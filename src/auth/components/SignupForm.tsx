@@ -42,7 +42,7 @@ export const SignupForm = (props: SignupFormProps) => {
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <Form
             className="space-y-6"
-            submitText="Create Account"
+            submitText="Anmelden"
             schema={Signup}
             initialValues={{ email: "", password: "" }}
             onSubmit={handleSubmit}
@@ -77,15 +77,6 @@ export const SignupForm = (props: SignupFormProps) => {
                   Passwort vergessen
                 </Link>
               </div>
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                Anmelden
-              </button>
             </div>
           </Form>
         </div>

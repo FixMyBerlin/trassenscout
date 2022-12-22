@@ -52,29 +52,26 @@ export function Form<S extends z.ZodType<any, any>>({
             }
           }
         })}
-        className="form"
         {...props}
       >
         {/* Form fields supplied as children are rendered here */}
         {children}
 
         {formError && (
-          <div role="alert" style={{ color: "red" }}>
+          <div role="alert" className="text-red-700 rounded bg-red-50 py-1 px-2">
             {formError}
           </div>
         )}
 
         {submitText && (
-          <button type="submit" disabled={ctx.formState.isSubmitting}>
+          <button
+            type="submit"
+            disabled={ctx.formState.isSubmitting}
+            className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
             {submitText}
           </button>
         )}
-
-        <style global jsx>{`
-          .form > * + * {
-            margin-top: 1rem;
-          }
-        `}</style>
       </form>
     </FormProvider>
   )
