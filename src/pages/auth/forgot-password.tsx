@@ -5,12 +5,14 @@ import { ForgotPassword } from "src/auth/validations"
 import forgotPassword from "src/auth/mutations/forgotPassword"
 import { useMutation } from "@blitzjs/rpc"
 import { BlitzPage } from "@blitzjs/next"
+import { MetaTags } from "src/core/layouts/MetaTags"
 
 const ForgotPasswordPage: BlitzPage = () => {
   const [forgotPasswordMutation, { isSuccess }] = useMutation(forgotPassword)
 
   return (
-    <Layout title="Forgot Your Password?">
+    <Layout>
+      <MetaTags noindex title="Passwort vergessen" />
       <h1>Forgot your password?</h1>
 
       {isSuccess ? (

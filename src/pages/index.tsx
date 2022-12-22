@@ -7,6 +7,7 @@ import logout from "src/auth/mutations/logout"
 import logo from "public/logo.png"
 import { useMutation } from "@blitzjs/rpc"
 import { Routes, BlitzPage } from "@blitzjs/next"
+import { MetaTags } from "src/core/layouts/MetaTags"
 
 /*
  * This file is just for a pleasant getting started page for your new app.
@@ -55,7 +56,8 @@ const UserInfo = () => {
 
 const Home: BlitzPage = () => {
   return (
-    <Layout title="Home">
+    <Layout>
+      <MetaTags title="RSV Startseite" />
       <div className="container">
         <main>
           <div className="logo">
