@@ -33,6 +33,7 @@
     "@prisma/client": "4.6.0",
     "autoprefixer": "10.4.13",
     "blitz": "2.0.0-beta.20",
+    "clsx": "1.2.1",
     "next": "12.2.5",
     "postcss": "8.4.20",
     "prisma": "4.6.0",
