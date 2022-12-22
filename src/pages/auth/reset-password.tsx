@@ -9,6 +9,7 @@ import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import Link from "next/link"
 import { MetaTags } from "src/core/layouts/MetaTags"
+import { FormLayout } from "src/core/components/forms"
 
 const ResetPasswordPage: BlitzPage = () => {
   const [token, setToken] = useState("")
@@ -21,8 +22,6 @@ const ResetPasswordPage: BlitzPage = () => {
 
   return (
     <div>
-      <h1>Set a New Password</h1>
-
       {isSuccess ? (
         <div>
           <h2>Password Reset Successfully</h2>
@@ -32,6 +31,7 @@ const ResetPasswordPage: BlitzPage = () => {
         </div>
       ) : (
         <Form
+          className="space-y-6"
           submitText="Reset Password"
           schema={ResetPassword}
           initialValues={{
@@ -71,7 +71,7 @@ ResetPasswordPage.redirectAuthenticatedTo = "/"
 ResetPasswordPage.getLayout = (page) => (
   <Layout>
     <MetaTags noindex title="Passwort vergessen" />
-    {page}
+    <FormLayout title="Neues Passwort vergeben">{page}</FormLayout>
   </Layout>
 )
 

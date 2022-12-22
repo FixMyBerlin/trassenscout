@@ -60,10 +60,7 @@ export const SignupForm = (props: SignupFormProps) => {
               </div> */}
 
           <div className="text-sm">
-            <Link
-              href={Routes.ForgotPasswordPage()}
-              className="font-medium text-indigo-600 hover:text-indigo-500"
-            >
+            <Link href={Routes.ForgotPasswordPage()} className="font-medium">
               Passwort vergessen
             </Link>
           </div>

@@ -18,6 +18,7 @@ export const LoginForm = (props: LoginFormProps) => {
   return (
     <FormLayout title="Einloggen" subtitle="Willkommen zurück!">
       <Form
+        className="space-y-6"
         submitText="Einloggen"
         schema={Login}
         initialValues={{ email: "", password: "" }}
@@ -39,8 +40,10 @@ export const LoginForm = (props: LoginFormProps) => {
       >
         <LabeledTextField name="email" label="Email" placeholder="Email" />
         <LabeledTextField name="password" label="Password" placeholder="Password" type="password" />
-        <div>
-          <Link href={Routes.ForgotPasswordPage()}>Passwort vergessen?</Link>
+        <div className="text-sm">
+          <Link href={Routes.ForgotPasswordPage()} className="font-medium">
+            Passwort vergessen?
+          </Link>
         </div>
       </Form>
 
