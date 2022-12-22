@@ -1,11 +1,12 @@
+import { Routes } from "@blitzjs/next"
+import { useMutation } from "@blitzjs/rpc"
 import { AuthenticationError, PromiseReturnType } from "blitz"
-import Link from "next/link"
-import { LabeledTextField } from "src/core/components/LabeledTextField"
-import { Form, FORM_ERROR } from "src/core/components/Form"
 import login from "src/auth/mutations/login"
 import { Login } from "src/auth/validations"
-import { useMutation } from "@blitzjs/rpc"
-import { Routes } from "@blitzjs/next"
+import { FormLayout } from "src/core/components/forms"
+import { Form, FORM_ERROR } from "src/core/components/forms/Form"
+import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
+import { Link } from "src/core/components/links"
 
 type LoginFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof login>) => void
@@ -13,12 +14,11 @@ type LoginFormProps = {
 
 export const LoginForm = (props: LoginFormProps) => {
   const [loginMutation] = useMutation(login)
-  return (
-    <div>
-      <h1>Login</h1>
 
+  return (
+    <FormLayout title="Einloggen" subtitle="Willkommen zurück!">
       <Form
-        submitText="Login"
+        submitText="Einloggen"
         schema={Login}
         initialValues={{ email: "", password: "" }}
         onSubmit={async (values) => {
@@ -40,19 +40,14 @@ export const LoginForm = (props: LoginFormProps) => {
         <LabeledTextField name="email" label="Email" placeholder="Email" />
         <LabeledTextField name="password" label="Password" placeholder="Password" type="password" />
         <div>
-          <Link href={Routes.ForgotPasswordPage()}>
-            <a>Forgot your password?</a>
-          </Link>
+          <Link href={Routes.ForgotPasswordPage()}>Passwort vergessen?</Link>
         </div>
       </Form>
 
-      <div style={{ marginTop: "1rem" }}>
-        Or{" "}
-        <Link href={Routes.SignupPage()}>
-          <a>Sign Up</a>
-        </Link>
+      <div className="mt-4">
+        Oder <Link href={Routes.SignupPage()}>registrieren</Link>
       </div>
-    </div>
+    </FormLayout>
   )
 }
 
