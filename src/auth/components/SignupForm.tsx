@@ -58,12 +58,6 @@ export const SignupForm = (props: SignupFormProps) => {
                   Merken
                 </label>
               </div> */}
-
-          <div className="text-sm">
-            <Link href={Routes.ForgotPasswordPage()} className="font-medium">
-              Passwort vergessen
-            </Link>
-          </div>
         </div>
       </Form>
 
