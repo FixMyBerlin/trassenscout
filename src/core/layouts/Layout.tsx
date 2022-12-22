@@ -10,7 +10,7 @@ const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
     <>
       <Head>
         <title>{title || "rsv-builder"}</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" />
       </Head>
 
       {children}
