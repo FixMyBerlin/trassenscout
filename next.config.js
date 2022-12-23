@@ -6,6 +6,7 @@ const { withBlitz } = require("@blitzjs/next")
  **/
 const config = {
   reactStrictMode: true,
+  swcMinify: true,
 }
 
 module.exports = withBlitz(config)
