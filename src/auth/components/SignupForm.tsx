@@ -14,7 +14,8 @@ type SignupFormProps = {
 export const SignupForm = (props: SignupFormProps) => {
   const [signupMutation] = useMutation(signup)
 
-  const handleSubmit = async (values) => {
+  type HandleSubmit = { email: string; password: string } | undefined
+  const handleSubmit = async (values: HandleSubmit) => {
     try {
       await signupMutation(values)
       props.onSuccess?.()
