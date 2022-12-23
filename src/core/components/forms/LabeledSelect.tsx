@@ -3,19 +3,19 @@ import clsx from "clsx"
 import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef } from "react"
 import { useFormContext } from "react-hook-form"
 
-export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
-  /** Field name. */
+export interface LabeledSelectProps extends PropsWithoutRef<JSX.IntrinsicElements["select"]> {
+  /** Select name. */
   name: string
+  /** Options: [value, text] */
+  options: [string, string][]
   /** Field label. */
   label: string
-  /** Field type. Doesn't include radio buttons and checkboxes */
-  type?: "text" | "password" | "email" | "number"
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
 }
 
-export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
-  ({ name, label, outerProps, labelProps, ...props }, ref) => {
+export const LabeledSelect = forwardRef<HTMLInputElement, LabeledSelectProps>(
+  ({ name, options, label, outerProps, labelProps, ...props }, ref) => {
     const {
       register,
       formState: { isSubmitting, errors },
@@ -32,18 +32,24 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
         >
           {label}
         </label>
-        <input
+        <select
           disabled={isSubmitting}
           {...register(name)}
           id={name}
           {...props}
           className={clsx(
-            "block w-full appearance-none rounded-md border px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none sm:text-sm",
+            "w-full rounded-md border bg-white py-2 px-3 shadow-sm focus:outline-none sm:text-sm",
             hasError
               ? "border-red-700 shadow-red-200 focus:border-red-800 focus:ring-red-800"
               : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
           )}
-        />
+        >
+          {options.map(([value, text]) => (
+            <option key={value} value={value}>
+              {text}
+            </option>
+          ))}
+        </select>
 
         <ErrorMessage
           render={({ message }) => (

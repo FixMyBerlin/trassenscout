@@ -33,7 +33,6 @@ const ForgotPasswordPage: BlitzPage = () => {
           </div>
         ) : (
           <Form
-            className="space-y-6"
             submitText="E-Mail zum Passwort ändern zusenden…"
             schema={ForgotPassword}
             initialValues={{ email: "" }}

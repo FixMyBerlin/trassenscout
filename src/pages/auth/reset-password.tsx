@@ -48,7 +48,6 @@ const ResetPasswordPage: BlitzPage = () => {
           </div>
         ) : (
           <Form
-            className="space-y-6"
             submitText="Reset Password"
             schema={ResetPassword}
             initialValues={{

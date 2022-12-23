@@ -32,7 +32,6 @@ export const SignupForm = (props: SignupFormProps) => {
   return (
     <LayoutMiddleBox title="Registrieren" subtitle="Willkommen!">
       <Form
-        className="space-y-6"
         submitText="Registrieren"
         schema={Signup}
         initialValues={{ email: "", password: "" }}

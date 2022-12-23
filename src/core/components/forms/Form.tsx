@@ -2,6 +2,7 @@ import { useState, ReactNode, PropsWithoutRef } from "react"
 import { FormProvider, useForm, UseFormProps } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import clsx from "clsx"
 
 export interface FormProps<S extends z.ZodType<any, any>>
   extends Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> {
@@ -39,6 +40,7 @@ export function Form<S extends z.ZodType<any, any>>({
   return (
     <FormProvider {...ctx}>
       <form
+        className={clsx("space-y-6", props.className)}
         onSubmit={ctx.handleSubmit(async (values) => {
           const result = (await onSubmit(values)) || {}
           for (const [key, value] of Object.entries(result)) {

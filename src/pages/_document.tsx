@@ -11,7 +11,7 @@ class MyDocument extends Document {
     return (
       <Html lang="de" className="h-full">
         <Head />
-        <body className="flex min-h-full w-full text-slate-900">
+        <body className="flex min-h-full w-full text-slate-900 antialiased">
           <Main />
           <NextScript />
         </body>
