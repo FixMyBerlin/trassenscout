@@ -42,7 +42,7 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
 
         <ErrorMessage
           render={({ message }) => (
-            <div role="alert" className="text-red-700 text-sm">
+            <div role="alert" className="text-sm text-red-700">
               {message}
             </div>
           )}

@@ -76,7 +76,7 @@ export const info: React.FC<Props> = ({ type, title, children, actionText, actio
           <h3 className={clsx(titleClasses, "text-sm font-medium")}>{title}</h3>
 
           {children && (
-            <div className={clsx(textClasses, "mt-2 text-sm prose prose-sm")}>{children}</div>
+            <div className={clsx(textClasses, "prose prose-sm mt-2 text-sm")}>{children}</div>
           )}
 
           {Boolean(action) && (
