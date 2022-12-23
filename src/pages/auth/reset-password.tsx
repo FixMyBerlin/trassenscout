@@ -36,44 +36,41 @@ const ResetPasswordPage: BlitzPage = () => {
   }
 
   return (
-    <div>
-      {isSuccess ? (
-        <div>
-          <h2>Password Reset Successfully</h2>
-          <p>
-            Go to the <Link href={Routes.Home()}>homepage</Link>
-          </p>
-        </div>
-      ) : (
-        <Form
-          className="space-y-6"
-          submitText="Reset Password"
-          schema={ResetPassword}
-          initialValues={{
-            password: "",
-            passwordConfirmation: "",
-            token,
-          }}
-          onSubmit={handleSubmit}
-        >
-          <LabeledTextField name="password" label="New Password" type="password" />
-          <LabeledTextField
-            name="passwordConfirmation"
-            label="Confirm New Password"
-            type="password"
-          />
-        </Form>
-      )}
-    </div>
+    <Layout>
+      <MetaTags noindex title="Passwort vergessen" />
+      <LayoutMiddleBox title="Neues Passwort vergeben">
+        {isSuccess ? (
+          <div>
+            <h2>Password Reset Successfully</h2>
+            <p>
+              Go to the <Link href={Routes.Home()}>homepage</Link>
+            </p>
+          </div>
+        ) : (
+          <Form
+            className="space-y-6"
+            submitText="Reset Password"
+            schema={ResetPassword}
+            initialValues={{
+              password: "",
+              passwordConfirmation: "",
+              token,
+            }}
+            onSubmit={handleSubmit}
+          >
+            <LabeledTextField name="password" label="New Password" type="password" />
+            <LabeledTextField
+              name="passwordConfirmation"
+              label="Confirm New Password"
+              type="password"
+            />
+          </Form>
+        )}
+      </LayoutMiddleBox>
+    </Layout>
   )
 }
 
 ResetPasswordPage.redirectAuthenticatedTo = "/"
-ResetPasswordPage.getLayout = (page) => (
-  <Layout>
-    <MetaTags noindex title="Passwort vergessen" />
-    <LayoutMiddleBox title="Neues Passwort vergeben">{page}</LayoutMiddleBox>
-  </Layout>
-)
 
 export default ResetPasswordPage
