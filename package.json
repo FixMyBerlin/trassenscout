@@ -28,6 +28,7 @@
     "@blitzjs/auth": "2.0.0-beta.20",
     "@blitzjs/next": "2.0.0-beta.20",
     "@blitzjs/rpc": "2.0.0-beta.20",
+    "@headlessui/react": "1.7.7",
     "@heroicons/react": "2.0.13",
     "@hookform/error-message": "2.0.1",
     "@hookform/resolvers": "2.9.10",
