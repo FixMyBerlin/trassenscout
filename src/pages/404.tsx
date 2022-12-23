@@ -1,20 +1,13 @@
-import Head from "next/head"
 import { ErrorComponent } from "@blitzjs/next"
+import { LayoutArticle, MetaTags } from "src/core/layouts"
 
-// ------------------------------------------------------
-// This page is rendered if a route match is not found
-// ------------------------------------------------------
 export default function Page404() {
   const statusCode = 404
-  const title = "This page could not be found"
+  const title = "Seite nicht gefunden"
   return (
-    <>
-      <Head>
-        <title>
-          {statusCode}: {title}
-        </title>
-      </Head>
+    <LayoutArticle>
+      <MetaTags title="Seite nicht gefunden (404)" />
       <ErrorComponent statusCode={statusCode} title={title} />
-    </>
+    </LayoutArticle>
   )
 }
