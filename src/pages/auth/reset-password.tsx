@@ -1,15 +1,14 @@
-import { useEffect, useState } from "react"
-import Layout from "src/core/layouts/Layout"
-import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
-import { Form, FORM_ERROR } from "src/core/components/forms/Form"
-import { ResetPassword } from "src/auth/validations"
-import resetPassword from "src/auth/mutations/resetPassword"
 import { BlitzPage, Routes } from "@blitzjs/next"
-import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import Link from "next/link"
-import { MetaTags } from "src/core/layouts/MetaTags"
+import { useRouter } from "next/router"
+import { useEffect, useState } from "react"
+import resetPassword from "src/auth/mutations/resetPassword"
+import { ResetPassword } from "src/auth/validations"
 import { FormLayout } from "src/core/components/forms"
+import { Form, FORM_ERROR } from "src/core/components/forms/Form"
+import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
+import { Layout, MetaTags } from "src/core/layouts"
 
 const ResetPasswordPage: BlitzPage = () => {
   const [token, setToken] = useState("")

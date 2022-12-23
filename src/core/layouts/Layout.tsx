@@ -1,10 +1,10 @@
-import Head from "next/head"
-import React, { FC } from "react"
 import { BlitzLayout } from "@blitzjs/next"
+import Head from "next/head"
+import React from "react"
 
 type Props = { children?: React.ReactNode }
 
-const Layout: BlitzLayout<Props> = ({ children }) => {
+export const Layout: BlitzLayout<Props> = ({ children }) => {
   return (
     <>
       <Head>
@@ -14,5 +14,3 @@ const Layout: BlitzLayout<Props> = ({ children }) => {
     </>
   )
 }
-
-export default Layout

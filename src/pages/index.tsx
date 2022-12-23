@@ -1,13 +1,12 @@
-import { Suspense } from "react"
+import { BlitzPage, Routes } from "@blitzjs/next"
+import { useMutation } from "@blitzjs/rpc"
 import Image from "next/image"
 import Link from "next/link"
-import Layout from "src/core/layouts/Layout"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import logout from "src/auth/mutations/logout"
 import logo from "public/logo.png"
-import { useMutation } from "@blitzjs/rpc"
-import { Routes, BlitzPage } from "@blitzjs/next"
-import { MetaTags } from "src/core/layouts/MetaTags"
+import { Suspense } from "react"
+import logout from "src/auth/mutations/logout"
+import { Layout, MetaTags } from "src/core/layouts"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 /*
  * This file is just for a pleasant getting started page for your new app.
