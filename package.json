@@ -8,6 +8,7 @@
     "build": "blitz build",
     "studio": "blitz prisma studio",
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
+    "format": "prettier --ignore-path .gitignore \"(components|pages)/**/*.+(ts|js|tsx)\" --write",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "prepare": "husky install"
