@@ -2,9 +2,10 @@
   "name": "rsv-builder",
   "version": "1.0.0",
   "scripts": {
-    "dev": "blitz dev",
-    "build": "blitz build",
     "start": "blitz start",
+    "dev": "NODE_OPTIONS='--inspect' blitz dev",
+    "debug": "DEBUG=blitz:* blitz console",
+    "build": "blitz build",
     "studio": "blitz prisma studio",
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
     "test": "vitest run --passWithNoTests",
