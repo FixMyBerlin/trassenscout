@@ -7,16 +7,8 @@
   Styles based on …
   - https://github.com/tailwindlabs/play.tailwindcss.com/blob/master/src/pages/_document.js
   - Tailwind UI Components
+  Update: Styles for <html> and <body> move to _document.tsx
   */
-  html {
-    @apply h-full;
-  }
-
-  body {
-    @apply flex min-h-full w-full;
-    @apply text-slate-900;
-  }
-
   #__next {
     @apply flex w-full h-full flex-none flex-col;
   }
