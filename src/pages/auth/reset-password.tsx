@@ -18,6 +18,23 @@ const ResetPasswordPage: BlitzPage = () => {
     setToken(router.query.token as string)
   }, [router.isReady])
 
+  type HandleSubmit = { password: string; passwordConfirmation: string }
+  const handleSubmit = async (values: HandleSubmit) => {
+    try {
+      await resetPasswordMutation({ ...values, token })
+    } catch (error: any) {
+      if (error.name === "ResetPasswordError") {
+        return {
+          [FORM_ERROR]: error.message,
+        }
+      } else {
+        return {
+          [FORM_ERROR]: "Sorry, we had an unexpected error. Please try again.",
+        }
+      }
+    }
+  }
+
   return (
     <div>
       {isSuccess ? (
@@ -37,21 +54,7 @@ const ResetPasswordPage: BlitzPage = () => {
             passwordConfirmation: "",
             token,
           }}
-          onSubmit={async (values) => {
-            try {
-              await resetPasswordMutation({ ...values, token })
-            } catch (error: any) {
-              if (error.name === "ResetPasswordError") {
-                return {
-                  [FORM_ERROR]: error.message,
-                }
-              } else {
-                return {
-                  [FORM_ERROR]: "Sorry, we had an unexpected error. Please try again.",
-                }
-              }
-            }
-          }}
+          onSubmit={handleSubmit}
         >
           <LabeledTextField name="password" label="New Password" type="password" />
           <LabeledTextField

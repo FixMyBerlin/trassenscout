@@ -25,24 +25,29 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
 
     return (
       <div {...outerProps}>
-        <label {...labelProps} className="block text-sm font-medium text-gray-700">
+        <label
+          {...labelProps}
+          htmlFor={name}
+          className="mb-1 block text-sm font-medium text-gray-700"
+        >
           {label}
-          <input
-            disabled={isSubmitting}
-            {...register(name)}
-            {...props}
-            className={clsx(
-              "block w-full appearance-none rounded-md border px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none sm:text-sm",
-              hasError
-                ? "border-red-700 shadow-red-200 focus:border-red-800 focus:ring-red-800"
-                : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-            )}
-          />
         </label>
+        <input
+          disabled={isSubmitting}
+          {...register(name)}
+          id={name}
+          {...props}
+          className={clsx(
+            "block w-full appearance-none rounded-md border px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none sm:text-sm",
+            hasError
+              ? "border-red-700 shadow-red-200 focus:border-red-800 focus:ring-red-800"
+              : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+          )}
+        />
 
         <ErrorMessage
           render={({ message }) => (
-            <div role="alert" className="text-sm text-red-700">
+            <div role="alert" className="mt-1 text-sm text-red-700">
               {message}
             </div>
           )}

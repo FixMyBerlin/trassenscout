@@ -24,7 +24,7 @@ export function forgotPasswordMailer({ to, token }: ResetPasswordMailer) {
       <h3>NOTE: You must set up a production email integration in mailers/forgotPasswordMailer.ts</h3>
 
       <a href="${resetUrl}">
-        Click here to set a new password
+        Ein neues Passwort vergeben
       </a>
     `,
   }
