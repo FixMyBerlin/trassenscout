@@ -3,10 +3,10 @@ import { useMutation } from "@blitzjs/rpc"
 import { AuthenticationError, PromiseReturnType } from "blitz"
 import login from "src/auth/mutations/login"
 import { Login } from "src/auth/validations"
-import { FormLayout } from "src/core/components/forms"
 import { Form, FORM_ERROR } from "src/core/components/forms/Form"
 import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
 import { Link } from "src/core/components/links"
+import { LayoutMiddleBox } from "src/core/layouts"
 
 type LoginFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof login>) => void
@@ -16,7 +16,7 @@ export const LoginForm = (props: LoginFormProps) => {
   const [loginMutation] = useMutation(login)
 
   return (
-    <FormLayout title="Einloggen" subtitle="Willkommen zurück!">
+    <LayoutMiddleBox title="Einloggen" subtitle="Willkommen zurück!">
       <Form
         className="space-y-6"
         submitText="Einloggen"
@@ -50,7 +50,7 @@ export const LoginForm = (props: LoginFormProps) => {
       <div className="mt-4">
         Oder <Link href={Routes.SignupPage()}>registrieren</Link>
       </div>
-    </FormLayout>
+    </LayoutMiddleBox>
   )
 }
 

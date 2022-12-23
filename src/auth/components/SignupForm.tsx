@@ -2,10 +2,10 @@ import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import signup from "src/auth/mutations/signup"
 import { Signup } from "src/auth/validations"
-import { FormLayout } from "src/core/components/forms"
 import { Form, FORM_ERROR } from "src/core/components/forms/Form"
 import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
 import { Link } from "src/core/components/links"
+import { LayoutMiddleBox } from "src/core/layouts"
 
 type SignupFormProps = {
   onSuccess?: () => void
@@ -29,7 +29,7 @@ export const SignupForm = (props: SignupFormProps) => {
   }
 
   return (
-    <FormLayout title="Registrieren" subtitle="Willkommen!">
+    <LayoutMiddleBox title="Registrieren" subtitle="Willkommen!">
       <Form
         className="space-y-6"
         submitText="Registrieren"
@@ -67,7 +67,7 @@ export const SignupForm = (props: SignupFormProps) => {
           anmelden
         </Link>
       </div>
-    </FormLayout>
+    </LayoutMiddleBox>
   )
 }
 

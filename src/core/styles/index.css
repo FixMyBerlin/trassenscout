@@ -12,6 +12,17 @@
   #__next {
     @apply flex w-full h-full flex-none flex-col;
   }
+
+  /*
+  This is wild…
+  The next.js Head component does not provide a way to add classes to the <body> tag.
+  One can only add static lasses via _document.tsx.
+  There are complex solutions involving `pagePros` – thanks @ https://stackoverflow.com/a/66358460/729221
+  However, we can use css instead – thanks @ https://stackoverflow.com/a/21253034/729221
+  */
+  body:has(#__next .set-bg-indigo-50-on-body) {
+    @apply bg-indigo-50;
+  }
 }
 
 @layer components {

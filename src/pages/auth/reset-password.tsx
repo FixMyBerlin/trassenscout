@@ -5,10 +5,9 @@ import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import resetPassword from "src/auth/mutations/resetPassword"
 import { ResetPassword } from "src/auth/validations"
-import { FormLayout } from "src/core/components/forms"
 import { Form, FORM_ERROR } from "src/core/components/forms/Form"
 import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
-import { Layout, MetaTags } from "src/core/layouts"
+import { Layout, LayoutMiddleBox, MetaTags } from "src/core/layouts"
 
 const ResetPasswordPage: BlitzPage = () => {
   const [token, setToken] = useState("")
@@ -70,7 +69,7 @@ ResetPasswordPage.redirectAuthenticatedTo = "/"
 ResetPasswordPage.getLayout = (page) => (
   <Layout>
     <MetaTags noindex title="Passwort vergessen" />
-    <FormLayout title="Neues Passwort vergeben">{page}</FormLayout>
+    <LayoutMiddleBox title="Neues Passwort vergeben">{page}</LayoutMiddleBox>
   </Layout>
 )
 

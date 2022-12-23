@@ -2,11 +2,13 @@ import { BlitzLayout } from "@blitzjs/next"
 import React from "react"
 import { Layout } from "./Layout"
 
-type Props = { children?: React.ReactNode }
+type Props = {
+  children?: React.ReactNode
+}
 
-export const LayoutArticle: BlitzLayout<Props> = ({ children, ...props }) => {
+export const LayoutArticle: BlitzLayout<Props> = ({ children }) => {
   return (
-    <Layout {...props}>
+    <Layout>
       <div className="prose mx-auto">{children}</div>
     </Layout>
   )

@@ -1,3 +1,5 @@
 export * from "./Layout"
 export * from "./LayoutArticle"
+export * from "./LayoutMiddleBox"
+export * from "./Logo"
 export * from "./MetaTags"
