@@ -1,20 +1,16 @@
-import {Suspense} from "react"
-import {Routes} from '@blitzjs/next'
+import { Suspense } from "react"
+import { Routes } from "@blitzjs/next"
 if (process.env.parentModel) {
-  import Head from "next/head"
-  import Link from 'next/link'
-  import {usePaginatedQuery} from '@blitzjs/rpc'
-  import {useParam} from '@blitzjs/next'
+  import { usePaginatedQuery } from "@blitzjs/rpc"
+  import { useParam } from "@blitzjs/next"
   import { useRouter } from "next/router"
-
 } else {
-  import Head from "next/head"
-  import Link from 'next/link'
-  import {usePaginatedQuery} from '@blitzjs/rpc'
+  import { usePaginatedQuery } from "@blitzjs/rpc"
   import { useRouter } from "next/router"
 }
-import Layout from "src/core/layouts/Layout"
+import { LayoutArticle, MetaTags } from "src/core/layouts"
 import get__ModelNames__ from "src/__modelNamesPath__/queries/get__ModelNames__"
+import { Link } from "src/core/components/links"
 
 const ITEMS_PER_PAGE = 100
 
@@ -23,15 +19,15 @@ export const __ModelNames__List = () => {
   const page = Number(router.query.page) || 0
   if (process.env.parentModel) {
     const __parentModelId__ = useParam("__parentModelId__", "number")
-    const [{__modelNames__, hasMore}] = usePaginatedQuery(get__ModelNames__, {
-      where: {__parentModel__: {id: __parentModelId__!}},
-      orderBy: {id: "asc"},
+    const [{ __modelNames__, hasMore }] = usePaginatedQuery(get__ModelNames__, {
+      where: { __parentModel__: { id: __parentModelId__! } },
+      orderBy: { id: "asc" },
       skip: ITEMS_PER_PAGE * page,
       take: ITEMS_PER_PAGE,
     })
 
-    const goToPreviousPage = () => router.push({query: {page: page - 1}})
-    const goToNextPage = () => router.push({query: {page: page + 1}})
+    const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
+    const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
     return (
       <div>
@@ -54,14 +50,14 @@ export const __ModelNames__List = () => {
       </div>
     )
   } else {
-    const [{__modelNames__, hasMore}] = usePaginatedQuery(get__ModelNames__, {
-      orderBy: {id: "asc"},
+    const [{ __modelNames__, hasMore }] = usePaginatedQuery(get__ModelNames__, {
+      orderBy: { id: "asc" },
       skip: ITEMS_PER_PAGE * page,
       take: ITEMS_PER_PAGE,
     })
 
-    const goToPreviousPage = () => router.push({query: {page: page - 1}})
-    const goToNextPage = () => router.push({query: {page: page + 1}})
+    const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
+    const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
     return (
       <div>
@@ -69,9 +65,14 @@ export const __ModelNames__List = () => {
           {__modelNames__.map((__modelName__) => (
             <li key={__modelName__.id}>
               <if condition="parentModel">
-                <Link href={Routes.Show__ModelName__Page({ __parentModelId__: __parentModelId__!, __modelId__: __modelName__.id })}>
+                <Link
+                  href={Routes.Show__ModelName__Page({
+                    __parentModelId__: __parentModelId__!,
+                    __modelId__: __modelName__.id,
+                  })}
+                >
                   <a>{__modelName__.name}</a>
-                </Link>               
+                </Link>
                 <else>
                   <Link href={Routes.Show__ModelName__Page({ __modelId__: __modelName__.id })}>
                     <a>{__modelName__.name}</a>
@@ -99,32 +100,27 @@ const __ModelNames__Page = () => {
   }
 
   return (
-    <Layout>
-      <Head>
-        <title>__ModelNames__</title>
-      </Head>
+    <LayoutArticle>
+      <MetaTags noindex title="__ModelNames__" />
 
       <div>
         <p>
           <if condition="parentModel">
             <Link href={Routes.New__ModelName__Page({ __parentModelId__: __parentModelId__! })}>
-              <a>Create __ModelName__</a>
+              __ModelName__ erstellen
             </Link>
             <else>
-              <Link href={Routes.New__ModelName__Page()}>
-                <a>Create __ModelName__</a>
-              </Link>
+              <Link href={Routes.New__ModelName__Page()}>__ModelName__ erstellen</Link>
             </else>
           </if>
         </p>
 
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div>Daten werden geladen…</div>}>
           <__ModelNames__List />
         </Suspense>
       </div>
-    </Layout>
+    </LayoutArticle>
   )
 }
-
 
 export default __ModelNames__Page

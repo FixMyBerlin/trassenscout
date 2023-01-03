@@ -1,37 +1,57 @@
-import {Suspense} from "react"
-import {Routes} from '@blitzjs/next'
-import Head from "next/head"
-import Link from 'next/link'
+import { Suspense } from "react"
+import { Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
-import {useQuery, useMutation} from '@blitzjs/rpc'
-import {useParam} from '@blitzjs/next'
-
-import Layout from "src/core/layouts/Layout"
+import { useQuery, useMutation } from "@blitzjs/rpc"
+import { useParam } from "@blitzjs/next"
+import { LayoutArticle, MetaTags } from "src/core/layouts"
 import get__ModelName__ from "src/__modelNamesPath__/queries/get__ModelName__"
 import update__ModelName__ from "src/__modelNamesPath__/mutations/update__ModelName__"
-import {__ModelName__Form, FORM_ERROR} from "src/__modelNamesPath__/components/__ModelName__Form"
+import { __ModelName__Form, FORM_ERROR } from "src/__modelNamesPath__/components/__ModelName__Form"
+import { Link } from "src/core/components/links"
 
-export const Edit__ModelName__ = () => {
+const Edit__ModelName__ = () => {
   const router = useRouter()
   const __modelId__ = useParam("__modelId__", "number")
   if (process.env.parentModel) {
     const __parentModelId__ = useParam("__parentModelId__", "number")
   }
-  const [__modelName__, {setQueryData}] = useQuery(
+  const [__modelName__, { setQueryData }] = useQuery(
     get__ModelName__,
-    {id: __modelId__},
-    { 
+    { id: __modelId__ },
+    {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
-      staleTime: Infinity 
+      staleTime: Infinity,
     }
   )
   const [update__ModelName__Mutation] = useMutation(update__ModelName__)
 
+  type HandleSubmit = any // TODO
+  const handleSubmit = async (values: HandleSubmit) => {
+    try {
+      const updated = await update__ModelName__Mutation({
+        id: __modelName__.id,
+        ...values,
+      })
+      await setQueryData(updated)
+      await router.push(
+        process.env.parentModel
+          ? Routes.Show__ModelName__Page({
+              __parentModelId__: __parentModelId__!,
+              __modelId__: updated.id,
+            })
+          : Routes.Show__ModelName__Page({ __modelId__: updated.id })
+      )
+    } catch (error: any) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
+
   return (
     <>
-      <Head>
-        <title>Edit __ModelName__ {__modelName__.id}</title>
-      </Head>
+      <MetaTags noindex title="Edit __ModelName__ {__modelName__.id}" />
 
       <div>
         <h1>Edit __ModelName__ {__modelName__.id}</h1>
@@ -44,25 +64,7 @@ export const Edit__ModelName__ = () => {
           //         then import and use it here
           // schema={Update__ModelName__}
           initialValues={__modelName__}
-          onSubmit={async (values) => {
-            try {
-              const updated = await update__ModelName__Mutation({
-                id: __modelName__.id,
-                ...values
-              })
-              await setQueryData(updated)
-              await router.push(
-                process.env.parentModel
-                  ? Routes.Show__ModelName__Page({ __parentModelId__: __parentModelId__!, __modelId__: updated.id })
-                  : Routes.Show__ModelName__Page({ __modelId__: updated.id })
-              )
-            } catch (error: any) {
-              console.error(error)
-              return {
-                [FORM_ERROR]: error.toString(),
-              }
-            }
-          }}
+          onSubmit={handleSubmit}
         />
       </div>
     </>
@@ -75,28 +77,25 @@ const Edit__ModelName__Page = () => {
   }
 
   return (
-    <div>
-      <Suspense fallback={<div>Loading...</div>}>
+    <LayoutArticle>
+      <Suspense fallback={<div>Daten werden geladen…</div>}>
         <Edit__ModelName__ />
       </Suspense>
 
       <p>
         <if condition="parentModel">
           <Link href={Routes.__ModelNames__Page({ __parentModelId__: __parentModelId__! })}>
-            <a>__ModelNames__</a>
+            __ModelNames__
           </Link>
           <else>
-            <Link href={Routes.__ModelNames__Page()}>
-              <a>__ModelNames__</a>
-            </Link>
+            <Link href={Routes.__ModelNames__Page()}>__ModelNames__</Link>
           </else>
         </if>
       </p>
-    </div>
+    </LayoutArticle>
   )
 }
 
 Edit__ModelName__Page.authenticate = true
-Edit__ModelName__Page.getLayout = (page) => <Layout>{page}</Layout>
 
 export default Edit__ModelName__Page

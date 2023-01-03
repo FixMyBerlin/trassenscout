@@ -1,17 +1,16 @@
-import {Routes} from '@blitzjs/next'
+import { Routes } from "@blitzjs/next"
 if (process.env.parentModel) {
-  import Link from 'next/link'
-  import {useParam} from '@blitzjs/next'
+  import { useParam } from "@blitzjs/next"
   import { useRouter } from "next/router"
-  import {useMutation} from '@blitzjs/rpc'
+  import { useMutation } from "@blitzjs/rpc"
 } else {
-  import Link from 'next/link'
   import { useRouter } from "next/router"
-  import {useMutation} from '@blitzjs/rpc'
+  import { useMutation } from "@blitzjs/rpc"
 }
-import Layout from "src/core/layouts/Layout"
+import { LayoutArticle, MetaTags } from "src/core/layouts"
 import create__ModelName__ from "src/__modelNamesPath__/mutations/create__ModelName__"
-import {__ModelName__Form, FORM_ERROR} from "src/__modelNamesPath__/components/__ModelName__Form"
+import { __ModelName__Form, FORM_ERROR } from "src/__modelNamesPath__/components/__ModelName__Form"
+import { Link } from "src/core/components/links"
 
 const New__ModelName__Page = () => {
   const router = useRouter()
@@ -20,8 +19,31 @@ const New__ModelName__Page = () => {
   }
   const [create__ModelName__Mutation] = useMutation(create__ModelName__)
 
+  type HandleSubmit = any // TODO
+  const handleSubmit = async (values: HandleSubmit) => {
+    try {
+      const __modelName__ = await create__ModelName__Mutation(
+        process.env.parentModel ? { ...values, __parentModelId__: __parentModelId__! } : values
+      )
+      await router.push(
+        process.env.parentModel
+          ? Routes.Show__ModelName__Page({
+              __parentModelId__: __parentModelId__!,
+              __modelId__: __modelName__.id,
+            })
+          : Routes.Show__ModelName__Page({ __modelId__: __modelName__.id })
+      )
+    } catch (error: any) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
+
   return (
-    <Layout title={"Create New __ModelName__"}>
+    <LayoutArticle>
+      <MetaTags noindex title="Create New __ModelName__" />
       <h1>Create New __ModelName__</h1>
 
       <__ModelName__Form
@@ -31,40 +53,20 @@ const New__ModelName__Page = () => {
         //         then import and use it here
         // schema={Create__ModelName__}
         // initialValues={{}}
-        onSubmit={async (values) => {
-          try {
-            const __modelName__ = await create__ModelName__Mutation(
-              process.env.parentModel
-                ? {...values, __parentModelId__: __parentModelId__!}
-                : values,
-            )
-            await router.push(
-              process.env.parentModel
-                ? Routes.Show__ModelName__Page({ __parentModelId__: __parentModelId__!, __modelId__: __modelName__.id })
-                : Routes.Show__ModelName__Page({ __modelId__: __modelName__.id }),
-            )
-          } catch (error: any) {
-            console.error(error)
-            return {
-              [FORM_ERROR]: error.toString(),
-            }
-          }
-        }}
+        onSubmit={handleSubmit}
       />
 
       <p>
         <if condition="parentModel">
           <Link href={Routes.__ModelNames__Page({ __parentModelId__: __parentModelId__! })}>
-            <a>__ModelNames__</a>
+            __ModelNames__
           </Link>
           <else>
-            <Link href={Routes.__ModelNames__Page()}>
-              <a>__ModelNames__</a>
-            </Link>
+            <Link href={Routes.__ModelNames__Page()}>__ModelNames__</Link>
           </else>
         </if>
       </p>
-    </Layout>
+    </LayoutArticle>
   )
 }
 
