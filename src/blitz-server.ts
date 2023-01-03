@@ -1,3 +1,4 @@
+import type { BlitzCliConfig } from "blitz"
 import { setupBlitzServer } from "@blitzjs/next"
 import { AuthServerPlugin, PrismaStorage } from "@blitzjs/auth"
 import { simpleRolesIsAuthorized } from "@blitzjs/auth"
@@ -15,3 +16,7 @@ export const { gSSP, gSP, api } = setupBlitzServer({
   ],
   logger: BlitzLogger({}),
 })
+
+export const cliConfig: BlitzCliConfig = {
+  customTemplates: "src/core/templates",
+}
