@@ -4,25 +4,24 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Link } from "src/core/components/links"
+import { Routes } from "@blitzjs/next"
 
 const primaryNavigation = [
-  { name: "Home Test", href: "/", current: false },
-  { name: "Dashboard", href: "/rs8/", current: false },
+  { name: "Dashboard", href: Routes.Rs8Index() },
   {
     name: "Teilstrecken",
-    href: "/rs8/teilstrecke-1",
+    href: Routes.Rs8Teilstrecke1(),
 
     children: [
-      { name: "Teilstrecke 1", href: "/rs8/teilstrecke-1" },
-      { name: "Teilstrecke 2", href: "/rs8/teilstrecke-2" },
-      { name: "Teilstrecke 3", href: "/rs8/teilstrecke-3" },
-      { name: "Teilstrecke 4", href: "/rs8/teilstrecke-4" },
+      { name: "Teilstrecke 1", href: Routes.Rs8Teilstrecke1() },
+      { name: "Teilstrecke 2", href: Routes.Rs8Teilstrecke2() },
+      { name: "Teilstrecke 3", href: Routes.Rs8Teilstrecke3() },
+      { name: "Teilstrecke 4", href: Routes.Rs8Teilstrecke4() },
     ],
   },
-  // { name: 'Dateien', href: '#/rs8/dateien', current: false },
-  { name: "Termine", href: "/rs8/termine", current: false },
-  { name: "Kontakte", href: "/rs8/kontakte", current: false },
-  { name: "Impressum", href: "/impressum", current: false },
+  { name: "Termine", href: Routes.Rs8Termine() },
+  { name: "Kontakte", href: Routes.Rs8Kontakte() },
+  { name: "Impressum", href: Routes.PageKontakt() },
 ]
 
 export const PageNavigation: React.FC = () => {
@@ -37,7 +36,7 @@ export const PageNavigation: React.FC = () => {
   return (
     <div className="flex space-x-4">
       {primaryNavigation.map((item) => {
-        const current = pathname === item.href
+        const current = pathname === item.href.pathname
 
         if (!item.children) {
           return (
@@ -111,12 +110,12 @@ export const MobilePageNavigation: React.FC = () => {
     <Disclosure.Panel className="sm:hidden">
       <div className="space-y-1 px-2 pt-2 pb-3">
         {primaryNavigation.map((item) => {
-          const current = pathname === item.href
+          const current = pathname === item.href.pathname
           return (
             <Disclosure.Button
               key={item.name}
               as="a"
-              href={item.href}
+              href={item.href.pathname}
               className={clsx(
                 current
                   ? "bg-gray-900 text-white"
