@@ -1,13 +1,12 @@
+import { PageKontakt } from "src/kontakt/components"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 
-export default function PageKontakt() {
+export default function Kontakt() {
   return (
     <LayoutArticle>
       <MetaTags noindex title="Kontakt & Impressum" />
-      <h1>Kontakt & Impressum</h1>
-      <p>
-        <code>TODO</code>
-      </p>
+
+      <PageKontakt />
     </LayoutArticle>
   )
 }

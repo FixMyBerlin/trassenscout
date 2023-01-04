@@ -9,7 +9,7 @@ import {
 } from "src/core/components/forms"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 
-export default function PageFormTest() {
+export default function FormTest() {
   const handleSubmit = async (values: any) => {
     try {
       await Promise.reject()

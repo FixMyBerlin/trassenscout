@@ -21,7 +21,7 @@ const primaryNavigation = [
   },
   { name: "Termine", href: Routes.Rs8Termine() },
   { name: "Kontakte", href: Routes.Rs8Kontakte() },
-  { name: "Impressum", href: Routes.PageKontakt() },
+  { name: "Impressum", href: Routes.Kontakt() },
 ]
 
 export const PageNavigation: React.FC = () => {
