@@ -9,8 +9,9 @@ export const linkStyles = `${baseStyles} underline`
 export const buttonStyles = `${baseStyles} rounded-full border border-indigo-500 px-6 pt-4 pb-3`
 
 type Props = {
-  href: RouteUrlObject
+  href: RouteUrlObject | string
   className?: string
+  classNameOverwrites?: string
   /** @default `false` */
   blank?: boolean
   /** @desc Style Link as Button */
@@ -21,15 +22,33 @@ type Props = {
 export const Link: React.FC<Props> = ({
   href,
   className,
+  classNameOverwrites,
   children,
   blank = false,
   button,
   ...props
 }) => {
+  // external link
+  if (typeof href === "string") {
+    return (
+      <a
+        href={href}
+        className={classNameOverwrites || clsx(button ? buttonStyles : linkStyles, className)}
+        rel="noopener noreferrer"
+        {...{ target: blank ? "_blank" : undefined }}
+        {...props}
+      >
+        {children}
+      </a>
+    )
+  }
+
   return (
     <NextLink href={href} {...{ target: blank ? "_blank" : undefined }} {...props}>
       {/* TODO remove a-tag one React 13 can be used. */}
-      <a className={clsx(button ? buttonStyles : linkStyles, className)}>{children}</a>
+      <a className={classNameOverwrites || clsx(button ? buttonStyles : linkStyles, className)}>
+        {children}
+      </a>
     </NextLink>
   )
 }
