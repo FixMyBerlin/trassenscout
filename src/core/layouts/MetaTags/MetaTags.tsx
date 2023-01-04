@@ -59,7 +59,7 @@ export const MetaTags: React.FC<Props> = ({
       {(article ? true : null) && <meta property="og:type" content="article" />}
       <meta name="twitter:card" content="summary_large_image" />
 
-      <meta name="theme-color" content="#facc15" />
+      <meta name="theme-color" content="#34d399" />
     </Head>
   )
 }

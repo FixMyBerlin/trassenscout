@@ -70,7 +70,7 @@ Here is the starting structure of your app.
 
 ```
 rsv-builder
-├── app/
+├── src/
 │   ├── api/
 │   ├── auth/
 │   │   ├── components/
