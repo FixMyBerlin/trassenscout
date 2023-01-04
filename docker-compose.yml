@@ -1,0 +1,17 @@
+version: "1"
+services:
+  db:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      POSTGRES_PASSWORD: password
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+    ports:
+      - "6001:5432"
+    volumes:
+      - rsv-data:/var/lib/postgresql/data
+    container_name: rsv-builder-db
+volumes:
+  rsv-data:
