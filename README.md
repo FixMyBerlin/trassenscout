@@ -2,24 +2,29 @@
 
 This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 
-# ****name****
-
 ## Getting Started
 
-Run your app in the development mode.
-
+* Start the PostgreSQL Server. DATABASE_URL needs to be set for this to work - see [Environment Variables](#environment-variables).
+```
+docker compose up -d
+```
+* Apply Migrations.
+```
+blitz prisma migrate dev
+```
+* Run your app in the development mode.
 ```
 blitz dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Environment Variables
+## <a id="environment-variables"></a>Environment Variables
 
-Ensure the `.env.local` file has required environment variables:
+Ensure the `.env.local` file has required environment variables or just copy .env.local.example:
 
 ```
-DATABASE_URL=postgresql://<YOUR_DB_USERNAME>@localhost:5432/rsv-builder
+DATABASE_URL=postgresql://postgres:password@localhost:6001/postgres
 ```
 
 Ensure the `.env.test.local` file has required environment variables:
