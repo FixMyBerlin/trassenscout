@@ -4,20 +4,33 @@ This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 
 ## Getting Started
 
-* Start the PostgreSQL Server. DATABASE_URL needs to be set for this to work - see [Environment Variables](#environment-variables).
+1. Setup `.env.local`:
+This will setup up the [Environment Variables](#environment-variables) for PostgreSQL.
+```
+cp .env.local.example .env.local
+```
+
+1. Install Docker and open it once to finish the setup:
+```
+brew install --cask tableplus
+```
+
+1. Start the PostgreSQL Server:
 ```
 docker compose up -d
 ```
-* Apply Migrations.
+
+1. Apply Migrations:
 ```
 blitz prisma migrate dev
 ```
-* Run your app in the development mode.
+
+1. Run your app in the development mode:
 ```
 blitz dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Open [http://localhost:3000](http://localhost:3000).
 
 ## <a id="environment-variables"></a>Environment Variables
 
