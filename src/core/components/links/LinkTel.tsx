@@ -13,9 +13,8 @@ type Props = {
 export const LinkTel: React.FC<Props> = ({ className, tel, button, children, ...props }) => {
   return (
     <a
-      href={`mailto:${tel || children}`}
+      href={`tel:${tel || children}`}
       className={clsx(button ? buttonStyles : linkStyles, className)}
-      rel="noopener noreferrer"
       {...props}
     >
       {children}

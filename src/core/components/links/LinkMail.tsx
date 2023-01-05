@@ -25,12 +25,7 @@ export const LinkMail: React.FC<Props> = ({
   }
 
   return (
-    <a
-      href={`mailto:${url}`}
-      className={clsx(button ? buttonStyles : linkStyles, className)}
-      rel="noopener noreferrer"
-      {...props}
-    >
+    <a href={url.href} className={clsx(button ? buttonStyles : linkStyles, className)} {...props}>
       {children}
     </a>
   )
