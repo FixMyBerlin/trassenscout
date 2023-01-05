@@ -4,9 +4,9 @@ import NextLink from "next/link"
 import { RouteUrlObject } from "blitz"
 
 const baseStyles =
-  "text-slate-900 underline-offset-4 underline decoration-indigo-500 hover:text-indigo-500"
+  "text-slate-900 underline-offset-4 underline decoration-rsv-blau hover:text-rsv-blau"
 export const linkStyles = `${baseStyles} underline`
-export const buttonStyles = `${baseStyles} rounded-full border border-indigo-500 px-6 pt-4 pb-3`
+export const buttonStyles = `${baseStyles} rounded-full border border-rsv-blau px-6 pt-4 pb-3`
 
 type Props = {
   href: RouteUrlObject | string
