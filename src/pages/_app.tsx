@@ -1,8 +1,9 @@
-import { ErrorFallbackProps, ErrorComponent, ErrorBoundary, AppProps } from "@blitzjs/next"
+import { AppProps, ErrorBoundary, ErrorComponent, ErrorFallbackProps } from "@blitzjs/next"
+import "@fontsource/overpass/variable-italic.css"
+import "@fontsource/overpass/variable.css"
+import "@fontsource/overpass/500.css"
 import { AuthenticationError, AuthorizationError } from "blitz"
-import React from "react"
 import { withBlitz } from "src/blitz-client"
-
 import "src/core/styles/index.css"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
