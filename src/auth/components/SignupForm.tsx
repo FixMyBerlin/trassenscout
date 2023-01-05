@@ -30,7 +30,7 @@ export const SignupForm = (props: SignupFormProps) => {
   }
 
   return (
-    <LayoutMiddleBox title="Registrieren" subtitle="Willkommen!">
+    <>
       <Form
         submitText="Registrieren"
         schema={Signup}
@@ -67,7 +67,7 @@ export const SignupForm = (props: SignupFormProps) => {
           anmelden
         </Link>
       </div>
-    </LayoutMiddleBox>
+    </>
   )
 }
 

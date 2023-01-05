@@ -36,37 +36,35 @@ const ResetPasswordPage: BlitzPage = () => {
   }
 
   return (
-    <Layout>
+    <LayoutMiddleBox title="Neues Passwort vergeben">
       <MetaTags noindex title="Passwort vergessen" />
-      <LayoutMiddleBox title="Neues Passwort vergeben">
-        {isSuccess ? (
-          <div>
-            <h2>Password Reset Successfully</h2>
-            <p>
-              Go to the <Link href={Routes.Home()}>homepage</Link>
-            </p>
-          </div>
-        ) : (
-          <Form
-            submitText="Reset Password"
-            schema={ResetPassword}
-            initialValues={{
-              password: "",
-              passwordConfirmation: "",
-              token,
-            }}
-            onSubmit={handleSubmit}
-          >
-            <LabeledTextField name="password" label="New Password" type="password" />
-            <LabeledTextField
-              name="passwordConfirmation"
-              label="Confirm New Password"
-              type="password"
-            />
-          </Form>
-        )}
-      </LayoutMiddleBox>
-    </Layout>
+      {isSuccess ? (
+        <div>
+          <h2>Password Reset Successfully</h2>
+          <p>
+            Go to the <Link href={Routes.Home()}>homepage</Link>
+          </p>
+        </div>
+      ) : (
+        <Form
+          submitText="Reset Password"
+          schema={ResetPassword}
+          initialValues={{
+            password: "",
+            passwordConfirmation: "",
+            token,
+          }}
+          onSubmit={handleSubmit}
+        >
+          <LabeledTextField name="password" label="New Password" type="password" />
+          <LabeledTextField
+            name="passwordConfirmation"
+            label="Confirm New Password"
+            type="password"
+          />
+        </Form>
+      )}
+    </LayoutMiddleBox>
   )
 }
 

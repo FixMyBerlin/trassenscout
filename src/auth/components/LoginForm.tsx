@@ -33,7 +33,7 @@ export const LoginForm = (props: LoginFormProps) => {
   }
 
   return (
-    <LayoutMiddleBox title="Einloggen" subtitle="Willkommen zurück!">
+    <>
       <Form
         submitText="Einloggen"
         schema={Login}
@@ -52,7 +52,7 @@ export const LoginForm = (props: LoginFormProps) => {
       <div className="mt-4">
         Oder <Link href={Routes.SignupPage()}>registrieren</Link>
       </div>
-    </LayoutMiddleBox>
+    </>
   )
 }
 

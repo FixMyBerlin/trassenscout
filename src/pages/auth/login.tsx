@@ -1,7 +1,7 @@
 import { BlitzPage } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { LoginForm } from "src/auth/components/LoginForm"
-import { Layout, MetaTags } from "src/core/layouts"
+import { LayoutMiddleBox, MetaTags } from "src/core/layouts"
 
 const LoginPage: BlitzPage = () => {
   const router = useRouter()
@@ -12,7 +12,7 @@ const LoginPage: BlitzPage = () => {
   // }
 
   return (
-    <Layout>
+    <LayoutMiddleBox title="Einloggen" subtitle="Willkommen zurück!">
       <MetaTags noindex title="Anmelden" />
       {/* {currentUser && (
         <Notice
@@ -31,7 +31,7 @@ const LoginPage: BlitzPage = () => {
           return router.push(next)
         }}
       />
-    </Layout>
+    </LayoutMiddleBox>
   )
 }
 
