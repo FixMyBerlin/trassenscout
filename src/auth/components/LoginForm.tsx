@@ -15,27 +15,30 @@ type LoginFormProps = {
 export const LoginForm = (props: LoginFormProps) => {
   const [loginMutation] = useMutation(login)
 
+  type HandleSubmit = any // TODO
+  const handleSubmit = async (values: HandleSubmit) => {
+    try {
+      const user = await loginMutation(values)
+      props.onSuccess?.(user)
+    } catch (error: any) {
+      if (error instanceof AuthenticationError) {
+        return { [FORM_ERROR]: "Sorry, those credentials are invalid" }
+      } else {
+        return {
+          [FORM_ERROR]:
+            "Sorry, we had an unexpected error. Please try again. - " + error.toString(),
+        }
+      }
+    }
+  }
+
   return (
     <LayoutMiddleBox title="Einloggen" subtitle="Willkommen zurück!">
       <Form
         submitText="Einloggen"
         schema={Login}
         initialValues={{ email: "", password: "" }}
-        onSubmit={async (values) => {
-          try {
-            const user = await loginMutation(values)
-            props.onSuccess?.(user)
-          } catch (error: any) {
-            if (error instanceof AuthenticationError) {
-              return { [FORM_ERROR]: "Sorry, those credentials are invalid" }
-            } else {
-              return {
-                [FORM_ERROR]:
-                  "Sorry, we had an unexpected error. Please try again. - " + error.toString(),
-              }
-            }
-          }
-        }}
+        onSubmit={handleSubmit}
       >
         <LabeledTextField name="email" label="Email" placeholder="Email" />
         <LabeledTextField name="password" label="Password" placeholder="Password" type="password" />
