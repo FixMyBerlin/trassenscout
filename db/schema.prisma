@@ -63,3 +63,14 @@ model Token {
 // enum TokenType {
 //   RESET_PASSWORD
 // }
+
+model CalendarEntry {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  title        String
+  startAt      DateTime
+  locationName String?
+  locationUrl  String?
+  description  String?
+}
