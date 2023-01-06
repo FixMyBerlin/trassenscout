@@ -1,9 +1,7 @@
-version: "1"
+version: "3"
 services:
   db:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+    image: postgres:12-alpine
     environment:
       POSTGRES_PASSWORD: password
       LANG: en_US.UTF-8
