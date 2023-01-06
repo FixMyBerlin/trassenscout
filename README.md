@@ -52,6 +52,26 @@ yarn test
 
 Blitz comes with a test setup using [Vitest](https://vitest.dev/) and [react-testing-library](https://testing-library.com/).
 
+## Working with data, database
+
+1. Use `blitz g all calendarEntries title:string startAt:dateTime "locationName:string?" "locationUrl:string?" "description:string?" --dry-run` for scaffolding.
+  - Run `--dry-run` first to check the folder names and file names.
+
+1. Check [db/schema.prisma](./db/schema.prisma) if all was "translated".
+
+1. Use `blitz prisma migrate dev --create-only` to create the migration but not run it direclty.
+
+1. Double check the migration. For example, column renames are handled by deleting the column and adding a new one which we do not always want.
+
+1. Use `blitz prisma migrate dev` to apply the migration.
+
+1. Add the right [Zod schema (Docs)](https://zod.dev/) in the newly created `your-model/mutations` files.
+  - You can use https://github.com/CarterGrimmeisen/zod-prisma to generate a starting point for this based on the prisma schema. However, this package should only be used in a separate branch since it collides with blitz in some way.
+
+1. Add the right form inputs in the new `your-model/components/YourModelForm.tsx`.
+
+1. Consider adding seed data in [db/seeds.ts](./db/seeds.ts).
+
 ## Commands
 
 Blitz comes with a powerful CLI that is designed to make development easy and fast. You can install it with `npm i -g blitz`
