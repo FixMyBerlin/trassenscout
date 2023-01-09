@@ -60,9 +60,12 @@ const Edit__ModelName__ = () => {
         <__ModelName__Form
           submitText="Speichern"
           // TODO use a zod schema for form validation
-          //  - Tip: extract mutation's schema into a shared `validations.ts` file and
-          //         then import and use it here
-          // schema={Update__ModelName__}
+          // 1. Move the schema from mutations/create__ModelName__.ts to `__ModelName__/schema.ts`
+          //   - Name `__ModelName__Schema`
+          // 2. Import the zod schema here.
+          // 3. Update the mutations/update__ModelName__.ts to
+          //   `const Update__ModelName__Schema = __ModelName__Schema.merge(z.object({id: z.number(),}))`
+          // schema={__ModelName__Schema}
           initialValues={__modelName__}
           onSubmit={handleSubmit}
         />
