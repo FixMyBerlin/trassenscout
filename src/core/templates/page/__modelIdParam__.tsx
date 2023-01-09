@@ -8,6 +8,7 @@ import get__ModelName__ from "src/__modelNamesPath__/queries/get__ModelName__"
 import delete__ModelName__ from "src/__modelNamesPath__/mutations/delete__ModelName__"
 import { Link, linkStyles } from "src/core/components/links"
 import clsx from "clsx"
+import { quote } from "src/core/components/text"
 
 export const __ModelName__ = () => {
   const router = useRouter()
@@ -19,7 +20,7 @@ export const __ModelName__ = () => {
   const [__modelName__] = useQuery(get__ModelName__, { id: __modelId__ })
 
   const handleDelete = async () => {
-    if (window.confirm(`Den Eintrag mit ID ${__modelName__.id} löschen?`)) {
+    if (window.confirm(`Den Eintrag mit ID ${__modelName__.id} unwiderruflich löschen?`)) {
       await delete__ModelName__Mutation({ id: __modelName__.id })
       if (process.env.parentModel) {
         await router.push(Routes.__ModelNames__Page({ __parentModelId__: __parentModelId__! }))
@@ -31,10 +32,10 @@ export const __ModelName__ = () => {
 
   return (
     <>
-      <MetaTags noindex title="__ModelName__ {__modelName__.id}" />
+      <MetaTags noindex title={`__ModelName__ ${quote(__modelName__.id)}`} />
 
       <div>
-        <h1>__ModelName__ {__modelName__.id}</h1>
+        <h1>__ModelName__ {quote(__modelName__.id)}</h1>
         <pre>{JSON.stringify(__modelName__, null, 2)}</pre>
 
         <if condition="parentModel">
@@ -71,10 +72,10 @@ const Show__ModelName__Page = () => {
       <p>
         <if condition="parentModel">
           <Link href={Routes.__ModelNames__Page({ __parentModelId__: __parentModelId__! })}>
-            __ModelNames__
+            Alle __ModelNames__
           </Link>
           <else>
-            <Link href={Routes.__ModelNames__Page()}>__ModelNames__</Link>
+            <Link href={Routes.__ModelNames__Page()}>Alle __ModelNames__</Link>
           </else>
         </if>
       </p>

@@ -43,26 +43,24 @@ const New__ModelName__Page = () => {
 
   return (
     <LayoutArticle>
-      <MetaTags noindex title="Create New __ModelName__" />
-      <h1>Create New __ModelName__</h1>
+      <MetaTags noindex title="Neuen __ModelName__ erstellen" />
+      <h1>Neuen __ModelName__ erstellen</h1>
 
       <__ModelName__Form
-        submitText="Create __ModelName__"
-        // TODO use a zod schema for form validation
-        //  - Tip: extract mutation's schema into a shared `validations.ts` file and
-        //         then import and use it here
-        // schema={Create__ModelName__}
-        // initialValues={{}}
+        submitText="Erstellen"
+        // TODO schema: See `__ModelIdParam__/edit.tsx` for detailed instruction.
+        // schema={__ModelName__Schema}
+        // initialValues={{}} // Use only when custom initial values are needed
         onSubmit={handleSubmit}
       />
 
       <p>
         <if condition="parentModel">
           <Link href={Routes.__ModelNames__Page({ __parentModelId__: __parentModelId__! })}>
-            __ModelNames__
+            Alle __ModelNames__
           </Link>
           <else>
-            <Link href={Routes.__ModelNames__Page()}>__ModelNames__</Link>
+            <Link href={Routes.__ModelNames__Page()}>Alle __ModelNames__</Link>
           </else>
         </if>
       </p>
