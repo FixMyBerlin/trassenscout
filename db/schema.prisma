@@ -74,3 +74,14 @@ model CalendarEntry {
   locationUrl  String?
   description  String?
 }
+
+model Contact {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  email     String   @unique
+  title     String?
+  phone     String?
+  role      String?
+}
