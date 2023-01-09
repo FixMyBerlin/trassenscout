@@ -10,10 +10,11 @@ export interface LabeledTextareaProps extends PropsWithoutRef<JSX.IntrinsicEleme
   label: string
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
+  optional?: boolean
 }
 
 export const LabeledTextareaField = forwardRef<HTMLTextAreaElement, LabeledTextareaProps>(
-  ({ label, outerProps, labelProps, name, ...props }, ref) => {
+  ({ name, label, outerProps, labelProps, optional, ...props }, ref) => {
     const {
       register,
       formState: { isSubmitting, errors },
@@ -29,6 +30,7 @@ export const LabeledTextareaField = forwardRef<HTMLTextAreaElement, LabeledTexta
           className="mb-1 block text-sm font-medium text-gray-700"
         >
           {label}
+          {optional && <> (optional)</>}
         </label>
         <textarea
           disabled={isSubmitting}
