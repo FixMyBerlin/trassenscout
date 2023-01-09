@@ -7,6 +7,7 @@ import { Disclosure } from "../Disclosure"
 import { Link, linkStyles } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { CalendarEntry } from "@prisma/client"
+import { Routes } from "@blitzjs/next"
 
 type Props = {
   calendarEntry: CalendarEntry
@@ -81,6 +82,12 @@ export const DateEntry: React.FC<Props> = ({ calendarEntry }) => {
       ) : (
         <Markdown className="prose-sm" markdown={calendarEntry.description} />
       )}
+
+      <p className="prose prose-sm text-right prose-a:no-underline">
+        <Link button href={Routes.EditCalendarEntryPage({ calendarEntryId: calendarEntry.id })}>
+          Bearbeiten
+        </Link>
+      </p>
     </Disclosure>
   )
 }

@@ -37,11 +37,11 @@ export const CalendarEntriesList = () => {
 const CalendarEntriesPage = () => {
   return (
     <LayoutArticle>
-      <MetaTags noindex title="CalendarEntries" />
+      <MetaTags noindex title="Kalendereinträge" />
 
       <div>
         <p>
-          <Link href={Routes.NewCalendarEntryPage()}>CalendarEntry erstellen</Link>
+          <Link href={Routes.NewCalendarEntryPage()}>Neuer Kalendereintrag</Link>
         </p>
 
         <Suspense fallback={<div>Daten werden geladen…</div>}>

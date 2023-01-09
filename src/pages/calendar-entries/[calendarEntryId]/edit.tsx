@@ -8,6 +8,7 @@ import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
 import updateCalendarEntry from "src/calendar-entries/mutations/updateCalendarEntry"
 import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/CalendarEntryForm"
 import { Link } from "src/core/components/links"
+import { CalendarEntrySchema, CalendarEntryType } from "src/calendar-entries/schema"
 
 const EditCalendarEntry = () => {
   const router = useRouter()
@@ -39,24 +40,27 @@ const EditCalendarEntry = () => {
     }
   }
 
+  // Field Type `datetime-local` requires a format of "YYYY-MM-DDTHH:MM:SS" to pre fill the value.
+  const calendarEntryForDateTimeField = {
+    ...calendarEntry,
+    ...{ startAt: calendarEntry.startAt.toISOString().split(".")[0] },
+  }
+
   return (
     <>
       <MetaTags noindex title="Edit CalendarEntry {calendarEntry.id}" />
 
-      <div>
-        <h1>Edit CalendarEntry {calendarEntry.id}</h1>
-        <pre>{JSON.stringify(calendarEntry, null, 2)}</pre>
+      <h1>Edit CalendarEntry {calendarEntry.id}</h1>
+      <pre>{JSON.stringify(calendarEntry, null, 2)}</pre>
 
-        <CalendarEntryForm
-          submitText="Update CalendarEntry"
-          // TODO use a zod schema for form validation
-          //  - Tip: extract mutation's schema into a shared `validations.ts` file and
-          //         then import and use it here
-          // schema={UpdateCalendarEntry}
-          initialValues={calendarEntry}
-          onSubmit={handleSubmit}
-        />
-      </div>
+      <CalendarEntryForm
+        submitText="Update CalendarEntry"
+        // TODO HILFE, siehe new.tsx
+        schema={CalendarEntrySchema.omit({ startAt: true })}
+        // TODO HILFE, `initialValues` ist vom Prisma Type CalendarEntry, ABER für das schema verwenden wir ZOD. Und startAt in Prisma ist vom Type "Date", aber in zod ist es vom Type "string".
+        initialValues={calendarEntryForDateTimeField as unknown as CalendarEntryType}
+        onSubmit={handleSubmit}
+      />
     </>
   )
 }
@@ -69,7 +73,7 @@ const EditCalendarEntryPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.CalendarEntriesPage()}>CalendarEntries</Link>
+        <Link href={Routes.CalendarEntriesPage()}>Alle Kalendereinträge</Link>
       </p>
     </LayoutArticle>
   )

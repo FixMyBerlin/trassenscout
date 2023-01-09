@@ -5,6 +5,7 @@ import { LayoutArticle, MetaTags } from "src/core/layouts"
 import createCalendarEntry from "src/calendar-entries/mutations/createCalendarEntry"
 import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/CalendarEntryForm"
 import { Link } from "src/core/components/links"
+import { CalendarEntrySchema } from "src/calendar-entries/schema"
 
 const NewCalendarEntryPage = () => {
   const router = useRouter()
@@ -25,21 +26,22 @@ const NewCalendarEntryPage = () => {
 
   return (
     <LayoutArticle>
-      <MetaTags noindex title="Create New CalendarEntry" />
-      <h1>Create New CalendarEntry</h1>
+      <MetaTags noindex title="Neuer Kalendereintrag" />
+      <h1>Neuer Kalendereintrag</h1>
 
       <CalendarEntryForm
-        submitText="Create CalendarEntry"
-        // TODO use a zod schema for form validation
-        //  - Tip: extract mutation's schema into a shared `validations.ts` file and
-        //         then import and use it here
-        // schema={CreateCalendarEntry}
+        submitText="Erstellen"
+        // TODO HILFE 1: `startAt` darf hier nicht Teil des Schemas sein, da sonst Type-Missmatch im Frontend(!)
+        // TODO HILFE 2: Wenn `startAt` ommit, dann funktioniert Frontend. ABER dann Fehlermeldung im Backend. OBWOHL das Backend eigentlich gar kein Schema geliefert bekommt(?). Bzw. am Backend hat sich nichts geändert.
+        // TODO: HILFE 1 + 2 gelten auch für edit.tsx
+        // schema={CalendarEntrySchema.omit({ startAt: true })}
+
         // initialValues={{}}
         onSubmit={handleSubmit}
       />
 
       <p>
-        <Link href={Routes.CalendarEntriesPage()}>CalendarEntries</Link>
+        <Link href={Routes.CalendarEntriesPage()}>Alle Kalendereinträge</Link>
       </p>
     </LayoutArticle>
   )
