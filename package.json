@@ -8,7 +8,7 @@
     "build": "blitz build",
     "studio": "blitz prisma studio",
     "check": "npm run type-check && npm run lint && npm run format && npm run test",
-    "type-check": "tsc",
+    "type-check": "tsc --noEmit",
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
     "format": "prettier --ignore-path .gitignore \"(components|pages)/**/*.+(ts|js|tsx)\" --write",
     "test": "vitest run --passWithNoTests",
