@@ -1,6 +1,7 @@
 import { BlitzPage } from "@blitzjs/next"
-import Link from "next/link"
-import { Layout, MetaTags } from "src/core/layouts"
+import { AdminBox } from "src/core/components/AdminBox"
+import { Link } from "src/core/components/links"
+import { LayoutMiddleBox, MetaTags } from "src/core/layouts"
 import { z } from "zod"
 
 declare global {
@@ -15,13 +16,15 @@ const Zod: BlitzPage = () => {
   }
 
   return (
-    <Layout>
+    <LayoutMiddleBox>
       <MetaTags noindex title="ZOD Test page" />
-      <p>
-        Use the browser console to test <Link href="https://zod.dev/">zod</Link> (
-        <Link href="https://github.com/colinhacks/zod">Github</Link>).
-      </p>
-    </Layout>
+      <AdminBox>
+        <div className="prose prose-lg">
+          Use the browser console to test <Link href="https://zod.dev/">zod</Link> (
+          <Link href="https://github.com/colinhacks/zod">Github</Link>).
+        </div>
+      </AdminBox>
+    </LayoutMiddleBox>
   )
 }
 
