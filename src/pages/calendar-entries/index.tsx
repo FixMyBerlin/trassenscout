@@ -6,6 +6,7 @@ import { LayoutArticle, MetaTags } from "src/core/layouts"
 import getCalendarEntries from "src/calendar-entries/queries/getCalendarEntries"
 import { Link } from "src/core/components/links"
 import { Calender } from "src/rs8/termine/components/Calender"
+import { Pagination } from "src/core/components/Pagination"
 
 const ITEMS_PER_PAGE = 100
 
@@ -24,12 +25,13 @@ export const CalendarEntriesList = () => {
   return (
     <div>
       <Calender calendarEntries={calendarEntries} />
-      <button disabled={page === 0} onClick={goToPreviousPage}>
-        Previous
-      </button>
-      <button disabled={!hasMore} onClick={goToNextPage}>
-        Next
-      </button>
+      <Pagination
+        visible={!hasMore || page !== 0}
+        disablePrev={page === 0}
+        disableNext={!hasMore}
+        handlePrev={goToPreviousPage}
+        handleNext={goToNextPage}
+      />
     </div>
   )
 }
