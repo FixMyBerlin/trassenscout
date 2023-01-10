@@ -11,6 +11,7 @@ if (process.env.parentModel) {
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import get__ModelNames__ from "src/__modelNamesPath__/queries/get__ModelNames__"
 import { Link } from "src/core/components/links"
+import { Pagination } from "src/core/components/Pagination"
 
 const ITEMS_PER_PAGE = 100
 
@@ -96,12 +97,13 @@ export const __ModelNames__List = () => {
           ))}
         </ul>
 
-        <button disabled={page === 0} onClick={goToPreviousPage}>
-          Previous
-        </button>
-        <button disabled={!hasMore} onClick={goToNextPage}>
-          Next
-        </button>
+        <Pagination
+          visible={!hasMore || page !== 0}
+          disablePrev={page === 0}
+          disableNext={!hasMore}
+          handlePrev={goToPreviousPage}
+          handleNext={goToNextPage}
+        />
       </>
     )
   }
