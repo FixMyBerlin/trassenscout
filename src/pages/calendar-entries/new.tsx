@@ -31,11 +31,7 @@ const NewCalendarEntryPage = () => {
 
       <CalendarEntryForm
         submitText="Erstellen"
-        // TODO HILFE 1: `startAt` darf hier nicht Teil des Schemas sein, da sonst Type-Missmatch im Frontend(!)
-        // TODO HILFE 2: Wenn `startAt` ommit, dann funktioniert Frontend. ABER dann Fehlermeldung im Backend. OBWOHL das Backend eigentlich gar kein Schema geliefert bekommt(?). Bzw. am Backend hat sich nichts geändert.
-        // TODO: HILFE 1 + 2 gelten auch für edit.tsx
-        // schema={CalendarEntrySchema.omit({ startAt: true })}
-
+        schema={CalendarEntrySchema}
         // initialValues={{}}
         onSubmit={handleSubmit}
       />

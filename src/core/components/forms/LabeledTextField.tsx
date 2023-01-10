@@ -20,9 +20,17 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
     const {
       register,
       formState: { isSubmitting, errors },
+      getValues,
+      setValue,
     } = useFormContext()
 
     const hasError = Boolean(errors[name])
+
+    // Field Type `datetime-local` requires a format of "YYYY-MM-DDTHH:MM:SS" to pre fill the value.
+    const value = getValues()[name]
+    if (value && props.type === "datetime-local") {
+      setValue(name, new Date(value as string).toISOString().split(".")[0])
+    }
 
     return (
       <div {...outerProps}>
