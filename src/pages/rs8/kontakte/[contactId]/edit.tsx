@@ -9,8 +9,9 @@ import updateContact from "src/contacts/mutations/updateContact"
 import { ContactForm, FORM_ERROR } from "src/contacts/components/ContactForm"
 import { Link } from "src/core/components/links"
 import { ContactSchema } from "src/contacts/schema"
+import { BlitzPage } from "@blitzjs/auth"
 
-const EditContact = () => {
+const EditContact: BlitzPage = () => {
   const router = useRouter()
   const contactId = useParam("contactId", "number")
   const [contact, { setQueryData }] = useQuery(

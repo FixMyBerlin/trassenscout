@@ -20,7 +20,7 @@ const primaryNavigation = [
     ],
   },
   { name: "Termine", href: Routes.Rs8Termine() },
-  { name: "Kontakte", href: Routes.Rs8Kontakte() },
+  { name: "Kontakte", href: Routes.ContactsPage() },
   { name: "Impressum", href: Routes.Kontakt() },
 ]
 
