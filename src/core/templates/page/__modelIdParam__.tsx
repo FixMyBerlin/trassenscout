@@ -32,32 +32,28 @@ export const __ModelName__ = () => {
 
   return (
     <>
-      <MetaTags noindex title={`__ModelName__ ${quote(__modelName__.id)}`} />
+      <h1>__ModelName__ {quote(__modelName__.id)}</h1>
+      <pre>{JSON.stringify(__modelName__, null, 2)}</pre>
 
-      <div>
-        <h1>__ModelName__ {quote(__modelName__.id)}</h1>
-        <pre>{JSON.stringify(__modelName__, null, 2)}</pre>
-
-        <if condition="parentModel">
-          <Link
-            href={Routes.Edit__ModelName__Page({
-              __parentModelId__: __parentModelId__!,
-              __modelId__: __modelName__.id,
-            })}
-          >
+      <if condition="parentModel">
+        <Link
+          href={Routes.Edit__ModelName__Page({
+            __parentModelId__: __parentModelId__!,
+            __modelId__: __modelName__.id,
+          })}
+        >
+          Bearbeiten
+        </Link>
+        <else>
+          <Link href={Routes.Edit__ModelName__Page({ __modelId__: __modelName__.id })}>
             Bearbeiten
           </Link>
-          <else>
-            <Link href={Routes.Edit__ModelName__Page({ __modelId__: __modelName__.id })}>
-              Bearbeiten
-            </Link>
-          </else>
-        </if>
+        </else>
+      </if>
 
-        <button type="button" onClick={handleDelete} className={clsx(linkStyles, "ml-2")}>
-          Löschen
-        </button>
-      </div>
+      <button type="button" onClick={handleDelete} className={clsx(linkStyles, "ml-2")}>
+        Löschen
+      </button>
     </>
   )
 }
@@ -69,6 +65,12 @@ const Show__ModelName__Page = () => {
 
   return (
     <LayoutArticle>
+      <MetaTags noindex title={`__ModelName__ ${quote(__modelName__.id)}`} />
+
+      <Suspense fallback={<div>Daten werden geladen…</div>}>
+        <__ModelName__ />
+      </Suspense>
+
       <p>
         <if condition="parentModel">
           <Link href={Routes.__ModelNames__Page({ __parentModelId__: __parentModelId__! })}>
@@ -79,10 +81,6 @@ const Show__ModelName__Page = () => {
           </else>
         </if>
       </p>
-
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
-        <__ModelName__ />
-      </Suspense>
     </LayoutArticle>
   )
 }

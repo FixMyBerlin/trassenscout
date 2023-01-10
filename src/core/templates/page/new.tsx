@@ -44,6 +44,7 @@ const New__ModelName__Page = () => {
   return (
     <LayoutArticle>
       <MetaTags noindex title="Neuen __ModelName__ erstellen" />
+
       <h1>Neuen __ModelName__ erstellen</h1>
 
       <__ModelName__Form

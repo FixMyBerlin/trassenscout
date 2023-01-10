@@ -51,25 +51,21 @@ const Edit__ModelName__ = () => {
 
   return (
     <>
-      <MetaTags noindex title={`__ModelName__ ${__modelName__.id} bearbeiten`} />
+      <h1>__ModelName__ {__modelName__.id} bearbeiten</h1>
+      <pre>{JSON.stringify(__modelName__, null, 2)}</pre>
 
-      <div>
-        <h1>__ModelName__ {__modelName__.id} bearbeiten</h1>
-        <pre>{JSON.stringify(__modelName__, null, 2)}</pre>
-
-        <__ModelName__Form
-          submitText="Speichern"
-          // TODO use a zod schema for form validation
-          // 1. Move the schema from mutations/create__ModelName__.ts to `__ModelName__/schema.ts`
-          //   - Name `__ModelName__Schema`
-          // 2. Import the zod schema here.
-          // 3. Update the mutations/update__ModelName__.ts to
-          //   `const Update__ModelName__Schema = __ModelName__Schema.merge(z.object({id: z.number(),}))`
-          // schema={__ModelName__Schema}
-          initialValues={__modelName__}
-          onSubmit={handleSubmit}
-        />
-      </div>
+      <__ModelName__Form
+        submitText="Speichern"
+        // TODO use a zod schema for form validation
+        // 1. Move the schema from mutations/create__ModelName__.ts to `__ModelName__/schema.ts`
+        //   - Name `__ModelName__Schema`
+        // 2. Import the zod schema here.
+        // 3. Update the mutations/update__ModelName__.ts to
+        //   `const Update__ModelName__Schema = __ModelName__Schema.merge(z.object({id: z.number(),}))`
+        // schema={__ModelName__Schema}
+        initialValues={__modelName__}
+        onSubmit={handleSubmit}
+      />
     </>
   )
 }
@@ -81,6 +77,8 @@ const Edit__ModelName__Page = () => {
 
   return (
     <LayoutArticle>
+      <MetaTags noindex title={`__ModelName__ ${__modelName__.id} bearbeiten`} />
+
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <Edit__ModelName__ />
       </Suspense>

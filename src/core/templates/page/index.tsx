@@ -30,7 +30,7 @@ export const __ModelNames__List = () => {
     const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
     return (
-      <div>
+      <>
         <ul>
           {__modelNames__.map((__modelName__) => (
             <li key={__modelName__.id}>
@@ -47,7 +47,7 @@ export const __ModelNames__List = () => {
         <button disabled={!hasMore} onClick={goToNextPage}>
           Next
         </button>
-      </div>
+      </>
     )
   } else {
     const [{ __modelNames__, hasMore }] = usePaginatedQuery(get__ModelNames__, {
@@ -60,7 +60,20 @@ export const __ModelNames__List = () => {
     const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
     return (
-      <div>
+      <>
+        <h1>__ModelNames__</h1>
+
+        <p>
+          <if condition="parentModel">
+            <Link href={Routes.New__ModelName__Page({ __parentModelId__: __parentModelId__! })}>
+              __ModelName__ erstellen
+            </Link>
+            <else>
+              <Link href={Routes.New__ModelName__Page()}>__ModelName__ erstellen</Link>
+            </else>
+          </if>
+        </p>
+
         <ul>
           {__modelNames__.map((__modelName__) => (
             <li key={__modelName__.id}>
@@ -89,7 +102,7 @@ export const __ModelNames__List = () => {
         <button disabled={!hasMore} onClick={goToNextPage}>
           Next
         </button>
-      </div>
+      </>
     )
   }
 }
@@ -103,22 +116,9 @@ const __ModelNames__Page = () => {
     <LayoutArticle>
       <MetaTags noindex title="__ModelNames__" />
 
-      <div>
-        <p>
-          <if condition="parentModel">
-            <Link href={Routes.New__ModelName__Page({ __parentModelId__: __parentModelId__! })}>
-              __ModelName__ erstellen
-            </Link>
-            <else>
-              <Link href={Routes.New__ModelName__Page()}>__ModelName__ erstellen</Link>
-            </else>
-          </if>
-        </p>
-
-        <Suspense fallback={<div>Daten werden geladen…</div>}>
-          <__ModelNames__List />
-        </Suspense>
-      </div>
+      <Suspense fallback={<div>Daten werden geladen…</div>}>
+        <__ModelNames__List />
+      </Suspense>
     </LayoutArticle>
   )
 }
