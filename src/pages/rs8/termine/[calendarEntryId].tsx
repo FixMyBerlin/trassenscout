@@ -3,13 +3,15 @@ import { Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
 import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
 import deleteCalendarEntry from "src/calendar-entries/mutations/deleteCalendarEntry"
 import { Link, linkStyles } from "src/core/components/links"
 import clsx from "clsx"
 import { quote } from "src/core/components/text"
 import { DateEntry } from "src/rs8/termine/components/Calender"
+import { AdminBox } from "src/core/components/AdminBox"
+import { PageHeader } from "src/core/components/PageHeader"
 
 export const CalendarEntry = () => {
   const router = useRouter()
@@ -27,38 +29,38 @@ export const CalendarEntry = () => {
   return (
     <>
       <MetaTags noindex title={`"Kalender-Eintrag ${quote(calendarEntry.title)}"`} />
+      <PageHeader title="Kalender-Eintrag" />
 
-      <div>
-        <h1>Kalender-Eintrag {quote(calendarEntry.title)}</h1>
-        <pre>{JSON.stringify(calendarEntry, null, 2)}</pre>
-
-        <div className="rounded border">
-          <DateEntry calendarEntry={calendarEntry} />
-        </div>
-
+      <p className="mb-10 space-x-4">
+        <Link href={Routes.CalendarEntriesPage()}>Zurück zur Liste</Link>
+        <span>–</span>
         <Link href={Routes.EditCalendarEntryPage({ calendarEntryId: calendarEntry.id })}>
-          Bearbeiten
+          Eintrag bearbeiten
         </Link>
-
-        <button type="button" onClick={handleDelete} className={clsx(linkStyles, "ml-2")}>
-          Löschen
+        <span>–</span>
+        <button type="button" onClick={handleDelete} className={linkStyles}>
+          Eintrag löschen
         </button>
+      </p>
+
+      <div className="max-w-prose rounded border shadow">
+        <DateEntry calendarEntry={calendarEntry} />
       </div>
+
+      <AdminBox>
+        <pre>{JSON.stringify(calendarEntry, null, 2)}</pre>
+      </AdminBox>
     </>
   )
 }
 
 const ShowCalendarEntryPage = () => {
   return (
-    <LayoutArticle>
-      <p>
-        <Link href={Routes.CalendarEntriesPage()}>Alle Kalendereinträge</Link>
-      </p>
-
+    <LayoutRs8>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <CalendarEntry />
       </Suspense>
-    </LayoutArticle>
+    </LayoutRs8>
   )
 }
 

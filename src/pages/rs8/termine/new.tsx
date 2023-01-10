@@ -1,11 +1,12 @@
 import { Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
 import createCalendarEntry from "src/calendar-entries/mutations/createCalendarEntry"
 import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/CalendarEntryForm"
 import { Link } from "src/core/components/links"
 import { CalendarEntrySchema } from "src/calendar-entries/schema"
+import { PageHeader } from "src/core/components/PageHeader"
 
 const NewCalendarEntryPage = () => {
   const router = useRouter()
@@ -25,9 +26,9 @@ const NewCalendarEntryPage = () => {
   }
 
   return (
-    <LayoutArticle>
+    <LayoutRs8>
       <MetaTags noindex title="Neuer Kalendereintrag" />
-      <h1>Neuer Kalendereintrag</h1>
+      <PageHeader title="Neuer Kalendereintrag" />
 
       <CalendarEntryForm
         submitText="Erstellen"
@@ -36,10 +37,10 @@ const NewCalendarEntryPage = () => {
         onSubmit={handleSubmit}
       />
 
-      <p>
-        <Link href={Routes.CalendarEntriesPage()}>Alle Kalendereinträge</Link>
+      <p className="mt-5">
+        <Link href={Routes.CalendarEntriesPage()}>Zurück zur Liste</Link>
       </p>
-    </LayoutArticle>
+    </LayoutRs8>
   )
 }
 

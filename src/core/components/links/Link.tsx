@@ -3,10 +3,9 @@ import clsx from "clsx"
 import NextLink from "next/link"
 import { RouteUrlObject } from "blitz"
 
-const baseStyles =
-  "text-slate-900 underline-offset-4 underline decoration-rsv-blau hover:text-rsv-blau"
+const baseStyles = "text-slate-900 underline-offset-4 decoration-rsv-blau hover:text-rsv-blau"
 export const linkStyles = `${baseStyles} underline`
-export const buttonStyles = `${baseStyles} rounded-full border border-rsv-blau px-6 pt-4 pb-3 disabled:text-gray-400 disabled:border-gray-300`
+export const buttonStyles = `${baseStyles} rounded-full border border-rsv-blau px-6 pt-4 pb-3 disabled:text-gray-400 disabled:border-gray-300 hover:bg-blue-50`
 
 type Props = {
   href: RouteUrlObject | string

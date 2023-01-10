@@ -28,6 +28,7 @@ export function Form<S extends z.ZodType<any, any>>({
   schema,
   initialValues,
   onSubmit,
+  className,
   ...props
 }: FormProps<S>) {
   const ctx = useForm<z.infer<S>>({
@@ -40,7 +41,7 @@ export function Form<S extends z.ZodType<any, any>>({
   return (
     <FormProvider {...ctx}>
       <form
-        className={clsx("space-y-6", props.className)}
+        className={clsx("space-y-6", className)}
         onSubmit={ctx.handleSubmit(async (values) => {
           const result = (await onSubmit(values)) || {}
           for (const [key, value] of Object.entries(result)) {
