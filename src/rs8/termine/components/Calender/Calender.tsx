@@ -1,7 +1,6 @@
 import { CalendarEntry } from "@prisma/client"
 import { isAfter, startOfToday } from "date-fns"
 import React from "react"
-import { dates } from "src/fakeServer/rs8/dates.const"
 import { DateList } from "./DateList"
 
 type Props = {
