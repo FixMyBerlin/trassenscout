@@ -1,10 +1,13 @@
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
+import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import getContacts from "src/contacts/queries/getContacts"
 import { buttonStyles, Link, LinkMail, LinkTel } from "src/core/components/links"
 import { LayoutRs8, MetaTags } from "src/core/layouts"
+import { Pagination } from "src/core/components/Pagination"
+import { PageHeader } from "src/core/components/PageHeader"
 
 const ITEMS_PER_PAGE = 100
 
@@ -86,12 +89,15 @@ export const ContactTable = () => {
                       <LinkMail subject="Abstimmung zum RS 8">{person.email}</LinkMail>
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                      <Link
-                        href={Routes.EditContactPage({ contactId: person.id })}
-                        className={buttonStyles}
-                      >
-                        Edit<span className="sr-only">, {person.name}</span>
-                      </Link>
+                      <p className="flex items-center justify-end gap-4 text-right">
+                        <Link button href={Routes.EditContactPage({ contactId: person.id })}>
+                          <PencilSquareIcon className="h-5 w-5" />
+                          <span className="sr-only">Bearbeiten</span>
+                        </Link>
+                        <Link href={Routes.ShowContactPage({ contactId: person.id })}>
+                          <TrashIcon className="h-5 w-5" />
+                        </Link>
+                      </p>
                     </td>
                   </tr>
                 ))}
@@ -100,14 +106,15 @@ export const ContactTable = () => {
           </div>
         </div>
       </div>
-
-      {/* TODO - anpassen wie bei Termine */}
-      {/* <button disabled={page === 0} onClick={goToPreviousPage}>
-        Previous
-      </button>
-      <button disabled={!hasMore} onClick={goToNextPage}>
-        Next
-      </button> */}
+      <div className="mt-6">
+        <Pagination
+          visible={hasMore || page !== 0}
+          disablePrev={page === 0}
+          disableNext={!hasMore}
+          handlePrev={goToPreviousPage}
+          handleNext={goToNextPage}
+        />
+      </div>
     </div>
   )
 }
@@ -117,6 +124,11 @@ const ContactsPage: BlitzPage = () => {
     <LayoutRs8>
       <MetaTags noindex title="Kontakte" />
       <div>
+        <PageHeader
+          title="Kontakte"
+          description="Dieser Bereich hilft Ihnen dabei wichtige Kontakte zu verwalten und
+        anzuschreiben."
+        />
         <Suspense fallback={<div>Daten werden geladen…</div>}>
           <ContactTable />
         </Suspense>
