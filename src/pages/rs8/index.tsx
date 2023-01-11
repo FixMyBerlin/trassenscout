@@ -11,4 +11,6 @@ const Rs8Index: BlitzPage = () => {
   )
 }
 
+Rs8Index.authenticate = true
+
 export default Rs8Index
