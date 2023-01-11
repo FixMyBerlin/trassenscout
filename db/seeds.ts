@@ -7,7 +7,6 @@ import db from "./index"
  * to easily generate realistic data.
  */
 const seed = async () => {
-  
   const user = await db.user.create({
     data: {
       email: "dev-team@fixmycity.de",
