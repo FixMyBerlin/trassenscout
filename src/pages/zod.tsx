@@ -29,4 +29,6 @@ const Zod: BlitzPage = () => {
   )
 }
 
+Zod.authenticate = true
+
 export default Zod
