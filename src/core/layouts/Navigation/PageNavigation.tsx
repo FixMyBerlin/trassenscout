@@ -3,7 +3,7 @@ import { Disclosure, Menu, Transition } from "@headlessui/react"
 import { ChevronDownIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 import { useRouter } from "next/router"
-import { Link } from "src/core/components/links"
+import { Link } from "src/core/components/links/Link"
 import { Routes } from "@blitzjs/next"
 
 const primaryNavigation = [
@@ -22,7 +22,6 @@ const primaryNavigation = [
 
   { name: "Kontakte", href: Routes.ContactsPage() },
   { name: "Termine", href: Routes.CalendarEntriesPage() },
-  { name: "Kontakte", href: Routes.Rs8Kontakte() },
   { name: "Impressum", href: Routes.Kontakt() },
 ]
 
