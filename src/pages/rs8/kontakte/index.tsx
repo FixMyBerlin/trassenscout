@@ -128,15 +128,15 @@ const ContactsPage: BlitzPage = () => {
           title="Kontakte"
           description="Dieser Bereich hilft Ihnen dabei wichtige Kontakte zu verwalten und
         anzuschreiben."
+          action={
+            <Link button href={Routes.NewContactPage()}>
+              Neuer Kalendereintrag
+            </Link>
+          }
         />
         <Suspense fallback={<div>Daten werden geladen…</div>}>
           <ContactTable />
         </Suspense>
-        <div className="mt-10">
-          <Link className={buttonStyles} href={Routes.NewContactPage()}>
-            Neuen Kontakt erstellen
-          </Link>
-        </div>
       </div>
     </LayoutRs8>
   )
