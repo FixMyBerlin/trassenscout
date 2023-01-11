@@ -16,6 +16,7 @@ const ResetPasswordPage: BlitzPage = () => {
 
   useEffect(() => {
     setToken(router.query.token as string)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady])
 
   type HandleSubmit = { password: string; passwordConfirmation: string }
