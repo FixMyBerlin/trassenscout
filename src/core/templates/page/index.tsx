@@ -11,6 +11,7 @@ if (process.env.parentModel) {
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import get__ModelNames__ from "src/__modelNamesPath__/queries/get__ModelNames__"
 import { Link } from "src/core/components/links"
+import { Pagination } from "src/core/components/Pagination"
 
 const ITEMS_PER_PAGE = 100
 
@@ -30,7 +31,7 @@ export const __ModelNames__List = () => {
     const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
     return (
-      <div>
+      <>
         <ul>
           {__modelNames__.map((__modelName__) => (
             <li key={__modelName__.id}>
@@ -47,7 +48,7 @@ export const __ModelNames__List = () => {
         <button disabled={!hasMore} onClick={goToNextPage}>
           Next
         </button>
-      </div>
+      </>
     )
   } else {
     const [{ __modelNames__, hasMore }] = usePaginatedQuery(get__ModelNames__, {
@@ -60,7 +61,20 @@ export const __ModelNames__List = () => {
     const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
     return (
-      <div>
+      <>
+        <h1>__ModelNames__</h1>
+
+        <p>
+          <if condition="parentModel">
+            <Link href={Routes.New__ModelName__Page({ __parentModelId__: __parentModelId__! })}>
+              __ModelName__ erstellen
+            </Link>
+            <else>
+              <Link href={Routes.New__ModelName__Page()}>__ModelName__ erstellen</Link>
+            </else>
+          </if>
+        </p>
+
         <ul>
           {__modelNames__.map((__modelName__) => (
             <li key={__modelName__.id}>
@@ -83,13 +97,14 @@ export const __ModelNames__List = () => {
           ))}
         </ul>
 
-        <button disabled={page === 0} onClick={goToPreviousPage}>
-          Previous
-        </button>
-        <button disabled={!hasMore} onClick={goToNextPage}>
-          Next
-        </button>
-      </div>
+        <Pagination
+          visible={!hasMore || page !== 0}
+          disablePrev={page === 0}
+          disableNext={!hasMore}
+          handlePrev={goToPreviousPage}
+          handleNext={goToNextPage}
+        />
+      </>
     )
   }
 }
@@ -103,22 +118,9 @@ const __ModelNames__Page = () => {
     <LayoutArticle>
       <MetaTags noindex title="__ModelNames__" />
 
-      <div>
-        <p>
-          <if condition="parentModel">
-            <Link href={Routes.New__ModelName__Page({ __parentModelId__: __parentModelId__! })}>
-              __ModelName__ erstellen
-            </Link>
-            <else>
-              <Link href={Routes.New__ModelName__Page()}>__ModelName__ erstellen</Link>
-            </else>
-          </if>
-        </p>
-
-        <Suspense fallback={<div>Daten werden geladen…</div>}>
-          <__ModelNames__List />
-        </Suspense>
-      </div>
+      <Suspense fallback={<div>Daten werden geladen…</div>}>
+        <__ModelNames__List />
+      </Suspense>
     </LayoutArticle>
   )
 }

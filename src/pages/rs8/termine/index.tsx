@@ -2,14 +2,16 @@ import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutRs8, MetaTags } from "src/core/layouts"
 import getCalendarEntries from "src/calendar-entries/queries/getCalendarEntries"
 import { Link } from "src/core/components/links"
 import { Calender } from "src/rs8/termine/components/Calender"
+import { Pagination } from "src/core/components/Pagination"
+import { PageHeader } from "src/core/components/PageHeader"
 
 const ITEMS_PER_PAGE = 100
 
-export const CalendarEntriesList = () => {
+const CalendarEntriesList = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ calendarEntries, hasMore }] = usePaginatedQuery(getCalendarEntries, {
@@ -22,33 +24,38 @@ export const CalendarEntriesList = () => {
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
   return (
-    <div>
+    <>
+      <PageHeader
+        title="Termine"
+        description="Dieser Bereich hilft Ihnen dabei Termine zu finden."
+        action={
+          <Link button href={Routes.NewCalendarEntryPage()}>
+            Neuer Kalendereintrag
+          </Link>
+        }
+      />
+
       <Calender calendarEntries={calendarEntries} />
-      <button disabled={page === 0} onClick={goToPreviousPage}>
-        Previous
-      </button>
-      <button disabled={!hasMore} onClick={goToNextPage}>
-        Next
-      </button>
-    </div>
+      <Pagination
+        visible={!hasMore || page !== 0}
+        disablePrev={page === 0}
+        disableNext={!hasMore}
+        handlePrev={goToPreviousPage}
+        handleNext={goToNextPage}
+      />
+    </>
   )
 }
 
 const CalendarEntriesPage = () => {
   return (
-    <LayoutArticle>
-      <MetaTags noindex title="CalendarEntries" />
+    <LayoutRs8>
+      <MetaTags noindex title="Kalendereinträge" />
 
-      <div>
-        <p>
-          <Link href={Routes.NewCalendarEntryPage()}>CalendarEntry erstellen</Link>
-        </p>
-
-        <Suspense fallback={<div>Daten werden geladen…</div>}>
-          <CalendarEntriesList />
-        </Suspense>
-      </div>
-    </LayoutArticle>
+      <Suspense fallback={<div>Daten werden geladen…</div>}>
+        <CalendarEntriesList />
+      </Suspense>
+    </LayoutRs8>
   )
 }
 

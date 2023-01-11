@@ -3,11 +3,16 @@ import { Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
 import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
 import updateCalendarEntry from "src/calendar-entries/mutations/updateCalendarEntry"
 import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/CalendarEntryForm"
 import { Link } from "src/core/components/links"
+import { CalendarEntrySchema } from "src/calendar-entries/schema"
+import { CalendarEntry } from "@prisma/client"
+import { quote } from "src/core/components/text"
+import { PageHeader } from "src/core/components/PageHeader"
+import { AdminBox } from "src/core/components/AdminBox"
 
 const EditCalendarEntry = () => {
   const router = useRouter()
@@ -41,37 +46,34 @@ const EditCalendarEntry = () => {
 
   return (
     <>
-      <MetaTags noindex title="Edit CalendarEntry {calendarEntry.id}" />
+      <MetaTags noindex title="Kalender-Eintrag bearbeiten" />
+      <PageHeader title="Kalender-Eintrag bearbeiten" />
 
-      <div>
-        <h1>Edit CalendarEntry {calendarEntry.id}</h1>
+      <CalendarEntryForm
+        submitText="Speichern"
+        schema={CalendarEntrySchema}
+        initialValues={calendarEntry}
+        onSubmit={handleSubmit}
+      />
+
+      <AdminBox>
         <pre>{JSON.stringify(calendarEntry, null, 2)}</pre>
-
-        <CalendarEntryForm
-          submitText="Update CalendarEntry"
-          // TODO use a zod schema for form validation
-          //  - Tip: extract mutation's schema into a shared `validations.ts` file and
-          //         then import and use it here
-          // schema={UpdateCalendarEntry}
-          initialValues={calendarEntry}
-          onSubmit={handleSubmit}
-        />
-      </div>
+      </AdminBox>
     </>
   )
 }
 
 const EditCalendarEntryPage = () => {
   return (
-    <LayoutArticle>
+    <LayoutRs8>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <EditCalendarEntry />
       </Suspense>
 
-      <p>
-        <Link href={Routes.CalendarEntriesPage()}>CalendarEntries</Link>
+      <p className="mt-5">
+        <Link href={Routes.CalendarEntriesPage()}>Zurück zur Liste</Link>
       </p>
-    </LayoutArticle>
+    </LayoutRs8>
   )
 }
 
