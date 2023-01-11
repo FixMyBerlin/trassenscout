@@ -54,6 +54,8 @@ Blitz comes with a test setup using [Vitest](https://vitest.dev/) and [react-tes
 
 ## Working with data, database
 
+### "new schema" flow
+
 1. Use `blitz g all calendarEntries title:string startAt:dateTime "locationName:string?" "locationUrl:string?" "description:string?" --dry-run` for scaffolding.
   - Run `--dry-run` first to check the folder names and file names.
 
@@ -65,12 +67,20 @@ Blitz comes with a test setup using [Vitest](https://vitest.dev/) and [react-tes
 
 1. Use `blitz prisma migrate dev` to apply the migration.
 
-1. Add the right [Zod schema (Docs)](https://zod.dev/) in the newly created `your-model/mutations` files.
-  - You can use https://github.com/CarterGrimmeisen/zod-prisma to generate a starting point for this based on the prisma schema. However, this package should only be used in a separate branch since it collides with blitz in some way.
+1. Schema:
+   - Follow the steps in `src/core/templates/page/__modelIdParam__/edit.tsx` to create a shared [Zod schema (Docs)](https://zod.dev/) and add it to the form for client side validations.
+   - Update the zod schema to match the Prisma schema.
+     - You can use `type UserType = z.infer<typeof UserSchema>` to create a TS schema from zod that can be compared to the prima schema (which are located in `node_modules/.prisma/client/index.d.ts`)
+     - You can use https://github.com/CarterGrimmeisen/zod-prisma to generate a starting point for this based on the prisma schema. However, this package should only be used in a separate branch since it collides with blitz in some way.
 
-1. Add the right form inputs in the new `your-model/components/YourModelForm.tsx`.
+1. Add seed data in [db/seeds.ts](./db/seeds.ts) – all models should have good seed data.
 
-1. Consider adding seed data in [db/seeds.ts](./db/seeds.ts).
+### Seeding
+
+Seeding new data requires a blank slate.
+
+1. `blitz prisma migrate reset`
+1. `blitz db seed`
 
 ## Commands
 

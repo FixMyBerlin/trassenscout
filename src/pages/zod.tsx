@@ -2,6 +2,7 @@ import { BlitzPage } from "@blitzjs/next"
 import { AdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { LayoutMiddleBox, MetaTags } from "src/core/layouts"
+import { isBrowser } from "src/core/utils"
 import { z } from "zod"
 
 declare global {
@@ -11,7 +12,7 @@ declare global {
 }
 
 const Zod: BlitzPage = () => {
-  if (typeof window !== "undefined") {
+  if (isBrowser) {
     window.z = z
   }
 
@@ -27,5 +28,7 @@ const Zod: BlitzPage = () => {
     </LayoutMiddleBox>
   )
 }
+
+Zod.authenticate = true
 
 export default Zod

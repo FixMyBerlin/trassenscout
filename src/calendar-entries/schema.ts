@@ -8,12 +8,7 @@ export const CalendarEntrySchema = z.object({
     invalid_type_error: "Kein gültiges Datumsformat.",
   }),
   locationName: z.string().nullish(),
-  // Either emtpy, or url (https://github.com/colinhacks/zod/issues/798#issuecomment-990891815)
-  locationUrl: z.union([
-    z.undefined(),
-    z.null(),
-    z.literal(""),
-    z.string().url({ message: "Kein gültige URL." }),
-  ]),
+  // Either emtpy, or url (https://github.com/colinhacks/zod/pull/1849)
+  locationUrl: z.union([z.string().url({ message: "Kein gültige URL." }).nullish(), z.literal("")]),
   description: z.string().nullish(),
 })

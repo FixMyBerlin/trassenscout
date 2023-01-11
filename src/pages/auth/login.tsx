@@ -1,9 +1,14 @@
 import { BlitzPage } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { LoginForm } from "src/auth/components/LoginForm"
+import { Notice } from "src/core/components/Notice"
 import { LayoutMiddleBox, MetaTags } from "src/core/layouts"
 
-const LoginPage: BlitzPage = () => {
+export type LoginFormMessageKeys = "loginRequired"
+
+type Props = { messageKey?: LoginFormMessageKeys }
+
+const LoginPage: BlitzPage<Props> = ({ messageKey }) => {
   const router = useRouter()
   // const currentUser = useCurrentUser()
   // const [logoutMutation] = useMutation(logout)
@@ -14,6 +19,11 @@ const LoginPage: BlitzPage = () => {
   return (
     <LayoutMiddleBox title="Einloggen" subtitle="Willkommen zurück!">
       <MetaTags noindex title="Anmelden" />
+      {messageKey === "loginRequired" && (
+        <Notice type="warn" title="Anmeldung erforderlich">
+          Um die gewünschte Seite aufzurufen müssen Sie angemeldet sein.
+        </Notice>
+      )}
       {/* {currentUser && (
         <Notice
           type="info"
