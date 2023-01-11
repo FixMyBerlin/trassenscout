@@ -1,12 +1,16 @@
+import { BlitzPage } from "@blitzjs/auth"
+import { PageHeader } from "src/core/components/PageHeader"
+import { LayoutRs8, MetaTags } from "src/core/layouts"
 import { PageKontakt } from "src/kontakt/components"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
 
-export default function Kontakt() {
+const Kontakt: BlitzPage = () => {
   return (
-    <LayoutArticle>
+    <LayoutRs8>
       <MetaTags noindex title="Kontakt & Impressum" />
-
+      <PageHeader title="Impressum" />
       <PageKontakt />
-    </LayoutArticle>
+    </LayoutRs8>
   )
 }
+
+export default Kontakt

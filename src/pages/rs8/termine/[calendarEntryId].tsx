@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { Routes } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
@@ -54,7 +54,7 @@ export const CalendarEntry = () => {
   )
 }
 
-const ShowCalendarEntryPage = () => {
+const ShowCalendarEntryPage: BlitzPage = () => {
   return (
     <LayoutRs8>
       <Suspense fallback={<div>Daten werden geladen…</div>}>

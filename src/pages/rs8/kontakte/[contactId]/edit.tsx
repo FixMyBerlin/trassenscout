@@ -60,7 +60,7 @@ const EditContact = () => {
   )
 }
 
-const EditContactPage = () => {
+const EditContactPage: BlitzPage = () => {
   return (
     <LayoutRs8>
       <Suspense fallback={<div>Daten werden geladen…</div>}>

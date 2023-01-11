@@ -1,18 +1,15 @@
-import { Suspense } from "react"
-import { Routes } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
-import { useQuery, useMutation } from "@blitzjs/rpc"
-import { useParam } from "@blitzjs/next"
-import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
-import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
-import updateCalendarEntry from "src/calendar-entries/mutations/updateCalendarEntry"
+import { Suspense } from "react"
 import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/CalendarEntryForm"
-import { Link } from "src/core/components/links"
+import updateCalendarEntry from "src/calendar-entries/mutations/updateCalendarEntry"
+import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
 import { CalendarEntrySchema } from "src/calendar-entries/schema"
-import { CalendarEntry } from "@prisma/client"
-import { quote } from "src/core/components/text"
-import { PageHeader } from "src/core/components/PageHeader"
 import { AdminBox } from "src/core/components/AdminBox"
+import { Link } from "src/core/components/links"
+import { PageHeader } from "src/core/components/PageHeader"
+import { LayoutRs8, MetaTags } from "src/core/layouts"
 
 const EditCalendarEntry = () => {
   const router = useRouter()
@@ -63,7 +60,7 @@ const EditCalendarEntry = () => {
   )
 }
 
-const EditCalendarEntryPage = () => {
+const EditCalendarEntryPage: BlitzPage = () => {
   return (
     <LayoutRs8>
       <Suspense fallback={<div>Daten werden geladen…</div>}>

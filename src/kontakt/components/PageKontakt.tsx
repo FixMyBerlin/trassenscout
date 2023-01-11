@@ -1,13 +1,11 @@
+import Image from "next/image"
 import React from "react"
 import { Link, LinkMail, LinkTel } from "src/core/components/links"
-import { PageHeader } from "src/core/components/PageHeader"
 import svgImageLogoBmdvFoerderung from "./assets/logo-bmdv-foerderung.svg"
-import Image from "next/image"
 
 export const PageKontakt: React.FC = () => {
   return (
     <>
-      <PageHeader title="Impressum" />
       <section className="prose mb-12">
         <p>
           <strong>FixMyCity GmbH</strong>

@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { Routes } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { LayoutRs8, MetaTags } from "src/core/layouts"
@@ -47,7 +47,7 @@ const CalendarEntriesList = () => {
   )
 }
 
-const CalendarEntriesPage = () => {
+const CalendarEntriesPage: BlitzPage = () => {
   return (
     <LayoutRs8>
       <MetaTags noindex title="Kalendereinträge" />

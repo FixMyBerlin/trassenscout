@@ -1,4 +1,4 @@
-import { Routes } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
@@ -8,7 +8,7 @@ import { Link } from "src/core/components/links"
 import { CalendarEntrySchema } from "src/calendar-entries/schema"
 import { PageHeader } from "src/core/components/PageHeader"
 
-const NewCalendarEntryPage = () => {
+const NewCalendarEntryPage: BlitzPage = () => {
   const router = useRouter()
   const [createCalendarEntryMutation] = useMutation(createCalendarEntry)
 
