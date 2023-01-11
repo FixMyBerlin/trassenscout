@@ -7,6 +7,7 @@ import db from "./index"
  * to easily generate realistic data.
  */
 const seed = async () => {
+  
   const user = await db.user.create({
     data: {
       email: "dev-team@fixmycity.de",
@@ -46,6 +47,38 @@ const seed = async () => {
     const data = seedCalendarEntries[i]
     if (data) {
       await db.calendarEntry.create({
+        data,
+      })
+    }
+  }
+  const seedContacts = [
+    {
+      name: "Sven",
+      email: "sven@fixmycity.de",
+      title: "Developer",
+      role: "Member",
+      phone: "030-123 123",
+    },
+    {
+      name: "Tobias Jordans",
+      email: "tobias@fixmycity.de",
+      title: null,
+      role: null,
+      phone: null,
+    },
+    {
+      name: "Johanna",
+      email: "johanna@fixmycity.de",
+      title: "Developer",
+      role: "Member",
+      phone: "030-123 123",
+    },
+  ]
+
+  for (let i = 0; i < seedContacts.length; i++) {
+    const data = seedContacts[i]
+    if (data) {
+      await db.contact.create({
         data,
       })
     }
