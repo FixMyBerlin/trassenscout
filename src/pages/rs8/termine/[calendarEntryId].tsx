@@ -29,7 +29,7 @@ export const CalendarEntry = () => {
   return (
     <>
       <MetaTags noindex title={`"Kalender-Eintrag ${quote(calendarEntry.title)}"`} />
-      <PageHeader title="Kalender-Eintrag" />
+      <PageHeader title={calendarEntry.title} />
 
       <p className="mb-10 space-x-4">
         <Link href={Routes.CalendarEntriesPage()}>Zurück zur Liste</Link>
