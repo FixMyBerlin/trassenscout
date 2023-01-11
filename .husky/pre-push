@@ -1,7 +1,8 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
 
+# This is `npm run check`
 npm run type-check
 npm run lint
 npm run format
-npm run test
+npm run test:run
