@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "blitz start",
+    "predev": "docker-compose up -d",
     "dev": "NODE_OPTIONS='--inspect' blitz dev",
     "debug": "DEBUG=blitz:* blitz console",
     "build": "blitz build",
