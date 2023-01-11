@@ -2,9 +2,10 @@ import { Disclosure, Menu, Transition } from "@headlessui/react"
 import { Bars3Icon, BellIcon, UserCircleIcon, XMarkIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 import Image from "next/image"
-import React, { Fragment } from "react"
+import React, { Fragment, Suspense } from "react"
 import { MobilePageNavigation, PageNavigation } from "./PageNavigation"
 import pngRsv8Logo from "./assets/rsv8-logo.png"
+import { User } from "./User"
 
 export const Navigation: React.FC = () => {
   return (
@@ -40,8 +41,8 @@ export const Navigation: React.FC = () => {
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <BellIcon className="h-6 w-6 rounded-full stroke-gray-300" aria-hidden="true" />
-                {/* Profile dropdown */}
-                <Menu as="div" className="relative ml-3">
+                {/* Profile dropdown - old version */}
+                {/* <Menu as="div" className="relative ml-3">
                   <div>
                     <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="sr-only">Open user menu</span>
@@ -77,7 +78,12 @@ export const Navigation: React.FC = () => {
                       </Menu.Item>
                     </Menu.Items>
                   </Transition>
-                </Menu>
+                </Menu> */}
+
+                {/* User menu - migrated from Atlas */}
+                <Suspense>
+                  <User />
+                </Suspense>
               </div>
             </div>
           </div>
