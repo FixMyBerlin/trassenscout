@@ -3,15 +3,17 @@ import { Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
 import getContact from "src/contacts/queries/getContact"
 import updateContact from "src/contacts/mutations/updateContact"
 import { ContactForm, FORM_ERROR } from "src/contacts/components/ContactForm"
 import { Link } from "src/core/components/links"
 import { ContactSchema } from "src/contacts/schema"
 import { BlitzPage } from "@blitzjs/auth"
+import { PageHeader } from "src/core/components/PageHeader"
+import { AdminBox } from "src/core/components/AdminBox"
 
-const EditContact: BlitzPage = () => {
+const EditContact = () => {
   const router = useRouter()
   const contactId = useParam("contactId", "number")
   const [contact, { setQueryData }] = useQuery(
@@ -43,34 +45,32 @@ const EditContact: BlitzPage = () => {
 
   return (
     <>
-      <MetaTags noindex title="Kontakt ändern" />
-
-      <div>
-        <h1>Kontakt ändern</h1>
+      <MetaTags noindex title="Kontakt bearbeiten" />
+      <PageHeader title="Kontakt bearbeiten" />
+      <ContactForm
+        submitText="Speichern"
+        schema={ContactSchema}
+        initialValues={contact}
+        onSubmit={handleSubmit}
+      />
+      <AdminBox>
         <pre>{JSON.stringify(contact, null, 2)}</pre>
-
-        <ContactForm
-          submitText="Speichern"
-          schema={ContactSchema}
-          initialValues={contact}
-          onSubmit={handleSubmit}
-        />
-      </div>
+      </AdminBox>
     </>
   )
 }
 
 const EditContactPage = () => {
   return (
-    <LayoutArticle>
+    <LayoutRs8>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <EditContact />
       </Suspense>
 
       <p>
-        <Link href={Routes.ContactsPage()}>Contacts</Link>
+        <Link href={Routes.ContactsPage()}>Zurück zur Kontaktliste</Link>
       </p>
-    </LayoutArticle>
+    </LayoutRs8>
   )
 }
 
