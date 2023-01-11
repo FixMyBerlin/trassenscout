@@ -37,7 +37,7 @@ const CalendarEntriesList = () => {
 
       <Calender calendarEntries={calendarEntries} />
       <Pagination
-        visible={!hasMore || page !== 0}
+        visible={hasMore || page !== 0}
         disablePrev={page === 0}
         disableNext={!hasMore}
         handlePrev={goToPreviousPage}

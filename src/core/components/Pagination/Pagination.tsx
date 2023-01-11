@@ -16,7 +16,7 @@ export const Pagination: React.FC<Props> = ({
   handlePrev,
   handleNext,
 }) => {
-  if (visible) return null
+  if (!visible) return null
 
   return (
     <div className="space-x-3">
