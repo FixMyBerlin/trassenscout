@@ -30,6 +30,7 @@ export function Form<S extends z.ZodType<any, any>>({
   schema,
   initialValues,
   onSubmit,
+  className,
   ...props
 }: FormProps<S>) {
   const ctx = useForm<z.infer<S>>({
@@ -40,21 +41,23 @@ export function Form<S extends z.ZodType<any, any>>({
   const [formError, setFormError] = useState<string | null>(null)
 
   return (
+
     <IntlProvider messages={errorMessageTranslations} locale="de" defaultLocale="de">
-      <FormProvider {...ctx}>
-        <form
-          className={clsx("space-y-6", props.className)}
-          onSubmit={ctx.handleSubmit(async (values) => {
-            const result = (await onSubmit(values)) || {}
-            for (const [key, value] of Object.entries(result)) {
-              if (key === FORM_ERROR) {
-                setFormError(value)
-              } else {
-                ctx.setError(key as any, {
-                  type: "submit",
-                  message: value,
-                })
-              }
+
+    <FormProvider {...ctx}>
+      <form
+        className={clsx("space-y-6", className)}
+        onSubmit={ctx.handleSubmit(async (values) => {
+          const result = (await onSubmit(values)) || {}
+          for (const [key, value] of Object.entries(result)) {
+            if (key === FORM_ERROR) {
+              setFormError(value)
+            } else {
+              ctx.setError(key as any, {
+                type: "submit",
+                message: value,
+              })
+
             }
           })}
           {...props}

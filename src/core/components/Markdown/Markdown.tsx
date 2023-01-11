@@ -26,7 +26,7 @@ export const Markdown: React.FC<Props> = ({ markdown, className }) => {
           components: {
             // eslint-disable-next-line react/no-unstable-nested-components
             h1: (props: any) => (
-              <p className="text-lg">
+              <p className="text-base">
                 <strong {...props} />
               </p>
             ),

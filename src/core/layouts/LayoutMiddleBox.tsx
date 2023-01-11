@@ -12,7 +12,7 @@ type Props = {
 
 export const LayoutMiddleBox: React.FC<Props> = ({ title, subtitle, children }) => {
   return (
-    <Layout>
+    <Layout navigation={false}>
       <div className="set-bg-indigo-50-on-body">
         <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-md">

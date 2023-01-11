@@ -8,6 +8,7 @@ import get__ModelName__ from "src/__modelNamesPath__/queries/get__ModelName__"
 import delete__ModelName__ from "src/__modelNamesPath__/mutations/delete__ModelName__"
 import { Link, linkStyles } from "src/core/components/links"
 import clsx from "clsx"
+import { quote } from "src/core/components/text"
 
 export const __ModelName__ = () => {
   const router = useRouter()
@@ -19,7 +20,7 @@ export const __ModelName__ = () => {
   const [__modelName__] = useQuery(get__ModelName__, { id: __modelId__ })
 
   const handleDelete = async () => {
-    if (window.confirm(`Den Eintrag mit ID ${__modelName__.id} löschen?`)) {
+    if (window.confirm(`Den Eintrag mit ID ${__modelName__.id} unwiderruflich löschen?`)) {
       await delete__ModelName__Mutation({ id: __modelName__.id })
       if (process.env.parentModel) {
         await router.push(Routes.__ModelNames__Page({ __parentModelId__: __parentModelId__! }))
@@ -31,32 +32,28 @@ export const __ModelName__ = () => {
 
   return (
     <>
-      <MetaTags noindex title="__ModelName__ {__modelName__.id}" />
+      <h1>__ModelName__ {quote(__modelName__.id)}</h1>
+      <pre>{JSON.stringify(__modelName__, null, 2)}</pre>
 
-      <div>
-        <h1>__ModelName__ {__modelName__.id}</h1>
-        <pre>{JSON.stringify(__modelName__, null, 2)}</pre>
-
-        <if condition="parentModel">
-          <Link
-            href={Routes.Edit__ModelName__Page({
-              __parentModelId__: __parentModelId__!,
-              __modelId__: __modelName__.id,
-            })}
-          >
+      <if condition="parentModel">
+        <Link
+          href={Routes.Edit__ModelName__Page({
+            __parentModelId__: __parentModelId__!,
+            __modelId__: __modelName__.id,
+          })}
+        >
+          Bearbeiten
+        </Link>
+        <else>
+          <Link href={Routes.Edit__ModelName__Page({ __modelId__: __modelName__.id })}>
             Bearbeiten
           </Link>
-          <else>
-            <Link href={Routes.Edit__ModelName__Page({ __modelId__: __modelName__.id })}>
-              Bearbeiten
-            </Link>
-          </else>
-        </if>
+        </else>
+      </if>
 
-        <button type="button" onClick={handleDelete} className={clsx(linkStyles, "ml-2")}>
-          Löschen
-        </button>
-      </div>
+      <button type="button" onClick={handleDelete} className={clsx(linkStyles, "ml-2")}>
+        Löschen
+      </button>
     </>
   )
 }
@@ -68,20 +65,22 @@ const Show__ModelName__Page = () => {
 
   return (
     <LayoutArticle>
-      <p>
-        <if condition="parentModel">
-          <Link href={Routes.__ModelNames__Page({ __parentModelId__: __parentModelId__! })}>
-            __ModelNames__
-          </Link>
-          <else>
-            <Link href={Routes.__ModelNames__Page()}>__ModelNames__</Link>
-          </else>
-        </if>
-      </p>
+      <MetaTags noindex title={`__ModelName__ ${quote(__modelName__.id)}`} />
 
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <__ModelName__ />
       </Suspense>
+
+      <p>
+        <if condition="parentModel">
+          <Link href={Routes.__ModelNames__Page({ __parentModelId__: __parentModelId__! })}>
+            Alle __ModelNames__
+          </Link>
+          <else>
+            <Link href={Routes.__ModelNames__Page()}>Alle __ModelNames__</Link>
+          </else>
+        </if>
+      </p>
     </LayoutArticle>
   )
 }

@@ -1,12 +1,13 @@
+import { Routes } from "@blitzjs/next"
+import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { ComputerDesktopIcon } from "@heroicons/react/24/outline"
 import { CalendarDaysIcon, MapPinIcon } from "@heroicons/react/24/solid"
+import { CalendarEntry } from "@prisma/client"
 import clsx from "clsx"
 import React from "react"
-import { TDate } from "src/fakeServer/rs8/dates.const"
-import { Disclosure } from "../Disclosure"
 import { Link, linkStyles } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
-import { CalendarEntry } from "@prisma/client"
+import { Disclosure } from "../Disclosure"
 
 type Props = {
   calendarEntry: CalendarEntry
@@ -81,6 +82,16 @@ export const DateEntry: React.FC<Props> = ({ calendarEntry }) => {
       ) : (
         <Markdown className="prose-sm" markdown={calendarEntry.description} />
       )}
+
+      <p className="mb-5 flex items-center justify-end gap-4 text-right">
+        <Link button href={Routes.EditCalendarEntryPage({ calendarEntryId: calendarEntry.id })}>
+          <PencilSquareIcon className="h-5 w-5" />
+          <span className="sr-only">Bearbeiten</span>
+        </Link>
+        <Link href={Routes.ShowCalendarEntryPage({ calendarEntryId: calendarEntry.id })}>
+          <TrashIcon className="h-5 w-5" />
+        </Link>
+      </p>
     </Disclosure>
   )
 }

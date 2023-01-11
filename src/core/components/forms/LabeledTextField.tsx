@@ -12,16 +12,25 @@ export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElem
   type?: "text" | "password" | "email" | "number" | "datetime-local"
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
+  optional?: boolean
 }
 
 export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
-  ({ name, label, outerProps, labelProps, ...props }, ref) => {
+  ({ name, label, outerProps, labelProps, optional, ...props }, ref) => {
     const {
       register,
       formState: { isSubmitting, errors },
+      getValues,
+      setValue,
     } = useFormContext()
 
     const hasError = Boolean(errors[name])
+
+    // Field Type `datetime-local` requires a format of "YYYY-MM-DDTHH:MM:SS" to pre fill the value.
+    const value = getValues()[name]
+    if (value && props.type === "datetime-local") {
+      setValue(name, new Date(value as string).toISOString().split(".")[0])
+    }
 
     return (
       <div {...outerProps}>
@@ -31,6 +40,7 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
           className="mb-1 block text-sm font-medium text-gray-700"
         >
           {label}
+          {optional && <> (optional)</>}
         </label>
         <input
           disabled={isSubmitting}

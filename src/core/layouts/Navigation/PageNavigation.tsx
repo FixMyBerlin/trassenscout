@@ -19,8 +19,10 @@ const primaryNavigation = [
       { name: "Teilstrecke 4", href: Routes.Rs8Teilstrecke4() },
     ],
   },
-  { name: "Termine", href: Routes.Rs8Termine() },
+
   { name: "Kontakte", href: Routes.ContactsPage() },
+  { name: "Termine", href: Routes.CalendarEntriesPage() },
+  { name: "Kontakte", href: Routes.Rs8Kontakte() },
   { name: "Impressum", href: Routes.Kontakt() },
 ]
 

@@ -1,10 +1,12 @@
 import { Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
 import createCalendarEntry from "src/calendar-entries/mutations/createCalendarEntry"
 import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/CalendarEntryForm"
 import { Link } from "src/core/components/links"
+import { CalendarEntrySchema } from "src/calendar-entries/schema"
+import { PageHeader } from "src/core/components/PageHeader"
 
 const NewCalendarEntryPage = () => {
   const router = useRouter()
@@ -24,24 +26,21 @@ const NewCalendarEntryPage = () => {
   }
 
   return (
-    <LayoutArticle>
-      <MetaTags noindex title="Create New CalendarEntry" />
-      <h1>Create New CalendarEntry</h1>
+    <LayoutRs8>
+      <MetaTags noindex title="Neuer Kalendereintrag" />
+      <PageHeader title="Neuer Kalendereintrag" />
 
       <CalendarEntryForm
-        submitText="Create CalendarEntry"
-        // TODO use a zod schema for form validation
-        //  - Tip: extract mutation's schema into a shared `validations.ts` file and
-        //         then import and use it here
-        // schema={CreateCalendarEntry}
+        submitText="Erstellen"
+        schema={CalendarEntrySchema}
         // initialValues={{}}
         onSubmit={handleSubmit}
       />
 
-      <p>
-        <Link href={Routes.CalendarEntriesPage()}>CalendarEntries</Link>
+      <p className="mt-5">
+        <Link href={Routes.CalendarEntriesPage()}>Zurück zur Liste</Link>
       </p>
-    </LayoutArticle>
+    </LayoutRs8>
   )
 }
 
