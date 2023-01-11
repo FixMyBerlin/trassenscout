@@ -14,7 +14,7 @@ type TypConfig = {
 }
 type TypeConfigElement = {
   icon: React.ReactNode
-  bgClasses: string
+  wrapperClass: string
   titleClasses: string
   textClasses: string
   actionClasses: string
@@ -23,33 +23,33 @@ type TypeConfigElement = {
 const typeConfig: TypConfig = {
   error: {
     icon: <XCircleIcon className="h-5 w-5 text-red-400" aria-hidden="true" />,
-    bgClasses: "bg-red-50",
-    titleClasses: "bg-red-800",
-    textClasses: "bg-red-700",
+    wrapperClass: "bg-red-50 border-red-500",
+    titleClasses: "text-red-800",
+    textClasses: "text-red-700",
     actionClasses:
       "bg-red-50 focus:ring-red-600 focus:ring-offset-red-50 text-red-800 hover:bg-red-100",
   },
   info: {
     icon: <InformationCircleIcon className="h-5 w-5 text-blue-400" aria-hidden="true" />,
-    bgClasses: "bg-blue-50",
-    titleClasses: "bg-blue-800",
-    textClasses: "bg-blue-700",
+    wrapperClass: "bg-blue-50 border-blue-500",
+    titleClasses: "text-blue-800",
+    textClasses: "text-blue-700",
     actionClasses:
       "bg-blue-50 focus:ring-blue-600 focus:ring-offset-blue-50 text-blue-800 hover:bg-blue-100",
   },
   warn: {
-    icon: <ExclamationTriangleIcon className="h-5 w-5 text-yellow-400" aria-hidden="true" />,
-    bgClasses: "bg-yellow-50",
-    titleClasses: "bg-yellow-800",
-    textClasses: "bg-yellow-700",
+    icon: <ExclamationTriangleIcon className="h-5 w-5 text-yellow-700" aria-hidden="true" />,
+    wrapperClass: "bg-yellow-50 border-yellow-500",
+    titleClasses: "text-yellow-800",
+    textClasses: "text-yellow-700",
     actionClasses:
       "bg-yellow-50 focus:ring-yellow-600 focus:ring-offset-yellow-50 text-yellow-800 hover:bg-yellow-100",
   },
   success: {
     icon: <CheckCircleIcon className="h-5 w-5 text-green-400" aria-hidden="true" />,
-    bgClasses: "bg-green-50",
-    titleClasses: "bg-green-800",
-    textClasses: "bg-green-700",
+    wrapperClass: "bg-green-50 border-green-500",
+    titleClasses: "text-green-800",
+    textClasses: "text-green-700",
     actionClasses:
       "bg-green-50 focus:ring-green-600 focus:ring-offset-green-50 text-green-800 hover:bg-green-100",
   },
@@ -63,12 +63,12 @@ type Props = {
   action?: (_: any) => void
 }
 
-export const info: React.FC<Props> = ({ type, title, children, actionText, action }) => {
+export const Notice: React.FC<Props> = ({ type, title, children, actionText, action }) => {
   if (!type) return null
-  const { icon, bgClasses, titleClasses, textClasses, actionClasses } = typeConfig[type]
+  const { icon, wrapperClass, titleClasses, textClasses, actionClasses } = typeConfig[type]
 
   return (
-    <div className={clsx(bgClasses, "rounded-md p-4")}>
+    <div className={clsx(wrapperClass, "mb-5 rounded-md border p-4")}>
       <div className="flex">
         <div className="flex-shrink-0">{icon}</div>
 

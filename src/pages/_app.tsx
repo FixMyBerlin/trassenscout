@@ -1,14 +1,15 @@
 import { AppProps, ErrorBoundary, ErrorComponent, ErrorFallbackProps } from "@blitzjs/next"
+import "@fontsource/overpass/500.css"
 import "@fontsource/overpass/variable-italic.css"
 import "@fontsource/overpass/variable.css"
-import "@fontsource/overpass/500.css"
 import { AuthenticationError, AuthorizationError } from "blitz"
 import { withBlitz } from "src/blitz-client"
 import "src/core/styles/index.css"
+import LoginPage from "./auth/login"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
-    return <div>Error: You are not authenticated</div>
+    return <LoginPage messageKey="loginRequired" />
   } else if (error instanceof AuthorizationError) {
     return (
       <ErrorComponent
