@@ -1,12 +1,9 @@
-import { paginate } from "blitz";
-import { resolver } from "@blitzjs/rpc";
-import db, { Prisma } from "db";
+import { paginate } from "blitz"
+import { resolver } from "@blitzjs/rpc"
+import db, { Prisma } from "db"
 
 interface GetContactsInput
-  extends Pick<
-    Prisma.ContactFindManyArgs,
-    "where" | "orderBy" | "skip" | "take"
-  > {}
+  extends Pick<Prisma.ContactFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
 
 export default resolver.pipe(
   resolver.authorize(),
@@ -21,15 +18,17 @@ export default resolver.pipe(
       skip,
       take,
       count: () => db.contact.count({ where }),
-      query: (paginateArgs) =>
-        db.contact.findMany({ ...paginateArgs, where, orderBy }),
-    });
+      query: async (paginateArgs) => {
+        // await new Promise((resolve) => setTimeout(resolve, 10000))
+        return db.contact.findMany({ ...paginateArgs, where, orderBy })
+      },
+    })
 
     return {
       contacts,
       nextPage,
       hasMore,
       count,
-    };
+    }
   }
-);
+)
