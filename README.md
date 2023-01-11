@@ -54,6 +54,8 @@ Blitz comes with a test setup using [Vitest](https://vitest.dev/) and [react-tes
 
 ## Working with data, database
 
+### "new schema" flow
+
 1. Use `blitz g all calendarEntries title:string startAt:dateTime "locationName:string?" "locationUrl:string?" "description:string?" --dry-run` for scaffolding.
   - Run `--dry-run` first to check the folder names and file names.
 
@@ -73,6 +75,12 @@ Blitz comes with a test setup using [Vitest](https://vitest.dev/) and [react-tes
 
 1. Add seed data in [db/seeds.ts](./db/seeds.ts) – all models should have good seed data.
 
+### Seeding
+
+Seeding new data requires a blank slate.
+
+1. `blitz prisma migrate reset`
+1. `blitz db seed`
 
 ## Commands
 
