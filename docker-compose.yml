@@ -11,5 +11,13 @@ services:
     volumes:
       - rsv-data:/var/lib/postgresql/data
     container_name: rsv-builder-db
+  db-test:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_PASSWORD: password
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+    ports:
+      - "6002:5432"
 volumes:
   rsv-data:
