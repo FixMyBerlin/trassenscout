@@ -1,22 +1,12 @@
 import db from "./index"
 import seedProjects from "./seeds/projects"
+import seedUsers from "./seeds/users"
 
 /*
  * This seed function is executed when you run `blitz db seed`.
- *
- * Probably you want to use a library like https://chancejs.com
- * to easily generate realistic data.
  */
 const seed = async () => {
-  const user = await db.user.create({
-    data: {
-      email: "dev-team@fixmycity.de",
-      // password: dev-team@fixmycity.de
-      hashedPassword:
-        "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTIscD0xJDRMWm82dmVrRk91VnVlZTVwcEpiS3ckOHFZcHhyM2RITm0yTGxTeXdqeEcxSWFsZEJCUWhxNVZxdm53eHoxTk4xTQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
-    },
-  })
-
+  await seedUsers()
   await seedProjects()
 
   const seedCalendarEntries = [
