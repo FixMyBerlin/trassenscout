@@ -6,7 +6,7 @@ const Home: BlitzPage = () => {
   return (
     <Layout>
       <MetaTags title="RSV Startseite" />
-      Startseite Logged Out UND Startseite Logged In
+      <div className="h-56">Startseite Logged Out UND Startseite Logged In</div>
       <ul>
         <li>
           <Link href={Routes.Rs8Index()}>RS8</Link>

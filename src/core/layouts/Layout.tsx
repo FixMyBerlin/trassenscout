@@ -1,6 +1,7 @@
 import { BlitzLayout } from "@blitzjs/next"
 import Head from "next/head"
 import React from "react"
+import { HeaderApp } from "./Header"
 
 type Props = {
   navigation?: boolean
@@ -17,9 +18,7 @@ export const Layout: BlitzLayout<Props> = ({ navigation, children }) => {
         <meta data-process-env-node_env={process.env.NODE_ENV} />
       </Head>
       <div className="text-dark-gray relative flex h-full flex-col overflow-x-hidden">
-        {navigation !== false && (
-          <nav className="h-10 w-full bg-gray-800 text-white">Navigation TODO</nav>
-        )}
+        {navigation !== false && <HeaderApp />}
         <main className="mx-auto w-full max-w-7xl px-6 pb-16 md:px-8">{children}</main>
       </div>
     </>
