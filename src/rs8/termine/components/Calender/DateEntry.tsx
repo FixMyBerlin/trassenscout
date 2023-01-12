@@ -1,4 +1,4 @@
-import { Routes as PageRoutes } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { ComputerDesktopIcon } from "@heroicons/react/24/outline"
 import { CalendarDaysIcon, MapPinIcon } from "@heroicons/react/24/solid"
@@ -84,11 +84,11 @@ export const DateEntry: React.FC<Props> = ({ calendarEntry }) => {
       )}
 
       <p className="mb-5 flex items-center justify-end gap-4 text-right">
-        <Link button href={PageRoutes.EditCalendarEntryPage({ calendarEntryId: calendarEntry.id })}>
+        <Link button href={Routes.EditCalendarEntryPage({ calendarEntryId: calendarEntry.id })}>
           <PencilSquareIcon className="h-5 w-5" />
           <span className="sr-only">Bearbeiten</span>
         </Link>
-        <Link href={PageRoutes.ShowCalendarEntryPage({ calendarEntryId: calendarEntry.id })}>
+        <Link href={Routes.ShowCalendarEntryPage({ calendarEntryId: calendarEntry.id })}>
           <TrashIcon className="h-5 w-5" />
         </Link>
       </p>

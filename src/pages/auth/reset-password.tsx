@@ -1,4 +1,4 @@
-import { BlitzPage, Routes as PageRoutes } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -43,7 +43,7 @@ const ResetPasswordPage: BlitzPage = () => {
         <div>
           <h2>Password Reset Successfully</h2>
           <p>
-            Go to the <Link href={PageRoutes.Home()}>homepage</Link>
+            Go to the <Link href={Routes.Home()}>homepage</Link>
           </p>
         </div>
       ) : (

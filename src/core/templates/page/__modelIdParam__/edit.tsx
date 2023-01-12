@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { Routes as PageRoutes } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
@@ -35,11 +35,11 @@ const Edit__ModelName__ = () => {
       await setQueryData(updated)
       await router.push(
         process.env.parentModel
-          ? PageRoutes.Show__ModelName__Page({
+          ? Routes.Show__ModelName__Page({
               __parentModelId__: __parentModelId__!,
               __modelId__: updated.id,
             })
-          : PageRoutes.Show__ModelName__Page({ __modelId__: updated.id })
+          : Routes.Show__ModelName__Page({ __modelId__: updated.id })
       )
     } catch (error: any) {
       console.error(error)
@@ -85,11 +85,11 @@ const Edit__ModelName__Page = () => {
 
       <p>
         <if condition="parentModel">
-          <Link href={PageRoutes.__ModelNames__Page({ __parentModelId__: __parentModelId__! })}>
+          <Link href={Routes.__ModelNames__Page({ __parentModelId__: __parentModelId__! })}>
             Alle __ModelNames__
           </Link>
           <else>
-            <Link href={PageRoutes.__ModelNames__Page()}>Alle __ModelNames__</Link>
+            <Link href={Routes.__ModelNames__Page()}>Alle __ModelNames__</Link>
           </else>
         </if>
       </p>

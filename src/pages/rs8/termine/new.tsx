@@ -1,4 +1,4 @@
-import { BlitzPage, Routes as PageRoutes } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/CalendarEntryForm"
@@ -16,7 +16,7 @@ const NewCalendarEntryPage: BlitzPage = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const calendarEntry = await createCalendarEntryMutation(values)
-      await router.push(PageRoutes.ShowCalendarEntryPage({ calendarEntryId: calendarEntry.id }))
+      await router.push(Routes.ShowCalendarEntryPage({ calendarEntryId: calendarEntry.id }))
     } catch (error: any) {
       console.error(error)
       return {
@@ -38,7 +38,7 @@ const NewCalendarEntryPage: BlitzPage = () => {
       />
 
       <p className="mt-5">
-        <Link href={PageRoutes.CalendarEntriesPage()}>Zurück zur Liste</Link>
+        <Link href={Routes.CalendarEntriesPage()}>Zurück zur Liste</Link>
       </p>
     </LayoutRs8>
   )

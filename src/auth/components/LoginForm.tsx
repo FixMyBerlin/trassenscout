@@ -1,4 +1,4 @@
-import { Routes as PageRoutes } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { AuthenticationError, PromiseReturnType } from "blitz"
 import login from "src/auth/mutations/login"
@@ -44,7 +44,7 @@ export const LoginForm = (props: LoginFormProps) => {
         <LabeledTextField name="email" label="Email" placeholder="Email" />
         <LabeledTextField name="password" label="Password" placeholder="Password" type="password" />
         <div className="text-sm">
-          <Link href={PageRoutes.ForgotPasswordPage()} className="font-medium">
+          <Link href={Routes.ForgotPasswordPage()} className="font-medium">
             Passwort vergessen?
           </Link>
         </div>
@@ -65,7 +65,7 @@ export const LoginForm = (props: LoginFormProps) => {
       </Form>
 
       <div className="mt-4">
-        Oder <Link href={PageRoutes.SignupPage()}>registrieren</Link>
+        Oder <Link href={Routes.SignupPage()}>registrieren</Link>
       </div>
     </>
   )

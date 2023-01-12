@@ -1,4 +1,4 @@
-import { Routes as PageRoutes } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { RouteUrlObject } from "blitz"
 import React from "react"
 import { FooterLinkList } from "./FooterLinkList"
@@ -9,9 +9,9 @@ export type FooterMenuItem = {
   blank: boolean
 }
 
-const pages: FooterMenuItem[] = [{ name: "Start", href: PageRoutes.Home(), blank: false }]
+const pages: FooterMenuItem[] = [{ name: "Start", href: Routes.Home(), blank: false }]
 
-const legal: FooterMenuItem[] = [{ name: "Startseite", href: PageRoutes.Home(), blank: false }]
+const legal: FooterMenuItem[] = [{ name: "Startseite", href: Routes.Home(), blank: false }]
 
 export const Footer: React.FC = () => {
   return (

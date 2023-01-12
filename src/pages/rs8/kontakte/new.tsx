@@ -1,4 +1,4 @@
-import { BlitzPage, Routes as PageRoutes } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
@@ -16,7 +16,7 @@ const NewContactPage: BlitzPage = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const contact = await createContactMutation(values)
-      await router.push(PageRoutes.ShowContactPage({ contactId: contact.id }))
+      await router.push(Routes.ShowContactPage({ contactId: contact.id }))
     } catch (error: any) {
       console.error(error)
       return {
@@ -32,7 +32,7 @@ const NewContactPage: BlitzPage = () => {
       <ContactForm submitText="Erstellen" schema={ContactSchema} onSubmit={handleSubmit} />
 
       <p className="mt-5">
-        <Link href={PageRoutes.ContactsPage()}>Zurück zur Kontaktliste</Link>
+        <Link href={Routes.ContactsPage()}>Zurück zur Kontaktliste</Link>
       </p>
     </LayoutRs8>
   )

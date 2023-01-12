@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { BlitzPage, Routes as PageRoutes } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
@@ -22,7 +22,7 @@ export const CalendarEntry = () => {
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${calendarEntry.id} unwiderruflich löschen?`)) {
       await deleteCalendarEntryMutation({ id: calendarEntry.id })
-      await router.push(PageRoutes.CalendarEntriesPage())
+      await router.push(Routes.CalendarEntriesPage())
     }
   }
 
@@ -32,9 +32,9 @@ export const CalendarEntry = () => {
       <PageHeader title={calendarEntry.title} />
 
       <p className="mb-10 space-x-4">
-        <Link href={PageRoutes.CalendarEntriesPage()}>Zurück zur Liste</Link>
+        <Link href={Routes.CalendarEntriesPage()}>Zurück zur Liste</Link>
         <span>–</span>
-        <Link href={PageRoutes.EditCalendarEntryPage({ calendarEntryId: calendarEntry.id })}>
+        <Link href={Routes.EditCalendarEntryPage({ calendarEntryId: calendarEntry.id })}>
           Eintrag bearbeiten
         </Link>
         <span>–</span>

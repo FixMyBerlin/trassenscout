@@ -1,4 +1,4 @@
-import { Routes as PageRoutes } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { Contact } from "@prisma/client"
 import React from "react"
@@ -71,11 +71,11 @@ export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) =>
                   {withAction && (
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                       <p className="flex items-center justify-end gap-4 text-right">
-                        <Link button href={PageRoutes.EditContactPage({ contactId: contact.id })}>
+                        <Link button href={Routes.EditContactPage({ contactId: contact.id })}>
                           <PencilSquareIcon className="h-5 w-5" />
                           <span className="sr-only">Bearbeiten</span>
                         </Link>
-                        <Link href={PageRoutes.ShowContactPage({ contactId: contact.id })}>
+                        <Link href={Routes.ShowContactPage({ contactId: contact.id })}>
                           <TrashIcon className="h-5 w-5" />
                         </Link>
                       </p>

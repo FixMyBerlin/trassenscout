@@ -1,4 +1,4 @@
-import { Routes as PageRoutes } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { Menu, Transition } from "@headlessui/react"
 import { UserIcon } from "@heroicons/react/24/solid"
 import React, { Fragment } from "react"
@@ -39,7 +39,7 @@ export const LoggedIn: React.FC<Props> = ({ user }) => {
           </div>
           <Menu.Item>
             <div className="mx-4 mt-6 mb-4">
-              <Link href={PageRoutes.LogoutRedirectPage()} button>
+              <Link href={Routes.LogoutRedirectPage()} button>
                 Abmelden
               </Link>
             </div>

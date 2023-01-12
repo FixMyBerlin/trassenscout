@@ -1,31 +1,31 @@
-import { Routes as PageRoutes } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 
 export const menuItemsMobile = [
-  { name: "Dashboard", href: PageRoutes.Rs8Index() },
-  { name: "Teilstrecke 1", href: PageRoutes.Rs8Teilstrecke1() },
-  { name: "Teilstrecke 2", href: PageRoutes.Rs8Teilstrecke2() },
-  { name: "Teilstrecke 3", href: PageRoutes.Rs8Teilstrecke3() },
-  { name: "Teilstrecke 4", href: PageRoutes.Rs8Teilstrecke4() },
-  { name: "Kontakte", href: PageRoutes.ContactsPage() },
-  { name: "Termine", href: PageRoutes.CalendarEntriesPage() },
-  { name: "Impressum", href: PageRoutes.Kontakt() },
+  { name: "Dashboard", href: Routes.Rs8Index() },
+  { name: "Teilstrecke 1", href: Routes.Rs8Teilstrecke1() },
+  { name: "Teilstrecke 2", href: Routes.Rs8Teilstrecke2() },
+  { name: "Teilstrecke 3", href: Routes.Rs8Teilstrecke3() },
+  { name: "Teilstrecke 4", href: Routes.Rs8Teilstrecke4() },
+  { name: "Kontakte", href: Routes.ContactsPage() },
+  { name: "Termine", href: Routes.CalendarEntriesPage() },
+  { name: "Impressum", href: Routes.Kontakt() },
 ]
 
 export const menuItemsDesktop = [
-  { name: "Dashboard", href: PageRoutes.Rs8Index() },
+  { name: "Dashboard", href: Routes.Rs8Index() },
   {
     name: "Teilstrecken",
-    href: PageRoutes.Rs8Teilstrecke1(),
+    href: Routes.Rs8Teilstrecke1(),
 
     children: [
-      { name: "Teilstrecke 1", href: PageRoutes.Rs8Teilstrecke1() },
-      { name: "Teilstrecke 2", href: PageRoutes.Rs8Teilstrecke2() },
-      { name: "Teilstrecke 3", href: PageRoutes.Rs8Teilstrecke3() },
-      { name: "Teilstrecke 4", href: PageRoutes.Rs8Teilstrecke4() },
+      { name: "Teilstrecke 1", href: Routes.Rs8Teilstrecke1() },
+      { name: "Teilstrecke 2", href: Routes.Rs8Teilstrecke2() },
+      { name: "Teilstrecke 3", href: Routes.Rs8Teilstrecke3() },
+      { name: "Teilstrecke 4", href: Routes.Rs8Teilstrecke4() },
     ],
   },
 
-  { name: "Kontakte", href: PageRoutes.ContactsPage() },
-  { name: "Termine", href: PageRoutes.CalendarEntriesPage() },
-  { name: "Impressum", href: PageRoutes.Kontakt() },
+  { name: "Kontakte", href: Routes.ContactsPage() },
+  { name: "Termine", href: Routes.CalendarEntriesPage() },
+  { name: "Impressum", href: Routes.Kontakt() },
 ]

@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { Routes as PageRoutes } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
@@ -34,7 +34,7 @@ const EditContact = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(PageRoutes.ShowContactPage({ contactId: updated.id }))
+      await router.push(Routes.ShowContactPage({ contactId: updated.id }))
     } catch (error: any) {
       console.error(error)
       return {
@@ -68,7 +68,7 @@ const EditContactPage: BlitzPage = () => {
       </Suspense>
 
       <p>
-        <Link href={PageRoutes.ContactsPage()}>Zurück zur Kontaktliste</Link>
+        <Link href={Routes.ContactsPage()}>Zurück zur Kontaktliste</Link>
       </p>
     </LayoutRs8>
   )

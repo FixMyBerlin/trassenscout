@@ -1,4 +1,4 @@
-import { BlitzPage, Routes as PageRoutes } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline"
 import { useRouter } from "next/router"
@@ -60,7 +60,7 @@ const ContactsPage: BlitzPage = () => {
           description="Dieser Bereich hilft Ihnen dabei wichtige Kontakte zu verwalten und
         anzuschreiben."
           action={
-            <Link button href={PageRoutes.NewContactPage()}>
+            <Link button href={Routes.NewContactPage()}>
               Neuer Kalendereintrag
             </Link>
           }
