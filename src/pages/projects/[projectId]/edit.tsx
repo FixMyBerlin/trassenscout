@@ -1,13 +1,12 @@
-import { Suspense } from "react"
-import { Routes } from "@blitzjs/next"
+import { Routes, useParam } from "@blitzjs/next"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
-import { useQuery, useMutation } from "@blitzjs/rpc"
-import { useParam } from "@blitzjs/next"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import getProject from "src/projects/queries/getProject"
-import updateProject from "src/projects/mutations/updateProject"
-import { ProjectForm, FORM_ERROR } from "src/projects/components/ProjectForm"
+import { Suspense } from "react"
 import { Link } from "src/core/components/links"
+import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
+import updateProject from "src/projects/mutations/updateProject"
+import getProject from "src/projects/queries/getProject"
 
 const EditProject = () => {
   const router = useRouter()
@@ -41,21 +40,32 @@ const EditProject = () => {
 
   return (
     <>
+      <MetaTags noindex title={`Project ${project.name} bearbeiten`} />
+
       <h1>Project {project.id} bearbeiten</h1>
       <pre>{JSON.stringify(project, null, 2)}</pre>
 
       <ProjectForm
         submitText="Speichern"
-        // TODO use a zod schema for form validation
-        // 1. Move the schema from mutations/createProject.ts to `Project/schema.ts`
-        //   - Name `ProjectSchema`
-        // 2. Import the zod schema here.
-        // 3. Update the mutations/updateProject.ts to
-        //   `const UpdateProjectSchema = ProjectSchema.merge(z.object({id: z.number(),}))`
-        // schema={ProjectSchema}
+        // schema={ProjectSchema} // TODO add this
         initialValues={project}
         onSubmit={handleSubmit}
       />
+
+      {/* TODO: Get this into the form so we can populate a dropdown with the data */}
+      <h2>
+        Nutze eine dieser <code>UserId</code>:
+      </h2>
+      <p>Die ID muss man manuell in das Feld oben übertragen.</p>
+      <ul>
+        {users.map((user) => {
+          return (
+            <li key={user.id}>
+              <code>{user.id}</code> {user.name} {user.email}
+            </li>
+          )
+        })}
+      </ul>
     </>
   )
 }
@@ -63,8 +73,6 @@ const EditProject = () => {
 const EditProjectPage = () => {
   return (
     <LayoutArticle>
-      <MetaTags noindex title={`Project ${project.title} bearbeiten`} />
-
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <EditProject />
       </Suspense>
