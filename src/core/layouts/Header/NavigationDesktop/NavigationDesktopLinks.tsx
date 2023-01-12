@@ -1,14 +1,13 @@
-
-import { Menu, Transition } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import clsx from 'clsx'
-import { useRouter } from 'next/router'
-import React, { Fragment } from 'react'
-import { Link } from 'src/core/components/links/Link'
-import { PrimaryNavigationProps } from '../types'
+import { Menu, Transition } from "@headlessui/react"
+import { ChevronDownIcon } from "@heroicons/react/20/solid"
+import clsx from "clsx"
+import { useRouter } from "next/router"
+import React, { Fragment } from "react"
+import { Link } from "src/core/components/links/Link"
+import { PrimaryNavigationProps } from "../types"
 
 type Props = {
-  menuItems: PrimaryNavigationProps['primaryNavigation']
+  menuItems: PrimaryNavigationProps["primaryNavigation"]
 }
 
 export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {

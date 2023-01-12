@@ -4,25 +4,25 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Link } from "src/core/components/links/Link"
-import { Routes } from "@blitzjs/next"
+import { Routes as PageRoutes } from "@blitzjs/next"
 
 const primaryNavigation = [
-  { name: "Dashboard", href: Routes.Rs8Index() },
+  { name: "Dashboard", href: PageRoutes.Rs8Index() },
   {
     name: "Teilstrecken",
-    href: Routes.Rs8Teilstrecke1(),
+    href: PageRoutes.Rs8Teilstrecke1(),
 
     children: [
-      { name: "Teilstrecke 1", href: Routes.Rs8Teilstrecke1() },
-      { name: "Teilstrecke 2", href: Routes.Rs8Teilstrecke2() },
-      { name: "Teilstrecke 3", href: Routes.Rs8Teilstrecke3() },
-      { name: "Teilstrecke 4", href: Routes.Rs8Teilstrecke4() },
+      { name: "Teilstrecke 1", href: PageRoutes.Rs8Teilstrecke1() },
+      { name: "Teilstrecke 2", href: PageRoutes.Rs8Teilstrecke2() },
+      { name: "Teilstrecke 3", href: PageRoutes.Rs8Teilstrecke3() },
+      { name: "Teilstrecke 4", href: PageRoutes.Rs8Teilstrecke4() },
     ],
   },
 
-  { name: "Kontakte", href: Routes.ContactsPage() },
-  { name: "Termine", href: Routes.CalendarEntriesPage() },
-  { name: "Impressum", href: Routes.Kontakt() },
+  { name: "Kontakte", href: PageRoutes.ContactsPage() },
+  { name: "Termine", href: PageRoutes.CalendarEntriesPage() },
+  { name: "Impressum", href: PageRoutes.Kontakt() },
 ]
 
 export const PageNavigation: React.FC = () => {

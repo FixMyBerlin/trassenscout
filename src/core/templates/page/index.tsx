@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { Routes } from "@blitzjs/next"
+import { Routes as PageRoutes } from "@blitzjs/next"
 if (process.env.parentModel) {
   import { usePaginatedQuery } from "@blitzjs/rpc"
   import { useParam } from "@blitzjs/next"
@@ -35,7 +35,7 @@ export const __ModelNames__List = () => {
         <ul>
           {__modelNames__.map((__modelName__) => (
             <li key={__modelName__.id}>
-              <Link href={Routes.Show__ModelName__Page({ __modelId__: __modelName__.id })}>
+              <Link href={PageRoutes.Show__ModelName__Page({ __modelId__: __modelName__.id })}>
                 <a>{__modelName__.name}</a>
               </Link>
             </li>
@@ -66,11 +66,11 @@ export const __ModelNames__List = () => {
 
         <p>
           <if condition="parentModel">
-            <Link href={Routes.New__ModelName__Page({ __parentModelId__: __parentModelId__! })}>
+            <Link href={PageRoutes.New__ModelName__Page({ __parentModelId__: __parentModelId__! })}>
               __ModelName__ erstellen
             </Link>
             <else>
-              <Link href={Routes.New__ModelName__Page()}>__ModelName__ erstellen</Link>
+              <Link href={PageRoutes.New__ModelName__Page()}>__ModelName__ erstellen</Link>
             </else>
           </if>
         </p>
@@ -80,7 +80,7 @@ export const __ModelNames__List = () => {
             <li key={__modelName__.id}>
               <if condition="parentModel">
                 <Link
-                  href={Routes.Show__ModelName__Page({
+                  href={PageRoutes.Show__ModelName__Page({
                     __parentModelId__: __parentModelId__!,
                     __modelId__: __modelName__.id,
                   })}
@@ -88,7 +88,7 @@ export const __ModelNames__List = () => {
                   <a>{__modelName__.name}</a>
                 </Link>
                 <else>
-                  <Link href={Routes.Show__ModelName__Page({ __modelId__: __modelName__.id })}>
+                  <Link href={PageRoutes.Show__ModelName__Page({ __modelId__: __modelName__.id })}>
                     <a>{__modelName__.name}</a>
                   </Link>
                 </else>

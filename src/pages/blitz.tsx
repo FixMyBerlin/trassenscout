@@ -1,4 +1,4 @@
-import { BlitzPage, Routes } from "@blitzjs/next"
+import { BlitzPage, Routes as PageRoutes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import Image from "next/image"
 import Link from "next/link"
@@ -38,12 +38,12 @@ const UserInfo = () => {
   } else {
     return (
       <>
-        <Link href={Routes.SignupPage()}>
+        <Link href={PageRoutes.SignupPage()}>
           <a className="inline-flex items-center rounded border border-transparent bg-indigo-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
             <strong>Sign Up</strong>
           </a>
         </Link>
-        <Link href={Routes.LoginPage()}>
+        <Link href={PageRoutes.LoginPage()}>
           <a className="inline-flex items-center rounded border border-transparent bg-indigo-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
             <strong>Login</strong>
           </a>

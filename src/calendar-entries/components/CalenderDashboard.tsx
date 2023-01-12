@@ -1,4 +1,4 @@
-import { Routes } from "@blitzjs/next"
+import { Routes as PageRoutes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { startOfDay } from "date-fns"
 import { Suspense } from "react"
@@ -28,7 +28,7 @@ export const CalenderDashboard: React.FC = () => {
         <CalendarDashboardDateList />
       </Suspense>
       <p className="mt-5">
-        <Link button href={Routes.CalendarEntriesPage()}>
+        <Link button href={PageRoutes.CalendarEntriesPage()}>
           Alle Termine
         </Link>
       </p>

@@ -1,4 +1,4 @@
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes as PageRoutes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
@@ -32,7 +32,7 @@ const EditCalendarEntry = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(Routes.ShowCalendarEntryPage({ calendarEntryId: updated.id }))
+      await router.push(PageRoutes.ShowCalendarEntryPage({ calendarEntryId: updated.id }))
     } catch (error: any) {
       console.error(error)
       return {
@@ -68,7 +68,7 @@ const EditCalendarEntryPage: BlitzPage = () => {
       </Suspense>
 
       <p className="mt-5">
-        <Link href={Routes.CalendarEntriesPage()}>Zurück zur Liste</Link>
+        <Link href={PageRoutes.CalendarEntriesPage()}>Zurück zur Liste</Link>
       </p>
     </LayoutRs8>
   )

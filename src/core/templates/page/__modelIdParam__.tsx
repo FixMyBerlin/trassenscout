@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { Routes } from "@blitzjs/next"
+import { Routes as PageRoutes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
@@ -23,9 +23,9 @@ export const __ModelName__ = () => {
     if (window.confirm(`Den Eintrag mit ID ${__modelName__.id} unwiderruflich löschen?`)) {
       await delete__ModelName__Mutation({ id: __modelName__.id })
       if (process.env.parentModel) {
-        await router.push(Routes.__ModelNames__Page({ __parentModelId__: __parentModelId__! }))
+        await router.push(PageRoutes.__ModelNames__Page({ __parentModelId__: __parentModelId__! }))
       } else {
-        await router.push(Routes.__ModelNames__Page())
+        await router.push(PageRoutes.__ModelNames__Page())
       }
     }
   }
@@ -37,7 +37,7 @@ export const __ModelName__ = () => {
 
       <if condition="parentModel">
         <Link
-          href={Routes.Edit__ModelName__Page({
+          href={PageRoutes.Edit__ModelName__Page({
             __parentModelId__: __parentModelId__!,
             __modelId__: __modelName__.id,
           })}
@@ -45,7 +45,7 @@ export const __ModelName__ = () => {
           Bearbeiten
         </Link>
         <else>
-          <Link href={Routes.Edit__ModelName__Page({ __modelId__: __modelName__.id })}>
+          <Link href={PageRoutes.Edit__ModelName__Page({ __modelId__: __modelName__.id })}>
             Bearbeiten
           </Link>
         </else>
@@ -73,11 +73,11 @@ const Show__ModelName__Page = () => {
 
       <p>
         <if condition="parentModel">
-          <Link href={Routes.__ModelNames__Page({ __parentModelId__: __parentModelId__! })}>
+          <Link href={PageRoutes.__ModelNames__Page({ __parentModelId__: __parentModelId__! })}>
             Alle __ModelNames__
           </Link>
           <else>
-            <Link href={Routes.__ModelNames__Page()}>Alle __ModelNames__</Link>
+            <Link href={PageRoutes.__ModelNames__Page()}>Alle __ModelNames__</Link>
           </else>
         </if>
       </p>

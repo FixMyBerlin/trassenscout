@@ -1,4 +1,4 @@
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes as PageRoutes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
@@ -22,7 +22,7 @@ export const Contact = () => {
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${contact.id} löschen?`)) {
       await deleteContactMutation({ id: contact.id })
-      await router.push(Routes.ContactsPage())
+      await router.push(PageRoutes.ContactsPage())
     }
   }
 
@@ -31,9 +31,9 @@ export const Contact = () => {
       <MetaTags noindex title={`Kontakt ${quote(contact.name)}`} />
       <PageHeader title={contact.name} />
       <p className="mb-10 space-x-4">
-        <Link href={Routes.ContactsPage()}>Zurück zur Kontaktliste</Link>
+        <Link href={PageRoutes.ContactsPage()}>Zurück zur Kontaktliste</Link>
         <span>–</span>
-        <Link href={Routes.EditContactPage({ contactId: contact.id })}>Eintrag bearbeiten</Link>
+        <Link href={PageRoutes.EditContactPage({ contactId: contact.id })}>Eintrag bearbeiten</Link>
         <span>–</span>
         <button type="button" onClick={handleDelete} className={linkStyles}>
           Eintrag löschen

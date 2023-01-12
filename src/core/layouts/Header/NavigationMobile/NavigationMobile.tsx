@@ -1,10 +1,9 @@
-import { Disclosure } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { useMatchRoute } from '@tanstack/react-location'
-import { clsx } from 'clsx'
-import React from 'react'
-import { PrimaryNavigationProps } from '../types'
-import { User } from '../User'
+import { Disclosure } from "@headlessui/react"
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
+import { clsx } from "clsx"
+import React from "react"
+import { PrimaryNavigationProps } from "../types"
+import { User } from "../User"
 
 type Props = PrimaryNavigationProps & {
   logo: React.ReactElement
@@ -75,9 +74,7 @@ export const NavigationMobile: React.FC<Props> = ({
                             : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                           'block rounded-md px-3 py-2 text-base font-medium'
                         )}
-                        aria-current={
-                          matchRoute({ to: item.href }) ? 'page' : undefined
-                        }
+                        aria-current={matchRoute({ to: item.href }) ? "page" : undefined}
                       >
                         {item.name}
                       </Disclosure.Button>

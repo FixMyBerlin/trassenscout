@@ -1,4 +1,4 @@
-import { Routes } from "@blitzjs/next"
+import { Routes as PageRoutes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import signup from "src/auth/mutations/signup"
 import { Signup } from "src/auth/validations"
@@ -63,7 +63,7 @@ export const SignupForm = (props: SignupFormProps) => {
 
       <div className="mt-4">
         Oder{" "}
-        <Link blank href={Routes.LoginPage()}>
+        <Link blank href={PageRoutes.LoginPage()}>
           anmelden
         </Link>
       </div>

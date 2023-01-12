@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { BlitzPage, Routes } from "@blitzjs/next"
+import { BlitzPage, Routes as PageRoutes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { LayoutRs8, MetaTags } from "src/core/layouts"
@@ -29,7 +29,7 @@ const CalendarEntriesList = () => {
         title="Termine"
         description="Dieser Bereich hilft Ihnen dabei Termine zu finden."
         action={
-          <Link button href={Routes.NewCalendarEntryPage()}>
+          <Link button href={PageRoutes.NewCalendarEntryPage()}>
             Neuer Kalendereintrag
           </Link>
         }
