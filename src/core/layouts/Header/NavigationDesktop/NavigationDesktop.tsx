@@ -1,17 +1,12 @@
-import React, { Suspense } from "react"
-import { PrimaryNavigationProps } from "../types"
+import { MenuItems } from "../types"
 import { User } from "../User"
 import { NavigationDesktopLinks } from "./NavigationDesktopLinks"
 
-type Props = PrimaryNavigationProps & {
+type Props = MenuItems & {
   logo: React.ReactElement
 }
 
-export const NavigationDesktop: React.FC<Props> = ({
-  primaryNavigation,
-  // secondaryNavigation,
-  logo: Logo,
-}) => {
+export const NavigationDesktop: React.FC<Props> = ({ menuItems, logo: Logo }) => {
   return (
     <div className="relative hidden sm:flex sm:flex-row sm:items-center sm:justify-between">
       <div className="relative flex min-h-[4rem] items-center justify-between sm:h-16">

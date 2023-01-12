@@ -3,12 +3,10 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import React, { Fragment } from "react"
-import { Link } from "src/core/components/links/Link"
-import { PrimaryNavigationProps } from "../types"
+import { Link } from "src/core/components/links"
+import { MenuItems } from "../types"
 
-type Props = {
-  menuItems: PrimaryNavigationProps["primaryNavigation"]
-}
+type Props = MenuItems
 
 export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
   const { pathname } = useRouter()
@@ -18,18 +16,10 @@ export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
       current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white",
       "rounded-md px-3 py-2 text-sm font-medium"
     )
-  // const matchRoute = useMatchRoute()
-  // const {
-  //   data: { region },
-  // } = useMatch<LocationGenerics>()
 
   return (
     <div className="flex space-x-4">
       {menuItems.map((item) => {
-        // const routeWithRegion = item.href.replaceAll(
-        //   ':regionPath',
-        //   region?.path || ''
-        // )
         const current = pathname === item.href.pathname
 
         if (!item.children) {
@@ -71,28 +61,31 @@ export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
             >
               <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <div className="px-1 py-1 ">
-                  {item.children.map((child) => (
-                    <Menu.Item key={child.name}>
-                      {({ active }) => (
-                        <Link
-                          href={child.href}
-                          classNameOverwrites={clsx(
-                            current && "bg-gray-200",
-                            active && "bg-gray-100",
-                            "group flex w-full items-center rounded-md px-2 py-2 text-sm"
-                          )}
-                        >
-                          {child.name}
-                        </Link>
-                      )}
-                    </Menu.Item>
-                  ))}
+                  {item.children.map((child) => {
+                    const current = pathname === child.href.pathname
+
+                    return (
+                      <Menu.Item key={child.name}>
+                        {({ active }) => (
+                          <Link
+                            href={child.href}
+                            classNameOverwrites={clsx(
+                              current && "bg-gray-200",
+                              active && "bg-gray-100",
+                              "group flex w-full items-center rounded-md px-2 py-2 text-sm"
+                            )}
+                          >
+                            {child.name}
+                          </Link>
+                        )}
+                      </Menu.Item>
+                    )
+                  })}
                 </div>
               </Menu.Items>
             </Transition>
           </Menu>
         )
-
       })}
     </div>
   )

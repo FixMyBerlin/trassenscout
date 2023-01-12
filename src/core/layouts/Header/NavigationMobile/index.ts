@@ -1,1 +1,1 @@
-export * from './NavigationMobile'
+export * from "./NavigationMobile"

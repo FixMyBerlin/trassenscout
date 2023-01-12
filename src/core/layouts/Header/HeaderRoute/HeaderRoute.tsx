@@ -1,21 +1,14 @@
+import { menuItemsDesktop, menuItemsMobile } from "../HeaderRoute/menuItems"
 import { NavigationDesktop } from "../NavigationDesktop"
+import { NavigationMobile } from "../NavigationMobile"
 import { NavigationWrapper } from "../NavigationWrapper"
 import { HeaderRouteLogo } from "./HeaderRouteLogo"
-import { primaryNavigation } from "./navigation.const"
 
 export const HeaderRoute = () => {
   return (
     <NavigationWrapper>
-      {/* <NavigationMobile
-        logo={<HeaderRegionenLogo />}
-        primaryNavigation={primaryNavigation}
-        secondaryNavigation={secondaryNavigationGrouped}
-      /> */}
-      <NavigationDesktop
-        logo={<HeaderRouteLogo />}
-        primaryNavigation={primaryNavigation}
-        //secondaryNavigation={secondaryNavigationGrouped}
-      />
+      <NavigationMobile logo={<HeaderRouteLogo />} menuItems={menuItemsMobile} />
+      <NavigationDesktop logo={<HeaderRouteLogo />} menuItems={menuItemsDesktop} />
     </NavigationWrapper>
   )
 }
