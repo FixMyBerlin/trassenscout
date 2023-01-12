@@ -7,6 +7,7 @@ import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import updateProject from "src/projects/mutations/updateProject"
 import getProject from "src/projects/queries/getProject"
+import getUsers from "src/users/queries/getUsers"
 
 const EditProject = () => {
   const router = useRouter()
@@ -20,6 +21,8 @@ const EditProject = () => {
     }
   )
   const [updateProjectMutation] = useMutation(updateProject)
+
+  const [{ users }] = useQuery(getUsers, {})
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {

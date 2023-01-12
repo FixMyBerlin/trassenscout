@@ -25,7 +25,9 @@ export const Project = () => {
 
   return (
     <>
-      <h1>Project {quote(project.title)}</h1>
+      <MetaTags noindex title={`Radschnellverbindung ${project.name}`} />
+
+      <h1>Project {quote(project.name)}</h1>
       <pre>{JSON.stringify(project, null, 2)}</pre>
 
       <Link href={Routes.EditProjectPage({ projectId: project.id })}>Bearbeiten</Link>
@@ -40,8 +42,6 @@ export const Project = () => {
 const ShowProjectPage = () => {
   return (
     <LayoutArticle>
-      <MetaTags noindex title={`Project ${quote(project.id)}`} />
-
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <Project />
       </Suspense>
