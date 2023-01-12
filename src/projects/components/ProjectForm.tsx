@@ -1,8 +1,19 @@
-import { Form, FormProps, LabeledTextareaField, LabeledTextField } from "src/core/components/forms"
+import { User } from "@prisma/client"
+import {
+  Form,
+  FormProps,
+  LabeledSelect,
+  LabeledTextareaField,
+  LabeledTextField,
+} from "src/core/components/forms"
 import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
 
-export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+export function ProjectForm<S extends z.ZodType<any, any>>(
+  props: FormProps<S> & { users: User[] }
+) {
+  const { users } = props
+
   return (
     <Form<S> {...props}>
       <LabeledTextField type="text" name="name" label="Name" placeholder="" />
@@ -13,23 +24,11 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         placeholder=""
         optional
       />
-      <LabeledTextField
-        type="number"
+      <LabeledSelect
         name="userId"
         label="Projektleiter:in"
-        placeholder=""
-        optional
+        options={users.map((u) => [u.id.toString(), u.email])}
       />
-      {/*
-        <LabeledSelect
-          name="testSelect"
-          label="Test Select"
-          options={[
-            ["foo", "Foo 1"],
-            ["bar", "Bar 1"],
-          ]}
-        />
-      */}
     </Form>
   )
 }

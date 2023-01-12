@@ -1,14 +1,18 @@
 import { Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
-import { useMutation } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import createProject from "src/projects/mutations/createProject"
 import { ProjectForm, FORM_ERROR } from "src/projects/components/ProjectForm"
 import { Link } from "src/core/components/links"
+import getUsers from "src/users/queries/getUsers"
+import { Suspense } from "react"
 
-const NewProjectPage = () => {
+const NewProjectPageWithQuery = () => {
   const router = useRouter()
   const [createProjectMutation] = useMutation(createProject)
+
+  const [{ users }] = useQuery(getUsers, {})
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -24,20 +28,31 @@ const NewProjectPage = () => {
   }
 
   return (
-    <LayoutArticle>
-      <MetaTags noindex title="Neuen Project erstellen" />
+    <>
+      <MetaTags noindex title="Neue Radschnellverbindung erstellen" />
 
-      <h1>Neuen Project erstellen</h1>
+      <h1>Neue Radschnellverbindung erstellen</h1>
 
       <ProjectForm
         submitText="Erstellen"
         // schema={ProjectSchema} // TODO add Schema
         // initialValues={{}} // Use only when custom initial values are needed
         onSubmit={handleSubmit}
+        users={users}
       />
+    </>
+  )
+}
+
+const NewProjectPage = () => {
+  return (
+    <LayoutArticle>
+      <Suspense fallback={<div>Daten werden geladen…</div>}>
+        <NewProjectPageWithQuery />
+      </Suspense>
 
       <p>
-        <Link href={Routes.Home()}>Alle Projects</Link>
+        <Link href={Routes.Home()}>Startseite</Link>
       </p>
     </LayoutArticle>
   )

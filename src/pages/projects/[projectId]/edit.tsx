@@ -53,22 +53,8 @@ const EditProject = () => {
         // schema={ProjectSchema} // TODO add this
         initialValues={project}
         onSubmit={handleSubmit}
+        users={users}
       />
-
-      {/* TODO: Get this into the form so we can populate a dropdown with the data */}
-      <h2>
-        Nutze eine dieser <code>UserId</code>:
-      </h2>
-      <p>Die ID muss man manuell in das Feld oben übertragen.</p>
-      <ul>
-        {users.map((user) => {
-          return (
-            <li key={user.id}>
-              <code>{user.id}</code> {user.name} {user.email}
-            </li>
-          )
-        })}
-      </ul>
     </>
   )
 }
@@ -81,7 +67,7 @@ const EditProjectPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.Home()}>Alle Projects</Link>
+        <Link href={Routes.Home()}>Startseite</Link>
       </p>
     </LayoutArticle>
   )
