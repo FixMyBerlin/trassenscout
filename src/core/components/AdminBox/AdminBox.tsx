@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React from "react"
+import React, { Suspense } from "react"
 import { isDev } from "src/core/utils"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
@@ -9,14 +9,12 @@ type Props = {
   children: React.ReactNode
 }
 
-export const AdminBox: React.FC<Props> = ({ devOnly, className, children }) => {
-  // TODO: Causes Server 500, same as in Login.
-  // const user = useCurrentUser()
+const AdminBoxWithQuery: React.FC<Props> = ({ devOnly, className, children }) => {
+  const user = useCurrentUser()
 
-  // if (!user) {
-  //   // TODO: Change to !user.superadmin once that flag is present; https://blitzjs.com/docs/authorization
-  //   return null
-  // }
+  if (user?.superadmin !== true) {
+    return null
+  }
 
   if (devOnly === true && !isDev) {
     return null
@@ -41,5 +39,13 @@ export const AdminBox: React.FC<Props> = ({ devOnly, className, children }) => {
       </div>
       {children}
     </div>
+  )
+}
+
+export const AdminBox: React.FC<Props> = (props: Props) => {
+  return (
+    <Suspense>
+      <AdminBoxWithQuery {...props} />
+    </Suspense>
   )
 }
