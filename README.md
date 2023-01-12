@@ -77,10 +77,7 @@ Blitz comes with a test setup using [Vitest](https://vitest.dev/) and [react-tes
 
 ### Seeding
 
-Seeding new data requires a blank slate.
-
-1. `blitz prisma migrate reset`
-1. `blitz db seed`
+Use `npm run seed`. It will drop and migrate the db and apply the seeds afterwards.
 
 ## Commands
 
