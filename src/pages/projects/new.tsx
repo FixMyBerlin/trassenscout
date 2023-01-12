@@ -7,6 +7,7 @@ import { ProjectForm, FORM_ERROR } from "src/projects/components/ProjectForm"
 import { Link } from "src/core/components/links"
 import getUsers from "src/users/queries/getUsers"
 import { Suspense } from "react"
+import { ProjectSchema } from "src/projects/schema"
 
 const NewProjectPageWithQuery = () => {
   const router = useRouter()
@@ -35,7 +36,7 @@ const NewProjectPageWithQuery = () => {
 
       <ProjectForm
         submitText="Erstellen"
-        // schema={ProjectSchema} // TODO add Schema
+        schema={ProjectSchema}
         // initialValues={{}} // Use only when custom initial values are needed
         onSubmit={handleSubmit}
         users={users}

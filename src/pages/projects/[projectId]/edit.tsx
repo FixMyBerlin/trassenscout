@@ -7,6 +7,7 @@ import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import updateProject from "src/projects/mutations/updateProject"
 import getProject from "src/projects/queries/getProject"
+import { ProjectSchema } from "src/projects/schema"
 import getUsers from "src/users/queries/getUsers"
 
 const EditProject = () => {
@@ -50,7 +51,7 @@ const EditProject = () => {
 
       <ProjectForm
         submitText="Speichern"
-        // schema={ProjectSchema} // TODO add this
+        schema={ProjectSchema}
         initialValues={project}
         onSubmit={handleSubmit}
         users={users}

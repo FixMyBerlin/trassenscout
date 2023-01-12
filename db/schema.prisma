@@ -72,8 +72,8 @@ model Project {
   name         String
   shortName    String?
   introduction String?
-  ownerId      User?    @relation(fields: [userId], references: [id])
-  userId       Int?
+  ownerId      User     @relation(fields: [userId], references: [id])
+  userId       Int
 }
 
 model CalendarEntry {
