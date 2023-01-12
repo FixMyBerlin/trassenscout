@@ -32,6 +32,8 @@ export const __ModelName__ = () => {
 
   return (
     <>
+      <MetaTags noindex title={`__ModelName__ ${quote(__modelName__.id)}`} />
+
       <h1>__ModelName__ {quote(__modelName__.id)}</h1>
       <pre>{JSON.stringify(__modelName__, null, 2)}</pre>
 
@@ -65,8 +67,6 @@ const Show__ModelName__Page = () => {
 
   return (
     <LayoutArticle>
-      <MetaTags noindex title={`__ModelName__ ${quote(__modelName__.id)}`} />
-
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <__ModelName__ />
       </Suspense>

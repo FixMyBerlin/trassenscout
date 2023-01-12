@@ -51,6 +51,8 @@ const Edit__ModelName__ = () => {
 
   return (
     <>
+      <MetaTags noindex title={`__ModelName__ ${__modelName__.id} bearbeiten`} />
+
       <h1>__ModelName__ {__modelName__.id} bearbeiten</h1>
       <pre>{JSON.stringify(__modelName__, null, 2)}</pre>
 
@@ -77,8 +79,6 @@ const Edit__ModelName__Page = () => {
 
   return (
     <LayoutArticle>
-      <MetaTags noindex title={`__ModelName__ ${__modelName__.id} bearbeiten`} />
-
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <Edit__ModelName__ />
       </Suspense>
