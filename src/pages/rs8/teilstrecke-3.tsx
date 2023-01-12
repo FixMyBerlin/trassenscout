@@ -4,8 +4,7 @@ import { LayoutRs8, MetaTags } from "src/core/layouts"
 const Rs8Teilstrecke3: BlitzPage = () => {
   return (
     <LayoutRs8>
-      <MetaTags title="RSV Startseite" />
-      Welcome Home.
+      <MetaTags title="RSV Startseite" />3
     </LayoutRs8>
   )
 }
