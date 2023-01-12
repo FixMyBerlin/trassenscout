@@ -1,4 +1,4 @@
-import React from "react"
+import React, { AnchorHTMLAttributes, forwardRef } from "react"
 import clsx from "clsx"
 import NextLink from "next/link"
 import { RouteUrlObject } from "blitz"
@@ -18,36 +18,38 @@ type Props = {
   children: React.ReactNode
 } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href">
 
-export const Link: React.FC<Props> = ({
-  href,
-  className,
-  classNameOverwrites,
-  children,
-  blank = false,
-  button,
-  ...props
-}) => {
-  // external link
-  if (typeof href === "string") {
+export const Link: React.FC<Props> = forwardRef<HTMLAnchorElement, Props>(
+  ({ href, className, classNameOverwrites, children, blank = false, button, ...props }, ref) => {
+    // external link
+    if (typeof href === "string") {
+      return (
+        <a
+          ref={ref}
+          href={href}
+          className={classNameOverwrites || clsx(button ? buttonStyles : linkStyles, className)}
+          rel="noopener noreferrer"
+          {...{ target: blank ? "_blank" : undefined }}
+          {...props}
+        >
+          {children}
+        </a>
+      )
+    }
+
     return (
-      <a
-        href={href}
-        className={classNameOverwrites || clsx(button ? buttonStyles : linkStyles, className)}
-        rel="noopener noreferrer"
-        {...{ target: blank ? "_blank" : undefined }}
-        {...props}
-      >
-        {children}
-      </a>
+      <NextLink href={href} {...{ target: blank ? "_blank" : undefined }}>
+        {/*
+          TODO remove a-tag one React 13 can be used.
+          Also, update the `ref`, `{...props}`, see https://headlessui.com/react/menu#integrating-with-next-js
+        */}
+        <a
+          ref={ref}
+          className={classNameOverwrites || clsx(button ? buttonStyles : linkStyles, className)}
+          {...props}
+        >
+          {children}
+        </a>
+      </NextLink>
     )
   }
-
-  return (
-    <NextLink href={href} {...{ target: blank ? "_blank" : undefined }} {...props}>
-      {/* TODO remove a-tag one React 13 can be used. */}
-      <a className={classNameOverwrites || clsx(button ? buttonStyles : linkStyles, className)}>
-        {children}
-      </a>
-    </NextLink>
-  )
-}
+)
