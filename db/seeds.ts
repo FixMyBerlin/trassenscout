@@ -1,4 +1,5 @@
 import db from "./index"
+import seedProjects from "./seeds/projects"
 
 /*
  * This seed function is executed when you run `blitz db seed`.
@@ -15,6 +16,8 @@ const seed = async () => {
         "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTIscD0xJDRMWm82dmVrRk91VnVlZTVwcEpiS3ckOHFZcHhyM2RITm0yTGxTeXdqeEcxSWFsZEJCUWhxNVZxdm53eHoxTk4xTQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
     },
   })
+
+  await seedProjects()
 
   const seedCalendarEntries = [
     {
