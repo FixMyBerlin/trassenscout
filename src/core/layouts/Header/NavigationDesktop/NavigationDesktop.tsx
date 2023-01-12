@@ -20,12 +20,8 @@ export const NavigationDesktop: React.FC<Props> = ({
         </div>
       </div>
       <div className="flex items-center">
-        <Suspense>
-          <NavigationDesktopLinks menuItems={primaryNavigation} />
-        </Suspense>
-        <Suspense>
-          <User />
-        </Suspense>
+        <NavigationDesktopLinks menuItems={menuItems} />
+        <User />
       </div>
     </div>
   )

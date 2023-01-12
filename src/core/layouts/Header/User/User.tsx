@@ -1,11 +1,11 @@
 import { Routes as PageRoutes } from "@blitzjs/next"
 import { UserIcon } from "@heroicons/react/24/outline"
-import React from "react"
+import React, { Suspense } from "react"
 import { Link } from "src/core/components/links/Link"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { LoggedIn } from "./LoggedIn"
 
-export const User: React.FC = () => {
+const UserWithQuery: React.FC = () => {
   const user = useCurrentUser()
 
   return (
@@ -22,5 +22,13 @@ export const User: React.FC = () => {
         <LoggedIn user={user} />
       )}
     </div>
+  )
+}
+
+export const User: React.FC = () => {
+  return (
+    <Suspense>
+      <UserWithQuery />
+    </Suspense>
   )
 }
