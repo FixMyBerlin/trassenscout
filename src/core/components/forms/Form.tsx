@@ -5,6 +5,7 @@ import { z } from "zod"
 import clsx from "clsx"
 import { FormattedMessage, IntlProvider } from "react-intl"
 import { errorMessageTranslations } from "./errorMessageTranslations"
+import { FormError } from "./FormError"
 
 export interface FormProps<S extends z.ZodType<any, any>>
   extends Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> {
@@ -63,15 +64,7 @@ export function Form<S extends z.ZodType<any, any>>({
           {/* Form fields supplied as children are rendered here */}
           {children}
 
-          {formError && (
-            <div
-              role="alert"
-              className="rounded bg-red-50 py-1 px-2 text-red-700"
-              data-message-id={formError.replaceAll("\n", "")}
-            >
-              <FormattedMessage id={formError.replaceAll("\n", "")} defaultMessage={formError} />
-            </div>
-          )}
+          <FormError formError={formError} />
 
           {submitText && (
             <button
