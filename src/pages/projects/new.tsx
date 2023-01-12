@@ -37,7 +37,7 @@ const NewProjectPage = () => {
       />
 
       <p>
-        <Link href={Routes.ProjectsPage()}>Alle Projects</Link>
+        <Link href={Routes.Home()}>Alle Projects</Link>
       </p>
     </LayoutArticle>
   )

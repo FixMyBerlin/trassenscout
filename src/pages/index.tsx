@@ -1,18 +1,24 @@
-import { BlitzPage, Routes } from "@blitzjs/next"
-import { Link } from "src/core/components/links"
-import { Layout, MetaTags } from "src/core/layouts"
+import { BlitzPage } from "@blitzjs/next"
+import { Suspense } from "react"
+import PageHomeProjects from "src/home/components/PageHomeProjects"
+import PageHomePublic from "src/home/components/PageHomePublic"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+
+const HomeWithQuery: BlitzPage = () => {
+  const user = useCurrentUser()
+
+  if (user) {
+    return <PageHomeProjects />
+  }
+
+  return <PageHomePublic />
+}
 
 const Home: BlitzPage = () => {
   return (
-    <Layout>
-      <MetaTags title="RSV Startseite" />
-      <div className="h-56">Startseite Logged Out UND Startseite Logged In</div>
-      <ul>
-        <li>
-          <Link href={Routes.Rs8Index()}>RS8</Link>
-        </li>
-      </ul>
-    </Layout>
+    <Suspense>
+      <HomeWithQuery />
+    </Suspense>
   )
 }
 

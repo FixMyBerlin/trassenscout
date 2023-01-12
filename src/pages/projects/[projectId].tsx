@@ -19,13 +19,13 @@ export const Project = () => {
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${project.id} unwiderruflich löschen?`)) {
       await deleteProjectMutation({ id: project.id })
-      await router.push(Routes.ProjectsPage())
+      await router.push(Routes.Home())
     }
   }
 
   return (
     <>
-      <h1>Project {quote(project.id)}</h1>
+      <h1>Project {quote(project.title)}</h1>
       <pre>{JSON.stringify(project, null, 2)}</pre>
 
       <Link href={Routes.EditProjectPage({ projectId: project.id })}>Bearbeiten</Link>
@@ -47,7 +47,7 @@ const ShowProjectPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.ProjectsPage()}>Alle Projects</Link>
+        <Link href={Routes.Home()}>Alle Projects</Link>
       </p>
     </LayoutArticle>
   )

@@ -63,14 +63,14 @@ const EditProject = () => {
 const EditProjectPage = () => {
   return (
     <LayoutArticle>
-      <MetaTags noindex title={`Project ${project.id} bearbeiten`} />
+      <MetaTags noindex title={`Project ${project.title} bearbeiten`} />
 
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <EditProject />
       </Suspense>
 
       <p>
-        <Link href={Routes.ProjectsPage()}>Alle Projects</Link>
+        <Link href={Routes.Home()}>Alle Projects</Link>
       </p>
     </LayoutArticle>
   )

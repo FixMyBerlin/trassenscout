@@ -6,10 +6,11 @@ import { LayoutArticle, MetaTags } from "src/core/layouts"
 import getProjects from "src/projects/queries/getProjects"
 import { Link } from "src/core/components/links"
 import { Pagination } from "src/core/components/Pagination"
+import { AdminBox } from "src/core/components/AdminBox"
 
 const ITEMS_PER_PAGE = 100
 
-export const ProjectsList = () => {
+const ProjectsList = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
@@ -23,26 +24,25 @@ export const ProjectsList = () => {
 
   return (
     <>
-      <h1>Projects</h1>
+      <h1>Alle Radschnellverbindungen</h1>
 
-      <p>
-        <Link href={Routes.NewProjectPage()}>Project erstellen</Link>
-      </p>
+      <AdminBox>
+        <p>
+          <Link href={Routes.NewProjectPage()}>Radschnellverbindung erstellen</Link>
+        </p>
+      </AdminBox>
 
       <ul>
         {projects.map((project) => (
           <li key={project.id}>
-            <Link href={Routes.ShowProjectPage({ projectId: project.id })}>
-              <a>{project.name}</a>
-            </Link>
+            <Link href={Routes.ShowProjectPage({ projectId: project.id })}>{project.name}</Link>
           </li>
         ))}
       </ul>
 
       <Pagination
-        visible={!hasMore || page !== 0}
-        disablePrev={page === 0}
-        disableNext={!hasMore}
+        hasMore={hasMore}
+        page={page}
         handlePrev={goToPreviousPage}
         handleNext={goToNextPage}
       />
@@ -50,7 +50,7 @@ export const ProjectsList = () => {
   )
 }
 
-const ProjectsPage = () => {
+const PageHomeProjects = () => {
   return (
     <LayoutArticle>
       <MetaTags noindex title="Projects" />
@@ -62,4 +62,4 @@ const ProjectsPage = () => {
   )
 }
 
-export default ProjectsPage
+export default PageHomeProjects
