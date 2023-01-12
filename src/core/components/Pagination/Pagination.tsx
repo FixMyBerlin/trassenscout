@@ -2,28 +2,21 @@ import React from "react"
 import { buttonStyles } from "../links"
 
 type Props = {
-  visible: boolean
-  disablePrev: boolean
-  disableNext: boolean
+  hasMore: boolean
+  page: number
   handlePrev: () => void
   handleNext: () => void
 }
 
-export const Pagination: React.FC<Props> = ({
-  visible,
-  disablePrev,
-  disableNext,
-  handlePrev,
-  handleNext,
-}) => {
-  if (!visible) return null
+export const Pagination: React.FC<Props> = ({ hasMore, page, handlePrev, handleNext }) => {
+  if (!hasMore || page !== 0) return null
 
   return (
     <div className="space-x-3">
-      <button className={buttonStyles} disabled={disablePrev} onClick={handlePrev}>
+      <button className={buttonStyles} disabled={page === 0} onClick={handlePrev}>
         ←
       </button>
-      <button className={buttonStyles} disabled={disableNext} onClick={handleNext}>
+      <button className={buttonStyles} disabled={!hasMore} onClick={handleNext}>
         →
       </button>
     </div>

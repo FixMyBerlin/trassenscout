@@ -98,9 +98,8 @@ export const __ModelNames__List = () => {
         </ul>
 
         <Pagination
-          visible={!hasMore || page !== 0}
-          disablePrev={page === 0}
-          disableNext={!hasMore}
+          hasMore={hasMore}
+          page={page}
           handlePrev={goToPreviousPage}
           handleNext={goToNextPage}
         />

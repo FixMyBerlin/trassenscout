@@ -39,9 +39,8 @@ export const ContactTable = () => {
       <ContactList contacts={contacts} />
       <div className="mt-6">
         <Pagination
-          visible={hasMore || page !== 0}
-          disablePrev={page === 0}
-          disableNext={!hasMore}
+          hasMore={hasMore}
+          page={page}
           handlePrev={goToPreviousPage}
           handleNext={goToNextPage}
         />
