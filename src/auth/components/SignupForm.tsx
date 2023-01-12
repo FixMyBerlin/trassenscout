@@ -5,7 +5,6 @@ import { Signup } from "src/auth/validations"
 import { Form, FORM_ERROR } from "src/core/components/forms/Form"
 import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
 import { Link } from "src/core/components/links"
-import { LayoutMiddleBox } from "src/core/layouts"
 
 type SignupFormProps = {
   onSuccess?: () => void
@@ -14,7 +13,12 @@ type SignupFormProps = {
 export const SignupForm = (props: SignupFormProps) => {
   const [signupMutation] = useMutation(signup)
 
-  type HandleSubmit = { email: string; password: string }
+  type HandleSubmit = {
+    email: string
+    firstName: string | null
+    lastName: string | null
+    password: string
+  }
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await signupMutation(values)
@@ -37,7 +41,21 @@ export const SignupForm = (props: SignupFormProps) => {
         initialValues={{ email: "", password: "" }}
         onSubmit={handleSubmit}
       >
-        <LabeledTextField name="email" label="Email" placeholder="Email" autoComplete="email" />
+        <LabeledTextField name="email" label="E-Mail" placeholder="" autoComplete="email" />
+        <LabeledTextField
+          name="firstName"
+          label="Vorname"
+          placeholder=""
+          autoComplete="first-name"
+          optional
+        />
+        <LabeledTextField
+          name="lastName"
+          label="Nachname"
+          placeholder=""
+          autoComplete="last-name"
+          optional
+        />
         <LabeledTextField
           name="password"
           label="Password"

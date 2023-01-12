@@ -16,10 +16,12 @@ model User {
   id             Int      @id @default(autoincrement())
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  name           String?
   email          String   @unique
   hashedPassword String?
   role           String   @default("USER")
+  superadmin     Boolean  @default(false)
+  firstName      String?
+  lastName       String?
 
   tokens   Token[]
   sessions Session[]

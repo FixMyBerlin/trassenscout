@@ -1,7 +1,7 @@
-import db from "../index"
+import db, { Project } from "../index"
 
 const seedProjects = async () => {
-  const seeData = [
+  const seeData: Omit<Project, "id" | "createdAt" | "updatedAt">[] = [
     {
       name: "Radschnellverbindung 3000",
       shortName: "RS3k",

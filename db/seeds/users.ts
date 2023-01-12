@@ -1,18 +1,24 @@
-import db from "../index"
+import db, { User } from "../index"
 
 const seedUsers = async () => {
-  const seeData = [
+  const seeData: Omit<User, "id" | "createdAt" | "updatedAt" | "role">[] = [
     {
       email: "dev-team@fixmycity.de",
       // password: dev-team@fixmycity.de
       hashedPassword:
         "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTIscD0xJDRMWm82dmVrRk91VnVlZTVwcEpiS3ckOHFZcHhyM2RITm0yTGxTeXdqeEcxSWFsZEJCUWhxNVZxdm53eHoxTk4xTQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      superadmin: true,
+      firstName: "Rudi",
+      lastName: "Radfreund",
     },
     {
-      email: "dev-team+user2@fixmycity.de",
+      email: "regular-user@fixmycity.de",
       // password: dev-team@fixmycity.de
       hashedPassword:
         "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTIscD0xJDRMWm82dmVrRk91VnVlZTVwcEpiS3ckOHFZcHhyM2RITm0yTGxTeXdqeEcxSWFsZEJCUWhxNVZxdm53eHoxTk4xTQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      superadmin: false,
+      firstName: null,
+      lastName: null,
     },
   ]
 
