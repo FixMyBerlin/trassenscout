@@ -36,7 +36,7 @@ export const __ModelNames__List = () => {
           {__modelNames__.map((__modelName__) => (
             <li key={__modelName__.id}>
               <Link href={Routes.Show__ModelName__Page({ __modelId__: __modelName__.id })}>
-                <a>{__modelName__.name}</a>
+                {__modelName__.name}
               </Link>
             </li>
           ))}
@@ -85,11 +85,11 @@ export const __ModelNames__List = () => {
                     __modelId__: __modelName__.id,
                   })}
                 >
-                  <a>{__modelName__.name}</a>
+                  {__modelName__.name}
                 </Link>
                 <else>
                   <Link href={Routes.Show__ModelName__Page({ __modelId__: __modelName__.id })}>
-                    <a>{__modelName__.name}</a>
+                    {__modelName__.name}
                   </Link>
                 </else>
               </if>
