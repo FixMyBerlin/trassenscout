@@ -1,13 +1,13 @@
-import { Suspense } from "react"
-import { Routes } from "@blitzjs/next"
+import { Routes, useParam } from "@blitzjs/next"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
-import { useQuery, useMutation } from "@blitzjs/rpc"
-import { useParam } from "@blitzjs/next"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import get__ModelName__ from "src/__modelNamesPath__/queries/get__ModelName__"
-import update__ModelName__ from "src/__modelNamesPath__/mutations/update__ModelName__"
-import { __ModelName__Form, FORM_ERROR } from "src/__modelNamesPath__/components/__ModelName__Form"
+import { Suspense } from "react"
+import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
+import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { FORM_ERROR, __ModelName__Form } from "src/__modelNamesPath__/components/__ModelName__Form"
+import update__ModelName__ from "src/__modelNamesPath__/mutations/update__ModelName__"
+import get__ModelName__ from "src/__modelNamesPath__/queries/get__ModelName__"
 
 const Edit__ModelName__ = () => {
   const router = useRouter()
@@ -54,7 +54,9 @@ const Edit__ModelName__ = () => {
       <MetaTags noindex title={`__ModelName__ ${__modelName__.id} bearbeiten`} />
 
       <h1>__ModelName__ {__modelName__.id} bearbeiten</h1>
-      <pre>{JSON.stringify(__modelName__, null, 2)}</pre>
+      <SuperAdminBox>
+        <pre>{JSON.stringify(__modelName__, null, 2)}</pre>
+      </SuperAdminBox>
 
       <__ModelName__Form
         submitText="Speichern"

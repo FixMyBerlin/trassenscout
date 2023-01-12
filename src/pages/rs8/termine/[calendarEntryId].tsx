@@ -10,7 +10,7 @@ import { Link, linkStyles } from "src/core/components/links"
 import clsx from "clsx"
 import { quote } from "src/core/components/text"
 import { DateEntry } from "src/rs8/termine/components/Calender"
-import { AdminBox } from "src/core/components/AdminBox"
+import { SuperAdminBox } from "src/core/components/AdminBox"
 import { PageHeader } from "src/core/components/PageHeader"
 
 export const CalendarEntry = () => {
@@ -47,9 +47,9 @@ export const CalendarEntry = () => {
         <DateEntry calendarEntry={calendarEntry} />
       </div>
 
-      <AdminBox>
+      <SuperAdminBox>
         <pre>{JSON.stringify(calendarEntry, null, 2)}</pre>
-      </AdminBox>
+      </SuperAdminBox>
     </>
   )
 }

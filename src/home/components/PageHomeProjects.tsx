@@ -1,12 +1,12 @@
-import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import getProjects from "src/projects/queries/getProjects"
+import { Suspense } from "react"
+import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { Pagination } from "src/core/components/Pagination"
-import { AdminBox } from "src/core/components/AdminBox"
+import { LayoutArticle, MetaTags } from "src/core/layouts"
+import getProjects from "src/projects/queries/getProjects"
 
 const ITEMS_PER_PAGE = 100
 
@@ -26,11 +26,11 @@ const ProjectsList = () => {
     <>
       <h1>Alle Radschnellverbindungen</h1>
 
-      <AdminBox>
+      <SuperAdminBox>
         <p>
           <Link href={Routes.NewProjectPage()}>Radschnellverbindung erstellen</Link>
         </p>
-      </AdminBox>
+      </SuperAdminBox>
 
       <ul>
         {projects.map((project) => (

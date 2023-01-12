@@ -1,14 +1,12 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
-import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { ContactList } from "src/contacts/components/ContactList"
 import deleteContact from "src/contacts/mutations/deleteContact"
 import getContact from "src/contacts/queries/getContact"
-import { AdminBox } from "src/core/components/AdminBox"
-import { Link, LinkMail, linkStyles, LinkTel } from "src/core/components/links"
+import { SuperAdminBox } from "src/core/components/AdminBox"
+import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { quote } from "src/core/components/text"
 import { LayoutRs8, MetaTags } from "src/core/layouts"
@@ -41,9 +39,9 @@ export const Contact = () => {
       </p>
       <div>
         <ContactList withAction={false} contacts={[contact]} />
-        <AdminBox>
+        <SuperAdminBox>
           <pre>{JSON.stringify(contact, null, 2)}</pre>
-        </AdminBox>
+        </SuperAdminBox>
       </div>
     </>
   )

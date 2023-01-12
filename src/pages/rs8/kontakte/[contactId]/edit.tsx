@@ -1,17 +1,16 @@
-import { Suspense } from "react"
-import { Routes } from "@blitzjs/next"
-import { useRouter } from "next/router"
-import { useQuery, useMutation } from "@blitzjs/rpc"
-import { useParam } from "@blitzjs/next"
-import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
-import getContact from "src/contacts/queries/getContact"
-import updateContact from "src/contacts/mutations/updateContact"
-import { ContactForm, FORM_ERROR } from "src/contacts/components/ContactForm"
-import { Link } from "src/core/components/links"
-import { ContactSchema } from "src/contacts/schema"
 import { BlitzPage } from "@blitzjs/auth"
+import { Routes, useParam } from "@blitzjs/next"
+import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useRouter } from "next/router"
+import { Suspense } from "react"
+import { ContactForm, FORM_ERROR } from "src/contacts/components/ContactForm"
+import updateContact from "src/contacts/mutations/updateContact"
+import getContact from "src/contacts/queries/getContact"
+import { ContactSchema } from "src/contacts/schema"
+import { SuperAdminBox } from "src/core/components/AdminBox"
+import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
-import { AdminBox } from "src/core/components/AdminBox"
+import { LayoutRs8, MetaTags } from "src/core/layouts"
 
 const EditContact = () => {
   const router = useRouter()
@@ -53,9 +52,9 @@ const EditContact = () => {
         initialValues={contact}
         onSubmit={handleSubmit}
       />
-      <AdminBox>
+      <SuperAdminBox>
         <pre>{JSON.stringify(contact, null, 2)}</pre>
-      </AdminBox>
+      </SuperAdminBox>
     </>
   )
 }

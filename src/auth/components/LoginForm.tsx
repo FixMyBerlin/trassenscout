@@ -3,11 +3,10 @@ import { useMutation } from "@blitzjs/rpc"
 import { AuthenticationError, PromiseReturnType } from "blitz"
 import login from "src/auth/mutations/login"
 import { Login } from "src/auth/validations"
-import { AdminBox } from "src/core/components/AdminBox"
+import { DevAdminBox } from "src/core/components/AdminBox"
 import { Form, FORM_ERROR } from "src/core/components/forms/Form"
 import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
 import { buttonStyles, Link } from "src/core/components/links"
-import { LayoutMiddleBox } from "src/core/layouts"
 
 type LoginFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof login>) => void
@@ -49,7 +48,7 @@ export const LoginForm = (props: LoginFormProps) => {
           </Link>
         </div>
 
-        <AdminBox devOnly={true} className="text-center">
+        <DevAdminBox className="text-center">
           <button
             className={buttonStyles}
             onClick={async () =>
@@ -61,7 +60,7 @@ export const LoginForm = (props: LoginFormProps) => {
           >
             Login <code>dev-team@fixmycity.de</code>
           </button>
-        </AdminBox>
+        </DevAdminBox>
       </Form>
 
       <div className="mt-4">

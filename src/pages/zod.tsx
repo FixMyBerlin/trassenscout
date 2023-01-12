@@ -1,5 +1,5 @@
 import { BlitzPage } from "@blitzjs/next"
-import { AdminBox } from "src/core/components/AdminBox"
+import { DevAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { LayoutMiddleBox, MetaTags } from "src/core/layouts"
 import { isBrowser } from "src/core/utils"
@@ -19,12 +19,12 @@ const Zod: BlitzPage = () => {
   return (
     <LayoutMiddleBox>
       <MetaTags noindex title="ZOD Test page" />
-      <AdminBox>
+      <DevAdminBox>
         <div className="prose prose-lg">
           Use the browser console to test <Link href="https://zod.dev/">zod</Link> (
           <Link href="https://github.com/colinhacks/zod">Github</Link>).
         </div>
-      </AdminBox>
+      </DevAdminBox>
     </LayoutMiddleBox>
   )
 }

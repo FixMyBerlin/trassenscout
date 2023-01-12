@@ -6,7 +6,7 @@ import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/C
 import updateCalendarEntry from "src/calendar-entries/mutations/updateCalendarEntry"
 import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
 import { CalendarEntrySchema } from "src/calendar-entries/schema"
-import { AdminBox } from "src/core/components/AdminBox"
+import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { LayoutRs8, MetaTags } from "src/core/layouts"
@@ -53,9 +53,9 @@ const EditCalendarEntry = () => {
         onSubmit={handleSubmit}
       />
 
-      <AdminBox>
+      <SuperAdminBox>
         <pre>{JSON.stringify(calendarEntry, null, 2)}</pre>
-      </AdminBox>
+      </SuperAdminBox>
     </>
   )
 }

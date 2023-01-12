@@ -1,14 +1,14 @@
-import { Suspense } from "react"
-import { Routes } from "@blitzjs/next"
-import { useRouter } from "next/router"
-import { useQuery, useMutation } from "@blitzjs/rpc"
-import { useParam } from "@blitzjs/next"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import get__ModelName__ from "src/__modelNamesPath__/queries/get__ModelName__"
-import delete__ModelName__ from "src/__modelNamesPath__/mutations/delete__ModelName__"
-import { Link, linkStyles } from "src/core/components/links"
+import { Routes, useParam } from "@blitzjs/next"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
+import { useRouter } from "next/router"
+import { Suspense } from "react"
+import { SuperAdminBox } from "src/core/components/AdminBox"
+import { Link, linkStyles } from "src/core/components/links"
 import { quote } from "src/core/components/text"
+import { LayoutArticle, MetaTags } from "src/core/layouts"
+import delete__ModelName__ from "src/__modelNamesPath__/mutations/delete__ModelName__"
+import get__ModelName__ from "src/__modelNamesPath__/queries/get__ModelName__"
 
 export const __ModelName__ = () => {
   const router = useRouter()
@@ -35,7 +35,9 @@ export const __ModelName__ = () => {
       <MetaTags noindex title={`__ModelName__ ${quote(__modelName__.id)}`} />
 
       <h1>__ModelName__ {quote(__modelName__.id)}</h1>
-      <pre>{JSON.stringify(__modelName__, null, 2)}</pre>
+      <SuperAdminBox>
+        <pre>{JSON.stringify(__modelName__, null, 2)}</pre>
+      </SuperAdminBox>
 
       <if condition="parentModel">
         <Link
