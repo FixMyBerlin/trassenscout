@@ -1,7 +1,7 @@
 import { NavigationDesktop } from "../NavigationDesktop"
 import { NavigationMobile } from "../NavigationMobile"
 import { NavigationWrapper } from "../NavigationWrapper"
-import { NavigationGeneralLogo } from "./HeaderAppLogo"
+import { NavigationGeneralLogo } from "./NavigationGeneralLogo"
 import { menuItems } from "./menuItems"
 
 export const NavigationGeneral = () => {
