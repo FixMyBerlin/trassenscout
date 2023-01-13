@@ -30,7 +30,7 @@ export function CalendarEntryForm<S extends z.ZodType<any, any>>(
         placeholder="Beispielsweise Adresse und Bezeichnung des Konferenzraums"
       />
       <LabeledTextField
-        type="text"
+        type="url"
         name="locationUrl"
         optional
         label="Online Meeting URL"

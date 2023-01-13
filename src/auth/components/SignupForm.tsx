@@ -42,22 +42,35 @@ export const SignupForm = (props: SignupFormProps) => {
         initialValues={{ email: "", password: "" }}
         onSubmit={handleSubmit}
       >
-        <LabeledTextField name="email" label="E-Mail" placeholder="" autoComplete="email" />
+        <LabeledTextField
+          type="email"
+          name="email"
+          label="E-Mail"
+          placeholder=""
+          autoComplete="email"
+        />
         <LabeledTextField
           name="firstName"
           label="Vorname"
           placeholder=""
-          autoComplete="first-name"
+          autoComplete="given-name"
           optional
         />
         <LabeledTextField
           name="lastName"
           label="Nachname"
           placeholder=""
-          autoComplete="last-name"
+          autoComplete="family-name"
           optional
         />
-        <LabeledTextField name="phone" label="Telefon" placeholder="" optional />
+        <LabeledTextField
+          type="tel"
+          name="phone"
+          label="Telefon"
+          placeholder=""
+          autoComplete="tel"
+          optional
+        />
         <LabeledTextField
           name="password"
           label="Password"

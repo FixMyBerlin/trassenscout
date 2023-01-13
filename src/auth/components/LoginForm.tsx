@@ -40,8 +40,14 @@ export const LoginForm = (props: LoginFormProps) => {
         initialValues={{ email: "", password: "" }}
         onSubmit={handleSubmit}
       >
-        <LabeledTextField name="email" label="Email" placeholder="Email" />
-        <LabeledTextField name="password" label="Password" placeholder="Password" type="password" />
+        <LabeledTextField name="email" label="Email" placeholder="Email" autoComplete="email" />
+        <LabeledTextField
+          name="password"
+          label="Password"
+          placeholder="Password"
+          type="password"
+          autoComplete="current-password"
+        />
         <div className="text-sm">
           <Link href={Routes.ForgotPasswordPage()} className="font-medium">
             Passwort vergessen?
