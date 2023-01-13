@@ -8,6 +8,8 @@ import { Link } from "src/core/components/links"
 import getUsers from "src/users/queries/getUsers"
 import { Suspense } from "react"
 import { ProjectSchema } from "src/projects/schema"
+import { AdminBox } from "src/core/components/AdminBox/AdminBox"
+import { SuperAdminBox } from "src/core/components/AdminBox"
 
 const NewProjectPageWithQuery = () => {
   const router = useRouter()
@@ -31,16 +33,17 @@ const NewProjectPageWithQuery = () => {
   return (
     <>
       <MetaTags noindex title="Neue Radschnellverbindung erstellen" />
+      <SuperAdminBox>
+        <h1>Neue Radschnellverbindung erstellen</h1>
 
-      <h1>Neue Radschnellverbindung erstellen</h1>
-
-      <ProjectForm
-        submitText="Erstellen"
-        schema={ProjectSchema}
-        // initialValues={{}} // Use only when custom initial values are needed
-        onSubmit={handleSubmit}
-        users={users}
-      />
+        <ProjectForm
+          submitText="Erstellen"
+          schema={ProjectSchema}
+          // initialValues={{}} // Use only when custom initial values are needed
+          onSubmit={handleSubmit}
+          users={users}
+        />
+      </SuperAdminBox>
     </>
   )
 }

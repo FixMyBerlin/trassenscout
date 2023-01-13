@@ -9,6 +9,7 @@ import deleteProject from "src/projects/mutations/deleteProject"
 import { Link, linkStyles } from "src/core/components/links"
 import clsx from "clsx"
 import { quote } from "src/core/components/text"
+import { SuperAdminBox } from "src/core/components/AdminBox"
 
 export const Project = () => {
   const router = useRouter()
@@ -29,12 +30,12 @@ export const Project = () => {
 
       <h1>Project {quote(project.name)}</h1>
       <pre>{JSON.stringify(project, null, 2)}</pre>
-
-      <Link href={Routes.EditProjectPage({ projectId: project.id })}>Bearbeiten</Link>
-
-      <button type="button" onClick={handleDelete} className={clsx(linkStyles, "ml-2")}>
-        Löschen
-      </button>
+      <SuperAdminBox>
+        <Link href={Routes.EditProjectPage({ projectId: project.id })}>Bearbeiten</Link>
+        <button type="button" onClick={handleDelete} className={clsx(linkStyles, "ml-2")}>
+          Löschen
+        </button>
+      </SuperAdminBox>
     </>
   )
 }

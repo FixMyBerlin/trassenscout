@@ -2,6 +2,7 @@ import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
+import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
@@ -45,17 +46,18 @@ const EditProject = () => {
   return (
     <>
       <MetaTags noindex title={`Project ${project.name} bearbeiten`} />
+      <SuperAdminBox>
+        <h1>Project {project.id} bearbeiten</h1>
+        <pre>{JSON.stringify(project, null, 2)}</pre>
 
-      <h1>Project {project.id} bearbeiten</h1>
-      <pre>{JSON.stringify(project, null, 2)}</pre>
-
-      <ProjectForm
-        submitText="Speichern"
-        schema={ProjectSchema}
-        initialValues={project}
-        onSubmit={handleSubmit}
-        users={users}
-      />
+        <ProjectForm
+          submitText="Speichern"
+          schema={ProjectSchema}
+          initialValues={project}
+          onSubmit={handleSubmit}
+          users={users}
+        />
+      </SuperAdminBox>
     </>
   )
 }
