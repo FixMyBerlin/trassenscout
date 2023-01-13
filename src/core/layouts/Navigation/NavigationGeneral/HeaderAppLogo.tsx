@@ -1,6 +1,6 @@
 import { EyeDropperIcon } from "@heroicons/react/20/solid"
 
-export const HeaderAppLogo: React.FC = () => {
+export const NavigationGeneralLogo: React.FC = () => {
   return (
     <>
       <EyeDropperIcon className="block h-8 w-auto text-yellow-400 lg:hidden" />

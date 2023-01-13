@@ -4,7 +4,7 @@ import Image from "next/image"
 import React from "react"
 import pngRsv8Logo from "./../assets/rsv8-logo.png"
 
-export const HeaderRouteLogo: React.FC = () => {
+export const NavigationProjectLogo: React.FC = () => {
   // const {
   //   data: { region },
   // } = useMatch<LocationGenerics>()

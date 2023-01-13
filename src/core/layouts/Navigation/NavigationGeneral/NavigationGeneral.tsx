@@ -1,14 +1,14 @@
 import { NavigationDesktop } from "../NavigationDesktop"
 import { NavigationMobile } from "../NavigationMobile"
 import { NavigationWrapper } from "../NavigationWrapper"
-import { HeaderAppLogo } from "./HeaderAppLogo"
+import { NavigationGeneralLogo } from "./HeaderAppLogo"
 import { menuItems } from "./menuItems"
 
-export const HeaderApp = () => {
+export const NavigationGeneral = () => {
   return (
     <NavigationWrapper>
-      <NavigationMobile logo={<HeaderAppLogo />} menuItems={menuItems} />
-      <NavigationDesktop logo={<HeaderAppLogo />} menuItems={menuItems} />
+      <NavigationMobile logo={<NavigationGeneralLogo />} menuItems={menuItems} />
+      <NavigationDesktop logo={<NavigationGeneralLogo />} menuItems={menuItems} />
     </NavigationWrapper>
   )
 }
