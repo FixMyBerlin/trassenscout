@@ -22,6 +22,7 @@ model User {
   superadmin     Boolean  @default(false)
   firstName      String?
   lastName       String?
+  phone          String?
 
   tokens   Token[]
   sessions Session[]

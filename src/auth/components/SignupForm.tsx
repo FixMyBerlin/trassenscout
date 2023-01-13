@@ -16,6 +16,7 @@ export const SignupForm = (props: SignupFormProps) => {
   type HandleSubmit = {
     email: string
     firstName: string | null
+    phone: string | null
     lastName: string | null
     password: string
   }
@@ -56,6 +57,7 @@ export const SignupForm = (props: SignupFormProps) => {
           autoComplete="last-name"
           optional
         />
+        <LabeledTextField name="phone" label="Telefon" placeholder="" optional />
         <LabeledTextField
           name="password"
           label="Password"

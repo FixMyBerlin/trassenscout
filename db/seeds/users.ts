@@ -10,6 +10,7 @@ const seedUsers = async () => {
       superadmin: true,
       firstName: "Rudi",
       lastName: "Radfreund",
+      phone: "030 123456",
     },
     {
       email: "regular-user@fixmycity.de",
@@ -19,6 +20,7 @@ const seedUsers = async () => {
       superadmin: false,
       firstName: null,
       lastName: null,
+      phone: null,
     },
   ]
 
