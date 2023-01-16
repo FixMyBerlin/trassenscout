@@ -69,14 +69,15 @@ model Token {
 // }
 
 model Project {
-  id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  name         String
-  shortName    String?
-  introduction String?
-  ownerId      User     @relation(fields: [userId], references: [id])
-  userId       Int
+  id            Int             @id @default(autoincrement())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  name          String
+  shortName     String?
+  introduction  String?
+  ownerId       User            @relation(fields: [userId], references: [id])
+  userId        Int
+  CalendarEntry CalendarEntry[]
 }
 
 model CalendarEntry {
@@ -88,6 +89,8 @@ model CalendarEntry {
   locationName String?
   locationUrl  String?
   description  String?
+  projectScope Project  @relation(fields: [projectId], references: [id])
+  projectId    Int
 }
 
 model Contact {

@@ -15,4 +15,5 @@ export const CalendarEntrySchema = z.object({
   // Either emtpy, or url (https://github.com/colinhacks/zod/pull/1849)
   locationUrl: z.union([z.string().url({ message: "Kein gültige URL." }).nullish(), z.literal("")]),
   description: z.string().nullish(),
+  projectId: z.coerce.number(),
 })

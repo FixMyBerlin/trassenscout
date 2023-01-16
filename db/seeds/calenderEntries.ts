@@ -4,6 +4,7 @@ const seedCalendarEntries = async () => {
   const seedCalendarEntries: Omit<CalendarEntry, "id" | "createdAt" | "updatedAt">[] = [
     {
       title: "Koordinations-Termin Abschnitt 2",
+      projectId: 1,
       startAt: new Date("2023-12-14 10:00"),
       locationName: "Konferenz Raum A",
       locationUrl: "https://us02web.zoom.us/j/2194140224?pwd=123",
@@ -12,6 +13,7 @@ const seedCalendarEntries = async () => {
     },
     {
       title: "Koordinations-Termin Abschnitt 5",
+      projectId: 1,
       startAt: new Date("2023-10-14 10:30"),
       locationName: "Konferenz Raum A",
       locationUrl: "https://us02web.zoom.us/j/2194140224?pwd=123",
@@ -20,6 +22,7 @@ const seedCalendarEntries = async () => {
     },
     {
       title: "Abstimmung Kreuzungspunkt 14",
+      projectId: 2,
       startAt: new Date("2023-02-14 10:00"),
       locationName: null,
       locationUrl: null,

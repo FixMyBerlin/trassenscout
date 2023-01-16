@@ -1,4 +1,3 @@
-import db from "./index"
 import seedCalendarEntries from "./seeds/calenderEntries"
 import seedContacts from "./seeds/contacts"
 import seedProjects from "./seeds/projects"

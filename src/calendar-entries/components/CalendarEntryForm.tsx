@@ -1,8 +1,18 @@
-import { Form, FormProps, LabeledTextareaField, LabeledTextField } from "src/core/components/forms"
+import { Project } from "@prisma/client"
+import {
+  Form,
+  FormProps,
+  LabeledSelect,
+  LabeledTextareaField,
+  LabeledTextField,
+} from "src/core/components/forms"
 import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
 
-export function CalendarEntryForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+export function CalendarEntryForm<S extends z.ZodType<any, any>>(
+  props: FormProps<S> & { projects: Project[] }
+) {
+  const { projects } = props
   return (
     <Form<S> {...props} className="max-w-prose">
       <LabeledTextField type="text" name="title" label="Title" placeholder="" />
@@ -32,6 +42,11 @@ export function CalendarEntryForm<S extends z.ZodType<any, any>>(props: FormProp
         label="Beschreibung (Markdown)"
         placeholder=""
         className="h-60"
+      />
+      <LabeledSelect
+        name="projectId"
+        label="Projekt / Radschnellverbindung"
+        options={projects.map((p) => [String(p.id), String(p.id)])}
       />
     </Form>
   )

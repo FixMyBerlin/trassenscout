@@ -10,10 +10,12 @@ import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { LayoutRs8, MetaTags } from "src/core/layouts"
+import getProjects from "src/projects/queries/getProjects"
 
 const EditCalendarEntry = () => {
   const router = useRouter()
   const calendarEntryId = useParam("calendarEntryId", "number")
+  const [{ projects }] = useQuery(getProjects, {})
   const [calendarEntry, { setQueryData }] = useQuery(
     getCalendarEntry,
     { id: calendarEntryId },
@@ -48,6 +50,7 @@ const EditCalendarEntry = () => {
 
       <CalendarEntryForm
         submitText="Speichern"
+        projects={projects}
         schema={CalendarEntrySchema}
         initialValues={calendarEntry}
         onSubmit={handleSubmit}
