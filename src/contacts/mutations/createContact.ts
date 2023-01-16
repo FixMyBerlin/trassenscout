@@ -1,6 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { z } from "zod"
 import { ContactSchema } from "../schema"
 
 export default resolver.pipe(resolver.zod(ContactSchema), resolver.authorize(), async (input) => {
