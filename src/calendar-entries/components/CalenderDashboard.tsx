@@ -1,4 +1,4 @@
-import { Routes } from "@blitzjs/next"
+import { Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { startOfDay } from "date-fns"
 import { Suspense } from "react"
@@ -7,6 +7,7 @@ import { DateList } from "../../rs8/termine/components/Calender/DateList"
 import getCalendarEntries from "../queries/getCalendarEntries"
 
 const CalendarDashboardDateList: React.FC = () => {
+  const projectId = useParam("projectId", "number")
   const [{ calendarEntries }] = usePaginatedQuery(getCalendarEntries, {
     orderBy: { startAt: "asc" },
     take: 3,
@@ -17,7 +18,16 @@ const CalendarDashboardDateList: React.FC = () => {
     },
   })
 
-  return <DateList calendarEntries={calendarEntries} />
+  return (
+    <>
+      <DateList calendarEntries={calendarEntries} />
+      <p className="mt-5">
+        <Link button href={Routes.CalendarEntriesPage({ projectId: projectId! })}>
+          Alle Termine
+        </Link>
+      </p>
+    </>
+  )
 }
 
 export const CalenderDashboard: React.FC = () => {
@@ -27,11 +37,6 @@ export const CalenderDashboard: React.FC = () => {
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <CalendarDashboardDateList />
       </Suspense>
-      <p className="mt-5">
-        <Link button href={Routes.CalendarEntriesPage()}>
-          Alle Termine
-        </Link>
-      </p>
     </section>
   )
 }
