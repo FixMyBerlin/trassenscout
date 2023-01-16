@@ -8,6 +8,7 @@ const seedContacts = async () => {
       title: "Developer",
       role: "Member",
       phone: "030-123 123",
+      projectId: 1,
     },
     {
       name: "Tobias Jordans",
@@ -15,6 +16,7 @@ const seedContacts = async () => {
       title: null,
       role: null,
       phone: null,
+      projectId: 1,
     },
     {
       name: "Johanna",
@@ -22,6 +24,7 @@ const seedContacts = async () => {
       title: "Developer",
       role: "Member",
       phone: "030-123 123",
+      projectId: 2,
     },
   ]
 

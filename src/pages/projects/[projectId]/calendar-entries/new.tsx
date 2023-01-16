@@ -43,7 +43,6 @@ const NewCalendarEntry = () => {
         schema={CalendarEntrySchema.omit({ projectId: true })}
         //  initialValues={{}}
         onSubmit={handleSubmit}
-        //projects={projects}
       />
     </>
   )

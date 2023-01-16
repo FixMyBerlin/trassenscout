@@ -77,6 +77,7 @@ model Project {
   userId        Int
   Section       Section[]
   CalendarEntry CalendarEntry[]
+  Contact       Contact[]
 }
 
 model CalendarEntry {
@@ -101,6 +102,8 @@ model Contact {
   title     String?
   phone     String?
   role      String?
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId Int
 }
 
 model Section {

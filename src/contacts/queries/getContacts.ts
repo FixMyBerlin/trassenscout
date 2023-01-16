@@ -18,10 +18,7 @@ export default resolver.pipe(
       skip,
       take,
       count: () => db.contact.count({ where }),
-      query: async (paginateArgs) => {
-        // await new Promise((resolve) => setTimeout(resolve, 10000))
-        return db.contact.findMany({ ...paginateArgs, where, orderBy })
-      },
+      query: (paginateArgs) => db.contact.findMany({ ...paginateArgs, where, orderBy }),
     })
 
     return {

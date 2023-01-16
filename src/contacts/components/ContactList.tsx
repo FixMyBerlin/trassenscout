@@ -1,4 +1,4 @@
-import { Routes } from "@blitzjs/next"
+import { Routes, useParam } from "@blitzjs/next"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { Contact } from "@prisma/client"
 import React from "react"
@@ -10,7 +10,7 @@ type Props = {
 }
 
 export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) => {
-  //const locationDomain = calendarEntry.locationUrl && new URL(calendarEntry.locationUrl).hostname
+  const projectId = useParam("projectId", "number")
 
   return (
     <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -71,11 +71,22 @@ export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) =>
                   {withAction && (
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                       <p className="flex items-center justify-end gap-4 text-right">
-                        <Link button href={Routes.EditContactPage({ contactId: contact.id })}>
+                        <Link
+                          button
+                          href={Routes.EditContactPage({
+                            contactId: contact.id,
+                            projectId: projectId!,
+                          })}
+                        >
                           <PencilSquareIcon className="h-5 w-5" />
                           <span className="sr-only">Bearbeiten</span>
                         </Link>
-                        <Link href={Routes.ShowContactPage({ contactId: contact.id })}>
+                        <Link
+                          href={Routes.ShowContactPage({
+                            contactId: contact.id,
+                            projectId: projectId!,
+                          })}
+                        >
                           <TrashIcon className="h-5 w-5" />
                         </Link>
                       </p>
