@@ -22,10 +22,10 @@ model User {
   firstName      String?
   lastName       String?
   phone          String?
-  tokens         Token[]
-  sessions       Session[]
-  projects       Project[]
-  sections       Section[]
+  Tokens         Token[]
+  Sessions       Session[]
+  Projects       Project[]
+  Sections       Section[]
 }
 
 model Session {
@@ -66,17 +66,17 @@ model Token {
 // }
 
 model Project {
-  id            Int             @id @default(autoincrement())
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  name          String
-  shortName     String?
-  introduction  String?
-  manager       User            @relation(fields: [managerId], references: [id])
-  managerId     Int
-  Section       Section[]
-  CalendarEntry CalendarEntry[]
-  Contact       Contact[]
+  id              Int             @id @default(autoincrement())
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  name            String
+  shortName       String?
+  introduction    String?
+  manager         User            @relation(fields: [managerId], references: [id])
+  managerId       Int
+  Sections        Section[]
+  CalendarEntries CalendarEntry[]
+  Contacts        Contact[]
 }
 
 model CalendarEntry {
