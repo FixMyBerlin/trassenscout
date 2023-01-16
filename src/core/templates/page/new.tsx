@@ -69,7 +69,7 @@ const New__ModelName__ = () => {
   )
 }
 
-const Edit__ModelName__Page = () => {
+const New__ModelName__Page = () => {
   if (process.env.parentModel) {
     const __parentModelId__ = useParam("__parentModelId__", "number")
   }
@@ -77,7 +77,7 @@ const Edit__ModelName__Page = () => {
   return (
     <LayoutArticle>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
-        <Edit__ModelName__ />
+        <New__ModelName__ />
       </Suspense>
 
       <p>
