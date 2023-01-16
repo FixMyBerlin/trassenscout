@@ -12,7 +12,7 @@ import create__ModelName__ from "src/__modelNamesPath__/mutations/create__ModelN
 import { __ModelName__Form, FORM_ERROR } from "src/__modelNamesPath__/components/__ModelName__Form"
 import { Link } from "src/core/components/links"
 
-const New__ModelName__Page = () => {
+const New__ModelName__ = () => {
   const router = useRouter()
   if (process.env.parentModel) {
     const __parentModelId__ = useParam("__parentModelId__", "number")
@@ -42,7 +42,7 @@ const New__ModelName__Page = () => {
   }
 
   return (
-    <LayoutArticle>
+    <>
       <MetaTags noindex title="Neuen __ModelName__ erstellen" />
 
       <h1>Neuen __ModelName__ erstellen</h1>
@@ -54,6 +54,20 @@ const New__ModelName__Page = () => {
         // initialValues={{}} // Use only when custom initial values are needed
         onSubmit={handleSubmit}
       />
+    </>
+  )
+}
+
+const Edit__ModelName__Page = () => {
+  if (process.env.parentModel) {
+    const __parentModelId__ = useParam("__parentModelId__", "number")
+  }
+
+  return (
+    <LayoutArticle>
+      <Suspense fallback={<div>Daten werden geladen…</div>}>
+        <Edit__ModelName__ />
+      </Suspense>
 
       <p>
         <if condition="parentModel">
