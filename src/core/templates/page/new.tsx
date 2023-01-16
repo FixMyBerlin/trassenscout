@@ -47,13 +47,24 @@ const New__ModelName__ = () => {
 
       <h1>Neuen __ModelName__ erstellen</h1>
 
-      <__ModelName__Form
-        submitText="Erstellen"
-        // TODO schema: See `__ModelIdParam__/edit.tsx` for detailed instruction.
-        // schema={__ModelName__Schema}
-        // initialValues={{}} // Use only when custom initial values are needed
-        onSubmit={handleSubmit}
-      />
+      <if condition="parentModel">
+        <__ModelName__Form
+          submitText="Erstellen"
+          // TODO schema: See `__ModelIdParam__/edit.tsx` for detailed instruction.
+          // schema={__ModelName__Schema.omit({ __parentModelId__: true })}
+          // initialValues={{}} // Use only when custom initial values are needed
+          onSubmit={handleSubmit}
+        />
+        <else>
+          <__ModelName__Form
+            submitText="Erstellen"
+            // TODO schema: See `__ModelIdParam__/edit.tsx` for detailed instruction.
+            // schema={__ModelName__Schema}
+            // initialValues={{}} // Use only when custom initial values are needed
+            onSubmit={handleSubmit}
+          />
+        </else>
+      </if>
     </>
   )
 }
