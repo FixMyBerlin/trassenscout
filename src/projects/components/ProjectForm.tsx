@@ -25,7 +25,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
         optional
       />
       <LabeledSelect
-        name="userId"
+        name="managerId"
         label="Projektleiter:in"
         options={users.map((u) => [
           u.id.toString(),
