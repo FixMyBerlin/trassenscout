@@ -10,7 +10,7 @@ import { PageHeader } from "src/core/components/PageHeader"
 import { LayoutRs8, MetaTags } from "src/core/layouts"
 import getProjects from "src/projects/queries/getProjects"
 
-const NewCalendarEntryPage: BlitzPage = () => {
+const NewCalendarEntry: BlitzPage = () => {
   const router = useRouter()
   const [{ projects }] = useQuery(getProjects, {})
   const [createCalendarEntryMutation] = useMutation(createCalendarEntry)
@@ -30,17 +30,26 @@ const NewCalendarEntryPage: BlitzPage = () => {
   }
 
   return (
-    <LayoutRs8>
+    <>
       <MetaTags noindex title="Neuer Kalendereintrag" />
       <PageHeader title="Neuer Kalendereintrag" />
-      <Suspense>
-        <CalendarEntryForm
-          projects={projects}
-          submitText="Erstellen"
-          schema={CalendarEntrySchema}
-          // initialValues={{}}
-          onSubmit={handleSubmit}
-        />
+
+      <CalendarEntryForm
+        submitText="Erstellen"
+        schema={CalendarEntrySchema}
+        // initialValues={{}}
+        onSubmit={handleSubmit}
+        projects={projects}
+      />
+    </>
+  )
+}
+
+const NewCalendarEntryPage = () => {
+  return (
+    <LayoutRs8>
+      <Suspense fallback={<div>Daten werden geladen…</div>}>
+        <NewCalendarEntry />
       </Suspense>
 
       <p className="mt-5">
