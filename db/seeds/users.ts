@@ -27,9 +27,7 @@ const seedUsers = async () => {
   for (let i = 0; i < seeData.length; i++) {
     const data = seeData[i]
     if (data) {
-      await db.user.create({
-        data,
-      })
+      await db.user.create({ data })
     }
   }
 }

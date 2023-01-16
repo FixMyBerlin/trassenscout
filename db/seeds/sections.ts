@@ -23,9 +23,7 @@ const seedSections = async () => {
   for (let i = 0; i < seeData.length; i++) {
     const data = seeData[i]
     if (data) {
-      await db.section.create({
-        data,
-      })
+      await db.section.create({ data })
     }
   }
 }

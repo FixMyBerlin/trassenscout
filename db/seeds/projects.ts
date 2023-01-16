@@ -23,9 +23,7 @@ const seedProjects = async () => {
   for (let i = 0; i < seeData.length; i++) {
     const data = seeData[i]
     if (data) {
-      await db.project.create({
-        data,
-      })
+      await db.project.create({ data })
     }
   }
 }

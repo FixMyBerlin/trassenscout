@@ -31,9 +31,7 @@ const seedContacts = async () => {
   for (let i = 0; i < seedContacts.length; i++) {
     const data = seedContacts[i]
     if (data) {
-      await db.contact.create({
-        data,
-      })
+      await db.contact.create({ data })
     }
   }
 }
