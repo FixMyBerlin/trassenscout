@@ -32,6 +32,8 @@ export const __ModelNames__List = () => {
 
     return (
       <>
+        <h1>__ModelNames__</h1>
+
         <ul>
           {__modelNames__.map((__modelName__) => (
             <li key={__modelName__.id}>
@@ -42,12 +44,12 @@ export const __ModelNames__List = () => {
           ))}
         </ul>
 
-        <button disabled={page === 0} onClick={goToPreviousPage}>
-          Previous
-        </button>
-        <button disabled={!hasMore} onClick={goToNextPage}>
-          Next
-        </button>
+        <Pagination
+          hasMore={hasMore}
+          page={page}
+          handlePrev={goToPreviousPage}
+          handleNext={goToNextPage}
+        />
       </>
     )
   } else {

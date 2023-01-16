@@ -11,6 +11,7 @@ import { LayoutArticle, MetaTags } from "src/core/layouts"
 import create__ModelName__ from "src/__modelNamesPath__/mutations/create__ModelName__"
 import { __ModelName__Form, FORM_ERROR } from "src/__modelNamesPath__/components/__ModelName__Form"
 import { Link } from "src/core/components/links"
+import { Suspense } from "react"
 
 const New__ModelName__ = () => {
   const router = useRouter()
