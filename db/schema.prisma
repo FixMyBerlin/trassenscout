@@ -13,20 +13,20 @@ generator client {
 // --------------------------------------
 
 model User {
-  id             Int      @id @default(autoincrement())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  email          String   @unique
+  id             Int       @id @default(autoincrement())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  email          String    @unique
   hashedPassword String?
-  role           String   @default("USER")
-  superadmin     Boolean  @default(false)
+  role           String    @default("USER")
+  superadmin     Boolean   @default(false)
   firstName      String?
   lastName       String?
   phone          String?
-
-  tokens   Token[]
-  sessions Session[]
-  projects Project[]
+  tokens         Token[]
+  sessions       Session[]
+  projects       Project[]
+  sections       Section[]
 }
 
 model Session {
@@ -39,9 +39,8 @@ model Session {
   antiCSRFToken      String?
   publicData         String?
   privateData        String?
-
-  user   User? @relation(fields: [userId], references: [id])
-  userId Int?
+  user               User?     @relation(fields: [userId], references: [id])
+  userId             Int?
 }
 
 model Token {
@@ -54,9 +53,8 @@ model Token {
   // type        TokenType
   expiresAt   DateTime
   sentTo      String
-
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
 
   @@unique([hashedToken, type])
 }
@@ -77,6 +75,7 @@ model Project {
   introduction  String?
   ownerId       User            @relation(fields: [userId], references: [id])
   userId        Int
+  Section       Section[]
   CalendarEntry CalendarEntry[]
 }
 
@@ -102,4 +101,16 @@ model Contact {
   title     String?
   phone     String?
   role      String?
+}
+
+model Section {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  description String?
+  manager     User     @relation(fields: [managerId], references: [id])
+  managerId   Int
+  project     Project  @relation(fields: [projectId], references: [id])
+  projectId   Int
 }
