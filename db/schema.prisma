@@ -26,6 +26,7 @@ model User {
   Sessions       Session[]
   Projects       Project[]
   Sections       Section[]
+  Subsections    Subsection[]
 }
 
 model Session {
@@ -115,4 +116,18 @@ model Section {
   managerId   Int
   project     Project  @relation(fields: [projectId], references: [id])
   projectId   Int
+  Subsections Subsection[]
+}
+
+model Subsection {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  description String?
+  geometry    Json
+  manager     User     @relation(fields: [managerId], references: [id])
+  managerId   Int
+  section     Section  @relation(fields: [sectionId], references: [id])
+  sectionId   Int
 }

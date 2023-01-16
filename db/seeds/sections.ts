@@ -1,4 +1,4 @@
-import db, { Project, Section } from "../index"
+import db, { Section } from "../index"
 
 const seedSections = async () => {
   const seeData: Omit<Section, "id" | "createdAt" | "updatedAt">[] = [

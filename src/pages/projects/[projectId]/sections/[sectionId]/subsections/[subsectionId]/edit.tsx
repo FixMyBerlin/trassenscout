@@ -5,39 +5,41 @@ import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
-import { FORM_ERROR, SectionForm } from "src/sections/components/SectionForm"
-import updateSection from "src/sections/mutations/updateSection"
-import getSection from "src/sections/queries/getSection"
-import { SectionSchema } from "src/sections/schema"
+import { FORM_ERROR, SubsectionForm } from "src/subsections/components/SubsectionForm"
+import updateSubsection from "src/subsections/mutations/updateSubsection"
+import getSubsection from "src/subsections/queries/getSubsection"
+import { SubsectionSchema } from "src/subsections/schema"
 import getUsers from "src/users/queries/getUsers"
 
-const EditSection = () => {
+const EditSubsection = () => {
   const router = useRouter()
-  const sectionId = useParam("sectionId", "number")
   const projectId = useParam("projectId", "number")
-  const [section, { setQueryData }] = useQuery(
-    getSection,
-    { id: sectionId },
+  const sectionId = useParam("sectionId", "number")
+  const subsectionId = useParam("subsectionId", "number")
+  const [subsection, { setQueryData }] = useQuery(
+    getSubsection,
+    { id: subsectionId },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
     }
   )
-  const [updateSectionMutation] = useMutation(updateSection)
+  const [updateSubsectionMutation] = useMutation(updateSubsection)
   const [{ users }] = useQuery(getUsers, {})
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const updated = await updateSectionMutation({
-        id: section.id,
+      const updated = await updateSubsectionMutation({
+        id: subsection.id,
         ...values,
       })
       await setQueryData(updated)
       await router.push(
-        Routes.ShowSectionPage({
+        Routes.ShowSubsectionPage({
           projectId: projectId!,
-          sectionId: updated.id,
+          sectionId: sectionId!,
+          subsectionId: updated.id,
         })
       )
     } catch (error: any) {
@@ -50,17 +52,17 @@ const EditSection = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Section ${section.id} bearbeiten`} />
+      <MetaTags noindex title={`Abschnitt ${subsection.name} bearbeiten`} />
 
-      <h1>Section {section.id} bearbeiten</h1>
+      <h1>Abschnitt {subsection.name} bearbeiten</h1>
       <SuperAdminBox>
-        <pre>{JSON.stringify(section, null, 2)}</pre>
+        <pre>{JSON.stringify(subsection, null, 2)}</pre>
       </SuperAdminBox>
 
-      <SectionForm
+      <SubsectionForm
         submitText="Speichern"
-        schema={SectionSchema}
-        initialValues={section}
+        schema={SubsectionSchema}
+        initialValues={subsection}
         onSubmit={handleSubmit}
         users={users}
       />
@@ -68,22 +70,22 @@ const EditSection = () => {
   )
 }
 
-const EditSectionPage = () => {
+const EditSubsectionPage = () => {
   const projectId = useParam("projectId", "number")
 
   return (
     <LayoutArticle>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
-        <EditSection />
+        <EditSubsection />
       </Suspense>
 
       <p>
-        <Link href={Routes.SectionsPage({ projectId: projectId! })}>Alle Sections</Link>
+        <Link href={Routes.SectionsPage({ projectId: projectId! })}>Alle Abschnitte</Link>
       </p>
     </LayoutArticle>
   )
 }
 
-EditSectionPage.authenticate = true
+EditSubsectionPage.authenticate = true
 
-export default EditSectionPage
+export default EditSubsectionPage

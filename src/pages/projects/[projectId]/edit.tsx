@@ -23,7 +23,6 @@ const EditProject = () => {
     }
   )
   const [updateProjectMutation] = useMutation(updateProject)
-
   const [{ users }] = useQuery(getUsers, {})
 
   type HandleSubmit = any // TODO
