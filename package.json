@@ -7,6 +7,7 @@
     "debug": "DEBUG=blitz:* blitz console",
     "build": "blitz build",
     "studio": "blitz prisma studio",
+    "openTypes": "code \"node_modules/.prisma/client/index.d.ts\"",
     "migrate:create": "blitz prisma migrate dev --create-only && migrate:create:openMigration",
     "migrate:create:openMigration": "code $(find . -cmin -1 | head -n 1)",
     "migrate": "blitz prisma migrate dev",
