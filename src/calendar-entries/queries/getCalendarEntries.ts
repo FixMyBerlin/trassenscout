@@ -1,9 +1,12 @@
-import { paginate } from "blitz"
-import { resolver } from "@blitzjs/rpc"
-import db, { Prisma } from "db"
+import { paginate } from "blitz";
+import { resolver } from "@blitzjs/rpc";
+import db, { Prisma } from "db";
 
 interface GetCalendarEntriesInput
-  extends Pick<Prisma.CalendarEntryFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
+  extends Pick<
+    Prisma.CalendarEntryFindManyArgs,
+    "where" | "orderBy" | "skip" | "take"
+  > {}
 
 export default resolver.pipe(
   resolver.authorize(),
@@ -18,14 +21,15 @@ export default resolver.pipe(
       skip,
       take,
       count: () => db.calendarEntry.count({ where }),
-      query: (paginateArgs) => db.calendarEntry.findMany({ ...paginateArgs, where, orderBy }),
-    })
+      query: (paginateArgs) =>
+        db.calendarEntry.findMany({ ...paginateArgs, where, orderBy }),
+    });
 
     return {
       calendarEntries,
       nextPage,
       hasMore,
       count,
-    }
+    };
   }
-)
+);

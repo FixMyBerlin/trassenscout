@@ -1,6 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { z } from "zod"
 import { SectionSchema } from "../schema"
 
 export default resolver.pipe(resolver.zod(SectionSchema), resolver.authorize(), async (input) => {

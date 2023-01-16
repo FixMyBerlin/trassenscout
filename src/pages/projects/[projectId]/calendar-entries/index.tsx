@@ -1,21 +1,23 @@
-import { Suspense } from "react"
-import { BlitzPage, Routes } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
-import { LayoutRs8, MetaTags } from "src/core/layouts"
+import { Suspense } from "react"
 import getCalendarEntries from "src/calendar-entries/queries/getCalendarEntries"
 import { Link } from "src/core/components/links"
-import { Calender } from "src/rs8/termine/components/Calender"
-import { Pagination } from "src/core/components/Pagination"
 import { PageHeader } from "src/core/components/PageHeader"
+import { Pagination } from "src/core/components/Pagination"
+import { LayoutRs8, MetaTags } from "src/core/layouts"
+import { Calender } from "src/rs8/termine/components/Calender"
 
 const ITEMS_PER_PAGE = 100
 
-const CalendarEntriesList = () => {
+export const CalendarEntriesList = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
+  const projectId = useParam("projectId", "number")
   const [{ calendarEntries, hasMore }] = usePaginatedQuery(getCalendarEntries, {
-    orderBy: { startAt: "asc" },
+    where: { project: { id: projectId! } },
+    orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -29,13 +31,14 @@ const CalendarEntriesList = () => {
         title="Termine"
         description="Dieser Bereich hilft Ihnen dabei Termine zu finden."
         action={
-          <Link button href={Routes.NewCalendarEntryPage()}>
+          <Link button href={Routes.NewCalendarEntryPage({ projectId: projectId! })}>
             Neuer Kalendereintrag
           </Link>
         }
       />
 
       <Calender calendarEntries={calendarEntries} />
+
       <Pagination
         hasMore={hasMore}
         page={page}

@@ -2,20 +2,19 @@ import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/CalendarEntryForm"
-import updateCalendarEntry from "src/calendar-entries/mutations/updateCalendarEntry"
-import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
-import { CalendarEntrySchema } from "src/calendar-entries/schema"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
+import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
+import { FORM_ERROR, CalendarEntryForm } from "src/calendar-entries/components/CalendarEntryForm"
+import updateCalendarEntry from "src/calendar-entries/mutations/updateCalendarEntry"
+import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
 import { PageHeader } from "src/core/components/PageHeader"
-import { LayoutRs8, MetaTags } from "src/core/layouts"
-import getProjects from "src/projects/queries/getProjects"
+import { CalendarEntrySchema } from "src/calendar-entries/schema"
 
 const EditCalendarEntry = () => {
   const router = useRouter()
   const calendarEntryId = useParam("calendarEntryId", "number")
-  const [{ projects }] = useQuery(getProjects, {})
+  const projectId = useParam("projectId", "number")
   const [calendarEntry, { setQueryData }] = useQuery(
     getCalendarEntry,
     { id: calendarEntryId },
@@ -31,10 +30,16 @@ const EditCalendarEntry = () => {
     try {
       const updated = await updateCalendarEntryMutation({
         id: calendarEntry.id,
+        projectId: projectId!,
         ...values,
       })
       await setQueryData(updated)
-      await router.push(Routes.ShowCalendarEntryPage({ calendarEntryId: updated.id }))
+      await router.push(
+        Routes.ShowCalendarEntryPage({
+          projectId: projectId!,
+          calendarEntryId: updated.id,
+        })
+      )
     } catch (error: any) {
       console.error(error)
       return {
@@ -45,12 +50,17 @@ const EditCalendarEntry = () => {
 
   return (
     <>
-      <MetaTags noindex title="Kalender-Eintrag bearbeiten" />
+      <MetaTags noindex title={`CalendarEntry ${calendarEntry.id} bearbeiten`} />
+
+      <h1>CalendarEntry {calendarEntry.id} bearbeiten</h1>
       <PageHeader title="Kalender-Eintrag bearbeiten" />
+      <SuperAdminBox>
+        <pre>{JSON.stringify(calendarEntry, null, 2)}</pre>
+      </SuperAdminBox>
 
       <CalendarEntryForm
         submitText="Speichern"
-        projects={projects}
+        //projects={projects}
         schema={CalendarEntrySchema}
         initialValues={calendarEntry}
         onSubmit={handleSubmit}
@@ -64,6 +74,8 @@ const EditCalendarEntry = () => {
 }
 
 const EditCalendarEntryPage: BlitzPage = () => {
+  const projectId = useParam("projectId", "number")
+
   return (
     <LayoutRs8>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
@@ -71,7 +83,7 @@ const EditCalendarEntryPage: BlitzPage = () => {
       </Suspense>
 
       <p className="mt-5">
-        <Link href={Routes.CalendarEntriesPage()}>Zurück zur Liste</Link>
+        <Link href={Routes.CalendarEntriesPage({ projectId: projectId! })}>Zurück zur Liste</Link>
       </p>
     </LayoutRs8>
   )

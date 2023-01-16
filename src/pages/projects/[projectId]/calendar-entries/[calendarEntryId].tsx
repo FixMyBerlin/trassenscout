@@ -1,28 +1,28 @@
-import { Suspense } from "react"
-import { BlitzPage, Routes } from "@blitzjs/next"
-import { useRouter } from "next/router"
-import { useQuery, useMutation } from "@blitzjs/rpc"
-import { useParam } from "@blitzjs/next"
-import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
-import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
-import deleteCalendarEntry from "src/calendar-entries/mutations/deleteCalendarEntry"
-import { Link, linkStyles } from "src/core/components/links"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
-import { quote } from "src/core/components/text"
-import { DateEntry } from "src/rs8/termine/components/Calender"
+import { useRouter } from "next/router"
+import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
+import { Link, linkStyles } from "src/core/components/links"
+import { quote } from "src/core/components/text"
+import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
+import deleteCalendarEntry from "src/calendar-entries/mutations/deleteCalendarEntry"
+import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
 import { PageHeader } from "src/core/components/PageHeader"
+import { DateEntry } from "src/rs8/termine/components/Calender"
 
 export const CalendarEntry = () => {
   const router = useRouter()
   const calendarEntryId = useParam("calendarEntryId", "number")
+  const projectId = useParam("projectId", "number")
   const [deleteCalendarEntryMutation] = useMutation(deleteCalendarEntry)
   const [calendarEntry] = useQuery(getCalendarEntry, { id: calendarEntryId })
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${calendarEntry.id} unwiderruflich löschen?`)) {
       await deleteCalendarEntryMutation({ id: calendarEntry.id })
-      await router.push(Routes.CalendarEntriesPage())
+      await router.push(Routes.CalendarEntriesPage({ projectId: projectId! }))
     }
   }
 
@@ -32,9 +32,14 @@ export const CalendarEntry = () => {
       <PageHeader title={calendarEntry.title} />
 
       <p className="mb-10 space-x-4">
-        <Link href={Routes.CalendarEntriesPage()}>Zurück zur Liste</Link>
+        <Link href={Routes.CalendarEntriesPage({ projectId: projectId! })}>Zurück zur Liste</Link>
         <span>–</span>
-        <Link href={Routes.EditCalendarEntryPage({ calendarEntryId: calendarEntry.id })}>
+        <Link
+          href={Routes.EditCalendarEntryPage({
+            calendarEntryId: calendarEntry.id,
+            projectId: projectId!,
+          })}
+        >
           Eintrag bearbeiten
         </Link>
         <span>–</span>
@@ -55,11 +60,19 @@ export const CalendarEntry = () => {
 }
 
 const ShowCalendarEntryPage: BlitzPage = () => {
+  const projectId = useParam("projectId", "number")
+
   return (
     <LayoutRs8>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <CalendarEntry />
       </Suspense>
+
+      <p>
+        <Link href={Routes.CalendarEntriesPage({ projectId: projectId! })}>
+          Alle CalendarEntries
+        </Link>
+      </p>
     </LayoutRs8>
   )
 }
