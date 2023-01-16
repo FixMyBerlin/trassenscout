@@ -10,7 +10,6 @@ import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function CalendarEntryForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
-  //const { projects } = props
   return (
     <Form<S> {...props} className="max-w-prose">
       <LabeledTextField type="text" name="title" label="Title" placeholder="" />
@@ -41,11 +40,6 @@ export function CalendarEntryForm<S extends z.ZodType<any, any>>(props: FormProp
         placeholder=""
         className="h-60"
       />
-      {/* <LabeledSelect
-        name="projectId"
-        label="Projekt / Radschnellverbindung"
-        options={projects.map((p) => [String(p.id), String(p.id)])}
-      /> */}
     </Form>
   )
 }
