@@ -50,6 +50,14 @@ export function Form<S extends z.ZodType<any, any>>({
             const result = (await onSubmit(values)) || {}
             for (const [key, value] of Object.entries(result)) {
               if (key === FORM_ERROR) {
+                // For ZodErrors, the message field is not deserialized.
+                // We try to parse it here but also make catch edge cases.
+                // Learn more at https://github.com/blitz-js/blitz/issues/4059
+                if (value.name === "ZodError" && typeof value.message === "string") {
+                  try {
+                    value.message = JSON.parse(value.message)
+                  } catch {}
+                }
                 setFormError(value)
               } else {
                 ctx.setError(key as any, {

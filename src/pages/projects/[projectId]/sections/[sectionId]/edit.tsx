@@ -42,9 +42,7 @@ const EditSection = () => {
       )
     } catch (error: any) {
       console.error(error)
-      return {
-        [FORM_ERROR]: error.toString(),
-      }
+      return { [FORM_ERROR]: error }
     }
   }
 

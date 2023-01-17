@@ -1,48 +1,34 @@
-import { formatZodError } from "blitz"
+import clsx from "clsx"
 import { FormattedMessage } from "react-intl"
 import { isDev } from "src/core/utils"
+import { proseClasses } from "../text"
 
-type Props = { formError: string | null }
+type Props = {
+  formError: any // TODO buil proper type
+}
 
+// See also https://github.com/blitz-js/blitz/issues/4059
 export const FormError: React.FC<Props> = ({ formError }) => {
   if (!formError) return null
 
-  // For some reason, zod errors from the server are strings.
-  // They cannot be parsed as JSON. Therefore we make this fiddely dance
-  // to extract the information from them. THere has to be a nicer way than this…
-  let zodErrors: string[] | null = null
-  if (formError.startsWith("ZodError:")) {
-    const errorObject = JSON.parse(formError.replace("ZodError: ", ""))
-    if (errorObject && errorObject[0]?.message) {
-      zodErrors = errorObject.map((e: any) => `${e?.path?.join(" ")}: ${e.message}`)
-    }
-  }
-
-  if (isDev) {
-    console.log(
-      "FormError:",
-      { formError, type: typeof formError },
-      { parsedZodErrors: zodErrors, type: typeof zodErrors }
-    )
-  }
-
   return (
-    <div
-      role="alert"
-      className="rounded bg-red-50 py-1 px-2 text-red-700"
-      data-message-id={formError.replaceAll("\n", "")}
-    >
-      {zodErrors && Boolean(zodErrors?.length) ? (
+    <div role="alert" className={clsx(proseClasses, "rounded bg-red-50 py-1 px-2 text-red-700")}>
+      {formError.name === "ZodError" ? (
         <>
-          {zodErrors.map((e) => (
+          {formError.message.map((error: any) => (
             <>
-              {e}
+              <code className="text-red-800">{error.path[0]}</code>: {error.message}
               <br />
             </>
           ))}
         </>
       ) : (
-        <FormattedMessage id={formError.replaceAll("\n", "")} defaultMessage={formError} />
+        <span {...(isDev ? { "data-message-id": formError.toString().replaceAll("\n", "") } : {})}>
+          <FormattedMessage
+            id={formError.toString().replaceAll("\n", "")}
+            defaultMessage={formError}
+          />
+        </span>
       )}
     </div>
   )
