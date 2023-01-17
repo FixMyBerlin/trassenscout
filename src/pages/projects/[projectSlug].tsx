@@ -13,9 +13,9 @@ import { SuperAdminBox } from "src/core/components/AdminBox"
 
 export const Project = () => {
   const router = useRouter()
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
   const [deleteProjectMutation] = useMutation(deleteProject)
-  const [project] = useQuery(getProject, { id: projectId })
+  const [project] = useQuery(getProject, { slug: projectSlug })
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${project.id} unwiderruflich löschen?`)) {
@@ -31,7 +31,7 @@ export const Project = () => {
       <h1>Project {quote(project.name)}</h1>
       <pre>{JSON.stringify(project, null, 2)}</pre>
       <SuperAdminBox>
-        <Link href={Routes.EditProjectPage({ projectId: project.id })}>Bearbeiten</Link>
+        <Link href={Routes.EditProjectPage({ projectSlug: project.slug })}>Bearbeiten</Link>
         <button type="button" onClick={handleDelete} className={clsx(linkStyles, "ml-2")}>
           Löschen
         </button>

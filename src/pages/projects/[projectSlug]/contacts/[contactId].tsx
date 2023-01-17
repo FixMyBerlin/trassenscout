@@ -14,14 +14,14 @@ import { LayoutRs8, MetaTags } from "src/core/layouts"
 export const Contact = () => {
   const router = useRouter()
   const contactId = useParam("contactId", "number")
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
   const [deleteContactMutation] = useMutation(deleteContact)
   const [contact] = useQuery(getContact, { id: contactId })
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${contact.id} unwiderruflich löschen?`)) {
       await deleteContactMutation({ id: contact.id })
-      await router.push(Routes.ContactsPage({ projectId: projectId! }))
+      await router.push(Routes.ContactsPage({ projectSlug: projectSlug! }))
     }
   }
 
@@ -30,9 +30,11 @@ export const Contact = () => {
       <MetaTags noindex title={`Kontakt ${quote(contact.name)}`} />
       <PageHeader title={contact.name} />
       <p className="mb-10 space-x-4">
-        <Link href={Routes.ContactsPage({ projectId: projectId! })}>Zurück zur Kontaktliste</Link>
+        <Link href={Routes.ContactsPage({ projectSlug: projectSlug! })}>
+          Zurück zur Kontaktliste
+        </Link>
         <span>–</span>
-        <Link href={Routes.EditContactPage({ contactId: contact.id, projectId: projectId! })}>
+        <Link href={Routes.EditContactPage({ contactId: contact.id, projectSlug: projectSlug! })}>
           Eintrag bearbeiten
         </Link>
         <span>–</span>

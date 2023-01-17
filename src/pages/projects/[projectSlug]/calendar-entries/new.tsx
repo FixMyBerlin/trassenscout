@@ -12,16 +12,19 @@ import { CalendarEntrySchema } from "src/calendar-entries/schema"
 
 const NewCalendarEntry = () => {
   const router = useRouter()
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
   const [createCalendarEntryMutation] = useMutation(createCalendarEntry)
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const calendarEntry = await createCalendarEntryMutation({ ...values, projectId: projectId! })
+      const calendarEntry = await createCalendarEntryMutation({
+        ...values,
+        projectSlug: projectSlug!,
+      })
       await router.push(
         Routes.ShowCalendarEntryPage({
-          projectId: projectId!,
+          projectSlug: projectSlug!,
           calendarEntryId: calendarEntry.id,
         })
       )
@@ -47,7 +50,7 @@ const NewCalendarEntry = () => {
 }
 
 const NewCalendarEntryPage: BlitzPage = () => {
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
 
   return (
     <LayoutRs8>
@@ -56,7 +59,9 @@ const NewCalendarEntryPage: BlitzPage = () => {
       </Suspense>
 
       <p className="mt-5">
-        <Link href={Routes.CalendarEntriesPage({ projectId: projectId! })}>Zurück zur Liste</Link>
+        <Link href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>
+          Zurück zur Liste
+        </Link>
       </p>
     </LayoutRs8>
   )

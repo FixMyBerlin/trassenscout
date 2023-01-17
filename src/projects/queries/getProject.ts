@@ -5,12 +5,13 @@ import { z } from "zod"
 
 const GetProject = z.object({
   // This accepts type of undefined, but is required at runtime
-  id: z.number().optional().refine(Boolean, "Required"),
+  slug: z.string().optional().refine(Boolean, "Required"),
 })
 
-export default resolver.pipe(resolver.zod(GetProject), resolver.authorize(), async ({ id }) => {
+export default resolver.pipe(resolver.zod(GetProject), resolver.authorize(), async ({ slug }) => {
   // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-  const project = await db.project.findFirst({ where: { id } })
+  console.log("a", { slug })
+  const project = await db.project.findFirst({ where: { slug } })
 
   if (!project) throw new NotFoundError()
 

@@ -12,7 +12,7 @@ import { Suspense } from "react"
 
 const NewSection = () => {
   const router = useRouter()
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
   const [createSectionMutation] = useMutation(createSection)
 
   const [{ users }] = useQuery(getUsers, {})
@@ -20,11 +20,11 @@ const NewSection = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const section = await createSectionMutation({ ...values, projectId: projectId! })
+      const section = await createSectionMutation({ ...values, projectSlug: projectSlug! })
       await router.push(
         Routes.ShowSectionPage({
-          projectId: projectId!,
-          sectionId: section.id,
+          projectSlug: projectSlug!,
+          sectionSlug: section.slug,
         })
       )
     } catch (error: any) {
@@ -51,7 +51,7 @@ const NewSection = () => {
 }
 
 const NewSectionPage = () => {
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
 
   return (
     <LayoutArticle>
@@ -60,7 +60,7 @@ const NewSectionPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.SectionsPage({ projectId: projectId! })}>Alle Sections</Link>
+        <Link href={Routes.SectionsPage({ projectSlug: projectSlug! })}>Alle Sections</Link>
       </p>
     </LayoutArticle>
   )

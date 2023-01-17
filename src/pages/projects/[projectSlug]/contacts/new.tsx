@@ -9,17 +9,17 @@ import { PageHeader } from "src/core/components/PageHeader"
 import { LayoutRs8, MetaTags } from "src/core/layouts"
 
 const NewContactPage: BlitzPage = () => {
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
   const router = useRouter()
   const [createContactMutation] = useMutation(createContact)
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const contact = await createContactMutation({ ...values, projectId: projectId! })
+      const contact = await createContactMutation({ ...values, projectSlug: projectSlug! })
       await router.push(
         Routes.ShowContactPage({
-          projectId: projectId!,
+          projectSlug: projectSlug!,
           contactId: contact.id,
         })
       )
@@ -40,7 +40,9 @@ const NewContactPage: BlitzPage = () => {
       />
 
       <p className="mt-5">
-        <Link href={Routes.ContactsPage({ projectId: projectId! })}>Zurück zur Kontaktliste</Link>
+        <Link href={Routes.ContactsPage({ projectSlug: projectSlug! })}>
+          Zurück zur Kontaktliste
+        </Link>
       </p>
     </LayoutRs8>
   )

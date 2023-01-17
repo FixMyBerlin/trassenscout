@@ -14,9 +14,9 @@ const ITEMS_PER_PAGE = 100
 export const CalendarEntriesList = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
   const [{ calendarEntries, hasMore }] = usePaginatedQuery(getCalendarEntries, {
-    where: { project: { id: projectId! } },
+    where: { project: { slug: projectSlug! } },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
@@ -31,7 +31,7 @@ export const CalendarEntriesList = () => {
         title="Termine"
         description="Dieser Bereich hilft Ihnen dabei Termine zu finden."
         action={
-          <Link button href={Routes.NewCalendarEntryPage({ projectId: projectId! })}>
+          <Link button href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}>
             Neuer Kalendereintrag
           </Link>
         }

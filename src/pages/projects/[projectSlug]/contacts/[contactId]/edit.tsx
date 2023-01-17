@@ -13,7 +13,7 @@ import { PageHeader } from "src/core/components/PageHeader"
 const EditContact = () => {
   const router = useRouter()
   const contactId = useParam("contactId", "number")
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
   const [contact, { setQueryData }] = useQuery(
     getContact,
     { id: contactId },
@@ -34,7 +34,7 @@ const EditContact = () => {
       await setQueryData(updated)
       await router.push(
         Routes.ShowContactPage({
-          projectId: projectId!,
+          projectSlug: projectSlug!,
           contactId: updated.id,
         })
       )
@@ -59,7 +59,7 @@ const EditContact = () => {
 }
 
 const EditContactPage: BlitzPage = () => {
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
 
   return (
     <LayoutRs8>
@@ -68,7 +68,9 @@ const EditContactPage: BlitzPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.ContactsPage({ projectId: projectId! })}>Zurück zur Kontaktliste</Link>
+        <Link href={Routes.ContactsPage({ projectSlug: projectSlug! })}>
+          Zurück zur Kontaktliste
+        </Link>
       </p>
     </LayoutRs8>
   )

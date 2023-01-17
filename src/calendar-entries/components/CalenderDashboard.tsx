@@ -7,7 +7,7 @@ import { DateList } from "../../rs8/termine/components/Calender/DateList"
 import getCalendarEntries from "../queries/getCalendarEntries"
 
 const CalendarDashboardDateList: React.FC = () => {
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
   const [{ calendarEntries }] = usePaginatedQuery(getCalendarEntries, {
     orderBy: { startAt: "asc" },
     take: 3,
@@ -22,7 +22,7 @@ const CalendarDashboardDateList: React.FC = () => {
     <>
       <DateList calendarEntries={calendarEntries} />
       <p className="mt-5">
-        <Link button href={Routes.CalendarEntriesPage({ projectId: projectId! })}>
+        <Link button href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>
           Alle Termine
         </Link>
       </p>

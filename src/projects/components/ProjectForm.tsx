@@ -16,6 +16,13 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
 
   return (
     <Form<S> {...props}>
+      <LabeledTextField
+        type="text"
+        name="slug"
+        label="URL-Segment"
+        help="Änderungen am URL-Segement sorgen dafür, dass bisherige URLs nicht mehr funktionieren."
+        placeholder=""
+      />
       <LabeledTextField type="text" name="name" label="Name" placeholder="" />
       <LabeledTextField type="text" name="shortName" label="Kurzname" placeholder="" optional />
       <LabeledTextareaField

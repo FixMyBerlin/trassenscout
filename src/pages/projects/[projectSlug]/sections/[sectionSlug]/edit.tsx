@@ -13,11 +13,11 @@ import getUsers from "src/users/queries/getUsers"
 
 const EditSection = () => {
   const router = useRouter()
-  const sectionId = useParam("sectionId", "number")
-  const projectId = useParam("projectId", "number")
+  const sectionSlug = useParam("sectionSlug", "string")
+  const projectSlug = useParam("projectSlug", "string")
   const [section, { setQueryData }] = useQuery(
     getSection,
-    { id: sectionId },
+    { slug: sectionSlug },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
@@ -36,8 +36,8 @@ const EditSection = () => {
       await setQueryData(updated)
       await router.push(
         Routes.ShowSectionPage({
-          projectId: projectId!,
-          sectionId: updated.id,
+          projectSlug: projectSlug!,
+          sectionSlug: updated.slug,
         })
       )
     } catch (error: any) {
@@ -67,7 +67,7 @@ const EditSection = () => {
 }
 
 const EditSectionPage = () => {
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
 
   return (
     <LayoutArticle>
@@ -76,7 +76,7 @@ const EditSectionPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.SectionsPage({ projectId: projectId! })}>Alle Sections</Link>
+        <Link href={Routes.SectionsPage({ projectSlug: projectSlug! })}>Alle Sections</Link>
       </p>
     </LayoutArticle>
   )

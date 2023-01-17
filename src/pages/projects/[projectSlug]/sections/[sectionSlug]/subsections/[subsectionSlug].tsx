@@ -12,16 +12,18 @@ import getSubsection from "src/subsections/queries/getSubsection"
 
 export const Subsection = () => {
   const router = useRouter()
-  const projectId = useParam("projectId", "number")
-  const sectionId = useParam("sectionId", "number")
-  const subsectionId = useParam("subsectionId", "number")
+  const projectSlug = useParam("projectSlug", "string")
+  const sectionSlug = useParam("sectionSlug", "string")
+  const subsectionSlug = useParam("subsectionSlug", "string")
   const [deleteSubsectionMutation] = useMutation(deleteSubsection)
-  const [subsection] = useQuery(getSubsection, { id: subsectionId })
+  const [subsection] = useQuery(getSubsection, { slug: subsectionSlug })
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${subsection.id} unwiderruflich löschen?`)) {
       await deleteSubsectionMutation({ id: subsection.id })
-      await router.push(Routes.SubsectionsPage({ projectId: projectId!, sectionId: sectionId! }))
+      await router.push(
+        Routes.SubsectionsPage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })
+      )
     }
   }
 
@@ -36,9 +38,9 @@ export const Subsection = () => {
 
       <Link
         href={Routes.EditSubsectionPage({
-          projectId: projectId!,
-          sectionId: sectionId!,
-          subsectionId: subsection.id,
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug!,
+          subsectionSlug: subsection.slug,
         })}
       >
         Bearbeiten
@@ -52,7 +54,7 @@ export const Subsection = () => {
 }
 
 const ShowSubsectionPage = () => {
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
 
   return (
     <LayoutArticle>
@@ -61,7 +63,7 @@ const ShowSubsectionPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.SectionsPage({ projectId: projectId! })}>Alle Abschnitte</Link>
+        <Link href={Routes.SectionsPage({ projectSlug: projectSlug! })}>Alle Abschnitte</Link>
       </p>
     </LayoutArticle>
   )

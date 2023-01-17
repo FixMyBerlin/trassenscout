@@ -15,9 +15,9 @@ const ITEMS_PER_PAGE = 100
 export const ContactTable = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
   const [{ contacts, hasMore }] = usePaginatedQuery(getContacts, {
-    where: { project: { id: projectId! } },
+    where: { project: { slug: projectSlug! } },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
@@ -52,7 +52,7 @@ export const ContactTable = () => {
 }
 
 const ContactsPage: BlitzPage = () => {
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
   return (
     <LayoutRs8>
       <MetaTags noindex title="Kontakte" />
@@ -62,7 +62,7 @@ const ContactsPage: BlitzPage = () => {
           description="Dieser Bereich hilft Ihnen dabei wichtige Kontakte zu verwalten und
         anzuschreiben."
           action={
-            <Link button href={Routes.NewContactPage({ projectId: projectId! })}>
+            <Link button href={Routes.NewContactPage({ projectSlug: projectSlug! })}>
               Neuer Kalendereintrag
             </Link>
           }

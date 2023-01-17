@@ -13,10 +13,10 @@ import getUsers from "src/users/queries/getUsers"
 
 const EditProject = () => {
   const router = useRouter()
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
   const [project, { setQueryData }] = useQuery(
     getProject,
-    { id: projectId },
+    { slug: projectSlug },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
@@ -33,7 +33,7 @@ const EditProject = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(Routes.ShowProjectPage({ projectId: updated.id }))
+      await router.push(Routes.ShowProjectPage({ projectSlug: updated.slug }))
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }

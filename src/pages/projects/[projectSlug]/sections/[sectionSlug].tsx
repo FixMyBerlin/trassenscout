@@ -12,15 +12,15 @@ import getSection from "src/sections/queries/getSection"
 
 export const Section = () => {
   const router = useRouter()
-  const sectionId = useParam("sectionId", "number")
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
+  const sectionSlug = useParam("sectionSlug", "string")
   const [deleteSectionMutation] = useMutation(deleteSection)
-  const [section] = useQuery(getSection, { id: sectionId })
+  const [section] = useQuery(getSection, { slug: sectionSlug })
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${section.id} unwiderruflich löschen?`)) {
       await deleteSectionMutation({ id: section.id })
-      await router.push(Routes.SectionsPage({ projectId: projectId! }))
+      await router.push(Routes.SectionsPage({ projectSlug: projectSlug! }))
     }
   }
 
@@ -35,8 +35,8 @@ export const Section = () => {
 
       <Link
         href={Routes.EditSectionPage({
-          projectId: projectId!,
-          sectionId: section.id,
+          projectSlug: projectSlug!,
+          sectionSlug: section.slug,
         })}
       >
         Bearbeiten
@@ -50,7 +50,7 @@ export const Section = () => {
 }
 
 const ShowSectionPage = () => {
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
 
   return (
     <LayoutArticle>
@@ -59,7 +59,7 @@ const ShowSectionPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.SectionsPage({ projectId: projectId! })}>Alle Sections</Link>
+        <Link href={Routes.SectionsPage({ projectSlug: projectSlug! })}>Alle Sections</Link>
       </p>
     </LayoutArticle>
   )

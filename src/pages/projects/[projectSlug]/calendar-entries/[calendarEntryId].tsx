@@ -15,14 +15,14 @@ import { DateEntry } from "src/rs8/termine/components/Calender"
 export const CalendarEntry = () => {
   const router = useRouter()
   const calendarEntryId = useParam("calendarEntryId", "number")
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
   const [deleteCalendarEntryMutation] = useMutation(deleteCalendarEntry)
   const [calendarEntry] = useQuery(getCalendarEntry, { id: calendarEntryId })
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${calendarEntry.id} unwiderruflich löschen?`)) {
       await deleteCalendarEntryMutation({ id: calendarEntry.id })
-      await router.push(Routes.CalendarEntriesPage({ projectId: projectId! }))
+      await router.push(Routes.CalendarEntriesPage({ projectSlug: projectSlug! }))
     }
   }
 
@@ -32,12 +32,14 @@ export const CalendarEntry = () => {
       <PageHeader title={calendarEntry.title} />
 
       <p className="mb-10 space-x-4">
-        <Link href={Routes.CalendarEntriesPage({ projectId: projectId! })}>Zurück zur Liste</Link>
+        <Link href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>
+          Zurück zur Liste
+        </Link>
         <span>–</span>
         <Link
           href={Routes.EditCalendarEntryPage({
             calendarEntryId: calendarEntry.id,
-            projectId: projectId!,
+            projectSlug: projectSlug!,
           })}
         >
           Eintrag bearbeiten
@@ -60,7 +62,7 @@ export const CalendarEntry = () => {
 }
 
 const ShowCalendarEntryPage: BlitzPage = () => {
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
 
   return (
     <LayoutRs8>
@@ -69,7 +71,7 @@ const ShowCalendarEntryPage: BlitzPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.CalendarEntriesPage({ projectId: projectId! })}>
+        <Link href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>
           Alle CalendarEntries
         </Link>
       </p>

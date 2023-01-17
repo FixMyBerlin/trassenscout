@@ -21,7 +21,7 @@ const NewProjectPageWithQuery = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const project = await createProjectMutation(values)
-      await router.push(Routes.ShowProjectPage({ projectId: project.id }))
+      await router.push(Routes.ShowProjectPage({ projectSlug: project.slug }))
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }

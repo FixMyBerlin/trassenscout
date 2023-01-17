@@ -15,7 +15,7 @@ type Props = {
 
 export const DateEntry: React.FC<Props> = ({ calendarEntry }) => {
   const locationDomain = calendarEntry.locationUrl && new URL(calendarEntry.locationUrl).hostname
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
   return (
     <Disclosure
       classNameButton="py-4 px-6 text-left text-sm text-gray-900"
@@ -87,7 +87,7 @@ export const DateEntry: React.FC<Props> = ({ calendarEntry }) => {
         <Link
           button
           href={Routes.EditCalendarEntryPage({
-            projectId: projectId!,
+            projectSlug: projectSlug!,
             calendarEntryId: calendarEntry.id,
           })}
         >
@@ -96,7 +96,7 @@ export const DateEntry: React.FC<Props> = ({ calendarEntry }) => {
         </Link>
         <Link
           href={Routes.ShowCalendarEntryPage({
-            projectId: projectId!,
+            projectSlug: projectSlug!,
             calendarEntryId: calendarEntry.id,
           })}
         >

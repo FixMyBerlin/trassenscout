@@ -9,23 +9,25 @@ import { Link } from "src/core/components/links"
 import { Suspense } from "react"
 import { SubsectionSchema } from "src/subsections/schema"
 import getUsers from "src/users/queries/getUsers"
+import getSection from "src/sections/queries/getSection"
 
 const NewSubsection = () => {
   const router = useRouter()
-  const projectId = useParam("projectId", "number")
-  const sectionId = useParam("sectionId", "number")
+  const projectSlug = useParam("projectSlug", "string")
+  const sectionSlug = useParam("sectionSlug", "string")
   const [createSubsectionMutation] = useMutation(createSubsection)
   const [{ users }] = useQuery(getUsers, {})
+  const [section] = useQuery(getSection, { slug: sectionSlug })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const subsection = await createSubsectionMutation({ ...values, sectionId: sectionId! })
+      const subsection = await createSubsectionMutation({ ...values, sectionId: section.id! })
       await router.push(
         Routes.ShowSubsectionPage({
-          projectId: projectId!,
-          sectionId: sectionId!,
-          subsectionId: subsection.id,
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug!,
+          subsectionSlug: subsection.slug,
         })
       )
     } catch (error: any) {
@@ -52,7 +54,7 @@ const NewSubsection = () => {
 }
 
 const NewSubsectionPage = () => {
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
 
   return (
     <LayoutArticle>
@@ -61,7 +63,7 @@ const NewSubsectionPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.SectionsPage({ projectId: projectId! })}>Alle Abschnitte</Link>
+        <Link href={Routes.SectionsPage({ projectSlug: projectSlug! })}>Alle Abschnitte</Link>
       </p>
     </LayoutArticle>
   )

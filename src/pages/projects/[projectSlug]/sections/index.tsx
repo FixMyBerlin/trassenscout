@@ -4,19 +4,18 @@ import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
-import getSubsections from "src/subsections/queries/getSubsections"
+import getSections from "src/sections/queries/getSections"
 import { Link } from "src/core/components/links"
 import { Pagination } from "src/core/components/Pagination"
 
 const ITEMS_PER_PAGE = 100
 
-export const SubsectionsList = () => {
+export const SectionsList = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
-  const projectId = useParam("projectId", "number")
-  const sectionId = useParam("sectionId", "number")
-  const [{ subsections, hasMore }] = usePaginatedQuery(getSubsections, {
-    where: { section: { id: sectionId! } },
+  const projectSlug = useParam("projectSlug", "string")
+  const [{ sections, hasMore }] = usePaginatedQuery(getSections, {
+    where: { project: { slug: projectSlug! } },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
@@ -28,16 +27,15 @@ export const SubsectionsList = () => {
   return (
     <>
       <ul>
-        {subsections.map((subsection) => (
-          <li key={subsection.id}>
+        {sections.map((section) => (
+          <li key={section.id}>
             <Link
-              href={Routes.ShowSubsectionPage({
-                projectId: projectId!,
-                sectionId: sectionId!,
-                subsectionId: subsection.id,
+              href={Routes.ShowSectionPage({
+                projectSlug: projectSlug!,
+                sectionSlug: section.slug,
               })}
             >
-              {subsection.name}
+              {section.name}
             </Link>
           </li>
         ))}
@@ -53,18 +51,18 @@ export const SubsectionsList = () => {
   )
 }
 
-const SubsectionsPage = () => {
-  const sectionId = useParam("sectionId", "number")
+const SectionsPage = () => {
+  const projectSlug = useParam("projectSlug", "string")
 
   return (
     <LayoutArticle>
-      <MetaTags noindex title="Abschnitte" />
+      <MetaTags noindex title="Sections" />
 
       <Suspense fallback={<div>Daten werden geladen…</div>}>
-        <SubsectionsList />
+        <SectionsList />
       </Suspense>
     </LayoutArticle>
   )
 }
 
-export default SubsectionsPage
+export default SectionsPage

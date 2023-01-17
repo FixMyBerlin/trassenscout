@@ -1,18 +1,8 @@
-import { Prisma } from "db"
+import { JsonValue, SlugSchema } from "src/core/utils"
 import { z } from "zod"
 
-// Thanks to https://github.com/chrishoermann/zod-prisma-types#field-validators
-export const JsonValue: z.ZodType<Prisma.JsonValue> = z
-  .union([
-    z.string(),
-    z.number(),
-    z.boolean(),
-    z.lazy(() => z.array(JsonValue)),
-    z.lazy(() => z.record(JsonValue)),
-  ])
-  .nullable()
-
 export const SubsectionSchema = z.object({
+  slug: SlugSchema,
   name: z.string(),
   description: z.string().nullish(),
   geometry: JsonValue,

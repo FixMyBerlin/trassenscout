@@ -10,7 +10,7 @@ type Props = {
 }
 
 export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) => {
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
 
   return (
     <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -75,7 +75,7 @@ export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) =>
                           button
                           href={Routes.EditContactPage({
                             contactId: contact.id,
-                            projectId: projectId!,
+                            projectSlug: projectSlug!,
                           })}
                         >
                           <PencilSquareIcon className="h-5 w-5" />
@@ -84,7 +84,7 @@ export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) =>
                         <Link
                           href={Routes.ShowContactPage({
                             contactId: contact.id,
-                            projectId: projectId!,
+                            projectSlug: projectSlug!,
                           })}
                         >
                           <TrashIcon className="h-5 w-5" />

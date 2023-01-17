@@ -3,6 +3,7 @@ import db, { Section } from "../index"
 const seedSections = async () => {
   const seeData: Omit<Section, "id" | "createdAt" | "updatedAt">[] = [
     {
+      slug: "teilstrecke-1",
       name: "Section 1",
       description: `*Lorem ipsum dolor sit amet*, consetetur sadipscing elitr.
 
@@ -13,6 +14,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       projectId: 1,
     },
     {
+      slug: "teilstrecke-2",
       name: "Section 2",
       description: null,
       managerId: 1,

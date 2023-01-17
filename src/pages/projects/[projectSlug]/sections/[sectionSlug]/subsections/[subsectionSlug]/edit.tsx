@@ -13,12 +13,12 @@ import getUsers from "src/users/queries/getUsers"
 
 const EditSubsection = () => {
   const router = useRouter()
-  const projectId = useParam("projectId", "number")
-  const sectionId = useParam("sectionId", "number")
-  const subsectionId = useParam("subsectionId", "number")
+  const projectSlug = useParam("projectSlug", "string")
+  const sectionSlug = useParam("sectionSlug", "string")
+  const subsectionSlug = useParam("subsectionSlug", "string")
   const [subsection, { setQueryData }] = useQuery(
     getSubsection,
-    { id: subsectionId },
+    { slug: subsectionSlug },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
@@ -37,9 +37,9 @@ const EditSubsection = () => {
       await setQueryData(updated)
       await router.push(
         Routes.ShowSubsectionPage({
-          projectId: projectId!,
-          sectionId: sectionId!,
-          subsectionId: updated.id,
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug!,
+          subsectionSlug: updated.slug,
         })
       )
     } catch (error: any) {
@@ -69,7 +69,7 @@ const EditSubsection = () => {
 }
 
 const EditSubsectionPage = () => {
-  const projectId = useParam("projectId", "number")
+  const projectSlug = useParam("projectSlug", "string")
 
   return (
     <LayoutArticle>
@@ -78,7 +78,7 @@ const EditSubsectionPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.SectionsPage({ projectId: projectId! })}>Alle Abschnitte</Link>
+        <Link href={Routes.SectionsPage({ projectSlug: projectSlug! })}>Alle Abschnitte</Link>
       </p>
     </LayoutArticle>
   )

@@ -73,6 +73,7 @@ model Project {
   id           Int      @id @default(autoincrement())
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  slug         String   @unique
   name         String
   shortName    String?
   introduction String?
@@ -117,6 +118,7 @@ model Section {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  slug        String
   name        String
   description String?
 
@@ -126,12 +128,15 @@ model Section {
   projectId Int
 
   subsections Subsection[]
+
+  @@unique([projectId, slug])
 }
 
 model Subsection {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  slug        String
   name        String
   description String?
   geometry    Json
@@ -140,4 +145,6 @@ model Subsection {
   managerId Int
   section   Section @relation(fields: [sectionId], references: [id])
   sectionId Int
+
+  @@unique([sectionId, slug])
 }

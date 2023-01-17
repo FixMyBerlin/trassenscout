@@ -4,18 +4,19 @@ import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
-import getSections from "src/sections/queries/getSections"
+import getSubsections from "src/subsections/queries/getSubsections"
 import { Link } from "src/core/components/links"
 import { Pagination } from "src/core/components/Pagination"
 
 const ITEMS_PER_PAGE = 100
 
-export const SectionsList = () => {
+export const SubsectionsList = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
-  const projectId = useParam("projectId", "number")
-  const [{ sections, hasMore }] = usePaginatedQuery(getSections, {
-    where: { project: { id: projectId! } },
+  const projectSlug = useParam("projectSlug", "string")
+  const sectionSlug = useParam("sectionSlug", "string")
+  const [{ subsections, hasMore }] = usePaginatedQuery(getSubsections, {
+    where: { section: { slug: sectionSlug! } },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
@@ -27,39 +28,43 @@ export const SectionsList = () => {
   return (
     <>
       <ul>
-        {sections.map((section) => (
-          <li key={section.id}>
+        {subsections.map((subsection) => (
+          <li key={subsection.id}>
             <Link
-              href={Routes.ShowSectionPage({ projectId: section.projectId, sectionId: section.id })}
+              href={Routes.ShowSubsectionPage({
+                projectSlug: projectSlug!,
+                sectionSlug: sectionSlug!,
+                subsectionSlug: subsection.slug,
+              })}
             >
-              {section.name}
+              {subsection.name}
             </Link>
           </li>
         ))}
       </ul>
 
-      <button disabled={page === 0} onClick={goToPreviousPage}>
-        Previous
-      </button>
-      <button disabled={!hasMore} onClick={goToNextPage}>
-        Next
-      </button>
+      <Pagination
+        hasMore={hasMore}
+        page={page}
+        handlePrev={goToPreviousPage}
+        handleNext={goToNextPage}
+      />
     </>
   )
 }
 
-const SectionsPage = () => {
-  const projectId = useParam("projectId", "number")
+const SubsectionsPage = () => {
+  const sectionSlug = useParam("sectionSlug", "string")
 
   return (
     <LayoutArticle>
-      <MetaTags noindex title="Sections" />
+      <MetaTags noindex title="Abschnitte" />
 
       <Suspense fallback={<div>Daten werden geladen…</div>}>
-        <SectionsList />
+        <SubsectionsList />
       </Suspense>
     </LayoutArticle>
   )
 }
 
-export default SectionsPage
+export default SubsectionsPage

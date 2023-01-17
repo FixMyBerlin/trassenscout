@@ -3,6 +3,7 @@ import db, { Project } from "../index"
 const seedProjects = async () => {
   const seeData: Omit<Project, "id" | "createdAt" | "updatedAt">[] = [
     {
+      slug: "rs3000",
       name: "Radschnellverbindung 3000",
       shortName: "RS3k",
       introduction: `*Lorem ipsum dolor sit amet*, consetetur sadipscing elitr.
@@ -13,6 +14,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       managerId: 1,
     },
     {
+      slug: "rs3001",
       name: "Radschnellverbindung 3001",
       shortName: null,
       introduction: null,
