@@ -12,21 +12,22 @@ generator client {
 // --------------------------------------
 
 model User {
-  id             Int          @id @default(autoincrement())
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  email          String       @unique
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  email          String   @unique
   hashedPassword String?
-  role           String       @default("USER")
-  superadmin     Boolean      @default(false)
+  role           String   @default("USER")
+  superadmin     Boolean  @default(false)
   firstName      String?
   lastName       String?
   phone          String?
-  tokens         Token[]
-  sessions       Session[]
-  projects       Project[]
-  Sections       Section[]
-  Subsections    Subsection[]
+
+  tokens      Token[]
+  sessions    Session[]
+  projects    Project[]
+  sections    Section[]
+  subsections Subsection[]
 }
 
 model Session {
@@ -39,8 +40,9 @@ model Session {
   antiCSRFToken      String?
   publicData         String?
   privateData        String?
-  user               User?     @relation(fields: [userId], references: [id])
-  userId             Int?
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?
 }
 
 model Token {
@@ -53,8 +55,9 @@ model Token {
   // type        TokenType
   expiresAt   DateTime
   sentTo      String
-  user        User     @relation(fields: [userId], references: [id])
-  userId      Int
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
 
   @@unique([hashedToken, type])
 }
@@ -67,17 +70,19 @@ model Token {
 // }
 
 model Project {
-  id              Int             @id @default(autoincrement())
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  name            String
-  shortName       String?
-  introduction    String?
-  manager         User            @relation(fields: [managerId], references: [id])
-  managerId       Int
-  Sections        Section[]
-  CalendarEntries CalendarEntry[]
-  Contacts        Contact[]
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  name         String
+  shortName    String?
+  introduction String?
+
+  manager   User @relation(fields: [managerId], references: [id])
+  managerId Int
+
+  sections        Section[]
+  calendarEntries CalendarEntry[]
+  contacts        Contact[]
 }
 
 model CalendarEntry {
@@ -89,8 +94,9 @@ model CalendarEntry {
   locationName String?
   locationUrl  String?
   description  String?
-  project      Project  @relation(fields: [projectId], references: [id])
-  projectId    Int
+
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId Int
 }
 
 model Contact {
@@ -102,21 +108,24 @@ model Contact {
   title     String?
   phone     String?
   role      String?
-  project   Project  @relation(fields: [projectId], references: [id])
+
+  project   Project @relation(fields: [projectId], references: [id])
   projectId Int
 }
 
 model Section {
-  id          Int          @id @default(autoincrement())
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   name        String
   description String?
-  manager     User         @relation(fields: [managerId], references: [id])
-  managerId   Int
-  project     Project      @relation(fields: [projectId], references: [id])
-  projectId   Int
-  Subsections Subsection[]
+
+  manager   User    @relation(fields: [managerId], references: [id])
+  managerId Int
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId Int
+
+  subsections Subsection[]
 }
 
 model Subsection {
@@ -126,8 +135,9 @@ model Subsection {
   name        String
   description String?
   geometry    Json
-  manager     User     @relation(fields: [managerId], references: [id])
-  managerId   Int
-  section     Section  @relation(fields: [sectionId], references: [id])
-  sectionId   Int
+
+  manager   User    @relation(fields: [managerId], references: [id])
+  managerId Int
+  section   Section @relation(fields: [sectionId], references: [id])
+  sectionId Int
 }
