@@ -28,14 +28,16 @@ const ProjectsList = () => {
 
       <SuperAdminBox>
         <p>
-          <Link href={Routes.NewProjectPage()}>Radschnellverbindung erstellen</Link>
+          <Link href={Routes.AdminNewProjectPage()}>Radschnellverbindung erstellen</Link>
         </p>
       </SuperAdminBox>
 
       <ul>
         {projects.map((project) => (
           <li key={project.id}>
-            <Link href={Routes.ShowProjectPage({ projectSlug: project.slug })}>{project.name}</Link>
+            <Link href={Routes.ProjectDashboardPage({ projectSlug: project.slug })}>
+              {project.name}
+            </Link>
           </li>
         ))}
       </ul>

@@ -11,7 +11,7 @@ import getProject from "src/projects/queries/getProject"
 import { ProjectSchema } from "src/projects/schema"
 import getUsers from "src/users/queries/getUsers"
 
-const EditProject = () => {
+const EditProjectWithQuery = () => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
   const [project, { setQueryData }] = useQuery(
@@ -33,7 +33,7 @@ const EditProject = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(Routes.ShowProjectPage({ projectSlug: updated.slug }))
+      await router.push(Routes.ProjectDashboardPage({ projectSlug: updated.slug }))
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -60,14 +60,18 @@ const EditProject = () => {
 }
 
 const EditProjectPage = () => {
+  const projectSlug = useParam("projectSlug", "string")
+
   return (
     <LayoutArticle>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
-        <EditProject />
+        <EditProjectWithQuery />
       </Suspense>
 
       <p>
-        <Link href={Routes.Home()}>Startseite</Link>
+        <Link href={Routes.ProjectDashboardPage({ projectSlug: projectSlug! })}>
+          Zurück zum Projekt
+        </Link>
       </p>
     </LayoutArticle>
   )

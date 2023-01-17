@@ -1,17 +1,16 @@
 import { Routes } from "@blitzjs/next"
-import { useRouter } from "next/router"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import createProject from "src/projects/mutations/createProject"
-import { ProjectForm, FORM_ERROR } from "src/projects/components/ProjectForm"
-import { Link } from "src/core/components/links"
-import getUsers from "src/users/queries/getUsers"
+import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { ProjectSchema } from "src/projects/schema"
-import { AdminBox } from "src/core/components/AdminBox/AdminBox"
 import { SuperAdminBox } from "src/core/components/AdminBox"
+import { Link } from "src/core/components/links"
+import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
+import createProject from "src/projects/mutations/createProject"
+import { ProjectSchema } from "src/projects/schema"
+import getUsers from "src/users/queries/getUsers"
 
-const NewProjectPageWithQuery = () => {
+const AdminNewProjectPageWithQuery = () => {
   const router = useRouter()
   const [createProjectMutation] = useMutation(createProject)
 
@@ -21,7 +20,7 @@ const NewProjectPageWithQuery = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const project = await createProjectMutation(values)
-      await router.push(Routes.ShowProjectPage({ projectSlug: project.slug }))
+      await router.push(Routes.ProjectDashboardPage({ projectSlug: project.slug }))
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -46,11 +45,11 @@ const NewProjectPageWithQuery = () => {
   )
 }
 
-const NewProjectPage = () => {
+const AdminNewProjectPage = () => {
   return (
     <LayoutArticle>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
-        <NewProjectPageWithQuery />
+        <AdminNewProjectPageWithQuery />
       </Suspense>
 
       <p>
@@ -60,6 +59,6 @@ const NewProjectPage = () => {
   )
 }
 
-NewProjectPage.authenticate = true
+AdminNewProjectPage.authenticate = true
 
-export default NewProjectPage
+export default AdminNewProjectPage

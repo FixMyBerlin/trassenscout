@@ -1,18 +1,19 @@
-import { BlitzPage, Routes } from "@blitzjs/next"
-import { useParam } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
-import { useMutation } from "@blitzjs/rpc"
-import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
-import createCalendarEntry from "src/calendar-entries/mutations/createCalendarEntry"
-import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/CalendarEntryForm"
-import { Link } from "src/core/components/links"
 import { Suspense } from "react"
-import { PageHeader } from "src/core/components/PageHeader"
+import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/CalendarEntryForm"
+import createCalendarEntry from "src/calendar-entries/mutations/createCalendarEntry"
 import { CalendarEntrySchema } from "src/calendar-entries/schema"
+import { Link } from "src/core/components/links"
+import { PageHeader } from "src/core/components/PageHeader"
+import { LayoutRs8, MetaTags } from "src/core/layouts"
+import getProject from "src/projects/queries/getProject"
 
 const NewCalendarEntry = () => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
+  const [project] = useQuery(getProject, { slug: projectSlug! })
   const [createCalendarEntryMutation] = useMutation(createCalendarEntry)
 
   type HandleSubmit = any // TODO
@@ -20,7 +21,7 @@ const NewCalendarEntry = () => {
     try {
       const calendarEntry = await createCalendarEntryMutation({
         ...values,
-        projectSlug: projectSlug!,
+        projectId: project.id!,
       })
       await router.push(
         Routes.ShowCalendarEntryPage({

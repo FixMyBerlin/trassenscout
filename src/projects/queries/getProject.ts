@@ -10,7 +10,6 @@ const GetProject = z.object({
 
 export default resolver.pipe(resolver.zod(GetProject), resolver.authorize(), async ({ slug }) => {
   // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-  console.log("a", { slug })
   const project = await db.project.findFirst({ where: { slug } })
 
   if (!project) throw new NotFoundError()

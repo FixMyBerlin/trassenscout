@@ -3,7 +3,7 @@ import clsx from "clsx"
 import { Link } from "../links/Link"
 
 type Props = {
-  markdown: string
+  markdown?: string | null
   className?: string
 }
 
@@ -17,6 +17,8 @@ export const Markdown: React.FC<Props> = ({ markdown, className }) => {
   const createMarkdownLink = (link: string) => {
     return ` [${link}](${link})`
   }
+
+  if (!markdown) return null
 
   return (
     <div className={clsx("prose", className)}>

@@ -1,28 +1,28 @@
-import { ErrorBoundary, Routes } from "@blitzjs/next"
-import { useParam } from "@blitzjs/next"
-import { useRouter } from "next/router"
+import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import createSection from "src/sections/mutations/createSection"
-import { SectionForm, FORM_ERROR } from "src/sections/components/SectionForm"
+import { useRouter } from "next/router"
+import { Suspense } from "react"
 import { Link } from "src/core/components/links"
+import { LayoutArticle, MetaTags } from "src/core/layouts"
+import getProject from "src/projects/queries/getProject"
+import { FORM_ERROR, SectionForm } from "src/sections/components/SectionForm"
+import createSection from "src/sections/mutations/createSection"
 import { SectionSchema } from "src/sections/schema"
 import getUsers from "src/users/queries/getUsers"
-import { Suspense } from "react"
 
-const NewSection = () => {
+const NewSectionWithQuery = () => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
+  const [project] = useQuery(getProject, { slug: projectSlug! })
   const [createSectionMutation] = useMutation(createSection)
-
   const [{ users }] = useQuery(getUsers, {})
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const section = await createSectionMutation({ ...values, projectSlug: projectSlug! })
+      const section = await createSectionMutation({ ...values, projectId: project.id! })
       await router.push(
-        Routes.ShowSectionPage({
+        Routes.SectionDashboardPage({
           projectSlug: projectSlug!,
           sectionSlug: section.slug,
         })
@@ -35,9 +35,9 @@ const NewSection = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neuen Section erstellen" />
+      <MetaTags noindex title="Neue Teilstrecke erstellen" />
 
-      <h1>Neuen Section erstellen</h1>
+      <h1>Neue Teilstrecke erstellen</h1>
 
       <SectionForm
         submitText="Erstellen"
@@ -56,11 +56,11 @@ const NewSectionPage = () => {
   return (
     <LayoutArticle>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
-        <NewSection />
+        <NewSectionWithQuery />
       </Suspense>
 
       <p>
-        <Link href={Routes.SectionsPage({ projectSlug: projectSlug! })}>Alle Sections</Link>
+        <Link href={Routes.ProjectDashboardPage({ projectSlug: projectSlug! })}>Zum Projekt</Link>
       </p>
     </LayoutArticle>
   )

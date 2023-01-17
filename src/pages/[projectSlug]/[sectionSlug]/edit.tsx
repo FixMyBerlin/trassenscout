@@ -1,11 +1,14 @@
 import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
+import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Link } from "src/core/components/links"
+import { Link, linkStyles } from "src/core/components/links"
+import { PageHeader } from "src/core/components/PageHeader"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SectionForm } from "src/sections/components/SectionForm"
+import deleteSection from "src/sections/mutations/deleteSection"
 import updateSection from "src/sections/mutations/updateSection"
 import getSection from "src/sections/queries/getSection"
 import { SectionSchema } from "src/sections/schema"
@@ -35,7 +38,7 @@ const EditSection = () => {
       })
       await setQueryData(updated)
       await router.push(
-        Routes.ShowSectionPage({
+        Routes.SectionDashboardPage({
           projectSlug: projectSlug!,
           sectionSlug: updated.slug,
         })
@@ -46,11 +49,19 @@ const EditSection = () => {
     }
   }
 
+  const [deleteSectionMutation] = useMutation(deleteSection)
+  const handleDelete = async () => {
+    if (window.confirm(`Den Eintrag mit ID ${section.id} unwiderruflich löschen?`)) {
+      await deleteSectionMutation({ id: section.id })
+      await router.push(Routes.ProjectDashboardPage({ projectSlug: projectSlug! }))
+    }
+  }
+
   return (
     <>
       <MetaTags noindex title={`Section ${section.id} bearbeiten`} />
+      <PageHeader title={`${section.name} bearbeiten`} />
 
-      <h1>Section {section.id} bearbeiten</h1>
       <SuperAdminBox>
         <pre>{JSON.stringify(section, null, 2)}</pre>
       </SuperAdminBox>
@@ -62,12 +73,19 @@ const EditSection = () => {
         onSubmit={handleSubmit}
         users={users}
       />
+
+      <hr />
+
+      <button type="button" onClick={handleDelete} className={clsx(linkStyles)}>
+        Löschen
+      </button>
     </>
   )
 }
 
 const EditSectionPage = () => {
   const projectSlug = useParam("projectSlug", "string")
+  const sectionSlug = useParam("sectionSlug", "string")
 
   return (
     <LayoutArticle>
@@ -76,7 +94,14 @@ const EditSectionPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.SectionsPage({ projectSlug: projectSlug! })}>Alle Sections</Link>
+        <Link
+          href={Routes.SectionDashboardPage({
+            projectSlug: projectSlug!,
+            sectionSlug: sectionSlug!,
+          })}
+        >
+          Zurück zur Teilstrecke
+        </Link>
       </p>
     </LayoutArticle>
   )
