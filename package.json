@@ -10,7 +10,7 @@
     "openTypes": "code \"node_modules/.prisma/client/index.d.ts\"",
     "migrate": "blitz prisma migrate dev",
     "migrate:create": "blitz prisma migrate dev --create-only && npm run migrate:create:openMigration",
-    "migrate:create:openMigration": "code $(find ./db/migrations -type f -cmin -1 | head -n 1)",
+    "migrate:create:openMigration": "code $(find ./db/migrations -type f -cmin -1 | head -n 2)",
     "migrate:check": "blitz prisma migrate status",
     "check": "npm run migrate:check && npm run type-check && npm run lint && npm run format && npm run test",
     "type-check": "tsc --noEmit",
