@@ -148,5 +148,23 @@ model Subsection {
   section   Section @relation(fields: [sectionId], references: [id])
   sectionId Int
 
+  stakeholdernotes StakeholdernotesOnSubsections[]
+
   @@unique([sectionId, slug])
+}
+
+model Stakeholdernote {
+  id          Int                             @id @default(autoincrement())
+  name        String
+  subsections StakeholdernotesOnSubsections[]
+}
+
+model StakeholdernotesOnSubsections {
+  subsection        Subsection      @relation(fields: [subsectionId], references: [id])
+  subsectionId      Int
+  stakeholdernote   Stakeholdernote @relation(fields: [stakeholdernoteId], references: [id])
+  stakeholdernoteId Int
+
+  @@id([subsectionId, stakeholdernoteId])
+  @@unique([subsectionId, stakeholdernoteId])
 }
