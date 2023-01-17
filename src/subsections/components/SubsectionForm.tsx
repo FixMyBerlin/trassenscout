@@ -7,6 +7,7 @@ import {
   LabeledTextField,
 } from "src/core/components/forms"
 import { z } from "zod"
+import { GeometryValidation } from "./GeometryValidation"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function SubsectionForm<S extends z.ZodType<any, any>>(
@@ -30,6 +31,8 @@ export function SubsectionForm<S extends z.ZodType<any, any>>(
         placeholder=""
         optional
       />
+      <LabeledTextareaField name="geometry" label="Geometry (LineString)" placeholder="" />
+      <GeometryValidation name="geometry" />
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"

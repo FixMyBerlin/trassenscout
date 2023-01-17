@@ -10,7 +10,7 @@ const seedSubsections = async () => {
 Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr.
 
 Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.`,
-      geometry: [
+      geometry: JSON.stringify([
         [9.194367099283662, 48.893241109056355],
         [9.204387735380609, 48.893397440552611],
         [9.206940021105661, 48.892932857563238],
@@ -24,7 +24,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
         [9.215124815329835, 48.89110532952899],
         [9.215157030644356, 48.891101239311162],
         [9.215175577768182, 48.891098834544948],
-      ],
+      ]),
       managerId: 1,
       sectionId: 1,
     },
@@ -32,7 +32,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       slug: "abschnitt-unterstadt",
       name: "Section 2",
       description: null,
-      geometry: [
+      geometry: JSON.stringify([
         [9.240035354230526, 48.887679242641617],
         [9.240504673657304, 48.887561858179502],
         [9.243368218227335, 48.886582729338258],
@@ -107,7 +107,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
         [9.246904578174556, 48.885578244736855],
         [9.246938370895526, 48.885564387583585],
         [9.246941223036616, 48.885563365049123],
-      ],
+      ]),
       managerId: 1,
       sectionId: 1,
     },

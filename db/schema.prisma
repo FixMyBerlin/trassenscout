@@ -141,7 +141,7 @@ model Subsection {
   slug        String
   name        String
   description String?
-  geometry    Json
+  geometry    String
 
   manager   User    @relation(fields: [managerId], references: [id])
   managerId Int

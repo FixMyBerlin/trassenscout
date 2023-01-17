@@ -33,7 +33,7 @@ export const SectionDashboardWithQuery = () => {
       <ul>
         {subsections.map((subsection) => {
           const debugSubsection = subsection
-          debugSubsection.geometry = [] // just to make the pre tag smaller
+          debugSubsection.geometry = "Gekürzt für die Lesbarkeit"
           return (
             <li key={subsection.id}>
               <strong>{subsection.name}</strong>

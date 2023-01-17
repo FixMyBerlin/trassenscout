@@ -5,7 +5,9 @@ export const SubsectionSchema = z.object({
   slug: SlugSchema,
   name: z.string(),
   description: z.string().nullish(),
-  geometry: JsonValue,
+  geometry: z.coerce.string().min(20, {
+    message: "Pflichtfeld. Format muss ein LineString sein [[9.1943,48.8932],[9.2043,48.8933]].",
+  }),
   managerId: z.coerce.number(),
   sectionId: z.number(),
 })
