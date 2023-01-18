@@ -7,6 +7,7 @@ import { Link } from "src/core/components/links"
 import { Pagination } from "src/core/components/Pagination"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import getProjects from "src/projects/queries/getProjects"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 const ITEMS_PER_PAGE = 100
 
@@ -18,12 +19,14 @@ const ProjectsList = () => {
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
+  const user = useCurrentUser()
 
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
   return (
     <>
+      <p>Willkommen zurück{Boolean(user?.firstName) && `, ${user?.firstName}`}!</p>
       <h1>Alle Radschnellverbindungen</h1>
 
       <SuperAdminBox>

@@ -1,6 +1,7 @@
 import React, { Suspense } from "react"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { AdminBox } from "./AdminBox"
+import { isAdmin } from "../../../users/utils/isAdmin"
 
 type Props = {
   className?: string
@@ -10,11 +11,11 @@ type Props = {
 const SuperAdminBoxQuery: React.FC<Props> = (props) => {
   const user = useCurrentUser()
 
-  if (user?.superadmin !== true) {
+  if (!isAdmin(user)) {
     return null
   }
 
-  return <AdminBox label="Superadmin" {...props} />
+  return <AdminBox label="Admin" {...props} />
 }
 
 export const SuperAdminBox: React.FC<Props> = (props) => {

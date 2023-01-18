@@ -12,13 +12,12 @@ generator client {
 // --------------------------------------
 
 model User {
-  id             Int      @id @default(autoincrement())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  email          String   @unique
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  email          String       @unique
   hashedPassword String?
-  role           String   @default("USER")
-  superadmin     Boolean  @default(false)
+  role           UserRoleEnum @default(USER)
   firstName      String?
   lastName       String?
   phone          String?
@@ -28,6 +27,11 @@ model User {
   projects    Project[]
   sections    Section[]
   subsections Subsection[]
+}
+
+enum UserRoleEnum {
+  USER
+  ADMIN
 }
 
 model Session {

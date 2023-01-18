@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React from "react"
 
 type Props = {
-  label: "Dev" | "Superadmin"
+  label: "Dev" | "Admin"
   className?: string
   children: React.ReactNode
 }
