@@ -162,6 +162,7 @@ model Stakeholdernote {
   name        String
   status      StakeholdernoteStatusEnum
   statusText  String?
+  
   subsections StakeholdernotesOnSubsections[]
 }
 
