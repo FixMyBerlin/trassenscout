@@ -32,17 +32,17 @@ export const StakeholdernotesList = () => {
         <div>
           <div className="rounded-lg bg-gray-100 p-10">
             <h4 className="mb-6 text-lg font-bold">Offen</h4>
-            <ul className="flex flex-col space-y-4">
+            <ul className="flex list-none flex-col space-y-4 pl-0">
               {stakeholdersInProgress.map((stakeholder) => {
                 return (
-                  <li key={stakeholder.title}>
+                  <li key={stakeholder.id}>
                     <StakeholderItem stakeholder={stakeholder} />
                   </li>
                 )
               })}
               {stakeholdersPending.map((stakeholder) => {
                 return (
-                  <li key={stakeholder.title}>
+                  <li key={stakeholder.id}>
                     <StakeholderItem stakeholder={stakeholder} />
                   </li>
                 )
@@ -53,17 +53,17 @@ export const StakeholdernotesList = () => {
         <div>
           <div className="rounded-lg bg-gray-100 p-10">
             <h4 className="mb-6 font-bold">Erledigt</h4>
-            <ul className="flex flex-col space-y-2">
+            <ul className="flex list-none flex-col space-y-2 pl-0">
               {stakeholdersDone.map((stakeholder) => {
                 return (
-                  <li key={stakeholder.title}>
+                  <li key={stakeholder.id}>
                     <StakeholderItem stakeholder={stakeholder} />
                   </li>
                 )
               })}
               {stakeholdersIrrelevant.map((stakeholder) => {
                 return (
-                  <li key={stakeholder.title}>
+                  <li key={stakeholder.id}>
                     <StakeholderItem stakeholder={stakeholder} />
                   </li>
                 )
