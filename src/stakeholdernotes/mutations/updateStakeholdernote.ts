@@ -1,11 +1,13 @@
-import { resolver } from "@blitzjs/rpc";
-import db from "db";
-import { z } from "zod";
+import { resolver } from "@blitzjs/rpc"
+import db from "db"
+import { z } from "zod"
+import { StakeholdernoteSchema } from "../schema"
 
-const UpdateStakeholdernote = z.object({
-  id: z.number(),
-  name: z.string(),
-});
+const UpdateStakeholdernote = StakeholdernoteSchema.merge(
+  z.object({
+    id: z.number(),
+  })
+)
 
 export default resolver.pipe(
   resolver.zod(UpdateStakeholdernote),
@@ -15,8 +17,8 @@ export default resolver.pipe(
     const stakeholdernote = await db.stakeholdernote.update({
       where: { id },
       data,
-    });
+    })
 
-    return stakeholdernote;
+    return stakeholdernote
   }
-);
+)
