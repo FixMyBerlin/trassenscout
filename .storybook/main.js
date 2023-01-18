@@ -1,4 +1,5 @@
 const path = require("path")
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin")
 
 module.exports = {
   stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
@@ -11,14 +12,14 @@ module.exports = {
   core: {
     builder: "@storybook/builder-webpack5",
   },
-  webpackFinal: async (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      src: path.resolve(__dirname, "../src"),
-      db: path.resolve(__dirname, "../db"),
-      // blitz: path.resolve(__dirname, "../node_modules/blitz/dist/index-server"),
-    }
-    console.log(config.resolve.alias)
+  webpackFinal: (config) => {
+    config.resolve.plugins = config.resolve.plugins || []
+    config.resolve.plugins.push(
+      // @ts-ignore
+      new TsconfigPathsPlugin({
+        configFile: path.resolve(__dirname, "../tsconfig.json"),
+      })
+    )
 
     return config
   },
