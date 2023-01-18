@@ -1,7 +1,7 @@
 import db, { Stakeholdernote } from "../index"
 
-const stakeholdernotes = async () => {
-  const seedStakeholdernotes: Omit<Stakeholdernote, "id" | "createdAt" | "updatedAt">[] = [
+const seedStakeholdernotes = async () => {
+  const stakeholdernotes: Omit<Stakeholdernote, "id" | "createdAt" | "updatedAt">[] = [
     {
       name: "Kita Klein und Stark",
       status: "inprogress",
@@ -19,12 +19,12 @@ const stakeholdernotes = async () => {
     },
   ]
 
-  for (let i = 0; i < seedStakeholdernotes.length; i++) {
-    const data = seedStakeholdernotes[i]
+  for (let i = 0; i < stakeholdernotes.length; i++) {
+    const data = stakeholdernotes[i]
     if (data) {
       await db.stakeholdernote.create({ data })
     }
   }
 }
 
-export default stakeholdernotes
+export default seedStakeholdernotes
