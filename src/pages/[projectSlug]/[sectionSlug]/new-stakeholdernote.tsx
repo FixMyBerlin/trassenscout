@@ -1,6 +1,6 @@
-import { Routes } from "@blitzjs/next"
+import { Routes, useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
-import { useMutation } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import createStakeholdernote from "src/stakeholdernotes/mutations/createStakeholdernote"
 import {
@@ -10,15 +10,21 @@ import {
 import { Link } from "src/core/components/links"
 import { Suspense } from "react"
 import { StakeholdernoteSchema } from "src/stakeholdernotes/schema"
+import getSection from "src/sections/queries/getSection"
 
 const NewStakeholdernote = () => {
   const router = useRouter()
   const [createStakeholdernoteMutation] = useMutation(createStakeholdernote)
+  const sectionSlug = useParam("sectionSlug", "string")
+  const [section] = useQuery(getSection, { slug: sectionSlug })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const stakeholdernote = await createStakeholdernoteMutation(values)
+      const stakeholdernote = await createStakeholdernoteMutation({
+        ...values,
+        sectionId: section.id,
+      })
       await router.push(Routes.ShowStakeholdernotePage({ stakeholdernoteId: stakeholdernote.id }))
     } catch (error: any) {
       console.error(error)
@@ -30,12 +36,12 @@ const NewStakeholdernote = () => {
     <>
       <MetaTags noindex title="Neuen Stakeholdernote erstellen" />
 
-      <h1>Neuen Stakeholdernote erstellen</h1>
+      <h1>Stakeholder erstellen</h1>
 
       <StakeholdernoteForm
         submitText="Erstellen"
         // TODO schema: See `__ModelIdParam__/edit.tsx` for detailed instruction.
-        schema={StakeholdernoteSchema}
+        schema={StakeholdernoteSchema.omit({ sectionId: true })}
         // initialValues={{}} // Use only when custom initial values are needed
         onSubmit={handleSubmit}
       />
