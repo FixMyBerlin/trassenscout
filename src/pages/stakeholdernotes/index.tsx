@@ -33,7 +33,7 @@ export const StakeholdernotesList = () => {
         {stakeholdernotes.map((stakeholdernote) => (
           <li key={stakeholdernote.id}>
             <Link href={Routes.ShowStakeholdernotePage({ stakeholdernoteId: stakeholdernote.id })}>
-              {stakeholdernote.name}
+              {stakeholdernote.title}
             </Link>
           </li>
         ))}

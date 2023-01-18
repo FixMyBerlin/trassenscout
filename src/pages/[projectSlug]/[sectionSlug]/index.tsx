@@ -7,7 +7,9 @@ import { Markdown } from "src/core/components/Markdown/Markdown"
 import { PageHeader } from "src/core/components/PageHeader"
 import { quote } from "src/core/components/text"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { StakeholdernotesList } from "src/pages/stakeholdernotes"
 import getSection from "src/sections/queries/getSection"
+import StakeholdernoteList from "src/stakeholdernotes/components/StakeholdernoteList"
 import getSubsections from "src/subsections/queries/getSubsections"
 
 export const SectionDashboardWithQuery = () => {
@@ -43,6 +45,8 @@ export const SectionDashboardWithQuery = () => {
           )
         })}
       </ul>
+
+      <StakeholdernoteList/>
 
       <section className="rounded border border-cyan-800 bg-cyan-100 p-5">
         <Link
