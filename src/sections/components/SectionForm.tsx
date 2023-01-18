@@ -23,6 +23,7 @@ export function SectionForm<S extends z.ZodType<any, any>>(
         help="Änderungen am URL-Segement sorgen dafür, dass bisherige URLs nicht mehr funktionieren."
         placeholder=""
       />
+      <LabeledTextField type="number" name="index" label="Index und Reihenfolge" placeholder="" />
       <LabeledTextField type="text" name="name" label="Name" placeholder="" />
       <LabeledTextareaField
         name="description"

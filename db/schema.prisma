@@ -125,6 +125,7 @@ model Section {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   slug        String
+  index       Int
   name        String
   description String?
 
@@ -137,6 +138,7 @@ model Section {
   stakeholdernote Stakeholdernote[]
 
   @@unique([projectId, slug])
+  @@unique([projectId, index])
 }
 
 model Subsection {
