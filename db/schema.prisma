@@ -133,7 +133,8 @@ model Section {
   project   Project @relation(fields: [projectId], references: [id])
   projectId Int
 
-  subsections Subsection[]
+  subsections     Subsection[]
+  stakeholdernote Stakeholdernote[]
 
   @@unique([projectId, slug])
 }
@@ -153,4 +154,22 @@ model Subsection {
   sectionId Int
 
   @@unique([sectionId, slug])
+}
+
+model Stakeholdernote {
+  id         Int                       @id @default(autoincrement())
+  createdAt  DateTime                  @default(now())
+  updatedAt  DateTime                  @updatedAt
+  title      String
+  status     StakeholdernoteStatusEnum
+  statusText String?
+  section    Section                   @relation(fields: [sectionId], references: [id])
+  sectionId  Int
+}
+
+enum StakeholdernoteStatusEnum {
+  irrelevant
+  pending
+  inprogress
+  done
 }
