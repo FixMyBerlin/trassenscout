@@ -1,30 +1,24 @@
 import { Routes, useParam } from "@blitzjs/next"
-import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/router"
+import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
-import { Pagination } from "src/core/components/Pagination"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { BaseMapSections, SectionsMap } from "src/projects/components/Map"
+import { SectionsTeasers } from "src/projects/components/Map/SectionsTeaser/SectionsTeasers"
 import getProject from "src/projects/queries/getProject"
 import getSections from "src/sections/queries/getSections"
 
-const ITEMS_PER_PAGE = 100
-
 export const ProjectDashboardWithQuery = () => {
-  const router = useRouter()
-  const page = Number(router.query.page) || 0
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
-  const [{ sections, hasMore }] = usePaginatedQuery(getSections, {
+  const [{ sections }] = useQuery(getSections, {
     where: { project: { slug: projectSlug! } },
     orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
+    include: { subsections: { select: { id: true, geometry: true } } },
   })
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  if (!sections.length) return null
 
   return (
     <>
@@ -32,26 +26,9 @@ export const ProjectDashboardWithQuery = () => {
       <PageHeader title={project.name} />
 
       <h2>Alle Teilstrecken</h2>
-      <ul>
-        {sections.map((section) => (
-          <li key={section.id}>
-            <Link
-              href={Routes.SectionDashboardPage({
-                projectSlug: projectSlug!,
-                sectionSlug: section.slug,
-              })}
-            >
-              {section.name}
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <Pagination
-        hasMore={hasMore}
-        page={page}
-        handlePrev={goToPreviousPage}
-        handleNext={goToNextPage}
-      />
+
+      <SectionsMap sections={sections as BaseMapSections} />
+      <SectionsTeasers sections={sections} />
 
       <h2>Kommende Termine</h2>
       <code>todo</code>
@@ -69,8 +46,6 @@ export const ProjectDashboardWithQuery = () => {
 }
 
 const ProjectDashboardPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
-
   return (
     <LayoutArticle>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
