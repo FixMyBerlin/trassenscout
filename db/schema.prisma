@@ -70,13 +70,13 @@ model Token {
 // }
 
 model Project {
-  id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  slug         String   @unique
-  name         String
-  shortName    String?
-  introduction String?
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  slug        String   @unique
+  name        String
+  shortName   String?
+  description String?
 
   manager   User @relation(fields: [managerId], references: [id])
   managerId Int

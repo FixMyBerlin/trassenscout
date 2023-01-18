@@ -26,8 +26,8 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
       <LabeledTextField type="text" name="name" label="Name" placeholder="" />
       <LabeledTextField type="text" name="shortName" label="Kurzname" placeholder="" optional />
       <LabeledTextareaField
-        name="introduction"
-        label="Introduction (Markdown)"
+        name="description"
+        label="Beschreibung (Markdown)"
         placeholder=""
         optional
       />

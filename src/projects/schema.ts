@@ -5,6 +5,6 @@ export const ProjectSchema = z.object({
   slug: SlugSchema,
   name: NameSchema,
   shortName: z.string().nullish(),
-  introduction: z.string().nullish(),
+  description: z.string().nullish(),
   managerId: z.coerce.number(),
 })
