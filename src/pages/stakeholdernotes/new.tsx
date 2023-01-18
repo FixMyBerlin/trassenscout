@@ -9,6 +9,7 @@ import {
 } from "src/stakeholdernotes/components/StakeholdernoteForm"
 import { Link } from "src/core/components/links"
 import { Suspense } from "react"
+import { StakeholdernoteSchema } from "src/stakeholdernotes/schema"
 
 const NewStakeholdernote = () => {
   const router = useRouter()
@@ -34,7 +35,7 @@ const NewStakeholdernote = () => {
       <StakeholdernoteForm
         submitText="Erstellen"
         // TODO schema: See `__ModelIdParam__/edit.tsx` for detailed instruction.
-        // schema={StakeholdernoteSchema}
+        schema={StakeholdernoteSchema}
         // initialValues={{}} // Use only when custom initial values are needed
         onSubmit={handleSubmit}
       />

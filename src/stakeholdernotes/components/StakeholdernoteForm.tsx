@@ -1,41 +1,61 @@
-import { Form, FormProps } from "src/core/components/forms"
+import {
+  Form,
+  FormProps,
+  LabeledCheckboxGroup,
+  LabeledRadiobuttonGroup,
+  LabeledSelect,
+  LabeledTextareaField,
+  LabeledTextField,
+} from "src/core/components/forms"
 import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function StakeholdernoteForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
     <Form<S> {...props}>
-      {/*
-        <LabeledTextField type="text" name="name" label="Name" placeholder="Name" />
+      <LabeledTextField type="text" name="title" label="Name" placeholder="" />
 
-        <LabeledTextareaField name="testTextarea" label="Test Textarea" placeholder="Placeholder" />
+      <LabeledTextareaField
+        name="statusText"
+        label="Beschreibung des Status (Markdown)"
+        placeholder=""
+      />
 
-        <LabeledCheckboxGroup
-          items={["item1", "item2", "item3"].map((item) => ({
-            name: `checkbox${item}help`,
-            label: `Test Checkbox ${item}`,
-            help: `Help text ${item}`,
-          }))}
-        />
+      {/* <LabeledCheckboxGroup
+        items={["irrelevant", "pending", "inprogress", "done"].map((item) => ({
+          name: `checkbox${item}help`,
+          label: `Test Checkbox ${item}`,
+          help: `Help text ${item}`,
+        }))}
+      /> */}
 
-        <LabeledRadiobuttonGroup
-          items={["item1", "item2", "item3"].map((item) => ({
-            scope: "help",
-            name: `radio${item}help`,
-            label: `Test Radiobutton ${item}`,
-            help: `Help text ${item}`,
-          }))}
-        />
+      {/* <LabeledRadiobuttonGroup
+        items={["item1", "item2", "item3"].map((item) => ({
+          scope: "help",
+          name: `radio${item}help`,
+          label: `Test Radiobutton ${item}`,
+          help: `Help text ${item}`,
+        }))}
+      /> */}
 
-        <LabeledSelect
-          name="testSelect"
-          label="Test Select"
-          options={[
-            ["foo", "Foo 1"],
-            ["bar", "Bar 1"],
-          ]}
-        />
-      */}
+      <LabeledSelect
+        name="sectionId"
+        label="Teilstrecke"
+        options={[
+          ["1", "1"],
+          ["2", "2"],
+        ]}
+      />
+      <LabeledSelect
+        name="status"
+        label="Status"
+        options={[
+          ["irrelevant", "irrelevant"],
+          ["pending", "ausstehend"],
+          ["inprogress", "in Arbeit"],
+          ["done", "erledigt"],
+        ]}
+      />
     </Form>
   )
 }
