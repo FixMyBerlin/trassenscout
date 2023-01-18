@@ -18,32 +18,6 @@ export function StakeholdernoteForm<S extends z.ZodType<any, any>>(props: FormPr
         label="Beschreibung des Status (Markdown)"
         placeholder=""
       />
-
-      {/* <LabeledCheckboxGroup
-        items={["irrelevant", "pending", "inprogress", "done"].map((item) => ({
-          name: `checkbox${item}help`,
-          label: `Test Checkbox ${item}`,
-          help: `Help text ${item}`,
-        }))}
-      /> */}
-
-      {/* <LabeledRadiobuttonGroup
-        items={["item1", "item2", "item3"].map((item) => ({
-          scope: "help",
-          name: `radio${item}help`,
-          label: `Test Radiobutton ${item}`,
-          help: `Help text ${item}`,
-        }))}
-      /> */}
-
-      <LabeledSelect
-        name="sectionId"
-        label="Teilstrecke"
-        options={[
-          ["1", "1"],
-          ["2", "2"],
-        ]}
-      />
       <LabeledSelect
         name="status"
         label="Status"

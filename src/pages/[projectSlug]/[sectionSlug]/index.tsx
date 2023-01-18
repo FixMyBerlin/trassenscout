@@ -64,7 +64,14 @@ export const SectionDashboardWithQuery = () => {
           Neuer Abschnitt
         </Link>
         <br />
-        <Link href={Routes.NewStakeholdernotePage()}>Neuer Stakeholder</Link>
+        <Link
+          href={Routes.NewStakeholdernotePage({
+            projectSlug: projectSlug!,
+            sectionSlug: sectionSlug!,
+          })}
+        >
+          Neuer Stakeholder
+        </Link>
 
         <ul>
           {subsections.map((subsection) => {
