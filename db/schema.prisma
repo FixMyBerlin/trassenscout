@@ -160,7 +160,16 @@ model Subsection {
 model Stakeholdernote {
   id          Int                             @id @default(autoincrement())
   name        String
+  status      StakeholdernoteStatusEnum
+  statusText  String?
   subsections StakeholdernotesOnSubsections[]
+}
+
+enum StakeholdernoteStatusEnum {
+  irrelevant
+  pending
+  inprogress
+  done
 }
 
 model StakeholdernotesOnSubsections {
