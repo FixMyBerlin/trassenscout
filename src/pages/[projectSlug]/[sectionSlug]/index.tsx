@@ -57,12 +57,14 @@ export const SectionDashboardWithQuery = () => {
         >
           Bearbeiten (und löschen)
         </Link>
-
+        <br />
         <Link
           href={Routes.NewSubsectionPage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}
         >
           Neuer Abschnitt
         </Link>
+        <br />
+        <Link href={Routes.NewStakeholdernotePage()}>Neuer Stakeholder</Link>
 
         <ul>
           {subsections.map((subsection) => {
