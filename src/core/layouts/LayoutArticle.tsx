@@ -1,5 +1,7 @@
 import { BlitzLayout } from "@blitzjs/next"
+import clsx from "clsx"
 import React from "react"
+import { proseClasses } from "../components/text"
 import { Layout } from "./Layout"
 
 type Props = {
@@ -9,7 +11,7 @@ type Props = {
 export const LayoutArticle: BlitzLayout<Props> = ({ children }) => {
   return (
     <Layout>
-      <div className="prose mx-auto w-full">{children}</div>
+      <div className={clsx(proseClasses, "mx-auto w-full")}>{children}</div>
     </Layout>
   )
 }
