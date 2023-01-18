@@ -25,10 +25,6 @@ export const StakeholdernotesList = () => {
     <>
       <h1>Stakeholdernotes</h1>
 
-      <p>
-        <Link href={Routes.NewStakeholdernotePage()}>Stakeholdernote erstellen</Link>
-      </p>
-
       <ul>
         {stakeholdernotes.map((stakeholdernote) => (
           <li key={stakeholdernote.id}>

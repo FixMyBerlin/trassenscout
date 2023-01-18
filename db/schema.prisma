@@ -161,15 +161,15 @@ model Stakeholdernote {
   createdAt  DateTime                  @default(now())
   updatedAt  DateTime                  @updatedAt
   title      String
-  status     StakeholdernoteStatusEnum
+  status     StakeholdernoteStatusEnum @default(PENDING)
   statusText String?
   section    Section                   @relation(fields: [sectionId], references: [id])
   sectionId  Int
 }
 
 enum StakeholdernoteStatusEnum {
-  irrelevant
-  pending
-  inprogress
-  done
+  PENDING
+  IN_PROGRESS
+  DONE
+  IRRELEVANT
 }

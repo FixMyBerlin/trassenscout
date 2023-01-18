@@ -12,16 +12,16 @@ export const StakeholdernotesList = () => {
   })
 
   const stakeholdersDone = stakeholdernotes.filter(
-    (stakeholdernotes) => stakeholdernotes.status === "done"
+    (stakeholdernotes) => stakeholdernotes.status === "DONE"
   )
   const stakeholdersPending = stakeholdernotes.filter(
-    (stakeholdernotes) => stakeholdernotes.status === "pending"
+    (stakeholdernotes) => stakeholdernotes.status === "PENDING"
   )
   const stakeholdersIrrelevant = stakeholdernotes.filter(
-    (stakeholdernotes) => stakeholdernotes.status === "irrelevant"
+    (stakeholdernotes) => stakeholdernotes.status === "IRRELEVANT"
   )
   const stakeholdersInProgress = stakeholdernotes.filter(
-    (stakeholdernotes) => stakeholdernotes.status === "inprogress"
+    (stakeholdernotes) => stakeholdernotes.status === "IN_PROGRESS"
   )
 
   return (

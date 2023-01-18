@@ -4,39 +4,39 @@ const seedStakeholdernotes = async () => {
   const stakeholdernotes: Omit<Stakeholdernote, "id" | "createdAt" | "updatedAt">[] = [
     {
       title: "Kita Klein und Stark",
-      status: "inprogress",
+      status: "IN_PROGRESS",
       statusText: null,
       sectionId: 2,
     },
     {
       title: "ADFC Süd",
-      status: "done",
+      status: "DONE",
       statusText: null,
       sectionId: 1,
     },
     {
       title: "Feuerwehr Schrankenhusenborstel",
-      status: "pending",
+      status: "PENDING",
       statusText: "Gspräch per Telefon vielversprechend",
       sectionId: 1,
     },
     {
       title: "Kita Schrankenhusenborstel",
-      status: "inprogress",
+      status: "IN_PROGRESS",
       statusText:
         "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
       sectionId: 2,
     },
     {
       title: "ADFC Nord",
-      status: "done",
+      status: "DONE",
       statusText:
         "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
       sectionId: 1,
     },
     {
       title: "Feuerwehr Schrankenhusenborstel",
-      status: "pending",
+      status: "IRRELEVANT",
       statusText: "Gspräch per Telefon vielversprechend",
       sectionId: 1,
     },
