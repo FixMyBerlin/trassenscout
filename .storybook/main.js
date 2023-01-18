@@ -12,15 +12,12 @@ module.exports = {
   core: {
     builder: "@storybook/builder-webpack5",
   },
-  webpackFinal: (config) => {
-    config.resolve.plugins = config.resolve.plugins || []
-    config.resolve.plugins.push(
+  webpackFinal: async (config) => {
+    config.resolve.plugins = [
+      ...(config.resolve.plugins || []),
       // @ts-ignore
-      new TsconfigPathsPlugin({
-        configFile: path.resolve(__dirname, "../tsconfig.json"),
-      })
-    )
-
+      new TsconfigPathsPlugin({ extensions: config.resolve.extensions }),
+    ]
     return config
   },
 }
