@@ -4,4 +4,5 @@ export const StakeholdernoteSchema = z.object({
   title: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
   statusText: z.string().nullish(),
   status: z.enum(["irrelevant", "pending", "inprogress", "done"]),
+  sectionId: z.coerce.number(),
 })
