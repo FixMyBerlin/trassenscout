@@ -43,7 +43,7 @@
     "maplibre-gl": "2.4.0",
     "next": "12.2.5",
     "postcss": "8.4.20",
-    "prisma": "4.6.0",
+    "prisma": "4.6.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "7.41.0",
