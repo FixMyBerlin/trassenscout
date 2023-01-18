@@ -1,4 +1,4 @@
-module.exports = require("@blitzjs/next/eslint")
+module.exports = require("@blitzjs/next/eslint");
 
 // TODO
 // We have those linters in other projects, hande i18n issues.
@@ -11,3 +11,4 @@ module.exports = require("@blitzjs/next/eslint")
 // We also need to figure out how to add them here.
 // - https://nextjs.org/docs/basic-features/eslint
 // - legacy blitz: https://github.com/blitz-js/blitz/discussions/2529#discussioncomment-911474
+export const extends = ["plugin:storybook/recommended"];
