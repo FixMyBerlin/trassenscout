@@ -25,9 +25,9 @@ export const Stakeholdernote = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Stakeholdernote ${quote(stakeholdernote.id)}`} />
+      <MetaTags noindex title={`Stakeholdernote ${quote(stakeholdernote.title)}`} />
 
-      <h1>Stakeholdernote {quote(stakeholdernote.id)}</h1>
+      <h1>Stakeholdernote {quote(stakeholdernote.title)}</h1>
       <SuperAdminBox>
         <pre>{JSON.stringify(stakeholdernote, null, 2)}</pre>
       </SuperAdminBox>

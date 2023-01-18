@@ -12,7 +12,6 @@ export const StakeholdernotesList = () => {
 
   return (
     <>
-      
       <p>
         <Link href={Routes.NewStakeholdernotePage()}>Stakeholdernote erstellen</Link>
       </p>

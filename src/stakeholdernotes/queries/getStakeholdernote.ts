@@ -1,12 +1,12 @@
-import { NotFoundError } from "blitz";
-import { resolver } from "@blitzjs/rpc";
-import db from "db";
-import { z } from "zod";
+import { NotFoundError } from "blitz"
+import { resolver } from "@blitzjs/rpc"
+import db from "db"
+import { z } from "zod"
 
 const GetStakeholdernote = z.object({
   // This accepts type of undefined, but is required at runtime
   id: z.number().optional().refine(Boolean, "Required"),
-});
+})
 
 export default resolver.pipe(
   resolver.zod(GetStakeholdernote),
@@ -15,10 +15,10 @@ export default resolver.pipe(
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const stakeholdernote = await db.stakeholdernote.findFirst({
       where: { id },
-    });
+    })
 
-    if (!stakeholdernote) throw new NotFoundError();
+    if (!stakeholdernote) throw new NotFoundError()
 
-    return stakeholdernote;
+    return stakeholdernote
   }
-);
+)

@@ -46,7 +46,7 @@ export const SectionDashboardWithQuery = () => {
         })}
       </ul>
 
-      <StakeholdernoteList/>
+      <StakeholdernoteList />
 
       <section className="rounded border border-cyan-800 bg-cyan-100 p-5">
         <Link
