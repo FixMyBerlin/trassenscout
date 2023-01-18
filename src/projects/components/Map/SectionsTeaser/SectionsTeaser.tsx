@@ -14,7 +14,7 @@ export const SectionsTeaser: React.FC<Props> = ({ section }) => {
 
   return (
     <div
-      key={section.name}
+      key={section.id}
       className="group w-full rounded-md border-2 border-gray-200 bg-white p-5 hover:bg-gray-100 md:w-1/3"
     >
       <Link
@@ -26,7 +26,7 @@ export const SectionsTeaser: React.FC<Props> = ({ section }) => {
       >
         <div className="mb-3 flex items-center justify-start gap-3">
           <SectionMarker number={section.index} />
-          <h3 className="grow text-xl font-bold leading-tight">{section.name}</h3>
+          <h3 className="grow text-xl font-bold leading-tight">{section.title}</h3>
         </div>
         <div className="flex items-end justify-between">
           <span className="inline-flex items-center rounded-full bg-rsv-ochre px-2.5 py-1 text-xs text-white">

@@ -61,9 +61,9 @@ const EditSubsection = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Abschnitt ${subsection.name} bearbeiten`} />
+      <MetaTags noindex title={`Abschnitt ${subsection.title} bearbeiten`} />
 
-      <h1>Abschnitt {subsection.name} bearbeiten</h1>
+      <h1>Abschnitt {subsection.title} bearbeiten</h1>
       <SuperAdminBox>
         <pre>{JSON.stringify(subsection, null, 2)}</pre>
       </SuperAdminBox>

@@ -5,7 +5,7 @@ const seedSubsections = async () => {
     // Section 1:
     {
       slug: "abschnitt-hansaviertel",
-      name: "Abschnitt 1 Hansaviertel",
+      title: "Abschnitt 1 Hansaviertel",
       description: `*Lorem ipsum dolor sit amet*, consetetur sadipscing elitr.
 
 Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr.
@@ -29,7 +29,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     },
     {
       slug: "abschnitt-hbf",
-      name: "Abschnitt Hauptbahnhof",
+      title: "Abschnitt Hauptbahnhof",
       description: null,
       geometry: JSON.stringify([
         [13.392787102151175, 52.52243126246529],
@@ -45,7 +45,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     },
     {
       slug: "abschnitt-insel",
-      name: "Abschnitt Museumsinsel",
+      title: "Abschnitt Museumsinsel",
       description: null,
       geometry: JSON.stringify([
         [13.410442693616204, 52.514591398693426],
@@ -58,7 +58,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     },
     {
       slug: "abschnitt-east-side",
-      name: "Abschnitt East Side",
+      title: "Abschnitt East Side",
       description: null,
       geometry: JSON.stringify([
         [13.451639073702552, 52.499875779590525],
@@ -72,7 +72,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     // Section 2:
     {
       slug: "abschnitt-tiergarten",
-      name: "Abschnitt Tiergarten",
+      title: "Abschnitt Tiergarten",
       description: null,
       geometry: JSON.stringify([
         [13.317597867354067, 52.52004509035683],
@@ -85,7 +85,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     },
     {
       slug: "abschnitt-gleisdreieck",
-      name: "Abschnitt Gleisdreieck",
+      title: "Abschnitt Gleisdreieck",
       description: null,
       geometry: JSON.stringify([
         [13.35206427335541, 52.505835784446134],
@@ -101,7 +101,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     },
     {
       slug: "abschnitt-urbahnhafen",
-      name: "Abschnitt Urbahnhafen",
+      title: "Abschnitt Urbahnhafen",
       description: null,
       geometry: JSON.stringify([
         [13.388480650254337, 52.497979825501545],
@@ -114,7 +114,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     },
     {
       slug: "abschnitt-paul-lincke-ufer",
-      name: "Abschnitt Paul Lincke Ufer",
+      title: "Abschnitt Paul Lincke Ufer",
       description: null,
       geometry: JSON.stringify([
         [13.41977042897335, 52.49633598230557],
@@ -127,7 +127,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     // Seection 3:
     {
       slug: "abschnitt-1",
-      name: "Abschnitt 1",
+      title: "Abschnitt 1",
       description: null,
       geometry: JSON.stringify([
         [13.41977042897335, 52.49633598230557],

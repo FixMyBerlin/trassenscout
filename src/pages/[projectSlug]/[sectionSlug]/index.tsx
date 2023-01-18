@@ -7,7 +7,6 @@ import { Markdown } from "src/core/components/Markdown/Markdown"
 import { PageHeader } from "src/core/components/PageHeader"
 import { quote } from "src/core/components/text"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
-import { StakeholdernotesList } from "src/pages/stakeholdernotes"
 import getSection from "src/sections/queries/getSection"
 import StakeholdernoteList from "src/stakeholdernotes/components/StakeholdernoteList"
 import getSubsections from "src/subsections/queries/getSubsections"
@@ -18,27 +17,27 @@ export const SectionDashboardWithQuery = () => {
   const [section] = useQuery(getSection, { slug: sectionSlug })
   const [{ subsections, count }] = useQuery(getSubsections, {
     where: { section: { slug: sectionSlug! } },
-    orderBy: { name: "asc" },
+    orderBy: { title: "asc" },
   })
 
   return (
     <>
-      <MetaTags noindex title={`Section ${quote(section.name)}`} />
-      <PageHeader title={section.name} />
+      <MetaTags noindex title={section.title} />
+      <PageHeader title={section.title} subtitle={section.subTitle} />
 
       <h2>Alle Daten zu unserer Teilstrecke</h2>
       <SuperAdminBox>
         <pre>{JSON.stringify(section, null, 2)}</pre>
       </SuperAdminBox>
 
-      <h2>Alle Abschnitte diese Teilstrecke</h2>
+      <h2>Alle {count} Abschnitte diese Teilstrecke</h2>
       <ul>
         {subsections.map((subsection) => {
           const debugSubsection = subsection
           debugSubsection.geometry = "Gekürzt für die Lesbarkeit"
           return (
             <li key={subsection.id}>
-              <strong>{subsection.name}</strong>
+              <strong>{subsection.title}</strong>
               <Markdown markdown={subsection.description} />
               <pre>{JSON.stringify(subsection, undefined, 2)}</pre>
             </li>
@@ -84,7 +83,7 @@ export const SectionDashboardWithQuery = () => {
                     subsectionSlug: subsection.slug,
                   })}
                 >
-                  {subsection.name} bearbeiten
+                  {quote(subsection.title)} bearbeiten
                 </Link>
               </li>
             )

@@ -4,6 +4,7 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
+import { quote } from "src/core/components/text"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import updateProject from "src/projects/mutations/updateProject"
@@ -42,9 +43,9 @@ const EditProjectWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Project ${project.name} bearbeiten`} />
+      <MetaTags noindex title={`Project ${quote(project.title)} bearbeiten`} />
       <SuperAdminBox>
-        <h1>Project {project.id} bearbeiten</h1>
+        <h1>Project {quote(project.title)} bearbeiten</h1>
         <pre>{JSON.stringify(project, null, 2)}</pre>
 
         <ProjectForm

@@ -5,7 +5,8 @@ const seedSections = async () => {
     // Project 1:
     {
       slug: "teilstrecke-1",
-      name: "Teilstrecke 1: Spree",
+      title: "Teilstrecke 1",
+      subTitle: "Route Spree",
       index: 1,
       description: `*Lorem ipsum dolor sit amet*, consetetur sadipscing elitr.
 
@@ -17,7 +18,8 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     },
     {
       slug: "teilstrecke-2",
-      name: "Teilstrecke 2: Kanal",
+      title: "Teilstrecke 2",
+      subTitle: "Route Kanal",
       index: 2,
       description: null,
       managerId: 1,
@@ -26,7 +28,8 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     // Project 2:
     {
       slug: "teilstrecke-1",
-      name: "Teilstrecke 1",
+      title: "Teilstrecke ",
+      subTitle: null,
       index: 2,
       description: null,
       managerId: 1,
@@ -37,7 +40,8 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     // Project 4:
     {
       slug: "teilstrecke-1",
-      name: "Teilstrecke 1",
+      title: "Teilstrecke ",
+      subTitle: null,
       index: 2,
       description: null,
       managerId: 1,

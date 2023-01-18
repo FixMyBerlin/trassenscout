@@ -20,7 +20,7 @@ export const SectionsMap: React.FC<Props> = ({ sections }) => {
 
     return (
       <Marker
-        key={section.name}
+        key={section.id}
         longitude={midPoint.geometry.coordinates[0]}
         latitude={midPoint.geometry.coordinates[1]}
         anchor="center"

@@ -41,7 +41,7 @@ const NewSubsection = () => {
       <MetaTags noindex title="Neuen Abschnitt erstellen" />
 
       <h1>Neuen Abschnitt erstellen</h1>
-      <p>In Teilstrecke {quote(section.name)}</p>
+      <p>In Teilstrecke {quote(section.title)}</p>
 
       <SubsectionForm
         submitText="Erstellen"

@@ -3,6 +3,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
+import { quote } from "src/core/components/text"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { BaseMapSections, SectionsMap } from "src/projects/components/Map"
 import { SectionsTeasers } from "src/projects/components/Map/SectionsTeaser/SectionsTeasers"
@@ -22,8 +23,8 @@ export const ProjectDashboardWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={project.name} />
-      <PageHeader title={project.name} />
+      <MetaTags noindex title={project.title} />
+      <PageHeader title={project.title} />
 
       <h2>Alle Teilstrecken</h2>
 
@@ -36,7 +37,7 @@ export const ProjectDashboardWithQuery = () => {
 
       <section className="rounded border border-cyan-800 bg-cyan-100 p-5">
         <Link href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
-          {project.name} bearbeiten
+          {quote(project.title)} bearbeiten
         </Link>
 
         <Link href={Routes.NewSectionPage({ projectSlug: projectSlug! })}>Neue Teilstrecke</Link>

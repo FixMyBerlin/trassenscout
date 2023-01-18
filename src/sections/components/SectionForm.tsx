@@ -24,7 +24,8 @@ export function SectionForm<S extends z.ZodType<any, any>>(
         placeholder=""
       />
       <LabeledTextField type="number" name="index" label="Index und Reihenfolge" placeholder="" />
-      <LabeledTextField type="text" name="name" label="Name" placeholder="" />
+      <LabeledTextField type="text" name="title" label="Name" placeholder="" />
+      <LabeledTextField type="text" name="subTitle" label="Untertitel" placeholder="" />
       <LabeledTextareaField
         name="description"
         label="Beschreibung (Markdown)"

@@ -78,8 +78,8 @@ model Project {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   slug        String   @unique
-  name        String
-  shortName   String?
+  title       String
+  shortTitle  String?
   description String?
 
   manager   User @relation(fields: [managerId], references: [id])
@@ -126,7 +126,8 @@ model Section {
   updatedAt   DateTime @updatedAt
   slug        String
   index       Int
-  name        String
+  title       String
+  subTitle    String?
   description String?
 
   manager   User    @relation(fields: [managerId], references: [id])
@@ -146,7 +147,7 @@ model Subsection {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   slug        String
-  name        String
+  title       String
   description String?
   geometry    String
 

@@ -39,7 +39,7 @@ const ProjectsList = () => {
         {projects.map((project) => (
           <li key={project.id}>
             <Link href={Routes.ProjectDashboardPage({ projectSlug: project.slug })}>
-              {project.name}
+              {project.title}
             </Link>
           </li>
         ))}
