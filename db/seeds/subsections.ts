@@ -4,7 +4,7 @@ const seedSubsections = async () => {
   const seeData: Omit<Subsection, "id" | "createdAt" | "updatedAt">[] = [
     {
       slug: "abschnitt-oberstadt",
-      name: "Section 1",
+      name: "Abschnitt 1",
       description: `*Lorem ipsum dolor sit amet*, consetetur sadipscing elitr.
 
 Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr.
@@ -30,7 +30,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     },
     {
       slug: "abschnitt-unterstadt",
-      name: "Section 2",
+      name: "Abschnitt 2",
       description: null,
       geometry: JSON.stringify([
         [9.240035354230526, 48.887679242641617],
