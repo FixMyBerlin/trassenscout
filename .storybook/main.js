@@ -12,9 +12,13 @@ module.exports = {
     builder: "@storybook/builder-webpack5",
   },
   webpackFinal: async (config) => {
-    console.log("foo", { config })
-    config.resolve.modules = [path.resolve(__dirname, ".."), "node_modules"]
-    console.log("foo2", { config })
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      src: path.resolve(__dirname, "../src"),
+      db: path.resolve(__dirname, "../db"),
+      // blitz: path.resolve(__dirname, "../node_modules/blitz/dist/index-server"),
+    }
+    console.log(config.resolve.alias)
 
     return config
   },
