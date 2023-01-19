@@ -1,9 +1,9 @@
 <div align="center"><br><br>
   <!--<img src="src/images/rsv8-logo.png" height="80" />-->
-  <h1 align="center">Trassenscout</h1>
+  <h1 align="center">Trassenscout (Alpha)</h1>
 </div>
 
-> Trassenscout supports administrations in the process of evaluating and building cycle highways and other route based infrastructure.
+> Trassenscout (Alpha) supports administrations in the process of evaluating and building cycle highways and other route based infrastructure.
 >
 > Please contact hello@fixmycity.de to learn more.
 
