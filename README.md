@@ -84,7 +84,7 @@ Blitz comes with a test setup using [Vitest](https://vitest.dev/) and [react-tes
 ### "new schema" flow
 
 1. Use `blitz g all calendarEntries title:string startAt:dateTime "locationName:string?" "locationUrl:string?" "description:string?" --dry-run` for scaffolding.
-  - Run `--dry-run` first to check the folder names and file names.
+   - Run `--dry-run` first to check the folder names and file names.
 
 1. Check [db/schema.prisma](./db/schema.prisma) if all was "translated".
 
