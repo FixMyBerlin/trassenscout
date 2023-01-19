@@ -1,6 +1,5 @@
 import { BlitzLayout } from "@blitzjs/next"
 import Head from "next/head"
-import React from "react"
 import { NavigationGeneral } from "./Navigation"
 
 type Props = {

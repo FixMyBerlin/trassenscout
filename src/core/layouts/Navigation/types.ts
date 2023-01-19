@@ -1,5 +1,4 @@
 import { RouteUrlObject } from "blitz"
-import { ReactNode } from "react"
 
 export type MenuItems = { menuItems: MenuItem[] }
 

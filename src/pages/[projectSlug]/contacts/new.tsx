@@ -1,6 +1,7 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
+import { Suspense } from "react"
 import { ContactForm, FORM_ERROR } from "src/contacts/components/ContactForm"
 import createContact from "src/contacts/mutations/createContact"
 import { ContactSchema } from "src/contacts/schema"
@@ -9,7 +10,7 @@ import { PageHeader } from "src/core/components/PageHeader"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import getProject from "src/projects/queries/getProject"
 
-const NewContactPage: BlitzPage = () => {
+const NewContactWithQuery: BlitzPage = () => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug! })
@@ -40,6 +41,18 @@ const NewContactPage: BlitzPage = () => {
         schema={ContactSchema.omit({ projectId: true })}
         onSubmit={handleSubmit}
       />
+    </LayoutRs8>
+  )
+}
+
+const NewContactPage: BlitzPage = () => {
+  const projectSlug = useParam("projectSlug", "string")
+
+  return (
+    <LayoutRs8>
+      <Suspense fallback={<div>Daten werden geladen…</div>}>
+        <NewContactWithQuery />
+      </Suspense>
 
       <p className="mt-5">
         <Link href={Routes.ContactsPage({ projectSlug: projectSlug! })}>
