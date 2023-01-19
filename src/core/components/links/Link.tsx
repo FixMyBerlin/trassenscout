@@ -1,7 +1,7 @@
-import React, { AnchorHTMLAttributes, forwardRef } from "react"
+import { RouteUrlObject } from "blitz"
 import clsx from "clsx"
 import NextLink from "next/link"
-import { RouteUrlObject } from "blitz"
+import { forwardRef } from "react"
 
 const baseStyles = "text-slate-900 underline-offset-4 decoration-rsv-blau hover:text-rsv-blau"
 export const linkStyles = `${baseStyles} underline`

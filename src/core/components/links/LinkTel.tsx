@@ -1,4 +1,3 @@
-import React from "react"
 import clsx from "clsx"
 import { buttonStyles, linkStyles } from "./Link"
 
