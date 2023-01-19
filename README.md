@@ -3,9 +3,11 @@
   <h1 align="center">Trassenscout</h1>
 </div>
 
-Trassenscout supports administrations in the process of evaluating and building cycle highways and other route based infrastructure.
+> Trassenscout supports administrations in the process of evaluating and building cycle highways and other route based infrastructure.
+>
+> Please contact hello@fixmycity.de to learn more.
 
-Please contact hello@fixmycity.de to learn more.
+---
 
 ### Architecture
 
@@ -32,9 +34,7 @@ There is a `.env.local` and a `.env.production` file, which provide the keys to 
 - Blitz handels the communication between server and client with [Blitz RPC (Docs)](https://blitzjs.com/docs/rpc-overview)
 - Blitz enhances NextJS with [type save routes (Docs)](https://blitzjs.com/docs/cli-routes)
 - Everything else is part of Next JS and documented in [the Next JS Docs](https://nextjs.org/docs/getting-started).
-
-  > Note: This project usees Next 12 (for now).
-
+  > **Note** This project usees Next 12 (for now).
 
 ## Getting Started
 
