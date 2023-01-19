@@ -3,7 +3,8 @@ import db, { Contact } from "../index"
 const seedContacts = async () => {
   const seedContacts: Omit<Contact, "id" | "createdAt" | "updatedAt">[] = [
     {
-      name: "Sven",
+      firstName: null,
+      lastName: "Svenson",
       email: "sven@fixmycity.de",
       title: "Developer",
       role: "Member",
@@ -11,7 +12,8 @@ const seedContacts = async () => {
       projectId: 1,
     },
     {
-      name: "Tobias Jordans",
+      firstName: "Tobias",
+      lastName: "Jordans",
       email: "tobias@fixmycity.de",
       title: null,
       role: null,
@@ -19,7 +21,8 @@ const seedContacts = async () => {
       projectId: 1,
     },
     {
-      name: "Johanna",
+      firstName: "Johanna",
+      lastName: "Michel",
       email: "johanna@fixmycity.de",
       title: "Developer",
       role: "Member",

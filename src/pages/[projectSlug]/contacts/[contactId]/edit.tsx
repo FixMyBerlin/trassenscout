@@ -46,9 +46,18 @@ const EditContact = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Kontakt von ${contact.name} bearbeiten`} />
+      <MetaTags
+        noindex
+        title={`Kontakt von${contact.firstName ? " " + contact.firstName : ""} ${
+          contact.lastName
+        } bearbeiten`}
+      />
 
-      <PageHeader title={`Kontakt von ${contact.name} bearbeiten`} />
+      <PageHeader
+        title={`Kontakt von${contact.firstName ? " " + contact.firstName : ""} ${
+          contact.lastName
+        } bearbeiten`}
+      />
       <SuperAdminBox>
         <pre>{JSON.stringify(contact, null, 2)}</pre>
       </SuperAdminBox>

@@ -27,8 +27,15 @@ export const Contact = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Kontakt ${quote(contact.name)}`} />
-      <PageHeader title={contact.name} />
+      <MetaTags
+        noindex
+        title={`Kontakt ${quote(
+          contact.firstName ? contact.firstName + " " + contact.lastName : contact.lastName
+        )}`}
+      />
+      <PageHeader
+        title={contact.firstName ? contact.firstName + " " + contact.lastName : contact.lastName}
+      />
       <p className="mb-10 space-x-4">
         <Link href={Routes.ContactsPage({ projectSlug: projectSlug! })}>
           Zurück zur Kontaktliste

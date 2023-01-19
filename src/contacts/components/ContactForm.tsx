@@ -5,11 +5,12 @@ export { FORM_ERROR } from "src/core/components/forms"
 export function ContactForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
     <Form<S> className="max-w-prose" {...props}>
-      <LabeledTextField type="text" name="name" label="Vor- und Nachname" placeholder="" />
+      <LabeledTextField type="text" name="firstName" label="Vorname" optional placeholder="" />
+      <LabeledTextField type="text" name="lastName" label="Nachname" placeholder="" />
       <LabeledTextField type="text" name="email" label="E-Mail-Adresse" placeholder="" />
-      <LabeledTextField type="text" name="phone" label="Telefonnummer" placeholder="" />
-      <LabeledTextField type="text" name="title" label="Titel" placeholder="" />
-      <LabeledTextField type="text" name="role" label="Position" placeholder="" />
+      <LabeledTextField type="text" name="phone" label="Telefonnummer" optional placeholder="" />
+      <LabeledTextField type="text" name="title" label="Titel" optional placeholder="" />
+      <LabeledTextField type="text" name="role" label="Position" optional placeholder="" />
     </Form>
   )
 }

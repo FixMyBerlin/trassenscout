@@ -55,7 +55,8 @@ export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) =>
                 <tr key={contact.email}>
                   <td className="h-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                     <div className="flex items-center font-medium text-gray-900">
-                      {contact.name}
+                      {contact.firstName ? contact.firstName + " " : ""}
+                      {contact.lastName}
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
