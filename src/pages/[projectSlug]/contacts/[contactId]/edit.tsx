@@ -10,7 +10,7 @@ import updateContact from "src/contacts/mutations/updateContact"
 import getContact from "src/contacts/queries/getContact"
 import { PageHeader } from "src/core/components/PageHeader"
 
-const EditContact = () => {
+const EditContactWithQuery = () => {
   const router = useRouter()
   const contactId = useParam("contactId", "number")
   const projectSlug = useParam("projectSlug", "string")
@@ -64,7 +64,7 @@ const EditContactPage: BlitzPage = () => {
   return (
     <LayoutRs8>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
-        <EditContact />
+        <EditContactWithQuery />
       </Suspense>
 
       <p>
