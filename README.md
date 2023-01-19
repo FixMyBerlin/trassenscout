@@ -9,11 +9,11 @@
 
 ---
 
-### Architecture
+## Architecture
 
 This project is build with [BlitzJS](https://blitzjs.com/) a toolkit build upon [ReactJS](https://reactjs.org/). Data is stored in a PostgreSQL database using Docker.
 
-### Development
+## Development
 
 For starting developing, the following steps could be helpful for getting started:
 
@@ -81,7 +81,7 @@ Blitz comes with a test setup using [Vitest](https://vitest.dev/) and [react-tes
 
 ## Working with data, database
 
-### "new schema" flow
+Follow this steps to add a model with forms and pages:
 
 1. Use `blitz g all calendarEntries title:string startAt:dateTime "locationName:string?" "locationUrl:string?" "description:string?" --dry-run` for scaffolding.
    - Run `--dry-run` first to check the folder names and file names.
@@ -101,7 +101,3 @@ Blitz comes with a test setup using [Vitest](https://vitest.dev/) and [react-tes
      - You can use https://github.com/CarterGrimmeisen/zod-prisma to generate a starting point for this based on the prisma schema. However, this package should only be used in a separate branch since it collides with blitz in some way.
 
 1. Add seed data in [db/seeds.ts](./db/seeds.ts) – all models should have good seed data.
-
-### Seeding
-
-Use `npm run seed`. It will drop and migrate the db and apply the seeds afterwards.
