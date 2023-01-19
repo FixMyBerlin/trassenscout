@@ -4,7 +4,7 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
-import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
+import { LayoutArticle, LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, CalendarEntryForm } from "src/calendar-entries/components/CalendarEntryForm"
 import updateCalendarEntry from "src/calendar-entries/mutations/updateCalendarEntry"
 import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
@@ -75,7 +75,7 @@ const EditCalendarEntryPage: BlitzPage = () => {
   const projectSlug = useParam("projectSlug", "string")
 
   return (
-    <LayoutRs8>
+    <LayoutRs>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <EditCalendarEntry />
       </Suspense>
@@ -85,7 +85,7 @@ const EditCalendarEntryPage: BlitzPage = () => {
           Zurück zur Liste
         </Link>
       </p>
-    </LayoutRs8>
+    </LayoutRs>
   )
 }
 

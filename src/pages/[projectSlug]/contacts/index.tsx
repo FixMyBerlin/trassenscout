@@ -3,7 +3,7 @@ import { BlitzPage, Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
-import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
+import { LayoutArticle, LayoutRs, MetaTags } from "src/core/layouts"
 import getContacts from "src/contacts/queries/getContacts"
 import { Link } from "src/core/components/links"
 import { Pagination } from "src/core/components/Pagination"
@@ -54,7 +54,7 @@ export const ContactTable = () => {
 const ContactsPage: BlitzPage = () => {
   const projectSlug = useParam("projectSlug", "string")
   return (
-    <LayoutRs8>
+    <LayoutRs>
       <MetaTags noindex title="Kontakte" />
       <div>
         <PageHeader
@@ -71,7 +71,7 @@ const ContactsPage: BlitzPage = () => {
           <ContactTable />
         </Suspense>
       </div>
-    </LayoutRs8>
+    </LayoutRs>
   )
 }
 

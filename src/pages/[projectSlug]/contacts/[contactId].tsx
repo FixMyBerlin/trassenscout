@@ -9,7 +9,7 @@ import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { quote } from "src/core/components/text"
-import { LayoutRs8, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 
 export const Contact = () => {
   const router = useRouter()
@@ -54,11 +54,11 @@ export const Contact = () => {
 
 const ShowContactPage: BlitzPage = () => {
   return (
-    <LayoutRs8>
+    <LayoutRs>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <Contact />
       </Suspense>
-    </LayoutRs8>
+    </LayoutRs>
   )
 }
 

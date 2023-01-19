@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import getProject from "src/projects/queries/getProject"
 import { FORM_ERROR, SectionForm } from "src/sections/components/SectionForm"
 import createSection from "src/sections/mutations/createSection"
@@ -54,7 +54,7 @@ const NewSectionPage = () => {
   const projectSlug = useParam("projectSlug", "string")
 
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <NewSectionWithQuery />
       </Suspense>
@@ -62,7 +62,7 @@ const NewSectionPage = () => {
       <p>
         <Link href={Routes.ProjectDashboardPage({ projectSlug: projectSlug! })}>Zum Projekt</Link>
       </p>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 

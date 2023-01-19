@@ -6,7 +6,7 @@ import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
 import { quote } from "src/core/components/text"
-import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
+import { LayoutArticle, LayoutRs, MetaTags } from "src/core/layouts"
 import deleteCalendarEntry from "src/calendar-entries/mutations/deleteCalendarEntry"
 import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
 import { PageHeader } from "src/core/components/PageHeader"
@@ -65,7 +65,7 @@ const ShowCalendarEntryPage: BlitzPage = () => {
   const projectSlug = useParam("projectSlug", "string")
 
   return (
-    <LayoutRs8>
+    <LayoutRs>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <CalendarEntry />
       </Suspense>
@@ -75,7 +75,7 @@ const ShowCalendarEntryPage: BlitzPage = () => {
           Alle CalendarEntries
         </Link>
       </p>
-    </LayoutRs8>
+    </LayoutRs>
   )
 }
 

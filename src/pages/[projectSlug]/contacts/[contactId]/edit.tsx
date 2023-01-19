@@ -4,7 +4,7 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
-import { LayoutArticle, LayoutRs8, MetaTags } from "src/core/layouts"
+import { LayoutArticle, LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, ContactForm } from "src/contacts/components/ContactForm"
 import updateContact from "src/contacts/mutations/updateContact"
 import getContact from "src/contacts/queries/getContact"
@@ -62,7 +62,7 @@ const EditContactPage: BlitzPage = () => {
   const projectSlug = useParam("projectSlug", "string")
 
   return (
-    <LayoutRs8>
+    <LayoutRs>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <EditContact />
       </Suspense>
@@ -72,7 +72,7 @@ const EditContactPage: BlitzPage = () => {
           Zurück zur Kontaktliste
         </Link>
       </p>
-    </LayoutRs8>
+    </LayoutRs>
   )
 }
 

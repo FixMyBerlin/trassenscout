@@ -6,7 +6,7 @@ import createContact from "src/contacts/mutations/createContact"
 import { ContactSchema } from "src/contacts/schema"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
-import { LayoutRs8, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import getProject from "src/projects/queries/getProject"
 
 const NewContactPage: BlitzPage = () => {
@@ -32,7 +32,7 @@ const NewContactPage: BlitzPage = () => {
   }
 
   return (
-    <LayoutRs8>
+    <LayoutRs>
       <MetaTags noindex title="Neuer Kontakt" />
       <PageHeader title="Neuer Kontakt" />
       <ContactForm
@@ -46,7 +46,7 @@ const NewContactPage: BlitzPage = () => {
           Zurück zur Kontaktliste
         </Link>
       </p>
-    </LayoutRs8>
+    </LayoutRs>
   )
 }
 

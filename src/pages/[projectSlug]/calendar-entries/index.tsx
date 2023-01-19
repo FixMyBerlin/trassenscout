@@ -6,7 +6,7 @@ import getCalendarEntries from "src/calendar-entries/queries/getCalendarEntries"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Pagination } from "src/core/components/Pagination"
-import { LayoutRs8, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import { Calender } from "src/rs8/termine/components/Calender"
 
 const ITEMS_PER_PAGE = 100
@@ -51,13 +51,13 @@ export const CalendarEntriesList = () => {
 
 const CalendarEntriesPage: BlitzPage = () => {
   return (
-    <LayoutRs8>
+    <LayoutRs>
       <MetaTags noindex title="Kalendereinträge" />
 
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <CalendarEntriesList />
       </Suspense>
-    </LayoutRs8>
+    </LayoutRs>
   )
 }
 

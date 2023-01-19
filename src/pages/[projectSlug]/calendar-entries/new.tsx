@@ -7,7 +7,7 @@ import createCalendarEntry from "src/calendar-entries/mutations/createCalendarEn
 import { CalendarEntrySchema } from "src/calendar-entries/schema"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
-import { LayoutRs8, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import getProject from "src/projects/queries/getProject"
 
 const NewCalendarEntry = () => {
@@ -54,7 +54,7 @@ const NewCalendarEntryPage: BlitzPage = () => {
   const projectSlug = useParam("projectSlug", "string")
 
   return (
-    <LayoutRs8>
+    <LayoutRs>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <NewCalendarEntry />
       </Suspense>
@@ -64,7 +64,7 @@ const NewCalendarEntryPage: BlitzPage = () => {
           Zurück zur Liste
         </Link>
       </p>
-    </LayoutRs8>
+    </LayoutRs>
   )
 }
 

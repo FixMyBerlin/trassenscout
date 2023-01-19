@@ -1,10 +1,11 @@
 import { Routes, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
+import { CalenderDashboard } from "src/calendar-entries/components"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { quote } from "src/core/components/text"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import { BaseMapSections, SectionsMap } from "src/projects/components/Map"
 import { SectionsTeasers } from "src/projects/components/Map/SectionsTeaser/SectionsTeasers"
 import getProject from "src/projects/queries/getProject"
@@ -31,9 +32,7 @@ export const ProjectDashboardWithQuery = () => {
       <SectionsMap sections={sections as BaseMapSections} />
       <SectionsTeasers sections={sections} />
 
-      <h2>Kommende Termine</h2>
-      <code>todo</code>
-      {/* TODO: Termine Dashboard Modul */}
+      <CalenderDashboard />
 
       <section className="rounded border border-cyan-800 bg-cyan-100 p-5">
         <Link href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
@@ -48,11 +47,11 @@ export const ProjectDashboardWithQuery = () => {
 
 const ProjectDashboardPage = () => {
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <ProjectDashboardWithQuery />
       </Suspense>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 

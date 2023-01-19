@@ -5,7 +5,7 @@ import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { quote } from "src/core/components/text"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import updateProject from "src/projects/mutations/updateProject"
 import getProject from "src/projects/queries/getProject"
@@ -64,7 +64,7 @@ const EditProjectPage = () => {
   const projectSlug = useParam("projectSlug", "string")
 
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <EditProjectWithQuery />
       </Suspense>
@@ -74,7 +74,7 @@ const EditProjectPage = () => {
           Zurück zum Projekt
         </Link>
       </p>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 

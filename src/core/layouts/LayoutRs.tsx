@@ -5,7 +5,7 @@ type Props = {
   children?: React.ReactNode
 }
 
-export const LayoutRs8: React.FC<Props> = ({ children }) => {
+export const LayoutRs: React.FC<Props> = ({ children }) => {
   return (
     <div className="text-dark-gray relative flex h-full flex-col overflow-x-hidden">
       <NavigationProject />

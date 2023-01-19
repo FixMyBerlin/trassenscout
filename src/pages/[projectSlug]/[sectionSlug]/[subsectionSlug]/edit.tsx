@@ -5,7 +5,7 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SubsectionForm } from "src/subsections/components/SubsectionForm"
 import deleteSubsection from "src/subsections/mutations/deleteSubsection"
 import updateSubsection from "src/subsections/mutations/updateSubsection"
@@ -90,7 +90,7 @@ const EditSubsectionPage = () => {
   const sectionSlug = useParam("sectionSlug", "string")
 
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <EditSubsection />
       </Suspense>
@@ -105,7 +105,7 @@ const EditSubsectionPage = () => {
           Zurück zur Teilstrecke
         </Link>
       </p>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 
