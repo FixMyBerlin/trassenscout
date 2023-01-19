@@ -8,6 +8,7 @@ export const menuItemsMobile = [
   { name: "Teilstrecke 4", href: Routes.Rs8Teilstrecke4() },
   { name: "Kontakte", href: Routes.ContactsPage({ projectSlug: "rs3000" }) }, // TODO dynamisieren
   { name: "Termine", href: Routes.CalendarEntriesPage({ projectSlug: "rs3000" }) }, // TODO dynamisieren
+  { name: "Dateien", href: Routes.FilesPage({ projectSlug: "rs3000" }) },
   { name: "Impressum", href: Routes.Kontakt() },
 ]
 
@@ -27,5 +28,6 @@ export const menuItemsDesktop = [
 
   { name: "Kontakte", href: Routes.ContactsPage({ projectSlug: "rs3000" }) }, // TODO dynamisieren
   { name: "Termine", href: Routes.CalendarEntriesPage({ projectSlug: "rs3000" }) }, // TODO dynamisieren
+  { name: "Dateien", href: Routes.FilesPage({ projectSlug: "rs3000" }) },
   { name: "Impressum", href: Routes.Kontakt() },
 ]

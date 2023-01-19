@@ -31,7 +31,7 @@ const EditFile = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(Routes.ProjectDashboardPage({ projectSlug: projectSlug! }))
+      await router.push(Routes.ShowFilePage({ fileId: file.id, projectSlug: projectSlug! }))
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
