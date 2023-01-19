@@ -4,6 +4,7 @@ import { Suspense } from "react"
 import { CalenderDashboard } from "src/calendar-entries/components"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
+import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { BaseMapSections, SectionsMap } from "src/projects/components/Map"
@@ -48,7 +49,7 @@ export const ProjectDashboardWithQuery = () => {
 const ProjectDashboardPage = () => {
   return (
     <LayoutRs>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner />}>
         <ProjectDashboardWithQuery />
       </Suspense>
     </LayoutRs>
