@@ -39,36 +39,32 @@ There is a `.env.local` and a `.env.production` file, which provide the keys to 
 ## Getting Started
 
 1. Setup `.env.local`:
-This will setup up the [Environment Variables](#environment-variables) for PostgreSQL.
-```
-cp .env.local.example .env.local
-```
+    This will setup up the [Environment Variables](#environment-variables) for PostgreSQL.
+    ```
+    cp .env.local.example .env.local
+    ```
 
 1. Install Docker and open it once to finish the setup:
-```
-brew install --cask docker
-```
+    ```
+    brew install --cask docker
+    ```
 
 1. Start the PostgreSQL Server
-
-This is done automatically with `npm run dev`.
-
-```
-docker compose up -d
-```
+    This is done automatically with `npm run dev`.
+    ```
+    docker compose up -d
+    ```
 
 1. Seed your database:
-
-Which will also apply migrations.
-```
-npm run seed
-```
+    Which will also apply migrations.
+    ```
+    npm run seed
+    ```
 
 1. Run your app in the development mode:
-
-```
-npm run dev
-```
+    ```
+    npm run dev
+    ```
 
 1. Open [http://localhost:3000](http://localhost:3000).
 
