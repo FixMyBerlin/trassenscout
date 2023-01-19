@@ -38,7 +38,7 @@ There is a `.env.local` and a `.env.production` file, which provide the keys to 
 
 ## Getting Started
 
-1. Setup `.env.local`:
+1. Setup `.env.local`:<br />
     This will setup up the [Environment Variables](#environment-variables) for PostgreSQL.
     ```
     cp .env.local.example .env.local
@@ -49,13 +49,13 @@ There is a `.env.local` and a `.env.production` file, which provide the keys to 
     brew install --cask docker
     ```
 
-1. Start the PostgreSQL Server
+1. Start the PostgreSQL Server<br />
     This is done automatically with `npm run dev`.
     ```
     docker compose up -d
     ```
 
-1. Seed your database:
+1. Seed your database:<br />
     Which will also apply migrations.
     ```
     npm run seed
