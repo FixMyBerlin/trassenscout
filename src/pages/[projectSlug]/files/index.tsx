@@ -28,7 +28,7 @@ export const FilesList = () => {
       <h1>Files</h1>
 
       <p>
-        <Link href={Routes.NewFilePage({ projectSlug: projectSlug, sectionSlug: sectionSlug })}>
+        <Link href={Routes.NewFilePage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}>
           File erstellen
         </Link>
       </p>
@@ -38,7 +38,7 @@ export const FilesList = () => {
           <li key={file.id}>
             <Link
               href={Routes.ShowFilePage({
-                projectSlug: projectSlug,
+                projectSlug: projectSlug!,
                 sectionSlug: sectionSlug,
                 fileId: file.id,
               })}

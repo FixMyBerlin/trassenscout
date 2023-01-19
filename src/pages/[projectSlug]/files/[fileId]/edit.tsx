@@ -3,11 +3,11 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Link } from "src/core/components/links"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
-import { FORM_ERROR, FileForm } from "src/files/components/FileForm"
+import { FileForm, FORM_ERROR } from "src/files/components/FileForm"
 import updateFile from "src/files/mutations/updateFile"
 import getFile from "src/files/queries/getFile"
+import { FileSchema } from "src/files/schema"
 
 const EditFile = () => {
   const router = useRouter()
@@ -31,7 +31,7 @@ const EditFile = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(Routes.ShowFilePage({ projectSlug: projectSlug, fileId: updated.id }))
+      await router.push(Routes.ProjectDashboardPage({ projectSlug: projectSlug! }))
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -55,7 +55,7 @@ const EditFile = () => {
         // 2. Import the zod schema here.
         // 3. Update the mutations/updateFile.ts to
         //   `const UpdateFileSchema = FileSchema.merge(z.object({id: z.number(),}))`
-        // schema={FileSchema}
+        schema={FileSchema}
         initialValues={file}
         onSubmit={handleSubmit}
       />

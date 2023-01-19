@@ -21,7 +21,11 @@ const NewFile = () => {
     try {
       const file = await createFileMutation({ ...values, projectId: project.id })
       await router.push(
-        Routes.ShowFilePage({ projectSlug: projectSlug, sectionSlug: sectionSlug, fileId: file.id })
+        Routes.ShowFilePage({
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug!,
+          fileId: file.id,
+        })
       )
     } catch (error: any) {
       console.error(error)

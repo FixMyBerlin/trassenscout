@@ -15,15 +15,12 @@ export const File = () => {
   const fileId = useParam("fileId", "number")
   const [deleteFileMutation] = useMutation(deleteFile)
   const [file] = useQuery(getFile, { id: fileId })
-  const sectionSlug = useParam("sectionSlug", "string")
   const projectSlug = useParam("projectSlug", "string")
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${file.id} unwiderruflich löschen?`)) {
       await deleteFileMutation({ id: file.id })
-      await router.push(
-        Routes.SectionDashboardPage({ projectSlug: projectSlug, sectionSlug: sectionSlug })
-      )
+      await router.push(Routes.ProjectDashboardPage({ projectSlug: projectSlug! }))
     }
   }
 
@@ -36,7 +33,7 @@ export const File = () => {
         <pre>{JSON.stringify(file, null, 2)}</pre>
       </SuperAdminBox>
 
-      <Link href={Routes.EditFilePage({ projectSlug: projectSlug, fileId: file.id })}>
+      <Link href={Routes.EditFilePage({ projectSlug: projectSlug!, fileId: file.id })}>
         Bearbeiten
       </Link>
 

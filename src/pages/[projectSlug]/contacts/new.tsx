@@ -41,7 +41,7 @@ const NewContactWithQuery: BlitzPage = () => {
         schema={ContactSchema.omit({ projectId: true })}
         onSubmit={handleSubmit}
       />
-    </LayoutRs8>
+    </LayoutRs>
   )
 }
 
@@ -49,7 +49,7 @@ const NewContactPage: BlitzPage = () => {
   const projectSlug = useParam("projectSlug", "string")
 
   return (
-    <LayoutRs8>
+    <LayoutRs>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <NewContactWithQuery />
       </Suspense>
