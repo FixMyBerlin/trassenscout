@@ -12,6 +12,7 @@ import getFile from "src/files/queries/getFile"
 const EditFile = () => {
   const router = useRouter()
   const fileId = useParam("fileId", "number")
+  const projectSlug = useParam("projectSlug", "string")
   const [file, { setQueryData }] = useQuery(
     getFile,
     { id: fileId },
@@ -30,7 +31,7 @@ const EditFile = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(Routes.ShowFilePage({ fileId: updated.id }))
+      await router.push(Routes.ShowFilePage({ projectSlug: projectSlug, fileId: updated.id }))
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -68,10 +69,6 @@ const EditFilePage = () => {
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <EditFile />
       </Suspense>
-
-      <p>
-        <Link href={Routes.FilesPage()}>Alle Files</Link>
-      </p>
     </LayoutArticle>
   )
 }

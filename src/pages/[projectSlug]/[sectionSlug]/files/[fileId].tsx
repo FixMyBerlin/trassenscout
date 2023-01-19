@@ -15,24 +15,30 @@ export const File = () => {
   const fileId = useParam("fileId", "number")
   const [deleteFileMutation] = useMutation(deleteFile)
   const [file] = useQuery(getFile, { id: fileId })
+  const sectionSlug = useParam("sectionSlug", "string")
+  const projectSlug = useParam("projectSlug", "string")
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${file.id} unwiderruflich löschen?`)) {
       await deleteFileMutation({ id: file.id })
-      await router.push(Routes.FilesPage())
+      await router.push(
+        Routes.SectionDashboardPage({ projectSlug: projectSlug, sectionSlug: sectionSlug })
+      )
     }
   }
 
   return (
     <>
-      <MetaTags noindex title={`File ${quote(file.id)}`} />
+      <MetaTags noindex title={`File ${quote(file.title)}`} />
 
-      <h1>File {quote(file.id)}</h1>
+      <h1>File {quote(file.title)}</h1>
       <SuperAdminBox>
         <pre>{JSON.stringify(file, null, 2)}</pre>
       </SuperAdminBox>
 
-      <Link href={Routes.EditFilePage({ fileId: file.id })}>Bearbeiten</Link>
+      <Link href={Routes.EditFilePage({ projectSlug: projectSlug, fileId: file.id })}>
+        Bearbeiten
+      </Link>
 
       <button type="button" onClick={handleDelete} className={clsx(linkStyles, "ml-2")}>
         Löschen
@@ -47,10 +53,6 @@ const ShowFilePage = () => {
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <File />
       </Suspense>
-
-      <p>
-        <Link href={Routes.FilesPage()}>Alle Files</Link>
-      </p>
     </LayoutArticle>
   )
 }

@@ -13,13 +13,16 @@ const NewFile = () => {
   const router = useRouter()
   const [createFileMutation] = useMutation(createFile)
   const projectSlug = useParam("projectSlug", "string")
+  const sectionSlug = useParam("sectionSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug! })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const file = await createFileMutation({ ...values, projectId: project.id })
-      await router.push(Routes.ShowFilePage({ fileId: file.id }))
+      await router.push(
+        Routes.ShowFilePage({ projectSlug: projectSlug, sectionSlug: sectionSlug, fileId: file.id })
+      )
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -49,10 +52,6 @@ const NewFilePage = () => {
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <NewFile />
       </Suspense>
-
-      <p>
-        <Link href={Routes.FilesPage()}>Alle Files</Link>
-      </p>
     </LayoutArticle>
   )
 }
