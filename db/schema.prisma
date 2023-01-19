@@ -88,6 +88,7 @@ model Project {
   sections        Section[]
   calendarEntries CalendarEntry[]
   contacts        Contact[]
+  files           File[]
 }
 
 model CalendarEntry {
@@ -176,4 +177,14 @@ enum StakeholdernoteStatusEnum {
   IN_PROGRESS
   DONE
   IRRELEVANT
+}
+
+model File {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  title       String
+  externalUrl String
+  project     Project  @relation(fields: [projectId], references: [id])
+  projectId   Int
 }
