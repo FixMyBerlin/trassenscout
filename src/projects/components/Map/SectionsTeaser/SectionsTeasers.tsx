@@ -6,7 +6,7 @@ type Props = {
 
 export const SectionsTeasers: React.FC<Props> = ({ sections }) => {
   return (
-    <div className="my-5 flex w-full flex-col gap-4 md:flex-row">
+    <div className="my-12 grid w-full grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
       {sections.map((section) => {
         return <SectionsTeaser key={section.id} section={section} />
       })}
