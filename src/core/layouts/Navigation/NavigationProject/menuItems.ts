@@ -1,33 +1,44 @@
 import { Routes } from "@blitzjs/next"
+import { Project, Section } from "@prisma/client"
 
-export const menuItemsMobile = [
-  { name: "Dashboard", href: Routes.Rs8Index() },
-  { name: "Teilstrecke 1", href: Routes.Rs8Teilstrecke1() },
-  { name: "Teilstrecke 2", href: Routes.Rs8Teilstrecke2() },
-  { name: "Teilstrecke 3", href: Routes.Rs8Teilstrecke3() },
-  { name: "Teilstrecke 4", href: Routes.Rs8Teilstrecke4() },
-  { name: "Kontakte", href: Routes.ContactsPage({ projectSlug: "rs3000" }) }, // TODO dynamisieren
-  { name: "Termine", href: Routes.CalendarEntriesPage({ projectSlug: "rs3000" }) }, // TODO dynamisieren
-  { name: "Dateien", href: Routes.FilesPage({ projectSlug: "rs3000" }) },
-  { name: "Impressum", href: Routes.Kontakt() },
-]
+export const menuItemsMobile = (projectSlug: Project["slug"] | undefined, sections: Section[]) => {
+  if (!projectSlug) return []
 
-export const menuItemsDesktop = [
-  { name: "Dashboard", href: Routes.Rs8Index() },
-  {
+  const sectionLinks = sections?.map((section) => ({
+    name: section.title,
+    href: Routes.SectionDashboardPage({ projectSlug: projectSlug!, sectionSlug: section.slug }),
+  }))
+
+  return [
+    ...sectionLinks,
+    { name: "Dashboard", href: Routes.ProjectDashboardPage({ projectSlug: projectSlug! }) },
+    { name: "Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
+    { name: "Termine", href: Routes.CalendarEntriesPage({ projectSlug: projectSlug! }) },
+    { name: "Dateien", href: Routes.FilesPage({ projectSlug: projectSlug! }) },
+    { name: "Impressum", href: Routes.Kontakt() },
+  ]
+}
+
+export const menuItemsDesktop = (projectSlug: Project["slug"] | undefined, sections: Section[]) => {
+  if (!projectSlug) return []
+
+  const sectionLinksChildren = sections?.map((section) => ({
+    name: section.title,
+    href: Routes.SectionDashboardPage({ projectSlug: projectSlug!, sectionSlug: section.slug }),
+  }))
+
+  const sectionLinks = sectionLinksChildren && {
     name: "Teilstrecken",
-    href: Routes.Rs8Teilstrecke1(),
+    href: sectionLinksChildren[0]!.href, // ! nötig damit "versichert" wird dass href property nie undefined sein wird (sonst type error)
+    children: sectionLinksChildren,
+  }
 
-    children: [
-      { name: "Teilstrecke 1", href: Routes.Rs8Teilstrecke1() },
-      { name: "Teilstrecke 2", href: Routes.Rs8Teilstrecke2() },
-      { name: "Teilstrecke 3", href: Routes.Rs8Teilstrecke3() },
-      { name: "Teilstrecke 4", href: Routes.Rs8Teilstrecke4() },
-    ],
-  },
-
-  { name: "Kontakte", href: Routes.ContactsPage({ projectSlug: "rs3000" }) }, // TODO dynamisieren
-  { name: "Termine", href: Routes.CalendarEntriesPage({ projectSlug: "rs3000" }) }, // TODO dynamisieren
-  { name: "Dateien", href: Routes.FilesPage({ projectSlug: "rs3000" }) },
-  { name: "Impressum", href: Routes.Kontakt() },
-]
+  return [
+    sectionLinks,
+    { name: "Dashboard", href: Routes.ProjectDashboardPage({ projectSlug: projectSlug! }) },
+    { name: "Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
+    { name: "Termine", href: Routes.CalendarEntriesPage({ projectSlug: projectSlug! }) },
+    { name: "Dateien", href: Routes.FilesPage({ projectSlug: projectSlug! }) },
+    { name: "Impressum", href: Routes.Kontakt() },
+  ].filter(Boolean)
+}

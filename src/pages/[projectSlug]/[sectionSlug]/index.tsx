@@ -6,7 +6,7 @@ import { Link } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { PageHeader } from "src/core/components/PageHeader"
 import { quote } from "src/core/components/text"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import getSection from "src/sections/queries/getSection"
 import StakeholdernoteList from "src/stakeholdernotes/components/StakeholdernoteList"
 import getSubsections from "src/subsections/queries/getSubsections"
@@ -96,11 +96,11 @@ export const SectionDashboardWithQuery = () => {
 
 const SectionDashboardPage = () => {
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <SectionDashboardWithQuery />
       </Suspense>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 
