@@ -37,10 +37,6 @@ export const Contact = () => {
         title={contact.firstName ? contact.firstName + " " + contact.lastName : contact.lastName}
       />
       <p className="mb-10 space-x-4">
-        <Link href={Routes.ContactsPage({ projectSlug: projectSlug! })}>
-          Zurück zur Kontaktliste
-        </Link>
-        <span>–</span>
         <Link href={Routes.EditContactPage({ contactId: contact.id, projectSlug: projectSlug! })}>
           Eintrag bearbeiten
         </Link>
@@ -55,6 +51,7 @@ export const Contact = () => {
           <pre>{JSON.stringify(contact, null, 2)}</pre>
         </SuperAdminBox>
       </div>
+      <Link href={Routes.ContactsPage({ projectSlug: projectSlug! })}>Zurück zur Kontaktliste</Link>
     </>
   )
 }

@@ -1,15 +1,17 @@
-import { Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links"
+import { PageHeader } from "src/core/components/PageHeader"
 import { Pagination } from "src/core/components/Pagination"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { FileTable } from "src/files/components/FileTable"
 import getFiles from "src/files/queries/getFiles"
 
 const ITEMS_PER_PAGE = 100
 
-export const FilesList = () => {
+export const Files = () => {
   const router = useRouter()
   const sectionSlug = useParam("sectionSlug", "string")
   const projectSlug = useParam("projectSlug", "string")
@@ -26,29 +28,19 @@ export const FilesList = () => {
 
   return (
     <>
-      <h1>Files</h1>
-
-      <p>
-        <Link href={Routes.NewFilePage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}>
-          File erstellen
-        </Link>
-      </p>
-
-      <ul>
-        {files.map((file) => (
-          <li key={file.id}>
-            <Link
-              href={Routes.ShowFilePage({
-                projectSlug: projectSlug!,
-                sectionSlug: sectionSlug,
-                fileId: file.id,
-              })}
-            >
-              {file.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <PageHeader
+        title="Dateien"
+        description="Dieser Bereich hilft Ihnen dabei Termine zu finden."
+        action={
+          <Link
+            button
+            href={Routes.NewFilePage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}
+          >
+            Neue Datei
+          </Link>
+        }
+      />
+      <FileTable files={files} />
 
       <Pagination
         hasMore={hasMore}
@@ -60,13 +52,13 @@ export const FilesList = () => {
   )
 }
 
-const FilesPage = () => {
+const FilesPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <MetaTags noindex title="Files" />
 
       <Suspense fallback={<div>Daten werden geladen…</div>}>
-        <FilesList />
+        <Files />
       </Suspense>
     </LayoutRs>
   )

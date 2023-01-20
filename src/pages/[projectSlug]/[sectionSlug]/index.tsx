@@ -7,6 +7,8 @@ import { Markdown } from "src/core/components/Markdown/Markdown"
 import { PageHeader } from "src/core/components/PageHeader"
 import { quote } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { FileTable } from "src/files/components/FileTable"
+import getFiles from "src/files/queries/getFiles"
 import getSection from "src/sections/queries/getSection"
 import StakeholdernoteList from "src/stakeholdernotes/components/StakeholdernoteList"
 import getSubsections from "src/subsections/queries/getSubsections"
@@ -15,6 +17,7 @@ export const SectionDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
   const [section] = useQuery(getSection, { slug: sectionSlug })
+  const [{ files }] = useQuery(getFiles, { where: { projectId: 1 } })
   const [{ subsections, count }] = useQuery(getSubsections, {
     where: { section: { slug: sectionSlug! } },
     orderBy: { title: "asc" },
@@ -44,6 +47,8 @@ export const SectionDashboardWithQuery = () => {
           )
         })}
       </ul>
+
+      <FileTable files={files} />
 
       <StakeholdernoteList />
 

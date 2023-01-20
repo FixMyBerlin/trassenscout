@@ -1,4 +1,4 @@
-import { Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { CalenderDashboard } from "src/calendar-entries/components"
@@ -46,7 +46,7 @@ export const ProjectDashboardWithQuery = () => {
   )
 }
 
-const ProjectDashboardPage = () => {
+const ProjectDashboardPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <Suspense fallback={<Spinner />}>

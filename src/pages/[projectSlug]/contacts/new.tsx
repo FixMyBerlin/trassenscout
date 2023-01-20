@@ -33,7 +33,7 @@ const NewContactWithQuery: BlitzPage = () => {
   }
 
   return (
-    <LayoutRs>
+    <>
       <MetaTags noindex title="Neuer Kontakt" />
       <PageHeader title="Neuer Kontakt" />
       <ContactForm
@@ -41,7 +41,7 @@ const NewContactWithQuery: BlitzPage = () => {
         schema={ContactSchema.omit({ projectId: true })}
         onSubmit={handleSubmit}
       />
-    </LayoutRs>
+    </>
   )
 }
 

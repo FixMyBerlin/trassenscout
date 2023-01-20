@@ -28,14 +28,9 @@ export const CalendarEntry = () => {
 
   return (
     <>
-      <MetaTags noindex title={`"Kalender-Eintrag ${quote(calendarEntry.title)}"`} />
-      <PageHeader title={calendarEntry.title} />
-
+      <MetaTags noindex title={`Termin ${quote(calendarEntry.title)}`} />
+      <PageHeader title={`Termin ${quote(calendarEntry.title)}`} />
       <p className="mb-10 space-x-4">
-        <Link href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>
-          Zurück zur Liste
-        </Link>
-        <span>–</span>
         <Link
           href={Routes.EditCalendarEntryPage({
             calendarEntryId: calendarEntry.id,
@@ -49,7 +44,6 @@ export const CalendarEntry = () => {
           Eintrag löschen
         </button>
       </p>
-
       <div className="max-w-prose rounded border shadow">
         <DateEntry calendarEntry={calendarEntry} />
       </div>
@@ -57,24 +51,20 @@ export const CalendarEntry = () => {
       <SuperAdminBox>
         <pre>{JSON.stringify(calendarEntry, null, 2)}</pre>
       </SuperAdminBox>
+
+      <Link href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>
+        Zurück zum Kalender
+      </Link>
     </>
   )
 }
 
 const ShowCalendarEntryPage: BlitzPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
-
   return (
     <LayoutRs>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <CalendarEntry />
       </Suspense>
-
-      <p>
-        <Link href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>
-          Alle CalendarEntries
-        </Link>
-      </p>
     </LayoutRs>
   )
 }

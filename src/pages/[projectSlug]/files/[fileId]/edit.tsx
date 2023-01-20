@@ -1,15 +1,18 @@
-import { Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { Link } from "src/core/components/links"
+import { PageHeader } from "src/core/components/PageHeader"
+import { quote } from "src/core/components/text"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileForm, FORM_ERROR } from "src/files/components/FileForm"
 import updateFile from "src/files/mutations/updateFile"
 import getFile from "src/files/queries/getFile"
 import { FileSchema } from "src/files/schema"
 
-const EditFile = () => {
+const EditFileWithQuery = () => {
   const router = useRouter()
   const fileId = useParam("fileId", "number")
   const projectSlug = useParam("projectSlug", "string")
@@ -40,21 +43,12 @@ const EditFile = () => {
 
   return (
     <>
-      <MetaTags noindex title={`File ${file.id} bearbeiten`} />
+      <MetaTags noindex title={`Datei ${quote(file.title)} bearbeiten`} />
 
-      <h1>File {file.id} bearbeiten</h1>
-      <SuperAdminBox>
-        <pre>{JSON.stringify(file, null, 2)}</pre>
-      </SuperAdminBox>
+      <PageHeader title={`Datei ${quote(file.title)} bearbeiten`} />
 
       <FileForm
         submitText="Speichern"
-        // TODO use a zod schema for form validation
-        // 1. Move the schema from mutations/createFile.ts to `File/schema.ts`
-        //   - Name `FileSchema`
-        // 2. Import the zod schema here.
-        // 3. Update the mutations/updateFile.ts to
-        //   `const UpdateFileSchema = FileSchema.merge(z.object({id: z.number(),}))`
         schema={FileSchema}
         initialValues={file}
         onSubmit={handleSubmit}
@@ -63,13 +57,18 @@ const EditFile = () => {
   )
 }
 
-const EditFilePage = () => {
+const EditFilePage: BlitzPage = () => {
+  const projectSlug = useParam("projectSlug", "string")
+
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
-        <EditFile />
+        <EditFileWithQuery />
       </Suspense>
-    </LayoutArticle>
+      <p className="mt-5">
+        <Link href={Routes.FilesPage({ projectSlug: projectSlug! })}>Zurück zur Dateiliste</Link>
+      </p>
+    </LayoutRs>
   )
 }
 

@@ -1,15 +1,16 @@
-import { Routes, useParam } from "@blitzjs/next"
-import { useRouter } from "next/router"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import createFile from "src/files/mutations/createFile"
-import { FileForm, FORM_ERROR } from "src/files/components/FileForm"
-import { Link } from "src/core/components/links"
+import { useRouter } from "next/router"
 import { Suspense } from "react"
+import { Link } from "src/core/components/links"
+import { PageHeader } from "src/core/components/PageHeader"
+import { LayoutRs, MetaTags } from "src/core/layouts"
+import { FileForm, FORM_ERROR } from "src/files/components/FileForm"
+import createFile from "src/files/mutations/createFile"
 import { FileSchema } from "src/files/schema"
 import getProject from "src/projects/queries/getProject"
 
-const NewFile = () => {
+const NewFileWithQuery = () => {
   const router = useRouter()
   const [createFileMutation] = useMutation(createFile)
   const projectSlug = useParam("projectSlug", "string")
@@ -35,10 +36,8 @@ const NewFile = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neuen File erstellen" />
-
-      <h1>Neuen File erstellen</h1>
-
+      <MetaTags noindex title="Neue Datei" />
+      <PageHeader title="Neue Datei" />
       <FileForm
         submitText="Erstellen"
         // TODO schema: See `__ModelIdParam__/edit.tsx` for detailed instruction.
@@ -50,13 +49,18 @@ const NewFile = () => {
   )
 }
 
-const NewFilePage = () => {
+const NewFilePage: BlitzPage = () => {
+  const projectSlug = useParam("projectSlug", "string")
+
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
-        <NewFile />
+        <NewFileWithQuery />
       </Suspense>
-    </LayoutArticle>
+      <p className="mt-5">
+        <Link href={Routes.FilesPage({ projectSlug: projectSlug! })}>Zurück zur Dateiliste</Link>
+      </p>
+    </LayoutRs>
   )
 }
 

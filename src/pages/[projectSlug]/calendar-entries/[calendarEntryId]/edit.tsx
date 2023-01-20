@@ -10,6 +10,7 @@ import updateCalendarEntry from "src/calendar-entries/mutations/updateCalendarEn
 import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
 import { PageHeader } from "src/core/components/PageHeader"
 import { CalendarEntrySchema } from "src/calendar-entries/schema"
+import { quote } from "src/core/components/text"
 
 const EditCalendarEntry = () => {
   const router = useRouter()
@@ -48,10 +49,9 @@ const EditCalendarEntry = () => {
 
   return (
     <>
-      <MetaTags noindex title={`CalendarEntry ${calendarEntry.id} bearbeiten`} />
+      <MetaTags noindex title={`Termin ${quote(calendarEntry.title)}`} />
 
-      <h1>CalendarEntry {calendarEntry.id} bearbeiten</h1>
-      <PageHeader title="Kalender-Eintrag bearbeiten" />
+      <PageHeader title={`Termin ${quote(calendarEntry.title)}`} />
       <SuperAdminBox>
         <pre>{JSON.stringify(calendarEntry, null, 2)}</pre>
       </SuperAdminBox>
