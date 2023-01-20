@@ -28,8 +28,6 @@ export const ProjectDashboardWithQuery = () => {
       <MetaTags noindex title={project.title} />
       <PageHeader title={project.title} />
 
-      <h2>Alle Teilstrecken</h2>
-
       <SectionsMap sections={sections as BaseMapSections} />
       <SectionsTeasers sections={sections} />
 

@@ -49,8 +49,10 @@ export const SectionDashboardWithQuery = () => {
         })}
       </ul>
 
+      <h3 className="mb-8 text-2xl font-bold">Wichtige Dateien</h3>
       <FileTable files={files} />
 
+      <h3 className="mb-10 text-2xl font-bold">Stakeholderliste und Status der Abstimmung</h3>
       <StakeholdernoteList />
 
       <section className="rounded border border-cyan-800 bg-cyan-100 p-5">

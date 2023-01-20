@@ -26,8 +26,6 @@ export const StakeholdernotesList = () => {
 
   return (
     <div className="mb-12">
-      <h3 className="mb-10 text-2xl font-bold">Stakeholderliste und Status der Abstimmung</h3>
-
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <div className="rounded-lg bg-gray-100 p-10">
