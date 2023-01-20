@@ -10,8 +10,8 @@ export const menuItemsMobile = (projectSlug: Project["slug"] | undefined, sectio
   }))
 
   return [
-    ...sectionLinks,
     { name: "Dashboard", href: Routes.ProjectDashboardPage({ projectSlug: projectSlug! }) },
+    ...sectionLinks,
     { name: "Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
     { name: "Termine", href: Routes.CalendarEntriesPage({ projectSlug: projectSlug! }) },
     { name: "Dateien", href: Routes.FilesPage({ projectSlug: projectSlug! }) },
@@ -34,8 +34,8 @@ export const menuItemsDesktop = (projectSlug: Project["slug"] | undefined, secti
   }
 
   return [
-    sectionLinks,
     { name: "Dashboard", href: Routes.ProjectDashboardPage({ projectSlug: projectSlug! }) },
+    sectionLinks,
     { name: "Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
     { name: "Termine", href: Routes.CalendarEntriesPage({ projectSlug: projectSlug! }) },
     { name: "Dateien", href: Routes.FilesPage({ projectSlug: projectSlug! }) },
