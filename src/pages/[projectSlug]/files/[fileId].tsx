@@ -6,7 +6,7 @@ import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
 import { quote } from "src/core/components/text"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import deleteFile from "src/files/mutations/deleteFile"
 import getFile from "src/files/queries/getFile"
 
@@ -46,11 +46,11 @@ export const File = () => {
 
 const ShowFilePage = () => {
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <File />
       </Suspense>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 

@@ -1,11 +1,11 @@
-import { Suspense } from "react"
 import { Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import getFiles from "src/files/queries/getFiles"
+import { Suspense } from "react"
 import { Link } from "src/core/components/links"
 import { Pagination } from "src/core/components/Pagination"
+import { LayoutRs, MetaTags } from "src/core/layouts"
+import getFiles from "src/files/queries/getFiles"
 
 const ITEMS_PER_PAGE = 100
 
@@ -62,13 +62,13 @@ export const FilesList = () => {
 
 const FilesPage = () => {
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <MetaTags noindex title="Files" />
 
       <Suspense fallback={<div>Daten werden geladen…</div>}>
         <FilesList />
       </Suspense>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 
