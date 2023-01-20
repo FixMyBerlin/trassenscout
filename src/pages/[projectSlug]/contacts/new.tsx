@@ -7,6 +7,7 @@ import createContact from "src/contacts/mutations/createContact"
 import { ContactSchema } from "src/contacts/schema"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
+import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import getProject from "src/projects/queries/getProject"
 
@@ -50,7 +51,7 @@ const NewContactPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <NewContactWithQuery />
       </Suspense>
 

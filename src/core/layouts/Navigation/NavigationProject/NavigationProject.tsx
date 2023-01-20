@@ -8,6 +8,7 @@ import { Suspense } from "react"
 import getSections from "src/sections/queries/getSections"
 import { useQuery } from "@blitzjs/rpc"
 import getProject from "src/projects/queries/getProject"
+import { Spinner } from "src/core/components/Spinner"
 
 const NavigationProjectWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
@@ -30,7 +31,7 @@ const NavigationProjectWithQuery = () => {
 
 export const NavigationProject = () => {
   return (
-    <Suspense>
+    <Suspense fallback={<Spinner />}>
       <NavigationProjectWithQuery />
     </Suspense>
   )

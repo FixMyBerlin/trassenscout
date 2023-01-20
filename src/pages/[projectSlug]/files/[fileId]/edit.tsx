@@ -5,6 +5,7 @@ import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
+import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileForm, FORM_ERROR } from "src/files/components/FileForm"
@@ -62,7 +63,7 @@ const EditFilePage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <EditFileWithQuery />
       </Suspense>
       <p className="mt-5">

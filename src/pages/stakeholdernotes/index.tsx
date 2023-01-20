@@ -1,11 +1,12 @@
 import { Suspense } from "react"
-import { Routes } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
 import { Link } from "src/core/components/links"
 import { Pagination } from "src/core/components/Pagination"
+import { Spinner } from "src/core/components/Spinner"
 
 const ITEMS_PER_PAGE = 100
 
@@ -45,12 +46,12 @@ export const StakeholdernotesList = () => {
   )
 }
 
-const StakeholdernotesPage = () => {
+const StakeholdernotesPage: BlitzPage = () => {
   return (
     <LayoutArticle>
       <MetaTags noindex title="Stakeholdernotes" />
 
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <StakeholdernotesList />
       </Suspense>
     </LayoutArticle>

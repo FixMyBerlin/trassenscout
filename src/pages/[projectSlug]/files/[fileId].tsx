@@ -6,6 +6,7 @@ import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
+import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
@@ -52,7 +53,7 @@ export const File = () => {
 const ShowFilePage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <File />
       </Suspense>
     </LayoutRs>

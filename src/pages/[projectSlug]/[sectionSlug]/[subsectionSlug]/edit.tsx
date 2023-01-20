@@ -1,10 +1,11 @@
-import { Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
+import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SubsectionForm } from "src/subsections/components/SubsectionForm"
 import deleteSubsection from "src/subsections/mutations/deleteSubsection"
@@ -85,13 +86,13 @@ const EditSubsection = () => {
   )
 }
 
-const EditSubsectionPage = () => {
+const EditSubsectionPage: BlitzPage = () => {
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
 
   return (
     <LayoutRs>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <EditSubsection />
       </Suspense>
 

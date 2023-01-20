@@ -4,6 +4,7 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
+import { Spinner } from "src/core/components/Spinner"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, __ModelName__Form } from "src/__modelNamesPath__/components/__ModelName__Form"
 import update__ModelName__ from "src/__modelNamesPath__/mutations/update__ModelName__"
@@ -79,7 +80,7 @@ const Edit__ModelName__Page = () => {
 
   return (
     <LayoutArticle>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <Edit__ModelName__ />
       </Suspense>
 

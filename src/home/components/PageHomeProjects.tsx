@@ -5,6 +5,7 @@ import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { Pagination } from "src/core/components/Pagination"
+import { Spinner } from "src/core/components/Spinner"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import getProjects from "src/projects/queries/getProjects"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
@@ -60,7 +61,7 @@ const PageHomeProjects = () => {
     <LayoutArticle>
       <MetaTags noindex title="Projects" />
 
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <ProjectsList />
       </Suspense>
     </LayoutArticle>

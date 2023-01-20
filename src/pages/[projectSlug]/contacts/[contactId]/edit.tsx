@@ -9,6 +9,7 @@ import { FORM_ERROR, ContactForm } from "src/contacts/components/ContactForm"
 import updateContact from "src/contacts/mutations/updateContact"
 import getContact from "src/contacts/queries/getContact"
 import { PageHeader } from "src/core/components/PageHeader"
+import { Spinner } from "src/core/components/Spinner"
 
 const EditContactWithQuery = () => {
   const router = useRouter()
@@ -72,7 +73,7 @@ const EditContactPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <EditContactWithQuery />
       </Suspense>
 

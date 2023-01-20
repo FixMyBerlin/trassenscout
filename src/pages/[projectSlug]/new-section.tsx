@@ -1,8 +1,9 @@
-import { Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links"
+import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import getProject from "src/projects/queries/getProject"
 import { FORM_ERROR, SectionForm } from "src/sections/components/SectionForm"
@@ -50,12 +51,12 @@ const NewSectionWithQuery = () => {
   )
 }
 
-const NewSectionPage = () => {
+const NewSectionPage: BlitzPage = () => {
   const projectSlug = useParam("projectSlug", "string")
 
   return (
     <LayoutRs>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <NewSectionWithQuery />
       </Suspense>
 

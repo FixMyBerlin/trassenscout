@@ -3,6 +3,7 @@ import { usePaginatedQuery } from "@blitzjs/rpc"
 import { startOfDay } from "date-fns"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links/Link"
+import { Spinner } from "src/core/components/Spinner"
 import { DateList } from "../../rs8/termine/components/Calender/DateList"
 import getCalendarEntries from "../queries/getCalendarEntries"
 
@@ -34,7 +35,7 @@ export const CalenderDashboard: React.FC = () => {
   return (
     <section className="my-12 space-y-6 md:max-w-prose">
       <h2 className="mb-2 text-3xl font-bold">Kommende Termine</h2>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner />}>
         <CalendarDashboardDateList />
       </Suspense>
     </section>

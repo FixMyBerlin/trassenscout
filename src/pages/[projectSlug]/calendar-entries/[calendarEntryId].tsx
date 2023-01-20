@@ -11,6 +11,7 @@ import deleteCalendarEntry from "src/calendar-entries/mutations/deleteCalendarEn
 import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
 import { PageHeader } from "src/core/components/PageHeader"
 import { DateEntry } from "src/rs8/termine/components/Calender"
+import { Spinner } from "src/core/components/Spinner"
 
 export const CalendarEntry = () => {
   const router = useRouter()
@@ -62,7 +63,7 @@ export const CalendarEntry = () => {
 const ShowCalendarEntryPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <CalendarEntry />
       </Suspense>
     </LayoutRs>

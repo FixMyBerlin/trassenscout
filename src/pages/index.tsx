@@ -1,5 +1,6 @@
 import { BlitzPage } from "@blitzjs/next"
 import { Suspense } from "react"
+import { Spinner } from "src/core/components/Spinner"
 import PageHomeProjects from "src/home/components/PageHomeProjects"
 import PageHomePublic from "src/home/components/PageHomePublic"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
@@ -16,7 +17,7 @@ const HomeWithQuery: BlitzPage = () => {
 
 const Home: BlitzPage = () => {
   return (
-    <Suspense>
+    <Suspense fallback={<Spinner page />}>
       <HomeWithQuery />
     </Suspense>
   )

@@ -1,10 +1,11 @@
-import { Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
+import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import deleteStakeholdernote from "src/stakeholdernotes/mutations/deleteStakeholdernote"
@@ -43,10 +44,10 @@ export const Stakeholdernote = () => {
   )
 }
 
-const ShowStakeholdernotePage = () => {
+const ShowStakeholdernotePage: BlitzPage = () => {
   return (
     <LayoutArticle>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <Stakeholdernote />
       </Suspense>
 

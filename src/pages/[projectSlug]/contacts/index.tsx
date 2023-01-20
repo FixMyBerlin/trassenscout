@@ -9,6 +9,7 @@ import { Link } from "src/core/components/links"
 import { Pagination } from "src/core/components/Pagination"
 import { PageHeader } from "src/core/components/PageHeader"
 import { ContactList } from "src/contacts/components/ContactList"
+import { Spinner } from "src/core/components/Spinner"
 
 const ITEMS_PER_PAGE = 100
 
@@ -67,7 +68,7 @@ const ContactsPage: BlitzPage = () => {
             </Link>
           }
         />
-        <Suspense fallback={<div>Daten werden geladen…</div>}>
+        <Suspense fallback={<Spinner page />}>
           <ContactTable />
         </Suspense>
       </div>

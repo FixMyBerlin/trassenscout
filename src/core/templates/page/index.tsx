@@ -9,6 +9,7 @@ if (process.env.parentModel) {
   import { useRouter } from "next/router"
 }
 import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { Spinner } from "src/core/components/Spinner"
 import get__ModelNames__ from "src/__modelNamesPath__/queries/get__ModelNames__"
 import { Link } from "src/core/components/links"
 import { Pagination } from "src/core/components/Pagination"
@@ -119,7 +120,7 @@ const __ModelNames__Page = () => {
     <LayoutArticle>
       <MetaTags noindex title="__ModelNames__" />
 
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <__ModelNames__List />
       </Suspense>
     </LayoutArticle>

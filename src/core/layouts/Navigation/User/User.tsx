@@ -2,6 +2,7 @@ import { Routes } from "@blitzjs/next"
 import { UserIcon } from "@heroicons/react/24/outline"
 import React, { Suspense } from "react"
 import { Link } from "src/core/components/links/Link"
+import { Spinner } from "src/core/components/Spinner"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { LoggedIn } from "./LoggedIn"
 
@@ -27,7 +28,7 @@ const UserWithQuery: React.FC = () => {
 
 export const User: React.FC = () => {
   return (
-    <Suspense>
+    <Suspense fallback={<Spinner />}>
       <UserWithQuery />
     </Suspense>
   )

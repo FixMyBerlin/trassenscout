@@ -1,9 +1,10 @@
-import { Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
+import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
@@ -60,12 +61,12 @@ const EditProjectWithQuery = () => {
   )
 }
 
-const EditProjectPage = () => {
+const EditProjectPage: BlitzPage = () => {
   const projectSlug = useParam("projectSlug", "string")
 
   return (
     <LayoutRs>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <EditProjectWithQuery />
       </Suspense>
 

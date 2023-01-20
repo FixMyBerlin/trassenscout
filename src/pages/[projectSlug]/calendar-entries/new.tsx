@@ -7,6 +7,7 @@ import createCalendarEntry from "src/calendar-entries/mutations/createCalendarEn
 import { CalendarEntrySchema } from "src/calendar-entries/schema"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
+import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import getProject from "src/projects/queries/getProject"
 
@@ -55,7 +56,7 @@ const NewCalendarEntryPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <NewCalendarEntry />
       </Suspense>
 

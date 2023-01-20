@@ -11,6 +11,7 @@ import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
 import { PageHeader } from "src/core/components/PageHeader"
 import { CalendarEntrySchema } from "src/calendar-entries/schema"
 import { quote } from "src/core/components/text"
+import { Spinner } from "src/core/components/Spinner"
 
 const EditCalendarEntry = () => {
   const router = useRouter()
@@ -76,7 +77,7 @@ const EditCalendarEntryPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <EditCalendarEntry />
       </Suspense>
 

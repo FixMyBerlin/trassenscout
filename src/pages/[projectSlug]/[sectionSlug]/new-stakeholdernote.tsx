@@ -1,4 +1,4 @@
-import { Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
@@ -11,6 +11,7 @@ import { Link } from "src/core/components/links"
 import { Suspense } from "react"
 import { StakeholdernoteSchema } from "src/stakeholdernotes/schema"
 import getSection from "src/sections/queries/getSection"
+import { Spinner } from "src/core/components/Spinner"
 
 const NewStakeholdernote = () => {
   const router = useRouter()
@@ -49,10 +50,10 @@ const NewStakeholdernote = () => {
   )
 }
 
-const NewStakeholdernotePage = () => {
+const NewStakeholdernotePage: BlitzPage = () => {
   return (
     <LayoutArticle>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <NewStakeholdernote />
       </Suspense>
 

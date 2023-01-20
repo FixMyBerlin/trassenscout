@@ -6,6 +6,7 @@ import getCalendarEntries from "src/calendar-entries/queries/getCalendarEntries"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Pagination } from "src/core/components/Pagination"
+import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { Calender } from "src/rs8/termine/components/Calender"
 
@@ -54,7 +55,7 @@ const CalendarEntriesPage: BlitzPage = () => {
     <LayoutRs>
       <MetaTags noindex title="Kalendereinträge" />
 
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <CalendarEntriesList />
       </Suspense>
     </LayoutRs>

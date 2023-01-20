@@ -5,6 +5,7 @@ import Link from "next/link"
 import logo from "public/logo.png"
 import { Suspense } from "react"
 import logout from "src/auth/mutations/logout"
+import { Spinner } from "src/core/components/Spinner"
 import { Layout, MetaTags } from "src/core/layouts"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
@@ -66,7 +67,7 @@ const Blitz: BlitzPage = () => {
             <strong>Congrats!</strong> Your app is ready, including user sign-up and log-in.
           </p>
           <div className="buttons" style={{ marginTop: "1rem", marginBottom: "1rem" }}>
-            <Suspense fallback="Loading...">
+            <Suspense fallback={<Spinner />}>
               <UserInfo />
             </Suspense>
           </div>

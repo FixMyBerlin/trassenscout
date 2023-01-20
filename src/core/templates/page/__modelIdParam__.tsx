@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
+import { Spinner } from "src/core/components/Spinner"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
 import { quote } from "src/core/components/text"
@@ -69,7 +70,7 @@ const Show__ModelName__Page = () => {
 
   return (
     <LayoutArticle>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <__ModelName__ />
       </Suspense>
 

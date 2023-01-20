@@ -4,6 +4,7 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
+import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileForm, FORM_ERROR } from "src/files/components/FileForm"
 import createFile from "src/files/mutations/createFile"
@@ -54,7 +55,7 @@ const NewFilePage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <NewFileWithQuery />
       </Suspense>
       <p className="mt-5">

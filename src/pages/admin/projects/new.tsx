@@ -4,6 +4,7 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
+import { Spinner } from "src/core/components/Spinner"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import createProject from "src/projects/mutations/createProject"
@@ -48,7 +49,7 @@ const AdminNewProjectPageWithQuery = () => {
 const AdminNewProjectPage = () => {
   return (
     <LayoutArticle>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <AdminNewProjectPageWithQuery />
       </Suspense>
 

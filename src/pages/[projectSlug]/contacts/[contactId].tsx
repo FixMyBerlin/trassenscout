@@ -8,6 +8,7 @@ import getContact from "src/contacts/queries/getContact"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
+import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 
@@ -59,7 +60,7 @@ export const Contact = () => {
 const ShowContactPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <Contact />
       </Suspense>
     </LayoutRs>

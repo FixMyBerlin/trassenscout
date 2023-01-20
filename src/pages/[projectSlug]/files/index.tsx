@@ -5,6 +5,7 @@ import { Suspense } from "react"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Pagination } from "src/core/components/Pagination"
+import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFiles from "src/files/queries/getFiles"
@@ -57,7 +58,7 @@ const FilesPage: BlitzPage = () => {
     <LayoutRs>
       <MetaTags noindex title="Files" />
 
-      <Suspense fallback={<div>Daten werden geladen…</div>}>
+      <Suspense fallback={<Spinner page />}>
         <Files />
       </Suspense>
     </LayoutRs>
