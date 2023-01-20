@@ -76,7 +76,7 @@ const New__ModelName__Page = () => {
 
   return (
     <LayoutArticle>
-      <Suspense fallback={<Spinner page />}}>
+      <Suspense fallback={<Spinner page />}>
         <New__ModelName__ />
       </Suspense>
 

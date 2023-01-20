@@ -18,6 +18,11 @@ export const Signup = z.object({
   firstName: z.string().nullable(),
   lastName: z.string().nullable(),
 })
+export const UpdateUser = z.object({
+  phone: z.string().nullable(),
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
+})
 
 export const Login = z.object({
   email,

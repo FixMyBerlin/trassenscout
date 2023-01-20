@@ -2,14 +2,14 @@ import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Link } from "src/core/components/links"
-import { LayoutArticle, LayoutRs, MetaTags } from "src/core/layouts"
-import { FORM_ERROR, ContactForm } from "src/contacts/components/ContactForm"
+import { ContactForm, FORM_ERROR } from "src/contacts/components/ContactForm"
 import updateContact from "src/contacts/mutations/updateContact"
 import getContact from "src/contacts/queries/getContact"
+import { SuperAdminBox } from "src/core/components/AdminBox"
+import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 
 const EditContactWithQuery = () => {
   const router = useRouter()

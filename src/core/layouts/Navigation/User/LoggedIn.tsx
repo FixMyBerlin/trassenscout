@@ -65,8 +65,8 @@ export const LoggedIn: React.FC<Props> = ({ user }) => {
                     )}
                   </table>
                   <div className="mt-6 mb-4">
-                    <Link href="#todo" button>
-                      TODO Profil bearbeiten
+                    <Link href={Routes.EditUserPage()} button>
+                      Profil bearbeiten
                     </Link>
                   </div>
                 </div>
