@@ -7,6 +7,7 @@ module.exports = {
         "rsv-pink": "#e6007d",
         "rsv-blau": "#0f65af",
         "rsv-ochre": "#eab308",
+        hellgrau: "#F9FAFB",
       },
       typography: {
         DEFAULT: {

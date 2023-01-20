@@ -10,7 +10,7 @@
   Update: Styles for <html> and <body> move to _document.tsx
   */
   #__next {
-    @apply flex w-full h-full flex-none flex-col;
+    @apply flex h-full w-full flex-none flex-col;
   }
 
   /*
@@ -21,7 +21,7 @@
   However, we can use css instead – thanks @ https://stackoverflow.com/a/21253034/729221
   */
   body:has(#__next .set-bg-indigo-50-on-body) {
-    @apply bg-indigo-50;
+    @apply bg-hellgrau;
   }
 }
 
