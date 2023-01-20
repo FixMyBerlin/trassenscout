@@ -27,11 +27,20 @@ export const menuItemsDesktop = (projectSlug: Project["slug"] | undefined, secti
     href: Routes.SectionDashboardPage({ projectSlug: projectSlug!, sectionSlug: section.slug }),
   }))
 
-  const sectionLinks = sectionLinksChildren && {
+  const sectionLinks = Boolean(sectionLinksChildren.length) && {
     name: "Teilstrecken",
     href: sectionLinksChildren[0]!.href, // ! nötig damit "versichert" wird dass href property nie undefined sein wird (sonst type error)
     children: sectionLinksChildren,
   }
+
+  if (!sectionLinks)
+    return [
+      { name: "Dashboard", href: Routes.ProjectDashboardPage({ projectSlug: projectSlug! }) },
+      { name: "Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
+      { name: "Termine", href: Routes.CalendarEntriesPage({ projectSlug: projectSlug! }) },
+      { name: "Dateien", href: Routes.FilesPage({ projectSlug: projectSlug! }) },
+      { name: "Impressum", href: Routes.Kontakt() },
+    ]
 
   return [
     { name: "Dashboard", href: Routes.ProjectDashboardPage({ projectSlug: projectSlug! }) },
@@ -40,5 +49,5 @@ export const menuItemsDesktop = (projectSlug: Project["slug"] | undefined, secti
     { name: "Termine", href: Routes.CalendarEntriesPage({ projectSlug: projectSlug! }) },
     { name: "Dateien", href: Routes.FilesPage({ projectSlug: projectSlug! }) },
     { name: "Impressum", href: Routes.Kontakt() },
-  ].filter(Boolean)
+  ]
 }
