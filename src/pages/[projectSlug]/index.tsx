@@ -49,7 +49,7 @@ export const ProjectDashboardWithQuery = () => {
 const ProjectDashboardPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <Suspense fallback={<Spinner />}>
+      <Suspense fallback={<Spinner page />}>
         <ProjectDashboardWithQuery />
       </Suspense>
     </LayoutRs>
