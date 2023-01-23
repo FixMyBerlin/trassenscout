@@ -21,7 +21,18 @@ export const ProjectDashboardWithQuery = () => {
     include: { subsections: { select: { id: true, geometry: true } } },
   })
 
-  if (!sections.length) return null
+  if (!sections.length)
+    return (
+      <>
+        <section className="rounded border border-cyan-800 bg-cyan-100 p-5">
+          <Link href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
+            {quote(project.title)} bearbeiten
+          </Link>
+          <br />
+          <Link href={Routes.NewSectionPage({ projectSlug: projectSlug! })}>Neue Teilstrecke</Link>
+        </section>
+      </>
+    )
 
   return (
     <>
@@ -32,12 +43,11 @@ export const ProjectDashboardWithQuery = () => {
       <SectionsTeasers sections={sections} />
 
       <CalenderDashboard />
-
       <section className="rounded border border-cyan-800 bg-cyan-100 p-5">
         <Link href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
           {quote(project.title)} bearbeiten
         </Link>
-
+        <br />
         <Link href={Routes.NewSectionPage({ projectSlug: projectSlug! })}>Neue Teilstrecke</Link>
       </section>
     </>
