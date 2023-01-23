@@ -9,6 +9,10 @@ module.exports = {
         "rsv-ochre": "#eab308",
         hellgrau: "#F9FAFB",
       },
+      backgroundImage: {
+        'dashed-line':
+          'repeating-linear-gradient(to right, #d9d9d9, #d9d9d9 10px, transparent 10px, transparent 13px)',
+      },
       typography: {
         DEFAULT: {
           // Tell the plugin to not add any classes to anchor tags
