@@ -10,15 +10,23 @@ import { quote } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFiles from "src/files/queries/getFiles"
+import getProject from "src/projects/queries/getProject"
 import getSection from "src/sections/queries/getSection"
 import StakeholdernoteList from "src/stakeholdernotes/components/StakeholdernoteList"
+import getStakeholdernote from "src/stakeholdernotes/queries/getStakeholdernote"
+import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
 import getSubsections from "src/subsections/queries/getSubsections"
 
 export const SectionDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
   const [section] = useQuery(getSection, { slug: sectionSlug })
-  const [{ files }] = useQuery(getFiles, { where: { projectId: 1 } })
+  const [project] = useQuery(getProject, { slug: projectSlug })
+  const [{ files }] = useQuery(getFiles, { where: { projectId: project.id } })
+  const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, {
+    where: { sectionId: section.id },
+    orderBy: { id: "asc" },
+  })
   const [{ subsections, count }] = useQuery(getSubsections, {
     where: { section: { slug: sectionSlug! } },
     orderBy: { title: "asc" },
@@ -53,7 +61,7 @@ export const SectionDashboardWithQuery = () => {
       <FileTable files={files} />
 
       <h3 className="mb-10 text-2xl font-bold">Stakeholderliste und Status der Abstimmung</h3>
-      <StakeholdernoteList />
+      <StakeholdernoteList stakeholdernotes={stakeholdernotes} />
 
       <section className="rounded border border-cyan-800 bg-cyan-100 p-5">
         <Link
@@ -71,31 +79,34 @@ export const SectionDashboardWithQuery = () => {
           Neuer Abschnitt
         </Link>
         <br />
-        <Link
-          href={Routes.NewStakeholdernotePage({
-            projectSlug: projectSlug!,
-            sectionSlug: sectionSlug!,
-          })}
-        >
-          Neuer Stakeholder
-        </Link>
+        {sectionSlug && (
+          <Link
+            href={Routes.NewStakeholdernotePage({
+              projectSlug: projectSlug!,
+              sectionSlug: sectionSlug!,
+            })}
+          >
+            Neuer Stakeholder
+          </Link>
+        )}
 
         <ul>
-          {subsections.map((subsection) => {
-            return (
-              <li key={subsection.id}>
-                <Link
-                  href={Routes.EditSubsectionPage({
-                    projectSlug: projectSlug!,
-                    sectionSlug: sectionSlug!,
-                    subsectionSlug: subsection.slug,
-                  })}
-                >
-                  {quote(subsection.title)} bearbeiten
-                </Link>
-              </li>
-            )
-          })}
+          {subsections &&
+            subsections.map((subsection) => {
+              return (
+                <li key={subsection.id}>
+                  <Link
+                    href={Routes.EditSubsectionPage({
+                      projectSlug: projectSlug!,
+                      sectionSlug: sectionSlug!,
+                      subsectionSlug: subsection.slug,
+                    })}
+                  >
+                    {quote(subsection.title)} bearbeiten
+                  </Link>
+                </li>
+              )
+            })}
         </ul>
       </section>
     </>

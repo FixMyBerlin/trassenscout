@@ -1,15 +1,17 @@
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
+import { Stakeholdernote } from "@prisma/client"
 import { useRouter } from "next/router"
 import { Link } from "src/core/components/links"
 import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
 import { StakeholderItem } from "./StakeholderItem"
 
-export const StakeholdernotesList = () => {
+type props = {
+  stakeholdernotes: Stakeholdernote[]
+}
+
+export const StakeholdernotesList: React.FC<props> = ({ stakeholdernotes }) => {
   const router = useRouter()
-  const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, {
-    orderBy: { id: "asc" },
-  })
 
   const stakeholdersDone = stakeholdernotes.filter(
     (stakeholdernotes) => stakeholdernotes.status === "DONE"
