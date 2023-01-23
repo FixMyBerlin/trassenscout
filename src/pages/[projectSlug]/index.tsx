@@ -55,10 +55,13 @@ export const ProjectDashboardWithQuery = () => {
       <div className="max-w-[650px]">
         <Image src={statusImg} alt=""></Image>
       </div>
+
       <DashedLine />
 
-      <SectionsMap sections={sections as BaseMapSections} />
-      <SectionsTeasers sections={sections} />
+      <div className="mt-12">
+        <SectionsMap sections={sections as BaseMapSections} />
+        <SectionsTeasers sections={sections} />
+      </div>
 
       <CalenderDashboard />
       <section className="rounded border border-cyan-800 bg-cyan-100 p-5">
