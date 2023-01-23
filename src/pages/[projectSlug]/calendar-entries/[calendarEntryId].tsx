@@ -46,7 +46,7 @@ export const CalendarEntry = () => {
         </button>
       </p>
       <div className="max-w-prose rounded border shadow">
-        <DateEntry calendarEntry={calendarEntry} />
+        <DateEntry withAction={false} calendarEntry={calendarEntry} />
       </div>
 
       <SuperAdminBox>
