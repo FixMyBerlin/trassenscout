@@ -40,7 +40,7 @@ export const File = () => {
           Löschen
         </button>
       </p>
-      <FileTable files={[file]} />
+      <FileTable withAction={false} files={[file]} />
 
       <SuperAdminBox>
         <pre>{JSON.stringify(file, null, 2)}</pre>
