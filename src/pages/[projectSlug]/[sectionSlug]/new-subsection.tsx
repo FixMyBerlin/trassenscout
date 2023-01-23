@@ -22,7 +22,6 @@ const NewSubsection = () => {
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
-    console.log({ values })
     try {
       const subsection = await createSubsectionMutation({ ...values, sectionId: section.id! })
       await router.push(
