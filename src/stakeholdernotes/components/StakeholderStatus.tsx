@@ -25,7 +25,7 @@ export const StakeholderStatus: React.FC<Props> = ({ status }) => {
           <div className="mx-auto mb-2 flex  h-10 w-10 rounded-full bg-gray-300">
             <XMarkIcon className="mx-auto w-4 text-white" />
           </div>
-          <small>{status}</small>
+          <small>irrelevant</small>
         </div>
       )
     case "DONE":
