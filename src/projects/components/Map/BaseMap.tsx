@@ -49,14 +49,14 @@ export const BaseMap: React.FC<Props> = ({
     section: Section
   }
   const pickLineColor = ({ section }: PickLineColor) => {
-    let lineColor = "#eab308"
+    let lineColor = "#979797"
 
     if (hoveredSectionIds.includes(section.id)) {
-      lineColor = "#e6007d"
+      lineColor = "#EAB308"
     }
 
     if (selectedSection && section.id === selectedSection.id) {
-      lineColor = "#0a64ae"
+      lineColor = "#EAB308"
     }
 
     return lineColor
