@@ -22,6 +22,13 @@ const CalendarDashboardDateList: React.FC = () => {
     },
   })
 
+  if (!calendarEntries.length)
+    return (
+      <Link href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}>
+        Neuen Termin eintragen
+      </Link>
+    )
+
   return (
     <>
       <DateList calendarEntries={calendarEntries} />
