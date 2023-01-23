@@ -1,19 +1,27 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
+import Image from "next/image"
+import statusImg from "public/Planungsphase_Placeholder.jpg"
 import { Suspense } from "react"
 import { CalenderDashboard } from "src/calendar-entries/components"
+import DashedLine from "src/core/components/DashedLine"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
+import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { BaseMapSections, SectionsMap } from "src/projects/components/Map"
 import { SectionsTeasers } from "src/projects/components/Map/SectionsTeaser/SectionsTeasers"
 import getProject from "src/projects/queries/getProject"
 import getSections from "src/sections/queries/getSections"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { getFullname } from "src/users/utils"
 
 export const ProjectDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
+  const user = useCurrentUser()
+  const userName = getFullname(user!)
   const [project] = useQuery(getProject, { slug: projectSlug })
   const [{ sections }] = useQuery(getSections, {
     where: { project: { slug: projectSlug! } },
@@ -37,7 +45,17 @@ export const ProjectDashboardWithQuery = () => {
   return (
     <>
       <MetaTags noindex title={project.title} />
-      <PageHeader title={project.title} />
+      <PageHeader
+        title={project.title}
+        intro={`Willkommen im Trassenscout zum ${project.title}, Sie sind angemeldet als: ${userName}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Abschnitte finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
+        logo
+      />
+
+      <H2 className="my-6">Aktuelle Planungsphase</H2>
+      <div className="max-w-[650px]">
+        <Image src={statusImg} alt=""></Image>
+      </div>
+      <DashedLine />
 
       <SectionsMap sections={sections as BaseMapSections} />
       <SectionsTeasers sections={sections} />
