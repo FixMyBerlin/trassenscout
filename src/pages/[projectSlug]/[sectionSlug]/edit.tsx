@@ -7,7 +7,7 @@ import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SectionForm } from "src/sections/components/SectionForm"
 import deleteSection from "src/sections/mutations/deleteSection"
 import updateSection from "src/sections/mutations/updateSection"
@@ -89,7 +89,7 @@ const EditSectionPage: BlitzPage = () => {
   const sectionSlug = useParam("sectionSlug", "string")
 
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<Spinner page />}>
         <EditSection />
       </Suspense>
@@ -104,7 +104,7 @@ const EditSectionPage: BlitzPage = () => {
           Zurück zur Teilstrecke
         </Link>
       </p>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 

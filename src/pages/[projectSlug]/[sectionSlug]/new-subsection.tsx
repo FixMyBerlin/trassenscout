@@ -5,7 +5,7 @@ import { Suspense } from "react"
 import { Link } from "src/core/components/links"
 import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import getSection from "src/sections/queries/getSection"
 import { FORM_ERROR, SubsectionForm } from "src/subsections/components/SubsectionForm"
 import createSubsection from "src/subsections/mutations/createSubsection"
@@ -59,7 +59,7 @@ const NewSubsectionPage: BlitzPage = () => {
   const sectionSlug = useParam("sectionSlug", "string")
 
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<Spinner page />}>
         <NewSubsection />
       </Suspense>
@@ -74,7 +74,7 @@ const NewSubsectionPage: BlitzPage = () => {
           Zurück zur Teilstrecke
         </Link>
       </p>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 

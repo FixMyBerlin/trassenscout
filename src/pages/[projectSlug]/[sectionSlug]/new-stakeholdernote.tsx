@@ -1,17 +1,17 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
-import { useRouter } from "next/router"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import createStakeholdernote from "src/stakeholdernotes/mutations/createStakeholdernote"
-import {
-  StakeholdernoteForm,
-  FORM_ERROR,
-} from "src/stakeholdernotes/components/StakeholdernoteForm"
-import { Link } from "src/core/components/links"
+import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { StakeholdernoteSchema } from "src/stakeholdernotes/schema"
-import getSection from "src/sections/queries/getSection"
+import { Link } from "src/core/components/links"
 import { Spinner } from "src/core/components/Spinner"
+import { LayoutRs, MetaTags } from "src/core/layouts"
+import getSection from "src/sections/queries/getSection"
+import {
+  FORM_ERROR,
+  StakeholdernoteForm,
+} from "src/stakeholdernotes/components/StakeholdernoteForm"
+import createStakeholdernote from "src/stakeholdernotes/mutations/createStakeholdernote"
+import { StakeholdernoteSchema } from "src/stakeholdernotes/schema"
 
 const NewStakeholdernote = () => {
   const router = useRouter()
@@ -52,7 +52,7 @@ const NewStakeholdernote = () => {
 
 const NewStakeholdernotePage: BlitzPage = () => {
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<Spinner page />}>
         <NewStakeholdernote />
       </Suspense>
@@ -60,7 +60,7 @@ const NewStakeholdernotePage: BlitzPage = () => {
       <p>
         <Link href={Routes.StakeholdernotesPage()}>Alle Stakeholdernotes</Link>
       </p>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 
