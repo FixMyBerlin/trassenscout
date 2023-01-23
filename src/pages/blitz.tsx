@@ -2,7 +2,6 @@ import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import Image from "next/image"
 import Link from "next/link"
-import logo from "public/logo.png"
 import { Suspense } from "react"
 import logout from "src/auth/mutations/logout"
 import { Spinner } from "src/core/components/Spinner"
@@ -60,9 +59,6 @@ const Blitz: BlitzPage = () => {
       <MetaTags title="RSV Startseite" />
       <div className="container">
         <main>
-          <div className="logo">
-            <Image src={`${logo.src}`} alt="blitzjs" width="256px" height="118px" layout="fixed" />
-          </div>
           <p>
             <strong>Congrats!</strong> Your app is ready, including user sign-up and log-in.
           </p>
