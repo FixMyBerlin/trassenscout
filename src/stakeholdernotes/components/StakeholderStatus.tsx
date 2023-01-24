@@ -1,7 +1,8 @@
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline"
+import { Stakeholdernote } from "@prisma/client"
 import React from "react"
 
-type Props = { status?: string }
+type Props = { status?: Stakeholdernote["status"] }
 
 export const StakeholderStatus: React.FC<Props> = ({ status }) => {
   switch (status) {
