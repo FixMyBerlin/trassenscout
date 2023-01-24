@@ -35,7 +35,7 @@ export const SectionDashboardWithQuery = () => {
   }) // TODO make project required
   const [{ sections }] = useQuery(getSections, {
     where: { project: { slug: projectSlug! } },
-    orderBy: { id: "asc" },
+    orderBy: { index: "asc" },
     include: { subsections: { select: { id: true, geometry: true } } },
   }) // TODO make project required
 

@@ -25,7 +25,7 @@ export const ProjectDashboardWithQuery = () => {
   const [project] = useQuery(getProject, { slug: projectSlug })
   const [{ sections }] = useQuery(getSections, {
     where: { project: { slug: projectSlug! } },
-    orderBy: { id: "asc" },
+    orderBy: { index: "asc" },
     include: { subsections: { select: { id: true, geometry: true } } },
   })
 
