@@ -12,7 +12,7 @@ export const StakeholderStatus: React.FC<Props> = ({ status }) => {
           <small>ausstehend</small>
         </div>
       )
-    case "IN-PROGRESS":
+    case "IN_PROGRESS":
       return (
         <div className="w-18 flex-shrink-0 text-center text-slate-400">
           <div className="mx-auto mb-2 h-10 w-10 rounded-full bg-slate-400" />
