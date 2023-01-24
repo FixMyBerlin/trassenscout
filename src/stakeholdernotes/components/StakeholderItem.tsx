@@ -1,4 +1,4 @@
-import { Routes } from "@blitzjs/next"
+import { Routes, useParam } from "@blitzjs/next"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { Stakeholdernote } from "@prisma/client"
 import React from "react"
@@ -11,6 +11,8 @@ type props = {
 }
 
 export const StakeholderItem: React.FC<props> = ({ stakeholder }) => {
+  const sectionSlug = useParam("sectionSlug", "string")
+  const projectSlug = useParam("projectSlug", "string")
   return (
     <div>
       <div className="flex space-x-5">
@@ -26,6 +28,8 @@ export const StakeholderItem: React.FC<props> = ({ stakeholder }) => {
         <Link
           button
           href={Routes.EditStakeholdernotePage({
+            projectSlug: projectSlug!,
+            sectionSlug: sectionSlug!,
             stakeholdernoteId: stakeholder.id,
           })}
         >
@@ -34,6 +38,8 @@ export const StakeholderItem: React.FC<props> = ({ stakeholder }) => {
         </Link>
         <Link
           href={Routes.ShowStakeholdernotePage({
+            projectSlug: projectSlug!,
+            sectionSlug: sectionSlug!,
             stakeholdernoteId: stakeholder.id,
           })}
         >

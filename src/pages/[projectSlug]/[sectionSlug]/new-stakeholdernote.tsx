@@ -29,7 +29,9 @@ const NewStakeholdernote = () => {
         ...values,
         sectionId: section.id,
       })
-      await router.push(Routes.ShowStakeholdernotePage({ stakeholdernoteId: stakeholdernote.id }))
+      await router.push(
+        Routes.SectionDashboardPage({ sectionSlug: sectionSlug!, projectSlug: projectSlug! })
+      )
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }

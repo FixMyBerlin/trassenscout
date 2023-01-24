@@ -5,14 +5,17 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
+import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import deleteStakeholdernote from "src/stakeholdernotes/mutations/deleteStakeholdernote"
 import getStakeholdernote from "src/stakeholdernotes/queries/getStakeholdernote"
 
 export const Stakeholdernote = () => {
   const router = useRouter()
+  const sectionSlug = useParam("sectionSlug", "string")
+  const projectSlug = useParam("projectSlug", "string")
   const stakeholdernoteId = useParam("stakeholdernoteId", "number")
   const [deleteStakeholdernoteMutation] = useMutation(deleteStakeholdernote)
   const [stakeholdernote] = useQuery(getStakeholdernote, { id: stakeholdernoteId })
@@ -20,41 +23,56 @@ export const Stakeholdernote = () => {
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${stakeholdernote.id} unwiderruflich löschen?`)) {
       await deleteStakeholdernoteMutation({ id: stakeholdernote.id })
-      await router.push(Routes.StakeholdernotesPage())
+      await router.push(
+        Routes.SectionDashboardPage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })
+      )
     }
   }
 
   return (
     <>
-      <MetaTags noindex title={`Stakeholdernote ${quote(stakeholdernote.title)}`} />
+      <MetaTags noindex title={`Stakeholder ${quote(stakeholdernote.title)}`} />
 
-      <h1>Stakeholdernote {quote(stakeholdernote.title)}</h1>
+      <PageHeader title={`Stakeholder ${quote(stakeholdernote.title)}`} />
+
       <SuperAdminBox>
         <pre>{JSON.stringify(stakeholdernote, null, 2)}</pre>
       </SuperAdminBox>
 
-      <Link href={Routes.EditStakeholdernotePage({ stakeholdernoteId: stakeholdernote.id })}>
+      <Link
+        href={Routes.EditStakeholdernotePage({
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug!,
+          stakeholdernoteId: stakeholdernote.id,
+        })}
+      >
         Bearbeiten
       </Link>
 
       <button type="button" onClick={handleDelete} className={clsx(linkStyles, "ml-2")}>
         Löschen
       </button>
+      <p>
+        <Link
+          href={Routes.SectionDashboardPage({
+            projectSlug: projectSlug!,
+            sectionSlug: sectionSlug!,
+          })}
+        >
+          Zurück zum Dashboard der Teilstrecke
+        </Link>
+      </p>
     </>
   )
 }
 
 const ShowStakeholdernotePage: BlitzPage = () => {
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<Spinner page />}>
         <Stakeholdernote />
       </Suspense>
-
-      <p>
-        <Link href={Routes.StakeholdernotesPage()}>Alle Stakeholdernotes</Link>
-      </p>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 
