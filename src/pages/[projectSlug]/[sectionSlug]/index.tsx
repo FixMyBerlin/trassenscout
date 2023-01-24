@@ -6,7 +6,7 @@ import { Link } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { quote } from "src/core/components/text"
+import { proseClasses, quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
@@ -64,27 +64,6 @@ export const SectionDashboardWithQuery = () => {
           selectedSection={section}
           isInteractive={false}
         />
-      </div>
-      {/*
-      <SuperAdminBox>
-        <pre>{JSON.stringify(section, null, 2)}</pre>
-      </SuperAdminBox> */}
-
-      <div className="mb-12">
-        <H2 className="mb-5">Alle {count} Abschnitte dieser Teilstrecke</H2>
-        <ul>
-          {subsections.map((subsection) => {
-            const debugSubsection = subsection
-            debugSubsection.geometry = "Gekürzt für die Lesbarkeit"
-            return (
-              <li key={subsection.id}>
-                <strong>{subsection.title}</strong>
-                <Markdown markdown={subsection.description} />
-                <pre>{JSON.stringify(subsection, undefined, 2)}</pre>
-              </li>
-            )
-          })}
-        </ul>
         {/* <SectionPanel section={section} /> */}
       </div>
 
@@ -144,6 +123,30 @@ export const SectionDashboardWithQuery = () => {
             })}
         </ul>
       </section>
+
+      <SuperAdminBox>
+        <div className="mb-12 space-y-6">
+          <div className={proseClasses}>
+            <pre>{JSON.stringify({ section }, null, 2)}</pre>
+          </div>
+          <H2 className="mb-5">Alle {count} Abschnitte dieser Teilstrecke</H2>
+          <ul>
+            {subsections.map((subsection) => {
+              const debugSubsection = subsection
+              debugSubsection.geometry = "Gekürzt für die Lesbarkeit"
+              return (
+                <li key={subsection.id}>
+                  <strong>{subsection.title}</strong>
+                  <Markdown markdown={subsection.description} />
+                  <div className={proseClasses}>
+                    <pre>{JSON.stringify({ subsection }, undefined, 2)}</pre>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      </SuperAdminBox>
     </>
   )
 }
