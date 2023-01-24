@@ -17,6 +17,7 @@ import getProject from "src/projects/queries/getProject"
 import getSection from "src/sections/queries/getSection"
 import getSections from "src/sections/queries/getSections"
 import StakeholdernoteList from "src/stakeholdernotes/components/StakeholdernoteList"
+import { StakeholderSectionStatus } from "src/stakeholdernotes/components/StakeholderSectionStatus"
 import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
 import getSubsections from "src/subsections/queries/getSubsections"
 
@@ -48,7 +49,8 @@ export const SectionDashboardWithQuery = () => {
 
       <div className="mb-12">
         <p>
-          <strong>Stakeholder:</strong> Todo Status Stakeholder
+          <strong>Stakeholder:</strong>{" "}
+          <StakeholderSectionStatus stakeholdernotes={stakeholdernotes} />
         </p>
         {section.description && (
           <p>
