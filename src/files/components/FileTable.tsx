@@ -29,7 +29,7 @@ export const FileTable: React.FC<Props> = ({ files, withAction = true }) => {
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     {file.externalUrl && (
                       <Link blank href={file.externalUrl}>
-                        Zur Datei
+                        Download
                       </Link>
                     )}
                   </td>

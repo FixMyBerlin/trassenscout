@@ -37,7 +37,7 @@ const NewFileWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neue Datei" />
+      <MetaTags noindex title="Neues Dokument" />
 
       <FileForm
         submitText="Erstellen"
@@ -55,12 +55,12 @@ const NewFilePage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <PageHeader title="Neue Datei" />
+      <PageHeader title="Neues Dokument" />
       <Suspense fallback={<Spinner page />}>
         <NewFileWithQuery />
       </Suspense>
       <p className="mt-5">
-        <Link href={Routes.FilesPage({ projectSlug: projectSlug! })}>Zurück zur Dateiliste</Link>
+        <Link href={Routes.FilesPage({ projectSlug: projectSlug! })}>Zurück zu Dokumenten</Link>
       </p>
     </LayoutRs>
   )

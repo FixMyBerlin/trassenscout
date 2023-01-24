@@ -30,14 +30,14 @@ export const Files = () => {
   return (
     <>
       <PageHeader
-        title="Dateien"
-        description="Dieser Bereich hilft Ihnen relevante Dateien zu verwalten."
+        title="Dokumente"
+        description="Dieser Bereich hilft Ihnen relevante Dokumente zu verwalten."
         action={
           <Link
             button
             href={Routes.NewFilePage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}
           >
-            Neue Datei
+            Neues Dokument
           </Link>
         }
       />

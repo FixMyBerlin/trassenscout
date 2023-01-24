@@ -14,7 +14,7 @@ export const menuItemsMobile = (projectSlug: Project["slug"] | undefined, sectio
     ...sectionLinks,
     { name: "Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
     { name: "Termine", href: Routes.CalendarEntriesPage({ projectSlug: projectSlug! }) },
-    { name: "Dateien", href: Routes.FilesPage({ projectSlug: projectSlug! }) },
+    { name: "Dokumente", href: Routes.FilesPage({ projectSlug: projectSlug! }) },
     { name: "Impressum", href: Routes.Kontakt() },
   ]
 }
@@ -38,7 +38,7 @@ export const menuItemsDesktop = (projectSlug: Project["slug"] | undefined, secti
       { name: "Dashboard", href: Routes.ProjectDashboardPage({ projectSlug: projectSlug! }) },
       { name: "Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
       { name: "Termine", href: Routes.CalendarEntriesPage({ projectSlug: projectSlug! }) },
-      { name: "Dateien", href: Routes.FilesPage({ projectSlug: projectSlug! }) },
+      { name: "Dokumente", href: Routes.FilesPage({ projectSlug: projectSlug! }) },
       { name: "Impressum", href: Routes.Kontakt() },
     ]
 
@@ -47,7 +47,7 @@ export const menuItemsDesktop = (projectSlug: Project["slug"] | undefined, secti
     sectionLinks,
     { name: "Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
     { name: "Termine", href: Routes.CalendarEntriesPage({ projectSlug: projectSlug! }) },
-    { name: "Dateien", href: Routes.FilesPage({ projectSlug: projectSlug! }) },
+    { name: "Dokumente", href: Routes.FilesPage({ projectSlug: projectSlug! }) },
     { name: "Impressum", href: Routes.Kontakt() },
   ]
 }

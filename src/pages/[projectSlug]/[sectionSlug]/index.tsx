@@ -68,7 +68,7 @@ export const SectionDashboardWithQuery = () => {
       </div>
 
       <div className="mb-12">
-        <H2 className="mb-5 text-2xl font-bold">Wichtige Dateien</H2>
+        <H2 className="mb-5 text-2xl font-bold">Relevante Dokumente</H2>
         <FileTable files={files} />
       </div>
 
