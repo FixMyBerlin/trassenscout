@@ -11,6 +11,9 @@ export const StakeholderStatus: React.FC<Props> = ({ status }) => {
         <div className="w-18 flex-shrink-0 text-center text-slate-400">
           <div className="mx-auto mb-2 h-10  w-10 rounded-full border-4 border-slate-400" />
           <small>ausstehend</small>
+          <br />
+          <small className="opacity-0">ausstehend</small>
+          {/* TODO find a serious solution: prevent div from shrinking so that all have the same size */}
         </div>
       )
     case "IN_PROGRESS":
@@ -18,6 +21,8 @@ export const StakeholderStatus: React.FC<Props> = ({ status }) => {
         <div className="w-18 flex-shrink-0 text-center text-slate-400">
           <div className="mx-auto mb-2 h-10 w-10 rounded-full bg-slate-400" />
           <small>in Arbeit</small>
+          <br />
+          <small className="opacity-0">ausstehend</small>
         </div>
       )
     case "IRRELEVANT":
@@ -27,6 +32,8 @@ export const StakeholderStatus: React.FC<Props> = ({ status }) => {
             <XMarkIcon className="mx-auto w-4 text-white" />
           </div>
           <small>irrelevant</small>
+          <br />
+          <small className="opacity-0">ausstehend</small>
         </div>
       )
     case "DONE":
@@ -36,6 +43,8 @@ export const StakeholderStatus: React.FC<Props> = ({ status }) => {
             <CheckIcon className="mx-auto w-4 text-white" />
           </div>
           <small>erledigt</small>
+          <br />
+          <small className="opacity-0">ausstehend</small>
         </div>
       )
     default:
@@ -43,6 +52,8 @@ export const StakeholderStatus: React.FC<Props> = ({ status }) => {
         <div className="w-18 flex-shrink-0 text-center text-sky-600">
           <div className="mx-auto mb-2 h-10  w-10 rounded-full bg-sky-600" />
           <small>erledigt</small>
+          <br />
+          <small className="opacity-0">ausstehend</small>
         </div>
       )
   }
