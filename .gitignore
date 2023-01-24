@@ -57,3 +57,6 @@ lib-cov
 
 # IDE
 .idea
+
+# local data
+db/remote/data/dump.sql
