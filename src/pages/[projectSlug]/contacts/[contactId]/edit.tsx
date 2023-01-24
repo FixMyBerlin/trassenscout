@@ -10,6 +10,7 @@ import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { getFullname } from "src/users/utils"
 
 const EditContactWithQuery = () => {
   const router = useRouter()
@@ -49,21 +50,23 @@ const EditContactWithQuery = () => {
     <>
       <MetaTags
         noindex
-        title={`Kontakt von${contact.firstName ? " " + contact.firstName : ""} ${
-          contact.lastName
+        title={`Kontakt von ${
+          contact.firstName ? contact.firstName + " " + contact.lastName : contact.lastName
         } bearbeiten`}
       />
 
       <PageHeader
-        title={`Kontakt von${contact.firstName ? " " + contact.firstName : ""} ${
-          contact.lastName
-        } bearbeiten`}
+        title={`Kontakt von ${
+          contact.firstName ? contact.firstName + " " + contact.lastName : contact.lastName
+        }`}
+        subtitle="Kontakt bearbeiten"
       />
+
+      <ContactForm submitText="Speichern" initialValues={contact} onSubmit={handleSubmit} />
+
       <SuperAdminBox>
         <pre>{JSON.stringify(contact, null, 2)}</pre>
       </SuperAdminBox>
-
-      <ContactForm submitText="Speichern" initialValues={contact} onSubmit={handleSubmit} />
     </>
   )
 }

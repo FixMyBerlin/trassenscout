@@ -30,12 +30,14 @@ export const Contact = () => {
     <>
       <MetaTags
         noindex
-        title={`Kontakt ${quote(
+        title={`Kontakt von ${
           contact.firstName ? contact.firstName + " " + contact.lastName : contact.lastName
-        )}`}
+        }`}
       />
       <PageHeader
-        title={contact.firstName ? contact.firstName + " " + contact.lastName : contact.lastName}
+        title={`Kontakt von ${
+          contact.firstName ? contact.firstName + " " + contact.lastName : contact.lastName
+        }`}
       />
       <p className="mb-10 space-x-4">
         <Link href={Routes.EditContactPage({ contactId: contact.id, projectSlug: projectSlug! })}>

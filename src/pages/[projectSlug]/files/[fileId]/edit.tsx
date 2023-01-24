@@ -46,7 +46,7 @@ const EditFileWithQuery = () => {
     <>
       <MetaTags noindex title={`Datei ${quote(file.title)} bearbeiten`} />
 
-      <PageHeader title={`Datei ${quote(file.title)} bearbeiten`} />
+      <PageHeader title={`${quote(file.title)}`} subtitle="Datei bearbeiten" />
 
       <FileForm
         submitText="Speichern"

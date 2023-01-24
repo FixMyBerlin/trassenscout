@@ -5,6 +5,7 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
+import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SubsectionForm } from "src/subsections/components/SubsectionForm"
@@ -64,7 +65,8 @@ const EditSubsection = () => {
     <>
       <MetaTags noindex title={`Abschnitt ${subsection.title} bearbeiten`} />
 
-      <h1>Abschnitt {subsection.title} bearbeiten</h1>
+      <PageHeader title={`Abschnitt ${subsection.title}`} subtitle="Abschnitt bearbeiten" />
+
       <SuperAdminBox>
         <pre>{JSON.stringify(subsection, null, 2)}</pre>
       </SuperAdminBox>

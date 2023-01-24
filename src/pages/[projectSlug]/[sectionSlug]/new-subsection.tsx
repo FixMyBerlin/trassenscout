@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links"
+import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
@@ -39,10 +40,11 @@ const NewSubsection = () => {
   return (
     <>
       <MetaTags noindex title="Neuen Abschnitt erstellen" />
-
-      <h1>Neuen Abschnitt erstellen</h1>
-      <p>In Teilstrecke {quote(section.title)}</p>
-
+      <PageHeader
+        title="Neuen Abschnitt erstellen"
+        subtitle={`In Teilstrecke ${quote(section.title)}`}
+      />
+    
       <SubsectionForm
         submitText="Erstellen"
         schema={SubsectionSchema.omit({ sectionId: true })}

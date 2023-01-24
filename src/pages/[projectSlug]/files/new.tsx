@@ -38,7 +38,7 @@ const NewFileWithQuery = () => {
   return (
     <>
       <MetaTags noindex title="Neue Datei" />
-      <PageHeader title="Neue Datei" />
+
       <FileForm
         submitText="Erstellen"
         // TODO schema: See `__ModelIdParam__/edit.tsx` for detailed instruction.
@@ -55,6 +55,7 @@ const NewFilePage: BlitzPage = () => {
 
   return (
     <LayoutRs>
+      <PageHeader title="Neue Datei" />
       <Suspense fallback={<Spinner page />}>
         <NewFileWithQuery />
       </Suspense>

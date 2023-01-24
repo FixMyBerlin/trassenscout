@@ -52,10 +52,7 @@ const EditCalendarEntry = () => {
     <>
       <MetaTags noindex title={`Termin ${quote(calendarEntry.title)}`} />
 
-      <PageHeader title={`Termin ${quote(calendarEntry.title)}`} />
-      <SuperAdminBox>
-        <pre>{JSON.stringify(calendarEntry, null, 2)}</pre>
-      </SuperAdminBox>
+      <PageHeader title={quote(calendarEntry.title)} subtitle="Termin bearbeiten" />
 
       <CalendarEntryForm
         submitText="Speichern"
