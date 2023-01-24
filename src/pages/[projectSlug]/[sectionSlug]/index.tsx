@@ -23,14 +23,14 @@ export const SectionDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
-  const [section] = useQuery(getSection, { sectionSlug, projectSlug }) // TODO projectId übergeben
+  const [section] = useQuery(getSection, { sectionSlug, projectSlug }) // TODO optimize to allow projectId as well to get rid of one query in case we can
   const [{ files }] = useQuery(getFiles, { where: { projectId: project.id } }) // TODO make project required
   const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, {
     sectionId: section.id,
     orderBy: { id: "asc" },
   })
   const [{ subsections, count }] = useQuery(getSubsections, {
-    where: { section: { slug: sectionSlug! } },
+    where: { sectionId: section.id },
     orderBy: { title: "asc" },
   }) // TODO make project required
   const [{ sections }] = useQuery(getSections, {

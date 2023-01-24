@@ -15,16 +15,13 @@ export default resolver.pipe(
   async ({ sectionSlug, projectSlug }) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
 
-    const project = await db.project.findFirst({
-      where: { slug: projectSlug },
-      select: { id: true },
-    })
-    if (!project) throw new NotFoundError(`Unknown project with slug ${projectSlug}`)
-
     const section = await db.section.findFirst({
-      where: { slug: sectionSlug, projectId: project.id },
+      where: { slug: sectionSlug, project: { slug: projectSlug } },
     })
-    if (!section) throw new NotFoundError(`Unknown section with slug ${sectionSlug}`)
+    if (!section)
+      throw new NotFoundError(
+        `Unknown section with ${JSON.stringify({ sectionSlug, projectSlug })}`
+      )
 
     return section
   }
