@@ -27,8 +27,9 @@ export const PageHeader: React.FC<Props> = ({
           <H1 className="mb-5 pt-12 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
             {title}
           </H1>
-          <div className="min-w-[146px]"></div>
-          <Image src={pngRsv8Logo} width={146} height={146} alt="" />
+          <div className="shrink-0">
+            <Image src={pngRsv8Logo} width={146} height={146} alt="" />
+          </div>
         </div>
       ) : (
         <div className="flex items-center justify-between">
