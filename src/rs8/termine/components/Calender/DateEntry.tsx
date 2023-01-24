@@ -86,13 +86,12 @@ export const DateEntry: React.FC<Props> = ({ calendarEntry, withAction = true })
       {withAction && (
         <p className="mb-5 flex items-center justify-end gap-4 text-right">
           <Link
-            button
             href={Routes.EditCalendarEntryPage({
               projectSlug: projectSlug!,
               calendarEntryId: calendarEntry.id,
             })}
           >
-            <PencilSquareIcon className="h-5 w-5" />
+            <PencilSquareIcon className="h-4 w-4" />
             <span className="sr-only">Bearbeiten</span>
           </Link>
           <Link
@@ -101,7 +100,7 @@ export const DateEntry: React.FC<Props> = ({ calendarEntry, withAction = true })
               calendarEntryId: calendarEntry.id,
             })}
           >
-            <TrashIcon className="h-5 w-5" />
+            <TrashIcon className="h-4 w-4" />
           </Link>
         </p>
       )}
