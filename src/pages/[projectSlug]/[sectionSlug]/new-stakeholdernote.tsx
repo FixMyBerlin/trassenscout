@@ -20,7 +20,7 @@ const NewStakeholdernote = () => {
   const [createStakeholdernoteMutation] = useMutation(createStakeholdernote)
   const sectionSlug = useParam("sectionSlug", "string")
   const projectSlug = useParam("projectSlug", "string")
-  const [section] = useQuery(getSection, { slug: sectionSlug })
+  const [section] = useQuery(getSection, { sectionSlug, projectSlug })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {

@@ -17,7 +17,7 @@ const NewSubsection = () => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
-  const [section] = useQuery(getSection, { slug: sectionSlug })
+  const [section] = useQuery(getSection, { sectionSlug, projectSlug })
   const [createSubsectionMutation] = useMutation(createSubsection)
   const [{ users }] = useQuery(getUsers, {})
 

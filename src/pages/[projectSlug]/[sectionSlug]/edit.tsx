@@ -21,7 +21,7 @@ const EditSection = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [section, { setQueryData }] = useQuery(
     getSection,
-    { slug: sectionSlug },
+    { sectionSlug, projectSlug },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,

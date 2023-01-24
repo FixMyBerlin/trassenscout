@@ -22,9 +22,9 @@ import getSubsections from "src/subsections/queries/getSubsections"
 export const SectionDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
-  const [section] = useQuery(getSection, { slug: sectionSlug })
   const [project] = useQuery(getProject, { slug: projectSlug })
   const [{ files }] = useQuery(getFiles, { where: { projectId: project.id } })
+  const [section] = useQuery(getSection, { sectionSlug, projectSlug }) // TODO projectId übergeben
   const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, {
     where: { sectionId: section.id },
     orderBy: { id: "asc" },
