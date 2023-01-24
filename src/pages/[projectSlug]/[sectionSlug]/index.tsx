@@ -52,6 +52,10 @@ export const SectionDashboardWithQuery = () => {
           <strong>Stakeholder:</strong>{" "}
           <StakeholderSectionStatus stakeholdernotes={stakeholdernotes} />
         </p>
+        <p>
+          <strong>Teilstreckenlänge:</strong> {section.length ? section.length + " km" : " k.A."}
+        </p>
+
         {section.description && (
           <p>
             <strong>Kurzinfo:</strong>
