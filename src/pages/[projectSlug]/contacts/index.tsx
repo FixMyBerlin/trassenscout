@@ -64,7 +64,7 @@ const ContactsPage: BlitzPage = () => {
         anzuschreiben."
           action={
             <Link button href={Routes.NewContactPage({ projectSlug: projectSlug! })}>
-              Neuer Kalendereintrag
+              Neuer Kontakt
             </Link>
           }
         />

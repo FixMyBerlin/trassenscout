@@ -33,7 +33,7 @@ export const CalendarEntriesList = () => {
         description="Dieser Bereich hilft Ihnen dabei Termine zu finden."
         action={
           <Link button href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}>
-            Neuer Kalendereintrag
+            Neuer Termin
           </Link>
         }
       />

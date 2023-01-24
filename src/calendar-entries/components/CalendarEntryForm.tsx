@@ -12,7 +12,7 @@ export { FORM_ERROR } from "src/core/components/forms"
 export function CalendarEntryForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
     <Form<S> {...props} className="max-w-prose">
-      <LabeledTextField type="text" name="title" label="Title" placeholder="" />
+      <LabeledTextField type="text" name="title" label="Titel" placeholder="" />
       <LabeledTextField
         type="datetime-local"
         name="startAt"

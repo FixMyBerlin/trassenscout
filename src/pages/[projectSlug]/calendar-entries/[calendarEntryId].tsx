@@ -53,9 +53,7 @@ export const CalendarEntry = () => {
         <pre>{JSON.stringify(calendarEntry, null, 2)}</pre>
       </SuperAdminBox>
 
-      <Link href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>
-        Zurück zum Kalender
-      </Link>
+      <Link href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>Zurück Terminen</Link>
     </>
   )
 }

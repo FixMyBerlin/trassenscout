@@ -47,9 +47,11 @@ export const ProjectDashboardWithQuery = () => {
       <MetaTags noindex title={project.title} />
       <PageHeader
         title={project.title}
-        intro={`Willkommen im Trassenscout zum ${project.title}, Sie sind angemeldet als: ${userName}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Abschnitte finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
+        intro={`Willkommen im Trassenscout zum ${project.title}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
         logo
       />
+
+      {/* TODO: intro prop evtl. mit project description ersetzen */}
 
       <H2 className="my-6">Aktuelle Planungsphase</H2>
       <div className="max-w-[650px]">
