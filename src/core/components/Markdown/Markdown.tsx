@@ -63,9 +63,11 @@ export const Markdown: React.FC<Props> = ({ markdown, className }) => {
               </p>
             ),
             // eslint-disable-next-line react/no-unstable-nested-components, jsx-a11y/anchor-has-content
-            // a: (props: any) => <a target="_blank" {...props} />,
+            a: (props: any) => <a className="underline" target="_blank" {...props} />,
             // eslint-disable-next-line react/no-unstable-nested-components
-            a: (props: any) => <Link blank to={props.href} {...props} />,
+            // a: (props: any) => (
+            //   <Link classNameOverwrites="text-sm underline" blank to={props.href} {...props} />
+            // ),
           },
         }}
       >
