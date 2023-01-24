@@ -44,7 +44,7 @@ const NewSubsection = () => {
         title="Neuen Abschnitt erstellen"
         subtitle={`In Teilstrecke ${quote(section.title)}`}
       />
-    
+
       <SubsectionForm
         submitText="Erstellen"
         schema={SubsectionSchema.omit({ sectionId: true })}

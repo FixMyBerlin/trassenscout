@@ -46,7 +46,7 @@ const EditProjectWithQuery = () => {
   return (
     <>
       <MetaTags noindex title={`Project ${quote(project.title)} bearbeiten`} />
-      <PageHeader title={quote(project.title)} subtitle="Projekt bearbeiten"/>
+      <PageHeader title={quote(project.title)} subtitle="Projekt bearbeiten" />
       <SuperAdminBox>
         <h1>Project {quote(project.title)} bearbeiten</h1>
         <pre>{JSON.stringify(project, null, 2)}</pre>
