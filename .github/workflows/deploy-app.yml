@@ -1,10 +1,22 @@
 name: Deploy to AWS Lightsail
 on:
-  push:
-    branches:
-      - develop
+  workflow_call:
+    inputs:
+      service-name:
+        required: true
+        type: string
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      DATABASE_URL:
+        required: true
+      SESSION_SECRET_KEY:
+        required: true
+
 jobs:
-  build-docker-image:
+  build-push-deploy-docker-images:
     runs-on: ubuntu-latest
     steps:
 
@@ -63,8 +75,9 @@ jobs:
           cat .github/workflows/deployment-config.yml.tpl | envsubst > deployment-config.yml
           cat deployment-config.yml
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL_STAGING }}
-          SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY_STAGING }}
+          SERVICE_NAME: ${{ inputs.service-name }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY }}
 
       - name: Create Deployment and deploy
         run: >

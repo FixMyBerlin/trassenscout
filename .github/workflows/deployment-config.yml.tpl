@@ -1,4 +1,4 @@
-serviceName: trassenscout-staging
+serviceName: ${SERVICE_NAME}
 containers:
   nginx:
     command: []
