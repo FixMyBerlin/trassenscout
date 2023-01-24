@@ -6,7 +6,7 @@ import { Signup } from "../validations"
 
 export default resolver.pipe(
   resolver.zod(Signup),
-  async ({ email, firstName, lastName, password }, ctx) => {
+  async ({ email, firstName, lastName, password, phone }, ctx) => {
     const hashedPassword = await SecurePassword.hash(password.trim())
     const user = await db.user.create({
       data: {
@@ -15,6 +15,7 @@ export default resolver.pipe(
         lastName,
         hashedPassword,
         role: "USER",
+        phone,
       },
       select: { id: true, firstName: true, lastName: true, email: true, role: true },
     })
