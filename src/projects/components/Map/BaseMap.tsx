@@ -56,7 +56,7 @@ export const BaseMap: React.FC<Props> = ({
     }
 
     if (selectedSection && section.id === selectedSection.id) {
-      lineColor = "#EAB308"
+      lineColor = "#EAB308" // #0A64AE
     }
 
     return lineColor

@@ -12,6 +12,7 @@ import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFiles from "src/files/queries/getFiles"
 import { BaseMap, BaseMapSections, SectionsMap } from "src/projects/components/Map"
+import { SectionPanel } from "src/projects/components/Map/SectionPanel"
 import getProject from "src/projects/queries/getProject"
 import getSection from "src/sections/queries/getSection"
 import getSections from "src/sections/queries/getSections"
@@ -57,7 +58,7 @@ export const SectionDashboardWithQuery = () => {
         )}
       </div>
 
-      <div className="mb-12 h-96 w-full sm:h-[500px]">
+      <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
         <BaseMap
           sections={sections as BaseMapSections}
           selectedSection={section}
@@ -84,6 +85,7 @@ export const SectionDashboardWithQuery = () => {
             )
           })}
         </ul>
+        {/* <SectionPanel section={section} /> */}
       </div>
 
       <div className="mb-12">
