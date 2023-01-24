@@ -18,7 +18,7 @@
     "format": "prettier --ignore-path .gitignore \"./(src|db|mailers)/**/*.+(js|ts|tsx)\" --write",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
-    "seed": "blitz prisma migrate reset && blitz db seed",
+    "seed": "npm run migrate && blitz prisma migrate reset && blitz db seed",
     "prepare": "husky install"
   },
   "prisma": {
