@@ -24,6 +24,7 @@ export const menuItemsDesktop = (projectSlug: Project["slug"] | undefined, secti
 
   const sectionLinksChildren = sections?.map((section) => ({
     name: section.title,
+    slug: section.slug,
     href: Routes.SectionDashboardPage({ projectSlug: projectSlug!, sectionSlug: section.slug }),
   }))
 

@@ -16,17 +16,22 @@ export const StakeholderItem: React.FC<props> = ({ stakeholder }) => {
   const projectSlug = useParam("projectSlug", "string")
   const [isExpand, setIsExpand] = useState(false)
 
-  const handleToggle = () => {setIsExpand(!isExpand)}
+  const handleToggle = () => {
+    setIsExpand(!isExpand)
+  }
 
   return (
     <div>
-      <div onClick={handleToggle} className="cursor-pointer flex space-x-5">
+      <div onClick={handleToggle} className="flex cursor-pointer space-x-5">
         <StakeholderStatus status={stakeholder.status} />
         <div>
           <p>
             <strong>{stakeholder.title}</strong>
           </p>
-          <Markdown className={clsx("prose-sm", !isExpand ? "line-clamp-2" : "line-clamp-none")} markdown={stakeholder.statusText} />
+          <Markdown
+            className={clsx("prose-sm", !isExpand ? "line-clamp-2" : "line-clamp-none")}
+            markdown={stakeholder.statusText}
+          />
         </div>
       </div>
       <div className="flex items-center justify-end space-x-4">
