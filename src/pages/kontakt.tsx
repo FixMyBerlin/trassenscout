@@ -7,7 +7,7 @@ const Kontakt: BlitzPage = () => {
   return (
     <LayoutArticle>
       <MetaTags noindex title="Kontakt & Impressum" />
-      <PageHeader title="Impressum" />
+      <PageHeader manager={false} title="Impressum" />
       <PageKontakt />
     </LayoutArticle>
   )
