@@ -6,6 +6,7 @@ import {
   LabeledTextareaField,
   LabeledTextField,
 } from "src/core/components/forms"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -13,6 +14,17 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
   props: FormProps<S> & { users: User[] }
 ) {
   const { users } = props
+  const currentUser = useCurrentUser()
+  const userOptions = [
+    [
+      currentUser!.id.toString(),
+      [currentUser!.firstName, currentUser!.lastName, `<${currentUser!.email}>`].join(" "),
+    ],
+  ].concat(
+    users
+      .filter((u) => u.id !== currentUser?.id)
+      .map((u) => [String(u.id), [u.firstName, u.lastName, `<${u.email}>`].join(" ")])
+  )
 
   return (
     <Form<S> {...props}>
@@ -34,10 +46,8 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
-        options={users.map((u) => [
-          u.id.toString(),
-          [u.firstName, u.lastName, `<${u.email}>`].join(" "),
-        ])}
+        options={userOptions as [string, string][]}
+        // TODO: type
       />
     </Form>
   )

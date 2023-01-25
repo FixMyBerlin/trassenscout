@@ -49,9 +49,9 @@ export const SectionDashboardWithQuery = () => {
 
       <div className="mb-12">
         {section.description && (
-          <p className="mb-5">
+          <div className="mb-5">
             <Markdown markdown={section.description} />
-          </p>
+          </div>
         )}
         <p>
           <strong>Stakeholder:</strong>{" "}
@@ -81,7 +81,7 @@ export const SectionDashboardWithQuery = () => {
         <StakeholdernoteList stakeholdernotes={stakeholdernotes} />
       </div>
 
-      <section className="rounded border border-cyan-800 bg-cyan-100 p-5">
+      <section className="rounded border bg-blue-100 p-5">
         <Link
           href={Routes.EditSectionPage({
             projectSlug: projectSlug!,
