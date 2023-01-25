@@ -48,6 +48,11 @@ export const SectionDashboardWithQuery = () => {
       <PageHeader title={section.title} subtitle={section.subTitle} />
 
       <div className="mb-12">
+        {section.description && (
+          <p className="mb-5">
+            <Markdown markdown={section.description} />
+          </p>
+        )}
         <p>
           <strong>Stakeholder:</strong>{" "}
           <StakeholderSectionStatus stakeholdernotes={stakeholdernotes} />
@@ -55,13 +60,6 @@ export const SectionDashboardWithQuery = () => {
         <p>
           <strong>Teilstreckenlänge:</strong> {section.length ? section.length + " km" : " k.A."}
         </p>
-
-        {section.description && (
-          <p>
-            <strong>Kurzinfo:</strong>
-            <Markdown markdown={section.description} />
-          </p>
-        )}
       </div>
 
       <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
