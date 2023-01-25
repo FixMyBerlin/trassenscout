@@ -9,11 +9,12 @@ export const StakeholderSectionStatus: React.FC<props> = ({ stakeholdernotes }) 
     (stakeholder) => stakeholder.status === "DONE"
   )
 
-  if (!stakeholdernotes.length) return <>Es wurden noch keine Stakeholder eingetragen.</>
+  if (!stakeholdernotes.length) return null
 
   return (
-    <>
-      {stakeholdernotesDone.length} von {stakeholdernotes.length} geklärt
-    </>
+    <p>
+      <strong>Stakeholder:</strong> {stakeholdernotesDone.length} von {stakeholdernotes.length}{" "}
+      geklärt
+    </p>
   )
 }

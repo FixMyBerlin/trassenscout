@@ -53,10 +53,9 @@ export const SectionDashboardWithQuery = () => {
             <Markdown markdown={section.description} />
           </div>
         )}
-        <p>
-          <strong>Stakeholder:</strong>{" "}
-          <StakeholderSectionStatus stakeholdernotes={stakeholdernotes} />
-        </p>
+
+        <StakeholderSectionStatus stakeholdernotes={stakeholdernotes} />
+
         <p>
           <strong>Teilstreckenlänge:</strong> {section.length ? section.length + " km" : " k.A."}
         </p>
