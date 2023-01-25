@@ -29,7 +29,7 @@ export const FileTable: React.FC<Props> = ({ files, withAction = true }) => {
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     {file.externalUrl && (
                       <Link blank href={file.externalUrl}>
-                        Zur Datei
+                        Download
                       </Link>
                     )}
                   </td>
@@ -37,16 +37,15 @@ export const FileTable: React.FC<Props> = ({ files, withAction = true }) => {
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                       <p className="flex items-center justify-end gap-4 text-right">
                         <Link
-                          button
                           href={Routes.EditFilePage({ projectSlug: projectSlug!, fileId: file.id })}
                         >
-                          <PencilSquareIcon className="h-5 w-5" />
+                          <PencilSquareIcon className="h-4 w-4" />
                           <span className="sr-only">Bearbeiten</span>
                         </Link>
                         <Link
                           href={Routes.ShowFilePage({ projectSlug: projectSlug!, fileId: file.id })}
                         >
-                          <TrashIcon className="h-5 w-5" />
+                          <TrashIcon className="h-4 w-4" />
                         </Link>
                       </p>
                     </td>

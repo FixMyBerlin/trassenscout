@@ -30,7 +30,7 @@ export const CalendarEntriesList = () => {
     <>
       <PageHeader
         title="Termine"
-        description="Dieser Bereich hilft Ihnen dabei Termine zu finden."
+        description="Dieser Bereich hilft Ihnen wichtige Termine zu verwalten."
         action={
           <Link button href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}>
             Neuer Termin
@@ -53,7 +53,7 @@ export const CalendarEntriesList = () => {
 const CalendarEntriesPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title="Kalendereinträge" />
+      <MetaTags noindex title="Termine" />
 
       <Suspense fallback={<Spinner page />}>
         <CalendarEntriesList />

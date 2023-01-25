@@ -26,14 +26,13 @@ export const StakeholderItem: React.FC<props> = ({ stakeholder }) => {
       </div>
       <div className="flex items-center justify-end space-x-4">
         <Link
-          button
           href={Routes.EditStakeholdernotePage({
             projectSlug: projectSlug!,
             sectionSlug: sectionSlug!,
             stakeholdernoteId: stakeholder.id,
           })}
         >
-          <PencilSquareIcon className="h-5 w-5" />
+          <PencilSquareIcon className="h-4 w-4" />
           <span className="sr-only">Bearbeiten</span>
         </Link>
         <Link
@@ -43,7 +42,7 @@ export const StakeholderItem: React.FC<props> = ({ stakeholder }) => {
             stakeholdernoteId: stakeholder.id,
           })}
         >
-          <TrashIcon className="h-5 w-5" />
+          <TrashIcon className="h-4 w-4" />
         </Link>
       </div>
     </div>

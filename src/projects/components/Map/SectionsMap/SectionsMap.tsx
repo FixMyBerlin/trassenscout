@@ -1,3 +1,4 @@
+import { Section } from "@prisma/client"
 import { along, length, lineString } from "@turf/turf"
 import { Marker } from "react-map-gl"
 import { BaseMap, BaseMapSections } from "../BaseMap"
@@ -5,9 +6,11 @@ import { SectionMarker } from "../SectionMarker"
 
 type Props = {
   sections: BaseMapSections
+  selectedSection?: Section
+  isInteractive?: boolean
 }
 
-export const SectionsMap: React.FC<Props> = ({ sections }) => {
+export const SectionsMap: React.FC<Props> = ({ sections, selectedSection, isInteractive }) => {
   const markers = sections.map((section, index) => {
     const midIndex = Math.floor(section.subsections.length / 2)
     const geometryString = section.subsections?.at(midIndex)?.geometry
@@ -32,7 +35,9 @@ export const SectionsMap: React.FC<Props> = ({ sections }) => {
 
   return (
     <div className="h-[500px] w-full drop-shadow-md">
-      <BaseMap sections={sections}>{markers}</BaseMap>
+      <BaseMap selectedSection={selectedSection} isInteractive={isInteractive} sections={sections}>
+        {markers}
+      </BaseMap>
     </div>
   )
 }

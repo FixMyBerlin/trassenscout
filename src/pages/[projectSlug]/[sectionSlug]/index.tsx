@@ -17,6 +17,7 @@ import getProject from "src/projects/queries/getProject"
 import getSection from "src/sections/queries/getSection"
 import getSections from "src/sections/queries/getSections"
 import StakeholdernoteList from "src/stakeholdernotes/components/StakeholdernoteList"
+import { StakeholderSectionStatus } from "src/stakeholdernotes/components/StakeholderSectionStatus"
 import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
 import getSubsections from "src/subsections/queries/getSubsections"
 
@@ -47,19 +48,22 @@ export const SectionDashboardWithQuery = () => {
       <PageHeader title={section.title} subtitle={section.subTitle} />
 
       <div className="mb-12">
-        <p>
-          <strong>Stakeholder:</strong> Todo Status Stakeholder
-        </p>
         {section.description && (
-          <p>
-            <strong>Kurzinfo:</strong>
+          <p className="mb-5">
             <Markdown markdown={section.description} />
           </p>
         )}
+        <p>
+          <strong>Stakeholder:</strong>{" "}
+          <StakeholderSectionStatus stakeholdernotes={stakeholdernotes} />
+        </p>
+        <p>
+          <strong>Teilstreckenlänge:</strong> {section.length ? section.length + " km" : " k.A."}
+        </p>
       </div>
 
       <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
-        <BaseMap
+        <SectionsMap
           sections={sections as BaseMapSections}
           selectedSection={section}
           isInteractive={false}
@@ -68,7 +72,7 @@ export const SectionDashboardWithQuery = () => {
       </div>
 
       <div className="mb-12">
-        <H2 className="mb-5 text-2xl font-bold">Wichtige Dateien</H2>
+        <H2 className="mb-5 text-2xl font-bold">Relevante Dokumente</H2>
         <FileTable files={files} />
       </div>
 

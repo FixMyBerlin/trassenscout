@@ -128,6 +128,7 @@ model Section {
   updatedAt   DateTime @updatedAt
   slug        String
   index       Int
+  length      String?
   title       String
   subTitle    String?
   description String?

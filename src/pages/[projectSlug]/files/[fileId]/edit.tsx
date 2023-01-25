@@ -44,9 +44,9 @@ const EditFileWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Datei ${quote(file.title)} bearbeiten`} />
+      <MetaTags noindex title={`Dokument ${quote(file.title)} bearbeiten`} />
 
-      <PageHeader title={`${quote(file.title)}`} subtitle="Datei bearbeiten" />
+      <PageHeader title={`${quote(file.title)}`} subtitle="Dokument bearbeiten" />
 
       <FileForm
         submitText="Speichern"
@@ -67,7 +67,7 @@ const EditFilePage: BlitzPage = () => {
         <EditFileWithQuery />
       </Suspense>
       <p className="mt-5">
-        <Link href={Routes.FilesPage({ projectSlug: projectSlug! })}>Zurück zur Dateiliste</Link>
+        <Link href={Routes.FilesPage({ projectSlug: projectSlug! })}>Zurück zu Dokumenten</Link>
       </p>
     </LayoutRs>
   )

@@ -73,13 +73,12 @@ export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) =>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                       <p className="flex items-center justify-end gap-4 text-right">
                         <Link
-                          button
                           href={Routes.EditContactPage({
                             contactId: contact.id,
                             projectSlug: projectSlug!,
                           })}
                         >
-                          <PencilSquareIcon className="h-5 w-5" />
+                          <PencilSquareIcon className="h-4 w-4" />
                           <span className="sr-only">Bearbeiten</span>
                         </Link>
                         <Link
@@ -88,7 +87,7 @@ export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) =>
                             projectSlug: projectSlug!,
                           })}
                         >
-                          <TrashIcon className="h-5 w-5" />
+                          <TrashIcon className="h-4 w-4" />
                         </Link>
                       </p>
                     </td>

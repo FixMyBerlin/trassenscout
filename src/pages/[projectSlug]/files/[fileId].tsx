@@ -29,8 +29,8 @@ export const File = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Datei ${quote(file.title)}`} />
-      <PageHeader title={`Datei ${quote(file.title)}`} />
+      <MetaTags noindex title={`Dokument ${quote(file.title)}`} />
+      <PageHeader title={`Dokument ${quote(file.title)}`} />
       <p className="mb-10 space-x-4">
         <Link href={Routes.EditFilePage({ projectSlug: projectSlug!, fileId: file.id })}>
           Bearbeiten
@@ -45,7 +45,7 @@ export const File = () => {
       <SuperAdminBox>
         <pre>{JSON.stringify(file, null, 2)}</pre>
       </SuperAdminBox>
-      <Link href={Routes.FilesPage({ projectSlug: projectSlug! })}>Zurück zur Dateiliste</Link>
+      <Link href={Routes.FilesPage({ projectSlug: projectSlug! })}>Zurück zu Dokumenten</Link>
     </>
   )
 }
