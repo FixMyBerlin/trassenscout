@@ -9,10 +9,12 @@ import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import createProject from "src/projects/mutations/createProject"
 import { ProjectSchema } from "src/projects/schema"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getUsers from "src/users/queries/getUsers"
 
 const AdminNewProjectPageWithQuery = () => {
   const router = useRouter()
+  const currentUser = useCurrentUser()
   const [createProjectMutation] = useMutation(createProject)
 
   const [{ users }] = useQuery(getUsers, {})
@@ -37,7 +39,7 @@ const AdminNewProjectPageWithQuery = () => {
         <ProjectForm
           submitText="Erstellen"
           schema={ProjectSchema}
-          // initialValues={{}} // Use only when custom initial values are needed
+          initialValues={{ managerId: currentUser!.id }}
           onSubmit={handleSubmit}
           users={users}
         />

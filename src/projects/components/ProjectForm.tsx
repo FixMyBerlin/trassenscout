@@ -14,17 +14,6 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
   props: FormProps<S> & { users: User[] }
 ) {
   const { users } = props
-  const currentUser = useCurrentUser()
-  const userOptions = [
-    [
-      currentUser!.id.toString(),
-      [currentUser!.firstName, currentUser!.lastName, `<${currentUser!.email}>`].join(" "),
-    ],
-  ].concat(
-    users
-      .filter((u) => u.id !== currentUser?.id)
-      .map((u) => [String(u.id), [u.firstName, u.lastName, `<${u.email}>`].join(" ")])
-  )
 
   return (
     <Form<S> {...props}>
@@ -46,8 +35,10 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
-        options={userOptions as [string, string][]}
-        // TODO: type
+        options={users.map((u) => [
+          String(u.id),
+          [u.firstName, u.lastName, `<${u.email}>`].join(" "),
+        ])}
       />
     </Form>
   )
