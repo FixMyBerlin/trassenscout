@@ -14,6 +14,8 @@ on:
         required: true
       SESSION_SECRET_KEY:
         required: true
+      NGINX_HTPASSWD:
+        required: true
 
 jobs:
   build-push-deploy-docker-images:
@@ -53,7 +55,8 @@ jobs:
       - name: Build nginx image
         uses: docker/build-push-action@v3
         with:
-          file: ./docker/nginx/Dockerfile
+          context: ./docker/nginx
+          build-args: NGINX_HTPASSWD=${{ secrets.NGINX_HTPASSWD }}
           push: false
           load: true
           cache-from: type=gha
@@ -62,11 +65,13 @@ jobs:
 
       - name: Push the app image
         run: |
+          echo push public.ecr.aws/n0p8j4k5/trassenscout/nginx:${GITHUB_SHA}
           aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/n0p8j4k5/trassenscout
           docker push public.ecr.aws/n0p8j4k5/trassenscout/app:${GITHUB_SHA}
 
       - name: Push the nginx image
         run: |
+          echo push public.ecr.aws/n0p8j4k5/trassenscout/nginx:${GITHUB_SHA}
           aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/n0p8j4k5/trassenscout
           docker push public.ecr.aws/n0p8j4k5/trassenscout/nginx:${GITHUB_SHA}
 

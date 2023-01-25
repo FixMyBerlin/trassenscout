@@ -13,3 +13,4 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       DATABASE_URL:  ${{ secrets.DATABASE_URL_STAGING }}
       SESSION_SECRET_KEY: ${{ secrets.DATABASE_URL_STAGING }}
+      NGINX_HTPASSWD: ${{ secrets.NGINX_HTPASSWD }}
