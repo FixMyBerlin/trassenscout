@@ -26,5 +26,5 @@ module.exports = {
       mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
     },
   },
-  plugins: [require("@tailwindcss/typography"), require("@tailwindcss/forms")],
+  plugins: [require("@tailwindcss/typography"), require('@tailwindcss/line-clamp'), require("@tailwindcss/forms")],
 }
