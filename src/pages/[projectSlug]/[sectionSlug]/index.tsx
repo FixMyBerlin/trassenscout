@@ -5,6 +5,7 @@ import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { PageHeader } from "src/core/components/PageHeader"
+import { Manager } from "src/core/components/PageHeader/Manager"
 import { Spinner } from "src/core/components/Spinner"
 import { proseClasses, quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
@@ -20,12 +21,14 @@ import StakeholdernoteList from "src/stakeholdernotes/components/Stakeholdernote
 import { StakeholderSectionStatus } from "src/stakeholdernotes/components/StakeholderSectionStatus"
 import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
 import getSubsections from "src/subsections/queries/getSubsections"
+import getUser from "src/users/queries/getUser"
 
 export const SectionDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
   const [section] = useQuery(getSection, { sectionSlug, projectSlug }) // TODO optimize to allow projectId as well to get rid of one query in case we can
+  const [user] = useQuery(getUser, section.managerId)
   const [{ files }] = useQuery(getFiles, { where: { projectId: project.id } }) // TODO make project required
   const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, {
     sectionId: section.id,
@@ -44,7 +47,7 @@ export const SectionDashboardWithQuery = () => {
   return (
     <>
       <MetaTags noindex title={section.title} />
-
+      <Manager manager={user!} />
       <PageHeader title={section.title} subtitle={section.subTitle} />
 
       <div className="mb-12">

@@ -1,9 +1,7 @@
 import Image from "next/image"
-import { Suspense } from "react"
 import DashedLine from "../DashedLine"
 import { H1, H2 } from "../text/Headings"
 import pngRsv8Logo from "./../../layouts/Navigation/assets/rsv8-logo.png" // TODO Logo dynamisch
-import { Manager } from "./Manager"
 
 type Props = {
   title: string
@@ -11,7 +9,6 @@ type Props = {
   description?: string
   action?: React.ReactNode
   logo?: boolean
-  manager?: boolean
   intro?: string
 }
 
@@ -22,18 +19,12 @@ export const PageHeader: React.FC<Props> = ({
   action,
   logo = false,
   intro,
-  manager = true,
 }) => {
   return (
     <section className="mb-12">
       {logo ? (
         <div className="flex items-start justify-between">
           <div>
-            {manager && (
-              <Suspense>
-                <Manager />
-              </Suspense>
-            )}
             <H1 className="mb-5 pt-12 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
               {title}
             </H1>
@@ -44,11 +35,6 @@ export const PageHeader: React.FC<Props> = ({
         </div>
       ) : (
         <>
-          {manager && (
-            <Suspense>
-              <Manager />
-            </Suspense>
-          )}
           <div className="flex items-center justify-between">
             <H1 className="mb-5 pt-12 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
               {title}

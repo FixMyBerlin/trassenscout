@@ -7,6 +7,7 @@ import { CalenderDashboard } from "src/calendar-entries/components"
 import DashedLine from "src/core/components/DashedLine"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
+import { Manager } from "src/core/components/PageHeader/Manager"
 import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
@@ -16,13 +17,15 @@ import { SectionsTeasers } from "src/projects/components/Map/SectionsTeaser/Sect
 import getProject from "src/projects/queries/getProject"
 import getSections from "src/sections/queries/getSections"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import getUser from "src/users/queries/getUser"
 import { getFullname } from "src/users/utils"
 
 export const ProjectDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
-  const user = useCurrentUser()
-  const userName = getFullname(user!)
+  const currentUser = useCurrentUser()
+  const userName = getFullname(currentUser!)
   const [project] = useQuery(getProject, { slug: projectSlug })
+  const [user] = useQuery(getUser, project.managerId)
   const [{ sections }] = useQuery(getSections, {
     where: { project: { slug: projectSlug! } },
     orderBy: { index: "asc" },
@@ -50,6 +53,7 @@ export const ProjectDashboardWithQuery = () => {
         intro={`Willkommen im Trassenscout zum ${project.title}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
         logo
       />
+      <Manager manager={user!} />
 
       {/* TODO: intro prop evtl. mit project description ersetzen */}
 
