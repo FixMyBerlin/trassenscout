@@ -100,14 +100,25 @@ export const SectionDashboardWithQuery = () => {
         </Link>
         <br />
         {sectionSlug && (
-          <Link
-            href={Routes.NewStakeholdernotePage({
-              projectSlug: projectSlug!,
-              sectionSlug: sectionSlug!,
-            })}
-          >
-            Neuer Stakeholder
-          </Link>
+          <>
+            <Link
+              href={Routes.NewStakeholdernotePage({
+                projectSlug: projectSlug!,
+                sectionSlug: sectionSlug!,
+              })}
+            >
+              Neuer Stakeholder
+            </Link>
+            <br />
+            <Link
+              href={Routes.NewStakeholdernoteMultiPage({
+                projectSlug: projectSlug!,
+                sectionSlug: sectionSlug!,
+              })}
+            >
+              Mehrere neue Stakeholder erstellen
+            </Link>
+          </>
         )}
 
         <ul>
