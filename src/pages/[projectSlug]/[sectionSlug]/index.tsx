@@ -12,8 +12,7 @@ import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFiles from "src/files/queries/getFiles"
-import { BaseMap, BaseMapSections, SectionsMap } from "src/projects/components/Map"
-import { SectionPanel } from "src/projects/components/Map/SectionPanel"
+import { BaseMapSections, SectionsMap } from "src/projects/components/Map"
 import getProject from "src/projects/queries/getProject"
 import getSection from "src/sections/queries/getSection"
 import getSections from "src/sections/queries/getSections"
@@ -43,46 +42,58 @@ export const SectionDashboardWithQuery = () => {
     orderBy: { index: "asc" },
     include: { subsections: { select: { id: true, geometry: true } } },
   }) // TODO make project required
+  console.log(subsections)
 
   return (
     <>
       <MetaTags noindex title={section.title} />
+
       <Manager manager={user!} />
+
       <PageHeader title={section.title} subtitle={section.subTitle} />
 
+      {/* Intro: Kurzinfo, Stakeholderstatus, Teilstreckenlänge */}
       <div className="mb-12">
         {section.description && (
           <div className="mb-5">
             <Markdown markdown={section.description} />
           </div>
         )}
-
         <StakeholderSectionStatus stakeholdernotes={stakeholdernotes} />
-
         <p>
           <strong>Teilstreckenlänge:</strong> {section.length ? section.length + " km" : " k.A."}
         </p>
       </div>
 
-      <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
-        <SectionsMap
-          sections={sections as BaseMapSections}
-          selectedSection={section}
-          isInteractive={false}
-        />
-        {/* <SectionPanel section={section} /> */}
-      </div>
+      {/* Karte mit Daten der subsections */}
+      {Boolean(subsections.length) && (
+        <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
+          <SectionsMap
+            sections={sections as BaseMapSections}
+            selectedSection={section}
+            isInteractive={false}
+          />
+          {/* <SectionPanel section={section} /> */}
+        </div>
+      )}
 
-      <div className="mb-12">
-        <H2 className="mb-5 text-2xl font-bold">Relevante Dokumente</H2>
-        <FileTable files={files} />
-      </div>
+      {/* Dateien / files */}
+      {Boolean(files.length) && (
+        <div className="mb-12">
+          <H2 className="mb-5 text-2xl font-bold">Relevante Dokumente</H2>
+          <FileTable files={files} />
+        </div>
+      )}
 
-      <div className="mb-12">
-        <H2 className="mb-5 text-2xl font-bold">Stakeholderliste und Status der Abstimmung</H2>
-        <StakeholdernoteList stakeholdernotes={stakeholdernotes} />
-      </div>
+      {/* Stakeholder / stakeholdernotes */}
+      {Boolean(stakeholdernotes.length) && (
+        <div className="mb-12">
+          <H2 className="mb-5 text-2xl font-bold">Stakeholderliste und Status der Abstimmung</H2>
+          <StakeholdernoteList stakeholdernotes={stakeholdernotes} />
+        </div>
+      )}
 
+      {/* Admin Actions Section - noch ungestyled */}
       <section className="rounded border bg-blue-100 p-5">
         <Link
           href={Routes.EditSectionPage({
@@ -120,7 +131,6 @@ export const SectionDashboardWithQuery = () => {
             </Link>
           </>
         )}
-
         <ul>
           {subsections &&
             subsections.map((subsection) => {

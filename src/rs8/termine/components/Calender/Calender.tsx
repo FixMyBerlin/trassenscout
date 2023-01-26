@@ -21,8 +21,13 @@ export const Calender: React.FC<Props> = ({ calendarEntries }) => {
     })
 
   // TODO why does suspense boundary not catch this?
-  if (!calendarEntries?.length) {
-    return null
+
+  if (!calendarEntries.length) {
+    return (
+      <p className="text-center text-xl text-gray-500">
+        <span>Es wurden noch keine Termine eingetragen.</span>
+      </p>
+    )
   }
 
   return (

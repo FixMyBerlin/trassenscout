@@ -48,15 +48,17 @@ export const ProjectDashboardWithQuery = () => {
   return (
     <>
       <MetaTags noindex title={project.title} />
+
       <PageHeader
         title={project.title}
         intro={`Willkommen im Trassenscout zum ${project.title}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
         logo
       />
-      <Manager manager={user!} />
-
       {/* TODO: intro prop evtl. mit project description ersetzen */}
 
+      <Manager manager={user!} />
+
+      {/* Phasen Panel */}
       <H2 className="my-6">Aktuelle Planungsphase</H2>
       <div className="max-w-[650px]">
         <Image src={statusImg} alt=""></Image>
@@ -64,12 +66,17 @@ export const ProjectDashboardWithQuery = () => {
 
       <DashedLine />
 
+      {/* Karte mit Daten der Abschnitte/subsections und Teaser Teilstrecke/sections */}
+      {/* {Boolean(sections && sections[0]?.subsections?.length) && ( */}
       <div className="mt-12">
         <SectionsMap sections={sections as BaseMapSections} />
-        <SectionsTeasers sections={sections} />
       </div>
+      {/* )} */}
+      {Boolean(sections.length) && <SectionsTeasers sections={sections} />}
 
       <CalenderDashboard />
+
+      {/* Admin Actions Section - noch ungestyled */}
       <section className="rounded border bg-blue-100 p-5">
         <Link href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
           {quote(project.title)} bearbeiten

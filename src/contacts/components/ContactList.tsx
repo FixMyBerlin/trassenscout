@@ -1,5 +1,5 @@
 import { Routes, useParam } from "@blitzjs/next"
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
+import { PencilSquareIcon, TableCellsIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { Contact } from "@prisma/client"
 import React from "react"
 import { Link, LinkMail, LinkTel } from "src/core/components/links"
