@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { ContactList } from "src/contacts/components/ContactList"
+import { ContactSingle } from "src/contacts/components/ContactSingle"
 import deleteContact from "src/contacts/mutations/deleteContact"
 import getContact from "src/contacts/queries/getContact"
 import { SuperAdminBox } from "src/core/components/AdminBox"
@@ -12,7 +13,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 
-export const Contact = () => {
+export const ContactWithQuery = () => {
   const router = useRouter()
   const contactId = useParam("contactId", "number")
   const projectSlug = useParam("projectSlug", "string")
@@ -49,12 +50,13 @@ export const Contact = () => {
         </button>
       </p>
       <div>
-        <ContactList withAction={false} contacts={[contact]} />
+        <ContactSingle contact={contact} />
         <SuperAdminBox>
           <pre>{JSON.stringify(contact, null, 2)}</pre>
         </SuperAdminBox>
       </div>
       <Link href={Routes.ContactsPage({ projectSlug: projectSlug! })}>Zurück zur Kontaktliste</Link>
+     
     </>
   )
 }
@@ -63,7 +65,7 @@ const ShowContactPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <Suspense fallback={<Spinner page />}>
-        <Contact />
+        <ContactWithQuery />
       </Suspense>
     </LayoutRs>
   )
