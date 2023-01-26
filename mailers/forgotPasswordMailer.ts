@@ -1,9 +1,5 @@
-/* TODO - You need to add a mailer integration in `integrations/` and import here.
- *
- * The integration file can be very simple. Instantiate the email client
- * and then export it. That way you can import here and anywhere else
- * and use it straight away.
- */
+import Mailjet from "node-mailjet"
+import previewEmail from "preview-email"
 
 type ResetPasswordMailer = {
   to: string
@@ -15,14 +11,17 @@ export function forgotPasswordMailer({ to, token }: ResetPasswordMailer) {
   const origin = process.env.APP_ORIGIN || process.env.BLITZ_DEV_SERVER_ORIGIN
   const resetUrl = `${origin}/auth/reset-password?token=${token}`
 
+  // mailjet format
   const msg = {
-    from: "TODO@example.com",
-    to,
-    subject: "Your Password Reset Instructions",
-    html: `
-      <h1>Reset Your Password</h1>
-      <h3>NOTE: You must set up a production email integration in mailers/forgotPasswordMailer.ts</h3>
-
+    From: { Email: "<info@fixmycity.de>", Name: "Trassenscout" },
+    To: [{ Email: to }],
+    Subject: "Setzen Sie ihr Passwort zurück",
+    TextPart: `
+      Setzen Sie ihr Passwort zurück.\n
+      Ein neues Passwort vergeben: ${resetUrl},
+    `,
+    HTMLPart: `
+      <h1>Setzen Sie ihr Passwort zurück.</h1>
       <a href="${resetUrl}">
         Ein neues Passwort vergeben
       </a>
@@ -32,13 +31,30 @@ export function forgotPasswordMailer({ to, token }: ResetPasswordMailer) {
   return {
     async send() {
       if (process.env.NODE_ENV === "production") {
-        // TODO - send the production email, like this:
-        // await postmark.sendEmail(msg)
-        throw new Error("No production email implementation in mailers/forgotPasswordMailer")
+        const mailjet = Mailjet.apiConnect(
+          // @ts-ignore
+          process.env.MAILJET_APIKEY_PUBLIC,
+          process.env.MAILJET_APIKEY_PRIVATE
+        )
+        const request = mailjet.post("send", { version: "v3.1" }).request({ Messages: [msg] })
+        request
+          .then((result) => {
+            console.log(result.body)
+          })
+          .catch((err) => {
+            console.error(err.statusCode)
+          })
       } else {
         // Preview email in the browser
-        const previewEmail = (await import("preview-email")).default
-        await previewEmail(msg)
+        var { From, To, Subject, TextPart, HTMLPart } = msg
+        await previewEmail({
+          from: `${From.Name} <${From.Email}>`,
+          // @ts-ignore
+          to: `${To[0].Name} <${To[0].Email}>`,
+          subject: Subject,
+          text: TextPart,
+          html: HTMLPart,
+        })
       }
     },
   }
