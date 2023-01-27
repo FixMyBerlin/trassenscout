@@ -1,8 +1,11 @@
+import { useParam } from "@blitzjs/next"
 import { Disclosure } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import React from "react"
+import { Link } from "src/core/components/links"
+import { sectionBbox } from "src/projects/components/Map/utils"
 import { MenuItems } from "../types"
 import { User } from "../User"
 
@@ -11,7 +14,14 @@ type Props = MenuItems & {
 }
 
 export const NavigationMobile: React.FC<Props> = ({ menuItems, logo: Logo }) => {
+  const { asPath } = useRouter()
   const { pathname } = useRouter()
+
+  const itemClasses = (current: boolean) =>
+    clsx(
+      current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white",
+      "rounded-md px-3 py-2 text-sm font-medium"
+    )
 
   return (
     <Disclosure as="div" className="relative flex flex-col sm:hidden">
@@ -37,23 +47,24 @@ export const NavigationMobile: React.FC<Props> = ({ menuItems, logo: Logo }) => 
           </div>
 
           <Disclosure.Panel className="divide-y-2 divide-gray-900">
-            <div className="space-y-1 pt-2 pb-3">
+            <div className="space-y-3 pt-2 pb-3">
               {menuItems.map((item) => {
+                // console.log(item.name)
+                // console.log("item.href", item.href)
+                // console.log("asPath", asPath)
+                // console.log("pathname", pathname)
+
                 const current = pathname === item.href.pathname
+
                 return (
-                  <Disclosure.Button
-                    key={item.name}
-                    as="a"
-                    href={item.href.pathname}
-                    className={clsx(
-                      current
-                        ? "bg-gray-900 text-white"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                      "block rounded-md px-3 py-2 text-base font-medium"
-                    )}
-                    aria-current={current ? "page" : undefined}
-                  >
-                    {item.name}
+                  <Disclosure.Button key={item.name} as="div">
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      classNameOverwrites={itemClasses(current)}
+                    >
+                      {item.name}
+                    </Link>
                   </Disclosure.Button>
                 )
               })}
