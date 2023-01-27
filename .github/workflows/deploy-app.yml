@@ -2,7 +2,10 @@ name: Deploy to AWS Lightsail
 on:
   workflow_call:
     inputs:
-      service-name:
+      APP_ORIGIN:
+        required: true
+        type: string
+      SERVICE_NAME:
         required: true
         type: string
     secrets:
@@ -15,6 +18,10 @@ on:
       SESSION_SECRET_KEY:
         required: true
       NGINX_HTPASSWD:
+        required: true
+      MAILJET_APIKEY_PUBLIC:
+        required: true
+      MAILJET_APIKEY_PRIVATE:
         required: true
 
 jobs:
@@ -56,7 +63,6 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./docker/nginx
-          build-args: NGINX_HTPASSWD=${{ secrets.NGINX_HTPASSWD }}
           push: false
           load: true
           cache-from: type=gha
@@ -80,9 +86,13 @@ jobs:
           cat .github/workflows/deployment-config.yml.tpl | envsubst > deployment-config.yml
           cat deployment-config.yml
         env:
-          SERVICE_NAME: ${{ inputs.service-name }}
+          APP_ORIGIN: ${{ inputs.APP_ORIGIN }}
+          SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY }}
+          NGINX_HTPASSWD: ${{ secrets.NGINX_HTPASSWD }}
+          MAILJET_APIKEY_PUBLIC: ${{ secrets.MAILJET_APIKEY_PUBLIC }}
+          MAILJET_APIKEY_PRIVATE: ${{ secrets.MAILJET_APIKEY_PRIVATE }}
 
       - name: Create Deployment and deploy
         run: >

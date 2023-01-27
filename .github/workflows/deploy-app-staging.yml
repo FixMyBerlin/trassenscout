@@ -7,10 +7,13 @@ jobs:
   call-deploy-app:
     uses: ./.github/workflows/deploy-app.yml
     with:
-      service-name: trassenscout-staging
+      APP_ORIGIN: http://staging.trassenscout.de
+      SERVICE_NAME: trassenscout-staging
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       DATABASE_URL:  ${{ secrets.DATABASE_URL_STAGING }}
-      SESSION_SECRET_KEY: ${{ secrets.DATABASE_URL_STAGING }}
+      SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY_STAGING }}
       NGINX_HTPASSWD: ${{ secrets.NGINX_HTPASSWD }}
+      MAILJET_APIKEY_PUBLIC: ${{ secrets.MAILJET_APIKEY_PUBLIC }}
+      MAILJET_APIKEY_PRIVATE: ${{ secrets.MAILJET_APIKEY_PRIVATE }}
