@@ -22,19 +22,21 @@ export const StakeholderItem: React.FC<props> = ({ stakeholder }) => {
 
   return (
     <div>
-      <div onClick={handleToggle} className="flex cursor-pointer space-x-5">
+      <div className="flex cursor-pointer space-x-5">
         <StakeholderStatus status={stakeholder.status} />
         <div>
           <p>
             <strong>{stakeholder.title}</strong>
           </p>
-          <Markdown
-            className={clsx("prose-sm", !isExpand ? "line-clamp-2" : "line-clamp-none")}
-            markdown={stakeholder.statusText}
-          />
+          <button className="text-left" onClick={handleToggle}>
+            <Markdown
+              className={clsx("prose-sm", !isExpand ? "line-clamp-2" : "line-clamp-none")}
+              markdown={stakeholder.statusText}
+            />
+          </button>
         </div>
       </div>
-      <div className="flex items-center justify-end space-x-4">
+      <div className="mb-2 flex items-center justify-end space-x-4">
         <Link
           href={Routes.EditStakeholdernotePage({
             projectSlug: projectSlug!,

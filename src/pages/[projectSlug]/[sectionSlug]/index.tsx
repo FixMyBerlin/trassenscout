@@ -42,7 +42,6 @@ export const SectionDashboardWithQuery = () => {
     orderBy: { index: "asc" },
     include: { subsections: { select: { id: true, geometry: true } } },
   }) // TODO make project required
-  console.log(subsections)
 
   return (
     <>
