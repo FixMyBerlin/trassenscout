@@ -56,7 +56,6 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./docker/nginx
-          build-args: NGINX_HTPASSWD=${{ secrets.NGINX_HTPASSWD }}
           push: false
           load: true
           cache-from: type=gha
@@ -83,6 +82,7 @@ jobs:
           SERVICE_NAME: ${{ inputs.service-name }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY }}
+          NGINX_HTPASSWD: ${{ secrets.NGINX_HTPASSWD }}
 
       - name: Create Deployment and deploy
         run: >

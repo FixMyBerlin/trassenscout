@@ -2,6 +2,8 @@ serviceName: ${SERVICE_NAME}
 containers:
   nginx:
     command: []
+    environment:
+      NGINX_HTPASSWD: ${NGINX_HTPASSWD}
     image: public.ecr.aws/n0p8j4k5/trassenscout/nginx:${GITHUB_SHA}
     ports:
       "80": HTTP
