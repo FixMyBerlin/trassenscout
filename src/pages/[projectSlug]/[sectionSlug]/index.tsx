@@ -13,7 +13,6 @@ import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFiles from "src/files/queries/getFiles"
 import { BaseMapSections, SectionsMap } from "src/projects/components/Map"
-import getProject from "src/projects/queries/getProject"
 import getSection from "src/sections/queries/getSection"
 import getSections from "src/sections/queries/getSections"
 import StakeholdernoteList from "src/stakeholdernotes/components/StakeholdernoteList"
@@ -29,7 +28,7 @@ export const SectionDashboardWithQuery = () => {
   const [user] = useQuery(getUser, section.managerId)
   const [{ files }] = useQuery(getFiles, { projectSlug: projectSlug! })
   const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, {
-    sectionId: section.id,
+    sectionSlug: sectionSlug!,
     orderBy: { id: "asc" },
   })
   const [{ subsections, count }] = useQuery(getSubsections, {

@@ -1,9 +1,5 @@
-import { Routes } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
 import { Stakeholdernote } from "@prisma/client"
 import { useRouter } from "next/router"
-import { Link } from "src/core/components/links"
-import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
 import { StakeholderItem } from "./StakeholderItem"
 
 type props = {
