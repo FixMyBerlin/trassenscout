@@ -2,14 +2,19 @@ serviceName: ${SERVICE_NAME}
 containers:
   nginx:
     command: []
+    environment:
+      NGINX_HTPASSWD: ${NGINX_HTPASSWD}
     image: public.ecr.aws/n0p8j4k5/trassenscout/nginx:${GITHUB_SHA}
     ports:
       "80": HTTP
   app:
     command: []
     environment:
+      APP_ORIGIN: ${APP_ORIGIN}
       DATABASE_URL: ${DATABASE_URL}
       SESSION_SECRET_KEY: ${SESSION_SECRET_KEY}
+      MAILJET_APIKEY_PUBLIC: ${MAILJET_APIKEY_PUBLIC}
+      MAILJET_APIKEY_PRIVATE: ${MAILJET_APIKEY_PRIVATE}
     image: public.ecr.aws/n0p8j4k5/trassenscout/app:${GITHUB_SHA}
     ports:
       "3000": HTTP
