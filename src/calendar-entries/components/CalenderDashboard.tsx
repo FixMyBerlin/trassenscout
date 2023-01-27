@@ -13,10 +13,10 @@ const CalendarDashboardDateList: React.FC = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
   const [{ calendarEntries }] = usePaginatedQuery(getCalendarEntries, {
+    projectSlug: projectSlug!,
     orderBy: { startAt: "asc" },
     take: 3,
     where: {
-      projectId: project.id,
       startAt: {
         gte: startOfDay(new Date()),
       },
