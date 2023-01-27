@@ -18,7 +18,7 @@ export const Files = () => {
   const projectSlug = useParam("projectSlug", "string")
   const page = Number(router.query.page) || 0
   const [{ files, hasMore }] = usePaginatedQuery(getFiles, {
-    where: { project: { slug: projectSlug! } },
+    projectSlug: projectSlug!,
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,

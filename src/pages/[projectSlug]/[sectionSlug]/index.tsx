@@ -25,10 +25,9 @@ import getUser from "src/users/queries/getUser"
 export const SectionDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug })
   const [section] = useQuery(getSection, { sectionSlug, projectSlug }) // TODO optimize to allow projectId as well to get rid of one query in case we can
   const [user] = useQuery(getUser, section.managerId)
-  const [{ files }] = useQuery(getFiles, { where: { projectId: project.id } }) // TODO make project required
+  const [{ files }] = useQuery(getFiles, { projectSlug: projectSlug! })
   const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, {
     sectionId: section.id,
     orderBy: { id: "asc" },
