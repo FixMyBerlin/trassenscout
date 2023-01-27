@@ -2,13 +2,16 @@ import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
-interface GetContactsInput
-  extends Pick<Prisma.ContactFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
+type GetContactsInput = { projectSlug: string } & Pick<
+  Prisma.ContactFindManyArgs,
+  "where" | "orderBy" | "skip" | "take"
+>
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, skip = 0, take = 100 }: GetContactsInput) => {
+  async ({ projectSlug, where, orderBy, skip = 0, take = 100 }: GetContactsInput) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
+    const saveWhere = { project: { slug: projectSlug }, ...where }
     const {
       items: contacts,
       hasMore,
@@ -17,8 +20,8 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.contact.count({ where }),
-      query: (paginateArgs) => db.contact.findMany({ ...paginateArgs, where, orderBy }),
+      count: () => db.contact.count({ where: saveWhere }),
+      query: (paginateArgs) => db.contact.findMany({ ...paginateArgs, where: saveWhere, orderBy }),
     })
 
     return {

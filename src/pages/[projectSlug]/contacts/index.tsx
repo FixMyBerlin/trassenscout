@@ -18,7 +18,7 @@ export const ContactTable = () => {
   const page = Number(router.query.page) || 0
   const projectSlug = useParam("projectSlug", "string")
   const [{ contacts, hasMore }] = usePaginatedQuery(getContacts, {
-    where: { project: { slug: projectSlug! } },
+    projectSlug: projectSlug!,
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
