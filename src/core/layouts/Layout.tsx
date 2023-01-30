@@ -1,5 +1,6 @@
 import { BlitzLayout } from "@blitzjs/next"
 import Head from "next/head"
+import { Footer } from "./Footer"
 import { NavigationGeneral } from "./Navigation"
 
 type Props = {
@@ -20,6 +21,7 @@ export const Layout: BlitzLayout<Props> = ({ navigation, children }) => {
         {navigation !== false && <NavigationGeneral />}
         <main className="mx-auto w-full max-w-7xl px-6 pb-16 md:px-8">{children}</main>
       </div>
+      <Footer />
     </>
   )
 }

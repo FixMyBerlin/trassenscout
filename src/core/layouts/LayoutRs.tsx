@@ -1,4 +1,5 @@
 import React from "react"
+import { Footer } from "./Footer"
 import { NavigationProject } from "./Navigation/NavigationProject/NavigationProject"
 
 type Props = {
@@ -10,6 +11,7 @@ export const LayoutRs: React.FC<Props> = ({ children }) => {
     <div className="text-dark-gray relative flex h-full flex-col overflow-x-hidden">
       <NavigationProject />
       <main className="mx-auto w-full max-w-7xl px-6 pb-16 md:px-8">{children}</main>
+      <Footer />
     </div>
   )
 }
