@@ -1,11 +1,9 @@
-import { useParam } from "@blitzjs/next"
 import { Disclosure } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import React from "react"
 import { Link } from "src/core/components/links"
-import { sectionBbox } from "src/projects/components/Map/utils"
 import { MenuItems } from "../types"
 import { User } from "../User"
 
