@@ -10,19 +10,19 @@ import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
 import { Layout, LayoutMiddleBox, MetaTags } from "src/core/layouts"
 
 const ResetPasswordPage: BlitzPage = () => {
-  const [token, setToken] = useState("")
   const router = useRouter()
+  const token = router.query.token?.toString()
   const [resetPasswordMutation, { isSuccess }] = useMutation(resetPassword)
 
-  useEffect(() => {
-    setToken(router.query.token as string)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.isReady])
+  type PageState = "token_missing" | "success" | "form"
+  let pageState: PageState = "form"
+  if (typeof token !== "string") pageState = "token_missing"
+  if (isSuccess) pageState = "success"
 
   type HandleSubmit = { password: string; passwordConfirmation: string }
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      await resetPasswordMutation({ ...values, token })
+      token && (await resetPasswordMutation({ ...values, token: token }))
     } catch (error: any) {
       if (error.name === "ResetPasswordError") {
         return {
@@ -39,14 +39,20 @@ const ResetPasswordPage: BlitzPage = () => {
   return (
     <LayoutMiddleBox title="Neues Passwort vergeben">
       <MetaTags noindex title="Passwort vergessen" />
-      {isSuccess ? (
+      {pageState === "token_missing" && (
+        <div>
+          <h2>Reset password link is invalid.</h2>
+        </div>
+      )}
+      {pageState === "success" && (
         <div>
           <h2>Password Reset Successfully</h2>
           <p>
             Go to the <Link href={Routes.Home()}>homepage</Link>
           </p>
         </div>
-      ) : (
+      )}
+      {pageState === "form" && (
         <Form
           submitText="Reset Password"
           schema={ResetPassword}
