@@ -10,7 +10,6 @@ type GetCalendarEntriesInput = { projectSlug: string } & Pick<
 export default resolver.pipe(
   resolver.authorize(),
   async ({ projectSlug, where, orderBy, skip = 0, take = 100 }: GetCalendarEntriesInput) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const saveWhere = { project: { slug: projectSlug }, ...where }
     const {
       items: calendarEntries,

@@ -12,7 +12,6 @@ export default resolver.pipe(
   resolver.zod(GetSubsection),
   resolver.authorize(),
   async ({ slug }) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const subsection = await db.subsection.findFirst({ where: { slug } })
 
     if (!subsection) throw new NotFoundError()

@@ -13,7 +13,6 @@ export default resolver.pipe(
   resolver.zod(UpdateFileSchema),
   resolver.authorize(),
   async ({ id, ...data }) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const file = await db.file.update({ where: { id }, data })
 
     return file

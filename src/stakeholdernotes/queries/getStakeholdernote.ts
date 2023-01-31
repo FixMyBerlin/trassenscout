@@ -12,7 +12,6 @@ export default resolver.pipe(
   resolver.zod(GetStakeholdernote),
   resolver.authorize(),
   async ({ id }) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const stakeholdernote = await db.stakeholdernote.findFirst({
       where: { id },
     })

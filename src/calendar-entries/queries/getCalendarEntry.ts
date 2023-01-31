@@ -12,7 +12,6 @@ export default resolver.pipe(
   resolver.zod(GetCalendarEntry),
   resolver.authorize(),
   async ({ id }) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const calendarEntry = await db.calendarEntry.findFirst({ where: { id } })
 
     if (!calendarEntry) throw new NotFoundError()

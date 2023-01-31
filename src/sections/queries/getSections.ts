@@ -14,7 +14,6 @@ export default resolver.pipe(
     take = 100,
     include,
   }: GetSectionsInput) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const {
       items: sections,
       hasMore,
