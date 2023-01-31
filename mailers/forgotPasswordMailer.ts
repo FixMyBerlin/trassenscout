@@ -50,7 +50,7 @@ export function forgotPasswordMailer({ to, token }: ResetPasswordMailer) {
         await previewEmail({
           from: `${From.Name} <${From.Email}>`,
           // @ts-ignore
-          to: `${To[0].Name} <${To[0].Email}>`,
+          to: `${To[0]?.Name || ""} <${To[0].Email}>`,
           subject: Subject,
           text: TextPart,
           html: HTMLPart,
