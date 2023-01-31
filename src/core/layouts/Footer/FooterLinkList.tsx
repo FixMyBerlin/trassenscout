@@ -1,10 +1,10 @@
 import clsx from "clsx"
 import React from "react"
 import { Link } from "src/core/components/links"
-import { FooterMenuItem } from "./Footer"
+import { FooterLink } from "./links.const"
 
 type Props = {
-  linkList: FooterMenuItem[]
+  linkList: FooterLink[]
   className?: string
 }
 

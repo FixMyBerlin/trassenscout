@@ -4,7 +4,7 @@ import { Layout, MetaTags } from "src/core/layouts"
 
 const PageHomePublic = () => {
   return (
-    <Layout>
+    <Layout navigation="general" footer="general">
       <MetaTags title="TODO Homepage Public" />
       Public homepage
       <p>

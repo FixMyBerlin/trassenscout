@@ -3,7 +3,7 @@ import Image from "next/image"
 import React from "react"
 import { Link } from "src/core/components/links"
 import pngRsv8Logo from "./../Navigation/assets/rsv8-logo.png" // TODO
-import { FooterMenuItemLogo } from "./Footer"
+import { FooterMenuItemLogo } from "./FooterProject"
 
 type Props = {
   logos: FooterMenuItemLogo[]
@@ -15,10 +15,7 @@ export const FooterLogos: React.FC<Props> = ({ logos, className }) => {
     <ul className={clsx("grid grid-cols-3 gap-5", className)}>
       {logos.map((item) => (
         <li key={item.name}>
-          <Link
-            href={item.href}
-            blank={item.blank}
-          >
+          <Link href={item.href} blank={item.blank}>
             <Image
               src={pngRsv8Logo}
               width={48}
