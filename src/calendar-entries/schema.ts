@@ -17,3 +17,8 @@ export const CalendarEntrySchema = z.object({
   description: z.string().nullish(),
   projectId: z.coerce.number(),
 })
+
+export const CalendarEntryStartDateStartTimeSchema = z.object({
+  startDate: z.string().min(8, { message: "Pflichtfeld." }),
+  startTime: z.string().min(5, { message: "Pflichtfeld." }),
+})

@@ -10,7 +10,7 @@ type Props = {
 
 export const LayoutArticle: BlitzLayout<Props> = ({ children }) => {
   return (
-    <Layout>
+    <Layout navigation="general" footer="general">
       <div className={clsx(proseClasses, "mx-auto w-full")}>{children}</div>
     </Layout>
   )

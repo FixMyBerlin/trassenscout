@@ -1,18 +1,19 @@
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 import db, { Prisma } from "db"
+import { z } from "zod"
 
-type GetStakeholdernotesInput = { sectionId: number } & Pick<
+type GetStakeholdernotesInput = { sectionSlug: string } & Pick<
   Prisma.StakeholdernoteFindManyArgs,
   "where" | "orderBy" | "skip" | "take"
 >
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ sectionId, where, orderBy, skip = 0, take = 100 }: GetStakeholdernotesInput) => {
+  async ({ sectionSlug, where, orderBy, skip = 0, take = 100 }: GetStakeholdernotesInput) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
 
-    const saveWhere = { sectionId, ...where }
+    const saveWhere = { section: { slug: sectionSlug }, ...where }
     const {
       items: stakeholdernotes,
       hasMore,

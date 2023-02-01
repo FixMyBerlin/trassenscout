@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { ContactList } from "src/contacts/components/ContactList"
+import { ContactSingle } from "src/contacts/components/ContactSingle"
 import deleteContact from "src/contacts/mutations/deleteContact"
 import getContact from "src/contacts/queries/getContact"
 import { SuperAdminBox } from "src/core/components/AdminBox"
@@ -11,8 +12,9 @@ import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { getFullname } from "src/users/utils"
 
-export const Contact = () => {
+export const ContactWithQuery = () => {
   const router = useRouter()
   const contactId = useParam("contactId", "number")
   const projectSlug = useParam("projectSlug", "string")
@@ -28,17 +30,8 @@ export const Contact = () => {
 
   return (
     <>
-      <MetaTags
-        noindex
-        title={`Kontakt von ${
-          contact.firstName ? contact.firstName + " " + contact.lastName : contact.lastName
-        }`}
-      />
-      <PageHeader
-        title={`Kontakt von ${
-          contact.firstName ? contact.firstName + " " + contact.lastName : contact.lastName
-        }`}
-      />
+      <MetaTags noindex title={`Kontakt von ${getFullname(contact)}`} />
+      <PageHeader title={`Kontakt von ${getFullname(contact)}`} />
       <p className="mb-10 space-x-4">
         <Link href={Routes.EditContactPage({ contactId: contact.id, projectSlug: projectSlug! })}>
           Eintrag bearbeiten
@@ -49,7 +42,7 @@ export const Contact = () => {
         </button>
       </p>
       <div>
-        <ContactList withAction={false} contacts={[contact]} />
+        <ContactSingle contact={contact} />
         <SuperAdminBox>
           <pre>{JSON.stringify(contact, null, 2)}</pre>
         </SuperAdminBox>
@@ -63,7 +56,7 @@ const ShowContactPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <Suspense fallback={<Spinner page />}>
-        <Contact />
+        <ContactWithQuery />
       </Suspense>
     </LayoutRs>
   )

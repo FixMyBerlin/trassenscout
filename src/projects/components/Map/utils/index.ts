@@ -1,2 +1,2 @@
-export * from "./sectionBbox"
+export * from "./sectionsBbox"
 export * from "./geometryStartEndPoint"

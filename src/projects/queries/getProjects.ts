@@ -1,6 +1,6 @@
 import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
-import db, { Prisma } from "db"
+import db, { Prisma, Project } from "db"
 
 interface GetProjectsInput
   extends Pick<Prisma.ProjectFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
@@ -8,7 +8,6 @@ interface GetProjectsInput
 export default resolver.pipe(
   resolver.authorize(),
   async ({ where, orderBy, skip = 0, take = 100 }: GetProjectsInput) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const {
       items: projects,
       hasMore,

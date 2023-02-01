@@ -1,18 +1,20 @@
-import { menuItemsDesktop, menuItemsMobile } from "./menuItems"
+import { useParam } from "@blitzjs/next"
+import { useQuery } from "@blitzjs/rpc"
+import { Suspense } from "react"
+import { Spinner } from "src/core/components/Spinner"
+import getProjectWithId from "src/projects/queries/getProjectWithId"
+import getSections from "src/sections/queries/getSections"
 import { NavigationDesktop } from "../NavigationDesktop"
 import { NavigationMobile } from "../NavigationMobile"
 import { NavigationWrapper } from "../NavigationWrapper"
+import { menuItemsDesktop, menuItemsMobile } from "./menuItems"
 import { NavigationProjectLogo } from "./NavigationProjectLogo"
-import { useParam } from "@blitzjs/next"
-import { Suspense } from "react"
-import getSections from "src/sections/queries/getSections"
-import { useQuery } from "@blitzjs/rpc"
-import getProject from "src/projects/queries/getProject"
-import { Spinner } from "src/core/components/Spinner"
 
 const NavigationProjectWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug })
+  const [project] = useQuery(getProjectWithId, {
+    slug: projectSlug!,
+  })
   const [{ sections }] = useQuery(getSections, { where: { projectId: project.id! } })
 
   return (

@@ -1,11 +1,4 @@
-import { Project } from "@prisma/client"
-import {
-  Form,
-  FormProps,
-  LabeledSelect,
-  LabeledTextareaField,
-  LabeledTextField,
-} from "src/core/components/forms"
+import { Form, FormProps, LabeledTextareaField, LabeledTextField } from "src/core/components/forms"
 import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -13,12 +6,10 @@ export function CalendarEntryForm<S extends z.ZodType<any, any>>(props: FormProp
   return (
     <Form<S> {...props} className="max-w-prose">
       <LabeledTextField type="text" name="title" label="Titel" placeholder="" />
-      <LabeledTextField
-        type="datetime-local"
-        name="startAt"
-        label="Start Datum und Zeit"
-        placeholder=""
-      />
+      <div className="flex gap-4">
+        <LabeledTextField type="date" name="startDate" label="Start-Datum" placeholder="" />
+        <LabeledTextField type="time" name="startTime" label="und -Zeit" placeholder="" />
+      </div>
       <LabeledTextField
         type="text"
         name="locationName"

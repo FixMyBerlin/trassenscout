@@ -1,3 +1,4 @@
+import { useParam } from "@blitzjs/next"
 import { Menu, Transition } from "@headlessui/react"
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
@@ -10,6 +11,7 @@ type Props = MenuItems
 
 export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
   const { pathname } = useRouter()
+  const sectionSlug = useParam("sectionSlug", "string")
 
   const itemClasses = (current: boolean) =>
     clsx(
@@ -62,8 +64,7 @@ export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
               <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <div className="px-1 py-1 ">
                   {item.children.map((child) => {
-                    const current = pathname === child.href.pathname
-
+                    const current = sectionSlug === child.slug
                     return (
                       <Menu.Item key={child.name}>
                         {({ active }) => (

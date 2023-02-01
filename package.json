@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "blitz start",
-    "dev": "docker compose up -d && NODE_OPTIONS='--inspect' blitz dev",
+    "dev": "if [ $(docker inspect -f '{{.State.Running}}' rsv-builder-db) = \"true\" ]; then echo Docker: Skipping – Container already running; else docker compose up --detach nope; fi && NODE_OPTIONS='--inspect' blitz dev",
     "debug": "DEBUG=blitz:* blitz console",
     "build": "blitz build",
     "studio": "blitz prisma studio",
@@ -12,6 +12,7 @@
     "migrate:create": "blitz prisma migrate dev --create-only && npm run migrate:create:openMigration",
     "migrate:create:openMigration": "code $(find ./db/migrations -type f -name \"migration.sql\" -cmin -1 | head -n 1)",
     "migrate:check": "blitz prisma migrate status",
+    "migrate:compare": "git diff origin/main... -- db/migrations",
     "check": "npm run migrate:check && npm run type-check && npm run lint && npm run format && npm run test",
     "type-check": "tsc --noEmit",
     "lint": "eslint --fix --ignore-pattern \"src/core/templates/*\" --ignore-path .gitignore --ext .js,.ts,.tsx .",
@@ -58,6 +59,7 @@
   "devDependencies": {
     "@next/bundle-analyzer": "12.0.8",
     "@tailwindcss/forms": "0.5.3",
+    "@tailwindcss/line-clamp": "0.4.2",
     "@tailwindcss/typography": "0.5.8",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "13.4.0",

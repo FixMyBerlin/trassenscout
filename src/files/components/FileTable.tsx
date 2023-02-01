@@ -11,6 +11,14 @@ type Props = {
 
 export const FileTable: React.FC<Props> = ({ files, withAction = true }) => {
   const projectSlug = useParam("projectSlug", "string")
+
+  if (!files.length) {
+    return (
+      <p className="text-center text-xl text-gray-500">
+        <span>Es wurden noch keine Dokumente eingetragen.</span>
+      </p>
+    )
+  }
   return (
     <div className="my-5 -mx-4 max-w-prose overflow-x-auto sm:-mx-6 lg:-mx-8">
       <div className="inline-block min-w-full py-2 align-middle  md:px-6 lg:px-8">

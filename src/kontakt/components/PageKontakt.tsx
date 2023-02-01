@@ -15,7 +15,7 @@ export const PageKontakt: React.FC = () => {
           12049 Berlin
           <br />
           E-Mail-Adresse:{" "}
-          <LinkMail mailto="feedback@fixmycity.de" subject="Feedback RSV-Abstimmungsplattform">
+          <LinkMail mailto="feedback@fixmycity.de" subject="Feedback zum Trassenscout">
             hello@fixmycity.de
           </LinkMail>
           <br />
@@ -35,7 +35,7 @@ export const PageKontakt: React.FC = () => {
         <h2 className="mb-2 text-3xl font-bold">Feedback &amp; Kontakt</h2>
         <p>
           Wir freuen uns über Kommentare Anregungen und Unterstützung an{" "}
-          <LinkMail mailto="feedback@fixmycity.de" subject="Feedback RSV-Abstimmungsplattform">
+          <LinkMail mailto="feedback@fixmycity.de" subject="Feedback zum Trassenscout">
             feedback@fixmycity.de
           </LinkMail>
           .
@@ -54,11 +54,11 @@ export const PageKontakt: React.FC = () => {
         {/* TODO: Update Github- und Lizenz Link! */}
         <p>
           Sofern du Bugs oder Verbesserungsvorschläge hast, gib uns gerne{" "}
-          <Link blank href="https://github.com/FixMyBerlin/#todo">
+          <Link blank href="https://github.com/FixMyBerlin/trassenscout/issues/new">
             auf GitHub
           </Link>{" "}
           Feedback. Du kannst den{" "}
-          <Link href="https://github.com/FixMyBerlin/#todo" blank>
+          <Link href="https://github.com/FixMyBerlin/trassenscout/" blank>
             Source Code auch weiterentwickeln
           </Link>
           . Lizenz:{" "}

@@ -112,7 +112,7 @@ model Contact {
   firstName String?
   lastName  String
   email     String
-  title     String?
+  note      String?
   phone     String?
   role      String?
 

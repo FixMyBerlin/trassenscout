@@ -6,3 +6,5 @@ export const StakeholdernoteSchema = z.object({
   status: z.enum(["IRRELEVANT", "PENDING", "IN_PROGRESS", "DONE"]),
   sectionId: z.coerce.number(),
 })
+
+export const StakeholdernoteMultiSchema = z.object({ title: z.string() })

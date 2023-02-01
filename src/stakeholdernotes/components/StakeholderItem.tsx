@@ -1,7 +1,8 @@
 import { Routes, useParam } from "@blitzjs/next"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { Stakeholdernote } from "@prisma/client"
-import React from "react"
+import clsx from "clsx"
+import React, { useState } from "react"
 import { Link } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { StakeholderStatus } from "./StakeholderStatus"
@@ -13,18 +14,29 @@ type props = {
 export const StakeholderItem: React.FC<props> = ({ stakeholder }) => {
   const sectionSlug = useParam("sectionSlug", "string")
   const projectSlug = useParam("projectSlug", "string")
+  const [isExpand, setIsExpand] = useState(false)
+
+  const handleToggle = () => {
+    setIsExpand(!isExpand)
+  }
+
   return (
     <div>
-      <div className="flex space-x-5">
+      <div className="flex cursor-pointer space-x-5">
         <StakeholderStatus status={stakeholder.status} />
-        <div className="">
+        <div>
           <p>
             <strong>{stakeholder.title}</strong>
           </p>
-          <Markdown className="prose-sm" markdown={stakeholder.statusText} />
+          <button className="text-left" onClick={handleToggle}>
+            <Markdown
+              className={clsx("prose-sm", !isExpand ? "line-clamp-2" : "line-clamp-none")}
+              markdown={stakeholder.statusText}
+            />
+          </button>
         </div>
       </div>
-      <div className="flex items-center justify-end space-x-4">
+      <div className="mb-2 flex items-center justify-end space-x-4">
         <Link
           href={Routes.EditStakeholdernotePage({
             projectSlug: projectSlug!,

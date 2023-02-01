@@ -55,7 +55,7 @@ const UserInfo = () => {
 
 const Blitz: BlitzPage = () => {
   return (
-    <Layout>
+    <Layout navigation="general" footer="general">
       <MetaTags title="RSV Startseite" />
       <div className="container">
         <main>

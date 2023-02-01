@@ -8,26 +8,26 @@ import { useRouter } from "next/router"
 import React, { useState } from "react"
 import Map, { Layer, NavigationControl, ScaleControl, Source } from "react-map-gl"
 import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher/BackgroundSwitcher"
-import { sectionBbox, geometryStartEndPoint } from "./utils"
+import { sectionsBbox, geometryStartEndPoint } from "./utils"
 
 export type BaseMapSections = (Section & {
-  subsections: Pick<Subsection, "id" | "geometry">[]
+  subsections: Pick<Subsection, "id" | "slug" | "geometry">[]
 })[]
 
 type Props = {
-  children?: React.ReactNode
   sections: BaseMapSections
-  selectedSection?: Section
+  isInteractive: boolean
+  selectedSection?: BaseMapSections[number]
   className?: string
-  isInteractive?: boolean
+  children?: React.ReactNode
 }
 
 export const BaseMap: React.FC<Props> = ({
-  children,
   sections,
+  isInteractive,
   selectedSection,
   className,
-  isInteractive = true,
+  children,
 }) => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
@@ -89,9 +89,10 @@ export const BaseMap: React.FC<Props> = ({
   const handleMouseLeave = () => {
     if (!isInteractive) return
     setCursorStyle("grab")
+    setHoveredSectionIds([])
   }
 
-  const [minX, minY, maxX, maxY] = sectionBbox(sections)
+  const [minX, minY, maxX, maxY] = sectionsBbox(selectedSection ? [selectedSection] : sections)
 
   if (!minX || !minY || !maxX || !maxY) return null
 
@@ -116,6 +117,7 @@ export const BaseMap: React.FC<Props> = ({
         {children}
 
         {sections.map((section) => {
+          // Rendering the lines
           return section.subsections.map((subsection) => {
             return (
               <Source
@@ -142,6 +144,7 @@ export const BaseMap: React.FC<Props> = ({
         })}
 
         {sections
+          // Rednering the dots
           // TODO re-evaluate this old code; I think we don't need this…
           // .filter((section) => section === selectedSection)
           .map((section) => {
@@ -155,9 +158,7 @@ export const BaseMap: React.FC<Props> = ({
                   id={`layer_dots_${subsection.id}`}
                   type="circle"
                   paint={{
-                    "circle-color": pickLineColor({
-                      section,
-                    }),
+                    "circle-color": "RGB(15, 23, 42)",
                     "circle-radius": 6,
                   }}
                 />

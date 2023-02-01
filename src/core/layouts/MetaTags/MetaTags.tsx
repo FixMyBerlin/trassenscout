@@ -3,8 +3,8 @@ import React from "react"
 import SocialSharingImage from "./assets/default.png"
 
 const seoDefaultValues = {
-  defaultTitle: "RSV",
-  defaultDescription: "Daten zum RSV.",
+  defaultTitle: "Trassenscout",
+  defaultDescription: "Daten zur Trasse.",
   baseUrl: "https://#todo.de",
 }
 

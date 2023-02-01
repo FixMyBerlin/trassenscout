@@ -5,30 +5,30 @@ import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { PageHeader } from "src/core/components/PageHeader"
+import { Manager } from "src/core/components/PageHeader/Manager"
 import { Spinner } from "src/core/components/Spinner"
 import { proseClasses, quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFiles from "src/files/queries/getFiles"
-import { BaseMap, BaseMapSections, SectionsMap } from "src/projects/components/Map"
-import { SectionPanel } from "src/projects/components/Map/SectionPanel"
-import getProject from "src/projects/queries/getProject"
+import { BaseMapSections, SectionsMap } from "src/projects/components/Map"
 import getSection from "src/sections/queries/getSection"
 import getSections from "src/sections/queries/getSections"
 import StakeholdernoteList from "src/stakeholdernotes/components/StakeholdernoteList"
 import { StakeholderSectionStatus } from "src/stakeholdernotes/components/StakeholderSectionStatus"
 import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
 import getSubsections from "src/subsections/queries/getSubsections"
+import getUser from "src/users/queries/getUser"
 
 export const SectionDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug })
   const [section] = useQuery(getSection, { sectionSlug, projectSlug }) // TODO optimize to allow projectId as well to get rid of one query in case we can
-  const [{ files }] = useQuery(getFiles, { where: { projectId: project.id } }) // TODO make project required
+  const [user] = useQuery(getUser, section.managerId)
+  const [{ files }] = useQuery(getFiles, { projectSlug: projectSlug! })
   const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, {
-    sectionId: section.id,
+    sectionSlug: sectionSlug!,
     orderBy: { id: "asc" },
   })
   const [{ subsections, count }] = useQuery(getSubsections, {
@@ -41,54 +41,69 @@ export const SectionDashboardWithQuery = () => {
     include: { subsections: { select: { id: true, geometry: true } } },
   }) // TODO make project required
 
+  const sectionsWithSubsections = sections as BaseMapSections
+  const selectedSectionWithSubsections = sectionsWithSubsections.find((s) => s.id === section.id)
+
   return (
     <>
       <MetaTags noindex title={section.title} />
 
+      <Manager manager={user!} />
+
       <PageHeader title={section.title} subtitle={section.subTitle} />
 
+      {/* Intro: Kurzinfo, Stakeholderstatus, Teilstreckenlänge */}
       <div className="mb-12">
         {section.description && (
-          <p className="mb-5">
+          <div className="mb-5">
             <Markdown markdown={section.description} />
-          </p>
+          </div>
         )}
-        <p>
-          <strong>Stakeholder:</strong>{" "}
-          <StakeholderSectionStatus stakeholdernotes={stakeholdernotes} />
-        </p>
+        <StakeholderSectionStatus stakeholdernotes={stakeholdernotes} />
         <p>
           <strong>Teilstreckenlänge:</strong> {section.length ? section.length + " km" : " k.A."}
         </p>
       </div>
 
-      <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
-        <SectionsMap
-          sections={sections as BaseMapSections}
-          selectedSection={section}
-          isInteractive={false}
-        />
-        {/* <SectionPanel section={section} /> */}
-      </div>
+      {/* Karte mit Daten der subsections */}
+      {Boolean(subsections.length) && (
+        <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
+          <SectionsMap
+            sections={sectionsWithSubsections}
+            selectedSection={selectedSectionWithSubsections}
+            isInteractive={false}
+          />
+          {/* <SectionPanel section={section} /> */}
+        </div>
+      )}
 
-      <div className="mb-12">
-        <H2 className="mb-5 text-2xl font-bold">Relevante Dokumente</H2>
-        <FileTable files={files} />
-      </div>
+      {/* Dateien / files */}
+      {Boolean(files.length) && (
+        <div className="mb-12">
+          <H2 className="mb-5 text-2xl font-bold">Relevante Dokumente</H2>
+          <FileTable files={files} />
+        </div>
+      )}
 
-      <div className="mb-12">
-        <H2 className="mb-5 text-2xl font-bold">Stakeholderliste und Status der Abstimmung</H2>
-        <StakeholdernoteList stakeholdernotes={stakeholdernotes} />
-      </div>
+      {/* Stakeholder / stakeholdernotes */}
+      {Boolean(stakeholdernotes.length) && (
+        <div className="mb-12">
+          <H2 className="mb-5 text-2xl font-bold">
+            Abstimmung mit <abbr title="Träger öffentlicher Belange">TöB</abbr>s
+          </H2>
+          <StakeholdernoteList stakeholdernotes={stakeholdernotes} />
+        </div>
+      )}
 
-      <section className="rounded border border-cyan-800 bg-cyan-100 p-5">
+      {/* Admin Actions Section - noch ungestyled */}
+      <section className="rounded border bg-blue-100 p-5">
         <Link
           href={Routes.EditSectionPage({
             projectSlug: projectSlug!,
             sectionSlug: section.slug,
           })}
         >
-          Bearbeiten (und löschen)
+          Bearbeiten
         </Link>
         <br />
         <Link
@@ -98,16 +113,26 @@ export const SectionDashboardWithQuery = () => {
         </Link>
         <br />
         {sectionSlug && (
-          <Link
-            href={Routes.NewStakeholdernotePage({
-              projectSlug: projectSlug!,
-              sectionSlug: sectionSlug!,
-            })}
-          >
-            Neuer Stakeholder
-          </Link>
+          <>
+            <Link
+              href={Routes.NewStakeholdernotePage({
+                projectSlug: projectSlug!,
+                sectionSlug: sectionSlug!,
+              })}
+            >
+              Neuer Stakeholder
+            </Link>
+            <br />
+            <Link
+              href={Routes.NewStakeholdernoteMultiPage({
+                projectSlug: projectSlug!,
+                sectionSlug: sectionSlug!,
+              })}
+            >
+              Mehrere neue Stakeholder erstellen
+            </Link>
+          </>
         )}
-
         <ul>
           {subsections &&
             subsections.map((subsection) => {

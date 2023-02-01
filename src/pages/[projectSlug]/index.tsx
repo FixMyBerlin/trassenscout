@@ -7,6 +7,7 @@ import { CalenderDashboard } from "src/calendar-entries/components"
 import DashedLine from "src/core/components/DashedLine"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
+import { Manager } from "src/core/components/PageHeader/Manager"
 import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
@@ -16,23 +17,25 @@ import { SectionsTeasers } from "src/projects/components/Map/SectionsTeaser/Sect
 import getProject from "src/projects/queries/getProject"
 import getSections from "src/sections/queries/getSections"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import getUser from "src/users/queries/getUser"
 import { getFullname } from "src/users/utils"
 
 export const ProjectDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
-  const user = useCurrentUser()
-  const userName = getFullname(user!)
+  const currentUser = useCurrentUser()
+  const userName = getFullname(currentUser!)
   const [project] = useQuery(getProject, { slug: projectSlug })
+  const [user] = useQuery(getUser, project.managerId)
   const [{ sections }] = useQuery(getSections, {
     where: { project: { slug: projectSlug! } },
     orderBy: { index: "asc" },
-    include: { subsections: { select: { id: true, geometry: true } } },
+    include: { subsections: { select: { id: true, slug: true, geometry: true } } },
   })
 
   if (!sections.length)
     return (
       <>
-        <section className="rounded border border-cyan-800 bg-cyan-100 p-5">
+        <section className="rounded border  bg-blue-100 p-5">
           <Link href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
             {quote(project.title)} bearbeiten
           </Link>
@@ -45,14 +48,17 @@ export const ProjectDashboardWithQuery = () => {
   return (
     <>
       <MetaTags noindex title={project.title} />
+
       <PageHeader
         title={project.title}
         intro={`Willkommen im Trassenscout zum ${project.title}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
         logo
       />
-
       {/* TODO: intro prop evtl. mit project description ersetzen */}
 
+      <Manager manager={user!} />
+
+      {/* Phasen Panel */}
       <H2 className="my-6">Aktuelle Planungsphase</H2>
       <div className="max-w-[650px]">
         <Image src={statusImg} alt=""></Image>
@@ -60,13 +66,18 @@ export const ProjectDashboardWithQuery = () => {
 
       <DashedLine />
 
+      {/* Karte mit Daten der Abschnitte/subsections und Teaser Teilstrecke/sections */}
+      {/* {Boolean(sections && sections[0]?.subsections?.length) && ( */}
       <div className="mt-12">
-        <SectionsMap sections={sections as BaseMapSections} />
-        <SectionsTeasers sections={sections} />
+        <SectionsMap sections={sections as BaseMapSections} isInteractive={true} />
       </div>
+      {/* )} */}
+      {Boolean(sections.length) && <SectionsTeasers sections={sections} />}
 
       <CalenderDashboard />
-      <section className="rounded border border-cyan-800 bg-cyan-100 p-5">
+
+      {/* Admin Actions Section - noch ungestyled */}
+      <section className="rounded border bg-blue-100 p-5">
         <Link href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
           {quote(project.title)} bearbeiten
         </Link>

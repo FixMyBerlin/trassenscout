@@ -10,7 +10,16 @@ export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElem
   label: string
   help?: string
   /** Field type. Doesn't include radio buttons and checkboxes */
-  type?: "text" | "password" | "email" | "number" | "datetime-local" | "tel" | "url"
+  type?:
+    | "text"
+    | "password"
+    | "email"
+    | "number"
+    // | "datetime-local" // This is broken in Firefox, so we cannot use it
+    | "tel"
+    | "url"
+    | "date"
+    | "time"
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
   optional?: boolean
@@ -21,17 +30,17 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
     const {
       register,
       formState: { isSubmitting, errors },
-      getValues,
-      setValue,
+      // getValues,
+      // setValue,
     } = useFormContext()
 
     const hasError = Boolean(errors[name])
 
     // Field Type `datetime-local` requires a format of "YYYY-MM-DDTHH:MM:SS" to pre fill the value.
-    const value = getValues()[name]
-    if (value && props.type === "datetime-local") {
-      setValue(name, new Date(value as string).toISOString().split(".")[0])
-    }
+    // const value = getValues()[name]
+    // if (value && props.type === "datetime-local") {
+    //   setValue(name, new Date(value as string).toISOString().split(".")[0])
+    // }
 
     return (
       <div {...outerProps}>

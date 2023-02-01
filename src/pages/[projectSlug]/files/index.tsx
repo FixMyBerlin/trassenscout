@@ -18,7 +18,7 @@ export const Files = () => {
   const projectSlug = useParam("projectSlug", "string")
   const page = Number(router.query.page) || 0
   const [{ files, hasMore }] = usePaginatedQuery(getFiles, {
-    where: { project: { slug: projectSlug! } },
+    projectSlug: projectSlug!,
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
@@ -31,7 +31,7 @@ export const Files = () => {
     <>
       <PageHeader
         title="Dokumente"
-        description="Dieser Bereich hilft Ihnen relevante Dokumente zu verwalten."
+        description="Dieser Bereich hilft Ihnen Dokumente zu verwalten."
         action={
           <Link
             button
@@ -56,7 +56,7 @@ export const Files = () => {
 const FilesPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title="Files" />
+      <MetaTags noindex title="Dokumente" />
 
       <Suspense fallback={<Spinner page />}>
         <Files />

@@ -1,18 +1,58 @@
 import { Remark } from "react-remark"
 import clsx from "clsx"
 import { Link } from "../links/Link"
+import { proseClasses } from "../text"
 
 type Props = {
   markdown?: string | null
   className?: string
 }
 
-// via className prop: configuration of HTML rendered from Markdown with Tailwind CSS Typography plugin: https://tailwindcss.com/docs/typography-plugin
+const MdH1 = (props: any) => (
+  <p className="text-base">
+    <strong {...props} />
+  </p>
+)
+const MdH2 = (props: any) => (
+  <p className="text-sm">
+    <strong {...props} />
+  </p>
+)
+const MdH3 = (props: any) => (
+  <p className="text-sm">
+    <strong {...props} />
+  </p>
+)
+const MdH4 = (props: any) => (
+  <p className="text-sm">
+    <strong {...props} />
+  </p>
+)
+const MdH5 = (props: any) => (
+  <p className="text-sm">
+    <strong {...props} />
+  </p>
+)
+const MdH6 = (props: any) => (
+  <p className="text-sm">
+    <strong {...props} />
+  </p>
+)
+const MdA = (props: any) => <Link blank to={props.href} {...props} />
+
+const components = {
+  h1: MdH1,
+  h2: MdH2,
+  h3: MdH3,
+  h4: MdH4,
+  h5: MdH5,
+  h6: MdH6,
+  a: MdA,
+}
 
 export const Markdown: React.FC<Props> = ({ markdown, className }) => {
   // regex matches Links of pattern - except for links preceded by '(' / '['
   const regexLink =
-    // eslint-disable-next-line no-useless-escape
     /(?<!\[|\()(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])/g
   const createMarkdownLink = (link: string) => {
     return ` [${link}](${link})`
@@ -21,55 +61,10 @@ export const Markdown: React.FC<Props> = ({ markdown, className }) => {
   if (!markdown) return null
 
   return (
-    <div className={clsx("prose", className)}>
+    <div className={clsx(proseClasses, className)}>
       <Remark
         remarkToRehypeOptions={{ allowDangerousHtml: true }}
-        rehypeReactOptions={{
-          components: {
-            // eslint-disable-next-line react/no-unstable-nested-components
-            h1: (props: any) => (
-              <p className="text-base">
-                <strong {...props} />
-              </p>
-            ),
-            // eslint-disable-next-line react/no-unstable-nested-components
-            h2: (props: any) => (
-              <p className="text-sm">
-                <strong {...props} />
-              </p>
-            ),
-            // eslint-disable-next-line react/no-unstable-nested-components
-            h3: (props: any) => (
-              <p className="text-sm">
-                <strong {...props} />
-              </p>
-            ),
-            // eslint-disable-next-line react/no-unstable-nested-components
-            h4: (props: any) => (
-              <p className="text-sm">
-                <strong {...props} />
-              </p>
-            ),
-            // eslint-disable-next-line react/no-unstable-nested-components
-            h5: (props: any) => (
-              <p className="text-sm">
-                <strong {...props} />
-              </p>
-            ),
-            // eslint-disable-next-line react/no-unstable-nested-components
-            h6: (props: any) => (
-              <p className="text-sm">
-                <strong {...props} />
-              </p>
-            ),
-            // eslint-disable-next-line react/no-unstable-nested-components, jsx-a11y/anchor-has-content
-            a: (props: any) => <a className="underline" target="_blank" {...props} />,
-            // eslint-disable-next-line react/no-unstable-nested-components
-            // a: (props: any) => (
-            //   <Link classNameOverwrites="text-sm underline" blank to={props.href} {...props} />
-            // ),
-          },
-        }}
+        rehypeReactOptions={{ components }}
       >
         {markdown.replaceAll(regexLink, createMarkdownLink)}
       </Remark>

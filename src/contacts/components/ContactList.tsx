@@ -1,8 +1,9 @@
 import { Routes, useParam } from "@blitzjs/next"
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
+import { PencilSquareIcon, TableCellsIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { Contact } from "@prisma/client"
 import React from "react"
 import { Link, LinkMail, LinkTel } from "src/core/components/links"
+import { getFullname } from "src/users/utils"
 
 type Props = {
   contacts: Contact[]
@@ -29,7 +30,7 @@ export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) =>
                   scope="col"
                   className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
-                  Titel & Position
+                  Position
                 </th>
                 <th
                   scope="col"
@@ -43,6 +44,9 @@ export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) =>
                 >
                   E-Mail
                 </th>
+                <th scope="col" className="sr-only">
+                  Details
+                </th>
                 {withAction && (
                   <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
                     <span className="sr-only">Edit</span>
@@ -55,20 +59,31 @@ export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) =>
                 <tr key={contact.email}>
                   <td className="h-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                     <div className="flex items-center font-medium text-gray-900">
-                      {contact.firstName ? contact.firstName + " " : ""}
-                      {contact.lastName}
+                      {getFullname(contact)}
                     </div>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <div className="text-gray-900">{contact.title}</div>
-                    <div className="text-gray-500">{contact.role}</div>
-                  </td>
+                  <td className="break-words px-3 py-4 text-sm text-gray-500">{contact.role}</td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     {contact.phone && <LinkTel>{contact.phone}</LinkTel>}
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     <LinkMail subject="Abstimmung zum RS 8">{contact.email}</LinkMail>
                   </td>
+
+                  {contact.note ? (
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      <Link
+                        href={Routes.ShowContactPage({
+                          projectSlug: projectSlug!,
+                          contactId: contact.id,
+                        })}
+                      >
+                        Details
+                      </Link>
+                    </td>
+                  ) : (
+                    <td className="sr-only">Keine Details</td>
+                  )}
                   {withAction && (
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                       <p className="flex items-center justify-end gap-4 text-right">

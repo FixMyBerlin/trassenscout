@@ -48,19 +48,9 @@ const EditContactWithQuery = () => {
 
   return (
     <>
-      <MetaTags
-        noindex
-        title={`Kontakt von ${
-          contact.firstName ? contact.firstName + " " + contact.lastName : contact.lastName
-        } bearbeiten`}
-      />
+      <MetaTags noindex title={`Kontakt von ${getFullname(contact)} bearbeiten`} />
 
-      <PageHeader
-        title={`Kontakt von ${
-          contact.firstName ? contact.firstName + " " + contact.lastName : contact.lastName
-        }`}
-        subtitle="Kontakt bearbeiten"
-      />
+      <PageHeader title={`Kontakt von ${getFullname(contact)}`} subtitle="Kontakt bearbeiten" />
 
       <ContactForm submitText="Speichern" initialValues={contact} onSubmit={handleSubmit} />
 
