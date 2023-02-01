@@ -58,7 +58,7 @@ const ContactsPage: BlitzPage = () => {
       <div>
         <PageHeader
           title="Kontakte"
-          description="Dieser Bereich hilft Ihnen dabei wichtige Kontakte zu verwalten und
+          description="Dieser Bereich hilft Ihnen dabei Kontakte zu verwalten und
         anzuschreiben."
           action={
             <Link button href={Routes.NewContactPage({ projectSlug: projectSlug! })}>
