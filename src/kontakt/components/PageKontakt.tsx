@@ -35,7 +35,7 @@ export const PageKontakt: React.FC = () => {
         <h2 className="mb-2 text-3xl font-bold">Feedback &amp; Kontakt</h2>
         <p>
           Wir freuen uns über Kommentare Anregungen und Unterstützung an{" "}
-          <LinkMail mailto="feedback@fixmycity.de" subject="Feedback RSV-Abstimmungsplattform">
+          <LinkMail mailto="feedback@fixmycity.de" subject="Feedback zum Trassenscout">
             feedback@fixmycity.de
           </LinkMail>
           .
