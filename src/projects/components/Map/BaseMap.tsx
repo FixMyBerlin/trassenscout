@@ -11,23 +11,23 @@ import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher/BackgroundSw
 import { sectionBbox, geometryStartEndPoint } from "./utils"
 
 export type BaseMapSections = (Section & {
-  subsections: Pick<Subsection, "id" | "geometry">[]
+  subsections: Pick<Subsection, "id" | "slug" | "geometry">[]
 })[]
 
 type Props = {
-  children?: React.ReactNode
   sections: BaseMapSections
+  isInteractive: boolean
   selectedSection?: Section
   className?: string
-  isInteractive?: boolean
+  children?: React.ReactNode
 }
 
 export const BaseMap: React.FC<Props> = ({
-  children,
   sections,
+  isInteractive,
   selectedSection,
   className,
-  isInteractive = true,
+  children,
 }) => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")

@@ -29,7 +29,7 @@ export const ProjectDashboardWithQuery = () => {
   const [{ sections }] = useQuery(getSections, {
     where: { project: { slug: projectSlug! } },
     orderBy: { index: "asc" },
-    include: { subsections: { select: { id: true, geometry: true } } },
+    include: { subsections: { select: { id: true, slug: true, geometry: true } } },
   })
 
   if (!sections.length)
@@ -69,7 +69,7 @@ export const ProjectDashboardWithQuery = () => {
       {/* Karte mit Daten der Abschnitte/subsections und Teaser Teilstrecke/sections */}
       {/* {Boolean(sections && sections[0]?.subsections?.length) && ( */}
       <div className="mt-12">
-        <SectionsMap sections={sections as BaseMapSections} />
+        <SectionsMap sections={sections as BaseMapSections} isInteractive={true} />
       </div>
       {/* )} */}
       {Boolean(sections.length) && <SectionsTeasers sections={sections} />}
