@@ -52,9 +52,7 @@ export const ContactSingle: React.FC<Props> = ({ contact }) => {
                     {getFullname(contact)}
                   </div>
                 </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  <div className="text-gray-500">{contact.role}</div>
-                </td>
+                <td className="break-words px-3 py-4 text-sm text-gray-500">{contact.role}</td>
                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {contact.phone && <LinkTel>{contact.phone}</LinkTel>}
                 </td>
