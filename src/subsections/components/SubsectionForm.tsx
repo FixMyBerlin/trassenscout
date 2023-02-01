@@ -6,6 +6,7 @@ import {
   LabeledTextareaField,
   LabeledTextField,
 } from "src/core/components/forms"
+import { getFullname } from "src/users/utils"
 import { z } from "zod"
 import { GeometryValidation } from "./GeometryValidation"
 export { FORM_ERROR } from "src/core/components/forms"
@@ -36,10 +37,7 @@ export function SubsectionForm<S extends z.ZodType<any, any>>(
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
-        options={users.map((u) => [
-          u.id.toString(),
-          [u.firstName, u.lastName, `<${u.email}>`].join(" "),
-        ])}
+        options={users.map((u) => [u.id.toString(), [getFullname(u), `<${u.email}>`].join(" ")])}
       />
     </Form>
   )

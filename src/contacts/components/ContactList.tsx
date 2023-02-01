@@ -3,6 +3,7 @@ import { PencilSquareIcon, TableCellsIcon, TrashIcon } from "@heroicons/react/20
 import { Contact } from "@prisma/client"
 import React from "react"
 import { Link, LinkMail, LinkTel } from "src/core/components/links"
+import { getFullname } from "src/users/utils"
 
 type Props = {
   contacts: Contact[]
@@ -58,8 +59,7 @@ export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) =>
                 <tr key={contact.email}>
                   <td className="h-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                     <div className="flex items-center font-medium text-gray-900">
-                      {contact.firstName ? contact.firstName + " " : ""}
-                      {contact.lastName}
+                      {getFullname(contact)}
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">

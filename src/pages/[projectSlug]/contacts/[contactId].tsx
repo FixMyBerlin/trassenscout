@@ -12,6 +12,7 @@ import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { getFullname } from "src/users/utils"
 
 export const ContactWithQuery = () => {
   const router = useRouter()
@@ -29,17 +30,8 @@ export const ContactWithQuery = () => {
 
   return (
     <>
-      <MetaTags
-        noindex
-        title={`Kontakt von ${
-          contact.firstName ? contact.firstName + " " + contact.lastName : contact.lastName
-        }`}
-      />
-      <PageHeader
-        title={`Kontakt von ${
-          contact.firstName ? contact.firstName + " " + contact.lastName : contact.lastName
-        }`}
-      />
+      <MetaTags noindex title={`Kontakt von ${getFullname(contact)}`} />
+      <PageHeader title={`Kontakt von ${getFullname(contact)}`} />
       <p className="mb-10 space-x-4">
         <Link href={Routes.EditContactPage({ contactId: contact.id, projectSlug: projectSlug! })}>
           Eintrag bearbeiten

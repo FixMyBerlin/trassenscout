@@ -3,6 +3,7 @@ import { Contact } from "@prisma/client"
 import React from "react"
 import { LinkMail, LinkTel } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
+import { getFullname } from "src/users/utils"
 
 type Props = {
   contact: Contact
@@ -48,8 +49,7 @@ export const ContactSingle: React.FC<Props> = ({ contact }) => {
               <tr key={contact.email}>
                 <td className="h-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                   <div className="flex items-center font-medium text-gray-900">
-                    {contact.firstName ? contact.firstName + " " : ""}
-                    {contact.lastName}
+                    {getFullname(contact)}
                   </div>
                 </td>
                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
