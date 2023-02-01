@@ -89,6 +89,7 @@ export const BaseMap: React.FC<Props> = ({
   const handleMouseLeave = () => {
     if (!isInteractive) return
     setCursorStyle("grab")
+    setHoveredSectionIds([])
   }
 
   const [minX, minY, maxX, maxY] = sectionBbox(sections)
