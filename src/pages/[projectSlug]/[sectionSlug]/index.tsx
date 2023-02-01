@@ -98,7 +98,7 @@ export const SectionDashboardWithQuery = () => {
             sectionSlug: section.slug,
           })}
         >
-          Bearbeiten (und löschen)
+          Bearbeiten
         </Link>
         <br />
         <Link
