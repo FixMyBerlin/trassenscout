@@ -85,7 +85,7 @@ export const SectionDashboardWithQuery = () => {
       {/* Stakeholder / stakeholdernotes */}
       {Boolean(stakeholdernotes.length) && (
         <div className="mb-12">
-          <H2 className="mb-5 text-2xl font-bold">Stakeholderliste und Status der Abstimmung</H2>
+          <H2 className="mb-5 text-2xl font-bold">Abstimmung mit <abbr title="Träger öffentlicher Belange">TöB</abbr>s</H2>
           <StakeholdernoteList stakeholdernotes={stakeholdernotes} />
         </div>
       )}
@@ -98,7 +98,7 @@ export const SectionDashboardWithQuery = () => {
             sectionSlug: section.slug,
           })}
         >
-          Bearbeiten (und löschen)
+          Bearbeiten
         </Link>
         <br />
         <Link

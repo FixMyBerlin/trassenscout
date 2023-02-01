@@ -30,7 +30,7 @@ export const CalendarEntriesList = () => {
     <>
       <PageHeader
         title="Termine"
-        description="Dieser Bereich hilft Ihnen wichtige Termine zu verwalten."
+        description="Dieser Bereich hilft Ihnen Termine zu verwalten."
         action={
           <Link button href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}>
             Neuer Termin
