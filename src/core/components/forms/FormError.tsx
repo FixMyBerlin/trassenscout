@@ -15,7 +15,7 @@ export const FormError: React.FC<Props> = ({ formError }) => {
     <div role="alert" className={clsx(proseClasses, "rounded bg-red-50 py-1 px-2 text-red-700")}>
       {formError.name === "ZodError" ? (
         <>
-          {formError.message.map((error: any) => (
+          {(formError?.issues || formError?.message || []).map((error: any) => (
             <>
               <code className="text-red-800">{error.path[0]}</code>: {error.message}
               <br />

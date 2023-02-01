@@ -1,17 +1,25 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
+import { CalendarEntry } from "db"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Link } from "src/core/components/links"
-import { LayoutArticle, LayoutRs, MetaTags } from "src/core/layouts"
-import { FORM_ERROR, CalendarEntryForm } from "src/calendar-entries/components/CalendarEntryForm"
+import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/CalendarEntryForm"
 import updateCalendarEntry from "src/calendar-entries/mutations/updateCalendarEntry"
 import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
+import {
+  CalendarEntrySchema,
+  CalendarEntryStartDateStartTimeSchema,
+} from "src/calendar-entries/schema"
+import { getDate, getTime } from "src/calendar-entries/utils/splitStartAt"
+import { transformValuesWithStartAt } from "src/calendar-entries/utils/transformValuesWithStartAt"
+import { SuperAdminBox } from "src/core/components/AdminBox"
+import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
-import { CalendarEntrySchema } from "src/calendar-entries/schema"
-import { quote } from "src/core/components/text"
 import { Spinner } from "src/core/components/Spinner"
+import { quote } from "src/core/components/text"
+import { LayoutRs, MetaTags } from "src/core/layouts"
+import { Z } from "vitest/dist/types-de0e0997"
+import { z } from "zod"
 
 const EditCalendarEntry = () => {
   const router = useRouter()
@@ -30,10 +38,11 @@ const EditCalendarEntry = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
+      const transformedValues = transformValuesWithStartAt(values)
       const updated = await updateCalendarEntryMutation({
+        ...transformedValues,
         id: calendarEntry.id,
         projectSlug: projectSlug!,
-        ...values,
       })
       await setQueryData(updated)
       await router.push(
@@ -48,6 +57,21 @@ const EditCalendarEntry = () => {
     }
   }
 
+  const Schema = CalendarEntrySchema.omit({ startAt: true }).merge(
+    CalendarEntryStartDateStartTimeSchema
+  )
+  type InitialValue = z.infer<typeof Schema>
+
+  // We cannot edit startAt directly, so we need to split the startDate and startTime
+  // and format them correctly for the given input types.
+  const createInitialValues = () => {
+    const copy: any = structuredClone(calendarEntry)
+    copy.startDate = getDate(copy.startAt)
+    copy.startTime = getTime(copy.startAt)
+    delete copy["startAt"]
+    return copy as InitialValue
+  }
+
   return (
     <>
       <MetaTags noindex title={`Termin ${quote(calendarEntry.title)}`} />
@@ -56,9 +80,8 @@ const EditCalendarEntry = () => {
 
       <CalendarEntryForm
         submitText="Speichern"
-        //projects={projects}
-        schema={CalendarEntrySchema}
-        initialValues={calendarEntry}
+        schema={Schema}
+        initialValues={createInitialValues()}
         onSubmit={handleSubmit}
       />
 

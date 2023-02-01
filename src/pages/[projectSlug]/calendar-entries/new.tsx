@@ -4,7 +4,11 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/CalendarEntryForm"
 import createCalendarEntry from "src/calendar-entries/mutations/createCalendarEntry"
-import { CalendarEntrySchema } from "src/calendar-entries/schema"
+import {
+  CalendarEntrySchema,
+  CalendarEntryStartDateStartTimeSchema,
+} from "src/calendar-entries/schema"
+import { transformValuesWithStartAt } from "src/calendar-entries/utils/transformValuesWithStartAt"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
@@ -20,8 +24,9 @@ const NewCalendarEntry = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
+      const transformedValues = transformValuesWithStartAt(values)
       const calendarEntry = await createCalendarEntryMutation({
-        ...values,
+        ...transformedValues,
         projectId: project.id!,
       })
       await router.push(
@@ -31,7 +36,7 @@ const NewCalendarEntry = () => {
         })
       )
     } catch (error: any) {
-      console.error(error)
+      console.error("handleSubmit", error)
       return { [FORM_ERROR]: error }
     }
   }
@@ -43,7 +48,10 @@ const NewCalendarEntry = () => {
 
       <CalendarEntryForm
         submitText="Erstellen"
-        schema={CalendarEntrySchema.omit({ projectId: true })}
+        schema={CalendarEntrySchema.omit({
+          projectId: true,
+          startAt: true,
+        }).merge(CalendarEntryStartDateStartTimeSchema)}
         //  initialValues={{}}
         onSubmit={handleSubmit}
       />
