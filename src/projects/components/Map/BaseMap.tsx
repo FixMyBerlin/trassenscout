@@ -116,6 +116,7 @@ export const BaseMap: React.FC<Props> = ({
         {children}
 
         {sections.map((section) => {
+          // Rendering the lines
           return section.subsections.map((subsection) => {
             return (
               <Source
@@ -142,6 +143,7 @@ export const BaseMap: React.FC<Props> = ({
         })}
 
         {sections
+          // Rednering the dots
           // TODO re-evaluate this old code; I think we don't need this…
           // .filter((section) => section === selectedSection)
           .map((section) => {
@@ -155,9 +157,7 @@ export const BaseMap: React.FC<Props> = ({
                   id={`layer_dots_${subsection.id}`}
                   type="circle"
                   paint={{
-                    "circle-color": pickLineColor({
-                      section,
-                    }),
+                    "circle-color": "RGB(15, 23, 42)",
                     "circle-radius": 6,
                   }}
                 />
