@@ -56,7 +56,7 @@ export const Files = () => {
 const FilesPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title="Files" />
+      <MetaTags noindex title="Dokumente" />
 
       <Suspense fallback={<Spinner page />}>
         <Files />
