@@ -31,7 +31,7 @@ export const Files = () => {
     <>
       <PageHeader
         title="Dokumente"
-        description="Dieser Bereich hilft Ihnen relevante Dokumente zu verwalten."
+        description="Dieser Bereich hilft Ihnen Dokumente zu verwalten."
         action={
           <Link
             button
