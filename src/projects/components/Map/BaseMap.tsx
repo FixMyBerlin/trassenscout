@@ -8,7 +8,7 @@ import { useRouter } from "next/router"
 import React, { useState } from "react"
 import Map, { Layer, NavigationControl, ScaleControl, Source } from "react-map-gl"
 import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher/BackgroundSwitcher"
-import { sectionBbox, geometryStartEndPoint } from "./utils"
+import { sectionsBbox, geometryStartEndPoint } from "./utils"
 
 export type BaseMapSections = (Section & {
   subsections: Pick<Subsection, "id" | "slug" | "geometry">[]
@@ -17,7 +17,7 @@ export type BaseMapSections = (Section & {
 type Props = {
   sections: BaseMapSections
   isInteractive: boolean
-  selectedSection?: Section
+  selectedSection?: BaseMapSections[number]
   className?: string
   children?: React.ReactNode
 }
@@ -92,7 +92,7 @@ export const BaseMap: React.FC<Props> = ({
     setHoveredSectionIds([])
   }
 
-  const [minX, minY, maxX, maxY] = sectionBbox(sections)
+  const [minX, minY, maxX, maxY] = sectionsBbox(selectedSection ? [selectedSection] : sections)
 
   if (!minX || !minY || !maxX || !maxY) return null
 

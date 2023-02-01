@@ -8,7 +8,7 @@ import { SectionMarker } from "../SectionMarker"
 
 type Props = {
   sections: BaseMapSections
-  selectedSection?: Section
+  selectedSection?: BaseMapSections[number]
   isInteractive: boolean
 }
 

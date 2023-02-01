@@ -41,6 +41,9 @@ export const SectionDashboardWithQuery = () => {
     include: { subsections: { select: { id: true, geometry: true } } },
   }) // TODO make project required
 
+  const sectionsWithSubsections = sections as BaseMapSections
+  const selectedSectionWithSubsections = sectionsWithSubsections.find((s) => s.id === section.id)
+
   return (
     <>
       <MetaTags noindex title={section.title} />
@@ -66,8 +69,8 @@ export const SectionDashboardWithQuery = () => {
       {Boolean(subsections.length) && (
         <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
           <SectionsMap
-            sections={sections as BaseMapSections}
-            selectedSection={section}
+            sections={sectionsWithSubsections}
+            selectedSection={selectedSectionWithSubsections}
             isInteractive={false}
           />
           {/* <SectionPanel section={section} /> */}
