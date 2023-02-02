@@ -6,6 +6,7 @@ import { z } from "zod"
 const GetProject = z.object({
   // This accepts type of undefined, but is required at runtime
   slug: z.string().optional().refine(Boolean, "Required"),
+  select: z.any(),
 })
 
 type GetProjectsInput = Pick<Prisma.ProjectFindFirstOrThrowArgs, "select"> & { slug?: string }
