@@ -1,6 +1,6 @@
 import { NotFoundError } from "blitz"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
+import db, { Prisma } from "db"
 import { z } from "zod"
 
 const GetProject = z.object({
@@ -8,10 +8,16 @@ const GetProject = z.object({
   slug: z.string().optional().refine(Boolean, "Required"),
 })
 
-export default resolver.pipe(resolver.zod(GetProject), resolver.authorize(), async ({ slug }) => {
-  const project = await db.project.findFirst({ where: { slug } })
+type GetProjectsInput = Pick<Prisma.ProjectFindFirstOrThrowArgs, "select"> & { slug?: string }
 
-  if (!project) throw new NotFoundError()
+export default resolver.pipe(
+  resolver.zod(GetProject),
+  resolver.authorize(),
+  async ({ slug, select = {} }: GetProjectsInput) => {
+    const project = await db.project.findFirst({ where: { slug }, select })
 
-  return project
-})
+    if (!project) throw new NotFoundError()
+
+    return project
+  }
+)
