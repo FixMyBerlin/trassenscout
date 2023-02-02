@@ -3,11 +3,12 @@ import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 import { z } from "zod"
 
-const GetProject = z.object({
-  // This accepts type of undefined, but is required at runtime
-  slug: z.string().optional().refine(Boolean, "Required"),
-  select: z.any(),
-})
+const GetProject = z
+  .object({
+    // This accepts type of undefined, but is required at runtime
+    slug: z.string().optional().refine(Boolean, "Required"),
+  })
+  .passthrough()
 
 type GetProjectsInput = Pick<Prisma.ProjectFindFirstOrThrowArgs, "select"> & { slug?: string }
 
