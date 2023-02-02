@@ -1,5 +1,6 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
+import { Project } from "@prisma/client"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links"
@@ -15,7 +16,7 @@ import getUsers from "src/users/queries/getUsers"
 const NewSectionWithQuery = () => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug! })
+  const [project] = useQuery<any, Project>(getProject, { slug: projectSlug! })
   const [createSectionMutation] = useMutation(createSection)
   const [{ users }] = useQuery(getUsers, {})
 

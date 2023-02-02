@@ -1,5 +1,6 @@
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
+import { Project } from "@prisma/client"
 import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
 import getProject from "src/projects/queries/getProject"
@@ -12,9 +13,9 @@ import { NavigationProjectLogo } from "./NavigationProjectLogo"
 
 const NavigationProjectWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
-  const [project] = useQuery(getProject, {
+  const [project] = useQuery<any, Project>(getProject, {
     slug: projectSlug!,
-    scope: "id",
+    scope: "all",
   })
   const [{ sections }] = useQuery(getSections, { where: { projectId: project.id! } })
 

@@ -1,5 +1,6 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
+import { Project } from "db"
 import Image from "next/image"
 import statusImg from "public/Planungsphase_Placeholder.jpg"
 import { Suspense } from "react"
@@ -24,7 +25,7 @@ export const ProjectDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const currentUser = useCurrentUser()
   const userName = getFullname(currentUser!)
-  const [project] = useQuery(getProject, { slug: projectSlug })
+  const [project] = useQuery<any, Project>(getProject, { slug: projectSlug })
   const [user] = useQuery(getUser, project.managerId)
   const [{ sections }] = useQuery(getSections, {
     where: { project: { slug: projectSlug! } },

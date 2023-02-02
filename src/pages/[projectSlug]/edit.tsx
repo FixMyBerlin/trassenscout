@@ -1,5 +1,6 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
+import { Project } from "@prisma/client"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
@@ -17,7 +18,7 @@ import getUsers from "src/users/queries/getUsers"
 const EditProjectWithQuery = () => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
-  const [project, { setQueryData }] = useQuery(
+  const [project, { setQueryData }] = useQuery<any, Project>(
     getProject,
     { slug: projectSlug },
     {
