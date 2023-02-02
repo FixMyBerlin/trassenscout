@@ -1,5 +1,6 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
+import { Project } from "@prisma/client"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/CalendarEntryForm"
@@ -18,7 +19,7 @@ import getProject from "src/projects/queries/getProject"
 const NewCalendarEntry = () => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug! })
+  const [project] = useQuery<any, Project>(getProject, { slug: projectSlug! })
   const [createCalendarEntryMutation] = useMutation(createCalendarEntry)
 
   type HandleSubmit = any // TODO

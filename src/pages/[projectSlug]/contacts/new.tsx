@@ -1,5 +1,6 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
+import { Project } from "@prisma/client"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { ContactForm, FORM_ERROR } from "src/contacts/components/ContactForm"
@@ -14,7 +15,7 @@ import getProject from "src/projects/queries/getProject"
 const NewContactWithQuery: BlitzPage = () => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug! })
+  const [project] = useQuery<any, Project>(getProject, { slug: projectSlug! })
   const [createContactMutation] = useMutation(createContact)
 
   type HandleSubmit = any // TODO

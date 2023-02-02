@@ -1,6 +1,7 @@
 import { Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { startOfDay } from "date-fns"
+import { Project } from "db"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links/Link"
 import { Spinner } from "src/core/components/Spinner"
@@ -11,7 +12,7 @@ import getCalendarEntries from "../queries/getCalendarEntries"
 
 const CalendarDashboardDateList: React.FC = () => {
   const projectSlug = useParam("projectSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug })
+  const [project] = useQuery<any, Project>(getProject, { slug: projectSlug })
   const [{ calendarEntries }] = usePaginatedQuery(getCalendarEntries, {
     projectSlug: projectSlug!,
     orderBy: { startAt: "asc" },

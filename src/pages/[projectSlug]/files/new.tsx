@@ -1,5 +1,6 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
+import { Project } from "@prisma/client"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links"
@@ -16,7 +17,7 @@ const NewFileWithQuery = () => {
   const [createFileMutation] = useMutation(createFile)
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug! })
+  const [project] = useQuery<any, Project>(getProject, { slug: projectSlug! })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
