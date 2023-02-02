@@ -14,7 +14,7 @@ const NavigationProjectWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, {
     slug: projectSlug!,
-    select: { id: true },
+    scope: "id",
   })
   const [{ sections }] = useQuery(getSections, { where: { projectId: project.id! } })
 
