@@ -1,13 +1,38 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 set -e
 
+usage() { echo "Usage: get-dump.sh [-s]" 1>&2; exit 1; }
+
+while getopts 'sh' OPTION; do
+  case "$OPTION" in
+    s) USE_STAGING=1 ;;
+    h) usage ;;
+    ?) usage ;;
+  esac
+done
+
+. ./.env
 . ./.env.local
-if ! [ -v DATABASE_URL_REMOTE ]; then
-  echo '$DATABASE_URL_REMOTE is not set.'
-  exit 1
+if [ $USE_STAGING ]; then
+  if ! [ -v DATABASE_URL_STAGING ]; then
+    echo 'DATABASE_URL_STAGING is not set.'
+    exit 1
+  else
+    DATABASE_URL=$DATABASE_URL_STAGING
+    echo "Getting dump from staging database..."
+  fi
+else
+  if ! [ -v DATABASE_URL_PRODUCTION ]; then
+    echo 'DATABASE_URL_PRODUCTION is not set.'
+    exit 1
+  else
+    DATABASE_URL=$DATABASE_URL_PRODUCTION
+    echo "Getting dump from production database..."
+  fi
 fi
 
 DIR=$( cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P )
-pg_dump $DATABASE_URL_REMOTE | grep -vE 'rdsadmin;|dbmasteruser;' > $DIR/data/dump.sql
+alias pg_dump="docker run -it --rm --entrypoint pg_dump postgres"
+pg_dump $DATABASE_URL | grep -vE 'rdsadmin;|dbmasteruser;' > $DIR/data/dump.sql
 ls -l $DIR/data/dump.sql
