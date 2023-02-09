@@ -27,6 +27,7 @@ model User {
   projects    Project[]
   sections    Section[]
   subsections Subsection[]
+  Membership  Membership[]
 }
 
 enum UserRoleEnum {
@@ -89,6 +90,17 @@ model Project {
   calendarEntries CalendarEntry[]
   contacts        Contact[]
   files           File[]
+  Membership      Membership[]
+}
+
+model Membership {
+  id Int @id @default(autoincrement())
+
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId Int
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
 }
 
 model CalendarEntry {
