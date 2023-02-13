@@ -17,5 +17,7 @@ export default defineConfig({
     coverage: {
       reporter: ["text", "json", "html"],
     },
+    minThreads: 1,
+    maxThreads: 1,
   },
 })
