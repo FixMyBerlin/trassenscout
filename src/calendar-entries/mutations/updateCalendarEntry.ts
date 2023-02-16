@@ -8,7 +8,6 @@ import { authorizeProjectAdmin } from "src/authorization"
 const UpdateCalendarEntry = CalendarEntrySchema.merge(
   z.object({
     id: z.number(),
-    projectSlug: z.string(),
   })
 )
 

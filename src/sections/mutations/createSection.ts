@@ -1,9 +1,13 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { SectionSchema } from "../schema"
+import getProjectId from "../../projects/queries/getProjectId"
 
 export default resolver.pipe(resolver.zod(SectionSchema), resolver.authorize(), async (input) => {
-  const section = await db.section.create({ data: input })
-
-  return section
+  return await db.section.create({
+    data: {
+      projectId: (await getProjectId(input.projectSlug))!,
+      ...input,
+    },
+  })
 })

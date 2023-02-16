@@ -1,5 +1,5 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { ContactForm, FORM_ERROR } from "src/contacts/components/ContactForm"
@@ -9,18 +9,16 @@ import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import getProject from "src/projects/queries/getProject"
 
 const NewContactWithQuery: BlitzPage = () => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug! })
   const [createContactMutation] = useMutation(createContact)
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const contact = await createContactMutation({ ...values, projectId: project.id! })
+      const contact = await createContactMutation({ ...values, projectSlug: projectSlug! })
       await router.push(
         Routes.ShowContactPage({
           projectSlug: projectSlug!,
@@ -39,7 +37,7 @@ const NewContactWithQuery: BlitzPage = () => {
       <PageHeader title="Neuer Kontakt" />
       <ContactForm
         submitText="Erstellen"
-        schema={ContactSchema.omit({ projectId: true })}
+        schema={ContactSchema.omit({ projectSlug: true })}
         onSubmit={handleSubmit}
       />
     </>
