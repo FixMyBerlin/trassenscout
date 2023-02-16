@@ -18,11 +18,14 @@ export const CalendarEntry = () => {
   const calendarEntryId = useParam("calendarEntryId", "number")
   const projectSlug = useParam("projectSlug", "string")
   const [deleteCalendarEntryMutation] = useMutation(deleteCalendarEntry)
-  const [calendarEntry] = useQuery(getCalendarEntry, { id: calendarEntryId })
+  const [calendarEntry] = useQuery(getCalendarEntry, {
+    id: calendarEntryId,
+    projectSlug: projectSlug!,
+  })
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${calendarEntry.id} unwiderruflich löschen?`)) {
-      await deleteCalendarEntryMutation({ id: calendarEntry.id })
+      await deleteCalendarEntryMutation({ id: calendarEntry.id, projectSlug: projectSlug! })
       await router.push(Routes.CalendarEntriesPage({ projectSlug: projectSlug! }))
     }
   }

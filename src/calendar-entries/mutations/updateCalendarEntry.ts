@@ -1,17 +1,20 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
+
 import { CalendarEntrySchema } from "../schema"
+import { authorizeProjectAdmin } from "src/authorization"
 
 const UpdateCalendarEntry = CalendarEntrySchema.merge(
   z.object({
     id: z.number(),
+    projectSlug: z.string(),
   })
 )
 
 export default resolver.pipe(
   resolver.zod(UpdateCalendarEntry),
-  resolver.authorize(),
+  authorizeProjectAdmin,
   async ({ id, ...data }) => {
     const calendarEntry = await db.calendarEntry.update({
       where: { id },

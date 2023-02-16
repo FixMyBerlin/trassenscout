@@ -2,13 +2,16 @@ import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
+import { authorizeProjectAdmin } from "../../authorization"
+
 type GetCalendarEntriesInput = { projectSlug: string } & Pick<
   Prisma.CalendarEntryFindManyArgs,
   "where" | "orderBy" | "skip" | "take"
 >
 
 export default resolver.pipe(
-  resolver.authorize(),
+  // @ts-ignore
+  authorizeProjectAdmin,
   async ({ projectSlug, where, orderBy, skip = 0, take = 100 }: GetCalendarEntriesInput) => {
     const saveWhere = { project: { slug: projectSlug }, ...where }
     const {
