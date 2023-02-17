@@ -8,8 +8,8 @@ const seedUsers = async () => {
       hashedPassword:
         "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTIscD0xJDRMWm82dmVrRk91VnVlZTVwcEpiS3ckOHFZcHhyM2RITm0yTGxTeXdqeEcxSWFsZEJCUWhxNVZxdm53eHoxTk4xTQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
       role: "ADMIN",
-      firstName: "Andi",
-      lastName: "Admin",
+      firstName: "Admin",
+      lastName: "Admin User",
       phone: "030 123456",
     },
     {
@@ -18,8 +18,18 @@ const seedUsers = async () => {
       hashedPassword:
         "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTIscD0xJDRMWm82dmVrRk91VnVlZTVwcEpiS3ckOHFZcHhyM2RITm0yTGxTeXdqeEcxSWFsZEJCUWhxNVZxdm53eHoxTk4xTQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
       role: "USER",
-      firstName: null,
-      lastName: null,
+      firstName: "Regular",
+      lastName: "Regular User",
+      phone: null,
+    },
+    {
+      email: "rs3000-user@fixmycity.de",
+      // password: dev-team@fixmycity.de
+      hashedPassword:
+        "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTIscD0xJDRMWm82dmVrRk91VnVlZTVwcEpiS3ckOHFZcHhyM2RITm0yTGxTeXdqeEcxSWFsZEJCUWhxNVZxdm53eHoxTk4xTQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      role: "USER",
+      firstName: "RS3000",
+      lastName: "RS3000 User",
       phone: null,
     },
   ]
