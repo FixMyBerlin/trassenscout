@@ -7,7 +7,6 @@ import { CalenderDashboard } from "src/calendar-entries/components"
 import DashedLine from "src/core/components/DashedLine"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
-import { Manager } from "src/core/components/PageHeader/Manager"
 import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
@@ -55,8 +54,6 @@ export const ProjectDashboardWithQuery = () => {
         logo
       />
       {/* TODO: intro prop evtl. mit project description ersetzen */}
-
-      <Manager manager={user!} />
 
       {/* Phasen Panel */}
       <H2 className="my-6">Aktuelle Planungsphase</H2>

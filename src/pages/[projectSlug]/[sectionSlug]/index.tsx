@@ -5,7 +5,6 @@ import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { PageHeader } from "src/core/components/PageHeader"
-import { Manager } from "src/core/components/PageHeader/Manager"
 import { Spinner } from "src/core/components/Spinner"
 import { proseClasses, quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
@@ -47,8 +46,6 @@ export const SectionDashboardWithQuery = () => {
   return (
     <>
       <MetaTags noindex title={section.title} />
-
-      <Manager manager={user!} />
 
       <PageHeader title={section.title} subtitle={section.subTitle} />
 
