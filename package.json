@@ -28,6 +28,8 @@
     "schema": "db/schema.prisma"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "3.272.0",
+    "@aws-sdk/s3-request-presigner": "3.272.0",
     "@blitzjs/auth": "2.0.0-beta.20",
     "@blitzjs/next": "2.0.0-beta.20",
     "@blitzjs/rpc": "2.0.0-beta.20",
