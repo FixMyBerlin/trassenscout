@@ -101,6 +101,8 @@ model Membership {
 
   user   User @relation(fields: [userId], references: [id])
   userId Int
+
+  @@unique([projectId, userId])
 }
 
 model CalendarEntry {
