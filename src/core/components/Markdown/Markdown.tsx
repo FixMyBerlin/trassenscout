@@ -51,13 +51,6 @@ const components = {
 }
 
 export const Markdown: React.FC<Props> = ({ markdown, className }) => {
-  // regex matches Links of pattern - except for links preceded by '(' / '['
-  const regexLink =
-    /(?<!\[|\()(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])/g
-  const createMarkdownLink = (link: string) => {
-    return ` [${link}](${link})`
-  }
-
   if (!markdown) return null
 
   return (
@@ -66,7 +59,7 @@ export const Markdown: React.FC<Props> = ({ markdown, className }) => {
         remarkToRehypeOptions={{ allowDangerousHtml: true }}
         rehypeReactOptions={{ components }}
       >
-        {markdown.replaceAll(regexLink, createMarkdownLink)}
+        {markdown}
       </Remark>
     </div>
   )
