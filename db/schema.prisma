@@ -79,7 +79,7 @@ model Project {
   updatedAt   DateTime @updatedAt
   slug        String   @unique
   title       String
-  shortTitle  String?
+  shortTitle  String
   description String?
 
   manager   User @relation(fields: [managerId], references: [id])
