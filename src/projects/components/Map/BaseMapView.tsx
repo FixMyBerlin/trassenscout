@@ -143,28 +143,25 @@ export const BaseMapView: React.FC<BaseMapViewProps> = ({
           })
         })}
 
-        {sections
+        {sections.map((section) => {
           // Rednering the dots
-          // TODO re-evaluate this old code; I think we don't need this…
-          // .filter((section) => section === selectedSection)
-          .map((section) => {
-            return section.subsections.map((subsection) => (
-              <Source
-                key={`layer_dots_${subsection.id}`}
-                type="geojson"
-                data={geometryStartEndPoint(subsection.geometry)}
-              >
-                <Layer
-                  id={`layer_dots_${subsection.id}`}
-                  type="circle"
-                  paint={{
-                    "circle-color": "RGB(15, 23, 42)",
-                    "circle-radius": 6,
-                  }}
-                />
-              </Source>
-            ))
-          })}
+          return section.subsections.map((subsection) => (
+            <Source
+              key={`layer_dots_${subsection.id}`}
+              type="geojson"
+              data={geometryStartEndPoint(subsection.geometry)}
+            >
+              <Layer
+                id={`layer_dots_${subsection.id}`}
+                type="circle"
+                paint={{
+                  "circle-color": "RGB(15, 23, 42)",
+                  "circle-radius": 6,
+                }}
+              />
+            </Source>
+          ))
+        })}
 
         <NavigationControl showCompass={false} />
         <ScaleControl />
