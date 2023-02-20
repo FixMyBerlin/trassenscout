@@ -4,8 +4,8 @@ import { lineString } from "@turf/helpers"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useRouter } from "next/router"
-import React, { useState } from "react"
-import Map, { Layer, NavigationControl, ScaleControl, Source } from "react-map-gl"
+import React, { useEffect, useState } from "react"
+import Map, { Layer, NavigationControl, ScaleControl, Source, useMap } from "react-map-gl"
 import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher/BackgroundSwitcher"
 import { geometryStartEndPoint, sectionsBbox } from "./utils"
 
@@ -30,6 +30,7 @@ export const BaseMapView: React.FC<BaseMapViewProps> = ({
 }) => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
+  const { mainMap } = useMap()
 
   const [hoveredSectionIds, setHoveredSectionIds] = useState<number[]>([])
 
@@ -91,9 +92,18 @@ export const BaseMapView: React.FC<BaseMapViewProps> = ({
     setHoveredSectionIds([])
   }
 
-  const [minX, minY, maxX, maxY] = sectionsBbox(selectedSection ? [selectedSection] : sections)
+  const sectionBounds = sectionsBbox(selectedSection ? [selectedSection] : sections)
 
-  if (!minX || !minY || !maxX || !maxY) return null
+  console.log({ id: selectedSection?.id }, sectionBounds)
+
+  useEffect(() => {
+    if (!mainMap) return
+    if (!sectionBounds) return
+
+    mainMap.fitBounds(sectionBounds, { padding: 60 })
+  }, [mainMap, sectionBounds])
+
+  if (!sectionBounds) return null
 
   return (
     <>
@@ -101,7 +111,7 @@ export const BaseMapView: React.FC<BaseMapViewProps> = ({
         id="mainMap"
         mapLib={maplibregl}
         initialViewState={{
-          bounds: [minX, minY, maxX, maxY],
+          bounds: sectionBounds,
           fitBoundsOptions: {
             padding: 60,
           },

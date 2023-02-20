@@ -1,6 +1,7 @@
 import combine from "@turf/combine"
 import { BBox, bbox, bboxPolygon, featureCollection, lineString } from "@turf/turf"
-import { BaseMapSections } from "../BaseMap"
+import type { LngLatBoundsLike } from "react-map-gl"
+import { BaseMapSections } from "../BaseMapView"
 
 export const sectionsBbox = (sections: BaseMapSections) => {
   // Calculate the bbox of all subSections by first creating a bbox per subSection, then make a polygon out of those, then calculate the bbox for all those polygons. It's likely this could be done easier…
@@ -15,5 +16,5 @@ export const sectionsBbox = (sections: BaseMapSections) => {
   )
 
   const [minX, minY, maxX, maxY] = bbox(subSectionBoxes)
-  return [minX, minY, maxX, maxY]
+  return [minX, minY, maxX, maxY] as LngLatBoundsLike
 }
