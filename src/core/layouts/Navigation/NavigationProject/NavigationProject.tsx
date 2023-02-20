@@ -4,10 +4,11 @@ import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
 import getProjectWithId from "src/projects/queries/getProjectWithId"
 import getSections from "src/sections/queries/getSections"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { NavigationDesktop } from "../NavigationDesktop"
 import { NavigationMobile } from "../NavigationMobile"
 import { NavigationWrapper } from "../NavigationWrapper"
-import { menuItemsDesktop, menuItemsMobile } from "./menuItems"
+import { menuItemsProject } from "./menuItems"
 import { NavigationProjectLogo } from "./NavigationProjectLogo"
 
 const NavigationProjectWithQuery = () => {
@@ -16,16 +17,19 @@ const NavigationProjectWithQuery = () => {
     slug: projectSlug!,
   })
   const [{ sections }] = useQuery(getSections, { where: { projectId: project.id! } })
+  const user = useCurrentUser()
+
+  const projects = user?.projects
 
   return (
     <NavigationWrapper>
       <NavigationMobile
         logo={<NavigationProjectLogo />}
-        menuItems={menuItemsMobile(projectSlug, sections)}
+        menuItemsProject={menuItemsProject(projectSlug!, sections!)}
       />
       <NavigationDesktop
         logo={<NavigationProjectLogo />}
-        menuItems={menuItemsDesktop(projectSlug, sections)}
+        menuItemsProject={menuItemsProject(projectSlug!, sections!)}
       />
     </NavigationWrapper>
   )

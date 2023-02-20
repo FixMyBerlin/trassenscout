@@ -14,6 +14,7 @@ export default async function getCurrentUser(_ = null, { session }: Ctx) {
       email: true,
       phone: true,
       role: true,
+      projects: { select: { shortTitle: true, slug: true } },
     },
   })
 

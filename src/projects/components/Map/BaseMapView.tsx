@@ -94,8 +94,6 @@ export const BaseMapView: React.FC<BaseMapViewProps> = ({
 
   const sectionBounds = sectionsBbox(selectedSection ? [selectedSection] : sections)
 
-  console.log({ id: selectedSection?.id }, sectionBounds)
-
   useEffect(() => {
     if (!mainMap) return
     if (!sectionBounds) return

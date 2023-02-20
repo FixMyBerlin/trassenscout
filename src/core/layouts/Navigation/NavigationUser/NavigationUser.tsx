@@ -4,7 +4,7 @@ import React, { Suspense } from "react"
 import { Link } from "src/core/components/links/Link"
 import { Spinner } from "src/core/components/Spinner"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { LoggedIn } from "./LoggedIn"
+import { NavigationUserLoggedIn } from "./NavigationUserLoggedIn"
 
 const UserWithQuery: React.FC = () => {
   const user = useCurrentUser()
@@ -20,13 +20,13 @@ const UserWithQuery: React.FC = () => {
           <UserIcon className="h-6 w-6" aria-hidden="true" />
         </Link>
       ) : (
-        <LoggedIn user={user} />
+        <NavigationUserLoggedIn user={user} />
       )}
     </div>
   )
 }
 
-export const User: React.FC = () => {
+export const NavigationUser: React.FC = () => {
   return (
     <Suspense fallback={<Spinner />}>
       <UserWithQuery />

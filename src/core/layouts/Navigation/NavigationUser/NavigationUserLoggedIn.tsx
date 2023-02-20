@@ -11,7 +11,7 @@ type Props = {
   user: CurrentUser
 }
 
-export const LoggedIn: React.FC<Props> = ({ user }) => {
+export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
   return (
     <Menu as="div" className="relative ml-3">
       {({ open }) => (
