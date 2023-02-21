@@ -13,7 +13,10 @@ export const CalendarEntrySchema = z.object({
   }),
   locationName: z.string().nullish(),
   // Either emtpy, or url (https://github.com/colinhacks/zod/pull/1849)
-  locationUrl: z.union([z.string().url({ message: "Kein gültige URL." }).nullish(), z.literal("")]),
+  locationUrl: z.union([
+    z.string().url({ message: "Die URL ist ungültig." }).nullish(),
+    z.literal(""),
+  ]),
   description: z.string().nullish(),
   projectId: z.coerce.number(),
 })

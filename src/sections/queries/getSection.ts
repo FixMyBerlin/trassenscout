@@ -20,7 +20,7 @@ export default resolver.pipe(
     })
     if (!section)
       throw new NotFoundError(
-        `Unknown section with ${JSON.stringify({ sectionSlug, projectSlug })}`
+        `Unbekannte Teilstrecke mit ${JSON.stringify({ sectionSlug, projectSlug })}`
       )
 
     return section

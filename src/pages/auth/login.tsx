@@ -17,7 +17,7 @@ const LoginPage: BlitzPage<Props> = ({ messageKey }) => {
   // }
 
   return (
-    <LayoutMiddleBox title="Einloggen" subtitle="Willkommen zurück!">
+    <LayoutMiddleBox title="Anmelden" subtitle="Willkommen zurück!">
       <MetaTags noindex title="Anmelden" />
       {messageKey === "loginRequired" && (
         <Notice type="warn" title="Anmeldung erforderlich">

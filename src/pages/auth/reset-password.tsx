@@ -41,20 +41,20 @@ const ResetPasswordPage: BlitzPage = () => {
       <MetaTags noindex title="Passwort vergessen" />
       {pageState === "token_missing" && (
         <div>
-          <h2>Reset password link is invalid.</h2>
+          <h2>Dieser Link ist ungültig.</h2>
         </div>
       )}
       {pageState === "success" && (
         <div>
-          <h2>Password Reset Successfully</h2>
+          <h2>Passwort erfolgreich zurückgesetzt.</h2>
           <p>
-            Go to the <Link href={Routes.Home()}>homepage</Link>
+            Zur <Link href={Routes.Home()}>Startseite</Link>
           </p>
         </div>
       )}
       {pageState === "form" && (
         <Form
-          submitText="Reset Password"
+          submitText="Passwort zurücksetzen"
           schema={ResetPassword}
           initialValues={{
             password: "",
@@ -63,10 +63,10 @@ const ResetPasswordPage: BlitzPage = () => {
           }}
           onSubmit={handleSubmit}
         >
-          <LabeledTextField name="password" label="New Password" type="password" />
+          <LabeledTextField name="password" label="Neues Passwort" type="password" />
           <LabeledTextField
             name="passwordConfirmation"
-            label="Confirm New Password"
+            label="Neues Passwort bestätigen"
             type="password"
           />
         </Form>

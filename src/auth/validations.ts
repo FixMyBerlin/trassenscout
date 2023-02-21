@@ -2,7 +2,7 @@ import { z } from "zod"
 
 export const email = z
   .string()
-  .email()
+  .email({ message: "Ungültige E-Mail-Adresse." })
   .transform((str) => str.toLowerCase().trim())
 
 export const password = z
@@ -40,7 +40,7 @@ export const ResetPassword = z
     token: z.string(),
   })
   .refine((data) => data.password === data.passwordConfirmation, {
-    message: "Passwords don't match",
+    message: "Die Passwörter stimmen nicht überein.",
     path: ["passwordConfirmation"], // set the path of the error
   })
 

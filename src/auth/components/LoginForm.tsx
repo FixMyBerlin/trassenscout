@@ -35,16 +35,16 @@ export const LoginForm = (props: LoginFormProps) => {
   return (
     <>
       <Form
-        submitText="Einloggen"
+        submitText="Anmelden"
         schema={Login}
         initialValues={{ email: "", password: "" }}
         onSubmit={handleSubmit}
       >
-        <LabeledTextField name="email" label="Email" placeholder="Email" autoComplete="email" />
+        <LabeledTextField name="email" label="E-Mail" placeholder="E-Mail" autoComplete="email" />
         <LabeledTextField
           name="password"
-          label="Password"
-          placeholder="Password"
+          label="Passwort"
+          placeholder="Passwort"
           type="password"
           autoComplete="current-password"
         />
