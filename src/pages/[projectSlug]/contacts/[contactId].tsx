@@ -19,11 +19,11 @@ export const ContactWithQuery = () => {
   const contactId = useParam("contactId", "number")
   const projectSlug = useParam("projectSlug", "string")
   const [deleteContactMutation] = useMutation(deleteContact)
-  const [contact] = useQuery(getContact, { id: contactId })
+  const [contact] = useQuery(getContact, { id: contactId, projectSlug: projectSlug! })
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${contact.id} unwiderruflich löschen?`)) {
-      await deleteContactMutation({ id: contact.id })
+      await deleteContactMutation({ id: contact.id, projectSlug: projectSlug! })
       await router.push(Routes.ContactsPage({ projectSlug: projectSlug! }))
     }
   }
