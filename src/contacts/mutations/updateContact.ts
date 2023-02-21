@@ -14,7 +14,7 @@ const UpdateContactSchemaSchema = ContactSchema.merge(
 
 export default resolver.pipe(
   resolver.zod(UpdateContactSchemaSchema),
-  authorizeProjectAdmin,
+  authorizeProjectAdmin(),
   async ({ id, ...data }) => {
     return await db.contact.update({ where: { id }, data })
   }

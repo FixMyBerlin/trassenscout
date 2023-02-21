@@ -7,7 +7,7 @@ import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 
 export default resolver.pipe(
   resolver.zod(CalendarEntrySchema),
-  authorizeProjectAdmin,
+  authorizeProjectAdmin(),
   async (input) => {
     return await db.calendarEntry.create({
       data: {

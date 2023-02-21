@@ -11,7 +11,7 @@ const GetContact = z.object({
   projectSlug: z.string(),
 })
 
-export default resolver.pipe(resolver.zod(GetContact), authorizeProjectAdmin, async ({ id }) => {
+export default resolver.pipe(resolver.zod(GetContact), authorizeProjectAdmin(), async ({ id }) => {
   const contact = await db.contact.findFirst({ where: { id } })
   if (!contact) throw new NotFoundError()
 

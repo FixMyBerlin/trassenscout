@@ -14,7 +14,7 @@ const UpdateFileSchema = FileSchema.merge(
 
 export default resolver.pipe(
   resolver.zod(UpdateFileSchema),
-  authorizeProjectAdmin,
+  authorizeProjectAdmin(),
   async ({ id, ...data }) => {
     const file = await db.file.update({ where: { id }, data })
 

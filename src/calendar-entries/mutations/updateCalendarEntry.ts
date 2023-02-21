@@ -13,7 +13,7 @@ const UpdateCalendarEntry = CalendarEntrySchema.merge(
 
 export default resolver.pipe(
   resolver.zod(UpdateCalendarEntry),
-  authorizeProjectAdmin,
+  authorizeProjectAdmin(),
   async ({ id, projectSlug, ...data }) => {
     const calendarEntry = await db.calendarEntry.update({
       where: { id },

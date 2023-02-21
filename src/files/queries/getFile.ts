@@ -11,7 +11,7 @@ const GetFile = z.object({
   projectSlug: z.string(),
 })
 
-export default resolver.pipe(resolver.zod(GetFile), authorizeProjectAdmin, async ({ id }) => {
+export default resolver.pipe(resolver.zod(GetFile), authorizeProjectAdmin(), async ({ id }) => {
   const file = await db.file.findFirst({ where: { id } })
   if (!file) throw new NotFoundError()
 

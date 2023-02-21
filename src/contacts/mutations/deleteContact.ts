@@ -9,6 +9,6 @@ const DeleteContact = z.object({
   projectSlug: z.string(),
 })
 
-export default resolver.pipe(resolver.zod(DeleteContact), authorizeProjectAdmin, async ({ id }) => {
+export default resolver.pipe(resolver.zod(DeleteContact), authorizeProjectAdmin(), async ({ id }) => {
   return await db.contact.deleteMany({ where: { id } })
 })

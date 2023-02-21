@@ -12,7 +12,7 @@ const GetCalendarEntry = z.object({
 
 export default resolver.pipe(
   resolver.zod(GetCalendarEntry),
-  authorizeProjectAdmin,
+  authorizeProjectAdmin(),
   async ({ id }) => {
     const calendarEntry = await db.calendarEntry.findFirst({ where: { id } })
 

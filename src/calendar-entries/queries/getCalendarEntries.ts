@@ -11,7 +11,7 @@ type GetCalendarEntriesInput = { projectSlug: string } & Pick<
 
 export default resolver.pipe(
   // @ts-ignore
-  authorizeProjectAdmin,
+  authorizeProjectAdmin(),
   async ({ projectSlug, where, orderBy, skip = 0, take = 100 }: GetCalendarEntriesInput) => {
     const saveWhere = { project: { slug: projectSlug }, ...where }
     const {

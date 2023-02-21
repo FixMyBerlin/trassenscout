@@ -9,6 +9,6 @@ const DeleteFile = z.object({
   projectSlug: z.string(),
 })
 
-export default resolver.pipe(resolver.zod(DeleteFile), authorizeProjectAdmin, async ({ id }) => {
+export default resolver.pipe(resolver.zod(DeleteFile), authorizeProjectAdmin(), async ({ id }) => {
   return await db.file.deleteMany({ where: { id } })
 })
