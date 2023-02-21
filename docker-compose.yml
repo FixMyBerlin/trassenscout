@@ -11,5 +11,6 @@ services:
     volumes:
       - rsv-data:/var/lib/postgresql/data
     container_name: rsv-builder-db
+    command: ['postgres', '-clog_destination=stderr', '-clog_statement=all']
 volumes:
   rsv-data:
