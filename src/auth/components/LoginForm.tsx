@@ -22,11 +22,10 @@ export const LoginForm = (props: LoginFormProps) => {
       props.onSuccess?.(user)
     } catch (error: any) {
       if (error instanceof AuthenticationError) {
-        return { [FORM_ERROR]: "Sorry, those credentials are invalid" }
+        return { [FORM_ERROR]: "Diese Anmeldedaten sind ungültig." }
       } else {
         return {
-          [FORM_ERROR]:
-            "Sorry, we had an unexpected error. Please try again. - " + error.toString(),
+          [FORM_ERROR]: "Ein unerwarteter Fehler ist aufgetreten. - " + error.toString(),
         }
       }
     }

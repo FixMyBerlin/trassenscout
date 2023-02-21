@@ -17,6 +17,7 @@ export function UserEditForm<S extends z.ZodType<any, any>>(props: FormProps<S>)
         label="Nachname"
         placeholder=""
         autoComplete="family-name"
+        optional
       />
       <LabeledTextField
         type="tel"

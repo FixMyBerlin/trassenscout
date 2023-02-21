@@ -7,8 +7,8 @@ export const email = z
 
 export const password = z
   .string()
-  .min(10)
-  .max(100)
+  .min(10, { message: "Pflichtfeld. Mindestens 10 Zeichen." })
+  .max(100, { message: "Maximal 100 Zeichen." })
   .transform((str) => str.trim())
 
 export const Signup = z.object({

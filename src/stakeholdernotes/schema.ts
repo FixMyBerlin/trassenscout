@@ -7,4 +7,6 @@ export const StakeholdernoteSchema = z.object({
   sectionId: z.coerce.number(),
 })
 
-export const StakeholdernoteMultiSchema = z.object({ title: z.string() })
+export const StakeholdernoteMultiSchema = z.object({
+  title: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
+})
