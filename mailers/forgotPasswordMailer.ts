@@ -13,7 +13,7 @@ export function forgotPasswordMailer({ to, token }: ResetPasswordMailer) {
 
   // mailjet format
   const msg = {
-    From: { Email: "<info@fixmycity.de>", Name: "Trassenscout" },
+    From: { Email: "<noreply@trassenscout.de>", Name: "Trassenscout" },
     To: [{ Email: to }],
     Subject: "Setzen Sie ihr Passwort zurück",
     TextPart: `
