@@ -4,7 +4,7 @@ const seedMemberships = async () => {
   const memberships: Omit<Membership, "id">[] = [
     {
       projectId: 1, // rs-spree
-      userId: 3,    // rs3000-user@fixmycity.de
+      userId: 3, // rs3000-user@fixmycity.de
     },
   ]
 
