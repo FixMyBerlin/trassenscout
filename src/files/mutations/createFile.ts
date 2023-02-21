@@ -1,9 +1,11 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
+
 import { FileSchema } from "../schema"
 import getProjectId from "../../projects/queries/getProjectId"
+import { authorizeProjectAdmin } from "src/authorization"
 
-export default resolver.pipe(resolver.zod(FileSchema), resolver.authorize(), async (input) => {
+export default resolver.pipe(resolver.zod(FileSchema), authorizeProjectAdmin, async (input) => {
   return await db.file.create({
     data: {
       projectId: (await getProjectId(input.projectSlug))!,

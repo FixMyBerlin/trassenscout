@@ -17,12 +17,12 @@ export const File = () => {
   const router = useRouter()
   const fileId = useParam("fileId", "number")
   const [deleteFileMutation] = useMutation(deleteFile)
-  const [file] = useQuery(getFile, { id: fileId })
   const projectSlug = useParam("projectSlug", "string")
+  const [file] = useQuery(getFile, { id: fileId, projectSlug: projectSlug! })
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${file.id} unwiderruflich löschen?`)) {
-      await deleteFileMutation({ id: file.id })
+      await deleteFileMutation({ id: file.id, projectSlug: projectSlug! })
       await router.push(Routes.ProjectDashboardPage({ projectSlug: projectSlug! }))
     }
   }

@@ -19,7 +19,7 @@ const EditFileWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [file, { setQueryData }] = useQuery(
     getFile,
-    { id: fileId },
+    { id: fileId, projectSlug: projectSlug! },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
@@ -32,6 +32,7 @@ const EditFileWithQuery = () => {
     try {
       const updated = await updateFileMutation({
         id: file.id,
+        projectSlug: projectSlug!,
         ...values,
       })
       await setQueryData(updated)
