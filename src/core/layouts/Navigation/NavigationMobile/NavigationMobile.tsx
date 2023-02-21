@@ -4,6 +4,7 @@ import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import React from "react"
 import { Link } from "src/core/components/links"
+import { NavigationProjectsSwitch } from "../NavigationProjectsSwitch"
 import { NavigationUser } from "../NavigationUser"
 import { MenuItem } from "../types"
 
@@ -27,6 +28,7 @@ export const NavigationMobile: React.FC<Props> = ({ menuItemsProject, logo: Logo
         <>
           <div className="relative flex min-h-[4rem] items-center justify-between sm:h-16">
             <div className="absolute inset-y-0 right-0 flex items-center space-x-2">
+              <NavigationProjectsSwitch />
               <NavigationUser />
               {Boolean(menuItemsProject?.length) && (
                 <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
