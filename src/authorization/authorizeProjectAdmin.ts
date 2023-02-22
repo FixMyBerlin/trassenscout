@@ -1,16 +1,12 @@
 import { AuthorizationError, Ctx } from "blitz"
 import db, { UserRoleEnum } from "db"
 
-type Input =
-  | (Record<string, any> & {
-      projectId: number
-    })
-  | (Record<string, any> & {
-      projectSlug: string
-    })
+type GetterFn =
+  | ((input: Record<string, any>) => number)
+  | ((input: Record<string, any>) => Promise<number>)
 
-export function authorizeProjectAdmin() {
-  return async function authorize<T extends Input>(input: T, ctx: Ctx): Promise<T> {
+export function authorizeProjectAdmin(getProjectId: GetterFn) {
+  return async function authorize<T extends Record<string, any>>(input: T, ctx: Ctx): Promise<T> {
     if (!ctx.session.userId) {
       throw new AuthorizationError()
     }
@@ -27,15 +23,13 @@ export function authorizeProjectAdmin() {
       return input
     }
 
-    // ...if user is a project admin
-    const projectCondition =
-      "projectId" in input ? { projectId: input.projectId } : { project: { slug: input.projectSlug } }
+    const projectId = await getProjectId(input)
 
     if (
       await db.membership.findFirst({
         where: {
           userId: ctx.session.userId,
-          ...projectCondition,
+          projectId,
         },
       })
     ) {
