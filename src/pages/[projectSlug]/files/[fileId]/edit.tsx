@@ -2,7 +2,6 @@ import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
@@ -19,7 +18,7 @@ const EditFileWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [file, { setQueryData }] = useQuery(
     getFile,
-    { id: fileId, projectSlug: projectSlug! },
+    { id: fileId },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
@@ -32,7 +31,6 @@ const EditFileWithQuery = () => {
     try {
       const updated = await updateFileMutation({
         id: file.id,
-        projectSlug: projectSlug!,
         ...values,
       })
       await setQueryData(updated)

@@ -3,6 +3,7 @@ import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
 import { authorizeProjectAdmin } from "src/authorization"
+import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 
 type GetFilesInput = { projectSlug: string } & Pick<
   Prisma.FileFindManyArgs,
@@ -11,7 +12,7 @@ type GetFilesInput = { projectSlug: string } & Pick<
 
 export default resolver.pipe(
   // @ts-ignore
-  authorizeProjectAdmin(),
+  authorizeProjectAdmin(getProjectIdBySlug),
   async ({ projectSlug, where, orderBy, skip = 0, take = 100 }: GetFilesInput) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
 

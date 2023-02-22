@@ -40,7 +40,7 @@ const NewFileWithQuery = () => {
       <FileForm
         submitText="Erstellen"
         // TODO schema: See `__ModelIdParam__/edit.tsx` for detailed instruction.
-        schema={FileSchema.omit({ projectSlug: true })}
+        schema={FileSchema}
         // initialValues={{}} // Use only when custom initial values are needed
         onSubmit={handleSubmit}
       />
