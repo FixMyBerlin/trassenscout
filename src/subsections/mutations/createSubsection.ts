@@ -1,14 +1,12 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
+
+import { authorizeProjectAdmin } from "src/authorization"
 import { SubsectionSchema } from "../schema"
+import getSectionProjectId from "../../sections/queries/getSectionProjectId"
 
 export default resolver.pipe(
   resolver.zod(SubsectionSchema),
-  resolver.authorize(),
-  async (input) => {
-    // TODO: Figure out why this `any` is needed
-    const subsection = await db.subsection.create({ data: input } as any)
-
-    return subsection
-  }
+  authorizeProjectAdmin(getSectionProjectId),
+  async (input) => await db.subsection.create({ data: input })
 )
