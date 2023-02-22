@@ -3,7 +3,7 @@ import db from "db"
 
 import { CalendarEntrySchema } from "../schema"
 import { authorizeProjectAdmin } from "src/authorization"
-import getProjectId from "../../projects/queries/getProjectId"
+import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 
 export default resolver.pipe(
   resolver.zod(CalendarEntrySchema),
@@ -11,7 +11,7 @@ export default resolver.pipe(
   async (input) => {
     return await db.calendarEntry.create({
       data: {
-        projectId: (await getProjectId(input.projectSlug))!,
+        projectId: (await getProjectIdBySlug(input.projectSlug))!,
         ...input,
       },
     })
