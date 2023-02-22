@@ -39,7 +39,7 @@ const NewSectionWithQuery = () => {
 
       <SectionForm
         submitText="Erstellen"
-        schema={SectionSchema.omit({ projectSlug: true })}
+        schema={SectionSchema}
         // initialValues={}
         onSubmit={handleSubmit}
         users={users}

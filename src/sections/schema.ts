@@ -9,5 +9,4 @@ export const SectionSchema = z.object({
   description: z.string().nullish(),
   length: z.string().nullish(),
   managerId: z.coerce.number(),
-  projectSlug: SlugSchema,
 })
