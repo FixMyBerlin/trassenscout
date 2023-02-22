@@ -2,11 +2,24 @@ import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
-interface GetSubsectionsInput
-  extends Pick<Prisma.SubsectionFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
+import { authorizeProjectAdmin } from "src/authorization"
+
+type GetSubsectionsInput = Pick<
+  Prisma.SubsectionFindManyArgs,
+  "where" | "orderBy" | "skip" | "take"
+>
+
+const getProjectId = async (query: Record<string, any>): Promise<number> =>
+  (
+    await db.section.findFirstOrThrow({
+      where: { id: query.where.sectionId || null },
+      select: { projectId: true },
+    })
+  ).projectId
 
 export default resolver.pipe(
-  resolver.authorize(),
+  // @ts-ignore
+  authorizeProjectAdmin(getProjectId),
   async ({ where, orderBy, skip = 0, take = 100 }: GetSubsectionsInput) => {
     const {
       items: subsections,
