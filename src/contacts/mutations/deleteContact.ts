@@ -1,14 +1,16 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-
 import { z } from "zod"
+
 import { authorizeProjectAdmin } from "src/authorization"
+import getContactProjectId from "../queries/getContactProjectId"
 
-const DeleteContact = z.object({
+const DeleteContactSchema = z.object({
   id: z.number(),
-  projectSlug: z.string(),
 })
 
-export default resolver.pipe(resolver.zod(DeleteContact), authorizeProjectAdmin(), async ({ id }) => {
-  return await db.contact.deleteMany({ where: { id } })
-})
+export default resolver.pipe(
+  resolver.zod(DeleteContactSchema),
+  authorizeProjectAdmin(getContactProjectId),
+  async ({ id }) => await db.contact.deleteMany({ where: { id } })
+)

@@ -18,7 +18,7 @@ const EditContactWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [contact, { setQueryData }] = useQuery(
     getContact,
-    { id: contactId, projectSlug: projectSlug! },
+    { id: contactId },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
@@ -31,7 +31,6 @@ const EditContactWithQuery = () => {
     try {
       const updated = await updateContactMutation({
         id: contact.id,
-        projectSlug: projectSlug!,
         ...values,
       })
       await setQueryData(updated)

@@ -1,5 +1,4 @@
 import { z } from "zod"
-import { SlugSchema } from "../core/utils"
 
 export const ContactSchema = z.object({
   lastName: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
@@ -8,5 +7,4 @@ export const ContactSchema = z.object({
   note: z.string().nullish(),
   phone: z.string().nullish(),
   role: z.string().nullish(),
-  projectSlug: SlugSchema,
 })
