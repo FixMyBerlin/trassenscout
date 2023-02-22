@@ -24,7 +24,7 @@
     "posttest": "docker rm ts-test-db -f",
     "test:watch": "npm run pretest && vitest watch && npm run posttest",
     "test:ui": "npm run pretest && vitest --ui && npm run posttest",
-    "seed": "npm run migrate && blitz prisma migrate reset && blitz db seed",
+    "seed": "npm run predev && npm run migrate && blitz prisma migrate reset && blitz db seed",
     "prepare": "husky install"
   },
   "prisma": {
