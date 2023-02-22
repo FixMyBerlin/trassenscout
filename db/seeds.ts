@@ -14,12 +14,13 @@ import seedMemberships from "./seeds/memberships"
 const seed = async () => {
   await seedUsers()
   await seedProjects()
+  await seedMemberships()
   await seedSections()
   await seedSubsections()
   await seedCalendarEntries()
   await seedContacts()
   await seedStakeholdernotes()
   await seedFiles()
-  await seedMemberships()
 }
+
 export default seed

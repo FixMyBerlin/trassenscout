@@ -1,11 +1,16 @@
 import db, { Membership } from "../index"
 
 const seedMemberships = async () => {
+  const allProjects = db.project.findMany()
   const memberships: Omit<Membership, "id">[] = [
     {
       projectId: 1, // rs-spree
-      userId: 3, // rs3000-user@fixmycity.de
+      userId: 3, // rs-spree-permissions@fixmycity.de
     },
+    ...(await allProjects).map((p) => ({
+      projectId: p.id,
+      userId: 4, // all-projects-permissions@fixmycity.de
+    })),
   ]
 
   for (let i = 0; i < memberships.length; i++) {
