@@ -1,28 +1,28 @@
-import { NotFoundError } from "blitz"
 import { resolver } from "@blitzjs/rpc"
-import db, { Project } from "db"
+import db from "db"
 import { z } from "zod"
 
-const GetSection = z.object({
+import { authorizeProjectAdmin } from "src/authorization"
+
+const GetSectionSchema = z.object({
   // This accepts type of undefined, but is required at runtime
   sectionSlug: z.string().optional().refine(Boolean, "Required"),
   projectSlug: z.string().optional().refine(Boolean, "Required"),
 })
 
-export default resolver.pipe(
-  resolver.zod(GetSection),
-  resolver.authorize(),
-  async ({ sectionSlug, projectSlug }) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
+const getProjectId = async (input: Record<string, any>): Promise<number> =>
+  (
+    await db.section.findFirstOrThrow({
+      where: { slug: input.sectionSlug || null, project: { slug: input.projectSlug || null } },
+      select: { projectId: true },
+    })
+  ).projectId
 
-    const section = await db.section.findFirst({
+export default resolver.pipe(
+  resolver.zod(GetSectionSchema),
+  authorizeProjectAdmin(getProjectId),
+  async ({ sectionSlug, projectSlug }) =>
+    await db.section.findFirstOrThrow({
       where: { slug: sectionSlug, project: { slug: projectSlug } },
     })
-    if (!section)
-      throw new NotFoundError(
-        `Unknown section with ${JSON.stringify({ sectionSlug, projectSlug })}`
-      )
-
-    return section
-  }
 )
