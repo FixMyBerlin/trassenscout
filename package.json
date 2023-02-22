@@ -20,7 +20,7 @@
     "lint": "eslint --fix --ignore-pattern \"src/core/templates/*\" --ignore-path .gitignore --ext .js,.ts,.tsx .",
     "format": "prettier --ignore-path .gitignore \"./(src|db|mailers)/**/*.+(js|ts|tsx)\" --write",
     "test": "vitest run --passWithNoTests || :",
-    "pretest": "docker run -d -e POSTGRES_PASSWORD=password -p 6002:5432 --name=ts-test-db postgres:12-alpine",
+    "pretest": "if [ $(docker inspect -f '{{.State.Running}}' ts-test-db) = \"true\" ]; then npm run posttest && npm run pretest; else docker run -d -e POSTGRES_PASSWORD=password -p 6002:5432 --name=ts-test-db postgres:12-alpine; fi",
     "posttest": "docker rm ts-test-db -f",
     "test:watch": "npm run pretest && vitest watch && npm run posttest",
     "test:ui": "npm run pretest && vitest --ui && npm run posttest",
