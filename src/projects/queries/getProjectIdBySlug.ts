@@ -1,11 +1,18 @@
 import db from "db"
 
-const getProjectIdBySlug = async (projectSlug: string) =>
-  (
+type Input = string | Record<string, any>
+
+const getProjectIdBySlug = async (projectSlug: Input): Promise<number> => {
+  if (typeof projectSlug !== "string") {
+    projectSlug = projectSlug.projectSlug
+  }
+  return (
     await db.project.findFirstOrThrow({
-      where: { slug: projectSlug },
+      // @ts-ignore possible error is intended here
+      where: { slug: projectSlug || null },
       select: { id: true },
     })
   ).id
+}
 
 export default getProjectIdBySlug

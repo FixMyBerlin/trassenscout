@@ -2,7 +2,8 @@ import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
-import { authorizeProjectAdmin } from "../../authorization"
+import { authorizeProjectAdmin } from "src/authorization"
+import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 
 type GetCalendarEntriesInput = { projectSlug: string } & Pick<
   Prisma.CalendarEntryFindManyArgs,
@@ -11,7 +12,7 @@ type GetCalendarEntriesInput = { projectSlug: string } & Pick<
 
 export default resolver.pipe(
   // @ts-ignore
-  authorizeProjectAdmin(),
+  authorizeProjectAdmin(getProjectIdBySlug),
   async ({ projectSlug, where, orderBy, skip = 0, take = 100 }: GetCalendarEntriesInput) => {
     const saveWhere = { project: { slug: projectSlug }, ...where }
     const {

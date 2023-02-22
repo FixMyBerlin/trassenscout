@@ -3,18 +3,14 @@ import db from "db"
 import { z } from "zod"
 
 import { authorizeProjectAdmin } from "src/authorization"
+import getCalendarEntryProjectId from "../queries/getCalendarEntryProjectId"
 
-const DeleteCalendarEntry = z.object({
+const DeleteCalendarEntrySchema = z.object({
   id: z.number(),
-  projectSlug: z.string(),
 })
 
 export default resolver.pipe(
-  resolver.zod(DeleteCalendarEntry),
-  authorizeProjectAdmin(),
-  async ({ id }) => {
-    const calendarEntry = await db.calendarEntry.deleteMany({ where: { id } })
-
-    return calendarEntry
-  }
+  resolver.zod(DeleteCalendarEntrySchema),
+  authorizeProjectAdmin(getCalendarEntryProjectId),
+  async ({ id }) => await db.calendarEntry.deleteMany({ where: { id } })
 )

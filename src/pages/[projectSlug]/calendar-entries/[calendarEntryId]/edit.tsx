@@ -1,6 +1,5 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { CalendarEntry } from "db"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/CalendarEntryForm"
@@ -18,7 +17,6 @@ import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { Z } from "vitest/dist/types-de0e0997"
 import { z } from "zod"
 
 const EditCalendarEntry = () => {
@@ -27,7 +25,7 @@ const EditCalendarEntry = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [calendarEntry, { setQueryData }] = useQuery(
     getCalendarEntry,
-    { id: calendarEntryId, projectSlug: projectSlug! },
+    { id: calendarEntryId },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
@@ -42,7 +40,6 @@ const EditCalendarEntry = () => {
       const updated = await updateCalendarEntryMutation({
         ...transformedValues,
         id: calendarEntry.id,
-        projectSlug: projectSlug!,
       })
       await setQueryData(updated)
       await router.push(
