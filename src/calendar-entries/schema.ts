@@ -18,7 +18,6 @@ export const CalendarEntrySchema = z.object({
     z.literal(""),
   ]),
   description: z.string().nullish(),
-  projectId: z.coerce.number(),
 })
 
 export const CalendarEntryStartDateStartTimeSchema = z.object({

@@ -6,7 +6,6 @@ import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import getProject from "src/projects/queries/getProject"
 import { FORM_ERROR, SectionForm } from "src/sections/components/SectionForm"
 import createSection from "src/sections/mutations/createSection"
 import { SectionSchema } from "src/sections/schema"
@@ -15,14 +14,13 @@ import getUsers from "src/users/queries/getUsers"
 const NewSectionWithQuery = () => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug! })
   const [createSectionMutation] = useMutation(createSection)
   const [{ users }] = useQuery(getUsers, {})
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const section = await createSectionMutation({ ...values, projectId: project.id! })
+      const section = await createSectionMutation({ ...values, projectSlug: projectSlug! })
       await router.push(
         Routes.SectionDashboardPage({
           projectSlug: projectSlug!,
@@ -41,7 +39,7 @@ const NewSectionWithQuery = () => {
 
       <SectionForm
         submitText="Erstellen"
-        schema={SectionSchema.omit({ projectId: true })}
+        schema={SectionSchema}
         // initialValues={}
         onSubmit={handleSubmit}
         users={users}

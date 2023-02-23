@@ -1,9 +1,25 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
+import { z } from "zod"
+
+import { authorizeProjectAdmin } from "src/authorization"
+import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 import { SectionSchema } from "../schema"
 
-export default resolver.pipe(resolver.zod(SectionSchema), resolver.authorize(), async (input) => {
-  const section = await db.section.create({ data: input })
+const CreateSectionSchema = SectionSchema.merge(
+  z.object({
+    projectSlug: z.string(),
+  })
+)
 
-  return section
-})
+export default resolver.pipe(
+  resolver.zod(CreateSectionSchema),
+  authorizeProjectAdmin(getProjectIdBySlug),
+  async ({ projectSlug, ...input }) =>
+    await db.section.create({
+      data: {
+        projectId: await getProjectIdBySlug(projectSlug),
+        ...input,
+      },
+    })
+)

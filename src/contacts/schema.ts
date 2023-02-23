@@ -7,5 +7,4 @@ export const ContactSchema = z.object({
   note: z.string().nullish(),
   phone: z.string().nullish(),
   role: z.string().nullish(),
-  projectId: z.coerce.number(),
 })

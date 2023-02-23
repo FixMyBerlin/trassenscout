@@ -1,9 +1,25 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
+import { z } from "zod"
+
+import { authorizeProjectAdmin } from "src/authorization"
+import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 import { ContactSchema } from "../schema"
 
-export default resolver.pipe(resolver.zod(ContactSchema), resolver.authorize(), async (input) => {
-  const contact = await db.contact.create({ data: input })
+const CreateContactSchema = ContactSchema.merge(
+  z.object({
+    projectSlug: z.string(),
+  })
+)
 
-  return contact
-})
+export default resolver.pipe(
+  resolver.zod(CreateContactSchema),
+  authorizeProjectAdmin(getProjectIdBySlug),
+  async ({ projectSlug, ...input }) =>
+    await db.contact.create({
+      data: {
+        projectId: (await getProjectIdBySlug(projectSlug))!,
+        ...input,
+      },
+    })
+)

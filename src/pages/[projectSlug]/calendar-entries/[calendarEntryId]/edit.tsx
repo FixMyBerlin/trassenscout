@@ -40,7 +40,6 @@ const EditCalendarEntry = () => {
       const updated = await updateCalendarEntryMutation({
         ...transformedValues,
         id: calendarEntry.id,
-        projectSlug: projectSlug!,
       })
       await setQueryData(updated)
       await router.push(

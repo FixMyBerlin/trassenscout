@@ -1,17 +1,17 @@
-import { NotFoundError } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
 
-const GetFile = z.object({
+import { authorizeProjectAdmin } from "src/authorization"
+import getFileProjectId from "./getFileProjectId"
+
+const GetFileSchema = z.object({
   // This accepts type of undefined, but is required at runtime
   id: z.number().optional().refine(Boolean, "Required"),
 })
 
-export default resolver.pipe(resolver.zod(GetFile), resolver.authorize(), async ({ id }) => {
-  const file = await db.file.findFirst({ where: { id } })
-
-  if (!file) throw new NotFoundError()
-
-  return file
-})
+export default resolver.pipe(
+  resolver.zod(GetFileSchema),
+  authorizeProjectAdmin(getFileProjectId),
+  async ({ id }) => await db.file.findFirstOrThrow({ where: { id } })
+)

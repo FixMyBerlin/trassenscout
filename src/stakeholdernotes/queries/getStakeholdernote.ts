@@ -1,23 +1,20 @@
-import { NotFoundError } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
 
-const GetStakeholdernote = z.object({
+import { authorizeProjectAdmin } from "src/authorization"
+import getStakeholdernoteProjectId from "./getStakeholdernoteProjectId"
+
+const GetStakeholdernoteSchema = z.object({
   // This accepts type of undefined, but is required at runtime
   id: z.number().optional().refine(Boolean, "Required"),
 })
 
 export default resolver.pipe(
-  resolver.zod(GetStakeholdernote),
-  resolver.authorize(),
-  async ({ id }) => {
-    const stakeholdernote = await db.stakeholdernote.findFirst({
+  resolver.zod(GetStakeholdernoteSchema),
+  authorizeProjectAdmin(getStakeholdernoteProjectId),
+  async ({ id }) =>
+    await db.stakeholdernote.findFirstOrThrow({
       where: { id },
     })
-
-    if (!stakeholdernote) throw new NotFoundError()
-
-    return stakeholdernote
-  }
 )
