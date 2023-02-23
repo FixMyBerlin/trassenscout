@@ -3,7 +3,7 @@ import Image from "next/image"
 import { Link, LinkMail, LinkTel } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
-import svgImageLogoBmdvFoerderung from "../components/PageKontakt/assets/logo-bmdv-foerderung.svg"
+import svgImageLogoBmdvFoerderung from "src/kontakt/assets/logo-bmdv-foerderung.svg"
 
 const Kontakt: BlitzPage = () => {
   return (
