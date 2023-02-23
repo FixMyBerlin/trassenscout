@@ -190,7 +190,13 @@ const Datenschutz: BlitzPage = () => {
               Serverstandorte Frankfurt und Saint-Ghislain (Belgien). Ein ausnahmsweiser Zugriff aus
               den USA kann nicht ausgeschlossen werden (z.B. zu Wartungszwecken oder Fehlersuche).
             </td>
-            <td>Dennoch Standard&shy;datenschutz&shy;klauseln abgeschlossen</td>
+            <td>
+              Dennoch{" "}
+              <Link href="https://www.mailjet.com/de/rechtliches/av-vertrag/">
+                Standard&shy;datenschutz&shy;klauseln abgeschlossen
+              </Link>
+              .
+            </td>
             <td>Bereitstellung von Registrierungslinks und Benachrichtigungen</td>
           </tr>
           <tr>
@@ -350,11 +356,11 @@ const Datenschutz: BlitzPage = () => {
       </ul>
 
       <h3>Rechtsgrundlage</h3>
-      <p>Die Rechtsgrundlage für die Verarbeitung Ihrer personenbezogenen Daten im Rahmen des:</p>
+      <p>Die Rechtsgrundlage für die Verarbeitung Ihrer personenbezogenen Daten im Rahmen des</p>
       <ul>
-        <li>Newsletter-Abonnements ist Ihre Einwilligung gem. Art. 6 Abs. 1 S. 1 lit. a DSGVO,</li>
+        <li>Newsletter-Abonnements: Ihre Einwilligung gem. Art. 6 Abs. 1 S. 1 lit. a DSGVO;</li>
         <li>
-          sowie Newsletter-Trackings ist Ihre Einwilligung gem. Art. 6 Abs. 1 S. 1 lit. a DSGVO.
+          für die Auswertungen: Ebenso Ihre Einwilligung gem. Art. 6 Abs. 1 S. 1 lit. a DSGVO.
         </li>
       </ul>
 
@@ -372,7 +378,7 @@ const Datenschutz: BlitzPage = () => {
       </p>
 
       <h3>Empfänger personenbezogener Daten</h3>
-      <p>Wir setzen folgende Dienstleister ein:</p>
+      <p>Wir setzen folgenden Dienstleister ein:</p>
 
       <table>
         <thead>
@@ -381,7 +387,7 @@ const Datenschutz: BlitzPage = () => {
             <th>Anschrift</th>
             <th>Drittland</th>
             <th>Geeignete Garantie</th>
-            <th>Weitere Informationen</th>
+            <th>Zweck</th>
           </tr>
         </thead>
         <tbody>
@@ -392,11 +398,14 @@ const Datenschutz: BlitzPage = () => {
               Serverstandorte Frankfurt und Saint-Ghislain (Belgien). Ein ausnahmsweiser Zugriff aus
               den USA kann nicht ausgeschlossen werden (z.B. zu Wartungszwecken oder Fehlersuche).
             </td>
-            <td>Dennoch Standard&shy;datenschutz&shy;klauseln abgeschlossen</td>
             <td>
+              Dennoch{" "}
               <Link href="https://www.mailjet.com/de/rechtliches/av-vertrag/">
-                mailjet.com/de/rechtliches/av-vertrag
+                Standard&shy;datenschutz&shy;klauseln abgeschlossen
               </Link>
+            </td>
+            <td>
+              Versand von Newslettern, Durchführung des Double-Opt-Ins, Auswertung der Öffnungsrate
             </td>
           </tr>
         </tbody>
