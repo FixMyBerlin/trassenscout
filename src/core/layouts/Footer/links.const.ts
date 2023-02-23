@@ -8,6 +8,6 @@ export type FooterLink = {
 }
 
 export const links: FooterLink[] = [
-  { name: "Kontakt & Impressum", href: Routes.Kontakt(), blank: false }, // TODO: Kontakt und Impressum einheitlich benennen
-  { name: "Datenschutz", href: Routes.Home(), blank: false }, // TODO update Link
+  { name: "Kontakt & Impressum", href: Routes.Kontakt(), blank: false },
+  { name: "Datenschutz", href: Routes.Datenschutz(), blank: false },
 ]

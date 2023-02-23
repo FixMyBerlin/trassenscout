@@ -18,7 +18,7 @@ const seedFiles = async () => {
       projectId: 4,
     },
     {
-      title: "Datenschutz",
+      title: "Trassenplanung Projekt 2",
       externalUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
       projectId: 2,
     },
