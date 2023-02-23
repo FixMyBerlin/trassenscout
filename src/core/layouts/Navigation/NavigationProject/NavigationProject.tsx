@@ -2,6 +2,7 @@ import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
+import getProjectWithId from "src/projects/queries/getProjectWithId"
 import getSections from "src/sections/queries/getSections"
 import { NavigationDesktop } from "../NavigationDesktop"
 import { NavigationMobile } from "../NavigationMobile"
@@ -11,13 +12,10 @@ import { NavigationProjectLogo } from "./NavigationProjectLogo"
 
 const NavigationProjectWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
-  const [{ sections }] = useQuery(getSections, {
-    where: {
-      project: {
-        slug: projectSlug!,
-      },
-    },
+  const [project] = useQuery(getProjectWithId, {
+    slug: projectSlug!,
   })
+  const [{ sections }] = useQuery(getSections, { where: { projectId: project.id! } })
 
   return (
     <NavigationWrapper>
