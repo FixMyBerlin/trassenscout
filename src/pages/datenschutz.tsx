@@ -158,6 +158,15 @@ const Datenschutz: BlitzPage = () => {
       <h3>Empfänger personenbezogener Daten</h3>
       <p>Wir setzen folgende Dienstleister ein:</p>
       <table>
+        <thead>
+          <tr>
+            <th>Anbieter</th>
+            <th>Anschrift</th>
+            <th>Drittland</th>
+            <th>Geeignete Garantie</th>
+            <th>Zweck</th>
+          </tr>
+        </thead>
         <tbody>
           <tr>
             <th>MapTiler AG</th>
@@ -192,7 +201,7 @@ const Datenschutz: BlitzPage = () => {
             </td>
             <td>
               Dennoch{" "}
-              <Link href="https://www.mailjet.com/de/rechtliches/av-vertrag/">
+              <Link blank href="https://www.mailjet.com/de/rechtliches/av-vertrag/">
                 Standard&shy;datenschutz&shy;klauseln abgeschlossen
               </Link>
               .
@@ -260,7 +269,9 @@ const Datenschutz: BlitzPage = () => {
       <p>
         Google Cloud EMEA Limited, 70 Sir John Rogerson&lsquo;s Quay, Dublin 2, Irland. Weiter
         Informationen erhalten Sie in der Datenschutzerklärung von Google:{" "}
-        <Link href="https://policies.google.com/privacy?hl=de">policies.google.com/privacy</Link>
+        <Link blank href="https://policies.google.com/privacy?hl=de">
+          policies.google.com/privacy
+        </Link>
       </p>
 
       <h2 id="contact">Kontaktmöglichkeiten</h2>
@@ -379,7 +390,6 @@ const Datenschutz: BlitzPage = () => {
 
       <h3>Empfänger personenbezogener Daten</h3>
       <p>Wir setzen folgenden Dienstleister ein:</p>
-
       <table>
         <thead>
           <tr>
@@ -400,7 +410,7 @@ const Datenschutz: BlitzPage = () => {
             </td>
             <td>
               Dennoch{" "}
-              <Link href="https://www.mailjet.com/de/rechtliches/av-vertrag/">
+              <Link blank href="https://www.mailjet.com/de/rechtliches/av-vertrag/">
                 Standard&shy;datenschutz&shy;klauseln abgeschlossen
               </Link>
             </td>
