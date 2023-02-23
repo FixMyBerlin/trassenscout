@@ -48,6 +48,7 @@
     "mapbox-gl": "2.12.0",
     "maplibre-gl": "2.4.0",
     "next": "12.2.5",
+    "next-s3-upload": "0.2.10",
     "node-mailjet": "6.0.1",
     "postcss": "8.4.20",
     "prisma": "4.6.1",

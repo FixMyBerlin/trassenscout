@@ -13,6 +13,8 @@ import getProject from "src/projects/queries/getProject"
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
 import { s3Client, BUCKET } from "src/core/libs/s3Client"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
+import { useS3Upload } from "next-s3-upload"
+import { Notice } from "src/core/components/Notice"
 
 const NewFileWithQuery = () => {
   const router = useRouter()
@@ -38,33 +40,27 @@ const NewFileWithQuery = () => {
     }
   }
 
-  const [progress, setProgress] = useState(0)
-  const [selectedFile, setSelectedFile] = useState(null)
+  let [imageUrl, setImageUrl] = useState()
+  let { uploadToS3 } = useS3Upload()
 
-  const handleFileInput = (e: ChangeEventHandler<HTMLInputElement>) => {
-    if (e?.target?.files) {
-      setSelectedFile(e.target.files[0])
-    }
+  const [errorUserFeedback, setErrorUserFeedback] = useState("")
+  const [successUserFeedback, setSuccessUserFeedback] = useState("")
+
+  let handleFileChange = async (event: Event) => {
+    event?.target?.files && setImageUrl(event.target.files[0])
   }
-
-  const uploadFile = async (file) => {
-    const bucketParams = {
-      Bucket: BUCKET,
-      Key: file.name,
-      Body: file,
-    }
-
-    try {
-      await s3Client.send(new PutObjectCommand(bucketParams))
-      console.log("uploading file")
-      // const command = new PutObjectCommand(bucketParams)
-      // const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 })
-      // console.log(
-      //   `\nPutting "${bucketParams.Key}" using signedUrl with body "${bucketParams.Body}" in v3`
-      // )
-      // console.log(signedUrl)
-    } catch (err) {
-      console.log("Error creating presigned URL", err)
+  const uploadFile = async () => {
+    if (imageUrl) {
+      try {
+        let { url } = await uploadToS3(imageUrl)
+        setSuccessUserFeedback("Upload erfolgreich.")
+      } catch (e: Event) {
+        switch (e.message.split(":")[0]) {
+          case "Access Denied":
+            setErrorUserFeedback("Upload nicht erlaubt.")
+            break
+        }
+      }
     }
   }
 
@@ -80,16 +76,66 @@ const NewFileWithQuery = () => {
         onSubmit={handleSubmit}
       />
 
-      <div>
-        <div>Native SDK File Upload Progress is {progress}%</div>
-        <input type="file" onChange={handleFileInput} />
+      <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+        <label
+          htmlFor="cover-photo"
+          className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+        >
+          Datei ablegen
+        </label>
+        <div className="mt-1 sm:col-span-2 sm:mt-0">
+          <div className="flex max-w-lg justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
+            <div className="space-y-1 text-center">
+              <svg
+                className="mx-auto h-12 w-12 text-gray-400"
+                stroke="currentColor"
+                fill="none"
+                viewBox="0 0 48 48"
+                aria-hidden="true"
+              >
+                <path
+                  d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <div className="flex text-sm text-gray-600">
+                <label
+                  htmlFor="file-upload"
+                  className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
+                >
+                  <span>Datei hochladen</span>
+                  <input
+                    id="file-upload"
+                    name="file-upload"
+                    type="file"
+                    className="sr-only"
+                    onChange={handleFileChange}
+                  />
+                </label>
+                <p className="pl-1">oder drag und drop</p>
+              </div>
+              <p className="text-xs text-gray-500">PNG, JPG, GIF up to ??? MB</p>
+            </div>
+          </div>
+        </div>
         <button
           className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          onClick={() => uploadFile(selectedFile)}
+          onClick={() => uploadFile()}
         >
-          {" "}
-          Upload to S3
+          Hochladen
         </button>
+        {successUserFeedback && (
+          <Notice type={"success"} title={"Erfolgeich"}>
+            {successUserFeedback}
+          </Notice>
+        )}
+        {errorUserFeedback && (
+          <Notice type={"error"} title={"Fehler"}>
+            {errorUserFeedback}
+          </Notice>
+        )}
       </div>
     </>
   )
