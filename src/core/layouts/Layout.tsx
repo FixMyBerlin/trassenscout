@@ -4,6 +4,7 @@ import { FooterProject } from "./Footer"
 import { FooterGeneral } from "./Footer/FooterGeneral"
 import { FooterMinimal } from "./Footer/FooterMinimal"
 import { NavigationGeneral, NavigationProject } from "./Navigation"
+import { TailwindResponsiveHelper } from "./TailwindResponsiveHelper/TailwindResponsiveHelper"
 
 type Props = {
   navigation: "general" | "project" | "none"
@@ -32,6 +33,7 @@ export const Layout: BlitzLayout<Props> = ({
       {footer === "general" && <FooterGeneral />}
       {footer === "project" && <FooterProject />}
       {footer === "minimal" && <FooterMinimal />}
+      <TailwindResponsiveHelper />
     </>
   )
 }
