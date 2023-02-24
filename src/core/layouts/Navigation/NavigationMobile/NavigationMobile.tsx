@@ -53,11 +53,7 @@ export const NavigationMobile: React.FC<Props> = ({ menuItemsProject, logo: Logo
                   const current = pathname === item.href.pathname
                   return (
                     <Disclosure.Button key={item.name} as="div">
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        classNameOverwrites={itemClasses(current)}
-                      >
+                      <Link href={item.href} classNameOverwrites={itemClasses(current)}>
                         {item.name}
                       </Link>
                     </Disclosure.Button>
