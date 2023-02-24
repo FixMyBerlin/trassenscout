@@ -1,6 +1,6 @@
 import { Routes } from "@blitzjs/next"
 import { Menu, Transition } from "@headlessui/react"
-import { Square3Stack3DIcon } from "@heroicons/react/20/solid"
+import { FolderIcon, FolderOpenIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import React, { Fragment, Suspense } from "react"
@@ -35,7 +35,7 @@ const NavigationProjectsSwitchWithQuery: React.FC = () => {
               )}
             >
               <span className="sr-only">Trassenwechsel</span>
-              <Square3Stack3DIcon className="h-6 w-6 text-gray-300" aria-hidden="true" />
+              <FolderIcon className="h-6 w-6 text-gray-300" aria-hidden="true" />
             </Menu.Button>
             {open && (
               <Transition
