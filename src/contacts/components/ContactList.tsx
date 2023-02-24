@@ -8,9 +8,10 @@ import { getFullname } from "src/users/utils"
 type Props = {
   contacts: Contact[]
   withAction?: boolean
+  withNotes?: boolean
 }
 
-export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) => {
+export const ContactList: React.FC<Props> = ({ contacts, withAction = true, withNotes = true }) => {
   const projectSlug = useParam("projectSlug", "string")
 
   return (
@@ -44,9 +45,11 @@ export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) =>
                 >
                   E-Mail
                 </th>
-                <th scope="col" className="sr-only">
-                  Details
-                </th>
+                {withNotes && (
+                  <th scope="col" className="sr-only">
+                    Details
+                  </th>
+                )}
                 {withAction && (
                   <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
                     <span className="sr-only">Edit</span>
@@ -70,7 +73,7 @@ export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) =>
                     <LinkMail subject="Abstimmung zum RS 8">{contact.email}</LinkMail>
                   </td>
 
-                  {contact.note ? (
+                  {withNotes && contact.note ? (
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                       <Link
                         href={Routes.ShowContactPage({
@@ -82,7 +85,7 @@ export const ContactList: React.FC<Props> = ({ contacts, withAction = true }) =>
                       </Link>
                     </td>
                   ) : (
-                    <td className="sr-only">Keine Details</td>
+                    withNotes && <td className="sr-only">Keine Details</td>
                   )}
                   {withAction && (
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
