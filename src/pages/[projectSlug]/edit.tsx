@@ -47,17 +47,16 @@ const EditProjectWithQuery = () => {
     <>
       <MetaTags noindex title={`Project ${quote(project.title)} bearbeiten`} />
       <PageHeader title={quote(project.title)} subtitle="Projekt bearbeiten" />
-      <SuperAdminBox>
-        <h1>Project {quote(project.title)} bearbeiten</h1>
-        <pre>{JSON.stringify(project, null, 2)}</pre>
 
-        <ProjectForm
-          submitText="Speichern"
-          schema={ProjectSchema}
-          initialValues={project}
-          onSubmit={handleSubmit}
-          users={users}
-        />
+      <ProjectForm
+        submitText="Speichern"
+        schema={ProjectSchema}
+        initialValues={project}
+        onSubmit={handleSubmit}
+        users={users}
+      />
+      <SuperAdminBox>
+        <pre>{JSON.stringify(project, null, 2)}</pre>
       </SuperAdminBox>
     </>
   )
