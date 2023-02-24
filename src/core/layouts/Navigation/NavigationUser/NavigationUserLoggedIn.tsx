@@ -1,8 +1,9 @@
-import { Routes } from "@blitzjs/next"
+import { Routes, useParam } from "@blitzjs/next"
 import { Menu, Transition } from "@headlessui/react"
 import { UserIcon } from "@heroicons/react/24/solid"
 import clsx from "clsx"
 import React, { Fragment } from "react"
+import { LinkMail } from "src/core/components/links"
 import { Link } from "src/core/components/links/Link"
 import { CurrentUser } from "src/users/types"
 import { getFullname, isAdmin } from "src/users/utils"
@@ -12,6 +13,7 @@ type Props = {
 }
 
 export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
+  const projectSlug = useParam("projectSlug", "string")
   return (
     <Menu as="div" className="relative ml-3">
       {({ open }) => (
@@ -40,41 +42,47 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
             >
               <Menu.Items
                 static
-                className="absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                className="absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-md bg-gray-50 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
               >
-                <div className="border-b border-gray-200 bg-gray-50 px-4 py-2 text-sm text-gray-700">
-                  <table className="mb-1">
-                    <caption className="text-left font-bold">Angemeldet als…</caption>
-                    <tr>
-                      <th className="pr-2 text-left">E-Mail</th>
-                      <td>{user.email}</td>
-                    </tr>
-                    <tr>
-                      <th className="pr-2 text-left">Name</th>
-                      <td>{getFullname(user) || "-"}</td>
-                    </tr>
-                    <tr>
-                      <th className="pr-2 text-left">Tel</th>
-                      <td>{user.phone || "-"}</td>
-                    </tr>
-                    {isAdmin(user) && (
-                      <tr className="text-purple-700">
-                        <th className="pr-2 text-left">Rolle</th>
-                        <td>Admin</td>
-                      </tr>
+                <div className="px-4 py-2 text-gray-700">
+                  <p>Angemeldet als</p>
+                  <p className="font-bold">{getFullname(user) || "-"}</p>
+                  <p className="mb-2 font-bold">
+                    <LinkMail className="!text-gray-700" href={user.email}>
+                      {user.email}
+                    </LinkMail>
+                  </p>
+
+                  {isAdmin(user) && <p className="font-bold text-purple-700">Rolle: Admin</p>}
+
+                  <div className="mt-6 mb-4 flex flex-col gap-4">
+                    {projectSlug && (
+                      <Menu.Item>
+                        <Link
+                          className=" !text-gray-500"
+                          href={Routes.ProjectTeamPage({ projectSlug: projectSlug! })}
+                        >
+                          Projektteam
+                        </Link>
+                      </Menu.Item>
                     )}
-                  </table>
-                  <div className="mt-6 mb-4">
-                    <Link href={Routes.EditUserPage()} button>
-                      Profil bearbeiten
-                    </Link>
+                    <Menu.Item>
+                      <Link className=" !text-gray-500" href={Routes.LogoutRedirectPage()}>
+                        Abmelden
+                      </Link>
+                    </Menu.Item>
+                    {projectSlug && (
+                      <Menu.Item>
+                        <Link
+                          className=" !text-gray-500"
+                          href={Routes.EditUserPage({ projectSlug: projectSlug! })}
+                        >
+                          Ihr Profil
+                        </Link>
+                      </Menu.Item>
+                    )}
                   </div>
                 </div>
-                <Menu.Item>
-                  <div className="mx-4 mt-6 mb-4">
-                    <Link href={Routes.LogoutRedirectPage()}>Abmelden</Link>
-                  </div>
-                </Menu.Item>
               </Menu.Items>
             </Transition>
           )}
