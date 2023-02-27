@@ -2,6 +2,7 @@ import { Layout, MetaTags } from "src/core/layouts"
 import { NewsItem } from "./news/NewsItem"
 import { newsItems } from "./news/newsItems.const"
 import { PageHomePublicContact } from "./PageHomePublicContact"
+import PageHomePublicOnline from "./PageHomePublicOnline"
 import { PageHomePublicPhotos } from "./PageHomePublicPhotos"
 
 const PageHomePublic = () => {
@@ -53,6 +54,7 @@ const PageHomePublic = () => {
             <PageHomePublicContact />
             {/* <Newsletter />
             <Resume /> */}
+            <PageHomePublicOnline />
           </div>
         </div>
       </section>
