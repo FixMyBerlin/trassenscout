@@ -9,18 +9,21 @@ import { TailwindResponsiveHelper } from "./TailwindResponsiveHelper/TailwindRes
 type Props = {
   navigation: "general" | "project" | "none"
   footer: "general" | "project" | "minimal"
+  fullWidth?: boolean
   children?: React.ReactNode
 }
 
 export const Layout: BlitzLayout<Props> = ({
   navigation = "general",
   footer = "general",
+  fullWidth = false,
   children,
 }) => {
   return (
     <>
       <Head>
         {/* Reminder: We cannot use this to set the <body class>. See index.css for our workaround. */}
+        {/* /src/core/layouts/Navigation/assets/trassenscout-logo-bildmarke.svg */}
         <link rel="icon" href="/favicon.svg" />
       </Head>
 
@@ -28,7 +31,11 @@ export const Layout: BlitzLayout<Props> = ({
         {navigation === "general" && <NavigationGeneral />}
         {navigation === "project" && <NavigationProject />}
 
-        <main className="mx-auto w-full max-w-7xl px-6 pb-16 md:px-8">{children}</main>
+        {fullWidth ? (
+          <main className="w-full">{children}</main>
+        ) : (
+          <main className="mx-auto w-full max-w-7xl px-6 pb-16 md:px-8">{children}</main>
+        )}
       </div>
       {footer === "general" && <FooterGeneral />}
       {footer === "project" && <FooterProject />}

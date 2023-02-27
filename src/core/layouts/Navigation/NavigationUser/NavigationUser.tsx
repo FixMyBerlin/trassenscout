@@ -1,5 +1,6 @@
 import { Routes } from "@blitzjs/next"
 import { UserIcon } from "@heroicons/react/24/outline"
+import clsx from "clsx"
 import React, { Suspense } from "react"
 import { Link } from "src/core/components/links/Link"
 import { Spinner } from "src/core/components/Spinner"
@@ -13,11 +14,15 @@ const UserWithQuery: React.FC = () => {
     <div className="sm:ml-6">
       {!user ? (
         <Link
-          className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white  focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white sm:border sm:border-gray-700"
+          className={clsx(
+            "flex rounded-full border-2 border-transparent bg-gray-800 p-1 text-sm",
+            "hover:border-offset-gray-800 hover:border-2 hover:border-gray-500",
+            "focus:outline-none focus:ring-2 focus:ring-white/30"
+          )}
           href={Routes.LoginPage()}
         >
           <span className="sr-only">Anmelden</span>
-          <UserIcon className="h-6 w-6" aria-hidden="true" />
+          <UserIcon className="h-6 w-6 text-gray-300" aria-hidden="true" />
         </Link>
       ) : (
         <NavigationUserLoggedIn user={user} />
