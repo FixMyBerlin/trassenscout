@@ -43,8 +43,8 @@ const PageHomePublic = () => {
 
       <PageHomePublicPhotos />
 
-      <section className="mx-auto mt-10 w-full max-w-7xl px-6 pb-16 md:px-8">
-        <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
+      <section className="mx-auto mt-16 w-full max-w-7xl px-6 pb-16 md:px-8">
+        <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-12 lg:max-w-none lg:grid-cols-2 lg:gap-y-20">
           <div className="flex flex-col gap-16">
             {newsItems.map((newsItem) => (
               <NewsItem key={newsItem.slug} article={newsItem} />
