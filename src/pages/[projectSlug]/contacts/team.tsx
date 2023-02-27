@@ -2,7 +2,7 @@ import { BlitzPage, useParam } from "@blitzjs/next"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { ContactList } from "src/contacts/components/ContactList"
+import { ContactListTeam } from "src/contacts/components/ContactListTeam"
 import getContacts from "src/contacts/queries/getContacts"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Pagination } from "src/core/components/Pagination"
@@ -43,7 +43,7 @@ export const ProjectTeamWithQuery = () => {
         title="Das Projektteam"
         description={`Dieser Bereich hilft Ihnen dabei wichtige Informationen und Kontakte der Beteiligten des Projektes ${project.title} zu finden.`}
       />
-      <ContactList withNotes={false} withAction={false} contacts={contacts} />
+      <ContactListTeam contacts={contacts} />
       {/* TODO query memberships for project and replace contacts with users with membership */}
       <div className="mt-6">
         <Pagination
