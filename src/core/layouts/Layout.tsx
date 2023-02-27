@@ -24,7 +24,7 @@ export const Layout: BlitzLayout<Props> = ({
         <link rel="icon" href="/favicon.svg" />
       </Head>
 
-      <div className="text-dark-gray relative flex h-full flex-col overflow-x-hidden">
+      <div className="relative flex h-full flex-col overflow-x-hidden">
         {navigation === "general" && <NavigationGeneral />}
         {navigation === "project" && <NavigationProject />}
 
