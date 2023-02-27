@@ -2,7 +2,7 @@ import { Routes } from "@blitzjs/next"
 import { Project, Section } from "@prisma/client"
 import { CurrentUser } from "src/users/types"
 
-export const menuItemsProject = (projectSlug: Project["slug"], sections: Section[]) => {
+export const menuItems = (projectSlug: Project["slug"], sections: Section[]) => {
   const sectionLinksChildren = sections?.map((section) => ({
     name: section.title,
     slug: section.slug,

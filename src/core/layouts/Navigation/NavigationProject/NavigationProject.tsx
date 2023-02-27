@@ -8,7 +8,7 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { NavigationDesktop } from "../NavigationDesktop"
 import { NavigationMobile } from "../NavigationMobile"
 import { NavigationWrapper } from "../NavigationWrapper"
-import { menuItemsProject } from "./menuItems"
+import { menuItems } from "./menuItems"
 import { NavigationProjectLogo } from "./NavigationProjectLogo"
 
 const NavigationProjectWithQuery = () => {
@@ -25,11 +25,11 @@ const NavigationProjectWithQuery = () => {
     <NavigationWrapper>
       <NavigationMobile
         logo={<NavigationProjectLogo />}
-        menuItemsProject={menuItemsProject(projectSlug!, sections!)}
+        menuItems={menuItems(projectSlug!, sections!)}
       />
       <NavigationDesktop
         logo={<NavigationProjectLogo />}
-        menuItemsProject={menuItemsProject(projectSlug!, sections!)}
+        menuItems={menuItems(projectSlug!, sections!)}
       />
     </NavigationWrapper>
   )

@@ -9,11 +9,11 @@ import { NavigationUser } from "../NavigationUser"
 import { MenuItem } from "../types"
 
 type Props = {
-  menuItemsProject: MenuItem[]
+  menuItems: MenuItem[]
   logo: React.ReactElement
 }
 
-export const NavigationMobile: React.FC<Props> = ({ menuItemsProject, logo: Logo }) => {
+export const NavigationMobile: React.FC<Props> = ({ menuItems, logo }) => {
   const { query, pathname } = useRouter()
 
   const itemClasses = (current: boolean) =>
@@ -30,7 +30,7 @@ export const NavigationMobile: React.FC<Props> = ({ menuItemsProject, logo: Logo
             <div className="absolute inset-y-0 right-0 flex items-center space-x-2">
               <NavigationProjectsSwitch />
               <NavigationUser />
-              {Boolean(menuItemsProject?.length) && (
+              {Boolean(menuItems?.length) && (
                 <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Hauptmenü öffnen</span>
                   {open ? (
@@ -42,13 +42,13 @@ export const NavigationMobile: React.FC<Props> = ({ menuItemsProject, logo: Logo
               )}
             </div>
             <div className="flex flex-1 items-center justify-start sm:items-stretch">
-              <div className="flex flex-shrink-0 items-center">{Logo}</div>
+              <div className="flex flex-shrink-0 items-center">{logo}</div>
             </div>
           </div>
 
           <Disclosure.Panel className="divide-y-2 divide-gray-900">
             <div className="space-y-3 pt-2 pb-3">
-              {menuItemsProject?.map((item) => {
+              {menuItems?.map((item) => {
                 if (!item.children) {
                   const current = pathname === item.href.pathname
                   return (
