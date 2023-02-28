@@ -1,6 +1,7 @@
 import { Routes } from "@blitzjs/next"
 import { Menu, Transition } from "@headlessui/react"
-import { FolderIcon, FolderOpenIcon } from "@heroicons/react/24/outline"
+import { FolderIcon } from "@heroicons/react/24/outline"
+import { Project } from "@prisma/client"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import React, { Fragment, Suspense } from "react"
@@ -11,9 +12,20 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 const NavigationProjectsSwitchWithQuery: React.FC = () => {
   const { query } = useRouter()
   const user = useCurrentUser()
-  const projects = user?.projects
+  // @ts-ignore // TODO
+  const Membership = user?.Membership
+  const ownProjects = user?.projects // TODO see below
 
-  if (!projects || projects?.length <= 1) return null
+  let projects: Pick<Project, "slug" | "shortTitle">[] = Membership?.map(
+    (item: { project: Pick<Project, "slug" | "shortTitle"> }) => item.project
+  )
+
+  if (!projects || projects?.length <= 1 || !ownProjects) return null
+
+  if (!projects || (projects?.length <= 1 && ownProjects)) projects = ownProjects
+  // TODO delete this fallback in case user has no memberships but > 1 projects
+  // - in the future this case will not exist as a manager will always have a membership
+
   const menuItems = projects?.map((project) => ({
     name: project.shortTitle,
     slug: project.slug,

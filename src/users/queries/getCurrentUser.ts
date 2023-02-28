@@ -14,7 +14,12 @@ export default async function getCurrentUser(_ = null, { session }: Ctx) {
       email: true,
       phone: true,
       role: true,
-      projects: { select: { shortTitle: true, slug: true } },
+      projects: true, // projects of which user is coordinator
+      Membership: {
+        select: {
+          project: { select: { slug: true, shortTitle: true } },
+        },
+      },
     },
   })
 
