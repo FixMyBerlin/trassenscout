@@ -8,7 +8,7 @@ import { PageHomePublicPhotos } from "./PageHomePublicPhotos"
 const PageHomePublic = () => {
   return (
     <Layout navigation="general" footer="general" fullWidth>
-      <MetaTags title="TODO Homepage Public" />
+      <MetaTags title="Trassenscout" />
 
       <section className="mx-auto w-full max-w-7xl px-6 pb-16 md:px-8">
         <div className="max-w-2xl">
