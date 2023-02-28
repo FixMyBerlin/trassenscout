@@ -33,22 +33,21 @@ const PageHomePublicOnline = () => {
   ]
 
   return (
-    <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
-      <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+    <section className="rounded-2xl border border-gray-100 p-6">
+      <h2 className="flex items-center text-sm font-semibold text-gray-900">
         <GlobeAltIcon className="h-7 w-7 flex-none text-gray-400" />
         <span className="my-auto ml-3">Im Netz</span>
       </h2>
-      <ol className="mt-6 space-y-4">
+      <ol className="mt-6 space-y-2">
         {onlineList.map((item, itemIndex) => (
           <li key={itemIndex} className="flex gap-4">
-            <div className="relative mt-1 flex flex-none items-center justify-center ">
-              {/* <div className="relative mt-1 flex h-10 w-10 flex-none items-center justify-center rounded-full shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0"> */}
+            <div className="relative mt-1 flex flex-none items-center justify-center grayscale">
               <Image
                 src={item.logo}
-                className="text-gray-400"
                 alt="Trassenscout"
                 height={32}
                 width={32}
+                className="rounded-md"
               />
             </div>
             <div className="flex flex-auto flex-wrap gap-x-2">
@@ -62,7 +61,7 @@ const PageHomePublicOnline = () => {
           </li>
         ))}
       </ol>
-    </div>
+    </section>
   )
 }
 
