@@ -8,6 +8,7 @@ import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import getProjectIncludeUsers from "src/projects/queries/getProjectIncludeUsers"
+import getUser from "src/users/queries/getUser"
 
 const ITEMS_PER_PAGE = 100
 
@@ -19,16 +20,25 @@ export const ProjectTeamWithQuery = () => {
   const [project] = useQuery(getProjectIncludeUsers, {
     slug: projectSlug!,
   })
+  const [user] = useQuery(getUser, project.managerId)
 
   // @ts-ignore // TODO
   const { Membership } = project
   const teamContacts = Membership.map((item: { user: User }) => item.user)
 
+  // TODO at the moment this fallback shows at least the manager of the project, in case no memberships exist
+  // - in the future it should not be possible to have a project without memberships - at least manager should have one
   if (!teamContacts.length) {
     return (
-      <p className="text-center text-xl text-gray-500">
-        <span>Es wurden noch keine Kontakte eingetragen.</span>
-      </p>
+      <div className="mt-8 flex flex-col">
+        <PageHeader
+          title="Das Projektteam"
+          description={`Dieser Bereich hilft Ihnen dabei wichtige Informationen und Kontakte der Beteiligten des Projektes ${project.title} zu finden.`}
+        />
+        <p className="text-center text-xl text-gray-500">
+          <ContactListTeam contacts={[user!]} />
+        </p>
+      </div>
     )
   }
 
