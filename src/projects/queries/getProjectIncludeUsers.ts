@@ -11,6 +11,14 @@ const GetProject = z.object({
 export default resolver.pipe(resolver.zod(GetProject), resolver.authorize(), async ({ slug }) => {
   const project = await db.project.findFirst({
     where: { slug },
+    include: {
+      // @ts-ignore // TODO 
+      Membership: {
+        select: {
+          user: true,
+        },
+      },
+    },
   })
 
   if (!project) throw new NotFoundError()

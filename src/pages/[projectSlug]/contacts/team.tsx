@@ -1,14 +1,13 @@
 import { BlitzPage, useParam } from "@blitzjs/next"
-import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
+import { User } from "@prisma/client"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { ContactListTeam } from "src/contacts/components/ContactListTeam"
-import getContacts from "src/contacts/queries/getContacts"
 import { PageHeader } from "src/core/components/PageHeader"
-import { Pagination } from "src/core/components/Pagination"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import getProject from "src/projects/queries/getProject"
+import getProjectIncludeUsers from "src/projects/queries/getProjectIncludeUsers"
 
 const ITEMS_PER_PAGE = 100
 
@@ -16,20 +15,16 @@ export const ProjectTeamWithQuery = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const projectSlug = useParam("projectSlug", "string")
-  const [{ contacts, hasMore }] = usePaginatedQuery(getContacts, {
-    projectSlug: projectSlug!,
-    orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
-  const [project] = useQuery(getProject, {
+
+  const [project] = useQuery(getProjectIncludeUsers, {
     slug: projectSlug!,
   })
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  // @ts-ignore // TODO
+  const { Membership } = project
+  const teamContacts = Membership.map((item: { user: User }) => item.user)
 
-  if (!contacts.length) {
+  if (!teamContacts.length) {
     return (
       <p className="text-center text-xl text-gray-500">
         <span>Es wurden noch keine Kontakte eingetragen.</span>
@@ -43,16 +38,9 @@ export const ProjectTeamWithQuery = () => {
         title="Das Projektteam"
         description={`Dieser Bereich hilft Ihnen dabei wichtige Informationen und Kontakte der Beteiligten des Projektes ${project.title} zu finden.`}
       />
-      <ContactListTeam contacts={contacts} />
+      <ContactListTeam contacts={teamContacts} />
       {/* TODO query memberships for project and replace contacts with users with membership */}
-      <div className="mt-6">
-        <Pagination
-          hasMore={hasMore}
-          page={page}
-          handlePrev={goToPreviousPage}
-          handleNext={goToNextPage}
-        />
-      </div>
+      <div className="mt-6"></div>
     </div>
   )
 }

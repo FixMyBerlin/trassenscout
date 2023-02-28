@@ -1,12 +1,12 @@
 import { useParam } from "@blitzjs/next"
-import { Contact } from "@prisma/client"
+import { User } from "@prisma/client"
 import React from "react"
 import { LinkMail, LinkTel } from "src/core/components/links"
 import { getFullname } from "src/users/utils"
 import { ContactListWrapper } from "./ContactListWrapper"
 
 type Props = {
-  contacts: Contact[]
+  contacts: User[]
 }
 
 export const ContactListTeam: React.FC<Props> = ({ contacts }) => {
