@@ -1,32 +1,33 @@
 import { Routes } from "@blitzjs/next"
 import { Menu, Transition } from "@headlessui/react"
 import { FolderIcon } from "@heroicons/react/24/outline"
-import { Project } from "@prisma/client"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import React, { Fragment, Suspense } from "react"
 import { Link } from "src/core/components/links/Link"
 import { Spinner } from "src/core/components/Spinner"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { useQuery } from "@blitzjs/rpc"
+import getProjects from "src/projects/queries/getProjects"
 
-const NavigationProjectsSwitchWithQuery: React.FC = () => {
+const NavigationProjectsSwitchWithProjectsQuery: React.FC = () => {
   const { query } = useRouter()
   const user = useCurrentUser()
-  // @ts-ignore // TODO
-  const Membership = user?.Membership
-  const ownProjects = user?.projects // TODO see below
 
-  let projects: Pick<Project, "slug" | "shortTitle">[] = Membership?.map(
-    (item: { project: Pick<Project, "slug" | "shortTitle"> }) => item.project
-  )
+  if (!user) {
+    throw new Error("User required here.")
+  }
 
-  if (!projects || projects?.length <= 1 || !ownProjects) return null
+  const projects = useQuery(
+    getProjects,
+    user.role === "ADMIN" ? {} : { where: { Membership: { some: { userId: user.id } } } }
+  )[0].projects
 
-  if (!projects || (projects?.length <= 1 && ownProjects)) projects = ownProjects
-  // TODO delete this fallback in case user has no memberships but > 1 projects
-  // - in the future this case will not exist as a manager will always have a membership
+  if (!projects.length) {
+    return null
+  }
 
-  const menuItems = projects?.map((project) => ({
+  const menuItems = projects.map((project) => ({
     name: project.shortTitle,
     slug: project.slug,
     href: Routes.ProjectDashboardPage({ projectSlug: project.slug }),
@@ -91,10 +92,19 @@ const NavigationProjectsSwitchWithQuery: React.FC = () => {
   )
 }
 
+const NavigationProjectsSwitchWithUserQuery: React.FC = () => {
+  const user = useCurrentUser()
+  if (user) {
+    return <NavigationProjectsSwitchWithProjectsQuery />
+  } else {
+    return null
+  }
+}
+
 export const NavigationProjectsSwitch: React.FC = () => {
   return (
     <Suspense fallback={<Spinner />}>
-      <NavigationProjectsSwitchWithQuery />
+      <NavigationProjectsSwitchWithUserQuery />
     </Suspense>
   )
 }
