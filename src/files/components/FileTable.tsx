@@ -26,7 +26,7 @@ export const FileTable: React.FC<Props> = ({ files, withAction = true }) => {
           <table className="min-w-full divide-y divide-gray-300">
             <tbody className="divide-y divide-gray-200 bg-white">
               {files.map((file) => (
-                <tr key={file.title}>
+                <tr key={file.id}>
                   <td className="h-20 whitespace-nowrap py-4 pr-3 pl-4 text-sm sm:pl-6">
                     <PaperClipIcon className="h-8 w-8 text-gray-500" />
                   </td>
