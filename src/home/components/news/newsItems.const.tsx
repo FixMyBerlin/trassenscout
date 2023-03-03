@@ -6,7 +6,7 @@ export const newsItems = [
   {
     slug: "launch",
     title: "Erste Version des Trassenscout erfolgreich gelauncht",
-    date: new Date("02.03.2023"),
+    date: "2023-02-02",
     body: (
       <>
         <p>
