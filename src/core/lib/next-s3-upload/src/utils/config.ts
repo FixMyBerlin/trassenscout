@@ -3,6 +3,7 @@ export type S3Config = {
   secretAccessKey?: string;
   bucket?: string;
   region?: string;
+  rootFolder?: string;
   endpoint?: string;
   forcePathStyle?: boolean;
 };
@@ -14,6 +15,7 @@ export function getConfig(s3Config?: S3Config) {
       s3Config?.secretAccessKey ?? `${process.env.S3_UPLOAD_SECRET}`,
     bucket: s3Config?.bucket ?? `${process.env.S3_UPLOAD_BUCKET}`,
     region: s3Config?.region ?? `${process.env.S3_UPLOAD_REGION}`,
+    rootFolder: s3Config?.rootFolder ?? `${process.env.S3_UPLOAD_ROOTFOLDER}`,
     endpoint: s3Config?.endpoint,
     forcePathStyle: s3Config?.forcePathStyle,
   };

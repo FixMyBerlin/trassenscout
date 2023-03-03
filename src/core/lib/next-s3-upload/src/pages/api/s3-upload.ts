@@ -29,6 +29,7 @@ let makeRouteHandler = (options: Options = {}): Handler => {
       secretAccessKey: options.secretAccessKey,
       bucket: options.bucket,
       region: options.region,
+      rootFolder: options.rootFolder,
       forcePathStyle: options.forcePathStyle,
       endpoint: options.endpoint,
     });
@@ -44,7 +45,7 @@ let makeRouteHandler = (options: Options = {}): Handler => {
 
       let key = options.key
         ? await Promise.resolve(options.key(req, filename))
-        : `next-s3-uploads/${uuid()}/${sanitizeKey(filename)}`;
+        : `${config.rootFolder}/${uuid()}/${sanitizeKey(filename)}`;
       let { bucket, region, endpoint } = config;
 
       if (uploadType === 'presigned') {
@@ -114,7 +115,7 @@ let makeRouteHandler = (options: Options = {}): Handler => {
 };
 
 let missingEnvs = (config: Record<string, any>): string[] => {
-  let required = ['accessKeyId', 'secretAccessKey', 'bucket', 'region'];
+  let required = ['accessKeyId', 'secretAccessKey', 'bucket', 'region', 'rootFolder'];
 
   return required.filter(key => !config[key] || config.key === '');
 };
