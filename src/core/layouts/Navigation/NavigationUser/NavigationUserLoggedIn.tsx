@@ -66,11 +66,6 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
                         </Link>
                       </Menu.Item>
                     )}
-                    <Menu.Item>
-                      <Link className=" !text-gray-500" href={Routes.LogoutRedirectPage()}>
-                        Abmelden
-                      </Link>
-                    </Menu.Item>
                     {projectSlug && (
                       <Menu.Item>
                         <Link
@@ -81,6 +76,11 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
                         </Link>
                       </Menu.Item>
                     )}
+                    <Menu.Item>
+                      <Link className=" !text-gray-500" href={Routes.LogoutRedirectPage()}>
+                        Abmelden
+                      </Link>
+                    </Menu.Item>
                   </div>
                 </div>
               </Menu.Items>
