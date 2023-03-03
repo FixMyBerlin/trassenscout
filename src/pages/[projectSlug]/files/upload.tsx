@@ -22,10 +22,12 @@ const UploadNewFileWithQuery = () => {
     | "INITIAL"
     | "FILE_SELECTED"
     | "FILE_UPLOADING"
+    | "FILE_ERROR"
     | "FILE_UPLOADED"
     | "FILE_SAVED"
   const [uploadState, setUploadState] = useState<FileUploadState>("INITIAL")
   const [fileUrl, setFileUrl] = useState<string | null>(null)
+  const [uploadError, setUploadError] = useState<string | null>(null)
   const { uploadToS3, files } = useS3Upload()
 
   let handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,9 +43,23 @@ const UploadNewFileWithQuery = () => {
 
   const wait = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay))
 
+  const reset = () => {
+    setUploadState("INITIAL")
+    setFileToUpload(null)
+    setUploadError(null)
+  }
+
   const uploadFile = async () => {
     setUploadState("FILE_UPLOADING")
-    let { url } = await uploadToS3(fileToUpload!)
+    let url = ""
+    try {
+      url = (await uploadToS3(fileToUpload!)).url
+    } catch (e) {
+      if (!(e instanceof Error)) throw e
+      setUploadError(e.message)
+      setUploadState("FILE_ERROR")
+      return
+    }
     setUploadState("FILE_UPLOADED")
     setFileUrl(url)
     const file = await createFileMutation({
@@ -94,9 +110,13 @@ const UploadNewFileWithQuery = () => {
           <code>
             <pre>state: {uploadState}</pre>
             <br />
-            {["FILE_SELECTED", "FILE_UPLOADING", "FILE_UPLOADED", "FILE_SAVED"].includes(
-              uploadState
-            ) && (
+            {[
+              "FILE_SELECTED",
+              "FILE_UPLOADING",
+              "FILE_ERROR",
+              "FILE_UPLOADED",
+              "FILE_SAVED",
+            ].includes(uploadState) && (
               <pre>
                 name: {fileToUpload!.name}
                 <br />
@@ -104,7 +124,9 @@ const UploadNewFileWithQuery = () => {
                 <br />
                 size: {fileToUpload!.size}
                 <br />
-                {["FILE_UPLOADING", "FILE_UPLOADED", "FILE_SAVED"].includes(uploadState) && (
+                {["FILE_UPLOADING", "FILE_ERROR", "FILE_UPLOADED", "FILE_SAVED"].includes(
+                  uploadState
+                ) && (
                   <>
                     progress: {files[0]?.progress || 0}%
                     <br />
@@ -121,14 +143,26 @@ const UploadNewFileWithQuery = () => {
           </code>
         </div>
 
+        {["FILE_ERROR"].includes(uploadState) && (
+          <div className="mt-2 border-2 border-red-500 p-2">
+            <pre>{uploadError}</pre>
+          </div>
+        )}
+
         {["INITIAL", "FILE_SELECTED"].includes(uploadState) && (
           <FileSelector onChange={handleFileChange} />
         )}
 
-        {uploadState === "FILE_SELECTED" && (
-          <>
-            <UploadButton onClick={() => uploadFile()} />
-          </>
+        {["FILE_SELECTED"].includes(uploadState) && (
+          <button className="mt-2 flex text-xl underline" onClick={() => uploadFile()}>
+            Hochladen
+          </button>
+        )}
+
+        {["FILE_ERROR", "FILE_SAVED"].includes(uploadState) && (
+          <button className="mt-2 flex text-xl underline" onClick={reset}>
+            Reset
+          </button>
         )}
       </div>
     </>
