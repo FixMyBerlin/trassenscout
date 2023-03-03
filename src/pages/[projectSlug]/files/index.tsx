@@ -33,12 +33,20 @@ export const Files = () => {
         title="Dokumente"
         description="Dieser Bereich hilft Ihnen Dokumente zu verwalten."
         action={
+        <div>
           <Link
             button
             href={Routes.NewFilePage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}
           >
             Neues Dokument
           </Link>
+          <Link className="ml-2"
+            button
+            href={Routes.UploadFilePage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}
+          >
+            Neue Datei hochladen
+          </Link>
+        </div>
         }
       />
       <FileTable files={files} />
