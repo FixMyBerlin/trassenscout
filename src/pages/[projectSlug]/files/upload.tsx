@@ -8,7 +8,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import createFile from "src/files/mutations/createFile"
 import getProject from "src/projects/queries/getProject"
-import { useS3Upload } from "next-s3-upload"
+import { useS3Upload } from "src/core/lib/next-s3-upload/src"
 
 const UploadNewFileWithQuery = () => {
   const router = useRouter()

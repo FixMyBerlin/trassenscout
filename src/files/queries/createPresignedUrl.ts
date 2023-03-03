@@ -3,11 +3,11 @@ import { S3RequestPresigner } from "@aws-sdk/s3-request-presigner"
 import { parseUrl } from "@aws-sdk/url-parser"
 import { formatUrl } from "@aws-sdk/util-format-url"
 import { Hash } from "@aws-sdk/hash-node"
-import { getS3Config } from "src/core/utils/getS3Config"
+import { getConfig } from "src/core/lib/next-s3-upload/src/utils/config"
 
 const createPresignedUrl = async (url: string) => {
   const endpoint = parseUrl(url)
-  const { accessKeyId, secretAccessKey, region } = getS3Config()
+  const { accessKeyId, secretAccessKey, region } = getConfig()
   const presigner = new S3RequestPresigner({
     credentials: { accessKeyId, secretAccessKey },
     region,
