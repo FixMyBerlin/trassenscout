@@ -3,6 +3,7 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
+import { XhrHttpHandler } from '@aws-sdk/xhr-http-handler';
 import { Uploader, useUploader } from './use-uploader';
 
 type Params = {
@@ -16,6 +17,7 @@ let upload: Uploader<Params> = async (file, params, { onProgress }) => {
   let { key, bucket, token, region } = params;
 
   let client = new S3Client({
+    requestHandler: new XhrHttpHandler({}),
     credentials: {
       accessKeyId: token.Credentials.AccessKeyId,
       secretAccessKey: token.Credentials.SecretAccessKey,

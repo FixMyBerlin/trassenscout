@@ -26,7 +26,7 @@ const UploadNewFileWithQuery = () => {
     | "FILE_SAVED"
   const [uploadState, setUploadState] = useState<FileUploadState>("INITIAL")
   const [fileUrl, setFileUrl] = useState<string | null>(null)
-  const { uploadToS3 } = useS3Upload()
+  const { uploadToS3, files } = useS3Upload()
 
   let handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files as FileList
@@ -104,6 +104,12 @@ const UploadNewFileWithQuery = () => {
                 <br />
                 size: {fileToUpload!.size}
                 <br />
+                {["FILE_UPLOADING", "FILE_UPLOADED", "FILE_SAVED"].includes(uploadState) && (
+                  <>
+                    progress: {files[0]?.progress || 0}%
+                    <br />
+                  </>
+                )}
                 {["FILE_UPLOADED", "FILE_SAVED"].includes(uploadState) && (
                   <>
                     url: {fileUrl || "null"}
