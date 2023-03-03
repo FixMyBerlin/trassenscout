@@ -20,8 +20,8 @@
   There are complex solutions involving `pagePros` – thanks @ https://stackoverflow.com/a/66358460/729221
   However, we can use css instead – thanks @ https://stackoverflow.com/a/21253034/729221
   */
-  body:has(#__next .set-bg-indigo-50-on-body) {
-    @apply bg-hellgrau;
+  body:has(#__next .set-bg-gray-100-on-body) {
+    @apply bg-gray-100;
   }
 }
 

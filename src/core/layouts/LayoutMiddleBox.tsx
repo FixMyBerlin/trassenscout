@@ -14,7 +14,7 @@ type Props = {
 export const LayoutMiddleBox: React.FC<Props> = ({ title, subtitle, children }) => {
   return (
     <Layout navigation="none" footer="minimal">
-      <div className="set-bg-indigo-50-on-body">
+      <div className="set-bg-gray-100-on-body">
         <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:mx-auto sm:w-full sm:max-w-md">
             <Image src={Logo} className="" alt="Trassenscout" height={48} />
