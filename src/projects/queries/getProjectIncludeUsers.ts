@@ -12,7 +12,6 @@ export default resolver.pipe(resolver.zod(GetProject), resolver.authorize(), asy
   const project = await db.project.findFirst({
     where: { slug },
     include: {
-      // @ts-ignore // TODO
       Membership: {
         select: {
           user: true,

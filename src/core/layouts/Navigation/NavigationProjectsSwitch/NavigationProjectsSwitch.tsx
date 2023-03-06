@@ -23,7 +23,7 @@ const NavigationProjectsSwitchWithProjectsQuery: React.FC = () => {
     user.role === "ADMIN" ? {} : { where: { Membership: { some: { userId: user.id } } } }
   )[0].projects
 
-  if (!projects.length) {
+  if (projects.length <= 1) {
     return null
   }
 
