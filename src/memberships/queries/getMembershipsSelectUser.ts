@@ -11,7 +11,7 @@ const GetProject = z.object({
 export default resolver.pipe(resolver.zod(GetProject), resolver.authorize(), async ({ slug }) => {
   const project = await db.project.findFirst({
     where: { slug },
-    include: {
+    select: {
       Membership: {
         select: {
           user: true,
@@ -22,5 +22,7 @@ export default resolver.pipe(resolver.zod(GetProject), resolver.authorize(), asy
 
   if (!project) throw new NotFoundError()
 
-  return project
+  const { Membership } = project
+
+  return Membership
 })

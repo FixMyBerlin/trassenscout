@@ -4,7 +4,7 @@ import React from "react"
 import { LinkMail, LinkTel } from "src/core/components/links"
 import { CurrentUser } from "src/users/types"
 import { getFullname } from "src/users/utils"
-import { ContactListWrapper } from "./ContactListWrapper"
+import { ContactListWrapper } from "../../contacts/components/ContactListWrapper"
 
 type Props = {
   contacts: User[] | CurrentUser[]
