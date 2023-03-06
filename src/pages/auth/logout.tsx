@@ -1,9 +1,9 @@
-import { BlitzPage } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { useEffect } from "react"
 import logout from "src/auth/mutations/logout"
-import { buttonStyles } from "src/core/components/links"
+import { Spinner } from "src/core/components/Spinner"
 import { LayoutMiddleBox, MetaTags } from "src/core/layouts"
 
 const LogoutRedirectPage: BlitzPage = () => {
@@ -12,8 +12,7 @@ const LogoutRedirectPage: BlitzPage = () => {
 
   const handleLogout = async () => {
     await logoutMutation()
-    const next = router.query.next ? decodeURIComponent(router.query.next as string) : "/"
-    return router.push(next)
+    void router.push(Routes.Home())
   }
 
   useEffect(() => {
@@ -25,16 +24,7 @@ const LogoutRedirectPage: BlitzPage = () => {
   return (
     <LayoutMiddleBox title="Abmelden" subtitle="Sie werden abgemeldet…">
       <MetaTags noindex title="Abmelden" />
-      <p className="text-center">
-        <button
-          className={buttonStyles}
-          onClick={async () => {
-            await handleLogout()
-          }}
-        >
-          Abmelden
-        </button>
-      </p>
+      <Spinner page />
     </LayoutMiddleBox>
   )
 }

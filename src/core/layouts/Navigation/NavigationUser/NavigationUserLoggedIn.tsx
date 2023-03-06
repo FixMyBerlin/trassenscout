@@ -47,11 +47,7 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
                 <div className="px-4 py-2 text-gray-700">
                   <p>Angemeldet als</p>
                   <p className="font-bold">{getFullname(user) || "-"}</p>
-                  <p className="mb-2 font-bold">
-                    <LinkMail className="!text-gray-700" href={user.email}>
-                      {user.email}
-                    </LinkMail>
-                  </p>
+                  <p className="mb-2 font-bold">{user.email}</p>
 
                   {isAdmin(user) && <p className="font-bold text-purple-700">Rolle: Admin</p>}
 
