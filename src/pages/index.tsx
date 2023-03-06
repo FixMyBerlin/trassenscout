@@ -24,11 +24,12 @@ const HomeWithWithProjectsQuery: React.FC = () => {
     user.role === "ADMIN" ? {} : { where: { Membership: { some: { userId: user.id } } } }
   )[0].projects
 
-  if (projects.length)
+  if (projects.length) {
     void router.push(Routes.ProjectDashboardPage({ projectSlug: projects[0]!.slug }))
+    return <Spinner page />
+  }
 
   return <PageHomeNoProject />
-  // return <ProjectDashboardPage />
 }
 
 const HomeWithQuery: BlitzPage = () => {
