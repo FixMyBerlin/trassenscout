@@ -54,17 +54,25 @@ export const LoginForm = (props: LoginFormProps) => {
         </div>
 
         <DevAdminBox className="text-center">
-          <button
-            className={buttonStyles}
-            onClick={async () =>
-              await handleSubmit({
-                email: "dev-team@fixmycity.de",
-                password: "dev-team@fixmycity.de",
-              })
-            }
-          >
-            Login <code>dev-team@fixmycity.de</code>
-          </button>
+          {[
+            ["admin", "dev-team@fixmycity.de"],
+            ["no-permission", "no-permissions@fixmycity.de"],
+            ["one-project", "rs-spree-permissions@fixmycity.de"],
+            ["all-projects-noadmin", "all-projects-permissions@fixmycity.de"],
+          ].map(([displayName, email]) => (
+            <button
+              key={displayName}
+              className={buttonStyles}
+              onClick={async () =>
+                await handleSubmit({
+                  email,
+                  password: "dev-team@fixmycity.de",
+                })
+              }
+            >
+              {displayName}
+            </button>
+          ))}
         </DevAdminBox>
       </Form>
 
