@@ -1,6 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import db, { Prisma, Project } from "db"
+import db, { Project } from "db"
 import { z } from "zod"
 
 type ProjectWithId = Pick<Project, "id">

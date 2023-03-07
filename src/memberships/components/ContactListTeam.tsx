@@ -1,18 +1,15 @@
-import { useParam } from "@blitzjs/next"
-import { User } from "@prisma/client"
+import { PromiseReturnType } from "blitz"
 import React from "react"
+import { ContactListWrapper } from "src/contacts/components/ContactListWrapper"
 import { LinkMail, LinkTel } from "src/core/components/links"
-import { CurrentUser } from "src/users/types"
 import { getFullname } from "src/users/utils"
-import { ContactListWrapper } from "../../contacts/components/ContactListWrapper"
+import getUsersByProjectMembership from "../queries/getUsersByProjectMembership"
 
 type Props = {
-  contacts: User[] | CurrentUser[]
+  contacts: PromiseReturnType<typeof getUsersByProjectMembership>
 }
 
 export const ContactListTeam: React.FC<Props> = ({ contacts }) => {
-  const projectSlug = useParam("projectSlug", "string")
-
   return (
     <ContactListWrapper>
       <table className="min-w-full divide-y divide-gray-300">
