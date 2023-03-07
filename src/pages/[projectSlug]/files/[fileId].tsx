@@ -17,7 +17,7 @@ export const File = () => {
   const router = useRouter()
   const fileId = useParam("fileId", "number")
   const [deleteFileMutation] = useMutation(deleteFile)
-  const [file] = useQuery(getFile, { id: fileId, presignUrl: true })
+  const [file] = useQuery(getFile, { id: fileId })
   const projectSlug = useParam("projectSlug", "string")
 
   const handleDelete = async () => {

@@ -4,12 +4,8 @@ import { File } from "@prisma/client"
 import React from "react"
 import { Link } from "src/core/components/links"
 
-interface FileS3 extends File {
-  presignedUrl: string | null
-}
-
 type Props = {
-  files: FileS3[]
+  files: File[]
   withAction?: boolean
 }
 
@@ -39,8 +35,8 @@ export const FileTable: React.FC<Props> = ({ files, withAction = true }) => {
                   </td>
 
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {(file.presignedUrl ||  file.externalUrl) && (
-                      <Link blank href={file.presignedUrl ||  file.externalUrl}>
+                    {file.externalUrl && (
+                      <Link blank href={file.externalUrl}>
                         Download
                       </Link>
                     )}
