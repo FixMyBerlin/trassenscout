@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { getSession } from "@blitzjs/auth"
-import db from "db"
+import { AuthorizationError } from "blitz"
+import { NotFoundError } from "@prisma/client/runtime"
+import { ZodError } from "zod"
 import {
   S3Client,
   HeadObjectCommand,
@@ -8,27 +10,15 @@ import {
   S3ServiceException,
 } from "@aws-sdk/client-s3"
 import { getConfig } from "src/core/lib/next-s3-upload/src/utils/config"
+import getFile from "src/files/queries/getFile"
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   try {
-    const fileId: number = Number(req.query.path![0])
-    if (isNaN(fileId)) throw ["ts", 400, "BadRequest"]
-
-    const file = await db.file.findFirst({ where: { id: fileId } })
-    if (!file) throw ["ts", 404, "NotFound"]
-
-    const session = await getSession(req, res)
-    if (!session.userId) throw ["ts", 401, "Unauthorized"]
-
-    const user = await db.user.findFirst({ where: { id: session.userId } })
-    if (!user) throw ["ts", 401, "Unauthorized"]
-
-    if (user.role !== "ADMIN") {
-      const membership = await db.membership.findFirst({
-        where: { userId: session.userId, projectId: file.projectId },
-      })
-      if (!membership) throw ["ts", 403, "Forbidden"]
-    }
+    const file = await getFile(
+      { id: Number(req.query.path![0]) },
+      // @ts-ignore will work
+      { session: await getSession(req, res) }
+    )
 
     const { hostname, pathname } = new URL(file.externalUrl)
     const isAws = hostname.endsWith("amazonaws.com")
@@ -67,6 +57,12 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     if (err instanceof S3ServiceException) {
       const { name, $metadata } = err
       errorDetails = ["s3", $metadata.httpStatusCode!, name]
+    } else if (err instanceof NotFoundError) {
+      errorDetails = ["ts", 404, "NotFound"]
+    } else if (err instanceof ZodError) {
+      errorDetails = ["ts", 400, "BadRequest"]
+    } else if (err instanceof AuthorizationError) {
+      errorDetails = ["ts", 403, "Forbidden"]
     } else if (err instanceof Error) {
       errorDetails = ["ts", 500, err.name]
     } else if (Array.isArray(err)) {
