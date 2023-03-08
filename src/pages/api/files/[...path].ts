@@ -1,5 +1,6 @@
-import db from "db"
 import { NextApiRequest, NextApiResponse } from "next"
+import { getSession } from "@blitzjs/auth"
+import db from "db"
 import {
   HeadObjectCommand,
   GetObjectCommand,
@@ -15,6 +16,19 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     const file = await db.file.findFirst({ where: { id: fileId } })
     if (!file) throw ["ts", 404, "NotFound"]
+
+    const session = await getSession(req, res)
+    if (!session.userId) throw ["ts", 401, "Unauthorized"]
+
+    const user = await db.user.findFirst({ where: { id: session.userId } })
+    if (!user) throw ["ts", 401, "Unauthorized"]
+
+    if (user.role !== "ADMIN") {
+      const membership = await db.membership.findFirst({
+        where: { userId: session.userId, projectId: file.projectId },
+      })
+      if (!membership) throw ["ts", 403, "Forbidden"]
+    }
 
     const url = file.externalUrl
     const isS3 = new URL(file.externalUrl).host.endsWith("amazonaws.com")
