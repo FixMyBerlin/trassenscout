@@ -1,6 +1,5 @@
 import { Routes } from "@blitzjs/next"
 import { Project, Section } from "@prisma/client"
-import { CurrentUser } from "src/users/types"
 
 export const menuItems = (projectSlug: Project["slug"], sections: Section[]) => {
   const sectionLinksChildren = sections?.map((section) => ({
@@ -20,7 +19,6 @@ export const menuItems = (projectSlug: Project["slug"], sections: Section[]) => 
     : []
   return [
     ...sectionLinks,
-    { name: "Dashboard", href: Routes.ProjectDashboardPage({ projectSlug: projectSlug! }) },
     { name: "Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
     { name: "Termine", href: Routes.CalendarEntriesPage({ projectSlug: projectSlug! }) },
     { name: "Dokumente", href: Routes.FilesPage({ projectSlug: projectSlug! }) },
