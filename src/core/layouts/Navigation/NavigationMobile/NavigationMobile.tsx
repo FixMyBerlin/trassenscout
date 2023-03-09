@@ -2,7 +2,7 @@ import { Disclosure } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import { useRouter } from "next/router"
-import React from "react"
+import React, { Fragment } from "react"
 import { Link } from "src/core/components/links"
 import { NavigationProjectsSwitch } from "../NavigationProjectsSwitch"
 import { NavigationUser } from "../NavigationUser"
@@ -60,7 +60,7 @@ export const NavigationMobile: React.FC<Props> = ({ menuItems, logo }) => {
                   )
                 } else {
                   return (
-                    <>
+                    <Fragment key={item.name}>
                       <Disclosure.Button key={item.name} as="div">
                         <div
                           className="rounded-md px-3 py-2 text-sm font-bold text-gray-300 hover:bg-gray-700"
@@ -79,7 +79,7 @@ export const NavigationMobile: React.FC<Props> = ({ menuItems, logo }) => {
                           </Disclosure.Button>
                         )
                       })}
-                    </>
+                    </Fragment>
                   )
                 }
               })}
