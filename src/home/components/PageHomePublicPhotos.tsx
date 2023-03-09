@@ -1,10 +1,10 @@
 import clsx from "clsx"
 import Image from "next/image"
-import pngImage1 from "../assets/map-part1.png"
-import pngImage2 from "../assets/map-part2.png"
-import pngImage3 from "../assets/map-part3.png"
-import pngImage4 from "../assets/map-part4.png"
-import pngImage5 from "../assets/map-part5.png"
+import pngImage1 from "../assets/map-1.jpg"
+import pngImage2 from "../assets/map-2.jpg"
+import pngImage3 from "../assets/map-3.jpg"
+import pngImage4 from "../assets/map-4.jpg"
+import pngImage5 from "../assets/map-5.jpg"
 
 export const PageHomePublicPhotos = () => {
   let rotations = ["rotate-2", "-rotate-2", "rotate-2", "rotate-2", "-rotate-2"]
