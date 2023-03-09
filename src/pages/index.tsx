@@ -15,10 +15,7 @@ const HomeWithWithProjectsQuery: React.FC = () => {
     throw new Error("User required here.")
   }
 
-  const projects = useQuery(
-    getProjects,
-    user.role === "ADMIN" ? {} : { where: { Membership: { some: { userId: user.id } } } }
-  )[0].projects
+  const projects = useQuery(getProjects, {})[0].projects
 
   if (projects.length) {
     void router.push(Routes.ProjectDashboardPage({ projectSlug: projects[0]!.slug }))
