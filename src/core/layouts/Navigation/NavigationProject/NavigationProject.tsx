@@ -4,7 +4,6 @@ import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
 import getProjectWithId from "src/projects/queries/getProjectWithId"
 import getSections from "src/sections/queries/getSections"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { NavigationDesktop } from "../NavigationDesktop"
 import { NavigationMobile } from "../NavigationMobile"
 import { NavigationWrapper } from "../NavigationWrapper"
@@ -17,9 +16,6 @@ const NavigationProjectWithQuery = () => {
     slug: projectSlug!,
   })
   const [{ sections }] = useQuery(getSections, { where: { projectId: project.id! } })
-  const user = useCurrentUser()
-
-  const projects = user?.projects
 
   return (
     <NavigationWrapper>
