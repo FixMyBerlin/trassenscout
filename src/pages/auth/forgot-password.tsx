@@ -22,17 +22,19 @@ const ForgotPasswordPage: BlitzPage = () => {
   }
 
   return (
-    <LayoutMiddleBox title="Passwort vergessen">
+    <LayoutMiddleBox
+      title="Passwort vergessen"
+      subtitle="Bitte geben Sie Ihre E-Mail-Adresse ein, damit wir Ihnen einen Link zum Zurücksetzen Ihres Passwort senden können."
+    >
       <MetaTags noindex title="Passwort vergessen" />
       {isSuccess ? (
         <div className="prose">
-          <h2 className="text-center">Anfrage empfangen</h2>
-          <p>Wenn deine E-Mail-Adresse im System ist, senden wir dir jetzt eine E-Mail.</p>
-          <p>Klicke darin auf den Link {frenchQuote("Ein neues Passwort vergeben")}.</p>
+          <p>Wenn Ihre E-Mail-Adresse im System ist, sollten Sie eine E-Mail bekommen haben.</p>
+          <p>Klicken Sie darin auf den Link {frenchQuote("Ein neues Passwort vergeben")}.</p>
         </div>
       ) : (
         <Form
-          submitText="E-Mail zum Passwort ändern zusenden…"
+          submitText="E-Mail zusenden"
           schema={ForgotPassword}
           initialValues={{ email: "" }}
           onSubmit={handleSubmit}

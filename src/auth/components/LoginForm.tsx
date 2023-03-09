@@ -39,7 +39,12 @@ export const LoginForm = (props: LoginFormProps) => {
         initialValues={{ email: "", password: "" }}
         onSubmit={handleSubmit}
       >
-        <LabeledTextField name="email" label="E-Mail" placeholder="E-Mail" autoComplete="email" />
+        <LabeledTextField
+          name="email"
+          label="E-Mail-Adresse"
+          placeholder="name@beispiel.de"
+          autoComplete="email"
+        />
         <LabeledTextField
           name="password"
           label="Passwort"
@@ -48,6 +53,7 @@ export const LoginForm = (props: LoginFormProps) => {
           autoComplete="current-password"
         />
         <div className="text-sm">
+          Sie haben Ihr{" "}
           <Link href={Routes.ForgotPasswordPage()} className="font-medium">
             Passwort vergessen?
           </Link>
@@ -77,7 +83,7 @@ export const LoginForm = (props: LoginFormProps) => {
       </Form>
 
       <div className="mt-4">
-        Oder <Link href={Routes.SignupPage()}>registrieren</Link>
+        Sie haben noch keinen Account? Zur <Link href={Routes.SignupPage()}>Registrierung</Link>.
       </div>
     </>
   )

@@ -45,8 +45,8 @@ export const SignupForm = (props: SignupFormProps) => {
         <LabeledTextField
           type="email"
           name="email"
-          label="E-Mail"
-          placeholder=""
+          label="E-Mail-Adresse"
+          placeholder="name@beispiel.de"
           autoComplete="email"
         />
         <LabeledTextField
@@ -95,10 +95,11 @@ export const SignupForm = (props: SignupFormProps) => {
       </Form>
 
       <div className="mt-4">
-        Oder{" "}
+        Sie haben bereits einen Account? Zur{" "}
         <Link blank href={Routes.LoginPage()}>
-          anmelden
+          Anmeldung
         </Link>
+        .
       </div>
     </>
   )
