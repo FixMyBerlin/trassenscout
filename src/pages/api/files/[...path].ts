@@ -2,9 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { getSession } from "@blitzjs/auth"
 import db from "db"
 import {
+  S3Client,
   HeadObjectCommand,
   GetObjectCommand,
-  S3Client,
   S3ServiceException,
 } from "@aws-sdk/client-s3"
 import { getConfig } from "src/core/lib/next-s3-upload/src/utils/config"
@@ -30,20 +30,22 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       if (!membership) throw ["ts", 403, "Forbidden"]
     }
 
-    const url = file.externalUrl
-    const isS3 = new URL(file.externalUrl).host.endsWith("amazonaws.com")
-    if (!isS3) throw ["ts", 409, "Conflict"]
+    const { hostname, pathname } = new URL(file.externalUrl)
+    const isAws = hostname.endsWith("amazonaws.com")
+    if (!isAws) throw ["ts", 409, "Conflict"]
 
-    const { accessKeyId, secretAccessKey, region, bucket } = getConfig()
+    const { accessKeyId, secretAccessKey, region } = getConfig()
     const s3Client = new S3Client({
       credentials: { accessKeyId, secretAccessKey },
       region,
     })
 
-    const key = new URL(url).pathname.substring(1)
-    const params = { Bucket: bucket, Key: key }
-    const headResponse = await s3Client.send(new HeadObjectCommand(params))
+    const params = {
+      Bucket: hostname.split(".")[0],
+      Key: pathname.substring(1),
+    }
 
+    const headResponse = await s3Client.send(new HeadObjectCommand(params))
     res.setHeader("Content-Length", headResponse.ContentLength!)
     res.setHeader("Content-Type", headResponse.ContentType!)
     res.setHeader("ETag", headResponse.ETag!)
