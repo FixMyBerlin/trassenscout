@@ -24,7 +24,7 @@ export const Layout: BlitzLayout<Props> = ({
       <Head>
         {/* Reminder: We cannot use this to set the <body class>. See index.css for our workaround. */}
         {/* /src/core/layouts/Navigation/assets/trassenscout-logo-bildmarke.svg */}
-        <link rel="icon" href="favicon.svg" />
+        <link rel="icon" href="favicon.svg" type="image/svg+xml" />
       </Head>
 
       <div className="relative flex h-full flex-col overflow-x-hidden">
