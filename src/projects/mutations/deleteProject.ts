@@ -6,8 +6,10 @@ const DeleteProject = z.object({
   id: z.number(),
 })
 
-export default resolver.pipe(resolver.zod(DeleteProject), resolver.authorize(), async ({ id }) => {
-  const project = await db.project.deleteMany({ where: { id } })
-
-  return project
-})
+export default resolver.pipe(
+  resolver.zod(DeleteProject),
+  resolver.authorize("ADMIN"),
+  async ({ id }) => {
+    return await db.project.deleteMany({ where: { id } })
+  }
+)
