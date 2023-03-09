@@ -1,5 +1,5 @@
 import Image from "next/image"
-import svgLogoTrassenscout from "../assets/trassenscout-logo-weiss.svg"
+import svgLogoTrassenscout from "../assets/trassenscout-logo-gelb.svg"
 
 export const NavigationGeneralLogo: React.FC = () => {
   return (

@@ -2,7 +2,7 @@ import Image from "next/image"
 import { LinkMail } from "src/core/components/links"
 import { H1 } from "src/core/components/text/Headings"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
-import Logo from "./../../core/layouts/Navigation/assets/trassenscout-logo.svg"
+import Logo from "./../../core/layouts/Navigation/assets/trassenscout-logo-without-text.svg"
 
 const ITEMS_PER_PAGE = 100
 
@@ -14,7 +14,7 @@ const PageHomeNoProject = () => {
       <div className="set-bg-gray-100-on-body">
         <div className="flex h-full w-full">
           <div className="mx-auto flex max-w-xl flex-col items-center py-24">
-            <Image src={Logo} alt="Trassenscout" height={48} />
+            <Image src={Logo} alt="Trassenscout" height={60} />
 
             <H1 className="mt-12 text-center">Noch keiner Trasse zugeordnet</H1>
             <div className="rounded-lg bg-white px-8 py-4 text-sm shadow-md">
