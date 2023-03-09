@@ -20,10 +20,7 @@ const EditUserWithQuery = () => {
   const [updateUserMutation] = useMutation(updateUser)
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      await updateUserMutation({
-        ...values,
-        id: user?.id, //?
-      })
+      await updateUserMutation({ ...values })
       await router.push(Routes.Home())
     } catch (error: any) {
       console.error(error)
