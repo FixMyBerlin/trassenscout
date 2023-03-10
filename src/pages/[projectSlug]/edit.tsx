@@ -12,7 +12,7 @@ import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import updateProject from "src/projects/mutations/updateProject"
 import getProject from "src/projects/queries/getProject"
 import { ProjectSchema } from "src/projects/schema"
-import getUsers from "src/users/queries/getUsers"
+import getProjectUsers from "src/users/queries/getProjectUsers"
 
 const EditProjectWithQuery = () => {
   const router = useRouter()
@@ -26,7 +26,7 @@ const EditProjectWithQuery = () => {
     }
   )
   const [updateProjectMutation] = useMutation(updateProject)
-  const [{ users }] = useQuery(getUsers, {})
+  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {

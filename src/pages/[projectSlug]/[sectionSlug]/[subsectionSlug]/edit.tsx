@@ -13,7 +13,7 @@ import deleteSubsection from "src/subsections/mutations/deleteSubsection"
 import updateSubsection from "src/subsections/mutations/updateSubsection"
 import getSubsection from "src/subsections/queries/getSubsection"
 import { SubsectionSchema } from "src/subsections/schema"
-import getUsers from "src/users/queries/getUsers"
+import getProjectUsers from "src/users/queries/getProjectUsers"
 
 const EditSubsection = () => {
   const router = useRouter()
@@ -29,7 +29,7 @@ const EditSubsection = () => {
     }
   )
   const [updateSubsectionMutation] = useMutation(updateSubsection)
-  const [{ users }] = useQuery(getUsers, {})
+  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {

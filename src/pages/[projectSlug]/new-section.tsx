@@ -9,13 +9,13 @@ import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SectionForm } from "src/sections/components/SectionForm"
 import createSection from "src/sections/mutations/createSection"
 import { SectionSchema } from "src/sections/schema"
-import getUsers from "src/users/queries/getUsers"
+import getProjectUsers from "src/users/queries/getProjectUsers"
 
 const NewSectionWithQuery = () => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
   const [createSectionMutation] = useMutation(createSection)
-  const [{ users }] = useQuery(getUsers, {})
+  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -40,7 +40,6 @@ const NewSectionWithQuery = () => {
       <SectionForm
         submitText="Erstellen"
         schema={SectionSchema}
-        // initialValues={}
         onSubmit={handleSubmit}
         users={users}
       />

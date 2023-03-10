@@ -1,4 +1,3 @@
-import { User } from "@prisma/client"
 import {
   Form,
   FormProps,
@@ -11,7 +10,9 @@ import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function SectionForm<S extends z.ZodType<any, any>>(
-  props: FormProps<S> & { users: User[] }
+  props: FormProps<S> & {
+    users: { id: number; firstName: string | null; lastName: string | null }[]
+  }
 ) {
   const { users } = props
 
@@ -37,7 +38,7 @@ export function SectionForm<S extends z.ZodType<any, any>>(
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
-        options={users.map((u) => [String(u.id), [getFullname(u), `<${u.email}>`].join(" ")])}
+        options={users.map((u) => [String(u.id), getFullname(u)!])}
       />
     </Form>
   )
