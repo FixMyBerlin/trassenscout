@@ -20,6 +20,7 @@ export default resolver.pipe(
         firstName: true,
         lastName: true,
         email: true,
+        phone: true,
       },
     })
 )

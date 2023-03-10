@@ -1,12 +1,16 @@
-import { PromiseReturnType } from "blitz"
 import React from "react"
 import { ContactListWrapper } from "src/contacts/components/ContactListWrapper"
 import { LinkMail, LinkTel } from "src/core/components/links"
 import { getFullname } from "src/users/utils"
-import getUsersByProjectMembership from "../queries/getUsersByProjectMembership"
 
 type Props = {
-  contacts: PromiseReturnType<typeof getUsersByProjectMembership>
+  contacts: {
+    id: number
+    firstName: string | null
+    lastName: string | null
+    email: string
+    phone: string | null
+  }[]
 }
 
 export const ContactListTeam: React.FC<Props> = ({ contacts }) => {

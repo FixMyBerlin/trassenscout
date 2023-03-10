@@ -1,21 +1,17 @@
 import { BlitzPage, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { ContactListTeam } from "src/memberships/components/ContactListTeam"
-import getMembershipsSelectUser from "src/memberships/queries/getUsersByProjectMembership"
+import getProjectUsers from "src/users/queries/getProjectUsers"
 import getProject from "src/projects/queries/getProject"
 
 export const ProjectTeamWithQuery = () => {
-  const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
-
   const [project] = useQuery(getProject, { slug: projectSlug })
-
-  const [users] = useQuery(getMembershipsSelectUser, { id: project.id! })
+  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
   return (
     <div className="mt-8 flex flex-col">
@@ -29,7 +25,6 @@ export const ProjectTeamWithQuery = () => {
 }
 
 const ProjectTeamPage: BlitzPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
   return (
     <LayoutRs>
       <MetaTags noindex title="Projektteam" />
