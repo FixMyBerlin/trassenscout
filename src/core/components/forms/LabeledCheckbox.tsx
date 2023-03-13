@@ -36,7 +36,7 @@ export const LabeledCheckbox = forwardRef<HTMLInputElement, LabeledCheckboxProps
               "h-4 w-4 rounded",
               hasError
                 ? "border-pink-800 text-pink-500 shadow-sm shadow-pink-200 focus:ring-pink-800"
-                : "text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                : "border-gray-300 text-blue-600 focus:ring-blue-500"
             )}
           />
         </div>

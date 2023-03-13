@@ -8,8 +8,8 @@ export const StakeholderStatus: React.FC<Props> = ({ status }) => {
   switch (status) {
     case "PENDING":
       return (
-        <div className="w-18 flex-shrink-0 text-center text-slate-400">
-          <div className="mx-auto mb-2 h-10  w-10 rounded-full border-4 border-slate-400" />
+        <div className="w-18 flex-shrink-0 text-center text-gray-400">
+          <div className="mx-auto mb-2 h-10  w-10 rounded-full border-4 border-gray-400" />
           <small>ausstehend</small>
           <br />
           <small className="opacity-0">ausstehend</small>
@@ -18,8 +18,8 @@ export const StakeholderStatus: React.FC<Props> = ({ status }) => {
       )
     case "IN_PROGRESS":
       return (
-        <div className="w-18 flex-shrink-0 text-center text-slate-400">
-          <div className="mx-auto mb-2 h-10 w-10 rounded-full bg-slate-400" />
+        <div className="w-18 flex-shrink-0 text-center text-gray-400">
+          <div className="mx-auto mb-2 h-10 w-10 rounded-full bg-gray-400" />
           <small>in Arbeit</small>
           <br />
           <small className="opacity-0">ausstehend</small>
@@ -38,8 +38,8 @@ export const StakeholderStatus: React.FC<Props> = ({ status }) => {
       )
     case "DONE":
       return (
-        <div className="w-18 flex-shrink-0 text-center text-sky-600">
-          <div className="mx-auto mb-2 flex  h-10 w-10 rounded-full bg-sky-600">
+        <div className="w-18 text-sky-600 flex-shrink-0 text-center">
+          <div className="bg-sky-600 mx-auto mb-2  flex h-10 w-10 rounded-full">
             <CheckIcon className="mx-auto w-4 text-white" />
           </div>
           <small>erledigt</small>
@@ -49,8 +49,8 @@ export const StakeholderStatus: React.FC<Props> = ({ status }) => {
       )
     default:
       return (
-        <div className="w-18 flex-shrink-0 text-center text-sky-600">
-          <div className="mx-auto mb-2 h-10  w-10 rounded-full bg-sky-600" />
+        <div className="w-18 text-sky-600 flex-shrink-0 text-center">
+          <div className="bg-sky-600 mx-auto mb-2  h-10 w-10 rounded-full" />
           <small>erledigt</small>
           <br />
           <small className="opacity-0">ausstehend</small>

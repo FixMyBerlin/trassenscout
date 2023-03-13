@@ -10,7 +10,7 @@ export const Spinner: React.FC<Props> = ({ page = false }) => {
       <div role="status" className="flex h-full items-center justify-center">
         <svg
           aria-hidden="true"
-          className="my-20 inline h-12 w-12 animate-spin fill-rsv-blau text-gray-200 dark:text-gray-600"
+          className="fill-rsv-blau my-20 inline h-12 w-12 animate-spin text-gray-200 dark:text-gray-600"
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"

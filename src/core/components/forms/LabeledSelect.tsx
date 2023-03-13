@@ -44,7 +44,7 @@ export const LabeledSelect = forwardRef<HTMLInputElement, LabeledSelectProps>(
             "w-full rounded-md border bg-white py-2 px-3 shadow-sm focus:outline-none sm:text-sm",
             hasError
               ? "border-pink-800 shadow-pink-200 focus:border-pink-800 focus:ring-pink-800"
-              : "focus:border-indigo-500 focus:ring-indigo-500 border-gray-300"
+              : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
           )}
         >
           {options.map(([value, text]) => (

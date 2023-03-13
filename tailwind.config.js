@@ -23,6 +23,7 @@ module.exports = {
       white: colors.white,
       black: colors.black,
       gray: colors.gray,
+      purple: colors.purple, // super admin color
       // primary
       blue: {
         50: "#DFE9F7",

@@ -46,7 +46,7 @@ export const LabeledTextareaField = forwardRef<HTMLTextAreaElement, LabeledTexta
             "mt-1 block w-full rounded-md shadow-sm sm:text-sm",
             hasError
               ? "border-pink-800 shadow-pink-200 focus:border-pink-800 focus:ring-pink-800"
-              : "focus:border-indigo-500 focus:ring-indigo-500 border-gray-300"
+              : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
           )}
         />
         {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}
