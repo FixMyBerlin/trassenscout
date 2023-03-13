@@ -25,7 +25,7 @@ export const PageHeader: React.FC<Props> = ({
       {logo ? (
         <div className="flex items-start justify-between">
           <div>
-            <H1 className="mb-5 pt-12 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+            <H1>
               {title}
             </H1>
           </div>
@@ -36,7 +36,7 @@ export const PageHeader: React.FC<Props> = ({
       ) : (
         <>
           <div className="flex items-center justify-between">
-            <H1 className="mb-5 pt-12 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+            <H1>
               {title}
             </H1>
             {Boolean(action) && <div>{action}</div>}

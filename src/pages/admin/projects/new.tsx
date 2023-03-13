@@ -5,6 +5,7 @@ import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { Spinner } from "src/core/components/Spinner"
+import { H1 } from "src/core/components/text/Headings"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import createProject from "src/projects/mutations/createProject"
@@ -34,7 +35,7 @@ const AdminNewProjectPageWithQuery = () => {
     <>
       <MetaTags noindex title="Neue Radschnellverbindung erstellen" />
       <SuperAdminBox>
-        <h1>Neue Radschnellverbindung erstellen</h1>
+        <H1>Neue Radschnellverbindung erstellen</H1>
 
         <ProjectForm
           submitText="Erstellen"
