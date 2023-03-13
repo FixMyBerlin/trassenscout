@@ -11,7 +11,7 @@ export type LinkProps = {
   /** @default `false` */
   blank?: boolean
   /** @desc Style Link as Button */
-  button?: true | "blue" | "white"
+  button?: true | "blue" | "white" | "pink"
   children: React.ReactNode
 } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href">
 

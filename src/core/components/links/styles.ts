@@ -11,9 +11,12 @@ const activeStyleBlueButtonElement =
   "enabled:active:ring-2 enabled:active:ring-blue-800 enabled:active:bg-blue-500"
 const activeStyleWhiteButtonElement =
   "enabled:active:ring-2 enabled:active:ring-blue-500 enabled:active:bg-white enabled:active:text-black"
+const activeStylePinkButtonElement =
+  "enabled:active:ring-2 enabled:active:ring-pink-800 enabled:active:bg-blue-500"
 
 const hoverStyleForLinkElement = "hover:bg-blue-800 hover:text-white"
 const activeStyleBlueLinkElement = "active:ring-2 active:ring-blue-800 active:bg-blue-500"
+const activeStylePinkLinkElement = "active:ring-2 active:ring-pink-800 active:bg-pink-500"
 const activeStyleWhiteLinkElement =
   "active:ring-2 active:ring-blue-500 active:bg-white active:text-black"
 
@@ -31,6 +34,18 @@ export const blueButtonStyles = clsx(
   blueButtonBase,
   hoverStyleForButtonElement,
   activeStyleBlueButtonElement
+)
+// PINK BUTTON
+const pinkButtonBase = clsx(buttonBase, "text-white bg-pink-500")
+const pinkButtonStylesForLinkElement = clsx(
+  pinkButtonBase,
+  hoverStyleForLinkElement,
+  activeStylePinkLinkElement
+)
+export const pinkButtonStyles = clsx(
+  pinkButtonBase,
+  hoverStyleForButtonElement,
+  activeStylePinkButtonElement
 )
 
 // WHITE BUTTON
@@ -54,6 +69,8 @@ export const selectLinkStyle = (button: LinkProps["button"], className?: string)
       return clsx(blueButtonStylesForLinkElement, className)
     case "white":
       return clsx(whiteButtonStylesForLinkElement, className)
+    case "pink":
+      return clsx(pinkButtonStylesForLinkElement, className)
     default:
       return clsx(linkStyles, className)
   }
