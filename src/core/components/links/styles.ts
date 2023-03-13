@@ -18,7 +18,7 @@ const activeStyleWhiteLinkElement =
   "active:ring-2 active:ring-blue-500 active:bg-white active:text-black"
 
 const buttonBase =
-  "shadow-sm text-sm py-3 px-6 text-sm font-normal rounded-lg inline-flex items-center justify-center no-underline"
+  "w-full sm:w-auto shadow-sm text-sm py-3 px-6 text-sm font-normal rounded-lg inline-flex items-center justify-center no-underline"
 
 // BLUE BUTTON
 const blueButtonBase = clsx(buttonBase, "text-white bg-blue-500")
