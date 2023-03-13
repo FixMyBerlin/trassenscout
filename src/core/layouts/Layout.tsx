@@ -3,12 +3,14 @@ import Head from "next/head"
 import { FooterProject } from "./Footer"
 import { FooterGeneral } from "./Footer/FooterGeneral"
 import { FooterMinimal } from "./Footer/FooterMinimal"
+import { FooterParticipation } from "./Footer/FooterParticipation"
 import { NavigationGeneral, NavigationProject } from "./Navigation"
+import { NavigationParticipation } from "./Navigation/NavigationParticipation/NavigationParticipation"
 import { TailwindResponsiveHelper } from "./TailwindResponsiveHelper/TailwindResponsiveHelper"
 
 type Props = {
-  navigation: "general" | "project" | "none"
-  footer: "general" | "project" | "minimal"
+  navigation: "general" | "project" | "none" | "participation"
+  footer: "general" | "project" | "minimal" | "participation"
   fullWidth?: boolean
   children?: React.ReactNode
 }
@@ -30,6 +32,7 @@ export const Layout: BlitzLayout<Props> = ({
       <div className="relative flex h-full flex-col overflow-x-hidden">
         {navigation === "general" && <NavigationGeneral />}
         {navigation === "project" && <NavigationProject />}
+        {navigation === "participation" && <NavigationParticipation />}
 
         {fullWidth ? (
           <main className="w-full">{children}</main>
@@ -40,6 +43,7 @@ export const Layout: BlitzLayout<Props> = ({
       {footer === "general" && <FooterGeneral />}
       {footer === "project" && <FooterProject />}
       {footer === "minimal" && <FooterMinimal />}
+      {footer === "participation" && <FooterParticipation />}
       <TailwindResponsiveHelper />
     </>
   )
