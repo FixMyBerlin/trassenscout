@@ -43,8 +43,8 @@ export const LabeledSelect = forwardRef<HTMLInputElement, LabeledSelectProps>(
           className={clsx(
             "w-full rounded-md border bg-white py-2 px-3 shadow-sm focus:outline-none sm:text-sm",
             hasError
-              ? "border-red-700 shadow-red-200 focus:border-red-800 focus:ring-red-800"
-              : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+              ? "border-pink-800 shadow-pink-200 focus:border-pink-800 focus:ring-pink-800"
+              : "focus:border-indigo-500 focus:ring-indigo-500 border-gray-300"
           )}
         >
           {options.map(([value, text]) => (
@@ -57,7 +57,7 @@ export const LabeledSelect = forwardRef<HTMLInputElement, LabeledSelectProps>(
 
         <ErrorMessage
           render={({ message }) => (
-            <div role="alert" className="mt-1 text-sm text-red-700">
+            <div role="alert" className="mt-1 text-sm text-pink-800">
               {message}
             </div>
           )}

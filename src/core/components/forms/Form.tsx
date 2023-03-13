@@ -1,9 +1,10 @@
-import { useState, ReactNode, PropsWithoutRef } from "react"
-import { FormProvider, useForm, UseFormProps } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
 import clsx from "clsx"
-import { FormattedMessage, IntlProvider } from "react-intl"
+import { PropsWithoutRef, ReactNode, useState } from "react"
+import { FormProvider, useForm, UseFormProps } from "react-hook-form"
+import { IntlProvider } from "react-intl"
+import { z } from "zod"
+import { blueButtonStyles } from "../links"
 import { errorMessageTranslations } from "./errorMessageTranslations"
 import { FormError } from "./FormError"
 
@@ -73,12 +74,11 @@ export function Form<S extends z.ZodType<any, any>>({
           {children}
 
           <FormError formError={formError} />
-
           {submitText && (
             <button
               type="submit"
               disabled={ctx.formState.isSubmitting}
-              className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              className={blueButtonStyles}
             >
               {submitText}
             </button>

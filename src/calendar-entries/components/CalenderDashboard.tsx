@@ -33,7 +33,7 @@ const CalendarDashboardDateList: React.FC = () => {
       <DateList calendarEntries={calendarEntries} />
       {Boolean(calendarEntries.length) && (
         <p>
-          <Link button href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>
+          <Link button="white" href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>
             Alle Termine
           </Link>
         </p>

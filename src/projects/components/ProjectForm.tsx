@@ -1,12 +1,10 @@
-import { User } from "@prisma/client"
 import {
   Form,
   FormProps,
   LabeledSelect,
   LabeledTextareaField,
-  LabeledTextField,
+  LabeledTextField
 } from "src/core/components/forms"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getFullname } from "src/users/utils"
 import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"

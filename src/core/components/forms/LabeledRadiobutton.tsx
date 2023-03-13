@@ -37,8 +37,8 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
             className={clsx(
               "h-4 w-4",
               hasError
-                ? "border-red-700 text-red-600 shadow-sm shadow-red-200 focus:ring-red-700"
-                : "border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                ? "border-pink-800 text-pink-500 shadow-sm shadow-pink-200 focus:ring-pink-800"
+                : "text-indigo-600 focus:ring-indigo-500 border-gray-300"
             )}
           />
         </div>
@@ -51,7 +51,7 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
           {help && <div className="m-0 text-gray-500">{help}</div>}
           <ErrorMessage
             render={({ message }) => (
-              <p role="alert" className="m-0 text-sm text-red-700">
+              <p role="alert" className="m-0 text-sm text-pink-800">
                 {message}
               </p>
             )}

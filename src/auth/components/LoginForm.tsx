@@ -6,7 +6,7 @@ import { Login } from "src/auth/validations"
 import { DevAdminBox } from "src/core/components/AdminBox"
 import { Form, FORM_ERROR } from "src/core/components/forms/Form"
 import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
-import { buttonStyles, Link } from "src/core/components/links"
+import { blueButtonStyles, Link } from "src/core/components/links"
 
 type LoginFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof login>) => void
@@ -68,7 +68,7 @@ export const LoginForm = (props: LoginFormProps) => {
           ].map(([displayName, email]) => (
             <button
               key={displayName}
-              className={buttonStyles}
+              className={blueButtonStyles}
               onClick={async () =>
                 await handleSubmit({
                   email,

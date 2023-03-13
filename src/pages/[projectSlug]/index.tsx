@@ -35,7 +35,7 @@ export const ProjectDashboardWithQuery = () => {
   if (!sections.length)
     return (
       <>
-        <section className="rounded border  bg-blue-100 p-5">
+        <section className="rounded border bg-blue-100 p-5">
           <Link href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
             {quote(project.title)} bearbeiten
           </Link>

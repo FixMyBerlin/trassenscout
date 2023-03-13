@@ -1,13 +1,12 @@
 /** @type {import('tailwindcss').Config} */
+/* eslint-disable global-require */
+//  @type {import('tailwindcss').Config}
+const colors = require("tailwindcss/colors")
+
 module.exports = {
   content: ["src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
-      colors: {
-        "rsv-pink": "#e6007d",
-        "rsv-blau": "#0f65af",
-        "rsv-ochre": "#eab308",
-      },
       backgroundImage: {
         "dashed-line":
           "repeating-linear-gradient(to right, #d9d9d9, #d9d9d9 10px, transparent 10px, transparent 13px)",
@@ -18,6 +17,63 @@ module.exports = {
           // since we always use the Link component which is styled already.
           css: { a: false },
         },
+      },
+    },
+    colors: {
+      white: colors.white,
+      black: colors.black,
+      gray: colors.gray,
+      // primary
+      blue: {
+        50: "#DFE9F7",
+        100: "#B6CEEC",
+        200: "#8EB2E1",
+        300: "#6697D7",
+        400: "#3D7BCC",
+        500: "#2C62A9", // default
+        600: "#224B81",
+        700: "#173459",
+        800: "#0D1C31",
+        900: "#020508",
+      },
+      // secondary
+      yellow: {
+        50: "#FFFBF0",
+        100: "#FDEEBF",
+        200: "#FBE08D",
+        300: "#FAD35C",
+        400: "#F8C62B",
+        500: "#EAB308", // default
+        600: "#B68C06",
+        700: "#856605",
+        800: "#544003",
+        900: "#231A01",
+      },
+      // error
+      pink: {
+        50: "#FFF1F2",
+        100: "#FFE4E6",
+        200: "#FECDD3",
+        300: "#FDA4AF",
+        400: "#FB7185",
+        500: "#F43F5E", // default
+        600: "#E11D48",
+        700: "#BE123C",
+        800: "#9F1239",
+        900: "#9F1239",
+      },
+      // success
+      green: {
+        50: "#ECFDF5",
+        100: "#D1FAE5",
+        200: "#A7F3D0",
+        300: "#6EE7B7",
+        400: "#34D399",
+        500: "#10B981", // default
+        600: "#059669",
+        700: "#047857",
+        800: "#065F46",
+        900: "#064E3B",
       },
     },
     fontFamily: {

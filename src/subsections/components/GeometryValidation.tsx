@@ -21,7 +21,7 @@ export const GeometryValidation: React.FC<Props> = ({ name }) => {
     <div
       className={clsx(
         "my-10 rounded border p-3 text-gray-700",
-        schemaResult.success ? "bg-gray-100" : "border-red-800 bg-red-100"
+        schemaResult.success ? "bg-gray-100" : "border-pink-800 bg-pink-100"
       )}
     >
       <h3 className="m-0 text-sm">Geometrieprüfung:</h3>

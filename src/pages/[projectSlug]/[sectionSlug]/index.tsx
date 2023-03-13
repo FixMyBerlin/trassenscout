@@ -90,6 +90,15 @@ export const SectionDashboardWithQuery = () => {
             Abstimmung mit <abbr title="Träger öffentlicher Belange">TöB</abbr>s
           </H2>
           <StakeholdernoteList stakeholdernotes={stakeholdernotes} />
+          <Link
+            href={Routes.NewStakeholdernotePage({
+              projectSlug: projectSlug!,
+              sectionSlug: sectionSlug!,
+            })}
+            button
+          >
+            Neuer TöB
+          </Link>
         </div>
       )}
 
@@ -118,7 +127,7 @@ export const SectionDashboardWithQuery = () => {
                 sectionSlug: sectionSlug!,
               })}
             >
-              Neuer Stakeholder
+              Neuer TöB
             </Link>
             <br />
             <Link
@@ -127,7 +136,7 @@ export const SectionDashboardWithQuery = () => {
                 sectionSlug: sectionSlug!,
               })}
             >
-              Mehrere neue Stakeholder erstellen
+              Mehrere neue TöBs erstellen
             </Link>
           </>
         )}
