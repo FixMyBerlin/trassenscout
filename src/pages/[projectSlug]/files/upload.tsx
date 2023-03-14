@@ -1,5 +1,5 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense, useState } from "react"
 import { Link } from "src/core/components/links"
@@ -7,7 +7,6 @@ import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import createFile from "src/files/mutations/createFile"
-import getProject from "src/projects/queries/getProject"
 import { useS3Upload } from "src/core/lib/next-s3-upload/src"
 
 const UploadNewFileWithQuery = () => {
@@ -15,7 +14,6 @@ const UploadNewFileWithQuery = () => {
   const [createFileMutation] = useMutation(createFile)
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug! })
 
   const [fileToUpload, setFileToUpload] = useState<File | null>(null)
   type FileUploadState =
@@ -65,7 +63,7 @@ const UploadNewFileWithQuery = () => {
     const file = await createFileMutation({
       title: fileToUpload!.name,
       externalUrl: url,
-      projectId: project.id,
+      projectSlug: projectSlug!,
     })
     setUploadState("FILE_SAVED")
     await wait(1000)
