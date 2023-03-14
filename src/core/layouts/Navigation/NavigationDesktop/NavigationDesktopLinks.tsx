@@ -47,7 +47,7 @@ export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
             >
               {item.name}
               <ChevronDownIcon
-                className="text-blue-200 hover:text-blue-100 ml-2 -mr-1 h-5 w-5"
+                className="ml-2 -mr-1 h-5 w-5 text-blue-200 hover:text-blue-100"
                 aria-hidden="true"
               />
             </Menu.Button>

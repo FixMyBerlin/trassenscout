@@ -18,7 +18,7 @@ export const SectionsTeaser: React.FC<Props> = ({ section }) => {
         projectSlug: projectSlug!,
         sectionSlug: section.slug,
       })}
-      classNameOverwrites="flex items-center justify-start gap-4 rounded-md border border-gray-200 bg-white p-5 shadow-md hover:bg-gray-100 hover:text-rsv-blau"
+      classNameOverwrites="flex items-center justify-start gap-4 rounded-md border border-gray-200 bg-white p-5 shadow-md hover:bg-gray-100 hover:text-blue-500"
     >
       <SectionMarker number={section.index} />
       <h3 className="flex items-center pt-0.5 text-xl font-bold leading-tight">{section.title}</h3>
