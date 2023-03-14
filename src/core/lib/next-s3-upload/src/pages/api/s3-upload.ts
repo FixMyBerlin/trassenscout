@@ -23,7 +23,7 @@ type Options = S3Config & {
 };
 
 let makeRouteHandler = (options: Options = {}): Handler => {
-  let route: NextRouteHandler = async function(req, res) {
+  let route: NextRouteHandler = async function (req, res) {
     let config = getConfig({
       accessKeyId: options.accessKeyId,
       secretAccessKey: options.secretAccessKey,
@@ -115,9 +115,15 @@ let makeRouteHandler = (options: Options = {}): Handler => {
 };
 
 let missingEnvs = (config: Record<string, any>): string[] => {
-  let required = ['accessKeyId', 'secretAccessKey', 'bucket', 'region', 'rootFolder'];
+  let required = [
+    'accessKeyId',
+    'secretAccessKey',
+    'bucket',
+    'region',
+    'rootFolder',
+  ];
 
-  return required.filter(key => !config[key] || config.key === '');
+  return required.filter((key) => !config[key] || config.key === '');
 };
 
 let APIRoute = makeRouteHandler();

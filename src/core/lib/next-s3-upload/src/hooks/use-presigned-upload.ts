@@ -15,7 +15,7 @@ let upload: Uploader = async (file, params, { onProgress }) => {
     xhr.setRequestHeader('Content-Type', file.type);
     xhr.setRequestHeader('Cache-Control', 'max-age=630720000');
 
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         if (xhr.status >= 200 && xhr.status < 300) {
           resolve();

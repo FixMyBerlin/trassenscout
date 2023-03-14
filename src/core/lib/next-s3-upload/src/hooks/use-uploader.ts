@@ -81,7 +81,7 @@ export const useUploader = (
     addFile(file);
 
     let result = await uploader(file, params, {
-      onProgress: uploaded => updateFileProgress(file, uploaded),
+      onProgress: (uploaded) => updateFileProgress(file, uploaded),
     });
 
     return result;

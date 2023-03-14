@@ -45,12 +45,13 @@ let upload: Uploader<Params> = async (file, params, { onProgress }) => {
     params: uploadParams,
   });
 
-  s3Upload.on('httpUploadProgress', progress => {
+  s3Upload.on('httpUploadProgress', (progress) => {
     let uploaded = progress.loaded ?? 0;
     onProgress(uploaded);
   });
 
-  let uploadResult = (await s3Upload.done()) as CompleteMultipartUploadCommandOutput;
+  let uploadResult =
+    (await s3Upload.done()) as CompleteMultipartUploadCommandOutput;
 
   let url =
     uploadResult.Bucket && uploadResult.Key

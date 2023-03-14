@@ -25,8 +25,8 @@ export const useUploadFiles = () => {
   };
 
   let updateFileProgress = (file: File, uploaded: number) => {
-    setFiles(files =>
-      files.map(trackedFile =>
+    setFiles((files) =>
+      files.map((trackedFile) =>
         trackedFile.file === file
           ? {
               file,
@@ -40,7 +40,7 @@ export const useUploadFiles = () => {
   };
 
   let addFile = (file: File) => {
-    setFiles(files => [
+    setFiles((files) => [
       ...files,
       { file, progress: 0, uploaded: 0, size: file.size },
     ]);

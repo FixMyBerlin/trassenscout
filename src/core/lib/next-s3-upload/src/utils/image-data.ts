@@ -4,7 +4,7 @@ interface ImageData {
 }
 
 export const getImageData = (file: File | Blob): Promise<ImageData> => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     if (file.type.split('/')?.[0] === 'image') {
       let img = new Image();
       let objectUrl = URL.createObjectURL(file);
