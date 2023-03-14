@@ -12,7 +12,7 @@ import {
 import { getConfig } from "src/core/lib/next-s3-upload/src/utils/config"
 import getFile from "src/files/queries/getFile"
 
-export default async function (req: NextApiRequest, res: NextApiResponse) {
+export default async function downloadFile(req: NextApiRequest, res: NextApiResponse) {
   try {
     const file = await getFile(
       { id: Number(req.query.path![0]) },
