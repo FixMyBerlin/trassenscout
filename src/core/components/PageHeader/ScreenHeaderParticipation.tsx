@@ -1,11 +1,11 @@
 import { H1 } from "../text/Headings"
 
-type Props = {
+export type ScreenHeaderParticipationProps = {
   title: string
   description?: string
 }
 
-export const PageHeaderParticipation: React.FC<Props> = ({
+export const ScreenHeaderParticipation: React.FC<ScreenHeaderParticipationProps> = ({
   title,
 
   description,
