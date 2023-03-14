@@ -10,6 +10,8 @@ export interface LabeledRadiobuttonProps extends PropsWithoutRef<JSX.IntrinsicEl
   name: string
   /** Field label. */
   label: string
+  /** Field value. */
+  value: string
   /** Help text below field label. */
   help?: string
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
@@ -17,7 +19,7 @@ export interface LabeledRadiobuttonProps extends PropsWithoutRef<JSX.IntrinsicEl
 }
 
 export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobuttonProps>(
-  ({ scope, name, label, help, outerProps, labelProps, ...props }, ref) => {
+  ({ scope, name, label, value, help, outerProps, labelProps, ...props }, ref) => {
     const {
       register,
       formState: { isSubmitting, errors },
