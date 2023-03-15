@@ -8,6 +8,12 @@ const seedFiles = async () => {
       projectId: 1,
     },
     {
+      title: "AWS S3 Image",
+      externalUrl:
+        "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
+      projectId: 1,
+    },
+    {
       title: "Protokoll Gesamttreffen Projekt 2",
       externalUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
       projectId: 2,
