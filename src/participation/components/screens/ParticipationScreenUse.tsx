@@ -1,6 +1,5 @@
 import { ScreenHeaderParticipation } from "src/core/components/PageHeader/ScreenHeaderParticipation"
-import { H2 } from "src/core/components/text/Headings"
-import { ParticipationLabeledRadiobuttonGroup } from "./ParticipationLabeledRadiobuttonGroup"
+import { SurveyItemList } from "../SurveyItemList"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export type TSurveyItems = {
@@ -26,7 +25,7 @@ export const PartcipationScreenUse: React.FC = () => {
     },
     {
       id: 2,
-      type: "radio",
+      type: "checkbox",
       question: {
         de: "Wie häufig würden Sie den RS8 nutzen?",
         tr: "RS8'i ne sıklıkla kullanırsınız?",
@@ -56,48 +55,7 @@ export const PartcipationScreenUse: React.FC = () => {
         title="Nutzung des RS8"
         description="Zuerst möchten wir Ihnen einige Fragen zur Nutzung des RS 8 Ludwigsburg–Waiblingen stellen."
       />
-      {surveyItems.map(({ id, type, question, answers }) => {
-        return (
-          <div key={id}>
-            <H2>{question.de}</H2>
-            {type === "radio" && (
-              <ParticipationLabeledRadiobuttonGroup
-                key={id}
-                items={answers.map((item) => ({
-                  scope: String(id),
-                  name: item.de,
-                  label: item.de,
-                  value: item.de,
-                }))}
-              />
-            )}
-            {/* TODO */}
-            {type === "checkbox" && (
-              <ParticipationLabeledRadiobuttonGroup
-                key={id}
-                items={answers.map((item) => ({
-                  scope: String(id),
-                  name: item.de,
-                  label: item.de,
-                  value: item.de,
-                }))}
-              />
-            )}
-            {/* TODO */}
-            {type === "textarea" && (
-              <ParticipationLabeledRadiobuttonGroup
-                key={id}
-                items={answers.map((item) => ({
-                  scope: String(id),
-                  name: item.de,
-                  label: item.de,
-                  value: item.de,
-                }))}
-              />
-            )}
-          </div>
-        )
-      })}
+      <SurveyItemList surveyItems={surveyItems} />
     </section>
   )
 }
