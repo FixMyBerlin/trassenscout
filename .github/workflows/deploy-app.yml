@@ -8,6 +8,15 @@ on:
       SERVICE_NAME:
         required: true
         type: string
+      S3_UPLOAD_BUCKET:
+        required: true
+        type: string
+      S3_UPLOAD_REGION:
+        required: true
+        type: string
+      S3_UPLOAD_ROOTFOLDER:
+        required: true
+        type: string
     secrets:
       AWS_ACCESS_KEY_ID:
         required: true
@@ -22,6 +31,10 @@ on:
       MAILJET_APIKEY_PUBLIC:
         required: true
       MAILJET_APIKEY_PRIVATE:
+        required: true
+      S3_UPLOAD_KEY:
+        required: true
+      S3_UPLOAD_SECRET:
         required: true
 
 jobs:
@@ -93,6 +106,11 @@ jobs:
           NGINX_HTPASSWD: ${{ secrets.NGINX_HTPASSWD }}
           MAILJET_APIKEY_PUBLIC: ${{ secrets.MAILJET_APIKEY_PUBLIC }}
           MAILJET_APIKEY_PRIVATE: ${{ secrets.MAILJET_APIKEY_PRIVATE }}
+          S3_UPLOAD_KEY: ${{ secrets.S3_UPLOAD_KEY }}
+          S3_UPLOAD_SECRET: ${{ secrets.S3_UPLOAD_SECRET }}
+          S3_UPLOAD_BUCKET: ${{ inputs.S3_UPLOAD_BUCKET }}
+          S3_UPLOAD_REGION: ${{ inputs.S3_UPLOAD_REGION }}
+          S3_UPLOAD_ROOTFOLDER: ${{ inputs.S3_UPLOAD_ROOTFOLDER }}
 
       - name: Create Deployment and deploy
         run: >
