@@ -78,7 +78,7 @@ export default function FormTest() {
             scope: "regular",
             name: `radio${item}regular`,
             label: `Test Radiobutton ${item}`,
-            value: `test${item}value`
+            value: `test${item}value`,
           }))}
         />
         <LabeledRadiobuttonGroup
@@ -87,7 +87,7 @@ export default function FormTest() {
             name: `radio${item}help`,
             label: `Test Radiobutton ${item}`,
             help: `Help text ${item}`,
-            value: `test${item}value`
+            value: `test${item}value`,
           }))}
         />
         <LabeledSelect

@@ -49,7 +49,7 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
                   <p className="font-bold">{getFullname(user) || "-"}</p>
                   <p className="mb-2 font-bold">{user.email}</p>
 
-                  {isAdmin(user) && <p className="text-purple-700 font-bold">Rolle: Admin</p>}
+                  {isAdmin(user) && <p className="font-bold text-purple-700">Rolle: Admin</p>}
 
                   <div className="mt-6 mb-4 flex flex-col gap-4">
                     {projectSlug && (

@@ -57,7 +57,7 @@ export const LabeledSelect = forwardRef<HTMLInputElement, LabeledSelectProps>(
 
         <ErrorMessage
           render={({ message }) => (
-            <div role="alert" className="text-red-800 mt-1 text-sm">
+            <div role="alert" className="mt-1 text-sm text-red-800">
               {message}
             </div>
           )}

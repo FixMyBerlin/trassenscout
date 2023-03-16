@@ -22,7 +22,7 @@ type TypeConfigElement = {
 
 const typeConfig: TypConfig = {
   error: {
-    icon: <XCircleIcon className="text-red-500 h-5 w-5" aria-hidden="true" />,
+    icon: <XCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />,
     wrapperClass: "bg-red-50 border-red-500",
     titleClasses: "text-red-800",
     textClasses: "text-red-800",

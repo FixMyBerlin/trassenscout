@@ -25,9 +25,7 @@ export const PageHeader: React.FC<Props> = ({
       {logo ? (
         <div className="flex items-start justify-between">
           <div>
-            <H1>
-              {title}
-            </H1>
+            <H1>{title}</H1>
           </div>
           <div className="shrink-0">
             <Image src={pngRsv8Logo} width={146} height={146} alt="" />
@@ -36,9 +34,7 @@ export const PageHeader: React.FC<Props> = ({
       ) : (
         <>
           <div className="flex items-center justify-between">
-            <H1>
-              {title}
-            </H1>
+            <H1>{title}</H1>
             {Boolean(action) && <div>{action}</div>}
           </div>
         </>

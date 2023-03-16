@@ -1,6 +1,9 @@
 import clsx from "clsx"
 import React from "react"
-import { ParticipationLabeledCheckbox, TParticipationLabeledCheckbox } from "./ParticipationLabeledCheckbox"
+import {
+  ParticipationLabeledCheckbox,
+  TParticipationLabeledCheckbox,
+} from "./ParticipationLabeledCheckbox"
 
 type Props = {
   items: TParticipationLabeledCheckbox[]
