@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "type": "object",
+  "required": ["id", "version", "title", "createdAt"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "integer", "enum": [1] },
+    "title": { "$ref": "#/$defs/translatableText" },
+    "version": { "type": "integer", "enum": [1] },
+    "createdAt": { "type": "string", "format": "date" },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "description", "buttons"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "integer", "minimum": 1 },
+          "title": { "$ref": "#/$defs/translatableText" },
+          "description": { "$ref": "#/$defs/translatableText" },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "typ", "label"],
+              "properties": {
+                "id": { "type": "integer", "minimum": 1 },
+                "typ": {
+                  "type": "string",
+                  "enum": ["singleResponse", "multipleResponse", "text"]
+                },
+                "label": { "$ref": "#/$defs/translatableText" }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": { "typ": { "enum": ["singleResponse", "multipleResponse"] } }
+                  },
+                  "then": {
+                    "required": ["responses"],
+                    "properties": {
+                      "responses": {
+                        "type": "array",
+                        "minLength": 2,
+                        "items": {
+                          "required": ["id", "text"],
+                          "properties": {
+                            "id": { "type": "integer", "minimum": 1 },
+                            "text": { "$ref": "#/$defs/translatableText" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "buttons": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "color", "onClick"],
+              "additionalProperties": false,
+              "properties": {
+                "label": { "$ref": "#/$defs/translatableText" },
+                "color": { "type": "string", "enum": ["white", "pink"] },
+                "onClick": {
+                  "type": "object",
+                  "required": ["action"],
+                  "additionalItems": false,
+                  "properties": {
+                    "action": {
+                      "enum": ["reset", "nextPage", "previousPage", "submit"]
+                    },
+                    "arguments": { "type": "array" }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "translatableText": {
+      "type": "object",
+      "required": ["de"],
+      "additionalProperties": false,
+      "properties": {
+        "de": { "type": "string", "minLength": 2 }
+      }
+    }
+  }
+}
