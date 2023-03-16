@@ -1,4 +1,4 @@
-import { H1 } from "../text/Headings"
+import { H1 } from "../../../core/components/text/Headings"
 
 export type ScreenHeaderParticipationProps = {
   title: string
