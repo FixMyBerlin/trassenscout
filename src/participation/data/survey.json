@@ -28,7 +28,7 @@
         {
           "id": 1,
           "label": { "de": "Würden Sie den RS8 nutzen?" },
-          "typ": "singleResponse",
+          "component": "singleResponse",
           "props": {
             "responses": [
               { "id": 1, "text": { "de": "Ja" } },
@@ -40,7 +40,7 @@
         {
           "id": 2,
           "label": { "de": "Wie häufig würden Sie den RS8 nutzen?" },
-          "typ": "singleResponse",
+          "component": "singleResponse",
           "props": {
             "responses": [
               { "id": 1, "text": { "de": "Täglich" } },
@@ -53,7 +53,7 @@
         {
           "id": 3,
           "label": { "de": "Für welche Zwecke würden Sie den RS8 nutzen?" },
-          "typ": "multipleResponse",
+          "component": "multipleResponse",
           "props": {
             "responses": [
               { "id": 1, "text": { "de": "Einkaufen" } },
@@ -66,7 +66,7 @@
         {
           "id": 4,
           "label": { "de": "Würden Sie durch den RS 8 häufiger aufs Auto verzichten?" },
-          "typ": "singleResponse",
+          "component": "singleResponse",
           "props": {
             "responses": [
               { "id": 1, "text": { "de": "Ja" } },
@@ -80,7 +80,7 @@
           "label": {
             "de": "Glauben Sie, dass andere durch den RS 8 häufiger aufs Auto verzichten würden?"
           },
-          "typ": "singleResponse",
+          "component": "singleResponse",
           "props": {
             "responses": [
               { "id": 1, "text": { "de": "Ja" } },
@@ -105,7 +105,7 @@
         {
           "id": 1,
           "label": { "de": "Wie wichtig ist Ihnen die Beleuchtung eines Radschnellwegs?" },
-          "typ": "singleResponse",
+          "component": "singleResponse",
           "props": {
             "responses": [
               { "id": 1, "text": { "de": "Sehr wichtig" } },
@@ -117,7 +117,7 @@
         {
           "id": 2,
           "label": { "de": "Wie wichtig sind Ihnen Rastmöglichkeiten entlang der Strecke?" },
-          "typ": "singleResponse",
+          "component": "singleResponse",
           "props": {
             "responses": [
               { "id": 1, "text": { "de": "Sehr wichtig" } },
@@ -131,7 +131,7 @@
           "label": {
             "de": "Wie wichtig sind Ihnen Reparatursäulen (Luftpumpe, Werkzeug) entlang der Strecke ?"
           },
-          "typ": "singleResponse",
+          "component": "singleResponse",
           "props": {
             "responses": [
               { "id": 1, "text": { "de": "Sehr wichtig" } },

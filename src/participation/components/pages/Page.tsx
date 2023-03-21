@@ -12,7 +12,7 @@ export type TButton = {
 export type TQuestion = {
   id: number
   label: { de: string }
-  typ: "singleResponse" | "multipleResponse" | "text"
+  component: "singleResponse" | "multipleResponse" | "text"
   props: {
     responses: { id: number; text: { de: string } }[] | null
   }

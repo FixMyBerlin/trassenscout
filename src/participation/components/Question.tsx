@@ -8,10 +8,10 @@ export { FORM_ERROR } from "src/core/components/forms"
 type QuestionGroupProps = { question: TQuestion }
 
 const QuestionGroup: React.FC<QuestionGroupProps> = ({ question }) => {
-  const { id, typ, props } = question
+  const { id, component, props } = question
   const { responses } = props
   if (!responses) return null
-  if (typ === "singleResponse")
+  if (component === "singleResponse")
     return (
       <ParticipationLabeledRadiobuttonGroup
         key={id}
@@ -23,7 +23,7 @@ const QuestionGroup: React.FC<QuestionGroupProps> = ({ question }) => {
         }))}
       />
     )
-  if (typ === "multipleResponse")
+  if (component === "multipleResponse")
     return (
       <ParticipationLabeledCheckboxGroup
         key={id}

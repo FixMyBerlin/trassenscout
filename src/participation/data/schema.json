@@ -22,10 +22,10 @@
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["id", "typ", "label"],
+              "required": ["id", "component", "label"],
               "properties": {
                 "id": { "type": "integer", "minimum": 1 },
-                "typ": {
+                "component": {
                   "type": "string",
                   "enum": ["singleResponse", "multipleResponse", "text"]
                 },
@@ -34,7 +34,7 @@
               "allOf": [
                 {
                   "if": {
-                    "properties": { "typ": { "enum": ["singleResponse", "multipleResponse"] } }
+                    "properties": { "component": { "enum": ["singleResponse", "multipleResponse"] } }
                   },
                   "then": {
                     "required": ["props"],
