@@ -8,6 +8,7 @@ import { MetaTags } from "src/core/layouts"
 import { LayoutParticipation } from "./core/LayoutParticipation"
 import { NavigationParticipation } from "./core/NavigationParticipation"
 import { ParticipationMap } from "./maps/ParticipationMap"
+import { ParticipationStaticMap } from "./maps/ParticipationStaticMap"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -112,6 +113,7 @@ export const Survey: React.FC<Props> = ({ survey }) => {
         <MapProvider>
           <ParticipationMap projectMap={map} />
         </MapProvider>
+        <ParticipationStaticMap projectMap={map} />
       </Form>
     </LayoutParticipation>
   )
