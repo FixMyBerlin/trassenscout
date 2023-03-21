@@ -1,4 +1,5 @@
 import { multiLineString, MultiLineString } from "@turf/helpers"
+import clsx from "clsx"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import React, { useCallback, useEffect, useState } from "react"
@@ -42,6 +43,7 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
   const [marker, setMarker] = useState(projectMap.marker)
   const [events, logEvents] = useState<Record<string, LngLat>>({})
   const [isPinInView, setIsPinInView] = useState(true)
+  const [isMediumScreen, setIsMediumScreen] = useState(false)
 
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const handleLayerSwitch = (layer: LayerType) => {
@@ -56,8 +58,20 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
 
   useEffect(() => {
     if (!mainMap) return
-    // mainMap.fitBounds(sectionBounds, { padding: 60 })
   }, [mainMap])
+
+  useEffect(() => {
+    const lgMediaQuery = window.matchMedia("(min-width: 768px)")
+    // @ts-ignore
+    function onMediaQueryChange({ matches }) {
+      setIsMediumScreen(matches)
+    }
+    onMediaQueryChange(lgMediaQuery)
+    lgMediaQuery.addEventListener("change", onMediaQueryChange)
+    return () => {
+      lgMediaQuery.removeEventListener("change", onMediaQueryChange)
+    }
+  }, [])
 
   const onMarkerDragStart = useCallback((event: MarkerDragEvent) => {
     logEvents((_events) => ({ ..._events, onDragStart: event.lngLat }))
@@ -101,7 +115,7 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
   const { config } = projectMap
 
   return (
-    <div className="h-[500px]">
+    <div className={clsx(className, "h-[500px]")}>
       <Map
         id="mainMap"
         mapLib={maplibregl}
@@ -141,7 +155,8 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
             />
           </Source>
         </Marker>
-        <NavigationControl showCompass={false} />
+        {isMediumScreen && <NavigationControl showCompass={false} />}
+
         {/* <ScaleControl /> */}
         <MapBanner
           className="absolute bottom-12"
