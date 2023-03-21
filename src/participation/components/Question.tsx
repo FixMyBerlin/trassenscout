@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import { H2 } from "src/core/components/text/Headings"
 import { ParticipationLabeledCheckboxGroup } from "./form/ParticipationLabeledCheckboxGroup"
 import { ParticipationLabeledRadiobuttonGroup } from "./form/ParticipationLabeledRadiobuttonGroup"
@@ -39,14 +40,14 @@ const components = {
   text: TextResponseComponent,
 }
 
-type Props = { question: TQuestion }
+type Props = { question: TQuestion; className?: string }
 
-export const Question: React.FC<Props> = ({ question }) => {
+export const Question: React.FC<Props> = ({ question, className }) => {
   const { id, label, component, props } = question
   const Component = components[component]
   return (
-    <div key={id}>
-      <H2>{label.de}</H2>
+    <div className={className} key={id}>
+      <H2 className="mb-8">{label.de}</H2>
       <Component id={id} {...props} />
     </div>
   )

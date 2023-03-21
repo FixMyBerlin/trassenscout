@@ -49,9 +49,9 @@ export const Page: React.FC<Props> = ({ page, buttonActions }) => {
           questions.length &&
           questions.map((question, index) => (
             // eslint-disable-next-line react/jsx-key
-            <Question key={index} question={question} />
+            <Question className="mb-2" key={index} question={question} />
           ))}
-        <div className="sm flex flex-col gap-2 pt-10 sm:flex-row-reverse sm:justify-end sm:space-y-0">
+        <div className="sm flex flex-col gap-6 pt-10 sm:flex-row-reverse sm:justify-end sm:space-y-0">
           {buttons?.map((button, index) => (
             <ParticipationButton buttonActions={buttonActions} key={index} button={button} />
           ))}

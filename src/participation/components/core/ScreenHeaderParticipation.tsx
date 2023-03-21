@@ -11,8 +11,8 @@ export const ScreenHeaderParticipation: React.FC<ScreenHeaderParticipationProps>
   description,
 }) => {
   return (
-    <section className="mb-12">
-      <div className="mb-12">
+    <section className="mb-2">
+      <div className="mb-8">
         <H1>{title}</H1>
       </div>
 
