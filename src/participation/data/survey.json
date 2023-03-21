@@ -29,43 +29,51 @@
           "id": 1,
           "label": { "de": "Würden Sie den RS8 nutzen?" },
           "typ": "singleResponse",
-          "responses": [
-            { "id": 1, "text": { "de": "Ja" } },
-            { "id": 2, "text": { "de": "Nein" } },
-            { "id": 3, "text": { "de": "Ich fahre diese Strecke ohnehin nicht." } }
-          ]
+          "props": {
+            "responses": [
+              { "id": 1, "text": { "de": "Ja" } },
+              { "id": 2, "text": { "de": "Nein" } },
+              { "id": 3, "text": { "de": "Ich fahre diese Strecke ohnehin nicht." } }
+            ]
+          }
         },
         {
           "id": 2,
           "label": { "de": "Wie häufig würden Sie den RS8 nutzen?" },
           "typ": "singleResponse",
-          "responses": [
-            { "id": 1, "text": { "de": "Täglich" } },
-            { "id": 2, "text": { "de": "Mehrmals pro Woche" } },
-            { "id": 3, "text": { "de": "Mehrmals pro Monat." } },
-            { "id": 4, "text": { "de": "Weiß nicht / Keine Angabe." } }
-          ]
+          "props": {
+            "responses": [
+              { "id": 1, "text": { "de": "Täglich" } },
+              { "id": 2, "text": { "de": "Mehrmals pro Woche" } },
+              { "id": 3, "text": { "de": "Mehrmals pro Monat." } },
+              { "id": 4, "text": { "de": "Weiß nicht / Keine Angabe." } }
+            ]
+          }
         },
         {
           "id": 3,
           "label": { "de": "Für welche Zwecke würden Sie den RS8 nutzen?" },
           "typ": "multipleResponse",
-          "responses": [
-            { "id": 1, "text": { "de": "Einkaufen" } },
-            { "id": 2, "text": { "de": "Zur Arbeit/Schule pendeln" } },
-            { "id": 3, "text": { "de": "Sport/Freizeit" } },
-            { "id": 4, "text": { "de": "Anderes" } }
-          ]
+          "props": {
+            "responses": [
+              { "id": 1, "text": { "de": "Einkaufen" } },
+              { "id": 2, "text": { "de": "Zur Arbeit/Schule pendeln" } },
+              { "id": 3, "text": { "de": "Sport/Freizeit" } },
+              { "id": 4, "text": { "de": "Anderes" } }
+            ]
+          }
         },
         {
           "id": 4,
           "label": { "de": "Würden Sie durch den RS 8 häufiger aufs Auto verzichten?" },
           "typ": "singleResponse",
-          "responses": [
-            { "id": 1, "text": { "de": "Ja" } },
-            { "id": 2, "text": { "de": "Nein" } },
-            { "id": 3, "text": { "de": "Ich verzichte bereits aufs Auto." } }
-          ]
+          "props": {
+            "responses": [
+              { "id": 1, "text": { "de": "Ja" } },
+              { "id": 2, "text": { "de": "Nein" } },
+              { "id": 3, "text": { "de": "Ich verzichte bereits aufs Auto." } }
+            ]
+          }
         },
         {
           "id": 5,
@@ -73,11 +81,13 @@
             "de": "Glauben Sie, dass andere durch den RS 8 häufiger aufs Auto verzichten würden?"
           },
           "typ": "singleResponse",
-          "responses": [
-            { "id": 1, "text": { "de": "Ja" } },
-            { "id": 2, "text": { "de": "Nein" } },
-            { "id": 3, "text": { "de": "Ich verzichte bereits aufs Auto." } }
-          ]
+          "props": {
+            "responses": [
+              { "id": 1, "text": { "de": "Ja" } },
+              { "id": 2, "text": { "de": "Nein" } },
+              { "id": 3, "text": { "de": "Ich verzichte bereits aufs Auto." } }
+            ]
+          }
         }
       ],
       "buttons": [
@@ -96,21 +106,25 @@
           "id": 1,
           "label": { "de": "Wie wichtig ist Ihnen die Beleuchtung eines Radschnellwegs?" },
           "typ": "singleResponse",
-          "responses": [
-            { "id": 1, "text": { "de": "Sehr wichtig" } },
-            { "id": 2, "text": { "de": "Weniger wichtig" } },
-            { "id": 3, "text": { "de": "Weiß nicht" } }
-          ]
+          "props": {
+            "responses": [
+              { "id": 1, "text": { "de": "Sehr wichtig" } },
+              { "id": 2, "text": { "de": "Weniger wichtig" } },
+              { "id": 3, "text": { "de": "Weiß nicht" } }
+            ]
+          }
         },
         {
           "id": 2,
           "label": { "de": "Wie wichtig sind Ihnen Rastmöglichkeiten entlang der Strecke?" },
           "typ": "singleResponse",
-          "responses": [
-            { "id": 1, "text": { "de": "Sehr wichtig" } },
-            { "id": 2, "text": { "de": "Weniger wichtig" } },
-            { "id": 3, "text": { "de": "Weiß nicht" } }
-          ]
+          "props": {
+            "responses": [
+              { "id": 1, "text": { "de": "Sehr wichtig" } },
+              { "id": 2, "text": { "de": "Weniger wichtig" } },
+              { "id": 3, "text": { "de": "Weiß nicht" } }
+            ]
+          }
         },
         {
           "id": 3,
@@ -118,11 +132,13 @@
             "de": "Wie wichtig sind Ihnen Reparatursäulen (Luftpumpe, Werkzeug) entlang der Strecke ?"
           },
           "typ": "singleResponse",
-          "responses": [
-            { "id": 1, "text": { "de": "Sehr wichtig" } },
-            { "id": 2, "text": { "de": "Weniger wichtig" } },
-            { "id": 3, "text": { "de": "Weiß nicht" } }
-          ]
+          "props": {
+            "responses": [
+              { "id": 1, "text": { "de": "Sehr wichtig" } },
+              { "id": 2, "text": { "de": "Weniger wichtig" } },
+              { "id": 3, "text": { "de": "Weiß nicht" } }
+            ]
+          }
         }
       ],
       "buttons": [

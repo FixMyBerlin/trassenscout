@@ -8,7 +8,8 @@ export { FORM_ERROR } from "src/core/components/forms"
 type QuestionGroupProps = { question: TQuestion }
 
 const QuestionGroup: React.FC<QuestionGroupProps> = ({ question }) => {
-  const { typ, responses, id } = question
+  const { id, typ, props } = question
+  const { responses } = props
   if (!responses) return null
   if (typ === "singleResponse")
     return (

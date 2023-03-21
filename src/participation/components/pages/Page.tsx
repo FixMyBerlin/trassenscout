@@ -13,7 +13,9 @@ export type TQuestion = {
   id: number
   label: { de: string }
   typ: "singleResponse" | "multipleResponse" | "text"
-  responses: { id: number; text: { de: string } }[] | null
+  props: {
+    responses: { id: number; text: { de: string } }[] | null
+  }
 }
 
 export type TPage = {
