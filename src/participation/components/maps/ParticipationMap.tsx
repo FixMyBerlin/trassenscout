@@ -1,4 +1,4 @@
-import { lineString, multiLineString, MultiLineString } from "@turf/helpers"
+import { multiLineString, MultiLineString } from "@turf/helpers"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import React, { useCallback, useEffect, useState } from "react"
@@ -9,11 +9,10 @@ import Map, {
   Marker,
   MarkerDragEvent,
   NavigationControl,
-  ScaleControl,
   Source,
   useMap,
 } from "react-map-gl"
-import { BackgroundSwitcher, LayerType } from "src/projects/components/Map/BackgroundSwitcher"
+import { LayerType } from "src/projects/components/Map/BackgroundSwitcher"
 import { MapBanner } from "./MapBanner"
 import { ParticipationBackgroundSwitcher } from "./ParticipationBackgroundSwitcher"
 import Pin from "./Pin"
@@ -42,7 +41,7 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
   const { mainMap } = useMap()
   const [marker, setMarker] = useState(projectMap.marker)
   const [events, logEvents] = useState<Record<string, LngLat>>({})
-  const [pinInView, setPinInView] = useState(true)
+  const [isPinInView, setIsPinInView] = useState(true)
 
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const handleLayerSwitch = (layer: LayerType) => {
@@ -75,15 +74,14 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
 
   const onMarkerDragEnd = useCallback((event: MarkerDragEvent) => {
     logEvents((_events) => ({ ..._events, onDragEnd: event.lngLat }))
-    if (isPinInView()) {
-      setPinInView(true)
-    } else {
-      setPinInView(false)
-    }
   }, [])
 
-  const isPinInView = () => {
-    return mainMap?.getBounds().contains(marker)
+  const checkPinInView = () => {
+    if (mainMap && mainMap?.getBounds().contains(marker)) {
+      setIsPinInView(true)
+    } else {
+      setIsPinInView(false)
+    }
   }
 
   const easeToPin = () => {
@@ -94,11 +92,10 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
   }
 
   const handleMapMove = () => {
-    if (isPinInView()) {
-      setPinInView(true)
-    } else {
-      setPinInView(false)
-    }
+    checkPinInView()
+  }
+  const handleMapZoom = () => {
+    checkPinInView()
   }
 
   const { config } = projectMap
@@ -121,16 +118,8 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
         onMove={handleMapMove}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         onClick={handleClick}
-        // cursor={cursorStyle}
-        // onMouseEnter={handleMouseEnter}
-        // onMouseLeave={handleMouseLeave}
-        // interactiveLayerIds={interactiveLayerIds}
+        onZoom={handleMapZoom}
       >
-        {/* <div className="hidden md:block">
-          <div className="absolute top-4 left-4 z-50 h-10 w-10 rounded-full bg-red-500">
-            TESTHIDE
-          </div>
-        </div> */}
         {children}
         <Marker
           longitude={marker.lng}
@@ -157,7 +146,7 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
         <MapBanner
           className="absolute bottom-12"
           action={easeToPin}
-          status={pinInView ? "default" : "pinOutOfView"}
+          status={isPinInView ? "default" : "pinOutOfView"}
         />
         <ParticipationBackgroundSwitcher
           className="absolute top-4 left-4"
