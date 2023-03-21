@@ -10,16 +10,16 @@ const hoverStyleForButtonElement = "enabled:hover:bg-blue-800 enabled:hover:text
 const activeStyleBlueButtonElement =
   "enabled:active:ring-2 enabled:active:ring-blue-800 enabled:active:bg-blue-500"
 const activeStyleWhiteButtonElement =
-  "enabled:active:ring-2 enabled:active:ring-blue-500 enabled:active:bg-white enabled:active:text-black"
+  "enabled:active:ring-2 enabled:active:ring-blue-800 enabled:active:bg-white enabled:active:text-black"
 const activeStylePinkButtonElement =
-  "enabled:active:ring-2 enabled:active:ring-pink-600 enabled:active:bg-pink-500 enabled:hover:bg-pink-300 enabled:hover:text-white"
+  "enabled:active:ring-2 enabled:active:ring-blue-800 enabled:active:bg-pink-500 enabled:hover:bg-blue-800 enabled:hover:text-white"
 
 const hoverStyleForLinkElement = "hover:bg-blue-800 hover:text-white"
 const activeStyleBlueLinkElement = "active:ring-2 active:ring-blue-800 active:bg-blue-500"
 const activeStylePinkLinkElement =
-  "active:ring-2 active:ring-pink-600 active:bg-pink-500 hover:bg-pink-300 hover:text-white"
+  "active:ring-2 active:ring-blue-800 active:bg-pink-500 hover:bg-blue-800 hover:text-white"
 const activeStyleWhiteLinkElement =
-  "active:ring-2 active:ring-blue-500 active:bg-white active:text-black"
+  "active:ring-2 active:ring-blue-800 active:bg-white active:text-black"
 
 const buttonBase =
   "w-full sm:w-auto shadow-sm text-sm py-3 px-6 text-sm font-normal rounded-lg inline-flex items-center justify-center no-underline"
