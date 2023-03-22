@@ -1,5 +1,6 @@
 import { ScreenHeaderParticipation } from "src/participation/components/core/ScreenHeaderParticipation"
 import { ParticipationButton, TParticipationButton } from "../core/ParticipationButton"
+import { ParticipationButtonWrapper } from "../core/ParticipationButtonWrapper"
 import { Question } from "../Question"
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -51,11 +52,11 @@ export const Page: React.FC<Props> = ({ page, buttonActions }) => {
             // eslint-disable-next-line react/jsx-key
             <Question className="mb-2" key={index} question={question} />
           ))}
-        <div className="sm flex flex-col gap-6 pt-10 sm:flex-row-reverse sm:justify-end sm:space-y-0">
+        <ParticipationButtonWrapper>
           {buttons?.map((button, index) => (
             <ParticipationButton buttonActions={buttonActions} key={index} button={button} />
           ))}
-        </div>
+        </ParticipationButtonWrapper>
       </>
     </section>
   )
