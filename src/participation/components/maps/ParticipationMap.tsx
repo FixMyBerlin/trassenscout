@@ -23,24 +23,18 @@ export type ParticipationMapProps = {
   children?: React.ReactNode
   projectMap: {
     projectGeometry: MultiLineString
-    marker: { lng: number; lat: number }
+    initialMarker: { lng: number; lat: number }
     config: {
-      zoom: number
       bounds: LngLatBoundsLike
-      longitude: number
-      latitude: number
-      boundsPadding: number
+      minZoom?: number
+      maxZoom?: number
     }
   }
 }
 
-export const ParticipationMap: React.FC<ParticipationMapProps> = ({
-  projectMap,
-  className,
-  children,
-}) => {
+export const ParticipationMap: React.FC<ParticipationMapProps> = ({ map, className, children }) => {
   const { mainMap } = useMap()
-  const [marker, setMarker] = useState(projectMap.marker)
+  const [marker, setMarker] = useState(map.initialMarker)
   const [events, logEvents] = useState<Record<string, LngLat>>({})
   const [isPinInView, setIsPinInView] = useState(true)
   const [isMediumScreen, setIsMediumScreen] = useState(false)
@@ -88,6 +82,7 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
 
   const onMarkerDragEnd = useCallback((event: MarkerDragEvent) => {
     logEvents((_events) => ({ ..._events, onDragEnd: event.lngLat }))
+    console.log(event)
   }, [])
 
   const checkPinInView = () => {
@@ -112,7 +107,7 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
     checkPinInView()
   }
 
-  const { config } = projectMap
+  const { config } = map
 
   return (
     <div className={clsx(className, "h-[500px]")}>
@@ -120,19 +115,15 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
         id="mainMap"
         mapLib={maplibregl}
         initialViewState={{
-          longitude: config.longitude,
-          latitude: config.latitude,
-          zoom: config.zoom,
           bounds: config.bounds,
-          fitBoundsOptions: {
-            padding: config.boundsPadding,
-          },
         }}
         scrollZoom={false}
         onMove={handleMapMove}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         onClick={handleClick}
         onZoom={handleMapZoom}
+        minZoom={config.minZoom || 6}
+        maxZoom={config.maxZoom || 14}
       >
         {children}
         <Marker
@@ -145,7 +136,7 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
           onDragEnd={onMarkerDragEnd}
         >
           <Pin />
-          <Source type="geojson" data={multiLineString(projectMap.projectGeometry.coordinates)}>
+          <Source type="geojson" data={multiLineString(map.projectGeometry.coordinates)}>
             <Layer
               type="line"
               paint={{

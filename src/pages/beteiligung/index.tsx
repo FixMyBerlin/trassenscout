@@ -54,7 +54,7 @@ const Email = ({ onSubmit }) => {
 }
 
 const ParticipationMainPage: BlitzPage = () => {
-  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("MORE")
+  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("SURVEY")
   const [responses, setResponses] = useState<any[]>([])
   const [email, setEmail] = useState<string | null>()
 

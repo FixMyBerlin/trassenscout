@@ -3,28 +3,22 @@ import clsx from "clsx"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import React, { useEffect } from "react"
-import Map, { Layer, LngLatBoundsLike, Marker, Source, useMap } from "react-map-gl"
-import Pin from "./Pin"
+import Map, { Layer, Marker, Source, useMap } from "react-map-gl"
 import StaticPin from "./StaticPin"
 
-export type ParticipationMapProps = {
+type Props = {
   className?: string
   children?: React.ReactNode
-  projectMap: {
+  marker: { lng: number; lat: number }
+  staticMap: {
     projectGeometry: MultiLineString
-    marker: { lng: number; lat: number }
-    config: {
-      zoom: number
-      bounds: LngLatBoundsLike
-      longitude: number
-      latitude: number
-      boundsPadding: number
-    }
+    config: { zoom: number }
   }
 }
 
-export const ParticipationStaticMap: React.FC<ParticipationMapProps> = ({
-  projectMap,
+export const ParticipationStaticMap: React.FC<Props> = ({
+  staticMap,
+  marker,
   className,
   children,
 }) => {
@@ -43,9 +37,9 @@ export const ParticipationStaticMap: React.FC<ParticipationMapProps> = ({
         id="mainMap"
         mapLib={maplibregl}
         initialViewState={{
-          longitude: projectMap.marker.lng,
-          latitude: projectMap.marker.lat,
-          zoom: 12,
+          longitude: marker.lng,
+          latitude: marker.lat,
+          zoom: staticMap.config.zoom || 12,
         }}
         scrollZoom={false}
         boxZoom={false}
@@ -60,12 +54,12 @@ export const ParticipationStaticMap: React.FC<ParticipationMapProps> = ({
         {children}
         <Marker
           style={{ cursor: "default" }}
-          longitude={projectMap.marker.lng}
-          latitude={projectMap.marker.lat}
+          longitude={marker.lng}
+          latitude={marker.lat}
           anchor="bottom"
         >
           <StaticPin />
-          <Source type="geojson" data={multiLineString(projectMap.projectGeometry.coordinates)}>
+          <Source type="geojson" data={multiLineString(staticMap.projectGeometry.coordinates)}>
             <Layer
               type="line"
               paint={{

@@ -21,9 +21,9 @@ export type TConfig = Partial<Pick<ViewState, "longitude" | "latitude" | "zoom">
   zoomDiff?: number
 }
 const map = {
-  marker: {
-    lat: 52.51328686398023,
-    lng: 13.507912153758042,
+  initialMarker: {
+    lat: 52.505743315292676,
+    lng: 13.439531515319231,
   },
   projectGeometry: {
     type: "MultiLineString",
@@ -51,11 +51,40 @@ const map = {
     ],
   },
   config: {
-    zoom: 2,
-    bounds: [13.412276463418607, 52.49144130153442, 13.750532816664474, 52.671787],
-    longitude: 13.5,
-    latitude: 52.5,
-    boundsPadding: 20,
+    bounds: [13.368215305236783, 52.482770463629336, 13.491453514701735, 52.53102559302558],
+    maxZoom: 14,
+    minZoom: 6,
+  },
+}
+
+const staticMap = {
+  projectGeometry: {
+    type: "MultiLineString",
+    coordinates: [
+      [
+        [13.467931, 52.504393],
+        [13.467309, 52.504917],
+        [13.466715, 52.505385],
+        [13.466632, 52.50544],
+        [13.466545, 52.505499],
+        [13.465651, 52.506256],
+        [13.465277, 52.50656],
+        [13.465014, 52.506773],
+        [13.464841, 52.506901],
+        [13.464793, 52.506936],
+        [13.464716, 52.507013],
+        [13.46479, 52.507086],
+        [13.464836, 52.507133],
+        [13.465274, 52.507573],
+      ],
+      [
+        [13.465274, 52.507573],
+        [13.465279, 52.507578],
+      ],
+    ],
+  },
+  config: {
+    zoom: 12,
   },
 }
 
@@ -112,9 +141,15 @@ export const Survey: React.FC<Props> = ({ survey }) => {
             return <Page key={page.id} page={page} buttonActions={buttonActions} />
         })}
         <MapProvider>
-          <ParticipationMap projectMap={map} />
+          <ParticipationMap map={map} />
         </MapProvider>
-        <ParticipationStaticMap projectMap={map} />
+        <ParticipationStaticMap
+          marker={{
+            lat: 52.505743315292676,
+            lng: 13.439531515319231,
+          }}
+          staticMap={staticMap}
+        />
         <LastPage />
       </Form>
     </LayoutParticipation>
