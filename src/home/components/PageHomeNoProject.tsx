@@ -9,7 +9,7 @@ const ITEMS_PER_PAGE = 100
 const PageHomeNoProject = () => {
   return (
     <LayoutArticle>
-      <MetaTags noindex title="" />
+      <MetaTags noindex title="Trassenscout: Noch keiner Trasse zugeordnet" />
 
       <div className="set-bg-gray-100-on-body">
         <div className="flex h-full w-full">
