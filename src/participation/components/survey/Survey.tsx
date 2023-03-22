@@ -1,22 +1,20 @@
-import { Routes } from "@blitzjs/next"
-import router from "next/router"
-import { useState } from "react"
-import { LngLatBoundsLike, ViewState } from "react-map-gl"
-import { Form, FORM_ERROR } from "src/core/components/forms"
-import { pinkButtonStyles } from "src/core/components/links"
-import { MetaTags } from "src/core/layouts"
-import { LayoutParticipation } from "../core/LayoutParticipation"
-import { NavigationParticipation } from "../core/NavigationParticipation"
+import { useContext, useEffect, useState } from "react"
+import { ProgressContext } from "src/pages/beteiligung"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
-import { Page, TSurvey } from "./Page"
+import { Page, TPage } from "./Page"
 
 type Props = { survey: TSurvey; onSubmit: ([]) => void }
-export type TConfig = Partial<Pick<ViewState, "longitude" | "latitude" | "zoom">> & {
-  bounds?: LngLatBoundsLike
-  zoomDiff?: number
+
+export type TSurvey = {
+  id: number
+  title: { de: string }
+  createdAt: string
+  version: number
+  pages: TPage[]
 }
+
 const map = {
   initialMarker: {
     lat: 52.505743315292676,
@@ -85,33 +83,37 @@ const staticMap = {
   },
 }
 
-export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
-  const [pageProgress, setPageProgress] = useState(1)
+export const Survey: React.FC<Props> = ({ survey, handleSubmit }) => {
+  // const [surveyResponses, setSurveyResponses] = useState(["eins"])
+  const { progress, setProgress } = useContext(ProgressContext)
+  useEffect(() => {
+    setProgress({ ...progress, total: pages.length })
+  }, [])
 
-  const handleNextPage = () => {
-    const newPageProgress = pageProgress < pages.length ? pageProgress + 1 : pages.length
-    setPageProgress(newPageProgress)
-    window && window.scrollTo(0, 0)
-    console.log(newPageProgress)
-  }
-  const handleBackPage = () => {
-    const newPageProgress = pageProgress > 1 ? pageProgress - 1 : 1
-    setPageProgress(newPageProgress)
-    window && window.scrollTo(0, 0)
-    console.log(newPageProgress)
-  }
+  // const handleNextPage = () => {
+  //   const newCurrent = progress < pages.length ? progress + 1 : pages.length
+  //   setProgress({ current: newCurrent, total: pages.length })
+  //   window && window.scrollTo(0, 0)
+  //   console.log(newCurrent)
+  // }
+  // const handleBackPage = () => {
+  //   const newCurrent = progress > 1 ? progress - 1 : 1
+  //   setProgress({ current: newCurrent, total: pages.length })
+  //   window && window.scrollTo(0, 0)
+  //   console.log(newCurrent)
+  // }
 
-  const handleReset = () => {
-    setPageProgress(1)
-    console.log("reset")
-    // TODO reset object data
-  }
+  // const handleReset = () => {
+  //   setProgress(1)
+  //   // setSurveyResponses([])
+  // }
 
-  const buttonActions = {
-    next: handleNextPage,
-    back: handleBackPage,
-    reset: handleReset,
-  }
+  // const buttonActions = {
+  //   next: handleNextPage,
+  //   back: handleBackPage,
+  //   reset: handleReset,
+  //   submit: () => {},
+  // }
 
   const { pages } = survey
 
@@ -137,18 +139,10 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   }
 
   return (
-    <LayoutParticipation
-      navigation={
-        <NavigationParticipation progress={{ current: pageProgress, total: pages.length }} />
-      }
-    >
-      <MetaTags noindex title="Beteiligung RS8" />
-      <Form submitClassName={pinkButtonStyles} onSubmit={handleSubmit}>
-        {pages.map((page) => {
-          if (pageProgress === page.id)
-            return <Page key={page.id} page={page} buttonActions={buttonActions} />
-        })}
-      </Form>
-    </LayoutParticipation>
+    <>
+      {pages.map((page) => {
+        if (page.id === progress.current) return <Page key={page.id} page={page} />
+      })}
+    </>
   )
 }

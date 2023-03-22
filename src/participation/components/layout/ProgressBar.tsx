@@ -1,11 +1,13 @@
+import { useContext } from "react"
+import { ProgressContext } from "src/pages/beteiligung"
+
 export { FORM_ERROR } from "src/core/components/forms"
 
-export type TProgress = {
-  progress: { current: number; total: number }
-}
-
-export const ProgressBar: React.FC<TProgress> = ({ progress }) => {
+export const ProgressBar = () => {
+  const { progress } = useContext(ProgressContext)
   const width = (progress.current / progress.total) * 100
+  console.log(progress)
+  // const width = 100
   return (
     <div>
       <h4 className="sr-only">Status</h4>

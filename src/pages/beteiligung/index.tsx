@@ -1,14 +1,18 @@
 import { BlitzPage } from "@blitzjs/next"
+import { createContext, useState } from "react"
+import { Done } from "src/participation/components/Done"
+import { Email } from "src/participation/components/Email"
+import { Feedback } from "src/participation/components/Feedback"
+import { LayoutParticipation } from "src/participation/components/layout/LayoutParticipation"
+import { More } from "src/participation/components/More"
 import { Survey } from "src/participation/components/survey/Survey"
 import surveyDefinition from "src/participation/data/survey.json"
-import { useState } from "react"
-import { Feedback } from "src/participation/components/Feedback"
-import { More } from "src/participation/components/More"
-import { Email } from "src/participation/components/Email"
-import { Done } from "src/participation/components/Done"
+
+export const ProgressContext = createContext(null)
 
 const ParticipationMainPage: BlitzPage = () => {
-  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("FEEDBACK")
+  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("SURVEY")
+  const [progress, setProgress] = useState({ current: 1, total: 1 })
   const [responses, setResponses] = useState<any[]>([])
   const [email, setEmail] = useState<string | null>()
 
@@ -38,6 +42,10 @@ const ParticipationMainPage: BlitzPage = () => {
     setEmail(email)
   }
 
+  // const handleProgressChange = ({ newCurrent, newTotal }) => {
+  //   setProgress({ current: newCurrent, total: newTotal })
+  // }
+
   let component
   switch (stage) {
     case "SURVEY":
@@ -58,16 +66,18 @@ const ParticipationMainPage: BlitzPage = () => {
   }
 
   return (
-    <div>
-      <div className="border-red-500">
-        <code>stage: {stage}</code>
-        <code>
-          <pre>{JSON.stringify(responses, null, 2)}</pre>
-        </code>
-        <code>email: {email}</code>
-      </div>
-      <div>{component}</div>
-    </div>
+    <ProgressContext.Provider value={{ progress, setProgress }}>
+      <LayoutParticipation>
+        <div className="border-red-500">
+          <code>stage: {stage}</code>
+          <code>
+            <pre>{JSON.stringify(responses, null, 2)}</pre>
+          </code>
+          <code>email: {email}</code>
+        </div>
+        <div>{component}</div>
+      </LayoutParticipation>
+    </ProgressContext.Provider>
   )
 }
 

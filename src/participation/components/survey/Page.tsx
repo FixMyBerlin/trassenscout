@@ -29,17 +29,9 @@ export type TPage = {
   buttons: TButton[] | null
 }
 
-export type TSurvey = {
-  id: number
-  title: { de: string }
-  createdAt: string
-  version: number
-  pages: TPage[]
-}
+type Props = { page: TPage }
 
-type Props = { page: TPage; buttonActions: TParticipationButton["buttonActions"] }
-
-export const Page: React.FC<Props> = ({ page, buttonActions }) => {
+export const Page: React.FC<Props> = ({ page }) => {
   if (!page) return null
   const { title, description, questions, buttons } = page
   return (
@@ -54,7 +46,7 @@ export const Page: React.FC<Props> = ({ page, buttonActions }) => {
           ))}
         <ParticipationButtonWrapper>
           {buttons?.map((button, index) => (
-            <ParticipationButton buttonActions={buttonActions} key={index} button={button} />
+            <ParticipationButton key={index} button={button} />
           ))}
         </ParticipationButtonWrapper>
       </>
