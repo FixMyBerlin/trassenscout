@@ -42,14 +42,8 @@
               },
               "allOf": [
                 {
-                  "if": {
-                    "properties": {
-                      "component": { "enum": ["singleResponse", "multipleResponse"] }
-                    }
-                  },
-                  "then": {
-                    "properties": { "props": { "$ref": "#/$defs/SingleOrMultiResponseProps" } }
-                  }
+                  "if": { "properties": { "component": { "enum": ["singleResponse", "multipleResponse"] }}},
+                  "then": { "properties": { "props": { "$ref": "#/$defs/SingleOrMultiResponseProps" } }}
                 }
               ]
             }

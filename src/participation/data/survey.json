@@ -145,6 +145,64 @@
         { "label": { "de": "Weiter" }, "color": "pink", "onClick": { "action": "nextPage" } },
         { "label": { "de": "Zurück" }, "color": "white", "onClick": { "action": "previousPage" } }
       ]
+    },
+    {
+      "id": 4,
+      "title": { "de": "Weitere Verkehrsteilnehmer auf dem RS8" },
+      "description": {
+        "de": "Leider wird es nicht überall möglich sein, Wege zu bauen, die ausschließlich dem Radverkehr vorbehalten sind. Wir möchten gerne von Ihnen wissen, welche Folgen das für Ihre Nutzung des RS 8 hätte."
+      },
+      "questions": [
+        {
+          "id": 1,
+          "label": {
+            "de": "Eine Fahrradstraße, die auch von Kfz befahren werden darf, würde ich..."
+          },
+          "component": "singleResponse",
+          "props": {
+            "responses": [
+              { "id": 1, "text": { "de": "ohne Einschränkung mit dem Rad nutzen." } },
+              { "id": 2, "text": { "de": "selten mit dem Rad nutzen." } },
+              { "id": 3, "text": { "de": "nie mit dem Rad nutzen." } },
+              { "id": 4, "text": { "de": "Weiß nicht" } }
+            ]
+          }
+        },
+        {
+          "id": 2,
+          "label": {
+            "de": "Einen Radweg, der auch von landwirtschaftlichen Fahrzeugen befahren werden darf, würde ich..."
+          },
+          "component": "singleResponse",
+          "props": {
+            "responses": [
+              { "id": 1, "text": { "de": "ohne Einschränkung mit dem Rad nutzen." } },
+              { "id": 2, "text": { "de": "selten mit dem Rad nutzen." } },
+              { "id": 3, "text": { "de": "nie mit dem Rad nutzen." } },
+              { "id": 4, "text": { "de": "Weiß nicht" } }
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "label": {
+            "de": "Einen Radweg, der auch von Bussen befahren werden darf, würde ich..."
+          },
+          "component": "singleResponse",
+          "props": {
+            "responses": [
+              { "id": 1, "text": { "de": "ohne Einschränkung mit dem Rad nutzen." } },
+              { "id": 2, "text": { "de": "selten mit dem Rad nutzen." } },
+              { "id": 3, "text": { "de": "nie mit dem Rad nutzen." } },
+              { "id": 4, "text": { "de": "Weiß nicht" } }
+            ]
+          }
+        }
+      ],
+      "buttons": [
+        { "label": { "de": "Weiter" }, "color": "pink", "onClick": { "action": "nextPage" } },
+        { "label": { "de": "Zurück" }, "color": "white", "onClick": { "action": "previousPage" } }
+      ]
     }
   ]
 }
