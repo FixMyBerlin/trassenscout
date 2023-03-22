@@ -27,10 +27,20 @@ const MultipleResponseComponent = ({ id, responses }) => (
   />
 )
 
-const TextResponseComponent = ({ id }) => (
+const TextResponseComponent = ({ id, caption }) => (
   <>
     <ParticipationLabeledTextareaField name={String(id)} label={""} />
-    <p className="mt-2 text-right text-sm text-gray-500">Max. 2000 Zeichen</p>
+    <p className="mt-2 text-right text-sm text-gray-500">{caption.de}</p>
+  </>
+)
+
+const CustomComponent = (props) => (
+  <>
+    <div className="border-2 border-black bg-gray-200 p-1">
+      <code>
+        <pre>{JSON.stringify(props, null, 2)}</pre>
+      </code>
+    </div>
   </>
 )
 
@@ -38,17 +48,18 @@ const components = {
   singleResponse: SingleResponseComponent,
   multipleResponse: MultipleResponseComponent,
   text: TextResponseComponent,
+  custom: CustomComponent,
 }
 
 type Props = { question: TQuestion; className?: string }
 
 export const Question: React.FC<Props> = ({ question, className }) => {
   const { id, label, component, props } = question
-  const Component = components[component]
+  const Component = components[component] || null
   return (
     <div className={className} key={id}>
       <H2 className="mb-8">{label.de}</H2>
-      <Component id={id} {...props} />
+      {Component && <Component id={id} {...props} />}
     </div>
   )
 }

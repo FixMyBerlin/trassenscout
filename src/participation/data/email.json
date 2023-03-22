@@ -1,0 +1,45 @@
+{
+  "id": 1,
+  "title": { "de": "Feedback" },
+  "createdAt": "2023-03-22T14:46:45.712Z",
+  "version": 1,
+  "pages": [
+    {
+      "id": 1,
+      "title": { "de": "Vielen Dank für Ihre Teilnahme" },
+      "description": { "de": "" },
+      "questions": [
+        {
+          "id": 1,
+          "label": { "de": "Was passiert jetzt?" },
+          "component": "custom",
+          "props": {
+            "text": {
+              "de": "Die Anregungen aus der Bürgerbeteiligung werden vom Planungsteam ausgewertet und geprüft, ob und inwieweit sie in die weitere Entwurfsplanung einfließen können. Wir bitten im Vorhinein um Verständnis, dass wir nicht jeden Hinweis kommentieren. Nach Abschluss der Beteiligung werden wir gebündelt Rückmeldung zu den angesprochenen Themen geben."
+            }
+          }
+        },
+        {
+          "id": 2,
+          "label": {
+            "de": "Möchten Sie weiter informiert werden?"
+          },
+          "component": "custom",
+          "props": {
+            "text": {
+              "de": "Wenn Sie Ihre E-Mail-Adresse angeben, können wir ggf. Rückfragen stellen und informieren Sie über die Veröffentlichung der Ergebnisse und weitere Fortschritte im Projekt RS 8."
+            },
+            "emailPlaceholder": { "de": "you@example.com" },
+            "agreementText": {
+              "de": "Ich stimme den Datenschutzbedingungen zur Verarbeitung meiner persönlichen Daten zu."
+            }
+          }
+        }
+      ],
+      "buttons": [
+        { "label": { "de": "Weiter" }, "color": "pink", "onClick": { "action": "nextPage" } },
+        { "label": { "de": "Zurück" }, "color": "white", "onClick": { "action": "previousPage" } }
+      ]
+    }
+  ]
+}
