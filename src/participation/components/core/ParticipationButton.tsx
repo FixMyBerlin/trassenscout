@@ -6,15 +6,20 @@ export { FORM_ERROR } from "src/core/components/forms"
 export type TParticipationButton = {
   button: TButton
   buttonActions: { next: any; back: any; reset: any }
+  disabled?: boolean
 }
 
-export const ParticipationButton: React.FC<TParticipationButton> = ({ button, buttonActions }) => {
+export const ParticipationButton: React.FC<TParticipationButton> = ({
+  disabled,
+  button,
+  buttonActions,
+}) => {
   const { label, color, onClick } = button
   const buttonStyles = clsx("px-12", color === "white" ? whiteButtonStyles : pinkButtonStyles)
 
   if (onClick.action === "submit")
     return (
-      <button type="submit" className={buttonStyles}>
+      <button disabled={disabled} type="submit" className={buttonStyles}>
         {label.de}
       </button>
     )
@@ -33,7 +38,7 @@ export const ParticipationButton: React.FC<TParticipationButton> = ({ button, bu
   }
 
   return (
-    <button type="button" className={buttonStyles} onClick={buttonActionSelect}>
+    <button disabled={disabled} type="button" className={buttonStyles} onClick={buttonActionSelect}>
       {label.de}
     </button>
   )
