@@ -1,24 +1,33 @@
+export { FORM_ERROR } from "src/core/components/forms"
 import clsx from "clsx"
 import { useState } from "react"
+import { Form } from "src/core/components/forms"
 import { Link, pinkButtonStyles, whiteButtonStyles } from "src/core/components/links"
-import { ParticipationButton } from "../core/ParticipationButton"
-import { ParticipationButtonWrapper } from "../core/ParticipationButtonWrapper"
-import { ScreenHeaderParticipation } from "../core/ScreenHeaderParticipation"
-import { ParticipationH2, ParticipationP } from "../core/Text"
-import { ParticipationLabeledCheckbox } from "../form/ParticipationLabeledCheckbox"
-import { ParticipationLabeledTextField } from "../form/ParticipationLabeledTextField"
-export { FORM_ERROR } from "src/core/components/forms"
+import { ParticipationButtonWrapper } from "./core/ParticipationButtonWrapper"
+import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
+import { ParticipationH2, ParticipationP } from "./core/Text"
+import { ParticipationLabeledTextField } from "./form/ParticipationLabeledTextField"
 
-export const LastPage = () => {
+type Props = {
+  onSubmit: any
+}
+
+export const Email: React.FC<Props> = ({ onSubmit }) => {
   const [email, setEmail] = useState("")
   const [consent, setConsent] = useState(false)
-  const handleSubmitClick = () => {
-    console.log("TEST TEST")
+
+  const handleSubmit = () => {
+    onSubmit(email)
+  }
+
+  // TODO: Event type
+  const handleInputChange = (event: any) => {
+    setEmail(event.target.value)
   }
 
   return (
     <section>
-      <>
+      <Form onSubmit={(values) => console.log(values)}>
         <ScreenHeaderParticipation title="Vielen Dank für Ihre Teilnahme" />
         <ParticipationH2>Was passiert jetzt?</ParticipationH2>
         <ParticipationP>
@@ -37,16 +46,17 @@ export const LastPage = () => {
           label=""
           placeholder="you@example.com"
           outerProps={{ className: "mb-6" }}
+          onChange={handleInputChange}
         />
-        <ParticipationLabeledCheckbox
+        {/* <ParticipationLabeledCheckbox
           name="consent"
           label="Ich stimme den Datenschutzbedingungen zur Verarbeitung meiner persönlichen Daten zu."
-        />
+        /> */}
 
         <ParticipationButtonWrapper>
           <button
             disabled={!consent}
-            onClick={handleSubmitClick}
+            onClick={handleSubmit}
             className={clsx(pinkButtonStyles, consent ? "" : "!bg-pink-200")}
             // TODO abstract in button component
             type="button"
@@ -61,7 +71,7 @@ export const LastPage = () => {
             Nein, zurück zur Startseite
           </Link>
         </ParticipationButtonWrapper>
-      </>
+      </Form>
     </section>
   )
 }

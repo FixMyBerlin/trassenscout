@@ -1,19 +1,16 @@
 import { Routes } from "@blitzjs/next"
 import router from "next/router"
 import { useState } from "react"
-import { LngLatBoundsLike, MapProvider, ViewState } from "react-map-gl"
+import { LngLatBoundsLike, ViewState } from "react-map-gl"
 import { Form, FORM_ERROR } from "src/core/components/forms"
 import { pinkButtonStyles } from "src/core/components/links"
 import { MetaTags } from "src/core/layouts"
-import { LayoutParticipation } from "./core/LayoutParticipation"
-import { NavigationParticipation } from "./core/NavigationParticipation"
-import { ParticipationMap } from "./maps/ParticipationMap"
-import { ParticipationStaticMap } from "./maps/ParticipationStaticMap"
-import { LastPage } from "./pages/LastPage"
+import { LayoutParticipation } from "../core/LayoutParticipation"
+import { NavigationParticipation } from "../core/NavigationParticipation"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
-import { Page, TSurvey } from "./pages/Page"
+import { Page, TSurvey } from "./Page"
 
 type Props = { survey: TSurvey; onSubmit: ([]) => void }
 export type TConfig = Partial<Pick<ViewState, "longitude" | "latitude" | "zoom">> & {
@@ -151,17 +148,6 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
           if (pageProgress === page.id)
             return <Page key={page.id} page={page} buttonActions={buttonActions} />
         })}
-        <MapProvider>
-          <ParticipationMap map={map} />
-        </MapProvider>
-        <ParticipationStaticMap
-          marker={{
-            lat: 52.505743315292676,
-            lng: 13.439531515319231,
-          }}
-          staticMap={staticMap}
-        />
-        <LastPage />
       </Form>
     </LayoutParticipation>
   )

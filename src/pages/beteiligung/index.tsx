@@ -1,60 +1,14 @@
 import { BlitzPage } from "@blitzjs/next"
-import { Survey } from "src/participation/components/Survey"
+import { Survey } from "src/participation/components/survey/Survey"
 import surveyDefinition from "src/participation/data/survey.json"
 import { useState } from "react"
-
-const Feedback = ({ onSubmit }) => {
-  const handleSubmit = () => {
-    onSubmit({ feed: "back" })
-  }
-
-  return (
-    <div>
-      <h1>Feedback</h1>
-      <div>
-        <button className="m-2 border-2 p-2" onClick={handleSubmit}>
-          OK
-        </button>
-      </div>
-    </div>
-  )
-}
-
-const More = ({ onClickMore, onClickFinish }) => {
-  return (
-    <div>
-      <h1>Feedback</h1>
-      <div>
-        <button className="m-2 border-2 p-2" onClick={onClickMore}>
-          More Feedback
-        </button>
-        <button className="m-2 border-2 p-2" onClick={onClickFinish}>
-          Finish
-        </button>
-      </div>
-    </div>
-  )
-}
-
-const Email = ({ onSubmit }) => {
-  const handleSubmit = () => {
-    onSubmit("john@example.com")
-  }
-  return (
-    <div>
-      <h1>Email</h1>
-      <div>
-        {/*<input type="text" name="" id="" />*/}
-        <button className="m-2 border-2 p-2" onClick={handleSubmit}>
-          Send
-        </button>
-      </div>
-    </div>
-  )
-}
+import { Feedback } from "src/participation/components/Feedback"
+import { More } from "src/participation/components/More"
+import { Email } from "src/participation/components/Email"
+import { Done } from "src/participation/components/Done"
 
 const ParticipationMainPage: BlitzPage = () => {
-  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("SURVEY")
+  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("FEEDBACK")
   const [responses, setResponses] = useState<any[]>([])
   const [email, setEmail] = useState<string | null>()
 
@@ -99,7 +53,7 @@ const ParticipationMainPage: BlitzPage = () => {
       component = <Email onSubmit={handleSubmitEmail} />
       break
     case "DONE":
-      component = <h1>Done</h1>
+      component = <Done />
       break
   }
 

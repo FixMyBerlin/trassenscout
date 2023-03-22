@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { pinkButtonStyles, whiteButtonStyles } from "src/core/components/links"
-import { TButton } from "../pages/Page"
+import { TButton } from "../survey/Page"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export type TParticipationButton = {
