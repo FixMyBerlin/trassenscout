@@ -9,6 +9,7 @@ import { LayoutParticipation } from "./core/LayoutParticipation"
 import { NavigationParticipation } from "./core/NavigationParticipation"
 import { ParticipationMap } from "./maps/ParticipationMap"
 import { ParticipationStaticMap } from "./maps/ParticipationStaticMap"
+import { LastPage } from "./pages/LastPage"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -114,6 +115,7 @@ export const Survey: React.FC<Props> = ({ survey }) => {
           <ParticipationMap projectMap={map} />
         </MapProvider>
         <ParticipationStaticMap projectMap={map} />
+        <LastPage />
       </Form>
     </LayoutParticipation>
   )
