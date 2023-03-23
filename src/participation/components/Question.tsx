@@ -9,10 +9,10 @@ export { FORM_ERROR } from "src/core/components/forms"
 const SingleResponseComponent = ({ id, responses }) => (
   <ParticipationLabeledRadiobuttonGroup
     items={responses.map((item) => ({
-      scope: String(id),
+      scope: `single-${id}`,
       name: item.text.de,
       label: item.text.de,
-      value: item.text.de,
+      value: item.id,
     }))}
   />
 )
@@ -21,7 +21,7 @@ const MultipleResponseComponent = ({ id, responses }) => (
   <ParticipationLabeledCheckboxGroup
     key={id}
     items={responses.map((item) => ({
-      name: item.text.de,
+      name: `multi-${id}-${item.id}`,
       label: item.text.de,
     }))}
   />
@@ -29,7 +29,7 @@ const MultipleResponseComponent = ({ id, responses }) => (
 
 const TextResponseComponent = ({ id, caption }) => (
   <>
-    <ParticipationLabeledTextareaField name={String(id)} label={""} />
+    <ParticipationLabeledTextareaField name={`text-${id}`} label={""} />
     <p className="mt-2 text-right text-sm text-gray-500">{caption.de}</p>
   </>
 )

@@ -87,7 +87,7 @@ const ParticipationMainPage: BlitzPage = () => {
   let component
   switch (stage) {
     case "SURVEY":
-      component = <Survey survey={surveyDefinition} handleSubmit={handleSubmitSurvey} />
+      component = <Survey survey={surveyDefinition} onSubmit={handleSubmitSurvey} />
       break
     case "FEEDBACK":
       component = <Feedback onSubmit={handleSubmitFeedback} />

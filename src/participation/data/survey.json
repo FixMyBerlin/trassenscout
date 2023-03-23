@@ -103,7 +103,7 @@
       },
       "questions": [
         {
-          "id": 1,
+          "id": 6,
           "label": { "de": "Wie wichtig ist Ihnen die Beleuchtung eines Radschnellwegs?" },
           "component": "singleResponse",
           "props": {
@@ -115,7 +115,7 @@
           }
         },
         {
-          "id": 2,
+          "id": 7,
           "label": { "de": "Wie wichtig sind Ihnen Rastmöglichkeiten entlang der Strecke?" },
           "component": "singleResponse",
           "props": {
@@ -127,7 +127,7 @@
           }
         },
         {
-          "id": 3,
+          "id": 8,
           "label": {
             "de": "Wie wichtig sind Ihnen Reparatursäulen (Luftpumpe, Werkzeug) entlang der Strecke ?"
           },
@@ -154,7 +154,7 @@
       },
       "questions": [
         {
-          "id": 1,
+          "id": 9,
           "label": {
             "de": "Eine Fahrradstraße, die auch von Kfz befahren werden darf, würde ich..."
           },
@@ -169,7 +169,7 @@
           }
         },
         {
-          "id": 2,
+          "id": 10,
           "label": {
             "de": "Einen Radweg, der auch von landwirtschaftlichen Fahrzeugen befahren werden darf, würde ich..."
           },
@@ -184,7 +184,7 @@
           }
         },
         {
-          "id": 3,
+          "id": 11,
           "label": {
             "de": "Einen Radweg, der auch von Bussen befahren werden darf, würde ich..."
           },
@@ -200,7 +200,7 @@
         }
       ],
       "buttons": [
-        { "label": { "de": "Weiter" }, "color": "pink", "onClick": { "action": "nextPage" } },
+        { "label": { "de": "Weiter" }, "color": "pink", "onClick": { "action": "submit" } },
         { "label": { "de": "Zurück" }, "color": "white", "onClick": { "action": "previousPage" } }
       ]
     }

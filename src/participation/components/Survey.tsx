@@ -15,7 +15,7 @@ export { FORM_ERROR } from "src/core/components/forms"
 
 import { Page, TSurvey } from "./pages/Page"
 
-type Props = { survey: TSurvey }
+type Props = { survey: TSurvey; onSubmit: ([]) => void }
 export type TConfig = Partial<Pick<ViewState, "longitude" | "latitude" | "zoom">> & {
   bounds?: LngLatBoundsLike
   zoomDiff?: number
@@ -88,7 +88,7 @@ const staticMap = {
   },
 }
 
-export const Survey: React.FC<Props> = ({ survey }) => {
+export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   const [pageProgress, setPageProgress] = useState(1)
 
   const handleNextPage = () => {
@@ -118,16 +118,27 @@ export const Survey: React.FC<Props> = ({ survey }) => {
 
   const { pages } = survey
 
-  type HandleSubmit = any // TODO
-  const handleSubmit = async (values: HandleSubmit) => {
-    try {
-      await console.log(values)
-      await router.push(Routes.ParticipationMainPage())
-    } catch (error: any) {
-      console.error(error)
-      return { [FORM_ERROR]: error }
-    }
+  const handleSubmit = (values: Record<string, null | string | boolean>) => {
+    const responses: Record<string, null | string | number | number[]> = {}
+    Object.entries(values).forEach(([k, v]) => {
+      const [questionType, questionId, responseId] = k.split("-")
+      switch (questionType) {
+        case "single":
+          responses[questionId!] = v === null ? null : Number(v)
+          break
+        case "multi":
+          if (!(questionId! in responses)) responses[questionId!] = []
+          // @ts-ignore
+          if (v) responses[questionId!].push(Number(responseId))
+          break
+        case "text":
+          responses[questionId!] = v === "" ? null : String(v)
+          break
+      }
+    })
+    onSubmit(Object.entries(responses).map(([k, v]) => [Number(k), v]))
   }
+
   return (
     <LayoutParticipation
       navigation={
