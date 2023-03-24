@@ -31,7 +31,7 @@ export type TPage = {
 
 type Props = { page: TPage }
 
-export const Page: React.FC<Props> = ({ page, buttonActions }) => {
+export const Page: React.FC<Props> = ({ page, buttonActions, completed }) => {
   if (!page) return null
   const { title, description, questions, buttons } = page
   return (
@@ -45,9 +45,20 @@ export const Page: React.FC<Props> = ({ page, buttonActions }) => {
             <Question className="mb-2" key={index} question={question} />
           ))}
         <ParticipationButtonWrapper>
-          {buttons?.map((button, index) => (
-            <ParticipationButton key={index} button={button} buttonActions={buttonActions} />
-          ))}
+          {buttons?.map((button, index) => {
+            let disabled = false
+            if (["nextPage", "submit"].includes(button.onClick.action)) {
+              disabled = !completed
+            }
+            return (
+              <ParticipationButton
+                buttonActions={buttonActions}
+                key={index}
+                button={button}
+                disabled={disabled}
+              />
+            )
+          })}
         </ParticipationButtonWrapper>
       </>
     </section>

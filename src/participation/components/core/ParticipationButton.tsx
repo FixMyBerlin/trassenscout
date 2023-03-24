@@ -15,8 +15,11 @@ export const ParticipationButton: React.FC<TParticipationButton> = ({
   buttonActions,
 }) => {
   const { label, color, onClick } = button
-  const buttonStyles = clsx("px-12", color === "white" ? whiteButtonStyles : pinkButtonStyles)
-
+  const buttonStyles = clsx(
+    "px-12",
+    color === "white" ? whiteButtonStyles : pinkButtonStyles,
+    disabled && "opacity-20"
+  )
   if (onClick.action === "submit")
     return (
       <button disabled={disabled} type="submit" className={buttonStyles}>

@@ -5,6 +5,7 @@ import { ProgressContext } from "src/pages/beteiligung"
 export { FORM_ERROR } from "src/core/components/forms"
 
 import { Page, TPage } from "./Page"
+import { pinkButtonStyles } from "../../../core/components/links"
 
 type Props = { survey: TSurvey; onSubmit: ([]) => void }
 
@@ -18,7 +19,9 @@ export type TSurvey = {
 
 export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   const [pageProgress, setPageProgress] = useState(0)
+  const [values, setValues] = useState({})
   const { progress, setProgress } = useContext(ProgressContext)
+
   useEffect(() => {
     setProgress({ ...progress, total: pages.length })
   }, [])
@@ -50,7 +53,7 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
 
   const { pages } = survey
 
-  const handleSubmit = (values: Record<string, null | string | boolean>) => {
+  const transformValues = (values: Record<string, null | string | boolean>) => {
     const responses: Record<string, null | string | number | number[]> = {}
     Object.entries(values).forEach(([k, v]) => {
       const [questionType, questionId, responseId] = k.split("-")
@@ -68,14 +71,50 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
           break
       }
     })
-    onSubmit(Object.entries(responses).map(([k, v]) => [Number(k), v]))
+    return responses
+  }
+
+  const handleSubmit = (values) => {
+    onSubmit(Object.entries(transformValues(values)).map(([k, v]) => [Number(k), v]))
+  }
+
+  const handleChange = (values) => {
+    values = transformValues(values)
+    setValues(values)
+  }
+
+  const pageIsComplete = () => {
+    let completed: boolean
+    const questions = pages[pageProgress]!.questions
+
+    if (!questions || !questions.length) {
+      completed = true
+    } else {
+      // @ts-ignore every() returns a boolean
+      completed = pages[pageProgress]!.questions?.every(({ id, component }) => {
+        if (!(id in values)) {
+          return false
+        }
+        // @ts-ignore no worries - this works
+        const response = values[id]
+        if (["singleResponse", "text"].includes(component)) {
+          return response !== null
+        } else {
+          return !!response.length
+        }
+      })
+    }
+    return completed
   }
 
   const page = pages[pageProgress]
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Page page={page} buttonActions={buttonActions} />
+    <Form submitClassName={pinkButtonStyles} onSubmit={handleSubmit} onChangeValues={handleChange}>
+      <code>
+        <pre>{JSON.stringify(values, null, 2)}</pre>
+      </code>
+      <Page page={page} buttonActions={buttonActions} completed={pageIsComplete()} />
     </Form>
   )
 }
