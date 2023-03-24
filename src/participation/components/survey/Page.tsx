@@ -31,7 +31,7 @@ export type TPage = {
 
 type Props = { page: TPage }
 
-export const Page: React.FC<Props> = ({ page }) => {
+export const Page: React.FC<Props> = ({ page, buttonActions }) => {
   if (!page) return null
   const { title, description, questions, buttons } = page
   return (
@@ -46,7 +46,7 @@ export const Page: React.FC<Props> = ({ page }) => {
           ))}
         <ParticipationButtonWrapper>
           {buttons?.map((button, index) => (
-            <ParticipationButton key={index} button={button} />
+            <ParticipationButton key={index} button={button} buttonActions={buttonActions} />
           ))}
         </ParticipationButtonWrapper>
       </>
