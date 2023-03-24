@@ -19,7 +19,15 @@ export const ParticipationButton: React.FC<TParticipationButton> = ({
   const { label, color, onClick } = button
   const buttonStyles = clsx("px-12", color === "white" ? whiteButtonStyles : pinkButtonStyles)
 
+  if (onClick.action === "submit")
+    return (
+      <button disabled={disabled} type="submit" className={buttonStyles}>
+        {label.de}
+      </button>
+    )
+
   let buttonAction: any
+  // TODO
   switch (onClick.action) {
     case "reset":
       buttonAction = () => {}
@@ -39,10 +47,6 @@ export const ParticipationButton: React.FC<TParticipationButton> = ({
         window && window.scrollTo(0, 0)
         console.log(newCurrent)
       }
-      break
-    case "submit":
-      buttonAction = () => {}
-      break
   }
 
   return (

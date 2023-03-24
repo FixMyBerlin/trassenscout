@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react"
+import { Form } from "src/core/components/forms"
 import { ProgressContext } from "src/pages/beteiligung"
 
 export { FORM_ERROR } from "src/core/components/forms"
@@ -83,7 +84,7 @@ const staticMap = {
   },
 }
 
-export const Survey: React.FC<Props> = ({ survey, handleSubmit }) => {
+export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   // const [surveyResponses, setSurveyResponses] = useState(["eins"])
   const { progress, setProgress } = useContext(ProgressContext)
   useEffect(() => {
@@ -139,10 +140,10 @@ export const Survey: React.FC<Props> = ({ survey, handleSubmit }) => {
   }
 
   return (
-    <>
+    <Form onSubmit={handleSubmit}>
       {pages.map((page) => {
         if (page.id === progress.current) return <Page key={page.id} page={page} />
       })}
-    </>
+    </Form>
   )
 }
