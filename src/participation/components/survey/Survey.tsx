@@ -85,36 +85,36 @@ const staticMap = {
 }
 
 export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
-  // const [surveyResponses, setSurveyResponses] = useState(["eins"])
+  const [pageProgress, setPageProgress] = useState(0)
   const { progress, setProgress } = useContext(ProgressContext)
   useEffect(() => {
     setProgress({ ...progress, total: pages.length })
   }, [])
 
-  // const handleNextPage = () => {
-  //   const newCurrent = progress < pages.length ? progress + 1 : pages.length
-  //   setProgress({ current: newCurrent, total: pages.length })
-  //   window && window.scrollTo(0, 0)
-  //   console.log(newCurrent)
-  // }
-  // const handleBackPage = () => {
-  //   const newCurrent = progress > 1 ? progress - 1 : 1
-  //   setProgress({ current: newCurrent, total: pages.length })
-  //   window && window.scrollTo(0, 0)
-  //   console.log(newCurrent)
-  // }
+  const handleNextPage = () => {
+    const newPageProgress = Math.min(pages.length - 1, pageProgress + 1)
+    setPageProgress(newPageProgress)
+    window && window.scrollTo(0, 0)
+    console.log(newPageProgress)
+  }
+  const handleBackPage = () => {
+    const newPageProgress = Math.max(0, pageProgress - 1)
+    setPageProgress(newPageProgress)
+    window && window.scrollTo(0, 0)
+    console.log(newPageProgress)
+  }
 
-  // const handleReset = () => {
-  //   setProgress(1)
-  //   // setSurveyResponses([])
-  // }
+  const handleReset = () => {
+    // setProgress(1)
+    // setSurveyResponses([])
+  }
 
-  // const buttonActions = {
-  //   next: handleNextPage,
-  //   back: handleBackPage,
-  //   reset: handleReset,
-  //   submit: () => {},
-  // }
+  const buttonActions = {
+    next: handleNextPage,
+    back: handleBackPage,
+    reset: handleReset,
+    submit: () => {},
+  }
 
   const { pages } = survey
 
@@ -139,11 +139,11 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
     onSubmit(Object.entries(responses).map(([k, v]) => [Number(k), v]))
   }
 
+  const page = pages[pageProgress]
+
   return (
     <Form onSubmit={handleSubmit}>
-      {pages.map((page) => {
-        if (page.id === progress.current) return <Page key={page.id} page={page} />
-      })}
+      <Page page={page} buttonActions={buttonActions} />
     </Form>
   )
 }
