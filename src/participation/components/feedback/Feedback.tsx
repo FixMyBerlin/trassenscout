@@ -15,7 +15,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const { progress, setProgress } = useContext(ProgressContext)
 
   useEffect(() => {
-    setProgress({ ...progress, total: pages.length - 1 })
+    setProgress({ current: 0, total: pages.length - 1 })
   }, [])
 
   const [isMap, setIsMap] = useState(false)
@@ -50,10 +50,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
         <FeedbackFirstPage page={pages[0]} isMap={isMap} onButtonClick={handleNextPage} />
       )}
       {progress.current === 1 && (
-        <FeedbackSecondPage
-          page={pages[1]}
-          onButtonClick={{ next: handleNextPage, back: handleBackPage }}
-        />
+        <FeedbackSecondPage page={pages[1]} onButtonClick={handleBackPage} />
       )}
     </Form>
   )

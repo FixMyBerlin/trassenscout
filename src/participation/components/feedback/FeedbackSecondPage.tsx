@@ -1,10 +1,7 @@
 import { ParticipationButton } from "../core/ParticipationButton"
 import { ParticipationButtonWrapper } from "../core/ParticipationButtonWrapper"
 import { ScreenHeaderParticipation } from "../core/ScreenHeaderParticipation"
-import { ParticipationH2, ParticipationH3 } from "../core/Text"
-import { ParticipationLabeledCheckboxGroup } from "../form/ParticipationLabeledCheckboxGroup"
-import { ParticipationLabeledRadiobuttonGroup } from "../form/ParticipationLabeledRadiobuttonGroup"
-import { ParticipationMap } from "../maps/ParticipationMap"
+import { ParticipationH3, ParticipationP } from "../core/Text"
 import { ParticipationStaticMap } from "../maps/ParticipationStaticMap"
 import { Question } from "../survey/Question"
 
@@ -12,7 +9,7 @@ export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
   page: any // TODO
-  onButtonClick: { next: any; back: any } // TODO
+  onButtonClick: any // TODO
 }
 
 export const FeedbackSecondPage: React.FC<Props> = ({ page, onButtonClick }) => {
@@ -23,7 +20,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({ page, onButtonClick }) => 
     <>
       <ScreenHeaderParticipation title={title.de} description={description.de} />
       <ParticipationH3>{questions[0].label.de}</ParticipationH3>
-      <p>TODO</p>
+      <ParticipationP>TODO</ParticipationP>
       <ParticipationH3>{questions[1].label.de}</ParticipationH3>
       <ParticipationStaticMap
         marker={{
@@ -66,10 +63,8 @@ export const FeedbackSecondPage: React.FC<Props> = ({ page, onButtonClick }) => 
 
       {/* TODO Disabled */}
       <ParticipationButtonWrapper>
-        <ParticipationButton type="button" onClick={onButtonClick.next}>
-          {buttons[0].label.de}
-        </ParticipationButton>
-        <ParticipationButton color="white" type="button" onClick={onButtonClick.back}>
+        <ParticipationButton type="submit">{buttons[0].label.de}</ParticipationButton>
+        <ParticipationButton color="white" type="button" onClick={onButtonClick}>
           {buttons[1].label.de}
         </ParticipationButton>
       </ParticipationButtonWrapper>
