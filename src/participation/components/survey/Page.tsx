@@ -1,7 +1,7 @@
 import { ScreenHeaderParticipation } from "src/participation/components/core/ScreenHeaderParticipation"
-import { ParticipationButton, TParticipationButton } from "../core/ParticipationButton"
+import { SurveyButton, TSurveyButton } from "./SurveyButton"
 import { ParticipationButtonWrapper } from "../core/ParticipationButtonWrapper"
-import { Question } from "../Question"
+import { Question } from "./Question"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export type TButton = {
@@ -51,7 +51,7 @@ export const Page: React.FC<Props> = ({ page, buttonActions, completed }) => {
               disabled = !completed
             }
             return (
-              <ParticipationButton
+              <SurveyButton
                 buttonActions={buttonActions}
                 key={index}
                 button={button}
