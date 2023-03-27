@@ -22,7 +22,7 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   const { progress, setProgress } = useContext(ProgressContext)
 
   useEffect(() => {
-    setProgress({ ...progress, total: pages.length - 1 })
+    setProgress({ current: 0, total: pages.length - 1 })
   }, [])
 
   const handleNextPage = () => {

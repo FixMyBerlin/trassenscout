@@ -19,9 +19,11 @@ export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
   const [isDirty, setIsDirty] = useState(false)
   const [isFeedback, setIsFeedback] = useState(false)
   const { progress, setProgress } = useContext(ProgressContext)
+
   useEffect(() => {
-    setProgress({ ...progress, total: more.pages.length })
+    setProgress({ current: 0, total: more.pages.length - 1 })
   }, [])
+
   const { title, description, questions, buttons } = more.pages[0]
   const question = questions[0]
   const button = buttons[0]
