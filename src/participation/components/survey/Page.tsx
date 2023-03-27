@@ -29,7 +29,7 @@ export type TPage = {
   buttons: TButton[] | null
 }
 
-type Props = { page: TPage }
+type Props = { page: TPage; buttonActions: any; completed: boolean }
 
 export const Page: React.FC<Props> = ({ page, buttonActions, completed }) => {
   if (!page) return null
