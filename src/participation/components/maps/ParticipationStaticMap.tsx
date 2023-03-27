@@ -12,7 +12,6 @@ type Props = {
   marker: { lng: number; lat: number }
   staticMap: {
     projectGeometry: MultiLineString
-    config: { zoom: number }
   }
 }
 
@@ -39,7 +38,7 @@ export const ParticipationStaticMap: React.FC<Props> = ({
         initialViewState={{
           longitude: marker.lng,
           latitude: marker.lat,
-          zoom: staticMap.config.zoom || 12,
+          zoom: 12,
         }}
         scrollZoom={false}
         boxZoom={false}
