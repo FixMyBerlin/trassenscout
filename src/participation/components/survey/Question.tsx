@@ -1,9 +1,9 @@
 import clsx from "clsx"
 import { H2 } from "src/core/components/text/Headings"
-import { ParticipationLabeledCheckboxGroup } from "./form/ParticipationLabeledCheckboxGroup"
-import { ParticipationLabeledRadiobuttonGroup } from "./form/ParticipationLabeledRadiobuttonGroup"
-import { ParticipationLabeledTextareaField } from "./form/ParticipationLabeledTextareaField"
-import { TQuestion } from "./survey/Page"
+import { ParticipationLabeledCheckboxGroup } from "../form/ParticipationLabeledCheckboxGroup"
+import { ParticipationLabeledRadiobuttonGroup } from "../form/ParticipationLabeledRadiobuttonGroup"
+import { ParticipationLabeledTextareaField } from "../form/ParticipationLabeledTextareaField"
+import { TQuestion } from "./Page"
 export { FORM_ERROR } from "src/core/components/forms"
 
 const SingleResponseComponent = ({ id, responses }) => (

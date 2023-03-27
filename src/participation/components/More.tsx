@@ -6,7 +6,7 @@ import { ProgressContext } from "src/pages/beteiligung"
 import { ParticipationButton } from "./core/ParticipationButton"
 import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
 import { ParticipationLabeledRadiobuttonGroup } from "./form/ParticipationLabeledRadiobuttonGroup"
-import { Question } from "./Question"
+import { Question } from "./survey/Question"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
