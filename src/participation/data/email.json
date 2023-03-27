@@ -37,8 +37,16 @@
         }
       ],
       "buttons": [
-        { "label": { "de": "Weiter" }, "color": "pink", "onClick": { "action": "nextPage" } },
-        { "label": { "de": "Zurück" }, "color": "white", "onClick": { "action": "previousPage" } }
+        {
+          "label": { "de": "Ja, halten Sie mich auf dem Laufenden" },
+          "color": "pink",
+          "onClick": { "action": "nextPage" }
+        },
+        {
+          "label": { "de": "Nein, zurück zur Startseite" },
+          "color": "white",
+          "onClick": { "action": "previousPage" }
+        }
       ]
     }
   ]
