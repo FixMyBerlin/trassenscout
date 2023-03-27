@@ -18,25 +18,22 @@ export type TSurvey = {
 }
 
 export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
-  const [pageProgress, setPageProgress] = useState(0)
   const [values, setValues] = useState({})
   const { progress, setProgress } = useContext(ProgressContext)
 
   useEffect(() => {
-    setProgress({ ...progress, total: pages.length })
+    setProgress({ ...progress, total: pages.length - 1 })
   }, [])
 
   const handleNextPage = () => {
-    const newPageProgress = Math.min(pages.length - 1, pageProgress + 1)
-    setPageProgress(newPageProgress)
+    const newProgress = Math.min(pages.length - 1, progress.current + 1)
+    setProgress({ ...progress, current: newProgress })
     window && window.scrollTo(0, 0)
-    console.log(newPageProgress)
   }
   const handleBackPage = () => {
-    const newPageProgress = Math.max(0, pageProgress - 1)
-    setPageProgress(newPageProgress)
+    const newProgress = Math.max(0, progress.current - 1)
+    setProgress({ ...progress, current: newProgress })
     window && window.scrollTo(0, 0)
-    console.log(newPageProgress)
   }
 
   const handleReset = () => {
@@ -85,13 +82,13 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
 
   const pageIsComplete = () => {
     let completed: boolean
-    const questions = pages[pageProgress]!.questions
+    const questions = pages[progress.current]!.questions
 
     if (!questions || !questions.length) {
       completed = true
     } else {
       // @ts-ignore every() returns a boolean
-      completed = pages[pageProgress]!.questions?.every(({ id, component }) => {
+      completed = pages[progress.current]!.questions?.every(({ id, component }) => {
         if (!(id in values)) {
           return false
         }
@@ -107,7 +104,7 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
     return completed
   }
 
-  const page = pages[pageProgress]
+  const page = pages[progress.current]
 
   return (
     <Form submitClassName={pinkButtonStyles} onSubmit={handleSubmit} onChangeValues={handleChange}>
