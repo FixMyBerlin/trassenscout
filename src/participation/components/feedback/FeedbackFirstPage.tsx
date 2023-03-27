@@ -23,7 +23,7 @@ export const FeedbackFirstPage: React.FC<Props> = ({ page, isMap, onButtonClick 
       <ScreenHeaderParticipation title={title.de} description={description.de} />
       <ParticipationLabeledCheckboxGroup
         items={questions[0].props.responses.map((item) => ({
-          name: String(item.id),
+          name: item.text.de,
           label: item.text.de,
         }))}
       />

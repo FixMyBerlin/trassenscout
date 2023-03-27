@@ -1,3 +1,6 @@
+import { useContext } from "react"
+import { H1 } from "src/core/components/text/Headings"
+import { PinContext } from "src/participation/context/contexts"
 import { ParticipationButton } from "../core/ParticipationButton"
 import { ParticipationButtonWrapper } from "../core/ParticipationButtonWrapper"
 import { ScreenHeaderParticipation } from "../core/ScreenHeaderParticipation"
@@ -10,51 +13,39 @@ export { FORM_ERROR } from "src/core/components/forms"
 type Props = {
   page: any // TODO
   onButtonClick: any // TODO
+  projectGeometry: any // TODO
+  feedbackCategory: string[]
 }
 
-export const FeedbackSecondPage: React.FC<Props> = ({ page, onButtonClick }) => {
+export const FeedbackSecondPage: React.FC<Props> = ({
+  page,
+  onButtonClick,
+  projectGeometry,
+  feedbackCategory,
+}) => {
+  const { pinPostion } = useContext(PinContext)
   const { title, description, questions, buttons } = page
+
   const textAreaQuestions = questions.filter((q) => q.component === "text")
 
   return (
     <>
       <ScreenHeaderParticipation title={title.de} description={description.de} />
       <ParticipationH3>{questions[0].label.de}</ParticipationH3>
-      <ParticipationP>TODO</ParticipationP>
-      <ParticipationH3>{questions[1].label.de}</ParticipationH3>
-      <ParticipationStaticMap
-        marker={{
-          lng: 13.465274,
-          lat: 52.507573,
-        }}
-        staticMap={{
-          projectGeometry: {
-            type: "MultiLineString",
-            coordinates: [
-              [
-                [13.467931, 52.504393],
-                [13.467309, 52.504917],
-                [13.466715, 52.505385],
-                [13.466632, 52.50544],
-                [13.466545, 52.505499],
-                [13.465651, 52.506256],
-                [13.465277, 52.50656],
-                [13.465014, 52.506773],
-                [13.464841, 52.506901],
-                [13.464793, 52.506936],
-                [13.464716, 52.507013],
-                [13.46479, 52.507086],
-                [13.464836, 52.507133],
-                [13.465274, 52.507573],
-              ],
-              [
-                [13.465274, 52.507573],
-                [13.465279, 52.507578],
-              ],
-            ],
-          },
-        }}
-      />
+      {Boolean(feedbackCategory?.length) &&
+        feedbackCategory?.map((c) => <ParticipationP key={c}>{c}</ParticipationP>)}
+
+      {pinPostion && (
+        <>
+          <ParticipationH3>{questions[1].label.de}</ParticipationH3>
+          <ParticipationStaticMap
+            marker={pinPostion}
+            staticMap={{
+              projectGeometry: projectGeometry,
+            }}
+          />
+        </>
+      )}
       {textAreaQuestions &&
         textAreaQuestions.length &&
         textAreaQuestions.map((question, index) => (
