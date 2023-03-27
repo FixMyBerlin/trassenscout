@@ -10,11 +10,10 @@ import moreDefinition from "src/participation/data/more.json"
 import surveyDefinition from "src/participation/data/survey.json"
 import feedbackDefinition from "src/participation/data/feedback.json"
 import emailDefinition from "src/participation/data/email.json"
-
-export const ProgressContext = createContext(null)
+import { ProgressContext } from "src/participation/context/contexts"
 
 const ParticipationMainPage: BlitzPage = () => {
-  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("EMAIL")
+  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("FEEDBACK")
   const [progress, setProgress] = useState({ current: 0, total: 0 })
   const [responses, setResponses] = useState<any[]>([])
   const [emailState, setEmailState] = useState<string | null>()

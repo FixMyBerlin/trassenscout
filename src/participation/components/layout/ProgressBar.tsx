@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { ProgressContext } from "src/pages/beteiligung"
+import { ProgressContext } from "src/participation/context/contexts"
 
 export { FORM_ERROR } from "src/core/components/forms"
 

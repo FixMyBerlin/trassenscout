@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { Form } from "src/core/components/forms"
-import { ProgressContext } from "src/pages/beteiligung"
+import { ProgressContext } from "../context/contexts"
 import { ParticipationButton } from "./core/ParticipationButton"
 import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
 import { ParticipationH2 } from "./core/Text"

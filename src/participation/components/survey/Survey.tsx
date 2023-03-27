@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react"
 import { Form } from "src/core/components/forms"
-import { ProgressContext } from "src/pages/beteiligung"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
 import { Page, TPage } from "./Page"
 import { pinkButtonStyles } from "../../../core/components/links"
+import { ProgressContext } from "src/participation/context/contexts"
 
 type Props = { survey: TSurvey; onSubmit: ([]) => void }
 
@@ -30,6 +30,7 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
     setProgress({ ...progress, current: newProgress })
     window && window.scrollTo(0, 0)
   }
+
   const handleBackPage = () => {
     const newProgress = Math.max(0, progress.current - 1)
     setProgress({ ...progress, current: newProgress })
