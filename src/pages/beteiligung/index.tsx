@@ -2,17 +2,18 @@ import { BlitzPage } from "@blitzjs/next"
 import { createContext, useState } from "react"
 import { Done } from "src/participation/components/Done"
 import { Email } from "src/participation/components/Email"
-import { Feedback } from "src/participation/components/Feedback"
+import { Feedback } from "src/participation/components/feedback/Feedback"
 import { LayoutParticipation } from "src/participation/components/layout/LayoutParticipation"
 import { More } from "src/participation/components/More"
 import { Survey } from "src/participation/components/survey/Survey"
 import moreDefinition from "src/participation/data/more.json"
 import surveyDefinition from "src/participation/data/survey.json"
+import feedbackDefinition from "src/participation/data/feedback.json"
 
 export const ProgressContext = createContext(null)
 
 const ParticipationMainPage: BlitzPage = () => {
-  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("MORE")
+  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("FEEDBACK")
   const [progress, setProgress] = useState({ current: 1, total: 1 })
   const [responses, setResponses] = useState<any[]>([])
   const [email, setEmail] = useState<string | null>()
@@ -53,7 +54,7 @@ const ParticipationMainPage: BlitzPage = () => {
       component = <Survey survey={surveyDefinition} onSubmit={handleSubmitSurvey} />
       break
     case "FEEDBACK":
-      component = <Feedback onSubmit={handleSubmitFeedback} />
+      component = <Feedback feedback={feedbackDefinition} onSubmit={handleSubmitFeedback} />
       break
     case "MORE":
       component = (
