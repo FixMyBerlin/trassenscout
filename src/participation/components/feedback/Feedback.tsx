@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { Form } from "src/core/components/forms"
-import { ProgressContext } from "src/participation/context/contexts"
+import { PinContext, ProgressContext } from "src/participation/context/contexts"
 import { FeedbackFirstPage } from "./FeedbackFirstPage"
 import { FeedbackSecondPage } from "./FeedbackSecondPage"
 
@@ -13,6 +13,7 @@ type Props = {
 
 export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const { progress, setProgress } = useContext(ProgressContext)
+  const [pinPostion, setPinPosition] = useState(null)
 
   useEffect(() => {
     setProgress({ current: 0, total: pages.length - 1 })
@@ -34,7 +35,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   }
 
   const handleSubmit = (values) => {
-    onSubmit({ feedback: values })
+    onSubmit({ feedback: values, pin: pinPostion })
   }
 
   // when Form changes, check if Radio "Ja" is selected - set state to true
@@ -45,13 +46,15 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   }
 
   return (
-    <Form onSubmit={handleSubmit} onChangeValues={handleChange}>
-      {progress.current === 0 && (
-        <FeedbackFirstPage page={pages[0]} isMap={isMap} onButtonClick={handleNextPage} />
-      )}
-      {progress.current === 1 && (
-        <FeedbackSecondPage page={pages[1]} onButtonClick={handleBackPage} />
-      )}
-    </Form>
+    <PinContext.Provider value={{ pinPostion, setPinPosition }}>
+      <Form onSubmit={handleSubmit} onChangeValues={handleChange}>
+        {progress.current === 0 && (
+          <FeedbackFirstPage page={pages[0]} isMap={isMap} onButtonClick={handleNextPage} />
+        )}
+        {progress.current === 1 && (
+          <FeedbackSecondPage page={pages[1]} onButtonClick={handleBackPage} />
+        )}
+      </Form>
+    </PinContext.Provider>
   )
 }

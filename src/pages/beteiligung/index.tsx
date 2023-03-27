@@ -23,8 +23,8 @@ const ParticipationMainPage: BlitzPage = () => {
     setStage("MORE")
   }
 
-  const handleSubmitFeedback = (feedback: {}) => {
-    setResponses([...responses, feedback])
+  const handleSubmitFeedback = (feedback: {}, pin: {}) => {
+    setResponses([...responses, feedback, pin])
     setStage("EMAIL")
   }
 
