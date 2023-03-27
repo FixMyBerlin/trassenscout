@@ -1,73 +1,65 @@
 export { FORM_ERROR } from "src/core/components/forms"
-import clsx from "clsx"
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Form } from "src/core/components/forms"
-import { Link, pinkButtonStyles, whiteButtonStyles } from "src/core/components/links"
+import { Link, whiteButtonStyles } from "src/core/components/links"
+import { ProgressContext } from "src/pages/beteiligung"
+import { ParticipationButton } from "./core/ParticipationButton"
 import { ParticipationButtonWrapper } from "./core/ParticipationButtonWrapper"
 import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
 import { ParticipationH2, ParticipationP } from "./core/Text"
+import { ParticipationLabeledCheckbox } from "./form/ParticipationLabeledCheckbox"
 import { ParticipationLabeledTextField } from "./form/ParticipationLabeledTextField"
 
 type Props = {
   onSubmit: any
+  email: any // TODO
 }
 
-export const Email: React.FC<Props> = ({ onSubmit }) => {
-  const [email, setEmail] = useState("")
+export const Email: React.FC<Props> = ({ onSubmit, email }) => {
   const [consent, setConsent] = useState(false)
+  const { progress, setProgress } = useContext(ProgressContext)
 
-  const handleSubmit = () => {
-    onSubmit(email)
+  useEffect(() => {
+    setProgress({ current: 0, total: email.pages.length - 1 })
+  }, [])
+
+  const handleSubmit = (values) => {
+    onSubmit(values.email)
   }
 
   // TODO: Event type
-  const handleInputChange = (event: any) => {
-    setEmail(event.target.value)
+  const handleChange = (values) => {
+    console.log(values)
+    setConsent(values.consent && values.email)
   }
+
+  const page = email.pages[0]
 
   return (
     <section>
-      <Form onSubmit={(values) => console.log(values)}>
-        <ScreenHeaderParticipation title="Vielen Dank für Ihre Teilnahme" />
-        <ParticipationH2>Was passiert jetzt?</ParticipationH2>
-        <ParticipationP>
-          Die Anregungen aus der Bürgerbeteiligung werden vom Planungsteam ausgewertet und geprüft,
-          ob und inwieweit sie in die weitere Entwurfsplanung einfließen können. Wir bitten im
-          Vorhinein um Verständnis, dass wir nicht jeden Hinweis kommentieren. Nach Abschluss der
-          Beteiligung werden wir gebündelt Rückmeldung zu den angesprochenen Themen geben.
-        </ParticipationP>
-        <ParticipationH2>Möchten Sie weiter informiert werden?</ParticipationH2>
-        <ParticipationP className="mb-12">
-          Wenn Sie Ihre E-Mail-Adresse angeben, können wir ggf. Rückfragen stellen und informieren
-          Sie über die Veröffentlichung der Ergebnisse und weitere Fortschritte im Projekt RS 8.
-        </ParticipationP>
+      <Form onSubmit={handleSubmit} onChangeValues={handleChange}>
+        <ScreenHeaderParticipation title={page.title.de} />
+        <ParticipationH2>{page.questions[0].label.de}</ParticipationH2>
+        <ParticipationP>{page.questions[0].props.text.de}</ParticipationP>
+        <ParticipationH2>{page.questions[1].label.de}</ParticipationH2>
+        <ParticipationP>{page.questions[1].props.text.de}</ParticipationP>
         <ParticipationLabeledTextField
           name="email"
           label=""
-          placeholder="you@example.com"
+          placeholder={page.questions[1].props.emailPlaceholder.de}
           outerProps={{ className: "mb-6" }}
-          onChange={handleInputChange}
         />
-        {/* <ParticipationLabeledCheckbox
+        <ParticipationLabeledCheckbox
           name="consent"
-          label="Ich stimme den Datenschutzbedingungen zur Verarbeitung meiner persönlichen Daten zu."
-        /> */}
+          label={page.questions[1].props.agreementText.de}
+        />
 
         <ParticipationButtonWrapper>
-          <button
-            disabled={!consent}
-            onClick={handleSubmit}
-            className={clsx(pinkButtonStyles, consent ? "" : "!bg-pink-200")}
-            // TODO abstract in button component
-            type="button"
-          >
-            Ja, halten Sie mich auf dem Laufenden
-          </button>
+          <ParticipationButton disabled={!consent} type="submit">
+            {page.buttons[0].label.de}
+          </ParticipationButton>
           {/* TODO Link */}
-          <Link
-            className={whiteButtonStyles}
-            href="https://www.landkreis-ludwigsburg.de/de/verkehr-sicherheit-ordnung/radverkehr/radschnellwege/"
-          >
+          <Link className={whiteButtonStyles} href="https://rsv8-lb-wn.de/beteiligung">
             Nein, zurück zur Startseite
           </Link>
         </ParticipationButtonWrapper>
