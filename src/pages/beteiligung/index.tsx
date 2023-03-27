@@ -9,14 +9,15 @@ import { Survey } from "src/participation/components/survey/Survey"
 import moreDefinition from "src/participation/data/more.json"
 import surveyDefinition from "src/participation/data/survey.json"
 import feedbackDefinition from "src/participation/data/feedback.json"
+import emailDefinition from "src/participation/data/email.json"
 
 export const ProgressContext = createContext(null)
 
 const ParticipationMainPage: BlitzPage = () => {
-  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("FEEDBACK")
-  const [progress, setProgress] = useState({ current: 1, total: 1 })
+  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("EMAIL")
+  const [progress, setProgress] = useState({ current: 0, total: 0 })
   const [responses, setResponses] = useState<any[]>([])
-  const [email, setEmail] = useState<string | null>()
+  const [emailState, setEmailState] = useState<string | null>()
 
   const handleSubmitSurvey = (surveyResponses: []) => {
     setResponses([...responses, ...surveyResponses])
@@ -25,7 +26,7 @@ const ParticipationMainPage: BlitzPage = () => {
 
   const handleSubmitFeedback = (feedback: {}) => {
     setResponses([...responses, feedback])
-    setStage("MORE")
+    setStage("EMAIL")
   }
 
   const handleMoreFeedback = () => {
@@ -41,7 +42,8 @@ const ParticipationMainPage: BlitzPage = () => {
     console.log("responses:", responses)
     console.log("email:", email)
     setStage("DONE")
-    setEmail(email)
+    setEmailState(email)
+    console.log(email)
   }
 
   // const handleProgressChange = ({ newCurrent, newTotal }) => {
@@ -62,7 +64,7 @@ const ParticipationMainPage: BlitzPage = () => {
       )
       break
     case "EMAIL":
-      component = <Email onSubmit={handleSubmitEmail} />
+      component = <Email email={emailDefinition} onSubmit={handleSubmitEmail} />
       break
     case "DONE":
       component = <Done />
@@ -77,7 +79,7 @@ const ParticipationMainPage: BlitzPage = () => {
           <code>
             <pre>{JSON.stringify(responses, null, 2)}</pre>
           </code>
-          <code>email: {email}</code>
+          <code>email: {emailState}</code>
         </div>
         <div>{component}</div>
       </LayoutParticipation>
