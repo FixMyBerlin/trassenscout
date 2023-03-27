@@ -1,6 +1,8 @@
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Form } from "src/core/components/forms"
+import { ProgressContext } from "src/pages/beteiligung"
 import { FeedbackFirstPage } from "./FeedbackFirstPage"
+import { FeedbackSecondPage } from "./FeedbackSecondPage"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -10,8 +12,26 @@ type Props = {
 }
 
 export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
+  const { progress, setProgress } = useContext(ProgressContext)
+
+  useEffect(() => {
+    setProgress({ ...progress, total: pages.length - 1 })
+  }, [])
+
   const [isMap, setIsMap] = useState(false)
+
   const { pages } = feedback
+
+  const handleNextPage = () => {
+    const newProgress = Math.min(pages.length - 1, progress.current + 1)
+    setProgress({ ...progress, current: newProgress })
+    window && window.scrollTo(0, 0)
+  }
+  const handleBackPage = () => {
+    const newProgress = Math.max(0, progress.current - 1)
+    setProgress({ ...progress, current: newProgress })
+    window && window.scrollTo(0, 0)
+  }
 
   const handleSubmit = (values) => {
     onSubmit({ feedback: values })
@@ -26,7 +46,15 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
 
   return (
     <Form onSubmit={handleSubmit} onChangeValues={handleChange}>
-      <FeedbackFirstPage page={pages[0]} isMap={isMap} />
+      {progress.current === 0 && (
+        <FeedbackFirstPage page={pages[0]} isMap={isMap} onButtonClick={handleNextPage} />
+      )}
+      {progress.current === 1 && (
+        <FeedbackSecondPage
+          page={pages[1]}
+          onButtonClick={{ next: handleNextPage, back: handleBackPage }}
+        />
+      )}
     </Form>
   )
 }

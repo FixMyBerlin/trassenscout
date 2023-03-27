@@ -10,9 +10,10 @@ export { FORM_ERROR } from "src/core/components/forms"
 type Props = {
   page: any // TODO
   isMap: boolean
+  onButtonClick: any // TODO
 }
 
-export const FeedbackFirstPage: React.FC<Props> = ({ page, isMap }) => {
+export const FeedbackFirstPage: React.FC<Props> = ({ page, isMap, onButtonClick }) => {
   const { title, description, questions, buttons } = page
 
   const mapProps = questions.find((question) => question.component === "custom").props
@@ -44,8 +45,10 @@ export const FeedbackFirstPage: React.FC<Props> = ({ page, isMap }) => {
           }}
         />
       )}
-
-      <ParticipationButton>{buttons[0].label.de}</ParticipationButton>
+      {/* TODO Disabled */}
+      <ParticipationButton type="button" onClick={onButtonClick}>
+        {buttons[0].label.de}
+      </ParticipationButton>
     </>
   )
 }
