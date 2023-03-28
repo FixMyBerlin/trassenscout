@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "title": { "de": "Feedback" },
+  "title": { "de": "Email" },
   "createdAt": "2023-03-22T14:46:45.712Z",
   "version": 1,
   "pages": [
@@ -15,7 +15,7 @@
           "component": "custom",
           "props": {
             "text": {
-              "de": "Die Anregungen aus der Bürgerbeteiligung werden vom Planungsteam ausgewertet und geprüft, ob und inwieweit sie in die weitere Entwurfsplanung einfließen können. Wir bitten im Vorhinein um Verständnis, dass wir nicht jeden Hinweis kommentieren. Nach Abschluss der Beteiligung werden wir gebündelt Rückmeldung zu den angesprochenen Themen geben."
+              "de": "Nach Abschluss der Beteiligung (X.X.2023) werden Ihre Anregungen vom Planungsteam ausgewertet und geprüft, ob und inwieweit sie in die weitere Entwurfsplanung einfließen können. Wir bitten im Vorhinein um Verständnis, dass wir nicht jeden Hinweis kommentieren können. Nach der Auswertung werden wir gebündelt Rückmeldung zu den angesprochenen Themen geben."
             }
           }
         },
@@ -27,7 +27,7 @@
           "component": "custom",
           "props": {
             "text": {
-              "de": "Wenn Sie Ihre E-Mail-Adresse angeben, können wir ggf. Rückfragen stellen und informieren Sie über die Veröffentlichung der Ergebnisse und weitere Fortschritte im Projekt RS 8."
+              "de": "Wenn Sie Ihre E-Mail-Adresse angeben, informieren wir Sie über die Veröffentlichung der Ergebnisse und weitere Fortschritte im Projekt RS 8."
             },
             "emailPlaceholder": { "de": "you@example.com" },
             "agreementText": {

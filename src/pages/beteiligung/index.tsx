@@ -13,7 +13,7 @@ import emailDefinition from "src/participation/data/email.json"
 import { ProgressContext } from "src/participation/context/contexts"
 
 const ParticipationMainPage: BlitzPage = () => {
-  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("FEEDBACK")
+  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("SURVEY")
   const [progress, setProgress] = useState({ current: 0, total: 0 })
   const [responses, setResponses] = useState<any[]>([])
   const [emailState, setEmailState] = useState<string | null>()
@@ -43,6 +43,7 @@ const ParticipationMainPage: BlitzPage = () => {
     setStage("DONE")
     setEmailState(email)
     console.log(email)
+    // TODO --> zur RS8 Seite /beteiligung weiterleiten
   }
 
   // const handleProgressChange = ({ newCurrent, newTotal }) => {

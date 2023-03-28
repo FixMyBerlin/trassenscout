@@ -19,9 +19,10 @@
             "responses": [
               { "id": 1, "text": { "de": "Nutzung" } },
               { "id": 2, "text": { "de": "Streckenführung" } },
-              { "id": 3, "text": { "de": "Mögliche Konflikte" } },
-              { "id": 3, "text": { "de": "Umwelt- und Naturschutz" } },
-              { "id": 3, "text": { "de": "Sonstiges" } }
+              { "id": 3, "text": { "de": "Zubringer" } },
+              { "id": 4, "text": { "de": "Mögliche Konflikte" } },
+              { "id": 5, "text": { "de": "Umwelt- und Naturschutz" } },
+              { "id": 6, "text": { "de": "Sonstiges" } }
             ]
           }
         },
@@ -40,7 +41,7 @@
         },
         {
           "id": 3,
-          "label": { "de": "Wählen Sie die Stelle für Ihr Feedback" },
+          "label": { "de": "Markieren Sie die Stelle, zu der Sie etwas sagen möchten." },
           "component": "custom",
           "props": {
             "marker": {
@@ -111,7 +112,7 @@
         },
         {
           "id": 4,
-          "label": { "de": "Was wünschen Sie sich?" },
+          "label": { "de": "Was gefällt Ihnen hier besonders?" },
           "component": "text",
           "props": {
             "placeholder": { "de": "Beantworten Sie hier..." },
@@ -120,7 +121,7 @@
         },
         {
           "id": 5,
-          "label": { "de": "Was gefällt Ihnen hier besonders?" },
+          "label": { "de": "Was wünschen Sie sich?" },
           "component": "text",
           "props": {
             "placeholder": { "de": "Beantworten Sie hier..." },
@@ -129,8 +130,16 @@
         }
       ],
       "buttons": [
-        { "label": { "de": "Weiter" }, "color": "pink", "onClick": { "action": "nextPage" } },
-        { "label": { "de": "Zurück" }, "color": "white", "onClick": { "action": "previousPage" } }
+        {
+          "label": { "de": "Absenden & Beteiligung abschließen" },
+          "color": "pink",
+          "onClick": { "action": "nextPage" }
+        },
+        {
+          "label": { "de": "Absenden &  weiteren Hinweis geben" },
+          "color": "pink",
+          "onClick": { "action": "nextPage" }
+        }
       ]
     }
   ]

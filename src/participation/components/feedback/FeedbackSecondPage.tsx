@@ -55,10 +55,13 @@ export const FeedbackSecondPage: React.FC<Props> = ({
       {/* TODO Disabled */}
       <ParticipationButtonWrapper>
         <ParticipationButton type="submit">{buttons[0].label.de}</ParticipationButton>
-        <ParticipationButton color="white" type="button" onClick={onButtonClick}>
+        <ParticipationButton color="pink" type="button" onClick={onButtonClick}>
           {buttons[1].label.de}
         </ParticipationButton>
       </ParticipationButtonWrapper>
+      <ParticipationButton color="white" type="button" onClick={onButtonClick}>
+        Zurück
+      </ParticipationButton>
     </>
   )
 }
