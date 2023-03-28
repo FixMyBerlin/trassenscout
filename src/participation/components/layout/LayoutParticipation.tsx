@@ -7,15 +7,19 @@ import { FooterParticipation } from "./FooterParticipation"
 import { HeaderParticipation } from "./HeaderParticipation"
 
 type Props = {
+  faviconUrl: string
   children?: React.ReactNode
 }
 
-export const LayoutParticipation: BlitzLayout<Props> = ({ children }) => {
+export const LayoutParticipation: BlitzLayout<Props> = ({ faviconUrl, children }) => {
+  const extension = new URL(faviconUrl).pathname.split(".").at(-1)
+  const mimetype =
+    { ico: "image/x-icon", svg: "image/svg+xml", jpg: "image/jpeg" }[extension!] ||
+    `image/${extension}`
   return (
     <>
       <Head>
-        {/* TODO */}
-        <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href={faviconUrl} type={mimetype} />
       </Head>
       <div className="relative flex h-full flex-col overflow-x-hidden">
         <MetaTags noindex title="Beteiligung RS8" />

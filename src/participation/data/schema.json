@@ -2,13 +2,14 @@
   "title": "Survey",
   "version": 1,
   "type": "object",
-  "required": ["id", "version", "title", "pages", "createdAt"],
+  "required": ["id", "version", "title", "pages", "createdAt", "faviconUrl"],
   "additionalProperties": false,
   "properties": {
     "id": { "type": "integer", "minimum": 1 },
     "title": { "$ref": "#/$defs/translatableText" },
     "version": { "type": "integer", "enum": [1] },
     "createdAt": { "type": "string", "format": "date" },
+    "faviconUrl": { "type": "string" },
     "pages": {
       "type": "array",
       "items": {
