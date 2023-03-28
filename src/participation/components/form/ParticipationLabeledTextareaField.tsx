@@ -64,6 +64,7 @@ export const ParticipationLabeledTextareaField = forwardRef<
           errors={errors}
           name={name}
         />
+        <p className="mt-2 text-right text-sm text-gray-500">Max. 2000 Zeichen</p>
       </div>
     )
   }

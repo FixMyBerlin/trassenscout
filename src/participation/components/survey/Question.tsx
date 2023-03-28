@@ -29,7 +29,6 @@ const MultipleResponseComponent = ({ id, responses }) => (
 const TextResponseComponent = ({ id, caption }) => (
   <>
     <ParticipationLabeledTextareaField name={`text-${id}`} label={""} />
-    <p className="mt-2 text-right text-sm text-gray-500">{caption.de}</p>
   </>
 )
 
