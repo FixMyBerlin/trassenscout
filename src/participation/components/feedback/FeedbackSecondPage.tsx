@@ -1,5 +1,4 @@
 import { useContext } from "react"
-import { H1 } from "src/core/components/text/Headings"
 import { PinContext } from "src/participation/context/contexts"
 import { ParticipationButton } from "../core/ParticipationButton"
 import { ParticipationButtonWrapper } from "../core/ParticipationButtonWrapper"
@@ -23,7 +22,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
   projectGeometry,
   feedbackCategory,
 }) => {
-  const { pinPostion } = useContext(PinContext)
+  const { pinPosition } = useContext(PinContext)
   const { title, description, questions, buttons } = page
 
   const textAreaQuestions = questions.filter((q) => q.component === "text")
@@ -34,11 +33,11 @@ export const FeedbackSecondPage: React.FC<Props> = ({
       <ParticipationH3>{questions[0].label.de}</ParticipationH3>
       <ParticipationP>{feedbackCategory}</ParticipationP>
 
-      {pinPostion && (
+      {pinPosition && (
         <>
           <ParticipationH3>{questions[1].label.de}</ParticipationH3>
           <ParticipationStaticMap
-            marker={pinPostion}
+            marker={pinPosition}
             staticMap={{
               projectGeometry: projectGeometry,
             }}

@@ -13,7 +13,7 @@ type Props = {
 
 export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const { progress, setProgress } = useContext(ProgressContext)
-  const [pinPostion, setPinPosition] = useState(null)
+  const [pinPosition, setPinPosition] = useState(null)
   const [feedbackCategory, setFeedbackCategory] = useState("")
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   }
 
   const handleSubmit = (values) => {
-    onSubmit({ feedback: values, pin: pinPostion })
+    onSubmit({ feedback: values, pin: pinPosition })
   }
 
   // when Form changes, check if Radio "Ja" is selected - set state to true
@@ -49,7 +49,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   }
 
   return (
-    <PinContext.Provider value={{ pinPostion, setPinPosition }}>
+    <PinContext.Provider value={{ pinPosition, setPinPosition }}>
       <Form onSubmit={handleSubmit} onChangeValues={handleChange}>
         {progress.current === 0 && (
           <FeedbackFirstPage page={pages[0]} isMap={isMap} onButtonClick={handleNextPage} />

@@ -48,7 +48,7 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
     setSelectedLayer(layer)
   }
 
-  const { pinPostion, setPinPosition } = useContext(PinContext)
+  const { pinPosition, setPinPosition } = useContext(PinContext)
 
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
   const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
@@ -97,7 +97,7 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
   }, [])
 
   const checkPinInView = () => {
-    if (mainMap && mainMap?.getBounds().contains(pinPostion)) {
+    if (mainMap && mainMap?.getBounds().contains(pinPosition)) {
       setIsPinInView(true)
     } else {
       setIsPinInView(false)
@@ -106,7 +106,7 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
 
   const easeToPin = () => {
     mainMap?.easeTo({
-      center: [pinPostion.lng, pinPostion.lat],
+      center: [pinPosition.lng, pinPosition.lat],
       duration: 1000,
     })
   }
@@ -135,10 +135,10 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
         onZoom={handleMapZoom}
       >
         {children}
-        {pinPostion && (
+        {pinPosition && (
           <Marker
-            longitude={pinPostion?.lng}
-            latitude={pinPostion?.lat}
+            longitude={pinPosition?.lng}
+            latitude={pinPosition?.lat}
             anchor="bottom"
             draggable
             onDragStart={onMarkerDragStart}
