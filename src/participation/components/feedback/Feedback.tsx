@@ -14,7 +14,7 @@ type Props = {
 export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const { progress, setProgress } = useContext(ProgressContext)
   const [pinPosition, setPinPosition] = useState(null)
-  const [feedbackCategory, setFeedbackCategory] = useState("")
+  const [feedbackCategory, setFeedbackCategory] = useState(0)
 
   useEffect(() => {
     setProgress({ current: 0, total: pages.length - 1 })
@@ -25,7 +25,10 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const { pages } = feedback
 
   const projectGeometry = feedback.pages[0].questions[2].props.projectGeometry
-  console.log(projectGeometry)
+
+  const pinId = pages[1].questions.find((question) => question.component === "custom").id
+
+  const categories = pages[0].questions[0].props.responses
 
   const handleNextPage = () => {
     const newProgress = Math.min(pages.length - 1, progress.current + 1)
@@ -39,13 +42,15 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   }
 
   const handleSubmit = (values) => {
-    onSubmit({ feedback: values, pin: pinPosition })
+    const _values = { ...values }
+    delete _values.mapView
+    onSubmit({ feedback: { ..._values, [pinId]: pinPosition } })
   }
 
   // when Form changes, check if Radio "Ja" is selected - set state to true
   const handleChange = (values) => {
     setIsMap(pages[0].questions[1].props.responses[0].id === Number(values.mapView))
-    setFeedbackCategory(values.category || "")
+    setFeedbackCategory(values.category || 0)
   }
 
   return (
@@ -59,7 +64,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
             projectGeometry={projectGeometry}
             page={pages[1]}
             onButtonClick={handleBackPage}
-            feedbackCategory={feedbackCategory}
+            feedbackCategory={categories[feedbackCategory].text.de}
           />
         )}
       </Form>

@@ -23,10 +23,10 @@ export const FeedbackFirstPage: React.FC<Props> = ({ page, isMap, onButtonClick 
       <ScreenHeaderParticipation title={title.de} description={description.de} />
       <ParticipationLabeledRadiobuttonGroup
         items={questions[0].props.responses.map((item) => ({
-          scope: "category",
+          scope: String(questions[1].id),
           name: String(item.id),
           label: item.text.de,
-          value: item.text.de,
+          value: item.id,
         }))}
       />
       <ParticipationH2>{questions[1].label.de}</ParticipationH2>

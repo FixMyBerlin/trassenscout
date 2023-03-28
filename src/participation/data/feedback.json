@@ -12,7 +12,7 @@
       },
       "questions": [
         {
-          "id": 1,
+          "id": 21,
           "label": { "de": "Zu welchem Thema passt Ihr Feedback?" },
           "component": "singleResponse",
           "props": {
@@ -27,7 +27,7 @@
           }
         },
         {
-          "id": 2,
+          "id": 22,
           "label": {
             "de": "Bezieht sich Ihr Feedback auf eine konkrete Stelle entlang der Route?"
           },
@@ -40,7 +40,7 @@
           }
         },
         {
-          "id": 3,
+          "id": 23,
           "label": { "de": "Markieren Sie die Stelle, zu der Sie etwas sagen möchten." },
           "component": "custom",
           "props": {
@@ -96,22 +96,22 @@
       },
       "questions": [
         {
-          "id": 1,
+          "id": 31,
           "label": { "de": "Kategorie" },
           "component": "custom"
         },
         {
-          "id": 2,
+          "id": 32,
           "label": { "de": "Ausgewählte Stelle" },
           "component": "custom"
         },
         {
-          "id": 3,
+          "id": 33,
           "label": { "de": "Wählen Sie die Stelle für Ihr Feedback" },
           "component": "custom"
         },
         {
-          "id": 4,
+          "id": 34,
           "label": { "de": "Was gefällt Ihnen hier besonders?" },
           "component": "text",
           "props": {
@@ -120,7 +120,7 @@
           }
         },
         {
-          "id": 5,
+          "id": 35,
           "label": { "de": "Was wünschen Sie sich?" },
           "component": "text",
           "props": {

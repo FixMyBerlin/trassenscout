@@ -4,8 +4,8 @@ import { ParticipationButton } from "../core/ParticipationButton"
 import { ParticipationButtonWrapper } from "../core/ParticipationButtonWrapper"
 import { ScreenHeaderParticipation } from "../core/ScreenHeaderParticipation"
 import { ParticipationH3, ParticipationP } from "../core/Text"
+import { ParticipationLabeledTextareaField } from "../form/ParticipationLabeledTextareaField"
 import { ParticipationStaticMap } from "../maps/ParticipationStaticMap"
-import { Question } from "../survey/Question"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -44,11 +44,14 @@ export const FeedbackSecondPage: React.FC<Props> = ({
           />
         </>
       )}
-      {textAreaQuestions &&
-        textAreaQuestions.length &&
-        textAreaQuestions.map((question, index) => (
-          <Question className="mb-2" key={index} question={question} />
-        ))}
+      <ParticipationLabeledTextareaField
+        name={String(textAreaQuestions[0].id)}
+        label={textAreaQuestions[0].label.de}
+      />
+      <ParticipationLabeledTextareaField
+        name={String(textAreaQuestions[1].id)}
+        label={textAreaQuestions[1].label.de}
+      />
 
       {/* TODO Disabled */}
       <ParticipationButtonWrapper>
