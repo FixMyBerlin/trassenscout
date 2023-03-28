@@ -1,5 +1,5 @@
 {
-  "id": 1,
+  "id": 2,
   "title": { "de": "Feedback" },
   "createdAt": "2023-03-22T12:19:59.648Z",
   "version": 1,
@@ -42,7 +42,7 @@
         {
           "id": 23,
           "label": { "de": "Markieren Sie die Stelle, zu der Sie etwas sagen möchten." },
-          "component": "custom",
+          "component": "map",
           "props": {
             "marker": {
               "lat": 52.51328686398023,
@@ -112,12 +112,12 @@
         {
           "label": { "de": "Absenden & Beteiligung abschließen" },
           "color": "pink",
-          "onClick": { "action": "nextPage" }
+          "onClick": { "action": "submit" }
         },
         {
           "label": { "de": "Absenden &  weiteren Hinweis geben" },
           "color": "pink",
-          "onClick": { "action": "nextPage" }
+          "onClick": { "action": "submit" }
         }
       ]
     }

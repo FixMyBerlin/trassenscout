@@ -26,7 +26,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
 
   const projectGeometry = feedback.pages[0].questions[2].props.projectGeometry
 
-  const pinId = pages[1].questions.find((question) => question.component === "custom").id
+  const pinId = pages[0].questions.find((question) => question.component === "map").id
 
   const categories = pages[0].questions[0].props.responses
 
@@ -41,15 +41,15 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
     window && window.scrollTo(0, 0)
   }
 
-  const handleSubmit = (values) => {
-    const _values = { ...values }
-    delete _values.mapView
-    onSubmit({ feedback: { ..._values, [pinId]: pinPosition } })
+  const handleSubmit = (values: Record<string, any>, submitterId: string) => {
+    values = { ...values }
+    delete values.mapView
+    onSubmit({ ...values, [pinId]: isMap ? pinPosition : null }, submitterId)
   }
 
   // when Form changes, check if Radio "Ja" is selected - set state to true
-  const handleChange = (values) => {
-    setIsMap(pages[0].questions[1].props.responses[0].id === Number(values.mapView))
+  const handleChange = (values: Record<string, any>) => {
+    setIsMap(values.mapView === "1") // "1" -> yes, "2" -> no - see feedback.json
     setFeedbackCategory(values.category || 0)
   }
 

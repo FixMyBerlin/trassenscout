@@ -23,29 +23,54 @@ const ParticipationMainPage: BlitzPage = () => {
   const [responses, setResponses] = useState<any[]>([])
   const [emailState, setEmailState] = useState<string | null>()
   const [surveySessionId, setSurveySessionId] = useState<null | number>(null)
+  const [feedbackKey, setFeedbackKey] = useState(1)
   const [createSurveySessionMutation] = useMutation(createSurveySession)
   const [updateSurveySessionMutation] = useMutation(updateSurveySession)
   const [createSurveyResponseMutation] = useMutation(createSurveyResponse)
 
-  const handleSubmitSurvey = async (surveyResponses: any) => {
-    console.log("surveyResponses", surveyResponses)
+  const getOrCreateSurveySessionId = async () => {
+    if (surveySessionId) {
+      return surveySessionId
+    } else {
+      const surveySession = await createSurveySessionMutation({})
+      setSurveySessionId(surveySession.id)
+      return surveySession.id
+    }
+  }
+
+  const handleSubmitSurvey = async (surveyResponses: Record<string, any>) => {
+    console.log("survey responses", surveyResponses)
     setResponses([...responses, surveyResponses])
     setStage("MORE")
-    const surveySession = await createSurveySessionMutation({})
-    setSurveySessionId(surveySession.id)
+    const surveySessionId_ = await getOrCreateSurveySessionId()
     await createSurveyResponseMutation({
-      surveySessionId: surveySession.id,
+      surveySessionId: surveySessionId_,
       surveyId: surveyDefinition.id,
       data: JSON.stringify(surveyResponses),
     })
   }
 
-  const handleSubmitFeedback = (feedback: {}, pin: {}) => {
-    setResponses([...responses, feedback, pin])
-    setStage("EMAIL")
+  const handleSubmitFeedback = async (feedbackResponses: Record<string, any>, submitterId: string) => {
+    console.log("survey responses", feedbackResponses)
+    setResponses([...responses, feedbackResponses])
+    if (submitterId === "submit-finish") {
+      setStage("EMAIL")
+    } else {
+      setFeedbackKey(feedbackKey + 1)
+      setStage("FEEDBACK")
+    }
+    void (async () => {
+      const surveySessionId_ = await getOrCreateSurveySessionId()
+      await createSurveyResponseMutation({
+        surveySessionId: surveySessionId_,
+        surveyId: feedbackDefinition.id,
+        data: JSON.stringify(feedbackResponses),
+      })
+    })()
   }
 
   const handleMoreFeedback = () => {
+    setFeedbackKey(feedbackKey + 1)
     setStage("FEEDBACK")
   }
 
@@ -74,7 +99,9 @@ const ParticipationMainPage: BlitzPage = () => {
       component = <Survey survey={surveyDefinition} onSubmit={handleSubmitSurvey} />
       break
     case "FEEDBACK":
-      component = <Feedback feedback={feedbackDefinition} onSubmit={handleSubmitFeedback} />
+      component = (
+        <Feedback key={feedbackKey} feedback={feedbackDefinition} onSubmit={handleSubmitFeedback} />
+      )
       break
     case "MORE":
       component = (

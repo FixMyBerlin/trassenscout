@@ -16,14 +16,14 @@ type Props = {
 export const FeedbackFirstPage: React.FC<Props> = ({ page, isMap, onButtonClick }) => {
   const { title, description, questions, buttons } = page
 
-  const mapProps = questions.find((question) => question.component === "custom").props
+  const mapProps = questions.find((question) => question.component === "map").props
 
   return (
     <>
       <ScreenHeaderParticipation title={title.de} description={description.de} />
       <ParticipationLabeledRadiobuttonGroup
         items={questions[0].props.responses.map((item) => ({
-          scope: String(questions[1].id),
+          scope: String(questions[0].id),
           name: String(item.id),
           label: item.text.de,
           value: item.id,
