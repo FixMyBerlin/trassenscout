@@ -5,9 +5,8 @@ export { FORM_ERROR } from "src/core/components/forms"
 
 export const ProgressBar = () => {
   const { progress } = useContext(ProgressContext)
-  const width = (progress.current / progress.total) * 100
-  console.log(progress)
-  // const width = 100
+  const width = progress ? ((progress.current + 1) / (progress.total + 1)) * 100 : 100
+
   return (
     <div>
       <h4 className="sr-only">Status</h4>
