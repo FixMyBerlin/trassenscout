@@ -1,13 +1,25 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
+import { z } from "zod"
+
+import { authorizeProjectAdmin } from "src/authorization"
+import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 import { CalendarEntrySchema } from "../schema"
 
-export default resolver.pipe(
-  resolver.zod(CalendarEntrySchema),
-  resolver.authorize(),
-  async (input) => {
-    const calendarEntry = await db.calendarEntry.create({ data: input })
+const CreateCalendarEntrySchema = CalendarEntrySchema.merge(
+  z.object({
+    projectSlug: z.string(),
+  })
+)
 
-    return calendarEntry
-  }
+export default resolver.pipe(
+  resolver.zod(CreateCalendarEntrySchema),
+  authorizeProjectAdmin(getProjectIdBySlug),
+  async ({ projectSlug, ...input }) =>
+    await db.calendarEntry.create({
+      data: {
+        projectId: await getProjectIdBySlug(projectSlug),
+        ...input,
+      },
+    })
 )

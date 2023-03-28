@@ -5,14 +5,14 @@ import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { PageHeader } from "src/core/components/PageHeader"
-import { Manager } from "src/core/components/PageHeader/Manager"
 import { Spinner } from "src/core/components/Spinner"
 import { proseClasses, quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFiles from "src/files/queries/getFiles"
-import { BaseMapSections, SectionsMap } from "src/projects/components/Map"
+import { SectionsMap } from "src/projects/components/Map"
+import type { BaseMapSections } from "src/projects/components/Map/BaseMapView"
 import getSection from "src/sections/queries/getSection"
 import getSections from "src/sections/queries/getSections"
 import StakeholdernoteList from "src/stakeholdernotes/components/StakeholdernoteList"
@@ -47,8 +47,6 @@ export const SectionDashboardWithQuery = () => {
   return (
     <>
       <MetaTags noindex title={section.title} />
-
-      <Manager manager={user!} />
 
       <PageHeader title={section.title} subtitle={section.subTitle} />
 

@@ -27,7 +27,7 @@ export const SignupForm = (props: SignupFormProps) => {
     } catch (error: any) {
       if (error.code === "P2002" && error.meta?.target?.includes("email")) {
         // This error comes from Prisma
-        return { email: "This email is already being used" }
+        return { email: "Diese E-Mail-Adresse ist bereits registriert." }
       } else {
         return { [FORM_ERROR]: error }
       }
@@ -45,8 +45,8 @@ export const SignupForm = (props: SignupFormProps) => {
         <LabeledTextField
           type="email"
           name="email"
-          label="E-Mail"
-          placeholder=""
+          label="E-Mail-Adresse"
+          placeholder="name@beispiel.de"
           autoComplete="email"
         />
         <LabeledTextField
@@ -73,8 +73,8 @@ export const SignupForm = (props: SignupFormProps) => {
         />
         <LabeledTextField
           name="password"
-          label="Password"
-          placeholder="Password"
+          label="Passwort"
+          placeholder=""
           type="password"
           autoComplete="current-password"
         />
@@ -95,10 +95,11 @@ export const SignupForm = (props: SignupFormProps) => {
       </Form>
 
       <div className="mt-4">
-        Oder{" "}
+        Sie haben bereits einen Account? Zur{" "}
         <Link blank href={Routes.LoginPage()}>
-          anmelden
+          Anmeldung
         </Link>
+        .
       </div>
     </>
   )

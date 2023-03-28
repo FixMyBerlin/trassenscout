@@ -2,13 +2,13 @@ import { z } from "zod"
 
 export const email = z
   .string()
-  .email()
+  .email({ message: "Ungültige E-Mail-Adresse." })
   .transform((str) => str.toLowerCase().trim())
 
 export const password = z
   .string()
-  .min(10)
-  .max(100)
+  .min(10, { message: "Pflichtfeld. Mindestens 10 Zeichen." })
+  .max(100, { message: "Maximal 100 Zeichen." })
   .transform((str) => str.trim())
 
 export const Signup = z.object({
@@ -40,7 +40,7 @@ export const ResetPassword = z
     token: z.string(),
   })
   .refine((data) => data.password === data.passwordConfirmation, {
-    message: "Passwords don't match",
+    message: "Die Passwörter stimmen nicht überein.",
     path: ["passwordConfirmation"], // set the path of the error
   })
 

@@ -1,5 +1,5 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links"
@@ -9,19 +9,17 @@ import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileForm, FORM_ERROR } from "src/files/components/FileForm"
 import createFile from "src/files/mutations/createFile"
 import { FileSchema } from "src/files/schema"
-import getProject from "src/projects/queries/getProject"
 
 const NewFileWithQuery = () => {
   const router = useRouter()
   const [createFileMutation] = useMutation(createFile)
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug! })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const file = await createFileMutation({ ...values, projectId: project.id })
+      const file = await createFileMutation({ ...values, projectSlug: projectSlug! })
       await router.push(
         Routes.ShowFilePage({
           projectSlug: projectSlug!,
@@ -42,7 +40,7 @@ const NewFileWithQuery = () => {
       <FileForm
         submitText="Erstellen"
         // TODO schema: See `__ModelIdParam__/edit.tsx` for detailed instruction.
-        schema={FileSchema.omit({ projectId: true })}
+        schema={FileSchema}
         // initialValues={{}} // Use only when custom initial values are needed
         onSubmit={handleSubmit}
       />

@@ -1,4 +1,3 @@
-import { User } from "@prisma/client"
 import {
   Form,
   FormProps,
@@ -12,7 +11,9 @@ import { GeometryValidation } from "./GeometryValidation"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function SubsectionForm<S extends z.ZodType<any, any>>(
-  props: FormProps<S> & { users: User[] }
+  props: FormProps<S> & {
+    users: { id: number; firstName: string | null; lastName: string | null; email: string }[]
+  }
 ) {
   const { users } = props
 

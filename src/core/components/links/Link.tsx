@@ -26,7 +26,7 @@ export const Link: React.FC<Props> = forwardRef<HTMLAnchorElement, Props>(
         <a
           ref={ref}
           href={href}
-          className={classNameOverwrites || clsx(button ? buttonStyles : linkStyles, className)}
+          className={classNameOverwrites ?? clsx(button ? buttonStyles : linkStyles, className)}
           rel="noopener noreferrer"
           {...{ target: blank ? "_blank" : undefined }}
           {...props}
@@ -44,7 +44,7 @@ export const Link: React.FC<Props> = forwardRef<HTMLAnchorElement, Props>(
         */}
         <a
           ref={ref}
-          className={classNameOverwrites || clsx(button ? buttonStyles : linkStyles, className)}
+          className={classNameOverwrites ?? clsx(button ? buttonStyles : linkStyles, className)}
           {...props}
         >
           {children}

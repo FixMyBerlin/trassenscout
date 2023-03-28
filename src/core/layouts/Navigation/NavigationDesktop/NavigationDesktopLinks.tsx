@@ -5,9 +5,9 @@ import clsx from "clsx"
 import { useRouter } from "next/router"
 import React, { Fragment } from "react"
 import { Link } from "src/core/components/links"
-import { MenuItems } from "../types"
+import { MenuItem } from "../types"
 
-type Props = MenuItems
+type Props = { menuItems: MenuItem[] }
 
 export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
   const { pathname } = useRouter()
@@ -21,7 +21,7 @@ export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
 
   return (
     <div className="flex space-x-4">
-      {menuItems.map((item) => {
+      {menuItems?.map((item) => {
         const current = pathname === item.href.pathname
 
         if (!item.children) {

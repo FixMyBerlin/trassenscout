@@ -1,13 +1,17 @@
-import { paginate } from "blitz"
+import { Ctx, paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
-import db, { Prisma, Project } from "db"
+import db, { Prisma } from "db"
 
 interface GetProjectsInput
   extends Pick<Prisma.ProjectFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
 
 export default resolver.pipe(
-  resolver.authorize(),
-  async ({ where, orderBy, skip = 0, take = 100 }: GetProjectsInput) => {
+  resolver.authorize(/* ok */),
+  async ({ where, orderBy, skip = 0, take = 100 }: GetProjectsInput, ctx: Ctx) => {
+    const user = await db.user.findFirst({ where: { id: ctx.session.userId! } })
+    if (user!.role !== "ADMIN") {
+      where = { ...where, Membership: { some: { userId: user!.id } } }
+    }
     const {
       items: projects,
       hasMore,

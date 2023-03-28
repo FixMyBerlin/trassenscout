@@ -1,23 +1,23 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
+
+import { authorizeProjectAdmin } from "src/authorization"
+import getStakeholdernoteProjectId from "../queries/getStakeholdernoteProjectId"
 import { StakeholdernoteSchema } from "../schema"
 
-const UpdateStakeholdernote = StakeholdernoteSchema.merge(
+const UpdateStakeholdernoteSchema = StakeholdernoteSchema.merge(
   z.object({
     id: z.number(),
   })
 )
 
 export default resolver.pipe(
-  resolver.zod(UpdateStakeholdernote),
-  resolver.authorize(),
-  async ({ id, ...data }) => {
-    const stakeholdernote = await db.stakeholdernote.update({
+  resolver.zod(UpdateStakeholdernoteSchema),
+  authorizeProjectAdmin(getStakeholdernoteProjectId),
+  async ({ id, ...data }) =>
+    await db.stakeholdernote.update({
       where: { id },
       data,
     })
-
-    return stakeholdernote
-  }
 )

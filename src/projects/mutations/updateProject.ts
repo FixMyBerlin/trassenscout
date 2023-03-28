@@ -11,10 +11,8 @@ const UpdateProject = ProjectSchema.merge(
 
 export default resolver.pipe(
   resolver.zod(UpdateProject),
-  resolver.authorize(),
+  resolver.authorize("ADMIN"),
   async ({ id, ...data }) => {
-    const project = await db.project.update({ where: { id }, data })
-
-    return project
+    return await db.project.update({ where: { id }, data })
   }
 )

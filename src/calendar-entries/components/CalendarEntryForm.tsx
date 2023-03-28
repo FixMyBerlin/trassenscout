@@ -10,19 +10,13 @@ export function CalendarEntryForm<S extends z.ZodType<any, any>>(props: FormProp
         <LabeledTextField type="date" name="startDate" label="Start-Datum" placeholder="" />
         <LabeledTextField type="time" name="startTime" label="und -Zeit" placeholder="" />
       </div>
-      <LabeledTextField
-        type="text"
-        name="locationName"
-        optional
-        label="Ort"
-        placeholder="Beispielsweise Adresse und Bezeichnung des Konferenzraums"
-      />
+      <LabeledTextField type="text" name="locationName" optional label="Ort" placeholder="" />
       <LabeledTextField
         type="url"
         name="locationUrl"
         optional
-        label="Online Meeting URL"
-        placeholder="Beispielsweise Adresse und Bezeichnung des Konferenzraums"
+        label="Besprechungslink"
+        placeholder=""
       />
       <LabeledTextareaField
         name="description"

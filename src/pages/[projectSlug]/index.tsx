@@ -7,12 +7,12 @@ import { CalenderDashboard } from "src/calendar-entries/components"
 import DashedLine from "src/core/components/DashedLine"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
-import { Manager } from "src/core/components/PageHeader/Manager"
 import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { BaseMapSections, SectionsMap } from "src/projects/components/Map"
+import { SectionsMap } from "src/projects/components/Map"
+import type { BaseMapSections } from "src/projects/components/Map/BaseMapView"
 import { SectionsTeasers } from "src/projects/components/Map/SectionsTeaser/SectionsTeasers"
 import getProject from "src/projects/queries/getProject"
 import getSections from "src/sections/queries/getSections"
@@ -55,8 +55,6 @@ export const ProjectDashboardWithQuery = () => {
         logo
       />
       {/* TODO: intro prop evtl. mit project description ersetzen */}
-
-      <Manager manager={user!} />
 
       {/* Phasen Panel */}
       <H2 className="my-6">Aktuelle Planungsphase</H2>

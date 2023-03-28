@@ -7,7 +7,7 @@ import { ChangePassword } from "../validations"
 
 export default resolver.pipe(
   resolver.zod(ChangePassword),
-  resolver.authorize(),
+  resolver.authorize(/* ok */),
   async ({ currentPassword, newPassword }, ctx) => {
     const user = await db.user.findFirst({ where: { id: ctx.session.userId } })
     if (!user) throw new NotFoundError()
@@ -16,7 +16,7 @@ export default resolver.pipe(
       await authenticateUser(user.email, currentPassword)
     } catch (error) {
       if (error instanceof AuthenticationError) {
-        throw new Error("Invalid Password")
+        throw new Error("Passwort ungültig.")
       }
       throw error
     }

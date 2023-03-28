@@ -12,7 +12,14 @@ import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function ProjectForm<S extends z.ZodType<any, any>>(
-  props: FormProps<S> & { users: User[] }
+  props: FormProps<S> & {
+    users: {
+      id: number
+      firstName: string | null
+      lastName: string | null
+      email: string
+    }[]
+  }
 ) {
   const { users } = props
 
@@ -26,7 +33,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
         placeholder=""
       />
       <LabeledTextField type="text" name="title" label="Name" placeholder="" />
-      <LabeledTextField type="text" name="shortTitle" label="Kurzname" placeholder="" optional />
+      <LabeledTextField type="text" name="shortTitle" label="Kurzname" placeholder="" />
       <LabeledTextareaField
         name="description"
         label="Beschreibung (Markdown)"
@@ -36,7 +43,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
-        options={users.map((u) => [String(u.id), [getFullname(u), `<${u.email}>`].join(" ")])}
+        options={users.map((u) => [u.id.toString(), [getFullname(u), `<${u.email}>`].join(" ")])}
       />
     </Form>
   )

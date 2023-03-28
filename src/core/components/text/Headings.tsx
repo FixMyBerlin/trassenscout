@@ -7,11 +7,9 @@ type Props = {
 }
 
 export const H1: React.FC<Props> = ({ className, children }) => {
-  return <h1 className={clsx("text-6xl font-extrabold leading-10", className)}>{children}</h1>
+  return <h1 className={clsx("text-[42px] font-extrabold", className)}>{children}</h1>
 }
 
 export const H2: React.FC<Props> = ({ className, children }) => {
-  return (
-    <h2 className={clsx("text-dark-gray text-[32px] font-extrabold", className)}>{children}</h2>
-  )
+  return <h2 className={clsx("text-[32px] font-extrabold", className)}>{children}</h2>
 }

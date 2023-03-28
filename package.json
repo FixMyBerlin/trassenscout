@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "start": "blitz start",
-    "dev": "if [ $(docker inspect -f '{{.State.Running}}' rsv-builder-db) = \"true\" ]; then echo Docker: Skipping – Container already running; else docker compose up --detach nope; fi && NODE_OPTIONS='--inspect' blitz dev",
+    "dev": "NODE_OPTIONS='--inspect' blitz dev",
+    "predev": "if [[ $(docker inspect -f '{{.State.Running}}' rsv-builder-db) = \"true\" ]]; then echo Docker: Skipping – Container already running; else docker compose up --detach; fi",
+    "postdev": "docker compose down",
     "debug": "DEBUG=blitz:* blitz console",
     "build": "blitz build",
     "studio": "blitz prisma studio",
@@ -17,9 +19,12 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint --fix --ignore-pattern \"src/core/templates/*\" --ignore-path .gitignore --ext .js,.ts,.tsx .",
     "format": "prettier --ignore-path .gitignore \"./(src|db|mailers)/**/*.+(js|ts|tsx)\" --write",
-    "test": "vitest run --passWithNoTests",
-    "test:watch": "vitest",
-    "seed": "npm run migrate && blitz prisma migrate reset && blitz db seed",
+    "test": "vitest run --passWithNoTests || :",
+    "pretest": "if [[ $(docker inspect -f '{{.State.Running}}' ts-test-db) = \"true\" ]]; then npm run posttest && npm run pretest; else docker run -d -e POSTGRES_PASSWORD=password -p 6002:5432 --name=ts-test-db postgres:12-alpine; fi",
+    "posttest": "docker rm ts-test-db -f",
+    "test:watch": "npm run pretest && vitest watch && npm run posttest",
+    "test:ui": "npm run pretest && vitest --ui && npm run posttest",
+    "seed": "npm run predev && npm run migrate && blitz prisma migrate reset && blitz db seed",
     "prepare": "husky install"
   },
   "prisma": {

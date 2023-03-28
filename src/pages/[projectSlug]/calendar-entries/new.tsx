@@ -1,5 +1,5 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/CalendarEntryForm"
@@ -13,12 +13,10 @@ import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import getProject from "src/projects/queries/getProject"
 
 const NewCalendarEntry = () => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug! })
   const [createCalendarEntryMutation] = useMutation(createCalendarEntry)
 
   type HandleSubmit = any // TODO
@@ -27,7 +25,7 @@ const NewCalendarEntry = () => {
       const transformedValues = transformValuesWithStartAt(values)
       const calendarEntry = await createCalendarEntryMutation({
         ...transformedValues,
-        projectId: project.id!,
+        projectSlug: projectSlug!,
       })
       await router.push(
         Routes.ShowCalendarEntryPage({
@@ -49,7 +47,7 @@ const NewCalendarEntry = () => {
       <CalendarEntryForm
         submitText="Erstellen"
         schema={CalendarEntrySchema.omit({
-          projectId: true,
+          projectSlug: true,
           startAt: true,
         }).merge(CalendarEntryStartDateStartTimeSchema)}
         //  initialValues={{}}

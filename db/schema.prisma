@@ -27,6 +27,7 @@ model User {
   projects    Project[]
   sections    Section[]
   subsections Subsection[]
+  Membership  Membership[]
 }
 
 enum UserRoleEnum {
@@ -79,7 +80,7 @@ model Project {
   updatedAt   DateTime @updatedAt
   slug        String   @unique
   title       String
-  shortTitle  String?
+  shortTitle  String
   description String?
 
   manager   User @relation(fields: [managerId], references: [id])
@@ -89,6 +90,19 @@ model Project {
   calendarEntries CalendarEntry[]
   contacts        Contact[]
   files           File[]
+  Membership      Membership[]
+}
+
+model Membership {
+  id Int @id @default(autoincrement())
+
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId Int
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  @@unique([projectId, userId])
 }
 
 model CalendarEntry {

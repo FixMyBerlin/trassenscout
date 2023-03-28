@@ -1,9 +1,25 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
+import { z } from "zod"
+
+import { authorizeProjectAdmin } from "src/authorization"
+import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 import { FileSchema } from "../schema"
 
-export default resolver.pipe(resolver.zod(FileSchema), resolver.authorize(), async (input) => {
-  const file = await db.file.create({ data: input })
+const CreateFileSchema = FileSchema.merge(
+  z.object({
+    projectSlug: z.string(),
+  })
+)
 
-  return file
-})
+export default resolver.pipe(
+  resolver.zod(CreateFileSchema),
+  authorizeProjectAdmin(getProjectIdBySlug),
+  async ({ projectSlug, ...input }) =>
+    await db.file.create({
+      data: {
+        projectId: await getProjectIdBySlug(projectSlug),
+        ...input,
+      },
+    })
+)

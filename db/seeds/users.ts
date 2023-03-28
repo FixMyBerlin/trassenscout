@@ -1,25 +1,45 @@
 import db, { User } from "../index"
 
 const seedUsers = async () => {
+  // password: dev-team@fixmycity.de
+  const hashedPassword =
+    "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTIscD0xJDRMWm82dmVrRk91VnVlZTVwcEpiS3ckOHFZcHhyM2RITm0yTGxTeXdqeEcxSWFsZEJCUWhxNVZxdm53eHoxTk4xTQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+
   const seeData: Omit<User, "id" | "createdAt" | "updatedAt">[] = [
     {
       email: "dev-team@fixmycity.de",
-      // password: dev-team@fixmycity.de
-      hashedPassword:
-        "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTIscD0xJDRMWm82dmVrRk91VnVlZTVwcEpiS3ckOHFZcHhyM2RITm0yTGxTeXdqeEcxSWFsZEJCUWhxNVZxdm53eHoxTk4xTQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+
+      hashedPassword,
       role: "ADMIN",
-      firstName: "Andi",
-      lastName: "Admin",
+      firstName: "Admin",
+      lastName: "AdminUser",
       phone: "030 123456",
     },
     {
-      email: "regular-user@fixmycity.de",
-      // password: dev-team@fixmycity.de
-      hashedPassword:
-        "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTIscD0xJDRMWm82dmVrRk91VnVlZTVwcEpiS3ckOHFZcHhyM2RITm0yTGxTeXdqeEcxSWFsZEJCUWhxNVZxdm53eHoxTk4xTQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      email: "no-permissions@fixmycity.de",
+
+      hashedPassword,
       role: "USER",
-      firstName: null,
-      lastName: null,
+      firstName: "NoPermissions",
+      lastName: "RegularUser",
+      phone: null,
+    },
+    {
+      email: "rs-spree-permissions@fixmycity.de",
+
+      hashedPassword,
+      role: "USER",
+      firstName: "RS Spree Permissions",
+      lastName: "RegularUser",
+      phone: null,
+    },
+    {
+      email: "all-projects-permissions@fixmycity.de",
+
+      hashedPassword,
+      role: "USER",
+      firstName: "AllProjects Permissions",
+      lastName: "RegularUser",
       phone: null,
     },
   ]

@@ -1,9 +1,9 @@
-import { useParam, Routes } from "@blitzjs/next"
-import { Section } from "@prisma/client"
+import { Routes, useParam } from "@blitzjs/next"
 import { along, length, lineString } from "@turf/turf"
 import { useRouter } from "next/router"
 import { Marker } from "react-map-gl"
-import { BaseMap, BaseMapSections } from "../BaseMap"
+import { BaseMap } from "../BaseMap"
+import type { BaseMapSections } from "../BaseMapView"
 import { SectionMarker } from "../SectionMarker"
 
 type Props = {

@@ -1,6 +1,5 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
-import { TableCellsIcon } from "@heroicons/react/20/solid"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { ContactList } from "src/contacts/components/ContactList"

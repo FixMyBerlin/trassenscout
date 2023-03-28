@@ -6,7 +6,7 @@ interface GetUsersInput
   extends Pick<Prisma.ProjectFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
 
 export default resolver.pipe(
-  resolver.authorize(),
+  resolver.authorize("ADMIN"),
   async ({ where, orderBy, skip = 0, take = 100 }: GetUsersInput) => {
     const {
       items: users,
@@ -17,7 +17,18 @@ export default resolver.pipe(
       skip,
       take,
       count: () => db.user.count({ where }),
-      query: (paginateArgs) => db.user.findMany({ ...paginateArgs, where, orderBy }),
+      query: (paginateArgs) =>
+        db.user.findMany({
+          ...paginateArgs,
+          where,
+          orderBy,
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        }),
     })
 
     return {

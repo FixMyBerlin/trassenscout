@@ -1,6 +1,9 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
+
+import { authorizeProjectAdmin } from "src/authorization"
+import getFileProjectId from "../queries/getFileProjectId"
 import { FileSchema } from "../schema"
 
 const UpdateFileSchema = FileSchema.merge(
@@ -11,10 +14,6 @@ const UpdateFileSchema = FileSchema.merge(
 
 export default resolver.pipe(
   resolver.zod(UpdateFileSchema),
-  resolver.authorize(),
-  async ({ id, ...data }) => {
-    const file = await db.file.update({ where: { id }, data })
-
-    return file
-  }
+  authorizeProjectAdmin(getFileProjectId),
+  async ({ id, ...data }) => await db.file.update({ where: { id }, data })
 )

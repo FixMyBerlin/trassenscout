@@ -1,11 +1,17 @@
-import { EyeDropperIcon } from "@heroicons/react/20/solid"
+import Image from "next/image"
+import svgLogoTrassenscout from "../assets/trassenscout-logo-gelb.svg"
 
 export const NavigationGeneralLogo: React.FC = () => {
   return (
-    <>
-      <EyeDropperIcon className="block h-8 w-auto text-rsv-ochre lg:hidden" />
-      <EyeDropperIcon className="hidden h-8 w-auto text-rsv-ochre lg:block" />{" "}
-      <span className="ml-2 text-gray-400">Trassenscout (Alpha)</span>
-    </>
+    <div className="flex items-end">
+      <Image
+        src={svgLogoTrassenscout}
+        className="block h-8 w-auto text-rsv-ochre lg:hidden"
+        alt="Trassenscout"
+        height={32}
+        width={120}
+      />
+      <span className="ml-2 text-xs uppercase text-gray-400">Alpha</span>
+    </div>
   )
 }

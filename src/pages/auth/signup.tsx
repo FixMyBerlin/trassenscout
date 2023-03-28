@@ -7,7 +7,10 @@ const SignupPage: BlitzPage = () => {
   const router = useRouter()
 
   return (
-    <LayoutMiddleBox title="Registrieren" subtitle="Willkommen!">
+    <LayoutMiddleBox
+      title="Account registrieren"
+      subtitle="Willkommen! Hier können Sie sich registrieren."
+    >
       <MetaTags noindex title="Anmelden" />
       <SignupForm onSuccess={() => router.push(Routes.Home())} />
     </LayoutMiddleBox>

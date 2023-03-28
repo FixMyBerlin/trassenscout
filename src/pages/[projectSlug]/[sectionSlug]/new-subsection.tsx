@@ -11,7 +11,7 @@ import getSection from "src/sections/queries/getSection"
 import { FORM_ERROR, SubsectionForm } from "src/subsections/components/SubsectionForm"
 import createSubsection from "src/subsections/mutations/createSubsection"
 import { SubsectionSchema } from "src/subsections/schema"
-import getUsers from "src/users/queries/getUsers"
+import getProjectUsers from "src/users/queries/getProjectUsers"
 
 const NewSubsection = () => {
   const router = useRouter()
@@ -19,7 +19,7 @@ const NewSubsection = () => {
   const sectionSlug = useParam("sectionSlug", "string")
   const [section] = useQuery(getSection, { sectionSlug, projectSlug })
   const [createSubsectionMutation] = useMutation(createSubsection)
-  const [{ users }] = useQuery(getUsers, {})
+  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {

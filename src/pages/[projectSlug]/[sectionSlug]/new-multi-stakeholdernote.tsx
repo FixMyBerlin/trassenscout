@@ -45,7 +45,7 @@ const NewStakeholdernoteMulti = () => {
 
   return (
     <>
-      <MetaTags noindex title="Mehrere neue Stakeholdernote erstellen" />
+      <MetaTags noindex title="Mehrere Stakeholder erstellen" />
 
       <PageHeader
         title="Mehrere Stakeholder erstellen"
@@ -55,7 +55,7 @@ const NewStakeholdernoteMulti = () => {
       <StakeholdernoteMultiForm
         submitText="Erstellen"
         // TODO schema: See `__ModelIdParam__/edit.tsx` for detailed instruction.
-        //schema={StakeholdernoteMultiSchema}
+        schema={StakeholdernoteMultiSchema}
         onSubmit={handleSubmit}
       />
       <p>

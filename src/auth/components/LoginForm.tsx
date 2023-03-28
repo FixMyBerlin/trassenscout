@@ -22,11 +22,10 @@ export const LoginForm = (props: LoginFormProps) => {
       props.onSuccess?.(user)
     } catch (error: any) {
       if (error instanceof AuthenticationError) {
-        return { [FORM_ERROR]: "Sorry, those credentials are invalid" }
+        return { [FORM_ERROR]: "Diese Anmeldedaten sind ungültig." }
       } else {
         return {
-          [FORM_ERROR]:
-            "Sorry, we had an unexpected error. Please try again. - " + error.toString(),
+          [FORM_ERROR]: "Ein unerwarteter Fehler ist aufgetreten. - " + error.toString(),
         }
       }
     }
@@ -35,42 +34,56 @@ export const LoginForm = (props: LoginFormProps) => {
   return (
     <>
       <Form
-        submitText="Einloggen"
+        submitText="Anmelden"
         schema={Login}
         initialValues={{ email: "", password: "" }}
         onSubmit={handleSubmit}
       >
-        <LabeledTextField name="email" label="Email" placeholder="Email" autoComplete="email" />
+        <LabeledTextField
+          name="email"
+          label="E-Mail-Adresse"
+          placeholder="name@beispiel.de"
+          autoComplete="email"
+        />
         <LabeledTextField
           name="password"
-          label="Password"
-          placeholder="Password"
+          label="Passwort"
+          placeholder="Passwort"
           type="password"
           autoComplete="current-password"
         />
         <div className="text-sm">
+          Sie haben Ihr{" "}
           <Link href={Routes.ForgotPasswordPage()} className="font-medium">
             Passwort vergessen?
           </Link>
         </div>
 
         <DevAdminBox className="text-center">
-          <button
-            className={buttonStyles}
-            onClick={async () =>
-              await handleSubmit({
-                email: "dev-team@fixmycity.de",
-                password: "dev-team@fixmycity.de",
-              })
-            }
-          >
-            Login <code>dev-team@fixmycity.de</code>
-          </button>
+          {[
+            ["admin", "dev-team@fixmycity.de"],
+            ["no-permission", "no-permissions@fixmycity.de"],
+            ["one-project", "rs-spree-permissions@fixmycity.de"],
+            ["all-projects-noadmin", "all-projects-permissions@fixmycity.de"],
+          ].map(([displayName, email]) => (
+            <button
+              key={displayName}
+              className={buttonStyles}
+              onClick={async () =>
+                await handleSubmit({
+                  email,
+                  password: "dev-team@fixmycity.de",
+                })
+              }
+            >
+              {displayName}
+            </button>
+          ))}
         </DevAdminBox>
       </Form>
 
       <div className="mt-4">
-        Oder <Link href={Routes.SignupPage()}>registrieren</Link>
+        Sie haben noch keinen Account? Zur <Link href={Routes.SignupPage()}>Registrierung</Link>.
       </div>
     </>
   )

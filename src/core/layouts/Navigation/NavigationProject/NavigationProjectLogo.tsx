@@ -1,8 +1,7 @@
 import { BuildingLibraryIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import Image from "next/image"
-import React from "react"
-import pngRsv8Logo from "./../assets/rsv8-logo.png" //
+import pngRsv8Logo from "./../assets/rsv8-logo.png"
 
 export const NavigationProjectLogo: React.FC = () => {
   const regionLogo = true

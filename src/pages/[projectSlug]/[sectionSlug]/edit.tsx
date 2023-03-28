@@ -13,7 +13,7 @@ import deleteSection from "src/sections/mutations/deleteSection"
 import updateSection from "src/sections/mutations/updateSection"
 import getSection from "src/sections/queries/getSection"
 import { SectionSchema } from "src/sections/schema"
-import getUsers from "src/users/queries/getUsers"
+import getProjectUsers from "src/users/queries/getProjectUsers"
 
 const EditSection = () => {
   const router = useRouter()
@@ -28,7 +28,7 @@ const EditSection = () => {
     }
   )
   const [updateSectionMutation] = useMutation(updateSection)
-  const [{ users }] = useQuery(getUsers, {})
+  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
