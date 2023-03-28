@@ -14,7 +14,7 @@ type Props = {
 export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const { progress, setProgress } = useContext(ProgressContext)
   const [pinPostion, setPinPosition] = useState(null)
-  const [feedbackCategory, setFeedbackCategory] = useState([])
+  const [feedbackCategory, setFeedbackCategory] = useState("")
 
   useEffect(() => {
     setProgress({ current: 0, total: pages.length - 1 })
@@ -45,12 +45,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   // when Form changes, check if Radio "Ja" is selected - set state to true
   const handleChange = (values) => {
     setIsMap(pages[0].questions[1].props.responses[0].id === Number(values.mapView))
-
-    const newCategories = Object.entries(values)
-      .filter(([k, v]) => v === true)
-      .map(([k, v]) => k)
-    console.log(newCategories)
-    setFeedbackCategory(newCategories)
+    setFeedbackCategory(values.category || "")
   }
 
   return (

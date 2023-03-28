@@ -14,7 +14,7 @@ type Props = {
   page: any // TODO
   onButtonClick: any // TODO
   projectGeometry: any // TODO
-  feedbackCategory: string[]
+  feedbackCategory: string
 }
 
 export const FeedbackSecondPage: React.FC<Props> = ({
@@ -32,8 +32,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
     <>
       <ScreenHeaderParticipation title={title.de} description={description.de} />
       <ParticipationH3>{questions[0].label.de}</ParticipationH3>
-      {Boolean(feedbackCategory?.length) &&
-        feedbackCategory?.map((c) => <ParticipationP key={c}>{c}</ParticipationP>)}
+      <ParticipationP>{feedbackCategory}</ParticipationP>
 
       {pinPostion && (
         <>

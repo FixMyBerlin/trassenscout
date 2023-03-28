@@ -21,10 +21,12 @@ export const FeedbackFirstPage: React.FC<Props> = ({ page, isMap, onButtonClick 
   return (
     <>
       <ScreenHeaderParticipation title={title.de} description={description.de} />
-      <ParticipationLabeledCheckboxGroup
+      <ParticipationLabeledRadiobuttonGroup
         items={questions[0].props.responses.map((item) => ({
-          name: item.text.de,
+          scope: "category",
+          name: String(item.id),
           label: item.text.de,
+          value: item.text.de,
         }))}
       />
       <ParticipationH2>{questions[1].label.de}</ParticipationH2>
