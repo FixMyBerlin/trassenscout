@@ -23,6 +23,8 @@ export const FeedbackFirstPage: React.FC<Props> = ({ isCompleted, page, isMap, o
 
   return (
     <>
+      <ScreenHeaderParticipation title={title.de} description={description.de} />
+
       <Question question={questions[0]} />
       <Question question={questions[1]} />
       {/* <ParticipationH2>{questions[1].label.de}</ParticipationH2>
