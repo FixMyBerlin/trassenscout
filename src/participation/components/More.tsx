@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { Form } from "src/core/components/forms"
+import SurveyForm from "./form/SurveyForm"
 import { ProgressContext } from "../context/contexts"
 import { ParticipationButton } from "./core/ParticipationButton"
 import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
@@ -37,7 +37,7 @@ export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
   }
 
   return (
-    <Form onSubmit={onClickFinish} onChangeValues={handleChange}>
+    <SurveyForm onSubmit={onClickFinish} onChangeValues={handleChange}>
       <ScreenHeaderParticipation title={title.de} description={description.de} />
       <ParticipationH2>{question.label.de}</ParticipationH2>
       <ParticipationLabeledRadiobuttonGroup
@@ -52,6 +52,6 @@ export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
       <ParticipationButton disabled={!isDirty} onClick={isFeedback ? onClickMore : onClickFinish}>
         {button.label.de}
       </ParticipationButton>
-    </Form>
+    </SurveyForm>
   )
 }

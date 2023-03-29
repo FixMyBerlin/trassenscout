@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react"
-import { Form } from "src/core/components/forms"
+import SurveyForm from "../form/SurveyForm"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
 import { Page, TPage } from "./Page"
-import { pinkButtonStyles } from "../../../core/components/links"
 import { ProgressContext } from "src/participation/context/contexts"
 import { Debug } from "./Debug"
 
@@ -110,13 +109,13 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   const page = pages[progress.current]
 
   return (
-    <Form submitClassName={pinkButtonStyles} onSubmit={handleSubmit} onChangeValues={handleChange}>
+    <SurveyForm onSubmit={handleSubmit} onChangeValues={handleChange}>
       <Debug>
         <code>
           <pre>{JSON.stringify(values, null, 2)}</pre>
         </code>
       </Debug>
       <Page page={page} buttonActions={buttonActions} completed={pageIsComplete()} />
-    </Form>
+    </SurveyForm>
   )
 }

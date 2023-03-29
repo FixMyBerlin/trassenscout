@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { Form } from "src/core/components/forms"
+import SurveyForm from "../form/SurveyForm"
 import { PinContext, ProgressContext } from "src/participation/context/contexts"
 import { FeedbackFirstPage } from "./FeedbackFirstPage"
 import { FeedbackSecondPage } from "./FeedbackSecondPage"
@@ -84,7 +84,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
 
   return (
     <PinContext.Provider value={{ pinPosition, setPinPosition }}>
-      <Form onSubmit={handleSubmit} onChangeValues={handleChange}>
+      <SurveyForm onSubmit={handleSubmit} onChangeValues={handleChange}>
         {progress.current === 0 && (
           <FeedbackFirstPage
             isCompleted={isPageOneCompleted}
@@ -102,7 +102,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
             feedbackCategory={categories[feedbackCategory - 1].text.de}
           />
         )}
-      </Form>
+      </SurveyForm>
     </PinContext.Provider>
   )
 }

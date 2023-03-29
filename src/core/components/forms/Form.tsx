@@ -2,7 +2,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import clsx from "clsx"
 import { PropsWithoutRef, ReactNode, useEffect, useState } from "react"
 import { FormProvider, useForm, UseFormProps } from "react-hook-form"
+import { IntlProvider } from "react-intl"
 import { z } from "zod"
+import { blueButtonStyles } from "../links"
+import { errorMessageTranslations } from "./errorMessageTranslations"
 import { FormError } from "./FormError"
 
 export interface FormProps<S extends z.ZodType<any, any>>
@@ -13,7 +16,7 @@ export interface FormProps<S extends z.ZodType<any, any>>
   submitText?: string
   submitClassName?: string
   schema?: S
-  onSubmit: (values: z.infer<S>, submitterId?: string) => Promise<void | OnSubmitResult>
+  onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
   onChangeValues: (values: any) => void
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
 }
@@ -41,7 +44,7 @@ export function Form<S extends z.ZodType<any, any>>({
     resolver: schema ? zodResolver(schema) : undefined,
     defaultValues: initialValues,
   })
-  const [formError] = useState<string | null>(null)
+  const [formError, setFormError] = useState<string | null>(null)
   useEffect(() => {
     if (onChangeValues) {
       onChangeValues(ctx.getValues())
@@ -51,21 +54,49 @@ export function Form<S extends z.ZodType<any, any>>({
   if (onChangeValues) props.onChange = () => onChangeValues(ctx.getValues())
 
   return (
-    <FormProvider {...ctx}>
-      <form
-        className={clsx("space-y-6", className)}
-        onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
-          // @ts-ignore
-          const submitterId = e.nativeEvent.submitter.id
-          await ctx.handleSubmit(async (values) => await onSubmit(values, submitterId))()
-          e.preventDefault()
-        }}
-        {...props}
-      >
-        {children}
-        <FormError formError={formError} />
-      </form>
-    </FormProvider>
+    <IntlProvider messages={errorMessageTranslations} locale="de" defaultLocale="de">
+      <FormProvider {...ctx}>
+        <form
+          className={clsx("space-y-6", className)}
+          onSubmit={ctx.handleSubmit(async (values) => {
+            const result = (await onSubmit(values)) || {}
+            for (const [key, value] of Object.entries(result)) {
+              if (key === FORM_ERROR) {
+                // For ZodErrors, the message field is not deserialized.
+                // We try to parse it here but also make catch edge cases.
+                // Learn more at https://github.com/blitz-js/blitz/issues/4059
+                if (value.name === "ZodError" && typeof value.message === "string") {
+                  try {
+                    value.message = JSON.parse(value.message)
+                  } catch {}
+                }
+                setFormError(value)
+              } else {
+                ctx.setError(key as any, {
+                  type: "submit",
+                  message: value,
+                })
+              }
+            }
+          })}
+          {...props}
+        >
+          {/* Form fields supplied as children are rendered here */}
+          {children}
+
+          <FormError formError={formError} />
+          {submitText && (
+            <button
+              type="submit"
+              disabled={ctx.formState.isSubmitting}
+              className={submitClassName || blueButtonStyles}
+            >
+              {submitText}
+            </button>
+          )}
+        </form>
+      </FormProvider>
+    </IntlProvider>
   )
 }
 

@@ -1,6 +1,8 @@
+import { Survey } from "./survey/Survey"
+
 export { FORM_ERROR } from "src/core/components/forms"
 import { useContext, useEffect, useState } from "react"
-import { Form } from "src/core/components/forms"
+import SurveyForm from "./form/SurveyForm"
 import { Link, whiteButtonStyles } from "src/core/components/links"
 import { ProgressContext } from "../context/contexts"
 import { ParticipationButton } from "./core/ParticipationButton"
@@ -37,7 +39,7 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
 
   return (
     <section>
-      <Form onSubmit={handleSubmit} onChangeValues={handleChange}>
+      <SurveyForm onSubmit={handleSubmit} onChangeValues={handleChange}>
         <ScreenHeaderParticipation title={page.title.de} />
         <ParticipationH2>{page.questions[0].label.de}</ParticipationH2>
         <ParticipationP>{page.questions[0].props.text.de}</ParticipationP>
@@ -62,7 +64,7 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
             Nein, zurück zur Startseite
           </Link>
         </ParticipationButtonWrapper>
-      </Form>
+      </SurveyForm>
     </section>
   )
 }
