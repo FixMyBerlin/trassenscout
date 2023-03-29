@@ -42,12 +42,14 @@ const ParticipationMainPage: BlitzPage = () => {
     console.log("survey responses", surveyResponses)
     setResponses([...responses, surveyResponses])
     setStage("MORE")
-    const surveySessionId_ = await getOrCreateSurveySessionId()
-    await createSurveyResponseMutation({
-      surveySessionId: surveySessionId_,
-      surveyId: surveyDefinition.id,
-      data: JSON.stringify(surveyResponses),
-    })
+    void (async () => {
+      const surveySessionId_ = await getOrCreateSurveySessionId()
+      await createSurveyResponseMutation({
+        surveySessionId: surveySessionId_,
+        surveyId: surveyDefinition.id,
+        data: JSON.stringify(surveyResponses),
+      })
+    })()
   }
 
   const handleSubmitFeedback = async (feedbackResponses: Record<string, any>, submitterId: string) => {
