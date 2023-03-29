@@ -1,12 +1,9 @@
-import { paginate } from "blitz";
-import { resolver } from "@blitzjs/rpc";
-import db, { Prisma } from "db";
+import { paginate } from "blitz"
+import { resolver } from "@blitzjs/rpc"
+import db, { Prisma } from "db"
 
 interface GetSurveySessionsInput
-  extends Pick<
-    Prisma.SurveySessionFindManyArgs,
-    "where" | "orderBy" | "skip" | "take"
-  > {}
+  extends Pick<Prisma.SurveySessionFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
 
 export default resolver.pipe(
   resolver.authorize(),
@@ -21,15 +18,14 @@ export default resolver.pipe(
       skip,
       take,
       count: () => db.surveySession.count({ where }),
-      query: (paginateArgs) =>
-        db.surveySession.findMany({ ...paginateArgs, where, orderBy }),
-    });
+      query: (paginateArgs) => db.surveySession.findMany({ ...paginateArgs, where, orderBy }),
+    })
 
     return {
       surveySessions,
       nextPage,
       hasMore,
       count,
-    };
+    }
   }
-);
+)
