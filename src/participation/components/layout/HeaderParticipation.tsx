@@ -12,7 +12,10 @@ export const HeaderParticipation = () => {
           <Image width={50} height={50} src={Logo} alt="RS-Logo" />
           <span className="py-5 pl-4">Beteiligung</span>
         </div>
-        <Link classNameOverwrites="text-gray-900" href="https://rsv8-lb-wn.de/beteiligung">
+        <Link
+          classNameOverwrites="text-gray-900"
+          href="https://radschnellweg8-lb-wn.de/beteiligung"
+        >
           <XMarkIcon className="h-7  w-7" />
         </Link>
       </div>

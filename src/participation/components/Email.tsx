@@ -59,7 +59,7 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
             {page.buttons[0].label.de}
           </ParticipationButton>
           {/* TODO Link */}
-          <Link className={whiteButtonStyles} href="https://rsv8-lb-wn.de/beteiligung">
+          <Link className={whiteButtonStyles} href="https://radschnellweg8-lb-wn.de/beteiligung">
             Nein, zurück zur Startseite
           </Link>
         </ParticipationButtonWrapper>
