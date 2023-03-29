@@ -79,6 +79,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
     setIsPageOneCompleted(values["21"] && values["22"])
     setIsPageTwoCompleted(values["34"] || values["35"])
     setIsMap(values["22"] === 1) // "1" -> yes, "2" -> no - see feedback.json
+    if (!(values["22"] === 1)) setPinPosition(null) // set pinPosition to null if not yes
     setFeedbackCategory(values["21"] || categories.length) // sets state to response id of chosen category (question 21) // fallback: '"Sonstiges"
   }
 
