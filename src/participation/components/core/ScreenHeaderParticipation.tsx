@@ -1,4 +1,4 @@
-import { H1 } from "../../../core/components/text/Headings"
+import { ParticipationH1 } from "./Text"
 
 export type ScreenHeaderParticipationProps = {
   title: string
@@ -13,7 +13,7 @@ export const ScreenHeaderParticipation: React.FC<ScreenHeaderParticipationProps>
   return (
     <section className="mb-2">
       <div className="mb-8">
-        <H1>{title}</H1>
+        <ParticipationH1>{title}</ParticipationH1>
       </div>
 
       {Boolean(description) && <p className="text-base text-gray-700">{description}</p>}
