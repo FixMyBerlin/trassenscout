@@ -9,7 +9,7 @@ const SingleResponseComponent = ({ id, responses }) => (
   <ParticipationLabeledRadiobuttonGroup
     items={responses.map((item) => ({
       scope: `single-${id}`,
-      name: item.text.de,
+      name: `${id}-${item.id}`,
       label: item.text.de,
       value: item.id,
     }))}
