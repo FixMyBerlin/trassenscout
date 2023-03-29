@@ -14,6 +14,7 @@ type Props = {
 export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const { progress, setProgress } = useContext(ProgressContext)
   const [pinPosition, setPinPosition] = useState(null)
+  const [values, setValues] = useState({})
   const [feedbackCategory, setFeedbackCategory] = useState(0)
 
   useEffect(() => {
@@ -42,17 +43,40 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
     window && window.scrollTo(0, 0)
   }
 
+  const transformValues = (values: Record<string, null | string | boolean>) => {
+    const responses: Record<string, null | string | number | number[]> = {}
+    Object.entries(values).forEach(([k, v]) => {
+      const [questionType, questionId, responseId] = k.split("-")
+      switch (questionType) {
+        case "single":
+          responses[questionId!] = v === null ? null : Number(v)
+          break
+        case "multi":
+          if (!(questionId! in responses)) responses[questionId!] = []
+          // @ts-ignore
+          if (v) responses[questionId!].push(Number(responseId))
+          break
+        case "text":
+          responses[questionId!] = v === "" ? null : String(v)
+          break
+      }
+    })
+    return responses
+  }
+
   const handleSubmit = (values: Record<string, any>, submitterId: string) => {
-    values = { ...values }
-    delete values["single-22"]
+    values = transformValues(values)
+    delete values["22"]
     onSubmit({ ...values, [pinId]: isMap ? pinPosition : null }, submitterId)
   }
 
   // when Form changes, check if Radio "Ja" is selected - set state to true
   const handleChange = (values: Record<string, any>) => {
     console.log(values)
-    setIsMap(values["single-22"] === "1") // "1" -> yes, "2" -> no - see feedback.json
-    setFeedbackCategory(values["single-21"] || categories.length) // sets state to response id of chosen category (question 21) // fallback: '"Sonstiges"
+    setValues(values)
+    values = transformValues(values)
+    setIsMap(values["22"] === 1) // "1" -> yes, "2" -> no - see feedback.json
+    setFeedbackCategory(values["21"] || categories.length) // sets state to response id of chosen category (question 21) // fallback: '"Sonstiges"
   }
 
   return (
