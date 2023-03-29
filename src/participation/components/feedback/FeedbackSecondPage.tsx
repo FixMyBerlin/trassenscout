@@ -44,14 +44,16 @@ export const FeedbackSecondPage: React.FC<Props> = ({
           />
         </>
       )}
-      <ParticipationLabeledTextareaField
-        name={String(textAreaQuestions[0].id)}
-        label={textAreaQuestions[0].label.de}
-      />
-      <ParticipationLabeledTextareaField
-        name={String(textAreaQuestions[1].id)}
-        label={textAreaQuestions[1].label.de}
-      />
+      <div className="pt-8">
+        <ParticipationLabeledTextareaField
+          name={String(textAreaQuestions[0].id)}
+          label={textAreaQuestions[0].label.de}
+        />
+        <ParticipationLabeledTextareaField
+          name={String(textAreaQuestions[1].id)}
+          label={textAreaQuestions[1].label.de}
+        />
+      </div>
 
       {/* TODO Disabled */}
       <ParticipationButtonWrapper>
