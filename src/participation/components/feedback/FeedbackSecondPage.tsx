@@ -3,7 +3,7 @@ import { PinContext } from "src/participation/context/contexts"
 import { ParticipationButton } from "../core/ParticipationButton"
 import { ParticipationButtonWrapper } from "../core/ParticipationButtonWrapper"
 import { ScreenHeaderParticipation } from "../core/ScreenHeaderParticipation"
-import { ParticipationH3, ParticipationP } from "../core/Text"
+import { ParticipationH2, ParticipationH3, ParticipationP } from "../core/Text"
 import { ParticipationStaticMap } from "../maps/ParticipationStaticMap"
 import { Question } from "../survey/Question"
 
@@ -32,7 +32,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
   return (
     <>
       <ScreenHeaderParticipation title={title.de} description={description.de} />
-      <ParticipationH3>{questions[0].label.de}</ParticipationH3>
+      <ParticipationH2>{questions[0].label.de}</ParticipationH2>
       <ParticipationP>{feedbackCategory}</ParticipationP>
 
       {pinPosition && (
