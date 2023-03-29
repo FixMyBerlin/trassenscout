@@ -16,6 +16,7 @@ import { ProgressContext } from "src/participation/context/contexts"
 import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
 import updateSurveySession from "src/survey-sessions/mutations/updateSurveySession"
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
+import { Debug } from "src/participation/components/survey/Debug"
 
 const ParticipationMainPage: BlitzPage = () => {
   const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("SURVEY")
@@ -114,13 +115,13 @@ const ParticipationMainPage: BlitzPage = () => {
   return (
     <ProgressContext.Provider value={{ progress, setProgress }}>
       <LayoutParticipation faviconUrl={surveyDefinition.faviconUrl}>
-        {/* <div className="border-red-500">
+        <Debug className="border-red-500">
           <code>stage: {stage}</code>
           <code>
             <pre>{JSON.stringify(responses, null, 2)}</pre>
           </code>
           <code>email: {emailState}</code>
-        </div> */}
+        </Debug>
         <div>{component}</div>
       </LayoutParticipation>
     </ProgressContext.Provider>

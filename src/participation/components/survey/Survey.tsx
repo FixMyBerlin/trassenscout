@@ -6,6 +6,7 @@ export { FORM_ERROR } from "src/core/components/forms"
 import { Page, TPage } from "./Page"
 import { pinkButtonStyles } from "../../../core/components/links"
 import { ProgressContext } from "src/participation/context/contexts"
+import { Debug } from "./Debug"
 
 type Props = { survey: TSurvey; onSubmit: ([]) => void }
 
@@ -110,9 +111,11 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
 
   return (
     <Form submitClassName={pinkButtonStyles} onSubmit={handleSubmit} onChangeValues={handleChange}>
-      {/* <code>
-        <pre>{JSON.stringify(values, null, 2)}</pre>
-      </code> */}
+      <Debug>
+        <code>
+          <pre>{JSON.stringify(values, null, 2)}</pre>
+        </code>
+      </Debug>
       <Page page={page} buttonActions={buttonActions} completed={pageIsComplete()} />
     </Form>
   )
