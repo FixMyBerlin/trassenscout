@@ -15,6 +15,8 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const { progress, setProgress } = useContext(ProgressContext)
   const [pinPosition, setPinPosition] = useState(null)
   const [values, setValues] = useState({})
+  const [isPageOneCompleted, setIsPageOneCompleted] = useState(false)
+  const [isPageTwoCompleted, setIsPageTwoCompleted] = useState(false)
   const [feedbackCategory, setFeedbackCategory] = useState(0)
 
   useEffect(() => {
@@ -66,15 +68,16 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
 
   const handleSubmit = (values: Record<string, any>, submitterId: string) => {
     values = transformValues(values)
-    delete values["22"]
+    delete values["22"] // delete map ja/nein response
     onSubmit({ ...values, [pinId]: isMap ? pinPosition : null }, submitterId)
   }
 
   // when Form changes, check if Radio "Ja" is selected - set state to true
   const handleChange = (values: Record<string, any>) => {
-    console.log(values)
     setValues(values)
     values = transformValues(values)
+    setIsPageOneCompleted(values["21"] && values["22"])
+    setIsPageTwoCompleted(values["34"] || values["35"])
     setIsMap(values["22"] === 1) // "1" -> yes, "2" -> no - see feedback.json
     setFeedbackCategory(values["21"] || categories.length) // sets state to response id of chosen category (question 21) // fallback: '"Sonstiges"
   }
@@ -83,10 +86,16 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
     <PinContext.Provider value={{ pinPosition, setPinPosition }}>
       <Form onSubmit={handleSubmit} onChangeValues={handleChange}>
         {progress.current === 0 && (
-          <FeedbackFirstPage page={pages[0]} isMap={isMap} onButtonClick={handleNextPage} />
+          <FeedbackFirstPage
+            isCompleted={isPageOneCompleted}
+            page={pages[0]}
+            isMap={isMap}
+            onButtonClick={handleNextPage}
+          />
         )}
         {progress.current === 1 && (
           <FeedbackSecondPage
+            isCompleted={isPageTwoCompleted}
             projectGeometry={projectGeometry}
             page={pages[1]}
             onButtonClick={handleBackPage}

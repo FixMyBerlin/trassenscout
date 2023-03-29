@@ -4,8 +4,8 @@ import { ParticipationButton } from "../core/ParticipationButton"
 import { ParticipationButtonWrapper } from "../core/ParticipationButtonWrapper"
 import { ScreenHeaderParticipation } from "../core/ScreenHeaderParticipation"
 import { ParticipationH3, ParticipationP } from "../core/Text"
-import { ParticipationLabeledTextareaField } from "../form/ParticipationLabeledTextareaField"
 import { ParticipationStaticMap } from "../maps/ParticipationStaticMap"
+import { Question } from "../survey/Question"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -14,10 +14,12 @@ type Props = {
   onButtonClick: any // TODO
   projectGeometry: any // TODO
   feedbackCategory: string
+  isCompleted: boolean
 }
 
 export const FeedbackSecondPage: React.FC<Props> = ({
   page,
+  isCompleted,
   onButtonClick,
   projectGeometry,
   feedbackCategory,
@@ -45,22 +47,16 @@ export const FeedbackSecondPage: React.FC<Props> = ({
         </>
       )}
       <div className="pt-8">
-        <ParticipationLabeledTextareaField
-          name={String(textAreaQuestions[0].id)}
-          label={textAreaQuestions[0].label.de}
-        />
-        <ParticipationLabeledTextareaField
-          name={String(textAreaQuestions[1].id)}
-          label={textAreaQuestions[1].label.de}
-        />
+        <Question question={textAreaQuestions[0]} />
+        <Question question={textAreaQuestions[1]} />
       </div>
 
       {/* TODO Disabled */}
       <ParticipationButtonWrapper>
-        <ParticipationButton id="submit-finish" type="submit">
+        <ParticipationButton disabled={!isCompleted} id="submit-finish" type="submit">
           {buttons[0].label.de}
         </ParticipationButton>
-        <ParticipationButton id="submit-more" type="submit">
+        <ParticipationButton disabled={!isCompleted} id="submit-more" type="submit">
           {buttons[1].label.de}
         </ParticipationButton>
       </ParticipationButtonWrapper>

@@ -13,9 +13,10 @@ type Props = {
   page: any // TODO
   isMap: boolean
   onButtonClick: any // TODO
+  isCompleted: boolean
 }
 
-export const FeedbackFirstPage: React.FC<Props> = ({ page, isMap, onButtonClick }) => {
+export const FeedbackFirstPage: React.FC<Props> = ({ isCompleted, page, isMap, onButtonClick }) => {
   const { title, description, questions, buttons } = page
 
   const mapProps = questions.find((question) => question.component === "map").props
@@ -45,7 +46,7 @@ export const FeedbackFirstPage: React.FC<Props> = ({ page, isMap, onButtonClick 
         </MapProvider>
       )}
       {/* TODO Disabled */}
-      <ParticipationButton type="button" onClick={onButtonClick}>
+      <ParticipationButton disabled={!isCompleted} type="button" onClick={onButtonClick}>
         {buttons[0].label.de}
       </ParticipationButton>
     </>
