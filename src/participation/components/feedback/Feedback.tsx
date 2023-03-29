@@ -18,6 +18,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
 
   useEffect(() => {
     setProgress({ current: 0, total: pages.length - 1 })
+    setFeedbackCategory(categories.length) // default: '"Sonstiges"
   }, [])
 
   const [isMap, setIsMap] = useState(false)
@@ -50,7 +51,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   // when Form changes, check if Radio "Ja" is selected - set state to true
   const handleChange = (values: Record<string, any>) => {
     setIsMap(values.mapView === "1") // "1" -> yes, "2" -> no - see feedback.json
-    setFeedbackCategory(values.category || 0)
+    setFeedbackCategory(values[21] || categories.length) // sets state to response id of chosen category (question 21) // fallback: '"Sonstiges"
   }
 
   return (
@@ -64,7 +65,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
             projectGeometry={projectGeometry}
             page={pages[1]}
             onButtonClick={handleBackPage}
-            feedbackCategory={categories[feedbackCategory].text.de}
+            feedbackCategory={categories[feedbackCategory - 1].text.de}
           />
         )}
       </Form>
