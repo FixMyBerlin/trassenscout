@@ -1,3 +1,4 @@
+import { MapProvider } from "react-map-gl"
 import { ParticipationButton } from "../core/ParticipationButton"
 import { ScreenHeaderParticipation } from "../core/ScreenHeaderParticipation"
 import { ParticipationH2 } from "../core/Text"
@@ -39,13 +40,15 @@ export const FeedbackFirstPage: React.FC<Props> = ({ page, isMap, onButtonClick 
         }))}
       />
       {isMap && (
-        <ParticipationMap
-          projectMap={{
-            projectGeometry: mapProps.projectGeometry,
-            initialMarker: mapProps.marker,
-            config: mapProps.config,
-          }}
-        />
+        <MapProvider>
+          <ParticipationMap
+            projectMap={{
+              projectGeometry: mapProps.projectGeometry,
+              initialMarker: mapProps.marker,
+              config: mapProps.config,
+            }}
+          />
+        </MapProvider>
       )}
       {/* TODO Disabled */}
       <ParticipationButton type="button" onClick={onButtonClick}>

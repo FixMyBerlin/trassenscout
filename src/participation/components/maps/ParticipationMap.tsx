@@ -57,7 +57,6 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
   const handleClick = async (e: mapboxgl.MapLayerMouseEvent) => {}
 
   useEffect(() => {
-    // console.log(projectMap.initialMarker)
     setPinPosition(projectMap.initialMarker)
   }, [])
 
@@ -93,11 +92,10 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
 
   const onMarkerDragEnd = useCallback((event: MarkerDragEvent) => {
     logEvents((_events) => ({ ..._events, onDragEnd: event.lngLat }))
-    // console.log(event.lngLat.lat)
   }, [])
 
   const checkPinInView = () => {
-    if (mainMap && mainMap?.getBounds().contains(pinPosition)) {
+    if (mainMap && pinPosition && mainMap?.getBounds().contains(pinPosition)) {
       setIsPinInView(true)
     } else {
       setIsPinInView(false)
@@ -105,10 +103,11 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
   }
 
   const easeToPin = () => {
-    mainMap?.easeTo({
-      center: [pinPosition.lng, pinPosition.lat],
-      duration: 1000,
-    })
+    pinPosition &&
+      mainMap?.easeTo({
+        center: [pinPosition.lng, pinPosition.lat],
+        duration: 1000,
+      })
   }
 
   const handleMapMove = () => {
