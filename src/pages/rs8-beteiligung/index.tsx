@@ -51,7 +51,10 @@ const ParticipationMainPage: BlitzPage = () => {
     })()
   }
 
-  const handleSubmitFeedback = async (feedbackResponses: Record<string, any>, submitterId: string) => {
+  const handleSubmitFeedback = async (
+    feedbackResponses: Record<string, any>,
+    submitterId: string
+  ) => {
     setResponses([...responses, feedbackResponses])
     if (submitterId === "submit-finish") {
       setStage("EMAIL")
@@ -111,13 +114,13 @@ const ParticipationMainPage: BlitzPage = () => {
   return (
     <ProgressContext.Provider value={{ progress, setProgress }}>
       <LayoutParticipation>
-        <div className="border-red-500">
+        {/* <div className="border-red-500">
           <code>stage: {stage}</code>
           <code>
             <pre>{JSON.stringify(responses, null, 2)}</pre>
           </code>
           <code>email: {emailState}</code>
-        </div>
+        </div> */}
         <div>{component}</div>
       </LayoutParticipation>
     </ProgressContext.Provider>

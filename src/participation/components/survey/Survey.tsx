@@ -110,9 +110,9 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
 
   return (
     <Form submitClassName={pinkButtonStyles} onSubmit={handleSubmit} onChangeValues={handleChange}>
-      <code>
+      {/* <code>
         <pre>{JSON.stringify(values, null, 2)}</pre>
-      </code>
+      </code> */}
       <Page page={page} buttonActions={buttonActions} completed={pageIsComplete()} />
     </Form>
   )

@@ -58,7 +58,6 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
           <ParticipationButton disabled={!consent} type="submit">
             {page.buttons[0].label.de}
           </ParticipationButton>
-          {/* TODO Link */}
           <Link className={whiteButtonStyles} href="https://radschnellweg8-lb-wn.de/beteiligung">
             Nein, zurück zur Startseite
           </Link>
