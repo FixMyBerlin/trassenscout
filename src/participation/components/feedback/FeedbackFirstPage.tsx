@@ -5,6 +5,7 @@ import { ParticipationH2 } from "../core/Text"
 import { ParticipationLabeledCheckboxGroup } from "../form/ParticipationLabeledCheckboxGroup"
 import { ParticipationLabeledRadiobuttonGroup } from "../form/ParticipationLabeledRadiobuttonGroup"
 import { ParticipationMap } from "../maps/ParticipationMap"
+import { Question } from "../survey/Question"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -21,24 +22,17 @@ export const FeedbackFirstPage: React.FC<Props> = ({ page, isMap, onButtonClick 
 
   return (
     <>
-      <ScreenHeaderParticipation title={title.de} description={description.de} />
-      <ParticipationLabeledRadiobuttonGroup
-        items={questions[0].props.responses.map((item) => ({
-          scope: String(questions[0].id),
-          name: String(item.id),
-          label: item.text.de,
-          value: item.id,
-        }))}
-      />
-      <ParticipationH2>{questions[1].label.de}</ParticipationH2>
+      <Question question={questions[0]} />
+      <Question question={questions[1]} />
+      {/* <ParticipationH2>{questions[1].label.de}</ParticipationH2>
       <ParticipationLabeledRadiobuttonGroup
         items={questions[1].props.responses.map((item) => ({
           scope: "mapView",
-          name: String(item.id),
+          name: `mapView-${item.id}`,
           label: item.text.de,
           value: item.id,
         }))}
-      />
+      /> */}
       {isMap && (
         <MapProvider>
           <ParticipationMap

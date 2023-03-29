@@ -44,14 +44,15 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
 
   const handleSubmit = (values: Record<string, any>, submitterId: string) => {
     values = { ...values }
-    delete values.mapView
+    delete values["single-22"]
     onSubmit({ ...values, [pinId]: isMap ? pinPosition : null }, submitterId)
   }
 
   // when Form changes, check if Radio "Ja" is selected - set state to true
   const handleChange = (values: Record<string, any>) => {
-    setIsMap(values.mapView === "1") // "1" -> yes, "2" -> no - see feedback.json
-    setFeedbackCategory(values[21] || categories.length) // sets state to response id of chosen category (question 21) // fallback: '"Sonstiges"
+    console.log(values)
+    setIsMap(values["single-22"] === "1") // "1" -> yes, "2" -> no - see feedback.json
+    setFeedbackCategory(values["single-21"] || categories.length) // sets state to response id of chosen category (question 21) // fallback: '"Sonstiges"
   }
 
   return (
