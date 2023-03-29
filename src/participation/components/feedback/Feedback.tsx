@@ -17,7 +17,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const [values, setValues] = useState({})
   const [isPageOneCompleted, setIsPageOneCompleted] = useState(false)
   const [isPageTwoCompleted, setIsPageTwoCompleted] = useState(false)
-  const [feedbackCategory, setFeedbackCategory] = useState(0)
+  const [feedbackCategory, setFeedbackCategory] = useState(1)
 
   useEffect(() => {
     setProgress({ current: 0, total: pages.length - 1 })
