@@ -39,7 +39,6 @@ const ParticipationMainPage: BlitzPage = () => {
   }
 
   const handleSubmitSurvey = async (surveyResponses: Record<string, any>) => {
-    console.log("survey responses", surveyResponses)
     setResponses([...responses, surveyResponses])
     setStage("MORE")
     void (async () => {
@@ -53,7 +52,6 @@ const ParticipationMainPage: BlitzPage = () => {
   }
 
   const handleSubmitFeedback = async (feedbackResponses: Record<string, any>, submitterId: string) => {
-    console.log("survey responses", feedbackResponses)
     setResponses([...responses, feedbackResponses])
     if (submitterId === "submit-finish") {
       setStage("EMAIL")
@@ -81,19 +79,11 @@ const ParticipationMainPage: BlitzPage = () => {
   }
 
   const handleSubmitEmail = async (email: string | null) => {
-    console.log("#################### SUBMIT ####################")
-    console.log("responses:", responses)
-    console.log("email:", email)
     setStage("DONE")
     setEmailState(email)
-    console.log(email)
     await updateSurveySessionMutation({ id: surveySessionId!, email: email! })
     // TODO --> zur RS8 Seite /beteiligung weiterleiten
   }
-
-  // const handleProgressChange = ({ newCurrent, newTotal }) => {
-  //   setProgress({ current: newCurrent, total: newTotal })
-  // }
 
   let component
   switch (stage) {
