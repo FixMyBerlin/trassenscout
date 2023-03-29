@@ -1,4 +1,4 @@
-import { ParticipationH3 } from "../core/Text"
+import { ParticipationH2 } from "../core/Text"
 import { ParticipationLabeledCheckboxGroup } from "../form/ParticipationLabeledCheckboxGroup"
 import { ParticipationLabeledRadiobuttonGroup } from "../form/ParticipationLabeledRadiobuttonGroup"
 import { ParticipationLabeledTextareaField } from "../form/ParticipationLabeledTextareaField"
@@ -56,7 +56,7 @@ export const Question: React.FC<Props> = ({ question, className }) => {
   const Component = components[component] || null
   return (
     <div className={className} key={id}>
-      <ParticipationH3>{label.de}</ParticipationH3>
+      <ParticipationH2>{label.de}</ParticipationH2>
       {Component && <Component id={id} {...props} />}
     </div>
   )
