@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import clsx from "clsx"
-import { PropsWithoutRef, ReactNode, useEffect, useState } from "react"
+import { PropsWithoutRef, ReactNode, useState } from "react"
 import { FormProvider, useForm, UseFormProps } from "react-hook-form"
 import { IntlProvider } from "react-intl"
 import { z } from "zod"
@@ -17,7 +17,6 @@ export interface FormProps<S extends z.ZodType<any, any>>
   submitClassName?: string
   schema?: S
   onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
-  onChangeValues: (values: any) => void
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
 }
 
@@ -35,7 +34,6 @@ export function Form<S extends z.ZodType<any, any>>({
   schema,
   initialValues,
   onSubmit,
-  onChangeValues,
   className,
   ...props
 }: FormProps<S>) {
@@ -45,13 +43,6 @@ export function Form<S extends z.ZodType<any, any>>({
     defaultValues: initialValues,
   })
   const [formError, setFormError] = useState<string | null>(null)
-  useEffect(() => {
-    if (onChangeValues) {
-      onChangeValues(ctx.getValues())
-    }
-  }, [])
-
-  if (onChangeValues) props.onChange = () => onChangeValues(ctx.getValues())
 
   return (
     <IntlProvider messages={errorMessageTranslations} locale="de" defaultLocale="de">
