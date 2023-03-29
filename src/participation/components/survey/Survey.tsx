@@ -72,11 +72,12 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
     return responses
   }
 
-  const handleSubmit = (values) => {
-    onSubmit(Object.entries(transformValues(values)).map(([k, v]) => [Number(k), v]))
+  const handleSubmit = (values: any) => {
+    values = transformValues(values)
+    onSubmit(values)
   }
 
-  const handleChange = (values) => {
+  const handleChange = (values: any) => {
     values = transformValues(values)
     setValues(values)
   }

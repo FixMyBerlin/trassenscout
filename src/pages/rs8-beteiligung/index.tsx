@@ -1,5 +1,7 @@
-import { BlitzPage } from "@blitzjs/next"
 import { createContext, useState } from "react"
+import { BlitzPage } from "@blitzjs/next"
+import { useMutation } from "@blitzjs/rpc"
+
 import { Done } from "src/participation/components/Done"
 import { Email } from "src/participation/components/Email"
 import { Feedback } from "src/participation/components/feedback/Feedback"
@@ -11,16 +13,31 @@ import surveyDefinition from "src/participation/data/survey.json"
 import feedbackDefinition from "src/participation/data/feedback.json"
 import emailDefinition from "src/participation/data/email.json"
 import { ProgressContext } from "src/participation/context/contexts"
+import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
+import updateSurveySession from "src/survey-sessions/mutations/updateSurveySession"
+import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
 
 const ParticipationMainPage: BlitzPage = () => {
   const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("SURVEY")
   const [progress, setProgress] = useState({ current: 0, total: 0 })
   const [responses, setResponses] = useState<any[]>([])
   const [emailState, setEmailState] = useState<string | null>()
+  const [surveySessionId, setSurveySessionId] = useState<null | number>(null)
+  const [createSurveySessionMutation] = useMutation(createSurveySession)
+  const [updateSurveySessionMutation] = useMutation(updateSurveySession)
+  const [createSurveyResponseMutation] = useMutation(createSurveyResponse)
 
-  const handleSubmitSurvey = (surveyResponses: []) => {
-    setResponses([...responses, ...surveyResponses])
+  const handleSubmitSurvey = async (surveyResponses: any) => {
+    console.log("surveyResponses", surveyResponses)
+    setResponses([...responses, surveyResponses])
     setStage("MORE")
+    const surveySession = await createSurveySessionMutation({})
+    setSurveySessionId(surveySession.id)
+    await createSurveyResponseMutation({
+      surveySessionId: surveySession.id,
+      surveyId: surveyDefinition.id,
+      data: JSON.stringify(surveyResponses),
+    })
   }
 
   const handleSubmitFeedback = (feedback: {}, pin: {}) => {
@@ -36,13 +53,14 @@ const ParticipationMainPage: BlitzPage = () => {
     setStage("EMAIL")
   }
 
-  const handleSubmitEmail = (email: string | null) => {
+  const handleSubmitEmail = async (email: string | null) => {
     console.log("#################### SUBMIT ####################")
     console.log("responses:", responses)
     console.log("email:", email)
     setStage("DONE")
     setEmailState(email)
     console.log(email)
+    await updateSurveySessionMutation({ id: surveySessionId!, email: email! })
     // TODO --> zur RS8 Seite /beteiligung weiterleiten
   }
 
