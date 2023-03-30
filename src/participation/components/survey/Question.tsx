@@ -1,22 +1,33 @@
+import { SingleOrMultiResponseProps, TextResponseProps } from "src/participation/data/types"
+import { Question as TQuestion } from "src/participation/data/types"
 import { ParticipationH2 } from "../core/Text"
 import { ParticipationLabeledCheckboxGroup } from "../form/ParticipationLabeledCheckboxGroup"
 import { ParticipationLabeledRadiobuttonGroup } from "../form/ParticipationLabeledRadiobuttonGroup"
 import { ParticipationLabeledTextareaField } from "../form/ParticipationLabeledTextareaField"
-import { TQuestion } from "./Page"
 export { FORM_ERROR } from "src/core/components/forms"
 
-const SingleResponseComponent = ({ id, responses }) => (
+type TSingleOrMultuResponseComponentProps = {
+  id: number
+} & SingleOrMultiResponseProps
+
+const SingleResponseComponent: React.FC<TSingleOrMultuResponseComponentProps> = ({
+  id,
+  responses,
+}) => (
   <ParticipationLabeledRadiobuttonGroup
     items={responses.map((item) => ({
       scope: `single-${id}`,
       name: `${id}-${item.id}`,
       label: item.text.de,
-      value: item.id,
+      value: `${item.id}`,
     }))}
   />
 )
 
-const MultipleResponseComponent = ({ id, responses }) => (
+const MultipleResponseComponent: React.FC<TSingleOrMultuResponseComponentProps> = ({
+  id,
+  responses,
+}) => (
   <ParticipationLabeledCheckboxGroup
     key={id}
     items={responses.map((item) => ({
@@ -26,13 +37,18 @@ const MultipleResponseComponent = ({ id, responses }) => (
   />
 )
 
-const TextResponseComponent = ({ id, caption }) => (
+type TTextResponseComponentProps = {
+  id: number
+} & TextResponseProps
+
+const TextResponseComponent: React.FC<TTextResponseComponentProps> = ({ id }) => (
   <>
     <ParticipationLabeledTextareaField name={`text-${id}`} label={""} />
   </>
 )
 
-const CustomComponent = (props) => (
+// TODO type
+const CustomComponent = (props: any) => (
   <>
     <div className="border-2 border-black bg-gray-200 p-1">
       <code>

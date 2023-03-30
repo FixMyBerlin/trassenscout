@@ -1,11 +1,9 @@
 import clsx from "clsx"
-import { pinkButtonStyles } from "src/core/components/links"
 
 type Props = {
   status: "default" | "pinOutOfView"
   className?: string
-  action?: any
-  // TODO
+  action?: () => void
 }
 
 export const MapBanner: React.FC<Props> = ({ status, className, action }) => {

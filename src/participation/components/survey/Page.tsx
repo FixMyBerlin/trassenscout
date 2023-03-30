@@ -1,33 +1,24 @@
 import { ScreenHeaderParticipation } from "src/participation/components/core/ScreenHeaderParticipation"
-import { SurveyButton, TSurveyButton } from "./SurveyButton"
+import { SurveyButton } from "./SurveyButton"
 import { ParticipationButtonWrapper } from "../core/ParticipationButtonWrapper"
+import { Page as TPage } from "src/participation/data/types"
 import { Question } from "./Question"
 export { FORM_ERROR } from "src/core/components/forms"
 
-export type TButton = {
-  label: { de: string }
-  color: "white" | "pink"
-  onClick: { action: "reset" | "nextPage" | "previousPage" | "submit" }
-}
+// export type TSurveyButton = {
+//   label: { de: string }
+//   color: "white" | "pink"
+//   onClick: { action: "nextPage" | "previousPage" | "submit" }
+// }
 
-export type TQuestion = {
-  id: number
-  label: { de: string }
-  component: "singleResponse" | "multipleResponse" | "text"
-  props: {
-    responses: { id: number; text: { de: string } }[] | null
-  }
-}
-
-export type TPage = {
-  id: number
-  title: { de: string }
-  description: {
-    de: string
-  }
-  questions: TQuestion[] | null
-  buttons: TButton[] | null
-}
+// export type TQuestion = {
+//   id: number
+//   label: { de: string }
+//   component: "singleResponse" | "multipleResponse" | "text"
+//   props: {
+//     responses: TResponse[]
+//   }
+// }
 
 type Props = { page: TPage; buttonActions: any; completed: boolean }
 

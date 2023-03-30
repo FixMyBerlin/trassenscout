@@ -10,7 +10,7 @@ type TPinContext = {
     lng: number
     lat: number
   } | null
-  setPinPosition: ({ lng, lat }: { lng: number; lat: number }) => void
+  setPinPosition: () => void
 }
 
 export const ProgressContext = createContext<TProgressContext>({

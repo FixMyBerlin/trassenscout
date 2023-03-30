@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { ReactNode } from "react"
 import { pinkButtonStyles, whiteButtonStyles } from "src/core/components/links"
-import { TButton } from "../survey/Page"
+import { TSurveyButton } from "../survey/Page"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {

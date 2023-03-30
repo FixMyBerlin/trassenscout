@@ -1,16 +1,14 @@
-import clsx from "clsx"
-import { pinkButtonStyles, whiteButtonStyles } from "src/core/components/links"
+import { Button } from "src/participation/data/types"
 import { ParticipationButton } from "../core/ParticipationButton"
-import { TButton } from "./Page"
 export { FORM_ERROR } from "src/core/components/forms"
 
-export type TSurveyButton = {
-  button: TButton
-  buttonActions: { next: any; back: any; reset: any }
+type Props = {
+  button: Button
+  buttonActions: { next: () => void; back: () => void }
   disabled?: boolean
 }
 
-export const SurveyButton: React.FC<TSurveyButton> = ({ disabled, button, buttonActions }) => {
+export const SurveyButton: React.FC<Props> = ({ disabled, button, buttonActions }) => {
   const { label, color, onClick } = button
 
   if (onClick.action === "submit")
@@ -22,9 +20,6 @@ export const SurveyButton: React.FC<TSurveyButton> = ({ disabled, button, button
 
   let buttonActionSelect: any
   switch (onClick.action) {
-    case "reset":
-      buttonActionSelect = buttonActions.reset
-      break
     case "nextPage":
       buttonActionSelect = buttonActions.next
       break

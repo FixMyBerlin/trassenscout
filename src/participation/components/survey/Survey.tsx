@@ -3,19 +3,12 @@ import SurveyForm from "../form/SurveyForm"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
-import { Page, TPage } from "./Page"
 import { ProgressContext } from "src/participation/context/contexts"
+import { Survey as TSurvey } from "src/participation/data/types"
 import { Debug } from "./Debug"
+import { Page } from "./Page"
 
 type Props = { survey: TSurvey; onSubmit: ([]) => void }
-
-export type TSurvey = {
-  id: number
-  title: { de: string }
-  createdAt: string
-  version: number
-  pages: TPage[]
-}
 
 export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   const [values, setValues] = useState({})
@@ -37,16 +30,9 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
     window && window.scrollTo(0, 0)
   }
 
-  const handleReset = () => {
-    // setProgress(1)
-    // setSurveyResponses([])
-  }
-
   const buttonActions = {
     next: handleNextPage,
     back: handleBackPage,
-    reset: handleReset,
-    submit: () => {},
   }
 
   const { pages } = survey
@@ -115,7 +101,7 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
           <pre>{JSON.stringify(values, null, 2)}</pre>
         </code>
       </Debug>
-      <Page page={page} buttonActions={buttonActions} completed={pageIsComplete()} />
+      {page && <Page page={page} buttonActions={buttonActions} completed={pageIsComplete()} />}
     </SurveyForm>
   )
 }
