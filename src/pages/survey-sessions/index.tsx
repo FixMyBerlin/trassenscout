@@ -58,7 +58,7 @@ export const SurveySessionsList = () => {
             <li key={id} className="border-2 p-2">
               <Link href={Routes.ShowSurveySessionPage({ surveySessionId: id })}>
                 <code className="text-base">
-                  SurveySession {id} - {createdAt.toISOString()} - {email || "n/a"}
+                  SurveySession {id} - {createdAt.toISOString()} - {email || "null"}
                 </code>
               </Link>
 
@@ -79,8 +79,10 @@ export const SurveySessionsList = () => {
                               {(() => {
                                 if (question.component === "singleResponse") {
                                   // @ts-ignore
-                                  const responseId = responseData as number
-                                  return question.responses[responseId].text.de
+                                  const responseId = responseData as number | null
+                                  return responseId === null
+                                    ? "null"
+                                    : question.responses[responseId].text.de
                                 }
                                 if (question.component === "multipleResponse") {
                                   // @ts-ignore
