@@ -1,9 +1,14 @@
 ## How to generate type definitions from the json schema
 
 1. Install [jq](https://stedolan.github.io/jq/)
+  - Linux:
 
         curl https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o ~/bin/jq
         chmod u+x ~/bin/jq
+
+  - OS X with Homebrew:
+
+        brew install jq
 
 2. Install [json2ts](https://github.com/bcherny/json-schema-to-typescript)
 
