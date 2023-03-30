@@ -43,8 +43,14 @@
               },
               "allOf": [
                 {
-                  "if": { "properties": { "component": { "enum": ["singleResponse", "multipleResponse"] }}},
-                  "then": { "properties": { "props": { "$ref": "#/$defs/SingleOrMultiResponseProps" } }}
+                  "if": {
+                    "properties": {
+                      "component": { "enum": ["singleResponse", "multipleResponse"] }
+                    }
+                  },
+                  "then": {
+                    "properties": { "props": { "$ref": "#/$defs/SingleOrMultiResponseProps" } }
+                  }
                 }
               ]
             }
@@ -64,7 +70,7 @@
                   "additionalItems": false,
                   "properties": {
                     "action": {
-                      "enum": ["reset", "nextPage", "previousPage", "submit"]
+                      "enum": ["nextPage", "previousPage", "submit"]
                     },
                     "arguments": { "type": "array" }
                   },
