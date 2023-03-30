@@ -6,39 +6,45 @@
  */
 
 export interface Survey {
-  id: 1;
-  title: TranslatableText;
-  version: 1;
-  createdAt: string;
-  pages: {
-    id: number;
-    title: TranslatableText;
-    description: TranslatableText;
-    questions?: {
-      id: number;
-      component: "singleResponse" | "multipleResponse" | "text";
-      label: TranslatableText;
-      "//* props.oneOf is here for generating typescript"?: "*//";
-      props: SingleOrMultiResponseProps | TextResponseProps;
-    }[];
-    buttons: {
-      label: TranslatableText;
-      color: "white" | "pink";
-      onClick: {
-        action: "reset" | "nextPage" | "previousPage" | "submit";
-        arguments?: unknown[];
-      };
-    }[];
-  }[];
+  id: number
+  title: TranslatableText
+  version: 1
+  createdAt: string
+  faviconUrl: string
+  pages: Page[]
+}
+
+export interface Page {
+  id: number
+  title: TranslatableText
+  description: TranslatableText
+  questions?: Question[]
+  buttons: Button[]
+}
+export interface Question {
+  id: number
+  component: "singleResponse" | "multipleResponse" | "text"
+  label: TranslatableText
+  "//* props.oneOf is here for generating typescript"?: "*//"
+  props: SingleOrMultiResponseProps | TextResponseProps
+}
+
+export interface Button {
+  label: TranslatableText
+  color: "white" | "pink"
+  onClick: {
+    action: "nextPage" | "previousPage" | "submit"
+    arguments?: unknown[]
+  }
 }
 export interface TranslatableText {
-  de: string;
+  de: string
 }
 export interface SingleOrMultiResponseProps {
-  responses: Response[];
+  responses: Response[]
 }
 export interface Response {
-  id: number;
-  text: TranslatableText;
+  id: number
+  text: TranslatableText
 }
 export interface TextResponseProps {}
