@@ -42,6 +42,7 @@ const ParticipationMainPage: BlitzPage = () => {
   const handleSubmitSurvey = async (surveyResponses: Record<string, any>) => {
     setResponses([...responses, surveyResponses])
     setStage("MORE")
+    window && window.scrollTo(0, 0)
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
@@ -59,9 +60,11 @@ const ParticipationMainPage: BlitzPage = () => {
     setResponses([...responses, feedbackResponses])
     if (submitterId === "submit-finish") {
       setStage("EMAIL")
+      window && window.scrollTo(0, 0)
     } else {
       setFeedbackKey(feedbackKey + 1)
       setStage("FEEDBACK")
+      window && window.scrollTo(0, 0)
     }
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
@@ -76,14 +79,17 @@ const ParticipationMainPage: BlitzPage = () => {
   const handleMoreFeedback = () => {
     setFeedbackKey(feedbackKey + 1)
     setStage("FEEDBACK")
+    window && window.scrollTo(0, 0)
   }
 
   const handleFinish = () => {
     setStage("EMAIL")
+    window && window.scrollTo(0, 0)
   }
 
   const handleSubmitEmail = async (email: string | null) => {
     setStage("DONE")
+    window && window.scrollTo(0, 0)
     setEmailState(email)
     await updateSurveySessionMutation({ id: surveySessionId!, email: email! })
     // TODO --> zur RS8 Seite /beteiligung weiterleiten
