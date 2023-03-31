@@ -2,12 +2,13 @@ import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense, useState } from "react"
-import { Link } from "src/core/components/links"
+import { blueButtonStyles, Link, whiteButtonStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import createFile from "src/files/mutations/createFile"
 import { useS3Upload } from "src/core/lib/next-s3-upload/src"
+import { SuperAdminBox } from "src/core/components/AdminBox"
 
 const UploadNewFileWithQuery = () => {
   const router = useRouter()
@@ -78,7 +79,7 @@ const UploadNewFileWithQuery = () => {
 
   // @ts-ignore
   const FileSelector = ({ onChange }) => (
-    <div className="mt-2 flex text-xl underline">
+    <button className={blueButtonStyles}>
       <label htmlFor="file-upload">
         <span>Datei auswählen</span>
         <input
@@ -89,7 +90,7 @@ const UploadNewFileWithQuery = () => {
           onChange={onChange}
         />
       </label>
-    </div>
+    </button>
   )
 
   // @ts-ignore
@@ -104,7 +105,24 @@ const UploadNewFileWithQuery = () => {
       <MetaTags noindex title="Neue Datei hochladen" />
 
       <div>
-        <div className="border-2 border-blue-200 p-2">
+        {["FILE_SELECTED", "FILE_UPLOADING", "FILE_ERROR", "FILE_UPLOADED", "FILE_SAVED"].includes(
+          uploadState
+        ) && (
+          <div className="rounded-lg border px-4 py-2">
+            Ausgewählte Datei: {fileToUpload!.name}
+            <br />{" "}
+            {["FILE_UPLOADING", "FILE_ERROR", "FILE_UPLOADED", "FILE_SAVED"].includes(
+              uploadState
+            ) && (
+              <>
+                Fortschritt: {files[0]?.progress || 0}%
+                <br />
+              </>
+            )}
+          </div>
+        )}
+
+        <SuperAdminBox>
           <code>
             <pre>state: {uploadState}</pre>
             <br />
@@ -139,26 +157,27 @@ const UploadNewFileWithQuery = () => {
               </pre>
             )}
           </code>
+
+          {["FILE_ERROR"].includes(uploadState) && (
+            <div className="border-red-500 mt-2 border-2 p-2">
+              <pre>{uploadError}</pre>
+            </div>
+          )}
+        </SuperAdminBox>
+        <div className="flex flex-col gap-4 sm:flex-row">
+          {["INITIAL", "FILE_SELECTED"].includes(uploadState) && (
+            <FileSelector onChange={handleFileChange} />
+          )}
+
+          {["FILE_SELECTED"].includes(uploadState) && (
+            <button className={blueButtonStyles} onClick={() => uploadFile()}>
+              Hochladen
+            </button>
+          )}
         </div>
 
-        {["FILE_ERROR"].includes(uploadState) && (
-          <div className="mt-2 border-2 border-red-500 p-2">
-            <pre>{uploadError}</pre>
-          </div>
-        )}
-
-        {["INITIAL", "FILE_SELECTED"].includes(uploadState) && (
-          <FileSelector onChange={handleFileChange} />
-        )}
-
-        {["FILE_SELECTED"].includes(uploadState) && (
-          <button className="mt-2 flex text-xl underline" onClick={() => uploadFile()}>
-            Hochladen
-          </button>
-        )}
-
         {["FILE_ERROR", "FILE_SAVED"].includes(uploadState) && (
-          <button className="mt-2 flex text-xl underline" onClick={reset}>
+          <button className={whiteButtonStyles} onClick={reset}>
             Reset
           </button>
         )}
@@ -172,7 +191,7 @@ const UploadFilePage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <PageHeader title="Neue Datei hochladen" />
+      <PageHeader title="Neues Dokument" />
       <Suspense fallback={<Spinner page />}>
         <UploadNewFileWithQuery />
       </Suspense>
