@@ -62,7 +62,7 @@ const Datenschutz: BlitzPage = () => {
       </p>
       <p>
         Sie können sich jederzeit bei allen Fragen und Anregungen zum Datenschutz sowie zur Ausübung
-        Ihrer Rechte direkt an unsere Datenschutzbeauftragten wenden.
+        Ihrer Rechte direkt an unseren Datenschutzbeauftragten wenden.
       </p>
       <h3 id="thirdparty">Einsatz von Drittdiensten</h3>
       <p>
@@ -89,38 +89,22 @@ const Datenschutz: BlitzPage = () => {
         personenbezogenen Daten, die durch uns verarbeitet werden, unterscheiden sich teilweise; je
         nachdem, ob Sie den öffentlichen oder den nicht-öffentlichen Bereich nutzen.
       </p>
+
       <h3>Allgemeine Informationen</h3>
       <p>
-        Bei Besuch unserer Website werden automatisch Daten verarbeitet, die Ihr Browser an unseren
+        Beim Besuch unseres Portals werden automatisch Daten verarbeitet, die Ihr Browser an unseren
         Server übermittelt. Diese allgemeinen Daten und Informationen werden in den Logfiles des
         Servers gespeichert (in sog. „Server-Logfiles“). Erfasst werden können die
       </p>
       <ul>
         <li>Browsertyp und Browserversion</li>
-        <li>verwendetes Betriebssystem</li>
+        <li>verwendetes Betriebssystem sowie Angaben zum Endgerät</li>
         <li>Referrer URL (zuvor besuchte Website)</li>
         <li>Hostname des zugreifenden Rechners</li>
         <li>Datum und Uhrzeit der Serveranfrage</li>
         <li>IP-Adresse</li>
         <li>Nutzungsdaten</li>
         <li>Betrachteter Kartenausschnitt</li>
-      </ul>
-      <p>
-        Bei der Erstellung der Zugänge zum internen Bereich und dessen Nutzung werden durch uns
-        außerdem folgende weitere personenbezogener Daten erfasst:
-      </p>
-      <ul>
-        <li>E-Mail-Adresse</li>
-        <li>Passwort (in verschlüsselter Form)</li>
-        <li>Telefonnummer (optional)</li>
-        <li>Rolle in der Organisation (optional)</li>
-        <li>Liste Ihrer Projekte und Ihre Berechtigungen</li>
-        <li>
-          Wenn als Projektmanager:in zugewiesen: Projektbeschreibungen (inkl. geologischer Angaben)
-        </li>
-        <li>Kontaktdaten und Termine</li>
-        <li>Notizen soweit diese personenbezogen Daten enthalten</li>
-        <li>Hochgeladene Dateien soweit diese personenbezogene Daten enthalten</li>
       </ul>
 
       <h3>Öffentlicher Bereich / Beteiligungsformulare</h3>
@@ -138,6 +122,25 @@ const Datenschutz: BlitzPage = () => {
         Zeitpunkt <strong>nicht</strong> mit einer der oben genannten Datenarten in Verbindung
         gebracht werden können.
       </p>
+
+      <h3>Interner Bereich</h3>
+      <p>
+        Bei der Erstellung der Zugänge zum internen Bereich und dessen Nutzung werden durch uns
+        außerdem folgende weitere personenbezogener Daten erfasst:
+      </p>
+      <ul>
+        <li>E-Mail-Adresse</li>
+        <li>Passwort (in verschlüsselter Form)</li>
+        <li>Telefonnummer (optional)</li>
+        <li>Rolle in der Organisation (optional)</li>
+        <li>Liste Ihrer Projekte und Ihre Berechtigungen</li>
+        <li>
+          Wenn als Projektmanager:in zugewiesen: Projektbeschreibungen (inkl. geologischer Angaben)
+        </li>
+        <li>Kontaktdaten und Termine</li>
+        <li>Notizen soweit diese personenbezogen Daten enthalten</li>
+        <li>Hochgeladene Dateien soweit diese personenbezogene Daten enthalten</li>
+      </ul>
 
       <h3>Zweck der Verarbeitung</h3>
       <p>
@@ -442,9 +445,9 @@ const Datenschutz: BlitzPage = () => {
       </p>
       <h3>Löschung (Art. 17 DSGVO)</h3>
       <p>
-        Sie haben das Recht, von uns zu verlangen, dass personenbezogenen Daten, die sie betreffen,
-        unverzüglich gelöscht werden, wenn einer der gesetzlich vorgesehenen Gründe zutrifft und
-        soweit die Verarbeitung bzw. Speicherung nicht erforderlich ist.
+        Sie haben das Recht, von uns zu verlangen, dass die personenbezogenen Daten, die sie
+        betreffen, unverzüglich gelöscht werden, wenn einer der gesetzlich vorgesehenen Gründe
+        zutrifft und soweit die Verarbeitung bzw. Speicherung nicht erforderlich ist.
       </p>
       <h3>Einschränkung der Verarbeitung (Art. 18 DSGVO)</h3>
       <p>
