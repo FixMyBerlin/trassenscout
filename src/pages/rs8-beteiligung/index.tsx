@@ -92,7 +92,6 @@ const ParticipationMainPage: BlitzPage = () => {
     window && window.scrollTo(0, 0)
     setEmailState(email)
     await updateSurveySessionMutation({ id: surveySessionId!, email: email! })
-    // TODO --> zur RS8 Seite /beteiligung weiterleiten
   }
 
   let component

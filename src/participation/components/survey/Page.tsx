@@ -5,21 +5,6 @@ import { Page as TPage } from "src/participation/data/types"
 import { Question } from "./Question"
 export { FORM_ERROR } from "src/core/components/forms"
 
-// export type TSurveyButton = {
-//   label: { de: string }
-//   color: "white" | "pink"
-//   onClick: { action: "nextPage" | "previousPage" | "submit" }
-// }
-
-// export type TQuestion = {
-//   id: number
-//   label: { de: string }
-//   component: "singleResponse" | "multipleResponse" | "text"
-//   props: {
-//     responses: TResponse[]
-//   }
-// }
-
 type Props = { page: TPage; buttonActions: any; completed: boolean }
 
 export const Page: React.FC<Props> = ({ page, buttonActions, completed }) => {
