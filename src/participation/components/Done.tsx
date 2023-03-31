@@ -11,10 +11,10 @@ export const Done = () => {
         title="Vielen Dank!"
         description="Ihre Emailadresse wurde vermerkt."
       />
-
+      {/* TODO replace link in production: https://radschnellweg8-lb-wn.de/beteiligung */}
       <Link
         className={clsx(whiteButtonStyles, "mt-32")}
-        href="https://radschnellweg8-lb-wn.de/beteiligung"
+        href="https://develop--rsv8-lb-wn.netlify.app/beteiligung/"
       >
         Zurück Startseite
       </Link>
