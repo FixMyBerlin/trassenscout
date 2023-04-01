@@ -5,6 +5,7 @@ import { ParticipationButton } from "./core/ParticipationButton"
 import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
 import { ParticipationH2 } from "./core/Text"
 import { ParticipationLabeledRadiobuttonGroup } from "./form/ParticipationLabeledRadiobuttonGroup"
+import { Response } from "../data/types"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -28,7 +29,7 @@ export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
   const question = questions[0]
   const button = buttons[0]
 
-  const handleChange = (values) => {
+  const handleChange = (values: Record<string, any>) => {
     setIsFeedback(Number(values.feedback) === question.props.responses[0].id)
     setIsDirty(
       Number(values.feedback) === question.props.responses[0].id ||
@@ -41,7 +42,7 @@ export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
       <ScreenHeaderParticipation title={title.de} description={description.de} />
       <ParticipationH2>{question.label.de}</ParticipationH2>
       <ParticipationLabeledRadiobuttonGroup
-        items={question.props.responses.map((item) => ({
+        items={question.props.responses.map((item: Response) => ({
           scope: "feedback",
           name: String(item.id),
           label: item.text.de,

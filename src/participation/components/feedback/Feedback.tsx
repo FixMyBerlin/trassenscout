@@ -30,7 +30,9 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
 
   const projectGeometry = feedback.pages[0].questions[2].props.projectGeometry
 
-  const pinId = pages[0].questions.find((question) => question.component === "map").id
+  const pinId = pages[0].questions.find(
+    (question: Record<string, any>) => question.component === "map"
+  ).id
 
   const categories = pages[0].questions[0].props.responses
 
@@ -66,7 +68,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
     return responses
   }
 
-  const handleSubmit = (values: Record<string, any>, submitterId: string) => {
+  const handleSubmit = (values: Record<string, any>, submitterId?: string) => {
     values = transformValues(values)
     delete values["22"] // delete map ja/nein response
     onSubmit({ ...values, [pinId]: isMap ? pinPosition : null }, submitterId)
@@ -84,6 +86,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   }
 
   return (
+    // @ts-ignore
     <PinContext.Provider value={{ pinPosition, setPinPosition }}>
       <SurveyForm onSubmit={handleSubmit} onChangeValues={handleChange}>
         {progress.current === 0 && (

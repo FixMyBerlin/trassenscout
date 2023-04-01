@@ -27,7 +27,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
   const { pinPosition } = useContext(PinContext)
   const { title, description, questions, buttons } = page
 
-  const textAreaQuestions = questions.filter((q) => q.component === "text")
+  const textAreaQuestions = questions.filter((q: Record<string, any>) => q.component === "text")
 
   return (
     <>

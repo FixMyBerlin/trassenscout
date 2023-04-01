@@ -97,6 +97,7 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   const page = pages[progress.current]
 
   return (
+    // @ts-ignore
     <SurveyForm onSubmit={handleSubmit} onChangeValues={handleChange}>
       <Debug>
         <code>

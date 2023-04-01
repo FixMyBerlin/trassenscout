@@ -1,5 +1,3 @@
-import { Survey } from "./survey/Survey"
-
 export { FORM_ERROR } from "src/core/components/forms"
 import { useContext, useEffect, useState } from "react"
 import SurveyForm from "./form/SurveyForm"
@@ -25,13 +23,11 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
     setProgress({ current: 0, total: email.pages.length - 1 })
   }, [])
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values: Record<string, any>) => {
     onSubmit(values.email)
   }
 
-  // TODO: Event type
-  const handleChange = (values) => {
-    console.log(values)
+  const handleChange = (values: Record<string, any>) => {
     setConsent(values.consent && values.email)
   }
 

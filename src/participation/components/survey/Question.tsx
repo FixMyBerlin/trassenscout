@@ -73,6 +73,7 @@ export const Question: React.FC<Props> = ({ question, className }) => {
   return (
     <div className={className} key={id}>
       <ParticipationH2>{label.de}</ParticipationH2>
+      {/* @ts-ignore */}
       {Component && <Component id={id} {...props} />}
     </div>
   )

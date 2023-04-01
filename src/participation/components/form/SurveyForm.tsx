@@ -8,14 +8,9 @@ export interface FormProps<S extends z.ZodType<any, any>>
   extends Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> {
   children: ReactNode
   schema?: S
-  onSubmit: (values: z.infer<S>, submitterId?: string) => Promise<void | OnSubmitResult>
+  onSubmit: (values: z.infer<S>, submitterId?: string) => void
   onChangeValues: (values: any) => void
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
-}
-
-interface OnSubmitResult {
-  FORM_ERROR?: string
-  [prop: string]: any
 }
 
 export const FORM_ERROR = "FORM_ERROR"
