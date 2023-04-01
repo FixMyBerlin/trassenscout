@@ -16,7 +16,9 @@ export const ScreenHeaderParticipation: React.FC<ScreenHeaderParticipationProps>
         <ParticipationH1>{title}</ParticipationH1>
       </div>
 
-      {Boolean(description) && <p className="text-base text-gray-700 whitespace-pre-wrap">{description}</p>}
+      {Boolean(description) && (
+        <p className="whitespace-pre-wrap text-base text-gray-700">{description}</p>
+      )}
     </section>
   )
 }
