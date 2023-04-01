@@ -75,26 +75,32 @@ export const SurveySessionsList = () => {
                           const question = questions[questionId]
                           return (
                             <div key={question.id} className="ml-3">
-                              <span className="italic">{question.label.de}</span> =&nbsp;
+                              <span className="italic">
+                                [{question.id}] {question.label.de}
+                              </span>{" "}
+                              =&nbsp;
                               {(() => {
                                 if (question.component === "singleResponse") {
                                   // @ts-ignore
                                   const responseId = responseData as number | null
                                   return responseId === null
                                     ? "null"
-                                    : question.responses[responseId].text.de
+                                    : `[${responseId}] ${question.responses[responseId].text.de}`
                                 }
                                 if (question.component === "multipleResponse") {
                                   // @ts-ignore
                                   const responseIds = responseData as number[]
                                   return responseIds
-                                    .map((responseId) => question.responses[responseId].text.de)
+                                    .map(
+                                      (responseId) =>
+                                        `[${responseId}] ${question.responses[responseId].text.de}`
+                                    )
                                     .join(", ")
                                 }
                                 if (question.component === "text") {
                                   // @ts-ignore
-                                  const responseText = responseData as string
-                                  return responseText
+                                  const responseText = responseData as string | null
+                                  return JSON.stringify(responseText)
                                 }
                                 return JSON.stringify(responseData)
                               })()}
