@@ -20,3 +20,4 @@
        cat $DIR/schema.json |
        jq 'delpaths([["properties", "pages", "items", "properties", "questions", "items", "allOf"]])' |
        json2ts > $DIR/types.ts
+       npx prettier $DIR/types.ts --write
