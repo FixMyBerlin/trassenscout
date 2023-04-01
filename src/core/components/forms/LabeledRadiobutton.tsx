@@ -10,6 +10,8 @@ export interface LabeledRadiobuttonProps extends PropsWithoutRef<JSX.IntrinsicEl
   name: string
   /** Field label. */
   label: string
+  /** Field value. */
+  value: string
   /** Help text below field label. */
   help?: string
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
@@ -17,7 +19,7 @@ export interface LabeledRadiobuttonProps extends PropsWithoutRef<JSX.IntrinsicEl
 }
 
 export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobuttonProps>(
-  ({ scope, name, label, help, outerProps, labelProps, ...props }, ref) => {
+  ({ scope, name, label, value, help, outerProps, labelProps, ...props }, ref) => {
     const {
       register,
       formState: { isSubmitting, errors },
@@ -37,7 +39,7 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
             className={clsx(
               "h-4 w-4",
               hasError
-                ? "border-pink-800 text-pink-500 shadow-sm shadow-pink-200 focus:ring-pink-800"
+                ? "border-red-800 text-red-500 shadow-sm shadow-red-200 focus:ring-red-800"
                 : "border-gray-300 text-blue-600 focus:ring-blue-500"
             )}
           />
@@ -51,7 +53,7 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
           {help && <div className="m-0 text-gray-500">{help}</div>}
           <ErrorMessage
             render={({ message }) => (
-              <p role="alert" className="m-0 text-sm text-pink-800">
+              <p role="alert" className="m-0 text-sm text-red-800">
                 {message}
               </p>
             )}

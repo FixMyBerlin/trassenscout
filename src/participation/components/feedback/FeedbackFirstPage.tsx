@@ -1,0 +1,46 @@
+import { MapProvider } from "react-map-gl"
+import { ParticipationButton } from "../core/ParticipationButton"
+import { ScreenHeaderParticipation } from "../core/ScreenHeaderParticipation"
+import { ParticipationMap } from "../maps/ParticipationMap"
+import { Question } from "../survey/Question"
+
+export { FORM_ERROR } from "src/core/components/forms"
+
+type Props = {
+  page: any // TODO
+  isMap: boolean
+  onButtonClick: any // TODO
+  isCompleted: boolean
+}
+
+export const FeedbackFirstPage: React.FC<Props> = ({ isCompleted, page, isMap, onButtonClick }) => {
+  const { title, description, questions, buttons } = page
+
+  const mapProps = questions.find(
+    (question: Record<string, any>) => question.component === "map"
+  ).props
+
+  return (
+    <>
+      <ScreenHeaderParticipation title={title.de} description={description.de} />
+
+      <Question question={questions[0]} />
+      <Question question={questions[1]} />
+      {isMap && (
+        <MapProvider>
+          <ParticipationMap
+            projectMap={{
+              projectGeometry: mapProps.projectGeometry,
+              initialMarker: mapProps.marker,
+              config: mapProps.config,
+            }}
+          />
+        </MapProvider>
+      )}
+      {/* TODO Disabled */}
+      <ParticipationButton disabled={!isCompleted} type="button" onClick={onButtonClick}>
+        {buttons[0].label.de}
+      </ParticipationButton>
+    </>
+  )
+}

@@ -203,3 +203,19 @@ model File {
   project     Project  @relation(fields: [projectId], references: [id])
   projectId   Int
 }
+
+model SurveySession {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String?
+  responses SurveyResponse[]
+}
+
+model SurveyResponse {
+  id              Int           @id @default(autoincrement())
+  surveySession   SurveySession @relation(fields: [surveySessionId], references: [id])
+  surveySessionId Int
+  surveyId        Int
+  data            String
+}

@@ -22,12 +22,12 @@ type TypeConfigElement = {
 
 const typeConfig: TypConfig = {
   error: {
-    icon: <XCircleIcon className="h-5 w-5 text-pink-500" aria-hidden="true" />,
-    wrapperClass: "bg-pink-50 border-pink-500",
-    titleClasses: "text-pink-800",
-    textClasses: "text-pink-800",
+    icon: <XCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />,
+    wrapperClass: "bg-red-50 border-red-500",
+    titleClasses: "text-red-800",
+    textClasses: "text-red-800",
     actionClasses:
-      "bg-pink-50 focus:ring-pink-500 focus:ring-offset-pink-50 text-pink-800 hover:bg-pink-100",
+      "bg-red-50 focus:ring-red-500 focus:ring-offset-red-50 text-red-800 hover:bg-red-100",
   },
   info: {
     icon: <InformationCircleIcon className="h-5 w-5 text-blue-500" aria-hidden="true" />,
