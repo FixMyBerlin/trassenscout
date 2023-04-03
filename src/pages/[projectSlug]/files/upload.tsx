@@ -88,6 +88,7 @@ const UploadNewFileWithQuery = () => {
           type="file"
           className="sr-only"
           onChange={onChange}
+          accept="image/*,.pdf,.docx,.doc,.odt,.xlsx,.ods,.pptx,.odp,.dxp,.dwg"
         />
       </label>
     </button>
