@@ -68,7 +68,7 @@ Card.Title = function CardTitle({ as: Component = "h2", href, children }: any) {
 }
 
 Card.Description = function CardDescription({ children }: { children: React.ReactNode }) {
-  return <p className="prose relative z-10 mt-2 text-sm">{children}</p>
+  return <div className="prose relative z-10 mt-2 text-sm">{children}</div>
 }
 
 Card.Cta = function CardCta({ children }: { children: React.ReactNode }) {
