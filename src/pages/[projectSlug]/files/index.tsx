@@ -38,7 +38,7 @@ export const Files = () => {
               button
               href={Routes.NewFilePage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}
             >
-              Neues Dokument
+              Neues externes Dokument
             </Link>
             <Link
               className="ml-2"
