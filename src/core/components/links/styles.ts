@@ -2,8 +2,7 @@ import clsx from "clsx"
 import { LinkProps } from "./Link"
 
 // LINK
-export const linkStyles =
-  "text-sm text-blue-500 hover:text-blue-800 active:ring-1 active:ring-blue-500 rounded-lg"
+export const linkStyles = "text-sm text-blue-500 hover:text-blue-800 rounded-lg"
 
 // HOVER and ACTIVE
 const hoverStyleForButtonElement = "enabled:hover:bg-blue-800 enabled:hover:text-white"
