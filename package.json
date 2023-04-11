@@ -45,6 +45,7 @@
     "@hookform/error-message": "2.0.1",
     "@hookform/resolvers": "2.9.10",
     "@prisma/client": "4.6.0",
+    "@socialgouv/matomo-next": "1.6.1",
     "@turf/helpers": "6.5.0",
     "@turf/turf": "6.5.0",
     "autoprefixer": "10.4.13",
