@@ -1,0 +1,11 @@
+version: "3"
+services:
+
+  nginx:
+    build:
+      context: ./docker/nginx
+    environment:
+      NGINX_HTPASSWD: "NGINX_HTPASSWD"
+      ASSETS_BUCKET_HOST: "ASSETS_BUCKET_HOST"
+      ASSETS_BUCKET_PATH: "ASSETS_BUCKET_PATH"
+    network_mode: host

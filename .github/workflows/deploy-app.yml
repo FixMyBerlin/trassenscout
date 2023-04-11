@@ -36,6 +36,10 @@ on:
         required: true
       S3_UPLOAD_SECRET:
         required: true
+      ASSETS_BUCKET_HOST:
+        required: true
+      ASSETS_BUCKET_PATH:
+        required: true
 
 jobs:
   build-push-deploy-docker-images:
@@ -111,6 +115,8 @@ jobs:
           S3_UPLOAD_BUCKET: ${{ inputs.S3_UPLOAD_BUCKET }}
           S3_UPLOAD_REGION: ${{ inputs.S3_UPLOAD_REGION }}
           S3_UPLOAD_ROOTFOLDER: ${{ inputs.S3_UPLOAD_ROOTFOLDER }}
+          ASSETS_BUCKET_HOST: ${{ secrets.ASSETS_BUCKET_HOST }}
+          ASSETS_BUCKET_PATH: ${{ secrets.ASSETS_BUCKET_PATH }}
 
       - name: Create Deployment and deploy
         run: >
