@@ -9,6 +9,7 @@ const tocItems: TocHashLink = [
   ["#intro", "Einleitung"],
   ["#responsible", "Verantwortlichkeit"],
   ["#hosting", "Bereitstellung"],
+  ["#analytics", "Webanalyse"],
   ["#youtube", "YouTube"],
   ["#contact", "Kontaktmöglichkeiten"],
   ["#newsletter", "Newsletter"],
@@ -16,15 +17,15 @@ const tocItems: TocHashLink = [
   ["#updates", "Aktualität & Änderungen"],
 ]
 
-// const MatomoIframe: React.FC = () => {
-//   return (
-//     <iframe
-//       title="Matomo Opt Out Tracking"
-//       className="h-52 w-full border bg-[#f0fdf4] p-2"
-//       src="https://s.trassenscout.de/index.php?module=CoreAdminHome&action=optOut&language=de&backgroundColor=f0fdf4&fontColor=374151&fontSize=16px&fontFamily=Arial"
-//     />
-//   )
-// }
+const MatomoIframe: React.FC = () => {
+  return (
+    <iframe
+      title="Matomo Opt Out Tracking"
+      className="h-52 w-full border bg-[#f0fdf4] p-2"
+      src="https://s.fixmycity.de/index.php?module=CoreAdminHome&action=optOut&language=de&backgroundColor=f0fdf4&fontColor=374151&fontSize=16px&fontFamily=Arial"
+    />
+  )
+}
 
 const Datenschutz: BlitzPage = () => {
   return (
@@ -246,9 +247,9 @@ const Datenschutz: BlitzPage = () => {
           </tr>
         </tbody>
       </table>
-      {/* <h2 id="analytics">Webanalyse</h2>
+      <h2 id="analytics">Webanalyse</h2>
       <p>
-        Zusätzlich zu den oben genannten Datenverarbeitungen nutzen wir ein Statistiksystem, das
+        Zusätzlich zu den oben genannten Datenverarbeitungen nutzen wir ein Statistiksystem, das{" "}
         <strong>keine personenbezogenen Daten</strong> verarbeitet. Aus Fairness- und
         Transparenzgründen haben wir uns dennoch entschieden, die entsprechenden Details dazu
         offenzulegen:
@@ -269,7 +270,7 @@ const Datenschutz: BlitzPage = () => {
         Bezug zu einer bestimmten Person herzustellen. Sie können trotzdem die Verwendung von Matomo
         während Ihres Besuchs durch Abwahl des folgenden Hakens unterbinden:
       </p>
-      <MatomoIframe /> */}
+      <MatomoIframe />
       <h2 id="youtube">YouTube</h2>
       <h3>Allgemeine Information</h3>
       <p>
