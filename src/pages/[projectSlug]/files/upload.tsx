@@ -160,7 +160,7 @@ const UploadNewFileWithQuery = () => {
           </code>
 
           {["FILE_ERROR"].includes(uploadState) && (
-            <div className="border-red-500 mt-2 border-2 p-2">
+            <div className="mt-2 border-2 border-red-500 p-2">
               <pre>{uploadError}</pre>
             </div>
           )}

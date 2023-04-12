@@ -1,28 +1,28 @@
-import React from 'react';
-import { FileInput } from '../components/file-input';
-import { useRef, useState } from 'react';
+import React from "react"
+import { FileInput } from "../components/file-input"
+import { useRef, useState } from "react"
 
 type TrackedFile = {
-  file: File;
-  progress: number;
-  uploaded: number;
-  size: number;
-};
+  file: File
+  progress: number
+  uploaded: number
+  size: number
+}
 
 export const useUploadFiles = () => {
-  let ref = useRef<HTMLInputElement>();
-  let [files, setFiles] = useState<TrackedFile[]>([]);
+  let ref = useRef<HTMLInputElement>()
+  let [files, setFiles] = useState<TrackedFile[]>([])
 
   let openFileDialog = () => {
     if (ref.current) {
-      ref.current.value = '';
-      ref.current?.click();
+      ref.current.value = ""
+      ref.current?.click()
     }
-  };
+  }
 
   let resetFiles = () => {
-    setFiles([]);
-  };
+    setFiles([])
+  }
 
   let updateFileProgress = (file: File, uploaded: number) => {
     setFiles((files) =>
@@ -36,24 +36,19 @@ export const useUploadFiles = () => {
             }
           : trackedFile
       )
-    );
-  };
+    )
+  }
 
   let addFile = (file: File) => {
-    setFiles((files) => [
-      ...files,
-      { file, progress: 0, uploaded: 0, size: file.size },
-    ]);
-  };
+    setFiles((files) => [...files, { file, progress: 0, uploaded: 0, size: file.size }])
+  }
 
   return {
-    FileInput: (props: any) => (
-      <FileInput {...props} ref={ref} style={{ display: 'none' }} />
-    ),
+    FileInput: (props: any) => <FileInput {...props} ref={ref} style={{ display: "none" }} />,
     openFileDialog,
     files,
     addFile,
     updateFileProgress,
     resetFiles,
-  };
-};
+  }
+}
