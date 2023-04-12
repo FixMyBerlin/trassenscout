@@ -32,7 +32,7 @@ server {
       proxy_intercept_errors on;
       error_page             403 =404 /404.html;
       add_header             Cache-Control max-age=31536000;
-      proxy_pass             https://${ASSETS_BUCKET_HOST}${ASSETS_BUCKET_PATH};
+      proxy_pass             http://${ASSETS_BUCKET_HOST}${ASSETS_BUCKET_PATH};
   }
   location = /404.html {
       internal;
