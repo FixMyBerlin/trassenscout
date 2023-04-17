@@ -1,7 +1,6 @@
-import Image from "next/image"
+import { NavigationProjectLogo } from "src/core/layouts/Navigation/NavigationProject/NavigationProjectLogo"
 import DashedLine from "../DashedLine"
 import { H1, H2 } from "../text/Headings"
-import pngRsv8Logo from "./../../layouts/Navigation/assets/rsv8-logo.png" // TODO Logo dynamisch
 
 type Props = {
   title: string
@@ -27,8 +26,8 @@ export const PageHeader: React.FC<Props> = ({
           <div>
             <H1>{title}</H1>
           </div>
-          <div className="shrink-0">
-            <Image src={pngRsv8Logo} width={146} height={146} alt="" />
+          <div className="hidden shrink-0 px-8 pb-4 sm:block">
+            <NavigationProjectLogo width={146} height={146} defaultImg={false} />
           </div>
         </div>
       ) : (
