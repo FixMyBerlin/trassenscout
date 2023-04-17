@@ -82,6 +82,7 @@ model Project {
   title       String
   shortTitle  String
   description String?
+  logoSrc     String?
 
   manager   User @relation(fields: [managerId], references: [id])
   managerId Int
@@ -205,9 +206,9 @@ model File {
 }
 
 model SurveySession {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int              @id @default(autoincrement())
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
   email     String?
   responses SurveyResponse[]
 }
