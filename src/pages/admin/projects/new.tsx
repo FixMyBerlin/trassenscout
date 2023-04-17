@@ -22,6 +22,8 @@ const AdminNewProjectPageWithQuery = () => {
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
+    // const logoSource = process.env.NEXT_PUBLIC_AWS_URL + values.logo
+    // values = { ...values, logo: logoSource }
     try {
       const project = await createProjectMutation(values)
       await router.push(Routes.ProjectDashboardPage({ projectSlug: project.slug }))

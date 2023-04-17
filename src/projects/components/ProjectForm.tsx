@@ -32,6 +32,14 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
       />
       <LabeledTextField type="text" name="title" label="Name" placeholder="" />
       <LabeledTextField type="text" name="shortTitle" label="Kurzname" placeholder="" />
+      <LabeledTextField
+        optional
+        type="text"
+        name="logo"
+        label="Logo"
+        placeholder="beispiel.png"
+        help="Das Logo wird von FixMyCity extern abgelegt und hier referenziert."
+      />
       <LabeledTextareaField
         name="description"
         label="Beschreibung (Markdown)"

@@ -27,7 +27,11 @@ const EditProjectWithQuery = () => {
   )
   const [updateProjectMutation] = useMutation(updateProject)
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
-
+  // let initialLogo: string
+  // if (project.logo && project.logo.split("assets/staging/").length > 1) {
+  //   initialLogo = project.logo.split("assets/staging/")[1]!
+  // }
+  // const initialProjectValues = project.logo ? { ...project, logo: initialLogo } : project
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
