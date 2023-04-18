@@ -1,5 +1,4 @@
 <div align="center"><br><br>
-  <!--<img src="src/images/rsv8-logo.png" height="80" />-->
   <h1 align="center">Trassenscout (Alpha)</h1>
 </div>
 
