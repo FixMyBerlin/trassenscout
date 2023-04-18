@@ -1,13 +1,41 @@
+import { useParam } from "@blitzjs/next"
+import { useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
-import React from "react"
-import { ProjectLogo } from "../Navigation/NavigationProject/ProjectLogo"
+import React, { Suspense } from "react"
+import { getImageSrc } from "src/core/utils/getImageSrc"
+import getProject from "src/projects/queries/getProject"
 
 type Props = { className?: string }
 
-export const FooterLogos: React.FC<Props> = ({ className }) => {
+export const FooterLogosWithQuery: React.FC<Props> = ({ className }) => {
+  const projectSlug = useParam("projectSlug", "string")
+  const [project] = useQuery(getProject, { slug: projectSlug })
+
+  if (!project.partnerLogoSrc) return null
+
   return (
-    <ul className={clsx("grid grid-cols-3 gap-5", className)}>
-      <ProjectLogo />
+    <ul
+      className={clsx(
+        "flex flex-col items-center justify-evenly gap-4 py-4 sm:flex-row",
+        className
+      )}
+    >
+      {project.partnerLogoSrc.map((partnerLogo) => (
+        <img
+          className="h-auto w-24"
+          src={getImageSrc(partnerLogo)}
+          alt="partnerLogo"
+          key={partnerLogo}
+        />
+      ))}
     </ul>
+  )
+}
+
+export const FooterLogos: React.FC<Props> = (props) => {
+  return (
+    <Suspense>
+      <FooterLogosWithQuery {...props} />
+    </Suspense>
   )
 }

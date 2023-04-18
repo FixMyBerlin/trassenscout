@@ -22,8 +22,8 @@ const AdminNewProjectPageWithQuery = () => {
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
-    // const logoSource = process.env.NEXT_PUBLIC_AWS_URL + values.logo
-    // values = { ...values, logo: logoSource }
+    const partnerLogoSrcArray = values.partnerLogoSrc.split("\n")
+    values = { ...values, partnerLogoSrc: partnerLogoSrcArray }
     try {
       const project = await createProjectMutation(values)
       await router.push(Routes.ProjectDashboardPage({ projectSlug: project.slug }))
@@ -41,7 +41,7 @@ const AdminNewProjectPageWithQuery = () => {
 
         <ProjectForm
           submitText="Erstellen"
-          schema={ProjectSchema}
+          // schema={ProjectSchema}
           initialValues={{ managerId: currentUser!.id }}
           onSubmit={handleSubmit}
           users={users}
