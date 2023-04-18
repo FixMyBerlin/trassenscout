@@ -7,7 +7,7 @@ import { NavigationDesktop } from "../NavigationDesktop"
 import { NavigationMobile } from "../NavigationMobile"
 import { NavigationWrapper } from "../NavigationWrapper"
 import { menuItems } from "./menuItems"
-import { NavigationProjectLogo } from "./NavigationProjectLogo"
+import { ProjectLogo } from "./ProjectLogo"
 
 const NavigationProjectWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
@@ -15,14 +15,8 @@ const NavigationProjectWithQuery = () => {
 
   return (
     <NavigationWrapper>
-      <NavigationMobile
-        logo={<NavigationProjectLogo />}
-        menuItems={menuItems(projectSlug!, sections!)}
-      />
-      <NavigationDesktop
-        logo={<NavigationProjectLogo />}
-        menuItems={menuItems(projectSlug!, sections!)}
-      />
+      <NavigationMobile logo={<ProjectLogo />} menuItems={menuItems(projectSlug!, sections!)} />
+      <NavigationDesktop logo={<ProjectLogo />} menuItems={menuItems(projectSlug!, sections!)} />
     </NavigationWrapper>
   )
 }

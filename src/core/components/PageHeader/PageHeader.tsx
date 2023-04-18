@@ -1,4 +1,4 @@
-import { NavigationProjectLogo } from "src/core/layouts/Navigation/NavigationProject/NavigationProjectLogo"
+import { ProjectLogo } from "src/core/layouts/Navigation/NavigationProject/ProjectLogo"
 import DashedLine from "../DashedLine"
 import { H1, H2 } from "../text/Headings"
 
@@ -27,7 +27,7 @@ export const PageHeader: React.FC<Props> = ({
             <H1>{title}</H1>
           </div>
           <div className="hidden shrink-0 px-8 pb-4 sm:block">
-            <NavigationProjectLogo width={146} height={146} defaultImg={false} />
+            <ProjectLogo className="h-36 w-36" defaultImg={false} />
           </div>
         </div>
       ) : (
