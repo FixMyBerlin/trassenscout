@@ -4,6 +4,7 @@ import router from "next/router"
 import { Suspense } from "react"
 import { getSession } from "@blitzjs/auth"
 import { GetServerSidePropsContext } from "next"
+import { api } from "../blitz-server"
 
 import { Spinner } from "src/core/components/Spinner"
 import PageHomeNoProject from "src/home/components/PageHomeNoProject"
@@ -36,6 +37,7 @@ const Home: BlitzPage<{ user: CurrentUser }> = ({ user }) => {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req, res } = context
+  await api(() => null)
   const session = await getSession(req, res)
   // @ts-ignore session is all is needed
   const user = await getCurrentUser(null, { session })
