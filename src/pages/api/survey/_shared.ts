@@ -1,10 +1,12 @@
 import { createObjectCsvStringifier } from "csv-writer"
 import { NextApiRequest, NextApiResponse } from "next"
+import { api } from "src/blitz-server"
 import { getSession } from "@blitzjs/auth"
 
 const DEBUG = false
 
 export const authenticate = async (req: NextApiRequest, res: NextApiResponse) => {
+  await api(() => null)
   const session = await getSession(req, res)
   const ok = session.userId && session.role === "ADMIN"
   if (!ok) {
@@ -24,7 +26,7 @@ export const sendCsv = (
     fieldDelimiter: ";",
     alwaysQuote: true,
   })
-  const csvString = csvStringifier.stringifyRecords(data)
+  const csvString = csvStringifier.getHeaderString() + csvStringifier.stringifyRecords(data)
   if (DEBUG) {
     res.setHeader("Content-Type", "text/plain")
   } else {

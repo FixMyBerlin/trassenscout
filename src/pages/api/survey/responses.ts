@@ -14,12 +14,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   ]
 
   type Question = { questionId: number | string; responseId: number | string; text: string }
-  let data: Question[] = [{ questionId: "questionId", responseId: "responseId", text: "text" }]
+  let data: Question[] = []
   const addQuestions = (definition: Survey) => {
     definition.pages.forEach((page) => {
       if (!page.questions) return
       page.questions.forEach((question) => {
-        if (!["singleResponse", "multiResponse"].includes(question.component)) return
+        if (!["singleResponse", "multipleResponse"].includes(question.component)) return
         // @ts-ignore
         question.props.responses.forEach((response) => {
           data.push({
