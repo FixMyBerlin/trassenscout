@@ -1,6 +1,5 @@
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { BuildingLibraryIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import Image from "next/image"
 import { Suspense } from "react"
@@ -31,11 +30,14 @@ export const ProjectLogoWithQuery: React.FC<Props> = ({ className, defaultImg = 
             "rounded-sm bg-white/90 px-1 py-1": regionlogoWhiteBackgroundRequired,
           })}
         >
-          <img
-            className={clsx(className, "h-12 w-12")}
-            src={getImageSrc(project.logoSrc)}
-            alt="Projektlogo"
-          />
+          <div className={clsx(className, "relative h-12 w-12")}>
+            <Image
+              className="object-contain"
+              layout="fill"
+              src={getImageSrc(project.logoSrc)}
+              alt="Projektlogo"
+            />
+          </div>
         </div>
       ) : (
         <div className={className}>
