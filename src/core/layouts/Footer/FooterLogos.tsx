@@ -14,21 +14,20 @@ export const FooterLogosWithQuery: React.FC<Props> = ({ className }) => {
   if (!project.partnerLogoSrc) return null
 
   return (
-    <ul
-      className={clsx(
-        "flex flex-col items-center justify-evenly gap-4 py-4 sm:flex-row",
-        className
-      )}
-    >
-      {project.partnerLogoSrc.map((partnerLogo) => (
-        <img
-          className="h-auto w-24"
-          src={getImageSrc(partnerLogo)}
-          alt="partnerLogo"
-          key={partnerLogo}
-        />
-      ))}
-    </ul>
+    <div className="flex">
+      <ul
+        className={clsx(
+          "mx-auto grid w-full grid-flow-row grid-cols-3 items-center justify-evenly gap-8 pb-8 sm:grid-cols-4 md:grid-cols-5",
+          className
+        )}
+      >
+        {project.partnerLogoSrc.map((partnerLogo) => (
+          <li key={partnerLogo}>
+            <img className="mx-auto h-auto w-16" src={getImageSrc(partnerLogo)} alt="partnerLogo" />
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
