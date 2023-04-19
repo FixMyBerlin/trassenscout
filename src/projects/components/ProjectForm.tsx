@@ -37,8 +37,8 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
         type="text"
         name="logoSrc"
         label="Logo"
-        placeholder="assets/beispiel.png"
-        help="Das Logo wird von FixMyCity extern abgelegt und hier referenziert. Beim Ablegen in AWS das Logo vorher mit ImageOptim https://imageoptim.com/online optimieren."
+        placeholder="beispiel.png"
+        help="Das Logo wird von FixMyCity extern abgelegt und hier referenziert."
       />
       <LabeledTextareaField
         name="description"
@@ -49,9 +49,9 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
       <LabeledTextareaField
         optional
         name="partnerLogoSrc"
-        help="Die Logos werden von FixMyCity extern abgelegt und hier referenziert. Beim Ablegen in AWS das Logo vorher mit ImageOptim https://imageoptim.com/online optimieren."
+        help="Die Logos werden von FixMyCity extern abgelegt und hier referenziert."
         label="Partner-Logos (ein Logo pro Zeile)"
-        placeholder="assets/beispiel.png"
+        placeholder="beispiel.png"
       />
 
       <LabeledSelect
