@@ -48,8 +48,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const csvData: Result[] = []
-  // @ts-ignore headers are strings
-  csvData.push(Object.fromEntries(headers.map(({ id, title }) => [id, title])))
 
   surveySessions.forEach((surveySession) => {
     const { id, createdAt, responses } = surveySession
