@@ -75,13 +75,15 @@ model Token {
 // }
 
 model Project {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  slug        String   @unique
-  title       String
-  shortTitle  String
-  description String?
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  slug           String   @unique
+  title          String
+  shortTitle     String
+  description    String?
+  logoSrc        String?
+  partnerLogoSrc String[]
 
   manager   User @relation(fields: [managerId], references: [id])
   managerId Int
@@ -205,9 +207,9 @@ model File {
 }
 
 model SurveySession {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int              @id @default(autoincrement())
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
   email     String?
   responses SurveyResponse[]
 }

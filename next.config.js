@@ -9,7 +9,7 @@ const config = {
   swcMinify: true,
   productionBrowserSourceMaps: true, // build source maps in production – https://nextjs.org/docs/advanced-features/source-maps
   images: {
-    domains: [], // allow fetching images from those domains – https://nextjs.org/docs/api-reference/next/image#domains
+    domains: ["staging.trassenscout.de", "trassenscout.de", "develop--rsv8-lb-wn.netlify.app"], // allow fetching images from those domains – https://nextjs.org/docs/api-reference/next/image#domains
   },
 }
 

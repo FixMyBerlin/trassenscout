@@ -23,7 +23,7 @@ export const LayoutParticipation: BlitzLayout<Props> = ({ faviconUrl, children }
       </Head>
       <div className="relative flex h-full flex-col overflow-x-hidden">
         <MetaTags noindex title="Beteiligung RS8" />
-        <HeaderParticipation />
+        <HeaderParticipation logoSrc={faviconUrl} />
         <main className="mx-auto flex w-full flex-col pb-40">
           <ContainerParticipation>{children}</ContainerParticipation>
         </main>
