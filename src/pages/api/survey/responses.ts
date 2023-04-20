@@ -38,5 +38,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   addQuestions(feedbackDefinition)
   data = data.filter(({ questionId }) => questionId !== 22)
 
-  sendCsv(res, headers, data)
+  sendCsv(res, headers, data, "responses.csv")
 }
