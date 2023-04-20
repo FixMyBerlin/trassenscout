@@ -8,5 +8,5 @@ export const ProjectSchema = z.object({
   description: z.string().nullish(),
   logoSrc: z.string().nullish(),
   managerId: z.coerce.number(),
-  partnerLogoSrcs: z.string().array(),
+  partnerLogoSrc: z.string().array(),
 })

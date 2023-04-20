@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE "Project" ADD COLUMN     "partnerLogoSrcs" TEXT[];
+ALTER TABLE "Project" ADD COLUMN     "partnerLogoSrc" TEXT[];

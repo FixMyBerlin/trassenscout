@@ -58,7 +58,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
       />
       <LabeledTextareaField
         optional
-        name="partnerLogoSrcs"
+        name="partnerLogoSrc"
         label="Partner-Logos (ein Logo pro Zeile)"
         placeholder="beispiel.png"
       />
