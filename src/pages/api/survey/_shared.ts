@@ -19,7 +19,8 @@ export const authenticate = async (req: NextApiRequest, res: NextApiResponse) =>
 export const sendCsv = (
   res: NextApiResponse,
   headers: { id: string; title: string }[],
-  data: Record<string, any>[]
+  data: Record<string, any>[],
+  filename: string
 ) => {
   const csvStringifier = createObjectCsvStringifier({
     header: headers,
@@ -31,7 +32,7 @@ export const sendCsv = (
     res.setHeader("Content-Type", "text/plain")
   } else {
     res.setHeader("Content-Type", "text/csv")
-    res.setHeader("Content-Disposition", "attachment; filename=results.csv")
+    res.setHeader("Content-Disposition", `attachment; filename=${filename}`)
   }
   res.send(csvString)
 }

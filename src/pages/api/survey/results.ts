@@ -80,5 +80,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
   })
   //
-  sendCsv(res, headers, csvData)
+  sendCsv(res, headers, csvData, "results.csv")
 }
