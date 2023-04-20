@@ -12,7 +12,7 @@ export const FooterLogosWithQuery: React.FC<Props> = ({ className }) => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
 
-  if (!project.partnerLogoSrc) return null
+  if (!project.partnerLogoSrcs) return null
 
   return (
     <div className="flex">
@@ -22,7 +22,7 @@ export const FooterLogosWithQuery: React.FC<Props> = ({ className }) => {
           className
         )}
       >
-        {project.partnerLogoSrc.map((partnerLogo) => (
+        {project.partnerLogoSrcs.map((partnerLogo) => (
           <li className="relative mx-auto h-16 w-20" key={partnerLogo}>
             <Image
               className="mx-auto object-contain"

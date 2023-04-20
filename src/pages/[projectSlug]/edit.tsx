@@ -30,8 +30,8 @@ const EditProjectWithQuery = () => {
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
-    const partnerLogoSrcArray = values.partnerLogoSrc.split("\n")
-    values = { ...values, partnerLogoSrc: partnerLogoSrcArray }
+    const partnerLogoSrcsArray = values.partnerLogoSrcs.split("\n")
+    values = { ...values, partnerLogoSrcs: partnerLogoSrcsArray }
 
     try {
       const updated = await updateProjectMutation({
@@ -54,7 +54,7 @@ const EditProjectWithQuery = () => {
       <ProjectForm
         submitText="Speichern"
         // schema={ProjectSchema}
-        initialValues={{ ...project, partnerLogoSrc: project.partnerLogoSrc.join("\n") }}
+        initialValues={{ ...project, partnerLogoSrcs: project.partnerLogoSrcs.join("\n") }}
         onSubmit={handleSubmit}
         users={users}
       />

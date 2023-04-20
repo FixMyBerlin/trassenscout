@@ -22,8 +22,8 @@ const AdminNewProjectPageWithQuery = () => {
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
-    const partnerLogoSrcArray = values.partnerLogoSrc.split("\n")
-    values = { ...values, partnerLogoSrc: partnerLogoSrcArray }
+    const partnerLogoSrcsArray = values.partnerLogoSrcs.split("\n")
+    values = { ...values, partnerLogoSrcs: partnerLogoSrcsArray }
     try {
       const project = await createProjectMutation(values)
       await router.push(Routes.ProjectDashboardPage({ projectSlug: project.slug }))
