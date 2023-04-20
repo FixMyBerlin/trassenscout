@@ -5,6 +5,7 @@ import {
   LabeledTextareaField,
   LabeledTextField,
 } from "src/core/components/forms"
+import { Link } from "src/core/components/links"
 import { getFullname } from "src/users/utils"
 import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
@@ -38,8 +39,17 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
         name="logoSrc"
         label="Logo"
         placeholder="beispiel.png"
-        help="Das Logo wird von FixMyCity extern abgelegt und hier referenziert."
       />
+      <p className="mt-2 text-sm text-gray-500">
+        Das Logo wird von FixMyCity{" "}
+        <Link
+          href="https://s3.console.aws.amazon.com/s3/buckets/trassenscout-public?prefix=assets/&region=eu-central-1"
+          blank
+        >
+          extern in AWS abgelegt
+        </Link>
+        , von NextJS intern optimiert und hier referenziert.
+      </p>
       <LabeledTextareaField
         name="description"
         label="Beschreibung (Markdown)"
@@ -49,11 +59,19 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
       <LabeledTextareaField
         optional
         name="partnerLogoSrc"
-        help="Die Logos werden von FixMyCity extern abgelegt und hier referenziert."
         label="Partner-Logos (ein Logo pro Zeile)"
         placeholder="beispiel.png"
       />
-
+      <p className="mt-2 text-sm text-gray-500">
+        Die Logos werden von FixMyCity{" "}
+        <Link
+          href="https://s3.console.aws.amazon.com/s3/buckets/trassenscout-public?prefix=assets/&region=eu-central-1"
+          blank
+        >
+          extern in AWS abgelegt
+        </Link>
+        , von NextJS intern optimiert und hier referenziert.
+      </p>
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
