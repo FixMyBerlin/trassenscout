@@ -346,7 +346,6 @@ const Datenschutz: BlitzPage = () => {
       <p>Im Rahmen des Newsletterversands verarbeiten wir folgende personenbezogene Daten:</p>
       <ul>
         <li>E-Mail-Adresse</li>
-        <li>Vor- und Nachname</li>
         <li>Metadaten (z. B. Geräteinformationen, IP-Adresse, Datum- und Uhrzeit der Anmeldung)</li>
       </ul>
       <h3>Newsletteranmeldung</h3>
