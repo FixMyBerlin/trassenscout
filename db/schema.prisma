@@ -175,7 +175,28 @@ model Subsection {
   section   Section @relation(fields: [sectionId], references: [id])
   sectionId Int
 
+  subsubsections Subsubsection[]
+
   @@unique([sectionId, slug])
+}
+
+model Subsubsection {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  slug        String
+  title       String
+  description String?
+  geometry    String
+
+  subsection   Subsection @relation(fields: [subsectionId], references: [id])
+  subsectionId Int
+
+  guidance String
+  task     String
+  length   Float
+  width    Float
 }
 
 model Stakeholdernote {
