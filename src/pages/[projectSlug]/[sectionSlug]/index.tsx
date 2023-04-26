@@ -11,7 +11,7 @@ import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFiles from "src/files/queries/getFiles"
-import { ProjectMap } from "src/projects/components/Map/ProjectMap"
+import { SectionMap } from "src/projects/components/Map/SectionMap"
 import type { ProjectMapSections } from "src/projects/components/Map/ProjectMap"
 import getSection from "src/sections/queries/getSection"
 import getSections from "src/sections/queries/getSections"
@@ -38,7 +38,7 @@ export const SectionDashboardWithQuery = () => {
   const [{ sections }] = useQuery(getSections, {
     where: { project: { slug: projectSlug! } },
     orderBy: { index: "asc" },
-    include: { subsections: { select: { id: true, geometry: true } } },
+    include: { subsections: true },
   }) // TODO make project required
 
   const sectionsWithSubsections = sections as ProjectMapSections
@@ -66,10 +66,10 @@ export const SectionDashboardWithQuery = () => {
       {/* Karte mit Daten der subsections */}
       {Boolean(subsections.length) && (
         <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
-          <ProjectMap
+          <SectionMap
             sections={sectionsWithSubsections}
             selectedSection={selectedSectionWithSubsections}
-            isInteractive={false}
+            isInteractive={true}
           />
           {/* <SectionPanel section={section} /> */}
         </div>
