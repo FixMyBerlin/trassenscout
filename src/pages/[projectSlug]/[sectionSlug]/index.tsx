@@ -11,8 +11,8 @@ import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFiles from "src/files/queries/getFiles"
-import { SectionsMap } from "src/projects/components/Map"
-import type { BaseMapSections } from "src/projects/components/Map/BaseMapView"
+import { ProjectMap } from "src/projects/components/Map/ProjectMap"
+import type { ProjectMapSections } from "src/projects/components/Map/ProjectMap"
 import getSection from "src/sections/queries/getSection"
 import getSections from "src/sections/queries/getSections"
 import StakeholdernoteList from "src/stakeholdernotes/components/StakeholdernoteList"
@@ -41,7 +41,7 @@ export const SectionDashboardWithQuery = () => {
     include: { subsections: { select: { id: true, geometry: true } } },
   }) // TODO make project required
 
-  const sectionsWithSubsections = sections as BaseMapSections
+  const sectionsWithSubsections = sections as ProjectMapSections
   const selectedSectionWithSubsections = sectionsWithSubsections.find((s) => s.id === section.id)
 
   return (
@@ -66,7 +66,7 @@ export const SectionDashboardWithQuery = () => {
       {/* Karte mit Daten der subsections */}
       {Boolean(subsections.length) && (
         <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
-          <SectionsMap
+          <ProjectMap
             sections={sectionsWithSubsections}
             selectedSection={selectedSectionWithSubsections}
             isInteractive={false}

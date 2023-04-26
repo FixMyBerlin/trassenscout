@@ -11,8 +11,8 @@ import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { SectionsMap } from "src/projects/components/Map"
-import type { BaseMapSections } from "src/projects/components/Map/BaseMapView"
+import { ProjectMap } from "src/projects/components/Map/ProjectMap"
+import type { ProjectMapSections } from "src/projects/components/Map/ProjectMap"
 import { SectionsTeasers } from "src/projects/components/Map/SectionsTeaser/SectionsTeasers"
 import getProject from "src/projects/queries/getProject"
 import getSections from "src/sections/queries/getSections"
@@ -67,7 +67,7 @@ export const ProjectDashboardWithQuery = () => {
       {/* Karte mit Daten der Abschnitte/subsections und Teaser Teilstrecke/sections */}
       {/* {Boolean(sections && sections[0]?.subsections?.length) && ( */}
       <div className="mt-12">
-        <SectionsMap sections={sections as BaseMapSections} isInteractive={true} />
+        <ProjectMap sections={sections as ProjectMapSections} isInteractive={true} />
       </div>
       {/* )} */}
       {Boolean(sections.length) && <SectionsTeasers sections={sections} />}

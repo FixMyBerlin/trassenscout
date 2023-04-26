@@ -3,7 +3,7 @@ import { Section } from "@prisma/client"
 import clsx from "clsx"
 import React from "react"
 import { blueButtonStyles, Link } from "src/core/components/links"
-import { SectionMarker } from "../SectionMarker"
+import { SectionMarker } from "../Markers"
 
 type Props = {
   section: Section
