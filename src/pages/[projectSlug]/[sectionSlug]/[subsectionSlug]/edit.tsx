@@ -11,7 +11,7 @@ import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SubsectionForm } from "src/subsections/components/SubsectionForm"
 import deleteSubsection from "src/subsections/mutations/deleteSubsection"
 import updateSubsection from "src/subsections/mutations/updateSubsection"
-import getSubsection from "src/subsections/queries/getSubsection"
+import getSubsectionBySlugs from "src/subsections/queries/getSubsectionBySlugs"
 import { SubsectionSchema } from "src/subsections/schema"
 import getProjectUsers from "src/users/queries/getProjectUsers"
 
@@ -20,14 +20,11 @@ const EditSubsection = () => {
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
   const subsectionSlug = useParam("subsectionSlug", "string")
-  const [subsection, { setQueryData }] = useQuery(
-    getSubsection,
-    { slug: subsectionSlug },
-    {
-      // This ensures the query never refreshes and overwrites the form data while the user is editing.
-      staleTime: Infinity,
-    }
-  )
+  const [subsection, { setQueryData }] = useQuery(getSubsectionBySlugs, {
+    projectSlug: projectSlug!,
+    sectionSlug: sectionSlug!,
+    slug: subsectionSlug!,
+  })
   const [updateSubsectionMutation] = useMutation(updateSubsection)
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
