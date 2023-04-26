@@ -9,7 +9,7 @@ import { Layer, Marker, Source, useMap } from "react-map-gl"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 
-import { geometryStartEndPoint, sectionsBbox } from "./utils"
+import { sectionsBbox } from "./utils"
 import { BaseMap } from "./BaseMap"
 import { SectionMarker } from "./Markers"
 
@@ -74,6 +74,11 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({
     return lineColor
   }
 
+  const dots = sections
+    .map((section) => section.subsections.map((subsection) => JSON.parse(subsection.geometry)[0]))
+    .flat()
+  dots.push(JSON.parse(sections.at(-1)!.subsections.at(-1)!.geometry).at(-1))
+
   const lines = sections.map((section) =>
     section.subsections.map((subsection) => (
       <>
@@ -93,24 +98,6 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({
               "line-color": getLineColor({ section }),
               "line-color-transition": { duration: 0 },
             }}
-          />
-        </Source>
-      </>
-    ))
-  )
-
-  const dots = sections.map((section) =>
-    section.subsections.map((subsection) => (
-      <>
-        <Source
-          key={`layer_dots_${subsection.id}`}
-          type="geojson"
-          data={geometryStartEndPoint(subsection.geometry)}
-        >
-          <Layer
-            id={`layer_dots_${subsection.id}`}
-            type="circle"
-            paint={{ "circle-color": "RGB(15, 23, 42)", "circle-radius": 6 }}
           />
         </Source>
       </>
@@ -158,9 +145,10 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({
       onMouseLeave={handleMouseLeave}
       isInteractive={isInteractive}
       interactiveLayerIds={interactiveLayerIds}
+      // @ts-ignore
+      dots={lineString(dots)}
     >
       {lines}
-      {dots}
       {markers}
     </BaseMap>
   )

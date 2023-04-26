@@ -1,11 +1,14 @@
 import React, { useState } from "react"
 import { MapProps } from "react-map-gl/src/components/map"
-import Map, { MapProvider, NavigationControl, ScaleControl } from "react-map-gl"
+import Map, { Layer, MapProvider, NavigationControl, ScaleControl, Source } from "react-map-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
+import { LineString } from "@turf/helpers"
+
 import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher"
 
 export interface BaseMapProps extends MapProps {
   isInteractive?: boolean
+  dots?: LineString
 }
 
 const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
@@ -17,6 +20,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   isInteractive,
   onMouseEnter,
   onMouseLeave,
+  dots,
   ...mapProps
 }) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
@@ -34,6 +38,18 @@ export const BaseMap: React.FC<BaseMapProps> = ({
     if (isInteractive) setCursorStyle("grab")
   }
 
+  const dotSource = dots ? (
+    <>
+      <Source key="source_dots" type="geojson" data={dots}>
+        <Layer
+          id={"layer_dots"}
+          type="circle"
+          paint={{ "circle-color": "RGB(15, 23, 42)", "circle-radius": 6 }}
+        />
+      </Source>
+    </>
+  ) : null
+
   return (
     <div className="h-[500px] w-full drop-shadow-md">
       <div className="relative h-full w-full">
@@ -50,6 +66,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
             <NavigationControl showCompass={false} />
             <ScaleControl />
             {children}
+            {dotSource}
           </Map>
           <BackgroundSwitcher
             className="absolute top-4 left-4"
