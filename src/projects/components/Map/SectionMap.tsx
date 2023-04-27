@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { useRouter } from "next/router"
 import { Routes, useParam } from "@blitzjs/next"
 import { Section } from "@prisma/client"
 import { lineString } from "@turf/helpers"
-import { Layer, Marker, Source, useMap } from "react-map-gl"
+import { Layer, Marker, Source } from "react-map-gl"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 
@@ -26,7 +26,6 @@ export const SectionMap: React.FC<SectionMapProps> = ({
 }) => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
-  const { mainMap } = useMap()
 
   const [hoveredSectionIds, setHoveredSectionIds] = useState<number[]>([])
 
@@ -57,12 +56,6 @@ export const SectionMap: React.FC<SectionMapProps> = ({
     .flat()
 
   const sectionBounds = sectionsBbox(selectedSection ? [selectedSection] : sections)
-
-  useEffect(() => {
-    if (!mainMap || !sectionBounds) return
-    mainMap.fitBounds(sectionBounds, { padding: 60 })
-  }, [mainMap, sectionBounds])
-
   if (!sectionBounds) return null
 
   // Layer style for segments depending on selected section and segment
