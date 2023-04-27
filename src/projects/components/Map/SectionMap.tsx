@@ -3,17 +3,14 @@ import { useRouter } from "next/router"
 import { Routes, useParam } from "@blitzjs/next"
 import { Section } from "@prisma/client"
 import { lineString } from "@turf/helpers"
-import { along, length } from "@turf/turf"
-
 import { Layer, Marker, Source, useMap } from "react-map-gl"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 
-import { geometryStartEndPoint, sectionsBbox } from "./utils"
+import { midPoint, sectionsBbox } from "./utils"
 import { BaseMap } from "./BaseMap"
-import { SectionMarker } from "./Markers"
+import { SubsectionMarker } from "./Markers"
 import { ProjectMapSections } from "./ProjectMap"
-import subsections from "../../../../db/seeds/subsections"
 
 type SectionMapProps = {
   children?: React.ReactNode
@@ -106,30 +103,26 @@ export const SectionMap: React.FC<SectionMapProps> = ({
     ))
   )
 
-  const markers = sections.map((section, index) => {
-    const midIndex = Math.floor(section.subsections.length / 2)
-    const geometryString = section.subsections?.at(midIndex)?.geometry
-    if (!section.subsections.length || !midIndex || !geometryString) {
-      return null
-    }
-    const midLine = lineString(JSON.parse(geometryString))
-    const midLengthHalf = length(midLine) / 2
-    const midPoint = along(midLine, midLengthHalf)
-
+  const markers = selectedSection.subsections.map((subsection, index) => {
+    const [longitude, latitude] = midPoint(JSON.parse(subsection.geometry)).geometry.coordinates
     return (
       <Marker
-        key={section.id}
-        longitude={midPoint.geometry.coordinates[0]}
-        latitude={midPoint.geometry.coordinates[1]}
+        key={subsection.id}
+        longitude={longitude}
+        latitude={latitude}
         anchor="center"
         onClick={() =>
           isInteractive &&
           router.push(
-            Routes.SectionDashboardPage({ projectSlug: projectSlug!, sectionSlug: section.slug })
+            Routes.SubsectionDashboardPage({
+              projectSlug: projectSlug!,
+              sectionSlug: selectedSection.slug,
+              subsectionSlug: subsection.slug,
+            })
           )
         }
       >
-        <SectionMarker isInteractive={isInteractive} number={index + 1} />
+        <SubsectionMarker isInteractive={isInteractive} label={`T${index + 1}`} />
       </Marker>
     )
   })
