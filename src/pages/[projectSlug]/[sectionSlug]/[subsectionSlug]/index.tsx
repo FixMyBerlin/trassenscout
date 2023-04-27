@@ -1,38 +1,52 @@
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Link } from "src/core/components/links"
-import { Markdown } from "src/core/components/Markdown/Markdown"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { proseClasses, quote } from "src/core/components/text"
-import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { ProjectMap } from "src/projects/components/Map/ProjectMap"
-import type { ProjectMapSections } from "src/projects/components/Map/ProjectMap"
-import getSection from "src/sections/queries/getSection"
-import getSections from "src/sections/queries/getSections"
-import { StakeholderSectionStatus } from "src/stakeholdernotes/components/StakeholderSectionStatus"
-import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
-import getSubsections from "src/subsections/queries/getSubsections"
+import { SubsectionMap } from "src/projects/components/Map/SubsectionMap"
 import getSubsectionBySlugs from "src/subsections/queries/getSubsectionBySlugs"
+import {
+  Subsection as SubsectionClient,
+  Subsubsection as SubsubsectionClient,
+} from "@prisma/client"
+import { Position } from "@turf/helpers"
+
+export interface Subsubsection extends Omit<SubsubsectionClient, "geometry"> {
+  geometry: Position[]
+}
+
+export interface Subsection extends Omit<SubsectionClient, "geometry"> {
+  geometry: Position[]
+  subsubsections: Subsubsection[]
+}
 
 export const SubsectionDashboard = () => {
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
   const subsectionSlug = useParam("subsectionSlug", "string")
-  const [subsection] = useQuery(getSubsectionBySlugs, {
+  const [subsectionOrg] = useQuery(getSubsectionBySlugs, {
     projectSlug: projectSlug!,
     sectionSlug: sectionSlug!,
     slug: subsectionSlug!,
     includeSubsubsections: true,
   })
 
+  const subsection: Subsection = JSON.parse(JSON.stringify(subsectionOrg)) // deep copy
+  subsection.geometry = subsection.geometry ? JSON.parse(subsection.geometry) : null
+  subsection.subsubsections.forEach((subsubsection) => {
+    subsubsection.geometry = subsubsection.geometry ? JSON.parse(subsubsection.geometry) : null
+  })
+
   return (
     <>
       <MetaTags noindex title={subsection!.title} />
       <PageHeader title={subsection!.title} />
+
+      <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
+        <SubsectionMap sections={[]} selectedSection={subsection} />
+      </div>
 
       <SuperAdminBox>
         <code>
