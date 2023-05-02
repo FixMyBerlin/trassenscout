@@ -26,15 +26,11 @@ export const SubsubsectionsList = () => {
     <>
       <h1>Subsubsections</h1>
 
-      <p>
-        <Link href={Routes.NewSubsubsectionPage()}>Subsubsection erstellen</Link>
-      </p>
-
       <ul>
         {subsubsections.map((subsubsection) => (
           <li key={subsubsection.id}>
             <Link href={Routes.ShowSubsubsectionPage({ subsubsectionId: subsubsection.id })}>
-              {subsubsection.name}
+              {subsubsection.title}
             </Link>
           </li>
         ))}

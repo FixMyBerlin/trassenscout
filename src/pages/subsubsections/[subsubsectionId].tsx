@@ -26,9 +26,9 @@ export const Subsubsection = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Subsubsection ${quote(subsubsection.id)}`} />
+      <MetaTags noindex title={`Subsubsection ${quote(subsubsection.title)}`} />
 
-      <h1>Subsubsection {quote(subsubsection.id)}</h1>
+      <h1>Subsubsection {quote(subsubsection.title)}</h1>
       <SuperAdminBox>
         <pre>{JSON.stringify(subsubsection, null, 2)}</pre>
       </SuperAdminBox>

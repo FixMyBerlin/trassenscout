@@ -4,6 +4,7 @@ import { z } from "zod"
 
 import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
+import { NotFoundError } from "blitz"
 
 const GetSubsectionSchema = z.object({
   projectSlug: z.string(),
@@ -30,6 +31,8 @@ export default resolver.pipe(
     if (includeSubsubsections) {
       query.include = { subsubsections: true }
     }
-    return await db.subsection.findFirst(query)
+    const subsection = await db.subsection.findFirst(query)
+    if (!subsection) throw new NotFoundError()
+    return subsection
   }
 )

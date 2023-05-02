@@ -68,6 +68,7 @@ export const SectionDashboardWithQuery = () => {
         <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
           <SectionMap
             sections={sectionsWithSubsections}
+            // @ts-ignore
             selectedSection={selectedSectionWithSubsections}
             isInteractive={true}
           />
@@ -163,7 +164,6 @@ export const SectionDashboardWithQuery = () => {
               )
             })}
         </ul>
-
       </section>
 
       <SuperAdminBox>

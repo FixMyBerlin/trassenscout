@@ -37,8 +37,10 @@ export const SubsectionDashboard = () => {
   })
 
   const subsection: Subsection = JSON.parse(JSON.stringify(subsectionOrg)) // deep copy
+  // @ts-expect-error
   subsection.geometry = subsection.geometry ? JSON.parse(subsection.geometry) : null
   subsection.subsubsections.forEach((subsubsection) => {
+    // @ts-expect-error
     subsubsection.geometry = subsubsection.geometry ? JSON.parse(subsubsection.geometry) : null
   })
 
@@ -56,7 +58,6 @@ export const SubsectionDashboard = () => {
         )}
         <p>
           <strong>Teilstreckenlänge:</strong>{" "}
-          {subsection.length ? subsection.length + " km" : " k.A."}
         </p>
       </div>
 
