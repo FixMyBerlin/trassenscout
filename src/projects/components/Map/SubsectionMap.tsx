@@ -1,10 +1,7 @@
 import React, { useState } from "react"
-import { FeatureCollection } from "geojson"
 import { lineString } from "@turf/helpers"
 import { bbox, featureCollection } from "@turf/turf"
-import { Layer, LngLatBoundsLike, Marker, Source } from "react-map-gl"
-import maplibregl from "maplibre-gl"
-import "maplibre-gl/dist/maplibre-gl.css"
+import { LngLatBoundsLike, Marker } from "react-map-gl"
 
 import { midPoint } from "./utils"
 import { BaseMap } from "./BaseMap"
@@ -82,7 +79,6 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
   return (
     <BaseMap
       id="mainMap"
-      mapLib={maplibregl}
       initialViewState={{
         bounds: sectionBounds,
         fitBoundsOptions: { padding: 60 },

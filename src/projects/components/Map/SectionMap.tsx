@@ -4,8 +4,6 @@ import { Routes, useParam } from "@blitzjs/next"
 import { Section } from "@prisma/client"
 import { lineString } from "@turf/helpers"
 import { Layer, Marker, Source } from "react-map-gl"
-import maplibregl from "maplibre-gl"
-import "maplibre-gl/dist/maplibre-gl.css"
 
 import { midPoint, sectionsBbox } from "./utils"
 import { BaseMap } from "./BaseMap"
@@ -123,7 +121,6 @@ export const SectionMap: React.FC<SectionMapProps> = ({
   return (
     <BaseMap
       id="mainMap"
-      mapLib={maplibregl}
       initialViewState={{
         bounds: sectionBounds,
         fitBoundsOptions: { padding: 60 },

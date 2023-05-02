@@ -1,6 +1,6 @@
 import React, { useState } from "react"
-import { MapProps } from "react-map-gl/src/components/map"
-import Map, { Layer, NavigationControl, ScaleControl, Source } from "react-map-gl"
+import Map, { Layer, MapProps, NavigationControl, ScaleControl, Source } from "react-map-gl"
+import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { FeatureCollection } from "@turf/helpers"
 
@@ -88,6 +88,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
       <div className="relative h-full w-full">
         {/* @ts-ignore */}
         <Map
+          mapLib={maplibregl}
           mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
           scrollZoom={false}
           cursor={cursorStyle}
