@@ -24,7 +24,7 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
   const router = useRouter()
   const [hovered, setHovered] = useState<number | null>(null)
 
-  const selectableSections = selectedSection.subsubsections
+  const selectableSections = selectedSection.subsubsections.filter((sec) => sec.geometry !== null)
 
   const select = async (id: number) => {
     await router.push(Routes.ShowSubsubsectionPage({ subsubsectionId: id }))

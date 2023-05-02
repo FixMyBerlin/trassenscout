@@ -1,6 +1,8 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
+import { Position } from "@turf/helpers"
+
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
@@ -14,7 +16,6 @@ import {
   Subsection as SubsectionClient,
   Subsubsection as SubsubsectionClient,
 } from "@prisma/client"
-import { Position } from "@turf/helpers"
 
 export interface Subsubsection extends Omit<SubsubsectionClient, "geometry"> {
   geometry: Position[]
@@ -36,12 +37,20 @@ export const SubsectionDashboard = () => {
     includeSubsubsections: true,
   })
 
+  const parseGeometry = (objectWithGeometry: Record<any, any> | { geometry: Position[] }) => {
+    if (objectWithGeometry.geometry === null) return null
+    try {
+      return JSON.parse(objectWithGeometry.geometry)
+    } catch (e: any) {
+      console.error("Parsing :", e.message, JSON.parse(JSON.stringify(objectWithGeometry)))
+      return null
+    }
+  }
+
   const subsection: Subsection = JSON.parse(JSON.stringify(subsectionOrg)) // deep copy
-  // @ts-expect-error
-  subsection.geometry = subsection.geometry ? JSON.parse(subsection.geometry) : null
+  subsection.geometry = parseGeometry(subsection)
   subsection.subsubsections.forEach((subsubsection) => {
-    // @ts-expect-error
-    subsubsection.geometry = subsubsection.geometry ? JSON.parse(subsubsection.geometry) : null
+    subsubsection.geometry = parseGeometry(subsubsection)
   })
 
   return (
