@@ -1,7 +1,9 @@
 import React, { useState } from "react"
+import { useRouter } from "next/router"
+import { Routes } from "@blitzjs/next"
+import { LngLatBoundsLike, Marker } from "react-map-gl"
 import { lineString } from "@turf/helpers"
 import { bbox, featureCollection } from "@turf/turf"
-import { LngLatBoundsLike, Marker } from "react-map-gl"
 
 import { midPoint } from "./utils"
 import { BaseMap } from "./BaseMap"
@@ -19,18 +21,19 @@ const lineColor = "#EAB308"
 const hoveredColor = "#fad57d"
 
 export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selectedSection }) => {
+  const router = useRouter()
   const [hovered, setHovered] = useState<number | null>(null)
 
   const selectableSections = selectedSection.subsubsections
 
-  const select = (id: number) => {
-    console.log("selected subsubsection:", id)
+  const select = async (id: number) => {
+    await router.push(Routes.ShowSubsubsectionPage({ subsubsectionId: id }))
   }
 
   const handleClick = async (e: mapboxgl.MapLayerMouseEvent | undefined) => {
     const id = e?.features?.[0]?.properties?.id
     if (!id) return
-    select(id)
+    await select(id)
   }
 
   const handleMouseEnter = (e: mapboxgl.MapLayerMouseEvent) =>
@@ -69,7 +72,7 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
         longitude={longitude}
         latitude={latitude}
         anchor="center"
-        onClick={() => select(sec.id)}
+        onClick={async () => await select(sec.id)}
       >
         <SubsubsectionMarker isInteractive label={`RF${index + 1}`} />
       </Marker>

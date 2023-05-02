@@ -10,6 +10,7 @@ import { quote } from "src/core/components/text"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import deleteSubsubsection from "src/subsubsections/mutations/deleteSubsubsection"
 import getSubsubsection from "src/subsubsections/queries/getSubsubsection"
+import { PageHeader } from "../../core/components/PageHeader"
 
 export const Subsubsection = () => {
   const router = useRouter()
@@ -24,11 +25,14 @@ export const Subsubsection = () => {
     }
   }
 
+  const title = `Planungsabschnitt "${subsubsection.title}" [${subsubsection.id}]`
+
   return (
     <>
-      <MetaTags noindex title={`Subsubsection ${quote(subsubsection.title)}`} />
+      <MetaTags noindex title={title} />
 
-      <h1>Subsubsection {quote(subsubsection.title)}</h1>
+      <PageHeader title={title} />
+
       <SuperAdminBox>
         <pre>{JSON.stringify(subsubsection, null, 2)}</pre>
       </SuperAdminBox>
