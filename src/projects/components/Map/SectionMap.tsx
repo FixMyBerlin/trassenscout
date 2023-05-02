@@ -115,7 +115,7 @@ export const SectionMap: React.FC<SectionMapProps> = ({
           )
         }
       >
-        <SubsectionMarker isInteractive={isInteractive} label={`T${index + 1}`} />
+        <SubsectionMarker isInteractive={isInteractive} label={`PA${index + 1}`} />
       </Marker>
     )
   })

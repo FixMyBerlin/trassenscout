@@ -120,7 +120,7 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({
           )
         }
       >
-        <SectionMarker isInteractive={isInteractive} number={index + 1} />
+        <SectionMarker isInteractive={isInteractive} label={`TS${index + 1}`} />
       </Marker>
     )
   })

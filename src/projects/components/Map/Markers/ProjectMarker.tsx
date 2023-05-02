@@ -5,13 +5,13 @@ type Props = {
   isInteractive?: boolean
 }
 
-export const SectionMarker: React.FC<Props> = ({ label, isInteractive }) => {
+export const ProjectMarker: React.FC<Props> = ({ label, isInteractive }) => {
   return (
     <div
       className={clsx(
         { "cursor-pointer": isInteractive },
-        `flex h-9 w-12
-        flex-none items-center justify-center rounded-lg
+        `flex h-10 w-10
+        flex-none items-center justify-center rounded-full
         border-2 border-yellow-500 bg-white pt-0.5
         font-sans text-xl font-bold leading-none text-gray-900`
       )}

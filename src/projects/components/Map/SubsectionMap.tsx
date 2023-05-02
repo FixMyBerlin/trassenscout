@@ -74,7 +74,7 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
         anchor="center"
         onClick={() => select(sec.id)}
       >
-        <SubsubsectionMarker isInteractive label={`P${index + 1}`} />
+        <SubsubsectionMarker isInteractive label={`RF${index + 1}`} />
       </Marker>
     )
   })

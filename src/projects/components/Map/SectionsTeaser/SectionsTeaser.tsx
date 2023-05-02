@@ -1,8 +1,7 @@
 import { Routes, useParam } from "@blitzjs/next"
 import { Section } from "@prisma/client"
-import clsx from "clsx"
 import React from "react"
-import { blueButtonStyles, Link } from "src/core/components/links"
+import { Link } from "src/core/components/links"
 import { SectionMarker } from "../Markers"
 
 type Props = {
@@ -20,7 +19,7 @@ export const SectionsTeaser: React.FC<Props> = ({ section }) => {
       })}
       classNameOverwrites="flex items-center justify-start gap-4 rounded-md border border-gray-200 bg-white p-5 shadow-md hover:bg-gray-100 hover:text-blue-500"
     >
-      <SectionMarker number={section.index} />
+      <SectionMarker label={`TS${section.index}`} />
       <h3 className="flex items-center pt-0.5 text-xl font-bold leading-tight">{section.title}</h3>
     </Link>
   )
