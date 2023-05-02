@@ -113,12 +113,15 @@ export const SectionDashboardWithQuery = () => {
           Bearbeiten
         </Link>
         <br />
+
         <Link
           href={Routes.NewSubsectionPage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}
         >
           Neuer Abschnitt
         </Link>
         <br />
+
+        {/* Stakeholder */}
         {sectionSlug && (
           <>
             <Link
@@ -140,6 +143,8 @@ export const SectionDashboardWithQuery = () => {
             </Link>
           </>
         )}
+
+        {/* Abschnitte (Subsections bearbeiten) */}
         <ul>
           {subsections &&
             subsections.map((subsection) => {
@@ -158,6 +163,7 @@ export const SectionDashboardWithQuery = () => {
               )
             })}
         </ul>
+
       </section>
 
       <SuperAdminBox>
