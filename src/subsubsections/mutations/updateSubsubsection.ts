@@ -2,21 +2,22 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
 
-const UpdateSubsubsection = z.object({
-  id: z.number(),
-  name: z.string(),
-})
+import { authorizeProjectAdmin } from "src/authorization"
+// import getSubsubsectionProjectId from "../queries/getSubsubsectionProjectId"
+import { SubsubsectionSchema } from "../schema"
+
+const UpdateSubsubsectionSchema = SubsubsectionSchema.merge(
+  z.object({
+    id: z.number(),
+  })
+)
 
 export default resolver.pipe(
-  resolver.zod(UpdateSubsubsection),
-  resolver.authorize(),
-  async ({ id, ...data }) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-    const subsubsection = await db.subsubsection.update({
+  resolver.zod(UpdateSubsubsectionSchema),
+  // authorizeProjectAdmin(getSubsubsectionProjectId),
+  async ({ id, ...data }) =>
+    await db.subsubsection.update({
       where: { id },
       data,
     })
-
-    return subsubsection
-  }
 )

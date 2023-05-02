@@ -9,6 +9,7 @@ import { Suspense } from "react"
 import { PageHeader } from "src/core/components/PageHeader"
 import { quote } from "src/core/components/text"
 import getSubsectionBySlugs from "src/subsections/queries/getSubsectionBySlugs"
+import { SubsubsectionSchema } from "src/subsubsections/schema"
 
 const NewSubsubsection = () => {
   const router = useRouter()
@@ -20,14 +21,18 @@ const NewSubsubsection = () => {
   const [subsection] = useQuery(getSubsectionBySlugs, {
     projectSlug: projectSlug!,
     sectionSlug: sectionSlug!,
-    slug: subsectionSlug!
+    slug: subsectionSlug!,
   })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
+    console.log("v", values)
     try {
-      const subsubsection = await createSubsubsectionMutation(values)
-      await router.push(Routes.ShowSubsubsectionPage({ subsubsectionId: subsubsection.id }))
+      const subsubsection = await createSubsubsectionMutation({
+        ...values,
+        subsectionId: subsection!.id,
+      })
+      await router.push(Routes.ShowSubsubsectionPage({ subsubsectionId: subsubsection!.id }))
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -40,14 +45,12 @@ const NewSubsubsection = () => {
 
       <PageHeader
         title="Teilplanung erstellen"
-        subtitle={`Für den Abschnitt ${quote(subsection.title)}`}
+        subtitle={`Für den Abschnitt ${quote(subsection!.title)}`}
       />
 
       <SubsubsectionForm
         submitText="Erstellen"
-        // TODO schema: See `__ModelIdParam__/edit.tsx` for detailed instruction.
-        // schema={SubsubsectionSchema}
-        // initialValues={{}} // Use only when custom initial values are needed
+        schema={SubsubsectionSchema.omit({ subsectionId: true })}
         onSubmit={handleSubmit}
       />
     </>

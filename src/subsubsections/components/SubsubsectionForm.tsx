@@ -1,41 +1,44 @@
-import { Form, FormProps } from "src/core/components/forms"
+import { Form, FormProps, LabeledTextareaField, LabeledTextField } from "src/core/components/forms"
 import { z } from "zod"
+// @ts-ignore
+import { GeometryValidation } from "./GeometryValidation"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
     <Form<S> {...props}>
-      {/*
-        <LabeledTextField type="text" name="name" label="Name" placeholder="Name" />
-
-        <LabeledTextareaField name="testTextarea" label="Test Textarea" placeholder="Placeholder" />
-
-        <LabeledCheckboxGroup
-          items={["item1", "item2", "item3"].map((item) => ({
-            name: `checkbox${item}help`,
-            label: `Test Checkbox ${item}`,
-            help: `Help text ${item}`,
-          }))}
-        />
-
-        <LabeledRadiobuttonGroup
-          items={["item1", "item2", "item3"].map((item) => ({
-            scope: "help",
-            name: `radio${item}help`,
-            label: `Test Radiobutton ${item}`,
-            help: `Help text ${item}`,
-          }))}
-        />
-
-        <LabeledSelect
-          name="testSelect"
-          label="Test Select"
-          options={[
-            ["foo", "Foo 1"],
-            ["bar", "Bar 1"],
-          ]}
-        />
-      */}
+      <LabeledTextField
+        type="text"
+        name="slug"
+        label="URL-Segment"
+        help="Änderungen am URL-Segement sorgen dafür, dass bisherige URLs nicht mehr funktionieren."
+        placeholder=""
+      />
+      <LabeledTextField type="text" name="title" label="Name" placeholder="" />
+      <LabeledTextareaField
+        name="description"
+        label="Beschreibung (Markdown)"
+        placeholder=""
+        optional
+      />
+      <LabeledTextareaField name="geometry" label="Geometry (LineString)" placeholder="" />
+      <GeometryValidation name="geometry" />
+      <LabeledTextField
+        type="text"
+        name="guidance"
+        label="Führungsform"
+        help="Führungsform"
+        placeholder=""
+      />
+      <LabeledTextField
+        type="text"
+        name="task"
+        label="Massnahmentyp"
+        help="Massnahmentyp"
+        placeholder=""
+      />
+      <LabeledTextField type="number" name="length" label="Länge (in km)" optional placeholder="" />
+      <LabeledTextField type="number" name="width" label="Breite (in m)" optional placeholder="" />
     </Form>
   )
 }

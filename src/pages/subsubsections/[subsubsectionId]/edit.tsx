@@ -4,11 +4,13 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
+import { PageHeader } from "../../../core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
 import updateSubsubsection from "src/subsubsections/mutations/updateSubsubsection"
 import getSubsubsection from "src/subsubsections/queries/getSubsubsection"
+import { SubsubsectionSchema } from "../../../subsubsections/schema"
 
 const EditSubsubsection = () => {
   const router = useRouter()
@@ -38,27 +40,22 @@ const EditSubsubsection = () => {
     }
   }
 
+  const title = `Teilplanung "${subsubsection.title}" bearbeiten`
   return (
     <>
-      <MetaTags noindex title={`Subsubsection ${subsubsection.id} bearbeiten`} />
-
-      <h1>Subsubsection {subsubsection.id} bearbeiten</h1>
-      <SuperAdminBox>
-        <pre>{JSON.stringify(subsubsection, null, 2)}</pre>
-      </SuperAdminBox>
+      <MetaTags noindex title={title} />
+      <PageHeader title={title} />
 
       <SubsubsectionForm
         submitText="Speichern"
-        // TODO use a zod schema for form validation
-        // 1. Move the schema from mutations/createSubsubsection.ts to `Subsubsection/schema.ts`
-        //   - Name `SubsubsectionSchema`
-        // 2. Import the zod schema here.
-        // 3. Update the mutations/updateSubsubsection.ts to
-        //   `const UpdateSubsubsectionSchema = SubsubsectionSchema.merge(z.object({id: z.number(),}))`
-        // schema={SubsubsectionSchema}
+        schema={SubsubsectionSchema}
         initialValues={subsubsection}
         onSubmit={handleSubmit}
       />
+
+      <SuperAdminBox>
+        <pre>{JSON.stringify(subsubsection, null, 2)}</pre>
+      </SuperAdminBox>
     </>
   )
 }
