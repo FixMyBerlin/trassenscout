@@ -1,16 +1,12 @@
-import db, { Subsection } from "../index"
+import db, { Prisma } from "../index"
 
 const seedSubsections = async () => {
-  const seeData: Omit<Subsection, "id" | "createdAt" | "updatedAt">[] = [
+  const seeData: Prisma.SubsectionUncheckedCreateInput[] = [
     // Section 1:
     {
       slug: "abschnitt-hansaviertel",
       title: "Abschnitt 1 Hansaviertel",
-      description: `*Lorem ipsum dolor sit amet*, consetetur sadipscing elitr.
-
-Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr.
-
-Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.`,
+      description: `Das Hansaviertel ist ein Stadtviertel in Berlin, das in den 1950er Jahren nach Plänen bekannter Architekten wie Walter Gropius, Alvar Aalto und Oscar Niemeyer erbaut wurde. Es liegt zwischen dem Berliner Tiergarten und dem Spreeufer und wurde als Modellprojekt für modernes, funktionales Wohnen konzipiert.`,
       geometry: JSON.stringify([
         [13.363361116374904, 52.519430986022115],
         [13.357157800454104, 52.517204842057566],
@@ -26,6 +22,52 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       ]),
       managerId: 1,
       sectionId: 1,
+      subsubsections: {
+        create: [
+          {
+            slug: "teilplanung-1",
+            title: "Teilplanung 1",
+            description: "Das Hansaviertel ist ein Stadtteil im Zentrum von Berlin - Teilplanung 1",
+            geometry: JSON.stringify([
+              [13.363361116374904, 52.519430986022115],
+              [13.357157800454104, 52.517204842057566],
+            ]),
+            guidance: "* guidance 1 *",
+            task: "* task 1 *",
+            length: 0.487,
+            width: 1,
+          },
+          {
+            slug: "teilplanung-2",
+            title: "Teilplanung 2",
+            description: "Das Hansaviertel ist ein Stadtteil im Zentrum von Berlin - Teilplanung 2",
+            geometry: JSON.stringify([
+              [13.350954484534668, 52.51914062581497],
+              [13.345069287379602, 52.52262482165125],
+              [13.33966126837197, 52.52233448255228],
+            ]),
+            guidance: "* guidance 2 *",
+            task: "* task 2 *",
+            length: 0.922,
+            width: 2,
+          },
+          {
+            slug: "teilplanung-3",
+            title: "Teilplanung 3",
+            description: "Das Hansaviertel ist ein Stadtteil im Zentrum von Berlin - Teilplanung 3",
+            geometry: JSON.stringify([
+              [13.334253249364252, 52.51701125899095],
+              [13.329481467886865, 52.5184631112015],
+              [13.327890874060671, 52.523108715884604],
+              [13.322641914435906, 52.5248506909908],
+            ]),
+            guidance: "* guidance 3 *",
+            task: "* task 3 *",
+            length: 1.293,
+            width: 3,
+          },
+        ],
+      },
     },
     {
       slug: "abschnitt-hbf",
