@@ -1,16 +1,27 @@
-import { Routes } from "@blitzjs/next"
+import { Routes, useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
-import { useMutation } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { Spinner } from "src/core/components/Spinner"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import createSubsubsection from "src/subsubsections/mutations/createSubsubsection"
 import { SubsubsectionForm, FORM_ERROR } from "src/subsubsections/components/SubsubsectionForm"
-import { Link } from "src/core/components/links"
 import { Suspense } from "react"
+import { PageHeader } from "src/core/components/PageHeader"
+import { quote } from "src/core/components/text"
+import getSubsectionBySlugs from "src/subsections/queries/getSubsectionBySlugs"
 
 const NewSubsubsection = () => {
   const router = useRouter()
   const [createSubsubsectionMutation] = useMutation(createSubsubsection)
+
+  const projectSlug = useParam("projectSlug", "string")
+  const sectionSlug = useParam("sectionSlug", "string")
+  const subsectionSlug = useParam("subsectionSlug", "string")
+  const [subsection] = useQuery(getSubsectionBySlugs, {
+    projectSlug: projectSlug!,
+    sectionSlug: sectionSlug!,
+    slug: subsectionSlug!
+  })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -25,9 +36,12 @@ const NewSubsubsection = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neuen Subsubsection erstellen" />
+      <MetaTags noindex title="Neue Teilplanung erstellen" />
 
-      <h1>Neuen Subsubsection erstellen</h1>
+      <PageHeader
+        title="Teilplanung erstellen"
+        subtitle={`Für den Abschnitt ${quote(subsection.title)}`}
+      />
 
       <SubsubsectionForm
         submitText="Erstellen"
@@ -42,15 +56,11 @@ const NewSubsubsection = () => {
 
 const NewSubsubsectionPage = () => {
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<Spinner page />}>
         <NewSubsubsection />
       </Suspense>
-
-      <p>
-        <Link href={Routes.SubsubsectionsPage()}>Alle Subsubsections</Link>
-      </p>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 
