@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { useRouter } from "next/router"
-import { Routes } from "@blitzjs/next"
+import { Routes, useParam } from "@blitzjs/next"
 import { LngLatBoundsLike, Marker } from "react-map-gl"
 import { lineString } from "@turf/helpers"
 import { bbox, featureCollection } from "@turf/turf"
@@ -9,7 +9,7 @@ import { midPoint } from "./utils"
 import { BaseMap } from "./BaseMap"
 import { SubsubsectionMarker } from "./Markers"
 import { ProjectMapSections } from "./ProjectMap"
-import { Subsection } from "src/pages/[projectSlug]/[sectionSlug]/[subsectionSlug]"
+import { Subsection } from "src/pages/[projectSlug]/[sectionSlug]/[...subsectionPath]"
 
 type SubsectionMapProps = {
   sections: ProjectMapSections
@@ -21,19 +21,32 @@ const lineColor = "#EAB308"
 const hoveredColor = "#fad57d"
 
 export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selectedSection }) => {
+  const projectSlug = useParam("projectSlug", "string")
+  const sectionSlug = useParam("sectionSlug", "string")
+  const [subsectionSlug] = useParam("subsectionPath") as string[]
+
   const router = useRouter()
   const [hovered, setHovered] = useState<number | null>(null)
 
   const selectableSections = selectedSection.subsubsections.filter((sec) => sec.geometry !== null)
 
-  const select = async (id: number) => {
-    await router.push(Routes.ShowSubsubsectionPage({ subsubsectionId: id }))
+  const handleSelect = (slug: string | null) => {
+    void router.push(
+      Routes.SubsectionDashboardPage({
+        projectSlug: projectSlug!,
+        sectionSlug: sectionSlug!,
+        subsectionPath: slug ? [subsectionSlug!, slug] : [subsectionSlug!]
+      }),
+      undefined,
+      { scroll: false }
+    )
   }
 
-  const handleClick = async (e: mapboxgl.MapLayerMouseEvent | undefined) => {
-    const id = e?.features?.[0]?.properties?.id
-    if (!id) return
-    await select(id)
+  const handleClick = async (e: mapboxgl.MapLayerMouseEvent) => {
+    if (!e.features?.length) handleSelect(null)
+    const slug = e.features?.[0]?.properties?.slug
+    if (!slug) handleSelect(null)
+    handleSelect(slug)
   }
 
   const handleMouseEnter = (e: mapboxgl.MapLayerMouseEvent) =>
@@ -61,6 +74,7 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
     selectableSections.map((sec) =>
       lineString(sec.geometry, {
         id: sec.id,
+        slug: sec.slug,
         color: sec.id === hovered ? hoveredColor : lineColor,
       })
     )
@@ -81,7 +95,7 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
         longitude={longitude}
         latitude={latitude}
         anchor="center"
-        onClick={async () => await select(sec.id)}
+        onClick={async () => handleSelect(sec.slug)}
       >
         <SubsubsectionMarker label={`RF${index + 1}`} />
       </Marker>

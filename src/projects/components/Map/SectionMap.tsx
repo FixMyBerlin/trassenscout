@@ -32,7 +32,7 @@ export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSectio
       Routes.SubsectionDashboardPage({
         projectSlug: projectSlug!,
         sectionSlug: sectionSlug!,
-        subsectionSlug: subsectionSlug,
+        subsectionPath: [subsectionSlug],
       })
     )
 

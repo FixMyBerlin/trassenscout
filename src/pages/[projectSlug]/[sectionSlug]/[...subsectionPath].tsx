@@ -31,7 +31,8 @@ export interface Subsection extends Omit<SubsectionClient, "geometry"> {
 export const SubsectionDashboard = () => {
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
-  const subsectionSlug = useParam("subsectionSlug", "string")
+  const [subsectionSlug, subsubsectionSlug] = useParam("subsectionPath") as string[]
+
   const [subsectionOrg] = useQuery(getSubsectionBySlugs, {
     projectSlug: projectSlug!,
     sectionSlug: sectionSlug!,
@@ -60,6 +61,9 @@ export const SubsectionDashboard = () => {
     subsubsection.geometry = parseGeometry(subsubsection)
   })
 
+  const subsubsection =
+    subsubsectionSlug && subsection.subsubsections.find((s) => s.slug === subsubsectionSlug)
+
   return (
     <>
       <MetaTags noindex title={subsection!.title} />
@@ -76,6 +80,8 @@ export const SubsectionDashboard = () => {
           <strong>Teilstreckenlänge:</strong>{" "}
         </p>
       </div>
+
+      <div>{subsubsection ? `${subsubsection.id} ${subsubsection.slug}` : "---y"}</div>
 
       <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
         <SubsectionMap sections={sections as ProjectMapSections} selectedSection={subsection} />
@@ -131,6 +137,9 @@ export const SubsectionDashboard = () => {
 }
 
 const SubsectionDashboardPage: BlitzPage = () => {
+  const [subsectionSlug] = (useParam("subsectionPath") as string[]) || []
+  if (subsectionSlug === undefined) return null
+
   return (
     <LayoutRs>
       <Suspense fallback={<Spinner page />}>
