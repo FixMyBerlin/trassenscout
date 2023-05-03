@@ -44,11 +44,20 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
   const [minX, minY, maxX, maxY] = bbox(lineString(selectedSection.geometry))
   const sectionBounds: LngLatBoundsLike = [minX, minY, maxX, maxY]
 
-  const features = featureCollection([
-    lineString(selectedSection.geometry, { color: unselectableLineColor }),
-  ])
+  const lines = featureCollection(
+    sections
+      .map((section) =>
+        section.subsections.map((subsection) =>
+          lineString(JSON.parse(subsection.geometry), {
+            color: unselectableLineColor,
+            opacity: subsection.id === selectedSection.id ? 1 : 0.5,
+          })
+        )
+      )
+      .flat()
+  )
 
-  const selectableFeatures = featureCollection(
+  const selectableLines = featureCollection(
     selectableSections.map((sec) =>
       lineString(sec.geometry, {
         id: sec.id,
@@ -65,7 +74,7 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
   const dotsFeature = dots ? lineString(dots) : null
 
   const markers = selectableSections.map((sec, index) => {
-    const [longitude, latitude] = midPoint(sec.geometry).geometry.coordinates
+    const [longitude, latitude] = midPoint(sec.geometry)
     return (
       <Marker
         key={sec.id}
@@ -74,7 +83,7 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
         anchor="center"
         onClick={async () => await select(sec.id)}
       >
-        <SubsubsectionMarker isInteractive label={`RF${index + 1}`} />
+        <SubsubsectionMarker label={`RF${index + 1}`} />
       </Marker>
     )
   })
@@ -89,9 +98,8 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      isInteractive={true}
-      features={features}
-      selectableFeatures={selectableFeatures}
+      lines={lines}
+      selectableLines={selectableLines}
       // @ts-ignore
       dots={dotsFeature}
     >

@@ -19,13 +19,12 @@ import StakeholdernoteList from "src/stakeholdernotes/components/Stakeholdernote
 import { StakeholderSectionStatus } from "src/stakeholdernotes/components/StakeholderSectionStatus"
 import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
 import getSubsections from "src/subsections/queries/getSubsections"
-import getUser from "src/users/queries/getUser"
 
 export const SectionDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
+
   const [section] = useQuery(getSection, { sectionSlug, projectSlug }) // TODO optimize to allow projectId as well to get rid of one query in case we can
-  const [user] = useQuery(getUser, section.managerId)
   const [{ files }] = useQuery(getFiles, { projectSlug: projectSlug! })
   const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, {
     sectionSlug: sectionSlug!,
@@ -70,7 +69,6 @@ export const SectionDashboardWithQuery = () => {
             sections={sectionsWithSubsections}
             // @ts-ignore
             selectedSection={selectedSectionWithSubsections}
-            isInteractive={true}
           />
           {/* <SectionPanel section={section} /> */}
         </div>

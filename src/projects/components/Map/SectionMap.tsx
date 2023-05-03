@@ -1,119 +1,92 @@
 import React, { useState } from "react"
 import { useRouter } from "next/router"
 import { Routes, useParam } from "@blitzjs/next"
-import { Section } from "@prisma/client"
 import { lineString } from "@turf/helpers"
-import { Layer, Marker, Source } from "react-map-gl"
+import { Marker } from "react-map-gl"
 
 import { midPoint, sectionsBbox } from "./utils"
 import { BaseMap } from "./BaseMap"
 import { SubsectionMarker } from "./Markers"
 import { ProjectMapSections } from "./ProjectMap"
+import { featureCollection } from "@turf/turf"
 
 type SectionMapProps = {
   children?: React.ReactNode
-  isInteractive: boolean
   sections: ProjectMapSections
   selectedSection: ProjectMapSections[number]
 }
 
-export const SectionMap: React.FC<SectionMapProps> = ({
-  sections,
-  isInteractive,
-  selectedSection,
-}) => {
+const unselectableLineColor = "#979797"
+const lineColor = "#EAB308"
+const hoveredColor = "#fad57d"
+
+export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSection }) => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
+  const sectionSlug = useParam("sectionSlug", "string")
 
-  const [hoveredSectionIds, setHoveredSectionIds] = useState<number[]>([])
+  const [hovered, setHovered] = useState<number | null>(null)
 
-  const handleClick = async (e: mapboxgl.MapLayerMouseEvent) => {
-    if (!isInteractive) return
-    const { sectionSlug, subsectionSlug } = e.features![0]!.properties!
-    await router.push(
+  const handleSelect = (subsectionSlug: string) =>
+    router.push(
       Routes.SubsectionDashboardPage({
         projectSlug: projectSlug!,
-        sectionSlug: sectionSlug,
+        sectionSlug: sectionSlug!,
         subsectionSlug: subsectionSlug,
       })
     )
+
+  const handleClick = async (e: mapboxgl.MapLayerMouseEvent) => {
+    const { subsectionSlug } = e.features![0]!.properties!
+    await handleSelect(subsectionSlug)
   }
 
-  const handleMouseEnter = (e: mapboxgl.MapLayerMouseEvent) => {
-    if (!isInteractive) return
-    setHoveredSectionIds(e.features!.map((f) => f?.properties?.sectionId))
-  }
+  const handleMouseEnter = (e: mapboxgl.MapLayerMouseEvent) =>
+    setHovered(e?.features?.[0]?.properties?.id || null)
 
-  const handleMouseLeave = () => {
-    if (!isInteractive) return
-    setHoveredSectionIds([])
-  }
-
-  const interactiveLayerIds = sections
-    .map((s) => s.subsections.map((ss) => `layer_${ss.id}`))
-    .flat()
+  const handleMouseLeave = () => setHovered(null)
 
   const sectionBounds = sectionsBbox(selectedSection ? [selectedSection] : sections)
   if (!sectionBounds) return null
 
-  // Layer style for segments depending on selected section and segment
-  const getLineColor = ({ section }: { section: Section }) => {
-    let lineColor = "#979797"
-    if (hoveredSectionIds.includes(section.id)) lineColor = "#EAB308"
-    if (selectedSection && section.id === selectedSection.id) lineColor = "#EAB308"
-    return lineColor
-  }
-
   const dots = selectedSection.subsections.map((subsection) => JSON.parse(subsection.geometry)[0])
   dots.push(JSON.parse(selectedSection.subsections.at(-1)!.geometry).at(-1))
 
-  const lines = sections.map((section) =>
-    section.subsections.map((subsection) => (
-      <>
-        <Source
-          key={subsection.id}
-          type="geojson"
-          data={lineString(JSON.parse(subsection.geometry), {
-            sectionId: section.id,
-            sectionSlug: section.slug,
-            subsectionId: subsection.id,
-            subsectionSlug: subsection.slug,
-          })}
-        >
-          <Layer
-            id={`layer_${subsection.id}`}
-            type="line"
-            paint={{
-              "line-width": 7,
-              "line-color": getLineColor({ section }),
-              "line-color-transition": { duration: 0 },
-            }}
-          />
-        </Source>
-      </>
-    ))
+  const lines = featureCollection(
+    sections
+      .filter((section) => section.id !== selectedSection.id)
+      .map((section) =>
+        section.subsections.map((subsection) =>
+          lineString(JSON.parse(subsection.geometry), {
+            color: unselectableLineColor,
+            opacity: 0.5,
+          })
+        )
+      )
+      .flat()
+  )
+
+  const selectableLines = featureCollection(
+    selectedSection.subsections.map((subsection) =>
+      lineString(JSON.parse(subsection.geometry), {
+        id: subsection.id,
+        subsectionSlug: subsection.slug,
+        color: subsection.id === hovered ? hoveredColor : lineColor,
+      })
+    )
   )
 
   const markers = selectedSection.subsections.map((subsection, index) => {
-    const [longitude, latitude] = midPoint(JSON.parse(subsection.geometry)).geometry.coordinates
+    const [longitude, latitude] = midPoint(JSON.parse(subsection.geometry))
     return (
       <Marker
         key={subsection.id}
         longitude={longitude}
         latitude={latitude}
         anchor="center"
-        onClick={() =>
-          isInteractive &&
-          router.push(
-            Routes.SubsectionDashboardPage({
-              projectSlug: projectSlug!,
-              sectionSlug: selectedSection.slug,
-              subsectionSlug: subsection.slug,
-            })
-          )
-        }
+        onClick={() => handleSelect(subsection.slug)}
       >
-        <SubsectionMarker isInteractive={isInteractive} label={`PA${index + 1}`} />
+        <SubsectionMarker label={`PA${index + 1}`} />
       </Marker>
     )
   })
@@ -128,12 +101,11 @@ export const SectionMap: React.FC<SectionMapProps> = ({
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      isInteractive={isInteractive}
-      interactiveLayerIds={interactiveLayerIds}
+      lines={lines}
+      selectableLines={selectableLines}
       // @ts-ignore
       dots={lineString(dots)}
     >
-      {lines}
       {markers}
     </BaseMap>
   )

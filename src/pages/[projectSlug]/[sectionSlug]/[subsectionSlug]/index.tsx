@@ -11,7 +11,9 @@ import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { SubsectionMap } from "src/projects/components/Map/SubsectionMap"
+import getSections from "src/sections/queries/getSections"
 import getSubsectionBySlugs from "src/subsections/queries/getSubsectionBySlugs"
+import { ProjectMapSections } from "src/projects/components/Map"
 import {
   Subsection as SubsectionClient,
   Subsubsection as SubsubsectionClient,
@@ -35,6 +37,11 @@ export const SubsectionDashboard = () => {
     sectionSlug: sectionSlug!,
     slug: subsectionSlug!,
     includeSubsubsections: true,
+  })
+  const [{ sections }] = useQuery(getSections, {
+    where: { project: { slug: projectSlug! } },
+    orderBy: { index: "asc" },
+    include: { subsections: true },
   })
 
   const parseGeometry = (objectWithGeometry: Record<any, any> | { geometry: Position[] }) => {
@@ -71,7 +78,7 @@ export const SubsectionDashboard = () => {
       </div>
 
       <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
-        <SubsectionMap sections={[]} selectedSection={subsection} />
+        <SubsectionMap sections={sections as ProjectMapSections} selectedSection={subsection} />
       </div>
 
       {/* Admin Actions Section - noch ungestyled */}

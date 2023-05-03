@@ -7,9 +7,8 @@ import { FeatureCollection } from "@turf/helpers"
 import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher"
 
 export interface BaseMapProps extends MapProps {
-  isInteractive?: boolean
-  features?: FeatureCollection
-  selectableFeatures?: FeatureCollection
+  lines?: FeatureCollection
+  selectableLines?: FeatureCollection
   dots?: FeatureCollection
 }
 
@@ -20,13 +19,11 @@ const selectableLayerId = "layer_selectable_features"
 
 export const BaseMap: React.FC<BaseMapProps> = ({
   children,
-  isInteractive,
   onMouseEnter,
   onMouseLeave,
-  features,
-  selectableFeatures,
+  lines,
+  selectableLines,
   dots,
-  interactiveLayerIds,
   ...mapProps
 }) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
@@ -37,11 +34,11 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   const [cursorStyle, setCursorStyle] = useState("grab")
   const handleMouseEnter = (e: mapboxgl.MapLayerMouseEvent) => {
     if (onMouseEnter) onMouseEnter(e)
-    if (isInteractive) setCursorStyle("pointer")
+    setCursorStyle("pointer")
   }
   const handleMouseLeave = (e: mapboxgl.MapLayerMouseEvent) => {
     if (onMouseLeave) onMouseLeave(e)
-    if (isInteractive) setCursorStyle("grab")
+    setCursorStyle("grab")
   }
 
   const dotSource = dots ? (
@@ -51,33 +48,32 @@ export const BaseMap: React.FC<BaseMapProps> = ({
     </Source>
   ) : null
 
-  const featuresSource = features ? (
+  const featuresSource = lines ? (
     // @ts-ignore
-    <Source key="lines" type="geojson" data={features}>
+    <Source key="lines" type="geojson" data={lines}>
       <Layer
         type="line"
         paint={{
           "line-width": 7,
-          "line-color": ["get", "color"],
+          "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
           "line-color-transition": { duration: 0 },
+          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
         }}
       />
     </Source>
   ) : null
 
-  let allInteractiveLayerIds: string[] = []
-  if (interactiveLayerIds) allInteractiveLayerIds = [...interactiveLayerIds]
-  if (selectableFeatures) allInteractiveLayerIds = [...allInteractiveLayerIds, selectableLayerId]
-  const selectableFeaturesSource = selectableFeatures ? (
+  const selectableFeaturesSource = selectableLines ? (
     // @ts-ignore
-    <Source key="selectable_lines" type="geojson" data={selectableFeatures}>
+    <Source key="selectable_lines" type="geojson" data={selectableLines}>
       <Layer
         id={selectableLayerId}
         type="line"
         paint={{
           "line-width": 7,
-          "line-color": ["get", "color"],
+          "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
           "line-color-transition": { duration: 0 },
+          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
         }}
       />
     </Source>
@@ -88,13 +84,14 @@ export const BaseMap: React.FC<BaseMapProps> = ({
       <div className="relative h-full w-full">
         {/* @ts-ignore */}
         <Map
+          reuseMaps
           mapLib={maplibregl}
           mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
           scrollZoom={false}
           cursor={cursorStyle}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          interactiveLayerIds={allInteractiveLayerIds}
+          interactiveLayerIds={selectableLines ? [selectableLayerId] : undefined}
           {...mapProps}
         >
           <NavigationControl showCompass={false} />

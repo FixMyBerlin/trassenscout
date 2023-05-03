@@ -67,7 +67,7 @@ export const ProjectDashboardWithQuery = () => {
       {/* Karte mit Daten der Abschnitte/subsections und Teaser Teilstrecke/sections */}
       {/* {Boolean(sections && sections[0]?.subsections?.length) && ( */}
       <div className="mt-12">
-        <ProjectMap sections={sections as ProjectMapSections} isInteractive={true} />
+        <ProjectMap sections={sections as ProjectMapSections} />
       </div>
       {/* )} */}
       {Boolean(sections.length) && <SectionsTeasers sections={sections} />}
