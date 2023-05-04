@@ -16,16 +16,10 @@ import type { ProjectMapSections } from "src/projects/components/Map/ProjectMap"
 import { SectionsTeasers } from "src/projects/components/Map/SectionsTeaser/SectionsTeasers"
 import getProject from "src/projects/queries/getProject"
 import getSections from "src/sections/queries/getSections"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import getUser from "src/users/queries/getUser"
-import { getFullname } from "src/users/utils"
 
 export const ProjectDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
-  const currentUser = useCurrentUser()
-  const userName = getFullname(currentUser!)
   const [project] = useQuery(getProject, { slug: projectSlug })
-  const [user] = useQuery(getUser, project.managerId)
   const [{ sections }] = useQuery(getSections, {
     where: { project: { slug: projectSlug! } },
     orderBy: { index: "asc" },
