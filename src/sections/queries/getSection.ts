@@ -1,8 +1,8 @@
 import { resolver } from "@blitzjs/rpc"
+import { NotFoundError } from "blitz"
 import db from "db"
-import { z } from "zod"
-
 import { authorizeProjectAdmin } from "src/authorization"
+import { z } from "zod"
 
 const GetSectionSchema = z.object({
   // This accepts type of undefined, but is required at runtime
@@ -21,8 +21,11 @@ const getProjectId = async (input: Record<string, any>): Promise<number> =>
 export default resolver.pipe(
   resolver.zod(GetSectionSchema),
   authorizeProjectAdmin(getProjectId),
-  async ({ sectionSlug, projectSlug }) =>
-    await db.section.findFirstOrThrow({
+  async ({ sectionSlug, projectSlug }) => {
+    const section = await db.section.findFirst({
       where: { slug: sectionSlug, project: { slug: projectSlug } },
     })
+    if (!section) throw new NotFoundError()
+    return section
+  }
 )
