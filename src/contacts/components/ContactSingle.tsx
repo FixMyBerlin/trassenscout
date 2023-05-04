@@ -4,7 +4,7 @@ import React from "react"
 import { LinkMail, LinkTel } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { getFullname } from "src/users/utils"
-import { ContactListWrapper } from "./ContactListWrapper"
+import { TableWrapper } from "../../core/components/Table/TableWrapper"
 
 type Props = {
   contact: Contact
@@ -14,7 +14,7 @@ export const ContactSingle: React.FC<Props> = ({ contact }) => {
   const projectSlug = useParam("projectSlug", "string")
 
   return (
-    <ContactListWrapper>
+    <TableWrapper>
       <table className="min-w-full divide-y divide-gray-300">
         <thead className="bg-gray-50">
           <tr>
@@ -58,6 +58,6 @@ export const ContactSingle: React.FC<Props> = ({ contact }) => {
           <Markdown markdown={contact.note}></Markdown>
         </div>
       )}
-    </ContactListWrapper>
+    </TableWrapper>
   )
 }

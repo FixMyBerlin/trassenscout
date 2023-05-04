@@ -12,7 +12,7 @@ import getProject from "src/projects/queries/getProject"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getFullname } from "src/users/utils"
-import { ContactListWrapper } from "./ContactListWrapper"
+import { TableWrapper } from "../../core/components/Table/TableWrapper"
 
 type Props = {
   contacts: Contact[]
@@ -48,7 +48,7 @@ export const ContactList: React.FC<Props> = ({ contacts }) => {
 
   return (
     <SurveyForm onSubmit={handleSubmit} onChangeValues={handleChange}>
-      <ContactListWrapper>
+      <TableWrapper>
         <table className="min-w-full divide-y divide-gray-300">
           <thead className="bg-gray-50">
             <tr>
@@ -126,7 +126,7 @@ export const ContactList: React.FC<Props> = ({ contacts }) => {
             ))}
           </tbody>
         </table>
-      </ContactListWrapper>
+      </TableWrapper>
       <button disabled={!isChecked} className={whiteButtonStyles} type="submit">
         Mail senden
       </button>

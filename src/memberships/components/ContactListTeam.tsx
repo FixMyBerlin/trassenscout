@@ -1,5 +1,5 @@
 import React from "react"
-import { ContactListWrapper } from "src/contacts/components/ContactListWrapper"
+import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { LinkMail, LinkTel } from "src/core/components/links"
 import { getFullname } from "src/users/utils"
 
@@ -15,7 +15,7 @@ type Props = {
 
 export const ContactListTeam: React.FC<Props> = ({ contacts }) => {
   return (
-    <ContactListWrapper>
+    <TableWrapper>
       <table className="min-w-full divide-y divide-gray-300">
         <thead className="bg-gray-50">
           <tr>
@@ -53,6 +53,6 @@ export const ContactListTeam: React.FC<Props> = ({ contacts }) => {
           ))}
         </tbody>
       </table>
-    </ContactListWrapper>
+    </TableWrapper>
   )
 }
