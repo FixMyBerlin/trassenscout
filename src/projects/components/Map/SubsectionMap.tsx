@@ -1,10 +1,11 @@
 import React, { useState } from "react"
 import { useRouter } from "next/router"
-import { Routes, useParam } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { LngLatBoundsLike, Marker } from "react-map-gl"
 import { lineString } from "@turf/helpers"
 import { bbox, featureCollection } from "@turf/turf"
 
+import { useSlugs } from "src/core/hooks"
 import { midPoint } from "./utils"
 import { BaseMap } from "./BaseMap"
 import { SubsubsectionMarker } from "./Markers"
@@ -21,9 +22,7 @@ const lineColor = "#EAB308"
 const hoveredColor = "#fad57d"
 
 export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selectedSection }) => {
-  const projectSlug = useParam("projectSlug", "string")
-  const sectionSlug = useParam("sectionSlug", "string")
-  const [subsectionSlug] = useParam("subsectionPath") as string[]
+  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
 
   const router = useRouter()
   const [hovered, setHovered] = useState<number | null>(null)

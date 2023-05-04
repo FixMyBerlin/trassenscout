@@ -1,8 +1,9 @@
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { Position } from "@turf/helpers"
 
+import { useSlugs } from "src/core/hooks"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
@@ -29,9 +30,7 @@ export interface Subsection extends Omit<SubsectionClient, "geometry"> {
 }
 
 export const SubsectionDashboard = () => {
-  const projectSlug = useParam("projectSlug", "string")
-  const sectionSlug = useParam("sectionSlug", "string")
-  const [subsectionSlug, subsubsectionSlug] = useParam("subsectionPath") as string[]
+  const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
   const [subsectionOrg] = useQuery(getSubsectionBySlugs, {
     projectSlug: projectSlug!,
@@ -137,7 +136,7 @@ export const SubsectionDashboard = () => {
 }
 
 const SubsectionDashboardPage: BlitzPage = () => {
-  const [subsectionSlug] = (useParam("subsectionPath") as string[]) || []
+  const { subsectionSlug } = useSlugs()
   if (subsectionSlug === undefined) return null
 
   return (
