@@ -1,3 +1,4 @@
+import { useRouter } from "next/router"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
@@ -15,6 +16,7 @@ import { SubsectionMap } from "src/projects/components/Map/SubsectionMap"
 import getSections from "src/sections/queries/getSections"
 import getSubsectionBySlugs from "src/subsections/queries/getSubsectionBySlugs"
 import { ProjectMapSections } from "src/projects/components/Map"
+import { Sidebar } from "src/projects/components/Map/Sidebar"
 import {
   Subsection as SubsectionClient,
   Subsubsection as SubsubsectionClient,
@@ -30,6 +32,8 @@ export interface Subsection extends Omit<SubsectionClient, "geometry"> {
 }
 
 export const SubsectionDashboard = () => {
+  const router = useRouter()
+
   const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
   const [subsectionOrg] = useQuery(getSubsectionBySlugs, {
@@ -80,10 +84,25 @@ export const SubsectionDashboard = () => {
         </p>
       </div>
 
-      <div>{subsubsection ? `${subsubsection.id} ${subsubsection.slug}` : "---y"}</div>
-
-      <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
+      <div className="relative mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
         <SubsectionMap sections={sections as ProjectMapSections} selectedSection={subsection} />
+        {subsubsection ? (
+          <Sidebar
+            className="absolute right-0 top-0 h-full w-1/3 overflow-auto border-2 border-black bg-white"
+            subsubsection={subsubsection}
+            onClose={() => {
+              void router.push(
+                Routes.SubsectionDashboardPage({
+                  projectSlug: projectSlug!,
+                  sectionSlug: sectionSlug!,
+                  subsectionPath: [subsectionSlug!],
+                }),
+                undefined,
+                { scroll: false }
+              )
+            }}
+          ></Sidebar>
+        ) : null}
       </div>
 
       {/* Admin Actions Section - noch ungestyled */}
