@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { useRouter } from "next/router"
 import { Routes } from "@blitzjs/next"
-import { LngLatBoundsLike, Marker } from "react-map-gl"
+import { LngLatBoundsLike, MapLayerMouseEvent, Marker } from "react-map-gl"
 import { lineString } from "@turf/helpers"
 import { bbox, featureCollection } from "@turf/turf"
 
@@ -25,7 +25,6 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
   const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
 
   const router = useRouter()
-  const [hovered, setHovered] = useState<number | null>(null)
 
   const selectableSections = selectedSection.subsubsections.filter((sec) => sec.geometry !== null)
 
@@ -34,23 +33,18 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
       Routes.SubsectionDashboardPage({
         projectSlug: projectSlug!,
         sectionSlug: sectionSlug!,
-        subsectionPath: slug ? [subsectionSlug!, slug] : [subsectionSlug!]
+        subsectionPath: slug ? [subsectionSlug!, slug] : [subsectionSlug!],
       }),
       undefined,
       { scroll: false }
     )
   }
 
-  const handleClick = async (e: mapboxgl.MapLayerMouseEvent) => {
-    if (!e.features?.length) handleSelect(null)
-    const slug = e.features?.[0]?.properties?.slug
-    if (!slug) handleSelect(null)
-    handleSelect(slug)
-  }
-
-  const handleMouseEnter = (e: mapboxgl.MapLayerMouseEvent) =>
-    setHovered(e?.features?.[0]?.properties?.id || null)
-
+  const [hovered, setHovered] = useState<string | number | null>(null)
+  const getId = (e: MapLayerMouseEvent | undefined) => e?.features?.[0]?.properties?.id || null
+  const handleClick = async (e: MapLayerMouseEvent | undefined) =>
+    getId(e) && handleSelect(getId(e))
+  const handleMouseEnter = (e: MapLayerMouseEvent | undefined) => setHovered(getId(e))
   const handleMouseLeave = () => setHovered(null)
 
   const [minX, minY, maxX, maxY] = bbox(lineString(selectedSection.geometry))
@@ -72,9 +66,8 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
   const selectableLines = featureCollection(
     selectableSections.map((sec) =>
       lineString(sec.geometry, {
-        id: sec.id,
-        slug: sec.slug,
-        color: sec.id === hovered ? hoveredColor : lineColor,
+        id: sec.slug,
+        color: sec.slug === hovered ? hoveredColor : lineColor,
       })
     )
   )
@@ -96,7 +89,11 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
         anchor="center"
         onClick={async () => handleSelect(sec.slug)}
       >
-        <SubsubsectionMarker label={`RF${index + 1}`} />
+        <SubsubsectionMarker
+          label={`RF${index + 1}`}
+          onMouseEnter={() => setHovered(sec.slug)}
+          onMouseLeave={() => setHovered(null)}
+        />
       </Marker>
     )
   })
