@@ -58,11 +58,7 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
 
   useEffect(() => {
     setPinPosition(projectMap.initialMarker)
-  }, [])
-
-  useEffect(() => {
-    if (!mainMap) return
-  }, [mainMap])
+  })
 
   useEffect(() => {
     const lgMediaQuery = window.matchMedia("(min-width: 768px)")
@@ -75,20 +71,23 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
     return () => {
       lgMediaQuery.removeEventListener("change", onMediaQueryChange)
     }
-  }, [])
+  })
 
   const onMarkerDragStart = useCallback((event: MarkerDragEvent) => {
     logEvents((_events) => ({ ..._events, onDragStart: event.lngLat }))
   }, [])
 
-  const onMarkerDrag = useCallback((event: MarkerDragEvent) => {
-    logEvents((_events) => ({ ..._events, onDrag: event.lngLat }))
-    console.log(event.lngLat.lat)
-    setPinPosition({
-      lng: event.lngLat.lng,
-      lat: event.lngLat.lat,
-    })
-  }, [])
+  const onMarkerDrag = useCallback(
+    (event: MarkerDragEvent) => {
+      logEvents((_events) => ({ ..._events, onDrag: event.lngLat }))
+      console.log(event.lngLat.lat)
+      setPinPosition({
+        lng: event.lngLat.lng,
+        lat: event.lngLat.lat,
+      })
+    },
+    [setPinPosition]
+  )
 
   const onMarkerDragEnd = useCallback((event: MarkerDragEvent) => {
     logEvents((_events) => ({ ..._events, onDragEnd: event.lngLat }))

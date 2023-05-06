@@ -23,7 +23,7 @@ export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
 
   useEffect(() => {
     setProgress({ current: 0, total: more.pages.length - 1 })
-  }, [])
+  })
 
   const { title, description, questions, buttons } = more.pages[0]
   const question = questions[0]

@@ -21,7 +21,7 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
 
   useEffect(() => {
     setProgress({ current: 0, total: email.pages.length - 1 })
-  }, [])
+  })
 
   const handleSubmit = (values: Record<string, any>) => {
     onSubmit(values.email)

@@ -22,7 +22,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   useEffect(() => {
     setProgress({ current: 0, total: pages.length - 1 })
     setFeedbackCategory(categories.length) // default: '"Sonstiges"
-  }, [])
+  }, []) // eslint-disable-line
 
   const [isMap, setIsMap] = useState(false)
 
