@@ -1,13 +1,14 @@
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
-import { proseClasses, quote } from "src/core/components/text"
+import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { H2 } from "src/core/components/text/Headings"
+import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFiles from "src/files/queries/getFiles"
@@ -22,8 +23,7 @@ import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernote
 import getSubsections from "src/subsections/queries/getSubsections"
 
 export const SectionDashboardWithQuery = () => {
-  const projectSlug = useParam("projectSlug", "string")
-  const sectionSlug = useParam("sectionSlug", "string")
+  const { projectSlug, sectionSlug } = useSlugs()
 
   const [section] = useQuery(getSection, { sectionSlug, projectSlug }) // TODO optimize to allow projectId as well to get rid of one query in case we can
   const [{ files }] = useQuery(getFiles, { projectSlug: projectSlug! })
@@ -48,10 +48,21 @@ export const SectionDashboardWithQuery = () => {
     <>
       <MetaTags noindex title={section.title} />
 
-      <PageHeader title={section.title} subtitle={section.subTitle} />
+      <PageHeader
+        title={section.title}
+        subtitle={section.subTitle}
+        action={
+          <Link
+            icon="edit"
+            href={Routes.EditSectionPage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}
+          >
+            bearbeiten
+          </Link>
+        }
+      />
 
       {/* Intro: Kurzinfo, Stakeholderstatus, Teilstreckenlänge */}
-      <div className="mb-12">
+      <section className="mb-12">
         {section.description && (
           <div className="mb-5">
             <Markdown markdown={section.description} />
@@ -61,134 +72,63 @@ export const SectionDashboardWithQuery = () => {
         <p>
           <strong>Teilstreckenlänge:</strong> {section.length ? section.length + " km" : " k.A."}
         </p>
-      </div>
+      </section>
 
       {/* Karte mit Daten der subsections */}
       {Boolean(subsections.length) && (
-        <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
+        <section className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
           <SectionMap
             sections={sectionsWithSubsections}
             // @ts-ignore
             selectedSection={selectedSectionWithSubsections}
           />
           {/* <SectionPanel section={section} /> */}
-        </div>
+        </section>
       )}
 
       <SubsectionTable subsections={subsections} />
 
       {/* Dateien / files */}
       {Boolean(files.length) && (
-        <div className="mb-12">
+        <section className="mb-12">
           <H2 className="mb-5 text-2xl font-bold">Relevante Dokumente</H2>
           <FileTable files={files} />
-        </div>
+        </section>
       )}
 
       {/* Stakeholder / stakeholdernotes */}
       {Boolean(stakeholdernotes.length) && (
-        <div className="mb-12">
+        <section className="mb-12">
           <H2 className="mb-5 text-2xl font-bold">
             Abstimmung mit <abbr title="Träger öffentlicher Belange">TöB</abbr>s
           </H2>
           <StakeholdernoteList stakeholdernotes={stakeholdernotes} />
-          <Link
-            href={Routes.NewStakeholdernotePage({
-              projectSlug: projectSlug!,
-              sectionSlug: sectionSlug!,
-            })}
-            button
-          >
-            Neuer TöB
-          </Link>
-        </div>
-      )}
-
-      {/* Admin Actions Section - noch ungestyled */}
-      <section className="rounded border bg-blue-100 p-5">
-        <Link
-          href={Routes.EditSectionPage({
-            projectSlug: projectSlug!,
-            sectionSlug: section.slug,
-          })}
-        >
-          Bearbeiten
-        </Link>
-        <br />
-
-        <Link
-          href={Routes.NewSubsectionPage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}
-        >
-          Neuer Abschnitt
-        </Link>
-        <br />
-
-        {/* Stakeholder */}
-        {sectionSlug && (
-          <>
+          <ButtonWrapper>
             <Link
+              button="blue"
+              icon="plus"
               href={Routes.NewStakeholdernotePage({
                 projectSlug: projectSlug!,
                 sectionSlug: sectionSlug!,
               })}
             >
-              Neuer TöB
+              TöB
             </Link>
-            <br />
             <Link
+              button="white"
+              icon="plus"
               href={Routes.NewStakeholdernoteMultiPage({
                 projectSlug: projectSlug!,
                 sectionSlug: sectionSlug!,
               })}
             >
-              Mehrere neue TöBs erstellen
+              Mehrere TöBs
             </Link>
-          </>
-        )}
+          </ButtonWrapper>
+        </section>
+      )}
 
-        {/* Abschnitte (Subsections bearbeiten) */}
-        <ul>
-          {subsections &&
-            subsections.map((subsection) => {
-              return (
-                <li key={subsection.id}>
-                  <Link
-                    href={Routes.EditSubsectionPage({
-                      projectSlug: projectSlug!,
-                      sectionSlug: sectionSlug!,
-                      subsectionSlug: subsection.slug,
-                    })}
-                  >
-                    {quote(subsection.title)} bearbeiten
-                  </Link>
-                </li>
-              )
-            })}
-        </ul>
-      </section>
-
-      <SuperAdminBox>
-        <div className="mb-12 space-y-6">
-          <div className={proseClasses}>
-            <pre>{JSON.stringify({ section }, null, 2)}</pre>
-          </div>
-          <H2 className="mb-5">Alle {count} Abschnitte dieser Teilstrecke</H2>
-          <ul>
-            {subsections.map((subsection) => {
-              const debugSubsection = subsection
-              debugSubsection.geometry = "Gekürzt für die Lesbarkeit"
-              return (
-                <li key={subsection.id}>
-                  <strong>{subsection.title}</strong>
-                  <Markdown markdown={subsection.description} />
-                  <div className={proseClasses}>
-                    <pre>{JSON.stringify({ subsection }, undefined, 2)}</pre>
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
+      <SuperAdminLogData data={{ sections, subsections, stakeholdernotes }} />
     </>
   )
 }

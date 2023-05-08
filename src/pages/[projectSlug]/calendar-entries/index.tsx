@@ -29,17 +29,15 @@ export const CalendarEntriesWithData = () => {
 
   return (
     <>
-      <PageHeader
-        title="Termine"
-        description="Dieser Bereich hilft Ihnen Termine zu verwalten."
-        action={
-          <Link button href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}>
-            Neuer Termin
-          </Link>
-        }
-      />
-
       <Calender calendarEntries={calendarEntries} />
+
+      <Link
+        button="blue"
+        icon="plus"
+        href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}
+      >
+        Termin
+      </Link>
 
       <Pagination
         hasMore={hasMore}
@@ -57,6 +55,7 @@ const CalendarEntriesPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <MetaTags noindex title="Termine" />
+      <PageHeader title="Termine" description="Dieser Bereich hilft Ihnen Termine zu verwalten." />
 
       <Suspense fallback={<Spinner page />}>
         <CalendarEntriesWithData />

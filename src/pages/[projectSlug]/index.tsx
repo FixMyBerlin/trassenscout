@@ -12,8 +12,8 @@ import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { ProjectMap } from "src/projects/components/Map/ProjectMap"
 import type { ProjectMapSections } from "src/projects/components/Map/ProjectMap"
+import { ProjectMap } from "src/projects/components/Map/ProjectMap"
 import { SectionTable } from "src/projects/components/SectionTable"
 import getProject from "src/projects/queries/getProject"
 import getSections from "src/sections/queries/getSections"
@@ -47,6 +47,11 @@ export const ProjectDashboardWithQuery = () => {
       <PageHeader
         title={project.title}
         intro={`Willkommen im Trassenscout zum ${project.title}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
+        action={
+          <Link icon="edit" href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
+            bearbeiten
+          </Link>
+        }
       />
       {/* TODO: intro prop evtl. mit project description ersetzen */}
 
@@ -69,14 +74,6 @@ export const ProjectDashboardWithQuery = () => {
 
       <CalenderDashboard />
 
-      {/* Admin Actions Section - noch ungestyled */}
-      <section className="rounded border bg-blue-100 p-5">
-        <Link href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
-          {quote(project.title)} bearbeiten
-        </Link>
-        <br />
-        <Link href={Routes.NewSectionPage({ projectSlug: projectSlug! })}>Neue Teilstrecke</Link>
-      </section>
       <SuperAdminLogData data={sections} />
     </>
   )

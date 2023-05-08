@@ -1,28 +1,26 @@
-import { useRouter } from "next/router"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { Suspense } from "react"
 import { Position } from "@turf/helpers"
+import { useRouter } from "next/router"
+import { Suspense } from "react"
 
-import { useSlugs } from "src/core/hooks"
-import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Link } from "src/core/components/links"
-import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
-import { Markdown } from "src/core/components/Markdown/Markdown"
-import { PageHeader } from "src/core/components/PageHeader"
-import { Spinner } from "src/core/components/Spinner"
-import { quote } from "src/core/components/text"
-import { LayoutRs, MetaTags } from "src/core/layouts"
-import { SubsectionMap } from "src/projects/components/Map/SubsectionMap"
-import getSections from "src/sections/queries/getSections"
-import getSubsectionBySlugs from "src/subsections/queries/getSubsectionBySlugs"
-import { ProjectMapSections } from "src/projects/components/Map"
-import { SubsubsectionSidebar } from "src/projects/components/Map/SubsubsectionSidebar"
 import {
   Subsection as SubsectionClient,
   Subsubsection as SubsubsectionClient,
 } from "@prisma/client"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
+import { Markdown } from "src/core/components/Markdown/Markdown"
+import { PageHeader } from "src/core/components/PageHeader"
+import { Spinner } from "src/core/components/Spinner"
+import { Link } from "src/core/components/links"
+import { useSlugs } from "src/core/hooks"
+import { LayoutRs, MetaTags } from "src/core/layouts"
+import { ProjectMapSections } from "src/projects/components/Map"
+import { SubsectionMap } from "src/projects/components/Map/SubsectionMap"
+import { SubsubsectionSidebar } from "src/projects/components/Map/SubsubsectionSidebar"
+import getSections from "src/sections/queries/getSections"
 import { SubsubsectionTable } from "src/subsections/components/SubsubsectionTable"
+import getSubsectionBySlugs from "src/subsections/queries/getSubsectionBySlugs"
 
 export interface Subsubsection extends Omit<SubsubsectionClient, "geometry"> {
   geometry: Position[]
@@ -37,16 +35,16 @@ export const SubsectionDashboardWithQuery = () => {
   const router = useRouter()
   const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
+  const [{ sections }] = useQuery(getSections, {
+    where: { project: { slug: projectSlug! } },
+    orderBy: { index: "asc" },
+    include: { subsections: true },
+  })
   const [subsectionOrg] = useQuery(getSubsectionBySlugs, {
     projectSlug: projectSlug!,
     sectionSlug: sectionSlug!,
     slug: subsectionSlug!,
     includeSubsubsections: true,
-  })
-  const [{ sections }] = useQuery(getSections, {
-    where: { project: { slug: projectSlug! } },
-    orderBy: { index: "asc" },
-    include: { subsections: true },
   })
 
   const parseGeometry = (objectWithGeometry: Record<any, any> | { geometry: Position[] }) => {
@@ -71,7 +69,21 @@ export const SubsectionDashboardWithQuery = () => {
   return (
     <>
       <MetaTags noindex title={subsection!.title} />
-      <PageHeader title={subsection!.title} />
+      <PageHeader
+        title={subsection!.title}
+        action={
+          <Link
+            icon="edit"
+            href={Routes.EditSubsectionPage({
+              projectSlug: projectSlug!,
+              sectionSlug: sectionSlug!,
+              subsectionSlug: subsectionSlug!,
+            })}
+          >
+            bearbeiten
+          </Link>
+        }
+      />
 
       {/* Intro */}
       <div className="mb-12">
@@ -108,51 +120,6 @@ export const SubsectionDashboardWithQuery = () => {
 
       {/* @ts-expect-errors the way we query for subsections causes the type to not know about subsections */}
       <SubsubsectionTable subsubsections={subsectionOrg.subsubsections} />
-
-      {/* Admin Actions Section - noch ungestyled */}
-      <section className="rounded border bg-blue-100 p-5">
-        <Link
-          href={Routes.EditSubsectionPage({
-            projectSlug: projectSlug!,
-            sectionSlug: sectionSlug!,
-            subsectionSlug: subsectionSlug!,
-          })}
-        >
-          {quote(subsection.title)} bearbeiten
-        </Link>
-        <br />
-
-        <Link
-          href={Routes.NewSubsubsectionPage({
-            projectSlug: projectSlug!,
-            sectionSlug: sectionSlug!,
-            subsectionSlug: subsectionSlug!,
-          })}
-        >
-          Neue Teilplanung
-        </Link>
-        <br />
-
-        {/* Teilplanungen (Subsubsections bearbeiten) */}
-        <ul>
-          {subsection.subsubsections.map((subsubsection) => {
-            return (
-              <li key={subsubsection.id}>
-                <Link
-                  href={Routes.EditSubsubsectionPage({
-                    projectSlug: projectSlug!,
-                    sectionSlug: sectionSlug!,
-                    subsectionSlug: subsectionSlug!,
-                    subsubsectionSlug: subsubsectionSlug!,
-                  })}
-                >
-                  {quote(subsubsection.title)} bearbeiten
-                </Link>
-              </li>
-            )
-          })}
-        </ul>
-      </section>
 
       <SuperAdminLogData data={{ subsectionOrg, subsection, sections }} />
     </>

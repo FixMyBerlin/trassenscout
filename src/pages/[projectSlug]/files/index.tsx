@@ -4,6 +4,7 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "src/core/components/links"
+import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Pagination } from "src/core/components/Pagination"
 import { Spinner } from "src/core/components/Spinner"
@@ -30,28 +31,24 @@ export const FilesWithData = () => {
 
   return (
     <>
-      <PageHeader
-        title="Dokumente"
-        description="Dieser Bereich hilft Ihnen Dokumente zu verwalten."
-        action={
-          <div>
-            <Link
-              button
-              href={Routes.NewFilePage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}
-            >
-              Neues externes Dokument
-            </Link>
-            <Link
-              className="ml-2"
-              button
-              href={Routes.UploadFilePage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}
-            >
-              Neue Datei hochladen
-            </Link>
-          </div>
-        }
-      />
       <FileTable files={files} />
+
+      <ButtonWrapper>
+        <Link
+          button="blue"
+          icon="plus"
+          href={Routes.UploadFilePage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}
+        >
+          Datei hochladen
+        </Link>
+        <Link
+          button="white"
+          icon="plus"
+          href={Routes.NewFilePage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}
+        >
+          Externer Dokumentenlink
+        </Link>
+      </ButtonWrapper>
 
       <Pagination
         hasMore={hasMore}
@@ -69,6 +66,10 @@ const FilesPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <MetaTags noindex title="Dokumente" />
+      <PageHeader
+        title="Dokumente"
+        description="Dieser Bereich hilft Ihnen Dokumente zu verwalten."
+      />
 
       <Suspense fallback={<Spinner page />}>
         <FilesWithData />

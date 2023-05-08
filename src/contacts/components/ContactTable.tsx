@@ -128,14 +128,14 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
           </tbody>
         </table>
       </TableWrapper>
-      <div className="flex items-center gap-3">
+      <ButtonWrapper className="justify-between">
+        <Link button="blue" icon="plus" href={Routes.NewContactPage({ projectSlug: projectSlug! })}>
+          Kontakt
+        </Link>
         <button disabled={!isChecked} className={whiteButtonStyles} type="submit">
           Mail schreiben
-        </button>{" "}
-        <Link button="blue" icon="plus" href={Routes.NewContactPage({ projectSlug: projectSlug! })}>
-          Neuer Kontakt
-        </Link>
-      </div>
+        </button>
+      </ButtonWrapper>
     </SurveyForm>
   )
 }
