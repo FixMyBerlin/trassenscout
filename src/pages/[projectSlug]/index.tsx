@@ -4,6 +4,7 @@ import Image from "next/image"
 import statusImg from "public/Planungsphase_Placeholder.jpg"
 import { Suspense } from "react"
 import { CalenderDashboard } from "src/calendar-entries/components"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import DashedLine from "src/core/components/DashedLine"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
@@ -77,6 +78,7 @@ export const ProjectDashboardWithQuery = () => {
         <br />
         <Link href={Routes.NewSectionPage({ projectSlug: projectSlug! })}>Neue Teilstrecke</Link>
       </section>
+      <SuperAdminLogData data={sections} />
     </>
   )
 }

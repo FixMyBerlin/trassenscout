@@ -2,6 +2,7 @@ import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Pagination } from "src/core/components/Pagination"
@@ -58,6 +59,8 @@ export const Files = () => {
         handlePrev={goToPreviousPage}
         handleNext={goToNextPage}
       />
+
+      <SuperAdminLogData data={files} />
     </>
   )
 }

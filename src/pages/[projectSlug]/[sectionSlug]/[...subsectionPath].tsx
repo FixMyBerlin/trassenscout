@@ -7,6 +7,7 @@ import { Position } from "@turf/helpers"
 import { useSlugs } from "src/core/hooks"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
@@ -153,9 +154,7 @@ export const SubsectionDashboard = () => {
         </ul>
       </section>
 
-      <SuperAdminBox>
-        <button onClick={() => console.log(subsection)}>Log Data</button>
-      </SuperAdminBox>
+      <SuperAdminLogData data={{ subsectionOrg, subsection, sections }} />
     </>
   )
 }

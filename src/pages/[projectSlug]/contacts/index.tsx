@@ -5,6 +5,7 @@ import { Suspense } from "react"
 import { ContactTable } from "src/contacts/components/ContactTable"
 import getContacts from "src/contacts/queries/getContacts"
 import { Link } from "src/core/components/links"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
@@ -27,6 +28,8 @@ export const ContactPageWithQuery = () => {
   return (
     <div className="mt-8 flex flex-col">
       <ContactTable contacts={contacts} />
+
+      <SuperAdminLogData data={contacts} />
     </div>
   )
 }

@@ -189,7 +189,6 @@ export const SectionDashboardWithQuery = () => {
             })}
           </ul>
         </div>
-      </SuperAdminBox>
     </>
   )
 }
