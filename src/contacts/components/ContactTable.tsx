@@ -4,7 +4,7 @@ import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { Contact } from "@prisma/client"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
-import { LabeledCheckbox } from "src/core/components/forms"
+import { Form, LabeledCheckbox } from "src/core/components/forms"
 import { Link, LinkMail, LinkTel, whiteButtonStyles } from "src/core/components/links"
 import SurveyForm from "src/participation/components/form/SurveyForm"
 import getProject from "src/projects/queries/getProject"
@@ -12,6 +12,7 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getFullname } from "src/users/utils"
 import { TableWrapper } from "../../core/components/Table/TableWrapper"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
+import { useSlugs } from "src/core/hooks"
 
 type Props = {
   contacts: Contact[]
@@ -20,8 +21,8 @@ type Props = {
 }
 
 export const ContactTable: React.FC<Props> = ({ contacts }) => {
-  const [isChecked, setIsChecked] = useState(false)
-  const projectSlug = useParam("projectSlug", "string")
+  const [mailButtonActive, setMailButtonActive] = useState(false)
+  const { projectSlug } = useSlugs()
   const router = useRouter()
   const user = useCurrentUser()
   const [project] = useQuery(getProject, { slug: projectSlug })
@@ -42,11 +43,13 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
 
   const handleChange = (values: any) => {
     // when form values change check if at least one checkmark is set
-    setIsChecked(Object.entries(values).filter((contact) => contact[1] === true).length !== 0)
+    setMailButtonActive(
+      Object.entries(values).filter((contact) => contact[1] === true).length !== 0
+    )
   }
 
   return (
-    <SurveyForm onSubmit={handleSubmit} onChangeValues={handleChange}>
+    <Form className="mt-7" onSubmit={handleSubmit} onChange={handleChange}>
       <TableWrapper>
         <table className="min-w-full divide-y divide-gray-300">
           <thead className="bg-gray-50">
@@ -136,10 +139,10 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
         <Link button="blue" icon="plus" href={Routes.NewContactPage({ projectSlug: projectSlug! })}>
           Kontakt
         </Link>
-        <button disabled={!isChecked} className={whiteButtonStyles} type="submit">
+        <button disabled={!mailButtonActive} className={whiteButtonStyles} type="submit">
           Mail schreiben
         </button>
       </ButtonWrapper>
-    </SurveyForm>
+    </Form>
   )
 }
