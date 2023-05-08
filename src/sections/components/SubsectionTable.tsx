@@ -12,7 +12,7 @@ type Props = {
 
 export const SubsectionTable: React.FC<Props> = ({ subsections }) => {
   const router = useRouter()
-  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
+  const { projectSlug, sectionSlug } = useSlugs()
 
   if (!subsections.length) return null
 

@@ -23,12 +23,13 @@ import { SubsubsectionTable } from "src/subsections/components/SubsubsectionTabl
 import getSubsection from "src/subsections/queries/getSubsection"
 import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
 import { PageDescription } from "src/core/components/pages/PageDescription"
+import invariant from "tiny-invariant"
 
-export interface Subsubsection extends Omit<SubsubsectionClient, "geometry"> {
+export type Subsubsection = Omit<SubsubsectionClient, "geometry"> & {
   geometry: Position[]
 }
 
-export interface Subsection extends Omit<SubsectionClient, "geometry"> {
+export type Subsection = Omit<SubsectionClient, "geometry"> & {
   geometry: Position[]
   subsubsections: Subsubsection[]
 }
@@ -49,14 +50,15 @@ export const SubsectionDashboardWithQuery = () => {
     includeSubsubsections: true,
   })
 
-  const parseGeometry = (objectWithGeometry: Record<any, any> | { geometry: Position[] }) => {
-    if (objectWithGeometry.geometry === null) return null
+  const parseGeometry = (objectWithGeometry: Record<any, any>) => {
+    let parsedGeometry = undefined
     try {
-      return JSON.parse(objectWithGeometry.geometry)
+      parsedGeometry = JSON.parse(objectWithGeometry.geometry) as Position[]
     } catch (e: any) {
       console.error("Parsing :", e.message, JSON.parse(JSON.stringify(objectWithGeometry)))
-      return null
     }
+    invariant(typeof parsedGeometry === "object", "parsed Geometry required")
+    return parsedGeometry
   }
 
   const subsection: Subsection = JSON.parse(JSON.stringify(subsectionOrg)) // deep copy
@@ -102,10 +104,15 @@ export const SubsectionDashboardWithQuery = () => {
       </PageDescription>
 
       <div className="relative mt-12 flex h-96 w-full gap-4 sm:h-[500px]">
-        <SubsectionMap sections={sections as ProjectMapSections} selectedSection={subsection} />
+        <SubsectionMap
+          // Make sure the map rerenders when we close the SubsectionSidebar
+          key={`map-${Boolean(subsubsection)}`}
+          sections={sections as ProjectMapSections}
+          selectedSection={subsection}
+        />
+
         {subsubsection ? (
           <SubsubsectionSidebar
-            className="absolute right-0 top-0 h-full w-1/3 overflow-auto border-2 border-black bg-white"
             subsubsection={subsubsection}
             onClose={() => {
               void router.push(
@@ -122,8 +129,7 @@ export const SubsectionDashboardWithQuery = () => {
         ) : null}
       </div>
 
-      {/* @ts-expect-errors the way we query for subsections causes the type to not know about subsections */}
-      <SubsubsectionTable subsubsections={subsectionOrg.subsubsections} />
+      <SubsubsectionTable subsubsections={subsection.subsubsections} />
 
       <SuperAdminLogData data={{ subsectionOrg, subsection, sections }} />
     </>

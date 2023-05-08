@@ -1,9 +1,10 @@
-import { Routes, useParam } from "@blitzjs/next"
-import { Subsubsection } from "@prisma/client"
+import { Routes } from "@blitzjs/next"
+import clsx from "clsx"
 import { useRouter } from "next/router"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
+import { Subsubsection } from "src/pages/[projectSlug]/[sectionSlug]/[...subsectionPath]"
 import { SubsubsectionMarker } from "src/projects/components/Map/Markers"
 
 type Props = {
@@ -12,7 +13,7 @@ type Props = {
 
 export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
   const router = useRouter()
-  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
+  const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
   if (!subsubsections.length) return null
 
@@ -50,11 +51,14 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
                 sectionSlug: sectionSlug!,
                 subsectionPath: [subsectionSlug!, subsubsection.slug],
               })
+
               return (
                 <tr
                   key={subsubsection.id}
-                  className="group cursor-pointer"
-                  onClick={() => router.push(route)}
+                  className={clsx("group cursor-pointer", {
+                    "bg-blue-50": subsubsection.slug === subsubsectionSlug,
+                  })}
+                  onClick={() => router.push(route, undefined, { scroll: false })}
                 >
                   <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50 sm:pl-6">
                     <SubsubsectionMarker label={`RF${index + 1}`} />

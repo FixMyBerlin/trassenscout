@@ -1,7 +1,12 @@
+import clsx from "clsx"
+
 type Props = {
+  className?: string
   children: React.ReactNode
 }
 
-export const PageDescription: React.FC<Props> = ({ children }) => {
-  return <section className="mt-12 rounded bg-gray-100 py-5 px-5">{children}</section>
+export const PageDescription: React.FC<Props> = ({ className, children }) => {
+  return (
+    <section className={clsx(className, "mt-12 rounded bg-gray-100 py-5 px-5")}>{children}</section>
+  )
 }
