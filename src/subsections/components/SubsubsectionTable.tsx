@@ -55,9 +55,9 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
               return (
                 <tr
                   key={subsubsection.id}
-                  className={clsx("group cursor-pointer", {
-                    "bg-blue-50": subsubsection.slug === subsubsectionSlug,
-                  })}
+                  className={clsx(
+                    subsubsection.slug === subsubsectionSlug ? "bg-blue-50" : "group cursor-pointer"
+                  )}
                   onClick={() => router.push(route, undefined, { scroll: false })}
                 >
                   <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50 sm:pl-6">
