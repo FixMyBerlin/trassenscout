@@ -20,7 +20,7 @@ type Props = {
   withNotes?: boolean
 }
 
-export const ContactList: React.FC<Props> = ({ contacts }) => {
+export const ContactTable: React.FC<Props> = ({ contacts }) => {
   const [isChecked, setIsChecked] = useState(false)
   const projectSlug = useParam("projectSlug", "string")
   const router = useRouter()
@@ -127,9 +127,14 @@ export const ContactList: React.FC<Props> = ({ contacts }) => {
           </tbody>
         </table>
       </TableWrapper>
-      <button disabled={!isChecked} className={whiteButtonStyles} type="submit">
-        Mail senden
-      </button>
+      <div className="flex items-center gap-3">
+        <button disabled={!isChecked} className={whiteButtonStyles} type="submit">
+          Mail schreiben
+        </button>{" "}
+        <Link button="blue" icon="plus" href={Routes.NewContactPage({ projectSlug: projectSlug! })}>
+          Neuer Kontakt
+        </Link>
+      </div>
     </SurveyForm>
   )
 }

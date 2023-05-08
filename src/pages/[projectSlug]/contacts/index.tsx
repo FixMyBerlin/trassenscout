@@ -2,14 +2,14 @@ import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { ContactList } from "src/contacts/components/ContactList"
+import { ContactTable } from "src/contacts/components/ContactTable"
 import getContacts from "src/contacts/queries/getContacts"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 
-export const ContactTable = () => {
+export const ContactPageWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [{ contacts }] = usePaginatedQuery(getContacts, {
     projectSlug: projectSlug!,
@@ -26,7 +26,7 @@ export const ContactTable = () => {
 
   return (
     <div className="mt-8 flex flex-col">
-      <ContactList contacts={contacts} />
+      <ContactTable contacts={contacts} />
     </div>
   )
 }
@@ -41,14 +41,9 @@ const ContactsPage: BlitzPage = () => {
           title="Kontakte"
           description="Dieser Bereich hilft Ihnen dabei Kontakte zu verwalten und
         anzuschreiben."
-          action={
-            <Link button="blue" href={Routes.NewContactPage({ projectSlug: projectSlug! })}>
-              Neuer Kontakt
-            </Link>
-          }
         />
         <Suspense fallback={<Spinner page />}>
-          <ContactTable />
+          <ContactPageWithQuery />
         </Suspense>
       </div>
     </LayoutRs>
