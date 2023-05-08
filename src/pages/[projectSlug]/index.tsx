@@ -48,7 +48,7 @@ export const ProjectDashboardWithQuery = () => {
       <Breadcrumb />
       <PageHeader
         title={project.title}
-        intro={`Willkommen im Trassenscout zum ${project.title}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
+        description={`Willkommen im Trassenscout zum ${project.title}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
         action={
           <Link icon="edit" href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
             bearbeiten
