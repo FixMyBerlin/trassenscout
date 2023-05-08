@@ -2,14 +2,12 @@ import { Routes, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { Contact } from "@prisma/client"
-import { AuthenticationError } from "blitz"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
-import { Form, FORM_ERROR, LabeledCheckbox } from "src/core/components/forms"
+import { LabeledCheckbox } from "src/core/components/forms"
 import { Link, LinkMail, LinkTel, whiteButtonStyles } from "src/core/components/links"
 import SurveyForm from "src/participation/components/form/SurveyForm"
 import getProject from "src/projects/queries/getProject"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getFullname } from "src/users/utils"
 import { TableWrapper } from "../../core/components/Table/TableWrapper"
@@ -81,7 +79,10 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
               <tr key={contact.email}>
                 <td className="h-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                   <div className="flex items-center font-medium text-gray-900">
-                    <LabeledCheckbox name={String(contact.id)} label={""} /> {getFullname(contact)}
+                    <LabeledCheckbox
+                      name={String(contact.id)}
+                      label={getFullname(contact) ?? "-"}
+                    />
                   </div>
                 </td>
                 <td className="break-words px-3 py-4 text-sm text-gray-500">{contact.role}</td>
