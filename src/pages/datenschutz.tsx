@@ -1,6 +1,6 @@
 import { BlitzPage } from "@blitzjs/next"
 import { Link, LinkMail, LinkTel } from "src/core/components/links"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { TableOfContents } from "src/datenschutz/components/TableOfContents/TableOfContents"
 import { TocHashLink } from "src/datenschutz/components/TableOfContents/types"

@@ -9,7 +9,7 @@ import { quote } from "src/core/components/text"
 import { LayoutArticle, LayoutRs, MetaTags } from "src/core/layouts"
 import deleteCalendarEntry from "src/calendar-entries/mutations/deleteCalendarEntry"
 import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { DateEntry } from "src/rs8/termine/components/Calender"
 import { Spinner } from "src/core/components/Spinner"
 

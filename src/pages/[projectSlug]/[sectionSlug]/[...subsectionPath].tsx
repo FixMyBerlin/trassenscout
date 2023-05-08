@@ -10,7 +10,7 @@ import {
 } from "@prisma/client"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Markdown } from "src/core/components/Markdown/Markdown"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"

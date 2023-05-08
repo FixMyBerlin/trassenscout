@@ -8,7 +8,7 @@ import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogDat
 import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
 import DashedLine from "src/core/components/DashedLine"
 import { Link } from "src/core/components/links"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"

@@ -4,7 +4,7 @@ import { Suspense } from "react"
 import { ContactTable } from "src/contacts/components/ContactTable"
 import getContacts from "src/contacts/queries/getContacts"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 
