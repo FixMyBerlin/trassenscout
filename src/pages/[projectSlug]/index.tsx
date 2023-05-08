@@ -47,7 +47,6 @@ export const ProjectDashboardWithQuery = () => {
       <PageHeader
         title={project.title}
         intro={`Willkommen im Trassenscout zum ${project.title}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
-        logo
       />
       {/* TODO: intro prop evtl. mit project description ersetzen */}
 
