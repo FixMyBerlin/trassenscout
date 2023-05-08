@@ -22,7 +22,9 @@ export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
   return (
     <div className="flex space-x-4">
       {menuItems?.map((item) => {
-        const current = pathname === item.href.pathname
+        const current = [item.href.pathname, ...(item.alsoHighlightPathnames || [])].includes(
+          pathname
+        )
 
         if (!item.children) {
           return (

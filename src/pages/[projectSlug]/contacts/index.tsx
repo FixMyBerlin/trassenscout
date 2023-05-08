@@ -1,4 +1,4 @@
-import { BlitzPage, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { ContactTable } from "src/contacts/components/ContactTable"
@@ -6,10 +6,12 @@ import getContacts from "src/contacts/queries/getContacts"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
+import { Tabs } from "src/core/components/Tabs/Tabs"
+import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 
-export const ContactPageWithQuery = () => {
-  const projectSlug = useParam("projectSlug", "string")
+export const ContactWithQuery = () => {
+  const { projectSlug } = useSlugs()
   const [{ contacts }] = usePaginatedQuery(getContacts, {
     projectSlug: projectSlug!,
     orderBy: { id: "asc" },
@@ -24,27 +26,35 @@ export const ContactPageWithQuery = () => {
   }
 
   return (
-    <section className="mt-12">
-      <ContactTable contacts={contacts} />
-
-      <SuperAdminLogData data={contacts} />
-    </section>
-  )
-}
-
-const ContactsPage: BlitzPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
-  return (
-    <LayoutRs>
-      <MetaTags noindex title="Kontakte" />
+    <div className="mt-12">
       <PageHeader
         title="Kontakte"
         description="Dieser Bereich hilft Ihnen dabei Kontakte zu verwalten und
         anzuschreiben."
       />
 
+      <Tabs
+        className="mt-7"
+        tabs={[
+          { name: "Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
+          { name: "Projektteam", href: Routes.ProjectTeamPage({ projectSlug: projectSlug! }) },
+        ]}
+      />
+
+      <ContactTable contacts={contacts} />
+
+      <SuperAdminLogData data={contacts} />
+    </div>
+  )
+}
+
+const ContactsPage: BlitzPage = () => {
+  return (
+    <LayoutRs>
+      <MetaTags noindex title="Kontakte" />
+
       <Suspense fallback={<Spinner page />}>
-        <ContactPageWithQuery />
+        <ContactWithQuery />
       </Suspense>
     </LayoutRs>
   )

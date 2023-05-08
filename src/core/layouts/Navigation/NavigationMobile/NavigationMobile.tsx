@@ -50,7 +50,11 @@ export const NavigationMobile: React.FC<Props> = ({ menuItems, logo }) => {
             <div className="space-y-3 pt-2 pb-3">
               {menuItems?.map((item) => {
                 if (!item.children) {
-                  const current = pathname === item.href.pathname
+                  const current = [
+                    item.href.pathname,
+                    ...(item.alsoHighlightPathnames || []),
+                  ].includes(pathname)
+
                   return (
                     <Disclosure.Button key={item.name} as="div">
                       <Link href={item.href} classNameOverwrites={itemClasses(current)}>

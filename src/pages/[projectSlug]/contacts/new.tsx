@@ -35,6 +35,7 @@ const NewContactWithQuery: BlitzPage = () => {
     <>
       <MetaTags noindex title="Neuer Kontakt" />
       <PageHeader title="Neuer Kontakt" />
+
       <ContactForm submitText="Erstellen" schema={ContactSchema} onSubmit={handleSubmit} />
     </>
   )

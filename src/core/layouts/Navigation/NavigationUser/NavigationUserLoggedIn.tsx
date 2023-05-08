@@ -56,16 +56,6 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
                       <Menu.Item>
                         <Link
                           className=" !text-gray-500"
-                          href={Routes.ProjectTeamPage({ projectSlug: projectSlug! })}
-                        >
-                          Projektteam
-                        </Link>
-                      </Menu.Item>
-                    )}
-                    {projectSlug && (
-                      <Menu.Item>
-                        <Link
-                          className=" !text-gray-500"
                           href={Routes.EditUserPage({ projectSlug: projectSlug! })}
                         >
                           Ihr Profil

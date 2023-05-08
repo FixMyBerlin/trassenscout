@@ -15,7 +15,7 @@ type Props = {
 
 export const ContactListTeam: React.FC<Props> = ({ contacts }) => {
   return (
-    <TableWrapper>
+    <TableWrapper className="mt-7">
       <table className="min-w-full divide-y divide-gray-300">
         <thead className="bg-gray-50">
           <tr>
