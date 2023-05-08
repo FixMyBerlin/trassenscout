@@ -4,12 +4,13 @@ import { Suspense } from "react"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { ContactListTeam } from "src/memberships/components/ContactListTeam"
+import { TeamTable } from "src/contacts/components/TeamTable"
 import getProjectUsers from "src/users/queries/getProjectUsers"
 import getProject from "src/projects/queries/getProject"
 import { Tabs } from "src/core/components/Tabs/Tabs"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 
-export const ProjectTeamWithQuery = () => {
+export const TeamWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
@@ -29,7 +30,9 @@ export const ProjectTeamWithQuery = () => {
         ]}
       />
 
-      <ContactListTeam contacts={users} />
+      <TeamTable contacts={users} />
+
+      <SuperAdminLogData data={users} />
     </div>
   )
 }
@@ -40,7 +43,7 @@ const ProjectTeamPage: BlitzPage = () => {
       <MetaTags noindex title="Projektteam" />
 
       <Suspense fallback={<Spinner page />}>
-        <ProjectTeamWithQuery />
+        <TeamWithQuery />
       </Suspense>
     </LayoutRs>
   )

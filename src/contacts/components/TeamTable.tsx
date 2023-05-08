@@ -13,7 +13,7 @@ type Props = {
   }[]
 }
 
-export const ContactListTeam: React.FC<Props> = ({ contacts }) => {
+export const TeamTable: React.FC<Props> = ({ contacts }) => {
   return (
     <TableWrapper className="mt-7">
       <table className="min-w-full divide-y divide-gray-300">
