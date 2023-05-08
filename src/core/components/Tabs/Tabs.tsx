@@ -23,7 +23,7 @@ export const Tabs: React.FC<Props> = ({ tabs, className }) => {
         <select
           id="tabs"
           name="tabs"
-          className="block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+          className="block w-full rounded-md border-gray-300 focus:border-gray-100 focus:ring-gray-500"
           defaultValue={tabs.find((tab) => router.pathname === tab.href.pathname)?.name}
           onChange={(event) => {
             const tab = tabs.find((tab) => tab.name === event.target.value)
@@ -45,8 +45,10 @@ export const Tabs: React.FC<Props> = ({ tabs, className }) => {
                 key={tab.name}
                 href={tab.href}
                 className={clsx(
-                  current ? "bg-blue-100 text-blue-700" : "text-gray-500 hover:text-gray-700",
-                  "rounded-md px-3 py-2 text-sm font-medium"
+                  current
+                    ? "cursor-default bg-gray-100 !text-gray-900 hover:bg-gray-100 hover:text-gray-900"
+                    : "",
+                  "rounded-md px-3 py-2"
                 )}
                 aria-current={current ? "page" : undefined}
               >
