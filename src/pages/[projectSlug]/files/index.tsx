@@ -13,7 +13,7 @@ import getFiles from "src/files/queries/getFiles"
 
 const ITEMS_PER_PAGE = 100
 
-export const Files = () => {
+export const FilesWithData = () => {
   const router = useRouter()
   const sectionSlug = useParam("sectionSlug", "string")
   const projectSlug = useParam("projectSlug", "string")
@@ -71,7 +71,7 @@ const FilesPage: BlitzPage = () => {
       <MetaTags noindex title="Dokumente" />
 
       <Suspense fallback={<Spinner page />}>
-        <Files />
+        <FilesWithData />
       </Suspense>
     </LayoutRs>
   )

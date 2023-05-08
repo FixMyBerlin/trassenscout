@@ -13,7 +13,7 @@ import { Calender } from "src/rs8/termine/components/Calender"
 
 const ITEMS_PER_PAGE = 100
 
-export const CalendarEntriesList = () => {
+export const CalendarEntriesWithData = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const projectSlug = useParam("projectSlug", "string")
@@ -59,7 +59,7 @@ const CalendarEntriesPage: BlitzPage = () => {
       <MetaTags noindex title="Termine" />
 
       <Suspense fallback={<Spinner page />}>
-        <CalendarEntriesList />
+        <CalendarEntriesWithData />
       </Suspense>
     </LayoutRs>
   )

@@ -33,7 +33,7 @@ export interface Subsection extends Omit<SubsectionClient, "geometry"> {
   subsubsections: Subsubsection[]
 }
 
-export const SubsectionDashboard = () => {
+export const SubsectionDashboardWithQuery = () => {
   const router = useRouter()
   const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
@@ -166,7 +166,7 @@ const SubsectionDashboardPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <Suspense fallback={<Spinner page />}>
-        <SubsectionDashboard />
+        <SubsectionDashboardWithQuery />
       </Suspense>
     </LayoutRs>
   )
