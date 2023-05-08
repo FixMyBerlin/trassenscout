@@ -11,6 +11,7 @@ import getProject from "src/projects/queries/getProject"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getFullname } from "src/users/utils"
 import { TableWrapper } from "../../core/components/Table/TableWrapper"
+import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 
 type Props = {
   contacts: Contact[]
@@ -79,10 +80,7 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
               <tr key={contact.email}>
                 <td className="h-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                   <div className="flex items-center font-medium text-gray-900">
-                    <LabeledCheckbox
-                      name={String(contact.id)}
-                      label={getFullname(contact) ?? "-"}
-                    />
+                    {getFullname(contact)}
                   </div>
                 </td>
                 <td className="break-words px-3 py-4 text-sm text-gray-500">{contact.role}</td>
@@ -121,6 +119,11 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
                     >
                       <TrashIcon className="h-4 w-4" />
                     </Link>
+                    <LabeledCheckbox
+                      name={String(contact.id)}
+                      labelProps={{ className: "sr-only" }}
+                      label={"Markieren für 'Mail schreiben'"}
+                    />
                   </p>
                 </td>
               </tr>
