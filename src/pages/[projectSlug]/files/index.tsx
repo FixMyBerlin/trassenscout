@@ -30,10 +30,10 @@ export const FilesWithData = () => {
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
   return (
-    <>
+    <section className="mt-12">
       <FileTable files={files} />
 
-      <ButtonWrapper>
+      <ButtonWrapper className="mt-5">
         <Link
           button="blue"
           icon="plus"
@@ -58,7 +58,7 @@ export const FilesWithData = () => {
       />
 
       <SuperAdminLogData data={files} />
-    </>
+    </section>
   )
 }
 

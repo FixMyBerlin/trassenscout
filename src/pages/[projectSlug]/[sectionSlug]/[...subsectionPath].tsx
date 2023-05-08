@@ -22,6 +22,7 @@ import getSections from "src/sections/queries/getSections"
 import { SubsubsectionTable } from "src/subsections/components/SubsubsectionTable"
 import getSubsection from "src/subsections/queries/getSubsection"
 import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
+import { PageDescription } from "src/core/components/pages/PageDescription"
 
 export interface Subsubsection extends Omit<SubsubsectionClient, "geometry"> {
   geometry: Position[]
@@ -88,19 +89,19 @@ export const SubsectionDashboardWithQuery = () => {
         }
       />
 
-      {/* Intro */}
-      <div className="mb-12">
-        {subsection.description && (
-          <div className="mb-5">
-            <Markdown markdown={subsection.description} />
+      <PageDescription>
+        <div className="flex gap-8">
+          <Markdown markdown={subsection.description} className="mb-3" />
+          <div className="space-y-2">
+            <p>
+              <strong>Teilstreckenlänge:</strong> TODO
+              {/* {subsection.length ? subsection.length + " km" : " k.A."} */}
+            </p>
           </div>
-        )}
-        <p>
-          <strong>Teilstreckenlänge:</strong>{" "}
-        </p>
-      </div>
+        </div>
+      </PageDescription>
 
-      <div className="relative mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
+      <div className="relative mt-12 flex h-96 w-full gap-4 sm:h-[500px]">
         <SubsectionMap sections={sections as ProjectMapSections} selectedSection={subsection} />
         {subsubsection ? (
           <SubsubsectionSidebar

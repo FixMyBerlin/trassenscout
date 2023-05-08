@@ -58,12 +58,12 @@ export const ProjectDashboardWithQuery = () => {
       {/* TODO: intro prop evtl. mit project description ersetzen */}
 
       {/* Phasen Panel */}
-      <H2 className="my-6">Aktuelle Planungsphase</H2>
-      <div className="max-w-[650px]">
-        <Image src={statusImg} alt=""></Image>
-      </div>
-
-      <DashedLine />
+      <section className="mt-12">
+        <H2>Aktuelle Planungsphase</H2>
+        <div className="mt-5 max-w-[650px]">
+          <Image src={statusImg} alt=""></Image>
+        </div>
+      </section>
 
       {/* Karte mit Daten der Abschnitte/subsections und Teaser Teilstrecke/sections */}
       {/* {Boolean(sections && sections[0]?.subsections?.length) && ( */}

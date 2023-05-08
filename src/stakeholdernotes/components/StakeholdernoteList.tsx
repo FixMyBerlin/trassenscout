@@ -1,5 +1,4 @@
 import { Stakeholdernote } from "@prisma/client"
-import { useRouter } from "next/router"
 import { StakeholderItem } from "./StakeholderItem"
 
 type props = {
@@ -7,8 +6,6 @@ type props = {
 }
 
 export const StakeholdernotesList: React.FC<props> = ({ stakeholdernotes }) => {
-  const router = useRouter()
-
   const stakeholdersDone = stakeholdernotes.filter(
     (stakeholdernotes) => stakeholdernotes.status === "DONE"
   )
@@ -23,55 +20,53 @@ export const StakeholdernotesList: React.FC<props> = ({ stakeholdernotes }) => {
   )
 
   return (
-    <div className="mb-12">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {(Boolean(stakeholdersInProgress.length) || Boolean(stakeholdersPending.length)) && (
-          <div>
-            <div className="rounded-lg bg-gray-100 p-10">
-              <h4 className="mb-6 text-lg font-bold">Offen</h4>
-              <ul className="flex list-none flex-col space-y-4 pl-0">
-                {stakeholdersInProgress.map((stakeholder) => {
-                  return (
-                    <li key={stakeholder.id}>
-                      <StakeholderItem stakeholder={stakeholder} />
-                    </li>
-                  )
-                })}
-                {stakeholdersPending.map((stakeholder) => {
-                  return (
-                    <li key={stakeholder.id}>
-                      <StakeholderItem stakeholder={stakeholder} />
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      {(Boolean(stakeholdersInProgress.length) || Boolean(stakeholdersPending.length)) && (
+        <div>
+          <div className="rounded-lg bg-gray-100 p-10">
+            <h4 className="mb-6 text-lg font-bold">Offen</h4>
+            <ul className="flex list-none flex-col space-y-4 pl-0">
+              {stakeholdersInProgress.map((stakeholder) => {
+                return (
+                  <li key={stakeholder.id}>
+                    <StakeholderItem stakeholder={stakeholder} />
+                  </li>
+                )
+              })}
+              {stakeholdersPending.map((stakeholder) => {
+                return (
+                  <li key={stakeholder.id}>
+                    <StakeholderItem stakeholder={stakeholder} />
+                  </li>
+                )
+              })}
+            </ul>
           </div>
-        )}
-        {(Boolean(stakeholdersDone.length) || Boolean(stakeholdersIrrelevant.length)) && (
-          <div>
-            <div className="rounded-lg bg-gray-100 p-10">
-              <h4 className="mb-6 font-bold">Erledigt</h4>
-              <ul className="flex list-none flex-col space-y-2 pl-0">
-                {stakeholdersDone.map((stakeholder) => {
-                  return (
-                    <li key={stakeholder.id}>
-                      <StakeholderItem stakeholder={stakeholder} />
-                    </li>
-                  )
-                })}
-                {stakeholdersIrrelevant.map((stakeholder) => {
-                  return (
-                    <li key={stakeholder.id}>
-                      <StakeholderItem stakeholder={stakeholder} />
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
+        </div>
+      )}
+      {(Boolean(stakeholdersDone.length) || Boolean(stakeholdersIrrelevant.length)) && (
+        <div>
+          <div className="rounded-lg bg-gray-100 p-10">
+            <h4 className="mb-6 font-bold">Erledigt</h4>
+            <ul className="flex list-none flex-col space-y-2 pl-0">
+              {stakeholdersDone.map((stakeholder) => {
+                return (
+                  <li key={stakeholder.id}>
+                    <StakeholderItem stakeholder={stakeholder} />
+                  </li>
+                )
+              })}
+              {stakeholdersIrrelevant.map((stakeholder) => {
+                return (
+                  <li key={stakeholder.id}>
+                    <StakeholderItem stakeholder={stakeholder} />
+                  </li>
+                )
+              })}
+            </ul>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

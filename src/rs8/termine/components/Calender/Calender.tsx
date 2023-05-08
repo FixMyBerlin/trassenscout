@@ -32,11 +32,11 @@ export const Calender: React.FC<Props> = ({ calendarEntries }) => {
 
   return (
     <section className="max-w-prose">
-      <div className="mb-12">
+      <div className="mt-12">
         <h2 className="mb-2 text-3xl font-bold">Kommende Termine</h2>
         <DateList calendarEntries={futureCalendarEntries} />
       </div>
-      <div className="mb-12 pt-8">
+      <div className="mt-12 pt-8">
         <h2 className="mb-2 text-3xl font-bold">Vergangene Termine</h2>
         <DateList calendarEntries={pastCalendarEntries} />
       </div>

@@ -131,6 +131,7 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
           </tbody>
         </table>
       </TableWrapper>
+
       <ButtonWrapper className="justify-between">
         <Link button="blue" icon="plus" href={Routes.NewContactPage({ projectSlug: projectSlug! })}>
           Kontakt

@@ -7,6 +7,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { H2 } from "src/core/components/text/Headings"
 import { DateList } from "../../rs8/termine/components/Calender/DateList"
 import getCalendarEntries from "../queries/getCalendarEntries"
+import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 
 const CalendarDashboardDateList: React.FC = () => {
   const projectSlug = useParam("projectSlug", "string")
@@ -21,31 +22,28 @@ const CalendarDashboardDateList: React.FC = () => {
     },
   })
 
-  if (!calendarEntries.length)
-    return (
-      <Link href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}>
-        Neuen Termin eintragen
-      </Link>
-    )
-
   return (
     <>
       <DateList calendarEntries={calendarEntries} />
-      {Boolean(calendarEntries.length) && (
-        <p>
+      <div className="mt-5">
+        {Boolean(calendarEntries.length) ? (
           <Link button="white" href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>
             Alle Termine
           </Link>
-        </p>
-      )}
+        ) : (
+          <Link icon="plus" href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}>
+            Neuen Termin eintragen
+          </Link>
+        )}
+      </div>
     </>
   )
 }
 
 export const CalenderDashboard: React.FC = () => {
   return (
-    <section className="my-12 space-y-6 md:max-w-prose">
-      <H2>Kommende Termine</H2>
+    <section className="mt-12 md:max-w-prose">
+      <H2 className="mb-3">Kommende Termine</H2>
       <Suspense fallback={<Spinner />}>
         <CalendarDashboardDateList />
       </Suspense>

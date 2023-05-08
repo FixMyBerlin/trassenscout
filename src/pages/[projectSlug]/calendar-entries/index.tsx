@@ -5,6 +5,7 @@ import { Suspense } from "react"
 import getCalendarEntries from "src/calendar-entries/queries/getCalendarEntries"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "src/core/components/links"
+import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Pagination } from "src/core/components/Pagination"
 import { Spinner } from "src/core/components/Spinner"
@@ -31,13 +32,15 @@ export const CalendarEntriesWithData = () => {
     <>
       <Calender calendarEntries={calendarEntries} />
 
-      <Link
-        button="blue"
-        icon="plus"
-        href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}
-      >
-        Termin
-      </Link>
+      <ButtonWrapper className="mt-5">
+        <Link
+          button="blue"
+          icon="plus"
+          href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}
+        >
+          Termin
+        </Link>
+      </ButtonWrapper>
 
       <Pagination
         hasMore={hasMore}

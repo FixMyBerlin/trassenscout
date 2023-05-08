@@ -11,7 +11,7 @@ const Kontakt: BlitzPage = () => {
       <MetaTags noindex title="Kontakt & Impressum" />
       <PageHeader title="Impressum" />
 
-      <section className="prose mb-12">
+      <section className="prose mt-12">
         <p>
           <strong>FixMyCity GmbH</strong>
           <br />
@@ -36,7 +36,8 @@ const Kontakt: BlitzPage = () => {
         <p>Umsatzsteuer-Identifikationsnummer gem. § 27a UStG: DE323489466</p>
         <p>Verantwortlicher i.S.v. § 55 Rundfunkstaatsvertrag (RStV): Boris Hekele</p>
       </section>
-      <section className="prose mb-12">
+
+      <section className="prose mt-12">
         <h2 className="mb-2 text-3xl font-bold">Feedback &amp; Kontakt</h2>
         <p>
           Wir freuen uns über Kommentare Anregungen und Unterstützung an{" "}

@@ -90,21 +90,23 @@ export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSectio
   })
 
   return (
-    <BaseMap
-      id="mainMap"
-      initialViewState={{
-        bounds: sectionBounds,
-        fitBoundsOptions: { padding: 60 },
-      }}
-      onClick={handleClick}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      lines={lines}
-      selectableLines={selectableLines}
-      // @ts-ignore
-      dots={lineString(dots)}
-    >
-      {markers}
-    </BaseMap>
+    <section className="mt-12 flex h-96 w-full gap-4 sm:h-[500px]">
+      <BaseMap
+        id="mainMap"
+        initialViewState={{
+          bounds: sectionBounds,
+          fitBoundsOptions: { padding: 60 },
+        }}
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        lines={lines}
+        selectableLines={selectableLines}
+        // @ts-ignore
+        dots={lineString(dots)}
+      >
+        {markers}
+      </BaseMap>
+    </section>
   )
 }

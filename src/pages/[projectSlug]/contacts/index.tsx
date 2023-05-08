@@ -24,11 +24,11 @@ export const ContactPageWithQuery = () => {
   }
 
   return (
-    <div className="mt-8 flex flex-col">
+    <section className="mt-12">
       <ContactTable contacts={contacts} />
 
       <SuperAdminLogData data={contacts} />
-    </div>
+    </section>
   )
 }
 

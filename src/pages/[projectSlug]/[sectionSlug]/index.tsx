@@ -4,10 +4,11 @@ import { Suspense } from "react"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
 import { Markdown } from "src/core/components/Markdown/Markdown"
-import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
+import { PageDescription } from "src/core/components/pages/PageDescription"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2 } from "src/core/components/text/Headings"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
@@ -64,45 +65,39 @@ export const SectionDashboardWithQuery = () => {
         }
       />
 
-      {/* Intro: Kurzinfo, Stakeholderstatus, Teilstreckenlänge */}
-      <section className="mb-12">
-        {section.description && (
-          <div className="mb-5">
-            <Markdown markdown={section.description} />
+      <PageDescription>
+        <div className="flex gap-8">
+          <Markdown markdown={section.description} className="mb-3" />
+          <div className="space-y-2">
+            <StakeholderSectionStatus stakeholdernotes={stakeholdernotes} />
+            <p>
+              <strong>Teilstreckenlänge:</strong>{" "}
+              {section.length ? section.length + " km" : " k.A."}
+            </p>
           </div>
-        )}
-        <StakeholderSectionStatus stakeholdernotes={stakeholdernotes} />
-        <p>
-          <strong>Teilstreckenlänge:</strong> {section.length ? section.length + " km" : " k.A."}
-        </p>
-      </section>
+        </div>
+      </PageDescription>
 
-      {/* Karte mit Daten der subsections */}
-      {Boolean(subsections.length) && (
-        <section className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
-          <SectionMap
-            sections={sectionsWithSubsections}
-            // @ts-ignore
-            selectedSection={selectedSectionWithSubsections}
-          />
-          {/* <SectionPanel section={section} /> */}
-        </section>
-      )}
+      <SectionMap
+        sections={sectionsWithSubsections}
+        // @ts-ignore
+        selectedSection={selectedSectionWithSubsections}
+      />
 
       <SubsectionTable subsections={subsections} />
 
       {/* Dateien / files */}
       {Boolean(files.length) && (
-        <section className="mb-12">
-          <H2 className="mb-5 text-2xl font-bold">Relevante Dokumente</H2>
+        <section className="mt-12">
+          <H2 className="mb-5">Relevante Dokumente</H2>
           <FileTable files={files} />
         </section>
       )}
 
       {/* Stakeholder / stakeholdernotes */}
       {Boolean(stakeholdernotes.length) && (
-        <section className="mb-12">
-          <H2 className="mb-5 text-2xl font-bold">
+        <section className="mt-12">
+          <H2 className="mb-5">
             Abstimmung mit <abbr title="Träger öffentlicher Belange">TöB</abbr>s
           </H2>
           <StakeholdernoteList stakeholdernotes={stakeholdernotes} />
