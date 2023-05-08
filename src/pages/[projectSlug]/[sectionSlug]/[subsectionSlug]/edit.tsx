@@ -11,7 +11,7 @@ import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SubsectionForm } from "src/subsections/components/SubsectionForm"
 import deleteSubsection from "src/subsections/mutations/deleteSubsection"
 import updateSubsection from "src/subsections/mutations/updateSubsection"
-import getSubsectionBySlugs from "src/subsections/queries/getSubsectionBySlugs"
+import getSubsection from "src/subsections/queries/getSubsection"
 import { SubsectionSchema } from "src/subsections/schema"
 import getProjectUsers from "src/users/queries/getProjectUsers"
 
@@ -20,10 +20,10 @@ const EditSubsection = () => {
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
   const subsectionSlug = useParam("subsectionSlug", "string")
-  const [subsection, { setQueryData }] = useQuery(getSubsectionBySlugs, {
+  const [subsection, { setQueryData }] = useQuery(getSubsection, {
     projectSlug: projectSlug!,
     sectionSlug: sectionSlug!,
-    slug: subsectionSlug!,
+    subsectionSlug: subsectionSlug!,
   })
   const [updateSubsectionMutation] = useMutation(updateSubsection)
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })

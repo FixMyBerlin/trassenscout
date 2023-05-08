@@ -6,6 +6,7 @@ import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
+import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import getSection from "src/sections/queries/getSection"
 import { FORM_ERROR, SubsectionForm } from "src/subsections/components/SubsectionForm"
@@ -15,9 +16,11 @@ import getProjectUsers from "src/users/queries/getProjectUsers"
 
 const NewSubsection = () => {
   const router = useRouter()
-  const projectSlug = useParam("projectSlug", "string")
-  const sectionSlug = useParam("sectionSlug", "string")
-  const [section] = useQuery(getSection, { sectionSlug, projectSlug })
+  const { projectSlug, sectionSlug } = useSlugs()
+  const [section] = useQuery(getSection, {
+    projectSlug: projectSlug!,
+    sectionSlug: sectionSlug!,
+  })
   const [createSubsectionMutation] = useMutation(createSubsection)
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 

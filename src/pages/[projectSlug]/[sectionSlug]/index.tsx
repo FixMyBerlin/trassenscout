@@ -25,20 +25,21 @@ import getSubsections from "src/subsections/queries/getSubsections"
 export const SectionDashboardWithQuery = () => {
   const { projectSlug, sectionSlug } = useSlugs()
 
-  const [section] = useQuery(getSection, { sectionSlug, projectSlug }) // TODO optimize to allow projectId as well to get rid of one query in case we can
+  const [section] = useQuery(getSection, { projectSlug: projectSlug!, sectionSlug: sectionSlug! })
   const [{ files }] = useQuery(getFiles, { projectSlug: projectSlug! })
   const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, {
     sectionSlug: sectionSlug!,
     orderBy: { id: "asc" },
   })
-  const [{ subsections, count }] = useQuery(getSubsections, {
-    where: { sectionId: section.id },
-    orderBy: { title: "asc" },
-  }) // TODO make project required
+  // TODO: Having both those calls is weird; Ideally change the getSectionS to getSection "include subsections".
   const [{ sections }] = useQuery(getSections, {
     where: { project: { slug: projectSlug! } },
     orderBy: { index: "asc" },
     include: { subsections: true },
+  }) // TODO make project required
+  const [{ subsections }] = useQuery(getSubsections, {
+    where: { sectionId: section.id },
+    orderBy: { title: "asc" },
   }) // TODO make project required
 
   const sectionsWithSubsections = sections as ProjectMapSections

@@ -8,17 +8,17 @@ import { z } from "zod"
 const GetSubsectionSchema = z.object({
   projectSlug: z.string(),
   sectionSlug: z.string(),
-  slug: z.string(),
+  subsectionSlug: z.string(),
   includeSubsubsections: z.boolean().optional(),
 })
 
 export default resolver.pipe(
   resolver.zod(GetSubsectionSchema),
   authorizeProjectAdmin(getProjectIdBySlug),
-  async ({ projectSlug, sectionSlug, slug, includeSubsubsections }) => {
+  async ({ projectSlug, sectionSlug, subsectionSlug, includeSubsubsections }) => {
     let query: Prisma.SubsectionFindFirstArgs = {
       where: {
-        slug,
+        slug: subsectionSlug,
         section: {
           slug: sectionSlug,
           project: {

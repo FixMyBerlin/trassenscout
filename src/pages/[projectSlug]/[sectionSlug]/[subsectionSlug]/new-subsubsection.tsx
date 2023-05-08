@@ -7,7 +7,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import getSubsectionBySlugs from "src/subsections/queries/getSubsectionBySlugs"
+import getSubsection from "src/subsections/queries/getSubsection"
 import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
 import createSubsubsection from "src/subsubsections/mutations/createSubsubsection"
 import { SubsubsectionSchema } from "src/subsubsections/schema"
@@ -17,11 +17,10 @@ const NewSubsubsection = () => {
   const [createSubsubsectionMutation] = useMutation(createSubsubsection)
 
   const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
-  console.log("xxx", projectSlug, sectionSlug, subsectionSlug)
-  const [subsection] = useQuery(getSubsectionBySlugs, {
+  const [subsection] = useQuery(getSubsection, {
     projectSlug: projectSlug!,
     sectionSlug: sectionSlug!,
-    slug: subsectionSlug!,
+    subsectionSlug: subsectionSlug!,
   })
 
   type HandleSubmit = any // TODO

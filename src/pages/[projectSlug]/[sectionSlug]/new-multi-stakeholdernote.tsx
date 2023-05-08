@@ -7,6 +7,7 @@ import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
+import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import getSection from "src/sections/queries/getSection"
 import {
@@ -20,9 +21,11 @@ import { StakeholdernoteMultiSchema, StakeholdernoteSchema } from "src/stakehold
 const NewStakeholdernoteMulti = () => {
   const router = useRouter()
   const [createStakeholdernoteMutation] = useMutation(createStakeholdernote)
-  const sectionSlug = useParam("sectionSlug", "string")
-  const projectSlug = useParam("projectSlug", "string")
-  const [section] = useQuery(getSection, { sectionSlug, projectSlug })
+  const { projectSlug, sectionSlug } = useSlugs()
+  const [section] = useQuery(getSection, {
+    projectSlug: projectSlug!,
+    sectionSlug: sectionSlug!,
+  })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {

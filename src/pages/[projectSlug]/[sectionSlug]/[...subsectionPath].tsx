@@ -20,7 +20,7 @@ import { SubsectionMap } from "src/projects/components/Map/SubsectionMap"
 import { SubsubsectionSidebar } from "src/projects/components/Map/SubsubsectionSidebar"
 import getSections from "src/sections/queries/getSections"
 import { SubsubsectionTable } from "src/subsections/components/SubsubsectionTable"
-import getSubsectionBySlugs from "src/subsections/queries/getSubsectionBySlugs"
+import getSubsection from "src/subsections/queries/getSubsection"
 
 export interface Subsubsection extends Omit<SubsubsectionClient, "geometry"> {
   geometry: Position[]
@@ -40,10 +40,10 @@ export const SubsectionDashboardWithQuery = () => {
     orderBy: { index: "asc" },
     include: { subsections: true },
   })
-  const [subsectionOrg] = useQuery(getSubsectionBySlugs, {
+  const [subsectionOrg] = useQuery(getSubsection, {
     projectSlug: projectSlug!,
     sectionSlug: sectionSlug!,
-    slug: subsectionSlug!,
+    subsectionSlug: subsectionSlug!,
     includeSubsubsections: true,
   })
 

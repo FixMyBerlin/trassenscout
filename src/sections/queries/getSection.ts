@@ -6,8 +6,8 @@ import { z } from "zod"
 
 const GetSectionSchema = z.object({
   // This accepts type of undefined, but is required at runtime
-  sectionSlug: z.string().optional().refine(Boolean, "Required"),
   projectSlug: z.string().optional().refine(Boolean, "Required"),
+  sectionSlug: z.string().optional().refine(Boolean, "Required"),
 })
 
 const getProjectId = async (input: Record<string, any>): Promise<number> =>
