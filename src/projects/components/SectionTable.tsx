@@ -1,10 +1,10 @@
-import { Routes, useParam } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { Section } from "@prisma/client"
 import { useRouter } from "next/router"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
-import { SectionMarker } from "./Map/Markers"
 import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
+import { SectionMarker } from "./Map/Markers"
 
 type Props = {
   sections: Section[]
@@ -63,6 +63,7 @@ export const SectionTable: React.FC<Props> = ({ sections }) => {
                   </td>
                   <td className="break-words py-4 pl-3 pr-4 text-sm font-medium group-hover:bg-gray-50 sm:pr-6">
                     {/* TODO Abstimmung */}-
+                    {/* <StakeholderSectionStatus stakeholdernotes={stakeholdernotes} /> */}
                   </td>
                 </tr>
               )
