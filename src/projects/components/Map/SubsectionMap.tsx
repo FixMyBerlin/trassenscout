@@ -19,9 +19,10 @@ type SubsectionMapProps = {
 const unselectableLineColor = "#979797"
 const lineColor = "#EAB308"
 const hoveredColor = "#fad57d"
+const selectedColor = "#2C62A9"
 
 export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selectedSection }) => {
-  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
+  const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
   const router = useRouter()
 
@@ -66,7 +67,12 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
     selectableSections.map((sec) =>
       lineString(sec.geometry, {
         id: sec.slug,
-        color: sec.slug === hovered ? hoveredColor : lineColor,
+        color:
+          sec.slug === subsubsectionSlug
+            ? selectedColor
+            : sec.slug === hovered
+            ? hoveredColor
+            : lineColor,
       })
     )
   )
