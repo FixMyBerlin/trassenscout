@@ -1,23 +1,23 @@
-import { Routes, useParam } from "@blitzjs/next"
-import { useRouter } from "next/router"
+import { Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { Spinner } from "src/core/components/Spinner"
-import { LayoutRs, MetaTags } from "src/core/layouts"
-import createSubsubsection from "src/subsubsections/mutations/createSubsubsection"
-import { SubsubsectionForm, FORM_ERROR } from "src/subsubsections/components/SubsubsectionForm"
+import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { PageHeader } from "src/core/components/PageHeader"
+import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
+import { useSlugs } from "src/core/hooks"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import getSubsectionBySlugs from "src/subsections/queries/getSubsectionBySlugs"
+import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
+import createSubsubsection from "src/subsubsections/mutations/createSubsubsection"
 import { SubsubsectionSchema } from "src/subsubsections/schema"
 
 const NewSubsubsection = () => {
   const router = useRouter()
   const [createSubsubsectionMutation] = useMutation(createSubsubsection)
 
-  const projectSlug = useParam("projectSlug", "string")
-  const sectionSlug = useParam("sectionSlug", "string")
-  const subsectionSlug = useParam("subsectionSlug", "string")
+  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
+  console.log("xxx", projectSlug, sectionSlug, subsectionSlug)
   const [subsection] = useQuery(getSubsectionBySlugs, {
     projectSlug: projectSlug!,
     sectionSlug: sectionSlug!,
@@ -32,7 +32,13 @@ const NewSubsubsection = () => {
         ...values,
         subsectionId: subsection!.id,
       })
-      await router.push(Routes.ShowSubsubsectionPage({ subsubsectionId: subsubsection!.id }))
+      await router.push(
+        Routes.SubsectionDashboardPage({
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug!,
+          subsectionPath: [subsectionSlug!],
+        })
+      )
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }

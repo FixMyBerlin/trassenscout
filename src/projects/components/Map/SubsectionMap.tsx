@@ -1,16 +1,15 @@
-import React, { useState } from "react"
-import { useRouter } from "next/router"
 import { Routes } from "@blitzjs/next"
-import { LngLatBoundsLike, MapLayerMouseEvent, Marker } from "react-map-gl"
 import { lineString } from "@turf/helpers"
 import { bbox, featureCollection } from "@turf/turf"
-
+import { useRouter } from "next/router"
+import React, { useState } from "react"
+import { LngLatBoundsLike, MapLayerMouseEvent, Marker } from "react-map-gl"
 import { useSlugs } from "src/core/hooks"
-import { midPoint } from "./utils"
+import { Subsection } from "src/pages/[projectSlug]/[sectionSlug]/[...subsectionPath]"
 import { BaseMap } from "./BaseMap"
 import { SubsubsectionMarker } from "./Markers"
 import { ProjectMapSections } from "./ProjectMap"
-import { Subsection } from "src/pages/[projectSlug]/[sectionSlug]/[...subsectionPath]"
+import { midPoint } from "./utils"
 
 type SubsectionMapProps = {
   sections: ProjectMapSections

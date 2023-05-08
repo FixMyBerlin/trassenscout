@@ -13,7 +13,7 @@ import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { ProjectMap } from "src/projects/components/Map/ProjectMap"
 import type { ProjectMapSections } from "src/projects/components/Map/ProjectMap"
-import { SectionsTeasers } from "src/projects/components/Map/SectionsTeaser/SectionsTeasers"
+import { SectionTable } from "src/projects/components/SectionTable"
 import getProject from "src/projects/queries/getProject"
 import getSections from "src/sections/queries/getSections"
 
@@ -64,7 +64,8 @@ export const ProjectDashboardWithQuery = () => {
         <ProjectMap sections={sections as ProjectMapSections} />
       </div>
       {/* )} */}
-      {Boolean(sections.length) && <SectionsTeasers sections={sections} />}
+
+      <SectionTable sections={sections} />
 
       <CalenderDashboard />
 

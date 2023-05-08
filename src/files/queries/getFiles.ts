@@ -14,8 +14,6 @@ export default resolver.pipe(
   // @ts-ignore
   authorizeProjectAdmin(getProjectIdBySlug),
   async ({ projectSlug, where, orderBy, skip = 0, take = 100 }: GetFilesInput) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-
     const saveWhere = { project: { slug: projectSlug }, ...where }
     const {
       items: files,

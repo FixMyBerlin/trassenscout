@@ -1,10 +1,9 @@
 import { resolver } from "@blitzjs/rpc"
+import { NotFoundError } from "blitz"
 import db, { Prisma } from "db"
-import { z } from "zod"
-
 import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
-import { NotFoundError } from "blitz"
+import { z } from "zod"
 
 const GetSubsectionSchema = z.object({
   projectSlug: z.string(),

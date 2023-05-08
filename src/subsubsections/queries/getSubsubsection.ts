@@ -4,16 +4,14 @@ import db from "db"
 import { z } from "zod"
 
 const GetSubsubsection = z.object({
-  // This accepts type of undefined, but is required at runtime
-  id: z.number().optional().refine(Boolean, "Required"),
+  slug: z.string(),
 })
 
 export default resolver.pipe(
   resolver.zod(GetSubsubsection),
   resolver.authorize(),
-  async ({ id }) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-    const subsubsection = await db.subsubsection.findFirst({ where: { id } })
+  async ({ slug }) => {
+    const subsubsection = await db.subsubsection.findFirst({ where: { slug } })
 
     if (!subsubsection) throw new NotFoundError()
 

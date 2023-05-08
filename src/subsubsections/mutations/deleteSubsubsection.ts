@@ -10,7 +10,6 @@ export default resolver.pipe(
   resolver.zod(DeleteSubsubsection),
   resolver.authorize(),
   async ({ id }) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const subsubsection = await db.subsubsection.deleteMany({ where: { id } })
 
     return subsubsection

@@ -37,8 +37,22 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         help="Massnahmentyp"
         placeholder=""
       />
-      <LabeledTextField type="number" name="length" label="Länge (in km)" optional placeholder="" />
-      <LabeledTextField type="number" name="width" label="Breite (in m)" optional placeholder="" />
+      <LabeledTextField
+        type="number"
+        step="0.001"
+        name="length"
+        label="Länge (in km)"
+        optional
+        placeholder=""
+      />
+      <LabeledTextField
+        type="number"
+        step="0.01"
+        name="width"
+        label="Breite (in m)"
+        optional
+        placeholder=""
+      />
     </Form>
   )
 }

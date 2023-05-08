@@ -16,11 +16,12 @@ import { SubsectionMap } from "src/projects/components/Map/SubsectionMap"
 import getSections from "src/sections/queries/getSections"
 import getSubsectionBySlugs from "src/subsections/queries/getSubsectionBySlugs"
 import { ProjectMapSections } from "src/projects/components/Map"
-import { Sidebar } from "src/projects/components/Map/Sidebar"
+import { SubsubsectionSidebar } from "src/projects/components/Map/SubsubsectionSidebar"
 import {
   Subsection as SubsectionClient,
   Subsubsection as SubsubsectionClient,
 } from "@prisma/client"
+import { SubsubsectionTable } from "src/subsections/components/SubsubsectionTable"
 
 export interface Subsubsection extends Omit<SubsubsectionClient, "geometry"> {
   geometry: Position[]
@@ -33,7 +34,6 @@ export interface Subsection extends Omit<SubsectionClient, "geometry"> {
 
 export const SubsectionDashboard = () => {
   const router = useRouter()
-
   const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
   const [subsectionOrg] = useQuery(getSubsectionBySlugs, {
@@ -87,7 +87,7 @@ export const SubsectionDashboard = () => {
       <div className="relative mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
         <SubsectionMap sections={sections as ProjectMapSections} selectedSection={subsection} />
         {subsubsection ? (
-          <Sidebar
+          <SubsubsectionSidebar
             className="absolute right-0 top-0 h-full w-1/3 overflow-auto border-2 border-black bg-white"
             subsubsection={subsubsection}
             onClose={() => {
@@ -101,9 +101,12 @@ export const SubsectionDashboard = () => {
                 { scroll: false }
               )
             }}
-          ></Sidebar>
+          ></SubsubsectionSidebar>
         ) : null}
       </div>
+
+      {/* @ts-expect-errors the way we query for subsections causes the type to not know about subsections */}
+      <SubsubsectionTable subsubsections={subsectionOrg.subsubsections} />
 
       {/* Admin Actions Section - noch ungestyled */}
       <section className="rounded border bg-blue-100 p-5">
@@ -136,7 +139,10 @@ export const SubsectionDashboard = () => {
               <li key={subsubsection.id}>
                 <Link
                   href={Routes.EditSubsubsectionPage({
-                    subsubsectionId: subsubsection.id,
+                    projectSlug: projectSlug!,
+                    sectionSlug: sectionSlug!,
+                    subsectionSlug: subsectionSlug!,
+                    subsubsectionSlug: subsubsectionSlug!,
                   })}
                 >
                   {quote(subsubsection.title)} bearbeiten

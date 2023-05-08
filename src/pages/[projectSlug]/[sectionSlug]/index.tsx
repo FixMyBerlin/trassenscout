@@ -2,21 +2,22 @@ import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Link } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
+import { Link } from "src/core/components/links"
 import { proseClasses, quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFiles from "src/files/queries/getFiles"
-import { SectionMap } from "src/projects/components/Map/SectionMap"
 import type { ProjectMapSections } from "src/projects/components/Map/ProjectMap"
+import { SectionMap } from "src/projects/components/Map/SectionMap"
+import { SubsectionTable } from "src/sections/components/SubsectionTable"
 import getSection from "src/sections/queries/getSection"
 import getSections from "src/sections/queries/getSections"
-import StakeholdernoteList from "src/stakeholdernotes/components/StakeholdernoteList"
 import { StakeholderSectionStatus } from "src/stakeholdernotes/components/StakeholderSectionStatus"
+import StakeholdernoteList from "src/stakeholdernotes/components/StakeholdernoteList"
 import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
 import getSubsections from "src/subsections/queries/getSubsections"
 
@@ -73,6 +74,8 @@ export const SectionDashboardWithQuery = () => {
           {/* <SectionPanel section={section} /> */}
         </div>
       )}
+
+      <SubsectionTable subsections={subsections} />
 
       {/* Dateien / files */}
       {Boolean(files.length) && (
