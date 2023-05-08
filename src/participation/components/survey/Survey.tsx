@@ -16,7 +16,7 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
 
   useEffect(() => {
     setProgress({ current: 0, total: pages.length - 1 })
-  })
+  }, [])
 
   useEffect(() => {
     window && window.scrollTo(0, 0)
