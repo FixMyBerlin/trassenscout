@@ -18,11 +18,9 @@ type Props = {
 export const Email: React.FC<Props> = ({ onSubmit, email }) => {
   const [consent, setConsent] = useState(false)
   const { progress, setProgress } = useContext(ProgressContext)
-
   useEffect(() => {
-    setProgress({ current: 0, total: email.pages.length - 1 })
+    setProgress(8)
   }, [])
-
   const handleSubmit = (values: Record<string, any>) => {
     onSubmit(values.email)
   }

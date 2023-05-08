@@ -17,12 +17,16 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const [values, setValues] = useState({})
   const [isPageOneCompleted, setIsPageOneCompleted] = useState(false)
   const [isPageTwoCompleted, setIsPageTwoCompleted] = useState(false)
+  const [feedbackPageProgress, setFeedbackPageProgress] = useState(0)
   const [feedbackCategory, setFeedbackCategory] = useState(1)
 
   useEffect(() => {
-    setProgress({ current: 0, total: pages.length - 1 })
     setFeedbackCategory(categories.length) // default: '"Sonstiges"
   }, [])
+
+  useEffect(() => {
+    setProgress(6 + feedbackPageProgress)
+  }, [feedbackPageProgress])
 
   const [isMap, setIsMap] = useState(false)
 
@@ -37,14 +41,15 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const categories = pages[0].questions[0].props.responses
 
   const handleNextPage = () => {
-    const newProgress = Math.min(pages.length - 1, progress.current + 1)
-    setProgress({ ...progress, current: newProgress })
-    window && window.scrollTo(0, 0)
+    const newFeedbackPageProgress = Math.min(pages.length, feedbackPageProgress + 1)
+    setFeedbackPageProgress(newFeedbackPageProgress)
+    console.log(newFeedbackPageProgress)
   }
+
   const handleBackPage = () => {
-    const newProgress = Math.max(0, progress.current - 1)
-    setProgress({ ...progress, current: newProgress })
-    window && window.scrollTo(0, 0)
+    const newFeedbackPageProgress = Math.max(0, feedbackPageProgress - 1)
+    setFeedbackPageProgress(newFeedbackPageProgress)
+    console.log(newFeedbackPageProgress)
   }
 
   const transformValues = (values: Record<string, null | string | boolean>) => {
@@ -89,7 +94,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
     // @ts-ignore
     <PinContext.Provider value={{ pinPosition, setPinPosition }}>
       <SurveyForm onSubmit={handleSubmit} onChangeValues={handleChange}>
-        {progress.current === 0 && (
+        {feedbackPageProgress === 0 && (
           <FeedbackFirstPage
             isCompleted={isPageOneCompleted}
             page={pages[0]}
@@ -97,7 +102,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
             onButtonClick={handleNextPage}
           />
         )}
-        {progress.current === 1 && (
+        {feedbackPageProgress === 1 && (
           <FeedbackSecondPage
             isCompleted={isPageTwoCompleted}
             projectGeometry={projectGeometry}
