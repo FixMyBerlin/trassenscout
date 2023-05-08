@@ -20,7 +20,7 @@ import { Debug } from "src/participation/components/survey/Debug"
 
 const ParticipationMainPage: BlitzPage = () => {
   const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("SURVEY")
-  const [progress, setProgress] = useState({ current: 0, total: 0 })
+  const [progress, setProgress] = useState(1)
   const [responses, setResponses] = useState<any[]>([])
   const [emailState, setEmailState] = useState<string | null>()
   const [surveySessionId, setSurveySessionId] = useState<null | number>(null)
@@ -65,6 +65,7 @@ const ParticipationMainPage: BlitzPage = () => {
       setFeedbackKey(feedbackKey + 1)
       setStage("FEEDBACK")
       window && window.scrollTo(0, 0)
+      console.log("set feedback")
     }
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()

@@ -51,7 +51,6 @@ export const FeedbackSecondPage: React.FC<Props> = ({
         <Question question={textAreaQuestions[1]} />
       </div>
 
-      {/* TODO Disabled */}
       <ParticipationButtonWrapper>
         <ParticipationButton disabled={!isCompleted} id="submit-finish" type="submit">
           {buttons[0].label.de}

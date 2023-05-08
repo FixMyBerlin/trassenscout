@@ -13,23 +13,24 @@ type Props = { survey: TSurvey; onSubmit: ([]) => void }
 export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   const [values, setValues] = useState({})
   const { progress, setProgress } = useContext(ProgressContext)
+  const [surveyPageProgress, setSurveyPageProgress] = useState(0)
 
   useEffect(() => {
-    setProgress({ current: 0, total: pages.length - 1 })
-  }, [])
+    setProgress(1 + surveyPageProgress)
+  }, [surveyPageProgress])
 
   useEffect(() => {
     window && window.scrollTo(0, 0)
   }, [progress])
 
   const handleNextPage = () => {
-    const newProgress = Math.min(pages.length - 1, progress.current + 1)
-    setProgress({ ...progress, current: newProgress })
+    const newSurveyPageProgress = Math.min(pages.length, surveyPageProgress + 1)
+    setSurveyPageProgress(newSurveyPageProgress)
   }
 
   const handleBackPage = () => {
-    const newProgress = Math.max(0, progress.current - 1)
-    setProgress({ ...progress, current: newProgress })
+    const newSurveyPageProgress = Math.max(0, surveyPageProgress - 1)
+    setSurveyPageProgress(newSurveyPageProgress)
   }
 
   const buttonActions = {
@@ -72,13 +73,13 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
 
   const pageIsComplete = () => {
     let completed: boolean
-    const questions = pages[progress.current]!.questions
+    const questions = pages[surveyPageProgress]!.questions
 
     if (!questions || !questions.length) {
       completed = true
     } else {
       // @ts-ignore every() returns a boolean
-      completed = pages[progress.current]!.questions?.every(({ id, component }) => {
+      completed = pages[surveyPageProgress]!.questions?.every(({ id, component }) => {
         if (!(id in values)) {
           return false
         }
@@ -94,7 +95,7 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
     return completed
   }
 
-  const page = pages[progress.current]
+  const page = pages[surveyPageProgress]
 
   return (
     // @ts-ignore
