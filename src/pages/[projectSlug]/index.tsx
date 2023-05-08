@@ -5,6 +5,7 @@ import statusImg from "public/Planungsphase_Placeholder.jpg"
 import { Suspense } from "react"
 import { CalenderDashboard } from "src/calendar-entries/components"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
+import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
 import DashedLine from "src/core/components/DashedLine"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/PageHeader"
@@ -44,6 +45,7 @@ export const ProjectDashboardWithQuery = () => {
     <>
       <MetaTags noindex title={project.title} />
 
+      <Breadcrumb />
       <PageHeader
         title={project.title}
         intro={`Willkommen im Trassenscout zum ${project.title}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}

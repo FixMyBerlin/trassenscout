@@ -21,6 +21,7 @@ import { SubsubsectionSidebar } from "src/projects/components/Map/SubsubsectionS
 import getSections from "src/sections/queries/getSections"
 import { SubsubsectionTable } from "src/subsections/components/SubsubsectionTable"
 import getSubsection from "src/subsections/queries/getSubsection"
+import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
 
 export interface Subsubsection extends Omit<SubsubsectionClient, "geometry"> {
   geometry: Position[]
@@ -69,6 +70,8 @@ export const SubsectionDashboardWithQuery = () => {
   return (
     <>
       <MetaTags noindex title={subsection!.title} />
+
+      <Breadcrumb />
       <PageHeader
         title={subsection!.title}
         action={

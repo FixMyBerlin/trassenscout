@@ -2,6 +2,7 @@ import { BlitzPage, Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
+import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
@@ -49,6 +50,7 @@ export const SectionDashboardWithQuery = () => {
     <>
       <MetaTags noindex title={section.title} />
 
+      <Breadcrumb />
       <PageHeader
         title={section.title}
         subtitle={section.subTitle}
