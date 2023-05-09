@@ -108,7 +108,7 @@ export const SubsectionDashboardWithQuery = () => {
           // Make sure the map rerenders when we close the SubsectionSidebar
           key={`map-${Boolean(subsubsection)}`}
           sections={sections as ProjectMapSections}
-          selectedSection={subsection}
+          selectedSubsection={subsection}
         />
 
         {subsubsection ? (

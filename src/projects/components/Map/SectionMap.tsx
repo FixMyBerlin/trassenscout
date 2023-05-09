@@ -38,11 +38,13 @@ export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSectio
   const handleMouseEnter = (e: MapLayerMouseEvent | undefined) => setHovered(getId(e))
   const handleMouseLeave = () => setHovered(null)
 
-  const sectionBounds = sectionsBbox(selectedSection ? [selectedSection] : sections)
+  const sectionBounds = sectionsBbox([selectedSection])
   if (!sectionBounds) return null
 
-  const dots = selectedSection.subsections.map((subsection) => JSON.parse(subsection.geometry)[0])
-  dots.push(JSON.parse(selectedSection.subsections.at(-1)!.geometry).at(-1))
+  const dots = selectedSection.subsections.map((subsection) => {
+    const geometry = JSON.parse(subsection.geometry)
+    return [geometry[0], geometry.at(-1)]
+  }).flat()
 
   const lines = featureCollection(
     sections
@@ -98,8 +100,7 @@ export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSectio
         onMouseLeave={handleMouseLeave}
         lines={lines}
         selectableLines={selectableLines}
-        // @ts-ignore
-        dots={lineString(dots)}
+        dots={dots.length ? lineString(dots) : undefined}
       >
         {markers}
       </BaseMap>

@@ -2,14 +2,14 @@ import React, { useState } from "react"
 import Map, { Layer, MapProps, NavigationControl, ScaleControl, Source } from "react-map-gl"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
-import { FeatureCollection } from "@turf/helpers"
+import { Feature, FeatureCollection, LineString } from "@turf/helpers"
 
 import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher"
 
 export interface BaseMapProps extends MapProps {
   lines?: FeatureCollection
   selectableLines?: FeatureCollection
-  dots?: FeatureCollection
+  dots?: Feature<LineString>
 }
 
 const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"

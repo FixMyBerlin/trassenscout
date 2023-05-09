@@ -18,10 +18,9 @@ export type ProjectMapSections = (Section & {
 type ProjectMapProps = {
   children?: React.ReactNode
   sections: ProjectMapSections
-  selectedSection?: ProjectMapSections[number]
 }
 
-export const ProjectMap: React.FC<ProjectMapProps> = ({ sections, selectedSection }) => {
+export const ProjectMap: React.FC<ProjectMapProps> = ({ sections }) => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
 
@@ -35,13 +34,22 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({ sections, selectedSectio
   const handleMouseEnter = (e: MapLayerMouseEvent | undefined) => setHovered(getId(e))
   const handleMouseLeave = () => setHovered(null)
 
-  const sectionBounds = sectionsBbox(selectedSection ? [selectedSection] : sections)
+  const sectionBounds = sectionsBbox(sections)
   if (!sectionBounds) return null
 
   const dots = sections
-    .map((section) => section.subsections.map((subsection) => JSON.parse(subsection.geometry)[0]))
+    .map((section) => {
+      const first = section.subsections[0]
+      if (!first) {
+        return []
+      } else {
+        return [
+          JSON.parse(first.geometry)[0],
+          JSON.parse(section.subsections.at(-1)!.geometry).at(-1),
+        ]
+      }
+    })
     .flat()
-  dots.push(JSON.parse(sections.at(-1)!.subsections.at(-1)!.geometry).at(-1))
 
   const selectableLines = featureCollection(
     sections
@@ -98,8 +106,7 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({ sections, selectedSectio
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       selectableLines={selectableLines}
-      // @ts-ignore
-      dots={lineString(dots)}
+      dots={dots.length ? lineString(dots) : undefined}
     >
       {markers}
     </BaseMap>
