@@ -1,10 +1,10 @@
 import { Stakeholdernote } from "@prisma/client"
 
-type props = {
+type Props = {
   stakeholdernotes: Stakeholdernote[]
 }
 
-export const StakeholderSectionStatus: React.FC<props> = ({ stakeholdernotes }) => {
+export const StakeholderSummary: React.FC<Props> = ({ stakeholdernotes }) => {
   const stakeholdernotesDone = stakeholdernotes.filter(
     (stakeholder) => stakeholder.status === "DONE"
   )

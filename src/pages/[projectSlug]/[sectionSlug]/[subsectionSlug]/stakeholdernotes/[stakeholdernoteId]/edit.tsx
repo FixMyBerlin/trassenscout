@@ -7,6 +7,7 @@ import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
+import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import {
   FORM_ERROR,
@@ -18,9 +19,8 @@ import { StakeholdernoteSchema } from "src/stakeholdernotes/schema"
 
 const EditStakeholdernote = () => {
   const router = useRouter()
+  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
   const stakeholdernoteId = useParam("stakeholdernoteId", "number")
-  const sectionSlug = useParam("sectionSlug", "string")
-  const projectSlug = useParam("projectSlug", "string")
   const [stakeholdernote, { setQueryData }] = useQuery(
     getStakeholdernote,
     { id: stakeholdernoteId },
@@ -40,7 +40,11 @@ const EditStakeholdernote = () => {
       })
       await setQueryData(updated)
       await router.push(
-        Routes.SectionDashboardPage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })
+        Routes.SubsectionDashboardPage({
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug!,
+          subsectionPath: [subsectionSlug!],
+        })
       )
     } catch (error: any) {
       console.error(error)
@@ -54,6 +58,7 @@ const EditStakeholdernote = () => {
       <PageHeader title={quote(stakeholdernote.title)} subtitle="Stakeholder bearbeiten" />
 
       <StakeholdernoteForm
+        className="mt-10"
         submitText="Speichern"
         // TODO use a zod schema for form validation
         // 1. Move the schema from mutations/createStakeholdernote.ts to `Stakeholdernote/schema.ts`
@@ -77,7 +82,7 @@ const EditStakeholdernote = () => {
             sectionSlug: sectionSlug!,
           })}
         >
-          Zurück zum Dashboard der Teilstrecke
+          Zurück zum Planungsabschnitt
         </Link>
       </p>
     </>

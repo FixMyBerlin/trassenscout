@@ -24,6 +24,9 @@ import getSubsection from "src/subsections/queries/getSubsection"
 import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import invariant from "tiny-invariant"
+import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
+import { StakeholderSummary } from "src/stakeholdernotes/components/StakeholderSummary"
+import { StakeholderSection } from "src/stakeholdernotes/components/StakeholderSection"
 
 export type Subsubsection = Omit<SubsubsectionClient, "geometry"> & {
   geometry: Position[]
@@ -48,6 +51,10 @@ export const SubsectionDashboardWithQuery = () => {
     sectionSlug: sectionSlug!,
     subsectionSlug: subsectionSlug!,
     includeSubsubsections: true,
+  })
+  const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, {
+    subsectionId: subsectionOrg.id,
+    orderBy: { id: "asc" },
   })
 
   const parseGeometry = (objectWithGeometry: Record<any, any>) => {
@@ -95,6 +102,7 @@ export const SubsectionDashboardWithQuery = () => {
         <div className="flex gap-8">
           <Markdown markdown={subsection.description} className="mb-3" />
           <div className="space-y-2">
+            <StakeholderSummary stakeholdernotes={stakeholdernotes} />
             <p>
               <strong>Teilstreckenlänge:</strong> TODO
               {/* {subsection.length ? subsection.length + " km" : " k.A."} */}
@@ -125,13 +133,15 @@ export const SubsectionDashboardWithQuery = () => {
                 { scroll: false }
               )
             }}
-          ></SubsubsectionSidebar>
+          />
         ) : null}
       </div>
 
       <SubsubsectionTable subsubsections={subsection.subsubsections} />
 
-      <SuperAdminLogData data={{ subsectionOrg, subsection, sections }} />
+      <StakeholderSection stakeholdernotes={stakeholdernotes} />
+
+      <SuperAdminLogData data={{ subsectionOrg, subsection, sections, stakeholdernotes }} />
     </>
   )
 }

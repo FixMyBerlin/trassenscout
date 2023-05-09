@@ -1,6 +1,5 @@
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { Stakeholdernote } from "@prisma/client"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links"
@@ -9,28 +8,26 @@ import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import getSection from "src/sections/queries/getSection"
-import {
-  FORM_ERROR,
-  StakeholdernoteForm,
-} from "src/stakeholdernotes/components/StakeholdernoteForm"
+import { FORM_ERROR } from "src/stakeholdernotes/components/StakeholdernoteForm"
 import { StakeholdernoteMultiForm } from "src/stakeholdernotes/components/StakeholdernoteMultiForm"
 import createStakeholdernote from "src/stakeholdernotes/mutations/createStakeholdernote"
-import { StakeholdernoteMultiSchema, StakeholdernoteSchema } from "src/stakeholdernotes/schema"
+import { StakeholdernoteMultiSchema } from "src/stakeholdernotes/schema"
+import getSubsection from "src/subsections/queries/getSubsection"
 
 const NewStakeholdernoteMulti = () => {
   const router = useRouter()
   const [createStakeholdernoteMutation] = useMutation(createStakeholdernote)
-  const { projectSlug, sectionSlug } = useSlugs()
-  const [section] = useQuery(getSection, {
+  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
+  const [subsection] = useQuery(getSubsection, {
     projectSlug: projectSlug!,
     sectionSlug: sectionSlug!,
+    subsectionSlug: subsectionSlug!,
   })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     const createStakeholderNoteArray = values.title.split("\n").map((i: string) => {
-      return { title: i, sectionId: section.id, status: "PENDING", statusText: null }
+      return { title: i, subsectionId: subsection.id, status: "PENDING", statusText: null }
     })
 
     try {
@@ -38,7 +35,11 @@ const NewStakeholdernoteMulti = () => {
         await createStakeholdernoteMutation(createStakeholderNoteArray[i])
       }
       await router.push(
-        Routes.SectionDashboardPage({ sectionSlug: sectionSlug!, projectSlug: projectSlug! })
+        Routes.SubsectionDashboardPage({
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug!,
+          subsectionPath: [subsectionSlug!],
+        })
       )
     } catch (error: any) {
       console.error(error)
@@ -48,27 +49,28 @@ const NewStakeholdernoteMulti = () => {
 
   return (
     <>
-      <MetaTags noindex title="Mehrere Stakeholder erstellen" />
-
+      <MetaTags noindex title="Mehrere TöBs erstellen" />
       <PageHeader
-        title="Mehrere Stakeholder erstellen"
-        subtitle={`Für die Teilstrecke ${quote(section.title)}`}
+        title="Mehrere TöBs erstellen"
+        subtitle={`Für die Teilstrecke ${quote(subsection.title)}`}
       />
 
       <StakeholdernoteMultiForm
+        className="mt-10"
         submitText="Erstellen"
         // TODO schema: See `__ModelIdParam__/edit.tsx` for detailed instruction.
         schema={StakeholdernoteMultiSchema}
         onSubmit={handleSubmit}
       />
-      <p>
+      <p className="mt-5">
         <Link
-          href={Routes.SectionDashboardPage({
-            sectionSlug: sectionSlug!,
+          href={Routes.SubsectionDashboardPage({
             projectSlug: projectSlug!,
+            sectionSlug: sectionSlug!,
+            subsectionPath: [subsectionSlug!],
           })}
         >
-          Zurück zum Dashboard der Teilstrecke
+          Zurück zum Planungsabschnitt
         </Link>
       </p>
     </>

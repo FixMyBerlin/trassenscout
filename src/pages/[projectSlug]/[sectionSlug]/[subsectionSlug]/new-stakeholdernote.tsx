@@ -1,4 +1,4 @@
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
@@ -8,32 +8,37 @@ import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import getSection from "src/sections/queries/getSection"
 import {
   FORM_ERROR,
   StakeholdernoteForm,
 } from "src/stakeholdernotes/components/StakeholdernoteForm"
 import createStakeholdernote from "src/stakeholdernotes/mutations/createStakeholdernote"
 import { StakeholdernoteSchema } from "src/stakeholdernotes/schema"
+import getSubsection from "src/subsections/queries/getSubsection"
 
 const NewStakeholdernote = () => {
   const router = useRouter()
   const [createStakeholdernoteMutation] = useMutation(createStakeholdernote)
-  const { projectSlug, sectionSlug } = useSlugs()
-  const [section] = useQuery(getSection, {
+  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
+  const [subsection] = useQuery(getSubsection, {
     projectSlug: projectSlug!,
     sectionSlug: sectionSlug!,
+    subsectionSlug: subsectionSlug!,
   })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const stakeholdernote = await createStakeholdernoteMutation({
+      await createStakeholdernoteMutation({
         ...values,
-        sectionId: section.id,
+        subsectionId: subsection.id,
       })
       await router.push(
-        Routes.SectionDashboardPage({ sectionSlug: sectionSlug!, projectSlug: projectSlug! })
+        Routes.SubsectionDashboardPage({
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug!,
+          subsectionPath: [subsectionSlug!],
+        })
       )
     } catch (error: any) {
       console.error(error)
@@ -43,28 +48,28 @@ const NewStakeholdernote = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neuen Stakeholdernote erstellen" />
-
+      <MetaTags noindex title="Neuen TöB erstellen" />
       <PageHeader
         title="Stakeholder erstellen"
-        subtitle={`Für die Teilstrecke ${quote(section.title)}`}
+        subtitle={`Für die Teilstrecke ${quote(subsection.title)}`}
       />
 
       <StakeholdernoteForm
+        className="mt-10"
         submitText="Erstellen"
-        // TODO schema: See `__ModelIdParam__/edit.tsx` for detailed instruction.
-        schema={StakeholdernoteSchema.omit({ sectionId: true })}
+        schema={StakeholdernoteSchema.omit({ subsectionId: true })}
         // initialValues={{}} // Use only when custom initial values are needed
         onSubmit={handleSubmit}
       />
-      <p>
+      <p className="mt-5">
         <Link
-          href={Routes.SectionDashboardPage({
-            sectionSlug: sectionSlug!,
+          href={Routes.SubsectionDashboardPage({
             projectSlug: projectSlug!,
+            sectionSlug: sectionSlug!,
+            subsectionPath: [subsectionSlug!],
           })}
         >
-          Zurück zum Dashboard der Teilstrecke
+          Zurück zum Planungsabschnitt
         </Link>
       </p>
     </>

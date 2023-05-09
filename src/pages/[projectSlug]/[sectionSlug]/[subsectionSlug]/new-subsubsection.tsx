@@ -25,9 +25,8 @@ const NewSubsubsection = () => {
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
-    console.log("v", values)
     try {
-      const subsubsection = await createSubsubsectionMutation({
+      await createSubsubsectionMutation({
         ...values,
         subsectionId: subsection!.id,
       })

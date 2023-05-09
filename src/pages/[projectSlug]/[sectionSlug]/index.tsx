@@ -6,7 +6,6 @@ import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
-import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2 } from "src/core/components/text/Headings"
@@ -19,9 +18,6 @@ import { SectionMap } from "src/projects/components/Map/SectionMap"
 import { SubsectionTable } from "src/sections/components/SubsectionTable"
 import getSection from "src/sections/queries/getSection"
 import getSections from "src/sections/queries/getSections"
-import { StakeholderSectionStatus } from "src/stakeholdernotes/components/StakeholderSectionStatus"
-import StakeholdernoteList from "src/stakeholdernotes/components/StakeholdernoteList"
-import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
 import getSubsections from "src/subsections/queries/getSubsections"
 
 export const SectionDashboardWithQuery = () => {
@@ -29,10 +25,7 @@ export const SectionDashboardWithQuery = () => {
 
   const [section] = useQuery(getSection, { projectSlug: projectSlug!, sectionSlug: sectionSlug! })
   const [{ files }] = useQuery(getFiles, { projectSlug: projectSlug! })
-  const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, {
-    sectionSlug: sectionSlug!,
-    orderBy: { id: "asc" },
-  })
+
   // TODO: Having both those calls is weird; Ideally change the getSectionS to getSection "include subsections".
   const [{ sections }] = useQuery(getSections, {
     where: { project: { slug: projectSlug! } },
@@ -69,7 +62,6 @@ export const SectionDashboardWithQuery = () => {
         <div className="flex gap-8">
           <Markdown markdown={section.description} className="mb-3" />
           <div className="space-y-2">
-            <StakeholderSectionStatus stakeholdernotes={stakeholdernotes} />
             <p>
               <strong>Teilstreckenlänge:</strong>{" "}
               {section.length ? section.length + " km" : " k.A."}
@@ -94,39 +86,7 @@ export const SectionDashboardWithQuery = () => {
         </section>
       )}
 
-      {/* Stakeholder / stakeholdernotes */}
-      {Boolean(stakeholdernotes.length) && (
-        <section className="mt-12">
-          <H2 className="mb-5">
-            Abstimmung mit <abbr title="Träger öffentlicher Belange">TöB</abbr>s
-          </H2>
-          <StakeholdernoteList stakeholdernotes={stakeholdernotes} />
-          <ButtonWrapper>
-            <Link
-              button="blue"
-              icon="plus"
-              href={Routes.NewStakeholdernotePage({
-                projectSlug: projectSlug!,
-                sectionSlug: sectionSlug!,
-              })}
-            >
-              TöB
-            </Link>
-            <Link
-              button="white"
-              icon="plus"
-              href={Routes.NewStakeholdernoteMultiPage({
-                projectSlug: projectSlug!,
-                sectionSlug: sectionSlug!,
-              })}
-            >
-              Mehrere TöBs
-            </Link>
-          </ButtonWrapper>
-        </section>
-      )}
-
-      <SuperAdminLogData data={{ sections, subsections, stakeholdernotes }} />
+      <SuperAdminLogData data={{ sections, subsections }} />
     </>
   )
 }
