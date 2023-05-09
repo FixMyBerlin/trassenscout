@@ -4,6 +4,7 @@ import { bbox, featureCollection } from "@turf/turf"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
 import { LngLatBoundsLike, MapLayerMouseEvent, Marker } from "react-map-gl"
+
 import { useSlugs } from "src/core/hooks"
 import { Subsection } from "src/pages/[projectSlug]/[sectionSlug]/[...subsectionPath]"
 import { BaseMap } from "./BaseMap"
@@ -11,16 +12,12 @@ import { TipMarker } from "./TipMarker"
 import { SubsubsectionLabel } from "./Labels"
 import { ProjectMapSections } from "./ProjectMap"
 import { midPoint } from "./utils"
+import { lineColors } from "./lineColors"
 
 type SubsectionMapProps = {
   sections: ProjectMapSections
   selectedSection: Subsection
 }
-
-const unselectableLineColor = "#979797"
-const lineColor = "#EAB308"
-const hoveredColor = "#fad57d"
-const selectedColor = "#2C62A9"
 
 export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selectedSection }) => {
   const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
@@ -56,8 +53,7 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
       .map((section) =>
         section.subsections.map((subsection) =>
           lineString(JSON.parse(subsection.geometry), {
-            color: unselectableLineColor,
-            opacity: subsection.id === selectedSection.id ? 1 : 0.5,
+            color: lineColors.unselectable,
           })
         )
       )
@@ -70,10 +66,10 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
         id: sec.slug,
         color:
           sec.slug === subsubsectionSlug
-            ? selectedColor
+            ? lineColors.selected
             : sec.slug === hovered
-            ? hoveredColor
-            : lineColor,
+            ? lineColors.hovered
+            : lineColors.selectable,
       })
     )
   )

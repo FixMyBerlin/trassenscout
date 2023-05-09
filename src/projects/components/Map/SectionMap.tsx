@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { useRouter } from "next/router"
 import { Routes, useParam } from "@blitzjs/next"
+import { featureCollection } from "@turf/turf"
 import { lineString } from "@turf/helpers"
 import { MapLayerMouseEvent, Marker } from "react-map-gl"
 
@@ -8,17 +9,13 @@ import { midPoint, sectionsBbox } from "./utils"
 import { BaseMap } from "./BaseMap"
 import { SubsectionLabel } from "./Labels"
 import { ProjectMapSections } from "./ProjectMap"
-import { featureCollection } from "@turf/turf"
+import { lineColors } from "./lineColors"
 
 type SectionMapProps = {
   children?: React.ReactNode
   sections: ProjectMapSections
   selectedSection: ProjectMapSections[number]
 }
-
-const unselectableLineColor = "#979797"
-const lineColor = "#EAB308"
-const hoveredColor = "#fad57d"
 
 export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSection }) => {
   const router = useRouter()
@@ -53,8 +50,7 @@ export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSectio
       .map((section) =>
         section.subsections.map((subsection) =>
           lineString(JSON.parse(subsection.geometry), {
-            color: unselectableLineColor,
-            opacity: 0.5,
+            color: lineColors.unselectable,
           })
         )
       )
@@ -65,7 +61,7 @@ export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSectio
     selectedSection.subsections.map((subsection) =>
       lineString(JSON.parse(subsection.geometry), {
         id: subsection.slug,
-        color: subsection.slug === hovered ? hoveredColor : lineColor,
+        color: subsection.slug === hovered ? lineColors.hovered : lineColors.selectable,
       })
     )
   )

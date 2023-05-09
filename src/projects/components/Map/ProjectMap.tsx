@@ -9,6 +9,7 @@ import { MapLayerMouseEvent, Marker } from "react-map-gl"
 import { sectionsBbox } from "./utils"
 import { BaseMap } from "./BaseMap"
 import { SectionLabel } from "./Labels"
+import { lineColors } from "./lineColors"
 
 export type ProjectMapSections = (Section & {
   subsections: Pick<Subsection, "id" | "slug" | "geometry">[]
@@ -37,14 +38,6 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({ sections, selectedSectio
   const sectionBounds = sectionsBbox(selectedSection ? [selectedSection] : sections)
   if (!sectionBounds) return null
 
-  // Layer style for segments depending on selected section and segment
-  const getLineColor = ({ section }: { section: Section }) => {
-    let lineColor = "#979797"
-    if (hovered === section.slug) lineColor = "#EAB308"
-    if (selectedSection && section.id === selectedSection.id) lineColor = "#EAB308"
-    return lineColor
-  }
-
   const dots = sections
     .map((section) => section.subsections.map((subsection) => JSON.parse(subsection.geometry)[0]))
     .flat()
@@ -56,7 +49,7 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({ sections, selectedSectio
         section.subsections.map((subsection) =>
           lineString(JSON.parse(subsection.geometry), {
             id: section.slug,
-            color: getLineColor({ section }),
+            color: hovered === section.slug ? lineColors.hovered : lineColors.selectable,
           })
         )
       )
