@@ -150,9 +150,9 @@ enum LabelPositionEnum {
 }
 
 model Section {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id          Int                @id @default(autoincrement())
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
   slug        String
   index       Int
   length      String?
@@ -175,13 +175,13 @@ model Section {
 }
 
 model Subsection {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id          Int                @id @default(autoincrement())
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
   slug        String
   title       String
   description String?
-  geometry    String
+  geometry    Json
   start       String
   end         String
   labelPos    LabelPositionEnum? @default(top)
@@ -205,7 +205,7 @@ model Subsubsection {
   slug        String
   title       String
   description String?
-  geometry    String
+  geometry    Json
   labelPos    LabelPositionEnum? @default(top)
 
   subsection   Subsection @relation(fields: [subsectionId], references: [id])
