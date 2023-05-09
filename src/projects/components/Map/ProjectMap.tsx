@@ -8,7 +8,7 @@ import { MapLayerMouseEvent, Marker } from "react-map-gl"
 
 import { sectionsBbox } from "./utils"
 import { BaseMap } from "./BaseMap"
-import { SectionMarker } from "./Markers"
+import { SectionLabel } from "./Labels"
 
 export type ProjectMapSections = (Section & {
   subsections: Pick<Subsection, "id" | "slug" | "geometry">[]
@@ -85,7 +85,7 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({ sections, selectedSectio
           )
         }
       >
-        <SectionMarker
+        <SectionLabel
           label={`TS${index + 1}`}
           onMouseEnter={() => setHovered(section.slug)}
           onMouseLeave={() => setHovered(null)}

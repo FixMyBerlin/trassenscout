@@ -6,7 +6,7 @@ import { MapLayerMouseEvent, Marker } from "react-map-gl"
 
 import { midPoint, sectionsBbox } from "./utils"
 import { BaseMap } from "./BaseMap"
-import { SubsectionMarker } from "./Markers"
+import { SubsectionLabel } from "./Labels"
 import { ProjectMapSections } from "./ProjectMap"
 import { featureCollection } from "@turf/turf"
 
@@ -80,7 +80,7 @@ export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSectio
         anchor="center"
         onClick={() => handleSelect(subsection.slug)}
       >
-        <SubsectionMarker
+        <SubsectionLabel
           label={`PA${index + 1}`}
           onMouseEnter={() => setHovered(subsection.slug)}
           onMouseLeave={() => setHovered(null)}

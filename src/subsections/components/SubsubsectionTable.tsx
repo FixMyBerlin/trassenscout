@@ -5,7 +5,7 @@ import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
 import { Subsubsection } from "src/pages/[projectSlug]/[sectionSlug]/[...subsectionPath]"
-import { SubsubsectionMarker } from "src/projects/components/Map/Markers"
+import { SubsubsectionLabel } from "src/projects/components/Map/Labels"
 
 type Props = {
   subsubsections: Subsubsection[]
@@ -61,7 +61,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
                   onClick={() => router.push(route, undefined, { scroll: false })}
                 >
                   <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50 sm:pl-6">
-                    <SubsubsectionMarker label={`RF${index + 1}`} />
+                    <SubsubsectionLabel label={`RF${index + 1}`} />
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 decoration-gray-500 decoration-1 underline-offset-4 group-hover:bg-gray-50 group-hover:underline">
                     <strong>{subsubsection.title}</strong>

@@ -7,8 +7,8 @@ import { LngLatBoundsLike, MapLayerMouseEvent, Marker } from "react-map-gl"
 import { useSlugs } from "src/core/hooks"
 import { Subsection } from "src/pages/[projectSlug]/[sectionSlug]/[...subsectionPath]"
 import { BaseMap } from "./BaseMap"
-import { TipMarker } from "./Markers/TipMarker"
-import { SubsubsectionMarker } from "./Markers"
+import { TipMarker } from "./TipMarker"
+import { SubsubsectionLabel } from "./Labels"
 import { ProjectMapSections } from "./ProjectMap"
 import { midPoint } from "./utils"
 
@@ -97,7 +97,7 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
       >
         <TipMarker anchor="top">
           <div className="p-2">
-            <SubsubsectionMarker
+            <SubsubsectionLabel
               label={`RF${index + 1}`}
               onMouseEnter={() => setHovered(sec.slug)}
               onMouseLeave={() => setHovered(null)}

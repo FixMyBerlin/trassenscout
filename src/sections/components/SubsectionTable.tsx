@@ -4,7 +4,7 @@ import { useRouter } from "next/router"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
-import { SubsectionMarker } from "src/projects/components/Map/Markers"
+import { SubsectionLabel } from "src/projects/components/Map/Labels"
 
 type Props = {
   subsections: Subsection[]
@@ -54,7 +54,7 @@ export const SubsectionTable: React.FC<Props> = ({ subsections }) => {
                   onClick={() => router.push(route)}
                 >
                   <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50 sm:pl-6">
-                    <SubsectionMarker label={`PA${index + 1}`} />
+                    <SubsectionLabel label={`PA${index + 1}`} />
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 decoration-gray-500 decoration-1 underline-offset-4 group-hover:bg-gray-50 group-hover:underline">
                     <strong>{subsection.title}</strong>
