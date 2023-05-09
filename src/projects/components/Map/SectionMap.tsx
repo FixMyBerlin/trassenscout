@@ -44,7 +44,7 @@ export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSectio
 
   const dots = selectedSection.subsections
     .map((subsection) => {
-      const geometry = JSON.parse(subsection.geometry)
+      const geometry = subsection.geometry
       return [geometry[0], geometry.at(-1)]
     })
     .flat()
@@ -54,7 +54,7 @@ export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSectio
       .filter((section) => section.id !== selectedSection.id)
       .map((section) =>
         section.subsections.map((subsection) =>
-          lineString(JSON.parse(subsection.geometry), {
+          lineString(subsection.geometry, {
             color: lineColors.unselectable,
           })
         )
@@ -64,7 +64,7 @@ export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSectio
 
   const selectableLines = featureCollection(
     selectedSection.subsections.map((subsection) =>
-      lineString(JSON.parse(subsection.geometry), {
+      lineString(subsection.geometry, {
         id: subsection.slug,
         color: subsection.slug === hovered ? lineColors.hovered : lineColors.selectable,
       })
@@ -72,7 +72,7 @@ export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSectio
   )
 
   const markers = selectedSection.subsections.map((subsection, index) => {
-    const [longitude, latitude] = midPoint(JSON.parse(subsection.geometry))
+    const [longitude, latitude] = midPoint(subsection.geometry)
     return (
       <Marker
         key={subsection.id}

@@ -1,13 +1,9 @@
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { Position } from "@turf/helpers"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
+import { Subsection, Subsubsection } from "@prisma/client"
 
-import {
-  Subsection as SubsectionClient,
-  Subsubsection as SubsubsectionClient,
-} from "@prisma/client"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { PageHeader } from "src/core/components/pages/PageHeader"
@@ -28,15 +24,6 @@ import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernote
 import { StakeholderSummary } from "src/stakeholdernotes/components/StakeholderSummary"
 import { StakeholderSection } from "src/stakeholdernotes/components/StakeholderSection"
 
-export type Subsubsection = Omit<SubsubsectionClient, "geometry"> & {
-  geometry: Position[]
-}
-
-export type Subsection = Omit<SubsectionClient, "geometry"> & {
-  geometry: Position[]
-  subsubsections: Subsubsection[]
-}
-
 export const SubsectionDashboardWithQuery = () => {
   const router = useRouter()
   const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
@@ -46,32 +33,18 @@ export const SubsectionDashboardWithQuery = () => {
     orderBy: { index: "asc" },
     include: { subsections: true },
   })
-  const [subsectionOrg] = useQuery(getSubsection, {
+  const result = useQuery(getSubsection, {
     projectSlug: projectSlug!,
     sectionSlug: sectionSlug!,
     subsectionSlug: subsectionSlug!,
     includeSubsubsections: true,
   })
-  const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, {
-    subsectionId: subsectionOrg.id,
-    orderBy: { id: "asc" },
-  })
-
-  const parseGeometry = (objectWithGeometry: Record<any, any>) => {
-    let parsedGeometry = undefined
-    try {
-      parsedGeometry = JSON.parse(objectWithGeometry.geometry) as Position[]
-    } catch (e: any) {
-      console.error("Parsing :", e.message, JSON.parse(JSON.stringify(objectWithGeometry)))
-    }
-    invariant(typeof parsedGeometry === "object", "parsed Geometry required")
-    return parsedGeometry
+  const subsection = result[0] as Subsection & {
+    subsubsections: Subsubsection[]
   }
-
-  const subsection: Subsection = JSON.parse(JSON.stringify(subsectionOrg)) // deep copy
-  subsection.geometry = parseGeometry(subsection)
-  subsection.subsubsections.forEach((subsubsection) => {
-    subsubsection.geometry = parseGeometry(subsubsection)
+  const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, {
+    subsectionId: subsection.id,
+    orderBy: { id: "asc" },
   })
 
   const subsubsection =
@@ -141,7 +114,7 @@ export const SubsectionDashboardWithQuery = () => {
 
       <StakeholderSection stakeholdernotes={stakeholdernotes} />
 
-      <SuperAdminLogData data={{ subsectionOrg, subsection, sections, stakeholdernotes }} />
+      <SuperAdminLogData data={{ subsection, sections }} />
     </>
   )
 }

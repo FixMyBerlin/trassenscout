@@ -1,10 +1,11 @@
 import { Routes } from "@blitzjs/next"
 import clsx from "clsx"
 import { useRouter } from "next/router"
+import { Subsubsection } from "@prisma/client"
+
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
-import { Subsubsection } from "src/pages/[projectSlug]/[sectionSlug]/[...subsectionPath]"
 import { SubsubsectionLabel } from "src/projects/components/Map/Labels"
 
 type Props = {

@@ -44,10 +44,7 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({ sections }) => {
       if (!first) {
         return []
       } else {
-        return [
-          JSON.parse(first.geometry)[0],
-          JSON.parse(section.subsections.at(-1)!.geometry).at(-1),
-        ]
+        return [first.geometry[0], section.subsections.at(-1)!.geometry.at(-1)]
       }
     })
     .flat()
@@ -56,7 +53,7 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({ sections }) => {
     sections
       .map((section) =>
         section.subsections.map((subsection) =>
-          lineString(JSON.parse(subsection.geometry), {
+          lineString(subsection.geometry, {
             id: section.slug,
             color: hovered === section.slug ? lineColors.hovered : lineColors.selectable,
           })
@@ -71,7 +68,7 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({ sections }) => {
     if (!section.subsections.length || !midIndex || !geometryString) {
       return null
     }
-    const midLine = lineString(JSON.parse(geometryString))
+    const midLine = lineString(geometryString)
     const midLengthHalf = length(midLine) / 2
     const midPoint = along(midLine, midLengthHalf)
 

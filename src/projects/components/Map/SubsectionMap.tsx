@@ -54,7 +54,7 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
     sections
       .map((section) =>
         section.subsections.map((subsection) =>
-          lineString(JSON.parse(subsection.geometry), {
+          lineString(subsection.geometry, {
             color: lineColors.unselectable,
           })
         )

@@ -8,7 +8,7 @@ export const sectionsBbox = (sections: ProjectMapSections) => {
   const subSectionBboxes: BBox[] = []
   sections.forEach((s) => {
     s.subsections.forEach((ss) => {
-      subSectionBboxes.push(bbox(lineString(JSON.parse(ss.geometry))))
+      subSectionBboxes.push(bbox(lineString(ss.geometry)))
     })
   })
   const subSectionBoxes = combine(

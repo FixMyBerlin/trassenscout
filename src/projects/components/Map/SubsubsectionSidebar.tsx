@@ -1,14 +1,14 @@
 import { Routes } from "@blitzjs/next"
 import clsx from "clsx"
 import React from "react"
+import { Subsubsection } from "@prisma/client"
+
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Markdown } from "src/core/components/Markdown/Markdown"
-import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link, whiteButtonStyles } from "src/core/components/links"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import { H2 } from "src/core/components/text/Headings"
 import { useSlugs } from "src/core/hooks"
-import { Subsubsection } from "src/pages/[projectSlug]/[sectionSlug]/[...subsectionPath]"
 
 type Props = {
   subsubsection: Subsubsection
