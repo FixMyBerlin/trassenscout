@@ -138,6 +138,17 @@ model Contact {
   @@unique([projectId, email])
 }
 
+enum LabelPositionEnum {
+  top
+  topRight
+  right
+  bottomRight
+  bottom
+  bottomLeft
+  left
+  topLeft
+}
+
 model Section {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
@@ -150,6 +161,7 @@ model Section {
   description String?
   start       String
   end         String
+  labelPos    LabelPositionEnum? @default(top)
 
   manager   User    @relation(fields: [managerId], references: [id])
   managerId Int
@@ -173,6 +185,7 @@ model Subsection {
   geometry    String
   start       String
   end         String
+  labelPos    LabelPositionEnum? @default(top)
 
   manager   User    @relation(fields: [managerId], references: [id])
   managerId Int
@@ -193,6 +206,7 @@ model Subsubsection {
   title       String
   description String?
   geometry    String
+  labelPos    LabelPositionEnum? @default(top)
 
   subsection   Subsection @relation(fields: [subsectionId], references: [id])
   subsectionId Int

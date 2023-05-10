@@ -88,7 +88,7 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
         anchor="center"
         onClick={async () => handleSelect(sec.slug)}
       >
-        <TipMarker anchor="top">
+        <TipMarker anchor={sec.labelPos || "top"}>
           <div className="p-2">
             <SubsubsectionLabel
               label={`RF${index + 1}`}

@@ -82,7 +82,7 @@ export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSectio
         onClick={() => handleSelect(subsection.slug)}
       >
         <TipMarker
-          anchor="top"
+          anchor={subsection.labelPos || "top"}
           onMouseEnter={() => setHovered(subsection.slug)}
           onMouseLeave={() => setHovered(null)}
         >

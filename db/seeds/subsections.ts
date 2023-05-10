@@ -9,6 +9,7 @@ const seedSubsections = async () => {
       description: `Das Hansaviertel ist ein Stadtviertel in Berlin, das in den 1950er Jahren nach Plänen bekannter Architekten wie Walter Gropius, Alvar Aalto und Oscar Niemeyer erbaut wurde. Es liegt zwischen dem Berliner Tiergarten und dem Spreeufer und wurde als Modellprojekt für modernes, funktionales Wohnen konzipiert.`,
       start: "Dovestraẞe",
       end: "Kanzlerpark",
+      labelPos: "top",
       geometry: JSON.stringify([
         [13.317392954811083, 52.52039883952099],
         [13.318029192341385, 52.52262482165125],
@@ -30,6 +31,7 @@ const seedSubsections = async () => {
             slug: "teilplanung-1",
             title: "Teilplanung 1",
             description: "Das Hansaviertel ist ein Stadtteil im Zentrum von Berlin - Teilplanung 1",
+            labelPos: "topLeft",
             geometry: JSON.stringify([
               [13.363361116374904, 52.519430986022115],
               [13.357157800454104, 52.517204842057566],
@@ -43,6 +45,7 @@ const seedSubsections = async () => {
             slug: "teilplanung-2",
             title: "Teilplanung 2",
             description: "Das Hansaviertel ist ein Stadtteil im Zentrum von Berlin - Teilplanung 2",
+            labelPos: "bottomLeft",
             geometry: JSON.stringify([
               [13.350954484534668, 52.51914062581497],
               [13.345069287379602, 52.52262482165125],
@@ -57,6 +60,7 @@ const seedSubsections = async () => {
             slug: "teilplanung-3",
             title: "Teilplanung 3",
             description: "Das Hansaviertel ist ein Stadtteil im Zentrum von Berlin - Teilplanung 3",
+            labelPos: "left",
             geometry: JSON.stringify([
               [13.334253249364252, 52.51701125899095],
               [13.329481467886865, 52.5184631112015],
@@ -77,6 +81,7 @@ const seedSubsections = async () => {
       description: null,
       start: "Kanzlerpark",
       end: "Ebertsbrücke",
+      labelPos: "top",
       geometry: JSON.stringify([
         [13.392787102151175, 52.52243126246529],
         [13.387538142526438, 52.52204414153442],
@@ -95,6 +100,7 @@ const seedSubsections = async () => {
       description: null,
       start: "Ebertsbrücke",
       end: "Fischerinsel",
+      labelPos: "topRight",
       geometry: JSON.stringify([
         [13.410442693616204, 52.514591398693426],
         [13.405352793374334, 52.51565615364305],
@@ -110,6 +116,7 @@ const seedSubsections = async () => {
       description: null,
       start: "Fischerinsel",
       end: "Schleusenufer",
+      labelPos: "topRight",
       geometry: JSON.stringify([
         [13.41060175299907, 52.514591398693426],
         [13.415532593858103, 52.51488178896585],
@@ -126,6 +133,7 @@ const seedSubsections = async () => {
       description: null,
       start: "Dovestraẞe",
       end: "Lützowplatz",
+      labelPos: "topRight",
       geometry: JSON.stringify([
         [13.317597867354067, 52.52004509035683],
         [13.3314161960285, 52.51250603081962],
@@ -141,6 +149,7 @@ const seedSubsections = async () => {
       description: null,
       start: "Lützowplatz",
       end: "Mehringdamm",
+      labelPos: "topRight",
       geometry: JSON.stringify([
         [13.35206427335541, 52.505835784446134],
         [13.357305708370632, 52.50670587399276],
@@ -159,6 +168,7 @@ const seedSubsections = async () => {
       description: null,
       start: "Mehringdamm",
       end: "Kottbusser Damm",
+      labelPos: "topRight",
       geometry: JSON.stringify([
         [13.388480650254337, 52.497979825501545],
         [13.395628061636813, 52.49788313054404],
@@ -174,6 +184,7 @@ const seedSubsections = async () => {
       description: null,
       start: "Kottbusser Damm",
       end: "Schleusenufer",
+      labelPos: "bottom",
       geometry: JSON.stringify([
         [13.41977042897335, 52.49633598230557],
         [13.439306686753582, 52.4902435569129],
@@ -189,6 +200,7 @@ const seedSubsections = async () => {
       description: null,
       start: "start abschnitt",
       end: "end abschnitt",
+      labelPos: "top",
       geometry: JSON.stringify([
         [13.41977042897335, 52.49633598230557],
         [13.439306686753582, 52.4902435569129],

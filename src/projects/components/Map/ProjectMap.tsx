@@ -13,7 +13,7 @@ import { SectionLabel, StartEnd } from "./Labels"
 import { lineColors } from "./lineColors"
 
 export type ProjectMapSections = (Section & {
-  subsections: Pick<Subsection, "id" | "slug" | "geometry">[]
+  subsections: Subsection[]
 })[]
 
 type ProjectMapProps = {
@@ -88,7 +88,7 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({ sections }) => {
         }
       >
         <TipMarker
-          anchor="top"
+          anchor={section.labelPos || "top"}
           onMouseEnter={() => setHovered(section.slug)}
           onMouseLeave={() => setHovered(null)}
         >
