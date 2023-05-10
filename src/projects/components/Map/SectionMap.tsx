@@ -41,10 +41,12 @@ export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSectio
   const sectionBounds = sectionsBbox([selectedSection])
   if (!sectionBounds) return null
 
-  const dots = selectedSection.subsections.map((subsection) => {
-    const geometry = JSON.parse(subsection.geometry)
-    return [geometry[0], geometry.at(-1)]
-  }).flat()
+  const dots = selectedSection.subsections
+    .map((subsection) => {
+      const geometry = JSON.parse(subsection.geometry)
+      return [geometry[0], geometry.at(-1)]
+    })
+    .flat()
 
   const lines = featureCollection(
     sections

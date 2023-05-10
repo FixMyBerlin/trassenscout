@@ -24,7 +24,9 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
 
   const router = useRouter()
 
-  const selectableSubsubsections = selectedSubsection.subsubsections.filter((sec) => sec.geometry !== null)
+  const selectableSubsubsections = selectedSubsection.subsubsections.filter(
+    (sec) => sec.geometry !== null
+  )
 
   const handleSelect = (slug: string | null) => {
     void router.push(
