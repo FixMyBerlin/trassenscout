@@ -8,7 +8,8 @@ import { MapLayerMouseEvent, Marker } from "react-map-gl"
 
 import { sectionsBbox } from "./utils"
 import { BaseMap } from "./BaseMap"
-import { SectionLabel } from "./Labels"
+import { TipMarker } from "./TipMarker"
+import { SectionLabel, StartEnd } from "./Labels"
 import { lineColors } from "./lineColors"
 
 export type ProjectMapSections = (Section & {
@@ -86,11 +87,17 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({ sections }) => {
           )
         }
       >
-        <SectionLabel
-          label={`TS${index + 1}`}
+        <TipMarker
+          anchor="top"
           onMouseEnter={() => setHovered(section.slug)}
           onMouseLeave={() => setHovered(null)}
-        />
+        >
+          <StartEnd
+            icon={<SectionLabel label={`TS${index + 1}`} />}
+            start={section.start}
+            end={section.end}
+          />
+        </TipMarker>
       </Marker>
     )
   })
