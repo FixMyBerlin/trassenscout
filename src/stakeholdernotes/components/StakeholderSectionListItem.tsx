@@ -3,7 +3,7 @@ import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { Stakeholdernote } from "@prisma/client"
 import clsx from "clsx"
 import React, { useState } from "react"
-import { Link } from "src/core/components/links"
+import { Link, linkStyles } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { StakeholderSectionListItemStatus } from "./StakeholderSectionListItemStatus"
 import { useSlugs } from "src/core/hooks"
@@ -51,7 +51,12 @@ export const StakeholderSectionListItem: React.FC<Props> = ({ stakeholder }) => 
           />
         </div>
       </button>
-      <ButtonWrapper className={clsx({ "-mt-5": !readMore }, "justify-end")}>
+      <ButtonWrapper className={clsx(readMore ? "mt-1" : "-mt-5", "justify-end")}>
+        {readMore && (
+          <button className={linkStyles} onClick={handleToggle}>
+            {isExpand ? "Zuklappen" : "Weiterlesen"}
+          </button>
+        )}
         <Link
           href={Routes.EditStakeholdernotePage({
             projectSlug: projectSlug!,
