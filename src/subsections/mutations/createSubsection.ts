@@ -8,5 +8,5 @@ import getSectionProjectId from "../../sections/queries/getSectionProjectId"
 export default resolver.pipe(
   resolver.zod(SubsectionSchema),
   authorizeProjectAdmin(getSectionProjectId),
-  async (input) => await db.subsection.create({ data: input })
+  async (input) => await db.subsection.create({ data: { start: "start", end: "end", ...input } })
 )

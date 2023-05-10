@@ -148,6 +148,8 @@ model Section {
   title       String
   subTitle    String?
   description String?
+  start       String
+  end         String
 
   manager   User    @relation(fields: [managerId], references: [id])
   managerId Int
@@ -169,6 +171,8 @@ model Subsection {
   title       String
   description String?
   geometry    String
+  start       String
+  end         String
 
   manager   User    @relation(fields: [managerId], references: [id])
   managerId Int

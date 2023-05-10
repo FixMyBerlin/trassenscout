@@ -7,6 +7,8 @@ const seedSubsections = async () => {
       slug: "abschnitt-hansaviertel",
       title: "Abschnitt 1 Hansaviertel",
       description: `Das Hansaviertel ist ein Stadtviertel in Berlin, das in den 1950er Jahren nach Plänen bekannter Architekten wie Walter Gropius, Alvar Aalto und Oscar Niemeyer erbaut wurde. Es liegt zwischen dem Berliner Tiergarten und dem Spreeufer und wurde als Modellprojekt für modernes, funktionales Wohnen konzipiert.`,
+      start: "Dovestraẞe",
+      end: "Kanzlerpark",
       geometry: JSON.stringify([
         [13.317392954811083, 52.52039883952099],
         [13.318029192341385, 52.52262482165125],
@@ -73,6 +75,8 @@ const seedSubsections = async () => {
       slug: "abschnitt-hbf",
       title: "Abschnitt Hauptbahnhof",
       description: null,
+      start: "Kanzlerpark",
+      end: "Ebertsbrücke",
       geometry: JSON.stringify([
         [13.392787102151175, 52.52243126246529],
         [13.387538142526438, 52.52204414153442],
@@ -89,6 +93,8 @@ const seedSubsections = async () => {
       slug: "abschnitt-insel",
       title: "Abschnitt Museumsinsel",
       description: null,
+      start: "Ebertsbrücke",
+      end: "Fischerinsel",
       geometry: JSON.stringify([
         [13.410442693616204, 52.514591398693426],
         [13.405352793374334, 52.51565615364305],
@@ -102,6 +108,8 @@ const seedSubsections = async () => {
       slug: "abschnitt-east-side",
       title: "Abschnitt East Side",
       description: null,
+      start: "Fischerinsel",
+      end: "Schleusenufer",
       geometry: JSON.stringify([
         [13.41060175299907, 52.514591398693426],
         [13.415532593858103, 52.51488178896585],
@@ -116,6 +124,8 @@ const seedSubsections = async () => {
       slug: "abschnitt-tiergarten",
       title: "Abschnitt Tiergarten",
       description: null,
+      start: "Dovestraẞe",
+      end: "Lützowplatz",
       geometry: JSON.stringify([
         [13.317597867354067, 52.52004509035683],
         [13.3314161960285, 52.51250603081962],
@@ -129,6 +139,8 @@ const seedSubsections = async () => {
       slug: "abschnitt-gleisdreieck",
       title: "Abschnitt Gleisdreieck",
       description: null,
+      start: "Lützowplatz",
+      end: "Mehringdamm",
       geometry: JSON.stringify([
         [13.35206427335541, 52.505835784446134],
         [13.357305708370632, 52.50670587399276],
@@ -145,6 +157,8 @@ const seedSubsections = async () => {
       slug: "abschnitt-urbahnhafen",
       title: "Abschnitt Urbahnhafen",
       description: null,
+      start: "Mehringdamm",
+      end: "Kottbusser Damm",
       geometry: JSON.stringify([
         [13.388480650254337, 52.497979825501545],
         [13.395628061636813, 52.49788313054404],
@@ -158,6 +172,8 @@ const seedSubsections = async () => {
       slug: "abschnitt-paul-lincke-ufer",
       title: "Abschnitt Paul Lincke Ufer",
       description: null,
+      start: "Kottbusser Damm",
+      end: "Schleusenufer",
       geometry: JSON.stringify([
         [13.41977042897335, 52.49633598230557],
         [13.439306686753582, 52.4902435569129],
@@ -171,6 +187,8 @@ const seedSubsections = async () => {
       slug: "abschnitt-1",
       title: "Abschnitt 1",
       description: null,
+      start: "start abschnitt",
+      end: "end abschnitt",
       geometry: JSON.stringify([
         [13.41977042897335, 52.49633598230557],
         [13.439306686753582, 52.4902435569129],
