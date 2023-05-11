@@ -7,6 +7,7 @@ import {
 } from "src/core/components/forms"
 import { getFullname } from "src/users/utils"
 import { z } from "zod"
+import { labelPosOptions } from "src/form"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function SectionForm<S extends z.ZodType<any, any>>(
@@ -28,6 +29,11 @@ export function SectionForm<S extends z.ZodType<any, any>>(
       <LabeledTextField type="number" name="index" label="Index und Reihenfolge" placeholder="" />
       <LabeledTextField type="text" name="title" label="Name" placeholder="" />
       <LabeledTextField type="text" name="subTitle" label="Untertitel" optional placeholder="" />
+      <div className="grid grid-cols-2 gap-5">
+        <LabeledTextField type="text" name="start" label="Startpunkt" placeholder="" />
+        <LabeledTextField type="text" name="end" label="Endpunkt" placeholder="" />
+      </div>
+      <LabeledSelect name="labelPos" label="Kartenlabelposition" options={labelPosOptions} />
       <LabeledTextareaField
         name="description"
         label="Beschreibung (Markdown)"
