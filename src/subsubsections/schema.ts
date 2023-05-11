@@ -1,3 +1,4 @@
+import { Prettify } from "src/core/types"
 import { SlugSchema } from "src/core/utils"
 import { z } from "zod"
 
@@ -7,9 +8,8 @@ export const SubsubsectionSchema = z.object({
     message: "Pflichtfeld. Mindestens 3 Zeichen.",
   }),
   description: z.string().nullish(),
-  geometry: z.coerce.string().min(20, {
-    message: "Pflichtfeld. Format muss ein LineString sein [[9.1943,48.8932],[9.2043,48.8933]].",
-  }),
+  // TODO Enhance the types here to include the comming type: area|route with geometry:Position(AKA Point)|Position[](Line)
+  geometry: z.array(z.tuple([z.number(), z.number()])),
   guidance: z.string().min(3, {
     message: "Pflichtfeld. Mindestens 3 Zeichen.",
   }),
@@ -21,4 +21,4 @@ export const SubsubsectionSchema = z.object({
   subsectionId: z.coerce.number(),
 })
 
-export type TSubsubsectionSchema = z.infer<typeof SubsubsectionSchema>
+export type TSubsubsectionSchema = Prettify<z.infer<typeof SubsubsectionSchema>>

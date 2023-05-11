@@ -1,9 +1,9 @@
 import combine from "@turf/combine"
 import { BBox, bbox, bboxPolygon, featureCollection, lineString } from "@turf/turf"
 import type { LngLatBoundsLike } from "react-map-gl"
-import { ProjectMapSections } from "../ProjectMap"
+import { SectionWithSubsectionsWithPosition } from "src/sections/queries/getSectionsIncludeSubsections"
 
-export const sectionsBbox = (sections: ProjectMapSections) => {
+export const sectionsBbox = (sections: SectionWithSubsectionsWithPosition[]) => {
   // Calculate the bbox of all subSections by first creating a bbox per subSection, then make a polygon out of those, then calculate the bbox for all those polygons. It's likely this could be done easier…
   const subSectionBboxes: BBox[] = []
   sections.forEach((s) => {

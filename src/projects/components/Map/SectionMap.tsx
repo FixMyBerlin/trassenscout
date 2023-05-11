@@ -1,24 +1,23 @@
-import React, { useState } from "react"
-import { useRouter } from "next/router"
 import { Routes, useParam } from "@blitzjs/next"
-import { featureCollection } from "@turf/turf"
 import { lineString } from "@turf/helpers"
+import { featureCollection } from "@turf/turf"
+import { useRouter } from "next/router"
+import React, { useState } from "react"
 import { MapLayerMouseEvent, Marker } from "react-map-gl"
-
-import { midPoint, sectionsBbox } from "./utils"
+import { SectionWithSubsectionsWithPosition } from "src/sections/queries/getSectionsIncludeSubsections"
 import { BaseMap } from "./BaseMap"
-import { TipMarker } from "./TipMarker"
 import { StartEnd, SubsectionLabel } from "./Labels"
-import { ProjectMapSections } from "./ProjectMap"
+import { TipMarker } from "./TipMarker"
 import { lineColors } from "./lineColors"
+import { midPoint, sectionsBbox } from "./utils"
 
-type SectionMapProps = {
+type Props = {
   children?: React.ReactNode
-  sections: ProjectMapSections
-  selectedSection: ProjectMapSections[number]
+  sections: SectionWithSubsectionsWithPosition[]
+  selectedSection: SectionWithSubsectionsWithPosition | undefined
 }
 
-export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSection }) => {
+export const SectionMap: React.FC<Props> = ({ sections, selectedSection }) => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
@@ -39,15 +38,13 @@ export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSectio
   const handleMouseEnter = (e: MapLayerMouseEvent | undefined) => setHovered(getId(e))
   const handleMouseLeave = () => setHovered(null)
 
-  const sectionBounds = sectionsBbox([selectedSection])
-  if (!sectionBounds) return null
+  // Guard so Typescript is happy afterward
+  if (!selectedSection?.subsections) return null
 
-  const dots = selectedSection.subsections
-    .map((subsection) => {
-      const geometry = subsection.geometry
-      return [geometry[0], geometry.at(-1)]
-    })
+  const dotGeoms = selectedSection.subsections
+    .map((s) => [s.geometry[0], s.geometry.at(-1)])
     .flat()
+    .filter(Boolean)
 
   const lines = featureCollection(
     sections
@@ -101,7 +98,7 @@ export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSectio
       <BaseMap
         id="mainMap"
         initialViewState={{
-          bounds: sectionBounds,
+          bounds: sectionsBbox([selectedSection]),
           fitBoundsOptions: { padding: 60 },
         }}
         onClick={handleClick}
@@ -109,7 +106,7 @@ export const SectionMap: React.FC<SectionMapProps> = ({ sections, selectedSectio
         onMouseLeave={handleMouseLeave}
         lines={lines}
         selectableLines={selectableLines}
-        dots={dots.length ? lineString(dots) : undefined}
+        dots={dotGeoms}
       >
         {markers}
       </BaseMap>

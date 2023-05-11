@@ -4,30 +4,24 @@ import { bbox, featureCollection } from "@turf/turf"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
 import { LngLatBoundsLike, MapLayerMouseEvent, Marker } from "react-map-gl"
-
 import { useSlugs } from "src/core/hooks"
-import { Subsection } from "src/pages/[projectSlug]/[sectionSlug]/[...subsectionPath]"
+import { SectionWithSubsectionsWithPosition } from "src/sections/queries/getSectionsIncludeSubsections"
+import { SubsectionWithSubsubsectionsWithPosition } from "src/subsections/queries/getSubsectionIncludeSubsubsections"
 import { BaseMap } from "./BaseMap"
-import { TipMarker } from "./TipMarker"
 import { SubsubsectionLabel } from "./Labels"
-import { ProjectMapSections } from "./ProjectMap"
-import { midPoint } from "./utils"
+import { TipMarker } from "./TipMarker"
 import { lineColors } from "./lineColors"
+import { midPoint } from "./utils"
 
-type SubsectionMapProps = {
-  sections: ProjectMapSections
-  selectedSubsection: Subsection
+type Props = {
+  sections: SectionWithSubsectionsWithPosition[]
+  selectedSubsection: SubsectionWithSubsubsectionsWithPosition
 }
 
-export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selectedSubsection }) => {
+export const SubsectionMap: React.FC<Props> = ({ sections, selectedSubsection }) => {
   const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
   const router = useRouter()
-
-  const selectableSubsubsections = selectedSubsection.subsubsections.filter(
-    (sec) => sec.geometry !== null
-  )
-
   const handleSelect = (slug: string | null) => {
     void router.push(
       Routes.SubsectionDashboardPage({
@@ -63,7 +57,7 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
   )
 
   const selectableLines = featureCollection(
-    selectableSubsubsections.map((sec) =>
+    selectedSubsection.subsubsections.map((sec) =>
       lineString(sec.geometry, {
         id: sec.slug,
         color:
@@ -76,9 +70,12 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
     )
   )
 
-  const dots = selectableSubsubsections.map((sec) => [sec.geometry[0], sec.geometry.at(-1)]).flat()
+  const dotsGeoms = selectedSubsection.subsubsections
+    .map((sec) => [sec.geometry[0], sec.geometry.at(-1)])
+    .flat()
+    .filter(Boolean)
 
-  const markers = selectableSubsubsections.map((sec, index) => {
+  const markers = selectedSubsection.subsubsections.map((sec, index) => {
     const [longitude, latitude] = midPoint(sec.geometry)
     return (
       <Marker
@@ -113,8 +110,7 @@ export const SubsectionMap: React.FC<SubsectionMapProps> = ({ sections, selected
       onMouseLeave={handleMouseLeave}
       lines={lines}
       selectableLines={selectableLines}
-      // @ts-ignore
-      dots={dots.length ? lineString(dots) : undefined}
+      dots={dotsGeoms}
     >
       {markers}
     </BaseMap>

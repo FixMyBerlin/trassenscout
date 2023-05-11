@@ -6,26 +6,22 @@ import { Suspense } from "react"
 import { CalenderDashboard } from "src/calendar-entries/components"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
-import DashedLine from "src/core/components/DashedLine"
+import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import type { ProjectMapSections } from "src/projects/components/Map/ProjectMap"
 import { ProjectMap } from "src/projects/components/Map/ProjectMap"
 import { SectionTable } from "src/projects/components/SectionTable"
 import getProject from "src/projects/queries/getProject"
-import getSections from "src/sections/queries/getSections"
+import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
 
 export const ProjectDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
-  const [{ sections }] = useQuery(getSections, {
+  const [{ sections }] = useQuery(getSectionsIncludeSubsections, {
     where: { project: { slug: projectSlug! } },
-    orderBy: { index: "asc" },
-    include: { subsections: { select: { id: true, slug: true, geometry: true } } },
   })
 
   if (!sections.length)
@@ -55,7 +51,6 @@ export const ProjectDashboardWithQuery = () => {
           </Link>
         }
       />
-      {/* TODO: intro prop evtl. mit project description ersetzen */}
 
       {/* Phasen Panel */}
       <section className="mt-12">
@@ -65,12 +60,7 @@ export const ProjectDashboardWithQuery = () => {
         </div>
       </section>
 
-      {/* Karte mit Daten der Abschnitte/subsections und Teaser Teilstrecke/sections */}
-      {/* {Boolean(sections && sections[0]?.subsections?.length) && ( */}
-      <div className="mt-12">
-        <ProjectMap sections={sections as ProjectMapSections} />
-      </div>
-      {/* )} */}
+      <ProjectMap sections={sections} />
 
       <SectionTable sections={sections} />
 

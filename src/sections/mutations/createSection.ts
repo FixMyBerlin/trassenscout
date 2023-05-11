@@ -15,8 +15,8 @@ const CreateSectionSchema = SectionSchema.merge(
 export default resolver.pipe(
   resolver.zod(CreateSectionSchema),
   authorizeProjectAdmin(getProjectIdBySlug),
-  async ({ projectSlug, ...input }) =>
-    await db.section.create({
+  async ({ projectSlug, ...input }) => {
+    const section = await db.section.create({
       data: {
         projectId: await getProjectIdBySlug(projectSlug),
         start: "start",
@@ -24,4 +24,6 @@ export default resolver.pipe(
         ...input,
       },
     })
+    return section
+  }
 )

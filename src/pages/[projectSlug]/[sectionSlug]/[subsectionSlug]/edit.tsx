@@ -1,12 +1,12 @@
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
+import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SubsectionForm } from "src/subsections/components/SubsectionForm"
 import deleteSubsection from "src/subsections/mutations/deleteSubsection"
@@ -17,9 +17,7 @@ import getProjectUsers from "src/users/queries/getProjectUsers"
 
 const EditSubsection = () => {
   const router = useRouter()
-  const projectSlug = useParam("projectSlug", "string")
-  const sectionSlug = useParam("sectionSlug", "string")
-  const subsectionSlug = useParam("subsectionSlug", "string")
+  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
   const [subsection, { setQueryData }] = useQuery(getSubsection, {
     projectSlug: projectSlug!,
     sectionSlug: sectionSlug!,
@@ -61,14 +59,10 @@ const EditSubsection = () => {
   return (
     <>
       <MetaTags noindex title={`Abschnitt ${subsection.title} bearbeiten`} />
-
-      <PageHeader title={`Abschnitt ${subsection.title}`} subtitle="Abschnitt bearbeiten" />
-
-      <SuperAdminBox>
-        <pre>{JSON.stringify(subsection, null, 2)}</pre>
-      </SuperAdminBox>
+      <PageHeader title="Abschnitt bearbeiten" subtitle={subsection.title} />
 
       <SubsectionForm
+        className="mt-10"
         submitText="Speichern"
         schema={SubsectionSchema}
         initialValues={subsection}
@@ -76,18 +70,19 @@ const EditSubsection = () => {
         users={users}
       />
 
-      <hr />
+      <hr className="my-5" />
 
-      <button type="button" onClick={handleDelete} className={clsx(linkStyles, "ml-2")}>
+      <button type="button" onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
         Löschen
       </button>
+
+      <hr className="my-5" />
     </>
   )
 }
 
 const EditSubsectionPage: BlitzPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
-  const sectionSlug = useParam("sectionSlug", "string")
+  const { projectSlug, sectionSlug } = useSlugs()
 
   return (
     <LayoutRs>

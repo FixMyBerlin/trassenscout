@@ -1,30 +1,45 @@
-import React, { useState } from "react"
-import Map, { Layer, MapProps, NavigationControl, ScaleControl, Source } from "react-map-gl"
+import { FeatureCollection, LineString, featureCollection, point } from "@turf/helpers"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
-import { Feature, FeatureCollection, LineString } from "@turf/helpers"
-
+import React, { useState } from "react"
+import Map, { Layer, MapProps, NavigationControl, ScaleControl, Source } from "react-map-gl"
 import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher"
 
-export interface BaseMapProps extends MapProps {
-  lines?: FeatureCollection
-  selectableLines?: FeatureCollection
-  dots?: Feature<LineString>
-}
-
 const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
-const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
+export const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
 const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
 const selectableLayerId = "layer_selectable_features"
 
+export type BaseMapProps = Required<
+  Pick<MapProps, "id" | "initialViewState" | "onMouseEnter" | "onMouseLeave" | "onClick">
+> & {
+  lines?: FeatureCollection<
+    LineString,
+    {
+      color: string
+    }
+  >
+  selectableLines: FeatureCollection<
+    LineString,
+    {
+      id: string
+      color: string
+    }
+  >
+  dots: [number, number][]
+  children: React.ReactNode
+}
+
 export const BaseMap: React.FC<BaseMapProps> = ({
-  children,
+  id: mapId,
+  initialViewState,
   onMouseEnter,
   onMouseLeave,
+  onClick,
   lines,
   selectableLines,
   dots,
-  ...mapProps
+  children,
 }) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const handleLayerSwitch = (layer: LayerType) => {
@@ -42,14 +57,12 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   }
 
   const dotSource = dots ? (
-    // @ts-ignore
-    <Source key="dots" type="geojson" data={dots}>
+    <Source key="dots" type="geojson" data={featureCollection(dots.map((d) => point(d)))}>
       <Layer type="circle" paint={{ "circle-color": "RGB(15, 23, 42)", "circle-radius": 6 }} />
     </Source>
   ) : null
 
   const featuresSource = lines ? (
-    // @ts-ignore
     <Source key="lines" type="geojson" data={lines}>
       <Layer
         type="line"
@@ -64,7 +77,6 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   ) : null
 
   const selectableFeaturesSource = selectableLines ? (
-    // @ts-ignore
     <Source key="selectable_lines" type="geojson" data={selectableLines}>
       <Layer
         id={selectableLayerId}
@@ -82,17 +94,18 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   return (
     <div className="h-[500px] w-full overflow-clip rounded-md drop-shadow-md">
       <div className="relative h-full w-full">
-        {/* @ts-ignore */}
         <Map
+          id={mapId}
           reuseMaps
+          initialViewState={initialViewState}
           mapLib={maplibregl}
           mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
           scrollZoom={false}
           cursor={cursorStyle}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
+          onClick={onClick}
           interactiveLayerIds={selectableLines ? [selectableLayerId] : undefined}
-          {...mapProps}
         >
           <NavigationControl showCompass={false} />
           <ScaleControl />

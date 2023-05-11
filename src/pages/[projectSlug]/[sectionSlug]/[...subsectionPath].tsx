@@ -2,61 +2,53 @@ import { BlitzPage, Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { Subsection, Subsubsection } from "@prisma/client"
-
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
+import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
 import { Markdown } from "src/core/components/Markdown/Markdown"
-import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
+import { PageDescription } from "src/core/components/pages/PageDescription"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { ProjectMapSections } from "src/projects/components/Map"
 import { SubsectionMap } from "src/projects/components/Map/SubsectionMap"
 import { SubsubsectionSidebar } from "src/projects/components/Map/SubsubsectionSidebar"
-import getSections from "src/sections/queries/getSections"
-import { SubsubsectionTable } from "src/subsections/components/SubsubsectionTable"
-import getSubsection from "src/subsections/queries/getSubsection"
-import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
-import { PageDescription } from "src/core/components/pages/PageDescription"
-import invariant from "tiny-invariant"
-import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
-import { StakeholderSummary } from "src/stakeholdernotes/components/StakeholderSummary"
+import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
 import { StakeholderSection } from "src/stakeholdernotes/components/StakeholderSection"
+import { StakeholderSummary } from "src/stakeholdernotes/components/StakeholderSummary"
+import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
+import { SubsubsectionTable } from "src/subsections/components/SubsubsectionTable"
+import getSubsectionIncludeSubsubsections from "src/subsections/queries/getSubsectionIncludeSubsubsections"
 
+// Page Renders Subsection _AND_ Subsubsection (as Panel)
 export const SubsectionDashboardWithQuery = () => {
   const router = useRouter()
   const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
-  const [{ sections }] = useQuery(getSections, {
+  const [{ sections: sectionsWithSubsections }] = useQuery(getSectionsIncludeSubsections, {
     where: { project: { slug: projectSlug! } },
-    orderBy: { index: "asc" },
-    include: { subsections: true },
   })
-  const result = useQuery(getSubsection, {
+  const [subsectionWithSubsubsection] = useQuery(getSubsectionIncludeSubsubsections, {
     projectSlug: projectSlug!,
     sectionSlug: sectionSlug!,
     subsectionSlug: subsectionSlug!,
-    includeSubsubsections: true,
   })
-  const subsection = result[0] as Subsection & {
-    subsubsections: Subsubsection[]
-  }
-  const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, {
-    subsectionId: subsection.id,
-    orderBy: { id: "asc" },
-  })
+  const stakeholdernotes = useQuery(getStakeholdernotes, {
+    subsectionId: subsectionWithSubsubsection.id,
+  })[0].stakeholdernotes
 
-  const subsubsection =
-    subsubsectionSlug && subsection.subsubsections.find((s) => s.slug === subsubsectionSlug)
+  // Handle/Render Subsubsection
+  const subsubsection = subsubsectionSlug
+    ? subsectionWithSubsubsection.subsubsections.find((s) => s.slug === subsubsectionSlug)
+    : undefined
 
   return (
     <>
-      <MetaTags noindex title={subsection!.title} />
+      <MetaTags noindex title={subsectionWithSubsubsection!.title} />
 
       <Breadcrumb />
       <PageHeader
-        title={subsection!.title}
+        title={subsectionWithSubsubsection!.title}
         action={
           <Link
             icon="edit"
@@ -73,7 +65,7 @@ export const SubsectionDashboardWithQuery = () => {
 
       <PageDescription>
         <div className="flex gap-8">
-          <Markdown markdown={subsection.description} className="mb-3" />
+          <Markdown markdown={subsectionWithSubsubsection.description} className="mb-3" />
           <div className="space-y-2">
             <StakeholderSummary stakeholdernotes={stakeholdernotes} />
             <p>
@@ -88,8 +80,8 @@ export const SubsectionDashboardWithQuery = () => {
         <SubsectionMap
           // Make sure the map rerenders when we close the SubsectionSidebar
           key={`map-${Boolean(subsubsection)}`}
-          sections={sections as ProjectMapSections}
-          selectedSubsection={subsection}
+          sections={sectionsWithSubsections}
+          selectedSubsection={subsectionWithSubsubsection}
         />
 
         {subsubsection ? (
@@ -110,11 +102,11 @@ export const SubsectionDashboardWithQuery = () => {
         ) : null}
       </div>
 
-      <SubsubsectionTable subsubsections={subsection.subsubsections} />
+      <SubsubsectionTable subsubsections={subsectionWithSubsubsection.subsubsections} />
 
       <StakeholderSection stakeholdernotes={stakeholdernotes} />
 
-      <SuperAdminLogData data={{ subsection, sections }} />
+      <SuperAdminLogData data={{ subsectionWithSubsubsection, sectionsWithSubsections }} />
     </>
   )
 }

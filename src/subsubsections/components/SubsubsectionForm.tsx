@@ -1,7 +1,6 @@
 import { Form, FormProps, LabeledTextareaField, LabeledTextField } from "src/core/components/forms"
+import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryField"
 import { z } from "zod"
-// @ts-ignore
-import { GeometryValidation } from "./GeometryValidation"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
@@ -21,8 +20,11 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         placeholder=""
         optional
       />
-      <LabeledTextareaField name="geometry" label="Geometry (LineString)" placeholder="" />
-      <GeometryValidation name="geometry" />
+      <LabeledGeometryField
+        name="geometry"
+        label="Geometry (`LineString` oder `Point`)"
+        placeholder=""
+      />
       <LabeledTextField
         type="text"
         name="guidance"

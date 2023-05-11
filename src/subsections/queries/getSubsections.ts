@@ -1,11 +1,12 @@
-import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
+import { paginate } from "blitz"
 import db, { Prisma } from "db"
-
 import { authorizeProjectAdmin } from "src/authorization"
+import { SubsectionWithPosition } from "./getSubsection"
 
 type GetSubsectionsInput = Pick<
   Prisma.SubsectionFindManyArgs,
+  // Do not allow `include` or `select` here, since we overwrite the types below.
   "where" | "orderBy" | "skip" | "take"
 >
 
@@ -20,7 +21,7 @@ const getProjectId = async (query: Record<string, any>): Promise<number> =>
 export default resolver.pipe(
   // @ts-ignore
   authorizeProjectAdmin(getProjectId),
-  async ({ where, orderBy, skip = 0, take = 100 }: GetSubsectionsInput) => {
+  async ({ where, orderBy = { title: "asc" }, skip = 0, take = 100 }: GetSubsectionsInput) => {
     const {
       items: subsections,
       hasMore,
@@ -34,7 +35,7 @@ export default resolver.pipe(
     })
 
     return {
-      subsections,
+      subsections: subsections as SubsectionWithPosition[], // Tip: Validate type shape with `satisfies`
       nextPage,
       hasMore,
       count,

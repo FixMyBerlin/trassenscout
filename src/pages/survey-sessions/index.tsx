@@ -65,7 +65,7 @@ export const SurveySessionsList = () => {
               <div>
                 {responses.map(({ id, surveyId, data }: SurveyResponse) => {
                   const survey = surveys[surveyId]
-                  data = JSON.parse(data)
+                  data = JSON.parse(data) as any // TODO are there types somewhere for {[questionId]: responseData} ?
                   return (
                     <code key={id}>
                       <div className="ml-3">

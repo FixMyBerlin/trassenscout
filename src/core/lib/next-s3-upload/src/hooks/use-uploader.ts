@@ -57,7 +57,7 @@ export const useUploader = (strategy: Strategy, uploader: Uploader, oldOptions?:
       }
     }
 
-    let params = await getUploadParams(strategy, file, options.endpoint?.request)
+    let params: any = await getUploadParams(strategy, file, options.endpoint?.request)
 
     if (params.error) {
       console.error(params.error)

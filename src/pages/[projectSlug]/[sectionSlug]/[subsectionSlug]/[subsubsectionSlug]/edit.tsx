@@ -1,13 +1,12 @@
-import { Routes, useParam } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { useSlugs } from "src/core/hooks"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
 import updateSubsubsection from "src/subsubsections/mutations/updateSubsubsection"
 import getSubsubsection from "src/subsubsections/queries/getSubsubsection"
@@ -47,31 +46,54 @@ const EditSubsubsection = () => {
     }
   }
 
+  // TODO: Fix delete. Shows this Error ATM:
+  //                 Uncaught (in promise) Error:
+  //                 Invalid `prisma.subsection.deleteMany()` invocation:
+  //                 Foreign key constraint failed on the field: `Subsubsection_subsectionId_fkey (index)`
+  // const [deleteSubsectionMutation] = useMutation(deleteSubsubsection)
+  // const handleDelete = async () => {
+  //   if (window.confirm(`Den Eintrag mit ID ${subsubsection.id} unwiderruflich löschen?`)) {
+  //     await deleteSubsectionMutation({ id: subsubsection.id })
+  //     await router.push(
+  //       Routes.SubsectionDashboardPage({
+  //         projectSlug: projectSlug!,
+  //         sectionSlug: sectionSlug!,
+  //         subsectionPath: [subsectionSlug!],
+  //       })
+  //     )
+  //   }
+  // }
+
   const title = `Teilplanung "${subsubsection.title}" bearbeiten`
   return (
     <>
       <MetaTags noindex title={title} />
-      <PageHeader title={title} />
+      <PageHeader title="Teilplanung bearbeiten" subtitle={subsubsection.title} />
 
       <SubsubsectionForm
+        className="mt-10"
         submitText="Speichern"
         schema={SubsubsectionSchema}
         initialValues={subsubsection}
         onSubmit={handleSubmit}
       />
 
-      <SuperAdminBox>
-        <pre>{JSON.stringify(subsubsection, null, 2)}</pre>
-      </SuperAdminBox>
+      {/* <hr className="my-5" />
+
+      <button type="button" onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
+        Löschen
+      </button> */}
+
+      <hr className="my-5" />
     </>
   )
 }
 
 const EditSubsubsectionPage = () => {
-  const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
+  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
 
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<Spinner page />}>
         <EditSubsubsection />
       </Suspense>
@@ -87,7 +109,7 @@ const EditSubsubsectionPage = () => {
           Zurück zum Abschnitt
         </Link>
       </p>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 

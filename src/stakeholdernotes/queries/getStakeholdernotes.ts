@@ -12,7 +12,13 @@ type GetStakeholdernotesInput = { subsectionId: number } & Pick<
 export default resolver.pipe(
   // @ts-ignore
   authorizeProjectAdmin(getStakeholdernoteProjectId),
-  async ({ subsectionId, where, orderBy, skip = 0, take = 100 }: GetStakeholdernotesInput) => {
+  async ({
+    subsectionId,
+    where,
+    orderBy = { id: "asc" },
+    skip = 0,
+    take = 100,
+  }: GetStakeholdernotesInput) => {
     const saveWhere = { subsectionId, ...where }
     const {
       items: stakeholdernotes,

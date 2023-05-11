@@ -1,4 +1,5 @@
-import { JsonValue, SlugSchema } from "src/core/utils"
+import { Prettify } from "src/core/types"
+import { SlugSchema } from "src/core/utils"
 import { z } from "zod"
 
 export const SubsectionSchema = z.object({
@@ -7,11 +8,9 @@ export const SubsectionSchema = z.object({
     message: "Pflichtfeld. Mindestens 3 Zeichen.",
   }),
   description: z.string().nullish(),
-  geometry: z.coerce.string().min(20, {
-    message: "Pflichtfeld. Format muss ein LineString sein [[9.1943,48.8932],[9.2043,48.8933]].",
-  }),
+  geometry: z.array(z.tuple([z.number(), z.number()])),
   managerId: z.coerce.number(),
   sectionId: z.coerce.number(),
 })
 
-export type TSubsectionSchema = z.infer<typeof SubsectionSchema>
+export type TSubsectionSchema = Prettify<z.infer<typeof SubsectionSchema>>

@@ -1,9 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
-
-import { authorizeProjectAdmin } from "src/authorization"
-// import getSubsubsectionProjectId from "../queries/getSubsubsectionProjectId"
+import { SubsubsectionWithPosition } from "../queries/getSubsubsection"
 import { SubsubsectionSchema } from "../schema"
 
 const UpdateSubsubsectionSchema = SubsubsectionSchema.merge(
@@ -15,9 +13,11 @@ const UpdateSubsubsectionSchema = SubsubsectionSchema.merge(
 export default resolver.pipe(
   resolver.zod(UpdateSubsubsectionSchema),
   // authorizeProjectAdmin(getSubsubsectionProjectId),
-  async ({ id, ...data }) =>
-    await db.subsubsection.update({
+  async ({ id, ...data }) => {
+    const subsubsection = await db.subsubsection.update({
       where: { id },
       data,
     })
+    return subsubsection as SubsubsectionWithPosition // Tip: Validate type shape with `satisfies`
+  }
 )

@@ -1,9 +1,13 @@
-import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
+import { paginate } from "blitz"
 import db, { Prisma } from "db"
+import { SubsubsectionWithPosition } from "./getSubsubsection"
 
-interface GetSubsubsectionsInput
-  extends Pick<Prisma.SubsubsectionFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
+type GetSubsubsectionsInput = Pick<
+  Prisma.SubsubsectionFindManyArgs,
+  // Do not allow `include` or `select` here, since we overwrite the types below.
+  "where" | "orderBy" | "skip" | "take"
+>
 
 export default resolver.pipe(
   resolver.authorize(),
@@ -21,7 +25,7 @@ export default resolver.pipe(
     })
 
     return {
-      subsubsections,
+      subsubsections: subsubsections as SubsubsectionWithPosition[], // Tip: Validate type shape with `satisfies`
       nextPage,
       hasMore,
       count,

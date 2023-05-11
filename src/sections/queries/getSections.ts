@@ -4,8 +4,7 @@ import db, { Prisma } from "db"
 
 import { authorizeProjectAdmin } from "src/authorization"
 
-interface GetSectionsInput
-  extends Pick<Prisma.SectionFindManyArgs, "where" | "orderBy" | "skip" | "take" | "include"> {}
+type GetSectionsInput = Pick<Prisma.SectionFindManyArgs, "where" | "orderBy" | "skip" | "take">
 
 const getProjectId = async (query: Record<string, any>): Promise<number> => {
   return (
@@ -19,13 +18,7 @@ const getProjectId = async (query: Record<string, any>): Promise<number> => {
 export default resolver.pipe(
   // @ts-ignore
   authorizeProjectAdmin(getProjectId),
-  async ({
-    where,
-    orderBy = { index: "asc" },
-    skip = 0,
-    take = 100,
-    include,
-  }: GetSectionsInput) => {
+  async ({ where, orderBy = { index: "asc" }, skip = 0, take = 100 }: GetSectionsInput) => {
     const {
       items: sections,
       hasMore,
@@ -35,7 +28,7 @@ export default resolver.pipe(
       skip,
       take,
       count: () => db.section.count({ where }),
-      query: (paginateArgs) => db.section.findMany({ ...paginateArgs, where, orderBy, include }),
+      query: (paginateArgs) => db.section.findMany({ ...paginateArgs, where, orderBy }),
     })
 
     return {

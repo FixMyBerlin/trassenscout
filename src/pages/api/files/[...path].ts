@@ -53,7 +53,7 @@ export default async function downloadFile(req: NextApiRequest, res: NextApiResp
       stream.on("end", resolve)
     })
   } catch (err) {
-    let errorDetails
+    let errorDetails: ["ts", number, string] | any[]
     if (err instanceof S3ServiceException) {
       const { name, $metadata } = err
       errorDetails = ["s3", $metadata.httpStatusCode!, name]

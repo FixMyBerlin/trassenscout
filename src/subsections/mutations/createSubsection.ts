@@ -1,12 +1,17 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-
 import { authorizeProjectAdmin } from "src/authorization"
-import { SubsectionSchema } from "../schema"
 import getSectionProjectId from "../../sections/queries/getSectionProjectId"
+import { SubsectionSchema } from "../schema"
 
 export default resolver.pipe(
   resolver.zod(SubsectionSchema),
   authorizeProjectAdmin(getSectionProjectId),
-  async (input) => await db.subsection.create({ data: { start: "start", end: "end", ...input } })
+  async (input) => {
+    const subsection = await db.subsection.create({
+      // TODO: Cleanup once Forms are updated
+      data: { start: "start", end: "end", ...input },
+    })
+    return subsection
+  }
 )

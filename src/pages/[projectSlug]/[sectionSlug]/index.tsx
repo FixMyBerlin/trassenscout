@@ -13,31 +13,27 @@ import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFiles from "src/files/queries/getFiles"
-import type { ProjectMapSections } from "src/projects/components/Map/ProjectMap"
 import { SectionMap } from "src/projects/components/Map/SectionMap"
 import { SubsectionTable } from "src/sections/components/SubsectionTable"
 import getSection from "src/sections/queries/getSection"
-import getSections from "src/sections/queries/getSections"
+import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
 import getSubsections from "src/subsections/queries/getSubsections"
 
 export const SectionDashboardWithQuery = () => {
   const { projectSlug, sectionSlug } = useSlugs()
 
+  // TODO: Refactor to remove this getSection an use the getSectionsIncludeSubsections + selectedSectionWithSubsections only
   const [section] = useQuery(getSection, { projectSlug: projectSlug!, sectionSlug: sectionSlug! })
   const [{ files }] = useQuery(getFiles, { projectSlug: projectSlug! })
 
   // TODO: Having both those calls is weird; Ideally change the getSectionS to getSection "include subsections".
-  const [{ sections }] = useQuery(getSections, {
+  const [{ sections: sectionsWithSubsections }] = useQuery(getSectionsIncludeSubsections, {
     where: { project: { slug: projectSlug! } },
-    orderBy: { index: "asc" },
-    include: { subsections: true },
   }) // TODO make project required
   const [{ subsections }] = useQuery(getSubsections, {
     where: { sectionId: section.id },
-    orderBy: { title: "asc" },
   }) // TODO make project required
 
-  const sectionsWithSubsections = sections as ProjectMapSections
   const selectedSectionWithSubsections = sectionsWithSubsections.find((s) => s.id === section.id)
 
   return (
@@ -72,7 +68,6 @@ export const SectionDashboardWithQuery = () => {
 
       <SectionMap
         sections={sectionsWithSubsections}
-        // @ts-ignore
         selectedSection={selectedSectionWithSubsections}
       />
 
@@ -86,7 +81,7 @@ export const SectionDashboardWithQuery = () => {
         </section>
       )}
 
-      <SuperAdminLogData data={{ sections, subsections }} />
+      <SuperAdminLogData data={{ sectionsWithSubsections, subsections }} />
     </>
   )
 }

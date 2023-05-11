@@ -1,27 +1,19 @@
-import React, { useState } from "react"
-import { useRouter } from "next/router"
 import { Routes, useParam } from "@blitzjs/next"
-import { Section, Subsection } from "@prisma/client"
 import { lineString } from "@turf/helpers"
 import { along, featureCollection, length } from "@turf/turf"
+import { useRouter } from "next/router"
+import React, { useState } from "react"
 import { MapLayerMouseEvent, Marker } from "react-map-gl"
-
-import { sectionsBbox } from "./utils"
+import { SectionWithSubsectionsWithPosition } from "src/sections/queries/getSectionsIncludeSubsections"
 import { BaseMap } from "./BaseMap"
-import { TipMarker } from "./TipMarker"
 import { SectionLabel, StartEnd } from "./Labels"
+import { TipMarker } from "./TipMarker"
 import { lineColors } from "./lineColors"
+import { sectionsBbox } from "./utils"
 
-export type ProjectMapSections = (Section & {
-  subsections: Subsection[]
-})[]
+type Props = { sections: SectionWithSubsectionsWithPosition[] }
 
-type ProjectMapProps = {
-  children?: React.ReactNode
-  sections: ProjectMapSections
-}
-
-export const ProjectMap: React.FC<ProjectMapProps> = ({ sections }) => {
+export const ProjectMap: React.FC<Props> = ({ sections }) => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
 
@@ -35,10 +27,7 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({ sections }) => {
   const handleMouseEnter = (e: MapLayerMouseEvent | undefined) => setHovered(getId(e))
   const handleMouseLeave = () => setHovered(null)
 
-  const sectionBounds = sectionsBbox(sections)
-  if (!sectionBounds) return null
-
-  const dots = sections
+  const dotsGeoms = sections
     .map((section) => {
       const first = section.subsections[0]
       if (!first) {
@@ -48,6 +37,7 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({ sections }) => {
       }
     })
     .flat()
+    .filter(Boolean)
 
   const selectableLines = featureCollection(
     sections
@@ -100,19 +90,21 @@ export const ProjectMap: React.FC<ProjectMapProps> = ({ sections }) => {
   })
 
   return (
-    <BaseMap
-      id="mainMap"
-      initialViewState={{
-        bounds: sectionBounds,
-        fitBoundsOptions: { padding: 60 },
-      }}
-      onClick={handleClick}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      selectableLines={selectableLines}
-      dots={dots.length ? lineString(dots) : undefined}
-    >
-      {markers}
-    </BaseMap>
+    <section className="mt-12">
+      <BaseMap
+        id="mainMap"
+        initialViewState={{
+          bounds: sectionsBbox(sections),
+          fitBoundsOptions: { padding: 60 },
+        }}
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        selectableLines={selectableLines}
+        dots={dotsGeoms}
+      >
+        {markers}
+      </BaseMap>
+    </section>
   )
 }
