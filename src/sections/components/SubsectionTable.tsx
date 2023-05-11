@@ -50,19 +50,17 @@ export const SubsectionTable: React.FC<Props> = ({ subsections }) => {
               return (
                 <tr
                   key={subsection.id}
-                  className="group cursor-pointer"
+                  className="group cursor-pointer hover:bg-gray-50"
                   onClick={() => router.push(route)}
                 >
-                  <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50 sm:pl-6">
+                  <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900  sm:pl-6">
                     <SubsectionLabel label={`PA${index + 1}`} />
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 decoration-gray-500 decoration-1 underline-offset-4 group-hover:bg-gray-50 group-hover:underline">
+                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                     <strong>{subsection.title}</strong>
                   </td>
-                  {/* <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 decoration-gray-500 decoration-1 underline-offset-4 group-hover:bg-gray-50 group-hover:underline">
-                    <strong>{subsection.title}</strong>
-                  </td> */}
-                  <td className="break-words py-4 pl-3 pr-4 text-sm font-medium group-hover:bg-gray-50 sm:pr-6">
+                  {/* <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50"></td> */}
+                  <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
                     {/* TODO Abstimmung */}-
                   </td>
                 </tr>

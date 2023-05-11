@@ -49,19 +49,19 @@ export const SectionTable: React.FC<Props> = ({ sections }) => {
               return (
                 <tr
                   key={section.id}
-                  className="group cursor-pointer"
+                  className="group cursor-pointer hover:bg-gray-50"
                   onClick={() => router.push(route)}
                 >
-                  <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50 sm:pl-6">
+                  <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                     <SectionLabel label={`TS${section.index}`} />
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 decoration-blue-500 decoration-1 underline-offset-4 group-hover:bg-gray-50 group-hover:underline">
+                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                     <strong>{section.title}</strong>: {section.subTitle}
                   </td>
-                  <td className="break-words px-3 py-4 text-sm text-gray-500 group-hover:bg-gray-50">
+                  <td className="break-words px-3 py-4 text-sm text-gray-500 ">
                     {section.length ? section.length + " km" : " k.A."}
                   </td>
-                  <td className="break-words py-4 pl-3 pr-4 text-sm font-medium group-hover:bg-gray-50 sm:pr-6">
+                  <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
                     {/* TODO Abstimmung */}-
                     {/* <StakeholderSectionStatus stakeholdernotes={stakeholdernotes} /> */}
                   </td>

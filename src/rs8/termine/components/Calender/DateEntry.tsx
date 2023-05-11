@@ -19,13 +19,11 @@ export const DateEntry: React.FC<Props> = ({ calendarEntry, withAction = true })
   const projectSlug = useParam("projectSlug", "string")
   return (
     <Disclosure
-      classNameButton="py-4 px-6 text-left text-sm text-gray-900"
+      classNameButton="py-4 px-6 text-left text-sm text-gray-900 hover:bg-gray-50"
       classNamePanel="px-6 pb-3"
       button={
         <div className="flex-auto">
-          <h3 className={clsx("pr-10 font-semibold group-hover:underline md:pr-0", linkStyles)}>
-            {calendarEntry.title}
-          </h3>
+          <h3 className={clsx("pr-10 font-semibold md:pr-0", linkStyles)}>{calendarEntry.title}</h3>
           <dl className="mt-2 flex w-full flex-row justify-between">
             {/* Date / Location / Arrow Container */}
             <div className="flex flex-col justify-start md:flex-row md:items-center md:space-x-8">
