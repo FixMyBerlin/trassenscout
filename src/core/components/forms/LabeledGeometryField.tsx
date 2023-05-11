@@ -1,6 +1,6 @@
 import { ErrorMessage } from "@hookform/error-message"
 import clsx from "clsx"
-import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef, useState } from "react"
+import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { LabeledGeometryFieldPreview } from "./LabeledGeometryFieldPreview"
 
@@ -27,22 +27,27 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
       watch,
     } = useFormContext()
 
+    const value = watch(name)
+    const [valueString, setValueString] = useState("")
+    useEffect(() => {
+      setValueString(JSON.stringify(value, undefined, 2))
+    }, [value])
+
     const [hasJsonParseError, setJsonParseError] = useState(false)
     const hasError = Boolean(errors[name])
-    const value = watch(name) // Get the current value of the field
 
     // Convert the JSON value to a string
     const handleTextareaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      let value = undefined
+      let newValue = undefined
       try {
-        value = JSON.parse(event.target.value)
+        newValue = JSON.parse(event.target.value)
         setJsonParseError(false)
       } catch (error) {
         setJsonParseError(true)
         console.error("ERROR in LabeledGeometryField", error, JSON.stringify(event.target.value))
       }
 
-      value && setValue(name, value, { shouldValidate: true })
+      newValue && setValue(name, newValue, { shouldValidate: true })
     }
 
     return (
@@ -62,7 +67,8 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
               {...register(name)}
               id={name}
               {...props}
-              value={JSON.stringify(value, undefined, 2)} // Convert JSON value to string
+              value={valueString}
+              onFocus={handleTextareaChange}
               onChange={handleTextareaChange}
               onBlur={handleTextareaChange}
               onSubmit={handleTextareaChange}
