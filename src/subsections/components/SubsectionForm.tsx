@@ -1,3 +1,5 @@
+import { z } from "zod"
+
 import {
   Form,
   FormProps,
@@ -7,7 +9,8 @@ import {
 } from "src/core/components/forms"
 import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryField"
 import { getFullname } from "src/users/utils"
-import { z } from "zod"
+import { labelPosOptions } from "src/form"
+
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function SubsectionForm<S extends z.ZodType<any, any>>(
@@ -27,6 +30,11 @@ export function SubsectionForm<S extends z.ZodType<any, any>>(
         placeholder=""
       />
       <LabeledTextField type="text" name="title" label="Name" placeholder="" />
+      <div className="grid grid-cols-2 gap-5">
+        <LabeledTextField type="text" name="start" label="Startpunkt" placeholder="" />
+        <LabeledTextField type="text" name="end" label="Endpunkt" placeholder="" />
+      </div>
+      <LabeledSelect name="labelPos" label="Kartenlabelposition" options={labelPosOptions} />
       <LabeledTextareaField
         name="description"
         label="Beschreibung (Markdown)"

@@ -19,8 +19,6 @@ export default resolver.pipe(
     const section = await db.section.create({
       data: {
         projectId: await getProjectIdBySlug(projectSlug),
-        start: "start",
-        end: "end",
         ...input,
       },
     })

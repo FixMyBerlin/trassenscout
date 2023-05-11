@@ -9,8 +9,7 @@ export default resolver.pipe(
   authorizeProjectAdmin(getSectionProjectId),
   async (input) => {
     const subsection = await db.subsection.create({
-      // TODO: Cleanup once Forms are updated
-      data: { start: "start", end: "end", ...input },
+      data: input,
     })
     return subsection
   }
