@@ -11,6 +11,7 @@ import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/Sub
 import updateSubsubsection from "src/subsubsections/mutations/updateSubsubsection"
 import getSubsubsection from "src/subsubsections/queries/getSubsubsection"
 import { SubsubsectionSchema } from "src/subsubsections/schema"
+import getProjectUsers from "src/users/queries/getProjectUsers"
 
 const EditSubsubsection = () => {
   const router = useRouter()
@@ -28,6 +29,7 @@ const EditSubsubsection = () => {
       staleTime: Infinity,
     }
   )
+  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
   const [updateSubsubsectionMutation] = useMutation(updateSubsubsection)
 
   type HandleSubmit = any // TODO
@@ -75,6 +77,7 @@ const EditSubsubsection = () => {
         schema={SubsubsectionSchema}
         initialValues={subsubsection}
         onSubmit={handleSubmit}
+        users={users}
       />
 
       {/* <hr className="my-5" />

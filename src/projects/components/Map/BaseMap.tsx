@@ -1,4 +1,4 @@
-import { FeatureCollection, LineString, featureCollection, point } from "@turf/helpers"
+import { FeatureCollection, LineString, Point, featureCollection, point } from "@turf/helpers"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import React, { useState } from "react"
@@ -8,24 +8,15 @@ import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher"
 const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
 export const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
 const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
-const selectableLayerId = "layer_selectable_features"
+const selectableLineLayerId = "layer_selectable_line_features"
+const selectablePointLayerId = "layer_selectable_point_features"
 
 export type BaseMapProps = Required<
   Pick<MapProps, "id" | "initialViewState" | "onMouseEnter" | "onMouseLeave" | "onClick">
 > & {
-  lines?: FeatureCollection<
-    LineString,
-    {
-      color: string
-    }
-  >
-  selectableLines: FeatureCollection<
-    LineString,
-    {
-      id: string
-      color: string
-    }
-  >
+  lines?: FeatureCollection<LineString, { color: string }>
+  selectableLines: FeatureCollection<LineString, { id: string; color: string }>
+  selectablePoints?: FeatureCollection<Point, { id: string; color: string }>
   dots: [number, number][]
   children: React.ReactNode
 }
@@ -38,6 +29,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   onClick,
   lines,
   selectableLines,
+  selectablePoints,
   dots,
   children,
 }) => {
@@ -55,7 +47,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
     if (onMouseLeave) onMouseLeave(e)
     setCursorStyle("grab")
   }
-
+  console.log("dots", dots)
   const dotSource = dots ? (
     <Source key="dots" type="geojson" data={featureCollection(dots.map((d) => point(d)))}>
       <Layer type="circle" paint={{ "circle-color": "RGB(15, 23, 42)", "circle-radius": 6 }} />
@@ -76,16 +68,31 @@ export const BaseMap: React.FC<BaseMapProps> = ({
     </Source>
   ) : null
 
-  const selectableFeaturesSource = selectableLines ? (
-    <Source key="selectable_lines" type="geojson" data={selectableLines}>
+  const selectableLineFeaturesSource = selectableLines ? (
+    <Source key={selectableLineLayerId} type="geojson" data={selectableLines}>
       <Layer
-        id={selectableLayerId}
+        id={selectableLineLayerId}
         type="line"
         paint={{
           "line-width": 7,
           "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
           "line-color-transition": { duration: 0 },
           "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
+        }}
+      />
+    </Source>
+  ) : null
+
+  const selectablePointFeaturesSource = selectablePoints ? (
+    <Source key={selectablePointLayerId} type="geojson" data={selectablePoints}>
+      <Layer
+        id={selectablePointLayerId}
+        type="circle"
+        paint={{
+          "circle-radius": 17,
+          "circle-color": ["case", ["has", "color"], ["get", "color"], "black"],
+          "circle-color-transition": { duration: 0 },
+          "circle-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
         }}
       />
     </Source>
@@ -105,13 +112,17 @@ export const BaseMap: React.FC<BaseMapProps> = ({
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onClick={onClick}
-          interactiveLayerIds={selectableLines ? [selectableLayerId] : undefined}
+          interactiveLayerIds={[
+            selectableLines && selectableLineLayerId,
+            selectablePoints && selectablePointLayerId,
+          ].filter(Boolean)}
         >
           <NavigationControl showCompass={false} />
           <ScaleControl />
           {children}
           {featuresSource}
-          {selectableFeaturesSource}
+          {selectableLineFeaturesSource}
+          {selectablePointFeaturesSource}
           {dotSource}
         </Map>
         <BackgroundSwitcher

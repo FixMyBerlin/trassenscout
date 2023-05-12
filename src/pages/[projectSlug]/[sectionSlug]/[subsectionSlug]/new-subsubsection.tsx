@@ -11,6 +11,7 @@ import getSubsection from "src/subsections/queries/getSubsection"
 import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
 import createSubsubsection from "src/subsubsections/mutations/createSubsubsection"
 import { SubsubsectionSchema } from "src/subsubsections/schema"
+import getProjectUsers from "src/users/queries/getProjectUsers"
 
 const NewSubsubsection = () => {
   const router = useRouter()
@@ -22,6 +23,7 @@ const NewSubsubsection = () => {
     sectionSlug: sectionSlug!,
     subsectionSlug: subsectionSlug!,
   })
+  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -53,9 +55,11 @@ const NewSubsubsection = () => {
       />
 
       <SubsubsectionForm
+        className="mt-10"
         submitText="Erstellen"
         schema={SubsubsectionSchema.omit({ subsectionId: true })}
         onSubmit={handleSubmit}
+        users={users}
       />
     </>
   )

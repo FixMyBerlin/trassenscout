@@ -15,6 +15,7 @@ model User {
   id             Int          @id @default(autoincrement())
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+  //
   email          String       @unique
   hashedPassword String?
   role           UserRoleEnum @default(USER)
@@ -22,12 +23,13 @@ model User {
   lastName       String?
   phone          String?
 
-  tokens      Token[]
-  sessions    Session[]
-  projects    Project[]
-  sections    Section[]
-  subsections Subsection[]
-  Membership  Membership[]
+  tokens        Token[]
+  sessions      Session[]
+  projects      Project[]
+  sections      Section[]
+  subsections   Subsection[]
+  Membership    Membership[]
+  Subsubsection Subsubsection[]
 }
 
 enum UserRoleEnum {
@@ -78,6 +80,7 @@ model Project {
   id              Int      @id @default(autoincrement())
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  //
   slug            String   @unique
   title           String
   shortTitle      String
@@ -111,6 +114,7 @@ model CalendarEntry {
   id           Int      @id @default(autoincrement())
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  //
   title        String
   startAt      DateTime
   locationName String?
@@ -125,6 +129,7 @@ model Contact {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  //
   firstName String?
   lastName  String
   email     String
@@ -150,9 +155,9 @@ enum LabelPositionEnum {
 }
 
 model Section {
-  id          Int                @id @default(autoincrement())
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
+  id          Int               @id @default(autoincrement())
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
   slug        String
   index       Int
   length      String?
@@ -161,7 +166,7 @@ model Section {
   description String?
   start       String
   end         String
-  labelPos    LabelPositionEnum? @default(top)
+  labelPos    LabelPositionEnum @default(top)
 
   manager   User    @relation(fields: [managerId], references: [id])
   managerId Int
@@ -175,16 +180,16 @@ model Section {
 }
 
 model Subsection {
-  id          Int                @id @default(autoincrement())
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
+  id          Int               @id @default(autoincrement())
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
   slug        String
   title       String
   description String?
   geometry    Json
   start       String
   end         String
-  labelPos    LabelPositionEnum? @default(top)
+  labelPos    LabelPositionEnum @default(top)
 
   manager   User    @relation(fields: [managerId], references: [id])
   managerId Int
@@ -198,25 +203,33 @@ model Subsection {
 }
 
 model Subsubsection {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  slug        String
-  title       String
-  description String?
-  geometry    Json
-  labelPos    LabelPositionEnum? @default(top)
-
-  subsection   Subsection @relation(fields: [subsectionId], references: [id])
+  id           Int                   @id @default(autoincrement())
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  //
+  slug         String
+  title        String
+  type         SubsubsectionTypeEnum @default(ROUTE) // Führungform
+  geometry     Json
+  labelPos     LabelPositionEnum     @default(top)
+  task         String // Maßnahmentyp
+  length       Float? // Kilometer
+  width        Float? // Meter
+  costEstimate Float? // Euro
+  description  String? // Anmerkungen
+  //
+  manager      User                  @relation(fields: [managerId], references: [id])
+  managerId    Int
+  //
+  subsection   Subsection            @relation(fields: [subsectionId], references: [id])
   subsectionId Int
 
-  guidance String
-  task     String
-  length   Float
-  width    Float
-
   @@unique([subsectionId, slug])
+}
+
+enum SubsubsectionTypeEnum {
+  ROUTE // Regelführung Strecke RF
+  AREA // Sonderführung Punkt (Bereich) SF
 }
 
 model Stakeholdernote {

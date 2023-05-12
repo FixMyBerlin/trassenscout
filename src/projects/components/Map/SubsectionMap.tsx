@@ -1,5 +1,5 @@
 import { Routes } from "@blitzjs/next"
-import { lineString } from "@turf/helpers"
+import { lineString, point } from "@turf/helpers"
 import { bbox, featureCollection } from "@turf/turf"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
@@ -60,36 +60,61 @@ export const SubsectionMap: React.FC<Props> = ({ sections, selectedSubsection })
   const lines = featureCollection(
     sections
       .map((section) =>
-        section.subsections.map((subsection) =>
-          lineString(subsection.geometry, {
-            color: lineColors.unselectable,
-          })
-        )
+        section.subsections
+          .map((subsection) =>
+            lineString(subsection.geometry, {
+              color: lineColors.unselectable,
+            })
+          )
+          .filter(Boolean)
       )
       .flat()
   )
 
   const selectableLines = featureCollection(
-    selectedSubsection.subsubsections.map((sec) =>
-      lineString(sec.geometry, {
-        id: sec.slug,
-        color:
-          sec.slug === subsubsectionSlug
-            ? lineColors.selected
-            : sec.slug === hovered
-            ? lineColors.hovered
-            : lineColors.selectable,
-      })
-    )
+    selectedSubsection.subsubsections
+      .map(
+        (sec) =>
+          sec.type === "ROUTE" &&
+          lineString(sec.geometry, {
+            id: sec.slug,
+            color:
+              sec.slug === subsubsectionSlug
+                ? lineColors.selected
+                : sec.slug === hovered
+                ? lineColors.hovered
+                : lineColors.selectable,
+          })
+      )
+      .filter(Boolean)
   )
 
+  const selectablePoints = featureCollection(
+    selectedSubsection.subsubsections
+      .map(
+        (sec) =>
+          sec.type === "AREA" &&
+          point(sec.geometry, {
+            id: sec.slug,
+            color:
+              sec.slug === subsubsectionSlug
+                ? lineColors.selected
+                : sec.slug === hovered
+                ? lineColors.hovered
+                : lineColors.selectable,
+          })
+      )
+      .filter(Boolean)
+  )
+
+  // Dots are only for Subsubsections of type ROUTE
   const dotsGeoms = selectedSubsection.subsubsections
-    .map((sec) => [sec.geometry[0], sec.geometry.at(-1)])
+    .map((sec) => sec.type === "ROUTE" && [(sec.geometry[0], sec.geometry.at(-1))])
     .flat()
     .filter(Boolean)
 
   const markers = selectedSubsection.subsubsections.map((sec, index) => {
-    const [longitude, latitude] = midPoint(sec.geometry)
+    const [longitude, latitude] = sec.type === "ROUTE" ? midPoint(sec.geometry) : sec.geometry
     return (
       <Marker
         key={sec.id}
@@ -103,7 +128,14 @@ export const SubsectionMap: React.FC<Props> = ({ sections, selectedSubsection })
           onMouseEnter={() => setHovered(sec.slug)}
           onMouseLeave={() => setHovered(null)}
         >
-          <TitleLabel icon={<SubsubsectionMapIcon label={`PA${index + 1}`} />} title={sec.title} />
+          <TitleLabel
+            icon={
+              <SubsubsectionMapIcon
+                label={sec.type === "ROUTE" ? `RF${index + 1}` : `SF${index + 1}`}
+              />
+            }
+            title={sec.title}
+          />
         </TipMarker>
       </Marker>
     )
@@ -121,6 +153,7 @@ export const SubsectionMap: React.FC<Props> = ({ sections, selectedSubsection })
       onMouseLeave={handleMouseLeave}
       lines={lines}
       selectableLines={selectableLines}
+      selectablePoints={selectablePoints}
       dots={dotsGeoms}
     >
       {markers}

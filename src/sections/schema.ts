@@ -11,7 +11,7 @@ export const SectionSchema = z.object({
   description: z.string().nullish(),
   start: z.string().min(5, { message: "Pflichtfeld. Mindestens 5 Zeichen." }),
   end: z.string().min(5, { message: "Pflichtfeld. Mindestens 5 Zeichen." }),
-  labelPos: z.nativeEnum(LabelPositionEnum).nullish(),
+  labelPos: z.nativeEnum(LabelPositionEnum),
   length: z.string().nullish(),
   managerId: z.coerce.number(),
 })
