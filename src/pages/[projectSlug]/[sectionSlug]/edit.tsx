@@ -56,7 +56,10 @@ const EditSection = () => {
   return (
     <>
       <MetaTags noindex title={`Section ${section.id} bearbeiten`} />
-      <PageHeader title={`${section.title} bearbeiten`} />
+      <PageHeader
+        title={`${section.title} bearbeiten`}
+        subtitle={`${section.subTitle} - ${section.start} ▸ ${section.end}`}
+      />
 
       <SuperAdminBox>
         <pre>{JSON.stringify(section, null, 2)}</pre>
