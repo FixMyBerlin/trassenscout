@@ -215,6 +215,8 @@ model Subsubsection {
   task     String
   length   Float
   width    Float
+
+  @@unique([subsectionId, slug])
 }
 
 model Stakeholdernote {
