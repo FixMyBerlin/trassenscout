@@ -24,7 +24,7 @@ export const ProjectDashboardWithQuery = () => {
     where: { project: { slug: projectSlug! } },
   })
 
-  if (!sections.length)
+  if (!sections.length) {
     return (
       <>
         <section className="rounded border bg-blue-100 p-5">
@@ -36,6 +36,7 @@ export const ProjectDashboardWithQuery = () => {
         </section>
       </>
     )
+  }
 
   return (
     <>

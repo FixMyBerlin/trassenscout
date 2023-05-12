@@ -1,9 +1,8 @@
 import { resolver } from "@blitzjs/rpc"
-import db, { Subsubsection } from "db"
-import { z } from "zod"
-
+import db, { Subsubsection, SubsubsectionTypeEnum } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
+import { z } from "zod"
 
 const GetSubsubsection = z.object({
   projectSlug: z.string(),
@@ -13,10 +12,17 @@ const GetSubsubsection = z.object({
 })
 
 // We lie with TypeScript here, because we know better. All `geometry` fields are Position. We make sure of that in our Form. They are also required, so never empty.
-// TODO Enhance the types here to include the comming type: area|route with geometry:Position(AKA Point)|Position[](Line)
-export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry"> & {
-  geometry: [number, number][] // Position[]
-}
+export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry"> &
+  (
+    | {
+        type: typeof SubsubsectionTypeEnum.AREA
+        geometry: [number, number] // Position
+      }
+    | {
+        type: typeof SubsubsectionTypeEnum.ROUTE
+        geometry: [number, number][] // Position[]
+      }
+  )
 
 export default resolver.pipe(
   resolver.zod(GetSubsubsection),

@@ -12,7 +12,7 @@ export const SubsectionSchema = z.object({
   description: z.string().nullish(),
   start: z.string().min(5, { message: "Pflichtfeld. Mindestens 5 Zeichen." }),
   end: z.string().min(5, { message: "Pflichtfeld. Mindestens 5 Zeichen." }),
-  labelPos: z.nativeEnum(LabelPositionEnum).nullish(),
+  labelPos: z.nativeEnum(LabelPositionEnum),
   geometry: z.array(z.tuple([z.number(), z.number()])),
   managerId: z.coerce.number(),
   sectionId: z.coerce.number(),

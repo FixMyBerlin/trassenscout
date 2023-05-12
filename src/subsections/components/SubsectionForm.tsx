@@ -1,5 +1,3 @@
-import { z } from "zod"
-
 import {
   Form,
   FormProps,
@@ -10,6 +8,7 @@ import {
 import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryField"
 import { labelPosOptions } from "src/form"
 import { getUserSelectOptions, UserSelectOptions } from "src/users/utils"
+import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function SubsectionForm<S extends z.ZodType<any, any>>(

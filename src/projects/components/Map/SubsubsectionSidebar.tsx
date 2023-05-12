@@ -67,14 +67,6 @@ export const SubsubsectionSidebar: React.FC<Props> = ({ subsubsection, onClose }
             <tbody className="divide-y divide-gray-200 bg-white">
               <tr>
                 <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
-                  Führungsform
-                </th>
-                <td className="break-words px-3 py-4 text-sm text-gray-500">
-                  {subsubsection.guidance}
-                </td>
-              </tr>
-              <tr>
-                <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
                   Maßnahmentyp
                 </th>
                 <td className="break-words px-3 py-4 text-sm text-gray-500">

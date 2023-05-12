@@ -52,6 +52,7 @@ const EditProjectWithQuery = () => {
       <PageHeader title={quote(project.title)} subtitle="Projekt bearbeiten" />
 
       <ProjectForm
+        className="mt-10"
         submitText="Speichern"
         // schema={ProjectSchema}
         initialValues={{ ...project, partnerLogoSrcs: project.partnerLogoSrcs.join("\n") }}

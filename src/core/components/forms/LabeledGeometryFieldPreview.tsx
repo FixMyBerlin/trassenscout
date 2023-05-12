@@ -1,14 +1,13 @@
-import React from "react"
 import { CheckBadgeIcon } from "@heroicons/react/24/solid"
 import { lineString, point } from "@turf/helpers"
 import { bbox } from "@turf/turf"
 import clsx from "clsx"
-import Map, { Layer, LngLatBoundsLike, NavigationControl, ScaleControl, Source } from "react-map-gl"
 import maplibregl from "maplibre-gl"
+import React from "react"
 import { useFormContext } from "react-hook-form"
-import { z } from "zod"
-
+import Map, { Layer, LngLatBoundsLike, NavigationControl, ScaleControl, Source } from "react-map-gl"
 import { vectorStyle } from "src/projects/components/Map/BaseMap"
+import { z } from "zod"
 
 type Props = {
   name: string
@@ -16,12 +15,17 @@ type Props = {
 }
 
 export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError }) => {
-  const { watch } = useFormContext()
+  const { watch, getValues } = useFormContext()
   const geometry = watch(name)
+  const geometryType = getValues("type") || "ROUTE" // Subsections don't have a `type` but area a ROUTE
 
   const LineStringSchema = z.array(z.array(z.number()).min(2).max(2).nonempty()).nonempty()
+  const PointSchema = z.array(z.number()).min(2).max(2).nonempty()
 
-  const schemaResult = LineStringSchema.safeParse(geometry)
+  const schemaResult =
+    geometryType === "ROUTE"
+      ? LineStringSchema.safeParse(geometry)
+      : PointSchema.safeParse(geometry)
 
   return (
     <div
@@ -31,18 +35,25 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
       )}
     >
       <h3 className="m-0 mb-3 flex items-center gap-1 text-sm font-semibold">
-        Geometrieprüfung:{" "}
+        Geometrieprüfung: {geometryType === "ROUTE" ? "Liniengeometrie" : "Punktgeometrie"}
         {schemaResult.success && !hasError && (
           <CheckBadgeIcon className="h-5 w-5 pb-0.5 text-green-700" />
         )}
       </h3>
       {schemaResult.success ? (
         <>
-          <div className="mb-3 h-[500px] w-full overflow-clip rounded-md drop-shadow-md">
+          <div className="mb-3 h-[300px] w-full overflow-clip rounded-md drop-shadow-md">
             <Map
               initialViewState={{
-                bounds: bbox(lineString(geometry)) as LngLatBoundsLike,
-                fitBoundsOptions: { padding: 10 },
+                ...(geometryType === "ROUTE"
+                  ? {
+                      bounds: bbox(lineString(geometry)) as LngLatBoundsLike,
+                      fitBoundsOptions: { padding: 20 },
+                    }
+                  : {}),
+                ...(geometryType === "AREA"
+                  ? { latitude: geometry.at(1), longitude: geometry.at(0), zoom: 14 }
+                  : {}),
               }}
               id="preview"
               mapLib={maplibregl}
@@ -51,40 +62,42 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
             >
               <NavigationControl showCompass={false} />
               <ScaleControl />
-              <Source key="line" type="geojson" data={lineString(geometry)}>
-                <Layer
-                  type="line"
-                  paint={{
-                    "line-width": 4,
-                    "line-color": "black",
-                  }}
-                />
-              </Source>
-              <Source key="dot" type="geojson" data={point(geometry[0])}>
-                <Layer
-                  type="circle"
-                  paint={{
-                    "circle-radius": 6,
-                    "circle-color": "black",
-                  }}
-                />
-              </Source>
+              {geometryType === "ROUTE" ? (
+                <Source type="geojson" data={lineString(geometry)}>
+                  <Layer
+                    type="line"
+                    paint={{
+                      "line-width": 4,
+                      "line-color": "black",
+                      "line-opacity": 0.6,
+                    }}
+                  />
+                </Source>
+              ) : (
+                <Source type="geojson" data={point(geometry)}>
+                  <Layer
+                    type="circle"
+                    paint={{
+                      "circle-radius": 4,
+                      "circle-color": "black",
+                      "circle-opacity": 0.6,
+                    }}
+                  />
+                </Source>
+              )}
             </Map>
           </div>
-          <pre className="m-0 text-xs leading-none">{JSON.stringify(geometry, undefined, 2)}</pre>
+          <details className="prose prose-sm">
+            <summary>Geometry</summary>
+            <pre className="m-0 text-xs leading-none">{JSON.stringify(geometry, undefined, 2)}</pre>
+          </details>
         </>
       ) : (
-        <>
-          <p className="mt-2 mb-0 text-sm">
-            Ungültiger <code>LineString</code>. Das Format muss sein:
-            <code>[[9.1943,48.8932],[9.2043,48.8933]]</code>
-          </p>
-          <p className="mt-2 mb-0 text-sm">
-            <strong>Achtung Validierung:</strong> Dieser Fehler muss behoben werden. Aus technischen
-            Gründen kann man das Formular trotzdem speichern. Das würde dann aber zu einer defekten
-            Appliation führen.
-          </p>
-        </>
+        <p className="mt-2 mb-0 min-h-[300px] text-sm">
+          <strong>Achtung Validierung:</strong> Dieser Fehler muss behoben werden. Aus technischen
+          Gründen kann man das Formular trotzdem speichern. Das würde dann aber zu einer defekten
+          Appliation führen.
+        </p>
       )}
     </div>
   )

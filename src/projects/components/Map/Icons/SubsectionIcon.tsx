@@ -19,7 +19,7 @@ export const SubsectionMapIcon: React.FC<Props> = ({ label, ...props }) => (
     className={`flex h-[21px] w-[34px] flex-none
         cursor-pointer items-center justify-center rounded-lg
         border-2 border-gray-900 bg-gray-900 pt-0.5
-        font-sans text-[12py] font-bold leading-none text-white`}
+        font-sans font-bold leading-none text-[12py] text-white`}
     {...props}
   >
     {label}

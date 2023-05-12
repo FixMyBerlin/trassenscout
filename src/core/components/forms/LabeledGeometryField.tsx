@@ -23,10 +23,12 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
     const {
       register,
       formState: { isSubmitting, errors },
+      getValues,
       setValue,
       watch,
     } = useFormContext()
 
+    const geometryType = getValues("type") || "ROUTE" // Subsections don't have a `type` but area a ROUTE
     const value = watch(name)
     const [valueString, setValueString] = useState("")
     useEffect(() => {
@@ -61,7 +63,7 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
           {optional && <> (optional)</>}
         </label>
         <div className="grid grid-cols-2 gap-5">
-          <div>
+          <div className="flex flex-col">
             <textarea
               disabled={isSubmitting}
               {...register(name)}
@@ -74,13 +76,25 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
               onSubmit={handleTextareaChange}
               className={clsx(
                 textareaClasName,
-                "block h-full w-full rounded-md shadow-sm sm:text-sm",
+                "block w-full grow rounded-md shadow-sm sm:text-sm",
                 hasError
                   ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
                   : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
               )}
             />
             {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}
+            <p className="mt-2 text-sm text-gray-500">
+              {geometryType === "ROUTE" ? (
+                <>
+                  Das richtige Format für eine Linie ist <code>[9.1943,48.8932]</code>
+                </>
+              ) : (
+                <>
+                  Das richtige Format für einen Punkt ist{" "}
+                  <code>[[9.1943,48.8932],[9.2043,48.8933]]</code>
+                </>
+              )}
+            </p>
           </div>
           <div>
             <ErrorMessage
