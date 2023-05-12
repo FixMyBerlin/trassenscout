@@ -9,6 +9,17 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator zod {
+  provider                 = "zod-prisma"
+  output                   = "./zod"
+  relationModel            = true
+  modelCase                = "PascalCase"
+  modelSuffix              = "Model"
+  useDecimalJs             = true
+  imports                  = null
+  prismaJsonNullability    = true
+}
+
 // --------------------------------------
 
 model User {
