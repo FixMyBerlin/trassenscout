@@ -17,7 +17,12 @@ const EditSubsubsection = () => {
   const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
   const [subsubsection, { setQueryData }] = useQuery(
     getSubsubsection,
-    { slug: subsubsectionSlug! },
+    {
+      projectSlug: projectSlug!,
+      sectionSlug: sectionSlug!,
+      subsectionSlug: subsectionSlug!,
+      subsubsectionSlug: subsubsectionSlug!,
+    },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
