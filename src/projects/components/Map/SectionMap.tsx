@@ -6,7 +6,8 @@ import React, { useState } from "react"
 import { MapLayerMouseEvent, Marker } from "react-map-gl"
 import { SectionWithSubsectionsWithPosition } from "src/sections/queries/getSectionsIncludeSubsections"
 import { BaseMap } from "./BaseMap"
-import { StartEnd, SubsectionLabel } from "./Labels"
+import { StartEndLabel } from "./Labels"
+import { SubsectionIcon } from "./Icons"
 import { TipMarker } from "./TipMarker"
 import { lineColors } from "./lineColors"
 import { midPoint, sectionsBbox } from "./utils"
@@ -96,8 +97,8 @@ export const SectionMap: React.FC<Props> = ({ sections, selectedSection }) => {
           onMouseEnter={() => setHovered(subsection.slug)}
           onMouseLeave={() => setHovered(null)}
         >
-          <StartEnd
-            icon={<SubsectionLabel label={`PA${index + 1}`} />}
+          <StartEndLabel
+            icon={<SubsectionIcon label={`PA${index + 1}`} />}
             start={subsection.start}
             end={subsection.end}
           />

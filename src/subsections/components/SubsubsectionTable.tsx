@@ -6,7 +6,7 @@ import { Subsubsection } from "@prisma/client"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
-import { SubsubsectionLabel } from "src/projects/components/Map/Labels"
+import { SubsubsectionIcon } from "src/projects/components/Map/Icons"
 
 type Props = {
   subsubsections: Subsubsection[]
@@ -64,7 +64,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
                   onClick={() => router.push(route, undefined, { scroll: false })}
                 >
                   <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                    <SubsubsectionLabel label={`RF${index + 1}`} />
+                    <SubsubsectionIcon label={`RF${index + 1}`} />
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                     <strong>{subsubsection.title}</strong>
