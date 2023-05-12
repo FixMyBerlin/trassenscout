@@ -22,22 +22,34 @@ export const SubsectionMap: React.FC<Props> = ({ sections, selectedSubsection })
   const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
   const router = useRouter()
-  const handleSelect = (slug: string | null) => {
-    void router.push(
-      Routes.SubsectionDashboardPage({
-        projectSlug: projectSlug!,
-        sectionSlug: sectionSlug!,
-        subsectionPath: slug ? [subsectionSlug!, slug] : [subsectionSlug!],
-      }),
-      undefined,
-      { scroll: false }
-    )
+
+  const handleSelect = (slug: string | null, edit: boolean) => {
+    if (slug && edit) {
+      void router.push(
+        Routes.EditSubsubsectionPage({
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug!,
+          subsectionSlug: subsectionSlug!,
+          subsubsectionSlug: slug,
+        })
+      )
+    } else {
+      void router.push(
+        Routes.SubsectionDashboardPage({
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug!,
+          subsectionPath: slug ? [subsectionSlug!, slug] : [subsectionSlug!],
+        }),
+        undefined,
+        { scroll: false }
+      )
+    }
   }
 
   const [hovered, setHovered] = useState<string | number | null>(null)
   const getId = (e: MapLayerMouseEvent | undefined) => e?.features?.[0]?.properties?.id || null
   const handleClick = async (e: MapLayerMouseEvent | undefined) =>
-    getId(e) && handleSelect(getId(e))
+    getId(e) && handleSelect(getId(e), e!.originalEvent.ctrlKey)
   const handleMouseEnter = (e: MapLayerMouseEvent | undefined) => setHovered(getId(e))
   const handleMouseLeave = () => setHovered(null)
 
@@ -83,7 +95,7 @@ export const SubsectionMap: React.FC<Props> = ({ sections, selectedSubsection })
         longitude={longitude}
         latitude={latitude}
         anchor="center"
-        onClick={async () => handleSelect(sec.slug)}
+        onClick={(e) => handleSelect(sec.slug, e.originalEvent.ctrlKey)}
       >
         <TipMarker anchor={sec.labelPos || "top"}>
           <div className="p-2">

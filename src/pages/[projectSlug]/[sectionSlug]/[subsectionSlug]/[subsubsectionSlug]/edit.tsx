@@ -38,13 +38,7 @@ const EditSubsubsection = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(
-        Routes.SubsectionDashboardPage({
-          projectSlug: projectSlug!,
-          sectionSlug: sectionSlug!,
-          subsectionPath: [subsectionSlug!, subsubsection.slug],
-        })
-      )
+      await router.back()
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }

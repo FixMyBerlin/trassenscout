@@ -17,13 +17,18 @@ export const ProjectMap: React.FC<Props> = ({ sections }) => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
 
-  const handleSelect = (sectionSlug: string) =>
-    router.push(Routes.SectionDashboardPage({ projectSlug: projectSlug!, sectionSlug }))
+  const handleSelect = (sectionSlug: string, edit: boolean) => {
+    if (edit) {
+      void router.push(Routes.EditSectionPage({ projectSlug: projectSlug!, sectionSlug }))
+    } else {
+      void router.push(Routes.SectionDashboardPage({ projectSlug: projectSlug!, sectionSlug }))
+    }
+  }
 
   const [hovered, setHovered] = useState<number | string | null>(null)
   const getId = (e: MapLayerMouseEvent | undefined) => e?.features?.[0]?.properties?.id || null
   const handleClick = async (e: MapLayerMouseEvent | undefined) =>
-    getId(e) && handleSelect(getId(e))
+    getId(e) && handleSelect(getId(e), e!.originalEvent.ctrlKey)
   const handleMouseEnter = (e: MapLayerMouseEvent | undefined) => setHovered(getId(e))
   const handleMouseLeave = () => setHovered(null)
 
@@ -68,11 +73,7 @@ export const ProjectMap: React.FC<Props> = ({ sections }) => {
         longitude={midPoint.geometry.coordinates[0]}
         latitude={midPoint.geometry.coordinates[1]}
         anchor="center"
-        onClick={() =>
-          router.push(
-            Routes.SectionDashboardPage({ projectSlug: projectSlug!, sectionSlug: section.slug })
-          )
-        }
+        onClick={(e) => handleSelect(section.slug, e.originalEvent.ctrlKey)}
       >
         <TipMarker
           anchor={section.labelPos || "top"}

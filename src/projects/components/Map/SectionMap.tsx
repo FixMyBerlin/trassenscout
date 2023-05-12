@@ -22,19 +22,30 @@ export const SectionMap: React.FC<Props> = ({ sections, selectedSection }) => {
   const projectSlug = useParam("projectSlug", "string")
   const sectionSlug = useParam("sectionSlug", "string")
 
-  const handleSelect = (subsectionSlug: string) =>
-    router.push(
-      Routes.SubsectionDashboardPage({
-        projectSlug: projectSlug!,
-        sectionSlug: sectionSlug!,
-        subsectionPath: [subsectionSlug],
-      })
-    )
+  const handleSelect = (subsectionSlug: string, edit: boolean) => {
+    if (edit) {
+      void router.push(
+        Routes.EditSubsectionPage({
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug!,
+          subsectionSlug,
+        })
+      )
+    } else {
+      void router.push(
+        Routes.SubsectionDashboardPage({
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug!,
+          subsectionPath: [subsectionSlug],
+        })
+      )
+    }
+  }
 
   const [hovered, setHovered] = useState<number | string | null>(null)
   const getId = (e: MapLayerMouseEvent | undefined) => e?.features?.[0]?.properties?.id || null
   const handleClick = async (e: MapLayerMouseEvent | undefined) =>
-    getId(e) && handleSelect(getId(e))
+    getId(e) && handleSelect(getId(e), e!.originalEvent.ctrlKey)
   const handleMouseEnter = (e: MapLayerMouseEvent | undefined) => setHovered(getId(e))
   const handleMouseLeave = () => setHovered(null)
 
@@ -76,7 +87,9 @@ export const SectionMap: React.FC<Props> = ({ sections, selectedSection }) => {
         longitude={longitude}
         latitude={latitude}
         anchor="center"
-        onClick={() => handleSelect(subsection.slug)}
+        onClick={(e) => {
+          handleSelect(subsection.slug, e.originalEvent.ctrlKey)
+        }}
       >
         <TipMarker
           anchor={subsection.labelPos || "top"}
