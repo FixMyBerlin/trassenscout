@@ -7,9 +7,9 @@ import { ProgressContext } from "../context/contexts"
 
 export const Done = () => {
   const { progress, setProgress } = useContext(ProgressContext)
-  useEffect(() => {
-    setProgress(8)
-  }, [])
+
+  setProgress(8)
+
   return (
     <section>
       <ScreenHeaderParticipation
