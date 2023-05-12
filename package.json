@@ -94,7 +94,8 @@
     "preview-email": "3.0.10",
     "typescript": "^4.9.5",
     "vite-tsconfig-paths": "3.6.0",
-    "vitest": "0.31.0"
+    "vitest": "0.31.0",
+    "zod-prisma": "0.5.4"
   },
   "private": true
 }
