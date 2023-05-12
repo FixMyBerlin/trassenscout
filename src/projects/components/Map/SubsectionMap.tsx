@@ -8,6 +8,7 @@ import { useSlugs } from "src/core/hooks"
 import { SectionWithSubsectionsWithPosition } from "src/sections/queries/getSectionsIncludeSubsections"
 import { SubsectionWithSubsubsectionsWithPosition } from "src/subsections/queries/getSubsectionIncludeSubsubsections"
 import { BaseMap } from "./BaseMap"
+import { TitleLabel } from "./Labels"
 import { SubsubsectionMapIcon } from "./Icons"
 import { TipMarker } from "./TipMarker"
 import { lineColors } from "./lineColors"
@@ -97,14 +98,12 @@ export const SubsectionMap: React.FC<Props> = ({ sections, selectedSubsection })
         anchor="center"
         onClick={(e) => handleSelect(sec.slug, e.originalEvent.ctrlKey)}
       >
-        <TipMarker anchor={sec.labelPos || "top"}>
-          <div className="p-2">
-            <SubsubsectionMapIcon
-              label={`RF${index + 1}`}
-              onMouseEnter={() => setHovered(sec.slug)}
-              onMouseLeave={() => setHovered(null)}
-            />
-          </div>
+        <TipMarker
+          anchor={sec.labelPos || "top"}
+          onMouseEnter={() => setHovered(sec.slug)}
+          onMouseLeave={() => setHovered(null)}
+        >
+          <TitleLabel icon={<SubsubsectionMapIcon label={`PA${index + 1}`} />} title={sec.title} />
         </TipMarker>
       </Marker>
     )
