@@ -54,7 +54,10 @@ const EditSubsection = () => {
   return (
     <>
       <MetaTags noindex title={`Abschnitt ${subsection.title} bearbeiten`} />
-      <PageHeader title="Abschnitt bearbeiten" subtitle={subsection.title} />
+      <PageHeader
+        title={`${subsection.title} bearbeiten`}
+        subtitle={`${subsection.start} ▸ ${subsection.end}`}
+      />
 
       <SubsectionForm
         className="mt-10"

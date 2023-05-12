@@ -28,27 +28,28 @@ export const SubsectionDashboardWithQuery = () => {
   const [{ sections: sectionsWithSubsections }] = useQuery(getSectionsIncludeSubsections, {
     where: { project: { slug: projectSlug! } },
   })
-  const [subsectionWithSubsubsection] = useQuery(getSubsectionIncludeSubsubsections, {
+  const [subsection] = useQuery(getSubsectionIncludeSubsubsections, {
     projectSlug: projectSlug!,
     sectionSlug: sectionSlug!,
     subsectionSlug: subsectionSlug!,
   })
   const stakeholdernotes = useQuery(getStakeholdernotes, {
-    subsectionId: subsectionWithSubsubsection.id,
+    subsectionId: subsection.id,
   })[0].stakeholdernotes
 
   // Handle/Render Subsubsection
   const subsubsection = subsubsectionSlug
-    ? subsectionWithSubsubsection.subsubsections.find((s) => s.slug === subsubsectionSlug)
+    ? subsection.subsubsections.find((s) => s.slug === subsubsectionSlug)
     : undefined
 
   return (
     <>
-      <MetaTags noindex title={subsectionWithSubsubsection!.title} />
+      <MetaTags noindex title={subsection!.title} />
 
       <Breadcrumb />
       <PageHeader
-        title={subsectionWithSubsubsection!.title}
+        title={subsection!.title}
+        subtitle={`${subsection.start} ▸ ${subsection.end}`}
         action={
           <Link
             icon="edit"
@@ -65,7 +66,7 @@ export const SubsectionDashboardWithQuery = () => {
 
       <PageDescription>
         <div className="flex gap-8">
-          <Markdown markdown={subsectionWithSubsubsection.description} className="mb-3" />
+          <Markdown markdown={subsection.description} className="mb-3" />
           <div className="space-y-2">
             <StakeholderSummary stakeholdernotes={stakeholdernotes} />
             <p>
@@ -81,7 +82,7 @@ export const SubsectionDashboardWithQuery = () => {
           // Make sure the map rerenders when we close the SubsectionSidebar
           key={`map-${Boolean(subsubsection)}`}
           sections={sectionsWithSubsections}
-          selectedSubsection={subsectionWithSubsubsection}
+          selectedSubsection={subsection}
         />
 
         {subsubsection ? (
@@ -102,11 +103,11 @@ export const SubsectionDashboardWithQuery = () => {
         ) : null}
       </div>
 
-      <SubsubsectionTable subsubsections={subsectionWithSubsubsection.subsubsections} />
+      <SubsubsectionTable subsubsections={subsection.subsubsections} />
 
       <StakeholderSection stakeholdernotes={stakeholdernotes} />
 
-      <SuperAdminLogData data={{ subsectionWithSubsubsection, sectionsWithSubsections }} />
+      <SuperAdminLogData data={{ subsection, sectionsWithSubsections }} />
     </>
   )
 }

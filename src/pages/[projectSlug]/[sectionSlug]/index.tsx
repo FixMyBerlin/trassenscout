@@ -43,7 +43,7 @@ export const SectionDashboardWithQuery = () => {
       <Breadcrumb />
       <PageHeader
         title={section.title}
-        subtitle={section.subTitle}
+        subtitle={`${section.subTitle} - ${section.start} ▸ ${section.end}`}
         action={
           <Link
             icon="edit"
