@@ -38,12 +38,7 @@ const EditSection = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(
-        Routes.SectionDashboardPage({
-          projectSlug: projectSlug!,
-          sectionSlug: updated.slug,
-        })
-      )
+      await router.back()
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
