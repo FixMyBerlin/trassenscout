@@ -13,8 +13,5 @@ ADD COLUMN     "costEstimate" DOUBLE PRECISION,
 ALTER COLUMN "length" DROP NOT NULL,
 ALTER COLUMN "width" DROP NOT NULL;
 
--- CreateIndex
-CREATE UNIQUE INDEX "Subsubsection_subsectionId_slug_key" ON "Subsubsection"("subsectionId", "slug");
-
 -- AddForeignKey
 ALTER TABLE "Subsubsection" ADD CONSTRAINT "Subsubsection_managerId_fkey" FOREIGN KEY ("managerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
