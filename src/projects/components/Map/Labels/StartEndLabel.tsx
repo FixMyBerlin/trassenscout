@@ -9,7 +9,7 @@ type Props = {
 }
 
 export const StartEndLabel: React.FC<Props> = ({ icon, start, end }) => (
-  <div className="p-[5px]">
+  <div className="px-[7px] py-[2px]">
     <div className="flex">
       <div className="flex items-center">{icon}</div>
       <div className="ml-[10px] pt-[7px]">
