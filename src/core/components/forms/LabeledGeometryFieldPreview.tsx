@@ -1,12 +1,14 @@
+import React from "react"
 import { CheckBadgeIcon } from "@heroicons/react/24/solid"
-import { lineString } from "@turf/helpers"
+import { lineString, point } from "@turf/helpers"
 import { bbox } from "@turf/turf"
 import clsx from "clsx"
+import Map, { Layer, LngLatBoundsLike, NavigationControl, ScaleControl, Source } from "react-map-gl"
 import maplibregl from "maplibre-gl"
 import { useFormContext } from "react-hook-form"
-import Map, { Layer, LngLatBoundsLike, NavigationControl, ScaleControl, Source } from "react-map-gl"
-import { vectorStyle } from "src/projects/components/Map/BaseMap"
 import { z } from "zod"
+
+import { vectorStyle } from "src/projects/components/Map/BaseMap"
 
 type Props = {
   name: string
@@ -15,11 +17,11 @@ type Props = {
 
 export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError }) => {
   const { watch } = useFormContext()
-  const watchwatch = watch(name)
+  const geometry = watch(name)
 
   const LineStringSchema = z.array(z.array(z.number()).min(2).max(2).nonempty()).nonempty()
 
-  const schemaResult = LineStringSchema.safeParse(watchwatch)
+  const schemaResult = LineStringSchema.safeParse(geometry)
 
   return (
     <div
@@ -39,7 +41,7 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
           <div className="mb-3 h-[500px] w-full overflow-clip rounded-md drop-shadow-md">
             <Map
               initialViewState={{
-                bounds: bbox(lineString(watchwatch)) as LngLatBoundsLike,
+                bounds: bbox(lineString(geometry)) as LngLatBoundsLike,
                 fitBoundsOptions: { padding: 10 },
               }}
               id="preview"
@@ -49,19 +51,27 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
             >
               <NavigationControl showCompass={false} />
               <ScaleControl />
-              <Source type="geojson" data={lineString(watchwatch)}>
+              <Source key="line" type="geojson" data={lineString(geometry)}>
                 <Layer
                   type="line"
                   paint={{
                     "line-width": 4,
                     "line-color": "black",
-                    "line-opacity": 0.6,
+                  }}
+                />
+              </Source>
+              <Source key="dot" type="geojson" data={point(geometry[0])}>
+                <Layer
+                  type="circle"
+                  paint={{
+                    "circle-radius": 6,
+                    "circle-color": "black",
                   }}
                 />
               </Source>
             </Map>
           </div>
-          <pre className="m-0 text-xs leading-none">{JSON.stringify(watchwatch, undefined, 2)}</pre>
+          <pre className="m-0 text-xs leading-none">{JSON.stringify(geometry, undefined, 2)}</pre>
         </>
       ) : (
         <>
