@@ -1,11 +1,10 @@
-import { useContext, useEffect, useState } from "react"
-import SurveyForm from "./form/SurveyForm"
-import { ProgressContext } from "../context/contexts"
+import { useState } from "react"
+import { Response } from "../data/types"
 import { ParticipationButton } from "./core/ParticipationButton"
 import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
 import { ParticipationH2 } from "./core/Text"
 import { ParticipationLabeledRadiobuttonGroup } from "./form/ParticipationLabeledRadiobuttonGroup"
-import { Response } from "../data/types"
+import SurveyForm from "./form/SurveyForm"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -19,9 +18,6 @@ export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
   // It would be much nicer to useFormContext and formState.isDirty - but then this component has to be wrapped in Form (and FormProvider - tbd)
   const [isDirty, setIsDirty] = useState(false)
   const [isFeedback, setIsFeedback] = useState(false)
-  const { progress, setProgress } = useContext(ProgressContext)
-
-  setProgress(5)
 
   const { title, description, questions, buttons } = more.pages[0]
   const question = questions[0]

@@ -2,14 +2,8 @@ export { FORM_ERROR } from "src/core/components/forms"
 import clsx from "clsx"
 import { Link, whiteButtonStyles } from "src/core/components/links"
 import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
-import { useContext, useEffect } from "react"
-import { ProgressContext } from "../context/contexts"
 
 export const Done = () => {
-  const { progress, setProgress } = useContext(ProgressContext)
-
-  setProgress(8)
-
   return (
     <section>
       <ScreenHeaderParticipation
