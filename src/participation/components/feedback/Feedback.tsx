@@ -25,10 +25,6 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
     setFeedbackCategory(categories.length) // default: '"Sonstiges"
   }, [])
 
-  useEffect(() => {
-    setProgress(stageProgressDefinition["FEEDBACK"] + feedbackPageProgress)
-  }, [feedbackPageProgress])
-
   const [isMap, setIsMap] = useState(false)
 
   const { pages } = feedback
@@ -44,13 +40,13 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const handleNextPage = () => {
     const newFeedbackPageProgress = Math.min(pages.length, feedbackPageProgress + 1)
     setFeedbackPageProgress(newFeedbackPageProgress)
-    console.log(newFeedbackPageProgress)
+    setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
   }
 
   const handleBackPage = () => {
     const newFeedbackPageProgress = Math.max(0, feedbackPageProgress - 1)
     setFeedbackPageProgress(newFeedbackPageProgress)
-    console.log(newFeedbackPageProgress)
+    setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
   }
 
   const transformValues = (values: Record<string, null | string | boolean>) => {
