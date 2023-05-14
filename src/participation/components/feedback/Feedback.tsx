@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from "react"
-import SurveyForm from "../form/SurveyForm"
+import { useContext, useState } from "react"
+import { stageProgressDefinition } from "src/pages/rs8-beteiligung"
 import { PinContext, ProgressContext } from "src/participation/context/contexts"
+import SurveyForm from "../form/SurveyForm"
 import { FeedbackFirstPage } from "./FeedbackFirstPage"
 import { FeedbackSecondPage } from "./FeedbackSecondPage"
-import { stageProgressDefinition } from "src/pages/rs8-beteiligung"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -19,11 +19,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const [isPageOneCompleted, setIsPageOneCompleted] = useState(false)
   const [isPageTwoCompleted, setIsPageTwoCompleted] = useState(false)
   const [feedbackPageProgress, setFeedbackPageProgress] = useState(0)
-  const [feedbackCategory, setFeedbackCategory] = useState(1)
-
-  useEffect(() => {
-    setFeedbackCategory(categories.length) // default: '"Sonstiges"
-  }, [])
+  const [feedbackCategory, setFeedbackCategory] = useState(6) // default: 6 / "Sonstiges"
 
   const [isMap, setIsMap] = useState(false)
 
