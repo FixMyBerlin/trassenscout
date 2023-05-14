@@ -56,9 +56,7 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
 
   const handleClick = async (e: mapboxgl.MapLayerMouseEvent) => {}
 
-  useEffect(() => {
-    setPinPosition(projectMap.initialMarker)
-  }, [])
+  if (!pinPosition) setPinPosition(projectMap.initialMarker)
 
   useEffect(() => {
     if (!mainMap) return
