@@ -1,14 +1,13 @@
 export { FORM_ERROR } from "src/core/components/forms"
-import { useContext, useEffect, useState } from "react"
-import SurveyForm from "./form/SurveyForm"
+import { useState } from "react"
 import { Link, whiteButtonStyles } from "src/core/components/links"
-import { ProgressContext } from "../context/contexts"
 import { ParticipationButton } from "./core/ParticipationButton"
 import { ParticipationButtonWrapper } from "./core/ParticipationButtonWrapper"
 import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
 import { ParticipationH2, ParticipationP } from "./core/Text"
 import { ParticipationLabeledCheckbox } from "./form/ParticipationLabeledCheckbox"
 import { ParticipationLabeledTextField } from "./form/ParticipationLabeledTextField"
+import SurveyForm from "./form/SurveyForm"
 
 type Props = {
   onSubmit: any
@@ -17,9 +16,6 @@ type Props = {
 
 export const Email: React.FC<Props> = ({ onSubmit, email }) => {
   const [consent, setConsent] = useState(false)
-  const { progress, setProgress } = useContext(ProgressContext)
-
-  setProgress(8)
 
   const handleSubmit = (values: Record<string, any>) => {
     onSubmit(values.email)

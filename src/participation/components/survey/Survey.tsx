@@ -3,6 +3,7 @@ import SurveyForm from "../form/SurveyForm"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
+import { stageProgressDefinition } from "src/pages/rs8-beteiligung"
 import { ProgressContext } from "src/participation/context/contexts"
 import { Survey as TSurvey } from "src/participation/data/types"
 import { Debug } from "./Debug"
@@ -16,7 +17,7 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   const [surveyPageProgress, setSurveyPageProgress] = useState(0)
 
   useEffect(() => {
-    setProgress(1 + surveyPageProgress)
+    setProgress(stageProgressDefinition["SURVEY"] + surveyPageProgress)
   }, [surveyPageProgress])
 
   useEffect(() => {

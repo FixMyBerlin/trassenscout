@@ -3,6 +3,7 @@ import SurveyForm from "../form/SurveyForm"
 import { PinContext, ProgressContext } from "src/participation/context/contexts"
 import { FeedbackFirstPage } from "./FeedbackFirstPage"
 import { FeedbackSecondPage } from "./FeedbackSecondPage"
+import { stageProgressDefinition } from "src/pages/rs8-beteiligung"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -25,7 +26,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   }, [])
 
   useEffect(() => {
-    setProgress(6 + feedbackPageProgress)
+    setProgress(stageProgressDefinition["FEEDBACK"] + feedbackPageProgress)
   }, [feedbackPageProgress])
 
   const [isMap, setIsMap] = useState(false)
