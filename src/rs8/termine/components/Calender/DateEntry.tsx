@@ -17,6 +17,7 @@ type Props = {
 export const DateEntry: React.FC<Props> = ({ calendarEntry, withAction = true }) => {
   const locationDomain = calendarEntry.locationUrl && new URL(calendarEntry.locationUrl).hostname
   const projectSlug = useParam("projectSlug", "string")
+
   return (
     <Disclosure
       classNameButton="py-4 px-6 text-left text-sm text-gray-900 hover:bg-gray-50"
@@ -79,7 +80,7 @@ export const DateEntry: React.FC<Props> = ({ calendarEntry, withAction = true })
       {!calendarEntry.description ? (
         <p className="text-gray-300">Für diesen Termin liegen keine Details vor.</p>
       ) : (
-        <Markdown className="prose-sm" markdown={calendarEntry.description} />
+        <Markdown className="prose-sm mt-3" markdown={calendarEntry.description} />
       )}
       {withAction && (
         <p className="mb-5 flex items-center justify-end gap-4 text-right">
