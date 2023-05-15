@@ -32,7 +32,7 @@ export const FileTable: React.FC<Props> = ({ files, withAction = true }) => {
                   : file.externalUrl
                 return (
                   <tr key={file.id}>
-                    <td className="h-20 whitespace-nowrap py-4 pr-3 pl-4 text-sm sm:pl-6">
+                    <td className="h-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                       <PaperClipIcon className="h-8 w-8 text-gray-500" />
                     </td>
                     <td className="h-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">

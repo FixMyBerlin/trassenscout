@@ -47,7 +47,7 @@ export const NavigationMobile: React.FC<Props> = ({ menuItems, logo }) => {
           </div>
 
           <Disclosure.Panel className="divide-y-2 divide-gray-900">
-            <div className="space-y-3 pt-2 pb-3">
+            <div className="space-y-3 pb-3 pt-2">
               {menuItems?.map((item) => {
                 if (!item.children) {
                   const current = [

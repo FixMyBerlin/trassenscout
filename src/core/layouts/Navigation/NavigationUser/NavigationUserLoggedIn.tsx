@@ -51,7 +51,7 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
 
                   {isAdmin(user) && <p className="font-bold text-purple-700">Rolle: Admin</p>}
 
-                  <div className="mt-6 mb-4 flex flex-col gap-4">
+                  <div className="mb-4 mt-6 flex flex-col gap-4">
                     {projectSlug && (
                       <Menu.Item>
                         <Link

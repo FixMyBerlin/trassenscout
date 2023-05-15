@@ -93,7 +93,7 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
           </details>
         </>
       ) : (
-        <p className="mt-2 mb-0 min-h-[300px] text-sm">
+        <p className="mb-0 mt-2 min-h-[300px] text-sm">
           <strong>Achtung Validierung:</strong> Dieser Fehler muss behoben werden. Aus technischen
           Gründen kann man das Formular trotzdem speichern. Das würde dann aber zu einer defekten
           Appliation führen.

@@ -41,7 +41,7 @@ export const LabeledSelect = forwardRef<HTMLInputElement, LabeledSelectProps>(
           id={name}
           {...props}
           className={clsx(
-            "w-full rounded-md border bg-white py-2 px-3 shadow-sm focus:outline-none sm:text-sm",
+            "w-full rounded-md border bg-white px-3 py-2 shadow-sm focus:outline-none sm:text-sm",
             hasError
               ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
               : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"

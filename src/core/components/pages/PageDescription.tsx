@@ -7,6 +7,6 @@ type Props = {
 
 export const PageDescription: React.FC<Props> = ({ className, children }) => {
   return (
-    <section className={clsx(className, "mt-12 rounded bg-gray-100 py-5 px-5")}>{children}</section>
+    <section className={clsx(className, "mt-12 rounded bg-gray-100 px-5 py-5")}>{children}</section>
   )
 }

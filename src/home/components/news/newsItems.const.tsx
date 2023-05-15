@@ -1,6 +1,6 @@
 import { Link } from "src/core/components/links"
 
-export type TNewsItem = typeof newsItems[number]
+export type TNewsItem = (typeof newsItems)[number]
 
 export const newsItems = [
   {

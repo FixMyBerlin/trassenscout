@@ -164,7 +164,7 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
           status={isPinInView ? "default" : "pinOutOfView"}
         />
         <ParticipationBackgroundSwitcher
-          className="absolute top-4 left-4"
+          className="absolute left-4 top-4"
           value={selectedLayer}
           onChange={handleLayerSwitch}
         />
