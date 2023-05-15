@@ -1,18 +1,21 @@
+import { Suspense } from "react"
+import { useRouter } from "next/router"
 import { Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/router"
-import { Suspense } from "react"
-import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
-import { Link } from "src/core/components/links"
+import clsx from "clsx"
+
+import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
-import updateSubsubsection from "src/subsubsections/mutations/updateSubsubsection"
-import getSubsubsection from "src/subsubsections/queries/getSubsubsection"
-import { SubsubsectionSchema } from "src/subsubsections/schema"
 import getProjectUsers from "src/users/queries/getProjectUsers"
+import getSubsubsection from "src/subsubsections/queries/getSubsubsection"
+import updateSubsubsection from "src/subsubsections/mutations/updateSubsubsection"
+import deleteSubsubsection from "src/subsubsections/mutations/deleteSubsubsection"
+import { SubsubsectionSchema } from "src/subsubsections/schema"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 
 const EditSubsubsection = () => {
   const router = useRouter()
@@ -48,23 +51,19 @@ const EditSubsubsection = () => {
     }
   }
 
-  // TODO: Fix delete. Shows this Error ATM:
-  //                 Uncaught (in promise) Error:
-  //                 Invalid `prisma.subsection.deleteMany()` invocation:
-  //                 Foreign key constraint failed on the field: `Subsubsection_subsectionId_fkey (index)`
-  // const [deleteSubsectionMutation] = useMutation(deleteSubsubsection)
-  // const handleDelete = async () => {
-  //   if (window.confirm(`Den Eintrag mit ID ${subsubsection.id} unwiderruflich löschen?`)) {
-  //     await deleteSubsectionMutation({ id: subsubsection.id })
-  //     await router.push(
-  //       Routes.SubsectionDashboardPage({
-  //         projectSlug: projectSlug!,
-  //         sectionSlug: sectionSlug!,
-  //         subsectionPath: [subsectionSlug!],
-  //       })
-  //     )
-  //   }
-  // }
+  const [deleteSubsectionMutation] = useMutation(deleteSubsubsection)
+  const handleDelete = async () => {
+    if (window.confirm(`Den Eintrag mit ID ${subsubsection.id} unwiderruflich löschen?`)) {
+      await deleteSubsectionMutation({ id: subsubsection.id })
+      await router.push(
+        Routes.SubsectionDashboardPage({
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug!,
+          subsectionPath: [subsectionSlug!],
+        })
+      )
+    }
+  }
 
   const title = `Führung "${subsubsection.title}" bearbeiten`
   return (
@@ -81,11 +80,11 @@ const EditSubsubsection = () => {
         users={users}
       />
 
-      {/* <hr className="my-5" />
+      <hr className="my-5" />
 
       <button type="button" onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
         Löschen
-      </button> */}
+      </button>
 
       <SuperAdminLogData data={subsubsection} />
     </>
