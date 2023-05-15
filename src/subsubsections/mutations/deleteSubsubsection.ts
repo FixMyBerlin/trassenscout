@@ -1,5 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
+import { authorizeProjectAdmin } from "src/authorization"
+import getSectionProjectId from "src/sections/queries/getSectionProjectId"
 import { z } from "zod"
 
 const DeleteSubsubsection = z.object({
@@ -8,10 +10,6 @@ const DeleteSubsubsection = z.object({
 
 export default resolver.pipe(
   resolver.zod(DeleteSubsubsection),
-  resolver.authorize(),
-  async ({ id }) => {
-    const subsubsection = await db.subsubsection.deleteMany({ where: { id } })
-
-    return subsubsection
-  }
+  authorizeProjectAdmin(getSectionProjectId),
+  async ({ id }) => await db.subsubsection.deleteMany({ where: { id } })
 )
