@@ -47,7 +47,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
     if (onMouseLeave) onMouseLeave(e)
     setCursorStyle("grab")
   }
-  console.log("dots", dots)
+
   const dotSource = dots ? (
     <Source key="dots" type="geojson" data={featureCollection(dots.map((d) => point(d)))}>
       <Layer type="circle" paint={{ "circle-color": "RGB(15, 23, 42)", "circle-radius": 6 }} />
