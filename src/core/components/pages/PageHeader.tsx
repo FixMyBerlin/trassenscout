@@ -1,4 +1,4 @@
-import DashedLine from "../DashedLine"
+import { DashedLine } from "../DashedLine"
 import { H1, H2 } from "../text/Headings"
 
 type Props = {
