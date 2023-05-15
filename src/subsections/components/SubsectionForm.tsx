@@ -8,15 +8,12 @@ import {
   LabeledTextField,
 } from "src/core/components/forms"
 import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryField"
-import { getFullname } from "src/users/utils"
 import { labelPosOptions } from "src/form"
-
+import { getUserSelectOptions, UserSelectOptions } from "src/users/utils"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function SubsectionForm<S extends z.ZodType<any, any>>(
-  props: FormProps<S> & {
-    users: { id: number; firstName: string | null; lastName: string | null; email: string }[]
-  }
+  props: FormProps<S> & { users: UserSelectOptions }
 ) {
   const { users } = props
 
@@ -45,7 +42,7 @@ export function SubsectionForm<S extends z.ZodType<any, any>>(
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
-        options={users.map((u) => [u.id.toString(), [getFullname(u), `<${u.email}>`].join(" ")])}
+        options={getUserSelectOptions(users)}
       />
     </Form>
   )

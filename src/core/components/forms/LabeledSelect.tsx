@@ -7,7 +7,7 @@ export interface LabeledSelectProps extends PropsWithoutRef<JSX.IntrinsicElement
   /** Select name. */
   name: string
   /** Options: [value, text] */
-  options: [string, string][]
+  options: [string | number, string][]
   /** Field label. */
   label: string
   help?: string
