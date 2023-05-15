@@ -28,15 +28,14 @@ export const ContactWithQuery = () => {
   return (
     <div className="mt-12">
       <PageHeader
-        title="Kontakte"
-        description="Dieser Bereich hilft Ihnen dabei Kontakte zu verwalten und
-        anzuschreiben."
+        title="Externe Kontakte"
+        description="Kontaktdaten, die für das ganze Projektteam wichtig sind."
       />
 
       <Tabs
         className="mt-7"
         tabs={[
-          { name: "Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
+          { name: "Externe Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
           { name: "Projektteam", href: Routes.ProjectTeamPage({ projectSlug: projectSlug! }) },
         ]}
       />

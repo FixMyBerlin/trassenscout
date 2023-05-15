@@ -6,7 +6,7 @@ const buttonBase =
   "w-full font-medium sm:w-auto shadow-sm text-sm pb-3.5 pt-4 px-6 rounded-lg inline-flex items-center justify-center no-underline disabled:text-gray-400 disabled:bg-white disabled:ring-1 disabled:ring-gray-400"
 
 // LINK
-export const linkStyles = "text-sm text-blue-500 hover:text-blue-800 rounded-lg"
+export const linkStyles = "text-sm text-blue-500 hover:text-blue-800"
 
 // HOVER and ACTIVE
 // for button elements
