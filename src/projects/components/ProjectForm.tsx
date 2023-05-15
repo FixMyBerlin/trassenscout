@@ -6,19 +6,12 @@ import {
   LabeledTextField,
 } from "src/core/components/forms"
 import { Link } from "src/core/components/links"
-import { getFullname } from "src/users/utils"
+import { getUserSelectOptions, UserSelectOptions } from "src/users/utils"
 import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function ProjectForm<S extends z.ZodType<any, any>>(
-  props: FormProps<S> & {
-    users: {
-      id: number
-      firstName: string | null
-      lastName: string | null
-      email: string
-    }[]
-  }
+  props: FormProps<S> & { users: UserSelectOptions }
 ) {
   const { users } = props
 
@@ -75,7 +68,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
-        options={users.map((u) => [u.id.toString(), [getFullname(u), `<${u.email}>`].join(" ")])}
+        options={getUserSelectOptions(users)}
       />
     </Form>
   )

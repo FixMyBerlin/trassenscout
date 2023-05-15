@@ -5,15 +5,13 @@ import {
   LabeledTextareaField,
   LabeledTextField,
 } from "src/core/components/forms"
-import { getFullname } from "src/users/utils"
+import { getUserSelectOptions, UserSelectOptions } from "src/users/utils"
 import { z } from "zod"
 import { labelPosOptions } from "src/form"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function SectionForm<S extends z.ZodType<any, any>>(
-  props: FormProps<S> & {
-    users: { id: number; firstName: string | null; lastName: string | null }[]
-  }
+  props: FormProps<S> & { users: UserSelectOptions }
 ) {
   const { users } = props
 
@@ -44,7 +42,7 @@ export function SectionForm<S extends z.ZodType<any, any>>(
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
-        options={users.map((u) => [String(u.id), getFullname(u)!])}
+        options={getUserSelectOptions(users)}
       />
     </Form>
   )
