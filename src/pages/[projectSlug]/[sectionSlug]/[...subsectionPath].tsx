@@ -12,7 +12,7 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { SubsectionMap } from "src/projects/components/Map/SubsectionMap"
-import { SubsubsectionSidebar } from "src/projects/components/Map/SubsubsectionSidebar"
+import { SubsubsectionMapSidebar } from "src/subsections/components/SubsubsectionMapSidebar"
 import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
 import { StakeholderSection } from "src/stakeholdernotes/components/StakeholderSection"
 import { StakeholderSummary } from "src/stakeholdernotes/components/StakeholderSummary"
@@ -86,7 +86,7 @@ export const SubsectionDashboardWithQuery = () => {
         />
 
         {subsubsection ? (
-          <SubsubsectionSidebar
+          <SubsubsectionMapSidebar
             subsubsection={subsubsection}
             onClose={() => {
               void router.push(
