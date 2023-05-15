@@ -22,7 +22,7 @@ export const SubsubsectionSchema = z.object({
   labelPos: z.nativeEnum(LabelPositionEnum),
   task: z.string().min(3, {
     message: "Pflichtfeld. Mindestens 3 Zeichen.",
-  }),
+  }), // Massnahmentyp
   length: z.coerce.number().nullish(), // km
   width: z.coerce.number().nullish(), // m
   costEstimate: z.coerce.number().nullish(), // €

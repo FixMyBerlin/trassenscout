@@ -66,7 +66,7 @@ export const SubsectionDashboardWithQuery = () => {
 
       <PageDescription>
         <div className="flex gap-8">
-          <Markdown markdown={subsection.description} className="mb-3" />
+          <Markdown markdown={subsection.description} className="leading-snug" />
           <div className="space-y-2">
             <StakeholderSummary stakeholdernotes={stakeholdernotes} />
             <p>

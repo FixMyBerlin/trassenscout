@@ -47,10 +47,10 @@ const NewSubsubsection = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neue Teilplanung erstellen" />
+      <MetaTags noindex title="Neue Führung erstellen" />
 
       <PageHeader
-        title="Teilplanung erstellen"
+        title="Führung erstellen"
         subtitle={`Für den Abschnitt ${quote(subsection!.title)}`}
       />
 

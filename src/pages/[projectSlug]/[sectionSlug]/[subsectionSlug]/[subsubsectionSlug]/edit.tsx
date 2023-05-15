@@ -65,11 +65,11 @@ const EditSubsubsection = () => {
   //   }
   // }
 
-  const title = `Teilplanung "${subsubsection.title}" bearbeiten`
+  const title = `Führung "${subsubsection.title}" bearbeiten`
   return (
     <>
       <MetaTags noindex title={title} />
-      <PageHeader title="Teilplanung bearbeiten" subtitle={subsubsection.title} />
+      <PageHeader title="Führung bearbeiten" subtitle={subsubsection.title} />
 
       <SubsubsectionForm
         className="mt-10"
@@ -92,7 +92,7 @@ const EditSubsubsection = () => {
 }
 
 const EditSubsubsectionPage = () => {
-  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
+  const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
   return (
     <LayoutRs>
@@ -105,10 +105,10 @@ const EditSubsubsectionPage = () => {
           href={Routes.SubsectionDashboardPage({
             projectSlug: projectSlug!,
             sectionSlug: sectionSlug!,
-            subsectionPath: [subsectionSlug!],
+            subsectionPath: [subsectionSlug!, subsubsectionSlug!],
           })}
         >
-          Zurück zum Abschnitt
+          Zurück zur Führung
         </Link>
       </p>
     </LayoutRs>
