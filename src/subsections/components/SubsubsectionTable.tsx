@@ -1,9 +1,10 @@
 import { Routes } from "@blitzjs/next"
+import { Subsubsection } from "@prisma/client"
 import clsx from "clsx"
 import { useRouter } from "next/router"
-import { Subsubsection } from "@prisma/client"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
+import { formattedEuro, formattedLength, formattedWidth } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { SubsubsectionIcon } from "src/projects/components/Map/Icons"
 
@@ -31,10 +32,16 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
                 Führungen
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Streckenlänge
+                Maßnahmentyp
+              </th>
+              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                Länge
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                 Breite
+              </th>
+              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                Kostenschätzung
               </th>
               <th
                 scope="col"
@@ -71,10 +78,16 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
                     <strong>{subsubsection.title}</strong>
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
-                    {subsubsection.length ? subsubsection.length + " km" : " k.A."}
+                    {subsubsection.task}
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
-                    {subsubsection.width ? subsubsection.width + " m" : " k.A."}
+                    {formattedLength(subsubsection.length)}
+                  </td>
+                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
+                    {formattedWidth(subsubsection.width)}
+                  </td>
+                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
+                    {formattedEuro(subsubsection.costEstimate)}
                   </td>
                   <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
                     {/* TODO Abstimmung */}-
