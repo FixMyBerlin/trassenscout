@@ -14,7 +14,7 @@ import Map, {
   useMap,
 } from "react-map-gl"
 import { PinContext } from "src/participation/context/contexts"
-import { LayerType } from "src/projects/components/Map/BackgroundSwitcher"
+import { LayerType } from "src/core/components/Map/BackgroundSwitcher"
 import { MapBanner } from "./MapBanner"
 import { ParticipationBackgroundSwitcher } from "./ParticipationBackgroundSwitcher"
 import Pin from "./Pin"

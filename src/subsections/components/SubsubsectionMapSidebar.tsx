@@ -8,7 +8,7 @@ import { PageDescription } from "src/core/components/pages/PageDescription"
 import { formattedEuro, formattedLength, formattedWidth } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { useSlugs } from "src/core/hooks"
-import { SubsubsectionIcon } from "src/projects/components/Map/Icons"
+import { SubsubsectionIcon } from "src/core/components/Map/Icons"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { getFullname } from "src/users/utils"
 

@@ -6,7 +6,7 @@ import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
 import { formattedEuro, formattedLength, formattedWidth } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
-import { SubsubsectionIcon } from "src/projects/components/Map/Icons"
+import { SubsubsectionIcon } from "src/core/components/Map/Icons"
 
 type Props = {
   subsubsections: Subsubsection[]

@@ -6,7 +6,7 @@ import maplibregl from "maplibre-gl"
 import React from "react"
 import { useFormContext } from "react-hook-form"
 import Map, { Layer, LngLatBoundsLike, NavigationControl, ScaleControl, Source } from "react-map-gl"
-import { vectorStyle } from "src/projects/components/Map/BaseMap"
+import { vectorStyle } from "src/core/components/Map/BaseMap"
 import { z } from "zod"
 
 type Props = {

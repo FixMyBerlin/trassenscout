@@ -4,7 +4,7 @@ import { useRouter } from "next/router"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
-import { SectionIcon } from "./Map/Icons"
+import { SectionIcon } from "../../core/components/Map/Icons"
 
 type Props = {
   sections: Section[]
