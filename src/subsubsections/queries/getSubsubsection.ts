@@ -1,5 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
-import db, { Subsubsection, SubsubsectionTypeEnum } from "db"
+import db, { Subsubsection, SubsubsectionTypeEnum, User } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { z } from "zod"
@@ -22,7 +22,7 @@ export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry"> &
         type: typeof SubsubsectionTypeEnum.ROUTE
         geometry: [number, number][] // Position[]
       }
-  )
+  ) & { manager: User }
 
 export default resolver.pipe(
   resolver.zod(GetSubsubsection),
@@ -41,6 +41,7 @@ export default resolver.pipe(
           },
         },
       },
+      include: { manager: true },
     }
     const subsubsection = await db.subsubsection.findFirstOrThrow(query)
     return subsubsection as SubsubsectionWithPosition // Tip: Validate type shape with `satisfies`

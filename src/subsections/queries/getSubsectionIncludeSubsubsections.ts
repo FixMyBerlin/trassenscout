@@ -24,7 +24,7 @@ export default resolver.pipe(
           },
         },
       },
-      include: { subsubsections: true },
+      include: { subsubsections: { include: { manager: true } } },
     }
     const subsection = await db.subsection.findFirst(query)
     if (!subsection) throw new NotFoundError()
