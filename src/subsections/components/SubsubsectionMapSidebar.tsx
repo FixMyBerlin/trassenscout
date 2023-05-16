@@ -11,6 +11,11 @@ import { useSlugs } from "src/core/hooks"
 import { SubsubsectionIcon } from "src/core/components/Map/Icons"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { getFullname } from "src/users/utils"
+import { useQuery } from "@blitzjs/rpc"
+import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
+import { FillExtrusionStyleLayer } from "maplibre-gl"
+import { fileUrl } from "src/files/utils/fileUrl"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 
 type Props = {
   subsubsection: SubsubsectionWithPosition
@@ -19,9 +24,13 @@ type Props = {
 
 export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClose }) => {
   const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
+  const [{ files }] = useQuery(getFilesWithSubsections, {
+    projectSlug: projectSlug!,
+    where: { subsubsectionId: subsubsection.id },
+  })
 
   return (
-    <div className="overlflow-y-scroll h-full w-[40rem] overflow-x-hidden rounded-md border border-gray-400/10 bg-white p-3 drop-shadow-md">
+    <section className="overlflow-y-scroll h-full w-[40rem] overflow-x-hidden rounded-md border border-gray-400/10 bg-white p-3 drop-shadow-md">
       <div className="mt-3 flex items-center justify-between">
         <SubsubsectionIcon
           label={subsubsection.type === "ROUTE" ? `RF${subsubsection.id}` : `SF${subsubsection.id}`}
@@ -115,9 +124,46 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
         </div>
       </div>
 
-      <SuperAdminBox>
-        <pre>{JSON.stringify(subsubsection, null, 2)}</pre>
-      </SuperAdminBox>
-    </div>
+      <section className="mt-10">
+        <div className="mb-2 flex items-center justify-between">
+          <H2>Grafiken</H2>
+          <Link
+            icon="plus"
+            href={Routes.NewFilePage({
+              projectSlug: projectSlug!,
+              subsubsectionId: subsubsection.id,
+              returnPath: [sectionSlug, subsectionSlug, subsubsectionSlug].join("/"),
+            })}
+          >
+            Grafik
+          </Link>
+        </div>
+        {!files.length && <p>Es gibt noch keine Grafiken für diese Planung</p>}
+        <div className="grid grid-cols-2 gap-3">
+          {files.map((file) => {
+            return (
+              <Link
+                key={file.id}
+                blank
+                href={fileUrl(file)}
+                className="relative flex cursor-pointer flex-col items-center justify-center rounded-md bg-white text-xs hover:bg-gray-50 hover:outline-none hover:ring hover:ring-opacity-50 hover:ring-offset-4"
+              >
+                <span className="h-40 w-full overflow-hidden rounded-md">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    alt={file.title}
+                    src={fileUrl(file)}
+                    className="h-full w-full object-cover object-center"
+                  />
+                </span>
+                <p className="mt-1 flex-none truncate text-left">{file.title || "-"}</p>
+              </Link>
+            )
+          })}
+        </div>
+      </section>
+
+      <SuperAdminLogData data={{ subsubsection, files }} />
+    </section>
   )
 }
