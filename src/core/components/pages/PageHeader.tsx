@@ -17,9 +17,7 @@ export const PageHeader: React.FC<Props> = ({ title, subtitle, description, acti
       </div>
 
       {Boolean(subtitle) && <H2 className="mt-3">{subtitle}</H2>}
-      {Boolean(description) && (
-        <p className="mt-5 max-w-prose text-base text-gray-500">{description}</p>
-      )}
+      {Boolean(description) && <p className="mt-5 text-base text-gray-500">{description}</p>}
 
       <DashedLine />
     </section>
