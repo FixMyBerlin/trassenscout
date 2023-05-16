@@ -5,6 +5,7 @@ import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
 import { SubsectionIcon } from "src/core/components/Map/Icons"
+import { startEnd } from "src/core/components/text/startEnd"
 
 type Props = {
   subsections: Subsection[]
@@ -56,6 +57,8 @@ export const SubsectionTable: React.FC<Props> = ({ subsections }) => {
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                     <strong>{subsection.title}</strong>
+                    <br />
+                    {startEnd(subsection)}
                   </td>
                   {/* <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50"></td> */}
                   <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">

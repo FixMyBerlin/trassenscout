@@ -184,9 +184,9 @@ model Section {
   length      String?
   title       String
   subTitle    String?
-  description String?
   start       String
   end         String
+  description String?
   labelPos    LabelPositionEnum @default(top)
 
   manager   User    @relation(fields: [managerId], references: [id])
@@ -207,10 +207,10 @@ model Subsection {
   //
   slug        String
   title       String
-  description String?
-  geometry    Json
   start       String
   end         String
+  description String?
+  geometry    Json
   labelPos    LabelPositionEnum @default(top)
 
   manager   User    @relation(fields: [managerId], references: [id])

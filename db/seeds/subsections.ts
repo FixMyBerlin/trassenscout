@@ -5,8 +5,8 @@ const seedSubsections = async () => {
   const seeData: Prisma.SubsectionUncheckedCreateInput[] = [
     // Section 1:
     {
-      slug: "abschnitt-hansaviertel",
-      title: "Abschnitt 1 Hansaviertel",
+      slug: "hansaviertel",
+      title: "Hansaviertel",
       description: `Das Hansaviertel ist ein Stadtviertel in Berlin, das in den 1950er Jahren nach Plänen bekannter Architekten wie Walter Gropius, Alvar Aalto und Oscar Niemeyer erbaut wurde. Es liegt zwischen dem Berliner Tiergarten und dem Spreeufer und wurde als Modellprojekt für modernes, funktionales Wohnen konzipiert.`,
       start: "Dovestraẞe",
       end: "Kanzlerpark",
@@ -29,8 +29,8 @@ const seedSubsections = async () => {
       subsubsections: { create: subsubsections },
     },
     {
-      slug: "abschnitt-hbf",
-      title: "Abschnitt Hauptbahnhof",
+      slug: "hbf",
+      title: " Hauptbahnhof",
       description: null,
       start: "Kanzlerpark",
       end: "Ebertsbrücke",
@@ -48,8 +48,8 @@ const seedSubsections = async () => {
       sectionId: 1,
     },
     {
-      slug: "abschnitt-insel",
-      title: "Abschnitt Museumsinsel",
+      slug: "insel",
+      title: " Museumsinsel",
       description: null,
       start: "Ebertsbrücke",
       end: "Fischerinsel",
@@ -64,8 +64,8 @@ const seedSubsections = async () => {
       sectionId: 1,
     },
     {
-      slug: "abschnitt-east-side",
-      title: "Abschnitt East Side",
+      slug: "east-side",
+      title: " East Side",
       description: null,
       start: "Fischerinsel",
       end: "Schleusenufer",
@@ -81,8 +81,8 @@ const seedSubsections = async () => {
     },
     // Section 2:
     {
-      slug: "abschnitt-tiergarten",
-      title: "Abschnitt Tiergarten",
+      slug: "tiergarten",
+      title: " Tiergarten",
       description: null,
       start: "Dovestraẞe",
       end: "Lützowplatz",
@@ -97,8 +97,8 @@ const seedSubsections = async () => {
       sectionId: 2,
     },
     {
-      slug: "abschnitt-gleisdreieck",
-      title: "Abschnitt Gleisdreieck",
+      slug: "gleisdreieck",
+      title: " Gleisdreieck",
       description: null,
       start: "Lützowplatz",
       end: "Mehringdamm",
@@ -116,8 +116,8 @@ const seedSubsections = async () => {
       sectionId: 2,
     },
     {
-      slug: "abschnitt-urbahnhafen",
-      title: "Abschnitt Urbahnhafen",
+      slug: "urbahnhafen",
+      title: " Urbahnhafen",
       description: null,
       start: "Mehringdamm",
       end: "Kottbusser Damm",
@@ -132,8 +132,8 @@ const seedSubsections = async () => {
       sectionId: 2,
     },
     {
-      slug: "abschnitt-paul-lincke-ufer",
-      title: "Abschnitt Paul Lincke Ufer",
+      slug: "paul-lincke-ufer",
+      title: " Paul Lincke Ufer",
       description: null,
       start: "Kottbusser Damm",
       end: "Schleusenufer",
@@ -146,14 +146,14 @@ const seedSubsections = async () => {
       managerId: 2,
       sectionId: 2,
     },
-    // Seection 3:
+    // Section 3:
     {
-      slug: "abschnitt-1",
-      title: "Abschnitt 1",
+      slug: "kanal",
+      title: "Kanal",
       description: null,
-      start: "start abschnitt",
-      end: "end abschnitt",
-      labelPos: "top",
+      start: "Schleusenufer",
+      end: "Kottbusser Brücke",
+      labelPos: "bottom",
       geometry: [
         [13.41977042897335, 52.49633598230557],
         [13.439306686753582, 52.4902435569129],
