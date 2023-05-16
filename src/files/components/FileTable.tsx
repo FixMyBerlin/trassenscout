@@ -6,6 +6,7 @@ import { Link } from "src/core/components/links"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { Prettify } from "src/core/types"
 import getFilesWithSubsections from "../queries/getFilesWithSubsections"
+import { fileUrl } from "../utils/fileUrl"
 
 type Props = Prettify<
   Pick<Awaited<ReturnType<typeof getFilesWithSubsections>>, "files"> & {
@@ -48,12 +49,10 @@ export const FileTable: React.FC<Props> = ({ files, withAction = true }) => {
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
           {files.map((file) => {
-            const url = `/api/files/${file.id}/${file.externalUrl.split("/").at(-1)}`
-
             return (
               <tr key={file.id}>
                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
-                  <Link blank href={url} className="flex items-center gap-2">
+                  <Link blank href={fileUrl(file)} className="flex items-center gap-2">
                     <PaperClipIcon className="h-6 w-6 text-gray-500" />
                     <strong className="font-semibold">{file.title}</strong>
                   </Link>
@@ -63,7 +62,7 @@ export const FileTable: React.FC<Props> = ({ files, withAction = true }) => {
                 </td>
                 <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
                   <ButtonWrapper className="justify-end">
-                    <Link blank icon="download" href={url}>
+                    <Link blank icon="download" href={fileUrl(file)}>
                       Download
                     </Link>
                     {withAction && (
