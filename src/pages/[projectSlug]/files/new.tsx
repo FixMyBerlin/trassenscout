@@ -1,29 +1,40 @@
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
+import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Suspense, useState } from "react"
+import { SuperAdminBox } from "src/core/components/AdminBox"
+import { Spinner } from "src/core/components/Spinner"
 import {
-  blueButtonStyles,
   Link,
+  blueButtonStyles,
   selectLinkStyle,
   whiteButtonStyles,
 } from "src/core/components/links"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { Spinner } from "src/core/components/Spinner"
-import { LayoutRs, MetaTags } from "src/core/layouts"
-import createFile from "src/files/mutations/createFile"
-import { useS3Upload } from "src/core/lib/next-s3-upload/src"
-import { SuperAdminBox } from "src/core/components/AdminBox"
-import { useSlugs } from "src/core/hooks"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
-import clsx from "clsx"
+import { PageHeader } from "src/core/components/pages/PageHeader"
+import { quote } from "src/core/components/text"
+import { useSlugs } from "src/core/hooks"
+import { LayoutRs, MetaTags } from "src/core/layouts"
+import { useS3Upload } from "src/core/lib/next-s3-upload/src"
+import createFile from "src/files/mutations/createFile"
 
-const UploadNewFileWithQuery = () => {
+const NewFileWithQuery = () => {
   const router = useRouter()
   const [createFileMutation] = useMutation(createFile)
-  const { projectSlug, sectionSlug } = useSlugs()
+  const projectSlug = useParam("projectSlug", "string")
+  const params: { subsubsectionId?: number; returnPath?: string } = useRouterQuery()
+  const subsubsectionIdFromParam = params.subsubsectionId || null
+  // TODO: As soon as those lines are added, the select-file does not work anymore without an error
+  // const [{ sections: sectionsWithSubsections }] = useQuery(getSectionsIncludeSubsections, {
+  //   where: { project: { slug: projectSlug! } },
+  // })
+  // const selectedSubsection = sectionsWithSubsections.find((s) =>
+  //   s.subsections.find((ss) => ss.id === subsubsectionIdFromParam)
+  // )
 
   const [fileToUpload, setFileToUpload] = useState<File | null>(null)
+  const [subsectionId, setSubsectionId] = useState<number | null>(null)
   type FileUploadState =
     | "INITIAL"
     | "FILE_SELECTED"
@@ -36,13 +47,16 @@ const UploadNewFileWithQuery = () => {
   const [uploadError, setUploadError] = useState<string | null>(null)
   const { uploadToS3, files } = useS3Upload()
 
-  let handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  let handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("foo", event)
     const files = event.target.files as FileList
     if (files[0]) {
       setFileToUpload(files[0])
+      setSubsectionId(null) // TODO rework form to allow setting the subsection based on a select box similar to src/files/components/FileForm.tsx
       setUploadState("FILE_SELECTED")
     } else {
       setFileToUpload(null)
+      setSubsectionId(null)
       setUploadState("INITIAL")
     }
   }
@@ -72,17 +86,26 @@ const UploadNewFileWithQuery = () => {
       title: fileToUpload!.name,
       externalUrl: url,
       projectSlug: projectSlug!,
-      subsectionId: null,
+      subsectionId: subsectionId,
+      subsubsectionId: subsubsectionIdFromParam,
     })
-    setUploadState("FILE_SAVED")
     await wait(1000)
-    await router.push(
-      Routes.ShowFilePage({
-        projectSlug: projectSlug!,
-        sectionSlug: sectionSlug!,
-        fileId: file.id,
-      })
-    )
+    setUploadState("FILE_SAVED")
+    let successUrl = Routes.ShowFilePage({
+      projectSlug: projectSlug!,
+      fileId: file.id,
+    })
+    if (params.returnPath) {
+      const [sectionSlug, subsectionSlug, subsubsectionSlug] = params.returnPath.split("/")
+      if (sectionSlug && subsectionSlug && subsubsectionSlug) {
+        successUrl = Routes.SubsectionDashboardPage({
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug,
+          subsectionPath: [subsectionSlug, subsubsectionSlug],
+        })
+      }
+    }
+    await router.push(successUrl)
   }
 
   const FileSelector = ({ onChange }: { onChange: React.ChangeEventHandler<HTMLInputElement> }) => {
@@ -112,6 +135,15 @@ const UploadNewFileWithQuery = () => {
 
   return (
     <>
+      {subsubsectionIdFromParam && (
+        <p className="py-5">
+          Die Datei wird der Führung mit ID {quote(subsubsectionIdFromParam.toString())} zugeordnet.
+        </p>
+      )}
+      {/* {selectedSubsection && (
+        <p>Die Datei wird der Führung {quote(selectedSubsection.title)} zugeordnet.</p>
+      )} */}
+
       {["FILE_SELECTED", "FILE_UPLOADING", "FILE_ERROR", "FILE_UPLOADED", "FILE_SAVED"].includes(
         uploadState
       ) && (
@@ -120,10 +152,13 @@ const UploadNewFileWithQuery = () => {
           <br />{" "}
           {["FILE_UPLOADING", "FILE_ERROR", "FILE_UPLOADED", "FILE_SAVED"].includes(
             uploadState
-          ) && <strong>Fortschritt: {files[0]?.progress || 0}%</strong>}
+          ) && (
+            <strong>
+              Fortschritt: {(files[0]?.progress || 0).toLocaleString("de-DE", { style: "percent" })}
+            </strong>
+          )}
         </div>
       )}
-
       <ButtonWrapper className="mt-10">
         {["INITIAL", "FILE_SELECTED"].includes(uploadState) && (
           <FileSelector onChange={handleFileChange} />
@@ -139,7 +174,6 @@ const UploadNewFileWithQuery = () => {
           </button>
         )}
       </ButtonWrapper>
-
       <SuperAdminBox className="prose-xs prose">
         <p>
           state: <code>{uploadState}</code>
@@ -182,7 +216,7 @@ const UploadNewFileWithQuery = () => {
   )
 }
 
-const UploadFilePage: BlitzPage = () => {
+const NewFilePage: BlitzPage = () => {
   const projectSlug = useParam("projectSlug", "string")
 
   return (
@@ -191,7 +225,7 @@ const UploadFilePage: BlitzPage = () => {
       <PageHeader title="Neues Dokument" />
 
       <Suspense fallback={<Spinner page />}>
-        <UploadNewFileWithQuery />
+        <NewFileWithQuery />
       </Suspense>
 
       <p className="mt-5">
@@ -201,6 +235,6 @@ const UploadFilePage: BlitzPage = () => {
   )
 }
 
-UploadFilePage.authenticate = true
+NewFilePage.authenticate = true
 
-export default UploadFilePage
+export default NewFilePage
