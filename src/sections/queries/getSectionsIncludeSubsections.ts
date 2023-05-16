@@ -9,7 +9,7 @@ import { Prettify } from "src/core/types"
 type GetSectionsInput = Pick<
   Prisma.SectionFindManyArgs,
   // Do not allow `include` or `select` here, since we overwrite the types below.
-  "where" | "orderBy" | "skip" | "take" | "include"
+  "where" | "orderBy" | "skip" | "take"
 >
 
 const getProjectId = async (query: Record<string, any>): Promise<number> => {
