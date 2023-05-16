@@ -37,7 +37,10 @@ export const FileTable: React.FC<Props> = ({ files, withAction = true }) => {
               Titel
             </th>
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-              Planungsabschnitt (optional)
+              Hochgeladen
+            </th>
+            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              Planungsabschnitt
             </th>
             <th
               scope="col"
@@ -56,6 +59,9 @@ export const FileTable: React.FC<Props> = ({ files, withAction = true }) => {
                     <PaperClipIcon className="h-6 w-6 text-gray-500" />
                     <strong className="font-semibold">{file.title}</strong>
                   </Link>
+                </td>
+                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {file.createdAt.toLocaleDateString()}
                 </td>
                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {file.subsection && `${file.subsection.start}–${file.subsection.end}`}
