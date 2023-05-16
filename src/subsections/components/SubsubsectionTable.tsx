@@ -16,8 +16,6 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
   const router = useRouter()
   const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
-  if (!subsubsections.length) return null
-
   return (
     <section>
       <TableWrapper className="mt-10">
@@ -101,6 +99,11 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
             })}
           </tbody>
         </table>
+        {!subsubsections.length && (
+          <div className="border-t px-3 py-5 text-center text-gray-500">
+            Noch keine Führungen angelegt
+          </div>
+        )}
       </TableWrapper>
       <Link
         button="blue"

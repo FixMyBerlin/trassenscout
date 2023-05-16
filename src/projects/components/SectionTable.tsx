@@ -15,8 +15,6 @@ export const SectionTable: React.FC<Props> = ({ sections }) => {
   const router = useRouter()
   const { projectSlug } = useSlugs()
 
-  if (!sections.length) return null
-
   return (
     <section>
       <TableWrapper className="mt-10">
@@ -73,6 +71,11 @@ export const SectionTable: React.FC<Props> = ({ sections }) => {
             })}
           </tbody>
         </table>
+        {!sections.length && (
+          <div className="border-t px-3 py-5 text-center text-gray-500">
+            Noch keine Teilstrecken angelegt
+          </div>
+        )}
       </TableWrapper>
       <Link
         button="blue"
