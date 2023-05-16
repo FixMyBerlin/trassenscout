@@ -17,7 +17,7 @@ export const TeamWithQuery = () => {
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
   return (
-    <div className="mt-12">
+    <>
       <PageHeader
         title="Projektteam"
         description="Kontakt zu allen registrierten Mitglieder:innen des Projektes."
@@ -34,7 +34,7 @@ export const TeamWithQuery = () => {
       <TeamTable contacts={users} />
 
       <SuperAdminLogData data={users} />
-    </div>
+    </>
   )
 }
 

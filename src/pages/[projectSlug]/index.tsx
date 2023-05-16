@@ -54,7 +54,7 @@ export const ProjectDashboardWithQuery = () => {
       />
 
       {/* Phasen Panel */}
-      <section className="mt-12">
+      <section>
         <H2>Aktuelle Planungsphase</H2>
         <div className="mt-5 max-w-[650px]">
           <Image src={statusImg} alt=""></Image>

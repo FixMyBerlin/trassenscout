@@ -26,7 +26,7 @@ export const ContactWithQuery = () => {
   }
 
   return (
-    <div className="mt-12">
+    <>
       <PageHeader
         title="Externe Kontakte"
         description="Kontaktdaten, die für das ganze Projektteam wichtig sind."
@@ -43,7 +43,7 @@ export const ContactWithQuery = () => {
       <ContactTable contacts={contacts} />
 
       <SuperAdminLogData data={contacts} />
-    </div>
+    </>
   )
 }
 

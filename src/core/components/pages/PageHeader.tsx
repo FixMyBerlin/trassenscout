@@ -10,7 +10,7 @@ type Props = {
 
 export const PageHeader: React.FC<Props> = ({ title, subtitle, description, action }) => {
   return (
-    <section className="pt-1">
+    <section className="mt-3 mb-12 pt-1">
       <div className="mt-5 flex items-center justify-between">
         <H1>{title}</H1>
         {Boolean(action) && <div>{action}</div>}
