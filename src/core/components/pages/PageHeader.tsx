@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import { DashedLine } from "../DashedLine"
 import { H1, H2 } from "../text/Headings"
 
@@ -7,6 +8,7 @@ type Props = {
   subtitle?: string | null
   description?: string
   action?: React.ReactNode
+  className?: string
 }
 
 export const PageHeader: React.FC<Props> = ({
@@ -15,9 +17,10 @@ export const PageHeader: React.FC<Props> = ({
   subtitle,
   description,
   action,
+  className,
 }) => {
   return (
-    <section className="mb-12 mt-3 pt-1">
+    <section className={clsx("mb-12", className)}>
       <div className="mt-5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           {titleIcon && (

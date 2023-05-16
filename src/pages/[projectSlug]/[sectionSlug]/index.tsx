@@ -10,6 +10,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import { PageHeader } from "src/core/components/pages/PageHeader"
+import { startEnd } from "src/core/components/text/startEnd"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { SubsectionTable } from "src/sections/components/SubsectionTable"
@@ -40,8 +41,8 @@ export const SectionDashboardWithQuery = () => {
       <Breadcrumb />
       <PageHeader
         titleIcon={<SectionMapIcon label={`TS${section.id}`} />}
-        title={section.title}
-        subtitle={`${section.subTitle} - ${section.start} ▸ ${section.end}`}
+        title={startEnd(section)}
+        subtitle={`Teilstrecke – ${section.title} – ${section.subTitle}`}
         action={
           <Link
             icon="edit"

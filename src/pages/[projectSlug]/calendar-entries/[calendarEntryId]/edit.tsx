@@ -72,8 +72,11 @@ const EditCalendarEntry = () => {
   return (
     <>
       <MetaTags noindex title={`Termin ${quote(calendarEntry.title)}`} />
-
-      <PageHeader title={quote(calendarEntry.title)} subtitle="Termin bearbeiten" />
+      <PageHeader
+        title={quote(calendarEntry.title)}
+        subtitle="Termin bearbeiten"
+        className="mt-12"
+      />
 
       <CalendarEntryForm
         submitText="Speichern"

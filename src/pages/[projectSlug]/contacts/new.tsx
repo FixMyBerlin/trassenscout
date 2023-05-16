@@ -33,9 +33,6 @@ const NewContactWithQuery: BlitzPage = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neuer Kontakt" />
-      <PageHeader title="Neuer Kontakt" />
-
       <ContactForm submitText="Erstellen" schema={ContactSchema} onSubmit={handleSubmit} />
     </>
   )
@@ -46,6 +43,9 @@ const NewContactPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
+      <MetaTags noindex title="Neuer Kontakt" />
+      <PageHeader title="Neuer Kontakt" className="mt-12" />
+
       <Suspense fallback={<Spinner page />}>
         <NewContactWithQuery />
       </Suspense>

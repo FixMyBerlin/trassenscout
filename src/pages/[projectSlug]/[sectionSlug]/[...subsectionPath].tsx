@@ -23,6 +23,7 @@ import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
 import { FileTable } from "src/files/components/FileTable"
 import { H2 } from "src/core/components/text"
 import { SubsectionMapIcon } from "src/core/components/Map/Icons"
+import { startEnd } from "src/core/components/text/startEnd"
 
 // Page Renders Subsection _AND_ Subsubsection (as Panel)
 export const SubsectionDashboardWithQuery = () => {
@@ -57,8 +58,8 @@ export const SubsectionDashboardWithQuery = () => {
       <Breadcrumb />
       <PageHeader
         titleIcon={<SubsectionMapIcon label={`PA${subsection.id}`} />}
-        title={subsection.title}
-        subtitle={`${subsection.start} ▸ ${subsection.end}`}
+        title={startEnd(subsection)}
+        subtitle={`Planungsabschnitt – ${subsection.title}`}
         action={
           <Link
             icon="edit"

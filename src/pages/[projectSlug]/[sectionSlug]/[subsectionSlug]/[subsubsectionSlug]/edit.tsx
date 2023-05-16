@@ -70,7 +70,7 @@ const EditSubsubsection = () => {
   return (
     <>
       <MetaTags noindex title={title} />
-      <PageHeader title="Führung bearbeiten" subtitle={subsubsection.title} />
+      <PageHeader title="Führung bearbeiten" subtitle={subsubsection.title} className="mt-12" />
 
       <SubsubsectionForm
         className="mt-10"

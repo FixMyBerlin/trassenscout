@@ -55,7 +55,11 @@ const EditStakeholdernote = () => {
   return (
     <>
       <MetaTags noindex title={`Stakeholder ${stakeholdernote.title} bearbeiten`} />
-      <PageHeader title={quote(stakeholdernote.title)} subtitle="Stakeholder bearbeiten" />
+      <PageHeader
+        title={quote(stakeholdernote.title)}
+        subtitle="Stakeholder bearbeiten"
+        className="mt-12"
+      />
 
       <StakeholdernoteForm
         className="mt-10"

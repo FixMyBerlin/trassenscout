@@ -57,6 +57,7 @@ const EditSubsection = () => {
       <PageHeader
         title={`${subsection.title} bearbeiten`}
         subtitle={`${subsection.start} ▸ ${subsection.end}`}
+        className="mt-12"
       />
 
       <SubsectionForm

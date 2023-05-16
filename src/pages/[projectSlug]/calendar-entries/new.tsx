@@ -41,9 +41,6 @@ const NewCalendarEntry = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neuer Kalendereintrag" />
-      <PageHeader title="Neuer Kalendereintrag" />
-
       <CalendarEntryForm
         submitText="Erstellen"
         schema={CalendarEntrySchema.omit({
@@ -62,6 +59,9 @@ const NewCalendarEntryPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
+      <MetaTags noindex title="Neuer Kalendereintrag" />
+      <PageHeader title="Neuer Kalendereintrag" className="mt-12" />
+
       <Suspense fallback={<Spinner page />}>
         <NewCalendarEntry />
       </Suspense>

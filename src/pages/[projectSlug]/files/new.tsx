@@ -222,7 +222,7 @@ const NewFilePage: BlitzPage = () => {
   return (
     <LayoutRs>
       <MetaTags noindex title="Neues Dokument" />
-      <PageHeader title="Neues Dokument" />
+      <PageHeader title="Neues Dokument" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
         <NewFileWithQuery />

@@ -29,7 +29,8 @@ export const ContactWithQuery = () => {
   return (
     <>
       <MetaTags noindex title={`Kontakt von ${getFullname(contact)}`} />
-      <PageHeader title={`Kontakt von ${getFullname(contact)}`} />
+      <PageHeader title={`Kontakt von ${getFullname(contact)}`} className="mt-12" />
+
       <p className="mb-10 space-x-4">
         <Link href={Routes.EditContactPage({ contactId: contact.id, projectSlug: projectSlug! })}>
           Eintrag bearbeiten

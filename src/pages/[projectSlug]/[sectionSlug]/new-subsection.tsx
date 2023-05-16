@@ -42,10 +42,10 @@ const NewSubsection = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neuen Abschnitt erstellen" />
       <PageHeader
         title="Neuen Abschnitt erstellen"
         subtitle={`In Teilstrecke ${quote(section.title)}`}
+        className="mt-12"
       />
 
       <SubsectionForm
@@ -65,6 +65,8 @@ const NewSubsectionPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
+      <MetaTags noindex title="Neuen Abschnitt erstellen" />
+
       <Suspense fallback={<Spinner page />}>
         <NewSubsection />
       </Suspense>

@@ -53,6 +53,7 @@ const NewStakeholdernoteMulti = () => {
       <PageHeader
         title="Mehrere TöBs erstellen"
         subtitle={`Für die Teilstrecke ${quote(subsection.title)}`}
+        className="mt-12"
       />
 
       <StakeholdernoteMultiForm

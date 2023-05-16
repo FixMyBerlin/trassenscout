@@ -52,7 +52,7 @@ const EditFileWithQuery = () => {
 
   return (
     <>
-      <PageHeader title="Dokument bearbeiten" />
+      <PageHeader title="Dokument bearbeiten" className="mt-12" />
 
       <FileForm
         submitText="Speichern"

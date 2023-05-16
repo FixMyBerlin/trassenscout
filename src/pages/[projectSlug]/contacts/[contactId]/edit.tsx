@@ -49,8 +49,11 @@ const EditContactWithQuery = () => {
   return (
     <>
       <MetaTags noindex title={`Kontakt von ${getFullname(contact)} bearbeiten`} />
-
-      <PageHeader title={`Kontakt von ${getFullname(contact)}`} subtitle="Kontakt bearbeiten" />
+      <PageHeader
+        title={`Kontakt von ${getFullname(contact)}`}
+        subtitle="Kontakt bearbeiten"
+        className="mt-12"
+      />
 
       <ContactForm submitText="Speichern" initialValues={contact} onSubmit={handleSubmit} />
 

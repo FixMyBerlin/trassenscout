@@ -5,6 +5,7 @@ import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
 import { SectionIcon } from "../../core/components/Map/Icons"
+import { startEnd } from "src/core/components/text/startEnd"
 
 type Props = {
   sections: Section[]
@@ -57,6 +58,8 @@ export const SectionTable: React.FC<Props> = ({ sections }) => {
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                     <strong>{section.title}</strong>: {section.subTitle}
+                    <br />
+                    {startEnd(section)}
                   </td>
                   <td className="break-words px-3 py-4 text-sm text-gray-500 ">
                     {section.length ? section.length + " km" : " k.A."}

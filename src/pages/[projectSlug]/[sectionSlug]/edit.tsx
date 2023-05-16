@@ -59,6 +59,7 @@ const EditSection = () => {
       <PageHeader
         title={`${section.title} bearbeiten`}
         subtitle={`${section.subTitle} - ${section.start} ▸ ${section.end}`}
+        className="mt-12"
       />
 
       <SuperAdminBox>

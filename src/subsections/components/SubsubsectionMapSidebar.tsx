@@ -147,16 +147,17 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                 blank
                 href={fileUrl(file)}
                 className="relative flex cursor-pointer flex-col items-center justify-center rounded-md bg-white text-xs hover:bg-gray-50 hover:outline-none hover:ring hover:ring-opacity-50 hover:ring-offset-4"
+                title={file.title}
               >
                 <span className="h-40 w-full overflow-hidden rounded-md">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    alt={file.title}
+                    alt=""
                     src={fileUrl(file)}
                     className="h-full w-full object-cover object-center"
                   />
                 </span>
-                <p className="mt-1 flex-none truncate text-left">{file.title || "-"}</p>
+                <p className="mt-1 w-full flex-none truncate text-left">{file.title || "-"}</p>
               </Link>
             )
           })}

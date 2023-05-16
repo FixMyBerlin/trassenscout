@@ -18,11 +18,6 @@ export const TeamWithQuery = () => {
 
   return (
     <>
-      <PageHeader
-        title="Projektteam"
-        description="Kontakt zu allen registrierten Mitglieder:innen des Projektes."
-      />
-
       <Tabs
         className="mt-7"
         tabs={[
@@ -42,6 +37,11 @@ const ProjectTeamPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <MetaTags noindex title="Projektteam" />
+      <PageHeader
+        title="Projektteam"
+        description="Kontakt zu allen registrierten Mitglieder:innen des Projektes."
+        className="mt-12"
+      />
 
       <Suspense fallback={<Spinner page />}>
         <TeamWithQuery />

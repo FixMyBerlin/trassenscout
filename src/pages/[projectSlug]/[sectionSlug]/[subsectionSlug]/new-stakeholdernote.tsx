@@ -52,6 +52,7 @@ const NewStakeholdernote = () => {
       <PageHeader
         title="Stakeholder erstellen"
         subtitle={`Für die Teilstrecke ${quote(subsection.title)}`}
+        className="mt-12"
       />
 
       <StakeholdernoteForm

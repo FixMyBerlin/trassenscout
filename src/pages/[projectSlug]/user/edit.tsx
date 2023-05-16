@@ -30,8 +30,6 @@ const EditUserWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Profil bearbeiten`} />
-      <PageHeader title="Profil bearbeiten" />
       <UserEditForm
         submitText="Speichern"
         schema={UpdateUser}
@@ -46,10 +44,11 @@ const EditUserWithQuery = () => {
 }
 
 const EditUserPage: BlitzPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
-
   return (
     <LayoutArticle>
+      <MetaTags noindex title="Profil bearbeiten" />
+      <PageHeader title="Profil bearbeiten" className="mt-12" />
+
       <Suspense fallback={<Spinner page />}>
         <EditUserWithQuery />
       </Suspense>

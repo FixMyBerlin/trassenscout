@@ -48,10 +48,10 @@ const NewSubsubsection = () => {
   return (
     <>
       <MetaTags noindex title="Neue Führung erstellen" />
-
       <PageHeader
         title="Führung erstellen"
         subtitle={`Für den Abschnitt ${quote(subsection!.title)}`}
+        className="mt-12"
       />
 
       <SubsubsectionForm

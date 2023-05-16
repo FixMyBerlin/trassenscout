@@ -30,6 +30,7 @@ export const ContactWithQuery = () => {
       <PageHeader
         title="Externe Kontakte"
         description="Kontaktdaten, die für das ganze Projektteam wichtig sind."
+        className="mt-12"
       />
 
       <Tabs

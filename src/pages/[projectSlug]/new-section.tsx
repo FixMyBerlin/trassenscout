@@ -35,8 +35,6 @@ const NewSectionWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neue Teilstrecke erstellen" />
-
       <SectionForm
         submitText="Erstellen"
         schema={SectionSchema}
@@ -52,7 +50,9 @@ const NewSectionPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <PageHeader title="Neue Teilstrecke erstellen" />
+      <MetaTags noindex title="Neue Teilstrecke erstellen" />
+      <PageHeader title="Neue Teilstrecke erstellen" className="mt-12" />
+
       <Suspense fallback={<Spinner page />}>
         <NewSectionWithQuery />
       </Suspense>

@@ -49,7 +49,7 @@ const EditProjectWithQuery = () => {
   return (
     <>
       <MetaTags noindex title={`Project ${quote(project.title)} bearbeiten`} />
-      <PageHeader title={quote(project.title)} subtitle="Projekt bearbeiten" />
+      <PageHeader title={quote(project.title)} subtitle="Projekt bearbeiten" className="mt-12" />
 
       <ProjectForm
         className="mt-10"

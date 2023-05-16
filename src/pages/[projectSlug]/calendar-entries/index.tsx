@@ -58,7 +58,11 @@ const CalendarEntriesPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <MetaTags noindex title="Termine" />
-      <PageHeader title="Termine" description="Dieser Bereich hilft Ihnen Termine zu verwalten." />
+      <PageHeader
+        title="Termine"
+        description="Dieser Bereich hilft Ihnen Termine zu verwalten."
+        className="mt-12"
+      />
 
       <Suspense fallback={<Spinner page />}>
         <CalendarEntriesWithData />

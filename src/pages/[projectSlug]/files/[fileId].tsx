@@ -30,7 +30,7 @@ export const File = () => {
 
   return (
     <>
-      <PageHeader title="Dokument Details" />
+      <PageHeader title="Dokument Details" className="mt-12" />
 
       <ButtonWrapper className="mb-10 space-x-4">
         <Link
