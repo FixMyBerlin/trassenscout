@@ -24,6 +24,7 @@ export const FilesWithData = () => {
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
+    where: { subsubsectionId: null },
   })
 
   const [{ sections: sectionsWithSubsections }] = useQuery(getSectionsIncludeSubsections, {
@@ -83,7 +84,7 @@ export const FilesWithData = () => {
       <FileTable files={filteredFiles} />
 
       <ButtonWrapper className="mt-5">
-        <Link button="blue" icon="plus" href={Routes.UploadFilePage({ projectSlug: projectSlug! })}>
+        <Link button="blue" icon="plus" href={Routes.NewFilePage({ projectSlug: projectSlug! })}>
           Datei hochladen
         </Link>
       </ButtonWrapper>

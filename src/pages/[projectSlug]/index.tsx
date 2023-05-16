@@ -25,7 +25,10 @@ export const ProjectDashboardWithQuery = () => {
   const [{ sections }] = useQuery(getSectionsIncludeSubsections, {
     where: { project: { slug: projectSlug! } },
   })
-  const [{ files }] = useQuery(getFilesWithSubsections, { projectSlug: projectSlug! })
+  const [{ files }] = useQuery(getFilesWithSubsections, {
+    projectSlug: projectSlug!,
+    where: { subsubsectionId: null },
+  })
 
   if (!sections.length) {
     return (
