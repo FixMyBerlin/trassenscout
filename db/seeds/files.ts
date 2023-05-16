@@ -4,34 +4,52 @@ const seedFiles = async () => {
   const seedFiles: Omit<File, "id" | "createdAt" | "updatedAt">[] = [
     {
       title: "Protokoll Gesamttreffen",
-      externalUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+      externalUrl:
+        "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
+      subsectionId: null,
     },
     {
       title: "AWS S3 Image",
       externalUrl:
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
+      subsectionId: null,
+    },
+    {
+      title: "Trassenplanung Projekt 1",
+      externalUrl:
+        "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
+      projectId: 1,
+      subsectionId: 1,
+    },
+    {
+      title: "FAQ Baulastträger 1",
+      externalUrl:
+        "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
+      projectId: 1,
+      subsectionId: 2,
+    },
+    {
+      title: "FAQ Baulastträger 2",
+      externalUrl:
+        "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
+      projectId: 1,
+      subsectionId: 2,
     },
     {
       title: "Protokoll Gesamttreffen Projekt 2",
-      externalUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+      externalUrl:
+        "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 2,
+      subsectionId: null,
     },
     {
       title: "Protokoll ADFC",
-      externalUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+      externalUrl:
+        "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 4,
-    },
-    {
-      title: "Trassenplanung Projekt 2",
-      externalUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
-      projectId: 2,
-    },
-    {
-      title: "FAQ Baulastträger",
-      externalUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
-      projectId: 2,
+      subsectionId: null,
     },
   ]
 

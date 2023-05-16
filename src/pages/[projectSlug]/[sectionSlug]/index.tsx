@@ -3,17 +3,14 @@ import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
+import { SectionMap } from "src/core/components/Map/SectionMap"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { H2 } from "src/core/components/text/Headings"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { FileTable } from "src/files/components/FileTable"
-import getFiles from "src/files/queries/getFiles"
-import { SectionMap } from "src/core/components/Map/SectionMap"
 import { SubsectionTable } from "src/sections/components/SubsectionTable"
 import getSection from "src/sections/queries/getSection"
 import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
@@ -24,7 +21,6 @@ export const SectionDashboardWithQuery = () => {
 
   // TODO: Refactor to remove this getSection an use the getSectionsIncludeSubsections + selectedSectionWithSubsections only
   const [section] = useQuery(getSection, { projectSlug: projectSlug!, sectionSlug: sectionSlug! })
-  const [{ files }] = useQuery(getFiles, { projectSlug: projectSlug! })
 
   // TODO: Having both those calls is weird; Ideally change the getSectionS to getSection "include subsections".
   const [{ sections: sectionsWithSubsections }] = useQuery(getSectionsIncludeSubsections, {
@@ -72,14 +68,6 @@ export const SectionDashboardWithQuery = () => {
       />
 
       <SubsectionTable subsections={subsections} />
-
-      {/* Dateien / files */}
-      {Boolean(files.length) && (
-        <section className="mt-12">
-          <H2 className="mb-5">Relevante Dokumente</H2>
-          <FileTable files={files} />
-        </section>
-      )}
 
       <SuperAdminLogData data={{ sectionsWithSubsections, subsections }} />
     </>

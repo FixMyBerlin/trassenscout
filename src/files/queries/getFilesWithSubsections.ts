@@ -24,7 +24,15 @@ export default resolver.pipe(
       skip,
       take,
       count: () => db.file.count({ where: saveWhere }),
-      query: (paginateArgs) => db.file.findMany({ ...paginateArgs, where: saveWhere, orderBy }),
+      query: (paginateArgs) =>
+        db.file.findMany({
+          ...paginateArgs,
+          where: saveWhere,
+          orderBy,
+          include: {
+            subsection: { select: { id: true, slug: true, start: true, end: true } },
+          },
+        }),
     })
 
     return {

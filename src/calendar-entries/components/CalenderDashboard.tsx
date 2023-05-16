@@ -42,7 +42,7 @@ const CalendarDashboardDateList: React.FC = () => {
 
 export const CalenderDashboard: React.FC = () => {
   return (
-    <section className="mt-12 md:max-w-prose">
+    <section className="mt-12">
       <H2 className="mb-3">Kommende Termine</H2>
       <Suspense fallback={<Spinner />}>
         <CalendarDashboardDateList />

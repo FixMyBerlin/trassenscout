@@ -204,6 +204,7 @@ model Subsection {
   id          Int               @id @default(autoincrement())
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
+  //
   slug        String
   title       String
   description String?
@@ -217,8 +218,9 @@ model Subsection {
   section   Section @relation(fields: [sectionId], references: [id])
   sectionId Int
 
-  subsubsections  Subsubsection[]
-  stakeholdernote Stakeholdernote[]
+  subsubsections   Subsubsection[]
+  stakeholdernotes Stakeholdernote[]
+  files            File[]
 
   @@unique([sectionId, slug])
 }
@@ -272,13 +274,17 @@ enum StakeholdernoteStatusEnum {
 }
 
 model File {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  title       String
-  externalUrl String
-  project     Project  @relation(fields: [projectId], references: [id])
-  projectId   Int
+  id           Int         @id @default(autoincrement())
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  //
+  title        String
+  externalUrl  String
+  //
+  project      Project     @relation(fields: [projectId], references: [id])
+  projectId    Int
+  subsection   Subsection? @relation(fields: [subsectionId], references: [id])
+  subsectionId Int?
 }
 
 model SurveySession {

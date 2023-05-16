@@ -6,13 +6,15 @@ import { Suspense } from "react"
 import { CalenderDashboard } from "src/calendar-entries/components"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
+import { ProjectMap } from "src/core/components/Map/ProjectMap"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { ProjectMap } from "src/core/components/Map/ProjectMap"
+import { FileTable } from "src/files/components/FileTable"
+import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
 import { SectionTable } from "src/projects/components/SectionTable"
 import getProject from "src/projects/queries/getProject"
 import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
@@ -23,6 +25,7 @@ export const ProjectDashboardWithQuery = () => {
   const [{ sections }] = useQuery(getSectionsIncludeSubsections, {
     where: { project: { slug: projectSlug! } },
   })
+  const [{ files }] = useQuery(getFilesWithSubsections, { projectSlug: projectSlug! })
 
   if (!sections.length) {
     return (
@@ -66,6 +69,13 @@ export const ProjectDashboardWithQuery = () => {
       <SectionTable sections={sections} />
 
       <CalenderDashboard />
+
+      {Boolean(files.length) && (
+        <section className="mt-12">
+          <H2 className="mb-5">Relevante Dokumente</H2>
+          <FileTable files={files} />
+        </section>
+      )}
 
       <SuperAdminLogData data={sections} />
     </>

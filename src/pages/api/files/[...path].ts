@@ -10,11 +10,11 @@ import {
   S3ServiceException,
 } from "@aws-sdk/client-s3"
 import { getConfig } from "src/core/lib/next-s3-upload/src/utils/config"
-import getFile from "src/files/queries/getFile"
+import getFileWithSubsections from "src/files/queries/getFileWithSubsections"
 
 export default async function downloadFile(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const file = await getFile(
+    const file = await getFileWithSubsections(
       { id: Number(req.query.path![0]) },
       // @ts-ignore will work
       { session: await getSession(req, res) }

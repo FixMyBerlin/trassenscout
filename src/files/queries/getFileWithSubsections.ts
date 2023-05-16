@@ -13,5 +13,10 @@ const GetFileSchema = z.object({
 export default resolver.pipe(
   resolver.zod(GetFileSchema),
   authorizeProjectAdmin(getFileProjectId),
-  async ({ id }) => await db.file.findFirstOrThrow({ where: { id } })
+  async ({ id }) => {
+    return await db.file.findFirstOrThrow({
+      where: { id },
+      include: { subsection: { select: { id: true, slug: true, start: true, end: true } } },
+    })
+  }
 )

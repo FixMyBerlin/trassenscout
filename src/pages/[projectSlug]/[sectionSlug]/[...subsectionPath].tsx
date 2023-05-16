@@ -19,6 +19,9 @@ import { StakeholderSummary } from "src/stakeholdernotes/components/StakeholderS
 import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
 import { SubsubsectionTable } from "src/subsections/components/SubsubsectionTable"
 import getSubsectionIncludeSubsubsections from "src/subsections/queries/getSubsectionIncludeSubsubsections"
+import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
+import { FileTable } from "src/files/components/FileTable"
+import { H2 } from "src/core/components/text"
 
 // Page Renders Subsection _AND_ Subsubsection (as Panel)
 export const SubsectionDashboardWithQuery = () => {
@@ -36,6 +39,10 @@ export const SubsectionDashboardWithQuery = () => {
   const stakeholdernotes = useQuery(getStakeholdernotes, {
     subsectionId: subsection.id,
   })[0].stakeholdernotes
+  const [{ files }] = useQuery(getFilesWithSubsections, {
+    projectSlug: projectSlug!,
+    where: { subsectionId: subsection.id },
+  })
 
   // Handle/Render Subsubsection
   const subsubsection = subsubsectionSlug
@@ -106,6 +113,11 @@ export const SubsectionDashboardWithQuery = () => {
       <SubsubsectionTable subsubsections={subsection.subsubsections} />
 
       <StakeholderSection stakeholdernotes={stakeholdernotes} />
+
+      <section className="mt-12">
+        <H2 className="mb-5">Relevante Dokumente</H2>
+        <FileTable files={files} />
+      </section>
 
       <SuperAdminLogData data={{ subsection, sectionsWithSubsections }} />
     </>

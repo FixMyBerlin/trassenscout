@@ -14,7 +14,6 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
   props: FormProps<S> & { users: UserSelectOptions }
 ) {
   const { users } = props
-  console.log({ props })
 
   return (
     <Form<S> {...props}>

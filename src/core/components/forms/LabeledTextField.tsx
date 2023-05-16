@@ -58,7 +58,10 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
           id={name}
           {...props}
           className={clsx(
+            props.readOnly &&
+              "cursor-not-allowed bg-gray-50 text-gray-500 ring-gray-200 sm:text-sm sm:leading-6",
             "block w-full appearance-none rounded-md border px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none sm:text-sm",
+            "disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 disabled:ring-gray-200",
             hasError
               ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
               : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"

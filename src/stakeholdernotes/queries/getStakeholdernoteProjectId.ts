@@ -6,7 +6,7 @@ const getStakeholdernoteProjectId = async (input: Record<string, any>) => {
       where: {
         subsections: {
           some: {
-            stakeholdernote: {
+            stakeholdernotes: {
               some: { id: input.id || null },
             },
           },

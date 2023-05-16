@@ -23,7 +23,10 @@ export const FormError: React.FC<Props> = ({ formError }) => {
           ))}
         </>
       ) : (
-        <span {...(isDev ? { "data-message-id": formError.toString().replaceAll("\n", "") } : {})}>
+        <span
+          {...(isDev ? { "data-message-id": formError.toString().replaceAll("\n", "") } : {})}
+          className="font-mono text-sm leading-tight"
+        >
           <FormattedMessage
             id={formError.toString().replaceAll("\n", "")}
             defaultMessage={formError}

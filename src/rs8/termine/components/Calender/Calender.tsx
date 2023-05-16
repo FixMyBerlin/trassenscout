@@ -36,7 +36,7 @@ export const Calender: React.FC<Props> = ({ calendarEntries }) => {
       <H2 className="mb-2">Kommende Termine</H2>
       <DateList calendarEntries={futureCalendarEntries} />
 
-      <H2 className="mt-12 mb-2">Vergangene Termine</H2>
+      <H2 className="mb-2 mt-12">Vergangene Termine</H2>
       <DateList calendarEntries={pastCalendarEntries} />
     </>
   )

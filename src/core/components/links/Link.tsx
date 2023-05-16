@@ -3,7 +3,7 @@ import clsx from "clsx"
 import NextLink from "next/link"
 import { forwardRef } from "react"
 import { selectLinkStyle } from "./styles"
-import { PlusIcon } from "@heroicons/react/20/solid"
+import { ArrowDownTrayIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { PencilIcon } from "@heroicons/react/24/outline"
 
 export type LinkProps = {
@@ -21,6 +21,8 @@ export type LinkProps = {
 const icons = {
   plus: <PlusIcon className="h-4 w-4 pb-0.5" />,
   edit: <PencilIcon className="h-4 w-4 pb-0.5" />,
+  download: <ArrowDownTrayIcon className="h-4 w-4 pb-0.5" />,
+  delete: <TrashIcon className="h-4 w-4 pb-0.5" />,
 }
 
 export const Link: React.FC<LinkProps> = forwardRef<HTMLAnchorElement, LinkProps>(
