@@ -2,7 +2,12 @@ import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense, useState } from "react"
-import { blueButtonStyles, Link, whiteButtonStyles } from "src/core/components/links"
+import {
+  blueButtonStyles,
+  Link,
+  selectLinkStyle,
+  whiteButtonStyles,
+} from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
@@ -11,6 +16,7 @@ import { useS3Upload } from "src/core/lib/next-s3-upload/src"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { useSlugs } from "src/core/hooks"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
+import clsx from "clsx"
 
 const UploadNewFileWithQuery = () => {
   const router = useRouter()
@@ -82,19 +88,25 @@ const UploadNewFileWithQuery = () => {
   const FileSelector = ({ onChange }: { onChange: React.ChangeEventHandler<HTMLInputElement> }) => {
     const fileChoosen = ["FILE_SELECTED"].includes(uploadState)
     return (
-      <button className={fileChoosen ? whiteButtonStyles : blueButtonStyles}>
-        <label htmlFor="file-upload">
-          <span>{fileChoosen ? "Andere Datei auswählen" : "Datei auswählen"}</span>
-          <input
-            id="file-upload"
-            name="file-upload"
-            type="file"
-            className="sr-only"
-            onChange={onChange}
-            accept="image/*,.pdf,.docx,.doc,.odt,.xlsx,.ods,.pptx,.odp,.dxp,.dwg"
-          />
+      <form>
+        <label
+          htmlFor="file-upload"
+          className={clsx(
+            fileChoosen ? selectLinkStyle("white") : selectLinkStyle("blue"),
+            "cursor-pointer"
+          )}
+        >
+          {fileChoosen ? "Andere Datei auswählen" : "Datei auswählen"}
         </label>
-      </button>
+        <input
+          id="file-upload"
+          name="file-upload"
+          type="file"
+          className="sr-only"
+          onChange={onChange}
+          accept="image/*,.pdf,.docx,.doc,.odt,.xlsx,.ods,.pptx,.odp,.dxp,.dwg"
+        />
+      </form>
     )
   }
 
