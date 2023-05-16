@@ -8,6 +8,7 @@ const seedFiles = async () => {
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
       subsectionId: null,
+      subsubsectionId: null,
     },
     {
       title: "AWS S3 Image",
@@ -15,6 +16,7 @@ const seedFiles = async () => {
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
       subsectionId: null,
+      subsubsectionId: null,
     },
     {
       title: "Trassenplanung Projekt 1",
@@ -22,6 +24,7 @@ const seedFiles = async () => {
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
       subsectionId: 1,
+      subsubsectionId: null,
     },
     {
       title: "FAQ Baulastträger 1",
@@ -29,6 +32,7 @@ const seedFiles = async () => {
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
       subsectionId: 2,
+      subsubsectionId: null,
     },
     {
       title: "FAQ Baulastträger 2",
@@ -36,6 +40,7 @@ const seedFiles = async () => {
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 1,
       subsectionId: 2,
+      subsubsectionId: null,
     },
     {
       title: "Protokoll Gesamttreffen Projekt 2",
@@ -43,6 +48,7 @@ const seedFiles = async () => {
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 2,
       subsectionId: null,
+      subsubsectionId: null,
     },
     {
       title: "Protokoll ADFC",
@@ -50,6 +56,15 @@ const seedFiles = async () => {
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
       projectId: 4,
       subsectionId: null,
+      subsubsectionId: null,
+    },
+    {
+      title: "Planungsdokument",
+      externalUrl:
+        "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
+      projectId: 4,
+      subsectionId: null,
+      subsubsectionId: 1,
     },
   ]
 

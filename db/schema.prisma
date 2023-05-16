@@ -246,6 +246,8 @@ model Subsubsection {
   //
   subsection   Subsection            @relation(fields: [subsectionId], references: [id])
   subsectionId Int
+  //
+  files        File[]
 
   @@unique([subsectionId, slug])
 }
@@ -274,17 +276,19 @@ enum StakeholdernoteStatusEnum {
 }
 
 model File {
-  id           Int         @id @default(autoincrement())
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  id              Int            @id @default(autoincrement())
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
   //
-  title        String
-  externalUrl  String
+  title           String
+  externalUrl     String
   //
-  project      Project     @relation(fields: [projectId], references: [id])
-  projectId    Int
-  subsection   Subsection? @relation(fields: [subsectionId], references: [id])
-  subsectionId Int?
+  project         Project        @relation(fields: [projectId], references: [id])
+  projectId       Int
+  subsection      Subsection?    @relation(fields: [subsectionId], references: [id])
+  subsectionId    Int?
+  Subsubsection   Subsubsection? @relation(fields: [subsubsectionId], references: [id])
+  subsubsectionId Int?
 }
 
 model SurveySession {
