@@ -80,6 +80,7 @@ const NewFileWithQuery = () => {
       setUploadState("FILE_ERROR")
       return
     }
+
     setUploadState("FILE_UPLOADED")
     setFileUrl(url)
     const file = await createFileMutation({
@@ -89,12 +90,10 @@ const NewFileWithQuery = () => {
       subsectionId: subsectionId,
       subsubsectionId: subsubsectionIdFromParam,
     })
+
     await wait(1000)
     setUploadState("FILE_SAVED")
-    let successUrl = Routes.ShowFilePage({
-      projectSlug: projectSlug!,
-      fileId: file.id,
-    })
+    let successUrl = Routes.FilesPage({ projectSlug: projectSlug! })
     if (params.returnPath) {
       const [sectionSlug, subsectionSlug, subsubsectionSlug] = params.returnPath.split("/")
       if (sectionSlug && subsectionSlug && subsubsectionSlug) {
