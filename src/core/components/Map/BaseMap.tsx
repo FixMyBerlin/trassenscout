@@ -99,7 +99,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   ) : null
 
   return (
-    <div className="h-[500px] w-full overflow-clip rounded-md drop-shadow-md">
+    <div className="h-96 w-full overflow-clip rounded-md drop-shadow-md sm:h-[500px]">
       <div className="relative h-full w-full">
         <Map
           id={mapId}

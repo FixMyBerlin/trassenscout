@@ -84,13 +84,16 @@ export const SubsectionDashboardWithQuery = () => {
         </div>
       </PageDescription>
 
-      <div className="relative mt-12 flex h-96 w-full gap-4 sm:h-[500px]">
-        <SubsectionMap
-          // Make sure the map rerenders when we close the SubsectionSidebar
-          key={`map-${Boolean(subsubsection)}`}
-          sections={sectionsWithSubsections}
-          selectedSubsection={subsection}
-        />
+      <div className="relative mt-12 flex w-full gap-4">
+        <div className="w-full">
+          <SubsectionMap
+            // Make sure the map rerenders when we close the SubsectionSidebar
+            key={`map-${Boolean(subsubsection)}`}
+            sections={sectionsWithSubsections}
+            selectedSubsection={subsection}
+          />
+          <SubsubsectionTable subsubsections={subsection.subsubsections} />
+        </div>
 
         {subsubsection ? (
           <SubsubsectionMapSidebar
@@ -109,8 +112,6 @@ export const SubsectionDashboardWithQuery = () => {
           />
         ) : null}
       </div>
-
-      <SubsubsectionTable subsubsections={subsection.subsubsections} />
 
       <StakeholderSection stakeholdernotes={stakeholdernotes} />
 
