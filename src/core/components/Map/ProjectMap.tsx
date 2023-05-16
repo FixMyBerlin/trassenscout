@@ -58,7 +58,7 @@ export const ProjectMap: React.FC<Props> = ({ sections }) => {
       .flat()
   )
 
-  const markers = sections.map((section, index) => {
+  const markers = sections.map((section) => {
     const midIndex = Math.floor(section.subsections.length / 2)
     const geometryString = section.subsections?.at(midIndex)?.geometry
     if (!section.subsections.length || !midIndex || !geometryString) {
@@ -82,7 +82,7 @@ export const ProjectMap: React.FC<Props> = ({ sections }) => {
           onMouseLeave={() => setHovered(null)}
         >
           <StartEndLabel
-            icon={<SectionMapIcon label={`TS${index + 1}`} />}
+            icon={<SectionMapIcon label={`TS${section.id}`} />}
             start={section.start}
             end={section.end}
           />

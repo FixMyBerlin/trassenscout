@@ -41,7 +41,7 @@ export const SubsectionTable: React.FC<Props> = ({ subsections }) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
-            {subsections.map((subsection, index) => {
+            {subsections.map((subsection) => {
               const route = Routes.SubsectionDashboardPage({
                 projectSlug: projectSlug!,
                 sectionSlug: sectionSlug!,
@@ -54,7 +54,7 @@ export const SubsectionTable: React.FC<Props> = ({ subsections }) => {
                   onClick={() => router.push(route)}
                 >
                   <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900  sm:pl-6">
-                    <SubsectionIcon label={`PA${index + 1}`} />
+                    <SubsectionIcon label={`PA${subsection.id}`} />
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                     <strong>{subsection.title}</strong>

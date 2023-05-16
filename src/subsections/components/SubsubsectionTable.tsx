@@ -52,7 +52,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
-            {subsubsections.map((subsubsection, index) => {
+            {subsubsections.map((subsubsection) => {
               const route = Routes.SubsectionDashboardPage({
                 projectSlug: projectSlug!,
                 sectionSlug: sectionSlug!,
@@ -71,7 +71,11 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
                 >
                   <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                     <SubsubsectionIcon
-                      label={subsubsection.type === "ROUTE" ? `RF${index + 1}` : `SF${index + 1}`}
+                      label={
+                        subsubsection.type === "ROUTE"
+                          ? `RF${subsubsection.id}`
+                          : `SF${subsubsection.id}`
+                      }
                     />
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">

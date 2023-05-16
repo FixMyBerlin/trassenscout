@@ -3,6 +3,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
+import { SectionMapIcon } from "src/core/components/Map/Icons"
 import { SectionMap } from "src/core/components/Map/SectionMap"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Spinner } from "src/core/components/Spinner"
@@ -38,6 +39,7 @@ export const SectionDashboardWithQuery = () => {
 
       <Breadcrumb />
       <PageHeader
+        titleIcon={<SectionMapIcon label={`TS${section.id}`} />}
         title={section.title}
         subtitle={`${section.subTitle} - ${section.start} ▸ ${section.end}`}
         action={

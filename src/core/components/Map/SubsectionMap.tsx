@@ -113,7 +113,7 @@ export const SubsectionMap: React.FC<Props> = ({ sections, selectedSubsection })
     .flat()
     .filter(Boolean)
 
-  const markers = selectedSubsection.subsubsections.map((sec, index) => {
+  const markers = selectedSubsection.subsubsections.map((sec) => {
     const [longitude, latitude] = sec.type === "ROUTE" ? midPoint(sec.geometry) : sec.geometry
     return (
       <Marker
@@ -130,9 +130,7 @@ export const SubsectionMap: React.FC<Props> = ({ sections, selectedSubsection })
         >
           <TitleLabel
             icon={
-              <SubsubsectionMapIcon
-                label={sec.type === "ROUTE" ? `RF${index + 1}` : `SF${index + 1}`}
-              />
+              <SubsubsectionMapIcon label={sec.type === "ROUTE" ? `RF${sec.id}` : `SF${sec.id}`} />
             }
             title={sec.title}
           />

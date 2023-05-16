@@ -80,7 +80,7 @@ export const SectionMap: React.FC<Props> = ({ sections, selectedSection }) => {
     )
   )
 
-  const markers = selectedSection.subsections.map((subsection, index) => {
+  const markers = selectedSection.subsections.map((subsection) => {
     const [longitude, latitude] = midPoint(subsection.geometry)
     return (
       <Marker
@@ -98,7 +98,7 @@ export const SectionMap: React.FC<Props> = ({ sections, selectedSection }) => {
           onMouseLeave={() => setHovered(null)}
         >
           <StartEndLabel
-            icon={<SubsectionMapIcon label={`PA${index + 1}`} />}
+            icon={<SubsectionMapIcon label={`PA${subsection.id}`} />}
             start={subsection.start}
             end={subsection.end}
           />
