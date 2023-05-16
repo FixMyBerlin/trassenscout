@@ -62,7 +62,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
                   key={subsubsection.id}
                   className={clsx(
                     subsubsection.slug === subsubsectionSlug
-                      ? "bg-blue-50"
+                      ? "bg-gray-100"
                       : "group cursor-pointer hover:bg-gray-50"
                   )}
                   onClick={() => router.push(route, undefined, { scroll: false })}
