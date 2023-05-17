@@ -1,21 +1,19 @@
 import { Routes } from "@blitzjs/next"
+import { useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
 import React from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
+import { SubsubsectionIcon } from "src/core/components/Map/Icons"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Link, whiteButtonStyles } from "src/core/components/links"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import { formattedEuro, formattedLength, formattedWidth } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { useSlugs } from "src/core/hooks"
-import { SubsubsectionIcon } from "src/core/components/Map/Icons"
+import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
+import { fileUrl } from "src/files/utils"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { getFullname } from "src/users/utils"
-import { useQuery } from "@blitzjs/rpc"
-import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
-import { FillExtrusionStyleLayer } from "maplibre-gl"
-import { fileUrl } from "src/files/utils/fileUrl"
-import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 
 type Props = {
   subsubsection: SubsubsectionWithPosition
@@ -142,23 +140,35 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
         <div className="grid grid-cols-2 gap-3">
           {files.map((file) => {
             return (
-              <Link
-                key={file.id}
-                blank
-                href={fileUrl(file)}
-                className="relative flex cursor-pointer flex-col items-center justify-center rounded-md bg-white text-xs hover:bg-gray-50 hover:outline-none hover:ring hover:ring-opacity-50 hover:ring-offset-4"
-                title={file.title}
-              >
-                <span className="h-40 w-full overflow-hidden rounded-md">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    alt=""
-                    src={fileUrl(file)}
-                    className="h-full w-full object-cover object-center"
-                  />
-                </span>
-                <p className="mt-1 w-full flex-none truncate text-left">{file.title || "-"}</p>
-              </Link>
+              <div key={file.id} className="relative">
+                <Link
+                  blank
+                  href={fileUrl(file)}
+                  className="relative flex cursor-pointer flex-col items-center justify-center rounded-md bg-white text-xs hover:bg-gray-50 hover:outline-none hover:ring hover:ring-opacity-50 hover:ring-offset-4"
+                  title={file.title}
+                >
+                  <span className="h-40 w-full overflow-hidden rounded-md">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      alt=""
+                      src={fileUrl(file)}
+                      className="h-full w-full object-cover object-center"
+                    />
+                  </span>
+                  <p className="mt-1 w-full flex-none truncate text-left">{file.title || "-"}</p>
+                </Link>
+                <Link
+                  icon="edit"
+                  href={Routes.EditFilePage({
+                    projectSlug: projectSlug!,
+                    fileId: file.id,
+                    returnPath: [sectionSlug, subsectionSlug, subsubsectionSlug].join("/"),
+                  })}
+                  className="absolute bottom-0 right-0 rounded border border-white/0 hover:border-blue-900"
+                >
+                  <span className="sr-only">Grafik bearbeiten</span>
+                </Link>
+              </div>
             )
           })}
         </div>

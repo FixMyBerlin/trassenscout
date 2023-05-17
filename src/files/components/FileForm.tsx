@@ -1,3 +1,4 @@
+import { SuperAdminBox } from "src/core/components/AdminBox"
 import {
   Form,
   FormProps,
@@ -12,9 +13,10 @@ export { FORM_ERROR } from "src/core/components/forms"
 export function FileForm<S extends z.ZodType<any, any>>(
   props: FormProps<S> & {
     sectionsWithSubsections: Awaited<ReturnType<typeof getSectionsIncludeSubsections>>["sections"]
+    isSubsubsectionFile: boolean
   }
 ) {
-  const { sectionsWithSubsections, ...formProps } = props
+  const { sectionsWithSubsections, isSubsubsectionFile, ...formProps } = props
 
   // We use `""` here to signify the "All" case which gets translated to `NULL` in `src/pages/[projectSlug]/files/[fileId]/edit.tsx` and new.
   const options: LabeledSelectProps["options"] = [["", "Übergreifendes Dokument"]]
@@ -26,15 +28,13 @@ export function FileForm<S extends z.ZodType<any, any>>(
 
   return (
     <Form<S> {...formProps}>
-      <LabeledTextField type="text" name="title" label="Name" placeholder="" />
-      <LabeledSelect name="subsectionId" label="Zuordnung zu Teilstrecke" options={options} />
-      <LabeledTextField
-        type="text"
-        name="externalUrl"
-        label="Externe Datei-URL"
-        readOnly
-        placeholder=""
-      />
+      <LabeledTextField type="text" name="title" label="Kurzbeschreibung" />
+      {!isSubsubsectionFile && (
+        <LabeledSelect name="subsectionId" label="Zuordnung zu Teilstrecke" options={options} />
+      )}
+      <SuperAdminBox>
+        <LabeledTextField type="text" name="externalUrl" label="Externe Datei-URL" readOnly />
+      </SuperAdminBox>
     </Form>
   )
 }

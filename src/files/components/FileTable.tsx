@@ -6,7 +6,7 @@ import { Link } from "src/core/components/links"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { Prettify } from "src/core/types"
 import getFilesWithSubsections from "../queries/getFilesWithSubsections"
-import { fileUrl } from "../utils/fileUrl"
+import { fileUrl } from "../utils"
 
 type Props = Prettify<
   Pick<Awaited<ReturnType<typeof getFilesWithSubsections>>, "files"> & {
