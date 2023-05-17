@@ -2,7 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 import db, { Prisma } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
-import getStakeholdernoteProjectId from "./getStakeholdernoteProjectId"
+import getSubsectionProjectId from "src/subsections/queries/getSubsectionProjectId"
 
 type GetStakeholdernotesInput = { subsectionId: number } & Pick<
   Prisma.StakeholdernoteFindManyArgs,
@@ -11,7 +11,7 @@ type GetStakeholdernotesInput = { subsectionId: number } & Pick<
 
 export default resolver.pipe(
   // @ts-ignore
-  authorizeProjectAdmin(getStakeholdernoteProjectId),
+  authorizeProjectAdmin(getSubsectionProjectId),
   async ({
     subsectionId,
     where,
