@@ -6,6 +6,7 @@ const seedSubsections = async () => {
     // Section 1:
     {
       slug: "hansaviertel",
+      order: 1,
       title: "Hansaviertel",
       start: "Dovestraẞe",
       end: "Kanzlerpark",
@@ -35,6 +36,7 @@ const seedSubsections = async () => {
     },
     {
       slug: "hbf",
+      order: 2,
       title: "Hauptbahnhof",
       start: "Kanzlerpark",
       end: "Ebertsbrücke",
@@ -54,6 +56,7 @@ const seedSubsections = async () => {
     },
     {
       slug: "insel",
+      order: 3,
       title: "Museumsinsel",
       start: "Ebertsbrücke",
       end: "Fischerinsel",
@@ -70,6 +73,7 @@ const seedSubsections = async () => {
     },
     {
       slug: "east-side",
+      order: 4,
       title: "East Side",
       start: "Fischerinsel",
       end: "Schleusenufer",
@@ -87,6 +91,7 @@ const seedSubsections = async () => {
     // Section 2:
     {
       slug: "tiergarten",
+      order: 5,
       title: "Tiergarten",
       start: "Dovestraẞe",
       end: "Lützowplatz",
@@ -103,6 +108,7 @@ const seedSubsections = async () => {
     },
     {
       slug: "gleisdreieck",
+      order: 6,
       title: "Gleisdreieck",
       start: "Lützowplatz",
       end: "Mehringdamm",
@@ -122,6 +128,7 @@ const seedSubsections = async () => {
     },
     {
       slug: "urbahnhafen",
+      order: 7,
       title: "Urbahnhafen",
       start: "Mehringdamm",
       end: "Kottbusser Damm",
@@ -138,6 +145,7 @@ const seedSubsections = async () => {
     },
     {
       slug: "paul-lincke-ufer",
+      order: 8,
       title: "Paul Lincke Ufer",
       start: "Kottbusser Damm",
       end: "Schleusenufer",
@@ -154,6 +162,7 @@ const seedSubsections = async () => {
     // Section 3:
     {
       slug: "kanal",
+      order: 9,
       title: "Kanal",
       start: "Schleusenufer",
       end: "Kottbusser Brücke",
@@ -172,8 +181,7 @@ const seedSubsections = async () => {
   for (let i = 0; i < seeData.length; i++) {
     const data = seeData[i]
     if (data) {
-      // TODO: Figure out why this `any` is needed
-      await db.subsection.create({ data } as any)
+      await db.subsection.create({ data })
     }
   }
 }

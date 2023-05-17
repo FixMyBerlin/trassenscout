@@ -23,7 +23,7 @@ export const __ModelNames__List = () => {
     const __parentModelId__ = useParam("__parentModelId__", "number")
     const [{ __modelNames__, hasMore }] = usePaginatedQuery(get__ModelNames__, {
       where: { __parentModel__: { id: __parentModelId__! } },
-      orderBy: { id: "asc" },
+      // orderBy: { id: "asc" },
       skip: ITEMS_PER_PAGE * page,
       take: ITEMS_PER_PAGE,
     })
@@ -55,7 +55,7 @@ export const __ModelNames__List = () => {
     )
   } else {
     const [{ __modelNames__, hasMore }] = usePaginatedQuery(get__ModelNames__, {
-      orderBy: { id: "asc" },
+      // orderBy: { id: "asc" },
       skip: ITEMS_PER_PAGE * page,
       take: ITEMS_PER_PAGE,
     })

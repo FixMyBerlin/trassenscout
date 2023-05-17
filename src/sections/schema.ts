@@ -5,7 +5,7 @@ import { SlugSchema } from "src/core/utils"
 
 export const SectionSchema = z.object({
   slug: SlugSchema,
-  index: z.coerce.number(),
+  order: z.coerce.number(),
   title: z.string().min(5, { message: "Pflichtfeld. Mindestens 5 Zeichen." }),
   description: z.string().nullish(),
   start: z.string().min(5, { message: "Pflichtfeld. Mindestens 5 Zeichen." }),

@@ -23,6 +23,13 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
         label="URL-Segment"
         help="Änderungen am URL-Segement sorgen dafür, dass bisherige URLs nicht mehr funktionieren."
       />
+      <LabeledTextField
+        type="number"
+        step="1"
+        name="order"
+        label="Reihenfolge Führung"
+        help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie (mit Unterbrechungen) mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung. Sonderfürungen Punkt/Fläche zwischen die Regelführungen Strecke einsortieren."
+      />
       <LabeledTextField type="text" name="title" label="Name" />
       <LabeledSelect
         name="type"

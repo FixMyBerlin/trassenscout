@@ -18,7 +18,7 @@ const getProjectId = async (query: Record<string, any>): Promise<number> => {
 export default resolver.pipe(
   // @ts-ignore
   authorizeProjectAdmin(getProjectId),
-  async ({ where, orderBy = { index: "asc" }, skip = 0, take = 100 }: GetSectionsInput) => {
+  async ({ where, orderBy = { order: "asc" }, skip = 0, take = 100 }: GetSectionsInput) => {
     const {
       items: sections,
       hasMore,

@@ -11,7 +11,7 @@ type GetSubsubsectionsInput = Pick<
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, skip = 0, take = 100 }: GetSubsubsectionsInput) => {
+  async ({ where, orderBy = { order: "asc" }, skip = 0, take = 100 }: GetSubsubsectionsInput) => {
     const {
       items: subsubsections,
       hasMore,

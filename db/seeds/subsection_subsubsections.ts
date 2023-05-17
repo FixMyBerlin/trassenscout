@@ -4,6 +4,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
   {
     slug: "rf-1",
     title: "Radweg mit landw. Verkehr frei",
+    order: 1,
     type: "ROUTE",
     geometry: [
       [13.363361116374904, 52.519430986022115],
@@ -21,6 +22,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
   {
     slug: "rf-2",
     title: "Ufersteg Hansaviertel",
+    order: 2,
     type: "ROUTE",
     geometry: [
       [13.350954484534668, 52.51914062581497],
@@ -38,6 +40,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
   {
     slug: "rf-3",
     title: "Fahrradstraße Levetzowstraße",
+    order: 3,
     type: "ROUTE",
     geometry: [
       [13.334253249364252, 52.51701125899095],
@@ -56,6 +59,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
   {
     slug: "sv-1",
     title: "Radweg auf Gotskowskybrücke",
+    order: 5,
     type: "AREA",
     geometry: [13.329078172644188, 52.5225862734311],
     labelPos: "top",
@@ -74,6 +78,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
   {
     slug: "sv-2",
     title: "Radweg unter S-Bahn-Brücke",
+    order: 6,
     type: "AREA",
     geometry: [13.350034203659277, 52.51973770393019],
     labelPos: "top",
