@@ -18,7 +18,7 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
 
   useEffect(() => {
     window && window.scrollTo(0, 0)
-  }, [progress])
+  }, [surveyPageProgress])
 
   const handleNextPage = () => {
     const newSurveyPageProgress = Math.min(pages.length, surveyPageProgress + 1)
