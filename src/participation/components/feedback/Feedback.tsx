@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { stageProgressDefinition } from "src/pages/rs8-beteiligung"
 import { PinContext, ProgressContext } from "src/participation/context/contexts"
 import SurveyForm from "../form/SurveyForm"
@@ -22,6 +22,9 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const [feedbackCategory, setFeedbackCategory] = useState(6) // default: 6 / "Sonstiges"
 
   const [isMap, setIsMap] = useState(false)
+  useEffect(() => {
+    window && window.scrollTo(0, 0)
+  }, [feedbackPageProgress])
 
   const { pages } = feedback
 
