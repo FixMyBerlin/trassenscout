@@ -8,6 +8,7 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileForm, FORM_ERROR } from "src/files/components/FileForm"
+import { FilePreview } from "src/files/components/FilePreview"
 import updateFile from "src/files/mutations/updateFileWithSubsections"
 import getFileWithSubsections from "src/files/queries/getFileWithSubsections"
 import { FileSchema } from "src/files/schema"
@@ -69,14 +70,18 @@ const EditFileWithQuery = () => {
     <>
       <PageHeader title="Dokument bearbeiten" className="mt-12" />
 
-      <FileForm
-        submitText="Speichern"
-        schema={FileSchema}
-        initialValues={file}
-        onSubmit={handleSubmit}
-        sectionsWithSubsections={sectionsWithSubsections}
-        isSubsubsectionFile={isSubsubsectionFile}
-      />
+      <div className="flex gap-10">
+        <FilePreview file={file} description={false} />
+        <FileForm
+          className="grow"
+          submitText="Speichern"
+          schema={FileSchema}
+          initialValues={file}
+          onSubmit={handleSubmit}
+          sectionsWithSubsections={sectionsWithSubsections}
+          isSubsubsectionFile={isSubsubsectionFile}
+        />
+      </div>
 
       <p className="mt-5">
         <Link href={backUrl}>

@@ -10,6 +10,7 @@ import { PageDescription } from "src/core/components/pages/PageDescription"
 import { formattedEuro, formattedLength, formattedWidth } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { useSlugs } from "src/core/hooks"
+import { FilePreview } from "src/files/components/FilePreview"
 import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
 import { fileUrl } from "src/files/utils"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
@@ -140,35 +141,15 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
         <div className="grid grid-cols-2 gap-3">
           {files.map((file) => {
             return (
-              <div key={file.id} className="relative">
-                <Link
-                  blank
-                  href={fileUrl(file)}
-                  className="relative flex cursor-pointer flex-col items-center justify-center rounded-md bg-white text-xs hover:bg-gray-50 hover:outline-none hover:ring hover:ring-opacity-50 hover:ring-offset-4"
-                  title={file.title}
-                >
-                  <span className="h-40 w-full overflow-hidden rounded-md">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      alt=""
-                      src={fileUrl(file)}
-                      className="h-full w-full object-cover object-center"
-                    />
-                  </span>
-                  <p className="mt-1 w-full flex-none truncate text-left">{file.title || "-"}</p>
-                </Link>
-                <Link
-                  icon="edit"
-                  href={Routes.EditFilePage({
-                    projectSlug: projectSlug!,
-                    fileId: file.id,
-                    returnPath: [sectionSlug, subsectionSlug, subsubsectionSlug].join("/"),
-                  })}
-                  className="absolute bottom-0 right-0 rounded border border-white/0 hover:border-blue-900"
-                >
-                  <span className="sr-only">Grafik bearbeiten</span>
-                </Link>
-              </div>
+              <FilePreview
+                key={file.id}
+                file={file}
+                editUrl={Routes.EditFilePage({
+                  projectSlug: projectSlug!,
+                  fileId: file.id,
+                  returnPath: [sectionSlug, subsectionSlug, subsubsectionSlug].join("/"),
+                })}
+              />
             )
           })}
         </div>
