@@ -2,6 +2,8 @@ import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 import db, { Prisma } from "db"
 import { SubsubsectionWithPosition } from "./getSubsubsection"
+import { authorizeProjectAdmin } from "src/authorization"
+import getSubsectionProjectId from "src/subsections/queries/getSubsectionProjectId"
 
 type GetSubsubsectionsInput = Pick<
   Prisma.SubsubsectionFindManyArgs,
@@ -9,8 +11,10 @@ type GetSubsubsectionsInput = Pick<
   "where" | "orderBy" | "skip" | "take"
 >
 
+// Currently unused
 export default resolver.pipe(
-  resolver.authorize(),
+  // @ts-ignore
+  authorizeProjectAdmin(getSubsectionProjectId),
   async ({ where, orderBy = { order: "asc" }, skip = 0, take = 100 }: GetSubsubsectionsInput) => {
     const {
       items: subsubsections,
