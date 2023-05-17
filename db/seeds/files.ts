@@ -62,7 +62,23 @@ const seedFiles = async () => {
       title: "Planungsdokument",
       externalUrl:
         "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
-      projectId: 4,
+      projectId: 1,
+      subsectionId: null,
+      subsubsectionId: 1,
+    },
+    {
+      title: "Super langer Text in der Beschreibung sehr lang",
+      externalUrl:
+        "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
+      projectId: 1,
+      subsectionId: null,
+      subsubsectionId: 1,
+    },
+    {
+      title: "Kurz",
+      externalUrl:
+        "https://trassenscout.s3.eu-central-1.amazonaws.com/rose-used-in-seed-data-do-not-delete.jpg",
+      projectId: 1,
       subsectionId: null,
       subsubsectionId: 1,
     },
