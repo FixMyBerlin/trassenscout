@@ -22,7 +22,7 @@ export const FilePreview: React.FC<Props> = ({ file, editUrl, description = true
       <Link
         blank
         href={fileUrl(file)}
-        className="relative flex cursor-pointer flex-col items-center justify-center rounded-md bg-white text-xs hover:bg-gray-50 hover:outline-none hover:ring hover:ring-opacity-50 hover:ring-offset-4"
+        className="relative flex cursor-pointer flex-col items-start justify-center rounded-md bg-white text-xs hover:bg-gray-50 hover:outline-none hover:ring hover:ring-opacity-50 hover:ring-offset-4"
         title={file.title}
       >
         <span className="h-40 w-full overflow-hidden rounded-md">
@@ -36,7 +36,12 @@ export const FilePreview: React.FC<Props> = ({ file, editUrl, description = true
           )}
         </span>
         {description && (
-          <p className="mt-1 w-full flex-none truncate text-left">{file.title || "-"}</p>
+          <p
+            className="mt-1 w-full flex-none truncate text-left"
+            style={editUrl ? { width: "calc(100% - 1rem)" } : {}}
+          >
+            {file.title || "-"}
+          </p>
         )}
       </Link>
       {editUrl && (
