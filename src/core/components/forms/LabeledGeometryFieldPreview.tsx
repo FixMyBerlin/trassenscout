@@ -86,6 +86,16 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
                       }}
                     />
                   </Source>
+                  {/* Highlight the start of a Geometry so help understand the direction */}
+                  <Source key="dot" type="geojson" data={point(geometry[0] as Position)}>
+                    <Layer
+                      type="circle"
+                      paint={{
+                        "circle-radius": 6,
+                        "circle-color": "black",
+                      }}
+                    />
+                  </Source>
                 </>
               ) : (
                 <Source type="geojson" data={point(geometry as AreaGeometry)}>
