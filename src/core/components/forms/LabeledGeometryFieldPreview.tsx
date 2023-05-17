@@ -1,5 +1,5 @@
 import { CheckBadgeIcon } from "@heroicons/react/24/solid"
-import { lineString, point } from "@turf/helpers"
+import { Position, lineString, point } from "@turf/helpers"
 import { bbox } from "@turf/turf"
 import clsx from "clsx"
 import maplibregl from "maplibre-gl"
@@ -7,6 +7,7 @@ import React from "react"
 import { useFormContext } from "react-hook-form"
 import Map, { Layer, LngLatBoundsLike, NavigationControl, ScaleControl, Source } from "react-map-gl"
 import { vectorStyle } from "src/core/components/Map/BaseMap"
+import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { z } from "zod"
 
 type Props = {
@@ -14,10 +15,17 @@ type Props = {
   hasError: boolean
 }
 
+// SubsectionWithPosition["geometry"]
+// SubsubsectionWithPosition["geometry"]
+// ^- but we cannot use those, because we cannot type narrow them properly
+// Also, we need turf's Position types in this file
+type RouteGeomtry = Position[] // [number, number][]
+type AreaGeometry = Position // [number, number]
+
 export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError }) => {
   const { watch, getValues } = useFormContext()
-  const geometry = watch(name)
-  const geometryType = getValues("type") || "ROUTE" // Subsections don't have a `type` but area a ROUTE
+  const geometry = watch(name) as RouteGeomtry | AreaGeometry
+  const geometryType = (getValues("type") || "ROUTE") as SubsubsectionWithPosition["type"] // Subsections don't have a `type` but area a ROUTE
 
   const LineStringSchema = z.array(z.array(z.number()).min(2).max(2).nonempty()).nonempty()
   const PointSchema = z.array(z.number()).min(2).max(2).nonempty()
@@ -47,12 +55,16 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
               initialViewState={{
                 ...(geometryType === "ROUTE"
                   ? {
-                      bounds: bbox(lineString(geometry)) as LngLatBoundsLike,
-                      fitBoundsOptions: { padding: 20 },
+                      bounds: bbox(lineString(geometry as RouteGeomtry)) as LngLatBoundsLike,
+                      fitBoundsOptions: { padding: 40 },
                     }
                   : {}),
                 ...(geometryType === "AREA"
-                  ? { latitude: geometry.at(1), longitude: geometry.at(0), zoom: 14 }
+                  ? {
+                      latitude: geometry.at(1) as number,
+                      longitude: geometry.at(0) as number,
+                      zoom: 14,
+                    }
                   : {}),
               }}
               id="preview"
@@ -63,18 +75,20 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
               <NavigationControl showCompass={false} />
               <ScaleControl />
               {geometryType === "ROUTE" ? (
-                <Source type="geojson" data={lineString(geometry)}>
-                  <Layer
-                    type="line"
-                    paint={{
-                      "line-width": 4,
-                      "line-color": "black",
-                      "line-opacity": 0.6,
-                    }}
-                  />
-                </Source>
+                <>
+                  <Source type="geojson" data={lineString(geometry as RouteGeomtry)}>
+                    <Layer
+                      type="line"
+                      paint={{
+                        "line-width": 4,
+                        "line-color": "black",
+                        "line-opacity": 0.6,
+                      }}
+                    />
+                  </Source>
+                </>
               ) : (
-                <Source type="geojson" data={point(geometry)}>
+                <Source type="geojson" data={point(geometry as AreaGeometry)}>
                   <Layer
                     type="circle"
                     paint={{
