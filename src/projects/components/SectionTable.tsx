@@ -52,7 +52,7 @@ export const SectionTable: React.FC<Props> = ({ sections }) => {
                   onClick={() => router.push(route)}
                 >
                   <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                    <SectionIcon label={`TS${section.index}`} />
+                    <SectionIcon label={`TS${section.id}`} />
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                     <strong>{section.title}</strong>
