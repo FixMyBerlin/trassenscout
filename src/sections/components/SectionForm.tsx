@@ -22,22 +22,16 @@ export function SectionForm<S extends z.ZodType<any, any>>(
         name="slug"
         label="URL-Segment"
         help="Änderungen am URL-Segement sorgen dafür, dass bisherige URLs nicht mehr funktionieren."
-        placeholder=""
       />
       <LabeledTextField type="number" name="index" label="Index und Reihenfolge" placeholder="" />
-      <LabeledTextField type="text" name="title" label="Name" placeholder="" />
+      <LabeledTextField type="text" name="title" label="Name" />
       <div className="grid grid-cols-2 gap-5">
-        <LabeledTextField type="text" name="start" label="Startpunkt" placeholder="" />
-        <LabeledTextField type="text" name="end" label="Endpunkt" placeholder="" />
+        <LabeledTextField type="text" name="start" label="Startpunkt" />
+        <LabeledTextField type="text" name="end" label="Endpunkt" />
       </div>
       <LabeledSelect name="labelPos" label="Kartenlabelposition" options={labelPosOptions} />
-      <LabeledTextareaField
-        name="description"
-        label="Beschreibung (Markdown)"
-        placeholder=""
-        optional
-      />
-      <LabeledTextField type="text" name="length" label="Länge (in km)" optional placeholder="" />
+      <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
+      <LabeledTextField type="text" name="length" label="Länge (in km)" optional />
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"

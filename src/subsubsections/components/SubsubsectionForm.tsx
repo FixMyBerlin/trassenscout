@@ -22,9 +22,8 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
         name="slug"
         label="URL-Segment"
         help="Änderungen am URL-Segement sorgen dafür, dass bisherige URLs nicht mehr funktionieren."
-        placeholder=""
       />
-      <LabeledTextField type="text" name="title" label="Name" placeholder="" />
+      <LabeledTextField type="text" name="title" label="Name" />
       <LabeledSelect
         name="type"
         label="Führungsform"
@@ -33,11 +32,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
           ["AREA", "Sonderführung Punkt/Fläche (SF)"],
         ]}
       />
-      <LabeledGeometryField
-        name="geometry"
-        label="Geometry (`LineString` oder `Point`)"
-        placeholder=""
-      />
+      <LabeledGeometryField name="geometry" label="Geometry (`LineString` oder `Point`)" />
       <LabeledSelect
         name="labelPos"
         label="Kartenlabel Position"
@@ -57,7 +52,6 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
         name="task"
         label="Massnahmentyp"
         help="Bspw. 'Fahrbahnmarkierung'"
-        placeholder=""
       />
       <LabeledTextField
         type="number"
@@ -65,30 +59,16 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
         name="length"
         label="Länge (in Kilometer)"
         optional
-        placeholder=""
       />
-      <LabeledTextField
-        type="number"
-        step="0.01"
-        name="width"
-        label="Breite (in Meter)"
-        optional
-        placeholder=""
-      />
+      <LabeledTextField type="number" step="0.01" name="width" label="Breite (in Meter)" optional />
       <LabeledTextField
         type="number"
         step="1"
         name="costEstimate"
         label="Kostenschätzung (in Euro)"
         optional
-        placeholder=""
       />
-      <LabeledTextareaField
-        name="description"
-        label="Beschreibung (Markdown)"
-        placeholder=""
-        optional
-      />
+      <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
