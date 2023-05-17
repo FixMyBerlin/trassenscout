@@ -3,13 +3,10 @@ import db from "db"
 
 import { authorizeProjectAdmin } from "src/authorization"
 import { SubsubsectionSchema } from "../schema"
-import getSectionProjectId from "../../sections/queries/getSectionProjectId"
+import getSubsectionProjectId from "src/subsections/queries/getSubsectionProjectId"
 
 export default resolver.pipe(
   resolver.zod(SubsubsectionSchema),
-  authorizeProjectAdmin(getSectionProjectId),
-  async (input) => {
-    const subsubsetion = await db.subsubsection.create({ data: input })
-    return subsubsetion
-  }
+  authorizeProjectAdmin(getSubsectionProjectId),
+  async (input) => await db.subsubsection.create({ data: input })
 )
