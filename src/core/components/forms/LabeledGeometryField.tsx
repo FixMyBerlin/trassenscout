@@ -76,7 +76,7 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
               onSubmit={handleTextareaChange}
               className={clsx(
                 textareaClasName,
-                "block w-full grow rounded-md shadow-sm sm:text-sm",
+                "block w-full grow rounded-md font-mono text-xs shadow-sm",
                 hasError
                   ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
                   : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
