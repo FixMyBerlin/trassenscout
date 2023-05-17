@@ -42,7 +42,7 @@ export const SectionDashboardWithQuery = () => {
       <PageHeader
         titleIcon={<SectionMapIcon label={`TS${section.id}`} />}
         title={startEnd(section)}
-        subtitle={`Teilstrecke – ${section.title} – ${section.subTitle}`}
+        subtitle={`Teilstrecke: ${section.title}`}
         action={
           <Link
             icon="edit"

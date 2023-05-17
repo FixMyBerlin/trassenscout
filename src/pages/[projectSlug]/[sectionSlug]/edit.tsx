@@ -7,6 +7,7 @@ import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
+import { startEnd } from "src/core/components/text/startEnd"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SectionForm } from "src/sections/components/SectionForm"
@@ -58,7 +59,7 @@ const EditSection = () => {
       <MetaTags noindex title={`Section ${section.id} bearbeiten`} />
       <PageHeader
         title={`${section.title} bearbeiten`}
-        subtitle={`${section.subTitle} - ${section.start} ▸ ${section.end}`}
+        subtitle={startEnd(section)}
         className="mt-12"
       />
 

@@ -55,7 +55,7 @@ export const SectionTable: React.FC<Props> = ({ sections }) => {
                     <SectionIcon label={`TS${section.index}`} />
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
-                    <strong>{section.title}</strong>: {section.subTitle}
+                    <strong>{section.title}</strong>
                     <br />
                     {startEnd(section)}
                   </td>

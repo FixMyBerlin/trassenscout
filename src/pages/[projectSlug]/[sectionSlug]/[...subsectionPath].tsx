@@ -59,7 +59,7 @@ export const SubsectionDashboardWithQuery = () => {
       <PageHeader
         titleIcon={<SubsectionMapIcon label={`PA${subsection.id}`} />}
         title={startEnd(subsection)}
-        subtitle={`Planungsabschnitt – ${subsection.title}`}
+        subtitle={`Planungsabschnitt: ${subsection.title}`}
         action={
           <Link
             icon="edit"

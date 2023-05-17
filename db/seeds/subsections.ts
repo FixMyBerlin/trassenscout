@@ -7,9 +7,14 @@ const seedSubsections = async () => {
     {
       slug: "hansaviertel",
       title: "Hansaviertel",
-      description: `Das Hansaviertel ist ein Stadtviertel in Berlin, das in den 1950er Jahren nach Plänen bekannter Architekten wie Walter Gropius, Alvar Aalto und Oscar Niemeyer erbaut wurde. Es liegt zwischen dem Berliner Tiergarten und dem Spreeufer und wurde als Modellprojekt für modernes, funktionales Wohnen konzipiert.`,
       start: "Dovestraẞe",
       end: "Kanzlerpark",
+      description: `
+**Das Hansaviertel** ist ein Stadtviertel in Berlin, das in den 1950er Jahren nach Plänen bekannter Architekten wie Walter Gropius, Alvar Aalto und Oscar Niemeyer erbaut wurde. Es liegt zwischen dem Berliner Tiergarten und dem Spreeufer und wurde als Modellprojekt für modernes, funktionales Wohnen konzipiert.
+
+- Foo
+- Bar
+      `,
       labelPos: "top",
       geometry: [
         [13.317392954811083, 52.52039883952099],
@@ -30,10 +35,10 @@ const seedSubsections = async () => {
     },
     {
       slug: "hbf",
-      title: " Hauptbahnhof",
-      description: null,
+      title: "Hauptbahnhof",
       start: "Kanzlerpark",
       end: "Ebertsbrücke",
+      description: null,
       labelPos: "top",
       geometry: [
         [13.392787102151175, 52.52243126246529],
@@ -49,10 +54,10 @@ const seedSubsections = async () => {
     },
     {
       slug: "insel",
-      title: " Museumsinsel",
-      description: null,
+      title: "Museumsinsel",
       start: "Ebertsbrücke",
       end: "Fischerinsel",
+      description: null,
       labelPos: "topRight",
       geometry: [
         [13.410442693616204, 52.514591398693426],
@@ -65,10 +70,10 @@ const seedSubsections = async () => {
     },
     {
       slug: "east-side",
-      title: " East Side",
-      description: null,
+      title: "East Side",
       start: "Fischerinsel",
       end: "Schleusenufer",
+      description: null,
       labelPos: "topRight",
       geometry: [
         [13.41060175299907, 52.514591398693426],
@@ -82,10 +87,10 @@ const seedSubsections = async () => {
     // Section 2:
     {
       slug: "tiergarten",
-      title: " Tiergarten",
-      description: null,
+      title: "Tiergarten",
       start: "Dovestraẞe",
       end: "Lützowplatz",
+      description: null,
       labelPos: "topRight",
       geometry: [
         [13.317597867354067, 52.52004509035683],
@@ -98,10 +103,10 @@ const seedSubsections = async () => {
     },
     {
       slug: "gleisdreieck",
-      title: " Gleisdreieck",
-      description: null,
+      title: "Gleisdreieck",
       start: "Lützowplatz",
       end: "Mehringdamm",
+      description: null,
       labelPos: "topRight",
       geometry: [
         [13.35206427335541, 52.505835784446134],
@@ -117,10 +122,10 @@ const seedSubsections = async () => {
     },
     {
       slug: "urbahnhafen",
-      title: " Urbahnhafen",
-      description: null,
+      title: "Urbahnhafen",
       start: "Mehringdamm",
       end: "Kottbusser Damm",
+      description: null,
       labelPos: "topRight",
       geometry: [
         [13.388480650254337, 52.497979825501545],
@@ -133,10 +138,10 @@ const seedSubsections = async () => {
     },
     {
       slug: "paul-lincke-ufer",
-      title: " Paul Lincke Ufer",
-      description: null,
+      title: "Paul Lincke Ufer",
       start: "Kottbusser Damm",
       end: "Schleusenufer",
+      description: null,
       labelPos: "bottom",
       geometry: [
         [13.41977042897335, 52.49633598230557],
@@ -150,9 +155,9 @@ const seedSubsections = async () => {
     {
       slug: "kanal",
       title: "Kanal",
-      description: null,
       start: "Schleusenufer",
       end: "Kottbusser Brücke",
+      description: null,
       labelPos: "bottom",
       geometry: [
         [13.41977042897335, 52.49633598230557],

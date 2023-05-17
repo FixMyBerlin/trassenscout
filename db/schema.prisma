@@ -183,7 +183,6 @@ model Section {
   index       Int
   length      String?
   title       String
-  subTitle    String?
   start       String
   end         String
   description String?
