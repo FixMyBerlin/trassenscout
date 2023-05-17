@@ -9,6 +9,7 @@ import Map, { Layer, LngLatBoundsLike, NavigationControl, ScaleControl, Source }
 import { vectorStyle } from "src/core/components/Map/BaseMap"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { z } from "zod"
+import { Link } from "../links"
 
 type Props = {
   name: string
@@ -113,6 +114,18 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
           </div>
           <details className="prose prose-sm">
             <summary>Geometry</summary>
+            <Link
+              blank
+              href={`http://geojson.io/#data=data:application/json,${encodeURIComponent(
+                JSON.stringify(
+                  geometryType === "ROUTE"
+                    ? lineString(geometry as RouteGeomtry)
+                    : point(geometry as AreaGeometry)
+                )
+              )}`}
+            >
+              Auf geojson.io öffnen
+            </Link>
             <pre className="m-0 text-xs leading-none">{JSON.stringify(geometry, undefined, 2)}</pre>
           </details>
         </>
