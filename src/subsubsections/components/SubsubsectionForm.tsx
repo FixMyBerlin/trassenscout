@@ -28,15 +28,15 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
         step="1"
         name="order"
         label="Reihenfolge Führung"
-        help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie (mit Unterbrechungen) mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung. Sonderfürungen Punkt/Fläche zwischen die Regelführungen Strecke einsortieren."
+        help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie (mit Unterbrechungen) mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung. Sonderführungen bitte zwischen die Regelführungen einsortieren."
       />
       <LabeledTextField type="text" name="title" label="Name" />
       <LabeledSelect
         name="type"
         label="Führungsform"
         options={[
-          ["ROUTE", "Regelführung Strecke (RF)"],
-          ["AREA", "Sonderführung Punkt/Fläche (SF)"],
+          ["ROUTE", "Regelführung (RF) – Linie"],
+          ["AREA", "Sonderführung (SF) – Punkt"],
         ]}
       />
       <LabeledGeometryField name="geometry" label="Geometry (`LineString` oder `Point`)" />
