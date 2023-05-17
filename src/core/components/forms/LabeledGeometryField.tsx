@@ -23,12 +23,11 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
     const {
       register,
       formState: { isSubmitting, errors },
-      getValues,
       setValue,
       watch,
     } = useFormContext()
 
-    const geometryType = getValues("type") || "ROUTE" // Subsections don't have a `type` but area a ROUTE
+    const geometryType = watch("type") || "ROUTE" // Subsections don't have a `type` but area a ROUTE
     const value = watch(name)
     const [valueString, setValueString] = useState("")
     useEffect(() => {
