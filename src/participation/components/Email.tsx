@@ -45,6 +45,10 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
           outerProps={{ className: "mb-6" }}
         />
         <ParticipationLabeledCheckbox
+          labelProps={{
+            className:
+              "ml-3 block cursor-pointer text-normal text-base sm:text-lg text-gray-700 hover:text-gray-800",
+          }}
           name="consent"
           label={page.questions[1].props.agreementText.de}
         />

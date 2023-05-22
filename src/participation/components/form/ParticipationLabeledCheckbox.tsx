@@ -36,6 +36,7 @@ export const ParticipationLabeledCheckbox = forwardRef<
           id={name}
           {...props}
           className={clsx(
+            props?.className,
             "h-4 w-4 rounded",
             hasError
               ? "border-red-800 text-red-500 shadow-sm shadow-red-200 focus:ring-red-800"
@@ -44,9 +45,12 @@ export const ParticipationLabeledCheckbox = forwardRef<
         />
       </div>
       <label
-        {...labelProps}
         htmlFor={name}
-        className="ml-3 block cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-800"
+        {...labelProps}
+        className={clsx(
+          labelProps?.className,
+          "ml-3 block cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-800"
+        )}
       >
         {label}
         {help && <div className="m-0 text-gray-500">{help}</div>}
