@@ -82,7 +82,7 @@ export const ProjectMap: React.FC<Props> = ({ sections }) => {
           onMouseLeave={() => setHovered(null)}
         >
           <StartEndLabel
-            icon={<SectionMapIcon label={`TS${section.id}`} />}
+            icon={<SectionMapIcon label={section.slug} />}
             start={section.start}
             end={section.end}
           />

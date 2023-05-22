@@ -10,6 +10,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import { PageHeader } from "src/core/components/pages/PageHeader"
+import { longTitle, seoTitle } from "src/core/components/text"
 import { startEnd } from "src/core/components/text/startEnd"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
@@ -36,13 +37,13 @@ export const SectionDashboardWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={section.title} />
+      <MetaTags noindex title={seoTitle(section.slug)} />
 
       <Breadcrumb />
       <PageHeader
-        titleIcon={<SectionMapIcon label={`TS${section.id}`} />}
-        title={startEnd(section)}
-        subtitle={`Teilstrecke: ${section.title}`}
+        titleIcon={<SectionMapIcon label={section.slug} />}
+        title={longTitle(section.slug)}
+        subtitle={startEnd(section)}
         action={
           <Link
             icon="edit"

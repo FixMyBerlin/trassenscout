@@ -6,6 +6,7 @@ import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
 import { SectionIcon } from "../../core/components/Map/Icons"
 import { startEnd } from "src/core/components/text/startEnd"
+import { formattedLength, longTitle } from "src/core/components/text"
 
 type Props = {
   sections: Section[]
@@ -28,15 +29,6 @@ export const SectionTable: React.FC<Props> = ({ sections }) => {
               >
                 Teilstrecke
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Streckenlänge
-              </th>
-              <th
-                scope="col"
-                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
-              >
-                Abstimmung
-              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
@@ -52,19 +44,12 @@ export const SectionTable: React.FC<Props> = ({ sections }) => {
                   onClick={() => router.push(route)}
                 >
                   <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                    <SectionIcon label={`TS${section.id}`} />
+                    <SectionIcon label={section.slug} />
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
-                    <strong>{section.title}</strong>
+                    <strong>{longTitle(section.slug)}</strong>
                     <br />
                     {startEnd(section)}
-                  </td>
-                  <td className="break-words px-3 py-4 text-sm text-gray-500 ">
-                    {section.length ? section.length + " km" : " k.A."}
-                  </td>
-                  <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
-                    {/* TODO Abstimmung */}-
-                    {/* <StakeholderSectionStatus stakeholdernotes={stakeholdernotes} /> */}
                   </td>
                 </tr>
               )

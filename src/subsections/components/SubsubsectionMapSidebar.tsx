@@ -31,17 +31,10 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
   return (
     <section className="overlflow-y-scroll h-full w-[40rem] overflow-x-hidden rounded-md border border-gray-400/10 bg-white p-3 drop-shadow-md">
       <div className="mt-3 flex items-center justify-between">
-        {subsubsection.type === "ROUTE" ? (
-          <div className="flex items-center justify-start gap-2">
-            <SubsubsectionIcon label={`RF${subsubsection.id}`} />
-            Regelführung
-          </div>
-        ) : (
-          <div className="flex items-center justify-start gap-2">
-            <SubsubsectionIcon label={`SF${subsubsection.id}`} />
-            Sonderführung
-          </div>
-        )}
+        <div className="flex items-center justify-start gap-2">
+          <SubsubsectionIcon label={subsubsection.slug} />
+          {subsubsection.type === "ROUTE" ? "Regelführung" : "Sonderführung"}
+        </div>
         <div className="flex items-center gap-3">
           <Link
             icon="edit"
@@ -63,7 +56,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
           </button>
         </div>
       </div>
-      <H2 className="mt-2">{subsubsection.title}</H2>
+      <H2 className="mt-2">{subsubsection.subTitle}</H2>
 
       <PageDescription className="mt-5 !p-3">
         <Markdown markdown={subsubsection.description} className="leading-tight" />

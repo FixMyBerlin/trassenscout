@@ -6,6 +6,7 @@ import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
 import { SubsectionIcon } from "src/core/components/Map/Icons"
 import { startEnd } from "src/core/components/text/startEnd"
+import { longTitle } from "src/core/components/text"
 
 type Props = {
   subsections: Subsection[]
@@ -53,10 +54,10 @@ export const SubsectionTable: React.FC<Props> = ({ subsections }) => {
                   onClick={() => router.push(route)}
                 >
                   <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900  sm:pl-6">
-                    <SubsectionIcon label={`PA${subsection.id}`} />
+                    <SubsectionIcon label={subsection.slug} />
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
-                    <strong>{subsection.title}</strong>
+                    <strong>{longTitle(subsection.slug)}</strong>
                     <br />
                     {startEnd(subsection)}
                   </td>

@@ -38,7 +38,7 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
       .map((contact) => contact.email)
       .join(",")
 
-    void router.push(`mailto:${user?.email}?bcc=${participants}&subject=Infos zu ${project.title}`)
+    void router.push(`mailto:${user?.email}?bcc=${participants}&subject=Infos zu ${project.slug}`)
   }
 
   const handleChange = (values: any) => {

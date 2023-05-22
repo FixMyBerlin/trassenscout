@@ -4,26 +4,25 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
+import { SubsectionMapIcon } from "src/core/components/Map/Icons"
+import { SubsectionMap } from "src/core/components/Map/SubsectionMap"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import { PageHeader } from "src/core/components/pages/PageHeader"
+import { H2, longTitle, seoTitle, startEnd } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { SubsectionMap } from "src/core/components/Map/SubsectionMap"
-import { SubsubsectionMapSidebar } from "src/subsections/components/SubsubsectionMapSidebar"
+import { FileTable } from "src/files/components/FileTable"
+import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
 import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
 import { StakeholderSection } from "src/stakeholdernotes/components/StakeholderSection"
 import { StakeholderSummary } from "src/stakeholdernotes/components/StakeholderSummary"
 import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
+import { SubsubsectionMapSidebar } from "src/subsections/components/SubsubsectionMapSidebar"
 import { SubsubsectionTable } from "src/subsections/components/SubsubsectionTable"
 import getSubsectionIncludeSubsubsections from "src/subsections/queries/getSubsectionIncludeSubsubsections"
-import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
-import { FileTable } from "src/files/components/FileTable"
-import { H2 } from "src/core/components/text"
-import { SubsectionMapIcon } from "src/core/components/Map/Icons"
-import { startEnd } from "src/core/components/text/startEnd"
 
 // Page Renders Subsection _AND_ Subsubsection (as Panel)
 export const SubsectionDashboardWithQuery = () => {
@@ -53,13 +52,13 @@ export const SubsectionDashboardWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={subsection!.title} />
+      <MetaTags noindex title={seoTitle(subsection.slug)} />
 
       <Breadcrumb />
       <PageHeader
-        titleIcon={<SubsectionMapIcon label={`PA${subsection.id}`} />}
-        title={startEnd(subsection)}
-        subtitle={`Planungsabschnitt: ${subsection.title}`}
+        titleIcon={<SubsectionMapIcon label={subsection.slug} />}
+        title={longTitle(subsection.slug)}
+        subtitle={startEnd(subsection)}
         action={
           <Link
             icon="edit"
@@ -79,10 +78,9 @@ export const SubsectionDashboardWithQuery = () => {
           <Markdown markdown={subsection.description} className="leading-snug" />
           <div className="space-y-2">
             <StakeholderSummary stakeholdernotes={stakeholdernotes} />
-            <p>
+            {/* <p>
               <strong>Teilstreckenlänge:</strong> TODO
-              {/* {subsection.length ? subsection.length + " km" : " k.A."} */}
-            </p>
+            </p> */}
           </div>
         </div>
       </PageDescription>

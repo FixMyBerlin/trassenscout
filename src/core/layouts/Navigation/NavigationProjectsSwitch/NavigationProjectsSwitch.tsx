@@ -25,7 +25,7 @@ const NavigationProjectsSwitchWithProjectsQuery: React.FC = () => {
   }
 
   const menuItems = projects.map((project) => ({
-    name: project.shortTitle,
+    name: project.slug,
     slug: project.slug,
     href: Routes.ProjectDashboardPage({ projectSlug: project.slug }),
   }))
@@ -37,7 +37,7 @@ const NavigationProjectsSwitchWithProjectsQuery: React.FC = () => {
           <>
             <Menu.Button
               className={clsx(
-                "border-transparent flex rounded-full border-2 bg-gray-800 p-1 text-sm",
+                "flex rounded-full border-2 border-transparent bg-gray-800 p-1 text-sm",
                 open
                   ? "border-offset-gray-800 border-2 border-white"
                   : "hover:border-offset-gray-800 hover:border-2 hover:border-gray-500",

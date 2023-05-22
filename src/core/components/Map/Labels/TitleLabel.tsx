@@ -2,7 +2,7 @@ import React from "react"
 
 type Props = {
   icon: any
-  title: string
+  title: string | null
 }
 
 export const TitleLabel: React.FC<Props> = ({ icon, title }) => (

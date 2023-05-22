@@ -37,7 +37,7 @@ export const FilesWithData = () => {
   sectionsWithSubsections.forEach((s) =>
     s.subsections.forEach((ss) => {
       const count = files.filter((f) => f.subsectionId === ss.id).length
-      selectOptions.push([ss.id, `${s.title}: ${ss.start}–${ss.end} (${count})`, count])
+      selectOptions.push([ss.id, `${s.slug} – ${ss.start}–${ss.end} (${count})`, count])
     })
   )
 

@@ -6,6 +6,7 @@ import { Suspense } from "react"
 import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
+import { longTitle, seoEditTitle } from "src/core/components/text"
 import { startEnd } from "src/core/components/text/startEnd"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
@@ -54,12 +55,8 @@ const EditSubsection = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Abschnitt ${subsection.title} bearbeiten`} />
-      <PageHeader
-        title={`${subsection.title} bearbeiten`}
-        subtitle={startEnd(subsection)}
-        className="mt-12"
-      />
+      <MetaTags noindex title={seoEditTitle(subsection.slug)} />
+      <PageHeader title={`${subsection.slug} bearbeiten`} className="mt-12" />
 
       <SubsectionForm
         className="mt-10"

@@ -5,7 +5,7 @@ import { Suspense } from "react"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { quote } from "src/core/components/text"
+import { longTitle, quote } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR } from "src/stakeholdernotes/components/StakeholdernoteForm"
@@ -52,7 +52,7 @@ const NewStakeholdernoteMulti = () => {
       <MetaTags noindex title="Mehrere TöBs erstellen" />
       <PageHeader
         title="Mehrere TöBs erstellen"
-        subtitle={`Für die Teilstrecke ${quote(subsection.title)}`}
+        subtitle={longTitle(subsection.slug)}
         className="mt-12"
       />
 

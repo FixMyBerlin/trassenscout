@@ -16,6 +16,7 @@ import updateSubsubsection from "src/subsubsections/mutations/updateSubsubsectio
 import deleteSubsubsection from "src/subsubsections/mutations/deleteSubsubsection"
 import { SubsubsectionSchema } from "src/subsubsections/schema"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
+import { seoEditTitle } from "src/core/components/text"
 
 const EditSubsubsection = () => {
   const router = useRouter()
@@ -65,11 +66,10 @@ const EditSubsubsection = () => {
     }
   }
 
-  const title = `Führung "${subsubsection.title}" bearbeiten`
   return (
     <>
-      <MetaTags noindex title={title} />
-      <PageHeader title="Führung bearbeiten" subtitle={subsubsection.title} className="mt-12" />
+      <MetaTags noindex title={seoEditTitle(subsubsection.slug)} />
+      <PageHeader title={`${subsubsection.slug} bearbeiten`} className="mt-12" />
 
       <SubsubsectionForm
         className="mt-10"

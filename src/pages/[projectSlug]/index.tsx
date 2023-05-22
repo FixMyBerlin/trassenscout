@@ -7,10 +7,12 @@ import { CalenderDashboard } from "src/calendar-entries/components"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
 import { ProjectMap } from "src/core/components/Map/ProjectMap"
+import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
+import { PageDescription } from "src/core/components/pages/PageDescription"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { quote } from "src/core/components/text"
+import { quote, seoTitle } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { SectionTable } from "src/projects/components/SectionTable"
@@ -29,7 +31,7 @@ export const ProjectDashboardWithQuery = () => {
       <>
         <section className="rounded border bg-blue-100 p-5">
           <Link href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
-            {quote(project.title)} bearbeiten
+            {project.slug} bearbeiten
           </Link>
           <br />
           <Link href={Routes.NewSectionPage({ projectSlug: projectSlug! })}>Neue Teilstrecke</Link>
@@ -40,12 +42,13 @@ export const ProjectDashboardWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={project.title} />
+      <MetaTags noindex title={seoTitle(project.slug)} />
 
       <Breadcrumb />
       <PageHeader
-        title={project.title}
-        description={`Willkommen im Trassenscout zum ${project.title}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
+        title={project.slug}
+        subtitle={project.subTitle}
+        description={`Willkommen im Trassenscout zum ${project.slug}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
         action={
           <Link icon="edit" href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
             bearbeiten
@@ -53,8 +56,14 @@ export const ProjectDashboardWithQuery = () => {
         }
       />
 
+      {project.description && (
+        <PageDescription>
+          <Markdown markdown={project.description} />
+        </PageDescription>
+      )}
+
       {/* Phasen Panel */}
-      <section>
+      <section className="mt-12">
         <H2>Aktuelle Planungsphase</H2>
         <div className="mt-5 max-w-[650px]">
           <Image src={statusImg} alt=""></Image>

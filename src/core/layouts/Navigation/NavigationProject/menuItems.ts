@@ -4,7 +4,7 @@ import { MenuItem } from "../types"
 
 export const menuItems = (projectSlug: Project["slug"], sections: Section[]) => {
   const sectionLinksChildren = sections?.map((section) => ({
-    name: section.title,
+    name: section.slug,
     slug: section.slug,
     href: Routes.SectionDashboardPage({ projectSlug: projectSlug!, sectionSlug: section.slug }),
   }))

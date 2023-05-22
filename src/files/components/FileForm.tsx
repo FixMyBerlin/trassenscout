@@ -22,7 +22,7 @@ export function FileForm<S extends z.ZodType<any, any>>(
   const options: LabeledSelectProps["options"] = [["", "Übergreifendes Dokument"]]
   sectionsWithSubsections.forEach((s) =>
     s.subsections.forEach((ss) => {
-      options.push([ss.id, `${s.title}: ${ss.start}–${ss.end}`] as [number, string])
+      options.push([ss.id, `${s.slug} – ${ss.start}–${ss.end}`] as [number, string])
     })
   )
 

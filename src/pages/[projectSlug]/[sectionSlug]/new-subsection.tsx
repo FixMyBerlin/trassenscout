@@ -5,7 +5,7 @@ import { Suspense } from "react"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { quote } from "src/core/components/text"
+import { longTitle, seoNewTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import getSection from "src/sections/queries/getSection"
@@ -43,8 +43,8 @@ const NewSubsection = () => {
   return (
     <>
       <PageHeader
-        title="Neuen Abschnitt erstellen"
-        subtitle={`In Teilstrecke ${quote(section.title)}`}
+        title={seoNewTitle("Planungsabschitt")}
+        subtitle={longTitle(section.slug)}
         className="mt-12"
       />
 

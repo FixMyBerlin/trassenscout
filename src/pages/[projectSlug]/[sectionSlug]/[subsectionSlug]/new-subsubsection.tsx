@@ -4,7 +4,7 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { quote } from "src/core/components/text"
+import { longTitle, quote, seoNewTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import getSubsection from "src/subsections/queries/getSubsection"
@@ -47,10 +47,10 @@ const NewSubsubsection = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neue Führung erstellen" />
+      <MetaTags noindex title={seoNewTitle("Führung")} />
       <PageHeader
-        title="Führung erstellen"
-        subtitle={`Für den Abschnitt ${quote(subsection!.title)}`}
+        title="Führung hinzufügen"
+        subtitle={longTitle(subsection.slug)}
         className="mt-12"
       />
 

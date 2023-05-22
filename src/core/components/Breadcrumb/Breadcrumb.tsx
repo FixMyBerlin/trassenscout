@@ -59,14 +59,14 @@ export const Breadcrumb: React.FC = () => {
       <ol className="flex items-center">
         {section && (
           <BreadcrumbStep
-            title={project.title}
+            title={project.slug}
             route={section ? Routes.ProjectDashboardPage({ projectSlug: projectSlug! }) : undefined}
             arrow={Boolean(section)}
           />
         )}
         {section && subsection && (
           <BreadcrumbStep
-            title={startEnd(section)}
+            title={section.slug}
             route={
               subsection
                 ? Routes.SectionDashboardPage({
@@ -80,7 +80,7 @@ export const Breadcrumb: React.FC = () => {
         )}
         {subsection && subsubsectionSlug && (
           <BreadcrumbStep
-            title={startEnd(subsection)}
+            title={subsection.slug}
             route={
               subsubsectionSlug
                 ? Routes.SubsectionDashboardPage({

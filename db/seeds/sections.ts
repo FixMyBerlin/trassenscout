@@ -4,8 +4,8 @@ const seedSections = async () => {
   const seedData: Prisma.SectionUncheckedCreateInput[] = [
     // Project 1:
     {
-      slug: "ts-1",
-      title: "Spree",
+      projectId: 1,
+      slug: "TS1",
       start: "Dovestraẞe",
       end: "Schleusenufer",
       order: 1,
@@ -20,11 +20,10 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
 Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.`,
       labelPos: "topRight",
       managerId: 1,
-      projectId: 1,
     },
     {
-      slug: "ts-2",
-      title: "Kanal",
+      projectId: 1,
+      slug: "TS2",
       start: "Dovestraẞe",
       end: "Schleusenufer",
       order: 2,
@@ -32,12 +31,11 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       description: null,
       labelPos: "bottomLeft",
       managerId: 1,
-      projectId: 1,
     },
     // Project 2:
     {
-      slug: "ts-77",
-      title: "titleString",
+      projectId: 2,
+      slug: "TS3",
       start: "startString",
       end: "endString",
       order: 3,
@@ -45,13 +43,12 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       description: null,
       labelPos: "top",
       managerId: 1,
-      projectId: 2,
     },
     // Project 4:
     // Blank
     {
-      slug: "ts-881",
-      title: "titleString2",
+      projectId: 4,
+      slug: "TS4",
       start: "startString2",
       end: "endString2",
       order: 4,
@@ -59,7 +56,6 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
       description: null,
       labelPos: "top",
       managerId: 1,
-      projectId: 4,
     },
   ]
 

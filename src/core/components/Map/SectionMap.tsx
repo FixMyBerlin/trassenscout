@@ -98,7 +98,7 @@ export const SectionMap: React.FC<Props> = ({ sections, selectedSection }) => {
           onMouseLeave={() => setHovered(null)}
         >
           <StartEndLabel
-            icon={<SubsectionMapIcon label={`PA${subsection.id}`} />}
+            icon={<SubsectionMapIcon label={subsection.slug} />}
             start={subsection.start}
             end={subsection.end}
           />

@@ -128,12 +128,7 @@ export const SubsectionMap: React.FC<Props> = ({ sections, selectedSubsection })
           onMouseEnter={() => setHovered(sec.slug)}
           onMouseLeave={() => setHovered(null)}
         >
-          <TitleLabel
-            icon={
-              <SubsubsectionMapIcon label={sec.type === "ROUTE" ? `RF${sec.id}` : `SF${sec.id}`} />
-            }
-            title={sec.title}
-          />
+          <TitleLabel icon={<SubsubsectionMapIcon label={sec.slug} />} title={sec.subTitle} />
         </TipMarker>
       </Marker>
     )

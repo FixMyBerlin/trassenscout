@@ -2,8 +2,8 @@ import { Prisma } from "@prisma/client"
 
 export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "subsectionId">[] = [
   {
-    slug: "rf-1",
-    title: "Radweg mit landw. Verkehr frei",
+    slug: "RF1",
+    subTitle: "Radweg mit landw. Verkehr frei",
     order: 1,
     type: "ROUTE",
     geometry: [
@@ -20,8 +20,8 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     managerId: 1,
   },
   {
-    slug: "rf-2",
-    title: "Ufersteg Hansaviertel",
+    slug: "RF2",
+    subTitle: "Ufersteg Hansaviertel",
     order: 2,
     type: "ROUTE",
     geometry: [
@@ -38,8 +38,8 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     managerId: 1,
   },
   {
-    slug: "rf-3",
-    title: "Fahrradstraße Levetzowstraße",
+    slug: "RF3",
+    subTitle: "Fahrradstraße Levetzowstraße",
     order: 3,
     type: "ROUTE",
     geometry: [
@@ -57,8 +57,8 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     managerId: 2,
   },
   {
-    slug: "sv-1",
-    title: "Radweg auf Gotskowskybrücke",
+    slug: "SF1",
+    subTitle: "Radweg auf Gotskowskybrücke",
     order: 5,
     type: "AREA",
     geometry: [13.329078172644188, 52.5225862734311],
@@ -76,8 +76,8 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     managerId: 1,
   },
   {
-    slug: "sv-2",
-    title: "Radweg unter S-Bahn-Brücke",
+    slug: "SF2",
+    subTitle: "Radweg unter S-Bahn-Brücke",
     order: 6,
     type: "AREA",
     geometry: [13.350034203659277, 52.51973770393019],
