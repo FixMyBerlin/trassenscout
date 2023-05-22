@@ -9,22 +9,13 @@ import { NavigationWrapper } from "../NavigationWrapper"
 import { menuItems } from "./menuItems"
 import { ProjectLogo } from "./ProjectLogo"
 
-const NavigationProjectWithQuery = () => {
+export const NavigationProject = () => {
   const projectSlug = useParam("projectSlug", "string")
-  const [{ sections }] = useQuery(getSections, { where: { project: { slug: projectSlug! } } })
 
   return (
     <NavigationWrapper>
-      <NavigationMobile logo={<ProjectLogo />} menuItems={menuItems(projectSlug!, sections!)} />
-      <NavigationDesktop logo={<ProjectLogo />} menuItems={menuItems(projectSlug!, sections!)} />
+      <NavigationMobile menuItems={menuItems(projectSlug!)} />
+      <NavigationDesktop menuItems={menuItems(projectSlug!)} />
     </NavigationWrapper>
-  )
-}
-
-export const NavigationProject = () => {
-  return (
-    <Suspense fallback={<Spinner />}>
-      <NavigationProjectWithQuery />
-    </Suspense>
   )
 }

@@ -2,15 +2,25 @@ import clsx from "clsx"
 
 type Props = {
   page?: boolean
+  size?: "5" | "12"
 }
 
-export const Spinner: React.FC<Props> = ({ page = false }) => {
+const spinnerSizeClasses = {
+  "5": "h-5 w-5",
+  "12": "h-12 w-12",
+}
+
+export const Spinner: React.FC<Props> = ({ page = false, size = "12" }) => {
   return (
     <div className={clsx("text-center", page ? "h-screen" : "")}>
       <div role="status" className="flex h-full items-center justify-center">
         <svg
           aria-hidden="true"
-          className="my-20 inline h-12 w-12 animate-spin fill-blue-500 text-gray-200 dark:text-gray-600"
+          className={clsx(
+            spinnerSizeClasses[size],
+            page ? "my-20" : "",
+            "inline animate-spin fill-blue-500 text-gray-200 dark:text-gray-600"
+          )}
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"

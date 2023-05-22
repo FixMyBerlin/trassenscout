@@ -15,7 +15,7 @@ const UserWithQuery: React.FC = () => {
       {!user ? (
         <Link
           className={clsx(
-            "border-transparent flex rounded-full border-2 bg-gray-800 p-1 text-sm",
+            "flex rounded-full border-2 border-transparent bg-gray-800 p-1 text-sm",
             "hover:border-offset-gray-800 hover:border-2 hover:border-gray-500",
             "focus:outline-none focus:ring-2 focus:ring-white/30"
           )}
@@ -33,7 +33,7 @@ const UserWithQuery: React.FC = () => {
 
 export const NavigationUser: React.FC = () => {
   return (
-    <Suspense fallback={<Spinner />}>
+    <Suspense fallback={<Spinner size="5" />}>
       <UserWithQuery />
     </Suspense>
   )
