@@ -16,17 +16,15 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   const { progress, setProgress } = useContext(ProgressContext)
   const [surveyPageProgress, setSurveyPageProgress] = useState(0)
 
-  useEffect(() => {
-    window && window.scrollTo(0, 0)
-  }, [surveyPageProgress])
-
   const handleNextPage = () => {
+    window && window.scrollTo(0, 0)
     const newSurveyPageProgress = Math.min(pages.length, surveyPageProgress + 1)
     setSurveyPageProgress(newSurveyPageProgress)
     setProgress(stageProgressDefinition["SURVEY"] + newSurveyPageProgress)
   }
 
   const handleBackPage = () => {
+    window && window.scrollTo(0, 0)
     const newSurveyPageProgress = Math.max(0, surveyPageProgress - 1)
     setSurveyPageProgress(newSurveyPageProgress)
     setProgress(stageProgressDefinition["SURVEY"] + newSurveyPageProgress)
