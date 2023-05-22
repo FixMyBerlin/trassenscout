@@ -13,7 +13,6 @@ export const ProgressBar = () => {
     <div>
       <h4 className="sr-only">Status</h4>
       <div aria-hidden="true">
-        <div>{progress + "/" + total}</div>
         <div className="overflow-hidden bg-gray-200">
           <div className="h-1 bg-pink-500" style={{ width: `${width}%` }} />
         </div>
