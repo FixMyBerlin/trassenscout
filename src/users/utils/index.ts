@@ -1,3 +1,4 @@
 export * from "./getFullname"
-export * from "./isAdmin"
+export * from "./getInitials"
 export * from "./getUserSelectOptions"
+export * from "./isAdmin"

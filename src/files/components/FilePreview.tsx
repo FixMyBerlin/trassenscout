@@ -48,7 +48,7 @@ export const FilePreview: React.FC<Props> = ({ file, editUrl, description = true
         <Link
           icon="edit"
           href={editUrl}
-          className="absolute bottom-0 right-0 rounded border border-white/0 hover:border-blue-900"
+          className="absolute bottom-0 right-0 rounded border border-transparent hover:border-blue-900"
         >
           <span className="sr-only">Dokument bearbeiten</span>
         </Link>

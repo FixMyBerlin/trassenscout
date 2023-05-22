@@ -3,10 +3,9 @@ import { Menu, Transition } from "@headlessui/react"
 import { UserIcon } from "@heroicons/react/24/solid"
 import clsx from "clsx"
 import React, { Fragment } from "react"
-import { LinkMail } from "src/core/components/links"
 import { Link } from "src/core/components/links/Link"
 import { CurrentUser } from "src/users/types"
-import { getFullname, isAdmin } from "src/users/utils"
+import { getFullname, getInitials, isAdmin } from "src/users/utils"
 
 type Props = {
   user: CurrentUser
@@ -14,21 +13,25 @@ type Props = {
 
 export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
   const projectSlug = useParam("projectSlug", "string")
+
   return (
-    <Menu as="div" className="relative ml-3">
+    <Menu as="div" className="relative ml-3 mr-5">
       {({ open }) => (
         <>
           <Menu.Button
             className={clsx(
-              "border-transparent flex rounded-full border-2 bg-gray-800 p-1 text-sm",
-              open
-                ? "border-offset-gray-800 border-2 border-white"
-                : "hover:border-offset-gray-800 hover:border-2 hover:border-gray-500",
+              "flex rounded-full border-2 border-transparent bg-blue-500 p-1",
+              open ? "hover:border-blue-800" : "offset hover:border-blue-800",
               "focus:outline-none focus:ring-2 focus:ring-white/30"
             )}
           >
             <span className="sr-only">User-Menü</span>
-            <UserIcon className="h-6 w-6 text-gray-300" aria-hidden="true" />
+            <div
+              className="flex h-8 w-8 items-center justify-center pt-0.5 text-lg font-semibold uppercase tracking-tighter text-gray-50"
+              aria-hidden="true"
+            >
+              {getInitials(user)}
+            </div>
           </Menu.Button>
           {open && (
             <Transition
