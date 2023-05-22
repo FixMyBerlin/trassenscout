@@ -1,5 +1,5 @@
 export { FORM_ERROR } from "src/core/components/forms"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { Link, whiteButtonStyles } from "src/core/components/links"
 import { ParticipationButton } from "./core/ParticipationButton"
 import { ParticipationButtonWrapper } from "./core/ParticipationButtonWrapper"
@@ -17,13 +17,16 @@ type Props = {
 export const Email: React.FC<Props> = ({ onSubmit, email }) => {
   const [consent, setConsent] = useState(false)
 
-  const handleSubmit = (values: Record<string, any>) => {
-    onSubmit(values.email)
-  }
+  const handleSubmit = useCallback(
+    (values: Record<string, any>) => {
+      onSubmit(values.email)
+    },
+    [onSubmit]
+  )
 
-  const handleChange = (values: Record<string, any>) => {
+  const handleChange = useCallback((values: Record<string, any>) => {
     setConsent(values.consent && values.email)
-  }
+  }, [])
 
   const page = email.pages[0]
 

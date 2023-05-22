@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import SurveyForm from "../form/SurveyForm"
 
 export { FORM_ERROR } from "src/core/components/forms"
@@ -58,15 +58,20 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
     return responses
   }
 
-  const handleSubmit = (values: any) => {
-    values = transformValues(values)
-    onSubmit(values)
-  }
+  const handleSubmit = useCallback(
+    (values: any) => {
+      console.log("submit", values)
+      values = transformValues(values)
+      onSubmit(values)
+    },
+    [onSubmit]
+  )
 
-  const handleChange = (values: any) => {
+  const handleChange = useCallback((values: any) => {
+    console.log("change", values)
     values = transformValues(values)
     setValues(values)
-  }
+  }, [])
 
   const pageIsComplete = () => {
     let completed: boolean

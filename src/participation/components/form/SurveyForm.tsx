@@ -33,7 +33,7 @@ export function SurveyForm<S extends z.ZodType<any, any>>({
     if (onChangeValues) {
       onChangeValues(ctx.getValues())
     }
-  }, [])
+  }, [onChangeValues, ctx])
 
   if (onChangeValues) props.onChange = () => onChangeValues(ctx.getValues())
 
