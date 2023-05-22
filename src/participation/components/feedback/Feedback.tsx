@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { stageProgressDefinition } from "src/pages/rs8-beteiligung"
 import { PinContext, ProgressContext } from "src/participation/context/contexts"
 import SurveyForm from "../form/SurveyForm"
@@ -68,22 +68,28 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
     return responses
   }
 
-  const handleSubmit = (values: Record<string, any>, submitterId?: string) => {
-    values = transformValues(values)
-    delete values["22"] // delete map ja/nein response
-    onSubmit({ ...values, [pinId]: isMap ? pinPosition : null }, submitterId)
-  }
+  const handleSubmit = useCallback(
+    (values: Record<string, any>, submitterId?: string) => {
+      values = transformValues(values)
+      delete values["22"] // delete map ja/nein response
+      onSubmit({ ...values, [pinId]: isMap ? pinPosition : null }, submitterId)
+    },
+    [isMap, onSubmit, pinId, pinPosition]
+  )
 
   // when Form changes, check if Radio "Ja" is selected - set state to true
-  const handleChange = (values: Record<string, any>) => {
-    setValues(values)
-    values = transformValues(values)
-    setIsPageOneCompleted(values["21"] && values["22"])
-    setIsPageTwoCompleted(values["34"] || values["35"])
-    setIsMap(values["22"] === 1) // "1" -> yes, "2" -> no - see feedback.json
-    if (!(values["22"] === 1)) setPinPosition(null) // set pinPosition to null if not yes
-    setFeedbackCategory(values["21"] || categories.length) // sets state to response id of chosen category (question 21) // fallback: '"Sonstiges"
-  }
+  const handleChange = useCallback(
+    (values: Record<string, any>) => {
+      setValues(values)
+      values = transformValues(values)
+      setIsPageOneCompleted(values["21"] && values["22"])
+      setIsPageTwoCompleted(values["34"] || values["35"])
+      setIsMap(values["22"] === 1) // "1" -> yes, "2" -> no - see feedback.json
+      if (!(values["22"] === 1)) setPinPosition(null) // set pinPosition to null if not yes
+      setFeedbackCategory(values["21"] || categories.length) // sets state to response id of chosen category (question 21) // fallback: '"Sonstiges"
+    },
+    [categories.length]
+  )
 
   return (
     // @ts-ignore
