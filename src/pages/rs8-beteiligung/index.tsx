@@ -77,7 +77,6 @@ const ParticipationMainPage: BlitzPage = () => {
       setStage("FEEDBACK")
       setProgress(stageProgressDefinition["FEEDBACK"])
       window && window.scrollTo(0, 0)
-      console.log("set feedback")
     }
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
