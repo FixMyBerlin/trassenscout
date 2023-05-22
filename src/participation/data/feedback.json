@@ -8,7 +8,7 @@
       "id": 1,
       "title": { "de": "Wir sind gespannt auf Ihre Anmerkungen." },
       "description": {
-        "de": "Hier können Sie dem Planungsteam konkrete Ideen, Anregungen und Hinweise zum RS 8 mit auf den Weg geben."
+        "de": "Hier können Sie dem Planungsteam konkrete Ideen, Anregungen und Hinweise zum RS 8 mit auf den Weg geben. Sie können mehrere Anmerkungen abgeben, bitte geben Sie diese einzeln ab."
       },
       "questions": [
         {
@@ -929,7 +929,7 @@
         },
         {
           "label": { "de": "Absenden &  weiteren Hinweis geben" },
-          "color": "pink",
+          "color": "white",
           "onClick": { "action": "submit" }
         }
       ]
