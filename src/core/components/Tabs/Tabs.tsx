@@ -58,7 +58,7 @@ export const Tabs: React.FC<Props> = ({ tabs, className }) => {
                 className={clsx(
                   current
                     ? "border-b-2 border-gray-900 !text-gray-900"
-                    : "border-transparent border-b hover:border-gray-200 hover:text-gray-700",
+                    : "border-b border-transparent hover:border-gray-200 hover:text-gray-700",
                   "flex px-3 py-3 text-sm font-medium"
                 )}
                 aria-current={current ? "page" : undefined}
