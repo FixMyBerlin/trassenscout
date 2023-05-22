@@ -5,6 +5,7 @@ import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
 import { ParticipationH2 } from "./core/Text"
 import { ParticipationLabeledRadiobuttonGroup } from "./form/ParticipationLabeledRadiobuttonGroup"
 import SurveyForm from "./form/SurveyForm"
+import { ParticipationButtonWrapper } from "./core/ParticipationButtonWrapper"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -46,10 +47,11 @@ export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
           value: item.id,
         }))}
       />
-
-      <ParticipationButton disabled={!isDirty} onClick={isFeedback ? onClickMore : onClickFinish}>
-        {button.label.de}
-      </ParticipationButton>
+      <ParticipationButtonWrapper>
+        <ParticipationButton disabled={!isDirty} onClick={isFeedback ? onClickMore : onClickFinish}>
+          {button.label.de}
+        </ParticipationButton>
+      </ParticipationButtonWrapper>
     </SurveyForm>
   )
 }
