@@ -265,7 +265,7 @@ model Stakeholdernote {
   title        String
   status       StakeholdernoteStatusEnum @default(PENDING)
   statusText   String?
-  section      Subsection                @relation(fields: [subsectionId], references: [id])
+  subsection   Subsection                @relation(fields: [subsectionId], references: [id])
   subsectionId Int
 }
 
