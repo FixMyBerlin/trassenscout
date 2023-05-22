@@ -33,19 +33,19 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
 
   const categories = pages[0].questions[0].props.responses
 
-  const handleNextPage = () => {
+  const handleNextPage = useCallback(() => {
     window && window.scrollTo(0, 0)
     const newFeedbackPageProgress = Math.min(pages.length, feedbackPageProgress + 1)
     setFeedbackPageProgress(newFeedbackPageProgress)
     setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
-  }
+  }, [feedbackPageProgress, pages.length, setProgress])
 
-  const handleBackPage = () => {
+  const handleBackPage = useCallback(() => {
     window && window.scrollTo(0, 0)
     const newFeedbackPageProgress = Math.max(0, feedbackPageProgress - 1)
     setFeedbackPageProgress(newFeedbackPageProgress)
     setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
-  }
+  }, [feedbackPageProgress, setProgress])
 
   const transformValues = (values: Record<string, null | string | boolean>) => {
     const responses: Record<string, null | string | number | number[]> = {}

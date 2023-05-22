@@ -44,17 +44,19 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
   const [isMediumScreen, setIsMediumScreen] = useState(false)
 
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
-  const handleLayerSwitch = (layer: LayerType) => {
-    setSelectedLayer(layer)
-  }
+
+  const handleLayerSwitch = useCallback(
+    () => (layer: LayerType) => {
+      setSelectedLayer(layer)
+    },
+    []
+  )
 
   const { pinPosition, setPinPosition } = useContext(PinContext)
 
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
   const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
   const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
-
-  const handleClick = async (e: mapboxgl.MapLayerMouseEvent) => {}
 
   if (!pinPosition) setPinPosition(projectMap.initialMarker)
 
@@ -79,14 +81,16 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
     logEvents((_events) => ({ ..._events, onDragStart: event.lngLat }))
   }, [])
 
-  const onMarkerDrag = useCallback((event: MarkerDragEvent) => {
-    logEvents((_events) => ({ ..._events, onDrag: event.lngLat }))
-    console.log(event.lngLat.lat)
-    setPinPosition({
-      lng: event.lngLat.lng,
-      lat: event.lngLat.lat,
-    })
-  }, [])
+  const onMarkerDrag = useCallback(
+    (event: MarkerDragEvent) => {
+      logEvents((_events) => ({ ..._events, onDrag: event.lngLat }))
+      setPinPosition({
+        lng: event.lngLat.lng,
+        lat: event.lngLat.lat,
+      })
+    },
+    [setPinPosition]
+  )
 
   const onMarkerDragEnd = useCallback((event: MarkerDragEvent) => {
     logEvents((_events) => ({ ..._events, onDragEnd: event.lngLat }))
@@ -128,7 +132,6 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
         scrollZoom={false}
         onMove={handleMapMove}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
-        onClick={handleClick}
         onZoom={handleMapZoom}
       >
         {children}

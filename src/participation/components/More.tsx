@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { Response } from "../data/types"
 import { ParticipationButton } from "./core/ParticipationButton"
 import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
@@ -23,13 +23,16 @@ export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
   const question = questions[0]
   const button = buttons[0]
 
-  const handleChange = (values: Record<string, any>) => {
-    setIsFeedback(Number(values.feedback) === question.props.responses[0].id)
-    setIsDirty(
-      Number(values.feedback) === question.props.responses[0].id ||
-        Number(values.feedback) === question.props.responses[1].id
-    )
-  }
+  const handleChange = useCallback(
+    (values: Record<string, any>) => {
+      setIsFeedback(Number(values.feedback) === question.props.responses[0].id)
+      setIsDirty(
+        Number(values.feedback) === question.props.responses[0].id ||
+          Number(values.feedback) === question.props.responses[1].id
+      )
+    },
+    [question.props.responses]
+  )
 
   return (
     <SurveyForm onSubmit={onClickFinish} onChangeValues={handleChange}>
