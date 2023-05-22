@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useState } from "react"
 import SurveyForm from "../form/SurveyForm"
 
 export { FORM_ERROR } from "src/core/components/forms"
@@ -16,19 +16,19 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   const { progress, setProgress } = useContext(ProgressContext)
   const [surveyPageProgress, setSurveyPageProgress] = useState(0)
 
-  const handleNextPage = () => {
+  const handleNextPage = useCallback(() => {
     window && window.scrollTo(0, 0)
-    const newSurveyPageProgress = Math.min(pages.length, surveyPageProgress + 1)
+    const newSurveyPageProgress = Math.min(survey.pages.length, surveyPageProgress + 1)
     setSurveyPageProgress(newSurveyPageProgress)
     setProgress(stageProgressDefinition["SURVEY"] + newSurveyPageProgress)
-  }
+  }, [survey.pages.length, setProgress, surveyPageProgress])
 
-  const handleBackPage = () => {
+  const handleBackPage = useCallback(() => {
     window && window.scrollTo(0, 0)
     const newSurveyPageProgress = Math.max(0, surveyPageProgress - 1)
     setSurveyPageProgress(newSurveyPageProgress)
     setProgress(stageProgressDefinition["SURVEY"] + newSurveyPageProgress)
-  }
+  }, [setProgress, surveyPageProgress])
 
   const buttonActions = {
     next: handleNextPage,
@@ -60,7 +60,6 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
 
   const handleSubmit = useCallback(
     (values: any) => {
-      console.log("submit", values)
       values = transformValues(values)
       onSubmit(values)
     },
@@ -68,7 +67,6 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   )
 
   const handleChange = useCallback((values: any) => {
-    console.log("change", values)
     values = transformValues(values)
     setValues(values)
   }, [])
