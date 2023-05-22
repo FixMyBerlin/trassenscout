@@ -55,7 +55,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
         <ParticipationButton disabled={!isCompleted} id="submit-finish" type="submit">
           {buttons[0].label.de}
         </ParticipationButton>
-        <ParticipationButton disabled={!isCompleted} id="submit-more" type="submit">
+        <ParticipationButton color="white" disabled={!isCompleted} id="submit-more" type="submit">
           {buttons[1].label.de}
         </ParticipationButton>
       </ParticipationButtonWrapper>
