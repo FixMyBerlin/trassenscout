@@ -6,6 +6,7 @@ import {
   LabeledTextField,
 } from "src/core/components/forms"
 import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryField"
+import { quote } from "src/core/components/text"
 import { getUserSelectOptions, UserSelectOptions } from "src/users/utils"
 import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
@@ -20,8 +21,10 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
       <LabeledTextField
         type="text"
         name="slug"
-        label="URL-Segment"
-        help="Änderungen am URL-Segement sorgen dafür, dass bisherige URLs nicht mehr funktionieren."
+        label="Kurz-Titel und URL-Teil"
+        help={`Bspw. ${quote("RF1")} oder ${quote(
+          "SF2a"
+        )}. Primäre Auszeichnung der Führung. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
       />
       <LabeledTextField
         type="number"
@@ -30,7 +33,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
         label="Reihenfolge Führung"
         help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie (mit Unterbrechungen) mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung. Sonderführungen bitte zwischen die Regelführungen einsortieren."
       />
-      <LabeledTextField type="text" name="title" label="Name" />
+      <LabeledTextField type="text" name="subTitle" label="Untertitel" optional />
       <LabeledSelect
         name="type"
         label="Führungsform"

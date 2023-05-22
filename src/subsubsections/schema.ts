@@ -15,9 +15,7 @@ const PositionArraySchema = z.array(z.tuple([z.number(), z.number()])) // Positi
 export const SubsubsectionSchema = z.object({
   slug: SlugSchema,
   order: z.coerce.number(),
-  title: z.string().min(3, {
-    message: "Pflichtfeld. Mindestens 3 Zeichen.",
-  }),
+  subTitle: z.string().nullish(),
   type: z.nativeEnum(SubsubsectionTypeEnum),
   geometry: PositionSchema.or(PositionArraySchema),
   labelPos: z.nativeEnum(LabelPositionEnum),

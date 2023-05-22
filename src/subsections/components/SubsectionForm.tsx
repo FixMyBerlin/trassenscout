@@ -6,6 +6,7 @@ import {
   LabeledTextField,
 } from "src/core/components/forms"
 import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryField"
+import { quote } from "src/core/components/text"
 import { labelPosOptions } from "src/form"
 import { getUserSelectOptions, UserSelectOptions } from "src/users/utils"
 import { z } from "zod"
@@ -21,8 +22,10 @@ export function SubsectionForm<S extends z.ZodType<any, any>>(
       <LabeledTextField
         type="text"
         name="slug"
-        label="URL-Segment"
-        help="Änderungen am URL-Segement sorgen dafür, dass bisherige URLs nicht mehr funktionieren."
+        label="Kurz-Titel und URL-Teil"
+        help={`Bspw. ${quote(
+          "PA1"
+        )}. Primäre Auszeichnung des Planungsabschnitts. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
       />
       <LabeledTextField
         type="number"
@@ -31,7 +34,6 @@ export function SubsectionForm<S extends z.ZodType<any, any>>(
         label="Reihenfolge Planungsabschnitte"
         help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung."
       />
-      <LabeledTextField type="text" name="title" label="Name" />
       <div className="grid grid-cols-2 gap-5">
         <LabeledTextField type="text" name="start" label="Startpunkt" />
         <LabeledTextField type="text" name="end" label="Endpunkt" />
