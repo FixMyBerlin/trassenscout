@@ -22,9 +22,6 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const [feedbackCategory, setFeedbackCategory] = useState(6) // default: 6 / "Sonstiges"
 
   const [isMap, setIsMap] = useState(false)
-  useEffect(() => {
-    window && window.scrollTo(0, 0)
-  }, [feedbackPageProgress])
 
   const { pages } = feedback
 
@@ -37,12 +34,14 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const categories = pages[0].questions[0].props.responses
 
   const handleNextPage = () => {
+    window && window.scrollTo(0, 0)
     const newFeedbackPageProgress = Math.min(pages.length, feedbackPageProgress + 1)
     setFeedbackPageProgress(newFeedbackPageProgress)
     setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
   }
 
   const handleBackPage = () => {
+    window && window.scrollTo(0, 0)
     const newFeedbackPageProgress = Math.max(0, feedbackPageProgress - 1)
     setFeedbackPageProgress(newFeedbackPageProgress)
     setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
