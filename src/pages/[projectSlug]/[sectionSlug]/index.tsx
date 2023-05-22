@@ -55,15 +55,7 @@ export const SectionDashboardWithQuery = () => {
       />
 
       <PageDescription>
-        <div className="flex gap-8">
-          <Markdown markdown={section.description} className="mb-3" />
-          <div className="space-y-2">
-            <p>
-              <strong>Teilstreckenlänge:</strong>{" "}
-              {section.length ? section.length + " km" : " k.A."}
-            </p>
-          </div>
-        </div>
+        <Markdown markdown={section.description} />
       </PageDescription>
 
       <SectionMap

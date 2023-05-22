@@ -184,7 +184,6 @@ model Section {
   end         String
   order       Int               @default(autoincrement())
   labelPos    LabelPositionEnum @default(top)
-  length      String?
   description String?
   //
   manager     User              @relation(fields: [managerId], references: [id])

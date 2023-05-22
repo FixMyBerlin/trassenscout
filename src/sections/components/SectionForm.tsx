@@ -37,7 +37,6 @@ export function SectionForm<S extends z.ZodType<any, any>>(
       </div>
       <LabeledSelect name="labelPos" label="Kartenlabelposition" options={labelPosOptions} />
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
-      <LabeledTextField type="text" name="length" label="Länge (in km)" optional />
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
