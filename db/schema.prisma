@@ -102,7 +102,7 @@ model Project {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   //
-  slug            String   @unique
+  slug            String   @unique // sortTitle and URL Slug
   subTitle        String?
   description     String?
   logoSrc         String?
@@ -179,13 +179,13 @@ model Section {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
   //
-  slug        String
-  order       Int               @default(autoincrement())
-  length      String?
+  slug        String // sortTitle and URL Slug
   start       String
   end         String
-  description String?
+  order       Int               @default(autoincrement())
   labelPos    LabelPositionEnum @default(top)
+  length      String?
+  description String?
   //
   manager     User              @relation(fields: [managerId], references: [id])
   managerId   Int
@@ -203,13 +203,13 @@ model Subsection {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
   //
-  slug        String
-  order       Int               @default(autoincrement())
+  slug        String // sortTitle and URL Slug
   start       String
   end         String
-  description String?
+  order       Int               @default(autoincrement())
   geometry    Json
   labelPos    LabelPositionEnum @default(top)
+  description String?
 
   manager   User    @relation(fields: [managerId], references: [id])
   managerId Int
@@ -229,9 +229,9 @@ model Subsubsection {
   createdAt    DateTime              @default(now())
   updatedAt    DateTime              @updatedAt
   //
-  slug         String
-  order        Int                   @default(autoincrement())
+  slug         String // sortTitle and URL Slug
   subTitle     String?
+  order        Int                   @default(autoincrement())
   type         SubsubsectionTypeEnum @default(ROUTE) // Führungform
   geometry     Json
   labelPos     LabelPositionEnum     @default(top)
