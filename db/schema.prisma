@@ -103,8 +103,7 @@ model Project {
   updatedAt       DateTime @updatedAt
   //
   slug            String   @unique
-  title           String
-  shortTitle      String
+  subTitle        String?
   description     String?
   logoSrc         String?
   partnerLogoSrcs String[]
@@ -183,7 +182,6 @@ model Section {
   slug        String
   order       Int               @default(autoincrement())
   length      String?
-  title       String
   start       String
   end         String
   description String?
@@ -207,7 +205,6 @@ model Subsection {
   //
   slug        String
   order       Int               @default(autoincrement())
-  title       String
   start       String
   end         String
   description String?
@@ -234,7 +231,7 @@ model Subsubsection {
   //
   slug         String
   order        Int                   @default(autoincrement())
-  title        String
+  subTitle     String?
   type         SubsubsectionTypeEnum @default(ROUTE) // Führungform
   geometry     Json
   labelPos     LabelPositionEnum     @default(top)
