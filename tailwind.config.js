@@ -1,8 +1,6 @@
-/** @type {import('tailwindcss').Config} */
-/* eslint-disable global-require */
-//  @type {import('tailwindcss').Config}
 const colors = require("tailwindcss/colors")
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["src/**/*.{js,ts,jsx,tsx}"],
   theme: {
@@ -16,6 +14,9 @@ module.exports = {
       },
     },
     colors: {
+      inherit: colors.inherit,
+      current: colors.current,
+      transparent: colors.transparent,
       white: colors.white,
       black: colors.black,
       gray: colors.gray,
