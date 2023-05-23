@@ -1,6 +1,5 @@
 import { Routes, useParam } from "@blitzjs/next"
 import { Menu, Transition } from "@headlessui/react"
-import { UserIcon } from "@heroicons/react/24/solid"
 import clsx from "clsx"
 import React, { Fragment } from "react"
 import { Link } from "src/core/components/links/Link"
@@ -47,18 +46,19 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
                 static
                 className="absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-md bg-gray-50 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
               >
-                <div className="px-4 py-2 text-gray-700">
+                <div className="px-4 py-2 leading-6 text-gray-700">
                   <p>Angemeldet als</p>
-                  <p className="font-bold">{getFullname(user) || "-"}</p>
-                  <p className="mb-2 font-bold">{user.email}</p>
+                  <p className="truncate font-bold">{getFullname(user) || "-"}</p>
+                  <p className="mb-2 truncate">{user.email}</p>
 
                   {isAdmin(user) && <p className="font-bold text-purple-700">Rolle: Admin</p>}
-
-                  <div className="mb-4 mt-6 flex flex-col gap-4">
+                </div>
+                <div className="border-t border-gray-200 px-4 py-2 text-gray-700">
+                  <div className="my-2 flex flex-col gap-4">
                     {projectSlug && (
                       <Menu.Item>
                         <Link
-                          className=" !text-gray-500"
+                          className="text-gray-500 decoration-blue-200 underline-offset-4 hover:text-blue-500 hover:underline"
                           href={Routes.EditUserPage({ projectSlug: projectSlug! })}
                         >
                           Ihr Profil
@@ -66,7 +66,10 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
                       </Menu.Item>
                     )}
                     <Menu.Item>
-                      <Link className=" !text-gray-500" href={Routes.LogoutRedirectPage()}>
+                      <Link
+                        className="text-gray-500 decoration-blue-200 underline-offset-4 hover:text-blue-500 hover:underline"
+                        href={Routes.LogoutRedirectPage()}
+                      >
                         Abmelden
                       </Link>
                     </Menu.Item>
