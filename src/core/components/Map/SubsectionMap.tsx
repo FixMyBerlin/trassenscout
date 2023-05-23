@@ -36,15 +36,19 @@ export const SubsectionMap: React.FC<Props> = ({ sections, selectedSubsection })
         })
       )
     } else {
-      void router.push(
-        Routes.SubsectionDashboardPage({
-          projectSlug: projectSlug!,
-          sectionSlug: sectionSlug!,
-          subsectionPath: slug ? [subsectionSlug!, slug] : [subsectionSlug!],
-        }),
-        undefined,
-        { scroll: false }
-      )
+      const url = slug
+        ? Routes.SubsubsectionDashboardPage({
+            projectSlug: projectSlug!,
+            sectionSlug: sectionSlug!,
+            subsectionSlug: subsectionSlug!,
+            subsubsectionSlug: slug,
+          })
+        : Routes.SubsectionDashboardPage({
+            projectSlug: projectSlug!,
+            sectionSlug: sectionSlug!,
+            subsectionSlug: subsectionSlug!,
+          })
+      void router.push(url, undefined, { scroll: false })
     }
   }
 

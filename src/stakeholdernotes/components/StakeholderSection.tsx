@@ -24,24 +24,13 @@ export const StakeholderSection: React.FC<Props> = ({ stakeholdernotes }) => {
         <Link
           button="blue"
           icon="plus"
-          href={Routes.NewStakeholdernotePage({
+          href={Routes.NewStakeholdernotesPage({
             projectSlug: projectSlug!,
             sectionSlug: sectionSlug!,
             subsectionSlug: subsectionSlug!,
           })}
         >
-          TöB
-        </Link>
-        <Link
-          button="white"
-          icon="plus"
-          href={Routes.NewStakeholdernoteMultiPage({
-            projectSlug: projectSlug!,
-            sectionSlug: sectionSlug!,
-            subsectionSlug: subsectionSlug!,
-          })}
-        >
-          Mehrere TöBs
+          TöBs
         </Link>
       </ButtonWrapper>
     </section>

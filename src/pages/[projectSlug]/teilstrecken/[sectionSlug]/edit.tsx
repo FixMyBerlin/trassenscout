@@ -18,7 +18,7 @@ import getSection from "src/sections/queries/getSection"
 import { SectionSchema } from "src/sections/schema"
 import getProjectUsers from "src/users/queries/getProjectUsers"
 
-const EditSection = () => {
+const EditSectionWithQuery = () => {
   const router = useRouter()
   const { projectSlug, sectionSlug } = useSlugs()
   const [section, { setQueryData }] = useQuery(
@@ -88,7 +88,7 @@ const EditSectionPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <Suspense fallback={<Spinner page />}>
-        <EditSection />
+        <EditSectionWithQuery />
       </Suspense>
 
       <p>

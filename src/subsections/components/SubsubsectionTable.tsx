@@ -57,10 +57,11 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
             {subsubsections.map((subsubsection) => {
-              const route = Routes.SubsectionDashboardPage({
+              const route = Routes.SubsubsectionDashboardPage({
                 projectSlug: projectSlug!,
                 sectionSlug: sectionSlug!,
-                subsectionPath: [subsectionSlug!, subsubsection.slug],
+                subsectionSlug: subsectionSlug!,
+                subsubsectionSlug: subsubsection.slug,
               })
 
               return (

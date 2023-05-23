@@ -87,7 +87,7 @@ export const Breadcrumb: React.FC = () => {
                 ? Routes.SubsectionDashboardPage({
                     projectSlug: projectSlug!,
                     sectionSlug: sectionSlug!,
-                    subsectionPath: [subsectionSlug!],
+                    subsectionSlug: subsectionSlug!,
                   })
                 : undefined
             }

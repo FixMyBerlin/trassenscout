@@ -45,7 +45,7 @@ export const SubsectionTable: React.FC<Props> = ({ subsections }) => {
               const route = Routes.SubsectionDashboardPage({
                 projectSlug: projectSlug!,
                 sectionSlug: sectionSlug!,
-                subsectionPath: [subsection.slug],
+                subsectionSlug: subsection.slug,
               })
               return (
                 <tr
