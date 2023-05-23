@@ -6,7 +6,7 @@ import UserEditForm from "src/auth/components/UserEditForm"
 import updateUser from "src/auth/mutations/updateUser"
 import { UpdateUser } from "src/auth/validations"
 import { SuperAdminBox } from "src/core/components/AdminBox"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR } from "src/projects/components/ProjectForm"
@@ -30,8 +30,6 @@ const EditUserWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Profil bearbeiten`} />
-      <PageHeader title="Profil bearbeiten" />
       <UserEditForm
         submitText="Speichern"
         schema={UpdateUser}
@@ -46,10 +44,11 @@ const EditUserWithQuery = () => {
 }
 
 const EditUserPage: BlitzPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
-
   return (
     <LayoutArticle>
+      <MetaTags noindex title="Profil bearbeiten" />
+      <PageHeader title="Profil bearbeiten" className="mt-12" />
+
       <Suspense fallback={<Spinner page />}>
         <EditUserWithQuery />
       </Suspense>

@@ -27,6 +27,15 @@ quantum!
       projectId: 1,
     },
     {
+      firstName: "Laurenz",
+      lastName: "L.",
+      email: "laurenz@fixmycity.de",
+      note: null,
+      role: null,
+      phone: null,
+      projectId: 1,
+    },
+    {
       firstName: "Johanna",
       lastName: "Michel",
       email: "johanna@fixmycity.de",

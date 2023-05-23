@@ -6,7 +6,7 @@ import { ContactForm, FORM_ERROR } from "src/contacts/components/ContactForm"
 import createContact from "src/contacts/mutations/createContact"
 import { ContactSchema } from "src/contacts/schema"
 import { Link } from "src/core/components/links"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 
@@ -33,8 +33,6 @@ const NewContactWithQuery: BlitzPage = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neuer Kontakt" />
-      <PageHeader title="Neuer Kontakt" />
       <ContactForm submitText="Erstellen" schema={ContactSchema} onSubmit={handleSubmit} />
     </>
   )
@@ -45,6 +43,9 @@ const NewContactPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
+      <MetaTags noindex title="Neuer Kontakt" />
+      <PageHeader title="Neuer Kontakt" className="mt-12" />
+
       <Suspense fallback={<Spinner page />}>
         <NewContactWithQuery />
       </Suspense>

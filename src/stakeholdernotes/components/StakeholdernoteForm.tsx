@@ -22,7 +22,7 @@ export function StakeholdernoteForm<S extends z.ZodType<any, any>>(props: FormPr
         name="status"
         label="Status"
         options={[
-          ["IRRELEVANT", "irrelevant"],
+          ["IRRELEVANT", "nicht erforderlich"],
           ["PENDING", "ausstehend"],
           ["IN_PROGRESS", "in Arbeit"],
           ["DONE", "erledigt"],

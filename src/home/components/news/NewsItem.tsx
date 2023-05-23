@@ -50,9 +50,9 @@ export function Card({ as: Component = "div", className, children }: any) {
 Card.Link = function CardLink({ children, ...props }: any) {
   return (
     <>
-      <div className="group-hover:opacity-100/50 absolute -inset-y-6 -inset-x-4 z-0 scale-95 bg-gray-50 opacity-0 transition group-hover:scale-100 sm:-inset-x-6 sm:rounded-2xl" />
+      <div className="group-hover:opacity-100/50 absolute -inset-x-4 -inset-y-6 z-0 scale-95 bg-gray-50 opacity-0 transition group-hover:scale-100 sm:-inset-x-6 sm:rounded-2xl" />
       <Link {...props}>
-        <span className="absolute -inset-y-6 -inset-x-4 z-20 sm:-inset-x-6 sm:rounded-2xl" />
+        <span className="absolute -inset-x-4 -inset-y-6 z-20 sm:-inset-x-6 sm:rounded-2xl" />
         <span className="relative z-10">{children}</span>
       </Link>
     </>
@@ -68,14 +68,14 @@ Card.Title = function CardTitle({ as: Component = "h2", href, children }: any) {
 }
 
 Card.Description = function CardDescription({ children }: { children: React.ReactNode }) {
-  return <p className="prose relative z-10 mt-2 text-sm">{children}</p>
+  return <div className="prose relative z-10 mt-2 text-sm">{children}</div>
 }
 
 Card.Cta = function CardCta({ children }: { children: React.ReactNode }) {
   return (
     <div
       aria-hidden="true"
-      className="relative z-10 mt-4 flex items-center text-sm font-medium text-teal-500"
+      className="text-teal-500 relative z-10 mt-4 flex items-center text-sm font-medium"
     >
       {children}
       <ChevronRightIcon className="ml-1 h-4 w-4 stroke-current" />

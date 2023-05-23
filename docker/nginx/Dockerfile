@@ -1,8 +1,5 @@
 FROM nginx:1.23
 
-COPY default.conf /etc/nginx/conf.d
+COPY default.conf.tpl /default.conf.tpl
 
-COPY startup.sh .
-RUN chmod 755 startup.sh
-
-CMD ["/bin/bash", "-c", "./startup.sh"]
+CMD ["/bin/sh" , "-c" , "envsubst '$ASSETS_BUCKET_HOST $ASSETS_BUCKET_PATH' < /default.conf.tpl > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"]

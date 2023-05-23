@@ -33,7 +33,7 @@ const UserWithQuery: React.FC = () => {
 
 export const NavigationUser: React.FC = () => {
   return (
-    <Suspense fallback={<Spinner />}>
+    <Suspense fallback={<Spinner size="5" />}>
       <UserWithQuery />
     </Suspense>
   )

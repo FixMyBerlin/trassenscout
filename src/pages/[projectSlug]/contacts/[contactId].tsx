@@ -7,7 +7,7 @@ import deleteContact from "src/contacts/mutations/deleteContact"
 import getContact from "src/contacts/queries/getContact"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { getFullname } from "src/users/utils"
@@ -29,7 +29,8 @@ export const ContactWithQuery = () => {
   return (
     <>
       <MetaTags noindex title={`Kontakt von ${getFullname(contact)}`} />
-      <PageHeader title={`Kontakt von ${getFullname(contact)}`} />
+      <PageHeader title={`Kontakt von ${getFullname(contact)}`} className="mt-12" />
+
       <p className="mb-10 space-x-4">
         <Link href={Routes.EditContactPage({ contactId: contact.id, projectSlug: projectSlug! })}>
           Eintrag bearbeiten

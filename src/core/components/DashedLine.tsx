@@ -1,7 +1,13 @@
 import React from "react"
 
-const DashedLine = () => {
-  return <div className="mt-10 h-[1px] bg-dashed-line" />
+export const DashedLine = () => {
+  return (
+    <div
+      className="mt-6 h-[1px]"
+      style={{
+        background:
+          "repeating-linear-gradient(to right, #8EB2E1, #8EB2E1 10px, transparent 10px, transparent 13px)",
+      }}
+    />
+  )
 }
-
-export default DashedLine

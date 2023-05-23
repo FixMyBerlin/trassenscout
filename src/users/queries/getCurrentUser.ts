@@ -17,6 +17,5 @@ export default async function getCurrentUser(_ = null, { session }: Ctx) {
     },
   })
 
-  // TODO: Change `as` to `satisfies` once TS 4.9 is available
-  return user as CurrentUser | null
+  return user
 }

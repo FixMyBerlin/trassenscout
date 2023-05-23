@@ -4,15 +4,27 @@ import { LabeledRadiobutton, LabeledRadiobuttonProps } from "./LabeledRadiobutto
 
 type Props = {
   items: LabeledRadiobuttonProps[]
+  groupLabel?: string
+  optional?: boolean
   className?: string
 }
 
-export const LabeledRadiobuttonGroup: React.FC<Props> = ({ items, className }) => {
+export const LabeledRadiobuttonGroup: React.FC<Props> = ({
+  items,
+  groupLabel,
+  optional,
+  className,
+}) => {
   return (
-    <div className={clsx(className, "space-y-3")}>
-      {items.map((item) => {
-        return <LabeledRadiobutton key={item.name} {...item} />
-      })}
+    <div>
+      <p className="mb-4 block text-sm font-medium text-gray-700">
+        {groupLabel} {optional && <> (optional)</>}
+      </p>
+      <div className={clsx(className, "space-y-3")}>
+        {items.map((item) => {
+          return <LabeledRadiobutton key={item.name} {...item} />
+        })}
+      </div>
     </div>
   )
 }

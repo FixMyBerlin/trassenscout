@@ -1,17 +1,13 @@
-import { useParam } from "@blitzjs/next"
-import { Menu, Transition } from "@headlessui/react"
-import { ChevronDownIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
 import { useRouter } from "next/router"
-import React, { Fragment } from "react"
+import React from "react"
 import { Link } from "src/core/components/links"
-import { MenuItem } from "../types"
+import { menuItems } from "../NavigationProject/menuItems"
 
-type Props = { menuItems: MenuItem[] }
+type Props = { menuItems: ReturnType<typeof menuItems> }
 
 export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
   const { pathname } = useRouter()
-  const sectionSlug = useParam("sectionSlug", "string")
 
   const itemClasses = (current: boolean) =>
     clsx(
@@ -22,70 +18,19 @@ export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
   return (
     <div className="flex space-x-4">
       {menuItems?.map((item) => {
-        const current = pathname === item.href.pathname
-
-        if (!item.children) {
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              classNameOverwrites={itemClasses(current)}
-              aria-current={current ? "page" : undefined}
-            >
-              {item.name}
-            </Link>
-          )
-        }
+        const current = [item.href.pathname, ...(item.alsoHighlightPathnames || [])].includes(
+          pathname
+        )
 
         return (
-          <Menu as="div" className="relative ml-3" key={item.name}>
-            <Menu.Button
-              className={clsx(
-                itemClasses(current),
-                "inline-flex w-full justify-center px-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-              )}
-            >
-              {item.name}
-              <ChevronDownIcon
-                className="ml-2 -mr-1 h-5 w-5 text-violet-200 hover:text-violet-100"
-                aria-hidden="true"
-              />
-            </Menu.Button>
-
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-100"
-              enterFrom="transform opacity-0 scale-95"
-              enterTo="transform opacity-100 scale-100"
-              leave="transition ease-in duration-75"
-              leaveFrom="transform opacity-100 scale-100"
-              leaveTo="transform opacity-0 scale-95"
-            >
-              <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                <div className="px-1 py-1 ">
-                  {item.children.map((child) => {
-                    const current = sectionSlug === child.slug
-                    return (
-                      <Menu.Item key={child.name}>
-                        {({ active }) => (
-                          <Link
-                            href={child.href}
-                            classNameOverwrites={clsx(
-                              current && "bg-gray-200",
-                              active && "bg-gray-100",
-                              "group flex w-full items-center rounded-md px-2 py-2 text-sm"
-                            )}
-                          >
-                            {child.name}
-                          </Link>
-                        )}
-                      </Menu.Item>
-                    )
-                  })}
-                </div>
-              </Menu.Items>
-            </Transition>
-          </Menu>
+          <Link
+            key={item.name}
+            href={item.href}
+            classNameOverwrites={itemClasses(current)}
+            aria-current={current ? "page" : undefined}
+          >
+            {item.name}
+          </Link>
         )
       })}
     </div>

@@ -1,179 +1,71 @@
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Link } from "src/core/components/links"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
+import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
+import { SectionMapIcon } from "src/core/components/Map/Icons"
+import { SectionMap } from "src/core/components/Map/SectionMap"
 import { Markdown } from "src/core/components/Markdown/Markdown"
-import { PageHeader } from "src/core/components/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { proseClasses, quote } from "src/core/components/text"
-import { H2 } from "src/core/components/text/Headings"
+import { Link } from "src/core/components/links"
+import { PageDescription } from "src/core/components/pages/PageDescription"
+import { PageHeader } from "src/core/components/pages/PageHeader"
+import { longTitle, seoTitle } from "src/core/components/text"
+import { startEnd } from "src/core/components/text/startEnd"
+import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { FileTable } from "src/files/components/FileTable"
-import getFiles from "src/files/queries/getFiles"
-import { SectionsMap } from "src/projects/components/Map"
-import type { BaseMapSections } from "src/projects/components/Map/BaseMapView"
+import { SubsectionTable } from "src/sections/components/SubsectionTable"
 import getSection from "src/sections/queries/getSection"
-import getSections from "src/sections/queries/getSections"
-import StakeholdernoteList from "src/stakeholdernotes/components/StakeholdernoteList"
-import { StakeholderSectionStatus } from "src/stakeholdernotes/components/StakeholderSectionStatus"
-import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
+import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
 import getSubsections from "src/subsections/queries/getSubsections"
-import getUser from "src/users/queries/getUser"
 
 export const SectionDashboardWithQuery = () => {
-  const projectSlug = useParam("projectSlug", "string")
-  const sectionSlug = useParam("sectionSlug", "string")
-  const [section] = useQuery(getSection, { sectionSlug, projectSlug }) // TODO optimize to allow projectId as well to get rid of one query in case we can
-  const [user] = useQuery(getUser, section.managerId)
-  const [{ files }] = useQuery(getFiles, { projectSlug: projectSlug! })
-  const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, {
-    sectionSlug: sectionSlug!,
-    orderBy: { id: "asc" },
-  })
-  const [{ subsections, count }] = useQuery(getSubsections, {
-    where: { sectionId: section.id },
-    orderBy: { title: "asc" },
-  }) // TODO make project required
-  const [{ sections }] = useQuery(getSections, {
+  const { projectSlug, sectionSlug } = useSlugs()
+
+  // TODO: Refactor to remove this getSection an use the getSectionsIncludeSubsections + selectedSectionWithSubsections only
+  const [section] = useQuery(getSection, { projectSlug: projectSlug!, sectionSlug: sectionSlug! })
+
+  // TODO: Having both those calls is weird; Ideally change the getSectionS to getSection "include subsections".
+  const [{ sections: sectionsWithSubsections }] = useQuery(getSectionsIncludeSubsections, {
     where: { project: { slug: projectSlug! } },
-    orderBy: { index: "asc" },
-    include: { subsections: { select: { id: true, geometry: true } } },
+  }) // TODO make project required
+  const [{ subsections }] = useQuery(getSubsections, {
+    where: { sectionId: section.id },
   }) // TODO make project required
 
-  const sectionsWithSubsections = sections as BaseMapSections
   const selectedSectionWithSubsections = sectionsWithSubsections.find((s) => s.id === section.id)
 
   return (
     <>
-      <MetaTags noindex title={section.title} />
+      <MetaTags noindex title={seoTitle(section.slug)} />
 
-      <PageHeader title={section.title} subtitle={section.subTitle} />
+      <Breadcrumb />
+      <PageHeader
+        titleIcon={<SectionMapIcon label={section.slug} />}
+        title={longTitle(section.slug)}
+        subtitle={startEnd(section)}
+        action={
+          <Link
+            icon="edit"
+            href={Routes.EditSectionPage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}
+          >
+            bearbeiten
+          </Link>
+        }
+      />
 
-      {/* Intro: Kurzinfo, Stakeholderstatus, Teilstreckenlänge */}
-      <div className="mb-12">
-        {section.description && (
-          <div className="mb-5">
-            <Markdown markdown={section.description} />
-          </div>
-        )}
-        <StakeholderSectionStatus stakeholdernotes={stakeholdernotes} />
-        <p>
-          <strong>Teilstreckenlänge:</strong> {section.length ? section.length + " km" : " k.A."}
-        </p>
-      </div>
+      <PageDescription>
+        <Markdown markdown={section.description} />
+      </PageDescription>
 
-      {/* Karte mit Daten der subsections */}
-      {Boolean(subsections.length) && (
-        <div className="mb-12 flex h-96 w-full gap-4 sm:h-[500px]">
-          <SectionsMap
-            sections={sectionsWithSubsections}
-            selectedSection={selectedSectionWithSubsections}
-            isInteractive={false}
-          />
-          {/* <SectionPanel section={section} /> */}
-        </div>
-      )}
+      <SectionMap
+        sections={sectionsWithSubsections}
+        selectedSection={selectedSectionWithSubsections}
+      />
 
-      {/* Dateien / files */}
-      {Boolean(files.length) && (
-        <div className="mb-12">
-          <H2 className="mb-5 text-2xl font-bold">Relevante Dokumente</H2>
-          <FileTable files={files} />
-        </div>
-      )}
+      <SubsectionTable subsections={subsections} />
 
-      {/* Stakeholder / stakeholdernotes */}
-      {Boolean(stakeholdernotes.length) && (
-        <div className="mb-12">
-          <H2 className="mb-5 text-2xl font-bold">
-            Abstimmung mit <abbr title="Träger öffentlicher Belange">TöB</abbr>s
-          </H2>
-          <StakeholdernoteList stakeholdernotes={stakeholdernotes} />
-        </div>
-      )}
-
-      {/* Admin Actions Section - noch ungestyled */}
-      <section className="rounded border bg-blue-100 p-5">
-        <Link
-          href={Routes.EditSectionPage({
-            projectSlug: projectSlug!,
-            sectionSlug: section.slug,
-          })}
-        >
-          Bearbeiten
-        </Link>
-        <br />
-        <Link
-          href={Routes.NewSubsectionPage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })}
-        >
-          Neuer Abschnitt
-        </Link>
-        <br />
-        {sectionSlug && (
-          <>
-            <Link
-              href={Routes.NewStakeholdernotePage({
-                projectSlug: projectSlug!,
-                sectionSlug: sectionSlug!,
-              })}
-            >
-              Neuer Stakeholder
-            </Link>
-            <br />
-            <Link
-              href={Routes.NewStakeholdernoteMultiPage({
-                projectSlug: projectSlug!,
-                sectionSlug: sectionSlug!,
-              })}
-            >
-              Mehrere neue Stakeholder erstellen
-            </Link>
-          </>
-        )}
-        <ul>
-          {subsections &&
-            subsections.map((subsection) => {
-              return (
-                <li key={subsection.id}>
-                  <Link
-                    href={Routes.EditSubsectionPage({
-                      projectSlug: projectSlug!,
-                      sectionSlug: sectionSlug!,
-                      subsectionSlug: subsection.slug,
-                    })}
-                  >
-                    {quote(subsection.title)} bearbeiten
-                  </Link>
-                </li>
-              )
-            })}
-        </ul>
-      </section>
-
-      <SuperAdminBox>
-        <div className="mb-12 space-y-6">
-          <div className={proseClasses}>
-            <pre>{JSON.stringify({ section }, null, 2)}</pre>
-          </div>
-          <H2 className="mb-5">Alle {count} Abschnitte dieser Teilstrecke</H2>
-          <ul>
-            {subsections.map((subsection) => {
-              const debugSubsection = subsection
-              debugSubsection.geometry = "Gekürzt für die Lesbarkeit"
-              return (
-                <li key={subsection.id}>
-                  <strong>{subsection.title}</strong>
-                  <Markdown markdown={subsection.description} />
-                  <div className={proseClasses}>
-                    <pre>{JSON.stringify({ subsection }, undefined, 2)}</pre>
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-      </SuperAdminBox>
+      <SuperAdminLogData data={{ sectionsWithSubsections, subsections }} />
     </>
   )
 }

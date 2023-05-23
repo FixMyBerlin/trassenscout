@@ -1,13 +1,18 @@
 import { Routes, useParam } from "@blitzjs/next"
-import { PaperClipIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
-import { File } from "@prisma/client"
+import { PaperClipIcon } from "@heroicons/react/20/solid"
 import React from "react"
+import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
+import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
+import { Prettify } from "src/core/types"
+import getFilesWithSubsections from "../queries/getFilesWithSubsections"
+import { fileUrl } from "../utils"
 
-type Props = {
-  files: File[]
-  withAction?: boolean
-}
+type Props = Prettify<
+  Pick<Awaited<ReturnType<typeof getFilesWithSubsections>>, "files"> & {
+    withAction?: boolean
+  }
+>
 
 export const FileTable: React.FC<Props> = ({ files, withAction = true }) => {
   const projectSlug = useParam("projectSlug", "string")
@@ -19,51 +24,82 @@ export const FileTable: React.FC<Props> = ({ files, withAction = true }) => {
       </p>
     )
   }
-  return (
-    <div className="my-5 -mx-4 max-w-prose overflow-x-auto sm:-mx-6 lg:-mx-8">
-      <div className="inline-block min-w-full py-2 align-middle  md:px-6 lg:px-8">
-        <div className="overflow-hidden ring-1 ring-black ring-opacity-5 md:rounded-lg">
-          <table className="min-w-full divide-y divide-gray-300">
-            <tbody className="divide-y divide-gray-200 bg-white">
-              {files.map((file) => (
-                <tr key={file.title}>
-                  <td className="h-20 whitespace-nowrap py-4 pr-3 pl-4 text-sm sm:pl-6">
-                    <PaperClipIcon className="h-8 w-8 text-gray-500" />
-                  </td>
-                  <td className="h-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
-                    <div className="flex items-center font-medium text-gray-900">{file.title}</div>
-                  </td>
 
-                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {file.externalUrl && (
-                      <Link blank href={file.externalUrl}>
-                        Download
-                      </Link>
+  return (
+    <TableWrapper>
+      <table className="min-w-full divide-y divide-gray-300">
+        <thead className="bg-gray-50">
+          <tr>
+            <th
+              scope="col"
+              className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+            >
+              Titel
+            </th>
+            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              Hochgeladen
+            </th>
+            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              Planungsabschnitt
+            </th>
+            <th
+              scope="col"
+              className="px-3 py-4 text-right text-sm font-semibold text-gray-900 sm:pr-6"
+            >
+              <span className="sr-only">Aktionen</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-200 bg-white">
+          {files.map((file) => {
+            return (
+              <tr key={file.id}>
+                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                  <Link blank href={fileUrl(file)} className="flex items-center gap-2">
+                    <PaperClipIcon className="h-6 w-6 text-gray-500" />
+                    <strong className="font-semibold">{file.title}</strong>
+                  </Link>
+                </td>
+                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {file.createdAt.toLocaleDateString()}
+                </td>
+                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {file.subsection && `${file.subsection.start}–${file.subsection.end}`}
+                </td>
+                <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
+                  <ButtonWrapper className="justify-end">
+                    <Link blank icon="download" href={fileUrl(file)}>
+                      Download
+                    </Link>
+                    {withAction && (
+                      <>
+                        <Link
+                          icon="edit"
+                          href={Routes.EditFilePage({
+                            projectSlug: projectSlug!,
+                            fileId: file.id,
+                          })}
+                        >
+                          Bearbeiten
+                        </Link>
+                        <Link
+                          icon="delete"
+                          href={Routes.ShowFilePage({
+                            projectSlug: projectSlug!,
+                            fileId: file.id,
+                          })}
+                        >
+                          Löschen
+                        </Link>
+                      </>
                     )}
-                  </td>
-                  {withAction && (
-                    <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                      <p className="flex items-center justify-end gap-4 text-right">
-                        <Link
-                          href={Routes.EditFilePage({ projectSlug: projectSlug!, fileId: file.id })}
-                        >
-                          <PencilSquareIcon className="h-4 w-4" />
-                          <span className="sr-only">Bearbeiten</span>
-                        </Link>
-                        <Link
-                          href={Routes.ShowFilePage({ projectSlug: projectSlug!, fileId: file.id })}
-                        >
-                          <TrashIcon className="h-4 w-4" />
-                        </Link>
-                      </p>
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+                  </ButtonWrapper>
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </TableWrapper>
   )
 }

@@ -1,5 +1,5 @@
 import React from "react"
-import { buttonStyles } from "../links"
+import { blueButtonStyles } from "../links"
 
 type Props = {
   hasMore: boolean
@@ -13,10 +13,10 @@ export const Pagination: React.FC<Props> = ({ hasMore, page, handlePrev, handleN
 
   return (
     <div className="space-x-3">
-      <button className={buttonStyles} disabled={page === 0} onClick={handlePrev}>
+      <button className={blueButtonStyles} disabled={page === 0} onClick={handlePrev}>
         ←
       </button>
-      <button className={buttonStyles} disabled={!hasMore} onClick={handleNext}>
+      <button className={blueButtonStyles} disabled={!hasMore} onClick={handleNext}>
         →
       </button>
     </div>

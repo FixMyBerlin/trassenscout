@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SectionForm } from "src/sections/components/SectionForm"
@@ -35,8 +35,6 @@ const NewSectionWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neue Teilstrecke erstellen" />
-
       <SectionForm
         submitText="Erstellen"
         schema={SectionSchema}
@@ -52,7 +50,9 @@ const NewSectionPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <PageHeader title="Neue Teilstrecke erstellen" />
+      <MetaTags noindex title="Neue Teilstrecke erstellen" />
+      <PageHeader title="Neue Teilstrecke erstellen" className="mt-12" />
+
       <Suspense fallback={<Spinner page />}>
         <NewSectionWithQuery />
       </Suspense>

@@ -1,6 +1,7 @@
 import Head from "next/head"
 import React from "react"
 import SocialSharingImage from "./assets/default.png"
+import { isProduction } from "../../utils"
 
 const seoDefaultValues = {
   defaultTitle: "Trassenscout",
@@ -16,14 +17,10 @@ type Props = {
   article?: boolean | null
 }
 
-export const MetaTags: React.FC<Props> = ({
-  noindex = false,
-  title,
-  description,
-  image,
-  article,
-}) => {
+export const MetaTags: React.FC<Props> = ({ noindex, title, description, image, article }) => {
   const { defaultTitle, defaultDescription, baseUrl } = seoDefaultValues
+
+  if (noindex === undefined) noindex = !isProduction
 
   const seo = {
     title: title || defaultTitle,
@@ -31,7 +28,7 @@ export const MetaTags: React.FC<Props> = ({
     image: `${baseUrl}${image || SocialSharingImage}`,
   }
 
-  if (noindex === true) {
+  if (noindex) {
     return (
       <Head>
         <title>{seo.title}</title>

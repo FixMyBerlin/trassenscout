@@ -1,25 +1,40 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
+import { Position } from "@turf/helpers"
+import { NotFoundError } from "blitz"
+import db, { Subsection } from "db"
+import { authorizeProjectAdmin } from "src/authorization"
+import { Prettify } from "src/core/types"
+import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { z } from "zod"
 
-import { authorizeProjectAdmin } from "src/authorization"
-
-const GetSubsectionSchema = z.object({
-  // This accepts type of undefined, but is required at runtime
-  slug: z.string().optional().refine(Boolean, "Required"),
-})
-
-const getProjectId = async (input: Record<string, any>) => {
-  return (
-    await db.section.findFirstOrThrow({
-      where: { subsections: { some: { slug: input.slug || null } } },
-      select: { projectId: true },
-    })
-  ).projectId
+// We lie with TypeScript here, because we know better. All `geometry` fields are Position. We make sure of that in our Form. They are also required, so never empty.
+export type SubsectionWithPosition = Omit<Subsection, "geometry"> & {
+  geometry: [number, number][] // Position[]
 }
+
+export const GetSubsectionSchema = z.object({
+  projectSlug: z.string(),
+  sectionSlug: z.string(),
+  subsectionSlug: z.string(),
+})
 
 export default resolver.pipe(
   resolver.zod(GetSubsectionSchema),
-  authorizeProjectAdmin(getProjectId),
-  async ({ slug }) => await db.subsection.findFirstOrThrow({ where: { slug } })
+  authorizeProjectAdmin(getProjectIdBySlug),
+  async ({ projectSlug, sectionSlug, subsectionSlug }) => {
+    const query = {
+      where: {
+        slug: subsectionSlug,
+        section: {
+          slug: sectionSlug,
+          project: {
+            slug: projectSlug,
+          },
+        },
+      },
+    }
+    const subsection = await db.subsection.findFirst(query)
+    if (!subsection) throw new NotFoundError()
+    return subsection as SubsectionWithPosition // Tip: Validate type shape with `satisfies`
+  }
 )

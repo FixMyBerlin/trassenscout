@@ -1,6 +1,3 @@
-import { Project, User } from "@prisma/client"
+import getCurrentUser from "./queries/getCurrentUser"
 
-export type CurrentUser = Pick<
-  User,
-  "id" | "firstName" | "lastName" | "email" | "phone" | "role"
-> & { projects: Pick<Project, "slug" | "shortTitle">[] }
+export type CurrentUser = NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>

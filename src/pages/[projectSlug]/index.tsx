@@ -4,84 +4,79 @@ import Image from "next/image"
 import statusImg from "public/Planungsphase_Placeholder.jpg"
 import { Suspense } from "react"
 import { CalenderDashboard } from "src/calendar-entries/components"
-import DashedLine from "src/core/components/DashedLine"
-import { Link } from "src/core/components/links"
-import { PageHeader } from "src/core/components/PageHeader"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
+import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
+import { ProjectMap } from "src/core/components/Map/ProjectMap"
+import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Spinner } from "src/core/components/Spinner"
-import { quote } from "src/core/components/text"
+import { Link } from "src/core/components/links"
+import { PageDescription } from "src/core/components/pages/PageDescription"
+import { PageHeader } from "src/core/components/pages/PageHeader"
+import { quote, seoTitle } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { SectionsMap } from "src/projects/components/Map"
-import type { BaseMapSections } from "src/projects/components/Map/BaseMapView"
-import { SectionsTeasers } from "src/projects/components/Map/SectionsTeaser/SectionsTeasers"
+import { SectionTable } from "src/projects/components/SectionTable"
 import getProject from "src/projects/queries/getProject"
-import getSections from "src/sections/queries/getSections"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import getUser from "src/users/queries/getUser"
-import { getFullname } from "src/users/utils"
+import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
 
 export const ProjectDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
-  const currentUser = useCurrentUser()
-  const userName = getFullname(currentUser!)
   const [project] = useQuery(getProject, { slug: projectSlug })
-  const [user] = useQuery(getUser, project.managerId)
-  const [{ sections }] = useQuery(getSections, {
+  const [{ sections }] = useQuery(getSectionsIncludeSubsections, {
     where: { project: { slug: projectSlug! } },
-    orderBy: { index: "asc" },
-    include: { subsections: { select: { id: true, slug: true, geometry: true } } },
   })
 
-  if (!sections.length)
+  if (!sections.length) {
     return (
       <>
-        <section className="rounded border  bg-blue-100 p-5">
+        <section className="rounded border bg-blue-100 p-5">
           <Link href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
-            {quote(project.title)} bearbeiten
+            {project.slug} bearbeiten
           </Link>
           <br />
           <Link href={Routes.NewSectionPage({ projectSlug: projectSlug! })}>Neue Teilstrecke</Link>
         </section>
       </>
     )
+  }
 
   return (
     <>
-      <MetaTags noindex title={project.title} />
+      <MetaTags noindex title={seoTitle(project.slug)} />
 
+      <Breadcrumb />
       <PageHeader
-        title={project.title}
-        intro={`Willkommen im Trassenscout zum ${project.title}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
-        logo
+        title={project.slug}
+        subtitle={project.subTitle}
+        description={`Willkommen im Trassenscout zum ${project.slug}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
+        action={
+          <Link icon="edit" href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
+            bearbeiten
+          </Link>
+        }
       />
-      {/* TODO: intro prop evtl. mit project description ersetzen */}
+
+      {project.description && (
+        <PageDescription>
+          <Markdown markdown={project.description} />
+        </PageDescription>
+      )}
 
       {/* Phasen Panel */}
-      <H2 className="my-6">Aktuelle Planungsphase</H2>
-      <div className="max-w-[650px]">
-        <Image src={statusImg} alt=""></Image>
-      </div>
+      <section className="mt-12">
+        <H2>Aktuelle Planungsphase</H2>
+        <div className="mt-5 max-w-[650px]">
+          <Image src={statusImg} alt=""></Image>
+        </div>
+      </section>
 
-      <DashedLine />
+      <ProjectMap sections={sections} />
 
-      {/* Karte mit Daten der Abschnitte/subsections und Teaser Teilstrecke/sections */}
-      {/* {Boolean(sections && sections[0]?.subsections?.length) && ( */}
-      <div className="mt-12">
-        <SectionsMap sections={sections as BaseMapSections} isInteractive={true} />
-      </div>
-      {/* )} */}
-      {Boolean(sections.length) && <SectionsTeasers sections={sections} />}
+      <SectionTable sections={sections} />
 
       <CalenderDashboard />
 
-      {/* Admin Actions Section - noch ungestyled */}
-      <section className="rounded border bg-blue-100 p-5">
-        <Link href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
-          {quote(project.title)} bearbeiten
-        </Link>
-        <br />
-        <Link href={Routes.NewSectionPage({ projectSlug: projectSlug! })}>Neue Teilstrecke</Link>
-      </section>
+      <SuperAdminLogData data={{ project, sections }} />
     </>
   )
 }

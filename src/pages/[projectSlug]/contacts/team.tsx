@@ -1,26 +1,35 @@
-import { BlitzPage, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { ContactListTeam } from "src/memberships/components/ContactListTeam"
+import { TeamTable } from "src/contacts/components/TeamTable"
 import getProjectUsers from "src/users/queries/getProjectUsers"
 import getProject from "src/projects/queries/getProject"
+import { Tabs } from "src/core/components/Tabs/Tabs"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
+import { quote } from "src/core/components/text"
 
-export const ProjectTeamWithQuery = () => {
+export const TeamWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
   return (
-    <div className="mt-8 flex flex-col">
-      <PageHeader
-        title="Das Projektteam"
-        description={`Dieser Bereich hilft Ihnen dabei wichtige Informationen und Kontakte der Beteiligten des Projektes ${project.title} zu finden.`}
+    <>
+      <Tabs
+        className="mt-7"
+        tabs={[
+          { name: "Externe Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
+          { name: "Projektteam", href: Routes.ProjectTeamPage({ projectSlug: projectSlug! }) },
+        ]}
       />
-      <ContactListTeam contacts={users} />
-    </div>
+
+      <TeamTable contacts={users} />
+
+      <SuperAdminLogData data={users} />
+    </>
   )
 }
 
@@ -28,9 +37,14 @@ const ProjectTeamPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <MetaTags noindex title="Projektteam" />
+      <PageHeader
+        title="Projektteam"
+        description="Kontakt zu allen registrierten Mitglieder:innen des Projektes."
+        className="mt-12"
+      />
 
       <Suspense fallback={<Spinner page />}>
-        <ProjectTeamWithQuery />
+        <TeamWithQuery />
       </Suspense>
     </LayoutRs>
   )

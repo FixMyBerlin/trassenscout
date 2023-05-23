@@ -9,12 +9,34 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// This is an optional zod helper script:
+// It will generate zod schemas based on this prisma-schema in `/db/zod-schema-inspiration`
+// We can use those, to improve our own zod schema files.
+// However, we cannot have this active all the time, due to an issue with blitz.
+// How to use:
+// 1. Remove comment below
+// 2. Use `npx blitz prisma generate` (mind the `x`)
+// 3. Copy what you need to your own schema
+// 4. Revert (1)
+//
+// generator zod {
+//   provider                 = "zod-prisma"
+//   output                   = "./zod-schema-inspiration"
+//   relationModel            = true
+//   modelCase                = "PascalCase"
+//   modelSuffix              = "Model"
+//   useDecimalJs             = true
+//   imports                  = null
+//   prismaJsonNullability    = true
+// }
+
 // --------------------------------------
 
 model User {
   id             Int          @id @default(autoincrement())
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+  //
   email          String       @unique
   hashedPassword String?
   role           UserRoleEnum @default(USER)
@@ -22,12 +44,13 @@ model User {
   lastName       String?
   phone          String?
 
-  tokens      Token[]
-  sessions    Session[]
-  projects    Project[]
-  sections    Section[]
-  subsections Subsection[]
-  Membership  Membership[]
+  tokens        Token[]
+  sessions      Session[]
+  projects      Project[]
+  sections      Section[]
+  subsections   Subsection[]
+  Membership    Membership[]
+  Subsubsection Subsubsection[]
 }
 
 enum UserRoleEnum {
@@ -75,13 +98,15 @@ model Token {
 // }
 
 model Project {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  slug        String   @unique
-  title       String
-  shortTitle  String
-  description String?
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  //
+  slug            String   @unique // sortTitle and URL Slug
+  subTitle        String?
+  description     String?
+  logoSrc         String?
+  partnerLogoSrcs String[]
 
   manager   User @relation(fields: [managerId], references: [id])
   managerId Int
@@ -109,6 +134,7 @@ model CalendarEntry {
   id           Int      @id @default(autoincrement())
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  //
   title        String
   startAt      DateTime
   locationName String?
@@ -123,6 +149,7 @@ model Contact {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  //
   firstName String?
   lastName  String
   email     String
@@ -136,55 +163,109 @@ model Contact {
   @@unique([projectId, email])
 }
 
+enum LabelPositionEnum {
+  top
+  topRight
+  right
+  bottomRight
+  bottom
+  bottomLeft
+  left
+  topLeft
+}
+
 model Section {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  slug        String
-  index       Int
-  length      String?
-  title       String
-  subTitle    String?
+  id          Int               @id @default(autoincrement())
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  //
+  slug        String // sortTitle and URL Slug
+  start       String
+  end         String
+  order       Int               @default(autoincrement())
+  labelPos    LabelPositionEnum @default(top)
   description String?
-
-  manager   User    @relation(fields: [managerId], references: [id])
-  managerId Int
-  project   Project @relation(fields: [projectId], references: [id])
-  projectId Int
-
-  subsections     Subsection[]
-  stakeholdernote Stakeholdernote[]
+  //
+  manager     User              @relation(fields: [managerId], references: [id])
+  managerId   Int
+  project     Project           @relation(fields: [projectId], references: [id])
+  projectId   Int
+  //
+  subsections Subsection[]
 
   @@unique([projectId, slug])
-  @@unique([projectId, index])
+  @@unique([projectId, order])
 }
 
 model Subsection {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  slug        String
-  title       String
+  id          Int               @id @default(autoincrement())
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  //
+  slug        String // sortTitle and URL Slug
+  start       String
+  end         String
+  order       Int               @default(autoincrement())
+  geometry    Json
+  labelPos    LabelPositionEnum @default(top)
   description String?
-  geometry    String
 
   manager   User    @relation(fields: [managerId], references: [id])
   managerId Int
   section   Section @relation(fields: [sectionId], references: [id])
   sectionId Int
 
+  subsubsections   Subsubsection[]
+  stakeholdernotes Stakeholdernote[]
+  files            File[]
+
   @@unique([sectionId, slug])
+  @@unique([sectionId, order])
+}
+
+model Subsubsection {
+  id           Int                   @id @default(autoincrement())
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  //
+  slug         String // sortTitle and URL Slug
+  subTitle     String?
+  order        Int                   @default(autoincrement())
+  type         SubsubsectionTypeEnum @default(ROUTE) // Führungform
+  geometry     Json
+  labelPos     LabelPositionEnum     @default(top)
+  task         String // Maßnahmentyp
+  length       Float? // Kilometer
+  width        Float? // Meter
+  costEstimate Float? // Euro
+  description  String? // Anmerkungen
+  //
+  manager      User                  @relation(fields: [managerId], references: [id])
+  managerId    Int
+  //
+  subsection   Subsection            @relation(fields: [subsectionId], references: [id])
+  subsectionId Int
+  //
+  files        File[]
+
+  @@unique([subsectionId, slug])
+  @@unique([subsectionId, order])
+}
+
+enum SubsubsectionTypeEnum {
+  ROUTE // Regelführung Strecke RF
+  AREA // Sonderführung Punkt (Bereich) SF
 }
 
 model Stakeholdernote {
-  id         Int                       @id @default(autoincrement())
-  createdAt  DateTime                  @default(now())
-  updatedAt  DateTime                  @updatedAt
-  title      String
-  status     StakeholdernoteStatusEnum @default(PENDING)
-  statusText String?
-  section    Section                   @relation(fields: [sectionId], references: [id])
-  sectionId  Int
+  id           Int                       @id @default(autoincrement())
+  createdAt    DateTime                  @default(now())
+  updatedAt    DateTime                  @updatedAt
+  title        String
+  status       StakeholdernoteStatusEnum @default(PENDING)
+  statusText   String?
+  subsection   Subsection                @relation(fields: [subsectionId], references: [id])
+  subsectionId Int
 }
 
 enum StakeholdernoteStatusEnum {
@@ -195,11 +276,33 @@ enum StakeholdernoteStatusEnum {
 }
 
 model File {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  title       String
-  externalUrl String
-  project     Project  @relation(fields: [projectId], references: [id])
-  projectId   Int
+  id              Int            @id @default(autoincrement())
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  //
+  title           String
+  externalUrl     String
+  //
+  project         Project        @relation(fields: [projectId], references: [id])
+  projectId       Int
+  subsection      Subsection?    @relation(fields: [subsectionId], references: [id])
+  subsectionId    Int?
+  Subsubsection   Subsubsection? @relation(fields: [subsubsectionId], references: [id])
+  subsubsectionId Int?
+}
+
+model SurveySession {
+  id        Int              @id @default(autoincrement())
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  email     String?
+  responses SurveyResponse[]
+}
+
+model SurveyResponse {
+  id              Int           @id @default(autoincrement())
+  surveySession   SurveySession @relation(fields: [surveySessionId], references: [id])
+  surveySessionId Int
+  surveyId        Int
+  data            String
 }

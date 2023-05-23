@@ -12,23 +12,20 @@ import getProjects from "src/projects/queries/getProjects"
 
 const NavigationProjectsSwitchWithProjectsQuery: React.FC = () => {
   const { query } = useRouter()
-  const user = useCurrentUser()
-
-  if (!user) {
-    throw new Error("User required here.")
-  }
 
   const projects = useQuery(getProjects, {})[0].projects
 
-  if (projects.length <= 1) {
+  if (!projects.length) {
     return null
   }
 
   const menuItems = projects.map((project) => ({
-    name: project.shortTitle,
+    name: project.slug,
     slug: project.slug,
     href: Routes.ProjectDashboardPage({ projectSlug: project.slug }),
   }))
+
+  const currentProject = projects.find((p) => p.slug === query.projectSlug)
 
   return (
     <div className="sm:ml-6">
@@ -37,7 +34,7 @@ const NavigationProjectsSwitchWithProjectsQuery: React.FC = () => {
           <>
             <Menu.Button
               className={clsx(
-                "flex rounded-full border-2 border-transparent bg-gray-800 p-1 text-sm",
+                "flex rounded-lg border-2 border-transparent bg-yellow-500 px-1 pb-0.5 pt-1 text-sm font-medium text-gray-800",
                 open
                   ? "border-offset-gray-800 border-2 border-white"
                   : "hover:border-offset-gray-800 hover:border-2 hover:border-gray-500",
@@ -45,7 +42,7 @@ const NavigationProjectsSwitchWithProjectsQuery: React.FC = () => {
               )}
             >
               <span className="sr-only">Trassenwechsel</span>
-              <FolderIcon className="h-6 w-6 text-gray-300" aria-hidden="true" />
+              {currentProject?.slug}
             </Menu.Button>
             {open && (
               <Transition
@@ -57,7 +54,7 @@ const NavigationProjectsSwitchWithProjectsQuery: React.FC = () => {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
               >
-                <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Menu.Items className="absolute left-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                   <div className="px-1 py-1 ">
                     {menuItems.map((item) => {
                       const current = query.projectSlug === item.slug
@@ -100,7 +97,7 @@ const NavigationProjectsSwitchWithUserQuery: React.FC = () => {
 
 export const NavigationProjectsSwitch: React.FC = () => {
   return (
-    <Suspense fallback={<Spinner />}>
+    <Suspense fallback={<Spinner size="5" />}>
       <NavigationProjectsSwitchWithUserQuery />
     </Suspense>
   )

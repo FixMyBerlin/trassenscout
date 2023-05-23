@@ -6,8 +6,8 @@ import { NavigationGeneralLogo } from "./NavigationGeneralLogo"
 export const NavigationGeneral = () => {
   return (
     <NavigationWrapper>
-      <NavigationMobile logo={<NavigationGeneralLogo />} menuItems={[]} />
-      <NavigationDesktop logo={<NavigationGeneralLogo />} menuItems={[]} />
+      <NavigationMobile menuItems={[]} />
+      <NavigationDesktop menuItems={[]} />
     </NavigationWrapper>
   )
 }

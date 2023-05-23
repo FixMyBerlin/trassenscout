@@ -1,22 +1,19 @@
+import { getSession } from "@blitzjs/auth"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
+import { GetServerSidePropsContext } from "next"
 import router from "next/router"
 import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
 import PageHomeNoProject from "src/home/components/PageHomeNoProject"
 import PageHomePublic from "src/home/components/PageHomePublic"
 import getProjects from "src/projects/queries/getProjects"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { api } from "../blitz-server"
+import getCurrentUser from "../users/queries/getCurrentUser"
+import { CurrentUser } from "../users/types"
 
 const HomeWithWithProjectsQuery: React.FC = () => {
-  const user = useCurrentUser()
-
-  if (!user) {
-    throw new Error("User required here.")
-  }
-
   const projects = useQuery(getProjects, {})[0].projects
-
   if (projects.length) {
     void router.push(Routes.ProjectDashboardPage({ projectSlug: projects[0]!.slug }))
     return <Spinner page />
@@ -25,21 +22,27 @@ const HomeWithWithProjectsQuery: React.FC = () => {
   return <PageHomeNoProject />
 }
 
-const HomeWithQuery: BlitzPage = () => {
-  const user = useCurrentUser()
-
+const Home: BlitzPage<{ user: CurrentUser }> = ({ user }) => {
   if (user) {
-    return <HomeWithWithProjectsQuery />
+    return (
+      <Suspense fallback={<Spinner page />}>
+        <HomeWithWithProjectsQuery />
+      </Suspense>
+    )
+  } else {
+    return <PageHomePublic />
   }
-  return <PageHomePublic />
 }
 
-const Home: BlitzPage = () => {
-  return (
-    <Suspense fallback={<Spinner page />}>
-      <HomeWithQuery />
-    </Suspense>
-  )
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { req, res } = context
+  await api(() => null)
+  const session = await getSession(req, res)
+  // @ts-ignore session is all is needed
+  const user = await getCurrentUser(null, { session })
+  return {
+    props: { user },
+  }
 }
 
 export default Home

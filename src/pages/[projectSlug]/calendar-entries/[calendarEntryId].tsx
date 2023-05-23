@@ -9,7 +9,7 @@ import { quote } from "src/core/components/text"
 import { LayoutArticle, LayoutRs, MetaTags } from "src/core/layouts"
 import deleteCalendarEntry from "src/calendar-entries/mutations/deleteCalendarEntry"
 import getCalendarEntry from "src/calendar-entries/queries/getCalendarEntry"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { DateEntry } from "src/rs8/termine/components/Calender"
 import { Spinner } from "src/core/components/Spinner"
 
@@ -30,7 +30,7 @@ export const CalendarEntry = () => {
   return (
     <>
       <MetaTags noindex title={`Termin ${quote(calendarEntry.title)}`} />
-      <PageHeader title={`Termin ${quote(calendarEntry.title)}`} />
+      <PageHeader title={`Termin ${quote(calendarEntry.title)}`} className="mt-12" />
       <p className="mb-10 space-x-4">
         <Link
           href={Routes.EditCalendarEntryPage({

@@ -22,20 +22,20 @@ type TypeConfigElement = {
 
 const typeConfig: TypConfig = {
   error: {
-    icon: <XCircleIcon className="h-5 w-5 text-red-400" aria-hidden="true" />,
+    icon: <XCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />,
     wrapperClass: "bg-red-50 border-red-500",
     titleClasses: "text-red-800",
-    textClasses: "text-red-700",
+    textClasses: "text-red-800",
     actionClasses:
-      "bg-red-50 focus:ring-red-600 focus:ring-offset-red-50 text-red-800 hover:bg-red-100",
+      "bg-red-50 focus:ring-red-500 focus:ring-offset-red-50 text-red-800 hover:bg-red-100",
   },
   info: {
-    icon: <InformationCircleIcon className="h-5 w-5 text-blue-400" aria-hidden="true" />,
+    icon: <InformationCircleIcon className="h-5 w-5 text-blue-500" aria-hidden="true" />,
     wrapperClass: "bg-blue-50 border-blue-500",
     titleClasses: "text-blue-800",
-    textClasses: "text-blue-700",
+    textClasses: "text-blue-800",
     actionClasses:
-      "bg-blue-50 focus:ring-blue-600 focus:ring-offset-blue-50 text-blue-800 hover:bg-blue-100",
+      "bg-blue-50 focus:ring-blue-500 focus:ring-offset-blue-50 text-blue-800 hover:bg-blue-100",
   },
   warn: {
     icon: <ExclamationTriangleIcon className="h-5 w-5 text-yellow-700" aria-hidden="true" />,

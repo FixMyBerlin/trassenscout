@@ -7,7 +7,7 @@ import updateContact from "src/contacts/mutations/updateContact"
 import getContact from "src/contacts/queries/getContact"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { getFullname } from "src/users/utils"
@@ -49,8 +49,11 @@ const EditContactWithQuery = () => {
   return (
     <>
       <MetaTags noindex title={`Kontakt von ${getFullname(contact)} bearbeiten`} />
-
-      <PageHeader title={`Kontakt von ${getFullname(contact)}`} subtitle="Kontakt bearbeiten" />
+      <PageHeader
+        title={`Kontakt von ${getFullname(contact)}`}
+        subtitle="Kontakt bearbeiten"
+        className="mt-12"
+      />
 
       <ContactForm submitText="Speichern" initialValues={contact} onSubmit={handleSubmit} />
 

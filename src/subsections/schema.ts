@@ -1,17 +1,19 @@
-import { JsonValue, SlugSchema } from "src/core/utils"
 import { z } from "zod"
+import { LabelPositionEnum } from "@prisma/client"
+
+import { Prettify } from "src/core/types"
+import { SlugSchema } from "src/core/utils"
 
 export const SubsectionSchema = z.object({
   slug: SlugSchema,
-  title: z.string().min(3, {
-    message: "Pflichtfeld. Mindestens 3 Zeichen.",
-  }),
+  order: z.coerce.number(),
   description: z.string().nullish(),
-  geometry: z.coerce.string().min(20, {
-    message: "Pflichtfeld. Format muss ein LineString sein [[9.1943,48.8932],[9.2043,48.8933]].",
-  }),
+  start: z.string().min(5, { message: "Pflichtfeld. Mindestens 5 Zeichen." }),
+  end: z.string().min(5, { message: "Pflichtfeld. Mindestens 5 Zeichen." }),
+  labelPos: z.nativeEnum(LabelPositionEnum),
+  geometry: z.array(z.tuple([z.number(), z.number()])),
   managerId: z.coerce.number(),
   sectionId: z.coerce.number(),
 })
 
-export type TSubsectionSchema = z.infer<typeof SubsectionSchema>
+export type TSubsectionSchema = Prettify<z.infer<typeof SubsectionSchema>>

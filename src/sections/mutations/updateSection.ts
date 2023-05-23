@@ -15,9 +15,11 @@ const UpdateSectionSchema = SectionSchema.merge(
 export default resolver.pipe(
   resolver.zod(UpdateSectionSchema),
   authorizeProjectAdmin(getSectionProjectId),
-  async ({ id, ...data }) =>
-    await db.section.update({
+  async ({ id, ...data }) => {
+    const section = await db.section.update({
       where: { id },
       data,
     })
+    return section
+  }
 )

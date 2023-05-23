@@ -6,6 +6,11 @@ import { AuthenticationError, AuthorizationError } from "blitz"
 import { withBlitz } from "src/blitz-client"
 import "src/core/styles/index.css"
 import LoginPage from "./auth/login"
+import { init } from "@socialgouv/matomo-next"
+import { useEffect } from "react"
+
+const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL
+const MATOMO_SITE_ID = process.env.NEXT_PUBLIC_MATOMO_SITE_ID
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
@@ -28,6 +33,10 @@ function RootErrorFallback({ error }: ErrorFallbackProps) {
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    // @ts-ignore
+    init({ url: MATOMO_URL, siteId: MATOMO_SITE_ID })
+  }, [])
   const getLayout = Component.getLayout || ((page) => page)
   return (
     <ErrorBoundary FallbackComponent={RootErrorFallback}>

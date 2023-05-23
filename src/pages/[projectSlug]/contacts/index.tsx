@@ -1,30 +1,21 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { ContactList } from "src/contacts/components/ContactList"
+import { ContactTable } from "src/contacts/components/ContactTable"
 import getContacts from "src/contacts/queries/getContacts"
-import { Link } from "src/core/components/links"
-import { PageHeader } from "src/core/components/PageHeader"
-import { Pagination } from "src/core/components/Pagination"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
+import { Tabs } from "src/core/components/Tabs/Tabs"
+import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 
-const ITEMS_PER_PAGE = 100
-
-export const ContactTable = () => {
-  const router = useRouter()
-  const page = Number(router.query.page) || 0
-  const projectSlug = useParam("projectSlug", "string")
-  const [{ contacts, hasMore }] = usePaginatedQuery(getContacts, {
+export const ContactWithQuery = () => {
+  const { projectSlug } = useSlugs()
+  const [{ contacts }] = usePaginatedQuery(getContacts, {
     projectSlug: projectSlug!,
     orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
   })
-
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
   if (!contacts.length) {
     return (
@@ -35,40 +26,36 @@ export const ContactTable = () => {
   }
 
   return (
-    <div className="mt-8 flex flex-col">
-      <ContactList contacts={contacts} />
-      <div className="mt-6">
-        <Pagination
-          hasMore={hasMore}
-          page={page}
-          handlePrev={goToPreviousPage}
-          handleNext={goToNextPage}
-        />
-      </div>
-    </div>
+    <>
+      <PageHeader
+        title="Externe Kontakte"
+        description="Kontaktdaten, die für das ganze Projektteam wichtig sind."
+        className="mt-12"
+      />
+
+      <Tabs
+        className="mt-7"
+        tabs={[
+          { name: "Externe Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
+          { name: "Projektteam", href: Routes.ProjectTeamPage({ projectSlug: projectSlug! }) },
+        ]}
+      />
+
+      <ContactTable contacts={contacts} />
+
+      <SuperAdminLogData data={contacts} />
+    </>
   )
 }
 
 const ContactsPage: BlitzPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
   return (
     <LayoutRs>
       <MetaTags noindex title="Kontakte" />
-      <div>
-        <PageHeader
-          title="Kontakte"
-          description="Dieser Bereich hilft Ihnen dabei Kontakte zu verwalten und
-        anzuschreiben."
-          action={
-            <Link button href={Routes.NewContactPage({ projectSlug: projectSlug! })}>
-              Neuer Kontakt
-            </Link>
-          }
-        />
-        <Suspense fallback={<Spinner page />}>
-          <ContactTable />
-        </Suspense>
-      </div>
+
+      <Suspense fallback={<Spinner page />}>
+        <ContactWithQuery />
+      </Suspense>
     </LayoutRs>
   )
 }

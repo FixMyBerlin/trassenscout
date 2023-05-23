@@ -6,7 +6,7 @@ export default function NotFound() {
   const title = "Seite nicht gefunden"
   return (
     <LayoutArticle>
-      <MetaTags title="Seite nicht gefunden (404)" />
+      <MetaTags noindex title="Seite nicht gefunden (404)" />
       <ErrorComponent statusCode={statusCode} title={title} />
     </LayoutArticle>
   )

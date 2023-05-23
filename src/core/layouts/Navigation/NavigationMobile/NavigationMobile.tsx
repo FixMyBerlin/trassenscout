@@ -4,23 +4,17 @@ import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import React, { Fragment } from "react"
 import { Link } from "src/core/components/links"
+import { menuItems } from "../NavigationProject/menuItems"
 import { NavigationProjectsSwitch } from "../NavigationProjectsSwitch"
 import { NavigationUser } from "../NavigationUser"
-import { MenuItem } from "../types"
+import { NavigationGeneralLogo } from "../NavigationGeneral/NavigationGeneralLogo"
 
 type Props = {
-  menuItems: MenuItem[]
-  logo: React.ReactElement
+  menuItems: ReturnType<typeof menuItems>
 }
 
-export const NavigationMobile: React.FC<Props> = ({ menuItems, logo }) => {
-  const { query, pathname } = useRouter()
-
-  const itemClasses = (current: boolean) =>
-    clsx(
-      current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white",
-      "rounded-md px-3 py-2 text-sm font-medium"
-    )
+export const NavigationMobile: React.FC<Props> = ({ menuItems }) => {
+  const { pathname } = useRouter()
 
   return (
     <Disclosure as="div" className="relative flex flex-col sm:hidden">
@@ -42,46 +36,35 @@ export const NavigationMobile: React.FC<Props> = ({ menuItems, logo }) => {
               )}
             </div>
             <div className="flex flex-1 items-center justify-start sm:items-stretch">
-              <div className="flex flex-shrink-0 items-center">{logo}</div>
+              <div className="flex flex-shrink-0 items-center">
+                <NavigationGeneralLogo />
+              </div>
             </div>
           </div>
 
           <Disclosure.Panel className="divide-y-2 divide-gray-900">
-            <div className="space-y-3 pt-2 pb-3">
+            <div className="space-y-3 pb-3 pt-2">
               {menuItems?.map((item) => {
-                if (!item.children) {
-                  const current = pathname === item.href.pathname
-                  return (
-                    <Disclosure.Button key={item.name} as="div">
-                      <Link href={item.href} classNameOverwrites={itemClasses(current)}>
-                        {item.name}
-                      </Link>
-                    </Disclosure.Button>
-                  )
-                } else {
-                  return (
-                    <Fragment key={item.name}>
-                      <Disclosure.Button key={item.name} as="div">
-                        <div
-                          className="rounded-md px-3 py-2 text-sm font-bold text-gray-300 hover:bg-gray-700"
-                          key={item.name}
-                        >
-                          {item.name}
-                        </div>
-                      </Disclosure.Button>
-                      {item.children.map((child) => {
-                        const current = query.sectionSlug === child.slug // this works specifically for 'sectionSlug', not generic for items with children
-                        return (
-                          <Disclosure.Button key={child.name} className="pl-6" as="div">
-                            <Link href={child.href} classNameOverwrites={itemClasses(current)}>
-                              {child.name}
-                            </Link>
-                          </Disclosure.Button>
-                        )
-                      })}
-                    </Fragment>
-                  )
-                }
+                const current = [
+                  item.href.pathname,
+                  ...(item.alsoHighlightPathnames || []),
+                ].includes(pathname)
+
+                return (
+                  <Disclosure.Button key={item.name} as="div">
+                    <Link
+                      href={item.href}
+                      classNameOverwrites={clsx(
+                        current
+                          ? "bg-gray-900 text-white"
+                          : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                        "rounded-md px-3 py-2 text-sm font-medium"
+                      )}
+                    >
+                      {item.name}
+                    </Link>
+                  </Disclosure.Button>
+                )
               })}
             </div>
           </Disclosure.Panel>

@@ -3,9 +3,10 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { quote } from "src/core/components/text"
+import { longTitle, seoNewTitle } from "src/core/components/text"
+import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import getSection from "src/sections/queries/getSection"
 import { FORM_ERROR, SubsectionForm } from "src/subsections/components/SubsectionForm"
@@ -15,9 +16,11 @@ import getProjectUsers from "src/users/queries/getProjectUsers"
 
 const NewSubsection = () => {
   const router = useRouter()
-  const projectSlug = useParam("projectSlug", "string")
-  const sectionSlug = useParam("sectionSlug", "string")
-  const [section] = useQuery(getSection, { sectionSlug, projectSlug })
+  const { projectSlug, sectionSlug } = useSlugs()
+  const [section] = useQuery(getSection, {
+    projectSlug: projectSlug!,
+    sectionSlug: sectionSlug!,
+  })
   const [createSubsectionMutation] = useMutation(createSubsection)
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
@@ -39,10 +42,10 @@ const NewSubsection = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neuen Abschnitt erstellen" />
       <PageHeader
-        title="Neuen Abschnitt erstellen"
-        subtitle={`In Teilstrecke ${quote(section.title)}`}
+        title={seoNewTitle("Planungsabschitt")}
+        subtitle={longTitle(section.slug)}
+        className="mt-12"
       />
 
       <SubsectionForm
@@ -62,6 +65,8 @@ const NewSubsectionPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
+      <MetaTags noindex title="Neuen Abschnitt erstellen" />
+
       <Suspense fallback={<Spinner page />}>
         <NewSubsection />
       </Suspense>

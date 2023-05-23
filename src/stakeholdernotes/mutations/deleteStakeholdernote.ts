@@ -12,5 +12,7 @@ const DeleteStakeholdernoteSchema = z.object({
 export default resolver.pipe(
   resolver.zod(DeleteStakeholdernoteSchema),
   authorizeProjectAdmin(getStakeholdernoteProjectId),
-  async ({ id }) => await db.stakeholdernote.deleteMany({ where: { id } })
+  async ({ id }) => {
+    return await db.stakeholdernote.deleteMany({ where: { id } })
+  }
 )

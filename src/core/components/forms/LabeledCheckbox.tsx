@@ -35,21 +35,21 @@ export const LabeledCheckbox = forwardRef<HTMLInputElement, LabeledCheckboxProps
             className={clsx(
               "h-4 w-4 rounded",
               hasError
-                ? "border-red-700 text-red-600 shadow-sm shadow-red-200 focus:ring-red-700"
-                : "border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                ? "border-red-800 text-red-500 shadow-sm shadow-red-200 focus:ring-red-800"
+                : "border-gray-300 text-blue-600 focus:ring-blue-500"
             )}
           />
         </div>
         <label
+          className="ml-3 block cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-800"
           {...labelProps}
           htmlFor={name}
-          className="ml-3 block cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-800"
         >
           {label}
           {help && <div className="m-0 text-gray-500">{help}</div>}
           <ErrorMessage
             render={({ message }) => (
-              <p role="alert" className="m-0 text-sm text-red-700">
+              <p role="alert" className="m-0 text-sm text-red-800">
                 {message}
               </p>
             )}

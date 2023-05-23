@@ -6,7 +6,7 @@ export const NavigationGeneralLogo: React.FC = () => {
     <div className="flex items-end">
       <Image
         src={svgLogoTrassenscout}
-        className="block h-8 w-auto text-rsv-ochre lg:hidden"
+        className="text-yellow-500"
         alt="Trassenscout"
         height={32}
         width={120}

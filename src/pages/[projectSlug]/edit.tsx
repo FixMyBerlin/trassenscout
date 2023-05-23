@@ -4,9 +4,9 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { quote } from "src/core/components/text"
+import { quote, seoEditTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import updateProject from "src/projects/mutations/updateProject"
@@ -30,6 +30,9 @@ const EditProjectWithQuery = () => {
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
+    const partnerLogoSrcsArray = values.partnerLogoSrcs.split("\n")
+    values = { ...values, partnerLogoSrcs: partnerLogoSrcsArray }
+
     try {
       const updated = await updateProjectMutation({
         id: project.id,
@@ -45,13 +48,14 @@ const EditProjectWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Project ${quote(project.title)} bearbeiten`} />
-      <PageHeader title={quote(project.title)} subtitle="Projekt bearbeiten" />
+      <MetaTags noindex title={seoEditTitle(project.slug)} />
+      <PageHeader title={`${project.slug} bearbeiten`} className="mt-12" />
 
       <ProjectForm
+        className="mt-10"
         submitText="Speichern"
-        schema={ProjectSchema}
-        initialValues={project}
+        // schema={ProjectSchema}
+        initialValues={{ ...project, partnerLogoSrcs: project.partnerLogoSrcs.join("\n") }}
         onSubmit={handleSubmit}
         users={users}
       />

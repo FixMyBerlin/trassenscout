@@ -1,12 +1,12 @@
-import clsx from "clsx"
-import { buttonStyles, linkStyles } from "./Link"
+import { LinkProps } from "./Link"
+import { selectLinkStyle } from "./styles"
 
 type Props = {
   className?: string
   mailto?: string
   subject?: string
   /** @desc Style Link as Button */
-  button?: boolean
+  button?: LinkProps["button"]
   children: React.ReactNode
 } & React.AnchorHTMLAttributes<HTMLAnchorElement>
 
@@ -24,7 +24,7 @@ export const LinkMail: React.FC<Props> = ({
   }
 
   return (
-    <a href={url.href} className={clsx(button ? buttonStyles : linkStyles, className)} {...props}>
+    <a href={url.href} className={selectLinkStyle(button, className)} {...props}>
       {children}
     </a>
   )

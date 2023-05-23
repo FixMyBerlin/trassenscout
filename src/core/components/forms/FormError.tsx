@@ -12,7 +12,7 @@ export const FormError: React.FC<Props> = ({ formError }) => {
   if (!formError) return null
 
   return (
-    <div role="alert" className={clsx(proseClasses, "rounded bg-red-50 py-1 px-2 text-red-700")}>
+    <div role="alert" className={clsx(proseClasses, "rounded bg-red-50 px-2 py-1 text-red-800")}>
       {formError.name === "ZodError" ? (
         <>
           {(formError?.issues || formError?.message || []).map((error: any) => (
@@ -23,7 +23,10 @@ export const FormError: React.FC<Props> = ({ formError }) => {
           ))}
         </>
       ) : (
-        <span {...(isDev ? { "data-message-id": formError.toString().replaceAll("\n", "") } : {})}>
+        <span
+          {...(isDev ? { "data-message-id": formError.toString().replaceAll("\n", "") } : {})}
+          className="font-mono text-sm leading-tight"
+        >
           <FormattedMessage
             id={formError.toString().replaceAll("\n", "")}
             defaultMessage={formError}

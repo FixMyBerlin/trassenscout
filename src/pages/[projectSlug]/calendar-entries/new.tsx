@@ -10,7 +10,7 @@ import {
 } from "src/calendar-entries/schema"
 import { transformValuesWithStartAt } from "src/calendar-entries/utils/transformValuesWithStartAt"
 import { Link } from "src/core/components/links"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 
@@ -41,9 +41,6 @@ const NewCalendarEntry = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neuer Kalendereintrag" />
-      <PageHeader title="Neuer Kalendereintrag" />
-
       <CalendarEntryForm
         submitText="Erstellen"
         schema={CalendarEntrySchema.omit({
@@ -62,6 +59,9 @@ const NewCalendarEntryPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
+      <MetaTags noindex title="Neuer Kalendereintrag" />
+      <PageHeader title="Neuer Kalendereintrag" className="mt-12" />
+
       <Suspense fallback={<Spinner page />}>
         <NewCalendarEntry />
       </Suspense>

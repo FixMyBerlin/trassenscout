@@ -5,8 +5,11 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
+import { seoEditTitle } from "src/core/components/text"
+import { startEnd } from "src/core/components/text/startEnd"
+import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SectionForm } from "src/sections/components/SectionForm"
 import deleteSection from "src/sections/mutations/deleteSection"
@@ -17,11 +20,10 @@ import getProjectUsers from "src/users/queries/getProjectUsers"
 
 const EditSection = () => {
   const router = useRouter()
-  const sectionSlug = useParam("sectionSlug", "string")
-  const projectSlug = useParam("projectSlug", "string")
+  const { projectSlug, sectionSlug } = useSlugs()
   const [section, { setQueryData }] = useQuery(
     getSection,
-    { sectionSlug, projectSlug },
+    { projectSlug: projectSlug!, sectionSlug: sectionSlug! },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
@@ -38,12 +40,7 @@ const EditSection = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(
-        Routes.SectionDashboardPage({
-          projectSlug: projectSlug!,
-          sectionSlug: updated.slug,
-        })
-      )
+      await router.back()
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -60,8 +57,8 @@ const EditSection = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Section ${section.id} bearbeiten`} />
-      <PageHeader title={`${section.title} bearbeiten`} />
+      <MetaTags noindex title={seoEditTitle(section.slug)} />
+      <PageHeader title={`${section.slug} bearbeiten`} className="mt-12" />
 
       <SuperAdminBox>
         <pre>{JSON.stringify(section, null, 2)}</pre>

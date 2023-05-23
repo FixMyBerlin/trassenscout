@@ -13,7 +13,7 @@ import { getDate, getTime } from "src/calendar-entries/utils/splitStartAt"
 import { transformValuesWithStartAt } from "src/calendar-entries/utils/transformValuesWithStartAt"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
-import { PageHeader } from "src/core/components/PageHeader"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { quote } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
@@ -72,8 +72,11 @@ const EditCalendarEntry = () => {
   return (
     <>
       <MetaTags noindex title={`Termin ${quote(calendarEntry.title)}`} />
-
-      <PageHeader title={quote(calendarEntry.title)} subtitle="Termin bearbeiten" />
+      <PageHeader
+        title={quote(calendarEntry.title)}
+        subtitle="Termin bearbeiten"
+        className="mt-12"
+      />
 
       <CalendarEntryForm
         submitText="Speichern"

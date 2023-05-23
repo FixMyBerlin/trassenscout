@@ -9,6 +9,9 @@ jobs:
     with:
       APP_ORIGIN: http://staging.trassenscout.de
       SERVICE_NAME: trassenscout-staging
+      S3_UPLOAD_BUCKET: trassenscout
+      S3_UPLOAD_REGION: eu-central-1
+      S3_UPLOAD_ROOTFOLDER: upload-staging
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -17,3 +20,7 @@ jobs:
       NGINX_HTPASSWD: ${{ secrets.NGINX_HTPASSWD }}
       MAILJET_APIKEY_PUBLIC: ${{ secrets.MAILJET_APIKEY_PUBLIC }}
       MAILJET_APIKEY_PRIVATE: ${{ secrets.MAILJET_APIKEY_PRIVATE }}
+      S3_UPLOAD_KEY: ${{ secrets.S3_UPLOAD_KEY }}
+      S3_UPLOAD_SECRET: ${{ secrets.S3_UPLOAD_SECRET }}
+      ASSETS_BUCKET_HOST: ${{ secrets.ASSETS_BUCKET_HOST }}
+      ASSETS_BUCKET_PATH: ${{ secrets.ASSETS_BUCKET_PATH_STAGING }}

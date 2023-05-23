@@ -17,9 +17,9 @@ const seed = async () => {
   await seedMemberships()
   await seedSections()
   await seedSubsections()
+  await seedStakeholdernotes()
   await seedCalendarEntries()
   await seedContacts()
-  await seedStakeholdernotes()
   await seedFiles()
 }
 

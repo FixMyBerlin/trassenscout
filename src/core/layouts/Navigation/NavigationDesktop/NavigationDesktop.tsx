@@ -1,16 +1,16 @@
-import { MenuItem } from "../types"
-import { NavigationUser } from "../NavigationUser"
-import { NavigationDesktopLinks } from "./NavigationDesktopLinks"
-import { NavigationProjectsSwitch } from "../NavigationProjectsSwitch"
 import { useRouter } from "next/router"
 import { Link } from "src/core/components/links"
+import { menuItems } from "../NavigationProject/menuItems"
+import { NavigationProjectsSwitch } from "../NavigationProjectsSwitch"
+import { NavigationUser } from "../NavigationUser"
+import { NavigationDesktopLinks } from "./NavigationDesktopLinks"
+import { NavigationGeneralLogo } from "../NavigationGeneral/NavigationGeneralLogo"
 
 type Props = {
-  menuItems: MenuItem[]
-  logo: React.ReactElement
+  menuItems: ReturnType<typeof menuItems>
 }
 
-export const NavigationDesktop: React.FC<Props> = ({ menuItems, logo }) => {
+export const NavigationDesktop: React.FC<Props> = ({ menuItems }) => {
   const { asPath } = useRouter()
 
   return (
@@ -19,19 +19,20 @@ export const NavigationDesktop: React.FC<Props> = ({ menuItems, logo }) => {
         <div className="flex flex-1 items-center justify-start sm:items-stretch">
           <div className="flex flex-shrink-0 items-center justify-center">
             {asPath === "/" ? (
-              <>{logo}</>
+              <NavigationGeneralLogo />
             ) : (
               <Link href="/" classNameOverwrites="">
-                {logo}
+                <NavigationGeneralLogo />
                 <span className="sr-only">Homepage</span>
               </Link>
             )}
           </div>
         </div>
+
+        <NavigationProjectsSwitch />
         <NavigationDesktopLinks menuItems={menuItems} />
       </div>
       <div className="flex items-center">
-        <NavigationProjectsSwitch />
         <NavigationUser />
       </div>
     </div>

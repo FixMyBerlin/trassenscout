@@ -2,6 +2,7 @@ import { CalendarEntry } from "@prisma/client"
 import { isAfter, startOfToday } from "date-fns"
 import React from "react"
 import { DateList } from "./DateList"
+import { H2 } from "src/core/components/text"
 
 type Props = {
   calendarEntries: CalendarEntry[]
@@ -31,15 +32,12 @@ export const Calender: React.FC<Props> = ({ calendarEntries }) => {
   }
 
   return (
-    <section className="max-w-prose">
-      <div className="mb-12">
-        <h2 className="mb-2 text-3xl font-bold">Kommende Termine</h2>
-        <DateList calendarEntries={futureCalendarEntries} />
-      </div>
-      <div className="mb-12 pt-8">
-        <h2 className="mb-2 text-3xl font-bold">Vergangene Termine</h2>
-        <DateList calendarEntries={pastCalendarEntries} />
-      </div>
-    </section>
+    <>
+      <H2 className="mb-2">Kommende Termine</H2>
+      <DateList calendarEntries={futureCalendarEntries} />
+
+      <H2 className="mb-2 mt-12">Vergangene Termine</H2>
+      <DateList calendarEntries={pastCalendarEntries} />
+    </>
   )
 }

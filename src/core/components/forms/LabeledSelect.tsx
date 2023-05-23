@@ -6,8 +6,8 @@ import { useFormContext } from "react-hook-form"
 export interface LabeledSelectProps extends PropsWithoutRef<JSX.IntrinsicElements["select"]> {
   /** Select name. */
   name: string
-  /** Options: [value, text] */
-  options: [string, string][]
+  /** Options: [value, text], use `""` for `null` in some cases, see src/pages/[projectSlug]/files/[fileId]/edit.tsx */
+  options: [string | number | "", string][]
   /** Field label. */
   label: string
   help?: string
@@ -41,10 +41,10 @@ export const LabeledSelect = forwardRef<HTMLInputElement, LabeledSelectProps>(
           id={name}
           {...props}
           className={clsx(
-            "w-full rounded-md border bg-white py-2 px-3 shadow-sm focus:outline-none sm:text-sm",
+            "w-full rounded-md border bg-white px-3 py-2 shadow-sm focus:outline-none sm:text-sm",
             hasError
-              ? "border-red-700 shadow-red-200 focus:border-red-800 focus:ring-red-800"
-              : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+              ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
+              : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
           )}
         >
           {options.map(([value, text]) => (
@@ -57,7 +57,7 @@ export const LabeledSelect = forwardRef<HTMLInputElement, LabeledSelectProps>(
 
         <ErrorMessage
           render={({ message }) => (
-            <div role="alert" className="mt-1 text-sm text-red-700">
+            <div role="alert" className="mt-1 text-sm text-red-800">
               {message}
             </div>
           )}
