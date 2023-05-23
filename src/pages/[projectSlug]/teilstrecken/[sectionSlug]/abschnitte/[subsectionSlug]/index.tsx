@@ -85,7 +85,7 @@ export const SubsectionDashboardWithQuery = () => {
         </div>
       </PageDescription>
 
-      <div className="relative mt-12 flex w-full gap-4">
+      <div className="relative mt-12 flex w-full gap-10">
         <div className="w-full">
           <SubsectionMap
             // Make sure the map rerenders when we close the SubsectionSidebar
