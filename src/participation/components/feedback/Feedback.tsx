@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useState } from "react"
 import { stageProgressDefinition } from "src/pages/rs8-beteiligung"
 import { PinContext, ProgressContext } from "src/participation/context/contexts"
 import SurveyForm from "../form/SurveyForm"
@@ -13,7 +13,7 @@ type Props = {
 }
 
 export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
-  const { progress, setProgress } = useContext(ProgressContext)
+  const { setProgress } = useContext(ProgressContext)
   const [pinPosition, setPinPosition] = useState(null)
   const [values, setValues] = useState({})
   const [isPageOneCompleted, setIsPageOneCompleted] = useState(false)
@@ -34,17 +34,17 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const categories = pages[0].questions[0].props.responses
 
   const handleNextPage = useCallback(() => {
-    window && window.scrollTo(0, 0)
     const newFeedbackPageProgress = Math.min(pages.length, feedbackPageProgress + 1)
     setFeedbackPageProgress(newFeedbackPageProgress)
     setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
+    window.requestAnimationFrame(() => window.scrollTo(0, 0))
   }, [feedbackPageProgress, pages.length, setProgress])
 
   const handleBackPage = useCallback(() => {
-    window && window.scrollTo(0, 0)
     const newFeedbackPageProgress = Math.max(0, feedbackPageProgress - 1)
     setFeedbackPageProgress(newFeedbackPageProgress)
     setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
+    window.requestAnimationFrame(() => window.scrollTo(0, 0))
   }, [feedbackPageProgress, setProgress])
 
   const transformValues = (values: Record<string, null | string | boolean>) => {
