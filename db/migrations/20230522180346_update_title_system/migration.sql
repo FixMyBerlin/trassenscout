@@ -23,3 +23,7 @@ ALTER TABLE "Subsubsection" ADD COLUMN "subTitle" TEXT;
 UPDATE "Subsubsection" SET "subTitle" = "title";
 --    Step 3: Drop the original column
 ALTER TABLE "Subsubsection" DROP COLUMN "title";
+
+-- DOKU:
+-- Part of the multi steps above was done, the migrations I tried before deleted all data in order to change the NOT NULL condition. However, the following migration is likely the more elegant way to do this…
+-- ALTER TABLE "Project" ALTER COLUMN "title" DROP NOT NULL;
