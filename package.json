@@ -15,6 +15,8 @@
     "migrate:create:openMigration": "code $(find ./db/migrations -type f -name \"migration.sql\" -cmin -1 | head -n 1)",
     "migrate:check": "blitz prisma migrate status",
     "migrate:compare": "git diff origin/main... -- db/migrations",
+    "db:getDump": "db/remote/get-dump.sh",
+    "db:restoreDump": "npm run predev && db/remote/restore-dump.sh",
     "check": "npm run migrate:check && npm run type-check && npm run lint && npm run format-check && npm run test",
     "type-check": "tsc --noEmit",
     "lint": "eslint --fix --ignore-pattern \"src/core/templates/*\" --ignore-path .gitignore --ext .js,.ts,.tsx .",
