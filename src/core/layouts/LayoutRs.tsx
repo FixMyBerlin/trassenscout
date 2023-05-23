@@ -8,7 +8,7 @@ type Props = {
 
 export const LayoutRs: React.FC<Props> = ({ children }) => {
   return (
-    <Layout navigation="project" footer="project" favicon="project">
+    <Layout navigation="project" footer="project" favicon="general">
       <MetaTags noindex />
       {children}
     </Layout>
