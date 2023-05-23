@@ -13,21 +13,21 @@ type Props = { survey: TSurvey; onSubmit: ([]) => void }
 
 export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   const [values, setValues] = useState({})
-  const { progress, setProgress } = useContext(ProgressContext)
+  const { setProgress } = useContext(ProgressContext)
   const [surveyPageProgress, setSurveyPageProgress] = useState(0)
 
   const handleNextPage = useCallback(() => {
-    window && window.scrollTo(0, 0)
     const newSurveyPageProgress = Math.min(survey.pages.length, surveyPageProgress + 1)
     setSurveyPageProgress(newSurveyPageProgress)
     setProgress(stageProgressDefinition["SURVEY"] + newSurveyPageProgress)
+    window.requestAnimationFrame(() => window.scrollTo(0, 0))
   }, [survey.pages.length, setProgress, surveyPageProgress])
 
   const handleBackPage = useCallback(() => {
-    window && window.scrollTo(0, 0)
     const newSurveyPageProgress = Math.max(0, surveyPageProgress - 1)
     setSurveyPageProgress(newSurveyPageProgress)
     setProgress(stageProgressDefinition["SURVEY"] + newSurveyPageProgress)
+    window.requestAnimationFrame(() => window.scrollTo(0, 0))
   }, [setProgress, surveyPageProgress])
 
   const buttonActions = {
