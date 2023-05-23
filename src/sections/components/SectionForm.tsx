@@ -23,8 +23,8 @@ export function SectionForm<S extends z.ZodType<any, any>>(
         name="slug"
         label="Kurz-Titel und URL-Teil"
         help={`Bspw. ${quote(
-          "TS1"
-        )}. Primäre Auszeichnung der Teilstrecke. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
+          "ts1"
+        )}. Primäre Auszeichnung der Teilstrecke. Wird immer in Großschreibung angezeigt aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
       />
       <LabeledTextField
         type="number"

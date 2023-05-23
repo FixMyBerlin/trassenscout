@@ -22,9 +22,9 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
         type="text"
         name="slug"
         label="Kurz-Titel und URL-Teil"
-        help={`Bspw. ${quote("RF1")} oder ${quote(
-          "SF2a"
-        )}. Primäre Auszeichnung der Führung. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
+        help={`Bspw. ${quote("rf1")} oder ${quote(
+          "sf2a"
+        )}. Primäre Auszeichnung der Führung. Wird immer in Großschreibung angezeigt aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
       />
       <LabeledTextField
         type="number"

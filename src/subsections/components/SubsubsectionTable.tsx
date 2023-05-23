@@ -4,7 +4,13 @@ import clsx from "clsx"
 import { useRouter } from "next/router"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
-import { formattedEuro, formattedLength, formattedWidth, longTitle } from "src/core/components/text"
+import {
+  formattedEuro,
+  formattedLength,
+  formattedWidth,
+  longTitle,
+  shortTitle,
+} from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { SubsubsectionIcon } from "src/core/components/Map/Icons"
 
@@ -68,7 +74,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
                   onClick={() => router.push(route, undefined, { scroll: false })}
                 >
                   <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                    <SubsubsectionIcon label={subsubsection.slug} />
+                    <SubsubsectionIcon label={shortTitle(subsubsection.slug)} />
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                     <strong>{longTitle(subsubsection.slug)}</strong>

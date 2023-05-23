@@ -6,7 +6,7 @@ import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
 import { SectionIcon } from "../../core/components/Map/Icons"
 import { startEnd } from "src/core/components/text/startEnd"
-import { formattedLength, longTitle } from "src/core/components/text"
+import { formattedLength, longTitle, shortTitle } from "src/core/components/text"
 
 type Props = {
   sections: Section[]
@@ -44,7 +44,7 @@ export const SectionTable: React.FC<Props> = ({ sections }) => {
                   onClick={() => router.push(route)}
                 >
                   <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                    <SectionIcon label={section.slug} />
+                    <SectionIcon label={shortTitle(section.slug)} />
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                     <strong>{longTitle(section.slug)}</strong>
