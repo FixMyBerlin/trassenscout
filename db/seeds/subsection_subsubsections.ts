@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client"
 
 export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "subsectionId">[] = [
   {
-    slug: "RF1",
+    slug: "rf1",
     subTitle: "Radweg mit landw. Verkehr frei",
     order: 1,
     type: "ROUTE",
@@ -20,7 +20,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     managerId: 1,
   },
   {
-    slug: "RF2",
+    slug: "rf2",
     subTitle: "Ufersteg Hansaviertel",
     order: 2,
     type: "ROUTE",
@@ -38,7 +38,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     managerId: 1,
   },
   {
-    slug: "RF3",
+    slug: "rf3",
     subTitle: "Fahrradstraße Levetzowstraße",
     order: 3,
     type: "ROUTE",
@@ -57,7 +57,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     managerId: 2,
   },
   {
-    slug: "SF1",
+    slug: "sf1",
     subTitle: "Radweg auf Gotskowskybrücke",
     order: 5,
     type: "AREA",
@@ -76,7 +76,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     managerId: 1,
   },
   {
-    slug: "SF2",
+    slug: "sf2",
     subTitle: "Radweg unter S-Bahn-Brücke",
     order: 6,
     type: "AREA",

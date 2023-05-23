@@ -1,18 +1,23 @@
+export const shortTitle = (slug: string) => {
+  return slug.toUpperCase()
+}
+
 export const longTitle = (slug: string) => {
   return slug
-    .replace("RS", "Radschnellverbindung ") // Project
-    .replace("TS", "Teilstrecke ") // Section
-    .replace("PA", "Planungsabschnitt ") // Subsection
-    .replace("RF", "Regelführung ") // Subsubsection
-    .replace("SF", "Sonderführung ") // Subsubsection
+    .replace("rs", "Radschnellverbindung ") // Project
+    .replace("ts", "Teilstrecke ") // Section
+    .replace("pa", "Planungsabschnitt ") // Subsection
+    .replace("rf", "Regelführung ") // Subsubsection
+    .replace("sf", "Sonderführung ") // Subsubsection
+    .replace("-", " ") // We allow "-", but longTitle shows it at space.
 }
 
 export const seoTitle = (slug: string) => {
-  return `${slug} – ${longTitle(slug)} – Trassenscout`
+  return `${shortTitle(slug)} – ${longTitle(slug)} – Trassenscout`
 }
 
 export const seoEditTitle = (slug: string) => {
-  return `${slug} bearbeiten – ${longTitle(slug)} – Trassenscout`
+  return `${shortTitle(slug)} bearbeiten – ${longTitle(slug)} – Trassenscout`
 }
 
 export const seoNewTitle = (kind: string) => {

@@ -13,6 +13,7 @@ import { SubsubsectionMapIcon } from "./Icons"
 import { TipMarker } from "./TipMarker"
 import { lineColors } from "./lineColors"
 import { midPoint } from "./utils"
+import { shortTitle } from "../text"
 
 type Props = {
   sections: SectionWithSubsectionsWithPosition[]
@@ -128,7 +129,10 @@ export const SubsectionMap: React.FC<Props> = ({ sections, selectedSubsection })
           onMouseEnter={() => setHovered(sec.slug)}
           onMouseLeave={() => setHovered(null)}
         >
-          <TitleLabel icon={<SubsubsectionMapIcon label={sec.slug} />} title={sec.subTitle} />
+          <TitleLabel
+            icon={<SubsubsectionMapIcon label={shortTitle(sec.slug)} />}
+            title={sec.subTitle}
+          />
         </TipMarker>
       </Marker>
     )

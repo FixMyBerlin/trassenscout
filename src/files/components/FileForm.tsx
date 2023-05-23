@@ -6,6 +6,7 @@ import {
   LabeledSelectProps,
   LabeledTextField,
 } from "src/core/components/forms"
+import { shortTitle } from "src/core/components/text"
 import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
 import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
@@ -22,7 +23,7 @@ export function FileForm<S extends z.ZodType<any, any>>(
   const options: LabeledSelectProps["options"] = [["", "Übergreifendes Dokument"]]
   sectionsWithSubsections.forEach((s) =>
     s.subsections.forEach((ss) => {
-      options.push([ss.id, `${s.slug} – ${ss.start}–${ss.end}`] as [number, string])
+      options.push([ss.id, `${shortTitle(s.slug)} – ${ss.start}–${ss.end}`] as [number, string])
     })
   )
 

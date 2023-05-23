@@ -7,7 +7,12 @@ import { SubsubsectionIcon } from "src/core/components/Map/Icons"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Link, whiteButtonStyles } from "src/core/components/links"
 import { PageDescription } from "src/core/components/pages/PageDescription"
-import { formattedEuro, formattedLength, formattedWidth } from "src/core/components/text"
+import {
+  formattedEuro,
+  formattedLength,
+  formattedWidth,
+  shortTitle,
+} from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { useSlugs } from "src/core/hooks"
 import { FilePreview } from "src/files/components/FilePreview"
@@ -32,7 +37,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
     <section className="overlflow-y-scroll h-full w-[40rem] overflow-x-hidden rounded-md border border-gray-400/10 bg-white p-3 drop-shadow-md">
       <div className="mt-3 flex items-center justify-between">
         <div className="flex items-center justify-start gap-2">
-          <SubsubsectionIcon label={subsubsection.slug} />
+          <SubsubsectionIcon label={shortTitle(subsubsection.slug)} />
           {subsubsection.type === "ROUTE" ? "Regelführung" : "Sonderführung"}
         </div>
         <div className="flex items-center gap-3">

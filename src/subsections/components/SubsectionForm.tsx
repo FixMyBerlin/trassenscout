@@ -24,8 +24,8 @@ export function SubsectionForm<S extends z.ZodType<any, any>>(
         name="slug"
         label="Kurz-Titel und URL-Teil"
         help={`Bspw. ${quote(
-          "PA1"
-        )}. Primäre Auszeichnung des Planungsabschnitts. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
+          "pa1"
+        )}. Primäre Auszeichnung des Planungsabschnitts. Wird immer in Großschreibung angezeigt aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
       />
       <LabeledTextField
         type="number"

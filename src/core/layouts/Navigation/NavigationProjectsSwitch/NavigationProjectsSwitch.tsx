@@ -9,6 +9,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { useQuery } from "@blitzjs/rpc"
 import getProjects from "src/projects/queries/getProjects"
+import { shortTitle } from "src/core/components/text"
 
 const NavigationProjectsSwitchWithProjectsQuery: React.FC = () => {
   const { query } = useRouter()
@@ -27,6 +28,8 @@ const NavigationProjectsSwitchWithProjectsQuery: React.FC = () => {
 
   const currentProject = projects.find((p) => p.slug === query.projectSlug)
 
+  if (!currentProject) return null
+
   return (
     <div className="sm:ml-6">
       <Menu as="div" className="relative ml-3">
@@ -42,7 +45,7 @@ const NavigationProjectsSwitchWithProjectsQuery: React.FC = () => {
               )}
             >
               <span className="sr-only">Trassenwechsel</span>
-              {currentProject?.slug}
+              {shortTitle(currentProject.slug)}
             </Menu.Button>
             {open && (
               <Transition

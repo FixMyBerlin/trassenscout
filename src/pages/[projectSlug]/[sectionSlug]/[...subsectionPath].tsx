@@ -11,7 +11,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { H2, longTitle, seoTitle, startEnd } from "src/core/components/text"
+import { H2, longTitle, seoTitle, shortTitle, startEnd } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
@@ -56,7 +56,7 @@ export const SubsectionDashboardWithQuery = () => {
 
       <Breadcrumb />
       <PageHeader
-        titleIcon={<SubsectionMapIcon label={subsection.slug} />}
+        titleIcon={<SubsectionMapIcon label={shortTitle(subsection.slug)} />}
         title={longTitle(subsection.slug)}
         subtitle={startEnd(subsection)}
         action={

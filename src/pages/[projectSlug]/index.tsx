@@ -12,7 +12,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { quote, seoTitle } from "src/core/components/text"
+import { quote, seoTitle, shortTitle } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { SectionTable } from "src/projects/components/SectionTable"
@@ -31,7 +31,7 @@ export const ProjectDashboardWithQuery = () => {
       <>
         <section className="rounded border bg-blue-100 p-5">
           <Link href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
-            {project.slug} bearbeiten
+            {shortTitle(project.slug)} bearbeiten
           </Link>
           <br />
           <Link href={Routes.NewSectionPage({ projectSlug: projectSlug! })}>Neue Teilstrecke</Link>
@@ -46,9 +46,11 @@ export const ProjectDashboardWithQuery = () => {
 
       <Breadcrumb />
       <PageHeader
-        title={project.slug}
+        title={shortTitle(project.slug)}
         subtitle={project.subTitle}
-        description={`Willkommen im Trassenscout zum ${project.slug}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
+        description={`Willkommen im Trassenscout zum ${shortTitle(
+          project.slug
+        )}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
         action={
           <Link icon="edit" href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
             bearbeiten

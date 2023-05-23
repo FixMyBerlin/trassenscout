@@ -8,6 +8,7 @@ import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Pagination } from "src/core/components/Pagination"
 import { Spinner } from "src/core/components/Spinner"
+import { shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFiles from "src/files/queries/getFilesWithSubsections"
@@ -37,7 +38,7 @@ export const FilesWithData = () => {
   sectionsWithSubsections.forEach((s) =>
     s.subsections.forEach((ss) => {
       const count = files.filter((f) => f.subsectionId === ss.id).length
-      selectOptions.push([ss.id, `${s.slug} – ${ss.start}–${ss.end} (${count})`, count])
+      selectOptions.push([ss.id, `${shortTitle(s.slug)} – ${ss.start}–${ss.end} (${count})`, count])
     })
   )
 

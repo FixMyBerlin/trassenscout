@@ -7,7 +7,7 @@ import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { seoEditTitle } from "src/core/components/text"
+import { seoEditTitle, shortTitle } from "src/core/components/text"
 import { startEnd } from "src/core/components/text/startEnd"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
@@ -58,7 +58,7 @@ const EditSection = () => {
   return (
     <>
       <MetaTags noindex title={seoEditTitle(section.slug)} />
-      <PageHeader title={`${section.slug} bearbeiten`} className="mt-12" />
+      <PageHeader title={`${shortTitle(section.slug)} bearbeiten`} className="mt-12" />
 
       <SuperAdminBox>
         <pre>{JSON.stringify(section, null, 2)}</pre>

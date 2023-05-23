@@ -11,6 +11,7 @@ import { SubsectionMapIcon } from "./Icons"
 import { TipMarker } from "./TipMarker"
 import { lineColors } from "./lineColors"
 import { midPoint, sectionsBbox } from "./utils"
+import { shortTitle } from "../text"
 
 type Props = {
   children?: React.ReactNode
@@ -98,7 +99,7 @@ export const SectionMap: React.FC<Props> = ({ sections, selectedSection }) => {
           onMouseLeave={() => setHovered(null)}
         >
           <StartEndLabel
-            icon={<SubsectionMapIcon label={subsection.slug} />}
+            icon={<SubsectionMapIcon label={shortTitle(subsection.slug)} />}
             start={subsection.start}
             end={subsection.end}
           />

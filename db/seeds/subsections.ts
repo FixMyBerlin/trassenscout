@@ -6,7 +6,7 @@ const seedSubsections = async () => {
     // Section 1:
     {
       sectionId: 1,
-      slug: "PA1",
+      slug: "pa1",
       order: 1,
       start: "Dovestraẞe",
       end: "Kanzlerpark",
@@ -35,7 +35,7 @@ const seedSubsections = async () => {
     },
     {
       sectionId: 1,
-      slug: "PA2",
+      slug: "pa2",
       order: 2,
       start: "Kanzlerpark",
       end: "Ebertsbrücke",
@@ -54,7 +54,7 @@ const seedSubsections = async () => {
     },
     {
       sectionId: 1,
-      slug: "PA3",
+      slug: "pa3",
       order: 3,
       start: "Ebertsbrücke",
       end: "Fischerinsel",
@@ -70,7 +70,7 @@ const seedSubsections = async () => {
     },
     {
       sectionId: 1,
-      slug: "PA4",
+      slug: "pa4",
       order: 4,
       start: "Fischerinsel",
       end: "Schleusenufer",
@@ -87,7 +87,7 @@ const seedSubsections = async () => {
     // Section 2:
     {
       sectionId: 2,
-      slug: "PA5",
+      slug: "pa5",
       order: 5,
       start: "Dovestraẞe",
       end: "Lützowplatz",
@@ -103,7 +103,7 @@ const seedSubsections = async () => {
     },
     {
       sectionId: 2,
-      slug: "PA6",
+      slug: "pa6",
       order: 6,
       start: "Lützowplatz",
       end: "Mehringdamm",
@@ -122,7 +122,7 @@ const seedSubsections = async () => {
     },
     {
       sectionId: 2,
-      slug: "PA7",
+      slug: "pa7",
       order: 7,
       start: "Mehringdamm",
       end: "Kottbusser Damm",
@@ -138,7 +138,7 @@ const seedSubsections = async () => {
     },
     {
       sectionId: 2,
-      slug: "PA8",
+      slug: "pa8",
       order: 8,
       start: "Kottbusser Damm",
       end: "Schleusenufer",
@@ -154,7 +154,7 @@ const seedSubsections = async () => {
     // Section 3:
     {
       sectionId: 3,
-      slug: "PA9",
+      slug: "pa9",
       order: 9,
       start: "Schleusenufer",
       end: "Kottbusser Brücke",

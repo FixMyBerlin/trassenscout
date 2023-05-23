@@ -5,7 +5,7 @@ const seedSections = async () => {
     // Project 1:
     {
       projectId: 1,
-      slug: "TS1",
+      slug: "ts1",
       start: "Dovestraẞe",
       end: "Schleusenufer",
       order: 1,
@@ -22,7 +22,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     },
     {
       projectId: 1,
-      slug: "TS2",
+      slug: "ts2",
       start: "Dovestraẞe",
       end: "Schleusenufer",
       order: 2,
@@ -33,7 +33,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     // Project 2:
     {
       projectId: 2,
-      slug: "TS3",
+      slug: "ts3",
       start: "startString",
       end: "endString",
       order: 3,
@@ -45,7 +45,7 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     // Blank
     {
       projectId: 4,
-      slug: "TS4",
+      slug: "ts4",
       start: "startString2",
       end: "endString2",
       order: 4,

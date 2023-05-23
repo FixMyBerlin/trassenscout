@@ -23,8 +23,8 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
         name="slug"
         label="Kurz-Titel und URL-Teil"
         help={`Empfohlenes Format: ${quote(
-          "RS99"
-        )}. Primäre Auszeichnung der Trasse. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
+          "rs99"
+        )}. Primäre Auszeichnung der Trasse. Wird immer in Großschreibung angezeigt aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
       />
       <LabeledTextField type="text" name="subTitle" label="Untertitel" optional />
       <LabeledTextField

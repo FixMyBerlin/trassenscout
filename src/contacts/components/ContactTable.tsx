@@ -13,6 +13,7 @@ import { getFullname } from "src/users/utils"
 import { TableWrapper } from "../../core/components/Table/TableWrapper"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { useSlugs } from "src/core/hooks"
+import { shortTitle } from "src/core/components/text"
 
 type Props = {
   contacts: Contact[]
@@ -38,7 +39,9 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
       .map((contact) => contact.email)
       .join(",")
 
-    void router.push(`mailto:${user?.email}?bcc=${participants}&subject=Infos zu ${project.slug}`)
+    void router.push(
+      `mailto:${user?.email}?bcc=${participants}&subject=Infos zu ${shortTitle(project.slug)}`
+    )
   }
 
   const handleChange = (values: any) => {

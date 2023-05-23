@@ -6,7 +6,7 @@ import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { quote, seoEditTitle } from "src/core/components/text"
+import { quote, seoEditTitle, shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import updateProject from "src/projects/mutations/updateProject"
@@ -49,7 +49,7 @@ const EditProjectWithQuery = () => {
   return (
     <>
       <MetaTags noindex title={seoEditTitle(project.slug)} />
-      <PageHeader title={`${project.slug} bearbeiten`} className="mt-12" />
+      <PageHeader title={`${shortTitle(project.slug)} bearbeiten`} className="mt-12" />
 
       <ProjectForm
         className="mt-10"

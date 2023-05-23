@@ -8,6 +8,7 @@ import getSection from "src/sections/queries/getSection"
 import { Routes } from "@blitzjs/next"
 import getSubsection from "src/subsections/queries/getSubsection"
 import { startEnd } from "../text/startEnd"
+import { shortTitle } from "../text"
 
 const BreadcrumbStep: React.FC<{ title: string; route?: RouteUrlObject; arrow: boolean }> = ({
   title,
@@ -59,14 +60,14 @@ export const Breadcrumb: React.FC = () => {
       <ol className="flex items-center">
         {section && (
           <BreadcrumbStep
-            title={project.slug}
+            title={shortTitle(project.slug)}
             route={section ? Routes.ProjectDashboardPage({ projectSlug: projectSlug! }) : undefined}
             arrow={Boolean(section)}
           />
         )}
         {section && subsection && (
           <BreadcrumbStep
-            title={section.slug}
+            title={shortTitle(section.slug)}
             route={
               subsection
                 ? Routes.SectionDashboardPage({
@@ -80,7 +81,7 @@ export const Breadcrumb: React.FC = () => {
         )}
         {subsection && subsubsectionSlug && (
           <BreadcrumbStep
-            title={subsection.slug}
+            title={shortTitle(subsection.slug)}
             route={
               subsubsectionSlug
                 ? Routes.SubsectionDashboardPage({
