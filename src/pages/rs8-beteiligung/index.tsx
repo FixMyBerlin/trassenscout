@@ -18,9 +18,18 @@ import updateSurveySession from "src/survey-sessions/mutations/updateSurveySessi
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
 import { Debug } from "src/participation/components/survey/Debug"
 
+// For Progressbar: stage and associated arbitrarily set status of the progressbar
+export const stageProgressDefinition = {
+  SURVEY: 1,
+  MORE: 5,
+  FEEDBACK: 6,
+  EMAIL: 8,
+  DONE: 8,
+}
+
 const ParticipationMainPage: BlitzPage = () => {
   const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("SURVEY")
-  const [progress, setProgress] = useState({ current: 0, total: 0 })
+  const [progress, setProgress] = useState(1)
   const [responses, setResponses] = useState<any[]>([])
   const [emailState, setEmailState] = useState<string | null>()
   const [surveySessionId, setSurveySessionId] = useState<null | number>(null)
@@ -42,6 +51,7 @@ const ParticipationMainPage: BlitzPage = () => {
   const handleSubmitSurvey = async (surveyResponses: Record<string, any>) => {
     setResponses([...responses, surveyResponses])
     setStage("MORE")
+    setProgress(stageProgressDefinition["MORE"])
     window && window.scrollTo(0, 0)
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
@@ -60,10 +70,12 @@ const ParticipationMainPage: BlitzPage = () => {
     setResponses([...responses, feedbackResponses])
     if (submitterId === "submit-finish") {
       setStage("EMAIL")
+      setProgress(stageProgressDefinition["EMAIL"])
       window && window.scrollTo(0, 0)
     } else {
       setFeedbackKey(feedbackKey + 1)
       setStage("FEEDBACK")
+      setProgress(stageProgressDefinition["FEEDBACK"])
       window && window.scrollTo(0, 0)
     }
     void (async () => {
@@ -79,16 +91,19 @@ const ParticipationMainPage: BlitzPage = () => {
   const handleMoreFeedback = () => {
     setFeedbackKey(feedbackKey + 1)
     setStage("FEEDBACK")
+    setProgress(stageProgressDefinition["FEEDBACK"])
     window && window.scrollTo(0, 0)
   }
 
   const handleFinish = () => {
     setStage("EMAIL")
+    setProgress(stageProgressDefinition["EMAIL"])
     window && window.scrollTo(0, 0)
   }
 
   const handleSubmitEmail = async (email: string | null) => {
     setStage("DONE")
+    setProgress(stageProgressDefinition["DONE"])
     window && window.scrollTo(0, 0)
     setEmailState(email)
     await updateSurveySessionMutation({ id: surveySessionId!, email: email! })

@@ -1,8 +1,8 @@
 import { createContext } from "react"
 
 type TProgressContext = {
-  progress: { current: number; total: number }
-  setProgress: ({ current, total }: { current: number; total: number }) => void
+  progress: number
+  setProgress: (current: number) => void
 }
 
 type TPinContext = {
@@ -14,7 +14,7 @@ type TPinContext = {
 }
 
 export const ProgressContext = createContext<TProgressContext>({
-  progress: { current: 0, total: 0 },
+  progress: 0,
   setProgress: () => {},
 })
 

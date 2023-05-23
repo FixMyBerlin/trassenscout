@@ -1,6 +1,7 @@
-import { useContext, useEffect, useState } from "react"
-import SurveyForm from "../form/SurveyForm"
+import { useCallback, useContext, useState } from "react"
+import { stageProgressDefinition } from "src/pages/rs8-beteiligung"
 import { PinContext, ProgressContext } from "src/participation/context/contexts"
+import SurveyForm from "../form/SurveyForm"
 import { FeedbackFirstPage } from "./FeedbackFirstPage"
 import { FeedbackSecondPage } from "./FeedbackSecondPage"
 
@@ -12,17 +13,13 @@ type Props = {
 }
 
 export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
-  const { progress, setProgress } = useContext(ProgressContext)
+  const { setProgress } = useContext(ProgressContext)
   const [pinPosition, setPinPosition] = useState(null)
   const [values, setValues] = useState({})
   const [isPageOneCompleted, setIsPageOneCompleted] = useState(false)
   const [isPageTwoCompleted, setIsPageTwoCompleted] = useState(false)
-  const [feedbackCategory, setFeedbackCategory] = useState(1)
-
-  useEffect(() => {
-    setProgress({ current: 0, total: pages.length - 1 })
-    setFeedbackCategory(categories.length) // default: '"Sonstiges"
-  }, [])
+  const [feedbackPageProgress, setFeedbackPageProgress] = useState(0)
+  const [feedbackCategory, setFeedbackCategory] = useState(6) // default: 6 / "Sonstiges"
 
   const [isMap, setIsMap] = useState(false)
 
@@ -36,16 +33,19 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
 
   const categories = pages[0].questions[0].props.responses
 
-  const handleNextPage = () => {
-    const newProgress = Math.min(pages.length - 1, progress.current + 1)
-    setProgress({ ...progress, current: newProgress })
-    window && window.scrollTo(0, 0)
-  }
-  const handleBackPage = () => {
-    const newProgress = Math.max(0, progress.current - 1)
-    setProgress({ ...progress, current: newProgress })
-    window && window.scrollTo(0, 0)
-  }
+  const handleNextPage = useCallback(() => {
+    const newFeedbackPageProgress = Math.min(pages.length, feedbackPageProgress + 1)
+    setFeedbackPageProgress(newFeedbackPageProgress)
+    setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
+    window.requestAnimationFrame(() => window.scrollTo(0, 0))
+  }, [feedbackPageProgress, pages.length, setProgress])
+
+  const handleBackPage = useCallback(() => {
+    const newFeedbackPageProgress = Math.max(0, feedbackPageProgress - 1)
+    setFeedbackPageProgress(newFeedbackPageProgress)
+    setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
+    window.requestAnimationFrame(() => window.scrollTo(0, 0))
+  }, [feedbackPageProgress, setProgress])
 
   const transformValues = (values: Record<string, null | string | boolean>) => {
     const responses: Record<string, null | string | number | number[]> = {}
@@ -68,28 +68,34 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
     return responses
   }
 
-  const handleSubmit = (values: Record<string, any>, submitterId?: string) => {
-    values = transformValues(values)
-    delete values["22"] // delete map ja/nein response
-    onSubmit({ ...values, [pinId]: isMap ? pinPosition : null }, submitterId)
-  }
+  const handleSubmit = useCallback(
+    (values: Record<string, any>, submitterId?: string) => {
+      values = transformValues(values)
+      delete values["22"] // delete map ja/nein response
+      onSubmit({ ...values, [pinId]: isMap ? pinPosition : null }, submitterId)
+    },
+    [isMap, onSubmit, pinId, pinPosition]
+  )
 
   // when Form changes, check if Radio "Ja" is selected - set state to true
-  const handleChange = (values: Record<string, any>) => {
-    setValues(values)
-    values = transformValues(values)
-    setIsPageOneCompleted(values["21"] && values["22"])
-    setIsPageTwoCompleted(values["34"] || values["35"])
-    setIsMap(values["22"] === 1) // "1" -> yes, "2" -> no - see feedback.json
-    if (!(values["22"] === 1)) setPinPosition(null) // set pinPosition to null if not yes
-    setFeedbackCategory(values["21"] || categories.length) // sets state to response id of chosen category (question 21) // fallback: '"Sonstiges"
-  }
+  const handleChange = useCallback(
+    (values: Record<string, any>) => {
+      setValues(values)
+      values = transformValues(values)
+      setIsPageOneCompleted(values["21"] && values["22"])
+      setIsPageTwoCompleted(values["34"] || values["35"])
+      setIsMap(values["22"] === 1) // "1" -> yes, "2" -> no - see feedback.json
+      if (!(values["22"] === 1)) setPinPosition(null) // set pinPosition to null if not yes
+      setFeedbackCategory(values["21"] || categories.length) // sets state to response id of chosen category (question 21) // fallback: '"Sonstiges"
+    },
+    [categories.length]
+  )
 
   return (
     // @ts-ignore
     <PinContext.Provider value={{ pinPosition, setPinPosition }}>
       <SurveyForm onSubmit={handleSubmit} onChangeValues={handleChange}>
-        {progress.current === 0 && (
+        {feedbackPageProgress === 0 && (
           <FeedbackFirstPage
             isCompleted={isPageOneCompleted}
             page={pages[0]}
@@ -97,7 +103,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
             onButtonClick={handleNextPage}
           />
         )}
-        {progress.current === 1 && (
+        {feedbackPageProgress === 1 && (
           <FeedbackSecondPage
             isCompleted={isPageTwoCompleted}
             projectGeometry={projectGeometry}

@@ -1,8 +1,9 @@
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useState } from "react"
 import SurveyForm from "../form/SurveyForm"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
+import { stageProgressDefinition } from "src/pages/rs8-beteiligung"
 import { ProgressContext } from "src/participation/context/contexts"
 import { Survey as TSurvey } from "src/participation/data/types"
 import { Debug } from "./Debug"
@@ -12,25 +13,22 @@ type Props = { survey: TSurvey; onSubmit: ([]) => void }
 
 export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   const [values, setValues] = useState({})
-  const { progress, setProgress } = useContext(ProgressContext)
+  const { setProgress } = useContext(ProgressContext)
+  const [surveyPageProgress, setSurveyPageProgress] = useState(0)
 
-  useEffect(() => {
-    setProgress({ current: 0, total: pages.length - 1 })
-  }, [])
+  const handleNextPage = useCallback(() => {
+    const newSurveyPageProgress = Math.min(survey.pages.length, surveyPageProgress + 1)
+    setSurveyPageProgress(newSurveyPageProgress)
+    setProgress(stageProgressDefinition["SURVEY"] + newSurveyPageProgress)
+    window.requestAnimationFrame(() => window.scrollTo(0, 0))
+  }, [survey.pages.length, setProgress, surveyPageProgress])
 
-  useEffect(() => {
-    window && window.scrollTo(0, 0)
-  }, [progress])
-
-  const handleNextPage = () => {
-    const newProgress = Math.min(pages.length - 1, progress.current + 1)
-    setProgress({ ...progress, current: newProgress })
-  }
-
-  const handleBackPage = () => {
-    const newProgress = Math.max(0, progress.current - 1)
-    setProgress({ ...progress, current: newProgress })
-  }
+  const handleBackPage = useCallback(() => {
+    const newSurveyPageProgress = Math.max(0, surveyPageProgress - 1)
+    setSurveyPageProgress(newSurveyPageProgress)
+    setProgress(stageProgressDefinition["SURVEY"] + newSurveyPageProgress)
+    window.requestAnimationFrame(() => window.scrollTo(0, 0))
+  }, [setProgress, surveyPageProgress])
 
   const buttonActions = {
     next: handleNextPage,
@@ -60,25 +58,28 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
     return responses
   }
 
-  const handleSubmit = (values: any) => {
-    values = transformValues(values)
-    onSubmit(values)
-  }
+  const handleSubmit = useCallback(
+    (values: any) => {
+      values = transformValues(values)
+      onSubmit(values)
+    },
+    [onSubmit]
+  )
 
-  const handleChange = (values: any) => {
+  const handleChange = useCallback((values: any) => {
     values = transformValues(values)
     setValues(values)
-  }
+  }, [])
 
   const pageIsComplete = () => {
     let completed: boolean
-    const questions = pages[progress.current]!.questions
+    const questions = pages[surveyPageProgress]!.questions
 
     if (!questions || !questions.length) {
       completed = true
     } else {
       // @ts-ignore every() returns a boolean
-      completed = pages[progress.current]!.questions?.every(({ id, component }) => {
+      completed = pages[surveyPageProgress]!.questions?.every(({ id, component }) => {
         if (!(id in values)) {
           return false
         }
@@ -94,7 +95,7 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
     return completed
   }
 
-  const page = pages[progress.current]
+  const page = pages[surveyPageProgress]
 
   return (
     // @ts-ignore

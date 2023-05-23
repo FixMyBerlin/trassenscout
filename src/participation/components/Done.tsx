@@ -8,7 +8,7 @@ export const Done = () => {
     <section>
       <ScreenHeaderParticipation
         title="Vielen Dank!"
-        description="Ihre Emailadresse wurde vermerkt."
+        description="Ihre E-Mail-Adresse wurde vermerkt."
       />
       {/* TODO replace link in production: https://radschnellweg8-lb-wn.de/beteiligung */}
       <Link

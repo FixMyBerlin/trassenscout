@@ -3,6 +3,7 @@ import { ParticipationButton } from "../core/ParticipationButton"
 import { ScreenHeaderParticipation } from "../core/ScreenHeaderParticipation"
 import { ParticipationMap } from "../maps/ParticipationMap"
 import { Question } from "../survey/Question"
+import { ParticipationButtonWrapper } from "../core/ParticipationButtonWrapper"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -38,9 +39,11 @@ export const FeedbackFirstPage: React.FC<Props> = ({ isCompleted, page, isMap, o
         </MapProvider>
       )}
       {/* TODO Disabled */}
-      <ParticipationButton disabled={!isCompleted} type="button" onClick={onButtonClick}>
-        {buttons[0].label.de}
-      </ParticipationButton>
+      <ParticipationButtonWrapper>
+        <ParticipationButton disabled={!isCompleted} type="button" onClick={onButtonClick}>
+          {buttons[0].label.de}
+        </ParticipationButton>
+      </ParticipationButtonWrapper>
     </>
   )
 }

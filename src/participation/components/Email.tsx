@@ -1,14 +1,13 @@
 export { FORM_ERROR } from "src/core/components/forms"
-import { useContext, useEffect, useState } from "react"
-import SurveyForm from "./form/SurveyForm"
+import { useCallback, useState } from "react"
 import { Link, whiteButtonStyles } from "src/core/components/links"
-import { ProgressContext } from "../context/contexts"
 import { ParticipationButton } from "./core/ParticipationButton"
 import { ParticipationButtonWrapper } from "./core/ParticipationButtonWrapper"
 import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
 import { ParticipationH2, ParticipationP } from "./core/Text"
 import { ParticipationLabeledCheckbox } from "./form/ParticipationLabeledCheckbox"
 import { ParticipationLabeledTextField } from "./form/ParticipationLabeledTextField"
+import SurveyForm from "./form/SurveyForm"
 
 type Props = {
   onSubmit: any
@@ -17,19 +16,17 @@ type Props = {
 
 export const Email: React.FC<Props> = ({ onSubmit, email }) => {
   const [consent, setConsent] = useState(false)
-  const { progress, setProgress } = useContext(ProgressContext)
 
-  useEffect(() => {
-    setProgress({ current: 0, total: email.pages.length - 1 })
-  }, [])
+  const handleSubmit = useCallback(
+    (values: Record<string, any>) => {
+      onSubmit(values.email)
+    },
+    [onSubmit]
+  )
 
-  const handleSubmit = (values: Record<string, any>) => {
-    onSubmit(values.email)
-  }
-
-  const handleChange = (values: Record<string, any>) => {
+  const handleChange = useCallback((values: Record<string, any>) => {
     setConsent(values.consent && values.email)
-  }
+  }, [])
 
   const page = email.pages[0]
 
@@ -48,6 +45,10 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
           outerProps={{ className: "mb-6" }}
         />
         <ParticipationLabeledCheckbox
+          labelProps={{
+            className:
+              "ml-3 block cursor-pointer text-normal text-base sm:text-lg text-gray-700 hover:text-gray-800",
+          }}
           name="consent"
           label={page.questions[1].props.agreementText.de}
         />
