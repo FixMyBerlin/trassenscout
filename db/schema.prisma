@@ -239,6 +239,7 @@ model Subsubsection {
   width        Float? // Meter
   costEstimate Float? // Euro
   description  String? // Anmerkungen
+  mapillaryKey String?
   //
   manager      User                  @relation(fields: [managerId], references: [id])
   managerId    Int

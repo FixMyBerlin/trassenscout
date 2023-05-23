@@ -164,6 +164,17 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
         </div>
       </section>
 
+      {subsubsection.mapillaryKey && (
+        <section className="mt-10">
+          <H2>Straßenansicht (Mapillary)</H2>
+          <iframe
+            title="Mapillary Image Preview"
+            src={`https://www.mapillary.com/embed?image_key=${subsubsection.mapillaryKey}&style=photo`}
+            className="mt-2 aspect-video w-full"
+          />
+        </section>
+      )}
+
       <SuperAdminLogData data={{ subsubsection, files }} />
     </section>
   )
