@@ -93,7 +93,10 @@ export const SubsectionDashboardWithQuery = () => {
             sections={sectionsWithSubsections}
             selectedSubsection={subsection}
           />
-          <SubsubsectionTable subsubsections={subsection.subsubsections} />
+          <SubsubsectionTable
+            subsubsections={subsection.subsubsections}
+            compact={Boolean(subsubsection)}
+          />
         </div>
 
         {subsubsection ? (

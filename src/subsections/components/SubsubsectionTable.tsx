@@ -16,9 +16,10 @@ import { SubsubsectionIcon } from "src/core/components/Map/Icons"
 
 type Props = {
   subsubsections: Subsubsection[]
+  compact: boolean
 }
 
-export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
+export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact }) => {
   const router = useRouter()
   const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
@@ -38,18 +39,39 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                 Maßnahmentyp
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th
+                scope="col"
+                className={clsx(
+                  { hidden: compact },
+                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                )}
+              >
                 Länge
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th
+                scope="col"
+                className={clsx(
+                  { hidden: compact },
+                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                )}
+              >
                 Breite
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th
+                scope="col"
+                className={clsx(
+                  { hidden: compact },
+                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                )}
+              >
                 Kostenschätzung
               </th>
               <th
                 scope="col"
-                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
+                className={clsx(
+                  { hidden: compact },
+                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
+                )}
               >
                 -
               </th>
@@ -85,17 +107,37 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
                     {subsubsection.task}
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
+                  <td
+                    className={clsx(
+                      { hidden: compact },
+                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900"
+                    )}
+                  >
                     {formattedLength(subsubsection.length)}
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
+                  <td
+                    className={clsx(
+                      { hidden: compact },
+                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900"
+                    )}
+                  >
                     {formattedWidth(subsubsection.width)}
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
+                  <td
+                    className={clsx(
+                      { hidden: compact },
+                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900"
+                    )}
+                  >
                     {formattedEuro(subsubsection.costEstimate)}
                   </td>
-                  <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
                     {/* TODO Abstimmung */}-
+                  <td
+                    className={clsx(
+                      { hidden: compact },
+                      "break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6"
+                    )}
+                  >
                   </td>
                 </tr>
               )
