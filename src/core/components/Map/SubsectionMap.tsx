@@ -136,6 +136,7 @@ export const SubsectionMap: React.FC<Props> = ({ sections, selectedSubsection })
           <TitleLabel
             icon={<SubsubsectionMapIcon label={shortTitle(sec.slug)} />}
             title={sec.subTitle}
+            subtitle={sec.task}
           />
         </TipMarker>
       </Marker>
