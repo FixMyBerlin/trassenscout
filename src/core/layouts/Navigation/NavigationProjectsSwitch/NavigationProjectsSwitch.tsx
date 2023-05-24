@@ -33,8 +33,8 @@ export const NavigationProjectsSwitch: React.FC<Props> = ({ projects }) => {
         <>
           <Menu.Button
             className={clsx(
-              "flex rounded-md border-2 border-transparent bg-yellow-500 px-2 pb-0.5 pt-1 text-sm font-medium text-gray-800",
-              open ? "border-2 border-white" : "hover:border-2 hover:border-gray-500",
+              "flex rounded-md bg-yellow-500 px-2 py-2 text-sm font-medium text-gray-800",
+              open ? "bg-yellow-400" : "hover:bg-yellow-400",
               "focus:outline-none focus:ring-2 focus:ring-white/30"
             )}
           >
@@ -67,7 +67,7 @@ export const NavigationProjectsSwitch: React.FC<Props> = ({ projects }) => {
                             classNameOverwrites={clsx(
                               current && "bg-gray-200",
                               active && "bg-gray-100",
-                              "group flex w-full items-center rounded-md px-2 py-2 text-sm gap-2"
+                              "text-blue-500 hover:text-blue-800 flex items-center rounded-md px-2 py-2 text-sm gap-2 items-center"
                             )}
                           >
                             {current && <ProjectLogo />}
