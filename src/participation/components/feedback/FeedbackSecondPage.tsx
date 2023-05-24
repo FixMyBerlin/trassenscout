@@ -6,13 +6,17 @@ import { ScreenHeaderParticipation } from "../core/ScreenHeaderParticipation"
 import { ParticipationH2, ParticipationH3, ParticipationP } from "../core/Text"
 import { ParticipationStaticMap } from "../maps/ParticipationStaticMap"
 import { Question } from "../survey/Question"
+import { MultiLineString } from "@turf/helpers"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
   page: any // TODO
   onButtonClick: any // TODO
-  projectGeometry: any // TODO
+  staticMapProps: {
+    projectGeometry: MultiLineString
+    layerStyles: Record<string, any>
+  }
   feedbackCategory: string
   isCompleted: boolean
 }
@@ -21,7 +25,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
   page,
   isCompleted,
   onButtonClick,
-  projectGeometry,
+  staticMapProps,
   feedbackCategory,
 }) => {
   const { pinPosition } = useContext(PinContext)
@@ -38,12 +42,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
       {pinPosition && (
         <>
           <ParticipationH3>{questions[1].label.de}</ParticipationH3>
-          <ParticipationStaticMap
-            marker={pinPosition}
-            staticMap={{
-              projectGeometry: projectGeometry,
-            }}
-          />
+          <ParticipationStaticMap marker={pinPosition} {...staticMapProps} />
         </>
       )}
       <div className="pt-8">

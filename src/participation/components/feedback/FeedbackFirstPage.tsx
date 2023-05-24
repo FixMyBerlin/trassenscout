@@ -39,6 +39,7 @@ export const FeedbackFirstPage: React.FC<Props> = ({
           <ParticipationMap
             {...mapIsDirtyProps}
             projectMap={{
+              layerStyles: mapProps.layerStyles,
               projectGeometry: mapProps.projectGeometry,
               initialMarker: mapProps.marker,
               config: mapProps.config,

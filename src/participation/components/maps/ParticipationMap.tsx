@@ -24,6 +24,7 @@ export type ParticipationMapProps = {
   children?: React.ReactNode
   projectMap: {
     projectGeometry: MultiLineString
+    layerStyles: Record<string, any>
     initialMarker: { lng: number; lat: number }
     config: {
       bounds: LngLatBoundsLike
@@ -154,21 +155,17 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
             onDragEnd={onMarkerDragEnd}
           >
             <Pin />
-            <Source type="geojson" data={multiLineString(projectMap.projectGeometry.coordinates)}>
-              <Layer
-                type="line"
-                paint={{
-                  "line-width": 7,
-                  "line-color": "blue",
-                }}
-              />
+            <Source type="geojson" data={projectMap.projectGeometry}>
+              {projectMap.layerStyles.map((layer: any) => {
+                return <Layer key={layer.id} {...layer} />
+              })}
             </Source>
           </Marker>
         )}
         {isMediumScreen && <NavigationControl showCompass={false} />}
 
         <MapBanner
-          className="absolute bottom-12"
+          className="absolute bottom-12 font-sans"
           action={easeToPin}
           status={isPinInView ? "default" : "pinOutOfView"}
         />
