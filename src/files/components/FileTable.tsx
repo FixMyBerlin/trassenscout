@@ -7,9 +7,10 @@ import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { Prettify } from "src/core/types"
 import getFilesWithSubsections from "../queries/getFilesWithSubsections"
 import { fileUrl } from "../utils"
+import { PromiseReturnType } from "blitz"
 
 type Props = Prettify<
-  Pick<Awaited<ReturnType<typeof getFilesWithSubsections>>, "files"> & {
+  Pick<PromiseReturnType<typeof getFilesWithSubsections>, "files"> & {
     withAction?: boolean
   }
 >

@@ -1,3 +1,4 @@
+import { PromiseReturnType } from "blitz"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import {
   Form,
@@ -13,7 +14,7 @@ export { FORM_ERROR } from "src/core/components/forms"
 
 export function FileForm<S extends z.ZodType<any, any>>(
   props: FormProps<S> & {
-    sectionsWithSubsections: Awaited<ReturnType<typeof getSectionsIncludeSubsections>>["sections"]
+    sectionsWithSubsections: PromiseReturnType<typeof getSectionsIncludeSubsections>["sections"]
     isSubsubsectionFile: boolean
   }
 ) {
