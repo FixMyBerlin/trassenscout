@@ -33,7 +33,7 @@ export const NavigationProjectsSwitch: React.FC<Props> = ({ projects }) => {
         <>
           <Menu.Button
             className={clsx(
-              "flex rounded-md bg-yellow-500 px-2 py-2 text-sm font-medium text-gray-800",
+              "flex rounded-md bg-yellow-500 px-3 py-2 text-sm font-medium text-gray-800",
               open ? "bg-yellow-400" : "hover:bg-yellow-400 focus:bg-yellow-400",
               "focus:outline-none focus:ring-2 focus:ring-white/30"
             )}
