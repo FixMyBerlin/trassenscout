@@ -5,7 +5,7 @@ type Props = {
   size?: "5" | "12"
 }
 
-const spinnerSizeClasses = {
+const sizeClasses = {
   "5": "h-5 w-5",
   "12": "h-12 w-12",
 }
@@ -17,7 +17,7 @@ export const Spinner: React.FC<Props> = ({ page = false, size = "12" }) => {
         <svg
           aria-hidden="true"
           className={clsx(
-            spinnerSizeClasses[size],
+            sizeClasses[size],
             page ? "my-20" : "",
             "inline animate-spin fill-blue-500 text-gray-200 dark:text-gray-600"
           )}
