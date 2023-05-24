@@ -12,7 +12,7 @@ type Props = {
 
 export const ParticipationLabeledCheckboxGroup: React.FC<Props> = ({ items, className }) => {
   return (
-    <div className={clsx(className, "space-y-8")}>
+    <div className={clsx(className, "space-y-2")}>
       {items.map((item, index) => {
         return <ParticipationLabeledCheckbox key={index} {...item} />
       })}
