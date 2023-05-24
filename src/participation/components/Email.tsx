@@ -44,14 +44,19 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
           placeholder={page.questions[1].props.emailPlaceholder.de}
           outerProps={{ className: "mb-6" }}
         />
-        <ParticipationLabeledCheckbox
-          labelProps={{
-            className:
-              "ml-3 block cursor-pointer text-normal text-base sm:text-lg text-gray-700 hover:text-gray-800",
-          }}
-          name="consent"
-          label={page.questions[1].props.agreementText.de}
-        />
+        <div className="flex items-center">
+          <ParticipationLabeledCheckbox
+            labelProps={{
+              className:
+                "ml-3 block cursor-pointer text-normal text-base sm:text-lg text-gray-700 hover:text-gray-800",
+            }}
+            name="consent"
+            label=""
+          />
+          <p className="pt-1">
+            Ich stimme den <Link href="/datenschutz">Datenschutzbedingungen</Link> zu.
+          </p>
+        </div>
 
         <ParticipationButtonWrapper>
           <ParticipationButton disabled={!consent} type="submit">
