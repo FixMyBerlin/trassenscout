@@ -31,12 +31,16 @@ export type ParticipationMapProps = {
       maxZoom?: number
     }
   }
+  isMapDirty: any
+  setIsMapDirty: any
 }
 
 export const ParticipationMap: React.FC<ParticipationMapProps> = ({
   projectMap,
   className,
   children,
+  isMapDirty,
+  setIsMapDirty,
 }) => {
   const { mainMap } = useMap()
   const [events, logEvents] = useState<Record<string, LngLat>>({})
@@ -77,9 +81,13 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
     }
   }, [])
 
-  const onMarkerDragStart = useCallback((event: MarkerDragEvent) => {
-    logEvents((_events) => ({ ..._events, onDragStart: event.lngLat }))
-  }, [])
+  const onMarkerDragStart = useCallback(
+    (event: MarkerDragEvent) => {
+      setIsMapDirty(true)
+      logEvents((_events) => ({ ..._events, onDragStart: event.lngLat }))
+    },
+    [setIsMapDirty]
+  )
 
   const onMarkerDrag = useCallback(
     (event: MarkerDragEvent) => {

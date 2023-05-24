@@ -12,9 +12,16 @@ type Props = {
   isMap: boolean
   onButtonClick: any // TODO
   isCompleted: boolean
+  mapIsDirtyProps: any
 }
 
-export const FeedbackFirstPage: React.FC<Props> = ({ isCompleted, page, isMap, onButtonClick }) => {
+export const FeedbackFirstPage: React.FC<Props> = ({
+  isCompleted,
+  page,
+  isMap,
+  onButtonClick,
+  mapIsDirtyProps,
+}) => {
   const { title, description, questions, buttons } = page
 
   const mapProps = questions.find(
@@ -30,6 +37,7 @@ export const FeedbackFirstPage: React.FC<Props> = ({ isCompleted, page, isMap, o
       {isMap && (
         <MapProvider>
           <ParticipationMap
+            {...mapIsDirtyProps}
             projectMap={{
               projectGeometry: mapProps.projectGeometry,
               initialMarker: mapProps.marker,
