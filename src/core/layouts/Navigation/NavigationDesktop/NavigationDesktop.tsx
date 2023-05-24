@@ -14,7 +14,7 @@ export const NavigationDesktop: React.FC<NavigationProps> = ({ menuItems, projec
 
   return (
     <div className="relative hidden sm:flex sm:flex-row sm:items-center sm:justify-between">
-      <div className="relative flex min-h-[4rem] items-center justify-between space-x-6 sm:h-16">
+      <div className="relative flex min-h-[4rem] items-center justify-between gap-4 sm:h-16">
         <div className="flex flex-1 items-center justify-start sm:items-stretch">
           <div className="flex flex-shrink-0 items-center justify-center">
             {asPath === `/${projectSlug}` ? (

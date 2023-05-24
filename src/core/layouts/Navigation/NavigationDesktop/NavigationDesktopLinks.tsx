@@ -10,7 +10,7 @@ export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
   const { pathname } = useRouter()
 
   return (
-    <div className="flex space-x-4">
+    <div className="flex gap-4">
       {menuItems?.map((item) => {
         const current = [item.href.pathname, ...(item.alsoHighlightPathnames || [])].includes(
           pathname
