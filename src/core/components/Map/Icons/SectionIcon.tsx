@@ -4,9 +4,9 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 
 export const SectionIcon: React.FC<Props> = ({ label, ...props }) => (
   <div
-    className={`flex h-9 w-12 flex-none
+    className={`flex h-9 w-auto flex-none
         items-center justify-center rounded-lg
-        border-2 border-yellow-500 bg-white pt-0.5
+        border-2 border-yellow-500 bg-white px-1.5 pt-0.5
         font-sans text-xl font-bold leading-none text-gray-900`}
     {...props}
   >
@@ -16,9 +16,9 @@ export const SectionIcon: React.FC<Props> = ({ label, ...props }) => (
 
 export const SectionMapIcon: React.FC<Props> = ({ label, ...props }) => (
   <div
-    className={`flex h-[21px] w-[34px] flex-none
-        items-center justify-center rounded-lg
-        border-2 border-yellow-500 bg-white pt-0.5
+    className={`flex h-[21px] w-auto flex-none
+        items-center justify-center rounded-md
+        border-2 border-yellow-500 bg-white px-1.5 pt-0.5
         font-sans text-[12px] font-bold leading-none text-gray-900`}
     {...props}
   >
