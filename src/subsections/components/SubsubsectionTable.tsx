@@ -1,7 +1,7 @@
 import { Routes } from "@blitzjs/next"
-import { Subsubsection } from "@prisma/client"
 import clsx from "clsx"
 import { useRouter } from "next/router"
+import { SubsubsectionIcon } from "src/core/components/Map/Icons"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
 import {
@@ -12,10 +12,11 @@ import {
   shortTitle,
 } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
-import { SubsubsectionIcon } from "src/core/components/Map/Icons"
+import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
+import { mapillaryLink } from "./utils/mapillaryLink"
 
 type Props = {
-  subsubsections: Subsubsection[]
+  subsubsections: SubsubsectionWithPosition[]
   compact: boolean
 }
 
@@ -86,6 +87,8 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                 subsubsectionSlug: subsubsection.slug,
               })
 
+              const mapillaryHref = mapillaryLink(subsubsection)
+
               return (
                 <tr
                   key={subsubsection.id}
@@ -131,13 +134,17 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   >
                     {formattedEuro(subsubsection.costEstimate)}
                   </td>
-                    {/* TODO Abstimmung */}-
                   <td
                     className={clsx(
                       { hidden: compact },
                       "break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6"
                     )}
                   >
+                    {mapillaryHref && (
+                      <Link href={mapillaryHref} blank>
+                        Mapillary
+                      </Link>
+                    )}
                   </td>
                 </tr>
               )
