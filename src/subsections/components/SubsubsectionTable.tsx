@@ -1,7 +1,7 @@
 import { Routes } from "@blitzjs/next"
-import { Subsubsection } from "@prisma/client"
 import clsx from "clsx"
 import { useRouter } from "next/router"
+import { SubsubsectionIcon } from "src/core/components/Map/Icons"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
 import {
@@ -12,13 +12,16 @@ import {
   shortTitle,
 } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
-import { SubsubsectionIcon } from "src/core/components/Map/Icons"
+import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
+import { mapillaryLink } from "./utils/mapillaryLink"
+import { ZeroCase } from "src/core/components/text/ZeroCase"
 
 type Props = {
-  subsubsections: Subsubsection[]
+  subsubsections: SubsubsectionWithPosition[]
+  compact: boolean
 }
 
-export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
+export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact }) => {
   const router = useRouter()
   const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
@@ -38,18 +41,39 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                 Maßnahmentyp
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th
+                scope="col"
+                className={clsx(
+                  { hidden: compact },
+                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                )}
+              >
                 Länge
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th
+                scope="col"
+                className={clsx(
+                  { hidden: compact },
+                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                )}
+              >
                 Breite
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th
+                scope="col"
+                className={clsx(
+                  { hidden: compact },
+                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                )}
+              >
                 Kostenschätzung
               </th>
               <th
                 scope="col"
-                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
+                className={clsx(
+                  { hidden: compact },
+                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
+                )}
               >
                 -
               </th>
@@ -57,11 +81,14 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
             {subsubsections.map((subsubsection) => {
-              const route = Routes.SubsectionDashboardPage({
+              const route = Routes.SubsubsectionDashboardPage({
                 projectSlug: projectSlug!,
                 sectionSlug: sectionSlug!,
-                subsectionPath: [subsectionSlug!, subsubsection.slug],
+                subsectionSlug: subsectionSlug!,
+                subsubsectionSlug: subsubsection.slug,
               })
+
+              const mapillaryHref = mapillaryLink(subsubsection)
 
               return (
                 <tr
@@ -84,17 +111,41 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
                     {subsubsection.task}
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
+                  <td
+                    className={clsx(
+                      { hidden: compact },
+                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900"
+                    )}
+                  >
                     {formattedLength(subsubsection.length)}
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
+                  <td
+                    className={clsx(
+                      { hidden: compact },
+                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900"
+                    )}
+                  >
                     {formattedWidth(subsubsection.width)}
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
+                  <td
+                    className={clsx(
+                      { hidden: compact },
+                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900"
+                    )}
+                  >
                     {formattedEuro(subsubsection.costEstimate)}
                   </td>
-                  <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
-                    {/* TODO Abstimmung */}-
+                  <td
+                    className={clsx(
+                      { hidden: compact },
+                      "break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6"
+                    )}
+                  >
+                    {mapillaryHref && (
+                      <Link href={mapillaryHref} blank>
+                        Mapillary
+                      </Link>
+                    )}
                   </td>
                 </tr>
               )
@@ -102,8 +153,8 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections }) => {
           </tbody>
         </table>
         {!subsubsections.length && (
-          <div className="border-t px-3 py-5 text-center text-gray-500">
-            Noch keine Führungen angelegt
+          <div className="border-t px-3 py-5">
+            <ZeroCase visible={subsubsections.length} name="Führungen" />
           </div>
         )}
       </TableWrapper>

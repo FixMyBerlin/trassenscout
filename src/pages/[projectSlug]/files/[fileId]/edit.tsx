@@ -27,7 +27,8 @@ const EditFileWithQuery = () => {
     backUrl = Routes.SubsectionDashboardPage({
       projectSlug: projectSlug!,
       sectionSlug: sectionSlug,
-      subsectionPath: [subsectionSlug, subsubsectionSlug],
+      subsectionSlug: subsectionSlug,
+      subsubsectionSlug: subsubsectionSlug,
     })
   }
 

@@ -2,18 +2,14 @@ import { Disclosure } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import { useRouter } from "next/router"
-import React, { Fragment } from "react"
+import React from "react"
 import { Link } from "src/core/components/links"
-import { menuItems } from "../NavigationProject/menuItems"
+import { NavigationGeneralLogo } from "../NavigationGeneral/NavigationGeneralLogo"
+import { NavigationProps } from "../NavigationProject/NavigationProject"
 import { NavigationProjectsSwitch } from "../NavigationProjectsSwitch"
 import { NavigationUser } from "../NavigationUser"
-import { NavigationGeneralLogo } from "../NavigationGeneral/NavigationGeneralLogo"
 
-type Props = {
-  menuItems: ReturnType<typeof menuItems>
-}
-
-export const NavigationMobile: React.FC<Props> = ({ menuItems }) => {
+export const NavigationMobile: React.FC<NavigationProps> = ({ menuItems, projects }) => {
   const { pathname } = useRouter()
 
   return (
@@ -22,8 +18,10 @@ export const NavigationMobile: React.FC<Props> = ({ menuItems }) => {
         <>
           <div className="relative flex min-h-[4rem] items-center justify-between sm:h-16">
             <div className="absolute inset-y-0 right-0 flex items-center space-x-2">
-              <NavigationProjectsSwitch />
+              <NavigationProjectsSwitch projects={projects} />
+
               <NavigationUser />
+
               {Boolean(menuItems?.length) && (
                 <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Hauptmenü öffnen</span>
@@ -37,7 +35,7 @@ export const NavigationMobile: React.FC<Props> = ({ menuItems }) => {
             </div>
             <div className="flex flex-1 items-center justify-start sm:items-stretch">
               <div className="flex flex-shrink-0 items-center">
-                <NavigationGeneralLogo />
+                <NavigationGeneralLogo beta={false} />
               </div>
             </div>
           </div>
@@ -58,7 +56,7 @@ export const NavigationMobile: React.FC<Props> = ({ menuItems }) => {
                         current
                           ? "bg-gray-900 text-white"
                           : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                        "rounded-md px-3 py-2 text-sm font-medium"
+                        "rounded-md px-3 py-2 text-sm font-medium block"
                       )}
                     >
                       {item.name}

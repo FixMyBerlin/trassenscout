@@ -28,7 +28,7 @@ export const Stakeholdernote = () => {
         Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
           sectionSlug: sectionSlug!,
-          subsectionPath: [subsectionSlug!],
+          subsectionSlug: subsectionSlug!,
         })
       )
     }
@@ -57,7 +57,7 @@ export const Stakeholdernote = () => {
           href={Routes.SubsectionDashboardPage({
             projectSlug: projectSlug!,
             sectionSlug: sectionSlug!,
-            subsectionPath: [subsectionSlug!],
+            subsectionSlug: subsectionSlug!,
           })}
         >
           Zurück zum Planungsabschnitt

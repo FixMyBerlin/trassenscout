@@ -9,7 +9,7 @@ import { H1 } from "src/core/components/text/Headings"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import createProject from "src/projects/mutations/createProject"
-import { ProjectSchema } from "src/projects/schema"
+import { ProjectLogoScrcsInputSchema, ProjectSchema } from "src/projects/schema"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getUsers from "src/users/queries/getUsers"
 
@@ -41,7 +41,7 @@ const AdminNewProjectPageWithQuery = () => {
 
         <ProjectForm
           submitText="Erstellen"
-          // schema={ProjectSchema}
+          schema={ProjectSchema.merge(ProjectLogoScrcsInputSchema)}
           initialValues={{ managerId: currentUser!.id }}
           onSubmit={handleSubmit}
           users={users}

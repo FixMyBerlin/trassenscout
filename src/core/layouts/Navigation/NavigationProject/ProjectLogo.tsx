@@ -10,38 +10,29 @@ import svgLogoTrassenscout from "../assets/trassenscout-logo-without-text.svg"
 
 type Props = {
   className?: string
-  defaultImg?: boolean
+  size?: "5" | "12"
 }
 
-export const ProjectLogoWithQuery: React.FC<Props> = ({ className, defaultImg = true }) => {
+const spinnerSizeClasses = {
+  "5": "h-5 aspect-square",
+  "12": "h-12 aspect-square",
+}
+
+export const ProjectLogoWithQuery: React.FC<Props> = ({ className, size = "5" }) => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
 
-  if (!project.logoSrc && !defaultImg) return null
+  if (!project.logoSrc) return null
 
   return (
-    <>
-      {project.logoSrc ? (
-        <div className={clsx(className, "relative h-12 w-12")}>
-          <Image
-            className="object-contain"
-            layout="fill"
-            src={getImageSrc(project.logoSrc)}
-            alt="Projektlogo"
-          />
-        </div>
-      ) : (
-        <div className={className}>
-          <Image
-            src={svgLogoTrassenscout}
-            className="text-yellow-500"
-            alt="Trassenscout"
-            height={36}
-            width={48}
-          />
-        </div>
-      )}
-    </>
+    <div className={clsx(className, "relative flex-none", spinnerSizeClasses[size])}>
+      <Image
+        className="object-contain"
+        layout="fill"
+        src={getImageSrc(project.logoSrc)}
+        alt="Projektlogo"
+      />
+    </div>
   )
 }
 

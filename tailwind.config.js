@@ -88,7 +88,7 @@ module.exports = {
       },
     },
     fontFamily: {
-      sans: ["OverpassVariable", "sans-serif"],
+      sans: ["Overpass", "sans-serif"],
       mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
     },
   },

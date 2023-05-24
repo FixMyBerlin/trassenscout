@@ -9,3 +9,7 @@ export const ProjectSchema = z.object({
   managerId: z.coerce.number(),
   partnerLogoSrcs: z.string().array(),
 })
+
+export const ProjectLogoScrcsInputSchema = z.object({
+  partnerLogoSrcs: z.string().nullish(),
+})

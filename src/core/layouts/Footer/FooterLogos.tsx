@@ -12,7 +12,7 @@ export const FooterLogosWithQuery: React.FC<Props> = ({ className }) => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
 
-  if (!project.partnerLogoSrcs) return null
+  if (!project.partnerLogoSrcs.length) return null
 
   return (
     <div className="flex">

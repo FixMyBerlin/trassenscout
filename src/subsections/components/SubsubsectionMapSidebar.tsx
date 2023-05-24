@@ -34,7 +34,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
   })
 
   return (
-    <section className="overlflow-y-scroll h-full w-[40rem] overflow-x-hidden rounded-md border border-gray-400/10 bg-white p-3 drop-shadow-md">
+    <section className="overlflow-y-scroll h-full w-[55rem] overflow-x-hidden rounded-md border border-gray-400/10 bg-white p-3 drop-shadow-md">
       <div className="mt-3 flex items-center justify-between">
         <div className="flex items-center justify-start gap-2">
           <SubsubsectionIcon label={shortTitle(subsubsection.slug)} />
@@ -163,6 +163,17 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
           })}
         </div>
       </section>
+
+      {subsubsection.mapillaryKey && (
+        <section className="mt-10">
+          <H2>Straßenansicht (Mapillary)</H2>
+          <iframe
+            title="Mapillary Image Preview"
+            src={`https://www.mapillary.com/embed?image_key=${subsubsection.mapillaryKey}&style=photo`}
+            className="mt-2 aspect-video w-full"
+          />
+        </section>
+      )}
 
       <SuperAdminLogData data={{ subsubsection, files }} />
     </section>

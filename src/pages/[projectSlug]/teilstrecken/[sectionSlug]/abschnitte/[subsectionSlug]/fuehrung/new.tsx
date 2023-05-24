@@ -36,7 +36,7 @@ const NewSubsubsection = () => {
         Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
           sectionSlug: sectionSlug!,
-          subsectionPath: [subsectionSlug!],
+          subsectionSlug: subsectionSlug!,
         })
       )
     } catch (error: any) {

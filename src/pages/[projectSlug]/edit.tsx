@@ -6,12 +6,12 @@ import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { quote, seoEditTitle, shortTitle } from "src/core/components/text"
+import { seoEditTitle, shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import updateProject from "src/projects/mutations/updateProject"
 import getProject from "src/projects/queries/getProject"
-import { ProjectSchema } from "src/projects/schema"
+import { ProjectLogoScrcsInputSchema, ProjectSchema } from "src/projects/schema"
 import getProjectUsers from "src/users/queries/getProjectUsers"
 
 const EditProjectWithQuery = () => {
@@ -54,7 +54,7 @@ const EditProjectWithQuery = () => {
       <ProjectForm
         className="mt-10"
         submitText="Speichern"
-        // schema={ProjectSchema}
+        schema={ProjectSchema.merge(ProjectLogoScrcsInputSchema)}
         initialValues={{ ...project, partnerLogoSrcs: project.partnerLogoSrcs.join("\n") }}
         onSubmit={handleSubmit}
         users={users}

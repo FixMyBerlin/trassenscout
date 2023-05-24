@@ -7,9 +7,11 @@ import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { Prettify } from "src/core/types"
 import getFilesWithSubsections from "../queries/getFilesWithSubsections"
 import { fileUrl } from "../utils"
+import { PromiseReturnType } from "blitz"
+import { ZeroCase } from "src/core/components/text/ZeroCase"
 
 type Props = Prettify<
-  Pick<Awaited<ReturnType<typeof getFilesWithSubsections>>, "files"> & {
+  Pick<PromiseReturnType<typeof getFilesWithSubsections>, "files"> & {
     withAction?: boolean
   }
 >
@@ -18,11 +20,7 @@ export const FileTable: React.FC<Props> = ({ files, withAction = true }) => {
   const projectSlug = useParam("projectSlug", "string")
 
   if (!files.length) {
-    return (
-      <p className="text-center text-xl text-gray-500">
-        <span>Es wurden noch keine Dokumente eingetragen.</span>
-      </p>
-    )
+    return <ZeroCase visible={files.length} name="Dokumente" />
   }
 
   return (

@@ -60,7 +60,7 @@ const EditSubsubsection = () => {
         Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
           sectionSlug: sectionSlug!,
-          subsectionPath: [subsectionSlug!],
+          subsectionSlug: subsectionSlug!,
         })
       )
     }
@@ -102,10 +102,11 @@ const EditSubsubsectionPage = () => {
 
       <p>
         <Link
-          href={Routes.SubsectionDashboardPage({
+          href={Routes.SubsubsectionDashboardPage({
             projectSlug: projectSlug!,
             sectionSlug: sectionSlug!,
-            subsectionPath: [subsectionSlug!, subsubsectionSlug!],
+            subsectionSlug: subsectionSlug!,
+            subsubsectionSlug: subsubsectionSlug!,
           })}
         >
           Zurück zur Führung

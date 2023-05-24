@@ -1,17 +1,18 @@
-import { Routes, useParam } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { lineString } from "@turf/helpers"
 import { featureCollection } from "@turf/turf"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
 import { MapLayerMouseEvent, Marker } from "react-map-gl"
+import { useSlugs } from "src/core/hooks"
 import { SectionWithSubsectionsWithPosition } from "src/sections/queries/getSectionsIncludeSubsections"
+import { shortTitle } from "../text"
 import { BaseMap } from "./BaseMap"
-import { StartEndLabel } from "./Labels"
 import { SubsectionMapIcon } from "./Icons"
+import { StartEndLabel } from "./Labels"
 import { TipMarker } from "./TipMarker"
 import { lineColors } from "./lineColors"
 import { midPoint, sectionsBbox } from "./utils"
-import { shortTitle } from "../text"
 
 type Props = {
   children?: React.ReactNode
@@ -21,8 +22,7 @@ type Props = {
 
 export const SectionMap: React.FC<Props> = ({ sections, selectedSection }) => {
   const router = useRouter()
-  const projectSlug = useParam("projectSlug", "string")
-  const sectionSlug = useParam("sectionSlug", "string")
+  const { projectSlug, sectionSlug } = useSlugs()
 
   const handleSelect = (subsectionSlug: string, edit: boolean) => {
     if (edit) {
@@ -38,7 +38,7 @@ export const SectionMap: React.FC<Props> = ({ sections, selectedSection }) => {
         Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
           sectionSlug: sectionSlug!,
-          subsectionPath: [subsectionSlug],
+          subsectionSlug: subsectionSlug!,
         })
       )
     }

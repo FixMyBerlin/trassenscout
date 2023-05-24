@@ -9,12 +9,6 @@ type Props = { menuItems: ReturnType<typeof menuItems> }
 export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
   const { pathname } = useRouter()
 
-  const itemClasses = (current: boolean) =>
-    clsx(
-      current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white",
-      "rounded-md px-3 py-2 text-sm font-medium"
-    )
-
   return (
     <div className="flex space-x-4">
       {menuItems?.map((item) => {
@@ -26,7 +20,12 @@ export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
           <Link
             key={item.name}
             href={item.href}
-            classNameOverwrites={itemClasses(current)}
+            classNameOverwrites={clsx(
+              current
+                ? "bg-gray-300 text-gray-900"
+                : "hover:bg-gray-100 text-gray-50 hover:text-gray-900",
+              "rounded-md px-3 py-2 text-sm font-medium"
+            )}
             aria-current={current ? "page" : undefined}
           >
             {item.name}

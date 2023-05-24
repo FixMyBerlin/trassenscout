@@ -78,6 +78,13 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
         label="Kostenschätzung (in Euro)"
         optional
       />
+      <LabeledTextField
+        type="text"
+        name="mapillaryKey"
+        label="Mapillary Bild Referenz"
+        optional
+        help="Die Mapillary Bild Referenz kann aus der URL als 'pKey' kopiert werden. Das ausgewählte Bild wird dann als eingebettete Vorschau auf der Seite angezeigt."
+      />
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledSelect
         name="managerId"

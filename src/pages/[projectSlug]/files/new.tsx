@@ -31,10 +31,11 @@ const NewFileWithQuery = () => {
   let backUrl = Routes.FilesPage({ projectSlug: projectSlug! })
   const { sectionSlug, subsectionSlug, subsubsectionSlug } = splitReturnTo(params)
   if (sectionSlug && subsectionSlug && subsubsectionSlug) {
-    backUrl = Routes.SubsectionDashboardPage({
+    backUrl = Routes.SubsubsectionDashboardPage({
       projectSlug: projectSlug!,
       sectionSlug: sectionSlug,
-      subsectionPath: [subsectionSlug, subsubsectionSlug],
+      subsectionSlug: subsectionSlug,
+      subsubsectionSlug: subsubsectionSlug,
     })
   }
 
