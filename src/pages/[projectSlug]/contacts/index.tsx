@@ -1,4 +1,4 @@
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { ContactTable } from "src/contacts/components/ContactTable"
@@ -7,6 +7,7 @@ import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogDat
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { Tabs } from "src/core/components/Tabs/Tabs"
+import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 
@@ -18,11 +19,7 @@ export const ContactWithQuery = () => {
   })
 
   if (!contacts.length) {
-    return (
-      <p className="text-center text-xl text-gray-500">
-        <span>Es wurden noch keine Kontakte eingetragen.</span>
-      </p>
-    )
+    return <ZeroCase visible={contacts.length} name="Kontakte" />
   }
 
   return (

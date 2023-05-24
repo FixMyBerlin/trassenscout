@@ -1,8 +1,9 @@
 import { CalendarEntry } from "@prisma/client"
 import { isAfter, startOfToday } from "date-fns"
 import React from "react"
-import { DateList } from "./DateList"
 import { H2 } from "src/core/components/text"
+import { ZeroCase } from "src/core/components/text/ZeroCase"
+import { DateList } from "./DateList"
 
 type Props = {
   calendarEntries: CalendarEntry[]
@@ -24,11 +25,7 @@ export const Calender: React.FC<Props> = ({ calendarEntries }) => {
   // TODO why does suspense boundary not catch this?
 
   if (!calendarEntries.length) {
-    return (
-      <p className="text-center text-xl text-gray-500">
-        <span>Es wurden noch keine Termine eingetragen.</span>
-      </p>
-    )
+    return <ZeroCase visible={calendarEntries.length} name="Termine" />
   }
 
   return (

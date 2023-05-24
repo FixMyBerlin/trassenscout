@@ -14,6 +14,7 @@ import {
 import { useSlugs } from "src/core/hooks"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { mapillaryLink } from "./utils/mapillaryLink"
+import { ZeroCase } from "src/core/components/text/ZeroCase"
 
 type Props = {
   subsubsections: SubsubsectionWithPosition[]
@@ -152,8 +153,8 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
           </tbody>
         </table>
         {!subsubsections.length && (
-          <div className="border-t px-3 py-5 text-center text-gray-500">
-            Noch keine Führungen angelegt
+          <div className="border-t px-3 py-5">
+            <ZeroCase visible={subsubsections.length} name="Führungen" />
           </div>
         )}
       </TableWrapper>

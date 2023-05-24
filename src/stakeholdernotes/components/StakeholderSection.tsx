@@ -6,6 +6,7 @@ import { H2 } from "src/core/components/text/Headings"
 import { Stakeholdernote } from "@prisma/client"
 import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
+import { ZeroCase } from "src/core/components/text/ZeroCase"
 
 type Props = {
   stakeholdernotes: Stakeholdernote[]
@@ -19,6 +20,9 @@ export const StakeholderSection: React.FC<Props> = ({ stakeholdernotes }) => {
       <H2 className="mb-5">
         Abstimmung mit <abbr title="Träger öffentlicher Belange">TöB</abbr>s
       </H2>
+
+      <ZeroCase visible={stakeholdernotes.length} name="TöBs" />
+
       <StakeholdernoteList stakeholdernotes={stakeholdernotes} />
       <ButtonWrapper className="mt-5">
         <Link

@@ -1,5 +1,6 @@
 import { CalendarEntry } from "@prisma/client"
 import React from "react"
+import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { DateEntry } from "./DateEntry"
 
 type Props = {
@@ -8,11 +9,7 @@ type Props = {
 
 export const DateList: React.FC<Props> = ({ calendarEntries }) => {
   if (!calendarEntries.length) {
-    return (
-      <p className="py-3 text-base text-gray-500">
-        <span>Es wurden noch keine Termine eingetragen</span>
-      </p>
-    )
+    return <ZeroCase visible={calendarEntries.length} name="Termine" />
   }
 
   return (
