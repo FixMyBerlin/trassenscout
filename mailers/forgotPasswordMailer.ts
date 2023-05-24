@@ -1,5 +1,6 @@
 import Mailjet from "node-mailjet"
 import previewEmail from "preview-email"
+import { getPrdOrStgDomain } from "src/core/components/links/getDomain"
 
 type ResetPasswordMailer = {
   to: string
@@ -7,8 +8,7 @@ type ResetPasswordMailer = {
 }
 
 export function forgotPasswordMailer({ to, token }: ResetPasswordMailer) {
-  // In production, set APP_ORIGIN to your production server origin
-  const origin = process.env.APP_ORIGIN || process.env.BLITZ_DEV_SERVER_ORIGIN
+  const origin = getPrdOrStgDomain()
   const resetUrl = `${origin}/auth/reset-password?token=${token}`
 
   // mailjet format
