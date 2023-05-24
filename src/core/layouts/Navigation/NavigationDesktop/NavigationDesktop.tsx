@@ -3,16 +3,12 @@ import { useRouter } from "next/router"
 import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
 import { NavigationGeneralLogo } from "../NavigationGeneral/NavigationGeneralLogo"
-import { menuItems } from "../NavigationProject/menuItems"
+import { NavigationProps } from "../NavigationProject/NavigationProject"
 import { NavigationProjectsSwitch } from "../NavigationProjectsSwitch"
 import { NavigationUser } from "../NavigationUser"
 import { NavigationDesktopLinks } from "./NavigationDesktopLinks"
 
-type Props = {
-  menuItems: ReturnType<typeof menuItems>
-}
-
-export const NavigationDesktop: React.FC<Props> = ({ menuItems }) => {
+export const NavigationDesktop: React.FC<NavigationProps> = ({ menuItems, projects }) => {
   const { asPath } = useRouter()
   const { projectSlug } = useSlugs()
 
@@ -35,7 +31,7 @@ export const NavigationDesktop: React.FC<Props> = ({ menuItems }) => {
           </div>
         </div>
 
-        <NavigationProjectsSwitch />
+        <NavigationProjectsSwitch projects={projects} />
         <NavigationDesktopLinks menuItems={menuItems} />
       </div>
       <div className="flex items-center">

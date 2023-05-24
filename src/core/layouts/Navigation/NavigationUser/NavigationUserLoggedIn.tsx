@@ -14,7 +14,7 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
   const projectSlug = useParam("projectSlug", "string")
 
   return (
-    <Menu as="div" className="relative ml-3 mr-5">
+    <Menu as="div" className="relative">
       {({ open }) => (
         <>
           <Menu.Button

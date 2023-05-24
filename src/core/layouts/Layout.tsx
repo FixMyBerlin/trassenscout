@@ -1,7 +1,5 @@
-import { BlitzLayout, useParam } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
+import { BlitzLayout } from "@blitzjs/next"
 import Head from "next/head"
-import getProject from "src/projects/queries/getProject"
 import { FooterProject } from "./Footer"
 import { FooterGeneral } from "./Footer/FooterGeneral"
 import { FooterMinimal } from "./Footer/FooterMinimal"

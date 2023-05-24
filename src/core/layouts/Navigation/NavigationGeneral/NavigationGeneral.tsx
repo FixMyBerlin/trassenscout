@@ -5,8 +5,8 @@ import { NavigationWrapper } from "../NavigationWrapper"
 export const NavigationGeneral = () => {
   return (
     <NavigationWrapper>
-      <NavigationMobile menuItems={[]} />
-      <NavigationDesktop menuItems={[]} />
+      <NavigationMobile menuItems={[]} projects={[]} />
+      <NavigationDesktop menuItems={[]} projects={[]} />
     </NavigationWrapper>
   )
 }

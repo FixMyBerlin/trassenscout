@@ -1,25 +1,21 @@
 import { Routes } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
 import { Menu, Transition } from "@headlessui/react"
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
 import { useRouter } from "next/router"
-import React, { Fragment, Suspense } from "react"
-import { Spinner } from "src/core/components/Spinner"
+import React, { Fragment } from "react"
 import { Link } from "src/core/components/links/Link"
 import { shortTitle } from "src/core/components/text"
-import getProjects from "src/projects/queries/getProjects"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { NavigationProps } from "../NavigationProject/NavigationProject"
 import { ProjectLogo } from "../NavigationProject/ProjectLogo"
 
-const NavigationProjectsSwitchWithProjectsQuery: React.FC = () => {
+type Props = Pick<NavigationProps, "projects">
+
+export const NavigationProjectsSwitch: React.FC<Props> = ({ projects }) => {
   const { query } = useRouter()
 
-  const projects = useQuery(getProjects, {})[0].projects
-
-  if (!projects.length) {
-    return null
-  }
+  // The 1 case is handeled by the Dashboard Link "Dashbaord RS8"
+  if (!projects?.length || projects.length === 1) return null
 
   const projectsMenuItems = projects.map((project) => ({
     name: shortTitle(project.slug),
@@ -30,22 +26,6 @@ const NavigationProjectsSwitchWithProjectsQuery: React.FC = () => {
   const currentProject = projects.find((p) => p.slug === query.projectSlug)
 
   if (!currentProject) return null
-
-  if (projectsMenuItems.length === 1) {
-    const project = projectsMenuItems[0]
-    if (!project) return null
-    return (
-      <Link
-        href={project.href}
-        classNameOverwrites={clsx(
-          "flex rounded-md border-2 border-transparent bg-yellow-500 px-2 pb-0.5 pt-1 text-sm font-medium text-gray-800",
-          query.projectSlug === project.slug ? "cursor-default" : "hover:bg-yellow-400"
-        )}
-      >
-        {shortTitle(project.slug)}
-      </Link>
-    )
-  }
 
   return (
     <Menu as="div" className="relative ml-3">
@@ -104,20 +84,5 @@ const NavigationProjectsSwitchWithProjectsQuery: React.FC = () => {
         </>
       )}
     </Menu>
-  )
-}
-
-const NavigationProjectsSwitchWithUserQuery: React.FC = () => {
-  const user = useCurrentUser()
-  if (!user) return null
-
-  return <NavigationProjectsSwitchWithProjectsQuery />
-}
-
-export const NavigationProjectsSwitch: React.FC = () => {
-  return (
-    <Suspense fallback={<Spinner size="5" />}>
-      <NavigationProjectsSwitchWithUserQuery />
-    </Suspense>
   )
 }

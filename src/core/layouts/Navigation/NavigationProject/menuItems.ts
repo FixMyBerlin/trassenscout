@@ -1,9 +1,17 @@
 import { Routes } from "@blitzjs/next"
 import { Project } from "@prisma/client"
 
-export const menuItems = (projectSlug: Project["slug"]) => {
+type Props = {
+  projectSlug: string
+  projectName: string | null
+}
+
+export const menuItems = ({ projectSlug, projectName }: Props) => {
   return [
-    { name: "Dashboard", href: Routes.ProjectDashboardPage({ projectSlug: projectSlug! }) },
+    {
+      name: `Dashboard ${projectName || ""}`,
+      href: Routes.ProjectDashboardPage({ projectSlug: projectSlug! }),
+    },
     {
       name: "Kontakte",
       href: Routes.ContactsPage({ projectSlug: projectSlug! }),
