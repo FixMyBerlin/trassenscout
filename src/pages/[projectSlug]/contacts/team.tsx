@@ -1,15 +1,15 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { Spinner } from "src/core/components/Spinner"
-import { LayoutRs, MetaTags } from "src/core/layouts"
 import { TeamTable } from "src/contacts/components/TeamTable"
-import getProjectUsers from "src/memberships/queries/getProjectUsers"
-import getProject from "src/projects/queries/getProject"
-import { Tabs } from "src/core/components/Tabs/Tabs"
+import { SuperAdminBox } from "src/core/components/AdminBox"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
-import { quote } from "src/core/components/text"
+import { Spinner } from "src/core/components/Spinner"
+import { Tabs } from "src/core/components/Tabs/Tabs"
+import { Link } from "src/core/components/links"
+import { PageHeader } from "src/core/components/pages/PageHeader"
+import { LayoutRs, MetaTags } from "src/core/layouts"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 
 export const TeamWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
@@ -26,6 +26,12 @@ export const TeamWithQuery = () => {
       />
 
       <TeamTable contacts={users} />
+
+      <SuperAdminBox>
+        <Link button="blue" href={Routes.AdminMembershipsPage()}>
+          Rechte verwalten
+        </Link>
+      </SuperAdminBox>
 
       <SuperAdminLogData data={users} />
     </>
