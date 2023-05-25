@@ -42,8 +42,9 @@ const NewSubsection = () => {
 
   return (
     <>
+      <MetaTags noindex title={seoNewTitle("Planungsabschnitt")} />
       <PageHeader
-        title={seoNewTitle("Planungsabschitt")}
+        title="Planungsabschitt hinzufügen"
         subtitle={longTitle(section.slug)}
         className="mt-12"
       />
@@ -65,8 +66,6 @@ const NewSubsectionPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <MetaTags noindex title="Neuen Abschnitt erstellen" />
-
       <Suspense fallback={<Spinner page />}>
         <NewSubsection />
       </Suspense>

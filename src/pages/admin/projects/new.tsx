@@ -4,7 +4,9 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
+import { seoNewTitle } from "src/core/components/text"
 import { H1 } from "src/core/components/text/Headings"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
@@ -35,10 +37,7 @@ const AdminNewProjectPageWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neue Radschnellverbindung erstellen" />
       <SuperAdminBox>
-        <H1>Neue Radschnellverbindung erstellen</H1>
-
         <ProjectForm
           submitText="Erstellen"
           schema={ProjectSchema.merge(ProjectLogoScrcsInputSchema)}
@@ -54,6 +53,9 @@ const AdminNewProjectPageWithQuery = () => {
 const AdminNewProjectPage = () => {
   return (
     <LayoutArticle>
+      <MetaTags noindex title={seoNewTitle("Trasse")} />
+      <PageHeader title="Trasse hinzufügen" className="mt-12" />
+
       <Suspense fallback={<Spinner page />}>
         <AdminNewProjectPageWithQuery />
       </Suspense>

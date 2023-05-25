@@ -12,6 +12,7 @@ import { transformValuesWithStartAt } from "src/calendar-entries/utils/transform
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
+import { seoNewTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 
 const NewCalendarEntry = () => {
@@ -59,8 +60,8 @@ const NewCalendarEntryPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <MetaTags noindex title="Neuer Kalendereintrag" />
-      <PageHeader title="Neuer Kalendereintrag" className="mt-12" />
+      <MetaTags noindex title={seoNewTitle("Termin")} />
+      <PageHeader title="Neuer Termin" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
         <NewCalendarEntry />

@@ -5,7 +5,7 @@ import { Suspense } from "react"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { longTitle, quote } from "src/core/components/text"
+import { longTitle, quote, seoNewTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR } from "src/stakeholdernotes/components/StakeholdernoteForm"
@@ -49,9 +49,9 @@ const NewStakeholdernotesWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title="Mehrere TöBs erstellen" />
+      <MetaTags noindex title={seoNewTitle("Mehrere TöB")} />
       <PageHeader
-        title="Mehrere TöBs erstellen"
+        title="Mehrere TöBs hinzufügen"
         subtitle={longTitle(subsection.slug)}
         className="mt-12"
       />
@@ -59,10 +59,23 @@ const NewStakeholdernotesWithQuery = () => {
       <StakeholdernoteMultiForm
         className="mt-10"
         submitText="Erstellen"
-        // TODO schema: See `__ModelIdParam__/edit.tsx` for detailed instruction.
         schema={StakeholdernoteMultiSchema}
+        // initialValues={} // Not used here due to custom form
         onSubmit={handleSubmit}
       />
+    </>
+  )
+}
+
+const NewStakeholdernotesPage: BlitzPage = () => {
+  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
+
+  return (
+    <LayoutRs>
+      <Suspense fallback={<Spinner page />}>
+        <NewStakeholdernotesWithQuery />
+      </Suspense>
+
       <p className="mt-5">
         <Link
           href={Routes.SubsectionDashboardPage({
@@ -74,16 +87,6 @@ const NewStakeholdernotesWithQuery = () => {
           Zurück zum Planungsabschnitt
         </Link>
       </p>
-    </>
-  )
-}
-
-const NewStakeholdernotesPage: BlitzPage = () => {
-  return (
-    <LayoutRs>
-      <Suspense fallback={<Spinner page />}>
-        <NewStakeholdernotesWithQuery />
-      </Suspense>
     </LayoutRs>
   )
 }
