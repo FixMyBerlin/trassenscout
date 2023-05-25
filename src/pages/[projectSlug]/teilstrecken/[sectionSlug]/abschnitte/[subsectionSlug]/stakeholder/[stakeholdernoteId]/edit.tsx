@@ -80,6 +80,7 @@ const EditStakeholdernotePage: BlitzPage = () => {
         <EditStakeholdernote />
       </Suspense>
 
+      <hr className="my-5" />
       <p>
         <Link
           href={Routes.SectionDashboardPage({

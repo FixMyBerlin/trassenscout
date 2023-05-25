@@ -75,6 +75,7 @@ const EditProjectPage: BlitzPage = () => {
         <EditProjectWithQuery />
       </Suspense>
 
+      <hr className="my-5" />
       <p>
         <Link href={Routes.ProjectDashboardPage({ projectSlug: projectSlug! })}>
           Zurück zum Projekt

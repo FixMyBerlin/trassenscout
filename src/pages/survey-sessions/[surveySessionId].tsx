@@ -32,6 +32,7 @@ const ShowSurveySessionPage = () => {
         <SurveySession />
       </Suspense>
 
+      <hr className="my-5" />
       <p>
         <Link href={Routes.SurveySessionsPage()}>Alle SurveySessions</Link>
       </p>

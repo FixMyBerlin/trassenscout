@@ -58,6 +58,7 @@ const NewSectionPage: BlitzPage = () => {
         <NewSectionWithQuery />
       </Suspense>
 
+      <hr className="my-5" />
       <p>
         <Link href={Routes.ProjectDashboardPage({ projectSlug: projectSlug! })}>Zum Projekt</Link>
       </p>

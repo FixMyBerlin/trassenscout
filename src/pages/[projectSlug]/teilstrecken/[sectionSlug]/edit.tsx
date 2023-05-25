@@ -90,6 +90,7 @@ const EditSectionPage: BlitzPage = () => {
         <EditSectionWithQuery />
       </Suspense>
 
+      <hr className="my-5" />
       <p>
         <Link
           href={Routes.SectionDashboardPage({

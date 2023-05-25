@@ -100,6 +100,7 @@ const EditSubsubsectionPage = () => {
         <EditSubsubsection />
       </Suspense>
 
+      <hr className="my-5" />
       <p>
         <Link
           href={Routes.SubsubsectionDashboardPage({

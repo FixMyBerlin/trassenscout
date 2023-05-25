@@ -71,6 +71,7 @@ const NewSubsectionPage: BlitzPage = () => {
         <NewSubsection />
       </Suspense>
 
+      <hr className="my-5" />
       <p>
         <Link
           href={Routes.SectionDashboardPage({
