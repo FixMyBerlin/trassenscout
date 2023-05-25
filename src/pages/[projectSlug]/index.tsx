@@ -10,9 +10,10 @@ import { ProjectMap } from "src/core/components/Map/ProjectMap"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
+import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { quote, seoTitleSlug, shortTitle } from "src/core/components/text"
+import { seoTitleSlug, shortTitle } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { SectionTable } from "src/projects/components/SectionTable"
@@ -29,12 +30,15 @@ export const ProjectDashboardWithQuery = () => {
   if (!sections.length) {
     return (
       <>
-        <section className="rounded border bg-blue-100 p-5">
-          <Link href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
-            {shortTitle(project.slug)} bearbeiten
-          </Link>
-          <br />
-          <Link href={Routes.NewSectionPage({ projectSlug: projectSlug! })}>Neue Teilstrecke</Link>
+        <section className="mt-12 p-5">
+          <ButtonWrapper>
+            <Link button="blue" href={Routes.NewSectionPage({ projectSlug: projectSlug! })}>
+              Neue Teilstrecke
+            </Link>
+            <Link button="blue" href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
+              {shortTitle(project.slug)} bearbeiten
+            </Link>
+          </ButtonWrapper>
         </section>
       </>
     )
