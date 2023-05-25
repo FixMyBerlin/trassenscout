@@ -9,6 +9,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { seoNewTitle } from "src/core/components/text"
 import { H1 } from "src/core/components/text/Headings"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
+import createMembership from "src/memberships/mutations/createMembership"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import createProject from "src/projects/mutations/createProject"
 import { ProjectLogoScrcsInputSchema, ProjectSchema } from "src/projects/schema"
@@ -19,6 +20,7 @@ const AdminNewProjectPageWithQuery = () => {
   const router = useRouter()
   const currentUser = useCurrentUser()
   const [createProjectMutation] = useMutation(createProject)
+  const [createMembershipMutation] = useMutation(createMembership)
 
   const [{ users }] = useQuery(getUsers, {})
 
@@ -28,6 +30,17 @@ const AdminNewProjectPageWithQuery = () => {
     values = { ...values, partnerLogoSrcs: partnerLogoSrcsArray }
     try {
       const project = await createProjectMutation(values)
+
+      // Create a membership for the selected user
+      if (project.managerId) {
+        try {
+          await createMembershipMutation({ projectId: project.id, userId: project.managerId })
+        } catch (error: any) {
+          console.error(error)
+          return { [FORM_ERROR]: error }
+        }
+      }
+
       await router.push(Routes.ProjectDashboardPage({ projectSlug: project.slug }))
     } catch (error: any) {
       console.error(error)
@@ -60,6 +73,7 @@ const AdminNewProjectPage = () => {
         <AdminNewProjectPageWithQuery />
       </Suspense>
 
+      <hr className="my-5" />
       <p>
         <Link href={Routes.Home()}>Startseite</Link>
       </p>
