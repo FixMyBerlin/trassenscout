@@ -28,15 +28,16 @@ const NewSubsubsection = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      await createSubsubsectionMutation({
+      const subsubsection = await createSubsubsectionMutation({
         ...values,
         subsectionId: subsection!.id,
       })
       await router.push(
-        Routes.SubsectionDashboardPage({
+        Routes.SubsubsectionDashboardPage({
           projectSlug: projectSlug!,
           sectionSlug: sectionSlug!,
           subsectionSlug: subsectionSlug!,
+          subsubsectionSlug: subsubsection.id,
         })
       )
     } catch (error: any) {

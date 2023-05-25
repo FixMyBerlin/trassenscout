@@ -29,9 +29,10 @@ const NewSubsection = () => {
     try {
       const subsection = await createSubsectionMutation({ ...values, sectionId: section.id! })
       await router.push(
-        Routes.SectionDashboardPage({
+        Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
           sectionSlug: sectionSlug!,
+          subsectionSlug: subsection.id,
         })
       )
     } catch (error: any) {
