@@ -13,7 +13,7 @@ type Props = {
   size?: "5" | "12"
 }
 
-const spinnerSizeClasses = {
+const sizeClasses = {
   "5": "h-5 aspect-square",
   "12": "h-12 aspect-square",
 }
@@ -25,7 +25,7 @@ export const ProjectLogoWithQuery: React.FC<Props> = ({ className, size = "5" })
   if (!project.logoSrc) return null
 
   return (
-    <div className={clsx(className, "relative flex-none", spinnerSizeClasses[size])}>
+    <div className={clsx(className, "relative flex-none", sizeClasses[size])}>
       <Image
         className="object-contain"
         layout="fill"

@@ -19,9 +19,8 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
         <>
           <Menu.Button
             className={clsx(
-              "flex rounded-full border-2 border-transparent bg-blue-500 p-1",
-              open ? "hover:border-blue-800" : "offset hover:border-blue-800",
-              "focus:outline-none focus:ring-2 focus:ring-white/30"
+              "flex rounded-full bg-blue-500 p-1",
+              open ? "bg-blue-400" : "hover:bg-blue-400 focus:bg-blue-400"
             )}
           >
             <span className="sr-only">User-Menü</span>
