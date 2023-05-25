@@ -12,7 +12,7 @@ import getSection from "src/sections/queries/getSection"
 import { FORM_ERROR, SubsectionForm } from "src/subsections/components/SubsectionForm"
 import createSubsection from "src/subsections/mutations/createSubsection"
 import { SubsectionSchema } from "src/subsections/schema"
-import getProjectUsers from "src/users/queries/getProjectUsers"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 
 const NewSubsection = () => {
   const router = useRouter()

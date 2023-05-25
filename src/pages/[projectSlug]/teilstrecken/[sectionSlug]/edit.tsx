@@ -17,7 +17,7 @@ import deleteSection from "src/sections/mutations/deleteSection"
 import updateSection from "src/sections/mutations/updateSection"
 import getSection from "src/sections/queries/getSection"
 import { SectionSchema } from "src/sections/schema"
-import getProjectUsers from "src/users/queries/getProjectUsers"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 
 const EditSectionWithQuery = () => {
   const router = useRouter()

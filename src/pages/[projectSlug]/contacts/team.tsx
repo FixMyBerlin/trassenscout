@@ -5,7 +5,7 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { TeamTable } from "src/contacts/components/TeamTable"
-import getProjectUsers from "src/users/queries/getProjectUsers"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 import getProject from "src/projects/queries/getProject"
 import { Tabs } from "src/core/components/Tabs/Tabs"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
@@ -13,7 +13,6 @@ import { quote } from "src/core/components/text"
 
 export const TeamWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug })
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
   return (

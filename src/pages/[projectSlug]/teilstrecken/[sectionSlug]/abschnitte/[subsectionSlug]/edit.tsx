@@ -15,7 +15,7 @@ import deleteSubsection from "src/subsections/mutations/deleteSubsection"
 import updateSubsection from "src/subsections/mutations/updateSubsection"
 import getSubsection from "src/subsections/queries/getSubsection"
 import { SubsectionSchema } from "src/subsections/schema"
-import getProjectUsers from "src/users/queries/getProjectUsers"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 
 const EditSubsection = () => {
   const router = useRouter()

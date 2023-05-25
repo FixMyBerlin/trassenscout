@@ -13,7 +13,7 @@ import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import updateProject from "src/projects/mutations/updateProject"
 import getProject from "src/projects/queries/getProject"
 import { ProjectLogoScrcsInputSchema, ProjectSchema } from "src/projects/schema"
-import getProjectUsers from "src/users/queries/getProjectUsers"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 
 const EditProjectWithQuery = () => {
   const router = useRouter()

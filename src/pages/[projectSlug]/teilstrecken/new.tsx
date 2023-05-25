@@ -10,7 +10,7 @@ import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SectionForm } from "src/sections/components/SectionForm"
 import createSection from "src/sections/mutations/createSection"
 import { SectionSchema } from "src/sections/schema"
-import getProjectUsers from "src/users/queries/getProjectUsers"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 
 const NewSectionWithQuery = () => {
   const router = useRouter()
