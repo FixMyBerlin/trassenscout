@@ -6,9 +6,11 @@ import { ContactForm, FORM_ERROR } from "src/contacts/components/ContactForm"
 import updateContact from "src/contacts/mutations/updateContact"
 import getContact from "src/contacts/queries/getContact"
 import { SuperAdminBox } from "src/core/components/AdminBox"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
+import { seoEditTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { getFullname } from "src/users/utils"
 
@@ -48,18 +50,9 @@ const EditContactWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Kontakt von ${getFullname(contact)} bearbeiten`} />
-      <PageHeader
-        title={`Kontakt von ${getFullname(contact)}`}
-        subtitle="Kontakt bearbeiten"
-        className="mt-12"
-      />
-
       <ContactForm submitText="Speichern" initialValues={contact} onSubmit={handleSubmit} />
 
-      <SuperAdminBox>
-        <pre>{JSON.stringify(contact, null, 2)}</pre>
-      </SuperAdminBox>
+      <SuperAdminLogData data={contact} />
     </>
   )
 }
@@ -69,6 +62,9 @@ const EditContactPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
+      <MetaTags noindex title={seoEditTitle("Kontakt")} />
+      <PageHeader title="Kontakt bearbeiten" className="mt-12" />
+
       <Suspense fallback={<Spinner page />}>
         <EditContactWithQuery />
       </Suspense>

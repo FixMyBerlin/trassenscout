@@ -6,6 +6,7 @@ import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogDat
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
+import { seoEditTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileForm, FORM_ERROR } from "src/files/components/FileForm"
 import { FilePreview } from "src/files/components/FilePreview"
@@ -69,8 +70,6 @@ const EditFileWithQuery = () => {
 
   return (
     <>
-      <PageHeader title="Dokument bearbeiten" className="mt-12" />
-
       <div className="flex gap-10">
         <FilePreview file={file} description={false} />
         <FileForm
@@ -100,7 +99,8 @@ const EditFilePage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <MetaTags noindex title="Dokument bearbeiten" />
+      <MetaTags noindex title={seoEditTitle("Dokument")} />
+      <PageHeader title="Dokument bearbeiten" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
         <EditFileWithQuery />

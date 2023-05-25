@@ -12,14 +12,22 @@ export const longTitle = (slug: string) => {
     .replace("-", " ") // We allow "-", but longTitle shows it at space.
 }
 
-export const seoTitle = (slug: string) => {
+export const seoTitleSlug = (slug: string) => {
   return `${shortTitle(slug)} – ${longTitle(slug)} – Trassenscout`
 }
 
-export const seoEditTitle = (slug: string) => {
+export const seoEditTitleSlug = (slug: string) => {
   return `${shortTitle(slug)} bearbeiten – ${longTitle(slug)} – Trassenscout`
 }
 
-export const seoNewTitle = (kind: string) => {
-  return `${kind} hinzufügen – Trassenscout`
+export const seoIndexTitle = (what: string, longWhat?: string | null) => {
+  return [`${what}`, longWhat, "Trassenscout"].filter(Boolean).join(" – ")
+}
+
+export const seoEditTitle = (what: string, longWhat?: string | null) => {
+  return [`${what} bearbeiten`, longWhat, "Trassenscout"].filter(Boolean).join(" – ")
+}
+
+export const seoNewTitle = (what: string) => {
+  return `${what} hinzufügen – Trassenscout`
 }

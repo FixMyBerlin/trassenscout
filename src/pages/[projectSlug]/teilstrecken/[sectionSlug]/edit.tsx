@@ -4,10 +4,11 @@ import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { seoEditTitle, shortTitle } from "src/core/components/text"
+import { seoEditTitleSlug, shortTitle } from "src/core/components/text"
 import { startEnd } from "src/core/components/text/startEnd"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
@@ -57,12 +58,8 @@ const EditSectionWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={seoEditTitle(section.slug)} />
-      <PageHeader title={`${shortTitle(section.slug)} bearbeiten`} className="mt-12" />
-
-      <SuperAdminBox>
-        <pre>{JSON.stringify(section, null, 2)}</pre>
-      </SuperAdminBox>
+      <MetaTags noindex title={seoEditTitleSlug(section.slug)} />
+      <PageHeader title="Teilstrecke bearbeiten" className="mt-12" />
 
       <SectionForm
         submitText="Speichern"
@@ -77,6 +74,8 @@ const EditSectionWithQuery = () => {
       <button type="button" onClick={handleDelete} className={clsx(linkStyles)}>
         Löschen
       </button>
+
+      <SuperAdminLogData data={section} />
     </>
   )
 }

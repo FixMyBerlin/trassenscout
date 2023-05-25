@@ -12,7 +12,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { quote, seoTitle, shortTitle } from "src/core/components/text"
+import { quote, seoTitleSlug, shortTitle } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { SectionTable } from "src/projects/components/SectionTable"
@@ -42,7 +42,7 @@ export const ProjectDashboardWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={seoTitle(project.slug)} />
+      <MetaTags noindex title={seoTitleSlug(project.slug)} />
 
       <Breadcrumb />
       <PageHeader

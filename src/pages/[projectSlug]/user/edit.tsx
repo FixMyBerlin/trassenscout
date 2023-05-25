@@ -6,8 +6,10 @@ import UserEditForm from "src/auth/components/UserEditForm"
 import updateUser from "src/auth/mutations/updateUser"
 import { UpdateUser } from "src/auth/validations"
 import { SuperAdminBox } from "src/core/components/AdminBox"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
+import { seoEditTitle } from "src/core/components/text"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR } from "src/projects/components/ProjectForm"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
@@ -36,9 +38,8 @@ const EditUserWithQuery = () => {
         initialValues={user!}
         onSubmit={handleSubmit}
       />
-      <SuperAdminBox>
-        <pre>{JSON.stringify(user, null, 2)}</pre>
-      </SuperAdminBox>
+
+      <SuperAdminLogData data={user} />
     </>
   )
 }
@@ -46,7 +47,7 @@ const EditUserWithQuery = () => {
 const EditUserPage: BlitzPage = () => {
   return (
     <LayoutArticle>
-      <MetaTags noindex title="Profil bearbeiten" />
+      <MetaTags noindex title={seoEditTitle("Profil")} />
       <PageHeader title="Profil bearbeiten" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
