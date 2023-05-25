@@ -5,7 +5,7 @@ export const mapillaryLink = (subsubsection: SubsubsectionWithPosition) => {
   if (!subsubsection.mapillaryKey) return null
 
   const url = new URL("https://www.mapillary.com/app/")
-  url.searchParams.append("pkey", subsubsection.mapillaryKey)
+  url.searchParams.append("pKey", subsubsection.mapillaryKey)
 
   const [lng, _1, _2, lat] =
     subsubsection.type === "ROUTE"
@@ -14,7 +14,7 @@ export const mapillaryLink = (subsubsection: SubsubsectionWithPosition) => {
   url.searchParams.append("lat", String(lat))
   url.searchParams.append("lng", String(lng))
 
-  url.searchParams.append("z", String(9)) // static for now
+  url.searchParams.append("z", String(12)) // does not really matter, Mapillary will zoom on the pKey image.
   url.searchParams.append("panos", String(true))
 
   const userForFilter = ["supaplex030", "tordans", "stefanhrt"]
