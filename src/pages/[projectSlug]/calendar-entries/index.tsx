@@ -10,7 +10,7 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Pagination } from "src/core/components/Pagination"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { Calender } from "src/rs8/termine/components/Calender"
+import { Calender } from "src/calendar-entries/components/Calender"
 
 const ITEMS_PER_PAGE = 100
 
