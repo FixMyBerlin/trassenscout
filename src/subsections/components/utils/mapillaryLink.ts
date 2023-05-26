@@ -10,7 +10,7 @@ export const mapillaryLink = (subsubsection: SubsubsectionWithPosition) => {
   const [lng, _1, _2, lat] =
     subsubsection.type === "ROUTE"
       ? bbox(lineString(subsubsection.geometry))
-      : bbox(lineString([subsubsection.geometry]))
+      : bbox(lineString([subsubsection.geometry, subsubsection.geometry]))
   url.searchParams.append("lat", String(lat))
   url.searchParams.append("lng", String(lng))
 
