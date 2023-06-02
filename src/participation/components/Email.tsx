@@ -57,7 +57,6 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
             Ich stimme den <Link href="/datenschutz">Datenschutzbedingungen</Link> zu.
           </p>
         </div>
-
         <ParticipationButtonWrapper>
           <ParticipationButton disabled={!consent} type="submit">
             {page.buttons[0].label.de}
