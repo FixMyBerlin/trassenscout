@@ -1,4 +1,4 @@
-import { ParticipationH1 } from "./Text"
+import { ParticipationH1 } from "../core/Text"
 
 export type ScreenHeaderParticipationProps = {
   title: string
