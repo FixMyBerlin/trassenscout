@@ -1,5 +1,5 @@
 import { useCallback, useContext, useState } from "react"
-import { stageProgressDefinition } from "src/pages/rs8-beteiligung"
+import { stageProgressDefinition } from "src/pages/beteiligung/rs8"
 import { PinContext, ProgressContext } from "src/participation/context/contexts"
 import SurveyForm from "../form/SurveyForm"
 import { FeedbackFirstPage } from "./FeedbackFirstPage"

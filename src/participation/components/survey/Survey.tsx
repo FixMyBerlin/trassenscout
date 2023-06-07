@@ -3,7 +3,7 @@ import SurveyForm from "../form/SurveyForm"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
-import { stageProgressDefinition } from "src/pages/rs8-beteiligung"
+import { stageProgressDefinition } from "src/pages/beteiligung/rs8"
 import { ProgressContext } from "src/participation/context/contexts"
 import { Survey as TSurvey } from "src/participation/data/types"
 import { Debug } from "./Debug"
