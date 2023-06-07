@@ -24,6 +24,7 @@ export type ParticipationMapProps = {
   children?: React.ReactNode
   projectMap: {
     projectGeometry: MultiLineString
+    layerStyles: Record<string, any>
     initialMarker: { lng: number; lat: number }
     config: {
       bounds: LngLatBoundsLike
@@ -31,12 +32,16 @@ export type ParticipationMapProps = {
       maxZoom?: number
     }
   }
+  isMapDirty: any
+  setIsMapDirty: any
 }
 
 export const ParticipationMap: React.FC<ParticipationMapProps> = ({
   projectMap,
   className,
   children,
+  isMapDirty,
+  setIsMapDirty,
 }) => {
   const { mainMap } = useMap()
   const [events, logEvents] = useState<Record<string, LngLat>>({})
@@ -44,7 +49,8 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
   const [isMediumScreen, setIsMediumScreen] = useState(false)
 
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
-  const handleLayerSwitch = (layer: LayerType) => {
+
+  const handleLayerSwitch = () => (layer: LayerType) => {
     setSelectedLayer(layer)
   }
 
@@ -54,11 +60,7 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
   const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
   const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
 
-  const handleClick = async (e: mapboxgl.MapLayerMouseEvent) => {}
-
-  useEffect(() => {
-    setPinPosition(projectMap.initialMarker)
-  }, [])
+  if (!pinPosition) setPinPosition(projectMap.initialMarker)
 
   useEffect(() => {
     if (!mainMap) return
@@ -77,18 +79,21 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
     }
   }, [])
 
-  const onMarkerDragStart = useCallback((event: MarkerDragEvent) => {
-    logEvents((_events) => ({ ..._events, onDragStart: event.lngLat }))
-  }, [])
+  const onMarkerDragStart = useCallback(
+    (event: MarkerDragEvent) => {
+      setIsMapDirty(true)
+      logEvents((_events) => ({ ..._events, onDragStart: event.lngLat }))
+    },
+    [setIsMapDirty]
+  )
 
-  const onMarkerDrag = useCallback((event: MarkerDragEvent) => {
+  const onMarkerDrag = (event: MarkerDragEvent) => {
     logEvents((_events) => ({ ..._events, onDrag: event.lngLat }))
-    console.log(event.lngLat.lat)
     setPinPosition({
       lng: event.lngLat.lng,
       lat: event.lngLat.lat,
     })
-  }, [])
+  }
 
   const onMarkerDragEnd = useCallback((event: MarkerDragEvent) => {
     logEvents((_events) => ({ ..._events, onDragEnd: event.lngLat }))
@@ -130,7 +135,6 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
         scrollZoom={false}
         onMove={handleMapMove}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
-        onClick={handleClick}
         onZoom={handleMapZoom}
       >
         {children}
@@ -145,21 +149,17 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
             onDragEnd={onMarkerDragEnd}
           >
             <Pin />
-            <Source type="geojson" data={multiLineString(projectMap.projectGeometry.coordinates)}>
-              <Layer
-                type="line"
-                paint={{
-                  "line-width": 7,
-                  "line-color": "blue",
-                }}
-              />
+            <Source type="geojson" data={projectMap.projectGeometry}>
+              {projectMap.layerStyles.map((layer: any) => {
+                return <Layer key={layer.id} {...layer} />
+              })}
             </Source>
           </Marker>
         )}
         {isMediumScreen && <NavigationControl showCompass={false} />}
 
         <MapBanner
-          className="absolute bottom-12"
+          className="absolute bottom-12 font-sans"
           action={easeToPin}
           status={isPinInView ? "default" : "pinOutOfView"}
         />

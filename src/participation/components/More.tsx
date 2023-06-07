@@ -1,11 +1,11 @@
-import { useContext, useEffect, useState } from "react"
-import SurveyForm from "./form/SurveyForm"
-import { ProgressContext } from "../context/contexts"
-import { ParticipationButton } from "./core/ParticipationButton"
-import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
+import { useCallback, useState } from "react"
+import { Response } from "../data/types"
+import { ParticipationButton } from "./core/buttons/ParticipationButton"
+import { ScreenHeaderParticipation } from "./layout/ScreenHeaderParticipation"
 import { ParticipationH2 } from "./core/Text"
 import { ParticipationLabeledRadiobuttonGroup } from "./form/ParticipationLabeledRadiobuttonGroup"
-import { Response } from "../data/types"
+import SurveyForm from "./form/SurveyForm"
+import { ParticipationButtonWrapper } from "./core/buttons/ParticipationButtonWrapper"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -19,23 +19,21 @@ export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
   // It would be much nicer to useFormContext and formState.isDirty - but then this component has to be wrapped in Form (and FormProvider - tbd)
   const [isDirty, setIsDirty] = useState(false)
   const [isFeedback, setIsFeedback] = useState(false)
-  const { progress, setProgress } = useContext(ProgressContext)
-
-  useEffect(() => {
-    setProgress({ current: 0, total: more.pages.length - 1 })
-  }, [])
 
   const { title, description, questions, buttons } = more.pages[0]
   const question = questions[0]
   const button = buttons[0]
 
-  const handleChange = (values: Record<string, any>) => {
-    setIsFeedback(Number(values.feedback) === question.props.responses[0].id)
-    setIsDirty(
-      Number(values.feedback) === question.props.responses[0].id ||
-        Number(values.feedback) === question.props.responses[1].id
-    )
-  }
+  const handleChange = useCallback(
+    (values: Record<string, any>) => {
+      setIsFeedback(Number(values.feedback) === question.props.responses[0].id)
+      setIsDirty(
+        Number(values.feedback) === question.props.responses[0].id ||
+          Number(values.feedback) === question.props.responses[1].id
+      )
+    },
+    [question.props.responses]
+  )
 
   return (
     <SurveyForm onSubmit={onClickFinish} onChangeValues={handleChange}>
@@ -49,10 +47,11 @@ export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
           value: item.id,
         }))}
       />
-
-      <ParticipationButton disabled={!isDirty} onClick={isFeedback ? onClickMore : onClickFinish}>
-        {button.label.de}
-      </ParticipationButton>
+      <ParticipationButtonWrapper>
+        <ParticipationButton disabled={!isDirty} onClick={isFeedback ? onClickMore : onClickFinish}>
+          {button.label.de}
+        </ParticipationButton>
+      </ParticipationButtonWrapper>
     </SurveyForm>
   )
 }

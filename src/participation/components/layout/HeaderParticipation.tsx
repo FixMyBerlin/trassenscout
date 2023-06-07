@@ -1,7 +1,7 @@
 import { XMarkIcon } from "@heroicons/react/20/solid"
-import { Link } from "src/core/components/links"
-import { ProgressBar } from "src/participation/components/layout/ProgressBar"
 import Image from "next/image"
+import { ProgressBar } from "src/participation/components/layout/ProgressBar"
+import { ParticipationLink } from "../core/links/ParticipationLink"
 
 type Props = {
   logoSrc: string
@@ -18,12 +18,12 @@ export const HeaderParticipation: React.FC<Props> = ({ logoSrc }) => {
           <span className="py-5 pl-5">Beteiligung</span>
         </div>
         {/* TODO replace link in production: https://radschnellweg8-lb-wn.de/beteiligung */}
-        <Link
+        <ParticipationLink
           classNameOverwrites="text-gray-900"
           href="https://develop--rsv8-lb-wn.netlify.app/beteiligung/"
         >
           <XMarkIcon className="h-7  w-7" />
-        </Link>
+        </ParticipationLink>
       </div>
       <ProgressBar />
     </nav>

@@ -3,9 +3,11 @@ import { ProgressContext } from "src/participation/context/contexts"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
+const TOTAL = 8
+
 export const ProgressBar = () => {
   const { progress } = useContext(ProgressContext)
-  const width = progress ? ((progress.current + 1) / (progress.total + 1)) * 100 : 100
+  const width = progress ? (progress / TOTAL) * 100 : 100
 
   return (
     <div>

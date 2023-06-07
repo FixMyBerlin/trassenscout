@@ -31,7 +31,7 @@
             },
             "emailPlaceholder": { "de": "you@example.com" },
             "agreementText": {
-              "de": "Ich stimme den Datenschutzbedingungen zur Verarbeitung meiner persönlichen Daten zu."
+              "de": "Ich stimme den Datenschutzbedingungen zu."
             }
           }
         }
