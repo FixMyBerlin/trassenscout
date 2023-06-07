@@ -18,9 +18,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const [values, setValues] = useState({})
   const [isPageOneCompleted, setIsPageOneCompleted] = useState(false)
   const [isPageTwoCompleted, setIsPageTwoCompleted] = useState(false)
-
   const [isMapDirty, setIsMapDirty] = useState(false)
-
   const [feedbackPageProgress, setFeedbackPageProgress] = useState(0)
   const [feedbackCategory, setFeedbackCategory] = useState(6) // default: 6 / "Sonstiges"
 
