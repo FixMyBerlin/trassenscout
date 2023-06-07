@@ -20,6 +20,7 @@ export const LayoutParticipation: BlitzLayout<Props> = ({ faviconUrl, children }
     <>
       <Head>
         <link rel="icon" href={faviconUrl} type={mimetype} />
+        <link rel="canonical" href="https://radschnellweg8-lb-wn.de/beteiligung/" />
       </Head>
       <div className="relative flex h-full flex-col overflow-x-hidden">
         <MetaTags noindex title="Beteiligung RS8" />
