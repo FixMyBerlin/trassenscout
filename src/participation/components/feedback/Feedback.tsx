@@ -35,19 +35,19 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
 
   const categories = pages[0].questions[0].props.responses
 
-  const handleNextPage = useCallback(() => {
+  const handleNextPage = () => {
     const newFeedbackPageProgress = Math.min(pages.length, feedbackPageProgress + 1)
     setFeedbackPageProgress(newFeedbackPageProgress)
     setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
     window.requestAnimationFrame(() => window.scrollTo(0, 0))
-  }, [feedbackPageProgress, pages.length, setProgress])
+  }
 
-  const handleBackPage = useCallback(() => {
+  const handleBackPage = () => {
     const newFeedbackPageProgress = Math.max(0, feedbackPageProgress - 1)
     setFeedbackPageProgress(newFeedbackPageProgress)
     setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
     window.requestAnimationFrame(() => window.scrollTo(0, 0))
-  }, [feedbackPageProgress, setProgress])
+  }
 
   const transformValues = (values: Record<string, null | string | boolean>) => {
     const responses: Record<string, null | string | number | number[]> = {}
@@ -70,14 +70,11 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
     return responses
   }
 
-  const handleSubmit = useCallback(
-    (values: Record<string, any>, submitterId?: string) => {
-      values = transformValues(values)
-      delete values["22"] // delete map ja/nein response
-      onSubmit({ ...values, [pinId]: isMap ? pinPosition : null }, submitterId)
-    },
-    [isMap, onSubmit, pinId, pinPosition]
-  )
+  const handleSubmit = (values: Record<string, any>, submitterId?: string) => {
+    values = transformValues(values)
+    delete values["22"] // delete map ja/nein response
+    onSubmit({ ...values, [pinId]: isMap ? pinPosition : null }, submitterId)
+  }
 
   // when Form changes, check if Radio "Ja" is selected - set state to true
   const handleChange = useCallback(

@@ -50,12 +50,9 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
 
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
 
-  const handleLayerSwitch = useCallback(
-    () => (layer: LayerType) => {
-      setSelectedLayer(layer)
-    },
-    []
-  )
+  const handleLayerSwitch = () => (layer: LayerType) => {
+    setSelectedLayer(layer)
+  }
 
   const { pinPosition, setPinPosition } = useContext(PinContext)
 
@@ -90,16 +87,13 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
     [setIsMapDirty]
   )
 
-  const onMarkerDrag = useCallback(
-    (event: MarkerDragEvent) => {
-      logEvents((_events) => ({ ..._events, onDrag: event.lngLat }))
-      setPinPosition({
-        lng: event.lngLat.lng,
-        lat: event.lngLat.lat,
-      })
-    },
-    [setPinPosition]
-  )
+  const onMarkerDrag = (event: MarkerDragEvent) => {
+    logEvents((_events) => ({ ..._events, onDrag: event.lngLat }))
+    setPinPosition({
+      lng: event.lngLat.lng,
+      lat: event.lngLat.lat,
+    })
+  }
 
   const onMarkerDragEnd = useCallback((event: MarkerDragEvent) => {
     logEvents((_events) => ({ ..._events, onDragEnd: event.lngLat }))

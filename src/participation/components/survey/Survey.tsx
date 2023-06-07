@@ -16,19 +16,19 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   const { setProgress } = useContext(ProgressContext)
   const [surveyPageProgress, setSurveyPageProgress] = useState(0)
 
-  const handleNextPage = useCallback(() => {
+  const handleNextPage = () => {
     const newSurveyPageProgress = Math.min(survey.pages.length, surveyPageProgress + 1)
     setSurveyPageProgress(newSurveyPageProgress)
     setProgress(stageProgressDefinition["SURVEY"] + newSurveyPageProgress)
     window.requestAnimationFrame(() => window.scrollTo(0, 0))
-  }, [survey.pages.length, setProgress, surveyPageProgress])
+  }
 
-  const handleBackPage = useCallback(() => {
+  const handleBackPage = () => {
     const newSurveyPageProgress = Math.max(0, surveyPageProgress - 1)
     setSurveyPageProgress(newSurveyPageProgress)
     setProgress(stageProgressDefinition["SURVEY"] + newSurveyPageProgress)
     window.requestAnimationFrame(() => window.scrollTo(0, 0))
-  }, [setProgress, surveyPageProgress])
+  }
 
   const buttonActions = {
     next: handleNextPage,
@@ -58,14 +58,10 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
     return responses
   }
 
-  const handleSubmit = useCallback(
-    (values: any) => {
-      values = transformValues(values)
-      onSubmit(values)
-    },
-    [onSubmit]
-  )
-
+  const handleSubmit = (values: any) => {
+    values = transformValues(values)
+    onSubmit(values)
+  }
   const handleChange = useCallback((values: any) => {
     values = transformValues(values)
     setValues(values)

@@ -18,12 +18,9 @@ type Props = {
 export const Email: React.FC<Props> = ({ onSubmit, email }) => {
   const [consent, setConsent] = useState(false)
 
-  const handleSubmit = useCallback(
-    (values: Record<string, any>) => {
-      onSubmit(values.email)
-    },
-    [onSubmit]
-  )
+  const handleSubmit = (values: Record<string, any>) => {
+    onSubmit(values.email)
+  }
 
   const handleChange = useCallback((values: Record<string, any>) => {
     setConsent(values.consent && values.email)
