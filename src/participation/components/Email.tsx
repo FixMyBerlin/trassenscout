@@ -8,6 +8,7 @@ import { ParticipationLabeledCheckbox } from "./form/ParticipationLabeledCheckbo
 import { ParticipationLabeledTextField } from "./form/ParticipationLabeledTextField"
 import SurveyForm from "./form/SurveyForm"
 import { ScreenHeaderParticipation } from "./layout/ScreenHeaderParticipation"
+import clsx from "clsx"
 
 type Props = {
   onSubmit: any
@@ -47,16 +48,18 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
         <div className="flex items-center">
           <ParticipationLabeledCheckbox
             labelProps={{
-              className:
-                "ml-3 block cursor-pointer text-normal text-base sm:text-lg text-gray-700 hover:text-gray-800",
+              className: clsx(
+                "text-base sm:text-lg text-gray-700 hover:text-gray-800 prose",
+                "prose-a:underline prose-a:text-pink-500 prose-a:decoreation-pink-500 prose-a:hover:text-blue-800 prose-a:hover:decoration-blue-800 prose-a:active:ring-1 prose-a:ring-pink-500 prose-a:rounded"
+              ),
             }}
             name="consent"
-            label=""
+            label={
+              <p>
+                Ich stimme den <a href="/datenschutz">Datenschutzbedingungen</a> zu.
+              </p>
+            }
           />
-          <p className="pt-1">
-            Ich stimme den{" "}
-            <ParticipationLink href="/datenschutz">Datenschutzbedingungen</ParticipationLink> zu.
-          </p>
         </div>
 
         <ParticipationButtonWrapper>

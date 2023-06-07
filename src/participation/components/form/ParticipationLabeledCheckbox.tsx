@@ -1,6 +1,6 @@
 import { ErrorMessage } from "@hookform/error-message"
 import clsx from "clsx"
-import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef } from "react"
+import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef, ReactNode } from "react"
 import { useFormContext } from "react-hook-form"
 
 export interface TParticipationLabeledCheckbox
@@ -8,7 +8,7 @@ export interface TParticipationLabeledCheckbox
   /** Field name. */
   name: string
   /** Field label. */
-  label: string
+  label: string | ReactNode
   /** Help text below field label. */
   help?: string
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
