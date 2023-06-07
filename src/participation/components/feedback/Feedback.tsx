@@ -84,14 +84,17 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
     (values: Record<string, any>) => {
       setValues(values)
       values = transformValues(values)
-      setIsMap(values["22"] === 1) // "1" -> yes, "2" -> no - see feedback.json
+      const isMapOption = values["22"] === 1 // "1" -> yes, "2" -> no - see feedback.json
+      setIsMap(isMapOption)
+      const isQuestionsCompletedPageOne = values["21"] && values["22"]
       setIsPageOneCompleted(
-        values["22"] !== 1 // if user did not choose map
-          ? values["21"] && values["22"] // page is completed in case both questions are answered
-          : values["21"] && values["22"] && isMapDirty // page is completed in case both questions are answered and user has touched the map marker
+        !isMapOption // if user did not choose map
+          ? isQuestionsCompletedPageOne // page is completed in case both questions are answered
+          : isQuestionsCompletedPageOne && isMapDirty // page is completed in case both questions are answered and user has touched the map marker
       )
-      setIsPageTwoCompleted(values["34"] || values["35"])
-      if (!(values["22"] === 1)) setPinPosition(null) // set pinPosition to null if not yes
+      const isMinimumOneQuestionPageTwo = values["34"] || values["35"]
+      setIsPageTwoCompleted(isMinimumOneQuestionPageTwo)
+      if (!isMapOption) setPinPosition(null) // set pinPosition to null if not yes
       setFeedbackCategory(values["21"] || categories.length) // sets state to response id of chosen category (question 21) // fallback: '"Sonstiges"
     },
     [categories.length, isMapDirty]
