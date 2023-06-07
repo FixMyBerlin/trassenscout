@@ -1,11 +1,11 @@
 import { useCallback, useState } from "react"
 import { Response } from "../data/types"
-import { ParticipationButton } from "./core/ParticipationButton"
-import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
+import { ParticipationButton } from "./core/buttons/ParticipationButton"
+import { ScreenHeaderParticipation } from "./layout/ScreenHeaderParticipation"
 import { ParticipationH2 } from "./core/Text"
 import { ParticipationLabeledRadiobuttonGroup } from "./form/ParticipationLabeledRadiobuttonGroup"
 import SurveyForm from "./form/SurveyForm"
-import { ParticipationButtonWrapper } from "./core/ParticipationButtonWrapper"
+import { ParticipationButtonWrapper } from "./core/buttons/ParticipationButtonWrapper"
 
 export { FORM_ERROR } from "src/core/components/forms"
 

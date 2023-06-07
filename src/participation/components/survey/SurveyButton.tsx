@@ -1,5 +1,5 @@
 import { Button } from "src/participation/data/types"
-import { ParticipationButton } from "../core/ParticipationButton"
+import { ParticipationButton } from "../core/buttons/ParticipationButton"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {

@@ -1,6 +1,6 @@
-import { ScreenHeaderParticipation } from "src/participation/components/core/ScreenHeaderParticipation"
+import { ScreenHeaderParticipation } from "src/participation/components/layout/ScreenHeaderParticipation"
 import { SurveyButton } from "./SurveyButton"
-import { ParticipationButtonWrapper } from "../core/ParticipationButtonWrapper"
+import { ParticipationButtonWrapper } from "../core/buttons/ParticipationButtonWrapper"
 import { Page as TPage } from "src/participation/data/types"
 import { Question } from "./Question"
 export { FORM_ERROR } from "src/core/components/forms"

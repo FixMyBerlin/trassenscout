@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { ReactNode } from "react"
-import { pinkButtonStyles, whiteButtonStyles } from "src/core/components/links"
+import { participationPinkButtonStyles, participationWhiteButtonStyles } from "../links/styles"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
@@ -17,8 +17,7 @@ export const ParticipationButton: React.FC<Props> = ({
 }) => {
   const buttonStyles = clsx(
     "px-12",
-    color === "white" ? whiteButtonStyles : pinkButtonStyles,
-    disabled && "opacity-20"
+    color === "white" ? participationWhiteButtonStyles : participationPinkButtonStyles
   )
 
   return (

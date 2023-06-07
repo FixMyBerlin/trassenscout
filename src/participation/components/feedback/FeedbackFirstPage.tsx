@@ -1,9 +1,9 @@
 import { MapProvider } from "react-map-gl"
-import { ParticipationButton } from "../core/ParticipationButton"
-import { ScreenHeaderParticipation } from "../core/ScreenHeaderParticipation"
+import { ParticipationButton } from "../core/buttons/ParticipationButton"
+import { ScreenHeaderParticipation } from "../layout/ScreenHeaderParticipation"
 import { ParticipationMap } from "../maps/ParticipationMap"
 import { Question } from "../survey/Question"
-import { ParticipationButtonWrapper } from "../core/ParticipationButtonWrapper"
+import { ParticipationButtonWrapper } from "../core/buttons/ParticipationButtonWrapper"
 
 export { FORM_ERROR } from "src/core/components/forms"
 

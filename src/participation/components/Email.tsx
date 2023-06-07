@@ -1,13 +1,13 @@
 export { FORM_ERROR } from "src/core/components/forms"
 import { useCallback, useState } from "react"
-import { Link, whiteButtonStyles } from "src/core/components/links"
-import { ParticipationButton } from "./core/ParticipationButton"
-import { ParticipationButtonWrapper } from "./core/ParticipationButtonWrapper"
-import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
 import { ParticipationH2, ParticipationP } from "./core/Text"
+import { ParticipationButton } from "./core/buttons/ParticipationButton"
+import { ParticipationButtonWrapper } from "./core/buttons/ParticipationButtonWrapper"
+import { ParticipationLink } from "./core/links/ParticipationLink"
 import { ParticipationLabeledCheckbox } from "./form/ParticipationLabeledCheckbox"
 import { ParticipationLabeledTextField } from "./form/ParticipationLabeledTextField"
 import SurveyForm from "./form/SurveyForm"
+import { ScreenHeaderParticipation } from "./layout/ScreenHeaderParticipation"
 
 type Props = {
   onSubmit: any
@@ -54,7 +54,8 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
             label=""
           />
           <p className="pt-1">
-            Ich stimme den <Link href="/datenschutz">Datenschutzbedingungen</Link> zu.
+            Ich stimme den{" "}
+            <ParticipationLink href="/datenschutz">Datenschutzbedingungen</ParticipationLink> zu.
           </p>
         </div>
 
@@ -63,12 +64,12 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
             {page.buttons[0].label.de}
           </ParticipationButton>
           {/* TODO replace link in production: https://radschnellweg8-lb-wn.de/beteiligung */}
-          <Link
-            className={whiteButtonStyles}
+          <ParticipationLink
+            button="white"
             href="https://develop--rsv8-lb-wn.netlify.app/beteiligung/"
           >
             Nein, zurück zur Startseite
-          </Link>
+          </ParticipationLink>
         </ParticipationButtonWrapper>
       </SurveyForm>
     </section>
