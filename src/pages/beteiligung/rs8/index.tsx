@@ -135,7 +135,10 @@ const ParticipationMainPage: BlitzPage = () => {
 
   return (
     <ProgressContext.Provider value={{ progress, setProgress }}>
-      <LayoutParticipation faviconUrl={surveyDefinition.faviconUrl}>
+      <LayoutParticipation
+        canonicalUrl={surveyDefinition.canonicalUrl}
+        faviconUrl={surveyDefinition.faviconUrl}
+      >
         <Debug className="border-red-500">
           <code>stage: {stage}</code>
           <code>
