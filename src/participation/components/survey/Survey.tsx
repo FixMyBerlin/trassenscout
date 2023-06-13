@@ -8,6 +8,7 @@ import { ProgressContext } from "src/participation/context/contexts"
 import { Survey as TSurvey } from "src/participation/data/types"
 import { Debug } from "./Debug"
 import { Page } from "./Page"
+import { scrollToTopWithDelay } from "src/participation/utils/scrollToTopWithDelay"
 
 type Props = { survey: TSurvey; onSubmit: ([]) => void }
 
@@ -20,14 +21,14 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
     const newSurveyPageProgress = Math.min(survey.pages.length, surveyPageProgress + 1)
     setSurveyPageProgress(newSurveyPageProgress)
     setProgress(stageProgressDefinition["SURVEY"] + newSurveyPageProgress)
-    window.requestAnimationFrame(() => window.scrollTo(0, 0))
+    scrollToTopWithDelay()
   }
 
   const handleBackPage = () => {
     const newSurveyPageProgress = Math.max(0, surveyPageProgress - 1)
     setSurveyPageProgress(newSurveyPageProgress)
     setProgress(stageProgressDefinition["SURVEY"] + newSurveyPageProgress)
-    window.requestAnimationFrame(() => window.scrollTo(0, 0))
+    scrollToTopWithDelay()
   }
 
   const buttonActions = {

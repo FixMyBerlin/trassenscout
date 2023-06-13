@@ -4,6 +4,7 @@ import { PinContext, ProgressContext } from "src/participation/context/contexts"
 import SurveyForm from "../form/SurveyForm"
 import { FeedbackFirstPage } from "./FeedbackFirstPage"
 import { FeedbackSecondPage } from "./FeedbackSecondPage"
+import { scrollToTopWithDelay } from "src/participation/utils/scrollToTopWithDelay"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -39,14 +40,14 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
     const newFeedbackPageProgress = Math.min(pages.length, feedbackPageProgress + 1)
     setFeedbackPageProgress(newFeedbackPageProgress)
     setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
-    window.requestAnimationFrame(() => window.scrollTo(0, 0))
+    scrollToTopWithDelay()
   }
 
   const handleBackPage = () => {
     const newFeedbackPageProgress = Math.max(0, feedbackPageProgress - 1)
     setFeedbackPageProgress(newFeedbackPageProgress)
     setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
-    window.requestAnimationFrame(() => window.scrollTo(0, 0))
+    scrollToTopWithDelay()
   }
 
   const transformValues = (values: Record<string, null | string | boolean>) => {

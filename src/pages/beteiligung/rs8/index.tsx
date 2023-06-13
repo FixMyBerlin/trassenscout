@@ -17,6 +17,7 @@ import createSurveySession from "src/survey-sessions/mutations/createSurveySessi
 import updateSurveySession from "src/survey-sessions/mutations/updateSurveySession"
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
 import { Debug } from "src/participation/components/survey/Debug"
+import { scrollToTopWithDelay } from "src/participation/utils/scrollToTopWithDelay"
 
 // For Progressbar: stage and associated arbitrarily set status of the progressbar
 export const stageProgressDefinition = {
@@ -52,7 +53,7 @@ const ParticipationMainPage: BlitzPage = () => {
     setResponses([...responses, surveyResponses])
     setStage("MORE")
     setProgress(stageProgressDefinition["MORE"])
-    window && window.scrollTo(0, 0)
+    scrollToTopWithDelay()
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
@@ -71,12 +72,12 @@ const ParticipationMainPage: BlitzPage = () => {
     if (submitterId === "submit-finish") {
       setStage("EMAIL")
       setProgress(stageProgressDefinition["EMAIL"])
-      window && window.scrollTo(0, 0)
+      scrollToTopWithDelay()
     } else {
       setFeedbackKey(feedbackKey + 1)
       setStage("FEEDBACK")
       setProgress(stageProgressDefinition["FEEDBACK"])
-      window && window.scrollTo(0, 0)
+      scrollToTopWithDelay()
     }
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
@@ -92,19 +93,19 @@ const ParticipationMainPage: BlitzPage = () => {
     setFeedbackKey(feedbackKey + 1)
     setStage("FEEDBACK")
     setProgress(stageProgressDefinition["FEEDBACK"])
-    window && window.scrollTo(0, 0)
+    scrollToTopWithDelay()
   }
 
   const handleFinish = () => {
     setStage("EMAIL")
     setProgress(stageProgressDefinition["EMAIL"])
-    window && window.scrollTo(0, 0)
+    scrollToTopWithDelay()
   }
 
   const handleSubmitEmail = async (email: string | null) => {
     setStage("DONE")
     setProgress(stageProgressDefinition["DONE"])
-    window && window.scrollTo(0, 0)
+    scrollToTopWithDelay()
     setEmailState(email)
     await updateSurveySessionMutation({ id: surveySessionId!, email: email! })
   }
