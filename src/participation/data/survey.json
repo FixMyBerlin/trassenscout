@@ -223,7 +223,7 @@
         }
       ],
       "buttons": [
-        { "label": { "de": "Weiter" }, "color": "pink", "onClick": { "action": "submit" } },
+        { "label": { "de": "Absenden" }, "color": "pink", "onClick": { "action": "submit" } },
         { "label": { "de": "Zurück" }, "color": "white", "onClick": { "action": "previousPage" } }
       ]
     }
