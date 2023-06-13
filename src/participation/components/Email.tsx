@@ -34,43 +34,25 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
         <ScreenHeaderParticipation title={page.title.de} />
         <ParticipationH2>{page.questions[0].label.de}</ParticipationH2>
         <ParticipationP>{page.questions[0].props.text.de}</ParticipationP>
-        <ParticipationH2>{page.questions[1].label.de}</ParticipationH2>
-        <ParticipationP>{page.questions[1].props.text.de}</ParticipationP>
-        <ParticipationLabeledTextField
-          name="email"
-          label=""
-          placeholder={page.questions[1].props.emailPlaceholder.de}
-          outerProps={{ className: "mb-6" }}
-        />
-        <div className="flex items-center">
-          <ParticipationLabeledCheckbox
-            labelProps={{
-              className: clsx(
-                "text-base sm:text-lg text-gray-700 hover:text-gray-800 prose",
-                "prose-a:underline prose-a:text-pink-500 prose-a:decoreation-pink-500 prose-a:hover:text-blue-800 prose-a:hover:decoration-blue-800 prose-a:active:ring-1 prose-a:ring-pink-500 prose-a:rounded"
-              ),
-            }}
-            name="consent"
-            label={
-              <p>
-                Ich stimme den <a href="/datenschutz">Datenschutzbedingungen</a> zu.
-              </p>
-            }
-          />
-        </div>
 
-        <ParticipationButtonWrapper>
-          <ParticipationButton disabled={!consent} type="submit">
-            {page.buttons[0].label.de}
-          </ParticipationButton>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: `
+              <iframe data-w-type="embedded" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://7p8q.mjt.lu/wgt/7p8q/t5g/form?c=f8dcc5f9" width="100%" style="height: 0;"></iframe>
+              <script type="text/javascript" src="https://app.mailjet.com/pas-nc-embedded-v1.js"></script>
+          `,
+          }}
+        />
+
+        <div className="pt-10 text-center">
           {/* TODO replace link in production: https://radschnellweg8-lb-wn.de/beteiligung */}
           <ParticipationLink
             button="white"
             href="https://develop--rsv8-lb-wn.netlify.app/beteiligung/"
           >
-            Nein, zurück zur Startseite
+            Zurück zur Startseite
           </ParticipationLink>
-        </ParticipationButtonWrapper>
+        </div>
       </SurveyForm>
     </section>
   )
