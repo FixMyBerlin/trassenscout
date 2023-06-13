@@ -50,7 +50,7 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
 
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
 
-  const handleLayerSwitch = () => (layer: LayerType) => {
+  const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)
   }
 
