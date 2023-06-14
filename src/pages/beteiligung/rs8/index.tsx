@@ -16,8 +16,10 @@ import { ProgressContext } from "src/participation/context/contexts"
 import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
 import updateSurveySession from "src/survey-sessions/mutations/updateSurveySession"
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
-import { Debug } from "src/participation/components/survey/Debug"
+import { Debug } from "src/participation/components/Debug"
 import { scrollToTopWithDelay } from "src/participation/utils/scrollToTopWithDelay"
+import { Spinner } from "src/core/components/Spinner"
+import { ParticipationSpinnerLayover } from "src/participation/components/survey/ParticipationSpinnerLayover"
 
 // For Progressbar: stage and associated arbitrarily set status of the progressbar
 export const stageProgressDefinition = {
@@ -31,6 +33,7 @@ export const stageProgressDefinition = {
 const ParticipationMainPage: BlitzPage = () => {
   const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("SURVEY")
   const [progress, setProgress] = useState(1)
+  const [isSpinner, setIsSpinner] = useState(false)
   const [responses, setResponses] = useState<any[]>([])
   const [emailState, setEmailState] = useState<string | null>()
   const [surveySessionId, setSurveySessionId] = useState<null | number>(null)
@@ -50,10 +53,14 @@ const ParticipationMainPage: BlitzPage = () => {
   }
 
   const handleSubmitSurvey = async (surveyResponses: Record<string, any>) => {
+    setIsSpinner(true)
     setResponses([...responses, surveyResponses])
-    setStage("MORE")
-    setProgress(stageProgressDefinition["MORE"])
-    scrollToTopWithDelay()
+    setTimeout(() => {
+      setStage("MORE")
+      setProgress(stageProgressDefinition["MORE"])
+      setIsSpinner(false)
+      scrollToTopWithDelay()
+    }, 2000)
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
@@ -147,7 +154,8 @@ const ParticipationMainPage: BlitzPage = () => {
           </code>
           <code>email: {emailState}</code>
         </Debug>
-        <div>{component}</div>
+        <div className={isSpinner ? "blur-sm" : ""}>{component}</div>
+        {isSpinner && <ParticipationSpinnerLayover page />}
       </LayoutParticipation>
     </ProgressContext.Provider>
   )
