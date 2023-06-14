@@ -45,7 +45,7 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
           }}
         />
 
-        <div className="pt-10 text-center">
+        <div className="pt-10">
           {/* TODO replace link in production: https://radschnellweg8-lb-wn.de/beteiligung */}
           <ParticipationLink
             button="white"
