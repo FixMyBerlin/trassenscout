@@ -46,11 +46,7 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
         />
 
         <div className="pt-10">
-          {/* TODO replace link in production: https://radschnellweg8-lb-wn.de/beteiligung */}
-          <ParticipationLink
-            button="white"
-            href="https://develop--rsv8-lb-wn.netlify.app/beteiligung/"
-          >
+          <ParticipationLink button="white" href="https://radschnellweg8-lb-wn.de/beteiligung/">
             Zurück zur Startseite
           </ParticipationLink>
         </div>
