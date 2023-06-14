@@ -113,7 +113,7 @@ const ParticipationMainPage: BlitzPage = () => {
   let component
   switch (stage) {
     case "SURVEY":
-      // @ts-ignore
+      // @ts-ignore "Types of property 'version' are incompatible. / Type 'number' is not assignable to type '1'."
       component = <Survey survey={surveyDefinition} onSubmit={handleSubmitSurvey} />
       break
     case "FEEDBACK":
