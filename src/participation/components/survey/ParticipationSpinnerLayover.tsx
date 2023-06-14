@@ -1,16 +1,6 @@
 import clsx from "clsx"
 
-type Props = {
-  page?: boolean
-  size?: "5" | "12"
-}
-
-const sizeClasses = {
-  "5": "h-5 w-5",
-  "12": "h-12 w-12",
-}
-
-export const ParticipationSpinnerLayover: React.FC<Props> = ({ page = false, size = "12" }) => {
+export const ParticipationSpinnerLayover: React.FC = () => {
   return (
     <div>
       <div className="fixed inset-0 z-50 h-screen">
@@ -18,8 +8,8 @@ export const ParticipationSpinnerLayover: React.FC<Props> = ({ page = false, siz
           <svg
             aria-hidden="true"
             className={clsx(
-              sizeClasses[size],
-              page ? "my-20" : "",
+              "h-12 w-12",
+              "my-20",
               "inline animate-spin fill-pink-500 text-gray-200 dark:text-pink-600"
             )}
             viewBox="0 0 100 101"
@@ -35,7 +25,7 @@ export const ParticipationSpinnerLayover: React.FC<Props> = ({ page = false, siz
               fill="currentFill"
             />
           </svg>
-          <span className="sr-only">Loading...</span>
+          <span className="sr-only">Absenden…</span>
         </div>
       </div>
     </div>

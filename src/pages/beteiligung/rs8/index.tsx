@@ -55,12 +55,7 @@ const ParticipationMainPage: BlitzPage = () => {
   const handleSubmitSurvey = async (surveyResponses: Record<string, any>) => {
     setIsSpinner(true)
     setResponses([...responses, surveyResponses])
-    setTimeout(() => {
-      setStage("MORE")
-      setProgress(stageProgressDefinition["MORE"])
-      setIsSpinner(false)
-      scrollToTopWithDelay()
-    }, 2000)
+
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
@@ -69,23 +64,22 @@ const ParticipationMainPage: BlitzPage = () => {
         data: JSON.stringify(surveyResponses),
       })
     })()
+
+    setTimeout(() => {
+      setStage("MORE")
+      setProgress(stageProgressDefinition["MORE"])
+      setIsSpinner(false)
+      scrollToTopWithDelay()
+    }, 900)
   }
 
   const handleSubmitFeedback = async (
     feedbackResponses: Record<string, any>,
     submitterId: string
   ) => {
+    setIsSpinner(true)
     setResponses([...responses, feedbackResponses])
-    if (submitterId === "submit-finish") {
-      setStage("EMAIL")
-      setProgress(stageProgressDefinition["EMAIL"])
-      scrollToTopWithDelay()
-    } else {
-      setFeedbackKey(feedbackKey + 1)
-      setStage("FEEDBACK")
-      setProgress(stageProgressDefinition["FEEDBACK"])
-      scrollToTopWithDelay()
-    }
+
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
@@ -94,6 +88,19 @@ const ParticipationMainPage: BlitzPage = () => {
         data: JSON.stringify(feedbackResponses),
       })
     })()
+
+    setTimeout(() => {
+      if (submitterId === "submit-finish") {
+        setStage("EMAIL")
+        setProgress(stageProgressDefinition["EMAIL"])
+      } else {
+        setFeedbackKey(feedbackKey + 1)
+        setStage("FEEDBACK")
+        setProgress(stageProgressDefinition["FEEDBACK"])
+      }
+      setIsSpinner(false)
+      scrollToTopWithDelay()
+    }, 900)
   }
 
   const handleMoreFeedback = () => {
@@ -155,7 +162,7 @@ const ParticipationMainPage: BlitzPage = () => {
           <code>email: {emailState}</code>
         </Debug>
         <div className={isSpinner ? "blur-sm" : ""}>{component}</div>
-        {isSpinner && <ParticipationSpinnerLayover page />}
+        {isSpinner && <ParticipationSpinnerLayover />}
       </LayoutParticipation>
     </ProgressContext.Provider>
   )
