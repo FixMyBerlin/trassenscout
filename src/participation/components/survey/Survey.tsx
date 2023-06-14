@@ -91,6 +91,7 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
     }
     return completed
   }
+  const completed = pageIsComplete()
 
   const page = pages[surveyPageProgress]
 
@@ -102,7 +103,7 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
           <pre>{JSON.stringify(values, null, 2)}</pre>
         </code>
       </Debug>
-      {page && <Page page={page} buttonActions={buttonActions} completed={pageIsComplete()} />}
+      {page && <Page page={page} buttonActions={buttonActions} completed={completed} />}
     </SurveyForm>
   )
 }
