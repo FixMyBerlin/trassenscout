@@ -17,30 +17,28 @@ export const Page: React.FC<Props> = ({ page, buttonActions, completed }) => {
 
   return (
     <section>
-      <>
-        <ScreenHeaderParticipation title={title.de} description={description.de} />
-        {questions &&
-          questions.length &&
-          questions.map((question) => (
-            <Question className="mb-2" key={`${pageId}-${question.id}`} question={question} />
-          ))}
-        <ParticipationButtonWrapper>
-          {buttons?.map((button) => {
-            let disabled = false
-            if (["nextPage", "submit"].includes(button.onClick.action)) {
-              disabled = !completed
-            }
-            return (
-              <SurveyButton
-                key={`${pageId}-${button.label.de}`}
-                buttonActions={buttonActions}
-                button={button}
-                disabled={disabled}
-              />
-            )
-          })}
-        </ParticipationButtonWrapper>
-      </>
+      <ScreenHeaderParticipation title={title.de} description={description.de} />
+      {questions &&
+        questions.length &&
+        questions.map((question) => (
+          <Question className="mb-2" key={`${pageId}-${question.id}`} question={question} />
+        ))}
+      <ParticipationButtonWrapper>
+        {buttons?.map((button) => {
+          let disabled = false
+          if (["nextPage", "submit"].includes(button.onClick.action)) {
+            disabled = !completed
+          }
+          return (
+            <SurveyButton
+              key={`${pageId}-${button.label.de}`}
+              buttonActions={buttonActions}
+              button={button}
+              disabled={disabled}
+            />
+          )
+        })}
+      </ParticipationButtonWrapper>
     </section>
   )
 }
