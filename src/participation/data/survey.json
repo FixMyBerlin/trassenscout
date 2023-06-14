@@ -34,7 +34,13 @@
           "props": {
             "responses": [
               { "id": 1, "text": { "de": "Ja" } },
-              { "id": 2, "text": { "de": "Nein" } },
+              {
+                "id": 2,
+                "text": { "de": "Nein" },
+                "help": {
+                  "de": "Warum nicht? Wir freuen uns, wenn Sie das Freifeldtext im späteren Teil „Weiteres Feedback“ nutzen, um uns Ihre Gründe zu nennen. Besten Dank!"
+                }
+              },
               {
                 "id": 3,
                 "text": {

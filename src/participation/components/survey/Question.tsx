@@ -19,6 +19,7 @@ const SingleResponseComponent: React.FC<TSingleOrMultuResponseComponentProps> = 
       scope: `single-${id}`,
       name: `${id}-${item.id}`,
       label: item.text.de,
+      help: item?.help?.de,
       value: `${item.id}`,
     }))}
   />
@@ -33,6 +34,7 @@ const MultipleResponseComponent: React.FC<TSingleOrMultuResponseComponentProps> 
     items={responses.map((item) => ({
       name: `multi-${id}-${item.id}`,
       label: item.text.de,
+      help: item?.help?.de,
     }))}
   />
 )
@@ -49,13 +51,11 @@ const TextResponseComponent: React.FC<TTextResponseComponentProps> = ({ id }) =>
 
 // TODO type
 const CustomComponent = (props: any) => (
-  <>
-    <div className="border-2 border-black bg-gray-200 p-1">
-      <code>
-        <pre>{JSON.stringify(props, null, 2)}</pre>
-      </code>
-    </div>
-  </>
+  <div className="border-2 border-black bg-gray-200 p-1">
+    <code>
+      <pre>{JSON.stringify(props, null, 2)}</pre>
+    </code>
+  </div>
 )
 
 const components = {

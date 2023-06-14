@@ -12,7 +12,7 @@ type Props = {
 
 export const ParticipationLabeledRadiobuttonGroup: React.FC<Props> = ({ items, className }) => {
   return (
-    <div className={clsx(className, "space-y-2")}>
+    <div className={className}>
       {items.map((item) => {
         return <ParticipationLabeledRadiobutton key={item.name} {...item} />
       })}
