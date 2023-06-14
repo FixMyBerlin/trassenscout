@@ -12,7 +12,7 @@ export const HeaderParticipation: React.FC<Props> = ({ logoSrc }) => {
     <nav className="z-20 shadow-xl">
       <div className="mx-auto flex items-center justify-between px-2 text-gray-500 sm:px-6 lg:pl-5 lg:pr-2.5">
         <div className="flex h-full items-start justify-start">
-          <span className="relative h-8 w-8">
+          <span className="relative h-12 w-12">
             <Image className="object-contain" layout="fill" src={logoSrc} alt="Projektlogo" />
           </span>
           <span className="py-5 pl-5">Beteiligung</span>
