@@ -40,7 +40,7 @@ export function SubsectionForm<S extends z.ZodType<any, any>>(
       </div>
       <LabeledSelect name="labelPos" label="Kartenlabelposition" options={labelPosOptions} />
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
-      <LabeledGeometryField name="geometry" label="Geometry (LineString)" />
+      <LabeledGeometryField name="geometry" label="Geometry der Achse (LineString)" />
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"

@@ -83,14 +83,17 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
             />
             {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}
             <p className="mt-2 text-sm text-gray-500">
+              Das richtige Koordinatensystem ist EPSG:4326 / WGS84.
+            </p>
+            <p className="mt-2 text-sm text-gray-500">
               {geometryType === "ROUTE" ? (
                 <>
-                  Das richtige Format für eine Linie ist <code>[9.1943,48.8932]</code>
+                  Das richtige Format für eine Linie ist <code>[9.1943,48.8932]</code>.
                 </>
               ) : (
                 <>
                   Das richtige Format für einen Punkt ist{" "}
-                  <code>[[9.1943,48.8932],[9.2043,48.8933]]</code>
+                  <code>[[9.1943,48.8932],[9.2043,48.8933]]</code>.
                 </>
               )}
             </p>

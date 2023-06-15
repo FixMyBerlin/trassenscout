@@ -42,7 +42,10 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
           ["AREA", "Sonderführung (SF) – Punkt"],
         ]}
       />
-      <LabeledGeometryField name="geometry" label="Geometry (`LineString` oder `Point`)" />
+      <LabeledGeometryField
+        name="geometry"
+        label="Geometry der Achse (`LineString` oder `Point`)"
+      />
       <LabeledSelect
         name="labelPos"
         label="Kartenlabel Position"
