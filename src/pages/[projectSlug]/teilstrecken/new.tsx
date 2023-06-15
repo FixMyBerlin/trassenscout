@@ -5,11 +5,12 @@ import { Suspense } from "react"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
+import { seoNewTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SectionForm } from "src/sections/components/SectionForm"
 import createSection from "src/sections/mutations/createSection"
 import { SectionSchema } from "src/sections/schema"
-import getProjectUsers from "src/users/queries/getProjectUsers"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 
 const NewSectionWithQuery = () => {
   const router = useRouter()
@@ -50,13 +51,14 @@ const NewSectionPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <MetaTags noindex title="Neue Teilstrecke erstellen" />
-      <PageHeader title="Neue Teilstrecke erstellen" className="mt-12" />
+      <MetaTags noindex title={seoNewTitle("Teilstrecke")} />
+      <PageHeader title="Teilstrecke hinzufügen" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
         <NewSectionWithQuery />
       </Suspense>
 
+      <hr className="my-5" />
       <p>
         <Link href={Routes.ProjectDashboardPage({ projectSlug: projectSlug! })}>Zum Projekt</Link>
       </p>

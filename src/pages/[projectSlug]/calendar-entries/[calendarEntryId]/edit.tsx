@@ -12,10 +12,11 @@ import {
 import { getDate, getTime } from "src/calendar-entries/utils/splitStartAt"
 import { transformValuesWithStartAt } from "src/calendar-entries/utils/transformValuesWithStartAt"
 import { SuperAdminBox } from "src/core/components/AdminBox"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { quote } from "src/core/components/text"
+import { quote, seoEditTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { z } from "zod"
 
@@ -71,13 +72,6 @@ const EditCalendarEntry = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Termin ${quote(calendarEntry.title)}`} />
-      <PageHeader
-        title={quote(calendarEntry.title)}
-        subtitle="Termin bearbeiten"
-        className="mt-12"
-      />
-
       <CalendarEntryForm
         submitText="Speichern"
         schema={Schema}
@@ -85,9 +79,7 @@ const EditCalendarEntry = () => {
         onSubmit={handleSubmit}
       />
 
-      <SuperAdminBox>
-        <pre>{JSON.stringify(calendarEntry, null, 2)}</pre>
-      </SuperAdminBox>
+      <SuperAdminLogData data={calendarEntry} />
     </>
   )
 }
@@ -97,6 +89,9 @@ const EditCalendarEntryPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
+      <MetaTags noindex title={seoEditTitle("Termin")} />
+      <PageHeader title="Termin bearbeiten" className="mt-12" />
+
       <Suspense fallback={<Spinner page />}>
         <EditCalendarEntry />
       </Suspense>

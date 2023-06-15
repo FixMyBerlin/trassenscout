@@ -13,7 +13,7 @@ import {
 } from "src/core/components/links"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { quote } from "src/core/components/text"
+import { quote, seoNewTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { useS3Upload } from "src/core/lib/next-s3-upload/src"
 import createFile from "src/files/mutations/createFile"
@@ -204,12 +204,10 @@ const NewFileWithQuery = () => {
 }
 
 const NewFilePage: BlitzPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
-
   return (
     <LayoutRs>
-      <MetaTags noindex title="Neues Dokument" />
-      <PageHeader title="Neues Dokument" className="mt-12" />
+      <MetaTags noindex title={seoNewTitle("Dokument")} />
+      <PageHeader title="Dokument hinzufügen" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
         <NewFileWithQuery />

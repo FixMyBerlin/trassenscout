@@ -4,19 +4,23 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
+import { seoNewTitle } from "src/core/components/text"
 import { H1 } from "src/core/components/text/Headings"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
+import createMembership from "src/memberships/mutations/createMembership"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import createProject from "src/projects/mutations/createProject"
 import { ProjectLogoScrcsInputSchema, ProjectSchema } from "src/projects/schema"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getUsers from "src/users/queries/getUsers"
 
-const AdminNewProjectPageWithQuery = () => {
+const AdminNewProjectWithQuery = () => {
   const router = useRouter()
   const currentUser = useCurrentUser()
   const [createProjectMutation] = useMutation(createProject)
+  const [createMembershipMutation] = useMutation(createMembership)
 
   const [{ users }] = useQuery(getUsers, {})
 
@@ -26,6 +30,17 @@ const AdminNewProjectPageWithQuery = () => {
     values = { ...values, partnerLogoSrcs: partnerLogoSrcsArray }
     try {
       const project = await createProjectMutation(values)
+
+      // Create a membership for the selected user
+      if (project.managerId) {
+        try {
+          await createMembershipMutation({ projectId: project.id, userId: project.managerId })
+        } catch (error: any) {
+          console.error(error)
+          return { [FORM_ERROR]: error }
+        }
+      }
+
       await router.push(Routes.ProjectDashboardPage({ projectSlug: project.slug }))
     } catch (error: any) {
       console.error(error)
@@ -35,10 +50,7 @@ const AdminNewProjectPageWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neue Radschnellverbindung erstellen" />
       <SuperAdminBox>
-        <H1>Neue Radschnellverbindung erstellen</H1>
-
         <ProjectForm
           submitText="Erstellen"
           schema={ProjectSchema.merge(ProjectLogoScrcsInputSchema)}
@@ -54,10 +66,14 @@ const AdminNewProjectPageWithQuery = () => {
 const AdminNewProjectPage = () => {
   return (
     <LayoutArticle>
+      <MetaTags noindex title={seoNewTitle("Trasse")} />
+      <PageHeader title="Trasse hinzufügen" className="mt-12" />
+
       <Suspense fallback={<Spinner page />}>
-        <AdminNewProjectPageWithQuery />
+        <AdminNewProjectWithQuery />
       </Suspense>
 
+      <hr className="my-5" />
       <p>
         <Link href={Routes.Home()}>Startseite</Link>
       </p>

@@ -10,7 +10,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { longTitle, seoTitle, shortTitle } from "src/core/components/text"
+import { longTitle, seoTitleSlug, shortTitle } from "src/core/components/text"
 import { startEnd } from "src/core/components/text/startEnd"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
@@ -37,7 +37,7 @@ export const SectionDashboardWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={seoTitle(section.slug)} />
+      <MetaTags noindex title={seoTitleSlug(section.slug)} />
 
       <Breadcrumb />
       <PageHeader

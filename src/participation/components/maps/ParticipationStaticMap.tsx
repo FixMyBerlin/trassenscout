@@ -1,4 +1,4 @@
-import { multiLineString, MultiLineString } from "@turf/helpers"
+import { MultiLineString } from "@turf/helpers"
 import clsx from "clsx"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
@@ -10,16 +10,16 @@ type Props = {
   className?: string
   children?: React.ReactNode
   marker: { lng: number; lat: number }
-  staticMap: {
-    projectGeometry: MultiLineString
-  }
+  projectGeometry: MultiLineString
+  layerStyles: Record<string, any>
 }
 
 export const ParticipationStaticMap: React.FC<Props> = ({
-  staticMap,
   marker,
   className,
   children,
+  projectGeometry,
+  layerStyles,
 }) => {
   const { mainMap } = useMap()
 
@@ -58,14 +58,10 @@ export const ParticipationStaticMap: React.FC<Props> = ({
           anchor="bottom"
         >
           <StaticPin />
-          <Source type="geojson" data={multiLineString(staticMap.projectGeometry.coordinates)}>
-            <Layer
-              type="line"
-              paint={{
-                "line-width": 7,
-                "line-color": "blue",
-              }}
-            />
+          <Source type="geojson" data={projectGeometry}>
+            {layerStyles.map((layer: any) => {
+              return <Layer key={layer.id} {...layer} />
+            })}
           </Source>
         </Marker>
       </Map>

@@ -10,13 +10,13 @@ import { Spinner } from "src/core/components/Spinner"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
-import getProjectUsers from "src/users/queries/getProjectUsers"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 import getSubsubsection from "src/subsubsections/queries/getSubsubsection"
 import updateSubsubsection from "src/subsubsections/mutations/updateSubsubsection"
 import deleteSubsubsection from "src/subsubsections/mutations/deleteSubsubsection"
 import { SubsubsectionSchema } from "src/subsubsections/schema"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
-import { seoEditTitle, shortTitle } from "src/core/components/text"
+import { seoEditTitleSlug, shortTitle } from "src/core/components/text"
 
 const EditSubsubsection = () => {
   const router = useRouter()
@@ -68,8 +68,8 @@ const EditSubsubsection = () => {
 
   return (
     <>
-      <MetaTags noindex title={seoEditTitle(subsubsection.slug)} />
-      <PageHeader title={`${shortTitle(subsubsection.slug)} bearbeiten`} className="mt-12" />
+      <MetaTags noindex title={seoEditTitleSlug(subsubsection.slug)} />
+      <PageHeader title="Führung bearbeiten" className="mt-12" />
 
       <SubsubsectionForm
         className="mt-10"
@@ -100,6 +100,7 @@ const EditSubsubsectionPage = () => {
         <EditSubsubsection />
       </Suspense>
 
+      <hr className="my-5" />
       <p>
         <Link
           href={Routes.SubsubsectionDashboardPage({

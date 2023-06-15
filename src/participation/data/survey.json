@@ -3,13 +3,14 @@
   "title": { "de": "Beteiligung" },
   "createdAt": "2023-03-15T20:19:43.815Z",
   "version": 1,
-  "faviconUrl": "https://develop--rsv8-lb-wn.netlify.app/favicon-32x32.png?v=7ff4817209a0037d257b39a5ad30c91f",
+  "logoUrl": "https://radschnellweg8-lb-wn.de/logo.png",
+  "canonicalUrl": "https://radschnellweg8-lb-wn.de/beteiligung/",
   "pages": [
     {
       "id": 1,
       "title": { "de": "Ihre Meinung ist gefragt" },
       "description": {
-        "de": "Auf dem Weg zur Schule, Sportstätte und Arbeitsplatz, beim Wocheneinkauf oder dem Familienausflug – unser Ziel ist, dass der Radschnellweg von vielen Menschen angenommen wird.\n\nDeshalb interessieren uns die Ideen, Anmerkungen und Hinweise von Alltagsexpertinnen und -experten. Sie kennen sich vor Ort aus. Unterstützen Sie das Planungsteam dabei, den RS 8 zum Erfolgsprojekt zu machen!\n\nDie Bürgerbeteiligung läuft noch bis zum X.X.2023. Die Beantwortung dauert ca. 5-10 Minuten."
+        "de": "Auf dem Weg zur Schule, Sportstätte und Arbeitsplatz, beim Wocheneinkauf oder dem Familienausflug – unser Ziel ist, dass der Radschnellweg von vielen Menschen angenommen wird.\n\nDeshalb interessieren uns die Ideen, Anmerkungen und Hinweise von Alltagsexpertinnen und -experten. Sie kennen sich vor Ort aus. Unterstützen Sie das Planungsteam dabei, den RS 8 zum Erfolgsprojekt zu machen!\n\nDie Bürgerbeteiligung läuft noch bis zum 20.08.2023. Die Beantwortung dauert ca. 5-10 Minuten."
       },
       "buttons": [
         {
@@ -33,7 +34,13 @@
           "props": {
             "responses": [
               { "id": 1, "text": { "de": "Ja" } },
-              { "id": 2, "text": { "de": "Nein" } },
+              {
+                "id": 2,
+                "text": { "de": "Nein" },
+                "help": {
+                  "de": "Warum nicht? Wir freuen uns, wenn Sie das Freifeldtext im späteren Teil „Weiteres Feedback“ nutzen, um uns Ihre Gründe zu nennen. Besten Dank!"
+                }
+              },
               {
                 "id": 3,
                 "text": {
@@ -222,7 +229,7 @@
         }
       ],
       "buttons": [
-        { "label": { "de": "Weiter" }, "color": "pink", "onClick": { "action": "submit" } },
+        { "label": { "de": "Absenden" }, "color": "pink", "onClick": { "action": "submit" } },
         { "label": { "de": "Zurück" }, "color": "white", "onClick": { "action": "previousPage" } }
       ]
     }

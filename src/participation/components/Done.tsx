@@ -1,22 +1,21 @@
 export { FORM_ERROR } from "src/core/components/forms"
-import clsx from "clsx"
-import { Link, whiteButtonStyles } from "src/core/components/links"
-import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
+import { ParticipationLink } from "./core/links/ParticipationLink"
+import { ScreenHeaderParticipation } from "./layout/ScreenHeaderParticipation"
 
 export const Done = () => {
   return (
     <section>
       <ScreenHeaderParticipation
         title="Vielen Dank!"
-        description="Ihre Emailadresse wurde vermerkt."
+        description="Ihre E-Mail-Adresse wurde vermerkt."
       />
-      {/* TODO replace link in production: https://radschnellweg8-lb-wn.de/beteiligung */}
-      <Link
-        className={clsx(whiteButtonStyles, "mt-32")}
-        href="https://develop--rsv8-lb-wn.netlify.app/beteiligung/"
+      <ParticipationLink
+        className="mt-32"
+        button="white"
+        href="https://radschnellweg8-lb-wn.de/beteiligung/"
       >
         Zurück Startseite
-      </Link>
+      </ParticipationLink>
     </section>
   )
 }

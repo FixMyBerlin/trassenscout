@@ -3,16 +3,17 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { seoEditTitle, shortTitle } from "src/core/components/text"
+import { seoEditTitleSlug, shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import updateProject from "src/projects/mutations/updateProject"
 import getProject from "src/projects/queries/getProject"
 import { ProjectLogoScrcsInputSchema, ProjectSchema } from "src/projects/schema"
-import getProjectUsers from "src/users/queries/getProjectUsers"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 
 const EditProjectWithQuery = () => {
   const router = useRouter()
@@ -48,8 +49,8 @@ const EditProjectWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={seoEditTitle(project.slug)} />
-      <PageHeader title={`${shortTitle(project.slug)} bearbeiten`} className="mt-12" />
+      <MetaTags noindex title={seoEditTitleSlug(project.slug)} />
+      <PageHeader title="Projekt bearbeiten" className="mt-12" />
 
       <ProjectForm
         className="mt-10"
@@ -59,9 +60,8 @@ const EditProjectWithQuery = () => {
         onSubmit={handleSubmit}
         users={users}
       />
-      <SuperAdminBox>
-        <pre>{JSON.stringify(project, null, 2)}</pre>
-      </SuperAdminBox>
+
+      <SuperAdminLogData data={project} />
     </>
   )
 }
@@ -75,6 +75,7 @@ const EditProjectPage: BlitzPage = () => {
         <EditProjectWithQuery />
       </Suspense>
 
+      <hr className="my-5" />
       <p>
         <Link href={Routes.ProjectDashboardPage({ projectSlug: projectSlug! })}>
           Zurück zum Projekt

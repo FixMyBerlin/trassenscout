@@ -3,10 +3,11 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { quote } from "src/core/components/text"
+import { quote, seoEditTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import {
@@ -54,31 +55,32 @@ const EditStakeholdernote = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Stakeholder ${stakeholdernote.title} bearbeiten`} />
-      <PageHeader
-        title={quote(stakeholdernote.title)}
-        subtitle="Stakeholder bearbeiten"
-        className="mt-12"
-      />
+      <MetaTags noindex title={seoEditTitle("TöB")} />
+      <PageHeader title="TöB bearbeiten" className="mt-12" />
 
       <StakeholdernoteForm
         className="mt-10"
         submitText="Speichern"
-        // TODO use a zod schema for form validation
-        // 1. Move the schema from mutations/createStakeholdernote.ts to `Stakeholdernote/schema.ts`
-        //   - Name `StakeholdernoteSchema`
-        // 2. Import the zod schema here.
-        // 3. Update the mutations/updateStakeholdernote.ts to
-        //   `const UpdateStakeholdernoteSchema = StakeholdernoteSchema.merge(z.object({id: z.number(),}))`
-        //schema={StakeholdernoteSchema}
+        schema={StakeholdernoteSchema}
         initialValues={stakeholdernote}
         onSubmit={handleSubmit}
       />
 
-      <SuperAdminBox>
-        <pre>{JSON.stringify(stakeholdernote, null, 2)}</pre>
-      </SuperAdminBox>
+      <SuperAdminLogData data={stakeholdernote} />
+    </>
+  )
+}
 
+const EditStakeholdernotePage: BlitzPage = () => {
+  const { projectSlug, sectionSlug } = useSlugs()
+
+  return (
+    <LayoutRs>
+      <Suspense fallback={<Spinner page />}>
+        <EditStakeholdernote />
+      </Suspense>
+
+      <hr className="my-5" />
       <p>
         <Link
           href={Routes.SectionDashboardPage({
@@ -89,16 +91,6 @@ const EditStakeholdernote = () => {
           Zurück zum Planungsabschnitt
         </Link>
       </p>
-    </>
-  )
-}
-
-const EditStakeholdernotePage: BlitzPage = () => {
-  return (
-    <LayoutRs>
-      <Suspense fallback={<Spinner page />}>
-        <EditStakeholdernote />
-      </Suspense>
     </LayoutRs>
   )
 }

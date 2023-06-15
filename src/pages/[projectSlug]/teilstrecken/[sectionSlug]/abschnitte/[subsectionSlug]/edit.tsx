@@ -6,7 +6,7 @@ import { Suspense } from "react"
 import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { longTitle, seoEditTitle, shortTitle } from "src/core/components/text"
+import { longTitle, seoEditTitleSlug, shortTitle } from "src/core/components/text"
 import { startEnd } from "src/core/components/text/startEnd"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
@@ -15,7 +15,7 @@ import deleteSubsection from "src/subsections/mutations/deleteSubsection"
 import updateSubsection from "src/subsections/mutations/updateSubsection"
 import getSubsection from "src/subsections/queries/getSubsection"
 import { SubsectionSchema } from "src/subsections/schema"
-import getProjectUsers from "src/users/queries/getProjectUsers"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 
 const EditSubsection = () => {
   const router = useRouter()
@@ -55,7 +55,7 @@ const EditSubsection = () => {
 
   return (
     <>
-      <MetaTags noindex title={seoEditTitle(subsection.slug)} />
+      <MetaTags noindex title={seoEditTitleSlug(subsection.slug)} />
       <PageHeader title={`${shortTitle(subsection.slug)} bearbeiten`} className="mt-12" />
 
       <SubsectionForm
@@ -87,6 +87,7 @@ const EditSubsectionPage: BlitzPage = () => {
         <EditSubsection />
       </Suspense>
 
+      <hr className="my-5" />
       <p>
         <Link
           href={Routes.SectionDashboardPage({

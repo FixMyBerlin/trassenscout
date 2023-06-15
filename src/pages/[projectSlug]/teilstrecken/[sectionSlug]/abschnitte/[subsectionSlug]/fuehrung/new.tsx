@@ -11,7 +11,7 @@ import getSubsection from "src/subsections/queries/getSubsection"
 import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
 import createSubsubsection from "src/subsubsections/mutations/createSubsubsection"
 import { SubsubsectionSchema } from "src/subsubsections/schema"
-import getProjectUsers from "src/users/queries/getProjectUsers"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 
 const NewSubsubsection = () => {
   const router = useRouter()
@@ -28,15 +28,16 @@ const NewSubsubsection = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      await createSubsubsectionMutation({
+      const subsubsection = await createSubsubsectionMutation({
         ...values,
         subsectionId: subsection!.id,
       })
       await router.push(
-        Routes.SubsectionDashboardPage({
+        Routes.SubsubsectionDashboardPage({
           projectSlug: projectSlug!,
           sectionSlug: sectionSlug!,
           subsectionSlug: subsectionSlug!,
+          subsubsectionSlug: subsubsection.id,
         })
       )
     } catch (error: any) {

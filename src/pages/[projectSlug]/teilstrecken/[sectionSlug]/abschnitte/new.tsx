@@ -12,7 +12,7 @@ import getSection from "src/sections/queries/getSection"
 import { FORM_ERROR, SubsectionForm } from "src/subsections/components/SubsectionForm"
 import createSubsection from "src/subsections/mutations/createSubsection"
 import { SubsectionSchema } from "src/subsections/schema"
-import getProjectUsers from "src/users/queries/getProjectUsers"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 
 const NewSubsection = () => {
   const router = useRouter()
@@ -29,9 +29,10 @@ const NewSubsection = () => {
     try {
       const subsection = await createSubsectionMutation({ ...values, sectionId: section.id! })
       await router.push(
-        Routes.SectionDashboardPage({
+        Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
           sectionSlug: sectionSlug!,
+          subsectionSlug: subsection.id,
         })
       )
     } catch (error: any) {
@@ -42,8 +43,9 @@ const NewSubsection = () => {
 
   return (
     <>
+      <MetaTags noindex title={seoNewTitle("Planungsabschnitt")} />
       <PageHeader
-        title={seoNewTitle("Planungsabschitt")}
+        title="Planungsabschitt hinzufügen"
         subtitle={longTitle(section.slug)}
         className="mt-12"
       />
@@ -65,12 +67,11 @@ const NewSubsectionPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <MetaTags noindex title="Neuen Abschnitt erstellen" />
-
       <Suspense fallback={<Spinner page />}>
         <NewSubsection />
       </Suspense>
 
+      <hr className="my-5" />
       <p>
         <Link
           href={Routes.SectionDashboardPage({

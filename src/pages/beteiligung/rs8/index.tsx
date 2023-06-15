@@ -16,11 +16,24 @@ import { ProgressContext } from "src/participation/context/contexts"
 import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
 import updateSurveySession from "src/survey-sessions/mutations/updateSurveySession"
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
-import { Debug } from "src/participation/components/survey/Debug"
+import { Debug } from "src/participation/components/Debug"
+import { scrollToTopWithDelay } from "src/participation/utils/scrollToTopWithDelay"
+import { Spinner } from "src/core/components/Spinner"
+import { ParticipationSpinnerLayover } from "src/participation/components/survey/ParticipationSpinnerLayover"
+
+// For Progressbar: stage and associated arbitrarily set status of the progressbar
+export const stageProgressDefinition = {
+  SURVEY: 1,
+  MORE: 5,
+  FEEDBACK: 6,
+  EMAIL: 8,
+  DONE: 8,
+}
 
 const ParticipationMainPage: BlitzPage = () => {
   const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("SURVEY")
-  const [progress, setProgress] = useState({ current: 0, total: 0 })
+  const [progress, setProgress] = useState(1)
+  const [isSpinner, setIsSpinner] = useState(false)
   const [responses, setResponses] = useState<any[]>([])
   const [emailState, setEmailState] = useState<string | null>()
   const [surveySessionId, setSurveySessionId] = useState<null | number>(null)
@@ -40,9 +53,9 @@ const ParticipationMainPage: BlitzPage = () => {
   }
 
   const handleSubmitSurvey = async (surveyResponses: Record<string, any>) => {
+    setIsSpinner(true)
     setResponses([...responses, surveyResponses])
-    setStage("MORE")
-    window && window.scrollTo(0, 0)
+
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
@@ -51,21 +64,22 @@ const ParticipationMainPage: BlitzPage = () => {
         data: JSON.stringify(surveyResponses),
       })
     })()
+
+    setTimeout(() => {
+      setStage("MORE")
+      setProgress(stageProgressDefinition["MORE"])
+      setIsSpinner(false)
+      scrollToTopWithDelay()
+    }, 900)
   }
 
   const handleSubmitFeedback = async (
     feedbackResponses: Record<string, any>,
     submitterId: string
   ) => {
+    setIsSpinner(true)
     setResponses([...responses, feedbackResponses])
-    if (submitterId === "submit-finish") {
-      setStage("EMAIL")
-      window && window.scrollTo(0, 0)
-    } else {
-      setFeedbackKey(feedbackKey + 1)
-      setStage("FEEDBACK")
-      window && window.scrollTo(0, 0)
-    }
+
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
@@ -74,22 +88,38 @@ const ParticipationMainPage: BlitzPage = () => {
         data: JSON.stringify(feedbackResponses),
       })
     })()
+
+    setTimeout(() => {
+      if (submitterId === "submit-finish") {
+        setStage("EMAIL")
+        setProgress(stageProgressDefinition["EMAIL"])
+      } else {
+        setFeedbackKey(feedbackKey + 1)
+        setStage("FEEDBACK")
+        setProgress(stageProgressDefinition["FEEDBACK"])
+      }
+      setIsSpinner(false)
+      scrollToTopWithDelay()
+    }, 900)
   }
 
   const handleMoreFeedback = () => {
     setFeedbackKey(feedbackKey + 1)
     setStage("FEEDBACK")
-    window && window.scrollTo(0, 0)
+    setProgress(stageProgressDefinition["FEEDBACK"])
+    scrollToTopWithDelay()
   }
 
   const handleFinish = () => {
     setStage("EMAIL")
-    window && window.scrollTo(0, 0)
+    setProgress(stageProgressDefinition["EMAIL"])
+    scrollToTopWithDelay()
   }
 
   const handleSubmitEmail = async (email: string | null) => {
     setStage("DONE")
-    window && window.scrollTo(0, 0)
+    setProgress(stageProgressDefinition["DONE"])
+    scrollToTopWithDelay()
     setEmailState(email)
     await updateSurveySessionMutation({ id: surveySessionId!, email: email! })
   }
@@ -97,17 +127,17 @@ const ParticipationMainPage: BlitzPage = () => {
   let component
   switch (stage) {
     case "SURVEY":
-      // @ts-ignore
+      // @ts-ignore "Types of property 'version' are incompatible. / Type 'number' is not assignable to type '1'."
       component = <Survey survey={surveyDefinition} onSubmit={handleSubmitSurvey} />
-      break
-    case "FEEDBACK":
-      component = (
-        <Feedback key={feedbackKey} feedback={feedbackDefinition} onSubmit={handleSubmitFeedback} />
-      )
       break
     case "MORE":
       component = (
         <More more={moreDefinition} onClickMore={handleMoreFeedback} onClickFinish={handleFinish} />
+      )
+      break
+    case "FEEDBACK":
+      component = (
+        <Feedback key={feedbackKey} feedback={feedbackDefinition} onSubmit={handleSubmitFeedback} />
       )
       break
     case "EMAIL":
@@ -120,7 +150,10 @@ const ParticipationMainPage: BlitzPage = () => {
 
   return (
     <ProgressContext.Provider value={{ progress, setProgress }}>
-      <LayoutParticipation faviconUrl={surveyDefinition.faviconUrl}>
+      <LayoutParticipation
+        canonicalUrl={surveyDefinition.canonicalUrl}
+        logoUrl={surveyDefinition.logoUrl}
+      >
         <Debug className="border-red-500">
           <code>stage: {stage}</code>
           <code>
@@ -128,7 +161,8 @@ const ParticipationMainPage: BlitzPage = () => {
           </code>
           <code>email: {emailState}</code>
         </Debug>
-        <div>{component}</div>
+        <div className={isSpinner ? "blur-sm" : ""}>{component}</div>
+        {isSpinner && <ParticipationSpinnerLayover />}
       </LayoutParticipation>
     </ProgressContext.Provider>
   )

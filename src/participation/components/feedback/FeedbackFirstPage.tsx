@@ -1,8 +1,9 @@
 import { MapProvider } from "react-map-gl"
-import { ParticipationButton } from "../core/ParticipationButton"
-import { ScreenHeaderParticipation } from "../core/ScreenHeaderParticipation"
+import { ParticipationButton } from "../core/buttons/ParticipationButton"
+import { ScreenHeaderParticipation } from "../layout/ScreenHeaderParticipation"
 import { ParticipationMap } from "../maps/ParticipationMap"
 import { Question } from "../survey/Question"
+import { ParticipationButtonWrapper } from "../core/buttons/ParticipationButtonWrapper"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -11,9 +12,16 @@ type Props = {
   isMap: boolean
   onButtonClick: any // TODO
   isCompleted: boolean
+  mapIsDirtyProps: any
 }
 
-export const FeedbackFirstPage: React.FC<Props> = ({ isCompleted, page, isMap, onButtonClick }) => {
+export const FeedbackFirstPage: React.FC<Props> = ({
+  isCompleted,
+  page,
+  isMap,
+  onButtonClick,
+  mapIsDirtyProps,
+}) => {
   const { title, description, questions, buttons } = page
 
   const mapProps = questions.find(
@@ -29,7 +37,9 @@ export const FeedbackFirstPage: React.FC<Props> = ({ isCompleted, page, isMap, o
       {isMap && (
         <MapProvider>
           <ParticipationMap
+            {...mapIsDirtyProps}
             projectMap={{
+              layerStyles: mapProps.layerStyles,
               projectGeometry: mapProps.projectGeometry,
               initialMarker: mapProps.marker,
               config: mapProps.config,
@@ -38,9 +48,11 @@ export const FeedbackFirstPage: React.FC<Props> = ({ isCompleted, page, isMap, o
         </MapProvider>
       )}
       {/* TODO Disabled */}
-      <ParticipationButton disabled={!isCompleted} type="button" onClick={onButtonClick}>
-        {buttons[0].label.de}
-      </ParticipationButton>
+      <ParticipationButtonWrapper>
+        <ParticipationButton disabled={!isCompleted} type="button" onClick={onButtonClick}>
+          {buttons[0].label.de}
+        </ParticipationButton>
+      </ParticipationButtonWrapper>
     </>
   )
 }

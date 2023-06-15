@@ -13,7 +13,7 @@ const config = {
       "tinkering.trassenscout.de",
       "staging.trassenscout.de",
       "trassenscout.de",
-      "develop--rsv8-lb-wn.netlify.app",
+      "radschnellweg8-lb-wn.de",
     ], // allow fetching images from those domains – https://nextjs.org/docs/api-reference/next/image#domains
   },
 }

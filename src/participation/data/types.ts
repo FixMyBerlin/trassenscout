@@ -46,5 +46,6 @@ export interface SingleOrMultiResponseProps {
 export interface Response {
   id: number
   text: TranslatableText
+  help?: TranslatableText
 }
 export interface TextResponseProps {}

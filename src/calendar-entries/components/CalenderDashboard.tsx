@@ -5,7 +5,7 @@ import { Suspense } from "react"
 import { Link } from "src/core/components/links/Link"
 import { Spinner } from "src/core/components/Spinner"
 import { H2 } from "src/core/components/text/Headings"
-import { DateList } from "../../rs8/termine/components/Calender/DateList"
+import { DateList } from "./Calender/DateList"
 import getCalendarEntries from "../queries/getCalendarEntries"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 

@@ -1,14 +1,11 @@
+import { useCallback, useEffect, useState } from "react"
+import { iframeResizer } from "iframe-resizer"
+
 export { FORM_ERROR } from "src/core/components/forms"
-import { useContext, useEffect, useState } from "react"
-import SurveyForm from "./form/SurveyForm"
-import { Link, whiteButtonStyles } from "src/core/components/links"
-import { ProgressContext } from "../context/contexts"
-import { ParticipationButton } from "./core/ParticipationButton"
-import { ParticipationButtonWrapper } from "./core/ParticipationButtonWrapper"
-import { ScreenHeaderParticipation } from "./core/ScreenHeaderParticipation"
 import { ParticipationH2, ParticipationP } from "./core/Text"
-import { ParticipationLabeledCheckbox } from "./form/ParticipationLabeledCheckbox"
-import { ParticipationLabeledTextField } from "./form/ParticipationLabeledTextField"
+import { ParticipationLink } from "./core/links/ParticipationLink"
+import SurveyForm from "./form/SurveyForm"
+import { ScreenHeaderParticipation } from "./layout/ScreenHeaderParticipation"
 
 type Props = {
   onSubmit: any
@@ -17,21 +14,20 @@ type Props = {
 
 export const Email: React.FC<Props> = ({ onSubmit, email }) => {
   const [consent, setConsent] = useState(false)
-  const { progress, setProgress } = useContext(ProgressContext)
-
-  useEffect(() => {
-    setProgress({ current: 0, total: email.pages.length - 1 })
-  }, [])
 
   const handleSubmit = (values: Record<string, any>) => {
     onSubmit(values.email)
   }
 
-  const handleChange = (values: Record<string, any>) => {
+  const handleChange = useCallback((values: Record<string, any>) => {
     setConsent(values.consent && values.email)
-  }
+  }, [])
 
   const page = email.pages[0]
+
+  useEffect(() => {
+    iframeResizer({}, "#mailjet-widget")
+  }, [])
 
   return (
     <section>
@@ -39,31 +35,21 @@ export const Email: React.FC<Props> = ({ onSubmit, email }) => {
         <ScreenHeaderParticipation title={page.title.de} />
         <ParticipationH2>{page.questions[0].label.de}</ParticipationH2>
         <ParticipationP>{page.questions[0].props.text.de}</ParticipationP>
-        <ParticipationH2>{page.questions[1].label.de}</ParticipationH2>
-        <ParticipationP>{page.questions[1].props.text.de}</ParticipationP>
-        <ParticipationLabeledTextField
-          name="email"
-          label=""
-          placeholder={page.questions[1].props.emailPlaceholder.de}
-          outerProps={{ className: "mb-6" }}
-        />
-        <ParticipationLabeledCheckbox
-          name="consent"
-          label={page.questions[1].props.agreementText.de}
+
+        <div
+          className="rounded border border-gray-300 pb-2"
+          dangerouslySetInnerHTML={{
+            __html: `
+              <iframe id="mailjet-widget" data-w-type="embedded" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://7p8q.mjt.lu/wgt/7p8q/t5g/form?c=f8dcc5f9" width="100%" style="height: 0px;"></iframe>
+          `,
+          }}
         />
 
-        <ParticipationButtonWrapper>
-          <ParticipationButton disabled={!consent} type="submit">
-            {page.buttons[0].label.de}
-          </ParticipationButton>
-          {/* TODO replace link in production: https://radschnellweg8-lb-wn.de/beteiligung */}
-          <Link
-            className={whiteButtonStyles}
-            href="https://develop--rsv8-lb-wn.netlify.app/beteiligung/"
-          >
-            Nein, zurück zur Startseite
-          </Link>
-        </ParticipationButtonWrapper>
+        <div className="pt-10">
+          <ParticipationLink button="white" href="https://radschnellweg8-lb-wn.de/beteiligung/">
+            Zurück zur Startseite
+          </ParticipationLink>
+        </div>
       </SurveyForm>
     </section>
   )

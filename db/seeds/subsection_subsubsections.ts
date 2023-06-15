@@ -76,7 +76,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
 - Foo
 - Bar
       `,
-    mapillaryKey: null,
+    mapillaryKey: "249624194247195",
     managerId: 1,
   },
   {

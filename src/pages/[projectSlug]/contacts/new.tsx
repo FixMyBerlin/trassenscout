@@ -8,6 +8,7 @@ import { ContactSchema } from "src/contacts/schema"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
+import { seoNewTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 
 const NewContactWithQuery: BlitzPage = () => {
@@ -43,7 +44,7 @@ const NewContactPage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <MetaTags noindex title="Neuer Kontakt" />
+      <MetaTags noindex title={seoNewTitle("Kontakt")} />
       <PageHeader title="Neuer Kontakt" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>

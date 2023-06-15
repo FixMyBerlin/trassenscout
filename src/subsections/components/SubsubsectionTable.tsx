@@ -135,14 +135,16 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   >
                     {formattedEuro(subsubsection.costEstimate)}
                   </td>
-                  <td
-                    className={clsx(
-                      { hidden: compact },
-                      "break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6"
-                    )}
-                  >
+                  <td className={clsx({ hidden: compact }, "break-words text-sm font-medium")}>
                     {mapillaryHref && (
-                      <Link href={mapillaryHref} blank>
+                      <Link
+                        href={mapillaryHref}
+                        blank
+                        // Trying to get the Link to fill the whole cell (only partial solution…)
+                        className="py-4 pl-3 pr-4 sm:pr-6"
+                        // This will prevent the <tr> onClick from firing. `pointer-events-none` does something differnet, it prevent this link from being clickable.
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         Mapillary
                       </Link>
                     )}

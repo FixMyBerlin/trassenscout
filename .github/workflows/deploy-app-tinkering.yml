@@ -1,0 +1,26 @@
+name: Deploy Tinkering
+on:
+  push:
+    branches:
+      - tinkering
+jobs:
+  call-deploy-app:
+    uses: ./.github/workflows/deploy-app.yml
+    with:
+      APP_ORIGIN: http://tinkering.trassenscout.de
+      SERVICE_NAME: trassenscout-tinkering
+      S3_UPLOAD_BUCKET: trassenscout
+      S3_UPLOAD_REGION: eu-central-1
+      S3_UPLOAD_ROOTFOLDER: upload-tinkering
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      DATABASE_URL:  ${{ secrets.DATABASE_URL_TINKERING }}
+      SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY_TINKERING }}
+      NGINX_HTPASSWD: ${{ secrets.NGINX_HTPASSWD }}
+      MAILJET_APIKEY_PUBLIC: ${{ secrets.MAILJET_APIKEY_PUBLIC }}
+      MAILJET_APIKEY_PRIVATE: ${{ secrets.MAILJET_APIKEY_PRIVATE }}
+      S3_UPLOAD_KEY: ${{ secrets.S3_UPLOAD_KEY }}
+      S3_UPLOAD_SECRET: ${{ secrets.S3_UPLOAD_SECRET }}
+      ASSETS_BUCKET_HOST: ${{ secrets.ASSETS_BUCKET_HOST }}
+      ASSETS_BUCKET_PATH: ${{ secrets.ASSETS_BUCKET_PATH_TINKERING }}
