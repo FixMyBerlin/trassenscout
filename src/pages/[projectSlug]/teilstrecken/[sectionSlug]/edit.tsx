@@ -3,21 +3,19 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
+import { Spinner } from "src/core/components/Spinner"
 import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { Spinner } from "src/core/components/Spinner"
-import { seoEditTitleSlug, shortTitle } from "src/core/components/text"
-import { startEnd } from "src/core/components/text/startEnd"
+import { seoEditTitleSlug } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 import { FORM_ERROR, SectionForm } from "src/sections/components/SectionForm"
 import deleteSection from "src/sections/mutations/deleteSection"
 import updateSection from "src/sections/mutations/updateSection"
 import getSection from "src/sections/queries/getSection"
 import { SectionSchema } from "src/sections/schema"
-import getProjectUsers from "src/memberships/queries/getProjectUsers"
 
 const EditSectionWithQuery = () => {
   const router = useRouter()
@@ -41,7 +39,9 @@ const EditSectionWithQuery = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.back()
+      await router.push(
+        Routes.SectionDashboardPage({ projectSlug: projectSlug!, sectionSlug: updated.slug })
+      )
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }

@@ -1,22 +1,22 @@
-import { Suspense } from "react"
-import { useRouter } from "next/router"
 import { Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
+import { useRouter } from "next/router"
+import { Suspense } from "react"
 
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
+import { Spinner } from "src/core/components/Spinner"
 import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { Spinner } from "src/core/components/Spinner"
+import { seoEditTitleSlug } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
 import getProjectUsers from "src/memberships/queries/getProjectUsers"
-import getSubsubsection from "src/subsubsections/queries/getSubsubsection"
-import updateSubsubsection from "src/subsubsections/mutations/updateSubsubsection"
+import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
 import deleteSubsubsection from "src/subsubsections/mutations/deleteSubsubsection"
+import updateSubsubsection from "src/subsubsections/mutations/updateSubsubsection"
+import getSubsubsection from "src/subsubsections/queries/getSubsubsection"
 import { SubsubsectionSchema } from "src/subsubsections/schema"
-import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
-import { seoEditTitleSlug, shortTitle } from "src/core/components/text"
 
 const EditSubsubsection = () => {
   const router = useRouter()
@@ -45,7 +45,14 @@ const EditSubsubsection = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.back()
+      await router.push(
+        Routes.SubsubsectionDashboardPage({
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug!,
+          subsectionSlug: subsectionSlug!,
+          subsubsectionSlug: updated.slug,
+        })
+      )
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
