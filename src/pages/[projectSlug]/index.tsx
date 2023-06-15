@@ -1,7 +1,5 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import Image from "next/image"
-import statusImg from "public/Planungsphase_Placeholder.jpg"
 import { Suspense } from "react"
 import { CalenderDashboard } from "src/calendar-entries/components"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
@@ -67,14 +65,6 @@ export const ProjectDashboardWithQuery = () => {
           <Markdown markdown={project.description} />
         </PageDescription>
       )}
-
-      {/* Phasen Panel */}
-      <section className="mt-12">
-        <H2>Aktuelle Planungsphase</H2>
-        <div className="mt-5 max-w-[650px]">
-          <Image src={statusImg} alt=""></Image>
-        </div>
-      </section>
 
       <ProjectMap sections={sections} />
 
