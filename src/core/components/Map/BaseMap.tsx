@@ -11,15 +11,14 @@ const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${ma
 const selectableLineLayerId = "layer_selectable_line_features"
 const selectablePointLayerId = "layer_selectable_point_features"
 
-export type BaseMapProps = Required<
-  Pick<MapProps, "id" | "initialViewState" | "onMouseEnter" | "onMouseLeave" | "onClick">
-> & {
-  lines?: FeatureCollection<LineString, { color: string }>
-  selectableLines: FeatureCollection<LineString, { id: string; color: string }>
-  selectablePoints?: FeatureCollection<Point, { id: string; color: string }>
-  dots: [number, number][]
-  children: React.ReactNode
-}
+export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
+  Partial<Pick<MapProps, "onMouseEnter" | "onMouseLeave" | "onClick" | "interactiveLayerIds">> & {
+    lines?: FeatureCollection<LineString, { color: string }>
+    selectableLines?: FeatureCollection<LineString, { id: string; color: string }>
+    selectablePoints?: FeatureCollection<Point, { id: string; color: string }>
+    dots: [number, number][]
+    children: React.ReactNode
+  }
 
 export const BaseMap: React.FC<BaseMapProps> = ({
   id: mapId,
@@ -27,6 +26,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   onMouseEnter,
   onMouseLeave,
   onClick,
+  interactiveLayerIds,
   lines,
   selectableLines,
   selectablePoints,
@@ -113,9 +113,12 @@ export const BaseMap: React.FC<BaseMapProps> = ({
           onMouseLeave={handleMouseLeave}
           onClick={onClick}
           interactiveLayerIds={[
+            interactiveLayerIds,
             selectableLines && selectableLineLayerId,
             selectablePoints && selectablePointLayerId,
-          ].filter(Boolean)}
+          ]
+            .flat()
+            .filter(Boolean)}
         >
           <NavigationControl showCompass={false} />
           <ScaleControl />
