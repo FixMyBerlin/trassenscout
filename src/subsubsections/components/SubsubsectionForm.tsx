@@ -26,6 +26,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
           "sf2a"
         )}. Primäre Auszeichnung der Führung. Wird immer in Großschreibung angezeigt aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
       />
+      <LabeledTextField type="text" name="subTitle" label="Title" optional />
       <LabeledTextField
         type="number"
         step="1"
@@ -33,7 +34,6 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
         label="Reihenfolge Führung"
         help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie (mit Unterbrechungen) mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung. Sonderführungen bitte zwischen die Regelführungen einsortieren."
       />
-      <LabeledTextField type="text" name="subTitle" label="Untertitel" optional />
       <LabeledSelect
         name="type"
         label="Führungsform"
