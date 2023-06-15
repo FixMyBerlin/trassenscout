@@ -11,18 +11,26 @@ import { Link } from "src/core/components/links"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { seoTitleSlug, shortTitle } from "src/core/components/text"
+import { longTitle, seoTitleSlug, shortTitle } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { SectionTable } from "src/projects/components/SectionTable"
 import getProject from "src/projects/queries/getProject"
-import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
+import { SubsectionTable } from "src/sections/components/SubsectionTable"
+import getSectionsIncludeSubsections, {
+  SectionWithSubsectionsWithPosition,
+} from "src/sections/queries/getSectionsIncludeSubsections"
 
 export const ProjectDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
   const [{ sections }] = useQuery(getSectionsIncludeSubsections, {
     where: { project: { slug: projectSlug! } },
+  })
+
+  let allSubsections: SectionWithSubsectionsWithPosition["subsections"] = []
+  sections.forEach((section) => {
+    allSubsections = [...allSubsections, ...section.subsections]
   })
 
   if (!sections.length) {
@@ -69,6 +77,8 @@ export const ProjectDashboardWithQuery = () => {
       <ProjectMap sections={sections} />
 
       <SectionTable sections={sections} />
+
+      <SubsectionTable subsections={allSubsections} createButton={false} />
 
       <CalenderDashboard />
 

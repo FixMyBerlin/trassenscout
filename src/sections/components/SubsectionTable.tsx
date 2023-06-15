@@ -7,12 +7,19 @@ import { useSlugs } from "src/core/hooks"
 import { SubsectionIcon } from "src/core/components/Map/Icons"
 import { startEnd } from "src/core/components/text/startEnd"
 import { longTitle, shortTitle } from "src/core/components/text"
+import { Prettify } from "src/core/types"
 
 type Props = {
-  subsections: Subsection[]
+  subsections: Prettify<
+    Omit<Partial<Subsection>, "slug" | "start" | "end"> &
+      Required<Pick<Subsection, "slug">> &
+      Required<Pick<Subsection, "start">> &
+      Required<Pick<Subsection, "end">>
+  >[]
+  createButton?: boolean
 }
 
-export const SubsectionTable: React.FC<Props> = ({ subsections }) => {
+export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = true }) => {
   const router = useRouter()
   const { projectSlug, sectionSlug } = useSlugs()
 
@@ -76,17 +83,19 @@ export const SubsectionTable: React.FC<Props> = ({ subsections }) => {
           </div>
         )}
       </TableWrapper>
-      <Link
-        button="blue"
-        icon="plus"
-        className="mt-4"
-        href={Routes.NewSubsectionPage({
-          projectSlug: projectSlug!,
-          sectionSlug: sectionSlug!,
-        })}
-      >
-        Neuer Planungsabschnitt
-      </Link>
+      {createButton && (
+        <Link
+          button="blue"
+          icon="plus"
+          className="mt-4"
+          href={Routes.NewSubsectionPage({
+            projectSlug: projectSlug!,
+            sectionSlug: sectionSlug!,
+          })}
+        >
+          Neuer Planungsabschnitt
+        </Link>
+      )}
     </section>
   )
 }
