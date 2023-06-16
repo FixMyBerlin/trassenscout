@@ -123,6 +123,10 @@ export const ExportWithQuery = () => {
   type FormProp = { testPointsString: string }
   const { handleSubmit, register } = useForm<FormProp>()
   const [testPoints, setTestPoints] = useState<[number, number][] | undefined>(undefined)
+  const [testPointLineSegments, setTestPontLineSegments] = useState<
+    Feature<LineString>[] | undefined
+  >(undefined)
+
   const handleShowPoints = ({ testPointsString }: FormProp) => {
     const points = testPointsString.split("\n").reduce((acc: [number, number][], line: string) => {
       const [lng, lat] = line
@@ -136,6 +140,23 @@ export const ExportWithQuery = () => {
       return acc
     }, [])
     setTestPoints(points)
+
+    // Slice the lineString between the given coordinates.
+    const testPointPoints = points?.map((coord) => point(coord))
+
+    if (testPointPoints && geoJsonLinestring) {
+      testPointPoints.forEach((pointPont, index) => {
+        if (index < testPointPoints.length - 1) {
+          const startPoint = pointPont
+          const endPoint = testPointPoints[index + 1]
+
+          if (endPoint) {
+            const segment = lineSlice(startPoint, endPoint, geoJsonLinestring)
+            setTestPontLineSegments((prev) => [...(prev || []), segment])
+          }
+        }
+      })
+    }
   }
 
   return (
@@ -161,9 +182,28 @@ export const ExportWithQuery = () => {
           </button>
           {testPoints && (
             <div className="prose">
+              <h4>Erkannte Punkte</h4>
               <pre>
                 <code>{stringifyGeoJSON(testPoints)}</code>
               </pre>
+              <div className="grid gap-2 sm:grid-cols-3">
+                {testPointLineSegments?.map((line) => {
+                  const start = line.geometry.coordinates.at(0)?.map((c) => c.toFixed(4))
+                  const end = line.geometry.coordinates.at(-1)?.map((c) => c.toFixed(4))
+                  return (
+                    <div key={stringifyGeoJSON([start, end])}>
+                      <h4>
+                        Abschnitt <br />
+                        {stringifyGeoJSON(start)} <br />
+                        {stringifyGeoJSON(end)}
+                      </h4>
+                      <pre>
+                        <code>{stringifyGeoJSON(line)}</code>
+                      </pre>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           )}
         </form>
@@ -274,7 +314,7 @@ export const ExportWithQuery = () => {
 
         {/* ===== Points via Textarea ===== */}
         {Array.isArray(testPoints) &&
-          testPoints.map((point) => {
+          testPoints.map((point, index) => {
             return (
               <Marker
                 key={JSON.stringify(point)}
@@ -283,7 +323,7 @@ export const ExportWithQuery = () => {
                 anchor="left"
               >
                 <div className="ml-3 rounded bg-red-700 px-1 py-0 text-xs text-red-50">
-                  {point[0].toFixed(3)}, {point[1].toFixed(3)}
+                  {index}: {point[0].toFixed(3)}, {point[1].toFixed(3)}
                 </div>
               </Marker>
             )
@@ -364,7 +404,7 @@ export const ExportWithQuery = () => {
                 <code>{stringifyGeoJSON(feature?.properties)}</code>
               </pre>
               <pre>
-                <code>{stringifyGeoJSON(feature?.geometry).replaceAll(",\n      ", ", ")}</code>
+                <code>{stringifyGeoJSON(feature?.geometry)}</code>
               </pre>
             </div>
           )
