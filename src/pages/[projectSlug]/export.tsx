@@ -4,7 +4,6 @@ import {
   Feature,
   LineString,
   Point,
-  feature,
   featureCollection,
   lineString,
   multiLineString,
@@ -13,7 +12,8 @@ import {
 import { bbox, lineSlice, nearestPointOnLine } from "@turf/turf"
 import clsx from "clsx"
 import { Suspense, useState } from "react"
-import { Layer, MapboxGeoJSONFeature, Source } from "react-map-gl"
+import { useForm } from "react-hook-form"
+import { Layer, MapboxGeoJSONFeature, Marker, Source } from "react-map-gl"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { BaseMap } from "src/core/components/Map/BaseMap"
 import { sectionsBbox } from "src/core/components/Map/utils"
@@ -90,9 +90,29 @@ export const ExportWithQuery = () => {
   }
 
   const handleResetMapPoints = () => {
+    setPointOneClicked(undefined)
     setPointOneLine(undefined)
+    setPointTwoClicked(undefined)
     setPointTwoLine(undefined)
     setNewLine(undefined)
+  }
+
+  type FormProp = { testPointsString: string }
+  const { handleSubmit, register } = useForm<FormProp>()
+  const [testPoints, setTestPoints] = useState<[number, number][] | undefined>(undefined)
+  const handleShowPoints = ({ testPointsString }: FormProp) => {
+    const points = testPointsString.split("\n").reduce((acc: [number, number][], line: string) => {
+      const [lng, lat] = line
+        .trim()
+        .split(",")
+        .map((e) => e.replace(/[^\d.,]/g, "")) // cleanup all except number and point
+        .map(parseFloat)
+      if (lng && lat && !isNaN(lng) && !isNaN(lat)) {
+        acc.push([lng, lat])
+      }
+      return acc
+    }, [])
+    setTestPoints(points)
   }
 
   return (
@@ -101,6 +121,30 @@ export const ExportWithQuery = () => {
       <PageHeader title={`Export für ${shortTitle(project.slug)}`} className="mt-12" />
 
       <H2>Planungsabschnitte Karte</H2>
+
+      <details className="mb-5 rounded border p-2">
+        <summary className="cursor-pointer">Testdaten auf der Karte anzeigen</summary>
+        <p className="prose prose-sm">
+          Format: <code>long,lat</code>, eine Zeile pro Punkt
+        </p>
+        <form onSubmit={handleSubmit(handleShowPoints)} className="space-y-2">
+          <textarea
+            {...register("testPointsString")}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+          <button type="submit" className={clsx(whiteButtonStyles, "!pb-1 !pt-1 pl-2 pr-2")}>
+            Punkte anzeigen
+          </button>
+          {testPoints && (
+            <div className="prose">
+              <pre>
+                <code>{JSON.stringify(testPoints, undefined, 2).replaceAll(",\n    ", ", ")}</code>
+              </pre>
+            </div>
+          )}
+        </form>
+      </details>
+
       <BaseMap
         id="exportSubsections"
         initialViewState={{
@@ -110,6 +154,7 @@ export const ExportWithQuery = () => {
         onClick={handleClick}
         interactiveLayerIds={["export"]}
         dots={dotsGeoms}
+        hash
       >
         <Source key="newLine" type="geojson" data={newLine}>
           <Layer
@@ -123,7 +168,6 @@ export const ExportWithQuery = () => {
             }}
           />
         </Source>
-
         <Source
           key="nearestPoint"
           type="geojson"
@@ -171,6 +215,36 @@ export const ExportWithQuery = () => {
             paint={{
               "line-width": 7,
               "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
+            }}
+          />
+        </Source>
+        {Array.isArray(testPoints) &&
+          testPoints.map((point) => {
+            return (
+              <Marker
+                key={JSON.stringify(point)}
+                latitude={point[1]}
+                longitude={point[0]}
+                anchor="left"
+              >
+                <div className="ml-3 rounded bg-red-700 px-1 py-0 text-xs text-red-50">
+                  {point[0].toFixed(3)}, {point[1].toFixed(3)}
+                </div>
+              </Marker>
+            )
+          })}
+        <Source
+          key="testPoints"
+          type="geojson"
+          data={featureCollection(testPoints?.map((p) => point(p)) || [])}
+        >
+          <Layer
+            id="testPoints"
+            type="circle"
+            paint={{
+              "circle-radius": 5,
+              "circle-color": "#BE123C",
+              "circle-opacity": 0.9,
             }}
           />
         </Source>

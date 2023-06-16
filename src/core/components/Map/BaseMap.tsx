@@ -12,7 +12,9 @@ const selectableLineLayerId = "layer_selectable_line_features"
 const selectablePointLayerId = "layer_selectable_point_features"
 
 export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
-  Partial<Pick<MapProps, "onMouseEnter" | "onMouseLeave" | "onClick" | "interactiveLayerIds">> & {
+  Partial<
+    Pick<MapProps, "onMouseEnter" | "onMouseLeave" | "onClick" | "interactiveLayerIds" | "hash">
+  > & {
     lines?: FeatureCollection<LineString, { color: string }>
     selectableLines?: FeatureCollection<LineString, { id: string; color: string }>
     selectablePoints?: FeatureCollection<Point, { id: string; color: string }>
@@ -27,6 +29,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   onMouseLeave,
   onClick,
   interactiveLayerIds,
+  hash,
   lines,
   selectableLines,
   selectablePoints,
@@ -119,6 +122,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
           ]
             .flat()
             .filter(Boolean)}
+          hash={hash || false}
         >
           <NavigationControl showCompass={false} />
           <ScaleControl />
