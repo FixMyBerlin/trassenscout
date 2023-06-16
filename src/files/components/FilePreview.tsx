@@ -15,7 +15,7 @@ type Props = {
 
 export const FilePreview: React.FC<Props> = ({ file, editUrl, description = true }) => {
   const fileType = file.externalUrl.split(".").at(-1) || "?"
-  const isImage = ["png", "jpg"].includes(fileType)
+  const isImage = ["png", "jpg"].includes(fileType.toLowerCase())
 
   return (
     <div key={file.id} className="relative">

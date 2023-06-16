@@ -3,19 +3,18 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
+import { Spinner } from "src/core/components/Spinner"
 import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { Spinner } from "src/core/components/Spinner"
-import { longTitle, seoEditTitleSlug, shortTitle } from "src/core/components/text"
-import { startEnd } from "src/core/components/text/startEnd"
+import { seoEditTitleSlug, shortTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 import { FORM_ERROR, SubsectionForm } from "src/subsections/components/SubsectionForm"
 import deleteSubsection from "src/subsections/mutations/deleteSubsection"
 import updateSubsection from "src/subsections/mutations/updateSubsection"
 import getSubsection from "src/subsections/queries/getSubsection"
 import { SubsectionSchema } from "src/subsections/schema"
-import getProjectUsers from "src/memberships/queries/getProjectUsers"
 
 const EditSubsection = () => {
   const router = useRouter()
@@ -36,7 +35,13 @@ const EditSubsection = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.back()
+      await router.push(
+        Routes.SubsectionDashboardPage({
+          projectSlug: projectSlug!,
+          sectionSlug: sectionSlug!,
+          subsectionSlug: updated.slug,
+        })
+      )
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
