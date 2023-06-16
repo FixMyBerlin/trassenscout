@@ -2,19 +2,23 @@ import { BlitzPage, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import {
   Feature,
+  LineString,
   Point,
+  feature,
   featureCollection,
   lineString,
   multiLineString,
   point,
 } from "@turf/helpers"
-import { bbox, nearestPointOnLine } from "@turf/turf"
+import { bbox, lineSlice, nearestPointOnLine } from "@turf/turf"
+import clsx from "clsx"
 import { Suspense, useState } from "react"
 import { Layer, MapboxGeoJSONFeature, Source } from "react-map-gl"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { BaseMap } from "src/core/components/Map/BaseMap"
 import { sectionsBbox } from "src/core/components/Map/utils"
 import { Spinner } from "src/core/components/Spinner"
+import { whiteButtonStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2, longTitle, seoTitleSlug, shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
@@ -50,7 +54,7 @@ export const ExportWithQuery = () => {
       return lineString(subs.geometry, properties, { bbox: bbox(lineString(subs.geometry)) })
     })
   )
-  const geoJsonLinestring = multiLineString(subsections.map((subs) => subs.geometry))
+  const geoJsonLinestring = lineString(subsections.map((subs) => subs.geometry).flat())
 
   const dotsGeoms = subsections
     .map((subsection) => [subsection.geometry.at(0), subsection.geometry.at(-1)])
@@ -60,15 +64,35 @@ export const ExportWithQuery = () => {
   const [clickedFeatures, setClickedFeatures] = useState<MapboxGeoJSONFeature[] | undefined>(
     undefined
   )
-  const [pointClicked, setPointClicked] = useState<Feature<Point> | undefined>(undefined)
-  const [pointOnLine, setPointOnLine] = useState<Feature<Point> | undefined>(undefined)
+  const [pointOneClicked, setPointOneClicked] = useState<Feature<Point> | undefined>(undefined)
+  const [pointOneLine, setPointOneLine] = useState<Feature<Point> | undefined>(undefined)
+  const [pointTwoClicked, setPointTwoClicked] = useState<Feature<Point> | undefined>(undefined)
+  const [pointTwoLine, setPointTwoLine] = useState<Feature<Point> | undefined>(undefined)
+  const [newLine, setNewLine] = useState<Feature<LineString> | undefined>(undefined)
+
   const handleClick = (event: mapboxgl.MapLayerMouseEvent) => {
     event.features && setClickedFeatures(event.features)
 
-    const clickedPoint = point(event.lngLat.toArray())
-    setPointClicked(point(clickedPoint.geometry.coordinates, { color: "#B68C06" }))
-    const nearestPoint = nearestPointOnLine(geoJsonLinestring, clickedPoint)
-    setPointOnLine(nearestPoint)
+    if (!pointOneLine) {
+      const clickedPoint = point(event.lngLat.toArray())
+      setPointOneClicked(point(clickedPoint.geometry.coordinates, { color: "#B68C06" }))
+      const nearestPoint = nearestPointOnLine(geoJsonLinestring, clickedPoint)
+      setPointOneLine(nearestPoint)
+    } else {
+      const clickedPoint = point(event.lngLat.toArray())
+      setPointTwoClicked(point(clickedPoint.geometry.coordinates, { color: "#B68C06" }))
+      const nearestPoint = nearestPointOnLine(geoJsonLinestring, clickedPoint)
+      setPointTwoLine(nearestPoint)
+
+      const newLine = lineSlice(pointOneLine, nearestPoint, geoJsonLinestring)
+      setNewLine(newLine)
+    }
+  }
+
+  const handleResetMapPoints = () => {
+    setPointOneLine(undefined)
+    setPointTwoLine(undefined)
+    setNewLine(undefined)
   }
 
   return (
@@ -87,6 +111,59 @@ export const ExportWithQuery = () => {
         interactiveLayerIds={["export"]}
         dots={dotsGeoms}
       >
+        <Source key="newLine" type="geojson" data={newLine}>
+          <Layer
+            id="newLine"
+            type="line"
+            paint={{
+              "line-width": 2,
+              "line-color": "white",
+              "line-opacity": 1,
+              "line-dasharray": [1, 1],
+            }}
+          />
+        </Source>
+
+        <Source
+          key="nearestPoint"
+          type="geojson"
+          data={featureCollection(
+            [pointOneLine, pointOneClicked, pointTwoLine, pointTwoClicked].filter(Boolean)
+          )}
+        >
+          <Layer
+            id="nearestPoint"
+            type="circle"
+            paint={{
+              "circle-radius": 17,
+              "circle-color": ["case", ["has", "color"], ["get", "color"], "#E5007D"],
+              "circle-opacity": 0.5,
+            }}
+          />
+        </Source>
+        <Source
+          key="nearestPointLine"
+          type="geojson"
+          data={multiLineString(
+            [
+              [pointOneLine?.geometry?.coordinates, pointOneClicked?.geometry?.coordinates],
+              [pointTwoLine?.geometry?.coordinates, pointTwoClicked?.geometry?.coordinates],
+            ]
+              .map((e) => e.filter(Boolean))
+              .filter((e) => e.length)
+          )}
+        >
+          <Layer
+            id="nearestPointLine"
+            type="line"
+            paint={{
+              "line-width": 2,
+              "line-color": "black",
+              "line-opacity": 0.3,
+              "line-dasharray": [1, 1],
+            }}
+          />
+        </Source>
         <Source key="export" type="geojson" data={geoJsonFeatureCollection}>
           <Layer
             id="export"
@@ -97,49 +174,36 @@ export const ExportWithQuery = () => {
             }}
           />
         </Source>
-        {pointOnLine && pointClicked && (
-          <>
-            <Source
-              key="nearestPoint"
-              type="geojson"
-              data={featureCollection([pointOnLine, pointClicked])}
-            >
-              <Layer
-                id="nearestPoint"
-                type="circle"
-                paint={{
-                  "circle-radius": 17,
-                  "circle-color": ["case", ["has", "color"], ["get", "color"], "#E5007D"],
-                  "circle-opacity": 0.5,
-                }}
-              />
-            </Source>
-            <Source
-              key="nearestPointLine"
-              type="geojson"
-              data={lineString([
-                pointOnLine.geometry.coordinates,
-                pointClicked.geometry.coordinates,
-              ])}
-            >
-              <Layer
-                id="nearestPointLine"
-                type="line"
-                paint={{
-                  "line-width": 2,
-                  "line-color": "black",
-                  "line-opacity": 0.3,
-                  "line-dasharray": [1, 1],
-                }}
-              />
-            </Source>
-          </>
-        )}
       </BaseMap>
-      <div className="prose my-2 max-w-none">
-        <pre>
-          <code>{JSON.stringify(pointOnLine, undefined, 2)}</code>
-        </pre>
+      <div className="prose my-2 grid max-w-none gap-2 md:grid-cols-3">
+        <div>
+          <h4>Punkt 1 geklickt</h4>
+          <pre>
+            <code>{JSON.stringify(pointOneLine, undefined, 2)}</code>
+          </pre>
+        </div>
+        <div>
+          <h4>Punkt 1 geklickt</h4>
+          <pre>
+            <code>{JSON.stringify(pointTwoLine, undefined, 2)}</code>
+          </pre>
+        </div>
+        <div>
+          <div className="flex items-center justify-between">
+            <h4>Linie dazwischen</h4>
+            <div>
+              <button
+                onClick={handleResetMapPoints}
+                className={clsx(whiteButtonStyles, "!pb-1 !pt-1 pl-2 pr-2")}
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+          <pre className="mt-0">
+            <code>{JSON.stringify(newLine, undefined, 2)}</code>
+          </pre>
+        </div>
       </div>
       <div className="prose mb-12 mt-2 max-w-none">
         {clickedFeatures?.map((feature) => {
