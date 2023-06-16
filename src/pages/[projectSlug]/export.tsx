@@ -37,6 +37,7 @@ export const ExportWithQuery = () => {
     where: { sectionId: { in: secitonIds } },
   })
 
+  // ===== Base Data =====
   const geoJsonFeatureCollection = featureCollection(
     subsections.map((subs, index) => {
       const properties = {
@@ -61,6 +62,7 @@ export const ExportWithQuery = () => {
     .flat()
     .filter(Boolean)
 
+  // ===== Click Feature, NewLine Feature =====
   const [clickedFeatures, setClickedFeatures] = useState<MapboxGeoJSONFeature[] | undefined>(
     undefined
   )
@@ -97,6 +99,7 @@ export const ExportWithQuery = () => {
     setNewLine(undefined)
   }
 
+  // ===== Points via Textarea =====
   type FormProp = { testPointsString: string }
   const { handleSubmit, register } = useForm<FormProp>()
   const [testPoints, setTestPoints] = useState<[number, number][] | undefined>(undefined)
@@ -122,6 +125,7 @@ export const ExportWithQuery = () => {
 
       <H2>Planungsabschnitte Karte</H2>
 
+      {/* ===== Points via Textarea ===== */}
       <details className="mb-5 rounded border p-2">
         <summary className="cursor-pointer">Testdaten auf der Karte anzeigen</summary>
         <p className="prose prose-sm">
@@ -156,6 +160,19 @@ export const ExportWithQuery = () => {
         dots={dotsGeoms}
         hash
       >
+        {/* ===== Base Data ===== */}
+        <Source key="export" type="geojson" data={geoJsonFeatureCollection}>
+          <Layer
+            id="export"
+            type="line"
+            paint={{
+              "line-width": 7,
+              "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
+            }}
+          />
+        </Source>
+
+        {/* ===== Click Feature, NewLine Feature ===== */}
         <Source key="newLine" type="geojson" data={newLine}>
           <Layer
             id="newLine"
@@ -208,16 +225,8 @@ export const ExportWithQuery = () => {
             }}
           />
         </Source>
-        <Source key="export" type="geojson" data={geoJsonFeatureCollection}>
-          <Layer
-            id="export"
-            type="line"
-            paint={{
-              "line-width": 7,
-              "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
-            }}
-          />
-        </Source>
+
+        {/* ===== Points via Textarea ===== */}
         {Array.isArray(testPoints) &&
           testPoints.map((point) => {
             return (
@@ -249,6 +258,8 @@ export const ExportWithQuery = () => {
           />
         </Source>
       </BaseMap>
+
+      {/* ===== Points via Textarea ===== */}
       <div className="prose my-2 grid max-w-none gap-2 md:grid-cols-3">
         <div>
           <h4>Punkt 1 geklickt</h4>
@@ -279,6 +290,8 @@ export const ExportWithQuery = () => {
           </pre>
         </div>
       </div>
+
+      {/* ===== Click Feature, NewLine Feature ===== */}
       <div className="prose mb-12 mt-2 max-w-none">
         {clickedFeatures?.map((feature) => {
           return (
