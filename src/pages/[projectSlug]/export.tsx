@@ -145,10 +145,23 @@ export const ExportWithQuery = () => {
       point(nearestPointOnLine(geoJsonLinestring, p).geometry.coordinates)
     )
     setTestPointsOnLine(testPointsOnLine)
-    setTestPontLineSegments(undefined) // reset
 
     // Slice the lineString between the given (and snapped) coordinates.
-    if (testPointsOnLine && geoJsonLinestring) {
+    const firstSegmentStart = geoJsonLinestring.geometry.coordinates.at(0)
+    const firstSegmentEnd = testPointsOnLine.at(0)
+    const lastSegmentStart = testPointsOnLine.at(-1)
+    const lastSegmentEnd = geoJsonLinestring.geometry.coordinates.at(-1)
+    if (
+      Boolean(testPointsOnLine.length) &&
+      geoJsonLinestring &&
+      firstSegmentStart &&
+      firstSegmentEnd &&
+      lastSegmentStart &&
+      lastSegmentEnd
+    ) {
+      const firstSegment = lineSlice(point(firstSegmentStart), firstSegmentEnd, geoJsonLinestring)
+      setTestPontLineSegments([firstSegment])
+
       testPointsOnLine.forEach((pointPoint, index) => {
         if (index < testPointsOnLine.length - 1) {
           const startPoint = pointPoint
@@ -159,6 +172,9 @@ export const ExportWithQuery = () => {
           }
         }
       })
+
+      const lastSegment = lineSlice(lastSegmentStart, point(lastSegmentEnd), geoJsonLinestring)
+      setTestPontLineSegments((prev) => [...(prev || []), lastSegment])
     }
   }
 
@@ -172,7 +188,7 @@ export const ExportWithQuery = () => {
       {/* ===== Points via Textarea ===== */}
       <details className="mb-5 rounded border p-2">
         <summary className="cursor-pointer">Testdaten auf der Karte anzeigen</summary>
-        <p className="prose prose-sm mt-3 max-w-">
+        <p className="prose prose-sm !mt-3 max-w-none">
           Format: <code>long,lat</code>, eine Zeile pro Punkt
         </p>
         <form onSubmit={handleSubmit(handleShowPoints)} className="space-y-2">
@@ -186,7 +202,7 @@ export const ExportWithQuery = () => {
           {testPointsOnLine && (
             <div className="prose !mt-6 max-w-none">
               <h4>
-                Erkannte, gesmappte Punkte{" "}
+                Erkannte, gemappte Punkte{" "}
                 <span className="ml-0.5 font-light text-gray-500">
                   (Rot; Gelb der original Punkt)
                 </span>
@@ -194,24 +210,34 @@ export const ExportWithQuery = () => {
               <pre>
                 <code>{stringifyGeoJSON(testPointsOnLine.map((p) => p.geometry.coordinates))}</code>
               </pre>
-              <div className="grid gap-2 sm:grid-cols-3">
-                {testPointLineSegments?.map((line) => {
-                  const start = line.geometry.coordinates.at(0)?.map((c) => c.toFixed(4))
-                  const end = line.geometry.coordinates.at(-1)?.map((c) => c.toFixed(4))
-                  return (
-                    <div key={stringifyGeoJSON([start, end])}>
-                      <h4>
-                        Abschnitt <br />
-                        {stringifyGeoJSON(start)} <br />
-                        {stringifyGeoJSON(end)}
-                      </h4>
-                      <pre>
-                        <code>{stringifyGeoJSON(line)}</code>
-                      </pre>
-                    </div>
-                  )
-                })}
-              </div>
+              <details>
+                <summary>Teilstrecken</summary>
+                <div className="grid gap-2 sm:grid-cols-3">
+                  {testPointLineSegments?.map((line, index) => {
+                    const start = line.geometry.coordinates.at(0)?.map((c) => c.toFixed(4))
+                    const end = line.geometry.coordinates.at(-1)?.map((c) => c.toFixed(4))
+                    return (
+                      <div key={stringifyGeoJSON([start, end])}>
+                        <h4>
+                          Abschnitt
+                          <br />
+                          {index === 0 && (
+                            <div className="text-gray-700">Start Trasse bis erster Punkt</div>
+                          )}
+                          {index === testPointLineSegments.length - 1 && (
+                            <div className="text-gray-700">Letzter Punkt bis Ende Trasse</div>
+                          )}
+                          {stringifyGeoJSON(start)} <br />
+                          {stringifyGeoJSON(end)}
+                        </h4>
+                        <pre>
+                          <code>{stringifyGeoJSON(line)}</code>
+                        </pre>
+                      </div>
+                    )
+                  })}
+                </div>
+              </details>
             </div>
           )}
         </form>
