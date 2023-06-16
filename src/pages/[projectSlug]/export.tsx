@@ -122,7 +122,8 @@ export const ExportWithQuery = () => {
   // ===== Points via Textarea =====
   type FormProp = { testPointsString: string }
   const { handleSubmit, register } = useForm<FormProp>()
-  const [testPoints, setTestPoints] = useState<[number, number][] | undefined>(undefined)
+  const [testPoints, setTestPoints] = useState<Feature<Point>[] | undefined>(undefined)
+  const [testPointsOnLine, setTestPointsOnLine] = useState<Feature<Point>[] | undefined>(undefined)
   const [testPointLineSegments, setTestPontLineSegments] = useState<
     Feature<LineString>[] | undefined
   >(undefined)
@@ -139,17 +140,19 @@ export const ExportWithQuery = () => {
       }
       return acc
     }, [])
-    setTestPoints(points)
+    setTestPoints(points.map((p) => point(p)))
+    const testPointsOnLine = points.map((p) =>
+      point(nearestPointOnLine(geoJsonLinestring, p).geometry.coordinates)
+    )
+    setTestPointsOnLine(testPointsOnLine)
+    setTestPontLineSegments(undefined) // reset
 
-    // Slice the lineString between the given coordinates.
-    const testPointPoints = points?.map((coord) => point(coord))
-
-    if (testPointPoints && geoJsonLinestring) {
-      testPointPoints.forEach((pointPont, index) => {
-        if (index < testPointPoints.length - 1) {
-          const startPoint = pointPont
-          const endPoint = testPointPoints[index + 1]
-
+    // Slice the lineString between the given (and snapped) coordinates.
+    if (testPointsOnLine && geoJsonLinestring) {
+      testPointsOnLine.forEach((pointPoint, index) => {
+        if (index < testPointsOnLine.length - 1) {
+          const startPoint = pointPoint
+          const endPoint = testPointsOnLine[index + 1]
           if (endPoint) {
             const segment = lineSlice(startPoint, endPoint, geoJsonLinestring)
             setTestPontLineSegments((prev) => [...(prev || []), segment])
@@ -169,7 +172,7 @@ export const ExportWithQuery = () => {
       {/* ===== Points via Textarea ===== */}
       <details className="mb-5 rounded border p-2">
         <summary className="cursor-pointer">Testdaten auf der Karte anzeigen</summary>
-        <p className="prose prose-sm">
+        <p className="prose prose-sm mt-3 max-w-">
           Format: <code>long,lat</code>, eine Zeile pro Punkt
         </p>
         <form onSubmit={handleSubmit(handleShowPoints)} className="space-y-2">
@@ -180,11 +183,16 @@ export const ExportWithQuery = () => {
           <button type="submit" className={clsx(whiteButtonStyles, "!pb-1 !pt-1 pl-2 pr-2")}>
             Punkte anzeigen
           </button>
-          {testPoints && (
-            <div className="prose">
-              <h4>Erkannte Punkte</h4>
+          {testPointsOnLine && (
+            <div className="prose !mt-6 max-w-none">
+              <h4>
+                Erkannte, gesmappte Punkte{" "}
+                <span className="ml-0.5 font-light text-gray-500">
+                  (Rot; Gelb der original Punkt)
+                </span>
+              </h4>
               <pre>
-                <code>{stringifyGeoJSON(testPoints)}</code>
+                <code>{stringifyGeoJSON(testPointsOnLine.map((p) => p.geometry.coordinates))}</code>
               </pre>
               <div className="grid gap-2 sm:grid-cols-3">
                 {testPointLineSegments?.map((line) => {
@@ -313,33 +321,45 @@ export const ExportWithQuery = () => {
           })}
 
         {/* ===== Points via Textarea ===== */}
-        {Array.isArray(testPoints) &&
-          testPoints.map((point, index) => {
+        {Array.isArray(testPointsOnLine) &&
+          testPointsOnLine.map((point, index) => {
             return (
               <Marker
-                key={JSON.stringify(point)}
-                latitude={point[1]}
-                longitude={point[0]}
+                key={JSON.stringify(point.geometry.coordinates)}
+                latitude={point.geometry.coordinates[1]}
+                longitude={point.geometry.coordinates[0]}
                 anchor="left"
               >
                 <div className="ml-3 rounded bg-red-700 px-1 py-0 text-xs text-red-50">
-                  {index}: {point[0].toFixed(3)}, {point[1].toFixed(3)}
+                  {index}: {point.geometry.coordinates[0]?.toFixed(3)},{" "}
+                  {point.geometry.coordinates[1]?.toFixed(3)}
                 </div>
               </Marker>
             )
           })}
         <Source
-          key="testPoints"
+          key="testPointsOnLine"
           type="geojson"
-          data={featureCollection(testPoints?.map((p) => point(p)) || [])}
+          data={featureCollection(testPointsOnLine || [])}
         >
           <Layer
-            id="testPoints"
+            id="testPointsOnLine"
             type="circle"
             paint={{
               "circle-radius": 5,
               "circle-color": "#BE123C",
               "circle-opacity": 0.9,
+            }}
+          />
+        </Source>
+        <Source key="testPoints" type="geojson" data={featureCollection(testPoints || [])}>
+          <Layer
+            id="testPoints"
+            type="circle"
+            paint={{
+              "circle-radius": 2,
+              "circle-color": "#F8C62B",
+              "circle-opacity": 1,
             }}
           />
         </Source>
