@@ -26,6 +26,7 @@ import getProject from "src/projects/queries/getProject"
 import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
 import getSubsections from "src/subsections/queries/getSubsections"
 
+// This became quite hacky in the end. We should not trust it completely.
 function stringifyGeoJSON(geojson: any) {
   return JSON.stringify(
     geojson,
@@ -44,6 +45,8 @@ function stringifyGeoJSON(geojson: any) {
     },
     2
   )
+    ?.replaceAll('"[', "[")
+    ?.replaceAll(']"', "]")
 }
 
 export const ExportWithQuery = () => {
@@ -231,7 +234,7 @@ export const ExportWithQuery = () => {
                           {stringifyGeoJSON(end)}
                         </h4>
                         <pre>
-                          <code>{stringifyGeoJSON(line)}</code>
+                          <code>{stringifyGeoJSON(line.geometry.coordinates)}</code>
                         </pre>
                       </div>
                     )
