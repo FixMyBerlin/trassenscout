@@ -1,4 +1,4 @@
-import Image from "next/image"
+import Image from "next/legacy/image"
 import { LinkMail } from "src/core/components/links"
 import { H1 } from "src/core/components/text/Headings"
 import { LayoutArticle, MetaTags } from "src/core/layouts"

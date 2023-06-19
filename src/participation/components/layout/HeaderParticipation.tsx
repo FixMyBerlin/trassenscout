@@ -1,5 +1,5 @@
 import { XMarkIcon } from "@heroicons/react/20/solid"
-import Image from "next/image"
+import Image from "next/legacy/image"
 import { ProgressBar } from "src/participation/components/layout/ProgressBar"
 import { ParticipationLink } from "../core/links/ParticipationLink"
 
