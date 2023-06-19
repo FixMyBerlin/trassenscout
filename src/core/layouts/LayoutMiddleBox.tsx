@@ -1,4 +1,4 @@
-import Image from "next/image"
+import Image from "next/legacy/image"
 import React from "react"
 import TrasssenscoutLogo from "../layouts/Navigation/assets/trassenscout-logo-gelb-text-dark.svg"
 import { Layout } from "./Layout"

@@ -1,4 +1,4 @@
-import Image from "next/image"
+import Image from "next/legacy/image"
 import svgLogoTrassenscout from "../assets/trassenscout-logo-gelb.svg"
 
 type Props = { beta?: boolean }
