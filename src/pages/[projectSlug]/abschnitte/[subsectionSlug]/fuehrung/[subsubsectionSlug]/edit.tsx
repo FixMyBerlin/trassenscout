@@ -3,7 +3,6 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "src/core/components/Spinner"
 import { Link, linkStyles } from "src/core/components/links"
@@ -20,12 +19,11 @@ import { SubsubsectionSchema } from "src/subsubsections/schema"
 
 const EditSubsubsection = () => {
   const router = useRouter()
-  const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
+  const { projectSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
   const [subsubsection, { setQueryData }] = useQuery(
     getSubsubsection,
     {
       projectSlug: projectSlug!,
-      sectionSlug: sectionSlug!,
       subsectionSlug: subsectionSlug!,
       subsubsectionSlug: subsubsectionSlug!,
     },
@@ -48,7 +46,6 @@ const EditSubsubsection = () => {
       await router.push(
         Routes.SubsubsectionDashboardPage({
           projectSlug: projectSlug!,
-          sectionSlug: sectionSlug!,
           subsectionSlug: subsectionSlug!,
           subsubsectionSlug: updated.slug,
         })
@@ -66,7 +63,6 @@ const EditSubsubsection = () => {
       await router.push(
         Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
-          sectionSlug: sectionSlug!,
           subsectionSlug: subsectionSlug!,
         })
       )
@@ -99,7 +95,7 @@ const EditSubsubsection = () => {
 }
 
 const EditSubsubsectionPage = () => {
-  const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
+  const { projectSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
   return (
     <LayoutRs>
@@ -112,7 +108,6 @@ const EditSubsubsectionPage = () => {
         <Link
           href={Routes.SubsubsectionDashboardPage({
             projectSlug: projectSlug!,
-            sectionSlug: sectionSlug!,
             subsectionSlug: subsectionSlug!,
             subsubsectionSlug: subsubsectionSlug!,
           })}

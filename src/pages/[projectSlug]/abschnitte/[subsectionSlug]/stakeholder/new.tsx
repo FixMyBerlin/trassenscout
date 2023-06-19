@@ -17,10 +17,10 @@ import getSubsection from "src/subsections/queries/getSubsection"
 const NewStakeholdernotesWithQuery = () => {
   const router = useRouter()
   const [createStakeholdernoteMutation] = useMutation(createStakeholdernote)
-  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
+
+  const { projectSlug, subsectionSlug } = useSlugs()
   const [subsection] = useQuery(getSubsection, {
     projectSlug: projectSlug!,
-    sectionSlug: sectionSlug!,
     subsectionSlug: subsectionSlug!,
   })
 
@@ -37,7 +37,6 @@ const NewStakeholdernotesWithQuery = () => {
       await router.push(
         Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
-          sectionSlug: sectionSlug!,
           subsectionSlug: subsectionSlug!,
         })
       )
@@ -68,7 +67,7 @@ const NewStakeholdernotesWithQuery = () => {
 }
 
 const NewStakeholdernotesPage: BlitzPage = () => {
-  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
+  const { projectSlug, subsectionSlug } = useSlugs()
 
   return (
     <LayoutRs>
@@ -80,7 +79,6 @@ const NewStakeholdernotesPage: BlitzPage = () => {
         <Link
           href={Routes.SubsectionDashboardPage({
             projectSlug: projectSlug!,
-            sectionSlug: sectionSlug!,
             subsectionSlug: subsectionSlug!,
           })}
         >

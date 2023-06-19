@@ -16,7 +16,7 @@ import getStakeholdernote from "src/stakeholdernotes/queries/getStakeholdernote"
 
 export const Stakeholdernote = () => {
   const router = useRouter()
-  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
+  const { projectSlug, subsectionSlug } = useSlugs()
   const stakeholdernoteId = useParam("stakeholdernoteId", "number")
   const [stakeholdernote] = useQuery(getStakeholdernote, { id: stakeholdernoteId })
 
@@ -27,7 +27,6 @@ export const Stakeholdernote = () => {
       await router.push(
         Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
-          sectionSlug: sectionSlug!,
           subsectionSlug: subsectionSlug!,
         })
       )
@@ -43,7 +42,6 @@ export const Stakeholdernote = () => {
         <Link
           href={Routes.EditStakeholdernotePage({
             projectSlug: projectSlug!,
-            sectionSlug: sectionSlug!,
             subsectionSlug: subsectionSlug!,
             stakeholdernoteId: stakeholdernote.id,
           })}
@@ -56,7 +54,6 @@ export const Stakeholdernote = () => {
         <Link
           href={Routes.SubsectionDashboardPage({
             projectSlug: projectSlug!,
-            sectionSlug: sectionSlug!,
             subsectionSlug: subsectionSlug!,
           })}
         >

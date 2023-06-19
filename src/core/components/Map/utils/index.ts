@@ -1,2 +1,2 @@
-export * from "./sectionsBbox"
+export * from "./subsectionsBbox"
 export * from "./midPoint"

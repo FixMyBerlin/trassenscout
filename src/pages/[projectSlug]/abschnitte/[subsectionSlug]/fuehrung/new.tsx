@@ -17,10 +17,9 @@ const NewSubsubsection = () => {
   const router = useRouter()
   const [createSubsubsectionMutation] = useMutation(createSubsubsection)
 
-  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
+  const { projectSlug, subsectionSlug } = useSlugs()
   const [subsection] = useQuery(getSubsection, {
     projectSlug: projectSlug!,
-    sectionSlug: sectionSlug!,
     subsectionSlug: subsectionSlug!,
   })
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
@@ -35,7 +34,6 @@ const NewSubsubsection = () => {
       await router.push(
         Routes.SubsubsectionDashboardPage({
           projectSlug: projectSlug!,
-          sectionSlug: sectionSlug!,
           subsectionSlug: subsectionSlug!,
           subsubsectionSlug: subsubsection.id,
         })

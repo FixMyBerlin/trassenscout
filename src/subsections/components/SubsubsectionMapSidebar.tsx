@@ -1,10 +1,11 @@
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
-import React from "react"
+import React, { Suspense } from "react"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { SubsubsectionIcon } from "src/core/components/Map/Icons"
 import { Markdown } from "src/core/components/Markdown/Markdown"
+import { Spinner } from "src/core/components/Spinner"
 import { Link, whiteButtonStyles } from "src/core/components/links"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import {
@@ -18,7 +19,9 @@ import { useSlugs } from "src/core/hooks"
 import { FilePreview } from "src/files/components/FilePreview"
 import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
 import { fileUrl } from "src/files/utils"
-import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
+import getSubsubsection, {
+  SubsubsectionWithPosition,
+} from "src/subsubsections/queries/getSubsubsection"
 import { getFullname } from "src/users/utils"
 
 type Props = {
@@ -27,7 +30,8 @@ type Props = {
 }
 
 export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClose }) => {
-  const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
+  const { projectSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
+
   const [{ files }] = useQuery(getFilesWithSubsections, {
     projectSlug: projectSlug!,
     where: { subsubsectionId: subsubsection.id },
@@ -46,7 +50,6 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
             className="mt-0.5"
             href={Routes.EditSubsubsectionPage({
               projectSlug: projectSlug!,
-              sectionSlug: sectionSlug!,
               subsectionSlug: subsectionSlug!,
               subsubsectionSlug: subsubsectionSlug!,
             })}
@@ -140,7 +143,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
             href={Routes.NewFilePage({
               projectSlug: projectSlug!,
               subsubsectionId: subsubsection.id,
-              returnPath: [sectionSlug, subsectionSlug, subsubsectionSlug].join("/"),
+              returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
             })}
           >
             Grafik
@@ -156,7 +159,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                 editUrl={Routes.EditFilePage({
                   projectSlug: projectSlug!,
                   fileId: file.id,
-                  returnPath: [sectionSlug, subsectionSlug, subsubsectionSlug].join("/"),
+                  returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
                 })}
               />
             )

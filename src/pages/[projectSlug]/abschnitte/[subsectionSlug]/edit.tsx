@@ -18,10 +18,9 @@ import { SubsectionSchema } from "src/subsections/schema"
 
 const EditSubsection = () => {
   const router = useRouter()
-  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
+  const { projectSlug, subsectionSlug } = useSlugs()
   const [subsection, { setQueryData }] = useQuery(getSubsection, {
     projectSlug: projectSlug!,
-    sectionSlug: sectionSlug!,
     subsectionSlug: subsectionSlug!,
   })
   const [updateSubsectionMutation] = useMutation(updateSubsection)
@@ -38,7 +37,6 @@ const EditSubsection = () => {
       await router.push(
         Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
-          sectionSlug: sectionSlug!,
           subsectionSlug: updated.slug,
         })
       )
@@ -53,7 +51,10 @@ const EditSubsection = () => {
     if (window.confirm(`Den Eintrag mit ID ${subsection.id} unwiderruflich löschen?`)) {
       await deleteSubsectionMutation({ id: subsection.id })
       await router.push(
-        Routes.SectionDashboardPage({ projectSlug: projectSlug!, sectionSlug: sectionSlug! })
+        Routes.SubsectionDashboardPage({
+          projectSlug: projectSlug!,
+          subsectionSlug: subsectionSlug!,
+        })
       )
     }
   }
@@ -84,7 +85,7 @@ const EditSubsection = () => {
 }
 
 const EditSubsectionPage: BlitzPage = () => {
-  const { projectSlug, sectionSlug } = useSlugs()
+  const { projectSlug, subsectionSlug } = useSlugs()
 
   return (
     <LayoutRs>
@@ -95,12 +96,12 @@ const EditSubsectionPage: BlitzPage = () => {
       <hr className="my-5" />
       <p>
         <Link
-          href={Routes.SectionDashboardPage({
+          href={Routes.SubsectionDashboardPage({
             projectSlug: projectSlug!,
-            sectionSlug: sectionSlug!,
+            subsectionSlug: subsectionSlug!,
           })}
         >
-          Zurück zur Teilstrecke
+          Zurück zum Planungsabschnitt
         </Link>
       </p>
     </LayoutRs>

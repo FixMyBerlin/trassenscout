@@ -5,7 +5,7 @@ import { Suspense } from "react"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
 import { SubsectionMapIcon } from "src/core/components/Map/Icons"
-import { SubsectionMap } from "src/core/components/Map/SubsectionMap"
+import { SubsectionSubsubsectionMap } from "src/core/components/Map/SubsectionSubsubsectionMap"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
@@ -16,39 +16,37 @@ import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
-import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
 import { StakeholderSection } from "src/stakeholdernotes/components/StakeholderSection"
 import { StakeholderSummary } from "src/stakeholdernotes/components/StakeholderSummary"
 import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
 import { SubsubsectionMapSidebar } from "src/subsections/components/SubsubsectionMapSidebar"
-import { SubsubsectionTable } from "src/subsections/components/SubsubsectionTable"
-import getSubsectionIncludeSubsubsections from "src/subsections/queries/getSubsectionIncludeSubsubsections"
+import getSubsections from "src/subsections/queries/getSubsections"
+import { SubsubsectionTable } from "src/subsubsections/components/SubsubsectionTable"
+import getSubsubsections from "src/subsubsections/queries/getSubsubsections"
 
 // Page Renders Subsection _AND_ Subsubsection (as Panel)
 export const SubsectionDashboardWithQuery = () => {
   const router = useRouter()
-  const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
+  const { projectSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
-  const [{ sections: sectionsWithSubsections }] = useQuery(getSectionsIncludeSubsections, {
-    where: { project: { slug: projectSlug! } },
-  })
-  const [subsection] = useQuery(getSubsectionIncludeSubsubsections, {
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
+  const subsection = subsections.find((ss) => ss.slug === subsectionSlug)
+
+  const [{ subsubsections }] = useQuery(getSubsubsections, {
     projectSlug: projectSlug!,
-    sectionSlug: sectionSlug!,
     subsectionSlug: subsectionSlug!,
   })
-  const stakeholdernotes = useQuery(getStakeholdernotes, {
-    subsectionId: subsection.id,
-  })[0].stakeholdernotes
+  const subsubsection = subsubsections.find((ss) => ss.slug === subsubsectionSlug)
+
+  const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, { subsectionId: subsection?.id })
   const [{ files }] = useQuery(getFilesWithSubsections, {
     projectSlug: projectSlug!,
-    where: { subsectionId: subsection.id },
+    where: { subsectionId: subsection?.id },
   })
 
-  // Handle/Render Subsubsection
-  const subsubsection = subsubsectionSlug
-    ? subsection.subsubsections.find((s) => s.slug === subsubsectionSlug)
-    : undefined
+  if (!subsection) {
+    return <Spinner page />
+  }
 
   return (
     <>
@@ -64,7 +62,6 @@ export const SubsectionDashboardWithQuery = () => {
             icon="edit"
             href={Routes.EditSubsectionPage({
               projectSlug: projectSlug!,
-              sectionSlug: sectionSlug!,
               subsectionSlug: subsectionSlug!,
             })}
           >
@@ -79,34 +76,31 @@ export const SubsectionDashboardWithQuery = () => {
           <div className="space-y-2">
             <StakeholderSummary stakeholdernotes={stakeholdernotes} />
             {/* <p>
-              <strong>Teilstreckenlänge:</strong> TODO
-            </p> */}
+                <strong>Teilstreckenlänge:</strong> TODO
+              </p> */}
           </div>
         </div>
       </PageDescription>
 
       <div className="relative mt-12 flex w-full gap-10">
         <div className="w-full">
-          <SubsectionMap
+          <SubsectionSubsubsectionMap
             // Make sure the map rerenders when we close the SubsectionSidebar
-            key={`map-${Boolean(subsubsection)}`}
-            sections={sectionsWithSubsections}
+            key={`map-${subsubsectionSlug ? "subsubsection" : "subsection"}`}
+            subsections={subsections}
             selectedSubsection={subsection}
+            subsubsections={subsubsections}
           />
-          <SubsubsectionTable
-            subsubsections={subsection.subsubsections}
-            compact={Boolean(subsubsection)}
-          />
+          <SubsubsectionTable subsubsections={subsubsections} compact={Boolean(subsubsection)} />
         </div>
 
-        {subsubsection ? (
+        {subsubsection && (
           <SubsubsectionMapSidebar
             subsubsection={subsubsection}
             onClose={() => {
               void router.push(
                 Routes.SubsectionDashboardPage({
                   projectSlug: projectSlug!,
-                  sectionSlug: sectionSlug!,
                   subsectionSlug: subsectionSlug!,
                 }),
                 undefined,
@@ -114,7 +108,7 @@ export const SubsectionDashboardWithQuery = () => {
               )
             }}
           />
-        ) : null}
+        )}
       </div>
 
       <StakeholderSection stakeholdernotes={stakeholdernotes} />
@@ -124,7 +118,7 @@ export const SubsectionDashboardWithQuery = () => {
         <FileTable files={files} />
       </section>
 
-      <SuperAdminLogData data={{ subsection, sectionsWithSubsections }} />
+      <SuperAdminLogData data={{ subsectionSlug }} />
     </>
   )
 }

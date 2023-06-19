@@ -12,8 +12,7 @@ import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 const CalendarDashboardDateList: React.FC = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [{ calendarEntries }] = usePaginatedQuery(getCalendarEntries, {
-    projectSlug: projectSlug!,
-    orderBy: { startAt: "asc" },
+    projectSlug: projectSlug,
     take: 3,
     where: {
       startAt: {

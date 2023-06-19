@@ -21,7 +21,7 @@ type Props = {
 
 export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = true }) => {
   const router = useRouter()
-  const { projectSlug, sectionSlug } = useSlugs()
+  const { projectSlug, subsectionSlug } = useSlugs()
 
   return (
     <section>
@@ -51,7 +51,6 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
             {subsections.map((subsection) => {
               const route = Routes.SubsectionDashboardPage({
                 projectSlug: projectSlug!,
-                sectionSlug: sectionSlug!,
                 subsectionSlug: subsection.slug,
               })
               return (
@@ -88,9 +87,9 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
           button="blue"
           icon="plus"
           className="mt-4"
-          href={Routes.NewSubsectionPage({
+          href={Routes.NewSubsubsectionPage({
             projectSlug: projectSlug!,
-            sectionSlug: sectionSlug!,
+            subsectionSlug: subsectionSlug!,
           })}
         >
           Neuer Planungsabschnitt

@@ -1,15 +1,14 @@
 import db from "db"
 
 const getSubsubsectionProjectId = async (input: Record<string, any>) => {
-  const subsubsectionId = input.id
-  return (
-    await db.section.findFirstOrThrow({
-      where: {
-        subsections: { some: { subsubsections: { some: { id: subsubsectionId || null } } } },
-      },
-      select: { projectId: true },
-    })
-  ).projectId
+  const subsubsectionId = input.id || null
+
+  const subsubsection = await db.subsection.findFirstOrThrow({
+    where: { subsubsections: { some: { id: subsubsectionId } } },
+    select: { projectId: true },
+  })
+
+  return subsubsection.projectId
 }
 
 export default getSubsubsectionProjectId

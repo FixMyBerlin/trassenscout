@@ -13,7 +13,7 @@ export const SubsectionSchema = z.object({
   labelPos: z.nativeEnum(LabelPositionEnum),
   geometry: z.array(z.tuple([z.number(), z.number()])),
   managerId: z.coerce.number(),
-  sectionId: z.coerce.number(),
+  projectId: z.coerce.number(),
 })
 
 export type TSubsectionSchema = Prettify<z.infer<typeof SubsectionSchema>>

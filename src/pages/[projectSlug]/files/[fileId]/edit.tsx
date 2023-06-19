@@ -14,7 +14,7 @@ import updateFile from "src/files/mutations/updateFileWithSubsections"
 import getFileWithSubsections from "src/files/queries/getFileWithSubsections"
 import { FileSchema } from "src/files/schema"
 import { splitReturnTo } from "src/files/utils"
-import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
+import getSubsections from "src/subsections/queries/getSubsections"
 
 const EditFileWithQuery = () => {
   const router = useRouter()
@@ -23,11 +23,10 @@ const EditFileWithQuery = () => {
 
   const params: { returnPath?: string } = useRouterQuery()
   let backUrl = Routes.FilesPage({ projectSlug: projectSlug! })
-  const { sectionSlug, subsectionSlug, subsubsectionSlug } = splitReturnTo(params)
-  if (sectionSlug && subsectionSlug && subsubsectionSlug) {
+  const { subsectionSlug, subsubsectionSlug } = splitReturnTo(params)
+  if (subsectionSlug && subsubsectionSlug) {
     backUrl = Routes.SubsectionDashboardPage({
       projectSlug: projectSlug!,
-      sectionSlug: sectionSlug,
       subsectionSlug: subsectionSlug,
       subsubsectionSlug: subsubsectionSlug,
     })
@@ -43,9 +42,7 @@ const EditFileWithQuery = () => {
   )
   const [updateFileMutation] = useMutation(updateFile)
 
-  const [{ sections: sectionsWithSubsections }] = useQuery(getSectionsIncludeSubsections, {
-    where: { project: { slug: projectSlug! } },
-  })
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -78,7 +75,7 @@ const EditFileWithQuery = () => {
           schema={FileSchema}
           initialValues={file}
           onSubmit={handleSubmit}
-          sectionsWithSubsections={sectionsWithSubsections}
+          subsections={subsections}
           isSubsubsectionFile={isSubsubsectionFile}
         />
       </div>
@@ -89,7 +86,7 @@ const EditFileWithQuery = () => {
         </Link>
       </p>
 
-      <SuperAdminLogData data={{ file, sectionsWithSubsections }} />
+      <SuperAdminLogData data={{ file, subsections }} />
     </>
   )
 }

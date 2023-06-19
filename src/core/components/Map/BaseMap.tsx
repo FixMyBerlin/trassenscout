@@ -16,8 +16,14 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
     Pick<MapProps, "onMouseEnter" | "onMouseLeave" | "onClick" | "interactiveLayerIds" | "hash">
   > & {
     lines?: FeatureCollection<LineString, { color: string }>
-    selectableLines?: FeatureCollection<LineString, { id: string; color: string }>
-    selectablePoints?: FeatureCollection<Point, { id: string; color: string }>
+    selectableLines?: FeatureCollection<
+      LineString,
+      { subsectionSlug: string; subsubsectionSlug?: string; color: string }
+    >
+    selectablePoints?: FeatureCollection<
+      Point,
+      { subsectionSlug: string; subsubsectionSlug?: string; color: string }
+    >
     dots: [number, number][]
     children: React.ReactNode
   }

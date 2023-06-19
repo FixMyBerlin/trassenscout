@@ -20,7 +20,7 @@ import { StakeholdernoteSchema } from "src/stakeholdernotes/schema"
 
 const EditStakeholdernote = () => {
   const router = useRouter()
-  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
+  const { projectSlug, subsectionSlug } = useSlugs()
   const stakeholdernoteId = useParam("stakeholdernoteId", "number")
   const [stakeholdernote, { setQueryData }] = useQuery(
     getStakeholdernote,
@@ -43,7 +43,6 @@ const EditStakeholdernote = () => {
       await router.push(
         Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
-          sectionSlug: sectionSlug!,
           subsectionSlug: subsectionSlug!,
         })
       )
@@ -72,7 +71,7 @@ const EditStakeholdernote = () => {
 }
 
 const EditStakeholdernotePage: BlitzPage = () => {
-  const { projectSlug, sectionSlug } = useSlugs()
+  const { projectSlug, subsectionSlug } = useSlugs()
 
   return (
     <LayoutRs>
@@ -83,9 +82,9 @@ const EditStakeholdernotePage: BlitzPage = () => {
       <hr className="my-5" />
       <p>
         <Link
-          href={Routes.SectionDashboardPage({
+          href={Routes.SubsectionDashboardPage({
             projectSlug: projectSlug!,
-            sectionSlug: sectionSlug!,
+            subsectionSlug: subsectionSlug!,
           })}
         >
           Zurück zum Planungsabschnitt

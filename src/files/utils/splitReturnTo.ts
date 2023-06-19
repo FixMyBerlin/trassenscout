@@ -4,6 +4,6 @@ export const splitReturnTo = (params: Props) => {
   if (!params.returnPath) {
     return {}
   }
-  const [sectionSlug, subsectionSlug, subsubsectionSlug] = params.returnPath.split("/")
-  return { sectionSlug, subsectionSlug, subsubsectionSlug }
+  const [subsectionSlug, subsubsectionSlug] = params.returnPath.split("/")
+  return { subsectionSlug, subsubsectionSlug }
 }

@@ -3,24 +3,27 @@ import { AuthorizationError } from "blitz"
 
 type Input = string | Record<string, any>
 
-const getProjectIdBySlug = async (input: Input): Promise<number> => {
-  let projectSlug
+const getProjectIdBySlug = async (input: Input) => {
+  let projectSlug: null | string = null
+
   if (typeof input === "string") {
     projectSlug = input
   } else if ("projectSlug" in input) {
     projectSlug = input.projectSlug
   } else if ("slug" in input) {
     projectSlug = input.slug
-  } else {
+  }
+
+  if (projectSlug === null) {
     throw new AuthorizationError()
   }
-  return (
-    await db.project.findFirstOrThrow({
-      // @ts-ignore possible error is intended here
-      where: { slug: projectSlug || null },
-      select: { id: true },
-    })
-  ).id
+
+  const project = await db.project.findFirstOrThrow({
+    where: { slug: projectSlug },
+    select: { id: true },
+  })
+
+  return project.id
 }
 
 export default getProjectIdBySlug

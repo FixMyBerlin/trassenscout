@@ -6,7 +6,6 @@ import { z } from "zod"
 
 const GetSubsubsection = z.object({
   projectSlug: z.string(),
-  sectionSlug: z.string(),
   subsectionSlug: z.string(),
   subsubsectionSlug: z.string(),
 })
@@ -22,27 +21,28 @@ export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry"> &
         type: typeof SubsubsectionTypeEnum.ROUTE
         geometry: [number, number][] // Position[]
       }
-  ) & { manager: User }
+  ) & { manager: User } & { subsection: { slug: string } }
 
 export default resolver.pipe(
   resolver.zod(GetSubsubsection),
   authorizeProjectAdmin(getProjectIdBySlug),
-  async ({ projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug }) => {
+  async ({ projectSlug, subsectionSlug, subsubsectionSlug }) => {
     const query = {
       where: {
         slug: subsubsectionSlug,
         subsection: {
           slug: subsectionSlug,
-          section: {
-            slug: sectionSlug,
-            project: {
-              slug: projectSlug,
-            },
+          project: {
+            slug: projectSlug,
           },
         },
       },
-      include: { manager: true },
+      include: {
+        manager: { select: { firstName: true, lastName: true } },
+        subsection: { select: { slug: true } },
+      },
     }
+
     const subsubsection = await db.subsubsection.findFirstOrThrow(query)
     return subsubsection as SubsubsectionWithPosition // Tip: Validate type shape with `satisfies`
   }

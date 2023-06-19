@@ -15,8 +15,6 @@ export type FooterMenuItemLogo = {
 }
 
 export const FooterProject: React.FC = () => {
-  const projectSlug = useParam("projectSlug", "string")
-
   return (
     <footer className="z-0 ">
       <FooterLogos />

@@ -11,10 +11,10 @@ import {
   longTitle,
   shortTitle,
 } from "src/core/components/text"
+import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { useSlugs } from "src/core/hooks"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
-import { mapillaryLink } from "./utils/mapillaryLink"
-import { ZeroCase } from "src/core/components/text/ZeroCase"
+import { mapillaryLink } from "../../subsections/components/utils/mapillaryLink"
 
 type Props = {
   subsubsections: SubsubsectionWithPosition[]
@@ -23,7 +23,7 @@ type Props = {
 
 export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact }) => {
   const router = useRouter()
-  const { projectSlug, sectionSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
+  const { projectSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
   return (
     <section>
@@ -83,7 +83,6 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
             {subsubsections.map((subsubsection) => {
               const route = Routes.SubsubsectionDashboardPage({
                 projectSlug: projectSlug!,
-                sectionSlug: sectionSlug!,
                 subsectionSlug: subsectionSlug!,
                 subsubsectionSlug: subsubsection.slug,
               })
@@ -166,7 +165,6 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
         className="mt-4"
         href={Routes.NewSubsubsectionPage({
           projectSlug: projectSlug!,
-          sectionSlug: sectionSlug!,
           subsectionSlug: subsectionSlug!,
         })}
       >

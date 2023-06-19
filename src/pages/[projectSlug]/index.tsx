@@ -11,42 +11,29 @@ import { Link } from "src/core/components/links"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { longTitle, seoTitleSlug, shortTitle } from "src/core/components/text"
-import { H2 } from "src/core/components/text/Headings"
+import { seoTitleSlug, shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { SectionTable } from "src/projects/components/SectionTable"
 import getProject from "src/projects/queries/getProject"
-import { SubsectionTable } from "src/sections/components/SubsectionTable"
-import getSectionsIncludeSubsections, {
-  SectionWithSubsectionsWithPosition,
-} from "src/sections/queries/getSectionsIncludeSubsections"
+import { SubsectionTable } from "src/subsections/components/SubsectionTable"
+import getSubsections from "src/subsections/queries/getSubsections"
 
 export const ProjectDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
-  const [{ sections }] = useQuery(getSectionsIncludeSubsections, {
-    where: { project: { slug: projectSlug! } },
-  })
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
 
-  let allSubsections: SectionWithSubsectionsWithPosition["subsections"] = []
-  sections.forEach((section) => {
-    allSubsections = [...allSubsections, ...section.subsections]
-  })
-
-  if (!sections.length) {
+  if (!subsections.length) {
     return (
-      <>
-        <section className="mt-12 p-5">
-          <ButtonWrapper>
-            <Link button="blue" href={Routes.NewSectionPage({ projectSlug: projectSlug! })}>
-              Neue Teilstrecke
-            </Link>
-            <Link button="blue" href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
-              {shortTitle(project.slug)} bearbeiten
-            </Link>
-          </ButtonWrapper>
-        </section>
-      </>
+      <section className="mt-12 p-5">
+        <ButtonWrapper>
+          <Link button="blue" href={Routes.NewSubsectionPage({ projectSlug: projectSlug! })}>
+            Neuer Planungsabschnitt
+          </Link>
+          <Link button="blue" href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
+            {shortTitle(project.slug)} bearbeiten
+          </Link>
+        </ButtonWrapper>
+      </section>
     )
   }
 
@@ -74,15 +61,13 @@ export const ProjectDashboardWithQuery = () => {
         </PageDescription>
       )}
 
-      <ProjectMap sections={sections} />
+      <ProjectMap subsections={subsections} />
 
-      <SectionTable sections={sections} />
-
-      <SubsectionTable subsections={allSubsections} createButton={false} />
+      <SubsectionTable subsections={subsections} />
 
       <CalenderDashboard />
 
-      <SuperAdminLogData data={{ project, sections }} />
+      <SuperAdminLogData data={{ project, subsections }} />
     </>
   )
 }
