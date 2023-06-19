@@ -26,6 +26,29 @@ import getProject from "src/projects/queries/getProject"
 import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
 import getSubsections from "src/subsections/queries/getSubsections"
 
+// This became quite hacky in the end. We should not trust it completely.
+function stringifyGeoJSON(geojson: any) {
+  return JSON.stringify(
+    geojson,
+    function (_key, value) {
+      // Check if the value is an array and represents coordinates
+      if (
+        Array.isArray(value) &&
+        value.length >= 2 &&
+        typeof value[0] === "number" &&
+        typeof value[1] === "number"
+      ) {
+        // Convert the array to a string with coordinates in a single line
+        return "[" + value.join(", ") + "]"
+      }
+      return value
+    },
+    2
+  )
+    ?.replaceAll('"[', "[")
+    ?.replaceAll(']"', "]")
+}
+
 export const ExportWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
@@ -77,12 +100,12 @@ export const ExportWithQuery = () => {
 
     if (!pointOneLine) {
       const clickedPoint = point(event.lngLat.toArray())
-      setPointOneClicked(point(clickedPoint.geometry.coordinates, { color: "#B68C06" }))
+      setPointOneClicked(point(clickedPoint.geometry.coordinates, { color: "#B68C06", radius: 8 }))
       const nearestPoint = nearestPointOnLine(geoJsonLinestring, clickedPoint)
       setPointOneLine(nearestPoint)
     } else {
       const clickedPoint = point(event.lngLat.toArray())
-      setPointTwoClicked(point(clickedPoint.geometry.coordinates, { color: "#B68C06" }))
+      setPointTwoClicked(point(clickedPoint.geometry.coordinates, { color: "#B68C06", radius: 8 }))
       const nearestPoint = nearestPointOnLine(geoJsonLinestring, clickedPoint)
       setPointTwoLine(nearestPoint)
 
@@ -102,7 +125,12 @@ export const ExportWithQuery = () => {
   // ===== Points via Textarea =====
   type FormProp = { testPointsString: string }
   const { handleSubmit, register } = useForm<FormProp>()
-  const [testPoints, setTestPoints] = useState<[number, number][] | undefined>(undefined)
+  const [testPoints, setTestPoints] = useState<Feature<Point>[] | undefined>(undefined)
+  const [testPointsOnLine, setTestPointsOnLine] = useState<Feature<Point>[] | undefined>(undefined)
+  const [testPointLineSegments, setTestPontLineSegments] = useState<
+    Feature<LineString>[] | undefined
+  >(undefined)
+
   const handleShowPoints = ({ testPointsString }: FormProp) => {
     const points = testPointsString.split("\n").reduce((acc: [number, number][], line: string) => {
       const [lng, lat] = line
@@ -115,7 +143,42 @@ export const ExportWithQuery = () => {
       }
       return acc
     }, [])
-    setTestPoints(points)
+    setTestPoints(points.map((p) => point(p)))
+    const testPointsOnLine = points.map((p) =>
+      point(nearestPointOnLine(geoJsonLinestring, p).geometry.coordinates)
+    )
+    setTestPointsOnLine(testPointsOnLine)
+
+    // Slice the lineString between the given (and snapped) coordinates.
+    const firstSegmentStart = geoJsonLinestring.geometry.coordinates.at(0)
+    const firstSegmentEnd = testPointsOnLine.at(0)
+    const lastSegmentStart = testPointsOnLine.at(-1)
+    const lastSegmentEnd = geoJsonLinestring.geometry.coordinates.at(-1)
+    if (
+      Boolean(testPointsOnLine.length) &&
+      geoJsonLinestring &&
+      firstSegmentStart &&
+      firstSegmentEnd &&
+      lastSegmentStart &&
+      lastSegmentEnd
+    ) {
+      const firstSegment = lineSlice(point(firstSegmentStart), firstSegmentEnd, geoJsonLinestring)
+      setTestPontLineSegments([firstSegment])
+
+      testPointsOnLine.forEach((pointPoint, index) => {
+        if (index < testPointsOnLine.length - 1) {
+          const startPoint = pointPoint
+          const endPoint = testPointsOnLine[index + 1]
+          if (endPoint) {
+            const segment = lineSlice(startPoint, endPoint, geoJsonLinestring)
+            setTestPontLineSegments((prev) => [...(prev || []), segment])
+          }
+        }
+      })
+
+      const lastSegment = lineSlice(lastSegmentStart, point(lastSegmentEnd), geoJsonLinestring)
+      setTestPontLineSegments((prev) => [...(prev || []), lastSegment])
+    }
   }
 
   return (
@@ -128,7 +191,7 @@ export const ExportWithQuery = () => {
       {/* ===== Points via Textarea ===== */}
       <details className="mb-5 rounded border p-2">
         <summary className="cursor-pointer">Testdaten auf der Karte anzeigen</summary>
-        <p className="prose prose-sm">
+        <p className="prose prose-sm !mt-3 max-w-none">
           Format: <code>long,lat</code>, eine Zeile pro Punkt
         </p>
         <form onSubmit={handleSubmit(handleShowPoints)} className="space-y-2">
@@ -139,11 +202,45 @@ export const ExportWithQuery = () => {
           <button type="submit" className={clsx(whiteButtonStyles, "!pb-1 !pt-1 pl-2 pr-2")}>
             Punkte anzeigen
           </button>
-          {testPoints && (
-            <div className="prose">
+          {testPointsOnLine && (
+            <div className="prose !mt-6 max-w-none">
+              <h4>
+                Erkannte, gemappte Punkte{" "}
+                <span className="ml-0.5 font-light text-gray-500">
+                  (Rot; Gelb der original Punkt)
+                </span>
+              </h4>
               <pre>
-                <code>{JSON.stringify(testPoints, undefined, 2).replaceAll(",\n    ", ", ")}</code>
+                <code>{stringifyGeoJSON(testPointsOnLine.map((p) => p.geometry.coordinates))}</code>
               </pre>
+              <details>
+                <summary>Teilstrecken</summary>
+                <div className="grid gap-2 sm:grid-cols-3">
+                  {testPointLineSegments?.map((line, index) => {
+                    const start = line.geometry.coordinates.at(0)?.map((c) => c.toFixed(4))
+                    const end = line.geometry.coordinates.at(-1)?.map((c) => c.toFixed(4))
+                    return (
+                      <div key={stringifyGeoJSON([start, end])}>
+                        <h4>
+                          Abschnitt
+                          <br />
+                          {index === 0 && (
+                            <div className="text-gray-700">Start Trasse bis erster Punkt</div>
+                          )}
+                          {index === testPointLineSegments.length - 1 && (
+                            <div className="text-gray-700">Letzter Punkt bis Ende Trasse</div>
+                          )}
+                          {stringifyGeoJSON(start)} <br />
+                          {stringifyGeoJSON(end)}
+                        </h4>
+                        <pre>
+                          <code>{stringifyGeoJSON(line.geometry.coordinates)}</code>
+                        </pre>
+                      </div>
+                    )
+                  })}
+                </div>
+              </details>
             </div>
           )}
         </form>
@@ -168,20 +265,29 @@ export const ExportWithQuery = () => {
             paint={{
               "line-width": 7,
               "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
+              "line-opacity": 0.75,
             }}
           />
         </Source>
 
         {/* ===== Click Feature, NewLine Feature ===== */}
-        <Source key="newLine" type="geojson" data={newLine}>
+        <Source
+          // Use key to force a rerender when the data changed
+          key={`newLine_${JSON.stringify([
+            pointOneLine?.geometry?.coordinates,
+            pointTwoLine?.geometry?.coordinates,
+          ])}`}
+          type="geojson"
+          data={newLine}
+        >
           <Layer
             id="newLine"
             type="line"
             paint={{
               "line-width": 2,
-              "line-color": "white",
+              "line-color": "white", //"#E5007D",
               "line-opacity": 1,
-              "line-dasharray": [1, 1],
+              "line-dasharray": [0.7, 0.7],
             }}
           />
         </Source>
@@ -196,7 +302,7 @@ export const ExportWithQuery = () => {
             id="nearestPoint"
             type="circle"
             paint={{
-              "circle-radius": 17,
+              "circle-radius": ["case", ["has", "radius"], ["get", "radius"], 14],
               "circle-color": ["case", ["has", "color"], ["get", "color"], "#E5007D"],
               "circle-opacity": 0.5,
             }}
@@ -219,36 +325,54 @@ export const ExportWithQuery = () => {
             type="line"
             paint={{
               "line-width": 2,
-              "line-color": "black",
-              "line-opacity": 0.3,
+              "line-color": "#B68C06",
+              "line-opacity": 0.5,
               "line-dasharray": [1, 1],
             }}
           />
         </Source>
 
-        {/* ===== Points via Textarea ===== */}
-        {Array.isArray(testPoints) &&
-          testPoints.map((point) => {
+        {/* ===== Dots Marker ===== */}
+        {Array.isArray(dotsGeoms) &&
+          dotsGeoms.map((point) => {
             return (
               <Marker
                 key={JSON.stringify(point)}
                 latitude={point[1]}
                 longitude={point[0]}
+                anchor="right"
+              >
+                <div className="mr-3 rounded bg-gray-700 px-1 py-0 text-xs text-gray-50">
+                  {point[0].toFixed(4)}, {point[1].toFixed(4)}
+                </div>
+              </Marker>
+            )
+          })}
+
+        {/* ===== Points via Textarea ===== */}
+        {Array.isArray(testPointsOnLine) &&
+          testPointsOnLine.map((point, index) => {
+            return (
+              <Marker
+                key={JSON.stringify(point.geometry.coordinates)}
+                latitude={point.geometry.coordinates[1]}
+                longitude={point.geometry.coordinates[0]}
                 anchor="left"
               >
                 <div className="ml-3 rounded bg-red-700 px-1 py-0 text-xs text-red-50">
-                  {point[0].toFixed(3)}, {point[1].toFixed(3)}
+                  {index}: {point.geometry.coordinates[0]?.toFixed(3)},{" "}
+                  {point.geometry.coordinates[1]?.toFixed(3)}
                 </div>
               </Marker>
             )
           })}
         <Source
-          key="testPoints"
+          key="testPointsOnLine"
           type="geojson"
-          data={featureCollection(testPoints?.map((p) => point(p)) || [])}
+          data={featureCollection(testPointsOnLine || [])}
         >
           <Layer
-            id="testPoints"
+            id="testPointsOnLine"
             type="circle"
             paint={{
               "circle-radius": 5,
@@ -257,22 +381,45 @@ export const ExportWithQuery = () => {
             }}
           />
         </Source>
+        <Source key="testPoints" type="geojson" data={featureCollection(testPoints || [])}>
+          <Layer
+            id="testPoints"
+            type="circle"
+            paint={{
+              "circle-radius": 2,
+              "circle-color": "#F8C62B",
+              "circle-opacity": 1,
+            }}
+          />
+        </Source>
       </BaseMap>
 
       {/* ===== Points via Textarea ===== */}
-      <div className="prose my-2 grid max-w-none gap-2 md:grid-cols-3">
+      <div className="prose my-2 grid max-w-none gap-2 md:grid-cols-2">
         <div>
-          <h4>Punkt 1 geklickt</h4>
-          <pre>
-            <code>{JSON.stringify(pointOneLine, undefined, 2)}</code>
+          <h4>Punkt 1 auf Linie (Klick in Karte)</h4>
+          <details className="text-xs">
+            <summary className="cursor-pointer">Details</summary>
+            <pre>
+              <code>{stringifyGeoJSON(pointOneLine)}</code>
+            </pre>
+          </details>
+          <pre className="mt-2">
+            <code>[{pointOneLine?.geometry?.coordinates.join(", ")}]</code>
+          </pre>
+
+          <h4>Punkt 2 auf Linie</h4>
+          <details className="text-xs">
+            <summary className="cursor-pointer">Details</summary>
+            <pre>
+              <code>{stringifyGeoJSON(pointTwoLine)}</code>
+            </pre>
+          </details>
+          <pre className="mt-2">
+            <code>[{pointTwoLine?.geometry?.coordinates.join(", ")}]</code>
           </pre>
         </div>
-        <div>
-          <h4>Punkt 1 geklickt</h4>
-          <pre>
-            <code>{JSON.stringify(pointTwoLine, undefined, 2)}</code>
-          </pre>
-        </div>
+
         <div>
           <div className="flex items-center justify-between">
             <h4>Linie dazwischen</h4>
@@ -285,8 +432,14 @@ export const ExportWithQuery = () => {
               </button>
             </div>
           </div>
-          <pre className="mt-0">
-            <code>{JSON.stringify(newLine, undefined, 2)}</code>
+          <details className="text-xs">
+            <summary className="cursor-pointer">Details</summary>
+            <pre>
+              <code>{stringifyGeoJSON(newLine)}</code>
+            </pre>
+          </details>
+          <pre className="mt-2">
+            <code>{stringifyGeoJSON(newLine?.geometry?.coordinates)}</code>
           </pre>
         </div>
       </div>
@@ -297,12 +450,10 @@ export const ExportWithQuery = () => {
           return (
             <div key={feature.properties?.slug} className="grid gap-3 md:grid-cols-2">
               <pre>
-                <code>{JSON.stringify(feature?.properties, undefined, 2)}</code>
+                <code>{stringifyGeoJSON(feature?.properties)}</code>
               </pre>
               <pre>
-                <code>
-                  {JSON.stringify(feature?.geometry, undefined, 2).replaceAll(",\n      ", ", ")}
-                </code>
+                <code>{stringifyGeoJSON(feature?.geometry)}</code>
               </pre>
             </div>
           )
@@ -312,7 +463,7 @@ export const ExportWithQuery = () => {
       <H2>Planungsabschnitte GeoJSON</H2>
       <div className="prose max-w-none">
         <pre>
-          <code>{JSON.stringify(geoJsonFeatureCollection, undefined, 2)}</code>
+          <code>{stringifyGeoJSON(geoJsonFeatureCollection)}</code>
         </pre>
       </div>
 
