@@ -4,15 +4,15 @@ import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef } from "react"
 import { useFormContext } from "react-hook-form"
 
 export interface LabeledRadiobuttonProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
-  /** Radiobutton scope. */
+  /** Radiobutton scope */
   scope: string
-  /** Field name. */
-  name: string
-  /** Field label. */
-  label: string
-  /** Field value. */
+  /** Field value */
   value: string
-  /** Help text below field label. */
+  /** Optional field `name` and `id`; Default is `value` */
+  name?: string
+  /** Field label */
+  label: string | React.ReactNode
+  /** Optional help text below field label */
   help?: string
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
@@ -20,23 +20,26 @@ export interface LabeledRadiobuttonProps extends PropsWithoutRef<JSX.IntrinsicEl
 
 // Note: See also src/participation/components/form/ParticipationLabeledRadiobutton.tsx
 export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobuttonProps>(
-  ({ scope, name, label, value, help, outerProps, labelProps, ...props }, ref) => {
+  ({ scope, value, name, label, help, outerProps, labelProps, ...props }, _ref) => {
     const {
       register,
       formState: { isSubmitting, errors },
     } = useFormContext()
 
-    const hasError = Boolean(errors[name])
+    const hasError = Boolean(errors[name || value])
 
     return (
-      <div {...outerProps} className={clsx(outerProps?.className, "flex items-start")}>
+      <div
+        {...outerProps}
+        className={clsx(outerProps?.className, "flex break-inside-avoid items-start")}
+      >
         <div className="flex h-5 items-center">
           <input
             type="radio"
             disabled={isSubmitting}
             value={value}
             {...register(scope)}
-            id={name}
+            id={name || value}
             {...props}
             className={clsx(
               "h-4 w-4",
@@ -60,7 +63,7 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
               </p>
             )}
             errors={errors}
-            name={name}
+            name={name || value}
           />
         </label>
       </div>

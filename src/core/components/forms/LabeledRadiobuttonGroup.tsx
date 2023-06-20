@@ -3,26 +3,32 @@ import React from "react"
 import { LabeledRadiobutton, LabeledRadiobuttonProps } from "./LabeledRadiobutton"
 
 type Props = {
-  items: LabeledRadiobuttonProps[]
-  groupLabel?: string
+  label?: string
   optional?: boolean
-  className?: string
+  scope: string
+  items: Omit<LabeledRadiobuttonProps, "scope">[]
+  classNameItemWrapper?: string
 }
 
 export const LabeledRadiobuttonGroup: React.FC<Props> = ({
-  items,
-  groupLabel,
+  label,
   optional,
-  className,
+  scope,
+  items,
+  classNameItemWrapper,
 }) => {
+  const itemsWithScope = items.map((i) => ({ ...i, scope }))
+
   return (
     <div>
-      <p className="mb-4 block text-sm font-medium text-gray-700">
-        {groupLabel} {optional && <> (optional)</>}
-      </p>
-      <div className={clsx(className, "space-y-3")}>
-        {items.map((item) => {
-          return <LabeledRadiobutton key={item.name} {...item} />
+      {label && (
+        <p className="mb-4 block text-sm font-medium text-gray-700">
+          {label} {optional && <> (optional)</>}
+        </p>
+      )}
+      <div className={clsx(classNameItemWrapper, "space-y-3")}>
+        {itemsWithScope.map((item) => {
+          return <LabeledRadiobutton key={item.value} {...item} />
         })}
       </div>
     </div>

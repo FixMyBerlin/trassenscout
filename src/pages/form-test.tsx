@@ -61,33 +61,40 @@ export default function FormTest() {
         />
         <LabeledTextareaField name="testTextarea" label="Test Textarea" placeholder="Placeholder" />
         <LabeledCheckboxGroup
+          scope="regular"
           items={["item1", "item2", "item3"].map((item) => ({
             name: `checkbox${item}regular`,
+            value: `test${item}value`,
             label: `Test Checkbox ${item}`,
           }))}
         />
         <LabeledCheckboxGroup
+          label="LabeledCheckboxGroup with help"
+          scope="help"
           items={["item1", "item2", "item3"].map((item) => ({
             name: `checkbox${item}help`,
+            value: `test${item}value`,
             label: `Test Checkbox ${item}`,
             help: `Help text ${item}`,
           }))}
         />
         <LabeledRadiobuttonGroup
+          scope="regular"
           items={["item1", "item2", "item3"].map((item) => ({
-            scope: "regular",
             name: `radio${item}regular`,
-            label: `Test Radiobutton ${item}`,
             value: `test${item}value`,
+            label: `Test Radiobutton ${item}`,
           }))}
         />
         <LabeledRadiobuttonGroup
+          scope="help"
+          label="LabeledRadiobuttonGroup with help in columns"
+          classNameItemWrapper="columns-2"
           items={["item1", "item2", "item3"].map((item) => ({
-            scope: "help",
             name: `radio${item}help`,
+            value: `test${item}value`,
             label: `Test Radiobutton ${item}`,
             help: `Help text ${item}`,
-            value: `test${item}value`,
           }))}
         />
         <LabeledSelect
