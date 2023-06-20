@@ -3,7 +3,6 @@ import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
 import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
-import getOperatorProjectId from "../queries/getOperatorProjectId"
 import { OperatorSchema } from "../schema"
 
 const CreateOperatorSchema = OperatorSchema.omit({ projectId: true }).merge(
@@ -14,7 +13,7 @@ const CreateOperatorSchema = OperatorSchema.omit({ projectId: true }).merge(
 
 export default resolver.pipe(
   resolver.zod(CreateOperatorSchema),
-  authorizeProjectAdmin(getOperatorProjectId),
+  authorizeProjectAdmin(getProjectIdBySlug),
   async ({ projectSlug, ...input }) =>
     await db.operator.create({
       data: {
