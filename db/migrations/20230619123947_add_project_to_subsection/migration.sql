@@ -11,13 +11,26 @@ ALTER TABLE "Subsection" DROP CONSTRAINT "Subsection_sectionId_fkey";
 
 -- DropIndex
 DROP INDEX "Subsection_sectionId_order_key";
-
--- DropIndex
 DROP INDEX "Subsection_sectionId_slug_key";
 
 -- AlterTable
-ALTER TABLE "Subsection" ADD COLUMN     "projectId" INTEGER NOT NULL,
-ALTER COLUMN "sectionId" DROP NOT NULL;
+ALTER TABLE "Subsection" ALTER COLUMN "sectionId" DROP NOT NULL;
+
+-- AlterTable and populate data
+ALTER TABLE "Subsection" ADD COLUMN   "projectId" INTEGER;
+UPDATE "Subsection"
+  SET "projectId" = (
+    SELECT "projectId"
+    FROM "Section"
+    WHERE "Section"."id" = "Subsection"."sectionId"
+  );
+ALTER TABLE "Subsection" ALTER COLUMN   "projectId" SET NOT NULL;
+
+-- Prevent error:
+--    Database error:
+--    ERROR: could not create unique index "Subsection_projectId_slug_key"
+--    DETAIL: Key ("projectId", slug)=(1, pa3) is duplicated.
+UPDATE "Subsection" SET "slug" = CONCAT('TODO', "order");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Subsection_projectId_slug_key" ON "Subsection"("projectId", "slug");
