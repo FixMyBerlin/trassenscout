@@ -60,7 +60,9 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
   const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
   const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
 
-  if (!pinPosition) setPinPosition(projectMap.initialMarker)
+  useEffect(() => {
+    if (!pinPosition) setPinPosition(projectMap.initialMarker)
+  }, [pinPosition, projectMap.initialMarker, setPinPosition])
 
   useEffect(() => {
     if (!mainMap) return
