@@ -1,21 +1,40 @@
+import { Routes } from "@blitzjs/next"
+import { useQuery } from "@blitzjs/rpc"
+import { Suspense } from "react"
+import { Spinner } from "src/core/components/Spinner"
 import {
   Form,
   FormProps,
   LabeledSelect,
-  LabeledTextareaField,
   LabeledTextField,
+  LabeledTextareaField,
 } from "src/core/components/forms"
 import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryField"
+import { Link } from "src/core/components/links"
 import { quote } from "src/core/components/text"
+import { useSlugs } from "src/core/hooks"
 import { labelPosOptions } from "src/form"
-import { getUserSelectOptions, UserSelectOptions } from "src/users/utils"
+import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
+import { UserSelectOptions, getUserSelectOptions } from "src/users/utils"
 import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
 
-export function SubsectionForm<S extends z.ZodType<any, any>>(
-  props: FormProps<S> & { users: UserSelectOptions }
-) {
+type Props<S extends z.ZodType<any, any>> = FormProps<S> & { users: UserSelectOptions }
+
+function SubsectionFormWithQuery<S extends z.ZodType<any, any>>(props: Props<S>) {
   const { users } = props
+
+  const { projectSlug } = useSlugs()
+  const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
+  const operatorOptions: [number | string, string][] = [
+    ["", "Kein Baulastträger"],
+    ...operators.map((o) => {
+      return [o.id, `${o.title} – ${o.slug} (bisher ${o.subsectionCount} Planungsabschnitte)`] as [
+        number,
+        string
+      ]
+    }),
+  ]
 
   return (
     <Form<S> {...props}>
@@ -41,11 +60,33 @@ export function SubsectionForm<S extends z.ZodType<any, any>>(
       <LabeledSelect name="labelPos" label="Kartenlabelposition" options={labelPosOptions} />
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledGeometryField name="geometry" label="Geometry der Achse (LineString)" />
+
+      <div className="flex items-end gap-5">
+        <LabeledSelect
+          name="operatorId"
+          label="Baulastträger"
+          optional
+          options={operatorOptions}
+          outerProps={{ className: "grow" }}
+        />
+        <Link href={Routes.OperatorsPage({ projectSlug: projectSlug! })} className="py-2">
+          Baulastträger verwalten…
+        </Link>
+      </div>
+
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
         options={getUserSelectOptions(users)}
       />
     </Form>
+  )
+}
+
+export function SubsectionForm<S extends z.ZodType<any, any>>(props: Props<S>) {
+  return (
+    <Suspense fallback={<Spinner />}>
+      <SubsectionFormWithQuery {...props} />
+    </Suspense>
   )
 }

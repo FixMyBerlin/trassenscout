@@ -13,15 +13,12 @@ export type SubsectionWithSubsubsectionsWithPosition = SubsectionWithPosition & 
 export default resolver.pipe(
   resolver.zod(GetSubsectionSchema),
   authorizeProjectAdmin(getProjectIdBySlug),
-  async ({ projectSlug, sectionSlug, subsectionSlug }) => {
+  async ({ projectSlug, subsectionSlug }) => {
     const query = {
       where: {
         slug: subsectionSlug,
-        section: {
-          slug: sectionSlug,
-          project: {
-            slug: projectSlug,
-          },
+        project: {
+          slug: projectSlug,
         },
       },
       include: {

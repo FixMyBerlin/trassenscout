@@ -13,7 +13,7 @@ type Props = {
 }
 
 export const StakeholderSection: React.FC<Props> = ({ stakeholdernotes }) => {
-  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
+  const { projectSlug, subsectionSlug } = useSlugs()
 
   return (
     <section className="mt-12">
@@ -30,7 +30,6 @@ export const StakeholderSection: React.FC<Props> = ({ stakeholdernotes }) => {
           icon="plus"
           href={Routes.NewStakeholdernotesPage({
             projectSlug: projectSlug!,
-            sectionSlug: sectionSlug!,
             subsectionSlug: subsectionSlug!,
           })}
         >

@@ -2,26 +2,26 @@ import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 import db, { Prisma } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
+import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { SubsectionWithPosition } from "./getSubsection"
 
-type GetSubsectionsInput = Pick<
+type GetSubsectionsInput = { projectSlug: string } & Pick<
   Prisma.SubsectionFindManyArgs,
   // Do not allow `include` or `select` here, since we overwrite the types below.
   "where" | "orderBy" | "skip" | "take"
 >
 
-const getProjectId = async (query: Record<string, any>): Promise<number> =>
-  (
-    await db.section.findFirstOrThrow({
-      where: { id: query.where.sectionId || null },
-      select: { projectId: true },
-    })
-  ).projectId
-
 export default resolver.pipe(
   // @ts-ignore
-  authorizeProjectAdmin(getProjectId),
-  async ({ where, orderBy = { order: "asc" }, skip = 0, take = 100 }: GetSubsectionsInput) => {
+  authorizeProjectAdmin(getProjectIdBySlug),
+  async ({
+    projectSlug,
+    where,
+    orderBy = { order: "asc" },
+    skip = 0,
+    take = 100,
+  }: GetSubsectionsInput) => {
+    const saveWhere = { project: { slug: projectSlug }, ...where }
     const {
       items: subsections,
       hasMore,
@@ -30,8 +30,14 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.subsection.count({ where }),
-      query: (paginateArgs) => db.subsection.findMany({ ...paginateArgs, where, orderBy }),
+      count: () => db.subsection.count({ where: saveWhere }),
+      query: (paginateArgs) =>
+        db.subsection.findMany({
+          ...paginateArgs,
+          where: saveWhere,
+          orderBy,
+          include: { operator: { select: { id: true, slug: true, title: true } } },
+        }),
     })
 
     return {

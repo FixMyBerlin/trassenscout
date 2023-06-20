@@ -4,33 +4,41 @@ import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef } from "react"
 import { useFormContext } from "react-hook-form"
 
 export interface LabeledCheckboxProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
-  /** Field name. */
-  name: string
-  /** Field label. */
-  label: string
-  /** Help text below field label. */
+  /** Checkbox scope. */
+  scope: string
+  /** Field value */
+  value: string
+  /** Optional field `name` and `id`; Default is `value` */
+  name?: string
+  /** Field label */
+  label: string | React.ReactNode
+  /** Optional help text below field label */
   help?: string
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
 }
 
 export const LabeledCheckbox = forwardRef<HTMLInputElement, LabeledCheckboxProps>(
-  ({ name, label, help, outerProps, labelProps, ...props }, ref) => {
+  ({ scope, value, name, label, help, outerProps, labelProps, ...props }, _ref) => {
     const {
       register,
       formState: { isSubmitting, errors },
     } = useFormContext()
 
-    const hasError = Boolean(errors[name])
+    const hasError = Boolean(errors[name || value])
 
     return (
-      <div {...outerProps} className={clsx(outerProps?.className, "flex items-start")}>
+      <div
+        {...outerProps}
+        className={clsx(outerProps?.className, "flex break-inside-avoid items-start")}
+      >
         <div className="flex h-5 items-center">
           <input
             type="checkbox"
             disabled={isSubmitting}
-            {...register(name)}
-            id={name}
+            value={value}
+            {...register(scope)}
+            id={name || value}
             {...props}
             className={clsx(
               "h-4 w-4 rounded",
@@ -54,7 +62,7 @@ export const LabeledCheckbox = forwardRef<HTMLInputElement, LabeledCheckboxProps
               </p>
             )}
             errors={errors}
-            name={name}
+            name={name || value}
           />
         </label>
       </div>

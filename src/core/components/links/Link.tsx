@@ -14,11 +14,11 @@ export type LinkProps = {
   blank?: boolean
   /** @desc Style Link as Button */
   button?: true | "blue" | "white" | "pink"
-  icon?: keyof typeof icons
+  icon?: keyof typeof linkIcons
   children: React.ReactNode
 } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href">
 
-const icons = {
+export const linkIcons = {
   plus: <PlusIcon className="h-4 w-4 pb-0.5" />,
   edit: <PencilIcon className="h-4 w-4 pb-0.5" />,
   download: <ArrowDownTrayIcon className="h-4 w-4 pb-0.5" />,
@@ -47,7 +47,7 @@ export const Link: React.FC<LinkProps> = forwardRef<HTMLAnchorElement, LinkProps
           {...{ target: blank ? "_blank" : undefined }}
           {...props}
         >
-          {icon && icons[icon]}
+          {icon && linkIcons[icon]}
           {children}
         </a>
       )
@@ -65,7 +65,7 @@ export const Link: React.FC<LinkProps> = forwardRef<HTMLAnchorElement, LinkProps
           {...props}
           {...{ target: blank ? "_blank" : undefined }}
         >
-          {icon && icons[icon]}
+          {icon && linkIcons[icon]}
           {children}
         </a>
       </NextLink>

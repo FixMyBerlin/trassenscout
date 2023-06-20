@@ -47,7 +47,6 @@ model User {
   tokens        Token[]
   sessions      Session[]
   projects      Project[]
-  sections      Section[]
   subsections   Subsection[]
   Membership    Membership[]
   Subsubsection Subsubsection[]
@@ -111,11 +110,12 @@ model Project {
   manager   User @relation(fields: [managerId], references: [id])
   managerId Int
 
-  sections        Section[]
+  subsections     Subsection[]
   calendarEntries CalendarEntry[]
   contacts        Contact[]
   files           File[]
   Membership      Membership[]
+  Operator        Operator[]
 }
 
 model Membership {
@@ -174,27 +174,19 @@ enum LabelPositionEnum {
   topLeft
 }
 
-model Section {
-  id          Int               @id @default(autoincrement())
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+model Operator {
+  id         Int          @id @default(autoincrement())
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
   //
-  slug        String // sortTitle and URL Slug
-  start       String
-  end         String
-  order       Int               @default(autoincrement())
-  labelPos    LabelPositionEnum @default(top)
-  description String?
+  slug       String // sortTitle and URL Slug
+  title      String
   //
-  manager     User              @relation(fields: [managerId], references: [id])
-  managerId   Int
-  project     Project           @relation(fields: [projectId], references: [id])
-  projectId   Int
-  //
-  subsections Subsection[]
+  project    Project      @relation(fields: [projectId], references: [id])
+  projectId  Int
+  Subsection Subsection[]
 
   @@unique([projectId, slug])
-  @@unique([projectId, order])
 }
 
 model Subsection {
@@ -210,17 +202,19 @@ model Subsection {
   labelPos    LabelPositionEnum @default(top)
   description String?
 
-  manager   User    @relation(fields: [managerId], references: [id])
-  managerId Int
-  section   Section @relation(fields: [sectionId], references: [id])
-  sectionId Int
+  manager    User      @relation(fields: [managerId], references: [id])
+  managerId  Int
+  project    Project   @relation(fields: [projectId], references: [id])
+  projectId  Int
+  operator   Operator? @relation(fields: [operatorId], references: [id])
+  operatorId Int?
 
   subsubsections   Subsubsection[]
   stakeholdernotes Stakeholdernote[]
   files            File[]
 
-  @@unique([sectionId, slug])
-  @@unique([sectionId, order])
+  @@unique([projectId, slug])
+  @@unique([projectId, order])
 }
 
 model Subsubsection {
@@ -265,6 +259,7 @@ model Stakeholdernote {
   title        String
   status       StakeholdernoteStatusEnum @default(PENDING)
   statusText   String?
+  //
   subsection   Subsection                @relation(fields: [subsectionId], references: [id])
   subsectionId Int
 }

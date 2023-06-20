@@ -16,14 +16,13 @@ import { useForm } from "react-hook-form"
 import { Layer, MapboxGeoJSONFeature, Marker, Source } from "react-map-gl"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { BaseMap } from "src/core/components/Map/BaseMap"
-import { sectionsBbox } from "src/core/components/Map/utils"
+import { subsectionsBbox } from "src/core/components/Map/utils"
 import { Spinner } from "src/core/components/Spinner"
 import { whiteButtonStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2, longTitle, seoTitleSlug, shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import getProject from "src/projects/queries/getProject"
-import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
 import getSubsections from "src/subsections/queries/getSubsections"
 
 // This became quite hacky in the end. We should not trust it completely.
@@ -52,13 +51,7 @@ function stringifyGeoJSON(geojson: any) {
 export const ExportWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
-  const [{ sections }] = useQuery(getSectionsIncludeSubsections, {
-    where: { project: { slug: projectSlug! } },
-  })
-  const secitonIds = sections.map((s) => s.id)
-  const [{ subsections }] = useQuery(getSubsections, {
-    where: { sectionId: { in: secitonIds } },
-  })
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
 
   // ===== Base Data =====
   const geoJsonFeatureCollection = featureCollection(
@@ -249,7 +242,7 @@ export const ExportWithQuery = () => {
       <BaseMap
         id="exportSubsections"
         initialViewState={{
-          bounds: sectionsBbox(sections),
+          bounds: subsectionsBbox(subsections),
           fitBoundsOptions: { padding: 60 },
         }}
         onClick={handleClick}
@@ -467,7 +460,7 @@ export const ExportWithQuery = () => {
         </pre>
       </div>
 
-      <SuperAdminLogData data={{ project, sections, subsections }} />
+      <SuperAdminLogData data={{ project, subsections }} />
     </>
   )
 }

@@ -12,7 +12,7 @@ import { shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFiles from "src/files/queries/getFilesWithSubsections"
-import getSectionsIncludeSubsections from "src/sections/queries/getSectionsIncludeSubsections"
+import getSubsections from "src/subsections/queries/getSubsections"
 
 const ITEMS_PER_PAGE = 100
 
@@ -28,19 +28,15 @@ export const FilesWithData = () => {
     where: { subsubsectionId: null },
   })
 
-  const [{ sections: sectionsWithSubsections }] = useQuery(getSectionsIncludeSubsections, {
-    where: { project: { slug: projectSlug! } },
-  })
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
 
   const selectOptions: [number, string, number][] = [
     [0, `Alle Dateien (${files.length})`, files.length],
   ]
-  sectionsWithSubsections.forEach((s) =>
-    s.subsections.forEach((ss) => {
-      const count = files.filter((f) => f.subsectionId === ss.id).length
-      selectOptions.push([ss.id, `${shortTitle(s.slug)} – ${ss.start}–${ss.end} (${count})`, count])
-    })
-  )
+  subsections.forEach((ss) => {
+    const count = files.filter((f) => f.subsectionId === ss.id).length
+    selectOptions.push([ss.id, `${shortTitle(ss.slug)} – ${ss.start}–${ss.end} (${count})`, count])
+  })
 
   // We use the URL param `filterSubsectionId` to filter the UI
   // Docs: https://blitzjs.com/docs/route-params-query#use-router-query
