@@ -55,8 +55,8 @@ export const SubsectionDashboardWithQuery = () => {
       <Breadcrumb />
       <PageHeader
         titleIcon={<SubsectionMapIcon label={shortTitle(subsection.slug)} />}
-        title={longTitle(subsection.slug)}
-        subtitle={startEnd(subsection)}
+        title={startEnd(subsection)}
+        subtitle={subsection.operator?.title}
         action={
           <Link
             icon="edit"

@@ -10,7 +10,7 @@ import { z } from "zod"
 // We lie with TypeScript here, because we know better. All `geometry` fields are Position. We make sure of that in our Form. They are also required, so never empty.
 export type SubsectionWithPosition = Omit<Subsection, "geometry"> & {
   geometry: [number, number][] // Position[]
-} & { operator: { id: number; slug: string } | null }
+} & { operator: { id: number; slug: string; title: string } | null }
 
 export const GetSubsectionSchema = z.object({
   projectSlug: z.string(),
@@ -28,7 +28,7 @@ export default resolver.pipe(
           slug: projectSlug,
         },
       },
-      include: { operator: { select: { id: true, slug: true } } },
+      include: { operator: { select: { id: true, slug: true, title: true } } },
     }
     const subsection = await db.subsection.findFirst(query)
     if (!subsection) throw new NotFoundError()

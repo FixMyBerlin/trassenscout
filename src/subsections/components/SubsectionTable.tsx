@@ -8,13 +8,14 @@ import { SubsectionIcon } from "src/core/components/Map/Icons"
 import { startEnd } from "src/core/components/text/startEnd"
 import { longTitle, shortTitle } from "src/core/components/text"
 import { Prettify } from "src/core/types"
+import { SubsectionWithPosition } from "../queries/getSubsection"
 
 type Props = {
   subsections: Prettify<
-    Omit<Partial<Subsection>, "slug" | "start" | "end"> &
-      Required<Pick<Subsection, "slug">> &
-      Required<Pick<Subsection, "start">> &
-      Required<Pick<Subsection, "end">>
+    Omit<Partial<SubsectionWithPosition>, "slug" | "start" | "end"> &
+      Required<Pick<SubsectionWithPosition, "slug">> &
+      Required<Pick<SubsectionWithPosition, "start">> &
+      Required<Pick<SubsectionWithPosition, "end">>
   >[]
   createButton?: boolean
 }
@@ -36,9 +37,9 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
               >
                 Planungsabschnitt
               </th>
-              {/* <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Streckenlänge
-              </th> */}
+              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                Baulastträger
+              </th>
               <th
                 scope="col"
                 className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
@@ -67,7 +68,12 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                     <br />
                     {startEnd(subsection)}
                   </td>
-                  {/* <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50"></td> */}
+                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
+                    {subsection.operator?.title || "–"}{" "}
+                    {subsection.operator?.slug && (
+                      <span className="uppercase">({subsection.operator?.slug})</span>
+                    )}
+                  </td>
                   <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
                     {/* TODO Abstimmung */}-
                   </td>

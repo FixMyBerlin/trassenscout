@@ -36,7 +36,7 @@ export default resolver.pipe(
           ...paginateArgs,
           where: saveWhere,
           orderBy,
-          include: { operator: { select: { id: true, slug: true } } },
+          include: { operator: { select: { id: true, slug: true, title: true } } },
         }),
     })
 
