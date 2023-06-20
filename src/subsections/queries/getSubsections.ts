@@ -32,7 +32,12 @@ export default resolver.pipe(
       take,
       count: () => db.subsection.count({ where: saveWhere }),
       query: (paginateArgs) =>
-        db.subsection.findMany({ ...paginateArgs, where: saveWhere, orderBy }),
+        db.subsection.findMany({
+          ...paginateArgs,
+          where: saveWhere,
+          orderBy,
+          include: { operator: { select: { id: true, slug: true } } },
+        }),
     })
 
     return {

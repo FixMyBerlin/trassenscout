@@ -14,6 +14,7 @@ export const SubsectionSchema = z.object({
   geometry: z.array(z.tuple([z.number(), z.number()])),
   managerId: z.coerce.number(),
   projectId: z.coerce.number(),
+  operatorId: z.coerce.number().nullish(),
 })
 
 export type TSubsectionSchema = Prettify<z.infer<typeof SubsectionSchema>>

@@ -1,4 +1,4 @@
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { CalenderDashboard } from "src/calendar-entries/components"
@@ -13,6 +13,7 @@ import { PageDescription } from "src/core/components/pages/PageDescription"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { seoTitleSlug, shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { OperatorFilterDropdown } from "src/projects/components/OperatorFilterDropdown"
 import getProject from "src/projects/queries/getProject"
 import { SubsectionTable } from "src/subsections/components/SubsectionTable"
 import getSubsections from "src/subsections/queries/getSubsections"
@@ -21,6 +22,15 @@ export const ProjectDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
   const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
+
+  // We use the URL param `operator` to filter the UI
+  // Docs: https://blitzjs.com/docs/route-params-query#use-router-query
+  const params = useRouterQuery()
+  const filteredSubsections = params.operator
+    ? subsections.filter(
+        (sec) => typeof params.operator === "string" && sec.operator?.slug === params.operator
+      )
+    : subsections
 
   if (!subsections.length) {
     return (
@@ -61,13 +71,15 @@ export const ProjectDashboardWithQuery = () => {
         </PageDescription>
       )}
 
-      <ProjectMap subsections={subsections} />
+      <OperatorFilterDropdown />
 
-      <SubsectionTable subsections={subsections} />
+      <ProjectMap subsections={filteredSubsections} />
+
+      <SubsectionTable subsections={filteredSubsections} />
 
       <CalenderDashboard />
 
-      <SuperAdminLogData data={{ project, subsections }} />
+      <SuperAdminLogData data={{ project, subsections, filteredSubsections }} />
     </>
   )
 }

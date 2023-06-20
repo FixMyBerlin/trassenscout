@@ -115,6 +115,7 @@ model Project {
   contacts        Contact[]
   files           File[]
   Membership      Membership[]
+  Operator        Operator[]
 }
 
 model Membership {
@@ -173,6 +174,21 @@ enum LabelPositionEnum {
   topLeft
 }
 
+model Operator {
+  id         Int          @id @default(autoincrement())
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  //
+  slug       String // sortTitle and URL Slug
+  title      String
+  //
+  project    Project      @relation(fields: [projectId], references: [id])
+  projectId  Int
+  Subsection Subsection[]
+
+  @@unique([projectId, slug])
+}
+
 model Subsection {
   id          Int               @id @default(autoincrement())
   createdAt   DateTime          @default(now())
@@ -186,10 +202,12 @@ model Subsection {
   labelPos    LabelPositionEnum @default(top)
   description String?
 
-  manager   User    @relation(fields: [managerId], references: [id])
-  managerId Int
-  project   Project @relation(fields: [projectId], references: [id])
-  projectId Int
+  manager    User      @relation(fields: [managerId], references: [id])
+  managerId  Int
+  project    Project   @relation(fields: [projectId], references: [id])
+  projectId  Int
+  operator   Operator? @relation(fields: [operatorId], references: [id])
+  operatorId Int?
 
   subsubsections   Subsubsection[]
   stakeholdernotes Stakeholdernote[]

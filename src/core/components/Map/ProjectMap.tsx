@@ -80,7 +80,7 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   })
 
   return (
-    <section className="mt-12">
+    <section className="mt-3">
       <BaseMap
         id="mainMap"
         initialViewState={{

@@ -3,9 +3,10 @@ import { subsubsections } from "./subsection_subsubsections"
 
 const seedSubsections = async () => {
   const seeData: Prisma.SubsectionUncheckedCreateInput[] = [
-    // Section 1:
+    // NORD:
     {
       projectId: 1,
+      operatorId: 1,
       slug: "pa1",
       order: 1,
       start: "Dovestraẞe",
@@ -35,6 +36,7 @@ const seedSubsections = async () => {
     },
     {
       projectId: 1,
+      operatorId: 1,
       slug: "pa2",
       order: 2,
       start: "Kanzlerpark",
@@ -54,6 +56,7 @@ const seedSubsections = async () => {
     },
     {
       projectId: 1,
+      operatorId: 1,
       slug: "pa3",
       order: 3,
       start: "Ebertsbrücke",
@@ -70,6 +73,7 @@ const seedSubsections = async () => {
     },
     {
       projectId: 1,
+      operatorId: 1,
       slug: "pa4",
       order: 4,
       start: "Fischerinsel",
@@ -84,9 +88,10 @@ const seedSubsections = async () => {
       ],
       managerId: 1,
     },
-    // Section 2:
+    // SÜD:
     {
       projectId: 1,
+      operatorId: 2,
       slug: "pa5",
       order: 5,
       start: "Dovestraẞe",
@@ -103,6 +108,7 @@ const seedSubsections = async () => {
     },
     {
       projectId: 1,
+      operatorId: 2,
       slug: "pa6",
       order: 6,
       start: "Lützowplatz",
@@ -122,6 +128,7 @@ const seedSubsections = async () => {
     },
     {
       projectId: 1,
+      operatorId: 2,
       slug: "pa7",
       order: 7,
       start: "Mehringdamm",
@@ -138,6 +145,7 @@ const seedSubsections = async () => {
     },
     {
       projectId: 1,
+      operatorId: 2,
       slug: "pa8",
       order: 8,
       start: "Kottbusser Damm",
@@ -151,9 +159,9 @@ const seedSubsections = async () => {
       ],
       managerId: 2,
     },
-    // Section 3:
     {
       projectId: 1,
+      operatorId: 2,
       slug: "pa9",
       order: 9,
       start: "Schleusenufer",
