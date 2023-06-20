@@ -13,10 +13,19 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 }
 
 const createSvg = (style: CSSProperties, rotation: number, path: JSX.Element) => {
-  style = { position: "absolute", width: 15, height: 15, ...style }
-  if (rotation)
-    style = { transform: `rotate(${rotation}deg)`, transformOrigin: "top left", ...style }
-  return <svg style={style}>{path}</svg>
+  return (
+    <svg
+      style={{
+        position: "absolute",
+        width: 15,
+        height: 15,
+        ...(rotation ? { transform: `rotate(${rotation}deg)`, transformOrigin: "top left" } : {}),
+        ...style,
+      }}
+    >
+      {path}
+    </svg>
+  )
 }
 
 const pathProps = { stroke: "#999", strokeWidth: "1", fill: "white" }
