@@ -15,14 +15,14 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
   Partial<
     Pick<MapProps, "onMouseEnter" | "onMouseLeave" | "onClick" | "interactiveLayerIds" | "hash">
   > & {
-    lines?: FeatureCollection<LineString, { color: string }>
+    lines?: FeatureCollection<LineString, { color: string; width?: number; opacity?: number }>
     selectableLines?: FeatureCollection<
       LineString,
-      { subsectionSlug: string; subsubsectionSlug?: string; color: string }
+      { subsectionSlug: string; subsubsectionSlug?: string; color: string; opacity?: number }
     >
     selectablePoints?: FeatureCollection<
       Point,
-      { subsectionSlug: string; subsubsectionSlug?: string; color: string }
+      { subsectionSlug: string; subsubsectionSlug?: string; color: string; opacity?: number }
     >
     dots: [number, number][]
     children: React.ReactNode
@@ -68,7 +68,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
       <Layer
         type="line"
         paint={{
-          "line-width": 7,
+          "line-width": ["case", ["has", "width"], ["get", "width"], 7],
           "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
           "line-color-transition": { duration: 0 },
           "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],

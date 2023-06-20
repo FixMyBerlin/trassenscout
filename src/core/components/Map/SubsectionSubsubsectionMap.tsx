@@ -26,7 +26,11 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
   selectedSubsection,
   subsubsections,
 }) => {
-  const { projectSlug, subsectionSlug } = useSlugs()
+  const {
+    projectSlug,
+    subsectionSlug: pageSubsectionSlug, // we use this name a lot, so `page*` is to clarify
+    subsubsectionSlug: pageSubsubsectionSlug,
+  } = useSlugs()
   const router = useRouter()
 
   type HandleSelectProps = { subsectionSlug: string; subsubsectionSlug: string; edit: boolean }
@@ -69,7 +73,13 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
     subsections
       .map((subsection) =>
         lineString(subsection.geometry, {
-          color: subsection.slug === selectedSubsection.slug ? "red" : lineColors.unselectable,
+          // TODO: Clarify style for selected section
+          color:
+            subsection.slug === selectedSubsection.slug
+              ? lineColors.selected
+              : lineColors.unselectable,
+          width: 17,
+          opacity: subsection.slug === selectedSubsection.slug ? 0.4 : 0.35,
         })
       )
       .filter(Boolean)
@@ -84,7 +94,7 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
             subsectionSlug: sec.subsection.slug,
             subsubsectionSlug: sec.slug,
             color:
-              sec.slug === sec.subsection.slug
+              sec.slug === pageSubsubsectionSlug
                 ? lineColors.selected
                 : sec.slug === hovered
                 ? lineColors.hovered
@@ -103,7 +113,7 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
             subsectionSlug: sec.subsection.slug,
             subsubsectionSlug: sec.slug,
             color:
-              sec.slug === sec.subsection.slug
+              sec.slug === pageSubsubsectionSlug
                 ? lineColors.selected
                 : sec.slug === hovered
                 ? lineColors.hovered
@@ -141,7 +151,9 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
           onMouseLeave={() => setHovered(null)}
           className={
             // We display all subsubsections, but those of other subsections are faded out
-            sec.subsection.slug === subsectionSlug ? "opacity-100" : "opacity-50 hover:opacity-100"
+            sec.subsection.slug === pageSubsectionSlug
+              ? "opacity-100"
+              : "opacity-50 hover:opacity-100"
           }
         >
           <TitleLabel
