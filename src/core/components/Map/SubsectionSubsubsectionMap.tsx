@@ -26,7 +26,7 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
   selectedSubsection,
   subsubsections,
 }) => {
-  const { projectSlug } = useSlugs()
+  const { projectSlug, subsectionSlug } = useSlugs()
   const router = useRouter()
 
   type HandleSelectProps = { subsectionSlug: string; subsubsectionSlug: string; edit: boolean }
@@ -139,6 +139,10 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
           anchor={sec.labelPos || "top"}
           onMouseEnter={() => setHovered(sec.slug)}
           onMouseLeave={() => setHovered(null)}
+          className={
+            // We display all subsubsections, but those of other subsections are faded out
+            sec.subsection.slug === subsectionSlug ? "opacity-100" : "opacity-50 hover:opacity-100"
+          }
         >
           <TitleLabel
             icon={<SubsubsectionMapIcon label={shortTitle(sec.slug)} />}

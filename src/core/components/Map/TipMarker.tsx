@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import React, { CSSProperties } from "react"
 
 type Props = React.HTMLAttributes<HTMLDivElement> & {
@@ -57,9 +58,9 @@ const divStyles = {
   right: { ...shadow, top: 0, left: 14, transform: "translateY(-50%)" },
 }
 
-export const TipMarker: React.FC<Props> = ({ anchor, children, ...props }) => {
+export const TipMarker: React.FC<Props> = ({ className, anchor, children, ...props }) => {
   return (
-    <div className="cursor-pointer whitespace-nowrap" {...props}>
+    <div className={clsx("cursor-pointer whitespace-nowrap", className)} {...props}>
       <div
         style={divStyles[anchor]}
         className="absolute rounded-md border border-gray-400 bg-white"
