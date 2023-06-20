@@ -71,6 +71,7 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
         >
           <StartEndLabel
             icon={<SectionMapIcon label={shortTitle(ss.slug)} />}
+            subIcon={ss.operator?.slug}
             start={ss.start}
             end={ss.end}
           />
