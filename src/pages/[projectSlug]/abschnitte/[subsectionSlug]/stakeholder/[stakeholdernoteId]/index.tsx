@@ -35,8 +35,8 @@ export const Stakeholdernote = () => {
 
   return (
     <>
-      <MetaTags noindex title={`TöB ${quote(stakeholdernote.title)}`} />
-      <PageHeader title={`TöB ${quote(stakeholdernote.title)}`} />
+      <MetaTags noindex title={`TÖB ${quote(stakeholdernote.title)}`} />
+      <PageHeader title={`TÖB ${quote(stakeholdernote.title)}`} />
 
       <ButtonWrapper className="mt-10">
         <Link

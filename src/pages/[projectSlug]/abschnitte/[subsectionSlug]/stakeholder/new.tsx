@@ -48,9 +48,9 @@ const NewStakeholdernotesWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={seoNewTitle("Mehrere TöB")} />
+      <MetaTags noindex title={seoNewTitle("Mehrere TÖB")} />
       <PageHeader
-        title="Mehrere TöBs hinzufügen"
+        title="Mehrere TÖBs hinzufügen"
         subtitle={longTitle(subsection.slug)}
         className="mt-12"
       />

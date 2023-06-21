@@ -54,8 +54,8 @@ const EditStakeholdernote = () => {
 
   return (
     <>
-      <MetaTags noindex title={seoEditTitle("TöB")} />
-      <PageHeader title="TöB bearbeiten" className="mt-12" />
+      <MetaTags noindex title={seoEditTitle("TÖB")} />
+      <PageHeader title="TÖB bearbeiten" className="mt-12" />
 
       <StakeholdernoteForm
         className="mt-10"

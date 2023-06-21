@@ -18,10 +18,10 @@ export const StakeholderSection: React.FC<Props> = ({ stakeholdernotes }) => {
   return (
     <section className="mt-12">
       <H2 className="mb-5">
-        Abstimmung mit <abbr title="Träger öffentlicher Belange">TöB</abbr>s
+        Abstimmung mit <abbr title="Träger öffentlicher Belange"> TÖB</abbr>s
       </H2>
 
-      <ZeroCase visible={stakeholdernotes.length} name="TöBs" />
+      <ZeroCase visible={stakeholdernotes.length} name="TÖBs" />
 
       <StakeholdernoteList stakeholdernotes={stakeholdernotes} />
       <ButtonWrapper className="mt-5">
@@ -33,7 +33,7 @@ export const StakeholderSection: React.FC<Props> = ({ stakeholdernotes }) => {
             subsectionSlug: subsectionSlug!,
           })}
         >
-          TöBs
+          TÖBs
         </Link>
       </ButtonWrapper>
     </section>
