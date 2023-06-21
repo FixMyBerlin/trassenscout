@@ -5,6 +5,7 @@ import router from "next/router"
 import React from "react"
 import { useSlugs } from "src/core/hooks"
 import getStakeholdernotes from "../queries/getStakeholdernotes"
+import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
 
 type Props = Pick<PromiseReturnType<typeof getStakeholdernotes>, "stakeholdernotes">
 
@@ -12,9 +13,9 @@ export const StakeholdernoteFilterDropdown: React.FC<Props> = ({ stakeholdernote
   const params = useRouterQuery()
   const { projectSlug, subsectionSlug } = useSlugs()
 
-  const options = Object.keys(StakeholdernoteStatusEnum).map((key) => {
+  const options = Object.values(stakeholderNotesStatus).map(({ key, label }) => {
     const count = stakeholdernotes.filter((s) => s.status === key).length
-    return { key, count }
+    return { key, label, count }
   })
 
   if (!stakeholdernotes?.length) return null
@@ -41,10 +42,10 @@ export const StakeholdernoteFilterDropdown: React.FC<Props> = ({ stakeholdernote
         <option key="" value="">
           Alles ({stakeholdernotes.length})
         </option>
-        {options.map(({ key, count }) => {
+        {options.map(({ key, label, count }) => {
           return (
             <option key={key} value={key}>
-              {key} ({count})
+              {label} ({count})
             </option>
           )
         })}

@@ -6,6 +6,7 @@ import {
   LabeledTextField,
 } from "src/core/components/forms"
 import { z } from "zod"
+import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function StakeholdernoteForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
@@ -21,12 +22,7 @@ export function StakeholdernoteForm<S extends z.ZodType<any, any>>(props: FormPr
       <LabeledRadiobuttonGroup
         scope="status"
         label="Status"
-        items={[
-          { value: "IRRELEVANT", label: "nicht erforderlich" },
-          { value: "PENDING", label: "ausstehend" },
-          { value: "IN_PROGRESS", label: "in Arbeit" },
-          { value: "DONE", label: "erledigt" },
-        ]}
+        items={stakeholderNotesStatus.map((s) => ({ value: s.key, label: s.label }))}
       />
     </Form>
   )

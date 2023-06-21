@@ -9,6 +9,8 @@ import { useSlugs } from "src/core/hooks"
 import getStakeholdernotes from "../queries/getStakeholdernotes"
 import StakeholdernoteList from "./StakeholderSectionList"
 import { StakeholdernoteFilterDropdown } from "./StakeholdernoteFilterDropdown"
+import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
+import { quote } from "src/core/components/text"
 
 type Props = {
   subsectionId: number
@@ -23,12 +25,14 @@ export const StakeholderSection: React.FC<Props> = ({ subsectionId }) => {
     ? stakeholdernotes.filter((s) => s.status === params.stakeholderFilter)
     : stakeholdernotes
 
+  const statusLabel = stakeholderNotesStatus.find((s) => s.key === params.stakeholderFilter)?.label
+
   return (
     <section className="mt-12">
       <div className="mb-5 flex items-center justify-between">
         <H2>
           Abstimmung mit <abbr title="Träger öffentlicher Belange"> TÖB</abbr>s
-          {params.stakeholderFilter && " (gefiltert)"}
+          {statusLabel && ` – Status ${quote(statusLabel)}`}
         </H2>
         <StakeholdernoteFilterDropdown stakeholdernotes={stakeholdernotes} />
       </div>
