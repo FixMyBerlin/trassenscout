@@ -1,29 +1,41 @@
-import { Routes } from "@blitzjs/next"
+import { Routes, useRouterQuery } from "@blitzjs/next"
+import { useQuery } from "@blitzjs/rpc"
 import React from "react"
-import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
-import StakeholdernoteList from "./StakeholderSectionList"
-import { H2 } from "src/core/components/text/Headings"
-import { Stakeholdernote } from "@prisma/client"
 import { Link } from "src/core/components/links"
-import { useSlugs } from "src/core/hooks"
+import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
+import { H2 } from "src/core/components/text/Headings"
 import { ZeroCase } from "src/core/components/text/ZeroCase"
+import { useSlugs } from "src/core/hooks"
+import getStakeholdernotes from "../queries/getStakeholdernotes"
+import StakeholdernoteList from "./StakeholderSectionList"
+import { StakeholdernoteFilterDropdown } from "./StakeholdernoteFilterDropdown"
 
 type Props = {
-  stakeholdernotes: Stakeholdernote[]
+  subsectionId: number
 }
 
-export const StakeholderSection: React.FC<Props> = ({ stakeholdernotes }) => {
+export const StakeholderSection: React.FC<Props> = ({ subsectionId }) => {
+  const params = useRouterQuery()
   const { projectSlug, subsectionSlug } = useSlugs()
+  const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, { subsectionId })
+
+  const filteredStakeholdernotes = params.stakeholderFilter
+    ? stakeholdernotes.filter((s) => s.status === params.stakeholderFilter)
+    : stakeholdernotes
 
   return (
     <section className="mt-12">
-      <H2 className="mb-5">
-        Abstimmung mit <abbr title="Träger öffentlicher Belange"> TÖB</abbr>s
-      </H2>
+      <div className="mb-5 flex items-center justify-between">
+        <H2>
+          Abstimmung mit <abbr title="Träger öffentlicher Belange"> TÖB</abbr>s
+          {params.stakeholderFilter && " (gefiltert)"}
+        </H2>
+        <StakeholdernoteFilterDropdown stakeholdernotes={stakeholdernotes} />
+      </div>
 
-      <ZeroCase visible={stakeholdernotes.length} name="TÖBs" />
+      <ZeroCase visible={filteredStakeholdernotes.length} name="TÖBs" />
 
-      <StakeholdernoteList stakeholdernotes={stakeholdernotes} />
+      <StakeholdernoteList stakeholdernotes={filteredStakeholdernotes} />
       <ButtonWrapper className="mt-5">
         <Link
           button="blue"

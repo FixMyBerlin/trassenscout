@@ -11,14 +11,13 @@ import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { H2, longTitle, seoTitleSlug, shortTitle, startEnd } from "src/core/components/text"
+import { H2, seoTitleSlug, shortTitle, startEnd } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
 import { StakeholderSection } from "src/stakeholdernotes/components/StakeholderSection"
 import { StakeholderSummary } from "src/stakeholdernotes/components/StakeholderSummary"
-import getStakeholdernotes from "src/stakeholdernotes/queries/getStakeholdernotes"
 import { SubsubsectionMapSidebar } from "src/subsections/components/SubsubsectionMapSidebar"
 import getSubsections from "src/subsections/queries/getSubsections"
 import { SubsubsectionTable } from "src/subsubsections/components/SubsubsectionTable"
@@ -38,7 +37,6 @@ export const SubsectionDashboardWithQuery = () => {
   })
   const subsubsection = subsubsections.find((ss) => ss.slug === subsubsectionSlug)
 
-  const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, { subsectionId: subsection?.id })
   const [{ files }] = useQuery(getFilesWithSubsections, {
     projectSlug: projectSlug!,
     where: { subsectionId: subsection?.id },
@@ -74,7 +72,7 @@ export const SubsectionDashboardWithQuery = () => {
         <div className="flex gap-8">
           <Markdown markdown={subsection.description} className="leading-snug" />
           <div className="space-y-2">
-            <StakeholderSummary stakeholdernotes={stakeholdernotes} />
+            <StakeholderSummary stakeholdernotesCounts={subsection.stakeholdernotesCounts} />
             {/* <p>
                 <strong>Teilstreckenlänge:</strong> TODO
               </p> */}
@@ -111,7 +109,7 @@ export const SubsectionDashboardWithQuery = () => {
         )}
       </div>
 
-      <StakeholderSection stakeholdernotes={stakeholdernotes} />
+      <StakeholderSection subsectionId={subsection.id} />
 
       <section className="mt-12">
         <H2 className="mb-5">Relevante Dokumente</H2>

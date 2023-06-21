@@ -1,16 +1,16 @@
 import { resolver } from "@blitzjs/rpc"
-import { Position } from "@turf/helpers"
 import { NotFoundError } from "blitz"
 import db, { Subsection } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
-import { Prettify } from "src/core/types"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { z } from "zod"
 
 // We lie with TypeScript here, because we know better. All `geometry` fields are Position. We make sure of that in our Form. They are also required, so never empty.
 export type SubsectionWithPosition = Omit<Subsection, "geometry"> & {
   geometry: [number, number][] // Position[]
-} & { operator: { id: number; slug: string; title: string } | null }
+} & { operator: { id: number; slug: string; title: string } | null } & {
+  stakeholdernotesCounts: { relevant: number; done: number }
+}
 
 export const GetSubsectionSchema = z.object({
   projectSlug: z.string(),
@@ -28,10 +28,29 @@ export default resolver.pipe(
           slug: projectSlug,
         },
       },
-      include: { operator: { select: { id: true, slug: true, title: true } } },
+      include: {
+        operator: { select: { id: true, slug: true, title: true } },
+        stakeholdernotes: { select: { id: true, status: true } },
+      },
     }
     const subsection = await db.subsection.findFirst(query)
     if (!subsection) throw new NotFoundError()
-    return subsection as SubsectionWithPosition // Tip: Validate type shape with `satisfies`
+
+    const relevantStakeholdernotes = subsection.stakeholdernotes.filter(
+      (note) => note.status !== "IRRELEVANT"
+    ).length
+
+    const doneStakeholdernotes = subsection.stakeholdernotes.filter(
+      (note) => note.status === "DONE"
+    ).length
+
+    const subsectionWithCounts: SubsectionWithPosition = {
+      ...subsection,
+      geometry: subsection.geometry as [number, number][],
+      operator: subsection.operator,
+      stakeholdernotesCounts: { relevant: relevantStakeholdernotes, done: doneStakeholdernotes },
+    }
+
+    return subsectionWithCounts
   }
 )

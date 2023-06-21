@@ -1,7 +1,7 @@
 import {
   Form,
   FormProps,
-  LabeledSelect,
+  LabeledRadiobuttonGroup,
   LabeledTextareaField,
   LabeledTextField,
 } from "src/core/components/forms"
@@ -18,14 +18,14 @@ export function StakeholdernoteForm<S extends z.ZodType<any, any>>(props: FormPr
         label="Beschreibung des Status (Markdown)"
         placeholder=""
       />
-      <LabeledSelect
-        name="status"
+      <LabeledRadiobuttonGroup
+        scope="status"
         label="Status"
-        options={[
-          ["IRRELEVANT", "nicht erforderlich"],
-          ["PENDING", "ausstehend"],
-          ["IN_PROGRESS", "in Arbeit"],
-          ["DONE", "erledigt"],
+        items={[
+          { value: "IRRELEVANT", label: "nicht erforderlich" },
+          { value: "PENDING", label: "ausstehend" },
+          { value: "IN_PROGRESS", label: "in Arbeit" },
+          { value: "DONE", label: "erledigt" },
         ]}
       />
     </Form>
