@@ -19,55 +19,34 @@ export const StakeholdernotesList: React.FC<props> = ({ stakeholdernotes }) => {
     (stakeholdernotes) => stakeholdernotes.status === "IN_PROGRESS"
   )
 
+  const sortedStakeholdernotes = [
+    ...stakeholdersInProgress,
+    ...stakeholdersPending,
+    ...stakeholdersDone,
+    ...stakeholdersIrrelevant,
+  ]
+
   if (!stakeholdernotes.length) {
     return null
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-      {(Boolean(stakeholdersInProgress.length) || Boolean(stakeholdersPending.length)) && (
-        <div className="rounded-2xl bg-gray-50 px-8 py-7">
-          <h3 className="mb-6 text-xl font-bold">Offen</h3>
-          <ul className="flex list-none flex-col gap-7 pl-0">
-            {stakeholdersInProgress.map((stakeholder) => {
-              return (
-                <li key={stakeholder.id}>
-                  <StakeholderSectionListItem stakeholder={stakeholder} />
-                </li>
-              )
-            })}
-            {stakeholdersPending.map((stakeholder) => {
-              return (
-                <li key={stakeholder.id}>
-                  <StakeholderSectionListItem stakeholder={stakeholder} />
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-      )}
+    <div className="not-prose overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+      <div className="flex border-b border-gray-100 text-xs uppercase text-gray-500">
+        <div className="w-64 pb-2 pl-4 pr-3 pt-3 sm:pl-6">Status</div>
+        <div className="grow px-3 pb-2 pt-3">TÖB</div>
+      </div>
 
-      {(Boolean(stakeholdersDone.length) || Boolean(stakeholdersIrrelevant.length)) && (
-        <div className="rounded-2xl bg-gray-50 px-8 py-7">
-          <h3 className="mb-6 text-xl font-bold">Erledigt</h3>
-          <ul className="flex list-none flex-col gap-7 pl-0">
-            {stakeholdersDone.map((stakeholder) => {
-              return (
-                <li key={stakeholder.id}>
-                  <StakeholderSectionListItem stakeholder={stakeholder} />
-                </li>
-              )
-            })}
-            {stakeholdersIrrelevant.map((stakeholder) => {
-              return (
-                <li key={stakeholder.id}>
-                  <StakeholderSectionListItem stakeholder={stakeholder} />
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-      )}
+      <div className="flex flex-col">
+        {sortedStakeholdernotes.map((stakeholderNote) => {
+          return (
+            <StakeholderSectionListItem
+              key={stakeholderNote.id}
+              stakeholderNote={stakeholderNote}
+            />
+          )
+        })}
+      </div>
     </div>
   )
 }

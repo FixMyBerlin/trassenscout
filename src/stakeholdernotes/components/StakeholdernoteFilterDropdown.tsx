@@ -13,7 +13,7 @@ export const StakeholdernoteFilterDropdown: React.FC<Props> = ({ stakeholdernote
   const params = useRouterQuery()
   const { projectSlug, subsectionSlug } = useSlugs()
 
-  const options = Object.values(stakeholderNotesStatus).map(({ key, label }) => {
+  const options = Object.entries(stakeholderNotesStatus).map(([key, label]) => {
     const count = stakeholdernotes.filter((s) => s.status === key).length
     return { key, label, count }
   })

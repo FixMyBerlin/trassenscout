@@ -1,6 +1,11 @@
-export const stakeholderNotesStatus = [
-  { key: "IRRELEVANT", label: "nicht erforderlich" },
-  { key: "PENDING", label: "ausstehend" },
-  { key: "IN_PROGRESS", label: "in Arbeit" },
-  { key: "DONE", label: "erledigt" },
-]
+export const stakeholderNotesStatus = {
+  IRRELEVANT: "Nicht erforderlich",
+  PENDING: "Ausstehend",
+  IN_PROGRESS: "In Arbeit",
+  DONE: "Erledigt",
+}
+
+export const stakeholderNoteLabel = (key: string | string[] | undefined | null) => {
+  if (!key) return undefined
+  return (stakeholderNotesStatus as Record<string, string>)[String(key)]
+}

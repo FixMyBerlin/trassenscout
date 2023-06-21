@@ -13,10 +13,10 @@ export const DateList: React.FC<Props> = ({ calendarEntries }) => {
   }
 
   return (
-    <ul className="overflow-clip rounded-lg border border-x-2 border-gray-100 shadow-md">
+    <ul className="overflow-clip rounded-lg border border-x-2 border-gray-100">
       {calendarEntries.map((calendarEntry) => {
         return (
-          <li key={calendarEntry.id} className="border-t-2 border-gray-100 first:border-t-0">
+          <li key={calendarEntry.id}>
             <DateEntry calendarEntry={calendarEntry} />
           </li>
         )

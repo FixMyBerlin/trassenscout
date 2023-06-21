@@ -22,7 +22,7 @@ export function StakeholdernoteForm<S extends z.ZodType<any, any>>(props: FormPr
       <LabeledRadiobuttonGroup
         scope="status"
         label="Status"
-        items={stakeholderNotesStatus.map((s) => ({ value: s.key, label: s.label }))}
+        items={Object.entries(stakeholderNotesStatus).map(([value, label]) => ({ value, label }))}
       />
     </Form>
   )

@@ -9,7 +9,7 @@ import { useSlugs } from "src/core/hooks"
 import getStakeholdernotes from "../queries/getStakeholdernotes"
 import StakeholdernoteList from "./StakeholderSectionList"
 import { StakeholdernoteFilterDropdown } from "./StakeholdernoteFilterDropdown"
-import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
+import { stakeholderNoteLabel, stakeholderNotesStatus } from "./stakeholdernotesStatus"
 import { quote } from "src/core/components/text"
 
 type Props = {
@@ -25,7 +25,7 @@ export const StakeholderSection: React.FC<Props> = ({ subsectionId }) => {
     ? stakeholdernotes.filter((s) => s.status === params.stakeholderFilter)
     : stakeholdernotes
 
-  const statusLabel = stakeholderNotesStatus.find((s) => s.key === params.stakeholderFilter)?.label
+  const statusLabel = stakeholderNoteLabel(params.stakeholderFilter)
 
   return (
     <section className="mt-12">
