@@ -1,12 +1,12 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
-import getSectionProjectId from "../../sections/queries/getSectionProjectId"
+import getSubsectionProjectId from "../queries/getSubsectionProjectId"
 import { SubsectionSchema } from "../schema"
 
 export default resolver.pipe(
   resolver.zod(SubsectionSchema),
-  authorizeProjectAdmin(getSectionProjectId),
+  authorizeProjectAdmin(getSubsectionProjectId),
   async (input) => {
     const subsection = await db.subsection.create({
       data: input,

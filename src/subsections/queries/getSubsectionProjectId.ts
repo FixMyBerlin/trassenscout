@@ -1,7 +1,8 @@
 import db from "db"
 
 const getSubsectionProjectId = async (value: number | Record<string, any>) => {
-  let subsectionId
+  let subsectionId = null
+
   if (typeof value === "number") {
     subsectionId = value
   } else if ("subsectionId" in value) {
@@ -9,12 +10,13 @@ const getSubsectionProjectId = async (value: number | Record<string, any>) => {
   } else if ("id" in value) {
     subsectionId = value.id
   }
-  return (
-    await db.section.findFirstOrThrow({
-      where: { subsections: { some: { id: subsectionId || null } } },
-      select: { projectId: true },
-    })
-  ).projectId
+
+  const subsection = await db.subsection.findFirstOrThrow({
+    where: { id: subsectionId },
+    select: { projectId: true },
+  })
+
+  return subsection.projectId
 }
 
 export default getSubsectionProjectId

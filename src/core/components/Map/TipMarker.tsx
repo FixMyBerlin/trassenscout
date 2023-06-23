@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import React, { CSSProperties } from "react"
 
 type Props = React.HTMLAttributes<HTMLDivElement> & {
@@ -13,10 +14,19 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 }
 
 const createSvg = (style: CSSProperties, rotation: number, path: JSX.Element) => {
-  style = { position: "absolute", width: 15, height: 15, ...style }
-  if (rotation)
-    style = { transform: `rotate(${rotation}deg)`, transformOrigin: "top left", ...style }
-  return <svg style={style}>{path}</svg>
+  return (
+    <svg
+      style={{
+        position: "absolute",
+        width: 15,
+        height: 15,
+        ...(rotation ? { transform: `rotate(${rotation}deg)`, transformOrigin: "top left" } : {}),
+        ...style,
+      }}
+    >
+      {path}
+    </svg>
+  )
 }
 
 const pathProps = { stroke: "#999", strokeWidth: "1", fill: "white" }
@@ -48,9 +58,9 @@ const divStyles = {
   right: { ...shadow, top: 0, left: 14, transform: "translateY(-50%)" },
 }
 
-export const TipMarker: React.FC<Props> = ({ anchor, children, ...props }) => {
+export const TipMarker: React.FC<Props> = ({ className, anchor, children, ...props }) => {
   return (
-    <div className="cursor-pointer whitespace-nowrap" {...props}>
+    <div className={clsx("cursor-pointer whitespace-nowrap", className)} {...props}>
       <div
         style={divStyles[anchor]}
         className="absolute rounded-md border border-gray-400 bg-white"

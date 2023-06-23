@@ -28,19 +28,16 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
   const user = useCurrentUser()
   const [project] = useQuery(getProject, { slug: projectSlug })
 
-  const handleSubmit = async (values: any) => {
-    // get an array of contact ids - where checkbox is checked
-    const participantsIds = Object.entries(values)
-      .filter((contact) => contact[1] === true)
-      .map((contact) => Number(contact[0]))
-    // get a string of all email adresses, seperated by a comma
-    const participants = contacts
-      .filter((contact) => participantsIds.includes(contact.id))
-      .map((contact) => contact.email)
+  const handleSubmit = async ({ selectedContacts }: { selectedContacts: string[] | [] }) => {
+    const selectedContactIds = selectedContacts.map(Number)
+
+    const contactMailString = contacts
+      .filter((contact) => selectedContactIds.includes(contact.id))
+      .map((contact) => `"${getFullname(contact)}" <${contact.email}>`)
       .join(",")
 
     void router.push(
-      `mailto:${user?.email}?bcc=${participants}&subject=Infos zu ${shortTitle(project.slug)}`
+      `mailto:${user?.email}?bcc=${contactMailString}&subject=Infos zu ${shortTitle(project.slug)}`
     )
   }
 
@@ -107,7 +104,7 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
                   </Link>
                 </td>
                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                  <p className="flex items-center justify-end gap-4 text-right">
+                  <div className="flex items-center justify-end gap-4 text-right">
                     <Link
                       href={Routes.EditContactPage({
                         contactId: contact.id,
@@ -126,11 +123,12 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
                       <TrashIcon className="h-4 w-4" />
                     </Link>
                     <LabeledCheckbox
-                      name={String(contact.id)}
+                      scope="selectedContacts"
+                      value={String(contact.id)}
                       labelProps={{ className: "sr-only" }}
-                      label={"Markieren für 'Mail schreiben'"}
+                      label="Markieren für 'Mail schreiben'"
                     />
-                  </p>
+                  </div>
                 </td>
               </tr>
             ))}

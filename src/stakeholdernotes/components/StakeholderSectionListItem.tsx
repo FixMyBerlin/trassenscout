@@ -14,7 +14,7 @@ type Props = {
 }
 
 export const StakeholderSectionListItem: React.FC<Props> = ({ stakeholder }) => {
-  const { projectSlug, sectionSlug, subsectionSlug } = useSlugs()
+  const { projectSlug, subsectionSlug } = useSlugs()
   const [isExpand, setIsExpand] = useState(false)
 
   const handleToggle = () => {
@@ -60,7 +60,6 @@ export const StakeholderSectionListItem: React.FC<Props> = ({ stakeholder }) => 
         <Link
           href={Routes.EditStakeholdernotePage({
             projectSlug: projectSlug!,
-            sectionSlug: sectionSlug!,
             subsectionSlug: subsectionSlug!,
             stakeholdernoteId: stakeholder.id,
           })}
@@ -71,7 +70,6 @@ export const StakeholderSectionListItem: React.FC<Props> = ({ stakeholder }) => 
         <Link
           href={Routes.ShowStakeholdernotePage({
             projectSlug: projectSlug!,
-            sectionSlug: sectionSlug!,
             subsectionSlug: subsectionSlug!,
             stakeholdernoteId: stakeholder.id,
           })}
