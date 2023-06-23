@@ -71,4 +71,6 @@ const CalendarEntriesPage: BlitzPage = () => {
   )
 }
 
+CalendarEntriesPage.authenticate = true
+
 export default CalendarEntriesPage

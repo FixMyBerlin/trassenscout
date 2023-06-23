@@ -57,4 +57,6 @@ const ContactsPage: BlitzPage = () => {
   )
 }
 
+ContactsPage.authenticate = true
+
 export default ContactsPage

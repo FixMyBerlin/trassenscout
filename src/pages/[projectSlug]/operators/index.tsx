@@ -144,4 +144,6 @@ const OperatorsPage: BlitzPage = () => {
   )
 }
 
+OperatorsPage.authenticate = true
+
 export default OperatorsPage

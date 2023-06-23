@@ -55,4 +55,6 @@ const ProjectTeamPage: BlitzPage = () => {
   )
 }
 
+ProjectTeamPage.authenticate = true
+
 export default ProjectTeamPage

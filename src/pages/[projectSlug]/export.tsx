@@ -475,4 +475,6 @@ const ExportPage: BlitzPage = () => {
   )
 }
 
+ExportPage.authenticate = true
+
 export default ExportPage
