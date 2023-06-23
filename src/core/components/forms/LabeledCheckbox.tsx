@@ -51,7 +51,7 @@ export const LabeledCheckbox = forwardRef<HTMLInputElement, LabeledCheckboxProps
         <label
           className="ml-3 block cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-800"
           {...labelProps}
-          htmlFor={name}
+          htmlFor={name || value}
         >
           {label}
           {help && <div className="m-0 text-gray-500">{help}</div>}

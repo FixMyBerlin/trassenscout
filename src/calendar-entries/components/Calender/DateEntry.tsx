@@ -5,9 +5,9 @@ import { CalendarDaysIcon, MapPinIcon } from "@heroicons/react/24/solid"
 import { CalendarEntry } from "@prisma/client"
 import clsx from "clsx"
 import React from "react"
+import { Disclosure } from "src/core/components/Disclosure"
 import { Link, linkStyles } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
-import { Disclosure } from "../Disclosure"
 
 type Props = {
   calendarEntry: CalendarEntry

@@ -51,7 +51,7 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
         </div>
         <label
           {...labelProps}
-          htmlFor={name}
+          htmlFor={name || value}
           className="ml-3 block cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-800"
         >
           {label}

@@ -1,82 +1,75 @@
-import { Routes, useParam } from "@blitzjs/next"
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
+import { Routes, useRouterQuery } from "@blitzjs/next"
 import { Stakeholdernote } from "@prisma/client"
-import clsx from "clsx"
-import React, { useState } from "react"
-import { Link, linkStyles } from "src/core/components/links"
+import React from "react"
+import { Disclosure } from "src/core/components/Disclosure"
 import { Markdown } from "src/core/components/Markdown/Markdown"
-import { StakeholderSectionListItemStatus } from "./StakeholderSectionListItemStatus"
+import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
-import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
+import { StakeholderSectionListItemStatus } from "./StakeholderSectionListItemStatus"
+import { useRouter } from "next/router"
 
 type Props = {
-  stakeholder: Stakeholdernote
+  stakeholderNote: Stakeholdernote
 }
 
-export const StakeholderSectionListItem: React.FC<Props> = ({ stakeholder }) => {
+export const StakeholderSectionListItem: React.FC<Props> = ({ stakeholderNote }) => {
   const { projectSlug, subsectionSlug } = useSlugs()
-  const [isExpand, setIsExpand] = useState(false)
 
-  const handleToggle = () => {
-    setIsExpand(!isExpand)
+  const router = useRouter()
+  const handleOpen = () => {
+    router.query.stakeholderDetails = String(stakeholderNote.id)
+    void router.push({ query: router.query }, undefined, { scroll: false })
+  }
+  const handleClose = () => {
+    delete router.query.stakeholderDetails
+    void router.push({ query: router.query }, undefined, { scroll: false })
   }
 
-  const readMore = stakeholder.statusText && stakeholder.statusText.length > 100
+  // Open Disclored for object ID `stakeholderDetails`
+  const params = useRouterQuery()
+  const paramsStakeholderDetails = parseInt(String(params.stakeholderDetails))
+  const open = stakeholderNote.id === paramsStakeholderDetails
 
   return (
-    <article>
-      <button
-        // This button is a readmore-feature. Its not great. For now, lets just visually hide it if no statusText is present.
-        // We should make this nicer…
-        className={clsx(
-          readMore ? "group/stakeholder" : "cursor-default",
-          "flex w-full gap-7 text-left"
-        )}
-        onClick={handleToggle}
-      >
-        <StakeholderSectionListItemStatus status={stakeholder.status} />
-
-        <div className="grow">
-          <h4
-            className={clsx(
-              { "text-blue-500 group-hover/stakeholder:text-blue-800": readMore },
-              "font-semibold"
-            )}
-          >
-            {stakeholder.title}
-          </h4>
-          <Markdown
-            className={clsx("prose prose-sm", isExpand ? "line-clamp-none" : "line-clamp-2")}
-            markdown={stakeholder.statusText}
-          />
+    <Disclosure
+      open={open}
+      onOpen={handleOpen}
+      onClose={handleClose}
+      classNameButton="py-4 text-left text-sm text-gray-900 hover:bg-gray-50"
+      classNamePanel="pb-3"
+      button={
+        <div className="flex">
+          <div className="w-52 flex-none pb-2 pl-4 pr-3 pt-3 sm:w-64 sm:pl-6">
+            <StakeholderSectionListItemStatus status={stakeholderNote.status} />
+          </div>
+          <div className="flex grow items-center px-3 pb-2 pt-3 font-bold text-blue-500">
+            {stakeholderNote.title}
+          </div>
         </div>
-      </button>
-      <ButtonWrapper className={clsx(readMore ? "mt-1" : "-mt-5", "justify-end")}>
-        {readMore && (
-          <button className={linkStyles} onClick={handleToggle}>
-            {isExpand ? "Zuklappen" : "Weiterlesen"}
-          </button>
+      }
+    >
+      <div className="ml-3 px-3 pb-2 pt-6 sm:ml-64">
+        {!stakeholderNote.statusText ? (
+          <p className="text-gray-300">Für diesen Termin liegen keine Details vor.</p>
+        ) : (
+          <Markdown className="prose-sm mt-3" markdown={stakeholderNote.statusText} />
         )}
-        <Link
-          href={Routes.EditStakeholdernotePage({
-            projectSlug: projectSlug!,
-            subsectionSlug: subsectionSlug!,
-            stakeholdernoteId: stakeholder.id,
-          })}
-        >
-          <PencilSquareIcon className="h-4 w-4" />
-          <span className="sr-only">Bearbeiten</span>
-        </Link>
-        <Link
-          href={Routes.ShowStakeholdernotePage({
-            projectSlug: projectSlug!,
-            subsectionSlug: subsectionSlug!,
-            stakeholdernoteId: stakeholder.id,
-          })}
-        >
-          <TrashIcon className="h-4 w-4" />
-        </Link>
-      </ButtonWrapper>
-    </article>
+        <p className="mt-6 italic">
+          Letzte Aktualisierung: {stakeholderNote.updatedAt.toLocaleDateString()}
+        </p>
+        <p className="mt-6">
+          <Link
+            icon="edit"
+            href={Routes.EditStakeholdernotePage({
+              projectSlug: projectSlug!,
+              subsectionSlug: subsectionSlug!,
+              stakeholdernoteId: stakeholderNote.id,
+            })}
+          >
+            Bearbeiten
+          </Link>
+        </p>
+      </div>
+    </Disclosure>
   )
 }

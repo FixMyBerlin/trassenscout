@@ -1,59 +1,37 @@
 import { CheckIcon, XMarkIcon } from "@heroicons/react/20/solid"
 import { Stakeholdernote } from "@prisma/client"
 import React from "react"
+import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
+import { ClockIcon, DocumentTextIcon } from "@heroicons/react/24/outline"
+import clsx from "clsx"
 
-type Props = { status?: Stakeholdernote["status"] }
+type Props = { status: Stakeholdernote["status"] }
+
+const statusColors = {
+  IRRELEVANT: "text-gray-700 bg-gray-100",
+  PENDING: "text-yellow-700 bg-yellow-100",
+  IN_PROGRESS: "text-blue-700 bg-blue-100",
+  DONE: "text-green-700 bg-green-100",
+}
+
+const statusIcon = {
+  IRRELEVANT: <XMarkIcon className="h-6 w-6" />,
+  PENDING: <DocumentTextIcon className="h-6 w-6" />,
+  IN_PROGRESS: <ClockIcon className="h-6 w-6" />,
+  DONE: <CheckIcon className="h-6 w-6" />,
+}
 
 export const StakeholderSectionListItemStatus: React.FC<Props> = ({ status }) => {
-  switch (status) {
-    case "PENDING":
-      return (
-        <div className="flex w-11 flex-none flex-col items-center justify-start text-blue-200">
-          <div className="mb-2 h-10 w-10 rounded-full border-4 border-blue-200" />
-          <small className="font-xs whitespace-nowrap text-center leading-tight tracking-tight">
-            ausstehend
-          </small>
-        </div>
-      )
-    case "IN_PROGRESS":
-      return (
-        <div className="flex w-11 flex-none flex-col items-center justify-start text-gray-400">
-          <div className="mb-2 h-10 w-10 rounded-full bg-gray-400" />
-          <small className="font-xs whitespace-nowrap text-center leading-tight tracking-tight">
-            in Arbeit
-          </small>
-        </div>
-      )
-    case "IRRELEVANT":
-      return (
-        <div className="flex w-11 flex-none flex-col items-center justify-start text-gray-300">
-          <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-gray-300">
-            <XMarkIcon className="w-5 text-white" />
-          </div>
-          <small className="font-xs text-center leading-tight tracking-tight">
-            nicht erforderlich
-          </small>
-        </div>
-      )
-    case "DONE":
-      return (
-        <div className="flex w-11 flex-none flex-col items-center justify-start text-blue-600">
-          <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-blue-600">
-            <CheckIcon className="w-5 text-white" />
-          </div>
-          <small className="font-xs whitespace-nowrap text-center leading-tight tracking-tight">
-            erledigt
-          </small>
-        </div>
-      )
-    default:
-      return (
-        <div className="flex w-11 flex-none flex-col items-center justify-start text-blue-600">
-          <div className="mb-2 h-10 w-10 rounded-full bg-blue-600" />
-          <small className="font-xs whitespace-nowrap text-center leading-tight tracking-tight">
-            erledigt
-          </small>
-        </div>
-      )
-  }
+  const label = stakeholderNotesStatus[status]
+
+  return (
+    <div
+      className={clsx(
+        statusColors[status],
+        "flex w-full items-center justify-between rounded-full px-5 py-1 font-bold"
+      )}
+    >
+      {statusIcon[status]} <div className="grow text-center">{label}</div>
+    </div>
+  )
 }

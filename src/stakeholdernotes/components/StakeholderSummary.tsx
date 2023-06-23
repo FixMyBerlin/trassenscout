@@ -1,22 +1,14 @@
-import { Stakeholdernote } from "@prisma/client"
+import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 
-type Props = {
-  stakeholdernotes: Stakeholdernote[]
-}
+type Props = Pick<SubsectionWithPosition, "stakeholdernotesCounts">
 
-export const StakeholderSummary: React.FC<Props> = ({ stakeholdernotes }) => {
-  const stakeholdernotesDone = stakeholdernotes.filter(
-    (stakeholder) => stakeholder.status === "DONE"
-  )
-  const stakeholdernotesRelevant = stakeholdernotes.filter(
-    (stakeholder) => stakeholder.status !== "IRRELEVANT"
-  )
-  if (!stakeholdernotes.length) return null
+export const StakeholderSummary: React.FC<Props> = ({ stakeholdernotesCounts }) => {
+  if (!stakeholdernotesCounts?.relevant) return null
 
   return (
     <p>
-      <strong>Stakeholder:</strong> {stakeholdernotesDone.length} von{" "}
-      {stakeholdernotesRelevant.length} geklärt
+      <strong>Stakeholder:</strong> {stakeholdernotesCounts.done} von{" "}
+      {stakeholdernotesCounts.relevant} geklärt
     </p>
   )
 }

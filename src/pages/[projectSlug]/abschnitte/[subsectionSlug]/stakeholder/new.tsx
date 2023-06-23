@@ -5,11 +5,12 @@ import { Suspense } from "react"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { longTitle, quote, seoNewTitle } from "src/core/components/text"
+import { longTitle, seoNewTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR } from "src/stakeholdernotes/components/StakeholdernoteForm"
 import { StakeholdernoteMultiForm } from "src/stakeholdernotes/components/StakeholdernoteMultiForm"
+import { hashStakeholdernotes } from "src/stakeholdernotes/components/StakeholderSection"
 import createStakeholdernote from "src/stakeholdernotes/mutations/createStakeholdernote"
 import { StakeholdernoteMultiSchema } from "src/stakeholdernotes/schema"
 import getSubsection from "src/subsections/queries/getSubsection"
@@ -34,12 +35,13 @@ const NewStakeholdernotesWithQuery = () => {
       for (let i = 0; i < createStakeholderNoteArray.length; i++) {
         await createStakeholdernoteMutation(createStakeholderNoteArray[i])
       }
-      await router.push(
-        Routes.SubsectionDashboardPage({
+      await router.push({
+        ...Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
           subsectionSlug: subsectionSlug!,
-        })
-      )
+        }),
+        hash: hashStakeholdernotes,
+      })
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -48,9 +50,9 @@ const NewStakeholdernotesWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={seoNewTitle("Mehrere TöB")} />
+      <MetaTags noindex title={seoNewTitle("Mehrere TÖB")} />
       <PageHeader
-        title="Mehrere TöBs hinzufügen"
+        title="Mehrere TÖBs hinzufügen"
         subtitle={longTitle(subsection.slug)}
         className="mt-12"
       />
@@ -77,10 +79,13 @@ const NewStakeholdernotesPage: BlitzPage = () => {
 
       <p className="mt-5">
         <Link
-          href={Routes.SubsectionDashboardPage({
-            projectSlug: projectSlug!,
-            subsectionSlug: subsectionSlug!,
-          })}
+          href={{
+            ...Routes.SubsectionDashboardPage({
+              projectSlug: projectSlug!,
+              subsectionSlug: subsectionSlug!,
+            }),
+            hash: hashStakeholdernotes,
+          }}
         >
           Zurück zum Planungsabschnitt
         </Link>
