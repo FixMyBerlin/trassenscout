@@ -10,7 +10,13 @@ interface GetSurveySessionsInput
 
 export default resolver.pipe(
   resolver.authorize("ADMIN"),
-  async ({ where, orderBy, include, skip = 0, take = 100 }: GetSurveySessionsInput) => {
+  async ({
+    where,
+    orderBy = { id: "desc" },
+    include,
+    skip = 0,
+    take = 100,
+  }: GetSurveySessionsInput) => {
     const {
       items: surveySessions,
       hasMore,
@@ -21,7 +27,12 @@ export default resolver.pipe(
       take,
       count: () => db.surveySession.count({ where }),
       query: (paginateArgs) =>
-        db.surveySession.findMany({ ...paginateArgs, where, orderBy, include }),
+        db.surveySession.findMany({
+          ...paginateArgs,
+          where,
+          orderBy,
+          include: { responses: true, ...include },
+        }),
     })
 
     return {
