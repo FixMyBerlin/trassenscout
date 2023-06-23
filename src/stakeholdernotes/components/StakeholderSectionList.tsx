@@ -1,11 +1,28 @@
+import { useRouterQuery } from "@blitzjs/next"
 import { Stakeholdernote } from "@prisma/client"
+import { useEffect, useRef } from "react"
 import { StakeholderSectionListItem } from "./StakeholderSectionListItem"
+import { ZeroCase } from "src/core/components/text/ZeroCase"
+import clsx from "clsx"
 
 type props = {
   stakeholdernotes: Stakeholdernote[]
 }
 
 export const StakeholdernotesList: React.FC<props> = ({ stakeholdernotes }) => {
+  // Handle scroll into view on page load (like a hash URL) based on a ref and URL param `stakeholderDetails`.
+  // The ref is an error of listItems where the array index is the stakeholderNote.id.
+  const params = useRouterQuery()
+  const paramsStakeholderDetails = parseInt(String(params.stakeholderDetails))
+  const disclosureRefs = useRef<Array<HTMLDivElement | null>>([])
+  useEffect(() => {
+    if (paramsStakeholderDetails) {
+      const currentRef = disclosureRefs.current?.at(paramsStakeholderDetails)
+      currentRef?.scrollIntoView({ behavior: "smooth" })
+    }
+  }, [paramsStakeholderDetails])
+
+  // Manually sort the entries
   const stakeholdersDone = stakeholdernotes.filter(
     (stakeholdernotes) => stakeholdernotes.status === "DONE"
   )
@@ -18,7 +35,6 @@ export const StakeholdernotesList: React.FC<props> = ({ stakeholdernotes }) => {
   const stakeholdersInProgress = stakeholdernotes.filter(
     (stakeholdernotes) => stakeholdernotes.status === "IN_PROGRESS"
   )
-
   const sortedStakeholdernotes = [
     ...stakeholdersInProgress,
     ...stakeholdersPending,
@@ -40,10 +56,17 @@ export const StakeholdernotesList: React.FC<props> = ({ stakeholdernotes }) => {
       <div className="flex flex-col">
         {sortedStakeholdernotes.map((stakeholderNote) => {
           return (
-            <StakeholderSectionListItem
+            <div
               key={stakeholderNote.id}
-              stakeholderNote={stakeholderNote}
-            />
+              // I tried passing the ref as forwardRef but that did not work for unknown reasons.
+              ref={(element) => (disclosureRefs.current[stakeholderNote.id] = element)}
+              className={clsx(
+                "scroll-m-0",
+                stakeholderNote.id == paramsStakeholderDetails && "bg-yellow-50"
+              )}
+            >
+              <StakeholderSectionListItem stakeholderNote={stakeholderNote} />
+            </div>
           )
         })}
       </div>

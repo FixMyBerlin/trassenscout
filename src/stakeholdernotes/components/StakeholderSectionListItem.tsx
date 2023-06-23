@@ -1,4 +1,4 @@
-import { Routes } from "@blitzjs/next"
+import { Routes, useRouterQuery } from "@blitzjs/next"
 import { Stakeholdernote } from "@prisma/client"
 import React from "react"
 import { Disclosure } from "src/core/components/Disclosure"
@@ -6,6 +6,7 @@ import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
 import { StakeholderSectionListItemStatus } from "./StakeholderSectionListItemStatus"
+import { useRouter } from "next/router"
 
 type Props = {
   stakeholderNote: Stakeholdernote
@@ -14,8 +15,26 @@ type Props = {
 export const StakeholderSectionListItem: React.FC<Props> = ({ stakeholderNote }) => {
   const { projectSlug, subsectionSlug } = useSlugs()
 
+  const router = useRouter()
+  const handleOpen = () => {
+    router.query.stakeholderDetails = String(stakeholderNote.id)
+    void router.push({ query: router.query }, undefined, { scroll: false })
+  }
+  const handleClose = () => {
+    delete router.query.stakeholderDetails
+    void router.push({ query: router.query }, undefined, { scroll: false })
+  }
+
+  // Open Disclored for object ID `stakeholderDetails`
+  const params = useRouterQuery()
+  const paramsStakeholderDetails = parseInt(String(params.stakeholderDetails))
+  const open = stakeholderNote.id === paramsStakeholderDetails
+
   return (
     <Disclosure
+      open={open}
+      onOpen={handleOpen}
+      onClose={handleClose}
       classNameButton="py-4 text-left text-sm text-gray-900 hover:bg-gray-50"
       classNamePanel="pb-3"
       button={
