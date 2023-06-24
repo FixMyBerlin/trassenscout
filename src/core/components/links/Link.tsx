@@ -55,20 +55,15 @@ export const Link: React.FC<LinkProps> = forwardRef<HTMLAnchorElement, LinkProps
     }
 
     return (
-      <NextLink href={href}>
-        {/*
-          TODO remove a-tag one React 13 can be used.
-          Also, update the `ref`, `{...props}`, see https://headlessui.com/react/menu#integrating-with-next-js
-        */}
-        <a
-          ref={ref}
-          className={classNames}
-          {...props}
-          {...{ target: blank ? "_blank" : undefined }}
-        >
-          {icon && linkIcons[icon]}
-          {children}
-        </a>
+      <NextLink
+        href={href}
+        ref={ref}
+        className={classNames}
+        {...props}
+        {...{ target: blank ? "_blank" : undefined }}
+      >
+        {icon && linkIcons[icon]}
+        {children}
       </NextLink>
     )
   }
