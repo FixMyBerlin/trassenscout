@@ -37,7 +37,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     costEstimate: null,
     description: "Rad- und Fußverkehr wird auf einem Ufersteig zum Teil über dem Wasser geführt.",
     mapillaryKey: "1646379745805677",
-    managerId: 1,
+    managerId: null,
   },
   {
     slug: "rf3",
@@ -57,7 +57,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     costEstimate: 20_000,
     description: "Ausbau Levetzowstraße zur Fahrradstraße mit Modalfilter, Anwohner frei.",
     mapillaryKey: "249624194247195",
-    managerId: 2,
+    managerId: null,
   },
   {
     slug: "sf1",

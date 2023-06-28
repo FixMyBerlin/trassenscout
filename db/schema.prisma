@@ -106,9 +106,9 @@ model Project {
   description     String?
   logoSrc         String?
   partnerLogoSrcs String[]
-
-  manager   User @relation(fields: [managerId], references: [id])
-  managerId Int
+  //
+  manager         User?    @relation(fields: [managerId], references: [id])
+  managerId       Int?
 
   subsections     Subsection[]
   calendarEntries CalendarEntry[]
@@ -201,13 +201,13 @@ model Subsection {
   geometry    Json
   labelPos    LabelPositionEnum @default(top)
   description String?
-
-  manager    User      @relation(fields: [managerId], references: [id])
-  managerId  Int
-  project    Project   @relation(fields: [projectId], references: [id])
-  projectId  Int
-  operator   Operator? @relation(fields: [operatorId], references: [id])
-  operatorId Int?
+  //
+  project     Project           @relation(fields: [projectId], references: [id])
+  projectId   Int
+  manager     User?             @relation(fields: [managerId], references: [id])
+  managerId   Int?
+  operator    Operator?         @relation(fields: [operatorId], references: [id])
+  operatorId  Int?
 
   subsubsections   Subsubsection[]
   stakeholdernotes Stakeholdernote[]
@@ -235,8 +235,8 @@ model Subsubsection {
   description  String? // Anmerkungen
   mapillaryKey String?
   //
-  manager      User                  @relation(fields: [managerId], references: [id])
-  managerId    Int
+  manager      User?                 @relation(fields: [managerId], references: [id])
+  managerId    Int?
   //
   subsection   Subsection            @relation(fields: [subsectionId], references: [id])
   subsectionId Int

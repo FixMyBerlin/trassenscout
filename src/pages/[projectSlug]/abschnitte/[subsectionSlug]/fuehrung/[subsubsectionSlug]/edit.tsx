@@ -41,6 +41,8 @@ const EditSubsubsection = () => {
       const updated = await updateSubsubsectionMutation({
         id: subsubsection.id,
         ...values,
+        // The value="" becomes "0" which we translate to NULL
+        managerId: values.managerId === 0 ? null : values.managerId,
       })
       await setQueryData(updated)
       await router.push(

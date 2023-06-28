@@ -52,7 +52,7 @@ const seedSubsections = async () => {
         [13.369246313529857, 52.52252804216468],
         [13.36352017575777, 52.519430986022115],
       ],
-      managerId: 1,
+      managerId: null,
     },
     {
       projectId: 1,
@@ -69,7 +69,7 @@ const seedSubsections = async () => {
         [13.399308536836458, 52.521366671697535],
         [13.392787102151175, 52.52252804216468],
       ],
-      managerId: 1,
+      managerId: null,
     },
     {
       projectId: 1,
