@@ -19,23 +19,31 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
 
-  const handleSelect = (subsectionSlug: string, edit: boolean) => {
-    if (edit) {
-      void router.push(Routes.EditSubsectionPage({ projectSlug: projectSlug!, subsectionSlug }))
-    } else {
-      void router.push(
-        Routes.SubsectionDashboardPage({ projectSlug: projectSlug!, subsectionSlug })
-      )
+  type HandleSelectProps = { subsectionSlug: string; edit: boolean }
+  const handleSelect = ({ subsectionSlug, edit }: HandleSelectProps) => {
+    if (!projectSlug) return
+    // alt+click
+    let url = edit
+      ? Routes.EditSubsectionPage({ projectSlug, subsectionSlug })
+      : Routes.SubsectionDashboardPage({ projectSlug, subsectionSlug })
+
+    void router.push(url, undefined, { scroll: edit ? true : false })
+  }
+
+  const handleClickMap = (e: MapLayerMouseEvent) => {
+    const subsectionSlug = e.features?.at(0)?.properties?.subsectionSlug
+    if (subsectionSlug) {
+      handleSelect({ subsectionSlug, edit: e.originalEvent?.altKey })
     }
   }
 
-  const [hovered, setHovered] = useState<number | string | null>(null)
-  // TODO:
-  const getId = (e: MapLayerMouseEvent | undefined) => e?.features?.[0]?.properties?.id || null
-  const handleClick = async (e: MapLayerMouseEvent | undefined) =>
-    getId(e) && handleSelect(getId(e), e!.originalEvent.ctrlKey)
-  const handleMouseEnter = (e: MapLayerMouseEvent | undefined) => setHovered(getId(e))
-  const handleMouseLeave = () => setHovered(null)
+  const [hovered, setHovered] = useState<string | number | null>(null)
+  const handleMouseEnter = (e: MapLayerMouseEvent) => {
+    setHovered(e.features?.at(0)?.properties?.id || null)
+  }
+  const handleMouseLeave = () => {
+    setHovered(null)
+  }
 
   const dotsGeoms = subsections
     .map((ss) => [ss.geometry.at(0), ss.geometry.at(-1)])
@@ -51,29 +59,29 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
     )
   )
 
-  const markers = subsections.map((ss) => {
-    const midLine = lineString(ss.geometry)
+  const markers = subsections.map((sub) => {
+    const midLine = lineString(sub.geometry)
     const midLengthHalf = length(midLine) / 2
     const midPoint = along(midLine, midLengthHalf)
 
     return (
       <Marker
-        key={ss.id}
+        key={sub.id}
         longitude={midPoint.geometry.coordinates[0]}
         latitude={midPoint.geometry.coordinates[1]}
         anchor="center"
-        onClick={(e) => handleSelect(ss.slug, e.originalEvent.ctrlKey)}
+        onClick={(e) => handleSelect({ subsectionSlug: sub.slug, edit: e.originalEvent.altKey })}
       >
         <TipMarker
-          anchor={ss.labelPos || "top"}
-          onMouseEnter={() => setHovered(ss.slug)}
+          anchor={sub.labelPos || "top"}
+          onMouseEnter={() => setHovered(sub.slug)}
           onMouseLeave={() => setHovered(null)}
         >
           <StartEndLabel
-            icon={<SubsectionMapIcon label={shortTitle(ss.slug)} />}
-            subIcon={ss.operator?.slug}
-            start={ss.start}
-            end={ss.end}
+            icon={<SubsectionMapIcon label={shortTitle(sub.slug)} />}
+            subIcon={sub.operator?.slug}
+            start={sub.start}
+            end={sub.end}
           />
         </TipMarker>
       </Marker>
@@ -88,7 +96,7 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
           bounds: subsectionsBbox(subsections),
           fitBoundsOptions: { padding: 60 },
         }}
-        onClick={handleClick}
+        onClick={handleClickMap}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         selectableLines={selectableLines}
@@ -96,6 +104,9 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
       >
         {markers}
       </BaseMap>
+      <p className="mt-2 text-right text-xs text-gray-400">
+        Schnellzugriff zum Bearbeitne über option+click (Mac) / alt+click (Windows)
+      </p>
     </section>
   )
 }
