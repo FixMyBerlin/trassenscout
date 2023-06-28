@@ -14,8 +14,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   ]
 
   const types = {
-    singleResponse: 'single',
-    multipleResponse: 'multi'
+    singleResponse: "single",
+    multipleResponse: "multi",
   }
 
   type Question = { id: number | string; type: string; question: string }
@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const addQuestions = (definition: Survey) => {
     definition.pages.forEach((page) => {
       if (!page.questions) return
-      page.questions.forEach(({id, component, label}) => {
+      page.questions.forEach(({ id, component, label }) => {
         // @ts-ignore
         data.push({ id, type: types[component] || component, question: label.de })
       })

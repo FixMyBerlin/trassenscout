@@ -14,9 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   ]
 
   type Question = { questionId: number | string; responseId: number | string; text: string }
-  let data: Question[] = [
-    { questionId: "questionId", responseId: "responseId", text: "text" },
-  ]
+  let data: Question[] = [{ questionId: "questionId", responseId: "responseId", text: "text" }]
   const addQuestions = (definition: Survey) => {
     definition.pages.forEach((page) => {
       if (!page.questions) return

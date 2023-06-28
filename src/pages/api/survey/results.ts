@@ -60,7 +60,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       Object.entries(data).map(([questionId, responseData]) => {
         // @ts-ignore
         const question = questions[questionId]
-        let row: Result = { createdAt: createdAt.toISOString(), sessionId: String(id), questionId: 'n/a' }
+        let row: Result = {
+          createdAt: createdAt.toISOString(),
+          sessionId: String(id),
+          questionId: "n/a",
+        }
         if (question.component === "singleResponse") {
           const responseId = responseData
           row = { ...row, questionId, responseId }
