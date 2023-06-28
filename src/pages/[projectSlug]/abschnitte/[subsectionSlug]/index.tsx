@@ -121,7 +121,16 @@ export const SubsectionDashboardWithQuery = () => {
         <FileTable files={files} />
       </section>
 
-      <SuperAdminLogData data={{ subsectionSlug }} />
+      <SuperAdminLogData
+        data={{
+          subsections,
+          subsection,
+          subsubsections,
+          subsubsectionsForSubsection,
+          subsubsection,
+          files,
+        }}
+      />
     </>
   )
 }
