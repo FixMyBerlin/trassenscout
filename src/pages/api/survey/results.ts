@@ -55,6 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { id, createdAt, responses } = surveySession
     console.log(id, createdAt.toISOString(), responses)
     responses.forEach(({ data }) => {
+      // @ts-ignore
       data = JSON.parse(data)
       Object.entries(data).map(([questionId, responseData]) => {
         // @ts-ignore
