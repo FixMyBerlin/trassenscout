@@ -3,7 +3,7 @@ import { lineString } from "@turf/helpers"
 import { along, featureCollection, length } from "@turf/turf"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
-import { MapLayerMouseEvent, Marker } from "react-map-gl"
+import { MapLayerMouseEvent, Marker, ViewStateChangeEvent } from "react-map-gl"
 import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 import { shortTitle } from "../text"
 import { BaseMap } from "./BaseMap"
@@ -37,9 +37,15 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
     }
   }
 
+  const [zoom, setZoom] = useState<number | null>(null)
+  const expandByZoom = (zoom: number | null) => !!zoom && zoom < 13
+  const handleZoomEnd = (e: ViewStateChangeEvent) => {
+    setZoom(e.viewState.zoom)
+  }
+
   // We need to separate the state to work around the issue when a marker overlaps a line and both interact
-  const [hoveredMap, setHoveredMap] = useState<string | number | null>(null)
-  const [hoveredMarker, setHoveredMarker] = useState<string | number | null>(null)
+  const [hoveredMap, setHoveredMap] = useState<string | null>(null)
+  const [hoveredMarker, setHoveredMarker] = useState<string | null>(null)
   const handleMouseEnter = (e: MapLayerMouseEvent) => {
     setHoveredMap(e.features?.at(0)?.properties?.subsectionSlug || null)
   }
@@ -87,6 +93,8 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
             subIcon={sub.operator?.slug}
             start={sub.start}
             end={sub.end}
+            // allow details when zoomed in _and_ when hovered
+            compact={expandByZoom(zoom) && !(sub.slug === hoveredMarker || sub.slug === hoveredMap)}
           />
         </TipMarker>
       </Marker>
@@ -104,8 +112,10 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
         onClick={handleClickMap}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onZoomEnd={handleZoomEnd}
         selectableLines={selectableLines}
         dots={dotsGeoms}
+        hash={true}
       >
         {markers}
       </BaseMap>

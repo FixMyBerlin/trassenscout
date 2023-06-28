@@ -2,7 +2,14 @@ import { FeatureCollection, LineString, Point, featureCollection, point } from "
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import React, { useState } from "react"
-import Map, { Layer, MapProps, NavigationControl, ScaleControl, Source } from "react-map-gl"
+import Map, {
+  Layer,
+  MapProps,
+  NavigationControl,
+  ScaleControl,
+  Source,
+  ViewStateChangeEvent,
+} from "react-map-gl"
 import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher"
 
 const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
@@ -13,7 +20,10 @@ const selectablePointLayerId = "layer_selectable_point_features"
 
 export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
   Partial<
-    Pick<MapProps, "onMouseEnter" | "onMouseLeave" | "onClick" | "interactiveLayerIds" | "hash">
+    Pick<
+      MapProps,
+      "onMouseEnter" | "onMouseLeave" | "onClick" | "onZoomEnd" | "interactiveLayerIds" | "hash"
+    >
   > & {
     lines?: FeatureCollection<LineString, { color: string; width?: number; opacity?: number }>
     selectableLines?: FeatureCollection<
@@ -34,6 +44,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   onMouseEnter,
   onMouseLeave,
   onClick,
+  onZoomEnd,
   interactiveLayerIds,
   hash,
   lines,
@@ -55,6 +66,9 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   const handleMouseLeave = (e: mapboxgl.MapLayerMouseEvent) => {
     if (onMouseLeave) onMouseLeave(e)
     setCursorStyle("grab")
+  }
+  const handleZoomEnd = (e: ViewStateChangeEvent) => {
+    if (onZoomEnd) onZoomEnd(e)
   }
 
   const dotSource = dots ? (
@@ -121,6 +135,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onClick={onClick}
+          onZoomEnd={handleZoomEnd}
           interactiveLayerIds={[
             interactiveLayerIds,
             selectableLines && selectableLineLayerId,
