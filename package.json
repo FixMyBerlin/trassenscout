@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "blitz start",
-    "dev": "NODE_OPTIONS='--inspect' blitz dev",
+    "dev": "blitz dev",
     "predev": "if [[ $(docker inspect -f '{{.State.Running}}' rsv-builder-db) = \"true\" ]]; then echo Docker: Skipping – Container already running; else docker compose up --detach; fi",
     "postdev": "docker compose down",
     "debug": "DEBUG=blitz:* blitz console",
