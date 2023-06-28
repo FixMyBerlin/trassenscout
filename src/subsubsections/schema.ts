@@ -27,7 +27,7 @@ export const SubsubsectionSchema = z.object({
   costEstimate: z.coerce.number().nullish(), // €
   description: z.string().nullish(),
   mapillaryKey: z.string().nullish(),
-  managerId: z.coerce.number(),
+  managerId: z.coerce.number().nullish(),
   subsectionId: z.coerce.number(),
 })
 

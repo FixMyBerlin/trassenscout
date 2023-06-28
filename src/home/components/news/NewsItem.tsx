@@ -51,7 +51,7 @@ Card.Link = function CardLink({ children, ...props }: any) {
   return (
     <>
       <div className="group-hover:opacity-100/50 absolute -inset-x-4 -inset-y-6 z-0 scale-95 bg-gray-50 opacity-0 transition group-hover:scale-100 sm:-inset-x-6 sm:rounded-2xl" />
-      <Link {...props}>
+      <Link {...props} legacyBehavior>
         <span className="absolute -inset-x-4 -inset-y-6 z-20 sm:-inset-x-6 sm:rounded-2xl" />
         <span className="relative z-10">{children}</span>
       </Link>

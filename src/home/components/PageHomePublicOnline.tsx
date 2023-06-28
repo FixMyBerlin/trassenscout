@@ -1,6 +1,6 @@
 import { GlobeAltIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
-import Image from "next/image"
+import Image from "next/legacy/image"
 import Link from "next/link"
 import { linkStyles } from "src/core/components/links"
 import FMCIcon from "../assets/fmc-icon.svg"

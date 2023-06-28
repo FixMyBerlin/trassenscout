@@ -10,6 +10,7 @@ export type SubsectionWithPosition = Omit<Subsection, "geometry"> & {
   geometry: [number, number][] // Position[]
 } & { operator: { id: number; slug: string; title: string } | null } & {
   stakeholdernotesCounts: { relevant: number; done: number }
+  subsubsectionCount: number
 }
 
 export const GetSubsectionSchema = z.object({
@@ -31,6 +32,7 @@ export default resolver.pipe(
       include: {
         operator: { select: { id: true, slug: true, title: true } },
         stakeholdernotes: { select: { id: true, status: true } },
+        subsubsections: { select: { id: true } },
       },
     }
     const subsection = await db.subsection.findFirst(query)
@@ -44,11 +46,19 @@ export default resolver.pipe(
       (note) => note.status === "DONE"
     ).length
 
+    const subsubsectionCount = subsection.subsubsections.length
+
+    // We only needed those for the counts, we don't actually want the full list to be returned
+    // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)" is true but not relevant here
+    delete subsection.stakeholdernotes
+    // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)" is true but not relevant here
+    delete subsection.subsubsections
+
     const subsectionWithCounts: SubsectionWithPosition = {
       ...subsection,
       geometry: subsection.geometry as [number, number][],
-      operator: subsection.operator,
       stakeholdernotesCounts: { relevant: relevantStakeholdernotes, done: doneStakeholdernotes },
+      subsubsectionCount,
     }
 
     return subsectionWithCounts

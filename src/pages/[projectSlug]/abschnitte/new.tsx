@@ -28,7 +28,7 @@ const NewSubsection = () => {
       await router.push(
         Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
-          subsectionSlug: subsection.id,
+          subsectionSlug: subsection.slug,
         })
       )
     } catch (error: any) {

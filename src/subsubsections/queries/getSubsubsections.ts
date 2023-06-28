@@ -37,8 +37,7 @@ export default resolver.pipe(
           where: saveWhere,
           orderBy,
           include: {
-            // TODO: Fix types, the ly to us and say we have this data, but we don't need it
-            // manager: { select: { firstName: true, lastName: true } },
+            manager: { select: { firstName: true, lastName: true } },
             subsection: { select: { slug: true } },
           },
         }),

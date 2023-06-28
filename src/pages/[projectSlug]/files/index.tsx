@@ -115,4 +115,6 @@ const FilesPage: BlitzPage = () => {
   )
 }
 
+FilesPage.authenticate = true
+
 export default FilesPage

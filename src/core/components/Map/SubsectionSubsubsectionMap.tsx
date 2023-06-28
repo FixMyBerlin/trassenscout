@@ -40,7 +40,7 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
       ? Routes.SubsubsectionDashboardPage({ projectSlug, subsectionSlug, subsubsectionSlug })
       : Routes.SubsectionDashboardPage({ projectSlug, subsectionSlug })
 
-    // ctrl+click
+    // alt+click
     if (edit) {
       url = subsubsectionSlug
         ? Routes.EditSubsubsectionPage({ projectSlug, subsectionSlug, subsubsectionSlug })
@@ -50,17 +50,17 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
     void router.push(url, undefined, { scroll: edit ? true : false })
   }
 
-  const handleClickMap = async (e: MapLayerMouseEvent) => {
+  const handleClickMap = (e: MapLayerMouseEvent) => {
     const subsectionSlug = e.features?.at(0)?.properties?.subsectionSlug
     const subsubsectionSlug = e.features?.at(0)?.properties?.subsubsectionSlug
     if (subsectionSlug && subsubsectionSlug) {
-      handleSelect({ subsectionSlug, subsubsectionSlug, edit: e?.originalEvent?.ctrlKey })
+      handleSelect({ subsectionSlug, subsubsectionSlug, edit: e.originalEvent?.altKey })
     }
   }
 
   const [hovered, setHovered] = useState<string | number | null>(null)
   const handleMouseEnter = (e: MapLayerMouseEvent) => {
-    setHovered(e?.features?.[0]?.properties?.id || null)
+    setHovered(e.features?.at(0)?.properties?.id || null)
   }
   const handleMouseLeave = () => {
     setHovered(null)
@@ -141,7 +141,7 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
           handleSelect({
             subsectionSlug: sec.subsection.slug,
             subsubsectionSlug: sec.slug,
-            edit: e.originalEvent.ctrlKey,
+            edit: e.originalEvent.altKey,
           })
         }}
       >
@@ -167,21 +167,26 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
   })
 
   return (
-    <BaseMap
-      id="mainMap"
-      initialViewState={{
-        bounds: sectionBounds,
-        fitBoundsOptions: { padding: 60 },
-      }}
-      onClick={handleClickMap}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      lines={lines}
-      selectableLines={selectableLines}
-      selectablePoints={selectablePoints}
-      dots={dotsGeoms}
-    >
-      {markers}
-    </BaseMap>
+    <>
+      <BaseMap
+        id="mainMap"
+        initialViewState={{
+          bounds: sectionBounds,
+          fitBoundsOptions: { padding: 60 },
+        }}
+        onClick={handleClickMap}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        lines={lines}
+        selectableLines={selectableLines}
+        selectablePoints={selectablePoints}
+        dots={dotsGeoms}
+      >
+        {markers}
+      </BaseMap>
+      <p className="mt-2 text-right text-xs text-gray-400">
+        Schnellzugriff zum Bearbeitne über option+click (Mac) / alt+click (Windows)
+      </p>
+    </>
   )
 }

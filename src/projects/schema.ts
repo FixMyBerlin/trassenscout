@@ -6,8 +6,8 @@ export const ProjectSchema = z.object({
   subTitle: z.string().nullish(),
   description: z.string().nullish(),
   logoSrc: z.string().nullish(),
-  managerId: z.coerce.number(),
   partnerLogoSrcs: z.string().array(),
+  managerId: z.coerce.number().nullish(),
 })
 
 export const ProjectLogoScrcsInputSchema = z.object({

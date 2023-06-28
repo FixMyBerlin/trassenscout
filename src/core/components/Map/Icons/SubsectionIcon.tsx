@@ -16,10 +16,10 @@ export const SubsectionIcon: React.FC<Props> = ({ label, ...props }) => (
 
 export const SubsectionMapIcon: React.FC<Props> = ({ label, ...props }) => (
   <div
-    className={`flex h-[21px] w-auto flex-none
+    className={`flex h-5 w-auto flex-none
         items-center justify-center rounded-md
         border-2 border-gray-900 bg-gray-900 px-1.5 pt-0.5
-        font-sans font-bold leading-none text-[12py] text-white`}
+        font-sans text-xs font-bold leading-none text-white`}
     {...props}
   >
     {label}

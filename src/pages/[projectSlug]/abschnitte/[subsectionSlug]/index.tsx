@@ -33,8 +33,10 @@ export const SubsectionDashboardWithQuery = () => {
 
   const [{ subsubsections }] = useQuery(getSubsubsections, {
     projectSlug: projectSlug!,
-    subsectionSlug: subsectionSlug!,
   })
+  const subsubsectionsForSubsection = subsubsections.filter(
+    (subsub) => subsub.subsectionId === subsection?.id
+  )
   const subsubsection = subsubsections.find((ss) => ss.slug === subsubsectionSlug)
 
   const [{ files }] = useQuery(getFilesWithSubsections, {
@@ -72,7 +74,10 @@ export const SubsectionDashboardWithQuery = () => {
         <div className="flex gap-8">
           <Markdown markdown={subsection.description} className="leading-snug" />
           <div className="space-y-2">
-            <StakeholderSummary stakeholdernotesCounts={subsection.stakeholdernotesCounts} />
+            <StakeholderSummary
+              format="labelNumber"
+              stakeholdernotesCounts={subsection.stakeholdernotesCounts}
+            />
             {/* <p>
                 <strong>Teilstreckenlänge:</strong> TODO
               </p> */}
@@ -89,7 +94,10 @@ export const SubsectionDashboardWithQuery = () => {
             selectedSubsection={subsection}
             subsubsections={subsubsections}
           />
-          <SubsubsectionTable subsubsections={subsubsections} compact={Boolean(subsubsection)} />
+          <SubsubsectionTable
+            subsubsections={subsubsectionsForSubsection}
+            compact={Boolean(subsubsection)}
+          />
         </div>
 
         {subsubsection && (
@@ -116,7 +124,16 @@ export const SubsectionDashboardWithQuery = () => {
         <FileTable files={files} />
       </section>
 
-      <SuperAdminLogData data={{ subsectionSlug }} />
+      <SuperAdminLogData
+        data={{
+          subsections,
+          subsection,
+          subsubsections,
+          subsubsectionsForSubsection,
+          subsubsection,
+          files,
+        }}
+      />
     </>
   )
 }

@@ -6,7 +6,7 @@ import { SurveyResponse } from "db"
 
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { Spinner } from "src/core/components/Spinner"
-import getSurveySessions from "src/survey-sessions/queries/getSurveySessions"
+import getSurveySessionsWithResponses from "src/survey-sessions/queries/getSurveySessionsWithResponses"
 import { Link } from "src/core/components/links"
 import { Pagination } from "src/core/components/Pagination"
 import surveyDefinition from "src/participation/data/survey.json"
@@ -34,11 +34,7 @@ const ITEMS_PER_PAGE = 10
 export const SurveySessionsList = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
-  const [{ surveySessions, hasMore }] = usePaginatedQuery(getSurveySessions, {
-    include: {
-      responses: true,
-    },
-    orderBy: { id: "asc" },
+  const [{ surveySessions, hasMore, count }] = usePaginatedQuery(getSurveySessionsWithResponses, {
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -48,17 +44,16 @@ export const SurveySessionsList = () => {
 
   return (
     <>
-      <h1>SurveySessions</h1>
+      <h1>SurveySessions {count}</h1>
 
       <ul>
         {surveySessions.map((surveySession) => {
-          // @ts-ignore
-          const { id, createdAt, email, responses } = surveySession
+          const { id, createdAt, responses } = surveySession
           return (
             <li key={id} className="border-2 p-2">
               <Link href={Routes.ShowSurveySessionPage({ surveySessionId: id })}>
                 <code className="text-base">
-                  SurveySession {id} - {createdAt.toISOString()} - {email || "null"}
+                  SurveySession {id} - {createdAt.toISOString()}
                 </code>
               </Link>
 
@@ -75,7 +70,7 @@ export const SurveySessionsList = () => {
                           const question = questions[questionId]
                           return (
                             <div key={question.id} className="ml-3">
-                              <span className="italic">
+                              <span className="">
                                 [{question.id}] {question.label.de}
                               </span>{" "}
                               =&nbsp;

@@ -9,14 +9,10 @@ import { startEnd } from "src/core/components/text/startEnd"
 import { longTitle, shortTitle } from "src/core/components/text"
 import { Prettify } from "src/core/types"
 import { SubsectionWithPosition } from "../queries/getSubsection"
+import { StakeholderSummary } from "src/stakeholdernotes/components/StakeholderSummary"
 
 type Props = {
-  subsections: Prettify<
-    Omit<Partial<SubsectionWithPosition>, "slug" | "start" | "end"> &
-      Required<Pick<SubsectionWithPosition, "slug">> &
-      Required<Pick<SubsectionWithPosition, "start">> &
-      Required<Pick<SubsectionWithPosition, "end">>
-  >[]
+  subsections: SubsectionWithPosition[]
   createButton?: boolean
 }
 
@@ -40,11 +36,14 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                 Baulastträger
               </th>
+              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                Anzahl Führungen
+              </th>
               <th
                 scope="col"
                 className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
               >
-                -
+                TÖBs
               </th>
             </tr>
           </thead>
@@ -74,8 +73,14 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                       <span className="uppercase">({subsection.operator?.slug})</span>
                     )}
                   </td>
+                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
+                    {subsection.subsubsectionCount}
+                  </td>
                   <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
-                    {/* TODO Abstimmung */}-
+                    <StakeholderSummary
+                      format="number"
+                      stakeholdernotesCounts={subsection.stakeholdernotesCounts}
+                    />
                   </td>
                 </tr>
               )
@@ -93,7 +98,7 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
           button="blue"
           icon="plus"
           className="mt-4"
-          href={Routes.NewSubsubsectionPage({
+          href={Routes.NewSubsectionPage({
             projectSlug: projectSlug!,
             subsectionSlug: subsectionSlug!,
           })}
