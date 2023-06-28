@@ -10,10 +10,10 @@ import {
   LabeledTextareaField,
 } from "src/core/components/forms"
 import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryField"
+import { LabeledRadiobuttonGroupLabelPos } from "src/core/components/forms/LabeledRadiobuttonGroupLabelPos"
 import { Link } from "src/core/components/links"
 import { quote } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
-import { labelPosOptions } from "src/form"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 import { UserSelectOptions, getUserSelectOptions } from "src/users/utils"
 import { z } from "zod"
@@ -57,7 +57,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>(props: Props<S>)
         <LabeledTextField type="text" name="start" label="Startpunkt" />
         <LabeledTextField type="text" name="end" label="Endpunkt" />
       </div>
-      <LabeledSelect name="labelPos" label="Kartenlabelposition" options={labelPosOptions} />
+      <LabeledRadiobuttonGroupLabelPos />
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledGeometryField name="geometry" label="Geometry der Achse (LineString)" />
 
