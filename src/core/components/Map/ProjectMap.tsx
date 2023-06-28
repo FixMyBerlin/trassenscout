@@ -37,12 +37,14 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
     }
   }
 
-  const [hovered, setHovered] = useState<string | number | null>(null)
+  // We need to separate the state to work around the issue when a marker overlaps a line and both interact
+  const [hoveredMap, setHoveredMap] = useState<string | number | null>(null)
+  const [hoveredMarker, setHoveredMarker] = useState<string | number | null>(null)
   const handleMouseEnter = (e: MapLayerMouseEvent) => {
-    setHovered(e.features?.at(0)?.properties?.id || null)
+    setHoveredMap(e.features?.at(0)?.properties?.subsectionSlug || null)
   }
   const handleMouseLeave = () => {
-    setHovered(null)
+    setHoveredMap(null)
   }
 
   const dotsGeoms = subsections
@@ -54,7 +56,10 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
     subsections.map((subsection) =>
       lineString(subsection.geometry, {
         subsectionSlug: subsection.slug,
-        color: hovered === subsection.slug ? lineColors.hovered : lineColors.selectable,
+        color:
+          hoveredMap === subsection.slug || hoveredMarker === subsection.slug
+            ? lineColors.hovered
+            : lineColors.selectable,
       })
     )
   )
@@ -74,8 +79,9 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
       >
         <TipMarker
           anchor={sub.labelPos || "top"}
-          onMouseEnter={() => setHovered(sub.slug)}
-          onMouseLeave={() => setHovered(null)}
+          anchor={sub.labelPos}
+          onMouseEnter={() => setHoveredMarker(sub.slug)}
+          onMouseLeave={() => setHoveredMarker(null)}
         >
           <StartEndLabel
             icon={<SubsectionMapIcon label={shortTitle(sub.slug)} />}

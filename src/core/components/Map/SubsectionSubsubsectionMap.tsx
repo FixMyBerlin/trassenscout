@@ -58,12 +58,14 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
     }
   }
 
-  const [hovered, setHovered] = useState<string | number | null>(null)
+  // We need to separate the state to work around the issue when a marker overlaps a line and both interact
+  const [hoveredMap, setHoveredMap] = useState<string | number | null>(null)
+  const [hoveredMarker, setHoveredMarker] = useState<string | number | null>(null)
   const handleMouseEnter = (e: MapLayerMouseEvent) => {
-    setHovered(e.features?.at(0)?.properties?.id || null)
+    setHoveredMap(e.features?.at(0)?.properties?.subsubsectionSlug || null)
   }
   const handleMouseLeave = () => {
-    setHovered(null)
+    setHoveredMap(null)
   }
 
   const [minX, minY, maxX, maxY] = bbox(lineString(selectedSubsection.geometry))
@@ -96,7 +98,7 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
             color:
               sec.slug === pageSubsubsectionSlug
                 ? lineColors.selected
-                : sec.slug === hovered
+                : hoveredMap === sec.slug || hoveredMarker === sec.slug
                 ? lineColors.hovered
                 : lineColors.selectable,
           })
@@ -115,7 +117,7 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
             color:
               sec.slug === pageSubsubsectionSlug
                 ? lineColors.selected
-                : sec.slug === hovered
+                : hoveredMap === sec.slug || hoveredMarker === sec.slug
                 ? lineColors.hovered
                 : lineColors.selectable,
           })
@@ -129,37 +131,39 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
     .flat()
     .filter(Boolean)
 
-  const markers = subsubsections.map((sec) => {
-    const [longitude, latitude] = sec.type === "ROUTE" ? midPoint(sec.geometry) : sec.geometry
+  const markers = subsubsections.map((subsub) => {
+    const [longitude, latitude] =
+      subsub.type === "ROUTE" ? midPoint(subsub.geometry) : subsub.geometry
     return (
       <Marker
-        key={sec.id}
+        key={subsub.id}
         longitude={longitude}
         latitude={latitude}
         anchor="center"
         onClick={(e) => {
           handleSelect({
-            subsectionSlug: sec.subsection.slug,
-            subsubsectionSlug: sec.slug,
+            subsectionSlug: subsub.subsection.slug,
+            subsubsectionSlug: subsub.slug,
             edit: e.originalEvent.altKey,
           })
         }}
       >
         <TipMarker
           anchor={sec.labelPos || "top"}
-          onMouseEnter={() => setHovered(sec.slug)}
-          onMouseLeave={() => setHovered(null)}
+          anchor={subsub.labelPos}
+          onMouseEnter={() => setHoveredMarker(subsub.slug)}
+          onMouseLeave={() => setHoveredMarker(null)}
           className={
             // We display all subsubsections, but those of other subsections are faded out
-            sec.subsection.slug === pageSubsectionSlug
+            subsub.subsection.slug === pageSubsectionSlug
               ? "opacity-100"
               : "opacity-50 hover:opacity-100"
           }
         >
           <TitleLabel
-            icon={<SubsubsectionMapIcon label={shortTitle(sec.slug)} />}
-            title={sec.subTitle}
-            subtitle={sec.task}
+            icon={<SubsubsectionMapIcon label={shortTitle(subsub.slug)} />}
+            title={subsub.subTitle}
+            subtitle={subsub.task}
           />
         </TipMarker>
       </Marker>
