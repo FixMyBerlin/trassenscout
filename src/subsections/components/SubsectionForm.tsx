@@ -12,7 +12,7 @@ import {
 import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryField"
 import { LabeledRadiobuttonGroupLabelPos } from "src/core/components/forms/LabeledRadiobuttonGroupLabelPos"
 import { Link } from "src/core/components/links"
-import { quote } from "src/core/components/text"
+import { quote, shortTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 import { UserSelectOptions, getUserSelectOptions } from "src/users/utils"
@@ -29,10 +29,10 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>(props: Props<S>)
   const operatorOptions: [number | string, string][] = [
     ["", "Kein Baulastträger"],
     ...operators.map((o) => {
-      return [o.id, `${o.title} – ${o.slug} (bisher ${o.subsectionCount} Planungsabschnitte)`] as [
-        number,
-        string
-      ]
+      return [
+        o.id,
+        `${o.title} – ${shortTitle(o.slug)} (bisher ${o.subsectionCount} Planungsabschnitte)`,
+      ] as [number, string]
     }),
   ]
 

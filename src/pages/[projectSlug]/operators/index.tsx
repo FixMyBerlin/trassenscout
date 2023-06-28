@@ -72,7 +72,7 @@ export const OperatorsWithData = () => {
               return (
                 <tr key={operator.id}>
                   <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
-                    <strong className="font-semibold">{operator.slug}</strong>
+                    <strong className="font-semibold">{shortTitle(operator.slug)}</strong>
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     <strong className="font-semibold">{operator.title}</strong>
