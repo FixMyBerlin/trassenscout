@@ -74,7 +74,10 @@ export const SubsectionDashboardWithQuery = () => {
         <div className="flex gap-8">
           <Markdown markdown={subsection.description} className="leading-snug" />
           <div className="space-y-2">
-            <StakeholderSummary stakeholdernotesCounts={subsection.stakeholdernotesCounts} />
+            <StakeholderSummary
+              format="labelNumber"
+              stakeholdernotesCounts={subsection.stakeholdernotesCounts}
+            />
             {/* <p>
                 <strong>Teilstreckenlänge:</strong> TODO
               </p> */}

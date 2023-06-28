@@ -36,12 +36,43 @@ export default resolver.pipe(
           ...paginateArgs,
           where: saveWhere,
           orderBy,
-          include: { operator: { select: { id: true, slug: true, title: true } } },
+          include: {
+            operator: { select: { id: true, slug: true, title: true } },
+            stakeholdernotes: { select: { id: true, status: true } },
+            subsubsections: { select: { id: true } },
+          },
         }),
     })
 
+    const subsectionsWithCounts: SubsectionWithPosition[] = []
+
+    subsections.forEach((subsection) => {
+      const relevantStakeholdernotes = subsection.stakeholdernotes.filter(
+        (note) => note.status !== "IRRELEVANT"
+      ).length
+
+      const doneStakeholdernotes = subsection.stakeholdernotes.filter(
+        (note) => note.status === "DONE"
+      ).length
+
+      const subsubsectionCount = subsection.subsubsections.length
+
+      // We only needed those for the counts, we don't actually want the full list to be returned
+      // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)" is true but not relevant here
+      delete subsection.stakeholdernotes
+      // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)" is true but not relevant here
+      delete subsection.subsubsections
+
+      subsectionsWithCounts.push({
+        ...subsection,
+        geometry: subsection.geometry as [number, number][],
+        stakeholdernotesCounts: { relevant: relevantStakeholdernotes, done: doneStakeholdernotes },
+        subsubsectionCount,
+      })
+    })
+
     return {
-      subsections: subsections as SubsectionWithPosition[], // Tip: Validate type shape with `satisfies`
+      subsections: subsectionsWithCounts,
       nextPage,
       hasMore,
       count,
