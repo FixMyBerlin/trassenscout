@@ -149,7 +149,6 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
         }}
       >
         <TipMarker
-          anchor={sec.labelPos || "top"}
           anchor={subsub.labelPos}
           onMouseEnter={() => setHoveredMarker(subsub.slug)}
           onMouseLeave={() => setHoveredMarker(null)}

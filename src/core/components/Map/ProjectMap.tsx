@@ -78,7 +78,6 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
         onClick={(e) => handleSelect({ subsectionSlug: sub.slug, edit: e.originalEvent.altKey })}
       >
         <TipMarker
-          anchor={sub.labelPos || "top"}
           anchor={sub.labelPos}
           onMouseEnter={() => setHoveredMarker(sub.slug)}
           onMouseLeave={() => setHoveredMarker(null)}
