@@ -93,7 +93,7 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
           button="blue"
           icon="plus"
           className="mt-4"
-          href={Routes.NewSubsubsectionPage({
+          href={Routes.NewSubsectionPage({
             projectSlug: projectSlug!,
             subsectionSlug: subsectionSlug!,
           })}
