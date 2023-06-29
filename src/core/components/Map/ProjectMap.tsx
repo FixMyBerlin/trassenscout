@@ -115,7 +115,6 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
         onZoomEnd={handleZoomEnd}
         selectableLines={selectableLines}
         dots={dotsGeoms}
-        hash={true}
       >
         {markers}
       </BaseMap>
