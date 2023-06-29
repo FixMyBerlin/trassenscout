@@ -5,15 +5,22 @@ import React from "react"
 import { Link } from "src/core/components/links"
 import { fileUrl } from "../utils"
 import { DocumentIcon } from "@heroicons/react/24/outline"
+import { Routes } from "@blitzjs/next"
 
 type Props = {
   file: File
   /** @desc No editUrl will hide the edit button */
   editUrl?: RouteUrlObject
+  showFileUrl?: RouteUrlObject
   description?: boolean
 }
 
-export const FilePreview: React.FC<Props> = ({ file, editUrl, description = true }) => {
+export const FilePreview: React.FC<Props> = ({
+  file,
+  editUrl,
+  showFileUrl,
+  description = true,
+}) => {
   const fileType = file.externalUrl.split(".").at(-1) || "?"
   const isImage = ["png", "jpg"].includes(fileType.toLowerCase())
 
@@ -38,21 +45,32 @@ export const FilePreview: React.FC<Props> = ({ file, editUrl, description = true
         {description && (
           <p
             className="mt-1 w-full flex-none truncate text-left"
-            style={editUrl ? { width: "calc(100% - 1rem)" } : {}}
+            style={editUrl ? { width: "calc(100% - 2.5rem)" } : {}}
           >
             {file.title || "-"}
           </p>
         )}
       </Link>
-      {editUrl && (
-        <Link
-          icon="edit"
-          href={editUrl}
-          className="absolute bottom-0 right-0 rounded border border-transparent hover:border-blue-900"
-        >
-          <span className="sr-only">Dokument bearbeiten</span>
-        </Link>
-      )}
+      <div className="absolute -bottom-2 right-0">
+        {editUrl && (
+          <Link
+            icon="edit"
+            href={editUrl}
+            className="rounded border border-transparent hover:border-blue-900"
+          >
+            <span className="sr-only">Grafik bearbeiten</span>
+          </Link>
+        )}
+        {showFileUrl && (
+          <Link
+            icon="delete"
+            className="rounded border border-transparent hover:border-blue-900"
+            href={showFileUrl}
+          >
+            <span className="sr-only">Grafik löschen</span>
+          </Link>
+        )}
+      </div>
     </div>
   )
 }

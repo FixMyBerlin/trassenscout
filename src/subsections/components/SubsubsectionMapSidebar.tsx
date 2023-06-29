@@ -161,6 +161,11 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   fileId: file.id,
                   returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
                 })}
+                showFileUrl={Routes.ShowFilePage({
+                  projectSlug: projectSlug!,
+                  fileId: file.id,
+                  returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
+                })}
               />
             )
           })}
