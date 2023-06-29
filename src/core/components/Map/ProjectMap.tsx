@@ -3,7 +3,7 @@ import { lineString } from "@turf/helpers"
 import { along, featureCollection, length } from "@turf/turf"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
-import { MapLayerMouseEvent, Marker, ViewStateChangeEvent } from "react-map-gl"
+import { MapLayerMouseEvent, MapboxEvent, Marker, ViewStateChangeEvent } from "react-map-gl"
 import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 import { shortTitle } from "../text"
 import { BaseMap } from "./BaseMap"
@@ -39,9 +39,8 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
 
   const [zoom, setZoom] = useState<number | null>(null)
   const expandByZoom = (zoom: number | null) => !!zoom && zoom < 13
-  const handleZoomEnd = (e: ViewStateChangeEvent) => {
-    setZoom(e.viewState.zoom)
-  }
+  const handleZoomEnd = (e: ViewStateChangeEvent) => setZoom(e.viewState.zoom)
+  const handleZoomOnLoad = (e: MapboxEvent) => setZoom(e.target.getZoom())
 
   // We need to separate the state to work around the issue when a marker overlaps a line and both interact
   const [hoveredMap, setHoveredMap] = useState<string | null>(null)
@@ -113,6 +112,7 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onZoomEnd={handleZoomEnd}
+        onLoad={handleZoomOnLoad}
         selectableLines={selectableLines}
         dots={dotsGeoms}
       >

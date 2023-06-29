@@ -5,6 +5,7 @@ import React, { useState } from "react"
 import Map, {
   Layer,
   MapProps,
+  MapboxEvent,
   NavigationControl,
   ScaleControl,
   Source,
@@ -22,7 +23,13 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
   Partial<
     Pick<
       MapProps,
-      "onMouseEnter" | "onMouseLeave" | "onClick" | "onZoomEnd" | "interactiveLayerIds" | "hash"
+      | "onMouseEnter"
+      | "onMouseLeave"
+      | "onClick"
+      | "onZoomEnd"
+      | "onLoad"
+      | "interactiveLayerIds"
+      | "hash"
     >
   > & {
     lines?: FeatureCollection<
@@ -55,6 +62,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   onMouseLeave,
   onClick,
   onZoomEnd,
+  onLoad,
   interactiveLayerIds,
   hash,
   lines,
@@ -79,6 +87,9 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   }
   const handleZoomEnd = (e: ViewStateChangeEvent) => {
     if (onZoomEnd) onZoomEnd(e)
+  }
+  const handleOnLoad = (e: MapboxEvent) => {
+    if (onLoad) onLoad(e)
   }
 
   const dotSource = dots ? (
@@ -153,6 +164,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
           onMouseLeave={handleMouseLeave}
           onClick={onClick}
           onZoomEnd={handleZoomEnd}
+          onLoad={handleOnLoad}
           interactiveLayerIds={[
             interactiveLayerIds,
             selectableLines && selectableLineLayerId,
