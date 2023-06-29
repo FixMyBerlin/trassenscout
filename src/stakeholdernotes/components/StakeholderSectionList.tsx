@@ -61,8 +61,8 @@ export const StakeholdernotesList: React.FC<props> = ({ stakeholdernotes }) => {
               // I tried passing the ref as forwardRef but that did not work for unknown reasons.
               ref={(element) => (disclosureRefs.current[stakeholderNote.id] = element)}
               className={clsx(
-                "scroll-m-0",
-                stakeholderNote.id == paramsStakeholderDetails && "bg-yellow-50"
+                "scroll-m-0"
+                // stakeholderNote.id == paramsStakeholderDetails && "bg-yellow-50"
               )}
             >
               <StakeholderSectionListItem stakeholderNote={stakeholderNote} />

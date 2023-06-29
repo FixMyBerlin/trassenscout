@@ -5,6 +5,7 @@ import React, { useState } from "react"
 import Map, {
   Layer,
   MapProps,
+  MapboxEvent,
   NavigationControl,
   ScaleControl,
   Source,
@@ -22,10 +23,26 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
   Partial<
     Pick<
       MapProps,
-      "onMouseEnter" | "onMouseLeave" | "onClick" | "onZoomEnd" | "interactiveLayerIds" | "hash"
+      | "onMouseEnter"
+      | "onMouseLeave"
+      | "onClick"
+      | "onZoomEnd"
+      | "onLoad"
+      | "interactiveLayerIds"
+      | "hash"
     >
   > & {
-    lines?: FeatureCollection<LineString, { color: string; width?: number; opacity?: number }>
+    lines?: FeatureCollection<
+      LineString,
+      {
+        /** @desc  */
+        color: string
+        radius?: number
+        "border-color"?: string
+        "border-width"?: number
+        opacity?: number
+      }
+    >
     selectableLines?: FeatureCollection<
       LineString,
       { subsectionSlug: string; subsubsectionSlug?: string; color: string; opacity?: number }
@@ -45,6 +62,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   onMouseLeave,
   onClick,
   onZoomEnd,
+  onLoad,
   interactiveLayerIds,
   hash,
   lines,
@@ -69,6 +87,9 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   }
   const handleZoomEnd = (e: ViewStateChangeEvent) => {
     if (onZoomEnd) onZoomEnd(e)
+  }
+  const handleOnLoad = (e: MapboxEvent) => {
+    if (onLoad) onLoad(e)
   }
 
   const dotSource = dots ? (
@@ -112,8 +133,15 @@ export const BaseMap: React.FC<BaseMapProps> = ({
         id={selectablePointLayerId}
         type="circle"
         paint={{
-          "circle-radius": 17,
+          "circle-radius": ["case", ["has", "radius"], ["get", "radius"], 17],
           "circle-color": ["case", ["has", "color"], ["get", "color"], "black"],
+          "circle-stroke-width": ["case", ["has", "border-width"], ["get", "border-width"], 0],
+          "circle-stroke-color": [
+            "case",
+            ["has", "border-color"],
+            ["get", "border-color"],
+            "transparent",
+          ],
           "circle-color-transition": { duration: 0 },
           "circle-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
         }}
@@ -136,6 +164,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
           onMouseLeave={handleMouseLeave}
           onClick={onClick}
           onZoomEnd={handleZoomEnd}
+          onLoad={handleOnLoad}
           interactiveLayerIds={[
             interactiveLayerIds,
             selectableLines && selectableLineLayerId,

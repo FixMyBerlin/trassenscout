@@ -64,6 +64,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
+        optional
         options={getUserSelectOptions(users)}
         help="Wir geben dieser Nutzer:in automatisch Zugriffsrechte auf dem Projekt"
       />

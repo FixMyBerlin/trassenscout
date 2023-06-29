@@ -12,7 +12,7 @@ import { BaseMap } from "./BaseMap"
 import { SubsubsectionMapIcon } from "./Icons"
 import { TitleLabel } from "./Labels"
 import { TipMarker } from "./TipMarker"
-import { lineColors } from "./lineColors"
+import { layerColors } from "./layerColors"
 import { midPoint } from "./utils"
 
 type Props = {
@@ -75,13 +75,11 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
     subsections
       .map((subsection) =>
         lineString(subsection.geometry, {
-          // TODO: Clarify style for selected section
           color:
             subsection.slug === selectedSubsection.slug
-              ? lineColors.selected
-              : lineColors.unselectable,
-          width: 17,
-          opacity: subsection.slug === selectedSubsection.slug ? 0.4 : 0.35,
+              ? layerColors.unselectableCurrent
+              : layerColors.unselectable,
+          // opacity: subsection.slug === selectedSubsection.slug ? 0.4 : 0.35,
         })
       )
       .filter(Boolean)
@@ -97,10 +95,10 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
             subsubsectionSlug: sec.slug,
             color:
               sec.slug === pageSubsubsectionSlug
-                ? lineColors.selected
+                ? layerColors.selected
                 : hoveredMap === sec.slug || hoveredMarker === sec.slug
-                ? lineColors.hovered
-                : lineColors.selectable,
+                ? layerColors.hovered
+                : layerColors.selectable,
           })
       )
       .filter(Boolean)
@@ -114,12 +112,21 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
           point(sec.geometry, {
             subsectionSlug: sec.subsection.slug,
             subsubsectionSlug: sec.slug,
+            opacity: 0.3,
             color:
               sec.slug === pageSubsubsectionSlug
-                ? lineColors.selected
+                ? layerColors.selected
                 : hoveredMap === sec.slug || hoveredMarker === sec.slug
-                ? lineColors.hovered
-                : lineColors.selectable,
+                ? layerColors.hovered
+                : layerColors.selectable,
+            radius: 10,
+            "border-width": 3,
+            "border-color":
+              sec.slug === pageSubsubsectionSlug
+                ? layerColors.selected
+                : hoveredMap === sec.slug || hoveredMarker === sec.slug
+                ? layerColors.hovered
+                : layerColors.selectable,
           })
       )
       .filter(Boolean)
@@ -127,7 +134,7 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
 
   // Dots are only for Subsubsections of type ROUTE
   const dotsGeoms = subsubsections
-    .map((sec) => sec.type === "ROUTE" && [(sec.geometry[0], sec.geometry.at(-1))])
+    .map((sec) => sec.type === "ROUTE" && [sec.geometry[0], sec.geometry.at(-1)])
     .flat()
     .filter(Boolean)
 

@@ -27,9 +27,13 @@ const NewStakeholdernotesWithQuery = () => {
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
-    const createStakeholderNoteArray = values.title.split("\n").map((i: string) => {
-      return { title: i, subsectionId: subsection.id, status: "PENDING", statusText: null }
-    })
+    const createStakeholderNoteArray = values.title
+      .split("\n")
+      .map((i: string) => i.trim())
+      .filter(Boolean)
+      .map((i: string) => {
+        return { title: i, subsectionId: subsection.id, status: "PENDING", statusText: null }
+      })
 
     try {
       for (let i = 0; i < createStakeholderNoteArray.length; i++) {

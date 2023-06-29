@@ -42,8 +42,8 @@ export const StakeholderSectionListItem: React.FC<Props> = ({ stakeholderNote })
           <div className="w-52 flex-none pb-2 pl-4 pr-3 pt-3 sm:w-64 sm:pl-6">
             <StakeholderSectionListItemStatus status={stakeholderNote.status} />
           </div>
-          <div className="flex grow items-center px-3 pb-2 pt-3 font-bold text-blue-500">
-            {stakeholderNote.title}
+          <div className="flex grow items-center px-3 pb-2 pt-3 font-medium text-blue-500">
+            <strong>{stakeholderNote.title}</strong>
           </div>
         </div>
       }

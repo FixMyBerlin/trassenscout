@@ -21,6 +21,7 @@ module.exports = {
       black: colors.black,
       gray: colors.gray,
       purple: colors.purple, // super admin color
+      indigo: colors.indigo, // used for labels
       // primary
       blue: {
         50: "#DFE9F7",

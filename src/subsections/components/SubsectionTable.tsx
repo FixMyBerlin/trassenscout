@@ -10,6 +10,7 @@ import { longTitle, shortTitle } from "src/core/components/text"
 import { Prettify } from "src/core/types"
 import { SubsectionWithPosition } from "../queries/getSubsection"
 import { StakeholderSummary } from "src/stakeholdernotes/components/StakeholderSummary"
+import clsx from "clsx"
 
 type Props = {
   subsections: SubsectionWithPosition[]
@@ -73,7 +74,14 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                       <span className="uppercase">({subsection.operator?.slug})</span>
                     )}
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
+                  <td
+                    className={clsx(
+                      "py-4 pl-4 pr-3 text-sm font-medium group-hover:bg-gray-50",
+                      subsection.subsubsectionCount === 0
+                        ? "text-gray-300 group-hover:text-gray-500"
+                        : "text-gray-900"
+                    )}
+                  >
                     {subsection.subsubsectionCount}
                   </td>
                   <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">

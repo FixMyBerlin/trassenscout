@@ -77,6 +77,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>(props: Props<S>)
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
+        optional
         options={getUserSelectOptions(users)}
       />
     </Form>

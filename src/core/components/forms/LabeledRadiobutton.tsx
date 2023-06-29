@@ -31,7 +31,10 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
     return (
       <div
         {...outerProps}
-        className={clsx(outerProps?.className, "flex break-inside-avoid items-start")}
+        className={clsx(
+          outerProps?.className,
+          "flex break-inside-avoid items-center justify-start"
+        )}
       >
         <div className="flex h-5 items-center">
           <input
