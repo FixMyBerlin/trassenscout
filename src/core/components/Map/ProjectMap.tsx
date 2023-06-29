@@ -10,7 +10,7 @@ import { BaseMap } from "./BaseMap"
 import { SubsectionMapIcon } from "./Icons"
 import { StartEndLabel } from "./Labels"
 import { TipMarker } from "./TipMarker"
-import { lineColors } from "./lineColors"
+import { layerColors } from "./layerColors"
 import { subsectionsBbox } from "./utils"
 
 type Props = { subsections: SubsectionWithPosition[] }
@@ -64,8 +64,8 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
         subsectionSlug: subsection.slug,
         color:
           hoveredMap === subsection.slug || hoveredMarker === subsection.slug
-            ? lineColors.hovered
-            : lineColors.selectable,
+            ? layerColors.hovered
+            : layerColors.selectable,
       })
     )
   )
