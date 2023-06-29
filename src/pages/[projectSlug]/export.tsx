@@ -143,93 +143,85 @@ export const ExportWithQuery = () => {
     setTestPointsOnLine(testPointsOnLine)
 
     // Slice the lineString between the given (and snapped) coordinates.
-    const firstSegmentStart = geoJsonLinestring.geometry.coordinates.at(0)
-    const firstSegmentEnd = testPointsOnLine.at(0)
-    const lastSegmentStart = testPointsOnLine.at(-1)
-    const lastSegmentEnd = geoJsonLinestring.geometry.coordinates.at(-1)
-    if (
-      Boolean(testPointsOnLine.length) &&
-      geoJsonLinestring &&
-      firstSegmentStart &&
-      firstSegmentEnd &&
-      lastSegmentStart &&
-      lastSegmentEnd
-    ) {
-      const firstSegment = lineSlice(point(firstSegmentStart), firstSegmentEnd, geoJsonLinestring)
-      setTestPontLineSegments([firstSegment])
-
-      testPointsOnLine.forEach((pointPoint, index) => {
-        if (index < testPointsOnLine.length - 1) {
-          const startPoint = pointPoint
-          const endPoint = testPointsOnLine[index + 1]
-          if (endPoint) {
-            const segment = lineSlice(startPoint, endPoint, geoJsonLinestring)
-            setTestPontLineSegments((prev) => [...(prev || []), segment])
-          }
-        }
-      })
-
-      const lastSegment = lineSlice(lastSegmentStart, point(lastSegmentEnd), geoJsonLinestring)
-      setTestPontLineSegments((prev) => [...(prev || []), lastSegment])
-    }
+    testPointsOnLine?.forEach((pointPoint, index) => {
+      const startPoint = pointPoint
+      const endPoint = testPointsOnLine.at(index + 1)
+      if (endPoint) {
+        const segment = lineSlice(startPoint, endPoint, geoJsonLinestring)
+        setTestPontLineSegments((prev) => [...(prev || []), segment])
+      }
+    })
   }
 
   return (
     <>
-      <MetaTags noindex title={`Export für ${seoTitleSlug(project.slug)}`} />
-      <PageHeader title={`Export für ${shortTitle(project.slug)}`} className="mt-12" />
+      <MetaTags
+        noindex
+        title={`Export und Schnittpunkt-Finder für ${seoTitleSlug(project.slug)}`}
+      />
+      <PageHeader
+        title={`Export und Schnittpunkt-Finder für ${shortTitle(project.slug)}`}
+        className="mt-12"
+      />
 
       <H2>Planungsabschnitte Karte</H2>
 
       {/* ===== Points via Textarea ===== */}
       <details className="mb-5 rounded border p-2">
         <summary className="cursor-pointer">Testdaten auf der Karte anzeigen</summary>
-        <p className="prose prose-sm !mt-3 max-w-none">
-          Format: <code>long,lat</code>, eine Zeile pro Punkt
-        </p>
         <form onSubmit={handleSubmit(handleShowPoints)} className="space-y-2">
-          <textarea
-            {...register("testPointsString")}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-          />
-          <button type="submit" className={clsx(whiteButtonStyles, "!pb-1 !pt-1 pl-2 pr-2")}>
-            Punkte anzeigen
-          </button>
+          <div className="mt-6 flex gap-4">
+            <div className="flex flex-1 flex-col gap-2">
+              <h4 className="font-semibold">
+                Format: <code>long,lat</code>, eine Zeile pro Punkt
+              </h4>
+              <textarea
+                {...register("testPointsString")}
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              />
+              <button type="submit" className={clsx(whiteButtonStyles, "!pb-1 !pt-1 pl-2 pr-2")}>
+                Punkte anzeigen
+              </button>
+            </div>
+            {testPointsOnLine && (
+              <div className="flex flex-1 flex-col gap-2">
+                <h4 className="font-semibold">
+                  Erkannte, gemappte Punkte{" "}
+                  <span className="ml-0.5 font-light text-gray-500">
+                    (Rot; Gelb der original Punkt)
+                  </span>
+                </h4>
+                <div className="prose max-w-none">
+                  <pre>
+                    <code>
+                      {stringifyGeoJSON(testPointsOnLine.map((p) => p.geometry.coordinates))}
+                    </code>
+                  </pre>
+                </div>
+              </div>
+            )}
+          </div>
           {testPointsOnLine && (
             <div className="prose !mt-6 max-w-none">
-              <h4>
-                Erkannte, gemappte Punkte{" "}
-                <span className="ml-0.5 font-light text-gray-500">
-                  (Rot; Gelb der original Punkt)
-                </span>
-              </h4>
-              <pre>
-                <code>{stringifyGeoJSON(testPointsOnLine.map((p) => p.geometry.coordinates))}</code>
-              </pre>
               <details>
-                <summary>Teilstrecken</summary>
+                <summary className="cursor-pointer font-semibold">Teilstrecken</summary>
                 <div className="grid gap-2 sm:grid-cols-3">
-                  {testPointLineSegments?.map((line, index) => {
+                  {testPointLineSegments?.map((line) => {
                     const start = line.geometry.coordinates.at(0)?.map((c) => c.toFixed(4))
                     const end = line.geometry.coordinates.at(-1)?.map((c) => c.toFixed(4))
                     return (
-                      <div key={stringifyGeoJSON([start, end])}>
-                        <h4>
-                          Abschnitt
-                          <br />
-                          {index === 0 && (
-                            <div className="text-gray-700">Start Trasse bis erster Punkt</div>
-                          )}
-                          {index === testPointLineSegments.length - 1 && (
-                            <div className="text-gray-700">Letzter Punkt bis Ende Trasse</div>
-                          )}
-                          {stringifyGeoJSON(start)} <br />
-                          {stringifyGeoJSON(end)}
-                        </h4>
+                      <details key={stringifyGeoJSON([start, end])} open>
+                        <summary className="cursor-pointer">
+                          <h4 className="inline-block">
+                            Abschnitt
+                            <br />
+                            {stringifyGeoJSON(start)} {stringifyGeoJSON(end)}
+                          </h4>
+                        </summary>
                         <pre>
                           <code>{stringifyGeoJSON(line.geometry.coordinates)}</code>
                         </pre>
-                      </div>
+                      </details>
                     )
                   })}
                 </div>
@@ -454,11 +446,14 @@ export const ExportWithQuery = () => {
       </div>
 
       <H2>Planungsabschnitte GeoJSON</H2>
-      <div className="prose max-w-none">
-        <pre>
-          <code>{stringifyGeoJSON(geoJsonFeatureCollection)}</code>
-        </pre>
-      </div>
+      <details>
+        <summary className="cursor-pointer">Anzeigen…</summary>
+        <div className="prose max-w-none">
+          <pre>
+            <code>{stringifyGeoJSON(geoJsonFeatureCollection)}</code>
+          </pre>
+        </div>
+      </details>
 
       <SuperAdminLogData data={{ project, subsections }} />
     </>
