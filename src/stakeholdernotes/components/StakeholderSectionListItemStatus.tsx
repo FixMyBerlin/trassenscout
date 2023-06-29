@@ -10,7 +10,7 @@ type Props = { status: Stakeholdernote["status"] }
 const statusColors = {
   IRRELEVANT: "text-gray-700 bg-gray-100",
   PENDING: "text-yellow-700 bg-yellow-100",
-  IN_PROGRESS: "text-blue-700 bg-blue-100",
+  IN_PROGRESS: "text-indigo-700 bg-indigo-100",
   DONE: "text-green-700 bg-green-100",
 }
 
