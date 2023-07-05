@@ -7,7 +7,6 @@ import { Spinner } from "src/core/components/Spinner"
 import getSurveys from "src/surveys/queries/getSurveys"
 import { Link } from "src/core/components/links"
 import { Pagination } from "src/core/components/Pagination"
-import ShowSurveyPage from "./[surveyId]"
 
 const ITEMS_PER_PAGE = 100
 
