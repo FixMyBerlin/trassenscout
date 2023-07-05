@@ -116,6 +116,7 @@ model Project {
   files           File[]
   Membership      Membership[]
   Operator        Operator[]
+  Survey          Survey[]
 }
 
 model Membership {
@@ -285,6 +286,16 @@ model File {
   subsectionId    Int?
   Subsubsection   Subsubsection? @relation(fields: [subsubsectionId], references: [id])
   subsubsectionId Int?
+}
+
+model Survey {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId Int
+  slug      String   @unique
+  active    Boolean  @default(false)
 }
 
 model SurveySession {
