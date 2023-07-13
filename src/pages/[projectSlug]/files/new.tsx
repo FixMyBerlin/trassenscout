@@ -147,11 +147,7 @@ const NewFileWithQuery = () => {
           <br />{" "}
           {["FILE_UPLOADING", "FILE_ERROR", "FILE_UPLOADED", "FILE_SAVED"].includes(
             uploadState
-          ) && (
-            <strong>
-              Fortschritt: {(files[0]?.progress || 0).toLocaleString("de-DE", { style: "percent" })}
-            </strong>
-          )}
+          ) && <strong>Fortschritt: {(files[0]?.progress || 0).toFixed(1)}%</strong>}
         </div>
       )}
       <ButtonWrapper className="mt-10">
