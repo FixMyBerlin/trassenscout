@@ -1,6 +1,5 @@
-import { multiLineString, MultiLineString } from "@turf/helpers"
+import { MultiLineString } from "@turf/helpers"
 import clsx from "clsx"
-import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import React, { useCallback, useContext, useEffect, useState } from "react"
 import Map, {
@@ -12,9 +11,9 @@ import Map, {
   NavigationControl,
   Source,
   useMap,
-} from "react-map-gl"
-import { PinContext } from "src/participation/context/contexts"
+} from "react-map-gl/maplibre"
 import { LayerType } from "src/core/components/Map/BackgroundSwitcher"
+import { PinContext } from "src/participation/context/contexts"
 import { MapBanner } from "./MapBanner"
 import { ParticipationBackgroundSwitcher } from "./ParticipationBackgroundSwitcher"
 import Pin from "./Pin"
@@ -84,7 +83,7 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
       setIsMapDirty(true)
       logEvents((_events) => ({ ..._events, onDragStart: event.lngLat }))
     },
-    [setIsMapDirty]
+    [setIsMapDirty],
   )
 
   const onMarkerDrag = (event: MarkerDragEvent) => {
@@ -128,7 +127,6 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
     <div className={clsx(className, "h-[500px]")}>
       <Map
         id="mainMap"
-        mapLib={maplibregl}
         initialViewState={{
           bounds: config.bounds,
         }}

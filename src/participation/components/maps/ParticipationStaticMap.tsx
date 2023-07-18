@@ -1,9 +1,8 @@
 import { MultiLineString } from "@turf/helpers"
 import clsx from "clsx"
-import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import React, { useEffect } from "react"
-import Map, { Layer, Marker, Source, useMap } from "react-map-gl"
+import Map, { Layer, Marker, Source, useMap } from "react-map-gl/maplibre"
 import StaticPin from "./StaticPin"
 
 type Props = {
@@ -34,7 +33,6 @@ export const ParticipationStaticMap: React.FC<Props> = ({
     <div className={clsx(className, "h-[230px]")}>
       <Map
         id="mainMap"
-        mapLib={maplibregl}
         initialViewState={{
           longitude: marker.lng,
           latitude: marker.lat,
