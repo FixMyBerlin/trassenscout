@@ -30,7 +30,7 @@ export type Uploader<P = any> = (
   params: P,
   eventHandlers: {
     onProgress: (uploaded: number) => void
-  }
+  },
 ) => Promise<UploadResult>
 
 export const useUploader = (strategy: Strategy, uploader: Uploader, oldOptions?: OldOptions) => {
@@ -42,7 +42,7 @@ export const useUploader = (strategy: Strategy, uploader: Uploader, oldOptions?:
     if (oldOptions?.endpoint) {
       if (process.env.NODE_ENV === "development") {
         console.warn(
-          "[Next S3 Upload] The `endpoint` option has been replaced by `endpoint.request.url`. For more information see: https://next-s3-upload.codingvalue.com/changes/endpoint"
+          "[Next S3 Upload] The `endpoint` option has been replaced by `endpoint.request.url`. For more information see: https://next-s3-upload.codingvalue.com/changes/endpoint",
         )
       }
 

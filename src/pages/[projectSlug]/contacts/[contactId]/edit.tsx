@@ -24,7 +24,7 @@ const EditContactWithQuery = () => {
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
-    }
+    },
   )
   const [updateContactMutation] = useMutation(updateContact)
 
@@ -40,7 +40,7 @@ const EditContactWithQuery = () => {
         Routes.ShowContactPage({
           projectSlug: projectSlug!,
           contactId: updated.id,
-        })
+        }),
       )
     } catch (error: any) {
       console.error(error)

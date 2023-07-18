@@ -20,7 +20,7 @@ export const sendCsv = (
   res: NextApiResponse,
   headers: { id: string; title: string }[],
   data: Record<string, any>[],
-  filename: string
+  filename: string,
 ) => {
   const csvStringifier = createObjectCsvStringifier({
     header: headers,

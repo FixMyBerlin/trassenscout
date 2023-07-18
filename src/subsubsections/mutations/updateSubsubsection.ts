@@ -10,7 +10,7 @@ import getSubsubsectionProjectId from "../queries/getSubsubsectionProjectId"
 const UpdateSubsubsectionSchema = SubsubsectionSchema.merge(
   z.object({
     id: z.number(),
-  })
+  }),
 )
 
 export default resolver.pipe(
@@ -22,5 +22,5 @@ export default resolver.pipe(
       data,
     })
     return subsubsection as SubsubsectionWithPosition // Tip: Validate type shape with `satisfies`
-  }
+  },
 )

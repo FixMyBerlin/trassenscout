@@ -40,7 +40,7 @@ export const ParticipationLabeledCheckbox = forwardRef<
             "h-4 w-4 cursor-pointer rounded group-hover:border-gray-400",
             hasError
               ? "border-red-800 text-red-500 shadow-sm shadow-red-200 focus:ring-red-800"
-              : "border-gray-300 text-pink-500  focus:ring-0"
+              : "border-gray-300 text-pink-500  focus:ring-0",
           )}
         />
       </div>
@@ -49,7 +49,7 @@ export const ParticipationLabeledCheckbox = forwardRef<
         {...labelProps}
         className={clsx(
           labelProps?.className,
-          "-ml-6 flex h-full min-h-[2.5rem]  w-full cursor-pointer flex-col items-start justify-center pl-9 text-sm font-medium text-gray-700 hover:text-gray-800 sm:w-auto sm:pr-24"
+          "-ml-6 flex h-full min-h-[2.5rem]  w-full cursor-pointer flex-col items-start justify-center pl-9 text-sm font-medium text-gray-700 hover:text-gray-800 sm:w-auto sm:pr-24",
         )}
       >
         {/* This pt-0.5 is just because of our font, which has a weird line-height so its hard to align to other elements */}

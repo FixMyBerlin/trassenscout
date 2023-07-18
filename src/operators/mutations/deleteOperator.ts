@@ -11,5 +11,5 @@ const DeleteOperatorSchema = z.object({
 export default resolver.pipe(
   resolver.zod(DeleteOperatorSchema),
   authorizeProjectAdmin(getOperatorProjectId),
-  async ({ id }) => await db.operator.deleteMany({ where: { id } })
+  async ({ id }) => await db.operator.deleteMany({ where: { id } }),
 )

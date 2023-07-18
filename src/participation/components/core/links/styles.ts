@@ -29,7 +29,7 @@ const whiteButtonStylesForLinkElement = clsx(
   buttonBase,
   "bg-white ring-1 ring-gray-400",
   hoverStyleForLinkElement,
-  activeStyleWhiteLinkElement
+  activeStyleWhiteLinkElement,
 )
 // for button elements
 export const participationWhiteButtonStyles = clsx(
@@ -37,7 +37,7 @@ export const participationWhiteButtonStyles = clsx(
   "enabled:bg-white enabled:ring-1 enabled:ring-gray-400",
   "disabled:text-gray-400 disabled:bg-white disabled:ring-1 disabled:ring-gray-200",
   hoverStyleForButtonElement,
-  activeStyleWhiteButtonElement
+  activeStyleWhiteButtonElement,
 )
 
 // PINK BUTTON
@@ -45,19 +45,19 @@ export const participationWhiteButtonStyles = clsx(
 const pinkButtonStylesForLinkElement = clsx(
   buttonBase,
   "text-white bg-pink-500",
-  activeStylePinkLinkElement
+  activeStylePinkLinkElement,
 )
 // for button elements
 export const participationPinkButtonStyles = clsx(
   buttonBase,
   "enabled:text-white enabled:bg-pink-500",
   "disabled:bg-pink-100 disabled:text-white",
-  activeStylePinkButtonElement
+  activeStylePinkButtonElement,
 )
 
 export const selectParticipationLinkStyle = (
   button: ParticipationLinkProps["button"],
-  className?: string
+  className?: string,
 ) => {
   switch (button) {
     case true:

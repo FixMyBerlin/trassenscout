@@ -31,5 +31,5 @@ export default resolver.pipe(
     const subsection = await db.subsection.findFirst(query)
     if (!subsection) throw new NotFoundError()
     return subsection as SubsectionWithSubsubsectionsWithPosition // Tip: Validate type shape with `satisfies`
-  }
+  },
 )

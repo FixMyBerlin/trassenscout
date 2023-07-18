@@ -13,5 +13,5 @@ const GetCalendarEntrySchema = z.object({
 export default resolver.pipe(
   resolver.zod(GetCalendarEntrySchema),
   authorizeProjectAdmin(getCalendarEntryProjectId),
-  async ({ id }) => await db.calendarEntry.findFirstOrThrow({ where: { id } })
+  async ({ id }) => await db.calendarEntry.findFirstOrThrow({ where: { id } }),
 )

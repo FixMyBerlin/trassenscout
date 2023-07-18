@@ -21,5 +21,5 @@ export default resolver.pipe(
       where: { id },
     })) as SurveySessionWithResponses
     return surveySession
-  }
+  },
 )

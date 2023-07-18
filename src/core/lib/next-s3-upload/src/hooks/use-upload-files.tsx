@@ -34,8 +34,8 @@ export const useUploadFiles = () => {
               size: file.size,
               progress: file.size ? (uploaded / file.size) * 100 : 0,
             }
-          : trackedFile
-      )
+          : trackedFile,
+      ),
     )
   }
 

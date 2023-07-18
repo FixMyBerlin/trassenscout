@@ -9,7 +9,7 @@ import { CalendarEntrySchema } from "../schema"
 const UpdateCalendarEntrySchema = CalendarEntrySchema.merge(
   z.object({
     id: z.number(),
-  })
+  }),
 )
 
 export default resolver.pipe(
@@ -19,5 +19,5 @@ export default resolver.pipe(
     await db.calendarEntry.update({
       where: { id },
       data,
-    })
+    }),
 )

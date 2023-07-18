@@ -13,5 +13,5 @@ export const FileInput = forwardRef<HTMLInputElement, FileInputProps>(
     }
 
     return <input onChange={handleChange} {...restOfProps} ref={forwardedRef} type="file" />
-  }
+  },
 )

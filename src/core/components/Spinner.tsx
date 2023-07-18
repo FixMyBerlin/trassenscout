@@ -19,7 +19,7 @@ export const Spinner: React.FC<Props> = ({ page = false, size = "12" }) => {
           className={clsx(
             sizeClasses[size],
             page ? "my-20" : "",
-            "inline animate-spin fill-blue-500 text-gray-200 dark:text-gray-600"
+            "inline animate-spin fill-blue-500 text-gray-200 dark:text-gray-600",
           )}
           viewBox="0 0 100 101"
           fill="none"

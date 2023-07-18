@@ -75,7 +75,7 @@ const ParticipationMainPage: BlitzPage = () => {
 
   const handleSubmitFeedback = async (
     feedbackResponses: Record<string, any>,
-    submitterId: string
+    submitterId: string,
   ) => {
     setIsSpinner(true)
     setResponses([...responses, feedbackResponses])

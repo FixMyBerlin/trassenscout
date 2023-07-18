@@ -30,7 +30,7 @@ const EditCalendarEntry = () => {
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
-    }
+    },
   )
   const [updateCalendarEntryMutation] = useMutation(updateCalendarEntry)
 
@@ -47,7 +47,7 @@ const EditCalendarEntry = () => {
         Routes.ShowCalendarEntryPage({
           projectSlug: projectSlug!,
           calendarEntryId: updated.id,
-        })
+        }),
       )
     } catch (error: any) {
       console.error(error)
@@ -56,7 +56,7 @@ const EditCalendarEntry = () => {
   }
 
   const Schema = CalendarEntrySchema.omit({ startAt: true }).merge(
-    CalendarEntryStartDateStartTimeSchema
+    CalendarEntryStartDateStartTimeSchema,
   )
   type InitialValue = z.infer<typeof Schema>
 

@@ -99,7 +99,7 @@ const NewFileWithQuery = () => {
         projectSlug: projectSlug!,
         fileId: file.id,
         returnPath: params.returnPath,
-      })
+      }),
     )
   }
 
@@ -111,7 +111,7 @@ const NewFileWithQuery = () => {
           htmlFor="file-upload"
           className={clsx(
             fileChoosen ? selectLinkStyle("white") : selectLinkStyle("blue"),
-            "cursor-pointer"
+            "cursor-pointer",
           )}
         >
           {fileChoosen ? "Andere Datei auswählen" : "Datei auswählen"}
@@ -140,13 +140,13 @@ const NewFileWithQuery = () => {
       )} */}
 
       {["FILE_SELECTED", "FILE_UPLOADING", "FILE_ERROR", "FILE_UPLOADED", "FILE_SAVED"].includes(
-        uploadState
+        uploadState,
       ) && (
         <div className="rounded-lg border px-4 py-2">
           Ausgewählte Datei: <strong>{fileToUpload!.name}</strong>
           <br />{" "}
           {["FILE_UPLOADING", "FILE_ERROR", "FILE_UPLOADED", "FILE_SAVED"].includes(
-            uploadState
+            uploadState,
           ) && <strong>Fortschritt: {(files[0]?.progress || 0).toFixed(1)}%</strong>}
         </div>
       )}
@@ -177,7 +177,7 @@ const NewFileWithQuery = () => {
           state: <code>{uploadState}</code>
         </p>
         {["FILE_SELECTED", "FILE_UPLOADING", "FILE_ERROR", "FILE_UPLOADED", "FILE_SAVED"].includes(
-          uploadState
+          uploadState,
         ) && (
           <p>
             type: <code>{fileToUpload!.type}</code>

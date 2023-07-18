@@ -21,7 +21,7 @@ export const FooterLogosWithQuery: React.FC<Props> = ({ className }) => {
       <ul
         className={clsx(
           "mx-auto grid w-full grid-flow-row grid-cols-3 items-center justify-evenly gap-8 pb-4 sm:grid-cols-4 md:grid-cols-5",
-          className
+          className,
         )}
       >
         {logos.map((partnerLogo) => (

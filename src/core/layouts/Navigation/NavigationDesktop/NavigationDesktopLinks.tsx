@@ -13,7 +13,7 @@ export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
     <div className="flex gap-4">
       {menuItems?.map((item) => {
         const current = [item.href.pathname, ...(item.alsoHighlightPathnames || [])].includes(
-          pathname
+          pathname,
         )
 
         return (
@@ -24,7 +24,7 @@ export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
               current
                 ? "bg-gray-300 text-gray-900"
                 : "hover:bg-gray-100 text-gray-50 hover:text-gray-900",
-              "rounded-md px-3 py-2 text-sm font-medium"
+              "rounded-md px-3 py-2 text-sm font-medium",
             )}
             aria-current={current ? "page" : undefined}
           >

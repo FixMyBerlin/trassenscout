@@ -16,7 +16,7 @@ const UserWithQuery: React.FC = () => {
         <Link
           className={clsx(
             "flex rounded-full bg-gray-800 p-1 text-sm",
-            "hover:bg-gray-700 focus:bg-gray-700"
+            "hover:bg-gray-700 focus:bg-gray-700",
           )}
           href={Routes.LoginPage()}
         >

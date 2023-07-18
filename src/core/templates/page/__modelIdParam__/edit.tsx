@@ -22,7 +22,7 @@ const Edit__ModelName__ = () => {
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
-    }
+    },
   )
   const [update__ModelName__Mutation] = useMutation(update__ModelName__)
 
@@ -40,7 +40,7 @@ const Edit__ModelName__ = () => {
               __parentModelId__: __parentModelId__!,
               __modelId__: updated.id,
             })
-          : Routes.Show__ModelName__Page({ __modelId__: updated.id })
+          : Routes.Show__ModelName__Page({ __modelId__: updated.id }),
       )
     } catch (error: any) {
       console.error(error)

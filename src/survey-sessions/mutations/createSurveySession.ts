@@ -6,5 +6,5 @@ const CreateSurveySession = z.object({})
 
 export default resolver.pipe(
   resolver.zod(CreateSurveySession),
-  async (input) => await db.surveySession.create({ data: input })
+  async (input) => await db.surveySession.create({ data: input }),
 )

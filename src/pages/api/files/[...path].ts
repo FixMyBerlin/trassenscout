@@ -17,7 +17,7 @@ export default async function downloadFile(req: NextApiRequest, res: NextApiResp
     const file = await getFileWithSubsections(
       { id: Number(req.query.path![0]) },
       // @ts-ignore will work
-      { session: await getSession(req, res) }
+      { session: await getSession(req, res) },
     )
 
     const { hostname, pathname } = new URL(file.externalUrl)

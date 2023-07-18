@@ -48,11 +48,11 @@ export default resolver.pipe(
 
     subsections.forEach((subsection) => {
       const relevantStakeholdernotes = subsection.stakeholdernotes.filter(
-        (note) => note.status !== "IRRELEVANT"
+        (note) => note.status !== "IRRELEVANT",
       ).length
 
       const doneStakeholdernotes = subsection.stakeholdernotes.filter(
-        (note) => note.status === "DONE"
+        (note) => note.status === "DONE",
       ).length
 
       const subsubsectionCount = subsection.subsubsections.length
@@ -77,5 +77,5 @@ export default resolver.pipe(
       hasMore,
       count,
     }
-  }
+  },
 )

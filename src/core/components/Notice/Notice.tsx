@@ -86,7 +86,7 @@ export const Notice: React.FC<Props> = ({ type, title, children, actionText, act
                   type="button"
                   className={clsx(
                     actionClasses,
-                    "rounded-md px-2 py-1.5 text-sm font-medium focus:outline-none focus:ring-2  focus:ring-offset-2"
+                    "rounded-md px-2 py-1.5 text-sm font-medium focus:outline-none focus:ring-2  focus:ring-offset-2",
                   )}
                   onClick={action}
                 >

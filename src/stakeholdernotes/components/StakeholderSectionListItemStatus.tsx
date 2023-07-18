@@ -28,7 +28,7 @@ export const StakeholderSectionListItemStatus: React.FC<Props> = ({ status }) =>
     <div
       className={clsx(
         statusColors[status],
-        "flex w-full items-center justify-between gap-2 rounded-full px-5 py-1 font-bold"
+        "flex w-full items-center justify-between gap-2 rounded-full px-5 py-1 font-bold",
       )}
     >
       {statusIcon[status]} <div className="grow text-center">{label}</div>
