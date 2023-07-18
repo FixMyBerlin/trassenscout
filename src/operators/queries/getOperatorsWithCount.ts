@@ -5,7 +5,7 @@ import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 
 type GetOperatorsInput = { projectSlug: string } & Pick<
-  Prisma.FileFindManyArgs,
+  Prisma.OperatorFindManyArgs,
   "where" | "orderBy" | "skip" | "take"
 >
 
@@ -35,7 +35,7 @@ export default resolver.pipe(
           ...operator,
           subsectionCount,
         }
-      })
+      }),
     )
 
     return {
@@ -44,5 +44,5 @@ export default resolver.pipe(
       hasMore,
       count,
     }
-  }
+  },
 )
