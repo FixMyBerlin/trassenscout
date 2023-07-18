@@ -4,13 +4,14 @@ import "maplibre-gl/dist/maplibre-gl.css"
 import React, { useState } from "react"
 import Map, {
   Layer,
+  MapEvent,
+  MapLayerMouseEvent,
   MapProps,
-  MapboxEvent,
   NavigationControl,
   ScaleControl,
   Source,
   ViewStateChangeEvent,
-} from "react-map-gl"
+} from "react-map-gl/maplibre"
 import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher"
 
 const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
@@ -77,18 +78,18 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   }
 
   const [cursorStyle, setCursorStyle] = useState("grab")
-  const handleMouseEnter = (e: mapboxgl.MapLayerMouseEvent) => {
+  const handleMouseEnter = (e: MapLayerMouseEvent) => {
     if (onMouseEnter) onMouseEnter(e)
     setCursorStyle("pointer")
   }
-  const handleMouseLeave = (e: mapboxgl.MapLayerMouseEvent) => {
+  const handleMouseLeave = (e: MapLayerMouseEvent) => {
     if (onMouseLeave) onMouseLeave(e)
     setCursorStyle("grab")
   }
   const handleZoomEnd = (e: ViewStateChangeEvent) => {
     if (onZoomEnd) onZoomEnd(e)
   }
-  const handleOnLoad = (e: MapboxEvent) => {
+  const handleOnLoad = (e: MapEvent) => {
     if (onLoad) onLoad(e)
   }
 

@@ -13,7 +13,7 @@ import { bbox, lineSlice, nearestPointOnLine } from "@turf/turf"
 import clsx from "clsx"
 import { Suspense, useState } from "react"
 import { useForm } from "react-hook-form"
-import { Layer, MapboxGeoJSONFeature, Marker, Source } from "react-map-gl"
+import { MapGeoJSONFeature, Layer, MapLayerMouseEvent, Marker, Source } from "react-map-gl/maplibre"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { BaseMap } from "src/core/components/Map/BaseMap"
 import { subsectionsBbox } from "src/core/components/Map/utils"
@@ -42,7 +42,7 @@ function stringifyGeoJSON(geojson: any) {
       }
       return value
     },
-    2
+    2,
   )
     ?.replaceAll('"[', "[")
     ?.replaceAll(']"', "]")
@@ -69,7 +69,7 @@ export const ExportWithQuery = () => {
         color: index % 2 === 0 ? "#0D1C31" : "#2C62A9",
       }
       return lineString(subs.geometry, properties, { bbox: bbox(lineString(subs.geometry)) })
-    })
+    }),
   )
   const geoJsonLinestring = lineString(subsections.map((subs) => subs.geometry).flat())
 
@@ -79,25 +79,26 @@ export const ExportWithQuery = () => {
     .filter(Boolean)
 
   // ===== Click Feature, NewLine Feature =====
-  const [clickedFeatures, setClickedFeatures] = useState<MapboxGeoJSONFeature[] | undefined>(
-    undefined
-  )
+  const [clickedFeatures, setClickedFeatures] = useState<MapGeoJSONFeature[] | undefined>(undefined)
   const [pointOneClicked, setPointOneClicked] = useState<Feature<Point> | undefined>(undefined)
   const [pointOneLine, setPointOneLine] = useState<Feature<Point> | undefined>(undefined)
   const [pointTwoClicked, setPointTwoClicked] = useState<Feature<Point> | undefined>(undefined)
   const [pointTwoLine, setPointTwoLine] = useState<Feature<Point> | undefined>(undefined)
   const [newLine, setNewLine] = useState<Feature<LineString> | undefined>(undefined)
 
-  const handleClick = (event: mapboxgl.MapLayerMouseEvent) => {
+  const handleClick = (event: MapLayerMouseEvent) => {
     event.features && setClickedFeatures(event.features)
 
     if (!pointOneLine) {
-      const clickedPoint = point(event.lngLat.toArray())
+      // Change back to the simpler… once https://github.com/visgl/react-map-gl/issues/2239 is resolved
+      // const clickedPoint = point(event.lngLat.toArray())
+      const clickedPoint = point([event.lngLat.lng, event.lngLat.lat])
       setPointOneClicked(point(clickedPoint.geometry.coordinates, { color: "#B68C06", radius: 8 }))
       const nearestPoint = nearestPointOnLine(geoJsonLinestring, clickedPoint)
       setPointOneLine(nearestPoint)
     } else {
-      const clickedPoint = point(event.lngLat.toArray())
+      // const clickedPoint = point(event.lngLat.toArray())
+      const clickedPoint = point([event.lngLat.lng, event.lngLat.lat])
       setPointTwoClicked(point(clickedPoint.geometry.coordinates, { color: "#B68C06", radius: 8 }))
       const nearestPoint = nearestPointOnLine(geoJsonLinestring, clickedPoint)
       setPointTwoLine(nearestPoint)
@@ -138,7 +139,7 @@ export const ExportWithQuery = () => {
     }, [])
     setTestPoints(points.map((p) => point(p)))
     const testPointsOnLine = points.map((p) =>
-      point(nearestPointOnLine(geoJsonLinestring, p).geometry.coordinates)
+      point(nearestPointOnLine(geoJsonLinestring, p).geometry.coordinates),
     )
     setTestPointsOnLine(testPointsOnLine)
 
@@ -280,7 +281,7 @@ export const ExportWithQuery = () => {
           key="nearestPoint"
           type="geojson"
           data={featureCollection(
-            [pointOneLine, pointOneClicked, pointTwoLine, pointTwoClicked].filter(Boolean)
+            [pointOneLine, pointOneClicked, pointTwoLine, pointTwoClicked].filter(Boolean),
           )}
         >
           <Layer
@@ -302,7 +303,7 @@ export const ExportWithQuery = () => {
               [pointTwoLine?.geometry?.coordinates, pointTwoClicked?.geometry?.coordinates],
             ]
               .map((e) => e.filter(Boolean))
-              .filter((e) => e.length)
+              .filter((e) => e.length),
           )}
         >
           <Layer
@@ -340,8 +341,8 @@ export const ExportWithQuery = () => {
             return (
               <Marker
                 key={JSON.stringify(point.geometry.coordinates)}
-                latitude={point.geometry.coordinates[1]}
-                longitude={point.geometry.coordinates[0]}
+                latitude={point.geometry.coordinates[1] as number}
+                longitude={point.geometry.coordinates[0] as number}
                 anchor="left"
               >
                 <div className="ml-3 rounded bg-red-700 px-1 py-0 text-xs text-red-50">
