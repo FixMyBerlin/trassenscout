@@ -17,7 +17,7 @@ export interface LabeledTextareaProps extends PropsWithoutRef<JSX.IntrinsicEleme
 export const LabeledTextareaField = forwardRef<HTMLTextAreaElement, LabeledTextareaProps>(
   (
     { name, label, help, outerProps, labelProps, optional, className: textareaClasName, ...props },
-    ref
+    ref,
   ) => {
     const {
       register,
@@ -46,7 +46,7 @@ export const LabeledTextareaField = forwardRef<HTMLTextAreaElement, LabeledTexta
             "mt-1 block w-full rounded-md shadow-sm sm:text-sm",
             hasError
               ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
-              : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
           )}
         />
         {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}
@@ -62,5 +62,5 @@ export const LabeledTextareaField = forwardRef<HTMLTextAreaElement, LabeledTexta
         />
       </div>
     )
-  }
+  },
 )

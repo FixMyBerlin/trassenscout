@@ -41,7 +41,7 @@ const EditSubsection = () => {
         Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
           subsectionSlug: updated.slug,
-        })
+        }),
       )
     } catch (error: any) {
       console.error(error)
@@ -57,7 +57,7 @@ const EditSubsection = () => {
         Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
           subsectionSlug: subsectionSlug!,
-        })
+        }),
       )
     }
   }

@@ -35,5 +35,5 @@ export default resolver.pipe(
 
     return { id }
   },
-  async ({ id }) => await db.file.deleteMany({ where: { id } })
+  async ({ id }) => await db.file.deleteMany({ where: { id } }),
 )

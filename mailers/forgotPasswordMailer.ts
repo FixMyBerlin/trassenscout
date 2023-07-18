@@ -34,7 +34,7 @@ export function forgotPasswordMailer({ to, token }: ResetPasswordMailer) {
         const mailjet = Mailjet.apiConnect(
           // @ts-ignore
           process.env.MAILJET_APIKEY_PUBLIC,
-          process.env.MAILJET_APIKEY_PRIVATE
+          process.env.MAILJET_APIKEY_PRIVATE,
         )
         const request = mailjet.post("send", { version: "v3.1" }).request({ Messages: [msg] })
         request

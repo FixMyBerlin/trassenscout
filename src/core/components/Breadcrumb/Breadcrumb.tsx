@@ -41,7 +41,7 @@ export const Breadcrumb: React.FC = () => {
       projectSlug: projectSlug!,
       subsectionSlug: subsectionSlug!,
     },
-    { enabled: !!projectSlug && !!subsectionSlug }
+    { enabled: !!projectSlug && !!subsectionSlug },
   )
 
   return (

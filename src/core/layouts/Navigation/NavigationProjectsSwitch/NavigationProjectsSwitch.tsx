@@ -35,7 +35,7 @@ export const NavigationProjectsSwitch: React.FC<Props> = ({ projects }) => {
             className={clsx(
               "flex rounded-md bg-yellow-500 px-3 py-2 text-sm font-medium text-gray-800",
               open ? "bg-yellow-400" : "hover:bg-yellow-400 focus:bg-yellow-400",
-              "focus:outline-none focus:ring-2 focus:ring-white/30"
+              "focus:outline-none focus:ring-2 focus:ring-white/30",
             )}
           >
             <span className="sr-only">Trassenwechsel</span>
@@ -67,7 +67,7 @@ export const NavigationProjectsSwitch: React.FC<Props> = ({ projects }) => {
                             classNameOverwrites={clsx(
                               current && "bg-gray-200",
                               active && "bg-gray-100",
-                              "text-blue-500 hover:text-blue-800 flex items-center rounded-md px-3 py-2 text-sm gap-2 items-center my-1.5 first:mt-0 last:mb-0"
+                              "text-blue-500 hover:text-blue-800 flex items-center rounded-md px-3 py-2 text-sm gap-2 items-center my-1.5 first:mt-0 last:mb-0",
                             )}
                           >
                             {current && <ProjectLogo />}

@@ -8,5 +8,5 @@ import getSubsectionProjectId from "src/subsections/queries/getSubsectionProject
 export default resolver.pipe(
   resolver.zod(SubsubsectionSchema),
   authorizeProjectAdmin(getSubsectionProjectId),
-  async (input) => await db.subsubsection.create({ data: input })
+  async (input) => await db.subsubsection.create({ data: input }),
 )

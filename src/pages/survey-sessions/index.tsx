@@ -88,7 +88,7 @@ export const SurveySessionsList = () => {
                                   return responseIds
                                     .map(
                                       (responseId) =>
-                                        `[${responseId}] ${question.responses[responseId].text.de}`
+                                        `[${responseId}] ${question.responses[responseId].text.de}`,
                                     )
                                     .join(", ")
                                 }

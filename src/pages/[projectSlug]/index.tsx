@@ -28,7 +28,7 @@ export const ProjectDashboardWithQuery = () => {
   const params = useRouterQuery()
   const filteredSubsections = params.operator
     ? subsections.filter(
-        (sec) => typeof params.operator === "string" && sec.operator?.slug === params.operator
+        (sec) => typeof params.operator === "string" && sec.operator?.slug === params.operator,
       )
     : subsections
 
@@ -56,7 +56,7 @@ export const ProjectDashboardWithQuery = () => {
         title={shortTitle(project.slug)}
         subtitle={project.subTitle}
         description={`Willkommen im Trassenscout zum ${shortTitle(
-          project.slug
+          project.slug,
         )}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
         action={
           <Link icon="edit" href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>

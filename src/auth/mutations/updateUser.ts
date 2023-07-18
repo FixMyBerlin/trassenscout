@@ -7,5 +7,5 @@ export default resolver.pipe(
   resolver.authorize(/* ok */),
   async (data, ctx) => {
     return await db.user.update({ where: { id: ctx.session.userId }, data })
-  }
+  },
 )

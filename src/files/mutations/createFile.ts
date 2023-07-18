@@ -9,7 +9,7 @@ import { FileSchema } from "../schema"
 const CreateFileSchema = FileSchema.merge(
   z.object({
     projectSlug: z.string(),
-  })
+  }),
 )
 
 export default resolver.pipe(
@@ -21,5 +21,5 @@ export default resolver.pipe(
         projectId: await getProjectIdBySlug(projectSlug),
         ...input,
       },
-    })
+    }),
 )

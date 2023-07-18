@@ -43,7 +43,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>(props: Props<S>)
         name="slug"
         label="Kurz-Titel und URL-Teil"
         help={`Bspw. ${quote(
-          "pa1"
+          "pa1",
         )}. Primäre Auszeichnung des Planungsabschnitts. Wird immer in Großschreibung angezeigt aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
       />
       <LabeledTextField

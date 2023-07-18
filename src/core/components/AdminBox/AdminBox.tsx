@@ -12,7 +12,7 @@ export const AdminBox: React.FC<Props> = ({ label, className, children }) => {
     <div
       className={clsx(
         className,
-        "relative my-10 rounded border border-purple-300 bg-purple-100 p-5 text-sm"
+        "relative my-10 rounded border border-purple-300 bg-purple-100 p-5 text-sm",
       )}
     >
       <div className="absolute -top-2 right-1 space-x-1 text-[10px] uppercase leading-none">

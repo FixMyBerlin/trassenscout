@@ -13,7 +13,7 @@ import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(
-  props: FormProps<S> & { users: UserSelectOptions }
+  props: FormProps<S> & { users: UserSelectOptions },
 ) {
   const { users } = props
 
@@ -24,7 +24,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
         name="slug"
         label="Kurz-Titel und URL-Teil"
         help={`Bspw. ${quote("rf1")} oder ${quote(
-          "sf2a"
+          "sf2a",
         )}. Primäre Auszeichnung der Führung. Wird immer in Großschreibung angezeigt aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
       />
       <LabeledTextField type="text" name="subTitle" label="Title" optional />

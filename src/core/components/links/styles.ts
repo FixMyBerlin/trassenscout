@@ -31,14 +31,14 @@ const blueButtonStylesForLinkElement = clsx(
   buttonBase,
   "text-white bg-blue-500",
   hoverStyleForLinkElement,
-  activeStyleBlueLinkElement
+  activeStyleBlueLinkElement,
 )
 // for button elements
 export const blueButtonStyles = clsx(
   buttonBase,
   "enabled:text-white enabled:bg-blue-500",
   hoverStyleForButtonElement,
-  activeStyleBlueButtonElement
+  activeStyleBlueButtonElement,
 )
 
 // WHITE BUTTON
@@ -47,14 +47,14 @@ const whiteButtonStylesForLinkElement = clsx(
   buttonBase,
   "bg-white ring-1 ring-gray-400",
   hoverStyleForLinkElement,
-  activeStyleWhiteLinkElement
+  activeStyleWhiteLinkElement,
 )
 // for button elements
 export const whiteButtonStyles = clsx(
   buttonBase,
   "enabled:bg-white enabled:ring-1 enabled:ring-gray-400",
   hoverStyleForButtonElement,
-  activeStyleWhiteButtonElement
+  activeStyleWhiteButtonElement,
 )
 
 // PINK BUTTON
@@ -62,13 +62,13 @@ export const whiteButtonStyles = clsx(
 const pinkButtonStylesForLinkElement = clsx(
   buttonBase,
   "text-white bg-pink-500",
-  activeStylePinkLinkElement
+  activeStylePinkLinkElement,
 )
 // for button elements
 export const pinkButtonStyles = clsx(
   buttonBase,
   "enabled:text-white enabled:bg-pink-500",
-  activeStylePinkButtonElement
+  activeStylePinkButtonElement,
 )
 
 export const selectLinkStyle = (button: LinkProps["button"], className?: string) => {

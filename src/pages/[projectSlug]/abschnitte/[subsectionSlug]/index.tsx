@@ -35,7 +35,7 @@ export const SubsectionDashboardWithQuery = () => {
     projectSlug: projectSlug!,
   })
   const subsubsectionsForSubsection = subsubsections.filter(
-    (subsub) => subsub.subsectionId === subsection?.id
+    (subsub) => subsub.subsectionId === subsection?.id,
   )
   const subsubsection = subsubsections.find((ss) => ss.slug === subsubsectionSlug)
 
@@ -110,7 +110,7 @@ export const SubsectionDashboardWithQuery = () => {
                   subsectionSlug: subsectionSlug!,
                 }),
                 undefined,
-                { scroll: false }
+                { scroll: false },
               )
             }}
           />

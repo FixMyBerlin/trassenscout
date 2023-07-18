@@ -64,7 +64,7 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
             "disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 disabled:ring-gray-200",
             hasError
               ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
-              : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
           )}
         />
         {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}
@@ -80,5 +80,5 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
         />
       </div>
     )
-  }
+  },
 )

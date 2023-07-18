@@ -14,5 +14,5 @@ export default resolver.pipe(
   authorizeProjectAdmin(getStakeholdernoteProjectId),
   async ({ id }) => {
     return await db.stakeholdernote.deleteMany({ where: { id } })
-  }
+  },
 )

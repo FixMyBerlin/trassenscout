@@ -12,5 +12,5 @@ const DeleteCalendarEntrySchema = z.object({
 export default resolver.pipe(
   resolver.zod(DeleteCalendarEntrySchema),
   authorizeProjectAdmin(getCalendarEntryProjectId),
-  async ({ id }) => await db.calendarEntry.deleteMany({ where: { id } })
+  async ({ id }) => await db.calendarEntry.deleteMany({ where: { id } }),
 )

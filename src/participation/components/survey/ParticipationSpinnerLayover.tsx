@@ -10,7 +10,7 @@ export const ParticipationSpinnerLayover: React.FC = () => {
             className={clsx(
               "h-12 w-12",
               "my-20",
-              "inline animate-spin fill-pink-500 text-gray-200 dark:text-pink-600"
+              "inline animate-spin fill-pink-500 text-gray-200 dark:text-pink-600",
             )}
             viewBox="0 0 100 101"
             fill="none"

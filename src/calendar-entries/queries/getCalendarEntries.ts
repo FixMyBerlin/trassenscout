@@ -40,5 +40,5 @@ export default resolver.pipe(
       hasMore,
       count,
     }
-  }
+  },
 )
