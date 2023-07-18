@@ -2,10 +2,9 @@ import { CheckBadgeIcon } from "@heroicons/react/24/solid"
 import { Position, lineString, point } from "@turf/helpers"
 import { bbox } from "@turf/turf"
 import clsx from "clsx"
-import maplibregl from "maplibre-gl"
 import React from "react"
 import { useFormContext } from "react-hook-form"
-import Map, { Layer, LngLatBoundsLike, NavigationControl, ScaleControl, Source } from "react-map-gl"
+import Map, { Layer, LngLatBoundsLike, NavigationControl, ScaleControl, Source } from "react-map-gl/maplibre"
 import { vectorStyle } from "src/core/components/Map/BaseMap"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { z } from "zod"
@@ -69,7 +68,6 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
                   : {}),
               }}
               id="preview"
-              mapLib={maplibregl}
               mapStyle={vectorStyle}
               scrollZoom={false}
             >
