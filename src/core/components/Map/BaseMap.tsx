@@ -105,7 +105,6 @@ export const BaseMap: React.FC<BaseMapProps> = ({
         paint={{
           "line-width": ["case", ["has", "width"], ["get", "width"], 7],
           "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "line-color-transition": { duration: 0 },
           "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
         }}
       />
@@ -120,7 +119,6 @@ export const BaseMap: React.FC<BaseMapProps> = ({
         paint={{
           "line-width": 7,
           "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "line-color-transition": { duration: 0 },
           "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
         }}
       />
@@ -142,7 +140,6 @@ export const BaseMap: React.FC<BaseMapProps> = ({
             ["get", "border-color"],
             "transparent",
           ],
-          "circle-color-transition": { duration: 0 },
           "circle-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
         }}
       />
