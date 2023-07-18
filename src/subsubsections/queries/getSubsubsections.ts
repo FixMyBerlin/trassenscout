@@ -6,7 +6,7 @@ import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { SubsubsectionWithPosition } from "./getSubsubsection"
 
 type GetSubsubsectionsInput = { projectSlug: string } & Pick<
-  Prisma.SubsectionFindManyArgs,
+  Prisma.SubsubsectionFindManyArgs,
   // Do not allow `include` or `select` here, since we overwrite the types below.
   "where" | "orderBy" | "skip" | "take"
 >
@@ -49,5 +49,5 @@ export default resolver.pipe(
       hasMore,
       count,
     }
-  }
+  },
 )
