@@ -15,7 +15,7 @@ export function FileForm<S extends z.ZodType<any, any>>(
   props: FormProps<S> & {
     subsections: SubsectionWithPosition[]
     isSubsubsectionFile: boolean
-  }
+  },
 ) {
   const { subsections, isSubsubsectionFile, ...formProps } = props
 

@@ -29,12 +29,12 @@ export const linkIcons = {
 export const Link: React.FC<LinkProps> = forwardRef<HTMLAnchorElement, LinkProps>(
   (
     { href, className, classNameOverwrites, children, blank = false, button, icon, ...props },
-    ref
+    ref,
   ) => {
     const classNames = clsx(
       { "gap-1 inline-flex justify-center items-center": icon }, // base styles for icon case
       { "pl-5 ": icon && button }, // overwrites to `buttonBase` for icon case
-      classNameOverwrites ?? selectLinkStyle(button, className)
+      classNameOverwrites ?? selectLinkStyle(button, className),
     )
 
     // external link
@@ -66,5 +66,5 @@ export const Link: React.FC<LinkProps> = forwardRef<HTMLAnchorElement, LinkProps
         {children}
       </NextLink>
     )
-  }
+  },
 )

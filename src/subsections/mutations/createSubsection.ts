@@ -12,5 +12,5 @@ export default resolver.pipe(
       data: input,
     })
     return subsection
-  }
+  },
 )

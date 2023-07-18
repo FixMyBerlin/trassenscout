@@ -16,5 +16,5 @@ export default resolver.pipe(
     return await db.operator.findFirstOrThrow({
       where: { id },
     })
-  }
+  },
 )

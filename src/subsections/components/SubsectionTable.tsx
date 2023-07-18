@@ -79,7 +79,7 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                       "py-4 pl-4 pr-3 text-sm font-medium group-hover:bg-gray-50",
                       subsection.subsubsectionCount === 0
                         ? "text-gray-300 group-hover:text-gray-500"
-                        : "text-gray-900"
+                        : "text-gray-900",
                     )}
                   >
                     {subsection.subsubsectionCount}

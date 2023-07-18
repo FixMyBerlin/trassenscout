@@ -20,7 +20,7 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
           <Menu.Button
             className={clsx(
               "flex rounded-full bg-blue-500 p-1",
-              open ? "bg-blue-400" : "hover:bg-blue-400 focus:bg-blue-400"
+              open ? "bg-blue-400" : "hover:bg-blue-400 focus:bg-blue-400",
             )}
           >
             <span className="sr-only">User-Menü</span>

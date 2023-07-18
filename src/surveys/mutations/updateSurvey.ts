@@ -5,5 +5,5 @@ import { UpdateSurveySchema } from "../schemas"
 export default resolver.pipe(
   resolver.zod(UpdateSurveySchema),
   resolver.authorize("ADMIN"),
-  async ({ id, ...data }) => await db.survey.update({ where: { id }, data })
+  async ({ id, ...data }) => await db.survey.update({ where: { id }, data }),
 )

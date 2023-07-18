@@ -13,5 +13,5 @@ export default resolver.pipe(
     await db.surveySession.update({
       where: { id },
       data,
-    })
+    }),
 )

@@ -31,7 +31,7 @@ export * from "@testing-library/react"
 const queryClient = new QueryClient()
 export function render(
   ui: RenderUI,
-  { wrapper, router, dehydratedState, ...options }: RenderOptions = {}
+  { wrapper, router, dehydratedState, ...options }: RenderOptions = {},
 ) {
   if (!wrapper) {
     // Add a default context wrapper if one isn't supplied from the test
@@ -59,7 +59,7 @@ export function render(
 // --------------------------------------------------
 export function renderHook(
   hook: RenderHook,
-  { wrapper, router, dehydratedState, ...options }: RenderOptions = {}
+  { wrapper, router, dehydratedState, ...options }: RenderOptions = {},
 ) {
   if (!wrapper) {
     // Add a default context wrapper if one isn't supplied from the test

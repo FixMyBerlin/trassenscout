@@ -30,7 +30,7 @@ const EditSubsubsection = () => {
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
-    }
+    },
   )
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
   const [updateSubsubsectionMutation] = useMutation(updateSubsubsection)
@@ -50,7 +50,7 @@ const EditSubsubsection = () => {
           projectSlug: projectSlug!,
           subsectionSlug: subsectionSlug!,
           subsubsectionSlug: updated.slug,
-        })
+        }),
       )
     } catch (error: any) {
       console.error(error)
@@ -66,7 +66,7 @@ const EditSubsubsection = () => {
         Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
           subsectionSlug: subsectionSlug!,
-        })
+        }),
       )
     }
   }

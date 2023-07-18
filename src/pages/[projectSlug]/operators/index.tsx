@@ -96,7 +96,7 @@ export const OperatorsWithData = () => {
                         onClick={() => handleDelete(operator.id)}
                         className={clsx(
                           linkStyles,
-                          "inline-flex items-center justify-center gap-1"
+                          "inline-flex items-center justify-center gap-1",
                         )}
                       >
                         {linkIcons["delete"]}

@@ -10,5 +10,5 @@ const GetSurvey = z.object({
 export default resolver.pipe(
   resolver.zod(GetSurvey),
   resolver.authorize("ADMIN"),
-  async ({ id }) => await db.survey.findFirstOrThrow({ where: { id } })
+  async ({ id }) => await db.survey.findFirstOrThrow({ where: { id } }),
 )

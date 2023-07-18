@@ -12,5 +12,5 @@ const DeleteSubsubsection = z.object({
 export default resolver.pipe(
   resolver.zod(DeleteSubsubsection),
   authorizeProjectAdmin(getSubsubsectionProjectId),
-  async ({ id }) => await db.subsubsection.deleteMany({ where: { id } })
+  async ({ id }) => await db.subsubsection.deleteMany({ where: { id } }),
 )

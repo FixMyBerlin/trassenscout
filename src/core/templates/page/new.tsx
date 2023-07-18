@@ -25,7 +25,7 @@ const New__ModelName__ = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const __modelName__ = await create__ModelName__Mutation(
-        process.env.parentModel ? { ...values, __parentModelId__: __parentModelId__! } : values
+        process.env.parentModel ? { ...values, __parentModelId__: __parentModelId__! } : values,
       )
       await router.push(
         process.env.parentModel
@@ -33,7 +33,7 @@ const New__ModelName__ = () => {
               __parentModelId__: __parentModelId__!,
               __modelId__: __modelName__.id,
             })
-          : Routes.Show__ModelName__Page({ __modelId__: __modelName__.id })
+          : Routes.Show__ModelName__Page({ __modelId__: __modelName__.id }),
       )
     } catch (error: any) {
       console.error(error)

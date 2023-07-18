@@ -7,5 +7,5 @@ export default resolver.pipe(
   resolver.authorize("ADMIN"),
   async (input) => {
     return await db.membership.create({ data: input })
-  }
+  },
 )

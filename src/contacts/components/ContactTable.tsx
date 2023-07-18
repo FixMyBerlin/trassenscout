@@ -37,14 +37,14 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
       .join(",")
 
     void router.push(
-      `mailto:${user?.email}?bcc=${contactMailString}&subject=Infos zu ${shortTitle(project.slug)}`
+      `mailto:${user?.email}?bcc=${contactMailString}&subject=Infos zu ${shortTitle(project.slug)}`,
     )
   }
 
   const handleChange = (values: any) => {
     // when form values change check if at least one checkmark is set
     setMailButtonActive(
-      Object.entries(values).filter((contact) => contact[1] === true).length !== 0
+      Object.entries(values).filter((contact) => contact[1] === true).length !== 0,
     )
   }
 

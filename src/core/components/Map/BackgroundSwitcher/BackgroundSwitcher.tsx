@@ -43,7 +43,7 @@ export const BackgroundSwitcher: React.FC<Props> = ({ value, onChange, className
                     className={({ active }) =>
                       clsx(
                         active ? "bg-blue-600 text-white" : "text-gray-900",
-                        "relative cursor-default select-none py-2 pl-3 pr-9"
+                        "relative cursor-default select-none py-2 pl-3 pr-9",
                       )
                     }
                     value={id}
@@ -53,7 +53,7 @@ export const BackgroundSwitcher: React.FC<Props> = ({ value, onChange, className
                         <span
                           className={clsx(
                             selected ? "font-semibold" : "font-normal",
-                            "block truncate"
+                            "block truncate",
                           )}
                         >
                           {labels[id]}
@@ -63,7 +63,7 @@ export const BackgroundSwitcher: React.FC<Props> = ({ value, onChange, className
                           <span
                             className={clsx(
                               active ? "text-white" : "text-blue-600",
-                              "absolute inset-y-0 right-0 flex items-center pr-4"
+                              "absolute inset-y-0 right-0 flex items-center pr-4",
                             )}
                           >
                             <CheckIcon className="h-5 w-5" aria-hidden="true" />

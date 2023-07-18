@@ -8,5 +8,5 @@ const GetSurvey = z.object({
 
 export default resolver.pipe(
   resolver.zod(GetSurvey),
-  async ({ slug }) => await db.survey.findFirstOrThrow({ where: { slug } })
+  async ({ slug }) => await db.survey.findFirstOrThrow({ where: { slug } }),
 )

@@ -45,5 +45,5 @@ export default resolver.pipe(
 
     const subsubsection = await db.subsubsection.findFirstOrThrow(query)
     return subsubsection as SubsubsectionWithPosition // Tip: Validate type shape with `satisfies`
-  }
+  },
 )

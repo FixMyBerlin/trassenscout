@@ -24,16 +24,16 @@ export const StakeholdernotesList: React.FC<props> = ({ stakeholdernotes }) => {
 
   // Manually sort the entries
   const stakeholdersDone = stakeholdernotes.filter(
-    (stakeholdernotes) => stakeholdernotes.status === "DONE"
+    (stakeholdernotes) => stakeholdernotes.status === "DONE",
   )
   const stakeholdersPending = stakeholdernotes.filter(
-    (stakeholdernotes) => stakeholdernotes.status === "PENDING"
+    (stakeholdernotes) => stakeholdernotes.status === "PENDING",
   )
   const stakeholdersIrrelevant = stakeholdernotes.filter(
-    (stakeholdernotes) => stakeholdernotes.status === "IRRELEVANT"
+    (stakeholdernotes) => stakeholdernotes.status === "IRRELEVANT",
   )
   const stakeholdersInProgress = stakeholdernotes.filter(
-    (stakeholdernotes) => stakeholdernotes.status === "IN_PROGRESS"
+    (stakeholdernotes) => stakeholdernotes.status === "IN_PROGRESS",
   )
   const sortedStakeholdernotes = [
     ...stakeholdersInProgress,
@@ -61,7 +61,7 @@ export const StakeholdernotesList: React.FC<props> = ({ stakeholdernotes }) => {
               // I tried passing the ref as forwardRef but that did not work for unknown reasons.
               ref={(element) => (disclosureRefs.current[stakeholderNote.id] = element)}
               className={clsx(
-                "scroll-m-0"
+                "scroll-m-0",
                 // stakeholderNote.id == paramsStakeholderDetails && "bg-yellow-50"
               )}
             >
