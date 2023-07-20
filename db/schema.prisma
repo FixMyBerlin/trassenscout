@@ -295,6 +295,7 @@ model Survey {
   project   Project  @relation(fields: [projectId], references: [id])
   projectId Int
   slug      String   @unique
+  title     String
   active    Boolean  @default(false)
 }
 
