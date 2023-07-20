@@ -7,6 +7,7 @@ import { DevAdminBox } from "src/core/components/AdminBox"
 import { Form, FORM_ERROR } from "src/core/components/forms/Form"
 import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
 import { blueButtonStyles, Link } from "src/core/components/links"
+import clsx from "clsx"
 
 type LoginFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof login>) => void
@@ -61,14 +62,15 @@ export const LoginForm = (props: LoginFormProps) => {
 
         <DevAdminBox className="text-center">
           {[
-            ["admin", "dev-team@fixmycity.de"],
-            ["no-permission", "no-permissions@fixmycity.de"],
-            ["one-project", "rs-spree-permissions@fixmycity.de"],
-            ["all-projects-noadmin", "all-projects-permissions@fixmycity.de"],
+            ["admin", "admin@fixmycity.de"],
+            ["all-projects", "all-projects@fixmycity.de"],
+            ["no-project", "no-project@fixmycity.de"],
+            ["rs23", "rs23@fixmycity.de"],
+            ["rs3000", "rs3000@fixmycity.de"],
           ].map(([displayName, email]) => (
             <button
               key={displayName}
-              className={blueButtonStyles}
+              className={clsx(blueButtonStyles, "m-1")}
               onClick={async () =>
                 await handleSubmit({
                   email,
