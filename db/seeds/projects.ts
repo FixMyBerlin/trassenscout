@@ -1,7 +1,7 @@
 import db, { Project } from "../index"
 
 const seedProjects = async () => {
-  const seeData: Omit<Project, "id" | "createdAt" | "updatedAt">[] = [
+  const seedData: Omit<Project, "id" | "createdAt" | "updatedAt">[] = [
     {
       slug: "rs23", // "W" ist der 23. Buchstabe
       subTitle: "Radschnellverbindung Berliner Wasserwege",
@@ -38,8 +38,8 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     },
   ]
 
-  for (let i = 0; i < seeData.length; i++) {
-    const data = seeData[i]
+  for (let i = 0; i < seedData.length; i++) {
+    const data = seedData[i]
     if (data) {
       await db.project.create({ data })
     }

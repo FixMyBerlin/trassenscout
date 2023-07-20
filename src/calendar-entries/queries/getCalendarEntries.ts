@@ -20,7 +20,7 @@ export default resolver.pipe(
     skip = 0,
     take = 100,
   }: GetCalendarEntriesInput) => {
-    const saveWhere = { project: { slug: projectSlug }, ...where }
+    const safeWhere = { project: { slug: projectSlug }, ...where }
     const {
       items: calendarEntries,
       hasMore,
@@ -29,9 +29,9 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.calendarEntry.count({ where: saveWhere }),
+      count: () => db.calendarEntry.count({ where: safeWhere }),
       query: (paginateArgs) =>
-        db.calendarEntry.findMany({ ...paginateArgs, where: saveWhere, orderBy }),
+        db.calendarEntry.findMany({ ...paginateArgs, where: safeWhere, orderBy }),
     })
 
     return {

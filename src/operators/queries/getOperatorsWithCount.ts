@@ -13,7 +13,7 @@ export default resolver.pipe(
   // @ts-ignore
   authorizeProjectAdmin(getProjectIdBySlug),
   async ({ projectSlug, where, orderBy, skip = 0, take = 100 }: GetOperatorsInput) => {
-    const saveWhere = { project: { slug: projectSlug }, ...where }
+    const safeWhere = { project: { slug: projectSlug }, ...where }
     const {
       items: operators,
       hasMore,
@@ -22,8 +22,8 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.operator.count({ where: saveWhere }),
-      query: (paginateArgs) => db.operator.findMany({ ...paginateArgs, where: saveWhere, orderBy }),
+      count: () => db.operator.count({ where: safeWhere }),
+      query: (paginateArgs) => db.operator.findMany({ ...paginateArgs, where: safeWhere, orderBy }),
     })
 
     const operatorsWithCount = await Promise.all(

@@ -14,7 +14,7 @@ export default resolver.pipe(
   // @ts-ignore
   authorizeProjectAdmin(getProjectIdBySlug),
   async ({ projectSlug, where, orderBy, skip = 0, take = 100 }: GetContactsInput) => {
-    const saveWhere = { project: { slug: projectSlug }, ...where }
+    const safeWhere = { project: { slug: projectSlug }, ...where }
     const {
       items: contacts,
       hasMore,
@@ -23,8 +23,8 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.contact.count({ where: saveWhere }),
-      query: (paginateArgs) => db.contact.findMany({ ...paginateArgs, where: saveWhere, orderBy }),
+      count: () => db.contact.count({ where: safeWhere }),
+      query: (paginateArgs) => db.contact.findMany({ ...paginateArgs, where: safeWhere, orderBy }),
     })
 
     return {
