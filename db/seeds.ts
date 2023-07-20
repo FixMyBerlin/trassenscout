@@ -13,8 +13,8 @@ import seedSurveys from "./seeds/surveys"
  * This seed function is executed when you run `blitz db seed`.
  */
 const seed = async () => {
-  await seedUsers()
   await seedProjects()
+  await seedUsers()
   await seedMemberships()
   await seedOperators()
   await seedSubsections()

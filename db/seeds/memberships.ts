@@ -1,25 +1,29 @@
-import db, { Membership } from "../index"
+import { Prisma } from "@prisma/client"
+import db from "../index"
+import { generateUserEmail } from "./users"
+
+type Memberships = Prisma.MembershipUncheckedCreateInput[]
 
 const seedMemberships = async () => {
-  const allProjects = db.project.findMany()
-  const memberships: Omit<Membership, "id">[] = [
-    {
-      projectId: 1, // rs-spree
-      userId: 3, // rs-spree-permissions@fixmycity.de
-    },
-    {
-      projectId: 1, // rs-spree
-      userId: 1, // Admin
-    },
-    {
-      projectId: 2, // rs-3000
-      userId: 1, // Admin
-    },
-    ...(await allProjects).map((p) => ({
-      projectId: p.id,
-      userId: 4, // all-projects-permissions@fixmycity.de
-    })),
-  ]
+  const projects = await db.project.findMany()
+  const users = await db.user.findMany()
+  const usersByEmail = Object.fromEntries(users.map((user) => [user.email, user]))
+
+  let projectMemberships: Memberships = projects.map(({ id, slug }) => ({
+    projectId: id,
+    // @ts-ignore
+    userId: usersByEmail[generateUserEmail(slug)].id,
+  }))
+
+  // @ts-ignore
+  const allProjectsAdminId = usersByEmail["all-projects@fixmycity.de"].id
+  let allMemberships: Memberships = projects.map(({ id }) => ({
+    projectId: id,
+    // @ts-ignore
+    userId: allProjectsAdminId,
+  }))
+
+  const memberships = [...projectMemberships, ...allMemberships]
 
   for (let i = 0; i < memberships.length; i++) {
     const data = memberships[i]

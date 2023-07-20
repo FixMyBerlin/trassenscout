@@ -1,54 +1,57 @@
-import db, { User } from "../index"
+import db from "../index"
+import { Prisma } from "@prisma/client"
+
+type Users = Prisma.UserUncheckedCreateInput[]
+
+export const generateUserEmail = (slug: string) => `${slug}@fixmycity.de`
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
 const seedUsers = async () => {
+  const allProjects = await db.project.findMany()
   // password: dev-team@fixmycity.de
   const hashedPassword =
     "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTIscD0xJDRMWm82dmVrRk91VnVlZTVwcEpiS3ckOHFZcHhyM2RITm0yTGxTeXdqeEcxSWFsZEJCUWhxNVZxdm53eHoxTk4xTQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 
-  const seeData: Omit<User, "id" | "createdAt" | "updatedAt">[] = [
+  let genericUsers: Users = [
     {
-      email: "dev-team@fixmycity.de",
-
-      hashedPassword,
+      email: "admin@fixmycity.de",
       role: "ADMIN",
       firstName: "Admin",
-      lastName: "AdminUser",
-      phone: "030 123456",
+      lastName: "Admin-User",
+      phone: "030 549 086 65 - 90",
+      hashedPassword,
     },
     {
-      email: "no-permissions@fixmycity.de",
-
-      hashedPassword,
+      email: "all-projects@fixmycity.de",
       role: "USER",
-      firstName: "NoPermissions",
-      lastName: "RegularUser",
-      phone: null,
+      firstName: "All-Projects",
+      lastName: "All-Projects-User",
+      phone: "030 549 086 65 - 91",
+      hashedPassword,
     },
     {
-      email: "rs-spree-permissions@fixmycity.de",
-
-      hashedPassword,
+      email: "no-project@fixmycity.de",
       role: "USER",
-      firstName: "RS Spree Permissions",
-      lastName: "RegularUser",
-      phone: null,
-    },
-    {
-      email: "all-projects-permissions@fixmycity.de",
-
+      firstName: "No-Project",
+      lastName: "No-Project-User",
+      phone: "030 549 086 65 - 92",
       hashedPassword,
-      role: "USER",
-      firstName: "AllProjects Permissions",
-      lastName: "RegularUser",
-      phone: null,
     },
   ]
 
-  for (let i = 0; i < seeData.length; i++) {
-    const data = seeData[i]
-    if (data) {
-      await db.user.create({ data })
-    }
+  const projectAdmins: Users = allProjects.map(({ id, slug }) => ({
+    email: generateUserEmail(slug),
+    role: "USER",
+    firstName: `${capitalize(slug)}-Admin`,
+    lastName: `${capitalize(slug)}-Admin-User`,
+    phone: `030 549 086 65 - ${id}`,
+    hashedPassword,
+  }))
+
+  const users = [...genericUsers, ...projectAdmins]
+  for (let i = 0; i < users.length; i++) {
+    // @ts-ignore
+    await db.user.create({ data: users[i] })
   }
 }
 
