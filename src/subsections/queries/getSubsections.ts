@@ -14,13 +14,7 @@ type GetSubsectionsInput = { projectSlug: string } & Pick<
 export default resolver.pipe(
   // @ts-ignore
   authorizeProjectAdmin(getProjectIdBySlug),
-  async ({
-    projectSlug,
-    where,
-    orderBy = { order: "asc" },
-    skip = 0,
-    take = 100,
-  }: GetSubsectionsInput) => {
+  async ({ projectSlug, where, orderBy, skip = 0, take = 100 }: GetSubsectionsInput) => {
     const safeWhere = { project: { slug: projectSlug }, ...where }
     const {
       items: subsections,

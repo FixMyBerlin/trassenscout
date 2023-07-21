@@ -7,16 +7,18 @@ import createSurvey from "src/surveys/mutations/createSurvey"
 import { SurveyForm, FORM_ERROR } from "src/surveys/components/SurveyForm"
 import { Link } from "src/core/components/links"
 import { Suspense } from "react"
+import { useSlugs } from "src/core/hooks"
 
 const NewSurvey = () => {
+  const { projectSlug } = useSlugs()
   const router = useRouter()
   const [createSurveyMutation] = useMutation(createSurvey)
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const survey = await createSurveyMutation(values)
-      await router.push(Routes.ShowSurveyPage({ surveyId: survey.id }))
+      const survey = await createSurveyMutation({ ...values, projectSlug: projectSlug! })
+      await router.push(Routes.ShowSurveyPage({ projectSlug: projectSlug!, surveyId: survey.id }))
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -33,13 +35,14 @@ const NewSurvey = () => {
 }
 
 const NewSurveyPage = () => {
+  const { projectSlug } = useSlugs()
   return (
     <LayoutArticle>
       <Suspense fallback={<Spinner page />}>
         <NewSurvey />
       </Suspense>
       <p>
-        <Link href={Routes.SurveysPage()}>Alle Surveys</Link>
+        <Link href={Routes.SurveysPage({ projectSlug: projectSlug! })}>Alle Surveys</Link>
       </p>
     </LayoutArticle>
   )

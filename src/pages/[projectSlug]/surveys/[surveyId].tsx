@@ -10,8 +10,10 @@ import { quote } from "src/core/components/text"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import deleteSurvey from "src/surveys/mutations/deleteSurvey"
 import getSurvey from "src/surveys/queries/getSurvey"
+import { useSlugs } from "src/core/hooks"
 
 export const Survey = () => {
+  const { projectSlug } = useSlugs()
   const router = useRouter()
   const surveyId = useParam("surveyId", "number")
   const [deleteSurveyMutation] = useMutation(deleteSurvey)
@@ -20,7 +22,7 @@ export const Survey = () => {
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${survey.id} unwiderruflich löschen?`)) {
       await deleteSurveyMutation({ id: survey.id })
-      await router.push(Routes.SurveysPage())
+      await router.push(Routes.SurveysPage({ projectSlug: projectSlug! }))
     }
   }
 
@@ -33,7 +35,9 @@ export const Survey = () => {
         <pre>{JSON.stringify(survey, null, 2)}</pre>
       </SuperAdminBox>
 
-      <Link href={Routes.EditSurveyPage({ surveyId: survey.id })}>Bearbeiten</Link>
+      <Link href={Routes.EditSurveyPage({ projectSlug: projectSlug!, surveyId: survey.id })}>
+        Bearbeiten
+      </Link>
 
       <button type="button" onClick={handleDelete} className={clsx(linkStyles, "ml-2")}>
         Löschen
@@ -43,6 +47,7 @@ export const Survey = () => {
 }
 
 const ShowSurveyPage = () => {
+  const { projectSlug } = useSlugs()
   return (
     <LayoutArticle>
       <Suspense fallback={<Spinner page />}>
@@ -50,7 +55,7 @@ const ShowSurveyPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.SurveysPage()}>Alle Surveys</Link>
+        <Link href={Routes.SurveysPage({ projectSlug: projectSlug! })}>Alle Surveys</Link>
       </p>
     </LayoutArticle>
   )

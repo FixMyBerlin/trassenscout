@@ -9,8 +9,10 @@ import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SurveyForm } from "src/surveys/components/SurveyForm"
 import updateSurvey from "src/surveys/mutations/updateSurvey"
 import getSurvey from "src/surveys/queries/getSurvey"
+import { useSlugs } from "src/core/hooks"
 
 const EditSurvey = () => {
+  const { projectSlug } = useSlugs()
   const router = useRouter()
   const surveyId = useParam("surveyId", "number")
   const [survey, { setQueryData }] = useQuery(
@@ -31,7 +33,7 @@ const EditSurvey = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(Routes.ShowSurveyPage({ surveyId: updated.id }))
+      await router.push(Routes.ShowSurveyPage({ projectSlug: projectSlug!, surveyId: updated.id }))
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -53,6 +55,7 @@ const EditSurvey = () => {
 }
 
 const EditSurveyPage = () => {
+  const { projectSlug } = useSlugs()
   return (
     <LayoutArticle>
       <Suspense fallback={<Spinner page />}>
@@ -60,7 +63,7 @@ const EditSurveyPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.SurveysPage()}>Alle Surveys</Link>
+        <Link href={Routes.SurveysPage({ projectSlug: projectSlug! })}>Alle Surveys</Link>
       </p>
     </LayoutArticle>
   )
