@@ -1,5 +1,12 @@
 module.exports = require("@blitzjs/next/eslint")
 
+module.exports = {
+  extends: ["./node_modules/@blitzjs/next/eslint"],
+  rules: {
+    "import/order": "error",
+  },
+}
+
 // TODO
 // We have those linters in other projects, hande i18n issues.
 // However, I am not sure which ruleset this is.
