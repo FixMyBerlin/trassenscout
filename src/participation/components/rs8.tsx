@@ -46,7 +46,7 @@ const ParticipationMainPage: BlitzPage = () => {
     if (surveySessionId) {
       return surveySessionId
     } else {
-      const surveySession = await createSurveySessionMutation({})
+      const surveySession = await createSurveySessionMutation({ surveyId: 1 })
       setSurveySessionId(surveySession.id)
       return surveySession.id
     }

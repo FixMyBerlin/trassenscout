@@ -289,20 +289,23 @@ model File {
 }
 
 model Survey {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  project   Project  @relation(fields: [projectId], references: [id])
-  projectId Int
-  slug      String   @unique
-  title     String
-  active    Boolean  @default(false)
+  id            Int             @id @default(autoincrement())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  project       Project         @relation(fields: [projectId], references: [id])
+  projectId     Int
+  slug          String          @unique
+  title         String
+  active        Boolean         @default(false)
+  SurveySession SurveySession[]
 }
 
 model SurveySession {
   id        Int              @id @default(autoincrement())
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
+  survey    Survey           @relation(fields: [surveyId], references: [id])
+  surveyId  Int
   responses SurveyResponse[]
 }
 
