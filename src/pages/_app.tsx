@@ -7,9 +7,9 @@ import "@fontsource/overpass/500.css"
 import { init } from "@socialgouv/matomo-next"
 import { AuthenticationError, AuthorizationError } from "blitz"
 import { useEffect, useRef } from "react"
+import LoginPage from "./auth/login"
 import { withBlitz } from "src/blitz-client"
 import "src/core/styles/index.css"
-import LoginPage from "./auth/login"
 
 const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL
 const MATOMO_SITE_ID = process.env.NEXT_PUBLIC_MATOMO_SITE_ID
