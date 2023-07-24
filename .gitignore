@@ -61,3 +61,6 @@ lib-cov
 # local data
 db/remote/data/dump.sql
 db/zod-schema-inspiration/
+
+# Sentry Auth Token
+.sentryclirc
