@@ -2,10 +2,10 @@ import { Routes } from "@blitzjs/next"
 import { UserIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 import React, { Suspense } from "react"
+import { NavigationUserLoggedIn } from "./NavigationUserLoggedIn"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links/Link"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { NavigationUserLoggedIn } from "./NavigationUserLoggedIn"
 
 const UserWithQuery: React.FC = () => {
   const user = useCurrentUser()

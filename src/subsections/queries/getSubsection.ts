@@ -1,9 +1,9 @@
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
+import { z } from "zod"
 import db, { Subsection } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
-import { z } from "zod"
 
 // We lie with TypeScript here, because we know better. All `geometry` fields are Position. We make sure of that in our Form. They are also required, so never empty.
 export type SubsectionWithPosition = Omit<Subsection, "geometry"> & {

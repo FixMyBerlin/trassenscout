@@ -1,6 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
+import db from "db"
 
 const DeleteMembership = z.object({
   id: z.number(),

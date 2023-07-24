@@ -1,12 +1,12 @@
 import { useContext } from "react"
-import { PinContext } from "src/participation/context/contexts"
+import { MultiLineString } from "@turf/helpers"
 import { ParticipationButton } from "../core/buttons/ParticipationButton"
 import { ParticipationButtonWrapper } from "../core/buttons/ParticipationButtonWrapper"
 import { ScreenHeaderParticipation } from "../layout/ScreenHeaderParticipation"
 import { ParticipationH2, ParticipationH3, ParticipationP } from "../core/Text"
 import { ParticipationStaticMap } from "../maps/ParticipationStaticMap"
 import { Question } from "../survey/Question"
-import { MultiLineString } from "@turf/helpers"
+import { PinContext } from "src/participation/context/contexts"
 
 export { FORM_ERROR } from "src/core/components/forms"
 

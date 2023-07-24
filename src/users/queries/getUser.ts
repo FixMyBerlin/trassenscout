@@ -1,5 +1,5 @@
-import db from "db"
 import { CurrentUser } from "../types"
+import db from "db"
 
 export default async function getUser(id: number) {
   const user = await db.user.findFirst({

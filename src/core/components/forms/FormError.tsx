@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { FormattedMessage } from "react-intl"
-import { isDev } from "src/core/utils"
 import { proseClasses } from "../text"
+import { isDev } from "src/core/utils"
 
 type Props = {
   formError: any // TODO buil proper type

@@ -1,8 +1,8 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
-import { authorizeProjectAdmin } from "src/authorization"
 import getSubsectionProjectId from "../queries/getSubsectionProjectId"
 import { SubsectionSchema } from "../schema"
+import db from "db"
+import { authorizeProjectAdmin } from "src/authorization"
 
 export default resolver.pipe(
   resolver.zod(SubsectionSchema),

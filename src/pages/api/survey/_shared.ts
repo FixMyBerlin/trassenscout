@@ -1,7 +1,7 @@
 import { createObjectCsvStringifier } from "csv-writer"
 import { NextApiRequest, NextApiResponse } from "next"
-import { api } from "src/blitz-server"
 import { getSession } from "@blitzjs/auth"
+import { api } from "src/blitz-server"
 
 const DEBUG = false
 

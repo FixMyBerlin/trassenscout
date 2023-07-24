@@ -1,12 +1,12 @@
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import db from "db"
 import { z } from "zod"
+import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3"
+import getFileProjectId from "../queries/getFileProjectId"
+import db from "db"
 
 import { authorizeProjectAdmin } from "src/authorization"
-import getFileProjectId from "../queries/getFileProjectId"
 
-import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3"
 import { getConfig } from "src/core/lib/next-s3-upload/src/utils/config"
 
 const DeleteFileSchema = z.object({

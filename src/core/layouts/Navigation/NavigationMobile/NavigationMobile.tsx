@@ -3,11 +3,11 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import React from "react"
-import { Link } from "src/core/components/links"
 import { NavigationGeneralLogo } from "../NavigationGeneral/NavigationGeneralLogo"
 import { NavigationProps } from "../NavigationProject/NavigationProject"
 import { NavigationProjectsSwitch } from "../NavigationProjectsSwitch"
 import { NavigationUser } from "../NavigationUser"
+import { Link } from "src/core/components/links"
 
 export const NavigationMobile: React.FC<NavigationProps> = ({ menuItems, projects }) => {
   const { pathname } = useRouter()

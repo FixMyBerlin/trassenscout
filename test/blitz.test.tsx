@@ -3,9 +3,9 @@
  */
 
 import { expect, vi, test } from "vitest"
+import Blitz from "../src/pages/blitz"
 import { render } from "test/utils"
 
-import Blitz from "../src/pages/blitz"
 
 vi.mock("public/logo.png", () => ({
   default: { src: "/logo.png" },

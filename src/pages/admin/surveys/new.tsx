@@ -1,12 +1,12 @@
 import { Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
+import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import createSurvey from "src/surveys/mutations/createSurvey"
 import { SurveyForm, FORM_ERROR } from "src/surveys/components/SurveyForm"
 import { Link } from "src/core/components/links"
-import { Suspense } from "react"
 
 const NewSurvey = () => {
   const router = useRouter()

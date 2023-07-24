@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next"
+import { authenticate, sendCsv } from "./_shared"
 import db from "db"
 import surveyDefinition from "src/participation/data/survey.json"
 import feedbackDefinition from "src/participation/data/feedback.json"
-import { authenticate, sendCsv } from "./_shared"
 
 const surveys = Object.fromEntries([surveyDefinition, feedbackDefinition].map((o) => [o.id, o]))
 const questions = {}

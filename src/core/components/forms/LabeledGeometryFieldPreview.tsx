@@ -11,10 +11,10 @@ import Map, {
   ScaleControl,
   Source,
 } from "react-map-gl/maplibre"
-import { vectorStyle } from "src/core/components/Map/BaseMap"
-import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { z } from "zod"
 import { Link } from "../links"
+import { vectorStyle } from "src/core/components/Map/BaseMap"
+import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 
 type Props = {
   name: string

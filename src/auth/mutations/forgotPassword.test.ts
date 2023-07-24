@@ -1,9 +1,9 @@
 import { vi, describe, it, beforeEach } from "vitest"
-import db from "db"
 import { hash256 } from "@blitzjs/auth"
-import forgotPassword from "./forgotPassword"
 import previewEmail from "preview-email"
 import { Ctx } from "@blitzjs/next"
+import forgotPassword from "./forgotPassword"
+import db from "db"
 
 beforeEach(async () => {
   await db.$reset()

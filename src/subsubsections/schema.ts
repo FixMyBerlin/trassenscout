@@ -1,7 +1,7 @@
 import { LabelPositionEnum, SubsubsectionTypeEnum } from "@prisma/client"
+import { z } from "zod"
 import { Prettify } from "src/core/types"
 import { SlugSchema } from "src/core/utils"
-import { z } from "zod"
 
 const PositionSchema = z.tuple([z.number(), z.number()]) // Position
 const PositionArraySchema = z.array(z.tuple([z.number(), z.number()])) // Position[]

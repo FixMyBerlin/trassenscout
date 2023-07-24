@@ -1,7 +1,7 @@
 import Link from "next/link"
 import clsx from "clsx"
-import { TNewsItem } from "./newsItems.const"
 import React from "react"
+import { TNewsItem } from "./newsItems.const"
 
 function formatDate(date: string) {
   return new Date(`${date}T00:00:00Z`).toLocaleDateString("de-DE", {

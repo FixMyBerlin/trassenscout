@@ -1,9 +1,9 @@
-import { SingleOrMultiResponseProps, TextResponseProps } from "src/participation/data/types"
-import { Question as TQuestion } from "src/participation/data/types"
 import { ParticipationH2 } from "../core/Text"
 import { ParticipationLabeledCheckboxGroup } from "../form/ParticipationLabeledCheckboxGroup"
 import { ParticipationLabeledRadiobuttonGroup } from "../form/ParticipationLabeledRadiobuttonGroup"
 import { ParticipationLabeledTextareaField } from "../form/ParticipationLabeledTextareaField"
+import { Question as TQuestion } from "src/participation/data/types"
+import { SingleOrMultiResponseProps, TextResponseProps } from "src/participation/data/types"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type TSingleOrMultuResponseComponentProps = {

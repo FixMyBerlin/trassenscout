@@ -4,7 +4,6 @@ import { along, featureCollection, length } from "@turf/turf"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
 import { MapEvent, MapLayerMouseEvent, Marker, ViewStateChangeEvent } from "react-map-gl/maplibre"
-import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 import { shortTitle } from "../text"
 import { BaseMap } from "./BaseMap"
 import { SubsectionMapIcon } from "./Icons"
@@ -12,6 +11,7 @@ import { StartEndLabel } from "./Labels"
 import { TipMarker } from "./TipMarker"
 import { layerColors } from "./layerColors"
 import { subsectionsBbox } from "./utils"
+import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 
 type Props = { subsections: SubsectionWithPosition[] }
 

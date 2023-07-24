@@ -1,10 +1,10 @@
 import { BlitzLayout } from "@blitzjs/next"
 import Head from "next/head"
-import { MetaTags } from "src/core/layouts"
-import { TailwindResponsiveHelper } from "src/core/layouts/TailwindResponsiveHelper/TailwindResponsiveHelper"
 import { ContainerParticipation } from "./ContainerParticipation"
 import { FooterParticipation } from "./FooterParticipation"
 import { HeaderParticipation } from "./HeaderParticipation"
+import { TailwindResponsiveHelper } from "src/core/layouts/TailwindResponsiveHelper/TailwindResponsiveHelper"
+import { MetaTags } from "src/core/layouts"
 
 type Props = {
   logoUrl: string

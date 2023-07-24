@@ -1,6 +1,6 @@
 import { User } from "@prisma/client"
-import { Prettify } from "src/core/types"
 import { getFullname } from "./getFullname"
+import { Prettify } from "src/core/types"
 
 export type UserSelectOptions = Prettify<(Partial<User> & Required<Pick<User, "id" | "email">>)[]>
 

@@ -1,10 +1,10 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
 
-import { authorizeProjectAdmin } from "src/authorization"
 import getFileProjectId from "../queries/getFileProjectId"
 import { FileSchema } from "../schema"
+import { authorizeProjectAdmin } from "src/authorization"
+import db from "db"
 
 const UpdateFileSchema = FileSchema.merge(
   z.object({

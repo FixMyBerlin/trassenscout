@@ -1,6 +1,6 @@
 import React from "react"
-import { isDev } from "src/core/utils"
 import { AdminBox } from "./AdminBox"
+import { isDev } from "src/core/utils"
 
 type Props = {
   className?: string

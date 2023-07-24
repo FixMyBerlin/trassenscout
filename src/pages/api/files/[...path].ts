@@ -8,9 +8,9 @@ import {
   GetObjectCommand,
   S3ServiceException,
 } from "@aws-sdk/client-s3"
+import { NotFoundError } from "@prisma/client/runtime/library"
 import { getConfig } from "src/core/lib/next-s3-upload/src/utils/config"
 import getFileWithSubsections from "src/files/queries/getFileWithSubsections"
-import { NotFoundError } from "@prisma/client/runtime/library"
 
 export default async function downloadFile(req: NextApiRequest, res: NextApiResponse) {
   try {

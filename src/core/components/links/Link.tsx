@@ -1,10 +1,10 @@
+import { UrlObject } from "url"
 import { ArrowDownTrayIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { PencilIcon } from "@heroicons/react/24/outline"
 import { RouteUrlObject } from "blitz"
 import clsx from "clsx"
 import NextLink from "next/link"
 import { forwardRef } from "react"
-import { UrlObject } from "url"
 import { selectLinkStyle } from "./styles"
 
 export type LinkProps = {

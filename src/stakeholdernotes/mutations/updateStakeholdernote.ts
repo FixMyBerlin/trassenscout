@@ -1,10 +1,10 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
 
-import { authorizeProjectAdmin } from "src/authorization"
 import getStakeholdernoteProjectId from "../queries/getStakeholdernoteProjectId"
 import { StakeholdernoteSchema } from "../schema"
+import { authorizeProjectAdmin } from "src/authorization"
+import db from "db"
 
 const UpdateStakeholdernoteSchema = StakeholdernoteSchema.merge(
   z.object({

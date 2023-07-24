@@ -1,9 +1,9 @@
 import { CheckIcon, XMarkIcon } from "@heroicons/react/20/solid"
 import { Stakeholdernote } from "@prisma/client"
 import React from "react"
-import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
 import { ClockIcon, DocumentTextIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
+import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
 
 type Props = { status: Stakeholdernote["status"] }
 

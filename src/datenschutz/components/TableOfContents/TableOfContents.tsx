@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
-import { Link } from "src/core/components/links"
 import { TocHashLink } from "./types"
+import { Link } from "src/core/components/links"
 
 type Props = { items: TocHashLink }
 

@@ -1,9 +1,9 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
+import getStakeholdernoteProjectId from "../queries/getStakeholdernoteProjectId"
+import db from "db"
 
 import { authorizeProjectAdmin } from "src/authorization"
-import getStakeholdernoteProjectId from "../queries/getStakeholdernoteProjectId"
 
 const DeleteStakeholdernoteSchema = z.object({
   id: z.number(),

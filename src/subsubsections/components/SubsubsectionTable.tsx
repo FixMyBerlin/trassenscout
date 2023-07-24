@@ -1,6 +1,7 @@
 import { Routes } from "@blitzjs/next"
 import clsx from "clsx"
 import { useRouter } from "next/router"
+import { mapillaryLink } from "../../subsections/components/utils/mapillaryLink"
 import { SubsubsectionIcon } from "src/core/components/Map/Icons"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
@@ -14,7 +15,6 @@ import {
 import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { useSlugs } from "src/core/hooks"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
-import { mapillaryLink } from "../../subsections/components/utils/mapillaryLink"
 
 type Props = {
   subsubsections: SubsubsectionWithPosition[]

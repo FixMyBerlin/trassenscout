@@ -1,7 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
 import { MembershipSchema } from "../schema"
+import db from "db"
 
 const UpdateMembership = MembershipSchema.merge(
   z.object({

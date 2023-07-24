@@ -2,11 +2,11 @@ import { GlobeAltIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 import Image from "next/legacy/image"
 import Link from "next/link"
-import { linkStyles } from "src/core/components/links"
 import FMCIcon from "../assets/fmc-icon.svg"
 import LinkedInIcon from "../assets/linkedin-logo.svg"
 import RSVIcon from "../assets/rsv-icon.svg"
 import TwitterIcon from "../assets/twitter-icon.svg"
+import { linkStyles } from "src/core/components/links"
 
 const PageHomePublicOnline = () => {
   let onlineList = [

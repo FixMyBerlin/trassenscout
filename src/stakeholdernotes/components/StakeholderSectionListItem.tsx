@@ -1,12 +1,12 @@
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { Stakeholdernote } from "@prisma/client"
 import React from "react"
+import { useRouter } from "next/router"
+import { StakeholderSectionListItemStatus } from "./StakeholderSectionListItemStatus"
 import { Disclosure } from "src/core/components/Disclosure"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
-import { StakeholderSectionListItemStatus } from "./StakeholderSectionListItemStatus"
-import { useRouter } from "next/router"
 
 type Props = {
   stakeholderNote: Stakeholdernote

@@ -1,10 +1,10 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
 
-import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 import { ContactSchema } from "../schema"
+import { authorizeProjectAdmin } from "src/authorization"
+import db from "db"
 
 const CreateContactSchema = ContactSchema.merge(
   z.object({

@@ -1,8 +1,8 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
-import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
 import getOperatorProjectId from "./getOperatorProjectId"
+import db from "db"
+import { authorizeProjectAdmin } from "src/authorization"
 
 const GetOperatorSchema = z.object({
   // This accepts type of undefined, but is required at runtime

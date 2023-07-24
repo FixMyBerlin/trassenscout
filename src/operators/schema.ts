@@ -1,5 +1,5 @@
-import { SlugSchema } from "src/core/utils"
 import { z } from "zod"
+import { SlugSchema } from "src/core/utils"
 
 export const OperatorSchema = z.object({
   slug: SlugSchema,

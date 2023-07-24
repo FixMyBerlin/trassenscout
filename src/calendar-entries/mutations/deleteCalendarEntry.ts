@@ -1,9 +1,9 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
+import getCalendarEntryProjectId from "../queries/getCalendarEntryProjectId"
+import db from "db"
 
 import { authorizeProjectAdmin } from "src/authorization"
-import getCalendarEntryProjectId from "../queries/getCalendarEntryProjectId"
 
 const DeleteCalendarEntrySchema = z.object({
   id: z.number(),

@@ -1,6 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
+import db from "db"
 
 const GetSurvey = z.object({
   // This accepts type of undefined, but is required at runtime

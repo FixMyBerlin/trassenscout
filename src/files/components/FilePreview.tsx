@@ -2,10 +2,10 @@
 import { File } from "@prisma/client"
 import { RouteUrlObject } from "blitz"
 import React from "react"
-import { Link } from "src/core/components/links"
-import { fileUrl } from "../utils"
 import { DocumentIcon } from "@heroicons/react/24/outline"
 import { Routes } from "@blitzjs/next"
+import { fileUrl } from "../utils"
+import { Link } from "src/core/components/links"
 
 type Props = {
   file: File

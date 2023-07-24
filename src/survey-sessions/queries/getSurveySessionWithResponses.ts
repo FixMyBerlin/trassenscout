@@ -1,6 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
-import db, { SurveySession, SurveyResponse } from "db"
 import { z } from "zod"
+import db, { SurveySession, SurveyResponse } from "db"
 
 const GetSurveySession = z.object({
   id: z.number(),

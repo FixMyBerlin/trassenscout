@@ -1,9 +1,9 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
+import getContactProjectId from "../queries/getContactProjectId"
+import db from "db"
 
 import { authorizeProjectAdmin } from "src/authorization"
-import getContactProjectId from "../queries/getContactProjectId"
 
 const DeleteContactSchema = z.object({
   id: z.number(),

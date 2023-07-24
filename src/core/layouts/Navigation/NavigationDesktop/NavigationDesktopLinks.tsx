@@ -1,8 +1,8 @@
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import React from "react"
-import { Link } from "src/core/components/links"
 import { menuItems } from "../NavigationProject/menuItems"
+import { Link } from "src/core/components/links"
 
 type Props = { menuItems: ReturnType<typeof menuItems> }
 

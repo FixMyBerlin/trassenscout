@@ -1,8 +1,8 @@
 import { resolver } from "@blitzjs/rpc"
+import { z } from "zod"
 import db, { Subsubsection, SubsubsectionTypeEnum, User } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
-import { z } from "zod"
 
 const GetSubsubsection = z.object({
   projectSlug: z.string(),

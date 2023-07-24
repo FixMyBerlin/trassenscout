@@ -1,5 +1,5 @@
-import { NameSchema, SlugSchema } from "src/core/utils"
 import { z } from "zod"
+import { NameSchema, SlugSchema } from "src/core/utils"
 
 export const ProjectSchema = z.object({
   slug: SlugSchema,

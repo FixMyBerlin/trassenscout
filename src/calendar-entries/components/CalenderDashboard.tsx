@@ -2,11 +2,11 @@ import { Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { startOfDay } from "date-fns"
 import { Suspense } from "react"
+import getCalendarEntries from "../queries/getCalendarEntries"
+import { DateList } from "./Calender/DateList"
 import { Link } from "src/core/components/links/Link"
 import { Spinner } from "src/core/components/Spinner"
 import { H2 } from "src/core/components/text/Headings"
-import { DateList } from "./Calender/DateList"
-import getCalendarEntries from "../queries/getCalendarEntries"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 
 const CalendarDashboardDateList: React.FC = () => {

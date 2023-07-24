@@ -1,8 +1,8 @@
 import { resolver } from "@blitzjs/rpc"
+import { StakeholdernoteSchema } from "../schema"
 import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import getSubsectionProjectId from "src/subsections/queries/getSubsectionProjectId"
-import { StakeholdernoteSchema } from "../schema"
 
 export default resolver.pipe(
   resolver.zod(StakeholdernoteSchema),

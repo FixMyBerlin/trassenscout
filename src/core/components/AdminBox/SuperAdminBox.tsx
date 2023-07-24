@@ -1,8 +1,8 @@
 import React, { Suspense } from "react"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { AdminBox } from "./AdminBox"
 import { isAdmin } from "../../../users/utils/isAdmin"
 import { Spinner } from "../Spinner"
+import { AdminBox } from "./AdminBox"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 type Props = {
   className?: string

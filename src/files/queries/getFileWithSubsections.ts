@@ -1,9 +1,9 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
+import getFileProjectId from "./getFileProjectId"
+import db from "db"
 
 import { authorizeProjectAdmin } from "src/authorization"
-import getFileProjectId from "./getFileProjectId"
 
 const GetFileSchema = z.object({
   // This accepts type of undefined, but is required at runtime

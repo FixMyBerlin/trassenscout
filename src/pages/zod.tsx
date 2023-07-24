@@ -1,9 +1,9 @@
 import { BlitzPage } from "@blitzjs/next"
+import { z } from "zod"
 import { DevAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { LayoutMiddleBox, MetaTags } from "src/core/layouts"
 import { isBrowser } from "src/core/utils"
-import { z } from "zod"
 
 declare global {
   interface Window {

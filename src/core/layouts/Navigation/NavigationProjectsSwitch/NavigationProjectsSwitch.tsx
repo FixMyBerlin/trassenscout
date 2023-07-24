@@ -4,10 +4,10 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import React, { Fragment } from "react"
-import { Link } from "src/core/components/links/Link"
-import { shortTitle } from "src/core/components/text"
 import { NavigationProps } from "../NavigationProject/NavigationProject"
 import { ProjectLogo } from "../NavigationProject/ProjectLogo"
+import { Link } from "src/core/components/links/Link"
+import { shortTitle } from "src/core/components/text"
 
 type Props = Pick<NavigationProps, "projects">
 

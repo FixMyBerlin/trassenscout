@@ -4,13 +4,13 @@ import { useQuery } from "@blitzjs/rpc"
 import { GetServerSidePropsContext } from "next"
 import router from "next/router"
 import { Suspense } from "react"
+import { api } from "../blitz-server"
+import getCurrentUser from "../users/queries/getCurrentUser"
+import { CurrentUser } from "../users/types"
 import { Spinner } from "src/core/components/Spinner"
 import PageHomeNoProject from "src/home/components/PageHomeNoProject"
 import PageHomePublic from "src/home/components/PageHomePublic"
 import getProjects from "src/projects/queries/getProjects"
-import { api } from "../blitz-server"
-import getCurrentUser from "../users/queries/getCurrentUser"
-import { CurrentUser } from "../users/types"
 
 const HomeWithWithProjectsQuery: React.FC = () => {
   const projects = useQuery(getProjects, {})[0].projects

@@ -1,9 +1,9 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
+import getStakeholdernoteProjectId from "./getStakeholdernoteProjectId"
+import db from "db"
 
 import { authorizeProjectAdmin } from "src/authorization"
-import getStakeholdernoteProjectId from "./getStakeholdernoteProjectId"
 
 const GetStakeholdernoteSchema = z.object({
   // This accepts type of undefined, but is required at runtime

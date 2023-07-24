@@ -1,10 +1,10 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
 
-import { authorizeProjectAdmin } from "src/authorization"
 import getCalendarEntryProjectId from "../queries/getCalendarEntryProjectId"
 import { CalendarEntrySchema } from "../schema"
+import { authorizeProjectAdmin } from "src/authorization"
+import db from "db"
 
 const UpdateCalendarEntrySchema = CalendarEntrySchema.merge(
   z.object({

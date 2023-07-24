@@ -12,11 +12,11 @@ import Map, {
   Source,
   useMap,
 } from "react-map-gl/maplibre"
-import { LayerType } from "src/core/components/Map/BackgroundSwitcher"
-import { PinContext } from "src/participation/context/contexts"
 import { MapBanner } from "./MapBanner"
 import { ParticipationBackgroundSwitcher } from "./ParticipationBackgroundSwitcher"
 import Pin from "./Pin"
+import { PinContext } from "src/participation/context/contexts"
+import { LayerType } from "src/core/components/Map/BackgroundSwitcher"
 
 export type ParticipationMapProps = {
   className?: string

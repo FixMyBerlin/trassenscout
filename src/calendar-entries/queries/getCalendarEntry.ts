@@ -1,9 +1,9 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
+import getCalendarEntryProjectId from "./getCalendarEntryProjectId"
+import db from "db"
 
 import { authorizeProjectAdmin } from "src/authorization"
-import getCalendarEntryProjectId from "./getCalendarEntryProjectId"
 
 const GetCalendarEntrySchema = z.object({
   // This accepts type of undefined, but is required at runtime

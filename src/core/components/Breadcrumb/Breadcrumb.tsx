@@ -2,11 +2,11 @@ import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { ChevronRightIcon } from "@heroicons/react/20/solid"
 import { RouteUrlObject } from "blitz"
+import { Link } from "../links"
+import { shortTitle } from "../text"
 import { useSlugs } from "src/core/hooks"
 import getProject from "src/projects/queries/getProject"
 import getSubsection from "src/subsections/queries/getSubsection"
-import { Link } from "../links"
-import { shortTitle } from "../text"
 
 const BreadcrumbStep: React.FC<{ title: string; route?: RouteUrlObject; arrow: boolean }> = ({
   title,

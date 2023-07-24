@@ -1,12 +1,12 @@
 import { Routes, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
+import { NotFoundError } from "blitz"
+import getSurveySessionWithResponses from "../../survey-sessions/queries/getSurveySessionWithResponses"
 import { Spinner } from "src/core/components/Spinner"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
-import getSurveySessionWithResponses from "../../survey-sessions/queries/getSurveySessionWithResponses"
-import { NotFoundError } from "blitz"
 
 export const SurveySession = () => {
   const surveySessionId = useParam("surveySessionId", "number")

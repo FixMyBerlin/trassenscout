@@ -3,10 +3,10 @@ import { useQuery } from "@blitzjs/rpc"
 import { clsx } from "clsx"
 import Image from "next/legacy/image"
 import { Suspense } from "react"
+import svgLogoTrassenscout from "../assets/trassenscout-logo-without-text.svg"
 import { Spinner } from "src/core/components/Spinner"
 import { getImageSrc } from "src/core/utils/getImageSrc"
 import getProject from "src/projects/queries/getProject"
-import svgLogoTrassenscout from "../assets/trassenscout-logo-without-text.svg"
 
 type Props = {
   className?: string

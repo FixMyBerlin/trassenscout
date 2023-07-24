@@ -1,10 +1,10 @@
 import { useParam } from "@blitzjs/next"
 import { Contact } from "@prisma/client"
 import React from "react"
+import { TableWrapper } from "../../core/components/Table/TableWrapper"
 import { LinkMail, LinkTel } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { getFullname } from "src/users/utils"
-import { TableWrapper } from "../../core/components/Table/TableWrapper"
 
 type Props = {
   contact: Contact

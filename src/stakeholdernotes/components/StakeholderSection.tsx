@@ -1,16 +1,16 @@
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import React from "react"
+import getStakeholdernotes from "../queries/getStakeholdernotes"
+import StakeholdernoteList from "./StakeholderSectionList"
+import { StakeholdernoteFilterDropdown } from "./StakeholdernoteFilterDropdown"
+import { stakeholderNoteLabel } from "./stakeholdernotesStatus"
 import { Link } from "src/core/components/links"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { useSlugs } from "src/core/hooks"
-import getStakeholdernotes from "../queries/getStakeholdernotes"
-import StakeholdernoteList from "./StakeholderSectionList"
-import { StakeholdernoteFilterDropdown } from "./StakeholdernoteFilterDropdown"
-import { stakeholderNoteLabel } from "./stakeholdernotesStatus"
 
 type Props = {
   subsectionId: number

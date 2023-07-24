@@ -1,10 +1,10 @@
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
+import { GetSubsectionSchema, SubsectionWithPosition } from "./getSubsection"
 import db, { Prisma } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
-import { GetSubsectionSchema, SubsectionWithPosition } from "./getSubsection"
 
 export type SubsectionWithSubsubsectionsWithPosition = SubsectionWithPosition & {
   subsubsections: SubsubsectionWithPosition[]
