@@ -6,6 +6,7 @@ import seedOperators from "./seeds/operators"
 import seedProjects from "./seeds/projects"
 import seedStakeholdernotes from "./seeds/stakeholdernotes"
 import seedSubsections from "./seeds/subsections"
+import seedSurvey from "./seeds/survey"
 import seedUsers from "./seeds/users"
 
 /*
@@ -21,6 +22,7 @@ const seed = async () => {
   await seedCalendarEntries()
   await seedContacts()
   await seedFiles()
+  await seedSurvey()
 }
 
 export default seed
