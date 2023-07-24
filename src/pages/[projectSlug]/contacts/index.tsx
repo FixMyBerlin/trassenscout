@@ -11,7 +11,7 @@ import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 
-export const ContactWithQuery = () => {
+export const ContactsWithQuery = () => {
   const { projectSlug } = useSlugs()
   const [{ contacts }] = usePaginatedQuery(getContacts, {
     projectSlug: projectSlug!,
@@ -51,7 +51,7 @@ const ContactsPage: BlitzPage = () => {
       <MetaTags noindex title="Kontakte" />
 
       <Suspense fallback={<Spinner page />}>
-        <ContactWithQuery />
+        <ContactsWithQuery />
       </Suspense>
     </LayoutRs>
   )
