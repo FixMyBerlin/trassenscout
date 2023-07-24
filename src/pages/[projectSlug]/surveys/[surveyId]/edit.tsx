@@ -5,7 +5,7 @@ import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { Spinner } from "src/core/components/Spinner"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SurveyForm } from "src/surveys/components/SurveyForm"
 import updateSurvey from "src/surveys/mutations/updateSurvey"
 import getSurvey from "src/surveys/queries/getSurvey"
@@ -57,7 +57,7 @@ const EditSurvey = () => {
 const EditSurveyPage = () => {
   const { projectSlug } = useSlugs()
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<Spinner page />}>
         <EditSurvey />
       </Suspense>
@@ -65,7 +65,7 @@ const EditSurveyPage = () => {
       <p>
         <Link href={Routes.SurveysPage({ projectSlug: projectSlug! })}>Alle Surveys</Link>
       </p>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 

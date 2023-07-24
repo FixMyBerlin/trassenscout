@@ -2,7 +2,7 @@ import { Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import { Spinner } from "src/core/components/Spinner"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import createSurvey from "src/surveys/mutations/createSurvey"
 import { SurveyForm, FORM_ERROR } from "src/surveys/components/SurveyForm"
 import { Link } from "src/core/components/links"
@@ -37,14 +37,14 @@ const NewSurvey = () => {
 const NewSurveyPage = () => {
   const { projectSlug } = useSlugs()
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<Spinner page />}>
         <NewSurvey />
       </Suspense>
       <p>
         <Link href={Routes.SurveysPage({ projectSlug: projectSlug! })}>Alle Surveys</Link>
       </p>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 

@@ -2,7 +2,7 @@ import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import { Spinner } from "src/core/components/Spinner"
 import getSurveys from "src/surveys/queries/getSurveys"
 import { Link } from "src/core/components/links"
@@ -56,13 +56,13 @@ export const SurveysList = () => {
 
 const SurveysPage = () => {
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <MetaTags noindex title="Surveys" />
 
       <Suspense fallback={<Spinner page />}>
         <SurveysList />
       </Suspense>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 

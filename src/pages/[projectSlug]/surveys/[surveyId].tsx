@@ -7,7 +7,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link, linkStyles } from "src/core/components/links"
 import { quote } from "src/core/components/text"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+import { LayoutRs, MetaTags } from "src/core/layouts"
 import deleteSurvey from "src/surveys/mutations/deleteSurvey"
 import getSurvey from "src/surveys/queries/getSurvey"
 import { useSlugs } from "src/core/hooks"
@@ -49,7 +49,7 @@ export const Survey = () => {
 const ShowSurveyPage = () => {
   const { projectSlug } = useSlugs()
   return (
-    <LayoutArticle>
+    <LayoutRs>
       <Suspense fallback={<Spinner page />}>
         <Survey />
       </Suspense>
@@ -57,7 +57,7 @@ const ShowSurveyPage = () => {
       <p>
         <Link href={Routes.SurveysPage({ projectSlug: projectSlug! })}>Alle Surveys</Link>
       </p>
-    </LayoutArticle>
+    </LayoutRs>
   )
 }
 
