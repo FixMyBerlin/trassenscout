@@ -13,7 +13,8 @@ export default resolver.pipe(
   // @ts-ignore
   authorizeProjectAdmin(getProjectIdBySlug),
   async ({ projectSlug, where, orderBy, skip = 0, take = 100 }: GetSurveysInput) => {
-    where = { project: { slug: projectSlug }, ...where }
+    const saveWhere = { project: { slug: projectSlug }, ...where }
+    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const {
       items: surveys,
       hasMore,
@@ -22,7 +23,7 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.survey.count({ where }),
+      count: () => db.survey.count({ where: saveWhere }),
       query: (paginateArgs) => db.survey.findMany({ ...paginateArgs, where, orderBy }),
     })
 
