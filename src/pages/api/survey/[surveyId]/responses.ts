@@ -2,10 +2,11 @@ import { NextApiRequest, NextApiResponse } from "next"
 import surveyDefinition from "src/participation/data/survey.json"
 import feedbackDefinition from "src/participation/data/feedback.json"
 import { Survey } from "src/participation/data/types"
-import { authenticate, sendCsv } from "./_shared"
+import { getSurvey, sendCsv } from "./_shared"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (!(await authenticate(req, res))) return
+  const survey = await getSurvey(req, res)
+  if (!survey) return
 
   const headers = [
     { id: "questionId", title: "questionId" },
