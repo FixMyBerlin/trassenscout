@@ -6,7 +6,6 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import GroupedSurveyResponseItem from "src/survey-responses/components/GroupedSurveyResponseItem"
-import GetGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
 import getSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
 import getSurveyNew from "src/surveys/queries/getSurvey"
 
@@ -15,7 +14,7 @@ export const SurveyResponseWithQuery = () => {
   const surveySlug = useParam("surveySlug", "string")
   const projectSlug = useParam("projectSlug", "string")
   const [survey] = useQuery(getSurveyNew, { slug: surveySlug })
-  const [{ surveyResponses, groupedSurveyResponses }] = usePaginatedQuery(getSurveyResponses, {
+  const [{ groupedSurveyResponses }] = usePaginatedQuery(getSurveyResponses, {
     surveySlug,
   })
 
@@ -24,17 +23,10 @@ export const SurveyResponseWithQuery = () => {
       <MetaTags noindex title={`Beteiligung ${survey.slug}`} />
       <PageHeader title={`Beteiligung ${survey.slug}`} className="mt-12" />
 
-      <div>
-        <pre>{JSON.stringify(groupedSurveyResponses, null, 2)}</pre>
-        <GroupedSurveyResponseItem
-          responseData={{
-            "1": {
-              "1": 71,
-              "2": 16,
-              "3": 13,
-            },
-          }}
-        />
+      <div className="space-y-4">
+        {Object.entries(groupedSurveyResponses).map(([k, v]) => {
+          return <GroupedSurveyResponseItem key={k} chartType={"bar"} responseData={{ [k]: v }} />
+        })}
       </div>
     </>
   )
