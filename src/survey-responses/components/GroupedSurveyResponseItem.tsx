@@ -1,8 +1,8 @@
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
-import { FormProps } from "src/core/components/forms"
-import { z } from "zod"
-export { FORM_ERROR } from "src/core/components/forms"
 import surveyDefinition from "src/participation/data/survey.json"
+import VerticalBartChart from "./BarChart"
+import PieChartWithLegend from "./PieChart"
+import { H3 } from "src/core/components/text"
+export { FORM_ERROR } from "src/core/components/forms"
 
 const data = [
   {
@@ -33,9 +33,6 @@ function transformJSONToArray(json) {
                 id: response.id,
                 text: response.text.de,
               }
-              if (response.help) {
-                responseObject.help = response.help.de
-              }
               return responseObject
             }),
           },
@@ -54,49 +51,38 @@ const surveyDefinitionArray = transformJSONToArray(surveyDefinition)
 
 type Props = {
   responseData: Record<string, Record<string, number>>
-  chartType: string
+  chartType: "bar" | "pie"
 }
 
 const GroupedSurveyResponseItem: React.FC<Props> = ({ responseData, chartType }) => {
+  const questionId = Object.keys(responseData)[0]
+  const question = surveyDefinitionArray.find((question) => Number(questionId) === question.id)
+
   const getSurveyQuestion = (id: string) => {
-    const question = surveyDefinitionArray.find((question) => Number(id) === question.id)
     return question.label
   }
+  const recordToArray = (record: Record<string, number>) => {
+    return Object.entries(record).map(([key, value]) => ({
+      name: question.props.responses.find((r) => r.id === Number(key)).text,
+      value,
+    }))
+  }
+
+  // console.log(recordToArray(responseData[questionId]))
 
   return (
-    <>
-      <h1 style={{ fontFamily: "Overpass" }}>
+    <div className="border rounded  py-3.5">
+      <H3 className="border-b pb-3.5 px-3.5">
         {getSurveyQuestion(Object.keys(responseData)[0] as string)}
-      </h1>
-      <ResponsiveContainer width="100%" height={480}>
-        <BarChart
-          width={500}
-          height={300}
-          data={data}
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-          layout="vertical"
-        >
-          <YAxis dataKey="name" width={100} type="category" tick={{ fontFamily: "Overpass" }} />
-          <XAxis tick={{ fontFamily: "Overpass" }} type="number" stroke={"0"} />
-          <CartesianGrid horizontal={false} />
-          <Tooltip
-            wrapperStyle={{
-              fontFamily: "Overpass",
-            }}
-            labelStyle={{
-              color: "#E5007D",
-            }}
-            itemStyle={{
-              color: "#E5007D",
-            }}
-            separator=": "
-            isAnimationActive={false}
-            contentStyle={{ width: "100%" }}
-          />
-          <Bar background={false} fill="#2C62A9" dataKey="Anzahl der Antworten" />
-        </BarChart>
-      </ResponsiveContainer>
-    </>
+      </H3>
+
+      <div className="h-[350px] px-3.5">
+        {chartType === "bar" && (
+          <VerticalBartChart data={recordToArray(responseData[questionId])} />
+        )}
+        {/* <PieChartWithLegend data={recordToArray(responseData[questionId])} /> */}
+      </div>
+    </div>
   )
 }
 
