@@ -12,7 +12,13 @@ type GetSurveysInput = { projectSlug: string } & Pick<
 export default resolver.pipe(
   // @ts-ignore
   authorizeProjectAdmin(getProjectIdBySlug),
-  async ({ projectSlug, where, orderBy, skip = 0, take = 100 }: GetSurveysInput) => {
+  async ({
+    projectSlug,
+    where,
+    orderBy = { id: "asc" },
+    skip = 0,
+    take = 100,
+  }: GetSurveysInput) => {
     const saveWhere = { project: { slug: projectSlug }, ...where }
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const {
