@@ -4,7 +4,6 @@ import { z } from "zod"
 
 const UpdateSurveySession = z.object({
   id: z.number(),
-  email: z.string(),
 })
 
 export default resolver.pipe(

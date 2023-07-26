@@ -121,7 +121,7 @@ const ParticipationMainPage: BlitzPage = () => {
     setProgress(stageProgressDefinition["DONE"])
     scrollToTopWithDelay()
     setEmailState(email)
-    await updateSurveySessionMutation({ id: surveySessionId!, email: email! })
+    await updateSurveySessionMutation({ id: surveySessionId! })
   }
 
   let component
