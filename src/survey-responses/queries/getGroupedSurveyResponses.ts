@@ -18,7 +18,7 @@ export default resolver.pipe(
     where,
     orderBy = { id: "desc" },
     skip = 0,
-    take = 100,
+    take = 1000,
   }: GetSurveyResponsesInput) => {
     // TODO at the moment surveyId is NOT the relation field
     // const saveWhere = { survey: { slug: surveySlug }, ...where }
@@ -30,6 +30,7 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
+      maxTake: 1001,
       count: () => db.surveyResponse.count({ where }),
       query: (paginateArgs) =>
         db.surveyResponse.findMany({
