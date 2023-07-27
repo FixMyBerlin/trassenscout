@@ -32,7 +32,7 @@ export const SurveyResponsesWithQuery = () => {
           key={survey.slug}
           href={Routes.SurveyResponsePage({ projectSlug: projectSlug!, surveySlug: survey.slug })}
         >
-          {survey.slug}
+          {survey.title}
         </Link>
       ))}
     </>
