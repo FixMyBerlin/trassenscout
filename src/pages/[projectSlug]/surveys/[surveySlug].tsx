@@ -7,7 +7,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import GroupedSurveyResponseItem from "src/survey-responses/components/GroupedSurveyResponseItem"
 import getSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
-import getSurveyNew from "src/surveys/queries/getSurvey"
+import getSurveyNew from "src/surveys/queries/getSurveyByProjectSlug"
 
 export const SurveyResponseWithQuery = () => {
   const router = useRouter()

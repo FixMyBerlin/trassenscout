@@ -1,25 +1,13 @@
-import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
+import { paginate } from "blitz"
 import db, { Prisma } from "db"
-import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 
-type GetSurveysInput = { projectSlug: string } & Pick<
-  Prisma.SurveyFindManyArgs,
-  "where" | "orderBy" | "skip" | "take"
->
+interface GetSurveysInput
+  extends Pick<Prisma.SurveyFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
 
 export default resolver.pipe(
-  // @ts-ignore
-  authorizeProjectAdmin(getProjectIdBySlug),
-  async ({
-    projectSlug,
-    where,
-    orderBy = { id: "asc" },
-    skip = 0,
-    take = 100,
-  }: GetSurveysInput) => {
-    const saveWhere = { project: { slug: projectSlug }, ...where }
+  resolver.authorize("ADMIN"),
+  async ({ where, orderBy, skip = 0, take = 100 }: GetSurveysInput) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const {
       items: surveys,
@@ -29,7 +17,7 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.survey.count({ where: saveWhere }),
+      count: () => db.survey.count({ where }),
       query: (paginateArgs) => db.survey.findMany({ ...paginateArgs, where, orderBy }),
     })
 
