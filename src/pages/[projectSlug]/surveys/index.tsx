@@ -1,10 +1,10 @@
 import { Suspense } from "react"
-import { Routes } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { Spinner } from "src/core/components/Spinner"
-import getSurveys from "src/surveys/queries/getSurveysAdmin"
+import getSurveys from "src/surveys/queries/getSurveysByProjectSlug"
 import { Link } from "src/core/components/links"
 import { Pagination } from "src/core/components/Pagination"
 import { useSlugs } from "src/core/hooks"
@@ -54,7 +54,7 @@ export const SurveysList = () => {
   )
 }
 
-const SurveysPage = () => {
+const SurveysPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <MetaTags noindex title="Surveys" />
