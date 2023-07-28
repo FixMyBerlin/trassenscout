@@ -2,20 +2,18 @@ import { Suspense } from "react"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
-import { LayoutRs, MetaTags } from "src/core/layouts"
+import { LayoutArticle, LayoutRs, MetaTags } from "src/core/layouts"
 import { Spinner } from "src/core/components/Spinner"
-import getSurveys from "src/surveys/queries/getSurveysByProjectSlug"
 import { Link } from "src/core/components/links"
 import { Pagination } from "src/core/components/Pagination"
 import { useSlugs } from "src/core/hooks"
+import getSurveys from "src/surveys/queries/getSurveys"
 
 export const SurveysList = () => {
   const { projectSlug } = useSlugs()
   const router = useRouter()
   const page = Number(router.query.page) || 0
-  const [{ surveys, hasMore }] = usePaginatedQuery(getSurveys, {
-    projectSlug: projectSlug!,
-  })
+  const [{ surveys, hasMore }] = usePaginatedQuery(getSurveys, {})
 
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
@@ -25,21 +23,13 @@ export const SurveysList = () => {
       <h1>Surveys</h1>
 
       <p>
-        <Link
-          href={Routes.NewSurveyPage({
-            projectSlug: projectSlug!,
-          })}
-        >
-          Survey erstellen
-        </Link>
+        <Link href={Routes.NewSurveyPage()}>Survey erstellen</Link>
       </p>
 
       <ul>
         {surveys.map((survey) => (
           <li key={survey.id}>
-            <Link href={Routes.ShowSurveyPage({ projectSlug: projectSlug!, surveyId: survey.id })}>
-              {survey.slug}
-            </Link>
+            <Link href={Routes.ShowSurveyPage({ surveyId: survey.id })}>{survey.slug}</Link>
           </li>
         ))}
       </ul>
@@ -56,13 +46,13 @@ export const SurveysList = () => {
 
 const SurveysPage: BlitzPage = () => {
   return (
-    <LayoutRs>
+    <LayoutArticle>
       <MetaTags noindex title="Surveys" />
 
       <Suspense fallback={<Spinner page />}>
         <SurveysList />
       </Suspense>
-    </LayoutRs>
+    </LayoutArticle>
   )
 }
 

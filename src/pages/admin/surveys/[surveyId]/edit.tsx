@@ -3,13 +3,13 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Link } from "src/core/components/links"
 import { Spinner } from "src/core/components/Spinner"
-import { LayoutRs, MetaTags } from "src/core/layouts"
+import { Link } from "src/core/components/links"
+import { useSlugs } from "src/core/hooks"
+import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SurveyForm } from "src/surveys/components/SurveyForm"
 import updateSurvey from "src/surveys/mutations/updateSurvey"
 import getSurvey from "src/surveys/queries/getSurvey"
-import { useSlugs } from "src/core/hooks"
 
 const EditSurvey = () => {
   const { projectSlug } = useSlugs()
@@ -33,7 +33,7 @@ const EditSurvey = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(Routes.ShowSurveyPage({ projectSlug: projectSlug!, surveyId: updated.id }))
+      await router.push(Routes.ShowSurveyPage({ surveyId: updated.id }))
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -57,15 +57,15 @@ const EditSurvey = () => {
 const EditSurveyPage = () => {
   const { projectSlug } = useSlugs()
   return (
-    <LayoutRs>
+    <LayoutArticle>
       <Suspense fallback={<Spinner page />}>
         <EditSurvey />
       </Suspense>
 
       <p>
-        <Link href={Routes.SurveysPage({ projectSlug: projectSlug! })}>Alle Surveys</Link>
+        <Link href={Routes.SurveysPage()}>Alle Surveys</Link>
       </p>
-    </LayoutRs>
+    </LayoutArticle>
   )
 }
 
