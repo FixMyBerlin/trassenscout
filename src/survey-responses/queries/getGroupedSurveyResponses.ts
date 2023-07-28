@@ -1,12 +1,12 @@
-import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
+import { paginate } from "blitz"
 import db, { Prisma } from "db"
 
 import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 
-type GetSurveyResponsesInput = { surveySlug: string } & Pick<
-  Prisma.SurveyResponseFindManyArgs,
+type GetSurveySessionsWithResponsesInput = { surveySlug: string } & Pick<
+  Prisma.SurveySessionFindManyArgs,
   "where" | "orderBy" | "skip" | "take"
 >
 
@@ -19,11 +19,10 @@ export default resolver.pipe(
     orderBy = { id: "desc" },
     skip = 0,
     take = 1000,
-  }: GetSurveyResponsesInput) => {
-    // TODO at the moment surveyId is NOT the relation field
-    // const saveWhere = { survey: { slug: surveySlug }, ...where }
+  }: GetSurveySessionsWithResponsesInput) => {
+    const saveWhere = { survey: { slug: surveySlug }, ...where }
     const {
-      items: surveyResponses,
+      items: surveySessions,
       hasMore,
       nextPage,
       count,
@@ -31,26 +30,32 @@ export default resolver.pipe(
       skip,
       take,
       maxTake: 1001,
-      count: () => db.surveyResponse.count({ where }),
+      count: () => db.surveySession.count({ where }),
       query: (paginateArgs) =>
-        db.surveyResponse.findMany({
+        db.surveySession.findMany({
           ...paginateArgs,
-          where: { surveyId: 1 }, // TODO at the moment we only want the first part of the survey and we get it by surveyId
+          where: saveWhere,
           orderBy,
+          include: {
+            // TODO at the moment surveyId (the field in SurveyResponses) is NOT a relation field
+            // the field here just represents first or second part of the survey
+            // at the moment we only want the first part of the survey
+            responses: { where: { surveyId: 1 } },
+          },
         }),
     })
 
     const groupedSurveyResponses: Record<string, Record<string, number>> = {}
 
-    if (surveyResponses.length) {
-      const responseObjectExample = JSON.parse(surveyResponses[0]!.data) as Record<
+    if (surveySessions.length) {
+      const responseObjectExample = JSON.parse(surveySessions[0]!.responses[0]!.data) as Record<
         string,
         number | number[]
       >
       Object.keys(responseObjectExample).forEach((responseKey) => {
         let result: Record<number, number> = {}
-        surveyResponses.forEach((response) => {
-          const responseObject = JSON.parse(response.data) as Record<string, number>
+        surveySessions.forEach((response) => {
+          const responseObject = JSON.parse(response.responses[0]!.data) as Record<string, number>
 
           if (typeof responseObject[responseKey] === "number") {
             // @ts-ignore
@@ -78,8 +83,8 @@ export default resolver.pipe(
     }
 
     return {
-      surveyResponses,
       groupedSurveyResponses,
+      surveySessions,
       nextPage,
       hasMore,
       count,
