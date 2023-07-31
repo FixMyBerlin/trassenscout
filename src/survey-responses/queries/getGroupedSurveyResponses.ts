@@ -36,26 +36,34 @@ export default resolver.pipe(
           ...paginateArgs,
           where: saveWhere,
           orderBy,
-          include: {
-            // TODO at the moment surveyId (the field in SurveyResponses) is NOT a relation field
-            // the field here just represents first or second part of the survey
-            // at the moment we only want the first part of the survey
-            responses: { where: { surveyId: 1 } },
-          },
+          include: { responses: true },
         }),
     })
 
-    const groupedSurveyResponses: Record<string, Record<string, number>> = {}
+    // at the moment surveyId (the field in SurveyResponses) is NOT a relation field
+    // the field here just represents first or second part of the survey
+    // here we first get all responses from the first part of the survey ("SurveyId" : 1)
+    const surveyResponsesFirstPart = surveySessions!.map(
+      (s) => s.responses.filter((r) => r.surveyId === 1)[0]!,
+    )
 
-    if (surveySessions.length) {
-      const responseObjectExample = JSON.parse(surveySessions[0]!.responses[0]!.data) as Record<
+    // here we first get all responses of type feedback of the survey ("SurveyId" : 2)
+    const surveyResponsesFeedbackPartNested = surveySessions!
+      .map((s) => s.responses.filter((r) => r.surveyId === 2))
+      .filter((array) => array.length > 0)
+    const surveyResponsesFeedbackPart = [].concat(...surveyResponsesFeedbackPartNested)
+
+    const groupedSurveyResponsesFirstPart: Record<string, Record<string, number>> = {}
+
+    if (surveyResponsesFirstPart.length) {
+      const responseObjectExample = JSON.parse(surveyResponsesFirstPart[0]!.data) as Record<
         string,
         number | number[]
       >
       Object.keys(responseObjectExample).forEach((responseKey) => {
         let result: Record<number, number> = {}
-        surveySessions.forEach((response) => {
-          const responseObject = JSON.parse(response.responses[0]!.data) as Record<string, number>
+        surveyResponsesFirstPart.forEach((response) => {
+          const responseObject = JSON.parse(response.data) as Record<string, number>
 
           if (typeof responseObject[responseKey] === "number") {
             // @ts-ignore
@@ -77,13 +85,13 @@ export default resolver.pipe(
             })
           }
         })
-
-        groupedSurveyResponses[responseKey] = result
+        groupedSurveyResponsesFirstPart[responseKey] = result
       })
     }
 
     return {
-      groupedSurveyResponses,
+      groupedSurveyResponsesFirstPart,
+      surveyResponsesFeedbackPart,
       surveySessions,
       nextPage,
       hasMore,
