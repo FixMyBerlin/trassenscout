@@ -14,10 +14,9 @@ type Props = {
 }
 
 const CustomizedLabel = (payload: any) => {
-  console.log(payload)
+  // console.log(payload)
   const x = payload.x ?? 0
   const y = payload.y ?? 0
-  console.log()
   const width = 3
   return (
     <svg xmlns="http://www.w3.org/2000/svg">
