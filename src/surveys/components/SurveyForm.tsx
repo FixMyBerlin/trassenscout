@@ -24,6 +24,23 @@ export function SurveyForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
       <LabeledTextField type="text" name="title" label="Titel" placeholder="" />
       <LabeledCheckbox value="active" label="Active" scope="active" />
       <LabeledSelect name="projectSlug" label="Projekt" options={projectOptions} />
+      <div className="flex gap-4">
+        <LabeledTextField
+          optional
+          type="date"
+          name="startDate"
+          label="Start-Datum"
+          placeholder=""
+        />
+        <LabeledTextField optional type="date" name="endDate" label="End-Datum" placeholder="" />
+      </div>
+      <LabeledTextField
+        type="number"
+        optional
+        name="interestedParticipants"
+        label="Anzahl der an Updates interessierten Teilnehmenden"
+        placeholder=""
+      />
     </Form>
   )
 }

@@ -4,6 +4,7 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
+import { PageHeader } from "src/core/components/pages/PageHeader"
 import { useSlugs } from "src/core/hooks"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SurveyForm } from "src/surveys/components/SurveyForm"
@@ -15,7 +16,12 @@ const NewSurvey = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const survey = await createSurveyMutation({ ...values })
+      const survey = await createSurveyMutation({
+        ...values,
+        interestedParticipants: Number(values.interestedParticipants),
+        startDate: new Date(values.startDate),
+        endDate: new Date(values.endDate),
+      })
       await router.push(Routes.ShowSurveyPage({ surveyId: survey.id }))
     } catch (error: any) {
       console.error(error)
@@ -25,8 +31,9 @@ const NewSurvey = () => {
 
   return (
     <>
-      <MetaTags noindex title="Neuen Survey erstellen" />
-      <h1>Neuen Survey erstellen</h1>
+      <MetaTags noindex title="Neue Beteiligung erstellen" />
+      <PageHeader title=" Neuen Survey erstellen" />
+      {/* TODO schema */}
       <SurveyForm submitText="Erstellen" onSubmit={handleSubmit} />
     </>
   )

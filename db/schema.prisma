@@ -292,12 +292,15 @@ model Survey {
   id            Int             @id @default(autoincrement())
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+  startDate     DateTime?
+  endDate       DateTime?
   project       Project         @relation(fields: [projectId], references: [id])
   projectId     Int
   slug          String          @unique
   title         String
   active        Boolean         @default(false)
   SurveySession SurveySession[]
+  interestedParticipants  Int?
 }
 
 model SurveySession {
