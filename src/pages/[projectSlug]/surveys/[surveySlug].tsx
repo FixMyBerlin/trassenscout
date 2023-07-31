@@ -1,6 +1,7 @@
 import { BlitzPage, useParam } from "@blitzjs/next"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
+import { isAfter } from "date-fns"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links"
@@ -26,10 +27,20 @@ export const SurveyResponseWithQuery = () => {
     (r) => JSON.parse(r.data)["23"],
   )
 
+  const getFormatDistanceInDays = (startDate: any, endDate?: any) => {
+    if (!startDate) return "(unbekannt)"
+    if (isSurveyPast)
+      return endDate
+        ? `${Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24))} Tage`
+        : "(unbekannt)"
+    return `${Math.floor(((new Date() as any) - startDate) / (1000 * 60 * 60 * 24))} Tagen`
+  }
+
+  const isSurveyPast = survey.endDate && isAfter(new Date(), survey.endDate)
   const generalSurveyInformation: Array<Record<string, Record<string, number | string>>> = [
     {
       firstRow: {
-        "Interesse an Updates": 0,
+        "Interesse an Updates": survey.interestedParticipants || "(unbekannt)",
         Teilnehmer: surveySessions.length,
         "Zusätzliches Feedback": surveyResponsesFeedbackPart.length,
         "Feedback mit Ortsangabe": surveyResponsesFeedbackPartWithLocation.length,
@@ -37,7 +48,17 @@ export const SurveyResponseWithQuery = () => {
           surveyResponsesFeedbackPart.length - surveyResponsesFeedbackPartWithLocation.length,
       },
     },
-    { secondRow: { "Läuft seit": `${0} Tagen`, "Gestartet am ": 0, "Ende am": 0 } },
+    {
+      secondRow: {
+        [`${isSurveyPast ? "Laufzeit war" : "Läuft seit"}`]: getFormatDistanceInDays(
+          survey.startDate,
+          survey.endDate,
+        ),
+        "Gestartet am ": survey.startDate ? survey.startDate.toLocaleDateString() : "(unbekannt)",
+        [`Endet${isSurveyPast ? "e" : ""} am`]:
+          survey.endDate?.toLocaleDateString() || "(unbekannt)",
+      },
+    },
   ]
 
   return (
