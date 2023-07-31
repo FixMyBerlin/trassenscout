@@ -17,21 +17,27 @@ export const SurveyResponseWithQuery = () => {
   const surveySlug = useParam("surveySlug", "string")
   const projectSlug = useParam("projectSlug", "string")
   const [survey] = useQuery(getSurveyByProjectSlug, { slug: surveySlug })
-  const [{ groupedSurveyResponses, surveySessions }] = usePaginatedQuery(getSurveyResponses, {
-    surveySlug,
-  })
+  const [{ groupedSurveyResponsesFirstPart, surveySessions, surveyResponsesFeedbackPart }] =
+    usePaginatedQuery(getSurveyResponses, {
+      surveySlug,
+    })
+
+  const surveyResponsesFeedbackPartWithLocation = surveyResponsesFeedbackPart.filter(
+    (r) => JSON.parse(r.data)["23"],
+  )
 
   const generalSurveyInformation: Array<Record<string, Record<string, number | string>>> = [
     {
       firstRow: {
-        "Interesse an Updates": 66,
+        "Interesse an Updates": 0,
         Teilnehmer: surveySessions.length,
-        "Zusätzliches Feedback ": 0,
-        "Feedback mit Ortsangabe": 0,
-        "Feedback ohne Ortsangabe": 0,
+        "Zusätzliches Feedback": surveyResponsesFeedbackPart.length,
+        "Feedback mit Ortsangabe": surveyResponsesFeedbackPartWithLocation.length,
+        "Feedback ohne Ortsangabe":
+          surveyResponsesFeedbackPart.length - surveyResponsesFeedbackPartWithLocation.length,
       },
     },
-    { secondRow: { "Läuft seit": `${0}Tagen`, "Gestartet am ": 0, "Ende am": 0 } },
+    { secondRow: { "Läuft seit": `${0} Tagen`, "Gestartet am ": 0, "Ende am": 0 } },
   ]
 
   return (
@@ -65,7 +71,7 @@ export const SurveyResponseWithQuery = () => {
 
       <div className="mt-16">
         <H2>Link zu Daten der Beteiligung </H2>
-        <div className="mt-4 border rounded  py-3.5">
+        <div className="mt-4 border rounded py-3.5">
           <Link
             blank
             className="flex gap-1 pl-3.5"
@@ -78,16 +84,12 @@ export const SurveyResponseWithQuery = () => {
       </div>
       <div className="mt-12">
         <H2>Allgemeine Infos </H2>
-        <div className="p-6 flex flex-col gap-y-2.5 bg-gray-100 rounded">
-          {generalSurveyInformation.map((row) => {
-            console.log({ row })
-            console.log(Object.values(row)[0])
+        <div className="mt-4 p-6 flex flex-col gap-y-2.5 bg-gray-100 rounded">
+          {generalSurveyInformation.map((row, i) => {
             return (
               // eslint-disable-next-line react/jsx-key
-              <div className="grid grid-cols-5 gap-4">
+              <div key={i} className="grid grid-cols-5 gap-4">
                 {Object.entries(Object.values(row)[0]).map(([k, v]) => {
-                  console.log({ k })
-                  console.log()
                   return (
                     <div key={k} className="flex flex-col gap-2.5">
                       <p className="text-gray-500 !text-sm">{k}</p>
@@ -98,17 +100,11 @@ export const SurveyResponseWithQuery = () => {
               </div>
             )
           })}
-          {/* <div className="grid grid-cols-5 gap-4">
-            <div className="flex flex-col gap-2.5">
-              <p className="text-gray-500 !text-sm">Interesse an Updates</p>
-              <p className="font-bold">66</p>
-            </div>
-          </div> */}
         </div>
       </div>
       <div className="space-y-4 mt-12">
         <H2>Auswertung in Diagrammen und Korrelationen</H2>
-        {Object.entries(groupedSurveyResponses).map(([k, v]) => {
+        {Object.entries(groupedSurveyResponsesFirstPart).map(([k, v]) => {
           return <GroupedSurveyResponseItem key={k} chartType={"bar"} responseData={{ [k]: v }} />
         })}
       </div>
