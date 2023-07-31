@@ -26,15 +26,16 @@ export const SurveyResponsesWithQuery = () => {
         description="Dieser Bereich sammelt die Ergebnisse und Berichte der Beteiligungen."
         className="mt-12"
       />
-      {surveys.map((survey) => (
-        // <h1 key={survey.slug}>{survey.slug}</h1>
-        <Link
-          key={survey.slug}
-          href={Routes.SurveyResponsePage({ projectSlug: projectSlug!, surveySlug: survey.slug })}
-        >
-          {survey.title}
-        </Link>
-      ))}
+      <div className="flex flex-col gap-4">
+        {surveys.map((survey) => (
+          <Link
+            key={survey.slug}
+            href={Routes.SurveyResponsePage({ projectSlug: projectSlug!, surveySlug: survey.slug })}
+          >
+            {survey.title}
+          </Link>
+        ))}
+      </div>
     </>
   )
 }
