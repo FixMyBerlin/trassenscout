@@ -24,6 +24,7 @@ export const SurveyResponseWithQuery = () => {
     })
 
   const surveyResponsesFeedbackPartWithLocation = surveyResponsesFeedbackPart.filter(
+  //  @ts-ignore
     (r) => JSON.parse(r.data)["23"],
   )
 
@@ -110,7 +111,7 @@ export const SurveyResponseWithQuery = () => {
             return (
               // eslint-disable-next-line react/jsx-key
               <div key={i} className="grid sm:grid-cols-5 gap-2 grid-cols-3">
-                {Object.entries(Object.values(row)[0]).map(([k, v]) => {
+                {Object.entries(Object.values(row)[0] as Record<string, string | number>).map(([k, v]) => {
                   return (
                     <div key={k} className="flex flex-col gap-2.5 justify-between">
                       <p className="text-gray-500 !text-sm">{k}</p>

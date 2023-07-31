@@ -51,6 +51,7 @@ export default resolver.pipe(
     const surveyResponsesFeedbackPartNested = surveySessions!
       .map((s) => s.responses.filter((r) => r.surveyId === 2))
       .filter((array) => array.length > 0)
+      //  @ts-ignore
     const surveyResponsesFeedbackPart = [].concat(...surveyResponsesFeedbackPartNested)
 
     const groupedSurveyResponsesFirstPart: Record<string, Record<string, number>> = {}
