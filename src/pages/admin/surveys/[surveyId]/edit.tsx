@@ -31,6 +31,9 @@ const EditSurvey = () => {
       const updated = await updateSurveyMutation({
         id: survey.id,
         ...values,
+        interestedParticipants: Number(values.interestedParticipants),
+        startDate: values.startDate ? new Date(values.startDate) : null,
+        endDate: values.endDate ? new Date(values.endDate) : null,
       })
       await setQueryData(updated)
       await router.push(Routes.ShowSurveyPage({ surveyId: updated.id }))
