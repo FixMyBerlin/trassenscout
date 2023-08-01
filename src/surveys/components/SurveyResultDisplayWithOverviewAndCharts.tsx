@@ -3,7 +3,7 @@ import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 import { isAfter } from "date-fns"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { H2, quote } from "src/core/components/text"
+import { H2 } from "src/core/components/text"
 import { MetaTags } from "src/core/layouts"
 import GroupedSurveyResponseItem from "src/survey-responses/components/GroupedSurveyResponseItem"
 import getSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
@@ -27,11 +27,12 @@ export const SurveyResultDisplayWithOverviewAndCharts: React.FC<Props> = ({surve
 
   const getFormatDistanceInDays = (startDate: any, endDate?: any) => {
     if (!startDate) return "(unbekannt)"
+    const distanceInDays = Math.floor(((new Date() as any) - startDate) / (1000 * 60 * 60 * 24))
     if (isSurveyPast)
       return endDate
         ? `${Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24))} Tage`
         : "(unbekannt)"
-    return `${Math.floor(((new Date() as any) - startDate) / (1000 * 60 * 60 * 24))} Tagen`
+    return `${distanceInDays} Tage${distanceInDays > 1 && 'n'}`
   }
 
   const isSurveyPast = survey.endDate && isAfter(new Date(), survey.endDate)
