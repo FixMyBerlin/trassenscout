@@ -35,6 +35,20 @@ export function SurveyForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
         <LabeledTextField optional type="date" name="endDate" label="End-Datum" placeholder="" />
       </div>
       <LabeledTextField
+        type="text"
+        optional
+        name="externalUrlSurveyResults"
+        label="Externe Url für Beteiligungsergebnisse"
+        placeholder=""
+      />
+      <LabeledTextField
+        type="text"
+        optional
+        name="surveyUrl"
+        label="Link zum Beteiligungsformular"
+        placeholder=""
+      />
+      <LabeledTextField
         type="number"
         optional
         name="interestedParticipants"

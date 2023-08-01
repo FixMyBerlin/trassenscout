@@ -301,6 +301,8 @@ model Survey {
   active        Boolean         @default(false)
   SurveySession SurveySession[]
   interestedParticipants  Int?
+  surveyUrl String?
+  externalUrlSurveyResults String?
 }
 
 model SurveySession {

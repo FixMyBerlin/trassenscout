@@ -9,6 +9,8 @@ export const CreateSurveySchema = z.object({
   interestedParticipants: z.number().nullish(),
   startDate: z.date().nullish(),
   endDate: z.date().nullish(),
+  externalUrlSurveyResults: z.string().url({ message: "Die URL ist ungültig." }).nullish(),
+  surveyUrl: z.string().url({ message: "Die URL ist ungültig." }).nullish(),
 })
 
 export const UpdateSurveySchema = z.object({
@@ -19,6 +21,9 @@ export const UpdateSurveySchema = z.object({
   slug: SlugSchema,
   title: z.string().min(3, { message: "Pflichtfeld. Mindestens 3 Zeichen." }),
   active: z.coerce.boolean(),
+  externalUrlSurveyResults: z.string().url({ message: "Die URL ist ungültig." }).nullish(),
+  surveyUrl: z.string().url({ message: "Die URL ist ungültig." }).nullish(),
+
 })
 
 export const DeleteSurveySchema = z.object({
