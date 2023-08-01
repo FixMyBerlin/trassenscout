@@ -7,6 +7,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import SurveyResultDisplayWithOverviewAndCharts from "src/surveys/components/SurveyResultDisplayWithOverviewAndCharts"
 import getSurveysByProjectSlug from "src/surveys/queries/getSurveysByProjectSlug"
 
 export const SurveyResponsesWithQuery = () => {
@@ -23,17 +24,13 @@ export const SurveyResponsesWithQuery = () => {
     <>
       <PageHeader
         title="Beteiligungen"
-        description="Dieser Bereich sammelt die Ergebnisse und Berichte der Beteiligungen."
+        description="Dieser Bereich sammelt die Ergebnisse und Berichte der Beteiligungen. Hier finden sie die Excel Tabelle und ausgewählte
+            Auswertungsergebnisse."
         className="mt-12"
       />
       <div className="flex flex-col gap-4">
         {surveys.map((survey) => (
-          <Link
-            key={survey.slug}
-            href={Routes.SurveyResponsePage({ projectSlug: projectSlug!, surveySlug: survey.slug })}
-          >
-            {survey.title}
-          </Link>
+          <SurveyResultDisplayWithOverviewAndCharts surveySlug={survey.slug} key={survey.id} />
         ))}
       </div>
     </>
