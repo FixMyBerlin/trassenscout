@@ -67,14 +67,14 @@ export const SurveyResultDisplayWithOverviewAndCharts: React.FC<Props> = ({surve
         title={survey.title}
         className="mt-6"
         description=
-              {survey.active &&
+              {survey.active && survey.surveyUrl &&
             <p className="mt-5 text-base text-gray-500">
 
               Die Beteiligung ist über{" "}
               <Link
                 blank
                 className="!text-base"
-                href={`https://trassenscout.de/beteiligung/${survey.slug}`}
+                href={survey.surveyUrl}
               >
                 diese Seite
                 <ArrowTopRightOnSquareIcon className="ml-1 w-4 h-4 inline-flex mb-1" />
@@ -87,16 +87,16 @@ export const SurveyResultDisplayWithOverviewAndCharts: React.FC<Props> = ({surve
 
       <div className="mt-4">
         <H2>Link zu Daten der Beteiligung </H2>
-        <div className="mt-4 border rounded py-3.5">
+        {survey.externalUrlSurveyResults ? <div className="mt-4 border rounded py-3.5">
           <Link
             blank
             className="flex gap-1 pl-3.5"
-            href="https://docs.google.com/spreadsheets/d/1l25xYc09ZFqHF0rlacd-JYEJYhBr8LPFVfRGbdEvmyg/edit#gid=1717799827"
+            href={survey.externalUrlSurveyResults}
           >
             Beteiligungs-Ergebnisse
             <ArrowTopRightOnSquareIcon className="w-4 h-4" />
           </Link>
-        </div>
+        </div> : <div className="mt-4">Es wurde bisher kein Link eingetragen.</div>}
       </div>
       <div className="mt-12">
         <H2>Allgemeine Infos </H2>
