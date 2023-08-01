@@ -1,23 +1,20 @@
-import surveyDefinition from "src/participation/data/survey.json"
-import VerticalBartChart from "./BarChart"
-import PieChartWithLegend from "./PieChart"
 import { H3 } from "src/core/components/text"
+import surveyDefinition from "src/participation/data/survey.json"
+import { Response, SingleOrMultiResponseProps, Survey } from "src/participation/data/types"
+import VerticalBartChart from "./BarChart"
 export { FORM_ERROR } from "src/core/components/forms"
 
-const data = [
-  {
-    name: "ohne Einschränkung mit dem Rad nutzen.",
-    "Anzahl der Antworten": 132,
-  },
-  { name: "eher selten mit dem Rad nutzen.", "Anzahl der Antworten": 191 },
-  { name: "nie mit dem Rad nutzen.", "Anzahl der Antworten": 73 },
-  { name: "Weiß ich nicht.", "Anzahl der Antworten": 10 },
-]
+type QuestionObject = {
+  id: number;
+  label: string;
+  component: "singleResponse" | "multipleResponse" | "text";
+  props: SingleOrMultiResponseProps[]
+};
 
-function transformJSONToArray(json) {
+function transformJSONToArray(json: Survey) {
   const pages = json.pages
 
-  const transformedArray = []
+  const transformedArray: QuestionObject[]= []
 
   pages.forEach((page) => {
     // Check if the page has questions
@@ -28,7 +25,7 @@ function transformJSONToArray(json) {
           label: question.label.de,
           component: question.component,
           props: {
-            responses: question.props.responses.map((response) => {
+            responses: question.props.responses.map((response: Response) => {
               const responseObject = {
                 id: response.id,
                 text: response.text.de,
@@ -39,15 +36,15 @@ function transformJSONToArray(json) {
         }
         return questionObject
       })
-
       transformedArray.push(...questions)
     }
   })
 
   return transformedArray
 }
+// ReturnType<typeof transformJSONToArray>
 
-const surveyDefinitionArray = transformJSONToArray(surveyDefinition)
+const surveyDefinitionArray: QuestionObject[] = transformJSONToArray(surveyDefinition)
 
 type Props = {
   responseData: Record<string, Record<string, number>>
@@ -58,9 +55,8 @@ const GroupedSurveyResponseItem: React.FC<Props> = ({ responseData, chartType })
   const questionId = Object.keys(responseData)[0]
   const question = surveyDefinitionArray.find((question) => Number(questionId) === question.id)
 
-  const getSurveyQuestion = (id: string) => {
-    return question.label
-  }
+  if (!question) return
+
   const recordToArray = (record: Record<string, number>) => {
     return Object.entries(record).map(([key, value]) => ({
       name: question.props.responses.find((r) => r.id === Number(key)).text,
@@ -68,17 +64,15 @@ const GroupedSurveyResponseItem: React.FC<Props> = ({ responseData, chartType })
     }))
   }
 
-  // console.log(recordToArray(responseData[questionId]))
-
   return (
     <div className="border rounded  py-3.5">
       <H3 className="border-b pb-3.5 px-3.5">
-        {getSurveyQuestion(Object.keys(responseData)[0] as string)}
+        {question.label}
       </H3>
 
       <div className="h-[350px] px-3.5">
-        {chartType === "bar" && (
-          <VerticalBartChart data={recordToArray(responseData[questionId])} />
+        {chartType === "bar" && questionId && (
+          <VerticalBartChart data={recordToArray(responseData[questionId] as Record<string, number>)} />
         )}
         {/* <PieChartWithLegend data={recordToArray(responseData[questionId])} /> */}
       </div>
