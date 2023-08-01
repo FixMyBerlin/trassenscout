@@ -10,7 +10,6 @@ export interface Survey {
   title: TranslatableText
   version: 1
   createdAt: string
-  faviconUrl: string
   pages: Page[]
 }
 
