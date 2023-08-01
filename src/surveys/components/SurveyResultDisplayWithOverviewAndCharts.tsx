@@ -35,6 +35,8 @@ export const SurveyResultDisplayWithOverviewAndCharts: React.FC<Props> = ({surve
   }
 
   const isSurveyPast = survey.endDate && isAfter(new Date(), survey.endDate)
+  const isSurveyFuture = survey.startDate && isAfter(survey.startDate, new Date())
+
   const generalSurveyInformation: Array<Record<string, Record<string, number | string>>> = [
     {
       firstRow: {
@@ -116,9 +118,10 @@ export const SurveyResultDisplayWithOverviewAndCharts: React.FC<Props> = ({surve
           })}
         </div>
       </div>
-      <div className="space-y-4 mt-12">
+       <div className="space-y-4 mt-12">
         <H2>Auswertung in Diagrammen und Korrelationen</H2>
-        {Object.entries(groupedSurveyResponsesFirstPart).map(([k, v]) => {
+        {isSurveyFuture && <div>Die Beteiligung liegt in der Zukunft</div>}
+        {!Boolean(surveySessions.length) ? <div>Es liegen keine Ergebnisse vor.</div> :Object.entries(groupedSurveyResponsesFirstPart).map(([k, v]) => {
           return <GroupedSurveyResponseItem key={k} chartType={"bar"} responseData={{ [k]: v }} />
         })}
       </div>
