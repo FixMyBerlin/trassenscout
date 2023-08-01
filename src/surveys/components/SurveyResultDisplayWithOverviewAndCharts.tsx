@@ -2,12 +2,11 @@ import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 import { isAfter } from "date-fns"
 import { Link } from "src/core/components/links"
-import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2 } from "src/core/components/text"
-import { MetaTags } from "src/core/layouts"
 import GroupedSurveyResponseItem from "src/survey-responses/components/GroupedSurveyResponseItem"
 import getSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
 import getSurveyByProjectSlug from "src/surveys/queries/getSurveyByProjectSlug"
+import { SurveyResultDisplayHeader } from "./SurveyResultDisplayHeader"
 
 type Props = {
 surveySlug: string
@@ -64,9 +63,9 @@ export const SurveyResultDisplayWithOverviewAndCharts: React.FC<Props> = ({surve
 
   return (
     <>
-      <PageHeader
+      <SurveyResultDisplayHeader
         title={survey.title}
-        className="mt-12"
+        className="mt-6"
         description=
               {survey.active &&
             <p className="mt-5 text-base text-gray-500">
