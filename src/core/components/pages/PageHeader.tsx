@@ -1,13 +1,12 @@
 import clsx from "clsx"
 import { DashedLine } from "../DashedLine"
 import { H1, H2 } from "../text/Headings"
-import { ReactNode } from "react"
 
 type Props = {
   titleIcon?: React.ReactNode
   title: string
   subtitle?: string | null
-  description?: string | ReactNode
+  description?: string | React.ReactNode
   action?: React.ReactNode
   className?: string
 }

@@ -8,7 +8,6 @@ import { Spinner } from "src/core/components/Spinner"
 import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import SurveyResultDisplayWithOverviewAndCharts from "src/surveys/components/SurveyResultDisplayWithOverviewAndCharts"
 import getSurveysByProjectSlug from "src/surveys/queries/getSurveysByProjectSlug"
 
 export const Surveys = () => {
@@ -22,6 +21,7 @@ export const Surveys = () => {
     return <ZeroCase visible={0} name="Kontakte" />
   }
 
+  // Navigation always links to /survey. But this redirects to the survey Page when only one is present.
   if (surveys.length === 1) {
     void router.push(Routes.SurveyPage({ projectSlug: projectSlug!, surveySlug: surveys[0]!.slug }))
     return <Spinner page />
