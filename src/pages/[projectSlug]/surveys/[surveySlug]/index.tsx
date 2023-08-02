@@ -2,14 +2,14 @@ import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 import { isAfter } from "date-fns"
-import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
+import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { Spinner } from "src/core/components/Spinner"
-import { H2, quote } from "src/core/components/text"
+import { H2 } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import surveyDefinition from "src/participation/data/survey.json"
 import GroupedSurveyResponseItem from "src/survey-responses/components/GroupedSurveyResponseItem"
 import getSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
 import getSurveyByProjectSlug from "src/surveys/queries/getSurveyByProjectSlug"
@@ -72,10 +72,10 @@ export const Survey = () => {
         className="mt-6"
         description={
           survey.active &&
-          survey.surveyUrl && (
+          surveyDefinition.canonicalUrl && (
             <p className="mt-5 text-base text-gray-500">
               Die Beteiligung ist über{" "}
-              <Link blank className="!text-base" href={survey.surveyUrl}>
+              <Link blank className="!text-base" href={surveyDefinition.canonicalUrl}>
                 diese Seite
                 <ArrowTopRightOnSquareIcon className="ml-1 w-4 h-4 inline-flex mb-1" />
               </Link>{" "}
@@ -87,9 +87,9 @@ export const Survey = () => {
 
       <div className="mt-4">
         <H2>Link zu Daten der Beteiligung </H2>
-        {survey.externalUrlSurveyResults ? (
+        {survey.surveyResultsUrl ? (
           <div className="mt-4 border rounded py-3.5">
-            <Link blank className="flex gap-1 pl-3.5" href={survey.externalUrlSurveyResults}>
+            <Link blank className="flex gap-1 pl-3.5" href={survey.surveyResultsUrl}>
               Beteiligungs-Ergebnisse
               <ArrowTopRightOnSquareIcon className="w-4 h-4" />
             </Link>
