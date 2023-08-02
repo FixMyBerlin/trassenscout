@@ -1,4 +1,6 @@
 import { useQuery } from "@blitzjs/rpc"
+import { useRouter } from "next/router"
+import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import {
   Form,
   FormProps,
@@ -18,42 +20,53 @@ export function SurveyForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
     }),
   ]
 
+  const router = useRouter()
+  const editForm = router.pathname.endsWith("edit")
+
   return (
     <Form<S> {...props}>
+      <SuperAdminLogData data={props} />
       <LabeledTextField type="text" name="slug" label="Slug" />
-      <LabeledTextField type="text" name="title" label="Titel" placeholder="" />
-      <LabeledCheckbox value="active" label="Active" scope="active" />
-      <LabeledSelect name="projectSlug" label="Projekt" options={projectOptions} />
+      <LabeledTextField type="text" name="title" label="Titel" />
+      <LabeledCheckbox
+        value="active"
+        label="Umfrage aktiv?"
+        scope="active"
+        help="Wenn deaktiviert, zeigt Umfrage-Seite einen generischen Hinweis an, dass die Umfrage nicht aktiv ist."
+      />
+
+      {/* projectSlug is only for the new form */}
+      {!editForm && <LabeledSelect name="projectSlug" label="Projekt" options={projectOptions} />}
+
       <div className="flex gap-4">
         <LabeledTextField
           optional
           type="date"
           name="startDate"
-          label="Start-Datum"
-          placeholder=""
+          label="Neues Start-Datum"
+          help="Reine Anzeige fürs Backend."
         />
-        <LabeledTextField optional type="date" name="endDate" label="End-Datum" placeholder="" />
+        <LabeledTextField
+          optional
+          type="date"
+          name="endDate"
+          label="Neus End-Datum"
+          help="Reine Anzeige fürs Backend."
+        />
       </div>
       <LabeledTextField
         type="text"
         optional
-        name="externalUrlSurveyResults"
-        label="Externe Url für Beteiligungsergebnisse"
-        placeholder=""
-      />
-      <LabeledTextField
-        type="text"
-        optional
-        name="surveyUrl"
-        label="Link zum Beteiligungsformular"
-        placeholder=""
+        name="surveyResultsUrl"
+        label="Externe Url der Beteiligungsergebnisse"
+        help="Bspw. Google Spreadsheet"
       />
       <LabeledTextField
         type="number"
         optional
         name="interestedParticipants"
         label="Anzahl der an Updates interessierten Teilnehmenden"
-        placeholder=""
+        help="Workflow: Wenn Beteiligung beendet, dann einmalig die Anzahl der angemeldeten und bestätigten E-Mail-Adressen von Mailjet übernehmen, bspw. https://app.mailjet.com/contacts/lists/show/GQcr"
       />
     </Form>
   )

@@ -299,10 +299,10 @@ model Survey {
   slug          String          @unique
   title         String
   active        Boolean         @default(false)
-  SurveySession SurveySession[]
   interestedParticipants  Int?
-  surveyUrl String?
-  externalUrlSurveyResults String?
+  surveyResultsUrl String?
+  //
+  SurveySession SurveySession[]
 }
 
 model SurveySession {

@@ -5,18 +5,20 @@ const seedSurveys = async () => {
     {
       projectId: 1,
       slug: "rs23-1",
-      title: "RS23 Beteiligung 1",
+      title: "RS23 Beteiligung 1 (inaktiv)",
+      active: false,
     },
     {
       projectId: 1,
-      slug: "rs23-2",
-      title: "RS23 Beteiligung 2",
+      slug: "rs23-inaktiv",
+      title: "RS23 Beteiliung 2 (aktiv)",
       active: true,
     },
     {
       projectId: 2,
-      slug: "rs3000",
-      title: "RS3000 Beteiligung",
+      slug: "ris3000",
+      title: "Projekt Mit Einer Umfrage (Redirect)",
+      active: false,
     },
   ]
 

@@ -32,7 +32,7 @@ const AdminNewSurvey = () => {
   return (
     <>
       <MetaTags noindex title="Neue Beteiligung erstellen" />
-      <PageHeader title=" Neuen Survey erstellen" />
+      <PageHeader title="Neuen Survey erstellen" />
       {/* TODO schema */}
       <SurveyForm submitText="Erstellen" onSubmit={handleSubmit} />
     </>
