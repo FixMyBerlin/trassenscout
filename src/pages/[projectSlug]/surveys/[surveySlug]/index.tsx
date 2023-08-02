@@ -1,9 +1,10 @@
-import { BlitzPage, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 import { isAfter } from "date-fns"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
+import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
@@ -132,6 +133,10 @@ export const Survey = () => {
           })
         )}
       </div>
+
+      <SuperAdminBox>
+        <Link href={Routes.AdminEditSurveyPage({ surveyId: survey.id })}>Bearbeiten</Link>
+      </SuperAdminBox>
     </>
   )
 }
