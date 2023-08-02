@@ -28,14 +28,17 @@ export const Survey = () => {
 
   const getFormatDistanceInDays = (startDate: any, endDate?: any) => {
     if (!startDate) return "(unbekannt)"
+    const distanceInDays = Math.floor(((new Date() as any) - startDate) / (1000 * 60 * 60 * 24))
     if (isSurveyPast)
       return endDate
         ? `${Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24))} Tage`
         : "(unbekannt)"
-    return `${Math.floor(((new Date() as any) - startDate) / (1000 * 60 * 60 * 24))} Tagen`
+    return `${distanceInDays} Tage${distanceInDays > 1 && "n"}`
   }
 
   const isSurveyPast = survey.endDate && isAfter(new Date(), survey.endDate)
+  const isSurveyFuture = survey.startDate && isAfter(survey.startDate, new Date())
+
   const generalSurveyInformation: Array<Record<string, Record<string, number | string>>> = [
     {
       firstRow: {
@@ -62,46 +65,39 @@ export const Survey = () => {
 
   return (
     <>
-      <MetaTags noindex title={`Beteiligung ${survey.slug}`} />
+      <MetaTags noindex title={`Beteiligung ${survey.title}`} />
       <PageHeader
         title={survey.title}
+        className="mt-6"
         description={
-          <>
+          survey.active &&
+          survey.surveyUrl && (
             <p className="mt-5 text-base text-gray-500">
-              {`Dieser Bereich sammelt die Ergebnisse und Berichte der Beteiligung ${quote(
-                survey.title,
-              )}. Hier finden sie die Excel Tabelle und ausgewählte
-            Auswertungsergebnisse.`}
-              <br />
               Die Beteiligung ist über{" "}
-              <Link
-                blank
-                className="!text-base"
-                href={`https://trassenscout.de/beteiligung/${survey.slug}`}
-              >
+              <Link blank className="!text-base" href={survey.surveyUrl}>
                 diese Seite
                 <ArrowTopRightOnSquareIcon className="ml-1 w-4 h-4 inline-flex mb-1" />
               </Link>{" "}
               erreichbar.
             </p>
-          </>
+          )
         }
-        className="mt-12"
       />
 
-      <div className="mt-16">
+      <div className="mt-4">
         <H2>Link zu Daten der Beteiligung </H2>
-        <div className="mt-4 border rounded py-3.5">
-          <Link
-            blank
-            className="flex gap-1 pl-3.5"
-            href="https://docs.google.com/spreadsheets/d/1l25xYc09ZFqHF0rlacd-JYEJYhBr8LPFVfRGbdEvmyg/edit#gid=1717799827"
-          >
-            Beteiligungs-Ergebnisse
-            <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-          </Link>
-        </div>
+        {survey.externalUrlSurveyResults ? (
+          <div className="mt-4 border rounded py-3.5">
+            <Link blank className="flex gap-1 pl-3.5" href={survey.externalUrlSurveyResults}>
+              Beteiligungs-Ergebnisse
+              <ArrowTopRightOnSquareIcon className="w-4 h-4" />
+            </Link>
+          </div>
+        ) : (
+          <div className="mt-4">Es wurde bisher kein Link eingetragen.</div>
+        )}
       </div>
+
       <div className="mt-12">
         <H2>Allgemeine Infos </H2>
         <div className="mt-4 p-6 flex flex-col gap-y-2.5 bg-gray-100 rounded">
@@ -124,11 +120,17 @@ export const Survey = () => {
           })}
         </div>
       </div>
+
       <div className="space-y-4 mt-12">
         <H2>Auswertung in Diagrammen und Korrelationen</H2>
-        {Object.entries(groupedSurveyResponsesFirstPart).map(([k, v]) => {
-          return <GroupedSurveyResponseItem key={k} chartType={"bar"} responseData={{ [k]: v }} />
-        })}
+        {isSurveyFuture && <div>Die Beteiligung liegt in der Zukunft</div>}
+        {!Boolean(surveySessions.length) ? (
+          <div>Es liegen keine Ergebnisse vor.</div>
+        ) : (
+          Object.entries(groupedSurveyResponsesFirstPart).map(([k, v]) => {
+            return <GroupedSurveyResponseItem key={k} chartType={"bar"} responseData={{ [k]: v }} />
+          })
+        )}
       </div>
     </>
   )
