@@ -8,19 +8,19 @@ import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2 } from "src/core/components/text"
+import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import surveyDefinition from "src/participation/data/survey.json"
 import GroupedSurveyResponseItem from "src/survey-responses/components/GroupedSurveyResponseItem"
-import getSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
-import getSurveyByProjectSlug from "src/surveys/queries/getSurveyByProjectSlug"
+import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
+import getSurvey from "src/surveys/queries/getSurvey"
 
 export const Survey = () => {
-  const surveySlug = useParam("surveySlug", "string")
-  const [survey] = useQuery(getSurveyByProjectSlug, { slug: surveySlug })
+  const { projectSlug } = useSlugs()
+  const surveyId = useParam("surveyId", "number")
+  const [survey] = useQuery(getSurvey, { id: surveyId })
   const [{ groupedSurveyResponsesFirstPart, surveySessions, surveyResponsesFeedbackPart }] =
-    usePaginatedQuery(getSurveyResponses, {
-      surveySlug,
-    })
+    usePaginatedQuery(getGroupedSurveyResponses, { projectSlug, surveyId: survey.id })
 
   const surveyResponsesFeedbackPartWithLocation = surveyResponsesFeedbackPart.filter(
     //  @ts-ignore
@@ -34,7 +34,7 @@ export const Survey = () => {
       return endDate
         ? `${Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24))} Tage`
         : "(unbekannt)"
-    return `${distanceInDays} Tage${distanceInDays > 1 && "n"}`
+    return `${distanceInDays} ${distanceInDays > 1 ? "Tagen" : "Tag"}`
   }
 
   const isSurveyPast = survey.endDate && isAfter(new Date(), survey.endDate)
@@ -58,7 +58,7 @@ export const Survey = () => {
           survey.endDate,
         ),
         "Gestartet am ": survey.startDate ? survey.startDate.toLocaleDateString() : "(unbekannt)",
-        [`Endet${isSurveyPast ? "e" : ""} am`]:
+        [`${isSurveyPast ? "Endete am" : "Endet am"}`]:
           survey.endDate?.toLocaleDateString() || "(unbekannt)",
       },
     },

@@ -5,7 +5,7 @@ import db, { Prisma } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 
-type GetSurveySessionsWithResponsesInput = { surveySlug: string } & Pick<
+type GetSurveySessionsWithResponsesInput = { projectSlug: string; surveyId: number } & Pick<
   Prisma.SurveySessionFindManyArgs,
   "where" | "orderBy" | "skip" | "take"
 >
@@ -14,13 +14,19 @@ export default resolver.pipe(
   // @ts-ignore
   authorizeProjectAdmin(getProjectIdBySlug),
   async ({
-    surveySlug,
+    projectSlug,
+    surveyId,
     where,
     orderBy = { id: "desc" },
     skip = 0,
     take = 1000,
   }: GetSurveySessionsWithResponsesInput) => {
-    const saveWhere = { survey: { slug: surveySlug }, ...where }
+    const saveWhere = {
+      survey: { project: { slug: projectSlug } },
+      surveyId,
+      ...where,
+    }
+
     const {
       items: surveySessions,
       hasMore,

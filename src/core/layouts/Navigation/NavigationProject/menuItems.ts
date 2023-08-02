@@ -23,7 +23,8 @@ export const menuItems = ({ projectSlug, projectName }: Props) => {
       name: "Beteiligung",
       href: Routes.SurveysPage({ projectSlug: projectSlug! }),
       alsoHighlightPathnames: [
-        Routes.SurveyPage({ projectSlug: projectSlug!, surveySlug: "anySurveySlug" }).pathname,
+        // Any survey page gets highlighted
+        Routes.SurveyPage({ projectSlug: projectSlug!, surveyId: 999 }).pathname,
       ],
     },
   ]

@@ -4,7 +4,7 @@ import { api } from "src/blitz-server"
 import { getSession } from "@blitzjs/auth"
 import { AuthorizationError } from "blitz"
 import { ZodError } from "zod"
-import dbGetSurvey from "src/surveys/queries/getSurvey"
+import dbGetSurvey from "src/surveys/queries/admin/getSurvey"
 import { Survey } from "db"
 
 const DEBUG = false

@@ -3,7 +3,6 @@ import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
-import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { useSlugs } from "src/core/hooks"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
@@ -46,9 +45,6 @@ const AdminNewSurveyPage = () => {
       <Suspense fallback={<Spinner page />}>
         <AdminNewSurvey />
       </Suspense>
-      <p>
-        <Link href={Routes.AdminSurveysPage()}>Alle Surveys</Link>
-      </p>
     </LayoutArticle>
   )
 }
