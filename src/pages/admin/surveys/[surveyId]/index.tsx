@@ -20,8 +20,7 @@ export const AdminSurvey = () => {
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${survey.id} unwiderruflich löschen?`)) {
       await deleteSurveyMutation({ id: survey.id })
-      await router.push(Routes.AdminSurveysPage())
-      // SurveysPage()
+      await router.push(Routes.Home())
     }
   }
 
@@ -49,10 +48,6 @@ const AdminShowSurveyPage = () => {
       <Suspense fallback={<Spinner page />}>
         <AdminSurvey />
       </Suspense>
-
-      <p>
-        <Link href={Routes.AdminSurveysPage()}>Alle Surveys</Link>
-      </p>
     </LayoutArticle>
   )
 }

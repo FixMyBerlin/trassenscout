@@ -4,7 +4,6 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Spinner } from "src/core/components/Spinner"
-import { Link } from "src/core/components/links"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SurveyForm } from "src/surveys/components/SurveyForm"
 import updateSurvey from "src/surveys/mutations/updateSurvey"
@@ -61,10 +60,6 @@ const AdminEditSurveyPage = () => {
       <Suspense fallback={<Spinner page />}>
         <AdminEditSurvey />
       </Suspense>
-
-      <p>
-        <Link href={Routes.AdminSurveysPage()}>Alle Surveys</Link>
-      </p>
     </LayoutArticle>
   )
 }

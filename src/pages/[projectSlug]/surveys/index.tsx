@@ -8,22 +8,20 @@ import { Spinner } from "src/core/components/Spinner"
 import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import getSurveysByProjectSlug from "src/surveys/queries/getSurveysByProjectSlug"
+import getSurveys from "src/surveys/queries/getSurveys"
 
 export const Surveys = () => {
   const router = useRouter()
   const { projectSlug } = useSlugs()
-  const [{ surveys }] = usePaginatedQuery(getSurveysByProjectSlug, {
-    projectSlug: projectSlug!,
-  })
+  const [{ surveys }] = usePaginatedQuery(getSurveys, { projectSlug: projectSlug! })
 
   if (!surveys.length) {
-    return <ZeroCase visible={0} name="Kontakte" />
+    return <ZeroCase visible={0} name="Beteiligungen" />
   }
 
   // Navigation always links to /survey. But this redirects to the survey Page when only one is present.
   if (surveys.length === 1) {
-    void router.push(Routes.SurveyPage({ projectSlug: projectSlug!, surveySlug: surveys[0]!.slug }))
+    void router.push(Routes.SurveyPage({ projectSlug: projectSlug!, surveyId: surveys[0]!.id }))
     return <Spinner page />
   }
 
@@ -39,7 +37,7 @@ export const Surveys = () => {
         {surveys.map((survey) => (
           <Link
             key={survey.id}
-            href={Routes.SurveyPage({ projectSlug: projectSlug!, surveySlug: survey.slug })}
+            href={Routes.SurveyPage({ projectSlug: projectSlug!, surveyId: survey.id })}
           >
             {survey.title}
           </Link>

@@ -2,6 +2,9 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
 
+import { authorizeProjectAdmin } from "src/authorization"
+import getSurveyProjectId from "./getSurveyProjectId"
+
 const GetSurveySchema = z.object({
   // This accepts type of undefined, but is required at runtime
   id: z.number().optional().refine(Boolean, "Required"),
@@ -9,6 +12,9 @@ const GetSurveySchema = z.object({
 
 export default resolver.pipe(
   resolver.zod(GetSurveySchema),
-  resolver.authorize("ADMIN"),
-  async ({ id }) => await db.survey.findFirstOrThrow({ where: { id } }),
+  authorizeProjectAdmin(getSurveyProjectId),
+  async ({ id }) =>
+    await db.survey.findFirstOrThrow({
+      where: { id },
+    }),
 )
