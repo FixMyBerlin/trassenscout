@@ -10,7 +10,10 @@ import {
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
-  data: any[]
+  data: {
+    name: string
+    value: number
+  }[]
 }
 
 const CustomizedLabel = (payload: any) => {
