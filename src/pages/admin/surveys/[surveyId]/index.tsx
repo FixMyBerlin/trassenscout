@@ -11,7 +11,7 @@ import { LayoutArticle, MetaTags } from "src/core/layouts"
 import deleteSurvey from "src/surveys/mutations/deleteSurvey"
 import getSurvey from "src/surveys/queries/getSurvey"
 
-export const Survey = () => {
+export const AdminSurvey = () => {
   const router = useRouter()
   const surveyId = useParam("surveyId", "number")
   const [deleteSurveyMutation] = useMutation(deleteSurvey)
@@ -20,7 +20,7 @@ export const Survey = () => {
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${survey.id} unwiderruflich löschen?`)) {
       await deleteSurveyMutation({ id: survey.id })
-      await router.push(Routes.SurveysPage())
+      await router.push(Routes.AdminSurveysPage())
       // SurveysPage()
     }
   }
@@ -34,7 +34,7 @@ export const Survey = () => {
         <pre>{JSON.stringify(survey, null, 2)}</pre>
       </SuperAdminBox>
 
-      <Link href={Routes.EditSurveyPage({ surveyId: survey.id })}>Bearbeiten</Link>
+      <Link href={Routes.AdminEditSurveyPage({ surveyId: survey.id })}>Bearbeiten</Link>
 
       <button type="button" onClick={handleDelete} className={clsx(linkStyles, "ml-2")}>
         Löschen
@@ -43,20 +43,20 @@ export const Survey = () => {
   )
 }
 
-const ShowSurveyPage = () => {
+const AdminShowSurveyPage = () => {
   return (
     <LayoutArticle>
       <Suspense fallback={<Spinner page />}>
-        <Survey />
+        <AdminSurvey />
       </Suspense>
 
       <p>
-        <Link href={Routes.SurveysPage()}>Alle Surveys</Link>
+        <Link href={Routes.AdminSurveysPage()}>Alle Surveys</Link>
       </p>
     </LayoutArticle>
   )
 }
 
-ShowSurveyPage.authenticate = { role: "ADMIN" }
+AdminShowSurveyPage.authenticate = { role: "ADMIN" }
 
-export default ShowSurveyPage
+export default AdminShowSurveyPage

@@ -16,7 +16,7 @@ import { getFullname } from "src/users/utils"
 
 const ITEMS_PER_PAGE = 100
 
-const AdminMembershipsWithQuery = () => {
+const AdminMemberships = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [result] = useQuery(getMemberships, {
@@ -116,7 +116,7 @@ const AdminMembershipsPage = () => {
       <PageHeader title="Zugriffsrechte" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
-        <AdminMembershipsWithQuery />
+        <AdminMemberships />
       </Suspense>
 
       <hr className="my-5" />
