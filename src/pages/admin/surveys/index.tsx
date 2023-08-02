@@ -1,16 +1,14 @@
-import { Suspense } from "react"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
-import { LayoutArticle, LayoutRs, MetaTags } from "src/core/layouts"
+import { Suspense } from "react"
+import { Pagination } from "src/core/components/Pagination"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
-import { Pagination } from "src/core/components/Pagination"
-import { useSlugs } from "src/core/hooks"
+import { LayoutArticle, MetaTags } from "src/core/layouts"
 import getSurveys from "src/surveys/queries/getSurveys"
 
-export const SurveysList = () => {
-  const { projectSlug } = useSlugs()
+export const AdminSurveysList = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ surveys, hasMore }] = usePaginatedQuery(getSurveys, {})
@@ -23,13 +21,13 @@ export const SurveysList = () => {
       <h1>Surveys</h1>
 
       <p>
-        <Link href={Routes.NewSurveyPage()}>Survey erstellen</Link>
+        <Link href={Routes.AdminNewSurveyPage()}>Survey erstellen</Link>
       </p>
 
       <ul>
         {surveys.map((survey) => (
           <li key={survey.id}>
-            <Link href={Routes.ShowSurveyPage({ surveyId: survey.id })}>{survey.slug}</Link>
+            <Link href={Routes.AdminShowSurveyPage({ surveyId: survey.id })}>{survey.slug}</Link>
           </li>
         ))}
       </ul>
@@ -44,18 +42,18 @@ export const SurveysList = () => {
   )
 }
 
-const SurveysPage: BlitzPage = () => {
+const AdminSurveysPage: BlitzPage = () => {
   return (
     <LayoutArticle>
       <MetaTags noindex title="Surveys" />
 
       <Suspense fallback={<Spinner page />}>
-        <SurveysList />
+        <AdminSurveysList />
       </Suspense>
     </LayoutArticle>
   )
 }
 
-SurveysPage.authenticate = { role: "ADMIN" }
+AdminSurveysPage.authenticate = { role: "ADMIN" }
 
-export default SurveysPage
+export default AdminSurveysPage

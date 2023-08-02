@@ -5,14 +5,12 @@ import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
-import { useSlugs } from "src/core/hooks"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SurveyForm } from "src/surveys/components/SurveyForm"
 import updateSurvey from "src/surveys/mutations/updateSurvey"
 import getSurvey from "src/surveys/queries/getSurvey"
 
-const EditSurvey = () => {
-  const { projectSlug } = useSlugs()
+const AdminEditSurvey = () => {
   const router = useRouter()
   const surveyId = useParam("surveyId", "number")
   const [survey, { setQueryData }] = useQuery(
@@ -36,7 +34,7 @@ const EditSurvey = () => {
         endDate: values.endDate ? new Date(values.endDate) : null,
       })
       await setQueryData(updated)
-      await router.push(Routes.ShowSurveyPage({ surveyId: updated.id }))
+      await router.push(Routes.AdminShowSurveyPage({ surveyId: updated.id }))
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -57,21 +55,20 @@ const EditSurvey = () => {
   )
 }
 
-const EditSurveyPage = () => {
-  const { projectSlug } = useSlugs()
+const AdminEditSurveyPage = () => {
   return (
     <LayoutArticle>
       <Suspense fallback={<Spinner page />}>
-        <EditSurvey />
+        <AdminEditSurvey />
       </Suspense>
 
       <p>
-        <Link href={Routes.SurveysPage()}>Alle Surveys</Link>
+        <Link href={Routes.AdminSurveysPage()}>Alle Surveys</Link>
       </p>
     </LayoutArticle>
   )
 }
 
-EditSurveyPage.authenticate = { role: "ADMIN" }
+AdminEditSurveyPage.authenticate = { role: "ADMIN" }
 
-export default EditSurveyPage
+export default AdminEditSurveyPage

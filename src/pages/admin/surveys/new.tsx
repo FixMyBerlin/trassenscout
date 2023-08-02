@@ -10,7 +10,7 @@ import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SurveyForm } from "src/surveys/components/SurveyForm"
 import createSurvey from "src/surveys/mutations/createSurvey"
 
-const NewSurvey = () => {
+const AdminNewSurvey = () => {
   const router = useRouter()
   const [createSurveyMutation] = useMutation(createSurvey)
   type HandleSubmit = any // TODO
@@ -22,7 +22,7 @@ const NewSurvey = () => {
         startDate: new Date(values.startDate),
         endDate: new Date(values.endDate),
       })
-      await router.push(Routes.ShowSurveyPage({ surveyId: survey.id }))
+      await router.push(Routes.AdminShowSurveyPage({ surveyId: survey.id }))
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -39,20 +39,20 @@ const NewSurvey = () => {
   )
 }
 
-const NewSurveyPage = () => {
+const AdminNewSurveyPage = () => {
   const { projectSlug } = useSlugs()
   return (
     <LayoutArticle>
       <Suspense fallback={<Spinner page />}>
-        <NewSurvey />
+        <AdminNewSurvey />
       </Suspense>
       <p>
-        <Link href={Routes.SurveysPage({})}>Alle Surveys</Link>
+        <Link href={Routes.AdminSurveysPage()}>Alle Surveys</Link>
       </p>
     </LayoutArticle>
   )
 }
 
-NewSurveyPage.authenticate = { role: "ADMIN" }
+AdminNewSurveyPage.authenticate = { role: "ADMIN" }
 
-export default NewSurveyPage
+export default AdminNewSurveyPage
