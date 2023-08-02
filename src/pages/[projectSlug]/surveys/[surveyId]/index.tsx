@@ -69,19 +69,24 @@ export const Survey = () => {
       <MetaTags noindex title={`Beteiligung ${survey.title}`} />
       <PageHeader
         title={survey.title}
-        className="mt-6"
+        className="mt-12"
         description={
-          survey.active &&
-          surveyDefinition.canonicalUrl && (
+          <>
             <p className="mt-5 text-base text-gray-500">
-              Die Beteiligung ist über{" "}
-              <Link blank className="!text-base" href={surveyDefinition.canonicalUrl}>
-                diese Seite
-                <ArrowTopRightOnSquareIcon className="ml-1 w-4 h-4 inline-flex mb-1" />
-              </Link>{" "}
-              erreichbar.
+              Dieser Bereich sammelt die Ergebnisse und Berichte der Beteiligung. Hier finden sie
+              die Excel Tabelle und ausgewählte Auswertungsergebnisse.
             </p>
-          )
+            {survey.active && surveyDefinition.canonicalUrl && (
+              <p className="text-base text-gray-500">
+                Die Beteiligung ist über{" "}
+                <Link blank className="!text-base" href={surveyDefinition.canonicalUrl}>
+                  diese Seite
+                  <ArrowTopRightOnSquareIcon className="ml-1 w-4 h-4 inline-flex mb-1" />
+                </Link>{" "}
+                erreichbar.
+              </p>
+            )}
+          </>
         }
       />
 
