@@ -1,5 +1,6 @@
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
+import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
@@ -10,7 +11,8 @@ import { LayoutRs, MetaTags } from "src/core/layouts"
 import SurveyResultDisplayWithOverviewAndCharts from "src/surveys/components/SurveyResultDisplayWithOverviewAndCharts"
 import getSurveysByProjectSlug from "src/surveys/queries/getSurveysByProjectSlug"
 
-export const SurveyResponsesWithQuery = () => {
+export const Surveys = () => {
+  const router = useRouter()
   const { projectSlug } = useSlugs()
   const [{ surveys }] = usePaginatedQuery(getSurveysByProjectSlug, {
     projectSlug: projectSlug!,
@@ -18,6 +20,11 @@ export const SurveyResponsesWithQuery = () => {
 
   if (!surveys.length) {
     return <ZeroCase visible={0} name="Kontakte" />
+  }
+
+  if (surveys.length === 1) {
+    void router.push(Routes.SurveyPage({ projectSlug: projectSlug!, surveySlug: surveys[0]!.slug }))
+    return <Spinner page />
   }
 
   return (
@@ -30,25 +37,30 @@ export const SurveyResponsesWithQuery = () => {
       />
       <div className="flex flex-col gap-4">
         {surveys.map((survey) => (
-          <SurveyResultDisplayWithOverviewAndCharts surveySlug={survey.slug} key={survey.id} />
+          <Link
+            key={survey.id}
+            href={Routes.SurveyPage({ projectSlug: projectSlug!, surveySlug: survey.slug })}
+          >
+            {survey.title}
+          </Link>
         ))}
       </div>
     </>
   )
 }
 
-const SurveyResponsesPage: BlitzPage = () => {
+const SurveysPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <MetaTags noindex title="Beteiligungen" />
 
       <Suspense fallback={<Spinner page />}>
-        <SurveyResponsesWithQuery />
+        <Surveys />
       </Suspense>
     </LayoutRs>
   )
 }
 
-SurveyResponsesPage.authenticate = true
+SurveysPage.authenticate = true
 
-export default SurveyResponsesPage
+export default SurveysPage

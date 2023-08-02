@@ -12,7 +12,7 @@ export const Survey = () => {
   return survey.active ? <ParticipationMainPage /> : <ParticipationInactivePage />
 }
 
-const SurveyPage = () => {
+const PublicSurveyPage = () => {
   return (
     <Suspense fallback={<Spinner page />}>
       <Survey />
@@ -20,4 +20,4 @@ const SurveyPage = () => {
   )
 }
 
-export default SurveyPage
+export default PublicSurveyPage

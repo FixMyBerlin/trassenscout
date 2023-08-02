@@ -19,6 +19,6 @@ export const menuItems = ({ projectSlug, projectName }: Props) => {
     },
     { name: "Termine", href: Routes.CalendarEntriesPage({ projectSlug: projectSlug! }) },
     { name: "Dokumente", href: Routes.FilesPage({ projectSlug: projectSlug! }) },
-    { name: "Beteiligung", href: Routes.SurveyResponsesPage({ projectSlug: projectSlug! }) },
+    { name: "Beteiligung", href: Routes.SurveysPage({ projectSlug: projectSlug! }) },
   ]
 }

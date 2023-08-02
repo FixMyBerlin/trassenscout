@@ -13,10 +13,8 @@ import GroupedSurveyResponseItem from "src/survey-responses/components/GroupedSu
 import getSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
 import getSurveyByProjectSlug from "src/surveys/queries/getSurveyByProjectSlug"
 
-export const SurveyResponseWithQuery = () => {
-  const router = useRouter()
+export const Survey = () => {
   const surveySlug = useParam("surveySlug", "string")
-  const projectSlug = useParam("projectSlug", "string")
   const [survey] = useQuery(getSurveyByProjectSlug, { slug: surveySlug })
   const [{ groupedSurveyResponsesFirstPart, surveySessions, surveyResponsesFeedbackPart }] =
     usePaginatedQuery(getSurveyResponses, {
@@ -24,7 +22,7 @@ export const SurveyResponseWithQuery = () => {
     })
 
   const surveyResponsesFeedbackPartWithLocation = surveyResponsesFeedbackPart.filter(
-  //  @ts-ignore
+    //  @ts-ignore
     (r) => JSON.parse(r.data)["23"],
   )
 
@@ -111,14 +109,16 @@ export const SurveyResponseWithQuery = () => {
             return (
               // eslint-disable-next-line react/jsx-key
               <div key={i} className="grid sm:grid-cols-5 gap-2 grid-cols-3">
-                {Object.entries(Object.values(row)[0] as Record<string, string | number>).map(([k, v]) => {
-                  return (
-                    <div key={k} className="flex flex-col gap-2.5 justify-between">
-                      <p className="text-gray-500 !text-sm">{k}</p>
-                      <p className="font-bold">{v}</p>
-                    </div>
-                  )
-                })}
+                {Object.entries(Object.values(row)[0] as Record<string, string | number>).map(
+                  ([k, v]) => {
+                    return (
+                      <div key={k} className="flex flex-col gap-2.5 justify-between">
+                        <p className="text-gray-500 !text-sm">{k}</p>
+                        <p className="font-bold">{v}</p>
+                      </div>
+                    )
+                  },
+                )}
               </div>
             )
           })}
@@ -134,16 +134,16 @@ export const SurveyResponseWithQuery = () => {
   )
 }
 
-const SurveyResponsePage: BlitzPage = () => {
+const SurveyPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <Suspense fallback={<Spinner page />}>
-        <SurveyResponseWithQuery />
+        <Survey />
       </Suspense>
     </LayoutRs>
   )
 }
 
-SurveyResponsePage.authenticate = true
+SurveyPage.authenticate = true
 
-export default SurveyResponsePage
+export default SurveyPage
