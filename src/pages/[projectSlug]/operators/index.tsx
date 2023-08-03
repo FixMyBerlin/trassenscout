@@ -1,5 +1,5 @@
-import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
-import { useMutation, usePaginatedQuery, useQuery } from "@blitzjs/rpc"
+import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
@@ -12,11 +12,8 @@ import { Spinner } from "src/core/components/Spinner"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { FileTable } from "src/files/components/FileTable"
-import getFiles from "src/files/queries/getFilesWithSubsections"
 import deleteOperator from "src/operators/mutations/deleteOperator"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
-import getSubsections from "src/subsections/queries/getSubsections"
 
 const ITEMS_PER_PAGE = 100
 

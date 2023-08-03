@@ -9,7 +9,7 @@ type GetMembershipInput = Pick<
 
 export default resolver.pipe(
   resolver.authorize("ADMIN"),
-  async ({ where, orderBy, skip = 0, take = 100, include }: GetMembershipInput) => {
+  async ({ where, orderBy = { id: "asc" }, skip = 0, take = 100, include }: GetMembershipInput) => {
     const {
       items: memberships,
       hasMore,

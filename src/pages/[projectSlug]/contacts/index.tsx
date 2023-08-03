@@ -13,10 +13,7 @@ import { LayoutRs, MetaTags } from "src/core/layouts"
 
 export const ContactsWithQuery = () => {
   const { projectSlug } = useSlugs()
-  const [{ contacts }] = usePaginatedQuery(getContacts, {
-    projectSlug: projectSlug!,
-    orderBy: { id: "asc" },
-  })
+  const [{ contacts }] = usePaginatedQuery(getContacts, { projectSlug: projectSlug! })
 
   if (!contacts.length) {
     return <ZeroCase visible={contacts.length} name="Kontakte" />

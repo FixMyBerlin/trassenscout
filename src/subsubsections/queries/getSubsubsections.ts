@@ -22,6 +22,7 @@ export default resolver.pipe(
     take = 100,
   }: GetSubsubsectionsInput) => {
     const safeWhere = { subsection: { project: { slug: projectSlug } }, ...where }
+
     const {
       items: subsubsections,
       hasMore,

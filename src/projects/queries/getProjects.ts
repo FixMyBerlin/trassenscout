@@ -7,7 +7,7 @@ interface GetProjectsInput
 
 export default resolver.pipe(
   resolver.authorize(/* ok */),
-  async ({ where, orderBy, skip = 0, take = 100 }: GetProjectsInput, ctx: Ctx) => {
+  async ({ where, orderBy = { id: "asc" }, skip = 0, take = 100 }: GetProjectsInput, ctx: Ctx) => {
     const user = await db.user.findFirst({ where: { id: ctx.session.userId! } })
     if (user!.role !== "ADMIN") {
       where = { ...where, Membership: { some: { userId: user!.id } } }

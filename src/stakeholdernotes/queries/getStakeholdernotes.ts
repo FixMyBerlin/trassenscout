@@ -20,6 +20,7 @@ export default resolver.pipe(
     take = 100,
   }: GetStakeholdernotesInput) => {
     const safeWhere = { subsectionId, ...where }
+
     const {
       items: stakeholdernotes,
       hasMore,

@@ -21,6 +21,7 @@ export default resolver.pipe(
     take = 100,
   }: GetCalendarEntriesInput) => {
     const safeWhere = { project: { slug: projectSlug }, ...where }
+
     const {
       items: calendarEntries,
       hasMore,

@@ -7,7 +7,7 @@ interface GetUsersInput
 
 export default resolver.pipe(
   resolver.authorize("ADMIN"),
-  async ({ where, orderBy, skip = 0, take = 100 }: GetUsersInput) => {
+  async ({ where, orderBy = { id: "asc" }, skip = 0, take = 100 }: GetUsersInput) => {
     const {
       items: users,
       hasMore,

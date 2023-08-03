@@ -13,8 +13,15 @@ type GetContactsInput = { projectSlug: string } & Pick<
 export default resolver.pipe(
   // @ts-ignore
   authorizeProjectAdmin(getProjectIdBySlug),
-  async ({ projectSlug, where, orderBy, skip = 0, take = 100 }: GetContactsInput) => {
+  async ({
+    projectSlug,
+    where,
+    orderBy = { id: "asc" },
+    skip = 0,
+    take = 100,
+  }: GetContactsInput) => {
     const safeWhere = { project: { slug: projectSlug }, ...where }
+
     const {
       items: contacts,
       hasMore,
