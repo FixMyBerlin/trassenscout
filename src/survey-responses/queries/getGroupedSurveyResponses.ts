@@ -21,11 +21,7 @@ export default resolver.pipe(
     skip = 0,
     take = 1000,
   }: GetSurveySessionsWithResponsesInput) => {
-    const saveWhere = {
-      survey: { project: { slug: projectSlug } },
-      surveyId,
-      ...where,
-    }
+    const safeWhere = { survey: { project: { slug: projectSlug } }, surveyId, ...where }
 
     const {
       items: surveySessions,
@@ -36,11 +32,11 @@ export default resolver.pipe(
       skip,
       take,
       maxTake: 1001,
-      count: () => db.surveySession.count({ where }),
+      count: () => db.surveySession.count({ where: safeWhere }),
       query: (paginateArgs) =>
         db.surveySession.findMany({
           ...paginateArgs,
-          where: saveWhere,
+          where: safeWhere,
           orderBy,
           include: { responses: true },
         }),

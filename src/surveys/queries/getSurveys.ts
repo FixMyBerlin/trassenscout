@@ -19,7 +19,8 @@ export default resolver.pipe(
     skip = 0,
     take = 100,
   }: GetSurveysInput) => {
-    const saveWhere = { project: { slug: projectSlug }, ...where }
+    const safeWhere = { project: { slug: projectSlug }, ...where }
+
     const {
       items: surveys,
       hasMore,
@@ -28,8 +29,8 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.survey.count({ where: saveWhere }),
-      query: (paginateArgs) => db.survey.findMany({ ...paginateArgs, where, orderBy }),
+      count: () => db.survey.count({ where: safeWhere }),
+      query: (paginateArgs) => db.survey.findMany({ ...paginateArgs, where: safeWhere, orderBy }),
     })
 
     return {
