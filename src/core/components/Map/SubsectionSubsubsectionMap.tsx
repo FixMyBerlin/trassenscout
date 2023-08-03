@@ -196,7 +196,7 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
         {markers}
       </BaseMap>
       <p className="mt-2 text-right text-xs text-gray-400">
-        Schnellzugriff zum Bearbeitne über option+click (Mac) / alt+click (Windows)
+        Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)
       </p>
     </>
   )
