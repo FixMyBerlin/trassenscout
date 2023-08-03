@@ -42,49 +42,42 @@ export default resolver.pipe(
         }),
     })
 
-    // at the moment surveyId (the field in SurveyResponses) is NOT a relation field
-    // the field here just represents first or second part of the survey
-    // here we first get all responses from the first part of the survey ("SurveyId" : 1)
-    const surveyResponsesFirstPart = surveySessions!.map(
-      (s) => s.responses.filter((r) => r.surveyId === 1)[0]!,
-    )
+    // Reminder: `response.surveyId` is NOT a relation field
+    // the field here just represents first or second part of the survey json
 
-    // here we first get all responses of type feedback of the survey ("SurveyId" : 2)
-    const surveyResponsesFeedbackPartNested = surveySessions!
-      .map((s) => s.responses.filter((r) => r.surveyId === 2))
-      .filter((array) => array.length > 0)
-    //  @ts-ignore
-    const surveyResponsesFeedbackPart = [].concat(...surveyResponsesFeedbackPartNested)
+    // src/participation/data/survey.json
+    const surveyResponsesFirstPart = surveySessions
+      .map((session) => session.responses)
+      .flat()
+      .filter((response) => response.surveyId === 1)
+
+    // src/participation/data/feedback.json
+    const surveyResponsesFeedbackPart = surveySessions
+      .map((session) => session.responses)
+      .flat()
+      .filter((response) => response.surveyId === 2)
 
     const groupedSurveyResponsesFirstPart: Record<string, Record<string, number>> = {}
 
-    if (surveyResponsesFirstPart.length) {
-      const responseObjectExample = JSON.parse(surveyResponsesFirstPart[0]!.data) as Record<
-        string,
-        number | number[]
-      >
-      Object.keys(responseObjectExample).forEach((responseKey) => {
+    const responseTemplateData = surveyResponsesFirstPart[0]?.data
+    const responseTemplate = responseTemplateData && JSON.parse(responseTemplateData)
+
+    if (responseTemplate && surveyResponsesFirstPart.length) {
+      Object.keys(responseTemplate).forEach((responseKey) => {
         let result: Record<number, number> = {}
         surveyResponsesFirstPart.forEach((response) => {
           const responseObject = JSON.parse(response.data) as Record<string, number>
 
           if (typeof responseObject[responseKey] === "number") {
-            // @ts-ignore
-            if (responseObject[responseKey] in result) {
-              // @ts-ignore
-              result[responseObject[responseKey]] += 1
-            } else {
-              // @ts-ignore
-              result[responseObject[responseKey]] = 1
-            }
+            // @ts-expect-errors
+            result[responseObject[responseKey]] ||= 0
+            // @ts-expect-errors
+            result[responseObject[responseKey]] += 1
           } else {
-            // @ts-ignore
+            // @ts-expect-errors
             responseObject[responseKey].forEach((responseKeyItem: number) => {
-              if (responseKeyItem in result) {
-                result[responseKeyItem] += 1
-              } else {
-                result[responseKeyItem] = 1
-              }
+              result[responseKeyItem] ||= 0
+              result[responseKeyItem] += 1
             })
           }
         })
