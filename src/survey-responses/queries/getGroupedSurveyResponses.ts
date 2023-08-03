@@ -64,7 +64,7 @@ export default resolver.pipe(
 
     if (responseTemplate && surveyResponsesFirstPart.length) {
       Object.keys(responseTemplate).forEach((responseKey) => {
-        let result: Record<number, number> = {}
+        const result: Record<number, number> = {}
         surveyResponsesFirstPart.forEach((response) => {
           const responseObject = JSON.parse(response.data) as Record<string, number>
 
@@ -73,13 +73,15 @@ export default resolver.pipe(
             result[responseObject[responseKey]] ||= 0
             // @ts-expect-errors
             result[responseObject[responseKey]] += 1
-          } else {
+          }
+          if (Array.isArray(responseObject[responseKey])) {
             // @ts-expect-errors
             responseObject[responseKey].forEach((responseKeyItem: number) => {
               result[responseKeyItem] ||= 0
               result[responseKeyItem] += 1
             })
           }
+          // To nothing for `null`
         })
         groupedSurveyResponsesFirstPart[responseKey] = result
       })
