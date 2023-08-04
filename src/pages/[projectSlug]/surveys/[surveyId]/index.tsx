@@ -1,7 +1,7 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
-import { isAfter } from "date-fns"
+import { isFuture, isPast } from "date-fns"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Spinner } from "src/core/components/Spinner"
@@ -13,6 +13,7 @@ import { LayoutRs, MetaTags } from "src/core/layouts"
 import surveyDefinition from "src/participation/data/survey.json"
 import GroupedSurveyResponseItem from "src/survey-responses/components/GroupedSurveyResponseItem"
 import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
+import { getFormatDistanceInDays } from "src/survey-responses/utils/ getFormatDistanceInDays"
 import getSurvey from "src/surveys/queries/getSurvey"
 
 export const Survey = () => {
@@ -27,18 +28,8 @@ export const Survey = () => {
     (r) => JSON.parse(r.data)["23"],
   )
 
-  const getFormatDistanceInDays = (startDate: any, endDate?: any) => {
-    if (!startDate) return "(unbekannt)"
-    const distanceInDays = Math.floor(((new Date() as any) - startDate) / (1000 * 60 * 60 * 24))
-    if (isSurveyPast)
-      return endDate
-        ? `${Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24))} Tage`
-        : "(unbekannt)"
-    return `${distanceInDays} ${distanceInDays > 1 ? "Tagen" : "Tag"}`
-  }
-
-  const isSurveyPast = survey.endDate && isAfter(new Date(), survey.endDate)
-  const isSurveyFuture = survey.startDate && isAfter(survey.startDate, new Date())
+  const isSurveyPast = survey.endDate && isPast(survey.endDate)
+  const isSurveyFuture = survey.startDate && isFuture(survey.startDate)
 
   const generalSurveyInformation: Array<Record<string, Record<string, number | string>>> = [
     {
@@ -53,11 +44,13 @@ export const Survey = () => {
     },
     {
       secondRow: {
-        [`${isSurveyPast ? "Laufzeit war" : "Läuft seit"}`]: getFormatDistanceInDays(
+        [`${isSurveyPast ? "Laufzeit war" : "Laufzeit ist"}`]: getFormatDistanceInDays(
           survey.startDate,
           survey.endDate,
         ),
-        "Gestartet am ": survey.startDate ? survey.startDate.toLocaleDateString() : "(unbekannt)",
+        [`${isSurveyFuture ? "Startet am" : "Gestartet am"}`]: survey.startDate
+          ? survey.startDate.toLocaleDateString()
+          : "(unbekannt)",
         [`${isSurveyPast ? "Endete am" : "Endet am"}`]:
           survey.endDate?.toLocaleDateString() || "(unbekannt)",
       },
