@@ -20,12 +20,19 @@ const CustomizedLabel = (payload: any) => {
   // console.log(payload)
   const x = payload.x ?? 0
   const y = payload.y ?? 0
-  const width = 3
   return (
-    <svg xmlns="http://www.w3.org/2000/svg">
-      <text fontSize={14} x={x + 4} y={y - 10}>
-        {payload.name}
-      </text>
+    <svg
+      style={{ backgroundColor: "#880808" }}
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <switch>
+        <foreignObject x={x + 4} y={y - 96} width="70vw" height="150">
+          <div className="flex flex-col justify-end h-24 leading-tight">
+            <p className="text-sm"> {payload.name}</p>
+          </div>
+        </foreignObject>
+      </switch>
     </svg>
   )
 }
