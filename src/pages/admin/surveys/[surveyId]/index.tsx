@@ -54,6 +54,6 @@ const AdminShowSurveyPage = () => {
 
 // See https://github.com/FixMyBerlin/private-issues/issues/936
 // AdminShowSurveyPage.authenticate = { role: "ADMIN" }
-AdminShowSurveyPage.authenticate = "ADMINs"
+AdminShowSurveyPage.authenticate = true
 
 export default AdminShowSurveyPage

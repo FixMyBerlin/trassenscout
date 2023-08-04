@@ -81,6 +81,8 @@ const AdminNewProjectPage = () => {
   )
 }
 
+// See https://github.com/FixMyBerlin/private-issues/issues/936
+// AdminNewProjectPage.authenticate = { role: "ADMIN" }
 AdminNewProjectPage.authenticate = true
 
 export default AdminNewProjectPage

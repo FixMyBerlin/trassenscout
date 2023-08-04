@@ -127,6 +127,8 @@ const AdminMembershipsPage = () => {
   )
 }
 
+// See https://github.com/FixMyBerlin/private-issues/issues/936
+// AdminMembershipsPage.authenticate = { role: "ADMIN" }
 AdminMembershipsPage.authenticate = true
 
 export default AdminMembershipsPage

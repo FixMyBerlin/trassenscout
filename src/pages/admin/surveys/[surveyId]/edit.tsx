@@ -66,6 +66,6 @@ const AdminEditSurveyPage = () => {
 
 // See https://github.com/FixMyBerlin/private-issues/issues/936
 // AdminEditSurveyPage.authenticate = { role: "ADMIN" }
-AdminEditSurveyPage.authenticate = "ADMINs"
+AdminEditSurveyPage.authenticate = true
 
 export default AdminEditSurveyPage
