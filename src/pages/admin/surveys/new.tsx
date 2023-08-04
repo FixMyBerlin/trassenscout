@@ -49,6 +49,8 @@ const AdminNewSurveyPage = () => {
   )
 }
 
-AdminNewSurveyPage.authenticate = { role: "ADMIN" }
+// See https://github.com/FixMyBerlin/private-issues/issues/936
+// AdminNewSurveyPage.authenticate = { role: "ADMIN" }
+AdminNewSurveyPage.authenticate = "ADMINs"
 
 export default AdminNewSurveyPage

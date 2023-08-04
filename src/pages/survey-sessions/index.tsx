@@ -134,6 +134,8 @@ const SurveySessionsPage = () => {
   )
 }
 
+// See https://github.com/FixMyBerlin/private-issues/issues/936
+// SurveySessionsPage.authenticate = { role: "ADMIN" }
 SurveySessionsPage.authenticate = "ADMINs"
 
 export default SurveySessionsPage
