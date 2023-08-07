@@ -7,16 +7,18 @@ import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { seoNewTitle } from "src/core/components/text"
-import { H1 } from "src/core/components/text/Headings"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import createMembership from "src/memberships/mutations/createMembership"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import createProject from "src/projects/mutations/createProject"
 import { ProjectLogoScrcsInputSchema, ProjectSchema } from "src/projects/schema"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import getAdminStatus from "src/users/queries/getAdminStatus"
 import getUsers from "src/users/queries/getUsers"
 
 const AdminNewProject = () => {
+  useQuery(getAdminStatus, {}) // See https://github.com/FixMyBerlin/private-issues/issues/936
+
   const router = useRouter()
   const currentUser = useCurrentUser()
   const [createProjectMutation] = useMutation(createProject)
@@ -81,6 +83,8 @@ const AdminNewProjectPage = () => {
   )
 }
 
+// See https://github.com/FixMyBerlin/private-issues/issues/936
+// AdminNewProjectPage.authenticate = { role: "ADMIN" }
 AdminNewProjectPage.authenticate = true
 
 export default AdminNewProjectPage

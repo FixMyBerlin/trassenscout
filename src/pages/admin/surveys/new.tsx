@@ -1,15 +1,17 @@
 import { Routes } from "@blitzjs/next"
-import { useMutation } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { useSlugs } from "src/core/hooks"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SurveyForm } from "src/surveys/components/SurveyForm"
 import createSurvey from "src/surveys/mutations/createSurvey"
+import getAdminStatus from "src/users/queries/getAdminStatus"
 
 const AdminNewSurvey = () => {
+  useQuery(getAdminStatus, {}) // See https://github.com/FixMyBerlin/private-issues/issues/936
+
   const router = useRouter()
   const [createSurveyMutation] = useMutation(createSurvey)
   type HandleSubmit = any // TODO
@@ -39,7 +41,6 @@ const AdminNewSurvey = () => {
 }
 
 const AdminNewSurveyPage = () => {
-  const { projectSlug } = useSlugs()
   return (
     <LayoutArticle>
       <Suspense fallback={<Spinner page />}>
@@ -51,6 +52,6 @@ const AdminNewSurveyPage = () => {
 
 // See https://github.com/FixMyBerlin/private-issues/issues/936
 // AdminNewSurveyPage.authenticate = { role: "ADMIN" }
-AdminNewSurveyPage.authenticate = "ADMINs"
+AdminNewSurveyPage.authenticate = true
 
 export default AdminNewSurveyPage

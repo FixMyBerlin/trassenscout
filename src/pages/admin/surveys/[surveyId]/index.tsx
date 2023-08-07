@@ -10,8 +10,11 @@ import { quote } from "src/core/components/text"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import deleteSurvey from "src/surveys/mutations/deleteSurvey"
 import getSurvey from "src/surveys/queries/getSurvey"
+import getAdminStatus from "src/users/queries/getAdminStatus"
 
 export const AdminSurvey = () => {
+  useQuery(getAdminStatus, {}) // See https://github.com/FixMyBerlin/private-issues/issues/936
+
   const router = useRouter()
   const surveyId = useParam("surveyId", "number")
   const [deleteSurveyMutation] = useMutation(deleteSurvey)
@@ -54,6 +57,6 @@ const AdminShowSurveyPage = () => {
 
 // See https://github.com/FixMyBerlin/private-issues/issues/936
 // AdminShowSurveyPage.authenticate = { role: "ADMIN" }
-AdminShowSurveyPage.authenticate = "ADMINs"
+AdminShowSurveyPage.authenticate = true
 
 export default AdminShowSurveyPage
