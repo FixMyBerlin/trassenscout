@@ -12,11 +12,14 @@ import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { seoIndexTitle, shortTitle } from "src/core/components/text"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import getMemberships from "src/memberships/queries/getMemberships"
+import getAdminStatus from "src/users/queries/getAdminStatus"
 import { getFullname } from "src/users/utils"
 
 const ITEMS_PER_PAGE = 100
 
 const AdminMemberships = () => {
+  useQuery(getAdminStatus, {}) // See https://github.com/FixMyBerlin/private-issues/issues/936
+
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [result] = useQuery(getMemberships, {

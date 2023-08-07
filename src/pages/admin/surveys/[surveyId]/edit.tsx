@@ -8,8 +8,11 @@ import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SurveyForm } from "src/surveys/components/SurveyForm"
 import updateSurvey from "src/surveys/mutations/updateSurvey"
 import getSurvey from "src/surveys/queries/getSurvey"
+import getAdminStatus from "src/users/queries/getAdminStatus"
 
 const AdminEditSurvey = () => {
+  useQuery(getAdminStatus, {}) // See https://github.com/FixMyBerlin/private-issues/issues/936
+
   const router = useRouter()
   const surveyId = useParam("surveyId", "number")
   const [survey, { setQueryData }] = useQuery(
