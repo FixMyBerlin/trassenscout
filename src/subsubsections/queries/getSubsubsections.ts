@@ -6,7 +6,7 @@ import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { SubsubsectionWithPosition } from "./getSubsubsection"
 
 type GetSubsubsectionsInput = { projectSlug: string } & Pick<
-  Prisma.SubsectionFindManyArgs,
+  Prisma.SubsubsectionFindManyArgs,
   // Do not allow `include` or `select` here, since we overwrite the types below.
   "where" | "orderBy" | "skip" | "take"
 >
@@ -21,7 +21,8 @@ export default resolver.pipe(
     skip = 0,
     take = 100,
   }: GetSubsubsectionsInput) => {
-    const saveWhere = { subsection: { project: { slug: projectSlug } }, ...where }
+    const safeWhere = { subsection: { project: { slug: projectSlug } }, ...where }
+
     const {
       items: subsubsections,
       hasMore,
@@ -30,11 +31,11 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.subsubsection.count({ where: saveWhere }),
+      count: () => db.subsubsection.count({ where: safeWhere }),
       query: (paginateArgs) =>
         db.subsubsection.findMany({
           ...paginateArgs,
-          where: saveWhere,
+          where: safeWhere,
           orderBy,
           include: {
             manager: { select: { firstName: true, lastName: true } },
@@ -49,5 +50,5 @@ export default resolver.pipe(
       hasMore,
       count,
     }
-  }
+  },
 )

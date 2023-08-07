@@ -24,7 +24,7 @@ const NewContactWithQuery: BlitzPage = () => {
         Routes.ShowContactPage({
           projectSlug: projectSlug!,
           contactId: contact.id,
-        })
+        }),
       )
     } catch (error: any) {
       console.error(error)

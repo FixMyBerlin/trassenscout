@@ -19,7 +19,8 @@ export default resolver.pipe(
     skip = 0,
     take = 100,
   }: GetStakeholdernotesInput) => {
-    const saveWhere = { subsectionId, ...where }
+    const safeWhere = { subsectionId, ...where }
+
     const {
       items: stakeholdernotes,
       hasMore,
@@ -28,9 +29,9 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.stakeholdernote.count({ where: saveWhere }),
+      count: () => db.stakeholdernote.count({ where: safeWhere }),
       query: (paginateArgs) =>
-        db.stakeholdernote.findMany({ ...paginateArgs, where: saveWhere, orderBy }),
+        db.stakeholdernote.findMany({ ...paginateArgs, where: safeWhere, orderBy }),
     })
 
     return {
@@ -39,5 +40,5 @@ export default resolver.pipe(
       hasMore,
       count,
     }
-  }
+  },
 )

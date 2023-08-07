@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 import db from "db"
 import surveyDefinition from "src/participation/data/survey.json"
 import feedbackDefinition from "src/participation/data/feedback.json"
-import { authenticate, sendCsv } from "./_shared"
+import { getSurvey, sendCsv } from "./_shared"
 
 const surveys = Object.fromEntries([surveyDefinition, feedbackDefinition].map((o) => [o.id, o]))
 const questions = {}
@@ -22,9 +22,13 @@ Object.values(surveys).forEach((survey) => {
 })
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (!(await authenticate(req, res))) return
+  const survey = await getSurvey(req, res)
+  if (!survey) return
 
-  const surveySessions = await db.surveySession.findMany({ include: { responses: true } })
+  const surveySessions = await db.surveySession.findMany({
+    where: { surveyId: survey.id },
+    include: { responses: true },
+  })
   console.log("surveySessions", surveySessions)
 
   const headers = [

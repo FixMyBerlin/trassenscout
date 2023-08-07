@@ -21,7 +21,8 @@ export default resolver.pipe(
     skip = 0,
     take = 100,
   }: GetSubsectionsInput) => {
-    const saveWhere = { project: { slug: projectSlug }, ...where }
+    const safeWhere = { project: { slug: projectSlug }, ...where }
+
     const {
       items: subsections,
       hasMore,
@@ -30,11 +31,11 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.subsection.count({ where: saveWhere }),
+      count: () => db.subsection.count({ where: safeWhere }),
       query: (paginateArgs) =>
         db.subsection.findMany({
           ...paginateArgs,
-          where: saveWhere,
+          where: safeWhere,
           orderBy,
           include: {
             operator: { select: { id: true, slug: true, title: true } },
@@ -48,11 +49,11 @@ export default resolver.pipe(
 
     subsections.forEach((subsection) => {
       const relevantStakeholdernotes = subsection.stakeholdernotes.filter(
-        (note) => note.status !== "IRRELEVANT"
+        (note) => note.status !== "IRRELEVANT",
       ).length
 
       const doneStakeholdernotes = subsection.stakeholdernotes.filter(
-        (note) => note.status === "DONE"
+        (note) => note.status === "DONE",
       ).length
 
       const subsubsectionCount = subsection.subsubsections.length
@@ -77,5 +78,5 @@ export default resolver.pipe(
       hasMore,
       count,
     }
-  }
+  },
 )

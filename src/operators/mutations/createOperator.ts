@@ -8,7 +8,7 @@ import { OperatorSchema } from "../schema"
 const CreateOperatorSchema = OperatorSchema.omit({ projectId: true }).merge(
   z.object({
     projectSlug: z.string(),
-  })
+  }),
 )
 
 export default resolver.pipe(
@@ -20,5 +20,5 @@ export default resolver.pipe(
         ...input,
         projectId: await getProjectIdBySlug(projectSlug),
       },
-    })
+    }),
 )

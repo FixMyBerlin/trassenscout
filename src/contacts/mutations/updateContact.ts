@@ -9,7 +9,7 @@ import { ContactSchema } from "../schema"
 const UpdateContactSchema = ContactSchema.merge(
   z.object({
     id: z.number(),
-  })
+  }),
 )
 
 export default resolver.pipe(
@@ -19,5 +19,5 @@ export default resolver.pipe(
     await db.contact.update({
       where: { id },
       data,
-    })
+    }),
 )

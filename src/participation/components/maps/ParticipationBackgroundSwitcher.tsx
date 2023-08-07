@@ -47,7 +47,7 @@ export const ParticipationBackgroundSwitcher: React.FC<Props> = ({
                     className={({ active }) =>
                       clsx(
                         "text-gray-900",
-                        "relative cursor-default select-none py-1 pl-3 pr-9 text-sm"
+                        "relative cursor-default select-none py-1 pl-3 pr-9 text-sm",
                       )
                     }
                     value={id}
@@ -57,7 +57,7 @@ export const ParticipationBackgroundSwitcher: React.FC<Props> = ({
                         <span
                           className={clsx(
                             selected ? "font-semibold" : "font-normal",
-                            "block truncate"
+                            "block truncate",
                           )}
                         >
                           {labels[id]}

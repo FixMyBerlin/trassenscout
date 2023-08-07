@@ -1,5 +1,5 @@
 import { useCallback, useContext, useState } from "react"
-import { stageProgressDefinition } from "src/pages/beteiligung/rs8"
+import { stageProgressDefinition } from "src/participation/components/rs8"
 import { PinContext, ProgressContext } from "src/participation/context/contexts"
 import SurveyForm from "../form/SurveyForm"
 import { FeedbackFirstPage } from "./FeedbackFirstPage"
@@ -31,7 +31,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
   const layerStyles = feedback.pages[0].questions[2].props.layerStyles
 
   const pinId = pages[0].questions.find(
-    (question: Record<string, any>) => question.component === "map"
+    (question: Record<string, any>) => question.component === "map",
   ).id
 
   const categories = pages[0].questions[0].props.responses
@@ -88,14 +88,14 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
       setIsPageOneCompleted(
         !isMapOption // if user did not choose map
           ? isQuestionsCompletedPageOne // page is completed in case both questions are answered
-          : isQuestionsCompletedPageOne && isMapDirty // page is completed in case both questions are answered and user has touched the map marker
+          : isQuestionsCompletedPageOne && isMapDirty, // page is completed in case both questions are answered and user has touched the map marker
       )
       const isMinimumOneQuestionPageTwo = values["34"] || values["35"]
       setIsPageTwoCompleted(isMinimumOneQuestionPageTwo)
       if (!isMapOption) setPinPosition(null) // set pinPosition to null if not yes
       setFeedbackCategory(values["21"] || categories.length) // sets state to response id of chosen category (question 21) // fallback: '"Sonstiges"
     },
-    [categories.length, isMapDirty]
+    [categories.length, isMapDirty],
   )
 
   return (

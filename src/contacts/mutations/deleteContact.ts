@@ -12,5 +12,5 @@ const DeleteContactSchema = z.object({
 export default resolver.pipe(
   resolver.zod(DeleteContactSchema),
   authorizeProjectAdmin(getContactProjectId),
-  async ({ id }) => await db.contact.deleteMany({ where: { id } })
+  async ({ id }) => await db.contact.deleteMany({ where: { id } }),
 )

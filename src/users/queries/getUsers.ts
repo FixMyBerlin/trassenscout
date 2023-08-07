@@ -3,11 +3,11 @@ import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
 interface GetUsersInput
-  extends Pick<Prisma.ProjectFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
+  extends Pick<Prisma.UserFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
 
 export default resolver.pipe(
   resolver.authorize("ADMIN"),
-  async ({ where, orderBy, skip = 0, take = 100 }: GetUsersInput) => {
+  async ({ where, orderBy = { id: "asc" }, skip = 0, take = 100 }: GetUsersInput) => {
     const {
       items: users,
       hasMore,
@@ -37,5 +37,5 @@ export default resolver.pipe(
       hasMore,
       count,
     }
-  }
+  },
 )

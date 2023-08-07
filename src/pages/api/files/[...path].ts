@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { getSession } from "@blitzjs/auth"
 import { AuthorizationError } from "blitz"
-import { NotFoundError } from "@prisma/client/runtime"
 import { ZodError } from "zod"
 import {
   S3Client,
@@ -11,13 +10,14 @@ import {
 } from "@aws-sdk/client-s3"
 import { getConfig } from "src/core/lib/next-s3-upload/src/utils/config"
 import getFileWithSubsections from "src/files/queries/getFileWithSubsections"
+import { NotFoundError } from "@prisma/client/runtime/library"
 
 export default async function downloadFile(req: NextApiRequest, res: NextApiResponse) {
   try {
     const file = await getFileWithSubsections(
       { id: Number(req.query.path![0]) },
       // @ts-ignore will work
-      { session: await getSession(req, res) }
+      { session: await getSession(req, res) },
     )
 
     const { hostname, pathname } = new URL(file.externalUrl)

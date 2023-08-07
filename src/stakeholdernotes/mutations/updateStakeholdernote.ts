@@ -9,7 +9,7 @@ import { StakeholdernoteSchema } from "../schema"
 const UpdateStakeholdernoteSchema = StakeholdernoteSchema.merge(
   z.object({
     id: z.number(),
-  })
+  }),
 )
 
 export default resolver.pipe(
@@ -19,5 +19,5 @@ export default resolver.pipe(
     await db.stakeholdernote.update({
       where: { id },
       data,
-    })
+    }),
 )

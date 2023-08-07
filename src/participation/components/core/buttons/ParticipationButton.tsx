@@ -17,7 +17,7 @@ export const ParticipationButton: React.FC<Props> = ({
 }) => {
   const buttonStyles = clsx(
     "px-12",
-    color === "white" ? participationWhiteButtonStyles : participationPinkButtonStyles
+    color === "white" ? participationWhiteButtonStyles : participationPinkButtonStyles,
   )
 
   return (

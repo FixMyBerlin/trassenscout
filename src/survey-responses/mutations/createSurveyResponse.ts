@@ -10,5 +10,5 @@ const CreateSurveyResponse = z.object({
 
 export default resolver.pipe(
   resolver.zod(CreateSurveyResponse),
-  async (input) => await db.surveyResponse.create({ data: input })
+  async (input) => await db.surveyResponse.create({ data: input }),
 )

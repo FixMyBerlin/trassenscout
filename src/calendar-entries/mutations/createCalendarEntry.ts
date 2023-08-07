@@ -9,7 +9,7 @@ import { CalendarEntrySchema } from "../schema"
 const CreateCalendarEntrySchema = CalendarEntrySchema.merge(
   z.object({
     projectSlug: z.string(),
-  })
+  }),
 )
 
 export default resolver.pipe(
@@ -21,5 +21,5 @@ export default resolver.pipe(
         projectId: await getProjectIdBySlug(projectSlug),
         ...input,
       },
-    })
+    }),
 )

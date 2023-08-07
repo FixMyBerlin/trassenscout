@@ -9,7 +9,7 @@ import { SubsectionSchema } from "../schema"
 const UpdateSubsectionSchema = SubsectionSchema.merge(
   z.object({
     id: z.number(),
-  })
+  }),
 )
 
 export default resolver.pipe(
@@ -21,5 +21,5 @@ export default resolver.pipe(
       data,
     })
     return subsection as SubsectionWithPosition // Tip: Validate type shape with `satisfies`
-  }
+  },
 )

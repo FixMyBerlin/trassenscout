@@ -3,7 +3,7 @@ import { lineString } from "@turf/helpers"
 import { along, featureCollection, length } from "@turf/turf"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
-import { MapLayerMouseEvent, MapboxEvent, Marker, ViewStateChangeEvent } from "react-map-gl"
+import { MapEvent, MapLayerMouseEvent, Marker, ViewStateChangeEvent } from "react-map-gl/maplibre"
 import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 import { shortTitle } from "../text"
 import { BaseMap } from "./BaseMap"
@@ -40,7 +40,7 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   const [zoom, setZoom] = useState<number | null>(null)
   const expandByZoom = (zoom: number | null) => !!zoom && zoom < 13
   const handleZoomEnd = (e: ViewStateChangeEvent) => setZoom(e.viewState.zoom)
-  const handleZoomOnLoad = (e: MapboxEvent) => setZoom(e.target.getZoom())
+  const handleZoomOnLoad = (e: MapEvent) => setZoom(e.target.getZoom())
 
   // We need to separate the state to work around the issue when a marker overlaps a line and both interact
   const [hoveredMap, setHoveredMap] = useState<string | null>(null)
@@ -65,8 +65,8 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
           hoveredMap === subsection.slug || hoveredMarker === subsection.slug
             ? layerColors.hovered
             : layerColors.selectable,
-      })
-    )
+      }),
+    ),
   )
 
   const markers = subsections.map((sub) => {
@@ -77,8 +77,8 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
     return (
       <Marker
         key={sub.id}
-        longitude={midPoint.geometry.coordinates[0]}
-        latitude={midPoint.geometry.coordinates[1]}
+        longitude={midPoint.geometry.coordinates[0] as number}
+        latitude={midPoint.geometry.coordinates[1] as number}
         anchor="center"
         onClick={(e) => handleSelect({ subsectionSlug: sub.slug, edit: e.originalEvent.altKey })}
       >
@@ -119,7 +119,7 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
         {markers}
       </BaseMap>
       <p className="mt-2 text-right text-xs text-gray-400">
-        Schnellzugriff zum Bearbeitne über option+click (Mac) / alt+click (Windows)
+        Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)
       </p>
     </section>
   )

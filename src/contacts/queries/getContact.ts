@@ -13,5 +13,5 @@ const GetContactSchema = z.object({
 export default resolver.pipe(
   resolver.zod(GetContactSchema),
   authorizeProjectAdmin(getContactProjectId),
-  async ({ id }) => await db.contact.findFirstOrThrow({ where: { id } })
+  async ({ id }) => await db.contact.findFirstOrThrow({ where: { id } }),
 )

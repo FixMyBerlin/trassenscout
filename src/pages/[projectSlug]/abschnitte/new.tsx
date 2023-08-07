@@ -29,7 +29,7 @@ const NewSubsection = () => {
         Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
           subsectionSlug: subsection.slug,
-        })
+        }),
       )
     } catch (error: any) {
       console.error(error)

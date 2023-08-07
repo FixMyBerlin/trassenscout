@@ -46,7 +46,7 @@ const ParticipationMainPage: BlitzPage = () => {
     if (surveySessionId) {
       return surveySessionId
     } else {
-      const surveySession = await createSurveySessionMutation({})
+      const surveySession = await createSurveySessionMutation({ surveyId: 1 })
       setSurveySessionId(surveySession.id)
       return surveySession.id
     }
@@ -75,7 +75,7 @@ const ParticipationMainPage: BlitzPage = () => {
 
   const handleSubmitFeedback = async (
     feedbackResponses: Record<string, any>,
-    submitterId: string
+    submitterId: string,
   ) => {
     setIsSpinner(true)
     setResponses([...responses, feedbackResponses])
@@ -121,7 +121,7 @@ const ParticipationMainPage: BlitzPage = () => {
     setProgress(stageProgressDefinition["DONE"])
     scrollToTopWithDelay()
     setEmailState(email)
-    await updateSurveySessionMutation({ id: surveySessionId!, email: email! })
+    await updateSurveySessionMutation({ id: surveySessionId! })
   }
 
   let component

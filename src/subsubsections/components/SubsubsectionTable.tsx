@@ -45,7 +45,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                 scope="col"
                 className={clsx(
                   { hidden: compact },
-                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900",
                 )}
               >
                 Länge
@@ -54,7 +54,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                 scope="col"
                 className={clsx(
                   { hidden: compact },
-                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900",
                 )}
               >
                 Breite
@@ -63,7 +63,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                 scope="col"
                 className={clsx(
                   { hidden: compact },
-                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900",
                 )}
               >
                 Kostenschätzung
@@ -72,7 +72,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                 scope="col"
                 className={clsx(
                   { hidden: compact },
-                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
+                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6",
                 )}
               >
                 -
@@ -95,7 +95,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   className={clsx(
                     subsubsection.slug === subsubsectionSlug
                       ? "bg-gray-100"
-                      : "group cursor-pointer hover:bg-gray-50"
+                      : "group cursor-pointer hover:bg-gray-50",
                   )}
                   onClick={() => router.push(route, undefined, { scroll: false })}
                 >
@@ -113,7 +113,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   <td
                     className={clsx(
                       { hidden: compact },
-                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900"
+                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
                     )}
                   >
                     {formattedLength(subsubsection.length)}
@@ -121,7 +121,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   <td
                     className={clsx(
                       { hidden: compact },
-                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900"
+                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
                     )}
                   >
                     {formattedWidth(subsubsection.width)}
@@ -129,7 +129,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   <td
                     className={clsx(
                       { hidden: compact },
-                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900"
+                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
                     )}
                   >
                     {formattedEuro(subsubsection.costEstimate)}

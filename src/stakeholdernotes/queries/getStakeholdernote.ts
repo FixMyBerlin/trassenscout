@@ -16,5 +16,5 @@ export default resolver.pipe(
   async ({ id }) =>
     await db.stakeholdernote.findFirstOrThrow({
       where: { id },
-    })
+    }),
 )

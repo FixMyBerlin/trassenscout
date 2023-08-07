@@ -1,14 +1,14 @@
 import { Routes, useParam } from "@blitzjs/next"
 import { PaperClipIcon } from "@heroicons/react/20/solid"
+import { PromiseReturnType } from "blitz"
 import React from "react"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
+import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { Prettify } from "src/core/types"
 import getFilesWithSubsections from "../queries/getFilesWithSubsections"
 import { fileUrl } from "../utils"
-import { PromiseReturnType } from "blitz"
-import { ZeroCase } from "src/core/components/text/ZeroCase"
 
 type Props = Prettify<
   Pick<PromiseReturnType<typeof getFilesWithSubsections>, "files"> & {

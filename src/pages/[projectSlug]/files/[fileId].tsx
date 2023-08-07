@@ -1,4 +1,4 @@
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/router"
@@ -13,20 +13,33 @@ import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import deleteFile from "src/files/mutations/deleteFile"
 import getFileWithSubsections from "src/files/queries/getFileWithSubsections"
+import { splitReturnTo } from "src/files/utils"
 
 export const File = () => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
   const fileId = useParam("fileId", "number")
   const [file] = useQuery(getFileWithSubsections, { id: fileId })
+  const params: { returnPath?: string } = useRouterQuery()
+  const { subsectionSlug, subsubsectionSlug } = splitReturnTo(params)
+  let backUrl = Routes.FilesPage({ projectSlug: projectSlug! })
+  if (subsectionSlug && subsubsectionSlug) {
+    backUrl = Routes.SubsectionDashboardPage({
+      projectSlug: projectSlug!,
+      subsectionSlug: subsectionSlug,
+      subsubsectionSlug: subsubsectionSlug,
+    })
+  }
 
   const [deleteFileMutation] = useMutation(deleteFile)
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${file.id} unwiderruflich löschen?`)) {
       await deleteFileMutation({ id: file.id })
-      await router.push(Routes.FilesPage({ projectSlug: projectSlug! }))
+      await router.push(backUrl)
     }
   }
+
+  const isSubsubsectionFile = Boolean(file.subsubsectionId)
 
   return (
     <>

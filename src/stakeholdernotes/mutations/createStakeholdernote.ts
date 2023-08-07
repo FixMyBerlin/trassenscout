@@ -7,5 +7,5 @@ import { StakeholdernoteSchema } from "../schema"
 export default resolver.pipe(
   resolver.zod(StakeholdernoteSchema),
   authorizeProjectAdmin(getSubsectionProjectId),
-  async (input) => await db.stakeholdernote.create({ data: input })
+  async (input) => await db.stakeholdernote.create({ data: input }),
 )

@@ -1,12 +1,16 @@
-import { AuthorizationError, Ctx } from "blitz"
+import { AuthorizationError } from "blitz"
 import db, { UserRoleEnum } from "db"
+import { SessionContext } from "@blitzjs/auth"
 
 type GetterFn =
   | ((input: Record<string, any>) => number)
   | ((input: Record<string, any>) => Promise<number>)
 
 export function authorizeProjectAdmin(getProjectId: GetterFn) {
-  return async function authorize<T extends Record<string, any>>(input: T, ctx: Ctx): Promise<T> {
+  return async function authorize<T extends Record<string, any>>(
+    input: T,
+    ctx: { session: SessionContext },
+  ): Promise<T> {
     if (!ctx.session.userId) {
       throw new AuthorizationError()
     }

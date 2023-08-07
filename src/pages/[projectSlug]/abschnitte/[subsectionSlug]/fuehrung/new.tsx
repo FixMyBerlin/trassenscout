@@ -36,7 +36,7 @@ const NewSubsubsection = () => {
           projectSlug: projectSlug!,
           subsectionSlug: subsectionSlug!,
           subsubsectionSlug: subsubsection.id,
-        })
+        }),
       )
     } catch (error: any) {
       console.error(error)

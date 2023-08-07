@@ -28,7 +28,7 @@ export const Tabs: React.FC<Props> = ({ tabs, className }) => {
             tabs.find(
               (tab) =>
                 router.pathname === tab.href.pathname &&
-                JSON.stringify(router.query) === JSON.stringify(tab.href.query)
+                JSON.stringify(router.query) === JSON.stringify(tab.href.query),
             )?.name
           }
           onChange={(event) => {
@@ -59,7 +59,7 @@ export const Tabs: React.FC<Props> = ({ tabs, className }) => {
                   current
                     ? "border-b-2 border-gray-900 !text-gray-900"
                     : "border-b border-transparent hover:border-gray-200 hover:text-gray-700",
-                  "flex px-3 py-3 text-sm font-medium"
+                  "flex px-3 py-3 text-sm font-medium",
                 )}
                 aria-current={current ? "page" : undefined}
               >
@@ -69,7 +69,7 @@ export const Tabs: React.FC<Props> = ({ tabs, className }) => {
                     <span
                       className={clsx(
                         current ? "bg-gray-100 text-gray-500" : "bg-gray-200 text-gray-900",
-                        "ml-3 hidden rounded-full px-2.5 py-0.5 text-xs font-medium md:inline-block"
+                        "ml-3 hidden rounded-full px-2.5 py-0.5 text-xs font-medium md:inline-block",
                       )}
                     >
                       {tab.count}

@@ -116,6 +116,7 @@ model Project {
   files           File[]
   Membership      Membership[]
   Operator        Operator[]
+  Survey          Survey[]
 }
 
 model Membership {
@@ -287,10 +288,29 @@ model File {
   subsubsectionId Int?
 }
 
+model Survey {
+  id            Int             @id @default(autoincrement())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  startDate     DateTime?
+  endDate       DateTime?
+  slug          String          @unique
+  title         String
+  active        Boolean         @default(false)
+  interestedParticipants  Int?
+  surveyResultsUrl String?
+  //
+  projectId     Int
+  project       Project         @relation(fields: [projectId], references: [id])
+  SurveySession SurveySession[]
+}
+
 model SurveySession {
   id        Int              @id @default(autoincrement())
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
+  survey    Survey           @relation(fields: [surveyId], references: [id])
+  surveyId  Int
   responses SurveyResponse[]
 }
 
@@ -298,6 +318,6 @@ model SurveyResponse {
   id              Int           @id @default(autoincrement())
   surveySession   SurveySession @relation(fields: [surveySessionId], references: [id])
   surveySessionId Int
-  surveyId        Int
+  surveyId        Int // surveyParts as specified by the survey JSON files
   data            String
 }

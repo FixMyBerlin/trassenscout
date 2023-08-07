@@ -1,4 +1,4 @@
-import { MapProvider } from "react-map-gl"
+import { MapProvider } from "react-map-gl/maplibre"
 import { ParticipationButton } from "../core/buttons/ParticipationButton"
 import { ScreenHeaderParticipation } from "../layout/ScreenHeaderParticipation"
 import { ParticipationMap } from "../maps/ParticipationMap"
@@ -25,7 +25,7 @@ export const FeedbackFirstPage: React.FC<Props> = ({
   const { title, description, questions, buttons } = page
 
   const mapProps = questions.find(
-    (question: Record<string, any>) => question.component === "map"
+    (question: Record<string, any>) => question.component === "map",
   ).props
 
   return (

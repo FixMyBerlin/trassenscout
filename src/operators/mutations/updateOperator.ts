@@ -8,7 +8,7 @@ import { OperatorSchema } from "../schema"
 const UpdateOperatorSchema = OperatorSchema.merge(
   z.object({
     id: z.number(),
-  })
+  }),
 )
 
 export default resolver.pipe(
@@ -18,5 +18,5 @@ export default resolver.pipe(
     await db.operator.update({
       where: { id },
       data,
-    })
+    }),
 )

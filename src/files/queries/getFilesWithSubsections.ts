@@ -13,8 +13,9 @@ type GetFilesInput = { projectSlug: string } & Pick<
 export default resolver.pipe(
   // @ts-ignore
   authorizeProjectAdmin(getProjectIdBySlug),
-  async ({ projectSlug, where, orderBy, skip = 0, take = 100 }: GetFilesInput) => {
-    const saveWhere = { project: { slug: projectSlug }, ...where }
+  async ({ projectSlug, where, orderBy = { id: "asc" }, skip = 0, take = 100 }: GetFilesInput) => {
+    const safeWhere = { project: { slug: projectSlug }, ...where }
+
     const {
       items: files,
       hasMore,
@@ -23,11 +24,11 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.file.count({ where: saveWhere }),
+      count: () => db.file.count({ where: safeWhere }),
       query: (paginateArgs) =>
         db.file.findMany({
           ...paginateArgs,
-          where: saveWhere,
+          where: safeWhere,
           orderBy,
           include: {
             subsection: { select: { id: true, slug: true, start: true, end: true } },
@@ -41,5 +42,5 @@ export default resolver.pipe(
       hasMore,
       count,
     }
-  }
+  },
 )

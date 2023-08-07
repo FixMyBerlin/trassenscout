@@ -5,15 +5,22 @@ import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 
 type GetOperatorsInput = { projectSlug: string } & Pick<
-  Prisma.FileFindManyArgs,
+  Prisma.OperatorFindManyArgs,
   "where" | "orderBy" | "skip" | "take"
 >
 
 export default resolver.pipe(
   // @ts-ignore
   authorizeProjectAdmin(getProjectIdBySlug),
-  async ({ projectSlug, where, orderBy, skip = 0, take = 100 }: GetOperatorsInput) => {
-    const saveWhere = { project: { slug: projectSlug }, ...where }
+  async ({
+    projectSlug,
+    where,
+    orderBy = { id: "asc" },
+    skip = 0,
+    take = 100,
+  }: GetOperatorsInput) => {
+    const safeWhere = { project: { slug: projectSlug }, ...where }
+
     const {
       items: operators,
       hasMore,
@@ -22,8 +29,8 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.operator.count({ where: saveWhere }),
-      query: (paginateArgs) => db.operator.findMany({ ...paginateArgs, where: saveWhere, orderBy }),
+      count: () => db.operator.count({ where: safeWhere }),
+      query: (paginateArgs) => db.operator.findMany({ ...paginateArgs, where: safeWhere, orderBy }),
     })
 
     const operatorsWithCount = await Promise.all(
@@ -35,7 +42,7 @@ export default resolver.pipe(
           ...operator,
           subsectionCount,
         }
-      })
+      }),
     )
 
     return {
@@ -44,5 +51,5 @@ export default resolver.pipe(
       hasMore,
       count,
     }
-  }
+  },
 )

@@ -2,10 +2,15 @@ import { CheckBadgeIcon } from "@heroicons/react/24/solid"
 import { Position, lineString, point } from "@turf/helpers"
 import { bbox } from "@turf/turf"
 import clsx from "clsx"
-import maplibregl from "maplibre-gl"
 import React from "react"
 import { useFormContext } from "react-hook-form"
-import Map, { Layer, LngLatBoundsLike, NavigationControl, ScaleControl, Source } from "react-map-gl"
+import Map, {
+  Layer,
+  LngLatBoundsLike,
+  NavigationControl,
+  ScaleControl,
+  Source,
+} from "react-map-gl/maplibre"
 import { vectorStyle } from "src/core/components/Map/BaseMap"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { z } from "zod"
@@ -40,7 +45,7 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
     <div
       className={clsx(
         "rounded border p-3 text-gray-700",
-        schemaResult.success ? "bg-gray-100" : "border-red-800 bg-red-100"
+        schemaResult.success ? "bg-gray-100" : "border-red-800 bg-red-100",
       )}
     >
       <h3 className="m-0 mb-3 flex items-center gap-1 text-sm font-semibold">
@@ -69,7 +74,6 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
                   : {}),
               }}
               id="preview"
-              mapLib={maplibregl}
               mapStyle={vectorStyle}
               scrollZoom={false}
             >
@@ -120,8 +124,8 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
                 JSON.stringify(
                   geometryType === "ROUTE"
                     ? lineString(geometry as RouteGeomtry)
-                    : point(geometry as AreaGeometry)
-                )
+                    : point(geometry as AreaGeometry),
+                ),
               )}`}
             >
               Auf geojson.io öffnen

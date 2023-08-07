@@ -2,7 +2,7 @@ import db, { Prisma } from "../index"
 import { subsubsections } from "./subsection_subsubsections"
 
 const seedSubsections = async () => {
-  const seeData: Prisma.SubsectionUncheckedCreateInput[] = [
+  const seedData: Prisma.SubsectionUncheckedCreateInput[] = [
     // NORD:
     {
       projectId: 1,
@@ -177,8 +177,8 @@ const seedSubsections = async () => {
     },
   ]
 
-  for (let i = 0; i < seeData.length; i++) {
-    const data = seeData[i]
+  for (let i = 0; i < seedData.length; i++) {
+    const data = seedData[i]
     if (data) {
       await db.subsection.create({ data })
     }

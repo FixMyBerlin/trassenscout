@@ -32,7 +32,7 @@ const NewCalendarEntry = () => {
         Routes.ShowCalendarEntryPage({
           projectSlug: projectSlug!,
           calendarEntryId: calendarEntry.id,
-        })
+        }),
       )
     } catch (error: any) {
       console.error("handleSubmit", error)

@@ -39,11 +39,11 @@ export default resolver.pipe(
     if (!subsection) throw new NotFoundError()
 
     const relevantStakeholdernotes = subsection.stakeholdernotes.filter(
-      (note) => note.status !== "IRRELEVANT"
+      (note) => note.status !== "IRRELEVANT",
     ).length
 
     const doneStakeholdernotes = subsection.stakeholdernotes.filter(
-      (note) => note.status === "DONE"
+      (note) => note.status === "DONE",
     ).length
 
     const subsubsectionCount = subsection.subsubsections.length
@@ -62,5 +62,5 @@ export default resolver.pipe(
     }
 
     return subsectionWithCounts
-  }
+  },
 )

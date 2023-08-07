@@ -1,4 +1,4 @@
-import { Routes, useParam } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { Contact } from "@prisma/client"
@@ -6,7 +6,6 @@ import { useRouter } from "next/router"
 import React, { useState } from "react"
 import { Form, LabeledCheckbox } from "src/core/components/forms"
 import { Link, LinkMail, LinkTel, whiteButtonStyles } from "src/core/components/links"
-import SurveyForm from "src/participation/components/form/SurveyForm"
 import getProject from "src/projects/queries/getProject"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getFullname } from "src/users/utils"
@@ -37,14 +36,14 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
       .join(",")
 
     void router.push(
-      `mailto:${user?.email}?bcc=${contactMailString}&subject=Infos zu ${shortTitle(project.slug)}`
+      `mailto:${user?.email}?bcc=${contactMailString}&subject=Infos zu ${shortTitle(project.slug)}`,
     )
   }
 
   const handleChange = (values: any) => {
     // when form values change check if at least one checkmark is set
     setMailButtonActive(
-      Object.entries(values).filter((contact) => contact[1] === true).length !== 0
+      Object.entries(values).filter((contact) => contact[1] === true).length !== 0,
     )
   }
 

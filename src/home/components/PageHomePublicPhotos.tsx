@@ -16,7 +16,7 @@ export const PageHomePublicPhotos = () => {
           key={image.src}
           className={clsx(
             "relative aspect-square w-44 flex-none overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 sm:w-72 sm:rounded-2xl",
-            rotations[imageIndex % rotations.length]
+            rotations[imageIndex % rotations.length],
           )}
         >
           <Image

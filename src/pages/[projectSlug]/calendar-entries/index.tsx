@@ -20,7 +20,6 @@ export const CalendarEntriesWithData = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [{ calendarEntries, hasMore }] = usePaginatedQuery(getCalendarEntries, {
     projectSlug: projectSlug!,
-    orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })

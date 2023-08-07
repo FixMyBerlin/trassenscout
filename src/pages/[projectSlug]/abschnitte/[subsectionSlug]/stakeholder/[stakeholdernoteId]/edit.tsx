@@ -31,7 +31,7 @@ const EditStakeholdernote = () => {
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
-    }
+    },
   )
   const [updateStakeholdernoteMutation] = useMutation(updateStakeholdernote)
 
@@ -48,7 +48,7 @@ const EditStakeholdernote = () => {
           projectSlug: projectSlug!,
           subsectionSlug: subsectionSlug!,
           stakeholderDetails: updated.id,
-        })
+        }),
       )
     } catch (error: any) {
       console.error(error)

@@ -3,7 +3,7 @@ import { lineString, point } from "@turf/helpers"
 import { bbox, featureCollection } from "@turf/turf"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
-import { LngLatBoundsLike, MapLayerMouseEvent, MapboxEvent, Marker } from "react-map-gl"
+import { LngLatBoundsLike, MapLayerMouseEvent, Marker } from "react-map-gl/maplibre"
 import { useSlugs } from "src/core/hooks"
 import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
@@ -80,9 +80,9 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
               ? layerColors.unselectableCurrent
               : layerColors.unselectable,
           // opacity: subsection.slug === selectedSubsection.slug ? 0.4 : 0.35,
-        })
+        }),
       )
-      .filter(Boolean)
+      .filter(Boolean),
   )
 
   const selectableLines = featureCollection(
@@ -99,9 +99,9 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
                 : hoveredMap === sec.slug || hoveredMarker === sec.slug
                 ? layerColors.hovered
                 : layerColors.selectable,
-          })
+          }),
       )
-      .filter(Boolean)
+      .filter(Boolean),
   )
 
   const selectablePoints = featureCollection(
@@ -127,9 +127,9 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
                 : hoveredMap === sec.slug || hoveredMarker === sec.slug
                 ? layerColors.hovered
                 : layerColors.selectable,
-          })
+          }),
       )
-      .filter(Boolean)
+      .filter(Boolean),
   )
 
   // Dots are only for Subsubsections of type ROUTE
@@ -141,11 +141,12 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
   const markers = subsubsections.map((subsub) => {
     const [longitude, latitude] =
       subsub.type === "ROUTE" ? midPoint(subsub.geometry) : subsub.geometry
+
     return (
       <Marker
         key={subsub.id}
-        longitude={longitude}
-        latitude={latitude}
+        longitude={longitude as number}
+        latitude={latitude as number}
         anchor="center"
         onClick={(e) => {
           handleSelect({
@@ -195,7 +196,7 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
         {markers}
       </BaseMap>
       <p className="mt-2 text-right text-xs text-gray-400">
-        Schnellzugriff zum Bearbeitne über option+click (Mac) / alt+click (Windows)
+        Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)
       </p>
     </>
   )

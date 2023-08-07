@@ -9,7 +9,7 @@ import { FileSchema } from "../schema"
 const UpdateFileSchema = FileSchema.merge(
   z.object({
     id: z.number(),
-  })
+  }),
 )
 
 export default resolver.pipe(
@@ -20,5 +20,5 @@ export default resolver.pipe(
       where: { id },
       data,
       include: { subsection: { select: { id: true, slug: true, start: true, end: true } } },
-    })
+    }),
 )

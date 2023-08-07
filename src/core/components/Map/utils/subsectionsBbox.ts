@@ -1,6 +1,6 @@
 import combine from "@turf/combine"
 import { BBox, bbox, bboxPolygon, featureCollection, lineString } from "@turf/turf"
-import type { LngLatBoundsLike } from "react-map-gl"
+import type { LngLatBoundsLike } from "react-map-gl/maplibre"
 import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 
 export const subsectionsBbox = (subsections: SubsectionWithPosition[]) => {
@@ -10,7 +10,7 @@ export const subsectionsBbox = (subsections: SubsectionWithPosition[]) => {
     subSectionBboxes.push(bbox(lineString(ss.geometry)))
   })
   const subSectionBoxes = combine(
-    featureCollection(subSectionBboxes.map((box) => bboxPolygon(box)))
+    featureCollection(subSectionBboxes.map((box) => bboxPolygon(box))),
   )
 
   const [minX, minY, maxX, maxY] = bbox(subSectionBoxes)

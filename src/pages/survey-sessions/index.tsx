@@ -88,7 +88,7 @@ export const SurveySessionsList = () => {
                                   return responseIds
                                     .map(
                                       (responseId) =>
-                                        `[${responseId}] ${question.responses[responseId].text.de}`
+                                        `[${responseId}] ${question.responses[responseId].text.de}`,
                                     )
                                     .join(", ")
                                 }
@@ -134,6 +134,8 @@ const SurveySessionsPage = () => {
   )
 }
 
+// See https://github.com/FixMyBerlin/private-issues/issues/936
+// SurveySessionsPage.authenticate = { role: "ADMIN" }
 SurveySessionsPage.authenticate = "ADMINs"
 
 export default SurveySessionsPage

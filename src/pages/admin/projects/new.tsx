@@ -16,7 +16,7 @@ import { ProjectLogoScrcsInputSchema, ProjectSchema } from "src/projects/schema"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getUsers from "src/users/queries/getUsers"
 
-const AdminNewProjectWithQuery = () => {
+const AdminNewProject = () => {
   const router = useRouter()
   const currentUser = useCurrentUser()
   const [createProjectMutation] = useMutation(createProject)
@@ -70,7 +70,7 @@ const AdminNewProjectPage = () => {
       <PageHeader title="Trasse hinzufügen" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
-        <AdminNewProjectWithQuery />
+        <AdminNewProject />
       </Suspense>
 
       <hr className="my-5" />

@@ -11,5 +11,5 @@ export default resolver.pipe(
   resolver.authorize("ADMIN"),
   async ({ id }) => {
     return await db.project.deleteMany({ where: { id } })
-  }
+  },
 )
