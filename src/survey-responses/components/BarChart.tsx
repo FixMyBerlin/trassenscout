@@ -59,6 +59,8 @@ const VerticalBartChart: React.FC<Props> = ({ data }) => {
             fill="#EAB308"
             dataKey="value"
             label={<CustomizedLabel />}
+            // disabling the animation: quick fix for labels/labellist that sometimes are not shown
+            isAnimationActive={false}
           >
             {/* <LabelList dataKey="key" position="top" /> */}
             <LabelList dataKey="value" position="right" />
