@@ -186,6 +186,7 @@ model Operator {
   project    Project      @relation(fields: [projectId], references: [id])
   projectId  Int
   Subsection Subsection[]
+  surveyResponses SurveyResponse[]
 
   @@unique([projectId, slug])
 }
@@ -320,4 +321,33 @@ model SurveyResponse {
   surveySessionId Int
   surveyId        Int // surveyParts as specified by the survey JSON files
   data            String
+  topics          TopicsOnSurveyResponses[]
+  status          SurveyResponseStatusEnum? @default(PENDING)
+  note            String?
+  operatorId      Int?
+  operator        Operator? @relation(fields: [operatorId], references: [id])
+}
+
+model Topic {
+  id               Int          @id @default(autoincrement())
+  title            String
+  surveyResponses  TopicsOnSurveyResponses[]
+}
+
+model TopicsOnSurveyResponses{
+
+  surveyResponse       SurveyResponse     @relation(fields: [surveyResponseId], references: [id])
+  surveyResponseId     Int // relation scalar field (used in the `@relation` attribute above)
+  topic                Topic @relation(fields: [topicId], references: [id])
+  topicId              Int // relation scalar field (used in the `@relation` attribute above)
+
+  @@id([surveyResponseId, topicId])
+}
+
+enum SurveyResponseStatusEnum {
+  PENDING
+  ASSIGNED
+  DONE_FAQ
+  DONE_PLANING
+  IRRELEVANT
 }
