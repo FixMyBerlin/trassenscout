@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import Image from "next/legacy/image"
+import Image from "next/image"
 import pngImage1 from "../assets/map-1.jpg"
 import pngImage2 from "../assets/map-2.jpg"
 import pngImage3 from "../assets/map-3.jpg"
@@ -21,9 +21,10 @@ export const PageHomePublicPhotos = () => {
         >
           <Image
             src={image}
-            alt=""
+            alt={""}
+            fill
             sizes="(min-width: 640px) 18rem, 11rem"
-            className="absolute inset-0 h-full w-full object-cover"
+            className="inset-0 object-cover"
           />
         </div>
       ))}

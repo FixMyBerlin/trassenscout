@@ -1,5 +1,5 @@
 import { BlitzPage } from "@blitzjs/auth"
-import Image from "next/legacy/image"
+import Image from "next/image"
 import { Link, LinkMail, LinkTel } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { LayoutArticle, MetaTags } from "src/core/layouts"

@@ -1,7 +1,7 @@
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
-import Image from "next/legacy/image"
+import Image from "next/image"
 import React, { Suspense } from "react"
 import { getImageSrc } from "src/core/utils/getImageSrc"
 import getProject from "src/projects/queries/getProject"
@@ -28,7 +28,7 @@ export const FooterLogosWithQuery: React.FC<Props> = ({ className }) => {
           <li className="relative mx-auto h-16 w-20" key={partnerLogo}>
             <Image
               className="mx-auto object-contain"
-              layout="fill"
+              fill
               src={getImageSrc(partnerLogo)}
               alt="partnerLogo"
             />
