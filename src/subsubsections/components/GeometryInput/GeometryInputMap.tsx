@@ -2,12 +2,12 @@ import { Feature, Point, Position, featureCollection, lineString, point } from "
 import { bbox, distance, lineSlice, nearestPointOnLine } from "@turf/turf"
 import React, { useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { Layer, LngLatBoundsLike, MapLayerMouseEvent, Marker, Source } from "react-map-gl/maplibre"
+import { Layer, LngLatBoundsLike, MapLayerMouseEvent, Source } from "react-map-gl/maplibre"
 import { BaseMap } from "src/core/components/Map/BaseMap"
 import { layerColors } from "src/core/components/Map/layerColors"
 import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
-import { z } from "zod"
+import { GeometryInputMapSubsubsections } from "./GeometryInputMapSubsubsections"
 
 type Props = {
   subsection: SubsectionWithPosition
@@ -94,6 +94,7 @@ export const GeometryInputMap: React.FC<Props> = ({ subsection }) => {
         >
           {geometryType === "ROUTE" ? (
             <>
+              <GeometryInputMapSubsubsections />
               {/* nearest Points to where clicked */}
               <Source
                 key="nearestPoint"
