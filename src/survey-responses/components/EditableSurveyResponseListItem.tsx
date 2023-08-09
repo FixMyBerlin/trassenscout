@@ -1,10 +1,13 @@
 import { Disclosure } from "src/core/components/Disclosure"
 import { SurveyResponse } from "@prisma/client"
 import clsx from "clsx"
+import { useRouter } from "next/router"
+import { useRouterQuery } from "@blitzjs/next"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
   response: SurveyResponse
+  className?: String
   columnWidthClasses: {
     id: string
     status: string
@@ -12,12 +15,24 @@ type Props = {
   }
 }
 
-const EditableSurveyResponseItem: React.FC<Props> = ({ response, columnWidthClasses }) => {
+const EditableSurveyResponseListItem: React.FC<Props> = ({ response, columnWidthClasses }) => {
+  const router = useRouter()
+  const handleOpen = () => {
+    router.query.responseDetails = String(response.id)
+    void router.push({ query: router.query }, undefined, { scroll: false })
+  }
+  const handleClose = () => {
+    delete router.query.responseDetails
+    void router.push({ query: router.query }, undefined, { scroll: false })
+  }
+  const params = useRouterQuery()
+  const responseDetails = parseInt(String(params.responseDetails))
+  const open = response.id === Number(responseDetails)
   return (
     <Disclosure
-      // open={open}
-      // onOpen={handleOpen}
-      // onClose={handleClose}
+      open={open}
+      onOpen={handleOpen}
+      onClose={handleClose}
       classNameButton="py-4 text-left text-sm text-gray-900 hover:bg-gray-50"
       classNamePanel="flex flex-start"
       button={
@@ -49,7 +64,7 @@ const EditableSurveyResponseItem: React.FC<Props> = ({ response, columnWidthClas
             </div>
           </div>
           <div className="flex-grow py-4 pl-4 pr-3 text-sm sm:pl-6">
-            <div className="font-medium items-center text-gray-900 line-clamp-3">
+            <div className={clsx(open || "line-clamp-3", "font-medium items-center text-gray-900")}>
               {/* @ts-ignore */}
               {JSON.parse(response.data)["34"] || JSON.parse(response.data)["35"]}
             </div>
@@ -62,4 +77,4 @@ const EditableSurveyResponseItem: React.FC<Props> = ({ response, columnWidthClas
   )
 }
 
-export default EditableSurveyResponseItem
+export default EditableSurveyResponseListItem
