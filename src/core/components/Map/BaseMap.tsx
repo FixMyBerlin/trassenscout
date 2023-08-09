@@ -174,11 +174,11 @@ export const BaseMap: React.FC<BaseMapProps> = ({
         >
           <NavigationControl showCompass={false} />
           <ScaleControl />
-          {children}
           {featuresSource}
           {selectableLineFeaturesSource}
           {selectablePointFeaturesSource}
           {dotSource}
+          {children}
         </Map>
         <BackgroundSwitcher
           className="absolute left-4 top-4"
