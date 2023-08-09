@@ -36,11 +36,8 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
     lines?: FeatureCollection<
       LineString,
       {
-        /** @desc  */
-        color: string
-        radius?: number
-        "border-color"?: string
-        "border-width"?: number
+        color?: string
+        width?: number
         opacity?: number
       }
     >

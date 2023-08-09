@@ -10,6 +10,7 @@ import { LabeledRadiobuttonGroupLabelPos } from "src/core/components/forms/Label
 import { quote } from "src/core/components/text"
 import { getUserSelectOptions, UserSelectOptions } from "src/users/utils"
 import { z } from "zod"
+import { GeometryInput } from "./GeometryInput/GeometryInput"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(
@@ -35,18 +36,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
         label="Reihenfolge Führung"
         help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie (mit Unterbrechungen) mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung. Sonderführungen bitte zwischen die Regelführungen einsortieren."
       />
-      <LabeledSelect
-        name="type"
-        label="Führungsform"
-        options={[
-          ["ROUTE", "Regelführung (RF) – Linie"],
-          ["AREA", "Sonderführung (SF) – Punkt"],
-        ]}
-      />
-      <LabeledGeometryField
-        name="geometry"
-        label="Geometry der Achse (`LineString` oder `Point`)"
-      />
+      <GeometryInput />
       <LabeledRadiobuttonGroupLabelPos />
       <LabeledTextField
         type="text"
