@@ -92,9 +92,9 @@ export const GeometryInputMap: React.FC<Props> = ({ subsection }) => {
             geometryType === "ROUTE" ? handleClickGeometryTypeRoute : handleClickGeometryTypeArea
           }
         >
+          <GeometryInputMapSubsubsections />
           {geometryType === "ROUTE" ? (
             <>
-              <GeometryInputMapSubsubsections />
               {/* nearest Points to where clicked */}
               <Source
                 key="nearestPoint"
