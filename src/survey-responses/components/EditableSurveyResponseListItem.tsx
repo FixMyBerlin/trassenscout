@@ -1,13 +1,13 @@
-import { Routes, useRouterQuery } from "@blitzjs/next"
+import { useRouterQuery } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { SurveyResponse } from "@prisma/client"
 import clsx from "clsx"
 import { useRouter } from "next/router"
+import { useCallback } from "react"
 import { Disclosure } from "src/core/components/Disclosure"
 import { LabeledRadiobuttonGroup } from "src/core/components/forms"
 import updateSurveyResponse from "../mutations/updateSurveyResponse"
 import EditableSurveyResponseForm, { FORM_ERROR } from "./EditableSurveyResponseForm"
-import { useCallback } from "react"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
@@ -36,6 +36,7 @@ const EditableSurveyResponseListItem: React.FC<Props> = ({
           id: response.id,
           ...values,
         })
+        // TODO
         // await setQueryData(updated)
         await console.log(`successfully updated ${response.id}`)
       } catch (error: any) {
@@ -63,14 +64,14 @@ const EditableSurveyResponseListItem: React.FC<Props> = ({
       open={open}
       onOpen={handleOpen}
       onClose={handleClose}
-      classNameButton="py-4 text-left text-sm text-gray-900 hover:bg-gray-50"
-      classNamePanel="flex flex-start"
+      classNameButton="pl-4 py-4 text-left text-sm text-gray-900 hover:bg-gray-50"
+      classNamePanel="pl-4 py-4 flex flex-start"
       button={
         <>
           <div
             className={clsx(
               columnWidthClasses.id,
-              "flex-shrink-0 h-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6",
+              "flex-shrink-0 h-20 whitespace-nowrap py-4 text-sm",
             )}
           >
             <div className="flex items-center font-medium text-gray-900">{response.id}</div>
@@ -78,7 +79,7 @@ const EditableSurveyResponseListItem: React.FC<Props> = ({
           <div
             className={clsx(
               columnWidthClasses.status,
-              "flex-shrink-0 h-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6",
+              "flex-shrink-0 h-20 whitespace-nowrap py-4 text-sm",
             )}
           >
             <div className="flex items-center font-medium text-gray-900">{response.status}</div>
@@ -86,14 +87,14 @@ const EditableSurveyResponseListItem: React.FC<Props> = ({
           <div
             className={clsx(
               columnWidthClasses.operator,
-              "flex-shrink-0 h-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6",
+              "flex-shrink-0 h-20 whitespace-nowrap py-4 text-sm",
             )}
           >
             <div className="flex items-center font-medium text-gray-900">
               {response.operatorId || "k.A."}
             </div>
           </div>
-          <div className="flex-grow py-4 pl-4 pr-3 text-sm sm:pl-6">
+          <div className="flex-grow py-4 text-sm">
             <div className={clsx(open || "line-clamp-3", "font-medium items-center text-gray-900")}>
               {/* @ts-ignore */}
               {JSON.parse(response.data)["34"] || JSON.parse(response.data)["35"]}
@@ -102,14 +103,17 @@ const EditableSurveyResponseListItem: React.FC<Props> = ({
         </>
       }
     >
-      <div className="ml-3 px-3 pb-2 pt-6 sm:ml-64">
+      <div className="w-full">
         {isCurrentItem && (
           <EditableSurveyResponseForm
             initialValues={{ ...response }}
             onChangeValues={handleSubmit}
             onSubmit={handleSubmit}
+            className="flex"
           >
+            <div className={clsx(columnWidthClasses.id, "flex-shrink-0")} />
             <LabeledRadiobuttonGroup
+              classNameItemWrapper={clsx("flex-shrink-0", columnWidthClasses.status)}
               scope={"status"}
               items={[
                 { value: "PENDING", label: "Ausstehend" },
@@ -119,6 +123,15 @@ const EditableSurveyResponseListItem: React.FC<Props> = ({
                 { value: "IRRELEVANT", label: "Nicht erforderlich" },
               ]}
             />
+            <div className={clsx(columnWidthClasses.operator, "flex-shrink-0")} />
+            <div className="flex-grow pb-4 space-y-3">
+              <div>
+                <p className="">Kategorie</p>
+                {/* question 21 represents 'Kategorie', TODO getCategoryName(id) */}
+                {/* @ts-ignore */}
+                <p>{JSON.parse(response.data)["21"]}</p>
+              </div>
+            </div>
           </EditableSurveyResponseForm>
         )}
       </div>
