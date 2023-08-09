@@ -74,8 +74,6 @@ export const GeometryInputMap: React.FC<Props> = ({ subsection }) => {
     newLine && setValue("geometry", newLine.geometry.coordinates)
   }
 
-  // const startPointLine = (geometryType === "ROUTE" ? geometry[0] : geometry) as [number, number]
-
   return (
     <div className="rounded border p-3 text-gray-700 bg-gray-100">
       <h3 className="m-0 mb-3 flex items-center gap-1 text-sm font-medium">
@@ -124,16 +122,6 @@ export const GeometryInputMap: React.FC<Props> = ({ subsection }) => {
                   }}
                 />
               </Source>
-              {/* Highlight the start of a Geometry so help understand the direction */}
-              {/* {startPointLine && (
-                <Marker
-                  latitude={startPointLine[1]}
-                  longitude={startPointLine[0]}
-                  anchor="top-right"
-                >
-                  <div className="bg-white shadow text-xs px-1 rounded mt-8">Start der Linie<br/>soll an </div>
-                </Marker>
-              )} */}
             </>
           ) : (
             <Source type="geojson" data={point(geometry as AreaGeometry)}>
