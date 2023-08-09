@@ -1,8 +1,10 @@
+import { useRouterQuery } from "@blitzjs/next"
 import { SurveyResponse } from "@prisma/client"
 import clsx from "clsx"
-import EditableSurveyResponseListItem from "./EditableSurveyResponseListItem"
-import { useRouterQuery } from "@blitzjs/next"
+import { useRouter } from "next/router"
 import { useEffect, useRef } from "react"
+import EditableSurveyResponseForm from "./EditableSurveyResponseForm"
+import EditableSurveyResponseListItem from "./EditableSurveyResponseListItem"
 export { FORM_ERROR } from "src/core/components/forms"
 
 const columnWidthClasses = {
@@ -17,14 +19,32 @@ type Props = {
 
 const EditableSurveyResponsesList: React.FC<Props> = ({ responses }) => {
   const params = useRouterQuery()
-  const paramsResponseDetails = parseInt(String(params.responseDetails))
   const disclosureRefs = useRef<Array<HTMLDivElement | null>>([])
+
+  const paramsResponseDetails = parseInt(String(params.responseDetails))
+
   useEffect(() => {
     if (paramsResponseDetails) {
       const currentRef = disclosureRefs.current?.at(paramsResponseDetails)
       currentRef?.scrollIntoView({ behavior: "smooth" })
     }
   }, [paramsResponseDetails])
+
+  // type HandleSubmit = any // TODO
+  // const handleSubmit = async (values: HandleSubmit) => {
+  //   try {
+  //     const updated = await updateSurveyResponseMutation({
+  //       id: paramsResponseDetails,
+  //       ...values,
+  //     })
+  //     // https://blitzjs.com/docs/mutation-usage
+  //     // await setQueryData(updated)
+  //     await console.log("update success")
+  //   } catch (error: any) {
+  //     console.error(error)
+  //     return { [FORM_ERROR]: error }
+  //   }
+  // }
 
   return (
     <div className="not-prose overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
@@ -49,6 +69,7 @@ const EditableSurveyResponsesList: React.FC<Props> = ({ responses }) => {
             <EditableSurveyResponseListItem
               columnWidthClasses={columnWidthClasses}
               response={response}
+              isCurrentItem={response.id === paramsResponseDetails}
             />
           </div>
         ))}
