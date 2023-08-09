@@ -1,13 +1,15 @@
 import { useRouterQuery } from "@blitzjs/next"
-import { useMutation } from "@blitzjs/rpc"
-import { SurveyResponse } from "@prisma/client"
+import { useMutation, useQuery } from "@blitzjs/rpc"
+import { Operator, SurveyResponse } from "@prisma/client"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { useCallback } from "react"
 import { Disclosure } from "src/core/components/Disclosure"
-import { LabeledRadiobuttonGroup } from "src/core/components/forms"
+import { LabeledRadiobuttonGroup, LabeledTextareaField } from "src/core/components/forms"
 import updateSurveyResponse from "../mutations/updateSurveyResponse"
 import EditableSurveyResponseForm, { FORM_ERROR } from "./EditableSurveyResponseForm"
+import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
+import { useSlugs } from "src/core/hooks"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
@@ -27,7 +29,11 @@ const EditableSurveyResponseListItem: React.FC<Props> = ({
   isCurrentItem,
 }) => {
   const router = useRouter()
+  const params = useRouterQuery()
   const [updateSurveyResponseMutation] = useMutation(updateSurveyResponse)
+  const { projectSlug } = useSlugs()
+  const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
+
   type HandleSubmit = any // TODO
   const handleSubmit = useCallback(
     async (values: HandleSubmit) => {
@@ -35,6 +41,7 @@ const EditableSurveyResponseListItem: React.FC<Props> = ({
         const updated = await updateSurveyResponseMutation({
           id: response.id,
           ...values,
+          operatorId: Number(values.operatorId),
         })
         // TODO
         // await setQueryData(updated)
@@ -46,6 +53,7 @@ const EditableSurveyResponseListItem: React.FC<Props> = ({
     },
     [response, updateSurveyResponseMutation],
   )
+
   const handleOpen = () => {
     router.query.responseDetails = String(response.id)
     void router.push({ query: router.query }, undefined, { scroll: false })
@@ -54,7 +62,7 @@ const EditableSurveyResponseListItem: React.FC<Props> = ({
     delete router.query.responseDetails
     void router.push({ query: router.query }, undefined, { scroll: false })
   }
-  const params = useRouterQuery()
+
   const responseDetails = parseInt(String(params.responseDetails))
   const open = response.id === Number(responseDetails)
   if (open) console.log(`Item NO ${response.id} is OPEN`)
@@ -103,10 +111,10 @@ const EditableSurveyResponseListItem: React.FC<Props> = ({
         </>
       }
     >
-      <div className="w-full">
+      <div className="w-full text-sm">
         {isCurrentItem && (
           <EditableSurveyResponseForm
-            initialValues={{ ...response }}
+            initialValues={{ ...response, operatorId: String(response.operatorId) }}
             onChangeValues={handleSubmit}
             onSubmit={handleSubmit}
             className="flex"
@@ -124,12 +132,27 @@ const EditableSurveyResponseListItem: React.FC<Props> = ({
               ]}
             />
             <div className={clsx(columnWidthClasses.operator, "flex-shrink-0")} />
-            <div className="flex-grow pb-4 space-y-3">
+            <div className="flex-grow pb-4 space-y-5">
               <div>
-                <p className="">Kategorie</p>
-                {/* question 21 represents 'Kategorie', TODO getCategoryName(id) */}
-                {/* @ts-ignore */}
-                <p>{JSON.parse(response.data)["21"]}</p>
+                <p className="font-bold mb-3">Kategorie</p>
+                <span className="px-3 py-2 bg-gray-300 rounded">
+                  {/* question 21 represents 'Kategorie', TODO getCategoryName(id) */}
+                  {/* @ts-ignore */}
+                  {JSON.parse(response.data)["21"]}
+                </span>
+              </div>
+              <div>
+                <p className="font-bold mb-3">Baulastträger</p>
+                <LabeledRadiobuttonGroup
+                  scope={"operatorId"}
+                  items={operators.map((operator: Operator) => {
+                    return { value: String(operator.id), label: operator.title }
+                  })}
+                />
+              </div>
+              <div>
+                <p className="font-bold mb-3">Interne Notiz</p>
+                <LabeledTextareaField name={"note"} label={""} />
               </div>
             </div>
           </EditableSurveyResponseForm>
