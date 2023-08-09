@@ -43,7 +43,7 @@ export const GeometryInput: React.FC = () => {
           { value: "ROUTE", label: "Regelführung (RF) – Linie" },
           { value: "AREA", label: "Sonderführung (SF) – Punkt" },
         ]}
-        classNameItemWrapper="flex gap-5 space-y-0 items-center"
+        classNameItemWrapper="flex gap-5 !space-y-0 items-center"
       />
 
       {schemaResult.success && <GeometryInputMap subsection={subsection} />}
