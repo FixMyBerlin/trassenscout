@@ -37,6 +37,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   type HandleSubmit = any // TODO
   const handleSubmit = useCallback(
     async (values: HandleSubmit) => {
+      // console.log(values.topics)
       try {
         const updated = await updateSurveyResponseMutation({
           id: response.id,
@@ -46,6 +47,15 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
         // TODO
         // await setQueryData(updated)
         await console.log(`successfully updated ${response.id}`)
+        // Create a membership for the selected user
+        // if (values.) {
+        //   try {
+        //     await createMembershipMutation({ projectId: project.id, userId: project.managerId })
+        //   } catch (error: any) {
+        //     console.error(error)
+        //     return { [FORM_ERROR]: error }
+        //   }
+        // }
       } catch (error: any) {
         console.error(error)
         return { [FORM_ERROR]: error }
