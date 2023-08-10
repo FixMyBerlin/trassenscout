@@ -56,6 +56,7 @@ const NewSubsubsection = () => {
       />
 
       <SubsubsectionForm
+        initialValues={{ type: "AREA" }}
         className="mt-10"
         submitText="Erstellen"
         schema={SubsubsectionSchema.omit({ subsectionId: true })}
