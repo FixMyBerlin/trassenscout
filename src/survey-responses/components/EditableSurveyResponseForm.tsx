@@ -1,55 +1,69 @@
-import { zodResolver } from "@hookform/resolvers/zod"
+import { Operator, SurveyResponse } from "@prisma/client"
 import clsx from "clsx"
-import { PropsWithoutRef, ReactNode, useEffect } from "react"
-import { FormProvider, useForm, UseFormProps } from "react-hook-form"
-import { z } from "zod"
+import { LabeledRadiobuttonGroup, LabeledTextareaField } from "src/core/components/forms"
+import EditableSurveyResponseFormWrapper from "./EditableSurveyResponseFormWrapper"
+import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
+import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
+import { useQuery } from "@blitzjs/rpc"
+import { useSlugs } from "src/core/hooks"
+export { FORM_ERROR } from "src/core/components/forms"
 
-export interface FormProps<S extends z.ZodType<any, any>>
-  extends Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> {
-  children: ReactNode
-  schema?: S
-  onSubmit: (values: z.infer<S>) => void
-  onChangeValues: (values: any) => void
-  initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
+type Props = {
+  columnWidthClasses: EditableSurveyResponseListItemProps["columnWidthClasses"]
+  handleSubmit: any
+  response: SurveyResponse
 }
-
-export const FORM_ERROR = "FORM_ERROR"
-
-export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
-  children,
-  schema,
-  initialValues,
-  onSubmit,
-  onChangeValues,
-  className,
-  ...props
-}: FormProps<S>) {
-  const ctx = useForm<z.infer<S>>({
-    mode: "onBlur",
-    resolver: schema ? zodResolver(schema) : undefined,
-    defaultValues: initialValues,
-  })
-  useEffect(() => {
-    if (onChangeValues) {
-      onChangeValues(ctx.getValues())
-    }
-  }, [onChangeValues, ctx])
-
-  if (onChangeValues) props.onChange = () => onChangeValues(ctx.getValues())
-
+export const EditableSurveyResponseForm: React.FC<Props> = ({
+  response,
+  columnWidthClasses,
+  handleSubmit,
+}) => {
+  const { projectSlug } = useSlugs()
+  const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   return (
-    <FormProvider {...ctx}>
-      <form
-        className={className}
-        onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
-          await ctx.handleSubmit(async (values) => await onSubmit(values))()
-          e.preventDefault()
-        }}
-        {...props}
-      >
-        {children}
-      </form>
-    </FormProvider>
+    <EditableSurveyResponseFormWrapper
+      initialValues={{ ...response, operatorId: String(response.operatorId) }}
+      onChangeValues={handleSubmit}
+      onSubmit={handleSubmit}
+      className="flex"
+    >
+      <div className={clsx(columnWidthClasses.id, "flex-shrink-0")} />
+      <LabeledRadiobuttonGroup
+        classNameItemWrapper={clsx("flex-shrink-0", columnWidthClasses.status)}
+        scope={"status"}
+        items={[
+          { value: "PENDING", label: "Ausstehend" },
+          { value: "ASSIGNED", label: "Zugeordnet" },
+          { value: "DONE_PLANING", label: "Erledigt (Planung)" },
+          { value: "DONE_FAQ", label: "Erledigt (FAQ)" },
+          { value: "IRRELEVANT", label: "Nicht erforderlich" },
+        ]}
+      />
+      <div className={clsx(columnWidthClasses.operator, "flex-shrink-0")} />
+      <div className="flex-grow pb-4 space-y-5">
+        <div>
+          <p className="font-bold mb-3">Kategorie</p>
+          <span className="px-3 py-2 bg-gray-300 rounded">
+            {/* question 21 represents 'Kategorie', TODO getCategoryName(id) */}
+            {/* @ts-ignore */}
+            {JSON.parse(response.data)["21"]}
+          </span>
+        </div>
+        <div>
+          <p className="font-bold mb-3">Baulastträger</p>
+          <LabeledRadiobuttonGroup
+            scope={"operatorId"}
+            items={operators.map((operator: Operator) => {
+              return { value: String(operator.id), label: operator.title }
+            })}
+          />
+        </div>
+        <div>
+          <p className="font-bold mb-3">Interne Notiz</p>
+          <LabeledTextareaField name={"note"} label={""} />
+        </div>
+      </div>
+    </EditableSurveyResponseFormWrapper>
   )
 }
 

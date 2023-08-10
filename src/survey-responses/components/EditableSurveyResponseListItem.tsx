@@ -7,12 +7,13 @@ import { useCallback } from "react"
 import { Disclosure } from "src/core/components/Disclosure"
 import { LabeledRadiobuttonGroup, LabeledTextareaField } from "src/core/components/forms"
 import updateSurveyResponse from "../mutations/updateSurveyResponse"
-import EditableSurveyResponseForm, { FORM_ERROR } from "./EditableSurveyResponseForm"
+import EditableSurveyResponseFormWrapper, { FORM_ERROR } from "./EditableSurveyResponseFormWrapper"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 import { useSlugs } from "src/core/hooks"
+import EditableSurveyResponseForm from "./EditableSurveyResponseForm"
 export { FORM_ERROR } from "src/core/components/forms"
 
-type Props = {
+export type EditableSurveyResponseListItemProps = {
   response: SurveyResponse
   className?: String
   columnWidthClasses: {
@@ -23,7 +24,7 @@ type Props = {
   isCurrentItem?: boolean
 }
 
-const EditableSurveyResponseListItem: React.FC<Props> = ({
+const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemProps> = ({
   response,
   columnWidthClasses,
   isCurrentItem,
@@ -32,7 +33,6 @@ const EditableSurveyResponseListItem: React.FC<Props> = ({
   const params = useRouterQuery()
   const [updateSurveyResponseMutation] = useMutation(updateSurveyResponse)
   const { projectSlug } = useSlugs()
-  const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
 
   type HandleSubmit = any // TODO
   const handleSubmit = useCallback(
@@ -114,48 +114,10 @@ const EditableSurveyResponseListItem: React.FC<Props> = ({
       <div className="w-full text-sm">
         {isCurrentItem && (
           <EditableSurveyResponseForm
-            initialValues={{ ...response, operatorId: String(response.operatorId) }}
-            onChangeValues={handleSubmit}
-            onSubmit={handleSubmit}
-            className="flex"
-          >
-            <div className={clsx(columnWidthClasses.id, "flex-shrink-0")} />
-            <LabeledRadiobuttonGroup
-              classNameItemWrapper={clsx("flex-shrink-0", columnWidthClasses.status)}
-              scope={"status"}
-              items={[
-                { value: "PENDING", label: "Ausstehend" },
-                { value: "ASSIGNED", label: "Zugeordnet" },
-                { value: "DONE_PLANING", label: "Erledigt (Planung)" },
-                { value: "DONE_FAQ", label: "Erledigt (FAQ)" },
-                { value: "IRRELEVANT", label: "Nicht erforderlich" },
-              ]}
-            />
-            <div className={clsx(columnWidthClasses.operator, "flex-shrink-0")} />
-            <div className="flex-grow pb-4 space-y-5">
-              <div>
-                <p className="font-bold mb-3">Kategorie</p>
-                <span className="px-3 py-2 bg-gray-300 rounded">
-                  {/* question 21 represents 'Kategorie', TODO getCategoryName(id) */}
-                  {/* @ts-ignore */}
-                  {JSON.parse(response.data)["21"]}
-                </span>
-              </div>
-              <div>
-                <p className="font-bold mb-3">Baulastträger</p>
-                <LabeledRadiobuttonGroup
-                  scope={"operatorId"}
-                  items={operators.map((operator: Operator) => {
-                    return { value: String(operator.id), label: operator.title }
-                  })}
-                />
-              </div>
-              <div>
-                <p className="font-bold mb-3">Interne Notiz</p>
-                <LabeledTextareaField name={"note"} label={""} />
-              </div>
-            </div>
-          </EditableSurveyResponseForm>
+            response={response}
+            columnWidthClasses={columnWidthClasses}
+            handleSubmit={handleSubmit}
+          />
         )}
       </div>
     </Disclosure>
