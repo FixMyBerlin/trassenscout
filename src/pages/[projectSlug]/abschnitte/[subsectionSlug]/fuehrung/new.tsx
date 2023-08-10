@@ -23,12 +23,14 @@ const NewSubsubsection = () => {
     subsectionSlug: subsectionSlug!,
   })
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
-
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
+    console.log(values)
     try {
       const subsubsection = await createSubsubsectionMutation({
         ...values,
+        // The value="" becomes "0" which we translate to NULL
+        managerId: values.managerId === 0 ? null : values.managerId,
         subsectionId: subsection!.id,
       })
       await router.push(
