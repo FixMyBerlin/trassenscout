@@ -41,7 +41,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
         const updated = await updateSurveyResponseMutation({
           id: response.id,
           ...values,
-          operatorId: Number(values.operatorId),
+          operatorId: values.operatorId === 0 ? null : values.operatorId,
         })
         // TODO
         // await setQueryData(updated)

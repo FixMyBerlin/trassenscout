@@ -22,7 +22,7 @@ export const EditableSurveyResponseForm: React.FC<Props> = ({
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   return (
     <EditableSurveyResponseFormWrapper
-      initialValues={{ ...response, operatorId: String(response.operatorId) }}
+      initialValues={{ ...response }}
       onChangeValues={handleSubmit}
       onSubmit={handleSubmit}
       className="flex"
