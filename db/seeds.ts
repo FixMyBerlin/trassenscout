@@ -8,6 +8,7 @@ import seedStakeholdernotes from "./seeds/stakeholdernotes"
 import seedSubsections from "./seeds/subsections"
 import seedUsers from "./seeds/users"
 import seedSurveys from "./seeds/surveys"
+import seedTopics from "./seeds/topics"
 
 /*
  * This seed function is executed when you run `blitz db seed`.
@@ -23,6 +24,7 @@ const seed = async () => {
   await seedContacts()
   await seedFiles()
   await seedSurveys()
+  await seedTopics()
 }
 
 export default seed
