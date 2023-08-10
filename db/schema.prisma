@@ -110,6 +110,7 @@ model Project {
   manager         User?    @relation(fields: [managerId], references: [id])
   managerId       Int?
 
+  topics          Topic[]
   subsections     Subsection[]
   calendarEntries CalendarEntry[]
   contacts        Contact[]
@@ -331,6 +332,8 @@ model SurveyResponse {
 model Topic {
   id               Int          @id @default(autoincrement())
   title            String
+  project          Project @relation(fields: [projectId], references: [id])
+  projectId        Int
   surveyResponses  TopicsOnSurveyResponses[]
 }
 
