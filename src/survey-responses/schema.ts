@@ -5,7 +5,6 @@ export const SurveyResponseSchema = z.object({
   status: z.enum(["PENDING", "ASSIGNED", "DONE_FAQ", "DONE_PLANING", "IRRELEVANT"]),
   surveySessionId: z.coerce.number(),
   surveyId: z.coerce.number(),
-  topics: z.any().nullish(),
   note: z.string().nullish(),
   operatorId: z.coerce.number().nullish(),
 })
