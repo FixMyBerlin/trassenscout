@@ -61,32 +61,40 @@ export default function FormTest() {
         />
         <LabeledTextareaField name="testTextarea" label="Test Textarea" placeholder="Placeholder" />
         <LabeledCheckboxGroup
-          scope="regular"
+          scope="regular-check"
           items={["item1", "item2", "item3"].map((item) => ({
-            name: `checkbox${item}regular`,
             value: `test${item}value`,
             label: `Test Checkbox ${item}`,
           }))}
         />
         <LabeledCheckboxGroup
           label="LabeledCheckboxGroup with help"
-          scope="help"
+          scope="help-check"
           items={["item1", "item2", "item3"].map((item) => ({
-            name: `checkbox${item}help`,
             value: `test${item}value`,
             label: `Test Checkbox ${item}`,
             help: `Help text ${item}`,
           }))}
         />
+        <LabeledCheckboxGroup
+          label="LabeledCheckboxGroup Readonly"
+          scope="readonly-check"
+          items={["item1"].map((item) => ({
+            value: `test${item}value`,
+            label: `Test Checkbox ${item}`,
+            readonly: true,
+          }))}
+        />
+        <hr />
         <LabeledRadiobuttonGroup
-          scope="regular"
+          scope="regular-radio"
           items={["item1", "item2", "item3"].map((item) => ({
             value: `test${item}value`,
             label: `Test Radiobutton ${item}`,
           }))}
         />
         <LabeledRadiobuttonGroup
-          scope="help"
+          scope="help-radio"
           label="LabeledRadiobuttonGroup with help in columns"
           classNameItemWrapper="columns-2"
           items={["item1", "item2", "item3"].map((item) => ({
@@ -95,6 +103,16 @@ export default function FormTest() {
             help: `Help text ${item}`,
           }))}
         />
+        <LabeledRadiobuttonGroup
+          label="LabeledRadiobuttonGroup Readonly"
+          scope="readonly-radio"
+          items={["item1"].map((item) => ({
+            value: `test${item}value`,
+            label: `Test Radiobutton ${item}`,
+            readonly: true,
+          }))}
+        />
+        <hr />
         <LabeledSelect
           name="testSelect"
           label="Test Select"
