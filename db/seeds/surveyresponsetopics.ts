@@ -1,7 +1,7 @@
-import db, { Topic } from "../index"
+import db, { SurveyResponseTopic } from "../index"
 
-const seedTopics = async () => {
-  const seedTopics: Omit<Topic, "id" | "createdAt" | "updatedAt">[] = [
+const seedSurveyResponseTopics = async () => {
+  const seedTopics: Omit<SurveyResponseTopic, "id" | "createdAt" | "updatedAt">[] = [
     {
       title: "Grünflächen",
       projectId: 1,
@@ -27,9 +27,9 @@ const seedTopics = async () => {
   for (let i = 0; i < seedTopics.length; i++) {
     const data = seedTopics[i]
     if (data) {
-      await db.topic.create({ data })
+      await db.surveyResponseTopic.create({ data })
     }
   }
 }
 
-export default seedTopics
+export default seedSurveyResponseTopics

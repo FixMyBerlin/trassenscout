@@ -11,7 +11,7 @@ import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseLis
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 import { useQuery } from "@blitzjs/rpc"
 import { useSlugs } from "src/core/hooks"
-import getTopicsByProject from "src/topics/queries/getTopicsByProject"
+import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
@@ -26,7 +26,9 @@ export const EditableSurveyResponseForm: React.FC<Props> = ({
 }) => {
   const { projectSlug } = useSlugs()
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
-  const [{ topics }] = useQuery(getTopicsByProject, {})
+  const [{ surveyResponseTopics }] = useQuery(getSurveyResponseTopicsByProject, {
+    projectSlug: projectSlug!,
+  })
   return (
     <EditableSurveyResponseFormWrapper
       initialValues={{ ...response }}
@@ -67,16 +69,16 @@ export const EditableSurveyResponseForm: React.FC<Props> = ({
         </div>
         <div>
           <p className="font-bold mb-3">Themenzuordnung (für FAQ)</p>
-          {/* <LabeledCheckboxGroup
-            scope="topics"
-            items={topics.map((t) => {
+          <LabeledCheckboxGroup
+            scope="surveyResponseTopics"
+            items={surveyResponseTopics.map((t) => {
               return {
                 value: String(t.id),
                 name: String(t.id),
                 label: t.title,
               }
             })}
-          /> */}
+          />
 
           {/* <LabeledTextField name={""} label={""} /> */}
         </div>

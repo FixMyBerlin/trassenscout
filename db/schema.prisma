@@ -110,7 +110,7 @@ model Project {
   manager         User?    @relation(fields: [managerId], references: [id])
   managerId       Int?
 
-  topics          Topic[]
+  surveyResponseTopics          SurveyResponseTopic[]
   subsections     Subsection[]
   calendarEntries CalendarEntry[]
   contacts        Contact[]
@@ -322,30 +322,30 @@ model SurveyResponse {
   surveySessionId Int
   surveyId        Int // surveyParts as specified by the survey JSON files
   data            String
-  topics          TopicsOnSurveyResponses[]
+  surveyResponseTopics          SurveyResponseTopicsOnSurveyResponses[]
   status          SurveyResponseStatusEnum? @default(PENDING)
   note            String?
   operatorId      Int?
   operator        Operator? @relation(fields: [operatorId], references: [id])
 }
 
-model Topic {
+model SurveyResponseTopic {
   id               Int        @id @default(autoincrement())
   title            String
   project          Project    @relation(fields: [projectId], references: [id])
   projectId        Int
-  surveyResponses  TopicsOnSurveyResponses[]
+  surveyResponses  SurveyResponseTopicsOnSurveyResponses[]
 
   @@unique([title, projectId ])
 }
 
-model TopicsOnSurveyResponses{
-  surveyResponse       SurveyResponse     @relation(fields: [surveyResponseId], references: [id])
-  surveyResponseId     Int
-  topic                Topic @relation(fields: [topicId], references: [id])
-  topicId              Int
+model SurveyResponseTopicsOnSurveyResponses{
+  surveyResponse             SurveyResponse     @relation(fields: [surveyResponseId], references: [id])
+  surveyResponseId           Int
+  surveyResponseTopic        SurveyResponseTopic @relation(fields: [surveyResponseTopicId], references: [id])
+  surveyResponseTopicId      Int
 
-  @@id([surveyResponseId, topicId])
+  @@id([surveyResponseId, surveyResponseTopicId])
 }
 
 enum SurveyResponseStatusEnum {
