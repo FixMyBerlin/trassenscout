@@ -19,6 +19,7 @@ import { FilePreview } from "src/files/components/FilePreview"
 import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { getFullname } from "src/users/utils"
+import { mapillaryLink } from "./utils/mapillaryLink"
 
 type Props = {
   subsubsection: SubsubsectionWithPosition
@@ -32,6 +33,8 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
     projectSlug: projectSlug!,
     where: { subsubsectionId: subsubsection.id },
   })
+
+  const mapillaryHref = mapillaryLink(subsubsection)
 
   return (
     <section className="overlflow-y-scroll h-full w-[55rem] overflow-x-hidden rounded-md border border-gray-400/10 bg-white p-3 drop-shadow-md">
@@ -168,16 +171,22 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
         </div>
       </section>
 
-      {subsubsection.mapillaryKey && (
-        <section className="mt-10">
-          <H2>Straßenansicht (Mapillary)</H2>
+      <section className="mt-10">
+        <H2>Straßenansicht (Mapillary)</H2>
+        {subsubsection.mapillaryKey ? (
           <iframe
             title="Mapillary Image Preview"
             src={`https://www.mapillary.com/embed?image_key=${subsubsection.mapillaryKey}&style=photo`}
             className="mt-2 aspect-video w-full"
           />
-        </section>
-      )}
+        ) : (
+          mapillaryHref && (
+            <Link blank href={mapillaryHref} className="block mt-3">
+              Mapillary öffnen
+            </Link>
+          )
+        )}
+      </section>
 
       <SuperAdminLogData data={{ subsubsection, files }} />
     </section>

@@ -1,5 +1,5 @@
 import { XMarkIcon } from "@heroicons/react/20/solid"
-import Image from "next/legacy/image"
+import Image from "next/image"
 import { ProgressBar } from "src/participation/components/layout/ProgressBar"
 import { ParticipationLink } from "../core/links/ParticipationLink"
 
@@ -13,7 +13,7 @@ export const HeaderParticipation: React.FC<Props> = ({ logoSrc }) => {
       <div className="mx-auto flex items-center justify-between px-2 text-gray-500 sm:px-6 lg:pl-5 lg:pr-2.5">
         <div className="flex h-full items-start justify-start">
           <span className="relative h-12 w-12">
-            <Image className="object-contain" layout="fill" src={logoSrc} alt="Projektlogo" />
+            <Image className="object-contain" fill src={logoSrc} alt="Projektlogo" />
           </span>
           <span className="py-5 pl-5">Beteiligung</span>
         </div>

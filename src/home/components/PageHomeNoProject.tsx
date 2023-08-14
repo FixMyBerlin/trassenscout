@@ -1,10 +1,8 @@
-import Image from "next/legacy/image"
+import Image from "next/image"
 import { LinkMail } from "src/core/components/links"
 import { H1 } from "src/core/components/text/Headings"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import Logo from "./../../core/layouts/Navigation/assets/trassenscout-logo-without-text.svg"
-
-const ITEMS_PER_PAGE = 100
 
 const PageHomeNoProject = () => {
   return (

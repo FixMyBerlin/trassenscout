@@ -36,11 +36,8 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
     lines?: FeatureCollection<
       LineString,
       {
-        /** @desc  */
-        color: string
-        radius?: number
-        "border-color"?: string
-        "border-width"?: number
+        color?: string
+        width?: number
         opacity?: number
       }
     >
@@ -174,11 +171,11 @@ export const BaseMap: React.FC<BaseMapProps> = ({
         >
           <NavigationControl showCompass={false} />
           <ScaleControl />
-          {children}
           {featuresSource}
           {selectableLineFeaturesSource}
           {selectablePointFeaturesSource}
           {dotSource}
+          {children}
         </Map>
         <BackgroundSwitcher
           className="absolute left-4 top-4"

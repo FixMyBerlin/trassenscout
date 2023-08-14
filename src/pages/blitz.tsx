@@ -1,6 +1,5 @@
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
-import Image from "next/legacy/image"
 import Link from "next/link"
 import { Suspense } from "react"
 import logout from "src/auth/mutations/logout"

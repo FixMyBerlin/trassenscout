@@ -7,6 +7,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
+import { ImplicitLabelType } from "recharts/types/component/Label"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
@@ -16,20 +17,15 @@ type Props = {
   }[]
 }
 
-const CustomizedLabel = (payload: any) => {
-  // console.log(payload)
-  const x = payload.x ?? 0
-  const y = payload.y ?? 0
+const CustomizedLabel: ImplicitLabelType = (props) => {
+  const x = props.x ?? 0
+  const y = props.y ?? 0
   return (
-    <svg
-      style={{ backgroundColor: "#880808" }}
-      fill="currentColor"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg xmlns="http://www.w3.org/2000/svg">
       <switch>
         <foreignObject x={x + 4} y={y - 96} width="70vw" height="150">
           <div className="flex flex-col justify-end h-24 leading-tight">
-            <p className="text-sm"> {payload.name}</p>
+            <p className="text-sm"> {props.name}</p>
           </div>
         </foreignObject>
       </switch>
@@ -63,6 +59,8 @@ const VerticalBartChart: React.FC<Props> = ({ data }) => {
             fill="#EAB308"
             dataKey="value"
             label={<CustomizedLabel />}
+            // disabling the animation: quick fix for labels/labellist that sometimes are not shown
+            isAnimationActive={false}
           >
             {/* <LabelList dataKey="key" position="top" /> */}
             <LabelList dataKey="value" position="right" />

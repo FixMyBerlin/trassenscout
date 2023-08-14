@@ -32,3 +32,5 @@ export const SubsubsectionSchema = z.object({
 })
 
 export type TSubsubsectionSchema = Prettify<z.infer<typeof SubsubsectionSchema>>
+
+export const SubsubsectionSchemaForm = SubsubsectionSchema.merge(z.object({ order: z.string() }))

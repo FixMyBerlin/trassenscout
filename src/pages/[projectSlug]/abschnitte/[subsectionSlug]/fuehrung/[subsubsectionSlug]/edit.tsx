@@ -10,12 +10,11 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { seoEditTitleSlug } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import getProjectUsers from "src/memberships/queries/getProjectUsers"
 import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
 import deleteSubsubsection from "src/subsubsections/mutations/deleteSubsubsection"
 import updateSubsubsection from "src/subsubsections/mutations/updateSubsubsection"
 import getSubsubsection from "src/subsubsections/queries/getSubsubsection"
-import { SubsubsectionSchema } from "src/subsubsections/schema"
+import { SubsubsectionSchemaForm } from "src/subsubsections/schema"
 
 const EditSubsubsection = () => {
   const router = useRouter()
@@ -32,7 +31,6 @@ const EditSubsubsection = () => {
       staleTime: Infinity,
     },
   )
-  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
   const [updateSubsubsectionMutation] = useMutation(updateSubsubsection)
 
   type HandleSubmit = any // TODO
@@ -79,10 +77,9 @@ const EditSubsubsection = () => {
       <SubsubsectionForm
         className="mt-10"
         submitText="Speichern"
-        schema={SubsubsectionSchema}
-        initialValues={subsubsection}
+        schema={SubsubsectionSchemaForm}
+        initialValues={{ ...subsubsection, order: String(subsubsection.order) }}
         onSubmit={handleSubmit}
-        users={users}
       />
 
       <hr className="my-5" />

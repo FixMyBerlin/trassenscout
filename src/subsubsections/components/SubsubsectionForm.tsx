@@ -1,21 +1,55 @@
+import { useQuery } from "@blitzjs/rpc"
 import {
   Form,
   FormProps,
+  LabeledRadiobuttonGroup,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
 } from "src/core/components/forms"
-import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryField"
 import { LabeledRadiobuttonGroupLabelPos } from "src/core/components/forms/LabeledRadiobuttonGroupLabelPos"
-import { quote } from "src/core/components/text"
-import { getUserSelectOptions, UserSelectOptions } from "src/users/utils"
+import { quote, shortTitle } from "src/core/components/text"
+import { useSlugs } from "src/core/hooks"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
+import { getUserSelectOptions } from "src/users/utils"
 import { z } from "zod"
+import getSubsubsections from "../queries/getSubsubsections"
+import { GeometryInput } from "./GeometryInput/GeometryInput"
 export { FORM_ERROR } from "src/core/components/forms"
+import { SubsubsectionSchemaForm } from "src/subsubsections/schema"
 
-export function SubsubsectionForm<S extends z.ZodType<any, any>>(
-  props: FormProps<S> & { users: UserSelectOptions },
-) {
-  const { users } = props
+export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+  const { projectSlug } = useSlugs()
+  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
+  const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug: projectSlug! })
+
+  const ordersWithPlaceholder = () => {
+    const maxOrder = Math.max(...subsubsections.map((s) => s.order)) + 5
+    let orders: { order: string; label: string; readonly: boolean }[] = []
+
+    for (let i = 0; i <= maxOrder; i++) {
+      const subsubsection = subsubsections.find((sub) => sub.order === i)
+      // @ts-expect-error no idea wo to get the types nice…
+      const current = subsubsection && subsubsection.id === props.initialValues?.id
+      orders.push({
+        order: String(i),
+        label: subsubsection
+          ? `Position ${i}: ${shortTitle(subsubsection.slug)} ${
+              current ? "(die Aktuelle Führung)" : ""
+            }`
+          : `Position ${i}`,
+        readonly: Boolean(subsubsection && !current),
+      })
+    }
+    orders.push({
+      order: String(maxOrder + 1),
+      label: `Position ${maxOrder + 1}`,
+      readonly: false,
+    })
+
+    return orders
+  }
+  const orders = ordersWithPlaceholder()
 
   return (
     <Form<S> {...props}>
@@ -28,25 +62,16 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(
         )}. Primäre Auszeichnung der Führung. Wird immer in Großschreibung angezeigt aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
       />
       <LabeledTextField type="text" name="subTitle" label="Title" optional />
-      <LabeledTextField
-        type="number"
-        step="1"
-        name="order"
-        label="Reihenfolge Führung"
-        help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie (mit Unterbrechungen) mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung. Sonderführungen bitte zwischen die Regelführungen einsortieren."
+
+      <LabeledRadiobuttonGroup
+        label="Anzeige-Reihenfolge der Führungen"
+        scope="order"
+        items={orders.map(({ order, label, readonly }) => {
+          return { value: order, label, readonly }
+        })}
       />
-      <LabeledSelect
-        name="type"
-        label="Führungsform"
-        options={[
-          ["ROUTE", "Regelführung (RF) – Linie"],
-          ["AREA", "Sonderführung (SF) – Punkt"],
-        ]}
-      />
-      <LabeledGeometryField
-        name="geometry"
-        label="Geometry der Achse (`LineString` oder `Point`)"
-      />
+
+      <GeometryInput />
       <LabeledRadiobuttonGroupLabelPos />
       <LabeledTextField
         type="text"

@@ -1,12 +1,11 @@
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { clsx } from "clsx"
-import Image from "next/legacy/image"
+import Image from "next/image"
 import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
 import { getImageSrc } from "src/core/utils/getImageSrc"
 import getProject from "src/projects/queries/getProject"
-import svgLogoTrassenscout from "../assets/trassenscout-logo-without-text.svg"
 
 type Props = {
   className?: string
@@ -26,12 +25,7 @@ export const ProjectLogoWithQuery: React.FC<Props> = ({ className, size = "5" })
 
   return (
     <div className={clsx(className, "relative flex-none", sizeClasses[size])}>
-      <Image
-        className="object-contain"
-        layout="fill"
-        src={getImageSrc(project.logoSrc)}
-        alt="Projektlogo"
-      />
+      <Image className="object-contain" fill src={getImageSrc(project.logoSrc)} alt="Projektlogo" />
     </div>
   )
 }

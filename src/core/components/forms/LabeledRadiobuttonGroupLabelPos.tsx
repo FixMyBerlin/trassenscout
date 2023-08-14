@@ -11,7 +11,6 @@ export const LabeledRadiobuttonGroupLabelPos: React.FC = () => {
       items={[
         {
           value: "top",
-          name: "top",
           label: (
             <span className="flex items-center gap-1.5">
               <TagIcon className="h-5 w-5 rotate-[225deg]" /> Pfeil unten
@@ -20,7 +19,6 @@ export const LabeledRadiobuttonGroupLabelPos: React.FC = () => {
         },
         {
           value: "topRight",
-          name: "topRight",
           label: (
             <span className="flex items-center gap-1.5">
               <TagIcon className="h-5 w-5 rotate-[265deg]" /> Pfeil unten links
@@ -29,7 +27,6 @@ export const LabeledRadiobuttonGroupLabelPos: React.FC = () => {
         },
         {
           value: "right",
-          name: "right",
           label: (
             <span className="flex items-center gap-1.5">
               <TagIcon className="h-5 w-5 rotate-[315deg]" /> Pfeil links
@@ -38,7 +35,6 @@ export const LabeledRadiobuttonGroupLabelPos: React.FC = () => {
         },
         {
           value: "bottomRight",
-          name: "bottomRight",
           label: (
             <span className="flex items-center gap-1.5">
               <TagIcon className="h-5 w-5 rotate-[365deg]" /> Pfeil oben links
@@ -47,7 +43,6 @@ export const LabeledRadiobuttonGroupLabelPos: React.FC = () => {
         },
         {
           value: "bottom",
-          name: "bottom",
           label: (
             <span className="flex items-center gap-1.5">
               <TagIcon className="h-5 w-5 rotate-[45deg]" /> Pfeil oben
@@ -56,7 +51,6 @@ export const LabeledRadiobuttonGroupLabelPos: React.FC = () => {
         },
         {
           value: "bottomLeft",
-          name: "bottomLeft",
           label: (
             <span className="flex items-center gap-1.5">
               <TagIcon className="h-5 w-5 rotate-[95deg]" /> Pfeil oben rechts
@@ -65,7 +59,6 @@ export const LabeledRadiobuttonGroupLabelPos: React.FC = () => {
         },
         {
           value: "left",
-          name: "left",
           label: (
             <span className="flex items-center gap-1.5">
               <TagIcon className="h-5 w-5 rotate-[135deg]" /> Pfeil rechts
@@ -74,7 +67,6 @@ export const LabeledRadiobuttonGroupLabelPos: React.FC = () => {
         },
         {
           value: "topLeft",
-          name: "topLeft",
           label: (
             <span className="flex items-center gap-1.5">
               <TagIcon className="h-5 w-5 rotate-[175deg]" /> Pfeil unten rechts

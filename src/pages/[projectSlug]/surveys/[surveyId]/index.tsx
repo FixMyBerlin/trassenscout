@@ -34,7 +34,7 @@ export const Survey = () => {
   const generalSurveyInformation: Array<Record<string, Record<string, number | string>>> = [
     {
       firstRow: {
-        "Interesse an Updates": survey.interestedParticipants || "(unbekannt)",
+        "Interesse an Updates": survey.interestedParticipants || "k. A.",
         Teilnehmer: surveySessions.length,
         "Zusätzliches Feedback": surveyResponsesFeedbackPart.length,
         "Feedback mit Ortsangabe": surveyResponsesFeedbackPartWithLocation.length,
@@ -50,9 +50,9 @@ export const Survey = () => {
         ),
         [`${isSurveyFuture ? "Startet am" : "Gestartet am"}`]: survey.startDate
           ? survey.startDate.toLocaleDateString()
-          : "(unbekannt)",
+          : "k. A.",
         [`${isSurveyPast ? "Endete am" : "Endet am"}`]:
-          survey.endDate?.toLocaleDateString() || "(unbekannt)",
+          survey.endDate?.toLocaleDateString() || "k. A.",
       },
     },
   ]
