@@ -6,10 +6,8 @@ import { useFormContext } from "react-hook-form"
 export interface LabeledRadiobuttonProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
   /** Radiobutton scope */
   scope: string
-  /** Field value */
+  /**  The field value must be a string. If the value is a number in the DB, it needs to be parsed to a string to be used as `initialValues`. When passed to the mutation, the value needs to be parsed back to a number using `parseInt`. This requires corresponding modifications to the ZOD schemas. */
   value: string
-  /** Optional field `name` and `id`; Default is `value` */
-  name?: string
   /** Field label */
   label: string | React.ReactNode
   /** Optional help text below field label */
@@ -42,8 +40,10 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
             type="radio"
             disabled={isSubmitting || readonly}
             value={value}
-            {...register(scope)}
-            id={name || value}
+            {
+              ...register(scope) /* this adds the name property */
+            }
+            id={value}
             {...props}
             className={clsx(
               "h-4 w-4",
@@ -58,7 +58,7 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
         </div>
         <label
           {...labelProps}
-          htmlFor={name || value}
+          htmlFor={value}
           className={clsx(
             "ml-3 block cursor-pointer text-sm font-medium",
             readonly ? "text-gray-400" : "text-gray-700 hover:text-gray-800",
@@ -73,7 +73,7 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
               </p>
             )}
             errors={errors}
-            name={name || value}
+            name={value}
           />
         </label>
       </div>

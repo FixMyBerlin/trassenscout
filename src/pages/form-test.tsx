@@ -81,7 +81,6 @@ export default function FormTest() {
         <LabeledRadiobuttonGroup
           scope="regular"
           items={["item1", "item2", "item3"].map((item) => ({
-            name: `radio${item}regular`,
             value: `test${item}value`,
             label: `Test Radiobutton ${item}`,
           }))}
@@ -91,7 +90,6 @@ export default function FormTest() {
           label="LabeledRadiobuttonGroup with help in columns"
           classNameItemWrapper="columns-2"
           items={["item1", "item2", "item3"].map((item) => ({
-            name: `radio${item}help`,
             value: `test${item}value`,
             label: `Test Radiobutton ${item}`,
             help: `Help text ${item}`,
