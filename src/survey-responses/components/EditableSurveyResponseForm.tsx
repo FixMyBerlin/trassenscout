@@ -12,6 +12,7 @@ import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 import { useQuery } from "@blitzjs/rpc"
 import { useSlugs } from "src/core/hooks"
 import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
+import getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse from "src/survey-response-topics-on-survey-responses/queries/getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
@@ -29,10 +30,22 @@ export const EditableSurveyResponseForm: React.FC<Props> = ({
   const [{ surveyResponseTopics }] = useQuery(getSurveyResponseTopicsByProject, {
     projectSlug: projectSlug!,
   })
+  const [{ surveyResponseTopicsOnSurveyResponses }] = useQuery(
+    getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse,
+    {
+      surveyResponseId: response.id,
+    },
+  )
   return (
     <EditableSurveyResponseFormWrapper
-      initialValues={{ ...response }}
-      onChangeValues={handleSubmit}
+      initialValues={{
+        ...response,
+        surveyResponseTopics: surveyResponseTopicsOnSurveyResponses.map((r) =>
+          String(r.surveyResponseTopicId),
+        ),
+        operatorId: String(response.operatorId),
+      }}
+      onChange={handleSubmit}
       onSubmit={handleSubmit}
       className="flex"
     >
@@ -61,7 +74,7 @@ export const EditableSurveyResponseForm: React.FC<Props> = ({
         <div>
           <p className="font-bold mb-3">Baulastträger</p>
           <LabeledRadiobuttonGroup
-            scope={"operatorId"}
+            scope="operatorId"
             items={operators.map((operator: Operator) => {
               return { value: String(operator.id), label: operator.title }
             })}
@@ -74,7 +87,6 @@ export const EditableSurveyResponseForm: React.FC<Props> = ({
             items={surveyResponseTopics.map((t) => {
               return {
                 value: String(t.id),
-                name: String(t.id),
                 label: t.title,
               }
             })}

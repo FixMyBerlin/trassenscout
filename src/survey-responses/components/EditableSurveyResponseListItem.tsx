@@ -5,12 +5,11 @@ import clsx from "clsx"
 import { useRouter } from "next/router"
 import { useCallback } from "react"
 import { Disclosure } from "src/core/components/Disclosure"
-import { useSlugs } from "src/core/hooks"
+import createSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/createSurveyResponseTopicsOnSurveyResponses"
+import deleteSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/deleteSurveyResponseTopicsOnSurveyResponses"
 import updateSurveyResponse from "../mutations/updateSurveyResponse"
 import EditableSurveyResponseForm from "./EditableSurveyResponseForm"
 import { FORM_ERROR } from "./EditableSurveyResponseFormWrapper"
-import createSurveyResponse from "../mutations/createSurveyResponse"
-import createSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/createSurveyResponseTopicsOnSurveyResponses"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export type EditableSurveyResponseListItemProps = {
@@ -32,9 +31,11 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const router = useRouter()
   const params = useRouterQuery()
   const [updateSurveyResponseMutation] = useMutation(updateSurveyResponse)
-  const { projectSlug } = useSlugs()
   const [surveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
     createSurveyResponseTopicsOnSurveyResponses,
+  )
+  const [deleteSurveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
+    deleteSurveyResponseTopicsOnSurveyResponses,
   )
 
   type HandleSubmit = any // TODO
@@ -45,18 +46,22 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
         const updated = await updateSurveyResponseMutation({
           id: response.id,
           ...values,
-          operatorId: values.operatorId === 0 ? null : values.operatorId,
+          operatorId: values.operatorId === 0 ? null : Number(values.operatorId),
         })
         // TODO
         // await setQueryData(updated)
         await console.log(`successfully updated ${response.id}`)
         if (Boolean(values.surveyResponseTopics)) {
           try {
-            await surveyResponseTopicsOnSurveyResponsesMutation({
+            await deleteSurveyResponseTopicsOnSurveyResponsesMutation({
               surveyResponseId: response.id,
-              surveyResponseTopicId: 2,
-              // Number(values.surveyResponseTopics[0]),
             })
+            for (let v of values.surveyResponseTopics) {
+              await surveyResponseTopicsOnSurveyResponsesMutation({
+                surveyResponseId: response.id,
+                surveyResponseTopicId: Number(v),
+              })
+            }
           } catch (error: any) {
             console.error(error)
             return { [FORM_ERROR]: error }
@@ -67,7 +72,12 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
         return { [FORM_ERROR]: error }
       }
     },
-    [response.id, surveyResponseTopicsOnSurveyResponsesMutation, updateSurveyResponseMutation],
+    [
+      deleteSurveyResponseTopicsOnSurveyResponsesMutation,
+      response.id,
+      surveyResponseTopicsOnSurveyResponsesMutation,
+      updateSurveyResponseMutation,
+    ],
   )
 
   const handleOpen = () => {
