@@ -77,8 +77,8 @@ const EditSubsubsection = () => {
       <SubsubsectionForm
         className="mt-10"
         submitText="Speichern"
-        initialValues={subsubsection}
         schema={SubsubsectionSchemaForm}
+        initialValues={{ ...subsubsection, order: String(subsubsection.order) }}
         onSubmit={handleSubmit}
       />
 

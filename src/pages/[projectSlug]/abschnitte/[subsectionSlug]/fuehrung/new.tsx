@@ -2,9 +2,9 @@ import { Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
-import { longTitle, quote, seoNewTitle } from "src/core/components/text"
+import { PageHeader } from "src/core/components/pages/PageHeader"
+import { longTitle, seoNewTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import getSubsection from "src/subsections/queries/getSubsection"
@@ -32,6 +32,7 @@ const NewSubsubsection = () => {
       const subsubsection = await createSubsubsectionMutation({
         ...values,
         // The value="" becomes "0" which we translate to NULL
+        order: parseInt(values.order),
         managerId: values.managerId === 0 ? null : values.managerId,
         subsectionId: subsection!.id,
       })
