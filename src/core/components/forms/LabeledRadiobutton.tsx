@@ -16,11 +16,12 @@ export interface LabeledRadiobuttonProps extends PropsWithoutRef<JSX.IntrinsicEl
   help?: string
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
+  readonly?: boolean
 }
 
 // Note: See also src/participation/components/form/ParticipationLabeledRadiobutton.tsx
 export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobuttonProps>(
-  ({ scope, value, name, label, help, outerProps, labelProps, ...props }, _ref) => {
+  ({ scope, value, name, label, help, outerProps, labelProps, readonly, ...props }, _ref) => {
     const {
       register,
       formState: { isSubmitting, errors },
@@ -39,7 +40,7 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
         <div className="flex h-5 items-center">
           <input
             type="radio"
-            disabled={isSubmitting}
+            disabled={isSubmitting || readonly}
             value={value}
             {...register(scope)}
             id={name || value}
@@ -48,14 +49,20 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
               "h-4 w-4",
               hasError
                 ? "border-red-800 text-red-500 shadow-sm shadow-red-200 focus:ring-red-800"
-                : "border-gray-300 text-blue-600 focus:ring-blue-500",
+                : readonly
+                ? "border-gray-300 bg-gray-50"
+                : "border-gray-300 focus:ring-blue-500 text-blue-600",
             )}
+            readOnly={readonly}
           />
         </div>
         <label
           {...labelProps}
           htmlFor={name || value}
-          className="ml-3 block cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-800"
+          className={clsx(
+            "ml-3 block cursor-pointer text-sm font-medium",
+            readonly ? "text-gray-400" : "text-gray-700 hover:text-gray-800",
+          )}
         >
           {label}
           {help && <div className="m-0 text-gray-500">{help}</div>}
