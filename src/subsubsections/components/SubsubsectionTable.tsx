@@ -152,6 +152,42 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
               )
             })}
           </tbody>
+          <tfoot className={clsx("bg-gray-50", { hidden: !subsubsections.length || compact })}>
+            <tr>
+              <td></td>
+              <td></td>
+              <td className="uppercase py-4 pl-4 pr-3 text-xs font-medium text-gray-500 text-right">
+                Summen:
+              </td>
+              <td
+                className={clsx(
+                  { hidden: compact },
+                  "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
+                )}
+              >
+                {formattedLength(subsubsections.reduce((acc, sub) => acc + (sub.length || 0), 0))}
+              </td>
+              <td
+                className={clsx(
+                  { hidden: compact },
+                  "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
+                )}
+              >
+                {formattedLength(subsubsections.reduce((acc, sub) => acc + (sub.width || 0), 0))}
+              </td>
+              <td
+                className={clsx(
+                  { hidden: compact },
+                  "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
+                )}
+              >
+                {formattedLength(
+                  subsubsections.reduce((acc, sub) => acc + (sub.costEstimate || 0), 0),
+                )}
+              </td>
+              <td></td>
+            </tr>
+          </tfoot>
         </table>
         {!subsubsections.length && (
           <div className="border-t px-3 py-5">
