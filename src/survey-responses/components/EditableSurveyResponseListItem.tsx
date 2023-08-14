@@ -1,20 +1,20 @@
 import { useRouterQuery } from "@blitzjs/next"
-import { useMutation, useQuery } from "@blitzjs/rpc"
-import { Operator, SurveyResponse } from "@prisma/client"
+import { useMutation } from "@blitzjs/rpc"
+import { SurveyResponse as TSurveyResponse } from "@prisma/client"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { useCallback } from "react"
 import { Disclosure } from "src/core/components/Disclosure"
-import { LabeledRadiobuttonGroup, LabeledTextareaField } from "src/core/components/forms"
-import updateSurveyResponse from "../mutations/updateSurveyResponse"
-import EditableSurveyResponseFormWrapper, { FORM_ERROR } from "./EditableSurveyResponseFormWrapper"
-import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 import { useSlugs } from "src/core/hooks"
+import updateSurveyResponse from "../mutations/updateSurveyResponse"
 import EditableSurveyResponseForm from "./EditableSurveyResponseForm"
+import { FORM_ERROR } from "./EditableSurveyResponseFormWrapper"
+import createSurveyResponse from "../mutations/createSurveyResponse"
+import createSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/createSurveyResponseTopicsOnSurveyResponses"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export type EditableSurveyResponseListItemProps = {
-  response: SurveyResponse
+  response: TSurveyResponse
   className?: String
   columnWidthClasses: {
     id: string
@@ -33,11 +33,14 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const params = useRouterQuery()
   const [updateSurveyResponseMutation] = useMutation(updateSurveyResponse)
   const { projectSlug } = useSlugs()
+  const [surveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
+    createSurveyResponseTopicsOnSurveyResponses,
+  )
 
   type HandleSubmit = any // TODO
   const handleSubmit = useCallback(
     async (values: HandleSubmit) => {
-      // console.log(values.topics)
+      console.log(typeof values.surveyResponseTopics[0])
       try {
         const updated = await updateSurveyResponseMutation({
           id: response.id,
@@ -47,21 +50,24 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
         // TODO
         // await setQueryData(updated)
         await console.log(`successfully updated ${response.id}`)
-        // Create a membership for the selected user
-        // if (values.) {
-        //   try {
-        //     await createMembershipMutation({ projectId: project.id, userId: project.managerId })
-        //   } catch (error: any) {
-        //     console.error(error)
-        //     return { [FORM_ERROR]: error }
-        //   }
-        // }
+        if (Boolean(values.surveyResponseTopics)) {
+          try {
+            await surveyResponseTopicsOnSurveyResponsesMutation({
+              surveyResponseId: response.id,
+              surveyResponseTopicId: 2,
+              // Number(values.surveyResponseTopics[0]),
+            })
+          } catch (error: any) {
+            console.error(error)
+            return { [FORM_ERROR]: error }
+          }
+        }
       } catch (error: any) {
         console.error(error)
         return { [FORM_ERROR]: error }
       }
     },
-    [response, updateSurveyResponseMutation],
+    [response.id, surveyResponseTopicsOnSurveyResponsesMutation, updateSurveyResponseMutation],
   )
 
   const handleOpen = () => {
@@ -75,7 +81,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
 
   const responseDetails = parseInt(String(params.responseDetails))
   const open = response.id === Number(responseDetails)
-  if (open) console.log(`Item NO ${response.id} is OPEN`)
+  // if (open) console.log(`Item NO ${response.id} is OPEN`)
 
   return (
     <Disclosure
