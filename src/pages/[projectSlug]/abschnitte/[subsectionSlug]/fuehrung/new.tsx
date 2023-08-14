@@ -10,7 +10,6 @@ import { LayoutRs, MetaTags } from "src/core/layouts"
 import getSubsection from "src/subsections/queries/getSubsection"
 import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
 import createSubsubsection from "src/subsubsections/mutations/createSubsubsection"
-import getProjectUsers from "src/memberships/queries/getProjectUsers"
 import { SubsubsectionSchemaForm } from "src/subsubsections/schema"
 import { z } from "zod"
 
@@ -64,7 +63,6 @@ const NewSubsubsection = () => {
         submitText="Erstellen"
         schema={NewSubsubsectionSchemaForm}
         onSubmit={handleSubmit}
-        users={users}
       />
     </>
   )

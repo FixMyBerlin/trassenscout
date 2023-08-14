@@ -10,7 +10,6 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { seoEditTitleSlug } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import getProjectUsers from "src/memberships/queries/getProjectUsers"
 import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
 import deleteSubsubsection from "src/subsubsections/mutations/deleteSubsubsection"
 import updateSubsubsection from "src/subsubsections/mutations/updateSubsubsection"
@@ -32,7 +31,6 @@ const EditSubsubsection = () => {
       staleTime: Infinity,
     },
   )
-  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
   const [updateSubsubsectionMutation] = useMutation(updateSubsubsection)
 
   type HandleSubmit = any // TODO
@@ -82,7 +80,6 @@ const EditSubsubsection = () => {
         initialValues={subsubsection}
         schema={SubsubsectionSchemaForm}
         onSubmit={handleSubmit}
-        users={users}
       />
 
       <hr className="my-5" />

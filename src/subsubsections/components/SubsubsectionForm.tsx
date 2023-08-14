@@ -1,3 +1,4 @@
+import { useQuery } from "@blitzjs/rpc"
 import {
   Form,
   FormProps,
@@ -9,14 +10,15 @@ import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryF
 import { LabeledRadiobuttonGroupLabelPos } from "src/core/components/forms/LabeledRadiobuttonGroupLabelPos"
 import { quote } from "src/core/components/text"
 import { getUserSelectOptions, UserSelectOptions } from "src/users/utils"
+import { useSlugs } from "src/core/hooks"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 import { z } from "zod"
 import { GeometryInput } from "./GeometryInput/GeometryInput"
 export { FORM_ERROR } from "src/core/components/forms"
 
-export function SubsubsectionForm<S extends z.ZodType<any, any>>(
-  props: FormProps<S> & { users: UserSelectOptions },
-) {
-  const { users } = props
+export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+  const { projectSlug } = useSlugs()
+  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
   return (
     <Form<S> {...props}>
