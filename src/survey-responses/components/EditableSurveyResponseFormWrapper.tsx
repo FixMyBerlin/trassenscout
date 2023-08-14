@@ -9,7 +9,7 @@ export interface FormProps<S extends z.ZodType<any, any>>
   children: ReactNode
   schema?: S
   onSubmit: (values: z.infer<S>) => void
-  onChangeValues: (values: any) => void
+  onChange: (values: any) => void
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
 }
 
@@ -20,7 +20,7 @@ export function EditableSurveyResponseFormWrapper<S extends z.ZodType<any, any>>
   schema,
   initialValues,
   onSubmit,
-  onChangeValues,
+  onChange,
   className,
   ...props
 }: FormProps<S>) {
@@ -29,13 +29,6 @@ export function EditableSurveyResponseFormWrapper<S extends z.ZodType<any, any>>
     resolver: schema ? zodResolver(schema) : undefined,
     defaultValues: initialValues,
   })
-  useEffect(() => {
-    if (onChangeValues) {
-      onChangeValues(ctx.getValues())
-    }
-  }, [onChangeValues, ctx])
-
-  if (onChangeValues) props.onChange = () => onChangeValues(ctx.getValues())
 
   return (
     <FormProvider {...ctx}>
@@ -43,6 +36,10 @@ export function EditableSurveyResponseFormWrapper<S extends z.ZodType<any, any>>
         className={className}
         onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
           await ctx.handleSubmit(async (values) => await onSubmit(values))()
+          e.preventDefault()
+        }}
+        onChange={async (e: React.FormEvent<HTMLFormElement>) => {
+          await ctx.handleSubmit(async (values) => await onChange(values))()
           e.preventDefault()
         }}
         {...props}
