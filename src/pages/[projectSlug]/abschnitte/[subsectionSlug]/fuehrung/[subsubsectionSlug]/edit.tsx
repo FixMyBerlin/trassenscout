@@ -15,7 +15,7 @@ import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/Sub
 import deleteSubsubsection from "src/subsubsections/mutations/deleteSubsubsection"
 import updateSubsubsection from "src/subsubsections/mutations/updateSubsubsection"
 import getSubsubsection from "src/subsubsections/queries/getSubsubsection"
-import { SubsubsectionSchema } from "src/subsubsections/schema"
+import { SubsubsectionSchemaForm } from "src/subsubsections/schema"
 
 const EditSubsubsection = () => {
   const router = useRouter()
@@ -79,8 +79,8 @@ const EditSubsubsection = () => {
       <SubsubsectionForm
         className="mt-10"
         submitText="Speichern"
-        schema={SubsubsectionSchema}
         initialValues={subsubsection}
+        schema={SubsubsectionSchemaForm}
         onSubmit={handleSubmit}
         users={users}
       />

@@ -10,8 +10,11 @@ import { LayoutRs, MetaTags } from "src/core/layouts"
 import getSubsection from "src/subsections/queries/getSubsection"
 import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
 import createSubsubsection from "src/subsubsections/mutations/createSubsubsection"
-import { SubsubsectionSchema } from "src/subsubsections/schema"
 import getProjectUsers from "src/memberships/queries/getProjectUsers"
+import { SubsubsectionSchemaForm } from "src/subsubsections/schema"
+import { z } from "zod"
+
+const NewSubsubsectionSchemaForm = SubsubsectionSchemaForm.omit({ subsectionId: true })
 
 const NewSubsubsection = () => {
   const router = useRouter()
@@ -22,8 +25,8 @@ const NewSubsubsection = () => {
     projectSlug: projectSlug!,
     subsectionSlug: subsectionSlug!,
   })
-  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
-  type HandleSubmit = any // TODO
+
+  type HandleSubmit = z.infer<typeof NewSubsubsectionSchemaForm>
   const handleSubmit = async (values: HandleSubmit) => {
     console.log(values)
     try {
@@ -59,7 +62,7 @@ const NewSubsubsection = () => {
         initialValues={{ type: "AREA" }}
         className="mt-10"
         submitText="Erstellen"
-        schema={SubsubsectionSchema.omit({ subsectionId: true })}
+        schema={NewSubsubsectionSchemaForm}
         onSubmit={handleSubmit}
         users={users}
       />
