@@ -9,7 +9,7 @@ const CreateSurveyResponseTopicSchema = SurveyResponseTopicSchema.merge(
   z.object({
     projectSlug: z.string(),
   }),
-)
+).omit({ projectId: true })
 
 export default resolver.pipe(
   resolver.zod(CreateSurveyResponseTopicSchema),

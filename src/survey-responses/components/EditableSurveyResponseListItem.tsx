@@ -1,15 +1,11 @@
 import { useRouterQuery } from "@blitzjs/next"
-import { useMutation } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
 import { SurveyResponse as TSurveyResponse } from "@prisma/client"
 import clsx from "clsx"
 import { useRouter } from "next/router"
-import { useCallback } from "react"
 import { Disclosure } from "src/core/components/Disclosure"
-import createSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/createSurveyResponseTopicsOnSurveyResponses"
-import deleteSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/deleteSurveyResponseTopicsOnSurveyResponses"
-import updateSurveyResponse from "../mutations/updateSurveyResponse"
-import EditableSurveyResponseForm from "./EditableSurveyResponseForm"
-import { FORM_ERROR } from "./EditableSurveyResponseFormWrapper"
+import getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse from "src/survey-response-topics-on-survey-responses/queries/getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse"
+import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export type EditableSurveyResponseListItemProps = {
@@ -30,54 +26,11 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
 }) => {
   const router = useRouter()
   const params = useRouterQuery()
-  const [updateSurveyResponseMutation] = useMutation(updateSurveyResponse)
-  const [surveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
-    createSurveyResponseTopicsOnSurveyResponses,
-  )
-  const [deleteSurveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
-    deleteSurveyResponseTopicsOnSurveyResponses,
-  )
-
-  type HandleSubmit = any // TODO
-  const handleSubmit = useCallback(
-    async (values: HandleSubmit) => {
-      console.log(typeof values.surveyResponseTopics[0])
-      try {
-        const updated = await updateSurveyResponseMutation({
-          id: response.id,
-          ...values,
-          operatorId: values.operatorId === 0 ? null : Number(values.operatorId),
-        })
-        // TODO
-        // await setQueryData(updated)
-        await console.log(`successfully updated ${response.id}`)
-        if (Boolean(values.surveyResponseTopics)) {
-          try {
-            await deleteSurveyResponseTopicsOnSurveyResponsesMutation({
-              surveyResponseId: response.id,
-            })
-            for (let v of values.surveyResponseTopics) {
-              await surveyResponseTopicsOnSurveyResponsesMutation({
-                surveyResponseId: response.id,
-                surveyResponseTopicId: Number(v),
-              })
-            }
-          } catch (error: any) {
-            console.error(error)
-            return { [FORM_ERROR]: error }
-          }
-        }
-      } catch (error: any) {
-        console.error(error)
-        return { [FORM_ERROR]: error }
-      }
+  const [{ surveyResponseTopicsOnSurveyResponses }] = useQuery(
+    getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse,
+    {
+      surveyResponseId: response.id,
     },
-    [
-      deleteSurveyResponseTopicsOnSurveyResponsesMutation,
-      response.id,
-      surveyResponseTopicsOnSurveyResponsesMutation,
-      updateSurveyResponseMutation,
-    ],
   )
 
   const handleOpen = () => {
@@ -140,9 +93,16 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
       <div className="w-full text-sm">
         {isCurrentItem && (
           <EditableSurveyResponseForm
+            initialValues={{
+              ...response,
+              surveyResponseTopics: surveyResponseTopicsOnSurveyResponses.map((r) =>
+                String(r.surveyResponseTopicId),
+              ),
+              operatorId: String(response.operatorId),
+            }}
+            className="flex"
             response={response}
             columnWidthClasses={columnWidthClasses}
-            handleSubmit={handleSubmit}
           />
         )}
       </div>
