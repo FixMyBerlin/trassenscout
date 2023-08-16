@@ -46,10 +46,7 @@ export const Tabs: React.FC<Props> = ({ tabs, className }) => {
       <div className="hidden sm:flex">
         <nav className="-mb-px flex w-full" aria-label="Tabs">
           {tabs.map((tab) => {
-            // This is a hacky way to compare an unkown set of query params. But it seems to work…
-            const current =
-              router.pathname === tab.href.pathname &&
-              JSON.stringify(router.query) === JSON.stringify(tab.href.query)
+            const current = router.pathname === tab.href.pathname
 
             return (
               <Link
