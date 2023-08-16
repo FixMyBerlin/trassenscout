@@ -20,6 +20,7 @@ import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries
 import { z } from "zod"
 import updateSurveyResponse from "../mutations/updateSurveyResponse"
 import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
+import { getSurveyResponseCategoryById } from "../utils/getSurveyResponseCategoryById"
 
 export interface FormProps<S extends z.ZodType<any, any>>
   extends Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> {
@@ -109,6 +110,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
       return { [FORM_ERROR]: error }
     }
   }
+
   return (
     <FormProvider {...methods}>
       <form
@@ -131,11 +133,10 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         <div className={clsx(columnWidthClasses.operator, "flex-shrink-0")} />
         <div className="flex-grow space-y-8 pr-2">
           <div>
-            <p className="font-bold mb-3">Kategorie</p>
-            <span className="px-3 py-2 bg-gray-300 rounded">
-              {/* question 21 represents 'Kategorie', TODO getCategoryName(id) */}
+            <p className="font-bold mb-5">Kategorie</p>
+            <span className="p-3 bg-gray-300 rounded">
               {/* @ts-ignore */}
-              {JSON.parse(initialValues.data)["21"]}
+              {getSurveyResponseCategoryById(JSON.parse(initialValues.data)["21"])}
             </span>
           </div>
           <div>
