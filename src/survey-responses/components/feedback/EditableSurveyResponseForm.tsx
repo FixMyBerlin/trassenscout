@@ -141,41 +141,57 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
 
   return (
     <FormProvider {...methods}>
-      <div className="grid grid-cols-4 gap-12 justify-start">
-        <form
-          className="grid grid-cols-3 gap-4 col-span-3"
-          onChange={async () => await methods.handleSubmit(handleSubmit)()}
-        >
-          <div>
-            <h4 className="font-bold mb-3">Status</h4>
-            <LabeledRadiobuttonGroup
-              classNameItemWrapper={clsx("flex-shrink-0")}
-              scope={"status"}
-              items={Object.entries(surveyResponseStatus).map(([value, label]) => {
-                return { value, label }
-              })}
-            />
+      <div className="grid grid-cols-4 gap-12">
+        <div className="flex flex-col justify-between col-span-2">
+          <div className="grid grid-cols-2 gap-4">
+            <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
+              <h4 className="font-bold mb-3">Status</h4>
+              <LabeledRadiobuttonGroup
+                classNameItemWrapper={clsx("flex-shrink-0")}
+                scope={"status"}
+                items={Object.entries(surveyResponseStatus).map(([value, label]) => {
+                  return { value, label }
+                })}
+              />
+            </form>
+
+            <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
+              <h4 className="font-bold mb-3">Baulastträger</h4>
+              <LabeledRadiobuttonGroup
+                scope="operatorId"
+                items={operators.map((operator: Operator) => {
+                  return { value: String(operator.id), label: operator.title }
+                })}
+              />
+            </form>
           </div>
 
-          <div>
-            <h4 className="font-bold mb-3">Baulastträger</h4>
-            <LabeledRadiobuttonGroup
-              scope="operatorId"
-              items={operators.map((operator: Operator) => {
-                return { value: String(operator.id), label: operator.title }
-              })}
-            />
-          </div>
+          <form
+            className="flex mt-6"
+            onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
+              e.preventDefault()
+              await methods.handleSubmit(handleSubmit)()
+            }}
+          >
+            <div className="flex-grow space-y-2 pr-2 pb-4">
+              <p className="font-bold mb-3">Notiz</p>
+              <LabeledTextareaField
+                help="Bitte starten Sie Ihre Notiz immer mit ihrem Namen"
+                name="note"
+                label=""
+              />
+              <button type="submit" className={clsx(blueButtonStyles, "!py-2.5 !px-3")}>
+                Speichern
+              </button>
+            </div>
+          </form>
+        </div>
 
-          <div>
-            <EditableSurveyResponseFormMap
-              responsePoint={responsePoint}
-              subsections={subsections}
-            />
-          </div>
-        </form>
+        <div>
+          <EditableSurveyResponseFormMap responsePoint={responsePoint} subsections={subsections} />
+        </div>
 
-        <div className="flex flex-col justify-start">
+        <div className="flex flex-col">
           <form
             className="flex"
             onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
@@ -208,47 +224,15 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
               methods.resetField("newTopic")
             }}
           >
-            <div className="flex-grow space-y-2 pr-2 pb-8">
-              <LabeledTextField
-                placeholder="Neuen Themenschwerpunkt eingeben"
-                name="newTopic"
-                label=""
-              />
-              <button
-                type="submit"
-                // disabled={ctx.formState.isSubmitting}
-                className={blueButtonStyles}
-              >
-                Speichern & hinzufügen
+            <div className="flex-grow space-y-2 mt-6 pr-2 pb-8">
+              <LabeledTextField placeholder="Thema hinzufügen" name="newTopic" label="" />
+              <button type="submit" className={clsx(blueButtonStyles, "!py-2.5 !px-3")}>
+                Hinzufügen
               </button>
             </div>
           </form>
         </div>
       </div>
-
-      <form
-        className="flex"
-        onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
-          e.preventDefault()
-          await methods.handleSubmit(handleSubmit)()
-        }}
-      >
-        <div className="flex-grow space-y-2 pr-2 pb-4">
-          <p className="font-bold mb-3">Interne Notiz</p>
-          <LabeledTextareaField
-            help="Schreibe und update den internen Kommentar. Das Datum der letzen Änderung wird automatisch auf das heutige gesetzt. Der interne Kommenar wird überschrieben."
-            name="note"
-            label=""
-          />
-          <button
-            type="submit"
-            // disabled={ctx.formState.isSubmitting}
-            className={blueButtonStyles}
-          >
-            Notiz hinzufügen
-          </button>
-        </div>
-      </form>
     </FormProvider>
   )
 }
