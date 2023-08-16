@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator, SurveyResponse } from "@prisma/client"
 import clsx from "clsx"
-import { PropsWithoutRef } from "react"
+import { PropsWithoutRef, useEffect } from "react"
 import { FormProvider, UseFormProps, useForm } from "react-hook-form"
 import {
   LabeledCheckboxGroup,
@@ -19,8 +19,9 @@ import createSurveyResponseTopic from "src/survey-response-topics/mutations/crea
 import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { z } from "zod"
 import updateSurveyResponse from "../mutations/updateSurveyResponse"
-import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
 import { getSurveyResponseCategoryById } from "../utils/getSurveyResponseCategoryById"
+import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
+import getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse from "src/survey-response-topics-on-survey-responses/queries/getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse"
 
 export interface FormProps<S extends z.ZodType<any, any>>
   extends Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> {
@@ -47,10 +48,28 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   })
 
   const { projectSlug } = useSlugs()
+
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
-  const [{ surveyResponseTopics }, { refetch }] = useQuery(getSurveyResponseTopicsByProject, {
-    projectSlug: projectSlug!,
-  })
+  const [{ surveyResponseTopicsOnSurveyResponses }, { refetch }] = useQuery(
+    getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse,
+    {
+      surveyResponseId: response.id,
+    },
+  )
+  const [{ surveyResponseTopics }, { refetch: refetchTopics }] = useQuery(
+    getSurveyResponseTopicsByProject,
+    {
+      projectSlug: projectSlug!,
+    },
+  )
+
+  useEffect(() => {
+    const surveyResponseTopics = surveyResponseTopicsOnSurveyResponses.map((r) =>
+      String(r.surveyResponseTopicId),
+    )
+    // @ts-expect-error
+    methods.setValue("surveyResponseTopics", surveyResponseTopics)
+  }, [methods, surveyResponseTopicsOnSurveyResponses])
 
   const [updateSurveyResponseMutation] = useMutation(updateSurveyResponse)
   const [surveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
@@ -60,6 +79,9 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
     deleteSurveyResponseTopicsOnSurveyResponses,
   )
   const [createSurveyResponseTopicMutation] = useMutation(createSurveyResponseTopic)
+  const [createSurveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
+    createSurveyResponseTopicsOnSurveyResponses,
+  )
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -105,8 +127,13 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
       })
       // TODO
       // await setQueryData(updated)
-      await console.log(`successfully added new topic ${values.newTopic}`)
+      console.log(`successfully added new topic ${values.newTopic}`)
+      await createSurveyResponseTopicsOnSurveyResponsesMutation({
+        surveyResponseTopicId: updated.id,
+        surveyResponseId: response.id,
+      })
       await refetch()
+      await refetchTopics()
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -136,10 +163,10 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         <div className="flex-grow space-y-8 pr-2">
           <div>
             <p className="font-bold mb-5">Kategorie</p>
-            <span className="p-3 bg-gray-300 rounded">
+            <div className="p-3 bg-gray-300 rounded">
               {/* @ts-ignore */}
               {getSurveyResponseCategoryById(JSON.parse(initialValues.data)["21"])}
-            </span>
+            </div>
           </div>
           <div>
             <p className="font-bold mb-3">Baulastträger</p>

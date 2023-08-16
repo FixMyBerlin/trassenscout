@@ -94,9 +94,6 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
           <EditableSurveyResponseForm
             initialValues={{
               ...response,
-              surveyResponseTopics: surveyResponseTopicsOnSurveyResponses.map((r) =>
-                String(r.surveyResponseTopicId),
-              ),
               operatorId: String(response.operatorId),
             }}
             className="flex"
