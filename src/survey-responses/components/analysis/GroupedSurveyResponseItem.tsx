@@ -1,7 +1,7 @@
 import { H3 } from "src/core/components/text"
 import surveyDefinition from "src/participation/data/survey.json"
-import { Response, SingleOrMultiResponseProps, Survey } from "src/participation/data/types"
-import VerticalBartChart from "./BarChart"
+import { Survey } from "src/participation/data/types"
+import { BarChart } from "./BarChart"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type QuestionObject = {
@@ -54,7 +54,7 @@ type Props = {
   chartType: "bar" | "pie"
 }
 
-const GroupedSurveyResponseItem: React.FC<Props> = ({ responseData, chartType }) => {
+export const GroupedSurveyResponseItem: React.FC<Props> = ({ responseData, chartType }) => {
   const questionId = Object.keys(responseData)[0]
   const question = surveyDefinitionArray.find((question) => Number(questionId) === question.id)
 
@@ -72,11 +72,9 @@ const GroupedSurveyResponseItem: React.FC<Props> = ({ responseData, chartType })
       <H3 className="border-b pb-3.5 px-3.5">{question.label}</H3>
 
       <div className="h-[350px] px-3.5">
-        {chartType === "bar" && <VerticalBartChart data={data} />}
+        {chartType === "bar" && <BarChart data={data} />}
         {/* <PieChartWithLegend data={recordToArray(responseData[questionId])} /> */}
       </div>
     </div>
   )
 }
-
-export default GroupedSurveyResponseItem

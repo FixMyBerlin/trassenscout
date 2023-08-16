@@ -13,7 +13,6 @@ import {
 import { blueButtonStyles } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
-import { stakeholderNotesStatus } from "src/stakeholdernotes/components/stakeholdernotesStatus"
 import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 import createSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/createSurveyResponseTopicsOnSurveyResponses"
 import deleteSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/deleteSurveyResponseTopicsOnSurveyResponses"
@@ -21,18 +20,18 @@ import getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse from "src/survey
 import createSurveyResponseTopic from "src/survey-response-topics/mutations/createSurveyResponseTopic"
 import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { z } from "zod"
-import updateSurveyResponse from "../mutations/updateSurveyResponse"
-import { getSurveyResponseCategoryById } from "../utils/getSurveyResponseCategoryById"
+import updateSurveyResponse from "../../mutations/updateSurveyResponse"
+import { getSurveyResponseCategoryById } from "../../utils/getSurveyResponseCategoryById"
 import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
-import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
+import { surveyResponseStatus } from "./surveyResponseStatus"
 
 export interface FormProps<S extends z.ZodType<any, any>>
   extends Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> {
   schema?: S
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
-  columnWidthClasses: EditableSurveyResponseListItemProps["columnWidthClasses"]
   response: SurveyResponse
   subsections: SubsectionWithPosition[]
+  refetchResponses: () => void
 }
 
 export const FORM_ERROR = "FORM_ERROR"
@@ -41,10 +40,9 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   schema,
   response,
   initialValues,
-  columnWidthClasses,
   className,
   subsections,
-  ...props
+  refetchResponses,
 }: FormProps<S>) {
   const methods = useForm<z.infer<S>>({
     mode: "onBlur",
@@ -55,17 +53,15 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   const { projectSlug } = useSlugs()
 
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
-  const [{ surveyResponseTopicsOnSurveyResponses }, { refetch }] = useQuery(
+
+  const [{ surveyResponseTopicsOnSurveyResponses }, { refetch: refetchResponse }] = useQuery(
     getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse,
-    {
-      surveyResponseId: response.id,
-    },
+    { surveyResponseId: response.id },
   )
+
   const [{ surveyResponseTopics }, { refetch: refetchTopics }] = useQuery(
     getSurveyResponseTopicsByProject,
-    {
-      projectSlug: projectSlug!,
-    },
+    { projectSlug: projectSlug! },
   )
 
   useEffect(() => {
@@ -91,18 +87,16 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   //  @ts-expect-error
   const responsePoint = JSON.parse(response.data)?.["23"]
 
-  type HandleSubmit = any // TODO
-  const handleSubmit = async (values: HandleSubmit) => {
+  const handleSubmit = async (values: any) => {
     console.log("handleSubmit", { values })
     try {
-      const updated = await updateSurveyResponseMutation({
+      await updateSurveyResponseMutation({
         id: response.id,
         ...values,
+        // Note: initialValues need to initialize `operatorId: 0`
         operatorId: values.operatorId === 0 ? null : Number(values.operatorId),
       })
-      // TODO
-      // await setQueryData(updated)
-      await console.log(`successfully updated ${response.id}`)
+
       if (Boolean(values.surveyResponseTopics)) {
         try {
           await deleteSurveyResponseTopicsOnSurveyResponsesMutation({
@@ -119,28 +113,29 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           return { [FORM_ERROR]: error }
         }
       }
+      await refetchResponses()
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
     }
   }
 
-  const handleNewTopic = async (values: HandleSubmit) => {
+  const handleNewTopic = async (values: any) => {
     const newTopicTitle = values.newTopic?.trim()
     if (!newTopicTitle) return
+
     try {
-      const updated = await createSurveyResponseTopicMutation({
+      const createdOrFetched = await createSurveyResponseTopicMutation({
         title: newTopicTitle,
         projectSlug: projectSlug!,
       })
-      // TODO
-      // await setQueryData(updated)
-      console.log(`successfully added new topic ${values.newTopic}`)
       await createSurveyResponseTopicsOnSurveyResponsesMutation({
-        surveyResponseTopicId: updated.id,
+        surveyResponseTopicId: createdOrFetched.id,
         surveyResponseId: response.id,
       })
-      await refetch()
+      console.log(`successfully updated ${createdOrFetched.id} and relation`)
+
+      await refetchResponse() // will update the UI so the checkboxes are checkd
       await refetchTopics()
     } catch (error: any) {
       console.error(error)
@@ -150,20 +145,15 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
 
   return (
     <FormProvider {...methods}>
-      <form
-        className={className}
-        onChange={async () => await methods.handleSubmit(handleSubmit)()}
-        {...props}
-      >
-        <div className={clsx(columnWidthClasses.id, "flex-shrink-0")} />
+      <form className={className} onChange={async () => await methods.handleSubmit(handleSubmit)()}>
         <LabeledRadiobuttonGroup
-          classNameItemWrapper={clsx("flex-shrink-0", columnWidthClasses.status)}
+          classNameItemWrapper={clsx("flex-shrink-0")}
           scope={"status"}
-          items={Object.entries(stakeholderNotesStatus).map(([value, label]) => {
+          items={Object.entries(surveyResponseStatus).map(([value, label]) => {
             return { value, label }
           })}
         />
-        <div className={clsx(columnWidthClasses.operator, "flex-shrink-0")} />
+
         <div className="flex-grow space-y-8 pr-2">
           <div className="grid grid-cols-3 gap-3">
             <div>
@@ -174,6 +164,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                   {getSurveyResponseCategoryById(JSON.parse(initialValues.data)["21"])}
                 </span>
               </div>
+
               <div>
                 <h4 className="font-bold mt-10 mb-3">Baulastträger</h4>
                 <LabeledRadiobuttonGroup
@@ -184,6 +175,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                 />
               </div>
             </div>
+
             <div className="col-span-2">
               <EditableSurveyResponseFormMap
                 responsePoint={responsePoint}
@@ -191,10 +183,11 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
               />
             </div>
           </div>
+
           <div>
             <h4 className="font-bold mb-3">Themenzuordnung (für FAQ)</h4>
             <LabeledCheckboxGroup
-              key={surveyResponseTopics.map((t) => t.id).join("-")}
+              // key={surveyResponseTopics.map((t) => t.id).join("-")}
               scope="surveyResponseTopics"
               items={surveyResponseTopics.map((t) => {
                 return {
@@ -206,6 +199,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           </div>
         </div>
       </form>
+
       <form
         className="flex"
         onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
@@ -215,9 +209,6 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           methods.resetField("newTopic")
         }}
       >
-        <div className={clsx(columnWidthClasses.id, "flex-shrink-0")} />
-        <div className={clsx(columnWidthClasses.status, "flex-shrink-0")} />
-        <div className={clsx(columnWidthClasses.operator, "flex-shrink-0")} />
         <div className="flex-grow space-y-2 pr-2 pb-8">
           <LabeledTextField
             placeholder="Neuen Themenschwerpunkt eingeben"
@@ -240,15 +231,12 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           await methods.handleSubmit(handleSubmit)()
         }}
       >
-        <div className={clsx(columnWidthClasses.id, "flex-shrink-0")} />
-        <div className={clsx(columnWidthClasses.status, "flex-shrink-0")} />
-        <div className={clsx(columnWidthClasses.operator, "flex-shrink-0")} />
         <div className="flex-grow space-y-2 pr-2 pb-4">
           <p className="font-bold mb-3">Interne Notiz</p>
           <LabeledTextareaField
             help="Schreibe und update den internen Kommentar. Das Datum der letzen Änderung wird automatisch auf das heutige gesetzt. Der interne Kommenar wird überschrieben."
             name="note"
-            label={""}
+            label=""
           />
           <button
             type="submit"

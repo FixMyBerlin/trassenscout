@@ -50,12 +50,15 @@ export default resolver.pipe(
       .map((session) => session.responses)
       .flat()
       .filter((response) => response.surveyId === 1)
+      .sort((a, b) => b.id - a.id)
 
     // src/participation/data/feedback.json
     const surveyResponsesFeedbackPart = surveySessions
       .map((session) => session.responses)
       .flat()
       .filter((response) => response.surveyId === 2)
+      // We need to sort again; the frontend received different orders before…
+      .sort((a, b) => b.id - a.id)
 
     const groupedSurveyResponsesFirstPart: Record<string, Record<string, number>> = {}
 
