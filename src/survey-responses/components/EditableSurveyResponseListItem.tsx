@@ -6,6 +6,7 @@ import { useRouter } from "next/router"
 import { Disclosure } from "src/core/components/Disclosure"
 import getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse from "src/survey-response-topics-on-survey-responses/queries/getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
+import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export type EditableSurveyResponseListItemProps = {
@@ -17,12 +18,14 @@ export type EditableSurveyResponseListItemProps = {
     operator: string
   }
   isCurrentItem?: boolean
+  subsections: SubsectionWithPosition[]
 }
 
 const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemProps> = ({
   response,
   columnWidthClasses,
   isCurrentItem,
+  subsections,
 }) => {
   const router = useRouter()
   const params = useRouterQuery()
@@ -99,6 +102,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             className="flex"
             response={response}
             columnWidthClasses={columnWidthClasses}
+            subsections={subsections}
           />
         )}
       </div>

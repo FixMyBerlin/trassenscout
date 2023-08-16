@@ -3,6 +3,7 @@ import { SurveyResponse } from "@prisma/client"
 import clsx from "clsx"
 import { useEffect, useRef } from "react"
 import EditableSurveyResponseListItem from "./EditableSurveyResponseListItem"
+import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 export { FORM_ERROR } from "src/core/components/forms"
 
 const columnWidthClasses = {
@@ -13,9 +14,10 @@ const columnWidthClasses = {
 
 type Props = {
   responses: SurveyResponse[]
+  subsections: SubsectionWithPosition[]
 }
 
-const EditableSurveyResponsesList: React.FC<Props> = ({ responses }) => {
+const EditableSurveyResponsesList: React.FC<Props> = ({ responses, subsections }) => {
   const params = useRouterQuery()
   const disclosureRefs = useRef<Array<HTMLDivElement | null>>([])
 
@@ -48,6 +50,7 @@ const EditableSurveyResponsesList: React.FC<Props> = ({ responses }) => {
               columnWidthClasses={columnWidthClasses}
               response={response}
               isCurrentItem={response.id === paramsResponseDetails}
+              subsections={subsections}
             />
           </div>
         ))}

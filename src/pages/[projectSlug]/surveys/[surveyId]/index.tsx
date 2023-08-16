@@ -25,7 +25,7 @@ export const Survey = () => {
     usePaginatedQuery(getGroupedSurveyResponses, { projectSlug, surveyId: survey.id })
 
   const surveyResponsesFeedbackPartWithLocation = surveyResponsesFeedbackPart.filter(
-    //  @ts-ignore
+    //  @ts-expect-error
     (r) => JSON.parse(r.data)["23"],
   )
 

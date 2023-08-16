@@ -14,6 +14,7 @@ import { blueButtonStyles } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 import { stakeholderNotesStatus } from "src/stakeholdernotes/components/stakeholdernotesStatus"
+import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 import createSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/createSurveyResponseTopicsOnSurveyResponses"
 import deleteSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/deleteSurveyResponseTopicsOnSurveyResponses"
 import getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse from "src/survey-response-topics-on-survey-responses/queries/getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse"
@@ -22,6 +23,7 @@ import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries
 import { z } from "zod"
 import updateSurveyResponse from "../mutations/updateSurveyResponse"
 import { getSurveyResponseCategoryById } from "../utils/getSurveyResponseCategoryById"
+import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
 import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
 
 export interface FormProps<S extends z.ZodType<any, any>>
@@ -30,6 +32,7 @@ export interface FormProps<S extends z.ZodType<any, any>>
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
   columnWidthClasses: EditableSurveyResponseListItemProps["columnWidthClasses"]
   response: SurveyResponse
+  subsections: SubsectionWithPosition[]
 }
 
 export const FORM_ERROR = "FORM_ERROR"
@@ -40,6 +43,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   initialValues,
   columnWidthClasses,
   className,
+  subsections,
   ...props
 }: FormProps<S>) {
   const methods = useForm<z.infer<S>>({
@@ -83,6 +87,9 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   const [createSurveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
     createSurveyResponseTopicsOnSurveyResponses,
   )
+
+  //  @ts-expect-error
+  const responsePoint = JSON.parse(response.data)?.["23"]
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -158,24 +165,34 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         />
         <div className={clsx(columnWidthClasses.operator, "flex-shrink-0")} />
         <div className="flex-grow space-y-8 pr-2">
-          <div>
-            <p className="font-bold mb-5">Kategorie</p>
-            <div className="p-3 bg-gray-300 rounded">
-              {/* @ts-ignore */}
-              {getSurveyResponseCategoryById(JSON.parse(initialValues.data)["21"])}
+          <div className="grid grid-cols-3 gap-3">
+            <div>
+              <div>
+                <h4 className="font-bold mb-5">Kategorie</h4>
+                <span className="p-3 bg-gray-300 rounded">
+                  {/* @ts-ignore */}
+                  {getSurveyResponseCategoryById(JSON.parse(initialValues.data)["21"])}
+                </span>
+              </div>
+              <div>
+                <h4 className="font-bold mt-10 mb-3">Baulastträger</h4>
+                <LabeledRadiobuttonGroup
+                  scope="operatorId"
+                  items={operators.map((operator: Operator) => {
+                    return { value: String(operator.id), label: operator.title }
+                  })}
+                />
+              </div>
+            </div>
+            <div className="col-span-2">
+              <EditableSurveyResponseFormMap
+                responsePoint={responsePoint}
+                subsections={subsections}
+              />
             </div>
           </div>
           <div>
-            <p className="font-bold mb-3">Baulastträger</p>
-            <LabeledRadiobuttonGroup
-              scope="operatorId"
-              items={operators.map((operator: Operator) => {
-                return { value: String(operator.id), label: operator.title }
-              })}
-            />
-          </div>
-          <div>
-            <p className="font-bold mb-3">Themenzuordnung (für FAQ)</p>
+            <h4 className="font-bold mb-3">Themenzuordnung (für FAQ)</h4>
             <LabeledCheckboxGroup
               key={surveyResponseTopics.map((t) => t.id).join("-")}
               scope="surveyResponseTopics"

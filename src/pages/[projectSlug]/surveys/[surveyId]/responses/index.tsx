@@ -11,6 +11,7 @@ import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import surveyDefinition from "src/participation/data/survey.json"
+import getSubsections from "src/subsections/queries/getSubsections"
 import EditableSurveyResponseListItem from "src/survey-responses/components/EditableSurveyResponseListItem"
 import EditableSurveyResponsesList from "src/survey-responses/components/EditableSurveyResponsesList"
 import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
@@ -18,12 +19,17 @@ import { SurveyTabs } from "src/surveys/components/SurveyTabs"
 import getSurvey from "src/surveys/queries/getSurvey"
 
 export const SurveyResponse = () => {
-  const { projectSlug } = useSlugs()
+  const { projectSlug, subsectionSlug } = useSlugs()
   const surveyId = useParam("surveyId", "number")
   const [survey] = useQuery(getSurvey, { id: surveyId })
   const [{ surveyResponsesFeedbackPart }] = usePaginatedQuery(getGroupedSurveyResponses, {
     projectSlug,
     surveyId: survey.id,
+  })
+
+  const [{ subsections }] = useQuery(getSubsections, {
+    projectSlug: projectSlug!,
+    subsectionSlug: subsectionSlug!,
   })
 
   return (
@@ -57,7 +63,10 @@ export const SurveyResponse = () => {
         <H2>Kommentare aus Bürgerbeteiligung</H2>
 
         <ZeroCase visible={surveyResponsesFeedbackPart.length} name={"Beiträge"} />
-        <EditableSurveyResponsesList responses={surveyResponsesFeedbackPart} />
+        <EditableSurveyResponsesList
+          responses={surveyResponsesFeedbackPart}
+          subsections={subsections}
+        />
 
         <code>{JSON.stringify(surveyResponsesFeedbackPart)}</code>
       </div>
