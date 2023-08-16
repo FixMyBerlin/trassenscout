@@ -44,7 +44,6 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
 
   const responseDetails = parseInt(String(params.responseDetails))
   const open = response.id === Number(responseDetails)
-  // if (open) console.log(`Item NO ${response.id} is OPEN`)
 
   return (
     <Disclosure

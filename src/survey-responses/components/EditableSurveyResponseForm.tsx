@@ -129,7 +129,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           ]}
         />
         <div className={clsx(columnWidthClasses.operator, "flex-shrink-0")} />
-        <div className="flex-grow pb-4 space-y-5">
+        <div className="flex-grow space-y-8 pr-2">
           <div>
             <p className="font-bold mb-3">Kategorie</p>
             <span className="px-3 py-2 bg-gray-300 rounded">
@@ -172,14 +172,18 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         <div className={clsx(columnWidthClasses.id, "flex-shrink-0")} />
         <div className={clsx(columnWidthClasses.status, "flex-shrink-0")} />
         <div className={clsx(columnWidthClasses.operator, "flex-shrink-0")} />
-        <div className="flex space-x-2">
-          <LabeledTextField name="newTopic" label="" />
+        <div className="flex-grow space-y-2 pr-2 pb-8">
+          <LabeledTextField
+            placeholder="Neuen Themenschwerpunkt eingeben"
+            name="newTopic"
+            label=""
+          />
           <button
             type="submit"
             // disabled={ctx.formState.isSubmitting}
             className={blueButtonStyles}
           >
-            Thema hinzufügen
+            Speichern & hinzufügen
           </button>
         </div>
       </form>
@@ -193,9 +197,13 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         <div className={clsx(columnWidthClasses.id, "flex-shrink-0")} />
         <div className={clsx(columnWidthClasses.status, "flex-shrink-0")} />
         <div className={clsx(columnWidthClasses.operator, "flex-shrink-0")} />
-        <div className="flex-grow space-y-2">
+        <div className="flex-grow space-y-2 pr-2 pb-4">
           <p className="font-bold mb-3">Interne Notiz</p>
-          <LabeledTextareaField name="note" label={""} />
+          <LabeledTextareaField
+            help="Schreibe und update den internen Kommentar. Das Datum der letzen Änderung wird automatisch auf das heutige gesetzt. Der interne Kommenar wird überschrieben."
+            name="note"
+            label={""}
+          />
           <button
             type="submit"
             // disabled={ctx.formState.isSubmitting}
