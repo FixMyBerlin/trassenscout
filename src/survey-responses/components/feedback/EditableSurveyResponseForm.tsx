@@ -21,7 +21,6 @@ import createSurveyResponseTopic from "src/survey-response-topics/mutations/crea
 import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { z } from "zod"
 import updateSurveyResponse from "../../mutations/updateSurveyResponse"
-import { getSurveyResponseCategoryById } from "../../utils/getSurveyResponseCategoryById"
 import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
 import { surveyResponseStatus } from "./surveyResponseStatus"
 
@@ -30,6 +29,7 @@ export interface FormProps<S extends z.ZodType<any, any>>
   schema?: S
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
   response: SurveyResponse
+  operators: Awaited<ReturnType<typeof getOperatorsWithCount>>["operators"]
   subsections: SubsectionWithPosition[]
   refetchResponses: () => void
 }
@@ -39,8 +39,8 @@ export const FORM_ERROR = "FORM_ERROR"
 export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   schema,
   response,
+  operators,
   initialValues,
-  className,
   subsections,
   refetchResponses,
 }: FormProps<S>) {
@@ -49,16 +49,12 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
     resolver: schema ? zodResolver(schema) : undefined,
     defaultValues: initialValues,
   })
-
-  const { projectSlug } = useSlugs()
-
-  const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
-
   const [{ surveyResponseTopicsOnSurveyResponses }, { refetch: refetchResponse }] = useQuery(
     getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse,
     { surveyResponseId: response.id },
   )
 
+  const { projectSlug } = useSlugs()
   const [{ surveyResponseTopics }, { refetch: refetchTopics }] = useQuery(
     getSurveyResponseTopicsByProject,
     { projectSlug: projectSlug! },
@@ -145,85 +141,91 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
 
   return (
     <FormProvider {...methods}>
-      <form className={className} onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-        <LabeledRadiobuttonGroup
-          classNameItemWrapper={clsx("flex-shrink-0")}
-          scope={"status"}
-          items={Object.entries(surveyResponseStatus).map(([value, label]) => {
-            return { value, label }
-          })}
-        />
-
-        <div className="flex-grow space-y-8 pr-2">
-          <div className="grid grid-cols-3 gap-3">
-            <div>
-              <div>
-                <h4 className="font-bold mb-5">Kategorie</h4>
-                <span className="p-3 bg-gray-300 rounded">
-                  {/* @ts-ignore */}
-                  {getSurveyResponseCategoryById(JSON.parse(initialValues.data)["21"])}
-                </span>
-              </div>
-
-              <div>
-                <h4 className="font-bold mt-10 mb-3">Baulastträger</h4>
-                <LabeledRadiobuttonGroup
-                  scope="operatorId"
-                  items={operators.map((operator: Operator) => {
-                    return { value: String(operator.id), label: operator.title }
-                  })}
-                />
-              </div>
-            </div>
-
-            <div className="col-span-2">
-              <EditableSurveyResponseFormMap
-                responsePoint={responsePoint}
-                subsections={subsections}
-              />
-            </div>
-          </div>
-
+      <div className="grid grid-cols-4 gap-12 justify-start">
+        <form
+          className="grid grid-cols-3 gap-4 col-span-3"
+          onChange={async () => await methods.handleSubmit(handleSubmit)()}
+        >
           <div>
-            <h4 className="font-bold mb-3">Themenzuordnung (für FAQ)</h4>
-            <LabeledCheckboxGroup
-              // key={surveyResponseTopics.map((t) => t.id).join("-")}
-              scope="surveyResponseTopics"
-              items={surveyResponseTopics.map((t) => {
-                return {
-                  value: String(t.id),
-                  label: t.title,
-                }
+            <h4 className="font-bold mb-3">Status</h4>
+            <LabeledRadiobuttonGroup
+              classNameItemWrapper={clsx("flex-shrink-0")}
+              scope={"status"}
+              items={Object.entries(surveyResponseStatus).map(([value, label]) => {
+                return { value, label }
               })}
             />
           </div>
-        </div>
-      </form>
 
-      <form
-        className="flex"
-        onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
-          e.preventDefault()
-          await methods.handleSubmit(handleNewTopic)()
-          // @ts-expect-error
-          methods.resetField("newTopic")
-        }}
-      >
-        <div className="flex-grow space-y-2 pr-2 pb-8">
-          <LabeledTextField
-            placeholder="Neuen Themenschwerpunkt eingeben"
-            name="newTopic"
-            label=""
-          />
-          <button
-            type="submit"
-            // disabled={ctx.formState.isSubmitting}
-            className={blueButtonStyles}
+          <div>
+            <h4 className="font-bold mb-3">Baulastträger</h4>
+            <LabeledRadiobuttonGroup
+              scope="operatorId"
+              items={operators.map((operator: Operator) => {
+                return { value: String(operator.id), label: operator.title }
+              })}
+            />
+          </div>
+
+          <div>
+            <EditableSurveyResponseFormMap
+              responsePoint={responsePoint}
+              subsections={subsections}
+            />
+          </div>
+        </form>
+
+        <div className="flex flex-col justify-start">
+          <form
+            className="flex"
+            onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
+              e.preventDefault()
+              await methods.handleSubmit(handleNewTopic)()
+              // @ts-expect-error
+              methods.resetField("newTopic")
+            }}
           >
-            Speichern & hinzufügen
-          </button>
+            <div>
+              <h4 className="font-bold mb-3">Themenzuordnung (für FAQ)</h4>
+              <LabeledCheckboxGroup
+                scope="surveyResponseTopics"
+                items={surveyResponseTopics.map((t) => {
+                  return {
+                    value: String(t.id),
+                    label: t.title,
+                  }
+                })}
+              />
+            </div>
+          </form>
+
+          <form
+            className="flex"
+            onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
+              e.preventDefault()
+              await methods.handleSubmit(handleNewTopic)()
+              // @ts-expect-error
+              methods.resetField("newTopic")
+            }}
+          >
+            <div className="flex-grow space-y-2 pr-2 pb-8">
+              <LabeledTextField
+                placeholder="Neuen Themenschwerpunkt eingeben"
+                name="newTopic"
+                label=""
+              />
+              <button
+                type="submit"
+                // disabled={ctx.formState.isSubmitting}
+                className={blueButtonStyles}
+              >
+                Speichern & hinzufügen
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
+
       <form
         className="flex"
         onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {

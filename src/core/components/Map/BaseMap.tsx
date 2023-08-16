@@ -13,6 +13,7 @@ import Map, {
   ViewStateChangeEvent,
 } from "react-map-gl/maplibre"
 import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher"
+import clsx from "clsx"
 
 const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
 export const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
@@ -50,6 +51,7 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
       { subsectionSlug: string; subsubsectionSlug?: string; color: string; opacity?: number }
     >
     dots: [number, number][]
+    classHeight?: string
     children: React.ReactNode
   }
 
@@ -67,6 +69,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   selectableLines,
   selectablePoints,
   dots,
+  classHeight,
   children,
 }) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
@@ -145,7 +148,12 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   ) : null
 
   return (
-    <div className="h-96 w-full overflow-clip rounded-md drop-shadow-md sm:h-[500px]">
+    <div
+      className={clsx(
+        "w-full overflow-clip rounded-md drop-shadow-md ",
+        classHeight ?? "h-96 sm:h-[500px]",
+      )}
+    >
       <div className="relative h-full w-full">
         <Map
           id={mapId}

@@ -57,6 +57,7 @@ export const EditableSurveyResponseFormMap: React.FC<Props> = ({ responsePoint, 
       initialViewState={{ bounds: bbox, fitBoundsOptions: { padding: 80 } }}
       dots={[]}
       id="preview"
+      classHeight="h-full"
     >
       <Source key="lines" type="geojson" data={featureCollection(collectedLines)}>
         <Layer
