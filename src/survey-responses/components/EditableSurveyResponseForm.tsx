@@ -40,7 +40,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   className,
   ...props
 }: FormProps<S>) {
-  const methods = useForm({
+  const methods = useForm<z.infer<S>>({
     mode: "onBlur",
     resolver: schema ? zodResolver(schema) : undefined,
     defaultValues: initialValues,
@@ -168,6 +168,8 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
           e.preventDefault()
           await methods.handleSubmit(handleNewTopic)()
+          // @ts-expect-error
+          methods.resetField("newTopic")
         }}
       >
         <div className={clsx(columnWidthClasses.id, "flex-shrink-0")} />
