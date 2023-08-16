@@ -96,9 +96,11 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   }
 
   const handleNewTopic = async (values: HandleSubmit) => {
+    const newTopicTitle = values.newTopic?.trim()
+    if (!newTopicTitle) return
     try {
       const updated = await createSurveyResponseTopicMutation({
-        title: values.newTopic,
+        title: newTopicTitle,
         projectSlug: projectSlug!,
       })
       // TODO

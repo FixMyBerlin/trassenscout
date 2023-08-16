@@ -11,11 +11,20 @@ const CreateSurveyResponseTopicSchema = SurveyResponseTopicSchema.merge(
   }),
 ).omit({ projectId: true })
 
+// Prisma upsert: https://www.prisma.io/docs/concepts/components/prisma-client/crud
+
 export default resolver.pipe(
   resolver.zod(CreateSurveyResponseTopicSchema),
   async ({ projectSlug, ...input }) =>
-    await db.surveyResponseTopic.create({
-      data: {
+    await db.surveyResponseTopic.upsert({
+      where: {
+        title_projectId: {
+          title: input.title,
+          projectId: (await getProjectIdBySlug(projectSlug))!,
+        },
+      },
+      update: {},
+      create: {
         ...input,
         projectId: (await getProjectIdBySlug(projectSlug))!,
       },
