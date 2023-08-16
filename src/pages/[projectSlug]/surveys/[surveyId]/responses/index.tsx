@@ -14,6 +14,7 @@ import surveyDefinition from "src/participation/data/survey.json"
 import EditableSurveyResponseListItem from "src/survey-responses/components/EditableSurveyResponseListItem"
 import EditableSurveyResponsesList from "src/survey-responses/components/EditableSurveyResponsesList"
 import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
+import { SurveyTabs } from "src/surveys/components/SurveyTabs"
 import getSurvey from "src/surveys/queries/getSurvey"
 
 export const SurveyResponse = () => {
@@ -33,6 +34,7 @@ export const SurveyResponse = () => {
         className="mt-12"
         description={
           <>
+            <SurveyTabs />
             <p className="mt-5 text-base text-gray-500">
               Dieser Bereich sammelt die Ergebnisse und Berichte der Beteiligung. Hier finden sie
               die Excel Tabelle und ausgewählte Auswertungsergebnisse.
