@@ -13,15 +13,16 @@ import {
 import { blueButtonStyles } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
+import { stakeholderNotesStatus } from "src/stakeholdernotes/components/stakeholdernotesStatus"
 import createSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/createSurveyResponseTopicsOnSurveyResponses"
 import deleteSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/deleteSurveyResponseTopicsOnSurveyResponses"
+import getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse from "src/survey-response-topics-on-survey-responses/queries/getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse"
 import createSurveyResponseTopic from "src/survey-response-topics/mutations/createSurveyResponseTopic"
 import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { z } from "zod"
 import updateSurveyResponse from "../mutations/updateSurveyResponse"
 import { getSurveyResponseCategoryById } from "../utils/getSurveyResponseCategoryById"
 import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
-import getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse from "src/survey-response-topics-on-survey-responses/queries/getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse"
 
 export interface FormProps<S extends z.ZodType<any, any>>
   extends Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> {
@@ -151,13 +152,9 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         <LabeledRadiobuttonGroup
           classNameItemWrapper={clsx("flex-shrink-0", columnWidthClasses.status)}
           scope={"status"}
-          items={[
-            { value: "PENDING", label: "Ausstehend" },
-            { value: "ASSIGNED", label: "Zugeordnet" },
-            { value: "DONE_PLANING", label: "Erledigt (Planung)" },
-            { value: "DONE_FAQ", label: "Erledigt (FAQ)" },
-            { value: "IRRELEVANT", label: "Nicht erforderlich" },
-          ]}
+          items={Object.entries(stakeholderNotesStatus).map(([value, label]) => {
+            return { value, label }
+          })}
         />
         <div className={clsx(columnWidthClasses.operator, "flex-shrink-0")} />
         <div className="flex-grow space-y-8 pr-2">
