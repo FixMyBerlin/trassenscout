@@ -6,27 +6,29 @@ import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 import { SurveyResponseTopicSchema } from "../schema"
 
 const CreateSurveyResponseTopicSchema = SurveyResponseTopicSchema.merge(
-  z.object({
-    projectSlug: z.string(),
-  }),
+  z.object({ projectSlug: z.string() }),
 ).omit({ projectId: true })
-
-// Prisma upsert: https://www.prisma.io/docs/concepts/components/prisma-client/crud
 
 export default resolver.pipe(
   resolver.zod(CreateSurveyResponseTopicSchema),
-  async ({ projectSlug, ...input }) =>
-    await db.surveyResponseTopic.upsert({
+  async ({ projectSlug, ...input }) => {
+    const projectId = await getProjectIdBySlug(projectSlug)
+
+    // Prisma `upsert`: https://www.prisma.io/docs/concepts/components/prisma-client/crud
+    const result = await db.surveyResponseTopic.upsert({
       where: {
         title_projectId: {
           title: input.title,
-          projectId: (await getProjectIdBySlug(projectSlug))!,
+          projectId,
         },
       },
       update: {},
       create: {
         ...input,
-        projectId: (await getProjectIdBySlug(projectSlug))!,
+        projectId,
       },
-    }),
+    })
+
+    return result
+  },
 )
