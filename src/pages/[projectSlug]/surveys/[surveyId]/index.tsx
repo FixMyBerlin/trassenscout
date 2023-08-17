@@ -11,7 +11,11 @@ import { H2 } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import surveyDefinition from "src/participation/data/survey.json"
-import { GroupedSurveyResponseItem } from "src/survey-responses/components/analysis/GroupedSurveyResponseItem"
+import {
+  GroupedSurveyResponseItem,
+  QuestionObject,
+  transformJSONToArray,
+} from "src/survey-responses/components/analysis/GroupedSurveyResponseItem"
 import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
 import { getFormatDistanceInDays } from "src/survey-responses/utils/getFormatDistanceInDays"
 import { SurveyTabs } from "src/surveys/components/SurveyTabs"
@@ -57,6 +61,31 @@ export const Survey = () => {
       },
     },
   ]
+
+  const getAllStructuredResponseData = () => {
+    const rawData = Object.entries(groupedSurveyResponsesFirstPart).map(([k, v]) => {
+      return { [k]: v }
+    })
+    // @ts-expect-error
+    const surveyDefinitionArray: QuestionObject[] = transformJSONToArray(surveyDefinition)
+    const structuredData = rawData.map((r) => {
+      const questionId = Object.keys(r)[0]
+      const question = surveyDefinitionArray.find((question) => Number(questionId) === question.id)
+
+      if (!question || !questionId) return
+      const response = r[questionId]
+      if (!response) return
+
+      const data = Object.entries(response).map(([key, value]) => ({
+        name:
+          question?.props?.responses?.find((r) => r.id === Number(key))?.text ?? "(Missing name",
+        value,
+      }))
+
+      return { questionLabel: question.label, data: data }
+    })
+    return structuredData
+  }
 
   return (
     <>
@@ -133,6 +162,11 @@ export const Survey = () => {
           })
         )}
       </div>
+
+      <SuperAdminBox>
+        <H2>Data to copy</H2>
+        <code>{JSON.stringify(getAllStructuredResponseData())}</code>
+      </SuperAdminBox>
 
       <SuperAdminBox>
         <Link href={Routes.AdminEditSurveyPage({ surveyId: survey.id })}>Bearbeiten</Link>

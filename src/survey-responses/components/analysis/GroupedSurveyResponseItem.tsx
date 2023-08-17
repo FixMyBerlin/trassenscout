@@ -4,14 +4,14 @@ import { Survey } from "src/participation/data/types"
 import { BarChart } from "./BarChart"
 export { FORM_ERROR } from "src/core/components/forms"
 
-type QuestionObject = {
+export type QuestionObject = {
   id: number
   label: string
   component: "singleResponse" | "multipleResponse" | "text"
   props: { responses: { id: number; text: string }[] }
 }
 
-function transformJSONToArray(json: Survey) {
+export function transformJSONToArray(json: Survey) {
   const pages = json.pages
 
   const transformedArray: QuestionObject[] = []
