@@ -111,6 +111,16 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         surveyResponseId: response.id,
       })
       await refetchResponses()
+
+      // For some super weird reason, the refetch does not return an updated response
+      // New entries are added via the refetch of topics.
+      // But the surveyResponse values still hold the old topic relation ids
+      // As a workaround, we manually update the form state here…
+      // @ts-expect-error
+      methods.setValue("surveyResponseTopics", [
+        ...values.surveyResponseTopics,
+        String(createdOrFetched.id),
+      ])
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
