@@ -11,9 +11,10 @@ import { H2 } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import surveyDefinition from "src/participation/data/survey.json"
-import GroupedSurveyResponseItem from "src/survey-responses/components/GroupedSurveyResponseItem"
+import { GroupedSurveyResponseItem } from "src/survey-responses/components/analysis/GroupedSurveyResponseItem"
 import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
-import { getFormatDistanceInDays } from "src/survey-responses/utils/ getFormatDistanceInDays"
+import { getFormatDistanceInDays } from "src/survey-responses/utils/getFormatDistanceInDays"
+import { SurveyTabs } from "src/surveys/components/SurveyTabs"
 import getSurvey from "src/surveys/queries/getSurvey"
 
 export const Survey = () => {
@@ -24,7 +25,7 @@ export const Survey = () => {
     usePaginatedQuery(getGroupedSurveyResponses, { projectSlug, surveyId: survey.id })
 
   const surveyResponsesFeedbackPartWithLocation = surveyResponsesFeedbackPart.filter(
-    //  @ts-ignore
+    //  @ts-expect-error
     (r) => JSON.parse(r.data)["23"],
   )
 
@@ -65,6 +66,7 @@ export const Survey = () => {
         className="mt-12"
         description={
           <>
+            <SurveyTabs />
             <p className="mt-5 text-base text-gray-500">
               Dieser Bereich sammelt die Ergebnisse und Berichte der Beteiligung. Hier finden sie
               die Excel Tabelle und ausgewählte Auswertungsergebnisse.

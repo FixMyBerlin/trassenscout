@@ -42,9 +42,9 @@ export const Disclosure: React.FC<Props> = ({
             {button}
 
             {open ? (
-              <ChevronUpIcon className="h-5 w-5 text-gray-700 group-hover:text-black" />
+              <ChevronUpIcon className="h-5 w-5 text-gray-700 group-hover:text-black flex-shrink-0" />
             ) : (
-              <ChevronDownIcon className="h-5 w-5 text-gray-700 group-hover:text-black" />
+              <ChevronDownIcon className="h-5 w-5 text-gray-700 group-hover:text-black flex-shrink-0" />
             )}
           </HeadlessUiDisclosure.Button>
           <Transition
