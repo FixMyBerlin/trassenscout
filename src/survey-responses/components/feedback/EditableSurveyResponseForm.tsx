@@ -27,7 +27,7 @@ type FormProps<S extends z.ZodType<any, any>> = Omit<
 > & {
   schema?: S
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
-  refetchResponses: () => void
+  refetchResponsesAndTopics: () => void
 } & Pick<EditableSurveyResponseListItemProps, "response" | "operators" | "topics" | "subsections">
 
 export const FORM_ERROR = "FORM_ERROR"
@@ -39,7 +39,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   topics,
   subsections,
   initialValues,
-  refetchResponses,
+  refetchResponsesAndTopics,
 }: FormProps<S>) {
   const methods = useForm<z.infer<S>>({
     mode: "onBlur",
@@ -89,7 +89,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           return { [FORM_ERROR]: error }
         }
       }
-      await refetchResponses()
+      await refetchResponsesAndTopics()
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -110,7 +110,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         surveyResponseTopicId: createdOrFetched.id,
         surveyResponseId: response.id,
       })
-      await refetchResponses()
+      await refetchResponsesAndTopics()
 
       // For some super weird reason, the refetch does not return an updated response
       // New entries are added via the refetch of topics.

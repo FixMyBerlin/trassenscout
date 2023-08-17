@@ -19,7 +19,7 @@ export type EditableSurveyResponseListItemProps = {
     Awaited<ReturnType<typeof getSurveyResponseTopicsByProject>>["surveyResponseTopics"]
   >
   subsections: SubsectionWithPosition[]
-  refetchResponses: () => void
+  refetchResponsesAndTopics: () => void
 }
 
 const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemProps> = ({
@@ -27,7 +27,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   operators,
   topics,
   subsections,
-  refetchResponses,
+  refetchResponsesAndTopics,
 }) => {
   const router = useRouter()
   const handleOpen = () => {
@@ -91,7 +91,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             operators={operators}
             topics={topics}
             subsections={subsections}
-            refetchResponses={refetchResponses}
+            refetchResponsesAndTopics={refetchResponsesAndTopics}
           />
         </div>
       )}

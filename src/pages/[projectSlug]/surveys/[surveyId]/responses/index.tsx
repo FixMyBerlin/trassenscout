@@ -23,17 +23,26 @@ export const SurveyResponse = () => {
   const surveyId = useParam("surveyId", "number")
 
   const [survey] = useQuery(getSurvey, { id: surveyId })
-  const [feedbackSurveyResponses, { refetch }] = useQuery(getFeedbackSurveyResponses, {
-    projectSlug,
-    surveyId: survey.id,
-  })
+  const [feedbackSurveyResponses, { refetch: refetchResponses }] = useQuery(
+    getFeedbackSurveyResponses,
+    {
+      projectSlug,
+      surveyId: survey.id,
+    },
+  )
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
-  const [{ surveyResponseTopics: topics }] = useQuery(getSurveyResponseTopicsByProject, {
-    projectSlug: projectSlug!,
-  })
+  const [{ surveyResponseTopics: topics }, { refetch: refetchTopics }] = useQuery(
+    getSurveyResponseTopicsByProject,
+    {
+      projectSlug: projectSlug!,
+    },
+  )
 
   // Whenever we submit the form, we also refetch, so the whole accordeon header and everything else is updated
-  const refetchResponses = async () => await refetch()
+  const refetchResponsesAndTopics = async () => {
+    await refetchTopics()
+    await refetchResponses()
+  }
 
   const [{ subsections }] = useQuery(getSubsections, {
     projectSlug: projectSlug!,
@@ -97,7 +106,7 @@ export const SurveyResponse = () => {
                 operators={operators}
                 topics={topics}
                 subsections={subsections}
-                refetchResponses={refetchResponses}
+                refetchResponsesAndTopics={refetchResponsesAndTopics}
               />
             </div>
           ))}
