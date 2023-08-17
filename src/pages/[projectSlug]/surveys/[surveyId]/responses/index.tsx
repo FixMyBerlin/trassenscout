@@ -1,5 +1,5 @@
 import { BlitzPage, useParam, useRouterQuery } from "@blitzjs/next"
-import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 import { Suspense, useEffect, useRef } from "react"
 import { Spinner } from "src/core/components/Spinner"
@@ -9,21 +9,28 @@ import { H2 } from "src/core/components/text"
 import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 import surveyDefinition from "src/participation/data/survey.json"
 import getSubsections from "src/subsections/queries/getSubsections"
+import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import EditableSurveyResponseListItem from "src/survey-responses/components/feedback/EditableSurveyResponseListItem"
-import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
+import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedbackSurveyResponses"
 import { SurveyTabs } from "src/surveys/components/SurveyTabs"
 import getSurvey from "src/surveys/queries/getSurvey"
 
 export const SurveyResponse = () => {
   const { projectSlug, subsectionSlug } = useSlugs()
   const surveyId = useParam("surveyId", "number")
+
   const [survey] = useQuery(getSurvey, { id: surveyId })
-  const [{ surveyResponsesFeedbackPart }, { refetch, setQueryData }] = usePaginatedQuery(
-    getGroupedSurveyResponses,
-    { projectSlug, surveyId: survey.id },
-  )
+  const [feedbackSurveyResponses, { refetch }] = useQuery(getFeedbackSurveyResponses, {
+    projectSlug,
+    surveyId: survey.id,
+  })
+  const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
+  const [{ surveyResponseTopics: topics }] = useQuery(getSurveyResponseTopicsByProject, {
+    projectSlug: projectSlug!,
+  })
 
   // Whenever we submit the form, we also refetch, so the whole accordeon header and everything else is updated
   const refetchResponses = async () => await refetch()
@@ -73,12 +80,12 @@ export const SurveyResponse = () => {
       />
 
       <div className="space-y-4 mt-12">
-        <H2>Kommentare aus Bürgerbeteiligung ({surveyResponsesFeedbackPart.length})</H2>
+        <H2>Kommentare aus Bürgerbeteiligung ({feedbackSurveyResponses.length})</H2>
 
-        <ZeroCase visible={surveyResponsesFeedbackPart.length} name={"Beiträge"} />
+        <ZeroCase visible={feedbackSurveyResponses.length} name={"Beiträge"} />
 
         <section>
-          {surveyResponsesFeedbackPart.map((response) => (
+          {feedbackSurveyResponses.map((response) => (
             <div
               key={response.id}
               className="w-full text-sm first:rounded-t-xl border border-gray-200 border-b-0 last:border-b last:rounded-b-xl overflow-hidden"
@@ -87,6 +94,8 @@ export const SurveyResponse = () => {
             >
               <EditableSurveyResponseListItem
                 response={response}
+                operators={operators}
+                topics={topics}
                 subsections={subsections}
                 refetchResponses={refetchResponses}
               />

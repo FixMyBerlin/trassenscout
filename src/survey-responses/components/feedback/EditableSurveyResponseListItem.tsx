@@ -1,27 +1,31 @@
 import { useRouterQuery } from "@blitzjs/next"
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid"
-import { SurveyResponse as TSurveyResponse } from "@prisma/client"
 import clsx from "clsx"
 import { useRouter } from "next/router"
-import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
-import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
-import { Transition } from "@headlessui/react"
-import { surveyResponseStatus } from "./surveyResponseStatus"
-import { useQuery } from "@blitzjs/rpc"
-import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
-import { useSlugs } from "src/core/hooks"
 import { Markdown } from "src/core/components/Markdown/Markdown"
+import { Prettify } from "src/core/types"
+import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
+import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
+import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
+import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedbackSurveyResponses"
 import { getSurveyResponseCategoryById } from "src/survey-responses/utils/getSurveyResponseCategoryById"
+import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
+import { surveyResponseStatus } from "./surveyResponseStatus"
 
 export type EditableSurveyResponseListItemProps = {
-  response: TSurveyResponse
-  className?: String
+  response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
+  operators: Prettify<Awaited<ReturnType<typeof getOperatorsWithCount>>["operators"]>
+  topics: Prettify<
+    Awaited<ReturnType<typeof getSurveyResponseTopicsByProject>>["surveyResponseTopics"]
+  >
   subsections: SubsectionWithPosition[]
   refetchResponses: () => void
 }
 
 const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemProps> = ({
   response,
+  operators,
+  topics,
   subsections,
   refetchResponses,
 }) => {
@@ -38,15 +42,13 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const params = useRouterQuery()
   const open = parseInt(String(params.responseDetails)) === response.id
 
-  const { projectSlug } = useSlugs()
-  const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
-
   const translatedStatus = response.status ? surveyResponseStatus[response.status] : ""
-  const operatorWitFallback = operators.find((o) => o.id === response.operatorId)?.title || "k.A."
-  // @ts-expect-error
-  const userText = JSON.parse(response.data)["34"] || JSON.parse(response.data)["35"]
-  // @ts-expect-error
-  const userCategory = getSurveyResponseCategoryById(JSON.parse(response.data)["21"])
+  const operatorWitFallback = response.operator?.title || "k.A."
+  // @ts-expect-error `data` is of type unkown
+  const userText = response.data["34"] || response.data["35"]
+  const userCategory =
+    // @ts-expect-error `data` is of type unkown
+    response.data["21"] && getSurveyResponseCategoryById(Number(response.data["21"]))
 
   return (
     <article data-open={open}>
@@ -81,10 +83,13 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
           <EditableSurveyResponseForm
             initialValues={{
               ...response,
+              // Mapping to string is required so the ReactHookForm and our Radiobutton can compare the data to find what is selected
+              surveyResponseTopics: response.surveyResponseTopics.map(String),
               operatorId: response.operatorId === null ? 0 : String(response.operatorId),
             }}
             response={response}
             operators={operators}
+            topics={topics}
             subsections={subsections}
             refetchResponses={refetchResponses}
           />

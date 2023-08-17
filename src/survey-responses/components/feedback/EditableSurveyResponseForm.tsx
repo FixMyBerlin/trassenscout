@@ -1,8 +1,8 @@
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Operator, SurveyResponse } from "@prisma/client"
+import { Operator } from "@prisma/client"
 import clsx from "clsx"
-import { PropsWithoutRef, useEffect } from "react"
+import { PropsWithoutRef } from "react"
 import { FormProvider, UseFormProps, useForm } from "react-hook-form"
 import {
   LabeledCheckboxGroup,
@@ -12,27 +12,23 @@ import {
 } from "src/core/components/forms"
 import { blueButtonStyles } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
-import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
-import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 import createSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/createSurveyResponseTopicsOnSurveyResponses"
 import deleteSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/deleteSurveyResponseTopicsOnSurveyResponses"
-import getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse from "src/survey-response-topics-on-survey-responses/queries/getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse"
 import createSurveyResponseTopic from "src/survey-response-topics/mutations/createSurveyResponseTopic"
-import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { z } from "zod"
 import updateSurveyResponse from "../../mutations/updateSurveyResponse"
 import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
+import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
 import { surveyResponseStatus } from "./surveyResponseStatus"
 
-export interface FormProps<S extends z.ZodType<any, any>>
-  extends Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> {
+type FormProps<S extends z.ZodType<any, any>> = Omit<
+  PropsWithoutRef<JSX.IntrinsicElements["form"]>,
+  "onSubmit"
+> & {
   schema?: S
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
-  response: SurveyResponse
-  operators: Awaited<ReturnType<typeof getOperatorsWithCount>>["operators"]
-  subsections: SubsectionWithPosition[]
   refetchResponses: () => void
-}
+} & Pick<EditableSurveyResponseListItemProps, "response" | "operators" | "topics" | "subsections">
 
 export const FORM_ERROR = "FORM_ERROR"
 
@@ -40,8 +36,9 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   schema,
   response,
   operators,
-  initialValues,
+  topics,
   subsections,
+  initialValues,
   refetchResponses,
 }: FormProps<S>) {
   const methods = useForm<z.infer<S>>({
@@ -49,24 +46,8 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
     resolver: schema ? zodResolver(schema) : undefined,
     defaultValues: initialValues,
   })
-  const [{ surveyResponseTopicsOnSurveyResponses }, { refetch: refetchResponse }] = useQuery(
-    getSurveyResponseTopicsOnSurveyResponsesBySurveyResponse,
-    { surveyResponseId: response.id },
-  )
 
   const { projectSlug } = useSlugs()
-  const [{ surveyResponseTopics }, { refetch: refetchTopics }] = useQuery(
-    getSurveyResponseTopicsByProject,
-    { projectSlug: projectSlug! },
-  )
-
-  useEffect(() => {
-    const surveyResponseTopics = surveyResponseTopicsOnSurveyResponses.map((r) =>
-      String(r.surveyResponseTopicId),
-    )
-    // @ts-expect-error
-    methods.setValue("surveyResponseTopics", surveyResponseTopics)
-  }, [methods, surveyResponseTopicsOnSurveyResponses])
 
   const [updateSurveyResponseMutation] = useMutation(updateSurveyResponse)
   const [surveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
@@ -80,15 +61,14 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
     createSurveyResponseTopicsOnSurveyResponses,
   )
 
-  //  @ts-expect-error
-  const responsePoint = JSON.parse(response.data)?.["23"]
-
   const handleSubmit = async (values: any) => {
     console.log("handleSubmit", { values })
     try {
       await updateSurveyResponseMutation({
         id: response.id,
-        ...values,
+        // We specify what we want to store explicity so that `data` and such is exclued
+        status: values.status,
+        note: values.note,
         // Note: initialValues need to initialize `operatorId: 0`
         operatorId: values.operatorId === 0 ? null : Number(values.operatorId),
       })
@@ -120,6 +100,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
     const newTopicTitle = values.newTopic?.trim()
     if (!newTopicTitle) return
 
+    console.log("handleNewTopic", { values })
     try {
       const createdOrFetched = await createSurveyResponseTopicMutation({
         title: newTopicTitle,
@@ -129,10 +110,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         surveyResponseTopicId: createdOrFetched.id,
         surveyResponseId: response.id,
       })
-      console.log(`successfully updated ${createdOrFetched.id} and relation`)
-
-      await refetchResponse() // will update the UI so the checkboxes are checkd
-      await refetchTopics()
+      await refetchResponses()
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -188,24 +166,20 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         </div>
 
         <div>
-          <EditableSurveyResponseFormMap responsePoint={responsePoint} subsections={subsections} />
+          <EditableSurveyResponseFormMap
+            // @ts-expect-error `data` is unkown
+            responsePoint={response.data["23"] as { lat: number; lng: number } | undefined}
+            subsections={subsections}
+          />
         </div>
 
         <div className="flex flex-col">
-          <form
-            className="flex"
-            onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
-              e.preventDefault()
-              await methods.handleSubmit(handleNewTopic)()
-              // @ts-expect-error
-              methods.resetField("newTopic")
-            }}
-          >
+          <form className="flex" onChange={async () => await methods.handleSubmit(handleSubmit)()}>
             <div>
               <h4 className="font-bold mb-3">Themenzuordnung (für FAQ)</h4>
               <LabeledCheckboxGroup
                 scope="surveyResponseTopics"
-                items={surveyResponseTopics.map((t) => {
+                items={topics.map((t) => {
                   return {
                     value: String(t.id),
                     label: t.title,
