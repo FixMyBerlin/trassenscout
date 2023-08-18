@@ -354,7 +354,8 @@ model SurveyResponseTopicsOnSurveyResponses {
 enum SurveyResponseStatusEnum {
   PENDING
   ASSIGNED
+  IRRELEVANT
+  HANDED_OVER
   DONE_FAQ
   DONE_PLANING
-  IRRELEVANT
 }
