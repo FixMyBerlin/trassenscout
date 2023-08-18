@@ -42,6 +42,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const params = useRouterQuery()
   const open = parseInt(String(params.responseDetails)) === response.id
 
+  // @ts-expect-error
   const translatedStatus = response.status ? surveyResponseStatus[response.status] : ""
   const operatorWitFallback = response.operator?.title || "k.A."
   // @ts-expect-error `data` is of type unkown
