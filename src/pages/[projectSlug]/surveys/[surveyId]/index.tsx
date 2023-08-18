@@ -5,7 +5,7 @@ import { isFuture, isPast } from "date-fns"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Spinner } from "src/core/components/Spinner"
-import { Link } from "src/core/components/links"
+import { Link, whiteButtonStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2 } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
@@ -87,6 +87,10 @@ export const Survey = () => {
     return structuredData
   }
 
+  const handleCopyButtonClick = async () => {
+    await navigator.clipboard.writeText(JSON.stringify(getAllStructuredResponseData()))
+  }
+
   return (
     <>
       <MetaTags noindex title={`Beteiligung ${survey.title}`} />
@@ -164,8 +168,11 @@ export const Survey = () => {
       </div>
 
       <SuperAdminBox>
-        <H2>Data to copy</H2>
-        <code>{JSON.stringify(getAllStructuredResponseData())}</code>
+        <div>
+          <button onClick={handleCopyButtonClick} className={whiteButtonStyles}>
+            Beteiligungsergebnisse in die Zwischenablage kopieren
+          </button>
+        </div>
       </SuperAdminBox>
 
       <SuperAdminBox>
