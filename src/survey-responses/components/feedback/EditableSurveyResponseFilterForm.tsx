@@ -1,26 +1,26 @@
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Operator } from "@prisma/client"
 import clsx from "clsx"
+import { useRouter } from "next/router"
 import { PropsWithoutRef } from "react"
 import { FormProvider, UseFormProps, useForm } from "react-hook-form"
+import { SuperAdminBox } from "src/core/components/AdminBox"
 import {
   LabeledCheckbox,
   LabeledCheckboxGroup,
   LabeledRadiobuttonGroup,
 } from "src/core/components/forms"
+import { linkStyles } from "src/core/components/links"
 import { Prettify } from "src/core/types"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { z } from "zod"
 import { surveyResponseStatus } from "./surveyResponseStatus"
-import { Operator } from "@prisma/client"
-import { TFilter } from "src/pages/[projectSlug]/surveys/[surveyId]/responses"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
   "onSubmit"
 > & {
-  filter: TFilter
-  setFilter: any // TODO
   schema?: S
   operators: Prettify<Awaited<ReturnType<typeof getOperatorsWithCount>>["operators"]>
   topics: Prettify<
@@ -33,7 +33,6 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   schema,
   operators,
   topics,
-  setFilter,
   initialValues,
 }: FormProps<S>) {
   const methods = useForm<z.infer<S>>({
@@ -42,55 +41,71 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     defaultValues: initialValues,
   })
 
-  const handleSubmit = (values: any) => {
-    console.log("handleSubmit", { values })
-    setFilter({
-      ...values,
-    })
+  const router = useRouter()
+  const handleSubmit = async (values: any) => {
+    await router.push({ query: { ...router.query, ...values } })
+  }
+
+  const handleFilterReset = async () => {
+    await router.push(
+      { query: { projectSlug: router.query.projectSlug, surveyId: router.query.surveyId } },
+      undefined,
+      { scroll: false },
+    )
   }
 
   return (
-    <FormProvider {...methods}>
-      <form
-        onChange={async () => await methods.handleSubmit(handleSubmit)()}
-        className="flex gap-8"
-      >
-        <div>
-          <h4 className="font-bold mb-3">Baulastträger</h4>
-          <LabeledRadiobuttonGroup
-            scope="operatorFilter"
-            items={operators.map((operator: Operator) => {
-              return { value: String(operator.id), label: operator.title }
-            })}
-          />
-        </div>
-        <div>
-          <h4 className="font-bold mb-3">Status</h4>
-          <LabeledCheckboxGroup
-            classNameItemWrapper={clsx("flex-shrink-0")}
-            scope={"statusFilter"}
-            items={Object.entries(surveyResponseStatus).map(([value, label]) => {
-              return { value, label }
-            })}
-          />
-        </div>
-        <div>
-          <h4 className="font-bold mb-3">Themenschwerpunkt</h4>
-          <LabeledCheckboxGroup
-            scope="topicFilter"
-            items={topics.map((t) => {
-              return {
-                value: String(t.id),
-                label: t.title,
-              }
-            })}
-          />
-        </div>
-        <div>
-          <h4 className="font-bold mb-3">Notiz</h4>
-          <LabeledCheckbox scope="isNoteFilter" value="true" label="Nur Beiträge mit Notiz" />
-        </div>
-      </form>
-    </FormProvider>
+    <nav>
+      <details>
+        <summary className="cursor-pointer text-gray-700 hover:text-gray-80">Filter</summary>
+
+        <SuperAdminBox>
+          <code>{JSON.stringify(router.query, undefined, 2)}</code>
+        </SuperAdminBox>
+        <FormProvider {...methods}>
+          <form
+            onChange={async () => await methods.handleSubmit(handleSubmit)()}
+            className="flex gap-8 justify-start items-start"
+          >
+            <LabeledRadiobuttonGroup
+              label="Baulastträger"
+              classLabelOverwrite="font-bold mb-3"
+              scope="operator"
+              items={operators.map((operator: Operator) => {
+                return { value: String(operator.id), label: operator.title }
+              })}
+            />
+            <LabeledCheckboxGroup
+              label="Status"
+              classLabelOverwrite="font-bold mb-3"
+              classNameItemWrapper={clsx("flex-shrink-0")}
+              scope={"status"}
+              items={Object.entries(surveyResponseStatus).map(([value, label]) => {
+                return { value, label }
+              })}
+            />
+            <LabeledCheckboxGroup
+              label="Themenschwerpunkt"
+              classLabelOverwrite="font-bold mb-3"
+              scope="topic"
+              items={topics.map((t) => {
+                return {
+                  value: String(t.id),
+                  label: t.title,
+                }
+              })}
+            />
+            <div>
+              <h4 className="font-bold mb-3">Notiz</h4>
+              <LabeledCheckbox scope="hasnotes" value="true" label="Nur Beiträge mit Notiz" />
+            </div>
+
+            <button className={linkStyles} onClick={handleFilterReset}>
+              Filter löschen
+            </button>
+          </form>
+        </FormProvider>
+      </details>
+    </nav>
   )
 }

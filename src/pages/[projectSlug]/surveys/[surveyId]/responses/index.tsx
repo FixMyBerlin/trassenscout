@@ -1,7 +1,8 @@
 import { BlitzPage, useParam, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
-import { Suspense, useEffect, useRef, useState } from "react"
+import { Suspense, useEffect, useRef } from "react"
+import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
@@ -19,14 +20,6 @@ import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedback
 import { SurveyTabs } from "src/surveys/components/SurveyTabs"
 import getSurvey from "src/surveys/queries/getSurvey"
 
-// WIP
-export type TFilter = {
-  operatorFilter: null | "1" | "2" | "3" | "4"
-  statusFilter: ("PENDING" | "ASSIGNED" | "DONE_PLANING" | "DONE_FAQ" | "IRRELEVANT")[] | false
-  topicFilter: number[] | false
-  isNoteFilter: boolean
-}
-
 export const SurveyResponse = () => {
   const { projectSlug, subsectionSlug } = useSlugs()
   const surveyId = useParam("surveyId", "number")
@@ -34,25 +27,13 @@ export const SurveyResponse = () => {
   const [survey] = useQuery(getSurvey, { id: surveyId })
   const [feedbackSurveyResponses, { refetch: refetchResponses }] = useQuery(
     getFeedbackSurveyResponses,
-    {
-      projectSlug,
-      surveyId: survey.id,
-    },
+    { projectSlug, surveyId: survey.id },
   )
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const [{ surveyResponseTopics: topics }, { refetch: refetchTopics }] = useQuery(
     getSurveyResponseTopicsByProject,
-    {
-      projectSlug: projectSlug!,
-    },
+    { projectSlug: projectSlug! },
   )
-
-  const [filter, setFilter] = useState<TFilter>({
-    operatorFilter: null,
-    statusFilter: false,
-    topicFilter: false,
-    isNoteFilter: false,
-  })
 
   // Whenever we submit the form, we also refetch, so the whole accordeon header and everything else is updated
   const refetchResponsesAndTopics = async () => {
@@ -107,19 +88,9 @@ export const SurveyResponse = () => {
       <div className="space-y-4 mt-12">
         <H2>Kommentare aus Bürgerbeteiligung ({feedbackSurveyResponses.length})</H2>
 
-        <div>
-          <div className="border rounded border-pink-300 p-2 mb-4">
-            <code>{JSON.stringify(filter)}</code>
-          </div>
-
-          <small>Filtern nach:</small>
-          <EditableSurveyResponseFilterForm
-            operators={operators}
-            topics={topics}
-            filter={filter}
-            setFilter={setFilter}
-          />
-        </div>
+        <SuperAdminBox>
+          <EditableSurveyResponseFilterForm operators={operators} topics={topics} />
+        </SuperAdminBox>
 
         <ZeroCase visible={feedbackSurveyResponses.length} name={"Beiträge"} />
 
