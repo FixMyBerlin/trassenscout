@@ -11,11 +11,8 @@ import { H2 } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import surveyDefinition from "src/participation/data/survey.json"
-import {
-  GroupedSurveyResponseItem,
-  QuestionObject,
-  transformJSONToArray,
-} from "src/survey-responses/components/analysis/GroupedSurveyResponseItem"
+import { Survey as TSurvey } from "src/participation/data/types"
+import { GroupedSurveyResponseItem } from "src/survey-responses/components/analysis/GroupedSurveyResponseItem"
 import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
 import { getFormatDistanceInDays } from "src/survey-responses/utils/getFormatDistanceInDays"
 import { SurveyTabs } from "src/surveys/components/SurveyTabs"
@@ -27,6 +24,48 @@ export const Survey = () => {
   const [survey] = useQuery(getSurvey, { id: surveyId })
   const [{ groupedSurveyResponsesFirstPart, surveySessions, surveyResponsesFeedbackPart }] =
     usePaginatedQuery(getGroupedSurveyResponses, { projectSlug, surveyId: survey.id })
+
+  type QuestionObject = {
+    id: number
+    label: string
+    component: "singleResponse" | "multipleResponse" | "text"
+    props: { responses: { id: number; text: string }[] }
+  }
+
+  function transformJSONToArray(json: TSurvey) {
+    const pages = json.pages
+
+    const transformedArray: QuestionObject[] = []
+
+    pages.forEach((page) => {
+      // Check if the page has questions
+      if (page.questions && page.questions.length > 0) {
+        const questions = page.questions
+          .map((question) => {
+            if (!("responses" in question.props)) return
+
+            const questionObject = {
+              id: question.id,
+              label: question.label.de,
+              component: question.component,
+              props: {
+                responses: question.props.responses.map((response) => {
+                  return {
+                    id: response.id,
+                    text: response.text.de,
+                  }
+                }),
+              },
+            }
+            return questionObject
+          })
+          .filter(Boolean)
+        questions && transformedArray.push(...questions)
+      }
+    })
+
+    return transformedArray
+  }
 
   const surveyResponsesFeedbackPartWithLocation = surveyResponsesFeedbackPart.filter(
     //  @ts-expect-error
@@ -62,33 +101,31 @@ export const Survey = () => {
     },
   ]
 
-  const getAllStructuredResponseData = () => {
-    const rawData = Object.entries(groupedSurveyResponsesFirstPart).map(([k, v]) => {
-      return { [k]: v }
-    })
-    // @ts-expect-error
-    const surveyDefinitionArray: QuestionObject[] = transformJSONToArray(surveyDefinition)
-    const structuredData = rawData.map((r) => {
-      const questionId = Object.keys(r)[0]
-      const question = surveyDefinitionArray.find((question) => Number(questionId) === question.id)
+  const rawData = Object.entries(groupedSurveyResponsesFirstPart).map(([k, v]) => {
+    return { [k]: v }
+  })
 
-      if (!question || !questionId) return
-      const response = r[questionId]
-      if (!response) return
+  // @ts-expect-error
+  const surveyDefinitionArray: QuestionObject[] = transformJSONToArray(surveyDefinition)
 
-      const data = Object.entries(response).map(([key, value]) => ({
-        name:
-          question?.props?.responses?.find((r) => r.id === Number(key))?.text ?? "(Missing name",
-        value,
-      }))
+  const groupedSurveyResponseData = rawData.map((r) => {
+    const questionId = Object.keys(r)[0]
+    const question = surveyDefinitionArray.find((question) => Number(questionId) === question.id)
 
-      return { questionLabel: question.label, data: data }
-    })
-    return structuredData
-  }
+    if (!question || !questionId) return
+    const response = r[questionId]
+    if (!response) return
+
+    const data = Object.entries(response).map(([key, value]) => ({
+      name: question?.props?.responses?.find((r) => r.id === Number(key))?.text ?? "(Missing name",
+      value,
+    }))
+
+    return { questionLabel: question.label, data: data }
+  })
 
   const handleCopyButtonClick = async () => {
-    await navigator.clipboard.writeText(JSON.stringify(getAllStructuredResponseData()))
+    await navigator.clipboard.writeText(JSON.stringify(groupedSurveyResponseData))
   }
 
   return (
@@ -158,11 +195,19 @@ export const Survey = () => {
       <div className="space-y-4 mt-12">
         <H2>Auswertung in Diagrammen und Korrelationen</H2>
         {isSurveyFuture && <div>Die Beteiligung liegt in der Zukunft</div>}
-        {!Boolean(surveySessions.length) ? (
+        {/* TODO check */}
+        {!Boolean(surveySessions.length) || !Boolean(groupedSurveyResponseData.length) ? (
           <div>Es liegen keine Ergebnisse vor.</div>
         ) : (
-          Object.entries(groupedSurveyResponsesFirstPart).map(([k, v]) => {
-            return <GroupedSurveyResponseItem key={k} chartType={"bar"} responseData={{ [k]: v }} />
+          groupedSurveyResponseData.map((questionItem) => {
+            return (
+              <GroupedSurveyResponseItem
+                key={questionItem?.questionLabel}
+                chartType={"bar"}
+                responseData={questionItem?.data}
+                questionLabel={questionItem?.questionLabel}
+              />
+            )
           })
         )}
       </div>
