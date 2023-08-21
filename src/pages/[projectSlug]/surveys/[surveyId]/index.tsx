@@ -119,7 +119,7 @@ export const Survey = () => {
       value,
     }))
 
-    return { questionLabel: question.label, data: data }
+    return { questionLabel: question.label, data }
   })
 
   const handleCopyButtonClick = async () => {
@@ -192,10 +192,10 @@ export const Survey = () => {
 
       <div className="space-y-4 mt-12">
         <H2>Auswertung in Diagrammen und Korrelationen</H2>
-        {isSurveyFuture && <div>Die Beteiligung liegt in der Zukunft</div>}
-        {/* TODO check */}
-        {!Boolean(surveySessions.length) || !Boolean(groupedSurveyResponseData.length) ? (
-          <div>Es liegen keine Ergebnisse vor.</div>
+        {isSurveyFuture && <p>Die Beteiligung liegt in der Zukunft</p>}
+
+        {!groupedSurveyResponseData.length ? (
+          <p>Es liegen keine Ergebnisse vor.</p>
         ) : (
           groupedSurveyResponseData.map((questionItem) => {
             return (
@@ -211,11 +211,11 @@ export const Survey = () => {
       </div>
 
       <SuperAdminBox>
-        <div>
+        <p>
           <button onClick={handleCopyButtonClick} className={whiteButtonStyles}>
             Beteiligungsergebnisse in die Zwischenablage kopieren
           </button>
-        </div>
+        </p>
       </SuperAdminBox>
 
       <SuperAdminBox>
