@@ -175,11 +175,11 @@ export const Survey = () => {
               // eslint-disable-next-line react/jsx-key
               <div key={i} className="grid sm:grid-cols-5 gap-2 grid-cols-3">
                 {Object.entries(Object.values(row)[0] as Record<string, string | number>).map(
-                  ([k, v]) => {
+                  ([label, value]) => {
                     return (
-                      <div key={k} className="flex flex-col gap-2.5 justify-between">
-                        <p className="text-gray-500 !text-sm">{k}</p>
-                        <p className="font-bold">{v}</p>
+                      <div key={label} className="flex flex-col gap-2.5 justify-between">
+                        <p className="text-gray-500 !text-sm">{label}</p>
+                        <p className="font-bold">{value}</p>
                       </div>
                     )
                   },
