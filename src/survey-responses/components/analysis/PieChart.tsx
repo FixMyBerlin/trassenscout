@@ -1,5 +1,11 @@
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
-export { FORM_ERROR } from "src/core/components/forms"
+import {
+  Cell,
+  Legend,
+  Pie,
+  PieChart as RechartPieChart,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts"
 
 type Props = {
   data: any[]
@@ -7,11 +13,11 @@ type Props = {
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]
 
-const PieChartWithLegend: React.FC<Props> = ({ data }) => {
+export const PieChart: React.FC<Props> = ({ data }) => {
   return (
     <>
       <ResponsiveContainer width="100%" height="100%">
-        <PieChart width={400} height={400}>
+        <RechartPieChart width={400} height={400}>
           <Pie
             data={data}
             cx="50%"
@@ -44,10 +50,8 @@ const PieChartWithLegend: React.FC<Props> = ({ data }) => {
               color: "black",
             }}
           />
-        </PieChart>
+        </RechartPieChart>
       </ResponsiveContainer>
     </>
   )
 }
-
-export default PieChartWithLegend

@@ -7,6 +7,7 @@ type Props = {
   optional?: boolean
   scope: string
   items: Omit<LabeledCheckboxProps, "scope">[]
+  classLabelOverwrite?: string
   classNameItemWrapper?: string
 }
 
@@ -15,6 +16,7 @@ export const LabeledCheckboxGroup: React.FC<Props> = ({
   optional,
   scope,
   items,
+  classLabelOverwrite,
   classNameItemWrapper,
 }) => {
   const itemsWithScope = items.map((i) => ({ ...i, scope }))
@@ -22,7 +24,7 @@ export const LabeledCheckboxGroup: React.FC<Props> = ({
   return (
     <div>
       {label && (
-        <p className="mb-4 block text-sm font-medium text-gray-700">
+        <p className={classLabelOverwrite || "mb-4 block text-sm font-medium text-gray-700"}>
           {label} {optional && <> (optional)</>}
         </p>
       )}

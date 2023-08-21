@@ -5,15 +5,17 @@ import { isFuture, isPast } from "date-fns"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Spinner } from "src/core/components/Spinner"
-import { Link } from "src/core/components/links"
+import { Link, whiteButtonStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2 } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import surveyDefinition from "src/participation/data/survey.json"
-import GroupedSurveyResponseItem from "src/survey-responses/components/GroupedSurveyResponseItem"
+import { Survey as TSurvey } from "src/participation/data/types"
+import { GroupedSurveyResponseItem } from "src/survey-responses/components/analysis/GroupedSurveyResponseItem"
 import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
-import { getFormatDistanceInDays } from "src/survey-responses/utils/ getFormatDistanceInDays"
+import { getFormatDistanceInDays } from "src/survey-responses/utils/getFormatDistanceInDays"
+import { SurveyTabs } from "src/surveys/components/SurveyTabs"
 import getSurvey from "src/surveys/queries/getSurvey"
 
 export const Survey = () => {
@@ -23,8 +25,47 @@ export const Survey = () => {
   const [{ groupedSurveyResponsesFirstPart, surveySessions, surveyResponsesFeedbackPart }] =
     usePaginatedQuery(getGroupedSurveyResponses, { projectSlug, surveyId: survey.id })
 
+  type QuestionObject = {
+    id: number
+    label: string
+    component: "singleResponse" | "multipleResponse" | "text"
+    props: { responses: { id: number; text: string }[] }
+  }
+
+  function extractQuestionsFromPages(pages: TSurvey["pages"]) {
+    const transformedArray: QuestionObject[] = []
+
+    pages.forEach((page) => {
+      if (!page.questions || page.questions.length === 0) return
+
+      const questions = page.questions
+        .map((question) => {
+          if (!("responses" in question.props)) return
+
+          const questionObject = {
+            id: question.id,
+            label: question.label.de,
+            component: question.component,
+            props: {
+              responses: question.props.responses.map((response) => {
+                return {
+                  id: response.id,
+                  text: response.text.de,
+                }
+              }),
+            },
+          }
+          return questionObject
+        })
+        .filter(Boolean)
+      transformedArray.push(...questions)
+    })
+
+    return transformedArray
+  }
+
   const surveyResponsesFeedbackPartWithLocation = surveyResponsesFeedbackPart.filter(
-    //  @ts-ignore
+    //  @ts-expect-error
     (r) => JSON.parse(r.data)["23"],
   )
 
@@ -57,6 +98,34 @@ export const Survey = () => {
     },
   ]
 
+  const rawData = Object.entries(groupedSurveyResponsesFirstPart).map(([k, v]) => {
+    return { [k]: v }
+  })
+
+  const surveyDefinitionArray = extractQuestionsFromPages(
+    surveyDefinition.pages as TSurvey["pages"],
+  )
+
+  const groupedSurveyResponseData = rawData.map((r) => {
+    const questionId = Object.keys(r)[0]
+    const question = surveyDefinitionArray.find((question) => Number(questionId) === question.id)
+
+    if (!question || !questionId) return
+    const response = r[questionId]
+    if (!response) return
+
+    const data = Object.entries(response).map(([key, value]) => ({
+      name: question?.props?.responses?.find((r) => r.id === Number(key))?.text ?? "(Missing name",
+      value,
+    }))
+
+    return { questionLabel: question.label, data }
+  })
+
+  const handleCopyButtonClick = async () => {
+    await navigator.clipboard.writeText(JSON.stringify(groupedSurveyResponseData))
+  }
+
   return (
     <>
       <MetaTags noindex title={`Beteiligung ${survey.title}`} />
@@ -65,6 +134,7 @@ export const Survey = () => {
         className="mt-12"
         description={
           <>
+            <SurveyTabs />
             <p className="mt-5 text-base text-gray-500">
               Dieser Bereich sammelt die Ergebnisse und Berichte der Beteiligung. Hier finden sie
               die Excel Tabelle und ausgewählte Auswertungsergebnisse.
@@ -105,11 +175,11 @@ export const Survey = () => {
               // eslint-disable-next-line react/jsx-key
               <div key={i} className="grid sm:grid-cols-5 gap-2 grid-cols-3">
                 {Object.entries(Object.values(row)[0] as Record<string, string | number>).map(
-                  ([k, v]) => {
+                  ([label, value]) => {
                     return (
-                      <div key={k} className="flex flex-col gap-2.5 justify-between">
-                        <p className="text-gray-500 !text-sm">{k}</p>
-                        <p className="font-bold">{v}</p>
+                      <div key={label} className="flex flex-col gap-2.5 justify-between">
+                        <p className="text-gray-500 !text-sm">{label}</p>
+                        <p className="font-bold">{value}</p>
                       </div>
                     )
                   },
@@ -122,15 +192,31 @@ export const Survey = () => {
 
       <div className="space-y-4 mt-12">
         <H2>Auswertung in Diagrammen und Korrelationen</H2>
-        {isSurveyFuture && <div>Die Beteiligung liegt in der Zukunft</div>}
-        {!Boolean(surveySessions.length) ? (
-          <div>Es liegen keine Ergebnisse vor.</div>
+        {isSurveyFuture && <p>Die Beteiligung liegt in der Zukunft</p>}
+
+        {!groupedSurveyResponseData.length ? (
+          <p>Es liegen keine Ergebnisse vor.</p>
         ) : (
-          Object.entries(groupedSurveyResponsesFirstPart).map(([k, v]) => {
-            return <GroupedSurveyResponseItem key={k} chartType={"bar"} responseData={{ [k]: v }} />
+          groupedSurveyResponseData.map((questionItem) => {
+            return (
+              <GroupedSurveyResponseItem
+                key={questionItem?.questionLabel}
+                chartType={"bar"}
+                responseData={questionItem?.data}
+                questionLabel={questionItem?.questionLabel}
+              />
+            )
           })
         )}
       </div>
+
+      <SuperAdminBox>
+        <p>
+          <button onClick={handleCopyButtonClick} className={whiteButtonStyles}>
+            Beteiligungsergebnisse in die Zwischenablage kopieren
+          </button>
+        </p>
+      </SuperAdminBox>
 
       <SuperAdminBox>
         <Link href={Routes.AdminEditSurveyPage({ surveyId: survey.id })}>Bearbeiten</Link>

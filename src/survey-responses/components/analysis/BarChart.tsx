@@ -1,6 +1,6 @@
 import {
   Bar,
-  BarChart,
+  BarChart as RechartBarChart,
   CartesianGrid,
   LabelList,
   ResponsiveContainer,
@@ -8,7 +8,6 @@ import {
   YAxis,
 } from "recharts"
 import { ImplicitLabelType } from "recharts/types/component/Label"
-export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
   data: {
@@ -33,11 +32,11 @@ const CustomizedLabel: ImplicitLabelType = (props) => {
   )
 }
 
-const VerticalBartChart: React.FC<Props> = ({ data }) => {
+export const BarChart: React.FC<Props> = ({ data }) => {
   return (
     <>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart
+        <RechartBarChart
           data={data}
           margin={{ top: 15, right: 40, left: 10, bottom: 5 }}
           layout="vertical"
@@ -65,10 +64,8 @@ const VerticalBartChart: React.FC<Props> = ({ data }) => {
             {/* <LabelList dataKey="key" position="top" /> */}
             <LabelList dataKey="value" position="right" />
           </Bar>
-        </BarChart>
+        </RechartBarChart>
       </ResponsiveContainer>
     </>
   )
 }
-
-export default VerticalBartChart

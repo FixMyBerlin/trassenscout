@@ -6,7 +6,7 @@ import { useFormContext } from "react-hook-form"
 export interface LabeledRadiobuttonProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
   /** Radiobutton scope */
   scope: string
-  /**  The field value must be a string. If the value is a number in the DB, it needs to be parsed to a string to be used as `initialValues`. When passed to the mutation, the value needs to be parsed back to a number using `parseInt`. This requires corresponding modifications to the ZOD schemas. */
+  /** The field value must be a string. If the value is a number in the DB, it needs to be parsed to a string to be used as `initialValues`. When passed to the mutation, the value needs to be parsed back to a number using `parseInt`. This requires corresponding modifications to the ZOD schemas. */
   value: string
   /** Field label */
   label: string | React.ReactNode
@@ -19,13 +19,14 @@ export interface LabeledRadiobuttonProps extends PropsWithoutRef<JSX.IntrinsicEl
 
 // Note: See also src/participation/components/form/ParticipationLabeledRadiobutton.tsx
 export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobuttonProps>(
-  ({ scope, value, name, label, help, outerProps, labelProps, readonly, ...props }, _ref) => {
+  ({ scope, value, label, help, outerProps, labelProps, readonly, ...props }, _ref) => {
     const {
       register,
       formState: { isSubmitting, errors },
     } = useFormContext()
 
-    const hasError = Boolean(errors[name || value])
+    const hasError = Boolean(errors[value])
+    const key = [scope, value].join("-")
 
     return (
       <div
@@ -43,7 +44,7 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
             {
               ...register(scope) /* this adds the name property */
             }
-            id={value}
+            id={key}
             {...props}
             className={clsx(
               "h-4 w-4",
@@ -58,10 +59,10 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
         </div>
         <label
           {...labelProps}
-          htmlFor={value}
+          htmlFor={key}
           className={clsx(
-            "ml-3 block cursor-pointer text-sm font-medium",
-            readonly ? "text-gray-400" : "text-gray-700 hover:text-gray-800",
+            "ml-3 block text-sm font-medium",
+            readonly ? "text-gray-400" : "cursor-pointer text-gray-700 hover:text-gray-800",
           )}
         >
           {label}
