@@ -32,36 +32,33 @@ export const Survey = () => {
     props: { responses: { id: number; text: string }[] }
   }
 
-  function transformJSONToArray(json: TSurvey) {
-    const pages = json.pages
-
+  function extractQuestionsFromPages(pages: TSurvey["pages"]) {
     const transformedArray: QuestionObject[] = []
 
     pages.forEach((page) => {
-      // Check if the page has questions
-      if (page.questions && page.questions.length > 0) {
-        const questions = page.questions
-          .map((question) => {
-            if (!("responses" in question.props)) return
+      if (!page.questions || page.questions.length === 0) return
 
-            const questionObject = {
-              id: question.id,
-              label: question.label.de,
-              component: question.component,
-              props: {
-                responses: question.props.responses.map((response) => {
-                  return {
-                    id: response.id,
-                    text: response.text.de,
-                  }
-                }),
-              },
-            }
-            return questionObject
-          })
-          .filter(Boolean)
-        questions && transformedArray.push(...questions)
-      }
+      const questions = page.questions
+        .map((question) => {
+          if (!("responses" in question.props)) return
+
+          const questionObject = {
+            id: question.id,
+            label: question.label.de,
+            component: question.component,
+            props: {
+              responses: question.props.responses.map((response) => {
+                return {
+                  id: response.id,
+                  text: response.text.de,
+                }
+              }),
+            },
+          }
+          return questionObject
+        })
+        .filter(Boolean)
+      transformedArray.push(...questions)
     })
 
     return transformedArray
@@ -105,8 +102,9 @@ export const Survey = () => {
     return { [k]: v }
   })
 
-  // @ts-expect-error
-  const surveyDefinitionArray: QuestionObject[] = transformJSONToArray(surveyDefinition)
+  const surveyDefinitionArray = extractQuestionsFromPages(
+    surveyDefinition.pages as TSurvey["pages"],
+  )
 
   const groupedSurveyResponseData = rawData.map((r) => {
     const questionId = Object.keys(r)[0]
