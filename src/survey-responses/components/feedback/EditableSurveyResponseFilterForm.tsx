@@ -3,13 +3,9 @@ import { Operator } from "@prisma/client"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { PropsWithoutRef } from "react"
-import { FormProvider, UseFormProps, useForm } from "react-hook-form"
+import { FormProvider, useForm } from "react-hook-form"
 import { SuperAdminBox } from "src/core/components/AdminBox"
-import {
-  LabeledCheckbox,
-  LabeledCheckboxGroup,
-  LabeledRadiobuttonGroup,
-} from "src/core/components/forms"
+import { LabeledCheckboxGroup, LabeledRadiobuttonGroup } from "src/core/components/forms"
 import { linkStyles } from "src/core/components/links"
 import { Prettify } from "src/core/types"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
@@ -26,37 +22,77 @@ type FormProps<S extends z.ZodType<any, any>> = Omit<
   topics: Prettify<
     Awaited<ReturnType<typeof getSurveyResponseTopicsByProject>>["surveyResponseTopics"]
   >
-  initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
 }
 
 export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>({
   schema,
   operators,
   topics,
-  initialValues,
 }: FormProps<S>) {
+  const router = useRouter()
+
+  const {
+    operator: queryOperator,
+    statuses: queryStatuses,
+    topics: queryTopics,
+    hasnotes: queryHasnotes,
+  } = router.query
+  // TODO: Resetting the form does not work, yet. The searchActive was supposed to help but does not fix it.
+  // For some reason the router.query destructuring above still has the old values after handleFilterReset was called.
+  // I tried different ways to reset the filters. One can see a quick flicker of the empty URL after handleFilterReset was called.
+  const searchActive = queryOperator && queryStatuses && queryTopics && queryHasnotes
+
   const methods = useForm<z.infer<S>>({
     mode: "onBlur",
     resolver: schema ? zodResolver(schema) : undefined,
-    defaultValues: initialValues,
+    defaultValues: async () => ({
+      operator: (searchActive && queryOperator) || "0",
+      statuses: (searchActive && queryStatuses) || "ALL",
+      topics: (searchActive && queryTopics) || "ALL",
+      hasnotes: (searchActive && queryHasnotes) || "ALL",
+    }),
   })
 
-  const router = useRouter()
   const handleSubmit = async (values: any) => {
-    await router.push({ query: { ...router.query, ...values } })
+    await router.push({ query: { ...router.query, ...values } }, undefined, { scroll: false })
   }
 
   const handleFilterReset = async () => {
-    await router.push(
-      { query: { projectSlug: router.query.projectSlug, surveyId: router.query.surveyId } },
-      undefined,
-      { scroll: false },
-    )
+    delete router.query.operator
+    delete router.query.statuses
+    delete router.query.topics
+    delete router.query.hasnotes
+
+    await router.push({ query: { ...router.query } }, undefined, { scroll: false })
   }
+
+  const operatorOptions = [
+    ...operators.map((operator: Operator) => {
+      return { value: String(operator.id), label: operator.title }
+    }),
+    { value: "0", label: "Kein Baulastträger" },
+  ]
+  const statusOptions = [
+    ...Object.entries(surveyResponseStatus).map(([value, label]) => {
+      return { value, label }
+    }),
+    { value: "ALL", label: "Alle Status" },
+  ]
+  const topicsOptions = [
+    ...topics.map((t) => {
+      return { value: String(t.id), label: t.title }
+    }),
+    { value: "ALL", label: "Alle Topics" },
+  ]
+  const hasnotesOptions = [
+    { value: "ALL", label: "Egal" },
+    { value: "true", label: "Mit Notiz" },
+    { value: "false", label: "Ohne Notiz" },
+  ]
 
   return (
     <nav>
-      <details>
+      <details open>
         <summary className="cursor-pointer text-gray-700 hover:text-gray-80">Filter</summary>
 
         <SuperAdminBox>
@@ -71,34 +107,27 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
               label="Baulastträger"
               classLabelOverwrite="font-bold mb-3"
               scope="operator"
-              items={operators.map((operator: Operator) => {
-                return { value: String(operator.id), label: operator.title }
-              })}
+              items={operatorOptions}
             />
             <LabeledCheckboxGroup
               label="Status"
               classLabelOverwrite="font-bold mb-3"
               classNameItemWrapper={clsx("flex-shrink-0")}
-              scope={"status"}
-              items={Object.entries(surveyResponseStatus).map(([value, label]) => {
-                return { value, label }
-              })}
+              scope={"statuses"}
+              items={statusOptions}
             />
             <LabeledCheckboxGroup
               label="Themenschwerpunkt"
               classLabelOverwrite="font-bold mb-3"
-              scope="topic"
-              items={topics.map((t) => {
-                return {
-                  value: String(t.id),
-                  label: t.title,
-                }
-              })}
+              scope="topics"
+              items={topicsOptions}
             />
-            <div>
-              <h4 className="font-bold mb-3">Notiz</h4>
-              <LabeledCheckbox scope="hasnotes" value="true" label="Nur Beiträge mit Notiz" />
-            </div>
+            <LabeledRadiobuttonGroup
+              label="Notiz"
+              classLabelOverwrite="font-bold mb-3"
+              scope="hasnotes"
+              items={hasnotesOptions}
+            />
 
             <button className={linkStyles} onClick={handleFilterReset}>
               Filter löschen

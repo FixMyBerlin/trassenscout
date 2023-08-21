@@ -16,6 +16,7 @@ import getSubsections from "src/subsections/queries/getSubsections"
 import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { EditableSurveyResponseFilterForm } from "src/survey-responses/components/feedback/EditableSurveyResponseFilterForm"
 import EditableSurveyResponseListItem from "src/survey-responses/components/feedback/EditableSurveyResponseListItem"
+import { useFilteredResponses } from "src/survey-responses/components/feedback/useFilteredResponses"
 import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedbackSurveyResponses"
 import { SurveyTabs } from "src/surveys/components/SurveyTabs"
 import getSurvey from "src/surveys/queries/getSurvey"
@@ -29,6 +30,7 @@ export const SurveyResponse = () => {
     getFeedbackSurveyResponses,
     { projectSlug, surveyId: survey.id },
   )
+  const filteredResponses = useFilteredResponses(feedbackSurveyResponses)
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const [{ surveyResponseTopics: topics }, { refetch: refetchTopics }] = useQuery(
     getSurveyResponseTopicsByProject,
@@ -86,16 +88,16 @@ export const SurveyResponse = () => {
       />
 
       <div className="space-y-4 mt-12">
-        <H2>Kommentare aus Bürgerbeteiligung ({feedbackSurveyResponses.length})</H2>
+        <H2>Kommentare aus Bürgerbeteiligung ({filteredResponses.length})</H2>
 
         <SuperAdminBox>
           <EditableSurveyResponseFilterForm operators={operators} topics={topics} />
         </SuperAdminBox>
 
-        <ZeroCase visible={feedbackSurveyResponses.length} name={"Beiträge"} />
+        <ZeroCase visible={filteredResponses.length} name={"Beiträge"} />
 
         <section>
-          {feedbackSurveyResponses.map((response) => (
+          {filteredResponses.map((response) => (
             <div
               key={response.id}
               className="w-full text-sm first:rounded-t-xl border border-gray-200 border-b-0 last:border-b last:rounded-b-xl overflow-hidden"
