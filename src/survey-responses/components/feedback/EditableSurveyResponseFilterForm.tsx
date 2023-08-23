@@ -40,7 +40,6 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   // For some reason the router.query destructuring above still has the old values after handleFilterReset was called.
   // I tried different ways to reset the filters. One can see a quick flicker of the empty URL after handleFilterReset was called.
   const searchActive = queryOperator && queryStatuses && queryTopics && queryHasnotes
-
   const methods = useForm<z.infer<S>>({
     mode: "onBlur",
     resolver: schema ? zodResolver(schema) : undefined,
@@ -57,11 +56,11 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   }
 
   const handleFilterReset = async () => {
+    methods.reset()
     delete router.query.operator
     delete router.query.statuses
     delete router.query.topics
     delete router.query.hasnotes
-
     await router.push({ query: { ...router.query } }, undefined, { scroll: false })
   }
 
@@ -127,8 +126,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
               scope="hasnotes"
               items={hasnotesOptions}
             />
-
-            <button className={linkStyles} onClick={handleFilterReset}>
+            <button type="button" className={linkStyles} onClick={handleFilterReset}>
               Filter löschen
             </button>
           </form>
