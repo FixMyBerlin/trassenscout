@@ -30,7 +30,6 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   topics,
 }: FormProps<S>) {
   const router = useRouter()
-
   const {
     operator: queryOperator,
     statuses: queryStatuses,
@@ -46,10 +45,10 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     mode: "onBlur",
     resolver: schema ? zodResolver(schema) : undefined,
     defaultValues: async () => ({
-      operator: (searchActive && queryOperator) || "0",
-      statuses: (searchActive && queryStatuses) || "ALL",
-      topics: (searchActive && queryTopics) || "ALL",
-      hasnotes: (searchActive && queryHasnotes) || "ALL",
+      operator: (searchActive && queryOperator) || "ALL", // default: radio "ALL"
+      statuses: (searchActive && queryStatuses) || [...Object.keys(surveyResponseStatus)], // default: all checked
+      topics: (searchActive && queryTopics) || [...topics.map((t) => String(t.id)), "0"], // default: all checked
+      hasnotes: (searchActive && queryHasnotes) || "ALL", // default: radio "ALL"
     }),
   })
 
@@ -67,25 +66,25 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   }
 
   const operatorOptions = [
+    { value: "ALL", label: "Alle" },
     ...operators.map((operator: Operator) => {
       return { value: String(operator.id), label: operator.title }
     }),
-    { value: "0", label: "Kein Baulastträger" },
+    { value: "0", label: "Nicht zugeordnet" },
   ]
   const statusOptions = [
     ...Object.entries(surveyResponseStatus).map(([value, label]) => {
       return { value, label }
     }),
-    { value: "ALL", label: "Alle Status" },
   ]
   const topicsOptions = [
     ...topics.map((t) => {
       return { value: String(t.id), label: t.title }
     }),
-    { value: "ALL", label: "Alle Topics" },
+    { value: "0", label: "ohne Themenschwerpunkt" },
   ]
   const hasnotesOptions = [
-    { value: "ALL", label: "Egal" },
+    { value: "ALL", label: "Alle" },
     { value: "true", label: "Mit Notiz" },
     { value: "false", label: "Ohne Notiz" },
   ]
