@@ -10,7 +10,7 @@ import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries
 import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedbackSurveyResponses"
 import { getSurveyResponseCategoryById } from "src/survey-responses/utils/getSurveyResponseCategoryById"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
-import { surveyResponseStatus } from "./surveyResponseStatus"
+import StatusTag from "./StatusTag"
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
@@ -42,7 +42,6 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const params = useRouterQuery()
   const open = parseInt(String(params.responseDetails)) === response.id
 
-  const translatedStatus = response.status ? surveyResponseStatus[response.status] : ""
   const operatorWitFallback = response.operator?.title || "k.A."
   // @ts-expect-error `data` is of type unkown
   const userText = response.data["34"] || response.data["35"]
@@ -55,12 +54,13 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
       <button
         className={clsx(
           "py-4 text-left text-sm text-gray-900 hover:bg-gray-50 group flex w-full items-center justify-between pr-4 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75 sm:pr-6",
-          open ? "bg-blue-50" : "border-b border-gray-100",
+          open ? "bg-gray-50" : "border-b border-gray-100",
         )}
         onClick={() => (open ? handleClose() : handleOpen())}
       >
-        <h3 className="flex grow items-center px-6 pb-2 pt-3 font-semibold text-blue-500">
-          #{response.id} — {translatedStatus} — {operatorWitFallback}
+        <h3 className="gap-4 flex grow items-center px-6 pb-2 pt-3 font-semibold text-blue-500">
+          #{response.id} - {operatorWitFallback}
+          <StatusTag status={response.status} />
         </h3>
         {open ? (
           <ChevronUpIcon className="h-5 w-5 text-gray-700 group-hover:text-black flex-shrink-0" />
