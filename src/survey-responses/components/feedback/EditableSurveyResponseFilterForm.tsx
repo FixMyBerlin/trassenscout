@@ -4,7 +4,6 @@ import clsx from "clsx"
 import { useRouter } from "next/router"
 import { PropsWithoutRef } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-import { SuperAdminBox } from "src/core/components/AdminBox"
 import { LabeledCheckboxGroup, LabeledRadiobuttonGroup } from "src/core/components/forms"
 import { linkStyles } from "src/core/components/links"
 import { Prettify } from "src/core/types"
@@ -80,7 +79,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     ...topics.map((t) => {
       return { value: String(t.id), label: t.title }
     }),
-    { value: "0", label: "ohne Themenschwerpunkt" },
+    { value: "0", label: "Ohne Themenschwerpunkt" },
   ]
   const hasnotesOptions = [
     { value: "ALL", label: "Alle" },
@@ -92,10 +91,6 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     <nav>
       <details open>
         <summary className="cursor-pointer text-gray-700 hover:text-gray-80">Filter</summary>
-
-        <SuperAdminBox>
-          <code>{JSON.stringify(router.query, undefined, 2)}</code>
-        </SuperAdminBox>
         <FormProvider {...methods}>
           <form
             onChange={async () => await methods.handleSubmit(handleSubmit)()}

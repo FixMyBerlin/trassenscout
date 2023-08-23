@@ -2,7 +2,6 @@ import { BlitzPage, useParam, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 import { Suspense, useEffect, useRef } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
@@ -90,9 +89,7 @@ export const SurveyResponse = () => {
       <div className="space-y-4 mt-12">
         <H2>Kommentare aus Bürgerbeteiligung ({filteredResponses.length})</H2>
 
-        <SuperAdminBox>
-          <EditableSurveyResponseFilterForm operators={operators} topics={topics} />
-        </SuperAdminBox>
+        <EditableSurveyResponseFilterForm operators={operators} topics={topics} />
 
         <ZeroCase visible={filteredResponses.length} name={"Beiträge"} />
 
