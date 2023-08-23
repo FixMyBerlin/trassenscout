@@ -2,7 +2,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
 import clsx from "clsx"
-import { PropsWithoutRef } from "react"
+import { PropsWithoutRef, useState } from "react"
 import { FormProvider, UseFormProps, useForm } from "react-hook-form"
 import {
   LabeledCheckboxGroup,
@@ -60,6 +60,8 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   const [createSurveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
     createSurveyResponseTopicsOnSurveyResponses,
   )
+
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
   const handleSubmit = async (values: any) => {
     console.log("handleSubmit", { values })
@@ -159,6 +161,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
             onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
               e.preventDefault()
               await methods.handleSubmit(handleSubmit)()
+              setHasUnsavedChanges(false)
             }}
           >
             <div className="flex-grow space-y-2 pr-2 pb-4">
@@ -167,10 +170,20 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                 help="Bitte starten Sie Ihre Notiz immer mit ihrem Namen"
                 name="note"
                 label=""
+                onChange={() => setHasUnsavedChanges(true)}
+                className={clsx(
+                  hasUnsavedChanges &&
+                    "focus:border-yellow-500 focus:ring-yellow-500 border-yellow-500 ring-yellow-500",
+                )}
               />
-              <button type="submit" className={clsx(blueButtonStyles, "!py-2.5 !px-3")}>
-                Speichern
-              </button>
+              <div className="flex justify-between items-end">
+                <button type="submit" className={clsx(blueButtonStyles, "!py-2.5 !px-3")}>
+                  Speichern
+                </button>
+                <small className={clsx(!hasUnsavedChanges && "opacity-0", "text-yellow-500")}>
+                  ungespeicherte Änderungen
+                </small>
+              </div>
             </div>
           </form>
         </div>
