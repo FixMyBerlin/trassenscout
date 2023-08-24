@@ -63,6 +63,10 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
+  const operatorsOptions = operators.map((operator: Operator) => {
+    return { value: String(operator.id), label: operator.title }
+  })
+
   const handleSubmit = async (values: any) => {
     console.log("handleSubmit", { values })
     try {
@@ -72,7 +76,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         status: values.status,
         note: values.note,
         // Note: initialValues need to initialize `operatorId: 0`
-        operatorId: values.operatorId === 0 ? null : Number(values.operatorId),
+        operatorId: values.operatorId === (0 || "0") ? null : Number(values.operatorId),
       })
 
       if (Boolean(values.surveyResponseTopics)) {
@@ -151,9 +155,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                   <h4 className="font-bold mb-3">Baulastträger</h4>
                   <LabeledRadiobuttonGroup
                     scope="operatorId"
-                    items={operators.map((operator: Operator) => {
-                      return { value: String(operator.id), label: operator.title }
-                    })}
+                    items={[...operatorsOptions, { value: "0", label: "Nicht zugeordnet" }]}
                   />
                 </form>
               </div>
