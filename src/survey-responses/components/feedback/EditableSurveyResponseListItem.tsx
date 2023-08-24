@@ -42,7 +42,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const params = useRouterQuery()
   const open = parseInt(String(params.responseDetails)) === response.id
 
-  const operatorWitFallback = response.operator?.title || "k.A."
+  const operatorSlugWitFallback = response.operator?.slug || "k.A."
   // @ts-expect-error `data` is of type unkown
   const userText = response.data["34"] || response.data["35"]
   const userCategory =
@@ -54,13 +54,16 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
       <button
         className={clsx(
           "py-4 text-left text-sm text-gray-900 hover:bg-gray-50 group flex w-full items-center justify-between pr-4 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75 sm:pr-6",
-          open ? "bg-gray-50" : "border-b border-gray-100",
+          open ? "bg-gray-50" : "border-b border-gray-300",
         )}
         onClick={() => (open ? handleClose() : handleOpen())}
       >
-        <h3 className="gap-4 flex grow items-center px-6 pb-2 pt-3 font-semibold text-blue-500">
-          #{response.id} - {operatorWitFallback}
+        <h3 className="gap-4 flex grow items-center px-6 pb-2 pt-3 text-gray-700">
+          {response.id}
           <StatusTag status={response.status} />
+          <span className=" bg-gray-300 rounded-full uppercase px-4 py-2 font-semibold">
+            {operatorSlugWitFallback}
+          </span>
         </h3>
         {open ? (
           <ChevronUpIcon className="h-5 w-5 text-gray-700 group-hover:text-black flex-shrink-0" />
@@ -70,14 +73,17 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
       </button>
 
       {open && (
-        <div className={clsx("overflow-clip p-6", open ? "border-b border-gray-100" : "")}>
-          <div className="flex gap-12 mb-10">
-            <blockquote className="border-l-4 border-l-gray-200 pl-2 mb-6">
+        <div className={clsx("overflow-clip p-6", open ? "border-b border-gray-300" : "")}>
+          <div className="flex gap-12 mb-10 flex-col md:flex-row justify-between">
+            <blockquote className="bg-yellow-100 p-4 mb-6">
               <Markdown markdown={userText} />
+              <div className="text-right text-gray-500">{`Bürgerbeitrag vom: ${response.surveySession.createdAt.toLocaleDateString()} um  ${response.surveySession.createdAt.toLocaleTimeString()}`}</div>
             </blockquote>
             <div>
               <h4 className="font-bold mb-5">Kategorie</h4>
-              <span className="p-3 bg-gray-300 rounded">{userCategory}</span>
+              <div className="w-48 flex-shrink-0">
+                <span className="p-3 px-4 bg-gray-300 rounded">{userCategory}</span>
+              </div>
             </div>
           </div>
           <EditableSurveyResponseForm

@@ -11,6 +11,7 @@ import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { z } from "zod"
 import { surveyResponseStatus } from "./surveyResponseStatus"
+import { XMarkIcon } from "@heroicons/react/20/solid"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -79,7 +80,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     ...topics.map((t) => {
       return { value: String(t.id), label: t.title }
     }),
-    { value: "0", label: "Ohne Themenschwerpunkt" },
+    { value: "0", label: "Ohne Thema" },
   ]
   const hasnotesOptions = [
     { value: "ALL", label: "Alle" },
@@ -94,35 +95,39 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
         <FormProvider {...methods}>
           <form
             onChange={async () => await methods.handleSubmit(handleSubmit)()}
-            className="flex gap-8 justify-start items-start"
+            className="flex flex-col gap-4 justify-start items-start"
           >
-            <LabeledRadiobuttonGroup
-              label="Baulastträger"
-              classLabelOverwrite="font-bold mb-3"
-              scope="operator"
-              items={operatorOptions}
-            />
-            <LabeledCheckboxGroup
-              label="Status"
-              classLabelOverwrite="font-bold mb-3"
-              classNameItemWrapper={clsx("flex-shrink-0")}
-              scope={"statuses"}
-              items={statusOptions}
-            />
-            <LabeledCheckboxGroup
-              label="Themenschwerpunkt"
-              classLabelOverwrite="font-bold mb-3"
-              scope="topics"
-              items={topicsOptions}
-            />
-            <LabeledRadiobuttonGroup
-              label="Notiz"
-              classLabelOverwrite="font-bold mb-3"
-              scope="hasnotes"
-              items={hasnotesOptions}
-            />
-            <button type="button" className={linkStyles} onClick={handleFilterReset}>
-              Filter löschen
+            <div className="flex flex-col sm:flex-row gap-12 mt-6">
+              <LabeledCheckboxGroup
+                label="Status"
+                classLabelOverwrite="font-bold mb-3"
+                classNameItemWrapper={clsx("flex-shrink-0")}
+                scope={"statuses"}
+                items={statusOptions}
+              />
+              <LabeledRadiobuttonGroup
+                label="Baulastträger"
+                classLabelOverwrite="font-bold mb-3"
+                scope="operator"
+                items={operatorOptions}
+              />
+              <LabeledRadiobuttonGroup
+                label="Notiz"
+                classLabelOverwrite="font-bold mb-3"
+                scope="hasnotes"
+                items={hasnotesOptions}
+              />
+              <LabeledCheckboxGroup
+                label="Themen"
+                classLabelOverwrite="font-bold mb-3"
+                scope="topics"
+                items={topicsOptions}
+                classNameItemWrapper="grid grid-cols-3 grid-rows-10 grid-flow-col-dense"
+              />
+            </div>
+            <button type="button" className={clsx(linkStyles, "flex")} onClick={handleFilterReset}>
+              <XMarkIcon className="h-4 w-4" />
+              Alle Filter deaktivieren
             </button>
           </form>
         </FormProvider>

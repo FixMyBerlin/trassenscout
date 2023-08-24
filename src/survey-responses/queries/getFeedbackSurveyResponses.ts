@@ -25,13 +25,14 @@ export default resolver.pipe(
       },
       orderBy: { id: "desc" },
       include: {
-        operator: { select: { id: true, title: true } },
+        operator: { select: { id: true, title: true, slug: true } },
         // surveyResponseTopics: {
         //   include: {
         //     surveyResponseTopic: { select: { id: true, title: true } },
         //   },
         // },
         surveyResponseTopics: true,
+        surveySession: { select: { createdAt: true } },
       },
     })
 

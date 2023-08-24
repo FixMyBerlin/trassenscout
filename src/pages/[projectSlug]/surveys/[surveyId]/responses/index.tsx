@@ -97,7 +97,7 @@ export const SurveyResponse = () => {
           {filteredResponses.map((response) => (
             <div
               key={response.id}
-              className="w-full text-sm first:rounded-t-xl border border-gray-200 border-b-0 last:border-b last:rounded-b-xl overflow-hidden"
+              className="w-full text-sm first:rounded-t-xl border border-gray-300 border-b-0 last:border-b last:rounded-b-xl overflow-hidden"
               // I tried passing the ref as forwardRef but that did not work for unknown reasons.
               ref={(element) => (accordionRefs.current[response.id] = element)}
             >

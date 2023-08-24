@@ -49,7 +49,7 @@ export const StatusTag: React.FC<Props> = ({ status }) => {
     <span
       className={clsx(
         statusColor,
-        "flex gap-1 items-center pl-3 pr-4 py-2 rounded-full font-normal",
+        "flex gap-1 items-center pl-3 pr-4 py-2 rounded-full font-semibold",
       )}
     >
       <StatusTagIcon status={status} />
