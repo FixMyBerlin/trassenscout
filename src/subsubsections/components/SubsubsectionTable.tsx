@@ -173,7 +173,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
                 )}
               >
-                {formattedLength(subsubsections.reduce((acc, sub) => acc + (sub.width || 0), 0))}
+                {formattedWidth(subsubsections.reduce((acc, sub) => acc + (sub.width || 0), 0))}
               </td>
               <td
                 className={clsx(
@@ -181,7 +181,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
                 )}
               >
-                {formattedLength(
+                {formattedEuro(
                   subsubsections.reduce((acc, sub) => acc + (sub.costEstimate || 0), 0),
                 )}
               </td>

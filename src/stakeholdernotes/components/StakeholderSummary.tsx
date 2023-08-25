@@ -9,7 +9,7 @@ export const StakeholderSummary: React.FC<Props> = ({ format, stakeholdernotesCo
 
   return (
     <p>
-      {format === "labelNumber" && <strong>Stakeholder:</strong>} {stakeholdernotesCounts.done} von{" "}
+      {format === "labelNumber" && <strong>TÖBs:</strong>} {stakeholdernotesCounts.done} von{" "}
       {stakeholdernotesCounts.relevant} geklärt
     </p>
   )
