@@ -1,37 +1,52 @@
 import { CheckIcon, XMarkIcon } from "@heroicons/react/20/solid"
-import { Stakeholdernote } from "@prisma/client"
+import { Stakeholdernote, SurveyResponse } from "@prisma/client"
 import React from "react"
 import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
 import { ClockIcon, DocumentTextIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
+import { surveyResponseStatus } from "src/survey-responses/components/feedback/surveyResponseStatus"
 
-type Props = { status: Stakeholdernote["status"] }
+type Props = {
+  status: Stakeholdernote["status"] | SurveyResponse["status"]
+}
 
 const statusColors = {
   IRRELEVANT: "text-gray-700 bg-gray-100",
   PENDING: "text-yellow-700 bg-yellow-100",
   IN_PROGRESS: "text-indigo-700 bg-indigo-100",
+  ASSIGNED: "text-indigo-700 bg-indigo-100",
+  HANDED_OVER: "text-indigo-700 bg-indigo-100",
   DONE: "text-green-700 bg-green-100",
+  DONE_FAQ: "text-green-700 bg-green-100",
+  DONE_PLANING: "text-green-700 bg-green-100",
 }
 
 const statusIcon = {
-  IRRELEVANT: <XMarkIcon className="h-6 w-6" />,
-  PENDING: <DocumentTextIcon className="h-6 w-6" />,
-  IN_PROGRESS: <ClockIcon className="h-6 w-6" />,
-  DONE: <CheckIcon className="h-6 w-6" />,
+  IRRELEVANT: <XMarkIcon className="h-4 w-4" />,
+  PENDING: <DocumentTextIcon className="h-4 w-4" />,
+  IN_PROGRESS: <ClockIcon className="h-4 w-4" />,
+  ASSIGNED: <ClockIcon className="h-4 w-4" />,
+  HANDED_OVER: <ClockIcon className="h-4 w-4" />,
+  DONE: <CheckIcon className="h-4 w-4" />,
+  DONE_FAQ: <CheckIcon className="h-4 w-4" />,
+  DONE_PLANING: <CheckIcon className="h-4 w-4" />,
 }
 
-export const StakeholderSectionListItemStatus: React.FC<Props> = ({ status }) => {
-  const label = stakeholderNotesStatus[status]
+export const ListItemStatus: React.FC<Props> = ({ status }) => {
+  if (!status) return null
+
+  const label =
+    // @ts-expect-error
+    status in stakeholderNotesStatus ? stakeholderNotesStatus[status] : surveyResponseStatus[status]
 
   return (
     <div
       className={clsx(
         statusColors[status],
-        "flex w-full items-center justify-between gap-2 rounded-full px-5 py-1 font-bold",
+        "w-[200px] px-5 flex gap-4 items-center py-2 rounded-full",
       )}
     >
-      {statusIcon[status]} <div className="grow text-center">{label}</div>
+      {statusIcon[status]} <div className="pt-1">{label}</div>
     </div>
   )
 }

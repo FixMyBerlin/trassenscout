@@ -5,12 +5,12 @@ import { useRouter } from "next/router"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Prettify } from "src/core/types"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
+import { ListItemStatus } from "src/stakeholdernotes/components/StakeholderSectionListItemStatus"
 import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedbackSurveyResponses"
 import { getSurveyResponseCategoryById } from "src/survey-responses/utils/getSurveyResponseCategoryById"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
-import StatusTag from "./StatusTag"
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
@@ -58,13 +58,19 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
         )}
         onClick={() => (open ? handleClose() : handleOpen())}
       >
-        <h3 className="gap-4 flex grow items-center px-6 pb-2 pt-3 text-gray-700">
-          {response.id}
-          <StatusTag status={response.status} />
-          <span className=" bg-gray-300 rounded-full uppercase px-4 py-2 font-semibold">
-            {operatorSlugWitFallback}
-          </span>
-        </h3>
+        <div className="gap-4 flex items-center px-6 pb-2 pt-3">
+          <h3 className="text-gray-700">{response.id} </h3>
+          <ListItemStatus status={response.status} />
+          <div
+            className={clsx(
+              "bg-gray-300 rounded-full px-4 py-2 text-sm",
+              operatorSlugWitFallback !== "k.A." && "uppercase",
+            )}
+          >
+            <div className="pt-1">{operatorSlugWitFallback}</div>
+          </div>
+        </div>
+
         {open ? (
           <ChevronUpIcon className="h-5 w-5 text-gray-700 group-hover:text-black flex-shrink-0" />
         ) : (
