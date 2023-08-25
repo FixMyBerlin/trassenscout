@@ -221,30 +221,31 @@ model Subsection {
 }
 
 model Subsubsection {
-  id           Int                   @id @default(autoincrement())
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
+  id              Int                   @id @default(autoincrement())
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
   //
-  slug         String // sortTitle and URL Slug
-  subTitle     String?
-  order        Int                   @default(autoincrement())
-  type         SubsubsectionTypeEnum @default(ROUTE) // Führungform
-  geometry     Json
-  labelPos     LabelPositionEnum     @default(top)
-  task         String // Maßnahmentyp
-  length       Float? // Kilometer
-  width        Float? // Meter
-  costEstimate Float? // Euro
-  description  String? // Anmerkungen
-  mapillaryKey String?
+  slug            String // sortTitle and URL Slug
+  subTitle        String?
+  order           Int                   @default(autoincrement())
+  type            SubsubsectionTypeEnum @default(ROUTE) // Führungform
+  geometry        Json
+  labelPos        LabelPositionEnum     @default(top)
+  task            String // Maßnahmentyp
+  length          Float? // Kilometer
+  width           Float? // Meter
+  costEstimate    Float? // Euro
+  qualityStandard QualityStandardEnum?
+  description     String? // Anmerkungen
+  mapillaryKey    String?
   //
-  manager      User?                 @relation(fields: [managerId], references: [id])
-  managerId    Int?
+  manager         User?                 @relation(fields: [managerId], references: [id])
+  managerId       Int?
   //
-  subsection   Subsection            @relation(fields: [subsectionId], references: [id])
-  subsectionId Int
+  subsection      Subsection            @relation(fields: [subsectionId], references: [id])
+  subsectionId    Int
   //
-  files        File[]
+  files           File[]
 
   @@unique([subsectionId, slug])
   @@unique([subsectionId, order])
@@ -253,6 +254,13 @@ model Subsubsection {
 enum SubsubsectionTypeEnum {
   ROUTE // Regelführung Strecke RF
   AREA // Sonderführung Punkt (Bereich) SF
+}
+
+enum QualityStandardEnum {
+  RSV // Radschnellverbindung
+  RVR // Radvorrangroute
+  RNBW // RadNETZ BW Standard
+  NO // kein Standard
 }
 
 model Stakeholdernote {

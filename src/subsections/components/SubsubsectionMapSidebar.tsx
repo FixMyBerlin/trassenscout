@@ -20,6 +20,10 @@ import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { getFullname } from "src/users/utils"
 import { mapillaryLink } from "./utils/mapillaryLink"
+import {
+  getSubsubsectionQualityStandardShortText,
+  subsubsectionTranslatedQualityStandard,
+} from "src/subsubsections/utils/subsubsectionTranslatedQualityStandard"
 
 type Props = {
   subsubsection: SubsubsectionWithPosition
@@ -119,6 +123,21 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                 </th>
                 <td className="break-words px-3 py-4 text-sm text-gray-500">
                   {formattedEuro(subsubsection.costEstimate)}
+                </td>
+              </tr>
+              <tr>
+                <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
+                  Standard
+                </th>
+                <td
+                  className={clsx(
+                    subsubsection.qualityStandard === "RSV" && "text-green-500",
+                    "break-words px-3 py-4 text-sm text-gray-500",
+                  )}
+                >
+                  {!subsubsection.qualityStandard
+                    ? "k.A."
+                    : subsubsectionTranslatedQualityStandard[subsubsection.qualityStandard]}
                 </td>
               </tr>
               <tr>

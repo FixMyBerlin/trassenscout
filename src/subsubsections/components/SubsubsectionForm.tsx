@@ -17,6 +17,7 @@ import getSubsubsections from "../queries/getSubsubsections"
 import { GeometryInput } from "./GeometryInput/GeometryInput"
 export { FORM_ERROR } from "src/core/components/forms"
 import { SubsubsectionSchemaForm } from "src/subsubsections/schema"
+import { subsubsectionTranslatedQualityStandard } from "../utils/subsubsectionTranslatedQualityStandard"
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const { projectSlug } = useSlugs()
@@ -50,7 +51,6 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
     return orders
   }
   const orders = ordersWithPlaceholder()
-
   return (
     <Form<S> {...props}>
       <LabeledTextField
@@ -93,6 +93,14 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         name="costEstimate"
         label="Kostenschätzung (in Euro)"
         optional
+      />
+      <LabeledSelect
+        name="qualityStandard"
+        label="RSV Standard"
+        options={[
+          ["", "(Keine Auswahl)"],
+          ...Object.entries(subsubsectionTranslatedQualityStandard),
+        ]}
       />
       <LabeledTextField
         type="text"

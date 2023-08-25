@@ -1,4 +1,4 @@
-import { LabelPositionEnum, SubsubsectionTypeEnum } from "@prisma/client"
+import { LabelPositionEnum, QualityStandardEnum, SubsubsectionTypeEnum } from "@prisma/client"
 import { Prettify } from "src/core/types"
 import { SlugSchema } from "src/core/utils"
 import { z } from "zod"
@@ -25,6 +25,7 @@ export const SubsubsectionSchema = z.object({
   length: z.coerce.number().nullish(), // km
   width: z.coerce.number().nullish(), // m
   costEstimate: z.coerce.number().nullish(), // €
+  qualityStandard: z.nativeEnum(QualityStandardEnum).nullish(),
   description: z.string().nullish(),
   mapillaryKey: z.string().nullish(),
   managerId: z.coerce.number().nullish(),
@@ -33,4 +34,9 @@ export const SubsubsectionSchema = z.object({
 
 export type TSubsubsectionSchema = Prettify<z.infer<typeof SubsubsectionSchema>>
 
-export const SubsubsectionSchemaForm = SubsubsectionSchema.merge(z.object({ order: z.string() }))
+export const SubsubsectionSchemaForm = SubsubsectionSchema.merge(
+  z.object({
+    order: z.string(),
+    qualityStandard: z.nativeEnum(QualityStandardEnum).nullish().or(z.literal("")),
+  }),
+)

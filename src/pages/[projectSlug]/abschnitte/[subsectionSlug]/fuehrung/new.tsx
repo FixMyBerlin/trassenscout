@@ -1,5 +1,6 @@
 import { Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
+import { QualityStandardEnum } from "@prisma/client"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
@@ -13,7 +14,9 @@ import createSubsubsection from "src/subsubsections/mutations/createSubsubsectio
 import { SubsubsectionSchemaForm } from "src/subsubsections/schema"
 import { z } from "zod"
 
-const NewSubsubsectionSchemaForm = SubsubsectionSchemaForm.omit({ subsectionId: true })
+const NewSubsubsectionSchemaForm = SubsubsectionSchemaForm.omit({
+  subsectionId: true,
+})
 
 const NewSubsubsection = () => {
   const router = useRouter()
@@ -34,6 +37,7 @@ const NewSubsubsection = () => {
         // The value="" becomes "0" which we translate to NULL
         order: parseInt(values.order),
         managerId: values.managerId === 0 ? null : values.managerId,
+        qualityStandard: !values.qualityStandard ? null : values.qualityStandard,
         subsectionId: subsection!.id,
       })
       await router.push(
@@ -59,7 +63,7 @@ const NewSubsubsection = () => {
       />
 
       <SubsubsectionForm
-        initialValues={{ type: "AREA" }}
+        initialValues={{ type: "AREA", qualityStandard: "" }}
         className="mt-10"
         submitText="Erstellen"
         schema={NewSubsubsectionSchemaForm}

@@ -15,6 +15,7 @@ import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { useSlugs } from "src/core/hooks"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { mapillaryLink } from "../../subsections/components/utils/mapillaryLink"
+import { getSubsubsectionQualityStandardShortText } from "../utils/subsubsectionTranslatedQualityStandard"
 
 type Props = {
   subsubsections: SubsubsectionWithPosition[]
@@ -67,6 +68,15 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                 )}
               >
                 Kostenschätzung
+              </th>
+              <th
+                scope="col"
+                className={clsx(
+                  { hidden: compact },
+                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900",
+                )}
+              >
+                Standard
               </th>
               <th
                 scope="col"
@@ -133,6 +143,15 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                     )}
                   >
                     {formattedEuro(subsubsection.costEstimate)}
+                  </td>
+                  <td
+                    className={clsx(
+                      { hidden: compact },
+                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
+                      subsubsection.qualityStandard === "RSV" && "text-green-500",
+                    )}
+                  >
+                    {getSubsubsectionQualityStandardShortText(subsubsection.qualityStandard)}
                   </td>
                   <td className={clsx({ hidden: compact }, "break-words text-sm font-medium")}>
                     {mapillaryHref && (
