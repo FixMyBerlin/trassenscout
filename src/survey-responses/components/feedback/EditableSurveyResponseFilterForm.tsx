@@ -89,13 +89,15 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   ]
 
   return (
-    <nav>
+    <nav className="border border-gray-300 rounded-xl">
       <details open>
-        <summary className="cursor-pointer text-gray-700 hover:text-gray-80">Filter</summary>
+        <summary className="px-4 py-2 cursor-pointer text-gray-700 hover:bg-gray-50 rounded-xl">
+          Filter
+        </summary>
         <FormProvider {...methods}>
           <form
             onChange={async () => await methods.handleSubmit(handleSubmit)()}
-            className="flex flex-col gap-4 justify-start items-start"
+            className="flex flex-col gap-4 justify-start items-start px-4 py-2 rounded-b-xl"
           >
             <div className="flex flex-col sm:flex-row gap-12 mt-6">
               <LabeledCheckboxGroup
