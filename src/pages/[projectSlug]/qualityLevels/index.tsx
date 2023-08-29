@@ -113,7 +113,7 @@ export const QualityLevelsWithData = () => {
         className="mt-4"
         href={Routes.NewQualityLevelPage({ projectSlug: projectSlug! })}
       >
-        Neuer Qualitätsstandard
+        Neuer Ausbaustandard
       </Link>
 
       <Pagination
@@ -131,8 +131,8 @@ export const QualityLevelsWithData = () => {
 const QualityLevelsPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title="Qualitätsstandards" />
-      <PageHeader title="Qualitätsstandards" className="mt-12" />
+      <MetaTags noindex title="Ausbaustandards" />
+      <PageHeader title="Ausbaustandards" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
         <QualityLevelsWithData />

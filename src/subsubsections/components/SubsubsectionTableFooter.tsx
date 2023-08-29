@@ -1,5 +1,4 @@
 import clsx from "clsx"
-import { useRouter } from "next/router"
 import {
   formattedEuro,
   formattedLength,
@@ -14,8 +13,6 @@ type Props = {
 }
 
 export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, compact }) => {
-  const router = useRouter()
-
   const uniqueQualityLevels = subsubsections
     .map((sub) => sub.qualityLevel)
     .filter((level, index, self) => index === self.findIndex((t) => t?.slug === level?.slug))
@@ -23,9 +20,10 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
   return (
     <tfoot className={clsx("bg-gray-50", { hidden: !subsubsections.length || compact })}>
       <tr>
-        <td></td>
-        <td></td>
-        <td className="uppercase pt-4 pb-2 pl-4 pr-3 text-xs font-medium text-gray-500 text-right">
+        <td
+          colSpan={3}
+          className="uppercase pt-4 pb-2 pl-4 pr-3 text-xs font-medium text-gray-500 text-right"
+        >
           Gesamt:
         </td>
         <td
@@ -42,7 +40,7 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
             "pt-4 pb-2 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap",
           )}
         >
-          {formattedWidth(subsubsections.reduce((acc, sub) => acc + (sub.width || 0), 0))}
+          -
         </td>
         <td
           className={clsx(
@@ -63,9 +61,10 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
         )
         return (
           <tr key={qualityLevel.slug}>
-            <td></td>
-            <td></td>
-            <td className="uppercase py-2 pl-4 pr-3 text-xs font-medium text-gray-500 text-right">
+            <td
+              colSpan={3}
+              className="uppercase py-2 pl-4 pr-3 text-xs font-medium text-gray-500 text-right"
+            >
               Standard {frenchQuote(qualityLevel.title)}:
             </td>
             <td
@@ -84,9 +83,7 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
                 "py-2 pl-4 pr-3 text-sm font-medium text-gray-900",
               )}
             >
-              {formattedWidth(
-                subsubsectionForQualityLevel.reduce((acc, sub) => acc + (sub.width || 0), 0),
-              )}
+              -
             </td>
             <td
               className={clsx(

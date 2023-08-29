@@ -123,7 +123,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
               </tr>
               <tr>
                 <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
-                  Standard
+                  Ausbaustandard
                 </th>
                 <td className="break-words px-3 py-4 text-sm text-gray-500">
                   {subsubsection.qualityLevel?.title || "k.A."}

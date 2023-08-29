@@ -76,7 +76,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   "px-3 py-3.5 text-left text-sm font-semibold text-gray-900",
                 )}
               >
-                Standard
+                Ausbaustandard
               </th>
               <th
                 scope="col"
