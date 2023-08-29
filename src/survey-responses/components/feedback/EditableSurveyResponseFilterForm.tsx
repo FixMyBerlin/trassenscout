@@ -90,7 +90,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
 
   return (
     <nav className="border border-gray-300 rounded-xl">
-      <details open>
+      <details>
         <summary className="px-4 py-2 cursor-pointer text-gray-700 hover:bg-gray-50 rounded-xl">
           Filter
         </summary>
