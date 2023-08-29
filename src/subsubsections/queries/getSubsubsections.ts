@@ -40,6 +40,7 @@ export default resolver.pipe(
           include: {
             manager: { select: { firstName: true, lastName: true } },
             subsection: { select: { slug: true } },
+            qualityLevel: { select: { title: true, slug: true } },
           },
         }),
     })

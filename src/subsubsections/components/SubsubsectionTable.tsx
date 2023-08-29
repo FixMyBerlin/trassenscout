@@ -15,7 +15,7 @@ import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { useSlugs } from "src/core/hooks"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { mapillaryLink } from "../../subsections/components/utils/mapillaryLink"
-import { getSubsubsectionQualityStandardShortText } from "../utils/subsubsectionTranslatedQualityStandard"
+import { SubsubsectionTableFooter } from "./SubsubsectionTableFooter"
 
 type Props = {
   subsubsections: SubsubsectionWithPosition[]
@@ -148,10 +148,9 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                     className={clsx(
                       { hidden: compact },
                       "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
-                      subsubsection.qualityStandard === "RSV" && "text-green-500",
                     )}
                   >
-                    {getSubsubsectionQualityStandardShortText(subsubsection.qualityStandard)}
+                    {subsubsection.qualityLevel?.title || "k.A."}
                   </td>
                   <td className={clsx({ hidden: compact }, "break-words text-sm font-medium")}>
                     {mapillaryHref && (
@@ -171,42 +170,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
               )
             })}
           </tbody>
-          <tfoot className={clsx("bg-gray-50", { hidden: !subsubsections.length || compact })}>
-            <tr>
-              <td></td>
-              <td></td>
-              <td className="uppercase py-4 pl-4 pr-3 text-xs font-medium text-gray-500 text-right">
-                Summen:
-              </td>
-              <td
-                className={clsx(
-                  { hidden: compact },
-                  "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
-                )}
-              >
-                {formattedLength(subsubsections.reduce((acc, sub) => acc + (sub.length || 0), 0))}
-              </td>
-              <td
-                className={clsx(
-                  { hidden: compact },
-                  "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
-                )}
-              >
-                {formattedWidth(subsubsections.reduce((acc, sub) => acc + (sub.width || 0), 0))}
-              </td>
-              <td
-                className={clsx(
-                  { hidden: compact },
-                  "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
-                )}
-              >
-                {formattedEuro(
-                  subsubsections.reduce((acc, sub) => acc + (sub.costEstimate || 0), 0),
-                )}
-              </td>
-              <td></td>
-            </tr>
-          </tfoot>
+          <SubsubsectionTableFooter subsubsections={subsubsections} compact={compact} />
         </table>
         {!subsubsections.length && (
           <div className="border-t px-3 py-5">
@@ -214,6 +178,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
           </div>
         )}
       </TableWrapper>
+
       <Link
         button="blue"
         icon="plus"

@@ -40,8 +40,8 @@ const EditSubsubsection = () => {
         id: subsubsection.id,
         ...values,
         // The value="" becomes "0" which we translate to NULL
+        qualityLevelId: values.qualityLevelId === 0 ? null : values.qualityLevelId,
         managerId: values.managerId === 0 ? null : values.managerId,
-        qualityStandard: !values.qualityStandard ? null : values.qualityStandard,
       })
       await setQueryData(updated)
       await router.push(
@@ -82,7 +82,6 @@ const EditSubsubsection = () => {
         initialValues={{
           ...subsubsection,
           order: String(subsubsection.order),
-          qualityStandard: !subsubsection.qualityStandard ? "" : subsubsection.qualityStandard,
         }}
         onSubmit={handleSubmit}
       />

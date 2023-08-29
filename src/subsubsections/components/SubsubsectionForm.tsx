@@ -1,3 +1,4 @@
+import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import {
   Form,
@@ -8,21 +9,29 @@ import {
   LabeledTextField,
 } from "src/core/components/forms"
 import { LabeledRadiobuttonGroupLabelPos } from "src/core/components/forms/LabeledRadiobuttonGroupLabelPos"
+import { Link } from "src/core/components/links"
 import { quote, shortTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import getProjectUsers from "src/memberships/queries/getProjectUsers"
+import getQualityLevelsWithCount from "src/qualityLevels/queries/getQualityLevelsWithCount"
 import { getUserSelectOptions } from "src/users/utils"
 import { z } from "zod"
 import getSubsubsections from "../queries/getSubsubsections"
 import { GeometryInput } from "./GeometryInput/GeometryInput"
 export { FORM_ERROR } from "src/core/components/forms"
-import { SubsubsectionSchemaForm } from "src/subsubsections/schema"
-import { subsubsectionTranslatedQualityStandard } from "../utils/subsubsectionTranslatedQualityStandard"
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const { projectSlug } = useSlugs()
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
   const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug: projectSlug! })
+
+  const [{ qualityLevels }] = useQuery(getQualityLevelsWithCount, { projectSlug })
+  const qualityLevelOptions: [number | string, string][] = [
+    ["", "Kein Ausbaustandard"],
+    ...qualityLevels.map((ql) => {
+      return [ql.id, `${ql.title} – ${shortTitle(ql.slug)}`] as [number, string]
+    }),
+  ]
 
   const ordersWithPlaceholder = () => {
     const maxOrder = Math.max(...subsubsections.map((s) => s.order)) + 5
@@ -51,6 +60,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
     return orders
   }
   const orders = ordersWithPlaceholder()
+
   return (
     <Form<S> {...props}>
       <LabeledTextField
@@ -94,14 +104,18 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label="Kostenschätzung (in Euro)"
         optional
       />
-      <LabeledSelect
-        name="qualityStandard"
-        label="RSV Standard"
-        options={[
-          ["", "(Keine Auswahl)"],
-          ...Object.entries(subsubsectionTranslatedQualityStandard),
-        ]}
-      />
+      <div className="flex items-end gap-5">
+        <LabeledSelect
+          name="qualityLevelId"
+          label="Ausbaustandard"
+          optional
+          options={qualityLevelOptions}
+          outerProps={{ className: "grow" }}
+        />
+        <Link href={Routes.QualityLevelsPage({ projectSlug: projectSlug! })} className="py-2">
+          Ausbaustandards verwalten…
+        </Link>
+      </div>
       <LabeledTextField
         type="text"
         name="mapillaryKey"

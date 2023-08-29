@@ -15,7 +15,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     length: 0.487,
     width: 3,
     costEstimate: 10_000,
-    qualityStandard: "RSV",
+    qualityLevelId: 1,
     description:
       "Ausweitung des Straßenbegleitenden **Feldweges zum Radweg**. Freigabe für landwirtschaftlichen Verkehr.",
     mapillaryKey: "797685018581574",
@@ -36,7 +36,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     length: 0.922,
     width: 3,
     costEstimate: null,
-    qualityStandard: null,
+    qualityLevelId: 2,
     description: "Rad- und Fußverkehr wird auf einem Ufersteig zum Teil über dem Wasser geführt.",
     mapillaryKey: "1646379745805677",
     managerId: null,
@@ -57,7 +57,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     length: 1.293,
     width: 4,
     costEstimate: 20_000,
-    qualityStandard: null,
+    qualityLevelId: null,
     description: "Ausbau Levetzowstraße zur Fahrradstraße mit Modalfilter, Anwohner frei.",
     mapillaryKey: "249624194247195",
     managerId: null,
@@ -73,7 +73,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     length: null,
     width: 2,
     costEstimate: 30_000,
-    qualityStandard: null,
+    qualityLevelId: 4,
     description: `
 **Sonderführung Radverkehr über Gotskowskybrücke.** Radweg auf einer Seite für beide Fahrtrichtungen. Schutz vor Kfz durch Betonschwellen.
 
@@ -94,7 +94,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     length: 0.5,
     width: 2,
     costEstimate: 10_000,
-    qualityStandard: null,
+    qualityLevelId: null,
     description:
       "Sonderführung Radverkehr unter der S-Bahn-Brücke im Seitenraum. Wegfall von einzelnen Kfz Stellplätzen; Neuaufteilung Parkspur, Radweg und Gehweg.",
     mapillaryKey: null,
