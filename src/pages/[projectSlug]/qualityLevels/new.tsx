@@ -7,21 +7,21 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { seoNewTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { OperatorForm } from "src/operators/components/OperatorForm"
-import createOperator from "src/operators/mutations/createOperator"
-import { OperatorSchema } from "src/operators/schema"
+import { QualityLevelForm } from "src/qualityLevels/components/QualityLevelForm"
+import createQualityLevel from "src/qualityLevels/mutations/createQualityLevel"
+import { QualityLevelSchema } from "src/qualityLevels/schema"
 import { FORM_ERROR } from "src/subsubsections/components/SubsubsectionForm"
 
-const NewOperatorPageWithQuery = () => {
+const NewQualityLevelPageWithQuery = () => {
   const router = useRouter()
   const { projectSlug } = useSlugs()
-  const [createOperatorMutation] = useMutation(createOperator)
+  const [createQualityLevelMutation] = useMutation(createQualityLevel)
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      await createOperatorMutation({ ...values, projectSlug: projectSlug! })
-      await router.push(Routes.OperatorsPage({ projectSlug: projectSlug! }))
+      await createQualityLevelMutation({ ...values, projectSlug: projectSlug! })
+      await router.push(Routes.QualityLevelsPage({ projectSlug: projectSlug! }))
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -30,29 +30,29 @@ const NewOperatorPageWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={seoNewTitle("Baulastträger")} />
-      <PageHeader title="Baulastträger hinzufügen" className="mt-12" />
+      <MetaTags noindex title={seoNewTitle("Ausbaustandard")} />
+      <PageHeader title="Ausbaustandard hinzufügen" className="mt-12" />
 
-      <OperatorForm
+      <QualityLevelForm
         className="mt-10"
         submitText="Erstellen"
-        schema={OperatorSchema.omit({ projectId: true })}
+        schema={QualityLevelSchema.omit({ projectId: true })}
         onSubmit={handleSubmit}
       />
     </>
   )
 }
 
-const NewOperatorPage = () => {
+const NewQualityLevelPage = () => {
   return (
     <LayoutRs>
       <Suspense fallback={<Spinner page />}>
-        <NewOperatorPageWithQuery />
+        <NewQualityLevelPageWithQuery />
       </Suspense>
     </LayoutRs>
   )
 }
 
-NewOperatorPage.authenticate = true
+NewQualityLevelPage.authenticate = true
 
-export default NewOperatorPage
+export default NewQualityLevelPage

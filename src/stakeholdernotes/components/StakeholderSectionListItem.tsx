@@ -5,7 +5,7 @@ import { Disclosure } from "src/core/components/Disclosure"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
-import { StakeholderSectionListItemStatus } from "./StakeholderSectionListItemStatus"
+import { ListItemStatus } from "./StakeholderSectionListItemStatus"
 import { useRouter } from "next/router"
 
 type Props = {
@@ -40,7 +40,7 @@ export const StakeholderSectionListItem: React.FC<Props> = ({ stakeholderNote })
       button={
         <div className="flex">
           <div className="w-52 flex-none pb-2 pl-4 pr-3 pt-3 sm:w-64 sm:pl-6">
-            <StakeholderSectionListItemStatus status={stakeholderNote.status} />
+            <ListItemStatus status={stakeholderNote.status} />
           </div>
           <div className="flex grow items-center px-3 pb-2 pt-3 font-medium text-blue-500">
             <strong>{stakeholderNote.title}</strong>

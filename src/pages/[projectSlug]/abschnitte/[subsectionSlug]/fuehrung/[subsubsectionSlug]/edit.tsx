@@ -40,6 +40,7 @@ const EditSubsubsection = () => {
         id: subsubsection.id,
         ...values,
         // The value="" becomes "0" which we translate to NULL
+        qualityLevelId: values.qualityLevelId === 0 ? null : values.qualityLevelId,
         managerId: values.managerId === 0 ? null : values.managerId,
       })
       await setQueryData(updated)
@@ -78,7 +79,10 @@ const EditSubsubsection = () => {
         className="mt-10"
         submitText="Speichern"
         schema={SubsubsectionSchemaForm}
-        initialValues={{ ...subsubsection, order: String(subsubsection.order) }}
+        initialValues={{
+          ...subsubsection,
+          order: String(subsubsection.order),
+        }}
         onSubmit={handleSubmit}
       />
 

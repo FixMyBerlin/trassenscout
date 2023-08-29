@@ -27,10 +27,15 @@ export const SubsubsectionSchema = z.object({
   costEstimate: z.coerce.number().nullish(), // €
   description: z.string().nullish(),
   mapillaryKey: z.string().nullish(),
+  qualityLevelId: z.coerce.number().nullish(),
   managerId: z.coerce.number().nullish(),
   subsectionId: z.coerce.number(),
 })
 
 export type TSubsubsectionSchema = Prettify<z.infer<typeof SubsubsectionSchema>>
 
-export const SubsubsectionSchemaForm = SubsubsectionSchema.merge(z.object({ order: z.string() }))
+export const SubsubsectionSchemaForm = SubsubsectionSchema.merge(
+  z.object({
+    order: z.string(),
+  }),
+)

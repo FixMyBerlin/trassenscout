@@ -13,7 +13,9 @@ import createSubsubsection from "src/subsubsections/mutations/createSubsubsectio
 import { SubsubsectionSchemaForm } from "src/subsubsections/schema"
 import { z } from "zod"
 
-const NewSubsubsectionSchemaForm = SubsubsectionSchemaForm.omit({ subsectionId: true })
+const NewSubsubsectionSchemaForm = SubsubsectionSchemaForm.omit({
+  subsectionId: true,
+})
 
 const NewSubsubsection = () => {
   const router = useRouter()
@@ -27,13 +29,13 @@ const NewSubsubsection = () => {
 
   type HandleSubmit = z.infer<typeof NewSubsubsectionSchemaForm>
   const handleSubmit = async (values: HandleSubmit) => {
-    console.log(values)
     try {
       const subsubsection = await createSubsubsectionMutation({
         ...values,
         // The value="" becomes "0" which we translate to NULL
         order: parseInt(values.order),
         managerId: values.managerId === 0 ? null : values.managerId,
+        qualityLevelId: values.qualityLevelId === 0 ? null : values.qualityLevelId,
         subsectionId: subsection!.id,
       })
       await router.push(

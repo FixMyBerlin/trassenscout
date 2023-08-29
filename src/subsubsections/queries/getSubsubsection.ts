@@ -1,5 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
-import db, { Subsubsection, SubsubsectionTypeEnum, User } from "db"
+import db, { QualityLevel, Subsubsection, SubsubsectionTypeEnum, User } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { z } from "zod"
@@ -21,7 +21,9 @@ export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry"> &
         type: typeof SubsubsectionTypeEnum.ROUTE
         geometry: [number, number][] // Position[]
       }
-  ) & { manager: User } & { subsection: { slug: string } }
+  ) & { manager: User } & { subsection: { slug: string } } & {
+    qualityLevel?: Pick<QualityLevel, "title" | "slug">
+  }
 
 export default resolver.pipe(
   resolver.zod(GetSubsubsection),
@@ -40,6 +42,7 @@ export default resolver.pipe(
       include: {
         manager: { select: { firstName: true, lastName: true } },
         subsection: { select: { slug: true } },
+        qualityLevel: { select: { title: true, slug: true } },
       },
     }
 

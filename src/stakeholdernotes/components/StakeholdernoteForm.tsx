@@ -7,7 +7,7 @@ import {
 } from "src/core/components/forms"
 import { z } from "zod"
 import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
-import { StakeholderSectionListItemStatus } from "./StakeholderSectionListItemStatus"
+import { ListItemStatus } from "./StakeholderSectionListItemStatus"
 import { Stakeholdernote } from "@prisma/client"
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -26,7 +26,7 @@ export function StakeholdernoteForm<S extends z.ZodType<any, any>>(props: FormPr
         label="Status"
         items={Object.keys(stakeholderNotesStatus).map((key) => ({
           value: key,
-          label: <StakeholderSectionListItemStatus status={key as Stakeholdernote["status"]} />,
+          label: <ListItemStatus status={key as Stakeholdernote["status"]} />,
         }))}
       />
     </Form>

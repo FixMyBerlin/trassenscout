@@ -28,7 +28,7 @@ export const LabeledCheckboxGroup: React.FC<Props> = ({
           {label} {optional && <> (optional)</>}
         </p>
       )}
-      <div className={clsx(classNameItemWrapper, "space-y-3")}>
+      <div className={clsx(classNameItemWrapper, "flex flex-col gap-3")}>
         {itemsWithScope.map((item) => {
           return <LabeledCheckbox key={item.value} {...item} />
         })}

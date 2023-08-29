@@ -62,7 +62,9 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
           htmlFor={key}
           className={clsx(
             "ml-3 block text-sm font-medium",
-            readonly ? "text-gray-400" : "cursor-pointer text-gray-700 hover:text-gray-800",
+            readonly
+              ? "text-gray-400"
+              : "cursor-pointer text-gray-700 hover:text-gray-800 whitespace-nowrap",
           )}
         >
           {label}

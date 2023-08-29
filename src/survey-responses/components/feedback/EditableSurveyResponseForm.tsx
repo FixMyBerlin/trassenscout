@@ -2,7 +2,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
 import clsx from "clsx"
-import { PropsWithoutRef } from "react"
+import { PropsWithoutRef, useState } from "react"
 import { FormProvider, UseFormProps, useForm } from "react-hook-form"
 import {
   LabeledCheckboxGroup,
@@ -61,6 +61,12 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
     createSurveyResponseTopicsOnSurveyResponses,
   )
 
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+
+  const operatorsOptions = operators.map((operator: Operator) => {
+    return { value: String(operator.id), label: operator.title }
+  })
+
   const handleSubmit = async (values: any) => {
     console.log("handleSubmit", { values })
     try {
@@ -70,7 +76,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         status: values.status,
         note: values.note,
         // Note: initialValues need to initialize `operatorId: 0`
-        operatorId: values.operatorId === 0 ? null : Number(values.operatorId),
+        operatorId: values.operatorId === (0 || "0") ? null : Number(values.operatorId),
       })
 
       if (Boolean(values.surveyResponseTopics)) {
@@ -129,50 +135,50 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
 
   return (
     <FormProvider {...methods}>
-      <div className="grid grid-cols-4 gap-12">
-        <div className="flex flex-col justify-between col-span-2">
-          <div className="grid grid-cols-2 gap-4">
-            <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-              <h4 className="font-bold mb-3">Status</h4>
-              <LabeledRadiobuttonGroup
-                classNameItemWrapper={clsx("flex-shrink-0")}
-                scope={"status"}
-                items={Object.entries(surveyResponseStatus).map(([value, label]) => {
-                  return { value, label }
-                })}
-              />
-            </form>
+      <div className="grid grid-cols-2 gap-8">
+        <div>
+          <div className="flex flex-col justify-between col-span-2">
+            <div className="flex flex-col w-full gap-10">
+              <div className="grid grid-cols-2 w-full gap-8">
+                <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
+                  <h4 className="font-bold mb-3">Status</h4>
+                  <LabeledRadiobuttonGroup
+                    classNameItemWrapper={clsx("flex-shrink-0")}
+                    scope={"status"}
+                    items={Object.entries(surveyResponseStatus).map(([value, label]) => {
+                      return { value, label }
+                    })}
+                  />
+                </form>
 
-            <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-              <h4 className="font-bold mb-3">Baulastträger</h4>
-              <LabeledRadiobuttonGroup
-                scope="operatorId"
-                items={operators.map((operator: Operator) => {
-                  return { value: String(operator.id), label: operator.title }
-                })}
-              />
-            </form>
-          </div>
-
-          <form
-            className="flex mt-6"
-            onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
-              e.preventDefault()
-              await methods.handleSubmit(handleSubmit)()
-            }}
-          >
-            <div className="flex-grow space-y-2 pr-2 pb-4">
-              <p className="font-bold mb-3">Notiz</p>
-              <LabeledTextareaField
-                help="Bitte starten Sie Ihre Notiz immer mit ihrem Namen"
-                name="note"
-                label=""
-              />
-              <button type="submit" className={clsx(blueButtonStyles, "!py-2.5 !px-3")}>
-                Speichern
-              </button>
+                <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
+                  <h4 className="font-bold mb-3">Baulastträger</h4>
+                  <LabeledRadiobuttonGroup
+                    scope="operatorId"
+                    items={[...operatorsOptions, { value: "0", label: "Nicht zugeordnet" }]}
+                  />
+                </form>
+              </div>
+              <form
+                className="flex"
+                onChange={async () => await methods.handleSubmit(handleSubmit)()}
+              >
+                <div>
+                  <h4 className="font-bold mb-3">Themen (für FAQ)</h4>
+                  <LabeledCheckboxGroup
+                    classNameItemWrapper="grid grid-cols-3 grid-rows-10 grid-flow-col-dense"
+                    scope="surveyResponseTopics"
+                    items={topics.map((t) => {
+                      return {
+                        value: String(t.id),
+                        label: t.title,
+                      }
+                    })}
+                  />
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
         </div>
 
         <div>
@@ -183,40 +189,53 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           />
         </div>
 
-        <div className="flex flex-col">
-          <form className="flex" onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-            <div>
-              <h4 className="font-bold mb-3">Themenzuordnung (für FAQ)</h4>
-              <LabeledCheckboxGroup
-                scope="surveyResponseTopics"
-                items={topics.map((t) => {
-                  return {
-                    value: String(t.id),
-                    label: t.title,
-                  }
-                })}
-              />
-            </div>
-          </form>
-
-          <form
-            className="flex"
-            onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
-              e.preventDefault()
-              await methods.handleSubmit(handleNewTopic)()
-              // @ts-expect-error
-              methods.resetField("newTopic")
-            }}
-          >
-            <div className="flex-grow space-y-2 mt-6 pr-2 pb-8">
-              <LabeledTextField placeholder="Thema hinzufügen" name="newTopic" label="" />
-              <button type="submit" className={clsx(blueButtonStyles, "!py-2.5 !px-3")}>
-                Hinzufügen
-              </button>
-            </div>
-          </form>
-        </div>
+        <form
+          className="flex"
+          onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault()
+            await methods.handleSubmit(handleNewTopic)()
+            // @ts-expect-error
+            methods.resetField("newTopic")
+          }}
+        >
+          <div className="space-y-2 pr-2 pb-8 min-w-[300px]">
+            <LabeledTextField placeholder="Thema hinzufügen" name="newTopic" label="" />
+            <button type="submit" className={clsx(blueButtonStyles, "!py-2.5 !px-3")}>
+              Hinzufügen
+            </button>
+          </div>
+        </form>
       </div>
+      <form
+        className="flex mt-6"
+        onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
+          e.preventDefault()
+          await methods.handleSubmit(handleSubmit)()
+          setHasUnsavedChanges(false)
+        }}
+      >
+        <div className="flex-grow space-y-2 pr-2 pb-4">
+          <p className="font-bold mb-3">Interne Notiz</p>
+          <LabeledTextareaField
+            help="Bitte starten Sie Ihre Notiz immer mit ihrem Namen"
+            name="note"
+            label=""
+            onChange={() => setHasUnsavedChanges(true)}
+            className={clsx(
+              hasUnsavedChanges &&
+                "focus:border-yellow-500 focus:ring-yellow-500 border-yellow-500 ring-yellow-500",
+            )}
+          />
+          <div className="flex justify-between items-end">
+            <button type="submit" className={clsx(blueButtonStyles, "!py-2.5 !px-3")}>
+              Notiz speichern
+            </button>
+            <small className={clsx(!hasUnsavedChanges && "opacity-0", "text-yellow-500")}>
+              ungespeicherte Änderungen
+            </small>
+          </div>
+        </div>
+      </form>
     </FormProvider>
   )
 }

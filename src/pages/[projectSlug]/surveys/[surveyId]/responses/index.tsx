@@ -2,7 +2,6 @@ import { BlitzPage, useParam, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 import { Suspense, useEffect, useRef } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
@@ -16,6 +15,7 @@ import getSubsections from "src/subsections/queries/getSubsections"
 import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { EditableSurveyResponseFilterForm } from "src/survey-responses/components/feedback/EditableSurveyResponseFilterForm"
 import EditableSurveyResponseListItem from "src/survey-responses/components/feedback/EditableSurveyResponseListItem"
+import { useFilteredResponses } from "src/survey-responses/components/feedback/useFilteredResponses"
 import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedbackSurveyResponses"
 import { SurveyTabs } from "src/surveys/components/SurveyTabs"
 import getSurvey from "src/surveys/queries/getSurvey"
@@ -29,6 +29,7 @@ export const SurveyResponse = () => {
     getFeedbackSurveyResponses,
     { projectSlug, surveyId: survey.id },
   )
+  const filteredResponses = useFilteredResponses(feedbackSurveyResponses)
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const [{ surveyResponseTopics: topics }, { refetch: refetchTopics }] = useQuery(
     getSurveyResponseTopicsByProject,
@@ -61,44 +62,20 @@ export const SurveyResponse = () => {
   return (
     <>
       <MetaTags noindex title={`Beteiligung ${survey.title}`} />
-      <PageHeader
-        title={survey.title}
-        className="mt-12"
-        description={
-          <>
-            <SurveyTabs />
-            <p className="mt-5 text-base text-gray-500">
-              Dieser Bereich sammelt die Ergebnisse und Berichte der Beteiligung. Hier finden sie
-              die Excel Tabelle und ausgewählte Auswertungsergebnisse.
-            </p>
-            {survey.active && surveyDefinition.canonicalUrl && (
-              <p className="text-base text-gray-500">
-                Die Beteiligung ist über{" "}
-                <Link blank className="!text-base" href={surveyDefinition.canonicalUrl}>
-                  diese Seite
-                  <ArrowTopRightOnSquareIcon className="ml-1 w-4 h-4 inline-flex mb-1" />
-                </Link>{" "}
-                erreichbar.
-              </p>
-            )}
-          </>
-        }
-      />
+      <PageHeader title={survey.title} className="mt-12" description={<SurveyTabs />} />
 
       <div className="space-y-4 mt-12">
-        <H2>Kommentare aus Bürgerbeteiligung ({feedbackSurveyResponses.length})</H2>
+        <H2>Kommentare aus Bürgerbeteiligung ({filteredResponses.length})</H2>
 
-        <SuperAdminBox>
-          <EditableSurveyResponseFilterForm operators={operators} topics={topics} />
-        </SuperAdminBox>
+        <EditableSurveyResponseFilterForm operators={operators} topics={topics} />
 
-        <ZeroCase visible={feedbackSurveyResponses.length} name={"Beiträge"} />
+        <ZeroCase visible={filteredResponses.length} name={"Beiträge"} />
 
         <section>
-          {feedbackSurveyResponses.map((response) => (
+          {filteredResponses.map((response) => (
             <div
               key={response.id}
-              className="w-full text-sm first:rounded-t-xl border border-gray-200 border-b-0 last:border-b last:rounded-b-xl overflow-hidden"
+              className="w-full text-sm first:rounded-t-xl border border-gray-300 border-b-0 last:border-b last:rounded-b-xl overflow-hidden"
               // I tried passing the ref as forwardRef but that did not work for unknown reasons.
               ref={(element) => (accordionRefs.current[response.id] = element)}
             >

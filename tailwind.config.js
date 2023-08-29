@@ -5,6 +5,10 @@ module.exports = {
   content: ["src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      gridTemplateRows: {
+        // Simple 8 row grid
+        10: "repeat(10, minmax(0, 1fr))",
+      },
       typography: {
         DEFAULT: {
           // Tell the plugin to not add any classes to anchor tags

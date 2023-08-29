@@ -101,7 +101,7 @@ model Project {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   //
-  slug            String   @unique // sortTitle and URL Slug
+  slug            String   @unique // shortTitle and URL Slug
   subTitle        String?
   description     String?
   logoSrc         String?
@@ -118,6 +118,7 @@ model Project {
   Membership           Membership[]
   Operator             Operator[]
   Survey               Survey[]
+  qualityLevels        QualityLevel[]
 }
 
 model Membership {
@@ -181,7 +182,7 @@ model Operator {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   //
-  slug            String // sortTitle and URL Slug
+  slug            String // shortTitle and URL Slug
   title           String
   //
   project         Project          @relation(fields: [projectId], references: [id])
@@ -197,7 +198,7 @@ model Subsection {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
   //
-  slug        String // sortTitle and URL Slug
+  slug        String // shortTitle and URL Slug
   start       String
   end         String
   order       Int               @default(autoincrement())
@@ -221,30 +222,33 @@ model Subsection {
 }
 
 model Subsubsection {
-  id           Int                   @id @default(autoincrement())
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
+  id             Int                   @id @default(autoincrement())
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
   //
-  slug         String // sortTitle and URL Slug
-  subTitle     String?
-  order        Int                   @default(autoincrement())
-  type         SubsubsectionTypeEnum @default(ROUTE) // Führungform
-  geometry     Json
-  labelPos     LabelPositionEnum     @default(top)
-  task         String // Maßnahmentyp
-  length       Float? // Kilometer
-  width        Float? // Meter
-  costEstimate Float? // Euro
-  description  String? // Anmerkungen
-  mapillaryKey String?
+  slug           String // shortTitle and URL Slug
+  subTitle       String?
+  order          Int                   @default(autoincrement())
+  type           SubsubsectionTypeEnum @default(ROUTE) // Führungform
+  geometry       Json
+  labelPos       LabelPositionEnum     @default(top)
+  task           String // Maßnahmentyp
+  length         Float? // Kilometer
+  width          Float? // Meter
+  costEstimate   Float? // Euro
+  description    String? // Anmerkungen
+  mapillaryKey   String?
   //
-  manager      User?                 @relation(fields: [managerId], references: [id])
-  managerId    Int?
+  qualityLevel   QualityLevel?         @relation(fields: [qualityLevelId], references: [id])
+  qualityLevelId Int?
   //
-  subsection   Subsection            @relation(fields: [subsectionId], references: [id])
-  subsectionId Int
+  manager        User?                 @relation(fields: [managerId], references: [id])
+  managerId      Int?
   //
-  files        File[]
+  subsection     Subsection            @relation(fields: [subsectionId], references: [id])
+  subsectionId   Int
+  //
+  files          File[]
 
   @@unique([subsectionId, slug])
   @@unique([subsectionId, order])
@@ -253,6 +257,21 @@ model Subsubsection {
 enum SubsubsectionTypeEnum {
   ROUTE // Regelführung Strecke RF
   AREA // Sonderführung Punkt (Bereich) SF
+}
+
+model QualityLevel {
+  id            Int             @id @default(autoincrement())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  //
+  slug          String // shortTitle and URL Slug
+  title         String
+  //
+  project       Project         @relation(fields: [projectId], references: [id])
+  projectId     Int
+  Subsubsection Subsubsection[]
+
+  @@unique([projectId, slug])
 }
 
 model Stakeholdernote {
@@ -354,7 +373,8 @@ model SurveyResponseTopicsOnSurveyResponses {
 enum SurveyResponseStatusEnum {
   PENDING
   ASSIGNED
+  IRRELEVANT
+  HANDED_OVER
   DONE_FAQ
   DONE_PLANING
-  IRRELEVANT
 }
