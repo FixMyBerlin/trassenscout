@@ -101,7 +101,7 @@ model Project {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   //
-  slug            String   @unique // sortTitle and URL Slug
+  slug            String   @unique // shortTitle and URL Slug
   subTitle        String?
   description     String?
   logoSrc         String?
@@ -181,7 +181,7 @@ model Operator {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   //
-  slug            String // sortTitle and URL Slug
+  slug            String // shortTitle and URL Slug
   title           String
   //
   project         Project          @relation(fields: [projectId], references: [id])
@@ -197,7 +197,7 @@ model Subsection {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
   //
-  slug        String // sortTitle and URL Slug
+  slug        String // shortTitle and URL Slug
   start       String
   end         String
   order       Int               @default(autoincrement())
