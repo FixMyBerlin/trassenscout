@@ -30,24 +30,24 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
         </td>
         <td
           className={clsx(
-            { hidden: compact },
-            "pt-4 pb-2 pl-4 pr-3 text-sm font-medium text-gray-900",
+            compact ? "hidden" : "",
+            "pt-4 pb-2 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap",
           )}
         >
           {formattedLength(subsubsections.reduce((acc, sub) => acc + (sub.length || 0), 0))}
         </td>
         <td
           className={clsx(
-            { hidden: compact },
-            "pt-4 pb-2 pl-4 pr-3 text-sm font-medium text-gray-900",
+            compact ? "hidden" : "",
+            "pt-4 pb-2 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap",
           )}
         >
           {formattedWidth(subsubsections.reduce((acc, sub) => acc + (sub.width || 0), 0))}
         </td>
         <td
           className={clsx(
-            { hidden: compact },
-            "pt-4 pb-2 pl-4 pr-3 text-sm font-medium text-gray-900",
+            compact ? "hidden" : "",
+            "pt-4 pb-2 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap",
           )}
         >
           {formattedEuro(subsubsections.reduce((acc, sub) => acc + (sub.costEstimate || 0), 0))}
@@ -70,7 +70,7 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
             </td>
             <td
               className={clsx(
-                { hidden: compact },
+                compact ? "hidden" : "",
                 "py-2 pl-4 pr-3 text-sm font-medium text-gray-900",
               )}
             >
@@ -80,7 +80,7 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
             </td>
             <td
               className={clsx(
-                { hidden: compact },
+                compact ? "hidden" : "",
                 "py-2 pl-4 pr-3 text-sm font-medium text-gray-900",
               )}
             >
@@ -90,7 +90,7 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
             </td>
             <td
               className={clsx(
-                { hidden: compact },
+                compact ? "hidden" : "",
                 "py-2 pl-4 pr-3 text-sm font-medium text-gray-900",
               )}
             >
