@@ -63,12 +63,14 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
           <ListItemStatus status={response.status} />
           <div
             className={clsx(
-              "bg-gray-300 rounded-full px-4 py-2 text-sm",
+              "bg-gray-300 rounded-full px-4 py-2 text-sm flex-shrink-0",
               operatorSlugWitFallback !== "k.A." && "uppercase",
             )}
           >
             <div className="pt-1">{operatorSlugWitFallback}</div>
           </div>
+
+          <Markdown className="ml-4 line-clamp-2" markdown={userText} />
         </div>
 
         {open ? (
