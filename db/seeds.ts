@@ -4,11 +4,12 @@ import seedFiles from "./seeds/files"
 import seedMemberships from "./seeds/memberships"
 import seedOperators from "./seeds/operators"
 import seedProjects from "./seeds/projects"
+import seedQualityLevels from "./seeds/qualityLevels"
 import seedStakeholdernotes from "./seeds/stakeholdernotes"
 import seedSubsections from "./seeds/subsections"
-import seedUsers from "./seeds/users"
-import seedSurveys from "./seeds/surveys"
 import seedSurveyResponseTopics from "./seeds/surveyresponsetopics"
+import seedSurveys from "./seeds/surveys"
+import seedUsers from "./seeds/users"
 
 /*
  * This seed function is executed when you run `blitz db seed`.
@@ -18,6 +19,7 @@ const seed = async () => {
   await seedUsers()
   await seedMemberships()
   await seedOperators()
+  await seedQualityLevels()
   await seedSubsections()
   await seedStakeholdernotes()
   await seedCalendarEntries()
