@@ -99,7 +99,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
               ...response,
               // Mapping to string is required so the ReactHookForm and our Radiobutton can compare the data to find what is selected
               surveyResponseTopics: response.surveyResponseTopics.map(String),
-              operatorId: response.operatorId === null ? 0 : String(response.operatorId),
+              operatorId: response.operatorId === null ? "0" : String(response.operatorId),
             }}
             response={response}
             operators={operators}
