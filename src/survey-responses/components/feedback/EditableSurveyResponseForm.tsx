@@ -20,6 +20,7 @@ import updateSurveyResponse from "../../mutations/updateSurveyResponse"
 import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
 import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
 import { surveyResponseStatus } from "./surveyResponseStatus"
+import { useRouter } from "next/router"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -41,6 +42,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   initialValues,
   refetchResponsesAndTopics,
 }: FormProps<S>) {
+  const router = useRouter()
   const methods = useForm<z.infer<S>>({
     mode: "onBlur",
     resolver: schema ? zodResolver(schema) : undefined,
@@ -106,7 +108,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
     const newTopicTitle = values.newTopic?.trim()
     if (!newTopicTitle) return
 
-    console.log("handleNewTopic", { values })
+    console.log(router.query.topics)
     try {
       const createdOrFetched = await createSurveyResponseTopicMutation({
         title: newTopicTitle,
@@ -127,6 +129,20 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         ...values.surveyResponseTopics,
         String(createdOrFetched.id),
       ])
+      // the EditableSurveyResponseFilterForm needs to update when a new topic is added here
+      // this hapens with a useEffect in EditableSurveyResponseFilterForm
+      await router.push(
+        {
+          query: {
+            ...router.query,
+            topics: [...(router.query.topics as string[]), String(createdOrFetched.id)],
+          },
+        },
+        undefined,
+        {
+          scroll: false,
+        },
+      )
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }

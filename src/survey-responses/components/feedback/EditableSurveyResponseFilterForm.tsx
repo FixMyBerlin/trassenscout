@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
 import clsx from "clsx"
 import { useRouter } from "next/router"
-import { PropsWithoutRef } from "react"
+import { PropsWithoutRef, useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { LabeledCheckboxGroup, LabeledRadiobuttonGroup } from "src/core/components/forms"
 import { linkStyles } from "src/core/components/links"
@@ -36,20 +36,45 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     topics: queryTopics,
     hasnotes: queryHasnotes,
   } = router.query
-  // TODO: Resetting the form does not work, yet. The searchActive was supposed to help but does not fix it.
-  // For some reason the router.query destructuring above still has the old values after handleFilterReset was called.
-  // I tried different ways to reset the filters. One can see a quick flicker of the empty URL after handleFilterReset was called.
+
   const searchActive = queryOperator && queryStatuses && queryTopics && queryHasnotes
+  if (!searchActive) {
+    void router.push(
+      {
+        query: {
+          ...router.query,
+          operator: "ALL", // default: radio "ALL"
+          statuses: [...Object.keys(surveyResponseStatus)], // default: all checked
+          topics: [...topics.map((t) => String(t.id)), "0"], // default: all checked
+          hasnotes: "ALL", // default: radio "ALL"
+        },
+      },
+      undefined,
+      { scroll: false },
+    )
+  }
   const methods = useForm<z.infer<S>>({
     mode: "onBlur",
     resolver: schema ? zodResolver(schema) : undefined,
     defaultValues: async () => ({
-      operator: (searchActive && queryOperator) || "ALL", // default: radio "ALL"
-      statuses: (searchActive && queryStatuses) || [...Object.keys(surveyResponseStatus)], // default: all checked
-      topics: (searchActive && queryTopics) || [...topics.map((t) => String(t.id)), "0"], // default: all checked
-      hasnotes: (searchActive && queryHasnotes) || "ALL", // default: radio "ALL"
+      operator: searchActive ? queryOperator : "ALL", // default: radio "ALL"
+      statuses: searchActive ? queryStatuses : [...Object.keys(surveyResponseStatus)], // default: all checked
+      topics: searchActive ? queryTopics : [...topics.map((t) => String(t.id)), "0"], // default: all checked
+      hasnotes: searchActive ? queryHasnotes : "ALL", // default: radio "ALL"
     }),
   })
+
+  // to update the checked items in the checkbox list when we add a new topic in EditableSurveyResponseForm (with handleNewTopic()), we need to set the form values here
+  useEffect(() => {
+    // @ts-expect-error
+    methods.setValue("operator", router.query.operator)
+    // @ts-expect-error
+    methods.setValue("statuses", router.query.statuses)
+    // @ts-expect-error
+    methods.setValue("topics", router.query.topics)
+    // @ts-expect-error
+    methods.setValue("hasnotes", router.query.hasnotes)
+  }, [methods, router])
 
   const handleSubmit = async (values: any) => {
     await router.push({ query: { ...router.query, ...values } }, undefined, { scroll: false })
@@ -57,11 +82,11 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
 
   const handleFilterReset = async () => {
     methods.reset()
-    delete router.query.operator
-    delete router.query.statuses
-    delete router.query.topics
-    delete router.query.hasnotes
-    await router.push({ query: { ...router.query } }, undefined, { scroll: false })
+    await router.push(
+      { query: { projectSlug: router.query.projectSlug, surveyId: router.query.surveyId } },
+      undefined,
+      { scroll: false },
+    )
   }
 
   const operatorOptions = [
