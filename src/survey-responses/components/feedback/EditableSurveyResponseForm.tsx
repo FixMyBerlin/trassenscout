@@ -233,7 +233,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         <div className="flex-grow space-y-2 pr-2 pb-4">
           <p className="font-bold mb-3">Interne Notiz</p>
           <LabeledTextareaField
-            help="Bitte starten Sie Ihre Notiz immer mit ihrem Namen"
+            help="Bitte starten Sie Ihre Notiz immer mit ihrem Namen oder Kürzel"
             name="note"
             label=""
             onChange={() => setHasUnsavedChanges(true)}
