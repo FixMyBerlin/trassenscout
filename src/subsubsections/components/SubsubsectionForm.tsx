@@ -79,6 +79,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         items={orders.map(({ order, label, readonly }) => {
           return { value: order, label, readonly }
         })}
+        classNameItemWrapper="sm:columns-2"
       />
 
       <GeometryInput />

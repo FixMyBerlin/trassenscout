@@ -1,6 +1,6 @@
 import db, { QualityLevel } from "../index"
 
-const seedQualityLevel = async () => {
+const seedQualityLevels = async () => {
   const seedFiles: Omit<QualityLevel, "id" | "createdAt" | "updatedAt">[] = [
     { projectId: 1, slug: "rsv", title: "Radschnellverbindung" },
     { projectId: 1, slug: "rvr", title: "Radvorrangroute" },
@@ -11,9 +11,9 @@ const seedQualityLevel = async () => {
   for (let i = 0; i < seedFiles.length; i++) {
     const data = seedFiles[i]
     if (data) {
-      await db.operator.create({ data })
+      await db.qualityLevel.create({ data })
     }
   }
 }
 
-export default seedQualityLevel
+export default seedQualityLevels
