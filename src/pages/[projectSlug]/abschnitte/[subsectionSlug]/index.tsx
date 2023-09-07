@@ -70,20 +70,13 @@ export const SubsectionDashboardWithQuery = () => {
         }
       />
 
-      <PageDescription>
-        <div className="flex gap-8">
-          <Markdown markdown={subsection.description} className="leading-snug" />
-          <div className="space-y-2">
-            <StakeholderSummary
-              format="labelNumber"
-              stakeholdernotesCounts={subsection.stakeholdernotesCounts}
-            />
-            {/* <p>
-                <strong>Teilstreckenlänge:</strong> TODO
-              </p> */}
+      {subsection.description && (
+        <PageDescription>
+          <div className="flex gap-8">
+            <Markdown markdown={subsection.description} className="leading-snug" />
           </div>
-        </div>
-      </PageDescription>
+        </PageDescription>
+      )}
 
       <div className="relative mt-12 flex w-full gap-10">
         <div className="w-full">
