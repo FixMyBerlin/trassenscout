@@ -54,7 +54,7 @@ export const StakeholderSection: React.FC<Props> = ({ subsectionId }) => {
             subsectionSlug: subsectionSlug!,
           })}
         >
-          TÖBs
+          TÖB hinzufügen
         </Link>
       </ButtonWrapper>
     </section>

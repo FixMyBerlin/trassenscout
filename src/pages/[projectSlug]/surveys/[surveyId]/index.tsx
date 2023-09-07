@@ -76,10 +76,10 @@ export const Survey = () => {
     {
       firstRow: {
         "Interesse an Updates": survey.interestedParticipants || "k. A.",
-        Teilnehmer: surveySessions.length,
-        "Zusätzliches Feedback": surveyResponsesFeedbackPart.length,
-        "Feedback mit Ortsangabe": surveyResponsesFeedbackPartWithLocation.length,
-        "Feedback ohne Ortsangabe":
+        Teilnehmende: surveySessions.length,
+        "Inhaltliches Feedback": surveyResponsesFeedbackPart.length,
+        "Inhaltliches Feedback mit Ortsangabe": surveyResponsesFeedbackPartWithLocation.length,
+        "Inhaltliches Feedback ohne Ortsangabe":
           surveyResponsesFeedbackPart.length - surveyResponsesFeedbackPartWithLocation.length,
       },
     },

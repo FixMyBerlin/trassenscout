@@ -87,7 +87,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       <LabeledTextField
         type="text"
         name="task"
-        label="Massnahmentyp"
+        label="Maßnahmentyp"
         help="Bspw. 'Fahrbahnmarkierung'"
       />
       <LabeledTextField

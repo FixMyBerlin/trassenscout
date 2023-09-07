@@ -1,5 +1,5 @@
 export const stakeholderNotesStatus = {
-  IRRELEVANT: "Nicht erforderlich",
+  IRRELEVANT: "Nicht relevant",
   PENDING: "Ausstehend",
   IN_PROGRESS: "In Arbeit",
   DONE: "Erledigt",
