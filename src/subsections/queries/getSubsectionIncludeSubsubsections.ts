@@ -24,7 +24,7 @@ export default resolver.pipe(
       include: {
         subsubsections: {
           include: { manager: true },
-          orderBy: { order: "asc" as Prisma.SortOrder },
+          orderBy: { slug: "asc" as Prisma.SortOrder },
         },
       },
     }

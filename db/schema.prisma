@@ -228,7 +228,6 @@ model Subsubsection {
   //
   slug           String // shortTitle and URL Slug
   subTitle       String?
-  order          Int                   @default(autoincrement())
   type           SubsubsectionTypeEnum @default(ROUTE) // Führungform
   geometry       Json
   labelPos       LabelPositionEnum     @default(top)
@@ -251,7 +250,6 @@ model Subsubsection {
   files          File[]
 
   @@unique([subsectionId, slug])
-  @@unique([subsectionId, order])
 }
 
 enum SubsubsectionTypeEnum {

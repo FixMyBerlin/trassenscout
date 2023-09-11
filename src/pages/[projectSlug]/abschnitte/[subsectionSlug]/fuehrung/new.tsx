@@ -33,7 +33,6 @@ const NewSubsubsection = () => {
       const subsubsection = await createSubsubsectionMutation({
         ...values,
         // The value="" becomes "0" which we translate to NULL
-        order: parseInt(values.order),
         managerId: values.managerId === 0 ? null : values.managerId,
         qualityLevelId: values.qualityLevelId === 0 ? null : values.qualityLevelId,
         subsectionId: subsection!.id,

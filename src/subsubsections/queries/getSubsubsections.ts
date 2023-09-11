@@ -17,7 +17,7 @@ export default resolver.pipe(
   async ({
     projectSlug,
     where,
-    orderBy = { order: "asc" },
+    orderBy = { slug: "asc" },
     skip = 0,
     take = 100,
   }: GetSubsubsectionsInput) => {
