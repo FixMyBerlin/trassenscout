@@ -83,7 +83,6 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       />
 
       <GeometryInput />
-      <LabeledRadiobuttonGroupLabelPos />
       <LabeledTextField
         type="text"
         name="task"
@@ -131,6 +130,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         optional
         options={getUserSelectOptions(users)}
       />
+      <LabeledRadiobuttonGroupLabelPos />
     </Form>
   )
 }
