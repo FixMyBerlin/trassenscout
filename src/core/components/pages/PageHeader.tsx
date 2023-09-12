@@ -27,10 +27,10 @@ export const PageHeader: React.FC<Props> = ({
     )
   return (
     <section className={clsx("mb-12", className)}>
-      <div className="mt-5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="mt-5 flex items-start justify-between">
+        <div className="flex gap-3 items-start">
           {titleIcon && (
-            <span style={{ zoom: 1.8 }} className="mb-1">
+            <span style={{ zoom: 1.8 }} className="mb-1 shrink-0">
               {titleIcon}
             </span>
           )}

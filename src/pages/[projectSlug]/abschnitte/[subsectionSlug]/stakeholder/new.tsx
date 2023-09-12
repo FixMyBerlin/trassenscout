@@ -40,7 +40,7 @@ const NewStakeholdernotesWithQuery = () => {
         await createStakeholdernoteMutation(createStakeholderNoteArray[i])
       }
       await router.push({
-        ...Routes.SubsectionDashboardPage({
+        ...Routes.SubsectionStakeholdersPage({
           projectSlug: projectSlug!,
           subsectionSlug: subsectionSlug!,
         }),
