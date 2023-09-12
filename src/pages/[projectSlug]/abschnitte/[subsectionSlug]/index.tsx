@@ -36,7 +36,7 @@ export const SubsectionDashboardWithQuery = () => {
   const subsubsectionsForSubsection = subsubsections.filter(
     (subsub) => subsub.subsectionId === subsection?.id,
   )
-  const subsubsection = subsubsections.find((ss) => ss.slug === subsubsectionSlug)
+  const subsubsection = subsubsectionsForSubsection.find((ss) => ss.slug === subsubsectionSlug)
 
   const [{ files }] = useQuery(getFilesWithSubsections, {
     projectSlug: projectSlug!,
