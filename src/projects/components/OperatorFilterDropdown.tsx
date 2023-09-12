@@ -43,7 +43,9 @@ export const OperatorFilterDropdown: React.FC = () => {
               )
             }
           >
-            <RadioGroup.Label as="span">Alle Baulastträger</RadioGroup.Label>
+            <RadioGroup.Label as="span" className="font-bold">
+              Alle Baulastträger
+            </RadioGroup.Label>
           </RadioGroup.Option>
           {operators.map((operator) => (
             <RadioGroup.Option
@@ -57,8 +59,8 @@ export const OperatorFilterDropdown: React.FC = () => {
                 )
               }
             >
-              <RadioGroup.Label as="span">
-                {operator.title} ({operator.subsectionCount})
+              <RadioGroup.Label className="uppercase font-bold" as="span">
+                {operator.slug}
               </RadioGroup.Label>
             </RadioGroup.Option>
           ))}
