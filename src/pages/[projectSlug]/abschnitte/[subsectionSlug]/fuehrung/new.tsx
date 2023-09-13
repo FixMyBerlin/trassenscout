@@ -41,7 +41,7 @@ const NewSubsubsection = () => {
         Routes.SubsubsectionDashboardPage({
           projectSlug: projectSlug!,
           subsectionSlug: subsectionSlug!,
-          subsubsectionSlug: subsubsection.id,
+          subsubsectionSlug: subsubsection.slug,
         }),
       )
     } catch (error: any) {
