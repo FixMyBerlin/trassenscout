@@ -1,6 +1,7 @@
 import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
+import { MapProvider } from "react-map-gl"
 import { CalenderDashboard } from "src/calendar-entries/components"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
@@ -72,8 +73,9 @@ export const ProjectDashboardWithQuery = () => {
       )}
 
       <OperatorFilterDropdown />
-
-      <ProjectMap subsections={filteredSubsections} />
+      <MapProvider>
+        <ProjectMap subsections={filteredSubsections} />
+      </MapProvider>
 
       <SubsectionTable subsections={filteredSubsections} />
 

@@ -1,9 +1,16 @@
 import { Routes, useParam } from "@blitzjs/next"
 import { lineString } from "@turf/helpers"
 import { along, featureCollection, length } from "@turf/turf"
+import { LngLatBoundsLike } from "maplibre-gl"
 import { useRouter } from "next/router"
-import React, { useState } from "react"
-import { MapEvent, MapLayerMouseEvent, Marker, ViewStateChangeEvent } from "react-map-gl/maplibre"
+import React, { useEffect, useState } from "react"
+import {
+  MapEvent,
+  MapLayerMouseEvent,
+  Marker,
+  ViewStateChangeEvent,
+  useMap,
+} from "react-map-gl/maplibre"
 import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 import { shortTitle } from "../text"
 import { BaseMap } from "./BaseMap"
@@ -18,6 +25,11 @@ type Props = { subsections: SubsectionWithPosition[] }
 export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
+  const { mainMap } = useMap()
+
+  useEffect(() => {
+    mainMap?.fitBounds(subsectionsBbox(subsections) as LngLatBoundsLike, { padding: 60 })
+  }, [mainMap, subsections])
 
   type HandleSelectProps = { subsectionSlug: string; edit: boolean }
   const handleSelect = ({ subsectionSlug, edit }: HandleSelectProps) => {
