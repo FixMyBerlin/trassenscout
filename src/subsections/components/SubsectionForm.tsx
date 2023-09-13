@@ -57,9 +57,9 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>(props: Props<S>)
         <LabeledTextField type="text" name="start" label="Startpunkt" />
         <LabeledTextField type="text" name="end" label="Endpunkt" />
       </div>
-      <LabeledRadiobuttonGroupLabelPos />
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledGeometryField name="geometry" label="Geometry der Achse (LineString)" />
+      <LabeledRadiobuttonGroupLabelPos />
 
       <div className="flex items-end gap-5">
         <LabeledSelect
