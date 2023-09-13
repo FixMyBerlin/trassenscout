@@ -16,7 +16,7 @@ export const OperatorFilterDropdown: React.FC = () => {
 
   return (
     <div className="mt-12">
-      <p>Planungsabschnitte anzeigen für:</p>
+      {/* <p>Planungsabschnitte anzeigen für:</p> */}
       <RadioGroup
         value={params.operator || ""}
         onChange={(value) => {
@@ -38,8 +38,8 @@ export const OperatorFilterDropdown: React.FC = () => {
             className={({ active, checked }) =>
               clsx(
                 active ? "" : "",
-                checked ? "bg-blue-800 text-white ring-0" : "ring-gray-300",
-                "hover:cursor-pointer hover:ring-gray-600 whitespace-nowrap relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm text-gray-900 ring-1  focus:z-10",
+                checked ? "bg-blue-900 text-white" : "ring-1 ring-gray-300 bg-white",
+                "hover:cursor-pointer ring-0 hover:ring-gray-600 whitespace-nowrap relative inline-flex items-center rounded-md px-3 py-2 text-sm text-gray-900 focus:z-10",
               )
             }
           >
@@ -54,8 +54,8 @@ export const OperatorFilterDropdown: React.FC = () => {
               className={({ active, checked }) =>
                 clsx(
                   active ? "" : "",
-                  checked ? "bg-blue-800 text-white ring-0" : "ring-gray-300",
-                  "hover:cursor-pointer hover:ring-gray-600 whitespace-nowrap relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm text-gray-900 ring-1  focus:z-10",
+                  checked ? "bg-blue-900 text-white" : "ring-1 ring-gray-300 bg-white",
+                  "hover:cursor-pointer ring-0 hover:ring-gray-600 whitespace-nowrap relative inline-flex items-center rounded-md px-3 py-2 text-sm text-gray-900 focus:z-10",
                 )
               }
             >
