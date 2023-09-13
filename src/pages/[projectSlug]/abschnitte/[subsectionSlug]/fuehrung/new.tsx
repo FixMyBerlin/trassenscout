@@ -60,7 +60,7 @@ const NewSubsubsection = () => {
       />
 
       <SubsubsectionForm
-        initialValues={{ type: "AREA", labelPos: "topRight" }}
+        initialValues={{ type: "AREA", labelPos: "bottom" }}
         className="mt-10"
         submitText="Erstellen"
         schema={NewSubsubsectionSchemaForm}
