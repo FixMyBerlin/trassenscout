@@ -26,23 +26,24 @@ export const PageHeader: React.FC<Props> = ({
       description
     )
   return (
-    <section className={clsx("mb-12", className)}>
-      <div className="mt-5 flex items-start justify-between">
-        <div className="flex gap-3 items-start">
-          {titleIcon && (
-            <span style={{ zoom: 1.8 }} className="mb-1 shrink-0">
-              {titleIcon}
-            </span>
-          )}
-          <H1>{title}</H1>
+    <section className={clsx("mb-12 space-y-3", className)}>
+      {(titleIcon || action) && (
+        <div className="mt-5 flex items-start justify-between">
+          {/* empty span should be rendered if no title icon to keep position of action */}
+          <span style={{ zoom: 1.8 }} className="mb-1 shrink-0">
+            {titleIcon ?? titleIcon}
+          </span>
+          {Boolean(action) && <div>{action}</div>}
         </div>
-        {Boolean(action) && <div>{action}</div>}
+      )}
+      <div>
+        <H1>{title}</H1>
+
+        {Boolean(subtitle) && <H2 className="mt-3">{subtitle}</H2>}
+        {Boolean(description) && styledDescription}
+
+        <DashedLine />
       </div>
-
-      {Boolean(subtitle) && <H2 className="mt-3">{subtitle}</H2>}
-      {Boolean(description) && styledDescription}
-
-      <DashedLine />
     </section>
   )
 }
