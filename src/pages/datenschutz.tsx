@@ -46,8 +46,8 @@ const Datenschutz: BlitzPage = () => {
       <h3>Verantwortlich im Sinne der DSGVO</h3>
       <p>
         <strong>FixMyCity GmbH</strong> <br />
-        Karlsgartenstraße 12 <br />
-        12049 Berlin <br />
+        Oberlandstraße 26-35 <br />
+        12099 Berlin <br />
         E-Mail: <LinkMail>hello@fixmycity.de</LinkMail> <br />
         Telefon: <LinkTel>+40 30 549 08 665</LinkTel>
       </p>
