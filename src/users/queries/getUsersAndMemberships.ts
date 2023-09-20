@@ -1,5 +1,5 @@
-import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
+import { paginate } from "blitz"
 import db, { Prisma } from "db"
 
 interface GetUsersInput
@@ -22,7 +22,15 @@ export default resolver.pipe(
           ...paginateArgs,
           where,
           orderBy,
-          include: { Membership: true },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            role: true,
+            // We cannot pass this part via select in the page component since TS will not be able to infer the types then
+            Membership: { select: { id: true, project: { select: { slug: true } } } },
+          },
         }),
     })
 

@@ -11,9 +11,7 @@ import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { MembershipForm } from "src/memberships/components/MembershipForm"
 import createMembership from "src/memberships/mutations/createMembership"
 import { FORM_ERROR } from "src/projects/components/ProjectForm"
-import getProjectsIdAndName from "src/projects/queries/getProjectsIdAndName"
 import getAdminStatus from "src/users/queries/getAdminStatus"
-import getUsers from "src/users/queries/getUsers"
 
 const AdminNewMembership = () => {
   useQuery(getAdminStatus, {}) // See https://github.com/FixMyBerlin/private-issues/issues/936
@@ -21,13 +19,11 @@ const AdminNewMembership = () => {
   const router = useRouter()
 
   const [createMembershipMutation] = useMutation(createMembership)
-  const [{ users }] = useQuery(getUsers, {})
-  const [{ projects }] = useQuery(getProjectsIdAndName, {})
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const membership = createMembershipMutation({ ...values })
+      await createMembershipMutation({ ...values })
       await router.push(Routes.AdminMembershipsPage())
     } catch (error: any) {
       console.error(error)
@@ -36,16 +32,13 @@ const AdminNewMembership = () => {
   }
 
   return (
-    <>
-      <SuperAdminBox>
-        <MembershipForm
-          submitText="Erstellen"
-          onSubmit={handleSubmit}
-          users={users}
-          projects={projects}
-        />
-      </SuperAdminBox>
-    </>
+    <SuperAdminBox>
+      <MembershipForm
+        initialValues={{ userId: router.query.userId }}
+        submitText="Erstellen"
+        onSubmit={handleSubmit}
+      />
+    </SuperAdminBox>
   )
 }
 

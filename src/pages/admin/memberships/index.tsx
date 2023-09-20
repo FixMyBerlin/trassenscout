@@ -1,161 +1,97 @@
 import { Routes } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
-import { Membership, Project, User } from "@prisma/client"
-import clsx from "clsx"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Link, blueButtonStyles, whiteButtonStyles } from "src/core/components/links"
-import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
-import { H2, seoIndexTitle, shortTitle } from "src/core/components/text"
+import { Link, linkIcons, linkStyles } from "src/core/components/links"
+import { PageHeader } from "src/core/components/pages/PageHeader"
+import { seoIndexTitle, shortTitle } from "src/core/components/text"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
-import getMemberships from "src/memberships/queries/getMemberships"
+import deleteMembership from "src/memberships/mutations/deleteMembership"
 import getAdminStatus from "src/users/queries/getAdminStatus"
-import getUsersWithMemberships from "src/users/queries/getUsersWithMemberships"
+import getUsersAndMemberships from "src/users/queries/getUsersAndMemberships"
 import { getFullname } from "src/users/utils"
-import AdminNewMembershipPage from "./new"
-
-const ITEMS_PER_PAGE = 100
 
 const AdminMemberships = () => {
   useQuery(getAdminStatus, {}) // See https://github.com/FixMyBerlin/private-issues/issues/936
 
+  const [{ users: userAndMemberships }] = useQuery(getUsersAndMemberships, {})
+
   const router = useRouter()
-  const page = Number(router.query.page) || 0
-  const [{ users }] = useQuery(getUsersWithMemberships, {})
-  const [result] = useQuery(getMemberships, {
-    include: { user: true, project: true },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
-  // const [createMembershipMutation] = useMutation(createMembership)
-
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
-
-  // type HandleSubmit = any // TODO
-  // const handleSubmit = async (values: HandleSubmit) => {
-  //  const partnerLogoSrcsArray = values.partnerLogoSrcs.split("\n")
-  //  values = { ...values, partnerLogoSrcs: partnerLogoSrcsArray }
-  //  try {
-  //   const project = await createProjectMutation(values)
-
-  //   // Create a membership for the selected user
-  //   if (project.managerId) {
-  //    try {
-  //     await createMembershipMutation({ projectId: project.id, userId: project.managerId })
-  //    } catch (error: any) {
-  //     console.error(error)
-  //     return { [FORM_ERROR]: error }
-  //    }
-  //   }
-
-  //   await router.push(Routes.ProjectDashboardPage({ projectSlug: project.slug }))
-  //  } catch (error: any) {
-  //   console.error(error)
-  //   return { [FORM_ERROR]: error }
-  //  }
-  // }
-
-  const memberships = result.memberships as (Membership & { user: User; project: Project })[]
-
-  const sortedMemberships = memberships.sort((x, y) => x.projectId - y.projectId)
-  const usersWithoutMemberships = users
-    .filter((u) => !sortedMemberships.map((m) => m.userId).includes(u.id))
-    .filter((u) => u.role !== "ADMIN")
+  const [deleteMembershipMutation] = useMutation(deleteMembership)
+  const handleDelete = async (
+    membership: (typeof userAndMemberships)[number]["Membership"][number],
+  ) => {
+    if (
+      window.confirm(
+        `Den Eintrag mit ID ${membership.id} auf Projekt ${membership.project.slug} unwiderruflich löschen?`,
+      )
+    ) {
+      await deleteMembershipMutation({ id: membership.id })
+      await router.push(Routes.AdminMembershipsPage())
+    }
+  }
 
   return (
-    <>
-      <SuperAdminBox>
-        <div className="flex flex-col sm:flex-row justify-between items-center">
-          {" "}
-          <H2>Nutzer*innen mit Rechten</H2>
-          <div className="mt-4">
-            <Link button href={Routes.AdminNewMembershipPage()}>
-              Rechte vergeben
-            </Link>
-          </div>
-        </div>
-        <TableWrapper>
-          <table className="min-w-full divide-y divide-gray-300">
-            <thead className="bg-gray-50">
-              <tr>
-                <th
-                  scope="col"
-                  className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
-                >
-                  User
-                </th>
-                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold sm:pr-6">
-                  Projekt
-                </th>
-              </tr>
-            </thead>
+    <SuperAdminBox>
+      <TableWrapper>
+        <table className="min-w-full divide-y divide-gray-300">
+          <thead className="bg-gray-50">
+            <tr>
+              <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6">
+                User
+              </th>
+              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold sm:pr-6">
+                Projekt
+              </th>
+            </tr>
+          </thead>
 
-            <tbody className="divide-y divide-gray-200 bg-white">
-              {sortedMemberships.map((membership) => {
-                return (
-                  <tr key={membership.id}>
-                    <td className="h-20 py-4 pl-4 pr-3 text-sm sm:pl-6">
-                      <strong>{getFullname(membership.user)}</strong>
-                      <br />
-                      {membership.user.email}
-                    </td>
-                    <td className="h-20 py-4 pl-4 pr-3 text-sm sm:pr-6">
-                      <Link
-                        blank
-                        href={Routes.ProjectDashboardPage({ projectSlug: membership.project.slug })}
-                      >
-                        {shortTitle(membership.project.slug)}
+          <tbody className="divide-y divide-gray-200 bg-white">
+            {userAndMemberships.map((user) => {
+              return (
+                <tr key={user.id}>
+                  <td className="h-20 py-4 pl-4 pr-3 text-sm sm:pl-6">
+                    <strong>{getFullname(user)}</strong>
+                    <br />
+                    {user.email}
+                    {user.role === "ADMIN" && <>(Admin)</>}
+                  </td>
+                  <td className="h-20 py-4 pl-4 pr-3 text-sm sm:pr-6">
+                    {user?.Membership?.length === 0 && <>Bisher keine Rechte</>}
+                    {user?.Membership?.map((membership) => {
+                      return (
+                        <div key={membership.id} className="flex justify-between">
+                          <Link
+                            blank
+                            href={Routes.ProjectDashboardPage({
+                              projectSlug: membership.project.slug,
+                            })}
+                          >
+                            {shortTitle(membership.project.slug)}
+                          </Link>
+
+                          <button onClick={() => handleDelete(membership)} className={linkStyles}>
+                            {linkIcons["delete"]}
+                          </button>
+                        </div>
+                      )
+                    })}
+                    <div className="border-t mt-2 pt-2">
+                      <Link icon="plus" href={Routes.AdminNewMembershipPage({ userId: user.id })}>
+                        Rechte
                       </Link>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </TableWrapper>
-        <div className="flex flex-col sm:flex-row justify-between items-center">
-          {" "}
-          <H2>Nutzer*innen ohne Rechte</H2>
-          <div className="mt-4">
-            <Link button href={Routes.AdminNewMembershipPage()}>
-              Rechte vergeben
-            </Link>
-          </div>
-        </div>
-        <TableWrapper>
-          <table className="min-w-full divide-y divide-gray-300">
-            <thead className="bg-gray-50">
-              <tr>
-                <th
-                  scope="col"
-                  className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
-                >
-                  User
-                </th>
-              </tr>
-            </thead>
-
-            <tbody className="divide-y divide-gray-200 bg-white">
-              {usersWithoutMemberships.map((user) => {
-                return (
-                  <tr key={user.id}>
-                    <td className="h-20 py-4 pl-4 pr-3 text-sm sm:pl-6">
-                      <strong>{getFullname(user)}</strong>
-                      <br />
-                      {user.email}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </TableWrapper>
-      </SuperAdminBox>
-    </>
+                    </div>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </TableWrapper>
+    </SuperAdminBox>
   )
 }
 
