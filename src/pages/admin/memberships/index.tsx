@@ -6,14 +6,12 @@ import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { Pagination } from "src/core/components/Pagination"
 import { Spinner } from "src/core/components/Spinner"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { H2, seoIndexTitle, shortTitle } from "src/core/components/text"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import getMemberships from "src/memberships/queries/getMemberships"
 import getAdminStatus from "src/users/queries/getAdminStatus"
-import getUsers from "src/users/queries/getUsers"
 import getUsersWithMemberships from "src/users/queries/getUsersWithMemberships"
 import { getFullname } from "src/users/utils"
 
@@ -58,7 +56,7 @@ const AdminMemberships = () => {
   //   return { [FORM_ERROR]: error }
   //  }
   // }
-  const { hasMore } = result
+
   const memberships = result.memberships as (Membership & { user: User; project: Project })[]
 
   const sortedMemberships = memberships.sort((x, y) => x.projectId - y.projectId)

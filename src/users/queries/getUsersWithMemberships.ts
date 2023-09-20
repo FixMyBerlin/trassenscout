@@ -23,12 +23,6 @@ export default resolver.pipe(
           where,
           orderBy,
           include: { Membership: true },
-          // select: {
-          //   id: true,
-          //   firstName: true,
-          //   lastName: true,
-          //   email: true,
-          // },
         }),
     })
 
