@@ -1,10 +1,11 @@
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Membership, Project, User } from "@prisma/client"
+import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Link } from "src/core/components/links"
+import { Link, blueButtonStyles, whiteButtonStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
@@ -14,6 +15,7 @@ import getMemberships from "src/memberships/queries/getMemberships"
 import getAdminStatus from "src/users/queries/getAdminStatus"
 import getUsersWithMemberships from "src/users/queries/getUsersWithMemberships"
 import { getFullname } from "src/users/utils"
+import AdminNewMembershipPage from "./new"
 
 const ITEMS_PER_PAGE = 100
 
@@ -67,6 +69,15 @@ const AdminMemberships = () => {
   return (
     <>
       <SuperAdminBox>
+        <div className="flex flex-col sm:flex-row justify-between items-center">
+          {" "}
+          <H2>Nutzer*innen mit Rechten</H2>
+          <div className="mt-4">
+            <Link button href={Routes.AdminNewMembershipPage()}>
+              Rechte vergeben
+            </Link>
+          </div>
+        </div>
         <TableWrapper>
           <table className="min-w-full divide-y divide-gray-300">
             <thead className="bg-gray-50">
@@ -106,7 +117,15 @@ const AdminMemberships = () => {
             </tbody>
           </table>
         </TableWrapper>
-        <H2>Nutzer*innen ohne Rechte</H2>
+        <div className="flex flex-col sm:flex-row justify-between items-center">
+          {" "}
+          <H2>Nutzer*innen ohne Rechte</H2>
+          <div className="mt-4">
+            <Link button href={Routes.AdminNewMembershipPage()}>
+              Rechte vergeben
+            </Link>
+          </div>
+        </div>
         <TableWrapper>
           <table className="min-w-full divide-y divide-gray-300">
             <thead className="bg-gray-50">
