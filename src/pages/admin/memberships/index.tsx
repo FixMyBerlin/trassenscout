@@ -9,10 +9,12 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Pagination } from "src/core/components/Pagination"
 import { Spinner } from "src/core/components/Spinner"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
-import { seoIndexTitle, shortTitle } from "src/core/components/text"
+import { H2, seoIndexTitle, shortTitle } from "src/core/components/text"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import getMemberships from "src/memberships/queries/getMemberships"
 import getAdminStatus from "src/users/queries/getAdminStatus"
+import getUsers from "src/users/queries/getUsers"
+import getUsersWithMemberships from "src/users/queries/getUsersWithMemberships"
 import { getFullname } from "src/users/utils"
 
 const ITEMS_PER_PAGE = 100
@@ -22,13 +24,12 @@ const AdminMemberships = () => {
 
   const router = useRouter()
   const page = Number(router.query.page) || 0
+  const [{ users }] = useQuery(getUsersWithMemberships, {})
   const [result] = useQuery(getMemberships, {
     include: { user: true, project: true },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
-  const { hasMore } = result
-  const memberships = result.memberships as (Membership & { user: User; project: Project })[]
   // const [createMembershipMutation] = useMutation(createMembership)
 
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
@@ -57,6 +58,13 @@ const AdminMemberships = () => {
   //   return { [FORM_ERROR]: error }
   //  }
   // }
+  const { hasMore } = result
+  const memberships = result.memberships as (Membership & { user: User; project: Project })[]
+
+  const sortedMemberships = memberships.sort((x, y) => x.projectId - y.projectId)
+  const usersWithoutMemberships = users
+    .filter((u) => !sortedMemberships.map((m) => m.userId).includes(u.id))
+    .filter((u) => u.role !== "ADMIN")
 
   return (
     <>
@@ -78,7 +86,7 @@ const AdminMemberships = () => {
             </thead>
 
             <tbody className="divide-y divide-gray-200 bg-white">
-              {memberships.map((membership) => {
+              {sortedMemberships.map((membership) => {
                 return (
                   <tr key={membership.id}>
                     <td className="h-20 py-4 pl-4 pr-3 text-sm sm:pl-6">
@@ -100,13 +108,35 @@ const AdminMemberships = () => {
             </tbody>
           </table>
         </TableWrapper>
+        <H2>Nutzer*innen ohne Rechte</H2>
+        <TableWrapper>
+          <table className="min-w-full divide-y divide-gray-300">
+            <thead className="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
+                >
+                  User
+                </th>
+              </tr>
+            </thead>
 
-        <Pagination
-          hasMore={hasMore}
-          page={page}
-          handlePrev={goToPreviousPage}
-          handleNext={goToNextPage}
-        />
+            <tbody className="divide-y divide-gray-200 bg-white">
+              {usersWithoutMemberships.map((user) => {
+                return (
+                  <tr key={user.id}>
+                    <td className="h-20 py-4 pl-4 pr-3 text-sm sm:pl-6">
+                      <strong>{getFullname(user)}</strong>
+                      <br />
+                      {user.email}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </TableWrapper>
       </SuperAdminBox>
     </>
   )
