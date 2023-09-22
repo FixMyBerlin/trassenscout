@@ -14,14 +14,13 @@ const PositionArraySchema = z.array(z.tuple([z.number(), z.number()])) // Positi
 
 export const SubsubsectionSchema = z.object({
   slug: SlugSchema,
-  order: z.coerce.number(),
   subTitle: z.string().nullish(),
   type: z.nativeEnum(SubsubsectionTypeEnum),
   geometry: PositionSchema.or(PositionArraySchema),
   labelPos: z.nativeEnum(LabelPositionEnum),
   task: z.string().min(3, {
     message: "Pflichtfeld. Mindestens 3 Zeichen.",
-  }), // Massnahmentyp
+  }), // Maßnahmentyp
   length: z.coerce.number().nullish(), // km
   width: z.coerce.number().nullish(), // m
   costEstimate: z.coerce.number().nullish(), // €
@@ -34,8 +33,4 @@ export const SubsubsectionSchema = z.object({
 
 export type TSubsubsectionSchema = Prettify<z.infer<typeof SubsubsectionSchema>>
 
-export const SubsubsectionSchemaForm = SubsubsectionSchema.merge(
-  z.object({
-    order: z.string(),
-  }),
-)
+export const SubsubsectionSchemaForm = SubsubsectionSchema

@@ -24,7 +24,13 @@ const NewSubsection = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const subsection = await createSubsectionMutation({ ...values, projectId: project.id! })
+      const subsection = await createSubsectionMutation({
+        ...values,
+        // The value="" becomes "0" which we translate to NULL
+        managerId: values.managerId === 0 ? null : values.managerId,
+        operatorId: values.operatorId === 0 ? null : values.operatorId,
+        projectId: project.id!,
+      })
       await router.push(
         Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
@@ -43,6 +49,7 @@ const NewSubsection = () => {
       <PageHeader title="Planungsabschitt hinzufügen" className="mt-12" />
 
       <SubsectionForm
+        initialValues={{ labelPos: "bottom" }}
         submitText="Erstellen"
         schema={SubsectionSchema.omit({ projectId: true })}
         // initialValues={} // Use only when custom initial values are needed

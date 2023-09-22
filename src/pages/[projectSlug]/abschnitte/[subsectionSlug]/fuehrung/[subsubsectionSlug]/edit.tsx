@@ -81,7 +81,6 @@ const EditSubsubsection = () => {
         schema={SubsubsectionSchemaForm}
         initialValues={{
           ...subsubsection,
-          order: String(subsubsection.order),
         }}
         onSubmit={handleSubmit}
       />

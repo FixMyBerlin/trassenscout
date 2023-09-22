@@ -33,7 +33,6 @@ const NewSubsubsection = () => {
       const subsubsection = await createSubsubsectionMutation({
         ...values,
         // The value="" becomes "0" which we translate to NULL
-        order: parseInt(values.order),
         managerId: values.managerId === 0 ? null : values.managerId,
         qualityLevelId: values.qualityLevelId === 0 ? null : values.qualityLevelId,
         subsectionId: subsection!.id,
@@ -42,7 +41,7 @@ const NewSubsubsection = () => {
         Routes.SubsubsectionDashboardPage({
           projectSlug: projectSlug!,
           subsectionSlug: subsectionSlug!,
-          subsubsectionSlug: subsubsection.id,
+          subsubsectionSlug: subsubsection.slug,
         }),
       )
     } catch (error: any) {
@@ -61,7 +60,7 @@ const NewSubsubsection = () => {
       />
 
       <SubsubsectionForm
-        initialValues={{ type: "AREA" }}
+        initialValues={{ type: "AREA", labelPos: "bottom" }}
         className="mt-10"
         submitText="Erstellen"
         schema={NewSubsubsectionSchemaForm}

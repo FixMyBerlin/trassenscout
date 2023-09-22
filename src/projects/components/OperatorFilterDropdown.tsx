@@ -1,5 +1,7 @@
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
+import { RadioGroup } from "@headlessui/react"
+import clsx from "clsx"
 import router from "next/router"
 import React from "react"
 import { useSlugs } from "src/core/hooks"
@@ -13,34 +15,57 @@ export const OperatorFilterDropdown: React.FC = () => {
   if (!operators?.length) return null
 
   return (
-    <div className="mt-12 flex justify-end">
-      <select
-        id="operator"
-        name="operator"
+    <div className="mt-12">
+      {/* <p>Planungsabschnitte anzeigen für:</p> */}
+      <RadioGroup
         value={params.operator || ""}
-        onChange={(event) => {
+        onChange={(value) => {
           void router.push(
             Routes.ProjectDashboardPage({
               projectSlug: projectSlug!,
-              ...(event.target.value ? { operator: event.target.value } : {}),
+              ...(value ? { operator: value } : {}),
             }),
             undefined,
             { scroll: false },
           )
         }}
-        className="block w-80 text-ellipsis rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-blue-600 sm:text-sm sm:leading-6"
+        className="mt-2"
       >
-        <option key="" value="">
-          Planungsabschnitte aller Baulastträger
-        </option>
-        {operators.map(({ slug, title, subsectionCount }) => {
-          return (
-            <option key={slug} value={slug}>
-              Planungsabschnitte ({subsectionCount}) für {title} ({slug})
-            </option>
-          )
-        })}
-      </select>
+        <RadioGroup.Label className="sr-only">Baulastträger auswählen</RadioGroup.Label>
+        <div className="space-x-2">
+          <RadioGroup.Option
+            value=""
+            className={({ active, checked }) =>
+              clsx(
+                active ? "" : "",
+                checked ? "bg-blue-900 text-white" : "ring-1 ring-gray-300 bg-white",
+                "hover:cursor-pointer ring-0 hover:ring-gray-600 whitespace-nowrap relative inline-flex items-center rounded-md px-3 py-2 text-sm text-gray-900 focus:z-10",
+              )
+            }
+          >
+            <RadioGroup.Label as="span" className="font-bold">
+              Alle Baulastträger
+            </RadioGroup.Label>
+          </RadioGroup.Option>
+          {operators.map((operator) => (
+            <RadioGroup.Option
+              key={operator.id}
+              value={operator.slug}
+              className={({ active, checked }) =>
+                clsx(
+                  active ? "" : "",
+                  checked ? "bg-blue-900 text-white" : "ring-1 ring-gray-300 bg-white",
+                  "hover:cursor-pointer ring-0 hover:ring-gray-600 whitespace-nowrap relative inline-flex items-center rounded-md px-3 py-2 text-sm text-gray-900 focus:z-10",
+                )
+              }
+            >
+              <RadioGroup.Label className="uppercase font-bold" as="span">
+                {operator.slug}
+              </RadioGroup.Label>
+            </RadioGroup.Option>
+          ))}
+        </div>
+      </RadioGroup>
     </div>
   )
 }

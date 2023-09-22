@@ -16,8 +16,7 @@ import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FileTable } from "src/files/components/FileTable"
 import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
-import { StakeholderSection } from "src/stakeholdernotes/components/StakeholderSection"
-import { StakeholderSummary } from "src/stakeholdernotes/components/StakeholderSummary"
+import { SubsectionTabs } from "src/subsections/components/SubsectionTabs"
 import { SubsubsectionMapSidebar } from "src/subsections/components/SubsubsectionMapSidebar"
 import getSubsections from "src/subsections/queries/getSubsections"
 import { SubsubsectionTable } from "src/subsubsections/components/SubsubsectionTable"
@@ -37,7 +36,7 @@ export const SubsectionDashboardWithQuery = () => {
   const subsubsectionsForSubsection = subsubsections.filter(
     (subsub) => subsub.subsectionId === subsection?.id,
   )
-  const subsubsection = subsubsections.find((ss) => ss.slug === subsubsectionSlug)
+  const subsubsection = subsubsectionsForSubsection.find((ss) => ss.slug === subsubsectionSlug)
 
   const [{ files }] = useQuery(getFilesWithSubsections, {
     projectSlug: projectSlug!,
@@ -56,6 +55,7 @@ export const SubsectionDashboardWithQuery = () => {
       <PageHeader
         titleIcon={<SubsectionMapIcon label={shortTitle(subsection.slug)} />}
         title={startEnd(subsection)}
+        className="mt-12"
         subtitle={subsection.operator?.title}
         action={
           <Link
@@ -68,22 +68,16 @@ export const SubsectionDashboardWithQuery = () => {
             bearbeiten
           </Link>
         }
+        description={<SubsectionTabs />}
       />
 
-      <PageDescription>
-        <div className="flex gap-8">
-          <Markdown markdown={subsection.description} className="leading-snug" />
-          <div className="space-y-2">
-            <StakeholderSummary
-              format="labelNumber"
-              stakeholdernotesCounts={subsection.stakeholdernotesCounts}
-            />
-            {/* <p>
-                <strong>Teilstreckenlänge:</strong> TODO
-              </p> */}
+      {subsection.description && (
+        <PageDescription>
+          <div className="flex gap-8">
+            <Markdown markdown={subsection.description} className="leading-snug" />
           </div>
-        </div>
-      </PageDescription>
+        </PageDescription>
+      )}
 
       <div className="relative mt-12 flex w-full gap-10">
         <div className="w-full">
@@ -116,8 +110,6 @@ export const SubsectionDashboardWithQuery = () => {
           />
         )}
       </div>
-
-      <StakeholderSection subsectionId={subsection.id} />
 
       <section className="mt-12">
         <H2 className="mb-5">Relevante Dokumente</H2>

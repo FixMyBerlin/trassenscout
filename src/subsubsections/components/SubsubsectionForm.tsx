@@ -3,7 +3,6 @@ import { useQuery } from "@blitzjs/rpc"
 import {
   Form,
   FormProps,
-  LabeledRadiobuttonGroup,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
@@ -16,14 +15,12 @@ import getProjectUsers from "src/memberships/queries/getProjectUsers"
 import getQualityLevelsWithCount from "src/qualityLevels/queries/getQualityLevelsWithCount"
 import { getUserSelectOptions } from "src/users/utils"
 import { z } from "zod"
-import getSubsubsections from "../queries/getSubsubsections"
 import { GeometryInput } from "./GeometryInput/GeometryInput"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const { projectSlug } = useSlugs()
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
-  const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug: projectSlug! })
 
   const [{ qualityLevels }] = useQuery(getQualityLevelsWithCount, { projectSlug })
   const qualityLevelOptions: [number | string, string][] = [
@@ -32,34 +29,6 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       return [ql.id, `${ql.title} – ${shortTitle(ql.slug)}`] as [number, string]
     }),
   ]
-
-  const ordersWithPlaceholder = () => {
-    const maxOrder = Math.max(...subsubsections.map((s) => s.order)) + 5
-    let orders: { order: string; label: string; readonly: boolean }[] = []
-
-    for (let i = 0; i <= maxOrder; i++) {
-      const subsubsection = subsubsections.find((sub) => sub.order === i)
-      // @ts-expect-error no idea wo to get the types nice…
-      const current = subsubsection && subsubsection.id === props.initialValues?.id
-      orders.push({
-        order: String(i),
-        label: subsubsection
-          ? `Position ${i}: ${shortTitle(subsubsection.slug)} ${
-              current ? "(die Aktuelle Führung)" : ""
-            }`
-          : `Position ${i}`,
-        readonly: Boolean(subsubsection && !current),
-      })
-    }
-    orders.push({
-      order: String(maxOrder + 1),
-      label: `Position ${maxOrder + 1}`,
-      readonly: false,
-    })
-
-    return orders
-  }
-  const orders = ordersWithPlaceholder()
 
   return (
     <Form<S> {...props}>
@@ -73,21 +42,11 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       />
       <LabeledTextField type="text" name="subTitle" label="Title" optional />
 
-      <LabeledRadiobuttonGroup
-        label="Anzeige-Reihenfolge der Führungen"
-        scope="order"
-        items={orders.map(({ order, label, readonly }) => {
-          return { value: order, label, readonly }
-        })}
-        classNameItemWrapper="sm:columns-2"
-      />
-
       <GeometryInput />
-      <LabeledRadiobuttonGroupLabelPos />
       <LabeledTextField
         type="text"
         name="task"
-        label="Massnahmentyp"
+        label="Maßnahmentyp"
         help="Bspw. 'Fahrbahnmarkierung'"
       />
       <LabeledTextField
@@ -131,6 +90,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         optional
         options={getUserSelectOptions(users)}
       />
+      <LabeledRadiobuttonGroupLabelPos />
     </Form>
   )
 }

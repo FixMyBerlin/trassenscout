@@ -44,7 +44,7 @@ const EditStakeholdernote = () => {
       })
       await setQueryData(updated)
       await router.push(
-        Routes.SubsectionDashboardPage({
+        Routes.SubsectionStakeholdersPage({
           projectSlug: projectSlug!,
           subsectionSlug: subsectionSlug!,
           stakeholderDetails: updated.id,

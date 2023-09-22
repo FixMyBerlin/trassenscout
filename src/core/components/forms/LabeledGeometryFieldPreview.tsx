@@ -117,7 +117,7 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
             </Map>
           </div>
           <details className="prose prose-sm">
-            <summary>Geometry</summary>
+            <summary className="cursor-pointer">Geometry</summary>
             <Link
               blank
               href={`http://geojson.io/#data=data:application/json,${encodeURIComponent(

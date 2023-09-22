@@ -62,7 +62,7 @@ export const SurveyResponse = () => {
       <PageHeader title={survey.title} className="mt-12" description={<SurveyTabs />} />
 
       <div className="space-y-4 mt-12">
-        <H2>Kommentare aus Bürgerbeteiligung ({filteredResponses.length})</H2>
+        <H2>Beiträge aus Bürgerbeteiligung ({filteredResponses.length})</H2>
 
         <EditableSurveyResponseFilterForm operators={operators} topics={topics} />
 

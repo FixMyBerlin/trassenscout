@@ -76,10 +76,10 @@ export const Survey = () => {
     {
       firstRow: {
         "Interesse an Updates": survey.interestedParticipants || "k. A.",
-        Teilnehmer: surveySessions.length,
-        "Zusätzliches Feedback": surveyResponsesFeedbackPart.length,
-        "Feedback mit Ortsangabe": surveyResponsesFeedbackPartWithLocation.length,
-        "Feedback ohne Ortsangabe":
+        Teilnehmende: surveySessions.length,
+        "Inhaltliches Feedback": surveyResponsesFeedbackPart.length,
+        "Inhaltliches Feedback mit Ortsangabe": surveyResponsesFeedbackPartWithLocation.length,
+        "Inhaltliches Feedback ohne Ortsangabe":
           surveyResponsesFeedbackPart.length - surveyResponsesFeedbackPartWithLocation.length,
       },
     },
@@ -153,7 +153,7 @@ export const Survey = () => {
         }
       />
 
-      <div className="mt-4">
+      {/* <div className="mt-4">
         <H2>Link zu Daten der Beteiligung </H2>
         {survey.surveyResultsUrl ? (
           <div className="mt-4 border rounded py-3.5">
@@ -165,7 +165,7 @@ export const Survey = () => {
         ) : (
           <div className="mt-4">Es wurde bisher kein Link eingetragen.</div>
         )}
-      </div>
+      </div> */}
 
       <div className="mt-12">
         <H2>Allgemeine Infos </H2>
