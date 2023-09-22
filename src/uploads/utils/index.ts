@@ -1,2 +1,2 @@
-export * from "./fileUrl"
+export * from "./uploadUrl"
 export * from "./splitReturnTo"

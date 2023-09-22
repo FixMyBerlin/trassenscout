@@ -16,19 +16,19 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { quote, seoNewTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { useS3Upload } from "src/core/lib/next-s3-upload/src"
-import createFile from "src/files/mutations/createFile"
-import { splitReturnTo } from "src/files/utils"
+import createUpload from "src/uploads/mutations/createUpload"
+import { splitReturnTo } from "src/uploads/utils"
 
 // Flow: /new goes to /edit on success
 // On /edit users can modify the title and section relation
-const NewFileWithQuery = () => {
+const NewUploadWithQuery = () => {
   const router = useRouter()
-  const [createFileMutation] = useMutation(createFile)
+  const [createUploadMutation] = useMutation(createUpload)
   const projectSlug = useParam("projectSlug", "string")
   const params: { subsubsectionId?: number; returnPath?: string } = useRouterQuery()
   const subsubsectionIdFromParam = params.subsubsectionId || null
 
-  let backUrl = Routes.FilesPage({ projectSlug: projectSlug! })
+  let backUrl = Routes.UploadsPage({ projectSlug: projectSlug! })
   const { subsectionSlug, subsubsectionSlug } = splitReturnTo(params)
   if (subsectionSlug && subsubsectionSlug) {
     backUrl = Routes.SubsubsectionDashboardPage({
@@ -49,9 +49,9 @@ const NewFileWithQuery = () => {
   const [uploadState, setUploadState] = useState<FileUploadState>("INITIAL")
   const [fileUrl, setFileUrl] = useState<string | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
-  const { uploadToS3, files } = useS3Upload()
+  const { uploadToS3, files } = useS3Upload() // sure
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUploadChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files as FileList
     if (files[0]) {
       setFileToUpload(files[0])
@@ -84,7 +84,7 @@ const NewFileWithQuery = () => {
 
     setUploadState("FILE_UPLOADED")
     setFileUrl(url)
-    const file = await createFileMutation({
+    const file = await createUploadMutation({
       title: fileToUpload!.name,
       externalUrl: url,
       projectSlug: projectSlug!,
@@ -95,9 +95,9 @@ const NewFileWithQuery = () => {
     await wait(1000)
     setUploadState("FILE_SAVED")
     await router.push(
-      Routes.EditFilePage({
+      Routes.EditUploadPage({
         projectSlug: projectSlug!,
-        fileId: file.id,
+        uploadId: file.id,
         returnPath: params.returnPath,
       }),
     )
@@ -152,7 +152,7 @@ const NewFileWithQuery = () => {
       )}
       <ButtonWrapper className="mt-10">
         {["INITIAL", "FILE_SELECTED"].includes(uploadState) && (
-          <FileSelector onChange={handleFileChange} />
+          <FileSelector onChange={handleUploadChange} />
         )}
         {["FILE_SELECTED"].includes(uploadState) && (
           <button className={blueButtonStyles} onClick={() => uploadFile()}>
@@ -198,19 +198,19 @@ const NewFileWithQuery = () => {
   )
 }
 
-const NewFilePage: BlitzPage = () => {
+const NewUploadPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <MetaTags noindex title={seoNewTitle("Dokument")} />
       <PageHeader title="Dokument hinzufügen" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
-        <NewFileWithQuery />
+        <NewUploadWithQuery />
       </Suspense>
     </LayoutRs>
   )
 }
 
-NewFilePage.authenticate = true
+NewUploadPage.authenticate = true
 
-export default NewFilePage
+export default NewUploadPage

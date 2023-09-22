@@ -9,18 +9,18 @@ import {
   S3ServiceException,
 } from "@aws-sdk/client-s3"
 import { getConfig } from "src/core/lib/next-s3-upload/src/utils/config"
-import getFileWithSubsections from "src/files/queries/getFileWithSubsections"
+import getUploadWithSubsections from "src/uploads/queries/getUploadWithSubsections"
 import { NotFoundError } from "@prisma/client/runtime/library"
 
 export default async function downloadFile(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const file = await getFileWithSubsections(
+    const upload = await getUploadWithSubsections(
       { id: Number(req.query.path![0]) },
       // @ts-ignore will work
       { session: await getSession(req, res) },
     )
 
-    const { hostname, pathname } = new URL(file.externalUrl)
+    const { hostname, pathname } = new URL(upload.externalUrl)
     const isAws = hostname.endsWith("amazonaws.com")
     if (!isAws) throw ["ts", 409, "Conflict"]
 

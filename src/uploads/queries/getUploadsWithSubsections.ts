@@ -5,28 +5,34 @@ import db, { Prisma } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 
-type GetFilesInput = { projectSlug: string } & Pick<
-  Prisma.FileFindManyArgs,
+type GetUploadsInput = { projectSlug: string } & Pick<
+  Prisma.UploadFindManyArgs,
   "where" | "orderBy" | "skip" | "take"
 >
 
 export default resolver.pipe(
   // @ts-ignore
   authorizeProjectAdmin(getProjectIdBySlug),
-  async ({ projectSlug, where, orderBy = { id: "asc" }, skip = 0, take = 100 }: GetFilesInput) => {
+  async ({
+    projectSlug,
+    where,
+    orderBy = { id: "asc" },
+    skip = 0,
+    take = 100,
+  }: GetUploadsInput) => {
     const safeWhere = { project: { slug: projectSlug }, ...where }
 
     const {
-      items: files,
+      items: uploads,
       hasMore,
       nextPage,
       count,
     } = await paginate({
       skip,
       take,
-      count: () => db.file.count({ where: safeWhere }),
+      count: () => db.upload.count({ where: safeWhere }),
       query: (paginateArgs) =>
-        db.file.findMany({
+        db.upload.findMany({
           ...paginateArgs,
           where: safeWhere,
           orderBy,
@@ -37,7 +43,7 @@ export default resolver.pipe(
     })
 
     return {
-      files,
+      uploads,
       nextPage,
       hasMore,
       count,

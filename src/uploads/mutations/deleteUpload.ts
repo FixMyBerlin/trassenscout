@@ -4,21 +4,21 @@ import db from "db"
 import { z } from "zod"
 
 import { authorizeProjectAdmin } from "src/authorization"
-import getFileProjectId from "../queries/getFileProjectId"
+import getUploadProjectId from "../queries/getUploadProjectId"
 
 import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3"
 import { getConfig } from "src/core/lib/next-s3-upload/src/utils/config"
 
-const DeleteFileSchema = z.object({
+const DeleteUploadSchema = z.object({
   id: z.number(),
 })
 
 export default resolver.pipe(
-  resolver.zod(DeleteFileSchema),
-  authorizeProjectAdmin(getFileProjectId),
+  resolver.zod(DeleteUploadSchema),
+  authorizeProjectAdmin(getUploadProjectId),
   async ({ id }) => {
-    const file = await db.file.findFirstOrThrow({ where: { id } })
-    const { hostname, pathname } = new URL(file.externalUrl)
+    const upload = await db.upload.findFirstOrThrow({ where: { id } })
+    const { hostname, pathname } = new URL(upload.externalUrl)
     const isAws = hostname.endsWith("amazonaws.com")
     if (!isAws) throw new NotFoundError()
 
@@ -35,5 +35,5 @@ export default resolver.pipe(
 
     return { id }
   },
-  async ({ id }) => await db.file.deleteMany({ where: { id } }),
+  async ({ id }) => await db.upload.deleteMany({ where: { id } }),
 )

@@ -6,7 +6,7 @@ import { useFormContext } from "react-hook-form"
 export interface LabeledSelectProps extends PropsWithoutRef<JSX.IntrinsicElements["select"]> {
   /** Select name. */
   name: string
-  /** Options: [value, text], use `""` for `null` in some cases, see src/pages/[projectSlug]/files/[fileId]/edit.tsx */
+  /** Options: [value, text], use `""` for `null` in some cases, see src/pages/[projectSlug]/uploads/[uploadId]/edit.tsx */
   options: [string | number | "", string][]
   /** Field label. */
   label: string

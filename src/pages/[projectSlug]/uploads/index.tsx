@@ -10,17 +10,17 @@ import { Pagination } from "src/core/components/Pagination"
 import { Spinner } from "src/core/components/Spinner"
 import { shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { FileTable } from "src/files/components/FileTable"
-import getFiles from "src/files/queries/getFilesWithSubsections"
+import { UploadTable } from "src/uploads/components/UploadTable"
+import getUploads from "src/uploads/queries/getUploadsWithSubsections"
 import getSubsections from "src/subsections/queries/getSubsections"
 
 const ITEMS_PER_PAGE = 100
 
-export const FilesWithData = () => {
+export const UploadsWithData = () => {
   const projectSlug = useParam("projectSlug", "string")
   const router = useRouter()
   const page = Number(router.query.page) || 0
-  const [{ files, hasMore }] = usePaginatedQuery(getFiles, {
+  const [{ uploads, hasMore }] = usePaginatedQuery(getUploads, {
     projectSlug: projectSlug!,
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
@@ -30,23 +30,23 @@ export const FilesWithData = () => {
   const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
 
   const selectOptions: [number, string, number][] = [
-    [0, `Alle Dateien (${files.length})`, files.length],
+    [0, `Alle Dateien (${uploads.length})`, uploads.length],
   ]
   subsections.forEach((ss) => {
-    const count = files.filter((f) => f.subsectionId === ss.id).length
+    const count = uploads.filter((f) => f.subsectionId === ss.id).length
     selectOptions.push([ss.id, `${shortTitle(ss.slug)} – ${ss.start}–${ss.end} (${count})`, count])
   })
 
   // We use the URL param `filterSubsectionId` to filter the UI
   // Docs: https://blitzjs.com/docs/route-params-query#use-router-query
   const params = useRouterQuery()
-  const filteredFiles = params.filterSubsectionId
-    ? files.filter(
+  const filteredUploads = params.filterSubsectionId
+    ? uploads.filter(
         (f) =>
           typeof params.filterSubsectionId === "string" &&
           f.subsectionId === parseInt(params.filterSubsectionId),
       )
-    : files
+    : uploads
 
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
@@ -60,7 +60,7 @@ export const FilesWithData = () => {
         onChange={(event) => {
           const sectionOrNull = parseInt(event.target.value) === 0 ? null : event.target.value
           void router.push(
-            Routes.FilesPage({
+            Routes.UploadsPage({
               projectSlug: projectSlug!,
               ...(sectionOrNull ? { filterSubsectionId: sectionOrNull } : {}),
             }),
@@ -77,10 +77,10 @@ export const FilesWithData = () => {
         })}
       </select>
 
-      <FileTable files={filteredFiles} />
+      <UploadTable uploads={filteredUploads} />
 
       <ButtonWrapper className="mt-5">
-        <Link button="blue" icon="plus" href={Routes.NewFilePage({ projectSlug: projectSlug! })}>
+        <Link button="blue" icon="plus" href={Routes.NewUploadPage({ projectSlug: projectSlug! })}>
           Datei hochladen
         </Link>
       </ButtonWrapper>
@@ -92,12 +92,12 @@ export const FilesWithData = () => {
         handleNext={goToNextPage}
       />
 
-      <SuperAdminLogData data={{ files, filteredFiles }} />
+      <SuperAdminLogData data={{ uploads, filteredUploads }} />
     </>
   )
 }
 
-const FilesPage: BlitzPage = () => {
+const UploadsPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <MetaTags noindex title="Dokumente" />
@@ -108,12 +108,12 @@ const FilesPage: BlitzPage = () => {
       />
 
       <Suspense fallback={<Spinner page />}>
-        <FilesWithData />
+        <UploadsWithData />
       </Suspense>
     </LayoutRs>
   )
 }
 
-FilesPage.authenticate = true
+UploadsPage.authenticate = true
 
-export default FilesPage
+export default UploadsPage

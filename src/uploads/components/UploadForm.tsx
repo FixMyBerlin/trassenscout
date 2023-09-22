@@ -11,15 +11,15 @@ import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
 
-export function FileForm<S extends z.ZodType<any, any>>(
+export function UploadForm<S extends z.ZodType<any, any>>(
   props: FormProps<S> & {
     subsections: SubsectionWithPosition[]
-    isSubsubsectionFile: boolean
+    isSubsubsectionUpload: boolean
   },
 ) {
-  const { subsections, isSubsubsectionFile, ...formProps } = props
+  const { subsections, isSubsubsectionUpload, ...formProps } = props
 
-  // We use `""` here to signify the "All" case which gets translated to `NULL` in `src/pages/[projectSlug]/files/[fileId]/edit.tsx` and new.
+  // We use `""` here to signify the "All" case which gets translated to `NULL` in `src/pages/[projectSlug]/uploads/[uploadId]/edit.tsx` and new.
   const options: LabeledSelectProps["options"] = [["", "Übergreifendes Dokument"]]
   subsections.forEach((ss) => {
     options.push([ss.id, `${shortTitle(ss.slug)} – ${ss.start}–${ss.end}`] as [number, string])
@@ -28,7 +28,7 @@ export function FileForm<S extends z.ZodType<any, any>>(
   return (
     <Form<S> {...formProps}>
       <LabeledTextField type="text" name="title" label="Kurzbeschreibung" />
-      {!isSubsubsectionFile && (
+      {!isSubsubsectionUpload && (
         <LabeledSelect name="subsectionId" label="Zuordnung zu Teilstrecke" options={options} />
       )}
       <SuperAdminBox>
