@@ -27,8 +27,15 @@ const NewContactWithQuery: BlitzPage = () => {
         }),
       )
     } catch (error: any) {
-      console.error(error)
-      return { [FORM_ERROR]: error }
+      if (error.code === "P2002" && error.meta?.target?.includes("email")) {
+        // This error comes from Prisma
+        return {
+          email:
+            "Diese E-Mail-Adresse ist bereits vergeben. Eine E-Mail-Adresse darf nur einem Kontakt zugewiesen werden.",
+        }
+      } else {
+        return { [FORM_ERROR]: error }
+      }
     }
   }
 

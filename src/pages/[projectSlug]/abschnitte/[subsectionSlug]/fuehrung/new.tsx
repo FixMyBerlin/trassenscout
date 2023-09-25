@@ -45,8 +45,14 @@ const NewSubsubsection = () => {
         }),
       )
     } catch (error: any) {
-      console.error(error)
-      return { [FORM_ERROR]: error }
+      if (error.code === "P2002" && error.meta?.target?.includes("slug")) {
+        // This error comes from Prisma
+        return {
+          slug: "Dieses URL-Segment ist bereits vergeben. Ein URL-Segment darf nur einmalig pro Planungsabschnitt zugewiesen werden.",
+        }
+      } else {
+        return { [FORM_ERROR]: error }
+      }
     }
   }
 

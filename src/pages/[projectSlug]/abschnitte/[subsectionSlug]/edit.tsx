@@ -44,8 +44,15 @@ const EditSubsection = () => {
         }),
       )
     } catch (error: any) {
-      console.error(error)
-      return { [FORM_ERROR]: error }
+      if (error.code === "P2002" && error.meta?.target?.includes("order")) {
+        // This error comes from Prisma
+        return {
+          order:
+            "Der Wert für 'Reihenfolge' wird bereits von einer anderen Teilstrecke verwendet. Bitte wählen Sie einen anderen Wert; er kann auch viel höher sein wie beispielweise 50.",
+        }
+      } else {
+        return { [FORM_ERROR]: error }
+      }
     }
   }
 

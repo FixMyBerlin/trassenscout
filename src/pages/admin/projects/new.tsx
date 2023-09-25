@@ -49,8 +49,14 @@ const AdminNewProject = () => {
 
       await router.push(Routes.ProjectDashboardPage({ projectSlug: project.slug }))
     } catch (error: any) {
-      console.error(error)
-      return { [FORM_ERROR]: error }
+      if (error.code === "P2002" && error.meta?.target?.includes("slug")) {
+        // This error comes from Prisma
+        return {
+          slug: "Dieses URL-Segment ist bereits für eine andere Trasse vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
+        }
+      } else {
+        return { [FORM_ERROR]: error }
+      }
     }
   }
 
