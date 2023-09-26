@@ -11,6 +11,8 @@ export const errorMessageTranslations: TranslatedMessages = {
     "Dieses URL-Segment ist bereits vergeben. Ein URL-Segment darf nur einmalig pro Planungsabschnitt zugewiesen werden.",
   "PrismaClientKnownRequestError: Invalid `prisma.subsubsection.update()` invocation:Unique constraint failed on the fields: (`subsectionId`,`slug`)":
     "Dieses URL-Segment ist bereits vergeben. Ein URL-Segment darf nur einmalig pro Planungsabschnitt zugewiesen werden.",
+  "PrismaClientKnownRequestError: Invalid `prisma.operator.create()` invocation:Unique constraint failed on the fields: (`projectId`,`slug`)":
+    "Dieses URL-Segment ist bereits für eine anderen Baulastträger vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
 
   // "Dies ist keine gültige E-Mail-Adresse.",
 }

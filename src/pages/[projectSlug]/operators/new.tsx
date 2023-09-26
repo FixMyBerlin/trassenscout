@@ -23,8 +23,14 @@ const NewOperatorPageWithQuery = () => {
       await createOperatorMutation({ ...values, projectSlug: projectSlug! })
       await router.push(Routes.OperatorsPage({ projectSlug: projectSlug! }))
     } catch (error: any) {
-      console.error(error)
-      return { [FORM_ERROR]: error }
+      if (error.code === "P2002" && error.meta?.target?.includes("slug")) {
+        // This error comes from Prisma
+        return {
+          slug: "Dieses URL-Segment ist bereits für eine anderen Baulastträger vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
+        }
+      } else {
+        return { [FORM_ERROR]: error }
+      }
     }
   }
 
