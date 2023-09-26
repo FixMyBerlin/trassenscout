@@ -2,9 +2,9 @@ import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import signup from "src/auth/mutations/signup"
 import { Signup } from "src/auth/validations"
-import { errorMessageTranslations } from "src/core/components/forms"
-import { Form, FORM_ERROR } from "src/core/components/forms/Form"
+import { FORM_ERROR, Form } from "src/core/components/forms/Form"
 import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
+import { getPrismaUniqueConstraintErrorMessage } from "src/core/components/forms/getPrismaUniqueConstraintErrorMessage"
 import { Link } from "src/core/components/links"
 
 type SignupFormProps = {
@@ -26,14 +26,7 @@ export const SignupForm = (props: SignupFormProps) => {
       await signupMutation(values)
       props.onSuccess?.()
     } catch (error: any) {
-      if (error.code === "P2002" && error.meta?.target?.includes("email")) {
-        // This error comes from Prisma
-        return {
-          email: errorMessageTranslations[error.message],
-        }
-      } else {
-        return { [FORM_ERROR]: error }
-      }
+      return getPrismaUniqueConstraintErrorMessage(error, FORM_ERROR, ["email"])
     }
   }
 
