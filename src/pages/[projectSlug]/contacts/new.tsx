@@ -5,6 +5,7 @@ import { Suspense } from "react"
 import { ContactForm, FORM_ERROR } from "src/contacts/components/ContactForm"
 import createContact from "src/contacts/mutations/createContact"
 import { ContactSchema } from "src/contacts/schema"
+import { getPrismaUniqueConstraintErrorMessage } from "src/core/components/forms/getPrismaUniqueConstraintErrorMessage"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
@@ -27,15 +28,7 @@ const NewContactWithQuery: BlitzPage = () => {
         }),
       )
     } catch (error: any) {
-      if (error.code === "P2002" && error.meta?.target?.includes("email")) {
-        // This error comes from Prisma
-        return {
-          email:
-            "Diese E-Mail-Adresse ist bereits vergeben. Eine E-Mail-Adresse darf nur einem Kontakt zugewiesen werden.",
-        }
-      } else {
-        return { [FORM_ERROR]: error }
-      }
+      return getPrismaUniqueConstraintErrorMessage(error, FORM_ERROR, ["email"])
     }
   }
 

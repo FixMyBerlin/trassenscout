@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
+import { getPrismaUniqueConstraintErrorMessage } from "src/core/components/forms/getPrismaUniqueConstraintErrorMessage"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
@@ -49,14 +50,7 @@ const AdminNewProject = () => {
 
       await router.push(Routes.ProjectDashboardPage({ projectSlug: project.slug }))
     } catch (error: any) {
-      if (error.code === "P2002" && error.meta?.target?.includes("slug")) {
-        // This error comes from Prisma
-        return {
-          slug: "Dieses URL-Segment ist bereits für eine andere Trasse vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
-        }
-      } else {
-        return { [FORM_ERROR]: error }
-      }
+      return getPrismaUniqueConstraintErrorMessage(error, FORM_ERROR, ["slug"])
     }
   }
 

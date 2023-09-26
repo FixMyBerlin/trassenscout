@@ -3,6 +3,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
+import { getPrismaUniqueConstraintErrorMessage } from "src/core/components/forms/getPrismaUniqueConstraintErrorMessage"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { seoNewTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
@@ -23,14 +24,7 @@ const NewOperatorPageWithQuery = () => {
       await createOperatorMutation({ ...values, projectSlug: projectSlug! })
       await router.push(Routes.OperatorsPage({ projectSlug: projectSlug! }))
     } catch (error: any) {
-      if (error.code === "P2002" && error.meta?.target?.includes("slug")) {
-        // This error comes from Prisma
-        return {
-          slug: "Dieses URL-Segment ist bereits für eine anderen Baulastträger vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
-        }
-      } else {
-        return { [FORM_ERROR]: error }
-      }
+      return getPrismaUniqueConstraintErrorMessage(error, FORM_ERROR, ["slug"])
     }
   }
 

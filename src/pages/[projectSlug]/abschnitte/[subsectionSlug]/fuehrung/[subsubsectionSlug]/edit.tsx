@@ -5,6 +5,7 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "src/core/components/Spinner"
+import { getPrismaUniqueConstraintErrorMessage } from "src/core/components/forms/getPrismaUniqueConstraintErrorMessage"
 import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { seoEditTitleSlug } from "src/core/components/text"
@@ -52,14 +53,7 @@ const EditSubsubsection = () => {
         }),
       )
     } catch (error: any) {
-      if (error.code === "P2002" && error.meta?.target?.includes("slug")) {
-        // This error comes from Prisma
-        return {
-          slug: "Dieses URL-Segment ist bereits vergeben. Ein URL-Segment darf nur einmalig pro Planungsabschnitt zugewiesen werden.",
-        }
-      } else {
-        return { [FORM_ERROR]: error }
-      }
+      return getPrismaUniqueConstraintErrorMessage(error, FORM_ERROR, ["slug"])
     }
   }
 

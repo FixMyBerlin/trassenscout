@@ -2,6 +2,7 @@ import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import signup from "src/auth/mutations/signup"
 import { Signup } from "src/auth/validations"
+import { errorMessageTranslations } from "src/core/components/forms"
 import { Form, FORM_ERROR } from "src/core/components/forms/Form"
 import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
 import { Link } from "src/core/components/links"
@@ -27,7 +28,9 @@ export const SignupForm = (props: SignupFormProps) => {
     } catch (error: any) {
       if (error.code === "P2002" && error.meta?.target?.includes("email")) {
         // This error comes from Prisma
-        return { email: "Diese E-Mail-Adresse ist bereits registriert." }
+        return {
+          email: errorMessageTranslations[error.message],
+        }
       } else {
         return { [FORM_ERROR]: error }
       }
