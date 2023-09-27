@@ -19,6 +19,8 @@ export const errorMessageTranslations: TranslatedMessages = {
     "Der Wert für 'Reihenfolge' wird bereits von einer anderen Teilstrecke verwendet. Bitte wählen Sie einen anderen Wert; er kann auch viel höher sein wie beispielweise 50.",
   "PrismaClientKnownRequestError: Invalid `prisma.subsection.create()` invocation:Unique constraint failed on the fields: (`projectId`,`slug`)":
     "Dieses URL-Segment ist bereits vergeben. Ein URL-Segment darf nur einmalig pro Trasse zugewiesen werden.",
+  "PrismaClientKnownRequestError: Invalid `prisma.subsection.update()` invocation:Unique constraint failed on the fields: (`projectId`,`slug`)":
+    "Dieses URL-Segment ist bereits vergeben. Ein URL-Segment darf nur einmalig pro Trasse zugewiesen werden.",
   // SUBSUBSECTION
   "PrismaClientKnownRequestError: Invalid `prisma.subsubsection.create()` invocation:Unique constraint failed on the fields: (`subsectionId`,`slug`)":
     "Dieses URL-Segment ist bereits vergeben. Ein URL-Segment darf nur einmalig pro Planungsabschnitt zugewiesen werden.",

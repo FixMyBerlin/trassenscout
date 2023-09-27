@@ -45,7 +45,7 @@ const EditSubsection = () => {
         }),
       )
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["order"])
+      return improveErrorMessage(error, FORM_ERROR, ["order", "slug"])
     }
   }
 
