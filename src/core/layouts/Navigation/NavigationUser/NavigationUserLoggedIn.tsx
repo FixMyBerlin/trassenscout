@@ -25,7 +25,7 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
           >
             <span className="sr-only">User-Menü</span>
             <div
-              className="flex h-8 w-8 items-center justify-center pt-0.5 text-lg font-semibold uppercase tracking-tighter text-gray-50"
+              className="flex h-8 w-8 items-center justify-center text-lg font-semibold uppercase tracking-tighter text-gray-50"
               aria-hidden="true"
             >
               {getInitials(user)}

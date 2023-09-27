@@ -12,7 +12,7 @@ export const SuperAdminLogData: React.FC<Props> = ({ data }) => {
         className={clsx("inline-flex items-center gap-2", pinkButtonStyles)}
         onClick={() => console.log(data)}
       >
-        <code className="pb-0.5 text-xs">console.log</code> Data
+        <code className="text-xs">console.log</code> Data
       </button>
     </SuperAdminBox>
   )

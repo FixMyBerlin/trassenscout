@@ -67,7 +67,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
               operatorSlugWitFallback !== "k.A." && "uppercase",
             )}
           >
-            <div className="pt-1">{operatorSlugWitFallback}</div>
+            <div>{operatorSlugWitFallback}</div>
           </div>
 
           <Markdown className="ml-4 line-clamp-2" markdown={userText} />

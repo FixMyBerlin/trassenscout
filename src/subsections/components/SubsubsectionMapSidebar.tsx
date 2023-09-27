@@ -46,7 +46,6 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
         <div className="flex items-center gap-3">
           <Link
             icon="edit"
-            className="mt-0.5"
             href={Routes.EditSubsubsectionPage({
               projectSlug: projectSlug!,
               subsectionSlug: subsectionSlug!,
@@ -56,7 +55,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
             bearbeiten
           </Link>
           <button
-            className={clsx("h-8 !w-8 !rounded-full !p-0 !pt-1", whiteButtonStyles)}
+            className={clsx("h-8 !w-8 !rounded-full !p-0", whiteButtonStyles)}
             onClick={onClose}
           >
             &times;

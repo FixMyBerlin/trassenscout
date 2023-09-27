@@ -54,10 +54,7 @@ export const LoginForm = (props: LoginFormProps) => {
           autoComplete="current-password"
         />
         <div className="text-sm">
-          Sie haben Ihr{" "}
-          <Link href={Routes.ForgotPasswordPage()} className="font-medium">
-            Passwort vergessen?
-          </Link>
+          Sie haben Ihr <Link href={Routes.ForgotPasswordPage()}>Passwort vergessen?</Link>
         </div>
 
         <DevAdminBox className="text-center">
@@ -84,7 +81,7 @@ export const LoginForm = (props: LoginFormProps) => {
         </DevAdminBox>
       </Form>
 
-      <div className="mt-4">
+      <div className="mt-4 text-sm">
         Sie haben noch keinen Account? Zur <Link href={Routes.SignupPage()}>Registrierung</Link>.
       </div>
     </>

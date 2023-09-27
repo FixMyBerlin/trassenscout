@@ -46,7 +46,7 @@ export const ListItemStatus: React.FC<Props> = ({ status }) => {
         "w-[200px] px-5 flex gap-4 items-center py-2 rounded-full flex-shrink-0",
       )}
     >
-      {statusIcon[status]} <div className="pt-1">{label}</div>
+      {statusIcon[status]} <div>{label}</div>
     </div>
   )
 }
