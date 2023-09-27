@@ -26,7 +26,7 @@ export const PieChart: React.FC<Props> = ({ data }) => {
             fill="#8884d8"
             dataKey="value"
             label
-            style={{ fontFamily: "Overpass" }}
+            style={{ fontFamily: "Red Hat Text" }}
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -40,7 +40,7 @@ export const PieChart: React.FC<Props> = ({ data }) => {
               color: "#E5007D",
             }}
             separator=": "
-            wrapperStyle={{ fontFamily: "Overpass" }}
+            wrapperStyle={{ fontFamily: "Red Hat Text" }}
           />
           <Legend
             layout="vertical"

@@ -1,9 +1,10 @@
 import { AppProps, ErrorBoundary, ErrorComponent, ErrorFallbackProps } from "@blitzjs/next"
-// https://fontsource.org/fonts/overpass/install => Tab "Static"
-import "@fontsource/overpass/400-italic.css"
-import "@fontsource/overpass/400.css"
-import "@fontsource/overpass/500.css"
-// import "@fontsource/overpass/500-italic.css"
+// https://fontsource.org/fonts/red-hat-text/install => Tab "Static"
+import "@fontsource/red-hat-text/400.css" // regular
+import "@fontsource/red-hat-text/500.css" // medium
+import "@fontsource/red-hat-text/600.css" // semibold
+import "@fontsource/red-hat-text/400-italic.css"
+import "@fontsource/red-hat-text/700.css" // extrabold
 import { init } from "@socialgouv/matomo-next"
 import { AuthenticationError, AuthorizationError } from "blitz"
 import { useEffect, useRef } from "react"
