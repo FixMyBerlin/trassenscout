@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
-import { getPrismaUniqueConstraintErrorMessage } from "src/core/components/forms/getPrismaUniqueConstraintErrorMessage"
+import { improveErrorMessage } from "src/core/components/forms/improveErrorMessage"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { seoNewTitle } from "src/core/components/text"
@@ -39,7 +39,7 @@ const NewSubsection = () => {
         }),
       )
     } catch (error: any) {
-      return getPrismaUniqueConstraintErrorMessage(error, FORM_ERROR, ["order", "slug"])
+      return improveErrorMessage(error, FORM_ERROR, ["order", "slug"])
     }
   }
 

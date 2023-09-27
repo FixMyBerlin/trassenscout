@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
-import { getPrismaUniqueConstraintErrorMessage } from "src/core/components/forms/getPrismaUniqueConstraintErrorMessage"
+import { improveErrorMessage } from "src/core/components/forms/improveErrorMessage"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
@@ -50,7 +50,7 @@ const AdminNewProject = () => {
 
       await router.push(Routes.ProjectDashboardPage({ projectSlug: project.slug }))
     } catch (error: any) {
-      return getPrismaUniqueConstraintErrorMessage(error, FORM_ERROR, ["slug"])
+      return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
   }
 

@@ -4,7 +4,7 @@ import signup from "src/auth/mutations/signup"
 import { Signup } from "src/auth/validations"
 import { FORM_ERROR, Form } from "src/core/components/forms/Form"
 import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
-import { getPrismaUniqueConstraintErrorMessage } from "src/core/components/forms/getPrismaUniqueConstraintErrorMessage"
+import { improveErrorMessage } from "src/core/components/forms/improveErrorMessage"
 import { Link } from "src/core/components/links"
 
 type SignupFormProps = {
@@ -26,7 +26,7 @@ export const SignupForm = (props: SignupFormProps) => {
       await signupMutation(values)
       props.onSuccess?.()
     } catch (error: any) {
-      return getPrismaUniqueConstraintErrorMessage(error, FORM_ERROR, ["email"])
+      return improveErrorMessage(error, FORM_ERROR, ["email"])
     }
   }
 

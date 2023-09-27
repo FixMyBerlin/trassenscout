@@ -5,7 +5,7 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "src/core/components/Spinner"
-import { getPrismaUniqueConstraintErrorMessage } from "src/core/components/forms/getPrismaUniqueConstraintErrorMessage"
+import { improveErrorMessage } from "src/core/components/forms/improveErrorMessage"
 import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { seoEditTitleSlug } from "src/core/components/text"
@@ -53,7 +53,7 @@ const EditSubsubsection = () => {
         }),
       )
     } catch (error: any) {
-      return getPrismaUniqueConstraintErrorMessage(error, FORM_ERROR, ["slug"])
+      return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
   }
 
