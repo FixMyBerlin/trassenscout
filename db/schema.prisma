@@ -114,7 +114,7 @@ model Project {
   subsections          Subsection[]
   calendarEntries      CalendarEntry[]
   contacts             Contact[]
-  files                File[]
+  uploads              Upload[]
   Membership           Membership[]
   Operator             Operator[]
   Survey               Survey[]
@@ -215,7 +215,7 @@ model Subsection {
 
   subsubsections   Subsubsection[]
   stakeholdernotes Stakeholdernote[]
-  files            File[]
+  uploads          Upload[]
 
   @@unique([projectId, slug])
   @@unique([projectId, order])
@@ -247,7 +247,7 @@ model Subsubsection {
   subsection     Subsection            @relation(fields: [subsectionId], references: [id])
   subsectionId   Int
   //
-  files          File[]
+  uploads        Upload[]
 
   @@unique([subsectionId, slug])
 }
@@ -291,7 +291,7 @@ enum StakeholdernoteStatusEnum {
   IRRELEVANT
 }
 
-model File {
+model Upload {
   id              Int            @id @default(autoincrement())
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt

@@ -1,7 +1,7 @@
-import db, { File } from "../index"
+import db, { Upload } from "../index"
 
-const seedFiles = async () => {
-  const seedFiles: Omit<File, "id" | "createdAt" | "updatedAt">[] = [
+const seedUploads = async () => {
+  const seedFiles: Omit<Upload, "id" | "createdAt" | "updatedAt">[] = [
     {
       title: "Protokoll Gesamttreffen",
       externalUrl:
@@ -87,9 +87,9 @@ const seedFiles = async () => {
   for (let i = 0; i < seedFiles.length; i++) {
     const data = seedFiles[i]
     if (data) {
-      await db.file.create({ data })
+      await db.upload.create({ data })
     }
   }
 }
 
-export default seedFiles
+export default seedUploads

@@ -8,21 +8,21 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { seoEditTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { FileForm, FORM_ERROR } from "src/files/components/FileForm"
-import { FilePreview } from "src/files/components/FilePreview"
-import updateFile from "src/files/mutations/updateFileWithSubsections"
-import getFileWithSubsections from "src/files/queries/getFileWithSubsections"
-import { FileSchema } from "src/files/schema"
-import { splitReturnTo } from "src/files/utils"
+import { UploadForm, FORM_ERROR } from "src/uploads/components/UploadForm"
+import { UploadPreview } from "src/uploads/components/UploadPreview"
+import updateUpload from "src/uploads/mutations/updateUploadWithSubsections"
+import getUploadWithSubsections from "src/uploads/queries/getUploadWithSubsections"
+import { UploadSchema } from "src/uploads/schema"
+import { splitReturnTo } from "src/uploads/utils"
 import getSubsections from "src/subsections/queries/getSubsections"
 
-const EditFileWithQuery = () => {
+const EditUploadWithQuery = () => {
   const router = useRouter()
-  const fileId = useParam("fileId", "number")
+  const uploadId = useParam("uploadId", "number")
   const projectSlug = useParam("projectSlug", "string")
 
   const params: { returnPath?: string } = useRouterQuery()
-  let backUrl = Routes.FilesPage({ projectSlug: projectSlug! })
+  let backUrl = Routes.UploadsPage({ projectSlug: projectSlug! })
   const { subsectionSlug, subsubsectionSlug } = splitReturnTo(params)
   if (subsectionSlug && subsubsectionSlug) {
     backUrl = Routes.SubsectionDashboardPage({
@@ -32,25 +32,25 @@ const EditFileWithQuery = () => {
     })
   }
 
-  const [file, { setQueryData }] = useQuery(
-    getFileWithSubsections,
-    { id: fileId },
+  const [upload, { setQueryData }] = useQuery(
+    getUploadWithSubsections,
+    { id: uploadId },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
     },
   )
-  const [updateFileMutation] = useMutation(updateFile)
+  const [updateUploadMutation] = useMutation(updateUpload)
 
   const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const updated = await updateFileMutation({
-        id: file.id,
+      const updated = await updateUploadMutation({
+        id: upload.id,
         ...values,
-        // We pass in `""` (in `src/files/components/FileForm.tsx`)
+        // We pass in `""` (in `src/uploads/components/UploadForm.tsx`)
         // which gets translated by `z.coerce.number()` to `0`
         // which we use here to overwrite the relation.
         subsectionId: values.subsectionId === 0 ? null : values.subsectionId,
@@ -63,35 +63,35 @@ const EditFileWithQuery = () => {
     }
   }
 
-  const isSubsubsectionFile = Boolean(file.subsubsectionId)
+  const isSubsubsectionUpload = Boolean(upload.subsubsectionId)
 
   return (
     <>
       <div className="flex gap-10">
-        <FilePreview file={file} description={false} />
-        <FileForm
+        <UploadPreview upload={upload} description={false} />
+        <UploadForm
           className="grow"
           submitText="Speichern"
-          schema={FileSchema}
-          initialValues={file}
+          schema={UploadSchema}
+          initialValues={upload}
           onSubmit={handleSubmit}
           subsections={subsections}
-          isSubsubsectionFile={isSubsubsectionFile}
+          isSubsubsectionUpload={isSubsubsectionUpload}
         />
       </div>
 
       <p className="mt-5">
         <Link href={backUrl}>
-          {isSubsubsectionFile ? "Zurück zur Führung" : "Zurück zu Dokumenten"}
+          {isSubsubsectionUpload ? "Zurück zur Führung" : "Zurück zu Dokumenten"}
         </Link>
       </p>
 
-      <SuperAdminLogData data={{ file, subsections }} />
+      <SuperAdminLogData data={{ upload, subsections }} />
     </>
   )
 }
 
-const EditFilePage: BlitzPage = () => {
+const EditUploadPage: BlitzPage = () => {
   const projectSlug = useParam("projectSlug", "string")
 
   return (
@@ -100,12 +100,12 @@ const EditFilePage: BlitzPage = () => {
       <PageHeader title="Dokument bearbeiten" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
-        <EditFileWithQuery />
+        <EditUploadWithQuery />
       </Suspense>
     </LayoutRs>
   )
 }
 
-EditFilePage.authenticate = true
+EditUploadPage.authenticate = true
 
-export default EditFilePage
+export default EditUploadPage

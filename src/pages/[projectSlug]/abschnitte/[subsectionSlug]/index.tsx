@@ -14,8 +14,8 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2, seoTitleSlug, shortTitle, startEnd } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { FileTable } from "src/files/components/FileTable"
-import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
+import { UploadTable } from "src/uploads/components/UploadTable"
+import getUploadsWithSubsections from "src/uploads/queries/getUploadsWithSubsections"
 import { SubsectionTabs } from "src/subsections/components/SubsectionTabs"
 import { SubsubsectionMapSidebar } from "src/subsections/components/SubsubsectionMapSidebar"
 import getSubsections from "src/subsections/queries/getSubsections"
@@ -38,7 +38,7 @@ export const SubsectionDashboardWithQuery = () => {
   )
   const subsubsection = subsubsectionsForSubsection.find((ss) => ss.slug === subsubsectionSlug)
 
-  const [{ files }] = useQuery(getFilesWithSubsections, {
+  const [{ uploads }] = useQuery(getUploadsWithSubsections, {
     projectSlug: projectSlug!,
     where: { subsectionId: subsection?.id },
   })
@@ -113,7 +113,7 @@ export const SubsectionDashboardWithQuery = () => {
 
       <section className="mt-12">
         <H2 className="mb-5">Relevante Dokumente</H2>
-        <FileTable files={files} />
+        <UploadTable uploads={uploads} />
       </section>
 
       <SuperAdminLogData
@@ -123,7 +123,7 @@ export const SubsectionDashboardWithQuery = () => {
           subsubsections,
           subsubsectionsForSubsection,
           subsubsection,
-          files,
+          uploads,
         }}
       />
     </>

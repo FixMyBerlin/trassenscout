@@ -18,7 +18,7 @@ export const menuItems = ({ projectSlug, projectName }: Props) => {
       alsoHighlightPathnames: [Routes.ProjectTeamPage({ projectSlug: projectSlug! }).pathname],
     },
     { name: "Termine", href: Routes.CalendarEntriesPage({ projectSlug: projectSlug! }) },
-    { name: "Dokumente", href: Routes.FilesPage({ projectSlug: projectSlug! }) },
+    { name: "Dokumente", href: Routes.UploadsPage({ projectSlug: projectSlug! }) },
     {
       name: "Beteiligung",
       href: Routes.SurveysPage({ projectSlug: projectSlug! }),
