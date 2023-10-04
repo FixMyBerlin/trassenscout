@@ -47,10 +47,10 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
               >
                 <div className="px-4 py-2 leading-6 text-gray-700">
                   <p>Angemeldet als</p>
-                  <p className="truncate font-bold">{getFullname(user) || "-"}</p>
+                  <p className="truncate font-semibold">{getFullname(user) || "-"}</p>
                   <p className="mb-2 truncate">{user.email}</p>
 
-                  {isAdmin(user) && <p className="font-bold text-purple-700">Rolle: Admin</p>}
+                  {isAdmin(user) && <p className="font-semibold text-purple-700">Rolle: Admin</p>}
                 </div>
                 <div className="border-t border-gray-200 px-4 py-2 text-gray-700">
                   <div className="my-2 flex flex-col gap-4">

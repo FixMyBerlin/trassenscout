@@ -7,7 +7,7 @@ export const SubsubsectionIcon: React.FC<Props> = ({ label, ...props }) => (
     className={`flex h-9 w-auto flex-none
         items-center justify-center rounded-lg
         border-2 border-gray-900 bg-white px-1.5
-        font-sans text-xl font-bold leading-none text-gray-900`}
+        font-sans text-xl font-semibold leading-none text-gray-900`}
     {...props}
   >
     {label}
@@ -19,7 +19,7 @@ export const SubsubsectionMapIcon: React.FC<Props> = ({ label, ...props }) => (
     className={`flex h-5 w-auto flex-none
         items-center justify-center rounded-md
         border-2 border-gray-900 bg-white px-1.5
-        font-sans text-xs font-bold leading-none text-gray-900`}
+        font-sans text-xs font-semibold leading-none text-gray-900`}
     {...props}
   >
     {label}

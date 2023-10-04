@@ -12,7 +12,7 @@ const PageHomePublic = () => {
 
       <section className="mx-auto w-full max-w-7xl px-6 pb-16 md:px-8">
         <div className="max-w-2xl">
-          <h1 className="mt-20 text-4xl font-bold tracking-tight text-gray-800 sm:text-5xl">
+          <h1 className="mt-20 text-4xl font-semibold tracking-tight text-gray-800 sm:text-5xl">
             Trassenscout findet Wege
           </h1>
           <div className="prose mt-6">

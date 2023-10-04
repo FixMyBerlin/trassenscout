@@ -18,7 +18,7 @@ export const LayoutMiddleBox: React.FC<Props> = ({ title, subtitle, children }) 
             <Image src={TrasssenscoutLogo} alt="Trassenscout" height={48} />
 
             {Boolean(title) && (
-              <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+              <h2 className="mt-6 text-center text-3xl font-semibold tracking-tight text-gray-900">
                 {title}
               </h2>
             )}

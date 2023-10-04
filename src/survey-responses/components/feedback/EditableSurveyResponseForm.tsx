@@ -157,7 +157,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
             <div className="flex flex-col w-full gap-10">
               <div className="grid grid-cols-2 w-full gap-8">
                 <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-                  <h4 className="font-bold mb-3">Status</h4>
+                  <h4 className="font-semibold mb-3">Status</h4>
                   <LabeledRadiobuttonGroup
                     classNameItemWrapper={clsx("flex-shrink-0")}
                     scope={"status"}
@@ -168,7 +168,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                 </form>
 
                 <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-                  <h4 className="font-bold mb-3">Baulastträger</h4>
+                  <h4 className="font-semibold mb-3">Baulastträger</h4>
                   <LabeledRadiobuttonGroup
                     scope="operatorId"
                     items={[...operatorsOptions, { value: "0", label: "Nicht zugeordnet" }]}
@@ -180,7 +180,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                 onChange={async () => await methods.handleSubmit(handleSubmit)()}
               >
                 <div>
-                  <h4 className="font-bold mb-3">Themen (für FAQ)</h4>
+                  <h4 className="font-semibold mb-3">Themen (für FAQ)</h4>
                   <LabeledCheckboxGroup
                     classNameItemWrapper="grid grid-cols-3 grid-rows-10 grid-flow-col-dense"
                     scope="surveyResponseTopics"
@@ -231,7 +231,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         }}
       >
         <div className="flex-grow space-y-2 pr-2 pb-4">
-          <p className="font-bold mb-3">Interne Notiz</p>
+          <p className="font-semibold mb-3">Interne Notiz</p>
           <LabeledTextareaField
             help="Bitte starten Sie Ihre Notiz immer mit ihrem Namen oder Kürzel"
             name="note"

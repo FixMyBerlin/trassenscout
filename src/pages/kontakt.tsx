@@ -38,7 +38,7 @@ const Kontakt: BlitzPage = () => {
       </section>
 
       <section className="prose mt-12">
-        <h2 className="mb-2 text-3xl font-bold">Feedback &amp; Kontakt</h2>
+        <h2 className="mb-2 text-3xl font-semibold">Feedback &amp; Kontakt</h2>
         <p>
           Wir freuen uns über Kommentare Anregungen und Unterstützung an{" "}
           <LinkMail mailto="feedback@fixmycity.de" subject="Feedback zum Trassenscout">

@@ -43,7 +43,7 @@ export const UploadPreview: React.FC<Props> = ({
           ) : (
             <div className="relative flex h-full w-full items-center justify-center bg-gray-50 text-gray-700 hover:text-blue-800">
               <DocumentIcon className="h-20 w-20 opacity-95" />
-              <span className="text-md absolute mt-4 font-bold uppercase">{fileType}</span>
+              <span className="text-md absolute mt-4 font-semibold uppercase">{fileType}</span>
             </div>
           )}
         </span>

@@ -88,7 +88,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
               <div className="text-right text-gray-500">{`Bürgerbeitrag vom: ${response.surveySession.createdAt.toLocaleDateString()} um  ${response.surveySession.createdAt.toLocaleTimeString()}`}</div>
             </blockquote>
             <div>
-              <h4 className="font-bold mb-5">Kategorie</h4>
+              <h4 className="font-semibold mb-5">Kategorie</h4>
               <div className="w-48 flex-shrink-0">
                 <span className="p-3 px-4 bg-gray-300 rounded">{userCategory}</span>
               </div>
