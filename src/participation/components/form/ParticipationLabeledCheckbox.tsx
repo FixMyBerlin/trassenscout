@@ -52,8 +52,7 @@ export const ParticipationLabeledCheckbox = forwardRef<
           "-ml-6 flex h-full min-h-[2.5rem]  w-full cursor-pointer flex-col items-start justify-center pl-9 text-sm font-medium text-gray-700 hover:text-gray-800 sm:w-auto sm:pr-24",
         )}
       >
-        {/* This pt-0.5 is just because of our font, which has a weird line-height so its hard to align to other elements */}
-        <span className="pt-0.5">{label}</span>
+        <span>{label}</span>
         {help && <div className="m-0 text-gray-400">{help}</div>}
         <ErrorMessage
           render={({ message }) => (

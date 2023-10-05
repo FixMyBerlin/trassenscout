@@ -3,6 +3,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
+import { improveErrorMessage } from "src/core/components/forms/improveErrorMessage"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { seoNewTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
@@ -23,8 +24,7 @@ const NewOperatorPageWithQuery = () => {
       await createOperatorMutation({ ...values, projectSlug: projectSlug! })
       await router.push(Routes.OperatorsPage({ projectSlug: projectSlug! }))
     } catch (error: any) {
-      console.error(error)
-      return { [FORM_ERROR]: error }
+      return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
   }
 

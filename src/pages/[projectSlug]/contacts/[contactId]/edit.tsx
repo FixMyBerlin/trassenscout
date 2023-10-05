@@ -5,14 +5,13 @@ import { Suspense } from "react"
 import { ContactForm, FORM_ERROR } from "src/contacts/components/ContactForm"
 import updateContact from "src/contacts/mutations/updateContact"
 import getContact from "src/contacts/queries/getContact"
-import { SuperAdminBox } from "src/core/components/AdminBox"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
+import { improveErrorMessage } from "src/core/components/forms/improveErrorMessage"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { seoEditTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { getFullname } from "src/users/utils"
 
 const EditContactWithQuery = () => {
   const router = useRouter()
@@ -43,11 +42,9 @@ const EditContactWithQuery = () => {
         }),
       )
     } catch (error: any) {
-      console.error(error)
-      return { [FORM_ERROR]: error }
+      return improveErrorMessage(error, FORM_ERROR, ["email"])
     }
   }
-
   return (
     <>
       <ContactForm submitText="Speichern" initialValues={contact} onSubmit={handleSubmit} />

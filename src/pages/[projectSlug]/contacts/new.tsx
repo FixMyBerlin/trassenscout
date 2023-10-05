@@ -5,6 +5,7 @@ import { Suspense } from "react"
 import { ContactForm, FORM_ERROR } from "src/contacts/components/ContactForm"
 import createContact from "src/contacts/mutations/createContact"
 import { ContactSchema } from "src/contacts/schema"
+import { improveErrorMessage } from "src/core/components/forms/improveErrorMessage"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
@@ -27,8 +28,7 @@ const NewContactWithQuery: BlitzPage = () => {
         }),
       )
     } catch (error: any) {
-      console.error(error)
-      return { [FORM_ERROR]: error }
+      return improveErrorMessage(error, FORM_ERROR, ["email"])
     }
   }
 

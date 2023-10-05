@@ -4,6 +4,7 @@ import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
+import { improveErrorMessage } from "src/core/components/forms/improveErrorMessage"
 import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { seoEditTitleSlug, shortTitle } from "src/core/components/text"
@@ -44,8 +45,7 @@ const EditSubsection = () => {
         }),
       )
     } catch (error: any) {
-      console.error(error)
-      return { [FORM_ERROR]: error }
+      return improveErrorMessage(error, FORM_ERROR, ["order", "slug"])
     }
   }
 

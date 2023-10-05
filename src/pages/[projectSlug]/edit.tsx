@@ -2,18 +2,18 @@ import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
+import { Spinner } from "src/core/components/Spinner"
+import { improveErrorMessage } from "src/core/components/forms/improveErrorMessage"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { Spinner } from "src/core/components/Spinner"
-import { seoEditTitleSlug, shortTitle } from "src/core/components/text"
+import { seoEditTitleSlug } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import getProjectUsers from "src/memberships/queries/getProjectUsers"
 import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import updateProject from "src/projects/mutations/updateProject"
 import getProject from "src/projects/queries/getProject"
 import { ProjectLogoScrcsInputSchema, ProjectSchema } from "src/projects/schema"
-import getProjectUsers from "src/memberships/queries/getProjectUsers"
 
 const EditProjectWithQuery = () => {
   const router = useRouter()
@@ -44,8 +44,7 @@ const EditProjectWithQuery = () => {
       await setQueryData(updated)
       await router.push(Routes.ProjectDashboardPage({ projectSlug: updated.slug }))
     } catch (error: any) {
-      console.error(error)
-      return { [FORM_ERROR]: error }
+      return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
   }
 

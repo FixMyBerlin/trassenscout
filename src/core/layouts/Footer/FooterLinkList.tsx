@@ -11,7 +11,7 @@ type Props = {
 export const FooterLinkList: React.FC<Props> = ({ linkList, className }) => {
   return (
     <div className="space-y-3">
-      <p className="text-sm font-bold text-gray-400">RECHTLICHES</p>
+      <p className="text-sm font-semibold text-gray-400">RECHTLICHES</p>
       <ul className={clsx("space-y-3", className)}>
         {linkList.map((item) => (
           <li key={item.name}>

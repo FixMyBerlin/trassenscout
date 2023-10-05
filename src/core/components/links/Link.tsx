@@ -20,10 +20,10 @@ export type LinkProps = {
 } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href">
 
 export const linkIcons = {
-  plus: <PlusIcon className="h-4 w-4 pb-0.5" />,
-  edit: <PencilIcon className="h-4 w-4 pb-0.5" />,
-  download: <ArrowDownTrayIcon className="h-4 w-4 pb-0.5" />,
-  delete: <TrashIcon className="h-4 w-4 pb-0.5" />,
+  plus: <PlusIcon className="h-3.5 w-3.5" />,
+  edit: <PencilIcon className="h-3.5 w-3.5" />,
+  download: <ArrowDownTrayIcon className="h-3.5 w-3.5" />,
+  delete: <TrashIcon className="h-3.5 w-3.5" />,
 }
 
 export const Link: React.FC<LinkProps> = forwardRef<HTMLAnchorElement, LinkProps>(

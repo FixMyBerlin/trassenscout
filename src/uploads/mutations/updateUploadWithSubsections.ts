@@ -3,20 +3,20 @@ import db from "db"
 import { z } from "zod"
 
 import { authorizeProjectAdmin } from "src/authorization"
-import getFileProjectId from "../queries/getFileProjectId"
-import { FileSchema } from "../schema"
+import getUploadProjectId from "../queries/getUploadProjectId"
+import { UploadSchema } from "../schema"
 
-const UpdateFileSchema = FileSchema.merge(
+const UpdateUploadSchema = UploadSchema.merge(
   z.object({
     id: z.number(),
   }),
 )
 
 export default resolver.pipe(
-  resolver.zod(UpdateFileSchema),
-  authorizeProjectAdmin(getFileProjectId),
+  resolver.zod(UpdateUploadSchema),
+  authorizeProjectAdmin(getUploadProjectId),
   async ({ id, ...data }) =>
-    await db.file.update({
+    await db.upload.update({
       where: { id },
       data,
       include: { subsection: { select: { id: true, slug: true, start: true, end: true } } },

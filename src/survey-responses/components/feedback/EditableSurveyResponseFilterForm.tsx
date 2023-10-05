@@ -127,26 +127,26 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
             <div className="flex flex-col sm:flex-row gap-12 mt-6">
               <LabeledCheckboxGroup
                 label="Status"
-                classLabelOverwrite="font-bold mb-3"
+                classLabelOverwrite="font-semibold mb-3"
                 classNameItemWrapper={clsx("flex-shrink-0")}
                 scope={"statuses"}
                 items={statusOptions}
               />
               <LabeledRadiobuttonGroup
                 label="Baulastträger"
-                classLabelOverwrite="font-bold mb-3"
+                classLabelOverwrite="font-semibold mb-3"
                 scope="operator"
                 items={operatorOptions}
               />
               <LabeledRadiobuttonGroup
                 label="Notiz"
-                classLabelOverwrite="font-bold mb-3"
+                classLabelOverwrite="font-semibold mb-3"
                 scope="hasnotes"
                 items={hasnotesOptions}
               />
               <LabeledCheckboxGroup
                 label="Themen"
-                classLabelOverwrite="font-bold mb-3"
+                classLabelOverwrite="font-semibold mb-3"
                 scope="topics"
                 items={topicsOptions}
                 classNameItemWrapper="grid grid-cols-3 grid-rows-10 grid-flow-col-dense"

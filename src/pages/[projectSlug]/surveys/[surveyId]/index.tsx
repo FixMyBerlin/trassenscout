@@ -179,7 +179,7 @@ export const Survey = () => {
                     return (
                       <div key={label} className="flex flex-col gap-2.5 justify-between">
                         <p className="text-gray-500 !text-sm">{label}</p>
-                        <p className="font-bold">{value}</p>
+                        <p className="font-semibold">{value}</p>
                       </div>
                     )
                   },

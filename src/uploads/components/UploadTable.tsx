@@ -7,20 +7,20 @@ import { Link } from "src/core/components/links"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { Prettify } from "src/core/types"
-import getFilesWithSubsections from "../queries/getFilesWithSubsections"
-import { fileUrl } from "../utils"
+import getUploadsWithSubsections from "../queries/getUploadsWithSubsections"
+import { uploadUrl } from "../utils"
 
 type Props = Prettify<
-  Pick<PromiseReturnType<typeof getFilesWithSubsections>, "files"> & {
+  Pick<PromiseReturnType<typeof getUploadsWithSubsections>, "uploads"> & {
     withAction?: boolean
   }
 >
 
-export const FileTable: React.FC<Props> = ({ files, withAction = true }) => {
+export const UploadTable: React.FC<Props> = ({ uploads, withAction = true }) => {
   const projectSlug = useParam("projectSlug", "string")
 
-  if (!files.length) {
-    return <ZeroCase visible={files.length} name="Dokumente" />
+  if (!uploads.length) {
+    return <ZeroCase visible={uploads.length} name="Dokumente" />
   }
 
   return (
@@ -49,42 +49,42 @@ export const FileTable: React.FC<Props> = ({ files, withAction = true }) => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
-          {files.map((file) => {
+          {uploads.map((upload) => {
             return (
-              <tr key={file.id}>
+              <tr key={upload.id}>
                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
-                  <Link blank href={fileUrl(file)} className="flex items-center gap-2">
+                  <Link blank href={uploadUrl(upload)} className="flex items-center gap-2">
                     <PaperClipIcon className="h-6 w-6 text-gray-500" />
-                    <strong className="font-semibold">{file.title}</strong>
+                    <strong className="font-semibold">{upload.title}</strong>
                   </Link>
                 </td>
                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {file.createdAt.toLocaleDateString()}
+                  {upload.createdAt.toLocaleDateString()}
                 </td>
                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {file.subsection && `${file.subsection.start}–${file.subsection.end}`}
+                  {upload.subsection && `${upload.subsection.start}–${upload.subsection.end}`}
                 </td>
                 <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
                   <ButtonWrapper className="justify-end">
-                    <Link blank icon="download" href={fileUrl(file)}>
+                    <Link blank icon="download" href={uploadUrl(upload)}>
                       Download
                     </Link>
                     {withAction && (
                       <>
                         <Link
                           icon="edit"
-                          href={Routes.EditFilePage({
+                          href={Routes.EditUploadPage({
                             projectSlug: projectSlug!,
-                            fileId: file.id,
+                            uploadId: upload.id,
                           })}
                         >
                           Bearbeiten
                         </Link>
                         <Link
                           icon="delete"
-                          href={Routes.ShowFilePage({
+                          href={Routes.ShowUploadPage({
                             projectSlug: projectSlug!,
-                            fileId: file.id,
+                            uploadId: upload.id,
                           })}
                         >
                           Löschen

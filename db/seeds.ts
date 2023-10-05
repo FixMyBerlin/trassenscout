@@ -1,6 +1,6 @@
 import seedCalendarEntries from "./seeds/calenderEntries"
 import seedContacts from "./seeds/contacts"
-import seedFiles from "./seeds/files"
+import seedUploads from "./seeds/uploads"
 import seedMemberships from "./seeds/memberships"
 import seedOperators from "./seeds/operators"
 import seedProjects from "./seeds/projects"
@@ -24,7 +24,7 @@ const seed = async () => {
   await seedStakeholdernotes()
   await seedCalendarEntries()
   await seedContacts()
-  await seedFiles()
+  await seedUploads()
   await seedSurveys()
   await seedSurveyResponseTopics()
 }

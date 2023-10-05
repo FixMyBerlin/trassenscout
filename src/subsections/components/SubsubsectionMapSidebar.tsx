@@ -15,8 +15,8 @@ import {
 } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { useSlugs } from "src/core/hooks"
-import { FilePreview } from "src/files/components/FilePreview"
-import getFilesWithSubsections from "src/files/queries/getFilesWithSubsections"
+import { UploadPreview } from "src/uploads/components/UploadPreview"
+import getUploadsWithSubsections from "src/uploads/queries/getUploadsWithSubsections"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { getFullname } from "src/users/utils"
 import { mapillaryLink } from "./utils/mapillaryLink"
@@ -29,7 +29,7 @@ type Props = {
 export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClose }) => {
   const { projectSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
 
-  const [{ files }] = useQuery(getFilesWithSubsections, {
+  const [{ uploads }] = useQuery(getUploadsWithSubsections, {
     projectSlug: projectSlug!,
     where: { subsubsectionId: subsubsection.id },
   })
@@ -46,7 +46,6 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
         <div className="flex items-center gap-3">
           <Link
             icon="edit"
-            className="mt-0.5"
             href={Routes.EditSubsubsectionPage({
               projectSlug: projectSlug!,
               subsectionSlug: subsectionSlug!,
@@ -56,7 +55,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
             bearbeiten
           </Link>
           <button
-            className={clsx("h-8 !w-8 !rounded-full !p-0 !pt-1", whiteButtonStyles)}
+            className={clsx("h-8 !w-8 !rounded-full !p-0", whiteButtonStyles)}
             onClick={onClose}
           >
             &times;
@@ -147,7 +146,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
           <H2>Grafiken</H2>
           <Link
             icon="plus"
-            href={Routes.NewFilePage({
+            href={Routes.NewUploadPage({
               projectSlug: projectSlug!,
               subsubsectionId: subsubsection.id,
               returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
@@ -156,21 +155,21 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
             Grafik
           </Link>
         </div>
-        {!files.length && <p>Es gibt noch keine Grafiken für diese Planung</p>}
+        {!uploads.length && <p>Es gibt noch keine Grafiken für diese Planung</p>}
         <div className="grid grid-cols-2 gap-3">
-          {files.map((file) => {
+          {uploads.map((upload) => {
             return (
-              <FilePreview
-                key={file.id}
-                file={file}
-                editUrl={Routes.EditFilePage({
+              <UploadPreview
+                key={upload.id}
+                upload={upload}
+                editUrl={Routes.EditUploadPage({
                   projectSlug: projectSlug!,
-                  fileId: file.id,
+                  uploadId: upload.id,
                   returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
                 })}
-                showFileUrl={Routes.ShowFilePage({
+                showUploadUrl={Routes.ShowUploadPage({
                   projectSlug: projectSlug!,
-                  fileId: file.id,
+                  uploadId: upload.id,
                   returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
                 })}
               />
@@ -196,7 +195,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
         )}
       </section>
 
-      <SuperAdminLogData data={{ subsubsection, files }} />
+      <SuperAdminLogData data={{ subsubsection, uploads }} />
     </section>
   )
 }
