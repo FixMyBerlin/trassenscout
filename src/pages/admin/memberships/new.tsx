@@ -1,5 +1,5 @@
 import { Routes } from "@blitzjs/next"
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
@@ -11,11 +11,8 @@ import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { MembershipForm } from "src/memberships/components/MembershipForm"
 import createMembership from "src/memberships/mutations/createMembership"
 import { FORM_ERROR } from "src/projects/components/ProjectForm"
-import getAdminStatus from "src/users/queries/getAdminStatus"
 
 const AdminNewMembership = () => {
-  useQuery(getAdminStatus, {}) // See https://github.com/FixMyBerlin/private-issues/issues/936
-
   const router = useRouter()
 
   const [createMembershipMutation] = useMutation(createMembership)
@@ -60,8 +57,6 @@ const AdminNewMembershipPage = () => {
   )
 }
 
-// See https://github.com/FixMyBerlin/private-issues/issues/936
-// AdminNewMembershipPage.authenticate = { role: "ADMIN" }
-AdminNewMembershipPage.authenticate = true
+AdminNewMembershipPage.authenticate = { role: "ADMIN" }
 
 export default AdminNewMembershipPage
