@@ -43,6 +43,7 @@ const EditSubsubsection = () => {
         // The value="" becomes "0" which we translate to NULL
         qualityLevelId: values.qualityLevelId === 0 ? null : values.qualityLevelId,
         managerId: values.managerId === 0 ? null : values.managerId,
+        costEstimate: values.costEstimate === 0 ? null : Number(values.costEstimate),
       })
       await setQueryData(updated)
       await router.push(
