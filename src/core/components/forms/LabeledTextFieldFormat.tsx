@@ -16,10 +16,11 @@ interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["i
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
   optional?: boolean
+  unit?: string
 }
 
 export const LabeledTextFieldFormat = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
-  ({ name, label, help, outerProps, labelProps, optional, ...props }, ref) => {
+  ({ name, label, help, outerProps, labelProps, optional, unit, ...props }, ref) => {
     const {
       register,
       formState: { isSubmitting, errors },
@@ -60,9 +61,6 @@ export const LabeledTextFieldFormat = forwardRef<HTMLInputElement, LabeledTextFi
 
     const reFormatNumber = (str: string) => {
       const cleanString = cleanStr(str)
-      // if (!cleanString) {
-      //   return ""
-      // }
       return cleanString
     }
 
@@ -79,7 +77,10 @@ export const LabeledTextFieldFormat = forwardRef<HTMLInputElement, LabeledTextFi
           {label}
           {optional && <> (optional)</>}
         </label>
-        <small>Formatierter Wert: {num.formattedValue}</small>
+        <small>
+          Formatierter Wert: {unit && num.formattedValue !== "k.A." && unit + " "}
+          {num.formattedValue}
+        </small>
         <input
           disabled={isSubmitting}
           value={num.value}
