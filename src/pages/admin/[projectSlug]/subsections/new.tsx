@@ -52,7 +52,6 @@ const AdminNewSubsection = () => {
         initialValues={{ labelPos: "bottom" }}
         submitText="Erstellen"
         schema={SubsectionSchema.omit({ projectId: true })}
-        // initialValues={} // Use only when custom initial values are needed
         onSubmit={handleSubmit}
         users={users}
       />
