@@ -1,4 +1,4 @@
-import { NameSchema, SlugSchema } from "src/core/utils"
+import { SlugSchema } from "src/core/utils"
 import { z } from "zod"
 
 export const ProjectSchema = z.object({
@@ -7,6 +7,7 @@ export const ProjectSchema = z.object({
   description: z.string().nullish(),
   logoSrc: z.string().nullish(),
   partnerLogoSrcs: z.string().array(),
+  felt_subsection_geometry_source_url: z.string().url({ message: "Ungültige Url." }).nullish(),
   managerId: z.coerce.number().nullish(),
 })
 
