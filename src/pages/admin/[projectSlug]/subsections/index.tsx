@@ -11,7 +11,7 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { seoTitleSlug, shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import getProject from "src/projects/queries/getProject"
-import { SubsectionTable } from "src/subsections/components/SubsectionTable"
+import { SubsectionTableAdmin } from "src/subsections/components/SubsectionTableAdmin"
 import getSubsections from "src/subsections/queries/getSubsections"
 
 export const AdminSubsectionsWithQuery = () => {
@@ -55,7 +55,7 @@ export const AdminSubsectionsWithQuery = () => {
           <Markdown markdown={project.description} />
         </PageDescription>
       )}
-      <SubsectionTable subsections={filteredSubsections} />
+      <SubsectionTableAdmin subsections={filteredSubsections} />
       <Link
         icon="plus"
         button="blue"
