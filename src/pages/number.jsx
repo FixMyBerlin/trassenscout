@@ -24,15 +24,29 @@ const format = (numStr) => {
 }
 
 const Demo = () => {
-  const [value, setValue] = useState(0)
+  const onChange = (s) => {
+    if (s === formattedValue.replace(",", "")) {
+      // comma was deleted
+      s = formattedValue
+    } else {
+      setFormattedValue(s)
+    }
+    return removeFormatting(s)
+  }
+
+  const startValue = 0
+  const [value, setValue] = useState(startValue)
+  const [formattedValue, setFormattedValue] = useState(format(startValue))
   const handleSubmit = (e) => e.preventDefault()
 
   return (
-    <div className="App">
+    <div className="border border-black p-4 m-4">
       <form onSubmit={handleSubmit}>
-        <NumberFormatBase value={value} removeFormatting={removeFormatting} format={format} />
+        <NumberFormatBase value={value} removeFormatting={onChange} format={format} />
         <br />
         <button type="submit">Submit</button>
+        <br />
+        <span>{formattedValue}</span>
       </form>
     </div>
   )
