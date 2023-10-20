@@ -7,7 +7,7 @@ export const ProjectSchema = z.object({
   description: z.string().nullish(),
   logoSrc: z.string().nullish(),
   partnerLogoSrcs: z.string().array(),
-  felt_subsection_geometry_source_url: z.string().url({ message: "Ungültige Url." }).nullish(),
+  felt_subsection_geometry_source_url: z.union([z.string().url().nullish(), z.literal("")]),
   managerId: z.coerce.number().nullish(),
 })
 
