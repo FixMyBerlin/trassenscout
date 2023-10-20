@@ -8,7 +8,7 @@ import {
   LabeledTextField,
 } from "src/core/components/forms"
 import { LabeledRadiobuttonGroupLabelPos } from "src/core/components/forms/LabeledRadiobuttonGroupLabelPos"
-import { LabeledTextFieldFormat } from "src/core/components/forms/LabeledTextFieldFormat"
+import { LabeledCurrencyField } from "src/core/components/forms/LabeledCurrencyField"
 import { Link } from "src/core/components/links"
 import { quote, shortTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
@@ -58,7 +58,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         optional
       />
       <LabeledTextField type="number" step="0.01" name="width" label="Breite (in Meter)" optional />
-      <LabeledTextFieldFormat unit="€" name="costEstimate" label="Kostenschätzung (in Euro)" />
+      <LabeledCurrencyField name="costEstimate" label="Kostenschätzung (in Euro)" />
       <div className="flex items-end gap-5">
         <LabeledSelect
           name="qualityLevelId"
