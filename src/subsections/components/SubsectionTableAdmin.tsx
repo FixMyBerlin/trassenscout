@@ -10,8 +10,11 @@ import { useSlugs } from "src/core/hooks"
 import { StakeholderSummary } from "src/stakeholdernotes/components/StakeholderSummary"
 import { SubsectionWithPosition } from "../queries/getSubsection"
 import { lineString } from "@turf/helpers"
-import { ClipboardDocumentIcon } from "@heroicons/react/20/solid"
+import { ClipboardDocumentIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline"
+import { useMutation } from "@blitzjs/rpc"
+import deleteSubsubsection from "src/subsubsections/mutations/deleteSubsubsection"
+import deleteSubsection from "../mutations/deleteSubsection"
 
 type Props = {
   subsections: SubsectionWithPosition[]
@@ -19,10 +22,16 @@ type Props = {
 }
 
 export const SubsectionTableAdmin: React.FC<Props> = ({ subsections }) => {
+  const [deleteSubsectionMutation] = useMutation(deleteSubsection)
   const router = useRouter()
   const { projectSlug, subsectionSlug } = useSlugs()
   const handleSlugCopyClick = async (slug: string) => {
     await navigator.clipboard.writeText(slug)
+  }
+  const handleDeleteSubsection = async (subsectionId: number) => {
+    if (window.confirm(`Den Eintrag mit ID ${subsectionId} unwiderruflich löschen?`)) {
+      await deleteSubsectionMutation({ id: subsectionId })
+    }
   }
 
   return (
@@ -60,6 +69,12 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections }) => {
                 className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
               >
                 Geometrie
+              </th>
+              <th
+                scope="col"
+                className="sr-only px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
+              >
+                bearbeiten
               </th>
             </tr>
           </thead>
@@ -130,6 +145,23 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections }) => {
                     ) : (
                       "Nein"
                     )}
+                  </td>
+                  <td className="space-y-2 pr-2">
+                    <Link
+                      href={Routes.EditSubsectionPage({
+                        projectSlug: projectSlug!,
+                        subsectionSlug: subsection.slug,
+                      })}
+                    >
+                      <PencilSquareIcon className="h-4 w-4" />
+                      <span className="sr-only">Bearbeiten</span>
+                    </Link>
+                    <button
+                      className="text-blue-500 hover:text-blue-800"
+                      onClick={() => handleDeleteSubsection(subsection.id)}
+                    >
+                      <TrashIcon className="h-4 w-4" />
+                    </button>
                   </td>
                 </tr>
               )
