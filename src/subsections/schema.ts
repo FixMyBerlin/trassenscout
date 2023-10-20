@@ -17,4 +17,8 @@ export const SubsectionSchema = z.object({
   operatorId: z.coerce.number().nullish(),
 })
 
+export const SubsectionsSchema = z.array(
+  SubsectionSchema.omit({ managerId: true, operatorId: true, description: true }),
+)
+
 export type TSubsectionSchema = Prettify<z.infer<typeof SubsectionSchema>>

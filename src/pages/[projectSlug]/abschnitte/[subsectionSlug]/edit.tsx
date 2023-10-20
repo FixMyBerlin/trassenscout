@@ -68,6 +68,7 @@ const EditSubsection = () => {
       <PageHeader title={`${shortTitle(subsection.slug)} bearbeiten`} className="mt-12" />
 
       <SubsectionForm
+        edit={true}
         className="mt-10"
         submitText="Speichern"
         schema={SubsectionSchema}

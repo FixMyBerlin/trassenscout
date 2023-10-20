@@ -15,16 +15,20 @@ import { Link } from "src/core/components/links"
 import { quote, shortTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
+import getProject from "src/projects/queries/getProject"
 import { UserSelectOptions, getUserSelectOptions } from "src/users/utils"
 import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
 
-type Props<S extends z.ZodType<any, any>> = FormProps<S> & { users: UserSelectOptions }
+type Props<S extends z.ZodType<any, any>> = FormProps<S> & {
+  users: UserSelectOptions
+  edit?: boolean
+}
 
 function SubsectionFormWithQuery<S extends z.ZodType<any, any>>(props: Props<S>) {
-  const { users } = props
-
+  const { users, edit } = props
   const { projectSlug } = useSlugs()
+  const [project] = useQuery(getProject, { slug: projectSlug })
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const operatorOptions: [number | string, string][] = [
     ["", "Kein Baulastträger"],
@@ -35,6 +39,8 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>(props: Props<S>)
       ] as [number, string]
     }),
   ]
+
+  const isReadOnlyFields = !!(edit && project?.felt_subsection_geometry_source_url)
 
   return (
     <Form<S> {...props}>
@@ -54,11 +60,28 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>(props: Props<S>)
         help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung."
       />
       <div className="grid grid-cols-2 gap-5">
-        <LabeledTextField type="text" name="start" label="Startpunkt" />
-        <LabeledTextField type="text" name="end" label="Endpunkt" />
+        <LabeledTextField
+          type="text"
+          name="start"
+          label="Startpunkt"
+          help={isReadOnlyFields ? `Diese Information kann nur in Felt editiert werden` : ""}
+          readOnly={isReadOnlyFields}
+        />
+        <LabeledTextField
+          type="text"
+          name="end"
+          label="Endpunkt"
+          help={isReadOnlyFields ? `Diese Information kann nur in Felt editiert werden` : ""}
+          readOnly={isReadOnlyFields}
+        />
       </div>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
-      <LabeledGeometryField name="geometry" label="Geometry der Achse (LineString)" />
+      <LabeledGeometryField
+        help={isReadOnlyFields ? `Diese Information kann nur in Felt editiert werden` : ""}
+        readOnly={isReadOnlyFields}
+        name="geometry"
+        label="Geometry der Achse (LineString)"
+      />
       <LabeledRadiobuttonGroupLabelPos />
 
       <div className="flex items-end gap-5">

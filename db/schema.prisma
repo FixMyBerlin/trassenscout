@@ -97,18 +97,19 @@ model Token {
 // }
 
 model Project {
-  id              Int      @id @default(autoincrement())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                                  Int      @id @default(autoincrement())
+  createdAt                           DateTime @default(now())
+  updatedAt                           DateTime @updatedAt
   //
-  slug            String   @unique // shortTitle and URL Slug
-  subTitle        String?
-  description     String?
-  logoSrc         String?
-  partnerLogoSrcs String[]
+  slug                                String   @unique // shortTitle and URL Slug
+  subTitle                            String?
+  description                         String?
+  logoSrc                             String?
+  partnerLogoSrcs                     String[]
+  felt_subsection_geometry_source_url String?
   //
-  manager         User?    @relation(fields: [managerId], references: [id])
-  managerId       Int?
+  manager                             User?    @relation(fields: [managerId], references: [id])
+  managerId                           Int?
 
   surveyResponseTopics SurveyResponseTopic[]
   subsections          Subsection[]
