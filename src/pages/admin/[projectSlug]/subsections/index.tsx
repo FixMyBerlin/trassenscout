@@ -21,7 +21,7 @@ export const AdminSubsectionsWithQuery = () => {
   useQuery(getAdminStatus, {}) // See https://github.com/FixMyBerlin/private-issues/issues/936
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
-  const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
+  const [{ subsections }, { refetch }] = useQuery(getSubsections, { projectSlug: projectSlug! })
   const [updateSubsectionMutation] = useMutation(updateSubsectionsWithFeltData)
 
   // We use the URL param `operator` to filter the UI
@@ -55,11 +55,7 @@ export const AdminSubsectionsWithQuery = () => {
         subsections,
         projectFeltUrl: project.felt_subsection_geometry_source_url,
       })
-      await router.push(
-        Routes.AdminSubsectionsPage({
-          projectSlug: projectSlug!,
-        }),
-      )
+      await refetch()
     } catch (error: any) {
       return console.error(error)
     }
