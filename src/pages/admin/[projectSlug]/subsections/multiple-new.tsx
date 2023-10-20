@@ -67,7 +67,7 @@ const AdminNewSubsections = () => {
       <PageHeader title="Planungsabschitt hinzufügen" className="mt-12" />
 
       <SubsectionsForm
-        initialValues={{ prefix: project.slug }}
+        initialValues={{ prefix: `${project.slug}-pa` }}
         submitText="Erstellen"
         // schema={SubsectionSchema.omit({ projectId: true })}
         onSubmit={handleSubmit}
