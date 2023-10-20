@@ -66,6 +66,7 @@ export const AdminSubsectionsWithQuery = () => {
       <MetaTags noindex title={seoTitleSlug(project.slug)} />
 
       <PageHeader
+        className="mt-12"
         title={shortTitle(project.slug)}
         subtitle={project.subTitle}
         description={`Planungsabschnitte ${project.subTitle}`}
@@ -77,18 +78,18 @@ export const AdminSubsectionsWithQuery = () => {
         </PageDescription>
       )}
       <SubsectionTableAdmin subsections={filteredSubsections} />
-      <Link
-        icon="plus"
-        button="blue"
-        href={Routes.AdminNewSubsectionsPage({ projectSlug: projectSlug! })}
-      >
-        Mehrere Planungsabschnitte erstellen
-      </Link>
-      <button className={blueButtonStyles} onClick={handleFeltDataClick}>
-        Daten von Felt übernehmen
-      </button>
-
-      <SuperAdminLogData data={{ project, subsections, filteredSubsections }} />
+      <div className="mt-8 flex gap-5 sm:flex-row flex-col">
+        <Link
+          icon="plus"
+          button="blue"
+          href={Routes.AdminNewSubsectionsPage({ projectSlug: projectSlug! })}
+        >
+          Mehrere Planungsabschnitte erstellen
+        </Link>
+        <button className={blueButtonStyles} onClick={handleFeltDataClick}>
+          Daten von Felt übernehmen
+        </button>
+      </div>
     </>
   )
 }

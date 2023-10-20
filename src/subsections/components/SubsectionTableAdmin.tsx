@@ -72,40 +72,37 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections }) => {
               return (
                 <tr
                   key={subsection.id}
-                  className="group cursor-pointer hover:bg-gray-50 h-full"
+                  className=" h-full"
                   // onClick={() => router.push(route)}
                 >
-                  <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900  sm:pl-6">
+                  <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                     <SubsectionIcon label={shortTitle(subsection.slug)} />
                   </td>
 
-                  <td className=" py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
-                    <div className="flex gap-5">
-                      <p>{subsection.slug}</p>
-                      <button onClick={() => handleSlugCopyClick(subsection.slug)}>
+                  <td className=" py-4 pl-4 pr-3 text-sm font-medium cursor-pointer text-blue-500 hover:text-blue-800">
+                    <button onClick={() => handleSlugCopyClick(subsection.slug)}>
+                      <div className="flex gap-5">
+                        <p>{subsection.slug}</p>
+
                         <ClipboardDocumentListIcon className="w-4" />
-                      </button>
-                    </div>
+                      </div>
+                    </button>
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
+                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
                     {subsection.order}
                   </td>
                   <td
                     className={clsx(
-                      "py-4 pl-4 pr-3 text-sm font-medium group-hover:bg-gray-50",
-                      subsection.end === "unbekannt"
-                        ? "text-gray-300 group-hover:text-gray-500"
-                        : "text-gray-900",
+                      "py-4 pl-4 pr-3 text-sm font-medium",
+                      subsection.end === "unbekannt" ? "text-gray-300" : "text-gray-900",
                     )}
                   >
                     {subsection.start}
                   </td>
                   <td
                     className={clsx(
-                      "py-4 pl-4 pr-3 text-sm font-medium group-hover:bg-gray-50",
-                      subsection.end === "unbekannt"
-                        ? "text-gray-300 group-hover:text-gray-500"
-                        : "text-gray-900",
+                      "py-4 pl-4 pr-3 text-sm font-medium",
+                      subsection.end === "unbekannt" ? "text-gray-300" : "text-gray-900",
                     )}
                   >
                     {subsection.end}
