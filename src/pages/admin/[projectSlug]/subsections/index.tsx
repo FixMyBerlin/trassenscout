@@ -5,7 +5,6 @@ import { Suspense } from "react"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Spinner } from "src/core/components/Spinner"
-import { improveErrorMessage } from "src/core/components/forms/improveErrorMessage"
 import { Link, blueButtonStyles } from "src/core/components/links"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { PageDescription } from "src/core/components/pages/PageDescription"
@@ -15,7 +14,6 @@ import { LayoutRs, MetaTags } from "src/core/layouts"
 import getProject from "src/projects/queries/getProject"
 import { SubsectionTableAdmin } from "src/subsections/components/SubsectionTableAdmin"
 import updateSubsectionsWithFeltData from "src/subsections/mutations/updateSubsectionsWithFeltData"
-import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 import getSubsections from "src/subsections/queries/getSubsections"
 
 export const AdminSubsectionsWithQuery = () => {
@@ -37,23 +35,24 @@ export const AdminSubsectionsWithQuery = () => {
     return (
       <section className="mt-12 p-5">
         <ButtonWrapper>
-          <Link button="blue" href={Routes.AdminNewSubsectionPage({ projectSlug: projectSlug! })}>
-            Neuer Planungsabschnitt
+          <Link
+            icon="plus"
+            button="blue"
+            href={Routes.AdminNewSubsectionsPage({ projectSlug: projectSlug! })}
+          >
+            Mehrere Planungsabschnitte erstellen
           </Link>
         </ButtonWrapper>
       </section>
     )
   }
-  // feltUrl: string
+
   const handleFeltDataClick = async () => {
     try {
       const subsection = await updateSubsectionMutation({
         subsections,
         projectFeltUrl: project.felt_subsection_geometry_source_url,
       })
-      // @ts-ignore todo
-      // subsections
-      await console.log("Success")
       await router.push(
         Routes.AdminSubsectionsPage({
           projectSlug: projectSlug!,

@@ -22,20 +22,20 @@ export default resolver.pipe(
   authorizeProjectAdmin(getSubsectionProjectId), // todo authorization pages/db
   async ({ subsections, projectFeltUrl }) => {
     const updatedSeubsections: SubsectionWithPosition[] = []
-    console.log({ subsections })
-    console.log({ projectFeltUrl })
     if (!projectFeltUrl) return null // todo
     await fetch(projectFeltUrl)
       .then((res) => res.json())
       .then((feltData) => {
         // @ts-ignore // todo
         const feltSubsections = feltData.features
-        // iterate over subsections
+        // iterate over ts-subsections
         subsections.forEach(async (tsSubsection) => {
+          // check in felt-subsections for matching id
           const matchingFeltSubsection = feltSubsections.find(
             // @ts-ignore // todo
             (s) => s.properties["ts_pa_id"] === tsSubsection.slug,
           )
+          // if ts-subsection-slug matches one of the felt-subsection-id, update db subsection, fields: start, end, geometry
           if (matchingFeltSubsection) {
             const updatedSubsection = await db.subsection.update({
               where: { id: tsSubsection.id },
