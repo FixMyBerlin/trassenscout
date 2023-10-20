@@ -19,7 +19,7 @@ const UpdateSubsectionsWithFeltDataSchema = z.object({
 
 export default resolver.pipe(
   resolver.zod(UpdateSubsectionsWithFeltDataSchema),
-  authorizeProjectAdmin(getSubsectionProjectId), // todo authorization pages/db
+  resolver.authorize("ADMIN"),
   async ({ subsections, projectFeltUrl }) => {
     const updatedSeubsections: SubsectionWithPosition[] = []
     if (!projectFeltUrl) return null // todo
