@@ -1,8 +1,6 @@
 import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import router from "next/router"
 import { Suspense } from "react"
-import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Spinner } from "src/core/components/Spinner"
 import { Link, blueButtonStyles } from "src/core/components/links"
