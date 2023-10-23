@@ -223,32 +223,35 @@ model Subsection {
 }
 
 model Subsubsection {
-  id             Int                   @id @default(autoincrement())
-  createdAt      DateTime              @default(now())
-  updatedAt      DateTime              @updatedAt
+  id              Int                   @id @default(autoincrement())
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
   //
-  slug           String // shortTitle and URL Slug
-  subTitle       String?
-  type           SubsubsectionTypeEnum @default(ROUTE) // Führungform
-  geometry       Json
-  labelPos       LabelPositionEnum     @default(top)
-  task           String // Maßnahmentyp
-  length         Float? // Kilometer
-  width          Float? // Meter
-  costEstimate   Float? // Euro
-  description    String? // Anmerkungen
-  mapillaryKey   String?
+  slug            String // shortTitle and URL Slug
+  subTitle        String?
+  type            SubsubsectionTypeEnum @default(ROUTE) // Führungform
+  geometry        Json
+  labelPos        LabelPositionEnum     @default(top)
+  task            String // Maßnahmentyp
+  length          Float? // Kilometer
+  width           Float? // Meter
+  costEstimate    Float? // Euro
+  description     String? // Anmerkungen
+  mapillaryKey    String?
+  maxSpeed        Int?
+  trafficLoad     Int?
+  trafficLoadDate DateTime?
   //
-  qualityLevel   QualityLevel?         @relation(fields: [qualityLevelId], references: [id])
-  qualityLevelId Int?
+  qualityLevel    QualityLevel?         @relation(fields: [qualityLevelId], references: [id])
+  qualityLevelId  Int?
   //
-  manager        User?                 @relation(fields: [managerId], references: [id])
-  managerId      Int?
+  manager         User?                 @relation(fields: [managerId], references: [id])
+  managerId       Int?
   //
-  subsection     Subsection            @relation(fields: [subsectionId], references: [id])
-  subsectionId   Int
+  subsection      Subsection            @relation(fields: [subsectionId], references: [id])
+  subsectionId    Int
   //
-  uploads        Upload[]
+  uploads         Upload[]
 
   @@unique([subsectionId, slug])
 }

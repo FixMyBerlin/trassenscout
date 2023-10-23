@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
+import { getDate } from "src/calendar-entries/utils/splitStartAt"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "src/core/components/Spinner"
 import { improveErrorMessage } from "src/core/components/forms/improveErrorMessage"
@@ -15,7 +16,7 @@ import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/Sub
 import deleteSubsubsection from "src/subsubsections/mutations/deleteSubsubsection"
 import updateSubsubsection from "src/subsubsections/mutations/updateSubsubsection"
 import getSubsubsection from "src/subsubsections/queries/getSubsubsection"
-import { SubsubsectionSchemaForm } from "src/subsubsections/schema"
+import { SubsubsectionFormSchema } from "src/subsubsections/schema"
 
 const EditSubsubsection = () => {
   const router = useRouter()
@@ -44,6 +45,7 @@ const EditSubsubsection = () => {
         qualityLevelId: values.qualityLevelId === 0 ? null : values.qualityLevelId,
         managerId: values.managerId === 0 ? null : values.managerId,
         costEstimate: values.costEstimate === 0 ? null : Number(values.costEstimate),
+        trafficLoadDate: values.trafficLoadDate === "" ? null : new Date(values.trafficLoadDate),
       })
       await setQueryData(updated)
       await router.push(
@@ -79,9 +81,12 @@ const EditSubsubsection = () => {
       <SubsubsectionForm
         className="mt-10"
         submitText="Speichern"
-        schema={SubsubsectionSchemaForm}
+        schema={SubsubsectionFormSchema}
         initialValues={{
           ...subsubsection,
+          trafficLoadDate: subsubsection.trafficLoadDate
+            ? getDate(subsubsection.trafficLoadDate)
+            : "",
         }}
         onSubmit={handleSubmit}
       />

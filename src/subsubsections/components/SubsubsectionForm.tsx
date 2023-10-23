@@ -7,7 +7,7 @@ import {
   LabeledTextareaField,
   LabeledTextField,
 } from "src/core/components/forms"
-import { LabeledRadiobuttonGroupLabelPos } from "src/core/components/forms/LabeledRadiobuttonGroupLabelPos"
+import { LabeledRadiobuttonGroupLabelPos } from "src/subsubsections/components/LabeledRadiobuttonGroupLabelPos"
 import { LabeledCurrencyField } from "src/core/components/forms/LabeledCurrencyField"
 import { Link } from "src/core/components/links"
 import { quote, shortTitle } from "src/core/components/text"
@@ -86,6 +86,29 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         options={getUserSelectOptions(users)}
       />
       <LabeledRadiobuttonGroupLabelPos />
+      <details>
+        <summary className="mb-2 cursor-pointer">Verkehrsbelastung</summary>
+        <LabeledTextField
+          type="number"
+          name="maxSpeed"
+          label="Zulässige Höchstgeschwindigkeit an der Straße (kmh)"
+          optional
+        />
+
+        <LabeledTextField
+          type="number"
+          name="trafficLoad"
+          label="Verkehrsbelastung an Werktagen an dieser Straße (Kfz/24h)"
+          optional
+        />
+
+        <LabeledTextField
+          type="date"
+          name="trafficLoadDate"
+          label="Verkehrsbelastung ermittelt am (Datum)"
+          optional
+        />
+      </details>
     </Form>
   )
 }

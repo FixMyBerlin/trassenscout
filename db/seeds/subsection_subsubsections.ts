@@ -20,6 +20,9 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
       "Ausweitung des Straßenbegleitenden **Feldweges zum Radweg**. Freigabe für landwirtschaftlichen Verkehr.",
     mapillaryKey: "797685018581574",
     managerId: 1,
+    maxSpeed: null,
+    trafficLoad: null,
+    trafficLoadDate: null,
   },
   {
     slug: "rf2",
@@ -40,6 +43,9 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     description: "Rad- und Fußverkehr wird auf einem Ufersteig zum Teil über dem Wasser geführt.",
     mapillaryKey: "1646379745805677",
     managerId: null,
+    maxSpeed: 30,
+    trafficLoad: 3456,
+    trafficLoadDate: null,
   },
   {
     slug: "rf3",
@@ -60,6 +66,9 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     description: "Ausbau Levetzowstraße zur Fahrradstraße mit Modalfilter, Anwohner frei.",
     mapillaryKey: "249624194247195",
     managerId: null,
+    maxSpeed: null,
+    trafficLoad: null,
+    trafficLoadDate: null,
   },
   {
     slug: "sf1",
@@ -80,6 +89,9 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
       `,
     mapillaryKey: "249624194247195",
     managerId: 1,
+    maxSpeed: null,
+    trafficLoad: null,
+    trafficLoadDate: null,
   },
   {
     slug: "sf2",
@@ -96,5 +108,8 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
       "Sonderführung Radverkehr unter der S-Bahn-Brücke im Seitenraum. Wegfall von einzelnen Kfz Stellplätzen; Neuaufteilung Parkspur, Radweg und Gehweg.",
     mapillaryKey: null,
     managerId: 3,
+    maxSpeed: null,
+    trafficLoad: null,
+    trafficLoadDate: null,
   },
 ]

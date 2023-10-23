@@ -10,7 +10,7 @@ import {
   LabeledTextareaField,
 } from "src/core/components/forms"
 import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryField"
-import { LabeledRadiobuttonGroupLabelPos } from "src/core/components/forms/LabeledRadiobuttonGroupLabelPos"
+import { LabeledRadiobuttonGroupLabelPos } from "src/subsubsections/components/LabeledRadiobuttonGroupLabelPos"
 import { Link } from "src/core/components/links"
 import { quote, shortTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"

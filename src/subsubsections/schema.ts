@@ -29,8 +29,30 @@ export const SubsubsectionSchema = z.object({
   qualityLevelId: z.coerce.number().nullish(),
   managerId: z.coerce.number().nullish(),
   subsectionId: z.coerce.number(),
+  maxSpeed: z.coerce.number().nullish(),
+  trafficLoad: z.coerce.number().nullish(),
+  trafficLoadDate: z.union([
+    z.coerce
+      .date({
+        // `coerce` makes it that we need to work around a nontranslatable error
+        // Thanks to https://github.com/colinhacks/zod/discussions/1851#discussioncomment-4649675
+        errorMap: ({ code }, { defaultError }) => {
+          if (code == "invalid_date") return { message: "Das Datum ist nicht richtig formatiert." }
+          return { message: defaultError }
+        },
+      })
+      .nullish(),
+    z.literal(""),
+  ]),
 })
-
 export type TSubsubsectionSchema = Prettify<z.infer<typeof SubsubsectionSchema>>
 
-export const SubsubsectionSchemaForm = SubsubsectionSchema
+export const SubsubsectionTrafficLoadDateSchema = z.object({
+  trafficLoadDate: z.union([
+    z.string().min(8, { message: "Das Datum ist nicht richtig formatiert." }),
+    z.literal(""),
+  ]),
+})
+export const SubsubsectionFormSchema = SubsubsectionSchema.omit({ trafficLoadDate: true }).merge(
+  SubsubsectionTrafficLoadDateSchema,
+)
