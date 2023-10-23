@@ -109,6 +109,55 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           optional
         />
       </details>
+      <details>
+        <summary className="mb-2 cursor-pointer">Kostenstruktur</summary>
+        <LabeledTextField type="number" name="planningCosts" label="Planungskosten" optional />
+        <LabeledTextField type="number" name="constructionCosts" label="Baukosten" optional />
+        <LabeledTextField type="number" name="deliveryCosts" label="Lieferkosten" optional />
+        <LabeledTextField
+          type="number"
+          name="landAcquisitionCosts"
+          label="Grunderwerbskosten (in Euro)"
+          optional
+        />
+        <LabeledTextField
+          type="number"
+          name="expensesOfficialOrders"
+          label="Ausgaben aufgrund behördlicher Anordnungen (in Euro)"
+          optional
+        />
+        <LabeledTextField
+          type="number"
+          name="expensesTechnicalVerification"
+          label="Ausgaben für den fachtechnischen Nachweis usw. (in Euro)"
+          optional
+        />
+        <LabeledTextField
+          type="number"
+          name="nonEligibleExpenses"
+          label="Nicht zuwendungsfähige Ausgaben (in Euro)"
+          optional
+        />
+        <LabeledTextField
+          type="number"
+          name="revenuesEconomicIncome"
+          label="Erlöse und wirtschafltiche Einnahmen (in Euro)"
+          optional
+        />
+        <LabeledTextField
+          type="number"
+          name="contributionsThirdParties"
+          label="Beiträge Dritter (in Euro)"
+          optional
+        />
+        <LabeledTextField
+          type="number"
+          name="grantsOtherFunding"
+          label="Zuwendungen aus anderen Förderprogrammen (in Euro)"
+          optional
+        />
+        <LabeledTextField type="number" name="ownFunds" label="Einsatz Eigenmittel" optional />
+      </details>
     </Form>
   )
 }

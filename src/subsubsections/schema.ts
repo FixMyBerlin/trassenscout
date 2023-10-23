@@ -44,6 +44,17 @@ export const SubsubsectionSchema = z.object({
       .nullish(),
     z.literal(""),
   ]),
+  planningCosts: z.coerce.number().nullish(),
+  deliveryCosts: z.coerce.number().nullish(),
+  constructionCosts: z.coerce.number().nullish(),
+  landAcquisitionCosts: z.coerce.number().nullish(),
+  expensesOfficialOrders: z.coerce.number().nullish(),
+  expensesTechnicalVerification: z.coerce.number().nullish(),
+  nonEligibleExpenses: z.coerce.number().nullish(),
+  revenuesEconomicIncome: z.coerce.number().nullish(),
+  contributionsThirdParties: z.coerce.number().nullish(),
+  grantsOtherFunding: z.coerce.number().nullish(),
+  ownFunds: z.coerce.number().nullish(),
 })
 export type TSubsubsectionSchema = Prettify<z.infer<typeof SubsubsectionSchema>>
 

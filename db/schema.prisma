@@ -241,17 +241,30 @@ model Subsubsection {
   maxSpeed        Int?
   trafficLoad     Int?
   trafficLoadDate DateTime?
+
+  planningCosts                 Int? //  Planungskosten
+  deliveryCosts                 Int? //  Lieferkosten
+  constructionCosts             Int? //  Baukosten
+  landAcquisitionCosts          Int? //  Grunderwerbskosten
+  expensesOfficialOrders        Int? //  Ausgaben aufgrund behördlicher Anordnungen
+  expensesTechnicalVerification Int? //  Ausgaben für den fachtechnischen Nachweis usw.
+  nonEligibleExpenses           Int? //  Nicht zuwendungsfähige Ausgaben
+  revenuesEconomicIncome        Int? //  Erlöse und wirtschafltiche Einnahmen
+  contributionsThirdParties     Int? //  Beiträge Dritter
+  grantsOtherFunding            Int? //  Zuwendungen aus anderen Förderprogrammen
+  ownFunds                      Int? //  Einsatz Eigenmittel
+
   //
-  qualityLevel    QualityLevel?         @relation(fields: [qualityLevelId], references: [id])
-  qualityLevelId  Int?
+  qualityLevel   QualityLevel? @relation(fields: [qualityLevelId], references: [id])
+  qualityLevelId Int?
   //
-  manager         User?                 @relation(fields: [managerId], references: [id])
-  managerId       Int?
+  manager        User?         @relation(fields: [managerId], references: [id])
+  managerId      Int?
   //
-  subsection      Subsection            @relation(fields: [subsectionId], references: [id])
-  subsectionId    Int
+  subsection     Subsection    @relation(fields: [subsectionId], references: [id])
+  subsectionId   Int
   //
-  uploads         Upload[]
+  uploads        Upload[]
 
   @@unique([subsectionId, slug])
 }
