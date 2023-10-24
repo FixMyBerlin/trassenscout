@@ -54,7 +54,7 @@ export const QualityLevelsWithData = () => {
                 Titel
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl Planungsabschnitt
+                Anzahl der Führungen
               </th>
               <th
                 scope="col"
@@ -75,7 +75,7 @@ export const QualityLevelsWithData = () => {
                     <strong className="font-semibold">{qualityLevel.title}</strong>
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {qualityLevel.subsubsectionCount} Planungsabschnitte
+                    {qualityLevel.subsubsectionCount} Führungen
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
                     <ButtonWrapper className="justify-end">
