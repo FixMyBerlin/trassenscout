@@ -13,11 +13,10 @@ import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import getProjectUsers from "src/memberships/queries/getProjectUsers"
 import getProject from "src/projects/queries/getProject"
-import { FORM_ERROR } from "src/subsections/components/SubsectionForm"
-import { SubsectionsForm } from "src/subsections/components/SubsectionsForm"
+import { FORM_ERROR, SubsectionsForm } from "src/subsections/components/SubsectionsForm"
 import createSubsections from "src/subsections/mutations/createSubsections"
 import getSubsectionMaxOrder from "src/subsections/queries/getSubsectionMaxOrder"
-import { SubsectionSchema, SubsectionsFormSchema, SubsectionsSchema } from "src/subsections/schema"
+import { SubsectionsFormSchema } from "src/subsections/schema"
 
 const AdminNewSubsections = () => {
   const router = useRouter()
