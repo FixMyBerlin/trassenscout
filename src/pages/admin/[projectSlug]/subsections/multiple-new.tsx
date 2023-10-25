@@ -17,6 +17,7 @@ import { FORM_ERROR } from "src/subsections/components/SubsectionForm"
 import { SubsectionsForm } from "src/subsections/components/SubsectionsForm"
 import createSubsections from "src/subsections/mutations/createSubsections"
 import getSubsectionMaxOrder from "src/subsections/queries/getSubsectionMaxOrder"
+import { SubsectionSchema, SubsectionsFormSchema, SubsectionsSchema } from "src/subsections/schema"
 
 const AdminNewSubsections = () => {
   const router = useRouter()
@@ -48,7 +49,6 @@ const AdminNewSubsections = () => {
         ],
       })
     }
-    console.log(newSubsections)
 
     try {
       const subsections = await createSubsectionsMutation(newSubsections)
@@ -70,7 +70,7 @@ const AdminNewSubsections = () => {
         <SubsectionsForm
           initialValues={{ prefix: `${project.slug}-pa` }}
           submitText="Erstellen"
-          // schema={SubsectionSchema.omit({ projectId: true })}
+          schema={SubsectionsFormSchema}
           onSubmit={handleSubmit}
         />
       </SuperAdminBox>
