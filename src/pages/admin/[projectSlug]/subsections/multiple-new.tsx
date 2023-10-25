@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { Subsection } from "@prisma/client"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
+import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Spinner } from "src/core/components/Spinner"
 import { improveErrorMessage } from "src/core/components/forms/improveErrorMessage"
 import { Link } from "src/core/components/links"
@@ -65,13 +66,14 @@ const AdminNewSubsections = () => {
     <>
       <MetaTags noindex title={seoNewTitle("Planungsabschnitt")} />
       <PageHeader title="Planungsabschitt hinzufügen" className="mt-12" />
-
-      <SubsectionsForm
-        initialValues={{ prefix: `${project.slug}-pa` }}
-        submitText="Erstellen"
-        // schema={SubsectionSchema.omit({ projectId: true })}
-        onSubmit={handleSubmit}
-      />
+      <SuperAdminBox>
+        <SubsectionsForm
+          initialValues={{ prefix: `${project.slug}-pa` }}
+          submitText="Erstellen"
+          // schema={SubsectionSchema.omit({ projectId: true })}
+          onSubmit={handleSubmit}
+        />
+      </SuperAdminBox>
     </>
   )
 }

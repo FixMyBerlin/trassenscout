@@ -52,7 +52,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
           type="text"
           name="felt_subsection_geometry_source_url"
           label="Felt Url"
-          placeholder="https://felt.com/map/beispiel-map.geojson"
+          placeholder="https://felt.com/map/beispiel-karte"
         />
       </SuperAdminBox>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />

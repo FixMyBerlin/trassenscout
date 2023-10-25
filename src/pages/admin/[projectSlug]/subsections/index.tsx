@@ -1,6 +1,7 @@
 import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
+import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Spinner } from "src/core/components/Spinner"
 import { Link, blueButtonStyles } from "src/core/components/links"
@@ -48,14 +49,19 @@ export const AdminSubsectionsWithQuery = () => {
   }
 
   const handleFeltDataClick = async () => {
-    try {
-      const subsection = await updateSubsectionMutation({
-        subsections,
-        projectFeltUrl: project.felt_subsection_geometry_source_url,
-      })
-      await refetch()
-    } catch (error: any) {
-      return console.error(error)
+    if (!project.felt_subsection_geometry_source_url) {
+      window.alert("Keine Felt URL")
+      return console.error("No Felt URL")
+    } else {
+      try {
+        const subsection = await updateSubsectionMutation({
+          subsections,
+          projectFeltUrl: `${project.felt_subsection_geometry_source_url}.geojson`,
+        })
+        await refetch()
+      } catch (error: any) {
+        return console.error(error)
+      }
     }
   }
 
@@ -69,25 +75,34 @@ export const AdminSubsectionsWithQuery = () => {
         subtitle={project.subTitle}
         description={`Planungsabschnitte ${project.subTitle}`}
       />
+      <SuperAdminBox>
+        {project.description && (
+          <PageDescription>
+            <Markdown markdown={project.description} />
+          </PageDescription>
+        )}
+        <SubsectionTableAdmin subsections={filteredSubsections} />
+        <div className="mt-8 flex gap-5 sm:flex-row flex-col">
+          <Link
+            icon="plus"
+            button="blue"
+            href={Routes.AdminNewSubsectionsPage({ projectSlug: projectSlug! })}
+          >
+            Planungsabschnitte im Bulk-Mode hinzufügen
+          </Link>
+          {project.felt_subsection_geometry_source_url && (
+            <>
+              <button className={blueButtonStyles} onClick={handleFeltDataClick}>
+                Daten von Felt übernehmen
+              </button>
 
-      {project.description && (
-        <PageDescription>
-          <Markdown markdown={project.description} />
-        </PageDescription>
-      )}
-      <SubsectionTableAdmin subsections={filteredSubsections} />
-      <div className="mt-8 flex gap-5 sm:flex-row flex-col">
-        <Link
-          icon="plus"
-          button="blue"
-          href={Routes.AdminNewSubsectionsPage({ projectSlug: projectSlug! })}
-        >
-          Mehrere Planungsabschnitte erstellen
-        </Link>
-        <button className={blueButtonStyles} onClick={handleFeltDataClick}>
-          Daten von Felt übernehmen
-        </button>
-      </div>
+              <Link button="blue" blank href={project.felt_subsection_geometry_source_url}>
+                Geometrien in Felt bearbeiten
+              </Link>
+            </>
+          )}
+        </div>
+      </SuperAdminBox>
     </>
   )
 }
