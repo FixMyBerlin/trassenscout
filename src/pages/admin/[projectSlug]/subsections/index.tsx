@@ -1,6 +1,6 @@
 import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Spinner } from "src/core/components/Spinner"
@@ -8,7 +8,7 @@ import { Link, blueButtonStyles } from "src/core/components/links"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { PageDescription } from "src/core/components/pages/PageDescription"
 import { PageHeader } from "src/core/components/pages/PageHeader"
-import { seoTitleSlug, shortTitle } from "src/core/components/text"
+import { quote, seoTitleSlug, shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import getProject from "src/projects/queries/getProject"
 import { SubsectionTableAdmin } from "src/subsections/components/SubsectionTableAdmin"
@@ -26,6 +26,7 @@ export const AdminSubsectionsWithQuery = () => {
   // We use the URL param `operator` to filter the UI
   // Docs: https://blitzjs.com/docs/route-params-query#use-router-query
   const params = useRouterQuery()
+  const [error, setError]: any | null = useState(null)
   const filteredSubsections = params.operator
     ? subsections.filter(
         (sec) => typeof params.operator === "string" && sec.operator?.slug === params.operator,
@@ -58,8 +59,10 @@ export const AdminSubsectionsWithQuery = () => {
           subsections,
           projectFeltUrl: `${project.felt_subsection_geometry_source_url}.geojson`,
         })
+        setError(null)
         await refetch()
       } catch (error: any) {
+        setError(error)
         return console.error(error)
       }
     }
@@ -82,6 +85,15 @@ export const AdminSubsectionsWithQuery = () => {
           </PageDescription>
         )}
         <SubsectionTableAdmin subsections={filteredSubsections} />
+        {error && (
+          <div role="alert" className="rounded bg-red-50 text-base px-2 py-1 text-red-800 mt-8">
+            Es ist ein Fehler aufgetreten:
+            <br />
+            {quote(error.toString())}
+            <br />
+            Überprüfe die Felt-Url des Projekts.
+          </div>
+        )}
         <div className="mt-8 flex gap-5 sm:flex-row flex-col">
           <Link
             icon="plus"
