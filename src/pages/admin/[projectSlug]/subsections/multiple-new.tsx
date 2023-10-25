@@ -65,7 +65,7 @@ const AdminNewSubsections = () => {
   return (
     <>
       <MetaTags noindex title={seoNewTitle("Planungsabschnitt")} />
-      <PageHeader title="Planungsabschitt hinzufügen" className="mt-12" />
+      <PageHeader title="Planungsabschnitte im Bulk-Mode hinzufügen" className="mt-12" />
       <SuperAdminBox>
         <SubsectionsForm
           initialValues={{ prefix: `${project.slug}-pa` }}

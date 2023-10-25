@@ -143,7 +143,7 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections }) => {
                         Auf geojson.io öffnen
                       </Link>
                     ) : (
-                      "Nein"
+                      "unbekannt"
                     )}
                   </td>
                   <td className="space-y-2 pr-2">

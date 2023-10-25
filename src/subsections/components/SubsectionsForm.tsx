@@ -12,8 +12,8 @@ function SubsectionsFormWithQuery<S extends z.ZodType<any, any>>(props: Props<S>
       <LabeledTextField
         type="text"
         name="prefix"
-        label="Prefix"
-        help="Prefix für die Namen aller im Bulk-Mode erstellten Planungsabschnitte."
+        label="Präfix"
+        help="Präfix für die Namen aller im Bulk-Mode erstellten Planungsabschnitte. Ergebnis: Präfix-[Nummer]"
       />
       <LabeledTextField
         type="number"
