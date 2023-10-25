@@ -17,6 +17,7 @@ import getQualityLevelsWithCount from "src/qualityLevels/queries/getQualityLevel
 import { getUserSelectOptions } from "src/users/utils"
 import { z } from "zod"
 import { GeometryInput } from "./GeometryInput/GeometryInput"
+import getSubsubsectionStatussWithCount from "src/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
@@ -28,6 +29,13 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
     ["", "Kein Ausbaustandard"],
     ...qualityLevels.map((ql) => {
       return [ql.id, `${ql.title} – ${shortTitle(ql.slug)}`] as [number, string]
+    }),
+  ]
+  const [{ subsubsectionStatuss }] = useQuery(getSubsubsectionStatussWithCount, { projectSlug })
+  const subsubsectionStatusOptions: [number | string, string][] = [
+    ["", "Status offen"],
+    ...subsubsectionStatuss.map((status) => {
+      return [status.id, status.title] as [number, string]
     }),
   ]
 
@@ -69,6 +77,21 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         />
         <Link href={Routes.QualityLevelsPage({ projectSlug: projectSlug! })} className="py-2">
           Ausbaustandards verwalten…
+        </Link>
+      </div>
+      <div className="flex items-end gap-5">
+        <LabeledSelect
+          name="subsubsectionStatusId"
+          label="Status"
+          optional
+          options={subsubsectionStatusOptions}
+          outerProps={{ className: "grow" }}
+        />
+        <Link
+          href={Routes.SubsubsectionStatussPage({ projectSlug: projectSlug! })}
+          className="py-2"
+        >
+          Status verwalten…
         </Link>
       </div>
       <LabeledTextField

@@ -120,6 +120,7 @@ model Project {
   Operator             Operator[]
   Survey               Survey[]
   qualityLevels        QualityLevel[]
+  SubsubsectionStatus  SubsubsectionStatus[]
 }
 
 model Membership {
@@ -255,16 +256,18 @@ model Subsubsection {
   ownFunds                      Int? //  Einsatz Eigenmittel
 
   //
-  qualityLevel   QualityLevel? @relation(fields: [qualityLevelId], references: [id])
-  qualityLevelId Int?
+  qualityLevel          QualityLevel?        @relation(fields: [qualityLevelId], references: [id])
+  qualityLevelId        Int?
   //
-  manager        User?         @relation(fields: [managerId], references: [id])
-  managerId      Int?
+  manager               User?                @relation(fields: [managerId], references: [id])
+  managerId             Int?
   //
-  subsection     Subsection    @relation(fields: [subsectionId], references: [id])
-  subsectionId   Int
+  subsection            Subsection           @relation(fields: [subsectionId], references: [id])
+  subsectionId          Int
   //
-  uploads        Upload[]
+  uploads               Upload[]
+  SubsubsectionStatus   SubsubsectionStatus? @relation(fields: [subsubsectionStatusId], references: [id])
+  subsubsectionStatusId Int?
 
   @@unique([subsectionId, slug])
 }
@@ -275,6 +278,21 @@ enum SubsubsectionTypeEnum {
 }
 
 model QualityLevel {
+  id            Int             @id @default(autoincrement())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  //
+  slug          String // shortTitle and URL Slug
+  title         String
+  //
+  project       Project         @relation(fields: [projectId], references: [id])
+  projectId     Int
+  Subsubsection Subsubsection[]
+
+  @@unique([projectId, slug])
+}
+
+model SubsubsectionStatus {
   id            Int             @id @default(autoincrement())
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt

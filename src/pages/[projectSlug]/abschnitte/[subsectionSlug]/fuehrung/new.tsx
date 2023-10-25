@@ -36,6 +36,8 @@ const NewSubsubsection = () => {
         // The value="" becomes "0" which we translate to NULL
         managerId: values.managerId === 0 ? null : values.managerId,
         qualityLevelId: values.qualityLevelId === 0 ? null : values.qualityLevelId,
+        subsubsectionStatusId:
+          values.subsubsectionStatusId === 0 ? null : values.subsubsectionStatusId,
         subsectionId: subsection!.id,
         trafficLoadDate: values.trafficLoadDate === "" ? null : new Date(values.trafficLoadDate),
       })

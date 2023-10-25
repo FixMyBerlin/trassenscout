@@ -36,6 +36,10 @@ export const errorMessageTranslations: TranslatedMessages = {
     "Dieses URL-Segment ist bereits für einen anderen Ausbaustandard vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
   "PrismaClientKnownRequestError: Invalid `prisma.qualityLevel.update()` invocation:Unique constraint failed on the fields: (`projectId`,`slug`)":
     "Dieses URL-Segment ist bereits für einen anderen Ausbaustandard vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
-
+  //SUBSUBSECTIONSTATUS
+  "PrismaClientKnownRequestError: Invalid `prisma.subsubsectionStatus.create()` invocation:Unique constraint failed on the fields: (`projectId`,`slug`)":
+    "Dieses URL-Segment ist bereits für einen anderen Status vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
+  "PrismaClientKnownRequestError: Invalid `prisma.subsubsectionStatus.update()` invocation:Unique constraint failed on the fields: (`projectId`,`slug`)":
+    "Dieses URL-Segment ist bereits für einen anderen Status vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
   // "Dies ist keine gültige E-Mail-Adresse.",
 }

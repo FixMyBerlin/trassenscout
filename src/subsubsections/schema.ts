@@ -29,6 +29,7 @@ export const SubsubsectionSchema = z.object({
   qualityLevelId: z.coerce.number().nullish(),
   managerId: z.coerce.number().nullish(),
   subsectionId: z.coerce.number(),
+  subsubsectionStatusId: z.coerce.number().nullish(),
   maxSpeed: z.coerce.number().nullish(),
   trafficLoad: z.coerce.number().nullish(),
   trafficLoadDate: z.union([
