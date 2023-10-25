@@ -41,7 +41,7 @@ const AdminNewSubsections = () => {
         labelPos: "bottom",
         start: "unbekannt",
         end: "unbekannt",
-        slug: `${values.prefix}-${maxOrderSubsections + i + 1}`,
+        slug: `pa${values.prefix}-${maxOrderSubsections + i + 1}`,
         order: maxOrderSubsections + i + 1,
         geometry: [
           [5.98865807458, 47.3024876979],
@@ -68,7 +68,6 @@ const AdminNewSubsections = () => {
       <PageHeader title="Planungsabschnitte im Bulk-Mode hinzufügen" className="mt-12" />
       <SuperAdminBox>
         <SubsectionsForm
-          initialValues={{ prefix: `${project.slug}-pa` }}
           submitText="Erstellen"
           schema={SubsectionsFormSchema}
           onSubmit={handleSubmit}

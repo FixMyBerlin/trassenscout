@@ -45,12 +45,13 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>(props: Props<S>)
   return (
     <Form<S> {...props}>
       <LabeledTextField
+        inlineLeadingAddon="pa"
         type="text"
         name="slug"
-        label="Kurz-Titel und URL-Teil"
-        help={`Bspw. ${quote(
-          "pa1",
-        )}. Primäre Auszeichnung des Planungsabschnitts. Wird immer in Großschreibung angezeigt aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
+        label="Id für Kurz-Titel und URL-Teil"
+        help={`Primäre Auszeichnung des Planungsabschnitts. Wird immer in Großschreibung angezeigt, aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren. Präfix aller Planungsabschnitte ist ${quote(
+          "pa",
+        )}. Zusätzlich muss eine Präfix-Id angegeben werden. Ergebnis: pa[Präfix-Id]`}
       />
       <LabeledTextField
         type="number"
