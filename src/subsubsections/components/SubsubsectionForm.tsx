@@ -26,7 +26,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
 
   const [{ qualityLevels }] = useQuery(getQualityLevelsWithCount, { projectSlug })
   const qualityLevelOptions: [number | string, string][] = [
-    ["", "Kein Ausbaustandard"],
+    ["", "Ausbaustandard offen"],
     ...qualityLevels.map((ql) => {
       return [ql.id, `${ql.title} – ${shortTitle(ql.slug)}`] as [number, string]
     }),
