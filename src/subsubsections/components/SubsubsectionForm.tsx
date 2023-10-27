@@ -8,7 +8,7 @@ import {
   LabeledTextField,
 } from "src/core/components/forms"
 import { LabeledRadiobuttonGroupLabelPos } from "src/subsubsections/components/LabeledRadiobuttonGroupLabelPos"
-import { LabeledCurrencyField } from "src/core/components/forms/LabeledCurrencyField"
+import { LabeledFormatNumberField } from "src/core/components/forms/LabeledFormatNumberField"
 import { Link } from "src/core/components/links"
 import { quote, shortTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
@@ -58,15 +58,28 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label="Maßnahmentyp"
         help="Bspw. 'Fahrbahnmarkierung'"
       />
-      <LabeledTextField
-        type="number"
+      <LabeledFormatNumberField
+        inlineLeadingAddon="km"
+        maxDecimalDigits={3}
         step="0.001"
         name="length"
-        label="Länge (in Kilometer)"
+        label="Länge"
         optional
       />
-      <LabeledTextField type="number" step="0.01" name="width" label="Breite (in Meter)" optional />
-      <LabeledCurrencyField name="costEstimate" label="Kostenschätzung (in Euro)" />
+      <LabeledFormatNumberField
+        inlineLeadingAddon="m"
+        maxDecimalDigits={3}
+        type="number"
+        step="0.01"
+        name="width"
+        label="Breite"
+        optional
+      />
+      <LabeledFormatNumberField
+        name="costEstimate"
+        inlineLeadingAddon="€"
+        label="Kostenschätzung"
+      />
       <div className="flex items-end gap-5">
         <LabeledSelect
           name="qualityLevelId"
@@ -111,14 +124,18 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       <LabeledRadiobuttonGroupLabelPos />
       <details>
         <summary className="mb-2 cursor-pointer">Verkehrsbelastung</summary>
-        <LabeledTextField
+        <LabeledFormatNumberField
+          inlineLeadingAddon="kmh"
+          maxDecimalDigits={0}
           type="number"
           name="maxSpeed"
-          label="Zulässige Höchstgeschwindigkeit an der Straße (kmh)"
+          label="Zulässige Höchstgeschwindigkeit an der Straße"
           optional
         />
 
-        <LabeledTextField
+        <LabeledFormatNumberField
+          inlineLeadingAddon="Kfz"
+          maxDecimalDigits={0}
           type="number"
           name="trafficLoad"
           label="Verkehrsbelastung an Werktagen an dieser Straße (Kfz/24h)"
@@ -134,52 +151,83 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       </details>
       <details>
         <summary className="mb-2 cursor-pointer">Kostenstruktur</summary>
-        <LabeledTextField type="number" name="planningCosts" label="Planungskosten" optional />
-        <LabeledTextField type="number" name="constructionCosts" label="Baukosten" optional />
-        <LabeledTextField type="number" name="deliveryCosts" label="Lieferkosten" optional />
-        <LabeledTextField
+        <LabeledFormatNumberField
+          inlineLeadingAddon="€"
+          type="number"
+          name="planningCosts"
+          label="Planungskosten"
+          optional
+        />
+        <LabeledFormatNumberField
+          inlineLeadingAddon="€"
+          type="number"
+          name="constructionCosts"
+          label="Baukosten"
+          optional
+        />
+        <LabeledFormatNumberField
+          inlineLeadingAddon="€"
+          type="number"
+          name="deliveryCosts"
+          label="Lieferkosten"
+          optional
+        />
+        <LabeledFormatNumberField
+          inlineLeadingAddon="€"
           type="number"
           name="landAcquisitionCosts"
-          label="Grunderwerbskosten (in Euro)"
+          label="Grunderwerbskosten"
           optional
         />
-        <LabeledTextField
+        <LabeledFormatNumberField
+          inlineLeadingAddon="€"
           type="number"
           name="expensesOfficialOrders"
-          label="Ausgaben aufgrund behördlicher Anordnungen (in Euro)"
+          label="Ausgaben aufgrund behördlicher Anordnungen"
           optional
         />
-        <LabeledTextField
+        <LabeledFormatNumberField
+          inlineLeadingAddon="€"
           type="number"
           name="expensesTechnicalVerification"
-          label="Ausgaben für den fachtechnischen Nachweis usw. (in Euro)"
+          label="Ausgaben für den fachtechnischen Nachweis usw."
           optional
         />
-        <LabeledTextField
+        <LabeledFormatNumberField
+          inlineLeadingAddon="€"
           type="number"
           name="nonEligibleExpenses"
-          label="Nicht zuwendungsfähige Ausgaben (in Euro)"
+          label="Nicht zuwendungsfähige Ausgaben"
           optional
         />
-        <LabeledTextField
+        <LabeledFormatNumberField
+          inlineLeadingAddon="€"
           type="number"
           name="revenuesEconomicIncome"
-          label="Erlöse und wirtschafltiche Einnahmen (in Euro)"
+          label="Erlöse und wirtschafltiche Einnahmen"
           optional
         />
-        <LabeledTextField
+        <LabeledFormatNumberField
+          inlineLeadingAddon="€"
           type="number"
           name="contributionsThirdParties"
-          label="Beiträge Dritter (in Euro)"
+          label="Beiträge Dritter"
           optional
         />
-        <LabeledTextField
+        <LabeledFormatNumberField
+          inlineLeadingAddon="€"
           type="number"
           name="grantsOtherFunding"
-          label="Zuwendungen aus anderen Förderprogrammen (in Euro)"
+          label="Zuwendungen aus anderen Förderprogrammen"
           optional
         />
-        <LabeledTextField type="number" name="ownFunds" label="Einsatz Eigenmittel" optional />
+        <LabeledFormatNumberField
+          inlineLeadingAddon="€"
+          type="number"
+          name="ownFunds"
+          label="Einsatz Eigenmittel"
+          optional
+        />
       </details>
     </Form>
   )
