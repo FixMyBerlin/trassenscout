@@ -10,12 +10,11 @@ import {
   LabeledTextareaField,
 } from "src/core/components/forms"
 import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryField"
-import { LabeledRadiobuttonGroupLabelPos } from "src/subsubsections/components/LabeledRadiobuttonGroupLabelPos"
 import { Link } from "src/core/components/links"
 import { quote, shortTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
-import getProject from "src/projects/queries/getProject"
+import { LabeledRadiobuttonGroupLabelPos } from "src/subsubsections/components/LabeledRadiobuttonGroupLabelPos"
 import { UserSelectOptions, getUserSelectOptions } from "src/users/utils"
 import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/forms"
