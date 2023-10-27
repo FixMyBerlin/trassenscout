@@ -41,12 +41,6 @@ const EditSubsubsection = () => {
       const updated = await updateSubsubsectionMutation({
         id: subsubsection.id,
         ...values,
-        // The value="" becomes "0" which we translate to NULL
-        qualityLevelId: values.qualityLevelId === 0 ? null : values.qualityLevelId,
-        subsubsectionStatusId:
-          values.subsubsectionStatusId === 0 ? null : values.subsubsectionStatusId,
-        managerId: values.managerId === 0 ? null : values.managerId,
-        costEstimate: values.costEstimate === 0 ? null : Number(values.costEstimate),
         trafficLoadDate: values.trafficLoadDate === "" ? null : new Date(values.trafficLoadDate),
       })
       await setQueryData(updated)

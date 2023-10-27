@@ -38,8 +38,6 @@ const EditProjectWithQuery = () => {
       const updated = await updateProjectMutation({
         id: project.id,
         ...values,
-        // The value="" becomes "0" which we translate to NULL
-        managerId: values.managerId === 0 ? null : values.managerId,
       })
       await setQueryData(updated)
       await router.push(Routes.ProjectDashboardPage({ projectSlug: updated.slug }))

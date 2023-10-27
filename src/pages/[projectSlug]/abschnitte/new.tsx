@@ -29,8 +29,6 @@ const NewSubsection = () => {
         ...values,
         // The value="" becomes "0" which we translate to NULL
         slug: `pa${values.slug}`,
-        managerId: values.managerId === 0 ? null : values.managerId,
-        operatorId: values.operatorId === 0 ? null : values.operatorId,
         projectId: project.id!,
       })
       await router.push(

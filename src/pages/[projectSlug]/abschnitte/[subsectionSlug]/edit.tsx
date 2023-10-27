@@ -35,8 +35,6 @@ const EditSubsection = () => {
         ...values,
         // The value="" becomes "0" which we translate to NULL
         slug: `pa${values.slug}`,
-        operatorId: values.operatorId === 0 ? null : values.operatorId,
-        managerId: values.managerId === 0 ? null : values.managerId,
       })
       await setQueryData(updated)
       await router.push(

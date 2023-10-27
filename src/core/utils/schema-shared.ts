@@ -8,3 +8,8 @@ export const SlugSchema = z
   })
 
 export const NameSchema = z.string().min(5, { message: "Pflichtfeld. Mindestens 5 Zeichen." })
+
+export const inputNumberOrNullSchema = z.preprocess(
+  (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
+  z.number().nullable(),
+)

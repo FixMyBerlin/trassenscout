@@ -1,6 +1,6 @@
 import { LabelPositionEnum, SubsubsectionTypeEnum } from "@prisma/client"
 import { Prettify } from "src/core/types"
-import { SlugSchema } from "src/core/utils"
+import { SlugSchema, inputNumberOrNullSchema } from "src/core/utils"
 import { z } from "zod"
 
 const PositionSchema = z.tuple([z.number(), z.number()]) // Position
@@ -21,17 +21,17 @@ export const SubsubsectionSchema = z.object({
   task: z.string().min(3, {
     message: "Pflichtfeld. Mindestens 3 Zeichen.",
   }), // Maßnahmentyp
-  length: z.coerce.number().nullish(), // km
-  width: z.coerce.number().nullish(), // m
-  costEstimate: z.coerce.number().nullish(), // €
+  length: inputNumberOrNullSchema, // km
+  width: inputNumberOrNullSchema, // m
+  costEstimate: inputNumberOrNullSchema, // €
   description: z.string().nullish(),
   mapillaryKey: z.string().nullish(),
-  qualityLevelId: z.coerce.number().nullish(),
-  managerId: z.coerce.number().nullish(),
+  qualityLevelId: inputNumberOrNullSchema,
+  managerId: inputNumberOrNullSchema,
   subsectionId: z.coerce.number(),
-  subsubsectionStatusId: z.coerce.number().nullish(),
-  maxSpeed: z.coerce.number().nullish(),
-  trafficLoad: z.coerce.number().nullish(),
+  subsubsectionStatusId: inputNumberOrNullSchema,
+  maxSpeed: inputNumberOrNullSchema,
+  trafficLoad: inputNumberOrNullSchema,
   trafficLoadDate: z.union([
     z.coerce
       .date({
@@ -45,17 +45,17 @@ export const SubsubsectionSchema = z.object({
       .nullish(),
     z.literal(""),
   ]),
-  planningCosts: z.coerce.number().nullish(),
-  deliveryCosts: z.coerce.number().nullish(),
-  constructionCosts: z.coerce.number().nullish(),
-  landAcquisitionCosts: z.coerce.number().nullish(),
-  expensesOfficialOrders: z.coerce.number().nullish(),
-  expensesTechnicalVerification: z.coerce.number().nullish(),
-  nonEligibleExpenses: z.coerce.number().nullish(),
-  revenuesEconomicIncome: z.coerce.number().nullish(),
-  contributionsThirdParties: z.coerce.number().nullish(),
-  grantsOtherFunding: z.coerce.number().nullish(),
-  ownFunds: z.coerce.number().nullish(),
+  planningCosts: inputNumberOrNullSchema,
+  deliveryCosts: inputNumberOrNullSchema,
+  constructionCosts: inputNumberOrNullSchema,
+  landAcquisitionCosts: inputNumberOrNullSchema,
+  expensesOfficialOrders: inputNumberOrNullSchema,
+  expensesTechnicalVerification: inputNumberOrNullSchema,
+  nonEligibleExpenses: inputNumberOrNullSchema,
+  revenuesEconomicIncome: inputNumberOrNullSchema,
+  contributionsThirdParties: inputNumberOrNullSchema,
+  grantsOtherFunding: inputNumberOrNullSchema,
+  ownFunds: inputNumberOrNullSchema,
 })
 export type TSubsubsectionSchema = Prettify<z.infer<typeof SubsubsectionSchema>>
 

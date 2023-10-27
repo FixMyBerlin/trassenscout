@@ -34,8 +34,6 @@ const AdminNewProject = () => {
     try {
       const project = await createProjectMutation({
         ...values,
-        // The value="" becomes "0" which we translate to NULL
-        managerId: values.managerId === 0 ? null : values.managerId,
       })
 
       // Create a membership for the selected user

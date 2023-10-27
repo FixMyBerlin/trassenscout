@@ -50,10 +50,6 @@ const EditUploadWithQuery = () => {
       const updated = await updateUploadMutation({
         id: upload.id,
         ...values,
-        // We pass in `""` (in `src/uploads/components/UploadForm.tsx`)
-        // which gets translated by `z.coerce.number()` to `0`
-        // which we use here to overwrite the relation.
-        subsectionId: values.subsectionId === 0 ? null : values.subsectionId,
       })
       await setQueryData(updated)
       await router.push(backUrl)
