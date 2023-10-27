@@ -25,13 +25,16 @@ type Props<S extends z.ZodType<any, any>> = FormProps<S> & {
   edit?: boolean
 }
 
-function SubsectionFormWithQuery<S extends z.ZodType<any, any>>(props: Props<S>) {
-  const { users, edit } = props
+function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
+  users,
+  edit,
+  ...props
+}: Props<S>) {
   const { projectSlug } = useSlugs()
   const [project] = useQuery(getProject, { slug: projectSlug })
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const operatorOptions: [number | string, string][] = [
-    ["", "Kein Baulastträger"],
+    ["", "Baulastträger offen"],
     ...operators.map((o) => {
       return [
         o.id,
@@ -39,7 +42,6 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>(props: Props<S>)
       ] as [number, string]
     }),
   ]
-
   const isReadOnlyFields = !!(edit && project?.felt_subsection_geometry_source_url)
 
   return (
