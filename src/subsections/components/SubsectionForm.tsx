@@ -22,16 +22,15 @@ export { FORM_ERROR } from "src/core/components/forms"
 
 type Props<S extends z.ZodType<any, any>> = FormProps<S> & {
   users: UserSelectOptions
-  edit?: boolean
+  isFeltFieldsReadOnly?: boolean
 }
 
 function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
   users,
-  edit,
+  isFeltFieldsReadOnly,
   ...props
 }: Props<S>) {
   const { projectSlug } = useSlugs()
-  const [project] = useQuery(getProject, { slug: projectSlug })
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const operatorOptions: [number | string, string][] = [
     ["", "Baulastträger offen"],
@@ -42,7 +41,6 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
       ] as [number, string]
     }),
   ]
-  const isReadOnlyFields = !!(edit && project?.felt_subsection_geometry_source_url)
 
   return (
     <Form<S> {...props}>
@@ -67,21 +65,21 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
           type="text"
           name="start"
           label="Startpunkt"
-          help={isReadOnlyFields ? `Diese Information kann nur in Felt editiert werden` : ""}
-          readOnly={isReadOnlyFields}
+          help={isFeltFieldsReadOnly ? `Diese Information kann nur in Felt editiert werden` : ""}
+          readOnly={isFeltFieldsReadOnly}
         />
         <LabeledTextField
           type="text"
           name="end"
           label="Endpunkt"
-          help={isReadOnlyFields ? `Diese Information kann nur in Felt editiert werden` : ""}
-          readOnly={isReadOnlyFields}
+          help={isFeltFieldsReadOnly ? `Diese Information kann nur in Felt editiert werden` : ""}
+          readOnly={isFeltFieldsReadOnly}
         />
       </div>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledGeometryField
-        help={isReadOnlyFields ? `Diese Information kann nur in Felt editiert werden` : ""}
-        readOnly={isReadOnlyFields}
+        help={isFeltFieldsReadOnly ? `Diese Information kann nur in Felt editiert werden` : ""}
+        readOnly={isFeltFieldsReadOnly}
         name="geometry"
         label="Geometry der Achse (LineString)"
       />

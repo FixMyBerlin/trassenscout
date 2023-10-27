@@ -11,6 +11,7 @@ import { seoEditTitleSlug, shortTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import getProjectUsers from "src/memberships/queries/getProjectUsers"
+import getProject from "src/projects/queries/getProject"
 import { FORM_ERROR, SubsectionForm } from "src/subsections/components/SubsectionForm"
 import deleteSubsection from "src/subsections/mutations/deleteSubsection"
 import updateSubsection from "src/subsections/mutations/updateSubsection"
@@ -20,6 +21,7 @@ import { SubsectionSchema } from "src/subsections/schema"
 const EditSubsection = () => {
   const router = useRouter()
   const { projectSlug, subsectionSlug } = useSlugs()
+  const [project] = useQuery(getProject, { slug: projectSlug })
   const [subsection, { setQueryData }] = useQuery(getSubsection, {
     projectSlug: projectSlug!,
     subsectionSlug: subsectionSlug!,
@@ -67,7 +69,7 @@ const EditSubsection = () => {
       <PageHeader title={`${shortTitle(subsection.slug)} bearbeiten`} className="mt-12" />
 
       <SubsectionForm
-        edit={true}
+        isFeltFieldsReadOnly={Boolean(project?.felt_subsection_geometry_source_url)}
         className="mt-10"
         submitText="Speichern"
         schema={SubsectionSchema}
