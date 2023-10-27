@@ -224,36 +224,37 @@ model Subsection {
 }
 
 model Subsubsection {
-  id              Int                   @id @default(autoincrement())
-  createdAt       DateTime              @default(now())
-  updatedAt       DateTime              @updatedAt
+  id           Int                   @id @default(autoincrement())
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
   //
-  slug            String // shortTitle and URL Slug
-  subTitle        String?
-  type            SubsubsectionTypeEnum @default(ROUTE) // Führungform
-  geometry        Json
-  labelPos        LabelPositionEnum     @default(top)
-  task            String // Maßnahmentyp
-  length          Float? // Kilometer
-  width           Float? // Meter
-  costEstimate    Float? // Euro
-  description     String? // Anmerkungen
-  mapillaryKey    String?
-  maxSpeed        Int?
-  trafficLoad     Int?
-  trafficLoadDate DateTime?
+  slug         String // shortTitle and URL Slug
+  subTitle     String?
+  type         SubsubsectionTypeEnum @default(ROUTE) // Führungform
+  geometry     Json
+  labelPos     LabelPositionEnum     @default(top)
+  task         String // Maßnahmentyp
+  length       Float? // Kilometer
+  width        Float? // Meter
+  costEstimate Float? // Euro
+  description  String? // Anmerkungen
+  mapillaryKey String?
 
-  planningCosts                 Int? //  Planungskosten
-  deliveryCosts                 Int? //  Lieferkosten
-  constructionCosts             Int? //  Baukosten
-  landAcquisitionCosts          Int? //  Grunderwerbskosten
-  expensesOfficialOrders        Int? //  Ausgaben aufgrund behördlicher Anordnungen
-  expensesTechnicalVerification Int? //  Ausgaben für den fachtechnischen Nachweis usw.
-  nonEligibleExpenses           Int? //  Nicht zuwendungsfähige Ausgaben
-  revenuesEconomicIncome        Int? //  Erlöse und wirtschafltiche Einnahmen
-  contributionsThirdParties     Int? //  Beiträge Dritter
-  grantsOtherFunding            Int? //  Zuwendungen aus anderen Förderprogrammen
-  ownFunds                      Int? //  Einsatz Eigenmittel
+  maxSpeed        Float? // Maximalgeschwindigkeit
+  trafficLoad     Int? // Verkehrsbelastung
+  trafficLoadDate DateTime? // Datum der Verkehrsbelastung
+
+  planningCosts                 Float? //  Planungskosten
+  deliveryCosts                 Float? //  Lieferkosten
+  constructionCosts             Float? //  Baukosten
+  landAcquisitionCosts          Float? //  Grunderwerbskosten
+  expensesOfficialOrders        Float? //  Ausgaben aufgrund behördlicher Anordnungen
+  expensesTechnicalVerification Float? //  Ausgaben für den fachtechnischen Nachweis usw.
+  nonEligibleExpenses           Float? //  Nicht zuwendungsfähige Ausgaben
+  revenuesEconomicIncome        Float? //  Erlöse und wirtschafltiche Einnahmen
+  contributionsThirdParties     Float? //  Beiträge Dritter
+  grantsOtherFunding            Float? //  Zuwendungen aus anderen Förderprogrammen
+  ownFunds                      Float? //  Einsatz Eigenmittel
 
   //
   qualityLevel          QualityLevel?        @relation(fields: [qualityLevelId], references: [id])
