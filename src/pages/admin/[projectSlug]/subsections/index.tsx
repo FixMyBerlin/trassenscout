@@ -102,7 +102,7 @@ export const AdminSubsectionsWithQuery = () => {
           >
             Planungsabschnitte im Bulk-Mode hinzufügen
           </Link>
-          {project.felt_subsection_geometry_source_url && (
+          {project.felt_subsection_geometry_source_url ? (
             <>
               <button className={blueButtonStyles} onClick={handleFeltDataClick}>
                 Daten von Felt übernehmen
@@ -112,6 +112,13 @@ export const AdminSubsectionsWithQuery = () => {
                 Geometrien in Felt bearbeiten
               </Link>
             </>
+          ) : (
+            <div className="flex flex-col justify-end">
+              <Link href={Routes.EditProjectPage({ projectSlug: project.slug })}>
+                Um die Geometrien der Planungsabschnitte in Felt zu bearbeiten, hier die Felt-Url
+                für die Trasse angeben.
+              </Link>
+            </div>
           )}
         </div>
       </SuperAdminBox>
