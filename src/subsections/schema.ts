@@ -28,3 +28,26 @@ export const SubsectionsFormSchema = z.object({
 })
 
 export type TSubsectionSchema = Prettify<z.infer<typeof SubsectionSchema>>
+
+const CoordinatesSchema = z.array(z.array(z.array(z.number()).min(2)))
+
+const GeometrySchema = z.object({
+  type: z.literal("MultiLineString"),
+  coordinates: CoordinatesSchema,
+})
+
+const PropertiesSchema = z.record(z.any())
+
+const FeatureSchema = z.object({
+  geometry: GeometrySchema,
+  properties: PropertiesSchema,
+})
+
+export const FeltApiResponseSchema = z.object({
+  data: z.object({
+    type: z.string(),
+    metadata: z.record(z.any()),
+    features: z.array(FeatureSchema),
+  }),
+  links: z.any(),
+})
