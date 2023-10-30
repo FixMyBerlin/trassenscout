@@ -5,7 +5,7 @@
     "start": "blitz start",
     "dev": "blitz dev",
     "predev": "if [[ $(docker inspect -f '{{.State.Running}}' rsv-builder-db) = \"true\" ]]; then echo Docker: Skipping – Container already running; else docker compose up --detach; fi",
-    "postdev": "docker compose down",
+    "postdev": "docker compose stop",
     "debug": "DEBUG=blitz:* blitz console",
     "build": "blitz build",
     "studio": "blitz prisma studio",
