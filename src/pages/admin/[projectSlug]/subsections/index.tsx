@@ -57,7 +57,7 @@ export const AdminSubsectionsWithQuery = () => {
       try {
         const subsection = await updateSubsectionMutation({
           subsections,
-          projectFeltUrl: `${project.felt_subsection_geometry_source_url}.geojson`,
+          projectFeltUrl: project.felt_subsection_geometry_source_url,
         })
         setError(null)
         await refetch()
