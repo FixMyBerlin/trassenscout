@@ -25,6 +25,7 @@ export const AdminSubsectionsWithQuery = () => {
   // Docs: https://blitzjs.com/docs/route-params-query#use-router-query
   const params = useRouterQuery()
   const [error, setError]: any | null = useState(null)
+  const [updatedIds, setUpdatedIds] = useState<number[]>([])
   const filteredSubsections = params.operator
     ? subsections.filter(
         (sec) => typeof params.operator === "string" && sec.operator?.slug === params.operator,
@@ -53,12 +54,14 @@ export const AdminSubsectionsWithQuery = () => {
       return console.error("No Felt URL")
     } else {
       try {
-        const subsection = await updateSubsectionMutation({
+        const subsectionIds = await updateSubsectionMutation({
           subsections,
           projectFeltUrl: project.felt_subsection_geometry_source_url,
         })
         setError(null)
+        if (subsectionIds) setUpdatedIds(subsectionIds)
         await refetch()
+        window.scrollTo(0, 0)
       } catch (error: any) {
         setError(error)
         return console.error(error)
@@ -82,7 +85,7 @@ export const AdminSubsectionsWithQuery = () => {
             <Markdown markdown={project.description} />
           </PageDescription>
         )}
-        <SubsectionTableAdmin subsections={filteredSubsections} />
+        <SubsectionTableAdmin updatedIds={updatedIds} subsections={filteredSubsections} />
         {error && (
           <div role="alert" className="rounded bg-red-50 text-base px-2 py-1 text-red-800 mt-8">
             Es ist ein Fehler aufgetreten:

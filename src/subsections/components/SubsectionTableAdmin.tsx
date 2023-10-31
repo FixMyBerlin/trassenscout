@@ -16,9 +16,10 @@ import { SubsectionWithPosition } from "../queries/getSubsection"
 type Props = {
   subsections: SubsectionWithPosition[]
   createButton?: boolean
+  updatedIds?: number[] | null
 }
 
-export const SubsectionTableAdmin: React.FC<Props> = ({ subsections }) => {
+export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds }) => {
   const [deleteSubsectionMutation] = useMutation(deleteSubsection)
   const router = useRouter()
   const { projectSlug, subsectionSlug } = useSlugs()
@@ -33,6 +34,12 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections }) => {
 
   return (
     <section>
+      {updatedIds?.length && (
+        <p className="text-base mt-8 border-4 border-blue-100 p-8">
+          Die Planungsabschnitte mit den Ids <code>{JSON.stringify(updatedIds)}</code> (in der
+          Tabelle blau hinterlegt) wurden in Felt erkannt und ggf. aktualisiert.
+        </p>
+      )}
       <TableWrapper className="mt-12">
         <table className="min-w-full divide-y divide-gray-300">
           <thead className="bg-gray-50">
@@ -84,7 +91,7 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections }) => {
               return (
                 <tr
                   key={subsection.id}
-                  className=" h-full"
+                  className={clsx("h-full", updatedIds?.includes(subsection.id) && "bg-blue-100")}
                   // onClick={() => router.push(route)}
                 >
                   <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
