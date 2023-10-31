@@ -133,8 +133,7 @@ const AdminSubsectionsPage: BlitzPage = () => {
     </LayoutRs>
   )
 }
-// See https://github.com/FixMyBerlin/private-issues/issues/936
-// AdminSubsectionsPage.authenticate = { role: "ADMIN" }
-AdminSubsectionsPage.authenticate = true
+
+AdminSubsectionsPage.authenticate = { role: "ADMIN" }
 
 export default AdminSubsectionsPage

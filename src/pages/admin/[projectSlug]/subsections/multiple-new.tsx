@@ -99,6 +99,6 @@ const AdminNewSubsectionsPage: BlitzPage = () => {
   )
 }
 
-AdminNewSubsectionsPage.authenticate = true
+AdminNewSubsectionsPage.authenticate = { role: "ADMIN" }
 
 export default AdminNewSubsectionsPage
