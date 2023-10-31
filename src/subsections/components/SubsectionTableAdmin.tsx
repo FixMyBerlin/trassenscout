@@ -21,8 +21,7 @@ type Props = {
 
 export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds }) => {
   const [deleteSubsectionMutation] = useMutation(deleteSubsection)
-  const router = useRouter()
-  const { projectSlug, subsectionSlug } = useSlugs()
+  const { projectSlug } = useSlugs()
   const handleSlugCopyClick = async (slug: string) => {
     await navigator.clipboard.writeText(slug)
   }
@@ -34,7 +33,7 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds 
 
   return (
     <section>
-      {updatedIds?.length && (
+      {Boolean(updatedIds?.length) && (
         <p className="text-base mt-8 border-4 border-blue-100 p-8">
           Die Planungsabschnitte mit den Ids <code>{JSON.stringify(updatedIds)}</code> (in der
           Tabelle blau hinterlegt) wurden in Felt erkannt und ggf. aktualisiert.
