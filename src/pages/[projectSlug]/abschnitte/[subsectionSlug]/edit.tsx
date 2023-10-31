@@ -35,7 +35,6 @@ const EditSubsection = () => {
       const updated = await updateSubsectionMutation({
         id: subsection.id,
         ...values,
-        // The value="" becomes "0" which we translate to NULL
         slug: `pa${values.slug}`,
       })
       await setQueryData(updated)

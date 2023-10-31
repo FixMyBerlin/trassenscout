@@ -9,7 +9,10 @@ export const SlugSchema = z
 
 export const NameSchema = z.string().min(5, { message: "Pflichtfeld. Mindestens 5 Zeichen." })
 
-export const inputNumberOrNullSchema = z.preprocess(
+// We want number fields to allow an explicit NULL for cases when they are not used but also a zero when the value is actually zero.
+// At the same time, we want zod to automatically format numbers that are strings (which they all are when submitted) as number.
+// This custom Schema solves this. One gotcha is, that the if-clause need to take both the client and server validation into account.
+export const InputNumberOrNullSchema = z.preprocess(
   (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
   z.number().nullable(),
 )

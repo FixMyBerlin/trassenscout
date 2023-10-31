@@ -20,7 +20,7 @@ const AdminNewMembership = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      await createMembershipMutation({ ...values })
+      await createMembershipMutation(values)
       await router.push(Routes.AdminMembershipsPage())
     } catch (error: any) {
       console.error(error)

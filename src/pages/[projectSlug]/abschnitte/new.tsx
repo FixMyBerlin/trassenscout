@@ -27,7 +27,6 @@ const NewSubsection = () => {
     try {
       const subsection = await createSubsectionMutation({
         ...values,
-        // The value="" becomes "0" which we translate to NULL
         slug: `pa${values.slug}`,
         projectId: project.id!,
       })

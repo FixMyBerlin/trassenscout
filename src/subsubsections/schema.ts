@@ -1,6 +1,6 @@
 import { LabelPositionEnum, SubsubsectionTypeEnum } from "@prisma/client"
 import { Prettify } from "src/core/types"
-import { SlugSchema, inputNumberOrNullSchema } from "src/core/utils"
+import { SlugSchema, InputNumberOrNullSchema } from "src/core/utils"
 import { z } from "zod"
 
 const PositionSchema = z.tuple([z.number(), z.number()]) // Position
@@ -21,17 +21,17 @@ export const SubsubsectionSchema = z.object({
   task: z.string().min(3, {
     message: "Pflichtfeld. Mindestens 3 Zeichen.",
   }), // Maßnahmentyp
-  length: inputNumberOrNullSchema, // km
-  width: inputNumberOrNullSchema, // m
-  costEstimate: inputNumberOrNullSchema, // €
+  length: InputNumberOrNullSchema, // km
+  width: InputNumberOrNullSchema, // m
+  costEstimate: InputNumberOrNullSchema, // €
   description: z.string().nullish(),
   mapillaryKey: z.string().nullish(),
-  qualityLevelId: inputNumberOrNullSchema,
-  managerId: inputNumberOrNullSchema,
+  qualityLevelId: InputNumberOrNullSchema,
+  managerId: InputNumberOrNullSchema,
   subsectionId: z.coerce.number(),
-  subsubsectionStatusId: inputNumberOrNullSchema,
-  maxSpeed: inputNumberOrNullSchema,
-  trafficLoad: inputNumberOrNullSchema,
+  subsubsectionStatusId: InputNumberOrNullSchema,
+  maxSpeed: InputNumberOrNullSchema,
+  trafficLoad: InputNumberOrNullSchema,
   trafficLoadDate: z.union([
     z.coerce
       .date({
@@ -45,17 +45,17 @@ export const SubsubsectionSchema = z.object({
       .nullish(),
     z.literal(""),
   ]),
-  planningCosts: inputNumberOrNullSchema,
-  deliveryCosts: inputNumberOrNullSchema,
-  constructionCosts: inputNumberOrNullSchema,
-  landAcquisitionCosts: inputNumberOrNullSchema,
-  expensesOfficialOrders: inputNumberOrNullSchema,
-  expensesTechnicalVerification: inputNumberOrNullSchema,
-  nonEligibleExpenses: inputNumberOrNullSchema,
-  revenuesEconomicIncome: inputNumberOrNullSchema,
-  contributionsThirdParties: inputNumberOrNullSchema,
-  grantsOtherFunding: inputNumberOrNullSchema,
-  ownFunds: inputNumberOrNullSchema,
+  planningCosts: InputNumberOrNullSchema,
+  deliveryCosts: InputNumberOrNullSchema,
+  constructionCosts: InputNumberOrNullSchema,
+  landAcquisitionCosts: InputNumberOrNullSchema,
+  expensesOfficialOrders: InputNumberOrNullSchema,
+  expensesTechnicalVerification: InputNumberOrNullSchema,
+  nonEligibleExpenses: InputNumberOrNullSchema,
+  revenuesEconomicIncome: InputNumberOrNullSchema,
+  contributionsThirdParties: InputNumberOrNullSchema,
+  grantsOtherFunding: InputNumberOrNullSchema,
+  ownFunds: InputNumberOrNullSchema,
 })
 export type TSubsubsectionSchema = Prettify<z.infer<typeof SubsubsectionSchema>>
 

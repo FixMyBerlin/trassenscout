@@ -29,9 +29,7 @@ const AdminNewProject = () => {
     const partnerLogoSrcsArray = values.partnerLogoSrcs.split("\n")
     values = { ...values, partnerLogoSrcs: partnerLogoSrcsArray }
     try {
-      const project = await createProjectMutation({
-        ...values,
-      })
+      const project = await createProjectMutation(values)
 
       // Create a membership for the selected user
       if (project.managerId) {
