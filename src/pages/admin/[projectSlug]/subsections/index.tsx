@@ -14,10 +14,8 @@ import getProject from "src/projects/queries/getProject"
 import { SubsectionTableAdmin } from "src/subsections/components/SubsectionTableAdmin"
 import updateSubsectionsWithFeltData from "src/subsections/mutations/updateSubsectionsWithFeltData"
 import getSubsections from "src/subsections/queries/getSubsections"
-import getAdminStatus from "src/users/queries/getAdminStatus"
 
 export const AdminSubsectionsWithQuery = () => {
-  useQuery(getAdminStatus, {}) // See https://github.com/FixMyBerlin/private-issues/issues/936
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
   const [{ subsections }, { refetch }] = useQuery(getSubsections, { projectSlug: projectSlug! })
