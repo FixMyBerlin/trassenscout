@@ -21,6 +21,7 @@ containers:
       S3_UPLOAD_BUCKET: ${S3_UPLOAD_BUCKET}
       S3_UPLOAD_REGION: ${S3_UPLOAD_REGION}
       S3_UPLOAD_ROOTFOLDER: ${S3_UPLOAD_ROOTFOLDER}
+      FELT_TOKEN: ${{ secrets.FELT_TOKEN }}
     image: public.ecr.aws/n0p8j4k5/trassenscout/app:${GITHUB_SHA}
     ports:
       "3000": HTTP

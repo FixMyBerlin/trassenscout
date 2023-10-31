@@ -36,6 +36,8 @@ on:
         required: true
       S3_UPLOAD_SECRET:
         required: true
+      FELT_TOKEN:
+        required: true
       ASSETS_BUCKET_HOST:
         required: true
       ASSETS_BUCKET_PATH:
@@ -45,7 +47,6 @@ jobs:
   build-push-deploy-docker-images:
     runs-on: ubuntu-latest
     steps:
-
       - uses: actions/checkout@v3
 
       - name: Upgrade AWS CLI version and setup lightsailctl
@@ -115,6 +116,7 @@ jobs:
           S3_UPLOAD_BUCKET: ${{ inputs.S3_UPLOAD_BUCKET }}
           S3_UPLOAD_REGION: ${{ inputs.S3_UPLOAD_REGION }}
           S3_UPLOAD_ROOTFOLDER: ${{ inputs.S3_UPLOAD_ROOTFOLDER }}
+          FELT_TOKEN: ${{ secrets.FELT_TOKEN }}
           ASSETS_BUCKET_HOST: ${{ secrets.ASSETS_BUCKET_HOST }}
           ASSETS_BUCKET_PATH: ${{ secrets.ASSETS_BUCKET_PATH }}
 
