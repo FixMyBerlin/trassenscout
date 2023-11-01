@@ -3,6 +3,7 @@ import db from "db"
 import { z } from "zod"
 import { SubsectionWithPosition } from "../queries/getSubsection"
 import { FeltApiResponseSchema, SubsectionSchema } from "../schema"
+import { multilinestringToLinestring } from "../components/utils/multilinestringToLinestring"
 
 const UpdateSubsectionsWithFeltDataSchema = z.object({
   subsections: z.array(
@@ -47,15 +48,15 @@ export default resolver.pipe(
         (s) => s?.properties["ts_pa_id"] === tsSubsection.slug,
       )
       // if ts-subsection-slug matches one of the felt-subsection-id, update db subsection, fields: start, end, geometry
-      if (matchingFeltSubsection) {
+      if (matchingFeltSubsection && matchingFeltSubsection.geometry.type === "MultiLineString") {
         const updatedSubsection = await db.subsection.update({
           where: { id: tsSubsection.id },
           data: {
-            // todo multilinestring problem
-            // felt data is a multilinestring, but we need a inestring - so we take the first linestring
-            // this only works when we use the line tool in felt, if we use the Route tool, we only save the first part of the geometry here
+            // Felt data is a multilinestring, but we need a linestring
+            // in Felt we get multiple lines, if we use the Route tool
+            // so we take the first linestring or we concat the multiple lines (in case last point of line a matches first point of line b)
             geometry: matchingFeltSubsection.geometry
-              ? matchingFeltSubsection?.geometry["coordinates"][0]
+              ? multilinestringToLinestring(matchingFeltSubsection?.geometry["coordinates"])
               : tsSubsection.geometry,
 
             start: matchingFeltSubsection.properties

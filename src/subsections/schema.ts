@@ -29,11 +29,17 @@ export const SubsectionsFormSchema = z.object({
 
 export type TSubsectionSchema = Prettify<z.infer<typeof SubsectionSchema>>
 
-const CoordinatesSchema = z.array(z.array(z.array(z.number()).min(2)))
-
 const GeometrySchema = z.object({
-  type: z.literal("MultiLineString"),
-  coordinates: CoordinatesSchema,
+  type: z.union([
+    z.literal("Point"),
+    z.literal("MultiPoint"),
+    z.literal("LineString"),
+    z.literal("MultiLineString"),
+    z.literal("Polygon"),
+    z.literal("MultiPolygon"),
+    z.literal("GeometryCollection"),
+  ]),
+  coordinates: z.array(z.any()),
 })
 
 const PropertiesSchema = z.record(z.any())
