@@ -53,6 +53,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
           name="felt_subsection_geometry_source_url"
           label="Felt Url"
           placeholder="https://felt.com/map/beispiel-karte"
+          help="Die Felt-Karte muss dem Account info@fixmycity.de gehören."
         />
       </SuperAdminBox>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
