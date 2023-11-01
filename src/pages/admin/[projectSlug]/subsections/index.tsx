@@ -25,6 +25,7 @@ export const AdminSubsectionsWithQuery = () => {
   // Docs: https://blitzjs.com/docs/route-params-query#use-router-query
   const params = useRouterQuery()
   const [error, setError]: any | null = useState(null)
+  const [isFetching, setIsFetching] = useState(false)
   const [updatedIds, setUpdatedIds] = useState<number[]>([])
   const filteredSubsections = params.operator
     ? subsections.filter(
@@ -49,6 +50,7 @@ export const AdminSubsectionsWithQuery = () => {
   }
 
   const handleFeltDataClick = async () => {
+    setIsFetching(true)
     if (!project.felt_subsection_geometry_source_url) {
       window.alert("Keine Felt URL")
       return console.error("No Felt URL")
@@ -62,6 +64,7 @@ export const AdminSubsectionsWithQuery = () => {
         if (subsectionIds) setUpdatedIds(subsectionIds)
         await refetch()
         window.scrollTo(0, 0)
+        setIsFetching(false)
       } catch (error: any) {
         setError(error)
         return console.error(error)
@@ -105,7 +108,11 @@ export const AdminSubsectionsWithQuery = () => {
           </Link>
           {project.felt_subsection_geometry_source_url ? (
             <>
-              <button className={blueButtonStyles} onClick={handleFeltDataClick}>
+              <button
+                disabled={isFetching}
+                className={blueButtonStyles}
+                onClick={handleFeltDataClick}
+              >
                 Daten von Felt übernehmen
               </button>
 
