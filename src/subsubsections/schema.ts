@@ -1,6 +1,6 @@
 import { LabelPositionEnum, SubsubsectionTypeEnum } from "@prisma/client"
 import { Prettify } from "src/core/types"
-import { SlugSchema } from "src/core/utils"
+import { SlugSchema, InputNumberOrNullSchema } from "src/core/utils"
 import { z } from "zod"
 
 const PositionSchema = z.tuple([z.number(), z.number()]) // Position
@@ -21,16 +21,50 @@ export const SubsubsectionSchema = z.object({
   task: z.string().min(3, {
     message: "Pflichtfeld. Mindestens 3 Zeichen.",
   }), // Maßnahmentyp
-  length: z.coerce.number().nullish(), // km
-  width: z.coerce.number().nullish(), // m
-  costEstimate: z.coerce.number().nullish(), // €
+  length: InputNumberOrNullSchema, // km
+  width: InputNumberOrNullSchema, // m
+  costEstimate: InputNumberOrNullSchema, // €
   description: z.string().nullish(),
   mapillaryKey: z.string().nullish(),
-  qualityLevelId: z.coerce.number().nullish(),
-  managerId: z.coerce.number().nullish(),
+  qualityLevelId: InputNumberOrNullSchema,
+  managerId: InputNumberOrNullSchema,
   subsectionId: z.coerce.number(),
+  subsubsectionStatusId: InputNumberOrNullSchema,
+  maxSpeed: InputNumberOrNullSchema,
+  trafficLoad: InputNumberOrNullSchema,
+  trafficLoadDate: z.union([
+    z.coerce
+      .date({
+        // `coerce` makes it that we need to work around a nontranslatable error
+        // Thanks to https://github.com/colinhacks/zod/discussions/1851#discussioncomment-4649675
+        errorMap: ({ code }, { defaultError }) => {
+          if (code == "invalid_date") return { message: "Das Datum ist nicht richtig formatiert." }
+          return { message: defaultError }
+        },
+      })
+      .nullish(),
+    z.literal(""),
+  ]),
+  planningCosts: InputNumberOrNullSchema,
+  deliveryCosts: InputNumberOrNullSchema,
+  constructionCosts: InputNumberOrNullSchema,
+  landAcquisitionCosts: InputNumberOrNullSchema,
+  expensesOfficialOrders: InputNumberOrNullSchema,
+  expensesTechnicalVerification: InputNumberOrNullSchema,
+  nonEligibleExpenses: InputNumberOrNullSchema,
+  revenuesEconomicIncome: InputNumberOrNullSchema,
+  contributionsThirdParties: InputNumberOrNullSchema,
+  grantsOtherFunding: InputNumberOrNullSchema,
+  ownFunds: InputNumberOrNullSchema,
 })
-
 export type TSubsubsectionSchema = Prettify<z.infer<typeof SubsubsectionSchema>>
 
-export const SubsubsectionSchemaForm = SubsubsectionSchema
+export const SubsubsectionTrafficLoadDateSchema = z.object({
+  trafficLoadDate: z.union([
+    z.string().min(8, { message: "Das Datum ist nicht richtig formatiert." }),
+    z.literal(""),
+  ]),
+})
+export const SubsubsectionFormSchema = SubsubsectionSchema.omit({ trafficLoadDate: true }).merge(
+  SubsubsectionTrafficLoadDateSchema,
+)

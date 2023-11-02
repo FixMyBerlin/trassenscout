@@ -4,6 +4,7 @@ import { RadioGroup } from "@headlessui/react"
 import clsx from "clsx"
 import router from "next/router"
 import React from "react"
+import { shortTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 
@@ -59,8 +60,8 @@ export const OperatorFilterDropdown: React.FC = () => {
                 )
               }
             >
-              <RadioGroup.Label className="uppercase font-semibold" as="span">
-                {operator.slug}
+              <RadioGroup.Label className="font-semibold" as="span">
+                {shortTitle(operator.slug)}
               </RadioGroup.Label>
             </RadioGroup.Option>
           ))}

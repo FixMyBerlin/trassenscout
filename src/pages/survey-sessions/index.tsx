@@ -1,17 +1,16 @@
-import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
-import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/router"
+import { usePaginatedQuery } from "@blitzjs/rpc"
 import { SurveyResponse } from "db"
+import { useRouter } from "next/router"
+import { Suspense } from "react"
 
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import { Spinner } from "src/core/components/Spinner"
-import getSurveySessionsWithResponses from "src/survey-sessions/queries/getSurveySessionsWithResponses"
-import { Link } from "src/core/components/links"
 import { Pagination } from "src/core/components/Pagination"
-import surveyDefinition from "src/participation/data/survey.json"
+import { Spinner } from "src/core/components/Spinner"
+import { Link } from "src/core/components/links"
+import { LayoutArticle, MetaTags } from "src/core/layouts"
 import feedbackDefinition from "src/participation/data/feedback.json"
-import getAdminStatus from "src/users/queries/getAdminStatus"
+import surveyDefinition from "src/participation/data/survey.json"
+import getSurveySessionsWithResponses from "src/survey-sessions/queries/getSurveySessionsWithResponses"
 
 const surveys = Object.fromEntries([surveyDefinition, feedbackDefinition].map((o) => [o.id, o]))
 const questions = {}
@@ -33,8 +32,6 @@ Object.values(surveys).forEach((survey) => {
 const ITEMS_PER_PAGE = 10
 
 export const SurveySessionsList = () => {
-  useQuery(getAdminStatus, {}) // See https://github.com/FixMyBerlin/private-issues/issues/936
-
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ surveySessions, hasMore, count }] = usePaginatedQuery(getSurveySessionsWithResponses, {
@@ -137,8 +134,6 @@ const SurveySessionsPage = () => {
   )
 }
 
-// See https://github.com/FixMyBerlin/private-issues/issues/936
-// SurveySessionsPage.authenticate = { role: "ADMIN" }
-SurveySessionsPage.authenticate = true
+SurveySessionsPage.authenticate = { role: "ADMIN" }
 
 export default SurveySessionsPage

@@ -14,12 +14,9 @@ import { FORM_ERROR, ProjectForm } from "src/projects/components/ProjectForm"
 import createProject from "src/projects/mutations/createProject"
 import { ProjectLogoScrcsInputSchema, ProjectSchema } from "src/projects/schema"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import getAdminStatus from "src/users/queries/getAdminStatus"
 import getUsers from "src/users/queries/getUsers"
 
 const AdminNewProject = () => {
-  useQuery(getAdminStatus, {}) // See https://github.com/FixMyBerlin/private-issues/issues/936
-
   const router = useRouter()
   const currentUser = useCurrentUser()
   const [createProjectMutation] = useMutation(createProject)
@@ -32,11 +29,7 @@ const AdminNewProject = () => {
     const partnerLogoSrcsArray = values.partnerLogoSrcs.split("\n")
     values = { ...values, partnerLogoSrcs: partnerLogoSrcsArray }
     try {
-      const project = await createProjectMutation({
-        ...values,
-        // The value="" becomes "0" which we translate to NULL
-        managerId: values.managerId === 0 ? null : values.managerId,
-      })
+      const project = await createProjectMutation(values)
 
       // Create a membership for the selected user
       if (project.managerId) {
@@ -87,8 +80,6 @@ const AdminNewProjectPage = () => {
   )
 }
 
-// See https://github.com/FixMyBerlin/private-issues/issues/936
-// AdminNewProjectPage.authenticate = { role: "ADMIN" }
-AdminNewProjectPage.authenticate = true
+AdminNewProjectPage.authenticate = { role: "ADMIN" }
 
 export default AdminNewProjectPage

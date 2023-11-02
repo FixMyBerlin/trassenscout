@@ -97,18 +97,19 @@ model Token {
 // }
 
 model Project {
-  id              Int      @id @default(autoincrement())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                                  Int      @id @default(autoincrement())
+  createdAt                           DateTime @default(now())
+  updatedAt                           DateTime @updatedAt
   //
-  slug            String   @unique // shortTitle and URL Slug
-  subTitle        String?
-  description     String?
-  logoSrc         String?
-  partnerLogoSrcs String[]
+  slug                                String   @unique // shortTitle and URL Slug
+  subTitle                            String?
+  description                         String?
+  logoSrc                             String?
+  partnerLogoSrcs                     String[]
+  felt_subsection_geometry_source_url String?
   //
-  manager         User?    @relation(fields: [managerId], references: [id])
-  managerId       Int?
+  manager                             User?    @relation(fields: [managerId], references: [id])
+  managerId                           Int?
 
   surveyResponseTopics SurveyResponseTopic[]
   subsections          Subsection[]
@@ -119,6 +120,7 @@ model Project {
   Operator             Operator[]
   Survey               Survey[]
   qualityLevels        QualityLevel[]
+  SubsubsectionStatus  SubsubsectionStatus[]
 }
 
 model Membership {
@@ -222,32 +224,51 @@ model Subsection {
 }
 
 model Subsubsection {
-  id             Int                   @id @default(autoincrement())
-  createdAt      DateTime              @default(now())
-  updatedAt      DateTime              @updatedAt
+  id           Int                   @id @default(autoincrement())
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
   //
-  slug           String // shortTitle and URL Slug
-  subTitle       String?
-  type           SubsubsectionTypeEnum @default(ROUTE) // Führungform
-  geometry       Json
-  labelPos       LabelPositionEnum     @default(top)
-  task           String // Maßnahmentyp
-  length         Float? // Kilometer
-  width          Float? // Meter
-  costEstimate   Float? // Euro
-  description    String? // Anmerkungen
-  mapillaryKey   String?
+  slug         String // shortTitle and URL Slug
+  subTitle     String?
+  type         SubsubsectionTypeEnum @default(ROUTE) // Führungform
+  geometry     Json
+  labelPos     LabelPositionEnum     @default(top)
+  task         String // Maßnahmentyp
+  length       Float? // Kilometer
+  width        Float? // Meter
+  costEstimate Float? // Euro
+  description  String? // Anmerkungen
+  mapillaryKey String?
+
+  maxSpeed        Float? // Maximalgeschwindigkeit
+  trafficLoad     Int? // Verkehrsbelastung
+  trafficLoadDate DateTime? // Datum der Verkehrsbelastung
+
+  planningCosts                 Float? //  Planungskosten
+  deliveryCosts                 Float? //  Lieferkosten
+  constructionCosts             Float? //  Baukosten
+  landAcquisitionCosts          Float? //  Grunderwerbskosten
+  expensesOfficialOrders        Float? //  Ausgaben aufgrund behördlicher Anordnungen
+  expensesTechnicalVerification Float? //  Ausgaben für den fachtechnischen Nachweis usw.
+  nonEligibleExpenses           Float? //  Nicht zuwendungsfähige Ausgaben
+  revenuesEconomicIncome        Float? //  Erlöse und wirtschafltiche Einnahmen
+  contributionsThirdParties     Float? //  Beiträge Dritter
+  grantsOtherFunding            Float? //  Zuwendungen aus anderen Förderprogrammen
+  ownFunds                      Float? //  Einsatz Eigenmittel
+
   //
-  qualityLevel   QualityLevel?         @relation(fields: [qualityLevelId], references: [id])
-  qualityLevelId Int?
+  qualityLevel          QualityLevel?        @relation(fields: [qualityLevelId], references: [id])
+  qualityLevelId        Int?
   //
-  manager        User?                 @relation(fields: [managerId], references: [id])
-  managerId      Int?
+  manager               User?                @relation(fields: [managerId], references: [id])
+  managerId             Int?
   //
-  subsection     Subsection            @relation(fields: [subsectionId], references: [id])
-  subsectionId   Int
+  subsection            Subsection           @relation(fields: [subsectionId], references: [id])
+  subsectionId          Int
   //
-  uploads        Upload[]
+  uploads               Upload[]
+  SubsubsectionStatus   SubsubsectionStatus? @relation(fields: [subsubsectionStatusId], references: [id])
+  subsubsectionStatusId Int?
 
   @@unique([subsectionId, slug])
 }
@@ -258,6 +279,21 @@ enum SubsubsectionTypeEnum {
 }
 
 model QualityLevel {
+  id            Int             @id @default(autoincrement())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  //
+  slug          String // shortTitle and URL Slug
+  title         String
+  //
+  project       Project         @relation(fields: [projectId], references: [id])
+  projectId     Int
+  Subsubsection Subsubsection[]
+
+  @@unique([projectId, slug])
+}
+
+model SubsubsectionStatus {
   id            Int             @id @default(autoincrement())
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt

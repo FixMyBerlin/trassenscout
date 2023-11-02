@@ -27,9 +27,7 @@ const NewSubsection = () => {
     try {
       const subsection = await createSubsectionMutation({
         ...values,
-        // The value="" becomes "0" which we translate to NULL
-        managerId: values.managerId === 0 ? null : values.managerId,
-        operatorId: values.operatorId === 0 ? null : values.operatorId,
+        slug: `pa${values.slug}`,
         projectId: project.id!,
       })
       await router.push(
@@ -52,7 +50,6 @@ const NewSubsection = () => {
         initialValues={{ labelPos: "bottom" }}
         submitText="Erstellen"
         schema={SubsectionSchema.omit({ projectId: true })}
-        // initialValues={} // Use only when custom initial values are needed
         onSubmit={handleSubmit}
         users={users}
       />

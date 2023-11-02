@@ -11,10 +11,10 @@ import { LayoutRs, MetaTags } from "src/core/layouts"
 import getSubsection from "src/subsections/queries/getSubsection"
 import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
 import createSubsubsection from "src/subsubsections/mutations/createSubsubsection"
-import { SubsubsectionSchemaForm } from "src/subsubsections/schema"
+import { SubsubsectionFormSchema } from "src/subsubsections/schema"
 import { z } from "zod"
 
-const NewSubsubsectionSchemaForm = SubsubsectionSchemaForm.omit({
+const NewSubsubsectionSchemaForm = SubsubsectionFormSchema.omit({
   subsectionId: true,
 })
 
@@ -33,10 +33,8 @@ const NewSubsubsection = () => {
     try {
       const subsubsection = await createSubsubsectionMutation({
         ...values,
-        // The value="" becomes "0" which we translate to NULL
-        managerId: values.managerId === 0 ? null : values.managerId,
-        qualityLevelId: values.qualityLevelId === 0 ? null : values.qualityLevelId,
         subsectionId: subsection!.id,
+        trafficLoadDate: values.trafficLoadDate === "" ? null : new Date(values.trafficLoadDate),
       })
       await router.push(
         Routes.SubsubsectionDashboardPage({

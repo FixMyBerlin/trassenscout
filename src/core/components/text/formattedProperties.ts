@@ -1,5 +1,5 @@
 export const formattedLength = (length?: number | null) => {
-  if (!length) {
+  if (length === undefined || length === null) {
     return "k.A."
   }
 
@@ -7,7 +7,7 @@ export const formattedLength = (length?: number | null) => {
 }
 
 export const formattedWidth = (width?: number | null) => {
-  if (!width) {
+  if (width === undefined || width === null) {
     return "k.A."
   }
 
@@ -15,9 +15,13 @@ export const formattedWidth = (width?: number | null) => {
 }
 
 export const formattedEuro = (euro?: number | null) => {
-  if (!euro) {
+  if (euro === undefined || euro === null) {
     return "k.A."
   }
-
-  return euro.toLocaleString() + " €"
+  const options = {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 2,
+  }
+  return euro.toLocaleString("de-DE", options)
 }

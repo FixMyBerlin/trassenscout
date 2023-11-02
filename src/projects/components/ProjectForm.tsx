@@ -1,3 +1,5 @@
+import { SuperAdminBox } from "src/core/components/AdminBox"
+import { AdminBox } from "src/core/components/AdminBox/AdminBox"
 import {
   Form,
   FormProps,
@@ -44,6 +46,16 @@ export function ProjectForm<S extends z.ZodType<any, any>>(
         </Link>
         , von NextJS intern optimiert und hier referenziert.
       </p>
+      <SuperAdminBox>
+        <LabeledTextField
+          optional
+          type="text"
+          name="felt_subsection_geometry_source_url"
+          label="Felt Url"
+          placeholder="https://felt.com/map/beispiel-karte"
+          help="Die Felt-Karte muss dem Account info@fixmycity.de gehören."
+        />
+      </SuperAdminBox>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledTextareaField
         optional

@@ -10,13 +10,10 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { seoIndexTitle, shortTitle } from "src/core/components/text"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import deleteMembership from "src/memberships/mutations/deleteMembership"
-import getAdminStatus from "src/users/queries/getAdminStatus"
 import getUsersAndMemberships from "src/users/queries/getUsersAndMemberships"
 import { getFullname } from "src/users/utils"
 
 const AdminMemberships = () => {
-  useQuery(getAdminStatus, {}) // See https://github.com/FixMyBerlin/private-issues/issues/936
-
   const [{ users: userAndMemberships }] = useQuery(getUsersAndMemberships, {})
 
   const router = useRouter()
@@ -113,8 +110,6 @@ const AdminMembershipsPage = () => {
   )
 }
 
-// See https://github.com/FixMyBerlin/private-issues/issues/936
-// AdminMembershipsPage.authenticate = { role: "ADMIN" }
-AdminMembershipsPage.authenticate = true
+AdminMembershipsPage.authenticate = { role: "ADMIN" }
 
 export default AdminMembershipsPage

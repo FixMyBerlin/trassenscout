@@ -1,4 +1,4 @@
-import { NameSchema, SlugSchema } from "src/core/utils"
+import { SlugSchema, InputNumberOrNullSchema } from "src/core/utils"
 import { z } from "zod"
 
 export const ProjectSchema = z.object({
@@ -7,7 +7,8 @@ export const ProjectSchema = z.object({
   description: z.string().nullish(),
   logoSrc: z.string().nullish(),
   partnerLogoSrcs: z.string().array(),
-  managerId: z.coerce.number().nullish(),
+  felt_subsection_geometry_source_url: z.union([z.string().url().nullish(), z.literal("")]),
+  managerId: InputNumberOrNullSchema,
 })
 
 export const ProjectLogoScrcsInputSchema = z.object({
