@@ -1,8 +1,8 @@
 <div align="center"><br><br>
-  <h1 align="center">Trassenscout (Alpha)</h1>
+  <h1 align="center">Trassenscout (beta)</h1>
 </div>
 
-> Trassenscout (Alpha) supports administrations in the process of evaluating and building cycle highways and other route based infrastructure.
+> Trassenscout (beta) supports administrations in the process of evaluating and building cycle highways and other route based infrastructure.
 >
 > Please contact hello@fixmycity.de to learn more.
 
