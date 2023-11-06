@@ -1,0 +1,121 @@
+{
+  "title": "Survey",
+  "version": 1,
+  "type": "object",
+  "required": ["id", "version", "title", "pages", "createdAt", "faviconUrl"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "integer", "minimum": 1 },
+    "title": { "$ref": "#/$defs/translatableText" },
+    "version": { "type": "integer", "enum": [1] },
+    "createdAt": { "type": "string", "format": "date" },
+    "faviconUrl": { "type": "string" },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "description", "buttons"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "integer", "minimum": 1 },
+          "title": { "$ref": "#/$defs/translatableText" },
+          "description": { "$ref": "#/$defs/translatableText" },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "component", "label", "props"],
+              "additionalProperties": false,
+              "properties": {
+                "id": { "type": "integer", "minimum": 1 },
+                "component": {
+                  "type": "string",
+                  "enum": ["singleResponse", "multipleResponse", "text"]
+                },
+                "label": { "$ref": "#/$defs/translatableText" },
+                "//* props.oneOf is here for generating typescript": "*//",
+                "props": {
+                  "oneOf": [
+                    { "$ref": "#/$defs/SingleOrMultiResponseProps" },
+                    { "$ref": "#/$defs/TextResponseProps" }
+                  ]
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "component": { "enum": ["singleResponse", "multipleResponse"] }
+                    }
+                  },
+                  "then": {
+                    "properties": { "props": { "$ref": "#/$defs/SingleOrMultiResponseProps" } }
+                  }
+                }
+              ]
+            }
+          },
+          "buttons": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "color", "onClick"],
+              "additionalProperties": false,
+              "properties": {
+                "label": { "$ref": "#/$defs/translatableText" },
+                "color": { "type": "string", "enum": ["white", "pink"] },
+                "onClick": {
+                  "type": "object",
+                  "required": ["action"],
+                  "additionalItems": false,
+                  "properties": {
+                    "action": {
+                      "enum": ["nextPage", "previousPage", "submit"]
+                    },
+                    "arguments": { "type": "array" }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "translatableText": {
+      "type": "object",
+      "required": ["de"],
+      "additionalProperties": false,
+      "properties": {
+        "de": { "type": "string", "minLength": 2 }
+      }
+    },
+    "Response": {
+      "type": "object",
+      "required": ["id", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 },
+        "text": { "$ref": "#/$defs/translatableText" }
+      }
+    },
+    "SingleOrMultiResponseProps": {
+      "type": "object",
+      "required": ["responses"],
+      "additionalProperties": false,
+      "properties": {
+        "responses": {
+          "type": "array",
+          "minLength": 2,
+          "items": { "$ref": "#/$defs/Response" }
+        }
+      }
+    },
+    "TextResponseProps": {
+      "type": "object",
+      "additionalProperties": false
+    }
+  }
+}

@@ -12,6 +12,6 @@ export default resolver.pipe(
     await db.survey.findFirstOrThrow({
       where: { slug },
       // For the public query, only return public information
-      select: { slug: true, active: true },
+      select: { slug: true, id: true, active: true },
     }),
 )
