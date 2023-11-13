@@ -1,5 +1,5 @@
 <div align="center"><br><br>
-  <h1 align="center">Trassenscout (beta)</h1>
+  <h1 align="center">Trassenscout (Beta)</h1>
 </div>
 
 > Trassenscout (beta) supports administrations in the process of evaluating and building cycle highways and in perspective other route based infrastructure.
