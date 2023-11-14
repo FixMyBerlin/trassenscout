@@ -3,6 +3,7 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { Role } from "types"
 import { Signup } from "../validations"
+import { userCreationMailer } from "mailers/userCreationMailer"
 
 export default resolver.pipe(
   resolver.zod(Signup),
@@ -21,6 +22,12 @@ export default resolver.pipe(
     })
 
     await ctx.session.$create({ userId: user.id, role: user.role as Role })
+    await userCreationMailer({
+      userMail: user.email,
+      userId: user.id,
+      userFirstname: user.firstName,
+      userLastname: user.lastName,
+    }).send()
     return user
   },
 )
