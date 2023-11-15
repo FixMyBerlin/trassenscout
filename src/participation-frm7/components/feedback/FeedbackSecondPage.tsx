@@ -1,16 +1,17 @@
 import { useContext } from "react"
-import { PinContext } from "src/participation-frm7/context/contexts"
-import { ParticipationButton } from "src/participation-frm7/components/core/buttons/ParticipationButton"
-import { ParticipationButtonWrapper } from "src/participation-frm7/components/core/buttons/ParticipationButtonWrapper"
-import { ScreenHeaderParticipation } from "src/participation-frm7/components/layout/ScreenHeaderParticipation"
+
+import { MultiLineString } from "@turf/helpers"
+import { ParticipationStaticMap } from "src/participation-frm7/components/maps/ParticipationStaticMap"
+import { Question } from "src/participation-frm7/components/survey/Question"
 import {
   ParticipationH2,
   ParticipationH3,
   ParticipationP,
-} from "src/participation-frm7/components/core/Text"
-import { ParticipationStaticMap } from "src/participation-frm7/components/maps/ParticipationStaticMap"
-import { Question } from "src/participation-frm7/components/survey/Question"
-import { MultiLineString } from "@turf/helpers"
+} from "src/participation/components/core/Text"
+import { ParticipationButton } from "src/participation/components/core/buttons/ParticipationButton"
+import { ParticipationButtonWrapper } from "src/participation/components/core/buttons/ParticipationButtonWrapper"
+import { PinContext } from "src/participation-frm7/context/contexts"
+import { ScreenHeaderParticipation } from "src/participation/components/layout/ScreenHeaderParticipation"
 
 export { FORM_ERROR } from "src/core/components/forms"
 

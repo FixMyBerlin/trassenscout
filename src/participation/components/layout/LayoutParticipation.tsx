@@ -8,8 +8,9 @@ import { HeaderParticipation } from "./HeaderParticipation"
 
 type Props = {
   logoUrl: string
+
   children?: React.ReactNode
-  canonicalUrl?: string
+  canonicalUrl: string
 }
 
 export const LayoutParticipation: BlitzLayout<Props> = ({ logoUrl, children, canonicalUrl }) => {
@@ -28,7 +29,7 @@ export const LayoutParticipation: BlitzLayout<Props> = ({ logoUrl, children, can
       <MetaTags noindex title="Beteiligung RS8" />
 
       <div className="relative flex h-full flex-col overflow-x-hidden">
-        <HeaderParticipation logoSrc={logoUrl} />
+        <HeaderParticipation landingPageUrl={canonicalUrl} logoSrc={logoUrl} />
         <main className="mx-auto flex w-full flex-col pb-40">
           <ContainerParticipation>{children}</ContainerParticipation>
         </main>

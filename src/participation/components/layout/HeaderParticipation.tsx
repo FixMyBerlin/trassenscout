@@ -5,9 +5,10 @@ import { ParticipationLink } from "../core/links/ParticipationLink"
 
 type Props = {
   logoSrc: string
+  landingPageUrl: string
 }
 
-export const HeaderParticipation: React.FC<Props> = ({ logoSrc }) => {
+export const HeaderParticipation: React.FC<Props> = ({ logoSrc, landingPageUrl }) => {
   return (
     <nav className="z-20 shadow-xl">
       <div className="mx-auto flex items-center justify-between px-2 text-gray-500 sm:px-6 lg:pl-5 lg:pr-2.5">
@@ -18,10 +19,7 @@ export const HeaderParticipation: React.FC<Props> = ({ logoSrc }) => {
           <span className="py-5 pl-5">Beteiligung</span>
         </div>
         {/* TODO replace link in production: https://radschnellweg8-lb-wn.de/beteiligung */}
-        <ParticipationLink
-          classNameOverwrites="text-gray-900"
-          href="https://develop--rsv8-lb-wn.netlify.app/beteiligung/"
-        >
+        <ParticipationLink classNameOverwrites="text-gray-900" href={landingPageUrl}>
           <XMarkIcon className="h-7  w-7" />
         </ParticipationLink>
       </div>

@@ -1,10 +1,11 @@
 import { useCallback, useContext, useState } from "react"
 import { stageProgressDefinition } from "src/participation-frm7/components/frm7"
 import { PinContext, ProgressContext } from "src/participation-frm7/context/contexts"
-import SurveyForm from "src/participation-frm7/components/form/SurveyForm"
+
 import { FeedbackFirstPage } from "src/participation-frm7/components/feedback/FeedbackFirstPage"
 import { FeedbackSecondPage } from "src/participation-frm7/components/feedback/FeedbackSecondPage"
 import { scrollToTopWithDelay } from "src/participation-frm7/utils/scrollToTopWithDelay"
+import SurveyForm from "src/participation/components/form/SurveyForm"
 
 export { FORM_ERROR } from "src/core/components/forms"
 

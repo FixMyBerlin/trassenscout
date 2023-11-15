@@ -12,11 +12,7 @@ const ParticipationInactivePage: BlitzPage = () => {
     >
       <section>
         <ScreenHeaderParticipation title="Diese Umfrage ist zur Zeit nicht aktiv." />
-        <ParticipationLink
-          className="mt-32"
-          button="white"
-          href="https://radschnellweg8-lb-wn.de/beteiligung/"
-        >
+        <ParticipationLink className="mt-32" button="white" href={surveyDefinition.canonicalUrl}>
           Zur Projektwebseite
         </ParticipationLink>
       </section>

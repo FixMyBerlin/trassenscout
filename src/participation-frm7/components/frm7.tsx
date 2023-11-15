@@ -12,16 +12,18 @@ import moreDefinition from "src/participation-frm7/data/more.json"
 import surveyDefinition from "src/participation-frm7/data/survey.json"
 import feedbackDefinition from "src/participation-frm7/data/feedback.json"
 import emailDefinition from "src/participation-frm7/data/email.json"
-import { ProgressContext } from "src/participation-frm7/context/contexts"
+
 import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
 import updateSurveySession from "src/survey-sessions/mutations/updateSurveySession"
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
-import { Debug } from "src/participation-frm7/components/Debug"
+
 import { scrollToTopWithDelay } from "src/participation-frm7/utils/scrollToTopWithDelay"
 
-import { LayoutParticipation } from "src/participation-frm7/components/layout/LayoutParticipation"
 import { ParticipationSpinnerLayover } from "src/participation-frm7/components/survey/ParticipationSpinnerLayover"
 import getPublicSurveyBySlug from "src/surveys/queries/getPublicSurveyBySlug"
+import { Debug } from "src/participation/components/core/Debug"
+import { ProgressContext } from "src/participation-frm7/context/contexts"
+import { LayoutParticipation } from "src/participation/components/layout/LayoutParticipation"
 
 // For Progressbar: stage and associated arbitrarily set status of the progressbar
 export const stageProgressDefinition = {

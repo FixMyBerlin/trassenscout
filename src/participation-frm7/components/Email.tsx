@@ -2,9 +2,10 @@ import { useCallback, useEffect, useState } from "react"
 import { iframeResizer } from "iframe-resizer"
 
 export { FORM_ERROR } from "src/core/components/forms"
-import { ParticipationH2, ParticipationP } from "./core/Text"
-import { ParticipationLink } from "./core/links/ParticipationLink"
-import { ScreenHeaderParticipation } from "./layout/ScreenHeaderParticipation"
+
+import { ParticipationH2, ParticipationP } from "src/participation/components/core/Text"
+import { ParticipationLink } from "src/participation/components/core/links/ParticipationLink"
+import { ScreenHeaderParticipation } from "src/participation/components/layout/ScreenHeaderParticipation"
 
 type Props = {
   onSubmit: any

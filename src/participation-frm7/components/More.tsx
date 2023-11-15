@@ -1,7 +1,7 @@
-import { ParticipationH2 } from "src/participation-frm7/components/core/Text"
-import { ParticipationButton } from "src/participation-frm7/components/core/buttons/ParticipationButton"
-import { ScreenHeaderParticipation } from "src/participation-frm7/components/layout/ScreenHeaderParticipation"
-import { ParticipationButtonWrapper } from "src/participation-frm7/components/core/buttons/ParticipationButtonWrapper"
+import { ParticipationH2 } from "src/participation/components/core/Text"
+import { ParticipationButton } from "src/participation/components/core/buttons/ParticipationButton"
+import { ParticipationButtonWrapper } from "src/participation/components/core/buttons/ParticipationButtonWrapper"
+import { ScreenHeaderParticipation } from "src/participation/components/layout/ScreenHeaderParticipation"
 
 export { FORM_ERROR } from "src/core/components/forms"
 

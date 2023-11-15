@@ -1,14 +1,16 @@
 import { useCallback, useContext, useState } from "react"
-import SurveyForm from "src/participation-frm7/components/form/SurveyForm"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
 import { stageProgressDefinition } from "src/participation-frm7/components/frm7"
-import { ProgressContext } from "src/participation-frm7/context/contexts"
+
 import { Survey as TSurvey } from "src/participation-frm7/data/types"
-import { Debug } from "src/participation-frm7/components/Debug"
+
 import { Page } from "src/participation-frm7/components/survey/Page"
+import { ProgressContext } from "src/participation-frm7/context/contexts"
 import { scrollToTopWithDelay } from "src/participation-frm7/utils/scrollToTopWithDelay"
+import { Debug } from "src/participation/components/core/Debug"
+import SurveyForm from "src/participation/components/form/SurveyForm"
 
 type Props = { survey: TSurvey; onSubmit: ([]) => void }
 

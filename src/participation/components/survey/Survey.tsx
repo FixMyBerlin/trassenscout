@@ -6,7 +6,7 @@ export { FORM_ERROR } from "src/core/components/forms"
 import { stageProgressDefinition } from "src/participation/components/rs8"
 import { ProgressContext } from "src/participation/context/contexts"
 import { Survey as TSurvey } from "src/participation/data/types"
-import { Debug } from "../Debug"
+import { Debug } from "../core/Debug"
 import { Page } from "./Page"
 import { scrollToTopWithDelay } from "src/participation/utils/scrollToTopWithDelay"
 

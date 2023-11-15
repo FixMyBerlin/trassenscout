@@ -1,12 +1,12 @@
-import { ParticipationH2 } from "src/participation-frm7/components/core/Text"
-import { ParticipationLabeledCheckboxGroup } from "src/participation-frm7/components/form/ParticipationLabeledCheckboxGroup"
-import { ParticipationLabeledRadiobuttonGroup } from "src/participation-frm7/components/form/ParticipationLabeledRadiobuttonGroup"
-import { ParticipationLabeledTextareaField } from "src/participation-frm7/components/form/ParticipationLabeledTextareaField"
 import {
   SingleOrMultiResponseProps,
   Question as TQuestion,
   TextResponseProps,
 } from "src/participation-frm7/data/types"
+import { ParticipationH2 } from "src/participation/components/core/Text"
+import { ParticipationLabeledCheckboxGroup } from "src/participation/components/form/ParticipationLabeledCheckboxGroup"
+import { ParticipationLabeledRadiobuttonGroup } from "src/participation/components/form/ParticipationLabeledRadiobuttonGroup"
+import { ParticipationLabeledTextareaField } from "src/participation/components/form/ParticipationLabeledTextareaField"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type TSingleOrMultuResponseComponentProps = {

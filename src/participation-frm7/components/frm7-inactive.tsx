@@ -1,8 +1,9 @@
 import { BlitzPage } from "@blitzjs/next"
 import { LayoutParticipation } from "src/participation/components/layout/LayoutParticipation"
-import surveyDefinition from "src/participation/data/survey.json"
-import { ScreenHeaderParticipation } from "./layout/ScreenHeaderParticipation"
-import { ParticipationLink } from "./core/links/ParticipationLink"
+import surveyDefinition from "src/participation-frm7/data/survey.json"
+
+import { ParticipationLink } from "src/participation/components/core/links/ParticipationLink"
+import { ScreenHeaderParticipation } from "src/participation/components/layout/ScreenHeaderParticipation"
 
 const ParticipationFrm7InactivePage: BlitzPage = () => {
   return (
@@ -12,11 +13,7 @@ const ParticipationFrm7InactivePage: BlitzPage = () => {
     >
       <section>
         <ScreenHeaderParticipation title="Diese Umfrage ist zur Zeit nicht aktiv." />
-        <ParticipationLink
-          className="mt-32"
-          button="white"
-          href="https://www.region-frankfurt.de/rsw"
-        >
+        <ParticipationLink className="mt-32" button="white" href={surveyDefinition.canonicalUrl}>
           Zur Projektwebseite
         </ParticipationLink>
       </section>
