@@ -2,7 +2,6 @@ import { useContext } from "react"
 
 import { MultiLineString } from "@turf/helpers"
 
-import { Question } from "src/participation-frm7/components/survey/Question"
 import {
   ParticipationH2,
   ParticipationH3,
@@ -11,8 +10,9 @@ import {
 import { ParticipationButton } from "src/participation/components/core/buttons/ParticipationButton"
 import { ParticipationButtonWrapper } from "src/participation/components/core/buttons/ParticipationButtonWrapper"
 import { PinContext } from "src/participation/context/contexts"
-import { ScreenHeaderParticipation } from "src/participation/components/layout/ScreenHeaderParticipation"
+import { ScreenHeaderParticipation } from "src/participation/components/core/layout/ScreenHeaderParticipation"
 import { ParticipationStaticMap } from "src/participation/components/maps/ParticipationStaticMap"
+import { Question } from "src/participation/components/core/Question"
 
 export { FORM_ERROR } from "src/core/components/forms"
 

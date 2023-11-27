@@ -5,9 +5,9 @@ import { useMutation } from "@blitzjs/rpc"
 import { Done } from "src/participation/components/Done"
 import { Email } from "src/participation/components/Email"
 import { Feedback } from "src/participation/components/feedback/Feedback"
-import { LayoutParticipation } from "src/participation/components/layout/LayoutParticipation"
+import { LayoutParticipation } from "src/participation/components/core/layout/LayoutParticipation"
 import { More } from "src/participation/components/More"
-import { Survey } from "src/participation/components/survey/Survey"
+import { Survey } from "src/participation/components/Survey"
 import moreDefinition from "src/participation/data/more.json"
 import surveyDefinition from "src/participation/data/survey.json"
 import feedbackDefinition from "src/participation/data/feedback.json"
@@ -19,7 +19,7 @@ import createSurveyResponse from "src/survey-responses/mutations/createSurveyRes
 import { Debug } from "src/participation/components/core/Debug"
 import { scrollToTopWithDelay } from "src/participation/utils/scrollToTopWithDelay"
 import { Spinner } from "src/core/components/Spinner"
-import { ParticipationSpinnerLayover } from "src/participation/components/survey/ParticipationSpinnerLayover"
+import { ParticipationSpinnerLayover } from "src/participation/components/core/ParticipationSpinnerLayover"
 
 // For Progressbar: stage and associated arbitrarily set status of the progressbar
 export const stageProgressDefinition = {
@@ -31,7 +31,7 @@ export const stageProgressDefinition = {
 }
 
 const ParticipationMainPage: BlitzPage = () => {
-  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("FEEDBACK")
+  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("SURVEY")
   const [progress, setProgress] = useState(1)
   const [isSpinner, setIsSpinner] = useState(false)
   const [responses, setResponses] = useState<any[]>([])

@@ -1,6 +1,6 @@
 import React from "react"
-import { FooterLinkList } from "../../../core/layouts/Footer/FooterLinkList"
-import { links } from "../../../core/layouts/Footer/links.const"
+import { FooterLinkList } from "../../../../core/layouts/Footer/FooterLinkList"
+import { links } from "../../../../core/layouts/Footer/links.const"
 
 export const FooterParticipation: React.FC = () => {
   return (

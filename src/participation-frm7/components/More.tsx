@@ -1,7 +1,7 @@
 import { ParticipationH2 } from "src/participation/components/core/Text"
 import { ParticipationButton } from "src/participation/components/core/buttons/ParticipationButton"
 import { ParticipationButtonWrapper } from "src/participation/components/core/buttons/ParticipationButtonWrapper"
-import { ScreenHeaderParticipation } from "src/participation/components/layout/ScreenHeaderParticipation"
+import { ScreenHeaderParticipation } from "src/participation/components/core/layout/ScreenHeaderParticipation"
 
 export { FORM_ERROR } from "src/core/components/forms"
 

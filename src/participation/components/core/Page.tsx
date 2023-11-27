@@ -1,9 +1,8 @@
-import { ScreenHeaderParticipation } from "src/participation/components/layout/ScreenHeaderParticipation"
-import { SurveyButton } from "./SurveyButton"
-
+import { ScreenHeaderParticipation } from "src/participation/components/core/layout/ScreenHeaderParticipation"
+import { ParticipationButtonWithAction } from "./buttons/ParticipationButtonWithAction"
+import { ParticipationButtonWrapper } from "./buttons/ParticipationButtonWrapper"
 import type { Page as TPage } from "src/participation/data/types"
 import { Question } from "./Question"
-import { ParticipationButtonWrapper } from "src/participation/components/core/buttons/ParticipationButtonWrapper"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
@@ -31,7 +30,7 @@ export const Page: React.FC<Props> = ({ page, buttonActions, completed }) => {
             disabled = !completed
           }
           return (
-            <SurveyButton
+            <ParticipationButtonWithAction
               key={`${pageId}-${button.label.de}`}
               buttonActions={buttonActions}
               button={button}

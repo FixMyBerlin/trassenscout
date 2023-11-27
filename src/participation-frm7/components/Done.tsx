@@ -1,7 +1,7 @@
 export { FORM_ERROR } from "src/core/components/forms"
 
 import { ParticipationLink } from "src/participation/components/core/links/ParticipationLink"
-import { ScreenHeaderParticipation } from "src/participation/components/layout/ScreenHeaderParticipation"
+import { ScreenHeaderParticipation } from "src/participation/components/core/layout/ScreenHeaderParticipation"
 
 export const Done = () => {
   return (

@@ -4,8 +4,9 @@ import { PinContext, ProgressContext } from "src/participation/context/contexts"
 
 import { FeedbackFirstPage } from "src/participation-frm7/components/feedback/FeedbackFirstPage"
 import { FeedbackSecondPage } from "src/participation-frm7/components/feedback/FeedbackSecondPage"
-import { scrollToTopWithDelay } from "src/participation-frm7/utils/scrollToTopWithDelay"
-import SurveyForm from "src/participation/components/form/SurveyForm"
+
+import SurveyForm from "src/participation/components/core/form/SurveyForm"
+import { scrollToTopWithDelay } from "src/participation/utils/scrollToTopWithDelay"
 
 export { FORM_ERROR } from "src/core/components/forms"
 

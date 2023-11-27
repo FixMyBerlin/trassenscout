@@ -1,7 +1,7 @@
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import Image from "next/image"
-import { ProgressBar } from "src/participation/components/layout/ProgressBar"
-import { ParticipationLink } from "../core/links/ParticipationLink"
+import { ProgressBar } from "src/participation/components/core/layout/ProgressBar"
+import { ParticipationLink } from "../links/ParticipationLink"
 
 type Props = {
   logoSrc: string

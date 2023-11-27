@@ -1,9 +1,9 @@
 import { BlitzPage } from "@blitzjs/next"
-import { LayoutParticipation } from "src/participation/components/layout/LayoutParticipation"
+import { LayoutParticipation } from "src/participation/components/core/layout/LayoutParticipation"
 import surveyDefinition from "src/participation-frm7/data/survey.json"
 
 import { ParticipationLink } from "src/participation/components/core/links/ParticipationLink"
-import { ScreenHeaderParticipation } from "src/participation/components/layout/ScreenHeaderParticipation"
+import { ScreenHeaderParticipation } from "src/participation/components/core/layout/ScreenHeaderParticipation"
 
 const ParticipationFrm7InactivePage: BlitzPage = () => {
   return (

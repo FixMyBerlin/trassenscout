@@ -4,8 +4,8 @@ import { iframeResizer } from "iframe-resizer"
 export { FORM_ERROR } from "src/core/components/forms"
 import { ParticipationH2, ParticipationP } from "./core/Text"
 import { ParticipationLink } from "./core/links/ParticipationLink"
-import SurveyForm from "./form/SurveyForm"
-import { ScreenHeaderParticipation } from "./layout/ScreenHeaderParticipation"
+import SurveyForm from "./core/form/SurveyForm"
+import { ScreenHeaderParticipation } from "./core/layout/ScreenHeaderParticipation"
 
 type Props = {
   onSubmit: any

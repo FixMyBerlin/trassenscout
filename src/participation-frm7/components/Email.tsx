@@ -5,7 +5,7 @@ export { FORM_ERROR } from "src/core/components/forms"
 
 import { ParticipationH2, ParticipationP } from "src/participation/components/core/Text"
 import { ParticipationLink } from "src/participation/components/core/links/ParticipationLink"
-import { ScreenHeaderParticipation } from "src/participation/components/layout/ScreenHeaderParticipation"
+import { ScreenHeaderParticipation } from "src/participation/components/core/layout/ScreenHeaderParticipation"
 
 type Props = {
   onSubmit: any

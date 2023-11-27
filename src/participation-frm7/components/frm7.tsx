@@ -7,7 +7,7 @@ import { Email } from "src/participation-frm7/components/Email"
 import { Feedback } from "src/participation-frm7/components/feedback/Feedback"
 
 import { More } from "src/participation-frm7/components/More"
-import { Survey } from "src/participation-frm7/components/survey/Survey"
+import { Survey } from "src/participation-frm7/components/Survey"
 import moreDefinition from "src/participation-frm7/data/more.json"
 import surveyDefinition from "src/participation-frm7/data/survey.json"
 import feedbackDefinition from "src/participation-frm7/data/feedback.json"
@@ -17,13 +17,12 @@ import createSurveySession from "src/survey-sessions/mutations/createSurveySessi
 import updateSurveySession from "src/survey-sessions/mutations/updateSurveySession"
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
 
-import { scrollToTopWithDelay } from "src/participation-frm7/utils/scrollToTopWithDelay"
-
-import { ParticipationSpinnerLayover } from "src/participation-frm7/components/survey/ParticipationSpinnerLayover"
 import getPublicSurveyBySlug from "src/surveys/queries/getPublicSurveyBySlug"
 import { Debug } from "src/participation/components/core/Debug"
 import { ProgressContext } from "src/participation/context/contexts"
-import { LayoutParticipation } from "src/participation/components/layout/LayoutParticipation"
+import { LayoutParticipation } from "src/participation/components/core/layout/LayoutParticipation"
+import { ParticipationSpinnerLayover } from "src/participation/components/core/ParticipationSpinnerLayover"
+import { scrollToTopWithDelay } from "src/participation/utils/scrollToTopWithDelay"
 
 // For Progressbar: stage and associated arbitrarily set status of the progressbar
 export const stageProgressDefinition = {
@@ -35,7 +34,7 @@ export const stageProgressDefinition = {
 }
 
 const ParticipationFrm7MainPage: BlitzPage = () => {
-  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("FEEDBACK")
+  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("SURVEY")
   const [progress, setProgress] = useState(1)
   const [isSpinner, setIsSpinner] = useState(false)
   const [responses, setResponses] = useState<any[]>([])

@@ -1,8 +1,8 @@
 import { ParticipationH2 } from "./core/Text"
 import { ParticipationButton } from "./core/buttons/ParticipationButton"
 import { ParticipationButtonWrapper } from "./core/buttons/ParticipationButtonWrapper"
-import SurveyForm from "./form/SurveyForm"
-import { ScreenHeaderParticipation } from "./layout/ScreenHeaderParticipation"
+import SurveyForm from "./core/form/SurveyForm"
+import { ScreenHeaderParticipation } from "./core/layout/ScreenHeaderParticipation"
 
 export { FORM_ERROR } from "src/core/components/forms"
 

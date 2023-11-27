@@ -1,8 +1,8 @@
 import { MapProvider } from "react-map-gl/maplibre"
 import { ParticipationButton } from "../core/buttons/ParticipationButton"
-import { ScreenHeaderParticipation } from "../layout/ScreenHeaderParticipation"
+import { ScreenHeaderParticipation } from "../core/layout/ScreenHeaderParticipation"
 import { ParticipationMap } from "../maps/ParticipationMap"
-import { Question } from "../survey/Question"
+import { Question } from "../core/Question"
 import { ParticipationButtonWrapper } from "../core/buttons/ParticipationButtonWrapper"
 
 export { FORM_ERROR } from "src/core/components/forms"

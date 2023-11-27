@@ -1,5 +1,5 @@
 import { Button } from "src/participation/data/types"
-import { ParticipationButton } from "../core/buttons/ParticipationButton"
+import { ParticipationButton } from "./ParticipationButton"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
@@ -8,7 +8,11 @@ type Props = {
   disabled?: boolean
 }
 
-export const SurveyButton: React.FC<Props> = ({ disabled, button, buttonActions }) => {
+export const ParticipationButtonWithAction: React.FC<Props> = ({
+  disabled,
+  button,
+  buttonActions,
+}) => {
   const { label, color, onClick } = button
 
   if (onClick.action === "submit")
