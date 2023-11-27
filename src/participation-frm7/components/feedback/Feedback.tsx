@@ -1,6 +1,6 @@
 import { useCallback, useContext, useState } from "react"
 import { stageProgressDefinition } from "src/participation-frm7/components/frm7"
-import { PinContext, ProgressContext } from "src/participation-frm7/context/contexts"
+import { PinContext, ProgressContext } from "src/participation/context/contexts"
 
 import { FeedbackFirstPage } from "src/participation-frm7/components/feedback/FeedbackFirstPage"
 import { FeedbackSecondPage } from "src/participation-frm7/components/feedback/FeedbackSecondPage"

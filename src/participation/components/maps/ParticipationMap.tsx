@@ -1,5 +1,6 @@
 import { MultiLineString } from "@turf/helpers"
 import clsx from "clsx"
+import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import React, { useCallback, useContext, useEffect, useState } from "react"
 import Map, {
@@ -13,10 +14,10 @@ import Map, {
   useMap,
 } from "react-map-gl/maplibre"
 import { LayerType } from "src/core/components/Map/BackgroundSwitcher"
+import { MapBanner } from "src/participation/components/maps/MapBanner"
+import { ParticipationBackgroundSwitcher } from "src/participation/components/maps/ParticipationBackgroundSwitcher"
+import Pin from "src/participation/components/maps/Pin"
 import { PinContext } from "src/participation/context/contexts"
-import { MapBanner } from "./MapBanner"
-import { ParticipationBackgroundSwitcher } from "./ParticipationBackgroundSwitcher"
-import Pin from "./Pin"
 
 export type ParticipationMapProps = {
   className?: string
@@ -134,8 +135,8 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
         onMove={handleMapMove}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         onZoom={handleMapZoom}
+        mapLib={maplibregl}
       >
-        {children}
         {pinPosition && (
           <Marker
             longitude={pinPosition?.lng}
@@ -147,13 +148,18 @@ export const ParticipationMap: React.FC<ParticipationMapProps> = ({
             onDragEnd={onMarkerDragEnd}
           >
             <Pin />
-            <Source type="geojson" data={projectMap.projectGeometry}>
-              {projectMap.layerStyles.map((layer: any) => {
-                return <Layer key={layer.id} {...layer} />
-              })}
-            </Source>
           </Marker>
         )}
+        <Source key="lines" type="geojson" data={projectMap.projectGeometry}>
+          <Layer
+            type="line"
+            paint={{
+              "line-width": 7,
+              "line-color": "red",
+              "line-opacity": 1,
+            }}
+          />
+        </Source>
         {isMediumScreen && <NavigationControl showCompass={false} />}
 
         <MapBanner

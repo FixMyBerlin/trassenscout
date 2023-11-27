@@ -7,7 +7,7 @@ import { stageProgressDefinition } from "src/participation-frm7/components/frm7"
 import { Survey as TSurvey } from "src/participation-frm7/data/types"
 
 import { Page } from "src/participation-frm7/components/survey/Page"
-import { ProgressContext } from "src/participation-frm7/context/contexts"
+import { ProgressContext } from "src/participation/context/contexts"
 import { scrollToTopWithDelay } from "src/participation-frm7/utils/scrollToTopWithDelay"
 import { Debug } from "src/participation/components/core/Debug"
 import SurveyForm from "src/participation/components/form/SurveyForm"

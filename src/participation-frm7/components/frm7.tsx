@@ -22,7 +22,7 @@ import { scrollToTopWithDelay } from "src/participation-frm7/utils/scrollToTopWi
 import { ParticipationSpinnerLayover } from "src/participation-frm7/components/survey/ParticipationSpinnerLayover"
 import getPublicSurveyBySlug from "src/surveys/queries/getPublicSurveyBySlug"
 import { Debug } from "src/participation/components/core/Debug"
-import { ProgressContext } from "src/participation-frm7/context/contexts"
+import { ProgressContext } from "src/participation/context/contexts"
 import { LayoutParticipation } from "src/participation/components/layout/LayoutParticipation"
 
 // For Progressbar: stage and associated arbitrarily set status of the progressbar
@@ -35,7 +35,7 @@ export const stageProgressDefinition = {
 }
 
 const ParticipationFrm7MainPage: BlitzPage = () => {
-  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("SURVEY")
+  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("FEEDBACK")
   const [progress, setProgress] = useState(1)
   const [isSpinner, setIsSpinner] = useState(false)
   const [responses, setResponses] = useState<any[]>([])

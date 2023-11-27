@@ -1,10 +1,10 @@
 import { MapProvider } from "react-map-gl/maplibre"
 
-import { ParticipationMap } from "src/participation-frm7/components/maps/ParticipationMap"
 import { Question } from "src/participation-frm7/components/survey/Question"
 import { ParticipationButton } from "src/participation/components/core/buttons/ParticipationButton"
 import { ParticipationButtonWrapper } from "src/participation/components/core/buttons/ParticipationButtonWrapper"
 import { ScreenHeaderParticipation } from "src/participation/components/layout/ScreenHeaderParticipation"
+import { ParticipationMap } from "src/participation/components/maps/ParticipationMap"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
