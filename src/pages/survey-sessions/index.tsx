@@ -58,8 +58,8 @@ export const SurveySessionsList = () => {
               </Link>
 
               <div>
-                {responses.map(({ id, surveyId, data }: SurveyResponse) => {
-                  const survey = surveys[surveyId]
+                {responses.map(({ id, surveyPart, data }: SurveyResponse) => {
+                  const survey = surveys[surveyPart]
                   data = JSON.parse(data) as any // TODO are there types somewhere for {[questionId]: responseData} ?
                   return (
                     <code key={id}>

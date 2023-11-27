@@ -46,7 +46,7 @@ const ParticipationMainPage: BlitzPage = () => {
     if (surveySessionId) {
       return surveySessionId
     } else {
-      const surveySession = await createSurveySessionMutation({ surveyId: 1 })
+      const surveySession = await createSurveySessionMutation({ surveyId: surveyDefinition.id })
       setSurveySessionId(surveySession.id)
       return surveySession.id
     }
@@ -60,7 +60,7 @@ const ParticipationMainPage: BlitzPage = () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
         surveySessionId: surveySessionId_,
-        surveyId: surveyDefinition.id,
+        surveyPart: surveyDefinition.id,
         data: JSON.stringify(surveyResponses),
       })
     })()
@@ -84,7 +84,7 @@ const ParticipationMainPage: BlitzPage = () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
         surveySessionId: surveySessionId_,
-        surveyId: feedbackDefinition.id,
+        surveyPart: feedbackDefinition.id,
         data: JSON.stringify(feedbackResponses),
       })
     })()

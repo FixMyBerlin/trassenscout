@@ -21,7 +21,7 @@ export default resolver.pipe(
         // Reminder: `response.surveyId` is NOT a relation field
         // the field here just represents first or second part of the survey json
         // surveyId `2` is src/participation/data/feedback.json
-        surveyId: 2,
+        surveyPart: 2,
       },
       orderBy: { id: "desc" },
       include: {

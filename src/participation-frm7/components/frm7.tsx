@@ -66,7 +66,7 @@ const ParticipationFrm7MainPage: BlitzPage = () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
         surveySessionId: surveySessionId_,
-        surveyId: surveyDefinition.id,
+        surveyPart: surveyDefinition.id,
         data: JSON.stringify(surveyResponses),
       })
     })()
@@ -90,7 +90,7 @@ const ParticipationFrm7MainPage: BlitzPage = () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
         surveySessionId: surveySessionId_,
-        surveyId: feedbackDefinition.id,
+        surveyPart: feedbackDefinition.id,
         data: JSON.stringify(feedbackResponses),
       })
     })()

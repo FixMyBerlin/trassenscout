@@ -49,14 +49,14 @@ export default resolver.pipe(
     const surveyResponsesFirstPart = surveySessions
       .map((session) => session.responses)
       .flat()
-      .filter((response) => response.surveyId === 1)
+      .filter((response) => response.surveyPart === 1)
       .sort((a, b) => b.id - a.id)
 
     // src/participation/data/feedback.json
     const surveyResponsesFeedbackPart = surveySessions
       .map((session) => session.responses)
       .flat()
-      .filter((response) => response.surveyId === 2)
+      .filter((response) => response.surveyPart === 2)
       // We need to sort again; the frontend received different orders before…
       .sort((a, b) => b.id - a.id)
 

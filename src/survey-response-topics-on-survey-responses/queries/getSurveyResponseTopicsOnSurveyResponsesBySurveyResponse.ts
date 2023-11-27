@@ -1,7 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 import db, { Prisma } from "db"
-import { SurveyResponse } from "src/pages/[projectSlug]/surveys/[surveyId]/responses"
 
 type GetSurveyResponseTopicsOnSurveyResponsesInput = { surveyResponseId: number } & Pick<
   Prisma.SurveyResponseTopicsOnSurveyResponsesFindManyArgs,

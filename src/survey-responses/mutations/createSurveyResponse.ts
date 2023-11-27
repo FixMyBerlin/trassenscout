@@ -4,7 +4,7 @@ import { z } from "zod"
 
 const CreateSurveyResponse = z.object({
   surveySessionId: z.number(),
-  surveyId: z.number(),
+  surveyPart: z.number(),
   data: z.string(),
 })
 
