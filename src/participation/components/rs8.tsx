@@ -3,10 +3,10 @@ import { BlitzPage } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 
 import { Done } from "src/participation/components/Done"
-import { Email } from "src/participation/components/Email"
+import { Email } from "src/participation/components/core/Email"
 import { Feedback } from "src/participation/components/feedback/Feedback"
 import { LayoutParticipation } from "src/participation/components/core/layout/LayoutParticipation"
-import { More } from "src/participation/components/More"
+import { More } from "src/participation/components/core/More"
 import { Survey } from "src/participation/components/Survey"
 import moreDefinition from "src/participation/data/more.json"
 import surveyDefinition from "src/participation/data/survey.json"
@@ -141,7 +141,13 @@ const ParticipationMainPage: BlitzPage = () => {
       )
       break
     case "EMAIL":
-      component = <Email email={emailDefinition} onSubmit={handleSubmitEmail} />
+      component = (
+        <Email
+          email={emailDefinition}
+          onSubmit={handleSubmitEmail}
+          homeUrl={surveyDefinition.canonicalUrl}
+        />
+      )
       break
     case "DONE":
       component = <Done />

@@ -1,7 +1,7 @@
-import { ParticipationH2 } from "src/participation/components/core/Text"
-import { ParticipationButton } from "src/participation/components/core/buttons/ParticipationButton"
-import { ParticipationButtonWrapper } from "src/participation/components/core/buttons/ParticipationButtonWrapper"
-import { ScreenHeaderParticipation } from "src/participation/components/core/layout/ScreenHeaderParticipation"
+import { ParticipationH2 } from "./Text"
+import { ParticipationButton } from "./buttons/ParticipationButton"
+import { ParticipationButtonWrapper } from "./buttons/ParticipationButtonWrapper"
+import { ScreenHeaderParticipation } from "./layout/ScreenHeaderParticipation"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -12,13 +12,12 @@ type Props = {
 }
 
 export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
-  const { title, description, questions, buttons } = more.pages[0]
-  const question = questions[0]
+  const { title, description, questionText, buttons } = more
 
   return (
     <>
       <ScreenHeaderParticipation title={title.de} description={description.de} />
-      <ParticipationH2>{question.label.de}</ParticipationH2>
+      <ParticipationH2>{questionText.de}</ParticipationH2>
       <ParticipationButtonWrapper>
         <ParticipationButton color={buttons[0].color} onClick={onClickMore}>
           {buttons[0].label.de}

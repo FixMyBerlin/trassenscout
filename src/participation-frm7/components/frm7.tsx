@@ -3,10 +3,9 @@ import { BlitzPage, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 
 import { Done } from "src/participation-frm7/components/Done"
-import { Email } from "src/participation-frm7/components/Email"
+
 import { Feedback } from "src/participation-frm7/components/feedback/Feedback"
 
-import { More } from "src/participation-frm7/components/More"
 import { Survey } from "src/participation-frm7/components/Survey"
 import moreDefinition from "src/participation-frm7/data/more.json"
 import surveyDefinition from "src/participation-frm7/data/survey.json"
@@ -23,6 +22,8 @@ import { ProgressContext } from "src/participation/context/contexts"
 import { LayoutParticipation } from "src/participation/components/core/layout/LayoutParticipation"
 import { ParticipationSpinnerLayover } from "src/participation/components/core/ParticipationSpinnerLayover"
 import { scrollToTopWithDelay } from "src/participation/utils/scrollToTopWithDelay"
+import { More } from "src/participation/components/core/More"
+import { Email } from "src/participation/components/core/Email"
 
 // For Progressbar: stage and associated arbitrarily set status of the progressbar
 export const stageProgressDefinition = {
@@ -146,7 +147,13 @@ const ParticipationFrm7MainPage: BlitzPage = () => {
       )
       break
     case "EMAIL":
-      component = <Email email={emailDefinition} onSubmit={handleSubmitEmail} />
+      component = (
+        <Email
+          email={emailDefinition}
+          onSubmit={handleSubmitEmail}
+          homeUrl={surveyDefinition.canonicalUrl}
+        />
+      )
       break
     case "DONE":
       component = <Done />
