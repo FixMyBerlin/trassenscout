@@ -1,7 +1,7 @@
 import { ScreenHeaderParticipation } from "src/participation/components/core/layout/ScreenHeaderParticipation"
 import { ParticipationButtonWithAction } from "./buttons/ParticipationButtonWithAction"
 import { ParticipationButtonWrapper } from "./buttons/ParticipationButtonWrapper"
-import type { Page as TPage } from "src/participation/data/types"
+import type { TPage as TPage } from "src/participation/data/types"
 import { Question } from "./Question"
 export { FORM_ERROR } from "src/core/components/forms"
 

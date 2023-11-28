@@ -45,14 +45,14 @@ export default resolver.pipe(
     // Reminder: `response.surveyId` is NOT a relation field
     // the field here just represents first or second part of the survey json
 
-    // src/participation/data/survey.json
+    // src/participation/data/survey
     const surveyResponsesFirstPart = surveySessions
       .map((session) => session.responses)
       .flat()
       .filter((response) => response.surveyPart === 1)
       .sort((a, b) => b.id - a.id)
 
-    // src/participation/data/feedback.json
+    // src/participation/data/feedback
     const surveyResponsesFeedbackPart = surveySessions
       .map((session) => session.responses)
       .flat()

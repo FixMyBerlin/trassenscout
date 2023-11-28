@@ -7,10 +7,10 @@ import { Done } from "src/participation-frm7/components/Done"
 import { Feedback } from "src/participation-frm7/components/feedback/Feedback"
 
 import { Survey } from "src/participation-frm7/components/Survey"
-import moreDefinition from "src/participation-frm7/data/more.json"
-import surveyDefinition from "src/participation-frm7/data/survey.json"
+import { moreDefinition } from "src/participation-frm7/data/more"
+import { surveyDefinition } from "src/participation-frm7/data/survey"
 import feedbackDefinition from "src/participation-frm7/data/feedback.json"
-import emailDefinition from "src/participation-frm7/data/email.json"
+import { emailDefinition } from "src/participation-frm7/data/email"
 
 import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
 import updateSurveySession from "src/survey-sessions/mutations/updateSurveySession"

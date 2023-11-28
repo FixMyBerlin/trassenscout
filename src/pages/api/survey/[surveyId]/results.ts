@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import db from "db"
-import surveyDefinition from "src/participation/data/survey.json"
+import surveyDefinition from "src/participation/data/survey"
 import feedbackDefinition from "src/participation/data/feedback.json"
 import { getSurvey, sendCsv } from "./_shared"
 

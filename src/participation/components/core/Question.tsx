@@ -1,5 +1,5 @@
-import { SingleOrMultiResponseProps, TextResponseProps } from "src/participation/data/types"
-import { Question as TQuestion } from "src/participation/data/types"
+import { TSingleOrMultiResponseProps, TextResponseProps } from "src/participation/data/types"
+import { TQuestion as TQuestion } from "src/participation/data/types"
 import { ParticipationH2 } from "./Text"
 import { ParticipationLabeledCheckboxGroup } from "./form/ParticipationLabeledCheckboxGroup"
 import { ParticipationLabeledRadiobuttonGroup } from "./form/ParticipationLabeledRadiobuttonGroup"
@@ -8,7 +8,7 @@ export { FORM_ERROR } from "src/core/components/forms"
 
 type TSingleOrMultuResponseComponentProps = {
   id: number
-} & SingleOrMultiResponseProps
+} & TSingleOrMultiResponseProps
 
 const SingleResponseComponent: React.FC<TSingleOrMultuResponseComponentProps> = ({
   id,

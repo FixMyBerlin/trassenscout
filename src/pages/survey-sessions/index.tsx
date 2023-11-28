@@ -9,7 +9,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import feedbackDefinition from "src/participation/data/feedback.json"
-import surveyDefinition from "src/participation/data/survey.json"
+import surveyDefinition from "src/participation/data/survey"
 import getSurveySessionsWithResponses from "src/survey-sessions/queries/getSurveySessionsWithResponses"
 
 const surveys = Object.fromEntries([surveyDefinition, feedbackDefinition].map((o) => [o.id, o]))
