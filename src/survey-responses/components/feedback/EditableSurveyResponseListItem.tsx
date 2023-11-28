@@ -11,6 +11,7 @@ import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries
 import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedbackSurveyResponses"
 import { getSurveyResponseCategoryById } from "src/survey-responses/utils/getSurveyResponseCategoryById"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
+import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
 import { feedbackDefinition } from "src/participation/data/feedback"
 
 export type EditableSurveyResponseListItemProps = {
@@ -44,17 +45,32 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const open = parseInt(String(params.responseDetails)) === response.id
 
   const operatorSlugWitFallback = response.operator?.slug || "k.A."
-  // @ts-expect-error `data` is of type unkown
-  const userText = response.data["34"] || response.data["35"]
-  let userAdditionalText = null
-  // @ts-expect-error `data` is of type unkown
-  if (response.data["34"] && response.data["35"]) {
-    // @ts-expect-error `data` is of type unkown
-    userAdditionalText = response.data["35"]
+
+  const feedbackQuestions = []
+  for (let page of feedbackDefinition.pages) {
+    feedbackQuestions.push(...page.questions)
   }
-  const userCategory =
+
+  const userTextIndices = feedbackQuestions
+    .filter((question) => question.evaluationRef === "feedback-userText")
+    .map((question) => question.id)
+
+  // @ts-expect-error `data` is of type unkown
+  const userTextPreview = response.data[Boolean(userTextIndices.length) && userTextIndices[0]]
+
+  const feedbackUserCategoryQuestion = feedbackQuestions.find(
+    (question) => question.evaluationRef === "feedback-category",
+  )
+
+  const feedbackUserCategory =
     // @ts-expect-error `data` is of type unkown
-    response.data["21"] && getSurveyResponseCategoryById(Number(response.data["21"]))
+    response.data[feedbackUserCategoryQuestion.id] &&
+    feedbackUserCategoryQuestion?.id &&
+    getSurveyResponseCategoryById(
+      // @ts-expect-error `data` is of type unkown
+      Number(response.data[feedbackUserCategoryQuestion.id]),
+      feedbackUserCategoryQuestion,
+    )
 
   return (
     <article data-open={open}>
@@ -77,7 +93,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             <div>{operatorSlugWitFallback}</div>
           </div>
 
-          <Markdown className="ml-4 line-clamp-2" markdown={userText} />
+          <Markdown className="ml-4 line-clamp-2" markdown={userTextPreview} />
         </div>
 
         {open ? (
@@ -90,28 +106,15 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
       {open && (
         <div className={clsx("overflow-clip p-6", open ? "border-b border-gray-300" : "")}>
           <div className="flex gap-12 mb-10 flex-col md:flex-row justify-between">
-            <div>
-              <blockquote className="bg-yellow-100 p-4 mb-2">
-                <h4 className="font-semibold mb-2">
-                  {/* @ts-expect-error `data` is of type unkown */}
-                  {response.data["34"]
-                    ? "Was gefällt Ihnen hier besonders?"
-                    : "Was wünschen Sie sich?"}
-                </h4>
-                <Markdown markdown={userText} />
-              </blockquote>
-              {userAdditionalText && (
-                <blockquote className="bg-blue-50 p-4">
-                  <h4 className="font-semibold mb-2">Was wünschen Sie sich?</h4>
-                  <Markdown markdown={userAdditionalText} />
-                </blockquote>
-              )}
-              <div className="mt-2 text-right text-gray-500">{`Bürgerbeitrag vom: ${response.surveySession.createdAt.toLocaleDateString()} um  ${response.surveySession.createdAt.toLocaleTimeString()}`}</div>
-            </div>
+            <EditableSurveyResponseUserText
+              userTextIndices={userTextIndices}
+              feedbackQuestions={feedbackQuestions}
+              response={response}
+            />
             <div>
               <h4 className="font-semibold mb-5">Kategorie</h4>
               <div className="w-48 flex-shrink-0">
-                <span className="p-3 px-4 bg-gray-300 rounded">{userCategory}</span>
+                <span className="p-3 px-4 bg-gray-300 rounded">{feedbackUserCategory}</span>
               </div>
             </div>
           </div>

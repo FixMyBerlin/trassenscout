@@ -13,6 +13,7 @@ export const feedbackDefinition: TFeedback = {
         {
           id: 21,
           label: { de: "Zu welchem Thema passt Ihr Feedback?" },
+          evaluationRef: "feedback-category",
           component: "singleResponse",
           props: {
             responses: [
@@ -31,6 +32,7 @@ export const feedbackDefinition: TFeedback = {
             de: "Bezieht sich Ihr Feedback auf eine konkrete Stelle entlang der Route?",
           },
           component: "singleResponse",
+          evaluationRef: "feedback-location",
           props: {
             responses: [
               { id: 1, text: { de: "Ja" } },
@@ -849,6 +851,7 @@ export const feedbackDefinition: TFeedback = {
           id: 34,
           label: { de: "Was gefällt Ihnen hier besonders?" },
           component: "text",
+          evaluationRef: "feedback-userText",
           props: {
             placeholder: { de: "Beantworten Sie hier..." },
             caption: { de: "Max. 2000 Zeichen" },
@@ -858,6 +861,7 @@ export const feedbackDefinition: TFeedback = {
           id: 35,
           label: { de: "Was wünschen Sie sich?" },
           component: "text",
+          evaluationRef: "feedback-userText",
           props: {
             placeholder: { de: "Beantworten Sie hier..." },
             caption: { de: "Max. 2000 Zeichen" },

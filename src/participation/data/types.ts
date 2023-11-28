@@ -88,18 +88,21 @@ type TMapProps = {
   caption?: TTranslatableText
 }
 
+export type TFeedbackQuestion = {
+  evaluationRef?: string
+  id: number
+  label: TTranslatableText
+  component: "singleResponse" | "multipleResponse" | "text" | "map" | "custom"
+  props?: TSingleOrMultiResponseProps | TMapProps
+}
+
 export type TFeedback = {
   part: number
   pages: {
     id: number
     title: TTranslatableText
     description: TTranslatableText
-    questions: {
-      id: number
-      label: TTranslatableText
-      component: "singleResponse" | "multipleResponse" | "text" | "map" | "custom"
-      props?: TSingleOrMultiResponseProps | TMapProps
-    }[]
+    questions: TFeedbackQuestion[]
     buttons: TButtonWithAction[]
   }[]
 }

@@ -1,9 +1,7 @@
-import { feedbackDefinition } from "src/participation/data/feedback"
+import { TFeedbackQuestion, TResponse } from "src/participation/data/types"
 
-export const getSurveyResponseCategoryById = (id: number) =>
-  // @ts-ignore
-  feedbackDefinition.pages[0]?.questions
-    // @ts-ignore
-    .find((e) => e.id === 21)
-    // @ts-ignore
-    .props.responses.find((r) => r.id === id).text.de
+export const getSurveyResponseCategoryById = (
+  id: number,
+  feedbackUserCategoryQuestion: TFeedbackQuestion,
+  // @ts-expect-error
+) => feedbackUserCategoryQuestion?.props?.responses.find((r: TResponse) => r.id === id).text.de
