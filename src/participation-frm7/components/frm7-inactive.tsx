@@ -1,6 +1,6 @@
 import { BlitzPage } from "@blitzjs/next"
 import { LayoutParticipation } from "src/participation/components/core/layout/LayoutParticipation"
-import surveyDefinition from "src/participation-frm7/data/survey"
+import { surveyDefinition } from "src/participation-frm7/data/survey"
 
 import { ParticipationLink } from "src/participation/components/core/links/ParticipationLink"
 import { ScreenHeaderParticipation } from "src/participation/components/core/layout/ScreenHeaderParticipation"

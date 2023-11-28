@@ -11,7 +11,7 @@ import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries
 import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedbackSurveyResponses"
 import { getSurveyResponseCategoryById } from "src/survey-responses/utils/getSurveyResponseCategoryById"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
-import feedbackDefinition from "src/participation/data/feedback.json"
+import { feedbackDefinition } from "src/participation/data/feedback"
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>

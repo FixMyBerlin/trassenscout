@@ -1,5 +1,5 @@
 export type TSurvey = {
-  id: number
+  part: number
   version: number
   logoUrl: string
   canonicalUrl: string
@@ -11,7 +11,7 @@ export type TPage = {
   title: TTranslatableText
   description: TTranslatableText
   questions?: TQuestion[]
-  buttons: TButton[]
+  buttons: TButtonWithAction[]
 }
 
 export type TQuestion = {
@@ -21,20 +21,29 @@ export type TQuestion = {
   props: TSingleOrMultiResponseProps
 }
 
-export type TButton = {
+export type TButtonWithAction = {
   label: TTranslatableText
-  color: "white" | "pink" | "blue"
-  onClick?: {
+  color: TColor
+  onClick: {
     action: "nextPage" | "previousPage" | "submit"
   }
 }
 
-export type TTranslatableText = {
+type TButton = {
+  label: TTranslatableText
+  color: TColor
+}
+
+type TColor = "white" | "pink" | "blue"
+
+type TTranslatableText = {
   de: string
 }
+
 export type TSingleOrMultiResponseProps = {
   responses: TResponse[]
 }
+
 export type TResponse = {
   id: number
   text: TTranslatableText
@@ -46,12 +55,51 @@ export type TEmail = {
   questionText: TTranslatableText
   description: TTranslatableText
   mailjetWidgetUrl: string
-  button: TButton[]
+  button: TButton
 }
 
 export type TMore = {
   title: TTranslatableText
   description: TTranslatableText
   questionText: TTranslatableText
-  buttons: TButton[]
+  buttons: TButtonWithAction[]
+}
+
+type TMapProps = {
+  marker?: {
+    lat: number
+    lng: number
+  }
+  layerStyles?: Record<string, any>[]
+  projectGeometry?: {
+    type: "FeatureCollection"
+    features: {
+      id?: string
+      type: "Feature"
+      properties: {}
+      geometry: {
+        coordinates: any[]
+        type: "MultiLineString" | "LineString"
+      }
+    }[]
+  }
+  config?: Record<string, any>
+  placeholder?: TTranslatableText
+  caption?: TTranslatableText
+}
+
+export type TFeedback = {
+  part: number
+  pages: {
+    id: number
+    title: TTranslatableText
+    description: TTranslatableText
+    questions: {
+      id: number
+      label: TTranslatableText
+      component: "singleResponse" | "multipleResponse" | "text" | "map" | "custom"
+      props?: TSingleOrMultiResponseProps | TMapProps
+    }[]
+    buttons: TButtonWithAction[]
+  }[]
 }

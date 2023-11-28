@@ -8,11 +8,11 @@ import { Pagination } from "src/core/components/Pagination"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
-import feedbackDefinition from "src/participation/data/feedback.json"
-import surveyDefinition from "src/participation/data/survey"
+import { feedbackDefinition } from "src/participation/data/feedback"
+import { surveyDefinition } from "src/participation/data/survey"
 import getSurveySessionsWithResponses from "src/survey-sessions/queries/getSurveySessionsWithResponses"
 
-const surveys = Object.fromEntries([surveyDefinition, feedbackDefinition].map((o) => [o.id, o]))
+const surveys = Object.fromEntries([surveyDefinition, feedbackDefinition].map((o) => [o.part, o]))
 const questions = {}
 Object.values(surveys).forEach((survey) => {
   survey.pages.forEach((page) => {
@@ -47,69 +47,77 @@ export const SurveySessionsList = () => {
       <h1>SurveySessions {count}</h1>
 
       <ul>
-        {surveySessions.map((surveySession) => {
-          const { id, createdAt, responses } = surveySession
-          return (
-            <li key={id} className="border-2 p-2">
-              <Link href={Routes.ShowSurveySessionPage({ surveySessionId: id })}>
-                <code className="text-base">
-                  SurveySession {id} - {createdAt.toISOString()}
-                </code>
-              </Link>
+        {surveySessions
+          // TODO remove filter to show all sessions
+          // iterate through all surveys - does not work with this code as questions differ in feedback and surveydefinition
+          .filter((session) => session.surveyId === 1)
+          .map((surveySession) => {
+            const { id, createdAt, responses } = surveySession
+            return (
+              <li key={id} className="border-2 p-2">
+                <Link href={Routes.ShowSurveySessionPage({ surveySessionId: id })}>
+                  <code className="text-base">
+                    SurveySession {id} - {createdAt.toISOString()}
+                  </code>
+                </Link>
 
-              <div>
-                {responses.map(({ id, surveyPart, data }: SurveyResponse) => {
-                  const survey = surveys[surveyPart]
-                  data = JSON.parse(data) as any // TODO are there types somewhere for {[questionId]: responseData} ?
-                  return (
-                    <code key={id}>
-                      <div className="ml-3">
-                        <p className="underline">{survey!.title.de}</p>
-                        {Object.entries(data).map(([questionId, responseData]) => {
-                          // @ts-ignore
-                          const question = questions[questionId]
-                          return (
-                            <div key={question.id} className="ml-3">
-                              <span className="">
-                                [{question.id}] {question.label.de}
-                              </span>{" "}
-                              =&nbsp;
-                              {(() => {
-                                if (question.component === "singleResponse") {
-                                  // @ts-ignore
-                                  const responseId = responseData as number | null
-                                  return responseId === null
-                                    ? "null"
-                                    : `[${responseId}] ${question.responses[responseId].text.de}`
-                                }
-                                if (question.component === "multipleResponse") {
-                                  // @ts-ignore
-                                  const responseIds = responseData as number[]
-                                  return responseIds
-                                    .map(
-                                      (responseId) =>
-                                        `[${responseId}] ${question.responses[responseId].text.de}`,
-                                    )
-                                    .join(", ")
-                                }
-                                if (question.component === "text") {
-                                  // @ts-ignore
-                                  const responseText = responseData as string | null
-                                  return JSON.stringify(responseText)
-                                }
-                                return JSON.stringify(responseData)
-                              })()}
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </code>
-                  )
-                })}
-              </div>
-            </li>
-          )
-        })}
+                <div>
+                  <code>
+                    {responses.map(({ id, surveyPart, data }: SurveyResponse) => {
+                      const survey = surveys[surveyPart]
+
+                      data = JSON.parse(data) as any // TODO are there types somewhere for {[questionId]: responseData} ?
+                      return (
+                        <code key={id}>
+                          <div className="ml-3">
+                            {Object.entries(data).map(([questionId, responseData]) => {
+                              // @ts-ignore
+                              const question = questions[questionId]
+                              console.log(questions)
+
+                              return (
+                                <div key={question.id} className="ml-3">
+                                  <span className="">
+                                    [{question.id}] {question.label.de}
+                                  </span>{" "}
+                                  =&nbsp;
+                                  {(() => {
+                                    if (question.component === "singleResponse") {
+                                      // @ts-ignore
+                                      const responseId = responseData as number | null
+                                      return responseId === null
+                                        ? "null"
+                                        : `[${responseId}] ${question.responses[responseId].text.de}`
+                                    }
+                                    if (question.component === "multipleResponse") {
+                                      // @ts-ignore
+                                      const responseIds = responseData as number[]
+                                      return responseIds
+                                        .map(
+                                          (responseId) =>
+                                            `[${responseId}] ${question.responses[responseId].text.de}`,
+                                        )
+                                        .join(", ")
+                                    }
+                                    if (question.component === "text") {
+                                      // @ts-ignore
+                                      const responseText = responseData as string | null
+                                      return JSON.stringify(responseText)
+                                    }
+                                    return JSON.stringify(responseData)
+                                  })()}
+                                </div>
+                              )
+                            })}
+                          </div>
+                        </code>
+                      )
+                    })}
+                  </code>
+                </div>
+              </li>
+            )
+          })}
       </ul>
 
       <Pagination

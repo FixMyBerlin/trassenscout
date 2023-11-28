@@ -1,131 +1,130 @@
-{
-  "id": 2,
-  "title": { "de": "Feedback" },
-  "createdAt": "2023-03-22T12:19:59.648Z",
-  "version": 1,
-  "pages": [
-    {
-      "id": 1,
-      "title": { "de": "Wir sind gespannt auf Ihre Anmerkungen." },
-      "description": {
-        "de": "Hier können Sie dem Planungsteam konkrete Ideen, Anregungen und Hinweise zum RS 8 mit auf den Weg geben. Sie können mehrere Anmerkungen abgeben, bitte geben Sie diese einzeln ab."
-      },
-      "questions": [
-        {
-          "id": 21,
-          "label": { "de": "Zu welchem Thema passt Ihr Feedback?" },
-          "component": "singleResponse",
-          "props": {
-            "responses": [
-              { "id": 1, "text": { "de": "Nutzung" } },
-              { "id": 2, "text": { "de": "Streckenführung" } },
-              { "id": 3, "text": { "de": "Zubringer" } },
-              { "id": 4, "text": { "de": "Mögliche Konflikte" } },
-              { "id": 5, "text": { "de": "Umwelt- und Naturschutz" } },
-              { "id": 6, "text": { "de": "Sonstiges" } }
-            ]
-          }
-        },
-        {
-          "id": 22,
-          "label": {
-            "de": "Bezieht sich Ihr Feedback auf eine konkrete Stelle entlang der Route?"
-          },
-          "component": "singleResponse",
-          "props": {
-            "responses": [
-              { "id": 1, "text": { "de": "Ja" } },
-              { "id": 2, "text": { "de": "Nein" } }
-            ]
-          }
-        },
-        {
-          "id": 23,
-          "label": { "de": "Markieren Sie die Stelle, zu der Sie etwas sagen möchten." },
-          "component": "map",
-          "props": {
-            "marker": {
-              "lat": 48.87405710508672,
-              "lng": 9.271044583540359
-            },
-            "layerStyles": [
-              {
-                "id": "RS8--allsections-luecke-copy",
-                "type": "line",
+import { TFeedback } from "./types"
 
-                "layout": { "visibility": "visible" },
-                "paint": {
+export const feedbackDefinition: TFeedback = {
+  part: 2,
+  pages: [
+    {
+      id: 1,
+      title: { de: "Wir sind gespannt auf Ihre Anmerkungen." },
+      description: {
+        de: "Hier können Sie dem Planungsteam konkrete Ideen, Anregungen und Hinweise zum RS 8 mit auf den Weg geben. Sie können mehrere Anmerkungen abgeben, bitte geben Sie diese einzeln ab.",
+      },
+      questions: [
+        {
+          id: 21,
+          label: { de: "Zu welchem Thema passt Ihr Feedback?" },
+          component: "singleResponse",
+          props: {
+            responses: [
+              { id: 1, text: { de: "Nutzung" } },
+              { id: 2, text: { de: "Streckenführung" } },
+              { id: 3, text: { de: "Zubringer" } },
+              { id: 4, text: { de: "Mögliche Konflikte" } },
+              { id: 5, text: { de: "Umwelt- und Naturschutz" } },
+              { id: 6, text: { de: "Sonstiges" } },
+            ],
+          },
+        },
+        {
+          id: 22,
+          label: {
+            de: "Bezieht sich Ihr Feedback auf eine konkrete Stelle entlang der Route?",
+          },
+          component: "singleResponse",
+          props: {
+            responses: [
+              { id: 1, text: { de: "Ja" } },
+              { id: 2, text: { de: "Nein" } },
+            ],
+          },
+        },
+        {
+          id: 23,
+          label: { de: "Markieren Sie die Stelle, zu der Sie etwas sagen möchten." },
+          component: "map",
+          props: {
+            marker: {
+              lat: 48.87405710508672,
+              lng: 9.271044583540359,
+            },
+            layerStyles: [
+              {
+                id: "RS8--allsections-luecke-copy",
+                type: "line",
+
+                layout: { visibility: "visible" },
+                paint: {
                   "line-color": "#2C62A9",
                   "line-width": 3,
-                  "line-dasharray": [2, 2]
+                  "line-dasharray": [2, 2],
                 },
-                "filter": ["all", ["==", "planungsabschnitt", "2A"]]
+                filter: ["all", ["==", "planungsabschnitt", "2A"]],
               },
               {
-                "id": "RS8--allsections",
-                "type": "line",
+                id: "RS8--allsections",
+                type: "line",
 
-                "layout": { "visibility": "visible" },
-                "paint": { "line-color": "#2C62A9", "line-width": 3 },
-                "filter": ["all", ["!=", "planungsabschnitt", "2A"]]
+                layout: { visibility: "visible" },
+                paint: { "line-color": "#2C62A9", "line-width": 3 },
+                filter: ["all", ["!=", "planungsabschnitt", "2A"]],
               },
               {
-                "id": "RS8--section4",
-                "type": "line",
+                id: "RS8--section4",
+                type: "line",
 
-                "layout": { "visibility": "none" },
-                "paint": {
+                layout: { visibility: "none" },
+                paint: {
                   "line-color": "#2C62A9",
                   "line-width": 7,
-                  "line-opacity": 1
+                  "line-opacity": 1,
                 },
-                "filter": ["all", ["==", "teilstrecke", 4]]
+                filter: ["all", ["==", "teilstrecke", 4]],
               },
               {
-                "id": "RS8--section3",
-                "type": "line",
+                id: "RS8--section3",
+                type: "line",
 
-                "layout": { "visibility": "none" },
-                "paint": { "line-color": "#2C62A9", "line-width": 5 },
-                "filter": ["all", ["==", "teilstrecke", 3]]
+                layout: { visibility: "none" },
+                paint: { "line-color": "#2C62A9", "line-width": 5 },
+                filter: ["all", ["==", "teilstrecke", 3]],
               },
               {
-                "id": "RS8--section1",
-                "type": "line",
+                id: "RS8--section1",
+                type: "line",
 
-                "layout": { "visibility": "none" },
-                "paint": { "line-color": "#2C62A9", "line-width": 5 },
-                "filter": ["any", ["==", "teilstrecke", 1], ["==", "planungsabschnitt", "2B"]]
+                layout: { visibility: "none" },
+                paint: { "line-color": "#2C62A9", "line-width": 5 },
+                filter: ["any", ["==", "teilstrecke", 1], ["==", "planungsabschnitt", "2B"]],
               },
               {
-                "id": "RS8--section1-luecke",
-                "type": "line",
+                id: "RS8--section1-luecke",
+                type: "line",
 
-                "layout": { "visibility": "none" },
-                "paint": {
+                layout: { visibility: "none" },
+                paint: {
                   "line-color": "#2c62a9",
                   "line-width": 7,
-                  "line-dasharray": [2, 2]
+                  "line-dasharray": [2, 2],
                 },
-                "filter": ["all", ["==", "planungsabschnitt", "2A"]]
+                filter: ["all", ["==", "planungsabschnitt", "2A"]],
               },
               {
-                "id": "RS8--section2",
-                "type": "line",
+                id: "RS8--section2",
+                type: "line",
 
-                "layout": { "visibility": "none" },
-                "paint": { "line-color": "#2c62a9", "line-width": 5 },
-                "filter": ["all", ["==", "teilstrecke", 2], ["!=", "planungsabschnitt", "2A"]]
-              }
+                layout: { visibility: "none" },
+                paint: { "line-color": "#2c62a9", "line-width": 5 },
+                filter: ["all", ["==", "teilstrecke", 2], ["!=", "planungsabschnitt", "2A"]],
+              },
             ],
-            "projectGeometry": {
-              "type": "FeatureCollection",
-              "features": [
+            projectGeometry: {
+              type: "FeatureCollection",
+              features: [
                 {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [
+                  type: "Feature",
+                  geometry: {
+                    type: "MultiLineString",
+                    coordinates: [
                       [
                         [9.194367, 48.893241],
                         [9.204387, 48.893397],
@@ -139,25 +138,25 @@
                         [9.214959, 48.891126],
                         [9.215124, 48.891105],
                         [9.215157, 48.891101],
-                        [9.215175, 48.891098]
-                      ]
-                    ]
+                        [9.215175, 48.891098],
+                      ],
+                    ],
                   },
-                  "id": "b52d5fa5-56ee-40de-b854-575f66edcd93",
-                  "properties": {
-                    "stroke": "#C93535",
-                    "gemeinde": "(1:Ludwigsburg)",
-                    "variante": "Trasse 2",
-                    "teilstrecke": 1,
-                    "baulasttraeger": "Stadt Ludwigsburg",
-                    "planungsabschnitt": "1B"
-                  }
+                  id: "b52d5fa5-56ee-40de-b854-575f66edcd93",
+                  properties: {
+                    stroke: "#C93535",
+                    gemeinde: "(1:Ludwigsburg)",
+                    variante: "Trasse 2",
+                    teilstrecke: 1,
+                    baulasttraeger: "Stadt Ludwigsburg",
+                    planungsabschnitt: "1B",
+                  },
                 },
                 {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "LineString",
-                    "coordinates": [
+                  type: "Feature",
+                  geometry: {
+                    type: "LineString",
+                    coordinates: [
                       [9.240035, 48.887679],
                       [9.240504, 48.887561],
                       [9.243368, 48.886582],
@@ -231,24 +230,24 @@
                       [9.246872, 48.885593],
                       [9.246904, 48.885578],
                       [9.246938, 48.885564],
-                      [9.246941, 48.885563]
-                    ]
+                      [9.246941, 48.885563],
+                    ],
                   },
-                  "id": "99b232e7-3c50-44ba-90ac-0f755c5b1836",
-                  "properties": {
-                    "stroke": "#C93535",
-                    "gemeinde": "(1:Remseck am Neckar)",
-                    "variante": "Trasse 2",
-                    "teilstrecke": 2,
-                    "baulasttraeger": "Kreis Ludwigsburg",
-                    "planungsabschnitt": "2C"
-                  }
+                  id: "99b232e7-3c50-44ba-90ac-0f755c5b1836",
+                  properties: {
+                    stroke: "#C93535",
+                    gemeinde: "(1:Remseck am Neckar)",
+                    variante: "Trasse 2",
+                    teilstrecke: 2,
+                    baulasttraeger: "Kreis Ludwigsburg",
+                    planungsabschnitt: "2C",
+                  },
                 },
                 {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "LineString",
-                    "coordinates": [
+                  type: "Feature",
+                  geometry: {
+                    type: "LineString",
+                    coordinates: [
                       [9.305, 48.838441],
                       [9.304997, 48.838436],
                       [9.304601, 48.838093],
@@ -273,24 +272,24 @@
                       [9.305058, 48.837724],
                       [9.305307, 48.837136],
                       [9.304794, 48.835689],
-                      [9.304766, 48.835575]
-                    ]
+                      [9.304766, 48.835575],
+                    ],
                   },
-                  "id": "695f87f5-80b6-498f-8de1-f9c86c62533f",
-                  "properties": {
-                    "stroke": "#C93535",
-                    "gemeinde": "(2:Fellbach,Waiblingen)",
-                    "variante": "Trasse 2",
-                    "teilstrecke": 3,
-                    "baulasttraeger": "Rems-Murr-Kreis",
-                    "planungsabschnitt": "3E"
-                  }
+                  id: "695f87f5-80b6-498f-8de1-f9c86c62533f",
+                  properties: {
+                    stroke: "#C93535",
+                    gemeinde: "(2:Fellbach,Waiblingen)",
+                    variante: "Trasse 2",
+                    teilstrecke: 3,
+                    baulasttraeger: "Rems-Murr-Kreis",
+                    planungsabschnitt: "3E",
+                  },
                 },
                 {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "LineString",
-                    "coordinates": [
+                  type: "Feature",
+                  geometry: {
+                    type: "LineString",
+                    coordinates: [
                       [9.267748, 48.878676],
                       [9.267825, 48.878569],
                       [9.268451, 48.877303],
@@ -316,24 +315,24 @@
                       [9.271077, 48.874053],
                       [9.271311, 48.873734],
                       [9.271428, 48.873611],
-                      [9.271868, 48.873704]
-                    ]
+                      [9.271868, 48.873704],
+                    ],
                   },
-                  "id": "3cfc8c2d-e6ee-43f2-ac1d-e22e8833c9b0",
-                  "properties": {
-                    "stroke": "#C93535",
-                    "gemeinde": "(1:Remseck am Neckar)",
-                    "variante": "Trasse 2",
-                    "teilstrecke": 2,
-                    "baulasttraeger": "Kreis Ludwigsburg",
-                    "planungsabschnitt": "2E"
-                  }
+                  id: "3cfc8c2d-e6ee-43f2-ac1d-e22e8833c9b0",
+                  properties: {
+                    stroke: "#C93535",
+                    gemeinde: "(1:Remseck am Neckar)",
+                    variante: "Trasse 2",
+                    teilstrecke: 2,
+                    baulasttraeger: "Kreis Ludwigsburg",
+                    planungsabschnitt: "2E",
+                  },
                 },
                 {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [
+                  type: "Feature",
+                  geometry: {
+                    type: "MultiLineString",
+                    coordinates: [
                       [
                         [9.29207, 48.858252],
                         [9.292078, 48.858219],
@@ -366,69 +365,69 @@
                         [9.291977, 48.854032],
                         [9.292263, 48.853953],
                         [9.291678, 48.853146],
-                        [9.291121, 48.85261]
-                      ]
-                    ]
+                        [9.291121, 48.85261],
+                      ],
+                    ],
                   },
-                  "id": "075e7bea-cf2e-4f36-aa30-8ea2a4ea1949",
-                  "properties": {
-                    "stroke": "#C93535",
-                    "gemeinde": "(2:Fellbach,Waiblingen)",
-                    "variante": "Trasse 2",
-                    "teilstrecke": 3,
-                    "baulasttraeger": "Rems-Murr-Kreis",
-                    "planungsabschnitt": "3B"
-                  }
+                  id: "075e7bea-cf2e-4f36-aa30-8ea2a4ea1949",
+                  properties: {
+                    stroke: "#C93535",
+                    gemeinde: "(2:Fellbach,Waiblingen)",
+                    variante: "Trasse 2",
+                    teilstrecke: 3,
+                    baulasttraeger: "Rems-Murr-Kreis",
+                    planungsabschnitt: "3B",
+                  },
                 },
                 {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [
+                  type: "Feature",
+                  geometry: {
+                    type: "MultiLineString",
+                    coordinates: [
                       [
                         [9.215175, 48.891098],
                         [9.237414, 48.889564],
-                        [9.237415, 48.889563]
-                      ]
-                    ]
+                        [9.237415, 48.889563],
+                      ],
+                    ],
                   },
-                  "id": "89b36de1-a801-467c-adfb-221a444ffe1c",
-                  "properties": {
-                    "stroke": "#E8B500",
-                    "gemeinde": "(1:Ludwigsburg)",
-                    "variante": "Trasse 2",
-                    "teilstrecke": "1",
-                    "baulasttraeger": "Kreis Ludwigsburg",
-                    "planungsabschnitt": "2A"
-                  }
+                  id: "89b36de1-a801-467c-adfb-221a444ffe1c",
+                  properties: {
+                    stroke: "#E8B500",
+                    gemeinde: "(1:Ludwigsburg)",
+                    variante: "Trasse 2",
+                    teilstrecke: "1",
+                    baulasttraeger: "Kreis Ludwigsburg",
+                    planungsabschnitt: "2A",
+                  },
                 },
                 {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "LineString",
-                    "coordinates": [
+                  type: "Feature",
+                  geometry: {
+                    type: "LineString",
+                    coordinates: [
                       [9.291121, 48.85261],
                       [9.293172, 48.851867],
                       [9.294817, 48.851281],
                       [9.298633, 48.850979],
-                      [9.298644, 48.850966]
-                    ]
+                      [9.298644, 48.850966],
+                    ],
                   },
-                  "id": "9e8a0353-84db-475c-a7ad-06c5d0f72ddd",
-                  "properties": {
-                    "stroke": "#C93535",
-                    "gemeinde": "(2:Fellbach,Waiblingen)",
-                    "variante": "Trasse 2",
-                    "teilstrecke": 3,
-                    "baulasttraeger": "Rems-Murr-Kreis",
-                    "planungsabschnitt": "3C"
-                  }
+                  id: "9e8a0353-84db-475c-a7ad-06c5d0f72ddd",
+                  properties: {
+                    stroke: "#C93535",
+                    gemeinde: "(2:Fellbach,Waiblingen)",
+                    variante: "Trasse 2",
+                    teilstrecke: 3,
+                    baulasttraeger: "Rems-Murr-Kreis",
+                    planungsabschnitt: "3C",
+                  },
                 },
                 {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [
+                  type: "Feature",
+                  geometry: {
+                    type: "MultiLineString",
+                    coordinates: [
                       [
                         [9.274665, 48.869429],
                         [9.274703, 48.86932],
@@ -483,25 +482,25 @@
                         [9.284165, 48.863988],
                         [9.284668, 48.863783],
                         [9.285767, 48.863323],
-                        [9.285943, 48.863261]
-                      ]
-                    ]
+                        [9.285943, 48.863261],
+                      ],
+                    ],
                   },
-                  "id": "cc9ad2e2-d826-4e6a-a0ac-e4470efa0946",
-                  "properties": {
-                    "stroke": "#C93535",
-                    "gemeinde": "(1:Remseck am Neckar)",
-                    "variante": "Trasse 2",
-                    "teilstrecke": 2,
-                    "baulasttraeger": "Kreis Ludwigsburg",
-                    "planungsabschnitt": "2G"
-                  }
+                  id: "cc9ad2e2-d826-4e6a-a0ac-e4470efa0946",
+                  properties: {
+                    stroke: "#C93535",
+                    gemeinde: "(1:Remseck am Neckar)",
+                    variante: "Trasse 2",
+                    teilstrecke: 2,
+                    baulasttraeger: "Kreis Ludwigsburg",
+                    planungsabschnitt: "2G",
+                  },
                 },
                 {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [
+                  type: "Feature",
+                  geometry: {
+                    type: "MultiLineString",
+                    coordinates: [
                       [
                         [9.285943, 48.863261],
                         [9.286104, 48.863205],
@@ -521,25 +520,25 @@
                         [9.291541, 48.859801],
                         [9.29174, 48.859372],
                         [9.291896, 48.858934],
-                        [9.29207, 48.858252]
-                      ]
-                    ]
+                        [9.29207, 48.858252],
+                      ],
+                    ],
                   },
-                  "id": "8a1fdd42-4c5a-4499-a5ce-974913f69b60",
-                  "properties": {
-                    "stroke": "#C93535",
-                    "gemeinde": "(2:Fellbach,Waiblingen)",
-                    "variante": "Trasse 2",
-                    "teilstrecke": 3,
-                    "baulasttraeger": "Rems-Murr-Kreis",
-                    "planungsabschnitt": "3A"
-                  }
+                  id: "8a1fdd42-4c5a-4499-a5ce-974913f69b60",
+                  properties: {
+                    stroke: "#C93535",
+                    gemeinde: "(2:Fellbach,Waiblingen)",
+                    variante: "Trasse 2",
+                    teilstrecke: 3,
+                    baulasttraeger: "Rems-Murr-Kreis",
+                    planungsabschnitt: "3A",
+                  },
                 },
                 {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [
+                  type: "Feature",
+                  geometry: {
+                    type: "MultiLineString",
+                    coordinates: [
                       [
                         [9.304766, 48.835575],
                         [9.304411, 48.834146],
@@ -566,25 +565,25 @@
                         [9.302774, 48.829705],
                         [9.302795, 48.829694],
                         [9.302817, 48.829685],
-                        [9.302877, 48.829676]
-                      ]
-                    ]
+                        [9.302877, 48.829676],
+                      ],
+                    ],
                   },
-                  "id": "54c7093b-189d-4f11-b85d-3fc46575040c",
-                  "properties": {
-                    "stroke": "#C93535",
-                    "gemeinde": "(2:,Waiblingen)",
-                    "variante": "Trasse 2",
-                    "teilstrecke": 4,
-                    "baulasttraeger": "Stadt Waiblingen",
-                    "planungsabschnitt": "4A"
-                  }
+                  id: "54c7093b-189d-4f11-b85d-3fc46575040c",
+                  properties: {
+                    stroke: "#C93535",
+                    gemeinde: "(2:,Waiblingen)",
+                    variante: "Trasse 2",
+                    teilstrecke: 4,
+                    baulasttraeger: "Stadt Waiblingen",
+                    planungsabschnitt: "4A",
+                  },
                 },
                 {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "LineString",
-                    "coordinates": [
+                  type: "Feature",
+                  geometry: {
+                    type: "LineString",
+                    coordinates: [
                       [9.302877, 48.829676],
                       [9.303212, 48.829625],
                       [9.303391, 48.829587],
@@ -603,24 +602,24 @@
                       [9.30173, 48.826878],
                       [9.301643, 48.826861],
                       [9.301558, 48.826841],
-                      [9.301474, 48.826817]
-                    ]
+                      [9.301474, 48.826817],
+                    ],
                   },
-                  "id": "82bf2e20-18d2-49eb-a5c9-efa633d8ea32",
-                  "properties": {
-                    "stroke": "#C93535",
-                    "gemeinde": "(2:,Waiblingen)",
-                    "variante": "Trasse 2",
-                    "teilstrecke": 4,
-                    "baulasttraeger": "Stadt Waiblingen",
-                    "planungsabschnitt": "4B"
-                  }
+                  id: "82bf2e20-18d2-49eb-a5c9-efa633d8ea32",
+                  properties: {
+                    stroke: "#C93535",
+                    gemeinde: "(2:,Waiblingen)",
+                    variante: "Trasse 2",
+                    teilstrecke: 4,
+                    baulasttraeger: "Stadt Waiblingen",
+                    planungsabschnitt: "4B",
+                  },
                 },
                 {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [
+                  type: "Feature",
+                  geometry: {
+                    type: "MultiLineString",
+                    coordinates: [
                       [
                         [9.298644, 48.850966],
                         [9.29891, 48.85067],
@@ -662,25 +661,25 @@
                         [9.305165, 48.839757],
                         [9.305141, 48.83916],
                         [9.305064, 48.83856],
-                        [9.305, 48.838441]
-                      ]
-                    ]
+                        [9.305, 48.838441],
+                      ],
+                    ],
                   },
-                  "id": "af5c5de7-20aa-4fbd-9bd9-39aeba3b2720",
-                  "properties": {
-                    "stroke": "#C93535",
-                    "gemeinde": "(2:Fellbach,Waiblingen)",
-                    "variante": "Trasse 2",
-                    "teilstrecke": 3,
-                    "baulasttraeger": "Rems-Murr-Kreis",
-                    "planungsabschnitt": "3D"
-                  }
+                  id: "af5c5de7-20aa-4fbd-9bd9-39aeba3b2720",
+                  properties: {
+                    stroke: "#C93535",
+                    gemeinde: "(2:Fellbach,Waiblingen)",
+                    variante: "Trasse 2",
+                    teilstrecke: 3,
+                    baulasttraeger: "Rems-Murr-Kreis",
+                    planungsabschnitt: "3D",
+                  },
                 },
                 {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [
+                  type: "Feature",
+                  geometry: {
+                    type: "MultiLineString",
+                    coordinates: [
                       [
                         [9.271868, 48.873704],
                         [9.271879, 48.873707],
@@ -704,25 +703,25 @@
                         [9.274517, 48.869772],
                         [9.27462, 48.869535],
                         [9.27465, 48.869474],
-                        [9.274665, 48.869429]
-                      ]
-                    ]
+                        [9.274665, 48.869429],
+                      ],
+                    ],
                   },
-                  "id": "696da69b-f626-4837-8aa0-cc247e1c73c6",
-                  "properties": {
-                    "stroke": "#C93535",
-                    "gemeinde": "(1:Remseck am Neckar)",
-                    "variante": "Trasse 2",
-                    "teilstrecke": 2,
-                    "baulasttraeger": "Kreis Ludwigsburg",
-                    "planungsabschnitt": "2F"
-                  }
+                  id: "696da69b-f626-4837-8aa0-cc247e1c73c6",
+                  properties: {
+                    stroke: "#C93535",
+                    gemeinde: "(1:Remseck am Neckar)",
+                    variante: "Trasse 2",
+                    teilstrecke: 2,
+                    baulasttraeger: "Kreis Ludwigsburg",
+                    planungsabschnitt: "2F",
+                  },
                 },
                 {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [
+                  type: "Feature",
+                  geometry: {
+                    type: "MultiLineString",
+                    coordinates: [
                       [
                         [9.237415, 48.889563],
                         [9.237619, 48.889472],
@@ -736,25 +735,25 @@
                         [9.239682, 48.888117],
                         [9.239889, 48.8879],
                         [9.240031, 48.88768],
-                        [9.240035, 48.887679]
-                      ]
-                    ]
+                        [9.240035, 48.887679],
+                      ],
+                    ],
                   },
-                  "id": "6b895f43-e6cb-4aa2-a9c0-288dab27bd4c",
-                  "properties": {
-                    "stroke": "#C93535",
-                    "gemeinde": "(1:Ludwigsburg)",
-                    "variante": "Trasse 2",
-                    "teilstrecke": "1",
-                    "baulasttraeger": "Kreis Ludwigsburg",
-                    "planungsabschnitt": "2B"
-                  }
+                  id: "6b895f43-e6cb-4aa2-a9c0-288dab27bd4c",
+                  properties: {
+                    stroke: "#C93535",
+                    gemeinde: "(1:Ludwigsburg)",
+                    variante: "Trasse 2",
+                    teilstrecke: "1",
+                    baulasttraeger: "Kreis Ludwigsburg",
+                    planungsabschnitt: "2B",
+                  },
                 },
                 {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "MultiLineString",
-                    "coordinates": [
+                  type: "Feature",
+                  geometry: {
+                    type: "MultiLineString",
+                    coordinates: [
                       [
                         [9.246941, 48.885563],
                         [9.250006, 48.884619],
@@ -773,112 +772,110 @@
                         [9.263889, 48.878882],
                         [9.264032, 48.87873],
                         [9.267549, 48.878743],
-                        [9.267748, 48.878676]
-                      ]
-                    ]
+                        [9.267748, 48.878676],
+                      ],
+                    ],
                   },
-                  "id": "10689c70-20f2-492b-879d-5ff6c80376d0",
-                  "properties": {
-                    "stroke": "#C93535",
-                    "gemeinde": "(1:Remseck am Neckar)",
-                    "variante": "Trasse 2",
-                    "teilstrecke": 2,
-                    "baulasttraeger": "Kreis Ludwigsburg",
-                    "planungsabschnitt": "2D"
-                  }
+                  id: "10689c70-20f2-492b-879d-5ff6c80376d0",
+                  properties: {
+                    stroke: "#C93535",
+                    gemeinde: "(1:Remseck am Neckar)",
+                    variante: "Trasse 2",
+                    teilstrecke: 2,
+                    baulasttraeger: "Kreis Ludwigsburg",
+                    planungsabschnitt: "2D",
+                  },
                 },
                 {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "LineString",
-                    "coordinates": [
+                  type: "Feature",
+                  geometry: {
+                    type: "LineString",
+                    coordinates: [
                       [9.185953, 48.892557],
                       [9.186506, 48.893118],
-                      [9.194367, 48.893241]
-                    ]
+                      [9.194367, 48.893241],
+                    ],
                   },
-                  "id": "adc65867-7da3-4015-aab3-af60a859e963",
-                  "properties": {
-                    "stroke": "#C93535",
-                    "gemeinde": "(1:Ludwigsburg)",
-                    "variante": "Trasse 2",
-                    "teilstrecke": 1,
-                    "baulasttraeger": "Stadt Ludwigsburg",
-                    "planungsabschnitt": "1A"
-                  }
-                }
-              ]
-            },
-            "config": {
-              "zoom": 2,
-              "bounds": [
-                9.387312714501604, 48.90390202531458, 9.103949029818097, 48.81629635563661
+                  id: "adc65867-7da3-4015-aab3-af60a859e963",
+                  properties: {
+                    stroke: "#C93535",
+                    gemeinde: "(1:Ludwigsburg)",
+                    variante: "Trasse 2",
+                    teilstrecke: 1,
+                    baulasttraeger: "Stadt Ludwigsburg",
+                    planungsabschnitt: "1A",
+                  },
+                },
               ],
-              "longitude": 13.5,
-              "latitude": 52.5,
-              "boundsPadding": 20
-            }
-          }
-        }
+            },
+            config: {
+              zoom: 2,
+              bounds: [9.387312714501604, 48.90390202531458, 9.103949029818097, 48.81629635563661],
+              longitude: 13.5,
+              latitude: 52.5,
+              boundsPadding: 20,
+            },
+          },
+        },
       ],
-      "buttons": [
-        { "label": { "de": "Weiter" }, "color": "pink", "onClick": { "action": "nextPage" } },
-        { "label": { "de": "Zurück" }, "color": "white", "onClick": { "action": "previousPage" } }
-      ]
+      buttons: [
+        { label: { de: "Weiter" }, color: "pink", onClick: { action: "nextPage" } },
+        { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
+      ],
     },
     {
-      "id": 2,
-      "title": { "de": "Ihr Hinweis" },
-      "description": {
-        "de": "Formulieren Sie hier Ihre Gedanken, Ideen, Anregungen oder Wünsche"
+      id: 2,
+      title: { de: "Ihr Hinweis" },
+      description: {
+        de: "Formulieren Sie hier Ihre Gedanken, Ideen, Anregungen oder Wünsche",
       },
-      "questions": [
+      questions: [
         {
-          "id": 31,
-          "label": { "de": "Kategorie" },
-          "component": "custom"
+          id: 31,
+          label: { de: "Kategorie" },
+          component: "custom",
         },
         {
-          "id": 32,
-          "label": { "de": "Ausgewählte Stelle" },
-          "component": "custom"
+          id: 32,
+          label: { de: "Ausgewählte Stelle" },
+          component: "custom",
         },
         {
-          "id": 33,
-          "label": { "de": "Wählen Sie die Stelle für Ihr Feedback" },
-          "component": "custom"
+          id: 33,
+          label: { de: "Wählen Sie die Stelle für Ihr Feedback" },
+          component: "custom",
         },
         {
-          "id": 34,
-          "label": { "de": "Was gefällt Ihnen hier besonders?" },
-          "component": "text",
-          "props": {
-            "placeholder": { "de": "Beantworten Sie hier..." },
-            "caption": { "de": "Max. 2000 Zeichen" }
-          }
+          id: 34,
+          label: { de: "Was gefällt Ihnen hier besonders?" },
+          component: "text",
+          props: {
+            placeholder: { de: "Beantworten Sie hier..." },
+            caption: { de: "Max. 2000 Zeichen" },
+          },
         },
         {
-          "id": 35,
-          "label": { "de": "Was wünschen Sie sich?" },
-          "component": "text",
-          "props": {
-            "placeholder": { "de": "Beantworten Sie hier..." },
-            "caption": { "de": "Max. 2000 Zeichen" }
-          }
-        }
+          id: 35,
+          label: { de: "Was wünschen Sie sich?" },
+          component: "text",
+          props: {
+            placeholder: { de: "Beantworten Sie hier..." },
+            caption: { de: "Max. 2000 Zeichen" },
+          },
+        },
       ],
-      "buttons": [
+      buttons: [
         {
-          "label": { "de": "Absenden & Beteiligung abschließen" },
-          "color": "pink",
-          "onClick": { "action": "submit" }
+          label: { de: "Absenden & Beteiligung abschließen" },
+          color: "pink",
+          onClick: { action: "submit" },
         },
         {
-          "label": { "de": "Absenden &  weiteren Hinweis geben" },
-          "color": "white",
-          "onClick": { "action": "submit" }
-        }
-      ]
-    }
-  ]
+          label: { de: "Absenden &  weiteren Hinweis geben" },
+          color: "white",
+          onClick: { action: "submit" },
+        },
+      ],
+    },
+  ],
 }

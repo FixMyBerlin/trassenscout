@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import surveyDefinition from "src/participation/data/survey"
-import feedbackDefinition from "src/participation/data/feedback.json"
+import { surveyDefinition } from "src/participation/data/survey"
+import { feedbackDefinition } from "src/participation/data/feedback"
 import { TSurvey } from "src/participation/data/types"
 import { getSurvey, sendCsv } from "./_shared"
 

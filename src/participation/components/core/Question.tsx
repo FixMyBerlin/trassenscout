@@ -1,5 +1,4 @@
-import { TSingleOrMultiResponseProps, TextResponseProps } from "src/participation/data/types"
-import { TQuestion as TQuestion } from "src/participation/data/types"
+import { TQuestion, TSingleOrMultiResponseProps } from "src/participation/data/types"
 import { ParticipationH2 } from "./Text"
 import { ParticipationLabeledCheckboxGroup } from "./form/ParticipationLabeledCheckboxGroup"
 import { ParticipationLabeledRadiobuttonGroup } from "./form/ParticipationLabeledRadiobuttonGroup"
@@ -41,14 +40,13 @@ const MultipleResponseComponent: React.FC<TSingleOrMultuResponseComponentProps> 
 
 type TTextResponseComponentProps = {
   id: number
-} & TextResponseProps
+}
 
 const TextResponseComponent: React.FC<TTextResponseComponentProps> = ({ id }) => (
   <>
     <ParticipationLabeledTextareaField name={`text-${id}`} label={""} />
   </>
 )
-
 // TODO type
 const CustomComponent = (props: any) => (
   <div className="border-2 border-black bg-gray-200 p-1">

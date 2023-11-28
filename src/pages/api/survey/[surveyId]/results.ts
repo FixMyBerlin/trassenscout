@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import db from "db"
-import surveyDefinition from "src/participation/data/survey"
-import feedbackDefinition from "src/participation/data/feedback.json"
+import { surveyDefinition } from "src/participation/data/survey"
+import { feedbackDefinition } from "src/participation/data/feedback"
 import { getSurvey, sendCsv } from "./_shared"
 
-const surveys = Object.fromEntries([surveyDefinition, feedbackDefinition].map((o) => [o.id, o]))
+const surveys = Object.fromEntries([surveyDefinition, feedbackDefinition].map((o) => [o.part, o]))
 const questions = {}
 Object.values(surveys).forEach((survey) => {
   survey.pages.forEach((page) => {

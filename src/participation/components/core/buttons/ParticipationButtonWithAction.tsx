@@ -1,9 +1,9 @@
-import { TButton } from "src/participation/data/types"
+import { TButtonWithAction } from "src/participation/data/types"
 import { ParticipationButton } from "./ParticipationButton"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
-  button: TButton
+  button: TButtonWithAction
   buttonActions: { next: () => void; back: () => void }
   disabled?: boolean
 }

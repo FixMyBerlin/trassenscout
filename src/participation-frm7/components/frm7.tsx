@@ -9,7 +9,7 @@ import { Feedback } from "src/participation-frm7/components/feedback/Feedback"
 import { Survey } from "src/participation-frm7/components/Survey"
 import { moreDefinition } from "src/participation-frm7/data/more"
 import { surveyDefinition } from "src/participation-frm7/data/survey"
-import feedbackDefinition from "src/participation-frm7/data/feedback.json"
+import { feedbackDefinition } from "src/participation-frm7/data/feedback"
 import { emailDefinition } from "src/participation-frm7/data/email"
 
 import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
@@ -66,7 +66,7 @@ const ParticipationFrm7MainPage: BlitzPage = () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
         surveySessionId: surveySessionId_,
-        surveyPart: surveyDefinition.id,
+        surveyPart: surveyDefinition.part,
         data: JSON.stringify(surveyResponses),
       })
     })()
@@ -90,7 +90,7 @@ const ParticipationFrm7MainPage: BlitzPage = () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
         surveySessionId: surveySessionId_,
-        surveyPart: feedbackDefinition.id,
+        surveyPart: feedbackDefinition.part,
         data: JSON.stringify(feedbackResponses),
       })
     })()

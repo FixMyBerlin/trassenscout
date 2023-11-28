@@ -12,7 +12,7 @@ import { LayoutParticipation } from "src/participation/components/core/layout/La
 import { Feedback } from "src/participation/components/feedback/Feedback"
 import { ProgressContext } from "src/participation/context/contexts"
 import { emailDefinition } from "src/participation/data/email"
-import feedbackDefinition from "src/participation/data/feedback.json"
+import { feedbackDefinition } from "src/participation/data/feedback"
 import { moreDefinition } from "src/participation/data/more"
 import { surveyDefinition } from "src/participation/data/survey"
 import { scrollToTopWithDelay } from "src/participation/utils/scrollToTopWithDelay"
@@ -45,7 +45,7 @@ const ParticipationMainPage: BlitzPage = () => {
     if (surveySessionId) {
       return surveySessionId
     } else {
-      const surveySession = await createSurveySessionMutation({ surveyId: surveyDefinition.id })
+      const surveySession = await createSurveySessionMutation({ surveyId: surveyDefinition.part })
       setSurveySessionId(surveySession.id)
       return surveySession.id
     }
@@ -59,7 +59,7 @@ const ParticipationMainPage: BlitzPage = () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
         surveySessionId: surveySessionId_,
-        surveyPart: surveyDefinition.id,
+        surveyPart: surveyDefinition.part,
         data: JSON.stringify(surveyResponses),
       })
     })()
@@ -83,7 +83,7 @@ const ParticipationMainPage: BlitzPage = () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
         surveySessionId: surveySessionId_,
-        surveyPart: feedbackDefinition.id,
+        surveyPart: feedbackDefinition.part,
         data: JSON.stringify(feedbackResponses),
       })
     })()

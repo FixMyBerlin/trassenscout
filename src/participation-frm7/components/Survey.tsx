@@ -4,7 +4,7 @@ export { FORM_ERROR } from "src/core/components/forms"
 
 import { stageProgressDefinition } from "src/participation-frm7/components/frm7"
 
-import { Survey as TSurvey } from "src/participation-frm7/data/types"
+import { TSurvey } from "src/participation/data/types"
 
 import { ProgressContext } from "src/participation/context/contexts"
 

@@ -1,7 +1,7 @@
 import { TSurvey } from "./types"
 
 export const surveyDefinition: TSurvey = {
-  id: 1,
+  part: 1,
   version: 1,
   logoUrl: "https://radschnellweg8-lb-wn.de/logo.png",
   canonicalUrl: "https://radschnellweg8-lb-wn.de/beteiligung/",
