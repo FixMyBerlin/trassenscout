@@ -1,4 +1,4 @@
-import { TFeedbackQuestion, TResponse } from "src/participation/data/types"
+import { TFeedbackQuestion, TResponse } from "src/survey-public/components/types"
 
 export const getSurveyResponseCategoryById = (
   id: number,

@@ -8,8 +8,8 @@ import { Pagination } from "src/core/components/Pagination"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
-import { feedbackDefinition } from "src/participation/data/feedback"
-import { surveyDefinition } from "src/participation/data/survey"
+import { feedbackDefinition } from "src/survey-public/rs8/data/feedback"
+import { surveyDefinition } from "src/survey-public/rs8/data/survey"
 import getSurveySessionsWithResponses from "src/survey-sessions/queries/getSurveySessionsWithResponses"
 
 const surveys = Object.fromEntries([surveyDefinition, feedbackDefinition].map((o) => [o.part, o]))

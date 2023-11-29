@@ -3,16 +3,15 @@ import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
-import SurveyFRM7 from "src/survey-public/components/SurveyFRM7"
-
-import { surveyDefinition as surveyDefinitionRS8 } from "src/survey-public/rs8/data/survey"
-import { surveyDefinition as surveyDefinitionFRM7 } from "src/survey-public/frm7/data/survey"
 
 import SurveyInactivePage from "src/survey-public/components/SurveyInactivePage"
-import { SurveyRS8 } from "src/survey-public/components/SurveyRS8"
 import getPublicSurveyBySlug from "src/surveys/queries/getPublicSurveyBySlug"
+import { SurveyRS8 } from "./SurveyRS8"
+import { surveyDefinition as surveyDefinitionRS8 } from "../rs8/data/survey"
+import { surveyDefinition as surveyDefinitionFRM7 } from "../frm7/data/survey"
+import SurveyFRM7 from "./SurveyFRM7"
 
-const PublicSurveyPageWithQuery = () => {
+const SurveyMainPageWithQuery = () => {
   const surveySlug = useParam("surveySlug", "string")
   const [survey] = useQuery(getPublicSurveyBySlug, { slug: surveySlug! })
   // only returns something if there is a 'Survey' in the DB with the slug (url params) and the slug is either rs8 or frm7
@@ -31,12 +30,13 @@ const PublicSurveyPageWithQuery = () => {
     )
   return null
 }
-const PublicSurveyPage: BlitzPage = () => {
+
+const SurveyMainPage: BlitzPage = () => {
   return (
     <Suspense fallback={<Spinner page />}>
-      <PublicSurveyPageWithQuery />
+      <SurveyMainPageWithQuery />
     </Suspense>
   )
 }
 
-export default PublicSurveyPage
+export default SurveyMainPage

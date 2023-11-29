@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Prettify } from "src/core/types"
-import { TFeedback, TFeedbackQuestion } from "src/participation/data/types"
+import { TFeedback, TFeedbackQuestion } from "src/survey-public/components/types"
 
 import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedbackSurveyResponses"
 
