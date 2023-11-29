@@ -23,6 +23,7 @@ export type SurveyMapProps = {
   className?: string
   children?: React.ReactNode
   projectMap: {
+    maptilerStyleUrl: string
     projectGeometry: MultiLineString
     layerStyles: Record<string, any>
     initialMarker: { lng: number; lat: number }
@@ -57,8 +58,9 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
   const { pinPosition, setPinPosition } = useContext(PinContext)
 
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
-  const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
-  const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
+
+  const vectorStyle = `${projectMap.maptilerStyleUrl}?key=${maptilerApiKey}`
+  const satelliteStyle = `${projectMap.maptilerStyleUrl}?key=${maptilerApiKey}`
 
   if (!pinPosition) setPinPosition(projectMap.initialMarker)
 
@@ -150,16 +152,14 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
             <SurveyPin />
           </Marker>
         )}
-        <Source key="lines" type="geojson" data={projectMap.projectGeometry}>
-          <Layer
-            type="line"
-            paint={{
-              "line-width": 7,
-              "line-color": "red",
-              "line-opacity": 1,
-            }}
-          />
-        </Source>
+        {projectMap.projectGeometry && (
+          <Source type="geojson" data={projectMap.projectGeometry}>
+            {projectMap.layerStyles &&
+              projectMap.layerStyles.map((layer: any) => {
+                return <Layer key={layer.id} {...layer} />
+              })}
+          </Source>
+        )}
         {isMediumScreen && <NavigationControl showCompass={false} />}
 
         <SurveyMapBanner

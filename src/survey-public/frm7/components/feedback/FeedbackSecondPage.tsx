@@ -18,6 +18,7 @@ type Props = {
   staticMapProps: {
     projectGeometry: MultiLineString
     layerStyles: Record<string, any>
+    maptilerStyleUrl: string
   }
   feedbackCategory: string
   isCompleted: boolean
@@ -49,7 +50,6 @@ export const FeedbackSecondPage: React.FC<Props> = ({
       )}
       <div className="pt-8">
         <Question question={textAreaQuestions[0]} />
-        <Question question={textAreaQuestions[1]} />
       </div>
 
       <SurveyButtonWrapper>

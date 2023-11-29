@@ -28,8 +28,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
 
   const { pages } = feedback
 
-  const projectGeometry = feedback.pages[0].questions[2].props.projectGeometry
-  const layerStyles = feedback.pages[0].questions[2].props.layerStyles
+  const { projectGeometry, layerStyles, maptilerStyleUrl } = feedback.pages[0].questions[2].props
 
   const pinId = pages[0].questions.find(
     (question: Record<string, any>) => question.component === "map",
@@ -115,7 +114,7 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback }) => {
         {feedbackPageProgress === 1 && (
           <FeedbackSecondPage
             isCompleted={isPageTwoCompleted}
-            staticMapProps={{ projectGeometry, layerStyles }}
+            staticMapProps={{ projectGeometry, layerStyles, maptilerStyleUrl }}
             page={pages[1]}
             onButtonClick={handleBackPage}
             feedbackCategory={categories[feedbackCategory - 1].text.de}

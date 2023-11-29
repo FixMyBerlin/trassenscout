@@ -45,6 +45,8 @@ export const feedbackDefinition: TFeedback = {
           label: { de: "Markieren Sie die Stelle, zu der Sie etwas sagen möchten." },
           component: "map",
           props: {
+            maptilerStyleUrl:
+              "https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json",
             marker: {
               lat: 48.87405710508672,
               lng: 9.271044583540359,

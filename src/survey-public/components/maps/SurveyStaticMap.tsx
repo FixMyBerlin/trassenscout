@@ -9,8 +9,9 @@ type Props = {
   className?: string
   children?: React.ReactNode
   marker: { lng: number; lat: number }
-  projectGeometry: MultiLineString
-  layerStyles: Record<string, any>
+  projectGeometry?: MultiLineString
+  layerStyles?: Record<string, any>
+  maptilerStyleUrl: string
 }
 
 export const SurveyStaticMap: React.FC<Props> = ({
@@ -19,11 +20,12 @@ export const SurveyStaticMap: React.FC<Props> = ({
   children,
   projectGeometry,
   layerStyles,
+  maptilerStyleUrl,
 }) => {
   const { mainMap } = useMap()
 
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
-  const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
+  const vectorStyle = `${maptilerStyleUrl}?key=${maptilerApiKey}`
 
   useEffect(() => {
     if (!mainMap) return
@@ -56,11 +58,14 @@ export const SurveyStaticMap: React.FC<Props> = ({
           anchor="bottom"
         >
           <SurveyStaticPin />
-          <Source type="geojson" data={projectGeometry}>
-            {layerStyles.map((layer: any) => {
-              return <Layer key={layer.id} {...layer} />
-            })}
-          </Source>
+          {projectGeometry && (
+            <Source type="geojson" data={projectGeometry}>
+              {layerStyles &&
+                layerStyles.map((layer: any) => {
+                  return <Layer key={layer.id} {...layer} />
+                })}
+            </Source>
+          )}
         </Marker>
       </Map>
     </div>

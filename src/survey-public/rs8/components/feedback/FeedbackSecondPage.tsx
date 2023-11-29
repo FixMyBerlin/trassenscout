@@ -17,6 +17,7 @@ type Props = {
   staticMapProps: {
     projectGeometry: MultiLineString
     layerStyles: Record<string, any>
+    maptilerStyleUrl: string
   }
   feedbackCategory: string
   isCompleted: boolean

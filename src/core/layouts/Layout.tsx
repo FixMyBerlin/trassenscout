@@ -10,6 +10,7 @@ type Props = {
   navigation: "general" | "project" | "none"
   footer: "general" | "project" | "minimal"
   children?: React.ReactNode
+  fullWidth?: boolean
 }
 
 export const Layout: BlitzLayout<Props> = ({

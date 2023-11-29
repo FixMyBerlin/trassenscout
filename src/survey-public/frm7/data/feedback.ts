@@ -45,111 +45,17 @@ export const feedbackDefinition: TFeedback = {
           label: { de: "Markieren Sie die Stelle, zu der Sie etwas sagen möchten." },
           component: "map",
           props: {
+            maptilerStyleUrl:
+              "https://api.maptiler.com/maps/a9cd44e7-43f6-4277-8ae0-d910f8162524/style.json",
             marker: {
-              lat: 50.131816894372264,
-              lng: 8.695815249074684,
-            },
-            layerStyles: [
-              {
-                id: "RS8--allsections-luecke-copy",
-                type: "line",
-
-                layout: { visibility: "visible" },
-                paint: {
-                  "line-color": "#2C62A9",
-                  "line-width": 3,
-                  "line-dasharray": [2, 2],
-                },
-                filter: ["all", ["==", "planungsabschnitt", "2A"]],
-              },
-              {
-                id: "RS8--allsections",
-                type: "line",
-
-                layout: { visibility: "visible" },
-                paint: { "line-color": "#2C62A9", "line-width": 3 },
-                filter: ["all", ["!=", "planungsabschnitt", "2A"]],
-              },
-              {
-                id: "RS8--section4",
-                type: "line",
-
-                layout: { visibility: "none" },
-                paint: {
-                  "line-color": "#2C62A9",
-                  "line-width": 7,
-                  "line-opacity": 1,
-                },
-                filter: ["all", ["==", "teilstrecke", 4]],
-              },
-              {
-                id: "RS8--section3",
-                type: "line",
-
-                layout: { visibility: "none" },
-                paint: { "line-color": "#2C62A9", "line-width": 5 },
-                filter: ["all", ["==", "teilstrecke", 3]],
-              },
-              {
-                id: "RS8--section1",
-                type: "line",
-
-                layout: { visibility: "none" },
-                paint: { "line-color": "#2C62A9", "line-width": 5 },
-                filter: ["any", ["==", "teilstrecke", 1], ["==", "planungsabschnitt", "2B"]],
-              },
-              {
-                id: "RS8--section1-luecke",
-                type: "line",
-
-                layout: { visibility: "none" },
-                paint: {
-                  "line-color": "#2c62a9",
-                  "line-width": 7,
-                  "line-dasharray": [2, 2],
-                },
-                filter: ["all", ["==", "planungsabschnitt", "2A"]],
-              },
-              {
-                id: "RS8--section2",
-                type: "line",
-
-                layout: { visibility: "none" },
-                paint: { "line-color": "#2c62a9", "line-width": 5 },
-                filter: ["all", ["==", "teilstrecke", 2], ["!=", "planungsabschnitt", "2A"]],
-              },
-            ],
-            projectGeometry: {
-              type: "FeatureCollection",
-              features: [
-                {
-                  type: "Feature",
-                  properties: {},
-                  geometry: {
-                    coordinates: [
-                      [
-                        [8.624785639994087, 50.087541366888246],
-                        [8.650674936761675, 50.09307804646028],
-                        [8.668598296062441, 50.100743162180805],
-                        [8.686521655363123, 50.106704071063945],
-                        [8.695815249074684, 50.131816894372264],
-                        [8.703117358419235, 50.14458107476918],
-                        [8.726351342697654, 50.14543189904731],
-                        [8.71440243649775, 50.15478996722965],
-                        [8.73099813955389, 50.16372096043952],
-                        [8.742947045754647, 50.15946831461474],
-                      ],
-                    ],
-                    type: "MultiLineString",
-                  },
-                },
-              ],
+              lat: 50.13810478491584,
+              lng: 8.774882307368216,
             },
             config: {
               zoom: 2,
               bounds: [8.576990015191768, 50.18115285304344, 8.791982825789262, 50.084578531515405],
-              longitude: 8.695815249074684,
-              latitude: 50.131816894372264,
+              longitude: 8.774882307368216,
+              latitude: 50.13810478491584,
               boundsPadding: 20,
             },
           },

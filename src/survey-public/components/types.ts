@@ -66,6 +66,7 @@ export type TMore = {
 }
 
 type TMapProps = {
+  maptilerStyleUrl: string
   marker?: {
     lat: number
     lng: number
@@ -88,12 +89,17 @@ type TMapProps = {
   caption?: TTranslatableText
 }
 
+type TTextProps = {
+  placeholder?: TTranslatableText
+  caption?: TTranslatableText
+}
+
 export type TFeedbackQuestion = {
   evaluationRef?: string
   id: number
   label: TTranslatableText
   component: "singleResponse" | "multipleResponse" | "text" | "map" | "custom"
-  props?: TSingleOrMultiResponseProps | TMapProps
+  props?: TSingleOrMultiResponseProps | TMapProps | TTextProps
 }
 
 export type TFeedback = {

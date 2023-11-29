@@ -12,7 +12,7 @@ import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedback
 import { getSurveyResponseCategoryById } from "src/survey-responses/utils/getSurveyResponseCategoryById"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
-import { feedbackDefinition } from "src/survey-public/rs8/data/feedback"
+import { feedbackDefinition } from "src/survey-public/rs8/data/feedback" // change import path (?)
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
