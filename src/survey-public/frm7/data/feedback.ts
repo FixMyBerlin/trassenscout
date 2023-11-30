@@ -5,7 +5,7 @@ export const feedbackDefinition: TFeedback = {
   pages: [
     {
       id: 1,
-      title: { de: "Wir sind gespannt auf Ihre Anmerkungen." },
+      title: { de: "Wir sind gespannt auf Ihre Anmerkungen. FRM7" },
       description: {
         de: "Hier können Sie dem Planungsteam konkrete Ideen, Anregungen und Hinweise zum RS 8 mit auf den Weg geben. Sie können mehrere Anmerkungen abgeben, bitte geben Sie diese einzeln ab.",
       },
@@ -42,6 +42,7 @@ export const feedbackDefinition: TFeedback = {
         },
         {
           id: 23,
+          evaluationRef: "survey-location",
           label: { de: "Markieren Sie die Stelle, zu der Sie etwas sagen möchten." },
           component: "map",
           props: {
@@ -91,7 +92,7 @@ export const feedbackDefinition: TFeedback = {
         {
           id: 34,
           label: { de: "Was gefällt Ihnen hier besonders?" },
-          evaluationRef: "feedback-userText",
+          evaluationRef: "feedback-usertext",
           component: "text",
           props: {
             placeholder: { de: "Beantworten Sie hier..." },

@@ -10,7 +10,10 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2 } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { surveyDefinition } from "src/survey-public/rs8/data/survey"
+import { feedbackDefinition as feedbackDefinitionRS8 } from "src/survey-public/rs8/data/feedback"
+import { feedbackDefinition as feedbackDefinitionFRM7 } from "src/survey-public/frm7/data/feedback"
+import { surveyDefinition as surveyDefinitionRS8 } from "src/survey-public/rs8/data/survey"
+import { surveyDefinition as surveyDefinitionFRM7 } from "src/survey-public/frm7/data/survey"
 import { TSurvey } from "src/survey-public/components/types"
 import { GroupedSurveyResponseItem } from "src/survey-responses/components/analysis/GroupedSurveyResponseItem"
 import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
@@ -63,10 +66,23 @@ export const Survey = () => {
 
     return transformedArray
   }
+  const feedbackQuestions = []
+
+  // this is a hack to get dynamic surveydefinition/question texts for the survey
+  const feedbackDefinition = survey.id === 1 ? feedbackDefinitionRS8 : feedbackDefinitionFRM7
+  const surveyDefinition = survey.id === 1 ? surveyDefinitionRS8 : surveyDefinitionFRM7
+
+  for (let page of feedbackDefinition.pages) {
+    page.questions && feedbackQuestions.push(...page.questions)
+  }
+
+  const userLocationQuestionId = feedbackQuestions.find(
+    (question) => question.evaluationRef === "survey-location",
+  )?.id
 
   const surveyResponsesFeedbackPartWithLocation = surveyResponsesFeedbackPart.filter(
     //  @ts-expect-error
-    (r) => JSON.parse(r.data)["23"],
+    (r) => JSON.parse(r.data)[userLocationQuestionId],
   )
 
   const isSurveyPast = survey.endDate && isPast(survey.endDate)

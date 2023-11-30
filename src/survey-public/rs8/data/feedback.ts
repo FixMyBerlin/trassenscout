@@ -42,6 +42,7 @@ export const feedbackDefinition: TFeedback = {
         },
         {
           id: 23,
+          evaluationRef: "survey-location",
           label: { de: "Markieren Sie die Stelle, zu der Sie etwas sagen möchten." },
           component: "map",
           props: {
@@ -853,7 +854,7 @@ export const feedbackDefinition: TFeedback = {
           id: 34,
           label: { de: "Was gefällt Ihnen hier besonders?" },
           component: "text",
-          evaluationRef: "feedback-userText",
+          evaluationRef: "feedback-usertext",
           props: {
             placeholder: { de: "Beantworten Sie hier..." },
             caption: { de: "Max. 2000 Zeichen" },
@@ -863,7 +864,7 @@ export const feedbackDefinition: TFeedback = {
           id: 35,
           label: { de: "Was wünschen Sie sich?" },
           component: "text",
-          evaluationRef: "feedback-userText",
+          evaluationRef: "feedback-usertext",
           props: {
             placeholder: { de: "Beantworten Sie hier..." },
             caption: { de: "Max. 2000 Zeichen" },

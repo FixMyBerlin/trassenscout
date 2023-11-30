@@ -29,6 +29,7 @@ type FormProps<S extends z.ZodType<any, any>> = Omit<
   schema?: S
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
   refetchResponsesAndTopics: () => void
+  userLocationQuestionId: number | undefined
 } & Pick<EditableSurveyResponseListItemProps, "response" | "operators" | "topics" | "subsections">
 
 export const FORM_ERROR = "FORM_ERROR"
@@ -39,6 +40,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   operators,
   topics,
   subsections,
+  userLocationQuestionId,
   initialValues,
   refetchResponsesAndTopics,
 }: FormProps<S>) {
@@ -199,8 +201,10 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
 
         <div>
           <EditableSurveyResponseFormMap
-            // @ts-expect-error `data` is unkown
-            responsePoint={response.data["23"] as { lat: number; lng: number } | undefined}
+            responsePoint={
+              // @ts-expect-error `data` is unkown
+              response.data[userLocationQuestionId] as { lat: number; lng: number } | undefined
+            }
             subsections={subsections}
           />
         </div>

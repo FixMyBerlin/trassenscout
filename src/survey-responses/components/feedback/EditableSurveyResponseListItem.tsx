@@ -12,7 +12,9 @@ import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedback
 import { getSurveyResponseCategoryById } from "src/survey-responses/utils/getSurveyResponseCategoryById"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
-import { feedbackDefinition } from "src/survey-public/rs8/data/feedback" // change import path (?)
+
+import { feedbackDefinition as feedbackDefinitionRS8 } from "src/survey-public/rs8/data/feedback" // change import path (?)
+import { feedbackDefinition as feedbackDefinitionFRM7 } from "src/survey-public/frm7/data/feedback" // change import path (?)
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
@@ -48,13 +50,21 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const operatorSlugWitFallback = response.operator?.slug || "k.A."
 
   const feedbackQuestions = []
+
+  // this is a hack to get dynamic feedbackdefinition/question texts for the survey
+  const feedbackDefinition = surveyId === "1" ? feedbackDefinitionRS8 : feedbackDefinitionFRM7
+
   for (let page of feedbackDefinition.pages) {
     feedbackQuestions.push(...page.questions)
   }
 
   const userTextIndices = feedbackQuestions
-    .filter((question) => question.evaluationRef === "feedback-userText")
+    .filter((question) => question.evaluationRef === "feedback-usertext")
     .map((question) => question.id)
+
+  const userLocationQuestionId = feedbackQuestions.find(
+    (question) => question.evaluationRef === "survey-location",
+  )?.id
 
   // @ts-expect-error `data` is of type unkown
   const userTextPreview = response.data[Boolean(userTextIndices.length) && userTextIndices[0]]
@@ -127,6 +137,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
               surveyResponseTopics: response.surveyResponseTopics.map(String),
               operatorId: response.operatorId === null ? "0" : String(response.operatorId),
             }}
+            userLocationQuestionId={userLocationQuestionId}
             response={response}
             operators={operators}
             topics={topics}
