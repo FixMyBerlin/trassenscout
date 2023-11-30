@@ -1,7 +1,7 @@
 import { BlitzLayout } from "@blitzjs/next"
 import Head from "next/head"
-import { MetaTags } from "src/core/layouts"
 import { TailwindResponsiveHelper } from "src/core/layouts/TailwindResponsiveHelper/TailwindResponsiveHelper"
+import { SurveyMetaTags } from "../SurveyMetaTags"
 import { SurveyContainer } from "./SurveyContainer"
 import { SurveyFooter } from "./SurveyFooter"
 import { SurveyHeader } from "./SurveyHeader"
@@ -26,7 +26,7 @@ export const SurveyLayout: BlitzLayout<Props> = ({ logoUrl, children, canonicalU
         <link rel="icon" href={logoUrl} type={mimetype} />
         {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
       </Head>
-      <MetaTags noindex title="Beteiligung RS8" />
+      <SurveyMetaTags canonicalUrl={canonicalUrl} title="Beteiligung RS8" />
 
       <div className="relative flex h-full flex-col overflow-x-hidden">
         <SurveyHeader landingPageUrl={canonicalUrl} logoSrc={logoUrl} />
