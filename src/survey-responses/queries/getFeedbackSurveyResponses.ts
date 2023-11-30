@@ -17,10 +17,9 @@ export default resolver.pipe(
           // Only surveyResponse.surveyId === surveyId
           surveyId,
         },
-        // Only surveyResponse.surveyId === 2 which
-        // Reminder: `response.surveyId` is NOT a relation field
+        // Only surveyResponse.surveyPart === 2
         // the field here just represents first or second part of the survey json
-        // surveyId `2` is src/participation/data/feedback.json
+        // surveyPart `2` in feedback.ts
         surveyPart: 2,
       },
       orderBy: { id: "desc" },
