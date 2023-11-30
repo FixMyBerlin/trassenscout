@@ -1,4 +1,4 @@
-import { useRouterQuery } from "@blitzjs/next"
+import { useParam, useRouterQuery } from "@blitzjs/next"
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
 import { useRouter } from "next/router"
@@ -43,6 +43,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
 
   const params = useRouterQuery()
   const open = parseInt(String(params.responseDetails)) === response.id
+  const surveyId = useParam("surveyId", "string")
 
   const operatorSlugWitFallback = response.operator?.slug || "k.A."
 
@@ -107,6 +108,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
         <div className={clsx("overflow-clip p-6", open ? "border-b border-gray-300" : "")}>
           <div className="flex gap-12 mb-10 flex-col md:flex-row justify-between">
             <EditableSurveyResponseUserText
+              surveyId={surveyId!}
               userTextIndices={userTextIndices}
               feedbackQuestions={feedbackQuestions}
               response={response}
