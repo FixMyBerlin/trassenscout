@@ -21,6 +21,8 @@ export const feedbackDefinition: TFeedback = {
               { id: 2, text: { de: "Streckenführung" } },
               { id: 3, text: { de: "Zubringer" } },
               { id: 4, text: { de: "Mögliche Konflikte" } },
+              { id: 7, text: { de: "Mögliche Konflikte FRM7" } },
+              { id: 8, text: { de: "Noch ein Thema" } },
               { id: 5, text: { de: "Umwelt- und Naturschutz" } },
               { id: 6, text: { de: "Sonstiges" } },
             ],
