@@ -60,7 +60,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   }
 
   const userTextIndices = feedbackQuestions
-    .filter((question) => question.evaluationRef === "feedback-usertext")
+    .filter((question) => question.evaluationRef?.includes("feedback-usertext"))
     .map((question) => question.id)
 
   const userLocationQuestionId = feedbackQuestions.find(

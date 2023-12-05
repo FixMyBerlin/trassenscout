@@ -7,6 +7,6 @@ export const responseConfig: TResponseConfig = {
     "feedback-category": 21,
     "is-feedback-location": 22,
     "feedback-location": 23,
-    "feedback-usertext": [34],
+    "feedback-usertext-1": 34,
   },
 }

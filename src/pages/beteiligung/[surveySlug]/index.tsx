@@ -3,14 +3,14 @@ import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
-import SurveyFRM7 from "src/survey-public/components/SurveyFRM7"
 
 import { surveyDefinition as surveyDefinitionRS8 } from "src/survey-public/rs8/data/survey"
 import { surveyDefinition as surveyDefinitionFRM7 } from "src/survey-public/frm7/data/survey"
 
 import SurveyInactivePage from "src/survey-public/components/SurveyInactivePage"
-import { SurveyRS8 } from "src/survey-public/components/SurveyRS8"
+import { SurveyRS8 } from "src/survey-public/rs8/SurveyRS8"
 import getPublicSurveyBySlug from "src/surveys/queries/getPublicSurveyBySlug"
+import { SurveyFRM7 } from "src/survey-public/frm7/SurveyFRM7"
 
 const PublicSurveyPageWithQuery = () => {
   const surveySlug = useParam("surveySlug", "string")

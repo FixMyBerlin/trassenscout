@@ -1,10 +1,9 @@
 import { MapProvider } from "react-map-gl/maplibre"
-
-import { SurveyButton } from "src/survey-public/components/core/buttons/SurveyButton"
-import { SurveyButtonWrapper } from "src/survey-public/components/core/buttons/SurveyButtonWrapper"
-import { SurveyScreenHeader } from "src/survey-public/components/core/layout/SurveyScreenHeader"
-import { SurveyMap } from "src/survey-public/components/maps/SurveyMap"
-import { Question } from "src/survey-public/components/Question"
+import { SurveyButton } from "../core/buttons/SurveyButton"
+import { SurveyScreenHeader } from "../core/layout/SurveyScreenHeader"
+import { SurveyMap } from "../maps/SurveyMap"
+import { Question } from "../Question"
+import { SurveyButtonWrapper } from "../core/buttons/SurveyButtonWrapper"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -40,8 +39,8 @@ export const FeedbackFirstPage: React.FC<Props> = ({
           <SurveyMap
             {...mapIsDirtyProps}
             projectMap={{
-              layerStyles: mapProps.layerStyles,
               maptilerStyleUrl: mapProps.maptilerStyleUrl,
+              layerStyles: mapProps.layerStyles,
               projectGeometry: mapProps.projectGeometry,
               initialMarker: mapProps.marker,
               config: mapProps.config,

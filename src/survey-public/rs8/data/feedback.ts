@@ -856,7 +856,7 @@ export const feedbackDefinition: TFeedback = {
           id: 34,
           label: { de: "Was gefällt Ihnen hier besonders?" },
           component: "text",
-          evaluationRef: "feedback-usertext",
+          evaluationRef: "feedback-usertext-1",
           props: {
             placeholder: { de: "Beantworten Sie hier..." },
             caption: { de: "Max. 2000 Zeichen" },
@@ -866,7 +866,7 @@ export const feedbackDefinition: TFeedback = {
           id: 35,
           label: { de: "Was wünschen Sie sich?" },
           component: "text",
-          evaluationRef: "feedback-usertext",
+          evaluationRef: "feedback-usertext-2",
           props: {
             placeholder: { de: "Beantworten Sie hier..." },
             caption: { de: "Max. 2000 Zeichen" },

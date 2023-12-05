@@ -1,13 +1,14 @@
 import { useContext } from "react"
 import { PinContext } from "src/survey-public/components/context/contexts"
-import { SurveyButton } from "../../../components/core/buttons/SurveyButton"
-import { SurveyButtonWrapper } from "../../../components/core/buttons/SurveyButtonWrapper"
+import { SurveyButton } from "../core/buttons/SurveyButton"
+import { SurveyButtonWrapper } from "../core/buttons/SurveyButtonWrapper"
 
 import { MultiLineString } from "@turf/helpers"
 import { SurveyScreenHeader } from "src/survey-public/components/core/layout/SurveyScreenHeader"
-import { SurveyH2, SurveyH3, SurveyP } from "../../../components/core/Text"
-import { SurveyStaticMap } from "../../../components/maps/SurveyStaticMap"
-import { Question } from "../../../components/Question"
+import { SurveyH2, SurveyH3, SurveyP } from "../core/Text"
+import { SurveyStaticMap } from "../maps/SurveyStaticMap"
+import { Question } from "../Question"
+import { TQuestion } from "src/survey-public/components/types"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -21,6 +22,7 @@ type Props = {
   }
   feedbackCategory: string
   isCompleted: boolean
+  userTextIndices: (number | undefined)[]
 }
 
 export const FeedbackSecondPage: React.FC<Props> = ({
@@ -29,11 +31,10 @@ export const FeedbackSecondPage: React.FC<Props> = ({
   onButtonClick,
   staticMapProps,
   feedbackCategory,
+  userTextIndices,
 }) => {
   const { pinPosition } = useContext(PinContext)
   const { title, description, questions, buttons } = page
-
-  const textAreaQuestions = questions.filter((q: Record<string, any>) => q.component === "text")
 
   return (
     <>
@@ -48,8 +49,10 @@ export const FeedbackSecondPage: React.FC<Props> = ({
         </>
       )}
       <div className="pt-8">
-        <Question question={textAreaQuestions[0]} />
-        <Question question={textAreaQuestions[1]} />
+        {userTextIndices.map((questionId) => {
+          const q = questions.find((q: TQuestion) => q.id === questionId)
+          if (q) return <Question key={questionId} question={q} />
+        })}
       </div>
 
       <SurveyButtonWrapper>

@@ -10,7 +10,7 @@ import { Debug } from "src/survey-public/components/core/Debug"
 import PublicSurveyForm from "src/survey-public/components/core/form/PublicSurveyForm"
 import { Page } from "src/survey-public/components/Page"
 import { scrollToTopWithDelay } from "src/survey-public/components/utils/scrollToTopWithDelay"
-import { stageProgressDefinition } from "../data/progress"
+import { stageProgressDefinition } from "../frm7/data/progress"
 
 type Props = { survey: TSurvey; onSubmit: ([]) => void }
 

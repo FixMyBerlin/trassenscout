@@ -94,7 +94,7 @@ export const feedbackDefinition: TFeedback = {
         {
           id: 34,
           label: { de: "Was gefällt Ihnen hier besonders?" },
-          evaluationRef: "feedback-usertext",
+          evaluationRef: "feedback-usertext-1",
           component: "text",
           props: {
             placeholder: { de: "Beantworten Sie hier..." },
