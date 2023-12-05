@@ -113,4 +113,8 @@ export type TFeedback = {
   }[]
 }
 
+export type TResponseConfig = {
+  evaluationRefs: Record<string, number | number[]>
+}
+
 export type TProgress = Record<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE", number>

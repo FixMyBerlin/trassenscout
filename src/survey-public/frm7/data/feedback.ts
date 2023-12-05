@@ -34,7 +34,7 @@ export const feedbackDefinition: TFeedback = {
             de: "Bezieht sich Ihr Feedback auf eine konkrete Stelle entlang der Route?",
           },
           component: "singleResponse",
-          evaluationRef: "feedback-location",
+          evaluationRef: "is-feedback-location",
           props: {
             responses: [
               { id: 1, text: { de: "Ja" } },
@@ -44,7 +44,7 @@ export const feedbackDefinition: TFeedback = {
         },
         {
           id: 23,
-          evaluationRef: "survey-location",
+          evaluationRef: "feedback-location",
           label: { de: "Markieren Sie die Stelle, zu der Sie etwas sagen möchten." },
           component: "map",
           props: {

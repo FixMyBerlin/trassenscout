@@ -69,6 +69,9 @@ export const Survey = () => {
   const feedbackQuestions = []
 
   // this is a hack to get dynamic surveydefinition/question texts for the survey
+  // helper und dort stehen die mports und das auchfür survey nuzeb
+  // so wie getter für db mit id returned die definition
+  // switch statement
   const feedbackDefinition = survey.id === 1 ? feedbackDefinitionRS8 : feedbackDefinitionFRM7
   const surveyDefinition = survey.id === 1 ? surveyDefinitionRS8 : surveyDefinitionFRM7
 
@@ -77,7 +80,7 @@ export const Survey = () => {
   }
 
   const userLocationQuestionId = feedbackQuestions.find(
-    (question) => question.evaluationRef === "survey-location",
+    (question) => question.evaluationRef === "feedback-location",
   )?.id
 
   const surveyResponsesFeedbackPartWithLocation = surveyResponsesFeedbackPart.filter(

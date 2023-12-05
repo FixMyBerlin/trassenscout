@@ -52,6 +52,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const feedbackQuestions = []
 
   // this is a hack to get dynamic feedbackdefinition/question texts for the survey
+  // getter todo
   const feedbackDefinition = surveyId === "1" ? feedbackDefinitionRS8 : feedbackDefinitionFRM7
 
   for (let page of feedbackDefinition.pages) {
@@ -63,7 +64,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
     .map((question) => question.id)
 
   const userLocationQuestionId = feedbackQuestions.find(
-    (question) => question.evaluationRef === "survey-location",
+    (question) => question.evaluationRef === "feedback-location",
   )?.id
 
   // @ts-expect-error `data` is of type unkown
