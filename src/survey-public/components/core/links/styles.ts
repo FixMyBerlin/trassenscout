@@ -63,6 +63,9 @@ export const selectSurveyLinkStyle = (button: SurveyLinkProps["button"], classNa
       return clsx(whiteButtonStylesForLinkElement, className)
     case "pink":
       return clsx(pinkButtonStylesForLinkElement, className)
+    // todo frm7
+    case "blue":
+      return clsx(pinkButtonStylesForLinkElement, className)
     default:
       return clsx(partcipationLinkStyles, className)
   }

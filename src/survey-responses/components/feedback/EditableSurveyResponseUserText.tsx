@@ -8,7 +8,7 @@ import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedback
 export type EditableSurveyResponseUserTextProps = {
   feedbackQuestions: TFeedbackQuestion[]
   response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
-  userTextIndices: Array<number>
+  userTextIndices: Array<number | undefined>
   surveyId: string
 }
 

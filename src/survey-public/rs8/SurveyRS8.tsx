@@ -4,6 +4,7 @@ import { feedbackDefinition } from "src/survey-public/rs8/data/feedback"
 import { moreDefinition } from "src/survey-public/rs8/data/more"
 import { stageProgressDefinition } from "src/survey-public/rs8/data/progress"
 import { surveyDefinition } from "src/survey-public/rs8/data/survey"
+import { responseConfig } from "./data/response-config"
 
 export const SurveyRS8: React.FC = () => {
   return (
@@ -13,6 +14,7 @@ export const SurveyRS8: React.FC = () => {
       moreDefinition={moreDefinition}
       stageProgressDefinition={stageProgressDefinition}
       surveyDefinition={surveyDefinition}
+      responseConfig={responseConfig}
     />
   )
 }

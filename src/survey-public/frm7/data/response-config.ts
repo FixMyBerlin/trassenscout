@@ -1,6 +1,6 @@
 import { TResponseConfig } from "../../components/types"
 
-// todo update when definitions are final for frm7
+// todo frm7 update when definitions are final for frm7
 
 export const responseConfig: TResponseConfig = {
   evaluationRefs: {

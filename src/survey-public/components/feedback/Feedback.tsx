@@ -1,21 +1,34 @@
 import { useCallback, useContext, useState } from "react"
 
 import { PinContext, ProgressContext } from "src/survey-public/components/context/contexts"
+import { scrollToTopWithDelay } from "src/survey-public/components/utils/scrollToTopWithDelay"
 import PublicSurveyForm from "../core/form/PublicSurveyForm"
+import {
+  TFeedback,
+  TMapProps,
+  TPage,
+  TProgress,
+  TResponseConfig,
+  TSingleOrMultiResponseProps,
+} from "../types"
 import { FeedbackFirstPage } from "./FeedbackFirstPage"
 import { FeedbackSecondPage } from "./FeedbackSecondPage"
-import { scrollToTopWithDelay } from "src/survey-public/components/utils/scrollToTopWithDelay"
-import { TFeedbackQuestion, TProgress, TQuestion } from "../types"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
   onSubmit: any
-  feedback: any // TODO
+  feedback: TFeedback
   stageProgressDefinition: TProgress
+  responseConfig: TResponseConfig
 }
 
-export const Feedback: React.FC<Props> = ({ onSubmit, feedback, stageProgressDefinition }) => {
+export const Feedback: React.FC<Props> = ({
+  onSubmit,
+  feedback,
+  stageProgressDefinition,
+  responseConfig,
+}) => {
   const { setProgress } = useContext(ProgressContext)
   const [pinPosition, setPinPosition] = useState(null)
   const [values, setValues] = useState({})
@@ -23,19 +36,31 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback, stageProgressDef
   const [isPageTwoCompleted, setIsPageTwoCompleted] = useState(false)
   const [isMapDirty, setIsMapDirty] = useState(false)
   const [feedbackPageProgress, setFeedbackPageProgress] = useState(0)
-  const [feedbackCategory, setFeedbackCategory] = useState(0)
+  const [feedbackCategory, setFeedbackCategory] = useState(1)
 
   const [isMap, setIsMap] = useState(false)
 
   const { pages } = feedback
 
-  const { projectGeometry, layerStyles, maptilerStyleUrl } = feedback.pages[0].questions[2].props
+  const { evaluationRefs } = responseConfig
 
-  const pinId = pages[0].questions.find(
-    (question: Record<string, any>) => question.component === "map",
-  ).id
+  const pinId = evaluationRefs["feedback-location"] as number
+  const isUserLocationQuestionId = evaluationRefs["is-feedback-location"]
+  const feedbackCategoryId = evaluationRefs["feedback-category"]
+  const userText1Id = evaluationRefs["feedback-usertext-1"]
+  const userText2Id = evaluationRefs["feedback-usertext-2"]
+  const categoryId = evaluationRefs["feedback-category"]
 
-  const categories = pages[0].questions[0].props.responses
+  const categoryProps = pages[0]?.questions.find((q) => q.id === categoryId)
+    ?.props as TSingleOrMultiResponseProps
+
+  const categories = categoryProps.responses
+
+  const { projectGeometry, layerStyles, maptilerStyleUrl } = pages[0]?.questions.find(
+    (q) => q.id === pinId,
+  )?.props as TMapProps
+
+  const categoryText = categories.find((q) => q.id === feedbackCategory)?.text.de
 
   const handleNextPage = () => {
     const newFeedbackPageProgress = Math.min(pages.length, feedbackPageProgress + 1)
@@ -72,32 +97,11 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback, stageProgressDef
     return responses
   }
 
-  const feedbackQuestions: TFeedbackQuestion[] = []
-
-  for (let page of feedback.pages) {
-    page.questions && feedbackQuestions.push(...page.questions)
-  }
-
-  const isUserLocationQuestionId = feedbackQuestions.find(
-    (question) => question.evaluationRef === "is-feedback-location",
-  )?.id
-  const feedbackCategoryId = feedbackQuestions.find(
-    (question) => question.evaluationRef === "feedback-category",
-  )?.id
-  const userText1Id = feedbackQuestions.find(
-    (question) => question.evaluationRef === "feedback-usertext-1",
-  )?.id
-  const userText2Id = feedbackQuestions.find(
-    (question) => question.evaluationRef === "feedback-usertext-2",
-  )?.id
-
   const handleSubmit = (values: Record<string, any>, submitterId?: string) => {
     values = transformValues(values)
     delete values[isUserLocationQuestionId!] // delete map ja/nein response
     onSubmit({ ...values, [pinId]: isMap ? pinPosition : null }, submitterId)
   }
-
-  console
 
   // when Form changes, check if Radio "Ja" is selected - set state to true
   const handleChange = useCallback(
@@ -113,7 +117,6 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback, stageProgressDef
           ? isQuestionsCompletedPageOne // page is completed in case both questions are answered
           : isQuestionsCompletedPageOne && isMapDirty, // page is completed in case both questions are answered and user has touched the map marker
       )
-      // = values["34"] || values["35"]
       let isMinimumOneQuestionPageTwo: boolean
       if (!userText2Id) {
         isMinimumOneQuestionPageTwo = Boolean(values[userText1Id!])
@@ -122,16 +125,9 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback, stageProgressDef
       }
       setIsPageTwoCompleted(isMinimumOneQuestionPageTwo)
       if (!isMapOption) setPinPosition(null) // set pinPosition to null if not yes
-      setFeedbackCategory(values[feedbackCategoryId!] || categories.length) // sets state to response id of chosen category (question 21) // fallback: '"Sonstiges"
+      setFeedbackCategory(values[feedbackCategoryId!] || 1) // sets state to response id of chosen category or 1 if no category is chosen
     },
-    [
-      categories.length,
-      feedbackCategoryId,
-      isMapDirty,
-      isUserLocationQuestionId,
-      userText1Id,
-      userText2Id,
-    ],
+    [feedbackCategoryId, isMapDirty, isUserLocationQuestionId, userText1Id, userText2Id],
   )
 
   return (
@@ -150,10 +146,10 @@ export const Feedback: React.FC<Props> = ({ onSubmit, feedback, stageProgressDef
         {feedbackPageProgress === 1 && (
           <FeedbackSecondPage
             isCompleted={isPageTwoCompleted}
-            staticMapProps={{ projectGeometry, layerStyles, maptilerStyleUrl }}
-            page={pages[1]}
+            staticMapProps={{ layerStyles, projectGeometry, maptilerStyleUrl }}
+            page={pages[1] as TPage}
             onButtonClick={handleBackPage}
-            feedbackCategory={categories[feedbackCategory - 1].text.de}
+            feedbackCategory={categoryText}
             userTextIndices={[userText1Id, userText2Id]}
           />
         )}

@@ -95,7 +95,6 @@ type TTextProps = {
 }
 
 export type TFeedbackQuestion = {
-  evaluationRef?: string
   id: number
   label: TTranslatableText
   component: "singleResponse" | "multipleResponse" | "text" | "map" | "custom"
@@ -114,7 +113,7 @@ export type TFeedback = {
 }
 
 export type TResponseConfig = {
-  evaluationRefs: Record<string, number | number[]>
+  evaluationRefs: Record<string, number>
 }
 
 export type TProgress = Record<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE", number>

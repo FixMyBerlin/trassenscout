@@ -16,13 +16,15 @@ import { scrollToTopWithDelay } from "src/survey-public/components/utils/scrollT
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
 import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
 import updateSurveySession from "src/survey-sessions/mutations/updateSurveySession"
+import { TEmail, TFeedback, TMore, TProgress, TResponseConfig, TSurvey } from "./types"
 
 type Props = {
-  emailDefinition: any
-  feedbackDefinition: any
-  moreDefinition: any
-  stageProgressDefinition: any
-  surveyDefinition: any
+  emailDefinition: TEmail
+  feedbackDefinition: TFeedback
+  moreDefinition: TMore
+  stageProgressDefinition: TProgress
+  surveyDefinition: TSurvey
+  responseConfig: TResponseConfig
 }
 
 export const SurveyMainPage: React.FC<Props> = ({
@@ -31,8 +33,9 @@ export const SurveyMainPage: React.FC<Props> = ({
   moreDefinition,
   stageProgressDefinition,
   surveyDefinition,
+  responseConfig,
 }) => {
-  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("SURVEY")
+  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("FEEDBACK")
   const [progress, setProgress] = useState(1)
   const [isSpinner, setIsSpinner] = useState(false)
   const [responses, setResponses] = useState<any[]>([])
@@ -139,21 +142,16 @@ export const SurveyMainPage: React.FC<Props> = ({
     case "FEEDBACK":
       component = (
         <Feedback
-          stageProgressDefinition={stageProgressDefinition}
           key={feedbackKey}
+          stageProgressDefinition={stageProgressDefinition}
           feedback={feedbackDefinition}
+          responseConfig={responseConfig}
           onSubmit={handleSubmitFeedback}
         />
       )
       break
     case "EMAIL":
-      component = (
-        <Email
-          email={emailDefinition}
-          onSubmit={handleSubmitEmail}
-          homeUrl={surveyDefinition.canonicalUrl}
-        />
-      )
+      component = <Email email={emailDefinition} homeUrl={surveyDefinition.canonicalUrl} />
       break
     case "DONE":
       component = <Done homeUrl={surveyDefinition.canonicalUrl} />

@@ -10,11 +10,12 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2 } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { feedbackDefinition as feedbackDefinitionRS8 } from "src/survey-public/rs8/data/feedback"
-import { feedbackDefinition as feedbackDefinitionFRM7 } from "src/survey-public/frm7/data/feedback"
-import { surveyDefinition as surveyDefinitionRS8 } from "src/survey-public/rs8/data/survey"
-import { surveyDefinition as surveyDefinitionFRM7 } from "src/survey-public/frm7/data/survey"
 import { TSurvey } from "src/survey-public/components/types"
+import {
+  getFeedbackDefinitionBySurveyId,
+  getResponseConfigBySurveyId,
+  getSurveyDefinitionBySurveyId,
+} from "src/survey-public/components/utils/getConfigBySurveyId"
 import { GroupedSurveyResponseItem } from "src/survey-responses/components/analysis/GroupedSurveyResponseItem"
 import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
 import { getFormatDistanceInDays } from "src/survey-responses/utils/getFormatDistanceInDays"
@@ -66,22 +67,18 @@ export const Survey = () => {
 
     return transformedArray
   }
-  const feedbackQuestions = []
 
-  // this is a hack to get dynamic surveydefinition/question texts for the survey
-  // helper und dort stehen die mports und das auchfür survey nuzeb
-  // so wie getter für db mit id returned die definition
-  // switch statement
-  const feedbackDefinition = survey.id === 1 ? feedbackDefinitionRS8 : feedbackDefinitionFRM7
-  const surveyDefinition = survey.id === 1 ? surveyDefinitionRS8 : surveyDefinitionFRM7
+  const feedbackDefinition = getFeedbackDefinitionBySurveyId(survey.id)
+  const surveyDefinition = getSurveyDefinitionBySurveyId(survey.id)
+  const responseConfig = getResponseConfigBySurveyId(survey.id)
+
+  const feedbackQuestions = []
 
   for (let page of feedbackDefinition.pages) {
     page.questions && feedbackQuestions.push(...page.questions)
   }
 
-  const userLocationQuestionId = feedbackQuestions.find(
-    (question) => question.evaluationRef === "feedback-location",
-  )?.id
+  const userLocationQuestionId = responseConfig?.evaluationRefs["feedback-location"]
 
   const surveyResponsesFeedbackPartWithLocation = surveyResponsesFeedbackPart.filter(
     //  @ts-expect-error

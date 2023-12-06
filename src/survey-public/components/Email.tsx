@@ -3,16 +3,16 @@ import { useEffect } from "react"
 import { SurveyH2, SurveyP } from "./core/Text"
 import { SurveyScreenHeader } from "./core/layout/SurveyScreenHeader"
 import { SurveyLink } from "./core/links/SurveyLink"
+import { TEmail } from "./types"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
-  onSubmit: any
-  email: any // TODO
+  email: TEmail
   homeUrl: string
 }
 
-export const Email: React.FC<Props> = ({ onSubmit, email, homeUrl }) => {
+export const Email: React.FC<Props> = ({ email, homeUrl }) => {
   const { description, questionText, button, title, mailjetWidgetUrl } = email
 
   useEffect(() => {

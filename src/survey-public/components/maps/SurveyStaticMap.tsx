@@ -4,12 +4,13 @@ import "maplibre-gl/dist/maplibre-gl.css"
 import React, { useEffect } from "react"
 import Map, { Layer, Marker, Source, useMap } from "react-map-gl/maplibre"
 import SurveyStaticPin from "./SurveyStaticPin"
+import { TMapProps } from "../types"
 
 type Props = {
   className?: string
   children?: React.ReactNode
   marker: { lng: number; lat: number }
-  projectGeometry?: MultiLineString
+  projectGeometry?: TMapProps["projectGeometry"]
   layerStyles?: Record<string, any>
   maptilerStyleUrl: string
 }

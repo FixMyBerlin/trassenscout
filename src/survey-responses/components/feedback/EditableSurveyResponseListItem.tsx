@@ -13,8 +13,10 @@ import { getSurveyResponseCategoryById } from "src/survey-responses/utils/getSur
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
 
-import { feedbackDefinition as feedbackDefinitionRS8 } from "src/survey-public/rs8/data/feedback" // change import path (?)
-import { feedbackDefinition as feedbackDefinitionFRM7 } from "src/survey-public/frm7/data/feedback" // change import path (?)
+import {
+  getFeedbackDefinitionBySurveyId,
+  getResponseConfigBySurveyId,
+} from "src/survey-public/components/utils/getConfigBySurveyId"
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
@@ -49,39 +51,33 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
 
   const operatorSlugWitFallback = response.operator?.slug || "k.A."
 
-  const feedbackQuestions = []
+  const { evaluationRefs } = getResponseConfigBySurveyId(surveyId!)
+  const feedbackDefinition = getFeedbackDefinitionBySurveyId(surveyId!)
 
-  // this is a hack to get dynamic feedbackdefinition/question texts for the survey
-  // getter todo
-  const feedbackDefinition = surveyId === "1" ? feedbackDefinitionRS8 : feedbackDefinitionFRM7
+  const feedbackQuestions = []
 
   for (let page of feedbackDefinition.pages) {
     feedbackQuestions.push(...page.questions)
   }
 
-  const userTextIndices = feedbackQuestions
-    .filter((question) => question.evaluationRef?.includes("feedback-usertext"))
-    .map((question) => question.id)
-
-  const userLocationQuestionId = feedbackQuestions.find(
-    (question) => question.evaluationRef === "feedback-location",
-  )?.id
-
-  // @ts-expect-error `data` is of type unkown
-  const userTextPreview = response.data[Boolean(userTextIndices.length) && userTextIndices[0]]
-
-  const feedbackUserCategoryQuestion = feedbackQuestions.find(
-    (question) => question.evaluationRef === "feedback-category",
+  const feedbackQuestion = feedbackQuestions.find(
+    (q) => q.id === evaluationRefs["feedback-category"],
   )
+
+  const userTextPreview =
+    // @ts-expect-error `data` is of type unkown
+    response.data[evaluationRefs["feedback-usertext-1"]] ||
+    // @ts-expect-error `data` is of type unkown
+    response.data[evaluationRefs["feedback-usertext-2"]]
 
   const feedbackUserCategory =
     // @ts-expect-error `data` is of type unkown
-    response.data[feedbackUserCategoryQuestion.id] &&
-    feedbackUserCategoryQuestion?.id &&
+    response.data[evaluationRefs["feedback-category"]] &&
+    evaluationRefs["feedback-category"] &&
     getSurveyResponseCategoryById(
       // @ts-expect-error `data` is of type unkown
-      Number(response.data[feedbackUserCategoryQuestion.id]),
-      feedbackUserCategoryQuestion,
+      Number(response.data[evaluationRefs["feedback-category"]]),
+      feedbackQuestion!,
     )
 
   return (
@@ -120,7 +116,10 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
           <div className="flex gap-12 mb-10 flex-col md:flex-row justify-between">
             <EditableSurveyResponseUserText
               surveyId={surveyId!}
-              userTextIndices={userTextIndices}
+              userTextIndices={[
+                evaluationRefs["feedback-usertext-1"],
+                evaluationRefs["feedback-usertext-2"],
+              ]}
               feedbackQuestions={feedbackQuestions}
               response={response}
             />
@@ -138,7 +137,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
               surveyResponseTopics: response.surveyResponseTopics.map(String),
               operatorId: response.operatorId === null ? "0" : String(response.operatorId),
             }}
-            userLocationQuestionId={userLocationQuestionId}
+            userLocationQuestionId={evaluationRefs["feedback-location"]}
             response={response}
             operators={operators}
             topics={topics}

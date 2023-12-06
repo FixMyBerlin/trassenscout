@@ -8,19 +8,19 @@ import { SurveyScreenHeader } from "src/survey-public/components/core/layout/Sur
 import { SurveyH2, SurveyH3, SurveyP } from "../core/Text"
 import { SurveyStaticMap } from "../maps/SurveyStaticMap"
 import { Question } from "../Question"
-import { TQuestion } from "src/survey-public/components/types"
+import { TMapProps, TPage, TQuestion } from "src/survey-public/components/types"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
-  page: any // TODO
-  onButtonClick: any // TODO
+  page: TPage
+  onButtonClick: any
   staticMapProps: {
-    projectGeometry: MultiLineString
-    layerStyles: Record<string, any>
+    projectGeometry: TMapProps["projectGeometry"]
+    layerStyles: Record<string, any> | undefined
     maptilerStyleUrl: string
   }
-  feedbackCategory: string
+  feedbackCategory: string | undefined
   isCompleted: boolean
   userTextIndices: (number | undefined)[]
 }
@@ -39,28 +39,28 @@ export const FeedbackSecondPage: React.FC<Props> = ({
   return (
     <>
       <SurveyScreenHeader title={title.de} description={description.de} />
-      <SurveyH2>{questions[0].label.de}</SurveyH2>
+      <SurveyH2>{questions![0]!.label.de}</SurveyH2>
       <SurveyP>{feedbackCategory}</SurveyP>
 
       {pinPosition && (
         <>
-          <SurveyH3>{questions[1].label.de}</SurveyH3>
+          <SurveyH3>{questions![1]!.label.de}</SurveyH3>
           <SurveyStaticMap marker={pinPosition} {...staticMapProps} />
         </>
       )}
       <div className="pt-8">
         {userTextIndices.map((questionId) => {
-          const q = questions.find((q: TQuestion) => q.id === questionId)
+          const q = questions!.find((q: TQuestion) => q.id === questionId)
           if (q) return <Question key={questionId} question={q} />
         })}
       </div>
 
       <SurveyButtonWrapper>
         <SurveyButton disabled={!isCompleted} id="submit-finish" type="submit">
-          {buttons[0].label.de}
+          {buttons![0]!.label.de}
         </SurveyButton>
         <SurveyButton color="white" disabled={!isCompleted} id="submit-more" type="submit">
-          {buttons[1].label.de}
+          {buttons![1]!.label.de}
         </SurveyButton>
       </SurveyButtonWrapper>
       <SurveyButton color="white" type="button" onClick={onButtonClick}>

@@ -13,7 +13,7 @@ export type SurveyLinkProps = {
   /** @default `false` */
   blank?: boolean
   /** @desc Style Link as Button */
-  button?: true | "white" | "pink"
+  button?: true | "white" | "pink" | "blue"
   children: React.ReactNode
 } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href">
 
