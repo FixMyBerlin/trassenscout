@@ -22,7 +22,14 @@ import getSubsections from "src/subsections/queries/getSubsections"
 export const ProjectDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
-  const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
+  const [{ subsections }] = useQuery(
+    getSubsections,
+    { projectSlug: projectSlug! },
+    {
+      // This ensures the query does not refresh when the window regains focus https://blitzjs.com/docs/query-usage
+      refetchOnWindowFocus: false,
+    },
+  )
 
   // We use the URL param `operator` to filter the UI
   // Docs: https://blitzjs.com/docs/route-params-query#use-router-query
