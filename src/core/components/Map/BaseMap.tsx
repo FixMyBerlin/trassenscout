@@ -50,9 +50,9 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
       Point,
       { subsectionSlug: string; subsubsectionSlug?: string; color: string; opacity?: number }
     >
-    dots: [number, number][]
+    dots?: [number, number][]
     classHeight?: string
-    children: React.ReactNode
+    children?: React.ReactNode
   }
 
 export const BaseMap: React.FC<BaseMapProps> = ({

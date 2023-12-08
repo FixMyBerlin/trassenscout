@@ -6,6 +6,7 @@ import { CalenderDashboard } from "src/calendar-entries/components"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
 import { ProjectMap } from "src/core/components/Map/ProjectMap"
+import { ProjectMapFallback } from "src/core/components/Map/ProjectMapFallback"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
@@ -81,7 +82,11 @@ export const ProjectDashboardWithQuery = () => {
 
       <OperatorFilterDropdown />
       <MapProvider>
-        <ProjectMap subsections={filteredSubsections} />
+        {Boolean(filteredSubsections.length) ? (
+          <ProjectMap subsections={filteredSubsections} />
+        ) : (
+          <ProjectMapFallback subsections={subsections} />
+        )}
       </MapProvider>
 
       <SubsectionTable subsections={filteredSubsections} />
