@@ -7,5 +7,4 @@ export const stageProgressDefinition: TProgress = {
   MORE: 5,
   FEEDBACK: 6,
   EMAIL: 8,
-  DONE: 8,
 }

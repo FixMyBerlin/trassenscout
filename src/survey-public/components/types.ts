@@ -65,7 +65,7 @@ export type TMore = {
   buttons: TButtonWithAction[]
 }
 
-type TMapProps = {
+export type TMapProps = {
   maptilerStyleUrl: string
   marker?: {
     lat: number
@@ -116,4 +116,4 @@ export type TResponseConfig = {
   evaluationRefs: Record<string, number>
 }
 
-export type TProgress = Record<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE", number>
+export type TProgress = Record<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL", number>

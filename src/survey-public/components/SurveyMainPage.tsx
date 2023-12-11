@@ -4,7 +4,6 @@ import { useState } from "react"
 import { Survey } from "src/survey-public/components/Survey"
 import { Feedback } from "src/survey-public/components/feedback/Feedback"
 
-import { Done } from "src/survey-public/components/Done"
 import { Email } from "src/survey-public/components/Email"
 import { More } from "src/survey-public/components/More"
 import { ProgressContext } from "src/survey-public/components/context/contexts"
@@ -35,7 +34,7 @@ export const SurveyMainPage: React.FC<Props> = ({
   surveyDefinition,
   responseConfig,
 }) => {
-  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "DONE">("FEEDBACK")
+  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL">("FEEDBACK")
   const [progress, setProgress] = useState(1)
   const [isSpinner, setIsSpinner] = useState(false)
   const [responses, setResponses] = useState<any[]>([])
@@ -120,14 +119,6 @@ export const SurveyMainPage: React.FC<Props> = ({
     scrollToTopWithDelay()
   }
 
-  const handleSubmitEmail = async (email: string | null) => {
-    setStage("DONE")
-    setProgress(stageProgressDefinition["DONE"])
-    scrollToTopWithDelay()
-    setEmailState(email)
-    await updateSurveySessionMutation({ id: surveySessionId! })
-  }
-
   let component
   switch (stage) {
     case "SURVEY":
@@ -152,9 +143,6 @@ export const SurveyMainPage: React.FC<Props> = ({
       break
     case "EMAIL":
       component = <Email email={emailDefinition} homeUrl={surveyDefinition.canonicalUrl} />
-      break
-    case "DONE":
-      component = <Done homeUrl={surveyDefinition.canonicalUrl} />
       break
   }
 
