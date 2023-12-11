@@ -17,7 +17,7 @@ import { LayerType } from "src/core/components/Map/BackgroundSwitcher"
 import { SurveyMapBanner } from "src/survey-public/components/maps/SurveyMapBanner"
 import { SurveyBackgroundSwitcher } from "src/survey-public/components/maps/SurveyBackgroundSwitcher"
 import SurveyPin from "src/survey-public/components/maps/SurveyPin"
-import { PinContext } from "src/survey-public/components/context/contexts"
+import { PinContext } from "src/survey-public/context/contexts"
 
 export type SurveyMapProps = {
   className?: string

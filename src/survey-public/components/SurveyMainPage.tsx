@@ -6,11 +6,11 @@ import { Feedback } from "src/survey-public/components/feedback/Feedback"
 
 import { Email } from "src/survey-public/components/Email"
 import { More } from "src/survey-public/components/More"
-import { ProgressContext } from "src/survey-public/components/context/contexts"
+import { ProgressContext } from "src/survey-public/context/contexts"
 import { Debug } from "src/survey-public/components/core/Debug"
 import { SurveyLayout } from "src/survey-public/components/core/layout/SurveyLayout"
 import { SurveySpinnerLayover } from "src/survey-public/components/core/layout/SurveySpinnerLayover"
-import { scrollToTopWithDelay } from "src/survey-public/components/utils/scrollToTopWithDelay"
+import { scrollToTopWithDelay } from "src/survey-public/utils/scrollToTopWithDelay"
 
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
 import createSurveySession from "src/survey-sessions/mutations/createSurveySession"

@@ -16,7 +16,7 @@ import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
 import {
   getFeedbackDefinitionBySurveyId,
   getResponseConfigBySurveyId,
-} from "src/survey-public/components/utils/getConfigBySurveyId"
+} from "src/survey-public/utils/getConfigBySurveyId"
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>

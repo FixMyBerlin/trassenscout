@@ -15,7 +15,7 @@ import {
   getFeedbackDefinitionBySurveyId,
   getResponseConfigBySurveyId,
   getSurveyDefinitionBySurveyId,
-} from "src/survey-public/components/utils/getConfigBySurveyId"
+} from "src/survey-public/utils/getConfigBySurveyId"
 import { GroupedSurveyResponseItem } from "src/survey-responses/components/analysis/GroupedSurveyResponseItem"
 import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
 import { getFormatDistanceInDays } from "src/survey-responses/utils/getFormatDistanceInDays"

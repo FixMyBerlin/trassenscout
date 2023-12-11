@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { PinContext } from "src/survey-public/components/context/contexts"
+import { PinContext } from "src/survey-public/context/contexts"
 import { SurveyButton } from "../core/buttons/SurveyButton"
 import { SurveyButtonWrapper } from "../core/buttons/SurveyButtonWrapper"
 

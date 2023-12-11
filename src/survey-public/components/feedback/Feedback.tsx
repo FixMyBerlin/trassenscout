@@ -1,7 +1,7 @@
 import { useCallback, useContext, useState } from "react"
 
-import { PinContext, ProgressContext } from "src/survey-public/components/context/contexts"
-import { scrollToTopWithDelay } from "src/survey-public/components/utils/scrollToTopWithDelay"
+import { PinContext, ProgressContext } from "src/survey-public/context/contexts"
+import { scrollToTopWithDelay } from "src/survey-public/utils/scrollToTopWithDelay"
 import PublicSurveyForm from "../core/form/PublicSurveyForm"
 import {
   TFeedback,

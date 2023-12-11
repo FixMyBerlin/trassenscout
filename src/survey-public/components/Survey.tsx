@@ -4,12 +4,12 @@ export { FORM_ERROR } from "src/core/components/forms"
 
 import { TSurvey } from "src/survey-public/components/types"
 
-import { ProgressContext } from "src/survey-public/components/context/contexts"
+import { ProgressContext } from "src/survey-public/context/contexts"
 
 import { Debug } from "src/survey-public/components/core/Debug"
 import PublicSurveyForm from "src/survey-public/components/core/form/PublicSurveyForm"
 import { Page } from "src/survey-public/components/Page"
-import { scrollToTopWithDelay } from "src/survey-public/components/utils/scrollToTopWithDelay"
+import { scrollToTopWithDelay } from "src/survey-public/utils/scrollToTopWithDelay"
 import { stageProgressDefinition } from "../frm7/data/progress"
 
 type Props = { survey: TSurvey; onSubmit: ([]) => void }
