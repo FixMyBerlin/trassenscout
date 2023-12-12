@@ -56,9 +56,8 @@ export const Feedback: React.FC<Props> = ({
 
   const categories = categoryProps.responses
 
-  const { projectGeometry, layerStyles, maptilerStyleUrl } = pages[0]?.questions.find(
-    (q) => q.id === pinId,
-  )?.props as TMapProps
+  const { maptilerStyleUrl, config } = pages[0]?.questions.find((q) => q.id === pinId)
+    ?.props as TMapProps
 
   const categoryText = categories.find((q) => q.id === feedbackCategory)?.text.de
 
@@ -146,7 +145,7 @@ export const Feedback: React.FC<Props> = ({
         {feedbackPageProgress === 1 && (
           <FeedbackSecondPage
             isCompleted={isPageTwoCompleted}
-            staticMapProps={{ layerStyles, projectGeometry, maptilerStyleUrl }}
+            staticMapProps={{ maptilerStyleUrl, pinColor: config.pinColor }}
             page={pages[1] as TPage}
             onButtonClick={handleBackPage}
             feedbackCategory={categoryText}

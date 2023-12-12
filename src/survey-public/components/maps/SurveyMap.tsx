@@ -14,8 +14,8 @@ import Map, {
   useMap,
 } from "react-map-gl/maplibre"
 import { LayerType } from "src/core/components/Map/BackgroundSwitcher"
-import { SurveyMapBanner } from "src/survey-public/components/maps/SurveyMapBanner"
 import { SurveyBackgroundSwitcher } from "src/survey-public/components/maps/SurveyBackgroundSwitcher"
+import { SurveyMapBanner } from "src/survey-public/components/maps/SurveyMapBanner"
 import SurveyPin from "src/survey-public/components/maps/SurveyPin"
 import { PinContext } from "src/survey-public/context/contexts"
 
@@ -29,8 +29,7 @@ export type SurveyMapProps = {
     initialMarker: { lng: number; lat: number }
     config: {
       bounds: LngLatBoundsLike
-      minZoom?: number
-      maxZoom?: number
+      pinColor: string
     }
   }
   isMapDirty: any
@@ -60,7 +59,7 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
 
   const vectorStyle = `${projectMap.maptilerStyleUrl}?key=${maptilerApiKey}`
-  const satelliteStyle = `${projectMap.maptilerStyleUrl}?key=${maptilerApiKey}`
+  const satelliteStyle = `${"https://api.maptiler.com/maps/hybrid/style.json"}?key=${maptilerApiKey}`
 
   if (!pinPosition) setPinPosition(projectMap.initialMarker)
 
@@ -149,7 +148,7 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
             onDrag={onMarkerDrag}
             onDragEnd={onMarkerDragEnd}
           >
-            <SurveyPin />
+            <SurveyPin color={config.pinColor} />
           </Marker>
         )}
         {projectMap.projectGeometry && (

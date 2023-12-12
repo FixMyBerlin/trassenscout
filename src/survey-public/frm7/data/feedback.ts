@@ -52,11 +52,9 @@ export const feedbackDefinition: TFeedback = {
               lng: 8.774882307368216,
             },
             config: {
-              zoom: 2,
               bounds: [8.576990015191768, 50.18115285304344, 8.791982825789262, 50.084578531515405],
-              longitude: 8.774882307368216,
-              latitude: 50.13810478491584,
-              boundsPadding: 20,
+              pinColor: "#E5007D",
+              // todo frm7
             },
           },
         },

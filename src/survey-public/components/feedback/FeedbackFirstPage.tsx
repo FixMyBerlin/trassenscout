@@ -40,8 +40,6 @@ export const FeedbackFirstPage: React.FC<Props> = ({
             {...mapIsDirtyProps}
             projectMap={{
               maptilerStyleUrl: mapProps.maptilerStyleUrl,
-              layerStyles: mapProps.layerStyles,
-              projectGeometry: mapProps.projectGeometry,
               initialMarker: mapProps.marker,
               config: mapProps.config,
             }}

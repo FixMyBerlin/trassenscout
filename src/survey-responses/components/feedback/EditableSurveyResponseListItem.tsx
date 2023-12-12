@@ -17,6 +17,7 @@ import {
   getFeedbackDefinitionBySurveyId,
   getResponseConfigBySurveyId,
 } from "src/survey-public/utils/getConfigBySurveyId"
+import { TMapProps } from "src/survey-public/components/types"
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
@@ -53,6 +54,13 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
 
   const { evaluationRefs } = getResponseConfigBySurveyId(surveyId!)
   const feedbackDefinition = getFeedbackDefinitionBySurveyId(surveyId!)
+
+  const mapProps = feedbackDefinition!.pages[0]!.questions.find(
+    (q) => q.id === evaluationRefs["feedback-location"],
+  )!.props as TMapProps
+
+  const maptilerStyleUrl = mapProps.maptilerStyleUrl
+  const defaultViewState = mapProps?.config?.bounds
 
   const feedbackQuestions = []
 
@@ -143,6 +151,9 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             topics={topics}
             subsections={subsections}
             refetchResponsesAndTopics={refetchResponsesAndTopics}
+            maptilerStyleUrl={maptilerStyleUrl}
+            defaultViewState={defaultViewState}
+            pinColor={mapProps.config.pinColor}
           />
         </div>
       )}

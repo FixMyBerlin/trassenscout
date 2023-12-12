@@ -1,3 +1,5 @@
+import { LngLatBoundsLike } from "maplibre-gl"
+
 export type TSurvey = {
   part: number
   version: number
@@ -71,20 +73,10 @@ export type TMapProps = {
     lat: number
     lng: number
   }
-  layerStyles?: Record<string, any>[]
-  projectGeometry?: {
-    type: "FeatureCollection"
-    features: {
-      id?: string
-      type: "Feature"
-      properties: {}
-      geometry: {
-        coordinates: any[]
-        type: "MultiLineString" | "LineString"
-      }
-    }[]
+  config: {
+    bounds: LngLatBoundsLike
+    pinColor: string
   }
-  config?: Record<string, any>
   placeholder?: TTranslatableText
   caption?: TTranslatableText
 }

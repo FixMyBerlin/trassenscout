@@ -1,30 +1,16 @@
-import { MultiLineString } from "@turf/helpers"
-import clsx from "clsx"
 import "maplibre-gl/dist/maplibre-gl.css"
 import React, { useEffect } from "react"
-import Map, { Layer, Marker, Source, useMap } from "react-map-gl/maplibre"
+import Map, { Marker, useMap } from "react-map-gl/maplibre"
 import SurveyStaticPin from "./SurveyStaticPin"
-import { TMapProps } from "../types"
 
 type Props = {
-  className?: string
-  children?: React.ReactNode
   marker: { lng: number; lat: number }
-  projectGeometry?: TMapProps["projectGeometry"]
-  layerStyles?: Record<string, any>
   maptilerStyleUrl: string
+  pinColor: string
 }
 
-export const SurveyStaticMap: React.FC<Props> = ({
-  marker,
-  className,
-  children,
-  projectGeometry,
-  layerStyles,
-  maptilerStyleUrl,
-}) => {
+export const SurveyStaticMap: React.FC<Props> = ({ marker, maptilerStyleUrl, pinColor }) => {
   const { mainMap } = useMap()
-
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
   const vectorStyle = `${maptilerStyleUrl}?key=${maptilerApiKey}`
 
@@ -33,7 +19,7 @@ export const SurveyStaticMap: React.FC<Props> = ({
   }, [mainMap])
 
   return (
-    <div className={clsx(className, "h-[230px]")}>
+    <div className="h-[230px]">
       <Map
         id="mainMap"
         initialViewState={{
@@ -51,22 +37,13 @@ export const SurveyStaticMap: React.FC<Props> = ({
         cursor={"default"}
         mapStyle={vectorStyle}
       >
-        {children}
         <Marker
           style={{ cursor: "default" }}
           longitude={marker.lng}
           latitude={marker.lat}
           anchor="bottom"
         >
-          <SurveyStaticPin />
-          {projectGeometry && (
-            <Source type="geojson" data={projectGeometry}>
-              {layerStyles &&
-                layerStyles.map((layer: any) => {
-                  return <Layer key={layer.id} {...layer} />
-                })}
-            </Source>
-          )}
+          <SurveyStaticPin color={pinColor} />
         </Marker>
       </Map>
     </div>

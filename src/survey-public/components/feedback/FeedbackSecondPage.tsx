@@ -3,12 +3,11 @@ import { PinContext } from "src/survey-public/context/contexts"
 import { SurveyButton } from "../core/buttons/SurveyButton"
 import { SurveyButtonWrapper } from "../core/buttons/SurveyButtonWrapper"
 
-import { MultiLineString } from "@turf/helpers"
 import { SurveyScreenHeader } from "src/survey-public/components/core/layout/SurveyScreenHeader"
+import { TPage, TQuestion } from "src/survey-public/components/types"
+import { Question } from "../Question"
 import { SurveyH2, SurveyH3, SurveyP } from "../core/Text"
 import { SurveyStaticMap } from "../maps/SurveyStaticMap"
-import { Question } from "../Question"
-import { TMapProps, TPage, TQuestion } from "src/survey-public/components/types"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -16,9 +15,8 @@ type Props = {
   page: TPage
   onButtonClick: any
   staticMapProps: {
-    projectGeometry: TMapProps["projectGeometry"]
-    layerStyles: Record<string, any> | undefined
     maptilerStyleUrl: string
+    pinColor: string
   }
   feedbackCategory: string | undefined
   isCompleted: boolean
