@@ -1,16 +1,14 @@
 import { Routes } from "@blitzjs/next"
-import { Subsection } from "@prisma/client"
+import clsx from "clsx"
 import { useRouter } from "next/router"
+import { SubsectionIcon } from "src/core/components/Map/Icons"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
-import { useSlugs } from "src/core/hooks"
-import { SubsectionIcon } from "src/core/components/Map/Icons"
-import { startEnd } from "src/core/components/text/startEnd"
 import { longTitle, shortTitle } from "src/core/components/text"
-import { Prettify } from "src/core/types"
-import { SubsectionWithPosition } from "../queries/getSubsection"
+import { startEnd } from "src/core/components/text/startEnd"
+import { useSlugs } from "src/core/hooks"
 import { StakeholderSummary } from "src/stakeholdernotes/components/StakeholderSummary"
-import clsx from "clsx"
+import { SubsectionWithPosition } from "../queries/getSubsection"
 
 type Props = {
   subsections: SubsectionWithPosition[]
