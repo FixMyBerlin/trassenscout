@@ -14,10 +14,12 @@ import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
 
 import {
-  getFeedbackDefinitionBySurveyId,
-  getResponseConfigBySurveyId,
-} from "src/survey-public/utils/getConfigBySurveyId"
+  getFeedbackDefinitionBySurveySlug,
+  getResponseConfigBySurveySlug,
+} from "src/survey-public/utils/getConfigBySurveySlug"
 import { TMapProps } from "src/survey-public/components/types"
+import getSurvey from "src/surveys/queries/getSurvey"
+import { useQuery } from "@blitzjs/rpc"
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
@@ -49,11 +51,12 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const params = useRouterQuery()
   const open = parseInt(String(params.responseDetails)) === response.id
   const surveyId = useParam("surveyId", "string")
+  const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
 
   const operatorSlugWitFallback = response.operator?.slug || "k.A."
 
-  const { evaluationRefs } = getResponseConfigBySurveyId(surveyId!)
-  const feedbackDefinition = getFeedbackDefinitionBySurveyId(surveyId!)
+  const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
+  const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
 
   const mapProps = feedbackDefinition!.pages[0]!.questions.find(
     (q) => q.id === evaluationRefs["feedback-location"],

@@ -12,10 +12,10 @@ import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { TSurvey } from "src/survey-public/components/types"
 import {
-  getFeedbackDefinitionBySurveyId,
-  getResponseConfigBySurveyId,
-  getSurveyDefinitionBySurveyId,
-} from "src/survey-public/utils/getConfigBySurveyId"
+  getFeedbackDefinitionBySurveySlug,
+  getResponseConfigBySurveySlug,
+  getSurveyDefinitionBySurveySlug,
+} from "src/survey-public/utils/getConfigBySurveySlug"
 import { GroupedSurveyResponseItem } from "src/survey-responses/components/analysis/GroupedSurveyResponseItem"
 import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
 import { getFormatDistanceInDays } from "src/survey-responses/utils/getFormatDistanceInDays"
@@ -68,9 +68,9 @@ export const Survey = () => {
     return transformedArray
   }
 
-  const feedbackDefinition = getFeedbackDefinitionBySurveyId(survey.id)
-  const surveyDefinition = getSurveyDefinitionBySurveyId(survey.id)
-  const responseConfig = getResponseConfigBySurveyId(survey.id)
+  const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
+  const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
+  const responseConfig = getResponseConfigBySurveySlug(survey.slug)
 
   const feedbackQuestions = []
 

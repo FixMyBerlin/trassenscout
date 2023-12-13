@@ -1,7 +1,13 @@
-import { TFeedbackQuestion, TResponse } from "src/survey-public/components/types"
+import {
+  TFeedbackQuestion,
+  TResponse,
+  TSingleOrMultiResponseProps,
+} from "src/survey-public/components/types"
 
 export const getSurveyResponseCategoryById = (
   id: number,
   feedbackUserCategoryQuestion: TFeedbackQuestion,
-  // @ts-expect-error
-) => feedbackUserCategoryQuestion?.props?.responses.find((r: TResponse) => r.id === id).text.de
+) => {
+  const props = feedbackUserCategoryQuestion?.props as TSingleOrMultiResponseProps
+  return props.responses.find((r: TResponse) => r.id === id)?.text.de
+}
