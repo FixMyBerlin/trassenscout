@@ -23,30 +23,16 @@ import getSubsections from "src/subsections/queries/getSubsections"
 export const ProjectDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
-  const [{ subsections }] = useQuery(
-    getSubsections,
-    { projectSlug: projectSlug! },
-    {
-      // This ensures the query does not refresh when the window regains focus https://blitzjs.com/docs/query-usage
-      refetchOnWindowFocus: false,
-    },
-  )
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
   // We use the URL param `operator` to filter the UI
   // Docs: https://blitzjs.com/docs/route-params-query#use-router-query
   const params = useRouterQuery()
 
-  const filteredSubsections = useMemo(() => {
-    return params.operator
-      ? subsections.filter(
-          (sec) => typeof params.operator === "string" && sec.operator?.slug === params.operator,
-        )
-      : subsections
-  }, [params.operator, subsections])
-  // const filteredSubsections = params.operator
-  //   ? subsections.filter(
-  //       (sec) => typeof params.operator === "string" && sec.operator?.slug === params.operator,
-  //     )
-  //   : subsections
+  const filteredSubsections = params.operator
+    ? subsections.filter(
+        (sec) => typeof params.operator === "string" && sec.operator?.slug === params.operator,
+      )
+    : subsections
 
   if (!subsections.length) {
     return (
