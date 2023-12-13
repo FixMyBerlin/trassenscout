@@ -13,7 +13,7 @@ export const NavigationGeneralLogo: React.FC<Props> = ({ beta = true }) => {
         height={30}
         width={84}
       />
-      {beta && <span className="ml-2 text-xs uppercase text-gray-400">Alpha</span>}
+      {beta && <span className="ml-2 text-xs uppercase text-gray-400">Beta</span>}
     </div>
   )
 }

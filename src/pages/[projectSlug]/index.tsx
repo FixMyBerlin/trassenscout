@@ -1,11 +1,12 @@
 import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { Suspense } from "react"
+import { Suspense, useMemo } from "react"
 import { MapProvider } from "react-map-gl"
 import { CalenderDashboard } from "src/calendar-entries/components"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
 import { ProjectMap } from "src/core/components/Map/ProjectMap"
+import { ProjectMapFallback } from "src/core/components/Map/ProjectMapFallback"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Spinner } from "src/core/components/Spinner"
 import { Link } from "src/core/components/links"
@@ -23,10 +24,10 @@ export const ProjectDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
   const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
-
   // We use the URL param `operator` to filter the UI
   // Docs: https://blitzjs.com/docs/route-params-query#use-router-query
   const params = useRouterQuery()
+
   const filteredSubsections = params.operator
     ? subsections.filter(
         (sec) => typeof params.operator === "string" && sec.operator?.slug === params.operator,
@@ -73,9 +74,14 @@ export const ProjectDashboardWithQuery = () => {
       )}
 
       <OperatorFilterDropdown />
-      <MapProvider>
-        <ProjectMap subsections={filteredSubsections} />
-      </MapProvider>
+
+      {Boolean(filteredSubsections.length) ? (
+        <MapProvider>
+          <ProjectMap subsections={filteredSubsections} />
+        </MapProvider>
+      ) : (
+        <ProjectMapFallback subsections={subsections} />
+      )}
 
       <SubsectionTable subsections={filteredSubsections} />
 

@@ -1,10 +1,11 @@
 import { Routes, useParam } from "@blitzjs/next"
 import { lineString } from "@turf/helpers"
 import { along, featureCollection, length } from "@turf/turf"
-import { LngLatBoundsLike } from "maplibre-gl"
+
 import { useRouter } from "next/router"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import {
+  LngLatBoundsLike,
   MapEvent,
   MapLayerMouseEvent,
   Marker,
@@ -27,9 +28,21 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   const projectSlug = useParam("projectSlug", "string")
   const { mainMap } = useMap()
 
+  // bundingBox only changes when subsections change / subsections array is created
+  const boundingBox = useMemo(() => {
+    return subsectionsBbox(subsections) as LngLatBoundsLike
+  }, [subsections])
+
+  // we do not want to fitBounds everytime the subsections array is created (tanstack query refetches subsections on window focus)
+  // we could disable refetchOnWindowFocus, in [projectId]/index.tsx with {refetchOnWindowFocus: false} https://blitzjs.com/docs/query-usage
+  // but then we would not get the latest data when the user comes back to the page
+
+  // we spread boundingBox in the dependency array to make sure the effect runs when the values of boundingBox change (not everytime the array is created)
   useEffect(() => {
-    mainMap?.fitBounds(subsectionsBbox(subsections) as LngLatBoundsLike, { padding: 60 })
-  }, [mainMap, subsections])
+    // @ts-expect-error
+    mainMap?.fitBounds(boundingBox, { padding: 60 })
+    // @ts-expect-error
+  }, [mainMap, ...boundingBox])
 
   type HandleSelectProps = { subsectionSlug: string; edit: boolean }
   const handleSelect = ({ subsectionSlug, edit }: HandleSelectProps) => {
@@ -117,7 +130,7 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
       <BaseMap
         id="mainMap"
         initialViewState={{
-          bounds: subsectionsBbox(subsections),
+          bounds: boundingBox,
           fitBoundsOptions: { padding: 60 },
         }}
         onClick={handleClickMap}
