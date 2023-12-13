@@ -1,6 +1,6 @@
 import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { Suspense, useEffect, useState } from "react"
+import { Suspense, useMemo } from "react"
 import { MapProvider } from "react-map-gl"
 import { CalenderDashboard } from "src/calendar-entries/components"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
@@ -34,16 +34,19 @@ export const ProjectDashboardWithQuery = () => {
   // We use the URL param `operator` to filter the UI
   // Docs: https://blitzjs.com/docs/route-params-query#use-router-query
   const params = useRouterQuery()
-  const [filteredSubsections, setFilteredSubsections] = useState(subsections)
 
-  useEffect(() => {
-    const newFilteredSubsections = params.operator
+  const filteredSubsections = useMemo(() => {
+    return params.operator
       ? subsections.filter(
           (sec) => typeof params.operator === "string" && sec.operator?.slug === params.operator,
         )
       : subsections
-    setFilteredSubsections(newFilteredSubsections)
   }, [params.operator, subsections])
+  // const filteredSubsections = params.operator
+  //   ? subsections.filter(
+  //       (sec) => typeof params.operator === "string" && sec.operator?.slug === params.operator,
+  //     )
+  //   : subsections
 
   if (!subsections.length) {
     return (
@@ -86,13 +89,13 @@ export const ProjectDashboardWithQuery = () => {
 
       <OperatorFilterDropdown />
 
-      <MapProvider>
-        {Boolean(filteredSubsections.length) ? (
+      {Boolean(filteredSubsections.length) ? (
+        <MapProvider>
           <ProjectMap subsections={filteredSubsections} />
-        ) : (
-          <ProjectMapFallback subsections={subsections} />
-        )}
-      </MapProvider>
+        </MapProvider>
+      ) : (
+        <ProjectMapFallback subsections={subsections} />
+      )}
 
       <SubsectionTable subsections={filteredSubsections} />
 
