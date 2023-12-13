@@ -137,6 +137,8 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         onZoom={handleMapZoom}
         mapLib={maplibregl}
+        // @ts-expect-error: See https://github.com/visgl/react-map-gl/issues/2310
+        RTLTextPlugin={null}
       >
         {pinPosition && (
           <Marker
