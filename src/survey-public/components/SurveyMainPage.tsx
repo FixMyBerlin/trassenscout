@@ -24,6 +24,7 @@ type Props = {
   stageProgressDefinition: TProgress
   surveyDefinition: TSurvey
   responseConfig: TResponseConfig
+  surveyId: number
 }
 
 export const SurveyMainPage: React.FC<Props> = ({
@@ -33,8 +34,9 @@ export const SurveyMainPage: React.FC<Props> = ({
   stageProgressDefinition,
   surveyDefinition,
   responseConfig,
+  surveyId,
 }) => {
-  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL">("FEEDBACK")
+  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL">("SURVEY")
   const [progress, setProgress] = useState(1)
   const [isSpinner, setIsSpinner] = useState(false)
   const [responses, setResponses] = useState<any[]>([])
@@ -49,7 +51,7 @@ export const SurveyMainPage: React.FC<Props> = ({
     if (surveySessionId) {
       return surveySessionId
     } else {
-      const surveySession = await createSurveySessionMutation({ surveyId: surveyDefinition.part })
+      const surveySession = await createSurveySessionMutation({ surveyId })
       setSurveySessionId(surveySession.id)
       return surveySession.id
     }

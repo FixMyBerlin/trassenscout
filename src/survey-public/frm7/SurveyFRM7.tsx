@@ -5,10 +5,13 @@ import { moreDefinition } from "src/survey-public/frm7/data/more"
 import { stageProgressDefinition } from "src/survey-public/frm7/data/progress"
 import { surveyDefinition } from "src/survey-public/frm7/data/survey"
 import { responseConfig } from "./data/response-config"
-
-export const SurveyFRM7: React.FC = () => {
+type Props = {
+  surveyId: number
+}
+export const SurveyFRM7: React.FC<Props> = ({ surveyId }) => {
   return (
     <SurveyMainPage
+      surveyId={surveyId}
       emailDefinition={emailDefinition}
       feedbackDefinition={feedbackDefinition}
       moreDefinition={moreDefinition}

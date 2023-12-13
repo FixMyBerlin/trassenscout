@@ -19,13 +19,13 @@ const PublicSurveyPageWithQuery = () => {
   if (!survey) return null
   if (surveySlug === "rs8")
     return survey.active ? (
-      <SurveyRS8 />
+      <SurveyRS8 surveyId={survey.id} />
     ) : (
       <SurveyInactivePage surveyDefinition={surveyDefinitionRS8} />
     )
   if (surveySlug === "frm7")
     return survey.active ? (
-      <SurveyFRM7 />
+      <SurveyFRM7 surveyId={survey.id} />
     ) : (
       <SurveyInactivePage surveyDefinition={surveyDefinitionFRM7} />
     )
