@@ -32,7 +32,7 @@ type FormProps<S extends z.ZodType<any, any>> = Omit<
   refetchResponsesAndTopics: () => void
   userLocationQuestionId: number | undefined
   maptilerStyleUrl: string
-  defaultViewState?: LngLatBoundsLike
+  defaultViewState: LngLatBoundsLike
   pinColor: string
 } & Pick<EditableSurveyResponseListItemProps, "response" | "operators" | "topics" | "subsections">
 
