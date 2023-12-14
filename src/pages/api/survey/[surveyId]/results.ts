@@ -29,7 +29,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     where: { surveyId: survey.id },
     include: { responses: true },
   })
-  console.log("surveySessions", surveySessions)
 
   const headers = [
     { id: "createdAt", title: "createdAt" },

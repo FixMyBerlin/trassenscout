@@ -70,7 +70,6 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   })
 
   const handleSubmit = async (values: any) => {
-    console.log("handleSubmit", { values })
     try {
       await updateSurveyResponseMutation({
         id: response.id,
