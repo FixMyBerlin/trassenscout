@@ -2,8 +2,10 @@ import { useMutation } from "@blitzjs/rpc"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
 import clsx from "clsx"
+import { useRouter } from "next/router"
 import { PropsWithoutRef, useState } from "react"
 import { FormProvider, UseFormProps, useForm } from "react-hook-form"
+import { LngLatBoundsLike } from "react-map-gl/maplibre"
 import {
   LabeledCheckboxGroup,
   LabeledRadiobuttonGroup,
@@ -20,7 +22,6 @@ import updateSurveyResponse from "../../mutations/updateSurveyResponse"
 import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
 import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
 import { surveyResponseStatus } from "./surveyResponseStatus"
-import { useRouter } from "next/router"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -29,6 +30,10 @@ type FormProps<S extends z.ZodType<any, any>> = Omit<
   schema?: S
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
   refetchResponsesAndTopics: () => void
+  userLocationQuestionId: number | undefined
+  maptilerStyleUrl: string
+  defaultViewState: LngLatBoundsLike
+  pinColor: string
 } & Pick<EditableSurveyResponseListItemProps, "response" | "operators" | "topics" | "subsections">
 
 export const FORM_ERROR = "FORM_ERROR"
@@ -38,7 +43,11 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   response,
   operators,
   topics,
+  defaultViewState,
   subsections,
+  maptilerStyleUrl,
+  userLocationQuestionId,
+  pinColor,
   initialValues,
   refetchResponsesAndTopics,
 }: FormProps<S>) {
@@ -198,9 +207,13 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
 
         <div>
           <EditableSurveyResponseFormMap
-            // @ts-expect-error `data` is unkown
-            responsePoint={response.data["23"] as { lat: number; lng: number } | undefined}
-            subsections={subsections}
+            marker={
+              // @ts-expect-error `data` is unkown
+              response.data[userLocationQuestionId] as { lat: number; lng: number } | undefined
+            }
+            maptilerStyleUrl={maptilerStyleUrl}
+            defaultViewState={defaultViewState}
+            pinColor={pinColor}
           />
         </div>
 

@@ -372,7 +372,7 @@ model SurveySession {
 
 model SurveyResponse {
   id                   Int                                     @id @default(autoincrement())
-  surveyId             Int // surveyParts as specified by the survey JSON files
+  surveyPart           Int
   data                 String
   status               SurveyResponseStatusEnum?               @default(PENDING)
   note                 String?

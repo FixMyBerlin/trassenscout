@@ -42,21 +42,20 @@ export default resolver.pipe(
         }),
     })
 
-    // Reminder: `response.surveyId` is NOT a relation field
-    // the field here just represents first or second part of the survey json
+    // the surveyPart field here represents first or second part of the survey
 
-    // src/participation/data/survey.json
+    // /data/survey.ts
     const surveyResponsesFirstPart = surveySessions
       .map((session) => session.responses)
       .flat()
-      .filter((response) => response.surveyId === 1)
+      .filter((response) => response.surveyPart === 1)
       .sort((a, b) => b.id - a.id)
 
-    // src/participation/data/feedback.json
+    // /data/feedback.ts
     const surveyResponsesFeedbackPart = surveySessions
       .map((session) => session.responses)
       .flat()
-      .filter((response) => response.surveyId === 2)
+      .filter((response) => response.surveyPart === 2)
       // We need to sort again; the frontend received different orders before…
       .sort((a, b) => b.id - a.id)
 

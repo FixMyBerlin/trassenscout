@@ -7,10 +7,10 @@ import { NavigationGeneral, NavigationProject } from "./Navigation"
 import { TailwindResponsiveHelper } from "./TailwindResponsiveHelper/TailwindResponsiveHelper"
 
 type Props = {
-  navigation: "general" | "project" | "none" | "participation"
-  footer: "general" | "project" | "minimal" | "participation"
-  fullWidth?: boolean
+  navigation: "general" | "project" | "none"
+  footer: "general" | "project" | "minimal"
   children?: React.ReactNode
+  fullWidth?: boolean
 }
 
 export const Layout: BlitzLayout<Props> = ({
