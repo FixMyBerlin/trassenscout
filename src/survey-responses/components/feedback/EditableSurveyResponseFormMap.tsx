@@ -1,5 +1,5 @@
 import "maplibre-gl/dist/maplibre-gl.css"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import Map, { LngLatBoundsLike, Marker, NavigationControl, useMap } from "react-map-gl/maplibre"
 import { BackgroundSwitcher, LayerType } from "src/core/components/Map/BackgroundSwitcher"
 import SurveyStaticPin from "src/core/components/Map/SurveyStaticPin"
@@ -18,10 +18,6 @@ export const EditableSurveyResponseFormMap: React.FC<Props> = ({
   pinColor,
 }) => {
   const { mainMap } = useMap()
-
-  useEffect(() => {
-    if (!mainMap) return
-  }, [mainMap])
 
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
 

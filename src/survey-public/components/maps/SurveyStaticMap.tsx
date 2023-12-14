@@ -1,5 +1,5 @@
 import "maplibre-gl/dist/maplibre-gl.css"
-import React, { useEffect } from "react"
+import React from "react"
 import Map, { Marker, useMap } from "react-map-gl/maplibre"
 import SurveyStaticPin from "./SurveyStaticPin"
 
@@ -13,10 +13,6 @@ export const SurveyStaticMap: React.FC<Props> = ({ marker, maptilerStyleUrl, pin
   const { mainMap } = useMap()
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
   const vectorStyle = `${maptilerStyleUrl}?key=${maptilerApiKey}`
-
-  useEffect(() => {
-    if (!mainMap) return
-  }, [mainMap])
 
   return (
     <div className="h-[230px]">

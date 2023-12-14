@@ -52,10 +52,6 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({ projectMap, className, set
   if (!pinPosition) setPinPosition(projectMap.initialMarker)
 
   useEffect(() => {
-    if (!mainMap) return
-  }, [mainMap])
-
-  useEffect(() => {
     const lgMediaQuery = window.matchMedia("(min-width: 768px)")
     // @ts-ignore
     function onMediaQueryChange({ matches }) {
