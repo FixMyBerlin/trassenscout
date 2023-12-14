@@ -45,7 +45,6 @@ export const EditableSurveyResponseFormMap: React.FC<Props> = ({
           zoom: marker ? 10.5 : undefined,
         }}
         scrollZoom={false}
-        cursor={"default"}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         // @ts-expect-error: See https://github.com/visgl/react-map-gl/issues/2310
         RTLTextPlugin={null}
