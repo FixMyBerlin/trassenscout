@@ -18,7 +18,7 @@ const EditableSurveyResponseUserText: React.FC<EditableSurveyResponseUserTextPro
   userTextIndices,
   surveyId,
 }) => {
-  // thsi is only used for RS8 survey responses
+  // this is only used for RS8 survey responses
   // wegen des Bugs (nur einer der Texte wurde angezeigt) sollen hier alle vor dem Bugfix nicht angezeigten Texte blau hinterlegt werden
   // if (surveyId === "1") {... sollte gelöscht werden wenn der Bug keine Rolle mehr spielt
   if (surveyId === "1")
