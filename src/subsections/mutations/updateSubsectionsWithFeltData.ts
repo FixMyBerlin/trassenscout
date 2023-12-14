@@ -1,9 +1,8 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
-import { SubsectionWithPosition } from "../queries/getSubsection"
-import { FeltApiResponseSchema, SubsectionSchema } from "../schema"
 import { multilinestringToLinestring } from "../components/utils/multilinestringToLinestring"
+import { FeltApiResponseSchema, SubsectionSchema } from "../schema"
 
 const UpdateSubsectionsWithFeltDataSchema = z.object({
   subsections: z.array(
