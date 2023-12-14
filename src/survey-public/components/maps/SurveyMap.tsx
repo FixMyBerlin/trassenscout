@@ -1,16 +1,13 @@
-import { MultiLineString } from "@turf/helpers"
 import clsx from "clsx"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import React, { useCallback, useContext, useEffect, useState } from "react"
 import Map, {
-  Layer,
   LngLat,
   LngLatBoundsLike,
   Marker,
   MarkerDragEvent,
   NavigationControl,
-  Source,
   useMap,
 } from "react-map-gl/maplibre"
 import { LayerType } from "src/core/components/Map/BackgroundSwitcher"
@@ -24,25 +21,16 @@ export type SurveyMapProps = {
   children?: React.ReactNode
   projectMap: {
     maptilerStyleUrl: string
-    projectGeometry: MultiLineString
-    layerStyles: Record<string, any>
     initialMarker: { lng: number; lat: number }
     config: {
       bounds: LngLatBoundsLike
       pinColor: string
     }
   }
-  isMapDirty: any
   setIsMapDirty: any
 }
 
-export const SurveyMap: React.FC<SurveyMapProps> = ({
-  projectMap,
-  className,
-  children,
-  isMapDirty,
-  setIsMapDirty,
-}) => {
+export const SurveyMap: React.FC<SurveyMapProps> = ({ projectMap, className, setIsMapDirty }) => {
   const { mainMap } = useMap()
   const [events, logEvents] = useState<Record<string, LngLat>>({})
   const [isPinInView, setIsPinInView] = useState(true)
@@ -153,14 +141,7 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
             <SurveyPin color={config.pinColor} />
           </Marker>
         )}
-        {projectMap.projectGeometry && (
-          <Source type="geojson" data={projectMap.projectGeometry}>
-            {projectMap.layerStyles &&
-              projectMap.layerStyles.map((layer: any) => {
-                return <Layer key={layer.id} {...layer} />
-              })}
-          </Source>
-        )}
+
         {isMediumScreen && <NavigationControl showCompass={false} />}
 
         <SurveyMapBanner
