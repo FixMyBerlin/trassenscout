@@ -32,7 +32,7 @@ export const EditableSurveyResponseFormMap: React.FC<Props> = ({
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
 
   const vectorStyle = `${maptilerStyleUrl}?key=${maptilerApiKey}`
-  const satelliteStyle = `${"https://api.maptiler.com/maps/hybrid/style.json"}?key=${maptilerApiKey}`
+  const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
 
   return (
     <div className="h-[600px]">
