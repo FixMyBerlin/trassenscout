@@ -361,11 +361,10 @@ model Survey {
 }
 
 model SurveySession {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int              @id @default(autoincrement())
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
   //
-
   survey    Survey           @relation(fields: [surveyId], references: [id])
   surveyId  Int
   responses SurveyResponse[]
