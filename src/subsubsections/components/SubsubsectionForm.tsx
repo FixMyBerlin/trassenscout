@@ -112,7 +112,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         type="number"
         step="0.01"
         name="width"
-        label="Breite"
+        label="Breite RVA"
         optional
       />
       <LabeledFormatNumberField
