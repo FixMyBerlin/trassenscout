@@ -11,6 +11,7 @@ import seedSurveyResponseTopics from "./seeds/surveyresponsetopics"
 import seedSurveys from "./seeds/surveys"
 import seedUploads from "./seeds/uploads"
 import seedUsers from "./seeds/users"
+import seedDevData from "./seeds/devData"
 
 /*
  * This seed function is executed when you run `blitz db seed`.
@@ -29,6 +30,7 @@ const seed = async () => {
   await seedSurveys()
   await seedSurveyResponseTopics()
   await seedSubsubsectionStatus()
+  await seedDevData()
 }
 
 export default seed
