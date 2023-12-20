@@ -18,6 +18,8 @@ import { getUserSelectOptions } from "src/users/utils"
 import { z } from "zod"
 import { GeometryInput } from "./GeometryInput/GeometryInput"
 import getSubsubsectionStatussWithCount from "src/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
+import getSubsubsectionTasksWithCount from "src/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
+
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
@@ -36,6 +38,13 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
     ["", "Status offen"],
     ...subsubsectionStatuss.map((status) => {
       return [status.id, status.title] as [number, string]
+    }),
+  ]
+  const [{ subsubsectionTasks }] = useQuery(getSubsubsectionTasksWithCount, { projectSlug })
+  const subsubsectionTaskOptions: [number | string, string][] = [
+    ["", "-"],
+    ...subsubsectionTasks.map((task) => {
+      return [task.id, task.title] as [number, string]
     }),
   ]
 
@@ -58,6 +67,17 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label="Maßnahmentyp"
         help="Bspw. 'Fahrbahnmarkierung'"
       />
+      <div className="flex items-end gap-5">
+        <LabeledSelect
+          name="subsubsectionTaskId"
+          label="Maßnahmentyp ENUM"
+          options={subsubsectionTaskOptions}
+          outerProps={{ className: "grow" }}
+        />
+        <Link href={Routes.SubsubsectionTasksPage({ projectSlug: projectSlug! })} className="py-2">
+          Maßnahmetypen verwalten…
+        </Link>
+      </div>
       <LabeledFormatNumberField
         inlineLeadingAddon="km"
         maxDecimalDigits={3}

@@ -30,6 +30,7 @@ export const SubsubsectionSchema = z.object({
   managerId: InputNumberOrNullSchema,
   subsectionId: z.coerce.number(),
   subsubsectionStatusId: InputNumberOrNullSchema,
+  subsubsectionTaskId: InputNumberOrNullSchema,
   maxSpeed: InputNumberOrNullSchema,
   trafficLoad: InputNumberOrNullSchema,
   trafficLoadDate: z.union([
