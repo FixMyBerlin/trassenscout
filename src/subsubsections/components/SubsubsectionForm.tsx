@@ -116,6 +116,15 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         optional
       />
       <LabeledFormatNumberField
+        inlineLeadingAddon="m"
+        maxDecimalDigits={3}
+        type="number"
+        step="0.01"
+        name="width"
+        label="Breite Bestand"
+        optional
+      />
+      <LabeledFormatNumberField
         name="costEstimate"
         inlineLeadingAddon="€"
         label="Kostenschätzung"
