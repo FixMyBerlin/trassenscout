@@ -226,21 +226,22 @@ model Subsection {
 }
 
 model Subsubsection {
-  id           Int                   @id @default(autoincrement())
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
+  id            Int                   @id @default(autoincrement())
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
   //
-  slug         String // shortTitle and URL Slug
-  subTitle     String?
-  type         SubsubsectionTypeEnum @default(ROUTE) // Führungform
-  geometry     Json
-  labelPos     LabelPositionEnum     @default(top)
-  task         String // Maßnahmentyp
-  length       Float? // Kilometer
-  width        Float? // Meter
-  costEstimate Float? // Euro
-  description  String? // Anmerkungen
-  mapillaryKey String?
+  slug          String // shortTitle and URL Slug
+  subTitle      String?
+  type          SubsubsectionTypeEnum @default(ROUTE) // Führungform
+  geometry      Json
+  labelPos      LabelPositionEnum     @default(top)
+  task          String // Maßnahmentyp
+  length        Float? // Kilometer
+  width         Float? // Meter
+  widthExisting Float? // Meter
+  costEstimate  Float? // Euro
+  description   String? // Anmerkungen
+  mapillaryKey  String?
 
   maxSpeed        Float? // Maximalgeschwindigkeit
   trafficLoad     Int? // Verkehrsbelastung
