@@ -6,7 +6,10 @@ import { useFormContext } from "react-hook-form"
 export interface LabeledCheckboxProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
   /** Checkbox scope. */
   scope: string
-  /** The field value must be a string. If the value is a number in the DB, it needs to be parsed to a string to be used as `initialValues`. When passed to the mutation, the value needs to be parsed back to a number using `parseInt`. This requires corresponding modifications to the ZOD schemas. */
+  /* The field value must be a string. If the value is a number in the DB,
+   * it needs to be parsed to a string to be used as `initialValues`.
+   * When passed to the mutation, the value needs to be parsed back to a number using `parseInt`.
+   * This requires corresponding modifications to the ZOD schemas. */
   value: string
   /** Field label */
   label: string | React.ReactNode
