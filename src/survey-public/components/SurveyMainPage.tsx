@@ -150,7 +150,11 @@ export const SurveyMainPage: React.FC<Props> = ({
 
   return (
     <ProgressContext.Provider value={{ progress, setProgress }}>
-      <SurveyLayout canonicalUrl={surveyDefinition.canonicalUrl} logoUrl={surveyDefinition.logoUrl}>
+      <SurveyLayout
+        primaryColor={surveyDefinition.primaryColor}
+        canonicalUrl={surveyDefinition.canonicalUrl}
+        logoUrl={surveyDefinition.logoUrl}
+      >
         <Debug className="border-red-500">
           <code>stage: {stage}</code>
           <code>

@@ -8,6 +8,8 @@ const buttonBase =
 // LINK
 export const partcipationLinkStyles =
   "underline text-pink-500 decoreation-pink-500 hover:text-blue-800 hover:decoration-blue-800 active:ring-1 ring-pink-500 rounded"
+export const partcipationRedLinkStyles =
+  "underline text-crimson-500 decoreation-crimson-500 hover:text-crimson-700 hover:decoration-crimson-700 active:ring-1 ring-crimson-500 rounded"
 
 // HOVER and ACTIVE
 // for button elements
@@ -16,10 +18,14 @@ const activeStyleWhiteButtonElement =
   "enabled:active:ring-2 enabled:active:ring-blue-800 enabled:active:bg-white enabled:active:text-black"
 const activeStylePinkButtonElement =
   "enabled:active:ring-2 enabled:active:ring-blue-800 enabled:active:bg-pink-500 enabled:hover:bg-blue-800 enabled:hover:text-white"
+const activeStyleRedButtonElement =
+  "enabled:active:ring-2 enabled:active:ring-crimson-700 enabled:active:bg-crimson-500 enabled:hover:bg-crimson-700 enabled:hover:text-white"
 // for link elements
 const hoverStyleForLinkElement = "hover:bg-blue-800 hover:text-white"
 const activeStylePinkLinkElement =
   "active:ring-2 active:ring-blue-800 active:bg-pink-500 hover:bg-blue-800 hover:text-white"
+const activeStyleRedLinkElement =
+  "active:ring-2 active:ring-crimson-700 active:bg-crimson-500 hover:bg-crimson-700 hover:text-white"
 const activeStyleWhiteLinkElement =
   "active:ring-2 active:ring-blue-800 active:bg-white active:text-black"
 
@@ -55,6 +61,22 @@ export const surveyPinkButtonStyles = clsx(
   activeStylePinkButtonElement,
 )
 
+// todo frm7
+// RED BUTTON
+// for link elements
+const redButtonStylesForLinkElement = clsx(
+  buttonBase,
+  "text-white bg-crimson-500",
+  activeStyleRedLinkElement,
+)
+// for button elements
+export const surveyRedButtonStyles = clsx(
+  buttonBase,
+  "enabled:text-white enabled:bg-crimson-500",
+  "disabled:bg-crimson-100 disabled:text-white",
+  activeStyleRedButtonElement,
+)
+
 export const selectSurveyLinkStyle = (button: SurveyLinkProps["button"], className?: string) => {
   switch (button) {
     case true:
@@ -64,8 +86,8 @@ export const selectSurveyLinkStyle = (button: SurveyLinkProps["button"], classNa
     case "pink":
       return clsx(pinkButtonStylesForLinkElement, className)
     // todo frm7
-    case "blue":
-      return clsx(pinkButtonStylesForLinkElement, className)
+    case "red":
+      return clsx(redButtonStylesForLinkElement, className)
     default:
       return clsx(partcipationLinkStyles, className)
   }

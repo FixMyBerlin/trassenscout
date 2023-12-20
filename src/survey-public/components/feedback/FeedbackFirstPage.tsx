@@ -48,7 +48,12 @@ export const FeedbackFirstPage: React.FC<Props> = ({
       )}
       {/* TODO Disabled */}
       <SurveyButtonWrapper>
-        <SurveyButton disabled={!isCompleted} type="button" onClick={onButtonClick}>
+        <SurveyButton
+          color={buttons[0].color}
+          disabled={!isCompleted}
+          type="button"
+          onClick={onButtonClick}
+        >
           {buttons[0].label.de}
         </SurveyButton>
       </SurveyButtonWrapper>

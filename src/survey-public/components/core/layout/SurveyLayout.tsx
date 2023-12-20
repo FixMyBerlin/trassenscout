@@ -8,12 +8,17 @@ import { SurveyHeader } from "./SurveyHeader"
 
 type Props = {
   logoUrl: string
-
+  primaryColor: "red" | "pink"
   children?: React.ReactNode
   canonicalUrl: string
 }
 
-export const SurveyLayout: BlitzLayout<Props> = ({ logoUrl, children, canonicalUrl }) => {
+export const SurveyLayout: BlitzLayout<Props> = ({
+  logoUrl,
+  children,
+  canonicalUrl,
+  primaryColor,
+}) => {
   const extension = new URL(logoUrl).pathname.split(".").at(-1)
   const mimetype =
     { ico: "image/x-icon", svg: "image/svg+xml", jpg: "image/jpeg", png: "image/png" }[
@@ -29,7 +34,7 @@ export const SurveyLayout: BlitzLayout<Props> = ({ logoUrl, children, canonicalU
       <SurveyMetaTags canonicalUrl={canonicalUrl} title="Beteiligung RS8" />
 
       <div className="relative flex h-full flex-col overflow-x-hidden">
-        <SurveyHeader landingPageUrl={canonicalUrl} logoSrc={logoUrl} />
+        <SurveyHeader primaryColor={primaryColor} landingPageUrl={canonicalUrl} logoSrc={logoUrl} />
         <main className="mx-auto flex w-full flex-col pb-40">
           <SurveyContainer>{children}</SurveyContainer>
         </main>

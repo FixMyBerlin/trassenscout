@@ -8,7 +8,11 @@ type Props = {
 }
 const SurveyInactivePage: BlitzPage<Props> = ({ surveyDefinition }) => {
   return (
-    <SurveyLayout canonicalUrl={surveyDefinition.canonicalUrl} logoUrl={surveyDefinition.logoUrl}>
+    <SurveyLayout
+      primaryColor={surveyDefinition.primaryColor}
+      canonicalUrl={surveyDefinition.canonicalUrl}
+      logoUrl={surveyDefinition.logoUrl}
+    >
       <section>
         <SurveyScreenHeader title="Diese Umfrage ist zur Zeit nicht aktiv." />
         <SurveyLink className="mt-32" button="white" href={surveyDefinition.canonicalUrl}>

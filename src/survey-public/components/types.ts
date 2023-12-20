@@ -36,7 +36,7 @@ type TButton = {
   color: TColor
 }
 
-type TColor = "white" | "pink" | "blue"
+type TColor = "white" | "pink" | "red"
 
 type TTranslatableText = {
   de: string

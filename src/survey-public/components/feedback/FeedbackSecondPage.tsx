@@ -54,11 +54,21 @@ export const FeedbackSecondPage: React.FC<Props> = ({
       </div>
 
       <SurveyButtonWrapper>
-        <SurveyButton disabled={!isCompleted} id="submit-finish" type="submit">
-          {buttons![0]!.label.de}
+        <SurveyButton
+          color={buttons[0]?.color}
+          disabled={!isCompleted}
+          id="submit-finish"
+          type="submit"
+        >
+          {buttons![0]?.label.de}
         </SurveyButton>
-        <SurveyButton color="white" disabled={!isCompleted} id="submit-more" type="submit">
-          {buttons![1]!.label.de}
+        <SurveyButton
+          color={buttons[1]?.color}
+          disabled={!isCompleted}
+          id="submit-more"
+          type="submit"
+        >
+          {buttons![1]?.label.de}
         </SurveyButton>
       </SurveyButtonWrapper>
       <SurveyButton color="white" type="button" onClick={onButtonClick}>
