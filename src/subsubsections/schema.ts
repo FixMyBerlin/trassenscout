@@ -26,11 +26,13 @@ export const SubsubsectionSchema = z.object({
   costEstimate: InputNumberOrNullSchema, // €
   description: z.string().nullish(),
   mapillaryKey: z.string().nullish(),
+  isExistingInfra: z.boolean(),
   qualityLevelId: InputNumberOrNullSchema,
   managerId: InputNumberOrNullSchema,
   subsectionId: z.coerce.number(),
   subsubsectionStatusId: InputNumberOrNullSchema,
   subsubsectionTaskId: InputNumberOrNullSchema,
+  subsubsectionInfraId: InputNumberOrNullSchema,
   maxSpeed: InputNumberOrNullSchema,
   trafficLoad: InputNumberOrNullSchema,
   trafficLoadDate: z.union([

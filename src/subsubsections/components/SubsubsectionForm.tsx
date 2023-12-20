@@ -3,6 +3,7 @@ import { useQuery } from "@blitzjs/rpc"
 import {
   Form,
   FormProps,
+  LabeledCheckbox,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
@@ -76,6 +77,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label="Maßnahmentyp"
         help="Bspw. 'Fahrbahnmarkierung'"
       />
+      <LabeledCheckbox scope="isExistingInfra" label="Bestandsführung" />
       <div className="flex items-end gap-5">
         <LabeledSelect
           name="subsubsectionTaskId"
