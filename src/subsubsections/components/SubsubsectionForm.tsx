@@ -224,7 +224,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           inlineLeadingAddon="€"
           type="number"
           name="revenuesEconomicIncome"
-          label="Erlöse und wirtschafltiche Einnahmen"
+          label="Erlöse und wirtschaftliche Einnahmen"
           optional
         />
         <LabeledFormatNumberField
