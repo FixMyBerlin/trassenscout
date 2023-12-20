@@ -37,7 +37,7 @@ export const GeometryInput: React.FC = () => {
   return (
     <>
       <LabeledRadiobuttonGroup
-        label="Führungsform"
+        label="Typ der Führung"
         scope="type"
         items={[
           { value: "ROUTE", label: "Regelführung (RF) – Linie" },
