@@ -122,6 +122,7 @@ model Project {
   qualityLevels        QualityLevel[]
   SubsubsectionStatus  SubsubsectionStatus[]
   SubsubsectionTask    SubsubsectionTask[]
+  SubsubsectionInfra   SubsubsectionInfra[]
 }
 
 model Membership {
@@ -275,6 +276,9 @@ model Subsubsection {
   SubsubsectionTask     SubsubsectionTask?   @relation(fields: [subsubsectionTaskId], references: [id])
   subsubsectionTaskId   Int?
   //
+  SubsubsectionInfra    SubsubsectionInfra?  @relation(fields: [subsubsectionInfraId], references: [id])
+  subsubsectionInfraId  Int?
+  //
 
   @@unique([subsectionId, slug])
 }
@@ -315,6 +319,21 @@ model SubsubsectionStatus {
 }
 
 model SubsubsectionTask {
+  id            Int             @id @default(autoincrement())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  //
+  slug          String // shortTitle and URL Slug
+  title         String
+  //
+  project       Project         @relation(fields: [projectId], references: [id])
+  projectId     Int
+  Subsubsection Subsubsection[]
+
+  @@unique([projectId, slug])
+}
+
+model SubsubsectionInfra {
   id            Int             @id @default(autoincrement())
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
