@@ -14,6 +14,8 @@ const config = {
       "staging.trassenscout.de",
       "trassenscout.de",
       "radschnellweg8-lb-wn.de",
+      "develop--frm-7-landingpage.netlify.app",
+      "radschnellweg-frm7.de",
     ], // allow fetching images from those domains – https://nextjs.org/docs/api-reference/next/image#domains
   },
 }

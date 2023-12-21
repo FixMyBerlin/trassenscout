@@ -5,6 +5,7 @@ export type TSurvey = {
   version: number
   logoUrl: string
   canonicalUrl: string
+  primaryColor: "red" | "pink"
   pages: TPage[]
 }
 
@@ -36,7 +37,7 @@ type TButton = {
   color: TColor
 }
 
-type TColor = "white" | "pink" | "blue"
+type TColor = "white" | "pink" | "red"
 
 type TTranslatableText = {
   de: string
@@ -57,6 +58,7 @@ export type TEmail = {
   questionText: TTranslatableText
   description: TTranslatableText
   mailjetWidgetUrl: string
+  linkColor: "red" | "pink"
   button: TButton
 }
 
@@ -77,8 +79,15 @@ export type TMapProps = {
     bounds: LngLatBoundsLike
     pinColor: string
   }
+  legend?: Record<string, TLegendItem>
   placeholder?: TTranslatableText
   caption?: TTranslatableText
+}
+type TLegendItem = {
+  label: TTranslatableText
+  color: string
+  width: number
+  shape: "line" | "dot"
 }
 
 type TTextProps = {

@@ -3,13 +3,13 @@ import { TMore } from "src/survey-public/components/types"
 export const moreDefinition: TMore = {
   title: { de: "Danke, Ihre Daten wurden gesendet." },
   description: {
-    de: "Wenn Sie möchten, können Sie uns noch weiteres Feedback z. B. zu einem konkreten Thema oder einer bestimmten Stelle zukommen lassen. Drücken Sie dazu bitte auf “Weitere Hinweise geben”. Dort haben Sie auch die Möglichkeit, Hinweise mit Pin auf einer interaktiven Karte zu verorten.",
+    de: "Wenn Sie möchten, können Sie uns sagen, was Sie besonders interessiert oder wenn Sie Probleme an bestimmten Stellen sehen. Zum Beispiel: Gibt es Orte, die verbessert werden könnten? Oder gibt es Bereiche, die zu Problemen führen könnten?\n\nIhre speziellen Hinweise, Kommentare oder Ideen sind für uns wichtig. Wenn Sie etwas Bestimmtes bemerkt haben, können Sie es uns mitteilen. Das hilft uns sehr weiter, den Radschnellweg noch besser zu planen.",
   },
-  questionText: { de: "Haben Sie noch konkrete Hinweise zu Themen vor Ort?" },
+  questionText: { de: "Möchten Sie einen konkreten Hinweis geben?" },
   buttons: [
     {
       label: { de: "Ja, ich habe noch Hinweise" },
-      color: "blue",
+      color: "red",
       onClick: { action: "nextPage" },
     },
     {

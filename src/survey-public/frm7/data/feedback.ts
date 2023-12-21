@@ -5,14 +5,14 @@ export const feedbackDefinition: TFeedback = {
   pages: [
     {
       id: 1,
-      title: { de: "Wir sind gespannt auf Ihre Anmerkungen. FRM7" },
+      title: { de: "Wir sind gespannt auf Ihre Hinweise. " },
       description: {
-        de: "Hier können Sie dem Planungsteam konkrete Ideen, Anregungen und Hinweise zum RS 8 mit auf den Weg geben. Sie können mehrere Anmerkungen abgeben, bitte geben Sie diese einzeln ab.",
+        de: "Hier können Sie dem Planungsteam konkrete Ideen, Anregungen und Hinweise zum FRM 7 geben. Sie können einen oder mehrere Hinweise abgeben. Wenn Sie mehrere Hinweise haben, können Sie diese nacheinander bearbeiten. Beginnen Sie nun mit dem ersten.",
       },
       questions: [
         {
           id: 21,
-          label: { de: "Zu welchem Thema passt Ihr Feedback?" },
+          label: { de: "Zu welchem Thema passt Ihr Hinweis?" },
           component: "singleResponse",
           props: {
             responses: [
@@ -20,8 +20,6 @@ export const feedbackDefinition: TFeedback = {
               { id: 2, text: { de: "Streckenführung" } },
               { id: 3, text: { de: "Zubringer" } },
               { id: 4, text: { de: "Mögliche Konflikte" } },
-              { id: 7, text: { de: "Mögliche Konflikte FRM7" } },
-              { id: 8, text: { de: "Noch ein Thema" } },
               { id: 5, text: { de: "Umwelt- und Naturschutz" } },
               { id: 6, text: { de: "Sonstiges" } },
             ],
@@ -30,7 +28,7 @@ export const feedbackDefinition: TFeedback = {
         {
           id: 22,
           label: {
-            de: "Bezieht sich Ihr Feedback auf eine konkrete Stelle entlang der Route?",
+            de: "Bezieht sich Ihr Hinweis auf eine konkrete Stelle entlang der Route?",
           },
           component: "singleResponse",
           props: {
@@ -42,33 +40,65 @@ export const feedbackDefinition: TFeedback = {
         },
         {
           id: 23,
-          label: { de: "Markieren Sie die Stelle, zu der Sie etwas sagen möchten." },
+          label: { de: "Bitte markieren Sie den Ort, zu dem Sie etwas sagen möchten." },
           component: "map",
           props: {
             maptilerStyleUrl:
               "https://api.maptiler.com/maps/a9cd44e7-43f6-4277-8ae0-d910f8162524/style.json",
             marker: {
-              lat: 50.13810478491584,
-              lng: 8.774882307368216,
+              lat: 50.13115168672226,
+              lng: 8.732094920912573,
             },
             config: {
               bounds: [8.576990015191768, 50.18115285304344, 8.791982825789262, 50.084578531515405],
-              pinColor: "#E5007D",
+              pinColor: "#D60F3D",
               // todo frm7
+            },
+            legend: {
+              variant1: {
+                label: { de: "Eher an großen Straßen auf Radwegen, getrennt von Autos." },
+                color: "#E5007D", // todo frm7
+                width: 10,
+                shape: "line",
+              },
+              variant2: {
+                label: { de: "Eher in ruhigen Wohnstraßen, dafür zusammen mit Autos." },
+                color: "#E5007D", // todo frm7
+                width: 10,
+                shape: "line",
+              },
+              irrelevant: {
+                label: { de: "Bereits beschlossene Strecke (außerhalb von Frankfurt)" },
+                color: "#FFF", // todo frm7
+                width: 15,
+                shape: "line",
+              },
+              blockedArea: {
+                label: { de: "Gesperrt aus Gründen des Natur- oder Denkmalschutzes" },
+                color: "#FFF", // todo frm7
+                width: 30,
+                shape: "line",
+              },
+              pois: {
+                label: { de: "Orte für Bildung, Arbeit, Freizeit und mehr." },
+                color: "#FFF", // todo frm7
+                width: 30,
+                shape: "dot",
+              },
             },
           },
         },
       ],
       buttons: [
-        { label: { de: "Weiter" }, color: "pink", onClick: { action: "nextPage" } },
+        { label: { de: "Weiter" }, color: "red", onClick: { action: "nextPage" } },
         { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
       ],
     },
     {
       id: 2,
-      title: { de: "Ihr Hinweis" },
+      title: { de: "Was möchten Sie uns mitteilen?" },
       description: {
-        de: "Formulieren Sie hier Ihre Gedanken, Ideen, Anregungen oder Wünsche",
+        de: "Beschreiben Sie hier, was Ihnen wichtig ist. Beschreiben Sie die Situation oder das Problem so genau wie möglich. Es ist hilfreich, wenn Ihre Verbesserungsvorschläge leicht nachvollziehbar sind.",
       },
       questions: [
         {
@@ -82,13 +112,8 @@ export const feedbackDefinition: TFeedback = {
           component: "custom",
         },
         {
-          id: 33,
-          label: { de: "Wählen Sie die Stelle für Ihr Feedback" },
-          component: "custom",
-        },
-        {
           id: 34,
-          label: { de: "Was gefällt Ihnen hier besonders?" },
+          label: { de: "Ihr Hinweis" },
           component: "text",
           props: {
             placeholder: { de: "Beantworten Sie hier..." },
@@ -99,7 +124,7 @@ export const feedbackDefinition: TFeedback = {
       buttons: [
         {
           label: { de: "Absenden & Beteiligung abschließen" },
-          color: "pink",
+          color: "red",
           onClick: { action: "submit" },
         },
         {
