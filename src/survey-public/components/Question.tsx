@@ -69,7 +69,7 @@ const components = {
   custom: CustomComponent,
 }
 
-type Props = { question: TQuestion; className?: string; primaryColor: "red" | "pink" }
+type Props = { question: TQuestion; className?: string; primaryColor?: "red" | "pink" }
 
 export const Question: React.FC<Props> = ({ question, className }) => {
   const { id, label, component, props } = question
