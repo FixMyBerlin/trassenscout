@@ -7,7 +7,7 @@ export const emailDefinition: TEmail = {
     de: "Nach Abschluss der Beteiligung (31.01.2024) werden Ihre Anregungen vom Planungsteam ausgewertet. Dabei wird geprüft, ob und inwieweit Ihre Hinweise in die weitere Planung einbezogen werden können. Bitte haben Sie Verständnis dafür, dass wir nicht jeden Hinweis kommentieren können. Nach der Auswertung werden wir zusammenfassend zu den genannten Themen Rückmeldung geben.",
   },
   linkColor: "red",
-  mailjetWidgetUrl: "https://7p8q.mjt.lu/wgt/7p8q/t5g/form?c=f8dcc5f9",
+  mailjetWidgetUrl: "https://7p8q.mjt.lu/wgt/7p8q/xwjs/form?c=84250207",
   button: {
     label: { de: "Nein, zurück zur Startseite" },
     color: "white",
