@@ -17,6 +17,7 @@ import deleteSubsubsection from "src/subsubsections/mutations/deleteSubsubsectio
 import updateSubsubsection from "src/subsubsections/mutations/updateSubsubsection"
 import getSubsubsection from "src/subsubsections/queries/getSubsubsection"
 import { SubsubsectionFormSchema } from "src/subsubsections/schema"
+import m2mFields from "src/subsubsections/m2mFields"
 
 const EditSubsubsection = () => {
   const router = useRouter()
@@ -69,6 +70,15 @@ const EditSubsubsection = () => {
     }
   }
 
+  let m2mFieldsInitialValues = {}
+  m2mFields.forEach((fieldName) => {
+    if (fieldName in subsubsection) {
+      m2mFieldsInitialValues[fieldName] = Array.from(subsubsection[fieldName].values(), (obj) =>
+        String(obj.id),
+      )
+    }
+  })
+
   return (
     <>
       <MetaTags noindex title={seoEditTitleSlug(subsubsection.slug)} />
@@ -80,6 +90,7 @@ const EditSubsubsection = () => {
         schema={SubsubsectionFormSchema}
         initialValues={{
           ...subsubsection,
+          ...m2mFieldsInitialValues,
           trafficLoadDate: subsubsection.trafficLoadDate
             ? getDate(subsubsection.trafficLoadDate)
             : "",

@@ -3,12 +3,16 @@ import db, { QualityLevel, Subsubsection, SubsubsectionTypeEnum, User } from "db
 import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { z } from "zod"
+import m2mFields from "../m2mFields"
 
 const GetSubsubsection = z.object({
   projectSlug: z.string(),
   subsectionSlug: z.string(),
   subsubsectionSlug: z.string(),
 })
+
+const includeM2mFields = {}
+m2mFields.forEach((fieldName) => (includeM2mFields[fieldName] = { select: { id: true } }))
 
 // We lie with TypeScript here, because we know better. All `geometry` fields are Position. We make sure of that in our Form. They are also required, so never empty.
 export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry"> &
@@ -43,6 +47,7 @@ export default resolver.pipe(
         manager: { select: { firstName: true, lastName: true } },
         subsection: { select: { slug: true } },
         qualityLevel: { select: { title: true, slug: true } },
+        ...includeM2mFields,
       },
     }
 

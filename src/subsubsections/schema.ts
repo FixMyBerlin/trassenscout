@@ -2,6 +2,7 @@ import { LabelPositionEnum, SubsubsectionTypeEnum } from "@prisma/client"
 import { Prettify } from "src/core/types"
 import { SlugSchema, InputNumberOrNullSchema } from "src/core/utils"
 import { z } from "zod"
+import m2mFields from "./m2mFields"
 
 const PositionSchema = z.tuple([z.number(), z.number()]) // Position
 const PositionArraySchema = z.array(z.tuple([z.number(), z.number()])) // Position[]
@@ -68,6 +69,17 @@ export const SubsubsectionTrafficLoadDateSchema = z.object({
     z.literal(""),
   ]),
 })
-export const SubsubsectionFormSchema = SubsubsectionSchema.omit({ trafficLoadDate: true }).merge(
+
+let FormSchema = SubsubsectionSchema.omit({ trafficLoadDate: true }).merge(
   SubsubsectionTrafficLoadDateSchema,
 )
+
+m2mFields.forEach((fieldName) => {
+  FormSchema = FormSchema.merge(
+    z.object({
+      [fieldName]: z.union([z.boolean(), z.array(z.coerce.number())]).transform((v) => v || []),
+    }),
+  )
+})
+
+export const SubsubsectionFormSchema = FormSchema

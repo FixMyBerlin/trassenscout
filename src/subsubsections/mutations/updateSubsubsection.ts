@@ -6,20 +6,41 @@ import { z } from "zod"
 import { SubsubsectionWithPosition } from "../queries/getSubsubsection"
 import { SubsubsectionSchema } from "../schema"
 import getSubsubsectionProjectId from "../queries/getSubsubsectionProjectId"
+import m2mFields from "../m2mFields"
 
-const UpdateSubsubsectionSchema = SubsubsectionSchema.merge(
+let UpdateSubsubsectionSchema = SubsubsectionSchema.merge(
   z.object({
     id: z.number(),
   }),
 )
+m2mFields.forEach((fieldName) => {
+  UpdateSubsubsectionSchema = UpdateSubsubsectionSchema.merge(
+    z.object({
+      [fieldName]: z.array(z.number()),
+    }),
+  )
+})
 
+// @ts-ignore
 export default resolver.pipe(
   resolver.zod(UpdateSubsubsectionSchema),
   authorizeProjectAdmin(getSubsubsectionProjectId),
   async ({ id, ...data }) => {
+    const disconnect = {}
+    const connect = {}
+    m2mFields.forEach((fieldName) => {
+      disconnect[fieldName] = { set: [] }
+      connect[fieldName] = { connect: data[fieldName].map((id) => ({ id })) }
+      delete data[fieldName]
+    })
+
+    await db.subsubsection.update({
+      where: { id },
+      data: disconnect,
+    })
     const subsubsection = await db.subsubsection.update({
       where: { id },
-      data,
+      data: { ...data, ...connect },
     })
     return subsubsection as SubsubsectionWithPosition // Tip: Validate type shape with `satisfies`
   },

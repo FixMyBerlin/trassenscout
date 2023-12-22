@@ -4,6 +4,7 @@ import {
   Form,
   FormProps,
   LabeledCheckbox,
+  LabeledCheckboxGroup,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
@@ -21,6 +22,7 @@ import { GeometryInput } from "./GeometryInput/GeometryInput"
 import getSubsubsectionStatussWithCount from "src/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
 import getSubsubsectionTasksWithCount from "src/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
 import getSubsubsectionInfrasWithCount from "src/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
+import getSubsubsectionSpecialsWithCount from "src/subsubsectionSpecial/queries/getSubsubsectionSpecialsWithCount"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -56,6 +58,15 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       return [infra.id, infra.title] as [number, string]
     }),
   ]
+  const [{ subsubsectionSpecials }] = useQuery(getSubsubsectionSpecialsWithCount, { projectSlug })
+  const subsubsectionSpecialOptions: [number | string, string][] = subsubsectionSpecials.map(
+    (special) => {
+      return {
+        value: String(special.id),
+        label: special.title,
+      }
+    },
+  )
 
   return (
     <Form<S> {...props}>
@@ -99,6 +110,19 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         <Link href={Routes.SubsubsectionInfrasPage({ projectSlug: projectSlug! })} className="py-2">
           Führungsformen verwalten…
         </Link>
+      </div>
+      <LabeledCheckbox scope="isExistingInfra" label="Bestandsführung" />
+      <div>
+        <LabeledCheckboxGroup
+          scope="specialFeatures"
+          label="Besonderheiten"
+          items={subsubsectionSpecialOptions}
+        />
+        <div className="mt-4">
+          <Link href={Routes.SubsubsectionSpecialsPage({ projectSlug: projectSlug! })} className="py-2">
+            Besonderheiten verwalten…
+          </Link>
+        </div>
       </div>
       <LabeledFormatNumberField
         inlineLeadingAddon="km"
