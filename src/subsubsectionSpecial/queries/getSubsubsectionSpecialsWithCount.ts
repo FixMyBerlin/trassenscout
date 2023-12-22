@@ -36,13 +36,16 @@ export default resolver.pipe(
 
     const subsubsectionSpecialWithCount = await Promise.all(
       subsubsectionSpecials.map(async (subsubsectionSpecial) => {
-        // const subsubsectionCount = await db.subsubsection.count({
-        //   where: {
-        //     subsection: { project: { slug: projectSlug } },
-        //     subsubsectionSpecialId: subsubsectionSpecial.id,
-        //   },
-        // })
-        const subsubsectionCount = 0
+        const subsubsectionCount = await db.subsubsection.count({
+          where: {
+            subsection: { project: { slug: projectSlug } },
+            specialFeatures: {
+              some: {
+                id: subsubsectionSpecial.id,
+              },
+            },
+          },
+        })
         return {
           ...subsubsectionSpecial,
           subsubsectionCount,
