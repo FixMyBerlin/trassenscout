@@ -75,6 +75,7 @@ let FormSchema = SubsubsectionSchema.omit({ trafficLoadDate: true }).merge(
 )
 
 m2mFields.forEach((fieldName) => {
+  // @ts-ignore
   FormSchema = FormSchema.merge(
     z.object({
       [fieldName]: z.union([z.boolean(), z.array(z.coerce.number())]).transform((v) => v || []),

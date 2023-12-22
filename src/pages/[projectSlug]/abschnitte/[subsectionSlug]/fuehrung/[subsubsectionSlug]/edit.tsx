@@ -73,7 +73,9 @@ const EditSubsubsection = () => {
   let m2mFieldsInitialValues = {}
   m2mFields.forEach((fieldName) => {
     if (fieldName in subsubsection) {
+      // @ts-ignore
       m2mFieldsInitialValues[fieldName] = Array.from(subsubsection[fieldName].values(), (obj) =>
+        // @ts-ignore
         String(obj.id),
       )
     }
@@ -88,6 +90,7 @@ const EditSubsubsection = () => {
         className="mt-10"
         submitText="Speichern"
         schema={SubsubsectionFormSchema}
+        // @ts-ignore
         initialValues={{
           ...subsubsection,
           ...m2mFieldsInitialValues,

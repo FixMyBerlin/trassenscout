@@ -12,6 +12,7 @@ const GetSubsubsection = z.object({
 })
 
 const includeM2mFields = {}
+// @ts-ignore
 m2mFields.forEach((fieldName) => (includeM2mFields[fieldName] = { select: { id: true } }))
 
 // We lie with TypeScript here, because we know better. All `geometry` fields are Position. We make sure of that in our Form. They are also required, so never empty.

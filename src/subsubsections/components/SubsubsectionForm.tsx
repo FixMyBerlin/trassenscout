@@ -59,6 +59,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
     }),
   ]
   const [{ subsubsectionSpecials }] = useQuery(getSubsubsectionSpecialsWithCount, { projectSlug })
+  // @ts-ignore
   const subsubsectionSpecialOptions: [number | string, string][] = subsubsectionSpecials.map(
     (special) => {
       return {
@@ -88,6 +89,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label="Maßnahmentyp"
         help="Bspw. 'Fahrbahnmarkierung'"
       />
+      {/* @ts-ignore */}
       <LabeledCheckbox scope="isExistingInfra" label="Bestandsführung" />
       <div className="flex items-end gap-5">
         <LabeledSelect
@@ -111,11 +113,13 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           Führungsformen verwalten…
         </Link>
       </div>
+      {/* @ts-ignore */}
       <LabeledCheckbox scope="isExistingInfra" label="Bestandsführung" />
       <div>
         <LabeledCheckboxGroup
           scope="specialFeatures"
           label="Besonderheiten"
+          // @ts-ignore
           items={subsubsectionSpecialOptions}
         />
         <div className="mt-4">

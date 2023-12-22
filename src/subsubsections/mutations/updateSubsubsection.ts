@@ -14,6 +14,7 @@ let UpdateSubsubsectionSchema = SubsubsectionSchema.merge(
   }),
 )
 m2mFields.forEach((fieldName) => {
+  // @ts-ignore
   UpdateSubsubsectionSchema = UpdateSubsubsectionSchema.merge(
     z.object({
       [fieldName]: z.array(z.number()),
@@ -29,8 +30,11 @@ export default resolver.pipe(
     const disconnect = {}
     const connect = {}
     m2mFields.forEach((fieldName) => {
+      // @ts-ignore
       disconnect[fieldName] = { set: [] }
+      // @ts-ignore
       connect[fieldName] = { connect: data[fieldName].map((id) => ({ id })) }
+      // @ts-ignore
       delete data[fieldName]
     })
 
