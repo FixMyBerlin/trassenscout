@@ -4,11 +4,13 @@ import { SurveyScreenHeader } from "../core/layout/SurveyScreenHeader"
 import { SurveyMap } from "../maps/SurveyMap"
 import { Question } from "../Question"
 import { SurveyButtonWrapper } from "../core/buttons/SurveyButtonWrapper"
+import { SurveyMapLegend } from "../maps/SurveyMapLegend"
+import { TMapProps, TPage } from "../types"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
-  page: any // TODO
+  page: any
   isMap: boolean
   onButtonClick: any // TODO
   isCompleted: boolean
@@ -24,9 +26,8 @@ export const FeedbackFirstPage: React.FC<Props> = ({
 }) => {
   const { title, description, questions, buttons } = page
 
-  const mapProps = questions.find(
-    (question: Record<string, any>) => question.component === "map",
-  ).props
+  const mapProps = questions.find((question: Record<string, any>) => question.component === "map")!
+    .props as TMapProps
 
   return (
     <>
@@ -44,6 +45,7 @@ export const FeedbackFirstPage: React.FC<Props> = ({
               config: mapProps.config,
             }}
           />
+          {mapProps.legend && <SurveyMapLegend legend={mapProps.legend} />}
         </MapProvider>
       )}
       {/* TODO Disabled */}

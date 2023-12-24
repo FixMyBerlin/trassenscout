@@ -83,10 +83,10 @@ export type TMapProps = {
   placeholder?: TTranslatableText
   caption?: TTranslatableText
 }
-type TLegendItem = {
+export type TLegendItem = {
   label: TTranslatableText
   color: string
-  width: number
+  height: string
   shape: "line" | "dot"
 }
 

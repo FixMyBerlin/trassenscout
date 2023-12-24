@@ -57,32 +57,32 @@ export const feedbackDefinition: TFeedback = {
             legend: {
               variant1: {
                 label: { de: "Eher an großen Straßen auf Radwegen, getrennt von Autos." },
-                color: "#E5007D", // todo frm7
-                width: 10,
+                color: "bg-[#006EFF]", // todo frm7
+                height: "h-[5px]",
                 shape: "line",
               },
               variant2: {
                 label: { de: "Eher in ruhigen Wohnstraßen, dafür zusammen mit Autos." },
-                color: "#E5007D", // todo frm7
-                width: 10,
+                color: "bg-[#FFD900]", // todo frm7
+                height: "h-[5px]",
                 shape: "line",
               },
               irrelevant: {
                 label: { de: "Bereits beschlossene Strecke (außerhalb von Frankfurt)" },
-                color: "#FFF", // todo frm7
-                width: 15,
+                color: "bg-[#000]", // todo frm7
+                height: "h-[5px]",
                 shape: "line",
               },
               blockedArea: {
                 label: { de: "Gesperrt aus Gründen des Natur- oder Denkmalschutzes" },
-                color: "#FFF", // todo frm7
-                width: 30,
+                color: "bg-[#DA1616] opacity-70", // todo frm7
+                height: "h-5",
                 shape: "line",
               },
               pois: {
                 label: { de: "Orte für Bildung, Arbeit, Freizeit und mehr." },
-                color: "#FFF", // todo frm7
-                width: 30,
+                color: "bg-[#000]", // todo frm7
+                height: "h-4",
                 shape: "dot",
               },
             },
