@@ -42,6 +42,7 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
     // @ts-expect-error
     mainMap?.fitBounds(boundingBox, { padding: 60 })
     // @ts-expect-error
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mainMap, ...boundingBox])
 
   type HandleSelectProps = { subsectionSlug: string; edit: boolean }
