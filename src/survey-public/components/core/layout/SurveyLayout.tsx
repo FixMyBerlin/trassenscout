@@ -20,16 +20,17 @@ export const SurveyLayout: BlitzLayout<Props> = ({
   primaryColor,
 }) => {
   const surveySlug = useParam("surveySlug", "string")
-  const extension = new URL(logoUrl).pathname.split(".").at(-1)
-  const mimetype =
-    { ico: "image/x-icon", svg: "image/svg+xml", jpg: "image/jpeg", png: "image/png" }[
-      extension!
-    ] || `image/${extension}`
+  // const extension = new URL(logoUrl).pathname.split(".").at(-1)
+  // const mimetype =
+  //   { ico: "image/x-icon", svg: "image/svg+xml", jpg: "image/jpeg", png: "image/png" }[
+  //     extension!
+  //   ] || `image/${extension}`
 
   return (
     <>
       <Head>
-        <link rel="icon" href={logoUrl} type={mimetype} />
+        {/* <link rel="icon" href={logoUrl} type={mimetype} /> */}
+        <link rel="icon" href="favicon.svg" type="image/svg+xml" />
         {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
       </Head>
       <SurveyMetaTags
