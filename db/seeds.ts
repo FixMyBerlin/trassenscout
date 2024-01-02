@@ -7,6 +7,9 @@ import seedQualityLevels from "./seeds/qualityLevels"
 import seedStakeholdernotes from "./seeds/stakeholdernotes"
 import seedSubsections from "./seeds/subsections"
 import seedSubsubsectionStatus from "./seeds/subsubsectionStatus"
+import seedSubsubsectionTask from "./seeds/subsubsectionTask"
+import seedSubsubsectionInfra from "./seeds/subsubsectionInfra"
+import seedSubsubsectionSpecial from "./seeds/subsubsectionSpecial"
 import seedSurveyResponseTopics from "./seeds/surveyresponsetopics"
 import seedSurveys from "./seeds/surveys"
 import seedUploads from "./seeds/uploads"
@@ -30,6 +33,9 @@ const seed = async () => {
   await seedSurveys()
   await seedSurveyResponseTopics()
   await seedSubsubsectionStatus()
+  await seedSubsubsectionTask()
+  await seedSubsubsectionInfra()
+  await seedSubsubsectionSpecial()
   await seedDevData()
 }
 
