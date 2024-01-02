@@ -237,7 +237,7 @@ model Subsubsection {
   type            SubsubsectionTypeEnum @default(ROUTE) // Führungform
   geometry        Json
   labelPos        LabelPositionEnum     @default(top)
-  task            String // Maßnahmentyp
+  task            String? // Maßnahmentyp - UNUSED
   lengthKm        Float? // Kilometer
   width           Float? // Meter
   widthExisting   Float? // Meter

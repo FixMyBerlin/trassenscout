@@ -19,9 +19,6 @@ export const SubsubsectionSchema = z.object({
   type: z.nativeEnum(SubsubsectionTypeEnum),
   geometry: PositionSchema.or(PositionArraySchema),
   labelPos: z.nativeEnum(LabelPositionEnum),
-  task: z.string().min(3, {
-    message: "Pflichtfeld. Mindestens 3 Zeichen.",
-  }), // Maßnahmentyp
   lengthKm: InputNumberOrNullSchema, // km
   width: InputNumberOrNullSchema, // m
   costEstimate: InputNumberOrNullSchema, // €
