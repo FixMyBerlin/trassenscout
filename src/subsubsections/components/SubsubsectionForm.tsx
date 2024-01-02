@@ -82,18 +82,12 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       />
       <LabeledTextField type="text" name="subTitle" label="Title" optional />
       <GeometryInput />
-      <LabeledTextField
-        type="text"
-        name="task"
-        label="Maßnahmentyp"
-        help="Bspw. 'Fahrbahnmarkierung'"
-      />
       {/* @ts-ignore */}
       <LabeledCheckbox scope="isExistingInfra" label="Bestandsführung" />
       <div className="flex items-end gap-5">
         <LabeledSelect
           name="subsubsectionTaskId"
-          label="Maßnahmentyp ENUM"
+          label="Maßnahmentyp"
           options={subsubsectionTaskOptions}
           outerProps={{ className: "grow" }}
         />
@@ -113,7 +107,6 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         </Link>
       </div>
       {/* @ts-ignore */}
-      <LabeledCheckbox scope="isExistingInfra" label="Bestandsführung" />
       <div>
         <LabeledCheckboxGroup
           scope="specialFeatures"
