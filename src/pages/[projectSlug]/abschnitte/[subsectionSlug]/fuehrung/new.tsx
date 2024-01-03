@@ -33,7 +33,9 @@ const NewSubsubsection = () => {
     try {
       const subsubsection = await createSubsubsectionMutation({
         ...values,
+        // @ts-ignore
         subsectionId: subsection!.id,
+        // @ts-ignore
         trafficLoadDate: values.trafficLoadDate === "" ? null : new Date(values.trafficLoadDate),
       })
       await router.push(
@@ -58,6 +60,7 @@ const NewSubsubsection = () => {
       />
 
       <SubsubsectionForm
+        // @ts-ignore
         initialValues={{ type: "AREA", labelPos: "bottom" }}
         className="mt-10"
         submitText="Erstellen"

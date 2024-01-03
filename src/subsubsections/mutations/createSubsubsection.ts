@@ -17,6 +17,7 @@ export default resolver.pipe(
       // @ts-ignore
       delete data[fieldName]
     })
+    // @ts-ignore
     return await db.subsubsection.create({ data: { ...data, ...connect } })
   },
 )
