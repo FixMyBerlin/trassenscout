@@ -226,6 +226,9 @@ export const surveyDefinition: TSurvey = {
                 text: {
                   de: "Ich fahre lieber auf sicheren Radwegen an großen Straßen, weil ich dann zügiger vorankomme.",
                 },
+                help: {
+                  de: "Als sichere Radwege verstehen wir Radwege, die entweder baulich vom Autoverkehr getrennt oder farblich deutlich hervorgehoben sind.",
+                },
               },
             ],
           },
@@ -380,7 +383,11 @@ export const surveyDefinition: TSurvey = {
         },
         {
           id: 19,
-          label: { de: "Wie hoch ist das netto Einkommen Ihres Haushaltes?" },
+          label: { de: "Wie hoch ist das netto Einkommen Ihres Haushalts?" },
+          help: {
+            de: "Das Netto Einkommen beschreibt das Geld, dass nach Abzug aller Abgaben, Steuern und Beiträge übrig bleibt. Zum Einkommen zählen auch Leistungen wie Arbeitslosengeld oder Bürgergeld.",
+          },
+
           component: "singleResponse",
           props: {
             responses: [

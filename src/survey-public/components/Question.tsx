@@ -72,11 +72,12 @@ const components = {
 type Props = { question: TQuestion; className?: string; primaryColor?: "red" | "pink" }
 
 export const Question: React.FC<Props> = ({ question, className }) => {
-  const { id, label, component, props } = question
+  const { id, help, label, component, props } = question
   const Component = components[component] || null
   return (
     <div className={className} key={id}>
       <SurveyH2>{label.de}</SurveyH2>
+      {help && <div className="-mt-4 mb-6 text-gray-400 text-sm">{help.de}</div>}
       {/* @ts-ignore */}
       {Component && <Component id={id} {...props} />}
     </div>

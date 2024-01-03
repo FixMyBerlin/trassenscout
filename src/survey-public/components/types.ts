@@ -21,6 +21,7 @@ export type TQuestion = {
   id: number
   component: "singleResponse" | "multipleResponse"
   label: TTranslatableText
+  help?: TTranslatableText
   props: TSingleOrMultiResponseProps
 }
 
