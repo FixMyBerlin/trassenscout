@@ -47,6 +47,7 @@ export const EditableSurveyResponseFormMap: React.FC<Props> = ({
       >
         {marker && (
           <Marker
+            draggable={false}
             style={{ cursor: "default" }}
             longitude={marker.lng}
             latitude={marker.lat}

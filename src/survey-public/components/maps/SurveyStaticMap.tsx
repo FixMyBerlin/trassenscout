@@ -36,6 +36,7 @@ export const SurveyStaticMap: React.FC<Props> = ({ marker, maptilerStyleUrl, pin
         RTLTextPlugin={null}
       >
         <Marker
+          draggable={false}
           style={{ cursor: "default" }}
           longitude={marker.lng}
           latitude={marker.lat}
