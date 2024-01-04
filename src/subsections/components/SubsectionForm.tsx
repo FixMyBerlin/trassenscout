@@ -9,6 +9,7 @@ import {
   LabeledTextField,
   LabeledTextareaField,
 } from "src/core/components/forms"
+import { LabeledFormatNumberField } from "src/core/components/forms/LabeledFormatNumberField"
 import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryField"
 import { Link } from "src/core/components/links"
 import { quote, shortTitle } from "src/core/components/text"
@@ -81,6 +82,14 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
         readOnly={isFeltFieldsReadOnly}
         name="geometry"
         label="Geometry der Achse (LineString)"
+      />
+      <LabeledFormatNumberField
+        inlineLeadingAddon="km"
+        maxDecimalDigits={3}
+        step="0.001"
+        name="lengthKm"
+        label="Länge"
+        optional
       />
       <LabeledRadiobuttonGroupLabelPos />
 
