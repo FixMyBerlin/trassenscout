@@ -52,6 +52,7 @@ export const LabeledFormatNumberField = forwardRef<HTMLInputElement, LabeledForm
       formState: { isSubmitting, errors },
       setValue,
       getValues,
+      watch,
     } = useFormContext()
 
     const format = (s: string) => {
@@ -66,6 +67,8 @@ export const LabeledFormatNumberField = forwardRef<HTMLInputElement, LabeledForm
     }
     const hasError = Boolean(errors[name])
 
+    // watch triggers rerender when value is updated (useful when value is updated in parent component)
+    const watchName = watch(name)
     const value = getValues()[name]
     const formattedValue = useRef(format(value))
 
