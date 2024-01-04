@@ -238,7 +238,7 @@ model Subsubsection {
   geometry        Json
   labelPos        LabelPositionEnum     @default(top)
   task            String // Maßnahmentyp
-  length          Float? // Kilometer
+  lengthKm        Float? // Kilometer
   width           Float? // Meter
   widthExisting   Float? // Meter
   costEstimate    Float? // Euro

@@ -135,7 +135,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         inlineLeadingAddon="km"
         maxDecimalDigits={3}
         step="0.001"
-        name="length"
+        name="lengthKm"
         label="Länge"
         optional
       />

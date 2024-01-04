@@ -22,7 +22,7 @@ export const SubsubsectionSchema = z.object({
   task: z.string().min(3, {
     message: "Pflichtfeld. Mindestens 3 Zeichen.",
   }), // Maßnahmentyp
-  length: InputNumberOrNullSchema, // km
+  lengthKm: InputNumberOrNullSchema, // km
   width: InputNumberOrNullSchema, // m
   costEstimate: InputNumberOrNullSchema, // €
   description: z.string().nullish(),

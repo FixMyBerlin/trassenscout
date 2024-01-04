@@ -1,10 +1,5 @@
 import clsx from "clsx"
-import {
-  formattedEuro,
-  formattedLength,
-  formattedWidth,
-  frenchQuote,
-} from "src/core/components/text"
+import { formattedEuro, formattedLength, frenchQuote } from "src/core/components/text"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 
 type Props = {
@@ -32,7 +27,7 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
             "pt-4 pb-2 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap",
           )}
         >
-          {formattedLength(subsubsections.reduce((acc, sub) => acc + (sub.length || 0), 0))}
+          {formattedLength(subsubsections.reduce((acc, sub) => acc + (sub.lengthKm || 0), 0))}
         </td>
         <td
           className={clsx(
@@ -74,7 +69,7 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
               )}
             >
               {formattedLength(
-                subsubsectionForQualityLevel.reduce((acc, sub) => acc + (sub.length || 0), 0),
+                subsubsectionForQualityLevel.reduce((acc, sub) => acc + (sub.lengthKm || 0), 0),
               )}
             </td>
             <td
