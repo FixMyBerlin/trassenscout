@@ -90,6 +90,12 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
         name="lengthKm"
         label="Länge"
         optional
+        help={
+          isFeltFieldsReadOnly
+            ? `Dieser Wert wird aus den Geometrien (Felt) berechnet und kann nicht manuell editiert werden.`
+            : ""
+        }
+        readOnly={isFeltFieldsReadOnly}
       />
       <LabeledRadiobuttonGroupLabelPos />
 

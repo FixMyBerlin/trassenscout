@@ -3,6 +3,7 @@ import db from "db"
 import { z } from "zod"
 import { multilinestringToLinestring } from "../components/utils/multilinestringToLinestring"
 import { FeltApiResponseSchema, SubsectionSchema } from "../schema"
+import { length, lineString } from "@turf/turf"
 
 const UpdateSubsectionsWithFeltDataSchema = z.object({
   subsections: z.array(
@@ -65,6 +66,14 @@ export default resolver.pipe(
             end: matchingFeltSubsection.properties
               ? matchingFeltSubsection.properties["ts_pa_end"]
               : tsSubsection.end,
+            lengthKm: length(
+              lineString(
+                // @ts-expect-error
+                matchingFeltSubsection.geometry
+                  ? multilinestringToLinestring(matchingFeltSubsection?.geometry["coordinates"])
+                  : tsSubsection.geometry,
+              ),
+            ),
           },
         })
 
