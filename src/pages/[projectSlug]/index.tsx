@@ -3,6 +3,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { Suspense, useMemo } from "react"
 import { MapProvider } from "react-map-gl"
 import { CalenderDashboard } from "src/calendar-entries/components"
+import { SuperAdminBox } from "src/core/components/AdminBox"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
 import { ProjectMap } from "src/core/components/Map/ProjectMap"
@@ -86,7 +87,14 @@ export const ProjectDashboardWithQuery = () => {
       <SubsectionTable subsections={filteredSubsections} />
 
       <CalenderDashboard />
-
+      <SuperAdminBox className="flex flex-col gap-4 items-start">
+        <Link button href={Routes.AdminNewSubsectionsPage({ projectSlug: project.slug })}>
+          Mehrere Planungsabschnitte erstellen
+        </Link>
+        <Link button href={Routes.AdminSubsectionsPage({ projectSlug: project.slug })}>
+          Felt Import für Planungsabschnitte
+        </Link>
+      </SuperAdminBox>
       <SuperAdminLogData data={{ project, subsections, filteredSubsections }} />
     </>
   )
