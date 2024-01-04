@@ -7,7 +7,7 @@ import { SlugSchema, InputNumberOrNullSchema } from "src/core/utils"
 export const SubsectionSchema = z.object({
   slug: SlugSchema,
   order: z.coerce.number(),
-  lengthKm: z.coerce.number().nullish(),
+  lengthKm: InputNumberOrNullSchema,
   description: z.string().nullish(),
   start: z.string().min(1),
   end: z.string().min(1),
