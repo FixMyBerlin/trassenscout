@@ -23,6 +23,7 @@ import getSubsubsectionStatussWithCount from "src/subsubsectionStatus/queries/ge
 import getSubsubsectionTasksWithCount from "src/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
 import getSubsubsectionInfrasWithCount from "src/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
 import getSubsubsectionSpecialsWithCount from "src/subsubsectionSpecial/queries/getSubsubsectionSpecialsWithCount"
+import { LabeledFormatNumberFieldCalculateLength } from "src/core/components/forms/LabeledFormatNumberFieldCalculateLength"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -80,9 +81,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         )}. Primäre Auszeichnung der Führung. Wird immer in Großschreibung angezeigt aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
       />
       <LabeledTextField type="text" name="subTitle" label="Title" optional />
-
       <GeometryInput />
-
       <LabeledTextField
         type="text"
         name="task"
@@ -131,14 +130,13 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           </Link>
         </div>
       </div>
-      <LabeledFormatNumberField
-        inlineLeadingAddon="km"
-        maxDecimalDigits={3}
-        step="0.001"
+      <LabeledFormatNumberFieldCalculateLength
+        optional
         name="lengthKm"
         label="Länge"
-        optional
+        help="Dieser Wert kann manuell eingetragen oder aus den vorhandenen Geometrien berechnet werden."
       />
+
       <LabeledFormatNumberField
         inlineLeadingAddon="m"
         maxDecimalDigits={3}
