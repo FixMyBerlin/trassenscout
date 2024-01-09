@@ -50,19 +50,23 @@ export const feedbackDefinition: TFeedback = {
               lng: 8.732094920912573,
             },
             config: {
-              bounds: [8.576990015191768, 50.18115285304344, 8.791982825789262, 50.084578531515405],
+              bounds: [8.68495, 50.103212, 8.793869, 50.148444],
               pinColor: "#D60F3D",
               // todo frm7
             },
             legend: {
               variant1: {
-                label: { de: "Eher an großen Straßen auf Radwegen, getrennt von Autos." },
+                label: {
+                  de: "Streckenführung A: Eher an großen Straßen auf Radwegen, getrennt von Autos.",
+                },
                 color: "bg-[#006EFF]", // todo frm7
                 height: "h-[5px]",
                 shape: "line",
               },
               variant2: {
-                label: { de: "Eher in ruhigen Wohnstraßen, dafür zusammen mit Autos." },
+                label: {
+                  de: "Streckenführung B: Eher in ruhigen Wohnstraßen, dafür zusammen mit Autos.",
+                },
                 color: "bg-[#FFD900]", // todo frm7
                 height: "h-[5px]",
                 shape: "line",
@@ -129,7 +133,7 @@ export const feedbackDefinition: TFeedback = {
         },
         {
           label: { de: "Absenden &  weiteren Hinweis geben" },
-          color: "white",
+          color: "red",
           onClick: { action: "submit" },
         },
       ],
