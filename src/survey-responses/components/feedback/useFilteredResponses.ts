@@ -10,10 +10,10 @@ export const useFilteredResponses = (
 
   if (!operator || !statuses || !topics || !hasnotes) return responses
 
-  console.log({ operator })
-  console.log({ statuses })
-  console.log({ topics })
-  console.log({ hasnotes })
+  // console.log({ operator })
+  // console.log({ statuses })
+  // console.log({ topics })
+  // console.log({ hasnotes })
 
   const filtered = responses
     // Handle `operator` which is the `operatorId: number` as 'string'

@@ -23,7 +23,7 @@ export const ExternalSurveyResponseFormMap: React.FC<Props> = ({
     <div>
       <p className="mb-4 block text-sm font-medium text-gray-700">Position wählen</p>
       <SurveyMap
-        className="h-64"
+        className="!h-64"
         projectMap={{
           maptilerStyleUrl: mapProps.maptilerStyleUrl,
           initialMarker: {
