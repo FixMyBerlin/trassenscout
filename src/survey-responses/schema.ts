@@ -1,5 +1,5 @@
 import { SurveyResponseSourceEnum, SurveyResponseStatusEnum } from "@prisma/client"
-import { z } from "zod"
+import { number, z } from "zod"
 
 export const SurveyResponseSchema = z.object({
   data: z.string(),
@@ -17,3 +17,5 @@ export const ExternalSurveyResponseFormSchema = z.object({
   categoryId: z.string(),
   isLocation: z.string(),
 })
+
+export const DeleteSurveyResponseSchema = z.object({ id: z.number() })
