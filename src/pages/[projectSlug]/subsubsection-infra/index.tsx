@@ -131,8 +131,8 @@ export const SubsubsectionInfrasWithData = () => {
 const SubsubsectionInfrasPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title="Form der Führungen" />
-      <PageHeader title="Form der Führungen" className="mt-12" />
+      <MetaTags noindex title="Führungsformen" />
+      <PageHeader title="Führungsformen" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
         <SubsubsectionInfrasWithData />

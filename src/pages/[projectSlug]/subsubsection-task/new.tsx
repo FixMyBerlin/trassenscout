@@ -30,8 +30,8 @@ const NewSubsubsectionTaskPageWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={seoNewTitle("Task für Führungen")} />
-      <PageHeader title="Task für Führungen hinzufügen" className="mt-12" />
+      <MetaTags noindex title={seoNewTitle("Maßnahmentyp hinzufügen")} />
+      <PageHeader title="Maßnahmentyp hinzufügen" className="mt-12" />
 
       <SubsubsectionTaskForm
         className="mt-10"

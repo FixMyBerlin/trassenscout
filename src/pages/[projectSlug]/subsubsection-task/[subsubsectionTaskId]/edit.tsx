@@ -70,8 +70,8 @@ const EditSubsubsectionsTaskWithQuery = () => {
 const EditSubsubsectionTaskPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title={seoEditTitle("Ausbaustandard")} />
-      <PageHeader title="Ausbaustandard bearbeiten" className="mt-12" />
+      <MetaTags noindex title={seoEditTitle("Maßnahmentyp bearbeiten")} />
+      <PageHeader title="Maßnahmentyp bearbeiten" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
         <EditSubsubsectionsTaskWithQuery />

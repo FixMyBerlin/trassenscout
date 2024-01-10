@@ -131,8 +131,8 @@ export const SubsubsectionTasksWithData = () => {
 const SubsubsectionTasksPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title="Maßnahme der Führungen" />
-      <PageHeader title="Maßnahme der Führungen" className="mt-12" />
+      <MetaTags noindex title="Maßnahmentypen" />
+      <PageHeader title="Maßnahmentypen" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
         <SubsubsectionTasksWithData />

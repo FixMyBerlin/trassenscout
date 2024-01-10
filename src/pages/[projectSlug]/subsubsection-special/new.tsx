@@ -30,8 +30,8 @@ const NewSubsubsectionSpecialPageWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={seoNewTitle("Special für Führungen")} />
-      <PageHeader title="Special für Führungen hinzufügen" className="mt-12" />
+      <MetaTags noindex title={seoNewTitle("Besonderheit hinzufügen")} />
+      <PageHeader title="Besonderheit hinzufügen" className="mt-12" />
 
       <SubsubsectionSpecialForm
         className="mt-10"

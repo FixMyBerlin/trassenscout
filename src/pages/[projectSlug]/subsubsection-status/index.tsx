@@ -131,8 +131,8 @@ export const SubsubsectionStatussWithData = () => {
 const SubsubsectionStatussPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title="Status der Führungen" />
-      <PageHeader title="Status der Führungen" className="mt-12" />
+      <MetaTags noindex title="Status" />
+      <PageHeader title="Status" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
         <SubsubsectionStatussWithData />

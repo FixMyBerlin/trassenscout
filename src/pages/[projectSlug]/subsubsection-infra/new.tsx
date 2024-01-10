@@ -30,8 +30,8 @@ const NewSubsubsectionInfraPageWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={seoNewTitle("Infra für Führungen")} />
-      <PageHeader title="Infra für Führungen hinzufügen" className="mt-12" />
+      <MetaTags noindex title={seoNewTitle("Führungsform hinzufügen")} />
+      <PageHeader title="Führungsform hinzufügen" className="mt-12" />
 
       <SubsubsectionInfraForm
         className="mt-10"

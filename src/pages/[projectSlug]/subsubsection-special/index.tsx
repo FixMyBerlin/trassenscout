@@ -135,8 +135,8 @@ export const SubsubsectionSpecialsWithData = () => {
 const SubsubsectionSpecialsPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title="Besonderheiten der Führungen" />
-      <PageHeader title="Besonderheiten der Führungen" className="mt-12" />
+      <MetaTags noindex title="Besonderheiten" />
+      <PageHeader title="Besonderheiten" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
         <SubsubsectionSpecialsWithData />
