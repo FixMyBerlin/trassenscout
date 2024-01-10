@@ -110,7 +110,7 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({ projectMap, className, set
   const { config } = projectMap
 
   return (
-    <div className={clsx(className, "h-[500px]")}>
+    <div className={clsx("h-[500px]", className)}>
       <Map
         id="mainMap"
         initialViewState={{
