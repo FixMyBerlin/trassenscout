@@ -10,8 +10,12 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2 } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import surveyDefinition from "src/participation/data/survey.json"
-import { Survey as TSurvey } from "src/participation/data/types"
+import { TSurvey } from "src/survey-public/components/types"
+import {
+  getFeedbackDefinitionBySurveySlug,
+  getResponseConfigBySurveySlug,
+  getSurveyDefinitionBySurveySlug,
+} from "src/survey-public/utils/getConfigBySurveySlug"
 import { GroupedSurveyResponseItem } from "src/survey-responses/components/analysis/GroupedSurveyResponseItem"
 import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
 import { getFormatDistanceInDays } from "src/survey-responses/utils/getFormatDistanceInDays"
@@ -64,9 +68,21 @@ export const Survey = () => {
     return transformedArray
   }
 
+  const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
+  const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
+  const responseConfig = getResponseConfigBySurveySlug(survey.slug)
+
+  const feedbackQuestions = []
+
+  for (let page of feedbackDefinition.pages) {
+    page.questions && feedbackQuestions.push(...page.questions)
+  }
+
+  const userLocationQuestionId = responseConfig?.evaluationRefs["feedback-location"]
+
   const surveyResponsesFeedbackPartWithLocation = surveyResponsesFeedbackPart.filter(
     //  @ts-expect-error
-    (r) => JSON.parse(r.data)["23"],
+    (r) => JSON.parse(r.data)[userLocationQuestionId],
   )
 
   const isSurveyPast = survey.endDate && isPast(survey.endDate)

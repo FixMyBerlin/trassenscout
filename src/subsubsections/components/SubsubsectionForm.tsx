@@ -3,6 +3,8 @@ import { useQuery } from "@blitzjs/rpc"
 import {
   Form,
   FormProps,
+  LabeledCheckbox,
+  LabeledCheckboxGroup,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
@@ -18,6 +20,11 @@ import { getUserSelectOptions } from "src/users/utils"
 import { z } from "zod"
 import { GeometryInput } from "./GeometryInput/GeometryInput"
 import getSubsubsectionStatussWithCount from "src/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
+import getSubsubsectionTasksWithCount from "src/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
+import getSubsubsectionInfrasWithCount from "src/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
+import getSubsubsectionSpecialsWithCount from "src/subsubsectionSpecial/queries/getSubsubsectionSpecialsWithCount"
+import { LabeledFormatNumberFieldCalculateLength } from "src/core/components/forms/LabeledFormatNumberFieldCalculateLength"
+
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
@@ -38,6 +45,30 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       return [status.id, status.title] as [number, string]
     }),
   ]
+  const [{ subsubsectionTasks }] = useQuery(getSubsubsectionTasksWithCount, { projectSlug })
+  const subsubsectionTaskOptions: [number | string, string][] = [
+    ["", "-"],
+    ...subsubsectionTasks.map((task) => {
+      return [task.id, task.title] as [number, string]
+    }),
+  ]
+  const [{ subsubsectionInfras }] = useQuery(getSubsubsectionInfrasWithCount, { projectSlug })
+  const subsubsectionInfraOptions: [number | string, string][] = [
+    ["", "-"],
+    ...subsubsectionInfras.map((infra) => {
+      return [infra.id, infra.title] as [number, string]
+    }),
+  ]
+  const [{ subsubsectionSpecials }] = useQuery(getSubsubsectionSpecialsWithCount, { projectSlug })
+  // @ts-ignore
+  const subsubsectionSpecialOptions: [number | string, string][] = subsubsectionSpecials.map(
+    (special) => {
+      return {
+        value: String(special.id),
+        label: special.title,
+      }
+    },
+  )
 
   return (
     <Form<S> {...props}>
@@ -50,20 +81,62 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         )}. Primäre Auszeichnung der Führung. Wird immer in Großschreibung angezeigt aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
       />
       <LabeledTextField type="text" name="subTitle" label="Title" optional />
-
       <GeometryInput />
-      <LabeledTextField
-        type="text"
-        name="task"
-        label="Maßnahmentyp"
-        help="Bspw. 'Fahrbahnmarkierung'"
-      />
-      <LabeledFormatNumberField
-        inlineLeadingAddon="km"
-        maxDecimalDigits={3}
-        step="0.001"
-        name="length"
+      {/* @ts-ignore */}
+      <LabeledCheckbox scope="isExistingInfra" label="Bestandsführung – keine Maßnahme geplant" />
+      <div className="flex items-end gap-5">
+        <LabeledSelect
+          name="subsubsectionTaskId"
+          label="Maßnahmentyp"
+          options={subsubsectionTaskOptions}
+          outerProps={{ className: "grow" }}
+        />
+        <Link href={Routes.SubsubsectionTasksPage({ projectSlug: projectSlug! })} className="py-2">
+          Maßnahmetypen verwalten…
+        </Link>
+      </div>
+      <div className="flex items-end gap-5">
+        <LabeledSelect
+          name="subsubsectionInfraId"
+          label="Führungsform"
+          options={subsubsectionInfraOptions}
+          outerProps={{ className: "grow" }}
+        />
+        <Link href={Routes.SubsubsectionInfrasPage({ projectSlug: projectSlug! })} className="py-2">
+          Führungsformen verwalten…
+        </Link>
+      </div>
+      {/* @ts-ignore */}
+      <div>
+        <LabeledCheckboxGroup
+          scope="specialFeatures"
+          label="Besonderheiten"
+          // @ts-ignore
+          items={subsubsectionSpecialOptions}
+        />
+        <div className="mt-4">
+          <Link
+            href={Routes.SubsubsectionSpecialsPage({ projectSlug: projectSlug! })}
+            className="py-2"
+          >
+            Besonderheiten verwalten…
+          </Link>
+        </div>
+      </div>
+      <LabeledFormatNumberFieldCalculateLength
+        optional
+        name="lengthKm"
         label="Länge"
+        help="Dieser Wert kann manuell eingetragen oder aus den vorhandenen Geometrien berechnet werden."
+      />
+
+      <LabeledFormatNumberField
+        inlineLeadingAddon="m"
+        maxDecimalDigits={3}
+        type="number"
+        step="0.01"
+        name="width"
+        label="Breite RVA"
         optional
       />
       <LabeledFormatNumberField
@@ -72,7 +145,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         type="number"
         step="0.01"
         name="width"
-        label="Breite"
+        label="Breite Bestand"
         optional
       />
       <LabeledFormatNumberField
@@ -204,7 +277,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           inlineLeadingAddon="€"
           type="number"
           name="revenuesEconomicIncome"
-          label="Erlöse und wirtschafltiche Einnahmen"
+          label="Erlöse und wirtschaftliche Einnahmen"
           optional
         />
         <LabeledFormatNumberField

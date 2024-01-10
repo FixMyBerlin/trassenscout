@@ -75,7 +75,7 @@ export const SubsubsectionStatussWithData = () => {
                     <strong className="font-semibold">{status.title}</strong>
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {status.subsubsectionCount} Führungen mit dem Staus {quote(status.title)}
+                    {status.subsubsectionCount} Führungen mit dem Status {quote(status.title)}
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
                     <ButtonWrapper className="justify-end">
@@ -131,8 +131,8 @@ export const SubsubsectionStatussWithData = () => {
 const SubsubsectionStatussPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title="Status der Führungen" />
-      <PageHeader title="Status der Führungen" className="mt-12" />
+      <MetaTags noindex title="Status" />
+      <PageHeader title="Status" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
         <SubsubsectionStatussWithData />

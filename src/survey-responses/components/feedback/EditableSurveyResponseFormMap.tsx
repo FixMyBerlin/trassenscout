@@ -1,97 +1,68 @@
-import { featureCollection, lineString, point } from "@turf/helpers"
-import { midpoint, nearestPointOnLine } from "@turf/turf"
-import React from "react"
-import { Layer, Marker, Source } from "react-map-gl/maplibre"
-import { BaseMap } from "src/core/components/Map/BaseMap"
-import { layerColors } from "src/core/components/Map/layerColors"
-import { subsectionsBbox } from "src/core/components/Map/utils"
-import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
-import { MapPinIcon } from "@heroicons/react/20/solid"
+import "maplibre-gl/dist/maplibre-gl.css"
+import React, { useState } from "react"
+import Map, { LngLatBoundsLike, Marker, NavigationControl, useMap } from "react-map-gl/maplibre"
+import { BackgroundSwitcher, LayerType } from "src/core/components/Map/BackgroundSwitcher"
+import SurveyStaticPin from "src/core/components/Map/SurveyStaticPin"
 
 type Props = {
-  responsePoint: { lat: number; lng: number } | undefined
-  subsections: SubsectionWithPosition[]
+  marker: { lat: number; lng: number } | undefined
+  maptilerStyleUrl: string
+  defaultViewState?: LngLatBoundsLike
+  pinColor: string
 }
 
-export const EditableSurveyResponseFormMap: React.FC<Props> = ({ responsePoint, subsections }) => {
-  const bbox = subsectionsBbox(subsections)
+export const EditableSurveyResponseFormMap: React.FC<Props> = ({
+  marker,
+  maptilerStyleUrl,
+  defaultViewState,
+  pinColor,
+}) => {
+  const { mainMap } = useMap()
 
-  // Group subsection linestrings by operator:
-  let prevOperatorId: number | undefined
-  let lineColor = layerColors.selectable
+  const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
 
-  const collectedLines: ReturnType<typeof lineString>[] = []
-  const collectedLabels: Record<string, any>[] = []
+  const handleLayerSwitch = (layer: LayerType) => {
+    setSelectedLayer(layer)
+  }
 
-  subsections.forEach((sub) => {
-    // Toggle color whenever the operator changed
-    if (sub.operator?.id !== prevOperatorId) {
-      lineColor =
-        lineColor === layerColors.selectable ? layerColors.selected : layerColors.selectable
-    }
+  const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
 
-    // Collect lines
-    collectedLines.push(lineString(sub.geometry, { name: sub.operator?.title, color: lineColor }))
-
-    // Collect label data
-    // We want one label per operator.
-    // Ideally that label would be positioned in the center of the merged linestrings.
-    // However, in the future our linestrings might not be mergable.
-    // Therefore, we pick the first linestring and accept the missplacement in some situation…
-    const fakeCenter = midpoint(sub.geometry.at(0)!, sub.geometry.at(-1)!)
-    const pointOnLine = nearestPointOnLine(lineString(sub.geometry), fakeCenter)
-    if (sub.operator?.id !== prevOperatorId) {
-      collectedLabels.push({
-        name: sub.operator?.title,
-        longitude: pointOnLine.geometry.coordinates[0],
-        latitude: pointOnLine.geometry.coordinates[1],
-        color: lineColor,
-      })
-    }
-
-    prevOperatorId = sub.operator?.id
-  })
+  const vectorStyle = `${maptilerStyleUrl}?key=${maptilerApiKey}`
+  const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
 
   return (
-    <BaseMap
-      initialViewState={{ bounds: bbox, fitBoundsOptions: { padding: 80 } }}
-      dots={[]}
-      id="preview"
-      classHeight="h-full"
-    >
-      <Source key="lines" type="geojson" data={featureCollection(collectedLines)}>
-        <Layer
-          type="line"
-          paint={{
-            "line-width": 4,
-            "line-color": ["get", "color"],
-            "line-opacity": 0.9,
-          }}
-        />
-      </Source>
-
-      {collectedLabels.map(({ name, longitude, latitude, color }) => {
-        if (!latitude || !longitude) return null
-        return (
-          <Marker key={name} longitude={longitude} latitude={latitude} anchor="center">
-            <span
-              className="rounded py-0 px-1"
-              style={{
-                backgroundColor: color,
-                color: layerColors.selectable === color ? "white" : "black",
-              }}
-            >
-              {name}
-            </span>
+    <div className="h-[600px]">
+      <Map
+        id="mainMap"
+        initialViewState={{
+          latitude: marker?.lat || undefined,
+          longitude: marker?.lng || undefined,
+          bounds: marker ? undefined : defaultViewState,
+          zoom: marker ? 10.5 : undefined,
+        }}
+        scrollZoom={false}
+        mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
+        // @ts-expect-error: See https://github.com/visgl/react-map-gl/issues/2310
+        RTLTextPlugin={null}
+      >
+        {marker && (
+          <Marker
+            draggable={false}
+            style={{ cursor: "default" }}
+            longitude={marker.lng}
+            latitude={marker.lat}
+            anchor="bottom"
+          >
+            <SurveyStaticPin color={pinColor} />
           </Marker>
-        )
-      })}
-
-      {responsePoint && (
-        <Marker longitude={responsePoint.lng} latitude={responsePoint.lat} anchor="bottom">
-          <MapPinIcon className="h-6 w-6 text-red-500" />
-        </Marker>
-      )}
-    </BaseMap>
+        )}
+        <BackgroundSwitcher
+          className="absolute left-4 top-4"
+          value={selectedLayer}
+          onChange={handleLayerSwitch}
+        />
+        <NavigationControl showCompass={false} />
+      </Map>
+    </div>
   )
 }

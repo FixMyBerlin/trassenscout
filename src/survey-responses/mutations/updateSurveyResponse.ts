@@ -14,7 +14,7 @@ const UpdateSurveyResponseSchema = SurveyResponseSchema.merge(
   // We do not want to update this data, it should stay as is
   data: true,
   surveySessionId: true,
-  surveyId: true,
+  surveyPart: true,
 })
 
 export default resolver.pipe(

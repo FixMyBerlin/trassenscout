@@ -9,6 +9,7 @@ import {
   LabeledTextField,
   LabeledTextareaField,
 } from "src/core/components/forms"
+import { LabeledFormatNumberFieldCalculateLength } from "src/core/components/forms/LabeledFormatNumberFieldCalculateLength"
 import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryField"
 import { Link } from "src/core/components/links"
 import { quote, shortTitle } from "src/core/components/text"
@@ -82,6 +83,13 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
         name="geometry"
         label="Geometry der Achse (LineString)"
       />
+      <LabeledFormatNumberFieldCalculateLength
+        optional
+        name="lengthKm"
+        label="Länge"
+        readOnly={isFeltFieldsReadOnly}
+      />
+
       <LabeledRadiobuttonGroupLabelPos />
 
       <div className="flex items-end gap-5">

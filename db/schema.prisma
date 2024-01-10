@@ -121,6 +121,9 @@ model Project {
   Survey               Survey[]
   qualityLevels        QualityLevel[]
   SubsubsectionStatus  SubsubsectionStatus[]
+  SubsubsectionTask    SubsubsectionTask[]
+  SubsubsectionInfra   SubsubsectionInfra[]
+  SubsubsectionSpecial SubsubsectionSpecial[]
 }
 
 model Membership {
@@ -207,6 +210,7 @@ model Subsection {
   geometry    Json
   labelPos    LabelPositionEnum @default(top)
   description String?
+  lengthKm    Float?
   //
   project     Project           @relation(fields: [projectId], references: [id])
   projectId   Int
@@ -224,21 +228,23 @@ model Subsection {
 }
 
 model Subsubsection {
-  id           Int                   @id @default(autoincrement())
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
+  id              Int                   @id @default(autoincrement())
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
   //
-  slug         String // shortTitle and URL Slug
-  subTitle     String?
-  type         SubsubsectionTypeEnum @default(ROUTE) // Führungform
-  geometry     Json
-  labelPos     LabelPositionEnum     @default(top)
-  task         String // Maßnahmentyp
-  length       Float? // Kilometer
-  width        Float? // Meter
-  costEstimate Float? // Euro
-  description  String? // Anmerkungen
-  mapillaryKey String?
+  slug            String // shortTitle and URL Slug
+  subTitle        String?
+  type            SubsubsectionTypeEnum @default(ROUTE) // Führungform
+  geometry        Json
+  labelPos        LabelPositionEnum     @default(top)
+  task            String? // Maßnahmentyp - UNUSED
+  lengthKm        Float? // Kilometer
+  width           Float? // Meter
+  widthExisting   Float? // Meter
+  costEstimate    Float? // Euro
+  description     String? // Anmerkungen
+  mapillaryKey    String?
+  isExistingInfra Boolean?              @default(false) // Bestandsführung
 
   maxSpeed        Float? // Maximalgeschwindigkeit
   trafficLoad     Int? // Verkehrsbelastung
@@ -257,18 +263,27 @@ model Subsubsection {
   ownFunds                      Float? //  Einsatz Eigenmittel
 
   //
-  qualityLevel          QualityLevel?        @relation(fields: [qualityLevelId], references: [id])
+  qualityLevel          QualityLevel?          @relation(fields: [qualityLevelId], references: [id])
   qualityLevelId        Int?
   //
-  manager               User?                @relation(fields: [managerId], references: [id])
+  manager               User?                  @relation(fields: [managerId], references: [id])
   managerId             Int?
   //
-  subsection            Subsection           @relation(fields: [subsectionId], references: [id])
+  subsection            Subsection             @relation(fields: [subsectionId], references: [id])
   subsectionId          Int
   //
   uploads               Upload[]
-  SubsubsectionStatus   SubsubsectionStatus? @relation(fields: [subsubsectionStatusId], references: [id])
+  //
+  SubsubsectionStatus   SubsubsectionStatus?   @relation(fields: [subsubsectionStatusId], references: [id])
   subsubsectionStatusId Int?
+  //
+  SubsubsectionTask     SubsubsectionTask?     @relation(fields: [subsubsectionTaskId], references: [id])
+  subsubsectionTaskId   Int?
+  //
+  SubsubsectionInfra    SubsubsectionInfra?    @relation(fields: [subsubsectionInfraId], references: [id])
+  subsubsectionInfraId  Int?
+  //
+  specialFeatures       SubsubsectionSpecial[]
 
   @@unique([subsectionId, slug])
 }
@@ -303,6 +318,52 @@ model SubsubsectionStatus {
   //
   project       Project         @relation(fields: [projectId], references: [id])
   projectId     Int
+  Subsubsection Subsubsection[]
+
+  @@unique([projectId, slug])
+}
+
+model SubsubsectionTask {
+  id            Int             @id @default(autoincrement())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  //
+  slug          String // shortTitle and URL Slug
+  title         String
+  //
+  project       Project         @relation(fields: [projectId], references: [id])
+  projectId     Int
+  Subsubsection Subsubsection[]
+
+  @@unique([projectId, slug])
+}
+
+model SubsubsectionInfra {
+  id            Int             @id @default(autoincrement())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  //
+  slug          String // shortTitle and URL Slug
+  title         String
+  //
+  project       Project         @relation(fields: [projectId], references: [id])
+  projectId     Int
+  Subsubsection Subsubsection[]
+
+  @@unique([projectId, slug])
+}
+
+model SubsubsectionSpecial {
+  id            Int             @id @default(autoincrement())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  //
+  slug          String // shortTitle and URL Slug
+  title         String
+  //
+  project       Project         @relation(fields: [projectId], references: [id])
+  projectId     Int
+  //
   Subsubsection Subsubsection[]
 
   @@unique([projectId, slug])
@@ -372,7 +433,7 @@ model SurveySession {
 
 model SurveyResponse {
   id                   Int                                     @id @default(autoincrement())
-  surveyId             Int // surveyParts as specified by the survey JSON files
+  surveyPart           Int
   data                 String
   status               SurveyResponseStatusEnum?               @default(PENDING)
   note                 String?

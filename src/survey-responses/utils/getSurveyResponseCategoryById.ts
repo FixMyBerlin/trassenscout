@@ -1,8 +1,13 @@
-import feedbackDefinition from "src/participation/data/feedback.json"
+import {
+  TFeedbackQuestion,
+  TResponse,
+  TSingleOrMultiResponseProps,
+} from "src/survey-public/components/types"
 
-export const getSurveyResponseCategoryById = (id: number) =>
-  feedbackDefinition.pages[0]?.questions
-    // @ts-ignore
-    .find((e) => e.id === 21)
-    // @ts-ignore
-    .props.responses.find((r) => r.id === id).text.de
+export const getSurveyResponseCategoryById = (
+  id: number,
+  feedbackUserCategoryQuestion: TFeedbackQuestion,
+) => {
+  const props = feedbackUserCategoryQuestion?.props as TSingleOrMultiResponseProps
+  return props.responses.find((r: TResponse) => r.id === id)?.text.de
+}
