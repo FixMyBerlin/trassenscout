@@ -82,6 +82,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
     try {
       await updateSurveyResponseMutation({
         id: response.id,
+        source: response.source,
         // We specify what we want to store explicity so that `data` and such is exclued
         status: values.status,
         note: values.note,
@@ -116,7 +117,6 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
     const newTopicTitle = values.newTopic?.trim()
     if (!newTopicTitle) return
 
-    console.log(router.query.topics)
     try {
       const createdOrFetched = await createSurveyResponseTopicMutation({
         title: newTopicTitle,

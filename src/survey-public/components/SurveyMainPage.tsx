@@ -36,7 +36,7 @@ export const SurveyMainPage: React.FC<Props> = ({
   responseConfig,
   surveyId,
 }) => {
-  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL">("SURVEY")
+  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL">("FEEDBACK")
   const [progress, setProgress] = useState(1)
   const [isSpinner, setIsSpinner] = useState(false)
   const [responses, setResponses] = useState<any[]>([])
@@ -67,6 +67,7 @@ export const SurveyMainPage: React.FC<Props> = ({
         surveySessionId: surveySessionId_,
         surveyPart: surveyDefinition.part,
         data: JSON.stringify(surveyResponses),
+        source: "FORM",
       })
     })()
 
@@ -91,6 +92,7 @@ export const SurveyMainPage: React.FC<Props> = ({
         surveySessionId: surveySessionId_,
         surveyPart: feedbackDefinition.part,
         data: JSON.stringify(feedbackResponses),
+        source: "FORM",
       })
     })()
 

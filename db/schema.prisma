@@ -437,12 +437,19 @@ model SurveyResponse {
   data                 String
   status               SurveyResponseStatusEnum?               @default(PENDING)
   note                 String?
+  source               SurveyResponseSourceEnum                @default(FORM)
   //
   surveySession        SurveySession                           @relation(fields: [surveySessionId], references: [id])
   surveySessionId      Int
   operatorId           Int?
   operator             Operator?                               @relation(fields: [operatorId], references: [id])
   surveyResponseTopics SurveyResponseTopicsOnSurveyResponses[]
+}
+
+enum SurveyResponseSourceEnum {
+  EMAIL
+  LETTER
+  FORM
 }
 
 model SurveyResponseTopic {
