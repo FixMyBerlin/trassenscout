@@ -12,6 +12,7 @@ import getSubsections from "src/subsections/queries/getSubsections"
 import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { EditableSurveyResponseFilterForm } from "src/survey-responses/components/feedback/EditableSurveyResponseFilterForm"
 import EditableSurveyResponseListItem from "src/survey-responses/components/feedback/EditableSurveyResponseListItem"
+import { ExternalSurveyResponseFormModal } from "src/survey-responses/components/feedback/ExternalSurveyResponseFormModal"
 import { useFilteredResponses } from "src/survey-responses/components/feedback/useFilteredResponses"
 import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedbackSurveyResponses"
 import { SurveyTabs } from "src/surveys/components/SurveyTabs"
@@ -63,6 +64,8 @@ export const SurveyResponse = () => {
 
       <div className="space-y-4 mt-12">
         <H2>Beiträge aus Bürgerbeteiligung ({filteredResponses.length})</H2>
+
+        <ExternalSurveyResponseFormModal refetch={refetchResponses} />
 
         <EditableSurveyResponseFilterForm operators={operators} topics={topics} />
 
