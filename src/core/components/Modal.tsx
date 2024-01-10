@@ -5,14 +5,14 @@ import { Fragment } from "react"
 type Props = {
   children?: React.ReactNode
   open: boolean
-  setOpen: (open: boolean) => void
+  handleClose: () => void
   className?: string
 }
 
-export const Modal: React.FC<Props> = ({ children, open, setOpen, className }) => {
+export const Modal: React.FC<Props> = ({ children, open, handleClose, className }) => {
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-20" onClose={setOpen}>
+      <Dialog as="div" className="relative z-20" onClose={handleClose}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"

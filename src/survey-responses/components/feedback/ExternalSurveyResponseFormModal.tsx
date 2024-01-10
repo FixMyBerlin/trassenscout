@@ -97,7 +97,14 @@ export const ExternalSurveyResponseFormModal: React.FC<Props> = ({ refetch }) =>
         <PlusIcon className="h-3.5 w-3.5" />
         Neuen Hinweis erfassen
       </button>
-      <Modal className="sm:!max-w-[600px]" open={open} setOpen={setOpen}>
+      <Modal
+        className="sm:!max-w-[600px]"
+        open={open}
+        handleClose={() => {
+          setOpen(false)
+          setPinPosition(null)
+        }}
+      >
         <PinContext.Provider value={{ pinPosition, setPinPosition }}>
           <ExternalSurveyResponseForm
             isLocation={isLocation}
