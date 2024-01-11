@@ -1,3 +1,4 @@
+import { Markdown } from "src/core/components/Markdown/Markdown"
 import { SurveyH1 } from "../Text"
 
 export type SurveyScreenHeaderProps = {
@@ -5,11 +6,7 @@ export type SurveyScreenHeaderProps = {
   description?: string
 }
 
-export const SurveyScreenHeader: React.FC<SurveyScreenHeaderProps> = ({
-  title,
-
-  description,
-}) => {
+export const SurveyScreenHeader: React.FC<SurveyScreenHeaderProps> = ({ title, description }) => {
   return (
     <section className="mb-2">
       <div className="mb-8">
@@ -17,7 +14,7 @@ export const SurveyScreenHeader: React.FC<SurveyScreenHeaderProps> = ({
       </div>
 
       {Boolean(description) && (
-        <p className="whitespace-pre-wrap text-base text-gray-700">{description}</p>
+        <Markdown className="prose-p:text-base prose-p:text-gray-700" markdown={description} />
       )}
     </section>
   )
