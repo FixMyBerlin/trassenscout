@@ -42,14 +42,17 @@ export const Email: React.FC<Props> = ({ email, homeUrl }) => {
       <SurveyP>
         Wenn Sie noch weiteres Feedback zur Umfrage/zur Online-Beteiligung haben, können Sie dies
         gerne an{" "}
-        <SurveyLink classNameOverwrites={colorClass} href="mailto:feedback@fixmycity.de">
-          feedback@fixmycity.de
+        <SurveyLink
+          classNameOverwrites={colorClass}
+          href="mailto:info@radschnellverbindungen.info?subject=Feedback zum FRM7"
+        >
+          info@radschnellverbindungen.info
         </SurveyLink>{" "}
         senden.{" "}
       </SurveyP>
 
       <div
-        className="rounded border border-gray-300 pt-4 p-2 my-6 mt-10"
+        className="rounded border border-gray-300 my-6 mt-10"
         dangerouslySetInnerHTML={{
           __html: `
               <iframe id="mailjet-widget" data-w-type="embedded" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="${mailjetWidgetUrl}" width="100%" style="height: 0px;"></iframe>

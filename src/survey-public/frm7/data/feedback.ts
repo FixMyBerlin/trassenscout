@@ -7,7 +7,7 @@ export const feedbackDefinition: TFeedback = {
       id: 1,
       title: { de: "Wir sind gespannt auf Ihre Hinweise. " },
       description: {
-        de: "Hier können Sie dem Planungsteam konkrete Ideen, Anregungen und Hinweise zum FRM 7 geben. Sie können einen oder mehrere Hinweise abgeben. Wenn Sie mehrere Hinweise haben, können Sie diese nacheinander bearbeiten. Beginnen Sie nun mit dem ersten.",
+        de: "Hier können Sie dem Planungsteam konkrete Ideen, Anregungen und Hinweise zum FRM7 geben. Sie können einen oder mehrere Hinweise abgeben. Wenn Sie mehrere Hinweise haben, können Sie diese nacheinander bearbeiten. Beginnen Sie nun mit dem ersten.",
       },
       questions: [
         {

@@ -11,7 +11,7 @@ export const surveyDefinition: TSurvey = {
       id: 1,
       title: { de: "Ihre Meinung zählt!" },
       description: {
-        de: "Frankfurt bekommt einen neuen Radschnellweg mit dem Namen FRM7. Radschnellwege sind besondere Radwege. Radfahrende können sicher und komfortabel zum Ziel kommen. Dabei gibt es keine Umwege und es geht zügig voran.\n\nWir möchten, dass viele Menschen diesen Radweg nutzen können – sei es auf dem Weg zur Schule, Arbeit, Sport oder beim Einkaufen und Familienausflug. Damit das Projekt zum Erfolg wird, sind Ihre Ideen und Anmerkungen von großer Bedeutung.\n\nSie haben bis zum 31.01.2024 Zeit, sich zu beteiligen.\n\nDie Beteiligung besteht aus zwei Teilen. Im ersten Teil möchten wir in einer kleinen Umfrage von Ihnen wissen, wie Sie sich im Verkehr bewegen und ob und wie Sie den Radschnellweg nutzen würden. Im zweiten Teil können Sie Ihre konkreten Hinweise und Wünsche zum Radschnellweg an uns richten.\n\nEs dauert nur 5-10 Minuten, um die Fragen zu beantworten.\n\nAlle Ihre Angaben und Hinweise bleiben anonym, also geheim.",
+        de: "Frankfurt bekommt einen neuen **Radschnellweg** mit dem Namen FRM7, der ohne Umwege nach Maintal und Hanau führt. Radfahrende können auf Radschnellwegen sicher und komfortabel zum Ziel kommen.\n\nWir möchten, dass viele Menschen diesen neuen Radweg nutzen können – sei es auf dem Weg zur Schule, Arbeit, Sport oder beim Einkaufen und Familienausflug. Damit das Projekt zum Erfolg wird, sind Ihre Wünsche  und Hinweise von großer Bedeutung.\n\nSie haben bis zum 31.01.2024 Zeit, sich zu beteiligen.\n\nDie Beteiligung besteht aus **zwei Teilen**. Im ersten Teil möchten wir in **einer kleinen Umfrage** von Ihnen wissen, wie Sie sich im Verkehr bewegen und ob und wie Sie den Radschnellweg nutzen würden. Im zweiten Teil können Sie **Ihre konkreten Hinweise und Wünsche** zum Radschnellweg an uns richten.\n\nEs dauert nur 5-10 Minuten, um die Fragen zu beantworten.\n\nAlle Ihre Angaben und Hinweise bleiben anonym, also geheim.",
       },
       buttons: [
         {
@@ -25,7 +25,7 @@ export const surveyDefinition: TSurvey = {
       id: 2,
       title: { de: "Ein kurzer Einstieg" },
       description: {
-        de: "Erzählen Sie uns zum Einstieg von Ihrer Nutzung von Verkehrsmitteln.",
+        de: "Erzählen Sie uns zum Einstieg davon, welche Verkehrsmittel Sie nutzen.",
       },
       questions: [
         {
@@ -42,18 +42,30 @@ export const surveyDefinition: TSurvey = {
               {
                 id: 3,
                 text: {
-                  de: "Fahrrad / E-Bike",
+                  de: "Fahrrad (ohne Motor)",
                 },
               },
-              { id: 4, text: { de: "E-Scooter" } },
               {
-                id: 5,
+                id: 4,
+                text: {
+                  de: "Pedelec / E-Bike",
+                },
+              },
+              { id: 5, text: { de: "E-Scooter" } },
+              {
+                id: 6,
                 text: { de: "Bus & Bahn" },
               },
               {
-                id: 6,
+                id: 7,
                 text: {
                   de: "Auto",
+                },
+              },
+              {
+                id: 8,
+                text: {
+                  de: "Carsharing",
                 },
               },
             ],
@@ -65,13 +77,16 @@ export const surveyDefinition: TSurvey = {
           component: "multipleResponse",
           props: {
             responses: [
-              { id: 1, text: { de: "Fahrrad (ohne Motor)" } },
-              { id: 2, text: { de: "Pedelec / E-Bike" } },
-              { id: 3, text: { de: "E-Scooter" } },
-              { id: 4, text: { de: "Monatsticket Nahverkehr" } },
-              { id: 5, text: { de: "Rollstuhl" } },
-              { id: 6, text: { de: "Eigenes Auto" } },
-              { id: 7, text: { de: "Motorrad / Moped" } },
+              {
+                id: 1,
+                text: { de: "Rollstuhl" },
+              },
+              { id: 2, text: { de: "Fahrrad (ohne Motor)" } },
+              { id: 3, text: { de: "Pedelec / E-Bike" } },
+              { id: 4, text: { de: "Roller / Motorrad" } },
+              { id: 5, text: { de: "E-Scooter" } },
+              { id: 6, text: { de: "Monatsticket Nahverkehr" } },
+              { id: 7, text: { de: "Eigenes Auto" } },
               { id: 8, text: { de: "Carsharing" } },
             ],
           },
@@ -83,7 +98,7 @@ export const surveyDefinition: TSurvey = {
           props: {
             responses: [
               { id: 1, text: { de: "Ich fahre kein Fahrrad" } },
-              { id: 2, text: { de: "bis 10 Minuten" } },
+              { id: 2, text: { de: "Bis 10 Minuten" } },
               { id: 3, text: { de: "11 bis 20 Minuten" } },
               { id: 4, text: { de: "21 bis 30 Minuten" } },
               { id: 5, text: { de: "Mehr als 30 Minuten" } },
@@ -103,7 +118,9 @@ export const surveyDefinition: TSurvey = {
               { id: 4, text: { de: "Ich fühle mich sicher auf dem Fahrrad im Verkehr." } },
               {
                 id: 5,
-                text: { de: "Keine der Antworten trifft auf mich zu, ich fahre kein Fahrrad" },
+                text: {
+                  de: "Keine der Antworten trifft auf mich zu, denn ich fahre kein Fahrrad.",
+                },
               },
             ],
           },
@@ -117,15 +134,21 @@ export const surveyDefinition: TSurvey = {
           props: {
             responses: [
               { id: 1, text: { de: "Ich kann nicht Fahrrad fahren (fehlende Fertigkeit)" } },
-              { id: 2, text: { de: "Ich kann nicht Fahrrad fahren (Körperliche Einschränkung)" } },
+              {
+                id: 2,
+                text: { de: "Ich kann nicht Fahrrad fahren (körperliche Einschränkung(en))" },
+              },
               { id: 3, text: { de: "Es gibt keine sichere Infrastruktur" } },
               { id: 4, text: { de: "Meine Strecken sind zu lang" } },
               { id: 5, text: { de: "Wenige Leute in meiner Umgebung fahren Fahrrad" } },
               { id: 6, text: { de: "Fahrradfahren ist zu anstrengend" } },
               { id: 7, text: { de: "Ich habe kein (gutes) Fahrrad" } },
-              { id: 8, text: { de: "Ich kann meine Kinder nicht mitnehmen" } },
+              { id: 8, text: { de: "Ich kann keine Kinder mitnehmen" } },
               { id: 9, text: { de: "Andere Gründe" } },
-              { id: 10, text: { de: "Keine Antwort trifft auf mich zu, ich fahre gerne Fahrrad" } },
+              {
+                id: 10,
+                text: { de: "Keine Antwort trifft auf mich zu, denn ich fahre gerne Fahrrad" },
+              },
             ],
           },
         },
@@ -201,9 +224,10 @@ export const surveyDefinition: TSurvey = {
             responses: [
               { id: 1, text: { de: "Ja, auf jeden Fall" } },
               { id: 2, text: { de: "Ja, wahrscheinlich ab und zu" } },
-              { id: 3, text: { de: "Nein" } },
-              { id: 4, text: { de: "Ich fahre bereits selten / nie Auto." } },
-              { id: 5, text: { de: "Keine Angabe" } },
+              { id: 3, text: { de: "Nein, ich würde weiterhin mit dem Auto fahren" } },
+              { id: 4, text: { de: "Nein, ich bin dort ohnehin nicht unterwegs" } },
+              { id: 5, text: { de: "Ich fahre bereits selten / nie Auto" } },
+              { id: 6, text: { de: "Keine Angabe" } },
             ],
           },
         },
@@ -313,7 +337,7 @@ export const surveyDefinition: TSurvey = {
       id: 4,
       title: { de: "Über Sie" },
       description: {
-        de: "Erzählen Sie uns von Ihnen. Ihre Antworten sind geheim.",
+        de: "Erzählen Sie uns von sich. Ihre Antworten sind anonym, also geheim.",
       },
       questions: [
         {
@@ -322,7 +346,7 @@ export const surveyDefinition: TSurvey = {
           component: "singleResponse",
           props: {
             responses: [
-              { id: 1, text: { de: "unter 14 Jahre" } },
+              { id: 1, text: { de: "Unter 14 Jahre" } },
               {
                 id: 2,
                 text: { de: "14 bis 18 Jahre" },
@@ -391,7 +415,7 @@ export const surveyDefinition: TSurvey = {
           component: "singleResponse",
           props: {
             responses: [
-              { id: 1, text: { de: "weniger als 1.000 Euro" } },
+              { id: 1, text: { de: "Weniger als 1.000 Euro" } },
               { id: 2, text: { de: "1.000 bis 3.000 Euro" } },
               { id: 3, text: { de: "3.001 bis 5.000 Euro" } },
               { id: 4, text: { de: "Mehr als 5.000 Euro" } },
@@ -474,7 +498,7 @@ export const surveyDefinition: TSurvey = {
             responses: [
               { id: 1, text: { de: "Ja" } },
               { id: 2, text: { de: "Nein" } },
-              { id: 3, text: { de: "nur ein Teil meiner Eltern" } },
+              { id: 3, text: { de: "Nur ein Teil meiner Eltern" } },
               { id: 4, text: { de: "Keine Angabe" } },
             ],
           },
