@@ -30,3 +30,7 @@
 
 @layer utilities {
 }
+
+.stripe-background {
+  background: repeating-linear-gradient(-45deg, #da1616, #da1616 2px, white 2px, white 4px);
+}

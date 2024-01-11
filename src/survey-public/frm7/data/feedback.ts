@@ -79,7 +79,7 @@ export const feedbackDefinition: TFeedback = {
               },
               blockedArea: {
                 label: { de: "Gesperrt aus Gründen des Natur- oder Denkmalschutzes" },
-                color: "bg-[#DA1616] opacity-70", // todo frm7
+                color: "opacity-70 stripe-background", // todo frm7
                 height: "h-5",
                 shape: "line",
               },
