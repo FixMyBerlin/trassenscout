@@ -18,7 +18,6 @@ export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
   return (
     <>
       <SurveyScreenHeader title={title.de} description={description.de} />
-      <SurveyH2>{questionText.de}</SurveyH2>
       <SurveyButtonWrapper>
         {buttons[0] && (
           <SurveyButton color={buttons[0].color} onClick={onClickMore}>
