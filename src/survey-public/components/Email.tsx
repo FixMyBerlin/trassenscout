@@ -40,8 +40,7 @@ export const Email: React.FC<Props> = ({ email, homeUrl }) => {
       <SurveyP>{description.de}</SurveyP>
       <SurveyH2>Möchten Sie uns noch etwas mit auf den Weg geben?</SurveyH2>
       <SurveyP>
-        Wenn Sie noch weiteres Feedback zur Umfrage/zur Online-Beteiligung haben, können Sie dies
-        gerne an{" "}
+        Wenn Sie noch weiteres Feedback zur Online-Beteiligung haben, können Sie dies gerne an{" "}
         <SurveyLink
           classNameOverwrites={colorClass}
           href="mailto:info@radschnellverbindungen.info?subject=Feedback zum FRM7"

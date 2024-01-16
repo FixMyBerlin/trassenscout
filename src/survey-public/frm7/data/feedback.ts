@@ -57,7 +57,7 @@ export const feedbackDefinition: TFeedback = {
             legend: {
               variant1: {
                 label: {
-                  de: "Streckenführung A: Eher an großen Straßen auf Radwegen, getrennt von Autos.",
+                  de: "Streckenführung A: Eher an großen Straßen auf Radwegen, getrennt von Autos",
                 },
                 color: "bg-[#006EFF]", // todo frm7
                 height: "h-[5px]",
@@ -65,7 +65,7 @@ export const feedbackDefinition: TFeedback = {
               },
               variant2: {
                 label: {
-                  de: "Streckenführung B: Eher in ruhigen Wohnstraßen, dafür zusammen mit Autos.",
+                  de: "Streckenführung B: Eher in ruhigen Wohnstraßen, dafür zusammen mit Autos",
                 },
                 color: "bg-[#FFD900]", // todo frm7
                 height: "h-[5px]",
@@ -84,7 +84,7 @@ export const feedbackDefinition: TFeedback = {
                 shape: "line",
               },
               pois: {
-                label: { de: "Orte für Bildung, Arbeit, Freizeit und mehr." },
+                label: { de: "Orte für Bildung, Arbeit, Freizeit und mehr" },
                 color: "bg-[#000]", // todo frm7
                 height: "h-4",
                 shape: "dot",

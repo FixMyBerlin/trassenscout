@@ -8,7 +8,7 @@ export const moreDefinition: TMore = {
   questionText: { de: "Möchten Sie einen konkreten Hinweis geben?" },
   buttons: [
     {
-      label: { de: "Weiter" },
+      label: { de: "Weiter zu den Hinweisen" },
       color: "red",
       onClick: { action: "nextPage" },
     },
