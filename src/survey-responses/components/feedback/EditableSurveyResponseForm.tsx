@@ -33,7 +33,6 @@ type FormProps<S extends z.ZodType<any, any>> = Omit<
   userLocationQuestionId: number | undefined
   maptilerStyleUrl: string
   defaultViewState: LngLatBoundsLike
-  pinColor: string
 } & Pick<EditableSurveyResponseListItemProps, "response" | "operators" | "topics" | "subsections">
 
 export const FORM_ERROR = "FORM_ERROR"
@@ -47,7 +46,6 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   subsections,
   maptilerStyleUrl,
   userLocationQuestionId,
-  pinColor,
   initialValues,
   refetchResponsesAndTopics,
 }: FormProps<S>) {
@@ -213,7 +211,6 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
             }
             maptilerStyleUrl={maptilerStyleUrl}
             defaultViewState={defaultViewState}
-            pinColor={pinColor}
           />
         </div>
 

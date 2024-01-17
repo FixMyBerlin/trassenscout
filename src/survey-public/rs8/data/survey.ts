@@ -5,7 +5,9 @@ export const surveyDefinition: TSurvey = {
   version: 1,
   logoUrl: "https://radschnellweg8-lb-wn.de/logo.png",
   canonicalUrl: "https://radschnellweg8-lb-wn.de/beteiligung/",
-  primaryColor: "pink",
+  primaryColor: "#e5007d",
+  darkColor: "#1e293b",
+  lightColor: "#ffcce8",
   pages: [
     {
       id: 1,
@@ -16,7 +18,7 @@ export const surveyDefinition: TSurvey = {
       buttons: [
         {
           label: { de: "Beteiligung starten" },
-          color: "pink",
+          color: "primaryColor",
           onClick: { action: "nextPage" },
         },
       ],
@@ -106,7 +108,7 @@ export const surveyDefinition: TSurvey = {
         },
       ],
       buttons: [
-        { label: { de: "Weiter" }, color: "pink", onClick: { action: "nextPage" } },
+        { label: { de: "Weiter" }, color: "primaryColor", onClick: { action: "nextPage" } },
         { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
       ],
     },
@@ -157,7 +159,7 @@ export const surveyDefinition: TSurvey = {
         },
       ],
       buttons: [
-        { label: { de: "Weiter" }, color: "pink", onClick: { action: "nextPage" } },
+        { label: { de: "Weiter" }, color: "primaryColor", onClick: { action: "nextPage" } },
         { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
       ],
     },
@@ -230,7 +232,7 @@ export const surveyDefinition: TSurvey = {
         },
       ],
       buttons: [
-        { label: { de: "Absenden" }, color: "pink", onClick: { action: "submit" } },
+        { label: { de: "Absenden" }, color: "primaryColor", onClick: { action: "submit" } },
         { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
       ],
     },

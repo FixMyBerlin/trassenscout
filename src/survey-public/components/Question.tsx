@@ -20,7 +20,6 @@ const SingleResponseComponent: React.FC<TSingleOrMultuResponseComponentProps> = 
       label: item.text.de,
       help: item?.help?.de,
       value: `${item.id}`,
-      primaryColor: "red", // todo frm7
     }))}
   />
 )
@@ -35,22 +34,17 @@ const MultipleResponseComponent: React.FC<TSingleOrMultuResponseComponentProps> 
       name: `multi-${id}-${item.id}`,
       label: item.text.de,
       help: item?.help?.de,
-      primaryColor: "red", // todo frm7
     }))}
   />
 )
 
 type TTextResponseComponentProps = {
   id: number
-  primaryColor: "red" | "pink"
 }
 
-const TextResponseComponent: React.FC<TTextResponseComponentProps> = ({
-  id,
-  primaryColor = "red", // todo frm7
-}) => (
+const TextResponseComponent: React.FC<TTextResponseComponentProps> = ({ id }) => (
   <>
-    <SurveyLabeledTextareaField primaryColor={primaryColor} name={`text-${id}`} label={""} />
+    <SurveyLabeledTextareaField name={`text-${id}`} label={""} />
   </>
 )
 // TODO type
@@ -69,7 +63,7 @@ const components = {
   custom: CustomComponent,
 }
 
-type Props = { question: TQuestion; className?: string; primaryColor?: "red" | "pink" }
+type Props = { question: TQuestion; className?: string }
 
 export const Question: React.FC<Props> = ({ question, className }) => {
   const { id, help, label, component, props } = question

@@ -6,10 +6,9 @@ import SurveyStaticPin from "./SurveyStaticPin"
 type Props = {
   marker: { lng: number; lat: number }
   maptilerStyleUrl: string
-  pinColor: string
 }
 
-export const SurveyStaticMap: React.FC<Props> = ({ marker, maptilerStyleUrl, pinColor }) => {
+export const SurveyStaticMap: React.FC<Props> = ({ marker, maptilerStyleUrl }) => {
   const { mainMap } = useMap()
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
   const vectorStyle = `${maptilerStyleUrl}?key=${maptilerApiKey}`
@@ -42,7 +41,7 @@ export const SurveyStaticMap: React.FC<Props> = ({ marker, maptilerStyleUrl, pin
           latitude={marker.lat}
           anchor="bottom"
         >
-          <SurveyStaticPin color={pinColor} />
+          <SurveyStaticPin />
         </Marker>
       </Map>
     </div>

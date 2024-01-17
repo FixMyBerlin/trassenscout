@@ -1,15 +1,15 @@
 import { useMutation } from "@blitzjs/rpc"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { Survey } from "src/survey-public/components/Survey"
 import { Feedback } from "src/survey-public/components/feedback/Feedback"
 
 import { Email } from "src/survey-public/components/Email"
 import { More } from "src/survey-public/components/More"
-import { ProgressContext } from "src/survey-public/context/contexts"
 import { Debug } from "src/survey-public/components/core/Debug"
 import { SurveyLayout } from "src/survey-public/components/core/layout/SurveyLayout"
 import { SurveySpinnerLayover } from "src/survey-public/components/core/layout/SurveySpinnerLayover"
+import { ProgressContext } from "src/survey-public/context/contexts"
 import { scrollToTopWithDelay } from "src/survey-public/utils/scrollToTopWithDelay"
 
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
@@ -46,6 +46,12 @@ export const SurveyMainPage: React.FC<Props> = ({
   const [createSurveySessionMutation] = useMutation(createSurveySession)
   const [updateSurveySessionMutation] = useMutation(updateSurveySession)
   const [createSurveyResponseMutation] = useMutation(createSurveyResponse)
+  useEffect(() => {
+    const root = document.documentElement
+    root.style.setProperty("--survey-primary-color", surveyDefinition.primaryColor)
+    root.style.setProperty("--survey-dark-color", surveyDefinition.darkColor)
+    root.style.setProperty("--survey-light-color", surveyDefinition.lightColor)
+  }, [surveyDefinition.darkColor, surveyDefinition.lightColor, surveyDefinition.primaryColor])
 
   const getOrCreateSurveySessionId = async () => {
     if (surveySessionId) {
@@ -152,11 +158,7 @@ export const SurveyMainPage: React.FC<Props> = ({
 
   return (
     <ProgressContext.Provider value={{ progress, setProgress }}>
-      <SurveyLayout
-        primaryColor={surveyDefinition.primaryColor}
-        canonicalUrl={surveyDefinition.canonicalUrl}
-        logoUrl={surveyDefinition.logoUrl}
-      >
+      <SurveyLayout canonicalUrl={surveyDefinition.canonicalUrl} logoUrl={surveyDefinition.logoUrl}>
         <Debug className="border-red-500">
           <code>stage: {stage}</code>
           <code>

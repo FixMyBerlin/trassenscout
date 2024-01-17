@@ -3,7 +3,6 @@ import { useEffect } from "react"
 import { SurveyH2, SurveyP } from "./core/Text"
 import { SurveyScreenHeader } from "./core/layout/SurveyScreenHeader"
 import { SurveyLink } from "./core/links/SurveyLink"
-import { partcipationLinkStyles, partcipationRedLinkStyles } from "./core/links/styles"
 import { TEmail } from "./types"
 
 export { FORM_ERROR } from "src/core/components/forms"
@@ -14,24 +13,11 @@ type Props = {
 }
 
 export const Email: React.FC<Props> = ({ email, homeUrl }) => {
-  const { description, questionText, button, linkColor, title, mailjetWidgetUrl } = email
+  const { description, questionText, button, title, mailjetWidgetUrl } = email
 
   useEffect(() => {
     iframeResizer({}, "#mailjet-widget")
   }, [])
-
-  // todo frm7
-  let colorClass: string
-  switch (linkColor) {
-    case "pink":
-      colorClass = partcipationLinkStyles
-      break
-    case "red":
-      colorClass = partcipationRedLinkStyles
-      break
-    default:
-      colorClass = partcipationLinkStyles
-  }
 
   return (
     <section>
@@ -41,10 +27,7 @@ export const Email: React.FC<Props> = ({ email, homeUrl }) => {
       <SurveyH2>Möchten Sie uns noch etwas mit auf den Weg geben?</SurveyH2>
       <SurveyP>
         Wenn Sie noch weiteres Feedback zur Online-Beteiligung haben, können Sie dies gerne an{" "}
-        <SurveyLink
-          classNameOverwrites={colorClass}
-          href="mailto:info@radschnellverbindungen.info?subject=Feedback zum FRM7"
-        >
+        <SurveyLink href="mailto:info@radschnellverbindungen.info?subject=Feedback zum FRM7">
           info@radschnellverbindungen.info
         </SurveyLink>{" "}
         senden.{" "}

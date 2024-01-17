@@ -20,9 +20,11 @@ import { TMapProps } from "src/survey-public/components/types"
 import {
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
+  getSurveyDefinitionBySurveySlug,
 } from "src/survey-public/utils/getConfigBySurveySlug"
 import deleteSurveyResponse from "src/survey-responses/mutations/deleteSurveyResponse"
 import getSurvey from "src/surveys/queries/getSurvey"
+import { useEffect } from "react"
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
@@ -42,6 +44,21 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   refetchResponsesAndTopics,
 }) => {
   const router = useRouter()
+
+  const params = useRouterQuery()
+  const open = parseInt(String(params.responseDetails)) === response.id
+  const surveyId = useParam("surveyId", "string")
+  const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
+  useEffect(() => {
+    const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
+    const root = document.documentElement
+    root.style.setProperty("--survey-primary-color", surveyDefinition.primaryColor)
+    root.style.setProperty("--survey-dark-color", surveyDefinition.darkColor)
+    root.style.setProperty("--survey-light-color", surveyDefinition.lightColor)
+  }, [survey.slug])
+
+  const [deleteCalendarEntryMutation] = useMutation(deleteSurveyResponse)
+
   const handleOpen = () => {
     router.query.responseDetails = String(response.id)
     void router.push({ query: router.query }, undefined, { scroll: false })
@@ -50,13 +67,6 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
     delete router.query.responseDetails
     void router.push({ query: router.query }, undefined, { scroll: false })
   }
-
-  const params = useRouterQuery()
-  const open = parseInt(String(params.responseDetails)) === response.id
-  const surveyId = useParam("surveyId", "string")
-  const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
-  const [deleteCalendarEntryMutation] = useMutation(deleteSurveyResponse)
-
   const operatorSlugWitFallback = response.operator?.slug || "k.A."
 
   const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
@@ -189,7 +199,6 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             refetchResponsesAndTopics={refetchResponsesAndTopics}
             maptilerStyleUrl={maptilerStyleUrl}
             defaultViewState={defaultViewState}
-            pinColor={mapProps.config.pinColor}
           />
         </div>
       )}

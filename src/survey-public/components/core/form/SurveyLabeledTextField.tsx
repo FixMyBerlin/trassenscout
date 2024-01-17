@@ -61,7 +61,7 @@ export const SurveyLabeledTextField = forwardRef<HTMLInputElement, LabeledTextFi
             "block w-full appearance-none rounded-md border px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none sm:text-sm",
             hasError
               ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
-              : "border-gray-300 focus:border-pink-500 focus:ring-pink-500",
+              : "border-gray-300 focus:border-[var(--survey-primary-color)] focus:ring-[var(--survey-primary-color)]",
           )}
         />
         {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}

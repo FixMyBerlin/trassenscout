@@ -6,10 +6,9 @@ import { SurveyLink } from "../links/SurveyLink"
 type Props = {
   logoSrc: string
   landingPageUrl: string
-  primaryColor: "red" | "pink"
 }
 
-export const SurveyHeader: React.FC<Props> = ({ logoSrc, landingPageUrl, primaryColor }) => {
+export const SurveyHeader: React.FC<Props> = ({ logoSrc, landingPageUrl }) => {
   return (
     <nav className="z-20 shadow-xl">
       <div className="mx-auto flex items-center justify-between px-2 text-gray-500 sm:px-6 lg:pl-5 lg:pr-2.5">
@@ -23,7 +22,7 @@ export const SurveyHeader: React.FC<Props> = ({ logoSrc, landingPageUrl, primary
           <XMarkIcon className="h-7  w-7" />
         </SurveyLink>
       </div>
-      <ProgressBar color={primaryColor} />
+      <ProgressBar />
     </nav>
   )
 }

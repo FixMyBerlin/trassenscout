@@ -5,7 +5,9 @@ export const surveyDefinition: TSurvey = {
   version: 1,
   logoUrl: "https://develop--frm-7-landingpage.netlify.app/logo.png", // "https://radschnellweg-frm7.de/logo.png" // todo frm7
   canonicalUrl: "https://staging.radschnellweg-frm7.de/beteiligung/", // "https://radschnellweg-frm7.de/beteiligung/" // todo frm7
-  primaryColor: "red",
+  primaryColor: "#D60F3D",
+  darkColor: "#5F071B",
+  lightColor: "#fecdd3",
   pages: [
     {
       id: 1,
@@ -16,7 +18,7 @@ export const surveyDefinition: TSurvey = {
       buttons: [
         {
           label: { de: "Beteiligung starten" },
-          color: "red",
+          color: "primaryColor",
           onClick: { action: "nextPage" },
         },
       ],
@@ -154,7 +156,7 @@ export const surveyDefinition: TSurvey = {
         },
       ],
       buttons: [
-        { label: { de: "Weiter" }, color: "red", onClick: { action: "nextPage" } },
+        { label: { de: "Weiter" }, color: "primaryColor", onClick: { action: "nextPage" } },
         { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
       ],
     },
@@ -329,7 +331,7 @@ export const surveyDefinition: TSurvey = {
         },
       ],
       buttons: [
-        { label: { de: "Weiter" }, color: "red", onClick: { action: "nextPage" } },
+        { label: { de: "Weiter" }, color: "primaryColor", onClick: { action: "nextPage" } },
         { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
       ],
     },
@@ -505,7 +507,7 @@ export const surveyDefinition: TSurvey = {
         },
       ],
       buttons: [
-        { label: { de: "Absenden" }, color: "red", onClick: { action: "submit" } },
+        { label: { de: "Absenden" }, color: "primaryColor", onClick: { action: "submit" } },
         { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
       ],
     },

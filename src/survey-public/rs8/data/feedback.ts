@@ -56,13 +56,12 @@ export const feedbackDefinition: TFeedback = {
             },
             config: {
               bounds: [9.387312714501604, 48.90390202531458, 9.103949029818097, 48.81629635563661],
-              pinColor: "#E5007D",
             },
           },
         },
       ],
       buttons: [
-        { label: { de: "Weiter" }, color: "pink", onClick: { action: "nextPage" } },
+        { label: { de: "Weiter" }, color: "primaryColor", onClick: { action: "nextPage" } },
         { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
       ],
     },
@@ -112,7 +111,7 @@ export const feedbackDefinition: TFeedback = {
       buttons: [
         {
           label: { de: "Absenden & Beteiligung abschließen" },
-          color: "pink",
+          color: "primaryColor",
           onClick: { action: "submit" },
         },
         {

@@ -51,15 +51,13 @@ export const feedbackDefinition: TFeedback = {
             },
             config: {
               bounds: [8.68495, 50.103212, 8.793869, 50.148444],
-              pinColor: "#D60F3D",
-              // todo frm7
             },
             legend: {
               variant1: {
                 label: {
                   de: "Streckenführung A: Eher an großen Straßen auf Radwegen, getrennt von Autos",
                 },
-                color: "bg-[#006EFF]", // todo frm7
+                color: "bg-[#006EFF]",
                 height: "h-[5px]",
                 shape: "line",
               },
@@ -67,25 +65,25 @@ export const feedbackDefinition: TFeedback = {
                 label: {
                   de: "Streckenführung B: Eher in ruhigen Wohnstraßen, dafür zusammen mit Autos",
                 },
-                color: "bg-[#FFD900]", // todo frm7
+                color: "bg-[#FFD900]",
                 height: "h-[5px]",
                 shape: "line",
               },
               irrelevant: {
                 label: { de: "Bereits beschlossene Strecke (außerhalb von Frankfurt)" },
-                color: "bg-[#000]", // todo frm7
+                color: "bg-[#000]",
                 height: "h-[5px]",
                 shape: "line",
               },
               blockedArea: {
                 label: { de: "Gesperrt aus Gründen des Natur- oder Denkmalschutzes" },
-                color: "opacity-70 stripe-background", // todo frm7
+                color: "opacity-70 stripe-background",
                 height: "h-5",
                 shape: "line",
               },
               pois: {
                 label: { de: "Orte für Bildung, Arbeit, Freizeit und mehr" },
-                color: "bg-[#000]", // todo frm7
+                color: "bg-[#000]",
                 height: "h-4",
                 shape: "dot",
               },
@@ -94,7 +92,7 @@ export const feedbackDefinition: TFeedback = {
         },
       ],
       buttons: [
-        { label: { de: "Weiter" }, color: "red", onClick: { action: "nextPage" } },
+        { label: { de: "Weiter" }, color: "primaryColor", onClick: { action: "nextPage" } },
         { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
       ],
     },
@@ -128,12 +126,12 @@ export const feedbackDefinition: TFeedback = {
       buttons: [
         {
           label: { de: "Absenden & Beteiligung abschließen" },
-          color: "red",
+          color: "primaryColor",
           onClick: { action: "submit" },
         },
         {
           label: { de: "Absenden &  weiteren Hinweis geben" },
-          color: "red",
+          color: "primaryColor",
           onClick: { action: "submit" },
         },
       ],

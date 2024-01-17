@@ -14,9 +14,8 @@ export const SurveyScreenHeader: React.FC<SurveyScreenHeaderProps> = ({ title, d
       </div>
 
       {Boolean(description) && (
-        // todo color handling
         <Markdown
-          className="prose-p:text-base prose-p:sm:text-lg hover:prose-a:text-[#5F071B] prose-p:text-gray-700 prose-a:text-base prose-a:underline prose-a:sm:text-lg prose-a:text-[#D60F3D]"
+          className="prose-p:text-base prose-p:sm:text-lg  prose-p:text-gray-700 prose-a:text-base prose-a:underline prose-a:sm:text-lg prose-a:text-[var(--survey-primary-color)] hover:prose-a:text-[var(--survey-dark-color)]"
           markdown={description}
         />
       )}

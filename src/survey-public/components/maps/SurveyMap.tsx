@@ -24,7 +24,6 @@ export type SurveyMapProps = {
     initialMarker: { lng: number; lat: number }
     config: {
       bounds: LngLatBoundsLike
-      pinColor: string
     }
   }
   setIsMapDirty: any
@@ -134,7 +133,7 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({ projectMap, className, set
             onDrag={onMarkerDrag}
             onDragEnd={onMarkerDragEnd}
           >
-            <SurveyPin color={config.pinColor} />
+            <SurveyPin />
           </Marker>
         )}
 

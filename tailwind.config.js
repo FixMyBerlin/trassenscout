@@ -65,12 +65,7 @@ module.exports = {
         800: "#4D002A",
         900: "#1A000E",
       },
-      // red (Beteiligung)
-      crimson: {
-        100: "#FFCCE8",
-        500: "#D60F3D", // default
-        700: "#5F071B",
-      },
+
       // error
       red: {
         50: "#FFF1F2",

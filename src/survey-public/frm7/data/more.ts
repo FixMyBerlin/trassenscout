@@ -9,7 +9,7 @@ export const moreDefinition: TMore = {
   buttons: [
     {
       label: { de: "Weiter zu den Hinweisen" },
-      color: "red",
+      color: "primaryColor",
       onClick: { action: "nextPage" },
     },
     {

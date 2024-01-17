@@ -10,9 +10,7 @@ export const SurveySpinnerLayover: React.FC = () => {
             className={clsx(
               "h-12 w-12",
               "my-20",
-              // todo frm7
-              // "inline animate-spin fill-pink-500 text-gray-200 dark:text-pink-600",
-              "inline animate-spin fill-crimson-500 text-gray-200 dark:crimson-700",
+              "inline animate-spin fill-[var(--survey-primary-color)] text-gray-200 dark:[var(--survey-dark-color)]",
             )}
             viewBox="0 0 100 101"
             fill="none"

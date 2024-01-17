@@ -31,6 +31,12 @@
 @layer utilities {
 }
 
+:root {
+  --survey-primary-color: #e5007d;
+  --survey-dark-color: #1e293b;
+  --survey-light-color: #ffcce8;
+}
+
 .stripe-background {
   background: repeating-linear-gradient(-45deg, #da1616, #da1616 2px, white 2px, white 4px);
 }

@@ -32,7 +32,6 @@ export const ExternalSurveyResponseFormMap: React.FC<Props> = ({
           },
           config: {
             bounds: mapProps.config!.bounds,
-            pinColor: mapProps.config!.pinColor,
           },
         }}
         setIsMapDirty={setIsMapDirty}
