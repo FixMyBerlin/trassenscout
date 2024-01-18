@@ -70,7 +70,7 @@ const EditSubsubsectionsSpecialWithQuery = () => {
 const EditSubsubsectionSpecialPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title={seoEditTitle("Besonderheit bearbeiten")} />
+      <MetaTags noindex title={seoEditTitle("Besonderheit")} />
       <PageHeader title="Besonderheit bearbeiten" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>

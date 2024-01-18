@@ -30,7 +30,7 @@ const NewSubsubsectionStatusPageWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={seoNewTitle("Status hinzufügen")} />
+      <MetaTags noindex title={seoNewTitle("Status")} />
       <PageHeader title="Status hinzufügen" className="mt-12" />
 
       <SubsubsectionStatusForm

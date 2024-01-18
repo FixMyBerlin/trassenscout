@@ -70,7 +70,7 @@ const EditSubsubsectionsStatusWithQuery = () => {
 const EditSubsubsectionStatusPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title={seoEditTitle("Status bearbeiten")} />
+      <MetaTags noindex title={seoEditTitle("Status")} />
       <PageHeader title="Status bearbeiten" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>

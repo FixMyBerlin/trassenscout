@@ -30,7 +30,7 @@ const NewQualityLevelPageWithQuery = () => {
 
   return (
     <>
-      <MetaTags noindex title={seoNewTitle("Ausbaustandard hinzufügen")} />
+      <MetaTags noindex title={seoNewTitle("Ausbaustandard")} />
       <PageHeader title="Ausbaustandard hinzufügen" className="mt-12" />
 
       <QualityLevelForm
