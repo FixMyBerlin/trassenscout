@@ -24,6 +24,7 @@ import getSubsubsectionTasksWithCount from "src/subsubsectionTask/queries/getSub
 import getSubsubsectionInfrasWithCount from "src/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
 import getSubsubsectionSpecialsWithCount from "src/subsubsectionSpecial/queries/getSubsubsectionSpecialsWithCount"
 import { LabeledFormatNumberFieldCalculateLength } from "src/core/components/forms/LabeledFormatNumberFieldCalculateLength"
+import { AnnualQuarterField } from "./AnnualQuarterField"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -80,6 +81,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           "sf2a",
         )}. Primäre Auszeichnung der Führung. Wird immer in Großschreibung angezeigt aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
       />
+
       <LabeledTextField type="text" name="subTitle" label="Title" optional />
       <GeometryInput />
       {/* @ts-ignore */}
@@ -129,7 +131,6 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label="Länge"
         help="Dieser Wert kann manuell eingetragen oder aus den vorhandenen Geometrien berechnet werden."
       />
-
       <LabeledFormatNumberField
         inlineLeadingAddon="m"
         maxDecimalDigits={3}
@@ -299,6 +300,31 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           type="number"
           name="ownFunds"
           label="Einsatz Eigenmittel"
+          optional
+        />
+      </details>
+      <details>
+        <summary className="mb-2 cursor-pointer">Dauer</summary>
+        <LabeledTextField
+          type="number"
+          step={1}
+          name="planningPeriod"
+          label="Planungszeit (in Monaten)"
+          optional
+          max={100}
+        />
+        <LabeledTextField
+          type="number"
+          step={1}
+          name="constructionPeriod"
+          label="Bauzeit (in Monaten)"
+          optional
+          max={100}
+        />
+        <LabeledTextField
+          type="text"
+          name="quarterPlannedCompletion"
+          label="Jahresquartal geplante Fertigstellung (Format Q-YYYY)"
           optional
         />
       </details>
