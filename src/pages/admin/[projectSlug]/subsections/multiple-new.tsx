@@ -1,6 +1,7 @@
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { Subsection } from "@prisma/client"
+import { length, lineString } from "@turf/turf"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { SuperAdminBox } from "src/core/components/AdminBox"
@@ -31,7 +32,7 @@ const AdminNewSubsections = () => {
     const newSubsections: Array<
       { geometry: [number, number][] } & Pick<
         Subsection,
-        "projectId" | "labelPos" | "start" | "end" | "slug" | "order"
+        "projectId" | "labelPos" | "start" | "end" | "slug" | "order" | "lengthKm"
       >
     > = []
     for (let i = 0; i < Number(values.no); i++) {
@@ -46,9 +47,14 @@ const AdminNewSubsections = () => {
           [5.98865807458, 47.3024876979],
           [15.0169958839, 54.983104153],
         ],
+        lengthKm: length(
+          lineString([
+            [5.98865807458, 47.3024876979],
+            [15.0169958839, 54.983104153],
+          ]),
+        ),
       })
     }
-
     try {
       const subsections = await createSubsectionsMutation(newSubsections)
       await router.push(

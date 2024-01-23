@@ -1,6 +1,8 @@
 import db, { Prisma } from "../index"
 import { subsubsections } from "./subsection_subsubsections"
 
+// lengthKm is NOT calculated here but arbitrary values to satisfy the schema
+
 const seedSubsections = async () => {
   const seedData: Prisma.SubsectionUncheckedCreateInput[] = [
     // NORD:
@@ -31,6 +33,7 @@ const seedSubsections = async () => {
         [13.357157800454104, 52.517204842057566],
         [13.363361116374904, 52.519430986022115],
       ],
+      lengthKm: 56,
       managerId: 1,
       subsubsections: { create: subsubsections },
     },
@@ -52,6 +55,7 @@ const seedSubsections = async () => {
         [13.369246313529857, 52.52252804216468],
         [13.36352017575777, 52.519430986022115],
       ],
+      lengthKm: 12,
       managerId: null,
     },
     {
@@ -69,6 +73,7 @@ const seedSubsections = async () => {
         [13.399308536836458, 52.521366671697535],
         [13.392787102151175, 52.52252804216468],
       ],
+      lengthKm: 12,
       managerId: null,
     },
     {
@@ -86,6 +91,7 @@ const seedSubsections = async () => {
         [13.421258731631525, 52.51333301867112],
         [13.451639073702552, 52.499875779590525],
       ],
+      lengthKm: 12,
       managerId: 1,
     },
     // SÜD:
@@ -104,6 +110,7 @@ const seedSubsections = async () => {
         [13.33697529376991, 52.51115272935999],
         [13.35222310471977, 52.5057391067665],
       ],
+      lengthKm: 12,
       managerId: 2,
     },
     {
@@ -124,6 +131,7 @@ const seedSubsections = async () => {
         [13.379859762067383, 52.49916452570534],
         [13.388754318454033, 52.49800420344744],
       ],
+      lengthKm: 12,
       managerId: 2,
     },
     {
@@ -141,6 +149,7 @@ const seedSubsections = async () => {
         [13.41278184895532, 52.4950788842759],
         [13.41977042897335, 52.49614258494796],
       ],
+      lengthKm: 12,
       managerId: 2,
     },
     {
@@ -157,6 +166,7 @@ const seedSubsections = async () => {
         [13.439306686753582, 52.4902435569129],
         [13.451695533149916, 52.49991367999152],
       ],
+      lengthKm: 3,
       managerId: 2,
     },
     {
@@ -173,6 +183,7 @@ const seedSubsections = async () => {
         [13.439306686753582, 52.4902435569129],
         [13.451695533149916, 52.49991367999152],
       ],
+      lengthKm: 8,
       managerId: 2,
     },
   ]

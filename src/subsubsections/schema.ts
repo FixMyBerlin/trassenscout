@@ -20,7 +20,7 @@ export const SubsubsectionSchema = z
     type: z.nativeEnum(SubsubsectionTypeEnum),
     geometry: PositionSchema.or(PositionArraySchema),
     labelPos: z.nativeEnum(LabelPositionEnum),
-    lengthKm: InputNumberOrNullSchema, // km
+    lengthKm: z.coerce.number({ invalid_type_error: "Pflichtfeld" }), // km
     width: InputNumberOrNullSchema, // m
     costEstimate: InputNumberOrNullSchema, // €
     description: z.string().nullish(),

@@ -210,7 +210,7 @@ model Subsection {
   geometry    Json
   labelPos    LabelPositionEnum @default(top)
   description String?
-  lengthKm    Float?
+  lengthKm    Float // Kilometer
   //
   project     Project           @relation(fields: [projectId], references: [id])
   projectId   Int
@@ -238,7 +238,7 @@ model Subsubsection {
   geometry        Json
   labelPos        LabelPositionEnum     @default(top)
   task            String? // Maßnahmentyp - UNUSED
-  lengthKm        Float? // Kilometer
+  lengthKm        Float // Kilometer
   width           Float? // Meter
   widthExisting   Float? // Meter
   costEstimate    Float? // Euro
