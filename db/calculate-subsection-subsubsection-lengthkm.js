@@ -4,13 +4,15 @@ const { PrismaClient } = require("@prisma/client")
 
 const db = new PrismaClient()
 /*
- * This function is executed when you run `todo`.
+ * This function is executed when you run `calc-lengthkm`.
  */
 const calculateLengthKm = async () => {
   const subsections = await db.subsection.findMany()
   console.log("subsections successfully fetched")
   subsections.forEach(async (subsection) => {
-    const calculatedLengthKm = Number(length(lineString(subsection.geometry)).toFixed(3))
+    const calculatedLengthKm = Number(
+      length(lineString(subsection.geometry), { units: "kilometers" }).toFixed(3),
+    )
     const updatedSubsection = await db.subsection.update({
       where: { id: subsection.id },
       data: { lengthKm: calculatedLengthKm },
@@ -26,7 +28,7 @@ const calculateLengthKm = async () => {
     const calculatedLengthKm =
       subsubsection.type === "AREA"
         ? 0.1 // AREAs are SF, they have no length so they get a default
-        : Number(length(lineString(subsubsection.geometry)).toFixed(3))
+        : Number(length(lineString(subsubsection.geometry), { units: "kilometers" }).toFixed(3))
     const updatedSubsubsection = await db.subsubsection.update({
       where: { id: subsubsection.id },
       data: { lengthKm: calculatedLengthKm },
