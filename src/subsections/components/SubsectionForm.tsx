@@ -1,5 +1,6 @@
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
+import { PriorityEnum } from "@prisma/client"
 import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
 import {
@@ -18,6 +19,8 @@ import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 import { LabeledRadiobuttonGroupLabelPos } from "src/subsubsections/components/LabeledRadiobuttonGroupLabelPos"
 import { UserSelectOptions, getUserSelectOptions } from "src/users/utils"
 import { z } from "zod"
+import { getPriorityTranslateion } from "./utils/getPriorityTranslation"
+import getNetworkHierarchysWithCount from "src/networkHierarchy/queries/getNetworkHierarchysWithCount"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props<S extends z.ZodType<any, any>> = FormProps<S> & {
@@ -32,12 +35,22 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
 }: Props<S>) {
   const { projectSlug } = useSlugs()
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
+  const [{ networkHierarchys }] = useQuery(getNetworkHierarchysWithCount, { projectSlug })
   const operatorOptions: [number | string, string][] = [
     ["", "Baulastträger offen"],
     ...operators.map((o) => {
       return [
         o.id,
         `${o.title} – ${shortTitle(o.slug)} (bisher ${o.subsectionCount} Planungsabschnitte)`,
+      ] as [number, string]
+    }),
+  ]
+  const networkOptions: [number | string, string][] = [
+    ["", "Netzwerkhierarchie offen"],
+    ...networkHierarchys.map((nh) => {
+      return [
+        nh.id,
+        `${nh.title} – ${shortTitle(nh.slug)} (bisher ${nh.subsectionCount} Planungsabschnitte)`,
       ] as [number, string]
     }),
   ]
@@ -111,6 +124,19 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
         optional
         options={getUserSelectOptions(users)}
       />
+
+      <div className="flex items-end gap-5">
+        <LabeledSelect
+          name="networkHierarchyId"
+          label="Netzhierarchie"
+          optional
+          options={networkOptions}
+          outerProps={{ className: "grow" }}
+        />
+        <Link href={Routes.NetworkHierarchysPage({ projectSlug: projectSlug! })} className="py-2">
+          Netzwerkhierarchiestufen verwalten…
+        </Link>
+      </div>
     </Form>
   )
 }

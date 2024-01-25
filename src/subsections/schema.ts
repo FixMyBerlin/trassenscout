@@ -16,6 +16,7 @@ export const SubsectionSchema = z.object({
   projectId: z.coerce.number(),
   managerId: InputNumberOrNullSchema,
   operatorId: InputNumberOrNullSchema,
+  networkHierarchyId: InputNumberOrNullSchema,
 })
 
 export const SubsectionsSchema = z.array(
