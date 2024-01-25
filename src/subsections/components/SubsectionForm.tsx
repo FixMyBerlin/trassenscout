@@ -55,6 +55,10 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
     }),
   ]
 
+  const prioritySelectOptions = Object.entries(PriorityEnum).map(([priority, value]) => {
+    return [priority, getPriorityTranslateion(value)] as [string, string]
+  })
+
   return (
     <Form<S> {...props}>
       <LabeledTextField
@@ -124,7 +128,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
         optional
         options={getUserSelectOptions(users)}
       />
-
+      <LabeledSelect name="priority" label="Priorität" optional options={prioritySelectOptions} />
       <div className="flex items-end gap-5">
         <LabeledSelect
           name="networkHierarchyId"

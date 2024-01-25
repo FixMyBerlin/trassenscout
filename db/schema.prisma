@@ -212,6 +212,7 @@ model Subsection {
   labelPos           LabelPositionEnum @default(top)
   description        String?
   lengthKm           Float // Kilometer
+  priority           PriorityEnum      @default(OPEN) // Priorität
   //
   project            Project           @relation(fields: [projectId], references: [id])
   projectId          Int
@@ -228,6 +229,14 @@ model Subsection {
 
   @@unique([projectId, slug])
   @@unique([projectId, order])
+}
+
+enum PriorityEnum {
+  OPEN
+  TOP //sehr hoch, hoch, mittel, niedrig
+  HIGH
+  MEDIUM
+  LOW
 }
 
 model NetworkHierarchy {

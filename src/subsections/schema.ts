@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { LabelPositionEnum } from "@prisma/client"
+import { LabelPositionEnum, PriorityEnum } from "@prisma/client"
 
 import { Prettify } from "src/core/types"
 import { SlugSchema, InputNumberOrNullSchema } from "src/core/utils"
