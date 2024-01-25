@@ -16,10 +16,10 @@ export const feedbackDefinition: TFeedback = {
           component: "singleResponse",
           props: {
             responses: [
-              { id: 1, text: { de: "Nutzung" } },
-              { id: 2, text: { de: "Streckenführung" } },
-              { id: 3, text: { de: "Zubringer" } },
-              { id: 4, text: { de: "Mögliche Konflikte" } },
+              { id: 1, text: { de: "Mögliche Konflikte" } },
+              { id: 2, text: { de: "Nutzung" } },
+              { id: 3, text: { de: "Streckenführung" } },
+              { id: 4, text: { de: "Zubringer" } },
               { id: 5, text: { de: "Umwelt- und Naturschutz" } },
               { id: 6, text: { de: "Sonstiges" } },
             ],
