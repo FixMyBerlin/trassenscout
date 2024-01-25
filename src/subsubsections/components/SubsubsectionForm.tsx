@@ -322,9 +322,10 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           max={100}
         />
         <LabeledTextField
-          type="text"
-          name="quarterPlannedCompletion"
-          label="Jahresquartal geplante Fertigstellung (Format Q-YYYY)"
+          type="date"
+          name="estimatedCompletionDate"
+          label="Datum geplante Fertigstellung"
+          placeholder=""
           optional
         />
       </details>

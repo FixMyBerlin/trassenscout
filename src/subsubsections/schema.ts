@@ -50,7 +50,15 @@ export const SubsubsectionSchema = z
     ]),
     planningPeriod: InputNumberOrNullSchema,
     constructionPeriod: InputNumberOrNullSchema,
-    quarterPlannedCompletion: z.string().nullish(),
+    estimatedCompletionDate: z.coerce.date({
+      // `coerce` makes it that we need to work around a nontranslatable error
+      // Thanks to https://github.com/colinhacks/zod/discussions/1851#discussioncomment-4649675
+      errorMap: ({ code }, { defaultError }) => {
+        if (code == "invalid_date")
+          return { message: "Pflichfeld. Das Datum ist nicht richtig formatiert." }
+        return { message: defaultError }
+      },
+    }),
     planningCosts: InputNumberOrNullSchema,
     deliveryCosts: InputNumberOrNullSchema,
     constructionCosts: InputNumberOrNullSchema,

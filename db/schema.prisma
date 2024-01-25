@@ -241,7 +241,6 @@ model Subsubsection {
   lengthKm        Float // Kilometer
   width           Float? // Meter
   widthExisting   Float? // Meter
-  costEstimate    Float? // Euro
   description     String? // Anmerkungen
   mapillaryKey    String?
   isExistingInfra Boolean?              @default(false) // Bestandsführung
@@ -252,7 +251,10 @@ model Subsubsection {
 
   planningPeriod                Float? //  Planungsdauer
   constructionPeriod            Float? // Baudauer
-  quarterPlannedCompletion      String? // Jahresquartal der geplanten Fertigstellung als string Form "1-2023"
+  estimatedCompletionDate       DateTime? // Jahresquartal der geplanten Fertigstellung als string Form "1-2023"
+  //
+  costEstimate                  Float? // Euro
+  //
   planningCosts                 Float? //  Planungskosten
   deliveryCosts                 Float? //  Lieferkosten
   constructionCosts             Float? //  Baukosten
