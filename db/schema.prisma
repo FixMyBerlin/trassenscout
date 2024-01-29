@@ -288,7 +288,9 @@ model Subsubsection {
   landAcquisitionCosts          Float? //  Grunderwerbskosten
   expensesOfficialOrders        Float? //  Ausgaben aufgrund behördlicher Anordnungen
   expensesTechnicalVerification Float? //  Ausgaben für den fachtechnischen Nachweis usw.
+  //
   nonEligibleExpenses           Float? //  Nicht zuwendungsfähige Ausgaben
+  //
   revenuesEconomicIncome        Float? //  Erlöse und wirtschafltiche Einnahmen
   contributionsThirdParties     Float? //  Beiträge Dritter
   grantsOtherFunding            Float? //  Zuwendungen aus anderen Förderprogrammen
