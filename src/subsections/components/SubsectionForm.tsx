@@ -19,7 +19,7 @@ import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 import { LabeledRadiobuttonGroupLabelPos } from "src/subsubsections/components/LabeledRadiobuttonGroupLabelPos"
 import { UserSelectOptions, getUserSelectOptions } from "src/users/utils"
 import { z } from "zod"
-import { getPriorityTranslateion } from "./utils/getPriorityTranslation"
+import { getPriorityTranslation } from "./utils/getPriorityTranslation"
 import getNetworkHierarchysWithCount from "src/networkHierarchy/queries/getNetworkHierarchysWithCount"
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -56,7 +56,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
   ]
 
   const prioritySelectOptions = Object.entries(PriorityEnum).map(([priority, value]) => {
-    return [priority, getPriorityTranslateion(value)] as [string, string]
+    return [priority, getPriorityTranslation(value)] as [string, string]
   })
 
   return (

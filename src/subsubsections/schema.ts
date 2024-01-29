@@ -3,6 +3,7 @@ import { Prettify } from "src/core/types"
 import { SlugSchema, InputNumberOrNullSchema } from "src/core/utils"
 import { z } from "zod"
 import m2mFields from "./m2mFields"
+import { SubsubsectionWithPosition } from "./queries/getSubsubsection"
 
 const PositionSchema = z.tuple([z.number(), z.number()]) // Position
 const PositionArraySchema = z.array(z.tuple([z.number(), z.number()])) // Position[]
@@ -80,6 +81,11 @@ export const SubsubsectionSchema = z
       ),
     ),
   )
+
+export type SubsubsectionWithPositionWithSpecialFeatures = Omit<
+  SubsubsectionWithPosition,
+  "manager" | "qualityLevel"
+> & { specialFeatures: { id: number; title: string }[] }
 
 export type TSubsubsectionSchema = Prettify<z.infer<typeof SubsubsectionSchema>>
 

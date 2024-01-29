@@ -1,6 +1,6 @@
 import { PriorityEnum } from "@prisma/client"
 
-export const getPriorityTranslateion = (priority: PriorityEnum) => {
+export const getPriorityTranslation = (priority: PriorityEnum) => {
   switch (priority) {
     case PriorityEnum.TOP:
       return "Sehr hoch"
