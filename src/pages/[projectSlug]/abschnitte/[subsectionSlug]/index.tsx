@@ -71,7 +71,7 @@ export const SubsectionDashboardWithQuery = () => {
         }
         description={
           <>
-            <details open>
+            <details>
               <summary className="mt-6 cursor-pointer">Info & Auswertung</summary>
               <SubsubsectionInfoPanel />
             </details>

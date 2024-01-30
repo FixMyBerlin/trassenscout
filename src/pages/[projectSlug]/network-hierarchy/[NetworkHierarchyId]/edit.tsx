@@ -9,12 +9,12 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { seoEditTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { FORM_ERROR, NetworkHierarchyForm } from "src/networkHierarchy/components/NetworkHierarchy"
 import updateNetworkHierarchy from "src/networkHierarchy/mutations/updateNetworkHierarchy"
 import getNetworkHierarchy from "src/networkHierarchy/queries/getNetworkHierarchy"
 import { NetworkHierarchySchema } from "src/networkHierarchy/schema"
-import { FORM_ERROR, QualityLevelForm } from "src/qualityLevels/components/QualityLevelForm"
 
-const EditQualityLevelWithQuery = () => {
+const EditNetworkHierarchyWithQuery = () => {
   const router = useRouter()
   const networkHierarchyId = useParam("network-hierarchy", "number")
   const projectSlug = useParam("projectSlug", "string")
@@ -45,7 +45,7 @@ const EditQualityLevelWithQuery = () => {
 
   return (
     <>
-      <QualityLevelForm
+      <NetworkHierarchyForm
         className="grow"
         submitText="Speichern"
         schema={NetworkHierarchySchema}
@@ -64,19 +64,19 @@ const EditQualityLevelWithQuery = () => {
   )
 }
 
-const EditQualityLevelPage: BlitzPage = () => {
+const EditNetworkHierarchyPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <MetaTags noindex title={seoEditTitle("Netzhierarchie")} />
       <PageHeader title="Netzhierarchie bearbeiten" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
-        <EditQualityLevelWithQuery />
+        <EditNetworkHierarchyWithQuery />
       </Suspense>
     </LayoutRs>
   )
 }
 
-EditQualityLevelPage.authenticate = true
+EditNetworkHierarchyPage.authenticate = true
 
-export default EditQualityLevelPage
+export default EditNetworkHierarchyPage
