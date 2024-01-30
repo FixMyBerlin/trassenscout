@@ -12,16 +12,16 @@ import { Spinner } from "src/core/components/Spinner"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import deleteQualityLevel from "src/qualityLevels/mutations/deleteQualityLevel"
-import getQualityLevelsWithCount from "src/qualityLevels/queries/getQualityLevelsWithCount"
+import deleteNetworkHierarchy from "src/networkHierarchy/mutations/deleteNetworkHierarchy"
+import getNetworkHierarchyWithCount from "src/networkHierarchy/queries/getNetworkHierarchysWithCount"
 
 const ITEMS_PER_PAGE = 100
 
-export const QualityLevelsWithData = () => {
+export const NetworkHierarchysWithData = () => {
   const projectSlug = useParam("projectSlug", "string")
   const router = useRouter()
   const page = Number(router.query.page) || 0
-  const [{ qualityLevels, hasMore }] = usePaginatedQuery(getQualityLevelsWithCount, {
+  const [{ networkHierarchys, hasMore }] = usePaginatedQuery(getNetworkHierarchyWithCount, {
     projectSlug: projectSlug!,
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
@@ -30,11 +30,11 @@ export const QualityLevelsWithData = () => {
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
-  const [deleteQualityLevelMutation] = useMutation(deleteQualityLevel)
-  const handleDelete = async (qualityLevelId: number) => {
-    if (window.confirm(`Den Eintrag mit ID ${qualityLevelId} unwiderruflich löschen?`)) {
-      await deleteQualityLevelMutation({ id: qualityLevelId })
-      await router.push(Routes.QualityLevelsPage({ projectSlug: projectSlug! }))
+  const [deleteNetworkHierarchyMutation] = useMutation(deleteNetworkHierarchy)
+  const handleDelete = async (networkHierarchyId: number) => {
+    if (window.confirm(`Den Eintrag mit ID ${networkHierarchyId} unwiderruflich löschen?`)) {
+      await deleteNetworkHierarchyMutation({ id: networkHierarchyId })
+      await router.push(Routes.NetworkHierarchysPage({ projectSlug: projectSlug! }))
     }
   }
 
@@ -65,32 +65,32 @@ export const QualityLevelsWithData = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
-            {qualityLevels.map((qualityLevel) => {
+            {networkHierarchys.map((networkHierarchy) => {
               return (
-                <tr key={qualityLevel.id}>
+                <tr key={networkHierarchy.id}>
                   <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
-                    <strong className="font-semibold">{shortTitle(qualityLevel.slug)}</strong>
+                    <strong className="font-semibold">{shortTitle(networkHierarchy.slug)}</strong>
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <strong className="font-semibold">{qualityLevel.title}</strong>
+                    <strong className="font-semibold">{networkHierarchy.title}</strong>
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {qualityLevel.subsubsectionCount} Führungen
+                    {networkHierarchy.subsectionCount} Führungen
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
                     <ButtonWrapper className="justify-end">
                       <Link
                         icon="edit"
-                        href={Routes.QualityLevelsPage({
+                        href={Routes.NetworkHierarchysPage({
                           projectSlug: projectSlug!,
-                          qualityLevelId: qualityLevel.id,
+                          networkHierarchyId: networkHierarchy.id,
                         })}
                       >
                         Bearbeiten
                       </Link>
                       <button
                         type="button"
-                        onClick={() => handleDelete(qualityLevel.id)}
+                        onClick={() => handleDelete(networkHierarchy.id)}
                         className={clsx(
                           linkStyles,
                           "inline-flex items-center justify-center gap-1",
@@ -111,7 +111,7 @@ export const QualityLevelsWithData = () => {
         button="blue"
         icon="plus"
         className="mt-4"
-        href={Routes.NewQualityLevelPage({ projectSlug: projectSlug! })}
+        href={Routes.NewNetworkHierarchyPage({ projectSlug: projectSlug! })}
       >
         Neuer Ausbaustandard
       </Link>
@@ -123,24 +123,24 @@ export const QualityLevelsWithData = () => {
         handleNext={goToNextPage}
       />
 
-      <SuperAdminLogData data={{ qualityLevels }} />
+      <SuperAdminLogData data={{ networkHierarchys }} />
     </>
   )
 }
 
-const QualityLevelsPage: BlitzPage = () => {
+const NetworkHierarchysPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <MetaTags noindex title="Ausbaustandards" />
       <PageHeader title="Ausbaustandards" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
-        <QualityLevelsWithData />
+        <NetworkHierarchysWithData />
       </Suspense>
     </LayoutRs>
   )
 }
 
-QualityLevelsPage.authenticate = true
+NetworkHierarchysPage.authenticate = true
 
-export default QualityLevelsPage
+export default NetworkHierarchysPage

@@ -3,6 +3,7 @@ import { Prettify } from "src/core/types"
 import { SlugSchema, InputNumberOrNullSchema } from "src/core/utils"
 import { z } from "zod"
 import m2mFields from "./m2mFields"
+import { SubsubsectionWithPosition } from "./queries/getSubsubsection"
 
 const PositionSchema = z.tuple([z.number(), z.number()]) // Position
 const PositionArraySchema = z.array(z.tuple([z.number(), z.number()])) // Position[]
@@ -20,7 +21,7 @@ export const SubsubsectionSchema = z
     type: z.nativeEnum(SubsubsectionTypeEnum),
     geometry: PositionSchema.or(PositionArraySchema),
     labelPos: z.nativeEnum(LabelPositionEnum),
-    lengthKm: InputNumberOrNullSchema, // km
+    lengthKm: z.coerce.number({ invalid_type_error: "Pflichtfeld" }), // km
     width: InputNumberOrNullSchema, // m
     costEstimate: InputNumberOrNullSchema, // €
     description: z.string().nullish(),
@@ -48,6 +49,17 @@ export const SubsubsectionSchema = z
         .nullish(),
       z.literal(""),
     ]),
+    planningPeriod: InputNumberOrNullSchema,
+    constructionPeriod: InputNumberOrNullSchema,
+    estimatedCompletionDate: z.coerce.date({
+      // `coerce` makes it that we need to work around a nontranslatable error
+      // Thanks to https://github.com/colinhacks/zod/discussions/1851#discussioncomment-4649675
+      errorMap: ({ code }, { defaultError }) => {
+        if (code == "invalid_date")
+          return { message: "Pflichfeld. Das Datum ist nicht richtig formatiert." }
+        return { message: defaultError }
+      },
+    }),
     planningCosts: InputNumberOrNullSchema,
     deliveryCosts: InputNumberOrNullSchema,
     constructionCosts: InputNumberOrNullSchema,
@@ -69,6 +81,11 @@ export const SubsubsectionSchema = z
       ),
     ),
   )
+
+export type SubsubsectionWithPositionWithSpecialFeatures = Omit<
+  SubsubsectionWithPosition,
+  "manager" | "qualityLevel"
+> & { specialFeatures: { id: number; title: string }[] }
 
 export type TSubsubsectionSchema = Prettify<z.infer<typeof SubsubsectionSchema>>
 

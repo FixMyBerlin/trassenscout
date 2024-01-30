@@ -9,21 +9,21 @@ import {
   LabeledTextareaField,
   LabeledTextField,
 } from "src/core/components/forms"
-import { LabeledRadiobuttonGroupLabelPos } from "src/subsubsections/components/LabeledRadiobuttonGroupLabelPos"
 import { LabeledFormatNumberField } from "src/core/components/forms/LabeledFormatNumberField"
+import { LabeledFormatNumberFieldCalculateLength } from "src/core/components/forms/LabeledFormatNumberFieldCalculateLength"
 import { Link } from "src/core/components/links"
 import { quote, shortTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import getProjectUsers from "src/memberships/queries/getProjectUsers"
 import getQualityLevelsWithCount from "src/qualityLevels/queries/getQualityLevelsWithCount"
+import getSubsubsectionInfrasWithCount from "src/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
+import { LabeledRadiobuttonGroupLabelPos } from "src/subsubsections/components/LabeledRadiobuttonGroupLabelPos"
+import getSubsubsectionSpecialsWithCount from "src/subsubsectionSpecial/queries/getSubsubsectionSpecialsWithCount"
+import getSubsubsectionStatussWithCount from "src/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
+import getSubsubsectionTasksWithCount from "src/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
 import { getUserSelectOptions } from "src/users/utils"
 import { z } from "zod"
 import { GeometryInput } from "./GeometryInput/GeometryInput"
-import getSubsubsectionStatussWithCount from "src/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
-import getSubsubsectionTasksWithCount from "src/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
-import getSubsubsectionInfrasWithCount from "src/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
-import getSubsubsectionSpecialsWithCount from "src/subsubsectionSpecial/queries/getSubsubsectionSpecialsWithCount"
-import { LabeledFormatNumberFieldCalculateLength } from "src/core/components/forms/LabeledFormatNumberFieldCalculateLength"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -80,6 +80,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           "sf2a",
         )}. Primäre Auszeichnung der Führung. Wird immer in Großschreibung angezeigt aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
       />
+
       <LabeledTextField type="text" name="subTitle" label="Title" optional />
       <GeometryInput />
       {/* @ts-ignore */}
@@ -129,7 +130,6 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label="Länge"
         help="Dieser Wert kann manuell eingetragen oder aus den vorhandenen Geometrien berechnet werden."
       />
-
       <LabeledFormatNumberField
         inlineLeadingAddon="m"
         maxDecimalDigits={3}
@@ -299,6 +299,32 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           type="number"
           name="ownFunds"
           label="Einsatz Eigenmittel"
+          optional
+        />
+      </details>
+      <details>
+        <summary className="mb-2 cursor-pointer">Dauer</summary>
+        <LabeledTextField
+          type="number"
+          step={1}
+          name="planningPeriod"
+          label="Planungszeit (in Monaten)"
+          optional
+          max={100}
+        />
+        <LabeledTextField
+          type="number"
+          step={1}
+          name="constructionPeriod"
+          label="Bauzeit (in Monaten)"
+          optional
+          max={100}
+        />
+        <LabeledTextField
+          type="date"
+          name="estimatedCompletionDate"
+          label="Datum geplante Fertigstellung"
+          placeholder=""
           optional
         />
       </details>

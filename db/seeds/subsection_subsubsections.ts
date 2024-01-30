@@ -1,5 +1,7 @@
 import { Prisma } from "@prisma/client"
 
+// lengthKm is NOT calculated here but arbitrary values to satisfy the schema
+
 export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "subsectionId">[] = [
   {
     slug: "rf1",
@@ -110,7 +112,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     geometry: [13.329078172644188, 52.5225862734311],
     labelPos: "top",
     task: "Fahrbahnmarkierung mit Querung",
-    lengthKm: null,
+    lengthKm: 3,
     width: 2,
     costEstimate: 30_000,
     qualityLevelId: 4,
