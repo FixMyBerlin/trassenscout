@@ -34,7 +34,7 @@ export const SubsubsectionInfoPanel: React.FC = () => {
         </div>
         <p>Reihenfolge: {subsection.order}</p>
       </div>
-      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 divide-x text-sm space-y-2">
+      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 divide-x text-sm">
         <SubsubsectionInfoPanelCellContainer
           icon={<CheckCircleIcon className="w-4 h-4" />}
           title="Führungen"
@@ -48,7 +48,7 @@ export const SubsubsectionInfoPanel: React.FC = () => {
         </SubsubsectionInfoPanelCellContainer>
         <SubsubsectionInfoPanelCellContainer
           icon={<ArrowUturnRightIcon className="w-4 h-4" />}
-          title="Führungen Details"
+          title="Standards"
         >
           <Suspense fallback={<Spinner />}>
             <SubsubsectionInfoPanelCellSubsectionsDetails

@@ -51,15 +51,20 @@ export const SubsubsectionSchema = z
     ]),
     planningPeriod: InputNumberOrNullSchema,
     constructionPeriod: InputNumberOrNullSchema,
-    estimatedCompletionDate: z.coerce.date({
-      // `coerce` makes it that we need to work around a nontranslatable error
-      // Thanks to https://github.com/colinhacks/zod/discussions/1851#discussioncomment-4649675
-      errorMap: ({ code }, { defaultError }) => {
-        if (code == "invalid_date")
-          return { message: "Pflichfeld. Das Datum ist nicht richtig formatiert." }
-        return { message: defaultError }
-      },
-    }),
+    estimatedCompletionDate: z.union([
+      z.coerce
+        .date({
+          // `coerce` makes it that we need to work around a nontranslatable error
+          // Thanks to https://github.com/colinhacks/zod/discussions/1851#discussioncomment-4649675
+          errorMap: ({ code }, { defaultError }) => {
+            if (code == "invalid_date")
+              return { message: "Das Datum ist nicht richtig formatiert." }
+            return { message: defaultError }
+          },
+        })
+        .nullish(),
+      z.literal(""),
+    ]),
     planningCosts: InputNumberOrNullSchema,
     deliveryCosts: InputNumberOrNullSchema,
     constructionCosts: InputNumberOrNullSchema,
@@ -94,12 +99,17 @@ export const SubsubsectionTrafficLoadDateSchema = z.object({
     z.string().min(8, { message: "Das Datum ist nicht richtig formatiert." }),
     z.literal(""),
   ]),
+  estimatedCompletionDate: z.union([
+    z.string().min(8, { message: "Das Datum ist nicht richtig formatiert." }),
+    z.literal(""),
+  ]),
 })
 
 // @ts-ignore
-let FormSchema = SubsubsectionSchema.omit({ trafficLoadDate: true }).merge(
-  SubsubsectionTrafficLoadDateSchema,
-)
+let FormSchema = SubsubsectionSchema.omit({
+  trafficLoadDate: true,
+  estimatedCompletionDate: true,
+}).merge(SubsubsectionTrafficLoadDateSchema)
 
 m2mFields.forEach((fieldName) => {
   // @ts-ignore

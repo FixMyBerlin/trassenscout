@@ -26,15 +26,18 @@ export const SubsubsectionInfoPanelCellSubsection: React.FC<Props> = ({
       </div>
       <div>
         <p className="flex gap-2">
-          <ExclamationTriangleIcon className="h-4" />
-          <span>Herausforderungen: {subsection.networkHierarchyId}</span>
+          <ExclamationTriangleIcon className="h-4 flex-shrink-0" />
+          <span className="">Herausforderungen: {subsection.networkHierarchyId}</span>
         </p>
         <div className="text-red-500">
-          {subsubsectionSpecialsWithCount.map((s) => (
-            <span key={s.id}>
-              {s.count} x {s.title}{" "}
-            </span>
-          ))}
+          {subsubsectionSpecialsWithCount.map((s) => {
+            if (s.count === 0) return
+            return (
+              <span key={s.id}>
+                {s.count} x {s.title}{" "}
+              </span>
+            )
+          })}
         </div>
       </div>
     </>

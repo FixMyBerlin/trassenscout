@@ -1,5 +1,6 @@
 import { useQuery } from "@blitzjs/rpc"
 import getStatsInfopanelSubsectionsDetails from "../queries/getStatsInfopanelSubsectionsDetails"
+import { formatGerKm, formatGerPercentage } from "./utils/formatNumericInfo"
 
 type Props = {
   subsectionSlug: string
@@ -18,8 +19,15 @@ export const SubsubsectionInfoPanelCellSubsectionsDetails: React.FC<Props> = ({
   )
   return (
     <>
-      <p className="font-bold">Gesamtlänge Führungen {subsection.sumLengthKmSubsubsections} km</p>
-      <p className="">mit eingetragenem Standard {sumLengthKmSubsubsectionsWithStandard} km</p>
+      <p className="text-red-500">
+        {formatGerKm(sumLengthKmSubsubsectionsWithStandard)} von{" "}
+        {formatGerKm(subsection.sumLengthKmSubsubsections)} (
+        {formatGerPercentage(
+          sumLengthKmSubsubsectionsWithStandard / (subsection.sumLengthKmSubsubsections / 100),
+        )}
+        ) sind definiert
+      </p>
+
       <div>
         <p className="font-bold">Standards</p>
         <p>von allen Führungen mit Ausbaustandard sind:</p>
@@ -29,8 +37,8 @@ export const SubsubsectionInfoPanelCellSubsectionsDetails: React.FC<Props> = ({
           {qualityLevelsWithCount.map((ql) => (
             <li className="space-x-2" key={ql.slug}>
               <span className="uppercase font-bold">{ql.slug}: </span>
-              <span>{ql.sumOfLengthKmPercentage} %</span>
-              <span>{ql.sumOfLengthKm} km</span>
+              <span>{formatGerPercentage(ql.sumOfLengthKmPercentage)}</span>
+              <span>{formatGerKm(ql.sumOfLengthKm)}</span>
             </li>
           ))}
         </ul>

@@ -320,11 +320,11 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           optional
           max={100}
         />
+
         <LabeledTextField
           type="date"
           name="estimatedCompletionDate"
           label="Datum geplante Fertigstellung"
-          placeholder=""
           optional
         />
       </details>

@@ -7,7 +7,7 @@ import { GetSubsectionSchema, SubsectionWithPosition } from "./getSubsection"
 
 type SubsectionCategory = {
   Anzahl: number
-  "Summe km": number
+  Summe: number
 }
 
 type SububsectionsCategoryCount = {
@@ -56,7 +56,7 @@ export default resolver.pipe(
         Anzahl: newSubsection?.subsubsections.filter(
           (s) => s.type === "ROUTE" && !s.isExistingInfra,
         ).length,
-        "Summe km": Number(
+        Summe: Number(
           newSubsection?.subsubsections
             .filter((s) => s.type === "ROUTE" && !s.isExistingInfra)
             .reduce((acc, s) => acc + (s.lengthKm ?? 0), 0)
@@ -66,7 +66,7 @@ export default resolver.pipe(
       "RF (Bestand)": {
         Anzahl: newSubsection?.subsubsections.filter((s) => s.type === "ROUTE" && s.isExistingInfra)
           .length,
-        "Summe km": Number(
+        Summe: Number(
           newSubsection?.subsubsections
             .filter((s) => s.type === "ROUTE" && s.isExistingInfra)
             .reduce((acc, s) => acc + (s.lengthKm ?? 0), 0)
@@ -75,7 +75,7 @@ export default resolver.pipe(
       },
       SF: {
         Anzahl: newSubsection?.subsubsections.filter((s) => s.type === "AREA").length,
-        "Summe km": Number(
+        Summe: Number(
           newSubsection?.subsubsections
             .filter((s) => s.type === "AREA")
             .reduce((acc, s) => acc + (s.lengthKm ?? 0), 0)
@@ -83,13 +83,13 @@ export default resolver.pipe(
         ),
       },
     }
-    // @ts-expect-error // todo
+
     return {
       subsection: {
         ...newSubsection,
-        sumLengthKmSubsubsections: newSubsection?.subsubsections
-          .reduce((acc, s) => acc + (s.lengthKm ?? 0), 0)
-          .toFixed(3),
+        sumLengthKmSubsubsections: Number(
+          newSubsection?.subsubsections.reduce((acc, s) => acc + (s.lengthKm ?? 0), 0).toFixed(3),
+        ),
       },
       subsubsectionsCategoryCount,
     } as SubsectionWithSubsubsectionsWithSpecialFeaturesCount

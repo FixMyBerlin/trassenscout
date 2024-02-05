@@ -8,7 +8,7 @@ import { GetSubsectionSchema } from "./getSubsection"
 type CostStructureCategory = {
   numberSubsubs: number | undefined
   costs?: number
-  sumLengthKm: number | undefined
+  sumLengthKm: number
 }
 
 type CostStructure = {
