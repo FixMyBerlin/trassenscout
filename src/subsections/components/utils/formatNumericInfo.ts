@@ -19,5 +19,5 @@ export const formatGerCurrency = (n: number) => {
     return "0 €"
   }
 
-  return n.toFixed(0) + " €"
+  return n.toLocaleString("de-DE") + " €"
 }
