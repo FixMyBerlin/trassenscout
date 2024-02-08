@@ -7,17 +7,19 @@ import { length, lineString } from "@turf/turf"
 export const LabeledFormatNumberFieldCalculateLength: React.FC<LabeledFormatNumberFieldProps> = (
   props,
 ) => {
-  const { setValue, getValues } = useFormContext()
+  const { watch, setValue, getValues } = useFormContext()
+
+  const isGeometry = watch("geometry")
 
   function isPoint(geometry: any[]) {
     return (
-      geometry.length === 2 && typeof geometry[0] === "number" && typeof geometry[1] === "number"
+      geometry?.length === 2 && typeof geometry[0] === "number" && typeof geometry[1] === "number"
     )
   }
 
   const calculateLength = () => {
     const geometry = getValues("geometry")
-    const calculatedLength = length(lineString(geometry))
+    const calculatedLength = Number(length(lineString(geometry)).toFixed(3))
     setValue(props.name, calculatedLength)
   }
 
@@ -48,7 +50,7 @@ export const LabeledFormatNumberFieldCalculateLength: React.FC<LabeledFormatNumb
 
       <button
         type="button"
-        disabled={isPoint(!getValues("geometry") || getValues("geometry")) || props.readOnly}
+        disabled={!isGeometry || isPoint(getValues("geometry")) || props.readOnly}
         onClick={calculateLength}
         className={clsx(blueButtonStyles, "!py-1 !px-2")}
       >

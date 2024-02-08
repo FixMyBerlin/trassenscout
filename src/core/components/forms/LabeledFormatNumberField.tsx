@@ -99,6 +99,7 @@ export const LabeledFormatNumberField = forwardRef<HTMLInputElement, LabeledForm
             </div>
           )}
           <NumberFormatBase
+            readOnly={readOnly}
             name={name}
             value={value}
             getInputRef={ref}

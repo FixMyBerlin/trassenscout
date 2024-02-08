@@ -22,7 +22,7 @@ export const SurveyMapLegend: React.FC<SurveyMapProps> = ({ legend }) => {
           <div className="h-6 flex flex-col justify-center">
             <LegendItemShape legendItem={value} />
           </div>
-          <div className="text-small">{value.label.de}</div>
+          <div className="text-sm">{value.label.de}</div>
         </div>
       ))}
     </div>

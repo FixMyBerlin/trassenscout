@@ -1,11 +1,6 @@
 import clsx from "clsx"
 import { ReactNode } from "react"
-import {
-  surveyPinkButtonStyles,
-  surveyRedButtonStyles,
-  surveyWhiteButtonStyles,
-} from "../links/styles"
-import { pinkButtonStyles } from "src/core/components/links"
+import { surveyPrimaryColorButtonStyles, surveyWhiteButtonStyles } from "../links/styles"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
@@ -20,19 +15,15 @@ export const SurveyButton: React.FC<Props> = ({ disabled, color, children, ...pr
     case "white":
       colorClass = surveyWhiteButtonStyles
       break
-    case "pink":
-      colorClass = surveyPinkButtonStyles
-      break
-    case "red":
-      colorClass = surveyRedButtonStyles
+    case "primaryColor":
+      colorClass = surveyPrimaryColorButtonStyles
       break
     default:
-      colorClass = pinkButtonStyles
+      colorClass = surveyPrimaryColorButtonStyles
   }
-  const buttonStyles = clsx("px-12", colorClass)
 
   return (
-    <button disabled={disabled} {...props} className={buttonStyles}>
+    <button disabled={disabled} {...props} className={clsx("px-12", colorClass)}>
       {children}
     </button>
   )

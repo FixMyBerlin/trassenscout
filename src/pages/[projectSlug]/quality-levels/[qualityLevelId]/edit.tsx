@@ -67,7 +67,7 @@ const EditQualityLevelWithQuery = () => {
 const EditQualityLevelPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title={seoEditTitle("Ausbaustandard bearbeiten")} />
+      <MetaTags noindex title={seoEditTitle("Ausbaustandard")} />
       <PageHeader title="Ausbaustandard bearbeiten" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>

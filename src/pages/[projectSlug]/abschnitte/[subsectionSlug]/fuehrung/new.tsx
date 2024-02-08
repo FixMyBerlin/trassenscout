@@ -37,6 +37,10 @@ const NewSubsubsection = () => {
         subsectionId: subsection!.id,
         // @ts-ignore
         trafficLoadDate: values.trafficLoadDate === "" ? null : new Date(values.trafficLoadDate),
+        // @ts-ignore
+        estimatedCompletionDate:
+          // @ts-ignore
+          values.estimatedCompletionDate === "" ? null : new Date(values.estimatedCompletionDate),
       })
       await router.push(
         Routes.SubsubsectionDashboardPage({

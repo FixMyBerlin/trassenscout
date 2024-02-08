@@ -12,29 +12,16 @@ export interface TSurveyLabeledCheckbox extends PropsWithoutRef<JSX.IntrinsicEle
   help?: string
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
-  primaryColor: "red" | "pink"
 }
 
 export const SurveyLabeledCheckbox = forwardRef<HTMLInputElement, TSurveyLabeledCheckbox>(
-  ({ name, label, help, outerProps, labelProps, primaryColor, ...props }, ref) => {
+  ({ name, label, help, outerProps, labelProps, ...props }, ref) => {
     const {
       register,
       formState: { isSubmitting, errors },
     } = useFormContext()
 
     const hasError = Boolean(errors[name])
-
-    let colorClass: string
-    switch (primaryColor) {
-      case "pink":
-        colorClass = "text-pink-500"
-        break
-      case "red":
-        colorClass = "text-crimson-500"
-        break
-      default:
-        colorClass = "text-pink-500"
-    }
 
     return (
       <div {...outerProps} className={clsx(outerProps?.className, "group flex items-start")}>
@@ -50,7 +37,7 @@ export const SurveyLabeledCheckbox = forwardRef<HTMLInputElement, TSurveyLabeled
               "h-4 w-4 cursor-pointer rounded group-hover:border-gray-400",
               hasError
                 ? "border-red-800 text-red-500 shadow-sm shadow-red-200 focus:ring-red-800"
-                : `border-gray-300 focus:ring-0 ${colorClass}`,
+                : `border-gray-300 focus:ring-0 text-[var(--survey-primary-color)]`,
             )}
           />
         </div>

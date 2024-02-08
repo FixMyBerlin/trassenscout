@@ -8,14 +8,12 @@ type Props = {
   marker: { lat: number; lng: number } | undefined
   maptilerStyleUrl: string
   defaultViewState?: LngLatBoundsLike
-  pinColor: string
 }
 
 export const EditableSurveyResponseFormMap: React.FC<Props> = ({
   marker,
   maptilerStyleUrl,
   defaultViewState,
-  pinColor,
 }) => {
   const { mainMap } = useMap()
 
@@ -53,7 +51,7 @@ export const EditableSurveyResponseFormMap: React.FC<Props> = ({
             latitude={marker.lat}
             anchor="bottom"
           >
-            <SurveyStaticPin color={pinColor} />
+            <SurveyStaticPin />
           </Marker>
         )}
         <BackgroundSwitcher

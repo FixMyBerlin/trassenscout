@@ -31,7 +31,8 @@
     "seed": "npm run predev && npm run migrate && blitz prisma migrate reset && blitz db seed",
     "updatePackages": "npx taze major --write",
     "release": "gh pr create --base main --head develop --title \"Release $(date '+%Y-%m-%d')\" --body \"\"",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "calc-lengthkm": "node db/calculate-subsection-subsubsection-lengthkm.js"
   },
   "prisma": {
     "schema": "db/schema.prisma"

@@ -1,7 +1,5 @@
 import { TResponseConfig } from "../../components/types"
 
-// todo frm7 update when definitions are final for frm7
-
 export const responseConfig: TResponseConfig = {
   evaluationRefs: {
     "feedback-category": 21,

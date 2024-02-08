@@ -145,7 +145,7 @@ export const Feedback: React.FC<Props> = ({
         {feedbackPageProgress === 1 && (
           <FeedbackSecondPage
             isCompleted={isPageTwoCompleted}
-            staticMapProps={{ maptilerStyleUrl, pinColor: config.pinColor }}
+            staticMapProps={{ maptilerStyleUrl }}
             page={pages[1] as TPage}
             onButtonClick={handleBackPage}
             feedbackCategory={categoryText}

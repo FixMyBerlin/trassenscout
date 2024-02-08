@@ -70,7 +70,7 @@ const EditSubsubsectionsInfraWithQuery = () => {
 const EditSubsubsectionInfraPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title={seoEditTitle("Führungsform bearbeiten")} />
+      <MetaTags noindex title={seoEditTitle("Führungsform")} />
       <PageHeader title="Führungsform bearbeiten" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>

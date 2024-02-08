@@ -13,13 +13,18 @@ import { getSurveyResponseCategoryById } from "src/survey-responses/utils/getSur
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
 
+import { useMutation, useQuery } from "@blitzjs/rpc"
+import { EnvelopeIcon } from "@heroicons/react/24/outline"
+import { linkStyles } from "src/core/components/links"
+import { TMapProps } from "src/survey-public/components/types"
 import {
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
+  getSurveyDefinitionBySurveySlug,
 } from "src/survey-public/utils/getConfigBySurveySlug"
-import { TMapProps } from "src/survey-public/components/types"
+import deleteSurveyResponse from "src/survey-responses/mutations/deleteSurveyResponse"
 import getSurvey from "src/surveys/queries/getSurvey"
-import { useQuery } from "@blitzjs/rpc"
+import { useEffect } from "react"
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
@@ -39,6 +44,21 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   refetchResponsesAndTopics,
 }) => {
   const router = useRouter()
+
+  const params = useRouterQuery()
+  const open = parseInt(String(params.responseDetails)) === response.id
+  const surveyId = useParam("surveyId", "string")
+  const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
+  useEffect(() => {
+    const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
+    const root = document.documentElement
+    root.style.setProperty("--survey-primary-color", surveyDefinition.primaryColor)
+    root.style.setProperty("--survey-dark-color", surveyDefinition.darkColor)
+    root.style.setProperty("--survey-light-color", surveyDefinition.lightColor)
+  }, [survey.slug])
+
+  const [deleteCalendarEntryMutation] = useMutation(deleteSurveyResponse)
+
   const handleOpen = () => {
     router.query.responseDetails = String(response.id)
     void router.push({ query: router.query }, undefined, { scroll: false })
@@ -47,12 +67,6 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
     delete router.query.responseDetails
     void router.push({ query: router.query }, undefined, { scroll: false })
   }
-
-  const params = useRouterQuery()
-  const open = parseInt(String(params.responseDetails)) === response.id
-  const surveyId = useParam("surveyId", "string")
-  const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
-
   const operatorSlugWitFallback = response.operator?.slug || "k.A."
 
   const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
@@ -91,6 +105,25 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
       feedbackQuestion!,
     )
 
+  const getTranslatedSource = (s: string) => {
+    switch (s) {
+      case "LETTER":
+        return "Brief"
+      default:
+        return "Email"
+    }
+  }
+
+  const handleDelete = async () => {
+    if (
+      response.source !== "FORM" &&
+      window.confirm(`Den Eintrag mit ID ${response.id} unwiderruflich löschen?`)
+    ) {
+      await deleteCalendarEntryMutation({ id: response.id })
+      await refetchResponsesAndTopics()
+    }
+  }
+
   return (
     <article data-open={open}>
       <button
@@ -124,6 +157,16 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
 
       {open && (
         <div className={clsx("overflow-clip p-6", open ? "border-b border-gray-300" : "")}>
+          {response.source !== "FORM" && (
+            <span className="flex flex-row gap-2 items-center">
+              <EnvelopeIcon className="h-4 w-4" />
+              <span>per {getTranslatedSource(response.source)} eingegangen </span>
+              <span>| </span>
+              <button onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
+                Eintrag löschen
+              </button>
+            </span>
+          )}
           <div className="flex gap-12 mb-10 flex-col md:flex-row justify-between">
             <EditableSurveyResponseUserText
               surveyId={surveyId!}
@@ -156,7 +199,6 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             refetchResponsesAndTopics={refetchResponsesAndTopics}
             maptilerStyleUrl={maptilerStyleUrl}
             defaultViewState={defaultViewState}
-            pinColor={mapProps.config.pinColor}
           />
         </div>
       )}

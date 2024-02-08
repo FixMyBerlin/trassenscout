@@ -43,6 +43,8 @@ const EditSubsubsection = () => {
         id: subsubsection.id,
         ...values,
         trafficLoadDate: values.trafficLoadDate === "" ? null : new Date(values.trafficLoadDate),
+        estimatedCompletionDate:
+          values.estimatedCompletionDate === "" ? null : new Date(values.estimatedCompletionDate),
       })
       await setQueryData(updated)
       await router.push(
@@ -96,6 +98,9 @@ const EditSubsubsection = () => {
           ...m2mFieldsInitialValues,
           trafficLoadDate: subsubsection.trafficLoadDate
             ? getDate(subsubsection.trafficLoadDate)
+            : "",
+          estimatedCompletionDate: subsubsection.estimatedCompletionDate
+            ? getDate(subsubsection.estimatedCompletionDate)
             : "",
         }}
         onSubmit={handleSubmit}

@@ -1,19 +1,19 @@
 import { TMore } from "src/survey-public/components/types"
 
 export const moreDefinition: TMore = {
-  title: { de: "Danke, Ihre Daten wurden gesendet." },
+  title: { de: "Ihre Hinweise und Wünsche" },
   description: {
-    de: "Wenn Sie möchten, können Sie uns sagen, was Sie besonders interessiert oder wenn Sie Probleme an bestimmten Stellen sehen. Zum Beispiel: Gibt es Orte, die verbessert werden könnten? Oder gibt es Bereiche, die zu Problemen führen könnten?\n\nIhre speziellen Hinweise, Kommentare oder Ideen sind für uns wichtig. Wenn Sie etwas Bestimmtes bemerkt haben, können Sie es uns mitteilen. Das hilft uns sehr weiter, den Radschnellweg noch besser zu planen.",
+    de: "Teil 1 von 2 der Beteiligung ist abgeschlossen. Wenn Sie möchten, können Sie nun konkrete Hinweise zum Radschnellweg abgeben.\n\nDabei interessiert uns besonders, wenn sie Probleme an bestimmten Stellen des Radwegs sehen. Zum Beispiel: Gibt es Orte, die verbessert werden könnten? Oder gibt es Bereiche, die zu Problemen oder Konflikten, zum Beispiel mit zu Fußgehenden oder Autos führen könnten?\n\nIhre speziellen Hinweise, Kommentare oder Ideen sind für uns wichtig. Das hilft uns sehr weiter, den Radschnellweg noch besser zu planen.",
   },
   questionText: { de: "Möchten Sie einen konkreten Hinweis geben?" },
   buttons: [
     {
-      label: { de: "Ja, ich habe noch Hinweise" },
-      color: "red",
+      label: { de: "Weiter zu den Hinweisen" },
+      color: "primaryColor",
       onClick: { action: "nextPage" },
     },
     {
-      label: { de: "Nein, ich möchte die Umfrage beenden" },
+      label: { de: "Beteiligung beenden" },
       color: "white",
       onClick: { action: "submit" },
     },

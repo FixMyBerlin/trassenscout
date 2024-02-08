@@ -3,6 +3,7 @@ import { Prettify } from "src/core/types"
 import { SlugSchema, InputNumberOrNullSchema } from "src/core/utils"
 import { z } from "zod"
 import m2mFields from "./m2mFields"
+import { SubsubsectionWithPosition } from "./queries/getSubsubsection"
 
 const PositionSchema = z.tuple([z.number(), z.number()]) // Position
 const PositionArraySchema = z.array(z.tuple([z.number(), z.number()])) // Position[]
@@ -20,7 +21,7 @@ export const SubsubsectionSchema = z
     type: z.nativeEnum(SubsubsectionTypeEnum),
     geometry: PositionSchema.or(PositionArraySchema),
     labelPos: z.nativeEnum(LabelPositionEnum),
-    lengthKm: InputNumberOrNullSchema, // km
+    lengthKm: z.coerce.number({ invalid_type_error: "Pflichtfeld" }), // km
     width: InputNumberOrNullSchema, // m
     costEstimate: InputNumberOrNullSchema, // €
     description: z.string().nullish(),
@@ -35,6 +36,22 @@ export const SubsubsectionSchema = z
     maxSpeed: InputNumberOrNullSchema,
     trafficLoad: InputNumberOrNullSchema,
     trafficLoadDate: z.union([
+      z.coerce
+        .date({
+          // `coerce` makes it that we need to work around a nontranslatable error
+          // Thanks to https://github.com/colinhacks/zod/discussions/1851#discussioncomment-4649675
+          errorMap: ({ code }, { defaultError }) => {
+            if (code == "invalid_date")
+              return { message: "Das Datum ist nicht richtig formatiert." }
+            return { message: defaultError }
+          },
+        })
+        .nullish(),
+      z.literal(""),
+    ]),
+    planningPeriod: InputNumberOrNullSchema,
+    constructionPeriod: InputNumberOrNullSchema,
+    estimatedCompletionDate: z.union([
       z.coerce
         .date({
           // `coerce` makes it that we need to work around a nontranslatable error
@@ -70,6 +87,11 @@ export const SubsubsectionSchema = z
     ),
   )
 
+export type SubsubsectionWithPositionWithSpecialFeatures = Omit<
+  SubsubsectionWithPosition,
+  "manager" | "qualityLevel"
+> & { specialFeatures: { id: number; title: string }[] }
+
 export type TSubsubsectionSchema = Prettify<z.infer<typeof SubsubsectionSchema>>
 
 export const SubsubsectionTrafficLoadDateSchema = z.object({
@@ -77,12 +99,17 @@ export const SubsubsectionTrafficLoadDateSchema = z.object({
     z.string().min(8, { message: "Das Datum ist nicht richtig formatiert." }),
     z.literal(""),
   ]),
+  estimatedCompletionDate: z.union([
+    z.string().min(8, { message: "Das Datum ist nicht richtig formatiert." }),
+    z.literal(""),
+  ]),
 })
 
 // @ts-ignore
-let FormSchema = SubsubsectionSchema.omit({ trafficLoadDate: true }).merge(
-  SubsubsectionTrafficLoadDateSchema,
-)
+let FormSchema = SubsubsectionSchema.omit({
+  trafficLoadDate: true,
+  estimatedCompletionDate: true,
+}).merge(SubsubsectionTrafficLoadDateSchema)
 
 m2mFields.forEach((fieldName) => {
   // @ts-ignore

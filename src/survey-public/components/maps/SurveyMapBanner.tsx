@@ -19,7 +19,11 @@ export const SurveyMapBanner: React.FC<Props> = ({ status, className, action }) 
       return (
         <div className={clsx("inset-x-0 mx-4 bg-white/80 p-4 px-8 text-center", className)}>
           Pin liegt außerhalb der aktuellen Ansicht.{" "}
-          <button className="text-pink-500 hover:underline" onClick={action} type="button">
+          <button
+            className="text-[var(--survey-primary-color)] hover:underline"
+            onClick={action}
+            type="button"
+          >
             Zentrieren
           </button>
         </div>

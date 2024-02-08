@@ -21,6 +21,7 @@ import { SubsubsectionMapSidebar } from "src/subsections/components/Subsubsectio
 import getSubsections from "src/subsections/queries/getSubsections"
 import { SubsubsectionTable } from "src/subsubsections/components/SubsubsectionTable"
 import getSubsubsections from "src/subsubsections/queries/getSubsubsections"
+import { SubsubsectionInfoPanel } from "src/subsections/components/SubsubsectionInfoPanel"
 
 // Page Renders Subsection _AND_ Subsubsection (as Panel)
 export const SubsectionDashboardWithQuery = () => {
@@ -68,7 +69,15 @@ export const SubsectionDashboardWithQuery = () => {
             bearbeiten
           </Link>
         }
-        description={<SubsectionTabs />}
+        description={
+          <>
+            <details>
+              <summary className="mt-6 cursor-pointer">Info & Auswertung</summary>
+              <SubsubsectionInfoPanel />
+            </details>
+            <SubsectionTabs />
+          </>
+        }
       />
 
       {subsection.description && (

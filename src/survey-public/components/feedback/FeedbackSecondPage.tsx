@@ -16,7 +16,6 @@ type Props = {
   onButtonClick: any
   staticMapProps: {
     maptilerStyleUrl: string
-    pinColor: string
   }
   feedbackCategory: string | undefined
   isCompleted: boolean

@@ -124,6 +124,7 @@ model Project {
   SubsubsectionTask    SubsubsectionTask[]
   SubsubsectionInfra   SubsubsectionInfra[]
   SubsubsectionSpecial SubsubsectionSpecial[]
+  NetworkHierarchy     NetworkHierarchy[]
 }
 
 model Membership {
@@ -199,25 +200,28 @@ model Operator {
 }
 
 model Subsection {
-  id          Int               @id @default(autoincrement())
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  id                 Int               @id @default(autoincrement())
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
   //
-  slug        String // shortTitle and URL Slug
-  start       String
-  end         String
-  order       Int               @default(autoincrement())
-  geometry    Json
-  labelPos    LabelPositionEnum @default(top)
-  description String?
-  lengthKm    Float?
+  slug               String // shortTitle and URL Slug
+  start              String
+  end                String
+  order              Int               @default(autoincrement())
+  geometry           Json
+  labelPos           LabelPositionEnum @default(top)
+  description        String?
+  lengthKm           Float // Kilometer
+  priority           PriorityEnum      @default(OPEN) // Priorität
   //
-  project     Project           @relation(fields: [projectId], references: [id])
-  projectId   Int
-  manager     User?             @relation(fields: [managerId], references: [id])
-  managerId   Int?
-  operator    Operator?         @relation(fields: [operatorId], references: [id])
-  operatorId  Int?
+  project            Project           @relation(fields: [projectId], references: [id])
+  projectId          Int
+  manager            User?             @relation(fields: [managerId], references: [id])
+  managerId          Int?
+  operator           Operator?         @relation(fields: [operatorId], references: [id])
+  operatorId         Int?
+  networkHierarchy   NetworkHierarchy? @relation(fields: [networkHierarchyId], references: [id])
+  networkHierarchyId Int?
 
   subsubsections   Subsubsection[]
   stakeholdernotes Stakeholdernote[]
@@ -225,6 +229,29 @@ model Subsection {
 
   @@unique([projectId, slug])
   @@unique([projectId, order])
+}
+
+enum PriorityEnum {
+  OPEN
+  TOP //sehr hoch, hoch, mittel, niedrig
+  HIGH
+  MEDIUM
+  LOW
+}
+
+model NetworkHierarchy {
+  id         Int          @id @default(autoincrement())
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  //
+  slug       String // shortTitle and URL Slug
+  title      String
+  //
+  project    Project      @relation(fields: [projectId], references: [id])
+  projectId  Int
+  Subsection Subsection[]
+
+  @@unique([projectId, slug])
 }
 
 model Subsubsection {
@@ -238,10 +265,9 @@ model Subsubsection {
   geometry        Json
   labelPos        LabelPositionEnum     @default(top)
   task            String? // Maßnahmentyp - UNUSED
-  lengthKm        Float? // Kilometer
+  lengthKm        Float // Kilometer
   width           Float? // Meter
   widthExisting   Float? // Meter
-  costEstimate    Float? // Euro
   description     String? // Anmerkungen
   mapillaryKey    String?
   isExistingInfra Boolean?              @default(false) // Bestandsführung
@@ -250,13 +276,21 @@ model Subsubsection {
   trafficLoad     Int? // Verkehrsbelastung
   trafficLoadDate DateTime? // Datum der Verkehrsbelastung
 
+  planningPeriod                Float? //  Planungsdauer
+  constructionPeriod            Float? // Baudauer
+  estimatedCompletionDate       DateTime? // Jahresquartal der geplanten Fertigstellung als string Form "1-2023"
+  //
+  costEstimate                  Float? // Euro
+  //
   planningCosts                 Float? //  Planungskosten
   deliveryCosts                 Float? //  Lieferkosten
   constructionCosts             Float? //  Baukosten
   landAcquisitionCosts          Float? //  Grunderwerbskosten
   expensesOfficialOrders        Float? //  Ausgaben aufgrund behördlicher Anordnungen
   expensesTechnicalVerification Float? //  Ausgaben für den fachtechnischen Nachweis usw.
+  //
   nonEligibleExpenses           Float? //  Nicht zuwendungsfähige Ausgaben
+  //
   revenuesEconomicIncome        Float? //  Erlöse und wirtschafltiche Einnahmen
   contributionsThirdParties     Float? //  Beiträge Dritter
   grantsOtherFunding            Float? //  Zuwendungen aus anderen Förderprogrammen
@@ -437,12 +471,19 @@ model SurveyResponse {
   data                 String
   status               SurveyResponseStatusEnum?               @default(PENDING)
   note                 String?
+  source               SurveyResponseSourceEnum                @default(FORM)
   //
   surveySession        SurveySession                           @relation(fields: [surveySessionId], references: [id])
   surveySessionId      Int
   operatorId           Int?
   operator             Operator?                               @relation(fields: [operatorId], references: [id])
   surveyResponseTopics SurveyResponseTopicsOnSurveyResponses[]
+}
+
+enum SurveyResponseSourceEnum {
+  EMAIL
+  LETTER
+  FORM
 }
 
 model SurveyResponseTopic {

@@ -13,7 +13,6 @@ export interface SurveyLabeledTextareaProps
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
   optional?: boolean
-  primaryColor: "red" | "pink"
 }
 
 export const SurveyLabeledTextareaField = forwardRef<
@@ -21,17 +20,7 @@ export const SurveyLabeledTextareaField = forwardRef<
   SurveyLabeledTextareaProps
 >(
   (
-    {
-      name,
-      label,
-      help,
-      outerProps,
-      labelProps,
-      optional,
-      className: textareaClasName,
-      primaryColor,
-      ...props
-    },
+    { name, label, help, outerProps, labelProps, optional, className: textareaClasName, ...props },
     ref,
   ) => {
     const {
@@ -40,18 +29,6 @@ export const SurveyLabeledTextareaField = forwardRef<
     } = useFormContext()
 
     const hasError = Boolean(errors[name])
-
-    let colorClass: string
-    switch (primaryColor) {
-      case "pink":
-        colorClass = "focus:border-pink-500 focus:ring-pink-500"
-        break
-      case "red":
-        colorClass = "focus:border-crimson-500 focus:ring-crimson-500"
-        break
-      default:
-        colorClass = "focus:border-pink-500 focus:ring-pink-500"
-    }
 
     return (
       <div {...outerProps}>
@@ -73,7 +50,7 @@ export const SurveyLabeledTextareaField = forwardRef<
             "mt-1 block h-52 w-full rounded-md shadow-sm sm:text-sm",
             hasError
               ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
-              : `border-gray-300 ${colorClass}}`,
+              : "border-gray-300 focus:border-[var(--survey-primary-color)] focus:ring-[var(--survey-dark-color)]",
           )}
         />
         {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}

@@ -5,7 +5,7 @@ type TProgressContext = {
   setProgress: (current: number) => void
 }
 
-type TPinContext = {
+export type TPinContext = {
   pinPosition: {
     lng: number
     lat: number

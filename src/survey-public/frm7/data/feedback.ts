@@ -7,7 +7,7 @@ export const feedbackDefinition: TFeedback = {
       id: 1,
       title: { de: "Wir sind gespannt auf Ihre Hinweise. " },
       description: {
-        de: "Hier können Sie dem Planungsteam konkrete Ideen, Anregungen und Hinweise zum FRM 7 geben. Sie können einen oder mehrere Hinweise abgeben. Wenn Sie mehrere Hinweise haben, können Sie diese nacheinander bearbeiten. Beginnen Sie nun mit dem ersten.",
+        de: "Hier können Sie dem Planungsteam konkrete Ideen, Anregungen und Hinweise zum FRM7 geben. Sie können einen oder mehrere Hinweise abgeben. Wenn Sie mehrere Hinweise haben, können Sie diese nacheinander bearbeiten. Beginnen Sie nun mit dem ersten.",
       },
       questions: [
         {
@@ -16,10 +16,10 @@ export const feedbackDefinition: TFeedback = {
           component: "singleResponse",
           props: {
             responses: [
-              { id: 1, text: { de: "Nutzung" } },
-              { id: 2, text: { de: "Streckenführung" } },
-              { id: 3, text: { de: "Zubringer" } },
-              { id: 4, text: { de: "Mögliche Konflikte" } },
+              { id: 1, text: { de: "Mögliche Konflikte" } },
+              { id: 2, text: { de: "Nutzung" } },
+              { id: 3, text: { de: "Streckenführung" } },
+              { id: 4, text: { de: "Zubringer" } },
               { id: 5, text: { de: "Umwelt- und Naturschutz" } },
               { id: 6, text: { de: "Sonstiges" } },
             ],
@@ -51,41 +51,39 @@ export const feedbackDefinition: TFeedback = {
             },
             config: {
               bounds: [8.68495, 50.103212, 8.793869, 50.148444],
-              pinColor: "#D60F3D",
-              // todo frm7
             },
             legend: {
               variant1: {
                 label: {
-                  de: "Streckenführung A: Eher an großen Straßen auf Radwegen, getrennt von Autos.",
+                  de: "Streckenführung A: Eher an großen Straßen auf Radwegen, getrennt von Autos",
                 },
-                color: "bg-[#006EFF]", // todo frm7
+                color: "bg-[#006EFF]",
                 height: "h-[5px]",
                 shape: "line",
               },
               variant2: {
                 label: {
-                  de: "Streckenführung B: Eher in ruhigen Wohnstraßen, dafür zusammen mit Autos.",
+                  de: "Streckenführung B: Eher in ruhigen Wohnstraßen, dafür zusammen mit Autos",
                 },
-                color: "bg-[#FFD900]", // todo frm7
+                color: "bg-[#FFD900]",
                 height: "h-[5px]",
                 shape: "line",
               },
               irrelevant: {
                 label: { de: "Bereits beschlossene Strecke (außerhalb von Frankfurt)" },
-                color: "bg-[#000]", // todo frm7
+                color: "bg-[#000]",
                 height: "h-[5px]",
                 shape: "line",
               },
               blockedArea: {
                 label: { de: "Gesperrt aus Gründen des Natur- oder Denkmalschutzes" },
-                color: "bg-[#DA1616] opacity-70", // todo frm7
+                color: "opacity-70 stripe-background",
                 height: "h-5",
                 shape: "line",
               },
               pois: {
-                label: { de: "Orte für Bildung, Arbeit, Freizeit und mehr." },
-                color: "bg-[#000]", // todo frm7
+                label: { de: "Orte für Bildung, Arbeit, Freizeit und mehr" },
+                color: "bg-[#000]",
                 height: "h-4",
                 shape: "dot",
               },
@@ -94,7 +92,7 @@ export const feedbackDefinition: TFeedback = {
         },
       ],
       buttons: [
-        { label: { de: "Weiter" }, color: "red", onClick: { action: "nextPage" } },
+        { label: { de: "Weiter" }, color: "primaryColor", onClick: { action: "nextPage" } },
         { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
       ],
     },
@@ -128,12 +126,12 @@ export const feedbackDefinition: TFeedback = {
       buttons: [
         {
           label: { de: "Absenden & Beteiligung abschließen" },
-          color: "red",
+          color: "primaryColor",
           onClick: { action: "submit" },
         },
         {
           label: { de: "Absenden &  weiteren Hinweis geben" },
-          color: "red",
+          color: "primaryColor",
           onClick: { action: "submit" },
         },
       ],

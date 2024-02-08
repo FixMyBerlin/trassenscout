@@ -1,6 +1,6 @@
 import db from "db"
 
-const getOperatorProjectId = async (input: Record<string, any>) =>
+const getQualityLevelProjectId = async (input: Record<string, any>) =>
   (
     await db.qualityLevel.findFirstOrThrow({
       where: { id: input.id || null },
@@ -8,4 +8,4 @@ const getOperatorProjectId = async (input: Record<string, any>) =>
     })
   ).projectId
 
-export default getOperatorProjectId
+export default getQualityLevelProjectId
