@@ -3,8 +3,8 @@ import { TSurvey } from "src/survey-public/components/types"
 export const surveyDefinition: TSurvey = {
   part: 1,
   version: 1,
-  logoUrl: "https://develop--frm-7-landingpage.netlify.app/logo.png", // "https://radschnellweg-frm7.de/logo.png" // todo frm7
-  canonicalUrl: "https://staging.radschnellweg-frm7.de/beteiligung/", // "https://radschnellweg-frm7.de/beteiligung/" // todo frm7
+  logoUrl: "https://radschnellweg-frm7.de/logo.png",
+  canonicalUrl: "https://radschnellweg-frm7.de/beteiligung/",
   primaryColor: "#D60F3D",
   darkColor: "#5F071B",
   lightColor: "#fecdd3",
@@ -13,7 +13,7 @@ export const surveyDefinition: TSurvey = {
       id: 1,
       title: { de: "Ihre Meinung zählt!" },
       description: {
-        de: "Frankfurt bekommt einen neuen **Radschnellweg** mit dem Namen FRM7, der ohne Umwege nach Maintal und Hanau führt. Radfahrende können auf Radschnellwegen sicher und komfortabel zum Ziel kommen.\n\nWir möchten, dass viele Menschen diesen neuen Radweg nutzen können – sei es auf dem Weg zur Schule, Arbeit, Sport oder beim Einkaufen und Familienausflug. Damit das Projekt zum Erfolg wird, sind Ihre Wünsche  und Hinweise von großer Bedeutung.\n\nSie haben bis zum **31.03.2024** Zeit, sich zu beteiligen.\n\nDie Beteiligung besteht aus **zwei Teilen**. Im ersten Teil möchten wir in einer kleinen Umfrage von Ihnen wissen, wie Sie sich im Verkehr bewegen und ob und wie Sie den Radschnellweg nutzen würden. Im zweiten Teil können Sie Ihre konkreten Hinweise und Wünsche zum Radschnellweg an uns richten. Diese werden von einem Planungsbüro ausgewertet. Auch wird die gesamte Beteiligung durch ein Forschungsprojekt begleitet.\n\nEs dauert nur **5-10 Minuten**, um die Fragen zu beantworten.\n\nAlle Ihre Angaben und Hinweise bleiben anonym, also geheim.\n\nBei der Beteiligung geht es konkret um den neu betrachteten Abschnitt im **Bereich Frankfurt**. Falls Sie vorab noch mehr über die Route erfahren wollen, können Sie sich [hier](https://staging.radschnellweg-frm7.de/route) über das Projekt informieren:.",
+        de: "Frankfurt bekommt einen neuen **Radschnellweg** mit dem Namen FRM7, der ohne Umwege nach Maintal und Hanau führt. Radfahrende können auf Radschnellwegen sicher und komfortabel zum Ziel kommen.\n\nWir möchten, dass viele Menschen diesen neuen Radweg nutzen können – sei es auf dem Weg zur Schule, Arbeit, Sport oder beim Einkaufen und Familienausflug. Damit das Projekt zum Erfolg wird, sind Ihre Wünsche  und Hinweise von großer Bedeutung.\n\nSie haben bis zum **31.03.2024** Zeit, sich zu beteiligen.\n\nDie Beteiligung besteht aus **zwei Teilen**. Im ersten Teil möchten wir in einer kleinen Umfrage von Ihnen wissen, wie Sie sich im Verkehr bewegen und ob und wie Sie den Radschnellweg nutzen würden. Im zweiten Teil können Sie Ihre konkreten Hinweise und Wünsche zum Radschnellweg an uns richten. Diese werden von einem Planungsbüro ausgewertet. Auch wird die gesamte Beteiligung durch ein Forschungsprojekt begleitet.\n\nEs dauert nur **5-10 Minuten**, um die Fragen zu beantworten.\n\nAlle Ihre Angaben und Hinweise bleiben anonym, also geheim.\n\nBei der Beteiligung geht es konkret um den neu betrachteten Abschnitt im **Bereich Frankfurt**. Falls Sie vorab noch mehr über die Route erfahren wollen, können Sie sich [hier](https://radschnellweg-frm7.de/route) über das Projekt informieren:.",
       },
       buttons: [
         {
