@@ -80,12 +80,6 @@ export const feedbackDefinition: TFeedback = {
                 height: "h-5",
                 shape: "line",
               },
-              pois: {
-                label: { de: "Orte für Bildung, Arbeit, Freizeit und mehr" },
-                color: "bg-[#000]",
-                height: "h-4",
-                shape: "dot",
-              },
             },
           },
         },
