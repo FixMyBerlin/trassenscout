@@ -61,6 +61,7 @@ export type TEmail = {
   questionText: TTranslatableText
   description: TTranslatableText
   mailjetWidgetUrl: string
+  homeUrl: string
   button: TButton
 }
 

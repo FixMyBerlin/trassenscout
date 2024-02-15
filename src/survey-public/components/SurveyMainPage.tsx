@@ -152,7 +152,7 @@ export const SurveyMainPage: React.FC<Props> = ({
       )
       break
     case "EMAIL":
-      component = <Email email={emailDefinition} homeUrl={surveyDefinition.canonicalUrl} />
+      component = <Email email={emailDefinition} />
       break
   }
 
