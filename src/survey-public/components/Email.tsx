@@ -9,11 +9,10 @@ export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
   email: TEmail
-  homeUrl: string
 }
 
-export const Email: React.FC<Props> = ({ email, homeUrl }) => {
-  const { description, questionText, button, title, mailjetWidgetUrl } = email
+export const Email: React.FC<Props> = ({ email }) => {
+  const { description, questionText, button, title, mailjetWidgetUrl, homeUrl } = email
 
   useEffect(() => {
     iframeResizer({}, "#mailjet-widget")

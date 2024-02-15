@@ -3,8 +3,8 @@ import { TSurvey } from "src/survey-public/components/types"
 export const surveyDefinition: TSurvey = {
   part: 1,
   version: 1,
-  logoUrl: "https://develop--frm-7-landingpage.netlify.app/logo.png", // "https://radschnellweg-frm7.de/logo.png" // todo frm7
-  canonicalUrl: "https://staging.radschnellweg-frm7.de/beteiligung/", // "https://radschnellweg-frm7.de/beteiligung/" // todo frm7
+  logoUrl: "https://radschnellweg-frm7.de/logo.png",
+  canonicalUrl: "https://radschnellweg-frm7.de/beteiligung/",
   primaryColor: "#D60F3D",
   darkColor: "#5F071B",
   lightColor: "#fecdd3",
@@ -13,7 +13,7 @@ export const surveyDefinition: TSurvey = {
       id: 1,
       title: { de: "Ihre Meinung zählt!" },
       description: {
-        de: "Frankfurt bekommt einen neuen **Radschnellweg** mit dem Namen FRM7, der ohne Umwege nach Maintal und Hanau führt. Radfahrende können auf Radschnellwegen sicher und komfortabel zum Ziel kommen.\n\nWir möchten, dass viele Menschen diesen neuen Radweg nutzen können – sei es auf dem Weg zur Schule, Arbeit, Sport oder beim Einkaufen und Familienausflug. Damit das Projekt zum Erfolg wird, sind Ihre Wünsche  und Hinweise von großer Bedeutung.\n\nSie haben bis zum **31.01.2024** Zeit, um sich zu beteiligen.\n\nDie Beteiligung besteht aus **zwei Teilen**. Im ersten Teil möchten wir in einer kleinen Umfrage von Ihnen wissen, wie Sie sich im Verkehr bewegen und ob und wie Sie den Radschnellweg nutzen würden. Im zweiten Teil können Sie Ihre konkreten Hinweise und Wünsche zum Radschnellweg an uns richten.\n\nEs dauert nur **5-10 Minuten**, um die Fragen zu beantworten.\n\nAlle Ihre Angaben und Hinweise bleiben anonym, also geheim.\n\nBei der Beteiligung geht es konkret um den neu betrachteten Abschnitt im **Bereich Frankfurt**. Falls Sie vorab noch mehr über die Route erfahren wollen, können Sie sich hier über das Projekt informieren: [www.radschnellweg-frm7.de](https://staging.radschnellweg-frm7.de/route).",
+        de: "Frankfurt bekommt einen neuen **Radschnellweg** mit dem Namen FRM7, der ohne Umwege nach Maintal und Hanau führt. Radfahrende können auf Radschnellwegen sicher und komfortabel zum Ziel kommen.\n\nWir möchten, dass viele Menschen diesen neuen Radweg nutzen können – sei es auf dem Weg zur Schule, Arbeit, Sport oder beim Einkaufen und Familienausflug. Damit das Projekt zum Erfolg wird, sind Ihre Wünsche  und Hinweise von großer Bedeutung.\n\nSie haben bis zum **31.03.2024** Zeit, sich zu beteiligen.\n\nDie Beteiligung besteht aus **zwei Teilen**. Im ersten Teil möchten wir in einer kleinen Umfrage von Ihnen wissen, wie Sie sich im Verkehr bewegen und ob und wie Sie den Radschnellweg nutzen würden. Im zweiten Teil können Sie Ihre konkreten Hinweise und Wünsche zum Radschnellweg an uns richten. Diese werden von einem Planungsbüro ausgewertet. Auch wird die gesamte Beteiligung durch ein Forschungsprojekt begleitet.\n\nEs dauert nur **5-10 Minuten**, um die Fragen zu beantworten.\n\nAlle Ihre Angaben und Hinweise bleiben anonym, also geheim.\n\nBei der Beteiligung geht es konkret um den neu betrachteten Abschnitt im **Bereich Frankfurt**. Falls Sie vorab noch mehr über die Route erfahren wollen, können Sie sich [hier](https://radschnellweg-frm7.de/route) über das Projekt informieren:.",
       },
       buttons: [
         {
@@ -138,7 +138,7 @@ export const surveyDefinition: TSurvey = {
               { id: 1, text: { de: "Ich kann nicht Fahrrad fahren (fehlende Fertigkeit)" } },
               {
                 id: 2,
-                text: { de: "Ich kann nicht Fahrrad fahren (körperliche Einschränkung(en))" },
+                text: { de: "Ich kann nicht Fahrrad fahren (körperliche Einschränkung)" },
               },
               { id: 3, text: { de: "Es gibt keine sichere Infrastruktur" } },
               { id: 4, text: { de: "Meine Strecken sind zu lang" } },
@@ -149,7 +149,7 @@ export const surveyDefinition: TSurvey = {
               { id: 9, text: { de: "Andere Gründe" } },
               {
                 id: 10,
-                text: { de: "Keine Antwort trifft auf mich zu, denn ich fahre gerne Fahrrad" },
+                text: { de: "Keine Antwort trifft auf mich zu, denn ich fahre Fahrrad" },
               },
             ],
           },
@@ -213,6 +213,7 @@ export const surveyDefinition: TSurvey = {
               { id: 4, text: { de: "Ich nehme Kind(er) mit dem Rad mit" } },
               { id: 5, text: { de: "Ich begleite Kind(er) mit dem Rad" } },
               { id: 6, text: { de: "Anderes" } },
+              { id: 7, text: { de: "Keine Angabe" } },
             ],
           },
         },
@@ -262,7 +263,7 @@ export const surveyDefinition: TSurvey = {
         {
           id: 14,
           label: {
-            de: "Ein Weg, auf dem auch Fußgänger und Fußgängerinnen unterwegs sind, würde ich..",
+            de: "Ein Weg, auf dem auch Fußgänger und Fußgängerinnen unterwegs sind, würde ich...",
           },
           component: "singleResponse",
           props: {
@@ -270,7 +271,7 @@ export const surveyDefinition: TSurvey = {
               {
                 id: 1,
                 text: {
-                  de: "Ohne Einschränkung mit dem Rad nutzen.",
+                  de: "Mit dem Rad nutzen.",
                 },
               },
               {
@@ -305,7 +306,7 @@ export const surveyDefinition: TSurvey = {
               {
                 id: 1,
                 text: {
-                  de: "Ohne Einschränkung mit dem Rad nutzen.",
+                  de: "Mit dem Rad nutzen.",
                 },
               },
               {
@@ -408,27 +409,6 @@ export const surveyDefinition: TSurvey = {
           },
         },
         {
-          id: 19,
-          label: { de: "Wie hoch ist das Nettoeinkommen Ihres Haushalts?" },
-          help: {
-            de: "Das Nettoeinkommen beschreibt das Geld, das nach Abzug aller Abgaben, Steuern und Beiträge übrig bleibt. Zum Einkommen zählen auch Leistungen wie Arbeitslosengeld oder Bürgergeld.",
-          },
-
-          component: "singleResponse",
-          props: {
-            responses: [
-              { id: 1, text: { de: "Weniger als 1.000 Euro" } },
-              { id: 2, text: { de: "1.000 bis 3.000 Euro" } },
-              { id: 3, text: { de: "3.001 bis 5.000 Euro" } },
-              { id: 4, text: { de: "Mehr als 5.000 Euro" } },
-              {
-                id: 5,
-                text: { de: "Keine Angabe" },
-              },
-            ],
-          },
-        },
-        {
           id: 20,
           label: {
             de: "Was ist Ihr höchster Bildungsabschluss?",
@@ -465,7 +445,7 @@ export const surveyDefinition: TSurvey = {
           label: {
             de: "Sind Sie aus gesundheitlichen Gründen in Ihrer Mobilität dauerhaft eingeschränkt?",
           },
-          component: "singleResponse",
+          component: "multipleResponse",
           props: {
             responses: [
               { id: 1, text: { de: "Ja, durch Gehbehinderung" } },
