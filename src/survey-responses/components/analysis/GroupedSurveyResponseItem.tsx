@@ -25,20 +25,23 @@ export const GroupedSurveyResponseItem: React.FC<Props> = ({
     case responseData.length <= 4:
       heightClass = "h-[290px]"
       break
+    case responseData.length <= 5:
+      heightClass = "h-[360px]"
+      break
     case responseData.length <= 6:
-      heightClass = "h-[300px]"
+      heightClass = "h-[400px]"
       break
     case responseData.length <= 8:
-      heightClass = "h-[600px]"
+      heightClass = "h-[550px]"
       break
     default:
-      heightClass = "h-[700px]"
+      heightClass = "h-[650px]"
   }
   return (
     <div className="border rounded  py-3.5">
       {questionLabel && <H3 className="border-b pb-3.5 px-3.5">{questionLabel}</H3>}
 
-      <div className={clsx("h-[480px] px-3.5", heightClass)}>
+      <div className={clsx("px-3.5", heightClass)}>
         {chartType === "bar" && <BarChart data={responseData} />}
         {/* <PieChart data={responseData} /> */}
       </div>
