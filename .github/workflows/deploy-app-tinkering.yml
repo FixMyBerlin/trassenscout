@@ -8,6 +8,7 @@ jobs:
     uses: ./.github/workflows/deploy-app.yml
     with:
       APP_ORIGIN: http://tinkering.trassenscout.de
+      NEXT_PUBLIC_APP_ORIGIN: http://tinkering.trassenscout.de
       SERVICE_NAME: trassenscout-tinkering
       S3_UPLOAD_BUCKET: trassenscout
       S3_UPLOAD_REGION: eu-central-1

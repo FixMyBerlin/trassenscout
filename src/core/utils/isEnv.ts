@@ -1,10 +1,11 @@
 export const isProduction =
-  process.env.NODE_ENV === "production" && process.env.APP_ORIGIN === "http://trassenscout.de"
+  process.env.NODE_ENV === "production" &&
+  process.env.NEXT_PUBLIC_APP_ORIGIN === "http://trassenscout.de"
 
 // This does not handle tinkering.trassenscout, yet
 // export const isStaging =
 //   process.env.NODE_ENV === "production" &&
-//   process.env.APP_ORIGIN === "http://staging.trassenscout.de"
+//   process.env.NEXT_PUBLIC_APP_ORIGIN === "http://staging.trassenscout.de"
 
 export const isDev = process.env.NODE_ENV === "development"
 
