@@ -31,6 +31,15 @@ export const Email: React.FC<Props> = ({ email }) => {
         </SurveyLink>{" "}
         senden.{" "}
       </SurveyP>
+      <SurveyP className="mt-6">
+        <i className="mt-6">
+          <strong>Transparenzhinweis</strong>: Die Befragung wurde um die Fragen („Sind Sie bzw.
+          Ihre Eltern in Deutschland geboren“) gekürzt, da diese bei Teilnehmenden zu Irritationen
+          geführt haben. Ziel der Fragen im Rahmen des Forschungsprojekts war die Ermittlung, welche
+          Zielgruppen in zukünftigen Beteiligungen ggf. noch gezielter angesprochen werden müssen.
+          Nach eingängiger Diskussion wurde entschieden, die beiden Fragen zu entfernen.
+        </i>
+      </SurveyP>
 
       <div
         className="rounded border border-gray-300 my-6 mt-10"

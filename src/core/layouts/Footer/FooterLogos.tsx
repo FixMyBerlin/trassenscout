@@ -26,12 +26,7 @@ export const FooterLogosWithQuery: React.FC<Props> = ({ className }) => {
       >
         {logos.map((partnerLogo) => (
           <li className="relative mx-auto h-16 w-20" key={partnerLogo}>
-            <Image
-              className="mx-auto object-contain"
-              fill
-              src={getImageSrc(partnerLogo)}
-              alt="partnerLogo"
-            />
+            <Image className="mx-auto object-contain" fill src={getImageSrc(partnerLogo)} alt="" />
           </li>
         ))}
       </ul>

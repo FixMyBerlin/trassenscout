@@ -5,6 +5,9 @@ on:
       APP_ORIGIN:
         required: true
         type: string
+      NEXT_PUBLIC_APP_ORIGIN:
+        required: true
+        type: string
       SERVICE_NAME:
         required: true
         type: string
@@ -105,6 +108,7 @@ jobs:
           cat deployment-config.yml
         env:
           APP_ORIGIN: ${{ inputs.APP_ORIGIN }}
+          NEXT_PUBLIC_APP_ORIGIN: ${{ inputs.NEXT_PUBLIC_APP_ORIGIN }}
           SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY }}

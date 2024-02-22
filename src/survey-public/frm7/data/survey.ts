@@ -456,35 +456,6 @@ export const surveyDefinition: TSurvey = {
             ],
           },
         },
-        {
-          id: 23,
-          label: {
-            de: "Sind Sie in Deutschland geboren?",
-          },
-          component: "singleResponse",
-          props: {
-            responses: [
-              { id: 1, text: { de: "Ja" } },
-              { id: 2, text: { de: "Nein" } },
-              { id: 3, text: { de: "Keine Angabe" } },
-            ],
-          },
-        },
-        {
-          id: 24,
-          label: {
-            de: "Sind Ihre Eltern in Deutschland geboren?",
-          },
-          component: "singleResponse",
-          props: {
-            responses: [
-              { id: 1, text: { de: "Ja" } },
-              { id: 2, text: { de: "Nein" } },
-              { id: 3, text: { de: "Nur ein Teil meiner Eltern" } },
-              { id: 4, text: { de: "Keine Angabe" } },
-            ],
-          },
-        },
       ],
       buttons: [
         { label: { de: "Absenden" }, color: "primaryColor", onClick: { action: "submit" } },

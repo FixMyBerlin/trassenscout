@@ -5,6 +5,7 @@ export const getPrdOrStgDomain = () => {
   // const origin = process.env.APP_ORIGIN || process.env.BLITZ_DEV_SERVER_ORIGIN
 
   const origin =
-    process.env.APP_ORIGIN?.replace("http:", "https:") || "https://staging.trassenscout.de"
+    process.env.NEXT_PUBLIC_APP_ORIGIN?.replace("http:", "https:") ||
+    "https://staging.trassenscout.de"
   return origin
 }
