@@ -49,18 +49,22 @@ export default resolver.pipe(
       .map((session) => session.responses)
       .flat()
       .filter((response) => response.surveyPart === 1)
-      .sort((a, b) => b.id - a.id)
+      // sort: oldest first
+      .sort((a, b) => a.id - b.id)
 
     // /data/feedback.ts
     const surveyResponsesFeedbackPart = surveySessions
       .map((session) => session.responses)
       .flat()
       .filter((response) => response.surveyPart === 2)
+      // sort: latest first
       // We need to sort again; the frontend received different orders before…
       .sort((a, b) => b.id - a.id)
 
     const groupedSurveyResponsesFirstPart: Record<string, Record<string, number>> = {}
 
+    // the first item of the array is the oldest response
+    // this is important as we need to get the original questions (including the deleted questions in case we delete questions while survey is active see frm7/data/survey.ts)
     const responseTemplateData = surveyResponsesFirstPart[0]?.data
     const responseTemplate = responseTemplateData && JSON.parse(responseTemplateData)
 

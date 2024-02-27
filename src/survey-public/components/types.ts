@@ -9,6 +9,7 @@ export type TSurvey = {
   lightColor: string
   darkColor: string
   pages: TPage[]
+  deletedQuestions?: TQuestion[]
 }
 
 export type TPage = {
