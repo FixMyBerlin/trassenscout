@@ -18,8 +18,8 @@ jobs:
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL_STAGING }}
-      SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY_STAGING }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY}}
       NGINX_HTPASSWD: ${{ secrets.NGINX_HTPASSWD }}
       MAILJET_APIKEY_PUBLIC: ${{ secrets.MAILJET_APIKEY_PUBLIC }}
       MAILJET_APIKEY_PRIVATE: ${{ secrets.MAILJET_APIKEY_PRIVATE }}
@@ -27,4 +27,4 @@ jobs:
       FELT_TOKEN: ${{ secrets.FELT_TOKEN }}
       S3_UPLOAD_SECRET: ${{ secrets.S3_UPLOAD_SECRET }}
       ASSETS_BUCKET_HOST: ${{ secrets.ASSETS_BUCKET_HOST }}
-      ASSETS_BUCKET_PATH: ${{ secrets.ASSETS_BUCKET_PATH_STAGING }}
+      ASSETS_BUCKET_PATH: ${{ secrets.ASSETS_BUCKET_PATH }}
