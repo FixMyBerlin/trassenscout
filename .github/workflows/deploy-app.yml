@@ -20,6 +20,12 @@ on:
       S3_UPLOAD_ROOTFOLDER:
         required: true
         type: string
+      ENVIRONMENT:
+        type: string
+        required: true
+      URL:
+        type: string
+        required: true
     secrets:
       AWS_ACCESS_KEY_ID:
         required: true
@@ -49,6 +55,9 @@ on:
 jobs:
   build-push-deploy-docker-images:
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.ENVIRONMENT }}
+      url: https://${{ inputs.URL }}
     steps:
       - uses: actions/checkout@v4
 

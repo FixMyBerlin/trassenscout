@@ -13,11 +13,13 @@ jobs:
       S3_UPLOAD_BUCKET: trassenscout
       S3_UPLOAD_REGION: eu-central-1
       S3_UPLOAD_ROOTFOLDER: upload-production
+      ENVIRONMENT: production
+      URL: trassenscout.de
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL_PRODUCTION }}
-      SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY_PRODUCTION }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY }}
       NGINX_HTPASSWD: ${{ secrets.NGINX_HTPASSWD }}
       MAILJET_APIKEY_PUBLIC: ${{ secrets.MAILJET_APIKEY_PUBLIC }}
       MAILJET_APIKEY_PRIVATE: ${{ secrets.MAILJET_APIKEY_PRIVATE }}
@@ -25,4 +27,4 @@ jobs:
       S3_UPLOAD_SECRET: ${{ secrets.S3_UPLOAD_SECRET }}
       FELT_TOKEN: ${{ secrets.FELT_TOKEN }}
       ASSETS_BUCKET_HOST: ${{ secrets.ASSETS_BUCKET_HOST }}
-      ASSETS_BUCKET_PATH: ${{ secrets.ASSETS_BUCKET_PATH_PRODUCTION }}
+      ASSETS_BUCKET_PATH: ${{ secrets.ASSETS_BUCKET_PATH }}

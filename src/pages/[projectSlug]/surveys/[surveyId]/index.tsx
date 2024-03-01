@@ -10,7 +10,7 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2 } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { TSurvey } from "src/survey-public/components/types"
+import { TQuestion, TSurvey } from "src/survey-public/components/types"
 import {
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
@@ -35,36 +35,48 @@ export const Survey = () => {
     component: "singleResponse" | "multipleResponse" | "text"
     props: { responses: { id: number; text: string }[] }
   }
+  const transformQuestion = (question: TQuestion): QuestionObject => {
+    return {
+      id: question.id,
+      label: question.label.de,
+      component: question.component,
+      props: {
+        responses: question.props.responses.map((response) => {
+          return {
+            id: response.id,
+            text: response.text.de,
+          }
+        }),
+      },
+    }
+  }
 
-  function extractQuestionsFromPages(pages: TSurvey["pages"]) {
+  const extractAndTransformQuestionsFromPages = (pages: TSurvey["pages"]): QuestionObject[] => {
     const transformedArray: QuestionObject[] = []
 
     pages.forEach((page) => {
       if (!page.questions || page.questions.length === 0) return
 
-      const questions = page.questions
+      const transformedQuestions = page.questions
         .map((question) => {
           if (!("responses" in question.props)) return
-
-          const questionObject = {
-            id: question.id,
-            label: question.label.de,
-            component: question.component,
-            props: {
-              responses: question.props.responses.map((response) => {
-                return {
-                  id: response.id,
-                  text: response.text.de,
-                }
-              }),
-            },
-          }
-          return questionObject
+          return transformQuestion(question)
         })
         .filter(Boolean)
-      transformedArray.push(...questions)
+      transformedArray.push(...transformedQuestions)
     })
+    return transformedArray
+  }
 
+  const transformDeletedQuestions = (questions: TQuestion[]): QuestionObject[] => {
+    const transformedArray: QuestionObject[] = []
+    const transformedQuestions = questions
+      .map((question) => {
+        if (!("responses" in question.props)) return
+        return transformQuestion(question)
+      })
+      .filter(Boolean)
+    transformedArray.push(...transformedQuestions)
     return transformedArray
   }
 
@@ -114,13 +126,22 @@ export const Survey = () => {
     },
   ]
 
+  // transform groupedSurveyResponsesFirstPart
   const rawData = Object.entries(groupedSurveyResponsesFirstPart).map(([k, v]) => {
     return { [k]: v }
   })
 
-  const surveyDefinitionArray = extractQuestionsFromPages(
+  // get all questions from surveyDefinition and transform them
+  let surveyDefinitionArray = extractAndTransformQuestionsFromPages(
     surveyDefinition.pages as TSurvey["pages"],
   )
+
+  // add th deleted questions to the array and transform them
+  if (surveyDefinition.deletedQuestions) {
+    surveyDefinitionArray = surveyDefinitionArray.concat(
+      transformDeletedQuestions(surveyDefinition.deletedQuestions),
+    )
+  }
 
   const groupedSurveyResponseData = rawData.map((r) => {
     const questionId = Object.keys(r)[0]
@@ -131,7 +152,7 @@ export const Survey = () => {
     if (!response) return
 
     const data = Object.entries(response).map(([key, value]) => ({
-      name: question?.props?.responses?.find((r) => r.id === Number(key))?.text ?? "(Missing name",
+      name: question?.props?.responses?.find((r) => r.id === Number(key))?.text ?? "Missing name",
       value,
     }))
 

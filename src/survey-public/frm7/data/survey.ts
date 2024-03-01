@@ -8,6 +8,39 @@ export const surveyDefinition: TSurvey = {
   primaryColor: "#D60F3D",
   darkColor: "#5F071B",
   lightColor: "#fecdd3",
+  // we had to delete these qustions while survey was active
+  // we keep the array of deleted question objects to be able to show these questions in the analysis
+  deletedQuestions: [
+    {
+      id: 23,
+      label: {
+        de: "Sind Sie in Deutschland geboren?",
+      },
+      component: "singleResponse",
+      props: {
+        responses: [
+          { id: 1, text: { de: "Ja" } },
+          { id: 2, text: { de: "Nein" } },
+          { id: 3, text: { de: "Keine Angabe" } },
+        ],
+      },
+    },
+    {
+      id: 24,
+      label: {
+        de: "Sind Ihre Eltern in Deutschland geboren?",
+      },
+      component: "singleResponse",
+      props: {
+        responses: [
+          { id: 1, text: { de: "Ja" } },
+          { id: 2, text: { de: "Nein" } },
+          { id: 3, text: { de: "Nur ein Teil meiner Eltern" } },
+          { id: 4, text: { de: "Keine Angabe" } },
+        ],
+      },
+    },
+  ],
   pages: [
     {
       id: 1,
