@@ -12,6 +12,14 @@ import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { z } from "zod"
 import { surveyResponseStatus } from "./surveyResponseStatus"
+import {
+  getFeedbackDefinitionBySurveySlug,
+  getResponseConfigBySurveySlug,
+} from "src/survey-public/utils/getConfigBySurveySlug"
+import { useParam } from "@blitzjs/next"
+import { useQuery } from "@blitzjs/rpc"
+import getSurvey from "src/surveys/queries/getSurvey"
+import { TResponse } from "src/survey-public/components/types"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -36,7 +44,24 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     topics: queryTopics,
     hasnotes: queryHasnotes,
     haslocation: queryHaslocation,
+    categories: queryCategories,
   } = router.query
+
+  const surveyId = useParam("surveyId", "string")
+  const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
+
+  const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
+  const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
+
+  const feedbackQuestions = []
+
+  for (let page of feedbackDefinition.pages) {
+    feedbackQuestions.push(...page.questions)
+  }
+
+  const feedbackQuestion = feedbackQuestions.find(
+    (q) => q.id === evaluationRefs["feedback-category"],
+  )
 
   const searchActive = queryOperator && queryStatuses && queryTopics && queryHasnotes
   if (!searchActive) {
@@ -49,6 +74,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
           topics: [...topics.map((t) => String(t.id)), "0"], // default: all checked
           hasnotes: "ALL", // default: radio "ALL"
           haslocation: "ALL", // default: radio "ALL"
+          //@ts-expect-error
+          categories: [...feedbackQuestion?.props?.responses.map((r: TResponse) => String(r.id))], // default: all checked
         },
       },
       undefined,
@@ -64,6 +91,10 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
       topics: searchActive ? queryTopics : [...topics.map((t) => String(t.id)), "0"], // default: all checked
       hasnotes: searchActive ? queryHasnotes : "ALL", // default: radio "ALL"
       haslocation: searchActive ? queryHaslocation : "ALL", // default: radio "ALL"
+      categories: searchActive
+        ? queryCategories
+        : //@ts-expect-error
+          [...feedbackQuestion?.props?.responses.map((r: TResponse) => String(r.id))], // default: all checked
     }),
   })
 
@@ -79,6 +110,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     methods.setValue("hasnotes", router.query.hasnotes)
     // @ts-expect-error
     methods.setValue("haslocation", router.query.haslocation)
+    // @ts-expect-error
+    methods.setValue("categories", router.query.categories)
   }, [methods, router])
 
   const handleSubmit = async (values: any) => {
@@ -112,6 +145,11 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     }),
     { value: "0", label: "Ohne Thema" },
   ]
+  // @ts-expect-error
+  const categoriesOptions = feedbackQuestion?.props?.responses.map((r: TResponse) => {
+    return { value: String(r.id), label: r.text.de }
+  })
+
   const hasnotesOptions = [
     { value: "ALL", label: "Alle" },
     { value: "true", label: "Mit Notiz" },
@@ -162,7 +200,13 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 items={haslocationOptions}
               />
             </div>
-            <div>
+            <div className="flex flex-col sm:flex-row gap-6">
+              <LabeledCheckboxGroup
+                label="Kategorien"
+                classLabelOverwrite="font-semibold mb-3"
+                scope="categories"
+                items={categoriesOptions}
+              />
               <LabeledCheckboxGroup
                 label="Themen"
                 classLabelOverwrite="font-semibold mb-3"
@@ -171,7 +215,11 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 classNameItemWrapper="grid grid-cols-5 grid-rows-6 grid-flow-col-dense"
               />
             </div>
-            <button type="button" className={clsx(linkStyles, "flex")} onClick={handleFilterReset}>
+            <button
+              type="button"
+              className={clsx(linkStyles, "flex mt-4")}
+              onClick={handleFilterReset}
+            >
               <XMarkIcon className="h-4 w-4" />
               Alle Filter zurücksetzen
             </button>

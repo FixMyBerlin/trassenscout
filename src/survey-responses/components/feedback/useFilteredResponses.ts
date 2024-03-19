@@ -7,7 +7,7 @@ export const useFilteredResponses = (
   surveySlug: string,
 ) => {
   const router = useRouter()
-  const { operator, statuses, topics, hasnotes, haslocation } = router.query
+  const { operator, statuses, topics, hasnotes, haslocation, categories } = router.query
 
   const { evaluationRefs } = getResponseConfigBySurveySlug(surveySlug)
 
@@ -18,6 +18,7 @@ export const useFilteredResponses = (
   // console.log({ topics })
   // console.log({ hasnotes })
   // console.log({ haslocation })
+  // console.log({ categories })
 
   const filtered = responses
     // Handle `operator` which is the `operatorId: number` as 'string'
@@ -62,6 +63,12 @@ export const useFilteredResponses = (
       // @ts-expect-error `data` is of type unkown
       if (haslocation === "false") return !response.data[evaluationRefs["feedback-location"]]
       return response
+    })
+    // Handle `categories`
+    .filter((response) => {
+      if (!categories) return
+      // @ts-expect-error `data` is of type unkown
+      return categories.includes(String(response.data[evaluationRefs["feedback-category"]]))
     })
 
   return filtered
