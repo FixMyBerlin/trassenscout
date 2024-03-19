@@ -1,19 +1,23 @@
 import { useRouter } from "next/router"
-import { type } from "os"
+import { getResponseConfigBySurveySlug } from "src/survey-public/utils/getConfigBySurveySlug"
 import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedbackSurveyResponses"
 
 export const useFilteredResponses = (
   responses: Awaited<ReturnType<typeof getFeedbackSurveyResponses>>,
+  surveySlug: string,
 ) => {
   const router = useRouter()
-  const { operator, statuses, topics, hasnotes } = router.query
+  const { operator, statuses, topics, hasnotes, haslocation } = router.query
 
-  if (!operator || !statuses || !topics || !hasnotes) return responses
+  const { evaluationRefs } = getResponseConfigBySurveySlug(surveySlug)
+
+  if (!operator || !statuses || !topics || !hasnotes || !haslocation) return responses
 
   // console.log({ operator })
   // console.log({ statuses })
   // console.log({ topics })
   // console.log({ hasnotes })
+  // console.log({ haslocation })
 
   const filtered = responses
     // Handle `operator` which is the `operatorId: number` as 'string'
@@ -43,11 +47,20 @@ export const useFilteredResponses = (
         )
       return topics.map(Number).some((topic) => response.surveyResponseTopics.includes(topic))
     })
-    // Handle `hasnotes` which is a boolean
+    // Handle `hasnotes`
     .filter((response) => {
       if (hasnotes === "ALL") return response
       if (hasnotes === "true") return response.note
       if (hasnotes === "false") return !response.note
+      return response
+    })
+    // Handle `haslocation`
+    .filter((response) => {
+      if (haslocation === "ALL") return response
+      // @ts-expect-error `data` is of type unkown
+      if (haslocation === "true") return response.data[evaluationRefs["feedback-location"]]
+      // @ts-expect-error `data` is of type unkown
+      if (haslocation === "false") return !response.data[evaluationRefs["feedback-location"]]
       return response
     })
 

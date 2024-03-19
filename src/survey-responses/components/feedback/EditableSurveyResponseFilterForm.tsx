@@ -1,3 +1,4 @@
+import { XMarkIcon } from "@heroicons/react/20/solid"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
 import clsx from "clsx"
@@ -11,7 +12,6 @@ import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { z } from "zod"
 import { surveyResponseStatus } from "./surveyResponseStatus"
-import { XMarkIcon } from "@heroicons/react/20/solid"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -35,6 +35,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     statuses: queryStatuses,
     topics: queryTopics,
     hasnotes: queryHasnotes,
+    haslocation: queryHaslocation,
   } = router.query
 
   const searchActive = queryOperator && queryStatuses && queryTopics && queryHasnotes
@@ -47,6 +48,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
           statuses: [...Object.keys(surveyResponseStatus)], // default: all checked
           topics: [...topics.map((t) => String(t.id)), "0"], // default: all checked
           hasnotes: "ALL", // default: radio "ALL"
+          haslocation: "ALL", // default: radio "ALL"
         },
       },
       undefined,
@@ -61,6 +63,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
       statuses: searchActive ? queryStatuses : [...Object.keys(surveyResponseStatus)], // default: all checked
       topics: searchActive ? queryTopics : [...topics.map((t) => String(t.id)), "0"], // default: all checked
       hasnotes: searchActive ? queryHasnotes : "ALL", // default: radio "ALL"
+      haslocation: searchActive ? queryHaslocation : "ALL", // default: radio "ALL"
     }),
   })
 
@@ -74,6 +77,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     methods.setValue("topics", router.query.topics)
     // @ts-expect-error
     methods.setValue("hasnotes", router.query.hasnotes)
+    // @ts-expect-error
+    methods.setValue("haslocation", router.query.haslocation)
   }, [methods, router])
 
   const handleSubmit = async (values: any) => {
@@ -112,10 +117,15 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     { value: "true", label: "Mit Notiz" },
     { value: "false", label: "Ohne Notiz" },
   ]
+  const haslocationOptions = [
+    { value: "ALL", label: "Alle" },
+    { value: "true", label: "Mit Ortsangabe" },
+    { value: "false", label: "Ohne Ortsangabe" },
+  ]
 
   return (
     <nav className="border border-gray-300 rounded-xl">
-      <details>
+      <details open>
         <summary className="px-4 py-2 cursor-pointer text-gray-700 hover:bg-gray-50 rounded-xl">
           Filter
         </summary>
@@ -144,12 +154,21 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 scope="hasnotes"
                 items={hasnotesOptions}
               />
+
+              <LabeledRadiobuttonGroup
+                label="Ortsangabe"
+                classLabelOverwrite="font-semibold mb-3"
+                scope="haslocation"
+                items={haslocationOptions}
+              />
+            </div>
+            <div>
               <LabeledCheckboxGroup
                 label="Themen"
                 classLabelOverwrite="font-semibold mb-3"
                 scope="topics"
                 items={topicsOptions}
-                classNameItemWrapper="grid grid-cols-3 grid-rows-10 grid-flow-col-dense"
+                classNameItemWrapper="grid grid-cols-5 grid-rows-6 grid-flow-col-dense"
               />
             </div>
             <button type="button" className={clsx(linkStyles, "flex")} onClick={handleFilterReset}>

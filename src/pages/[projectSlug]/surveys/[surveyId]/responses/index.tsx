@@ -27,7 +27,7 @@ export const SurveyResponse = () => {
     getFeedbackSurveyResponses,
     { projectSlug, surveyId: survey.id },
   )
-  const filteredResponses = useFilteredResponses(feedbackSurveyResponses)
+  const filteredResponses = useFilteredResponses(feedbackSurveyResponses, survey.slug)
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const [{ surveyResponseTopics: topics }, { refetch: refetchTopics }] = useQuery(
     getSurveyResponseTopicsByProject,
