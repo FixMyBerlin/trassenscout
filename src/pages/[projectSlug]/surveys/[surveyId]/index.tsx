@@ -105,9 +105,9 @@ export const Survey = () => {
       firstRow: {
         "Interesse an Updates": survey.interestedParticipants || "k. A.",
         Teilnehmende: surveySessions.length,
-        "Inhaltliches Feedback": surveyResponsesFeedbackPart.length,
-        "Inhaltliches Feedback mit Ortsangabe": surveyResponsesFeedbackPartWithLocation.length,
-        "Inhaltliches Feedback ohne Ortsangabe":
+        "Inhaltliche Beiträge": surveyResponsesFeedbackPart.length,
+        "Inhaltliche Beiträge mit Ortsangabe": surveyResponsesFeedbackPartWithLocation.length,
+        "Inhaltliche Beiträge ohne Ortsangabe":
           surveyResponsesFeedbackPart.length - surveyResponsesFeedbackPartWithLocation.length,
       },
     },
@@ -173,8 +173,7 @@ export const Survey = () => {
           <>
             <SurveyTabs />
             <p className="mt-5 text-base text-gray-500">
-              Dieser Bereich sammelt die Ergebnisse und Berichte der Beteiligung. Hier finden sie
-              die Excel Tabelle und ausgewählte Auswertungsergebnisse.
+              Dieser Bereich sammelt die Ergebnisse der Umfragen und Beteiligungen.
             </p>
             {survey.active && surveyDefinition.canonicalUrl && (
               <p className="text-base text-gray-500">

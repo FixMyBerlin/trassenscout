@@ -51,6 +51,8 @@ on:
         required: true
       ASSETS_BUCKET_PATH:
         required: true
+      ADMIN_EMAIL:
+        required: true
 
 jobs:
   build-push-deploy-docker-images:
@@ -132,6 +134,7 @@ jobs:
           FELT_TOKEN: ${{ secrets.FELT_TOKEN }}
           ASSETS_BUCKET_HOST: ${{ secrets.ASSETS_BUCKET_HOST }}
           ASSETS_BUCKET_PATH: ${{ secrets.ASSETS_BUCKET_PATH }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
 
       - name: Create Deployment and deploy
         run: >

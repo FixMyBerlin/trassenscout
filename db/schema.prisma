@@ -276,8 +276,8 @@ model Subsubsection {
   trafficLoad     Int? // Verkehrsbelastung
   trafficLoadDate DateTime? // Datum der Verkehrsbelastung
 
-  planningPeriod                Float? //  Planungsdauer
-  constructionPeriod            Float? // Baudauer
+  planningPeriod                Float? //  Planungsdauer in Monaten
+  constructionPeriod            Float? // Baudauer in Monaten
   estimatedCompletionDate       DateTime? // Jahresquartal der geplanten Fertigstellung als string Form "1-2023"
   //
   costEstimate                  Float? // Euro
