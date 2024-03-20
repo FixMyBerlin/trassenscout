@@ -29,8 +29,7 @@ export const Surveys = () => {
     <>
       <PageHeader
         title="Beteiligungen"
-        description="Dieser Bereich sammelt die Ergebnisse und Berichte der Beteiligungen. Hier finden sie die Excel Tabelle und ausgewählte
-            Auswertungsergebnisse."
+        description="Dieser Bereich sammelt die Ergebnisse der Umfragen und Beteiligungen."
         className="mt-12"
       />
       <div className="flex flex-col gap-4">

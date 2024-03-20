@@ -16,7 +16,7 @@ export const SurveyTabs: React.FC = () => {
           href: Routes.SurveyPage({ projectSlug: projectSlug!, surveyId: surveyId! }),
         },
         {
-          name: "Feedback",
+          name: "Beiträge",
           href: Routes.SurveyResponsePage({
             projectSlug: projectSlug!,
             surveyId: surveyId!,

@@ -26,7 +26,7 @@ export function ExternalSurveyResponseForm<S extends z.ZodType<any, any>>(
 
   return (
     <Form<S> {...props}>
-      <H2>Neuen Hinweis erfassen</H2>
+      <H2>Neuen Beitrag erfassen</H2>
       <p>
         Hier können Sie die Beiträge erfassen, die abseits der Online-Beteiligung eingereicht
         wurden.
