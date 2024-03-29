@@ -1,12 +1,12 @@
 import { useQuery } from "@blitzjs/rpc"
-import getStatsInfopanelCompletion from "../queries/getStatsInfopanelCompletion"
+import getStatsInfopanelCompletion from "../queries/getStatsInfopanelSubsectionCompletion"
 import { getQuarter, getYear } from "date-fns"
 
 type Props = {
   subsectionSlug: string
   projectSlug: string
 }
-export const SubsubsectionInfoPanelCellCompletion: React.FC<Props> = ({
+export const SubsectionInfoPanelCellCompletion: React.FC<Props> = ({
   subsectionSlug,
   projectSlug,
 }) => {

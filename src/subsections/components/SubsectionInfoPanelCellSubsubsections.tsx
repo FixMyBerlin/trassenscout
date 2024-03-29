@@ -1,12 +1,12 @@
 import { useQuery } from "@blitzjs/rpc"
-import getStatsInfopanelSubsections from "../queries/getStatsInfopanelSubsections"
+import getStatsInfopanelSubsections from "../queries/getStatsInfopanelSubsectionSubsubsections"
 import { formatGerKm, formatGerPercentage } from "./utils/formatNumericInfo"
 
 type Props = {
   subsectionSlug: string
   projectSlug: string
 }
-export const SubsubsectionInfoPanelCellSubsections: React.FC<Props> = ({
+export const SubsectionInfoPanelCellSubsubsections: React.FC<Props> = ({
   subsectionSlug,
   projectSlug,
 }) => {

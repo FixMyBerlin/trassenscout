@@ -1,5 +1,5 @@
 import { useQuery } from "@blitzjs/rpc"
-import getStatsInfopanelSubsection from "../queries/getStatsInfopanelSubsection"
+import getStatsInfopanelSubsection from "../queries/getStatsInfopanelSubsectionSubsection"
 import { getPriorityTranslation } from "./utils/getPriorityTranslation"
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 
@@ -7,7 +7,7 @@ type Props = {
   subsectionSlug: string
   projectSlug: string
 }
-export const SubsubsectionInfoPanelCellSubsection: React.FC<Props> = ({
+export const SubsectionInfoPanelCellSubsection: React.FC<Props> = ({
   subsectionSlug,
   projectSlug,
 }) => {

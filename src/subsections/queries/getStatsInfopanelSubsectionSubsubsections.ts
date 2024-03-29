@@ -5,15 +5,15 @@ import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { GetSubsectionSchema, SubsectionWithPosition } from "./getSubsection"
 
-type SubsectionCategory = {
+type SubsubsectionCategory = {
   Anzahl: number
   Summe: number
 }
 
 type SububsectionsCategoryCount = {
-  "RF (kein Bestand)": SubsectionCategory
-  "RF (Bestand)": SubsectionCategory
-  SF: SubsectionCategory
+  "RF (kein Bestand)": SubsubsectionCategory
+  "RF (Bestand)": SubsubsectionCategory
+  SF: SubsubsectionCategory
 }
 
 type SubsectionWithSubsubsectionsWithSpecialFeaturesCount = {
