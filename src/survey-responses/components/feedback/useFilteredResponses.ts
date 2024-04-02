@@ -7,11 +7,12 @@ export const useFilteredResponses = (
   surveySlug: string,
 ) => {
   const router = useRouter()
-  const { operator, statuses, topics, hasnotes, haslocation, categories } = router.query
+  const { operator, statuses, topics, hasnotes, haslocation, categories, searchterm } = router.query
 
   const { evaluationRefs } = getResponseConfigBySurveySlug(surveySlug)
 
-  if (!operator || !statuses || !topics || !hasnotes || !haslocation) return responses
+  if (!operator || !statuses || !topics || !hasnotes || !haslocation || searchterm === undefined)
+    return responses
 
   // console.log({ operator })
   // console.log({ statuses })
@@ -19,6 +20,7 @@ export const useFilteredResponses = (
   // console.log({ hasnotes })
   // console.log({ haslocation })
   // console.log({ categories })
+  // console.log({ searchterm })
 
   const filtered = responses
     // Handle `operator` which is the `operatorId: number` as 'string'
@@ -69,6 +71,30 @@ export const useFilteredResponses = (
       if (!categories) return
       // @ts-expect-error `data` is of type unkown
       return categories.includes(String(response.data[evaluationRefs["feedback-category"]]))
+    })
+    // Handle `searchterm`
+    .filter((response) => {
+      if (!searchterm) return response
+      return (
+        // @ts-expect-error - searchterm is a string
+        response.note?.toLowerCase().includes(searchterm.trim().toLowerCase()) ||
+        (response?.data &&
+          // @ts-expect-error `data` is of type unkown
+          response?.data[evaluationRefs["feedback-usertext-1"]] &&
+          // @ts-expect-error `data` is of type unkown
+          response?.data[evaluationRefs["feedback-usertext-1"]]
+            .toLowerCase()
+            // @ts-expect-error - searchterm is a string
+            .includes(searchterm.trim().toLowerCase())) ||
+        (response?.data &&
+          // @ts-expect-error `data` is of type unkown
+          response?.data[evaluationRefs["feedback-usertext-2"]] &&
+          // @ts-expect-error `data` is of type unkown
+          response?.data[evaluationRefs["feedback-usertext-2"]]
+            .toLowerCase()
+            // @ts-expect-error - searchterm is a string
+            .includes(searchterm.trim().toLowerCase()))
+      )
     })
 
   return filtered

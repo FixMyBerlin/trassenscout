@@ -95,7 +95,7 @@ export const ExternalSurveyResponseFormModal: React.FC<Props> = ({ refetch }) =>
         className={clsx("flex flex-row gap-1", blueButtonStyles)}
       >
         <PlusIcon className="h-3.5 w-3.5" />
-        Neuen Beitrag erfassen
+        Beitrag manuell hinzufügen
       </button>
       <Modal
         className="sm:!max-w-[600px]"
