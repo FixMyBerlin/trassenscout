@@ -62,8 +62,14 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   const feedbackQuestion = feedbackQuestions.find(
     (q) => q.id === evaluationRefs["feedback-category"],
   )
+  const searchActive =
+    queryOperator &&
+    queryStatuses &&
+    queryTopics &&
+    queryHasnotes &&
+    queryHaslocation &&
+    queryCategories
 
-  const searchActive = queryOperator && queryStatuses && queryTopics && queryHasnotes
   if (!searchActive) {
     void router.push(
       {
@@ -82,6 +88,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
       { scroll: false },
     )
   }
+
   const methods = useForm<z.infer<S>>({
     mode: "onBlur",
     resolver: schema ? zodResolver(schema) : undefined,
