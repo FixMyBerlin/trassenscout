@@ -3,9 +3,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
 import clsx from "clsx"
 import { useRouter } from "next/router"
-import { PropsWithoutRef, useEffect } from "react"
+import { PropsWithoutRef, use, useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-import { LabeledCheckboxGroup, LabeledRadiobuttonGroup } from "src/core/components/forms"
+import {
+  LabeledCheckboxGroup,
+  LabeledRadiobuttonGroup,
+  LabeledTextField,
+} from "src/core/components/forms"
 import { linkStyles } from "src/core/components/links"
 import { Prettify } from "src/core/types"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
@@ -45,6 +49,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     hasnotes: queryHasnotes,
     haslocation: queryHaslocation,
     categories: queryCategories,
+    searchterm: querySearchTerm,
   } = router.query
 
   const surveyId = useParam("surveyId", "string")
@@ -68,7 +73,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     queryTopics &&
     queryHasnotes &&
     queryHaslocation &&
-    queryCategories
+    queryCategories &&
+    querySearchTerm !== undefined
 
   if (!searchActive) {
     void router.push(
@@ -82,6 +88,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
           haslocation: "ALL", // default: radio "ALL"
           //@ts-expect-error
           categories: [...feedbackQuestion?.props?.responses.map((r: TResponse) => String(r.id))], // default: all checked
+          searchterm: "",
         },
       },
       undefined,
@@ -97,6 +104,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
       statuses: searchActive ? queryStatuses : [...Object.keys(surveyResponseStatus)], // default: all checked
       topics: searchActive ? queryTopics : [...topics.map((t) => String(t.id)), "0"], // default: all checked
       hasnotes: searchActive ? queryHasnotes : "ALL", // default: radio "ALL"
+      searchterm: searchActive ? querySearchTerm : "", // default: radio "ALL"
       haslocation: searchActive ? queryHaslocation : "ALL", // default: radio "ALL"
       categories: searchActive
         ? queryCategories
@@ -119,9 +127,17 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     methods.setValue("haslocation", router.query.haslocation)
     // @ts-expect-error
     methods.setValue("categories", router.query.categories)
+    // @ts-expect-error
+    methods.setValue("searchterm", router.query.searchterm)
   }, [methods, router])
 
+  useEffect(() => {
+    // @ts-expect-error
+    methods.setFocus("searchterm")
+  }, [methods, router.query.searchterm])
+
   const handleSubmit = async (values: any) => {
+    methods.reset(undefined, { keepValues: true })
     await router.push({ query: { ...router.query, ...values } }, undefined, { scroll: false })
   }
 
@@ -226,6 +242,13 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                   classNameItemWrapper="grid grid-cols-5 grid-rows-6 grid-flow-col-dense"
                 />
               )}
+            </div>
+            <div className="w-[300px]">
+              <LabeledTextField
+                name="searchterm"
+                label="Freitextsuche"
+                placeholder="Beiträge nach Suchwort filtern"
+              />
             </div>
             <button
               type="button"

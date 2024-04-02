@@ -63,14 +63,18 @@ export const SurveyResponse = () => {
       <PageHeader title={survey.title} className="mt-12" description={<SurveyTabs />} />
 
       <div className="space-y-4 mt-12">
-        <H2>Beiträge aus Bürgerbeteiligung ({filteredResponses.length})</H2>
+        <H2>Beiträge aus Bürgerbeteiligung </H2>
 
         <ExternalSurveyResponseFormModal refetch={refetchResponses} />
 
         <EditableSurveyResponseFilterForm operators={operators} topics={topics} />
 
         <ZeroCase visible={filteredResponses.length} name={"Beiträge"} />
-
+        {filteredResponses.length === 1 ? (
+          <p>1 Beitrag</p>
+        ) : (
+          <p>{filteredResponses.length} Beiträge</p>
+        )}
         <section>
           {filteredResponses.map((response) => (
             <div
