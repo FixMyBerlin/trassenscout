@@ -139,12 +139,15 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
       return { value, label }
     }),
   ]
-  const topicsOptions = [
-    ...topics.map((t) => {
-      return { value: String(t.id), label: t.title }
-    }),
-    { value: "0", label: "Ohne Thema" },
-  ]
+  const topicsOptions = topics.length
+    ? [
+        ...topics.map((t) => {
+          return { value: String(t.id), label: t.title }
+        }),
+        { value: "0", label: "Ohne Thema" },
+      ]
+    : []
+
   // @ts-expect-error
   const categoriesOptions = feedbackQuestion?.props?.responses.map((r: TResponse) => {
     return { value: String(r.id), label: r.text.de }
@@ -207,13 +210,15 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 scope="categories"
                 items={categoriesOptions}
               />
-              <LabeledCheckboxGroup
-                label="Themen"
-                classLabelOverwrite="font-semibold mb-3"
-                scope="topics"
-                items={topicsOptions}
-                classNameItemWrapper="grid grid-cols-5 grid-rows-6 grid-flow-col-dense"
-              />
+              {!!topicsOptions.length && (
+                <LabeledCheckboxGroup
+                  label="Themen"
+                  classLabelOverwrite="font-semibold mb-3"
+                  scope="topics"
+                  items={topicsOptions}
+                  classNameItemWrapper="grid grid-cols-5 grid-rows-6 grid-flow-col-dense"
+                />
+              )}
             </div>
             <button
               type="button"
