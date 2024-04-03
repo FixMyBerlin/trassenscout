@@ -33,6 +33,7 @@ type FormProps<S extends z.ZodType<any, any>> = Omit<
   userLocationQuestionId: number | undefined
   maptilerStyleUrl: string
   defaultViewState: LngLatBoundsLike
+  showMap?: boolean
 } & Pick<EditableSurveyResponseListItemProps, "response" | "operators" | "topics" | "subsections">
 
 export const FORM_ERROR = "FORM_ERROR"
@@ -48,6 +49,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   userLocationQuestionId,
   initialValues,
   refetchResponsesAndTopics,
+  showMap,
 }: FormProps<S>) {
   const router = useRouter()
   const methods = useForm<z.infer<S>>({
@@ -157,7 +159,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
 
   return (
     <FormProvider {...methods}>
-      <div className="grid grid-cols-2 gap-8">
+      <div className={clsx(showMap ? "grid-cols-2" : "grid-cols-1", "grid gap-8")}>
         <div>
           <div className="flex flex-col justify-between col-span-2">
             <div className="flex flex-col w-full gap-10">
@@ -203,16 +205,18 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           </div>
         </div>
 
-        <div>
-          <EditableSurveyResponseFormMap
-            marker={
-              // @ts-expect-error `data` is unkown
-              response.data[userLocationQuestionId] as { lat: number; lng: number } | undefined
-            }
-            maptilerStyleUrl={maptilerStyleUrl}
-            defaultViewState={defaultViewState}
-          />
-        </div>
+        {showMap && (
+          <div>
+            <EditableSurveyResponseFormMap
+              marker={
+                // @ts-expect-error `data` is unkown
+                response.data[userLocationQuestionId] as { lat: number; lng: number } | undefined
+              }
+              maptilerStyleUrl={maptilerStyleUrl}
+              defaultViewState={defaultViewState}
+            />
+          </div>
+        )}
 
         <form
           className="flex"
