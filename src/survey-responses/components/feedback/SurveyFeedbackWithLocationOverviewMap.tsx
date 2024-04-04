@@ -1,8 +1,8 @@
-import { Routes } from "@blitzjs/next"
+import { Routes, useParam } from "@blitzjs/next"
 import "maplibre-gl/dist/maplibre-gl.css"
 import router from "next/router"
 import React, { useState } from "react"
-import Map, { LngLatBoundsLike, Marker, NavigationControl, useMap } from "react-map-gl/maplibre"
+import Map, { LngLatBoundsLike, Marker, NavigationControl } from "react-map-gl/maplibre"
 import { BackgroundSwitcher, LayerType } from "src/core/components/Map/BackgroundSwitcher"
 import SurveyStaticPin from "src/core/components/Map/SurveyStaticPin"
 
@@ -22,6 +22,8 @@ export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
   surveyResponsesFeedbackPartWithLocation,
 }) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
+  const surveyId = useParam("surveyId", "number")
+  const projectSlug = useParam("projectSlug", "string")
 
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)
@@ -35,8 +37,8 @@ export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
   const handleSelect = (responseId: number) => {
     void router.push(
       Routes.SurveyResponseWithLocationPage({
-        projectSlug: "rs8",
-        surveyId: 1,
+        projectSlug: projectSlug!,
+        surveyId: surveyId!,
         surveyResponseId: responseId,
       }),
       undefined,
