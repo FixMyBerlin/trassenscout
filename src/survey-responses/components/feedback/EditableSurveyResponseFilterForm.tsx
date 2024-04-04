@@ -1,9 +1,12 @@
+import { useParam } from "@blitzjs/next"
+import { useQuery } from "@blitzjs/rpc"
 import { XMarkIcon } from "@heroicons/react/20/solid"
+import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/outline"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
 import clsx from "clsx"
 import { useRouter } from "next/router"
-import { PropsWithoutRef, use, useEffect } from "react"
+import { PropsWithoutRef, useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import {
   LabeledCheckboxGroup,
@@ -13,17 +16,15 @@ import {
 import { linkStyles } from "src/core/components/links"
 import { Prettify } from "src/core/types"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
-import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
-import { z } from "zod"
-import { surveyResponseStatus } from "./surveyResponseStatus"
+import { TResponse } from "src/survey-public/components/types"
 import {
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
 } from "src/survey-public/utils/getConfigBySurveySlug"
-import { useParam } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
+import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import getSurvey from "src/surveys/queries/getSurvey"
-import { TResponse } from "src/survey-public/components/types"
+import { z } from "zod"
+import { surveyResponseStatus } from "./surveyResponseStatus"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -131,13 +132,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     methods.setValue("searchterm", router.query.searchterm)
   }, [methods, router])
 
-  useEffect(() => {
-    // @ts-expect-error
-    methods.setFocus("searchterm")
-  }, [methods, router.query.searchterm])
-
   const handleSubmit = async (values: any) => {
-    methods.reset(undefined, { keepValues: true })
     await router.push({ query: { ...router.query, ...values } }, undefined, { scroll: false })
   }
 
@@ -218,7 +213,6 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 scope="hasnotes"
                 items={hasnotesOptions}
               />
-
               <LabeledRadiobuttonGroup
                 label="Ortsangabe"
                 classLabelOverwrite="font-semibold mb-3"
@@ -243,22 +237,30 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 />
               )}
             </div>
+          </form>
+          <form
+            className="px-4 pb-2 pt-4 rounded-b-xl flex items-end gap-4"
+            onBlur={async () => await methods.handleSubmit(handleSubmit)()}
+          >
             <div className="w-[300px]">
               <LabeledTextField
                 name="searchterm"
-                label="Freitextsuche"
+                label=""
                 placeholder="Beiträge nach Suchwort filtern"
               />
             </div>
-            <button
-              type="button"
-              className={clsx(linkStyles, "flex mt-4")}
-              onClick={handleFilterReset}
-            >
-              <XMarkIcon className="h-4 w-4" />
-              Alle Filter zurücksetzen
+            <button type="button" className="h-full pb-2">
+              <MagnifyingGlassCircleIcon className="w-6 h-6 text-blue-500 hover:text-blue-800" />
             </button>
           </form>
+          <button
+            type="button"
+            className={clsx(linkStyles, "flex mt-4 px-4 pb-2")}
+            onClick={handleFilterReset}
+          >
+            <XMarkIcon className="h-4 w-4" />
+            Alle Filter zurücksetzen
+          </button>
         </FormProvider>
       </details>
     </nav>
