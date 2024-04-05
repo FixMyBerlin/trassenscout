@@ -32,10 +32,8 @@ export type EditableSurveyResponseListItemProps = {
   topics: Prettify<
     Awaited<ReturnType<typeof getSurveyResponseTopicsByProject>>["surveyResponseTopics"]
   >
-  isAccordion?: boolean
   subsections: SubsectionWithPosition[]
   refetchResponsesAndTopics: () => void
-  showMap?: boolean
 }
 
 const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemProps> = ({
@@ -43,18 +41,14 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   operators,
   topics,
   subsections,
-  isAccordion,
   refetchResponsesAndTopics,
-  showMap,
 }) => {
   const router = useRouter()
+
   const params = useRouterQuery()
-  const open = !isAccordion ? true : parseInt(String(params.responseDetails)) === response.id
+  const open = parseInt(String(params.responseDetails)) === response.id
   const surveyId = useParam("surveyId", "string")
   const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
-
-  const [deleteCalendarEntryMutation] = useMutation(deleteSurveyResponse)
-
   useEffect(() => {
     const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
     const root = document.documentElement
@@ -62,6 +56,8 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
     root.style.setProperty("--survey-dark-color", surveyDefinition.darkColor)
     root.style.setProperty("--survey-light-color", surveyDefinition.lightColor)
   }, [survey.slug])
+
+  const [deleteCalendarEntryMutation] = useMutation(deleteSurveyResponse)
 
   const handleOpen = () => {
     router.query.responseDetails = String(response.id)
@@ -129,13 +125,13 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   }
 
   return (
-    <article data-open={open} className="bg-white">
+    <article data-open={open}>
       <button
         className={clsx(
           "py-4 text-left text-sm text-gray-900 hover:bg-gray-50 group flex w-full items-center justify-between pr-4 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75 sm:pr-6",
           open ? "bg-gray-50" : "border-b border-gray-300",
         )}
-        onClick={isAccordion ? () => (open ? handleClose() : handleOpen()) : undefined}
+        onClick={() => (open ? handleClose() : handleOpen())}
       >
         <div className="gap-4 flex items-center px-6 pb-2 pt-3">
           <h3 className="text-gray-700">{response.id} </h3>
@@ -152,12 +148,11 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
           <Markdown className="ml-4 line-clamp-2" markdown={userTextPreview} />
         </div>
 
-        {isAccordion &&
-          (open ? (
-            <ChevronUpIcon className="h-5 w-5 text-gray-700 group-hover:text-black flex-shrink-0" />
-          ) : (
-            <ChevronDownIcon className="h-5 w-5 text-gray-700 group-hover:text-black flex-shrink-0" />
-          ))}
+        {open ? (
+          <ChevronUpIcon className="h-5 w-5 text-gray-700 group-hover:text-black flex-shrink-0" />
+        ) : (
+          <ChevronDownIcon className="h-5 w-5 text-gray-700 group-hover:text-black flex-shrink-0" />
+        )}
       </button>
 
       {open && (
@@ -190,7 +185,6 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             </div>
           </div>
           <EditableSurveyResponseForm
-            showMap={showMap}
             initialValues={{
               ...response,
               // Mapping to string is required so the ReactHookForm and our Radiobutton can compare the data to find what is selected
