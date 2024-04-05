@@ -1,5 +1,5 @@
 import { useQuery } from "@blitzjs/rpc"
-import getStatsInfopanelSubsectionsDetails from "../queries/getStatsInfopanelSubsectionsDetails"
+import getStatsInfopanelSubsectionsDetails from "../queries/getStatsInfopanelSubsectionStandards"
 import { formatGerKm, formatGerPercentage } from "./utils/formatNumericInfo"
 
 type Props = {

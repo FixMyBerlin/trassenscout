@@ -1,25 +1,30 @@
+import { useParam } from "@blitzjs/next"
+import { useQuery } from "@blitzjs/rpc"
 import { XMarkIcon } from "@heroicons/react/20/solid"
+import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/outline"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { PropsWithoutRef, useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-import { LabeledCheckboxGroup, LabeledRadiobuttonGroup } from "src/core/components/forms"
+import {
+  LabeledCheckboxGroup,
+  LabeledRadiobuttonGroup,
+  LabeledTextField,
+} from "src/core/components/forms"
 import { linkStyles } from "src/core/components/links"
 import { Prettify } from "src/core/types"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
-import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
-import { z } from "zod"
-import { surveyResponseStatus } from "./surveyResponseStatus"
+import { TResponse } from "src/survey-public/components/types"
 import {
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
 } from "src/survey-public/utils/getConfigBySurveySlug"
-import { useParam } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
+import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import getSurvey from "src/surveys/queries/getSurvey"
-import { TResponse } from "src/survey-public/components/types"
+import { z } from "zod"
+import { surveyResponseStatus } from "./surveyResponseStatus"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -45,6 +50,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     hasnotes: queryHasnotes,
     haslocation: queryHaslocation,
     categories: queryCategories,
+    searchterm: querySearchTerm,
   } = router.query
 
   const surveyId = useParam("surveyId", "string")
@@ -62,8 +68,15 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   const feedbackQuestion = feedbackQuestions.find(
     (q) => q.id === evaluationRefs["feedback-category"],
   )
+  const searchActive =
+    queryOperator &&
+    queryStatuses &&
+    queryTopics &&
+    queryHasnotes &&
+    queryHaslocation &&
+    queryCategories &&
+    querySearchTerm !== undefined
 
-  const searchActive = queryOperator && queryStatuses && queryTopics && queryHasnotes
   if (!searchActive) {
     void router.push(
       {
@@ -76,12 +89,14 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
           haslocation: "ALL", // default: radio "ALL"
           //@ts-expect-error
           categories: [...feedbackQuestion?.props?.responses.map((r: TResponse) => String(r.id))], // default: all checked
+          searchterm: "",
         },
       },
       undefined,
       { scroll: false },
     )
   }
+
   const methods = useForm<z.infer<S>>({
     mode: "onBlur",
     resolver: schema ? zodResolver(schema) : undefined,
@@ -90,6 +105,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
       statuses: searchActive ? queryStatuses : [...Object.keys(surveyResponseStatus)], // default: all checked
       topics: searchActive ? queryTopics : [...topics.map((t) => String(t.id)), "0"], // default: all checked
       hasnotes: searchActive ? queryHasnotes : "ALL", // default: radio "ALL"
+      searchterm: searchActive ? querySearchTerm : "", // default: radio "ALL"
       haslocation: searchActive ? queryHaslocation : "ALL", // default: radio "ALL"
       categories: searchActive
         ? queryCategories
@@ -112,6 +128,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     methods.setValue("haslocation", router.query.haslocation)
     // @ts-expect-error
     methods.setValue("categories", router.query.categories)
+    // @ts-expect-error
+    methods.setValue("searchterm", router.query.searchterm)
   }, [methods, router])
 
   const handleSubmit = async (values: any) => {
@@ -139,12 +157,15 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
       return { value, label }
     }),
   ]
-  const topicsOptions = [
-    ...topics.map((t) => {
-      return { value: String(t.id), label: t.title }
-    }),
-    { value: "0", label: "Ohne Thema" },
-  ]
+  const topicsOptions = topics.length
+    ? [
+        ...topics.map((t) => {
+          return { value: String(t.id), label: t.title }
+        }),
+        { value: "0", label: "Ohne Thema" },
+      ]
+    : []
+
   // @ts-expect-error
   const categoriesOptions = feedbackQuestion?.props?.responses.map((r: TResponse) => {
     return { value: String(r.id), label: r.text.de }
@@ -192,7 +213,6 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 scope="hasnotes"
                 items={hasnotesOptions}
               />
-
               <LabeledRadiobuttonGroup
                 label="Ortsangabe"
                 classLabelOverwrite="font-semibold mb-3"
@@ -207,23 +227,40 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 scope="categories"
                 items={categoriesOptions}
               />
-              <LabeledCheckboxGroup
-                label="Themen"
-                classLabelOverwrite="font-semibold mb-3"
-                scope="topics"
-                items={topicsOptions}
-                classNameItemWrapper="grid grid-cols-5 grid-rows-6 grid-flow-col-dense"
+              {!!topicsOptions.length && (
+                <LabeledCheckboxGroup
+                  label="Themen"
+                  classLabelOverwrite="font-semibold mb-3"
+                  scope="topics"
+                  items={topicsOptions}
+                  classNameItemWrapper="grid grid-cols-5 grid-rows-6 grid-flow-col-dense"
+                />
+              )}
+            </div>
+          </form>
+          <form
+            className="px-4 pb-2 pt-4 rounded-b-xl flex items-end gap-4"
+            onBlur={async () => await methods.handleSubmit(handleSubmit)()}
+          >
+            <div className="w-[300px]">
+              <LabeledTextField
+                name="searchterm"
+                label=""
+                placeholder="Beiträge nach Suchwort filtern"
               />
             </div>
-            <button
-              type="button"
-              className={clsx(linkStyles, "flex mt-4")}
-              onClick={handleFilterReset}
-            >
-              <XMarkIcon className="h-4 w-4" />
-              Alle Filter zurücksetzen
+            <button type="button" className="h-full pb-2">
+              <MagnifyingGlassCircleIcon className="w-6 h-6 text-blue-500 hover:text-blue-800" />
             </button>
           </form>
+          <button
+            type="button"
+            className={clsx(linkStyles, "flex mt-4 px-4 pb-2")}
+            onClick={handleFilterReset}
+          >
+            <XMarkIcon className="h-4 w-4" />
+            Alle Filter zurücksetzen
+          </button>
         </FormProvider>
       </details>
     </nav>

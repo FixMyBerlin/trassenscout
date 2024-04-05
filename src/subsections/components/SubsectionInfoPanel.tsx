@@ -9,16 +9,16 @@ import { ArrowUturnRightIcon, DocumentIcon } from "@heroicons/react/24/outline"
 import React, { Suspense } from "react"
 import { useSlugs } from "src/core/hooks"
 import { getFullname } from "src/users/utils"
-import getStatsInfopanel from "../queries/getStatsInfopanel"
-import { SubsubsectionInfoPanelCellCompletion } from "./SubsubsectionInfoPanelCellCompletion"
-import { SubsubsectionInfoPanelCellContainer } from "./SubsubsectionInfoPanelCellContainer"
-import { SubsubsectionInfoPanelCellCosts } from "./SubsubsectionInfoPanelCellCosts"
-import { SubsubsectionInfoPanelCellSubsection } from "./SubsubsectionInfoPanelCellSubsection"
-import { SubsubsectionInfoPanelCellSubsections } from "./SubsubsectionInfoPanelCellSubsections"
+import getStatsInfopanel from "../queries/getStatsInfopanelSubsectionGeneral"
+import { SubsectionInfoPanelCellCompletion } from "./SubsectionInfoPanelCellCompletion"
+import { SubsectionInfoPanelCellContainer } from "./SubsectionInfoPanelCellContainer"
+import { SubsectionInfoPanelCellCosts } from "./SubsectionInfoPanelCellCosts"
+import { SubsectionInfoPanelCellSubsection } from "./SubsectionInfoPanelCellSubsection"
+import { SubsectionInfoPanelCellSubsubsections } from "./SubsectionInfoPanelCellSubsubsections"
 import { SubsubsectionInfoPanelCellSubsectionsDetails } from "./SubsubsectionInfoPanelCellSubsectionsDetails"
 import { Spinner } from "src/core/components/Spinner"
 
-export const SubsubsectionInfoPanel: React.FC = () => {
+export const SubsectionInfoPanel: React.FC = () => {
   const { projectSlug, subsectionSlug } = useSlugs()
   const [subsection] = useQuery(getStatsInfopanel, {
     subsectionSlug: subsectionSlug!,
@@ -35,18 +35,18 @@ export const SubsubsectionInfoPanel: React.FC = () => {
         <p>Reihenfolge: {subsection.order}</p>
       </div>
       <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 divide-x text-sm">
-        <SubsubsectionInfoPanelCellContainer
+        <SubsectionInfoPanelCellContainer
           icon={<CheckCircleIcon className="w-4 h-4" />}
           title="Führungen"
         >
           <Suspense fallback={<Spinner />}>
-            <SubsubsectionInfoPanelCellSubsections
+            <SubsectionInfoPanelCellSubsubsections
               subsectionSlug={subsectionSlug!}
               projectSlug={projectSlug!}
             />
           </Suspense>
-        </SubsubsectionInfoPanelCellContainer>
-        <SubsubsectionInfoPanelCellContainer
+        </SubsectionInfoPanelCellContainer>
+        <SubsectionInfoPanelCellContainer
           icon={<ArrowUturnRightIcon className="w-4 h-4" />}
           title="Standards"
         >
@@ -56,47 +56,47 @@ export const SubsubsectionInfoPanel: React.FC = () => {
               projectSlug={projectSlug!}
             />
           </Suspense>
-        </SubsubsectionInfoPanelCellContainer>
-        <SubsubsectionInfoPanelCellContainer
+        </SubsectionInfoPanelCellContainer>
+        <SubsectionInfoPanelCellContainer
           icon={<CurrencyEuroIcon className="w-4 h-4" />}
           title="Kosten"
         >
           <Suspense fallback={<Spinner />}>
-            <SubsubsectionInfoPanelCellCosts
+            <SubsectionInfoPanelCellCosts
               subsectionSlug={subsectionSlug!}
               projectSlug={projectSlug!}
             />
           </Suspense>
-        </SubsubsectionInfoPanelCellContainer>
-        <SubsubsectionInfoPanelCellContainer
+        </SubsectionInfoPanelCellContainer>
+        <SubsectionInfoPanelCellContainer
           icon={<CalendarIcon className="w-4 h-4" />}
           title="Realisierung"
         >
           <Suspense fallback={<Spinner />}>
-            <SubsubsectionInfoPanelCellCompletion
+            <SubsectionInfoPanelCellCompletion
               subsectionSlug={subsectionSlug!}
               projectSlug={projectSlug!}
             />
           </Suspense>
-        </SubsubsectionInfoPanelCellContainer>
-        <SubsubsectionInfoPanelCellContainer
+        </SubsectionInfoPanelCellContainer>
+        <SubsectionInfoPanelCellContainer
           icon={<DocumentIcon className="w-4 h-4" />}
           title="Beschreibung"
         >
           <p>{subsection.description || "k.A."}</p>
-        </SubsubsectionInfoPanelCellContainer>
+        </SubsectionInfoPanelCellContainer>
 
-        <SubsubsectionInfoPanelCellContainer
+        <SubsectionInfoPanelCellContainer
           icon={<QuestionMarkCircleIcon className="w-4 h-4" />}
           title="Planungsabschnitt"
         >
           <Suspense fallback={<Spinner />}>
-            <SubsubsectionInfoPanelCellSubsection
+            <SubsectionInfoPanelCellSubsection
               subsectionSlug={subsectionSlug!}
               projectSlug={projectSlug!}
             />
           </Suspense>
-        </SubsubsectionInfoPanelCellContainer>
+        </SubsectionInfoPanelCellContainer>
       </div>
     </div>
   )
