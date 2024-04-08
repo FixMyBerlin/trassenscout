@@ -3,7 +3,6 @@ import { useQuery } from "@blitzjs/rpc"
 import React from "react"
 import { Tabs } from "src/core/components/Tabs/Tabs"
 import { useSlugs } from "src/core/hooks"
-import getFeedbackResponsesWithLocation from "src/survey-responses/queries/getFeedbackSurveyResponsesWithLocation"
 import getFirstFeedbackSurveyResponseWithLocationId from "src/survey-responses/queries/getFirstFeedbackSurveyResponseWithLocationId"
 
 export const SurveyTabs: React.FC = () => {
