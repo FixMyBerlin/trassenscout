@@ -10,7 +10,7 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2 } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { TQuestion, TSurvey } from "src/survey-public/components/types"
+import { TSurvey } from "src/survey-public/components/types"
 import {
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
@@ -19,6 +19,10 @@ import {
 import { GroupedSurveyResponseItem } from "src/survey-responses/components/analysis/GroupedSurveyResponseItem"
 import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
 import { getFormatDistanceInDays } from "src/survey-responses/utils/getFormatDistanceInDays"
+import {
+  extractAndTransformQuestionsFromPages,
+  transformDeletedQuestions,
+} from "src/survey-responses/utils/format-survey-questions"
 import { SurveyTabs } from "src/surveys/components/SurveyTabs"
 import getSurvey from "src/surveys/queries/getSurvey"
 
@@ -28,57 +32,6 @@ export const Survey = () => {
   const [survey] = useQuery(getSurvey, { id: surveyId })
   const [{ groupedSurveyResponsesFirstPart, surveySessions, surveyResponsesFeedbackPart }] =
     usePaginatedQuery(getGroupedSurveyResponses, { projectSlug, surveyId: survey.id })
-
-  type QuestionObject = {
-    id: number
-    label: string
-    component: "singleResponse" | "multipleResponse" | "text"
-    props: { responses: { id: number; text: string }[] }
-  }
-  const transformQuestion = (question: TQuestion): QuestionObject => {
-    return {
-      id: question.id,
-      label: question.label.de,
-      component: question.component,
-      props: {
-        responses: question.props.responses.map((response) => {
-          return {
-            id: response.id,
-            text: response.text.de,
-          }
-        }),
-      },
-    }
-  }
-
-  const extractAndTransformQuestionsFromPages = (pages: TSurvey["pages"]): QuestionObject[] => {
-    const transformedArray: QuestionObject[] = []
-
-    pages.forEach((page) => {
-      if (!page.questions || page.questions.length === 0) return
-
-      const transformedQuestions = page.questions
-        .map((question) => {
-          if (!("responses" in question.props)) return
-          return transformQuestion(question)
-        })
-        .filter(Boolean)
-      transformedArray.push(...transformedQuestions)
-    })
-    return transformedArray
-  }
-
-  const transformDeletedQuestions = (questions: TQuestion[]): QuestionObject[] => {
-    const transformedArray: QuestionObject[] = []
-    const transformedQuestions = questions
-      .map((question) => {
-        if (!("responses" in question.props)) return
-        return transformQuestion(question)
-      })
-      .filter(Boolean)
-    transformedArray.push(...transformedQuestions)
-    return transformedArray
-  }
 
   const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
   const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
@@ -132,16 +85,16 @@ export const Survey = () => {
   })
 
   // get all questions from surveyDefinition and transform them
-  let surveyDefinitionArray = extractAndTransformQuestionsFromPages(
+  const surveyDefinitionArrayWithLatestQuestions = extractAndTransformQuestionsFromPages(
     surveyDefinition.pages as TSurvey["pages"],
   )
 
   // add th deleted questions to the array and transform them
-  if (surveyDefinition.deletedQuestions) {
-    surveyDefinitionArray = surveyDefinitionArray.concat(
-      transformDeletedQuestions(surveyDefinition.deletedQuestions),
-    )
-  }
+  const surveyDefinitionArray = surveyDefinition.deletedQuestions
+    ? surveyDefinitionArrayWithLatestQuestions.concat(
+        transformDeletedQuestions(surveyDefinition.deletedQuestions),
+      )
+    : surveyDefinitionArrayWithLatestQuestions
 
   const groupedSurveyResponseData = rawData.map((r) => {
     const questionId = Object.keys(r)[0]
@@ -159,7 +112,7 @@ export const Survey = () => {
     return { questionLabel: question.label, data }
   })
 
-  const handleCopyButtonClick = async () => {
+  const handleCopyChartDataButtonClick = async () => {
     await navigator.clipboard.writeText(JSON.stringify(groupedSurveyResponseData))
   }
 
@@ -247,11 +200,20 @@ export const Survey = () => {
       </div>
 
       <SuperAdminBox>
-        <p>
-          <button onClick={handleCopyButtonClick} className={whiteButtonStyles}>
-            Beteiligungsergebnisse in die Zwischenablage kopieren
+        <div className="flex flex-col gap-4 items-start">
+          <button onClick={handleCopyChartDataButtonClick} className={whiteButtonStyles}>
+            Beteiligungsergebnisse in die Zwischenablage kopieren - formatiert für Diagramme
           </button>
-        </p>
+          <Link href={`/api/survey/${survey.id}/questions`} button="white">
+            Fragen der Beteiligung als CSV herunterladen
+          </Link>
+          <Link href={`/api/survey/${survey.id}/responses`} button="white">
+            Antworten der Beteiligung als CSV herunterladen
+          </Link>
+          <Link href={`/api/survey/${survey.id}/results`} button="white">
+            Ergebnisse der Beteiligung als CSV herunterladen
+          </Link>
+        </div>
       </SuperAdminBox>
 
       <SuperAdminBox>
