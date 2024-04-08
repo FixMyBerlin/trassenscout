@@ -12,7 +12,7 @@ import {
   LabeledTextField,
   LabeledTextareaField,
 } from "src/core/components/forms"
-import { blueButtonStyles } from "src/core/components/links"
+import { Link, blueButtonStyles } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
 import createSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/createSurveyResponseTopicsOnSurveyResponses"
 import deleteSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/deleteSurveyResponseTopicsOnSurveyResponses"
@@ -22,6 +22,7 @@ import updateSurveyResponse from "../../mutations/updateSurveyResponse"
 import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
 import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
 import { surveyResponseStatus } from "./surveyResponseStatus"
+import { Routes, useParam } from "@blitzjs/next"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -59,6 +60,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   })
 
   const { projectSlug } = useSlugs()
+  const surveyId = useParam("surveyId", "string")
 
   const [updateSurveyResponseMutation] = useMutation(updateSurveyResponse)
   const [surveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
@@ -215,6 +217,22 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
               maptilerStyleUrl={maptilerStyleUrl}
               defaultViewState={defaultViewState}
             />
+            {
+              // @ts-expect-error `data` is unkown
+              response.data[userLocationQuestionId] && (
+                <div className="pt-4">
+                  <Link
+                    href={Routes.SurveyResponseWithLocationPage({
+                      projectSlug: projectSlug!,
+                      surveyId: surveyId!,
+                      surveyResponseId: response.id,
+                    })}
+                  >
+                    Alle verorteten Beiträge öffnen
+                  </Link>
+                </div>
+              )
+            }
           </div>
         )}
 

@@ -1,9 +1,7 @@
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import router from "next/router"
 import { Suspense } from "react"
 import { Spinner } from "src/core/components/Spinner"
-import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2 } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
@@ -73,27 +71,15 @@ export const SurveyResponseWithLocation = () => {
         <H2>Beiträge mit Ortsangabe </H2>
 
         <div className="flex flex-col lg:flex-row gap-2">
-          <div className="lg:w-[46%] shrink-0">
-            <section className="w-full lg:mb-6">
-              <SurveyFeedbackWithLocationOverviewMap
-                maptilerStyleUrl={maptilerStyleUrl}
-                defaultViewState={defaultViewState}
-                selectedSurveyResponse={selectedSurveyResponse}
-                surveyResponsesFeedbackPartWithLocation={surveyResponsesFeedbackPartWithLocation}
-                locationRef={locationRef!}
-              />
-            </section>
-            <Link
-              className="hidden lg:block"
-              href={Routes.SurveyResponsePage({
-                projectSlug: projectSlug!,
-                surveyId: surveyId!,
-                haslocation: "true",
-              })}
-            >
-              Alle verorteten Beiträge öffnen
-            </Link>
-          </div>
+          <section className="lg:w-[46%] shrink-0">
+            <SurveyFeedbackWithLocationOverviewMap
+              maptilerStyleUrl={maptilerStyleUrl}
+              defaultViewState={defaultViewState}
+              selectedSurveyResponse={selectedSurveyResponse}
+              surveyResponsesFeedbackPartWithLocation={surveyResponsesFeedbackPartWithLocation}
+              locationRef={locationRef!}
+            />
+          </section>
           <section className="rounded-md drop-shadow-md">
             <EditableSurveyResponseListItem
               key={selectedSurveyResponse?.id}
@@ -105,16 +91,6 @@ export const SurveyResponseWithLocation = () => {
             />
           </section>
         </div>
-        <Link
-          className="lg:hidden"
-          href={Routes.SurveyResponsePage({
-            projectSlug: projectSlug!,
-            surveyId: surveyId!,
-            haslocation: "true",
-          })}
-        >
-          Alle verorteten Beiträge öffnen
-        </Link>
       </div>
     </>
   )
