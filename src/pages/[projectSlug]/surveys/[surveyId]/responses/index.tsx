@@ -50,6 +50,7 @@ export const SurveyResponse = () => {
   const params = useRouterQuery()
   const paramsStakeholderDetails = parseInt(String(params.responseDetails))
   const accordionRefs = useRef<Array<HTMLDivElement | null>>([])
+
   useEffect(() => {
     if (paramsStakeholderDetails) {
       const currentRef = accordionRefs.current?.at(paramsStakeholderDetails)
@@ -84,6 +85,8 @@ export const SurveyResponse = () => {
               ref={(element) => (accordionRefs.current[response.id] = element)}
             >
               <EditableSurveyResponseListItem
+                showMap
+                isAccordion
                 response={response}
                 operators={operators}
                 topics={topics}

@@ -1,5 +1,4 @@
 import { Routes } from "@blitzjs/next"
-import { Project } from "@prisma/client"
 
 type Props = {
   projectSlug: string
@@ -25,6 +24,12 @@ export const menuItems = ({ projectSlug, projectName }: Props) => {
       alsoHighlightPathnames: [
         // Any survey page gets highlighted
         Routes.SurveyPage({ projectSlug: projectSlug!, surveyId: 999 }).pathname,
+        Routes.SurveyResponsePage({ projectSlug: projectSlug!, surveyId: 999 }).pathname,
+        Routes.SurveyResponseWithLocationPage({
+          projectSlug: projectSlug!,
+          surveyId: 999,
+          surveyResponseId: 9999,
+        }).pathname,
       ],
     },
   ]
