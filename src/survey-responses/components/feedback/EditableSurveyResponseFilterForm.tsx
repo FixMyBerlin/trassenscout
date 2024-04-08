@@ -86,7 +86,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
           statuses: [...Object.keys(surveyResponseStatus)], // default: all checked
           topics: [...topics.map((t) => String(t.id)), "0"], // default: all checked
           hasnotes: "ALL", // default: radio "ALL"
-          haslocation: queryHaslocation || "ALL", // default: radio "ALL"
+          haslocation: "ALL", // default: radio "ALL"
           //@ts-expect-error
           categories: [...feedbackQuestion?.props?.responses.map((r: TResponse) => String(r.id))], // default: all checked
           searchterm: "",
