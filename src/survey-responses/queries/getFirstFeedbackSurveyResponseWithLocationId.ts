@@ -4,7 +4,10 @@ import db from "db"
 
 import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
-import { getResponseConfigBySurveySlug } from "src/survey-public/utils/getConfigBySurveySlug"
+import {
+  getFeedbackDefinitionBySurveySlug,
+  getResponseConfigBySurveySlug,
+} from "src/survey-public/utils/getConfigBySurveySlug"
 
 type GetSurveySessionsWithResponsesInput = { projectSlug: string; surveyId: number }
 
@@ -26,15 +29,18 @@ export default resolver.pipe(
         surveySession: { include: { survey: { select: { slug: true } } } },
       },
     })
-    if (!surveyResponses?.length) throw new NotFoundError()
+    if (!surveyResponses?.length)
+      return {
+        surveyResponse: null,
+      }
 
-    const { evaluationRefs } = getResponseConfigBySurveySlug(
-      surveyResponses[0]!.surveySession.survey.slug,
-    )
+    const surveySlug = surveyResponses[0]!.surveySession.survey.slug
+
+    const { evaluationRefs } = getResponseConfigBySurveySlug(surveySlug)
 
     const filteredSurveyResponses = surveyResponses
       //@ts-expect-error
-      .filter((response) => JSON.parse(response.data)[23])
+      .filter((response) => JSON.parse(response.data)[evaluationRefs["feedback-location"]])
       .sort((a, b) => b.id - a.id)
 
     const surveyResponse = filteredSurveyResponses[0]
