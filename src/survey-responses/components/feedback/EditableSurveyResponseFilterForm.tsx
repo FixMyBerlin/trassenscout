@@ -243,6 +243,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
             onBlur={async () => await methods.handleSubmit(handleSubmit)()}
           >
             <div className="w-[300px]">
+              <p className="font-semibold mb-3">Freitextsuche</p>
               <LabeledTextField
                 name="searchterm"
                 label=""
