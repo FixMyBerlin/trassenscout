@@ -16,8 +16,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   ]
 
   const types = {
-    singleResponse: "single",
-    multipleResponse: "multi",
+    singleResponse: "einfach",
+    multipleResponse: "mehrfach",
   }
 
   type Question = { id: number | string; type: string; question: string }
