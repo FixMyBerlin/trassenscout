@@ -1,6 +1,7 @@
 import { useQuery } from "@blitzjs/rpc"
 import getStatsInfopanelSubsections from "../queries/getStatsInfopanelSubsectionSubsubsections"
 import { formatGerKm, formatGerPercentage } from "./utils/formatNumericInfo"
+import { Fragment } from "react"
 
 type Props = {
   subsectionSlug: string
@@ -29,7 +30,7 @@ export const SubsectionInfoPanelCellSubsubsections: React.FC<Props> = ({
         {subsection.subsubsections.length === 0
           ? "auf diesem PA wurden noch keine Führungen eingetragen"
           : Object.entries(subsubsectionsCategoryCount).map(([key, value]) => (
-              <>
+              <Fragment key={key}>
                 <div className="font-bold">{key}</div>
 
                 {Object.entries(value).map(([k, v]) => (
@@ -37,7 +38,7 @@ export const SubsectionInfoPanelCellSubsubsections: React.FC<Props> = ({
                     <span>{k}</span>: <span>{k === "Summe" ? formatGerKm(v) : v}</span>
                   </div>
                 ))}
-              </>
+              </Fragment>
             ))}
       </div>
     </>
