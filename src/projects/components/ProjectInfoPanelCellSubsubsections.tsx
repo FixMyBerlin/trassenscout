@@ -4,11 +4,12 @@ import {
   formatGerPercentage,
 } from "src/subsections/components/utils/formatNumericInfo"
 import getStatsInfopanelProjectSubsubsections from "../queries/getStatsInfopanelProjectSubsubsections"
+import { Fragment } from "react"
 
 type Props = {
   projectSlug: string
 }
-export const ProjectInfoPanelCellSubprojects: React.FC<Props> = ({ projectSlug }) => {
+export const ProjectInfoPanelCellSubsubsections: React.FC<Props> = ({ projectSlug }) => {
   const [{ project, subsubsectionsCategoryCount }] = useQuery(
     getStatsInfopanelProjectSubsubsections,
     {
@@ -19,7 +20,7 @@ export const ProjectInfoPanelCellSubprojects: React.FC<Props> = ({ projectSlug }
   return (
     <>
       <div>
-        <p className="font-bold">Planungsabschnitt</p>
+        <p className="font-bold">Projekt</p>
         <p className="text-red-500">
           {formatGerKm(project.sumLengthKmSubsubsections)} von{" "}
           {formatGerKm(project.projectLengthKm)} (
@@ -27,19 +28,27 @@ export const ProjectInfoPanelCellSubprojects: React.FC<Props> = ({ projectSlug }
           ) sind definiert
         </p>
       </div>
-      <div>
-        {Object.entries(subsubsectionsCategoryCount).map(([key, value]) => (
-          <>
-            <div className="font-bold">{key}</div>
+      {/* check if there are any subsubsections at all */}
+      {subsubsectionsCategoryCount["RF (Bestand)"].Anzahl +
+        subsubsectionsCategoryCount["RF (kein Bestand)"].Anzahl +
+        subsubsectionsCategoryCount.SF.Anzahl !==
+      0 ? (
+        <div>
+          {Object.entries(subsubsectionsCategoryCount).map(([key, value]) => (
+            <Fragment key={key}>
+              <div className="font-bold">{key}</div>
 
-            {Object.entries(value).map(([k, v]) => (
-              <div key={k}>
-                <span>{k}</span>: <span>{k === "Summe" ? formatGerKm(v) : v}</span>
-              </div>
-            ))}
-          </>
-        ))}
-      </div>
+              {Object.entries(value).map(([k, v]) => (
+                <div key={k}>
+                  <span>{k}</span>: <span>{k === "Summe" ? formatGerKm(v) : v}</span>
+                </div>
+              ))}
+            </Fragment>
+          ))}
+        </div>
+      ) : (
+        <p>Es wurden bisher keine Führungen eingetragen.</p>
+      )}
     </>
   )
 }

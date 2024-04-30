@@ -53,8 +53,6 @@ export default resolver.pipe(
 
     if (!newProject) throw new NotFoundError()
 
-    // console.log("newProject", newProject)
-
     const subsubsectionsNotIsExistingInfraAndRoute = []
 
     for (const subsection of newProject.subsections) {
@@ -64,8 +62,6 @@ export default resolver.pipe(
         }
       }
     }
-
-    console.log({ subsubsectionsNotIsExistingInfraAndRoute })
 
     const subsubsectionsIsExistingInfraAndRoute = []
 
@@ -77,8 +73,6 @@ export default resolver.pipe(
       }
     }
 
-    console.log({ subsubsectionsIsExistingInfraAndRoute })
-
     const subsubsectionsArea = []
 
     for (const subsection of newProject.subsections) {
@@ -89,8 +83,6 @@ export default resolver.pipe(
       }
     }
 
-    console.log({ subsubsectionsArea })
-
     let subsubsectionsSumLengthKm = 0
 
     for (const subsection of newProject.subsections) {
@@ -100,35 +92,28 @@ export default resolver.pipe(
       )
     }
 
-    console.log({ subsubsectionsSumLengthKm })
-
     const subsubsectionsCategoryCount = {
       "RF (kein Bestand)": {
         Anzahl: subsubsectionsNotIsExistingInfraAndRoute.length, // Summe aller subsubsections aller Subasections des Projects mit type === "ROUTE" && !isExistingInfra
-        Summe: Number(
-          subsubsectionsNotIsExistingInfraAndRoute
-            .reduce((acc, s) => acc + (s.lengthKm ?? 0), 0)
-            .toFixed(3),
+        Summe: subsubsectionsNotIsExistingInfraAndRoute.reduce(
+          (acc, s) => acc + (s.lengthKm ?? 0),
+          0,
         ),
       },
       "RF (Bestand)": {
         Anzahl: subsubsectionsIsExistingInfraAndRoute.length, // Summe aller subsubsections aller Subasections des Projects mit type === "ROUTE" && !isExistingInfra
-        Summe: Number(
-          subsubsectionsIsExistingInfraAndRoute
-            .reduce((acc, s) => acc + (s.lengthKm ?? 0), 0)
-            .toFixed(3),
-        ),
+        Summe: subsubsectionsIsExistingInfraAndRoute.reduce((acc, s) => acc + (s.lengthKm ?? 0), 0),
       },
       SF: {
         Anzahl: subsubsectionsArea.length, // Summe aller subsubsections aller Subasections des Projects mit type === "ROUTE" && !isExistingInfra
-        Summe: Number(subsubsectionsArea.reduce((acc, s) => acc + (s.lengthKm ?? 0), 0).toFixed(3)),
+        Summe: subsubsectionsArea.reduce((acc, s) => acc + (s.lengthKm ?? 0), 0),
       },
     }
 
     return {
       project: {
         projectLengthKm: Number(
-          newProject.subsections.reduce((acc, s) => acc + (s.lengthKm ?? 0), 0).toFixed(3),
+          newProject.subsections.reduce((acc, s) => acc + (s.lengthKm ?? 0), 0),
         ), // reduce length of all subsections of the project
         sumLengthKmSubsubsections: subsubsectionsSumLengthKm, // reduce length of all subsubsections of all subsections of the project
       },

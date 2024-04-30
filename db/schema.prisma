@@ -357,6 +357,7 @@ model SubsubsectionStatus {
   @@unique([projectId, slug])
 }
 
+// Maßnahmentyp
 model SubsubsectionTask {
   id            Int             @id @default(autoincrement())
   createdAt     DateTime        @default(now())
@@ -372,6 +373,7 @@ model SubsubsectionTask {
   @@unique([projectId, slug])
 }
 
+// Führungsform
 model SubsubsectionInfra {
   id            Int             @id @default(autoincrement())
   createdAt     DateTime        @default(now())
