@@ -5,7 +5,7 @@ import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
 import getProjectIdBySlug from "./getProjectIdBySlug"
 
-const GetProject = z.object({
+export const GetProject = z.object({
   // This accepts type of undefined, but is required at runtime
   slug: z.string().optional().refine(Boolean, "Required"),
 })

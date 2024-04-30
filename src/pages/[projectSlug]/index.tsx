@@ -17,6 +17,7 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { seoTitleSlug, shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { OperatorFilterDropdown } from "src/projects/components/OperatorFilterDropdown"
+import { ProjectInfoPanel } from "src/projects/components/ProjectInfoPanel"
 import getProject from "src/projects/queries/getProject"
 import { SubsectionTable } from "src/subsections/components/SubsectionTable"
 import getSubsections from "src/subsections/queries/getSubsections"
@@ -67,6 +68,10 @@ export const ProjectDashboardWithQuery = () => {
           </Link>
         }
       />
+      <details>
+        <summary className="mt-6 cursor-pointer">Info & Auswertung</summary>
+        <ProjectInfoPanel />
+      </details>
 
       {project.description && (
         <PageDescription>
