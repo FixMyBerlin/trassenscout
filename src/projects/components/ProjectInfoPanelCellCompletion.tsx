@@ -28,7 +28,7 @@ export const ProjectInfoPanelCellCompletion: React.FC<Props> = ({ projectSlug })
   const minEstimatedCompletionDate = min(arrayOfDates)
 
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-col gap-4">
       {minEstimatedCompletionDate && (
         <p className="font-bold">
           {"Q" +
