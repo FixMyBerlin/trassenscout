@@ -16,7 +16,7 @@ import { NetworkHierarchySchema } from "src/networkHierarchy/schema"
 
 const EditNetworkHierarchyWithQuery = () => {
   const router = useRouter()
-  const networkHierarchyId = useParam("network-hierarchy", "number")
+  const networkHierarchyId = useParam("networkHierarchyId", "number")
   const projectSlug = useParam("projectSlug", "string")
 
   const [networkHierarchy, { setQueryData }] = useQuery(
@@ -68,7 +68,7 @@ const EditNetworkHierarchyPage: BlitzPage = () => {
   return (
     <LayoutRs>
       <MetaTags noindex title={seoEditTitle("Netzhierarchie")} />
-      <PageHeader title="Netzhierarchie bearbeiten" className="mt-12" />
+      <PageHeader title="Netzstufe bearbeiten" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
         <EditNetworkHierarchyWithQuery />

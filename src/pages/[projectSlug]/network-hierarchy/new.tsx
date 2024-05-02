@@ -32,7 +32,7 @@ const NewNetworkHierarchyPageWithQuery = () => {
   return (
     <>
       <MetaTags noindex title={seoNewTitle("Ausbaustandard")} />
-      <PageHeader title="Ausbaustandard hinzufügen" className="mt-12" />
+      <PageHeader title="Netzstufe hinzufügen" className="mt-12" />
 
       <NetworkHierarchyForm
         className="mt-10"

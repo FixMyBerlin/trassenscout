@@ -46,7 +46,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
     }),
   ]
   const networkOptions: [number | string, string][] = [
-    ["", "Netzwerkhierarchie offen"],
+    ["", "Netzstufe offen"],
     ...networkHierarchys.map((nh) => {
       return [
         nh.id,
@@ -132,13 +132,13 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
       <div className="flex items-end gap-5">
         <LabeledSelect
           name="networkHierarchyId"
-          label="Netzhierarchie"
+          label="Netzstufe"
           optional
           options={networkOptions}
           outerProps={{ className: "grow" }}
         />
         <Link href={Routes.NetworkHierarchysPage({ projectSlug: projectSlug! })} className="py-2">
-          Netzwerkhierarchiestufen verwalten…
+          Netzstufen verwalten…
         </Link>
       </div>
     </Form>
