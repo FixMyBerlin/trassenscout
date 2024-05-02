@@ -144,7 +144,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         maxDecimalDigits={3}
         type="number"
         step="0.01"
-        name="width"
+        name="widthExisting"
         label="Breite Bestand"
         optional
       />

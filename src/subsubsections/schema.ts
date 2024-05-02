@@ -23,6 +23,7 @@ export const SubsubsectionSchema = z
     labelPos: z.nativeEnum(LabelPositionEnum),
     lengthKm: z.coerce.number({ invalid_type_error: "Pflichtfeld" }), // km
     width: InputNumberOrNullSchema, // m
+    widthExisting: InputNumberOrNullSchema, // m
     costEstimate: InputNumberOrNullSchema, // €
     description: z.string().nullish(),
     mapillaryKey: z.string().nullish(),
