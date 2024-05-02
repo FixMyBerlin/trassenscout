@@ -1,6 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import db, { Prisma } from "db"
+import db, { Prisma, Subsubsection } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { GetProject } from "./getProject"
@@ -27,6 +27,12 @@ type SubsectionWithSubsubsectionsWithSpecialFeaturesCount = {
     }[]
   } & { sumLengthKmSubsubsections: number }
   subsubsectionsCategoryCount: SububsectionsCategoryCount
+  qualityLevelsWithCount: {
+    slug: string
+    count: number
+    lengthKm: number
+    percentage: number
+  }[]
 }
 
 export default resolver.pipe(
@@ -41,8 +47,8 @@ export default resolver.pipe(
         subsections: {
           include: {
             subsubsections: {
-              select: { type: true, isExistingInfra: true, lengthKm: true, id: true },
               orderBy: { slug: "asc" as Prisma.SortOrder },
+              include: { qualityLevel: true },
             },
           },
         },
@@ -52,6 +58,14 @@ export default resolver.pipe(
     const newProject = await db.project.findFirst(query)
 
     if (!newProject) throw new NotFoundError()
+
+    const qualityLevels = await db.qualityLevel.findMany({
+      where: {
+        project: {
+          slug: slug,
+        },
+      },
+    })
 
     const subsubsectionsNotIsExistingInfraAndRoute = []
 
@@ -110,6 +124,37 @@ export default resolver.pipe(
       },
     }
 
+    // all subsubsections / Planungsabschnitte mit qulaity level / Ausbaustandard
+    const subsubsectionsWithQualityLevel: Subsubsection[] = []
+
+    newProject.subsections.forEach((newSubsection) => {
+      const newSubsubsectionsWithQualityLevel = newSubsection?.subsubsections.filter(
+        (subsubsection) => subsubsection?.qualityLevelId,
+      )
+      if (newSubsubsectionsWithQualityLevel.length)
+        subsubsectionsWithQualityLevel.push(...newSubsubsectionsWithQualityLevel)
+    })
+
+    const subsubsectionsWithQualityLevelLengthKm = subsubsectionsWithQualityLevel.reduce(
+      (acc, a) => acc + (a?.lengthKm || 0),
+      0,
+    )
+
+    const qualityLevelsWithCount = qualityLevels.map((level) => {
+      const subsubsectionsWithCertainQualityLevelLengthKm: number = subsubsectionsWithQualityLevel
+        .filter((subsub) => subsub.qualityLevelId === level.id)
+        .reduce((acc, a) => acc + (a?.lengthKm || 0), 0)
+      return {
+        slug: level.slug,
+        count: subsubsectionsWithQualityLevel.filter((subsub) => subsub.qualityLevelId === level.id)
+          .length,
+        lengthKm: subsubsectionsWithCertainQualityLevelLengthKm,
+        percentage:
+          subsubsectionsWithCertainQualityLevelLengthKm /
+          (subsubsectionsWithQualityLevelLengthKm / 100),
+      }
+    })
+
     return {
       project: {
         projectLengthKm: Number(
@@ -118,6 +163,7 @@ export default resolver.pipe(
         sumLengthKmSubsubsections: subsubsectionsSumLengthKm, // reduce length of all subsubsections of all subsections of the project
       },
       subsubsectionsCategoryCount,
+      qualityLevelsWithCount,
     } as SubsectionWithSubsubsectionsWithSpecialFeaturesCount
   },
 )

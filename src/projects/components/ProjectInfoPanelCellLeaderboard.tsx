@@ -32,17 +32,16 @@ export const ProjectInfoPanelCellLeaderboard: React.FC<Props> = ({ projectSlug }
         )}
       </div>
       <div>
-        {Boolean(managersWithCount.length) ? (
+        {managersWithCount ? (
           <>
             <p className="font-bold">Projektleiter:innen</p>
-            {managersWithCount &&
-              Object.entries(managersWithCount).map(([k, v]) => {
-                return (
-                  <p key={k}>
-                    {k}: {v} PAs
-                  </p>
-                )
-              })}
+            {Object.entries(managersWithCount).map(([k, v]) => {
+              return (
+                <p key={k}>
+                  {k}: {v} PAs
+                </p>
+              )
+            })}
           </>
         ) : (
           <p>Es wurden bisher keine Projektleiter:innen eingetragen.</p>

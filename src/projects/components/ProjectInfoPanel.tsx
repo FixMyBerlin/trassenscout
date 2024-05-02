@@ -34,6 +34,16 @@ export const ProjectInfoPanel: React.FC = () => {
           <p>{project.description || "k.A."}</p>
         </SubsectionInfoPanelCellContainer>
 
+        {/* Planungsabschnitte */}
+        <SubsectionInfoPanelCellContainer
+          icon={<ViewColumnsIcon className="w-4 h-4" />}
+          title="Planungsabschnitte"
+        >
+          <Suspense fallback={<Spinner />}>
+            <ProjectInfoPanelCellSubsections projectSlug={projectSlug!} />
+          </Suspense>
+        </SubsectionInfoPanelCellContainer>
+
         {/* Führungen */}
         <SubsectionInfoPanelCellContainer
           icon={<CheckCircleIcon className="w-4 h-4" />}
@@ -51,16 +61,6 @@ export const ProjectInfoPanel: React.FC = () => {
         >
           <Suspense fallback={<Spinner />}>
             <ProjectInfoPanelCellCosts projectSlug={projectSlug!} />
-          </Suspense>
-        </SubsectionInfoPanelCellContainer>
-
-        {/* Planungsabschnitte */}
-        <SubsectionInfoPanelCellContainer
-          icon={<ViewColumnsIcon className="w-4 h-4" />}
-          title="Planungsabschnitte"
-        >
-          <Suspense fallback={<Spinner />}>
-            <ProjectInfoPanelCellSubsections projectSlug={projectSlug!} />
           </Suspense>
         </SubsectionInfoPanelCellContainer>
 

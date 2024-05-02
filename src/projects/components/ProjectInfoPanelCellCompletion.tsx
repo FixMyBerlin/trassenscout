@@ -1,5 +1,5 @@
 import { useQuery } from "@blitzjs/rpc"
-import { getQuarter, getYear, max, min } from "date-fns"
+import { compareAsc, getQuarter, getYear, max, min } from "date-fns"
 import getStatsInfopanelProjectCompletion from "../queries/getStatsInfopanelProjectCompletion"
 
 type Props = {
@@ -24,26 +24,20 @@ export const ProjectInfoPanelCellCompletion: React.FC<Props> = ({ projectSlug })
     (subsub) => subsub.estimatedCompletionDate,
   )
 
-  const maxEstimatedCompletionDate = max(arrayOfDates)
-  const minEstimatedCompletionDate = min(arrayOfDates)
+  const sortedDates = arrayOfDates.sort(compareAsc)
 
   return (
     <div className="flex flex-col gap-4">
-      {minEstimatedCompletionDate && (
-        <p className="font-bold">
-          {"Q" +
-            getQuarter(new Date(minEstimatedCompletionDate)) +
-            " / " +
-            getYear(new Date(minEstimatedCompletionDate))}{" "}
-          -{" "}
-          {"Q" +
-            getQuarter(new Date(maxEstimatedCompletionDate)) +
-            " / " +
-            getYear(new Date(maxEstimatedCompletionDate))}
-        </p>
-      )}
+      <p className="font-bold">
+        {"Q" + getQuarter(new Date(sortedDates[0]!)) + " / " + getYear(new Date(sortedDates[0]!))} -{" "}
+        {"Q" +
+          getQuarter(new Date(sortedDates[sortedDates.length - 1]!)) +
+          " / " +
+          getYear(new Date(sortedDates[sortedDates.length - 1]!))}
+      </p>
+
       <div>
-        <p>Führungen mit Datum der geplanten Realisierung:</p>
+        <p>Realisierung Führungen nach Jahren:</p>
         <ul>
           {subsubsectionsWithEstimatedCompletionDate.map((s) => (
             <li className="space-x-2" key={s.id}>

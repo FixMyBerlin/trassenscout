@@ -10,7 +10,7 @@ type Props = {
   projectSlug: string
 }
 export const ProjectInfoPanelCellSubsubsections: React.FC<Props> = ({ projectSlug }) => {
-  const [{ project, subsubsectionsCategoryCount }] = useQuery(
+  const [{ project, subsubsectionsCategoryCount, qualityLevelsWithCount }] = useQuery(
     getStatsInfopanelProjectSubsubsections,
     {
       slug: projectSlug!,
@@ -48,6 +48,22 @@ export const ProjectInfoPanelCellSubsubsections: React.FC<Props> = ({ projectSlu
         </div>
       ) : (
         <p>Es wurden bisher keine Führungen eingetragen.</p>
+      )}
+      {qualityLevelsWithCount.length ? (
+        <>
+          <p className="font-bold">Ausbaustandard</p>
+          <ul>
+            {Object.entries(qualityLevelsWithCount).map(([key, value]) => (
+              <li className="" key={key}>
+                <span className="font-bold uppercase">{value.slug}</span>{" "}
+                <span>({value.count})</span>: <span>{formatGerKm(value.lengthKm)}</span>,{" "}
+                <span>{!value.percentage ? "-" : formatGerPercentage(value.percentage)}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p>Es wurden bisher keine Standards eingetragen.</p>
       )}
     </>
   )

@@ -1,26 +1,22 @@
 import { useQuery } from "@blitzjs/rpc"
-import getStatsInfopanelCosts from "../queries/getStatsInfopanelProjectCosts"
-import {
-  formatGerCurrency,
-  formatGerKm,
-  formatGerPercentage,
-} from "src/subsections/components/utils/formatNumericInfo"
+import { formatGerKm } from "src/subsections/components/utils/formatNumericInfo"
 import getStatsInfopanelProjectSubsections from "../queries/getStatsInfopanelProjectSubsections"
 
 type Props = {
   projectSlug: string
 }
 export const ProjectInfoPanelCellSubsections: React.FC<Props> = ({ projectSlug }) => {
-  const [{ projectLengthKm, networHierarchiesSubsectionsWithCount, qualityLevelsWithCount }] =
+  const [{ projectLengthKm, numberOfSubsections, networHierarchiesSubsectionsWithCount }] =
     useQuery(getStatsInfopanelProjectSubsections, {
       projectSlug: projectSlug!,
     })
 
   return (
     <>
+      {/* Gesamtlänge PAs */}
       <div>
-        {/* Gesamtlänge PAs */}
-        <p className="font-bold text-lg">{formatGerKm(projectLengthKm)}</p>
+        <p className="font-bold text-lg">Länge: {formatGerKm(projectLengthKm)}</p>
+        <p>Planungsabschnitte: {numberOfSubsections}</p>
       </div>
       {networHierarchiesSubsectionsWithCount.length ? (
         <>
@@ -36,22 +32,6 @@ export const ProjectInfoPanelCellSubsections: React.FC<Props> = ({ projectSlug }
         </>
       ) : (
         <p>Es wurden bisher keine Netzstufen eingetragen.</p>
-      )}
-      {qualityLevelsWithCount.length ? (
-        <>
-          <p className="font-bold">Ausbaustandard</p>
-          <ul>
-            {Object.entries(qualityLevelsWithCount).map(([key, value]) => (
-              <li className="" key={key}>
-                <span className="font-bold uppercase">{value.slug}</span>{" "}
-                <span>({value.count})</span>: <span>{formatGerKm(value.lengthKm)}</span>,{" "}
-                <span>{!value.percentage ? "-" : formatGerPercentage(value.percentage)}</span>
-              </li>
-            ))}
-          </ul>
-        </>
-      ) : (
-        <p>Es wurden bisher keine Standards eingetragen.</p>
       )}
     </>
   )

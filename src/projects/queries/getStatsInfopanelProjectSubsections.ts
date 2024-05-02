@@ -1,6 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import db, { Subsubsection } from "db"
+import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { z } from "zod"
@@ -11,16 +11,11 @@ export const GetSubsectionsSchema = z.object({
 
 type ProjectSubsectionsWithCostStructure = {
   projectLengthKm: number
+  numberOfSubsections: number
   networHierarchiesSubsectionsWithCount: {
     title: string
     count: number
     lengthKm: number
-  }[]
-  qualityLevelsWithCount: {
-    slug: string
-    count: number
-    lengthKm: number
-    percentage: number
   }[]
 }
 
@@ -35,7 +30,7 @@ export default resolver.pipe(
         },
       },
       include: {
-        subsubsections: { include: { qualityLevel: true } },
+        subsubsections: true,
         networkHierarchy: true,
       },
     }
@@ -45,13 +40,6 @@ export default resolver.pipe(
     if (!newSubsections.length) throw new NotFoundError()
 
     const networHierarchies = await db.networkHierarchy.findMany({
-      where: {
-        project: {
-          slug: projectSlug,
-        },
-      },
-    })
-    const qualityLevels = await db.qualityLevel.findMany({
       where: {
         project: {
           slug: projectSlug,
@@ -69,40 +57,10 @@ export default resolver.pipe(
       }
     })
 
-    // all subsubsections / Planungsabschnitte mit qulaity level / Ausbaustandard
-    const subsubsectionsWithQualityLevel: Subsubsection[] = []
-    newSubsections.forEach((newSubsection) => {
-      const newSubsubsectionsWithQualityLevel = newSubsection?.subsubsections.filter(
-        (subsubsection) => subsubsection?.qualityLevelId,
-      )
-      if (newSubsubsectionsWithQualityLevel.length)
-        subsubsectionsWithQualityLevel.push(...newSubsubsectionsWithQualityLevel)
-    })
-
-    const subsubsectionsWithQualityLevelLengthKm = subsubsectionsWithQualityLevel.reduce(
-      (acc, a) => acc + (a?.lengthKm || 0),
-      0,
-    )
-
-    const qualityLevelsWithCount = qualityLevels.map((level) => {
-      const subsubsectionsWithCertainQualityLevelLengthKm: number = subsubsectionsWithQualityLevel
-        .filter((subsub) => subsub.qualityLevelId === level.id)
-        .reduce((acc, a) => acc + (a?.lengthKm || 0), 0)
-      return {
-        slug: level.slug,
-        count: subsubsectionsWithQualityLevel.filter((subsub) => subsub.qualityLevelId === level.id)
-          .length,
-        lengthKm: subsubsectionsWithCertainQualityLevelLengthKm,
-        percentage:
-          subsubsectionsWithCertainQualityLevelLengthKm /
-          (subsubsectionsWithQualityLevelLengthKm / 100),
-      }
-    })
-
     return {
       projectLengthKm: newSubsections.reduce((acc, s) => acc + (s.lengthKm ?? 0), 0),
+      numberOfSubsections: newSubsections.length,
       networHierarchiesSubsectionsWithCount: networHierarchiesSubsectionsCount,
-      qualityLevelsWithCount,
     } as ProjectSubsectionsWithCostStructure
   },
 )
