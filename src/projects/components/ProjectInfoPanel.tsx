@@ -74,10 +74,10 @@ export const ProjectInfoPanel: React.FC = () => {
           </Suspense>
         </SubsectionInfoPanelCellContainer>
 
-        {/* Leaderboard Projektleiter:in */}
+        {/* Baulastträger und Projektleiter:in */}
         <SubsectionInfoPanelCellContainer
           icon={<UserGroupIcon className="w-6 h-6" />}
-          title="Leaderboard Projektleiter:in"
+          title="Baulastträger und Projektleiter:in"
         >
           <Suspense fallback={<Spinner />}>
             <ProjectInfoPanelCellLeaderboard projectSlug={projectSlug!} />
