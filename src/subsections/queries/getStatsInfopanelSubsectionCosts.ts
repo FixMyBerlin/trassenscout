@@ -55,27 +55,32 @@ export default resolver.pipe(
 
     const newSubsection = await db.subsection.findFirst(query)
 
+    // filter subsubsections with costs
     const subsubsectionsWithCosts = newSubsection?.subsubsections.filter(
       (subsubsection) => subsubsection?.costEstimate,
     )
+    // filter brf ("Bestandsregelführung") (existing infra and line / ROUTE geometry type)
+    const brf = newSubsection?.subsubsections?.filter(
+      (sub) => sub.type === "ROUTE" && sub.isExistingInfra,
+    )
 
+    // sum of costs of subsubsections with costs
     const subsubsectionsWithCostsAccCosts = subsubsectionsWithCosts?.reduce(
       (acc, a) => acc + (a?.costEstimate || 0),
       0,
     )
-    const subsubsectionsWithCostsLengthKm = subsubsectionsWithCosts?.reduce(
-      (acc, a) => acc + (a?.lengthKm || 0),
-      0,
-    )
+    // sum of km of subsubsections with costs plus km of brf (existing infra, because they don't cost anything)
+    const subsubsectionsWithCostsLengthKm =
+      subsubsectionsWithCosts?.reduce((acc, a) => acc + (a?.lengthKm || 0), 0) ||
+      0 + (brf?.reduce((acc, a) => acc + (a?.lengthKm || 0), 0) || 0)
 
+    // RF with costs
     const rfWithCosts = newSubsection?.subsubsections?.filter(
       (sub) => sub.type === "ROUTE" && sub.costEstimate && !sub.isExistingInfra,
     )
+    // SF with costs
     const sfWithCosts = newSubsection?.subsubsections?.filter(
       (sub) => sub.type === "AREA" && sub.costEstimate && !sub.isExistingInfra,
-    )
-    const brfWithCosts = newSubsection?.subsubsections?.filter(
-      (sub) => sub.type === "ROUTE" && sub.isExistingInfra,
     )
 
     const costStructure = {
@@ -90,9 +95,9 @@ export default resolver.pipe(
         sumLengthKm: sfWithCosts?.reduce((acc, a) => acc + (a?.lengthKm || 0), 0),
       },
       BRF: {
-        numberSubsubs: brfWithCosts?.length,
+        numberSubsubs: brf?.length,
         costs: undefined,
-        sumLengthKm: brfWithCosts?.reduce((acc, a) => acc + (a?.lengthKm || 0), 0),
+        sumLengthKm: brf?.reduce((acc, a) => acc + (a?.lengthKm || 0), 0),
       },
     }
 
