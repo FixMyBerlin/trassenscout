@@ -42,6 +42,19 @@ export const feedbackDefinition: TFeedback = {
             ],
           },
         },
+      ],
+      buttons: [
+        { label: { de: "Weiter" }, color: "primaryColor", onClick: { action: "nextPage" } },
+        { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
+      ],
+    },
+    {
+      id: 2,
+      title: { de: "Ihr Hinweis" },
+      description: {
+        de: "Formulieren Sie hier Ihre Gedanken, Ideen, Anregungen oder Wünsche *",
+      },
+      questions: [
         {
           id: 23,
 
@@ -57,19 +70,6 @@ export const feedbackDefinition: TFeedback = {
             },
           },
         },
-      ],
-      buttons: [
-        { label: { de: "Weiter" }, color: "primaryColor", onClick: { action: "nextPage" } },
-        { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
-      ],
-    },
-    {
-      id: 2,
-      title: { de: "Ihr Hinweis" },
-      description: {
-        de: "Formulieren Sie hier Ihre Gedanken, Ideen, Anregungen oder Wünsche *",
-      },
-      questions: [
         {
           id: 31,
           label: { de: "Kategorie" },

@@ -99,7 +99,6 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
           layers: ["Netzentwurf"],
         })[0]
       : undefined
-    console.log(line?.properties)
     const lineId = line?.properties["Verbindungs_ID"]
     const lineGeometry = line?.geometry
 
