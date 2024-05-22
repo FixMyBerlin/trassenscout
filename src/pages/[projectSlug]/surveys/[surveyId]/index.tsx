@@ -96,21 +96,29 @@ export const Survey = () => {
       )
     : surveyDefinitionArrayWithLatestQuestions
 
-  const groupedSurveyResponseData = rawData.map((r) => {
-    const questionId = Object.keys(r)[0]
-    const question = surveyDefinitionArray.find((question) => Number(questionId) === question.id)
+  const groupedSurveyResponseData = rawData
+    .map((r) => {
+      const questionId = Object.keys(r)[0]
+      const question = surveyDefinitionArray.find((question) => Number(questionId) === question.id)
 
-    if (!question || !questionId) return
-    const response = r[questionId]
-    if (!response) return
+      if (
+        !question ||
+        !questionId ||
+        // only multiple and single response questions are supported
+        !(question.component === "singleResponse" || question.component === "multipleResponse")
+      )
+        return
+      const response = r[questionId]
+      if (!response) return
 
-    const data = Object.entries(response).map(([key, value]) => ({
-      name: question?.props?.responses?.find((r) => r.id === Number(key))?.text ?? "Missing name",
-      value,
-    }))
+      const data = Object.entries(response).map(([key, value]) => ({
+        name: question?.props?.responses?.find((r) => r.id === Number(key))?.text ?? "Missing name",
+        value,
+      }))
 
-    return { questionLabel: question.label, data }
-  })
+      return { questionLabel: question.label, data }
+    })
+    .filter(Boolean)
 
   const handleCopyChartDataButtonClick = async () => {
     await navigator.clipboard.writeText(JSON.stringify(groupedSurveyResponseData))
@@ -141,20 +149,6 @@ export const Survey = () => {
           </>
         }
       />
-
-      {/* <div className="mt-4">
-        <H2>Link zu Daten der Beteiligung </H2>
-        {survey.surveyResultsUrl ? (
-          <div className="mt-4 border rounded py-3.5">
-            <Link blank className="flex gap-1 pl-3.5" href={survey.surveyResultsUrl}>
-              Beteiligungs-Ergebnisse
-              <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-            </Link>
-          </div>
-        ) : (
-          <div className="mt-4">Es wurde bisher kein Link eingetragen.</div>
-        )}
-      </div> */}
 
       <div className="mt-12">
         <H2>Allgemeine Infos </H2>

@@ -1,23 +1,31 @@
 import { useMutation } from "@blitzjs/rpc"
 import { useEffect, useState } from "react"
 
-import { Survey } from "src/survey-public/components/Survey"
-import { Feedback } from "src/survey-public/components/feedback/Feedback"
-
 import { Email } from "src/survey-public/components/Email"
 import { More } from "src/survey-public/components/More"
+import { Start } from "src/survey-public/components/Start"
+import { Survey } from "src/survey-public/components/Survey"
 import { Debug } from "src/survey-public/components/core/Debug"
 import { SurveyLayout } from "src/survey-public/components/core/layout/SurveyLayout"
 import { SurveySpinnerLayover } from "src/survey-public/components/core/layout/SurveySpinnerLayover"
+import { Feedback } from "src/survey-public/components/feedback/Feedback"
 import { ProgressContext } from "src/survey-public/context/contexts"
 import { scrollToTopWithDelay } from "src/survey-public/utils/scrollToTopWithDelay"
 
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
 import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
-import updateSurveySession from "src/survey-sessions/mutations/updateSurveySession"
-import { TEmail, TFeedback, TMore, TProgress, TResponseConfig, TSurvey } from "./types"
+import {
+  TEmail,
+  TFeedback,
+  TInstitutionsBboxes,
+  TMore,
+  TProgress,
+  TResponseConfig,
+  TSurvey,
+} from "./types"
 
 type Props = {
+  startContent: React.ReactNode
   emailDefinition: TEmail
   feedbackDefinition: TFeedback
   moreDefinition: TMore
@@ -25,9 +33,13 @@ type Props = {
   surveyDefinition: TSurvey
   responseConfig: TResponseConfig
   surveyId: number
+  // clean up after BB ? - initial view state of surveymapline depending on institution
+  // prop institutionsBboxes might be cleaned up after BB in this and the other components it is passed through
+  institutionsBboxes?: TInstitutionsBboxes
 }
 
 export const SurveyMainPage: React.FC<Props> = ({
+  startContent,
   emailDefinition,
   feedbackDefinition,
   moreDefinition,
@@ -35,16 +47,15 @@ export const SurveyMainPage: React.FC<Props> = ({
   surveyDefinition,
   responseConfig,
   surveyId,
+  institutionsBboxes,
 }) => {
-  const [stage, setStage] = useState<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL">("SURVEY")
+  const [stage, setStage] = useState<"START" | "SURVEY" | "MORE" | "FEEDBACK" | "EMAIL">("START")
   const [progress, setProgress] = useState(1)
   const [isSpinner, setIsSpinner] = useState(false)
   const [responses, setResponses] = useState<any[]>([])
-  const [emailState, setEmailState] = useState<string | null>()
   const [surveySessionId, setSurveySessionId] = useState<null | number>(null)
   const [feedbackKey, setFeedbackKey] = useState(1)
   const [createSurveySessionMutation] = useMutation(createSurveySession)
-  const [updateSurveySessionMutation] = useMutation(updateSurveySession)
   const [createSurveyResponseMutation] = useMutation(createSurveyResponse)
   useEffect(() => {
     const root = document.documentElement
@@ -61,6 +72,12 @@ export const SurveyMainPage: React.FC<Props> = ({
       setSurveySessionId(surveySession.id)
       return surveySession.id
     }
+  }
+
+  const handleStart = () => {
+    setStage("SURVEY")
+    setProgress(stageProgressDefinition["SURVEY"])
+    scrollToTopWithDelay()
   }
 
   const handleSubmitSurvey = async (surveyResponses: Record<string, any>) => {
@@ -131,8 +148,10 @@ export const SurveyMainPage: React.FC<Props> = ({
 
   let component
   switch (stage) {
+    case "START":
+      component = <Start onStartClick={handleStart} startContent={startContent} />
+      break
     case "SURVEY":
-      // @ts-ignore "Types of property 'version' are incompatible. / Type 'number' is not assignable to type '1'."
       component = <Survey survey={surveyDefinition} onSubmit={handleSubmitSurvey} />
       break
     case "MORE":
@@ -143,6 +162,8 @@ export const SurveyMainPage: React.FC<Props> = ({
     case "FEEDBACK":
       component = (
         <Feedback
+          institutionsBboxes={institutionsBboxes}
+          maptilerUrl={surveyDefinition.maptilerUrl}
           key={feedbackKey}
           stageProgressDefinition={stageProgressDefinition}
           feedback={feedbackDefinition}
@@ -164,7 +185,6 @@ export const SurveyMainPage: React.FC<Props> = ({
           <code>
             <pre>{JSON.stringify(responses, null, 2)}</pre>
           </code>
-          <code>email: {emailState}</code>
         </Debug>
         <div className={isSpinner ? "blur-sm" : ""}>{component}</div>
         {isSpinner && <SurveySpinnerLayover />}

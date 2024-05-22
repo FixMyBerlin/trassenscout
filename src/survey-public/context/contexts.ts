@@ -5,20 +5,7 @@ type TProgressContext = {
   setProgress: (current: number) => void
 }
 
-export type TPinContext = {
-  pinPosition: {
-    lng: number
-    lat: number
-  } | null
-  setPinPosition: ({ lat, lng }: { lat: number; lng: number }) => void
-}
-
 export const ProgressContext = createContext<TProgressContext>({
   progress: 0,
   setProgress: () => {},
-})
-
-export const PinContext = createContext<TPinContext>({
-  pinPosition: null,
-  setPinPosition: () => {},
 })

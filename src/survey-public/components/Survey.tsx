@@ -84,7 +84,7 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
         }
         // @ts-ignore no worries - this works
         const response = values[id]
-        if (["singleResponse", "text"].includes(component)) {
+        if (["singleResponse", "text", "textfield"].includes(component)) {
           return response !== null
         } else {
           return !!response.length

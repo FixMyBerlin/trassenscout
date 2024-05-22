@@ -1,54 +1,81 @@
-import { MapProvider } from "react-map-gl/maplibre"
-import { SurveyButton } from "../core/buttons/SurveyButton"
-import { SurveyScreenHeader } from "../core/layout/SurveyScreenHeader"
-import { SurveyMap } from "../maps/SurveyMap"
+import { useRouter } from "next/router"
 import { Question } from "../Question"
+import { SurveyButton } from "../core/buttons/SurveyButton"
 import { SurveyButtonWrapper } from "../core/buttons/SurveyButtonWrapper"
+import { SurveyScreenHeader } from "../core/layout/SurveyScreenHeader"
+import { SurveyMapLine } from "../maps/SurveyMapLine"
+import { MapProvider } from "react-map-gl"
+import { TInstitutionsBboxes, TLegendItem, TQuestion } from "../types"
+import { useParams } from "next/navigation"
+import { SurveyH2 } from "../core/Text"
 import { SurveyMapLegend } from "../maps/SurveyMapLegend"
-import { TMapProps, TPage } from "../types"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
   page: any
-  isMap: boolean
   onButtonClick: any // TODO
   isCompleted: boolean
-  mapIsDirtyProps: any
+  maptilerUrl: string
+  feedbackCategoryId: number
+  setIsCompleted: any
+  institutionsBboxes?: TInstitutionsBboxes
+  // clean up after BB: legend for line map
+  legend?: Record<string, Record<string, TLegendItem>>
 }
 
 export const FeedbackFirstPage: React.FC<Props> = ({
   isCompleted,
   page,
-  isMap,
   onButtonClick,
-  mapIsDirtyProps,
+  maptilerUrl,
+  setIsCompleted,
+  feedbackCategoryId,
+  institutionsBboxes,
+  legend,
 }) => {
-  const { title, description, questions, buttons } = page
+  // clean up after BB ? - initial view state of surveymapline depending on institution
+  // maybe this logic should be used for SurveyMap in future surveys
+  const router = useRouter()
+  const { id } = router.query
+  const initialBbox = institutionsBboxes?.find((institution) => institution.id === id)?.bbox as [
+    number,
+    number,
+    number,
+    number,
+  ]
+  const { surveySlug } = useParams()
 
-  const mapProps = questions.find((question: Record<string, any>) => question.component === "map")!
-    .props as TMapProps
+  const { title, description, buttons, questions } = page
 
   return (
     <>
       <SurveyScreenHeader title={title.de} description={description.de} />
-
-      <Question question={questions[0]} />
-      <Question question={questions[1]} />
-      {isMap && (
-        <MapProvider>
-          <SurveyMap
-            {...mapIsDirtyProps}
-            projectMap={{
-              maptilerStyleUrl: mapProps.maptilerStyleUrl,
-              initialMarker: mapProps.marker,
-              config: mapProps.config,
-            }}
-          />
-          {mapProps.legend && <SurveyMapLegend legend={mapProps.legend} />}
-        </MapProvider>
+      {/* clean up after BB */}
+      {/* This map to select a line is custom for BB survey and is going to be deleted afterwards */}
+      {surveySlug === "radnetz-brandenburg" && (
+        <>
+          <SurveyH2>{questions[0].label.de} *</SurveyH2>
+          <MapProvider>
+            <SurveyMapLine
+              projectMap={{
+                maptilerUrl: maptilerUrl,
+                config: {
+                  // initialBbox is the bounding box of the institution
+                  // fallback is the bounding box of Brandenburg hard coded as it will be deleted anyways
+                  bounds: initialBbox || [
+                    10.634343374814875, 50.99884540733649, 15.169801938047982, 53.769864338023126,
+                  ],
+                },
+              }}
+              setIsCompleted={setIsCompleted}
+            />
+          </MapProvider>
+          {legend && <SurveyMapLegend legend={legend} />}
+        </>
       )}
-      {/* TODO Disabled */}
+      {/* Category Question */}
+      <Question question={questions.find((q: TQuestion) => q.id === feedbackCategoryId)} />
       <SurveyButtonWrapper>
         <SurveyButton
           color={buttons[0].color}

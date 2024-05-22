@@ -24,7 +24,6 @@ export const SurveyLayout: BlitzLayout<Props> = ({ logoUrl, children, canonicalU
     <>
       <Head>
         <link rel="icon" href={logoUrl} type={mimetype} />
-        {/* <link rel="icon" href="favicon.svg" type="image/svg+xml" /> */}
         {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
       </Head>
       <SurveyMetaTags

@@ -3,6 +3,7 @@ import { SurveyButtonWithAction } from "./core/buttons/SurveyButtonWithAction"
 import { SurveyButtonWrapper } from "./core/buttons/SurveyButtonWrapper"
 import type { TPage as TPage } from "src/survey-public/components/types"
 import { Question } from "./Question"
+import { SurveyP } from "./core/Text"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
@@ -39,6 +40,9 @@ export const Page: React.FC<Props> = ({ page, buttonActions, completed }) => {
           )
         })}
       </SurveyButtonWrapper>
+      <SurveyP className="mt-6">
+        * Pflichtfelder Um Fortzufahren bitte alle Pflichtfelder ausfüllen.
+      </SurveyP>
     </section>
   )
 }

@@ -7,7 +7,7 @@ import { BackgroundSwitcher, LayerType } from "src/core/components/Map/Backgroun
 import SurveyStaticPin from "src/core/components/Map/SurveyStaticPin"
 
 type Props = {
-  maptilerStyleUrl: string
+  maptilerUrl: string
   defaultViewState?: LngLatBoundsLike
   selectedSurveyResponse: any
   surveyResponsesFeedbackPartWithLocation: any[]
@@ -15,7 +15,7 @@ type Props = {
 }
 
 export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
-  maptilerStyleUrl,
+  maptilerUrl,
   defaultViewState,
   selectedSurveyResponse,
   locationRef,
@@ -31,7 +31,7 @@ export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
 
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
 
-  const vectorStyle = `${maptilerStyleUrl}?key=${maptilerApiKey}`
+  const vectorStyle = `${maptilerUrl}?key=${maptilerApiKey}`
   const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
 
   const handleSelect = (responseId: number) => {
