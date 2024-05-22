@@ -106,9 +106,10 @@ export const Feedback: React.FC<Props> = ({
   }
 
   const handleSubmit = (values: Record<string, any>, submitterId?: string) => {
-    if (values[isUserLocationQuestionId!] === "2") values[userLocationQuestionId!] = "" // if "no location" is chosen, set location value to empty string
-    delete values[isUserLocationQuestionId!] // delete map ja/nein response
+    if (values[`single-${isUserLocationQuestionId}`] === "2")
+      values[`map-${userLocationQuestionId}`] = "" // if "no location" is chosen, set location value to empty string
     values = transformValues(values)
+    delete values[isUserLocationQuestionId!] // delete map ja/nein response
     onSubmit({ ...values }, submitterId)
   }
 
@@ -138,14 +139,13 @@ export const Feedback: React.FC<Props> = ({
     ],
   )
 
-  // show map: inital value of is location is set to true
-  const initialValuesKey = `single-${isUserLocationQuestionId}`
-
   return (
     <PublicSurveyForm
       onSubmit={handleSubmit}
       // inital value of is location is set to true
-      initialValues={{ [initialValuesKey]: "1" }}
+      initialValues={{
+        [`single-${isUserLocationQuestionId}`]: "1",
+      }}
       onChangeValues={handleChange}
     >
       {/* clean up BB remove setIsCompleted from FeedbackFirstPage props */}
