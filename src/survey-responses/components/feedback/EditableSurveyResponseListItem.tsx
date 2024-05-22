@@ -76,11 +76,12 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
   const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
 
-  const mapProps = feedbackDefinition!.pages[0]!.questions.find(
+  const mapProps = feedbackDefinition!.pages[1]!.questions.find(
     (q) => q.id === evaluationRefs["feedback-location"],
   )!.props as TMapProps
 
-  const maptilerStyleUrl = mapProps.maptilerStyleUrl
+  const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
+  const maptilerUrl = surveyDefinition.maptilerUrl
   const defaultViewState = mapProps?.config?.bounds
 
   const feedbackQuestions = []
@@ -203,7 +204,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             topics={topics}
             subsections={subsections}
             refetchResponsesAndTopics={refetchResponsesAndTopics}
-            maptilerStyleUrl={maptilerStyleUrl}
+            maptilerUrl={maptilerUrl}
             defaultViewState={defaultViewState}
           />
         </div>

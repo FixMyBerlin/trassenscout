@@ -7,7 +7,7 @@ const buttonBase =
 
 // LINK
 export const partcipationLinkStyles =
-  "underline text-[var(--survey-primary-color)] decoreation-[var(--survey-primary-color)] hover:text-[var(--survey-dark-color)] hover:decoration-[var(--survey-dark-color)] active:ring-1 ring-[var(--survey-primary-color)] rounded"
+  "underline text-[var(--survey-primary-color)] decoreation-[var(--survey-primary-color)] hover:text-[var(--survey-dark-color)] hover:decoration-[var(--survey-dark-color)]"
 
 // HOVER and ACTIVE
 // for button elements
