@@ -1,49 +1,68 @@
-import { useContext } from "react"
-import { PinContext } from "src/survey-public/context/contexts"
 import { SurveyButton } from "../core/buttons/SurveyButton"
 import { SurveyButtonWrapper } from "../core/buttons/SurveyButtonWrapper"
 
+import { MapProvider } from "react-map-gl"
 import { SurveyScreenHeader } from "src/survey-public/components/core/layout/SurveyScreenHeader"
-import { TPage, TQuestion } from "src/survey-public/components/types"
+import { TMapProps, TPage, TQuestion } from "src/survey-public/components/types"
 import { Question } from "../Question"
-import { SurveyH2, SurveyH3, SurveyP } from "../core/Text"
-import { SurveyStaticMap } from "../maps/SurveyStaticMap"
+import { SurveyMap } from "../maps/SurveyMap"
+import { SurveyMapLegend } from "../maps/SurveyMapLegend"
+import { useFormContext } from "react-hook-form"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
+  mapProps: TMapProps
+  maptilerUrl: string
   page: TPage
   onButtonClick: any
-  staticMapProps: {
-    maptilerStyleUrl: string
-  }
-  feedbackCategory: string | undefined
   isCompleted: boolean
   userTextIndices: (number | undefined)[]
+  mapIsDirtyProps: any
+  pinId: number
+  isUserLocationQuestionId: number
+  lineGeometryId: number
 }
 
 export const FeedbackSecondPage: React.FC<Props> = ({
+  mapProps,
+  maptilerUrl,
   page,
   isCompleted,
   onButtonClick,
-  staticMapProps,
-  feedbackCategory,
   userTextIndices,
+  mapIsDirtyProps,
+  pinId,
+  isUserLocationQuestionId,
+  lineGeometryId,
 }) => {
-  const { pinPosition } = useContext(PinContext)
   const { title, description, questions, buttons } = page
+
+  // watch if user choses to set a pin, update component if user choses to set a pin
+  const isMap = useFormContext().watch(`single-${isUserLocationQuestionId}`) === "1"
 
   return (
     <>
       <SurveyScreenHeader title={title.de} description={description.de} />
-      <SurveyH2>{questions![0]!.label.de}</SurveyH2>
-      <SurveyP>{feedbackCategory}</SurveyP>
+      {/* @ts-expect-error */}
+      {!!questions?.length && <Question question={questions[0]} />}
+      {/* <SurveyP>{feedbackCategory}</SurveyP> */}
+      {isMap && (
+        <MapProvider>
+          <SurveyMap
+            {...mapIsDirtyProps}
+            projectMap={{
+              maptilerUrl: maptilerUrl,
+              initialMarker: mapProps.marker,
+              config: mapProps.config,
+            }}
+            pinId={pinId}
+            // clean up after BB line selection is removed
+            lineGeometryId={lineGeometryId}
+          />
 
-      {pinPosition && (
-        <>
-          <SurveyH3>{questions![1]!.label.de}</SurveyH3>
-          <SurveyStaticMap marker={pinPosition} {...staticMapProps} />
-        </>
+          {mapProps.legend && <SurveyMapLegend legend={mapProps.legend} />}
+        </MapProvider>
       )}
       <div className="pt-8">
         {userTextIndices.map((questionId) => {
@@ -51,7 +70,6 @@ export const FeedbackSecondPage: React.FC<Props> = ({
           if (q) return <Question key={questionId} question={q} />
         })}
       </div>
-
       <SurveyButtonWrapper>
         <SurveyButton
           color={buttons[0]?.color}

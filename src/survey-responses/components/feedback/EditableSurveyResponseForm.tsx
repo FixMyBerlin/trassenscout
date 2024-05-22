@@ -23,6 +23,7 @@ import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
 import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
 import { surveyResponseStatus } from "./surveyResponseStatus"
 import { Routes, useParam } from "@blitzjs/next"
+import { H1 } from "src/core/components/text"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -32,7 +33,7 @@ type FormProps<S extends z.ZodType<any, any>> = Omit<
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
   refetchResponsesAndTopics: () => void
   userLocationQuestionId: number | undefined
-  maptilerStyleUrl: string
+  maptilerUrl: string
   defaultViewState: LngLatBoundsLike
   showMap?: boolean
 } & Pick<EditableSurveyResponseListItemProps, "response" | "operators" | "topics" | "subsections">
@@ -46,7 +47,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   topics,
   defaultViewState,
   subsections,
-  maptilerStyleUrl,
+  maptilerUrl,
   userLocationQuestionId,
   initialValues,
   refetchResponsesAndTopics,
@@ -214,7 +215,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                 // @ts-expect-error `data` is unkown
                 response.data[userLocationQuestionId] as { lat: number; lng: number } | undefined
               }
-              maptilerStyleUrl={maptilerStyleUrl}
+              maptilerUrl={maptilerUrl}
               defaultViewState={defaultViewState}
             />
             {

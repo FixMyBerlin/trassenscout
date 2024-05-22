@@ -1,8 +1,15 @@
-import { TQuestion, TSingleOrMultiResponseProps } from "src/survey-public/components/types"
+import {
+  TQuestion,
+  TSingleOrMultiResponseProps,
+  TTextProps,
+} from "src/survey-public/components/types"
 import { SurveyH2 } from "./core/Text"
 import { SurveyLabeledCheckboxGroup } from "./core/form/SurveyLabeledCheckboxGroup"
 import { SurveyLabeledRadiobuttonGroup } from "./core/form/SurveyLabeledRadiobuttonGroup"
 import { SurveyLabeledTextareaField } from "./core/form/SurveyLabeledTextareaField"
+import { SurveyLabeledTextField } from "./core/form/SurveyLabeledTextField"
+import { SurveyLabeledReadOnlyTextField } from "./core/form/SurveyLabeledReadOnlyTextField"
+import { read } from "fs"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type TSingleOrMultuResponseComponentProps = {
@@ -40,13 +47,30 @@ const MultipleResponseComponent: React.FC<TSingleOrMultuResponseComponentProps> 
 
 type TTextResponseComponentProps = {
   id: number
-}
+} & TTextProps
+type TReadOnlyResponseComponentProps = {
+  id: number
+  queryId: string
+} & TTextProps
 
-const TextResponseComponent: React.FC<TTextResponseComponentProps> = ({ id }) => (
+const TextResponseComponent: React.FC<TTextResponseComponentProps> = ({ id, placeholder }) => (
   <>
-    <SurveyLabeledTextareaField name={`text-${id}`} label={""} />
+    <SurveyLabeledTextareaField name={`text-${id}`} label={""} placeholder={placeholder?.de} />
   </>
 )
+
+const TextFieldResponseComponent: React.FC<TTextResponseComponentProps> = ({ id, placeholder }) => (
+  <>
+    <SurveyLabeledTextField name={`text-${id}`} placeholder={placeholder?.de} label={""} />
+  </>
+)
+
+const ReadOnlyResponseComponent: React.FC<TReadOnlyResponseComponentProps> = ({ id, queryId }) => (
+  <>
+    <SurveyLabeledReadOnlyTextField readOnly name={`text-${id}`} label={""} queryId={queryId} />
+  </>
+)
+
 // TODO type
 const CustomComponent = (props: any) => (
   <div className="border-2 border-black bg-gray-200 p-1">
@@ -60,6 +84,8 @@ const components = {
   singleResponse: SingleResponseComponent,
   multipleResponse: MultipleResponseComponent,
   text: TextResponseComponent,
+  textfield: TextFieldResponseComponent,
+  readOnly: ReadOnlyResponseComponent,
   custom: CustomComponent,
 }
 
@@ -70,7 +96,7 @@ export const Question: React.FC<Props> = ({ question, className }) => {
   const Component = components[component] || null
   return (
     <div className={className} key={id}>
-      <SurveyH2>{label.de}</SurveyH2>
+      <SurveyH2>{label.de} *</SurveyH2>
       {help && <div className="-mt-4 mb-6 text-gray-400 text-sm">{help.de}</div>}
       {/* @ts-ignore */}
       {Component && <Component id={id} {...props} />}

@@ -6,13 +6,13 @@ import SurveyStaticPin from "src/core/components/Map/SurveyStaticPin"
 
 type Props = {
   marker: { lat: number; lng: number } | undefined
-  maptilerStyleUrl: string
+  maptilerUrl: string
   defaultViewState?: LngLatBoundsLike
 }
 
 export const EditableSurveyResponseFormMap: React.FC<Props> = ({
   marker,
-  maptilerStyleUrl,
+  maptilerUrl,
   defaultViewState,
 }) => {
   const { mainMap } = useMap()
@@ -25,7 +25,7 @@ export const EditableSurveyResponseFormMap: React.FC<Props> = ({
 
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
 
-  const vectorStyle = `${maptilerStyleUrl}?key=${maptilerApiKey}`
+  const vectorStyle = `${maptilerUrl}?key=${maptilerApiKey}`
   const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
 
   return (

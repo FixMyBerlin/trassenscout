@@ -5,6 +5,7 @@ export const surveyDefinition: TSurvey = {
   version: 1,
   logoUrl: "https://radschnellweg8-lb-wn.de/logo.png",
   canonicalUrl: "https://radschnellweg8-lb-wn.de/beteiligung/",
+  maptilerUrl: "https://api.maptiler.com/maps/b09268b1-91d0-42e2-9518-321a1a94738f/style.json",
   primaryColor: "#e5007d",
   darkColor: "#1e293b",
   lightColor: "#ffcce8",

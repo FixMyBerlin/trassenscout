@@ -1,4 +1,3 @@
-import { SurveyH2 } from "./core/Text"
 import { SurveyButton } from "./core/buttons/SurveyButton"
 import { SurveyButtonWrapper } from "./core/buttons/SurveyButtonWrapper"
 import { SurveyScreenHeader } from "./core/layout/SurveyScreenHeader"

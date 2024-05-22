@@ -24,6 +24,19 @@ export const feedbackDefinition: TFeedback = {
             ],
           },
         },
+      ],
+      buttons: [
+        { label: { de: "Weiter" }, color: "primaryColor", onClick: { action: "nextPage" } },
+        { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
+      ],
+    },
+    {
+      id: 2,
+      title: { de: "Was möchten Sie uns mitteilen?" },
+      description: {
+        de: "Beschreiben Sie hier, was Ihnen wichtig ist. Beschreiben Sie die Situation oder das Problem so genau wie möglich. Es ist hilfreich, wenn Ihre Verbesserungsvorschläge leicht nachvollziehbar sind.",
+      },
+      questions: [
         {
           id: 22,
           label: {
@@ -42,8 +55,6 @@ export const feedbackDefinition: TFeedback = {
           label: { de: "Bitte markieren Sie den Ort, zu dem Sie etwas sagen möchten." },
           component: "map",
           props: {
-            maptilerStyleUrl:
-              "https://api.maptiler.com/maps/a9cd44e7-43f6-4277-8ae0-d910f8162524/style.json",
             marker: {
               lat: 50.13115168672226,
               lng: 8.732094920912573,
@@ -52,59 +63,34 @@ export const feedbackDefinition: TFeedback = {
               bounds: [8.68495, 50.103212, 8.793869, 50.148444],
             },
             legend: {
-              variant1: {
-                label: {
-                  de: "Streckenführung A: Eher an großen Straßen auf Radwegen, getrennt von Autos",
+              Streckenführung: {
+                variant1: {
+                  label: {
+                    de: "Streckenführung A: Eher an großen Straßen auf Radwegen, getrennt von Autos",
+                  },
+                  color: "bg-[#006EFF]",
+                  className: "h-[5px]",
                 },
-                color: "bg-[#006EFF]",
-                height: "h-[5px]",
-                shape: "line",
-              },
-              variant2: {
-                label: {
-                  de: "Streckenführung B: Eher in ruhigen Wohnstraßen, dafür zusammen mit Autos",
+                variant2: {
+                  label: {
+                    de: "Streckenführung B: Eher in ruhigen Wohnstraßen, dafür zusammen mit Autos",
+                  },
+                  color: "bg-[#FFD900]",
+                  className: "h-[5px]",
                 },
-                color: "bg-[#FFD900]",
-                height: "h-[5px]",
-                shape: "line",
-              },
-              irrelevant: {
-                label: { de: "Bereits beschlossene Strecke (außerhalb von Frankfurt)" },
-                color: "bg-[#000]",
-                height: "h-[5px]",
-                shape: "line",
-              },
-              blockedArea: {
-                label: { de: "Gesperrt aus Gründen des Natur- oder Denkmalschutzes" },
-                color: "opacity-70 stripe-background",
-                height: "h-5",
-                shape: "line",
+                irrelevant: {
+                  label: { de: "Bereits beschlossene Strecke (außerhalb von Frankfurt)" },
+                  color: "bg-[#000]",
+                  className: "h-[5px]",
+                },
+                blockedArea: {
+                  label: { de: "Gesperrt aus Gründen des Natur- oder Denkmalschutzes" },
+                  color: "opacity-70 stripe-background",
+                  className: "h-5",
+                },
               },
             },
           },
-        },
-      ],
-      buttons: [
-        { label: { de: "Weiter" }, color: "primaryColor", onClick: { action: "nextPage" } },
-        { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
-      ],
-    },
-    {
-      id: 2,
-      title: { de: "Was möchten Sie uns mitteilen?" },
-      description: {
-        de: "Beschreiben Sie hier, was Ihnen wichtig ist. Beschreiben Sie die Situation oder das Problem so genau wie möglich. Es ist hilfreich, wenn Ihre Verbesserungsvorschläge leicht nachvollziehbar sind.",
-      },
-      questions: [
-        {
-          id: 31,
-          label: { de: "Kategorie" },
-          component: "custom",
-        },
-        {
-          id: 32,
-          label: { de: "Ausgewählte Stelle" },
-          component: "custom",
         },
         {
           id: 34,
