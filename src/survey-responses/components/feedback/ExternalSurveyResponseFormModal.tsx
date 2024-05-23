@@ -18,7 +18,6 @@ import {
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
 import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
 import getSurvey from "src/surveys/queries/getSurvey"
-import { z } from "zod"
 import { ExternalSurveyResponseForm, FORM_ERROR } from "./ExternalSurveyResponseForm"
 
 type Props = { refetch: any }
@@ -39,11 +38,9 @@ export const ExternalSurveyResponseFormModal: React.FC<Props> = ({ refetch }) =>
   for (let page of feedbackDefinition.pages) {
     feedbackQuestions.push(...page.questions)
   }
-
   const categoryId = evaluationRefs["feedback-category"]
   const locationId = evaluationRefs["feedback-location"]
   const isLocationId = evaluationRefs["is-feedback-location"]
-  const userText1Id = evaluationRefs["feedback-usertext-1"]
 
   const categorieQuestion = feedbackQuestions.find((q) => q.id === categoryId)!
     .props as TSingleOrMultiResponseProps
@@ -89,17 +86,6 @@ export const ExternalSurveyResponseFormModal: React.FC<Props> = ({ refetch }) =>
     }
   }
 
-  const ExternalSurveyResponseFormSchema = z.object({
-    source: z.nativeEnum(SurveyResponseSourceEnum),
-    [`single-${isLocationId}`]: z.string(),
-    [`single-${categoryId}`]: z.string(),
-    [`text-${userText1Id}`]: z.string().nonempty({ message: "Pflichtfeld." }),
-    [`map-${locationId}`]: z.any(),
-  })
-
-  // show map: inital value of is location is set to true
-  const initialValuesKey = `single-${evaluationRefs["is-feedback-location"]}`
-
   return (
     <>
       <button
@@ -117,17 +103,10 @@ export const ExternalSurveyResponseFormModal: React.FC<Props> = ({ refetch }) =>
         }}
       >
         <ExternalSurveyResponseForm
-          schema={ExternalSurveyResponseFormSchema}
           evaluationRefs={evaluationRefs}
           categories={categories}
           mapProps={mapProps}
-          submitText="Speichern"
-          onSubmit={handleSubmit}
-          initialValues={{
-            source: "EMAIL",
-            [initialValuesKey]: "true",
-            [`map-${locationId}`]: null,
-          }}
+          handleSubmit={handleSubmit}
         />
       </Modal>
     </>
