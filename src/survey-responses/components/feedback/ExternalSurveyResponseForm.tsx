@@ -15,23 +15,52 @@ import { getSurveyDefinitionBySurveySlug } from "src/survey-public/utils/getConf
 import getSurvey from "src/surveys/queries/getSurvey"
 import { z } from "zod"
 import { ExternalSurveyResponseFormMap } from "./ExternalSurveyResponseFormMap"
+import { SurveyResponseSourceEnum } from "@prisma/client"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
-export function ExternalSurveyResponseForm<S extends z.ZodType<any, any>>(
-  props: FormProps<S> & {
-    mapProps: TMapProps
-    categories: TResponse[]
-    evaluationRefs: TResponseConfig["evaluationRefs"]
-  },
-) {
+type Props = {
+  mapProps: TMapProps
+  categories: TResponse[]
+  evaluationRefs: TResponseConfig["evaluationRefs"]
+  handleSubmit: any
+}
+
+export const ExternalSurveyResponseForm: React.FC<Props> = ({
+  mapProps,
+  categories,
+  evaluationRefs,
+  handleSubmit,
+}) => {
   const surveyId = useParam("surveyId", "string")
   const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
-  const { mapProps, categories, evaluationRefs } = props
+
   const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
 
+  const categoryId = evaluationRefs["feedback-category"]
+  const locationId = evaluationRefs["feedback-location"]
+  const isLocationId = evaluationRefs["is-feedback-location"]
+  const userText1Id = evaluationRefs["feedback-usertext-1"]
+
+  const ExternalSurveyResponseFormSchema = z.object({
+    source: z.nativeEnum(SurveyResponseSourceEnum),
+    [`single-${isLocationId}`]: z.string(),
+    [`single-${categoryId}`]: z.string(),
+    [`text-${userText1Id}`]: z.string().nonempty({ message: "Pflichtfeld." }),
+    [`map-${locationId}`]: z.any(),
+  })
+
   return (
-    <Form<S> {...props}>
+    <Form
+      submitText="Speichern"
+      onSubmit={handleSubmit}
+      initialValues={{
+        source: "EMAIL",
+        [`single-${evaluationRefs["is-feedback-location"]}`]: "true",
+        [`map-${locationId}`]: null,
+      }}
+      schema={ExternalSurveyResponseFormSchema}
+    >
       <H2>Neuen Beitrag erfassen</H2>
       <p>
         Hier können Sie die Beiträge erfassen, die abseits der Online-Beteiligung eingereicht

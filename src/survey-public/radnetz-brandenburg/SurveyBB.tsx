@@ -58,7 +58,7 @@ const StartContent: React.FC = () => {
           <Image
             src={AtlasImage}
             alt="Radverkehrsatlas Land Brandenburg"
-            className="object-cover"
+            className="object-cover w-full"
           />
         </div>
       </a>
