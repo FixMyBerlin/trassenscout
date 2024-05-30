@@ -44,6 +44,7 @@ export const FeedbackFirstPage: React.FC<Props> = ({
     number,
     number,
   ]
+  // @ts-ignore
   const { surveySlug } = useParams()
 
   const { title, description, buttons, questions } = page
