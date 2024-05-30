@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "baseUrl": ".",
     "allowJs": true,
     "skipLibCheck": true,
@@ -17,8 +21,24 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "tsBuildInfoFile": ".tsbuildinfo"
+    "tsBuildInfoFile": ".tsbuildinfo",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "exclude": ["node_modules", "**/*.e2e.ts", "cypress", "src/core/templates"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "types"]
+  "exclude": [
+    "node_modules",
+    "**/*.e2e.ts",
+    "cypress",
+    "src/core/templates"
+  ],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "types",
+    ".next/types/**/*.ts"
+  ]
 }
