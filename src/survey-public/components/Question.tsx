@@ -1,4 +1,5 @@
 import {
+  TFeedbackQuestion,
   TQuestion,
   TSingleOrMultiResponseProps,
   TTextProps,
@@ -89,10 +90,11 @@ const components = {
   custom: CustomComponent,
 }
 
-type Props = { question: TQuestion; className?: string }
+type Props = { question: TQuestion | TFeedbackQuestion; className?: string }
 
 export const Question: React.FC<Props> = ({ question, className }) => {
   const { id, help, label, component, props } = question
+  // @ts-expect-error
   const Component = components[component] || null
   return (
     <div className={className} key={id}>
