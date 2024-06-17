@@ -59,7 +59,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
               config: mapProps.config,
             }}
             pinId={pinId}
-            // clean up after BB line selection is removed
+            // todo survey clean up or refactor after survey BB line selection
             lineGeometryId={lineGeometryId}
           />
 
