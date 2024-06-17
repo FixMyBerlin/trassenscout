@@ -15,3 +15,7 @@
 2. `tippecanoe --maximum-zoom=g -rg  --drop-densest-as-needed --extend-zooms-if-still-dropping --layer=default /Users/fmc/Downloads/TS_BB_Netzentwurf.geojson --output /Users/fmc/Downloads/TS_BB_Netzentwurf.mbtiles`
 3. Datei austauschen unter https://cloud.maptiler.com/tiles/64022d33-fe65-45c9-b023-bac5e5871e1c/upload
 4. Im Kartenstil testen, ob die Daten richtig sind bzw. nach etwas Warten in der Umfrage
+
+## Special Features / Clean Up and Refactoring after BB survey;
+
+The survey still works for other configurations but some features are built specifically for the "radnetz-brandenburg"-survey. These parts are partially not dynamiy but hard coded. The comment `todo survey clean up or refactor after survey BB` has been added to the respective parts of the code.

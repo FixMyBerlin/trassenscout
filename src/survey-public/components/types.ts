@@ -101,6 +101,7 @@ export type TReadOnlyProps = {
 }
 
 export type TFeedbackQuestion = {
+  help?: TTranslatableText
   id: number
   label: TTranslatableText
   component: "singleResponse" | "multipleResponse" | "text" | "map" | "custom"

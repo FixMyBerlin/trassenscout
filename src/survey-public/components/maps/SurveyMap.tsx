@@ -33,7 +33,7 @@ export type SurveyMapProps = {
   }
   setIsMapDirty: any
   pinId: number
-  // clean up after BB line selection is removed
+  // todo survey clean up or refactor after survey BBline selection
   lineGeometryId?: number
 }
 
@@ -42,8 +42,8 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
   pinId,
   className,
   setIsMapDirty,
-  // clean up after BB line selection is removed
   lineGeometryId,
+  // todo survey clean up or refactor after survey BB line selection
 }) => {
   const { mainMap } = useMap()
   const [events, logEvents] = useState<Record<string, LngLat>>({})
@@ -57,7 +57,7 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
   }
   const { getValues, setValue } = useFormContext()
 
-  // clean up after BB line selection is removed
+  // todo survey clean up or refactor after survey BB line selection
   // take line geometry from form context
   const selectedLine = getValues()[`custom-${lineGeometryId}`] || null
   const mapBounds: { bounds: [number, number, number, number] } = {
@@ -68,7 +68,7 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
       : projectMap.config.bounds,
   }
 
-  // clean up after BB (center of line option)
+  // todo survey clean up or refactor after survey BB  (center of line option)
   // take pinPosition from form context - if it is not defined use center of selected line - if we do not have a selected line use initialMarker fallback from feedback.ts configuration
   const pinPosition =
     getValues()[`map-${pinId}`] ||
@@ -154,7 +154,7 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
         // @ts-expect-error: See https://github.com/visgl/react-map-gl/issues/2310
         RTLTextPlugin={null}
       >
-        {/* clean up after BB line selection is removed */}
+        {/* // todo survey clean up or refactor after survey BB line selection */}
         {selectedLine && (
           <Source
             key={"Netzentwurf"}

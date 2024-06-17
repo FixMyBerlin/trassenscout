@@ -20,7 +20,7 @@ type Props = {
   feedbackCategoryId: number
   setIsCompleted: any
   institutionsBboxes?: TInstitutionsBboxes
-  // clean up after BB: legend for line map
+  // todo survey clean up or refactor after survey BB: legend for line map
   legend?: Record<string, Record<string, TLegendItem>>
 }
 
@@ -34,7 +34,7 @@ export const FeedbackFirstPage: React.FC<Props> = ({
   institutionsBboxes,
   legend,
 }) => {
-  // clean up after BB ? - initial view state of surveymapline depending on institution
+  // todo survey clean up or refactor after survey BB ? - initial view state of surveymapline depending on institution
   // maybe this logic should be used for SurveyMap in future surveys
   const router = useRouter()
   const { id } = router.query
@@ -52,7 +52,7 @@ export const FeedbackFirstPage: React.FC<Props> = ({
   return (
     <>
       <SurveyScreenHeader title={title.de} description={description.de} />
-      {/* clean up after BB */}
+      {/* todo survey clean up or refactor after survey BB */}
       {/* This map to select a line is custom for BB survey and is going to be deleted afterwards */}
       {surveySlug === "radnetz-brandenburg" && (
         <>

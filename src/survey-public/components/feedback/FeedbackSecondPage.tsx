@@ -1,13 +1,15 @@
 import { SurveyButton } from "../core/buttons/SurveyButton"
 import { SurveyButtonWrapper } from "../core/buttons/SurveyButtonWrapper"
 
+import { useFormContext } from "react-hook-form"
 import { MapProvider } from "react-map-gl"
 import { SurveyScreenHeader } from "src/survey-public/components/core/layout/SurveyScreenHeader"
-import { TMapProps, TPage, TQuestion } from "src/survey-public/components/types"
+import { TFeedbackQuestion, TMapProps, TPage, TTextProps } from "src/survey-public/components/types"
 import { Question } from "../Question"
+import { SurveyLabeledTextareaField } from "../core/form/SurveyLabeledTextareaField"
 import { SurveyMap } from "../maps/SurveyMap"
 import { SurveyMapLegend } from "../maps/SurveyMapLegend"
-import { useFormContext } from "react-hook-form"
+import { SurveyH2 } from "../core/Text"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -57,7 +59,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
               config: mapProps.config,
             }}
             pinId={pinId}
-            // clean up after BB line selection is removed
+            // todo survey clean up or refactor after survey BB line selection
             lineGeometryId={lineGeometryId}
           />
 
@@ -66,8 +68,23 @@ export const FeedbackSecondPage: React.FC<Props> = ({
       )}
       <div className="pt-8">
         {userTextIndices.map((questionId) => {
-          const q = questions!.find((q: TQuestion) => q.id === questionId)
-          if (q) return <Question key={questionId} question={q} />
+          const q = questions!.find((q) => q.id === questionId)
+          if (q) {
+            const userTextQuestionProps = q.props as TTextProps
+            return (
+              <>
+                <SurveyH2>{q.label.de} *</SurveyH2>
+                {q.help && <div className="-mt-4 mb-6 text-gray-400 text-sm">{q.help.de}</div>}
+                <SurveyLabeledTextareaField
+                  key={q.id}
+                  maxLength={200}
+                  name={`text-${q.id}`}
+                  placeholder={userTextQuestionProps.placeholder?.de}
+                  label={""}
+                />
+              </>
+            )
+          }
         })}
       </div>
       <SurveyButtonWrapper>

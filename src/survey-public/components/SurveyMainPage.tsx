@@ -11,7 +11,9 @@ import { SurveySpinnerLayover } from "src/survey-public/components/core/layout/S
 import { Feedback } from "src/survey-public/components/feedback/Feedback"
 import { ProgressContext } from "src/survey-public/context/contexts"
 import { scrollToTopWithDelay } from "src/survey-public/utils/scrollToTopWithDelay"
+import surveyFeedbackEmail from "src/survey-responses/mutations/surveyFeedbackEmail"
 
+import { useParams } from "next/navigation"
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
 import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
 import {
@@ -23,6 +25,7 @@ import {
   TResponseConfig,
   TSurvey,
 } from "./types"
+import { useParam } from "@blitzjs/next"
 
 type Props = {
   startContent: React.ReactNode
@@ -33,7 +36,7 @@ type Props = {
   surveyDefinition: TSurvey
   responseConfig: TResponseConfig
   surveyId: number
-  // clean up after BB ? - initial view state of surveymapline depending on institution
+  // todo survey clean up or refactor after survey BB ? - initial view state of surveymapline depending on institution
   // prop institutionsBboxes might be cleaned up after BB in this and the other components it is passed through
   institutionsBboxes?: TInstitutionsBboxes
 }
@@ -57,6 +60,9 @@ export const SurveyMainPage: React.FC<Props> = ({
   const [feedbackKey, setFeedbackKey] = useState(1)
   const [createSurveySessionMutation] = useMutation(createSurveySession)
   const [createSurveyResponseMutation] = useMutation(createSurveyResponse)
+  const [surveyFeedbackEmailMutation] = useMutation(surveyFeedbackEmail)
+  const surveySlug = useParam("surveySlug", "string")
+
   useEffect(() => {
     const root = document.documentElement
     root.style.setProperty("--survey-primary-color", surveyDefinition.primaryColor)
@@ -117,6 +123,12 @@ export const SurveyMainPage: React.FC<Props> = ({
         data: JSON.stringify(feedbackResponses),
         source: "FORM",
       })
+      // todo survey clean up or refactor after survey BB
+      if (surveySlug === "radnetz-brandenburg")
+        await surveyFeedbackEmailMutation({
+          surveySessionId: surveySessionId_,
+          data: feedbackResponses,
+        })
     })()
 
     setTimeout(() => {
