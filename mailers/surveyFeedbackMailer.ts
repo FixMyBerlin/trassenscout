@@ -6,7 +6,7 @@ type SurveyFeedbackMailer = {
   userMail: string
   userFirstname: string
   userLastname: string
-  feedbackLocation: { lng: number; lat: number }
+  feedbackLocation?: { lng: number; lat: number }
   feedbackCategory: string
   feedbackText: string
   lineID: string
@@ -37,9 +37,11 @@ export function surveyFeedbackMailer({
     ID der gewählten Verbindung im Netzentwurf: ${lineID}
     Ihr Hinweis:
     ${feedbackText}
-    Ortsbezug des Beitrags (in OpenStreetMap): https://www.openstreetmap.org/?mlat=${
-      feedbackLocation.lat
-    }&mlon=${feedbackLocation.lng}=16
+    ${
+      feedbackLocation
+        ? `Ortsbezug des Beitrags (in OpenStreetMap): https://www.openstreetmap.org/?mlat=${feedbackLocation.lat}&mlon=${feedbackLocation.lng}=16`
+        : ""
+    }
 
     Hinweis: Beachten Sie, dass Sie für jeden eingereichten Hinweis eine separate E-Mail erhalten. Dies ist eine automatisiert versandte E-Mail, auf die Sie nicht antworten können.
 
@@ -69,15 +71,17 @@ export function surveyFeedbackMailer({
         ID der gewählten Verbindung im Netzentwurf: ${lineID}
         <br />
         Ihr Hinweis: <br />
-        <i>${feedbackText}</i>
+        ${feedbackText}
         <br />
-        <a target="_blank"
-          href=https://www.openstreetmap.org/?mlat=${feedbackLocation.lat}&mlon=${
-            feedbackLocation.lng
-          }=16
+        ${
+          feedbackLocation
+            ? `<a target="_blank"
+          href=https://www.openstreetmap.org/?mlat=${feedbackLocation.lat}&mlon=${feedbackLocation.lng}=16
         >
           Ortsbezug des Beitrags (in OpenStreetMap)
-        </a>
+        </a>`
+            : ""
+        }
       </p>
       <p>
           <i>Hinweis:</i>
