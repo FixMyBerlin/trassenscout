@@ -11,7 +11,8 @@
 
 1. GeoJSON von Ramboll (Download Sharepoint) bereinigen:
 - Umwadeln von Geopackage in QGIS in GeoJSON mit Projektion 4326
-- Öffnen in Placemark play und alle Spalten löschen außer `fid` und `Verbindungs_ID`
+- Öffnen in Placemark play und alle Spalten löschen außer `fid`, `from_name`, `to_name` und `Verbindungs_ID`
+  --> check if the properties that we need have the same mae as before!
 2. `tippecanoe --maximum-zoom=g -rg  --drop-densest-as-needed --extend-zooms-if-still-dropping --layer=default /Users/fmc/Downloads/TS_BB_Netzentwurf.geojson --output /Users/fmc/Downloads/TS_BB_Netzentwurf.mbtiles`
 3. Datei austauschen unter https://cloud.maptiler.com/tiles/64022d33-fe65-45c9-b023-bac5e5871e1c/upload
 4. Im Kartenstil testen, ob die Daten richtig sind bzw. nach etwas Warten in der Umfrage
