@@ -43,7 +43,7 @@ export function surveyFeedbackMailer({
     ${
       feedbackLocation
         ? `
-        Ortsbezug des Beitrags (in OpenStreetMap): https://www.openstreetmap.org/?mlat=${feedbackLocation.lat}&mlon=${feedbackLocation.lng}=16`
+        Ortsbezug des Beitrags (in OpenStreetMap): https://www.openstreetmap.org/?mlat=${feedbackLocation.lat}&mlon=${feedbackLocation.lng}&zoom=16`
         : ""
     }
 
@@ -80,7 +80,7 @@ export function surveyFeedbackMailer({
         ${
           feedbackLocation
             ? `<a target="_blank"
-          href=https://www.openstreetmap.org/?mlat=${feedbackLocation.lat}&mlon=${feedbackLocation.lng}=16
+          href=https://www.openstreetmap.org/?mlat=${feedbackLocation.lat}&mlon=${feedbackLocation.lng}&zoom=16
         ><br />
           Ortsbezug des Beitrags (in OpenStreetMap)
         </a>`
