@@ -204,7 +204,8 @@ const StartContent: React.FC = () => {
 export const SurveyBB: React.FC<Props> = ({ surveyId }) => {
   const router = useRouter()
   const { id } = router.query
-  const name = institutions_bboxes.find((i) => i.id === id)?.name || "invalid"
+  const institution = institutions_bboxes.find((i) => i.id === id)?.institution || "invalid"
+  const landkreis = institutions_bboxes.find((i) => i.id === id)?.landkreis || "invalid"
 
   // in survey radnetz-brandenburg, the institution id is passed as a query parameter in the original url sent to the user
   // the institution name should appear in the survey response
@@ -213,11 +214,12 @@ export const SurveyBB: React.FC<Props> = ({ surveyId }) => {
 
   // todo survey ? effect and dependency router?
   useEffect(() => {
-    router.query.institution = encodeURIComponent(name)
+    router.query.institution = encodeURIComponent(institution)
+    router.query.landkreis = encodeURIComponent(landkreis)
     void router.push({ query: router.query }, undefined, {
       scroll: false,
     })
-  }, [name, router.query.id])
+  }, [institution, landkreis, router.query.id])
 
   return (
     <SurveyMainPage

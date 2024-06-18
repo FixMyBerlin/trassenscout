@@ -134,7 +134,8 @@ export type TResponseConfig = {
 export type TProgress = Record<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL", number>
 
 export type TInstitutionsBboxes = {
-  name: string
+  institution: string
+  landkreis: string
   id: string
   bbox: number[]
 }[]

@@ -5,7 +5,7 @@
 - get the csv file from fmc drive
 - the csv should not contain any polish (or other non german) special characters
 - check if it is utf8 encoded (open with excel or numbers) - in case it is not: export it as utf8 encoded csv
-- transform to json - run `node src/survey-public/utils/csvToJson.js src/survey-public/radnetz-brandenburg/data/filename src/survey-public/radnetz-brandenburg/data/kvdaten_BB_bboxes_TEST.json`
+- transform to json - run `node src/survey-public/utils/csvToJson.js src/survey-public/radnetz-brandenburg/data/filename src/survey-public/radnetz-brandenburg/data/institutions_bboxes.json`
 
 ### geodata for SurveyMap und SurveyMapLine.tsx
 

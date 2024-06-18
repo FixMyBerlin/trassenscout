@@ -61,6 +61,13 @@ export const surveyDefinition: TSurvey = {
           help: { de: "Ihre Institution wird automatisch eingetragen." },
           props: { queryId: "institution" },
         },
+        {
+          id: 6,
+          label: { de: "Landkreis" },
+          component: "readOnly",
+          help: { de: "Ihr Landkreis wird automatisch eingetragen." },
+          props: { queryId: "landkreis" },
+        },
       ],
       buttons: [
         { label: { de: "Weiter" }, color: "primaryColor", onClick: { action: "nextPage" } },
