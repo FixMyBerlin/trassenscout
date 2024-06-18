@@ -17,6 +17,7 @@ import {
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
 } from "src/survey-public/utils/getConfigBySurveySlug"
+import { SurveyMapLineBanner } from "./SurveyMapLineBanner"
 
 export type SurveyMapProps = {
   className?: string
@@ -38,6 +39,7 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
   const { mainMap } = useMap()
   const [isMediumScreen, setIsMediumScreen] = useState(false)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
+  const [lineFromTo, setLineFromTo] = useState<{ from: string; to: string } | null>(null)
 
   const { setValue, getValues, watch } = useFormContext()
 
@@ -53,6 +55,7 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
 
   // take line geometry from form context - if it is not defined use initialMarker fallback from feedback.ts configuration
   const selectedLine = getValues()[`custom-${geometryQuestionId}`] || null
+
   //  update the map when we have a new value for the line
   const watchLine = watch(`custom-${geometryQuestionId}`)
 
@@ -101,6 +104,12 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
       : undefined
     const lineId = line?.properties["Verbindungs_ID"]
     const lineGeometry = line?.geometry
+
+    if (line) {
+      setLineFromTo({ from: line.properties["from_name"], to: line.properties["to_name"] })
+    } else {
+      setLineFromTo(null)
+    }
 
     if (lineId) setValue(`custom-${lineQuestionId}`, lineId)
 
@@ -152,6 +161,12 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
             />
           </Source>
         )}
+        <SurveyMapLineBanner
+          className="absolute bottom-12 font-sans"
+          from={lineFromTo?.from}
+          to={lineFromTo?.to}
+        />
+
         <SurveyBackgroundSwitcher
           className="absolute left-4 top-4"
           value={selectedLayer}
