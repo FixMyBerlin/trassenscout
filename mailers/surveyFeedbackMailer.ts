@@ -33,13 +33,17 @@ export function surveyFeedbackMailer({
     vielen Dank für Ihre Teilnahme! Hiermit bestätigen wir Ihnen den Eingang Ihres Beitrags mit folgenden Angaben:
 
     Eingangsdatum: ${new Date().toLocaleDateString("de-DE")}
+
     Kategorie: ${feedbackCategory}
+
     ID der gewählten Verbindung im Netzentwurf: ${lineID}
+
     Ihr Hinweis:
     ${feedbackText}
     ${
       feedbackLocation
-        ? `Ortsbezug des Beitrags (in OpenStreetMap): https://www.openstreetmap.org/?mlat=${feedbackLocation.lat}&mlon=${feedbackLocation.lng}=16`
+        ? `
+        Ortsbezug des Beitrags (in OpenStreetMap): https://www.openstreetmap.org/?mlat=${feedbackLocation.lat}&mlon=${feedbackLocation.lng}=16`
         : ""
     }
 
@@ -66,10 +70,10 @@ export function surveyFeedbackMailer({
         folgenden Angaben:
       </p>
       <p>
-        Eingangsdatum: ${new Date().toLocaleDateString("de-DE")} <br/>
-        Kategorie: ${feedbackCategory} <br />
+        Eingangsdatum: ${new Date().toLocaleDateString("de-DE")} <br/><br />
+        Kategorie: ${feedbackCategory} <br /><br />
         ID der gewählten Verbindung im Netzentwurf: ${lineID}
-        <br />
+        <br /><br />
         Ihr Hinweis: <br />
         ${feedbackText}
         <br />
@@ -77,7 +81,7 @@ export function surveyFeedbackMailer({
           feedbackLocation
             ? `<a target="_blank"
           href=https://www.openstreetmap.org/?mlat=${feedbackLocation.lat}&mlon=${feedbackLocation.lng}=16
-        >
+        ><br />
           Ortsbezug des Beitrags (in OpenStreetMap)
         </a>`
             : ""
