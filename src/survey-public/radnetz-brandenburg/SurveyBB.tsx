@@ -216,7 +216,7 @@ export const SurveyBB: React.FC<Props> = ({ surveyId }) => {
   useEffect(() => {
     router.query.institution = encodeURIComponent(institution)
     router.query.landkreis = encodeURIComponent(landkreis)
-    void router.push({ query: router.query }, undefined, {
+    void router.replace({ query: router.query }, undefined, {
       scroll: false,
     })
   }, [institution, landkreis, router.query.id])
