@@ -7,7 +7,7 @@ import { SurveyMapLine } from "../maps/SurveyMapLine"
 import { MapProvider } from "react-map-gl"
 import { TInstitutionsBboxes, TLegendItem, TQuestion } from "../types"
 import { useParams } from "next/navigation"
-import { SurveyH2 } from "../core/Text"
+import { SurveyH2, SurveyP } from "../core/Text"
 import { SurveyMapLegend } from "../maps/SurveyMapLegend"
 
 export { FORM_ERROR } from "src/core/components/forms"
@@ -87,6 +87,10 @@ export const FeedbackFirstPage: React.FC<Props> = ({
           {buttons[0].label.de}
         </SurveyButton>
       </SurveyButtonWrapper>
+      <SurveyP className="text-sm sm:text-sm">
+        * Pflichtfelder <br />
+        Um Fortzufahren bitte alle Pflichtfelder ausfüllen.
+      </SurveyP>
     </>
   )
 }

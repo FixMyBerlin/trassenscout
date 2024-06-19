@@ -13,6 +13,7 @@ export interface SurveyLabeledTextareaProps
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
   optional?: boolean
+  caption?: string
 }
 
 export const SurveyLabeledTextareaField = forwardRef<
@@ -20,7 +21,17 @@ export const SurveyLabeledTextareaField = forwardRef<
   SurveyLabeledTextareaProps
 >(
   (
-    { name, label, help, outerProps, labelProps, optional, className: textareaClasName, ...props },
+    {
+      name,
+      label,
+      help,
+      outerProps,
+      labelProps,
+      caption,
+      optional,
+      className: textareaClasName,
+      ...props
+    },
     ref,
   ) => {
     const {
@@ -64,7 +75,7 @@ export const SurveyLabeledTextareaField = forwardRef<
           errors={errors}
           name={name}
         />
-        <p className="mt-2 text-right text-sm text-gray-500">Max. 2000 Zeichen</p>
+        <p className="mt-2 text-right text-sm text-gray-500">{caption}</p>
       </div>
     )
   },

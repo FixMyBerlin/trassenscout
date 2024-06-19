@@ -7,14 +7,14 @@ export const feedbackDefinition: TFeedback = {
       id: 1,
       title: { de: "Verbindung und Kategorie auswählen" },
       description: {
-        de: "Wählen Sie die **Verbindung durch klicken** auf eine der orangen Linien auf der Karte aus. Bitte beziehen Sie Ihr Feedback auf die Linien, die in Ihrem Amtsbereich oder Zuständigkeitsbereich verlaufen.",
+        de: `Wählen Sie die Verbindung durch Klicken auf eine der orangenen Linien auf der Karte aus. Bedenken Sie dabei jedoch, dass sich Ihre Hinweise auf die Linien in Ihrem **Amts- oder Zuständigkeitsbereich** beschränken sollten. Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” verkleinern oder vergrößern.`,
       },
       questions: [
         // ID der Linie
         {
           id: 20,
           label: {
-            de: "Wählen Sie die Verbindung aus dem Radnetz zu der Sie einen Hinweis geben wollen!",
+            de: "Wählen Sie eine Verbindung aus dem Radnetz aus, zu der Sie Rückmeldung geben möchten.",
           },
           component: "custom",
         },
@@ -36,47 +36,61 @@ export const feedbackDefinition: TFeedback = {
         },
         {
           id: 22,
-          label: { de: "Zu welchem Thema passt Ihr Hinweis?" },
+          label: { de: "Zu welchem Thema passt Ihr Feedback?" },
           component: "singleResponse",
           props: {
             responses: [
-              { id: 1, text: { de: "Mögliche Konflikte" } },
-              { id: 2, text: { de: "Nutzung" } },
-              { id: 3, text: { de: "Streckenführung" } },
-              { id: 4, text: { de: "Umwelt- und Naturschutz" } },
-              { id: 5, text: { de: "Sonstiges" } },
+              {
+                id: 1,
+                help: {
+                  de: "z.B. ein Schul- oder Freizeitstandort, der noch nicht ausreichend berücksichtigt ist",
+                },
+                text: { de: "Wichtiges anzubindendes Ziel" },
+              },
+              {
+                id: 2,
+                help: {
+                  de: "z.B. ein bestehender Weg/Radweg, der noch nicht berücksichtigt wurde, aber besonders geeignet ist  (bspw. da er bereits gut angenommen wird)",
+                },
+                text: { de: "Vorschlag alternative Streckenführung" },
+              },
+              {
+                id: 3,
+                help: { de: "z.B. zu erwartende Hindernisse beim Flächenerwerb" },
+                text: { de: "Mögliche Hürden / besondere Herausforderungen" },
+              },
+              { id: 4, text: { de: "Anderes Thema" } },
             ],
           },
         },
       ],
       buttons: [
         { label: { de: "Weiter" }, color: "primaryColor", onClick: { action: "nextPage" } },
-        { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
       ],
     },
     {
       id: 2,
-      title: { de: "Was möchten Sie uns mitteilen?" },
+      title: { de: "Ihr Hinweis zu dieser Verbindung" },
       description: {
-        de: "Beschreiben Sie hier, was Ihnen wichtig ist. Beschreiben Sie die Situation oder das Problem so genau wie möglich. Es ist hilfreich, wenn Ihre Verbesserungsvorschläge leicht nachvollziehbar sind.",
+        de: "",
       },
       questions: [
         {
           id: 23,
           label: {
-            de: "Bezieht sich Ihr Hinweis auf eine konkrete Stelle entlang der Route?",
+            de: "Bezieht sich Ihr Hinweis auf eine konkrete Stelle entlang der ausgewählten Strecke?",
           },
           component: "singleResponse",
           props: {
             responses: [
-              { id: 1, text: { de: "Ja" } },
-              { id: 2, text: { de: "Nein" } },
+              { id: 1, text: { de: "Ja, ich möchte einen Pin auf der Karte setzen." } },
+              { id: 2, text: { de: "Nein, ich möchte keine konkrete Stelle angeben." } },
             ],
           },
         },
         {
           id: 24,
-          label: { de: "Bitte markieren Sie den Ort, zu dem Sie etwas sagen möchten." },
+          label: { de: "Wählen Sie die Stelle für Ihren Hinweis" },
           component: "map",
           props: {
             marker: {
@@ -200,22 +214,22 @@ export const feedbackDefinition: TFeedback = {
         },
         {
           id: 25,
-          label: { de: "Ihr Hinweis" },
+          label: { de: "Ihre Anmerkung" },
           component: "text",
           props: {
             placeholder: { de: "Beantworten Sie hier..." },
-            caption: { de: "Max. 2000 Zeichen" },
+            caption: { de: "max. 2000 Zeichen" },
           },
         },
       ],
       buttons: [
         {
-          label: { de: "Absenden & Beteiligung abschließen" },
+          label: { de: "Speichern & weiteren Hinweis hinzufügen" },
           color: "primaryColor",
           onClick: { action: "submit" },
         },
         {
-          label: { de: "Absenden &  weiteren Hinweis geben" },
+          label: { de: "Speichern & Beteiligung beenden" },
           color: "primaryColor",
           onClick: { action: "submit" },
         },

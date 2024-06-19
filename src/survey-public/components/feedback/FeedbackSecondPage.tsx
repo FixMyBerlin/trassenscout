@@ -9,7 +9,7 @@ import { Question } from "../Question"
 import { SurveyLabeledTextareaField } from "../core/form/SurveyLabeledTextareaField"
 import { SurveyMap } from "../maps/SurveyMap"
 import { SurveyMapLegend } from "../maps/SurveyMapLegend"
-import { SurveyH2 } from "../core/Text"
+import { SurveyH2, SurveyP } from "../core/Text"
 import { Fragment } from "react"
 
 export { FORM_ERROR } from "src/core/components/forms"
@@ -25,6 +25,7 @@ type Props = {
   pinId: number
   isUserLocationQuestionId: number
   lineGeometryId: number
+  userLocationQuestionId: number
 }
 
 export const FeedbackSecondPage: React.FC<Props> = ({
@@ -38,6 +39,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
   pinId,
   isUserLocationQuestionId,
   lineGeometryId,
+  userLocationQuestionId,
 }) => {
   const { title, description, questions, buttons } = page
 
@@ -48,8 +50,9 @@ export const FeedbackSecondPage: React.FC<Props> = ({
     <>
       <SurveyScreenHeader title={title.de} description={description.de} />
       {/* @ts-expect-error */}
-      {!!questions?.length && <Question question={questions[0]} />}
-      {/* <SurveyP>{feedbackCategory}</SurveyP> */}
+      <Question question={questions.find((q) => q.id === isUserLocationQuestionId)} />
+      {/* @ts-expect-error */}
+      <SurveyH2>{questions.find((q) => q.id === userLocationQuestionId)?.label.de} *</SurveyH2>
       {isMap && (
         <MapProvider>
           <SurveyMap
@@ -77,6 +80,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
                 <SurveyH2>{q.label.de} *</SurveyH2>
                 {q.help && <div className="-mt-4 mb-6 text-gray-400 text-sm">{q.help.de}</div>}
                 <SurveyLabeledTextareaField
+                  caption={userTextQuestionProps.caption?.de}
                   key={q.id}
                   maxLength={200}
                   name={`text-${q.id}`}
@@ -92,7 +96,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
         <SurveyButton
           color={buttons[0]?.color}
           disabled={!isCompleted}
-          id="submit-finish"
+          id="submit-more"
           type="submit"
         >
           {buttons![0]?.label.de}
@@ -100,7 +104,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
         <SurveyButton
           color={buttons[1]?.color}
           disabled={!isCompleted}
-          id="submit-more"
+          id="submit-finish"
           type="submit"
         >
           {buttons![1]?.label.de}
@@ -109,6 +113,10 @@ export const FeedbackSecondPage: React.FC<Props> = ({
       <SurveyButton color="white" type="button" onClick={onButtonClick}>
         Zurück
       </SurveyButton>
+      <SurveyP className="text-sm sm:text-sm">
+        * Pflichtfelder <br />
+        Um Fortzufahren bitte alle Pflichtfelder ausfüllen.
+      </SurveyP>
     </>
   )
 }

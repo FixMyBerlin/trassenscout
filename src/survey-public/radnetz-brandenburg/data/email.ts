@@ -3,7 +3,15 @@ import { TEmail } from "src/survey-public/components/types"
 export const emailDefinition: TEmail = {
   title: { de: "Vielen Dank für Ihre Teilnahme!" },
   description: {
-    de: "Vielen Dank für Ihre Rückmeldung. Alle ihre Hinweise sind bei uns eingegangen und wurden gespeichert. Sie haben zur Bestätigung für jeden Hinweis eine E-Mail erhalten.\n\n ## Wie geht es weiter? \n\nWenn Sie noch weiteres Feedback zur Online-Beteiligung haben, können Sie dies gerne an [info@radschnellverbindungen.info](info@radschnellverbindungen.info) senden.\n\nDie Beteiligung läuft noch bis zum **31. Juli 2024**. Bis dahin können Sie auf dem gleichen Wege noch weitere Hinweise einreichen. Nach Abschluss der Beteiligung werden alle Hinweise geprüft und vom Planungsbüro bearbeitet. Alle Hinweise fließen in die Abwägung zur Überarbeitung des Zielnetzentwurfs mit ein. Nach Abschluss der Auswertung werden die Hinweise und Rückmeldungen für alle Beteiligten im Radverkehrsatlas veröffentlicht. \n\nHinweis: Alle Vertreterinnen und Vertreter der Landkreise können die eingegangenen Hinweise bereits während der Beteiligung einsehen. Für die interkommunale Abstimmung kontaktieren Sie bei Bedarf den jeweiligen Landkreis.",
+    de: `Vielen Dank für Ihre Teilnahme. Ihre Hinweise sind bei uns eingegangen und wurden gespeichert. Sie haben für jeden Ihrer Hinweise zur Bestätigung eine E-Mail erhalten.
+
+## Wie geht es weiter?
+
+Die Beteiligung läuft noch **bis zum 20. September 2024**. Bis dahin können Sie auf dem gleichen Wege noch weitere Hinweise einreichen. Nach Abschluss der Beteiligung werden alle Hinweise fachlich geprüft und vom Planungsbüro bearbeitet. Alle Hinweise fließen in die Abwägung zur Überarbeitung des Zielnetzentwurfs mit ein. Nach Abschluss der Auswertung werden die Hinweise und Rückmeldungen für alle Beteiligten im Radverkehrsatlas veröffentlicht.
+
+Weiterführende Informationen zum Radnetz Brandenburg finden Sie außerdem auf der Website des Ministeriums für Infrastruktur und Landesplanung.
+
+`,
   },
   homeUrl:
     "https://mil.brandenburg.de/mil/de/themen/mobilitaet-verkehr/radverkehr/radnetz-brandenburg/",

@@ -23,7 +23,7 @@ export type TPage = {
 
 export type TQuestion = {
   id: number
-  component: "singleResponse" | "multipleResponse" | "textfield" | "readOnly"
+  component: "singleResponse" | "multipleResponse" | "textfield" | "readOnly" | "text"
   label: TTranslatableText
   help?: TTranslatableText
   props: TSingleOrMultiResponseProps | TTextProps | TReadOnlyProps
@@ -94,6 +94,7 @@ export type TLegendItem = {
 export type TTextProps = {
   placeholder?: TTranslatableText
   caption?: TTranslatableText
+  maxLength?: number
 }
 
 export type TReadOnlyProps = {

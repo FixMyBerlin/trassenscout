@@ -172,6 +172,7 @@ export const Feedback: React.FC<Props> = ({
           userTextIndices={[userText1Id, userText2Id]}
           pinId={pinId}
           isUserLocationQuestionId={isUserLocationQuestionId!}
+          userLocationQuestionId={userLocationQuestionId!}
           lineGeometryId={lineGeometryId}
         />
       )}

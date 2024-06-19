@@ -54,9 +54,20 @@ type TReadOnlyResponseComponentProps = {
   queryId: string
 } & TTextProps
 
-const TextResponseComponent: React.FC<TTextResponseComponentProps> = ({ id, placeholder }) => (
+const TextResponseComponent: React.FC<TTextResponseComponentProps> = ({
+  id,
+  placeholder,
+  caption,
+  maxLength,
+}) => (
   <>
-    <SurveyLabeledTextareaField name={`text-${id}`} label={""} placeholder={placeholder?.de} />
+    <SurveyLabeledTextareaField
+      name={`text-${id}`}
+      label={""}
+      placeholder={placeholder?.de}
+      caption={caption?.de}
+      maxLength={maxLength}
+    />
   </>
 )
 

@@ -11,7 +11,7 @@ export const SurveyMapBanner: React.FC<Props> = ({ status, className, action }) 
     case "default":
       return (
         <div className={clsx("inset-x-0 mx-4 bg-white/80 p-4 px-8 text-center", className)}>
-          Bewegen Sie den Pin an die Stelle, zu der Sie etwas sagen möchten.
+          Bewegen Sie den Pin auf die gewünschte Position.
         </div>
       )
       break

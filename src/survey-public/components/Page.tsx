@@ -40,8 +40,9 @@ export const Page: React.FC<Props> = ({ page, buttonActions, completed }) => {
           )
         })}
       </SurveyButtonWrapper>
-      <SurveyP className="mt-6">
-        * Pflichtfelder Um Fortzufahren bitte alle Pflichtfelder ausfüllen.
+      <SurveyP className="text-sm sm:text-sm">
+        * Pflichtfelder <br />
+        Um Fortzufahren bitte alle Pflichtfelder ausfüllen.
       </SurveyP>
     </section>
   )
