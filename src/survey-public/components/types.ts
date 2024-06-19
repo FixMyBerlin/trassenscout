@@ -125,9 +125,10 @@ export type TResponseConfig = {
     "is-feedback-location": number
     "feedback-location": number
     "feedback-usertext-1": number
-    "feedback-usertext-2"?: number
-    "line-id"?: number
-    "line-geometry"?: number
+    "feedback-usertext-2"?: number // survey RS8
+    "line-id"?: number // survey BB
+    "line-geometry"?: number // survey BB
+    "line-from-to-name"?: number // survey BB
   }
 }
 

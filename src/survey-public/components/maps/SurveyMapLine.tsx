@@ -39,7 +39,6 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
   const { mainMap } = useMap()
   const [isMediumScreen, setIsMediumScreen] = useState(false)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
-  const [lineFromTo, setLineFromTo] = useState<{ from: string; to: string } | null>(null)
 
   const { setValue, getValues, watch } = useFormContext()
 
@@ -52,6 +51,7 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
 
   const lineQuestionId = evaluationRefs["line-id"]
   const geometryQuestionId = evaluationRefs["line-geometry"]
+  const lineFromToNameQuestionId = evaluationRefs["line-from-to-name"]
 
   // take line geometry from form context - if it is not defined use initialMarker fallback from feedback.ts configuration
   const selectedLine = getValues()[`custom-${geometryQuestionId}`] || null
@@ -95,6 +95,7 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
           ]
         : undefined
 
+    // get line from map
     const line = bbox
       ? // @ts-expect-error we know that the geometry is a pointlike pointlike
         mainMap?.queryRenderedFeatures(bbox, {
@@ -102,17 +103,17 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
           layers: ["Netzentwurf"],
         })[0]
       : undefined
+
+    // get data that we need from line
     const lineId = line?.properties["Verbindungs_ID"]
+    const lineFrom = line?.properties["from_name"]
+    const lineTo = line?.properties["to_name"]
     const lineGeometry = line?.geometry
 
-    if (line) {
-      setLineFromTo({ from: line.properties["from_name"], to: line.properties["to_name"] })
-    } else {
-      setLineFromTo(null)
-    }
-
+    // set values for line id, geometry and from-to-name in form context
+    if (lineFrom && lineTo)
+      setValue(`custom-${lineFromToNameQuestionId}`, `${lineFrom} - ${lineTo}`)
     if (lineId) setValue(`custom-${lineQuestionId}`, lineId)
-
     if (lineGeometry) {
       // @ts-expect-error we know that the geometry is a line string
       setValue(`custom-${geometryQuestionId}`, JSON.stringify(lineGeometry.coordinates))
@@ -163,8 +164,7 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
         )}
         <SurveyMapLineBanner
           className="absolute bottom-12 font-sans"
-          from={lineFromTo?.from}
-          to={lineFromTo?.to}
+          lineFromToName={getValues()[`custom-${lineFromToNameQuestionId}`] || null}
         />
 
         <SurveyBackgroundSwitcher

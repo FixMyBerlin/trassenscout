@@ -18,6 +18,14 @@ export const feedbackDefinition: TFeedback = {
           },
           component: "custom",
         },
+        // Bezeichnung der Linie
+        {
+          id: 30,
+          label: {
+            de: "Bezeichnung der Linie mit Start und Ziel",
+          },
+          component: "custom",
+        },
         // Geometrie der Linie
         {
           id: 21,
