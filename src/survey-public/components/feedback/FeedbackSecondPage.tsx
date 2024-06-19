@@ -10,6 +10,7 @@ import { SurveyLabeledTextareaField } from "../core/form/SurveyLabeledTextareaFi
 import { SurveyMap } from "../maps/SurveyMap"
 import { SurveyMapLegend } from "../maps/SurveyMapLegend"
 import { SurveyH2 } from "../core/Text"
+import { Fragment } from "react"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -72,7 +73,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
           if (q) {
             const userTextQuestionProps = q.props as TTextProps
             return (
-              <>
+              <Fragment key={q.id}>
                 <SurveyH2>{q.label.de} *</SurveyH2>
                 {q.help && <div className="-mt-4 mb-6 text-gray-400 text-sm">{q.help.de}</div>}
                 <SurveyLabeledTextareaField
@@ -82,7 +83,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
                   placeholder={userTextQuestionProps.placeholder?.de}
                   label={""}
                 />
-              </>
+              </Fragment>
             )
           }
         })}
