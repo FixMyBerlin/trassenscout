@@ -30,13 +30,6 @@ const StartContent: React.FC = () => {
   const closeModal = () => {
     setIsOpen(false)
   }
-  const closeModalAndOpenAtlas = () => {
-    window.open(
-      "https://radverkehrsatlas.de/regionen/bb-beteiligung?v=1&map=11/52.397/13.034&config=!(i~bikelanes-minimal~a~~sc~!(i~bikelanes~s~!(i~hidden~a~_F)(i~default~a)(i~details~a~_F)(i~width~a~_F)))(i~poi~a~_F~sc~!(i~poi~s~!(i~hidden~a~_F)(i~default~a)(i~education~a~_F))(i~poiPlaces~s~!(i~hidden~a~_F)(i~default~a)(i~circle~a~_F))(i~poiBoundaries~s~!(i~hidden~a)(i~default~a~_F)(i~category*_district*_label~a~_F)(i~category*_municipality~a~_F)(i~category*_municipality*_label~a~_F))(i~poiPlusBarriers~s~!(i~default~a~_F))(i~poiPlusLanduse~s~!(i~default~a~_F))(i~poiPlusPublicTransport~s~!(i~default~a~_F)))(i~roads~a~_F~sc~!(i~roads~s~!(i~hidden~a~_F)(i~default~a)(i~sidestreets~a~_F)(i~mainstreets~a~_F))(i~maxspeed~s~!(i~hidden~a)(i~default~a~_F)(i~below30~a~_F)(i~above40~a~_F))(i~roads*_plus*_footways~s~!(i~default~a~_F)))(i~mapillary~a~_F~sc~!(i~mapillaryCoverage~s~!(i~hidden~a~_F)(i~default~a)(i~all~a~_F)(i~age~a~_F)(i~pano~a~_F)))~",
-      "_blank",
-    )
-    setIsOpen(false)
-  }
 
   const openModal = () => {
     setIsOpen(true)
