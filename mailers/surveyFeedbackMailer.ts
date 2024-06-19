@@ -9,7 +9,7 @@ type SurveyFeedbackMailer = {
   feedbackLocation?: { lng: number; lat: number }
   feedbackCategory: string
   feedbackText: string
-  lineID: string
+  lineFromToName: string
 }
 
 export function surveyFeedbackMailer({
@@ -19,7 +19,7 @@ export function surveyFeedbackMailer({
   feedbackLocation,
   feedbackCategory,
   feedbackText,
-  lineID,
+  lineFromToName,
 }: SurveyFeedbackMailer) {
   const origin = getPrdOrStgDomain()
   // mailjet format
@@ -36,14 +36,14 @@ export function surveyFeedbackMailer({
 
     Kategorie: ${feedbackCategory}
 
-    ID der gewählten Verbindung im Netzentwurf: ${lineID}
+    Ihre gewählte Verbindung im Netzentwurf: ${lineFromToName}
 
     Ihr Hinweis:
     ${feedbackText}
+
     ${
       feedbackLocation
-        ? `
-        Ortsbezug des Beitrags (in OpenStreetMap): https://www.openstreetmap.org/?mlat=${feedbackLocation.lat}&mlon=${feedbackLocation.lng}&zoom=16`
+        ? `Ortsbezug des Beitrags (in OpenStreetMap): https://www.openstreetmap.org/?mlat=${feedbackLocation.lat}&mlon=${feedbackLocation.lng}&zoom=16`
         : ""
     }
 
@@ -72,7 +72,7 @@ export function surveyFeedbackMailer({
       <p>
         Eingangsdatum: ${new Date().toLocaleDateString("de-DE")} <br/><br />
         Kategorie: ${feedbackCategory} <br /><br />
-        ID der gewählten Verbindung im Netzentwurf: ${lineID}
+        Ihre gewählte Verbindung im Netzentwurf: ${lineFromToName}
         <br /><br />
         Ihr Hinweis: <br />
         ${feedbackText}

@@ -42,7 +42,7 @@ export default resolver.pipe(
         feedbackLocation: data["24"],
         feedbackCategory: categories[data["22"]],
         feedbackText: data["25"],
-        lineID: data["20"],
+        lineFromToName: data["30"],
       }).send()
     }
     return
