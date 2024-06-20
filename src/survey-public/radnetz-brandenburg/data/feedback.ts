@@ -112,20 +112,20 @@ export const feedbackDefinition: TFeedback = {
                   color: "bg-[#E97E30]",
                   className: "h-[5px]",
                 },
+                areas: {
+                  label: { de: "Landkreisgrenzen" },
+                  color: "",
+                  className: "h-[2px] stripe-background-vertical-pink",
+                },
                 borders: {
                   label: {
                     de: "Gemeindegrenzen",
                   },
                   color: "",
-                  className: "h-[3px] stripe-background-vertical-orange",
-                },
-                areas: {
-                  label: { de: "Landkreise" },
-                  color: "bg-[#E135F8]",
-                  className: "h-[1.5px]",
+                  className: "h-[3px] stripe-background-vertical-pink-2",
                 },
               },
-              "Quellen &  Ziele": {
+              "Quellen &  Ziele (erst bei hoher Zoomstufe sichtbar)": {
                 education: {
                   label: {
                     de: "Bildung",
