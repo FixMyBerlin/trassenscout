@@ -20,6 +20,7 @@ import { stageProgressDefinition } from "./data/progress"
 import { responseConfig } from "./data/response-config"
 import { surveyDefinition } from "./data/survey"
 import { SurveyLink } from "../components/core/links/SurveyLink"
+import { isProduction } from "src/core/utils"
 
 type Props = {
   surveyId: number
@@ -128,7 +129,15 @@ const StartContent: React.FC = () => {
         Im Radverkehrsatlas sind auch die gesammelten Daten zur Bestandsinfrastruktur und zu
         Radrouten, verschiedene Daten aus OpenStreetMap sowie das Luftliniennetz einsehbar. Eine
         Anleitung zur Nutzung des Radverkehrsatlasses finden Sie{" "}
-        <a href="survey todo" className={partcipationLinkStyles}>
+        <a
+          target="_blank"
+          href={
+            isProduction
+              ? "https://trassenscout.de/radnetz-brandenburg/anleitung-radverkehrsatlas-beteiligung-bb.pdf"
+              : "https://staging.trassenscout.de/radnetz-brandenburg/anleitung-radverkehrsatlas-beteiligung-bb.pdf"
+          }
+          className={partcipationLinkStyles}
+        >
           hier
         </a>
         .

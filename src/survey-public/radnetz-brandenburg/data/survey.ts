@@ -6,8 +6,8 @@ export const surveyDefinition: TSurvey = {
   version: 1,
   // todo survey
   logoUrl: isProduction
-    ? "https://trassenscout.de/logo-land-bb.png"
-    : "https://staging.trassenscout.de/logo-land-bb.png",
+    ? "https://trassenscout.de/radnetz-brandenburg/bb-logo.png"
+    : "https://staging.trassenscout.de/radnetz-brandenburg/bb-logo.png",
   canonicalUrl:
     "https://mil.brandenburg.de/mil/de/themen/mobilitaet-verkehr/radverkehr/radnetz-brandenburg/",
   maptilerUrl: "https://api.maptiler.com/maps/1628cd25-069f-45bc-9e1e-9768388fe544/style.json",
