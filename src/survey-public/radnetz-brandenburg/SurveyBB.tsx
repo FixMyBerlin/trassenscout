@@ -220,8 +220,11 @@ const StartContent: React.FC = () => {
       </Transition>
       <SurveyP>
         Mit dem Aufrufen der Beteiligung stimme ich der{" "}
-        <SurveyLink href="/datenschutz">Datenschutzerklärung</SurveyLink> zu. Die Daten werden gemäß
-        DSGVO verarbeitet und nur für die Durchführung dieser Beteiligung gespeichert.
+        <SurveyLink blank href="/datenschutz">
+          Datenschutzerklärung
+        </SurveyLink>{" "}
+        zu. Die Daten werden gemäß DSGVO verarbeitet und nur für die Durchführung dieser Beteiligung
+        gespeichert.
       </SurveyP>
       <details>
         <summary
