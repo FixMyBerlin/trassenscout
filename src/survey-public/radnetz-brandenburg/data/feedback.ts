@@ -36,7 +36,7 @@ export const feedbackDefinition: TFeedback = {
         },
         {
           id: 22,
-          label: { de: "Zu welchem Thema passt Ihr Feedback?" },
+          label: { de: "Zu welchem Thema passt Ihr Hinweis?" },
           component: "singleResponse",
           props: {
             responses: [

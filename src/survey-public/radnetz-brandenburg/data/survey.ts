@@ -45,7 +45,7 @@ export const surveyDefinition: TSurvey = {
           id: 3,
           label: { de: "E-Mail-Adresse" },
           component: "textfield",
-          props: { placeholder: { de: "beispiel@beispiel.de" } },
+          props: {},
         },
         {
           id: 4,
@@ -54,7 +54,7 @@ export const surveyDefinition: TSurvey = {
             de: "Tragen Sie hier die 6-stellige PIN ein, die Sie von uns per E-Mail erhalten haben.",
           },
           component: "textfield",
-          props: { placeholder: { de: "1234" } },
+          props: {},
         },
         {
           id: 5,
