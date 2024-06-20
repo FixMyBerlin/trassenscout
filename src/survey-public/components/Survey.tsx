@@ -32,7 +32,12 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit, setStage }) => {
 
   const handleBackPage = () => {
     if (surveyPageProgress === 0) {
-      setStage("START")
+      if (
+        confirm(
+          "Wenn Sie zurück gehen, wird das Formular zurückgesetzt. Um die Einleitung erneut zu lesen, können Sie alternativ den Link in einem neuen Fenster nochmal öffnen.",
+        )
+      )
+        setStage("START")
     } else {
       const newSurveyPageProgress = Math.max(0, surveyPageProgress - 1)
       setSurveyPageProgress(newSurveyPageProgress)
