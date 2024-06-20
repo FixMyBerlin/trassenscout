@@ -107,6 +107,17 @@ export const SurveyMainPage: React.FC<Props> = ({
     }, 900)
   }
 
+  const handleFeedbackToMore = () => {
+    if (confirm("Wenn Sie zurück gehen, wird das Formular zurückgesetzt.")) {
+      setTimeout(() => {
+        setStage("MORE")
+        setProgress(stageProgressDefinition["MORE"])
+        setIsSpinner(false)
+        scrollToTopWithDelay()
+      }, 900)
+    }
+  }
+
   const handleSubmitFeedback = async (
     feedbackResponses: Record<string, any>,
     submitterId: string,
@@ -182,6 +193,7 @@ export const SurveyMainPage: React.FC<Props> = ({
           feedback={feedbackDefinition}
           responseConfig={responseConfig}
           onSubmit={handleSubmitFeedback}
+          onBackClick={handleFeedbackToMore}
         />
       )
       break

@@ -15,6 +15,7 @@ export { FORM_ERROR } from "src/core/components/forms"
 type Props = {
   page: any
   onButtonClick: any // TODO
+  onBackClick: any // TODO
   isCompleted: boolean
   maptilerUrl: string
   feedbackCategoryId: number
@@ -28,6 +29,7 @@ export const FeedbackFirstPage: React.FC<Props> = ({
   isCompleted,
   page,
   onButtonClick,
+  onBackClick,
   maptilerUrl,
   setIsCompleted,
   feedbackCategoryId,
@@ -86,6 +88,11 @@ export const FeedbackFirstPage: React.FC<Props> = ({
         >
           {buttons[0].label.de}
         </SurveyButton>
+        {buttons[1] && (
+          <SurveyButton color={buttons[1].color} type="button" onClick={onBackClick}>
+            {buttons[1].label.de}
+          </SurveyButton>
+        )}
       </SurveyButtonWrapper>
       <SurveyP className="text-sm sm:text-sm">
         * Pflichtfelder <br />

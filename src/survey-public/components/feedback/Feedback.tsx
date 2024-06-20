@@ -20,6 +20,7 @@ export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {
   onSubmit: any
+  onBackClick: any
   feedback: TFeedback
   stageProgressDefinition: TProgress
   responseConfig: TResponseConfig
@@ -30,6 +31,7 @@ type Props = {
 export const Feedback: React.FC<Props> = ({
   institutionsBboxes,
   onSubmit,
+  onBackClick,
   feedback,
   stageProgressDefinition,
   responseConfig,
@@ -159,6 +161,7 @@ export const Feedback: React.FC<Props> = ({
           onButtonClick={handleNextPage}
           feedbackCategoryId={feedbackCategoryId!}
           legend={mapProps.legend}
+          onBackClick={onBackClick}
         />
       )}
       {feedbackPageProgress === 1 && (
