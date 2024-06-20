@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from "react"
+import { SetStateAction, useCallback, useContext, useState } from "react"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -12,9 +12,13 @@ import { Page } from "src/survey-public/components/Page"
 import { scrollToTopWithDelay } from "src/survey-public/utils/scrollToTopWithDelay"
 import { stageProgressDefinition } from "../frm7/data/progress"
 
-type Props = { survey: TSurvey; onSubmit: ([]) => void }
+type Props = {
+  survey: TSurvey
+  onSubmit: ([]) => void
+  setStage: (value: SetStateAction<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "START">) => void
+}
 
-export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
+export const Survey: React.FC<Props> = ({ survey, onSubmit, setStage }) => {
   const [values, setValues] = useState({})
   const { setProgress } = useContext(ProgressContext)
   const [surveyPageProgress, setSurveyPageProgress] = useState(0)
@@ -27,9 +31,13 @@ export const Survey: React.FC<Props> = ({ survey, onSubmit }) => {
   }
 
   const handleBackPage = () => {
-    const newSurveyPageProgress = Math.max(0, surveyPageProgress - 1)
-    setSurveyPageProgress(newSurveyPageProgress)
-    setProgress(stageProgressDefinition["SURVEY"] + newSurveyPageProgress)
+    if (surveyPageProgress === 0) {
+      setStage("START")
+    } else {
+      const newSurveyPageProgress = Math.max(0, surveyPageProgress - 1)
+      setSurveyPageProgress(newSurveyPageProgress)
+      setProgress(stageProgressDefinition["SURVEY"] + newSurveyPageProgress)
+    }
     scrollToTopWithDelay()
   }
 

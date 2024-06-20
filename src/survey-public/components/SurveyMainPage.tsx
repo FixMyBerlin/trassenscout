@@ -163,7 +163,9 @@ export const SurveyMainPage: React.FC<Props> = ({
       component = <Start onStartClick={handleStart} startContent={startContent} />
       break
     case "SURVEY":
-      component = <Survey survey={surveyDefinition} onSubmit={handleSubmitSurvey} />
+      component = (
+        <Survey survey={surveyDefinition} setStage={setStage} onSubmit={handleSubmitSurvey} />
+      )
       break
     case "MORE":
       component = (
