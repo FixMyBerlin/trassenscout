@@ -28,6 +28,7 @@ import {
 
 type Props = {
   startContent: React.ReactNode
+  isStartDisabled?: boolean
   emailDefinition: TEmail
   feedbackDefinition: TFeedback
   moreDefinition: TMore
@@ -42,6 +43,7 @@ type Props = {
 
 export const SurveyMainPage: React.FC<Props> = ({
   startContent,
+  isStartDisabled = false,
   emailDefinition,
   feedbackDefinition,
   moreDefinition,
@@ -171,7 +173,9 @@ export const SurveyMainPage: React.FC<Props> = ({
   let component
   switch (stage) {
     case "START":
-      component = <Start onStartClick={handleStart} startContent={startContent} />
+      component = (
+        <Start disabled={isStartDisabled} onStartClick={handleStart} startContent={startContent} />
+      )
       break
     case "SURVEY":
       component = (

@@ -21,6 +21,7 @@ import { responseConfig } from "./data/response-config"
 import { surveyDefinition } from "./data/survey"
 import { SurveyLink } from "../components/core/links/SurveyLink"
 import { isProduction } from "src/core/utils"
+import { set } from "date-fns"
 
 type Props = {
   surveyId: number
@@ -367,9 +368,10 @@ const StartContent: React.FC = () => {
 
 export const SurveyBB: React.FC<Props> = ({ surveyId }) => {
   const router = useRouter()
+  const [isUrlInvalid, setIsUrlInvalid] = useState(false)
   const { id } = router.query
-  const institution = institutions_bboxes.find((i) => i.id === id)?.institution || "invalid"
-  const landkreis = institutions_bboxes.find((i) => i.id === id)?.landkreis || "invalid"
+  const institution = institutions_bboxes.find((i) => i.id === id)?.institution || "unbekannt"
+  const landkreis = institutions_bboxes.find((i) => i.id === id)?.landkreis || "unbekannt"
 
   // in survey radnetz-brandenburg, the institution id is passed as a query parameter in the original url sent to the user
   // the institution name should appear in the survey response
@@ -378,6 +380,7 @@ export const SurveyBB: React.FC<Props> = ({ surveyId }) => {
 
   // todo survey ? effect and dependency router?
   useEffect(() => {
+    if (institution === "unbekannt" || landkreis === "unbekannt") setIsUrlInvalid(true)
     router.query.institution = encodeURIComponent(institution)
     router.query.landkreis = encodeURIComponent(landkreis)
     void router.replace({ query: router.query }, undefined, {
@@ -387,6 +390,7 @@ export const SurveyBB: React.FC<Props> = ({ surveyId }) => {
 
   return (
     <SurveyMainPage
+      isStartDisabled={isUrlInvalid}
       startContent={<StartContent />}
       surveyId={surveyId}
       emailDefinition={emailDefinition}
