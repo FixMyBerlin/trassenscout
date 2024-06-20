@@ -13,7 +13,7 @@ import { ProgressContext } from "src/survey-public/context/contexts"
 import { scrollToTopWithDelay } from "src/survey-public/utils/scrollToTopWithDelay"
 import surveyFeedbackEmail from "src/survey-responses/mutations/surveyFeedbackEmail"
 
-import { useParams } from "next/navigation"
+import { useParam } from "@blitzjs/next"
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
 import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
 import {
@@ -25,7 +25,6 @@ import {
   TResponseConfig,
   TSurvey,
 } from "./types"
-import { useParam } from "@blitzjs/next"
 
 type Props = {
   startContent: React.ReactNode
