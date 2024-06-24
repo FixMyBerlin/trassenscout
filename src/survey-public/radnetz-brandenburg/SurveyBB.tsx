@@ -240,7 +240,7 @@ const StartContent: React.FC = () => {
         <summary
           className={clsx(
             partcipationLinkStyles,
-            "cursor-pointer mb-4 mt-8 text-lg font-extrabold",
+            "!text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35] cursor-pointer mb-4 mt-8 text-lg font-extrabold",
           )}
         >
           Häufige Fragen
@@ -248,7 +248,12 @@ const StartContent: React.FC = () => {
         <ul className={clsx("mb-8 space-y-2")}>
           <li>
             <details>
-              <summary className={clsx(partcipationLinkStyles, "cursor-pointer")}>
+              <summary
+                className={clsx(
+                  partcipationLinkStyles,
+                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                )}
+              >
                 Was bedeutet baulasträgerübergreifendes Radnetz?
               </summary>
               Beim <i>Radnetz Brandenburg</i> handelt es sich um ein flächendeckendes Radnetz für
@@ -261,7 +266,12 @@ const StartContent: React.FC = () => {
           </li>
           <li>
             <details>
-              <summary className={clsx(partcipationLinkStyles, "cursor-pointer")}>
+              <summary
+                className={clsx(
+                  partcipationLinkStyles,
+                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35 hover:text-[#C73C35]",
+                )}
+              >
                 Wie sieht das Umsetzungskonzept aus?
               </summary>
               Der erarbeitete und final abgestimmte Netzentwurf soll zukünftig die Grundlage für die
@@ -273,7 +283,12 @@ const StartContent: React.FC = () => {
           </li>
           <li>
             <details>
-              <summary className={clsx(partcipationLinkStyles, "cursor-pointer")}>
+              <summary
+                className={clsx(
+                  partcipationLinkStyles,
+                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                )}
+              >
                 Wie wurden die Zielpunkte für das Luftliniennetz ausgewählt?
               </summary>
               Die Auswahl der Zielpunkte erfolgte nach dem System der Zentralen Orte, sodass neben
@@ -288,7 +303,12 @@ const StartContent: React.FC = () => {
           </li>
           <li>
             <details>
-              <summary className={clsx(partcipationLinkStyles, "cursor-pointer")}>
+              <summary
+                className={clsx(
+                  partcipationLinkStyles,
+                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                )}
+              >
                 Nach welchen Kriterien erfolgt die Netzumlegung?
               </summary>
               Bei der sogenannten Netzumlegung wurden alle Luftlinien auf tatsächlich bestehende
@@ -301,7 +321,12 @@ const StartContent: React.FC = () => {
           </li>
           <li>
             <details>
-              <summary className={clsx(partcipationLinkStyles, "cursor-pointer")}>
+              <summary
+                className={clsx(
+                  partcipationLinkStyles,
+                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                )}
+              >
                 Wie wird die Beteiligung ausgewertet?
               </summary>
               Alle eingegangenen Hinweise und Rückmeldungen werden fachlich geprüft und abgewogen.
@@ -311,7 +336,12 @@ const StartContent: React.FC = () => {
           </li>
           <li>
             <details>
-              <summary className={clsx(partcipationLinkStyles, "cursor-pointer")}>
+              <summary
+                className={clsx(
+                  partcipationLinkStyles,
+                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                )}
+              >
                 Werden Radschnellverbindungen (RSV) berücksichtigt?
               </summary>
               Die Potenzialanalyse zu Radschnellverbindungen wurde bei der Netzentwicklung
@@ -323,7 +353,12 @@ const StartContent: React.FC = () => {
           </li>
           <li>
             <details>
-              <summary className={clsx(partcipationLinkStyles, "cursor-pointer")}>
+              <summary
+                className={clsx(
+                  partcipationLinkStyles,
+                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                )}
+              >
                 Wird das Radnetz verschiedene Hierarchieebenen berücksichtigen?
               </summary>
               Das Konzept zum Radnetz Brandenburg wird zunächst ohne hierarchische Unterscheidung
@@ -333,7 +368,12 @@ const StartContent: React.FC = () => {
           </li>
           <li>
             <details>
-              <summary className={clsx(partcipationLinkStyles, "cursor-pointer")}>
+              <summary
+                className={clsx(
+                  partcipationLinkStyles,
+                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                )}
+              >
                 Welche Qualitäts- und Ausbaustandards soll das Radnetz aufweisen?
               </summary>
               Die Qualitäts- und Ausbaustandards befinden sich zum aktuellen Zeitpunkt noch in
@@ -342,7 +382,12 @@ const StartContent: React.FC = () => {
           </li>
           <li>
             <details>
-              <summary className={clsx(partcipationLinkStyles, "cursor-pointer")}>
+              <summary
+                className={clsx(
+                  partcipationLinkStyles,
+                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                )}
+              >
                 Wie wird das Radnetz finanziert?
               </summary>
               Die Finanzierung ist zum jetzigen Zeitpunkt nicht abschließend geklärt.
@@ -350,7 +395,12 @@ const StartContent: React.FC = () => {
           </li>
           <li>
             <details>
-              <summary className={clsx(partcipationLinkStyles, "cursor-pointer")}>
+              <summary
+                className={clsx(
+                  partcipationLinkStyles,
+                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                )}
+              >
                 Werden auch länderübergreifende Radwegeplanungen berücksichtigt?
               </summary>
               Bei der Aufstellung des Luftliniennetzes wurden in Abstimmung mit den angrenzenden
