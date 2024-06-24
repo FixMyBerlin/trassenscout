@@ -188,7 +188,7 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
         )}
         {isMediumScreen && <NavigationControl showCompass={false} />}
         <SurveyMapBanner
-          className="absolute bottom-12 font-sans"
+          className="absolute bottom-12"
           action={easeToPin}
           status={isPinInView ? "default" : "pinOutOfView"}
         />

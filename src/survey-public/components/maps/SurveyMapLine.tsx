@@ -163,7 +163,7 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
           </Source>
         )}
         <SurveyMapLineBanner
-          className="absolute bottom-12 font-sans"
+          className="absolute bottom-12"
           lineFromToName={getValues()[`custom-${lineFromToNameQuestionId}`] || null}
         />
 
