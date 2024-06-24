@@ -10,7 +10,7 @@ export const Start: React.FC<Props> = ({ onStartClick, startContent, disabled })
       {disabled && (
         <small className="text-red-500">
           Fehler: Die URL ist fehlerhaft oder unvollständig. Bitte überprüfen Sie den Link, den Sie
-          erhalten haben.
+          per Email erhalten haben.
         </small>
       )}
       <SurveyButtonWrapper>
