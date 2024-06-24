@@ -125,29 +125,42 @@ export const feedbackDefinition: TFeedback = {
                   className: "h-[3px] stripe-background-vertical-pink-2",
                 },
               },
-              "Quellen &  Ziele (erst bei hoher Zoomstufe sichtbar)": {
-                education: {
+              Straßentypen: {
+                bund: {
                   label: {
-                    de: "Bildung",
+                    de: "Bundesstraßen",
                   },
-                  color: "bg-[#326BD7]",
-                  className: "h-5 rounded-full",
+                  color: "bg-[#F6E7AC] border-y border-gray-300",
+                  className: "h-[6px]",
                 },
+                land: {
+                  label: {
+                    de: "Landesstraßen",
+                  },
+                  color: "bg-[#F6E7AC] border-y border-gray-300",
+                  className: "h-[5px]",
+                },
+                kreis: {
+                  label: {
+                    de: "Kreisstraßen",
+                  },
+                  color: "bg-[#F6E7AC] border-y border-gray-300",
+                  className: "h-[4px]",
+                },
+                highway: {
+                  label: {
+                    de: "Autobahn",
+                  },
+                  color: "bg-[#A5C0CA]",
+                  className: "h-[4px]",
+                },
+              },
+              "Quellen &  Ziele (werden erst ab Zoomstufe 11 oder 14 angezeigt)": {
                 schools: {
                   label: {
                     de: "Schulen",
                   },
                   color: "bg-[#2880FB]",
-                  className: "h-5 rounded-full",
-                },
-                basics: {
-                  label: { de: "Grundversorgung" },
-                  color: "bg-[#F5814D]",
-                  className: "h-5 rounded-full",
-                },
-                freetime: {
-                  label: { de: "Freizeit" },
-                  color: "bg-[#AEE66D]",
                   className: "h-5 rounded-full",
                 },
                 kindergarden: {
@@ -160,13 +173,23 @@ export const feedbackDefinition: TFeedback = {
                   color: "bg-[#B377FE]",
                   className: "h-5 rounded-full",
                 },
+                basics: {
+                  label: { de: "Grundversorgung" },
+                  color: "bg-[#F5814D]",
+                  className: "h-5 rounded-full",
+                },
                 shopping: {
                   label: { de: "Einkauf" },
                   color: "bg-[#78E5D2]",
                   className: "h-5 rounded-full",
                 },
+                freetime: {
+                  label: { de: "Freizeit" },
+                  color: "bg-[#AEE66D]",
+                  className: "h-5 rounded-full",
+                },
               },
-              "Radinfrastruktur Führungsformen (Bestand)": {
+              "Radinfrastruktur Führungsformen (Bestand) (wird erst ab Zoomstufe 10 angezeigt)": {
                 seperat: {
                   label: {
                     de: "Führung baul. abgesetzte von Kfz",
