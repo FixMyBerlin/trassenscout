@@ -52,14 +52,14 @@ export function surveyFeedbackMailer({
     Nach Abschluss der Beteiligung werden Ihre Hinweise fachlich geprüft und in die Abwägung zur Überarbeitung des Zielnetzentwurfs mit einbezogen.
 
     Mit freundlichen Grüßen
-    i.A. das Team von FixMyCity
+    i.A. das Team vom Trassenscout
+
 
     FixMyCity GmbH
     Oberlandstraße 26-35
     12099 Berlin
-
-    mail: info@fixmycity.de
     www.fixmycity.de
+    Geschäftsführer: Boris Hekele und Heiko Rintelen
     `,
     HTMLPart: `
       <p>
@@ -98,7 +98,7 @@ export function surveyFeedbackMailer({
       </p>
       <p>
         Mit freundlichen Grüßen <br />
-        i.A. das Team von FixMyCity
+        i.A. das Team vom Trassenscout
       </p>
       <p>
         <small>FixMyCity GmbH</small>
@@ -108,17 +108,11 @@ export function surveyFeedbackMailer({
         <small>12099 Berlin</small>
         <br />
         <small>
-          mail: <a href="mailto:info@fixmycity.de">info@fixmycity.de</a>
-        </small>
-        <br />
-        <small>
           <a href="https://www.fixmycity.de/">www.fixmycity.de</a>
         </small>
         <br />
         <small>
-          <a href="https://de.linkedin.com/company/fixmycity?trk=public_profile_topcard-current-company">
-            LinkedIn
-          </a>
+        Geschäftsführer: Boris Hekele und Heiko Rintelen
         </small>
       </p>
         <img
