@@ -93,26 +93,29 @@ export const FeedbackSecondPage: React.FC<Props> = ({
         })}
       </div>
       <SurveyButtonWrapper>
-        <SurveyButton
-          color={buttons[0]?.color}
-          disabled={!isCompleted}
-          id="submit-more"
-          type="submit"
-        >
-          {buttons![0]?.label.de}
-        </SurveyButton>
-        <SurveyButton
-          color={buttons[1]?.color}
-          disabled={!isCompleted}
-          id="submit-finish"
-          type="submit"
-        >
-          {buttons![1]?.label.de}
+        <div className="flex gap-6 flex-col">
+          <SurveyButton
+            color={buttons[0]?.color}
+            disabled={!isCompleted}
+            id="submit-more"
+            type="submit"
+          >
+            {buttons![0]?.label.de}
+          </SurveyButton>
+          <SurveyButton
+            color={buttons[1]?.color}
+            disabled={!isCompleted}
+            id="submit-finish"
+            type="submit"
+          >
+            {buttons![1]?.label.de}
+          </SurveyButton>
+        </div>
+        <SurveyButton color="white" type="button" onClick={onButtonClick}>
+          Zurück
         </SurveyButton>
       </SurveyButtonWrapper>
-      <SurveyButton color="white" type="button" onClick={onButtonClick}>
-        Zurück
-      </SurveyButton>
+
       <SurveyP className="text-sm sm:text-sm">
         * Pflichtfelder <br />
         Um Fortzufahren bitte alle Pflichtfelder ausfüllen.

@@ -231,7 +231,7 @@ export const feedbackDefinition: TFeedback = {
         },
         {
           label: { de: "Speichern & Beteiligung beenden" },
-          color: "primaryColor",
+          color: "white",
           onClick: { action: "submit" },
         },
       ],
