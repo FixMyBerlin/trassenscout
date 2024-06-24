@@ -1,6 +1,5 @@
-import { Markdown } from "src/core/components/Markdown/Markdown"
-import { SurveyH1 } from "../Text"
 import { SurveyMarkdown } from "../SurveyMarkdown"
+import { SurveyH1 } from "../Text"
 
 export type SurveyScreenHeaderProps = {
   title: string
