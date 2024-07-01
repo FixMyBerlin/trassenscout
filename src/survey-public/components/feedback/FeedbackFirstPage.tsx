@@ -16,22 +16,20 @@ type Props = {
   page: any
   onButtonClick: any // TODO
   onBackClick: any // TODO
-  isCompleted: boolean
   maptilerUrl: string
   feedbackCategoryId: number
-  setIsCompleted: any
+  isCompletedProps: { isCompleted: boolean; setIsCompleted: (value: boolean) => void }
   institutionsBboxes?: TInstitutionsBboxes
   // todo survey clean up or refactor after survey BB: legend for line map
   legend?: Record<string, Record<string, TLegendItem>>
 }
 
 export const FeedbackFirstPage: React.FC<Props> = ({
-  isCompleted,
   page,
   onButtonClick,
   onBackClick,
   maptilerUrl,
-  setIsCompleted,
+  isCompletedProps: { isCompleted, setIsCompleted },
   feedbackCategoryId,
   institutionsBboxes,
   legend,
@@ -71,7 +69,7 @@ export const FeedbackFirstPage: React.FC<Props> = ({
                   ],
                 },
               }}
-              setIsCompleted={setIsCompleted}
+              setIsCompleted={setIsCompleted} // todo
             />
           </MapProvider>
           {legend && <SurveyMapLegend legend={legend} />}

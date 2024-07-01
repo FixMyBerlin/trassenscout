@@ -1,5 +1,5 @@
 import { useMutation } from "@blitzjs/rpc"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import { Email } from "src/survey-public/components/Email"
 import { More } from "src/survey-public/components/More"
@@ -16,6 +16,7 @@ import surveyFeedbackEmail from "src/survey-responses/mutations/surveyFeedbackEm
 import { useParam } from "@blitzjs/next"
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
 import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
+import PublicSurveyForm from "./core/form/PublicSurveyForm"
 import {
   TEmail,
   TFeedback,
@@ -25,6 +26,7 @@ import {
   TResponseConfig,
   TSurvey,
 } from "./types"
+import { getCompletedQuestionIds } from "../utils/getCompletedQuestionIds"
 
 type Props = {
   startContent: React.ReactNode
@@ -54,15 +56,20 @@ export const SurveyMainPage: React.FC<Props> = ({
   institutionsBboxes,
 }) => {
   const [stage, setStage] = useState<"START" | "SURVEY" | "MORE" | "FEEDBACK" | "EMAIL">("START")
+  // todo survey clean up or refactor after survey BB
+  const surveySlug = useParam("surveySlug", "string")
   const [progress, setProgress] = useState(1)
   const [isSpinner, setIsSpinner] = useState(false)
-  const [responses, setResponses] = useState<any[]>([])
   const [surveySessionId, setSurveySessionId] = useState<null | number>(null)
   const [feedbackKey, setFeedbackKey] = useState(1)
   const [createSurveySessionMutation] = useMutation(createSurveySession)
   const [createSurveyResponseMutation] = useMutation(createSurveyResponse)
   const [surveyFeedbackEmailMutation] = useMutation(surveyFeedbackEmail)
-  const surveySlug = useParam("surveySlug", "string")
+  const [surveyPageProgress, setSurveyPageProgress] = useState(0)
+  const [isSurveyPageCompleted, setIsSurveyPageCompleted] = useState(false)
+  const [isFirstPageCompleted, setIsFirstPageCompleted] = useState(false)
+  const [isSecondPageCompleted, setIsSecondPageCompleted] = useState(false)
+  const [isMapDirty, setIsMapDirty] = useState(false)
 
   useEffect(() => {
     const root = document.documentElement
@@ -81,16 +88,21 @@ export const SurveyMainPage: React.FC<Props> = ({
     }
   }
 
+  const feedbackFirstPageQuestionIds = feedbackDefinition.pages[0]?.questions.map((q) => q.id)
+  const secondPageQuestionIds = feedbackDefinition.pages[1]?.questions.map((q) => q.id)
+
+  const isUserLocationQuestionId = responseConfig.evaluationRefs["is-feedback-location"]
+  const userLocationQuestionId = responseConfig.evaluationRefs["feedback-location"]
+
   const handleStart = () => {
     setStage("SURVEY")
     setProgress(stageProgressDefinition["SURVEY"])
     scrollToTopWithDelay()
   }
 
-  const handleSubmitSurvey = async (surveyResponses: Record<string, any>) => {
+  const handleSurveySubmit = async (surveyResponses: Record<string, any>) => {
     setIsSpinner(true)
-    setResponses([...responses, surveyResponses])
-
+    surveyResponses = transformValues(surveyResponses)
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
@@ -110,22 +122,20 @@ export const SurveyMainPage: React.FC<Props> = ({
   }
 
   const handleFeedbackToMore = () => {
-    if (confirm("Wenn Sie zurück gehen, wird das Formular zurückgesetzt.")) {
-      setTimeout(() => {
-        setStage("MORE")
-        setProgress(stageProgressDefinition["MORE"])
-        setIsSpinner(false)
-        scrollToTopWithDelay()
-      }, 900)
-    }
+    setStage("MORE")
+    setProgress(stageProgressDefinition["MORE"])
+    setIsSpinner(false)
+    scrollToTopWithDelay()
   }
 
-  const handleSubmitFeedback = async (
-    feedbackResponses: Record<string, any>,
-    submitterId: string,
-  ) => {
+  const handleFeedbackSubmit = async (values: Record<string, any>, submitterId?: string) => {
+    if (values[`single-${isUserLocationQuestionId}`] === "2")
+      values[`map-${userLocationQuestionId}`] = "" // if "no location" is chosen, set location value to empty string
+    values = transformValues(values)
+    delete values[isUserLocationQuestionId!] // delete map ja/nein response
+    // await handleSubmitFeedback({ ...values }, submitterId)
+    const feedbackResponses = { ...values }
     setIsSpinner(true)
-    setResponses([...responses, feedbackResponses])
 
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
@@ -158,11 +168,54 @@ export const SurveyMainPage: React.FC<Props> = ({
   }
 
   const handleMoreFeedback = () => {
-    setFeedbackKey(feedbackKey + 1)
     setStage("FEEDBACK")
     setProgress(stageProgressDefinition["FEEDBACK"])
     scrollToTopWithDelay()
   }
+
+  const handleSurveyChange = useCallback(
+    (values: Record<string, any>) => {
+      const { pages } = surveyDefinition
+      const questions = pages[surveyPageProgress]!.questions
+      const pageQuestionIds = questions?.map((q) => q.id)
+
+      const completedQuestionIds = getCompletedQuestionIds(values)
+
+      if (!questions || !questions.length) {
+        setIsSurveyPageCompleted(true)
+      } else {
+        // check if all questions from page have been answered; compare arrays
+        setIsSurveyPageCompleted(
+          pageQuestionIds!.every((val) => completedQuestionIds.includes(val)),
+        )
+      }
+    },
+    [surveyDefinition, surveyPageProgress],
+  )
+
+  const handleFeedbackChange = useCallback(
+    (values: Record<string, any>) => {
+      const completedQuestionIds = getCompletedQuestionIds(values)
+      // check if all questions from page 1 and 2 have been answered; compare arrays
+      setIsFirstPageCompleted(
+        feedbackFirstPageQuestionIds!.every((val) => completedQuestionIds.includes(val)),
+      )
+      setIsSecondPageCompleted(
+        values[`single-${isUserLocationQuestionId}`] === "1"
+          ? secondPageQuestionIds!.every((val) => completedQuestionIds.includes(val)) && isMapDirty
+          : secondPageQuestionIds!
+              .filter((id) => id !== userLocationQuestionId)
+              .every((val) => completedQuestionIds.includes(val)),
+      )
+    },
+    [
+      isMapDirty,
+      isUserLocationQuestionId,
+      feedbackFirstPageQuestionIds,
+      secondPageQuestionIds,
+      userLocationQuestionId,
+    ],
+  )
 
   const handleFinish = () => {
     setStage("EMAIL")
@@ -179,12 +232,22 @@ export const SurveyMainPage: React.FC<Props> = ({
       break
     case "SURVEY":
       component = (
-        <Survey survey={surveyDefinition} setStage={setStage} onSubmit={handleSubmitSurvey} />
+        <Survey
+          surveyPageProgressProps={{ surveyPageProgress, setSurveyPageProgress }}
+          setStage={setStage}
+          isPageCompleted={isSurveyPageCompleted}
+          survey={surveyDefinition}
+        />
       )
       break
     case "MORE":
       component = (
-        <More more={moreDefinition} onClickMore={handleMoreFeedback} onClickFinish={handleFinish} />
+        <More
+          more={moreDefinition}
+          onClickMore={handleMoreFeedback}
+          onClickFinish={handleFinish}
+          isUserLocationQuestionId={isUserLocationQuestionId}
+        />
       )
       break
     case "FEEDBACK":
@@ -192,12 +255,13 @@ export const SurveyMainPage: React.FC<Props> = ({
         <Feedback
           institutionsBboxes={institutionsBboxes}
           maptilerUrl={surveyDefinition.maptilerUrl}
-          key={feedbackKey}
           stageProgressDefinition={stageProgressDefinition}
           feedback={feedbackDefinition}
           responseConfig={responseConfig}
-          onSubmit={handleSubmitFeedback}
           onBackClick={handleFeedbackToMore}
+          isFirstPageCompletedProps={{ isFirstPageCompleted, setIsFirstPageCompleted }}
+          isSecondPageCompletedProps={{ isSecondPageCompleted, setIsSecondPageCompleted }}
+          setIsMapDirty={setIsMapDirty}
         />
       )
       break
@@ -206,16 +270,61 @@ export const SurveyMainPage: React.FC<Props> = ({
       break
   }
 
+  const transformValues = (values: Record<string, null | string | boolean>) => {
+    const responses: Record<string, null | string | number | number[]> = {}
+    Object.entries(values).forEach(([k, v]) => {
+      const [questionType, questionId, responseId] = k.split("-")
+      switch (questionType) {
+        case "single":
+          responses[questionId!] = v === null ? null : Number(v)
+          break
+        case "multi":
+          if (!(questionId! in responses)) responses[questionId!] = []
+          // @ts-ignore
+          if (v) responses[questionId!].push(Number(responseId))
+          break
+        case "text":
+          responses[questionId!] = v === "" ? null : String(v)
+          break
+        case "map":
+          // @ts-expect-error
+          responses[questionId!] = v === "" ? null : { lng: v?.lng, lat: v?.lat }
+          break
+        case "custom":
+          responses[questionId!] = v === "" ? null : String(v)
+          break
+      }
+    })
+    return responses
+  }
+
   return (
     <ProgressContext.Provider value={{ progress, setProgress }}>
       <SurveyLayout canonicalUrl={surveyDefinition.canonicalUrl} logoUrl={surveyDefinition.logoUrl}>
-        <Debug className="border-red-500">
-          <code>stage: {stage}</code>
-          <code>
-            <pre>{JSON.stringify(responses, null, 2)}</pre>
-          </code>
+        <Debug className="border-red-500 border">
+          <code>stage: {stage}</code>{" "}
         </Debug>
-        <div className={isSpinner ? "blur-sm" : ""}>{component}</div>
+        <div className={isSpinner ? "blur-sm" : ""}>
+          {stage === "START" || stage === "SURVEY" ? (
+            <PublicSurveyForm
+              // key is necessary to reset form state when switching between survey and feedback part
+              key={1}
+              onChangeValues={handleSurveyChange}
+              onSubmit={handleSurveySubmit}
+            >
+              {component}
+            </PublicSurveyForm>
+          ) : (
+            <PublicSurveyForm
+              // feedback key / updating the key is necessary to reset form state when feedback part is filled out multiple times
+              key={2 + feedbackKey}
+              onSubmit={handleFeedbackSubmit}
+              onChangeValues={handleFeedbackChange}
+            >
+              {component}
+            </PublicSurveyForm>
+          )}
+        </div>
         {isSpinner && <SurveySpinnerLayover />}
       </SurveyLayout>
     </ProgressContext.Provider>

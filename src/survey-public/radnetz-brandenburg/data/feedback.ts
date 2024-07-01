@@ -66,7 +66,7 @@ export const feedbackDefinition: TFeedback = {
       ],
       buttons: [
         { label: { de: "Weiter" }, color: "primaryColor", onClick: { action: "nextPage" } },
-        { label: { de: "Hinweis abbrechen" }, color: "white", onClick: { action: "previousPage" } },
+        { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
       ],
     },
     {
