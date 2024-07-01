@@ -129,7 +129,11 @@ export const surveyDefinition: TSurvey = {
         },
       ],
       buttons: [
-        { label: { de: "Absenden" }, color: "primaryColor", onClick: { action: "submit" } },
+        {
+          label: { de: "Antworten speichern und weiter" },
+          color: "primaryColor",
+          onClick: { action: "submit" },
+        },
         { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
       ],
     },

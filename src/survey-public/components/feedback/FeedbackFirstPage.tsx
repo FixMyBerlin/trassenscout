@@ -96,7 +96,7 @@ export const FeedbackFirstPage: React.FC<Props> = ({
       </SurveyButtonWrapper>
       <SurveyP className="text-sm sm:text-sm">
         * Pflichtfelder <br />
-        Um Fortzufahren bitte alle Pflichtfelder ausfüllen.
+        Um fortzufahren, bitte alle Pflichtfelder ausfüllen.
       </SurveyP>
     </>
   )
