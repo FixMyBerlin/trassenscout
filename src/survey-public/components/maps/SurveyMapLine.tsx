@@ -111,10 +111,12 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
     const lineGeometry = line?.geometry
 
     // set values for line id, geometry and from-to-name in form context
-    if (lineFrom && lineTo)
-      setValue(`custom-${lineFromToNameQuestionId}`, `${lineFrom} - ${lineTo}`)
-    if (lineId) setValue(`custom-${lineQuestionId}`, lineId)
-    if (lineGeometry) {
+    if (line) {
+      setValue(
+        `custom-${lineFromToNameQuestionId}`,
+        `${lineFrom || "unbekannt"} - ${lineTo || "unbekannt"}`,
+      )
+      setValue(`custom-${lineQuestionId}`, lineId || "unbekannt")
       // @ts-expect-error we know that the geometry is a line string
       setValue(`custom-${geometryQuestionId}`, JSON.stringify(lineGeometry.coordinates))
     }
