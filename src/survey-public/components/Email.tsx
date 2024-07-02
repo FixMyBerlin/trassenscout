@@ -31,7 +31,8 @@ export const Email: React.FC<Props> = ({ email }) => {
         />
       )}
       <div className="pt-10">
-        <SurveyLink button={button.color} href={homeUrl}>
+        {/* todo survey clean up after survey BB: link external */}
+        <SurveyLink blank button={button.color} href={homeUrl}>
           {button.label.de}
         </SurveyLink>
       </div>

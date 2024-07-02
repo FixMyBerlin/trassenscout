@@ -27,7 +27,7 @@ export const SurveyMapLineBanner: React.FC<Props> = ({ className, lineFromToName
         className,
       )}
     >
-      Wählen Sie hier eine Linie aus.
+      Wählen Sie hier eine orange Linie aus.
     </div>
   )
 }

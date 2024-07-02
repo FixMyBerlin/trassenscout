@@ -67,14 +67,13 @@ const StartContent: React.FC = () => {
         zurückgegriffen.
       </SurveyP>
       <SurveyP>
-        Weiterführende Informationen zum Radnetz Brandenburg finden Sie auf der Website des
-        Ministeriums für{" "}
+        Weiterführende Informationen zum Radnetz Brandenburg finden Sie auf der{" "}
         <a
           className={partcipationLinkStyles}
           target="_blank"
           href="https://mil.brandenburg.de/mil/de/themen/mobilitaet-verkehr/radverkehr/radnetz-brandenburg/"
         >
-          Infrastruktur und Landesplanung
+          Website des Ministeriums für Infrastruktur und Landesplanung
         </a>
         .
       </SurveyP>
@@ -91,18 +90,18 @@ const StartContent: React.FC = () => {
         Radnetzkonzeptes zu kommentieren.{" "}
       </SurveyP>
       <SurveyH3>So geht’s!</SurveyH3>
-      <ul className="list-disc ml-6">
+      <ul className="list-disc ml-6 text-base sm:text-lg space-y-2">
         <li>
-          Schauen Sie sich vorab zunächst den Zielnetzentwurf im Radverkehrsatlas an. Starten Sie
-          erst dann die Beteiligung.{" "}
+          Schauen Sie sich vorab den Zielnetzentwurf im Radverkehrsatlas an. Starten Sie erst dann
+          die Beteiligung.{" "}
         </li>
         <li>
-          Zuerst müssen Sie sich bitte mit Namen, E-Mail-Adresse und PIN registrieren. Das Feld
-          „angemeldet als“ wird dabei automatisch ausgefüllt.{" "}
+          Nach Start der Beteiligung müssen Sie sich bitte zuerst mit Namen, E-Mail-Adresse und PIN
+          registrieren. Die Felder Institution und Landkreis werden dabei automatisch ausgefüllt.
         </li>
         <li>
-          Bevor Sie zur Beteiligung gelangen, möchten wir Sie bitten, zum Einstieg eine kurze
-          Umfrage mit zwei allgemeinen Fragen zu beantworten.{" "}
+          Bevor Sie Ihre Hinweise zum Netzentwurf abgeben können, möchten wir Sie außerdem bitten,
+          zum Einstieg eine kurze Umfrage mit zwei allgemeinen Fragen zu beantworten.
         </li>
         <li>
           Anschließend können Sie im Rahmen der Beteiligung zu den einzelnen Verbindungen Ihre
@@ -243,7 +242,7 @@ const StartContent: React.FC = () => {
         >
           Häufige Fragen
         </summary>
-        <ul className={clsx("mb-8 space-y-2")}>
+        <ul className={clsx("mb-8 space-y-4")}>
           <li>
             <details>
               <summary
@@ -275,8 +274,8 @@ const StartContent: React.FC = () => {
               Der erarbeitete und final abgestimmte Netzentwurf soll zukünftig die Grundlage für die
               Bedarfsplanung des Radwegebaus bilden. Erst wenn das Zielnetz vorliegt, kann mit der
               Ausarbeitung des Umsetzungskonzepts begonnen werden. Priorität wird dabei das
-              Schließen von Netzlücken haben. Gemäß Radverkehrsstrategie 2030 des Landes Brandenburg
-              wird angestrebt, das Netz bis 2045 umzusetzen.
+              Schließen von Netzlücken haben. Gemäß der Radverkehrsstrategie 2030 des Landes
+              Brandenburg wird angestrebt, das Netz bis 2045 umzusetzen.
             </details>
           </li>
           <li>
