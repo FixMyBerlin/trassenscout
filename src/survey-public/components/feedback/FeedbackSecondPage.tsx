@@ -19,9 +19,9 @@ type Props = {
   maptilerUrl: string
   page: TPage
   onButtonClick: any
-  isCompleted: boolean
+  isCompletedProps: { isCompleted: boolean; setIsCompleted: (value: boolean) => void }
   userTextIndices: (number | undefined)[]
-  mapIsDirtyProps: any
+  setIsMapDirty: (value: boolean) => void
   pinId: number
   isUserLocationQuestionId: number
   lineGeometryId: number
@@ -32,10 +32,10 @@ export const FeedbackSecondPage: React.FC<Props> = ({
   mapProps,
   maptilerUrl,
   page,
-  isCompleted,
+  isCompletedProps: { isCompleted, setIsCompleted },
   onButtonClick,
   userTextIndices,
-  mapIsDirtyProps,
+  setIsMapDirty,
   pinId,
   isUserLocationQuestionId,
   lineGeometryId,
@@ -56,13 +56,15 @@ export const FeedbackSecondPage: React.FC<Props> = ({
       {isMap && (
         <MapProvider>
           <SurveyMap
-            {...mapIsDirtyProps}
+            setIsMapDirty={setIsMapDirty}
             projectMap={{
               maptilerUrl: maptilerUrl,
-              initialMarker: mapProps.marker,
+              initialMarker: mapProps.marker!,
               config: mapProps.config,
             }}
             pinId={pinId}
+            questionIds={questions?.map((q) => q.id) || []}
+            setIsCompleted={setIsCompleted}
             // todo survey clean up or refactor after survey BB line selection
             lineGeometryId={lineGeometryId}
           />

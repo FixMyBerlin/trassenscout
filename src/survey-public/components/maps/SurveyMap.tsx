@@ -9,7 +9,6 @@ import { useFormContext } from "react-hook-form"
 import Map, {
   Layer,
   LngLat,
-  LngLatBoundsLike,
   Marker,
   MarkerDragEvent,
   NavigationControl,
@@ -20,6 +19,7 @@ import { LayerType } from "src/core/components/Map/BackgroundSwitcher"
 import { SurveyBackgroundSwitcher } from "src/survey-public/components/maps/SurveyBackgroundSwitcher"
 import { SurveyMapBanner } from "src/survey-public/components/maps/SurveyMapBanner"
 import SurveyPin from "src/survey-public/components/maps/SurveyPin"
+import { getCompletedQuestionIds } from "src/survey-public/utils/getCompletedQuestionIds"
 
 export type SurveyMapProps = {
   className?: string
@@ -31,8 +31,12 @@ export type SurveyMapProps = {
       bounds: [number, number, number, number]
     }
   }
-  setIsMapDirty: any
+  setIsMapDirty: (value: boolean) => void
   pinId: number
+  // todo as we use SurveyMap in the external survey response form, questionids and setcompleted... are optional
+  // we should seperate these components as the public survey will NOT work without these props
+  questionIds?: number[]
+  setIsCompleted?: (value: boolean) => void
   // todo survey clean up or refactor after survey BBline selection
   lineGeometryId?: number
 }
@@ -42,6 +46,8 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
   pinId,
   className,
   setIsMapDirty,
+  questionIds,
+  setIsCompleted,
   lineGeometryId,
   // todo survey clean up or refactor after survey BB line selection
 }) => {
@@ -49,7 +55,6 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
   const [events, logEvents] = useState<Record<string, LngLat>>({})
   const [isPinInView, setIsPinInView] = useState(true)
   const [isMediumScreen, setIsMediumScreen] = useState(false)
-
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
 
   const handleLayerSwitch = (layer: LayerType) => {
@@ -112,6 +117,14 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
       lng: event.lngLat.lng,
       lat: event.lngLat.lat,
     })
+    const values = getValues()
+    const completedQuestionIds = getCompletedQuestionIds(values)
+    // todo as we use surveymap in the external survey response form , question ids and setcompleted... are optional
+    // we should seperate these components as the public survey will NOT work without these props
+    // check if all questions from page one have been answered; compare arrays
+    questionIds &&
+      setIsCompleted &&
+      setIsCompleted(questionIds!.every((val) => completedQuestionIds.includes(val)))
   }
 
   const onMarkerDragEnd = useCallback((event: MarkerDragEvent) => {

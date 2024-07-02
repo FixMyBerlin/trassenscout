@@ -74,7 +74,7 @@ export const surveyDefinition: TSurvey = {
       buttons: [
         { label: { de: "Weiter" }, color: "primaryColor", onClick: { action: "nextPage" } },
         {
-          label: { de: "Zurück und Abbrechen" },
+          label: { de: "Zurück" },
           color: "white",
           onClick: { action: "previousPage" },
         },

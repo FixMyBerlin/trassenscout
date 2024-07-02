@@ -18,6 +18,7 @@ import {
   getResponseConfigBySurveySlug,
 } from "src/survey-public/utils/getConfigBySurveySlug"
 import { SurveyMapLineBanner } from "./SurveyMapLineBanner"
+import { getCompletedQuestionIds } from "src/survey-public/utils/getCompletedQuestionIds"
 
 export type SurveyMapProps = {
   className?: string
@@ -28,7 +29,7 @@ export type SurveyMapProps = {
       bounds: [number, number, number, number]
     }
   }
-  setIsCompleted: any
+  setIsCompleted: (value: boolean) => void
 }
 
 export const SurveyMapLine: React.FC<SurveyMapProps> = ({
@@ -77,8 +78,7 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
     }
   }, [])
 
-  // list of all question ids of page one
-  const pageOneQuestionIds = feedbackDefinition.pages[0]?.questions.map((q) => q.id)
+  const firstPageQuestionIds = feedbackDefinition.pages[0]?.questions.map((q) => q.id)
 
   const { config } = projectMap
 
@@ -119,11 +119,10 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
       setValue(`custom-${geometryQuestionId}`, JSON.stringify(lineGeometry.coordinates))
     }
     const values = getValues()
-
-    const completedQuestionIds = Object.keys(values).map((k) => Number(k.split("-")[1]))
+    const completedQuestionIds = getCompletedQuestionIds(values)
 
     // check if all questions from page one have been answered; compare arrays
-    setIsCompleted(pageOneQuestionIds!.every((val) => completedQuestionIds.includes(val)))
+    setIsCompleted(firstPageQuestionIds!.every((val) => completedQuestionIds.includes(val)))
   }
 
   return (
