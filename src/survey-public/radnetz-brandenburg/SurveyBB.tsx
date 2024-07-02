@@ -1,27 +1,25 @@
+import { Dialog, Transition } from "@headlessui/react"
 import clsx from "clsx"
 import Image from "next/image"
 import { useRouter } from "next/router"
-import { useEffect } from "react"
+import { Fragment, useEffect, useState } from "react"
+import { isProduction } from "src/core/utils"
 import institutions_bboxes from "src/survey-public/radnetz-brandenburg/data/institutions_bboxes.json"
 import { SurveyMainPage } from "../components/SurveyMainPage"
 import { SurveyH1, SurveyH2, SurveyH3, SurveyP } from "../components/core/Text"
-import { Dialog, Transition } from "@headlessui/react"
-import { Fragment, useState } from "react"
+import { SurveyLink } from "../components/core/links/SurveyLink"
 import {
   partcipationLinkStyles,
   primaryColorButtonStylesForLinkElement,
   surveyPrimaryColorButtonStyles,
 } from "../components/core/links/styles"
-import AtlasImage from "./data/Startseite_Platzhalter_Radverkehrstlas.png"
+import AtlasImage from "./data/Startseite_Radverkehrstlas.jpg"
 import { emailDefinition } from "./data/email"
 import { feedbackDefinition } from "./data/feedback"
 import { moreDefinition } from "./data/more"
 import { stageProgressDefinition } from "./data/progress"
 import { responseConfig } from "./data/response-config"
 import { surveyDefinition } from "./data/survey"
-import { SurveyLink } from "../components/core/links/SurveyLink"
-import { isProduction } from "src/core/utils"
-import { set } from "date-fns"
 
 type Props = {
   surveyId: number
@@ -150,12 +148,12 @@ const StartContent: React.FC = () => {
       <button
         type="button"
         onClick={openModal}
-        className="w-full md:h-[480px] overflow-hidden flex justify-center items-center my-8 relative"
+        className="w-full h-[480px] overflow-hidden flex justify-center items-center my-8 relative"
       >
         <Image
           src={AtlasImage}
           alt="Radverkehrsatlas Land Brandenburg"
-          className="object-cover w-full"
+          className="h-full object-cover"
         />
         <div className="font-semibold mx-8 max-w-[365px] bg-white/80 p-4 px-8 text-center absolute bottom-[45%] font-sans">
           Schauen Sie sich den gesamten{" "}
