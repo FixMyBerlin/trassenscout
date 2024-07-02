@@ -33,8 +33,10 @@ export type SurveyMapProps = {
   }
   setIsMapDirty: (value: boolean) => void
   pinId: number
-  questionIds: number[]
-  setIsCompleted: (value: boolean) => void
+  // todo as we use SurveyMap in the external survey response form, questionids and setcompleted... are optional
+  // we should seperate these components as the public survey will NOT work without these props
+  questionIds?: number[]
+  setIsCompleted?: (value: boolean) => void
   // todo survey clean up or refactor after survey BBline selection
   lineGeometryId?: number
 }
@@ -117,8 +119,12 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
     })
     const values = getValues()
     const completedQuestionIds = getCompletedQuestionIds(values)
+    // todo as we use surveymap in the external survey response form , question ids and setcompleted... are optional
+    // we should seperate these components as the public survey will NOT work without these props
     // check if all questions from page one have been answered; compare arrays
-    setIsCompleted(questionIds!.every((val) => completedQuestionIds.includes(val)))
+    questionIds &&
+      setIsCompleted &&
+      setIsCompleted(questionIds!.every((val) => completedQuestionIds.includes(val)))
   }
 
   const onMarkerDragEnd = useCallback((event: MarkerDragEvent) => {
