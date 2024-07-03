@@ -38,19 +38,17 @@ const StartContent: React.FC = () => {
 
   return (
     <>
-      <SurveyH1>
-        Beteiligung der Kommunen zur Erstellung des „Radnetz Brandenburg“-Konzeptes
-      </SurveyH1>
+      <SurveyH1>Beteiligung der Kommunen zur Erstellung des „Radnetz Brandenburg“-Konzept</SurveyH1>
       <SurveyP>
-        Mit dem <strong>Radnetz Brandenburg</strong> wird ein Konzept für ein umfassendes und
-        komfortabel befahrbares Wegenetz für den Alltagsverkehr – unter Einbezug der touristischen
-        Radrouten – erstellt. Das baulastträgerübergreifende Radnetz-Konzept soll dazu dienen, für
-        die kommenden Jahre eine neue Grundlage für die Bedarfsplanung zu haben, Prozesse zur
-        Priorisierung und Umsetzung unter den Baulastträgern zu optimieren sowie sukzessive
-        vorhandene Infrastrukturen zu ertüchtigen und vor allem Netzlücken zu schließen. Mit dem
-        Konzept sollen im Ergebnis durchgängige Radverkehrsverbindungen und somit die Grundlage für
-        eine zukünftige flächendeckende Erschließung des Landes Brandenburg mit Infrastruktur für
-        den Radverkehr geschaffen werden.
+        Mit dem Radnetz Brandenburg wird ein Konzept für ein umfassendes und komfortabel befahrbares
+        Wegenetz für den Alltagsverkehr – unter Einbezug der touristischen Radrouten – erstellt. Das
+        baulastträgerübergreifende Radnetz-Konzept soll dazu dienen, für die kommenden Jahre eine
+        neue Grundlage für die Bedarfsplanung zu haben, Prozesse zur Priorisierung und Umsetzung
+        unter den Baulastträgern zu optimieren sowie sukzessive vorhandene Infrastrukturen zu
+        ertüchtigen und vor allem Netzlücken zu schließen. Mit dem Konzept sollen im Ergebnis
+        durchgängige Radverkehrsverbindungen und somit die Grundlage für eine zukünftige
+        flächendeckende Erschließung des Landes Brandenburg mit Infrastruktur für den Radverkehr
+        geschaffen werden.
       </SurveyP>
       <SurveyP>
         Hierfür wurden zuerst <strong>Quellen und Ziele</strong> des Alltagsradverkehrs
@@ -59,7 +57,7 @@ const StartContent: React.FC = () => {
         Schwerpunkten, Bahnhöfen und weiteren regionalen Schwerpunkten, wie beispielsweise wichtige
         touristische Destinationen. In einem nächsten Schritt wird ein <strong>Zielnetz</strong>{" "}
         entwickelt, in dem das Luftliniennetz auf das bestehende Wegenetz umgelegt wird und so auch
-        wichtige Lückenschlüsse identifiziert werden. Dabei werden auch weitere wichtige Standorte
+        wichtige Lückenschlüsse identifiziert werden. Dabei werden auch weitere bedeutende Standorte
         wie zum Beispiel Schulen und Versorgungsstandorte berücksichtigt. Die Konzeption betrachtet
         grundsätzlich alle bestehenden Infrastrukturen und Wegeverbindungen, unter anderem
         straßenbegleitende und selbständige Radwege, Wirtschaftswege, touristische Radrouten und
@@ -115,10 +113,7 @@ const StartContent: React.FC = () => {
       </ul>
       <SurveyH2>Zielnetzentwurf im Radverkehrsatlas ansehen</SurveyH2>
       <SurveyP>
-        Unter dem unten stehenden Link können Sie sich den Zielnetzentwurf im{" "}
-        <i>
-          <strong>Radverkehrsatlas</strong>
-        </i>{" "}
+        Unter dem unten stehenden Link können Sie sich den Zielnetzentwurf im Radverkehrsatlas
         anschauen. Bitte beachten Sie, dass es sich hierbei um einen Entwurf handelt. Die
         vorgeschlagenen Verbindungen können sich, je nach Rückmeldungen seitens der Beteiligten,
         noch ändern.
@@ -202,7 +197,7 @@ const StartContent: React.FC = () => {
 
                   <div className="mt-4">
                     <a
-                      href="https://radverkehrsatlas.de/regionen/bb-beteiligung?v=1&map=11/52.397/13.034&config=!(i~bikelanes-minimal~a~~sc~!(i~bikelanes~s~!(i~hidden~a~_F)(i~default~a)(i~details~a~_F)(i~width~a~_F)))(i~poi~a~_F~sc~!(i~poi~s~!(i~hidden~a~_F)(i~default~a)(i~education~a~_F))(i~poiPlaces~s~!(i~hidden~a~_F)(i~default~a)(i~circle~a~_F))(i~poiBoundaries~s~!(i~hidden~a)(i~default~a~_F)(i~category*_district*_label~a~_F)(i~category*_municipality~a~_F)(i~category*_municipality*_label~a~_F))(i~poiPlusBarriers~s~!(i~default~a~_F))(i~poiPlusLanduse~s~!(i~default~a~_F))(i~poiPlusPublicTransport~s~!(i~default~a~_F)))(i~roads~a~_F~sc~!(i~roads~s~!(i~hidden~a~_F)(i~default~a)(i~sidestreets~a~_F)(i~mainstreets~a~_F))(i~maxspeed~s~!(i~hidden~a)(i~default~a~_F)(i~below30~a~_F)(i~above40~a~_F))(i~roads*_plus*_footways~s~!(i~default~a~_F)))(i~mapillary~a~_F~sc~!(i~mapillaryCoverage~s~!(i~hidden~a~_F)(i~default~a)(i~all~a~_F)(i~age~a~_F)(i~pano~a~_F)))~"
+                      href="https://radverkehrsatlas.de/regionen/bb-beteiligung?map=11%2F52.397%2F13.034&config=z9tzbb.16gdxh.i&data=bb-ramboll-umgelegte-linien&v=2"
                       target="_blank"
                       className={primaryColorButtonStylesForLinkElement}
                       onClick={closeModal}

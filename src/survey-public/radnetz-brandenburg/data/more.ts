@@ -21,7 +21,7 @@ export const moreDefinition: TMore = {
       onClick: { action: "nextPage" },
     },
     {
-      label: { de: "Ich möchte keinen Hinweis abgeben" },
+      label: { de: "Beteiligung beenden" },
       color: "white",
       onClick: { action: "submit" },
     },

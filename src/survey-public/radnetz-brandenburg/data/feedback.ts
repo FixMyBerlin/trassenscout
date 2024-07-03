@@ -7,7 +7,7 @@ export const feedbackDefinition: TFeedback = {
       id: 1,
       title: { de: "Verbindung und Kategorie auswählen" },
       description: {
-        de: `Wählen Sie die Verbindung durch Klicken auf eine der orangenen Linien auf der Karte aus. Bedenken Sie dabei jedoch, dass sich Ihre Hinweise auf die Linien in Ihrem **Amts- oder Zuständigkeitsbereich** beschränken sollten. Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” verkleinern oder vergrößern.`,
+        de: `Wählen Sie die Verbindung durch Klicken auf eine der orangen Linien auf der Karte aus. Bedenken Sie dabei jedoch, dass sich Ihre Hinweise auf die Linien in Ihrem **Amts- oder Zuständigkeitsbereich** beschränken sollten. Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” verkleinern oder vergrößern.`,
       },
       questions: [
         // ID der Linie
