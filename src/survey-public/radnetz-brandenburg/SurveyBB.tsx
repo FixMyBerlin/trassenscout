@@ -38,7 +38,9 @@ const StartContent: React.FC = () => {
 
   return (
     <>
-      <SurveyH1>Beteiligung der Kommunen zur Erstellung des „Radnetz Brandenburg“-Konzept</SurveyH1>
+      <SurveyH1>
+        Beteiligung der Kommunen zur Erstellung des „Radnetz Brandenburg“-Konzepts
+      </SurveyH1>
       <SurveyP>
         Mit dem Radnetz Brandenburg wird ein Konzept für ein umfassendes und komfortabel befahrbares
         Wegenetz für den Alltagsverkehr – unter Einbezug der touristischen Radrouten – erstellt. Das
