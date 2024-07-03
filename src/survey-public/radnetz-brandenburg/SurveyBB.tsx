@@ -246,14 +246,15 @@ const StartContent: React.FC = () => {
                   "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
                 )}
               >
-                Was bedeutet baulasträgerübergreifendes Radnetz?
+                Was bedeutet baulastträgerübergreifendes Radnetz?
               </summary>
-              Beim <i>Radnetz Brandenburg</i> handelt es sich um ein flächendeckendes Radnetz für
-              ganz Brandenburg, das weder nur entlang der Hauptstraßen verläuft, noch sich
-              ausschließlich auf Nebenstraßen fokussiert, sondern ausgewogen und übergreifend den
-              stets besten Weg versucht zu finden. Das Netz wird also neben Bundes- und
-              Landesstraßen auch aus Kreis- und Gemeindestraßen und Wald- und Wirtschaftswegen
-              bestehen.
+              Mit dem „Radnetz Brandenburg“-Konzept sollen durchgängige Radverkehrsverbindungen für
+              das gesamte Land Brandenburg geschaffen werden. In dieses Konzept werden sowohl
+              Abschnitte an Bundes- und Landesstraßen als auch an Kreis- und Gemeindestraßen
+              einbezogen. Darüber hinaus werden auch touristische Radrouten und alternative
+              Wegeführungen wie Wald- und Wirtschaftswege berücksichtigt. Somit wird das „Radnetz
+              Brandenburg“-Konzept eine Bedarfsgrundlage für alle Baulastträger (Landesbetrieb
+              Straßenwesen, Landkreise, Gemeinden etc.) im Land Brandenburg bilden.
             </details>
           </li>
           <li>
@@ -264,13 +265,15 @@ const StartContent: React.FC = () => {
                   "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35 hover:text-[#C73C35]",
                 )}
               >
-                Wie sieht das Umsetzungskonzept aus?
+                Wie sieht die Umsetzung des „Radnetz Brandenburg“-Konzepts aus?
               </summary>
-              Der erarbeitete und final abgestimmte Netzentwurf soll zukünftig die Grundlage für die
-              Bedarfsplanung des Radwegebaus bilden. Erst wenn das Zielnetz vorliegt, kann mit der
-              Ausarbeitung des Umsetzungskonzepts begonnen werden. Priorität wird dabei das
-              Schließen von Netzlücken haben. Gemäß der Radverkehrsstrategie 2030 des Landes
-              Brandenburg wird angestrebt, das Netz bis 2045 umzusetzen.
+              Der erarbeitete und final abgestimmte Zielnetzentwurf soll zukünftig die Grundlage für
+              die Bedarfsplanung des Radwegebaus bilden. Erst wenn das Zielnetz vorliegt, kann mit
+              der Umsetzung des Konzepts begonnen werden. Priorität wird dabei das Schließen von
+              Netzlücken haben sowie die Ertüchtigung bestehender Infrastruktur (z.B.
+              Wirtschaftswege), so dass diese ebenfalls sicher und komfortabel durch den Radverkehr
+              genutzt werden können. Gemäß Radverkehrsstrategie 2030 des Landes Brandenburg wird
+              angestrebt, das Netz bis 2045 umzusetzen.
             </details>
           </li>
           <li>
@@ -284,13 +287,13 @@ const StartContent: React.FC = () => {
                 Wie wurden die Zielpunkte für das Luftliniennetz ausgewählt?
               </summary>
               Die Auswahl der Zielpunkte erfolgte nach dem System der Zentralen Orte, sodass neben
-              der Metropolregion Berlin-Brandenburg und den vier kreisfreien Städten alle
-              Mittelzentren und Mittelzentren in Funktionsteilung berücksichtigt wurden. Darüber
-              hinaus wurden alle Grundfunktionalen Schwerpunkte und Bahn-Haltepunkte außerhalb der
-              genannten Orte eingebunden. Nach Rücksprache mit den Landkreisen wurden abschließend
-              weitere Quellen und Ziele von überregionaler Bedeutung, wie z.B. große Arbeits- und
-              weitere Siedlungsschwerpunkte, mit aufgenommen. Durch die Verbindung der Zielpunkte
-              ist schließlich das Luftliniennetz entstanden.
+              der Metropole Berlin und den vier kreisfreien Städten alle Mittelzentren und
+              Mittelzentren in Funktionsteilung berücksichtigt wurden. Darüber hinaus wurden alle
+              Grundfunktionalen Schwerpunkte und Bahn-Haltepunkte außerhalb der Zentralen Orte
+              eingebunden, um so auch den Umweltverbund zu stärken. Nach Rücksprache mit den
+              Landkreisen wurden abschließend weitere Quellen und Ziele von überregionaler
+              Bedeutung, wie z.B. große Arbeitgeber, mit aufgenommen. Durch die Verbindung der
+              Zielpunkte ist schließlich das Luftliniennetz entstanden.
             </details>
           </li>
           <li>
@@ -304,11 +307,11 @@ const StartContent: React.FC = () => {
                 Nach welchen Kriterien erfolgt die Netzumlegung?
               </summary>
               Bei der sogenannten Netzumlegung wurden alle Luftlinien auf tatsächlich bestehende
-              Straßen- und wegeverbindungen umgelegt. Dies erfolgte nach der Methodik der
+              Straßen- und Wegeverbindungen umgelegt. Dies erfolgte nach der Methodik der
               Bestwegeumlegung, d.h. es wurde stets der kürzeste Weg zwischen den festgelegten
               Zielpunkten gesucht. Dabei wurden – bis auf Autobahnen – alle Straßen- und
               Wegeverbindungen berücksichtigt. Anschließend wurde das Netz hinsichtlich
-              Plausibilität geprüft und manuell verfeinert.
+              Plausibilität geprüft und im Einzelfall manuell angepasst.
             </details>
           </li>
           <li>
@@ -319,11 +322,12 @@ const StartContent: React.FC = () => {
                   "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
                 )}
               >
-                Wie wird die Beteiligung ausgewertet?
+                Wie werden die Hinweise der Kommunen ausgewertet?
               </summary>
-              Alle eingegangenen Hinweise und Rückmeldungen werden fachlich geprüft und abgewogen.
-              Nach der Auswertung werden die Hinweise und Rückmeldungen für alle Beteiligten im
-              Radverkehrsatlas veröffentlicht und der Netzentwurf ggf. angepasst.
+              Alle eingegangenen Hinweise werden fachlich geprüft und abgewogen. Je nach Abwägung
+              wird der Netzentwurf daraufhin noch einmal angepasst. Nach der Auswertung werden die
+              Hinweise (einschließlich Abwägung) für alle Beteiligten im Radverkehrsatlas
+              veröffentlicht.
             </details>
           </li>
           <li>
@@ -334,13 +338,13 @@ const StartContent: React.FC = () => {
                   "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
                 )}
               >
-                Werden Radschnellverbindungen (RSV) berücksichtigt?
+                Werden Radschnellverbindungen (RSV) und Radvorrangrouten (RVR) berücksichtigt?
               </summary>
-              Die Potenzialanalyse zu Radschnellverbindungen wurde bei der Netzentwicklung
-              berücksichtigt. Ein Großteil der 16 identifizierten Potenziale befindet sich in der
-              Metropolregion, weshalb den Anschlusspunkten an das Berliner Radnetz eine besondere
-              Bedeutung zukommt. Auch die Verbindungen zwischen Lauchhammer und Schwarzheide sowie
-              zwischen Senftenberg und Großräschen wurden berücksichtigt.
+              Die im Rahmen der Potenzialanalyse zu Radschnellverbindungen ermittelten RSV und RVR
+              wurden bei der Netzentwicklung berücksichtigt. Ein Großteil der identifizierten
+              Potenziale befindet sich im Berliner Umland, weshalb den Anschlusspunkten an das
+              Berliner Radnetz eine besondere Bedeutung zukommt. Ebenfalls wurde die RVR Königs
+              Wusterhausen – Flughafen BER – Berlin mitberücksichtigt.
             </details>
           </li>
           <li>
@@ -351,11 +355,12 @@ const StartContent: React.FC = () => {
                   "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
                 )}
               >
-                Wird das Radnetz verschiedene Hierarchieebenen berücksichtigen?
+                Wird das „Radnetz Brandenburg“-Konzept verschiedene Hierarchieebenen
+                berücksichtigen?
               </summary>
-              Das Konzept zum Radnetz Brandenburg wird zunächst ohne hierarchische Unterscheidung
-              aufgestellt. Auf diese Weise werden keine Städte oder Verbindungen bevorzugt, sondern
-              alle Strecken gleichbehandelt.
+              Das Konzept zum Radnetz Brandenburg wird grundsätzlich ohne hierarchische
+              Unterscheidung aufgestellt. Auf diese Weise werden keine Städte oder Verbindungen
+              bevorzugt, sondern alle Strecken gleichbehandelt.
             </details>
           </li>
           <li>
@@ -380,9 +385,10 @@ const StartContent: React.FC = () => {
                   "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
                 )}
               >
-                Wie wird das Radnetz finanziert?
+                Wie werden die Radverkehrsverbindungen des Radnetz-Konzepts finanziert?{" "}
               </summary>
-              Die Finanzierung ist zum jetzigen Zeitpunkt nicht abschließend geklärt.
+              Die Finanzierung erfolgt über die Haushalte der jeweiligen Baulastträger und
+              entsprechende Fördermittel.
             </details>
           </li>
           <li>
@@ -393,13 +399,13 @@ const StartContent: React.FC = () => {
                   "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
                 )}
               >
-                Werden auch länderübergreifende Radwegeplanungen berücksichtigt?
+                Werden auch Radwegeplanungen benachbarter Länder berücksichtigt?{" "}
               </summary>
               Bei der Aufstellung des Luftliniennetzes wurden in Abstimmung mit den angrenzenden
-              Bundesländern und Wojewodschaften auch dortige Zielpunkte, Radnetze und -konzepte
-              eingebunden. Die Anschlüsse an bestehende und / oder geplante benachbarte Radnetze
-              werden im Rahmen der Planung somit also sichergestellt und länderübergreifende Routen
-              berücksichtigt.
+              Bundesländern und Wojewodschaften auch dortige Zielpunkte, bestehende Radwege und
+              Radnetzkonzepte eingebunden. Die Anschlüsse an bestehende und / oder geplante
+              Radverbindungen werden im Rahmen der Planung somit sichergestellt und
+              länderübergreifende Verbindungen berücksichtigt.
             </details>
           </li>
         </ul>
