@@ -40,3 +40,68 @@
 .stripe-background {
   background: repeating-linear-gradient(-45deg, #da1616, #da1616 2px, white 2px, white 4px);
 }
+
+.stripe-background-vertical-pink {
+  background: repeating-linear-gradient(
+    -90deg,
+    transparent,
+    transparent 3px,
+    #c33cb68c 3px,
+    #c33cb68c 4px,
+    transparent 4px,
+    transparent 7px,
+    #c33cb68c 7px,
+    #c33cb68c 10px
+  );
+}
+
+.stripe-background-vertical-pink-2 {
+  background: repeating-linear-gradient(
+    -90deg,
+    #c33cb68c,
+    #c33cb68c 4px,
+    transparent 4px,
+    transparent 5px,
+    #c33cb68c 5px,
+    #c33cb68c 6px,
+    transparent 6px,
+    transparent 7px
+  );
+}
+
+.stripe-background-vertical-darkblue {
+  background: repeating-linear-gradient(
+    -90deg,
+    #1353d1,
+    #1353d1 3px,
+    transparent 2px,
+    transparent 6px
+  );
+}
+.stripe-background-vertical-lightblue {
+  background: repeating-linear-gradient(
+    -90deg,
+    #9ebaf4,
+    #9ebaf4 3px,
+    transparent 2px,
+    transparent 6px
+  );
+}
+.stripe-background-vertical-blue {
+  background: repeating-linear-gradient(
+    -90deg,
+    #009ae9,
+    #009ae9 3px,
+    transparent 2px,
+    transparent 6px
+  );
+}
+.stripe-background-vertical-purple {
+  background: repeating-linear-gradient(
+    -90deg,
+    #ab7de3,
+    #ab7de3 3px,
+    transparent 2px,
+    transparent 6px
+  );
+}

@@ -7,7 +7,7 @@ const buttonBase =
 
 // LINK
 export const partcipationLinkStyles =
-  "underline text-[var(--survey-primary-color)] decoreation-[var(--survey-primary-color)] hover:text-[var(--survey-dark-color)] hover:decoration-[var(--survey-dark-color)] active:ring-1 ring-[var(--survey-primary-color)] rounded"
+  "underline text-[var(--survey-primary-color)] decoreation-[var(--survey-primary-color)] hover:text-[var(--survey-dark-color)] hover:decoration-[var(--survey-dark-color)]"
 
 // HOVER and ACTIVE
 // for button elements
@@ -43,7 +43,7 @@ export const surveyWhiteButtonStyles = clsx(
 
 // primary color survey BUTTON
 // for link elements
-const primaryColorButtonStylesForLinkElement = clsx(
+export const primaryColorButtonStylesForLinkElement = clsx(
   buttonBase,
   "text-white bg-[var(--survey-primary-color)]",
   activeStylePrimaryColorLinkElement,
@@ -51,7 +51,7 @@ const primaryColorButtonStylesForLinkElement = clsx(
 // for button elements
 export const surveyPrimaryColorButtonStyles = clsx(
   buttonBase,
-  "enabled:text-white enabled:bg-[var(--survey-primary-color)]",
+  "enabled:text-white bg-[var(--survey-primary-color)]",
   "disabled:bg-[var(--survey-light-color)] disabled:text-white",
   activeStylePrimaryColorButtonElement,
 )

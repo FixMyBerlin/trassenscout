@@ -9,7 +9,7 @@ export interface FormProps<S extends z.ZodType<any, any>>
   children: ReactNode
   schema?: S
   onSubmit: (values: z.infer<S>, submitterId?: string) => void
-  onChangeValues: (values: any) => void
+  onChangeValues?: (values: any) => void
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
 }
 

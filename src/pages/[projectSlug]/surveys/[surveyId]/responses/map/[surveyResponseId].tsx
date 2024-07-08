@@ -12,6 +12,7 @@ import { TMapProps } from "src/survey-public/components/types"
 import {
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
+  getSurveyDefinitionBySurveySlug,
 } from "src/survey-public/utils/getConfigBySurveySlug"
 import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import EditableSurveyResponseListItem from "src/survey-responses/components/feedback/EditableSurveyResponseListItem"
@@ -45,13 +46,13 @@ export const SurveyResponseWithLocation = () => {
 
   const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
   const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
+  const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
 
   const locationRef = evaluationRefs["feedback-location"]
 
-  const mapProps = feedbackDefinition!.pages[0]!.questions.find((q) => q.id === locationRef)!
+  const mapProps = feedbackDefinition!.pages[1]!.questions.find((q) => q.id === locationRef)!
     .props as TMapProps
-
-  const maptilerStyleUrl = mapProps.maptilerStyleUrl
+  const maptilerUrl = surveyDefinition.maptilerUrl
   const defaultViewState = mapProps?.config?.bounds
 
   if (!surveyResponsesFeedbackPartWithLocation?.length) return
@@ -73,7 +74,7 @@ export const SurveyResponseWithLocation = () => {
         <div className="flex flex-col lg:flex-row gap-2">
           <section className="lg:w-[46%] shrink-0">
             <SurveyFeedbackWithLocationOverviewMap
-              maptilerStyleUrl={maptilerStyleUrl}
+              maptilerUrl={maptilerUrl}
               defaultViewState={defaultViewState}
               selectedSurveyResponse={selectedSurveyResponse}
               surveyResponsesFeedbackPartWithLocation={surveyResponsesFeedbackPartWithLocation}

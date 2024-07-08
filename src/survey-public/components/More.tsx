@@ -1,8 +1,10 @@
-import { SurveyH2 } from "./core/Text"
+import { useFormContext } from "react-hook-form"
 import { SurveyButton } from "./core/buttons/SurveyButton"
 import { SurveyButtonWrapper } from "./core/buttons/SurveyButtonWrapper"
 import { SurveyScreenHeader } from "./core/layout/SurveyScreenHeader"
 import { TMore } from "./types"
+import { useEffect } from "react"
+import { get } from "http"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -10,9 +12,17 @@ type Props = {
   onClickMore: any
   onClickFinish: any
   more: TMore
+  isUserLocationQuestionId: number
 }
 
-export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
+export const More: React.FC<Props> = ({
+  more,
+  onClickMore,
+  onClickFinish,
+  isUserLocationQuestionId,
+}) => {
+  const { getValues, reset } = useFormContext()
+
   const { title, description, questionText, buttons } = more
 
   return (

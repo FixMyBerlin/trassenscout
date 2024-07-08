@@ -5,57 +5,12 @@ export const surveyDefinition: TSurvey = {
   version: 1,
   logoUrl: "https://radschnellweg-frm7.de/logo.png",
   canonicalUrl: "https://radschnellweg-frm7.de/beteiligung/",
+  maptilerUrl: "https://api.maptiler.com/maps/a9cd44e7-43f6-4277-8ae0-d910f8162524/style.json",
   primaryColor: "#D60F3D",
   darkColor: "#5F071B",
   lightColor: "#fecdd3",
-  // we had to delete these qustions while survey was active
-  // we keep the array of deleted question objects to be able to show these questions in the analysis
-  deletedQuestions: [
-    {
-      id: 23,
-      label: {
-        de: "Sind Sie in Deutschland geboren?",
-      },
-      component: "singleResponse",
-      props: {
-        responses: [
-          { id: 1, text: { de: "Ja" } },
-          { id: 2, text: { de: "Nein" } },
-          { id: 3, text: { de: "Keine Angabe" } },
-        ],
-      },
-    },
-    {
-      id: 24,
-      label: {
-        de: "Sind Ihre Eltern in Deutschland geboren?",
-      },
-      component: "singleResponse",
-      props: {
-        responses: [
-          { id: 1, text: { de: "Ja" } },
-          { id: 2, text: { de: "Nein" } },
-          { id: 3, text: { de: "Nur ein Teil meiner Eltern" } },
-          { id: 4, text: { de: "Keine Angabe" } },
-        ],
-      },
-    },
-  ],
+
   pages: [
-    {
-      id: 1,
-      title: { de: "Ihre Meinung zählt!" },
-      description: {
-        de: "Frankfurt bekommt einen neuen **Radschnellweg** mit dem Namen FRM7, der ohne Umwege nach Maintal und Hanau führt. Radfahrende können auf Radschnellwegen sicher und komfortabel zum Ziel kommen.\n\nWir möchten, dass viele Menschen diesen neuen Radweg nutzen können – sei es auf dem Weg zur Schule, Arbeit, Sport oder beim Einkaufen und Familienausflug. Damit das Projekt zum Erfolg wird, sind Ihre Wünsche  und Hinweise von großer Bedeutung.\n\nSie haben bis zum **31.03.2024** Zeit, sich zu beteiligen.\n\nDie Beteiligung besteht aus **zwei Teilen**. Im ersten Teil möchten wir in einer kleinen Umfrage von Ihnen wissen, wie Sie sich im Verkehr bewegen und ob und wie Sie den Radschnellweg nutzen würden. Im zweiten Teil können Sie Ihre konkreten Hinweise und Wünsche zum Radschnellweg an uns richten. Diese werden von einem Planungsbüro ausgewertet. Auch wird die gesamte Beteiligung durch ein Forschungsprojekt begleitet.\n\nEs dauert nur **5-10 Minuten**, um die Fragen zu beantworten.\n\nAlle Ihre Angaben und Hinweise bleiben anonym, also geheim.\n\nBei der Beteiligung geht es konkret um den neu betrachteten Abschnitt im **Bereich Frankfurt**. Falls Sie vorab noch mehr über die Route erfahren wollen, können Sie sich [hier](https://radschnellweg-frm7.de/route) über das Projekt informieren:.",
-      },
-      buttons: [
-        {
-          label: { de: "Beteiligung starten" },
-          color: "primaryColor",
-          onClick: { action: "nextPage" },
-        },
-      ],
-    },
     {
       id: 2,
       title: { de: "Ein kurzer Einstieg" },
@@ -494,6 +449,39 @@ export const surveyDefinition: TSurvey = {
         { label: { de: "Absenden" }, color: "primaryColor", onClick: { action: "submit" } },
         { label: { de: "Zurück" }, color: "white", onClick: { action: "previousPage" } },
       ],
+    },
+  ],
+  // we had to delete these qustions while survey was active
+  // we keep the array of deleted question objects to be able to show these questions in the analysis
+  deletedQuestions: [
+    {
+      id: 23,
+      label: {
+        de: "Sind Sie in Deutschland geboren?",
+      },
+      component: "singleResponse",
+      props: {
+        responses: [
+          { id: 1, text: { de: "Ja" } },
+          { id: 2, text: { de: "Nein" } },
+          { id: 3, text: { de: "Keine Angabe" } },
+        ],
+      },
+    },
+    {
+      id: 24,
+      label: {
+        de: "Sind Ihre Eltern in Deutschland geboren?",
+      },
+      component: "singleResponse",
+      props: {
+        responses: [
+          { id: 1, text: { de: "Ja" } },
+          { id: 2, text: { de: "Nein" } },
+          { id: 3, text: { de: "Nur ein Teil meiner Eltern" } },
+          { id: 4, text: { de: "Keine Angabe" } },
+        ],
+      },
     },
   ],
 }

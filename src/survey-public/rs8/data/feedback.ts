@@ -14,7 +14,7 @@ export const feedbackDefinition: TFeedback = {
       questions: [
         {
           id: 21,
-          label: { de: "Zu welchem Thema passt Ihr Feedback?" },
+          label: { de: "Zu welchem Thema passt Ihr Feedback? *" },
 
           component: "singleResponse",
           props: {
@@ -31,7 +31,7 @@ export const feedbackDefinition: TFeedback = {
         {
           id: 22,
           label: {
-            de: "Bezieht sich Ihr Feedback auf eine konkrete Stelle entlang der Route?",
+            de: "Bezieht sich Ihr Feedback auf eine konkrete Stelle entlang der Route? *",
           },
           component: "singleResponse",
 
@@ -40,23 +40,6 @@ export const feedbackDefinition: TFeedback = {
               { id: 1, text: { de: "Ja" } },
               { id: 2, text: { de: "Nein" } },
             ],
-          },
-        },
-        {
-          id: 23,
-
-          label: { de: "Markieren Sie die Stelle, zu der Sie etwas sagen möchten." },
-          component: "map",
-          props: {
-            maptilerStyleUrl:
-              "https://api.maptiler.com/maps/b09268b1-91d0-42e2-9518-321a1a94738f/style.json",
-            marker: {
-              lat: 48.87405710508672,
-              lng: 9.271044583540359,
-            },
-            config: {
-              bounds: [9.387312714501604, 48.90390202531458, 9.103949029818097, 48.81629635563661],
-            },
           },
         },
       ],
@@ -69,9 +52,24 @@ export const feedbackDefinition: TFeedback = {
       id: 2,
       title: { de: "Ihr Hinweis" },
       description: {
-        de: "Formulieren Sie hier Ihre Gedanken, Ideen, Anregungen oder Wünsche",
+        de: "Formulieren Sie hier Ihre Gedanken, Ideen, Anregungen oder Wünsche *",
       },
       questions: [
+        {
+          id: 23,
+
+          label: { de: "Markieren Sie die Stelle, zu der Sie etwas sagen möchten. *" },
+          component: "map",
+          props: {
+            marker: {
+              lat: 48.87405710508672,
+              lng: 9.271044583540359,
+            },
+            config: {
+              bounds: [9.387312714501604, 48.90390202531458, 9.103949029818097, 48.81629635563661],
+            },
+          },
+        },
         {
           id: 31,
           label: { de: "Kategorie" },

@@ -31,7 +31,7 @@ export default resolver.pipe(
         //   },
         // },
         surveyResponseTopics: true,
-        surveySession: { select: { createdAt: true } },
+        surveySession: { select: { createdAt: true, id: true } },
       },
     })
 

@@ -1,18 +1,23 @@
 import { TQuestion, TSurvey } from "src/survey-public/components/types"
+import { T } from "vitest/dist/types-198fd1d9"
 
 type QuestionObject = {
   id: number
   label: string
-  component: "singleResponse" | "multipleResponse" | "text"
+  component: "singleResponse" | "multipleResponse"
   props: { responses: { id: number; text: string }[] }
 }
 
-const transformQuestion = (question: TQuestion): QuestionObject => {
+const transformMultiAndSingleQuestion = (question: TQuestion): QuestionObject => {
   return {
     id: question.id,
     label: question.label.de,
+    // @ts-expect-error
+    // for the charts we only want the multi and single response questions to be displayed, we know that the component is either singleResponse or multipleResponse
     component: question.component,
     props: {
+      // @ts-expect-error
+      // for the charts we only want the multi and single response questions to be displayed, they always have responses
       responses: question.props.responses.map((response) => {
         return {
           id: response.id,
@@ -30,11 +35,12 @@ export const extractAndTransformQuestionsFromPages = (
 
   pages.forEach((page) => {
     if (!page.questions || page.questions.length === 0) return
-
     const transformedQuestions = page.questions
       .map((question) => {
-        if (!("responses" in question.props)) return
-        return transformQuestion(question)
+        // for the charts we only want the multi and single response questions to be displayed
+        if (!(question.component === "singleResponse" || question.component === "multipleResponse"))
+          return
+        return transformMultiAndSingleQuestion(question)
       })
       .filter(Boolean)
     transformedArray.push(...transformedQuestions)
@@ -47,7 +53,7 @@ export const transformDeletedQuestions = (questions: TQuestion[]): QuestionObjec
   const transformedQuestions = questions
     .map((question) => {
       if (!("responses" in question.props)) return
-      return transformQuestion(question)
+      return transformMultiAndSingleQuestion(question)
     })
     .filter(Boolean)
   transformedArray.push(...transformedQuestions)

@@ -65,6 +65,7 @@ const Datenschutz: BlitzPage = () => {
         Sie können sich jederzeit bei allen Fragen und Anregungen zum Datenschutz sowie zur Ausübung
         Ihrer Rechte direkt an unseren Datenschutzbeauftragten wenden.
       </p>
+
       <h3 id="thirdparty">Einsatz von Drittdiensten</h3>
       <p>
         Für bestimmte Funktionen und Services auf unserer Website setzen wir Dienste von
@@ -79,6 +80,7 @@ const Datenschutz: BlitzPage = () => {
         Sie uns dazu gerne eine E-Mail an die in diesen Datenschutzhinweisen genannte
         E-Mail-Adresse.
       </p>
+
       <h2 id="hosting">Bereitstellung des Portals</h2>
       <p>
         Unser Angebot besteht aus einem öffentlichen und einem nicht-öffentlichen Teil.{" "}
@@ -122,6 +124,34 @@ const Datenschutz: BlitzPage = () => {
         Die Daten werden umgehend anonymisiert und so gespeichert, dass diese zu einem späteren
         Zeitpunkt <strong>nicht</strong> mit einer der oben genannten Datenarten in Verbindung
         gebracht werden können.
+      </p>
+
+      <h3>Öffentlicher Bereich / Stakeholderumfrage</h3>
+      <p>
+        Im Rahmen unserer Beteiligungen führen wir teilweise außerordentliche
+        Beteiligungsbefragungen durch. Dabei werden ausgewählte Kommunen mit dem Ersuchen zur
+        Teilnahme an der Beteiligungsbefragung kontaktiert. Wenn Sie als Teil dieser Befragung and
+        der Beteiligung teilnehmen, werden – zusätzlich zu den obig aufgeführten, anonymisierten
+        Daten, noch folgende personenbezogenen Daten von uns erhoben:
+      </p>
+      <ul>
+        <li>E-Mail-Adresse</li>
+        <li>Name, Vorname</li>
+        <li>Name der Institution des Befragten</li>
+      </ul>
+      <p>
+        Die Speicherung dieser Daten ist für den ordnungsgemäßen Ablauf der Beteiligung notwendig,
+        da Rückfragen zu den Befragungsergebnissen auftreten können. Die Verarbeitung dieser Daten
+        stützen wir auf Ihre ausdrückliche, uns im Rahmen der Befragung erteilte Einwilligung gemäß
+        Art. 6 Abs. 1 lit. a. DSGVO. Wir versenden die Einladungen zu der Beteiligungsbefragung über
+        E-Mail. Für den Versand der Einladungen nutzen wir einen externen Anbieter, Mailjet
+        (Alt-Moabit 2, 10557 Berlin, Deutschland). Dieser Dienstleister erhält Ihre E-Mail-Adresse
+        und andere erforderliche Daten, um die Einladung in unserem Auftrag zu versenden.
+        Rechtsgrundlage für den Versand des Newsletters ist der Art. 6 Abs. 1 S. 1 lit. a. DSGVO,
+        Art. 6 Abs. 1 S. 1 lit. f. DSGVO). Mailjet gibt an, Webspace von Google zu beziehen,
+        spezifiziert aber nicht, ob es sich um Server innerhalb der EU handelt. Es ist daher nicht
+        auszuschließen, dass die personenbezogenen Daten jedenfalls teilweise in die USA übermittelt
+        werden. Mailjet ist nicht nach dem Data Privacy Framework zertifiziert.
       </p>
 
       <h3>Interner Bereich</h3>

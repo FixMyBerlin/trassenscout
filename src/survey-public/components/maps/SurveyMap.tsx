@@ -1,54 +1,94 @@
+import { lineString } from "@turf/helpers"
+import { bbox, center } from "@turf/turf"
 import clsx from "clsx"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
-import React, { useCallback, useContext, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
+import { useFormContext } from "react-hook-form"
+
 import Map, {
+  Layer,
   LngLat,
-  LngLatBoundsLike,
   Marker,
   MarkerDragEvent,
   NavigationControl,
+  Source,
   useMap,
 } from "react-map-gl/maplibre"
 import { LayerType } from "src/core/components/Map/BackgroundSwitcher"
 import { SurveyBackgroundSwitcher } from "src/survey-public/components/maps/SurveyBackgroundSwitcher"
 import { SurveyMapBanner } from "src/survey-public/components/maps/SurveyMapBanner"
 import SurveyPin from "src/survey-public/components/maps/SurveyPin"
-import { PinContext } from "src/survey-public/context/contexts"
+import { getCompletedQuestionIds } from "src/survey-public/utils/getCompletedQuestionIds"
 
 export type SurveyMapProps = {
   className?: string
   children?: React.ReactNode
   projectMap: {
-    maptilerStyleUrl: string
+    maptilerUrl: string
     initialMarker: { lng: number; lat: number }
     config: {
-      bounds: LngLatBoundsLike
+      bounds: [number, number, number, number]
     }
   }
-  setIsMapDirty: any
+  setIsMapDirty: (value: boolean) => void
+  pinId: number
+  // todo as we use SurveyMap in the external survey response form, questionids and setcompleted... are optional
+  // we should seperate these components as the public survey will NOT work without these props
+  questionIds?: number[]
+  setIsCompleted?: (value: boolean) => void
+  // todo survey clean up or refactor after survey BBline selection
+  lineGeometryId?: number
 }
 
-export const SurveyMap: React.FC<SurveyMapProps> = ({ projectMap, className, setIsMapDirty }) => {
+export const SurveyMap: React.FC<SurveyMapProps> = ({
+  projectMap,
+  pinId,
+  className,
+  setIsMapDirty,
+  questionIds,
+  setIsCompleted,
+  lineGeometryId,
+  // todo survey clean up or refactor after survey BB line selection
+}) => {
   const { mainMap } = useMap()
   const [events, logEvents] = useState<Record<string, LngLat>>({})
   const [isPinInView, setIsPinInView] = useState(true)
   const [isMediumScreen, setIsMediumScreen] = useState(false)
-
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
 
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)
   }
+  const { getValues, setValue } = useFormContext()
 
-  const { pinPosition, setPinPosition } = useContext(PinContext)
+  // todo survey clean up or refactor after survey BB line selection
+  // take line geometry from form context
+  const selectedLine = getValues()[`custom-${lineGeometryId}`] || null
+  const mapBounds: { bounds: [number, number, number, number] } = {
+    // @ts-expect-error
+    bounds: selectedLine
+      ? // @ts-expect-error
+        bbox(lineString(JSON.parse(selectedLine)))
+      : projectMap.config.bounds,
+  }
+
+  // todo survey clean up or refactor after survey BB  (center of line option)
+  // take pinPosition from form context - if it is not defined use center of selected line - if we do not have a selected line use initialMarker fallback from feedback.ts configuration
+  const pinPosition =
+    getValues()[`map-${pinId}`] ||
+    (selectedLine
+      ? {
+          // @ts-expect-error
+          lng: center(lineString(JSON.parse(selectedLine))).geometry.coordinates[0],
+          // @ts-expect-error
+          lat: center(lineString(JSON.parse(selectedLine))).geometry.coordinates[1],
+        }
+      : projectMap.initialMarker)
 
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
-
-  const vectorStyle = `${projectMap.maptilerStyleUrl}?key=${maptilerApiKey}`
+  const vectorStyle = `${projectMap.maptilerUrl}?key=${maptilerApiKey}`
   const satelliteStyle = `${"https://api.maptiler.com/maps/hybrid/style.json"}?key=${maptilerApiKey}`
-
-  if (!pinPosition) setPinPosition(projectMap.initialMarker)
 
   useEffect(() => {
     const lgMediaQuery = window.matchMedia("(min-width: 768px)")
@@ -73,10 +113,18 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({ projectMap, className, set
 
   const onMarkerDrag = (event: MarkerDragEvent) => {
     logEvents((_events) => ({ ..._events, onDrag: event.lngLat }))
-    setPinPosition({
+    setValue(`map-${pinId}`, {
       lng: event.lngLat.lng,
       lat: event.lngLat.lat,
     })
+    const values = getValues()
+    const completedQuestionIds = getCompletedQuestionIds(values)
+    // todo as we use surveymap in the external survey response form , question ids and setcompleted... are optional
+    // we should seperate these components as the public survey will NOT work without these props
+    // check if all questions from page one have been answered; compare arrays
+    questionIds &&
+      setIsCompleted &&
+      setIsCompleted(questionIds!.every((val) => completedQuestionIds.includes(val)))
   }
 
   const onMarkerDragEnd = useCallback((event: MarkerDragEvent) => {
@@ -106,15 +154,11 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({ projectMap, className, set
     checkPinInView()
   }
 
-  const { config } = projectMap
-
   return (
     <div className={clsx("h-[500px]", className)}>
       <Map
         id="mainMap"
-        initialViewState={{
-          bounds: config.bounds,
-        }}
+        initialViewState={{ ...mapBounds, fitBoundsOptions: { padding: 100 } }}
         scrollZoom={false}
         onMove={handleMapMove}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
@@ -123,6 +167,25 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({ projectMap, className, set
         // @ts-expect-error: See https://github.com/visgl/react-map-gl/issues/2310
         RTLTextPlugin={null}
       >
+        {/* // todo survey clean up or refactor after survey BB line selection */}
+        {selectedLine && (
+          <Source
+            key={"Netzentwurf"}
+            type="geojson"
+            // @ts-expect-error
+            data={lineString(JSON.parse(selectedLine))}
+          >
+            <Layer
+              id={"SelectedLine"}
+              type="line"
+              paint={{
+                "line-width": 5,
+                "line-color": ["case", ["has", "color"], ["get", "color"], "#994F0B"],
+                "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
+              }}
+            />
+          </Source>
+        )}
         {pinPosition && (
           <Marker
             longitude={pinPosition?.lng}
@@ -136,11 +199,9 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({ projectMap, className, set
             <SurveyPin />
           </Marker>
         )}
-
         {isMediumScreen && <NavigationControl showCompass={false} />}
-
         <SurveyMapBanner
-          className="absolute bottom-12 font-sans"
+          className="absolute bottom-12"
           action={easeToPin}
           status={isPinInView ? "default" : "pinOutOfView"}
         />

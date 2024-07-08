@@ -5,6 +5,7 @@ export type TSurvey = {
   version: number
   logoUrl: string
   canonicalUrl: string
+  maptilerUrl: string
   primaryColor: string
   lightColor: string
   darkColor: string
@@ -22,10 +23,10 @@ export type TPage = {
 
 export type TQuestion = {
   id: number
-  component: "singleResponse" | "multipleResponse"
+  component: "singleResponse" | "multipleResponse" | "textfield" | "readOnly" | "text"
   label: TTranslatableText
   help?: TTranslatableText
-  props: TSingleOrMultiResponseProps
+  props: TSingleOrMultiResponseProps | TTextProps | TReadOnlyProps
 }
 
 export type TButtonWithAction = {
@@ -59,9 +60,8 @@ export type TResponse = {
 
 export type TEmail = {
   title: TTranslatableText
-  questionText: TTranslatableText
   description: TTranslatableText
-  mailjetWidgetUrl: string
+  mailjetWidgetUrl?: string
   homeUrl: string
   button: TButton
 }
@@ -74,31 +74,35 @@ export type TMore = {
 }
 
 export type TMapProps = {
-  maptilerStyleUrl: string
   marker?: {
     lat: number
     lng: number
   }
   config: {
-    bounds: LngLatBoundsLike
+    bounds: [number, number, number, number]
   }
-  legend?: Record<string, TLegendItem>
+  legend?: Record<string, Record<string, TLegendItem>>
   placeholder?: TTranslatableText
   caption?: TTranslatableText
 }
 export type TLegendItem = {
   label: TTranslatableText
   color: string
-  height: string
-  shape: "line" | "dot"
+  className?: string
 }
 
-type TTextProps = {
+export type TTextProps = {
   placeholder?: TTranslatableText
   caption?: TTranslatableText
+  maxLength?: number
+}
+
+export type TReadOnlyProps = {
+  queryId: string
 }
 
 export type TFeedbackQuestion = {
+  help?: TTranslatableText
   id: number
   label: TTranslatableText
   component: "singleResponse" | "multipleResponse" | "text" | "map" | "custom"
@@ -117,7 +121,23 @@ export type TFeedback = {
 }
 
 export type TResponseConfig = {
-  evaluationRefs: Record<string, number>
+  evaluationRefs: {
+    "feedback-category": number
+    "is-feedback-location": number
+    "feedback-location": number
+    "feedback-usertext-1": number
+    "feedback-usertext-2"?: number // survey RS8
+    "line-id"?: number // survey BB
+    "line-geometry"?: number // survey BB
+    "line-from-to-name"?: number // survey BB
+  }
 }
 
 export type TProgress = Record<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL", number>
+
+export type TInstitutionsBboxes = {
+  institution: string
+  landkreis: string
+  id: string
+  bbox: number[]
+}[]
