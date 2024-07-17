@@ -16,6 +16,7 @@ import surveyFeedbackEmail from "src/survey-responses/mutations/surveyFeedbackEm
 import { useParam } from "@blitzjs/next"
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
 import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
+import { getCompletedQuestionIds } from "../utils/getCompletedQuestionIds"
 import PublicSurveyForm from "./core/form/PublicSurveyForm"
 import {
   TEmail,
@@ -26,7 +27,6 @@ import {
   TResponseConfig,
   TSurvey,
 } from "./types"
-import { getCompletedQuestionIds } from "../utils/getCompletedQuestionIds"
 
 type Props = {
   startContent: React.ReactNode
@@ -242,12 +242,7 @@ export const SurveyMainPage: React.FC<Props> = ({
       break
     case "MORE":
       component = (
-        <More
-          more={moreDefinition}
-          onClickMore={handleMoreFeedback}
-          onClickFinish={handleFinish}
-          isUserLocationQuestionId={isUserLocationQuestionId}
-        />
+        <More more={moreDefinition} onClickMore={handleMoreFeedback} onClickFinish={handleFinish} />
       )
       break
     case "FEEDBACK":

@@ -13,16 +13,9 @@ type Props = {
   onClickMore: any
   onClickFinish: any
   more: TMore
-  isUserLocationQuestionId: number
 }
 
-export const More: React.FC<Props> = ({
-  more,
-  onClickMore,
-  onClickFinish,
-  isUserLocationQuestionId,
-}) => {
-  const { getValues, reset } = useFormContext()
+export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
   useAlertBeforeUnload()
 
   const { title, description, questionText, buttons } = more
