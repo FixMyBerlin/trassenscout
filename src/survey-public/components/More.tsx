@@ -5,6 +5,7 @@ import { SurveyScreenHeader } from "./core/layout/SurveyScreenHeader"
 import { TMore } from "./types"
 import { useEffect } from "react"
 import { get } from "http"
+import { useAlertBeforeUnload } from "../utils/useAlertBeforeUnload"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -22,6 +23,7 @@ export const More: React.FC<Props> = ({
   isUserLocationQuestionId,
 }) => {
   const { getValues, reset } = useFormContext()
+  useAlertBeforeUnload()
 
   const { title, description, questionText, buttons } = more
 

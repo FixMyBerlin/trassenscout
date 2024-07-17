@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 
-import { useFormContext } from "react-hook-form"
+import { useFormContext, useFormState } from "react-hook-form"
 import { ProgressContext } from "src/survey-public/context/contexts"
 import { scrollToTopWithDelay } from "src/survey-public/utils/scrollToTopWithDelay"
 import { Debug } from "../core/Debug"
@@ -14,6 +14,7 @@ import {
 } from "../types"
 import { FeedbackFirstPage } from "./FeedbackFirstPage"
 import { FeedbackSecondPage } from "./FeedbackSecondPage"
+import { useAlertBeforeUnload } from "src/survey-public/utils/useAlertBeforeUnload"
 
 export { FORM_ERROR } from "src/core/components/forms"
 
@@ -47,6 +48,8 @@ export const Feedback: React.FC<Props> = ({
   isSecondPageCompletedProps: { isSecondPageCompleted, setIsSecondPageCompleted },
 }) => {
   const { setProgress } = useContext(ProgressContext)
+
+  useAlertBeforeUnload()
 
   const [feedbackPageProgress, setFeedbackPageProgress] = useState(0)
 
