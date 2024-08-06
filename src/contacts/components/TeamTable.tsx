@@ -6,8 +6,8 @@ import { getFullname } from "src/users/utils"
 type Props = {
   contacts: {
     id: number
-    firstName: string | null
-    lastName: string | null
+    firstName: string
+    lastName: string
     email: string
     phone: string | null
   }[]

@@ -15,13 +15,15 @@ export const Signup = z.object({
   email,
   password,
   phone: z.string().nullable(),
-  firstName: z.string().nullable(),
-  lastName: z.string().nullable(),
+  firstName: z.string().min(1, { message: "Pflichtfeld." }),
+  lastName: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
+  institution: z.string().nullable(),
 })
 export const UpdateUser = z.object({
   phone: z.string().nullable(),
-  firstName: z.string().nullable(),
-  lastName: z.string().nullable(),
+  firstName: z.string().min(1, { message: "Pflichtfeld." }),
+  lastName: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
+  institution: z.string().nullable(),
 })
 
 export const Login = z.object({

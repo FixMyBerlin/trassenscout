@@ -26,6 +26,7 @@ const seedUsers = async () => {
       role: "USER",
       firstName: "All-Projects",
       lastName: "All-Projects-User",
+      institution: "All-Project-Institution",
       phone: "030 549 086 65 - 91",
       hashedPassword,
     },
@@ -35,6 +36,7 @@ const seedUsers = async () => {
       firstName: "No-Project",
       lastName: "No-Project-User",
       phone: "030 549 086 65 - 92",
+      institution: "No-Project-Institution",
       hashedPassword,
     },
   ]

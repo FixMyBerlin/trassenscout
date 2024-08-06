@@ -40,9 +40,10 @@ model User {
   email          String       @unique
   hashedPassword String?
   role           UserRoleEnum @default(USER)
-  firstName      String?
-  lastName       String?
+  firstName      String
+  lastName       String
   phone          String?
+  institution    String? // Organisation / Kommune
 
   tokens        Token[]
   sessions      Session[]
