@@ -100,3 +100,4 @@ Follow this steps to add a model with forms and pages:
      - You can use https://github.com/CarterGrimmeisen/zod-prisma to generate a starting point for this based on the prisma schema. However, this package should only be used in a separate branch since it collides with blitz in some way.
 
 1. Add seed data in [db/seeds.ts](./db/seeds.ts) – all models should have good seed data.
+
