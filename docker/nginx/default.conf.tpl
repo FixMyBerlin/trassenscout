@@ -31,7 +31,7 @@ server {
       proxy_ignore_headers   Set-Cookie;
       proxy_intercept_errors on;
       error_page             403 =404 /404.html;
-      add_header             Cache-Control max-age=7776000, must-revalidate;
+      add_header             Cache-Control "max-age=7776000, must-revalidate";
       proxy_pass             http://${ASSETS_BUCKET_HOST}${ASSETS_BUCKET_PATH};
   }
   location = /404.html {
