@@ -19,7 +19,7 @@ const AdminMemberships = () => {
   const router = useRouter()
   const [deleteMembershipMutation] = useMutation(deleteMembership)
   const handleDelete = async (
-    membership: (typeof userAndMemberships)[number]["Membership"][number],
+    membership: (typeof userAndMemberships)[number]["memberships"][number],
   ) => {
     if (
       window.confirm(
@@ -57,8 +57,8 @@ const AdminMemberships = () => {
                     {user.role === "ADMIN" && <>(Admin)</>}
                   </td>
                   <td className="h-20 py-4 pl-4 pr-3 text-sm sm:pr-6">
-                    {user?.Membership?.length === 0 && <>Bisher keine Rechte</>}
-                    {user?.Membership?.map((membership) => {
+                    {user?.memberships?.length === 0 && <>Bisher keine Rechte</>}
+                    {user?.memberships?.map((membership) => {
                       return (
                         <div key={membership.id} className="flex justify-between">
                           <Link

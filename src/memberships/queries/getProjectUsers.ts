@@ -14,7 +14,7 @@ export default resolver.pipe(
   authorizeProjectAdmin(getProjectIdBySlug),
   async ({ projectSlug }) =>
     await db.user.findMany({
-      where: { Membership: { some: { project: { slug: projectSlug } } } },
+      where: { memberships: { some: { project: { slug: projectSlug } } } },
       select: {
         id: true,
         firstName: true,

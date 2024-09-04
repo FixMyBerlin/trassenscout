@@ -29,7 +29,7 @@ export default resolver.pipe(
             email: true,
             role: true,
             // We cannot pass this part via select in the page component since TS will not be able to infer the types then
-            Membership: { select: { id: true, project: { select: { slug: true } } } },
+            memberships: { select: { id: true, project: { select: { slug: true } } } },
           },
         }),
     })
