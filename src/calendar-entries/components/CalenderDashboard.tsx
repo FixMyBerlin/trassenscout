@@ -8,6 +8,7 @@ import { H2 } from "src/core/components/text/Headings"
 import { DateList } from "./Calender/DateList"
 import getCalendarEntries from "../queries/getCalendarEntries"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
+import { IfUserCanEdit } from "../../memberships/components/IfUserCan"
 
 const CalendarDashboardDateList: React.FC = () => {
   const projectSlug = useParam("projectSlug", "string")
@@ -30,9 +31,11 @@ const CalendarDashboardDateList: React.FC = () => {
             Alle Termine
           </Link>
         ) : (
-          <Link icon="plus" href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}>
-            Neuen Termin eintragen
-          </Link>
+          <IfUserCanEdit>
+            <Link icon="plus" href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}>
+              Neuen Termin eintragen
+            </Link>
+          </IfUserCanEdit>
         )}
       </div>
     </>

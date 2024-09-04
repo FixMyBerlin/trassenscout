@@ -20,6 +20,8 @@ import { StartEndLabel } from "./Labels"
 import { TipMarker } from "./TipMarker"
 import { layerColors } from "./layerColors"
 import { subsectionsBbox } from "./utils"
+import { IfUserCanEdit } from "../../../memberships/components/IfUserCan"
+import { useUserCan } from "../../../memberships/hooks/useUserCan"
 
 type Props = { subsections: SubsectionWithPosition[] }
 
@@ -27,6 +29,7 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
   const { mainMap } = useMap()
+  const userCan = useUserCan()
 
   // bundingBox only changes when subsections change / subsections array is created
   const boundingBox = useMemo(() => {
@@ -49,9 +52,10 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   const handleSelect = ({ subsectionSlug, edit }: HandleSelectProps) => {
     if (!projectSlug) return
     // alt+click
-    let url = edit
-      ? Routes.EditSubsectionPage({ projectSlug, subsectionSlug })
-      : Routes.SubsectionDashboardPage({ projectSlug, subsectionSlug })
+    let url =
+      userCan.edit && edit
+        ? Routes.EditSubsectionPage({ projectSlug, subsectionSlug })
+        : Routes.SubsectionDashboardPage({ projectSlug, subsectionSlug })
 
     void router.push(url, undefined, { scroll: edit ? true : false })
   }
@@ -144,9 +148,11 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
       >
         {markers}
       </BaseMap>
-      <p className="mt-2 text-right text-xs text-gray-400">
-        Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)
-      </p>
+      <IfUserCanEdit>
+        <p className="mt-2 text-right text-xs text-gray-400">
+          Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)
+        </p>
+      </IfUserCanEdit>
     </section>
   )
 }

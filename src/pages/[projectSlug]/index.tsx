@@ -21,6 +21,7 @@ import { ProjectInfoPanel } from "src/projects/components/ProjectInfoPanel"
 import getProject from "src/projects/queries/getProject"
 import { SubsectionTable } from "src/subsections/components/SubsectionTable"
 import getSubsections from "src/subsections/queries/getSubsections"
+import { IfUserCanEdit } from "../../memberships/components/IfUserCan"
 
 export const ProjectDashboardWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
@@ -63,9 +64,11 @@ export const ProjectDashboardWithQuery = () => {
           project.slug,
         )}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
         action={
-          <Link icon="edit" href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
-            bearbeiten
-          </Link>
+          <IfUserCanEdit>
+            <Link icon="edit" href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
+              bearbeiten
+            </Link>
+          </IfUserCanEdit>
         }
       />
       <details>

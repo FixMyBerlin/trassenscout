@@ -9,6 +9,7 @@ import { startEnd } from "src/core/components/text/startEnd"
 import { useSlugs } from "src/core/hooks"
 import { StakeholderSummary } from "src/stakeholdernotes/components/StakeholderSummary"
 import { SubsectionWithPosition } from "../queries/getSubsection"
+import { IfUserCanEdit } from "../../memberships/components/IfUserCan"
 
 type Props = {
   subsections: SubsectionWithPosition[]
@@ -100,17 +101,19 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
         )}
       </TableWrapper>
       {createButton && (
-        <Link
-          button="blue"
-          icon="plus"
-          className="mt-4"
-          href={Routes.NewSubsectionPage({
-            projectSlug: projectSlug!,
-            subsectionSlug: subsectionSlug!,
-          })}
-        >
-          Neuer Planungsabschnitt
-        </Link>
+        <IfUserCanEdit>
+          <Link
+            button="blue"
+            icon="plus"
+            className="mt-4"
+            href={Routes.NewSubsectionPage({
+              projectSlug: projectSlug!,
+              subsectionSlug: subsectionSlug!,
+            })}
+          >
+            Neuer Planungsabschnitt
+          </Link>
+        </IfUserCanEdit>
       )}
     </section>
   )
