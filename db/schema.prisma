@@ -137,7 +137,14 @@ model Membership {
   user   User @relation(fields: [userId], references: [id])
   userId Int
 
+  role MembershipRoleEnum @default(VIEWER)
+
   @@unique([projectId, userId])
+}
+
+enum MembershipRoleEnum {
+  VIEWER
+  EDITOR
 }
 
 model CalendarEntry {
