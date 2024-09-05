@@ -4,6 +4,7 @@ import { z } from "zod"
 
 import { authorizeProjectAdmin } from "src/authorization"
 import getUploadProjectId from "./getUploadProjectId"
+import { viewerRoles } from "../../authorization/constants"
 
 const UploadSchema = z.object({
   // This accepts type of undefined, but is required at runtime
@@ -12,7 +13,7 @@ const UploadSchema = z.object({
 
 export default resolver.pipe(
   resolver.zod(UploadSchema),
-  authorizeProjectAdmin(getUploadProjectId),
+  authorizeProjectAdmin(getUploadProjectId, viewerRoles),
   async ({ id }) => {
     return await db.upload.findFirstOrThrow({
       where: { id },

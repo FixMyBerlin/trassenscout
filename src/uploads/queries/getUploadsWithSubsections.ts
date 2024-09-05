@@ -3,7 +3,8 @@ import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
 import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
+import { viewerRoles } from "../../authorization/constants"
 
 type GetUploadsInput = { projectSlug: string } & Pick<
   Prisma.UploadFindManyArgs,
@@ -12,7 +13,7 @@ type GetUploadsInput = { projectSlug: string } & Pick<
 
 export default resolver.pipe(
   // @ts-ignore
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
   async ({
     projectSlug,
     where,

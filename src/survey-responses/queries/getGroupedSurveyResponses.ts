@@ -3,7 +3,8 @@ import { paginate } from "blitz"
 import db, { Prisma } from "db"
 
 import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
+import { viewerRoles } from "../../authorization/constants"
 
 type GetSurveySessionsWithResponsesInput = { projectSlug: string; surveyId: number } & Pick<
   Prisma.SurveySessionFindManyArgs,
@@ -12,7 +13,7 @@ type GetSurveySessionsWithResponsesInput = { projectSlug: string; surveyId: numb
 
 export default resolver.pipe(
   // @ts-ignore
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
   async ({
     projectSlug,
     surveyId,

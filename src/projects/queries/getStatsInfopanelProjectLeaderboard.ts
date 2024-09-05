@@ -1,10 +1,11 @@
 import { resolver } from "@blitzjs/rpc"
 import db, { Subsubsection } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 
 import { NotFoundError } from "blitz"
 import { GetSubsectionsSchema } from "./getStatsInfopanelProjectCosts"
+import { extractSlug } from "../../authorization/extractSlug"
+import { viewerRoles } from "../../authorization/constants"
 
 type SpecialsOperatorsManagersCount = {
   subsubsectionSpecialsWithCount: {
@@ -23,7 +24,7 @@ type SpecialsOperatorsManagersCount = {
 
 export default resolver.pipe(
   resolver.zod(GetSubsectionsSchema),
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractSlug, viewerRoles),
   async ({ projectSlug }) => {
     const query = {
       where: {

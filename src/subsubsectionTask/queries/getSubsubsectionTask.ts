@@ -3,6 +3,7 @@ import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
 import getQualityLevelProjectId from "./getSubsubsectionTaskProjectId"
+import { viewerRoles } from "../../authorization/constants"
 
 const GetSubsubsectionTask = z.object({
   // This accepts type of undefined, but is required at runtime
@@ -11,7 +12,7 @@ const GetSubsubsectionTask = z.object({
 
 export default resolver.pipe(
   resolver.zod(GetSubsubsectionTask),
-  authorizeProjectAdmin(getQualityLevelProjectId),
+  authorizeProjectAdmin(getQualityLevelProjectId, viewerRoles),
   async ({ id }) => {
     return await db.subsubsectionTask.findFirstOrThrow({
       where: { id },

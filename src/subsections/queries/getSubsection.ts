@@ -2,8 +2,9 @@ import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import db, { Subsection } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { z } from "zod"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
+import { viewerRoles } from "../../authorization/constants"
 
 // We lie with TypeScript here, because we know better. All `geometry` fields are Position. We make sure of that in our Form. They are also required, so never empty.
 export type SubsectionWithPosition = Omit<Subsection, "geometry"> & {
@@ -20,7 +21,7 @@ export const GetSubsectionSchema = z.object({
 
 export default resolver.pipe(
   resolver.zod(GetSubsectionSchema),
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
   async ({ projectSlug, subsectionSlug }) => {
     const query = {
       where: {

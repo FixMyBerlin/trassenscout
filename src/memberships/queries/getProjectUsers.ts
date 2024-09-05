@@ -2,8 +2,9 @@ import db from "db"
 import { resolver } from "@blitzjs/rpc"
 
 import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { z } from "zod"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
+import { viewerRoles } from "../../authorization/constants"
 
 const Schema = z.object({
   projectSlug: z.string(),
@@ -11,7 +12,7 @@ const Schema = z.object({
 
 export default resolver.pipe(
   resolver.zod(Schema),
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
   async ({ projectSlug }) =>
     await db.user.findMany({
       where: { memberships: { some: { project: { slug: projectSlug } } } },

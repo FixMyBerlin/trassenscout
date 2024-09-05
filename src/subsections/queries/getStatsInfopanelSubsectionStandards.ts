@@ -2,8 +2,9 @@ import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import db, { Prisma } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { GetSubsectionSchema, SubsectionWithPosition } from "./getSubsection"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
+import { viewerRoles } from "../../authorization/constants"
 
 type SubsectionWithSubsubsectionsWithPositionWithQualityLevelCalc = {
   subsection: SubsectionWithPosition & {
@@ -19,7 +20,7 @@ type SubsectionWithSubsubsectionsWithPositionWithQualityLevelCalc = {
 
 export default resolver.pipe(
   resolver.zod(GetSubsectionSchema),
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
   async ({ projectSlug, subsectionSlug }) => {
     const query = {
       where: {

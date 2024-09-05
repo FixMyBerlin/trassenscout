@@ -2,8 +2,9 @@ import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import db, { Prisma } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { GetSubsectionsSchema } from "./getStatsInfopanelProjectCosts"
+import { extractSlug } from "../../authorization/extractSlug"
+import { viewerRoles } from "../../authorization/constants"
 
 type SubsubsectionWithEstimatedCompletionDate = {
   id: number
@@ -17,7 +18,7 @@ type SubsubsectionsWithEstimatedCompetionDate = {
 
 export default resolver.pipe(
   resolver.zod(GetSubsectionsSchema),
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractSlug, viewerRoles),
   async ({ projectSlug }) => {
     const query = {
       where: {

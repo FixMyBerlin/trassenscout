@@ -4,6 +4,7 @@ import { z } from "zod"
 
 import { authorizeProjectAdmin } from "src/authorization"
 import getCalendarEntryProjectId from "./getCalendarEntryProjectId"
+import { viewerRoles } from "../../authorization/constants"
 
 const GetCalendarEntrySchema = z.object({
   // This accepts type of undefined, but is required at runtime
@@ -12,6 +13,7 @@ const GetCalendarEntrySchema = z.object({
 
 export default resolver.pipe(
   resolver.zod(GetCalendarEntrySchema),
-  authorizeProjectAdmin(getCalendarEntryProjectId),
+  // TODO: slug?
+  authorizeProjectAdmin(getCalendarEntryProjectId, viewerRoles),
   async ({ id }) => await db.calendarEntry.findFirstOrThrow({ where: { id } }),
 )

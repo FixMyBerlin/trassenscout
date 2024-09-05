@@ -3,14 +3,15 @@ import { NotFoundError } from "blitz"
 import db from "db"
 
 import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { getResponseConfigBySurveySlug } from "src/survey-public/utils/getConfigBySurveySlug"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
+import { viewerRoles } from "../../authorization/constants"
 
 type GetFeedbackSurveyResponsesWithLocationInput = { projectSlug: string; surveyId: number }
 
 export default resolver.pipe(
   // @ts-ignore
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
   async ({ projectSlug, surveyId }: GetFeedbackSurveyResponsesWithLocationInput) => {
     const rawSurveyResponse = await db.surveyResponse.findMany({
       where: {

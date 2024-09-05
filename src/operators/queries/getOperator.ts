@@ -3,6 +3,7 @@ import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
 import getOperatorProjectId from "./getOperatorProjectId"
+import { viewerRoles } from "../../authorization/constants"
 
 const GetOperatorSchema = z.object({
   // This accepts type of undefined, but is required at runtime
@@ -11,7 +12,7 @@ const GetOperatorSchema = z.object({
 
 export default resolver.pipe(
   resolver.zod(GetOperatorSchema),
-  authorizeProjectAdmin(getOperatorProjectId),
+  authorizeProjectAdmin(getOperatorProjectId, viewerRoles),
   async ({ id }) => {
     return await db.operator.findFirstOrThrow({
       where: { id },

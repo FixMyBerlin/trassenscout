@@ -2,9 +2,10 @@ import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { CurrentUser } from "src/users/types"
 import { GetSubsectionSchema } from "./getSubsection"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
+import { viewerRoles } from "../../authorization/constants"
 
 export type SubsectionWithManagerOperatorOrder = {
   order: number
@@ -15,7 +16,7 @@ export type SubsectionWithManagerOperatorOrder = {
 
 export default resolver.pipe(
   resolver.zod(GetSubsectionSchema),
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
   async ({ projectSlug, subsectionSlug }) => {
     const query = {
       where: {

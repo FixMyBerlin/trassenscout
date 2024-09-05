@@ -2,8 +2,9 @@ import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { z } from "zod"
+import { extractSlug } from "../../authorization/extractSlug"
+import { viewerRoles } from "../../authorization/constants"
 
 export const GetSubsectionsSchema = z.object({
   projectSlug: z.string(),
@@ -21,7 +22,7 @@ type ProjectSubsectionsWithCostStructure = {
 
 export default resolver.pipe(
   resolver.zod(GetSubsectionsSchema),
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractSlug, viewerRoles),
   async ({ projectSlug }) => {
     const query = {
       where: {
