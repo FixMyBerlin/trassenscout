@@ -1,9 +1,9 @@
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { Role } from "types"
 import { Signup } from "../validations"
 import { userCreationMailer } from "mailers/userCreationMailer"
+import { getMemberships } from "../getMemberships"
 
 export default resolver.pipe(
   resolver.zod(Signup),
@@ -29,7 +29,11 @@ export default resolver.pipe(
       },
     })
 
-    await ctx.session.$create({ userId: user.id, role: user.role as Role })
+    await ctx.session.$create({
+      userId: user.id,
+      role: user.role,
+      ...(await getMemberships(user.id)),
+    })
     await userCreationMailer({
       userMail: user.email,
       userId: user.id,
