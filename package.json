@@ -55,6 +55,7 @@
     "@socialgouv/matomo-next": "1.6.1",
     "@turf/helpers": "6.5.0",
     "@turf/turf": "6.5.0",
+    "adler-32": "1.3.1",
     "autoprefixer": "10.4.14",
     "blitz": "2.0.8",
     "clsx": "2.0.0",

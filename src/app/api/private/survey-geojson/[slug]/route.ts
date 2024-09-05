@@ -1,3 +1,4 @@
+import adler32 from "adler-32"
 import db from "db"
 import { feedbackDefinition } from "src/survey-public/radnetz-brandenburg/data/feedback"
 
@@ -86,8 +87,14 @@ export async function GET(request: Request, { params }: { params: { slug: string
             type: "LineString",
             coordinates: lineGeometry,
           },
-          id: `line-${reponseId}-${lineId}`,
+          // Maplibre GL JS requires the feature.id ot be an integer.
+          // If not, the hover/select process fails in Atlas.
+          // Plan B would be to set source.promoteId which can also be a string.
+          // Docs: https://maplibre.org/maplibre-style-spec/expressions/#feature-state
+          // The method we use here is the same we use in atlas `transformFile.ts`
+          id: new Uint32Array([adler32.str(JSON.stringify(`line-${reponseId}-${lineId}`))])[0]!,
           properties: {
+            featureId: `line-${reponseId}-${lineId}`,
             id: reponseId,
             Thema: category,
             Hinweis: text,
@@ -103,8 +110,9 @@ export async function GET(request: Request, { params }: { params: { slug: string
             type: "Point",
             coordinates: [location.lng, location.lat],
           },
-          id: `point-${reponseId}-${lineId}`,
+          id: new Uint32Array([adler32.str(JSON.stringify(`point-${reponseId}-${lineId}`))])[0]!,
           properties: {
+            featureId: `point-${reponseId}-${lineId}`,
             id: reponseId,
             Thema: category,
             Hinweis: text,
