@@ -86,10 +86,13 @@ export async function GET(request: Request, { params }: { params: { slug: string
             type: "LineString",
             coordinates: lineGeometry,
           },
+          id: `line-${reponseId}-${lineId}`,
           properties: {
-            id: `line-${reponseId}-${lineId}`,
+            id: reponseId,
             Thema: category,
             Hinweis: text,
+            geometryType: "line",
+            geometryLineId: lineId,
           },
         },
       ]
@@ -100,10 +103,13 @@ export async function GET(request: Request, { params }: { params: { slug: string
             type: "Point",
             coordinates: [location.lng, location.lat],
           },
+          id: `point-${reponseId}-${lineId}`,
           properties: {
-            id: `point-${reponseId}-${lineId}`,
+            id: reponseId,
             Thema: category,
             Hinweis: text,
+            geometryType: "point",
+            geometryLineId: lineId,
           },
         })
       }
