@@ -109,20 +109,20 @@ export const feedbackDefinition: TFeedback = {
                   label: {
                     de: "Auswählbare Verbindungen",
                   },
-                  color: "bg-[#E97E30]",
-                  className: "h-[5px]",
+                  color: "",
+                  className: "stripe-background-vertical-orange h-[3.5px]",
                 },
                 areas: {
                   label: { de: "Landkreisgrenzen" },
                   color: "",
-                  className: "h-[2px] stripe-background-vertical-pink",
+                  className: "h-[4px] stripe-background-vertical-pink",
                 },
                 borders: {
                   label: {
                     de: "Gemeindegrenzen",
                   },
                   color: "",
-                  className: "h-[3px] stripe-background-vertical-pink-2",
+                  className: "h-[2px] stripe-background-vertical-pink-2",
                 },
               },
               Straßentypen: {
@@ -130,29 +130,29 @@ export const feedbackDefinition: TFeedback = {
                   label: {
                     de: "Bundesstraßen",
                   },
-                  color: "bg-[#F6E7AC] border-y border-gray-300",
+                  color: "bg-[#1992f5] opacity-70",
                   className: "h-[6px]",
                 },
                 land: {
                   label: {
                     de: "Landesstraßen",
                   },
-                  color: "bg-[#F6E7AC] border-y border-gray-300",
-                  className: "h-[5px]",
+                  color: "bg-[#07b072]",
+                  className: "h-[6px] opacity-70",
                 },
                 kreis: {
                   label: {
                     de: "Kreisstraßen",
                   },
-                  color: "bg-[#F6E7AC] border-y border-gray-300",
-                  className: "h-[4px]",
+                  color: "bg-[#cab007]",
+                  className: "h-[6px] opacity-70",
                 },
                 highway: {
                   label: {
                     de: "Autobahn",
                   },
                   color: "bg-[#A5C0CA]",
-                  className: "h-[4px]",
+                  className: "h-[6px]",
                 },
               },
               "Quellen &  Ziele (werden erst ab Zoomstufe 11 oder 14 angezeigt)": {
@@ -161,32 +161,32 @@ export const feedbackDefinition: TFeedback = {
                     de: "Schulen",
                   },
                   color: "bg-[#2880FB]",
-                  className: "h-5 rounded-full",
+                  className: "h-3 rounded-full !w-3",
                 },
                 kindergarden: {
                   label: { de: "Kindergarten" },
                   color: "bg-[#00B4CC]",
-                  className: "h-5 rounded-full",
+                  className: "h-3 rounded-full !w-3",
                 },
                 universities: {
                   label: { de: "Universitäten" },
                   color: "bg-[#B377FE]",
-                  className: "h-5 rounded-full",
+                  className: "h-3 rounded-full !w-3",
                 },
                 basics: {
                   label: { de: "Grundversorgung" },
                   color: "bg-[#F5814D]",
-                  className: "h-5 rounded-full",
+                  className: "h-3 rounded-full !w-3",
                 },
                 shopping: {
                   label: { de: "Einkauf" },
                   color: "bg-[#78E5D2]",
-                  className: "h-5 rounded-full",
+                  className: "h-3 rounded-full !w-3",
                 },
                 freetime: {
                   label: { de: "Freizeit" },
                   color: "bg-[#AEE66D]",
-                  className: "h-5 rounded-full",
+                  className: "h-3 rounded-full !w-3",
                 },
               },
               "Radinfrastruktur Führungsformen (Bestand) (wird erst ab Zoomstufe 10 angezeigt)": {
@@ -195,42 +195,42 @@ export const feedbackDefinition: TFeedback = {
                     de: "Führung baul. abgesetzte von Kfz",
                   },
                   color: "bg-[#1353D1]",
-                  className: "h-[5px]",
+                  className: "h-[3px]",
                 },
                 extra: {
                   label: {
                     de: "Führung eigenständig auf Fahrbahn ",
                   },
                   color: "bg-[#009AE9]",
-                  className: "h-[5px]",
+                  className: "h-[3px]",
                 },
                 pedestrian: {
                   label: {
                     de: "Führung  mit Fußverkehr ",
                   },
                   color: "",
-                  className: "h-[5px] stripe-background-vertical-darkblue",
+                  className: "h-[3px] stripe-background-vertical-darkblue",
                 },
                 bike: {
                   label: {
                     de: "Führung  mit Rad frei ",
                   },
                   color: "",
-                  className: "h-[5px] stripe-background-vertical-lightblue",
+                  className: "h-[3px] stripe-background-vertical-lightblue",
                 },
                 kfz: {
                   label: {
                     de: "Führung mit Kfz (explizit)",
                   },
                   color: "",
-                  className: "h-[5px] stripe-background-vertical-blue",
+                  className: "h-[3px] stripe-background-vertical-blue",
                 },
                 unknown: {
                   label: {
                     de: "Führungsform unklar",
                   },
                   color: "",
-                  className: "h-[5px] stripe-background-vertical-purple",
+                  className: "h-[3px] stripe-background-vertical-purple",
                 },
               },
             },

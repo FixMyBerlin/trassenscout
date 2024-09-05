@@ -6,7 +6,7 @@ import clsx from "clsx"
 type SurveyMapLegendProps = { legend: TMapProps["legend"] }
 
 const LegendItemShape: React.FC<{ legendItem: TLegendItem }> = ({ legendItem }) => {
-  return <span className={clsx(legendItem.color, legendItem.className, "w-5")} />
+  return <span className={clsx("w-5", legendItem.color, legendItem.className)} />
 }
 
 export const SurveyMapLegend: React.FC<SurveyMapLegendProps> = ({ legend }) => {

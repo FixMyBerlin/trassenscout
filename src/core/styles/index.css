@@ -78,6 +78,15 @@
     transparent 6px
   );
 }
+.stripe-background-vertical-orange {
+  background: repeating-linear-gradient(
+    -90deg,
+    #e97e30,
+    #e97e30 6px,
+    transparent 6px,
+    transparent 12px
+  );
+}
 .stripe-background-vertical-lightblue {
   background: repeating-linear-gradient(
     -90deg,
