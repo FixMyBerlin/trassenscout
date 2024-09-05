@@ -9,3 +9,11 @@ export function globalize(values: Record<string, any>) {
     })
   }
 }
+
+// to be used to debug resolver pipes
+export function createLogger(...args: any[]) {
+  return (input: any) => {
+    console.log(...args)
+    return input
+  }
+}
