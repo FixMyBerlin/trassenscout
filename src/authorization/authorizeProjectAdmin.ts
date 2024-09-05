@@ -16,14 +16,7 @@ export function authorizeProjectAdmin(getProjectId: GetterFn) {
     }
 
     // check if user is a super admin or...
-    if (
-      await db.user.findFirst({
-        where: {
-          id: ctx.session.userId,
-          role: UserRoleEnum.ADMIN,
-        },
-      })
-    ) {
+    if (ctx.session.role === UserRoleEnum.ADMIN) {
       return input
     }
 
