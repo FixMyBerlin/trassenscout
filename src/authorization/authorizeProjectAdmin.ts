@@ -29,6 +29,11 @@ export function authorizeProjectAdmin(
 
     // check if user has project memberships and one of the required roles
     const idOrSlug = await getProjectIdOrSlug(input)
+
+    if (!idOrSlug) {
+      throw new Error("Invalid idOrSlug")
+    }
+
     if (
       !!ctx.session.memberships!.find(
         ({ project, role }: any) =>
