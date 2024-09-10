@@ -4,7 +4,7 @@ import { authorizeProjectAdmin } from "src/authorization"
 
 import { NotFoundError } from "blitz"
 import { GetSubsectionsSchema } from "./getStatsInfopanelProjectCosts"
-import { extractSlug } from "../../authorization/extractSlug"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { viewerRoles } from "../../authorization/constants"
 
 type SpecialsOperatorsManagersCount = {
@@ -24,7 +24,7 @@ type SpecialsOperatorsManagersCount = {
 
 export default resolver.pipe(
   resolver.zod(GetSubsectionsSchema),
-  authorizeProjectAdmin(extractSlug, viewerRoles),
+  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
   async ({ projectSlug }) => {
     const query = {
       where: {

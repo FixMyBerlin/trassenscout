@@ -3,7 +3,7 @@ import { NotFoundError } from "blitz"
 import db, { Subsubsection } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
-import { extractSlug } from "../../authorization/extractSlug"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { viewerRoles } from "../../authorization/constants"
 
 export const GetSubsectionsSchema = z.object({
@@ -31,7 +31,7 @@ type ProjectSubsectionsWithCostStructure = {
 
 export default resolver.pipe(
   resolver.zod(GetSubsectionsSchema),
-  authorizeProjectAdmin(extractSlug, viewerRoles),
+  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
   async ({ projectSlug }) => {
     const query = {
       where: {
