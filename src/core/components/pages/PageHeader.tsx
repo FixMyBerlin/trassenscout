@@ -1,4 +1,6 @@
 import clsx from "clsx"
+import { useSlugs } from "src/core/hooks"
+import { UserCanIcon } from "src/memberships/components/UserCanIcon"
 import { DashedLine } from "../DashedLine"
 import { H1, H2 } from "../text/Headings"
 
@@ -11,29 +13,34 @@ type Props = {
   className?: string
 }
 
-export const PageHeader: React.FC<Props> = ({
+export const PageHeader = ({
   titleIcon,
   title,
   subtitle,
   description,
   action,
   className,
-}) => {
+}: Props) => {
+  const { projectSlug } = useSlugs()
+
   const styledDescription =
     typeof description === "string" ? (
       <p className="mt-5 text-base text-gray-500">{description}</p>
     ) : (
       description
     )
+
   return (
     <section className={clsx("mb-12 space-y-3", className)}>
       {(titleIcon || action) && (
         <div className="mt-5 flex items-start justify-between">
           {/* empty span should be rendered if no title icon to keep position of action */}
           <span style={{ zoom: 1.8 }} className="mb-1 shrink-0">
-            {titleIcon ?? titleIcon}
+            {titleIcon}
           </span>
-          {Boolean(action) && <div>{action}</div>}
+          <div className="flex items-center gap-2">
+            {action} <UserCanIcon projectSlug={projectSlug!} />
+          </div>
         </div>
       )}
       <div>

@@ -6,12 +6,13 @@ import { useRouter } from "next/router"
 import { Fragment } from "react"
 import { Link } from "src/core/components/links/Link"
 import { shortTitle } from "src/core/components/text"
+import { UserCanIcon } from "src/memberships/components/UserCanIcon"
 import { NavigationProps } from "../NavigationProject/NavigationProject"
 import { ProjectLogo } from "../NavigationProject/ProjectLogo"
 
 type Props = Pick<NavigationProps, "projects">
 
-export const NavigationProjectsSwitch: React.FC<Props> = ({ projects }) => {
+export const NavigationProjectsSwitch = ({ projects }: Props) => {
   const { query } = useRouter()
 
   // The 1 case is handeled by the Dashboard Link "Dashbaord RS8"
@@ -59,6 +60,7 @@ export const NavigationProjectsSwitch: React.FC<Props> = ({ projects }) => {
                 <div className="p-1.5">
                   {projectsMenuItems.map((item) => {
                     const current = query.projectSlug === item.slug
+
                     return (
                       <Menu.Item key={item.name}>
                         {({ active }) => (
@@ -67,11 +69,14 @@ export const NavigationProjectsSwitch: React.FC<Props> = ({ projects }) => {
                             classNameOverwrites={clsx(
                               current && "bg-gray-200",
                               active && "bg-gray-100",
-                              "my-1.5 flex items-center gap-2 rounded-md px-3 py-2 text-sm text-blue-500 first:mt-0 last:mb-0 hover:text-blue-800",
+                              "my-1.5 flex items-center justify-between gap-2 rounded-md px-3 py-2 text-sm text-blue-500 first:mt-0 last:mb-0 hover:text-blue-800",
                             )}
                           >
-                            {current && <ProjectLogo />}
-                            {item.name}
+                            <div className="flex items-center gap-2">
+                              {current && <ProjectLogo />}
+                              {item.name}
+                            </div>
+                            <UserCanIcon projectSlug={item.slug} />
                           </Link>
                         )}
                       </Menu.Item>
