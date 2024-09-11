@@ -24,11 +24,8 @@ const seedSurveyResponseTopics = async () => {
     },
   ]
 
-  for (let i = 0; i < seedTopics.length; i++) {
-    const data = seedTopics[i]
-    if (data) {
-      await db.surveyResponseTopic.create({ data })
-    }
+  for (const data of seedTopics) {
+    await db.surveyResponseTopic.create({ data })
   }
 }
 

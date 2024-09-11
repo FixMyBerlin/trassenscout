@@ -8,11 +8,8 @@ const seedQualityLevels = async () => {
     { projectId: 1, slug: "no", title: "kein Standard" },
   ]
 
-  for (let i = 0; i < seedFiles.length; i++) {
-    const data = seedFiles[i]
-    if (data) {
-      await db.qualityLevel.create({ data })
-    }
+  for (const data of seedFiles) {
+    await db.qualityLevel.create({ data })
   }
 }
 

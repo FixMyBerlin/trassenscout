@@ -22,11 +22,8 @@ const seedSurveys = async () => {
     },
   ]
 
-  for (let i = 0; i < seedData.length; i++) {
-    const data = seedData[i]
-    if (data) {
-      await db.survey.create({ data })
-    }
+  for (const data of seedData) {
+    await db.survey.create({ data })
   }
 }
 

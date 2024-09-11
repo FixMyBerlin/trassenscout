@@ -188,11 +188,8 @@ const seedSubsections = async () => {
     },
   ]
 
-  for (let i = 0; i < seedData.length; i++) {
-    const data = seedData[i]
-    if (data) {
-      await db.subsection.create({ data })
-    }
+  for (const data of seedData) {
+    await db.subsection.create({ data })
   }
 }
 

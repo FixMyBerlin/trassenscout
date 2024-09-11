@@ -10,11 +10,8 @@ const seedSubsubsectionStatus = async () => {
     { projectId: 1, slug: "done", title: "umgesetzt" },
   ]
 
-  for (let i = 0; i < seedFiles.length; i++) {
-    const data = seedFiles[i]
-    if (data) {
-      await db.subsubsectionStatus.create({ data })
-    }
+  for (const data of seedFiles) {
+    await db.subsubsectionStatus.create({ data })
   }
 }
 

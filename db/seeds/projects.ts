@@ -42,11 +42,8 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
     },
   ]
 
-  for (let i = 0; i < seedData.length; i++) {
-    const data = seedData[i]
-    if (data) {
-      await db.project.create({ data })
-    }
+  for (const data of seedData) {
+    await db.project.create({ data })
   }
 }
 

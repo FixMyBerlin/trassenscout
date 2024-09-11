@@ -84,11 +84,8 @@ const seedUploads = async () => {
     },
   ]
 
-  for (let i = 0; i < seedFiles.length; i++) {
-    const data = seedFiles[i]
-    if (data) {
-      await db.upload.create({ data })
-    }
+  for (const data of seedFiles) {
+    await db.upload.create({ data })
   }
 }
 
