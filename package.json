@@ -29,7 +29,8 @@
     "test:watch": "npm run pretest && vitest watch && npm run posttest",
     "test:ui": "npm run pretest && vitest --ui && npm run posttest",
     "seed": "npm run predev && npm run migrate && blitz prisma migrate reset && blitz db seed",
-    "updatePackages": "npx taze major --write",
+    "updatePackages:major": "npx taze major --includeLocked --write --exclude eslint && npm run updatePackages:minor && npm install",
+    "updatePackages:minor": "npx taze minor --includeLocked --write && npm install",
     "release": "gh pr create --base main --head develop --title \"Release $(date '+%Y-%m-%d')\" --body \"\"",
     "prepare": "husky install",
     "calc-lengthkm": "node db/calculate-subsection-subsubsection-lengthkm.js"
