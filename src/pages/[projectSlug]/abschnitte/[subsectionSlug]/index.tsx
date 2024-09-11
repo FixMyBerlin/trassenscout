@@ -14,6 +14,7 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2, seoTitleSlug, shortTitle, startEnd } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import { SubsectionInfoPanel } from "src/subsections/components/SubsectionInfoPanel"
 import { SubsectionTabs } from "src/subsections/components/SubsectionTabs"
 import { SubsubsectionMapSidebar } from "src/subsections/components/SubsubsectionMapSidebar"
@@ -59,15 +60,17 @@ export const SubsectionDashboardWithQuery = () => {
         className="mt-12"
         subtitle={subsection.operator?.title}
         action={
-          <Link
-            icon="edit"
-            href={Routes.EditSubsectionPage({
-              projectSlug: projectSlug!,
-              subsectionSlug: subsectionSlug!,
-            })}
-          >
-            bearbeiten
-          </Link>
+          <IfUserCanEdit>
+            <Link
+              icon="edit"
+              href={Routes.EditSubsectionPage({
+                projectSlug: projectSlug!,
+                subsectionSlug: subsectionSlug!,
+              })}
+            >
+              bearbeiten
+            </Link>
+          </IfUserCanEdit>
         }
         description={
           <>
