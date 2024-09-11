@@ -130,7 +130,7 @@ export const feedbackDefinition: TFeedback = {
                   label: {
                     de: "Bundesstraßen",
                   },
-                  color: "bg-[#1992f5] opacity-70",
+                  color: "bg-[#9FD3F4]",
                   className: "h-[6px]",
                 },
                 land: {
@@ -151,7 +151,7 @@ export const feedbackDefinition: TFeedback = {
                   label: {
                     de: "Autobahn",
                   },
-                  color: "bg-[#A5C0CA]",
+                  color: "bg-[#9B9FA1]",
                   className: "h-[6px]",
                 },
               },
