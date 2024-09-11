@@ -9,27 +9,28 @@ const seedMemberships = async () => {
   const users = await db.user.findMany()
   const usersByEmail = Object.fromEntries(users.map((user) => [user.email, user]))
 
-  let projectMemberships: Memberships = projects.map(({ id, slug }) => ({
+  const projectMemberships: Memberships = projects.map(({ id, slug }) => ({
     projectId: id,
-    // @ts-ignore
-    userId: usersByEmail[generateUserEmail(slug)].id,
+    userId: usersByEmail[generateUserEmail(slug)]!.id,
+    role: "VIEWER",
   }))
 
-  // @ts-ignore
-  const allProjectsAdminId = usersByEmail["all-projects@fixmycity.de"].id
-  let allMemberships: Memberships = projects.map(({ id }) => ({
+  const allMembershipsViewer: Memberships = projects.map(({ id }) => ({
     projectId: id,
-    // @ts-ignore
-    userId: allProjectsAdminId,
+    userId: usersByEmail["all-projects-viewer@fixmycity.de"]!.id,
+    role: "VIEWER",
   }))
 
-  const memberships = [...projectMemberships, ...allMemberships]
+  const allMembershipsEditor: Memberships = projects.map(({ id }) => ({
+    projectId: id,
+    userId: usersByEmail["all-projects-editor@fixmycity.de"]!.id,
+    role: "EDITOR",
+  }))
 
-  for (let i = 0; i < memberships.length; i++) {
-    const data = memberships[i]
-    if (data) {
-      await db.membership.create({ data })
-    }
+  const memberships = [...allMembershipsViewer, ...allMembershipsEditor, ...projectMemberships]
+
+  for (const data of memberships) {
+    await db.membership.create({ data })
   }
 }
 
