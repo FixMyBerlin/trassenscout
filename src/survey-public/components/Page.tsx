@@ -12,7 +12,7 @@ type Props = {
   completed: boolean
 }
 
-export const Page: React.FC<Props> = ({ page, buttonActions, completed }) => {
+export const Page = ({ page, buttonActions, completed }: Props) => {
   if (!page) return null
   const { id: pageId, title, description, questions, buttons } = page
 

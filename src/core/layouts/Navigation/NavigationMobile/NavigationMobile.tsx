@@ -8,7 +8,7 @@ import { NavigationProps } from "../NavigationProject/NavigationProject"
 import { NavigationProjectsSwitch } from "../NavigationProjectsSwitch"
 import { NavigationUser } from "../NavigationUser"
 
-export const NavigationMobile: React.FC<NavigationProps> = ({ menuItems, projects }) => {
+export const NavigationMobile = ({ menuItems, projects }: NavigationProps) => {
   const { pathname } = useRouter()
 
   return (

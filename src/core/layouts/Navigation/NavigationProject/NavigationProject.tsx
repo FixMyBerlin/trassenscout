@@ -35,7 +35,7 @@ export const NavigationProjectWithQuery = () => {
   )
 }
 
-export const NavigationProject: React.FC = () => {
+export const NavigationProject = () => {
   return (
     <Suspense fallback={<Spinner size="5" />}>
       <NavigationProjectWithQuery />
