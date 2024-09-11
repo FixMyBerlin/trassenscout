@@ -2,9 +2,9 @@ import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import db, { Subsection, Subsubsection } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
-import { GetSubsectionSchema } from "./getSubsection"
-import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
+import { GetSubsectionSchema } from "./getSubsection"
 
 type CostStructureCategory = {
   numberSubsubs: number | undefined

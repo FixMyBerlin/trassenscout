@@ -1,4 +1,3 @@
-import React from "react"
 import { isDev } from "src/core/utils"
 import { AdminBox } from "./AdminBox"
 

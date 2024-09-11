@@ -24,11 +24,11 @@ export const ProjectInfoPanel: React.FC = () => {
   })
 
   return (
-    <div className="flex flex-col gap-2 text-gray-500 bg-gray-100 py-4 ">
-      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 divide-x text-sm">
+    <div className="flex flex-col gap-2 bg-gray-100 py-4 text-gray-500 ">
+      <div className="grid grid-cols-3 divide-x text-sm md:grid-cols-4 lg:grid-cols-6">
         {/* Beschreibung */}
         <SubsectionInfoPanelCellContainer
-          icon={<DocumentIcon className="w-4 h-4" />}
+          icon={<DocumentIcon className="h-4 w-4" />}
           title="Beschreibung"
         >
           <p>{project.description || "k.A."}</p>
@@ -36,7 +36,7 @@ export const ProjectInfoPanel: React.FC = () => {
 
         {/* Planungsabschnitte */}
         <SubsectionInfoPanelCellContainer
-          icon={<ViewColumnsIcon className="w-4 h-4" />}
+          icon={<ViewColumnsIcon className="h-4 w-4" />}
           title="Planungsabschnitte"
         >
           <Suspense fallback={<Spinner />}>
@@ -46,7 +46,7 @@ export const ProjectInfoPanel: React.FC = () => {
 
         {/* Führungen */}
         <SubsectionInfoPanelCellContainer
-          icon={<CheckCircleIcon className="w-4 h-4" />}
+          icon={<CheckCircleIcon className="h-4 w-4" />}
           title="Führungen"
         >
           <Suspense fallback={<Spinner />}>
@@ -56,7 +56,7 @@ export const ProjectInfoPanel: React.FC = () => {
 
         {/* Kosten */}
         <SubsectionInfoPanelCellContainer
-          icon={<CurrencyEuroIcon className="w-4 h-4" />}
+          icon={<CurrencyEuroIcon className="h-4 w-4" />}
           title="Kosten"
         >
           <Suspense fallback={<Spinner />}>
@@ -66,7 +66,7 @@ export const ProjectInfoPanel: React.FC = () => {
 
         {/* Realisierung */}
         <SubsectionInfoPanelCellContainer
-          icon={<CalendarIcon className="w-4 h-4" />}
+          icon={<CalendarIcon className="h-4 w-4" />}
           title="Realisierung"
         >
           <Suspense fallback={<Spinner />}>
@@ -76,7 +76,7 @@ export const ProjectInfoPanel: React.FC = () => {
 
         {/* Baulastträger und Projektleiter:in */}
         <SubsectionInfoPanelCellContainer
-          icon={<UserGroupIcon className="w-6 h-6" />}
+          icon={<UserGroupIcon className="h-6 w-6" />}
           title="Baulastträger und Projektleiter:in"
         >
           <Suspense fallback={<Spinner />}>

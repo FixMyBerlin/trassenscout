@@ -1,5 +1,5 @@
-import { Ctx, paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
+import { Ctx, paginate } from "blitz"
 import db, { Prisma } from "db"
 
 interface GetProjectsInput

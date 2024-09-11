@@ -3,9 +3,9 @@ import { NotFoundError } from "blitz"
 import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import { CurrentUser } from "src/users/types"
-import { GetSubsectionSchema } from "./getSubsection"
-import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
+import { GetSubsectionSchema } from "./getSubsection"
 
 export type SubsectionWithManagerOperatorOrder = {
   order: number

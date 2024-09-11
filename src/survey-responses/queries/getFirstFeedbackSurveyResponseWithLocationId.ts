@@ -1,11 +1,9 @@
 import { resolver } from "@blitzjs/rpc"
-import { NotFoundError } from "blitz"
 import db from "db"
-
 import { authorizeProjectAdmin } from "src/authorization"
 import { getResponseConfigBySurveySlug } from "src/survey-public/utils/getConfigBySurveySlug"
-import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 
 type GetSurveySessionsWithResponsesInput = { projectSlug: string; surveyId: number }
 

@@ -3,7 +3,6 @@ import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
 import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
-import { OperatorSchema } from "src/operators/schema"
 import { SubsubsectionSpecial } from "../schema"
 
 const CreateSubsubsectionSpecialSchema = SubsubsectionSpecial.omit({ projectId: true }).merge(

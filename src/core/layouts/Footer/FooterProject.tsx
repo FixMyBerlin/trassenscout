@@ -1,7 +1,4 @@
-import { useParam } from "@blitzjs/next"
 import { RouteUrlObject } from "blitz"
-
-import React from "react"
 import { FooterBuildByLine } from "./FooterBuildByLine"
 import { FooterLinkList } from "./FooterLinkList"
 import { FooterLogos } from "./FooterLogos"

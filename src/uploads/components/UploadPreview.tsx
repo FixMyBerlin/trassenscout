@@ -1,11 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
+import { DocumentIcon } from "@heroicons/react/24/outline"
 import { Upload } from "@prisma/client"
 import { RouteUrlObject } from "blitz"
-import React from "react"
 import { Link } from "src/core/components/links"
-
-import { DocumentIcon } from "@heroicons/react/24/outline"
-import { Routes } from "@blitzjs/next"
 import { uploadUrl } from "../utils"
 
 type Props = {

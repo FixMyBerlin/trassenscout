@@ -22,7 +22,7 @@ export const Email: React.FC<Props> = ({ email }) => {
       <SurveyScreenHeader title={title.de} description={description.de} />
       {mailjetWidgetUrl && (
         <div
-          className="rounded border border-gray-300 my-6 mt-10"
+          className="my-6 mt-10 rounded border border-gray-300"
           dangerouslySetInnerHTML={{
             __html: `
               <iframe id="mailjet-widget" data-w-type="embedded" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="${mailjetWidgetUrl}" width="100%" style="height: 0px;"></iframe>

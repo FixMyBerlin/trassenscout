@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { TSurvey } from "src/survey-public/components/types"
-import { getSurvey, sendCsv } from "./_shared"
 import { getSurveyDefinitionBySurveySlug } from "src/survey-public/utils/getConfigBySurveySlug"
+import { getSurvey, sendCsv } from "./_shared"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const survey = await getSurvey(req, res)

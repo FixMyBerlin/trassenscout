@@ -1,14 +1,12 @@
-import { responseConfig as FRM7ResponseConfig } from "src/survey-public/frm7/data/response-config"
-import { responseConfig as RS8ResponseConfig } from "src/survey-public/rs8/data/response-config"
-import { responseConfig as BBResponseConfig } from "src/survey-public/radnetz-brandenburg/data/response-config"
-
 import { feedbackDefinition as feedbackDefinitionFRM7 } from "src/survey-public/frm7/data/feedback"
-import { feedbackDefinition as feedbackDefinitionRS8 } from "src/survey-public/rs8/data/feedback"
-import { feedbackDefinition as feedbackDefinitionBB } from "src/survey-public/radnetz-brandenburg/data/feedback"
-
+import { responseConfig as FRM7ResponseConfig } from "src/survey-public/frm7/data/response-config"
 import { surveyDefinition as surveyDefinitionFRM7 } from "src/survey-public/frm7/data/survey"
-import { surveyDefinition as surveyDefinitionRS8 } from "src/survey-public/rs8/data/survey"
+import { feedbackDefinition as feedbackDefinitionBB } from "src/survey-public/radnetz-brandenburg/data/feedback"
+import { responseConfig as BBResponseConfig } from "src/survey-public/radnetz-brandenburg/data/response-config"
 import { surveyDefinition as surveyDefinitionBB } from "src/survey-public/radnetz-brandenburg/data/survey"
+import { feedbackDefinition as feedbackDefinitionRS8 } from "src/survey-public/rs8/data/feedback"
+import { responseConfig as RS8ResponseConfig } from "src/survey-public/rs8/data/response-config"
+import { surveyDefinition as surveyDefinitionRS8 } from "src/survey-public/rs8/data/survey"
 
 export const getResponseConfigBySurveySlug = (slug: string) => {
   switch (slug) {

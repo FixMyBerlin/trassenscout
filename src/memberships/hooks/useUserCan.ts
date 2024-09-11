@@ -1,6 +1,6 @@
 import { useQuery } from "@blitzjs/rpc"
-import getCurrentUserWithMemberships from "../../users/queries/getCurrentUserWithMemberships"
 import { useSlugs } from "../../core/hooks"
+import getCurrentUserWithMemberships from "../../users/queries/getCurrentUserWithMemberships"
 
 // for debugging - to check if the backend works properly
 const USER_HAS_ROLE: null | boolean = null

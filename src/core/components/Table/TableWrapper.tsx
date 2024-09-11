@@ -1,4 +1,3 @@
-import { useParam } from "@blitzjs/next"
 import clsx from "clsx"
 import React, { ReactNode } from "react"
 

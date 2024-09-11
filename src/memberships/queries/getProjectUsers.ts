@@ -1,10 +1,9 @@
-import db from "db"
 import { resolver } from "@blitzjs/rpc"
-
+import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
-import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 
 const Schema = z.object({
   projectSlug: z.string(),

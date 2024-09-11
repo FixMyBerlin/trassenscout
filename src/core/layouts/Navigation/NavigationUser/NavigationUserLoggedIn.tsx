@@ -46,7 +46,7 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
                 className="absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-md bg-gray-50 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
               >
                 <div className="px-4 py-2 leading-6 text-gray-700">
-                  <p className="text-xs text-gray-400 mb-2">Angemeldet als</p>
+                  <p className="mb-2 text-xs text-gray-400">Angemeldet als</p>
                   <p className="truncate font-semibold">{getFullname(user) || "-"}</p>
                   <p className="mb-2 truncate">{user.email}</p>
                   {user.institution && (

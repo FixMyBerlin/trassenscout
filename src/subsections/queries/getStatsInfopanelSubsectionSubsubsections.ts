@@ -2,9 +2,9 @@ import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import db, { Prisma } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
-import { GetSubsectionSchema, SubsectionWithPosition } from "./getSubsection"
-import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
+import { GetSubsectionSchema, SubsectionWithPosition } from "./getSubsection"
 
 type SubsubsectionCategory = {
   Anzahl: number

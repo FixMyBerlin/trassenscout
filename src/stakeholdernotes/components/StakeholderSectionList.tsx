@@ -1,9 +1,8 @@
 import { useRouterQuery } from "@blitzjs/next"
 import { Stakeholdernote } from "@prisma/client"
+import clsx from "clsx"
 import { useEffect, useRef } from "react"
 import { StakeholderSectionListItem } from "./StakeholderSectionListItem"
-import { ZeroCase } from "src/core/components/text/ZeroCase"
-import clsx from "clsx"
 
 type props = {
   stakeholdernotes: Stakeholdernote[]

@@ -1,6 +1,6 @@
 import { LabelPositionEnum, SubsubsectionTypeEnum } from "@prisma/client"
 import { Prettify } from "src/core/types"
-import { SlugSchema, InputNumberOrNullSchema } from "src/core/utils"
+import { InputNumberOrNullSchema, SlugSchema } from "src/core/utils"
 import { z } from "zod"
 import m2mFields from "./m2mFields"
 import { SubsubsectionWithPosition } from "./queries/getSubsubsection"

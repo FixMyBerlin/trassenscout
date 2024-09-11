@@ -4,8 +4,8 @@ import { feedbackDefinition } from "src/survey-public/frm7/data/feedback"
 import { moreDefinition } from "src/survey-public/frm7/data/more"
 import { stageProgressDefinition } from "src/survey-public/frm7/data/progress"
 import { surveyDefinition } from "src/survey-public/frm7/data/survey"
-import { responseConfig } from "./data/response-config"
 import { SurveyH1, SurveyP } from "../components/core/Text"
+import { responseConfig } from "./data/response-config"
 type Props = {
   surveyId: number
 }

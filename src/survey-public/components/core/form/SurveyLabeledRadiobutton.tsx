@@ -42,7 +42,7 @@ export const SurveyLabeledRadiobutton = forwardRef<HTMLInputElement, SurveyLabel
               "h-4 w-4 cursor-pointer group-hover:border-gray-400",
               hasError
                 ? "border-red-800 text-red-500 shadow-sm shadow-red-200 focus:ring-red-800"
-                : `border-gray-300 focus:ring-0 text-[var(--survey-primary-color)]`,
+                : `border-gray-300 text-[var(--survey-primary-color)] focus:ring-0`,
             )}
           />
         </div>

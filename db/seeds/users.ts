@@ -1,5 +1,5 @@
-import db from "../index"
 import { Prisma } from "@prisma/client"
+import db from "../index"
 
 type Users = Prisma.UserUncheckedCreateInput[]
 

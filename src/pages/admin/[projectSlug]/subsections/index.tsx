@@ -90,7 +90,7 @@ export const AdminSubsectionsWithQuery = () => {
         )}
         <SubsectionTableAdmin updatedIds={updatedIds} subsections={filteredSubsections} />
         {error && (
-          <div role="alert" className="rounded bg-red-50 text-base px-2 py-1 text-red-800 mt-8">
+          <div role="alert" className="mt-8 rounded bg-red-50 px-2 py-1 text-base text-red-800">
             Es ist ein Fehler aufgetreten:
             <br />
             {quote(error.toString())}
@@ -98,7 +98,7 @@ export const AdminSubsectionsWithQuery = () => {
             Überprüfe die Felt-Url des Projekts.
           </div>
         )}
-        <div className="mt-8 flex gap-5 sm:flex-row flex-col">
+        <div className="mt-8 flex flex-col gap-5 sm:flex-row">
           <Link
             icon="plus"
             button="blue"

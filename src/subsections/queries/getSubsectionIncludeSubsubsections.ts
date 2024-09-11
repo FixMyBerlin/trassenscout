@@ -3,9 +3,9 @@ import { NotFoundError } from "blitz"
 import db, { Prisma } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
-import { GetSubsectionSchema, SubsectionWithPosition } from "./getSubsection"
-import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
+import { GetSubsectionSchema, SubsectionWithPosition } from "./getSubsection"
 
 export type SubsectionWithSubsubsectionsWithPosition = SubsectionWithPosition & {
   subsubsections: SubsubsectionWithPosition[]

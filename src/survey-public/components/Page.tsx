@@ -1,9 +1,9 @@
 import { SurveyScreenHeader } from "src/survey-public/components/core/layout/SurveyScreenHeader"
-import { SurveyButtonWithAction } from "./core/buttons/SurveyButtonWithAction"
-import { SurveyButtonWrapper } from "./core/buttons/SurveyButtonWrapper"
-import type { TPage as TPage } from "src/survey-public/components/types"
+import type { TPage } from "src/survey-public/components/types"
 import { Question } from "./Question"
 import { SurveyP } from "./core/Text"
+import { SurveyButtonWithAction } from "./core/buttons/SurveyButtonWithAction"
+import { SurveyButtonWrapper } from "./core/buttons/SurveyButtonWrapper"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props = {

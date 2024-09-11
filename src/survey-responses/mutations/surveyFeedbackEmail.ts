@@ -1,8 +1,8 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { surveyFeedbackMailer } from "mailers/surveyFeedbackMailer"
-import { z } from "zod"
 import { feedbackDefinition } from "src/survey-public/radnetz-brandenburg/data/feedback"
+import { z } from "zod"
 
 export const SurveyFeedbackMail = z.object({
   surveySessionId: z.number(),

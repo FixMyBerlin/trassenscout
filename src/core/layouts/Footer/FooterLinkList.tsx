@@ -1,5 +1,4 @@
 import clsx from "clsx"
-import React from "react"
 import { Link } from "src/core/components/links"
 import { FooterLink } from "./links.const"
 

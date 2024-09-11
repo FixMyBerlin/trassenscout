@@ -36,7 +36,7 @@ const whiteButtonStylesForLinkElement = clsx(
 export const surveyWhiteButtonStyles = clsx(
   buttonBase,
   "enabled:bg-white enabled:ring-1 enabled:ring-gray-400",
-  "disabled:text-gray-400 disabled:bg-white disabled:ring-1 disabled:ring-gray-200",
+  "disabled:bg-white disabled:text-gray-400 disabled:ring-1 disabled:ring-gray-200",
   hoverStyleForButtonElement,
   activeStyleWhiteButtonElement,
 )
@@ -45,13 +45,13 @@ export const surveyWhiteButtonStyles = clsx(
 // for link elements
 export const primaryColorButtonStylesForLinkElement = clsx(
   buttonBase,
-  "text-white bg-[var(--survey-primary-color)]",
+  "bg-[var(--survey-primary-color)] text-white",
   activeStylePrimaryColorLinkElement,
 )
 // for button elements
 export const surveyPrimaryColorButtonStyles = clsx(
   buttonBase,
-  "enabled:text-white bg-[var(--survey-primary-color)]",
+  "bg-[var(--survey-primary-color)] enabled:text-white",
   "disabled:bg-[var(--survey-light-color)] disabled:text-white",
   activeStylePrimaryColorButtonElement,
 )

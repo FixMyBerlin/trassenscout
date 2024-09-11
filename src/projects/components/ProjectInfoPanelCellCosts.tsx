@@ -1,10 +1,10 @@
 import { useQuery } from "@blitzjs/rpc"
-import getStatsInfopanelCosts from "../queries/getStatsInfopanelProjectCosts"
 import {
   formatGerCurrency,
   formatGerKm,
   formatGerPercentage,
 } from "src/subsections/components/utils/formatNumericInfo"
+import getStatsInfopanelCosts from "../queries/getStatsInfopanelProjectCosts"
 
 type Props = {
   projectSlug: string
@@ -20,7 +20,7 @@ export const ProjectInfoPanelCellCosts: React.FC<Props> = ({ projectSlug }) => {
   return (
     <>
       <div>
-        <p className="font-bold text-lg">{formatGerCurrency(accCosts)}</p>
+        <p className="text-lg font-bold">{formatGerCurrency(accCosts)}</p>
         <p className="text-red-500">
           {formatGerKm(subsubsectionsWithCostsLengthKm)} von {formatGerKm(projectLengthKm)}
           {" ("}

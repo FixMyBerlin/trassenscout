@@ -17,14 +17,14 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
       <tr>
         <td
           colSpan={3}
-          className="uppercase pt-4 pb-2 pl-4 pr-3 text-xs font-medium text-gray-500 text-right"
+          className="pb-2 pl-4 pr-3 pt-4 text-right text-xs font-medium uppercase text-gray-500"
         >
           Gesamt:
         </td>
         <td
           className={clsx(
             compact ? "hidden" : "",
-            "pt-4 pb-2 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap",
+            "whitespace-nowrap pb-2 pl-4 pr-3 pt-4 text-sm font-medium text-gray-900",
           )}
         >
           {formattedLength(subsubsections.reduce((acc, sub) => acc + (sub.lengthKm || 0), 0))}
@@ -32,7 +32,7 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
         <td
           className={clsx(
             compact ? "hidden" : "",
-            "pt-4 pb-2 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap",
+            "whitespace-nowrap pb-2 pl-4 pr-3 pt-4 text-sm font-medium text-gray-900",
           )}
         >
           -
@@ -40,7 +40,7 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
         <td
           className={clsx(
             compact ? "hidden" : "",
-            "pt-4 pb-2 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap",
+            "whitespace-nowrap pb-2 pl-4 pr-3 pt-4 text-sm font-medium text-gray-900",
           )}
         >
           {formattedEuro(subsubsections.reduce((acc, sub) => acc + (sub.costEstimate || 0), 0))}
@@ -58,7 +58,7 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
           <tr key={qualityLevel.slug}>
             <td
               colSpan={3}
-              className="uppercase py-2 pl-4 pr-3 text-xs font-medium text-gray-500 text-right"
+              className="py-2 pl-4 pr-3 text-right text-xs font-medium uppercase text-gray-500"
             >
               Standard {frenchQuote(qualityLevel.title)}:
             </td>

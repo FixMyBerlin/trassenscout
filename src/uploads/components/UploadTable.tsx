@@ -1,7 +1,6 @@
 import { Routes, useParam } from "@blitzjs/next"
 import { PaperClipIcon } from "@heroicons/react/20/solid"
 import { PromiseReturnType } from "blitz"
-import React from "react"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"

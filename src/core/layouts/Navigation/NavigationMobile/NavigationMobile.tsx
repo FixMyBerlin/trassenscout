@@ -2,7 +2,6 @@ import { Disclosure } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import { useRouter } from "next/router"
-import React from "react"
 import { Link } from "src/core/components/links"
 import { NavigationGeneralLogo } from "../NavigationGeneral/NavigationGeneralLogo"
 import { NavigationProps } from "../NavigationProject/NavigationProject"
@@ -56,7 +55,7 @@ export const NavigationMobile: React.FC<NavigationProps> = ({ menuItems, project
                         current
                           ? "bg-gray-900 text-white"
                           : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                        "rounded-md px-3 py-2 text-sm font-medium block",
+                        "block rounded-md px-3 py-2 text-sm font-medium",
                       )}
                     >
                       {item.name}

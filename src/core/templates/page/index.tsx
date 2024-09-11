@@ -1,5 +1,10 @@
-import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
+import { Suspense } from "react"
+import get__ModelNames__ from "src/__modelNamesPath__/queries/get__ModelNames__"
+import { Pagination } from "src/core/components/Pagination"
+import { Spinner } from "src/core/components/Spinner"
+import { Link } from "src/core/components/links"
+import { LayoutArticle, MetaTags } from "src/core/layouts"
 if (process.env.parentModel) {
   import { usePaginatedQuery } from "@blitzjs/rpc"
   import { useParam } from "@blitzjs/next"
@@ -8,11 +13,6 @@ if (process.env.parentModel) {
   import { usePaginatedQuery } from "@blitzjs/rpc"
   import { useRouter } from "next/router"
 }
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import { Spinner } from "src/core/components/Spinner"
-import get__ModelNames__ from "src/__modelNamesPath__/queries/get__ModelNames__"
-import { Link } from "src/core/components/links"
-import { Pagination } from "src/core/components/Pagination"
 
 const ITEMS_PER_PAGE = 100
 

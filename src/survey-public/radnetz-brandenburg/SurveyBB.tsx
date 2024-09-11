@@ -90,7 +90,7 @@ const StartContent: React.FC = () => {
         Radnetzkonzeptes zu kommentieren.{" "}
       </SurveyP>
       <SurveyH3>So geht’s!</SurveyH3>
-      <ul className="list-disc ml-6 text-base sm:text-lg space-y-2">
+      <ul className="ml-6 list-disc space-y-2 text-base sm:text-lg">
         <li>
           Schauen Sie sich vorab den Zielnetzentwurf im Radverkehrsatlas an. Starten Sie erst dann
           die Beteiligung.{" "}
@@ -144,14 +144,14 @@ const StartContent: React.FC = () => {
       <button
         type="button"
         onClick={openModal}
-        className="w-full h-[480px] overflow-hidden flex justify-center items-center my-8 relative"
+        className="relative my-8 flex h-[480px] w-full items-center justify-center overflow-hidden"
       >
         <Image
           src={AtlasImage}
           alt="Radverkehrsatlas Land Brandenburg"
           className="h-full object-cover"
         />
-        <div className="font-semibold mx-8 max-w-[365px] bg-white/80 p-4 px-8 text-center absolute bottom-[45%] font-sans">
+        <div className="absolute bottom-[45%] mx-8 max-w-[365px] bg-white/80 p-4 px-8 text-center font-sans font-semibold">
           Schauen Sie sich den gesamten{" "}
           <span className={partcipationLinkStyles}>Zielnetzentwurf im Radverkehrsatlas</span> an.
         </div>
@@ -159,7 +159,7 @@ const StartContent: React.FC = () => {
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
           as="div"
-          className="fixed inset-0 flex items-center justify-center z-10"
+          className="fixed inset-0 z-10 flex items-center justify-center"
           onClose={closeModal}
         >
           <Transition.Child
@@ -234,7 +234,7 @@ const StartContent: React.FC = () => {
         <summary
           className={clsx(
             partcipationLinkStyles,
-            "!text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35] cursor-pointer mb-4 mt-8 text-lg font-extrabold",
+            "mb-4 mt-8 cursor-pointer text-lg font-extrabold !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35]",
           )}
         >
           Häufige Fragen
@@ -245,7 +245,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Was bedeutet baulastträgerübergreifendes Radnetz?
@@ -264,7 +264,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35 hover:text-[#C73C35]",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35] hover:text-[#C73C35]",
                 )}
               >
                 Wie sieht die Umsetzung des „Radnetz Brandenburg“-Konzepts aus?
@@ -283,7 +283,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Wie wurden die Zielpunkte für das Luftliniennetz ausgewählt?
@@ -303,7 +303,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Nach welchen Kriterien erfolgt die Netzumlegung?
@@ -321,7 +321,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Wie werden die Hinweise der Kommunen ausgewertet?
@@ -337,7 +337,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Werden Radschnellverbindungen (RSV) und Radvorrangrouten (RVR) berücksichtigt?
@@ -354,7 +354,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Wird das „Radnetz Brandenburg“-Konzept verschiedene Hierarchieebenen
@@ -370,7 +370,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Welche Qualitäts- und Ausbaustandards soll das Radnetz aufweisen?
@@ -384,7 +384,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Wie werden die Radverkehrsverbindungen des Radnetz-Konzepts finanziert?{" "}
@@ -398,7 +398,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Werden auch Radwegeplanungen benachbarter Länder berücksichtigt?{" "}

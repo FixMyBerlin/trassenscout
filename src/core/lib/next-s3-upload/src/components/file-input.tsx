@@ -1,5 +1,4 @@
-import React, { ChangeEvent, InputHTMLAttributes } from "react"
-import { forwardRef } from "react"
+import { ChangeEvent, InputHTMLAttributes, forwardRef } from "react"
 
 type FileInputProps = {
   onChange: (file: File | undefined, event: ChangeEvent<HTMLInputElement>) => void

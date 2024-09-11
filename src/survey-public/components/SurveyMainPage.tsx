@@ -1,6 +1,6 @@
+import { useParam } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useCallback, useEffect, useState } from "react"
-
 import { Email } from "src/survey-public/components/Email"
 import { More } from "src/survey-public/components/More"
 import { Start } from "src/survey-public/components/Start"
@@ -11,10 +11,8 @@ import { SurveySpinnerLayover } from "src/survey-public/components/core/layout/S
 import { Feedback } from "src/survey-public/components/feedback/Feedback"
 import { ProgressContext } from "src/survey-public/context/contexts"
 import { scrollToTopWithDelay } from "src/survey-public/utils/scrollToTopWithDelay"
-import surveyFeedbackEmail from "src/survey-responses/mutations/surveyFeedbackEmail"
-
-import { useParam } from "@blitzjs/next"
 import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
+import surveyFeedbackEmail from "src/survey-responses/mutations/surveyFeedbackEmail"
 import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
 import { getCompletedQuestionIds } from "../utils/getCompletedQuestionIds"
 import PublicSurveyForm from "./core/form/PublicSurveyForm"
@@ -296,7 +294,7 @@ export const SurveyMainPage: React.FC<Props> = ({
   return (
     <ProgressContext.Provider value={{ progress, setProgress }}>
       <SurveyLayout canonicalUrl={surveyDefinition.canonicalUrl} logoUrl={surveyDefinition.logoUrl}>
-        <Debug className="border-red-500 border">
+        <Debug className="border border-red-500">
           <code>stage: {stage}</code>{" "}
         </Debug>
         <div className={isSpinner ? "blur-sm" : ""}>

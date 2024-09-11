@@ -1,3 +1,4 @@
+import { Stakeholdernote } from "@prisma/client"
 import {
   Form,
   FormProps,
@@ -8,7 +9,6 @@ import {
 import { z } from "zod"
 import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
 import { ListItemStatus } from "./StakeholderSectionListItemStatus"
-import { Stakeholdernote } from "@prisma/client"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function StakeholdernoteForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {

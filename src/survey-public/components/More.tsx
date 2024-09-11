@@ -1,11 +1,8 @@
-import { useFormContext } from "react-hook-form"
+import { useAlertBeforeUnload } from "../utils/useAlertBeforeUnload"
 import { SurveyButton } from "./core/buttons/SurveyButton"
 import { SurveyButtonWrapper } from "./core/buttons/SurveyButtonWrapper"
 import { SurveyScreenHeader } from "./core/layout/SurveyScreenHeader"
 import { TMore } from "./types"
-import { useEffect } from "react"
-import { get } from "http"
-import { useAlertBeforeUnload } from "../utils/useAlertBeforeUnload"
 
 export { FORM_ERROR } from "src/core/components/forms"
 

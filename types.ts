@@ -1,5 +1,5 @@
 import { SimpleRolesIsAuthorized } from "@blitzjs/auth"
-import { User, UserRoleEnum, MembershipRoleEnum } from "db"
+import { MembershipRoleEnum, User, UserRoleEnum } from "db"
 
 type UserRole = keyof typeof UserRoleEnum
 type MembershipRole = keyof typeof MembershipRoleEnum

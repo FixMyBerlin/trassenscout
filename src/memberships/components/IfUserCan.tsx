@@ -1,4 +1,3 @@
-import React from "react"
 import { useUserCan } from "../hooks/useUserCan"
 
 const BORDER = false

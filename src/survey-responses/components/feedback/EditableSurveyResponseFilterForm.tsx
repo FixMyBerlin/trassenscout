@@ -183,17 +183,17 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   ]
 
   return (
-    <nav className="border border-gray-300 rounded-xl">
+    <nav className="rounded-xl border border-gray-300">
       <details open>
-        <summary className="px-4 py-2 cursor-pointer text-gray-700 hover:bg-gray-50 rounded-xl">
+        <summary className="cursor-pointer rounded-xl px-4 py-2 text-gray-700 hover:bg-gray-50">
           Filter
         </summary>
         <FormProvider {...methods}>
           <form
             onChange={async () => await methods.handleSubmit(handleSubmit)()}
-            className="flex flex-col gap-4 justify-start items-start px-4 py-2 rounded-b-xl"
+            className="flex flex-col items-start justify-start gap-4 rounded-b-xl px-4 py-2"
           >
-            <div className="flex flex-col sm:flex-row gap-12 mt-6">
+            <div className="mt-6 flex flex-col gap-12 sm:flex-row">
               <LabeledCheckboxGroup
                 label="Status"
                 classLabelOverwrite="font-semibold mb-3"
@@ -220,7 +220,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 items={haslocationOptions}
               />
             </div>
-            <div className="flex flex-col sm:flex-row gap-6">
+            <div className="flex flex-col gap-6 sm:flex-row">
               <LabeledCheckboxGroup
                 label="Kategorien"
                 classLabelOverwrite="font-semibold mb-3"
@@ -239,11 +239,11 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
             </div>
           </form>
           <form
-            className="px-4 pb-2 pt-4 rounded-b-xl flex items-end gap-4"
+            className="flex items-end gap-4 rounded-b-xl px-4 pb-2 pt-4"
             onBlur={async () => await methods.handleSubmit(handleSubmit)()}
           >
             <div className="w-[300px]">
-              <p className="font-semibold mb-3">Freitextsuche</p>
+              <p className="mb-3 font-semibold">Freitextsuche</p>
               <LabeledTextField
                 name="searchterm"
                 label=""
@@ -251,12 +251,12 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
               />
             </div>
             <button type="button" className="h-full pb-2">
-              <MagnifyingGlassCircleIcon className="w-6 h-6 text-blue-500 hover:text-blue-800" />
+              <MagnifyingGlassCircleIcon className="h-6 w-6 text-blue-500 hover:text-blue-800" />
             </button>
           </form>
           <button
             type="button"
-            className={clsx(linkStyles, "flex mt-4 px-4 pb-2")}
+            className={clsx(linkStyles, "mt-4 flex px-4 pb-2")}
             onClick={handleFilterReset}
           >
             <XMarkIcon className="h-4 w-4" />

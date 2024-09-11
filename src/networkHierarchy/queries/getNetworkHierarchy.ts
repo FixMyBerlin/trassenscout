@@ -2,8 +2,8 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
-import getNetworkHierarchyProjectId from "./getNetworkHierarchyProjectId"
 import { viewerRoles } from "../../authorization/constants"
+import getNetworkHierarchyProjectId from "./getNetworkHierarchyProjectId"
 
 const GetNetworkHierarchySchema = z.object({
   // This accepts type of undefined, but is required at runtime

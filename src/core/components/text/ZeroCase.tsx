@@ -1,5 +1,3 @@
-import React from "react"
-
 type Props = { visible: boolean | number; name?: string }
 
 export const ZeroCase: React.FC<Props> = ({ visible, name }) => {

@@ -1,6 +1,5 @@
 import {
   Form,
-  LabeledCheckbox,
   LabeledCheckboxGroup,
   LabeledRadiobuttonGroup,
   LabeledSelect,

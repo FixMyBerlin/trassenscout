@@ -1,7 +1,6 @@
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
-import React from "react"
 import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { SubsubsectionIcon } from "src/core/components/Map/Icons"
 import { Markdown } from "src/core/components/Markdown/Markdown"
@@ -15,9 +14,9 @@ import {
 } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { useSlugs } from "src/core/hooks"
+import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { UploadPreview } from "src/uploads/components/UploadPreview"
 import getUploadsWithSubsections from "src/uploads/queries/getUploadsWithSubsections"
-import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { getFullname } from "src/users/utils"
 import { mapillaryLink } from "./utils/mapillaryLink"
 
@@ -188,7 +187,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
           />
         ) : (
           mapillaryHref && (
-            <Link blank href={mapillaryHref} className="block mt-3">
+            <Link blank href={mapillaryHref} className="mt-3 block">
               Mapillary öffnen
             </Link>
           )

@@ -1,5 +1,4 @@
 import { SuperAdminBox } from "src/core/components/AdminBox"
-import { AdminBox } from "src/core/components/AdminBox/AdminBox"
 import {
   Form,
   FormProps,

@@ -1,5 +1,5 @@
 import { useQuery } from "@blitzjs/rpc"
-import { compareAsc, getQuarter, getYear, max, min } from "date-fns"
+import { compareAsc, getQuarter, getYear } from "date-fns"
 import getStatsInfopanelProjectCompletion from "../queries/getStatsInfopanelProjectCompletion"
 
 type Props = {

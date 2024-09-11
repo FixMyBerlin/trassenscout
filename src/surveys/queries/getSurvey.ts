@@ -1,10 +1,9 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { z } from "zod"
-
 import { authorizeProjectAdmin } from "src/authorization"
-import getSurveyProjectId from "./getSurveyProjectId"
+import { z } from "zod"
 import { viewerRoles } from "../../authorization/constants"
+import getSurveyProjectId from "./getSurveyProjectId"
 
 const GetSurveySchema = z.object({
   // This accepts type of undefined, but is required at runtime

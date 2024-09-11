@@ -1,5 +1,4 @@
 import { TagIcon } from "@heroicons/react/24/outline"
-import React from "react"
 import { LabeledRadiobuttonGroup } from "../../core/components/forms/LabeledRadiobuttonGroup"
 
 export const LabeledRadiobuttonGroupLabelPos: React.FC = () => {

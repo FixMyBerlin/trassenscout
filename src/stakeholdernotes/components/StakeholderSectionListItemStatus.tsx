@@ -1,10 +1,9 @@
 import { CheckIcon, XMarkIcon } from "@heroicons/react/20/solid"
-import { Stakeholdernote, SurveyResponse } from "@prisma/client"
-import React from "react"
-import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
 import { ClockIcon, DocumentTextIcon } from "@heroicons/react/24/outline"
+import { Stakeholdernote, SurveyResponse } from "@prisma/client"
 import clsx from "clsx"
 import { surveyResponseStatus } from "src/survey-responses/components/feedback/surveyResponseStatus"
+import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
 
 type Props = {
   status: Stakeholdernote["status"] | SurveyResponse["status"]
@@ -43,7 +42,7 @@ export const ListItemStatus: React.FC<Props> = ({ status }) => {
     <div
       className={clsx(
         statusColors[status],
-        "w-[200px] px-5 flex gap-4 items-center py-2 rounded-full flex-shrink-0",
+        "flex w-[200px] flex-shrink-0 items-center gap-4 rounded-full px-5 py-2",
       )}
     >
       {statusIcon[status]} <div>{label}</div>

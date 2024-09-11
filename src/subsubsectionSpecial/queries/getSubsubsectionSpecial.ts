@@ -2,8 +2,8 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
-import getQualityLevelProjectId from "./getSubsubsectionSpecialProjectId"
 import { viewerRoles } from "../../authorization/constants"
+import getQualityLevelProjectId from "./getSubsubsectionSpecialProjectId"
 
 const GetSubsubsectionSpecial = z.object({
   // This accepts type of undefined, but is required at runtime

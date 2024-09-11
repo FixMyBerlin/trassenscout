@@ -1,10 +1,10 @@
 import { useQuery } from "@blitzjs/rpc"
+import { Fragment } from "react"
 import {
   formatGerKm,
   formatGerPercentage,
 } from "src/subsections/components/utils/formatNumericInfo"
 import getStatsInfopanelProjectSubsubsections from "../queries/getStatsInfopanelProjectSubsubsections"
-import { Fragment } from "react"
 
 type Props = {
   projectSlug: string

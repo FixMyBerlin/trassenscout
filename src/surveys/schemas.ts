@@ -1,5 +1,5 @@
-import { z } from "zod"
 import { SlugSchema } from "src/core/utils"
+import { z } from "zod"
 
 export const CreateSurveySchema = z.object({
   projectSlug: SlugSchema,

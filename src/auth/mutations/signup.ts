@@ -1,9 +1,9 @@
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { Signup } from "../validations"
 import { userCreationMailer } from "mailers/userCreationMailer"
 import { getMemberships } from "../getMemberships"
+import { Signup } from "../validations"
 
 export default resolver.pipe(
   resolver.zod(Signup),

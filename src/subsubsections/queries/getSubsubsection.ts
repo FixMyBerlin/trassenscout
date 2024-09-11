@@ -2,9 +2,9 @@ import { resolver } from "@blitzjs/rpc"
 import db, { QualityLevel, Subsubsection, SubsubsectionTypeEnum, User } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
-import m2mFields from "../m2mFields"
-import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
+import m2mFields from "../m2mFields"
 
 const GetSubsubsection = z.object({
   projectSlug: z.string(),

@@ -76,7 +76,7 @@ const AdminMemberships = () => {
                         </div>
                       )
                     })}
-                    <div className="border-t mt-2 pt-2">
+                    <div className="mt-2 border-t pt-2">
                       <Link icon="plus" href={Routes.AdminNewMembershipPage({ userId: user.id })}>
                         Rechte
                       </Link>

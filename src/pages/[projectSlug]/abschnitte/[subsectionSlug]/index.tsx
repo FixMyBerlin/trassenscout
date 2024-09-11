@@ -14,14 +14,14 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { H2, seoTitleSlug, shortTitle, startEnd } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import { UploadTable } from "src/uploads/components/UploadTable"
-import getUploadsWithSubsections from "src/uploads/queries/getUploadsWithSubsections"
+import { SubsectionInfoPanel } from "src/subsections/components/SubsectionInfoPanel"
 import { SubsectionTabs } from "src/subsections/components/SubsectionTabs"
 import { SubsubsectionMapSidebar } from "src/subsections/components/SubsubsectionMapSidebar"
 import getSubsections from "src/subsections/queries/getSubsections"
 import { SubsubsectionTable } from "src/subsubsections/components/SubsubsectionTable"
 import getSubsubsections from "src/subsubsections/queries/getSubsubsections"
-import { SubsectionInfoPanel } from "src/subsections/components/SubsectionInfoPanel"
+import { UploadTable } from "src/uploads/components/UploadTable"
+import getUploadsWithSubsections from "src/uploads/queries/getUploadsWithSubsections"
 
 // Page Renders Subsection _AND_ Subsubsection (as Panel)
 export const SubsectionDashboardWithQuery = () => {

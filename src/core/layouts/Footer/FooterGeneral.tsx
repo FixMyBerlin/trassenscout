@@ -1,6 +1,3 @@
-import { useParam } from "@blitzjs/next"
-
-import React from "react"
 import { FooterBuildByLine } from "./FooterBuildByLine"
 import { FooterLinkList } from "./FooterLinkList"
 import { links } from "./links.const"

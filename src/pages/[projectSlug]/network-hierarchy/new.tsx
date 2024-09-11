@@ -11,7 +11,6 @@ import { LayoutRs, MetaTags } from "src/core/layouts"
 import { NetworkHierarchyForm } from "src/networkHierarchy/components/NetworkHierarchy"
 import createNetworkHierarchy from "src/networkHierarchy/mutations/createNetworkHierarchy"
 import { NetworkHierarchySchema } from "src/networkHierarchy/schema"
-
 import { FORM_ERROR } from "src/subsubsections/components/SubsubsectionForm"
 
 const NewNetworkHierarchyPageWithQuery = () => {

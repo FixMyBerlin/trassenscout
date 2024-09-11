@@ -1,6 +1,5 @@
 import { CalendarEntry } from "@prisma/client"
 import { isAfter, startOfToday } from "date-fns"
-import React from "react"
 import { H2 } from "src/core/components/text"
 import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { DateList } from "./DateList"

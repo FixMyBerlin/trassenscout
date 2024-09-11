@@ -2,9 +2,9 @@ import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 import db, { Prisma } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
-import { SubsubsectionWithPosition } from "./getSubsubsection"
-import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
+import { SubsubsectionWithPosition } from "./getSubsubsection"
 
 type GetSubsubsectionsInput = { projectSlug: string } & Pick<
   Prisma.SubsubsectionFindManyArgs,

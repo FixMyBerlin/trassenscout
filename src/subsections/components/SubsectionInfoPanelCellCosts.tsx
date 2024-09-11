@@ -14,7 +14,7 @@ export const SubsectionInfoPanelCellCosts: React.FC<Props> = ({ subsectionSlug, 
   return (
     <>
       <div>
-        <p className="font-bold text-lg">{formatGerCurrency(subsection.accCosts)}</p>
+        <p className="text-lg font-bold">{formatGerCurrency(subsection.accCosts)}</p>
         <p className="text-red-500">
           {formatGerKm(subsection.subsubsectionsWithCostsLengthKm)} von{" "}
           {formatGerKm(subsection.lengthKm)} km definiert

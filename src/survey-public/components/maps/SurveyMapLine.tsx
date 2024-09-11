@@ -13,12 +13,12 @@ import Map, {
 } from "react-map-gl/maplibre"
 import { LayerType } from "src/core/components/Map/BackgroundSwitcher"
 import { SurveyBackgroundSwitcher } from "src/survey-public/components/maps/SurveyBackgroundSwitcher"
+import { getCompletedQuestionIds } from "src/survey-public/utils/getCompletedQuestionIds"
 import {
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
 } from "src/survey-public/utils/getConfigBySurveySlug"
 import { SurveyMapLineBanner } from "./SurveyMapLineBanner"
-import { getCompletedQuestionIds } from "src/survey-public/utils/getCompletedQuestionIds"
 
 export type SurveyMapProps = {
   className?: string

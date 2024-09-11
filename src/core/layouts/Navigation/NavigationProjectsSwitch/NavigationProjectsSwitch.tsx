@@ -3,7 +3,7 @@ import { Menu, Transition } from "@headlessui/react"
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
 import { useRouter } from "next/router"
-import React, { Fragment } from "react"
+import { Fragment } from "react"
 import { Link } from "src/core/components/links/Link"
 import { shortTitle } from "src/core/components/text"
 import { NavigationProps } from "../NavigationProject/NavigationProject"
@@ -67,7 +67,7 @@ export const NavigationProjectsSwitch: React.FC<Props> = ({ projects }) => {
                             classNameOverwrites={clsx(
                               current && "bg-gray-200",
                               active && "bg-gray-100",
-                              "text-blue-500 hover:text-blue-800 flex items-center rounded-md px-3 py-2 text-sm gap-2 items-center my-1.5 first:mt-0 last:mb-0",
+                              "my-1.5 flex items-center gap-2 rounded-md px-3 py-2 text-sm text-blue-500 first:mt-0 last:mb-0 hover:text-blue-800",
                             )}
                           >
                             {current && <ProjectLogo />}

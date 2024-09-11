@@ -13,11 +13,11 @@ import { seoEditTitleSlug } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
 import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
+import m2mFields from "src/subsubsections/m2mFields"
 import deleteSubsubsection from "src/subsubsections/mutations/deleteSubsubsection"
 import updateSubsubsection from "src/subsubsections/mutations/updateSubsubsection"
 import getSubsubsection from "src/subsubsections/queries/getSubsubsection"
 import { SubsubsectionFormSchema } from "src/subsubsections/schema"
-import m2mFields from "src/subsubsections/m2mFields"
 
 const EditSubsubsection = () => {
   const router = useRouter()

@@ -1,7 +1,6 @@
 import Head from "next/head"
-import React from "react"
-import SocialSharingImage from "./assets/default.png"
 import { isProduction } from "../../utils"
+import SocialSharingImage from "./assets/default.png"
 
 const seoDefaultValues = {
   defaultTitle: "Trassenscout",

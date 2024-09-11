@@ -2,11 +2,10 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
-
-import { SubsubsectionWithPosition } from "../queries/getSubsubsection"
-import { SubsubsectionSchema } from "../schema"
-import getSubsubsectionProjectId from "../queries/getSubsubsectionProjectId"
 import m2mFields from "../m2mFields"
+import { SubsubsectionWithPosition } from "../queries/getSubsubsection"
+import getSubsubsectionProjectId from "../queries/getSubsubsectionProjectId"
+import { SubsubsectionSchema } from "../schema"
 
 let UpdateSubsubsectionSchema = SubsubsectionSchema.merge(
   z.object({

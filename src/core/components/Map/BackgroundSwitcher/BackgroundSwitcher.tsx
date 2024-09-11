@@ -1,7 +1,7 @@
-import { Fragment } from "react"
 import { Listbox, Transition } from "@headlessui/react"
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
+import { Fragment } from "react"
 
 export type LayerType = "vector" | "satellite"
 

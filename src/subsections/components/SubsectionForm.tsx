@@ -15,12 +15,12 @@ import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryF
 import { Link } from "src/core/components/links"
 import { quote, shortTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
+import getNetworkHierarchysWithCount from "src/networkHierarchy/queries/getNetworkHierarchysWithCount"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 import { LabeledRadiobuttonGroupLabelPos } from "src/subsubsections/components/LabeledRadiobuttonGroupLabelPos"
 import { UserSelectOptions, getUserSelectOptions } from "src/users/utils"
 import { z } from "zod"
 import { getPriorityTranslation } from "./utils/getPriorityTranslation"
-import getNetworkHierarchysWithCount from "src/networkHierarchy/queries/getNetworkHierarchysWithCount"
 export { FORM_ERROR } from "src/core/components/forms"
 
 type Props<S extends z.ZodType<any, any>> = FormProps<S> & {

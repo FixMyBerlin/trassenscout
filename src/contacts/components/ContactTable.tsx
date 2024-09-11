@@ -6,13 +6,13 @@ import { useRouter } from "next/router"
 import React, { useState } from "react"
 import { Form, LabeledCheckbox } from "src/core/components/forms"
 import { Link, LinkMail, LinkTel, whiteButtonStyles } from "src/core/components/links"
+import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
+import { shortTitle } from "src/core/components/text"
+import { useSlugs } from "src/core/hooks"
 import getProject from "src/projects/queries/getProject"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getFullname } from "src/users/utils"
 import { TableWrapper } from "../../core/components/Table/TableWrapper"
-import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
-import { useSlugs } from "src/core/hooks"
-import { shortTitle } from "src/core/components/text"
 
 type Props = {
   contacts: Contact[]

@@ -5,7 +5,7 @@ import { ForgotPassword } from "src/auth/validations"
 import { Form, FORM_ERROR } from "src/core/components/forms/Form"
 import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
 import { frenchQuote } from "src/core/components/text"
-import { Layout, LayoutMiddleBox, MetaTags } from "src/core/layouts"
+import { LayoutMiddleBox, MetaTags } from "src/core/layouts"
 
 const ForgotPasswordPage: BlitzPage = () => {
   const [forgotPasswordMutation, { isSuccess }] = useMutation(forgotPassword)

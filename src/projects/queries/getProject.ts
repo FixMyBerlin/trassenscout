@@ -3,8 +3,8 @@ import { NotFoundError } from "blitz"
 import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
-import { extractSlug } from "../../authorization/extractSlug"
 import { viewerRoles } from "../../authorization/constants"
+import { extractSlug } from "../../authorization/extractSlug"
 
 export const GetProject = z.object({
   // This accepts type of undefined, but is required at runtime

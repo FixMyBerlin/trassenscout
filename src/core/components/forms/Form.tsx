@@ -1,12 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import clsx from "clsx"
 import { PropsWithoutRef, ReactNode, useState } from "react"
-import { FormProvider, useForm, UseFormProps } from "react-hook-form"
+import { FormProvider, UseFormProps, useForm } from "react-hook-form"
 import { IntlProvider } from "react-intl"
 import { z } from "zod"
 import { blueButtonStyles } from "../links"
-import { errorMessageTranslations } from "./errorMessageTranslations"
 import { FormError } from "./FormError"
+import { errorMessageTranslations } from "./errorMessageTranslations"
 
 export interface FormProps<S extends z.ZodType<any, any>>
   extends Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> {

@@ -1,6 +1,6 @@
 import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { Suspense, useMemo } from "react"
+import { Suspense } from "react"
 import { MapProvider } from "react-map-gl"
 import { CalenderDashboard } from "src/calendar-entries/components"
 import { SuperAdminBox } from "src/core/components/AdminBox"
@@ -95,7 +95,7 @@ export const ProjectDashboardWithQuery = () => {
       <SubsectionTable subsections={filteredSubsections} />
 
       <CalenderDashboard />
-      <SuperAdminBox className="flex flex-col gap-4 items-start">
+      <SuperAdminBox className="flex flex-col items-start gap-4">
         <Link button href={Routes.AdminNewSubsectionsPage({ projectSlug: project.slug })}>
           Mehrere Planungsabschnitte erstellen
         </Link>

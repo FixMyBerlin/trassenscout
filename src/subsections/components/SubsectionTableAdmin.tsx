@@ -4,7 +4,6 @@ import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline"
 import { lineString } from "@turf/helpers"
 import clsx from "clsx"
-import { useRouter } from "next/router"
 import { SubsectionIcon } from "src/core/components/Map/Icons"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
@@ -34,7 +33,7 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds 
   return (
     <section>
       {Boolean(updatedIds?.length) && (
-        <p className="text-base mt-8 border-4 border-blue-100 p-8">
+        <p className="mt-8 border-4 border-blue-100 p-8 text-base">
           Die Planungsabschnitte mit den Ids <code>{JSON.stringify(updatedIds)}</code> (in der
           Tabelle blau hinterlegt) wurden in Felt erkannt und ggf. aktualisiert.
         </p>
@@ -97,7 +96,7 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds 
                     <SubsectionIcon label={shortTitle(subsection.slug)} />
                   </td>
 
-                  <td className=" py-4 pl-4 pr-3 text-sm font-medium cursor-pointer text-blue-500 hover:text-blue-800">
+                  <td className=" cursor-pointer py-4 pl-4 pr-3 text-sm font-medium text-blue-500 hover:text-blue-800">
                     <button onClick={() => handleSlugCopyClick(subsection.slug)}>
                       <div className="flex gap-5">
                         <p>{subsection.slug}</p>

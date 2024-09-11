@@ -1,6 +1,5 @@
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import React from "react"
 import { Link } from "src/core/components/links"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { quote } from "src/core/components/text"

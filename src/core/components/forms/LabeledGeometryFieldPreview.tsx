@@ -2,7 +2,6 @@ import { CheckBadgeIcon } from "@heroicons/react/24/solid"
 import { Position, lineString, point } from "@turf/helpers"
 import { bbox } from "@turf/turf"
 import clsx from "clsx"
-import React from "react"
 import { useFormContext } from "react-hook-form"
 import Map, {
   Layer,

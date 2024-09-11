@@ -31,5 +31,5 @@ export const SurveyH3: React.FC<Props> = ({ className, children }) => {
 }
 
 export const SurveyP: React.FC<Props> = ({ className, children }) => {
-  return <p className={clsx("text-base text-gray-700 sm:text-lg my-8", className)}>{children}</p>
+  return <p className={clsx("my-8 text-base text-gray-700 sm:text-lg", className)}>{children}</p>
 }

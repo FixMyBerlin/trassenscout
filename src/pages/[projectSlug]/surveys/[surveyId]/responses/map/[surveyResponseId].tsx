@@ -17,7 +17,6 @@ import {
 import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import EditableSurveyResponseListItem from "src/survey-responses/components/feedback/EditableSurveyResponseListItem"
 import { SurveyFeedbackWithLocationOverviewMap } from "src/survey-responses/components/feedback/SurveyFeedbackWithLocationOverviewMap"
-
 import getFeedbackResponsesWithLocation from "src/survey-responses/queries/getFeedbackSurveyResponsesWithLocation"
 import { SurveyTabs } from "src/surveys/components/SurveyTabs"
 import getSurvey from "src/surveys/queries/getSurvey"
@@ -71,8 +70,8 @@ export const SurveyResponseWithLocation = () => {
       <div className="mt-12 space-y-4">
         <H2>Beiträge mit Ortsangabe </H2>
 
-        <div className="flex flex-col lg:flex-row gap-2">
-          <section className="lg:w-[46%] shrink-0">
+        <div className="flex flex-col gap-2 lg:flex-row">
+          <section className="shrink-0 lg:w-[46%]">
             <SurveyFeedbackWithLocationOverviewMap
               maptilerUrl={maptilerUrl}
               defaultViewState={defaultViewState}

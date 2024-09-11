@@ -40,7 +40,7 @@ const Demo = () => {
   const handleSubmit = (e) => e.preventDefault()
 
   return (
-    <div className="border border-black p-4 m-4">
+    <div className="m-4 border border-black p-4">
       <form onSubmit={handleSubmit}>
         <NumberFormatBase value={value} removeFormatting={onChange} format={format} />
         <br />

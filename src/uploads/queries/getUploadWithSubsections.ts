@@ -1,10 +1,9 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { z } from "zod"
-
 import { authorizeProjectAdmin } from "src/authorization"
-import getUploadProjectId from "./getUploadProjectId"
+import { z } from "zod"
 import { viewerRoles } from "../../authorization/constants"
+import getUploadProjectId from "./getUploadProjectId"
 
 const UploadSchema = z.object({
   // This accepts type of undefined, but is required at runtime

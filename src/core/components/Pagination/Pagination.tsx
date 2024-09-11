@@ -1,4 +1,3 @@
-import React from "react"
 import { blueButtonStyles } from "../links"
 
 type Props = {

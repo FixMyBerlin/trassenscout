@@ -1,8 +1,8 @@
+import { length, lineString } from "@turf/turf"
 import clsx from "clsx"
 import { useFormContext } from "react-hook-form"
 import { blueButtonStyles } from "../links"
 import { LabeledFormatNumberField, LabeledFormatNumberFieldProps } from "./LabeledFormatNumberField"
-import { length, lineString } from "@turf/turf"
 
 export const LabeledFormatNumberFieldCalculateLength: React.FC<LabeledFormatNumberFieldProps> = (
   props,
@@ -39,7 +39,7 @@ export const LabeledFormatNumberFieldCalculateLength: React.FC<LabeledFormatNumb
   }
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-end gap-4">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
       <LabeledFormatNumberField
         inlineLeadingAddon="km"
         maxDecimalDigits={3}
@@ -52,7 +52,7 @@ export const LabeledFormatNumberFieldCalculateLength: React.FC<LabeledFormatNumb
         type="button"
         disabled={!isGeometry || isPoint(getValues("geometry")) || props.readOnly}
         onClick={calculateLength}
-        className={clsx(blueButtonStyles, "!py-1 !px-2")}
+        className={clsx(blueButtonStyles, "!px-2 !py-1")}
       >
         Länge aus Geometrie berechnen
       </button>

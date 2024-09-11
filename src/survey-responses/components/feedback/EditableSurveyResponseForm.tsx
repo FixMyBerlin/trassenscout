@@ -1,3 +1,4 @@
+import { Routes, useParam } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
@@ -22,8 +23,6 @@ import updateSurveyResponse from "../../mutations/updateSurveyResponse"
 import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
 import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
 import { surveyResponseStatus } from "./surveyResponseStatus"
-import { Routes, useParam } from "@blitzjs/next"
-import { H1 } from "src/core/components/text"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -164,11 +163,11 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
     <FormProvider {...methods}>
       <div className={clsx(showMap ? "grid-cols-2" : "grid-cols-1", "grid gap-8")}>
         <div>
-          <div className="flex flex-col justify-between col-span-2">
-            <div className="flex flex-col w-full gap-10">
-              <div className="grid grid-cols-2 w-full gap-8">
+          <div className="col-span-2 flex flex-col justify-between">
+            <div className="flex w-full flex-col gap-10">
+              <div className="grid w-full grid-cols-2 gap-8">
                 <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-                  <h4 className="font-semibold mb-3">Status</h4>
+                  <h4 className="mb-3 font-semibold">Status</h4>
                   <LabeledRadiobuttonGroup
                     classNameItemWrapper={clsx("flex-shrink-0")}
                     scope={"status"}
@@ -179,7 +178,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                 </form>
 
                 <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-                  <h4 className="font-semibold mb-3">Baulastträger</h4>
+                  <h4 className="mb-3 font-semibold">Baulastträger</h4>
                   <LabeledRadiobuttonGroup
                     scope="operatorId"
                     items={[...operatorsOptions, { value: "0", label: "Nicht zugeordnet" }]}
@@ -191,7 +190,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                 onChange={async () => await methods.handleSubmit(handleSubmit)()}
               >
                 <div>
-                  <h4 className="font-semibold mb-3">Themen (für FAQ)</h4>
+                  <h4 className="mb-3 font-semibold">Themen (für FAQ)</h4>
                   <LabeledCheckboxGroup
                     classNameItemWrapper="grid grid-cols-3 grid-rows-10 grid-flow-col-dense"
                     scope="surveyResponseTopics"
@@ -246,24 +245,24 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
             methods.resetField("newTopic")
           }}
         >
-          <div className="space-y-2 pr-2 pb-8 min-w-[300px]">
+          <div className="min-w-[300px] space-y-2 pb-8 pr-2">
             <LabeledTextField placeholder="Thema hinzufügen" name="newTopic" label="" />
-            <button type="submit" className={clsx(blueButtonStyles, "!py-2.5 !px-3")}>
+            <button type="submit" className={clsx(blueButtonStyles, "!px-3 !py-2.5")}>
               Hinzufügen
             </button>
           </div>
         </form>
       </div>
       <form
-        className="flex mt-6"
+        className="mt-6 flex"
         onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
           e.preventDefault()
           await methods.handleSubmit(handleSubmit)()
           setHasUnsavedChanges(false)
         }}
       >
-        <div className="flex-grow space-y-2 pr-2 pb-4">
-          <p className="font-semibold mb-3">Interne Notiz</p>
+        <div className="flex-grow space-y-2 pb-4 pr-2">
+          <p className="mb-3 font-semibold">Interne Notiz</p>
           <LabeledTextareaField
             help="Bitte starten Sie Ihre Notiz immer mit ihrem Namen oder Kürzel"
             name="note"
@@ -271,11 +270,11 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
             onChange={() => setHasUnsavedChanges(true)}
             className={clsx(
               hasUnsavedChanges &&
-                "focus:border-yellow-500 focus:ring-yellow-500 border-yellow-500 ring-yellow-500",
+                "border-yellow-500 ring-yellow-500 focus:border-yellow-500 focus:ring-yellow-500",
             )}
           />
-          <div className="flex justify-between items-end">
-            <button type="submit" className={clsx(blueButtonStyles, "!py-2.5 !px-3")}>
+          <div className="flex items-end justify-between">
+            <button type="submit" className={clsx(blueButtonStyles, "!px-3 !py-2.5")}>
               Notiz speichern
             </button>
             <small className={clsx(!hasUnsavedChanges && "opacity-0", "text-yellow-500")}>

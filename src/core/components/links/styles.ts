@@ -29,14 +29,14 @@ const activeStyleWhiteLinkElement =
 // for link elements
 const blueButtonStylesForLinkElement = clsx(
   buttonBase,
-  "text-white bg-blue-500",
+  "bg-blue-500 text-white",
   hoverStyleForLinkElement,
   activeStyleBlueLinkElement,
 )
 // for button elements
 export const blueButtonStyles = clsx(
   buttonBase,
-  "enabled:text-white enabled:bg-blue-500",
+  "enabled:bg-blue-500 enabled:text-white",
   hoverStyleForButtonElement,
   activeStyleBlueButtonElement,
 )
@@ -61,13 +61,13 @@ export const whiteButtonStyles = clsx(
 // for link elements
 const pinkButtonStylesForLinkElement = clsx(
   buttonBase,
-  "text-white bg-pink-500",
+  "bg-pink-500 text-white",
   activeStylePinkLinkElement,
 )
 // for button elements
 export const pinkButtonStyles = clsx(
   buttonBase,
-  "enabled:text-white enabled:bg-pink-500",
+  "enabled:bg-pink-500 enabled:text-white",
   activeStylePinkButtonElement,
 )
 

@@ -12,7 +12,7 @@ export const SurveyMapLineBanner: React.FC<Props> = ({ className, lineFromToName
     return (
       <div
         className={clsx(
-          "font-sans text-base font-semibold inset-x-0 mx-4 bg-white/80 p-4 px-8 text-center",
+          "inset-x-0 mx-4 bg-white/80 p-4 px-8 text-center font-sans text-base font-semibold",
           className,
         )}
       >
@@ -23,7 +23,7 @@ export const SurveyMapLineBanner: React.FC<Props> = ({ className, lineFromToName
   return (
     <div
       className={clsx(
-        "font-sans text-base font-semibold inset-x-0 mx-4 bg-white/80 p-4 px-8 text-center",
+        "inset-x-0 mx-4 bg-white/80 p-4 px-8 text-center font-sans text-base font-semibold",
         className,
       )}
     >

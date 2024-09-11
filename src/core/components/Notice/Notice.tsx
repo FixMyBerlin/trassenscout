@@ -1,10 +1,9 @@
 import {
+  CheckCircleIcon,
   ExclamationTriangleIcon,
   InformationCircleIcon,
   XCircleIcon,
 } from "@heroicons/react/20/solid"
-
-import { CheckCircleIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
 
 type TypeTypes = "info" | "error" | "warn" | "success"

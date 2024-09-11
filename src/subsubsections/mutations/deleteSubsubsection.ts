@@ -1,8 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { z } from "zod"
-
 import { authorizeProjectAdmin } from "src/authorization"
+import { z } from "zod"
 import getSubsubsectionProjectId from "../queries/getSubsubsectionProjectId"
 
 const DeleteSubsubsection = z.object({

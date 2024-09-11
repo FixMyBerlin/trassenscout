@@ -1,6 +1,5 @@
 import { Routes, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import React from "react"
 import { Tabs } from "src/core/components/Tabs/Tabs"
 import { useSlugs } from "src/core/hooks"
 import getFirstFeedbackSurveyResponseWithLocationId from "src/survey-responses/queries/getFirstFeedbackSurveyResponseWithLocationId"

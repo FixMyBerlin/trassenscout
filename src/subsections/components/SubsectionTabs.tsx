@@ -1,5 +1,4 @@
-import { Routes, useParam } from "@blitzjs/next"
-import React from "react"
+import { Routes } from "@blitzjs/next"
 import { Tabs } from "src/core/components/Tabs/Tabs"
 import { useSlugs } from "src/core/hooks"
 

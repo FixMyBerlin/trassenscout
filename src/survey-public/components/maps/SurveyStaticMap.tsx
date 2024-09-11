@@ -1,5 +1,4 @@
 import "maplibre-gl/dist/maplibre-gl.css"
-import React from "react"
 import Map, { Marker, useMap } from "react-map-gl/maplibre"
 import SurveyStaticPin from "./SurveyStaticPin"
 

@@ -8,8 +8,8 @@ import { longTitle, shortTitle } from "src/core/components/text"
 import { startEnd } from "src/core/components/text/startEnd"
 import { useSlugs } from "src/core/hooks"
 import { StakeholderSummary } from "src/stakeholdernotes/components/StakeholderSummary"
-import { SubsectionWithPosition } from "../queries/getSubsection"
 import { IfUserCanEdit } from "../../memberships/components/IfUserCan"
+import { SubsectionWithPosition } from "../queries/getSubsection"
 
 type Props = {
   subsections: SubsectionWithPosition[]

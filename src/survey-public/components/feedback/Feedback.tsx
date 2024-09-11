@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react"
-
 import { useFormContext } from "react-hook-form"
 import { ProgressContext } from "src/survey-public/context/contexts"
 import { scrollToTopWithDelay } from "src/survey-public/utils/scrollToTopWithDelay"

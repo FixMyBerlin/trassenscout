@@ -1,9 +1,9 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
+import { OperatorSchema } from "src/operators/schema"
 import { z } from "zod"
 import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
-import { OperatorSchema } from "src/operators/schema"
 
 const CreateOperatorSchema = OperatorSchema.omit({ projectId: true }).merge(
   z.object({

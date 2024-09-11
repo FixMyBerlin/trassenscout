@@ -1,5 +1,4 @@
 import { CalendarEntry } from "@prisma/client"
-import React from "react"
 import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { DateEntry } from "./DateEntry"
 

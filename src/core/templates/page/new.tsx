@@ -1,4 +1,10 @@
 import { Routes } from "@blitzjs/next"
+import { Suspense } from "react"
+import { FORM_ERROR, __ModelName__Form } from "src/__modelNamesPath__/components/__ModelName__Form"
+import create__ModelName__ from "src/__modelNamesPath__/mutations/create__ModelName__"
+import { Spinner } from "src/core/components/Spinner"
+import { Link } from "src/core/components/links"
+import { LayoutArticle, MetaTags } from "src/core/layouts"
 if (process.env.parentModel) {
   import { useParam } from "@blitzjs/next"
   import { useRouter } from "next/router"
@@ -7,12 +13,6 @@ if (process.env.parentModel) {
   import { useRouter } from "next/router"
   import { useMutation } from "@blitzjs/rpc"
 }
-import { Spinner } from "src/core/components/Spinner"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import create__ModelName__ from "src/__modelNamesPath__/mutations/create__ModelName__"
-import { __ModelName__Form, FORM_ERROR } from "src/__modelNamesPath__/components/__ModelName__Form"
-import { Link } from "src/core/components/links"
-import { Suspense } from "react"
 
 const New__ModelName__ = () => {
   const router = useRouter()

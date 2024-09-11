@@ -2,7 +2,6 @@ import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutArticle, MetaTags } from "src/core/layouts"
 import { TFeedbackQuestion, TQuestion } from "src/survey-public/components/types"

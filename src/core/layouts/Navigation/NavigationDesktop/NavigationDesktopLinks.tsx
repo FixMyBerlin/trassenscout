@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import { useRouter } from "next/router"
-import React from "react"
 import { Link } from "src/core/components/links"
 import { menuItems } from "../NavigationProject/menuItems"
 
@@ -23,7 +22,7 @@ export const NavigationDesktopLinks: React.FC<Props> = ({ menuItems }) => {
             classNameOverwrites={clsx(
               current
                 ? "bg-gray-300 text-gray-900"
-                : "hover:bg-gray-100 text-gray-50 hover:text-gray-900",
+                : "text-gray-50 hover:bg-gray-100 hover:text-gray-900",
               "rounded-md px-3 py-2 text-sm font-medium",
             )}
             aria-current={current ? "page" : undefined}

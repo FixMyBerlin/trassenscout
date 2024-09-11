@@ -3,8 +3,8 @@ import { NotFoundError } from "blitz"
 import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
-import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 
 export const GetSubsectionsSchema = z.object({
   projectSlug: z.string(),

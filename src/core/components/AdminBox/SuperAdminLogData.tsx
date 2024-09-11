@@ -1,7 +1,6 @@
-import React from "react"
-import { SuperAdminBox } from "./SuperAdminBox"
-import { pinkButtonStyles } from "../links"
 import clsx from "clsx"
+import { pinkButtonStyles } from "../links"
+import { SuperAdminBox } from "./SuperAdminBox"
 
 type Props = { data: any }
 

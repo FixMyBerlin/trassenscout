@@ -1,9 +1,9 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { z } from "zod"
-import { ProjectSchema } from "../schema"
 import { authorizeProjectAdmin } from "src/authorization"
+import { z } from "zod"
 import getProjectIdBySlug from "../queries/getProjectIdBySlug"
+import { ProjectSchema } from "../schema"
 
 const UpdateProject = ProjectSchema.merge(
   z.object({

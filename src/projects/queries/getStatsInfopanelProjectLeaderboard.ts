@@ -1,11 +1,10 @@
 import { resolver } from "@blitzjs/rpc"
+import { NotFoundError } from "blitz"
 import db, { Subsubsection } from "db"
 import { authorizeProjectAdmin } from "src/authorization"
-
-import { NotFoundError } from "blitz"
-import { GetSubsectionsSchema } from "./getStatsInfopanelProjectCosts"
-import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
+import { GetSubsectionsSchema } from "./getStatsInfopanelProjectCosts"
 
 type SpecialsOperatorsManagersCount = {
   subsubsectionSpecialsWithCount: {

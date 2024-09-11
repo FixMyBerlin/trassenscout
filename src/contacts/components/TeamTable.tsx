@@ -1,4 +1,3 @@
-import React from "react"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { LinkMail, LinkTel } from "src/core/components/links"
 import { getFullname } from "src/users/utils"

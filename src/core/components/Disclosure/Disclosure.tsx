@@ -1,7 +1,6 @@
 import { Disclosure as HeadlessUiDisclosure, Transition } from "@headlessui/react"
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
-import React from "react"
 
 type Props = {
   button: React.ReactNode | string
@@ -42,9 +41,9 @@ export const Disclosure: React.FC<Props> = ({
             {button}
 
             {open ? (
-              <ChevronUpIcon className="h-5 w-5 text-gray-700 group-hover:text-black flex-shrink-0" />
+              <ChevronUpIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
             ) : (
-              <ChevronDownIcon className="h-5 w-5 text-gray-700 group-hover:text-black flex-shrink-0" />
+              <ChevronDownIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
             )}
           </HeadlessUiDisclosure.Button>
           <Transition

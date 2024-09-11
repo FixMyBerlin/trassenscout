@@ -1,6 +1,5 @@
 import { useQuery } from "@blitzjs/rpc"
 import { featureCollection, lineString, point } from "@turf/helpers"
-import React from "react"
 import { Layer, Source } from "react-map-gl/maplibre"
 import { layerColors } from "src/core/components/Map/layerColors"
 import { useSlugs } from "src/core/hooks"
