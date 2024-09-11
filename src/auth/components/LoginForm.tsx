@@ -60,7 +60,8 @@ export const LoginForm = (props: LoginFormProps) => {
         <DevAdminBox className="text-center">
           {[
             ["admin", "admin@fixmycity.de"],
-            ["all-projects", "all-projects@fixmycity.de"],
+            ["all-projects-viewer", "all-projects-viewer@fixmycity.de"],
+            ["all-projects-editor", "all-projects-editor@fixmycity.de"],
             ["no-project", "no-project@fixmycity.de"],
             ["rs23", "rs23@fixmycity.de"],
             ["rs3000", "rs3000@fixmycity.de"],
