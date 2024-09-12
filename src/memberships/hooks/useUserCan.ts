@@ -1,24 +1,31 @@
-import { useQuery } from "@blitzjs/rpc"
+import { useSession } from "@blitzjs/auth"
+import { MembershipRoleEnum, UserRoleEnum } from "db"
 import { useSlugs } from "../../core/hooks"
-import getCurrentUserWithMemberships from "../../users/queries/getCurrentUserWithMemberships"
 
-// for debugging - to check if the backend works properly
-const USER_HAS_ROLE: null | boolean = null
-
-const userHasRole = (user: any, projectSlug: string, roles: Array<"VIEWER" | "EDITOR">) => {
-  if (USER_HAS_ROLE !== null) return USER_HAS_ROLE
-  if (!user) return false
-  if (user.role === "ADMIN") return true
-  return !!user.memberships.find(
+const userHasRole = (
+  sessionOrUser:
+    | ReturnType<typeof useSession>
+    | {
+        // A skeleton User type
+        role: UserRoleEnum
+        memberships: { project: { slug: string }; role: MembershipRoleEnum }[]
+      },
+  projectSlug: string,
+  roles: MembershipRoleEnum[],
+) => {
+  if (!sessionOrUser) return false
+  if (sessionOrUser.role === "ADMIN") return true
+  return sessionOrUser?.memberships?.some(
     (membership: any) => membership.project.slug === projectSlug && roles.includes(membership.role),
   )
 }
 
 export const useUserCan = () => {
-  const [user] = useQuery(getCurrentUserWithMemberships, null, { cacheTime: Infinity })
+  const session = useSession()
   const { projectSlug } = useSlugs()
+
   return {
-    view: userHasRole(user, projectSlug!, ["VIEWER", "EDITOR"]),
-    edit: userHasRole(user, projectSlug!, ["EDITOR"]),
+    view: userHasRole(session, projectSlug!, ["VIEWER", "EDITOR"]),
+    edit: userHasRole(session, projectSlug!, ["EDITOR"]),
   }
 }
