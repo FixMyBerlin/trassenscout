@@ -1,6 +1,7 @@
 import { useQuery } from "@blitzjs/rpc"
 import { EyeIcon, PencilIcon } from "@heroicons/react/20/solid"
 import getCurrentUserWithMemberships from "src/users/queries/getCurrentUserWithMemberships"
+import { roleTranslation } from "./roleTranslation.const"
 
 type Props = { projectSlug: string; className?: string }
 
@@ -13,10 +14,16 @@ export const UserCanIcon = ({ projectSlug, className }: Props) => {
   return (
     <>
       {userRoleOnProject?.role === "VIEWER" && (
-        <EyeIcon title="Anzeige-Rechte" className={className || "h-4 w-4"} />
+        <EyeIcon
+          title={roleTranslation[userRoleOnProject.role]}
+          className={className || "h-4 w-4"}
+        />
       )}
       {userRoleOnProject?.role === "EDITOR" && (
-        <PencilIcon title="Editor-Rechte" className={className || "h-4 w-4"} />
+        <PencilIcon
+          title={roleTranslation[userRoleOnProject.role]}
+          className={className || "h-4 w-4"}
+        />
       )}
     </>
   )

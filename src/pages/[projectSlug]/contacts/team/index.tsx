@@ -1,19 +1,16 @@
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { Suspense } from "react"
 import { TeamTable } from "src/contacts/components/TeamTable"
 import { SuperAdminBox } from "src/core/components/AdminBox"
-import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "src/core/components/Spinner"
 import { Tabs } from "src/core/components/Tabs/Tabs"
 import { Link } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
+import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import getProjectUsers from "src/memberships/queries/getProjectUsers"
 
 export const TeamWithQuery = () => {
-  const projectSlug = useParam("projectSlug", "string")
-  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
+  const { projectSlug } = useSlugs()
 
   return (
     <>
@@ -25,15 +22,13 @@ export const TeamWithQuery = () => {
         ]}
       />
 
-      <TeamTable contacts={users} />
+      <TeamTable />
 
       <SuperAdminBox>
         <Link button="blue" href={Routes.AdminMembershipsPage()}>
           Rechte verwalten
         </Link>
       </SuperAdminBox>
-
-      <SuperAdminLogData data={users} />
     </>
   )
 }
