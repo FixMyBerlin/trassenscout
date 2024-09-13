@@ -1,9 +1,9 @@
-import { SurveyResponseSourceEnum, SurveyResponseStatusEnum } from "@prisma/client"
+import { SurveyResponseSourceEnum } from "@prisma/client"
 import { z } from "zod"
 
 export const SurveyResponseSchema = z.object({
   data: z.string(),
-  status: z.nativeEnum(SurveyResponseStatusEnum),
+  status: z.string().nullish(),
   source: z.nativeEnum(SurveyResponseSourceEnum),
   surveySessionId: z.coerce.number(),
   surveyPart: z.coerce.number(),

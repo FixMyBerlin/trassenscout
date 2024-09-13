@@ -8,6 +8,7 @@ const CreateSurveyResponseSchema = z.object({
   surveyPart: z.number(),
   data: z.string(),
   source: z.nativeEnum(SurveyResponseSourceEnum),
+  status: z.string(),
 })
 
 export default resolver.pipe(

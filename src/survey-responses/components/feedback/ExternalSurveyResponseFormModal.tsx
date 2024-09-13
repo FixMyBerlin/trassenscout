@@ -12,6 +12,7 @@ import {
   TSingleOrMultiResponseProps,
 } from "src/survey-public/components/types"
 import {
+  getBackendConfigBySurveySlug,
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
 } from "src/survey-public/utils/getConfigBySurveySlug"
@@ -71,12 +72,16 @@ export const ExternalSurveyResponseFormModal: React.FC<Props> = ({ refetch }) =>
       const additionalUserTextId = evaluationRefs["feedback-usertext-2"]
       if (additionalUserTextId) values[additionalUserTextId] = null
 
+      // @ts-expect-error
+      const defaultStatus = getBackendConfigBySurveySlug(survey.slug).status[0].value
+
       const surveySession = await createSurveySessionMutation({ surveyId: Number(surveyId) })
       const surveyResponse = await createSurveyResponseMutation({
         surveyPart: 2,
         data: JSON.stringify(values),
         surveySessionId: surveySession.id,
         source: values.source as SurveyResponseSourceEnum,
+        status: defaultStatus,
       })
       await refetch()
       setOpen(false)

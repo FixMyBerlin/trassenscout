@@ -8,7 +8,7 @@ import {
 } from "src/core/components/forms"
 import { z } from "zod"
 import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
-import { ListItemStatus } from "./StakeholderSectionListItemStatus"
+import { StakeholderSectionListItemStatus } from "./StakeholderSectionListItemStatus"
 export { FORM_ERROR } from "src/core/components/forms"
 
 export function StakeholdernoteForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
@@ -26,7 +26,7 @@ export function StakeholdernoteForm<S extends z.ZodType<any, any>>(props: FormPr
         label="Status"
         items={Object.keys(stakeholderNotesStatus).map((key) => ({
           value: key,
-          label: <ListItemStatus status={key as Stakeholdernote["status"]} />,
+          label: <StakeholderSectionListItemStatus status={key as Stakeholdernote["status"]} />,
         }))}
       />
     </Form>

@@ -18,13 +18,13 @@ import { Prettify } from "src/core/types"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 import { TResponse } from "src/survey-public/components/types"
 import {
+  getBackendConfigBySurveySlug,
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
 } from "src/survey-public/utils/getConfigBySurveySlug"
 import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import getSurvey from "src/surveys/queries/getSurvey"
 import { z } from "zod"
-import { surveyResponseStatus } from "./surveyResponseStatus"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -77,13 +77,15 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     queryCategories &&
     querySearchTerm !== undefined
 
+  const surveyResponseStatus = getBackendConfigBySurveySlug(survey.slug).status
+
   if (!searchActive) {
     void router.push(
       {
         query: {
           ...router.query,
           operator: "ALL", // default: radio "ALL"
-          statuses: [...Object.keys(surveyResponseStatus)], // default: all checked
+          statuses: [...surveyResponseStatus.map((s) => s.value)], // default: all checked
           topics: [...topics.map((t) => String(t.id)), "0"], // default: all checked
           hasnotes: "ALL", // default: radio "ALL"
           haslocation: "ALL", // default: radio "ALL"
@@ -102,7 +104,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     resolver: schema ? zodResolver(schema) : undefined,
     defaultValues: async () => ({
       operator: searchActive ? queryOperator : "ALL", // default: radio "ALL"
-      statuses: searchActive ? queryStatuses : [...Object.keys(surveyResponseStatus)], // default: all checked
+      statuses: searchActive ? queryStatuses : [...surveyResponseStatus.map((s) => s.value)], // default: all checked
       topics: searchActive ? queryTopics : [...topics.map((t) => String(t.id)), "0"], // default: all checked
       hasnotes: searchActive ? queryHasnotes : "ALL", // default: radio "ALL"
       searchterm: searchActive ? querySearchTerm : "", // default: radio "ALL"
@@ -153,7 +155,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     { value: "0", label: "Nicht zugeordnet" },
   ]
   const statusOptions = [
-    ...Object.entries(surveyResponseStatus).map(([value, label]) => {
+    ...surveyResponseStatus.map(({ value, label }) => {
       return { value, label }
     }),
   ]

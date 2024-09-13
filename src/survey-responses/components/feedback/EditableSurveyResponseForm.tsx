@@ -1,5 +1,5 @@
 import { Routes, useParam } from "@blitzjs/next"
-import { useMutation } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
 import clsx from "clsx"
@@ -15,14 +15,15 @@ import {
 } from "src/core/components/forms"
 import { Link, blueButtonStyles } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
+import { getBackendConfigBySurveySlug } from "src/survey-public/utils/getConfigBySurveySlug"
 import createSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/createSurveyResponseTopicsOnSurveyResponses"
 import deleteSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/deleteSurveyResponseTopicsOnSurveyResponses"
 import createSurveyResponseTopic from "src/survey-response-topics/mutations/createSurveyResponseTopic"
+import getSurvey from "src/surveys/queries/getSurvey"
 import { z } from "zod"
 import updateSurveyResponse from "../../mutations/updateSurveyResponse"
 import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
 import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
-import { surveyResponseStatus } from "./surveyResponseStatus"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -61,6 +62,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
 
   const { projectSlug } = useSlugs()
   const surveyId = useParam("surveyId", "string")
+  const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
 
   const [updateSurveyResponseMutation] = useMutation(updateSurveyResponse)
   const [surveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
@@ -158,6 +160,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
       return { [FORM_ERROR]: error }
     }
   }
+  const surveyResponseStatus = getBackendConfigBySurveySlug(survey.slug).status
 
   return (
     <FormProvider {...methods}>
@@ -171,7 +174,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                   <LabeledRadiobuttonGroup
                     classNameItemWrapper={clsx("flex-shrink-0")}
                     scope={"status"}
-                    items={Object.entries(surveyResponseStatus).map(([value, label]) => {
+                    items={surveyResponseStatus.map(({ value, label }) => {
                       return { value, label }
                     })}
                   />

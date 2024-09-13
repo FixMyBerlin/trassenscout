@@ -436,6 +436,7 @@ export const SurveyBB: React.FC<Props> = ({ surveyId }) => {
     void router.replace({ query: router.query }, undefined, {
       scroll: false,
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [institution, landkreis, router.query.id])
 
   return (

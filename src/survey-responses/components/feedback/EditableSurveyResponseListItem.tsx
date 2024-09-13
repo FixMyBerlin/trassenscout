@@ -9,20 +9,21 @@ import { Markdown } from "src/core/components/Markdown/Markdown"
 import { linkStyles } from "src/core/components/links"
 import { Prettify } from "src/core/types"
 import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
-import { ListItemStatus } from "src/stakeholdernotes/components/StakeholderSectionListItemStatus"
 import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
+import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
+import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedbackSurveyResponses"
+import { getSurveyResponseCategoryById } from "src/survey-responses/utils/getSurveyResponseCategoryById"
+
 import { TMapProps } from "src/survey-public/components/types"
 import {
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
   getSurveyDefinitionBySurveySlug,
 } from "src/survey-public/utils/getConfigBySurveySlug"
-import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import deleteSurveyResponse from "src/survey-responses/mutations/deleteSurveyResponse"
-import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedbackSurveyResponses"
-import { getSurveyResponseCategoryById } from "src/survey-responses/utils/getSurveyResponseCategoryById"
 import getSurvey from "src/surveys/queries/getSurvey"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
+import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
 
 export type EditableSurveyResponseListItemProps = {
@@ -139,7 +140,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
       >
         <div className="flex items-center gap-4 px-6 pb-2 pt-3">
           <h3 className="text-gray-700">{response.id} </h3>
-          <ListItemStatus status={response.status} />
+          <EditableSurveyResponseStatusLabel surveySlug={survey.slug} status={response.status} />
           <div
             className={clsx(
               "flex-shrink-0 rounded-full bg-gray-300 px-4 py-2 text-sm",

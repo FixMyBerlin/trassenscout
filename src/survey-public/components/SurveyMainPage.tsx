@@ -15,6 +15,7 @@ import createSurveyResponse from "src/survey-responses/mutations/createSurveyRes
 import surveyFeedbackEmail from "src/survey-responses/mutations/surveyFeedbackEmail"
 import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
 import { getCompletedQuestionIds } from "../utils/getCompletedQuestionIds"
+import { getBackendConfigBySurveySlug } from "../utils/getConfigBySurveySlug"
 import PublicSurveyForm from "./core/form/PublicSurveyForm"
 import {
   TEmail,
@@ -98,6 +99,9 @@ export const SurveyMainPage: React.FC<Props> = ({
     scrollToTopWithDelay()
   }
 
+  // @ts-expect-error
+  const defaultStatus = getBackendConfigBySurveySlug(surveySlug).status[0].value
+
   const handleSurveySubmit = async (surveyResponses: Record<string, any>) => {
     setIsSpinner(true)
     surveyResponses = transformValues(surveyResponses)
@@ -108,6 +112,7 @@ export const SurveyMainPage: React.FC<Props> = ({
         surveyPart: surveyDefinition.part,
         data: JSON.stringify(surveyResponses),
         source: "FORM",
+        status: defaultStatus,
       })
     })()
 
@@ -142,6 +147,7 @@ export const SurveyMainPage: React.FC<Props> = ({
         surveyPart: feedbackDefinition.part,
         data: JSON.stringify(feedbackResponses),
         source: "FORM",
+        status: defaultStatus,
       })
       // todo survey clean up or refactor after survey BB
       if (surveySlug === "radnetz-brandenburg")

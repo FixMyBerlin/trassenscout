@@ -1,12 +1,9 @@
-import { CheckIcon, XMarkIcon } from "@heroicons/react/20/solid"
-import { ClockIcon, DocumentTextIcon } from "@heroicons/react/24/outline"
-import { Stakeholdernote, SurveyResponse } from "@prisma/client"
-import clsx from "clsx"
-import { surveyResponseStatus } from "src/survey-responses/components/feedback/surveyResponseStatus"
+import { Stakeholdernote } from "@prisma/client"
+import { StatusLabel } from "src/core/components/Status/StatusLabel"
 import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
 
 type Props = {
-  status: Stakeholdernote["status"] | SurveyResponse["status"]
+  status: Stakeholdernote["status"]
 }
 
 const statusColors = {
@@ -20,32 +17,26 @@ const statusColors = {
   DONE_PLANING: "text-green-700 bg-green-100",
 }
 
-const statusIcon = {
-  IRRELEVANT: <XMarkIcon className="h-4 w-4" />,
-  PENDING: <DocumentTextIcon className="h-4 w-4" />,
-  IN_PROGRESS: <ClockIcon className="h-4 w-4" />,
-  ASSIGNED: <ClockIcon className="h-4 w-4" />,
-  HANDED_OVER: <ClockIcon className="h-4 w-4" />,
-  DONE: <CheckIcon className="h-4 w-4" />,
-  DONE_FAQ: <CheckIcon className="h-4 w-4" />,
-  DONE_PLANING: <CheckIcon className="h-4 w-4" />,
+const statusIcon: Record<string, "XMARK" | "CLOCK" | "CHECKMARK" | "DOCUMENT"> = {
+  IRRELEVANT: "XMARK",
+  PENDING: "DOCUMENT",
+  IN_PROGRESS: "CLOCK",
+  ASSIGNED: "CLOCK",
+  HANDED_OVER: "CLOCK",
+  DONE: "CHECKMARK",
+  DONE_FAQ: "CHECKMARK",
+  DONE_PLANING: "CHECKMARK",
 }
 
-export const ListItemStatus: React.FC<Props> = ({ status }) => {
+export const StakeholderSectionListItemStatus: React.FC<Props> = ({ status }) => {
   if (!status) return null
 
-  const label =
-    // @ts-expect-error
-    status in stakeholderNotesStatus ? stakeholderNotesStatus[status] : surveyResponseStatus[status]
-
   return (
-    <div
-      className={clsx(
-        statusColors[status],
-        "flex w-[200px] flex-shrink-0 items-center gap-4 rounded-full px-5 py-2",
-      )}
-    >
-      {statusIcon[status]} <div>{label}</div>
-    </div>
+    <StatusLabel
+      // @ts-expect-error
+      icon={statusIcon[status]}
+      label={stakeholderNotesStatus[status]}
+      colorClass={statusColors[status]}
+    />
   )
 }
