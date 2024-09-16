@@ -1,6 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { authorizeProjectAdmin } from "src/authorization"
+import { AllowedSurveySlugs } from "src/survey-public/utils/allowedSurveySlugs"
 import { getResponseConfigBySurveySlug } from "src/survey-public/utils/getConfigBySurveySlug"
 import { viewerRoles } from "../../authorization/constants"
 import { extractProjectSlug } from "../../authorization/extractProjectSlug"
@@ -30,7 +31,7 @@ export default resolver.pipe(
         surveyResponse: null,
       }
 
-    const surveySlug = surveyResponses[0]!.surveySession.survey.slug
+    const surveySlug = surveyResponses[0]!.surveySession.survey.slug as AllowedSurveySlugs
 
     const { evaluationRefs } = getResponseConfigBySurveySlug(surveySlug)
 

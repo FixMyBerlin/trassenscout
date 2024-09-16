@@ -10,8 +10,9 @@ import { backendConfig as backendConfigRS8 } from "src/survey-public/rs8/data/ba
 import { feedbackDefinition as feedbackDefinitionRS8 } from "src/survey-public/rs8/data/feedback"
 import { responseConfig as RS8ResponseConfig } from "src/survey-public/rs8/data/response-config"
 import { surveyDefinition as surveyDefinitionRS8 } from "src/survey-public/rs8/data/survey"
+import { AllowedSurveySlugs } from "./allowedSurveySlugs"
 
-export const getResponseConfigBySurveySlug = (slug: string) => {
+export const getResponseConfigBySurveySlug = (slug: AllowedSurveySlugs) => {
   switch (slug) {
     case "rs8":
       return RS8ResponseConfig
@@ -19,12 +20,10 @@ export const getResponseConfigBySurveySlug = (slug: string) => {
       return FRM7ResponseConfig
     case "radnetz-brandenburg":
       return BBResponseConfig
-    default:
-      return RS8ResponseConfig
   }
 }
 
-export const getFeedbackDefinitionBySurveySlug = (slug: string) => {
+export const getFeedbackDefinitionBySurveySlug = (slug: AllowedSurveySlugs) => {
   switch (slug) {
     case "rs8":
       return feedbackDefinitionRS8
@@ -32,11 +31,9 @@ export const getFeedbackDefinitionBySurveySlug = (slug: string) => {
       return feedbackDefinitionFRM7
     case "radnetz-brandenburg":
       return feedbackDefinitionBB
-    default:
-      return feedbackDefinitionRS8
   }
 }
-export const getSurveyDefinitionBySurveySlug = (slug: string) => {
+export const getSurveyDefinitionBySurveySlug = (slug: AllowedSurveySlugs) => {
   switch (slug) {
     case "rs8":
       return surveyDefinitionRS8
@@ -44,12 +41,10 @@ export const getSurveyDefinitionBySurveySlug = (slug: string) => {
       return surveyDefinitionFRM7
     case "radnetz-brandenburg":
       return surveyDefinitionBB
-    default:
-      return surveyDefinitionRS8
   }
 }
 
-export const getBackendConfigBySurveySlug = (slug: string) => {
+export const getBackendConfigBySurveySlug = (slug: AllowedSurveySlugs) => {
   switch (slug) {
     case "rs8":
       return backendConfigRS8
@@ -57,7 +52,5 @@ export const getBackendConfigBySurveySlug = (slug: string) => {
       return backendConfigFRM7
     case "radnetz-brandenburg":
       return backendConfigBB
-    default:
-      return backendConfigRS8
   }
 }

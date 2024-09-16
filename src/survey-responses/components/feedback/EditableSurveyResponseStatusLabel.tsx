@@ -1,25 +1,23 @@
 import { StatusLabel } from "src/core/components/Status/StatusLabel"
+import { AllowedSurveySlugs } from "src/survey-public/utils/allowedSurveySlugs"
 import { getBackendConfigBySurveySlug } from "src/survey-public/utils/getConfigBySurveySlug"
 
 type Props = {
   status?: string | null
-  surveySlug: string
+  surveySlug: AllowedSurveySlugs
 }
 
-export const EditableSurveyResponseStatusLabel: React.FC<Props> = ({ status, surveySlug }) => {
+export const EditableSurveyResponseStatusLabel = ({ status, surveySlug }: Props) => {
   if (!status) return null
 
   const statusConfig = getBackendConfigBySurveySlug(surveySlug).status.find(
     (s) => s.value === status,
-  )
+  )!
 
   return (
     <StatusLabel
-      // @ts-expect-error
       icon={statusConfig.icon}
-      // @ts-expect-error
       label={statusConfig.label}
-      // @ts-expect-error
       colorClass={statusConfig.colorClass}
     />
   )

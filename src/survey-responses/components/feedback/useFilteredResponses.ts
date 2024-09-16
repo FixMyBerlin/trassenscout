@@ -1,10 +1,11 @@
 import { useRouter } from "next/router"
+import { AllowedSurveySlugs } from "src/survey-public/utils/allowedSurveySlugs"
 import { getResponseConfigBySurveySlug } from "src/survey-public/utils/getConfigBySurveySlug"
 import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedbackSurveyResponses"
 
 export const useFilteredResponses = (
   responses: Awaited<ReturnType<typeof getFeedbackSurveyResponses>>,
-  surveySlug: string,
+  surveySlug: AllowedSurveySlugs,
 ) => {
   const router = useRouter()
   const { operator, statuses, topics, hasnotes, haslocation, categories, searchterm } = router.query
