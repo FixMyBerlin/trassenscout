@@ -9,7 +9,7 @@ type Props = {
   className?: string
 }
 
-export const Modal: React.FC<Props> = ({ children, open, handleClose, className }) => {
+export const Modal = ({ children, open, handleClose, className }: Props) => {
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-20" onClose={handleClose}>
