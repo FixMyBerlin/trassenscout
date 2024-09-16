@@ -51,7 +51,10 @@ export const TeamTable = () => {
                 </td>
                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   <div className="flex items-center gap-2">
-                    <UserCanIcon projectSlug={projectSlug!} />
+                    <UserCanIcon
+                      role={user.currentMembershipRole}
+                      isAdmin={user.role === "ADMIN"}
+                    />
                     {roleTranslation[user.currentMembershipRole]}
                   </div>
                 </td>

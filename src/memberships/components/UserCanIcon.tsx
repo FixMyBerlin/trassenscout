@@ -1,29 +1,18 @@
-import { useSession } from "@blitzjs/auth"
 import { LockClosedIcon, LockOpenIcon } from "@heroicons/react/20/solid"
+import { clsx } from "clsx"
+import { MembershipRole } from "src/authorization/types"
 import { roleTranslation } from "./roleTranslation.const"
 
-type Props = { projectSlug: string; className?: string }
+type Props = { role: MembershipRole; isAdmin: boolean; className?: string }
 
-export const UserCanIcon = ({ projectSlug, className }: Props) => {
-  const session = useSession()
-  if (!session.memberships?.length) return null
+export const UserCanIcon = ({ role, isAdmin, className }: Props) => {
+  const title = isAdmin ? "Platform-Admin" : roleTranslation[role]
+  const classes = clsx(className || "h-4 w-4", isAdmin ? "text-purple-400" : "")
 
-  const userRoleOnProject = session.memberships.find((m) => m.project.slug === projectSlug)
-
-  return (
-    <>
-      {userRoleOnProject?.role === "VIEWER" && (
-        <LockClosedIcon
-          title={roleTranslation[userRoleOnProject.role]}
-          className={className || "h-4 w-4"}
-        />
-      )}
-      {userRoleOnProject?.role === "EDITOR" && (
-        <LockOpenIcon
-          title={roleTranslation[userRoleOnProject.role]}
-          className={className || "h-4 w-4"}
-        />
-      )}
-    </>
-  )
+  switch (role) {
+    case "VIEWER":
+      return <LockClosedIcon title={title} className={classes} />
+    case "EDITOR":
+      return <LockOpenIcon title={title} className={classes} />
+  }
 }

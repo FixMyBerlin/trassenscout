@@ -21,6 +21,7 @@ export default resolver.pipe(
         lastName: true,
         email: true,
         phone: true,
+        role: true,
         memberships: { select: { project: { select: { slug: true } }, role: true } },
       },
     })

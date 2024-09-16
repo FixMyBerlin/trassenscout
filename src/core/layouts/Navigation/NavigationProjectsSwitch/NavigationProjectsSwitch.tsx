@@ -6,7 +6,7 @@ import { useRouter } from "next/router"
 import { Fragment } from "react"
 import { Link } from "src/core/components/links/Link"
 import { shortTitle } from "src/core/components/text"
-import { UserCanIcon } from "src/memberships/components/UserCanIcon"
+import { CurrentUserCanIcon } from "src/memberships/components/CurrentUserCanIcon"
 import { NavigationProps } from "../NavigationProject/NavigationProject"
 import { ProjectLogo } from "../NavigationProject/ProjectLogo"
 
@@ -76,7 +76,7 @@ export const NavigationProjectsSwitch = ({ projects }: Props) => {
                               {current && <ProjectLogo />}
                               {item.name}
                             </div>
-                            <UserCanIcon projectSlug={item.slug} />
+                            <CurrentUserCanIcon projectSlug={item.slug} />
                           </Link>
                         )}
                       </Menu.Item>

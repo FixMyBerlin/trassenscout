@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { useSlugs } from "src/core/hooks"
-import { UserCanIcon } from "src/memberships/components/UserCanIcon"
+import { CurrentUserCanIcon } from "src/memberships/components/CurrentUserCanIcon"
 import { DashedLine } from "../DashedLine"
 import { H1, H2 } from "../text/Headings"
 
@@ -39,7 +39,7 @@ export const PageHeader = ({
             {titleIcon}
           </span>
           <div className="flex items-center gap-2">
-            {action} <UserCanIcon projectSlug={projectSlug!} />
+            {action} <CurrentUserCanIcon projectSlug={projectSlug!} />
           </div>
         </div>
       )}
