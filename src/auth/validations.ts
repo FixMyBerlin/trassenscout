@@ -1,3 +1,4 @@
+import { MembershipRoleEnum } from "@prisma/client"
 import { z } from "zod"
 
 export const email = z
@@ -24,6 +25,11 @@ export const UpdateUser = z.object({
   firstName: z.string().min(1, { message: "Pflichtfeld." }),
   lastName: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
   institution: z.string().nullable(),
+})
+export const UpdateMembershipRole = z.object({
+  projectSlug: z.string(),
+  userId: z.number(),
+  role: z.nativeEnum(MembershipRoleEnum),
 })
 
 export const Login = z.object({

@@ -1,5 +1,6 @@
 import { useSession } from "@blitzjs/auth"
 import { MembershipRoleEnum, UserRoleEnum } from "db"
+import { editorRoles, viewerRoles } from "src/authorization/constants"
 import { useSlugs } from "../../core/hooks"
 
 const userHasRole = (
@@ -25,7 +26,7 @@ export const useUserCan = () => {
   const { projectSlug } = useSlugs()
 
   return {
-    view: userHasRole(session, projectSlug!, ["VIEWER", "EDITOR"]),
-    edit: userHasRole(session, projectSlug!, ["EDITOR"]),
+    view: userHasRole(session, projectSlug!, viewerRoles),
+    edit: userHasRole(session, projectSlug!, editorRoles),
   }
 }
