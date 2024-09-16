@@ -10,6 +10,7 @@ import { Link, linkStyles } from "src/core/components/links"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { Spinner } from "src/core/components/Spinner"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import { getFullname } from "src/users/utils"
 
 export const ContactWithQuery = () => {
@@ -31,21 +32,25 @@ export const ContactWithQuery = () => {
       <MetaTags noindex title={`Kontakt von ${getFullname(contact)}`} />
       <PageHeader title={`Kontakt von ${getFullname(contact)}`} className="mt-12" />
 
-      <p className="mb-10 space-x-4">
-        <Link href={Routes.EditContactPage({ contactId: contact.id, projectSlug: projectSlug! })}>
-          Eintrag bearbeiten
-        </Link>
-        <span>–</span>
-        <button type="button" onClick={handleDelete} className={linkStyles}>
-          Eintrag löschen
-        </button>
-      </p>
+      <IfUserCanEdit>
+        <p className="mb-10 space-x-4">
+          <Link href={Routes.EditContactPage({ contactId: contact.id, projectSlug: projectSlug! })}>
+            Eintrag bearbeiten
+          </Link>
+          <span>–</span>
+          <button type="button" onClick={handleDelete} className={linkStyles}>
+            Eintrag löschen
+          </button>
+        </p>
+      </IfUserCanEdit>
+
       <div>
         <ContactSingle contact={contact} />
         <SuperAdminBox>
           <pre>{JSON.stringify(contact, null, 2)}</pre>
         </SuperAdminBox>
       </div>
+
       <Link href={Routes.ContactsPage({ projectSlug: projectSlug! })}>Zurück zur Kontaktliste</Link>
     </>
   )

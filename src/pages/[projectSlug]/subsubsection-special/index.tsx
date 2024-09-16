@@ -12,6 +12,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { quote, shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import deleteSubsubsectionSpecial from "src/subsubsectionSpecial/mutations/deleteSubsubsectionSpecial"
 import getSubsubsectionSpecialsWithCount from "src/subsubsectionSpecial/queries/getSubsubsectionSpecialsWithCount"
 
@@ -82,28 +83,30 @@ export const SubsubsectionSpecialsWithData = () => {
                     {quote(Special.title)}
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
-                    <ButtonWrapper className="justify-end">
-                      <Link
-                        icon="edit"
-                        href={Routes.EditSubsubsectionSpecialPage({
-                          projectSlug: projectSlug!,
-                          subsubsectionSpecialId: Special.id,
-                        })}
-                      >
-                        Bearbeiten
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(Special.id)}
-                        className={clsx(
-                          linkStyles,
-                          "inline-flex items-center justify-center gap-1",
-                        )}
-                      >
-                        {linkIcons["delete"]}
-                        Löschen
-                      </button>
-                    </ButtonWrapper>
+                    <IfUserCanEdit>
+                      <ButtonWrapper className="justify-end">
+                        <Link
+                          icon="edit"
+                          href={Routes.EditSubsubsectionSpecialPage({
+                            projectSlug: projectSlug!,
+                            subsubsectionSpecialId: Special.id,
+                          })}
+                        >
+                          Bearbeiten
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(Special.id)}
+                          className={clsx(
+                            linkStyles,
+                            "inline-flex items-center justify-center gap-1",
+                          )}
+                        >
+                          {linkIcons["delete"]}
+                          Löschen
+                        </button>
+                      </ButtonWrapper>
+                    </IfUserCanEdit>
                   </td>
                 </tr>
               )
@@ -111,14 +114,17 @@ export const SubsubsectionSpecialsWithData = () => {
           </tbody>
         </table>
       </TableWrapper>
-      <Link
-        button="blue"
-        icon="plus"
-        className="mt-4"
-        href={Routes.NewSubsubsectionSpecialPage({ projectSlug: projectSlug! })}
-      >
-        Neue Besonderheit
-      </Link>
+
+      <IfUserCanEdit>
+        <Link
+          button="blue"
+          icon="plus"
+          className="mt-4"
+          href={Routes.NewSubsubsectionSpecialPage({ projectSlug: projectSlug! })}
+        >
+          Neue Besonderheit
+        </Link>
+      </IfUserCanEdit>
 
       <Pagination
         hasMore={hasMore}

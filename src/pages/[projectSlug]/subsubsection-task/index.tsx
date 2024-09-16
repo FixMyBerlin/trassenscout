@@ -12,6 +12,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { quote, shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import deleteSubsubsectionTask from "src/subsubsectionTask/mutations/deleteSubsubsectionTask"
 import getSubsubsectionTasksWithCount from "src/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
 
@@ -78,28 +79,30 @@ export const SubsubsectionTasksWithData = () => {
                     {Task.subsubsectionCount} Führungen mit der Maßnahme {quote(Task.title)}
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
-                    <ButtonWrapper className="justify-end">
-                      <Link
-                        icon="edit"
-                        href={Routes.EditSubsubsectionTaskPage({
-                          projectSlug: projectSlug!,
-                          subsubsectionTaskId: Task.id,
-                        })}
-                      >
-                        Bearbeiten
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(Task.id)}
-                        className={clsx(
-                          linkStyles,
-                          "inline-flex items-center justify-center gap-1",
-                        )}
-                      >
-                        {linkIcons["delete"]}
-                        Löschen
-                      </button>
-                    </ButtonWrapper>
+                    <IfUserCanEdit>
+                      <ButtonWrapper className="justify-end">
+                        <Link
+                          icon="edit"
+                          href={Routes.EditSubsubsectionTaskPage({
+                            projectSlug: projectSlug!,
+                            subsubsectionTaskId: Task.id,
+                          })}
+                        >
+                          Bearbeiten
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(Task.id)}
+                          className={clsx(
+                            linkStyles,
+                            "inline-flex items-center justify-center gap-1",
+                          )}
+                        >
+                          {linkIcons["delete"]}
+                          Löschen
+                        </button>
+                      </ButtonWrapper>
+                    </IfUserCanEdit>
                   </td>
                 </tr>
               )
@@ -107,14 +110,17 @@ export const SubsubsectionTasksWithData = () => {
           </tbody>
         </table>
       </TableWrapper>
-      <Link
-        button="blue"
-        icon="plus"
-        className="mt-4"
-        href={Routes.NewSubsubsectionTaskPage({ projectSlug: projectSlug! })}
-      >
-        Neue Maßnahme
-      </Link>
+
+      <IfUserCanEdit>
+        <Link
+          button="blue"
+          icon="plus"
+          className="mt-4"
+          href={Routes.NewSubsubsectionTaskPage({ projectSlug: projectSlug! })}
+        >
+          Neue Maßnahme
+        </Link>
+      </IfUserCanEdit>
 
       <Pagination
         hasMore={hasMore}

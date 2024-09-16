@@ -13,6 +13,7 @@ import {
 } from "src/core/components/text"
 import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { useSlugs } from "src/core/hooks"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { mapillaryLink } from "../../subsections/components/utils/mapillaryLink"
 import { SubsubsectionTableFooter } from "./SubsubsectionTableFooter"
@@ -179,17 +180,19 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
         )}
       </TableWrapper>
 
-      <Link
-        button="blue"
-        icon="plus"
-        className="mt-4"
-        href={Routes.NewSubsubsectionPage({
-          projectSlug: projectSlug!,
-          subsectionSlug: subsectionSlug!,
-        })}
-      >
-        Neue Führung
-      </Link>
+      <IfUserCanEdit>
+        <Link
+          button="blue"
+          icon="plus"
+          className="mt-4"
+          href={Routes.NewSubsubsectionPage({
+            projectSlug: projectSlug!,
+            subsectionSlug: subsectionSlug!,
+          })}
+        >
+          Neue Führung
+        </Link>
+      </IfUserCanEdit>
     </section>
   )
 }

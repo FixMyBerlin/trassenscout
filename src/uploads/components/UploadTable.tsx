@@ -6,6 +6,7 @@ import { Link } from "src/core/components/links"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { Prettify } from "src/core/types"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import getUploadsWithSubsections from "../queries/getUploadsWithSubsections"
 import { uploadUrl } from "../utils"
 
@@ -69,7 +70,7 @@ export const UploadTable: React.FC<Props> = ({ uploads, withAction = true }) => 
                       Download
                     </Link>
                     {withAction && (
-                      <>
+                      <IfUserCanEdit>
                         <Link
                           icon="edit"
                           href={Routes.EditUploadPage({
@@ -88,7 +89,7 @@ export const UploadTable: React.FC<Props> = ({ uploads, withAction = true }) => 
                         >
                           Löschen
                         </Link>
-                      </>
+                      </IfUserCanEdit>
                     )}
                   </ButtonWrapper>
                 </td>

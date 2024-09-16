@@ -5,6 +5,7 @@ import { Disclosure } from "src/core/components/Disclosure"
 import { Markdown } from "src/core/components/Markdown/Markdown"
 import { Link } from "src/core/components/links"
 import { useSlugs } from "src/core/hooks"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import { StakeholderSectionListItemStatus } from "./StakeholderSectionListItemStatus"
 
 type Props = {
@@ -48,26 +49,28 @@ export const StakeholderSectionListItem: React.FC<Props> = ({ stakeholderNote })
       }
     >
       <div className="ml-3 px-3 pb-2 pt-6 sm:ml-64">
-        {!stakeholderNote.statusText ? (
-          <p className="text-gray-300">Für diesen Termin liegen keine Details vor.</p>
-        ) : (
+        {stakeholderNote.statusText ? (
           <Markdown className="prose-sm mt-3" markdown={stakeholderNote.statusText} />
+        ) : (
+          <p className="text-gray-300">Für diesen Termin liegen keine Details vor.</p>
         )}
         <p className="mt-6 italic">
           Letzte Aktualisierung: {stakeholderNote.updatedAt.toLocaleDateString()}
         </p>
-        <p className="mt-6">
-          <Link
-            icon="edit"
-            href={Routes.EditStakeholdernotePage({
-              projectSlug: projectSlug!,
-              subsectionSlug: subsectionSlug!,
-              stakeholdernoteId: stakeholderNote.id,
-            })}
-          >
-            Bearbeiten
-          </Link>
-        </p>
+        <IfUserCanEdit>
+          <p className="mt-6">
+            <Link
+              icon="edit"
+              href={Routes.EditStakeholdernotePage({
+                projectSlug: projectSlug!,
+                subsectionSlug: subsectionSlug!,
+                stakeholdernoteId: stakeholderNote.id,
+              })}
+            >
+              Bearbeiten
+            </Link>
+          </p>
+        </IfUserCanEdit>
       </div>
     </Disclosure>
   )

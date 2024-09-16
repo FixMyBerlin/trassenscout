@@ -12,6 +12,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import deleteNetworkHierarchy from "src/networkHierarchy/mutations/deleteNetworkHierarchy"
 import getNetworkHierarchyWithCount from "src/networkHierarchy/queries/getNetworkHierarchysWithCount"
 
@@ -78,28 +79,30 @@ export const NetworkHierarchysWithData = () => {
                     {networkHierarchy.subsectionCount} Planungsabschnitte
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
-                    <ButtonWrapper className="justify-end">
-                      <Link
-                        icon="edit"
-                        href={Routes.EditNetworkHierarchyPage({
-                          projectSlug: projectSlug!,
-                          networkHierarchyId: networkHierarchy.id,
-                        })}
-                      >
-                        Bearbeiten
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(networkHierarchy.id)}
-                        className={clsx(
-                          linkStyles,
-                          "inline-flex items-center justify-center gap-1",
-                        )}
-                      >
-                        {linkIcons["delete"]}
-                        Löschen
-                      </button>
-                    </ButtonWrapper>
+                    <IfUserCanEdit>
+                      <ButtonWrapper className="justify-end">
+                        <Link
+                          icon="edit"
+                          href={Routes.EditNetworkHierarchyPage({
+                            projectSlug: projectSlug!,
+                            networkHierarchyId: networkHierarchy.id,
+                          })}
+                        >
+                          Bearbeiten
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(networkHierarchy.id)}
+                          className={clsx(
+                            linkStyles,
+                            "inline-flex items-center justify-center gap-1",
+                          )}
+                        >
+                          {linkIcons["delete"]}
+                          Löschen
+                        </button>
+                      </ButtonWrapper>
+                    </IfUserCanEdit>
                   </td>
                 </tr>
               )
@@ -107,14 +110,17 @@ export const NetworkHierarchysWithData = () => {
           </tbody>
         </table>
       </TableWrapper>
-      <Link
-        button="blue"
-        icon="plus"
-        className="mt-4"
-        href={Routes.NewNetworkHierarchyPage({ projectSlug: projectSlug! })}
-      >
-        Neue Netzstufe
-      </Link>
+
+      <IfUserCanEdit>
+        <Link
+          button="blue"
+          icon="plus"
+          className="mt-4"
+          href={Routes.NewNetworkHierarchyPage({ projectSlug: projectSlug! })}
+        >
+          Neue Netzstufe
+        </Link>
+      </IfUserCanEdit>
 
       <Pagination
         hasMore={hasMore}

@@ -3,6 +3,7 @@ import { DocumentIcon } from "@heroicons/react/24/outline"
 import { Upload } from "@prisma/client"
 import { RouteUrlObject } from "blitz"
 import { Link } from "src/core/components/links"
+import { useUserCan } from "src/memberships/hooks/useUserCan"
 import { uploadUrl } from "../utils"
 
 type Props = {
@@ -13,14 +14,14 @@ type Props = {
   description?: boolean
 }
 
-export const UploadPreview: React.FC<Props> = ({
-  upload,
-  editUrl,
-  showUploadUrl,
-  description = true,
-}) => {
+export const UploadPreview = ({ upload, editUrl, showUploadUrl, description = true }: Props) => {
   const fileType = upload.externalUrl.split(".").at(-1) || "?"
   const isImage = ["png", "jpg"].includes(fileType.toLowerCase())
+
+  const canEdit = useUserCan().edit
+  if (!canEdit) {
+    editUrl = undefined
+  }
 
   return (
     <div key={upload.id} className="relative">

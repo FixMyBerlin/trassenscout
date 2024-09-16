@@ -100,6 +100,7 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
           </div>
         )}
       </TableWrapper>
+
       {createButton && (
         <IfUserCanEdit>
           <Link

@@ -6,6 +6,7 @@ import { quote } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { useSlugs } from "src/core/hooks"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import getStakeholdernotes from "../queries/getStakeholdernotes"
 import StakeholdernoteList from "./StakeholderSectionList"
 import { StakeholdernoteFilterDropdown } from "./StakeholdernoteFilterDropdown"
@@ -44,18 +45,21 @@ export const StakeholderSection: React.FC<Props> = ({ subsectionId }) => {
       />
 
       <StakeholdernoteList stakeholdernotes={filteredStakeholdernotes} />
-      <ButtonWrapper className="mt-5">
-        <Link
-          button="blue"
-          icon="plus"
-          href={Routes.NewStakeholdernotesPage({
-            projectSlug: projectSlug!,
-            subsectionSlug: subsectionSlug!,
-          })}
-        >
-          TÖB hinzufügen
-        </Link>
-      </ButtonWrapper>
+
+      <IfUserCanEdit>
+        <ButtonWrapper className="mt-5">
+          <Link
+            button="blue"
+            icon="plus"
+            href={Routes.NewStakeholdernotesPage({
+              projectSlug: projectSlug!,
+              subsectionSlug: subsectionSlug!,
+            })}
+          >
+            TÖB hinzufügen
+          </Link>
+        </ButtonWrapper>
+      </IfUserCanEdit>
     </section>
   )
 }

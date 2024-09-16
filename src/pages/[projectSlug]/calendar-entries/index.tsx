@@ -11,6 +11,7 @@ import { Link } from "src/core/components/links"
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { PageHeader } from "src/core/components/pages/PageHeader"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 
 const ITEMS_PER_PAGE = 100
 
@@ -31,15 +32,17 @@ export const CalendarEntriesWithData = () => {
     <>
       <Calender calendarEntries={calendarEntries} />
 
-      <ButtonWrapper className="mt-5">
-        <Link
-          button="blue"
-          icon="plus"
-          href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}
-        >
-          Termin
-        </Link>
-      </ButtonWrapper>
+      <IfUserCanEdit>
+        <ButtonWrapper className="mt-5">
+          <Link
+            button="blue"
+            icon="plus"
+            href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}
+          >
+            Termin
+          </Link>
+        </ButtonWrapper>
+      </IfUserCanEdit>
 
       <Pagination
         hasMore={hasMore}

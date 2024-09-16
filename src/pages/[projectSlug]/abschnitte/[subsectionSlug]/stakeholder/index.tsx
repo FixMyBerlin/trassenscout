@@ -9,6 +9,7 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { seoTitleSlug, shortTitle, startEnd } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import { StakeholderSection } from "src/stakeholdernotes/components/StakeholderSection"
 import { SubsectionTabs } from "src/subsections/components/SubsectionTabs"
 import getSubsections from "src/subsections/queries/getSubsections"
@@ -35,15 +36,17 @@ export const SubsectionStakeholdersWithQuery = () => {
         className="mt-12"
         subtitle={subsection.operator?.title}
         action={
-          <Link
-            icon="edit"
-            href={Routes.EditSubsectionPage({
-              projectSlug: projectSlug!,
-              subsectionSlug: subsectionSlug!,
-            })}
-          >
-            bearbeiten
-          </Link>
+          <IfUserCanEdit>
+            <Link
+              icon="edit"
+              href={Routes.EditSubsectionPage({
+                projectSlug: projectSlug!,
+                subsectionSlug: subsectionSlug!,
+              })}
+            >
+              bearbeiten
+            </Link>
+          </IfUserCanEdit>
         }
         description={<SubsectionTabs />}
       />

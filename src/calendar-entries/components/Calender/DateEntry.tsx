@@ -7,6 +7,7 @@ import clsx from "clsx"
 import { Disclosure } from "src/core/components/Disclosure"
 import { Link, linkStyles } from "src/core/components/links"
 import { Markdown } from "src/core/components/Markdown/Markdown"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 
 type Props = {
   calendarEntry: CalendarEntry
@@ -76,22 +77,24 @@ export const DateEntry: React.FC<Props> = ({ calendarEntry, withAction = true })
         </div>
       }
     >
-      {!calendarEntry.description ? (
-        <p className="text-gray-300">Für diesen Termin liegen keine Details vor.</p>
-      ) : (
+      {calendarEntry.description ? (
         <Markdown className="prose-sm mt-3" markdown={calendarEntry.description} />
+      ) : (
+        <p className="text-gray-300">Für diesen Termin liegen keine Details vor.</p>
       )}
       {withAction && (
         <p className="mb-5 flex items-center justify-end gap-4 text-right">
-          <Link
-            href={Routes.EditCalendarEntryPage({
-              projectSlug: projectSlug!,
-              calendarEntryId: calendarEntry.id,
-            })}
-          >
-            <PencilSquareIcon className="h-4 w-4" />
-            <span className="sr-only">Bearbeiten</span>
-          </Link>
+          <IfUserCanEdit>
+            <Link
+              href={Routes.EditCalendarEntryPage({
+                projectSlug: projectSlug!,
+                calendarEntryId: calendarEntry.id,
+              })}
+            >
+              <PencilSquareIcon className="h-4 w-4" />
+              <span className="sr-only">Bearbeiten</span>
+            </Link>
+          </IfUserCanEdit>
           <Link
             href={Routes.ShowCalendarEntryPage({
               projectSlug: projectSlug!,

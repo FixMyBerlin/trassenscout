@@ -40,21 +40,23 @@ export const __ModelName__ = () => {
         <pre>{JSON.stringify(__modelName__, null, 2)}</pre>
       </SuperAdminBox>
 
-      <if condition="parentModel">
-        <Link
-          href={Routes.Edit__ModelName__Page({
-            __parentModelId__: __parentModelId__!,
-            __modelId__: __modelName__.id,
-          })}
-        >
-          Bearbeiten
-        </Link>
-        <else>
-          <Link href={Routes.Edit__ModelName__Page({ __modelId__: __modelName__.id })}>
+      <IfUserCanEdit>
+        <if condition="parentModel">
+          <Link
+            href={Routes.Edit__ModelName__Page({
+              __parentModelId__: __parentModelId__!,
+              __modelId__: __modelName__.id,
+            })}
+          >
             Bearbeiten
           </Link>
-        </else>
-      </if>
+          <else>
+            <Link href={Routes.Edit__ModelName__Page({ __modelId__: __modelName__.id })}>
+              Bearbeiten
+            </Link>
+          </else>
+        </if>
+      </IfUserCanEdit>
 
       <button type="button" onClick={handleDelete} className={clsx(linkStyles, "ml-2")}>
         Löschen

@@ -12,6 +12,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { quote, shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import deleteSubsubsectionInfra from "src/subsubsectionInfra/mutations/deleteSubsubsectionInfra"
 import getSubsubsectionInfrasWithCount from "src/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
 
@@ -78,28 +79,30 @@ export const SubsubsectionInfrasWithData = () => {
                     {Infra.subsubsectionCount} Führungen mit der Form {quote(Infra.title)}
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
-                    <ButtonWrapper className="justify-end">
-                      <Link
-                        icon="edit"
-                        href={Routes.EditSubsubsectionInfraPage({
-                          projectSlug: projectSlug!,
-                          subsubsectionInfraId: Infra.id,
-                        })}
-                      >
-                        Bearbeiten
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(Infra.id)}
-                        className={clsx(
-                          linkStyles,
-                          "inline-flex items-center justify-center gap-1",
-                        )}
-                      >
-                        {linkIcons["delete"]}
-                        Löschen
-                      </button>
-                    </ButtonWrapper>
+                    <IfUserCanEdit>
+                      <ButtonWrapper className="justify-end">
+                        <Link
+                          icon="edit"
+                          href={Routes.EditSubsubsectionInfraPage({
+                            projectSlug: projectSlug!,
+                            subsubsectionInfraId: Infra.id,
+                          })}
+                        >
+                          Bearbeiten
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(Infra.id)}
+                          className={clsx(
+                            linkStyles,
+                            "inline-flex items-center justify-center gap-1",
+                          )}
+                        >
+                          {linkIcons["delete"]}
+                          Löschen
+                        </button>
+                      </ButtonWrapper>
+                    </IfUserCanEdit>
                   </td>
                 </tr>
               )
@@ -107,14 +110,17 @@ export const SubsubsectionInfrasWithData = () => {
           </tbody>
         </table>
       </TableWrapper>
-      <Link
-        button="blue"
-        icon="plus"
-        className="mt-4"
-        href={Routes.NewSubsubsectionInfraPage({ projectSlug: projectSlug! })}
-      >
-        Neue Führungsform
-      </Link>
+
+      <IfUserCanEdit>
+        <Link
+          button="blue"
+          icon="plus"
+          className="mt-4"
+          href={Routes.NewSubsubsectionInfraPage({ projectSlug: projectSlug! })}
+        >
+          Neue Führungsform
+        </Link>
+      </IfUserCanEdit>
 
       <Pagination
         hasMore={hasMore}

@@ -65,16 +65,18 @@ export const __ModelNames__List = () => {
       <>
         <h1>__ModelNames__</h1>
 
-        <p>
-          <if condition="parentModel">
-            <Link href={Routes.New__ModelName__Page({ __parentModelId__: __parentModelId__! })}>
-              __ModelName__ erstellen
-            </Link>
-            <else>
-              <Link href={Routes.New__ModelName__Page()}>__ModelName__ erstellen</Link>
-            </else>
-          </if>
-        </p>
+        <IfUserCanEdit>
+          <p>
+            <if condition="parentModel">
+              <Link href={Routes.New__ModelName__Page({ __parentModelId__: __parentModelId__! })}>
+                __ModelName__ erstellen
+              </Link>
+              <else>
+                <Link href={Routes.New__ModelName__Page()}>__ModelName__ erstellen</Link>
+              </else>
+            </if>
+          </p>
+        </IfUserCanEdit>
 
         <ul>
           {__modelNames__.map((__modelName__) => (

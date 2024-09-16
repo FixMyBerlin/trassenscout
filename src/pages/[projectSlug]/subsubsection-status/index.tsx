@@ -12,6 +12,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { quote, shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import deleteSubsubsectionStatus from "src/subsubsectionStatus/mutations/deleteSubsubsectionStatus"
 import getSubsubsectionStatussWithCount from "src/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
 
@@ -78,28 +79,30 @@ export const SubsubsectionStatussWithData = () => {
                     {status.subsubsectionCount} Führungen mit dem Status {quote(status.title)}
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
-                    <ButtonWrapper className="justify-end">
-                      <Link
-                        icon="edit"
-                        href={Routes.EditSubsubsectionStatusPage({
-                          projectSlug: projectSlug!,
-                          subsubsectionStatusId: status.id,
-                        })}
-                      >
-                        Bearbeiten
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(status.id)}
-                        className={clsx(
-                          linkStyles,
-                          "inline-flex items-center justify-center gap-1",
-                        )}
-                      >
-                        {linkIcons["delete"]}
-                        Löschen
-                      </button>
-                    </ButtonWrapper>
+                    <IfUserCanEdit>
+                      <ButtonWrapper className="justify-end">
+                        <Link
+                          icon="edit"
+                          href={Routes.EditSubsubsectionStatusPage({
+                            projectSlug: projectSlug!,
+                            subsubsectionStatusId: status.id,
+                          })}
+                        >
+                          Bearbeiten
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(status.id)}
+                          className={clsx(
+                            linkStyles,
+                            "inline-flex items-center justify-center gap-1",
+                          )}
+                        >
+                          {linkIcons["delete"]}
+                          Löschen
+                        </button>
+                      </ButtonWrapper>
+                    </IfUserCanEdit>
                   </td>
                 </tr>
               )
@@ -107,14 +110,17 @@ export const SubsubsectionStatussWithData = () => {
           </tbody>
         </table>
       </TableWrapper>
-      <Link
-        button="blue"
-        icon="plus"
-        className="mt-4"
-        href={Routes.NewSubsubsectionStatusPage({ projectSlug: projectSlug! })}
-      >
-        Neuer Status
-      </Link>
+
+      <IfUserCanEdit>
+        <Link
+          button="blue"
+          icon="plus"
+          className="mt-4"
+          href={Routes.NewSubsubsectionStatusPage({ projectSlug: projectSlug! })}
+        >
+          Neuer Status
+        </Link>
+      </IfUserCanEdit>
 
       <Pagination
         hasMore={hasMore}

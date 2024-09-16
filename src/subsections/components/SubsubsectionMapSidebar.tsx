@@ -14,6 +14,7 @@ import {
 } from "src/core/components/text"
 import { H2 } from "src/core/components/text/Headings"
 import { useSlugs } from "src/core/hooks"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { UploadPreview } from "src/uploads/components/UploadPreview"
 import getUploadsWithSubsections from "src/uploads/queries/getUploadsWithSubsections"
@@ -43,16 +44,18 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
           {subsubsection.type === "ROUTE" ? "Regelführung" : "Sonderführung"}
         </div>
         <div className="flex items-center gap-3">
-          <Link
-            icon="edit"
-            href={Routes.EditSubsubsectionPage({
-              projectSlug: projectSlug!,
-              subsectionSlug: subsectionSlug!,
-              subsubsectionSlug: subsubsectionSlug!,
-            })}
-          >
-            bearbeiten
-          </Link>
+          <IfUserCanEdit>
+            <Link
+              icon="edit"
+              href={Routes.EditSubsubsectionPage({
+                projectSlug: projectSlug!,
+                subsectionSlug: subsectionSlug!,
+                subsubsectionSlug: subsubsectionSlug!,
+              })}
+            >
+              bearbeiten
+            </Link>
+          </IfUserCanEdit>
           <button
             className={clsx("h-8 !w-8 !rounded-full !p-0", whiteButtonStyles)}
             onClick={onClose}
@@ -143,16 +146,18 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
       <section className="mt-10">
         <div className="mb-2 flex items-center justify-between">
           <H2>Grafiken</H2>
-          <Link
-            icon="plus"
-            href={Routes.NewUploadPage({
-              projectSlug: projectSlug!,
-              subsubsectionId: subsubsection.id,
-              returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
-            })}
-          >
-            Grafik
-          </Link>
+          <IfUserCanEdit>
+            <Link
+              icon="plus"
+              href={Routes.NewUploadPage({
+                projectSlug: projectSlug!,
+                subsubsectionId: subsubsection.id,
+                returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
+              })}
+            >
+              Grafik
+            </Link>
+          </IfUserCanEdit>
         </div>
         {!uploads.length && <p>Es gibt noch keine Grafiken für diese Planung</p>}
         <div className="grid grid-cols-2 gap-3">

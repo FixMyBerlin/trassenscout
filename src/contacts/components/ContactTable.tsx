@@ -9,6 +9,7 @@ import { Link, LinkMail, LinkTel, whiteButtonStyles } from "src/core/components/
 import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
 import { shortTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import getProject from "src/projects/queries/getProject"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getFullname } from "src/users/utils"
@@ -104,15 +105,17 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
                 </td>
                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                   <div className="flex items-center justify-end gap-4 text-right">
-                    <Link
-                      href={Routes.EditContactPage({
-                        contactId: contact.id,
-                        projectSlug: projectSlug!,
-                      })}
-                    >
-                      <PencilSquareIcon className="h-4 w-4" />
-                      <span className="sr-only">Bearbeiten</span>
-                    </Link>
+                    <IfUserCanEdit>
+                      <Link
+                        href={Routes.EditContactPage({
+                          contactId: contact.id,
+                          projectSlug: projectSlug!,
+                        })}
+                      >
+                        <PencilSquareIcon className="h-4 w-4" />
+                        <span className="sr-only">Bearbeiten</span>
+                      </Link>
+                    </IfUserCanEdit>
                     <Link
                       href={Routes.ShowContactPage({
                         contactId: contact.id,
@@ -136,9 +139,15 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
       </TableWrapper>
 
       <ButtonWrapper className="justify-between">
-        <Link button="blue" icon="plus" href={Routes.NewContactPage({ projectSlug: projectSlug! })}>
-          Kontakt
-        </Link>
+        <IfUserCanEdit>
+          <Link
+            button="blue"
+            icon="plus"
+            href={Routes.NewContactPage({ projectSlug: projectSlug! })}
+          >
+            Kontakt
+          </Link>
+        </IfUserCanEdit>
         <button disabled={!mailButtonActive} className={whiteButtonStyles} type="submit">
           Mail schreiben
         </button>

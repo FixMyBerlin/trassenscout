@@ -40,14 +40,19 @@ export const ProjectDashboardWithQuery = () => {
   if (!subsections.length) {
     return (
       <section className="mt-12 p-5">
-        <ButtonWrapper>
-          <Link button="blue" href={Routes.NewSubsectionPage({ projectSlug: projectSlug! })}>
-            Neuer Planungsabschnitt
-          </Link>
-          <Link button="blue" href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
-            {shortTitle(project.slug)} bearbeiten
-          </Link>
-        </ButtonWrapper>
+        <IfUserCanEdit>
+          <ButtonWrapper>
+            <Link button="blue" href={Routes.NewSubsectionPage({ projectSlug: projectSlug! })}>
+              Neuer Planungsabschnitt
+            </Link>
+            <Link button="blue" href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
+              {shortTitle(project.slug)} bearbeiten
+            </Link>
+          </ButtonWrapper>
+        </IfUserCanEdit>
+        <div className="border-t px-4 py-5 text-center text-gray-500">
+          Noch keine Planungsabschnitte angelegt
+        </div>
       </section>
     )
   }

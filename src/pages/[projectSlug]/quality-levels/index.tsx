@@ -12,6 +12,7 @@ import { Spinner } from "src/core/components/Spinner"
 import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { shortTitle } from "src/core/components/text"
 import { LayoutRs, MetaTags } from "src/core/layouts"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import deleteQualityLevel from "src/qualityLevels/mutations/deleteQualityLevel"
 import getQualityLevelsWithCount from "src/qualityLevels/queries/getQualityLevelsWithCount"
 
@@ -107,14 +108,17 @@ export const QualityLevelsWithData = () => {
           </tbody>
         </table>
       </TableWrapper>
-      <Link
-        button="blue"
-        icon="plus"
-        className="mt-4"
-        href={Routes.NewQualityLevelPage({ projectSlug: projectSlug! })}
-      >
-        Neuer Ausbaustandard
-      </Link>
+
+      <IfUserCanEdit>
+        <Link
+          button="blue"
+          icon="plus"
+          className="mt-4"
+          href={Routes.NewQualityLevelPage({ projectSlug: projectSlug! })}
+        >
+          Neuer Ausbaustandard
+        </Link>
+      </IfUserCanEdit>
 
       <Pagination
         hasMore={hasMore}

@@ -9,6 +9,7 @@ import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
 import { shortTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
+import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import { defaultGeometryForMultipleSubsectionForm } from "src/pages/admin/[projectSlug]/subsections/multiple-new"
 import deleteSubsection from "../mutations/deleteSubsection"
 import { SubsectionWithPosition } from "../queries/getSubsection"
@@ -151,21 +152,23 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds 
                     )}
                   </td>
                   <td className="space-y-2 pr-2">
-                    <Link
-                      href={Routes.EditSubsectionPage({
-                        projectSlug: projectSlug!,
-                        subsectionSlug: subsection.slug,
-                      })}
-                    >
-                      <PencilSquareIcon className="h-4 w-4" />
-                      <span className="sr-only">Bearbeiten</span>
-                    </Link>
-                    <button
-                      className="text-blue-500 hover:text-blue-800"
-                      onClick={() => handleDeleteSubsection(subsection.id)}
-                    >
-                      <TrashIcon className="h-4 w-4" />
-                    </button>
+                    <IfUserCanEdit>
+                      <Link
+                        href={Routes.EditSubsectionPage({
+                          projectSlug: projectSlug!,
+                          subsectionSlug: subsection.slug,
+                        })}
+                      >
+                        <PencilSquareIcon className="h-4 w-4" />
+                        <span className="sr-only">Bearbeiten</span>
+                      </Link>
+                      <button
+                        className="text-blue-500 hover:text-blue-800"
+                        onClick={() => handleDeleteSubsection(subsection.id)}
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                      </button>
+                    </IfUserCanEdit>
                   </td>
                 </tr>
               )
