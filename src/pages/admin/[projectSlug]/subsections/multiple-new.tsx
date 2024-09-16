@@ -19,6 +19,11 @@ import createSubsections from "src/subsections/mutations/createSubsections"
 import getSubsectionMaxOrder from "src/subsections/queries/getSubsectionMaxOrder"
 import { SubsectionsFormSchema } from "src/subsections/schema"
 
+export const defaultGeometryForMultipleSubsectionForm = [
+  [5.98865807458, 47.3024876979],
+  [15.0169958839, 54.983104153],
+] satisfies [[number, number], [number, number]]
+
 const AdminNewSubsections = () => {
   const router = useRouter()
   const { projectSlug } = useSlugs()
@@ -43,16 +48,8 @@ const AdminNewSubsections = () => {
         end: "unbekannt",
         slug: `pa${values.prefix}.${maxOrderSubsections + i + 1}`,
         order: maxOrderSubsections + i + 1,
-        geometry: [
-          [5.98865807458, 47.3024876979],
-          [15.0169958839, 54.983104153],
-        ],
-        lengthKm: length(
-          lineString([
-            [5.98865807458, 47.3024876979],
-            [15.0169958839, 54.983104153],
-          ]),
-        ),
+        geometry: defaultGeometryForMultipleSubsectionForm,
+        lengthKm: length(lineString(defaultGeometryForMultipleSubsectionForm)),
       })
     }
     try {

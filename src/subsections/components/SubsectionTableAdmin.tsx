@@ -9,6 +9,7 @@ import { TableWrapper } from "src/core/components/Table/TableWrapper"
 import { Link } from "src/core/components/links"
 import { shortTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
+import { defaultGeometryForMultipleSubsectionForm } from "src/pages/admin/[projectSlug]/subsections/multiple-new"
 import deleteSubsection from "../mutations/deleteSubsection"
 import { SubsectionWithPosition } from "../queries/getSubsection"
 
@@ -86,6 +87,9 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds 
                 projectSlug: projectSlug!,
                 subsectionSlug: subsection.slug,
               })
+              const noPreviewForDefaultGeometry =
+                String(subsection.geometry) === defaultGeometryForMultipleSubsectionForm.join(",")
+
               return (
                 <tr
                   key={subsection.id}
@@ -128,14 +132,12 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds 
                   <td
                     className={clsx(
                       "py-4 pl-4 pr-3 text-sm font-medium group-hover:bg-gray-50",
-                      String(subsection.geometry) ===
-                        "5.98865807458,47.3024876979,15.0169958839,54.983104153"
+                      noPreviewForDefaultGeometry
                         ? "text-gray-300 group-hover:text-gray-500"
                         : "text-gray-900",
                     )}
                   >
-                    {String(subsection.geometry) !==
-                    "5.98865807458,47.3024876979,15.0169958839,54.983104153" ? (
+                    {noPreviewForDefaultGeometry ? (
                       <Link
                         blank
                         href={`http://geojson.io/#data=data:application/json,${encodeURIComponent(
