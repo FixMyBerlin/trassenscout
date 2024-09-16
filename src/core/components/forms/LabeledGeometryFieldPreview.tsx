@@ -121,7 +121,7 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
             <summary className="cursor-pointer">Geometry</summary>
             <Link
               blank
-              href={`http://geojson.io/#data=data:application/json,${encodeURIComponent(
+              href={`http://play.placemark.io/?load=data:application/json,${encodeURIComponent(
                 JSON.stringify(
                   geometryType === "ROUTE"
                     ? lineString(geometry as RouteGeomtry)
@@ -129,7 +129,7 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
                 ),
               )}`}
             >
-              Auf geojson.io öffnen
+              Auf placemark.io öffnen
             </Link>
             <pre className="m-0 text-xs leading-none">{JSON.stringify(geometry, undefined, 2)}</pre>
           </details>

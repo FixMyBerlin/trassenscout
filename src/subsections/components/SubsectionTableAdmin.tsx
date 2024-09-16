@@ -140,11 +140,11 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds 
                     {noPreviewForDefaultGeometry ? (
                       <Link
                         blank
-                        href={`http://geojson.io/#data=data:application/json,${encodeURIComponent(
+                        href={`https://play.placemark.io/?load=data:application/json,${encodeURIComponent(
                           JSON.stringify(lineString(subsection.geometry)),
                         )}`}
                       >
-                        Auf geojson.io öffnen
+                        Auf placemark.io öffnen
                       </Link>
                     ) : (
                       "unbekannt"
