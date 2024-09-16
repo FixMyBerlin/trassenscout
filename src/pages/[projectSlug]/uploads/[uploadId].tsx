@@ -38,8 +38,6 @@ export const Upload = () => {
     }
   }
 
-  const isSubsubsectionUpload = Boolean(upload.subsubsectionId)
-
   return (
     <>
       <PageHeader title="Dokument Details" className="mt-12" />

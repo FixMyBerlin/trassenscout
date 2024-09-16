@@ -12,7 +12,6 @@ import { PageHeader } from "src/core/components/pages/PageHeader"
 import { seoNewTitle } from "src/core/components/text"
 import { useSlugs } from "src/core/hooks"
 import { LayoutRs, MetaTags } from "src/core/layouts"
-import getProjectUsers from "src/memberships/queries/getProjectUsers"
 import getProject from "src/projects/queries/getProject"
 import { FORM_ERROR, SubsectionsForm } from "src/subsections/components/SubsectionsForm"
 import createSubsections from "src/subsections/mutations/createSubsections"
@@ -29,7 +28,6 @@ const AdminNewSubsections = () => {
   const { projectSlug } = useSlugs()
   const [project] = useQuery(getProject, { slug: projectSlug! })
   const [createSubsectionsMutation] = useMutation(createSubsections)
-  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {

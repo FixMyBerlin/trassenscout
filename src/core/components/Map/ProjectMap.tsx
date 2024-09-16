@@ -51,7 +51,7 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   const handleSelect = ({ subsectionSlug, edit }: HandleSelectProps) => {
     if (!projectSlug) return
     // alt+click
-    let url =
+    const url =
       userCan.edit && edit
         ? Routes.EditSubsectionPage({ projectSlug, subsectionSlug })
         : Routes.SubsectionDashboardPage({ projectSlug, subsectionSlug })

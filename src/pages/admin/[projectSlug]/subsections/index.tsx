@@ -54,21 +54,21 @@ export const AdminSubsectionsWithQuery = () => {
     if (!project.felt_subsection_geometry_source_url) {
       window.alert("Keine Felt URL")
       return console.error("No Felt URL")
-    } else {
-      try {
-        const subsectionIds = await updateSubsectionMutation({
-          subsections,
-          projectFeltUrl: project.felt_subsection_geometry_source_url,
-        })
-        setError(null)
-        if (subsectionIds) setUpdatedIds(subsectionIds)
-        await refetch()
-        window.scrollTo(0, 0)
-        setIsFetching(false)
-      } catch (error: any) {
-        setError(error)
-        return console.error(error)
-      }
+    }
+
+    try {
+      const subsectionIds = await updateSubsectionMutation({
+        subsections,
+        projectFeltUrl: project.felt_subsection_geometry_source_url,
+      })
+      setError(null)
+      if (subsectionIds) setUpdatedIds(subsectionIds)
+      await refetch()
+      window.scrollTo(0, 0)
+      setIsFetching(false)
+    } catch (error: any) {
+      setError(error)
+      return console.error(error)
     }
   }
 
@@ -82,6 +82,7 @@ export const AdminSubsectionsWithQuery = () => {
         subtitle={project.subTitle}
         description={`Planungsabschnitte ${project.subTitle}`}
       />
+
       <SuperAdminBox>
         {project.description && (
           <PageDescription>
