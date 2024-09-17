@@ -1,9 +1,12 @@
 import db, { Prisma } from "@/db"
+import getProjects from "@/src/projects/queries/getProjects"
 import { resolver } from "@blitzjs/rpc"
 import { Ctx, paginate } from "blitz"
 
 interface GetProjectsInput
   extends Pick<Prisma.ProjectFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
+
+export type TGetProjects = Awaited<ReturnType<typeof getProjects>>
 
 export default resolver.pipe(
   resolver.authorize(/* ok */),

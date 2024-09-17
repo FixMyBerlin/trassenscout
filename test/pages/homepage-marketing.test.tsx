@@ -1,10 +1,10 @@
 /**
  * @vitest-environment jsdom
  */
+import Home from "@/src/pages"
 import { CurrentUser } from "@/src/users/types"
 import { expect, test, vi } from "vitest"
-import Home from "../src/pages/index"
-import { render } from "./utils"
+import { render } from "../utils"
 
 // vi.mock("public/logo.png", () => ({
 //   default: { src: "/logo.png" },
