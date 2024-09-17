@@ -102,6 +102,7 @@
     "eslint-config-prettier": "8.8.0",
     "husky": "8.0.3",
     "jsdom": "22.1.0",
+    "next-router-mock": "0.9.13",
     "prettier": "3.0.0",
     "prettier-plugin-organize-imports": "4.0.0",
     "prettier-plugin-prisma": "5.0.0",
