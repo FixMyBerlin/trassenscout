@@ -7,6 +7,7 @@ import { UserCanIcon } from "src/memberships/components/UserCanIcon"
 import { roleTranslation } from "src/memberships/components/roleTranslation.const"
 import getProjectUsers from "src/memberships/queries/getProjectUsers"
 import { getFullname } from "src/users/utils"
+import { TeamTableEditMembershipDelete } from "./TeamTableEditMembershipDelete"
 import { TeamTableEditMembershipModal } from "./TeamTableEditMembershipModal"
 
 export const TeamTable = () => {
@@ -58,6 +59,7 @@ export const TeamTable = () => {
                     />
                     {roleTranslation[user.currentMembershipRole]}
                     <TeamTableEditMembershipModal editUser={user} />
+                    <TeamTableEditMembershipDelete membershipId={user.currentMembershipId} />
                   </div>
                 </td>
               </tr>

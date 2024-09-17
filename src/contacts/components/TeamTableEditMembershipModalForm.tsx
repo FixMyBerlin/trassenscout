@@ -25,8 +25,7 @@ export const TeamTableEditMembershipModalForm = ({ editUser, closeModal }: Props
     try {
       await updateUserMutation(
         {
-          projectSlug: projectSlug!,
-          userId: editUser.id,
+          membershipId: editUser.currentMembershipId,
           role: values.role,
         },
         {
@@ -48,15 +47,15 @@ export const TeamTableEditMembershipModalForm = ({ editUser, closeModal }: Props
       schema={submitSchema}
       initialValues={{ role: editUser.currentMembershipRole }}
       onSubmit={handleSubmit}
-      editUser={editUser}
+      editUserRole={editUser.currentMembershipRole}
     />
   )
 }
 
 const TeamTableEditMembershipModalFormFields = <S extends z.ZodType<any, any>>({
-  editUser,
+  editUserRole,
   ...props
-}: FormProps<S> & Pick<Props, "editUser">) => {
+}: FormProps<S> & { editUserRole: MembershipRoleEnum }) => {
   return (
     <Form<S> className="max-w-prose" {...props}>
       <LabeledRadiobuttonGroup
@@ -67,7 +66,7 @@ const TeamTableEditMembershipModalFormFields = <S extends z.ZodType<any, any>>({
             scope: role,
             value: role,
             label: roleTranslation[role],
-            defaultChecked: role === editUser.currentMembershipRole,
+            defaultChecked: role === editUserRole,
           }
         })}
       />

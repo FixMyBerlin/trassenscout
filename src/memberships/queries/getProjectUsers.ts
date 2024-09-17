@@ -22,19 +22,28 @@ export default resolver.pipe(
         email: true,
         phone: true,
         role: true,
-        memberships: { select: { project: { select: { slug: true } }, role: true } },
+        memberships: {
+          select: {
+            project: { select: { slug: true } },
+            id: true,
+            role: true,
+          },
+        },
       },
     })
 
     // We flatten the memberships in order to not leak a list of memberships for one user to all users that receive this data
     type NonLeakingUser = Omit<(typeof users)[number], "memberships"> & {
+      currentMembershipId: number
       currentMembershipRole: MembershipRoleEnum
     }
     const secureUsers = users.map((user) => {
       const { memberships, ...secureUser } = user
+      const membership = memberships.find((m) => m.project.slug === projectSlug)
       // @ts-expect-error we add this property to the type in the next line
-      secureUser.currentMembershipRole = memberships.find((m) => m.project.slug === projectSlug)
-        ?.role
+      secureUser.currentMembershipId = membership?.id
+      // @ts-expect-error we add this property to the type in the next line
+      secureUser.currentMembershipRole = membership?.role
       return secureUser as NonLeakingUser
     })
 

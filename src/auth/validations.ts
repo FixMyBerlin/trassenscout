@@ -27,8 +27,7 @@ export const UpdateUser = z.object({
   institution: z.string().nullable(),
 })
 export const UpdateMembershipRole = z.object({
-  projectSlug: z.string(),
-  userId: z.number(),
+  membershipId: z.number(),
   role: z.nativeEnum(MembershipRoleEnum),
 })
 
