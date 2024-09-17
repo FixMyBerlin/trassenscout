@@ -1,11 +1,11 @@
+import { Spinner } from "@/src/core/components/Spinner"
+import { getImageSrc } from "@/src/core/utils/getImageSrc"
+import getProject from "@/src/projects/queries/getProject"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { clsx } from "clsx"
 import Image from "next/image"
 import { Suspense } from "react"
-import { Spinner } from "src/core/components/Spinner"
-import { getImageSrc } from "src/core/utils/getImageSrc"
-import getProject from "src/projects/queries/getProject"
 
 type Props = {
   className?: string

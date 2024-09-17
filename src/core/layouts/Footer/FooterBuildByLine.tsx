@@ -1,4 +1,4 @@
-import { Link } from "src/core/components/links"
+import { Link } from "@/src/core/components/links"
 
 export const FooterBuildByLine: React.FC = () => {
   return (

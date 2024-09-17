@@ -1,4 +1,4 @@
-import { isDev } from "src/core/utils"
+import { isDev } from "@/src/core/utils"
 
 export const TailwindResponsiveHelper: React.FC = () => {
   if (!isDev) return null

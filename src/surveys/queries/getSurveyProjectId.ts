@@ -1,4 +1,4 @@
-import db from "db"
+import db from "@/db"
 
 const getSurveyProjectId = async (input: Record<string, any>) =>
   (

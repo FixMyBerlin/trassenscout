@@ -1,7 +1,7 @@
+import { useSlugs } from "@/src/core/hooks"
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { PromiseReturnType } from "blitz"
 import router from "next/router"
-import { useSlugs } from "src/core/hooks"
 import getStakeholdernotes from "../queries/getStakeholdernotes"
 import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
 

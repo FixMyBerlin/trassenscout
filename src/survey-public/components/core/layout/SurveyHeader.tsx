@@ -1,6 +1,6 @@
+import { ProgressBar } from "@/src/survey-public/components/core/layout/ProgressBar"
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import Image from "next/image"
-import { ProgressBar } from "src/survey-public/components/core/layout/ProgressBar"
 import { SurveyLink } from "../links/SurveyLink"
 
 type Props = {

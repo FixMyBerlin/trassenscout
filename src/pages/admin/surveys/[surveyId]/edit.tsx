@@ -1,13 +1,13 @@
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
+import { Spinner } from "@/src/core/components/Spinner"
+import { LayoutArticle, MetaTags } from "@/src/core/layouts"
+import { FORM_ERROR, SurveyForm } from "@/src/surveys/components/SurveyForm"
+import updateSurvey from "@/src/surveys/mutations/updateSurvey"
+import getSurvey from "@/src/surveys/queries/getSurvey"
 import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Spinner } from "src/core/components/Spinner"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import { FORM_ERROR, SurveyForm } from "src/surveys/components/SurveyForm"
-import updateSurvey from "src/surveys/mutations/updateSurvey"
-import getSurvey from "src/surveys/queries/getSurvey"
 
 const AdminEditSurvey = () => {
   const router = useRouter()

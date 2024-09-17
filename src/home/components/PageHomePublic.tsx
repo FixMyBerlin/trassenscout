@@ -1,4 +1,4 @@
-import { Layout, MetaTags } from "src/core/layouts"
+import { Layout, MetaTags } from "@/src/core/layouts"
 import { PageHomePublicContact } from "./PageHomePublicContact"
 import PageHomePublicOnline from "./PageHomePublicOnline"
 import { PageHomePublicPhotos } from "./PageHomePublicPhotos"

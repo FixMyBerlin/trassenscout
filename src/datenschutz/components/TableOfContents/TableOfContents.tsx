@@ -1,4 +1,4 @@
-import { Link } from "src/core/components/links"
+import { Link } from "@/src/core/components/links"
 import { TocHashLink } from "./types"
 
 type Props = { items: TocHashLink }

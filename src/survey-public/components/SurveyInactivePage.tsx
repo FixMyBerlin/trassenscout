@@ -1,6 +1,6 @@
+import { SurveyLayout } from "@/src/survey-public/components/core/layout/SurveyLayout"
 import { BlitzPage } from "@blitzjs/next"
 import { useEffect } from "react"
-import { SurveyLayout } from "src/survey-public/components/core/layout/SurveyLayout"
 import { SurveyScreenHeader } from "./core/layout/SurveyScreenHeader"
 import { SurveyLink } from "./core/links/SurveyLink"
 import { TSurvey } from "./types"

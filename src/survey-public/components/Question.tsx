@@ -3,14 +3,14 @@ import {
   TQuestion,
   TSingleOrMultiResponseProps,
   TTextProps,
-} from "src/survey-public/components/types"
+} from "@/src/survey-public/components/types"
 import { SurveyH2 } from "./core/Text"
 import { SurveyLabeledCheckboxGroup } from "./core/form/SurveyLabeledCheckboxGroup"
 import { SurveyLabeledRadiobuttonGroup } from "./core/form/SurveyLabeledRadiobuttonGroup"
 import { SurveyLabeledReadOnlyTextField } from "./core/form/SurveyLabeledReadOnlyTextField"
 import { SurveyLabeledTextField } from "./core/form/SurveyLabeledTextField"
 import { SurveyLabeledTextareaField } from "./core/form/SurveyLabeledTextareaField"
-export { FORM_ERROR } from "src/core/components/forms"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 type TSingleOrMultuResponseComponentProps = {
   id: number

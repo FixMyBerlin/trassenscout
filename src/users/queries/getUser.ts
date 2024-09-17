@@ -1,4 +1,4 @@
-import db from "db"
+import db from "@/db"
 import { CurrentUser } from "../types"
 
 export default async function getUser(id: number) {

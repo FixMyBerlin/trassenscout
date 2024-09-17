@@ -1,7 +1,7 @@
+import db from "@/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
 import { AuthenticationError } from "blitz"
-import db from "db"
 import { getMemberships } from "../getMemberships"
 import { Login } from "../validations"
 

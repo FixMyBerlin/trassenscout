@@ -1,20 +1,20 @@
-import { Routes } from "@blitzjs/next"
-import clsx from "clsx"
-import { useRouter } from "next/router"
-import { SubsubsectionIcon } from "src/core/components/Map/Icons"
-import { TableWrapper } from "src/core/components/Table/TableWrapper"
-import { Link } from "src/core/components/links"
+import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
+import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
+import { Link } from "@/src/core/components/links"
 import {
   formattedEuro,
   formattedLength,
   formattedWidth,
   longTitle,
   shortTitle,
-} from "src/core/components/text"
-import { ZeroCase } from "src/core/components/text/ZeroCase"
-import { useSlugs } from "src/core/hooks"
-import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
-import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
+} from "@/src/core/components/text"
+import { ZeroCase } from "@/src/core/components/text/ZeroCase"
+import { useSlugs } from "@/src/core/hooks"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
+import { Routes } from "@blitzjs/next"
+import clsx from "clsx"
+import { useRouter } from "next/router"
 import { mapillaryLink } from "../../subsections/components/utils/mapillaryLink"
 import { SubsubsectionTableFooter } from "./SubsubsectionTableFooter"
 

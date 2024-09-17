@@ -1,4 +1,4 @@
-import db from "db"
+import db from "@/db"
 
 const getSubsubsectionProjectId = async (input: Record<string, any>) => {
   const subsubsectionId = input.id || null

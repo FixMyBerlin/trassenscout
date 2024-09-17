@@ -1,5 +1,5 @@
-import { isProduction } from "src/core/utils"
-import { TSurvey } from "src/survey-public/components/types"
+import { isProduction } from "@/src/core/utils"
+import { TSurvey } from "@/src/survey-public/components/types"
 
 export const surveyDefinition: TSurvey = {
   part: 1,

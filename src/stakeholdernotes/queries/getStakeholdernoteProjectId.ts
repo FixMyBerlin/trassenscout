@@ -1,4 +1,4 @@
-import db from "db"
+import db from "@/db"
 
 const getStakeholdernoteProjectId = async (input: Record<string, any>) => {
   const stakeholdernoteId = input.id || null

@@ -1,9 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
+import { Link } from "@/src/core/components/links"
+import { useUserCan } from "@/src/memberships/hooks/useUserCan"
 import { DocumentIcon } from "@heroicons/react/24/outline"
 import { Upload } from "@prisma/client"
 import { RouteUrlObject } from "blitz"
-import { Link } from "src/core/components/links"
-import { useUserCan } from "src/memberships/hooks/useUserCan"
 import { uploadUrl } from "../utils"
 
 type Props = {

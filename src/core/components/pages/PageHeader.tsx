@@ -1,6 +1,6 @@
+import { useSlugs } from "@/src/core/hooks"
+import { CurrentUserCanIcon } from "@/src/memberships/components/CurrentUserCanIcon"
 import clsx from "clsx"
-import { useSlugs } from "src/core/hooks"
-import { CurrentUserCanIcon } from "src/memberships/components/CurrentUserCanIcon"
 import { DashedLine } from "../DashedLine"
 import { H1, H2 } from "../text/Headings"
 

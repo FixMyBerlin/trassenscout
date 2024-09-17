@@ -2,7 +2,7 @@ import {
   TFeedbackQuestion,
   TResponse,
   TSingleOrMultiResponseProps,
-} from "src/survey-public/components/types"
+} from "@/src/survey-public/components/types"
 
 export const getSurveyResponseCategoryById = (
   id: number,

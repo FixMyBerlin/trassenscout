@@ -1,5 +1,5 @@
+import db from "@/db"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
 import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 import { SurveyResponseTopicSchema } from "../schema"

@@ -1,10 +1,10 @@
+import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
+import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import { Routes, useParam } from "@blitzjs/next"
 import "maplibre-gl/dist/maplibre-gl.css"
 import router from "next/router"
 import React, { useState } from "react"
 import Map, { LngLatBoundsLike, Marker, NavigationControl } from "react-map-gl/maplibre"
-import { BackgroundSwitcher, LayerType } from "src/core/components/Map/BackgroundSwitcher"
-import SurveyStaticPin from "src/core/components/Map/SurveyStaticPin"
 
 type Props = {
   maptilerUrl: string

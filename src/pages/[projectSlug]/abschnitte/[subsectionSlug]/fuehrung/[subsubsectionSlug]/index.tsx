@@ -1,5 +1,5 @@
+import { useSlugs } from "@/src/core/hooks"
 import { BlitzPage } from "@blitzjs/next"
-import { useSlugs } from "src/core/hooks"
 import SubsectionDashboardPage from "../.."
 
 const SubsubsectionDashboardPage: BlitzPage = () => {

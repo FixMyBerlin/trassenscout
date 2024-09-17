@@ -1,4 +1,4 @@
-import db from "db"
+import db from "@/db"
 
 const getNetworkHierarchyProjectId = async (input: Record<string, any>) =>
   (

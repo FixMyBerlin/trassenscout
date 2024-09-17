@@ -1,6 +1,6 @@
+import { MembershipRole } from "@/src/authorization/types"
 import { LockClosedIcon, LockOpenIcon } from "@heroicons/react/20/solid"
 import { clsx } from "clsx"
-import { MembershipRole } from "src/authorization/types"
 import { roleTranslation } from "./roleTranslation.const"
 
 type Props = { role: MembershipRole; isAdmin: boolean; className?: string }

@@ -1,24 +1,24 @@
-import { Routes } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
-import clsx from "clsx"
-import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
-import { SubsubsectionIcon } from "src/core/components/Map/Icons"
-import { Markdown } from "src/core/components/Markdown/Markdown"
-import { Link, whiteButtonStyles } from "src/core/components/links"
-import { PageDescription } from "src/core/components/pages/PageDescription"
+import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
+import { Markdown } from "@/src/core/components/Markdown/Markdown"
+import { Link, whiteButtonStyles } from "@/src/core/components/links"
+import { PageDescription } from "@/src/core/components/pages/PageDescription"
 import {
   formattedEuro,
   formattedLength,
   formattedWidth,
   shortTitle,
-} from "src/core/components/text"
-import { H2 } from "src/core/components/text/Headings"
-import { useSlugs } from "src/core/hooks"
-import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
-import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
-import { UploadPreview } from "src/uploads/components/UploadPreview"
-import getUploadsWithSubsections from "src/uploads/queries/getUploadsWithSubsections"
-import { getFullname } from "src/users/utils"
+} from "@/src/core/components/text"
+import { H2 } from "@/src/core/components/text/Headings"
+import { useSlugs } from "@/src/core/hooks"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
+import { UploadPreview } from "@/src/uploads/components/UploadPreview"
+import getUploadsWithSubsections from "@/src/uploads/queries/getUploadsWithSubsections"
+import { getFullname } from "@/src/users/utils"
+import { Routes } from "@blitzjs/next"
+import { useQuery } from "@blitzjs/rpc"
+import clsx from "clsx"
 import { mapillaryLink } from "./utils/mapillaryLink"
 
 type Props = {

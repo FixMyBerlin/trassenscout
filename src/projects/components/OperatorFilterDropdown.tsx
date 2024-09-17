@@ -1,11 +1,11 @@
+import { shortTitle } from "@/src/core/components/text"
+import { useSlugs } from "@/src/core/hooks"
+import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { RadioGroup } from "@headlessui/react"
 import clsx from "clsx"
 import router from "next/router"
-import { shortTitle } from "src/core/components/text"
-import { useSlugs } from "src/core/hooks"
-import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 
 export const OperatorFilterDropdown: React.FC = () => {
   const params = useRouterQuery()

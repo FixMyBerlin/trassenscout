@@ -1,18 +1,18 @@
+import { Spinner } from "@/src/core/components/Spinner"
+import PageHomeNoProject from "@/src/home/components/PageHomeNoProject"
+import PageHomePublic from "@/src/home/components/PageHomePublic"
+import getProjects from "@/src/projects/queries/getProjects"
 import { getSession } from "@blitzjs/auth"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { GetServerSidePropsContext } from "next"
 import router from "next/router"
 import { Suspense } from "react"
-import { Spinner } from "src/core/components/Spinner"
-import PageHomeNoProject from "src/home/components/PageHomeNoProject"
-import PageHomePublic from "src/home/components/PageHomePublic"
-import getProjects from "src/projects/queries/getProjects"
 import { api } from "../blitz-server"
 import getCurrentUser from "../users/queries/getCurrentUser"
 import { CurrentUser } from "../users/types"
 
-const HomeWithWithProjectsQuery: React.FC = () => {
+const HomeWithWithProjectsQuery = () => {
   const projects = useQuery(getProjects, {})[0].projects
   if (projects.length) {
     void router.push(Routes.ProjectDashboardPage({ projectSlug: projects[0]!.slug }))
@@ -22,7 +22,7 @@ const HomeWithWithProjectsQuery: React.FC = () => {
   return <PageHomeNoProject />
 }
 
-const Home: BlitzPage<{ user: CurrentUser }> = ({ user }) => {
+const Home: BlitzPage<{ user: CurrentUser | null }> = ({ user }) => {
   if (user) {
     return (
       <Suspense fallback={<Spinner page />}>

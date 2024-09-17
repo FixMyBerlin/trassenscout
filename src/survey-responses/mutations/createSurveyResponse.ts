@@ -1,6 +1,6 @@
+import db from "@/db"
 import { resolver } from "@blitzjs/rpc"
 import { SurveyResponseSourceEnum } from "@prisma/client"
-import db from "db"
 import { z } from "zod"
 
 const CreateSurveyResponseSchema = z.object({

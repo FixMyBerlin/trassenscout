@@ -1,11 +1,11 @@
+import signup from "@/src/auth/mutations/signup"
+import { Signup } from "@/src/auth/validations"
+import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
+import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
+import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import { Link } from "@/src/core/components/links"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
-import signup from "src/auth/mutations/signup"
-import { Signup } from "src/auth/validations"
-import { FORM_ERROR, Form } from "src/core/components/forms/Form"
-import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
-import { improveErrorMessage } from "src/core/components/forms/improveErrorMessage"
-import { Link } from "src/core/components/links"
 
 type SignupFormProps = {
   onSuccess?: () => void

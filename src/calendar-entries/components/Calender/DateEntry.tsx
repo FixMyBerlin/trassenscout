@@ -1,13 +1,13 @@
+import { Disclosure } from "@/src/core/components/Disclosure"
+import { Markdown } from "@/src/core/components/Markdown/Markdown"
+import { Link, linkStyles } from "@/src/core/components/links"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { Routes, useParam } from "@blitzjs/next"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { ComputerDesktopIcon } from "@heroicons/react/24/outline"
 import { CalendarDaysIcon, MapPinIcon } from "@heroicons/react/24/solid"
 import { CalendarEntry } from "@prisma/client"
 import clsx from "clsx"
-import { Disclosure } from "src/core/components/Disclosure"
-import { Link, linkStyles } from "src/core/components/links"
-import { Markdown } from "src/core/components/Markdown/Markdown"
-import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 
 type Props = {
   calendarEntry: CalendarEntry

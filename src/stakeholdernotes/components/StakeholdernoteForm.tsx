@@ -1,15 +1,15 @@
-import { Stakeholdernote } from "@prisma/client"
 import {
   Form,
   FormProps,
   LabeledRadiobuttonGroup,
   LabeledTextareaField,
   LabeledTextField,
-} from "src/core/components/forms"
+} from "@/src/core/components/forms"
+import { Stakeholdernote } from "@prisma/client"
 import { z } from "zod"
 import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
 import { StakeholderSectionListItemStatus } from "./StakeholderSectionListItemStatus"
-export { FORM_ERROR } from "src/core/components/forms"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 export function StakeholdernoteForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (

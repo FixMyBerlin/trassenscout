@@ -1,6 +1,6 @@
+import db from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
-import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
 import { SubsectionWithPosition } from "../queries/getSubsection"
 import getSubsectionProjectId from "../queries/getSubsectionProjectId"

@@ -5,8 +5,8 @@ import {
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
-} from "src/core/components/forms"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
+} from "@/src/core/components/forms"
+import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 
 export default function FormTest() {
   const handleSubmit = async (values: any) => {

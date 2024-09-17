@@ -1,4 +1,4 @@
-import { Link } from "src/core/components/links"
+import { Link } from "@/src/core/components/links"
 import { links } from "./links.const"
 
 export const FooterMinimal: React.FC = () => {

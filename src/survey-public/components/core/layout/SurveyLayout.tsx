@@ -1,6 +1,6 @@
+import { TailwindResponsiveHelper } from "@/src/core/layouts/TailwindResponsiveHelper/TailwindResponsiveHelper"
 import { BlitzLayout, useParam } from "@blitzjs/next"
 import Head from "next/head"
-import { TailwindResponsiveHelper } from "src/core/layouts/TailwindResponsiveHelper/TailwindResponsiveHelper"
 import { SurveyMetaTags } from "../SurveyMetaTags"
 import { SurveyContainer } from "./SurveyContainer"
 import { SurveyFooter } from "./SurveyFooter"

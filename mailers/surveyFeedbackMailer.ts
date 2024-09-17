@@ -1,6 +1,6 @@
+import { getPrdOrStgDomain } from "@/src/core/components/links/getDomain"
 import Mailjet from "node-mailjet"
 import previewEmail from "preview-email"
-import { getPrdOrStgDomain } from "src/core/components/links/getDomain"
 
 type SurveyFeedbackMailer = {
   userMail: string

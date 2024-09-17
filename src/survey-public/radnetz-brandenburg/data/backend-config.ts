@@ -1,4 +1,4 @@
-import { TBackendConfig } from "src/survey-public/rs8/data/backend-config"
+import { TBackendConfig } from "@/src/survey-public/rs8/data/backend-config"
 
 // this file describes the configuration of the Trassenscout
 export const backendConfig: TBackendConfig = {

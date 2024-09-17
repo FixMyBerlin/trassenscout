@@ -1,6 +1,6 @@
+import { proseClasses } from "@/src/core/components/text"
 import clsx from "clsx"
 import { Remark } from "react-remark"
-import { proseClasses } from "src/core/components/text"
 import { SurveyLink } from "./links/SurveyLink"
 
 type Props = {

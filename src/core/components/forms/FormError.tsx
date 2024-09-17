@@ -1,7 +1,7 @@
+import { isDev } from "@/src/core/utils"
 import clsx from "clsx"
 import { Fragment } from "react"
 import { FormattedMessage } from "react-intl"
-import { isDev } from "src/core/utils"
 import { proseClasses } from "../text"
 
 type Props = {

@@ -1,12 +1,12 @@
+import { Spinner } from "@/src/core/components/Spinner"
+import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { LayoutArticle, MetaTags } from "@/src/core/layouts"
+import { FORM_ERROR, SurveyForm } from "@/src/surveys/components/SurveyForm"
+import createSurvey from "@/src/surveys/mutations/createSurvey"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { Spinner } from "src/core/components/Spinner"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import { FORM_ERROR, SurveyForm } from "src/surveys/components/SurveyForm"
-import createSurvey from "src/surveys/mutations/createSurvey"
 
 const AdminNewSurvey = () => {
   const router = useRouter()

@@ -1,6 +1,6 @@
+import { formatGerKm } from "@/src/subsections/components/utils/formatNumericInfo"
 import { useQuery } from "@blitzjs/rpc"
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
-import { formatGerKm } from "src/subsections/components/utils/formatNumericInfo"
 import getStatsInfopanelProjectLeaderboard from "../queries/getStatsInfopanelProjectLeaderboard"
 
 type Props = {

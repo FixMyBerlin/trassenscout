@@ -1,4 +1,4 @@
-import { TEmail } from "src/survey-public/components/types"
+import { TEmail } from "@/src/survey-public/components/types"
 
 export const emailDefinition: TEmail = {
   title: { de: "Vielen Dank für Ihre Teilnahme!" },

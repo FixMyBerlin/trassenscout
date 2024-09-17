@@ -1,3 +1,5 @@
+import { getConfig } from "@/src/core/lib/next-s3-upload/src/utils/config"
+import getUploadWithSubsections from "@/src/uploads/queries/getUploadWithSubsections"
 import {
   GetObjectCommand,
   HeadObjectCommand,
@@ -8,8 +10,6 @@ import { getSession } from "@blitzjs/auth"
 import { NotFoundError } from "@prisma/client/runtime/library"
 import { AuthorizationError } from "blitz"
 import { NextApiRequest, NextApiResponse } from "next"
-import { getConfig } from "src/core/lib/next-s3-upload/src/utils/config"
-import getUploadWithSubsections from "src/uploads/queries/getUploadWithSubsections"
 import { ZodError } from "zod"
 
 export default async function downloadFile(req: NextApiRequest, res: NextApiResponse) {

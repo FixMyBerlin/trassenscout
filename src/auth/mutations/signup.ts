@@ -1,7 +1,7 @@
+import db from "@/db"
+import { userCreationMailer } from "@/mailers/userCreationMailer"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
-import { userCreationMailer } from "mailers/userCreationMailer"
 import { getMemberships } from "../getMemberships"
 import { Signup } from "../validations"
 

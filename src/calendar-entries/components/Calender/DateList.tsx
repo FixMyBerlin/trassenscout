@@ -1,5 +1,5 @@
+import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { CalendarEntry } from "@prisma/client"
-import { ZeroCase } from "src/core/components/text/ZeroCase"
 import { DateEntry } from "./DateEntry"
 
 type Props = {

@@ -1,23 +1,23 @@
-import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
-import { useMutation } from "@blitzjs/rpc"
-import clsx from "clsx"
-import { useRouter } from "next/router"
-import { Suspense, useState } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Spinner } from "src/core/components/Spinner"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
+import { Spinner } from "@/src/core/components/Spinner"
 import {
   Link,
   blueButtonStyles,
   selectLinkStyle,
   whiteButtonStyles,
-} from "src/core/components/links"
-import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { quote, seoNewTitle } from "src/core/components/text"
-import { LayoutRs, MetaTags } from "src/core/layouts"
-import { useS3Upload } from "src/core/lib/next-s3-upload/src"
-import createUpload from "src/uploads/mutations/createUpload"
-import { splitReturnTo } from "src/uploads/utils"
+} from "@/src/core/components/links"
+import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
+import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { quote, seoNewTitle } from "@/src/core/components/text"
+import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useS3Upload } from "@/src/core/lib/next-s3-upload/src"
+import createUpload from "@/src/uploads/mutations/createUpload"
+import { splitReturnTo } from "@/src/uploads/utils"
+import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
+import { useMutation } from "@blitzjs/rpc"
+import clsx from "clsx"
+import { useRouter } from "next/router"
+import { Suspense, useState } from "react"
 
 // Flow: /new goes to /edit on success
 // On /edit users can modify the title and section relation

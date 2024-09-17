@@ -1,5 +1,5 @@
+import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
 import { bbox, lineString } from "@turf/turf"
-import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 
 //** @desc A mapillary link, either for a given key *OR* for a given lat/lng */
 export const mapillaryLink = (subsubsection: SubsubsectionWithPosition) => {

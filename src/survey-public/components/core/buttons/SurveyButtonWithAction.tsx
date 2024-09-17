@@ -1,6 +1,6 @@
-import { TButtonWithAction } from "src/survey-public/components/types"
+import { TButtonWithAction } from "@/src/survey-public/components/types"
 import { SurveyButton } from "./SurveyButton"
-export { FORM_ERROR } from "src/core/components/forms"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props = {
   button: TButtonWithAction

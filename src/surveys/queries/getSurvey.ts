@@ -1,8 +1,11 @@
+import db from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
+import {
+  allowedSurveySlogs,
+  AllowedSurveySlugs,
+} from "@/src/survey-public/utils/allowedSurveySlugs"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import db from "db"
-import { authorizeProjectAdmin } from "src/authorization"
-import { allowedSurveySlogs, AllowedSurveySlugs } from "src/survey-public/utils/allowedSurveySlugs"
 import { z } from "zod"
 import { viewerRoles } from "../../authorization/constants"
 import getSurveyProjectId from "./getSurveyProjectId"

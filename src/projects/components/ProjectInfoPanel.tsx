@@ -1,3 +1,5 @@
+import { Spinner } from "@/src/core/components/Spinner"
+import { useSlugs } from "@/src/core/hooks"
 import { useQuery } from "@blitzjs/rpc"
 import {
   CheckCircleIcon,
@@ -7,8 +9,6 @@ import {
 } from "@heroicons/react/20/solid"
 import { CalendarIcon, DocumentIcon } from "@heroicons/react/24/outline"
 import React, { Suspense } from "react"
-import { Spinner } from "src/core/components/Spinner"
-import { useSlugs } from "src/core/hooks"
 import { SubsectionInfoPanelCellContainer } from "../../subsections/components/SubsectionInfoPanelCellContainer"
 import getStatsInfopanelProjectGeneral from "../queries/getStatsInfopanelProjectGeneral"
 import { ProjectInfoPanelCellCompletion } from "./ProjectInfoPanelCellCompletion"

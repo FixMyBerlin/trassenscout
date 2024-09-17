@@ -1,8 +1,8 @@
+import { LoginForm } from "@/src/auth/components/LoginForm"
+import { Notice } from "@/src/core/components/Notice"
+import { LayoutMiddleBox, MetaTags } from "@/src/core/layouts"
 import { BlitzPage } from "@blitzjs/next"
 import { useRouter } from "next/router"
-import { LoginForm } from "src/auth/components/LoginForm"
-import { Notice } from "src/core/components/Notice"
-import { LayoutMiddleBox, MetaTags } from "src/core/layouts"
 
 export type LoginFormMessageKeys = "loginRequired"
 

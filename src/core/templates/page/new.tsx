@@ -1,10 +1,13 @@
+import {
+  FORM_ERROR,
+  __ModelName__Form,
+} from "@/src/__modelNamesPath__/components/__ModelName__Form"
+import create__ModelName__ from "@/src/__modelNamesPath__/mutations/create__ModelName__"
+import { Spinner } from "@/src/core/components/Spinner"
+import { Link } from "@/src/core/components/links"
+import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 import { Routes } from "@blitzjs/next"
 import { Suspense } from "react"
-import { FORM_ERROR, __ModelName__Form } from "src/__modelNamesPath__/components/__ModelName__Form"
-import create__ModelName__ from "src/__modelNamesPath__/mutations/create__ModelName__"
-import { Spinner } from "src/core/components/Spinner"
-import { Link } from "src/core/components/links"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
 if (process.env.parentModel) {
   import { useParam } from "@blitzjs/next"
   import { useRouter } from "next/router"

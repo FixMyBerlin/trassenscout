@@ -1,13 +1,13 @@
+import { Page } from "@/src/survey-public/components/Page"
+import { Debug } from "@/src/survey-public/components/core/Debug"
+import { TSurvey } from "@/src/survey-public/components/types"
+import { ProgressContext } from "@/src/survey-public/context/contexts"
+import { scrollToTopWithDelay } from "@/src/survey-public/utils/scrollToTopWithDelay"
 import { SetStateAction, useContext } from "react"
 import { useFormContext } from "react-hook-form"
-import { Page } from "src/survey-public/components/Page"
-import { Debug } from "src/survey-public/components/core/Debug"
-import { TSurvey } from "src/survey-public/components/types"
-import { ProgressContext } from "src/survey-public/context/contexts"
-import { scrollToTopWithDelay } from "src/survey-public/utils/scrollToTopWithDelay"
 import { stageProgressDefinition } from "../frm7/data/progress"
 import { useAlertBeforeUnload } from "../utils/useAlertBeforeUnload"
-export { FORM_ERROR } from "src/core/components/forms"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props = {
   survey: TSurvey

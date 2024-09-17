@@ -1,4 +1,4 @@
-import { TFeedback } from "src/survey-public/components/types"
+import { TFeedback } from "@/src/survey-public/components/types"
 
 export const feedbackDefinition: TFeedback = {
   part: 2,

@@ -1,9 +1,9 @@
+import { linkIcons, linkStyles } from "@/src/core/components/links"
+import { useSlugs } from "@/src/core/hooks"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import deleteMembership from "@/src/memberships/mutations/deleteMembership"
+import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
 import { getQueryClient, getQueryKey, useMutation } from "@blitzjs/rpc"
-import { linkIcons, linkStyles } from "src/core/components/links"
-import { useSlugs } from "src/core/hooks"
-import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
-import deleteMembership from "src/memberships/mutations/deleteMembership"
-import getProjectUsers from "src/memberships/queries/getProjectUsers"
 
 type Props = {
   membershipId: number

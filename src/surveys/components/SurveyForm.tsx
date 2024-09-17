@@ -1,16 +1,16 @@
-import { useQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/router"
-import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
+import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import {
   Form,
   FormProps,
   LabeledCheckbox,
   LabeledSelect,
   LabeledTextField,
-} from "src/core/components/forms"
-import getProjects from "src/projects/queries/getProjects"
+} from "@/src/core/components/forms"
+import getProjects from "@/src/projects/queries/getProjects"
+import { useQuery } from "@blitzjs/rpc"
+import { useRouter } from "next/router"
 import { z } from "zod"
-export { FORM_ERROR } from "src/core/components/forms"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 export function SurveyForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const [{ projects }] = useQuery(getProjects, {})

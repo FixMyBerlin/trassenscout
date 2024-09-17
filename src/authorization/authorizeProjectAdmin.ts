@@ -1,6 +1,6 @@
+import { UserRoleEnum } from "@/db"
 import { SessionContext } from "@blitzjs/auth"
 import { AuthorizationError } from "blitz"
-import { UserRoleEnum } from "db"
 import { editorRoles } from "./constants"
 import { MembershipRole } from "./types"
 

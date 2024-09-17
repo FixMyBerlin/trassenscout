@@ -1,4 +1,4 @@
-import db from "db"
+import db from "@/db"
 
 const getCalendarEntryProjectId = async (input: Record<string, any>) =>
   (

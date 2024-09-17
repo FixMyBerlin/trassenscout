@@ -1,11 +1,11 @@
+import { Disclosure } from "@/src/core/components/Disclosure"
+import { Markdown } from "@/src/core/components/Markdown/Markdown"
+import { Link } from "@/src/core/components/links"
+import { useSlugs } from "@/src/core/hooks"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { Stakeholdernote } from "@prisma/client"
 import { useRouter } from "next/router"
-import { Disclosure } from "src/core/components/Disclosure"
-import { Markdown } from "src/core/components/Markdown/Markdown"
-import { Link } from "src/core/components/links"
-import { useSlugs } from "src/core/hooks"
-import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
 import { StakeholderSectionListItemStatus } from "./StakeholderSectionListItemStatus"
 
 type Props = {

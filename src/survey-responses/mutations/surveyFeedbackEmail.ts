@@ -1,7 +1,7 @@
+import db from "@/db"
+import { surveyFeedbackMailer } from "@/mailers/surveyFeedbackMailer"
+import { feedbackDefinition } from "@/src/survey-public/radnetz-brandenburg/data/feedback"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
-import { surveyFeedbackMailer } from "mailers/surveyFeedbackMailer"
-import { feedbackDefinition } from "src/survey-public/radnetz-brandenburg/data/feedback"
 import { z } from "zod"
 
 export const SurveyFeedbackMail = z.object({

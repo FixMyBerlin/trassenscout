@@ -1,9 +1,9 @@
-import { useQuery } from "@blitzjs/rpc"
 import {
   formatGerCurrency,
   formatGerKm,
   formatGerPercentage,
-} from "src/subsections/components/utils/formatNumericInfo"
+} from "@/src/subsections/components/utils/formatNumericInfo"
+import { useQuery } from "@blitzjs/rpc"
 import getStatsInfopanelCosts from "../queries/getStatsInfopanelProjectCosts"
 
 type Props = {

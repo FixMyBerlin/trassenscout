@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "baseUrl": ".",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    // Note: No `baseUrl`, just the `paths`
+    // We need to specify this explicitly, so that Vitest can pick it up and work
+    "paths": {
+      "@/*": ["./*"]
+    },
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -28,17 +28,6 @@
       }
     ]
   },
-  "exclude": [
-    "node_modules",
-    "**/*.e2e.ts",
-    "cypress",
-    "src/core/templates"
-  ],
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "types",
-    ".next/types/**/*.ts"
-  ]
+  "exclude": ["node_modules", "**/*.e2e.ts", "cypress", "src/core/templates"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "types", ".next/types/**/*.ts"]
 }

@@ -1,3 +1,5 @@
+import { vectorStyle } from "@/src/core/components/Map/BaseMap"
+import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
 import { CheckBadgeIcon } from "@heroicons/react/24/solid"
 import { Position, lineString, point } from "@turf/helpers"
 import { bbox } from "@turf/turf"
@@ -10,8 +12,6 @@ import Map, {
   ScaleControl,
   Source,
 } from "react-map-gl/maplibre"
-import { vectorStyle } from "src/core/components/Map/BaseMap"
-import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { z } from "zod"
 import { Link } from "../links"
 

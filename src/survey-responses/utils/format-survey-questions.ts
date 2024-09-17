@@ -1,4 +1,4 @@
-import { TQuestion, TSurvey } from "src/survey-public/components/types"
+import { TQuestion, TSurvey } from "@/src/survey-public/components/types"
 
 type QuestionObject = {
   id: number

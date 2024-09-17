@@ -1,5 +1,5 @@
-import { Form, FormProps } from "src/core/components/forms"
-import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
+import { Form, FormProps } from "@/src/core/components/forms"
+import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
 import { z } from "zod"
 
 export function UserEditForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {

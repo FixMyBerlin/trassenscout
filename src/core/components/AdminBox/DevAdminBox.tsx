@@ -1,4 +1,4 @@
-import { isDev } from "src/core/utils"
+import { isDev } from "@/src/core/utils"
 import { AdminBox } from "./AdminBox"
 
 type Props = {

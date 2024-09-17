@@ -1,30 +1,30 @@
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
+import { Spinner } from "@/src/core/components/Spinner"
+import { Link, whiteButtonStyles } from "@/src/core/components/links"
+import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { H2 } from "@/src/core/components/text"
+import { useSlugs } from "@/src/core/hooks"
+import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { TSurvey } from "@/src/survey-public/components/types"
+import {
+  getFeedbackDefinitionBySurveySlug,
+  getResponseConfigBySurveySlug,
+  getSurveyDefinitionBySurveySlug,
+} from "@/src/survey-public/utils/getConfigBySurveySlug"
+import { GroupedSurveyResponseItem } from "@/src/survey-responses/components/analysis/GroupedSurveyResponseItem"
+import getGroupedSurveyResponses from "@/src/survey-responses/queries/getGroupedSurveyResponses"
+import {
+  extractAndTransformQuestionsFromPages,
+  transformDeletedQuestions,
+} from "@/src/survey-responses/utils/format-survey-questions"
+import { getFormatDistanceInDays } from "@/src/survey-responses/utils/getFormatDistanceInDays"
+import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
+import getSurvey from "@/src/surveys/queries/getSurvey"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 import { isFuture, isPast } from "date-fns"
 import { Suspense } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Spinner } from "src/core/components/Spinner"
-import { Link, whiteButtonStyles } from "src/core/components/links"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { H2 } from "src/core/components/text"
-import { useSlugs } from "src/core/hooks"
-import { LayoutRs, MetaTags } from "src/core/layouts"
-import { TSurvey } from "src/survey-public/components/types"
-import {
-  getFeedbackDefinitionBySurveySlug,
-  getResponseConfigBySurveySlug,
-  getSurveyDefinitionBySurveySlug,
-} from "src/survey-public/utils/getConfigBySurveySlug"
-import { GroupedSurveyResponseItem } from "src/survey-responses/components/analysis/GroupedSurveyResponseItem"
-import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
-import {
-  extractAndTransformQuestionsFromPages,
-  transformDeletedQuestions,
-} from "src/survey-responses/utils/format-survey-questions"
-import { getFormatDistanceInDays } from "src/survey-responses/utils/getFormatDistanceInDays"
-import { SurveyTabs } from "src/surveys/components/SurveyTabs"
-import getSurvey from "src/surveys/queries/getSurvey"
 
 export const Survey = () => {
   const { projectSlug } = useSlugs()

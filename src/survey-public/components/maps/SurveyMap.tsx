@@ -1,3 +1,8 @@
+import { LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
+import { SurveyBackgroundSwitcher } from "@/src/survey-public/components/maps/SurveyBackgroundSwitcher"
+import { SurveyMapBanner } from "@/src/survey-public/components/maps/SurveyMapBanner"
+import SurveyPin from "@/src/survey-public/components/maps/SurveyPin"
+import { getCompletedQuestionIds } from "@/src/survey-public/utils/getCompletedQuestionIds"
 import { lineString } from "@turf/helpers"
 import { bbox, center } from "@turf/turf"
 import clsx from "clsx"
@@ -14,11 +19,6 @@ import Map, {
   Source,
   useMap,
 } from "react-map-gl/maplibre"
-import { LayerType } from "src/core/components/Map/BackgroundSwitcher"
-import { SurveyBackgroundSwitcher } from "src/survey-public/components/maps/SurveyBackgroundSwitcher"
-import { SurveyMapBanner } from "src/survey-public/components/maps/SurveyMapBanner"
-import SurveyPin from "src/survey-public/components/maps/SurveyPin"
-import { getCompletedQuestionIds } from "src/survey-public/utils/getCompletedQuestionIds"
 
 export type SurveyMapProps = {
   className?: string

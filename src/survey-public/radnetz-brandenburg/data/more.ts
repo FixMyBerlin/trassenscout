@@ -1,4 +1,4 @@
-import { TMore } from "src/survey-public/components/types"
+import { TMore } from "@/src/survey-public/components/types"
 
 export const moreDefinition: TMore = {
   title: { de: "Ihre Anmerkungen" },

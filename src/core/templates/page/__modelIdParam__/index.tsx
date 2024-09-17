@@ -1,15 +1,15 @@
+import delete__ModelName__ from "@/src/__modelNamesPath__/mutations/delete__ModelName__"
+import get__ModelName__ from "@/src/__modelNamesPath__/queries/get__ModelName__"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
+import { Spinner } from "@/src/core/components/Spinner"
+import { Link, linkStyles } from "@/src/core/components/links"
+import { quote } from "@/src/core/components/text"
+import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import delete__ModelName__ from "src/__modelNamesPath__/mutations/delete__ModelName__"
-import get__ModelName__ from "src/__modelNamesPath__/queries/get__ModelName__"
-import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Spinner } from "src/core/components/Spinner"
-import { Link, linkStyles } from "src/core/components/links"
-import { quote } from "src/core/components/text"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
 
 export const __ModelName__ = () => {
   const router = useRouter()

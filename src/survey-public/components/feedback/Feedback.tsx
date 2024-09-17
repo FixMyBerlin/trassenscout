@@ -1,8 +1,8 @@
+import { ProgressContext } from "@/src/survey-public/context/contexts"
+import { scrollToTopWithDelay } from "@/src/survey-public/utils/scrollToTopWithDelay"
+import { useAlertBeforeUnload } from "@/src/survey-public/utils/useAlertBeforeUnload"
 import { useContext, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { ProgressContext } from "src/survey-public/context/contexts"
-import { scrollToTopWithDelay } from "src/survey-public/utils/scrollToTopWithDelay"
-import { useAlertBeforeUnload } from "src/survey-public/utils/useAlertBeforeUnload"
 import { Debug } from "../core/Debug"
 import {
   TFeedback,
@@ -15,7 +15,7 @@ import {
 import { FeedbackFirstPage } from "./FeedbackFirstPage"
 import { FeedbackSecondPage } from "./FeedbackSecondPage"
 
-export { FORM_ERROR } from "src/core/components/forms"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props = {
   onBackClick: any

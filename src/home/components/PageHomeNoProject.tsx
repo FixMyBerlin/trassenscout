@@ -1,7 +1,7 @@
+import { LinkMail } from "@/src/core/components/links"
+import { H1 } from "@/src/core/components/text/Headings"
+import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 import Image from "next/image"
-import { LinkMail } from "src/core/components/links"
-import { H1 } from "src/core/components/text/Headings"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
 import Logo from "./../../core/layouts/Navigation/assets/trassenscout-logo-without-text.svg"
 
 const PageHomeNoProject = () => {

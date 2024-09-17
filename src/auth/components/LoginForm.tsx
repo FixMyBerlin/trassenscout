@@ -1,13 +1,13 @@
+import login from "@/src/auth/mutations/login"
+import { Login } from "@/src/auth/validations"
+import { DevAdminBox } from "@/src/core/components/AdminBox"
+import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
+import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
+import { Link, blueButtonStyles } from "@/src/core/components/links"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { AuthenticationError, PromiseReturnType } from "blitz"
 import clsx from "clsx"
-import login from "src/auth/mutations/login"
-import { Login } from "src/auth/validations"
-import { DevAdminBox } from "src/core/components/AdminBox"
-import { FORM_ERROR, Form } from "src/core/components/forms/Form"
-import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
-import { Link, blueButtonStyles } from "src/core/components/links"
 
 type LoginFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof login>) => void

@@ -1,10 +1,10 @@
+import { Modal } from "@/src/core/components/Modal"
+import { linkStyles } from "@/src/core/components/links"
+import { linkIcons } from "@/src/core/components/links/Link"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
 import { clsx } from "clsx"
 import { useState } from "react"
-import { Modal } from "src/core/components/Modal"
-import { linkStyles } from "src/core/components/links"
-import { linkIcons } from "src/core/components/links/Link"
-import { IfUserCanEdit } from "src/memberships/components/IfUserCan"
-import getProjectUsers from "src/memberships/queries/getProjectUsers"
 import { TeamTableEditMembershipModalForm } from "./TeamTableEditMembershipModalForm"
 
 type Props = { editUser: Awaited<ReturnType<typeof getProjectUsers>>[number] }

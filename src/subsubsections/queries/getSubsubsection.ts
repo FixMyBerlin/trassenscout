@@ -1,6 +1,6 @@
+import db, { QualityLevel, Subsubsection, SubsubsectionTypeEnum, User } from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
-import db, { QualityLevel, Subsubsection, SubsubsectionTypeEnum, User } from "db"
-import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
 import { viewerRoles } from "../../authorization/constants"
 import { extractProjectSlug } from "../../authorization/extractProjectSlug"

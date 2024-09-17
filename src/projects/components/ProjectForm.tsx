@@ -1,16 +1,16 @@
-import { SuperAdminBox } from "src/core/components/AdminBox"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import {
   Form,
   FormProps,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
-} from "src/core/components/forms"
-import { Link } from "src/core/components/links"
-import { quote } from "src/core/components/text"
-import { getUserSelectOptions, UserSelectOptions } from "src/users/utils"
+} from "@/src/core/components/forms"
+import { Link } from "@/src/core/components/links"
+import { quote } from "@/src/core/components/text"
+import { getUserSelectOptions, UserSelectOptions } from "@/src/users/utils"
 import { z } from "zod"
-export { FORM_ERROR } from "src/core/components/forms"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 export function ProjectForm<S extends z.ZodType<any, any>>(
   props: FormProps<S> & { users: UserSelectOptions },

@@ -1,5 +1,5 @@
+import { useCurrentUser } from "@/src/users/hooks/useCurrentUser"
 import React, { Suspense } from "react"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { isAdmin } from "../../../users/utils/isAdmin"
 import { Spinner } from "../Spinner"
 import { AdminBox } from "./AdminBox"

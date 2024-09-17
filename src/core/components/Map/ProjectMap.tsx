@@ -1,3 +1,4 @@
+import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
 import { Routes, useParam } from "@blitzjs/next"
 import { lineString } from "@turf/helpers"
 import { along, featureCollection, length } from "@turf/turf"
@@ -11,7 +12,6 @@ import {
   ViewStateChangeEvent,
   useMap,
 } from "react-map-gl/maplibre"
-import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
 import { IfUserCanEdit } from "../../../memberships/components/IfUserCan"
 import { useUserCan } from "../../../memberships/hooks/useUserCan"
 import { shortTitle } from "../text"

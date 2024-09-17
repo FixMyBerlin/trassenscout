@@ -1,6 +1,6 @@
+import { isProduction } from "@/src/core/utils"
 import { useSession } from "@blitzjs/auth"
 import { NoSymbolIcon } from "@heroicons/react/20/solid"
-import { isProduction } from "src/core/utils"
 import { useUserCan } from "../hooks/useUserCan"
 
 type Props = {

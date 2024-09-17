@@ -1,8 +1,8 @@
+import { SurveyScreenHeader } from "@/src/survey-public/components/core/layout/SurveyScreenHeader"
+import { TMapProps, TPage, TTextProps } from "@/src/survey-public/components/types"
 import { Fragment } from "react"
 import { useFormContext } from "react-hook-form"
 import { MapProvider } from "react-map-gl"
-import { SurveyScreenHeader } from "src/survey-public/components/core/layout/SurveyScreenHeader"
-import { TMapProps, TPage, TTextProps } from "src/survey-public/components/types"
 import { Question } from "../Question"
 import { SurveyH2, SurveyP } from "../core/Text"
 import { SurveyButton } from "../core/buttons/SurveyButton"
@@ -11,7 +11,7 @@ import { SurveyLabeledTextareaField } from "../core/form/SurveyLabeledTextareaFi
 import { SurveyMap } from "../maps/SurveyMap"
 import { SurveyMapLegend } from "../maps/SurveyMapLegend"
 
-export { FORM_ERROR } from "src/core/components/forms"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props = {
   mapProps: TMapProps

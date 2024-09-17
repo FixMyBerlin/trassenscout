@@ -1,5 +1,5 @@
+import { StatusLabel } from "@/src/core/components/Status/StatusLabel"
 import { Stakeholdernote } from "@prisma/client"
-import { StatusLabel } from "src/core/components/Status/StatusLabel"
 import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
 
 type Props = {

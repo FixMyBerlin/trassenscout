@@ -1,14 +1,14 @@
+import { Spinner } from "@/src/core/components/Spinner"
+import { Link } from "@/src/core/components/links"
+import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { ZeroCase } from "@/src/core/components/text/ZeroCase"
+import { useSlugs } from "@/src/core/hooks"
+import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import getSurveys from "@/src/surveys/queries/getSurveys"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { Link } from "src/core/components/links"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { Spinner } from "src/core/components/Spinner"
-import { ZeroCase } from "src/core/components/text/ZeroCase"
-import { useSlugs } from "src/core/hooks"
-import { LayoutRs, MetaTags } from "src/core/layouts"
-import getSurveys from "src/surveys/queries/getSurveys"
 
 export const Surveys = () => {
   const router = useRouter()

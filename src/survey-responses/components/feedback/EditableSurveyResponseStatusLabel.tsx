@@ -1,6 +1,6 @@
-import { StatusLabel } from "src/core/components/Status/StatusLabel"
-import { AllowedSurveySlugs } from "src/survey-public/utils/allowedSurveySlugs"
-import { getBackendConfigBySurveySlug } from "src/survey-public/utils/getConfigBySurveySlug"
+import { StatusLabel } from "@/src/core/components/Status/StatusLabel"
+import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
+import { getBackendConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 
 type Props = {
   status?: string | null

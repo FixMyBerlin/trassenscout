@@ -1,4 +1,4 @@
-import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
+import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
 
 type Props = Pick<SubsectionWithPosition, "stakeholdernotesCounts"> & {
   format: "number" | "labelNumber"

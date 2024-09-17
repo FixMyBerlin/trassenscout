@@ -1,6 +1,6 @@
+import db from "@/db"
+import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
-import { AllowedSurveySlugs } from "src/survey-public/utils/allowedSurveySlugs"
 import { UpdateSurveySchema } from "../schemas"
 
 export default resolver.pipe(

@@ -1,8 +1,8 @@
+import { ProgressContext } from "@/src/survey-public/context/contexts"
 import clsx from "clsx"
 import { useContext } from "react"
-import { ProgressContext } from "src/survey-public/context/contexts"
 
-export { FORM_ERROR } from "src/core/components/forms"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 const TOTAL = 8
 

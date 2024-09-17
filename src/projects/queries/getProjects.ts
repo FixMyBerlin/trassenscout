@@ -1,6 +1,6 @@
+import db, { Prisma } from "@/db"
 import { resolver } from "@blitzjs/rpc"
 import { Ctx, paginate } from "blitz"
-import db, { Prisma } from "db"
 
 interface GetProjectsInput
   extends Pick<Prisma.ProjectFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}

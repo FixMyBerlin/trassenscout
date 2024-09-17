@@ -1,5 +1,5 @@
+import { formatGerKm } from "@/src/subsections/components/utils/formatNumericInfo"
 import { useQuery } from "@blitzjs/rpc"
-import { formatGerKm } from "src/subsections/components/utils/formatNumericInfo"
 import getStatsInfopanelProjectSubsections from "../queries/getStatsInfopanelProjectSubsections"
 
 type Props = {

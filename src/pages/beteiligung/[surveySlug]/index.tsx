@@ -1,13 +1,13 @@
+import { Spinner } from "@/src/core/components/Spinner"
+import SurveyInactivePage from "@/src/survey-public/components/SurveyInactivePage"
+import { SurveyFRM7 } from "@/src/survey-public/frm7/SurveyFRM7"
+import { surveyDefinition as surveyDefinitionFRM7 } from "@/src/survey-public/frm7/data/survey"
+import { SurveyBB } from "@/src/survey-public/radnetz-brandenburg/SurveyBB"
+import getPublicSurveyBySlug from "@/src/surveys/queries/getPublicSurveyBySlug"
 import { BlitzPage } from "@blitzjs/auth"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
-import { Spinner } from "src/core/components/Spinner"
-import SurveyInactivePage from "src/survey-public/components/SurveyInactivePage"
-import { SurveyFRM7 } from "src/survey-public/frm7/SurveyFRM7"
-import { surveyDefinition as surveyDefinitionFRM7 } from "src/survey-public/frm7/data/survey"
-import { SurveyBB } from "src/survey-public/radnetz-brandenburg/SurveyBB"
-import getPublicSurveyBySlug from "src/surveys/queries/getPublicSurveyBySlug"
 
 const PublicSurveyPageWithQuery = () => {
   const surveySlug = useParam("surveySlug", "string")

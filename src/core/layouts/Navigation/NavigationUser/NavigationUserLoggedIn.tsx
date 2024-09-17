@@ -1,10 +1,10 @@
+import { Link } from "@/src/core/components/links/Link"
+import { CurrentUser } from "@/src/users/types"
+import { getFullname, getInitials, isAdmin } from "@/src/users/utils"
 import { Routes, useParam } from "@blitzjs/next"
 import { Menu, Transition } from "@headlessui/react"
 import clsx from "clsx"
 import React, { Fragment } from "react"
-import { Link } from "src/core/components/links/Link"
-import { CurrentUser } from "src/users/types"
-import { getFullname, getInitials, isAdmin } from "src/users/utils"
 
 type Props = {
   user: CurrentUser

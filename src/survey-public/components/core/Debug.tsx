@@ -1,4 +1,4 @@
-import { isDev } from "src/core/utils"
+import { isDev } from "@/src/core/utils"
 
 type Props = {
   children: React.ReactNode

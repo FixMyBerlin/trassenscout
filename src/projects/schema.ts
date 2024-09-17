@@ -1,4 +1,4 @@
-import { InputNumberOrNullSchema, SlugSchema } from "src/core/utils"
+import { InputNumberOrNullSchema, SlugSchema } from "@/src/core/utils"
 import { z } from "zod"
 
 export const ProjectSchema = z.object({

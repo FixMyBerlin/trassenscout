@@ -1,6 +1,6 @@
+import { Link } from "@/src/core/components/links"
 import { RouteUrlObject } from "blitz"
 import clsx from "clsx"
-import { Link } from "src/core/components/links"
 
 type TSurveyFooterLink = {
   name: string
