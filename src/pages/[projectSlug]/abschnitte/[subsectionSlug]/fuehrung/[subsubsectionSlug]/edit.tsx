@@ -8,7 +8,7 @@ import { seoEditTitleSlug } from "@/src/core/components/text"
 import { useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { FORM_ERROR, SubsubsectionForm } from "@/src/subsubsections/components/SubsubsectionForm"
-import m2mFields from "@/src/subsubsections/m2mFields"
+import { M2MFieldsType, m2mFields } from "@/src/subsubsections/m2mFields"
 import deleteSubsubsection from "@/src/subsubsections/mutations/deleteSubsubsection"
 import updateSubsubsection from "@/src/subsubsections/mutations/updateSubsubsection"
 import getSubsubsection from "@/src/subsubsections/queries/getSubsubsection"
@@ -72,13 +72,14 @@ const EditSubsubsection = () => {
     }
   }
 
-  let m2mFieldsInitialValues = {}
+  const m2mFieldsInitialValues: Record<M2MFieldsType | string, string[]> = {}
   m2mFields.forEach((fieldName) => {
     if (fieldName in subsubsection) {
-      // @ts-ignore
-      m2mFieldsInitialValues[fieldName] = Array.from(subsubsection[fieldName].values(), (obj) =>
-        // @ts-ignore
-        String(obj.id),
+      m2mFieldsInitialValues[fieldName] = Array.from(
+        // @ts-expect-error
+        subsubsection[fieldName].values(),
+        // @ts-expect-error
+        (obj) => String(obj.id),
       )
     }
   })
@@ -92,7 +93,7 @@ const EditSubsubsection = () => {
         className="mt-10"
         submitText="Speichern"
         schema={SubsubsectionFormSchema}
-        // @ts-ignore
+        // @ts-expect-error some null<>undefined missmatch
         initialValues={{
           ...subsubsection,
           ...m2mFieldsInitialValues,

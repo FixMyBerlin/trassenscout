@@ -45,7 +45,6 @@ const NewCalendarEntry = () => {
       <CalendarEntryForm
         submitText="Erstellen"
         schema={CalendarEntrySchema.omit({
-          projectSlug: true,
           startAt: true,
         }).merge(CalendarEntryStartDateStartTimeSchema)}
         //  initialValues={{}}

@@ -4,7 +4,7 @@ import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 import { viewerRoles } from "../../authorization/constants"
 import { extractProjectSlug } from "../../authorization/extractProjectSlug"
-import m2mFields from "../m2mFields"
+import { m2mFields } from "../m2mFields"
 
 const GetSubsubsection = z.object({
   projectSlug: z.string(),

@@ -75,7 +75,6 @@ export default resolver.pipe(
           const responseObject = JSON.parse(response.data) as Record<string, number>
 
           if (typeof responseObject[responseKey] === "number") {
-            // @ts-expect-errors
             result[responseObject[responseKey]] ||= 0
             // @ts-expect-errors
             result[responseObject[responseKey]] += 1

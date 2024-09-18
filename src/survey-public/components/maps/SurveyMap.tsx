@@ -12,7 +12,6 @@ import React, { useCallback, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import Map, {
   Layer,
-  LngLat,
   Marker,
   MarkerDragEvent,
   NavigationControl,
@@ -51,7 +50,7 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
   // todo survey clean up or refactor after survey BB line selection
 }) => {
   const { mainMap } = useMap()
-  const [events, logEvents] = useState<Record<string, LngLat>>({})
+  const [events, logEvents] = useState<Record<string, Object>>({})
   const [isPinInView, setIsPinInView] = useState(true)
   const [isMediumScreen, setIsMediumScreen] = useState(false)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")

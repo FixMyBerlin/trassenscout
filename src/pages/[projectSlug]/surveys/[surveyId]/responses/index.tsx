@@ -82,6 +82,7 @@ export const SurveyResponse = () => {
               key={response.id}
               className="w-full overflow-hidden border border-b-0 border-gray-300 text-sm first:rounded-t-xl last:rounded-b-xl last:border-b"
               // I tried passing the ref as forwardRef but that did not work for unknown reasons.
+              // @ts-expect-error TODO: this erros since we updated packages; we need to re-test this and maybe remove the feature?
               ref={(element) => (accordionRefs.current[response.id] = element)}
             >
               <EditableSurveyResponseListItem

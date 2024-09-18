@@ -35,8 +35,7 @@ export const SurveyLabeledReadOnlyTextField = forwardRef<HTMLInputElement, Label
     setValue(
       name,
       router.query[queryId] && typeof router.query[queryId] === "string"
-        ? // @ts-expect-error
-          decodeURIComponent(router.query[queryId])
+        ? decodeURIComponent(router.query[queryId])
         : "invalid",
     )
 

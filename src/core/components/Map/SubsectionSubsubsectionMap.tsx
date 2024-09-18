@@ -97,8 +97,8 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
               sec.slug === pageSubsubsectionSlug
                 ? layerColors.selected
                 : hoveredMap === sec.slug || hoveredMarker === sec.slug
-                ? layerColors.hovered
-                : layerColors.selectable,
+                  ? layerColors.hovered
+                  : layerColors.selectable,
           }),
       )
       .filter(Boolean),
@@ -117,16 +117,16 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
               sec.slug === pageSubsubsectionSlug
                 ? layerColors.selected
                 : hoveredMap === sec.slug || hoveredMarker === sec.slug
-                ? layerColors.hovered
-                : layerColors.selectable,
+                  ? layerColors.hovered
+                  : layerColors.selectable,
             radius: 10,
             "border-width": 3,
             "border-color":
               sec.slug === pageSubsubsectionSlug
                 ? layerColors.selected
                 : hoveredMap === sec.slug || hoveredMarker === sec.slug
-                ? layerColors.hovered
-                : layerColors.selectable,
+                  ? layerColors.hovered
+                  : layerColors.selectable,
           }),
       )
       .filter(Boolean),

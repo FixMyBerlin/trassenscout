@@ -1,5 +1,5 @@
-export * from "./Headings"
 export * from "./formattedProperties"
+export * from "./Headings"
 export * from "./prose"
 export * from "./quote"
 export * from "./startEnd"

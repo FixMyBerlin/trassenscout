@@ -41,7 +41,6 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
 
   // we spread boundingBox in the dependency array to make sure the effect runs when the values of boundingBox change (not everytime the array is created)
   useEffect(() => {
-    // @ts-expect-error
     mainMap?.fitBounds(boundingBox, { padding: 60 })
     // @ts-expect-error
     // eslint-disable-next-line react-hooks/exhaustive-deps

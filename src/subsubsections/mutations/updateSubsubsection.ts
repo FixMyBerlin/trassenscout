@@ -2,38 +2,27 @@ import db from "@/db"
 import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import m2mFields from "../m2mFields"
+import { m2mFields, type M2MFieldsType } from "../m2mFields"
 import { SubsubsectionWithPosition } from "../queries/getSubsubsection"
 import getSubsubsectionProjectId from "../queries/getSubsubsectionProjectId"
 import { SubsubsectionSchema } from "../schema"
 
-let UpdateSubsubsectionSchema = SubsubsectionSchema.merge(
+const UpdateSubsubsectionSchema = SubsubsectionSchema.merge(
   z.object({
     id: z.number(),
   }),
 )
-m2mFields.forEach((fieldName) => {
-  // @ts-ignore
-  UpdateSubsubsectionSchema = UpdateSubsubsectionSchema.merge(
-    z.object({
-      [fieldName]: z.array(z.number()),
-    }),
-  )
-})
 
-// @ts-ignore
 export default resolver.pipe(
   resolver.zod(UpdateSubsubsectionSchema),
   authorizeProjectAdmin(getSubsubsectionProjectId),
   async ({ id, ...data }) => {
-    const disconnect = {}
-    const connect = {}
+    const disconnect: Record<M2MFieldsType | string, { set: [] }> = {}
+    const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
     m2mFields.forEach((fieldName) => {
-      // @ts-ignore
       disconnect[fieldName] = { set: [] }
-      // @ts-ignore
-      connect[fieldName] = { connect: data[fieldName].map((id) => ({ id })) }
-      // @ts-ignore
+      connect[fieldName] = { connect: data[fieldName]?.map((id) => ({ id })) }
+      // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)"
       delete data[fieldName]
     })
 
@@ -43,6 +32,7 @@ export default resolver.pipe(
     })
     const subsubsection = await db.subsubsection.update({
       where: { id },
+      // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
       data: { ...data, ...connect },
     })
     return subsubsection as SubsubsectionWithPosition // Tip: Validate type shape with `satisfies`

@@ -22,6 +22,6 @@ export const formattedEuro = (euro?: number | null) => {
     style: "currency",
     currency: "EUR",
     maximumFractionDigits: 2,
-  }
+  } as const
   return euro.toLocaleString("de-DE", options)
 }
