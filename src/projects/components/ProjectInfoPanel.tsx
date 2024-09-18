@@ -8,7 +8,7 @@ import {
   ViewColumnsIcon,
 } from "@heroicons/react/20/solid"
 import { CalendarIcon, DocumentIcon } from "@heroicons/react/24/outline"
-import React, { Suspense } from "react"
+import { Suspense } from "react"
 import { SubsectionInfoPanelCellContainer } from "../../subsections/components/SubsectionInfoPanelCellContainer"
 import getStatsInfopanelProjectGeneral from "../queries/getStatsInfopanelProjectGeneral"
 import { ProjectInfoPanelCellCompletion } from "./ProjectInfoPanelCellCompletion"
@@ -24,7 +24,7 @@ export const ProjectInfoPanel: React.FC = () => {
   })
 
   return (
-    <div className="flex flex-col gap-2 bg-gray-100 py-4 text-gray-500 ">
+    <div className="flex flex-col gap-2 bg-gray-100 py-4 text-gray-500">
       <div className="grid grid-cols-3 divide-x text-sm md:grid-cols-4 lg:grid-cols-6">
         {/* Beschreibung */}
         <SubsectionInfoPanelCellContainer

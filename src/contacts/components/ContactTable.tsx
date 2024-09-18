@@ -12,7 +12,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { Contact } from "@prisma/client"
 import { useRouter } from "next/router"
-import React, { useState } from "react"
+import { useState } from "react"
 import { TableWrapper } from "../../core/components/Table/TableWrapper"
 
 type Props = {

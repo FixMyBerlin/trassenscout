@@ -4,7 +4,7 @@ import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometr
 import { useSlugs } from "@/src/core/hooks"
 import getSubsection from "@/src/subsections/queries/getSubsection"
 import { useQuery } from "@blitzjs/rpc"
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { GeometryInputMap } from "./GeometryInputMap"

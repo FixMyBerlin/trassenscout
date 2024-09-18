@@ -13,7 +13,7 @@ export type FooterMenuItemLogo = {
 
 export const FooterProject: React.FC = () => {
   return (
-    <footer className="z-0 ">
+    <footer className="z-0">
       <FooterLogos />
       <div className="bg-gray-800 px-6 py-8">
         <div className="pt-6">

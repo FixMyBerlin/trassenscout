@@ -1,7 +1,7 @@
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import "maplibre-gl/dist/maplibre-gl.css"
-import React, { useState } from "react"
+import { useState } from "react"
 import Map, { LngLatBoundsLike, Marker, NavigationControl, useMap } from "react-map-gl/maplibre"
 
 type Props = {

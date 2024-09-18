@@ -1,6 +1,6 @@
 import { linkStyles } from "@/src/core/components/links"
 import { GlobeAltIcon } from "@heroicons/react/24/outline"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import Image from "next/image"
 import FMCIcon from "../assets/fmc-icon.svg"
 import LinkedInIcon from "../assets/linkedin-logo.svg"

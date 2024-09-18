@@ -14,7 +14,7 @@ import getSubsection from "@/src/subsections/queries/getSubsection"
 import { SubsectionSchema } from "@/src/subsections/schema"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 

@@ -1,5 +1,5 @@
 import { H3 } from "@/src/core/components/text"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { BarChart } from "./BarChart"
 export { FORM_ERROR } from "@/src/core/components/forms"
 
@@ -38,7 +38,7 @@ export const GroupedSurveyResponseItem: React.FC<Props> = ({
       heightClass = "h-[650px]"
   }
   return (
-    <div className="rounded border  py-3.5">
+    <div className="rounded border py-3.5">
       {questionLabel && <H3 className="border-b px-3.5 pb-3.5">{questionLabel}</H3>}
 
       <div className={clsx("px-3.5", heightClass)}>

@@ -1,6 +1,6 @@
-import clsx from "clsx"
+import { clsx } from "clsx"
 import "maplibre-gl/dist/maplibre-gl.css"
-import React, { Fragment } from "react"
+import { Fragment } from "react"
 import { TLegendItem, TMapProps } from "../types"
 
 type SurveyMapLegendProps = { legend: TMapProps["legend"] }

@@ -7,7 +7,7 @@ import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { ComputerDesktopIcon } from "@heroicons/react/24/outline"
 import { CalendarDaysIcon, MapPinIcon } from "@heroicons/react/24/solid"
 import { CalendarEntry } from "@prisma/client"
-import clsx from "clsx"
+import { clsx } from "clsx"
 
 type Props = {
   calendarEntry: CalendarEntry

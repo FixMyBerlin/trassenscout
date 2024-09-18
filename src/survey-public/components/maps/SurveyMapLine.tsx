@@ -6,10 +6,10 @@ import {
   getResponseConfigBySurveySlug,
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import { lineString } from "@turf/helpers"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import Map, {
   Layer,

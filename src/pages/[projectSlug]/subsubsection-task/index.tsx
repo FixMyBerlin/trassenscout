@@ -12,7 +12,7 @@ import deleteSubsubsectionTask from "@/src/subsubsectionTask/mutations/deleteSub
 import getSubsubsectionTasksWithCount from "@/src/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 

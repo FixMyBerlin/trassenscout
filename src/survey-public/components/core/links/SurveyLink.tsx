@@ -1,5 +1,5 @@
 import { RouteUrlObject } from "blitz"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import NextLink from "next/link"
 import { forwardRef } from "react"
 import { selectSurveyLinkStyle } from "./styles"

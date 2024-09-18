@@ -1,5 +1,5 @@
 import { Link } from "@/src/core/components/links"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { FooterLink } from "./links.const"
 
 type Props = {

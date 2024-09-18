@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { pinkButtonStyles } from "../links"
 import { SuperAdminBox } from "./SuperAdminBox"
 

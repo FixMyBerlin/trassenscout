@@ -12,7 +12,7 @@ import deleteOperator from "@/src/operators/mutations/deleteOperator"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 

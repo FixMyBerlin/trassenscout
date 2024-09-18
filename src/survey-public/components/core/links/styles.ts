@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { SurveyLinkProps } from "./SurveyLink"
 
 // BUTTON:

@@ -9,7 +9,7 @@ import {
   QuestionMarkCircleIcon,
 } from "@heroicons/react/20/solid"
 import { ArrowUturnRightIcon, DocumentIcon } from "@heroicons/react/24/outline"
-import React, { Suspense } from "react"
+import { Suspense } from "react"
 import getStatsInfopanel from "../queries/getStatsInfopanelSubsectionGeneral"
 import { SubsectionInfoPanelCellCompletion } from "./SubsectionInfoPanelCellCompletion"
 import { SubsectionInfoPanelCellContainer } from "./SubsectionInfoPanelCellContainer"
@@ -26,7 +26,7 @@ export const SubsectionInfoPanel: React.FC = () => {
   })
 
   return (
-    <div className="flex flex-col gap-2 bg-gray-100 py-4 text-gray-500 ">
+    <div className="flex flex-col gap-2 bg-gray-100 py-4 text-gray-500">
       <div className="flex justify-between px-4">
         <div className="flex flex-row gap-2">
           <p className="text-gray-900">{subsection.operator?.title}</p>

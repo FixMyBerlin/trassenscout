@@ -10,7 +10,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline"
 import { lineString } from "@turf/helpers"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import deleteSubsection from "../mutations/deleteSubsection"
 import { SubsectionWithPosition } from "../queries/getSubsection"
 
@@ -101,7 +101,7 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds 
                     <SubsectionIcon label={shortTitle(subsection.slug)} />
                   </td>
 
-                  <td className=" cursor-pointer py-4 pl-4 pr-3 text-sm font-medium text-blue-500 hover:text-blue-800">
+                  <td className="cursor-pointer py-4 pl-4 pr-3 text-sm font-medium text-blue-500 hover:text-blue-800">
                     <button onClick={() => handleSlugCopyClick(subsection.slug)}>
                       <div className="flex gap-5">
                         <p>{subsection.slug}</p>

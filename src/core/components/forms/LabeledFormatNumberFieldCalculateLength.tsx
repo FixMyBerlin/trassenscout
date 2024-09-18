@@ -1,5 +1,5 @@
 import { length, lineString } from "@turf/turf"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useFormContext } from "react-hook-form"
 import { blueButtonStyles } from "../links"
 import { LabeledFormatNumberField, LabeledFormatNumberFieldProps } from "./LabeledFormatNumberField"

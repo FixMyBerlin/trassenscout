@@ -12,7 +12,7 @@ import deleteNetworkHierarchy from "@/src/networkHierarchy/mutations/deleteNetwo
 import getNetworkHierarchyWithCount from "@/src/networkHierarchy/queries/getNetworkHierarchysWithCount"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 

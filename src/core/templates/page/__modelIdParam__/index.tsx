@@ -7,7 +7,7 @@ import { quote } from "@/src/core/components/text"
 import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 

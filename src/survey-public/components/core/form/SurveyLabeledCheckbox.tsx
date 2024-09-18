@@ -1,5 +1,5 @@
 import { ErrorMessage } from "@hookform/error-message"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef, ReactNode } from "react"
 import { useFormContext } from "react-hook-form"
 
@@ -25,7 +25,7 @@ export const SurveyLabeledCheckbox = forwardRef<HTMLInputElement, TSurveyLabeled
 
     return (
       <div {...outerProps} className={clsx(outerProps?.className, "group flex items-start")}>
-        <div className="flex h-full min-h-[2.5rem] items-center ">
+        <div className="flex h-full min-h-[2.5rem] items-center">
           <input
             type="checkbox"
             disabled={isSubmitting}
@@ -46,7 +46,7 @@ export const SurveyLabeledCheckbox = forwardRef<HTMLInputElement, TSurveyLabeled
           {...labelProps}
           className={clsx(
             labelProps?.className,
-            "-ml-6 flex h-full min-h-[2.5rem]  w-full cursor-pointer flex-col items-start justify-center pl-9 text-sm font-medium text-gray-700 hover:text-gray-800 sm:w-auto sm:pr-24",
+            "-ml-6 flex h-full min-h-[2.5rem] w-full cursor-pointer flex-col items-start justify-center pl-9 text-sm font-medium text-gray-700 hover:text-gray-800 sm:w-auto sm:pr-24",
           )}
         >
           <span>{label}</span>

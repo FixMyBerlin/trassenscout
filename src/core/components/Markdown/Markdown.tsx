@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { Remark } from "react-remark"
 import { Link } from "../links/Link"
 import { proseClasses } from "../text"

@@ -18,7 +18,7 @@ import getUploadsWithSubsections from "@/src/uploads/queries/getUploadsWithSubse
 import { getFullname } from "@/src/users/utils"
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { mapillaryLink } from "./utils/mapillaryLink"
 
 type Props = {

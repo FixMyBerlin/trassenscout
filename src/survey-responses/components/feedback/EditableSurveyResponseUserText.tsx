@@ -2,7 +2,7 @@ import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Prettify } from "@/src/core/types"
 import { TFeedbackQuestion } from "@/src/survey-public/components/types"
 import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"
-import clsx from "clsx"
+import { clsx } from "clsx"
 
 export type EditableSurveyResponseUserTextProps = {
   feedbackQuestions: TFeedbackQuestion[]

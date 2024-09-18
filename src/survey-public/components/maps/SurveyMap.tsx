@@ -5,10 +5,10 @@ import SurveyPin from "@/src/survey-public/components/maps/SurveyPin"
 import { getCompletedQuestionIds } from "@/src/survey-public/utils/getCompletedQuestionIds"
 import { lineString } from "@turf/helpers"
 import { bbox, center } from "@turf/turf"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
-import React, { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import Map, {
   Layer,

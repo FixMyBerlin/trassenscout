@@ -1,5 +1,5 @@
 import { proseClasses } from "@/src/core/components/text"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { Remark } from "react-remark"
 import { SurveyLink } from "./links/SurveyLink"
 

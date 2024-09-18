@@ -3,8 +3,8 @@ import { Link } from "@/src/core/components/links/Link"
 import { useCurrentUser } from "@/src/users/hooks/useCurrentUser"
 import { Routes } from "@blitzjs/next"
 import { UserIcon } from "@heroicons/react/24/outline"
-import clsx from "clsx"
-import React, { Suspense } from "react"
+import { clsx } from "clsx"
+import { Suspense } from "react"
 import { NavigationUserLoggedIn } from "./NavigationUserLoggedIn"
 
 const UserWithQuery: React.FC = () => {

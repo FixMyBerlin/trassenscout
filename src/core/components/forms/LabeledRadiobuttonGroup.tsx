@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { LabeledRadiobutton, LabeledRadiobuttonProps } from "./LabeledRadiobutton"
 
 type Props = {

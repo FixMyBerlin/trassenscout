@@ -12,7 +12,7 @@ import deleteQualityLevel from "@/src/qualityLevels/mutations/deleteQualityLevel
 import getQualityLevelsWithCount from "@/src/qualityLevels/queries/getQualityLevelsWithCount"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 

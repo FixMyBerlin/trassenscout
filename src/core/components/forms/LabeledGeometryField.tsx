@@ -1,5 +1,5 @@
 import { ErrorMessage } from "@hookform/error-message"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { LabeledGeometryFieldPreview } from "./LabeledGeometryFieldPreview"

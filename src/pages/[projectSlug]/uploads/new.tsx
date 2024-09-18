@@ -15,7 +15,7 @@ import createUpload from "@/src/uploads/mutations/createUpload"
 import { splitReturnTo } from "@/src/uploads/utils"
 import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import { Suspense, useState } from "react"
 

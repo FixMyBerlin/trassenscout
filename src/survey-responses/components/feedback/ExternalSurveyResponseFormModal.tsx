@@ -17,7 +17,7 @@ import { useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { PlusIcon } from "@heroicons/react/20/solid"
 import { SurveyResponseSourceEnum } from "@prisma/client"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useState } from "react"
 import { ExternalSurveyResponseForm, FORM_ERROR } from "./ExternalSurveyResponseForm"
 

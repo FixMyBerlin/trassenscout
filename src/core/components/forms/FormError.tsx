@@ -1,5 +1,5 @@
 import { isDev } from "@/src/core/utils"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { Fragment } from "react"
 import { FormattedMessage } from "react-intl"
 import { proseClasses } from "../text"

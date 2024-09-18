@@ -4,7 +4,7 @@ import { CurrentUserCanIcon } from "@/src/memberships/components/CurrentUserCanI
 import { Routes } from "@blitzjs/next"
 import { Menu, Transition } from "@headlessui/react"
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import { Fragment } from "react"
 import { NavigationProps } from "../NavigationProject/NavigationProject"

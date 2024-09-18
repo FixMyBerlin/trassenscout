@@ -2,9 +2,9 @@ import { getImageSrc } from "@/src/core/utils/getImageSrc"
 import getProject from "@/src/projects/queries/getProject"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import Image from "next/image"
-import React, { Suspense } from "react"
+import { Suspense } from "react"
 
 type Props = { className?: string }
 

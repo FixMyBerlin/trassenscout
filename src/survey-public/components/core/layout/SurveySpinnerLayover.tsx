@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { clsx } from "clsx"
 
 export const SurveySpinnerLayover: React.FC = () => {
   return (
