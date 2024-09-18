@@ -1,5 +1,6 @@
 import db from "@/db"
-import { userCreationMailer } from "@/mailers/userCreationMailer"
+import { userCreatedNotificationToAdmin } from "@/emails/mailers/userCreatedNotificationToAdmin"
+import { getFullname } from "@/src/users/utils/getFullname"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
 import { getMemberships } from "../getMemberships"
@@ -34,13 +35,16 @@ export default resolver.pipe(
       role: user.role,
       ...(await getMemberships(user.id)),
     })
-    await userCreationMailer({
-      userMail: user.email,
-      userId: user.id,
-      userFirstname: user.firstName,
-      userLastname: user.lastName,
-      // todo institution?
-    }).send()
+
+    // Mail: Notify Admins
+    await (
+      await userCreatedNotificationToAdmin({
+        userMail: user.email,
+        userId: user.id,
+        userName: getFullname(user),
+        userMembershipCount: user.memberships.length,
+      })
+    ).send()
     return user
   },
 )
