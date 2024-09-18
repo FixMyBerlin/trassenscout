@@ -1,7 +1,7 @@
 import db from "@/db"
 import { authorizeProjectAdmin } from "@/src/authorization"
 import {
-  allowedSurveySlogs,
+  allowedSurveySlugs,
   AllowedSurveySlugs,
 } from "@/src/survey-public/utils/allowedSurveySlugs"
 import { resolver } from "@blitzjs/rpc"
@@ -22,7 +22,7 @@ export default resolver.pipe(
     const survey = await db.survey.findFirstOrThrow({
       where: { id },
     })
-    if (allowedSurveySlogs.includes(survey.slug)) {
+    if (!allowedSurveySlugs.includes(survey.slug)) {
       throw new NotFoundError()
     }
     // Get type savety for `slug`
