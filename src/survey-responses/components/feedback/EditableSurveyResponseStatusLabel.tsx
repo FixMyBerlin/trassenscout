@@ -1,5 +1,6 @@
 import { StatusLabel } from "@/src/core/components/Status/StatusLabel"
 import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
+import { backendConfig as defaultBackendConfig } from "@/src/survey-public/utils/backend-config-defaults"
 import { getBackendConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 
 type Props = {
@@ -10,9 +11,10 @@ type Props = {
 export const EditableSurveyResponseStatusLabel = ({ status, surveySlug }: Props) => {
   if (!status) return null
 
-  const statusConfig = getBackendConfigBySurveySlug(surveySlug).status.find(
-    (s) => s.value === status,
-  )!
+  const backendConfigStatus =
+    getBackendConfigBySurveySlug(surveySlug).status || defaultBackendConfig.status
+
+  const statusConfig = backendConfigStatus.find((s) => s.value === status)!
 
   return (
     <StatusLabel

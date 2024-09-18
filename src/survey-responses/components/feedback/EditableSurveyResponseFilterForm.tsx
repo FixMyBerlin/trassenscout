@@ -7,6 +7,7 @@ import { linkStyles } from "@/src/core/components/links"
 import { Prettify } from "@/src/core/types"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import { TResponse } from "@/src/survey-public/components/types"
+import { backendConfig as defaultBackendConfig } from "@/src/survey-public/utils/backend-config-defaults"
 import {
   getBackendConfigBySurveySlug,
   getFeedbackDefinitionBySurveySlug,
@@ -77,7 +78,9 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     queryCategories &&
     querySearchTerm !== undefined
 
-  const surveyResponseStatus = getBackendConfigBySurveySlug(survey.slug).status
+  const backendConfig = getBackendConfigBySurveySlug(survey.slug)
+  const surveyResponseStatus = backendConfig.status || defaultBackendConfig.status
+  const labels = backendConfig.labels || defaultBackendConfig.labels
 
   if (!searchActive) {
     void router.push(
@@ -164,7 +167,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
         ...topics.map((t) => {
           return { value: String(t.id), label: t.title }
         }),
-        { value: "0", label: "Ohne Thema" },
+        { value: "0", label: `Ohne ${labels.topics?.sg || "Tag"}` },
       ]
     : []
 
@@ -175,13 +178,13 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
 
   const hasnotesOptions = [
     { value: "ALL", label: "Alle" },
-    { value: "true", label: "Mit Notiz" },
-    { value: "false", label: "Ohne Notiz" },
+    { value: "true", label: `Mit ${labels.note?.sg || "Notiz"}` },
+    { value: "false", label: `Ohne ${labels.note?.sg || "Notiz"}` },
   ]
   const haslocationOptions = [
     { value: "ALL", label: "Alle" },
-    { value: "true", label: "Mit Ortsangabe" },
-    { value: "false", label: "Ohne Ortsangabe" },
+    { value: "true", label: `Mit ${labels.location?.sg || "Ortsangabe"}` },
+    { value: "false", label: `Ohne ${labels.location?.sg || "Ortsangabe"}` },
   ]
 
   return (
@@ -204,19 +207,19 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 items={statusOptions}
               />
               <LabeledRadiobuttonGroup
-                label="Baulastträger"
+                label={labels.operator?.sg || "Baulastträger"}
                 classLabelOverwrite="font-semibold mb-3"
                 scope="operator"
                 items={operatorOptions}
               />
               <LabeledRadiobuttonGroup
-                label="Notiz"
+                label={labels.note?.sg || "Notiz"}
                 classLabelOverwrite="font-semibold mb-3"
                 scope="hasnotes"
                 items={hasnotesOptions}
               />
               <LabeledRadiobuttonGroup
-                label="Ortsangabe"
+                label={labels.location?.sg || "Ortsangabe"}
                 classLabelOverwrite="font-semibold mb-3"
                 scope="haslocation"
                 items={haslocationOptions}
@@ -224,14 +227,14 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
             </div>
             <div className="flex flex-col gap-6 sm:flex-row">
               <LabeledCheckboxGroup
-                label="Kategorien"
+                label={labels.category?.sg || "Kategorien"}
                 classLabelOverwrite="font-semibold mb-3"
                 scope="categories"
                 items={categoriesOptions}
               />
               {!!topicsOptions.length && (
                 <LabeledCheckboxGroup
-                  label="Themen"
+                  label={labels.topics?.pl || "Tags"}
                   classLabelOverwrite="font-semibold mb-3"
                   scope="topics"
                   items={topicsOptions}

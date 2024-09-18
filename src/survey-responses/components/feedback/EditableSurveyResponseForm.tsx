@@ -6,7 +6,10 @@ import {
 } from "@/src/core/components/forms"
 import { Link, blueButtonStyles } from "@/src/core/components/links"
 import { useSlugs } from "@/src/core/hooks"
-import { getBackendConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
+import {
+  TBackendConfig,
+  backendConfig as defaultBackendConfig,
+} from "@/src/survey-public/utils/backend-config-defaults"
 import createSurveyResponseTopicsOnSurveyResponses from "@/src/survey-response-topics-on-survey-responses/mutations/createSurveyResponseTopicsOnSurveyResponses"
 import deleteSurveyResponseTopicsOnSurveyResponses from "@/src/survey-response-topics-on-survey-responses/mutations/deleteSurveyResponseTopicsOnSurveyResponses"
 import createSurveyResponseTopic from "@/src/survey-response-topics/mutations/createSurveyResponseTopic"
@@ -36,6 +39,7 @@ type FormProps<S extends z.ZodType<any, any>> = Omit<
   maptilerUrl: string
   defaultViewState: LngLatBoundsLike
   showMap?: boolean
+  backendConfig: TBackendConfig
 } & Pick<EditableSurveyResponseListItemProps, "response" | "operators" | "topics" | "subsections">
 
 export const FORM_ERROR = "FORM_ERROR"
@@ -52,6 +56,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   initialValues,
   refetchResponsesAndTopics,
   showMap,
+  backendConfig,
 }: FormProps<S>) {
   const router = useRouter()
   const methods = useForm<z.infer<S>>({
@@ -77,6 +82,9 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   )
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+
+  const labels = backendConfig.labels || defaultBackendConfig.labels
+  const surveyResponseStatus = backendConfig.status || defaultBackendConfig.status
 
   const operatorsOptions = operators.map((operator: Operator) => {
     return { value: String(operator.id), label: operator.title }
@@ -160,7 +168,6 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
       return { [FORM_ERROR]: error }
     }
   }
-  const surveyResponseStatus = getBackendConfigBySurveySlug(survey.slug).status
 
   return (
     <FormProvider {...methods}>
@@ -170,7 +177,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
             <div className="flex w-full flex-col gap-10">
               <div className="grid w-full grid-cols-2 gap-8">
                 <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-                  <h4 className="mb-3 font-semibold">Status</h4>
+                  <h4 className="mb-3 font-semibold">{labels.status?.sg || "Status"}</h4>
                   <LabeledRadiobuttonGroup
                     classNameItemWrapper={clsx("flex-shrink-0")}
                     scope={"status"}
@@ -181,7 +188,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                 </form>
 
                 <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-                  <h4 className="mb-3 font-semibold">Baulastträger</h4>
+                  <h4 className="mb-3 font-semibold">{labels.operator?.sg || "Baulastträger"}</h4>
                   <LabeledRadiobuttonGroup
                     scope="operatorId"
                     items={[...operatorsOptions, { value: "0", label: "Nicht zugeordnet" }]}
@@ -193,7 +200,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                 onChange={async () => await methods.handleSubmit(handleSubmit)()}
               >
                 <div>
-                  <h4 className="mb-3 font-semibold">Themen (für FAQ)</h4>
+                  <h4 className="mb-3 font-semibold">{labels.topics?.pl || "Tags"}</h4>
                   <LabeledCheckboxGroup
                     classNameItemWrapper="grid grid-cols-3 grid-rows-10 grid-flow-col-dense"
                     scope="surveyResponseTopics"
@@ -249,7 +256,11 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           }}
         >
           <div className="min-w-[300px] space-y-2 pb-8 pr-2">
-            <LabeledTextField placeholder="Thema hinzufügen" name="newTopic" label="" />
+            <LabeledTextField
+              placeholder={`${labels.topics?.sg || "Tag"} hinzufügen`}
+              name="newTopic"
+              label=""
+            />
             <button type="submit" className={clsx(blueButtonStyles, "!px-3 !py-2.5")}>
               Hinzufügen
             </button>
@@ -265,9 +276,9 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         }}
       >
         <div className="flex-grow space-y-2 pb-4 pr-2">
-          <p className="mb-3 font-semibold">Interne Notiz</p>
+          <p className="mb-3 font-semibold">{labels.note?.sg || "Notiz"}</p>
           <LabeledTextareaField
-            help="Bitte starten Sie Ihre Notiz immer mit ihrem Namen oder Kürzel"
+            help={labels.note?.help || "Bitte starten Sie immer mit ihrem Namen oder Kürzel."}
             name="note"
             label=""
             onChange={() => setHasUnsavedChanges(true)}
@@ -278,7 +289,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           />
           <div className="flex items-end justify-between">
             <button type="submit" className={clsx(blueButtonStyles, "!px-3 !py-2.5")}>
-              Notiz speichern
+              {labels.note?.sg || "Notiz"} speichern
             </button>
             <small className={clsx(!hasUnsavedChanges && "opacity-0", "text-yellow-500")}>
               ungespeicherte Änderungen

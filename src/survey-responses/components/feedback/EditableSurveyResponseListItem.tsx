@@ -3,9 +3,19 @@ import { linkStyles } from "@/src/core/components/links"
 import { Prettify } from "@/src/core/types"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
+import { TMapProps } from "@/src/survey-public/components/types"
+import { backendConfig as defaultBackendConfig } from "@/src/survey-public/utils/backend-config-defaults"
+import {
+  getBackendConfigBySurveySlug,
+  getFeedbackDefinitionBySurveySlug,
+  getResponseConfigBySurveySlug,
+  getSurveyDefinitionBySurveySlug,
+} from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
+import deleteSurveyResponse from "@/src/survey-responses/mutations/deleteSurveyResponse"
 import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"
 import { getSurveyResponseCategoryById } from "@/src/survey-responses/utils/getSurveyResponseCategoryById"
+import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useParam, useRouterQuery } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid"
@@ -13,15 +23,6 @@ import { EnvelopeIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { useEffect } from "react"
-
-import { TMapProps } from "@/src/survey-public/components/types"
-import {
-  getFeedbackDefinitionBySurveySlug,
-  getResponseConfigBySurveySlug,
-  getSurveyDefinitionBySurveySlug,
-} from "@/src/survey-public/utils/getConfigBySurveySlug"
-import deleteSurveyResponse from "@/src/survey-responses/mutations/deleteSurveyResponse"
-import getSurvey from "@/src/surveys/queries/getSurvey"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
@@ -73,26 +74,26 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   }
   const operatorSlugWitFallback = response.operator?.slug || "k.A."
 
-  const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
+  const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
   const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
+  const backendConfig = getBackendConfigBySurveySlug(survey.slug)
+  const labels = backendConfig.labels || defaultBackendConfig.labels
+  const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
 
   const mapProps = feedbackDefinition!.pages[1]!.questions.find(
     (q) => q.id === evaluationRefs["feedback-location"],
   )!.props as TMapProps
-
-  const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
-  const maptilerUrl = surveyDefinition.maptilerUrl
   const defaultViewState = mapProps?.config?.bounds
 
   const feedbackQuestions = []
-
   for (let page of feedbackDefinition.pages) {
     feedbackQuestions.push(...page.questions)
   }
-
   const feedbackQuestion = feedbackQuestions.find(
     (q) => q.id === evaluationRefs["feedback-category"],
   )
+
+  const maptilerUrl = surveyDefinition.maptilerUrl
 
   const userTextPreview =
     // @ts-expect-error `data` is of type unkown
@@ -184,7 +185,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
               response={response}
             />
             <div>
-              <h4 className="mb-5 font-semibold">Kategorie</h4>
+              <h4 className="mb-5 font-semibold">{labels.category?.sg || "Kategorie"}</h4>
               <div className="w-48 flex-shrink-0">
                 <span className="rounded bg-gray-300 p-3 px-4">{feedbackUserCategory}</span>
               </div>
@@ -206,6 +207,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             refetchResponsesAndTopics={refetchResponsesAndTopics}
             maptilerUrl={maptilerUrl}
             defaultViewState={defaultViewState}
+            backendConfig={backendConfig}
           />
         </div>
       )}
