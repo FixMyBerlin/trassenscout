@@ -19,7 +19,9 @@ export const Signup = z.object({
   firstName: z.string().min(1, { message: "Pflichtfeld." }),
   lastName: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
   institution: z.string().nullable(),
+  inviteToken: z.string().nullable(), // Signup will create a membership or not…
 })
+
 export const UpdateUser = z.object({
   phone: z.string().nullable(),
   firstName: z.string().min(1, { message: "Pflichtfeld." }),
@@ -34,6 +36,7 @@ export const UpdateMembershipRole = z.object({
 export const Login = z.object({
   email,
   password: z.string(),
+  inviteToken: z.string().nullish(), // Login will create a membership or not…
 })
 
 export const ForgotPassword = z.object({

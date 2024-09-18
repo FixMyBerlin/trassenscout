@@ -1,4 +1,5 @@
 import db from "@/db"
+import { invitationCreatedMailToUser } from "@/emails/mailers/invitationCreatedMailToUser"
 import { invitationCreatedNotificationToEditors } from "@/emails/mailers/invitationCreatedNotificationToEditors"
 import { authorizeProjectAdmin } from "@/src/authorization"
 import { shortTitle } from "@/src/core/components/text"
@@ -40,11 +41,24 @@ export default resolver.pipe(
         email: true,
         role: true,
         updatedAt: true,
+        token: true,
         inviter: { select: { firstName: true, lastName: true } },
+        project: { select: { slug: true } },
       },
     })
 
-    // Mail: Notify Editor Members
+    // Mail: Notify Invited Person (Invitee)
+    await (
+      await invitationCreatedMailToUser({
+        userEmail: invite.email,
+        projectName: shortTitle(invite.project.slug),
+        inviterName: getFullname(invite.inviter)!,
+        signupPath: Routes.SignupPage({ inviteToken: invite.token }).href,
+        loginPath: Routes.LoginPage({ inviteToken: invite.token }).href,
+      })
+    ).send()
+
+    // Mail: Notify all Editor Members
     const projectMemberRoleEditor = await db.membership.findMany({
       where: { projectId, role: "EDITOR" },
       select: { user: true, project: true },
@@ -63,6 +77,7 @@ export default resolver.pipe(
       ).send()
     }
 
-    return invite
+    const { token, ...saveInvite } = invite
+    return saveInvite
   },
 )

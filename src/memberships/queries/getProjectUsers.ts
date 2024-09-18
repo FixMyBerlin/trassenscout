@@ -1,5 +1,5 @@
 import db, { MembershipRoleEnum } from "@/db"
-import { selectUserFieldsForSession } from "@/src/auth/selectUserFieldsForSession"
+import { selectUserFieldsForSession } from "@/src/auth/shared/selectUserFieldsForSession"
 import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"

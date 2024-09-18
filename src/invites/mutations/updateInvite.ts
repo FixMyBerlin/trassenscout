@@ -12,9 +12,12 @@ const UpdateInviteSchema = InviteSchema.merge(
 export default resolver.pipe(
   resolver.zod(UpdateInviteSchema),
   // resolver.authorize(/* ok */), // Public page to accept an invitation
-  async ({ token, ...data }) =>
-    await db.invite.update({
+  async ({ token, ...data }) => {
+    const result = await db.invite.update({
       where: { token },
       data,
-    }),
+    })
+    // Only return minimal data to the public site
+    return { token: result.token }
+  },
 )
