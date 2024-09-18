@@ -1,4 +1,4 @@
-import { TeamTable } from "@/src/contacts/components/TeamTable"
+import { TeamInvitesTable } from "@/src/contacts/components/TeamInvitesTable"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Tabs } from "@/src/core/components/Tabs/Tabs"
@@ -7,11 +7,10 @@ import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { Suspense } from "react"
 
-export const TeamWithQuery = () => {
+export const TeamInvitesWithQuery = () => {
   const { projectSlug } = useSlugs()
 
   return (
@@ -24,26 +23,17 @@ export const TeamWithQuery = () => {
         ]}
       />
 
-      <TeamTable />
+      <TeamInvitesTable />
 
-      <IfUserCanEdit>
-        <ButtonWrapper className="mt-6 justify-end">
-          <Link
-            button="blue"
-            icon="list"
-            href={Routes.ProjectTeamInvitesPage({ projectSlug: projectSlug! })}
-          >
-            Einladungen
-          </Link>
-          <Link
-            button="blue"
-            icon="plus"
-            href={Routes.NewProjectTeamInvitePage({ projectSlug: projectSlug! })}
-          >
-            Mitwirkende einladen
-          </Link>
-        </ButtonWrapper>
-      </IfUserCanEdit>
+      <ButtonWrapper className="mt-6">
+        <Link
+          button="blue"
+          icon="plus"
+          href={Routes.NewProjectTeamInvitePage({ projectSlug: projectSlug! })}
+        >
+          Mitwirkende einladen
+        </Link>
+      </ButtonWrapper>
 
       <SuperAdminBox>
         <Link button="blue" href={Routes.AdminMembershipsPage()}>
@@ -54,23 +44,23 @@ export const TeamWithQuery = () => {
   )
 }
 
-const ProjectTeamPage: BlitzPage = () => {
+const ProjectTeamInvitesPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title="Projektteam" />
+      <MetaTags noindex title="Einladungen" />
       <PageHeader
-        title="Projektteam"
-        description="Kontakt zu allen registrierten Mitglieder:innen des Projektes."
+        title="Einladungen"
+        description="Übersich der Einladungen zur Mitarbeit im Projekt. Abgeschlossene Einladungen werden nach 30 Tagen gelöscht."
         className="mt-12"
       />
 
       <Suspense fallback={<Spinner page />}>
-        <TeamWithQuery />
+        <TeamInvitesWithQuery />
       </Suspense>
     </LayoutRs>
   )
 }
 
-ProjectTeamPage.authenticate = true
+ProjectTeamInvitesPage.authenticate = true
 
-export default ProjectTeamPage
+export default ProjectTeamInvitesPage

@@ -23,7 +23,9 @@ const AdminMemberships = () => {
   ) => {
     if (
       window.confirm(
-        `Den Eintrag mit ID ${membership.id} auf Projekt ${membership.project.slug} unwiderruflich löschen?`,
+        `Den Eintrag mit ID ${membership.id} auf Projekt ${shortTitle(
+          membership.project.slug,
+        )} unwiderruflich löschen?`,
       )
     ) {
       await deleteMembershipMutation({ id: membership.id })

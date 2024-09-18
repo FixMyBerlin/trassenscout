@@ -6,7 +6,7 @@ type Props = {
   children: React.ReactNode
 }
 
-export const DevAdminBox: React.FC<Props> = (props) => {
+export const DevAdminBox = (props: Props) => {
   if (!isDev) {
     return null
   }

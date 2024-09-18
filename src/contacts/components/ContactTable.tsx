@@ -138,7 +138,7 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
         </table>
       </TableWrapper>
 
-      <ButtonWrapper className="justify-between">
+      <ButtonWrapper className="mt-6 justify-between">
         <IfUserCanEdit>
           <Link
             button="blue"

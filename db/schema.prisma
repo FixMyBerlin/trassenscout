@@ -51,11 +51,35 @@ model User {
   subsections   Subsection[]
   memberships   Membership[]
   Subsubsection Subsubsection[]
+  invites       Invite[]
 }
 
 enum UserRoleEnum {
   USER
   ADMIN
+}
+
+model Invite {
+  id        Int                @id @default(autoincrement())
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  //
+  token     String             @unique
+  status    InviteStatusEnum   @default(PENDING)
+  //
+  email     String             @unique
+  role      MembershipRoleEnum @default(VIEWER)
+  //
+  projectId Int
+  project   Project            @relation(fields: [projectId], references: [id])
+  inviterId Int
+  inviter   User               @relation(fields: [inviterId], references: [id])
+}
+
+enum InviteStatusEnum {
+  PENDING
+  ACCEPTED
+  EXPIRED
 }
 
 model Session {
@@ -126,6 +150,7 @@ model Project {
   SubsubsectionInfra   SubsubsectionInfra[]
   SubsubsectionSpecial SubsubsectionSpecial[]
   NetworkHierarchy     NetworkHierarchy[]
+  Invite               Invite[]
 }
 
 model Membership {

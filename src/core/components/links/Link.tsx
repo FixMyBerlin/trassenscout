@@ -1,4 +1,4 @@
-import { ArrowDownTrayIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid"
+import { ArrowDownTrayIcon, ListBulletIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { PencilIcon } from "@heroicons/react/24/outline"
 import { RouteUrlObject } from "blitz"
 import clsx from "clsx"
@@ -24,6 +24,7 @@ export const linkIcons = {
   edit: <PencilIcon className="h-3.5 w-3.5" />,
   download: <ArrowDownTrayIcon className="h-3.5 w-3.5" />,
   delete: <TrashIcon className="h-3.5 w-3.5" />,
+  list: <ListBulletIcon className="h-3.5 w-3.5" />,
 }
 
 export const Link: React.FC<LinkProps> = forwardRef<HTMLAnchorElement, LinkProps>(

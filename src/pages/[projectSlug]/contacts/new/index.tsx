@@ -6,15 +6,16 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
+import { useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 
 const NewContactWithQuery: BlitzPage = () => {
   const router = useRouter()
-  const projectSlug = useParam("projectSlug", "string")
+  const { projectSlug } = useSlugs()
   const [createContactMutation] = useMutation(createContact)
 
   type HandleSubmit = any // TODO
@@ -40,7 +41,7 @@ const NewContactWithQuery: BlitzPage = () => {
 }
 
 const NewContactPage: BlitzPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
+  const { projectSlug } = useSlugs()
 
   return (
     <LayoutRs>
