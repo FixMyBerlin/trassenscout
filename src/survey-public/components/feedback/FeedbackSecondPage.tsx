@@ -2,7 +2,7 @@ import { SurveyScreenHeader } from "@/src/survey-public/components/core/layout/S
 import { TMapProps, TPage, TTextProps } from "@/src/survey-public/components/types"
 import { Fragment } from "react"
 import { useFormContext } from "react-hook-form"
-import { MapProvider } from "react-map-gl"
+import { MapProvider } from "react-map-gl/maplibre"
 import { Question } from "../Question"
 import { SurveyH2, SurveyP } from "../core/Text"
 import { SurveyButton } from "../core/buttons/SurveyButton"

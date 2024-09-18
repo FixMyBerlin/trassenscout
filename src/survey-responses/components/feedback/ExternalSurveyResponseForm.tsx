@@ -11,7 +11,7 @@ import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { SurveyResponseSourceEnum } from "@prisma/client"
-import { MapProvider } from "react-map-gl"
+import { MapProvider } from "react-map-gl/maplibre"
 import { z } from "zod"
 import { ExternalSurveyResponseFormMap } from "./ExternalSurveyResponseFormMap"
 

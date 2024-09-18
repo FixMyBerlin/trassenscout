@@ -20,7 +20,7 @@ import getSubsections from "@/src/subsections/queries/getSubsections"
 import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
-import { MapProvider } from "react-map-gl"
+import { MapProvider } from "react-map-gl/maplibre"
 import { IfUserCanEdit } from "../../memberships/components/IfUserCan"
 
 export const ProjectDashboardWithQuery = () => {

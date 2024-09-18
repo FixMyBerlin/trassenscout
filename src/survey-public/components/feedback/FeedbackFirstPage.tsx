@@ -1,6 +1,6 @@
 import { useParams } from "next/navigation"
 import { useRouter } from "next/router"
-import { MapProvider } from "react-map-gl"
+import { MapProvider } from "react-map-gl/maplibre"
 import { Question } from "../Question"
 import { SurveyH2, SurveyP } from "../core/Text"
 import { SurveyButton } from "../core/buttons/SurveyButton"
