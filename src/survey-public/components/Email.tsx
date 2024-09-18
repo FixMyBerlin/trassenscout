@@ -1,5 +1,4 @@
-import { iframeResizer } from "iframe-resizer"
-import { useEffect } from "react"
+import IframeResizer from "@iframe-resizer/react"
 import { SurveyScreenHeader } from "./core/layout/SurveyScreenHeader"
 import { SurveyLink } from "./core/links/SurveyLink"
 import { TEmail } from "./types"
@@ -13,21 +12,17 @@ type Props = {
 export const Email: React.FC<Props> = ({ email }) => {
   const { description, button, title, mailjetWidgetUrl, homeUrl } = email
 
-  useEffect(() => {
-    iframeResizer({}, "#mailjet-widget")
-  }, [])
-
   return (
     <section>
       <SurveyScreenHeader title={title.de} description={description.de} />
       {mailjetWidgetUrl && (
-        <div
+        <IframeResizer
           className="my-6 mt-10 rounded border border-gray-300"
-          dangerouslySetInnerHTML={{
-            __html: `
-              <iframe id="mailjet-widget" data-w-type="embedded" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="${mailjetWidgetUrl}" width="100%" style="height: 0px;"></iframe>
-          `,
-          }}
+          // https://iframe-resizer.com/frameworks/react/#typical-setup
+          // "For non-comercial open source projects, iframe-resizer is free to use under the Gnu Public License. To confirm that you are using it in a compatable project set the license to GPLv3."
+          license="GPLv3"
+          src={mailjetWidgetUrl}
+          style={{ width: "100%", height: "100vh" }}
         />
       )}
       <div className="pt-10">
