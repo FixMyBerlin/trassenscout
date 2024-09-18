@@ -8,6 +8,7 @@ export const isProduction =
 //   process.env.NEXT_PUBLIC_APP_ORIGIN === "http://staging.trassenscout.de"
 
 export const isDev = process.env.NODE_ENV === "development"
+export const isTest = process.env.NODE_ENV === "test"
 
 export const isBrowser = typeof window !== "undefined"
 export const isSSR = !isBrowser

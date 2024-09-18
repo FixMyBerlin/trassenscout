@@ -1,5 +1,5 @@
 import { footerTextMarkdown } from "@/emails/templats/footerTextMarkdown"
-import { isDev } from "@/src/core/utils"
+import { isDev, isTest } from "@/src/core/utils"
 import { render } from "@react-email/components"
 import Mailjet, { LibraryResponse, SendEmailV3_1 } from "node-mailjet"
 import { MarkdownMail } from "../../templats/MarkdownMail"
@@ -31,7 +31,7 @@ ${message.TextPart}
 ${footerTextMarkdown}
 `
 
-  if (isDev) {
+  if (isDev || isTest) {
     const previewEmail = (await import("preview-email")).default
     await previewEmail({
       from: formattedEmailAddress(message.From),
