@@ -1,6 +1,7 @@
 import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
 import combine from "@turf/combine"
-import { BBox, bbox, bboxPolygon, featureCollection, lineString } from "@turf/turf"
+import { bbox, bboxPolygon, featureCollection, lineString } from "@turf/turf"
+import type { BBox } from "geojson"
 import type { LngLatBoundsLike } from "react-map-gl/maplibre"
 
 export const subsectionsBbox = (subsections: SubsectionWithPosition[]) => {

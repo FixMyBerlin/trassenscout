@@ -1,9 +1,10 @@
 import { vectorStyle } from "@/src/core/components/Map/BaseMap"
 import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
 import { CheckBadgeIcon } from "@heroicons/react/24/solid"
-import { Position, lineString, point } from "@turf/helpers"
+import { lineString, point } from "@turf/helpers"
 import { bbox } from "@turf/turf"
-import clsx from "clsx"
+import { clsx } from "clsx"
+import type { Position } from "geojson"
 import { useFormContext } from "react-hook-form"
 import Map, {
   Layer,

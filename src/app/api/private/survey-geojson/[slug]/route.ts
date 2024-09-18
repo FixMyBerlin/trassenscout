@@ -1,7 +1,7 @@
 import db from "@/db"
 import { feedbackDefinition } from "@/src/survey-public/radnetz-brandenburg/data/feedback"
-import { Feature, LineString, Point, Position } from "@turf/helpers"
 import adler32 from "adler-32"
+import type { Feature, LineString, Point, Position } from "geojson"
 
 const categories = Object.fromEntries(
   // todo survey clean up after survey BB: remove or find generic way to do this

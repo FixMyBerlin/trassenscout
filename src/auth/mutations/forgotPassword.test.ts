@@ -2,7 +2,7 @@ import db from "@/db"
 import { hash256 } from "@blitzjs/auth"
 import { Ctx } from "@blitzjs/next"
 import previewEmail from "preview-email"
-import { beforeEach, describe, it, vi } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import forgotPassword from "./forgotPassword"
 
 beforeEach(async () => {

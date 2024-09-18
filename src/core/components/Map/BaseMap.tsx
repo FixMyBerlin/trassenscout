@@ -1,8 +1,9 @@
-import { FeatureCollection, LineString, Point, featureCollection, point } from "@turf/helpers"
-import clsx from "clsx"
+import { featureCollection, point } from "@turf/helpers"
+import { clsx } from "clsx"
+import type { FeatureCollection, LineString, Point } from "geojson"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
-import React, { useState } from "react"
+import { useState } from "react"
 import Map, {
   Layer,
   MapEvent,
@@ -150,7 +151,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   return (
     <div
       className={clsx(
-        "w-full overflow-clip rounded-md drop-shadow-md ",
+        "w-full overflow-clip rounded-md drop-shadow-md",
         classHeight ?? "h-96 sm:h-[500px]",
       )}
     >

@@ -10,17 +10,10 @@ import getProject from "@/src/projects/queries/getProject"
 import getSubsections from "@/src/subsections/queries/getSubsections"
 import { BlitzPage, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import {
-  Feature,
-  LineString,
-  Point,
-  featureCollection,
-  lineString,
-  multiLineString,
-  point,
-} from "@turf/helpers"
+import { featureCollection, lineString, multiLineString, point } from "@turf/helpers"
 import { bbox, lineSlice, nearestPointOnLine } from "@turf/turf"
-import clsx from "clsx"
+import { clsx } from "clsx"
+import type { Feature, LineString, Point } from "geojson"
 import { Suspense, useState } from "react"
 import { useForm } from "react-hook-form"
 import { Layer, MapGeoJSONFeature, MapLayerMouseEvent, Marker, Source } from "react-map-gl/maplibre"

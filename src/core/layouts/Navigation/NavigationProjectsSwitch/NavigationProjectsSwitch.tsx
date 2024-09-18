@@ -2,7 +2,7 @@ import { Link } from "@/src/core/components/links/Link"
 import { shortTitle } from "@/src/core/components/text"
 import { CurrentUserCanIcon } from "@/src/memberships/components/CurrentUserCanIcon"
 import { Routes } from "@blitzjs/next"
-import { Menu, Transition } from "@headlessui/react"
+import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react"
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
 import { clsx } from "clsx"
 import { useRouter } from "next/router"
@@ -32,7 +32,7 @@ export const NavigationProjectsSwitch = ({ projects }: Props) => {
     <Menu as="div" className="relative ml-3">
       {({ open }) => (
         <>
-          <Menu.Button
+          <MenuButton
             className={clsx(
               "flex rounded-md bg-yellow-500 px-3 py-2 text-sm font-medium text-gray-800",
               open ? "bg-yellow-400" : "hover:bg-yellow-400 focus:bg-yellow-400",
@@ -45,7 +45,7 @@ export const NavigationProjectsSwitch = ({ projects }: Props) => {
               className="-mr-1.5 ml-0.5 h-5 w-5 text-gray-900 hover:text-black"
               aria-hidden="true"
             />
-          </Menu.Button>
+          </MenuButton>
           {open && (
             <Transition
               as={Fragment}
@@ -56,13 +56,13 @@ export const NavigationProjectsSwitch = ({ projects }: Props) => {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute left-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <MenuItems className="absolute left-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <div className="p-1.5">
                   {projectsMenuItems.map((item) => {
                     const current = query.projectSlug === item.slug
 
                     return (
-                      <Menu.Item key={item.name}>
+                      <MenuItem key={item.name}>
                         {({ active }) => (
                           <Link
                             href={item.href}
@@ -79,11 +79,11 @@ export const NavigationProjectsSwitch = ({ projects }: Props) => {
                             <CurrentUserCanIcon projectSlug={item.slug} />
                           </Link>
                         )}
-                      </Menu.Item>
+                      </MenuItem>
                     )
                   })}
                 </div>
-              </Menu.Items>
+              </MenuItems>
             </Transition>
           )}
         </>

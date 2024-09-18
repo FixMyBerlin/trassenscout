@@ -1,5 +1,5 @@
 import { Link } from "@/src/core/components/links"
-import { Disclosure } from "@headlessui/react"
+import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import { useRouter } from "next/router"
@@ -22,14 +22,14 @@ export const NavigationMobile = ({ menuItems, projects }: NavigationProps) => {
               <NavigationUser />
 
               {Boolean(menuItems?.length) && (
-                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                <DisclosureButton className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Hauptmenü öffnen</span>
                   {open ? (
                     <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
                   ) : (
                     <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
                   )}
-                </Disclosure.Button>
+                </DisclosureButton>
               )}
             </div>
             <div className="flex flex-1 items-center justify-start sm:items-stretch">
@@ -39,7 +39,7 @@ export const NavigationMobile = ({ menuItems, projects }: NavigationProps) => {
             </div>
           </div>
 
-          <Disclosure.Panel className="divide-y-2 divide-gray-900">
+          <DisclosurePanel className="divide-y-2 divide-gray-900">
             <div className="space-y-3 pb-3 pt-2">
               {menuItems?.map((item) => {
                 const current = [
@@ -48,7 +48,7 @@ export const NavigationMobile = ({ menuItems, projects }: NavigationProps) => {
                 ].includes(pathname)
 
                 return (
-                  <Disclosure.Button key={item.name} as="div">
+                  <DisclosureButton key={item.name} as="div">
                     <Link
                       href={item.href}
                       classNameOverwrites={clsx(
@@ -60,11 +60,11 @@ export const NavigationMobile = ({ menuItems, projects }: NavigationProps) => {
                     >
                       {item.name}
                     </Link>
-                  </Disclosure.Button>
+                  </DisclosureButton>
                 )
               })}
             </div>
-          </Disclosure.Panel>
+          </DisclosurePanel>
         </>
       )}
     </Disclosure>

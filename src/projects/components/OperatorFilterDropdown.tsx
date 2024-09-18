@@ -3,8 +3,8 @@ import { useSlugs } from "@/src/core/hooks"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { RadioGroup } from "@headlessui/react"
-import clsx from "clsx"
+import { RadioGroup, RadioGroupLabel, RadioGroupOption } from "@headlessui/react"
+import { clsx } from "clsx"
 import router from "next/router"
 
 export const OperatorFilterDropdown: React.FC = () => {
@@ -31,9 +31,9 @@ export const OperatorFilterDropdown: React.FC = () => {
         }}
         className="mt-2"
       >
-        <RadioGroup.Label className="sr-only">Baulastträger auswählen</RadioGroup.Label>
+        <RadioGroupLabel className="sr-only">Baulastträger auswählen</RadioGroupLabel>
         <div className="space-x-2">
-          <RadioGroup.Option
+          <RadioGroupOption
             value=""
             className={({ active, checked }) =>
               clsx(
@@ -43,12 +43,12 @@ export const OperatorFilterDropdown: React.FC = () => {
               )
             }
           >
-            <RadioGroup.Label as="span" className="font-semibold">
+            <RadioGroupLabel as="span" className="font-semibold">
               Alle Baulastträger
-            </RadioGroup.Label>
-          </RadioGroup.Option>
+            </RadioGroupLabel>
+          </RadioGroupOption>
           {operators.map((operator) => (
-            <RadioGroup.Option
+            <RadioGroupOption
               key={operator.id}
               value={operator.slug}
               className={({ active, checked }) =>
@@ -59,10 +59,10 @@ export const OperatorFilterDropdown: React.FC = () => {
                 )
               }
             >
-              <RadioGroup.Label className="font-semibold" as="span">
+              <RadioGroupLabel className="font-semibold" as="span">
                 {shortTitle(operator.slug)}
-              </RadioGroup.Label>
-            </RadioGroup.Option>
+              </RadioGroupLabel>
+            </RadioGroupOption>
           ))}
         </div>
       </RadioGroup>

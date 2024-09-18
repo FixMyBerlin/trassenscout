@@ -1,7 +1,7 @@
 import { isProduction } from "@/src/core/utils"
 import institutions_bboxes from "@/src/survey-public/radnetz-brandenburg/data/institutions_bboxes.json"
-import { Dialog, Transition } from "@headlessui/react"
-import clsx from "clsx"
+import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@headlessui/react"
+import { clsx } from "clsx"
 import Image from "next/image"
 import { useRouter } from "next/router"
 import { Fragment, useEffect, useState } from "react"
@@ -162,7 +162,7 @@ const StartContent: React.FC = () => {
           className="fixed inset-0 z-10 flex items-center justify-center"
           onClose={closeModal}
         >
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0"
@@ -172,11 +172,11 @@ const StartContent: React.FC = () => {
             leaveTo="opacity-0"
           >
             <div className="fixed inset-0 bg-black/25" />
-          </Transition.Child>
+          </TransitionChild>
 
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 scale-95"
@@ -185,10 +185,10 @@ const StartContent: React.FC = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title as="h3" className="text-lg font-bold leading-6 text-gray-700">
+                <DialogPanel className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <DialogTitle as="h3" className="text-lg font-bold leading-6 text-gray-700">
                     Achtung:
-                  </Dialog.Title>
+                  </DialogTitle>
                   <div className="mt-2">
                     <p className="text-gray-700">
                       Durch Aufrufen der Seite bestätige ich, dass der Link zum Radverkehrsatlas und
@@ -216,8 +216,8 @@ const StartContent: React.FC = () => {
                       Nein, ich bleibe hier
                     </button>
                   </div>
-                </Dialog.Panel>
-              </Transition.Child>
+                </DialogPanel>
+              </TransitionChild>
             </div>
           </div>
         </Dialog>
@@ -416,7 +416,7 @@ const StartContent: React.FC = () => {
   )
 }
 
-export const SurveyBB: React.FC<Props> = ({ surveyId }) => {
+export const SurveyBB = ({ surveyId }: Props) => {
   const router = useRouter()
   const [isUrlInvalid, setIsUrlInvalid] = useState(false)
   const { id } = router.query
