@@ -1,4 +1,5 @@
 import db, { MembershipRoleEnum } from "@/db"
+import { selectUserFieldsForSession } from "@/src/auth/selectUserFieldsForSession"
 import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
@@ -16,19 +17,11 @@ export default resolver.pipe(
     const users = await db.user.findMany({
       where: { memberships: { some: { project: { slug: projectSlug } } } },
       select: {
-        id: true,
         firstName: true,
         lastName: true,
         email: true,
         phone: true,
-        role: true,
-        memberships: {
-          select: {
-            project: { select: { slug: true } },
-            id: true,
-            role: true,
-          },
-        },
+        ...selectUserFieldsForSession,
       },
     })
 

@@ -3,7 +3,7 @@ import { userCreatedNotificationToAdmin } from "@/emails/mailers/userCreatedNoti
 import { getFullname } from "@/src/users/utils/getFullname"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
-import { getMemberships } from "../getMemberships"
+import { selectUserFieldsForSession } from "../selectUserFieldsForSession"
 import { Signup } from "../validations"
 
 export default resolver.pipe(
@@ -21,19 +21,18 @@ export default resolver.pipe(
         institution,
       },
       select: {
-        id: true,
         firstName: true,
         lastName: true,
         email: true,
-        role: true,
         institution: true,
+        ...selectUserFieldsForSession,
       },
     })
 
     await ctx.session.$create({
       userId: user.id,
       role: user.role,
-      ...(await getMemberships(user.id)),
+      memberships: user.memberships,
     })
 
     // Mail: Notify Admins

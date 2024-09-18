@@ -1,4 +1,5 @@
 import db, { Prisma } from "@/db"
+import { selectUserFieldsForSession } from "@/src/auth/selectUserFieldsForSession"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 
@@ -23,13 +24,10 @@ export default resolver.pipe(
           where,
           orderBy,
           select: {
-            id: true,
             firstName: true,
             lastName: true,
             email: true,
-            role: true,
-            // We cannot pass this part via select in the page component since TS will not be able to infer the types then
-            memberships: { select: { id: true, project: { select: { slug: true } } } },
+            ...selectUserFieldsForSession,
           },
         }),
     })

@@ -2,12 +2,19 @@ import db from "@/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
 import { AuthenticationError } from "blitz"
-import { getMemberships } from "../getMemberships"
+import { selectUserFieldsForSession } from "../selectUserFieldsForSession"
 import { Login } from "../validations"
 
 export const authenticateUser = async (rawEmail: string, rawPassword: string) => {
   const { email, password } = Login.parse({ email: rawEmail, password: rawPassword })
-  const user = await db.user.findFirst({ where: { email } })
+
+  const user = await db.user.findFirst({
+    where: { email },
+    select: {
+      ...selectUserFieldsForSession,
+      hashedPassword: true,
+    },
+  })
   if (!user) throw new AuthenticationError()
 
   const result = await SecurePassword.verify(user.hashedPassword, password)
@@ -18,8 +25,8 @@ export const authenticateUser = async (rawEmail: string, rawPassword: string) =>
     await db.user.update({ where: { id: user.id }, data: { hashedPassword: improvedHash } })
   }
 
-  const { hashedPassword, ...rest } = user
-  return rest
+  const { hashedPassword, ...returnUser } = user
+  return returnUser
 }
 
 export default resolver.pipe(resolver.zod(Login), async ({ email, password }, ctx) => {
@@ -28,7 +35,7 @@ export default resolver.pipe(resolver.zod(Login), async ({ email, password }, ct
   await ctx.session.$create({
     userId: user.id,
     role: user.role,
-    ...(await getMemberships(user.id)),
+    memberships: user.memberships,
   })
 
   return user
