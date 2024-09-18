@@ -18,7 +18,7 @@ const statusColors: Record<InviteStatusEnum, string> = {
   EXPIRED: "text-indigo-700 bg-indigo-100",
 }
 
-const statusTranslations: Record<InviteStatusEnum, string> = {
+export const statusTranslations: Record<InviteStatusEnum, string> = {
   PENDING: "Ausstehend",
   ACCEPTED: "Akzeptiert",
   EXPIRED: "Abgelaufen",
