@@ -1,9 +1,9 @@
 import { CheckIcon, XMarkIcon } from "@heroicons/react/20/solid"
 import { ClockIcon, DocumentTextIcon } from "@heroicons/react/24/outline"
-import clsx from "clsx"
+import { clsx } from "clsx"
 
 type Props = {
-  icon: "XMARK" | "CLOCK" | "CHECKMARK" | "DOCUMENT"
+  icon?: "XMARK" | "CLOCK" | "CHECKMARK" | "DOCUMENT" | undefined
   label: string
   colorClass: string
 }
@@ -15,15 +15,15 @@ const statusIcon = {
   CHECKMARK: <CheckIcon className="h-4 w-4" />,
 }
 
-export const StatusLabel: React.FC<Props> = ({ icon, label, colorClass }) => {
+export const StatusLabel = ({ icon, label, colorClass }: Props) => {
   return (
     <div
       className={clsx(
         colorClass,
-        "flex w-[200px] flex-shrink-0 items-center gap-4 whitespace-nowrap rounded-full px-5 py-2",
+        "flex flex-shrink-0 items-center gap-4 whitespace-nowrap rounded-full px-5 py-2",
       )}
     >
-      {statusIcon[icon]} <div>{label}</div>
+      {icon ? statusIcon[icon] : undefined} {label}
     </div>
   )
 }

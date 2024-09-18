@@ -1,5 +1,6 @@
 import { StatusLabel } from "@/src/core/components/Status/StatusLabel"
 import { Stakeholdernote } from "@prisma/client"
+import { clsx } from "clsx"
 import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
 
 type Props = {
@@ -33,10 +34,9 @@ export const StakeholderSectionListItemStatus: React.FC<Props> = ({ status }) =>
 
   return (
     <StatusLabel
-      // @ts-expect-error
       icon={statusIcon[status]}
       label={stakeholderNotesStatus[status]}
-      colorClass={statusColors[status]}
+      colorClass={clsx(statusColors[status], "min-w-[200px]")}
     />
   )
 }
