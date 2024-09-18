@@ -4,7 +4,9 @@
   "scripts": {
     "start": "blitz start",
     "dev": "blitz dev",
-    "predev": "if [[ $(docker inspect -f '{{.State.Running}}' rsv-builder-db) = \"true\" ]]; then echo Docker: Skipping – Container already running; else docker compose up --detach; fi",
+    "predev": "npm run codegen && npm run predev:check_docker",
+    "predev:check_docker": "if [[ $(docker inspect -f '{{.State.Running}}' rsv-builder-db) = \"true\" ]]; then echo Docker: Skipping – Container already running; else docker compose up --detach; fi",
+    "codegen": "blitz codegen",
     "postdev": "docker compose stop",
     "debug": "DEBUG=blitz:* blitz console",
     "build": "blitz build",
