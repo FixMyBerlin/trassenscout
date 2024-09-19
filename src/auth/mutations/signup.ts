@@ -1,7 +1,9 @@
 import db from "@/db"
 import { userCreatedNotificationToAdmin } from "@/emails/mailers/userCreatedNotificationToAdmin"
+import { userCreatedNotificationToUser } from "@/emails/mailers/userCreatedNotificationToUser"
 import { getFullname } from "@/src/users/utils/getFullname"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
+import { Routes } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { checkAndUpdateInvite } from "../shared/checkAndUpdateInvite"
 import { notifyEditorsAboutNewMembership } from "../shared/notifyEditorsAboutNewMembership"
@@ -42,6 +44,14 @@ export default resolver.pipe(
       role: user.role,
       memberships: user.memberships,
     })
+
+    // Mail: Notify User
+    await (
+      await userCreatedNotificationToUser({
+        user: { email: user.email, name: getFullname(user) || "" },
+        path: Routes.Home(),
+      })
+    ).send()
 
     // Mail: Notify Admins
     await (

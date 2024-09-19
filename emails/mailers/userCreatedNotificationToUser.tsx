@@ -1,4 +1,3 @@
-import { quote } from "@/src/core/components/text/quote"
 import { RouteUrlObject } from "blitz"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
@@ -7,7 +6,6 @@ import { MailjetMessage } from "./utils/types"
 
 type Props = {
   user: { email: string; name: string }
-  projectName: string
   path: RouteUrlObject
 }
 
@@ -15,9 +13,7 @@ export async function userCreatedNotificationToUser(props: Props) {
   const text = `
 Guten Tag ${props.user.name}!
 
-Diese Mail dient als Information, dass Sie soeben einen Account für das Projekt ${quote(
-    props.projectName,
-  )} im Trassenscout erstellt haben.
+Diese Mail dient als Information, dass Sie soeben einen Account im Trassenscout erstellt haben.
 
 [ Trassenscout öffnen ](${mailUrl(props.path)})
 `
