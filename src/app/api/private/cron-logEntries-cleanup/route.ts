@@ -4,7 +4,7 @@ import { calculateComparisonDate } from "../../_utils/calculateComparisonDate"
 
 const LOGENTRIES_DAYS_TO_DELETION = 90
 
-export async function GET(request: Request, { params }: { params: { slug: string } }) {
+export async function GET(request: Request) {
   const apiKey = new URL(request.url).searchParams.get("apiKey")
   if (apiKey !== process.env.TS_API_KEY) {
     return Response.json({ statusText: "Unauthorized" }, { status: 401 })
@@ -28,5 +28,5 @@ export async function GET(request: Request, { params }: { params: { slug: string
     },
   })
 
-  Response.json({ statusText: "Success" }, { status: 200 })
+  return Response.json({ statusText: "Success" }, { status: 200 })
 }
