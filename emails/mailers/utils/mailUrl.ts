@@ -2,7 +2,7 @@ import { getPrdOrStgDomain } from "@/src/core/components/links/getDomain"
 import type { RouteUrlObject } from "blitz"
 import { z } from "zod"
 
-const QuerySchema = z.record(z.string().transform((val) => String(val)))
+const QuerySchema = z.record(z.string().transform((val) => String(val))).optional()
 
 export const mailUrl = (input: RouteUrlObject) => {
   const origin = getPrdOrStgDomain()
