@@ -29,7 +29,7 @@ Wenn Sie schon einen Account unter diese E-Mail-Adresse haben, [melden Sie sich 
   const message: MailjetMessage = {
     From: addressNoreply,
     To: [{ Email: props.userEmail }],
-    Subject: "Trassenscout: Neue Mitwirkende eingeladen",
+    Subject: `Trassenscout: Einladung zum Projekt ${quote(props.projectName)}`,
     TextPart: text,
   }
 
