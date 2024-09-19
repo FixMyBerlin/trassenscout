@@ -52,6 +52,7 @@ model User {
   memberships   Membership[]
   Subsubsection Subsubsection[]
   invites       Invite[]
+  logEntries    LogEntry[]
 }
 
 enum UserRoleEnum {
@@ -151,6 +152,7 @@ model Project {
   SubsubsectionSpecial SubsubsectionSpecial[]
   NetworkHierarchy     NetworkHierarchy[]
   Invite               Invite[]
+  logEntries           LogEntry[]
 }
 
 model Membership {
@@ -539,4 +541,30 @@ model SurveyResponseTopicsOnSurveyResponses {
   surveyResponseTopicId Int
 
   @@id([surveyResponseId, surveyResponseTopicId])
+}
+
+model LogEntry {
+  id        Int          @id @default(autoincrement())
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  //
+  userId    Int?
+  user      User?        @relation(fields: [userId], references: [id])
+  projectId Int?
+  project   Project?     @relation(fields: [projectId], references: [id])
+  //
+  logLevel  LogLevelEnum @default(INFO)
+  message   String
+  context   Json?
+
+  // Maybe later…
+  // @@index([createdAt])
+  // @@index([userId])
+  // @@index([projectId])
+}
+
+enum LogLevelEnum {
+  INFO
+  WARN
+  ERROR
 }
