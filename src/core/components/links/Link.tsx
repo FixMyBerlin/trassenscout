@@ -33,8 +33,8 @@ export const Link: React.FC<LinkProps> = forwardRef<HTMLAnchorElement, LinkProps
     ref,
   ) => {
     const classNames = clsx(
-      { "inline-flex items-center justify-center gap-1": icon }, // base styles for icon case
-      { "pl-5": icon && button }, // overwrites to `buttonBase` for icon case
+      icon ? "inline-flex items-center justify-center gap-1" : "", // base styles for icon case
+      icon && button ? "pl-5" : "", // overwrites to `buttonBase` for icon case
       classNameOverwrites ?? selectLinkStyle(button, className),
     )
 
