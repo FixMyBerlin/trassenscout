@@ -14,6 +14,11 @@ export const mailUrl = (input: RouteUrlObject) => {
   const params = new URLSearchParams(query)
 
   params.forEach((value, key) => {
+    // The params that are used to replace the URL template are still present.
+    // We need to filter them here.
+    // Otherwise we get URLs like `https://staging.trassenscout.de/rs23/invites?projectSlug=rs23`
+    if (input.pathname.includes(key)) return
+
     url.searchParams.append(key, value)
   })
 
