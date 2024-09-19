@@ -117,7 +117,12 @@ export const SignupForm = (props: SignupFormProps) => {
 
       <div className="mt-4">
         Sie haben bereits einen Account? Zur{" "}
-        <Link href={Routes.LoginPage({ inviteToken: params?.inviteToken })}>Anmeldung</Link>.
+        <Link
+          href={Routes.LoginPage(params?.inviteToken ? { inviteToken: params?.inviteToken } : {})}
+        >
+          Anmeldung
+        </Link>
+        .
       </div>
     </>
   )
