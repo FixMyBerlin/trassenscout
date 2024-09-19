@@ -51,6 +51,9 @@ ${footerTextMarkdown}
       {
         // See https://dev.mailjet.com/email/template-language/sendapi/#templates-error-management
         TemplateErrorReporting: addressDevteam,
+        // See Callout at https://dev.mailjet.com/email/guides/send-api-v31/
+        // Error `"TemplateLanguage" is not set while "TemplateErrorReporting" or "TemplateErrorDeliver" properties are.`
+        TemplateLanguage: true,
         ...message,
       },
     ],
