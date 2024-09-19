@@ -1,5 +1,6 @@
 import { footerTextMarkdown } from "@/emails/templats/footerTextMarkdown"
 import { isDev, isTest } from "@/src/core/utils"
+import { internalCreateLogEntry } from "@/src/logEntries/internalCeateLogEntry"
 import { render } from "@react-email/components"
 import Mailjet, { LibraryResponse, SendEmailV3_1 } from "node-mailjet"
 import { MarkdownMail } from "../../templats/MarkdownMail"
@@ -69,11 +70,16 @@ ${footerTextMarkdown}
     .request(data)
 
   // Log status
-  // const messagesStatus = result.body.Messages
-  // for (const messageStatus of messagesStatus) {
-  //   console.log("Mailjet email send", message.Subject, messageStatus.Status)
-  //   if (messageStatus.Errors.length) {
-  //     console.error("Error when sending a Mailjet message", message.Subject, messageStatus)
-  //   }
-  // }
+  for (const messageStatus of result.body.Messages) {
+    await internalCreateLogEntry({
+      apiKey: process.env.TS_API_KEY,
+      logLevel: messageStatus.Status === "error" ? "ERROR" : "INFO",
+      message: `SEND MAIL: ${message.Subject}`,
+      // @ts-expect-error I think those types are fine…
+      context:
+        messageStatus.Status === "error"
+          ? { CustomID: messageStatus.CustomID, errors: messageStatus.Errors }
+          : { CustomID: messageStatus.CustomID, text: message.TextPart },
+    })
+  }
 }
