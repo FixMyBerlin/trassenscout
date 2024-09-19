@@ -69,11 +69,11 @@ ${footerTextMarkdown}
     .request(data)
 
   // Log status
-  const messagesStatus = result.body.Messages
-  for (const messageStatus of messagesStatus) {
-    console.log("Mailjet email send", message.Subject, messageStatus.Status)
-    if (messageStatus.Errors.length) {
-      console.error("Error when sending a Mailjet message", message.Subject, messageStatus)
-    }
-  }
+  // const messagesStatus = result.body.Messages
+  // for (const messageStatus of messagesStatus) {
+  //   console.log("Mailjet email send", message.Subject, messageStatus.Status)
+  //   if (messageStatus.Errors.length) {
+  //     console.error("Error when sending a Mailjet message", message.Subject, messageStatus)
+  //   }
+  // }
 }
