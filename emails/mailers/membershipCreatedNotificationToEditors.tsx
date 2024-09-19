@@ -1,6 +1,7 @@
 import { quote } from "@/src/core/components/text/quote"
+import { RouteUrlObject } from "blitz"
 import { addressNoreply } from "./utils/addresses"
-import { mailLink } from "./utils/mailLink"
+import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
 import { MailjetMessage } from "./utils/types"
 
@@ -9,7 +10,7 @@ type Props = {
   projectName: string
   invinteeName: string
   roleName: string
-  teamPath: string
+  teamPath: RouteUrlObject
 }
 
 export async function membershipCreatedNotificationToEditors(props: Props) {
@@ -24,7 +25,7 @@ Soeben hat ${quote(props.invinteeName)} die Einladung zur Mitarbeit angenommen u
     props.roleName
   }.
 
-Das Projektteam kann unter ${mailLink(props.teamPath)} eingesehen werden.
+Das Projektteam kann unter ${mailUrl(props.teamPath)} eingesehen werden.
 `
 
   const message: MailjetMessage = {

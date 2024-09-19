@@ -53,8 +53,8 @@ export default resolver.pipe(
         userEmail: invite.email,
         projectName: shortTitle(invite.project.slug),
         inviterName: getFullname(invite.inviter)!,
-        signupPath: Routes.SignupPage({ inviteToken: invite.token }).href,
-        loginPath: Routes.LoginPage({ inviteToken: invite.token }).href,
+        signupPath: Routes.SignupPage({ inviteToken: invite.token }),
+        loginPath: Routes.LoginPage({ inviteToken: invite.token }),
       })
     ).send()
 
@@ -72,7 +72,7 @@ export default resolver.pipe(
           },
           projectName: shortTitle(membership.project.slug),
           inviterName: getFullname(invite.inviter)!,
-          path: Routes.ProjectTeamInvitesPage({ projectSlug }).href,
+          path: Routes.ProjectTeamInvitesPage({ projectSlug }),
         })
       ).send()
     }

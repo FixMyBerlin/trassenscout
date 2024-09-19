@@ -1,6 +1,6 @@
 import { Routes } from "@blitzjs/next"
 import { addressNoreply } from "./utils/addresses"
-import { mailLink } from "./utils/mailLink"
+import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
 import { MailjetMessage } from "./utils/types"
 
@@ -12,7 +12,7 @@ type props = {
 export async function forgotPasswordMailToUser(props: props) {
   const text = `
 Setzen Sie ihr Passwort zurück.
-[Ein neues Passwort vergeben]( ${mailLink(Routes.ResetPasswordPage({ token: props.token }).href)} )
+[Ein neues Passwort vergeben]( ${mailUrl(Routes.ResetPasswordPage({ token: props.token }))} )
 `
 
   const message: MailjetMessage = {

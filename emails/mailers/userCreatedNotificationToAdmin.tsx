@@ -1,6 +1,6 @@
 import { Routes } from "@blitzjs/next"
 import { addressNoreply } from "./utils/addresses"
-import { mailLink } from "./utils/mailLink"
+import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
 import { MailjetMessage } from "./utils/types"
 
@@ -25,7 +25,7 @@ ein neuer Nutzer-Account wurde erstellt, bitte prüfen und einem Projekt zuordne
       : "Es sind noch keine Mitgliedschaften vorhanden"
   }
 
-[Rechte verwalten]( ${mailLink(Routes.AdminMembershipsPage().href)} )
+[Rechte verwalten]( ${mailUrl(Routes.AdminMembershipsPage())} )
 `
 
   const message: MailjetMessage = {

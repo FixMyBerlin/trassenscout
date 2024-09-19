@@ -25,7 +25,7 @@ export const notifyEditorsAboutNewMembership = async ({ invite, invitee }: Props
         projectName: shortTitle(membership.project.slug),
         invinteeName: getFullname(invitee)!,
         roleName: roleTranslation[invite.role],
-        teamPath: Routes.ProjectTeamPage({ projectSlug: membership.project.slug }).href,
+        teamPath: Routes.ProjectTeamPage({ projectSlug: membership.project.slug }),
       })
     ).send()
   }

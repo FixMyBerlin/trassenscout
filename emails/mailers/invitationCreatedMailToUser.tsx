@@ -1,6 +1,7 @@
 import { quote } from "@/src/core/components/text/quote"
+import { RouteUrlObject } from "blitz"
 import { addressNoreply } from "./utils/addresses"
-import { mailLink } from "./utils/mailLink"
+import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
 import { MailjetMessage } from "./utils/types"
 
@@ -8,8 +9,8 @@ type Props = {
   userEmail: string
   projectName: string
   inviterName: string
-  signupPath: string
-  loginPath: string
+  signupPath: RouteUrlObject
+  loginPath: RouteUrlObject
 }
 
 export async function invitationCreatedMailToUser(props: Props) {
@@ -20,9 +21,9 @@ Sie wurden von ${props.inviterName} eingeladen am Projekt ${quote(props.projectN
 
 Bitte Registieren Sie sich, um die Einladung anzunehmen.
 
-[Einladung annehmen und Registrieren]( ${mailLink(props.signupPath)} )
+[Einladung annehmen und Registrieren]( ${mailUrl(props.signupPath)} )
 
-Wenn Sie schon einen Account unter diese E-Mail-Adresse haben, [melden Sie sich bitte damit an]( ${mailLink(props.loginPath)} ), um die Einladung anzunehmen.
+Wenn Sie schon einen Account unter diese E-Mail-Adresse haben, [melden Sie sich bitte damit an]( ${mailUrl(props.loginPath)} ), um die Einladung anzunehmen.
 `
 
   const message: MailjetMessage = {
