@@ -22,3 +22,5 @@ It defines:
 - additional filters for survey specific fields which are stored in the survey result itself (not in the DB)
 
 In `src/survey-public/utils/backend-config-defaults.ts` defines the defaults for the `response-config.ts` files. It can be used as a copy template. If no labels are set in the config file, the survey will take them from this file.
+
+The configuration of status must not be changed to be sure that status in the DB always matches the status configuration.

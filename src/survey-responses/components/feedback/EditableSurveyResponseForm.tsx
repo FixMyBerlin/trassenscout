@@ -84,7 +84,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
   const labels = backendConfig.labels || defaultBackendConfig.labels
-  const surveyResponseStatus = backendConfig.status || defaultBackendConfig.status
+  const surveyResponseStatus = backendConfig.status
 
   const operatorsOptions = operators.map((operator: Operator) => {
     return { value: String(operator.id), label: operator.title }

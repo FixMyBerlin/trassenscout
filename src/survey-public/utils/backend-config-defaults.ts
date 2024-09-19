@@ -10,7 +10,7 @@ type StatusItem = {
 
 export type TBackendConfig = {
   // if no status property exists in the config object, the default status items will be used
-  status?: [StatusItem, ...StatusItem[]]
+  status: [StatusItem, ...StatusItem[]]
   // if no labels property exists in the config object, the default labels will be used
   labels?: {
     note?: { sg: string; help: string }
@@ -23,7 +23,7 @@ export type TBackendConfig = {
 }
 
 export type TBackendConfigDefaults = {
-  status: NonNullable<TBackendConfig["status"]>
+  status: TBackendConfig["status"]
   labels: {
     note: NonNullable<NonNullable<TBackendConfig["labels"]>["note"]>
     status: NonNullable<NonNullable<TBackendConfig["labels"]>["status"]>

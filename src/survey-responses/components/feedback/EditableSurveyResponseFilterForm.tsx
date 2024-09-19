@@ -52,6 +52,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     haslocation: queryHaslocation,
     categories: queryCategories,
     searchterm: querySearchTerm,
+    additionalFilters: queryAdditionalFilters,
   } = router.query
 
   const surveyId = useParam("surveyId", "string")
@@ -79,7 +80,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     querySearchTerm !== undefined
 
   const backendConfig = getBackendConfigBySurveySlug(survey.slug)
-  const surveyResponseStatus = backendConfig.status || defaultBackendConfig.status
+  const surveyResponseStatus = backendConfig.status
   const labels = backendConfig.labels || defaultBackendConfig.labels
 
   if (!searchActive) {
