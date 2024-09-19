@@ -178,13 +178,19 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
 
   const hasnotesOptions = [
     { value: "ALL", label: "Alle" },
-    { value: "true", label: `Mit ${labels.note?.sg || "Notiz"}` },
-    { value: "false", label: `Ohne ${labels.note?.sg || "Notiz"}` },
+    { value: "true", label: `Mit ${labels.note?.sg || defaultBackendConfig.labels.note.sg}` },
+    { value: "false", label: `Ohne ${labels.note?.sg || defaultBackendConfig.labels.note.sg}` },
   ]
   const haslocationOptions = [
     { value: "ALL", label: "Alle" },
-    { value: "true", label: `Mit ${labels.location?.sg || "Ortsangabe"}` },
-    { value: "false", label: `Ohne ${labels.location?.sg || "Ortsangabe"}` },
+    {
+      value: "true",
+      label: `Mit ${labels.location?.sg || defaultBackendConfig.labels.location.sg}`,
+    },
+    {
+      value: "false",
+      label: `Ohne ${labels.location?.sg || defaultBackendConfig.labels.location.sg}`,
+    },
   ]
 
   return (
@@ -207,19 +213,19 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 items={statusOptions}
               />
               <LabeledRadiobuttonGroup
-                label={labels.operator?.sg || "Baulastträger"}
+                label={labels.operator?.sg || defaultBackendConfig.labels.operator.sg}
                 classLabelOverwrite="font-semibold mb-3"
                 scope="operator"
                 items={operatorOptions}
               />
               <LabeledRadiobuttonGroup
-                label={labels.note?.sg || "Notiz"}
+                label={labels.note?.sg || defaultBackendConfig.labels.note.sg}
                 classLabelOverwrite="font-semibold mb-3"
                 scope="hasnotes"
                 items={hasnotesOptions}
               />
               <LabeledRadiobuttonGroup
-                label={labels.location?.sg || "Ortsangabe"}
+                label={labels.location?.sg || defaultBackendConfig.labels.location.sg}
                 classLabelOverwrite="font-semibold mb-3"
                 scope="haslocation"
                 items={haslocationOptions}
@@ -227,14 +233,14 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
             </div>
             <div className="flex flex-col gap-6 sm:flex-row">
               <LabeledCheckboxGroup
-                label={labels.category?.sg || "Kategorien"}
+                label={labels.category?.sg || defaultBackendConfig.labels.category.sg}
                 classLabelOverwrite="font-semibold mb-3"
                 scope="categories"
                 items={categoriesOptions}
               />
               {!!topicsOptions.length && (
                 <LabeledCheckboxGroup
-                  label={labels.topics?.pl || "Tags"}
+                  label={labels.topics?.pl || defaultBackendConfig.labels.topics.pl}
                   classLabelOverwrite="font-semibold mb-3"
                   scope="topics"
                   items={topicsOptions}

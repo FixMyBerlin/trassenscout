@@ -185,7 +185,9 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
               response={response}
             />
             <div>
-              <h4 className="mb-5 font-semibold">{labels.category?.sg || "Kategorie"}</h4>
+              <h4 className="mb-5 font-semibold">
+                {labels.category?.sg || defaultBackendConfig.labels.category.sg}
+              </h4>
               <div className="w-48 flex-shrink-0">
                 <span className="rounded bg-gray-300 p-3 px-4">{feedbackUserCategory}</span>
               </div>

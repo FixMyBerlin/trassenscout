@@ -177,7 +177,9 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
             <div className="flex w-full flex-col gap-10">
               <div className="grid w-full grid-cols-2 gap-8">
                 <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-                  <h4 className="mb-3 font-semibold">{labels.status?.sg || "Status"}</h4>
+                  <h4 className="mb-3 font-semibold">
+                    {labels.status?.sg || defaultBackendConfig.labels.category.sg}
+                  </h4>
                   <LabeledRadiobuttonGroup
                     classNameItemWrapper={clsx("flex-shrink-0")}
                     scope={"status"}
@@ -188,7 +190,9 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                 </form>
 
                 <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-                  <h4 className="mb-3 font-semibold">{labels.operator?.sg || "Baulastträger"}</h4>
+                  <h4 className="mb-3 font-semibold">
+                    {labels.operator?.sg || defaultBackendConfig.labels.operator.sg}
+                  </h4>
                   <LabeledRadiobuttonGroup
                     scope="operatorId"
                     items={[...operatorsOptions, { value: "0", label: "Nicht zugeordnet" }]}
@@ -200,7 +204,9 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                 onChange={async () => await methods.handleSubmit(handleSubmit)()}
               >
                 <div>
-                  <h4 className="mb-3 font-semibold">{labels.topics?.pl || "Tags"}</h4>
+                  <h4 className="mb-3 font-semibold">
+                    {labels.topics?.pl || defaultBackendConfig.labels.topics.pl}
+                  </h4>
                   <LabeledCheckboxGroup
                     classNameItemWrapper="grid grid-cols-3 grid-rows-10 grid-flow-col-dense"
                     scope="surveyResponseTopics"
@@ -257,7 +263,9 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         >
           <div className="min-w-[300px] space-y-2 pb-8 pr-2">
             <LabeledTextField
-              placeholder={`${labels.topics?.sg || "Tag"} hinzufügen`}
+              placeholder={`${
+                labels.topics?.sg || defaultBackendConfig.labels.operator.sg
+              } hinzufügen`}
               name="newTopic"
               label=""
             />
@@ -276,9 +284,11 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         }}
       >
         <div className="flex-grow space-y-2 pb-4 pr-2">
-          <p className="mb-3 font-semibold">{labels.note?.sg || "Notiz"}</p>
+          <p className="mb-3 font-semibold">
+            {labels.note?.sg || defaultBackendConfig.labels.note.sg}
+          </p>
           <LabeledTextareaField
-            help={labels.note?.help || "Bitte starten Sie immer mit ihrem Namen oder Kürzel."}
+            help={labels.note?.help || defaultBackendConfig.labels.note.help}
             name="note"
             label=""
             onChange={() => setHasUnsavedChanges(true)}
@@ -289,7 +299,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           />
           <div className="flex items-end justify-between">
             <button type="submit" className={clsx(blueButtonStyles, "!px-3 !py-2.5")}>
-              {labels.note?.sg || "Notiz"} speichern
+              {labels.note?.sg || defaultBackendConfig.labels.note.sg} speichern
             </button>
             <small className={clsx(!hasUnsavedChanges && "opacity-0", "text-yellow-500")}>
               ungespeicherte Änderungen
