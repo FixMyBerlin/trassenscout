@@ -7,5 +7,10 @@ export const getPrdOrStgDomain = () => {
   const origin =
     process.env.NEXT_PUBLIC_APP_ORIGIN?.replace("http:", "https:") ||
     "https://staging.trassenscout.de"
+
+  if (process.env.NODE_ENV === "development") {
+    return process.env.BLITZ_DEV_SERVER_ORIGIN || origin
+  }
+
   return origin
 }
