@@ -30,8 +30,7 @@ export const SurveyStaticMap: React.FC<Props> = ({ marker, maptilerUrl }) => {
         touchZoomRotate={false}
         cursor={"default"}
         mapStyle={vectorStyle}
-        // @ts-expect-error: See https://github.com/visgl/react-map-gl/issues/2310
-        RTLTextPlugin={null}
+        RTLTextPlugin={false}
       >
         <Marker
           draggable={false}

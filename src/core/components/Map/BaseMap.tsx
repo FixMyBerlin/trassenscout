@@ -177,8 +177,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
             .flat()
             .filter(Boolean)}
           hash={hash || false}
-          // @ts-expect-error: See https://github.com/visgl/react-map-gl/issues/2310
-          RTLTextPlugin={null}
+          RTLTextPlugin={false}
         >
           <NavigationControl showCompass={false} />
           <ScaleControl />

@@ -137,8 +137,7 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
         }}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         mapLib={maplibregl}
-        // @ts-expect-error: See https://github.com/visgl/react-map-gl/issues/2310
-        RTLTextPlugin={null}
+        RTLTextPlugin={false}
         onClick={handleMapClick}
         cursor="pointer"
         // todo survey update layer name
