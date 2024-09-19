@@ -1,0 +1,19 @@
+name: Run daily tasks
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 5 * * *"
+
+jobs:
+  run-daily-tasks-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleanup invites STAGING
+        run: curl -X GET "https://staging.trassenscout.de/api/private/cron-invites-cleanup?apiKey=${{ secrets.API_KEY }}"
+      - name: Cleanup logEntries STAGING
+        run: curl -X GET "https://staging.trassenscout.de/api/private/cron-logEntries-cleanup?apiKey=${{ secrets.API_KEY }}"
+      - name: Cleanup invites PRODUCTION
+        run: curl -X GET "https://trassenscout.de/api/private/cron-invites-cleanup?apiKey=${{ secrets.API_KEY }}"
+      - name: Cleanup logEntries PRODUCTION
+        run: curl -X GET "https://trassenscout.de/api/private/cron-logEntries-cleanup?apiKey=${{ secrets.API_KEY }}"
