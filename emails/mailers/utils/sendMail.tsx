@@ -1,32 +1,27 @@
 import { footerTextMarkdown } from "@/emails/templats/footerTextMarkdown"
+import { MarkdownMail } from "@/emails/templats/MarkdownMail"
+import { signatureTextMarkdown } from "@/emails/templats/signatureTextMarkdown"
 import { isDev, isTest } from "@/src/core/utils"
 import { internalCreateLogEntry } from "@/src/logEntries/internalCeateLogEntry"
 import { render } from "@react-email/components"
 import Mailjet, { LibraryResponse, SendEmailV3_1 } from "node-mailjet"
-import { MarkdownMail } from "../../templats/MarkdownMail"
 import { addressDevteam } from "./addresses"
 import { formattedEmailAddress } from "./formattedEmailAddress"
 import { MailjetMessage } from "./types"
 
 export const sendMail = async (message: MailjetMessage) => {
-  // Add standard signiture to TextPart and HTMLPart
-  message.TextPart = `
-${message.TextPart}
-
-Mit freundlichen Grüßen
-
-i.A. das Team vom Trassenscout
-`
-
   // When no HTML is provided, we reuse the text.
   // But we can provide custom HTML if needed.
   if (!message.HTMLPart) {
     message.HTMLPart = await render(<MarkdownMail markdown={message.TextPart} />)
   }
 
-  // Add footer onyl to TextPart (because the HTMLPart has it's own footer)
+  // Add standard signiture and footer to TextPart only
+  // (The HTMLPart puts this in separate layout groups.)
   message.TextPart = `
 ${message.TextPart}
+
+${signatureTextMarkdown}
 
 ---
 ${footerTextMarkdown}

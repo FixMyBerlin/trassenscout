@@ -13,7 +13,7 @@
     "bleach": "rm -rf node_modules/ && rm -rf .next/ && npm install",
     "bleach:full": "rm package-lock.json && npm run bleach",
     "studio": "blitz prisma studio",
-    "mailpreview": "email dev",
+    "mailpreview": "BLITZ_DEV_SERVER_ORIGIN=http://localhost:3001 email dev",
     "openTypes": "code \"node_modules/.prisma/client/index.d.ts\"",
     "migrate": "blitz prisma migrate dev",
     "migrate:create": "blitz prisma migrate dev --create-only && npm run migrate:create:openMigration",
