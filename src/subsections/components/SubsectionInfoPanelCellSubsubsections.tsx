@@ -13,7 +13,7 @@ export const SubsectionInfoPanelCellSubsubsections: React.FC<Props> = ({
 }) => {
   const [{ subsection, subsubsectionsCategoryCount }] = useQuery(getStatsInfopanelSubsections, {
     subsectionSlug: subsectionSlug!,
-    projectSlug: projectSlug!,
+    projectSlug,
   })
 
   return (

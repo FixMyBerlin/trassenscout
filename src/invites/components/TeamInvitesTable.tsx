@@ -2,7 +2,7 @@ import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogD
 import { StatusLabel } from "@/src/core/components/Status/StatusLabel"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { LinkMail } from "@/src/core/components/links"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import getInvites from "@/src/invites/queries/getInvites"
 import { roleTranslation } from "@/src/memberships/components/roleTranslation.const"
 import { getFullname } from "@/src/users/utils"

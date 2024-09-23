@@ -1,7 +1,8 @@
 import { Disclosure } from "@/src/core/components/Disclosure"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Link } from "@/src/core/components/links"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { useSlug } from "@/src/core/routes/useSlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { Stakeholdernote } from "@prisma/client"
@@ -12,8 +13,8 @@ type Props = {
   stakeholderNote: Stakeholdernote
 }
 
-export const StakeholderSectionListItem: React.FC<Props> = ({ stakeholderNote }) => {
-  const { subsectionSlug } = useSlugs()
+export const StakeholderSectionListItem = ({ stakeholderNote }: Props) => {
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
 
   const router = useRouter()
@@ -63,7 +64,7 @@ export const StakeholderSectionListItem: React.FC<Props> = ({ stakeholderNote })
             <Link
               icon="edit"
               href={Routes.EditStakeholdernotePage({
-                projectSlug: projectSlug!,
+                projectSlug,
                 subsectionSlug: subsectionSlug!,
                 stakeholdernoteId: stakeholderNote.id,
               })}

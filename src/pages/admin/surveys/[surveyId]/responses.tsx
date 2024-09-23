@@ -1,6 +1,6 @@
 import { Spinner } from "@/src/core/components/Spinner"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutArticle, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { TFeedbackQuestion, TQuestion } from "@/src/survey-public/components/types"
 import {
   getFeedbackDefinitionBySurveySlug,

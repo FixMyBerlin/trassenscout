@@ -1,3 +1,4 @@
+"use client"
 import { useSession } from "@blitzjs/auth"
 import { UserCanIcon } from "./UserCanIcon"
 
@@ -11,6 +12,7 @@ export const CurrentUserCanIcon = ({ projectSlug, className }: Props) => {
     return <UserCanIcon role={"EDITOR"} isAdmin={isAdmin} className={className} />
   }
 
+  if (!projectSlug) return null
   if (!session.memberships?.length) return null
 
   const userRoleOnProject = session.memberships.find((m) => m.project.slug === projectSlug)

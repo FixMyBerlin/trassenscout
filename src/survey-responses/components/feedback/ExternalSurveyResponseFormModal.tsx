@@ -1,6 +1,6 @@
 import { Modal } from "@/src/core/components/Modal"
 import { blueButtonStyles } from "@/src/core/components/links"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import {
   TMapProps,

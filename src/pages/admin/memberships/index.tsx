@@ -4,8 +4,8 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoIndexTitle, shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutArticle, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import deleteMembership from "@/src/memberships/mutations/deleteMembership"
 import getUsersAndMemberships from "@/src/users/queries/getUsersAndMemberships"
 import { getFullname } from "@/src/users/utils"
@@ -30,7 +30,7 @@ const AdminMemberships = () => {
         )} unwiderruflich löschen?`,
       )
     ) {
-      await deleteMembershipMutation({ projectSlug: projectSlug!, membershipId: membership.id })
+      await deleteMembershipMutation({ projectSlug, membershipId: membership.id })
       await router.push(Routes.AdminMembershipsPage())
     }
   }
@@ -108,7 +108,7 @@ const AdminMembershipsPage = () => {
 
       <hr className="my-5" />
       <p>
-        <Link href={Routes.Home()}>Startseite</Link>
+        <Link href="/dashboard">Startseite</Link>
       </p>
     </LayoutArticle>
   )

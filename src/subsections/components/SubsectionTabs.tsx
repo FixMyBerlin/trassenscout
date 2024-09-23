@@ -1,9 +1,10 @@
 import { Tabs } from "@/src/core/components/Tabs/Tabs"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { useSlug } from "@/src/core/routes/useSlug"
 import { Routes } from "@blitzjs/next"
 
-export const SubsectionTabs: React.FC = () => {
-  const { subsectionSlug } = useSlugs()
+export const SubsectionTabs = () => {
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
 
   if (!(projectSlug && subsectionSlug)) return null

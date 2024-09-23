@@ -6,8 +6,8 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -21,10 +21,10 @@ const NewContactWithQuery: BlitzPage = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const contact = await createContactMutation({ ...values, projectSlug: projectSlug! })
+      const contact = await createContactMutation({ ...values, projectSlug })
       await router.push(
         Routes.ShowContactPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           contactId: contact.id,
         }),
       )
@@ -53,9 +53,7 @@ const NewContactPage: BlitzPage = () => {
       </Suspense>
 
       <p className="mt-5">
-        <Link href={Routes.ContactsPage({ projectSlug: projectSlug! })}>
-          Zurück zur Kontaktliste
-        </Link>
+        <Link href={Routes.ContactsPage({ projectSlug })}>Zurück zur Kontaktliste</Link>
       </p>
     </LayoutRs>
   )

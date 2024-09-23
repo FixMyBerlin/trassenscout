@@ -5,8 +5,9 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link, linkStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitleSlug } from "@/src/core/components/text"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { FORM_ERROR, SubsubsectionForm } from "@/src/subsubsections/components/SubsubsectionForm"
 import { M2MFieldsType, m2mFields } from "@/src/subsubsections/m2mFields"
 import deleteSubsubsection from "@/src/subsubsections/mutations/deleteSubsubsection"
@@ -21,7 +22,8 @@ import { Suspense } from "react"
 
 const EditSubsubsection = () => {
   const router = useRouter()
-  const { subsectionSlug, subsubsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
+  const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
   const [subsubsection, { setQueryData }] = useQuery(
     getSubsubsection,
@@ -121,7 +123,8 @@ const EditSubsubsection = () => {
 }
 
 const EditSubsubsectionPage = () => {
-  const { subsectionSlug, subsubsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
+  const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
 
   return (

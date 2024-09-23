@@ -1,4 +1,3 @@
-import { Routes } from "@blitzjs/next"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
@@ -15,7 +14,7 @@ export async function forgotPasswordMailToUser(props: props) {
     To: [{ Email: props.to }],
     Subject: "Trassenscout: Setzen Sie ihr Passwort zurück",
     introMarkdown: "# Setzen Sie ihr Passwort zurück.",
-    ctaLink: mailUrl(Routes.ResetPasswordPage({ token: props.token })),
+    ctaLink: mailUrl(`/auth/forgot-password?token=${props.token}`),
     ctaText: "Ein neues Passwort vergeben",
   }
 

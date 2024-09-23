@@ -1,3 +1,4 @@
+"use client"
 import { useCurrentUser } from "@/src/users/hooks/useCurrentUser"
 import { Suspense } from "react"
 import { isAdmin } from "../../../users/utils/isAdmin"
@@ -9,7 +10,7 @@ type Props = {
   children: React.ReactNode
 }
 
-const SuperAdminBoxQuery: React.FC<Props> = (props) => {
+const SuperAdminBoxQuery = (props: Props) => {
   const user = useCurrentUser()
 
   if (!isAdmin(user)) {
@@ -19,7 +20,7 @@ const SuperAdminBoxQuery: React.FC<Props> = (props) => {
   return <AdminBox label="Admin" {...props} />
 }
 
-export const SuperAdminBox: React.FC<Props> = (props) => {
+export const SuperAdminBox = (props: Props) => {
   return (
     <Suspense fallback={<Spinner />}>
       <SuperAdminBoxQuery {...props} />

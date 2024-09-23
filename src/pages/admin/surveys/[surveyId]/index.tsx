@@ -2,8 +2,8 @@ import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { quote } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutArticle, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import deleteSurvey from "@/src/surveys/mutations/deleteSurvey"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { Routes, useParam } from "@blitzjs/next"
@@ -22,7 +22,7 @@ export const AdminSurvey = () => {
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${survey.id} unwiderruflich löschen?`)) {
       await deleteSurveyMutation({ id: survey.id })
-      await router.push(Routes.Home())
+      await router.push(`/${projectSlug}/surveys`)
     }
   }
 

@@ -1,4 +1,5 @@
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import getProject from "@/src/projects/queries/getProject"
 import getSubsection from "@/src/subsections/queries/getSubsection"
 import { Routes } from "@blitzjs/next"
@@ -29,8 +30,9 @@ const BreadcrumbStep: React.FC<{ title: string; route?: RouteUrlObject; arrow: b
   )
 }
 
-export const Breadcrumb: React.FC = () => {
-  const { subsectionSlug, subsubsectionSlug } = useSlugs()
+export const Breadcrumb = () => {
+  const subsectionSlug = useSlug("subsectionSlug")
+  const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
 
   // Performance note: We use the same queries that are used on pages, so react query can cache them.
@@ -39,7 +41,7 @@ export const Breadcrumb: React.FC = () => {
   const [subsection] = useQuery(
     getSubsection,
     {
-      projectSlug: projectSlug!,
+      projectSlug,
       subsectionSlug: subsectionSlug!,
     },
     { enabled: !!projectSlug && !!subsectionSlug },
@@ -51,9 +53,7 @@ export const Breadcrumb: React.FC = () => {
         {subsection && (
           <BreadcrumbStep
             title={shortTitle(project.slug)}
-            route={
-              subsection ? Routes.ProjectDashboardPage({ projectSlug: projectSlug! }) : undefined
-            }
+            route={subsection ? Routes.ProjectDashboardPage({ projectSlug }) : undefined}
             arrow={Boolean(subsection)}
           />
         )}
@@ -63,7 +63,7 @@ export const Breadcrumb: React.FC = () => {
             route={
               subsubsectionSlug
                 ? Routes.SubsectionDashboardPage({
-                    projectSlug: projectSlug!,
+                    projectSlug,
                     subsectionSlug: subsectionSlug!,
                   })
                 : undefined

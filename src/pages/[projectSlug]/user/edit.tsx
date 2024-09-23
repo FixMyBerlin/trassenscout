@@ -1,4 +1,3 @@
-import UserEditForm from "@/src/auth/components/UserEditForm"
 import updateUser from "@/src/auth/mutations/updateUser"
 import { UpdateUser } from "@/src/auth/schema"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
@@ -7,8 +6,9 @@ import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
 import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 import { FORM_ERROR } from "@/src/projects/components/ProjectForm"
+import { UserEditForm } from "@/src/users/components/UserEditForm"
 import { useCurrentUser } from "@/src/users/hooks/useCurrentUser"
-import { BlitzPage, Routes } from "@blitzjs/next"
+import { BlitzPage } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
@@ -22,7 +22,7 @@ const EditUserWithQuery = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await updateUserMutation(values)
-      await router.push(Routes.Home())
+      await router.push("/dashboard")
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }

@@ -2,8 +2,8 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { SubsubsectionSpecialForm } from "@/src/subsubsectionSpecial/components/SubsubsectionSpecialForm"
 import createSubsubsectionSpecial from "@/src/subsubsectionSpecial/mutations/createSubsubsectionSpecial"
 import { SubsubsectionSpecial } from "@/src/subsubsectionSpecial/schema"
@@ -21,8 +21,8 @@ const NewSubsubsectionSpecialPageWithQuery = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      await createSubsubsectionSpecialMutation({ ...values, projectSlug: projectSlug! })
-      await router.push(Routes.SubsubsectionSpecialsPage({ projectSlug: projectSlug! }))
+      await createSubsubsectionSpecialMutation({ ...values, projectSlug })
+      await router.push(Routes.SubsubsectionSpecialsPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }

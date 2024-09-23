@@ -1,6 +1,6 @@
 import { membershipRoles } from "@/src/authorization/constants"
 import { Form, FormProps, LabeledRadiobuttonGroup } from "@/src/core/components/forms"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { roleTranslation } from "@/src/memberships/components/roleTranslation.const"
 import updateMembershipRole from "@/src/memberships/mutations/updateMembershipRole"
 import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
@@ -25,13 +25,13 @@ export const TeamTableEditMembershipModalForm = ({ editUser, closeModal }: Props
     try {
       await updateUserMutation(
         {
-          projectSlug: projectSlug!,
+          projectSlug,
           membershipId: editUser.currentMembershipId,
           role: values.role,
         },
         {
           onSuccess: async () => {
-            const queryKey = getQueryKey(getProjectUsers, { projectSlug: projectSlug! })
+            const queryKey = getQueryKey(getProjectUsers, { projectSlug })
             void getQueryClient().invalidateQueries(queryKey)
             closeModal()
           },

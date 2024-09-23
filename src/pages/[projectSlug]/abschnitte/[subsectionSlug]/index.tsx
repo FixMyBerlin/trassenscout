@@ -8,8 +8,9 @@ import { Link } from "@/src/core/components/links"
 import { PageDescription } from "@/src/core/components/pages/PageDescription"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { H2, seoTitleSlug, shortTitle, startEnd } from "@/src/core/components/text"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { SubsectionInfoPanel } from "@/src/subsections/components/SubsectionInfoPanel"
 import { SubsectionTabs } from "@/src/subsections/components/SubsectionTabs"
@@ -27,14 +28,15 @@ import { Suspense } from "react"
 // Page Renders Subsection _AND_ Subsubsection (as Panel)
 export const SubsectionDashboardWithQuery = () => {
   const router = useRouter()
-  const { subsectionSlug, subsubsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
+  const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
 
-  const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   const subsection = subsections.find((ss) => ss.slug === subsectionSlug)
 
   const [{ subsubsections }] = useQuery(getSubsubsections, {
-    projectSlug: projectSlug!,
+    projectSlug,
   })
   const subsubsectionsForSubsection = subsubsections.filter(
     (subsub) => subsub.subsectionId === subsection?.id,
@@ -42,7 +44,7 @@ export const SubsectionDashboardWithQuery = () => {
   const subsubsection = subsubsectionsForSubsection.find((ss) => ss.slug === subsubsectionSlug)
 
   const [{ uploads }] = useQuery(getUploadsWithSubsections, {
-    projectSlug: projectSlug!,
+    projectSlug,
     where: { subsectionId: subsection?.id },
   })
 
@@ -65,7 +67,7 @@ export const SubsectionDashboardWithQuery = () => {
             <Link
               icon="edit"
               href={Routes.EditSubsectionPage({
-                projectSlug: projectSlug!,
+                projectSlug,
                 subsectionSlug: subsectionSlug!,
               })}
             >
@@ -113,7 +115,7 @@ export const SubsectionDashboardWithQuery = () => {
             onClose={() => {
               void router.push(
                 Routes.SubsectionDashboardPage({
-                  projectSlug: projectSlug!,
+                  projectSlug,
                   subsectionSlug: subsectionSlug!,
                 }),
                 undefined,
@@ -144,7 +146,7 @@ export const SubsectionDashboardWithQuery = () => {
 }
 
 const SubsectionDashboardPage: BlitzPage = () => {
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   if (subsectionSlug === undefined) return null
 
   return (

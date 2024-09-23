@@ -7,7 +7,6 @@ import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoIndexTitle } from "@/src/core/components/text"
 import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 import getLogEntries from "@/src/logEntries/queries/getLogEntries"
-import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { format, formatDistanceToNow } from "date-fns"
 import { de } from "date-fns/locale"
@@ -102,7 +101,7 @@ const AdminLogEntriesPage = () => {
 
       <hr className="my-5" />
       <p>
-        <Link href={Routes.Home()}>Startseite</Link>
+        <Link href="/dashboard">Startseite</Link>
       </p>
     </LayoutArticle>
   )

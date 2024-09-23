@@ -1,6 +1,6 @@
 import { DevAdminBox } from "@/src/core/components/AdminBox"
 import { Link } from "@/src/core/components/links"
-import { LayoutMiddleBox, MetaTags } from "@/src/core/layouts"
+import { MetaTags } from "@/src/core/layouts"
 import { isBrowser } from "@/src/core/utils"
 import { BlitzPage } from "@blitzjs/next"
 import { z } from "zod"
@@ -17,7 +17,7 @@ const Zod: BlitzPage = () => {
   }
 
   return (
-    <LayoutMiddleBox>
+    <>
       <MetaTags noindex title="ZOD Test page" />
       <DevAdminBox>
         <div className="prose prose-lg">
@@ -25,7 +25,7 @@ const Zod: BlitzPage = () => {
           <Link href="https://github.com/colinhacks/zod">Github</Link>).
         </div>
       </DevAdminBox>
-    </LayoutMiddleBox>
+    </>
   )
 }
 

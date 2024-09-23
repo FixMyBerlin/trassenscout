@@ -1,4 +1,5 @@
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { useSlug } from "@/src/core/routes/useSlug"
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { PromiseReturnType } from "blitz"
 import router from "next/router"
@@ -9,7 +10,7 @@ type Props = Pick<PromiseReturnType<typeof getStakeholdernotes>, "stakeholdernot
 
 export const StakeholdernoteFilterDropdown: React.FC<Props> = ({ stakeholdernotes }) => {
   const params = useRouterQuery()
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
 
   const options = Object.entries(stakeholderNotesStatus).map(([key, label]) => {
@@ -28,7 +29,7 @@ export const StakeholdernoteFilterDropdown: React.FC<Props> = ({ stakeholdernote
         onChange={(event) => {
           void router.push(
             Routes.SubsectionDashboardPage({
-              projectSlug: projectSlug!,
+              projectSlug,
               subsectionSlug: subsectionSlug!,
               ...(event.target.value ? { stakeholderFilter: event.target.value } : {}),
             }),

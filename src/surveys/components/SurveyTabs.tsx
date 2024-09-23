@@ -1,10 +1,10 @@
 import { Tabs } from "@/src/core/components/Tabs/Tabs"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getFirstFeedbackSurveyResponseWithLocationId from "@/src/survey-responses/queries/getFirstFeedbackSurveyResponseWithLocationId"
 import { Routes, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 
-export const SurveyTabs: React.FC = () => {
+export const SurveyTabs = () => {
   const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "number")
 
@@ -19,12 +19,12 @@ export const SurveyTabs: React.FC = () => {
       tabs={[
         {
           name: "Auswertung",
-          href: Routes.SurveyPage({ projectSlug: projectSlug!, surveyId: surveyId! }),
+          href: Routes.SurveyPage({ projectSlug, surveyId: surveyId! }),
         },
         {
           name: "Beiträge",
           href: Routes.SurveyResponsePage({
-            projectSlug: projectSlug!,
+            projectSlug,
             surveyId: surveyId!,
           }),
         },
@@ -33,7 +33,7 @@ export const SurveyTabs: React.FC = () => {
               {
                 name: "Beiträge (Karte)",
                 href: Routes.SurveyResponseWithLocationPage({
-                  projectSlug: projectSlug!,
+                  projectSlug,
                   surveyId: surveyId!,
                   surveyResponseId: surveyResponse.id,
                 }),

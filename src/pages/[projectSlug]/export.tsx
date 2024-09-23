@@ -5,8 +5,8 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { whiteButtonStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { H2, longTitle, seoTitleSlug, shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import getProject from "@/src/projects/queries/getProject"
 import getSubsections from "@/src/subsections/queries/getSubsections"
 import { BlitzPage } from "@blitzjs/next"
@@ -45,7 +45,7 @@ function stringifyGeoJSON(geojson: any) {
 export const ExportWithQuery = () => {
   const projectSlug = useProjectSlug()
   const [project] = useQuery(getProject, { projectSlug })
-  const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
 
   // ===== Base Data =====
   const geoJsonFeatureCollection = featureCollection(
@@ -182,7 +182,7 @@ export const ExportWithQuery = () => {
               <div className="flex flex-1 flex-col gap-2">
                 <h4 className="font-semibold">
                   Erkannte, gemappte Punkte{" "}
-                  <span className="ml-0.5 font-light text-gray-500">
+                  <span className="font-light ml-0.5 text-gray-500">
                     (Rot; Gelb der original Punkt)
                   </span>
                 </h4>

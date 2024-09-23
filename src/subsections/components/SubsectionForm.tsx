@@ -9,7 +9,7 @@ import {
 import { LabeledFormatNumberFieldCalculateLength } from "@/src/core/components/forms/LabeledFormatNumberFieldCalculateLength"
 import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
 import { quote, shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
 import getNetworkHierarchysWithCount from "@/src/networkHierarchy/queries/getNetworkHierarchysWithCount"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
@@ -33,7 +33,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
   ...props
 }: Props<S>) {
   const projectSlug = useProjectSlug()
-  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug!, role: "EDITOR" })
+  const [users] = useQuery(getProjectUsers, { projectSlug, role: "EDITOR" })
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const [{ networkHierarchys }] = useQuery(getNetworkHierarchysWithCount, { projectSlug })
   const operatorOptions: [number | string, string][] = [
@@ -116,10 +116,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
           options={operatorOptions}
           outerProps={{ className: "grow" }}
         />
-        <LinkWithFormDirtyConfirm
-          href={Routes.OperatorsPage({ projectSlug: projectSlug! })}
-          className="py-2"
-        >
+        <LinkWithFormDirtyConfirm href={Routes.OperatorsPage({ projectSlug })} className="py-2">
           Baulastträger verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
@@ -140,7 +137,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
-          href={Routes.NetworkHierarchysPage({ projectSlug: projectSlug! })}
+          href={Routes.NetworkHierarchysPage({ projectSlug })}
           className="py-2"
         >
           Netzstufen verwalten…

@@ -6,8 +6,8 @@ import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { quote, shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import deleteSubsubsectionInfra from "@/src/subsubsectionInfra/mutations/deleteSubsubsectionInfra"
 import getSubsubsectionInfrasWithCount from "@/src/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
@@ -24,7 +24,7 @@ export const SubsubsectionInfrasWithData = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ subsubsectionInfras, hasMore }] = usePaginatedQuery(getSubsubsectionInfrasWithCount, {
-    projectSlug: projectSlug!,
+    projectSlug,
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -36,7 +36,7 @@ export const SubsubsectionInfrasWithData = () => {
   const handleDelete = async (subsubsectionInfraId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${subsubsectionInfraId} unwiderruflich löschen?`)) {
       await deleteSubsubsectionInfraMutation({ projectSlug, id: subsubsectionInfraId })
-      await router.push(Routes.SubsubsectionInfrasPage({ projectSlug: projectSlug! }))
+      await router.push(Routes.SubsubsectionInfrasPage({ projectSlug }))
     }
   }
 
@@ -85,7 +85,7 @@ export const SubsubsectionInfrasWithData = () => {
                         <Link
                           icon="edit"
                           href={Routes.EditSubsubsectionInfraPage({
-                            projectSlug: projectSlug!,
+                            projectSlug,
                             subsubsectionInfraId: Infra.id,
                           })}
                         >
@@ -117,7 +117,7 @@ export const SubsubsectionInfrasWithData = () => {
           button="blue"
           icon="plus"
           className="mt-4"
-          href={Routes.NewSubsubsectionInfraPage({ projectSlug: projectSlug! })}
+          href={Routes.NewSubsubsectionInfraPage({ projectSlug })}
         >
           Neue Führungsform
         </Link>

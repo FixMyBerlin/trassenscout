@@ -6,8 +6,8 @@ import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import deleteOperator from "@/src/operators/mutations/deleteOperator"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
@@ -24,7 +24,7 @@ export const OperatorsWithData = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ operators, hasMore }] = usePaginatedQuery(getOperatorsWithCount, {
-    projectSlug: projectSlug!,
+    projectSlug,
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -36,7 +36,7 @@ export const OperatorsWithData = () => {
   const handleDelete = async (operatorId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${operatorId} unwiderruflich löschen?`)) {
       await deleteOperatorMutation({ projectSlug, id: operatorId })
-      await router.push(Routes.OperatorsPage({ projectSlug: projectSlug! }))
+      await router.push(Routes.OperatorsPage({ projectSlug }))
     }
   }
 
@@ -85,7 +85,7 @@ export const OperatorsWithData = () => {
                         <Link
                           icon="edit"
                           href={Routes.EditOperatorPage({
-                            projectSlug: projectSlug!,
+                            projectSlug,
                             operatorId: operator.id,
                           })}
                         >
@@ -117,7 +117,7 @@ export const OperatorsWithData = () => {
           button="blue"
           icon="plus"
           className="mt-4"
-          href={Routes.NewOperatorPage({ projectSlug: projectSlug! })}
+          href={Routes.NewOperatorPage({ projectSlug })}
         >
           Neuer Baulastträger
         </Link>

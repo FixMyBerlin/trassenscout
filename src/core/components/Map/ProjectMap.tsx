@@ -1,4 +1,4 @@
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
 import { Routes } from "@blitzjs/next"
 import { lineString } from "@turf/helpers"

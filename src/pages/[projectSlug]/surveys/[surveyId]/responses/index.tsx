@@ -2,8 +2,9 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { H2 } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import getSubsections from "@/src/subsections/queries/getSubsections"
 import { getBackendConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
@@ -21,7 +22,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { Suspense, useEffect, useRef } from "react"
 
 export const SurveyResponse = () => {
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "number")
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
@@ -35,7 +36,7 @@ export const SurveyResponse = () => {
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const [{ surveyResponseTopics: topics }, { refetch: refetchTopics }] = useQuery(
     getSurveyResponseTopicsByProject,
-    { projectSlug: projectSlug! },
+    { projectSlug },
   )
 
   // Whenever we submit the form, we also refetch, so the whole accordeon header and everything else is updated
@@ -45,7 +46,7 @@ export const SurveyResponse = () => {
   }
 
   const [{ subsections }] = useQuery(getSubsections, {
-    projectSlug: projectSlug!,
+    projectSlug,
     subsectionSlug: subsectionSlug!,
   })
 

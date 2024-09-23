@@ -11,8 +11,9 @@ import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageDescription } from "@/src/core/components/pages/PageDescription"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoTitleSlug, shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useTryProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { OperatorFilterDropdown } from "@/src/projects/components/OperatorFilterDropdown"
 import { ProjectInfoPanel } from "@/src/projects/components/ProjectInfoPanel"
 import getProject from "@/src/projects/queries/getProject"
@@ -27,7 +28,7 @@ import { IfUserCanEdit } from "../../memberships/components/IfUserCan"
 export const ProjectDashboardWithQuery = () => {
   const projectSlug = useProjectSlug()
   const [project] = useQuery(getProject, { projectSlug })
-  const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   // We use the URL param `operator` to filter the UI
   // Docs: https://blitzjs.com/docs/route-params-query#use-router-query
   const params = useRouterQuery()
@@ -43,10 +44,10 @@ export const ProjectDashboardWithQuery = () => {
       <section className="mt-12 p-5">
         <IfUserCanEdit>
           <ButtonWrapper>
-            <Link button="blue" href={Routes.NewSubsectionPage({ projectSlug: projectSlug! })}>
+            <Link button="blue" href={Routes.NewSubsectionPage({ projectSlug })}>
               Neuer Planungsabschnitt
             </Link>
-            <Link button="blue" href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
+            <Link button="blue" href={Routes.EditProjectPage({ projectSlug })}>
               {shortTitle(project.slug)} bearbeiten
             </Link>
           </ButtonWrapper>
@@ -71,7 +72,7 @@ export const ProjectDashboardWithQuery = () => {
         )}. Sie bekommen hier alle wichtigen Informationen zum aktuellen Stand der Planung. Unter Teilstrecken finden Sie die für Ihre Kommune wichtigen Informationen und anstehenden Aufgaben. `}
         action={
           <IfUserCanEdit>
-            <Link icon="edit" href={Routes.EditProjectPage({ projectSlug: projectSlug! })}>
+            <Link icon="edit" href={Routes.EditProjectPage({ projectSlug })}>
               bearbeiten
             </Link>
           </IfUserCanEdit>
@@ -115,12 +116,11 @@ export const ProjectDashboardWithQuery = () => {
 }
 
 const ProjectDashboardPage: BlitzPage = () => {
+  const projectSlug = useTryProjectSlug()
   return (
-    <LayoutRs>
-      <Suspense fallback={<Spinner page />}>
-        <ProjectDashboardWithQuery />
-      </Suspense>
-    </LayoutRs>
+    <Suspense fallback={<Spinner page />}>
+      <LayoutRs>{projectSlug ? <ProjectDashboardWithQuery /> : <Spinner page />}</LayoutRs>
+    </Suspense>
   )
 }
 

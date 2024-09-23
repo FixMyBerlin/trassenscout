@@ -6,8 +6,8 @@ import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageDescription } from "@/src/core/components/pages/PageDescription"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { quote, seoTitleSlug, shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import getProject from "@/src/projects/queries/getProject"
 import { SubsectionTableAdmin } from "@/src/subsections/components/SubsectionTableAdmin"
 import updateSubsectionsWithFeltData from "@/src/subsections/mutations/updateSubsectionsWithFeltData"
@@ -19,7 +19,7 @@ import { Suspense, useState } from "react"
 export const AdminSubsectionsWithQuery = () => {
   const projectSlug = useProjectSlug()
   const [project] = useQuery(getProject, { projectSlug })
-  const [{ subsections }, { refetch }] = useQuery(getSubsections, { projectSlug: projectSlug! })
+  const [{ subsections }, { refetch }] = useQuery(getSubsections, { projectSlug })
   const [updateSubsectionMutation] = useMutation(updateSubsectionsWithFeltData)
 
   // We use the URL param `operator` to filter the UI
@@ -38,11 +38,7 @@ export const AdminSubsectionsWithQuery = () => {
     return (
       <section className="mt-12 p-5">
         <ButtonWrapper>
-          <Link
-            icon="plus"
-            button="blue"
-            href={Routes.AdminNewSubsectionsPage({ projectSlug: projectSlug! })}
-          >
+          <Link icon="plus" button="blue" href={Routes.AdminNewSubsectionsPage({ projectSlug })}>
             Mehrere Planungsabschnitte erstellen
           </Link>
         </ButtonWrapper>
@@ -101,11 +97,7 @@ export const AdminSubsectionsWithQuery = () => {
           </div>
         )}
         <div className="mt-8 flex flex-col gap-5 sm:flex-row">
-          <Link
-            icon="plus"
-            button="blue"
-            href={Routes.AdminNewSubsectionsPage({ projectSlug: projectSlug! })}
-          >
+          <Link icon="plus" button="blue" href={Routes.AdminNewSubsectionsPage({ projectSlug })}>
             Planungsabschnitte im Bulk-Mode hinzufügen
           </Link>
           {project.felt_subsection_geometry_source_url ? (

@@ -1,16 +1,18 @@
 import { layerColors } from "@/src/core/components/Map/layerColors"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getSubsubsections from "@/src/subsubsections/queries/getSubsubsections"
 import { useQuery } from "@blitzjs/rpc"
 import { featureCollection, lineString, point } from "@turf/helpers"
 import { Layer, Source } from "react-map-gl/maplibre"
 
-export const GeometryInputMapSubsubsections: React.FC = () => {
+export const GeometryInputMapSubsubsections = () => {
   // We render all other subsubsections data to give context for the user
-  const { subsectionSlug, subsubsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
+  const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
   const [{ subsubsections }] = useQuery(getSubsubsections, {
-    projectSlug: projectSlug!,
+    projectSlug,
     subsectionSlug: subsectionSlug!,
   })
 

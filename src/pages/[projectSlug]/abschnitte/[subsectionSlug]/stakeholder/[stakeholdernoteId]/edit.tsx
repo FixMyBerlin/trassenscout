@@ -4,8 +4,9 @@ import { Link, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { hashStakeholdernotes } from "@/src/stakeholdernotes/components/StakeholderSection"
 import {
   FORM_ERROR,
@@ -23,7 +24,7 @@ import { Suspense } from "react"
 
 const EditStakeholdernote = () => {
   const router = useRouter()
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
   const stakeholdernoteId = useParam("stakeholdernoteId", "number")
   const [stakeholdernote, { setQueryData }] = useQuery(
@@ -40,13 +41,14 @@ const EditStakeholdernote = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateStakeholdernoteMutation({
-        id: stakeholdernote.id,
         ...values,
+        id: stakeholdernote.id,
+        projectSlug,
       })
       await setQueryData(updated)
       await router.push(
         Routes.SubsectionStakeholdersPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           subsectionSlug: subsectionSlug!,
           stakeholderDetails: updated.id,
         }),
@@ -63,7 +65,7 @@ const EditStakeholdernote = () => {
       await deleteStakeholdernoteMutation({ projectSlug, id: stakeholdernote.id })
       await router.push({
         ...Routes.SubsectionDashboardPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           subsectionSlug: subsectionSlug!,
         }),
         hash: hashStakeholdernotes,
@@ -96,7 +98,7 @@ const EditStakeholdernote = () => {
 }
 
 const EditStakeholdernotePage: BlitzPage = () => {
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
 
   return (
@@ -110,7 +112,7 @@ const EditStakeholdernotePage: BlitzPage = () => {
         <Link
           href={{
             ...Routes.SubsectionDashboardPage({
-              projectSlug: projectSlug!,
+              projectSlug,
               subsectionSlug: subsectionSlug!,
             }),
             hash: hashStakeholdernotes,

@@ -1,4 +1,5 @@
 const colors = require("tailwindcss/colors")
+import defaultTheme from "tailwindcss/defaultTheme"
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -94,8 +95,21 @@ module.exports = {
       },
     },
     fontFamily: {
-      sans: ["Red Hat Text", "sans-serif"],
-      mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+      sans: ["var(--font-red-hat-text)", ...defaultTheme.fontFamily.sans],
+      mono: defaultTheme.fontFamily.mono,
+    },
+    fontWeight: {
+      // We only support some weights, see `src/app/_components/layouts/fonts.ts`
+      // Docs https://tailwindcss.com/docs/font-weight
+      // thin: '100',
+      // extralight: '200',
+      // light: "300",
+      normal: "400",
+      medium: "500",
+      semibold: "600",
+      bold: "700",
+      // extrabold: '800',
+      // black: '900',
     },
   },
   plugins: [require("@tailwindcss/typography"), require("@tailwindcss/forms")],

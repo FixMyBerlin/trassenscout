@@ -1,5 +1,5 @@
 import { shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
@@ -7,7 +7,7 @@ import { RadioGroup, RadioGroupLabel, RadioGroupOption } from "@headlessui/react
 import { clsx } from "clsx"
 import router from "next/router"
 
-export const OperatorFilterDropdown: React.FC = () => {
+export const OperatorFilterDropdown = () => {
   const params = useRouterQuery()
   const projectSlug = useProjectSlug()
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
@@ -22,7 +22,7 @@ export const OperatorFilterDropdown: React.FC = () => {
         onChange={(value) => {
           void router.push(
             Routes.ProjectDashboardPage({
-              projectSlug: projectSlug!,
+              projectSlug,
               ...(value ? { operator: value } : {}),
             }),
             undefined,

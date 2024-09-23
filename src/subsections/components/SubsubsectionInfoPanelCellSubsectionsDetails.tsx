@@ -14,7 +14,7 @@ export const SubsubsectionInfoPanelCellSubsectionsDetails: React.FC<Props> = ({
     getStatsInfopanelSubsectionsDetails,
     {
       subsectionSlug: subsectionSlug!,
-      projectSlug: projectSlug!,
+      projectSlug,
     },
   )
   return (

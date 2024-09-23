@@ -13,7 +13,7 @@ export const ProjectInfoPanelCellCosts: React.FC<Props> = ({ projectSlug }) => {
   const [{ projectLengthKm, accCosts, subsubsectionsWithCostsLengthKm, costStructure }] = useQuery(
     getStatsInfopanelCosts,
     {
-      projectSlug: projectSlug!,
+      projectSlug,
     },
   )
 

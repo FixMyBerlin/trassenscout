@@ -2,7 +2,7 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { Routes } from "@blitzjs/next"
@@ -75,7 +75,7 @@ export const UploadTable: React.FC<Props> = ({ uploads, withAction = true }) => 
                         <Link
                           icon="edit"
                           href={Routes.EditUploadPage({
-                            projectSlug: projectSlug!,
+                            projectSlug,
                             uploadId: upload.id,
                           })}
                         >
@@ -84,7 +84,7 @@ export const UploadTable: React.FC<Props> = ({ uploads, withAction = true }) => 
                         <Link
                           icon="delete"
                           href={Routes.ShowUploadPage({
-                            projectSlug: projectSlug!,
+                            projectSlug,
                             uploadId: upload.id,
                           })}
                         >

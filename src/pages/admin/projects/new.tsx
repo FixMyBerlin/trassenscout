@@ -78,7 +78,7 @@ const AdminNewProjectPage = () => {
 
       <hr className="my-5" />
       <p>
-        <Link href={Routes.Home()}>Startseite</Link>
+        <Link href="/dashboard">Startseite</Link>
       </p>
     </LayoutArticle>
   )

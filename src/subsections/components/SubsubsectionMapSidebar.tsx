@@ -10,7 +10,8 @@ import {
   shortTitle,
 } from "@/src/core/components/text"
 import { H2 } from "@/src/core/components/text/Headings"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { useSlug } from "@/src/core/routes/useSlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
 import { UploadPreview } from "@/src/uploads/components/UploadPreview"
@@ -27,7 +28,8 @@ type Props = {
 }
 
 export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClose }) => {
-  const { subsectionSlug, subsubsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
+  const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
 
   const [{ uploads }] = useQuery(getUploadsWithSubsections, {

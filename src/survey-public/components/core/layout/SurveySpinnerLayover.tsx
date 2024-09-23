@@ -1,6 +1,6 @@
 import { clsx } from "clsx"
 
-export const SurveySpinnerLayover: React.FC = () => {
+export const SurveySpinnerLayover = () => {
   return (
     <div>
       <div className="fixed inset-0 z-50 h-screen">

@@ -9,7 +9,8 @@ import {
   shortTitle,
 } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
 import { Routes } from "@blitzjs/next"
@@ -25,7 +26,8 @@ type Props = {
 
 export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact }) => {
   const router = useRouter()
-  const { subsectionSlug, subsubsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
+  const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
 
   return (

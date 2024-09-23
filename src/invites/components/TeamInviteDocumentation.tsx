@@ -1,4 +1,4 @@
-import { quote } from "@/src/core/components/text"
+import { quote } from "@/src/core/components/text/quote"
 import { statusTranslations } from "@/src/invites/components/TeamInvitesTable"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { INVITE_DAYS_TO_DELETION, INVITE_DAYS_TO_EXPIRED } from "../inviteSettings.const"

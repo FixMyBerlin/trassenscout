@@ -3,8 +3,8 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Link, whiteButtonStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { H2 } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { TSurvey } from "@/src/survey-public/components/types"
 import {
   getFeedbackDefinitionBySurveySlug,

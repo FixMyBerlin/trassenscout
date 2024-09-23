@@ -4,7 +4,7 @@ import {
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { linkStyles } from "@/src/core/components/links"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import { TResponse, TSingleOrMultiResponseProps } from "@/src/survey-public/components/types"

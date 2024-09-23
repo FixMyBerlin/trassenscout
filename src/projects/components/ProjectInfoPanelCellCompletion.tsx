@@ -9,7 +9,7 @@ export const ProjectInfoPanelCellCompletion: React.FC<Props> = ({ projectSlug })
   const [{ subsubsectionsWithEstimatedCompletionDate }] = useQuery(
     getStatsInfopanelProjectCompletion,
     {
-      projectSlug: projectSlug!,
+      projectSlug,
     },
   )
 

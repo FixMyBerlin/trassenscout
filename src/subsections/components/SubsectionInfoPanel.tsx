@@ -1,5 +1,6 @@
 import { Spinner } from "@/src/core/components/Spinner"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { useSlug } from "@/src/core/routes/useSlug"
 import { getFullname } from "@/src/users/utils"
 import { useQuery } from "@blitzjs/rpc"
 import {
@@ -18,12 +19,12 @@ import { SubsectionInfoPanelCellSubsection } from "./SubsectionInfoPanelCellSubs
 import { SubsectionInfoPanelCellSubsubsections } from "./SubsectionInfoPanelCellSubsubsections"
 import { SubsubsectionInfoPanelCellSubsectionsDetails } from "./SubsubsectionInfoPanelCellSubsectionsDetails"
 
-export const SubsectionInfoPanel: React.FC = () => {
-  const { subsectionSlug } = useSlugs()
+export const SubsectionInfoPanel = () => {
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
   const [subsection] = useQuery(getStatsInfopanel, {
     subsectionSlug: subsectionSlug!,
-    projectSlug: projectSlug!,
+    projectSlug,
   })
 
   return (

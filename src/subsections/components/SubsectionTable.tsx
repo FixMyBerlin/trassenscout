@@ -3,7 +3,8 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
 import { longTitle, shortTitle } from "@/src/core/components/text"
 import { startEnd } from "@/src/core/components/text/startEnd"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { StakeholderSummary } from "@/src/stakeholdernotes/components/StakeholderSummary"
 import { Routes } from "@blitzjs/next"
 import { clsx } from "clsx"
@@ -18,7 +19,7 @@ type Props = {
 
 export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = true }) => {
   const router = useRouter()
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
 
   return (
@@ -51,7 +52,7 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
           <tbody className="divide-y divide-gray-200 bg-white">
             {subsections.map((subsection) => {
               const route = Routes.SubsectionDashboardPage({
-                projectSlug: projectSlug!,
+                projectSlug,
                 subsectionSlug: subsection.slug,
               })
               return (
@@ -109,7 +110,7 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
             icon="plus"
             className="mt-4"
             href={Routes.NewSubsectionPage({
-              projectSlug: projectSlug!,
+              projectSlug,
               subsectionSlug: subsectionSlug!,
             })}
           >

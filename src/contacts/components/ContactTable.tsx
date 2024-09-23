@@ -2,7 +2,7 @@ import { Form, LabeledCheckbox } from "@/src/core/components/forms"
 import { Link, LinkMail, LinkTel, whiteButtonStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import getProject from "@/src/projects/queries/getProject"
 import { useCurrentUser } from "@/src/users/hooks/useCurrentUser"
@@ -96,7 +96,7 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   <Link
                     href={Routes.ShowContactPage({
-                      projectSlug: projectSlug!,
+                      projectSlug,
                       contactId: contact.id,
                     })}
                   >
@@ -109,7 +109,7 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
                       <Link
                         href={Routes.EditContactPage({
                           contactId: contact.id,
-                          projectSlug: projectSlug!,
+                          projectSlug,
                         })}
                       >
                         <PencilSquareIcon className="h-4 w-4" />
@@ -119,7 +119,7 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
                     <Link
                       href={Routes.ShowContactPage({
                         contactId: contact.id,
-                        projectSlug: projectSlug!,
+                        projectSlug,
                       })}
                     >
                       <TrashIcon className="h-4 w-4" />
@@ -140,11 +140,7 @@ export const ContactTable: React.FC<Props> = ({ contacts }) => {
 
       <ButtonWrapper className="mt-6 justify-between">
         <IfUserCanEdit>
-          <Link
-            button="blue"
-            icon="plus"
-            href={Routes.NewContactPage({ projectSlug: projectSlug! })}
-          >
+          <Link button="blue" icon="plus" href={Routes.NewContactPage({ projectSlug })}>
             Kontakt
           </Link>
         </IfUserCanEdit>

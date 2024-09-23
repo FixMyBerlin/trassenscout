@@ -4,8 +4,8 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import {
   FORM_ERROR,
   NetworkHierarchyForm,
@@ -41,7 +41,7 @@ const EditNetworkHierarchyWithQuery = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(Routes.NetworkHierarchysPage({ projectSlug: projectSlug! }))
+      await router.push(Routes.NetworkHierarchysPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
@@ -58,9 +58,7 @@ const EditNetworkHierarchyWithQuery = () => {
       />
 
       <p className="mt-5">
-        <Link href={Routes.NetworkHierarchysPage({ projectSlug: projectSlug! })}>
-          Zurück zur Übersicht
-        </Link>
+        <Link href={Routes.NetworkHierarchysPage({ projectSlug })}>Zurück zur Übersicht</Link>
       </p>
 
       <SuperAdminLogData data={{ networkHierarchy }} />

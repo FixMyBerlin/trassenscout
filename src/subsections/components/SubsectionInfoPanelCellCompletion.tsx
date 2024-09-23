@@ -12,7 +12,7 @@ export const SubsectionInfoPanelCellCompletion: React.FC<Props> = ({
 }) => {
   const [{ subsection }] = useQuery(getStatsInfopanelCompletion, {
     subsectionSlug: subsectionSlug!,
-    projectSlug: projectSlug!,
+    projectSlug,
   })
 
   if (subsection.subsubsections.length === 0)

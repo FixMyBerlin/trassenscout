@@ -1,6 +1,6 @@
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { linkStyles } from "@/src/core/components/links"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"

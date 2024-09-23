@@ -1,7 +1,7 @@
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Spinner } from "@/src/core/components/Spinner"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutArticle, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { FORM_ERROR, SurveyForm } from "@/src/surveys/components/SurveyForm"
 import updateSurvey from "@/src/surveys/mutations/updateSurvey"
 import getSurvey from "@/src/surveys/queries/getSurvey"

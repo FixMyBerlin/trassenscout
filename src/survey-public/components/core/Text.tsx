@@ -8,7 +8,7 @@ type Props = {
 
 export const SurveyH1: React.FC<Props> = ({ className, children }) => {
   return (
-    <h1 className={clsx("mb-6 mt-10 text-2xl font-extrabold text-gray-900 sm:text-3xl", className)}>
+    <h1 className={clsx("mb-6 mt-10 text-2xl font-bold text-gray-900 sm:text-3xl", className)}>
       {children}
     </h1>
   )
@@ -16,7 +16,7 @@ export const SurveyH1: React.FC<Props> = ({ className, children }) => {
 
 export const SurveyH2: React.FC<Props> = ({ className, children }) => {
   return (
-    <h2 className={clsx("mb-4 mt-12 text-lg font-extrabold text-gray-900 sm:text-xl", className)}>
+    <h2 className={clsx("mb-4 mt-12 text-lg font-bold text-gray-900 sm:text-xl", className)}>
       {children}
     </h2>
   )
@@ -24,9 +24,7 @@ export const SurveyH2: React.FC<Props> = ({ className, children }) => {
 
 export const SurveyH3: React.FC<Props> = ({ className, children }) => {
   return (
-    <h3 className={clsx("mb-4 mt-12 text-lg font-extrabold text-gray-900", className)}>
-      {children}
-    </h3>
+    <h3 className={clsx("mb-4 mt-12 text-lg font-bold text-gray-900", className)}>{children}</h3>
   )
 }
 

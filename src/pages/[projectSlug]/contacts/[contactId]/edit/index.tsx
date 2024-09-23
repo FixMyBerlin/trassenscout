@@ -7,8 +7,8 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -38,7 +38,7 @@ const EditContactWithQuery = () => {
       await setQueryData(updated)
       await router.push(
         Routes.ShowContactPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           contactId: updated.id,
         }),
       )
@@ -69,9 +69,7 @@ const EditContactPage: BlitzPage = () => {
 
       <hr className="my-5" />
       <p>
-        <Link href={Routes.ContactsPage({ projectSlug: projectSlug! })}>
-          Zurück zur Kontaktliste
-        </Link>
+        <Link href={Routes.ContactsPage({ projectSlug })}>Zurück zur Kontaktliste</Link>
       </p>
     </LayoutRs>
   )

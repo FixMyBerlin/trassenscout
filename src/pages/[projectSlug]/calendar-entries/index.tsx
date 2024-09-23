@@ -6,8 +6,8 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
@@ -21,7 +21,7 @@ export const CalendarEntriesWithData = () => {
   const page = Number(router.query.page) || 0
   const projectSlug = useProjectSlug()
   const [{ calendarEntries, hasMore }] = usePaginatedQuery(getCalendarEntries, {
-    projectSlug: projectSlug!,
+    projectSlug,
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -35,11 +35,7 @@ export const CalendarEntriesWithData = () => {
 
       <IfUserCanEdit>
         <ButtonWrapper className="mt-5">
-          <Link
-            button="blue"
-            icon="plus"
-            href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}
-          >
+          <Link button="blue" icon="plus" href={Routes.NewCalendarEntryPage({ projectSlug })}>
             Termin
           </Link>
         </ButtonWrapper>

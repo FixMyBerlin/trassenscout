@@ -4,8 +4,8 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoIndexTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { TeamInviteForm } from "@/src/invites/components/TeamInviteForm"
 import createInvite from "@/src/invites/mutations/createInvite"
 import { InviteSchema } from "@/src/invites/schema"
@@ -23,8 +23,8 @@ const TeamInviteWithQuery = () => {
   type HandleSubmit = z.infer<typeof InviteSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      await createInviteMutation({ ...values, projectSlug: projectSlug! })
-      await router.push(Routes.ProjectTeamInvitesPage({ projectSlug: projectSlug! }))
+      await createInviteMutation({ ...values, projectSlug })
+      await router.push(Routes.ProjectTeamInvitesPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["email"])
     }
@@ -50,7 +50,7 @@ const NewProjectTeamInvitePage: BlitzPage = () => {
       </Suspense>
 
       <p className="mt-5">
-        <Link href={Routes.ProjectTeamInvitesPage({ projectSlug: projectSlug! })}>
+        <Link href={Routes.ProjectTeamInvitesPage({ projectSlug })}>
           Zurück zur Liste der Einladungen
         </Link>
       </p>

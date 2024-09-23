@@ -6,8 +6,8 @@ import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import deleteQualityLevel from "@/src/qualityLevels/mutations/deleteQualityLevel"
 import getQualityLevelsWithCount from "@/src/qualityLevels/queries/getQualityLevelsWithCount"
@@ -24,7 +24,7 @@ export const QualityLevelsWithData = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ qualityLevels, hasMore }] = usePaginatedQuery(getQualityLevelsWithCount, {
-    projectSlug: projectSlug!,
+    projectSlug,
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -36,7 +36,7 @@ export const QualityLevelsWithData = () => {
   const handleDelete = async (qualityLevelId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${qualityLevelId} unwiderruflich löschen?`)) {
       await deleteQualityLevelMutation({ projectSlug, id: qualityLevelId })
-      await router.push(Routes.QualityLevelsPage({ projectSlug: projectSlug! }))
+      await router.push(Routes.QualityLevelsPage({ projectSlug }))
     }
   }
 
@@ -84,7 +84,7 @@ export const QualityLevelsWithData = () => {
                       <Link
                         icon="edit"
                         href={Routes.QualityLevelsPage({
-                          projectSlug: projectSlug!,
+                          projectSlug,
                           qualityLevelId: qualityLevel.id,
                         })}
                       >
@@ -115,7 +115,7 @@ export const QualityLevelsWithData = () => {
           button="blue"
           icon="plus"
           className="mt-4"
-          href={Routes.NewQualityLevelPage({ projectSlug: projectSlug! })}
+          href={Routes.NewQualityLevelPage({ projectSlug })}
         >
           Neuer Ausbaustandard
         </Link>

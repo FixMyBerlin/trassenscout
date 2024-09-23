@@ -3,8 +3,9 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link, linkStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitleSlug, shortTitle } from "@/src/core/components/text"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import getProject from "@/src/projects/queries/getProject"
 import { FORM_ERROR, SubsectionForm } from "@/src/subsections/components/SubsectionForm"
 import deleteSubsection from "@/src/subsections/mutations/deleteSubsection"
@@ -19,7 +20,7 @@ import { Suspense } from "react"
 
 const EditSubsection = () => {
   const router = useRouter()
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
   const [project] = useQuery(getProject, { projectSlug })
   const [subsection, { setQueryData }] = useQuery(getSubsection, {
@@ -52,7 +53,13 @@ const EditSubsection = () => {
   const [deleteSubsectionMutation] = useMutation(deleteSubsection)
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${subsection.id} unwiderruflich löschen?`)) {
-      await deleteSubsectionMutation({ projectSlug, id: subsection.id })
+      try {
+        await deleteSubsectionMutation({ projectSlug, id: subsection.id })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
       await router.push(
         Routes.SubsectionDashboardPage({
           projectSlug,
@@ -88,7 +95,7 @@ const EditSubsection = () => {
 }
 
 const EditSubsectionPage: BlitzPage = () => {
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
 
   return (

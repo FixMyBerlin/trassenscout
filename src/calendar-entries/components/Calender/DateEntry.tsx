@@ -1,7 +1,7 @@
 import { Disclosure } from "@/src/core/components/Disclosure"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Link, linkStyles } from "@/src/core/components/links"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { Routes } from "@blitzjs/next"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"

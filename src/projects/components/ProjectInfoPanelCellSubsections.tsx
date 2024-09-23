@@ -8,7 +8,7 @@ type Props = {
 export const ProjectInfoPanelCellSubsections: React.FC<Props> = ({ projectSlug }) => {
   const [{ projectLengthKm, numberOfSubsections, networHierarchiesSubsectionsWithCount }] =
     useQuery(getStatsInfopanelProjectSubsections, {
-      projectSlug: projectSlug!,
+      projectSlug,
     })
 
   return (

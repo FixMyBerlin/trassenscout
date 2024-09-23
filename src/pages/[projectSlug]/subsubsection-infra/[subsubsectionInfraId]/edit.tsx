@@ -4,8 +4,8 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import {
   FORM_ERROR,
   SubsubsectionInfraForm,
@@ -41,7 +41,7 @@ const EditSubsubsectionsInfraWithQuery = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(Routes.SubsubsectionInfrasPage({ projectSlug: projectSlug! }))
+      await router.push(Routes.SubsubsectionInfrasPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
@@ -58,9 +58,7 @@ const EditSubsubsectionsInfraWithQuery = () => {
       />
 
       <p className="mt-5">
-        <Link href={Routes.SubsubsectionInfrasPage({ projectSlug: projectSlug! })}>
-          Zurück zur Übersicht
-        </Link>
+        <Link href={Routes.SubsubsectionInfrasPage({ projectSlug })}>Zurück zur Übersicht</Link>
       </p>
 
       <SuperAdminLogData data={{ subsubsectionInfra }} />

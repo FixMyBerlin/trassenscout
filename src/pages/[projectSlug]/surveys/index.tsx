@@ -2,8 +2,8 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import getSurveys from "@/src/surveys/queries/getSurveys"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
@@ -13,7 +13,7 @@ import { Suspense } from "react"
 export const Surveys = () => {
   const router = useRouter()
   const projectSlug = useProjectSlug()
-  const [{ surveys }] = usePaginatedQuery(getSurveys, { projectSlug: projectSlug! })
+  const [{ surveys }] = usePaginatedQuery(getSurveys, { projectSlug })
 
   if (!surveys.length) {
     return <ZeroCase visible={0} name="Beteiligungen" />
@@ -21,7 +21,7 @@ export const Surveys = () => {
 
   // Navigation always links to /survey. But this redirects to the survey Page when only one is present.
   if (surveys.length === 1) {
-    void router.push(Routes.SurveyPage({ projectSlug: projectSlug!, surveyId: surveys[0]!.id }))
+    void router.push(Routes.SurveyPage({ projectSlug, surveyId: surveys[0]!.id }))
     return <Spinner page />
   }
 
@@ -34,10 +34,7 @@ export const Surveys = () => {
       />
       <div className="flex flex-col gap-4">
         {surveys.map((survey) => (
-          <Link
-            key={survey.id}
-            href={Routes.SurveyPage({ projectSlug: projectSlug!, surveyId: survey.id })}
-          >
+          <Link key={survey.id} href={Routes.SurveyPage({ projectSlug, surveyId: survey.id })}>
             {survey.title}
           </Link>
         ))}

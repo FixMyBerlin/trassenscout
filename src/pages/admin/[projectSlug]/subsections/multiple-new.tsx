@@ -4,8 +4,8 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import getProject from "@/src/projects/queries/getProject"
 import { FORM_ERROR, SubsectionsForm } from "@/src/subsections/components/SubsectionsForm"
 import createSubsections from "@/src/subsections/mutations/createSubsections"
@@ -57,7 +57,7 @@ const AdminNewSubsections = () => {
       })
       await router.push(
         Routes.AdminSubsectionsPage({
-          projectSlug: projectSlug!,
+          projectSlug,
         }),
       )
     } catch (error: any) {
@@ -93,7 +93,7 @@ const AdminNewSubsectionsPage: BlitzPage = () => {
       <p>
         <Link
           href={Routes.ProjectDashboardPage({
-            projectSlug: projectSlug!,
+            projectSlug,
           })}
         >
           Zurück Übersicht

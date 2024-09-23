@@ -4,8 +4,8 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { FORM_ERROR, QualityLevelForm } from "@/src/qualityLevels/components/QualityLevelForm"
 import updateQualityLevel from "@/src/qualityLevels/mutations/updateQualityLevel"
 import getQualityLevel from "@/src/qualityLevels/queries/getQualityLevel"
@@ -38,7 +38,7 @@ const EditQualityLevelWithQuery = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(Routes.QualityLevelsPage({ projectSlug: projectSlug! }))
+      await router.push(Routes.QualityLevelsPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
@@ -55,9 +55,7 @@ const EditQualityLevelWithQuery = () => {
       />
 
       <p className="mt-5">
-        <Link href={Routes.QualityLevelsPage({ projectSlug: projectSlug! })}>
-          Zurück zur Übersicht
-        </Link>
+        <Link href={Routes.QualityLevelsPage({ projectSlug })}>Zurück zur Übersicht</Link>
       </p>
 
       <SuperAdminLogData data={{ qualityLevel }} />

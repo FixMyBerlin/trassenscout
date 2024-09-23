@@ -8,7 +8,7 @@ type Props = {
   compact?: boolean
 }
 
-export const StartEndLabel: React.FC<Props> = ({ icon, subIcon, start, end, compact }) => (
+export const StartEndLabel = ({ icon, subIcon, start, end, compact }: Props) => (
   <div className="px-1.5 py-1">
     <div className="flex items-center gap-1.5">
       <div className="flex flex-col items-center leading-4">

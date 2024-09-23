@@ -11,7 +11,7 @@ import {
 import { LabeledFormatNumberField } from "@/src/core/components/forms/LabeledFormatNumberField"
 import { LabeledFormatNumberFieldCalculateLength } from "@/src/core/components/forms/LabeledFormatNumberFieldCalculateLength"
 import { quote, shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
 import getQualityLevelsWithCount from "@/src/qualityLevels/queries/getQualityLevelsWithCount"
 import getSubsubsectionInfrasWithCount from "@/src/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
@@ -30,7 +30,7 @@ export { FORM_ERROR } from "@/src/core/components/forms"
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const projectSlug = useProjectSlug()
-  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug!, role: "EDITOR" })
+  const [users] = useQuery(getProjectUsers, { projectSlug, role: "EDITOR" })
 
   const [{ qualityLevels }] = useQuery(getQualityLevelsWithCount, { projectSlug })
   const qualityLevelOptions: [number | string, string][] = [
@@ -91,7 +91,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
-          href={Routes.SubsubsectionTasksPage({ projectSlug: projectSlug! })}
+          href={Routes.SubsubsectionTasksPage({ projectSlug })}
           className="py-2"
         >
           Maßnahmetypen verwalten…
@@ -105,7 +105,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
-          href={Routes.SubsubsectionInfrasPage({ projectSlug: projectSlug! })}
+          href={Routes.SubsubsectionInfrasPage({ projectSlug })}
           className="py-2"
         >
           Führungsformen verwalten…
@@ -119,7 +119,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         />
         <div className="mt-4">
           <LinkWithFormDirtyConfirm
-            href={Routes.SubsubsectionSpecialsPage({ projectSlug: projectSlug! })}
+            href={Routes.SubsubsectionSpecialsPage({ projectSlug })}
             className="py-2"
           >
             Besonderheiten verwalten…
@@ -162,10 +162,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           options={qualityLevelOptions}
           outerProps={{ className: "grow" }}
         />
-        <LinkWithFormDirtyConfirm
-          href={Routes.QualityLevelsPage({ projectSlug: projectSlug! })}
-          className="py-2"
-        >
+        <LinkWithFormDirtyConfirm href={Routes.QualityLevelsPage({ projectSlug })} className="py-2">
           Ausbaustandards verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
@@ -178,7 +175,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
-          href={Routes.SubsubsectionStatussPage({ projectSlug: projectSlug! })}
+          href={Routes.SubsubsectionStatussPage({ projectSlug })}
           className="py-2"
         >
           Status verwalten…

@@ -1,6 +1,6 @@
 import { MembershipRoleEnum, UserRoleEnum } from "@/db"
 import { editorRoles, viewerRoles } from "@/src/authorization/constants"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSession } from "@blitzjs/auth"
 
 const userHasRole = (

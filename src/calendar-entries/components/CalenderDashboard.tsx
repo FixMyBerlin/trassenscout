@@ -1,7 +1,7 @@
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links/Link"
 import { H2 } from "@/src/core/components/text/Headings"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { startOfDay } from "date-fns"
@@ -10,7 +10,7 @@ import { IfUserCanEdit } from "../../memberships/components/IfUserCan"
 import getCalendarEntries from "../queries/getCalendarEntries"
 import { DateList } from "./Calender/DateList"
 
-const CalendarDashboardDateList: React.FC = () => {
+const CalendarDashboardDateList = () => {
   const projectSlug = useProjectSlug()
   const [{ calendarEntries }] = usePaginatedQuery(getCalendarEntries, {
     projectSlug,
@@ -27,12 +27,12 @@ const CalendarDashboardDateList: React.FC = () => {
       <DateList calendarEntries={calendarEntries} />
       <div className="mt-5">
         {Boolean(calendarEntries.length) ? (
-          <Link button="white" href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>
+          <Link button="white" href={Routes.CalendarEntriesPage({ projectSlug })}>
             Alle Termine
           </Link>
         ) : (
           <IfUserCanEdit>
-            <Link icon="plus" href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}>
+            <Link icon="plus" href={Routes.NewCalendarEntryPage({ projectSlug })}>
               Neuen Termin eintragen
             </Link>
           </IfUserCanEdit>
@@ -42,7 +42,7 @@ const CalendarDashboardDateList: React.FC = () => {
   )
 }
 
-export const CalenderDashboard: React.FC = () => {
+export const CalenderDashboard = () => {
   return (
     <section className="mt-12">
       <H2 className="mb-3">Kommende Termine</H2>

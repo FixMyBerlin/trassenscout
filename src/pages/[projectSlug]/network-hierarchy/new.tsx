@@ -2,8 +2,8 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { NetworkHierarchyForm } from "@/src/networkHierarchy/components/NetworkHierarchy"
 import createNetworkHierarchy from "@/src/networkHierarchy/mutations/createNetworkHierarchy"
 import { NetworkHierarchySchema } from "@/src/networkHierarchy/schema"
@@ -21,8 +21,8 @@ const NewNetworkHierarchyPageWithQuery = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      await createNetworkHierarchyMutation({ ...values, projectSlug: projectSlug! })
-      await router.push(Routes.NetworkHierarchysPage({ projectSlug: projectSlug! }))
+      await createNetworkHierarchyMutation({ ...values, projectSlug })
+      await router.push(Routes.NetworkHierarchysPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }

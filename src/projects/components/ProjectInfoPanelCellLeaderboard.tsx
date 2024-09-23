@@ -10,7 +10,7 @@ export const ProjectInfoPanelCellLeaderboard: React.FC<Props> = ({ projectSlug }
   const [{ operatorsWithCount, subsubsectionSpecialsWithCount, managersWithCount }] = useQuery(
     getStatsInfopanelProjectLeaderboard,
     {
-      projectSlug: projectSlug!,
+      projectSlug,
     },
   )
   return (

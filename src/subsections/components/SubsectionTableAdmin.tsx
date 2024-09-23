@@ -2,7 +2,7 @@ import { SubsectionIcon } from "@/src/core/components/Map/Icons"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
 import { shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { defaultGeometryForMultipleSubsectionForm } from "@/src/pages/admin/[projectSlug]/subsections/multiple-new"
 import { Routes } from "@blitzjs/next"
@@ -85,7 +85,7 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds 
           <tbody className="divide-y divide-gray-200 bg-white">
             {subsections.map((subsection) => {
               const route = Routes.SubsectionDashboardPage({
-                projectSlug: projectSlug!,
+                projectSlug,
                 subsectionSlug: subsection.slug,
               })
               const noPreviewForDefaultGeometry =
@@ -155,7 +155,7 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds 
                     <IfUserCanEdit>
                       <Link
                         href={Routes.EditSubsectionPage({
-                          projectSlug: projectSlug!,
+                          projectSlug,
                           subsectionSlug: subsection.slug,
                         })}
                       >

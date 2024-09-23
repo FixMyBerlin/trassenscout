@@ -1,7 +1,8 @@
 import { midPoint } from "@/src/core/components/Map/utils"
 import { LabeledRadiobuttonGroup } from "@/src/core/components/forms"
 import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { useSlug } from "@/src/core/routes/useSlug"
 import getSubsection from "@/src/subsections/queries/getSubsection"
 import { useQuery } from "@blitzjs/rpc"
 import { useEffect } from "react"
@@ -9,11 +10,11 @@ import { useFormContext } from "react-hook-form"
 import { z } from "zod"
 import { GeometryInputMap } from "./GeometryInputMap"
 
-export const GeometryInput: React.FC = () => {
-  const { subsectionSlug } = useSlugs()
+export const GeometryInput = () => {
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
   const [subsection] = useQuery(getSubsection, {
-    projectSlug: projectSlug!,
+    projectSlug,
     subsectionSlug: subsectionSlug!,
   })
 

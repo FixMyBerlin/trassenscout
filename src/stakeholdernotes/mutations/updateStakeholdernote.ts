@@ -16,7 +16,7 @@ const UpdateStakeholdernoteSchema = ProjectSlugRequiredSchema.merge(
 export default resolver.pipe(
   resolver.zod(UpdateStakeholdernoteSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ id, ...data }) => {
+  async ({ id, projectSlug, ...data }) => {
     return await db.stakeholdernote.update({
       where: { id },
       data,

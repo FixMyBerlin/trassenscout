@@ -6,8 +6,8 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { quote } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
@@ -24,7 +24,7 @@ export const CalendarEntry = () => {
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${calendarEntry.id} unwiderruflich löschen?`)) {
       await deleteCalendarEntryMutation({ projectSlug, id: calendarEntry.id })
-      await router.push(Routes.CalendarEntriesPage({ projectSlug: projectSlug! }))
+      await router.push(Routes.CalendarEntriesPage({ projectSlug }))
     }
   }
 
@@ -38,7 +38,7 @@ export const CalendarEntry = () => {
           <Link
             href={Routes.EditCalendarEntryPage({
               calendarEntryId: calendarEntry.id,
-              projectSlug: projectSlug!,
+              projectSlug,
             })}
           >
             Eintrag bearbeiten
@@ -58,7 +58,7 @@ export const CalendarEntry = () => {
         <pre>{JSON.stringify(calendarEntry, null, 2)}</pre>
       </SuperAdminBox>
 
-      <Link href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>Zurück Terminen</Link>
+      <Link href={Routes.CalendarEntriesPage({ projectSlug })}>Zurück Terminen</Link>
     </>
   )
 }

@@ -2,8 +2,8 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { QualityLevelForm } from "@/src/qualityLevels/components/QualityLevelForm"
 import createQualityLevel from "@/src/qualityLevels/mutations/createQualityLevel"
 import { QualityLevelSchema } from "@/src/qualityLevels/schema"
@@ -21,8 +21,8 @@ const NewQualityLevelPageWithQuery = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      await createQualityLevelMutation({ ...values, projectSlug: projectSlug! })
-      await router.push(Routes.QualityLevelsPage({ projectSlug: projectSlug! }))
+      await createQualityLevelMutation({ ...values, projectSlug })
+      await router.push(Routes.QualityLevelsPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }

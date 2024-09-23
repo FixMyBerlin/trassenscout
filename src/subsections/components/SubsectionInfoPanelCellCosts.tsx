@@ -9,7 +9,7 @@ type Props = {
 export const SubsectionInfoPanelCellCosts: React.FC<Props> = ({ subsectionSlug, projectSlug }) => {
   const [{ subsection, costStructure }] = useQuery(getStatsInfopanelCosts, {
     subsectionSlug: subsectionSlug!,
-    projectSlug: projectSlug!,
+    projectSlug,
   })
   return (
     <>

@@ -9,8 +9,8 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -27,11 +27,11 @@ const NewCalendarEntry = () => {
       const transformedValues = transformValuesWithStartAt(values)
       const calendarEntry = await createCalendarEntryMutation({
         ...transformedValues,
-        projectSlug: projectSlug!,
+        projectSlug,
       })
       await router.push(
         Routes.ShowCalendarEntryPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           calendarEntryId: calendarEntry.id,
         }),
       )
@@ -68,9 +68,7 @@ const NewCalendarEntryPage: BlitzPage = () => {
       </Suspense>
 
       <p className="mt-5">
-        <Link href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>
-          Zurück zur Liste
-        </Link>
+        <Link href={Routes.CalendarEntriesPage({ projectSlug })}>Zurück zur Liste</Link>
       </p>
     </LayoutRs>
   )

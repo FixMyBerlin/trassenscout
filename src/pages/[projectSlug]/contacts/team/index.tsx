@@ -5,8 +5,8 @@ import { Tabs } from "@/src/core/components/Tabs/Tabs"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { useUserCan } from "@/src/memberships/hooks/useUserCan"
 import { BlitzPage, Routes } from "@blitzjs/next"
@@ -16,10 +16,10 @@ export const TeamWithQuery = () => {
   const projectSlug = useProjectSlug()
   const showInvitesTab = useUserCan().edit
   const tabs = [
-    { name: "Externe Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
-    { name: "Projektteam", href: Routes.ProjectTeamPage({ projectSlug: projectSlug! }) },
+    { name: "Externe Kontakte", href: Routes.ContactsPage({ projectSlug }) },
+    { name: "Projektteam", href: Routes.ProjectTeamPage({ projectSlug }) },
     showInvitesTab
-      ? { name: "Einladungen", href: Routes.ProjectTeamInvitesPage({ projectSlug: projectSlug! }) }
+      ? { name: "Einladungen", href: Routes.ProjectTeamInvitesPage({ projectSlug }) }
       : undefined,
   ].filter(Boolean)
 
@@ -31,11 +31,7 @@ export const TeamWithQuery = () => {
 
       <IfUserCanEdit>
         <ButtonWrapper className="mt-6">
-          <Link
-            button="blue"
-            icon="plus"
-            href={Routes.NewProjectTeamInvitePage({ projectSlug: projectSlug! })}
-          >
+          <Link button="blue" icon="plus" href={Routes.NewProjectTeamInvitePage({ projectSlug })}>
             Mitwirkende einladen
           </Link>
         </ButtonWrapper>

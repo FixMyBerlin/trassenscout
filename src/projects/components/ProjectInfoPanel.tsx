@@ -1,5 +1,5 @@
 import { Spinner } from "@/src/core/components/Spinner"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useQuery } from "@blitzjs/rpc"
 import {
   CheckCircleIcon,
@@ -17,7 +17,7 @@ import { ProjectInfoPanelCellLeaderboard } from "./ProjectInfoPanelCellLeaderboa
 import { ProjectInfoPanelCellSubsections } from "./ProjectInfoPanelCellSubsections"
 import { ProjectInfoPanelCellSubsubsections } from "./ProjectInfoPanelCellSubsubsections"
 
-export const ProjectInfoPanel: React.FC = () => {
+export const ProjectInfoPanel = () => {
   const projectSlug = useProjectSlug()
   const [project] = useQuery(getStatsInfopanelProjectGeneral, { projectSlug })
 

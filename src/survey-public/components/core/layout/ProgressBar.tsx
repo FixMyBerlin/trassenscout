@@ -6,7 +6,7 @@ export { FORM_ERROR } from "@/src/core/components/forms"
 
 const TOTAL = 8
 
-export const ProgressBar: React.FC = () => {
+export const ProgressBar = () => {
   const { progress } = useContext(ProgressContext)
   const width = progress ? (progress / TOTAL) * 100 : 100
 

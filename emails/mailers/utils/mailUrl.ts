@@ -1,11 +1,19 @@
 import { getPrdOrStgDomain } from "@/src/core/components/links/getDomain"
 import type { RouteUrlObject } from "blitz"
+import { Route } from "next"
 import { z } from "zod"
 
 const QuerySchema = z.record(z.string().transform((val) => String(val))).optional()
 
-export const mailUrl = (input: RouteUrlObject) => {
+export const mailUrl = (input: RouteUrlObject | Route) => {
   const origin = getPrdOrStgDomain()
+
+  // Handle NextJS typed Route – which is a string with all query params included
+  if (typeof input === "string") {
+    return new URL(input, origin).toString()
+  }
+
+  // Handle Blitz RouteUrlObject:
   const url = new URL(input.href, origin)
 
   // The type for input.query includes `ParsedUrlQueryInput` which can be all kind of stuff

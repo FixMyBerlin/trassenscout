@@ -1,5 +1,5 @@
 import { linkIcons, linkStyles } from "@/src/core/components/links"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import deleteMembership from "@/src/memberships/mutations/deleteMembership"
 import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
@@ -22,7 +22,7 @@ export const TeamTableEditMembershipDelete = ({ membershipId }: Props) => {
         { projectSlug, membershipId },
         {
           onSuccess: async () => {
-            const queryKey = getQueryKey(getProjectUsers, { projectSlug: projectSlug! })
+            const queryKey = getQueryKey(getProjectUsers, { projectSlug })
             void getQueryClient().invalidateQueries(queryKey)
           },
         },
