@@ -36,7 +36,7 @@ export const MarkdownMail = ({
         {/* <Preview>Preview line</Preview> */}
         <Body className="m-0 bg-gray-100 sm:p-4">
           <Container className="mx-auto bg-white sm:rounded-lg sm:shadow-md">
-            <Section className="mb-4 flex items-center justify-center bg-gray-800 py-5 sm:rounded-t-lg">
+            <Section className="mb-4 bg-gray-800 py-5 text-center sm:rounded-t-lg dark:bg-gray-800">
               <Img
                 src={`${baseUrl}/emails/trassenscout-logo-mail-white.png`}
                 width="134"
