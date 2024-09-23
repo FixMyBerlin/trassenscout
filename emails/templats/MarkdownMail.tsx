@@ -36,14 +36,15 @@ export const MarkdownMail = ({
         {/* <Preview>Preview line</Preview> */}
         <Body className="m-0 bg-gray-100 sm:p-4">
           <Container className="mx-auto bg-white sm:rounded-lg sm:shadow-md">
-            <Section className="mb-4 bg-gray-800 py-5 text-center sm:rounded-t-lg dark:bg-gray-800">
-              <Img
-                src={`${baseUrl}/emails/trassenscout-logo-mail-white.png`}
-                width="134"
-                height="45"
-                alt="Trassenscout Logo"
-                className="mx-auto"
-              />
+            <Section className="mb-4 bg-gray-800 px-4 py-5 text-center sm:rounded-t-lg sm:px-8 dark:bg-gray-800">
+              <center>
+                <Img
+                  src={`https://staging.trassenscout.de/emails/trassenscout-logo-mail-white.png`}
+                  width="134"
+                  height="45"
+                  alt="Trassenscout Logo"
+                />
+              </center>
             </Section>
             <Section className="px-4 py-2 sm:px-8">
               <Markdown
@@ -59,13 +60,15 @@ export const MarkdownMail = ({
               </Markdown>
 
               {ctaLink && ctaText ? (
-                <Section className="my-5 flex items-center justify-center">
-                  <Button
-                    className="block min-w-52 rounded bg-blue-500 px-4 py-3.5 text-center font-sans text-base text-white no-underline"
-                    href={ctaLink}
-                  >
-                    {ctaText}
-                  </Button>
+                <Section className="my-5 flex items-center justify-center text-center">
+                  <center>
+                    <Button
+                      className="block min-w-52 rounded bg-blue-500 px-4 py-3.5 text-center font-sans text-base text-white no-underline"
+                      href={ctaLink}
+                    >
+                      {ctaText}
+                    </Button>
+                  </center>
                 </Section>
               ) : null}
 
