@@ -23,7 +23,7 @@ ${message.ctaText}: ${message.ctaLink}
 `
     : ""
 }
-${message.outroMarkdown}
+${message.outroMarkdown ? message.outroMarkdown : ""}
 
 ${signatureTextMarkdown}
 
