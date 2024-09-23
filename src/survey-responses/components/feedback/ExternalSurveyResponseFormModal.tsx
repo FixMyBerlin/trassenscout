@@ -72,7 +72,6 @@ export const ExternalSurveyResponseFormModal: React.FC<Props> = ({ refetch }) =>
       const additionalUserTextId = evaluationRefs["feedback-usertext-2"]
       if (additionalUserTextId) values[additionalUserTextId] = null
 
-      // @ts-expect-error
       const defaultStatus = getBackendConfigBySurveySlug(survey.slug).status[0].value
 
       const surveySession = await createSurveySessionMutation({ surveyId: Number(surveyId) })
