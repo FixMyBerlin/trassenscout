@@ -1,6 +1,7 @@
 import { getPrdOrStgDomain } from "@/src/core/components/links/getDomain"
 import {
   Body,
+  Button,
   Container,
   Head,
   Hr,
@@ -15,29 +16,17 @@ import { signatureTextMarkdown } from "./signatureTextMarkdown"
 
 const baseUrl = getPrdOrStgDomain()
 
-const demoTextMarkdown = `
-# Welcome to the Demo Text
+export type MarkdownMailProps = {
+  introMarkdown: string
+  outroMarkdown?: string
+} & ({ ctaLink: string; ctaText: string } | { ctaLink?: never | null; ctaText?: never | null })
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada.
-
-## Features
-
-- **Feature 1**: Lorem ipsum dolor sit amet, [consectetur adipiscing elit](https://example.com).
-- **Feature 2**: Vivamus lacinia odio vitae [vestibulum vestibulum](https://example.com).
-- **Feature 3**: Cras venenatis euismod malesuada.
-
-## More Information
-
-For more details, visit our [website](https://example.com) or check out our [documentation](https://example.com/docs).
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada.
-`
-
-type MarkdownMailProps = {
-  markdown: string
-}
-
-export const MarkdownMail = ({ markdown = demoTextMarkdown }: MarkdownMailProps) => {
+export const MarkdownMail = ({
+  introMarkdown = "",
+  outroMarkdown,
+  ctaLink = null,
+  ctaText = null,
+}: MarkdownMailProps) => {
   return (
     <Tailwind>
       <Html lang="de" dir="ltr">
@@ -45,9 +34,9 @@ export const MarkdownMail = ({ markdown = demoTextMarkdown }: MarkdownMailProps)
           <title>Trassenscout</title>
         </Head>
         {/* <Preview>Preview line</Preview> */}
-        <Body className="bg-gray-100 p-4">
-          <Container className="mx-auto rounded-lg bg-white shadow-md">
-            <Section className="mb-4 flex items-center justify-center rounded-t-lg bg-gray-800 py-5">
+        <Body className="m-0 bg-gray-100 sm:p-4">
+          <Container className="mx-auto bg-white sm:rounded-lg sm:shadow-md">
+            <Section className="mb-4 flex items-center justify-center bg-gray-800 py-5 sm:rounded-t-lg">
               <Img
                 src={`${baseUrl}/emails/trassenscout-logo-mail-white.png`}
                 width="134"
@@ -56,7 +45,7 @@ export const MarkdownMail = ({ markdown = demoTextMarkdown }: MarkdownMailProps)
                 className="mx-auto"
               />
             </Section>
-            <Section className="px-6 py-2 md:px-8">
+            <Section className="px-4 py-2 sm:px-8">
               <Markdown
                 markdownCustomStyles={{
                   h1,
@@ -66,20 +55,36 @@ export const MarkdownMail = ({ markdown = demoTextMarkdown }: MarkdownMailProps)
                   li: list,
                 }}
               >
-                {markdown}
+                {introMarkdown}
               </Markdown>
-              {/* Action section */
-              /*
-              <Section style={verificationSection}>
-                <Text style={verifyText}>Verification code</Text>
 
-                <Text style={codeText}>{verificationCode}</Text>
-                <Text style={validityText}>(This code is valid for 10 minutes)</Text>
-              </Section>
-            */}
+              {ctaLink && ctaText ? (
+                <Section className="my-5 flex items-center justify-center">
+                  <Button
+                    className="block min-w-52 rounded bg-blue-500 px-4 py-3.5 text-center font-sans text-base text-white no-underline"
+                    href={ctaLink}
+                  >
+                    {ctaText}
+                  </Button>
+                </Section>
+              ) : null}
+
+              {outroMarkdown ? (
+                <Markdown
+                  markdownCustomStyles={{
+                    h1,
+                    h2,
+                    p: mainText,
+                    link,
+                    li: list,
+                  }}
+                >
+                  {outroMarkdown}
+                </Markdown>
+              ) : null}
             </Section>
             <Hr />
-            <Section className="px-9 py-6">
+            <Section className="px-9 pb-6 pt-4">
               <Markdown
                 markdownCustomStyles={{
                   h1,
@@ -91,7 +96,7 @@ export const MarkdownMail = ({ markdown = demoTextMarkdown }: MarkdownMailProps)
               </Markdown>
             </Section>
           </Container>
-          <Container className="mx-auto">
+          <Container className="mx-auto py-6">
             <Markdown
               markdownCustomStyles={{
                 p: {
@@ -106,7 +111,6 @@ export const MarkdownMail = ({ markdown = demoTextMarkdown }: MarkdownMailProps)
                   color: "#333",
                 },
               }}
-              markdownContainerStyles={{ padding: "24px 0" }}
             >
               {footerTextMarkdown}
             </Markdown>

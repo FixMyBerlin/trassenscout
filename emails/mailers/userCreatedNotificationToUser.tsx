@@ -2,7 +2,7 @@ import { RouteUrlObject } from "blitz"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
-import { MailjetMessage } from "./utils/types"
+import { Mail } from "./utils/types"
 
 type Props = {
   user: { email: string; name: string }
@@ -10,19 +10,19 @@ type Props = {
 }
 
 export async function userCreatedNotificationToUser(props: Props) {
-  const text = `
+  const introMarkdown = `
 Guten Tag ${props.user.name}!
 
 Diese Mail dient als Information, dass Sie soeben einen Account im Trassenscout erstellt haben.
-
-[ Trassenscout öffnen ](${mailUrl(props.path)})
 `
 
-  const message: MailjetMessage = {
+  const message: Mail = {
     From: addressNoreply,
     To: [{ Email: props.user.email, Name: props.user.name }],
     Subject: "Trassenscout: Account aktiviert",
-    TextPart: text,
+    introMarkdown,
+    ctaLink: mailUrl(props.path),
+    ctaText: "Trassenscout öffnen",
   }
 
   return {

@@ -7,19 +7,23 @@ import { render } from "@react-email/components"
 import Mailjet, { LibraryResponse, SendEmailV3_1 } from "node-mailjet"
 import { addressDevteam } from "./addresses"
 import { formattedEmailAddress } from "./formattedEmailAddress"
-import { MailjetMessage } from "./types"
+import { Mail, MailjetMessage } from "./types"
 
-export const sendMail = async (message: MailjetMessage) => {
-  // When no HTML is provided, we reuse the text.
-  // But we can provide custom HTML if needed.
-  if (!message.HTMLPart) {
-    message.HTMLPart = await render(<MarkdownMail markdown={message.TextPart} />)
-  }
-
+export const sendMail = async (message: Mail) => {
   // Add standard signiture and footer to TextPart only
   // (The HTMLPart puts this in separate layout groups.)
-  message.TextPart = `
-${message.TextPart}
+  const textPart = `
+${message.introMarkdown}
+${
+  message.ctaLink && message.ctaText
+    ? `
+
+${message.ctaText}: ${message.ctaLink}
+
+`
+    : ""
+}
+${message.outroMarkdown}
 
 ${signatureTextMarkdown}
 
@@ -27,14 +31,24 @@ ${signatureTextMarkdown}
 ${footerTextMarkdown}
 `
 
+  const htmlPart = await render(<MarkdownMail {...message} />)
+
+  const mailjetMessage: MailjetMessage = {
+    From: message.From,
+    To: message.To,
+    Subject: message.Subject,
+    TextPart: textPart,
+    HTMLPart: htmlPart,
+  }
+
   if (isDev || isTest) {
     const previewEmail = (await import("preview-email")).default
     await previewEmail({
-      from: formattedEmailAddress(message.From),
-      to: message.To.map((to) => formattedEmailAddress(to)).join(";"),
-      subject: message.Subject,
-      text: message.TextPart,
-      html: message.HTMLPart,
+      from: formattedEmailAddress(mailjetMessage.From),
+      to: mailjetMessage.To.map((to) => formattedEmailAddress(to)).join(";"),
+      subject: mailjetMessage.Subject,
+      text: mailjetMessage.TextPart,
+      html: mailjetMessage.HTMLPart,
     })
     return
   }
@@ -50,7 +64,7 @@ ${footerTextMarkdown}
         // See Callout at https://dev.mailjet.com/email/guides/send-api-v31/
         // Error `"TemplateLanguage" is not set while "TemplateErrorReporting" or "TemplateErrorDeliver" properties are.`
         TemplateLanguage: true,
-        ...message,
+        ...mailjetMessage,
       },
     ],
   }
@@ -69,12 +83,12 @@ ${footerTextMarkdown}
     await internalCreateLogEntry({
       apiKey: process.env.TS_API_KEY,
       logLevel: messageStatus.Status === "error" ? "ERROR" : "INFO",
-      message: `SEND MAIL: ${message.Subject}`,
+      message: `SEND MAIL: ${mailjetMessage.Subject}`,
       // @ts-expect-error I think those types are fine…
       context:
         messageStatus.Status === "error"
           ? { CustomID: messageStatus.CustomID, errors: messageStatus.Errors }
-          : { CustomID: messageStatus.CustomID, text: message.TextPart },
+          : { CustomID: messageStatus.CustomID, text: mailjetMessage.TextPart },
     })
   }
 }

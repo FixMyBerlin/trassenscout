@@ -3,7 +3,7 @@ import { RouteUrlObject } from "blitz"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
-import { MailjetMessage } from "./utils/types"
+import { Mail } from "./utils/types"
 
 type Props = {
   userEmail: string
@@ -14,23 +14,27 @@ type Props = {
 }
 
 export async function invitationCreatedMailToUser(props: Props) {
-  const text = `
+  const introMarkdown = `
 Guten Tag!
 
-Sie wurden von ${props.inviterName} eingeladen am Projekt ${quote(props.projectName)} mitzuwirken.
+# Sie wurden eingeladen am Projekt ${quote(props.projectName)} mitzuwirken
 
-Bitte Registieren Sie sich, um die Einladung anzunehmen.
+Diese Einladung wurde von ${props.inviterName} verschickt.
 
-[Einladung annehmen und Registrieren]( ${mailUrl(props.signupPath)} )
+Bitte Registieren Sie sich, um die Einladung anzunehmen.`
 
+  const outroMarkdown = `
 Wenn Sie schon einen Account unter diese E-Mail-Adresse haben, [melden Sie sich bitte damit an]( ${mailUrl(props.loginPath)} ), um die Einladung anzunehmen.
 `
 
-  const message: MailjetMessage = {
+  const message: Mail = {
     From: addressNoreply,
     To: [{ Email: props.userEmail }],
     Subject: `Trassenscout: Einladung zum Projekt ${quote(props.projectName)}`,
-    TextPart: text,
+    introMarkdown,
+    ctaLink: mailUrl(props.signupPath),
+    ctaText: "Einladung annehmen und registrieren",
+    outroMarkdown,
   }
 
   return {

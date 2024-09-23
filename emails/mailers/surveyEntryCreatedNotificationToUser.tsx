@@ -1,6 +1,6 @@
 import { addressNoreply } from "./utils/addresses"
 import { sendMail } from "./utils/sendMail"
-import { MailjetMessage } from "./utils/types"
+import { Mail } from "./utils/types"
 
 type Props = {
   userMail: string
@@ -13,10 +13,12 @@ type Props = {
 }
 
 export async function surveyEntryCreatedNotificationToUser(props: Props) {
-  const text = `
+  const introMarkdown = `
 Guten Tag ${props.userFirstname} ${props.userLastname}!
 
-Vielen Dank für Ihre Teilnahme! Hiermit bestätigen wir Ihnen den Eingang Ihres Beitrags mit folgenden Angaben:
+Vielen Dank für Ihre Teilnahme!
+
+# Hiermit bestätigen wir Ihnen den Eingang Ihres Beitrags mit folgenden Angaben:
 
 * Eingangsdatum: ${new Date().toLocaleDateString("de-DE")}
 * Kategorie: ${props.feedbackCategory}
@@ -36,11 +38,11 @@ Hinweis: Beachten Sie, dass Sie für jeden eingereichten Hinweis eine separate E
 Nach Abschluss der Beteiligung werden Ihre Hinweise fachlich geprüft und in die Abwägung zur Überarbeitung des Zielnetzentwurfs mit einbezogen.
 `
 
-  const message: MailjetMessage = {
+  const message: Mail = {
     From: addressNoreply,
     To: [{ Email: props.userMail, Name: `${props.userFirstname} ${props.userLastname}` }],
     Subject: "Beteiligung zum Radnetz Brandenburg: Ihr eingereichter Hinweis",
-    TextPart: text,
+    introMarkdown,
   }
 
   return {

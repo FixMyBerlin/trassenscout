@@ -2,7 +2,7 @@ import { Routes } from "@blitzjs/next"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
-import { MailjetMessage } from "./utils/types"
+import { Mail } from "./utils/types"
 
 type Props = {
   userMail: string
@@ -12,10 +12,12 @@ type Props = {
 }
 
 export async function userCreatedNotificationToAdmin(props: Props) {
-  const text = `
-Liebes Trassenscout-Team,
+  const introMarkdown = `
+Liebes Trassenscout-Team!
 
-ein neuer Nutzer-Account wurde erstellt, bitte prüfen und einem Projekt zuordnen:
+# Ein neuer Nutzer-Account wurde erstellt
+
+Bitte prüfe den Account und ordne ihn einem einem Projekt.
 
 * Name: ${props.userName}
 * E-Mail: ${props.userMail}
@@ -24,15 +26,15 @@ ein neuer Nutzer-Account wurde erstellt, bitte prüfen und einem Projekt zuordne
       ? `Es sind bereits ${props.userMembershipCount} Mitgliedschafte(n) eingetragen (Einladungsprozess)`
       : "Es sind noch keine Mitgliedschaften vorhanden"
   }
-
-[Rechte verwalten]( ${mailUrl(Routes.AdminMembershipsPage())} )
 `
 
-  const message: MailjetMessage = {
+  const message: Mail = {
     From: addressNoreply,
     To: [{ Email: process.env.ADMIN_EMAIL }],
     Subject: "Trassenscout: User hat sich registriert",
-    TextPart: text,
+    introMarkdown,
+    ctaLink: mailUrl(Routes.AdminMembershipsPage()),
+    ctaText: "Rechte verwalten",
   }
 
   return {
