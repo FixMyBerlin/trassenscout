@@ -39,7 +39,7 @@ export const MarkdownMail = ({
             <Section className="mb-4 bg-gray-800 px-4 py-5 text-center sm:rounded-t-lg sm:px-8 dark:bg-gray-800">
               <center>
                 <Img
-                  src={`https://staging.trassenscout.de/emails/trassenscout-logo-mail-white.png`}
+                  src={`${baseUrl}/emails/trassenscout-logo-mail-white.png`}
                   width="134"
                   height="45"
                   alt="Trassenscout Logo"
