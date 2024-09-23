@@ -9,11 +9,18 @@ on:
 jobs:
   run-daily-tasks-staging:
     runs-on: ubuntu-latest
+    environment:
+      name: staging
     steps:
       - name: Cleanup invites STAGING
         run: curl --fail -X GET "https://staging.trassenscout.de/api/private/cron-invites-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
       - name: Cleanup logEntries STAGING
         run: curl --fail -X GET "https://staging.trassenscout.de/api/private/cron-logEntries-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+  run-daily-tasks-production:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
       - name: Cleanup invites PRODUCTION
         run: curl --fail -X GET "https://trassenscout.de/api/private/cron-invites-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
       - name: Cleanup logEntries PRODUCTION
