@@ -13,10 +13,6 @@ import {
 import { footerTextMarkdown } from "./footerTextMarkdown"
 import { signatureTextMarkdown } from "./signatureTextMarkdown"
 
-interface MarkdownMailProps {
-  markdown: string
-}
-
 const baseUrl = getPrdOrStgDomain()
 
 const demoTextMarkdown = `
@@ -37,6 +33,10 @@ For more details, visit our [website](https://example.com) or check out our [doc
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada.
 `
 
+type MarkdownMailProps = {
+  markdown: string
+}
+
 export const MarkdownMail = ({ markdown = demoTextMarkdown }: MarkdownMailProps) => {
   return (
     <Tailwind>
@@ -45,31 +45,31 @@ export const MarkdownMail = ({ markdown = demoTextMarkdown }: MarkdownMailProps)
           <title>Trassenscout</title>
         </Head>
         {/* <Preview>Preview line</Preview> */}
-        <Body style={main}>
-          <Container style={container}>
-            <Section style={coverSection}>
-              <Section style={imageSection}>
-                <Img
-                  src={`${baseUrl}/emails/trassenscout-logo-mail-white.png`}
-                  width="134"
-                  height="45"
-                  alt="Trassenscout Logo"
-                />
-              </Section>
-              <Section style={upperSection}>
-                <Markdown
-                  markdownCustomStyles={{
-                    h1,
-                    h2,
-                    p: mainText,
-                    link,
-                    li: list,
-                  }}
-                >
-                  {markdown}
-                </Markdown>
-                {/* Action section */
-                /*
+        <Body className="bg-gray-100 p-4">
+          <Container className="mx-auto rounded-lg bg-white shadow-md">
+            <Section className="mb-4 flex items-center justify-center rounded-t-lg bg-gray-800 py-5">
+              <Img
+                src={`${baseUrl}/emails/trassenscout-logo-mail-white.png`}
+                width="134"
+                height="45"
+                alt="Trassenscout Logo"
+                className="mx-auto"
+              />
+            </Section>
+            <Section className="px-6 py-2 md:px-8">
+              <Markdown
+                markdownCustomStyles={{
+                  h1,
+                  h2,
+                  p: mainText,
+                  link,
+                  li: list,
+                }}
+              >
+                {markdown}
+              </Markdown>
+              {/* Action section */
+              /*
               <Section style={verificationSection}>
                 <Text style={verifyText}>Verification code</Text>
 
@@ -77,24 +77,34 @@ export const MarkdownMail = ({ markdown = demoTextMarkdown }: MarkdownMailProps)
                 <Text style={validityText}>(This code is valid for 10 minutes)</Text>
               </Section>
             */}
-              </Section>
-              <Hr />
-              <Section style={lowerSection}>
-                <Markdown
-                  markdownCustomStyles={{
-                    h1,
-                    p: cautionText,
-                    link,
-                  }}
-                >
-                  {signatureTextMarkdown}
-                </Markdown>
-              </Section>
             </Section>
+            <Hr />
+            <Section className="px-9 py-6">
+              <Markdown
+                markdownCustomStyles={{
+                  h1,
+                  p: { ...text, margin: "0px" },
+                  link,
+                }}
+              >
+                {signatureTextMarkdown}
+              </Markdown>
+            </Section>
+          </Container>
+          <Container className="mx-auto">
             <Markdown
               markdownCustomStyles={{
-                p: footerText,
-                link: footerLink,
+                p: {
+                  ...text,
+                  fontSize: "12px",
+                  margin: "0",
+                  padding: "0 20px",
+                  lineHeight: "20px",
+                },
+                link: {
+                  fontSize: "12px",
+                  color: "#333",
+                },
               }}
               markdownContainerStyles={{ padding: "24px 0" }}
             >
@@ -109,21 +119,12 @@ export const MarkdownMail = ({ markdown = demoTextMarkdown }: MarkdownMailProps)
 
 export default MarkdownMail
 
-const main = {
-  backgroundColor: "#fff",
-  color: "#212121",
-}
-
-const container = {
-  padding: "20px",
-  margin: "0 auto",
-  backgroundColor: "#eee",
-}
+const fontFamily =
+  "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif"
 
 const h1 = {
   color: "#333",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+  fontFamily,
   fontSize: "20px",
   fontWeight: "bold",
   margin: "20px 0",
@@ -133,76 +134,19 @@ const h2 = { ...h1, marginTop: "25px", fontSize: "17px" }
 
 const link = {
   color: "#2C62A9", // text-blue-500
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+  fontFamily,
   fontSize: "14px",
   textDecoration: "underline",
 }
 
 const text = {
   color: "#333",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+  fontFamily,
   fontSize: "14px",
   margin: "10px 0",
   lineHeight: "24px",
 }
 
-const imageSection = {
-  backgroundColor: "rgb(31 41 55)", // bg-gray-800
-  display: "flex",
-  padding: "20px 0",
-  alignItems: "center",
-  justifyContent: "center",
-}
-
-const coverSection = { backgroundColor: "#fff" }
-
-const upperSection = { padding: "25px 35px 10px 35px" }
-
-const lowerSection = { padding: "25px 35px" }
-
-const footerText = {
-  ...text,
-  fontSize: "12px",
-  margin: "0",
-  padding: "0 20px",
-  lineHeight: "20px",
-}
-const footerLink = {
-  fontSize: "12px",
-  color: "#333",
-}
-
-// const verifyText = {
-//   ...text,
-//   margin: 0,
-//   fontWeight: "bold",
-//   textAlign: "center" as const,
-// }
-
-// const codeText = {
-//   ...text,
-//   fontWeight: "bold",
-//   fontSize: "36px",
-//   margin: "10px 0",
-//   textAlign: "center" as const,
-// }
-
-// const validityText = {
-//   ...text,
-//   margin: "0px",
-//   textAlign: "center" as const,
-// }
-
-// const verificationSection = {
-//   display: "flex",
-//   alignItems: "center",
-//   justifyContent: "center",
-// }
-
 const mainText = { ...text, marginBottom: "14px" }
 
 const list = { ...text, margin: "5px 0" }
-
-const cautionText = { ...text, margin: "0px" }
