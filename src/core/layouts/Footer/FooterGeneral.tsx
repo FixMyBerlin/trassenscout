@@ -2,7 +2,7 @@ import { FooterBuildByLine } from "./FooterBuildByLine"
 import { FooterLinkList } from "./FooterLinkList"
 import { links } from "./links.const"
 
-export const FooterGeneral: React.FC = () => {
+export const FooterGeneral = () => {
   return (
     <footer className="z-0 bg-gray-800 px-6 py-8">
       <div className="pt-6">

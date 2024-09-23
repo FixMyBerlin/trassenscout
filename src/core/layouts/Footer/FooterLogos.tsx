@@ -8,7 +8,7 @@ import { Suspense } from "react"
 
 type Props = { className?: string }
 
-export const FooterLogosWithQuery: React.FC<Props> = ({ className }) => {
+export const FooterLogosWithQuery = ({ className }: Props) => {
   const projectSlug = useParam("projectSlug", "string")
   const [project] = useQuery(getProject, { slug: projectSlug })
 
