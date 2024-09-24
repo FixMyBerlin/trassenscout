@@ -105,7 +105,7 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
       : undefined
 
     // get data that we need from line
-    const lineId = line?.properties["Verbindungs_ID"]
+    const lineId = line?.properties["Verbindung"]
     const lineFrom = line?.properties["from_name"]
     const lineTo = line?.properties["to_name"]
     const lineGeometry = line?.geometry
