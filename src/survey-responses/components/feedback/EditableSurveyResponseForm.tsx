@@ -151,18 +151,19 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
       ])
       // the EditableSurveyResponseFilterForm needs to update when a new topic is added here
       // this hapens with a useEffect in EditableSurveyResponseFilterForm
-      await router.push(
-        {
-          query: {
-            ...router.query,
-            topics: [...(router.query.topics as string[]), String(createdOrFetched.id)],
+      if (router.query.topics)
+        await router.push(
+          {
+            query: {
+              ...router.query,
+              topics: [...(router.query.topics as string[]), String(createdOrFetched.id)],
+            },
           },
-        },
-        undefined,
-        {
-          scroll: false,
-        },
-      )
+          undefined,
+          {
+            scroll: false,
+          },
+        )
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
