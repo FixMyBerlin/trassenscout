@@ -3,18 +3,19 @@ import { userCreatedNotificationToAdmin } from "@/emails/mailers/userCreatedNoti
 import { userCreatedNotificationToUser } from "@/emails/mailers/userCreatedNotificationToUser"
 import { getFullname } from "@/src/users/utils/getFullname"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
-import { Routes } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
-import { checkAndUpdateInvite } from "../shared/checkAndUpdateInvite"
+import { RouteUrlObject } from "blitz"
+import { getInvite } from "../shared/getInvite"
 import { notifyEditorsAboutNewMembership } from "../shared/notifyEditorsAboutNewMembership"
 import { selectUserFieldsForSession } from "../shared/selectUserFieldsForSession"
+import { updateInvite } from "../shared/updateInvite"
 import { Signup } from "../validations"
 
 export default resolver.pipe(
   resolver.zod(Signup),
   async ({ email, firstName, lastName, password, phone, institution, inviteToken }, ctx) => {
     // Case: Invite
-    const invite = await checkAndUpdateInvite(inviteToken, email)
+    let invite = await getInvite(inviteToken, email)
 
     const hashedPassword = await SecurePassword.hash(password.trim())
     const user = await db.user.create({
@@ -45,11 +46,14 @@ export default resolver.pipe(
       memberships: user.memberships,
     })
 
+    // Case: Invite
+    invite = await updateInvite(inviteToken, email)
+
     // Mail: Notify User
     await (
       await userCreatedNotificationToUser({
         user: { email: user.email, name: getFullname(user) || "" },
-        path: Routes.Home(),
+        path: { pathname: "/", query: undefined, href: "/" } satisfies RouteUrlObject,
       })
     ).send()
 

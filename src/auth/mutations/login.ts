@@ -2,9 +2,9 @@ import db from "@/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
 import { AuthenticationError } from "blitz"
-import { checkAndUpdateInvite } from "../shared/checkAndUpdateInvite"
 import { notifyEditorsAboutNewMembership } from "../shared/notifyEditorsAboutNewMembership"
 import { selectUserFieldsForSession } from "../shared/selectUserFieldsForSession"
+import { updateInvite } from "../shared/updateInvite"
 import { Login } from "../validations"
 
 export const authenticateUser = async (rawEmail: string, rawPassword: string) => {
@@ -36,7 +36,7 @@ export default resolver.pipe(resolver.zod(Login), async ({ email, password, invi
   let user = await authenticateUser(email, password)
 
   // Case: Invite
-  const invite = await checkAndUpdateInvite(inviteToken, email)
+  const invite = await updateInvite(inviteToken, email)
   if (invite) {
     user = await db.user.update({
       where: { id: user.id },
