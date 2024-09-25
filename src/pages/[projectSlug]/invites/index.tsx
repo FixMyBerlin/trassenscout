@@ -4,6 +4,7 @@ import { Tabs } from "@/src/core/components/Tabs/Tabs"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { seoIndexTitle } from "@/src/core/components/text"
 import { useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { TeamInviteDocumentation } from "@/src/invites/components/TeamInviteDocumentation"
@@ -14,15 +15,15 @@ import { Suspense } from "react"
 export const TeamInvitesWithQuery = () => {
   const { projectSlug } = useSlugs()
 
+  const tabs = [
+    { name: "Externe Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
+    { name: "Projektteam", href: Routes.ProjectTeamPage({ projectSlug: projectSlug! }) },
+    { name: "Einladungen", href: Routes.ProjectTeamInvitesPage({ projectSlug: projectSlug! }) },
+  ]
+
   return (
     <>
-      <Tabs
-        className="mt-7"
-        tabs={[
-          { name: "Externe Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
-          { name: "Projektteam", href: Routes.ProjectTeamPage({ projectSlug: projectSlug! }) },
-        ]}
-      />
+      <Tabs className="mt-7" tabs={tabs} />
 
       <TeamInvitesTable />
 
@@ -50,10 +51,10 @@ export const TeamInvitesWithQuery = () => {
 const ProjectTeamInvitesPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title="Einladungen" />
+      <MetaTags noindex title={seoIndexTitle("Einladungen")} />
       <PageHeader
         title="Einladungen"
-        description="Übersich der Einladungen zur Mitarbeit im Projekt."
+        description="Übersicht der Einladungen zur Mitarbeit im Projekt."
         className="mt-12"
       />
 

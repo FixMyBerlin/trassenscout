@@ -8,33 +8,30 @@ import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import { useUserCan } from "@/src/memberships/hooks/useUserCan"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { Suspense } from "react"
 
 export const TeamWithQuery = () => {
   const { projectSlug } = useSlugs()
 
+  const showInvitesTab = useUserCan().edit
+  const tabs = [
+    { name: "Externe Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
+    { name: "Projektteam", href: Routes.ProjectTeamPage({ projectSlug: projectSlug! }) },
+    showInvitesTab
+      ? { name: "Einladungen", href: Routes.ProjectTeamInvitesPage({ projectSlug: projectSlug! }) }
+      : undefined,
+  ].filter(Boolean)
+
   return (
     <>
-      <Tabs
-        className="mt-7"
-        tabs={[
-          { name: "Externe Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
-          { name: "Projektteam", href: Routes.ProjectTeamPage({ projectSlug: projectSlug! }) },
-        ]}
-      />
+      <Tabs className="mt-7" tabs={tabs} />
 
       <TeamTable />
 
       <IfUserCanEdit>
         <ButtonWrapper className="mt-6 justify-end">
-          <Link
-            button="blue"
-            icon="list"
-            href={Routes.ProjectTeamInvitesPage({ projectSlug: projectSlug! })}
-          >
-            Einladungen
-          </Link>
           <Link
             button="blue"
             icon="plus"
