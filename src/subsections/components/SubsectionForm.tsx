@@ -101,7 +101,6 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
         label="Geometry der Achse (LineString)"
       />
       <LabeledFormatNumberFieldCalculateLength
-        optional
         name="lengthKm"
         label="Länge"
         readOnly={isFeltFieldsReadOnly}
