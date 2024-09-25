@@ -3,7 +3,6 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { LinkMail, LinkTel } from "@/src/core/components/links"
 import { useSlugs } from "@/src/core/hooks"
 import { UserCanIcon } from "@/src/memberships/components/UserCanIcon"
-import { roleTranslation } from "@/src/memberships/components/roleTranslation.const"
 import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
 import { getFullname } from "@/src/users/utils"
 import { useQuery } from "@blitzjs/rpc"
@@ -57,7 +56,6 @@ export const TeamTable = () => {
                       role={user.currentMembershipRole}
                       isAdmin={user.role === "ADMIN"}
                     />
-                    {roleTranslation[user.currentMembershipRole]}
                     <TeamTableEditMembershipModal editUser={user} />
                     <TeamTableEditMembershipDelete membershipId={user.currentMembershipId} />
                   </div>
