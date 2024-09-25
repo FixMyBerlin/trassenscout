@@ -1,3 +1,4 @@
+import { showMembershipRoleCheckIndicatorState } from "@/src/core/store/showMembershipRoleCheckIndicator.zustand"
 import { isProduction } from "@/src/core/utils"
 import { useSession } from "@blitzjs/auth"
 import { NoSymbolIcon } from "@heroicons/react/20/solid"
@@ -10,7 +11,12 @@ type Props = {
 // This helps Admins to see which areas are only visible to permission holders
 export const AdminHint = ({ children }: Props) => {
   const session = useSession()
-  if (!isProduction && session.role === "ADMIN") {
+  if (isProduction) return children
+
+  const showMembershipRoleCheckIndicator = showMembershipRoleCheckIndicatorState()
+  if (showMembershipRoleCheckIndicator === false) return children
+
+  if (session.role === "ADMIN") {
     return (
       <>
         <span
@@ -23,6 +29,7 @@ export const AdminHint = ({ children }: Props) => {
       </>
     )
   }
+
   return children
 }
 

@@ -1,4 +1,10 @@
+import { AdminBox } from "@/src/core/components/AdminBox/AdminBox"
+import { linkStyles } from "@/src/core/components/links"
 import { Link } from "@/src/core/components/links/Link"
+import {
+  showMembershipRoleCheckIndicatorCountActions,
+  showMembershipRoleCheckIndicatorState,
+} from "@/src/core/store/showMembershipRoleCheckIndicator.zustand"
 import { CurrentUser } from "@/src/users/types"
 import { getFullname, getInitials, isAdmin } from "@/src/users/utils"
 import { Routes, useParam } from "@blitzjs/next"
@@ -12,6 +18,8 @@ type Props = {
 
 export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
   const projectSlug = useParam("projectSlug", "string")
+  const showMembershipRoleCheckIndicator = showMembershipRoleCheckIndicatorState()
+  const { toggleShowMembershipRoleCheckIndicator } = showMembershipRoleCheckIndicatorCountActions()
 
   return (
     <Menu as="div" className="relative">
@@ -53,7 +61,20 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
                     <p className="mb-2 truncate text-xs text-gray-400">{user.institution}</p>
                   )}
 
-                  {isAdmin(user) && <p className="font-semibold text-purple-700">Rolle: Admin</p>}
+                  {isAdmin(user) && (
+                    <>
+                      <AdminBox label="Admin">
+                        <p className="font-semibold">Rolle: Admin</p>
+                        <button
+                          onClick={toggleShowMembershipRoleCheckIndicator}
+                          className={clsx(linkStyles, "text-left")}
+                        >
+                          {showMembershipRoleCheckIndicator ? "AN" : "AUS"}: Hervorheben, wo Element
+                          abhängig von der Editor-Rolle angezeigt werden.
+                        </button>
+                      </AdminBox>
+                    </>
+                  )}
                 </div>
                 <div className="border-t border-gray-200 px-4 py-2 text-gray-700">
                   <div className="my-2 flex flex-col gap-4">
