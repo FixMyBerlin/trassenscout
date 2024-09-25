@@ -9,6 +9,11 @@ export default resolver.pipe(
   resolver.zod(UpdateMembershipRole),
   authorizeProjectAdmin(extractProjectSlug, editorRoles),
   async ({ membershipId, ...data }) => {
-    return await db.membership.update({ where: { id: membershipId }, data })
+    const updated = await db.membership.update({ where: { id: membershipId }, data })
+
+    // Delete the session of the updated user so she is forced to log in again to update her membership
+    await db.session.deleteMany({ where: { userId: updated.userId } })
+
+    return updated
   },
 )
