@@ -21,7 +21,7 @@ Guten Tag!
 
 Diese Einladung wurde von ${props.inviterName} verschickt.
 
-Bitte Registieren Sie sich, um die Einladung anzunehmen.`
+Bitte registieren Sie sich, um die Einladung anzunehmen.`
 
   const outroMarkdown = `
 Wenn Sie schon einen Account unter diese E-Mail-Adresse haben, [melden Sie sich bitte damit an]( ${mailUrl(props.loginPath)} ), um die Einladung anzunehmen.
