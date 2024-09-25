@@ -1,22 +1,18 @@
+import { Spinner } from "@/src/core/components/Spinner"
+import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { longTitle, seoNewTitle } from "@/src/core/components/text"
+import { useSlugs } from "@/src/core/hooks"
+import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import getSubsection from "@/src/subsections/queries/getSubsection"
+import { FORM_ERROR, SubsubsectionForm } from "@/src/subsubsections/components/SubsubsectionForm"
+import createSubsubsection from "@/src/subsubsections/mutations/createSubsubsection"
+import { SubsubsectionSchema } from "@/src/subsubsections/schema"
 import { Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { Spinner } from "src/core/components/Spinner"
-import { improveErrorMessage } from "src/core/components/forms/improveErrorMessage"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { longTitle, seoNewTitle } from "src/core/components/text"
-import { useSlugs } from "src/core/hooks"
-import { LayoutRs, MetaTags } from "src/core/layouts"
-import getSubsection from "src/subsections/queries/getSubsection"
-import { FORM_ERROR, SubsubsectionForm } from "src/subsubsections/components/SubsubsectionForm"
-import createSubsubsection from "src/subsubsections/mutations/createSubsubsection"
-import { SubsubsectionFormSchema } from "src/subsubsections/schema"
 import { z } from "zod"
-
-const NewSubsubsectionSchemaForm = SubsubsectionFormSchema.omit({
-  subsectionId: true,
-})
 
 const NewSubsubsection = () => {
   const router = useRouter()
@@ -28,19 +24,16 @@ const NewSubsubsection = () => {
     subsectionSlug: subsectionSlug!,
   })
 
-  type HandleSubmit = z.infer<typeof NewSubsubsectionSchemaForm>
+  type HandleSubmit = z.infer<typeof SubsubsectionSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const subsubsection = await createSubsubsectionMutation({
         ...values,
-        // @ts-ignore
         subsectionId: subsection!.id,
-        // @ts-ignore
-        trafficLoadDate: values.trafficLoadDate === "" ? null : new Date(values.trafficLoadDate),
-        // @ts-ignore
-        estimatedCompletionDate:
-          // @ts-ignore
-          values.estimatedCompletionDate === "" ? null : new Date(values.estimatedCompletionDate),
+        trafficLoadDate: values.trafficLoadDate ? new Date(values.trafficLoadDate) : null,
+        estimatedCompletionDate: values.estimatedCompletionDate
+          ? new Date(values.estimatedCompletionDate)
+          : null,
       })
       await router.push(
         Routes.SubsubsectionDashboardPage({
@@ -64,11 +57,10 @@ const NewSubsubsection = () => {
       />
 
       <SubsubsectionForm
-        // @ts-ignore
         initialValues={{ type: "AREA", labelPos: "bottom" }}
         className="mt-10"
         submitText="Erstellen"
-        schema={NewSubsubsectionSchemaForm}
+        schema={SubsubsectionSchema}
         onSubmit={handleSubmit}
       />
     </>

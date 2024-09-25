@@ -7,11 +7,8 @@ const seedSubsubsectionSpecial = async () => {
     { projectId: 1, slug: "b3", title: "Besonderheit 3" },
   ]
 
-  for (let i = 0; i < seedFiles.length; i++) {
-    const data = seedFiles[i]
-    if (data) {
-      await db.subsubsectionSpecial.create({ data })
-    }
+  for (const data of seedFiles) {
+    await db.subsubsectionSpecial.create({ data })
   }
 }
 

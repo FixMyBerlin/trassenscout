@@ -1,29 +1,22 @@
+import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { BaseMap } from "@/src/core/components/Map/BaseMap"
+import { subsectionsBbox } from "@/src/core/components/Map/utils"
+import { Spinner } from "@/src/core/components/Spinner"
+import { whiteButtonStyles } from "@/src/core/components/links"
+import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { H2, longTitle, seoTitleSlug, shortTitle } from "@/src/core/components/text"
+import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import getProject from "@/src/projects/queries/getProject"
+import getSubsections from "@/src/subsections/queries/getSubsections"
 import { BlitzPage, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import {
-  Feature,
-  LineString,
-  Point,
-  featureCollection,
-  lineString,
-  multiLineString,
-  point,
-} from "@turf/helpers"
+import { featureCollection, lineString, multiLineString, point } from "@turf/helpers"
 import { bbox, lineSlice, nearestPointOnLine } from "@turf/turf"
-import clsx from "clsx"
+import { clsx } from "clsx"
+import type { Feature, LineString, Point } from "geojson"
 import { Suspense, useState } from "react"
 import { useForm } from "react-hook-form"
-import { MapGeoJSONFeature, Layer, MapLayerMouseEvent, Marker, Source } from "react-map-gl/maplibre"
-import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
-import { BaseMap } from "src/core/components/Map/BaseMap"
-import { subsectionsBbox } from "src/core/components/Map/utils"
-import { Spinner } from "src/core/components/Spinner"
-import { whiteButtonStyles } from "src/core/components/links"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { H2, longTitle, seoTitleSlug, shortTitle } from "src/core/components/text"
-import { LayoutRs, MetaTags } from "src/core/layouts"
-import getProject from "src/projects/queries/getProject"
-import getSubsections from "src/subsections/queries/getSubsections"
+import { Layer, MapGeoJSONFeature, MapLayerMouseEvent, Marker, Source } from "react-map-gl/maplibre"
 
 // This became quite hacky in the end. We should not trust it completely.
 function stringifyGeoJSON(geojson: any) {

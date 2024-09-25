@@ -1,12 +1,11 @@
+import { shortTitle } from "@/src/core/components/text"
+import { useSlugs } from "@/src/core/hooks"
+import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { RadioGroup } from "@headlessui/react"
-import clsx from "clsx"
+import { RadioGroup, RadioGroupLabel, RadioGroupOption } from "@headlessui/react"
+import { clsx } from "clsx"
 import router from "next/router"
-import React from "react"
-import { shortTitle } from "src/core/components/text"
-import { useSlugs } from "src/core/hooks"
-import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
 
 export const OperatorFilterDropdown: React.FC = () => {
   const params = useRouterQuery()
@@ -32,38 +31,38 @@ export const OperatorFilterDropdown: React.FC = () => {
         }}
         className="mt-2"
       >
-        <RadioGroup.Label className="sr-only">Baulastträger auswählen</RadioGroup.Label>
+        <RadioGroupLabel className="sr-only">Baulastträger auswählen</RadioGroupLabel>
         <div className="space-x-2">
-          <RadioGroup.Option
+          <RadioGroupOption
             value=""
             className={({ active, checked }) =>
               clsx(
                 active ? "" : "",
-                checked ? "bg-blue-900 text-white" : "ring-1 ring-gray-300 bg-white",
-                "hover:cursor-pointer ring-0 hover:ring-gray-600 whitespace-nowrap relative inline-flex items-center rounded-md px-3 py-2 text-sm text-gray-900 focus:z-10",
+                checked ? "bg-blue-900 text-white" : "bg-white ring-1 ring-gray-300",
+                "relative inline-flex items-center whitespace-nowrap rounded-md px-3 py-2 text-sm text-gray-900 ring-0 hover:cursor-pointer hover:ring-gray-600 focus:z-10",
               )
             }
           >
-            <RadioGroup.Label as="span" className="font-semibold">
+            <RadioGroupLabel as="span" className="font-semibold">
               Alle Baulastträger
-            </RadioGroup.Label>
-          </RadioGroup.Option>
+            </RadioGroupLabel>
+          </RadioGroupOption>
           {operators.map((operator) => (
-            <RadioGroup.Option
+            <RadioGroupOption
               key={operator.id}
               value={operator.slug}
               className={({ active, checked }) =>
                 clsx(
                   active ? "" : "",
-                  checked ? "bg-blue-900 text-white" : "ring-1 ring-gray-300 bg-white",
-                  "hover:cursor-pointer ring-0 hover:ring-gray-600 whitespace-nowrap relative inline-flex items-center rounded-md px-3 py-2 text-sm text-gray-900 focus:z-10",
+                  checked ? "bg-blue-900 text-white" : "bg-white ring-1 ring-gray-300",
+                  "relative inline-flex items-center whitespace-nowrap rounded-md px-3 py-2 text-sm text-gray-900 ring-0 hover:cursor-pointer hover:ring-gray-600 focus:z-10",
                 )
               }
             >
-              <RadioGroup.Label className="font-semibold" as="span">
+              <RadioGroupLabel className="font-semibold" as="span">
                 {shortTitle(operator.slug)}
-              </RadioGroup.Label>
-            </RadioGroup.Option>
+              </RadioGroupLabel>
+            </RadioGroupOption>
           ))}
         </div>
       </RadioGroup>

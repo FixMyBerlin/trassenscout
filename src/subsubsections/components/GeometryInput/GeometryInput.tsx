@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react"
-import { LabeledRadiobuttonGroup, LabeledSelect } from "src/core/components/forms"
-import { LabeledGeometryField } from "src/core/components/forms/LabeledGeometryField"
-import { GeometryInputMap } from "./GeometryInputMap"
-import { useFormContext } from "react-hook-form"
+import { midPoint } from "@/src/core/components/Map/utils"
+import { LabeledRadiobuttonGroup } from "@/src/core/components/forms"
+import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
+import { useSlugs } from "@/src/core/hooks"
+import getSubsection from "@/src/subsections/queries/getSubsection"
 import { useQuery } from "@blitzjs/rpc"
-import getSubsection from "src/subsections/queries/getSubsection"
-import { useSlugs } from "src/core/hooks"
-import { midPoint } from "src/core/components/Map/utils"
+import { useEffect } from "react"
+import { useFormContext } from "react-hook-form"
 import { z } from "zod"
+import { GeometryInputMap } from "./GeometryInputMap"
 
 export const GeometryInput: React.FC = () => {
   const { projectSlug, subsectionSlug } = useSlugs()
@@ -48,8 +48,8 @@ export const GeometryInput: React.FC = () => {
 
       {schemaResult.success && <GeometryInputMap subsection={subsection} />}
 
-      <details className="open:border border-gray-300 p-4 rounded open:bg-gray-50">
-        <summary className="cursor-pointer mb-4 text-sm font-medium text-gray-700">
+      <details className="rounded border-gray-300 p-4 open:border open:bg-gray-50">
+        <summary className="mb-4 cursor-pointer text-sm font-medium text-gray-700">
           Geometrie
         </summary>
 

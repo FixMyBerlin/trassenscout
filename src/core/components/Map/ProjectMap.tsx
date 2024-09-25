@@ -1,9 +1,9 @@
+import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
 import { Routes, useParam } from "@blitzjs/next"
 import { lineString } from "@turf/helpers"
 import { along, featureCollection, length } from "@turf/turf"
-
 import { useRouter } from "next/router"
-import React, { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import {
   LngLatBoundsLike,
   MapEvent,
@@ -12,7 +12,8 @@ import {
   ViewStateChangeEvent,
   useMap,
 } from "react-map-gl/maplibre"
-import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
+import { IfUserCanEdit } from "../../../memberships/components/IfUserCan"
+import { useUserCan } from "../../../memberships/hooks/useUserCan"
 import { shortTitle } from "../text"
 import { BaseMap } from "./BaseMap"
 import { SubsectionMapIcon } from "./Icons"
@@ -27,6 +28,7 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   const router = useRouter()
   const projectSlug = useParam("projectSlug", "string")
   const { mainMap } = useMap()
+  const userCan = useUserCan()
 
   // bundingBox only changes when subsections change / subsections array is created
   const boundingBox = useMemo(() => {
@@ -39,7 +41,6 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
 
   // we spread boundingBox in the dependency array to make sure the effect runs when the values of boundingBox change (not everytime the array is created)
   useEffect(() => {
-    // @ts-expect-error
     mainMap?.fitBounds(boundingBox, { padding: 60 })
     // @ts-expect-error
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -49,9 +50,10 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   const handleSelect = ({ subsectionSlug, edit }: HandleSelectProps) => {
     if (!projectSlug) return
     // alt+click
-    let url = edit
-      ? Routes.EditSubsectionPage({ projectSlug, subsectionSlug })
-      : Routes.SubsectionDashboardPage({ projectSlug, subsectionSlug })
+    const url =
+      userCan.edit && edit
+        ? Routes.EditSubsectionPage({ projectSlug, subsectionSlug })
+        : Routes.SubsectionDashboardPage({ projectSlug, subsectionSlug })
 
     void router.push(url, undefined, { scroll: edit ? true : false })
   }
@@ -144,9 +146,11 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
       >
         {markers}
       </BaseMap>
-      <p className="mt-2 text-right text-xs text-gray-400">
-        Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)
-      </p>
+      <IfUserCanEdit>
+        <p className="mt-2 text-right text-xs text-gray-400">
+          Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)
+        </p>
+      </IfUserCanEdit>
     </section>
   )
 }

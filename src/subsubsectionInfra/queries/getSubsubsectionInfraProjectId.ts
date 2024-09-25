@@ -1,4 +1,4 @@
-import db from "db"
+import db from "@/db"
 
 const getSubsubsectionInfraProjectId = async (input: Record<string, any>) =>
   (

@@ -1,5 +1,4 @@
 import { Routes } from "@blitzjs/next"
-import React from "react"
 import { SurveyFooterLinkList } from "./SurveyFooterLinkList"
 
 export const SurveyFooter: React.FC = () => {

@@ -1,21 +1,21 @@
+import { Email } from "@/src/survey-public/components/Email"
+import { More } from "@/src/survey-public/components/More"
+import { Start } from "@/src/survey-public/components/Start"
+import { Survey } from "@/src/survey-public/components/Survey"
+import { Debug } from "@/src/survey-public/components/core/Debug"
+import { SurveyLayout } from "@/src/survey-public/components/core/layout/SurveyLayout"
+import { SurveySpinnerLayover } from "@/src/survey-public/components/core/layout/SurveySpinnerLayover"
+import { Feedback } from "@/src/survey-public/components/feedback/Feedback"
+import { ProgressContext } from "@/src/survey-public/context/contexts"
+import { scrollToTopWithDelay } from "@/src/survey-public/utils/scrollToTopWithDelay"
+import createSurveyResponse from "@/src/survey-responses/mutations/createSurveyResponse"
+import surveyFeedbackEmail from "@/src/survey-responses/mutations/surveyFeedbackEmail"
+import createSurveySession from "@/src/survey-sessions/mutations/createSurveySession"
+import { useParam } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useCallback, useEffect, useState } from "react"
-
-import { Email } from "src/survey-public/components/Email"
-import { More } from "src/survey-public/components/More"
-import { Start } from "src/survey-public/components/Start"
-import { Survey } from "src/survey-public/components/Survey"
-import { Debug } from "src/survey-public/components/core/Debug"
-import { SurveyLayout } from "src/survey-public/components/core/layout/SurveyLayout"
-import { SurveySpinnerLayover } from "src/survey-public/components/core/layout/SurveySpinnerLayover"
-import { Feedback } from "src/survey-public/components/feedback/Feedback"
-import { ProgressContext } from "src/survey-public/context/contexts"
-import { scrollToTopWithDelay } from "src/survey-public/utils/scrollToTopWithDelay"
-import surveyFeedbackEmail from "src/survey-responses/mutations/surveyFeedbackEmail"
-
-import { useParam } from "@blitzjs/next"
-import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
-import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
+import { getCompletedQuestionIds } from "../utils/getCompletedQuestionIds"
+import { getBackendConfigBySurveySlug } from "../utils/getConfigBySurveySlug"
 import PublicSurveyForm from "./core/form/PublicSurveyForm"
 import {
   TEmail,
@@ -26,7 +26,6 @@ import {
   TResponseConfig,
   TSurvey,
 } from "./types"
-import { getCompletedQuestionIds } from "../utils/getCompletedQuestionIds"
 
 type Props = {
   startContent: React.ReactNode
@@ -100,6 +99,9 @@ export const SurveyMainPage: React.FC<Props> = ({
     scrollToTopWithDelay()
   }
 
+  // @ts-expect-error
+  const defaultStatus = getBackendConfigBySurveySlug(surveySlug).status[0].value
+
   const handleSurveySubmit = async (surveyResponses: Record<string, any>) => {
     setIsSpinner(true)
     surveyResponses = transformValues(surveyResponses)
@@ -110,6 +112,7 @@ export const SurveyMainPage: React.FC<Props> = ({
         surveyPart: surveyDefinition.part,
         data: JSON.stringify(surveyResponses),
         source: "FORM",
+        status: defaultStatus,
       })
     })()
 
@@ -144,6 +147,7 @@ export const SurveyMainPage: React.FC<Props> = ({
         surveyPart: feedbackDefinition.part,
         data: JSON.stringify(feedbackResponses),
         source: "FORM",
+        status: defaultStatus,
       })
       // todo survey clean up or refactor after survey BB
       if (surveySlug === "radnetz-brandenburg")
@@ -242,12 +246,7 @@ export const SurveyMainPage: React.FC<Props> = ({
       break
     case "MORE":
       component = (
-        <More
-          more={moreDefinition}
-          onClickMore={handleMoreFeedback}
-          onClickFinish={handleFinish}
-          isUserLocationQuestionId={isUserLocationQuestionId}
-        />
+        <More more={moreDefinition} onClickMore={handleMoreFeedback} onClickFinish={handleFinish} />
       )
       break
     case "FEEDBACK":
@@ -301,7 +300,7 @@ export const SurveyMainPage: React.FC<Props> = ({
   return (
     <ProgressContext.Provider value={{ progress, setProgress }}>
       <SurveyLayout canonicalUrl={surveyDefinition.canonicalUrl} logoUrl={surveyDefinition.logoUrl}>
-        <Debug className="border-red-500 border">
+        <Debug className="border border-red-500">
           <code>stage: {stage}</code>{" "}
         </Debug>
         <div className={isSpinner ? "blur-sm" : ""}>

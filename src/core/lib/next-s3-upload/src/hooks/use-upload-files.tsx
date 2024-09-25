@@ -1,6 +1,5 @@
-import React from "react"
-import { FileInput } from "../components/file-input"
 import { useRef, useState } from "react"
+import { FileInput } from "../components/file-input"
 
 type TrackedFile = {
   file: File

@@ -1,27 +1,28 @@
+import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { Breadcrumb } from "@/src/core/components/Breadcrumb/Breadcrumb"
+import { SubsectionMapIcon } from "@/src/core/components/Map/Icons"
+import { SubsectionSubsubsectionMap } from "@/src/core/components/Map/SubsectionSubsubsectionMap"
+import { Markdown } from "@/src/core/components/Markdown/Markdown"
+import { Spinner } from "@/src/core/components/Spinner"
+import { Link } from "@/src/core/components/links"
+import { PageDescription } from "@/src/core/components/pages/PageDescription"
+import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { H2, seoTitleSlug, shortTitle, startEnd } from "@/src/core/components/text"
+import { useSlugs } from "@/src/core/hooks"
+import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import { SubsectionInfoPanel } from "@/src/subsections/components/SubsectionInfoPanel"
+import { SubsectionTabs } from "@/src/subsections/components/SubsectionTabs"
+import { SubsubsectionMapSidebar } from "@/src/subsections/components/SubsubsectionMapSidebar"
+import getSubsections from "@/src/subsections/queries/getSubsections"
+import { SubsubsectionTable } from "@/src/subsubsections/components/SubsubsectionTable"
+import getSubsubsections from "@/src/subsubsections/queries/getSubsubsections"
+import { UploadTable } from "@/src/uploads/components/UploadTable"
+import getUploadsWithSubsections from "@/src/uploads/queries/getUploadsWithSubsections"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
-import { Breadcrumb } from "src/core/components/Breadcrumb/Breadcrumb"
-import { SubsectionMapIcon } from "src/core/components/Map/Icons"
-import { SubsectionSubsubsectionMap } from "src/core/components/Map/SubsectionSubsubsectionMap"
-import { Markdown } from "src/core/components/Markdown/Markdown"
-import { Spinner } from "src/core/components/Spinner"
-import { Link } from "src/core/components/links"
-import { PageDescription } from "src/core/components/pages/PageDescription"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { H2, seoTitleSlug, shortTitle, startEnd } from "src/core/components/text"
-import { useSlugs } from "src/core/hooks"
-import { LayoutRs, MetaTags } from "src/core/layouts"
-import { UploadTable } from "src/uploads/components/UploadTable"
-import getUploadsWithSubsections from "src/uploads/queries/getUploadsWithSubsections"
-import { SubsectionTabs } from "src/subsections/components/SubsectionTabs"
-import { SubsubsectionMapSidebar } from "src/subsections/components/SubsubsectionMapSidebar"
-import getSubsections from "src/subsections/queries/getSubsections"
-import { SubsubsectionTable } from "src/subsubsections/components/SubsubsectionTable"
-import getSubsubsections from "src/subsubsections/queries/getSubsubsections"
-import { SubsectionInfoPanel } from "src/subsections/components/SubsectionInfoPanel"
 
 // Page Renders Subsection _AND_ Subsubsection (as Panel)
 export const SubsectionDashboardWithQuery = () => {
@@ -59,15 +60,17 @@ export const SubsectionDashboardWithQuery = () => {
         className="mt-12"
         subtitle={subsection.operator?.title}
         action={
-          <Link
-            icon="edit"
-            href={Routes.EditSubsectionPage({
-              projectSlug: projectSlug!,
-              subsectionSlug: subsectionSlug!,
-            })}
-          >
-            bearbeiten
-          </Link>
+          <IfUserCanEdit>
+            <Link
+              icon="edit"
+              href={Routes.EditSubsectionPage({
+                projectSlug: projectSlug!,
+                subsectionSlug: subsectionSlug!,
+              })}
+            >
+              bearbeiten
+            </Link>
+          </IfUserCanEdit>
         }
         description={
           <>

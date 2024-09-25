@@ -1,6 +1,6 @@
 import { useQuery } from "@blitzjs/rpc"
-import getStatsInfopanelCompletion from "../queries/getStatsInfopanelSubsectionCompletion"
 import { getQuarter, getYear } from "date-fns"
+import getStatsInfopanelCompletion from "../queries/getStatsInfopanelSubsectionCompletion"
 
 type Props = {
   subsectionSlug: string

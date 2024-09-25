@@ -1,9 +1,9 @@
-import { paginate } from "blitz"
+import db, { Prisma } from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
-import db, { Prisma } from "db"
-
-import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
+import { paginate } from "blitz"
+import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 
 type GetContactsInput = { projectSlug: string } & Pick<
   Prisma.ContactFindManyArgs,
@@ -12,7 +12,7 @@ type GetContactsInput = { projectSlug: string } & Pick<
 
 export default resolver.pipe(
   // @ts-ignore
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
   async ({
     projectSlug,
     where,

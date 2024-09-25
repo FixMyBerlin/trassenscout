@@ -1,30 +1,33 @@
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
+import { Spinner } from "@/src/core/components/Spinner"
+import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import { Link } from "@/src/core/components/links"
+import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { seoNewTitle } from "@/src/core/components/text"
+import { useSlugs } from "@/src/core/hooks"
+import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import getProject from "@/src/projects/queries/getProject"
+import { FORM_ERROR, SubsectionsForm } from "@/src/subsections/components/SubsectionsForm"
+import createSubsections from "@/src/subsections/mutations/createSubsections"
+import getSubsectionMaxOrder from "@/src/subsections/queries/getSubsectionMaxOrder"
+import { SubsectionsFormSchema } from "@/src/subsections/schema"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { Subsection } from "@prisma/client"
 import { length, lineString } from "@turf/turf"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Spinner } from "src/core/components/Spinner"
-import { improveErrorMessage } from "src/core/components/forms/improveErrorMessage"
-import { Link } from "src/core/components/links"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { seoNewTitle } from "src/core/components/text"
-import { useSlugs } from "src/core/hooks"
-import { LayoutRs, MetaTags } from "src/core/layouts"
-import getProjectUsers from "src/memberships/queries/getProjectUsers"
-import getProject from "src/projects/queries/getProject"
-import { FORM_ERROR, SubsectionsForm } from "src/subsections/components/SubsectionsForm"
-import createSubsections from "src/subsections/mutations/createSubsections"
-import getSubsectionMaxOrder from "src/subsections/queries/getSubsectionMaxOrder"
-import { SubsectionsFormSchema } from "src/subsections/schema"
+
+export const defaultGeometryForMultipleSubsectionForm = [
+  [5.98865807458, 47.3024876979],
+  [15.0169958839, 54.983104153],
+] satisfies [[number, number], [number, number]]
 
 const AdminNewSubsections = () => {
   const router = useRouter()
   const { projectSlug } = useSlugs()
   const [project] = useQuery(getProject, { slug: projectSlug! })
   const [createSubsectionsMutation] = useMutation(createSubsections)
-  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -43,16 +46,8 @@ const AdminNewSubsections = () => {
         end: "unbekannt",
         slug: `pa${values.prefix}.${maxOrderSubsections + i + 1}`,
         order: maxOrderSubsections + i + 1,
-        geometry: [
-          [5.98865807458, 47.3024876979],
-          [15.0169958839, 54.983104153],
-        ],
-        lengthKm: length(
-          lineString([
-            [5.98865807458, 47.3024876979],
-            [15.0169958839, 54.983104153],
-          ]),
-        ),
+        geometry: defaultGeometryForMultipleSubsectionForm,
+        lengthKm: length(lineString(defaultGeometryForMultipleSubsectionForm)),
       })
     }
     try {

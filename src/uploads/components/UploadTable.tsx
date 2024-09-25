@@ -1,12 +1,12 @@
+import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
+import { Link } from "@/src/core/components/links"
+import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
+import { ZeroCase } from "@/src/core/components/text/ZeroCase"
+import { Prettify } from "@/src/core/types"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { Routes, useParam } from "@blitzjs/next"
 import { PaperClipIcon } from "@heroicons/react/20/solid"
 import { PromiseReturnType } from "blitz"
-import React from "react"
-import { TableWrapper } from "src/core/components/Table/TableWrapper"
-import { Link } from "src/core/components/links"
-import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
-import { ZeroCase } from "src/core/components/text/ZeroCase"
-import { Prettify } from "src/core/types"
 import getUploadsWithSubsections from "../queries/getUploadsWithSubsections"
 import { uploadUrl } from "../utils"
 
@@ -70,7 +70,7 @@ export const UploadTable: React.FC<Props> = ({ uploads, withAction = true }) => 
                       Download
                     </Link>
                     {withAction && (
-                      <>
+                      <IfUserCanEdit>
                         <Link
                           icon="edit"
                           href={Routes.EditUploadPage({
@@ -89,7 +89,7 @@ export const UploadTable: React.FC<Props> = ({ uploads, withAction = true }) => 
                         >
                           Löschen
                         </Link>
-                      </>
+                      </IfUserCanEdit>
                     )}
                   </ButtonWrapper>
                 </td>

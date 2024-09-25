@@ -1,9 +1,10 @@
+import db from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import db from "db"
-import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
-import getProjectIdBySlug from "./getProjectIdBySlug"
+import { viewerRoles } from "../../authorization/constants"
+import { extractSlug } from "../../authorization/extractSlug"
 
 export const GetProject = z.object({
   // This accepts type of undefined, but is required at runtime
@@ -12,7 +13,7 @@ export const GetProject = z.object({
 
 export default resolver.pipe(
   resolver.zod(GetProject),
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractSlug, viewerRoles),
   async ({ slug }) => {
     const project = await db.project.findFirst({
       where: { slug },

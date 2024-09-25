@@ -1,13 +1,16 @@
-import { Routes } from "@blitzjs/next"
-import { useMutation } from "@blitzjs/rpc"
+import login from "@/src/auth/mutations/login"
+import { Login } from "@/src/auth/validations"
+import { DevAdminBox } from "@/src/core/components/AdminBox"
+import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
+import { HiddenField } from "@/src/core/components/forms/HiddenField"
+import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
+import { Link, blueButtonStyles } from "@/src/core/components/links"
+import getInvite from "@/src/invites/queries/getInvite"
+import { Routes, useRouterQuery } from "@blitzjs/next"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { AuthenticationError, PromiseReturnType } from "blitz"
-import login from "src/auth/mutations/login"
-import { Login } from "src/auth/validations"
-import { DevAdminBox } from "src/core/components/AdminBox"
-import { Form, FORM_ERROR } from "src/core/components/forms/Form"
-import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
-import { blueButtonStyles, Link } from "src/core/components/links"
-import clsx from "clsx"
+import { clsx } from "clsx"
+import { z } from "zod"
 
 type LoginFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof login>) => void
@@ -15,8 +18,10 @@ type LoginFormProps = {
 
 export const LoginForm = (props: LoginFormProps) => {
   const [loginMutation] = useMutation(login)
+  const params = useRouterQuery()
+  const [invite] = useQuery(getInvite, { token: String(params?.inviteToken) })
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<typeof Login>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const user = await loginMutation(values)
@@ -37,14 +42,20 @@ export const LoginForm = (props: LoginFormProps) => {
       <Form
         submitText="Anmelden"
         schema={Login}
-        initialValues={{ email: "", password: "" }}
+        initialValues={{
+          email: invite?.email || "",
+          password: "",
+          inviteToken: invite?.token || null,
+        }}
         onSubmit={handleSubmit}
       >
+        <HiddenField name="inviteToken" />
         <LabeledTextField
           name="email"
-          label="E-Mail-Adresse"
+          label={Boolean(invite?.email) ? "E-Mail-Adresse der Einladung" : "E-Mail-Adresse"}
           placeholder="name@beispiel.de"
           autoComplete="email"
+          readOnly={Boolean(invite?.email)}
         />
         <LabeledTextField
           name="password"
@@ -58,13 +69,22 @@ export const LoginForm = (props: LoginFormProps) => {
         </div>
 
         <DevAdminBox className="text-center">
-          {[
-            ["admin", "admin@fixmycity.de"],
-            ["all-projects", "all-projects@fixmycity.de"],
-            ["no-project", "no-project@fixmycity.de"],
-            ["rs23", "rs23@fixmycity.de"],
-            ["rs3000", "rs3000@fixmycity.de"],
-          ].map(([displayName, email]) => (
+          <p className="text-sm">
+            Invitation Token: {String(params?.inviteToken || "NOT FOUND")}
+            <br />
+            Invite: {invite ? "FOUND" : "NOT FOUND"}
+          </p>
+          <hr className="my-3 border border-white" />
+          {(
+            [
+              ["admin", "admin@fixmycity.de"],
+              ["all-projects-viewer", "all-projects-viewer@fixmycity.de"],
+              ["all-projects-editor", "all-projects-editor@fixmycity.de"],
+              ["no-project", "no-project@fixmycity.de"],
+              ["rs23", "rs23@fixmycity.de"],
+              ["rs3000", "rs3000@fixmycity.de"],
+            ] as const
+          ).map(([displayName, email]) => (
             <button
               key={displayName}
               className={clsx(blueButtonStyles, "m-1")}
@@ -72,6 +92,7 @@ export const LoginForm = (props: LoginFormProps) => {
                 await handleSubmit({
                   email,
                   password: "dev-team@fixmycity.de",
+                  inviteToken: null,
                 })
               }
             >
@@ -82,7 +103,13 @@ export const LoginForm = (props: LoginFormProps) => {
       </Form>
 
       <div className="mt-4 text-sm">
-        Sie haben noch keinen Account? Zur <Link href={Routes.SignupPage()}>Registrierung</Link>.
+        Sie haben noch keinen Account? Zur{" "}
+        <Link
+          href={Routes.SignupPage(params?.inviteToken ? { inviteToken: params?.inviteToken } : {})}
+        >
+          Registrierung
+        </Link>
+        .
       </div>
     </>
   )

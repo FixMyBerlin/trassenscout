@@ -1,5 +1,5 @@
+import db from "@/db"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { DeleteSurveyResponseSchema } from "../../survey-responses/schema"
 
 export default resolver.pipe(

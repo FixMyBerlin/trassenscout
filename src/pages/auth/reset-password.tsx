@@ -1,13 +1,12 @@
+import resetPassword from "@/src/auth/mutations/resetPassword"
+import { ResetPassword } from "@/src/auth/validations"
+import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
+import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
+import { LayoutMiddleBox, MetaTags } from "@/src/core/layouts"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
-import resetPassword from "src/auth/mutations/resetPassword"
-import { ResetPassword } from "src/auth/validations"
-import { Form, FORM_ERROR } from "src/core/components/forms/Form"
-import { LabeledTextField } from "src/core/components/forms/LabeledTextField"
-import { Layout, LayoutMiddleBox, MetaTags } from "src/core/layouts"
 
 const ResetPasswordPage: BlitzPage = () => {
   const router = useRouter()

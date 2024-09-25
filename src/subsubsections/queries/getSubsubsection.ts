@@ -1,9 +1,10 @@
+import db, { QualityLevel, Subsubsection, SubsubsectionTypeEnum, User } from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
-import db, { QualityLevel, Subsubsection, SubsubsectionTypeEnum, User } from "db"
-import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
 import { z } from "zod"
-import m2mFields from "../m2mFields"
+import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
+import { m2mFields } from "../m2mFields"
 
 const GetSubsubsection = z.object({
   projectSlug: z.string(),
@@ -32,7 +33,7 @@ export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry"> &
 
 export default resolver.pipe(
   resolver.zod(GetSubsubsection),
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
   async ({ projectSlug, subsectionSlug, subsubsectionSlug }) => {
     const query = {
       where: {

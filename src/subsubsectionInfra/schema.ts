@@ -1,4 +1,4 @@
-import { SlugSchema } from "src/core/utils"
+import { SlugSchema } from "@/src/core/utils"
 import { z } from "zod"
 
 export const SubsubsectionInfra = z.object({

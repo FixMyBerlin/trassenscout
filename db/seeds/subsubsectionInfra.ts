@@ -25,11 +25,8 @@ const seedSubsubsectionInfra = async () => {
     { projectId: 1, slug: "ff5", title: "Radschnellverbindung als Fahrradstraße" },
   ]
 
-  for (let i = 0; i < seedFiles.length; i++) {
-    const data = seedFiles[i]
-    if (data) {
-      await db.subsubsectionInfra.create({ data })
-    }
+  for (const data of seedFiles) {
+    await db.subsubsectionInfra.create({ data })
   }
 }
 

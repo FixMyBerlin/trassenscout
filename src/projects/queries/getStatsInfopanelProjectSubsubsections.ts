@@ -1,8 +1,9 @@
+import db, { Prisma, Subsubsection } from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import db, { Prisma, Subsubsection } from "db"
-import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
+import { viewerRoles } from "../../authorization/constants"
+import { extractSlug } from "../../authorization/extractSlug"
 import { GetProject } from "./getProject"
 
 type SubsubsectionCategory = {
@@ -37,7 +38,7 @@ type SubsectionWithSubsubsectionsWithSpecialFeaturesCount = {
 
 export default resolver.pipe(
   resolver.zod(GetProject),
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractSlug, viewerRoles),
   async ({ slug }) => {
     const query = {
       where: {

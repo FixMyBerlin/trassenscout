@@ -1,8 +1,15 @@
+import { LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
+import { SurveyBackgroundSwitcher } from "@/src/survey-public/components/maps/SurveyBackgroundSwitcher"
+import { getCompletedQuestionIds } from "@/src/survey-public/utils/getCompletedQuestionIds"
+import {
+  getFeedbackDefinitionBySurveySlug,
+  getResponseConfigBySurveySlug,
+} from "@/src/survey-public/utils/getConfigBySurveySlug"
 import { lineString } from "@turf/helpers"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import Map, {
   Layer,
@@ -11,14 +18,7 @@ import Map, {
   Source,
   useMap,
 } from "react-map-gl/maplibre"
-import { LayerType } from "src/core/components/Map/BackgroundSwitcher"
-import { SurveyBackgroundSwitcher } from "src/survey-public/components/maps/SurveyBackgroundSwitcher"
-import {
-  getFeedbackDefinitionBySurveySlug,
-  getResponseConfigBySurveySlug,
-} from "src/survey-public/utils/getConfigBySurveySlug"
 import { SurveyMapLineBanner } from "./SurveyMapLineBanner"
-import { getCompletedQuestionIds } from "src/survey-public/utils/getCompletedQuestionIds"
 
 export type SurveyMapProps = {
   className?: string
@@ -105,7 +105,7 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
       : undefined
 
     // get data that we need from line
-    const lineId = line?.properties["Verbindungs_ID"]
+    const lineId = line?.properties["Verbindung"]
     const lineFrom = line?.properties["from_name"]
     const lineTo = line?.properties["to_name"]
     const lineGeometry = line?.geometry
@@ -137,8 +137,7 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
         }}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         mapLib={maplibregl}
-        // @ts-expect-error: See https://github.com/visgl/react-map-gl/issues/2310
-        RTLTextPlugin={null}
+        RTLTextPlugin={false}
         onClick={handleMapClick}
         cursor="pointer"
         // todo survey update layer name

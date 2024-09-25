@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { clsx } from "clsx"
 
 type Props = {
   page?: boolean
@@ -10,7 +10,7 @@ const sizeClasses = {
   "12": "h-12 w-12",
 }
 
-export const Spinner: React.FC<Props> = ({ page = false, size = "12" }) => {
+export const Spinner = ({ page = false, size = "12" }: Props) => {
   return (
     <div className={clsx("text-center", page ? "h-screen" : "")}>
       <div role="status" className="flex h-full items-center justify-center">

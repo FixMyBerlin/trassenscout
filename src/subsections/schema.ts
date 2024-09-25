@@ -1,8 +1,7 @@
+import { Prettify } from "@/src/core/types"
+import { InputNumberOrNullSchema, SlugSchema } from "@/src/core/utils"
+import { LabelPositionEnum } from "@prisma/client"
 import { z } from "zod"
-import { LabelPositionEnum, PriorityEnum } from "@prisma/client"
-
-import { Prettify } from "src/core/types"
-import { SlugSchema, InputNumberOrNullSchema } from "src/core/utils"
 
 export const SubsectionSchema = z.object({
   slug: SlugSchema,

@@ -1,15 +1,15 @@
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
+import { Spinner } from "@/src/core/components/Spinner"
+import { Link, linkStyles } from "@/src/core/components/links"
+import { quote } from "@/src/core/components/text"
+import { LayoutArticle, MetaTags } from "@/src/core/layouts"
+import deleteSurvey from "@/src/surveys/mutations/deleteSurvey"
+import getSurvey from "@/src/surveys/queries/getSurvey"
 import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Spinner } from "src/core/components/Spinner"
-import { Link, linkStyles } from "src/core/components/links"
-import { quote } from "src/core/components/text"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import deleteSurvey from "src/surveys/mutations/deleteSurvey"
-import getSurvey from "src/surveys/queries/getSurvey"
 
 export const AdminSurvey = () => {
   const router = useRouter()

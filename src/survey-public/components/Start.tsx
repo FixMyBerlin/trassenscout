@@ -1,9 +1,12 @@
+import { useAlertBeforeUnload } from "../utils/useAlertBeforeUnload"
 import { SurveyButton } from "./core/buttons/SurveyButton"
 import { SurveyButtonWrapper } from "./core/buttons/SurveyButtonWrapper"
 
 type Props = { onStartClick: () => void; startContent: React.ReactNode; disabled: boolean }
 
 export const Start: React.FC<Props> = ({ onStartClick, startContent, disabled }) => {
+  useAlertBeforeUnload()
+
   return (
     <div>
       {startContent}

@@ -1,0 +1,30 @@
+name: Run daily tasks
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Runs day at 5:00 AM
+    - cron: "0 5 * * *"
+
+jobs:
+  run-daily-tasks-staging:
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+    steps:
+      - name: Cleanup invites STAGING
+        # --fail makes the github action fail on error
+        # -s (silent) removes the progress bar
+        # -S (show error) makes sure errors show even with -s active
+        run: curl --fail -s -S -X GET "https://staging.trassenscout.de/api/private/cron-invites-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+      - name: Cleanup logEntries STAGING
+        run: curl --fail -s -S -X GET "https://staging.trassenscout.de/api/private/cron-logEntries-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+  run-daily-tasks-production:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - name: Cleanup invites PRODUCTION
+        run: curl --fail -s -S -X GET "https://trassenscout.de/api/private/cron-invites-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+      - name: Cleanup logEntries PRODUCTION
+        run: curl --fail -s -S -X GET "https://trassenscout.de/api/private/cron-logEntries-cleanup?apiKey=${{ secrets.TS_API_KEY }}"

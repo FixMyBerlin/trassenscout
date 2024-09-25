@@ -1,10 +1,10 @@
-import { Dialog, Transition } from "@headlessui/react"
-import clsx from "clsx"
+import { isProduction } from "@/src/core/utils"
+import institutions_bboxes from "@/src/survey-public/radnetz-brandenburg/data/institutions_bboxes.json"
+import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@headlessui/react"
+import { clsx } from "clsx"
 import Image from "next/image"
 import { useRouter } from "next/router"
 import { Fragment, useEffect, useState } from "react"
-import { isProduction } from "src/core/utils"
-import institutions_bboxes from "src/survey-public/radnetz-brandenburg/data/institutions_bboxes.json"
 import { SurveyMainPage } from "../components/SurveyMainPage"
 import { SurveyH1, SurveyH2, SurveyH3, SurveyP } from "../components/core/Text"
 import { SurveyLink } from "../components/core/links/SurveyLink"
@@ -90,7 +90,7 @@ const StartContent: React.FC = () => {
         Radnetzkonzeptes zu kommentieren.{" "}
       </SurveyP>
       <SurveyH3>So geht’s!</SurveyH3>
-      <ul className="list-disc ml-6 text-base sm:text-lg space-y-2">
+      <ul className="ml-6 list-disc space-y-2 text-base sm:text-lg">
         <li>
           Schauen Sie sich vorab den Zielnetzentwurf im Radverkehrsatlas an. Starten Sie erst dann
           die Beteiligung.{" "}
@@ -144,14 +144,14 @@ const StartContent: React.FC = () => {
       <button
         type="button"
         onClick={openModal}
-        className="w-full h-[480px] overflow-hidden flex justify-center items-center my-8 relative"
+        className="relative my-8 flex h-[480px] w-full items-center justify-center overflow-hidden"
       >
         <Image
           src={AtlasImage}
           alt="Radverkehrsatlas Land Brandenburg"
           className="h-full object-cover"
         />
-        <div className="font-semibold mx-8 max-w-[365px] bg-white/80 p-4 px-8 text-center absolute bottom-[45%] font-sans">
+        <div className="absolute bottom-[45%] mx-8 max-w-[365px] bg-white/80 p-4 px-8 text-center font-sans font-semibold">
           Schauen Sie sich den gesamten{" "}
           <span className={partcipationLinkStyles}>Zielnetzentwurf im Radverkehrsatlas</span> an.
         </div>
@@ -159,10 +159,10 @@ const StartContent: React.FC = () => {
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
           as="div"
-          className="fixed inset-0 flex items-center justify-center z-10"
+          className="fixed inset-0 z-10 flex items-center justify-center"
           onClose={closeModal}
         >
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0"
@@ -172,11 +172,11 @@ const StartContent: React.FC = () => {
             leaveTo="opacity-0"
           >
             <div className="fixed inset-0 bg-black/25" />
-          </Transition.Child>
+          </TransitionChild>
 
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 scale-95"
@@ -185,10 +185,10 @@ const StartContent: React.FC = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title as="h3" className="text-lg font-bold leading-6 text-gray-700">
+                <DialogPanel className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <DialogTitle as="h3" className="text-lg font-bold leading-6 text-gray-700">
                     Achtung:
-                  </Dialog.Title>
+                  </DialogTitle>
                   <div className="mt-2">
                     <p className="text-gray-700">
                       Durch Aufrufen der Seite bestätige ich, dass der Link zum Radverkehrsatlas und
@@ -216,8 +216,8 @@ const StartContent: React.FC = () => {
                       Nein, ich bleibe hier
                     </button>
                   </div>
-                </Dialog.Panel>
-              </Transition.Child>
+                </DialogPanel>
+              </TransitionChild>
             </div>
           </div>
         </Dialog>
@@ -234,7 +234,7 @@ const StartContent: React.FC = () => {
         <summary
           className={clsx(
             partcipationLinkStyles,
-            "!text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35] cursor-pointer mb-4 mt-8 text-lg font-extrabold",
+            "mb-4 mt-8 cursor-pointer text-lg font-extrabold !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35]",
           )}
         >
           Häufige Fragen
@@ -245,7 +245,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Was bedeutet baulastträgerübergreifendes Radnetz?
@@ -264,7 +264,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35 hover:text-[#C73C35]",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35] hover:text-[#C73C35]",
                 )}
               >
                 Wie sieht die Umsetzung des „Radnetz Brandenburg“-Konzepts aus?
@@ -283,7 +283,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Wie wurden die Zielpunkte für das Luftliniennetz ausgewählt?
@@ -303,7 +303,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Nach welchen Kriterien erfolgt die Netzumlegung?
@@ -321,7 +321,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Wie werden die Hinweise der Kommunen ausgewertet?
@@ -337,7 +337,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Werden Radschnellverbindungen (RSV) und Radvorrangrouten (RVR) berücksichtigt?
@@ -354,7 +354,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Wird das „Radnetz Brandenburg“-Konzept verschiedene Hierarchieebenen
@@ -370,7 +370,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Welche Qualitäts- und Ausbaustandards soll das Radnetz aufweisen?
@@ -384,7 +384,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Wie werden die Radverkehrsverbindungen des Radnetz-Konzepts finanziert?{" "}
@@ -398,7 +398,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "cursor-pointer !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Werden auch Radwegeplanungen benachbarter Länder berücksichtigt?{" "}
@@ -416,7 +416,7 @@ const StartContent: React.FC = () => {
   )
 }
 
-export const SurveyBB: React.FC<Props> = ({ surveyId }) => {
+export const SurveyBB = ({ surveyId }: Props) => {
   const router = useRouter()
   const [isUrlInvalid, setIsUrlInvalid] = useState(false)
   const { id } = router.query
@@ -436,6 +436,7 @@ export const SurveyBB: React.FC<Props> = ({ surveyId }) => {
     void router.replace({ query: router.query }, undefined, {
       scroll: false,
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [institution, landkreis, router.query.id])
 
   return (

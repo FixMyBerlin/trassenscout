@@ -1,5 +1,4 @@
-import clsx from "clsx"
-import React from "react"
+import { clsx } from "clsx"
 import { LabeledRadiobutton, LabeledRadiobuttonProps } from "./LabeledRadiobutton"
 
 type Props = {

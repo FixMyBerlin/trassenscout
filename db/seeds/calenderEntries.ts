@@ -30,11 +30,8 @@ const seedCalendarEntries = async () => {
     },
   ]
 
-  for (let i = 0; i < seedCalendarEntries.length; i++) {
-    const data = seedCalendarEntries[i]
-    if (data) {
-      await db.calendarEntry.create({ data })
-    }
+  for (const data of seedCalendarEntries) {
+    await db.calendarEntry.create({ data })
   }
 }
 

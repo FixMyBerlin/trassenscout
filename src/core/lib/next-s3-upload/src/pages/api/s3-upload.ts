@@ -1,9 +1,9 @@
-import { NextApiRequest, NextApiResponse } from "next"
-import { STSClient, GetFederationTokenCommand, STSClientConfig } from "@aws-sdk/client-sts"
 import { PutObjectCommand } from "@aws-sdk/client-s3"
+import { GetFederationTokenCommand, STSClient, STSClientConfig } from "@aws-sdk/client-sts"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
-import { getConfig, S3Config } from "../../utils/config"
+import { NextApiRequest, NextApiResponse } from "next"
 import { getClient } from "../../utils/client"
+import { S3Config, getConfig } from "../../utils/config"
 import { sanitizeKey, uuid } from "../../utils/keys"
 
 type NextRouteHandler = (req: NextApiRequest, res: NextApiResponse) => Promise<void>

@@ -1,7 +1,8 @@
+import db from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
-import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
+import { viewerRoles } from "../../authorization/constants"
 import getOperatorProjectId from "./getOperatorProjectId"
 
 const GetOperatorSchema = z.object({
@@ -11,7 +12,7 @@ const GetOperatorSchema = z.object({
 
 export default resolver.pipe(
   resolver.zod(GetOperatorSchema),
-  authorizeProjectAdmin(getOperatorProjectId),
+  authorizeProjectAdmin(getOperatorProjectId, viewerRoles),
   async ({ id }) => {
     return await db.operator.findFirstOrThrow({
       where: { id },

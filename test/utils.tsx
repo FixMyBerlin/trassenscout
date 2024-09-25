@@ -1,9 +1,10 @@
-import { vi } from "vitest"
-import { render as defaultRender } from "@testing-library/react"
-import { renderHook as defaultRenderHook } from "@testing-library/react-hooks"
-import { NextRouter } from "next/router"
 import { BlitzProvider, RouterContext } from "@blitzjs/next"
 import { QueryClient } from "@blitzjs/rpc"
+import { render as defaultRender } from "@testing-library/react"
+import { renderHook as defaultRenderHook } from "@testing-library/react-hooks"
+import { MemoryRouterProvider } from "next-router-mock/dist/MemoryRouterProvider"
+import { NextRouter } from "next/router"
+import { vi } from "vitest"
 
 export * from "@testing-library/react"
 
@@ -36,11 +37,13 @@ export function render(
   if (!wrapper) {
     // Add a default context wrapper if one isn't supplied from the test
     wrapper = ({ children }: { children: React.ReactNode }) => (
-      <BlitzProvider dehydratedState={dehydratedState} client={queryClient}>
-        <RouterContext.Provider value={{ ...mockRouter, ...router }}>
-          {children}
-        </RouterContext.Provider>
-      </BlitzProvider>
+      <MemoryRouterProvider>
+        <BlitzProvider dehydratedState={dehydratedState} client={queryClient}>
+          <RouterContext.Provider value={{ ...mockRouter, ...router }}>
+            {children}
+          </RouterContext.Provider>
+        </BlitzProvider>
+      </MemoryRouterProvider>
     )
   }
   return defaultRender(ui, { wrapper, ...options })

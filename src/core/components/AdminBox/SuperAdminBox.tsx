@@ -1,8 +1,8 @@
-import React, { Suspense } from "react"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { AdminBox } from "./AdminBox"
+import { useCurrentUser } from "@/src/users/hooks/useCurrentUser"
+import { Suspense } from "react"
 import { isAdmin } from "../../../users/utils/isAdmin"
 import { Spinner } from "../Spinner"
+import { AdminBox } from "./AdminBox"
 
 type Props = {
   className?: string

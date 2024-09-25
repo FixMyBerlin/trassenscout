@@ -1,5 +1,10 @@
-import { Suspense } from "react"
+import get__ModelNames__ from "@/src/__modelNamesPath__/queries/get__ModelNames__"
+import { Pagination } from "@/src/core/components/Pagination"
+import { Spinner } from "@/src/core/components/Spinner"
+import { Link } from "@/src/core/components/links"
+import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 import { Routes } from "@blitzjs/next"
+import { Suspense } from "react"
 if (process.env.parentModel) {
   import { usePaginatedQuery } from "@blitzjs/rpc"
   import { useParam } from "@blitzjs/next"
@@ -8,11 +13,6 @@ if (process.env.parentModel) {
   import { usePaginatedQuery } from "@blitzjs/rpc"
   import { useRouter } from "next/router"
 }
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import { Spinner } from "src/core/components/Spinner"
-import get__ModelNames__ from "src/__modelNamesPath__/queries/get__ModelNames__"
-import { Link } from "src/core/components/links"
-import { Pagination } from "src/core/components/Pagination"
 
 const ITEMS_PER_PAGE = 100
 
@@ -65,16 +65,18 @@ export const __ModelNames__List = () => {
       <>
         <h1>__ModelNames__</h1>
 
-        <p>
-          <if condition="parentModel">
-            <Link href={Routes.New__ModelName__Page({ __parentModelId__: __parentModelId__! })}>
-              __ModelName__ erstellen
-            </Link>
-            <else>
-              <Link href={Routes.New__ModelName__Page()}>__ModelName__ erstellen</Link>
-            </else>
-          </if>
-        </p>
+        <IfUserCanEdit>
+          <p>
+            <if condition="parentModel">
+              <Link href={Routes.New__ModelName__Page({ __parentModelId__: __parentModelId__! })}>
+                __ModelName__ erstellen
+              </Link>
+              <else>
+                <Link href={Routes.New__ModelName__Page()}>__ModelName__ erstellen</Link>
+              </else>
+            </if>
+          </p>
+        </IfUserCanEdit>
 
         <ul>
           {__modelNames__.map((__modelName__) => (

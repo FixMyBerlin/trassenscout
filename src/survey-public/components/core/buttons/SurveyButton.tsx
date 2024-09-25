@@ -1,7 +1,7 @@
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { ReactNode } from "react"
 import { surveyPrimaryColorButtonStyles, surveyWhiteButtonStyles } from "../links/styles"
-export { FORM_ERROR } from "src/core/components/forms"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props = {
   color?: string

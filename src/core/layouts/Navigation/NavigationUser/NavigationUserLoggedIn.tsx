@@ -1,10 +1,10 @@
+import { Link } from "@/src/core/components/links/Link"
+import { CurrentUser } from "@/src/users/types"
+import { getFullname, getInitials, isAdmin } from "@/src/users/utils"
 import { Routes, useParam } from "@blitzjs/next"
-import { Menu, Transition } from "@headlessui/react"
-import clsx from "clsx"
-import React, { Fragment } from "react"
-import { Link } from "src/core/components/links/Link"
-import { CurrentUser } from "src/users/types"
-import { getFullname, getInitials, isAdmin } from "src/users/utils"
+import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react"
+import { clsx } from "clsx"
+import { Fragment } from "react"
 
 type Props = {
   user: CurrentUser
@@ -17,7 +17,7 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
     <Menu as="div" className="relative">
       {({ open }) => (
         <>
-          <Menu.Button
+          <MenuButton
             className={clsx(
               "flex rounded-full bg-blue-500 p-1",
               open ? "bg-blue-400" : "hover:bg-blue-400 focus:bg-blue-400",
@@ -30,7 +30,7 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
             >
               {getInitials(user)}
             </div>
-          </Menu.Button>
+          </MenuButton>
           {open && (
             <Transition
               as={Fragment}
@@ -41,28 +41,31 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items
+              <MenuItems
                 static
                 className="absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-md bg-gray-50 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
               >
                 <div className="px-4 py-2 leading-6 text-gray-700">
-                  <p>Angemeldet als</p>
+                  <p className="mb-2 text-xs text-gray-400">Angemeldet als</p>
                   <p className="truncate font-semibold">{getFullname(user) || "-"}</p>
                   <p className="mb-2 truncate">{user.email}</p>
+                  {user.institution && (
+                    <p className="mb-2 truncate text-xs text-gray-400">{user.institution}</p>
+                  )}
 
                   {isAdmin(user) && <p className="font-semibold text-purple-700">Rolle: Admin</p>}
                 </div>
                 <div className="border-t border-gray-200 px-4 py-2 text-gray-700">
                   <div className="my-2 flex flex-col gap-4">
                     {projectSlug && (
-                      <Menu.Item>
+                      <MenuItem>
                         <Link
                           className="text-gray-500 decoration-blue-200 underline-offset-4 hover:text-blue-500 hover:underline"
                           href={Routes.EditUserPage({ projectSlug: projectSlug! })}
                         >
                           Ihr Profil
                         </Link>
-                      </Menu.Item>
+                      </MenuItem>
                     )}
                     <Menu.Item>
                       <Link
@@ -74,7 +77,7 @@ export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
                     </Menu.Item>
                   </div>
                 </div>
-              </Menu.Items>
+              </MenuItems>
             </Transition>
           )}
         </>

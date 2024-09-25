@@ -1,5 +1,4 @@
-import React from "react"
-import { isDev } from "src/core/utils"
+import { isDev } from "@/src/core/utils"
 import { AdminBox } from "./AdminBox"
 
 type Props = {
@@ -7,7 +6,7 @@ type Props = {
   children: React.ReactNode
 }
 
-export const DevAdminBox: React.FC<Props> = (props) => {
+export const DevAdminBox = (props: Props) => {
   if (!isDev) {
     return null
   }

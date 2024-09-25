@@ -1,7 +1,8 @@
+import db from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
-import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
+import { viewerRoles } from "../../authorization/constants"
 import getQualityLevelProjectId from "./getSubsubsectionInfraProjectId"
 
 const GetSubsubsectionInfra = z.object({
@@ -11,7 +12,7 @@ const GetSubsubsectionInfra = z.object({
 
 export default resolver.pipe(
   resolver.zod(GetSubsubsectionInfra),
-  authorizeProjectAdmin(getQualityLevelProjectId),
+  authorizeProjectAdmin(getQualityLevelProjectId, viewerRoles),
   async ({ id }) => {
     return await db.subsubsectionInfra.findFirstOrThrow({
       where: { id },

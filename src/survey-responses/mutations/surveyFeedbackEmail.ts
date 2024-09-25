@@ -1,8 +1,8 @@
+import db from "@/db"
+import { surveyEntryCreatedNotificationToUser } from "@/emails/mailers/surveyEntryCreatedNotificationToUser"
+import { feedbackDefinition } from "@/src/survey-public/radnetz-brandenburg/data/feedback"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
-import { surveyFeedbackMailer } from "mailers/surveyFeedbackMailer"
 import { z } from "zod"
-import { feedbackDefinition } from "src/survey-public/radnetz-brandenburg/data/feedback"
 
 export const SurveyFeedbackMail = z.object({
   surveySessionId: z.number(),
@@ -32,18 +32,20 @@ export default resolver.pipe(
       // Send the email
       // todo survey clean up or refactor after survey BB
       // the refs are hard coded to reduce the complexity of the code as we do not know if we keep this feature
-      await surveyFeedbackMailer({
-        // @ts-expect-error
-        userMail: parsedSurveyPart1["3"],
-        // @ts-expect-error
-        userFirstname: parsedSurveyPart1["1"],
-        // @ts-expect-error
-        userLastname: parsedSurveyPart1["2"],
-        feedbackLocation: data["24"],
-        feedbackCategory: categories[data["22"]],
-        feedbackText: data["25"],
-        lineFromToName: data["30"],
-      }).send()
+      await (
+        await surveyEntryCreatedNotificationToUser({
+          // @ts-expect-error
+          userMail: parsedSurveyPart1["3"],
+          // @ts-expect-error
+          userFirstname: parsedSurveyPart1["1"],
+          // @ts-expect-error
+          userLastname: parsedSurveyPart1["2"],
+          feedbackLocation: data["24"],
+          feedbackCategory: categories[data["22"]],
+          feedbackText: data["25"],
+          lineFromToName: data["30"],
+        })
+      ).send()
     }
     return
   },

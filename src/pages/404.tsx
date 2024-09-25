@@ -1,5 +1,5 @@
+import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 import { ErrorComponent } from "@blitzjs/next"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
 
 export default function NotFound() {
   const statusCode = 404

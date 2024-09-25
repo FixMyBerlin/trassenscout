@@ -1,7 +1,7 @@
 import { useQuery } from "@blitzjs/rpc"
+import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import getStatsInfopanelSubsection from "../queries/getStatsInfopanelSubsectionSubsection"
 import { getPriorityTranslation } from "./utils/getPriorityTranslation"
-import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 
 type Props = {
   subsectionSlug: string

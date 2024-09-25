@@ -1,16 +1,17 @@
+import db from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
+import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
+import { getResponseConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import db from "db"
-
-import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
-import { getResponseConfigBySurveySlug } from "src/survey-public/utils/getConfigBySurveySlug"
+import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 
 type GetFeedbackSurveyResponsesWithLocationInput = { projectSlug: string; surveyId: number }
 
 export default resolver.pipe(
   // @ts-ignore
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
   async ({ projectSlug, surveyId }: GetFeedbackSurveyResponsesWithLocationInput) => {
     const rawSurveyResponse = await db.surveyResponse.findMany({
       where: {
@@ -33,7 +34,7 @@ export default resolver.pipe(
     if (!rawSurveyResponse?.length) throw new NotFoundError()
 
     const { evaluationRefs } = getResponseConfigBySurveySlug(
-      rawSurveyResponse[0]!.surveySession.survey.slug,
+      rawSurveyResponse[0]!.surveySession.survey.slug as AllowedSurveySlugs,
     )
 
     const parsedAndSorted = rawSurveyResponse

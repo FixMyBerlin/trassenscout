@@ -6,7 +6,7 @@ type Props = {
 
 export const SurveyButtonWrapper: React.FC<Props> = ({ children }) => {
   return (
-    <div className="sm:items-start flex flex-col gap-6 pt-10 sm:flex-row-reverse sm:justify-between sm:space-y-0">
+    <div className="flex flex-col gap-6 pt-10 sm:flex-row-reverse sm:items-start sm:justify-between sm:space-y-0">
       {children}
     </div>
   )

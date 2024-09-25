@@ -1,7 +1,7 @@
+import { SurveyMap } from "@/src/survey-public/components/maps/SurveyMap"
+import { TMapProps } from "@/src/survey-public/components/types"
 import { useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { SurveyMap } from "src/survey-public/components/maps/SurveyMap"
-import { TMapProps } from "src/survey-public/components/types"
 
 type Props = {
   mapProps: TMapProps

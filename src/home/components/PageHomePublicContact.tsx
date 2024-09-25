@@ -1,6 +1,5 @@
+import { LinkMail, LinkTel } from "@/src/core/components/links"
 import { EnvelopeIcon } from "@heroicons/react/24/outline"
-import React from "react"
-import { LinkMail, LinkTel } from "src/core/components/links"
 
 export const PageHomePublicContact: React.FC = () => {
   return (

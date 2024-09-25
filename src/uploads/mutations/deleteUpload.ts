@@ -1,13 +1,11 @@
+import db from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
+import { getConfig } from "@/src/core/lib/next-s3-upload/src/utils/config"
+import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import db from "db"
 import { z } from "zod"
-
-import { authorizeProjectAdmin } from "src/authorization"
 import getUploadProjectId from "../queries/getUploadProjectId"
-
-import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3"
-import { getConfig } from "src/core/lib/next-s3-upload/src/utils/config"
 
 const DeleteUploadSchema = z.object({
   id: z.number(),

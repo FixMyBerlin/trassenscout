@@ -1,8 +1,8 @@
+import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
+import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import "maplibre-gl/dist/maplibre-gl.css"
-import React, { useState } from "react"
+import { useState } from "react"
 import Map, { LngLatBoundsLike, Marker, NavigationControl, useMap } from "react-map-gl/maplibre"
-import { BackgroundSwitcher, LayerType } from "src/core/components/Map/BackgroundSwitcher"
-import SurveyStaticPin from "src/core/components/Map/SurveyStaticPin"
 
 type Props = {
   marker: { lat: number; lng: number } | undefined
@@ -40,8 +40,7 @@ export const EditableSurveyResponseFormMap: React.FC<Props> = ({
         }}
         scrollZoom={false}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
-        // @ts-expect-error: See https://github.com/visgl/react-map-gl/issues/2310
-        RTLTextPlugin={null}
+        RTLTextPlugin={false}
       >
         {marker && (
           <Marker

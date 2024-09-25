@@ -1,8 +1,8 @@
+import db from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
-
-import { authorizeProjectAdmin } from "src/authorization"
+import { viewerRoles } from "../../authorization/constants"
 import getCalendarEntryProjectId from "./getCalendarEntryProjectId"
 
 const GetCalendarEntrySchema = z.object({
@@ -12,6 +12,7 @@ const GetCalendarEntrySchema = z.object({
 
 export default resolver.pipe(
   resolver.zod(GetCalendarEntrySchema),
-  authorizeProjectAdmin(getCalendarEntryProjectId),
+  // TODO: slug?
+  authorizeProjectAdmin(getCalendarEntryProjectId, viewerRoles),
   async ({ id }) => await db.calendarEntry.findFirstOrThrow({ where: { id } }),
 )

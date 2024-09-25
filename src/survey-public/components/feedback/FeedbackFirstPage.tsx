@@ -1,16 +1,16 @@
+import { useParams } from "next/navigation"
 import { useRouter } from "next/router"
+import { MapProvider } from "react-map-gl/maplibre"
 import { Question } from "../Question"
+import { SurveyH2, SurveyP } from "../core/Text"
 import { SurveyButton } from "../core/buttons/SurveyButton"
 import { SurveyButtonWrapper } from "../core/buttons/SurveyButtonWrapper"
 import { SurveyScreenHeader } from "../core/layout/SurveyScreenHeader"
-import { SurveyMapLine } from "../maps/SurveyMapLine"
-import { MapProvider } from "react-map-gl"
-import { TInstitutionsBboxes, TLegendItem, TQuestion } from "../types"
-import { useParams } from "next/navigation"
-import { SurveyH2, SurveyP } from "../core/Text"
 import { SurveyMapLegend } from "../maps/SurveyMapLegend"
+import { SurveyMapLine } from "../maps/SurveyMapLine"
+import { TInstitutionsBboxes, TLegendItem, TQuestion } from "../types"
 
-export { FORM_ERROR } from "src/core/components/forms"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props = {
   page: any

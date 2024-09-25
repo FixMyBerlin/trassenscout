@@ -1,9 +1,10 @@
+import db, { Prisma } from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
+import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import db, { Prisma } from "db"
-import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
-import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
+import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { GetSubsectionSchema, SubsectionWithPosition } from "./getSubsection"
 
 export type SubsectionWithSubsubsectionsWithPosition = SubsectionWithPosition & {
@@ -12,7 +13,7 @@ export type SubsectionWithSubsubsectionsWithPosition = SubsectionWithPosition & 
 
 export default resolver.pipe(
   resolver.zod(GetSubsectionSchema),
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
   async ({ projectSlug, subsectionSlug }) => {
     const query = {
       where: {

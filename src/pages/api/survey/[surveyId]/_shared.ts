@@ -1,18 +1,14 @@
-import { createObjectCsvStringifier } from "csv-writer"
-import { NextApiRequest, NextApiResponse } from "next"
-import { api } from "src/blitz-server"
+import { api } from "@/src/blitz-server"
+import dbGetSurvey from "@/src/surveys/queries/getSurvey"
 import { getSession } from "@blitzjs/auth"
 import { AuthorizationError } from "blitz"
+import { createObjectCsvStringifier } from "csv-writer"
+import { NextApiRequest, NextApiResponse } from "next"
 import { ZodError } from "zod"
-import dbGetSurvey from "src/surveys/queries/getSurvey"
-import { Survey } from "db"
 
 const DEBUG = false
 
-export const getSurvey = async (
-  req: NextApiRequest,
-  res: NextApiResponse,
-): Promise<undefined | Survey> => {
+export const getSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
   await api(() => null)
 
   const err = (status: number, message: string) => {
@@ -20,11 +16,10 @@ export const getSurvey = async (
     res.end()
   }
 
-  const session = await getSession(req, res)
-
-  let survey
+  let survey: ReturnType<typeof dbGetSurvey>
   try {
-    // @ts-ignore
+    const session = await getSession(req, res)
+    // @ts-expect-error
     survey = await dbGetSurvey({ id: Number(req.query.surveyId) }, { session })
   } catch (e) {
     if (e instanceof AuthorizationError) {

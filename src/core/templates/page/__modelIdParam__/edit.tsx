@@ -1,14 +1,17 @@
+import {
+  FORM_ERROR,
+  __ModelName__Form,
+} from "@/src/__modelNamesPath__/components/__ModelName__Form"
+import update__ModelName__ from "@/src/__modelNamesPath__/mutations/update__ModelName__"
+import get__ModelName__ from "@/src/__modelNamesPath__/queries/get__ModelName__"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
+import { Spinner } from "@/src/core/components/Spinner"
+import { Link } from "@/src/core/components/links"
+import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Link } from "src/core/components/links"
-import { Spinner } from "src/core/components/Spinner"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import { FORM_ERROR, __ModelName__Form } from "src/__modelNamesPath__/components/__ModelName__Form"
-import update__ModelName__ from "src/__modelNamesPath__/mutations/update__ModelName__"
-import get__ModelName__ from "src/__modelNamesPath__/queries/get__ModelName__"
 
 const Edit__ModelName__ = () => {
   const router = useRouter()

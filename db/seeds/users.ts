@@ -1,9 +1,10 @@
-import db from "../index"
 import { Prisma } from "@prisma/client"
+import db from "../index"
 
 type Users = Prisma.UserUncheckedCreateInput[]
 
 export const generateUserEmail = (slug: string) => `${slug}@fixmycity.de`
+
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
 const seedUsers = async () => {
@@ -12,7 +13,7 @@ const seedUsers = async () => {
   const hashedPassword =
     "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTIscD0xJDRMWm82dmVrRk91VnVlZTVwcEpiS3ckOHFZcHhyM2RITm0yTGxTeXdqeEcxSWFsZEJCUWhxNVZxdm53eHoxTk4xTQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 
-  let genericUsers: Users = [
+  const genericUsers: Users = [
     {
       email: "admin@fixmycity.de",
       role: "ADMIN",
@@ -22,10 +23,20 @@ const seedUsers = async () => {
       hashedPassword,
     },
     {
-      email: "all-projects@fixmycity.de",
+      email: "all-projects-viewer@fixmycity.de",
       role: "USER",
       firstName: "All-Projects",
-      lastName: "All-Projects-User",
+      lastName: "Viewer-User",
+      institution: "All-Project-Institution",
+      phone: "030 549 086 65 - 91",
+      hashedPassword,
+    },
+    {
+      email: "all-projects-editor@fixmycity.de",
+      role: "USER",
+      firstName: "All-Projects",
+      lastName: "Editor-User",
+      institution: "All-Project-Institution",
       phone: "030 549 086 65 - 91",
       hashedPassword,
     },
@@ -35,6 +46,7 @@ const seedUsers = async () => {
       firstName: "No-Project",
       lastName: "No-Project-User",
       phone: "030 549 086 65 - 92",
+      institution: "No-Project-Institution",
       hashedPassword,
     },
   ]
@@ -44,14 +56,13 @@ const seedUsers = async () => {
     role: "USER",
     firstName: `${capitalize(slug)}-Admin`,
     lastName: `${capitalize(slug)}-Admin-User`,
-    phone: `030 549 086 65 - ${id}`,
+    phone: `030 549 086 65-${id}`,
     hashedPassword,
   }))
 
   const users = [...genericUsers, ...projectAdmins]
-  for (let i = 0; i < users.length; i++) {
-    // @ts-ignore
-    await db.user.create({ data: users[i] })
+  for (const user of users) {
+    await db.user.create({ data: user })
   }
 }
 

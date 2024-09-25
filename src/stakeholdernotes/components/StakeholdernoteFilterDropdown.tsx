@@ -1,9 +1,7 @@
+import { useSlugs } from "@/src/core/hooks"
 import { Routes, useRouterQuery } from "@blitzjs/next"
-import { StakeholdernoteStatusEnum } from "@prisma/client"
 import { PromiseReturnType } from "blitz"
 import router from "next/router"
-import React from "react"
-import { useSlugs } from "src/core/hooks"
 import getStakeholdernotes from "../queries/getStakeholdernotes"
 import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
 

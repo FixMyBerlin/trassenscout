@@ -1,19 +1,20 @@
+import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { Pagination } from "@/src/core/components/Pagination"
+import { Spinner } from "@/src/core/components/Spinner"
+import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
+import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
+import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
+import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { shortTitle } from "@/src/core/components/text"
+import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import deleteQualityLevel from "@/src/qualityLevels/mutations/deleteQualityLevel"
+import getQualityLevelsWithCount from "@/src/qualityLevels/queries/getQualityLevelsWithCount"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
-import { Link, linkIcons, linkStyles } from "src/core/components/links"
-import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { Pagination } from "src/core/components/Pagination"
-import { Spinner } from "src/core/components/Spinner"
-import { TableWrapper } from "src/core/components/Table/TableWrapper"
-import { shortTitle } from "src/core/components/text"
-import { LayoutRs, MetaTags } from "src/core/layouts"
-import deleteQualityLevel from "src/qualityLevels/mutations/deleteQualityLevel"
-import getQualityLevelsWithCount from "src/qualityLevels/queries/getQualityLevelsWithCount"
 
 const ITEMS_PER_PAGE = 100
 
@@ -107,14 +108,17 @@ export const QualityLevelsWithData = () => {
           </tbody>
         </table>
       </TableWrapper>
-      <Link
-        button="blue"
-        icon="plus"
-        className="mt-4"
-        href={Routes.NewQualityLevelPage({ projectSlug: projectSlug! })}
-      >
-        Neuer Ausbaustandard
-      </Link>
+
+      <IfUserCanEdit>
+        <Link
+          button="blue"
+          icon="plus"
+          className="mt-4"
+          href={Routes.NewQualityLevelPage({ projectSlug: projectSlug! })}
+        >
+          Neuer Ausbaustandard
+        </Link>
+      </IfUserCanEdit>
 
       <Pagination
         hasMore={hasMore}

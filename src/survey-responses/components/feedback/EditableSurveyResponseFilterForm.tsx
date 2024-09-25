@@ -1,30 +1,31 @@
+import {
+  LabeledCheckboxGroup,
+  LabeledRadiobuttonGroup,
+  LabeledTextField,
+} from "@/src/core/components/forms"
+import { linkStyles } from "@/src/core/components/links"
+import { Prettify } from "@/src/core/types"
+import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
+import { TResponse } from "@/src/survey-public/components/types"
+import { backendConfig as defaultBackendConfig } from "@/src/survey-public/utils/backend-config-defaults"
+import {
+  getBackendConfigBySurveySlug,
+  getFeedbackDefinitionBySurveySlug,
+  getResponseConfigBySurveySlug,
+} from "@/src/survey-public/utils/getConfigBySurveySlug"
+import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
+import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/outline"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import { PropsWithoutRef, useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-import {
-  LabeledCheckboxGroup,
-  LabeledRadiobuttonGroup,
-  LabeledTextField,
-} from "src/core/components/forms"
-import { linkStyles } from "src/core/components/links"
-import { Prettify } from "src/core/types"
-import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
-import { TResponse } from "src/survey-public/components/types"
-import {
-  getFeedbackDefinitionBySurveySlug,
-  getResponseConfigBySurveySlug,
-} from "src/survey-public/utils/getConfigBySurveySlug"
-import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
-import getSurvey from "src/surveys/queries/getSurvey"
 import { z } from "zod"
-import { surveyResponseStatus } from "./surveyResponseStatus"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -51,6 +52,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     haslocation: queryHaslocation,
     categories: queryCategories,
     searchterm: querySearchTerm,
+    additionalFilters: queryAdditionalFilters,
   } = router.query
 
   const surveyId = useParam("surveyId", "string")
@@ -77,13 +79,17 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     queryCategories &&
     querySearchTerm !== undefined
 
+  const backendConfig = getBackendConfigBySurveySlug(survey.slug)
+  const surveyResponseStatus = backendConfig.status
+  const labels = backendConfig.labels || defaultBackendConfig.labels
+
   if (!searchActive) {
     void router.push(
       {
         query: {
           ...router.query,
           operator: "ALL", // default: radio "ALL"
-          statuses: [...Object.keys(surveyResponseStatus)], // default: all checked
+          statuses: [...surveyResponseStatus.map((s) => s.value)], // default: all checked
           topics: [...topics.map((t) => String(t.id)), "0"], // default: all checked
           hasnotes: "ALL", // default: radio "ALL"
           haslocation: "ALL", // default: radio "ALL"
@@ -102,7 +108,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     resolver: schema ? zodResolver(schema) : undefined,
     defaultValues: async () => ({
       operator: searchActive ? queryOperator : "ALL", // default: radio "ALL"
-      statuses: searchActive ? queryStatuses : [...Object.keys(surveyResponseStatus)], // default: all checked
+      statuses: searchActive ? queryStatuses : [...surveyResponseStatus.map((s) => s.value)], // default: all checked
       topics: searchActive ? queryTopics : [...topics.map((t) => String(t.id)), "0"], // default: all checked
       hasnotes: searchActive ? queryHasnotes : "ALL", // default: radio "ALL"
       searchterm: searchActive ? querySearchTerm : "", // default: radio "ALL"
@@ -153,7 +159,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     { value: "0", label: "Nicht zugeordnet" },
   ]
   const statusOptions = [
-    ...Object.entries(surveyResponseStatus).map(([value, label]) => {
+    ...surveyResponseStatus.map(({ value, label }) => {
       return { value, label }
     }),
   ]
@@ -162,7 +168,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
         ...topics.map((t) => {
           return { value: String(t.id), label: t.title }
         }),
-        { value: "0", label: "Ohne Thema" },
+        { value: "0", label: `Ohne ${labels.topics?.sg || "Tag"}` },
       ]
     : []
 
@@ -173,27 +179,33 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
 
   const hasnotesOptions = [
     { value: "ALL", label: "Alle" },
-    { value: "true", label: "Mit Notiz" },
-    { value: "false", label: "Ohne Notiz" },
+    { value: "true", label: `Mit ${labels.note?.sg || defaultBackendConfig.labels.note.sg}` },
+    { value: "false", label: `Ohne ${labels.note?.sg || defaultBackendConfig.labels.note.sg}` },
   ]
   const haslocationOptions = [
     { value: "ALL", label: "Alle" },
-    { value: "true", label: "Mit Ortsangabe" },
-    { value: "false", label: "Ohne Ortsangabe" },
+    {
+      value: "true",
+      label: `Mit ${labels.location?.sg || defaultBackendConfig.labels.location.sg}`,
+    },
+    {
+      value: "false",
+      label: `Ohne ${labels.location?.sg || defaultBackendConfig.labels.location.sg}`,
+    },
   ]
 
   return (
-    <nav className="border border-gray-300 rounded-xl">
+    <nav className="rounded-xl border border-gray-300">
       <details open>
-        <summary className="px-4 py-2 cursor-pointer text-gray-700 hover:bg-gray-50 rounded-xl">
+        <summary className="cursor-pointer rounded-xl px-4 py-2 text-gray-700 hover:bg-gray-50">
           Filter
         </summary>
         <FormProvider {...methods}>
           <form
             onChange={async () => await methods.handleSubmit(handleSubmit)()}
-            className="flex flex-col gap-4 justify-start items-start px-4 py-2 rounded-b-xl"
+            className="flex flex-col items-start justify-start gap-4 rounded-b-xl px-4 py-2"
           >
-            <div className="flex flex-col sm:flex-row gap-12 mt-6">
+            <div className="mt-6 flex flex-col gap-12 sm:flex-row">
               <LabeledCheckboxGroup
                 label="Status"
                 classLabelOverwrite="font-semibold mb-3"
@@ -202,34 +214,34 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 items={statusOptions}
               />
               <LabeledRadiobuttonGroup
-                label="Baulastträger"
+                label={labels.operator?.sg || defaultBackendConfig.labels.operator.sg}
                 classLabelOverwrite="font-semibold mb-3"
                 scope="operator"
                 items={operatorOptions}
               />
               <LabeledRadiobuttonGroup
-                label="Notiz"
+                label={labels.note?.sg || defaultBackendConfig.labels.note.sg}
                 classLabelOverwrite="font-semibold mb-3"
                 scope="hasnotes"
                 items={hasnotesOptions}
               />
               <LabeledRadiobuttonGroup
-                label="Ortsangabe"
+                label={labels.location?.sg || defaultBackendConfig.labels.location.sg}
                 classLabelOverwrite="font-semibold mb-3"
                 scope="haslocation"
                 items={haslocationOptions}
               />
             </div>
-            <div className="flex flex-col sm:flex-row gap-6">
+            <div className="flex flex-col gap-6 sm:flex-row">
               <LabeledCheckboxGroup
-                label="Kategorien"
+                label={labels.category?.sg || defaultBackendConfig.labels.category.sg}
                 classLabelOverwrite="font-semibold mb-3"
                 scope="categories"
                 items={categoriesOptions}
               />
               {!!topicsOptions.length && (
                 <LabeledCheckboxGroup
-                  label="Themen"
+                  label={labels.topics?.pl || defaultBackendConfig.labels.topics.pl}
                   classLabelOverwrite="font-semibold mb-3"
                   scope="topics"
                   items={topicsOptions}
@@ -239,11 +251,11 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
             </div>
           </form>
           <form
-            className="px-4 pb-2 pt-4 rounded-b-xl flex items-end gap-4"
+            className="flex items-end gap-4 rounded-b-xl px-4 pb-2 pt-4"
             onBlur={async () => await methods.handleSubmit(handleSubmit)()}
           >
             <div className="w-[300px]">
-              <p className="font-semibold mb-3">Freitextsuche</p>
+              <p className="mb-3 font-semibold">Freitextsuche</p>
               <LabeledTextField
                 name="searchterm"
                 label=""
@@ -251,12 +263,12 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
               />
             </div>
             <button type="button" className="h-full pb-2">
-              <MagnifyingGlassCircleIcon className="w-6 h-6 text-blue-500 hover:text-blue-800" />
+              <MagnifyingGlassCircleIcon className="h-6 w-6 text-blue-500 hover:text-blue-800" />
             </button>
           </form>
           <button
             type="button"
-            className={clsx(linkStyles, "flex mt-4 px-4 pb-2")}
+            className={clsx(linkStyles, "mt-4 flex px-4 pb-2")}
             onClick={handleFilterReset}
           >
             <XMarkIcon className="h-4 w-4" />

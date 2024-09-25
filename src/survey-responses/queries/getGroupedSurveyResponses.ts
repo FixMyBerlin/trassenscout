@@ -1,9 +1,9 @@
+import db, { Prisma } from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
-import db, { Prisma } from "db"
-
-import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
+import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 
 type GetSurveySessionsWithResponsesInput = { projectSlug: string; surveyId: number } & Pick<
   Prisma.SurveySessionFindManyArgs,
@@ -12,7 +12,7 @@ type GetSurveySessionsWithResponsesInput = { projectSlug: string; surveyId: numb
 
 export default resolver.pipe(
   // @ts-ignore
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
   async ({
     projectSlug,
     surveyId,
@@ -75,7 +75,6 @@ export default resolver.pipe(
           const responseObject = JSON.parse(response.data) as Record<string, number>
 
           if (typeof responseObject[responseKey] === "number") {
-            // @ts-expect-errors
             result[responseObject[responseKey]] ||= 0
             // @ts-expect-errors
             result[responseObject[responseKey]] += 1

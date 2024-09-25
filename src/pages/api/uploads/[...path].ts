@@ -1,16 +1,16 @@
-import { NextApiRequest, NextApiResponse } from "next"
-import { getSession } from "@blitzjs/auth"
-import { AuthorizationError } from "blitz"
-import { ZodError } from "zod"
+import { getConfig } from "@/src/core/lib/next-s3-upload/src/utils/config"
+import getUploadWithSubsections from "@/src/uploads/queries/getUploadWithSubsections"
 import {
-  S3Client,
-  HeadObjectCommand,
   GetObjectCommand,
+  HeadObjectCommand,
+  S3Client,
   S3ServiceException,
 } from "@aws-sdk/client-s3"
-import { getConfig } from "src/core/lib/next-s3-upload/src/utils/config"
-import getUploadWithSubsections from "src/uploads/queries/getUploadWithSubsections"
+import { getSession } from "@blitzjs/auth"
 import { NotFoundError } from "@prisma/client/runtime/library"
+import { AuthorizationError } from "blitz"
+import { NextApiRequest, NextApiResponse } from "next"
+import { ZodError } from "zod"
 
 export default async function downloadFile(req: NextApiRequest, res: NextApiResponse) {
   try {

@@ -1,6 +1,6 @@
+import db, { Prisma } from "@/db"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
-import db, { Prisma } from "db"
 
 type GetMembershipInput = Pick<
   Prisma.MembershipFindManyArgs,

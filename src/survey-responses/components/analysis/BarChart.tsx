@@ -1,8 +1,8 @@
 import {
   Bar,
-  BarChart as RechartBarChart,
   CartesianGrid,
   LabelList,
+  BarChart as RechartBarChart,
   ResponsiveContainer,
   XAxis,
   YAxis,
@@ -23,7 +23,7 @@ const CustomizedLabel: ImplicitLabelType = (props) => {
     <svg xmlns="http://www.w3.org/2000/svg">
       <switch>
         <foreignObject x={x + 4} y={y - 96} width="70vw" height="150">
-          <div className="flex flex-col justify-end h-24 leading-tight">
+          <div className="flex h-24 flex-col justify-end leading-tight">
             <p className="text-sm"> {props.name}</p>
           </div>
         </foreignObject>

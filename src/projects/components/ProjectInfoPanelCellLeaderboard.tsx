@@ -1,7 +1,7 @@
+import { formatGerKm } from "@/src/subsections/components/utils/formatNumericInfo"
 import { useQuery } from "@blitzjs/rpc"
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import getStatsInfopanelProjectLeaderboard from "../queries/getStatsInfopanelProjectLeaderboard"
-import { formatGerKm } from "src/subsections/components/utils/formatNumericInfo"
 
 type Props = {
   projectSlug: string
@@ -14,7 +14,7 @@ export const ProjectInfoPanelCellLeaderboard: React.FC<Props> = ({ projectSlug }
     },
   )
   return (
-    <div className="flex gap-4 flex-col">
+    <div className="flex flex-col gap-4">
       <div className="">
         {Boolean(operatorsWithCount?.length) ? (
           <>

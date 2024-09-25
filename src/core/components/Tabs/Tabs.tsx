@@ -1,5 +1,5 @@
 import { RouteUrlObject } from "blitz"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import { Link } from "../links"
 

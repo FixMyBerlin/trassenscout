@@ -1,7 +1,8 @@
+import db from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
-import { authorizeProjectAdmin } from "src/authorization"
 import { z } from "zod"
+import { viewerRoles } from "../../authorization/constants"
 import getNetworkHierarchyProjectId from "./getNetworkHierarchyProjectId"
 
 const GetNetworkHierarchySchema = z.object({
@@ -11,7 +12,7 @@ const GetNetworkHierarchySchema = z.object({
 
 export default resolver.pipe(
   resolver.zod(GetNetworkHierarchySchema),
-  authorizeProjectAdmin(getNetworkHierarchyProjectId),
+  authorizeProjectAdmin(getNetworkHierarchyProjectId, viewerRoles),
   async ({ id }) => {
     return await db.networkHierarchy.findFirstOrThrow({
       where: { id },

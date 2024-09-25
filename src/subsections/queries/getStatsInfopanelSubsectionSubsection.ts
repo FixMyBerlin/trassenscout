@@ -1,11 +1,11 @@
+import db, { Prisma } from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
+import { SubsubsectionWithPositionWithSpecialFeatures } from "@/src/subsubsections/schema"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import db, { Prisma } from "db"
-import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
-
+import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { GetSubsectionSchema, SubsectionWithPosition } from "./getSubsection"
-import { SubsubsectionWithPositionWithSpecialFeatures } from "src/subsubsections/schema"
 
 type SubsectionWithSubsubsectionsWithSpecialFeaturesCount = {
   subsection: SubsectionWithPosition & {
@@ -21,7 +21,7 @@ type SubsectionWithSubsubsectionsWithSpecialFeaturesCount = {
 
 export default resolver.pipe(
   resolver.zod(GetSubsectionSchema),
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
   async ({ projectSlug, subsectionSlug }) => {
     const query = {
       where: {

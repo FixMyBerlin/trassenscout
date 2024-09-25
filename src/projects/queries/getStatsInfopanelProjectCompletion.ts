@@ -1,8 +1,9 @@
+import db, { Prisma } from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import db, { Prisma } from "db"
-import { authorizeProjectAdmin } from "src/authorization"
-import getProjectIdBySlug from "src/projects/queries/getProjectIdBySlug"
+import { viewerRoles } from "../../authorization/constants"
+import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { GetSubsectionsSchema } from "./getStatsInfopanelProjectCosts"
 
 type SubsubsectionWithEstimatedCompletionDate = {
@@ -17,7 +18,7 @@ type SubsubsectionsWithEstimatedCompetionDate = {
 
 export default resolver.pipe(
   resolver.zod(GetSubsectionsSchema),
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
   async ({ projectSlug }) => {
     const query = {
       where: {

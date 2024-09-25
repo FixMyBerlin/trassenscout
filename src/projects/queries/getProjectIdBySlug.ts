@@ -1,4 +1,4 @@
-import db from "db"
+import db from "@/db"
 import { AuthorizationError } from "blitz"
 
 type Input = string | Record<string, any>

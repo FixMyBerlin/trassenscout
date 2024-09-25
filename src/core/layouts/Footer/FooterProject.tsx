@@ -1,7 +1,4 @@
-import { useParam } from "@blitzjs/next"
 import { RouteUrlObject } from "blitz"
-
-import React from "react"
 import { FooterBuildByLine } from "./FooterBuildByLine"
 import { FooterLinkList } from "./FooterLinkList"
 import { FooterLogos } from "./FooterLogos"
@@ -16,7 +13,7 @@ export type FooterMenuItemLogo = {
 
 export const FooterProject: React.FC = () => {
   return (
-    <footer className="z-0 ">
+    <footer className="z-0">
       <FooterLogos />
       <div className="bg-gray-800 px-6 py-8">
         <div className="pt-6">

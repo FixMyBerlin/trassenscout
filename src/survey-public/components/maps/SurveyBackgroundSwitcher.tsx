@@ -1,7 +1,13 @@
-import { Fragment } from "react"
-import { Listbox, Transition } from "@headlessui/react"
+import {
+  Listbox,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+  Transition,
+} from "@headlessui/react"
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid"
-import clsx from "clsx"
+import { clsx } from "clsx"
+import { Fragment } from "react"
 
 export type LayerType = "vector" | "satellite"
 
@@ -22,12 +28,12 @@ export const SurveyBackgroundSwitcher: React.FC<Props> = ({ value, onChange, cla
       <Listbox value={value} onChange={onChange}>
         {({ open }) => (
           <div className="relative mt-1">
-            <Listbox.Button className="focus:border-black-500 relative cursor-default rounded-md border border-gray-300 bg-white py-1 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-[var(--survey-primary-color)] sm:text-sm">
+            <ListboxButton className="focus:border-black-500 relative cursor-default rounded-md border border-gray-300 bg-white py-1 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-[var(--survey-primary-color)] sm:text-sm">
               <span className="block truncate">{labels[value]}</span>
               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                 <ChevronDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
               </span>
-            </Listbox.Button>
+            </ListboxButton>
 
             <Transition
               show={open}
@@ -36,11 +42,11 @@ export const SurveyBackgroundSwitcher: React.FC<Props> = ({ value, onChange, cla
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Listbox.Options className="absolute z-50 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <ListboxOptions className="absolute z-50 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                 {Object.keys(labels).map((id) => (
-                  <Listbox.Option
+                  <ListboxOption
                     key={id}
-                    className={({ active }) =>
+                    className={({}) =>
                       clsx(
                         "text-gray-900",
                         "relative cursor-default select-none py-1 pl-3 pr-9 text-sm",
@@ -48,7 +54,7 @@ export const SurveyBackgroundSwitcher: React.FC<Props> = ({ value, onChange, cla
                     }
                     value={id}
                   >
-                    {({ selected, active }) => (
+                    {({ selected }) => (
                       <>
                         <span
                           className={clsx(
@@ -68,9 +74,9 @@ export const SurveyBackgroundSwitcher: React.FC<Props> = ({ value, onChange, cla
                         ) : null}
                       </>
                     )}
-                  </Listbox.Option>
+                  </ListboxOption>
                 ))}
-              </Listbox.Options>
+              </ListboxOptions>
             </Transition>
           </div>
         )}

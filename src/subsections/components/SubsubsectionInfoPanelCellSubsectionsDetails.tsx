@@ -36,7 +36,7 @@ export const SubsubsectionInfoPanelCellSubsectionsDetails: React.FC<Props> = ({
         <ul>
           {qualityLevelsWithCount.map((ql) => (
             <li className="space-x-2" key={ql.slug}>
-              <span className="uppercase font-bold">{ql.slug}: </span>
+              <span className="font-bold uppercase">{ql.slug}: </span>
               <span>{formatGerPercentage(ql.sumOfLengthKmPercentage)}</span>
               <span>{formatGerKm(ql.sumOfLengthKm)}</span>
             </li>

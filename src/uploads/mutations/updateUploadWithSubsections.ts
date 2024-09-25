@@ -1,8 +1,7 @@
+import db from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
-
-import { authorizeProjectAdmin } from "src/authorization"
 import getUploadProjectId from "../queries/getUploadProjectId"
 import { UploadSchema } from "../schema"
 

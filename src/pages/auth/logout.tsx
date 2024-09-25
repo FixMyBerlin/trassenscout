@@ -1,10 +1,10 @@
+import logout from "@/src/auth/mutations/logout"
+import { Spinner } from "@/src/core/components/Spinner"
+import { LayoutMiddleBox, MetaTags } from "@/src/core/layouts"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { useEffect } from "react"
-import logout from "src/auth/mutations/logout"
-import { Spinner } from "src/core/components/Spinner"
-import { LayoutMiddleBox, MetaTags } from "src/core/layouts"
 
 const LogoutRedirectPage: BlitzPage = () => {
   const [logoutMutation] = useMutation(logout)

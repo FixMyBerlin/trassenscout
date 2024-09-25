@@ -1,17 +1,17 @@
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
+import { Spinner } from "@/src/core/components/Spinner"
+import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
+import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
+import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { seoIndexTitle, shortTitle } from "@/src/core/components/text"
+import { LayoutArticle, MetaTags } from "@/src/core/layouts"
+import deleteMembership from "@/src/memberships/mutations/deleteMembership"
+import getUsersAndMemberships from "@/src/users/queries/getUsersAndMemberships"
+import { getFullname } from "@/src/users/utils"
 import { Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Spinner } from "src/core/components/Spinner"
-import { TableWrapper } from "src/core/components/Table/TableWrapper"
-import { Link, linkIcons, linkStyles } from "src/core/components/links"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { seoIndexTitle, shortTitle } from "src/core/components/text"
-import { LayoutArticle, MetaTags } from "src/core/layouts"
-import deleteMembership from "src/memberships/mutations/deleteMembership"
-import getUsersAndMemberships from "src/users/queries/getUsersAndMemberships"
-import { getFullname } from "src/users/utils"
 
 const AdminMemberships = () => {
   const [{ users: userAndMemberships }] = useQuery(getUsersAndMemberships, {})
@@ -19,11 +19,13 @@ const AdminMemberships = () => {
   const router = useRouter()
   const [deleteMembershipMutation] = useMutation(deleteMembership)
   const handleDelete = async (
-    membership: (typeof userAndMemberships)[number]["Membership"][number],
+    membership: (typeof userAndMemberships)[number]["memberships"][number],
   ) => {
     if (
       window.confirm(
-        `Den Eintrag mit ID ${membership.id} auf Projekt ${membership.project.slug} unwiderruflich löschen?`,
+        `Den Eintrag mit ID ${membership.id} auf Projekt ${shortTitle(
+          membership.project.slug,
+        )} unwiderruflich löschen?`,
       )
     ) {
       await deleteMembershipMutation({ id: membership.id })
@@ -57,8 +59,8 @@ const AdminMemberships = () => {
                     {user.role === "ADMIN" && <>(Admin)</>}
                   </td>
                   <td className="h-20 py-4 pl-4 pr-3 text-sm sm:pr-6">
-                    {user?.Membership?.length === 0 && <>Bisher keine Rechte</>}
-                    {user?.Membership?.map((membership) => {
+                    {user?.memberships?.length === 0 && <>Bisher keine Rechte</>}
+                    {user?.memberships?.map((membership) => {
                       return (
                         <div key={membership.id} className="flex justify-between">
                           <Link
@@ -76,7 +78,7 @@ const AdminMemberships = () => {
                         </div>
                       )
                     })}
-                    <div className="border-t mt-2 pt-2">
+                    <div className="mt-2 border-t pt-2">
                       <Link icon="plus" href={Routes.AdminNewMembershipPage({ userId: user.id })}>
                         Rechte
                       </Link>

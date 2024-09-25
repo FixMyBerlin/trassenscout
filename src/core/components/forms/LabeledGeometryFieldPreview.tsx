@@ -1,8 +1,10 @@
+import { vectorStyle } from "@/src/core/components/Map/BaseMap"
+import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
 import { CheckBadgeIcon } from "@heroicons/react/24/solid"
-import { Position, lineString, point } from "@turf/helpers"
+import { lineString, point } from "@turf/helpers"
 import { bbox } from "@turf/turf"
-import clsx from "clsx"
-import React from "react"
+import { clsx } from "clsx"
+import type { Position } from "geojson"
 import { useFormContext } from "react-hook-form"
 import Map, {
   Layer,
@@ -11,8 +13,6 @@ import Map, {
   ScaleControl,
   Source,
 } from "react-map-gl/maplibre"
-import { vectorStyle } from "src/core/components/Map/BaseMap"
-import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { z } from "zod"
 import { Link } from "../links"
 
@@ -76,8 +76,7 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
               id="preview"
               mapStyle={vectorStyle}
               scrollZoom={false}
-              // @ts-expect-error: See https://github.com/visgl/react-map-gl/issues/2310
-              RTLTextPlugin={null}
+              RTLTextPlugin={false}
             >
               <NavigationControl showCompass={false} />
               <ScaleControl />
@@ -122,7 +121,7 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
             <summary className="cursor-pointer">Geometry</summary>
             <Link
               blank
-              href={`http://geojson.io/#data=data:application/json,${encodeURIComponent(
+              href={`http://play.placemark.io/?load=data:application/json,${encodeURIComponent(
                 JSON.stringify(
                   geometryType === "ROUTE"
                     ? lineString(geometry as RouteGeomtry)
@@ -130,7 +129,7 @@ export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError })
                 ),
               )}`}
             >
-              Auf geojson.io öffnen
+              Auf placemark.io öffnen
             </Link>
             <pre className="m-0 text-xs leading-none">{JSON.stringify(geometry, undefined, 2)}</pre>
           </details>

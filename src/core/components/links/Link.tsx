@@ -1,7 +1,7 @@
-import { ArrowDownTrayIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid"
+import { ArrowDownTrayIcon, ListBulletIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { PencilIcon } from "@heroicons/react/24/outline"
 import { RouteUrlObject } from "blitz"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import NextLink from "next/link"
 import { forwardRef } from "react"
 import { UrlObject } from "url"
@@ -24,6 +24,7 @@ export const linkIcons = {
   edit: <PencilIcon className="h-3.5 w-3.5" />,
   download: <ArrowDownTrayIcon className="h-3.5 w-3.5" />,
   delete: <TrashIcon className="h-3.5 w-3.5" />,
+  list: <ListBulletIcon className="h-3.5 w-3.5" />,
 }
 
 export const Link: React.FC<LinkProps> = forwardRef<HTMLAnchorElement, LinkProps>(
@@ -32,8 +33,8 @@ export const Link: React.FC<LinkProps> = forwardRef<HTMLAnchorElement, LinkProps
     ref,
   ) => {
     const classNames = clsx(
-      { "gap-1 inline-flex justify-center items-center": icon }, // base styles for icon case
-      { "pl-5 ": icon && button }, // overwrites to `buttonBase` for icon case
+      icon ? "inline-flex items-center justify-center gap-1" : "", // base styles for icon case
+      icon && button ? "pl-5" : "", // overwrites to `buttonBase` for icon case
       classNameOverwrites ?? selectLinkStyle(button, className),
     )
 

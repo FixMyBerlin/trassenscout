@@ -1,5 +1,4 @@
-import { TQuestion, TSurvey } from "src/survey-public/components/types"
-import { T } from "vitest/dist/types-198fd1d9"
+import { TQuestion, TSurvey } from "@/src/survey-public/components/types"
 
 type QuestionObject = {
   id: number

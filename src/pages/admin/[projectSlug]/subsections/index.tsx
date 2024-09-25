@@ -1,19 +1,19 @@
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
+import { Markdown } from "@/src/core/components/Markdown/Markdown"
+import { Spinner } from "@/src/core/components/Spinner"
+import { Link, blueButtonStyles } from "@/src/core/components/links"
+import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
+import { PageDescription } from "@/src/core/components/pages/PageDescription"
+import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { quote, seoTitleSlug, shortTitle } from "@/src/core/components/text"
+import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import getProject from "@/src/projects/queries/getProject"
+import { SubsectionTableAdmin } from "@/src/subsections/components/SubsectionTableAdmin"
+import updateSubsectionsWithFeltData from "@/src/subsections/mutations/updateSubsectionsWithFeltData"
+import getSubsections from "@/src/subsections/queries/getSubsections"
 import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { Suspense, useState } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Markdown } from "src/core/components/Markdown/Markdown"
-import { Spinner } from "src/core/components/Spinner"
-import { Link, blueButtonStyles } from "src/core/components/links"
-import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
-import { PageDescription } from "src/core/components/pages/PageDescription"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { quote, seoTitleSlug, shortTitle } from "src/core/components/text"
-import { LayoutRs, MetaTags } from "src/core/layouts"
-import getProject from "src/projects/queries/getProject"
-import { SubsectionTableAdmin } from "src/subsections/components/SubsectionTableAdmin"
-import updateSubsectionsWithFeltData from "src/subsections/mutations/updateSubsectionsWithFeltData"
-import getSubsections from "src/subsections/queries/getSubsections"
 
 export const AdminSubsectionsWithQuery = () => {
   const projectSlug = useParam("projectSlug", "string")
@@ -54,21 +54,21 @@ export const AdminSubsectionsWithQuery = () => {
     if (!project.felt_subsection_geometry_source_url) {
       window.alert("Keine Felt URL")
       return console.error("No Felt URL")
-    } else {
-      try {
-        const subsectionIds = await updateSubsectionMutation({
-          subsections,
-          projectFeltUrl: project.felt_subsection_geometry_source_url,
-        })
-        setError(null)
-        if (subsectionIds) setUpdatedIds(subsectionIds)
-        await refetch()
-        window.scrollTo(0, 0)
-        setIsFetching(false)
-      } catch (error: any) {
-        setError(error)
-        return console.error(error)
-      }
+    }
+
+    try {
+      const subsectionIds = await updateSubsectionMutation({
+        subsections,
+        projectFeltUrl: project.felt_subsection_geometry_source_url,
+      })
+      setError(null)
+      if (subsectionIds) setUpdatedIds(subsectionIds)
+      await refetch()
+      window.scrollTo(0, 0)
+      setIsFetching(false)
+    } catch (error: any) {
+      setError(error)
+      return console.error(error)
     }
   }
 
@@ -82,6 +82,7 @@ export const AdminSubsectionsWithQuery = () => {
         subtitle={project.subTitle}
         description={`Planungsabschnitte ${project.subTitle}`}
       />
+
       <SuperAdminBox>
         {project.description && (
           <PageDescription>
@@ -90,7 +91,7 @@ export const AdminSubsectionsWithQuery = () => {
         )}
         <SubsectionTableAdmin updatedIds={updatedIds} subsections={filteredSubsections} />
         {error && (
-          <div role="alert" className="rounded bg-red-50 text-base px-2 py-1 text-red-800 mt-8">
+          <div role="alert" className="mt-8 rounded bg-red-50 px-2 py-1 text-base text-red-800">
             Es ist ein Fehler aufgetreten:
             <br />
             {quote(error.toString())}
@@ -98,7 +99,7 @@ export const AdminSubsectionsWithQuery = () => {
             Überprüfe die Felt-Url des Projekts.
           </div>
         )}
-        <div className="mt-8 flex gap-5 sm:flex-row flex-col">
+        <div className="mt-8 flex flex-col gap-5 sm:flex-row">
           <Link
             icon="plus"
             button="blue"

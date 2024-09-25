@@ -1,7 +1,11 @@
-import { Disclosure as HeadlessUiDisclosure, Transition } from "@headlessui/react"
+import {
+  DisclosureButton,
+  DisclosurePanel,
+  Disclosure as HeadlessUiDisclosure,
+  Transition,
+} from "@headlessui/react"
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid"
-import clsx from "clsx"
-import React from "react"
+import { clsx } from "clsx"
 
 type Props = {
   button: React.ReactNode | string
@@ -28,7 +32,7 @@ export const Disclosure: React.FC<Props> = ({
     <HeadlessUiDisclosure defaultOpen={open}>
       {({ open }) => (
         <>
-          <HeadlessUiDisclosure.Button
+          <DisclosureButton
             className={clsx(
               classNameButton,
               "group flex w-full items-center justify-between pr-4 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75 sm:pr-6",
@@ -42,11 +46,11 @@ export const Disclosure: React.FC<Props> = ({
             {button}
 
             {open ? (
-              <ChevronUpIcon className="h-5 w-5 text-gray-700 group-hover:text-black flex-shrink-0" />
+              <ChevronUpIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
             ) : (
-              <ChevronDownIcon className="h-5 w-5 text-gray-700 group-hover:text-black flex-shrink-0" />
+              <ChevronDownIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
             )}
-          </HeadlessUiDisclosure.Button>
+          </DisclosureButton>
           <Transition
             show={open}
             enter="transition duration-100 ease-out"
@@ -57,14 +61,14 @@ export const Disclosure: React.FC<Props> = ({
             leaveTo="transform scale-95 opacity-0"
           >
             {/* ausgeklappt / zusätzliche Info */}
-            <HeadlessUiDisclosure.Panel
+            <DisclosurePanel
               static
               className={clsx(classNamePanel, "overflow-clip", {
                 "border-b border-gray-100": open,
               })}
             >
               {children}
-            </HeadlessUiDisclosure.Panel>
+            </DisclosurePanel>
           </Transition>
         </>
       )}

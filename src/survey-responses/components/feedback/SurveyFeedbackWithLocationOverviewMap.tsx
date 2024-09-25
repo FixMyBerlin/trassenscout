@@ -1,10 +1,10 @@
+import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
+import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import { Routes, useParam } from "@blitzjs/next"
 import "maplibre-gl/dist/maplibre-gl.css"
 import router from "next/router"
-import React, { useState } from "react"
+import { useState } from "react"
 import Map, { LngLatBoundsLike, Marker, NavigationControl } from "react-map-gl/maplibre"
-import { BackgroundSwitcher, LayerType } from "src/core/components/Map/BackgroundSwitcher"
-import SurveyStaticPin from "src/core/components/Map/SurveyStaticPin"
 
 type Props = {
   maptilerUrl: string
@@ -55,8 +55,7 @@ export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
         }}
         scrollZoom={false}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
-        // @ts-expect-error: See https://github.com/visgl/react-map-gl/issues/2310
-        RTLTextPlugin={null}
+        RTLTextPlugin={false}
       >
         {surveyResponsesFeedbackPartWithLocation.map((r) => (
           <Marker

@@ -3,15 +3,14 @@ import {
   TQuestion,
   TSingleOrMultiResponseProps,
   TTextProps,
-} from "src/survey-public/components/types"
+} from "@/src/survey-public/components/types"
 import { SurveyH2 } from "./core/Text"
 import { SurveyLabeledCheckboxGroup } from "./core/form/SurveyLabeledCheckboxGroup"
 import { SurveyLabeledRadiobuttonGroup } from "./core/form/SurveyLabeledRadiobuttonGroup"
-import { SurveyLabeledTextareaField } from "./core/form/SurveyLabeledTextareaField"
-import { SurveyLabeledTextField } from "./core/form/SurveyLabeledTextField"
 import { SurveyLabeledReadOnlyTextField } from "./core/form/SurveyLabeledReadOnlyTextField"
-import { read } from "fs"
-export { FORM_ERROR } from "src/core/components/forms"
+import { SurveyLabeledTextField } from "./core/form/SurveyLabeledTextField"
+import { SurveyLabeledTextareaField } from "./core/form/SurveyLabeledTextareaField"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 type TSingleOrMultuResponseComponentProps = {
   id: number
@@ -110,7 +109,7 @@ export const Question: React.FC<Props> = ({ question, className }) => {
   return (
     <div className={className} key={id}>
       <SurveyH2>{label.de} *</SurveyH2>
-      {help && <div className="-mt-4 mb-6 text-gray-400 text-sm">{help.de}</div>}
+      {help && <div className="-mt-4 mb-6 text-sm text-gray-400">{help.de}</div>}
       {/* @ts-ignore */}
       {Component && <Component id={id} {...props} />}
     </div>

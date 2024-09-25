@@ -42,11 +42,8 @@ const seedStakeholdernotes = async () => {
     },
   ]
 
-  for (let i = 0; i < stakeholdernotes.length; i++) {
-    const data = stakeholdernotes[i]
-    if (data) {
-      await db.stakeholdernote.create({ data })
-    }
+  for (const data of stakeholdernotes) {
+    await db.stakeholdernote.create({ data })
   }
 }
 

@@ -1,9 +1,9 @@
-import db from "db"
-import { NextApiRequest, NextApiResponse } from "next"
+import db from "@/db"
 import {
   getFeedbackDefinitionBySurveySlug,
   getSurveyDefinitionBySurveySlug,
-} from "src/survey-public/utils/getConfigBySurveySlug"
+} from "@/src/survey-public/utils/getConfigBySurveySlug"
+import { NextApiRequest, NextApiResponse } from "next"
 import { getSurvey, sendCsv } from "./_shared"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

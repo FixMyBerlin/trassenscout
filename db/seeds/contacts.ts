@@ -48,11 +48,8 @@ quantum!
     },
   ]
 
-  for (let i = 0; i < seedContacts.length; i++) {
-    const data = seedContacts[i]
-    if (data) {
-      await db.contact.create({ data })
-    }
+  for (const data of seedContacts) {
+    await db.contact.create({ data })
   }
 }
 

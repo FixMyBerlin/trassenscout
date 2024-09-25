@@ -1,18 +1,17 @@
+import { SurveyScreenHeader } from "@/src/survey-public/components/core/layout/SurveyScreenHeader"
+import { TMapProps, TPage, TTextProps } from "@/src/survey-public/components/types"
+import { Fragment } from "react"
+import { useFormContext } from "react-hook-form"
+import { MapProvider } from "react-map-gl/maplibre"
+import { Question } from "../Question"
+import { SurveyH2, SurveyP } from "../core/Text"
 import { SurveyButton } from "../core/buttons/SurveyButton"
 import { SurveyButtonWrapper } from "../core/buttons/SurveyButtonWrapper"
-
-import { useFormContext } from "react-hook-form"
-import { MapProvider } from "react-map-gl"
-import { SurveyScreenHeader } from "src/survey-public/components/core/layout/SurveyScreenHeader"
-import { TFeedbackQuestion, TMapProps, TPage, TTextProps } from "src/survey-public/components/types"
-import { Question } from "../Question"
 import { SurveyLabeledTextareaField } from "../core/form/SurveyLabeledTextareaField"
 import { SurveyMap } from "../maps/SurveyMap"
 import { SurveyMapLegend } from "../maps/SurveyMapLegend"
-import { SurveyH2, SurveyP } from "../core/Text"
-import { Fragment } from "react"
 
-export { FORM_ERROR } from "src/core/components/forms"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props = {
   mapProps: TMapProps
@@ -80,7 +79,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
             return (
               <Fragment key={q.id}>
                 <SurveyH2>{q.label.de} *</SurveyH2>
-                {q.help && <div className="-mt-4 mb-6 text-gray-400 text-sm">{q.help.de}</div>}
+                {q.help && <div className="-mt-4 mb-6 text-sm text-gray-400">{q.help.de}</div>}
                 <SurveyLabeledTextareaField
                   caption={userTextQuestionProps.caption?.de}
                   key={q.id}
@@ -95,7 +94,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
         })}
       </div>
       <SurveyButtonWrapper>
-        <div className="flex gap-6 flex-col">
+        <div className="flex flex-col gap-6">
           <SurveyButton
             color={buttons[0]?.color}
             disabled={!isCompleted}

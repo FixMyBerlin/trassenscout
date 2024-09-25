@@ -1,13 +1,22 @@
+import db from "@/db"
+import { userCreatedNotificationToAdmin } from "@/emails/mailers/userCreatedNotificationToAdmin"
+import { userCreatedNotificationToUser } from "@/emails/mailers/userCreatedNotificationToUser"
+import { getFullname } from "@/src/users/utils/getFullname"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
-import { Role } from "types"
+import { RouteUrlObject } from "blitz"
+import { getInvite } from "../shared/getInvite"
+import { notifyEditorsAboutNewMembership } from "../shared/notifyEditorsAboutNewMembership"
+import { selectUserFieldsForSession } from "../shared/selectUserFieldsForSession"
+import { updateInvite } from "../shared/updateInvite"
 import { Signup } from "../validations"
-import { userCreationMailer } from "mailers/userCreationMailer"
 
 export default resolver.pipe(
   resolver.zod(Signup),
-  async ({ email, firstName, lastName, password, phone }, ctx) => {
+  async ({ email, firstName, lastName, password, phone, institution, inviteToken }, ctx) => {
+    // Case: Invite
+    let invite = await getInvite(inviteToken, email)
+
     const hashedPassword = await SecurePassword.hash(password.trim())
     const user = await db.user.create({
       data: {
@@ -17,17 +26,50 @@ export default resolver.pipe(
         hashedPassword,
         role: "USER",
         phone,
+        institution,
+        // Case: Invite
+        memberships: invite
+          ? { create: { projectId: invite.projectId, role: invite.role } }
+          : undefined,
       },
-      select: { id: true, firstName: true, lastName: true, email: true, role: true },
+      select: {
+        firstName: true,
+        lastName: true,
+        email: true,
+        ...selectUserFieldsForSession,
+      },
     })
 
-    await ctx.session.$create({ userId: user.id, role: user.role as Role })
-    await userCreationMailer({
-      userMail: user.email,
+    await ctx.session.$create({
       userId: user.id,
-      userFirstname: user.firstName,
-      userLastname: user.lastName,
-    }).send()
+      role: user.role,
+      memberships: user.memberships,
+    })
+
+    // Case: Invite
+    invite = await updateInvite(inviteToken, email)
+
+    // Mail: Notify User
+    await (
+      await userCreatedNotificationToUser({
+        user: { email: user.email, name: getFullname(user) || "" },
+        path: { pathname: "/", query: undefined, href: "/" } satisfies RouteUrlObject,
+      })
+    ).send()
+
+    // Mail: Notify Admins
+    await (
+      await userCreatedNotificationToAdmin({
+        userMail: user.email,
+        userId: user.id,
+        userName: getFullname(user),
+        userMembershipCount: user.memberships.length,
+      })
+    ).send()
+
+    // Case: Invite
+    await notifyEditorsAboutNewMembership({ invite, invitee: user })
+
     return user
   },
 )

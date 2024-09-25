@@ -1,11 +1,11 @@
+import { Form, FormProps, LabeledSelect } from "@/src/core/components/forms"
+import getProjects from "@/src/projects/queries/getProjects"
+import { getProjectSelectOptions } from "@/src/projects/utils/getProjectSelectOptions"
+import getUsers from "@/src/users/queries/getUsers"
+import { getUserSelectOptions } from "@/src/users/utils"
 import { useQuery } from "@blitzjs/rpc"
-import { Form, FormProps, LabeledSelect } from "src/core/components/forms"
-import getProjects from "src/projects/queries/getProjects"
-import { getProjectSelectOptions } from "src/projects/utils/getProjectSelectOptions"
-import getUsers from "src/users/queries/getUsers"
-import { getUserSelectOptions } from "src/users/utils"
 import { z } from "zod"
-export { FORM_ERROR } from "src/core/components/forms"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 export function MembershipForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const [{ users }] = useQuery(getUsers, {})

@@ -1,13 +1,22 @@
+import db from "@/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
 import { AuthenticationError } from "blitz"
-import db from "db"
-import { Role } from "types"
+import { notifyEditorsAboutNewMembership } from "../shared/notifyEditorsAboutNewMembership"
+import { selectUserFieldsForSession } from "../shared/selectUserFieldsForSession"
+import { updateInvite } from "../shared/updateInvite"
 import { Login } from "../validations"
 
 export const authenticateUser = async (rawEmail: string, rawPassword: string) => {
   const { email, password } = Login.parse({ email: rawEmail, password: rawPassword })
-  const user = await db.user.findFirst({ where: { email } })
+
+  const user = await db.user.findFirst({
+    where: { email },
+    select: {
+      ...selectUserFieldsForSession,
+      hashedPassword: true,
+    },
+  })
   if (!user) throw new AuthenticationError()
 
   const result = await SecurePassword.verify(user.hashedPassword, password)
@@ -18,15 +27,39 @@ export const authenticateUser = async (rawEmail: string, rawPassword: string) =>
     await db.user.update({ where: { id: user.id }, data: { hashedPassword: improvedHash } })
   }
 
-  const { hashedPassword, ...rest } = user
-  return rest
+  const { hashedPassword, ...returnUser } = user
+  return returnUser
 }
 
-export default resolver.pipe(resolver.zod(Login), async ({ email, password }, ctx) => {
+export default resolver.pipe(resolver.zod(Login), async ({ email, password, inviteToken }, ctx) => {
   // This throws an error if credentials are invalid
-  const user = await authenticateUser(email, password)
+  let user = await authenticateUser(email, password)
 
-  await ctx.session.$create({ userId: user.id, role: user.role as Role })
+  // Case: Invite
+  const invite = await updateInvite(inviteToken, email)
+  if (invite) {
+    user = await db.user.update({
+      where: { id: user.id },
+      data: {
+        memberships: { create: { projectId: invite.projectId, role: invite.role } },
+      },
+      select: {
+        firstName: true,
+        lastName: true,
+        email: true,
+        ...selectUserFieldsForSession,
+      },
+    })
+
+    // @ts-expect-error the user types don't get updated inside this block, so they are missing the name props
+    await notifyEditorsAboutNewMembership({ invite, invitee: user })
+  }
+
+  await ctx.session.$create({
+    userId: user.id,
+    role: user.role,
+    memberships: user.memberships,
+  })
 
   return user
 })

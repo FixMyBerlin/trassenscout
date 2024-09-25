@@ -1,6 +1,6 @@
+import { ProgressBar } from "@/src/survey-public/components/core/layout/ProgressBar"
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import Image from "next/image"
-import { ProgressBar } from "src/survey-public/components/core/layout/ProgressBar"
 import { SurveyLink } from "../links/SurveyLink"
 
 type Props = {
@@ -25,7 +25,7 @@ export const SurveyHeader: React.FC<Props> = ({ logoSrc, landingPageUrl }) => {
           <span className="py-5 pl-5">Beteiligung</span>
         </div>
         <SurveyLink classNameOverwrites="text-gray-900" href={landingPageUrl}>
-          <XMarkIcon className="h-7  w-7" />
+          <XMarkIcon className="h-7 w-7" />
         </SurveyLink>
       </div>
       <ProgressBar />

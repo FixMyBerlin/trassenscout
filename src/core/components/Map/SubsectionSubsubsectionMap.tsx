@@ -1,12 +1,12 @@
+import { useSlugs } from "@/src/core/hooks"
+import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
+import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
 import { Routes } from "@blitzjs/next"
 import { lineString, point } from "@turf/helpers"
 import { bbox, featureCollection } from "@turf/turf"
 import { useRouter } from "next/router"
-import React, { useState } from "react"
+import { useState } from "react"
 import { LngLatBoundsLike, MapLayerMouseEvent, Marker } from "react-map-gl/maplibre"
-import { useSlugs } from "src/core/hooks"
-import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
-import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { shortTitle } from "../text"
 import { BaseMap } from "./BaseMap"
 import { SubsubsectionMapIcon } from "./Icons"
@@ -97,8 +97,8 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
               sec.slug === pageSubsubsectionSlug
                 ? layerColors.selected
                 : hoveredMap === sec.slug || hoveredMarker === sec.slug
-                ? layerColors.hovered
-                : layerColors.selectable,
+                  ? layerColors.hovered
+                  : layerColors.selectable,
           }),
       )
       .filter(Boolean),
@@ -117,16 +117,16 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
               sec.slug === pageSubsubsectionSlug
                 ? layerColors.selected
                 : hoveredMap === sec.slug || hoveredMarker === sec.slug
-                ? layerColors.hovered
-                : layerColors.selectable,
+                  ? layerColors.hovered
+                  : layerColors.selectable,
             radius: 10,
             "border-width": 3,
             "border-color":
               sec.slug === pageSubsubsectionSlug
                 ? layerColors.selected
                 : hoveredMap === sec.slug || hoveredMarker === sec.slug
-                ? layerColors.hovered
-                : layerColors.selectable,
+                  ? layerColors.hovered
+                  : layerColors.selectable,
           }),
       )
       .filter(Boolean),

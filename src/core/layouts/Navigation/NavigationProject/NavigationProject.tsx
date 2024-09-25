@@ -1,14 +1,14 @@
+import { Spinner } from "@/src/core/components/Spinner"
+import { shortTitle } from "@/src/core/components/text"
+import getProjects from "@/src/projects/queries/getProjects"
 import { useParam } from "@blitzjs/next"
+import { useQuery } from "@blitzjs/rpc"
+import { PromiseReturnType } from "blitz"
+import { Suspense } from "react"
 import { NavigationDesktop } from "../NavigationDesktop"
 import { NavigationMobile } from "../NavigationMobile"
 import { NavigationWrapper } from "../NavigationWrapper"
 import { menuItems } from "./menuItems"
-import { Suspense } from "react"
-import { Spinner } from "src/core/components/Spinner"
-import { useQuery } from "@blitzjs/rpc"
-import getProjects from "src/projects/queries/getProjects"
-import { PromiseReturnType } from "blitz"
-import { shortTitle } from "src/core/components/text"
 
 export type NavigationProps = {
   menuItems: ReturnType<typeof menuItems>
@@ -35,7 +35,7 @@ export const NavigationProjectWithQuery = () => {
   )
 }
 
-export const NavigationProject: React.FC = () => {
+export const NavigationProject = () => {
   return (
     <Suspense fallback={<Spinner size="5" />}>
       <NavigationProjectWithQuery />

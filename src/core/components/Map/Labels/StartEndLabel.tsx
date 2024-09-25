@@ -1,5 +1,3 @@
-import React from "react"
-
 import { RouteIcon } from "../Icons"
 
 type Props = {

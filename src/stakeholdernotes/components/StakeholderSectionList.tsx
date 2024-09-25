@@ -1,9 +1,8 @@
 import { useRouterQuery } from "@blitzjs/next"
 import { Stakeholdernote } from "@prisma/client"
+import { clsx } from "clsx"
 import { useEffect, useRef } from "react"
 import { StakeholderSectionListItem } from "./StakeholderSectionListItem"
-import { ZeroCase } from "src/core/components/text/ZeroCase"
-import clsx from "clsx"
 
 type props = {
   stakeholdernotes: Stakeholdernote[]
@@ -59,6 +58,7 @@ export const StakeholdernotesList: React.FC<props> = ({ stakeholdernotes }) => {
             <div
               key={stakeholderNote.id}
               // I tried passing the ref as forwardRef but that did not work for unknown reasons.
+              // @ts-expect-error TODO: this erros since we updated packages; we need to re-test this and maybe remove the feature?
               ref={(element) => (disclosureRefs.current[stakeholderNote.id] = element)}
               className={clsx(
                 "scroll-m-0",

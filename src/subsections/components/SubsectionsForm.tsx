@@ -1,8 +1,8 @@
+import { Spinner } from "@/src/core/components/Spinner"
+import { Form, FormProps, LabeledTextField } from "@/src/core/components/forms"
 import { Suspense } from "react"
-import { Spinner } from "src/core/components/Spinner"
-import { Form, FormProps, LabeledTextField } from "src/core/components/forms"
 import { z } from "zod"
-export { FORM_ERROR } from "src/core/components/forms"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props<S extends z.ZodType<any, any>> = FormProps<S>
 

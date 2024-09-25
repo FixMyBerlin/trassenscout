@@ -1,5 +1,5 @@
+import { Prettify } from "@/src/core/types"
 import { Subsection } from "@prisma/client"
-import { Prettify } from "src/core/types"
 
 type Input = Prettify<
   Omit<Partial<Subsection>, "start" | "end"> &

@@ -1,4 +1,4 @@
-import { InputNumberOrNullSchema } from "src/core/utils"
+import { InputNumberOrNullSchema } from "@/src/core/utils"
 import { z } from "zod"
 
 export const UploadSchema = z.object({

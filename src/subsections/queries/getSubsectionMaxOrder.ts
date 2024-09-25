@@ -1,4 +1,4 @@
-import db from "db"
+import db from "@/db"
 
 const getSubsectionMaxOrder = async (projectId: number) => {
   const maxOrder = await db.subsection.aggregate({

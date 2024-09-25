@@ -1,8 +1,7 @@
-import React from "react"
-import { Link } from "src/core/components/links"
+import { Link } from "@/src/core/components/links"
 import { links } from "./links.const"
 
-export const FooterMinimal: React.FC = () => {
+export const FooterMinimal = () => {
   return (
     <footer className="mx-auto space-x-5 pb-8 text-center">
       {links.map((item) => (

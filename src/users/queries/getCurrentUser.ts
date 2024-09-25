@@ -1,6 +1,5 @@
+import db from "@/db"
 import { Ctx } from "blitz"
-import db from "db"
-import { CurrentUser } from "../types"
 
 export default async function getCurrentUser(_ = null, { session }: Ctx) {
   if (!session.userId) return null
@@ -14,6 +13,7 @@ export default async function getCurrentUser(_ = null, { session }: Ctx) {
       email: true,
       phone: true,
       role: true,
+      institution: true,
     },
   })
 

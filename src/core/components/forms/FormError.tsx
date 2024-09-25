@@ -1,6 +1,7 @@
-import clsx from "clsx"
+import { isDev } from "@/src/core/utils"
+import { clsx } from "clsx"
+import { Fragment } from "react"
 import { FormattedMessage } from "react-intl"
-import { isDev } from "src/core/utils"
 import { proseClasses } from "../text"
 
 type Props = {
@@ -8,7 +9,7 @@ type Props = {
 }
 
 // See also https://github.com/blitz-js/blitz/issues/4059
-export const FormError: React.FC<Props> = ({ formError }) => {
+export const FormError = ({ formError }: Props) => {
   if (!formError) return null
 
   return (
@@ -16,10 +17,10 @@ export const FormError: React.FC<Props> = ({ formError }) => {
       {formError.name === "ZodError" ? (
         <>
           {(formError?.issues || formError?.message || []).map((error: any) => (
-            <>
+            <Fragment key={error.message}>
               <code className="text-red-800">{error.path[0]}</code>: {error.message}
               <br />
-            </>
+            </Fragment>
           ))}
         </>
       ) : (

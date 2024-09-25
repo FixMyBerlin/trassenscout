@@ -1,7 +1,9 @@
-import { FeatureCollection, LineString, Point, featureCollection, point } from "@turf/helpers"
+import { featureCollection, point } from "@turf/helpers"
+import { clsx } from "clsx"
+import type { FeatureCollection, LineString, Point } from "geojson"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
-import React, { useState } from "react"
+import { useState } from "react"
 import Map, {
   Layer,
   MapEvent,
@@ -13,7 +15,6 @@ import Map, {
   ViewStateChangeEvent,
 } from "react-map-gl/maplibre"
 import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher"
-import clsx from "clsx"
 
 const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
 export const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
@@ -150,7 +151,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   return (
     <div
       className={clsx(
-        "w-full overflow-clip rounded-md drop-shadow-md ",
+        "w-full overflow-clip rounded-md drop-shadow-md",
         classHeight ?? "h-96 sm:h-[500px]",
       )}
     >
@@ -176,8 +177,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
             .flat()
             .filter(Boolean)}
           hash={hash || false}
-          // @ts-expect-error: See https://github.com/visgl/react-map-gl/issues/2310
-          RTLTextPlugin={null}
+          RTLTextPlugin={false}
         >
           <NavigationControl showCompass={false} />
           <ScaleControl />

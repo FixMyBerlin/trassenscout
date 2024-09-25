@@ -1,30 +1,30 @@
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
+import { Spinner } from "@/src/core/components/Spinner"
+import { Link, whiteButtonStyles } from "@/src/core/components/links"
+import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { H2 } from "@/src/core/components/text"
+import { useSlugs } from "@/src/core/hooks"
+import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { TSurvey } from "@/src/survey-public/components/types"
+import {
+  getFeedbackDefinitionBySurveySlug,
+  getResponseConfigBySurveySlug,
+  getSurveyDefinitionBySurveySlug,
+} from "@/src/survey-public/utils/getConfigBySurveySlug"
+import { GroupedSurveyResponseItem } from "@/src/survey-responses/components/analysis/GroupedSurveyResponseItem"
+import getGroupedSurveyResponses from "@/src/survey-responses/queries/getGroupedSurveyResponses"
+import {
+  extractAndTransformQuestionsFromPages,
+  transformDeletedQuestions,
+} from "@/src/survey-responses/utils/format-survey-questions"
+import { getFormatDistanceInDays } from "@/src/survey-responses/utils/getFormatDistanceInDays"
+import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
+import getSurvey from "@/src/surveys/queries/getSurvey"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 import { isFuture, isPast } from "date-fns"
 import { Suspense } from "react"
-import { SuperAdminBox } from "src/core/components/AdminBox"
-import { Spinner } from "src/core/components/Spinner"
-import { Link, whiteButtonStyles } from "src/core/components/links"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { H2 } from "src/core/components/text"
-import { useSlugs } from "src/core/hooks"
-import { LayoutRs, MetaTags } from "src/core/layouts"
-import { TSurvey } from "src/survey-public/components/types"
-import {
-  getFeedbackDefinitionBySurveySlug,
-  getResponseConfigBySurveySlug,
-  getSurveyDefinitionBySurveySlug,
-} from "src/survey-public/utils/getConfigBySurveySlug"
-import { GroupedSurveyResponseItem } from "src/survey-responses/components/analysis/GroupedSurveyResponseItem"
-import getGroupedSurveyResponses from "src/survey-responses/queries/getGroupedSurveyResponses"
-import { getFormatDistanceInDays } from "src/survey-responses/utils/getFormatDistanceInDays"
-import {
-  extractAndTransformQuestionsFromPages,
-  transformDeletedQuestions,
-} from "src/survey-responses/utils/format-survey-questions"
-import { SurveyTabs } from "src/surveys/components/SurveyTabs"
-import getSurvey from "src/surveys/queries/getSurvey"
 
 export const Survey = () => {
   const { projectSlug } = useSlugs()
@@ -141,7 +141,7 @@ export const Survey = () => {
                 Die Beteiligung ist über{" "}
                 <Link blank className="!text-base" href={surveyDefinition.canonicalUrl}>
                   diese Seite
-                  <ArrowTopRightOnSquareIcon className="ml-1 w-4 h-4 inline-flex mb-1" />
+                  <ArrowTopRightOnSquareIcon className="mb-1 ml-1 inline-flex h-4 w-4" />
                 </Link>{" "}
                 erreichbar.
               </p>
@@ -152,16 +152,16 @@ export const Survey = () => {
 
       <div className="mt-12">
         <H2>Allgemeine Infos </H2>
-        <div className="mt-4 p-6 flex flex-col gap-y-2.5 bg-gray-100 rounded">
+        <div className="mt-4 flex flex-col gap-y-2.5 rounded bg-gray-100 p-6">
           {generalSurveyInformation.map((row, i) => {
             return (
               // eslint-disable-next-line react/jsx-key
-              <div key={i} className="grid sm:grid-cols-5 gap-2 grid-cols-3">
+              <div key={i} className="grid grid-cols-3 gap-2 sm:grid-cols-5">
                 {Object.entries(Object.values(row)[0] as Record<string, string | number>).map(
                   ([label, value]) => {
                     return (
-                      <div key={label} className="flex flex-col gap-2.5 justify-between">
-                        <p className="text-gray-500 !text-sm">{label}</p>
+                      <div key={label} className="flex flex-col justify-between gap-2.5">
+                        <p className="!text-sm text-gray-500">{label}</p>
                         <p className="font-semibold">{value}</p>
                       </div>
                     )
@@ -173,7 +173,7 @@ export const Survey = () => {
         </div>
       </div>
 
-      <div className="space-y-4 mt-12">
+      <div className="mt-12 space-y-4">
         <H2>Auswertung in Diagrammen und Korrelationen</H2>
         {isSurveyFuture && <p>Die Beteiligung liegt in der Zukunft</p>}
 
@@ -194,7 +194,7 @@ export const Survey = () => {
       </div>
 
       <SuperAdminBox>
-        <div className="flex flex-col gap-4 items-start">
+        <div className="flex flex-col items-start gap-4">
           <button onClick={handleCopyChartDataButtonClick} className={whiteButtonStyles}>
             Beteiligungsergebnisse in die Zwischenablage kopieren - formatiert für Diagramme
           </button>

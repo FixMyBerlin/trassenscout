@@ -1,4 +1,4 @@
-FROM nginx:1.23
+FROM nginx:latest
 
 COPY default.conf.tpl /default.conf.tpl
 

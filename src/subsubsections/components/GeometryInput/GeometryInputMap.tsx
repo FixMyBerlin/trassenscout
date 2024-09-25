@@ -1,12 +1,13 @@
-import { Feature, Point, Position, featureCollection, lineString, point } from "@turf/helpers"
+import { BaseMap } from "@/src/core/components/Map/BaseMap"
+import { layerColors } from "@/src/core/components/Map/layerColors"
+import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
+import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
+import { featureCollection, lineString, point } from "@turf/helpers"
 import { bbox, distance, lineSlice, nearestPointOnLine } from "@turf/turf"
-import React, { useState } from "react"
+import type { Feature, Point, Position } from "geojson"
+import { useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Layer, LngLatBoundsLike, MapLayerMouseEvent, Source } from "react-map-gl/maplibre"
-import { BaseMap } from "src/core/components/Map/BaseMap"
-import { layerColors } from "src/core/components/Map/layerColors"
-import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
-import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
 import { GeometryInputMapSubsubsections } from "./GeometryInputMapSubsubsections"
 
 type Props = {
@@ -16,7 +17,7 @@ type Props = {
 type RouteGeometry = Position[] // [number, number][]
 type AreaGeometry = Position // [number, number]
 
-export const GeometryInputMap: React.FC<Props> = ({ subsection }) => {
+export const GeometryInputMap = ({ subsection }: Props) => {
   const { watch, setValue } = useFormContext()
   const geometry = watch("geometry") as RouteGeometry | AreaGeometry
   const geometryType = watch("type") as SubsubsectionWithPosition["type"]
@@ -75,7 +76,7 @@ export const GeometryInputMap: React.FC<Props> = ({ subsection }) => {
   }
 
   return (
-    <div className="rounded border p-3 text-gray-700 bg-gray-100">
+    <div className="rounded border bg-gray-100 p-3 text-gray-700">
       <h3 className="m-0 mb-3 flex items-center gap-1 text-sm font-medium">
         {geometryType === "ROUTE" ? "Liniengeometrie" : "Punktgeometrie"} zeichnen
       </h3>

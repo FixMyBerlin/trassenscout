@@ -1,23 +1,24 @@
-import { useParam } from "@blitzjs/next"
-import { useMutation, useQuery } from "@blitzjs/rpc"
-import { PlusIcon } from "@heroicons/react/20/solid"
-import { SurveyResponseSourceEnum } from "@prisma/client"
-import clsx from "clsx"
-import { useState } from "react"
-import { Modal } from "src/core/components/Modal"
-import { blueButtonStyles } from "src/core/components/links"
+import { Modal } from "@/src/core/components/Modal"
+import { blueButtonStyles } from "@/src/core/components/links"
 import {
   TMapProps,
   TResponse,
   TSingleOrMultiResponseProps,
-} from "src/survey-public/components/types"
+} from "@/src/survey-public/components/types"
 import {
+  getBackendConfigBySurveySlug,
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
-} from "src/survey-public/utils/getConfigBySurveySlug"
-import createSurveyResponse from "src/survey-responses/mutations/createSurveyResponse"
-import createSurveySession from "src/survey-sessions/mutations/createSurveySession"
-import getSurvey from "src/surveys/queries/getSurvey"
+} from "@/src/survey-public/utils/getConfigBySurveySlug"
+import createSurveyResponse from "@/src/survey-responses/mutations/createSurveyResponse"
+import createSurveySession from "@/src/survey-sessions/mutations/createSurveySession"
+import getSurvey from "@/src/surveys/queries/getSurvey"
+import { useParam } from "@blitzjs/next"
+import { useMutation, useQuery } from "@blitzjs/rpc"
+import { PlusIcon } from "@heroicons/react/20/solid"
+import { SurveyResponseSourceEnum } from "@prisma/client"
+import { clsx } from "clsx"
+import { useState } from "react"
 import { ExternalSurveyResponseForm, FORM_ERROR } from "./ExternalSurveyResponseForm"
 
 type Props = { refetch: any }
@@ -71,12 +72,15 @@ export const ExternalSurveyResponseFormModal: React.FC<Props> = ({ refetch }) =>
       const additionalUserTextId = evaluationRefs["feedback-usertext-2"]
       if (additionalUserTextId) values[additionalUserTextId] = null
 
+      const defaultStatus = getBackendConfigBySurveySlug(survey.slug).status[0].value
+
       const surveySession = await createSurveySessionMutation({ surveyId: Number(surveyId) })
       const surveyResponse = await createSurveyResponseMutation({
         surveyPart: 2,
         data: JSON.stringify(values),
         surveySessionId: surveySession.id,
         source: values.source as SurveyResponseSourceEnum,
+        status: defaultStatus,
       })
       await refetch()
       setOpen(false)

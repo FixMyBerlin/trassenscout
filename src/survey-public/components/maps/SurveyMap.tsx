@@ -1,25 +1,23 @@
+import { LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
+import { SurveyBackgroundSwitcher } from "@/src/survey-public/components/maps/SurveyBackgroundSwitcher"
+import { SurveyMapBanner } from "@/src/survey-public/components/maps/SurveyMapBanner"
+import SurveyPin from "@/src/survey-public/components/maps/SurveyPin"
+import { getCompletedQuestionIds } from "@/src/survey-public/utils/getCompletedQuestionIds"
 import { lineString } from "@turf/helpers"
 import { bbox, center } from "@turf/turf"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
-import React, { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
-
 import Map, {
   Layer,
-  LngLat,
   Marker,
   MarkerDragEvent,
   NavigationControl,
   Source,
   useMap,
 } from "react-map-gl/maplibre"
-import { LayerType } from "src/core/components/Map/BackgroundSwitcher"
-import { SurveyBackgroundSwitcher } from "src/survey-public/components/maps/SurveyBackgroundSwitcher"
-import { SurveyMapBanner } from "src/survey-public/components/maps/SurveyMapBanner"
-import SurveyPin from "src/survey-public/components/maps/SurveyPin"
-import { getCompletedQuestionIds } from "src/survey-public/utils/getCompletedQuestionIds"
 
 export type SurveyMapProps = {
   className?: string
@@ -52,7 +50,7 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
   // todo survey clean up or refactor after survey BB line selection
 }) => {
   const { mainMap } = useMap()
-  const [events, logEvents] = useState<Record<string, LngLat>>({})
+  const [events, logEvents] = useState<Record<string, Object>>({})
   const [isPinInView, setIsPinInView] = useState(true)
   const [isMediumScreen, setIsMediumScreen] = useState(false)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
@@ -164,8 +162,7 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         onZoom={handleMapZoom}
         mapLib={maplibregl}
-        // @ts-expect-error: See https://github.com/visgl/react-map-gl/issues/2310
-        RTLTextPlugin={null}
+        RTLTextPlugin={false}
       >
         {/* // todo survey clean up or refactor after survey BB line selection */}
         {selectedLine && (

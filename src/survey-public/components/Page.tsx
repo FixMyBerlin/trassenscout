@@ -1,10 +1,10 @@
-import { SurveyScreenHeader } from "src/survey-public/components/core/layout/SurveyScreenHeader"
-import { SurveyButtonWithAction } from "./core/buttons/SurveyButtonWithAction"
-import { SurveyButtonWrapper } from "./core/buttons/SurveyButtonWrapper"
-import type { TPage as TPage } from "src/survey-public/components/types"
+import { SurveyScreenHeader } from "@/src/survey-public/components/core/layout/SurveyScreenHeader"
+import type { TPage } from "@/src/survey-public/components/types"
 import { Question } from "./Question"
 import { SurveyP } from "./core/Text"
-export { FORM_ERROR } from "src/core/components/forms"
+import { SurveyButtonWithAction } from "./core/buttons/SurveyButtonWithAction"
+import { SurveyButtonWrapper } from "./core/buttons/SurveyButtonWrapper"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props = {
   page: TPage
@@ -12,7 +12,7 @@ type Props = {
   completed: boolean
 }
 
-export const Page: React.FC<Props> = ({ page, buttonActions, completed }) => {
+export const Page = ({ page, buttonActions, completed }: Props) => {
   if (!page) return null
   const { id: pageId, title, description, questions, buttons } = page
 

@@ -1,16 +1,17 @@
+import { Calender } from "@/src/calendar-entries/components/Calender"
+import getCalendarEntries from "@/src/calendar-entries/queries/getCalendarEntries"
+import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { Pagination } from "@/src/core/components/Pagination"
+import { Spinner } from "@/src/core/components/Spinner"
+import { Link } from "@/src/core/components/links"
+import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
+import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import getCalendarEntries from "src/calendar-entries/queries/getCalendarEntries"
-import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
-import { Link } from "src/core/components/links"
-import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { Pagination } from "src/core/components/Pagination"
-import { Spinner } from "src/core/components/Spinner"
-import { LayoutRs, MetaTags } from "src/core/layouts"
-import { Calender } from "src/calendar-entries/components/Calender"
 
 const ITEMS_PER_PAGE = 100
 
@@ -31,15 +32,17 @@ export const CalendarEntriesWithData = () => {
     <>
       <Calender calendarEntries={calendarEntries} />
 
-      <ButtonWrapper className="mt-5">
-        <Link
-          button="blue"
-          icon="plus"
-          href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}
-        >
-          Termin
-        </Link>
-      </ButtonWrapper>
+      <IfUserCanEdit>
+        <ButtonWrapper className="mt-5">
+          <Link
+            button="blue"
+            icon="plus"
+            href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}
+          >
+            Termin
+          </Link>
+        </ButtonWrapper>
+      </IfUserCanEdit>
 
       <Pagination
         hasMore={hasMore}

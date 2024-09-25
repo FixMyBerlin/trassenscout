@@ -1,15 +1,15 @@
 import { AppProps, ErrorBoundary, ErrorComponent, ErrorFallbackProps } from "@blitzjs/next"
 // https://fontsource.org/fonts/red-hat-text/install => Tab "Static"
+import { withBlitz } from "@/src/blitz-client"
+import "@/src/core/styles/index.css"
+import "@fontsource/red-hat-text/400-italic.css"
 import "@fontsource/red-hat-text/400.css" // regular
 import "@fontsource/red-hat-text/500.css" // medium
 import "@fontsource/red-hat-text/600.css" // semibold
-import "@fontsource/red-hat-text/400-italic.css"
 import "@fontsource/red-hat-text/700.css" // extrabold
 import { init } from "@socialgouv/matomo-next"
 import { AuthenticationError, AuthorizationError } from "blitz"
 import { useEffect, useRef } from "react"
-import { withBlitz } from "src/blitz-client"
-import "src/core/styles/index.css"
 import LoginPage from "./auth/login"
 
 const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL

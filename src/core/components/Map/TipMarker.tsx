@@ -1,5 +1,5 @@
-import clsx from "clsx"
-import React, { CSSProperties } from "react"
+import { clsx } from "clsx"
+import { CSSProperties } from "react"
 
 type Props = React.HTMLAttributes<HTMLDivElement> & {
   anchor:

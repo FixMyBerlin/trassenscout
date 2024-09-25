@@ -1,27 +1,19 @@
-import { useFormContext } from "react-hook-form"
+import { useAlertBeforeUnload } from "../utils/useAlertBeforeUnload"
 import { SurveyButton } from "./core/buttons/SurveyButton"
 import { SurveyButtonWrapper } from "./core/buttons/SurveyButtonWrapper"
 import { SurveyScreenHeader } from "./core/layout/SurveyScreenHeader"
 import { TMore } from "./types"
-import { useEffect } from "react"
-import { get } from "http"
 
-export { FORM_ERROR } from "src/core/components/forms"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props = {
   onClickMore: any
   onClickFinish: any
   more: TMore
-  isUserLocationQuestionId: number
 }
 
-export const More: React.FC<Props> = ({
-  more,
-  onClickMore,
-  onClickFinish,
-  isUserLocationQuestionId,
-}) => {
-  const { getValues, reset } = useFormContext()
+export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
+  useAlertBeforeUnload()
 
   const { title, description, questionText, buttons } = more
 

@@ -1,9 +1,9 @@
-import { Layout, MetaTags } from "src/core/layouts"
-import { NewsItem } from "./news/NewsItem"
-import { newsItems } from "./news/newsItems.const"
+import { Layout, MetaTags } from "@/src/core/layouts"
 import { PageHomePublicContact } from "./PageHomePublicContact"
 import PageHomePublicOnline from "./PageHomePublicOnline"
 import { PageHomePublicPhotos } from "./PageHomePublicPhotos"
+import { NewsItem } from "./news/NewsItem"
+import { newsItems } from "./news/newsItems.const"
 
 const PageHomePublic = () => {
   return (

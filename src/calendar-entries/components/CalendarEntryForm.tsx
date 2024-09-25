@@ -1,6 +1,11 @@
-import { Form, FormProps, LabeledTextareaField, LabeledTextField } from "src/core/components/forms"
+import {
+  Form,
+  FormProps,
+  LabeledTextareaField,
+  LabeledTextField,
+} from "@/src/core/components/forms"
 import { z } from "zod"
-export { FORM_ERROR } from "src/core/components/forms"
+export { FORM_ERROR } from "@/src/core/components/forms"
 
 export function CalendarEntryForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (

@@ -1,6 +1,6 @@
-import clsx from "clsx"
+import { proseClasses } from "@/src/core/components/text"
+import { clsx } from "clsx"
 import { Remark } from "react-remark"
-import { proseClasses } from "src/core/components/text"
 import { SurveyLink } from "./links/SurveyLink"
 
 type Props = {
@@ -33,8 +33,8 @@ const components = {
 }
 
 const proseClassesSurvey = clsx(
-  "prose-p:text-base prose-p:sm:text-lg prose-p:text-gray-700",
-  "prose-h2:mb-4 prose-h2:mt-8 prose-h2:text-lg prose-h2:font-extrabold prose-h2:text-gray-900 prose-h2:sm:text-xl prose-ol:text-base prose-ol:sm:text-lg",
+  "prose-p:text-base prose-p:text-gray-700 prose-p:sm:text-lg",
+  "prose-h2:mb-4 prose-h2:mt-8 prose-h2:text-lg prose-h2:font-extrabold prose-h2:text-gray-900 prose-ol:text-base prose-h2:sm:text-xl prose-ol:sm:text-lg",
 )
 
 export const SurveyMarkdown: React.FC<Props> = ({ markdown, className }) => {

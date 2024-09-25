@@ -1,24 +1,24 @@
-import { Routes } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
-import clsx from "clsx"
-import React from "react"
-import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
-import { SubsubsectionIcon } from "src/core/components/Map/Icons"
-import { Markdown } from "src/core/components/Markdown/Markdown"
-import { Link, whiteButtonStyles } from "src/core/components/links"
-import { PageDescription } from "src/core/components/pages/PageDescription"
+import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
+import { Markdown } from "@/src/core/components/Markdown/Markdown"
+import { Link, whiteButtonStyles } from "@/src/core/components/links"
+import { PageDescription } from "@/src/core/components/pages/PageDescription"
 import {
   formattedEuro,
   formattedLength,
   formattedWidth,
   shortTitle,
-} from "src/core/components/text"
-import { H2 } from "src/core/components/text/Headings"
-import { useSlugs } from "src/core/hooks"
-import { UploadPreview } from "src/uploads/components/UploadPreview"
-import getUploadsWithSubsections from "src/uploads/queries/getUploadsWithSubsections"
-import { SubsubsectionWithPosition } from "src/subsubsections/queries/getSubsubsection"
-import { getFullname } from "src/users/utils"
+} from "@/src/core/components/text"
+import { H2 } from "@/src/core/components/text/Headings"
+import { useSlugs } from "@/src/core/hooks"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
+import { UploadPreview } from "@/src/uploads/components/UploadPreview"
+import getUploadsWithSubsections from "@/src/uploads/queries/getUploadsWithSubsections"
+import { getFullname } from "@/src/users/utils"
+import { Routes } from "@blitzjs/next"
+import { useQuery } from "@blitzjs/rpc"
+import { clsx } from "clsx"
 import { mapillaryLink } from "./utils/mapillaryLink"
 
 type Props = {
@@ -44,16 +44,18 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
           {subsubsection.type === "ROUTE" ? "Regelführung" : "Sonderführung"}
         </div>
         <div className="flex items-center gap-3">
-          <Link
-            icon="edit"
-            href={Routes.EditSubsubsectionPage({
-              projectSlug: projectSlug!,
-              subsectionSlug: subsectionSlug!,
-              subsubsectionSlug: subsubsectionSlug!,
-            })}
-          >
-            bearbeiten
-          </Link>
+          <IfUserCanEdit>
+            <Link
+              icon="edit"
+              href={Routes.EditSubsubsectionPage({
+                projectSlug: projectSlug!,
+                subsectionSlug: subsectionSlug!,
+                subsubsectionSlug: subsubsectionSlug!,
+              })}
+            >
+              bearbeiten
+            </Link>
+          </IfUserCanEdit>
           <button
             className={clsx("h-8 !w-8 !rounded-full !p-0", whiteButtonStyles)}
             onClick={onClose}
@@ -144,16 +146,18 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
       <section className="mt-10">
         <div className="mb-2 flex items-center justify-between">
           <H2>Grafiken</H2>
-          <Link
-            icon="plus"
-            href={Routes.NewUploadPage({
-              projectSlug: projectSlug!,
-              subsubsectionId: subsubsection.id,
-              returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
-            })}
-          >
-            Grafik
-          </Link>
+          <IfUserCanEdit>
+            <Link
+              icon="plus"
+              href={Routes.NewUploadPage({
+                projectSlug: projectSlug!,
+                subsubsectionId: subsubsection.id,
+                returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
+              })}
+            >
+              Grafik
+            </Link>
+          </IfUserCanEdit>
         </div>
         {!uploads.length && <p>Es gibt noch keine Grafiken für diese Planung</p>}
         <div className="grid grid-cols-2 gap-3">
@@ -188,7 +192,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
           />
         ) : (
           mapillaryHref && (
-            <Link blank href={mapillaryHref} className="block mt-3">
+            <Link blank href={mapillaryHref} className="mt-3 block">
               Mapillary öffnen
             </Link>
           )

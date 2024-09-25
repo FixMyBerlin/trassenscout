@@ -1,17 +1,18 @@
+import { Link } from "@/src/core/components/links/Link"
+import { shortTitle } from "@/src/core/components/text"
+import { CurrentUserCanIcon } from "@/src/memberships/components/CurrentUserCanIcon"
 import { Routes } from "@blitzjs/next"
-import { Menu, Transition } from "@headlessui/react"
+import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react"
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useRouter } from "next/router"
-import React, { Fragment } from "react"
-import { Link } from "src/core/components/links/Link"
-import { shortTitle } from "src/core/components/text"
+import { Fragment } from "react"
 import { NavigationProps } from "../NavigationProject/NavigationProject"
 import { ProjectLogo } from "../NavigationProject/ProjectLogo"
 
 type Props = Pick<NavigationProps, "projects">
 
-export const NavigationProjectsSwitch: React.FC<Props> = ({ projects }) => {
+export const NavigationProjectsSwitch = ({ projects }: Props) => {
   const { query } = useRouter()
 
   // The 1 case is handeled by the Dashboard Link "Dashbaord RS8"
@@ -31,7 +32,7 @@ export const NavigationProjectsSwitch: React.FC<Props> = ({ projects }) => {
     <Menu as="div" className="relative ml-3">
       {({ open }) => (
         <>
-          <Menu.Button
+          <MenuButton
             className={clsx(
               "flex rounded-md bg-yellow-500 px-3 py-2 text-sm font-medium text-gray-800",
               open ? "bg-yellow-400" : "hover:bg-yellow-400 focus:bg-yellow-400",
@@ -44,7 +45,7 @@ export const NavigationProjectsSwitch: React.FC<Props> = ({ projects }) => {
               className="-mr-1.5 ml-0.5 h-5 w-5 text-gray-900 hover:text-black"
               aria-hidden="true"
             />
-          </Menu.Button>
+          </MenuButton>
           {open && (
             <Transition
               as={Fragment}
@@ -55,30 +56,34 @@ export const NavigationProjectsSwitch: React.FC<Props> = ({ projects }) => {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute left-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <MenuItems className="absolute left-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <div className="p-1.5">
                   {projectsMenuItems.map((item) => {
                     const current = query.projectSlug === item.slug
+
                     return (
-                      <Menu.Item key={item.name}>
+                      <MenuItem key={item.name}>
                         {({ active }) => (
                           <Link
                             href={item.href}
                             classNameOverwrites={clsx(
                               current && "bg-gray-200",
                               active && "bg-gray-100",
-                              "text-blue-500 hover:text-blue-800 flex items-center rounded-md px-3 py-2 text-sm gap-2 items-center my-1.5 first:mt-0 last:mb-0",
+                              "my-1.5 flex items-center justify-between gap-2 rounded-md px-3 py-2 text-sm text-blue-500 first:mt-0 last:mb-0 hover:text-blue-800",
                             )}
                           >
-                            {current && <ProjectLogo />}
-                            {item.name}
+                            <div className="flex items-center gap-2">
+                              {current && <ProjectLogo />}
+                              {item.name}
+                            </div>
+                            <CurrentUserCanIcon projectSlug={item.slug} />
                           </Link>
                         )}
-                      </Menu.Item>
+                      </MenuItem>
                     )
                   })}
                 </div>
-              </Menu.Items>
+              </MenuItems>
             </Transition>
           )}
         </>

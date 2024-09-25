@@ -1,19 +1,19 @@
+import { CalendarEntryForm, FORM_ERROR } from "@/src/calendar-entries/components/CalendarEntryForm"
+import createCalendarEntry from "@/src/calendar-entries/mutations/createCalendarEntry"
+import {
+  CalendarEntrySchema,
+  CalendarEntryStartDateStartTimeSchema,
+} from "@/src/calendar-entries/schema"
+import { transformValuesWithStartAt } from "@/src/calendar-entries/utils/transformValuesWithStartAt"
+import { Spinner } from "@/src/core/components/Spinner"
+import { Link } from "@/src/core/components/links"
+import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { seoNewTitle } from "@/src/core/components/text"
+import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { CalendarEntryForm, FORM_ERROR } from "src/calendar-entries/components/CalendarEntryForm"
-import createCalendarEntry from "src/calendar-entries/mutations/createCalendarEntry"
-import {
-  CalendarEntrySchema,
-  CalendarEntryStartDateStartTimeSchema,
-} from "src/calendar-entries/schema"
-import { transformValuesWithStartAt } from "src/calendar-entries/utils/transformValuesWithStartAt"
-import { Link } from "src/core/components/links"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { Spinner } from "src/core/components/Spinner"
-import { seoNewTitle } from "src/core/components/text"
-import { LayoutRs, MetaTags } from "src/core/layouts"
 
 const NewCalendarEntry = () => {
   const router = useRouter()
@@ -45,7 +45,6 @@ const NewCalendarEntry = () => {
       <CalendarEntryForm
         submitText="Erstellen"
         schema={CalendarEntrySchema.omit({
-          projectSlug: true,
           startAt: true,
         }).merge(CalendarEntryStartDateStartTimeSchema)}
         //  initialValues={{}}

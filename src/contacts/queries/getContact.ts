@@ -1,8 +1,8 @@
+import db from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
-
-import { authorizeProjectAdmin } from "src/authorization"
+import { viewerRoles } from "../../authorization/constants"
 import getContactProjectId from "./getContactProjectId"
 
 const GetContactSchema = z.object({
@@ -12,6 +12,6 @@ const GetContactSchema = z.object({
 
 export default resolver.pipe(
   resolver.zod(GetContactSchema),
-  authorizeProjectAdmin(getContactProjectId),
+  authorizeProjectAdmin(getContactProjectId, viewerRoles),
   async ({ id }) => await db.contact.findFirstOrThrow({ where: { id } }),
 )

@@ -1,13 +1,13 @@
+import { Spinner } from "@/src/core/components/Spinner"
+import { Link } from "@/src/core/components/links/Link"
+import { H2 } from "@/src/core/components/text/Headings"
 import { Routes, useParam } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { startOfDay } from "date-fns"
 import { Suspense } from "react"
-import { Link } from "src/core/components/links/Link"
-import { Spinner } from "src/core/components/Spinner"
-import { H2 } from "src/core/components/text/Headings"
-import { DateList } from "./Calender/DateList"
+import { IfUserCanEdit } from "../../memberships/components/IfUserCan"
 import getCalendarEntries from "../queries/getCalendarEntries"
-import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
+import { DateList } from "./Calender/DateList"
 
 const CalendarDashboardDateList: React.FC = () => {
   const projectSlug = useParam("projectSlug", "string")
@@ -30,9 +30,11 @@ const CalendarDashboardDateList: React.FC = () => {
             Alle Termine
           </Link>
         ) : (
-          <Link icon="plus" href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}>
-            Neuen Termin eintragen
-          </Link>
+          <IfUserCanEdit>
+            <Link icon="plus" href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}>
+              Neuen Termin eintragen
+            </Link>
+          </IfUserCanEdit>
         )}
       </div>
     </>

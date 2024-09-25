@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { LinkProps } from "./Link"
 
 // BUTTON:
@@ -6,7 +6,7 @@ const buttonBase =
   "w-full font-medium sm:w-auto shadow-sm text-sm py-3.5 px-6 rounded-lg inline-flex items-center justify-center no-underline disabled:text-gray-400 disabled:bg-white disabled:ring-1 disabled:ring-gray-400"
 
 // LINK
-export const linkStyles = "text-sm text-blue-500 hover:text-blue-800"
+export const linkStyles = "text-blue-500 hover:text-blue-800"
 
 // HOVER and ACTIVE
 // for button elements
@@ -29,14 +29,14 @@ const activeStyleWhiteLinkElement =
 // for link elements
 const blueButtonStylesForLinkElement = clsx(
   buttonBase,
-  "text-white bg-blue-500",
+  "bg-blue-500 text-white",
   hoverStyleForLinkElement,
   activeStyleBlueLinkElement,
 )
 // for button elements
 export const blueButtonStyles = clsx(
   buttonBase,
-  "enabled:text-white enabled:bg-blue-500",
+  "enabled:bg-blue-500 enabled:text-white",
   hoverStyleForButtonElement,
   activeStyleBlueButtonElement,
 )
@@ -61,13 +61,13 @@ export const whiteButtonStyles = clsx(
 // for link elements
 const pinkButtonStylesForLinkElement = clsx(
   buttonBase,
-  "text-white bg-pink-500",
+  "bg-pink-500 text-white",
   activeStylePinkLinkElement,
 )
 // for button elements
 export const pinkButtonStyles = clsx(
   buttonBase,
-  "enabled:text-white enabled:bg-pink-500",
+  "enabled:bg-pink-500 enabled:text-white",
   activeStylePinkButtonElement,
 )
 

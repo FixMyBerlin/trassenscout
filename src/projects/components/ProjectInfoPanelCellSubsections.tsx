@@ -1,5 +1,5 @@
+import { formatGerKm } from "@/src/subsections/components/utils/formatNumericInfo"
 import { useQuery } from "@blitzjs/rpc"
-import { formatGerKm } from "src/subsections/components/utils/formatNumericInfo"
 import getStatsInfopanelProjectSubsections from "../queries/getStatsInfopanelProjectSubsections"
 
 type Props = {
@@ -15,7 +15,7 @@ export const ProjectInfoPanelCellSubsections: React.FC<Props> = ({ projectSlug }
     <>
       {/* Gesamtlänge PAs */}
       <div>
-        <p className="font-bold text-lg">Länge: {formatGerKm(projectLengthKm)}</p>
+        <p className="text-lg font-bold">Länge: {formatGerKm(projectLengthKm)}</p>
         <p>Planungsabschnitte: {numberOfSubsections}</p>
       </div>
       {networHierarchiesSubsectionsWithCount.length ? (

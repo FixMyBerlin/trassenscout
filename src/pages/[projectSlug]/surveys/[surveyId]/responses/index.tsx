@@ -1,22 +1,22 @@
+import { Spinner } from "@/src/core/components/Spinner"
+import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { H2 } from "@/src/core/components/text"
+import { ZeroCase } from "@/src/core/components/text/ZeroCase"
+import { useSlugs } from "@/src/core/hooks"
+import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
+import getSubsections from "@/src/subsections/queries/getSubsections"
+import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
+import { EditableSurveyResponseFilterForm } from "@/src/survey-responses/components/feedback/EditableSurveyResponseFilterForm"
+import EditableSurveyResponseListItem from "@/src/survey-responses/components/feedback/EditableSurveyResponseListItem"
+import { ExternalSurveyResponseFormModal } from "@/src/survey-responses/components/feedback/ExternalSurveyResponseFormModal"
+import { useFilteredResponses } from "@/src/survey-responses/components/feedback/useFilteredResponses"
+import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"
+import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
+import getSurvey from "@/src/surveys/queries/getSurvey"
 import { BlitzPage, useParam, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense, useEffect, useRef } from "react"
-import { Spinner } from "src/core/components/Spinner"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { H2 } from "src/core/components/text"
-import { ZeroCase } from "src/core/components/text/ZeroCase"
-import { useSlugs } from "src/core/hooks"
-import { LayoutRs, MetaTags } from "src/core/layouts"
-import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
-import getSubsections from "src/subsections/queries/getSubsections"
-import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
-import { EditableSurveyResponseFilterForm } from "src/survey-responses/components/feedback/EditableSurveyResponseFilterForm"
-import EditableSurveyResponseListItem from "src/survey-responses/components/feedback/EditableSurveyResponseListItem"
-import { ExternalSurveyResponseFormModal } from "src/survey-responses/components/feedback/ExternalSurveyResponseFormModal"
-import { useFilteredResponses } from "src/survey-responses/components/feedback/useFilteredResponses"
-import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedbackSurveyResponses"
-import { SurveyTabs } from "src/surveys/components/SurveyTabs"
-import getSurvey from "src/surveys/queries/getSurvey"
 
 export const SurveyResponse = () => {
   const { projectSlug, subsectionSlug } = useSlugs()
@@ -63,7 +63,7 @@ export const SurveyResponse = () => {
       <MetaTags noindex title={`Beteiligung ${survey.title}`} />
       <PageHeader title={survey.title} className="mt-12" description={<SurveyTabs />} />
 
-      <div className="space-y-4 mt-12">
+      <div className="mt-12 space-y-4">
         <H2>Beiträge aus Bürgerbeteiligung </H2>
 
         <ExternalSurveyResponseFormModal refetch={refetchResponses} />
@@ -80,8 +80,9 @@ export const SurveyResponse = () => {
           {filteredResponses.map((response) => (
             <div
               key={response.id}
-              className="w-full text-sm first:rounded-t-xl border border-gray-300 border-b-0 last:border-b last:rounded-b-xl overflow-hidden"
+              className="w-full overflow-hidden border border-b-0 border-gray-300 text-sm first:rounded-t-xl last:rounded-b-xl last:border-b"
               // I tried passing the ref as forwardRef but that did not work for unknown reasons.
+              // @ts-expect-error TODO: this erros since we updated packages; we need to re-test this and maybe remove the feature?
               ref={(element) => (accordionRefs.current[response.id] = element)}
             >
               <EditableSurveyResponseListItem

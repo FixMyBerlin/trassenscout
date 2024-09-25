@@ -1,8 +1,10 @@
+import { LoginForm } from "@/src/auth/components/LoginForm"
+import { Notice } from "@/src/core/components/Notice"
+import { Spinner } from "@/src/core/components/Spinner"
+import { LayoutMiddleBox, MetaTags } from "@/src/core/layouts"
 import { BlitzPage } from "@blitzjs/next"
 import { useRouter } from "next/router"
-import { LoginForm } from "src/auth/components/LoginForm"
-import { Notice } from "src/core/components/Notice"
-import { LayoutMiddleBox, MetaTags } from "src/core/layouts"
+import { Suspense } from "react"
 
 export type LoginFormMessageKeys = "loginRequired"
 
@@ -38,12 +40,14 @@ const LoginPage: BlitzPage<Props> = ({ messageKey }) => {
           ausloggen.
         </Notice>
       )} */}
-      <LoginForm
-        onSuccess={(_user) => {
-          const next = router.query.next ? decodeURIComponent(router.query.next as string) : "/"
-          return router.push(next)
-        }}
-      />
+      <Suspense fallback={<Spinner />}>
+        <LoginForm
+          onSuccess={(_user) => {
+            const next = router.query.next ? decodeURIComponent(router.query.next as string) : "/"
+            return router.push(next)
+          }}
+        />
+      </Suspense>
     </LayoutMiddleBox>
   )
 }

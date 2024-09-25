@@ -1,18 +1,19 @@
+import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { Pagination } from "@/src/core/components/Pagination"
+import { Spinner } from "@/src/core/components/Spinner"
+import { Link } from "@/src/core/components/links"
+import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
+import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { shortTitle } from "@/src/core/components/text"
+import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import getSubsections from "@/src/subsections/queries/getSubsections"
+import { UploadTable } from "@/src/uploads/components/UploadTable"
+import getUploads from "@/src/uploads/queries/getUploadsWithSubsections"
 import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
-import { SuperAdminLogData } from "src/core/components/AdminBox/SuperAdminLogData"
-import { Link } from "src/core/components/links"
-import { ButtonWrapper } from "src/core/components/links/ButtonWrapper"
-import { PageHeader } from "src/core/components/pages/PageHeader"
-import { Pagination } from "src/core/components/Pagination"
-import { Spinner } from "src/core/components/Spinner"
-import { shortTitle } from "src/core/components/text"
-import { LayoutRs, MetaTags } from "src/core/layouts"
-import { UploadTable } from "src/uploads/components/UploadTable"
-import getUploads from "src/uploads/queries/getUploadsWithSubsections"
-import getSubsections from "src/subsections/queries/getSubsections"
 
 const ITEMS_PER_PAGE = 100
 
@@ -79,11 +80,17 @@ export const UploadsWithData = () => {
 
       <UploadTable uploads={filteredUploads} />
 
-      <ButtonWrapper className="mt-5">
-        <Link button="blue" icon="plus" href={Routes.NewUploadPage({ projectSlug: projectSlug! })}>
-          Datei hochladen
-        </Link>
-      </ButtonWrapper>
+      <IfUserCanEdit>
+        <ButtonWrapper className="mt-5">
+          <Link
+            button="blue"
+            icon="plus"
+            href={Routes.NewUploadPage({ projectSlug: projectSlug! })}
+          >
+            Datei hochladen
+          </Link>
+        </ButtonWrapper>
+      </IfUserCanEdit>
 
       <Pagination
         hasMore={hasMore}

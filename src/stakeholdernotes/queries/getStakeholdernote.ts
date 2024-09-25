@@ -1,8 +1,8 @@
+import db from "@/db"
+import { authorizeProjectAdmin } from "@/src/authorization"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
 import { z } from "zod"
-
-import { authorizeProjectAdmin } from "src/authorization"
+import { viewerRoles } from "../../authorization/constants"
 import getStakeholdernoteProjectId from "./getStakeholdernoteProjectId"
 
 const GetStakeholdernoteSchema = z.object({
@@ -12,7 +12,7 @@ const GetStakeholdernoteSchema = z.object({
 
 export default resolver.pipe(
   resolver.zod(GetStakeholdernoteSchema),
-  authorizeProjectAdmin(getStakeholdernoteProjectId),
+  authorizeProjectAdmin(getStakeholdernoteProjectId, viewerRoles),
   async ({ id }) =>
     await db.stakeholdernote.findFirstOrThrow({
       where: { id },

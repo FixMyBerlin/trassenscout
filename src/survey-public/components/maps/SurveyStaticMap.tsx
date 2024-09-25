@@ -1,5 +1,4 @@
 import "maplibre-gl/dist/maplibre-gl.css"
-import React from "react"
 import Map, { Marker, useMap } from "react-map-gl/maplibre"
 import SurveyStaticPin from "./SurveyStaticPin"
 
@@ -31,8 +30,7 @@ export const SurveyStaticMap: React.FC<Props> = ({ marker, maptilerUrl }) => {
         touchZoomRotate={false}
         cursor={"default"}
         mapStyle={vectorStyle}
-        // @ts-expect-error: See https://github.com/visgl/react-map-gl/issues/2310
-        RTLTextPlugin={null}
+        RTLTextPlugin={false}
       >
         <Marker
           draggable={false}

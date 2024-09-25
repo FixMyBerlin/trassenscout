@@ -1,5 +1,3 @@
-import { PrismaClient } from "@prisma/client"
-
 /*
 # TODO: Document why this exists and could be useful
 source .env.local

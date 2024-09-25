@@ -40,21 +40,47 @@ model User {
   email          String       @unique
   hashedPassword String?
   role           UserRoleEnum @default(USER)
-  firstName      String?
-  lastName       String?
+  firstName      String
+  lastName       String
   phone          String?
+  institution    String? // Organisation / Kommune
 
   tokens        Token[]
   sessions      Session[]
   projects      Project[]
   subsections   Subsection[]
-  Membership    Membership[]
+  memberships   Membership[]
   Subsubsection Subsubsection[]
+  invites       Invite[]
+  logEntries    LogEntry[]
 }
 
 enum UserRoleEnum {
   USER
   ADMIN
+}
+
+model Invite {
+  id        Int                @id @default(autoincrement())
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  //
+  token     String             @unique
+  status    InviteStatusEnum   @default(PENDING)
+  //
+  email     String             @unique
+  role      MembershipRoleEnum @default(VIEWER)
+  //
+  projectId Int
+  project   Project            @relation(fields: [projectId], references: [id])
+  inviterId Int
+  inviter   User               @relation(fields: [inviterId], references: [id])
+}
+
+enum InviteStatusEnum {
+  PENDING
+  ACCEPTED
+  EXPIRED
 }
 
 model Session {
@@ -125,6 +151,8 @@ model Project {
   SubsubsectionInfra   SubsubsectionInfra[]
   SubsubsectionSpecial SubsubsectionSpecial[]
   NetworkHierarchy     NetworkHierarchy[]
+  invites              Invite[]
+  logEntries           LogEntry[]
 }
 
 model Membership {
@@ -136,7 +164,14 @@ model Membership {
   user   User @relation(fields: [userId], references: [id])
   userId Int
 
+  role MembershipRoleEnum @default(VIEWER)
+
   @@unique([projectId, userId])
+}
+
+enum MembershipRoleEnum {
+  VIEWER
+  EDITOR
 }
 
 model CalendarEntry {
@@ -471,7 +506,7 @@ model SurveyResponse {
   id                   Int                                     @id @default(autoincrement())
   surveyPart           Int
   data                 String
-  status               SurveyResponseStatusEnum?               @default(PENDING)
+  status               String?
   note                 String?
   source               SurveyResponseSourceEnum                @default(FORM)
   //
@@ -508,11 +543,28 @@ model SurveyResponseTopicsOnSurveyResponses {
   @@id([surveyResponseId, surveyResponseTopicId])
 }
 
-enum SurveyResponseStatusEnum {
-  PENDING
-  ASSIGNED
-  IRRELEVANT
-  HANDED_OVER
-  DONE_FAQ
-  DONE_PLANING
+model LogEntry {
+  id        Int          @id @default(autoincrement())
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  //
+  userId    Int?
+  user      User?        @relation(fields: [userId], references: [id])
+  projectId Int?
+  project   Project?     @relation(fields: [projectId], references: [id])
+  //
+  logLevel  LogLevelEnum @default(INFO)
+  message   String
+  context   Json?
+
+  // Maybe later…
+  // @@index([createdAt])
+  // @@index([userId])
+  // @@index([projectId])
+}
+
+enum LogLevelEnum {
+  INFO
+  WARN
+  ERROR
 }

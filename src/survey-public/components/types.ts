@@ -1,5 +1,3 @@
-import { LngLatBoundsLike } from "react-map-gl/maplibre"
-
 export type TSurvey = {
   part: number
   version: number

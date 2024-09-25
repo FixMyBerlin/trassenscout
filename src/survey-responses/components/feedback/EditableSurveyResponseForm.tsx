@@ -1,29 +1,32 @@
-import { useMutation } from "@blitzjs/rpc"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Operator } from "@prisma/client"
-import clsx from "clsx"
-import { useRouter } from "next/router"
-import { PropsWithoutRef, useState } from "react"
-import { FormProvider, UseFormProps, useForm } from "react-hook-form"
-import { LngLatBoundsLike } from "react-map-gl/maplibre"
 import {
   LabeledCheckboxGroup,
   LabeledRadiobuttonGroup,
   LabeledTextField,
   LabeledTextareaField,
-} from "src/core/components/forms"
-import { Link, blueButtonStyles } from "src/core/components/links"
-import { useSlugs } from "src/core/hooks"
-import createSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/createSurveyResponseTopicsOnSurveyResponses"
-import deleteSurveyResponseTopicsOnSurveyResponses from "src/survey-response-topics-on-survey-responses/mutations/deleteSurveyResponseTopicsOnSurveyResponses"
-import createSurveyResponseTopic from "src/survey-response-topics/mutations/createSurveyResponseTopic"
+} from "@/src/core/components/forms"
+import { Link, blueButtonStyles } from "@/src/core/components/links"
+import { useSlugs } from "@/src/core/hooks"
+import {
+  TBackendConfig,
+  backendConfig as defaultBackendConfig,
+} from "@/src/survey-public/utils/backend-config-defaults"
+import createSurveyResponseTopicsOnSurveyResponses from "@/src/survey-response-topics-on-survey-responses/mutations/createSurveyResponseTopicsOnSurveyResponses"
+import deleteSurveyResponseTopicsOnSurveyResponses from "@/src/survey-response-topics-on-survey-responses/mutations/deleteSurveyResponseTopicsOnSurveyResponses"
+import createSurveyResponseTopic from "@/src/survey-response-topics/mutations/createSurveyResponseTopic"
+import getSurvey from "@/src/surveys/queries/getSurvey"
+import { Routes, useParam } from "@blitzjs/next"
+import { useMutation, useQuery } from "@blitzjs/rpc"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Operator } from "@prisma/client"
+import { clsx } from "clsx"
+import { useRouter } from "next/router"
+import { PropsWithoutRef, useState } from "react"
+import { FormProvider, UseFormProps, useForm } from "react-hook-form"
+import { LngLatBoundsLike } from "react-map-gl/maplibre"
 import { z } from "zod"
 import updateSurveyResponse from "../../mutations/updateSurveyResponse"
 import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
 import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
-import { surveyResponseStatus } from "./surveyResponseStatus"
-import { Routes, useParam } from "@blitzjs/next"
-import { H1 } from "src/core/components/text"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -36,6 +39,7 @@ type FormProps<S extends z.ZodType<any, any>> = Omit<
   maptilerUrl: string
   defaultViewState: LngLatBoundsLike
   showMap?: boolean
+  backendConfig: TBackendConfig
 } & Pick<EditableSurveyResponseListItemProps, "response" | "operators" | "topics" | "subsections">
 
 export const FORM_ERROR = "FORM_ERROR"
@@ -52,6 +56,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   initialValues,
   refetchResponsesAndTopics,
   showMap,
+  backendConfig,
 }: FormProps<S>) {
   const router = useRouter()
   const methods = useForm<z.infer<S>>({
@@ -62,6 +67,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
 
   const { projectSlug } = useSlugs()
   const surveyId = useParam("surveyId", "string")
+  const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
 
   const [updateSurveyResponseMutation] = useMutation(updateSurveyResponse)
   const [surveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
@@ -76,6 +82,9 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   )
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+
+  const labels = backendConfig.labels || defaultBackendConfig.labels
+  const surveyResponseStatus = backendConfig.status
 
   const operatorsOptions = operators.map((operator: Operator) => {
     return { value: String(operator.id), label: operator.title }
@@ -142,18 +151,19 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
       ])
       // the EditableSurveyResponseFilterForm needs to update when a new topic is added here
       // this hapens with a useEffect in EditableSurveyResponseFilterForm
-      await router.push(
-        {
-          query: {
-            ...router.query,
-            topics: [...(router.query.topics as string[]), String(createdOrFetched.id)],
+      if (router.query.topics)
+        await router.push(
+          {
+            query: {
+              ...router.query,
+              topics: [...(router.query.topics as string[]), String(createdOrFetched.id)],
+            },
           },
-        },
-        undefined,
-        {
-          scroll: false,
-        },
-      )
+          undefined,
+          {
+            scroll: false,
+          },
+        )
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -164,22 +174,26 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
     <FormProvider {...methods}>
       <div className={clsx(showMap ? "grid-cols-2" : "grid-cols-1", "grid gap-8")}>
         <div>
-          <div className="flex flex-col justify-between col-span-2">
-            <div className="flex flex-col w-full gap-10">
-              <div className="grid grid-cols-2 w-full gap-8">
+          <div className="col-span-2 flex flex-col justify-between">
+            <div className="flex w-full flex-col gap-10">
+              <div className="grid w-full grid-cols-2 gap-8">
                 <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-                  <h4 className="font-semibold mb-3">Status</h4>
+                  <h4 className="mb-3 font-semibold">
+                    {labels.status?.sg || defaultBackendConfig.labels.category.sg}
+                  </h4>
                   <LabeledRadiobuttonGroup
                     classNameItemWrapper={clsx("flex-shrink-0")}
                     scope={"status"}
-                    items={Object.entries(surveyResponseStatus).map(([value, label]) => {
+                    items={surveyResponseStatus.map(({ value, label }) => {
                       return { value, label }
                     })}
                   />
                 </form>
 
                 <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-                  <h4 className="font-semibold mb-3">Baulastträger</h4>
+                  <h4 className="mb-3 font-semibold">
+                    {labels.operator?.sg || defaultBackendConfig.labels.operator.sg}
+                  </h4>
                   <LabeledRadiobuttonGroup
                     scope="operatorId"
                     items={[...operatorsOptions, { value: "0", label: "Nicht zugeordnet" }]}
@@ -191,7 +205,9 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                 onChange={async () => await methods.handleSubmit(handleSubmit)()}
               >
                 <div>
-                  <h4 className="font-semibold mb-3">Themen (für FAQ)</h4>
+                  <h4 className="mb-3 font-semibold">
+                    {labels.topics?.pl || defaultBackendConfig.labels.topics.pl}
+                  </h4>
                   <LabeledCheckboxGroup
                     classNameItemWrapper="grid grid-cols-3 grid-rows-10 grid-flow-col-dense"
                     scope="surveyResponseTopics"
@@ -246,37 +262,45 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
             methods.resetField("newTopic")
           }}
         >
-          <div className="space-y-2 pr-2 pb-8 min-w-[300px]">
-            <LabeledTextField placeholder="Thema hinzufügen" name="newTopic" label="" />
-            <button type="submit" className={clsx(blueButtonStyles, "!py-2.5 !px-3")}>
+          <div className="min-w-[300px] space-y-2 pb-8 pr-2">
+            <LabeledTextField
+              placeholder={`${
+                labels.topics?.sg || defaultBackendConfig.labels.operator.sg
+              } hinzufügen`}
+              name="newTopic"
+              label=""
+            />
+            <button type="submit" className={clsx(blueButtonStyles, "!px-3 !py-2.5")}>
               Hinzufügen
             </button>
           </div>
         </form>
       </div>
       <form
-        className="flex mt-6"
+        className="mt-6 flex"
         onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
           e.preventDefault()
           await methods.handleSubmit(handleSubmit)()
           setHasUnsavedChanges(false)
         }}
       >
-        <div className="flex-grow space-y-2 pr-2 pb-4">
-          <p className="font-semibold mb-3">Interne Notiz</p>
+        <div className="flex-grow space-y-2 pb-4 pr-2">
+          <p className="mb-3 font-semibold">
+            {labels.note?.sg || defaultBackendConfig.labels.note.sg}
+          </p>
           <LabeledTextareaField
-            help="Bitte starten Sie Ihre Notiz immer mit ihrem Namen oder Kürzel"
+            help={labels.note?.help || defaultBackendConfig.labels.note.help}
             name="note"
             label=""
             onChange={() => setHasUnsavedChanges(true)}
             className={clsx(
               hasUnsavedChanges &&
-                "focus:border-yellow-500 focus:ring-yellow-500 border-yellow-500 ring-yellow-500",
+                "border-yellow-500 ring-yellow-500 focus:border-yellow-500 focus:ring-yellow-500",
             )}
           />
-          <div className="flex justify-between items-end">
-            <button type="submit" className={clsx(blueButtonStyles, "!py-2.5 !px-3")}>
-              Notiz speichern
+          <div className="flex items-end justify-between">
+            <button type="submit" className={clsx(blueButtonStyles, "!px-3 !py-2.5")}>
+              {labels.note?.sg || defaultBackendConfig.labels.note.sg} speichern
             </button>
             <small className={clsx(!hasUnsavedChanges && "opacity-0", "text-yellow-500")}>
               ungespeicherte Änderungen

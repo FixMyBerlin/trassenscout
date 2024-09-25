@@ -1,30 +1,31 @@
-import { useParam, useRouterQuery } from "@blitzjs/next"
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid"
-import clsx from "clsx"
-import { useRouter } from "next/router"
-import { Markdown } from "src/core/components/Markdown/Markdown"
-import { Prettify } from "src/core/types"
-import getOperatorsWithCount from "src/operators/queries/getOperatorsWithCount"
-import { ListItemStatus } from "src/stakeholdernotes/components/StakeholderSectionListItemStatus"
-import { SubsectionWithPosition } from "src/subsections/queries/getSubsection"
-import getSurveyResponseTopicsByProject from "src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
-import getFeedbackSurveyResponses from "src/survey-responses/queries/getFeedbackSurveyResponses"
-import { getSurveyResponseCategoryById } from "src/survey-responses/utils/getSurveyResponseCategoryById"
-import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
-import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
-
-import { useMutation, useQuery } from "@blitzjs/rpc"
-import { EnvelopeIcon } from "@heroicons/react/24/outline"
-import { linkStyles } from "src/core/components/links"
-import { TMapProps } from "src/survey-public/components/types"
+import { Markdown } from "@/src/core/components/Markdown/Markdown"
+import { linkStyles } from "@/src/core/components/links"
+import { Prettify } from "@/src/core/types"
+import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
+import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
+import { TMapProps } from "@/src/survey-public/components/types"
+import { backendConfig as defaultBackendConfig } from "@/src/survey-public/utils/backend-config-defaults"
 import {
+  getBackendConfigBySurveySlug,
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
   getSurveyDefinitionBySurveySlug,
-} from "src/survey-public/utils/getConfigBySurveySlug"
-import deleteSurveyResponse from "src/survey-responses/mutations/deleteSurveyResponse"
-import getSurvey from "src/surveys/queries/getSurvey"
+} from "@/src/survey-public/utils/getConfigBySurveySlug"
+import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
+import deleteSurveyResponse from "@/src/survey-responses/mutations/deleteSurveyResponse"
+import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"
+import { getSurveyResponseCategoryById } from "@/src/survey-responses/utils/getSurveyResponseCategoryById"
+import getSurvey from "@/src/surveys/queries/getSurvey"
+import { useParam, useRouterQuery } from "@blitzjs/next"
+import { useMutation, useQuery } from "@blitzjs/rpc"
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid"
+import { EnvelopeIcon } from "@heroicons/react/24/outline"
+import { clsx } from "clsx"
+import { useRouter } from "next/router"
 import { useEffect } from "react"
+import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
+import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
+import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
@@ -73,26 +74,26 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   }
   const operatorSlugWitFallback = response.operator?.slug || "k.A."
 
-  const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
+  const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
   const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
+  const backendConfig = getBackendConfigBySurveySlug(survey.slug)
+  const labels = backendConfig.labels || defaultBackendConfig.labels
+  const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
 
   const mapProps = feedbackDefinition!.pages[1]!.questions.find(
     (q) => q.id === evaluationRefs["feedback-location"],
   )!.props as TMapProps
-
-  const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
-  const maptilerUrl = surveyDefinition.maptilerUrl
   const defaultViewState = mapProps?.config?.bounds
 
   const feedbackQuestions = []
-
   for (let page of feedbackDefinition.pages) {
     feedbackQuestions.push(...page.questions)
   }
-
   const feedbackQuestion = feedbackQuestions.find(
     (q) => q.id === evaluationRefs["feedback-category"],
   )
+
+  const maptilerUrl = surveyDefinition.maptilerUrl
 
   const userTextPreview =
     // @ts-expect-error `data` is of type unkown
@@ -133,17 +134,17 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
     <article data-open={open} className="bg-white">
       <button
         className={clsx(
-          "py-4 text-left text-sm text-gray-900 hover:bg-gray-50 group flex w-full items-center justify-between pr-4 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75 sm:pr-6",
+          "group flex w-full items-center justify-between py-4 pr-4 text-left text-sm text-gray-900 hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75 sm:pr-6",
           open ? "bg-gray-50" : "border-b border-gray-300",
         )}
         onClick={isAccordion ? () => (open ? handleClose() : handleOpen()) : undefined}
       >
-        <div className="gap-4 flex items-center px-6 pb-2 pt-3">
+        <div className="flex items-center gap-4 px-6 pb-2 pt-3">
           <h3 className="text-gray-700">{response.id} </h3>
-          <ListItemStatus status={response.status} />
+          <EditableSurveyResponseStatusLabel surveySlug={survey.slug} status={response.status} />
           <div
             className={clsx(
-              "bg-gray-300 rounded-full px-4 py-2 text-sm flex-shrink-0",
+              "flex-shrink-0 rounded-full bg-gray-300 px-4 py-2 text-sm",
               operatorSlugWitFallback !== "k.A." && "uppercase",
             )}
           >
@@ -155,16 +156,16 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
 
         {isAccordion &&
           (open ? (
-            <ChevronUpIcon className="h-5 w-5 text-gray-700 group-hover:text-black flex-shrink-0" />
+            <ChevronUpIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
           ) : (
-            <ChevronDownIcon className="h-5 w-5 text-gray-700 group-hover:text-black flex-shrink-0" />
+            <ChevronDownIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
           ))}
       </button>
 
       {open && (
         <div className={clsx("overflow-clip p-6", open ? "border-b border-gray-300" : "")}>
           {response.source !== "FORM" && (
-            <span className="flex flex-row gap-2 items-center">
+            <span className="flex flex-row items-center gap-2">
               <EnvelopeIcon className="h-4 w-4" />
               <span>per {getTranslatedSource(response.source)} eingegangen </span>
               <span>| </span>
@@ -173,7 +174,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
               </button>
             </span>
           )}
-          <div className="flex gap-12 mb-10 flex-col md:flex-row justify-between">
+          <div className="mb-10 flex flex-col justify-between gap-12 md:flex-row">
             <EditableSurveyResponseUserText
               surveyId={surveyId!}
               userTextIndices={[
@@ -184,9 +185,11 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
               response={response}
             />
             <div>
-              <h4 className="font-semibold mb-5">Kategorie</h4>
+              <h4 className="mb-5 font-semibold">
+                {labels.category?.sg || defaultBackendConfig.labels.category.sg}
+              </h4>
               <div className="w-48 flex-shrink-0">
-                <span className="p-3 px-4 bg-gray-300 rounded">{feedbackUserCategory}</span>
+                <span className="rounded bg-gray-300 p-3 px-4">{feedbackUserCategory}</span>
               </div>
             </div>
           </div>
@@ -206,6 +209,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             refetchResponsesAndTopics={refetchResponsesAndTopics}
             maptilerUrl={maptilerUrl}
             defaultViewState={defaultViewState}
+            backendConfig={backendConfig}
           />
         </div>
       )}

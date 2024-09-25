@@ -1,5 +1,5 @@
 import { ErrorMessage } from "@hookform/error-message"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef } from "react"
 import { useFormContext } from "react-hook-form"
@@ -35,8 +35,7 @@ export const SurveyLabeledReadOnlyTextField = forwardRef<HTMLInputElement, Label
     setValue(
       name,
       router.query[queryId] && typeof router.query[queryId] === "string"
-        ? // @ts-expect-error
-          decodeURIComponent(router.query[queryId])
+        ? decodeURIComponent(router.query[queryId])
         : "invalid",
     )
 
@@ -58,7 +57,7 @@ export const SurveyLabeledReadOnlyTextField = forwardRef<HTMLInputElement, Label
           id={name}
           {...props}
           className={clsx(
-            "bg-gray-200 block w-full appearance-none rounded-md border px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none sm:text-sm",
+            "block w-full appearance-none rounded-md border bg-gray-200 px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none sm:text-sm",
             hasError
               ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
               : "border-gray-300 focus:border-[var(--survey-primary-color)] focus:ring-[var(--survey-primary-color)]",

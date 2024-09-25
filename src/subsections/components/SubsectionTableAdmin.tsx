@@ -1,15 +1,16 @@
+import { SubsectionIcon } from "@/src/core/components/Map/Icons"
+import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
+import { Link } from "@/src/core/components/links"
+import { shortTitle } from "@/src/core/components/text"
+import { useSlugs } from "@/src/core/hooks"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import { defaultGeometryForMultipleSubsectionForm } from "@/src/pages/admin/[projectSlug]/subsections/multiple-new"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline"
 import { lineString } from "@turf/helpers"
-import clsx from "clsx"
-import { useRouter } from "next/router"
-import { SubsectionIcon } from "src/core/components/Map/Icons"
-import { TableWrapper } from "src/core/components/Table/TableWrapper"
-import { Link } from "src/core/components/links"
-import { shortTitle } from "src/core/components/text"
-import { useSlugs } from "src/core/hooks"
+import { clsx } from "clsx"
 import deleteSubsection from "../mutations/deleteSubsection"
 import { SubsectionWithPosition } from "../queries/getSubsection"
 
@@ -34,7 +35,7 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds 
   return (
     <section>
       {Boolean(updatedIds?.length) && (
-        <p className="text-base mt-8 border-4 border-blue-100 p-8">
+        <p className="mt-8 border-4 border-blue-100 p-8 text-base">
           Die Planungsabschnitte mit den Ids <code>{JSON.stringify(updatedIds)}</code> (in der
           Tabelle blau hinterlegt) wurden in Felt erkannt und ggf. aktualisiert.
         </p>
@@ -87,6 +88,9 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds 
                 projectSlug: projectSlug!,
                 subsectionSlug: subsection.slug,
               })
+              const noPreviewForDefaultGeometry =
+                String(subsection.geometry) === defaultGeometryForMultipleSubsectionForm.join(",")
+
               return (
                 <tr
                   key={subsection.id}
@@ -97,7 +101,7 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds 
                     <SubsectionIcon label={shortTitle(subsection.slug)} />
                   </td>
 
-                  <td className=" py-4 pl-4 pr-3 text-sm font-medium cursor-pointer text-blue-500 hover:text-blue-800">
+                  <td className="cursor-pointer py-4 pl-4 pr-3 text-sm font-medium text-blue-500 hover:text-blue-800">
                     <button onClick={() => handleSlugCopyClick(subsection.slug)}>
                       <div className="flex gap-5">
                         <p>{subsection.slug}</p>
@@ -129,42 +133,42 @@ export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds 
                   <td
                     className={clsx(
                       "py-4 pl-4 pr-3 text-sm font-medium group-hover:bg-gray-50",
-                      String(subsection.geometry) ===
-                        "5.98865807458,47.3024876979,15.0169958839,54.983104153"
+                      noPreviewForDefaultGeometry
                         ? "text-gray-300 group-hover:text-gray-500"
                         : "text-gray-900",
                     )}
                   >
-                    {String(subsection.geometry) !==
-                    "5.98865807458,47.3024876979,15.0169958839,54.983104153" ? (
+                    {noPreviewForDefaultGeometry ? (
                       <Link
                         blank
-                        href={`http://geojson.io/#data=data:application/json,${encodeURIComponent(
+                        href={`https://play.placemark.io/?load=data:application/json,${encodeURIComponent(
                           JSON.stringify(lineString(subsection.geometry)),
                         )}`}
                       >
-                        Auf geojson.io öffnen
+                        Auf placemark.io öffnen
                       </Link>
                     ) : (
                       "unbekannt"
                     )}
                   </td>
                   <td className="space-y-2 pr-2">
-                    <Link
-                      href={Routes.EditSubsectionPage({
-                        projectSlug: projectSlug!,
-                        subsectionSlug: subsection.slug,
-                      })}
-                    >
-                      <PencilSquareIcon className="h-4 w-4" />
-                      <span className="sr-only">Bearbeiten</span>
-                    </Link>
-                    <button
-                      className="text-blue-500 hover:text-blue-800"
-                      onClick={() => handleDeleteSubsection(subsection.id)}
-                    >
-                      <TrashIcon className="h-4 w-4" />
-                    </button>
+                    <IfUserCanEdit>
+                      <Link
+                        href={Routes.EditSubsectionPage({
+                          projectSlug: projectSlug!,
+                          subsectionSlug: subsection.slug,
+                        })}
+                      >
+                        <PencilSquareIcon className="h-4 w-4" />
+                        <span className="sr-only">Bearbeiten</span>
+                      </Link>
+                      <button
+                        className="text-blue-500 hover:text-blue-800"
+                        onClick={() => handleDeleteSubsection(subsection.id)}
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                      </button>
+                    </IfUserCanEdit>
                   </td>
                 </tr>
               )
