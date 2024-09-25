@@ -14,6 +14,8 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { z } from "zod"
 
+const NewSubsubsectionSchema = SubsubsectionSchema.omit({ subsectionId: true })
+
 const NewSubsubsection = () => {
   const router = useRouter()
   const [createSubsubsectionMutation] = useMutation(createSubsubsection)
@@ -24,7 +26,7 @@ const NewSubsubsection = () => {
     subsectionSlug: subsectionSlug!,
   })
 
-  type HandleSubmit = z.infer<typeof SubsubsectionSchema>
+  type HandleSubmit = z.infer<typeof NewSubsubsectionSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const subsubsection = await createSubsubsectionMutation({
@@ -60,7 +62,7 @@ const NewSubsubsection = () => {
         initialValues={{ type: "AREA", labelPos: "bottom" }}
         className="mt-10"
         submitText="Erstellen"
-        schema={SubsubsectionSchema}
+        schema={NewSubsubsectionSchema}
         onSubmit={handleSubmit}
       />
     </>

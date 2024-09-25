@@ -75,7 +75,7 @@ export const SubsubsectionSchema = z.object({
   ownFunds: InputNumberOrNullSchema,
   // LIST ALL m2mFields HERE
   // We need to do this manually, since dynamic zod types don't work
-  specialFeatures: z.array(z.number()),
+  specialFeatures: z.union([z.literal(false), z.array(z.coerce.number())]),
 })
 
 export type SubsubsectionWithPositionWithSpecialFeatures = Omit<

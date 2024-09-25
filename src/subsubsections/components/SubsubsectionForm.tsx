@@ -81,7 +81,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
 
       <LabeledTextField type="text" name="subTitle" label="Title" optional />
       <GeometryInput />
-      {/* @ts-ignore */}
+      {/* @ts-expect-error the defaults work fine; but the helper should be update at some point */}
       <LabeledCheckbox scope="isExistingInfra" label="Bestandsführung – keine Maßnahme geplant" />
       <div className="flex items-end gap-5">
         <LabeledSelect
