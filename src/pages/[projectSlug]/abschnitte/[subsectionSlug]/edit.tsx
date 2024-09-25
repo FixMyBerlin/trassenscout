@@ -5,7 +5,6 @@ import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitleSlug, shortTitle } from "@/src/core/components/text"
 import { useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
 import getProject from "@/src/projects/queries/getProject"
 import { FORM_ERROR, SubsectionForm } from "@/src/subsections/components/SubsectionForm"
 import deleteSubsection from "@/src/subsections/mutations/deleteSubsection"
@@ -27,7 +26,6 @@ const EditSubsection = () => {
     subsectionSlug: subsectionSlug!,
   })
   const [updateSubsectionMutation] = useMutation(updateSubsection)
-  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -74,7 +72,6 @@ const EditSubsection = () => {
         schema={SubsectionSchema}
         initialValues={{ ...subsection, slug: subsection.slug.replace(/^pa/, "") }}
         onSubmit={handleSubmit}
-        users={users}
       />
 
       <hr className="my-5" />

@@ -29,7 +29,7 @@ export { FORM_ERROR } from "@/src/core/components/forms"
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const { projectSlug } = useSlugs()
-  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
+  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug!, role: "EDITOR" })
 
   const [{ qualityLevels }] = useQuery(getQualityLevelsWithCount, { projectSlug })
   const qualityLevelOptions: [number | string, string][] = [

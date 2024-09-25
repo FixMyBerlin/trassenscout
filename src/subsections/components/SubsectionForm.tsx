@@ -10,11 +10,12 @@ import { LabeledFormatNumberFieldCalculateLength } from "@/src/core/components/f
 import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
 import { quote, shortTitle } from "@/src/core/components/text"
 import { useSlugs } from "@/src/core/hooks"
+import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
 import getNetworkHierarchysWithCount from "@/src/networkHierarchy/queries/getNetworkHierarchysWithCount"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import { LabeledRadiobuttonGroupLabelPos } from "@/src/subsubsections/components/LabeledRadiobuttonGroupLabelPos"
 import { LinkWithFormDirtyConfirm } from "@/src/subsubsections/components/LinkWithFormDirtyConfirm"
-import { UserSelectOptions, getUserSelectOptions } from "@/src/users/utils"
+import { getUserSelectOptions } from "@/src/users/utils"
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { PriorityEnum } from "@prisma/client"
@@ -24,16 +25,15 @@ import { getPriorityTranslation } from "./utils/getPriorityTranslation"
 export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props<S extends z.ZodType<any, any>> = FormProps<S> & {
-  users: UserSelectOptions
   isFeltFieldsReadOnly?: boolean
 }
 
 function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
-  users,
   isFeltFieldsReadOnly,
   ...props
 }: Props<S>) {
   const { projectSlug } = useSlugs()
+  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug!, role: "EDITOR" })
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const [{ networkHierarchys }] = useQuery(getNetworkHierarchysWithCount, { projectSlug })
   const operatorOptions: [number | string, string][] = [

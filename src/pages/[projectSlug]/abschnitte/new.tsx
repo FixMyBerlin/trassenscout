@@ -5,7 +5,6 @@ import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
 import { useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
 import getProject from "@/src/projects/queries/getProject"
 import { FORM_ERROR, SubsectionForm } from "@/src/subsections/components/SubsectionForm"
 import createSubsection from "@/src/subsections/mutations/createSubsection"
@@ -20,7 +19,6 @@ const NewSubsection = () => {
   const { projectSlug } = useSlugs()
   const [project] = useQuery(getProject, { slug: projectSlug! })
   const [createSubsectionMutation] = useMutation(createSubsection)
-  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -52,7 +50,6 @@ const NewSubsection = () => {
         submitText="Erstellen"
         schema={SubsectionSchema.omit({ projectId: true })}
         onSubmit={handleSubmit}
-        users={users}
       />
     </>
   )
