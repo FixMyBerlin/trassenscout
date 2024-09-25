@@ -13,13 +13,13 @@ export async function userCreatedNotificationToUser(props: Props) {
   const introMarkdown = `
 Guten Tag ${props.user.name}!
 
-Diese Mail dient als Information, dass Sie soeben einen Account im Trassenscout erstellt haben.
+Herzlich Willkommen im Trassenscout! Diese E-Mail dient zur Information, dass Sie soeben erfolgreich einen Account erstellt haben. 
 `
 
   const message: Mail = {
     From: addressNoreply,
     To: [{ Email: props.user.email, Name: props.user.name }],
-    Subject: "Trassenscout: Account aktiviert",
+    Subject: "Trassenscout: Account erstellt",
     introMarkdown,
     ctaLink: mailUrl(props.path),
     ctaText: "Trassenscout öffnen",
