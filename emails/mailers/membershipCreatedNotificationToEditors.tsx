@@ -17,11 +17,11 @@ export async function membershipCreatedNotificationToEditors(props: Props) {
   const introMarkdown = `
 Guten Tag!
 
-Diese Mail dient als Information an alle mit der Rolle "Editor" für das Projekt ${quote(
+Diese Mail dient zur Information aller Personen mit der Rolle "Editor" im Projekt ${quote(
     props.projectName,
   )}.
 
-# Soeben hat ${quote(props.invinteeName)} die Einladung zur Mitarbeit angenommen und hat jetzt ${
+# ${quote(props.invinteeName)} hat soeben die Einladung zur Mitarbeit angenommen und hat jetzt ${
     props.roleName
   }.
 
@@ -31,7 +31,7 @@ Das Projektteam kann unter ${mailUrl(props.teamPath)} eingesehen werden.
   const message: Mail = {
     From: addressNoreply,
     To: [{ Email: props.user.email, Name: props.user.name }],
-    Subject: `Trassenscout: Neue Mitwirkende (${quote(props.projectName)})`,
+    Subject: `Trassenscout: Neue:r Mitwirkende:r (${quote(props.projectName)})`,
     introMarkdown,
   }
 
