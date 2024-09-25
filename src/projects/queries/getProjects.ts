@@ -1,7 +1,7 @@
 import db, { Prisma } from "@/db"
 import getProjects from "@/src/projects/queries/getProjects"
 import { resolver } from "@blitzjs/rpc"
-import { Ctx, paginate } from "blitz"
+import { Ctx, NotFoundError, paginate } from "blitz"
 
 interface GetProjectsInput
   extends Pick<Prisma.ProjectFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
@@ -12,9 +12,12 @@ export default resolver.pipe(
   resolver.authorize(/* ok */),
   async ({ where, orderBy = { id: "asc" }, skip = 0, take = 100 }: GetProjectsInput, ctx: Ctx) => {
     const user = await db.user.findFirst({ where: { id: ctx.session.userId! } })
+    if (!user) throw new NotFoundError()
+
     if (user!.role !== "ADMIN") {
-      where = { ...where, memberships: { some: { userId: user!.id } } }
+      where = { ...where, memberships: { some: { userId: user.id } } }
     }
+
     const {
       items: projects,
       hasMore,
