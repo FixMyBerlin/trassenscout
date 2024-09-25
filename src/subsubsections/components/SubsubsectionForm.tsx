@@ -3,6 +3,7 @@ import {
   FormProps,
   LabeledCheckbox,
   LabeledCheckboxGroup,
+  LabeledCheckboxProps,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
@@ -60,15 +61,12 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
     }),
   ]
   const [{ subsubsectionSpecials }] = useQuery(getSubsubsectionSpecialsWithCount, { projectSlug })
-  // @ts-ignore
-  const subsubsectionSpecialOptions: [number | string, string][] = subsubsectionSpecials.map(
-    (special) => {
-      return {
-        value: String(special.id),
-        label: special.title,
-      }
-    },
-  )
+  const subsubsectionSpecialOptions = subsubsectionSpecials.map((special) => {
+    return {
+      value: String(special.id),
+      label: special.title,
+    }
+  }) satisfies Omit<LabeledCheckboxProps, "scope">[]
 
   return (
     <Form<S> {...props}>
@@ -113,12 +111,10 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           Führungsformen verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-      {/* @ts-ignore */}
       <div>
         <LabeledCheckboxGroup
           scope="specialFeatures"
           label="Besonderheiten"
-          // @ts-ignore
           items={subsubsectionSpecialOptions}
         />
         <div className="mt-4">
