@@ -9,7 +9,6 @@ import {
 } from "@/src/core/components/forms"
 import { LabeledFormatNumberField } from "@/src/core/components/forms/LabeledFormatNumberField"
 import { LabeledFormatNumberFieldCalculateLength } from "@/src/core/components/forms/LabeledFormatNumberFieldCalculateLength"
-import { Link } from "@/src/core/components/links"
 import { quote, shortTitle } from "@/src/core/components/text"
 import { useSlugs } from "@/src/core/hooks"
 import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
@@ -24,6 +23,7 @@ import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { z } from "zod"
 import { GeometryInput } from "./GeometryInput/GeometryInput"
+import { LinkWithFormDirtyConfirm } from "./LinkWithFormDirtyConfirm"
 
 export { FORM_ERROR } from "@/src/core/components/forms"
 
@@ -92,9 +92,12 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           options={subsubsectionTaskOptions}
           outerProps={{ className: "grow" }}
         />
-        <Link href={Routes.SubsubsectionTasksPage({ projectSlug: projectSlug! })} className="py-2">
+        <LinkWithFormDirtyConfirm
+          href={Routes.SubsubsectionTasksPage({ projectSlug: projectSlug! })}
+          className="py-2"
+        >
           Maßnahmetypen verwalten…
-        </Link>
+        </LinkWithFormDirtyConfirm>
       </div>
       <div className="flex items-end gap-5">
         <LabeledSelect
@@ -103,9 +106,12 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           options={subsubsectionInfraOptions}
           outerProps={{ className: "grow" }}
         />
-        <Link href={Routes.SubsubsectionInfrasPage({ projectSlug: projectSlug! })} className="py-2">
+        <LinkWithFormDirtyConfirm
+          href={Routes.SubsubsectionInfrasPage({ projectSlug: projectSlug! })}
+          className="py-2"
+        >
           Führungsformen verwalten…
-        </Link>
+        </LinkWithFormDirtyConfirm>
       </div>
       {/* @ts-ignore */}
       <div>
@@ -116,12 +122,12 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           items={subsubsectionSpecialOptions}
         />
         <div className="mt-4">
-          <Link
+          <LinkWithFormDirtyConfirm
             href={Routes.SubsubsectionSpecialsPage({ projectSlug: projectSlug! })}
             className="py-2"
           >
             Besonderheiten verwalten…
-          </Link>
+          </LinkWithFormDirtyConfirm>
         </div>
       </div>
       <LabeledFormatNumberFieldCalculateLength
@@ -161,9 +167,12 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           options={qualityLevelOptions}
           outerProps={{ className: "grow" }}
         />
-        <Link href={Routes.QualityLevelsPage({ projectSlug: projectSlug! })} className="py-2">
+        <LinkWithFormDirtyConfirm
+          href={Routes.QualityLevelsPage({ projectSlug: projectSlug! })}
+          className="py-2"
+        >
           Ausbaustandards verwalten…
-        </Link>
+        </LinkWithFormDirtyConfirm>
       </div>
       <div className="flex items-end gap-5">
         <LabeledSelect
@@ -173,12 +182,12 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           options={subsubsectionStatusOptions}
           outerProps={{ className: "grow" }}
         />
-        <Link
+        <LinkWithFormDirtyConfirm
           href={Routes.SubsubsectionStatussPage({ projectSlug: projectSlug! })}
           className="py-2"
         >
           Status verwalten…
-        </Link>
+        </LinkWithFormDirtyConfirm>
       </div>
       <LabeledTextField
         type="text"

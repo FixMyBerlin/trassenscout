@@ -8,12 +8,12 @@ import {
 } from "@/src/core/components/forms"
 import { LabeledFormatNumberFieldCalculateLength } from "@/src/core/components/forms/LabeledFormatNumberFieldCalculateLength"
 import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
-import { Link } from "@/src/core/components/links"
 import { quote, shortTitle } from "@/src/core/components/text"
 import { useSlugs } from "@/src/core/hooks"
 import getNetworkHierarchysWithCount from "@/src/networkHierarchy/queries/getNetworkHierarchysWithCount"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import { LabeledRadiobuttonGroupLabelPos } from "@/src/subsubsections/components/LabeledRadiobuttonGroupLabelPos"
+import { LinkWithFormDirtyConfirm } from "@/src/subsubsections/components/LinkWithFormDirtyConfirm"
 import { UserSelectOptions, getUserSelectOptions } from "@/src/users/utils"
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
@@ -117,9 +117,12 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
           options={operatorOptions}
           outerProps={{ className: "grow" }}
         />
-        <Link href={Routes.OperatorsPage({ projectSlug: projectSlug! })} className="py-2">
+        <LinkWithFormDirtyConfirm
+          href={Routes.OperatorsPage({ projectSlug: projectSlug! })}
+          className="py-2"
+        >
           Baulastträger verwalten…
-        </Link>
+        </LinkWithFormDirtyConfirm>
       </div>
 
       <LabeledSelect
@@ -137,9 +140,12 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
           options={networkOptions}
           outerProps={{ className: "grow" }}
         />
-        <Link href={Routes.NetworkHierarchysPage({ projectSlug: projectSlug! })} className="py-2">
+        <LinkWithFormDirtyConfirm
+          href={Routes.NetworkHierarchysPage({ projectSlug: projectSlug! })}
+          className="py-2"
+        >
           Netzstufen verwalten…
-        </Link>
+        </LinkWithFormDirtyConfirm>
       </div>
     </Form>
   )
