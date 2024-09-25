@@ -37,7 +37,8 @@ export default resolver.pipe(resolver.zod(Login), async ({ email, password, invi
 
   // Case: Invite
   const invite = await updateInvite(inviteToken, email)
-  if (invite) {
+  const alreadyMember = user.memberships.some((m) => m.project.id === invite?.projectId)
+  if (invite && !alreadyMember) {
     user = await db.user.update({
       where: { id: user.id },
       data: {
@@ -51,7 +52,7 @@ export default resolver.pipe(resolver.zod(Login), async ({ email, password, invi
       },
     })
 
-    // @ts-expect-error the user types don't get updated inside this block, so they are missing the name props
+    // @ts-expect-error the `user` types don't get updated inside this block, so they are missing the name props
     await notifyEditorsAboutNewMembership({ invite, invitee: user })
   }
 
