@@ -594,17 +594,6 @@
     ]
   },
   {
-    "institution": "Amt Gerswalde",
-    "landkreis": "Uckermark",
-    "id": "amt-gerswalde",
-    "bbox": [
-      13.565983,
-      53.000832,
-      13.912912,
-      53.230358
-    ]
-  },
-  {
     "institution": "Gemeinde Glienicke/Nordbahn",
     "landkreis": "Oberhavel",
     "id": "afg-glienickenordbahn",
@@ -2274,6 +2263,28 @@
       52.092132,
       13.582319,
       52.282448
+    ]
+  },
+  {
+    "institution": "Ministerium für Landwirtschaft, Umwelt und Klimaschutz des Landes Brandenburg",
+    "landkreis": "ohne Landkreis",
+    "id": "m-mluk",
+    "bbox": [
+      11.8030125,
+      51.72871623281401,
+      14.457364752386212,
+      53.2886175
+    ]
+  },
+  {
+    "institution": "FixMyCity",
+    "landkreis": "ohne Landkreis",
+    "id": "u-fixmycity",
+    "bbox": [
+      11.8030125,
+      51.72871623281401,
+      14.457364752386212,
+      53.2886175
     ]
   }
 ]
