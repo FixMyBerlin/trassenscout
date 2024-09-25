@@ -13,7 +13,7 @@ export default resolver.pipe(
   async ({ where, orderBy = { id: "asc" }, skip = 0, take = 100 }: GetProjectsInput, ctx: Ctx) => {
     const user = await db.user.findFirst({ where: { id: ctx.session.userId! } })
     if (user!.role !== "ADMIN") {
-      where = { ...where, Membership: { some: { userId: user!.id } } }
+      where = { ...where, memberships: { some: { userId: user!.id } } }
     }
     const {
       items: projects,

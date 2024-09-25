@@ -137,22 +137,22 @@ model Project {
   manager                             User?    @relation(fields: [managerId], references: [id])
   managerId                           Int?
 
-  surveyResponseTopics SurveyResponseTopic[]
-  subsections          Subsection[]
-  calendarEntries      CalendarEntry[]
-  contacts             Contact[]
-  uploads              Upload[]
-  Membership           Membership[]
-  Operator             Operator[]
-  Survey               Survey[]
-  qualityLevels        QualityLevel[]
-  SubsubsectionStatus  SubsubsectionStatus[]
-  SubsubsectionTask    SubsubsectionTask[]
-  SubsubsectionInfra   SubsubsectionInfra[]
-  SubsubsectionSpecial SubsubsectionSpecial[]
-  NetworkHierarchy     NetworkHierarchy[]
-  invites              Invite[]
-  logEntries           LogEntry[]
+  surveyResponseTopics  SurveyResponseTopic[]
+  subsections           Subsection[]
+  calendarEntries       CalendarEntry[]
+  contacts              Contact[]
+  uploads               Upload[]
+  memberships           Membership[]
+  operators             Operator[]
+  surveys               Survey[]
+  qualityLevels         QualityLevel[]
+  subsubsectionStatuses SubsubsectionStatus[]
+  subsubsectionTasks    SubsubsectionTask[]
+  subsubsectionInfras   SubsubsectionInfra[]
+  subsubsectionSpecials SubsubsectionSpecial[]
+  networkHierarchies    NetworkHierarchy[]
+  invites               Invite[]
+  logEntries            LogEntry[]
 }
 
 model Membership {
@@ -228,7 +228,7 @@ model Operator {
   //
   project         Project          @relation(fields: [projectId], references: [id])
   projectId       Int
-  Subsection      Subsection[]
+  subsections     Subsection[]
   surveyResponses SurveyResponse[]
 
   @@unique([projectId, slug])
@@ -275,16 +275,16 @@ enum PriorityEnum {
 }
 
 model NetworkHierarchy {
-  id         Int          @id @default(autoincrement())
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
+  id          Int          @id @default(autoincrement())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   //
-  slug       String // shortTitle and URL Slug
-  title      String
+  slug        String // shortTitle and URL Slug
+  title       String
   //
-  project    Project      @relation(fields: [projectId], references: [id])
-  projectId  Int
-  Subsection Subsection[]
+  project     Project      @relation(fields: [projectId], references: [id])
+  projectId   Int
+  subsections Subsection[]
 
   @@unique([projectId, slug])
 }
@@ -331,28 +331,27 @@ model Subsubsection {
   grantsOtherFunding            Float? //  Zuwendungen aus anderen Förderprogrammen
   ownFunds                      Float? //  Einsatz Eigenmittel
 
-  //
-  qualityLevel          QualityLevel?          @relation(fields: [qualityLevelId], references: [id])
+  qualityLevel          QualityLevel?        @relation(fields: [qualityLevelId], references: [id])
   qualityLevelId        Int?
   //
-  manager               User?                  @relation(fields: [managerId], references: [id])
+  manager               User?                @relation(fields: [managerId], references: [id])
   managerId             Int?
   //
-  subsection            Subsection             @relation(fields: [subsectionId], references: [id])
+  subsection            Subsection           @relation(fields: [subsectionId], references: [id])
   subsectionId          Int
   //
   uploads               Upload[]
   //
-  SubsubsectionStatus   SubsubsectionStatus?   @relation(fields: [subsubsectionStatusId], references: [id])
+  SubsubsectionStatus   SubsubsectionStatus? @relation(fields: [subsubsectionStatusId], references: [id])
   subsubsectionStatusId Int?
   //
-  SubsubsectionTask     SubsubsectionTask?     @relation(fields: [subsubsectionTaskId], references: [id])
+  SubsubsectionTask     SubsubsectionTask?   @relation(fields: [subsubsectionTaskId], references: [id])
   subsubsectionTaskId   Int?
   //
-  SubsubsectionInfra    SubsubsectionInfra?    @relation(fields: [subsubsectionInfraId], references: [id])
+  SubsubsectionInfra    SubsubsectionInfra?  @relation(fields: [subsubsectionInfraId], references: [id])
   subsubsectionInfraId  Int?
-  //
-  specialFeatures       SubsubsectionSpecial[]
+
+  specialFeatures SubsubsectionSpecial[]
 
   @@unique([subsectionId, slug])
 }
@@ -363,79 +362,79 @@ enum SubsubsectionTypeEnum {
 }
 
 model QualityLevel {
-  id            Int             @id @default(autoincrement())
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id             Int             @id @default(autoincrement())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   //
-  slug          String // shortTitle and URL Slug
-  title         String
+  slug           String // shortTitle and URL Slug
+  title          String
   //
-  project       Project         @relation(fields: [projectId], references: [id])
-  projectId     Int
-  Subsubsection Subsubsection[]
+  project        Project         @relation(fields: [projectId], references: [id])
+  projectId      Int
+  subsubsections Subsubsection[]
 
   @@unique([projectId, slug])
 }
 
 model SubsubsectionStatus {
-  id            Int             @id @default(autoincrement())
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id             Int             @id @default(autoincrement())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   //
-  slug          String // shortTitle and URL Slug
-  title         String
+  slug           String // shortTitle and URL Slug
+  title          String
   //
-  project       Project         @relation(fields: [projectId], references: [id])
-  projectId     Int
-  Subsubsection Subsubsection[]
+  project        Project         @relation(fields: [projectId], references: [id])
+  projectId      Int
+  subsubsections Subsubsection[]
 
   @@unique([projectId, slug])
 }
 
 // Maßnahmentyp
 model SubsubsectionTask {
-  id            Int             @id @default(autoincrement())
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id             Int             @id @default(autoincrement())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   //
-  slug          String // shortTitle and URL Slug
-  title         String
+  slug           String // shortTitle and URL Slug
+  title          String
   //
-  project       Project         @relation(fields: [projectId], references: [id])
-  projectId     Int
-  Subsubsection Subsubsection[]
+  project        Project         @relation(fields: [projectId], references: [id])
+  projectId      Int
+  subsubsections Subsubsection[]
 
   @@unique([projectId, slug])
 }
 
 // Führungsform
 model SubsubsectionInfra {
-  id            Int             @id @default(autoincrement())
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id             Int             @id @default(autoincrement())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   //
-  slug          String // shortTitle and URL Slug
-  title         String
+  slug           String // shortTitle and URL Slug
+  title          String
   //
-  project       Project         @relation(fields: [projectId], references: [id])
-  projectId     Int
-  Subsubsection Subsubsection[]
+  project        Project         @relation(fields: [projectId], references: [id])
+  projectId      Int
+  subsubsections Subsubsection[]
 
   @@unique([projectId, slug])
 }
 
 model SubsubsectionSpecial {
-  id            Int             @id @default(autoincrement())
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id             Int             @id @default(autoincrement())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   //
-  slug          String // shortTitle and URL Slug
-  title         String
+  slug           String // shortTitle and URL Slug
+  title          String
   //
-  project       Project         @relation(fields: [projectId], references: [id])
-  projectId     Int
+  project        Project         @relation(fields: [projectId], references: [id])
+  projectId      Int
   //
-  Subsubsection Subsubsection[]
+  subsubsections Subsubsection[]
 
   @@unique([projectId, slug])
 }
@@ -489,7 +488,8 @@ model Survey {
   //
   projectId              Int
   project                Project         @relation(fields: [projectId], references: [id])
-  SurveySession          SurveySession[]
+  //
+  surveySessions         SurveySession[]
 }
 
 model SurveySession {
@@ -499,6 +499,7 @@ model SurveySession {
   //
   survey    Survey           @relation(fields: [surveyId], references: [id])
   surveyId  Int
+  //
   responses SurveyResponse[]
 }
 
