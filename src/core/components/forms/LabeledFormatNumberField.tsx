@@ -1,21 +1,20 @@
 import { ErrorMessage } from "@hookform/error-message"
 import { clsx } from "clsx"
-import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef, useRef } from "react"
+import { forwardRef, useRef } from "react"
 import { useFormContext } from "react-hook-form"
 import { NumberFormatBase } from "react-number-format"
 
-export interface LabeledFormatNumberFieldProps
-  extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
+export type LabeledFormatNumberFieldProps = {
   name: string
   label: string
   help?: string
-  outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
-  labelProps?: ComponentPropsWithoutRef<"label">
+  outerProps?: React.ComponentPropsWithoutRef<"div">
+  labelProps?: React.ComponentPropsWithoutRef<"label">
   optional?: boolean
   readOnly?: boolean
   maxDecimalDigits?: number
   inlineLeadingAddon?: string
-}
+} & React.ComponentPropsWithoutRef<"input">
 
 const removeFormatting = (s: string) => {
   if (s === "") return ""
