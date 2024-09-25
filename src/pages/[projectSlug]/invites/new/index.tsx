@@ -3,7 +3,7 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { seoNewTitle } from "@/src/core/components/text"
+import { seoIndexTitle } from "@/src/core/components/text"
 import { useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { TeamInviteForm } from "@/src/invites/components/TeamInviteForm"
@@ -42,7 +42,7 @@ const NewProjectTeamInvitePage: BlitzPage = () => {
 
   return (
     <LayoutRs>
-      <MetaTags noindex title={seoNewTitle("Teammitglied einladen")} />
+      <MetaTags noindex title={seoIndexTitle("Teammitglied einladen")} />
       <PageHeader title="Neues Teammitglied einladen" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>

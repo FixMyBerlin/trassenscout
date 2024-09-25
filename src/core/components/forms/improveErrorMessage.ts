@@ -15,7 +15,7 @@ const getPrismaUniqueConstraintErrorMessage = (
   formError: string,
   fieldNames: string[],
 ) => {
-  let result = { [formError]: error }
+  const result = { [formError]: error }
   fieldNames.forEach((fieldName: string) => {
     // Check what field name is included and adapt return object accordingly
     if (error.meta?.target?.includes(fieldName)) {
