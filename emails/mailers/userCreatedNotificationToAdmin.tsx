@@ -15,9 +15,9 @@ export async function userCreatedNotificationToAdmin(props: Props) {
   const introMarkdown = `
 Liebe Trassenscout-Admins!
 
-# Ein neuer Nutzer-Account wurde erstellt
+# Soeben wurde ein neuer Nutzer-Account erstellt.
 
-Bitte prüfe den Account und ordne ihn einem Projekt.
+Bitte prüfe den Account und ordne ihn einem Projekt zu.
 
 * Name: ${props.userName}
 * E-Mail: ${props.userMail}
