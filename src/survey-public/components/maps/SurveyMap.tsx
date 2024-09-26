@@ -1,10 +1,7 @@
 import { LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import { SurveyBackgroundSwitcher } from "@/src/survey-public/components/maps/SurveyBackgroundSwitcher"
-import { SurveyMapBanner } from "@/src/survey-public/components/maps/SurveyMapBanner"
-import SurveyPin from "@/src/survey-public/components/maps/SurveyPin"
 import { getCompletedQuestionIds } from "@/src/survey-public/utils/getCompletedQuestionIds"
-import { lineString } from "@turf/helpers"
-import { bbox, center } from "@turf/turf"
+import { bbox, center, lineString, multiLineString } from "@turf/turf"
 import { clsx } from "clsx"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
@@ -18,6 +15,9 @@ import Map, {
   Source,
   useMap,
 } from "react-map-gl/maplibre"
+import { getResponseConfigBySurveySlug } from "../../utils/getConfigBySurveySlug"
+import { SurveyMapBanner } from "./SurveyMapBanner"
+import SurveyPin from "./SurveyPin"
 
 export type SurveyMapProps = {
   className?: string
@@ -60,27 +60,56 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
   }
   const { getValues, setValue } = useFormContext()
 
+  const checkLineType = (selectedLine: any): string => {
+    if (Array.isArray(selectedLine)) {
+      if (Array.isArray(selectedLine[0])) {
+        if (Array.isArray(selectedLine[0][0])) {
+          return "MultiLineString" // 3D array
+        }
+        return "LineString" // 2D array
+      }
+    }
+    return "Unknown"
+  }
+
+  const getParsedLine = (selectedLine: any) => {
+    if (!selectedLine) return null
+    const lineType = checkLineType(JSON.parse(selectedLine))
+
+    switch (lineType) {
+      case "LineString":
+        // @ts-expect-error
+        return lineString(JSON.parse(selectedLine))
+      case "MultiLineString":
+        // @ts-expect-error
+        return multiLineString(JSON.parse(selectedLine))
+      default:
+        return null
+    }
+  }
+
   // todo survey clean up or refactor after survey BB line selection
   // take line geometry from form context
   const selectedLine = getValues()[`custom-${lineGeometryId}`] || null
+  const parsedSelectedLine = getParsedLine(selectedLine)
+
   const mapBounds: { bounds: [number, number, number, number] } = {
     // @ts-expect-error
-    bounds: selectedLine
-      ? // @ts-expect-error
-        bbox(lineString(JSON.parse(selectedLine)))
-      : projectMap.config.bounds,
+    bounds: parsedSelectedLine ? bbox(parsedSelectedLine) : projectMap.config.bounds,
   }
+
+  // todo survey clean up or refactor after survey BB
+  const { evaluationRefs } = getResponseConfigBySurveySlug("radnetz-brandenburg")
+  const lineQuestionId = evaluationRefs["line-id"]
 
   // todo survey clean up or refactor after survey BB  (center of line option)
   // take pinPosition from form context - if it is not defined use center of selected line - if we do not have a selected line use initialMarker fallback from feedback.ts configuration
   const pinPosition =
     getValues()[`map-${pinId}`] ||
-    (selectedLine
+    (parsedSelectedLine
       ? {
-          // @ts-expect-error
-          lng: center(lineString(JSON.parse(selectedLine))).geometry.coordinates[0],
-          // @ts-expect-error
-          lat: center(lineString(JSON.parse(selectedLine))).geometry.coordinates[1],
+          lng: center(parsedSelectedLine).geometry.coordinates[0],
+          lat: center(parsedSelectedLine).geometry.coordinates[1],
         }
       : projectMap.initialMarker)
 
@@ -156,33 +185,63 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
     <div className={clsx("h-[500px]", className)}>
       <Map
         id="mainMap"
-        initialViewState={{ ...mapBounds, fitBoundsOptions: { padding: 100 } }}
         scrollZoom={false}
+        initialViewState={{ ...mapBounds, fitBoundsOptions: { padding: 100 } }}
         onMove={handleMapMove}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         onZoom={handleMapZoom}
         mapLib={maplibregl}
         RTLTextPlugin={false}
+        maxZoom={13}
+        minZoom={7}
+        // hash={true}
+        cursor="grab"
       >
-        {/* // todo survey clean up or refactor after survey BB line selection */}
-        {selectedLine && (
-          <Source
-            key="SelectedLine"
-            type="geojson"
-            // @ts-expect-error
-            data={lineString(JSON.parse(selectedLine))}
-          >
-            <Layer
-              id={"SelectedLine"}
-              type="line"
-              paint={{
-                "line-width": 5,
-                "line-color": ["case", ["has", "color"], ["get", "color"], "#994F0B"],
-                "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
-              }}
-            />
-          </Source>
-        )}
+        {isMediumScreen && <NavigationControl showCompass={false} />}
+        <Source
+          key="SourceNetzentwurf"
+          type="vector"
+          minzoom={6}
+          maxzoom={10}
+          tiles={[
+            "https://api.maptiler.com/tiles/b55f82dc-7010-4b20-8fd2-8071fccf72e4/{z}/{x}/{y}.pbf?key=ECOoUBmpqklzSCASXxcu",
+          ]}
+        >
+          <Layer
+            id="LayerNetzentwurf"
+            type="line"
+            source-layer="default"
+            beforeId="Fühung unklar"
+            paint={{
+              "line-color": "hsl(30, 100%, 50%)",
+              "line-width": ["interpolate", ["linear"], ["zoom"], 0, 1, 8, 1.5, 13.8, 5],
+              "line-dasharray": [3, 2],
+            }}
+          />
+          <Layer
+            id="LayerNetzentwurfClicktarget"
+            type="line"
+            source-layer="default"
+            beforeId="Fühung unklar"
+            paint={{
+              "line-color": "transparent",
+              "line-width": ["interpolate", ["linear"], ["zoom"], 0, 6, 8, 12, 13.8, 10],
+            }}
+          />
+          <Layer
+            id="LayerSelectedLine"
+            type="line"
+            source-layer="default"
+            layout={{ visibility: selectedLine ? "visible" : "none" }}
+            filter={["==", "Verbindung", getValues()[`custom-${lineQuestionId}`] || ""]}
+            paint={{
+              "line-width": 5,
+              "line-color": ["case", ["has", "color"], ["get", "color"], "#994F0B"],
+              "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
+            }}
+          />
+        </Source>
+
         {pinPosition && (
           <Marker
             longitude={pinPosition?.lng}
@@ -196,12 +255,12 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
             <SurveyPin />
           </Marker>
         )}
-        {isMediumScreen && <NavigationControl showCompass={false} />}
         <SurveyMapBanner
           className="absolute bottom-12"
           action={easeToPin}
           status={isPinInView ? "default" : "pinOutOfView"}
         />
+
         <SurveyBackgroundSwitcher
           className="absolute left-4 top-4"
           value={selectedLayer}
