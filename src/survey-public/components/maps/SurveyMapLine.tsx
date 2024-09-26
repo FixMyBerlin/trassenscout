@@ -7,7 +7,7 @@ import {
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import { lineString } from "@turf/helpers"
 import { clsx } from "clsx"
-import maplibregl from "maplibre-gl"
+import maplibregl, { MapGeoJSONFeature } from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
@@ -110,6 +110,20 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
     setIsCompleted(firstPageQuestionIds!.every((val) => completedQuestionIds.includes(val)))
   }
 
+  const handleMouseMove = ({ features }: MapLayerMouseEvent) => {
+    updateCursor(features)
+  }
+
+  const handleMouseLeave = () => {
+    updateCursor([])
+  }
+
+  const updateCursor = (features: MapGeoJSONFeature[] | undefined) => {
+    setCursorStyle(features?.length ? "pointer" : "grab")
+  }
+
+  const [cursorStyle, setCursorStyle] = useState("grab")
+
   return (
     <div className={clsx("h-[500px]", className)}>
       <Map
@@ -122,7 +136,9 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
         mapLib={maplibregl}
         RTLTextPlugin={false}
         onClick={handleMapClick}
-        cursor="pointer"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        cursor={cursorStyle}
         // todo survey update layer name
         interactiveLayerIds={["Netzentwurf"]}
       >
