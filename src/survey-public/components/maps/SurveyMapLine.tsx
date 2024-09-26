@@ -84,43 +84,25 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
   const { config } = projectMap
 
   const handleMapClick = (event: MapLayerMouseEvent) => {
-    const point = [event.originalEvent.offsetX, event.originalEvent.offsetY]
+    const line = event.features?.[0]
 
-    const boxSize = 10
-
-    const bbox =
-      point[0] && point[1]
-        ? [
-            [point[0] - boxSize, point[1] - boxSize],
-            [point[0] + boxSize, point[1] + boxSize],
-          ]
-        : undefined
-
-    // get line from map
-    const line = bbox
-      ? // @ts-expect-error we know that the geometry is a pointlike pointlike
-        mainMap?.queryRenderedFeatures(bbox, {
-          // todo survey update layer name
-          layers: ["Netzentwurf"],
-        })[0]
-      : undefined
+    if (!line) return
 
     // get data that we need from line
-    const lineId = line?.properties["Verbindung"]
-    const lineFrom = line?.properties["from_name"]
-    const lineTo = line?.properties["to_name"]
-    const lineGeometry = line?.geometry
+    const lineId = line.properties["Verbindung"]
+    const lineFrom = line.properties["from_name"]
+    const lineTo = line.properties["to_name"]
+    const lineGeometry = line.geometry
 
     // set values for line id, geometry and from-to-name in form context
-    if (line) {
-      setValue(
-        `custom-${lineFromToNameQuestionId}`,
-        `${lineFrom || "unbekannt"} - ${lineTo || "unbekannt"}`,
-      )
-      setValue(`custom-${lineQuestionId}`, lineId || "unbekannt")
-      // @ts-expect-error we know that the geometry is a line string
-      setValue(`custom-${geometryQuestionId}`, JSON.stringify(lineGeometry.coordinates))
-    }
+    setValue(
+      `custom-${lineFromToNameQuestionId}`,
+      `${lineFrom || "unbekannt"} - ${lineTo || "unbekannt"}`,
+    )
+    setValue(`custom-${lineQuestionId}`, lineId || "unbekannt")
+    // @ts-expect-error we know that the geometry is a line string
+    setValue(`custom-${geometryQuestionId}`, JSON.stringify(lineGeometry.coordinates))
+
     const values = getValues()
     const completedQuestionIds = getCompletedQuestionIds(values)
 
