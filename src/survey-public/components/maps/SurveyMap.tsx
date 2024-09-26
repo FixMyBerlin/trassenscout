@@ -167,7 +167,7 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
         {/* // todo survey clean up or refactor after survey BB line selection */}
         {selectedLine && (
           <Source
-            key={"Netzentwurf"}
+            key="SelectedLine"
             type="geojson"
             // @ts-expect-error
             data={lineString(JSON.parse(selectedLine))}
