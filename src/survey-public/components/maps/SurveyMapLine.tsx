@@ -18,6 +18,7 @@ import Map, {
   Source,
   useMap,
 } from "react-map-gl/maplibre"
+import { DebugMapTileBoundaries } from "./DebugMapTileBoundaries"
 import { SurveyMapLineBanner } from "./SurveyMapLineBanner"
 
 export type SurveyMapProps = {
@@ -162,6 +163,7 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
             />
           </Source>
         )}
+        <DebugMapTileBoundaries />
         <SurveyMapLineBanner
           className="absolute bottom-12"
           lineFromToName={getValues()[`custom-${lineFromToNameQuestionId}`] || null}
