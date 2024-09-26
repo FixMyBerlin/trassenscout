@@ -5,7 +5,6 @@ import {
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
-import { lineString } from "@turf/helpers"
 import { clsx } from "clsx"
 import maplibregl, { MapGeoJSONFeature } from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
@@ -138,30 +137,59 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
         onClick={handleMapClick}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
+        maxZoom={13}
+        minZoom={7}
+        // hash={true}
         cursor={cursorStyle}
         // todo survey update layer name
-        interactiveLayerIds={["Netzentwurf"]}
+        interactiveLayerIds={["LayerNetzentwurfClicktarget"]}
       >
         {isMediumScreen && <NavigationControl showCompass={false} />}
-        {selectedLine && (
-          <Source
-            key={"Netzentwurf"}
-            type="geojson"
-            // @ts-expect-error
-            data={lineString(JSON.parse(selectedLine))}
-          >
-            <Layer
-              id={"SelectedLine"}
-              type="line"
-              paint={{
-                "line-width": 5,
-                "line-color": ["case", ["has", "color"], ["get", "color"], "#994F0B"],
-                "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
-              }}
-            />
-          </Source>
-        )}
         <DebugMapTileBoundaries />
+        <Source
+          key="SourceNetzentwurf"
+          type="vector"
+          minzoom={6}
+          maxzoom={10}
+          tiles={[
+            "https://api.maptiler.com/tiles/b55f82dc-7010-4b20-8fd2-8071fccf72e4/{z}/{x}/{y}.pbf?key=ECOoUBmpqklzSCASXxcu",
+          ]}
+        >
+          <Layer
+            id="LayerNetzentwurf"
+            type="line"
+            source-layer="default"
+            beforeId="Fühung unklar"
+            paint={{
+              "line-color": "hsl(30, 100%, 50%)",
+              "line-width": ["interpolate", ["linear"], ["zoom"], 0, 1, 8, 1.5, 13.8, 5],
+              "line-dasharray": [3, 2],
+            }}
+          />
+          <Layer
+            id="LayerNetzentwurfClicktarget"
+            type="line"
+            source-layer="default"
+            beforeId="Fühung unklar"
+            paint={{
+              "line-color": "transparent",
+              "line-width": ["interpolate", ["linear"], ["zoom"], 0, 6, 8, 12, 13.8, 10],
+            }}
+          />
+          <Layer
+            id="LayerSelectedLine"
+            type="line"
+            source-layer="default"
+            layout={{ visibility: selectedLine ? "visible" : "none" }}
+            filter={["==", "Verbindung", getValues()[`custom-${lineQuestionId}`] || ""]}
+            paint={{
+              "line-width": 5,
+              "line-color": ["case", ["has", "color"], ["get", "color"], "#994F0B"],
+              "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
+            }}
+          />
+        </Source>
+
         <SurveyMapLineBanner
           className="absolute bottom-12"
           lineFromToName={getValues()[`custom-${lineFromToNameQuestionId}`] || null}
