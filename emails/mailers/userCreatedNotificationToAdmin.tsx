@@ -13,11 +13,11 @@ type Props = {
 
 export async function userCreatedNotificationToAdmin(props: Props) {
   const introMarkdown = `
-Liebes Trassenscout-Team!
+Liebe Trassenscout-Admins!
 
-# Ein neuer Nutzer-Account wurde erstellt
+# Soeben wurde ein neuer Nutzer-Account erstellt.
 
-Bitte prüfe den Account und ordne ihn einem einem Projekt.
+Bitte prüfe den Account und ordne ihn einem Projekt zu.
 
 * Name: ${props.userName}
 * E-Mail: ${props.userMail}
@@ -31,7 +31,7 @@ Bitte prüfe den Account und ordne ihn einem einem Projekt.
   const message: Mail = {
     From: addressNoreply,
     To: [{ Email: process.env.ADMIN_EMAIL }],
-    Subject: "Trassenscout: User hat sich registriert",
+    Subject: "[Admin] Trassenscout: User hat sich registriert",
     introMarkdown,
     ctaLink: mailUrl(Routes.AdminMembershipsPage()),
     ctaText: "Rechte verwalten",

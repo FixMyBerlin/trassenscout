@@ -8,14 +8,18 @@ import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 
 const Schema = z.object({
   projectSlug: z.string(),
+  role: z.nativeEnum(MembershipRoleEnum).optional(),
 })
 
 export default resolver.pipe(
   resolver.zod(Schema),
   authorizeProjectAdmin(extractProjectSlug, viewerRoles),
-  async ({ projectSlug }) => {
+  async ({ projectSlug, role }) => {
+    const whereRole = role ? { role } : {}
     const users = await db.user.findMany({
-      where: { memberships: { some: { project: { slug: projectSlug } } } },
+      where: {
+        memberships: { some: { project: { slug: projectSlug }, ...whereRole } },
+      },
       select: {
         firstName: true,
         lastName: true,

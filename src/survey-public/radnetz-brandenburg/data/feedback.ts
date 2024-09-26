@@ -14,7 +14,7 @@ export const feedbackDefinition: TFeedback = {
         {
           id: 20,
           label: {
-            de: "Wählen Sie eine Verbindung aus dem Radnetz aus, zu der Sie Rückmeldung geben möchten.",
+            de: "Wählen Sie eine Verbindung aus dem Radnetz-Konzept aus, zu der Sie einen Hinweis geben möchten.",
           },
           component: "custom",
         },

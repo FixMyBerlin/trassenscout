@@ -1,5 +1,5 @@
 import resetPassword from "@/src/auth/mutations/resetPassword"
-import { ResetPassword } from "@/src/auth/validations"
+import { ResetPassword } from "@/src/auth/schema"
 import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
 import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
 import { LayoutMiddleBox, MetaTags } from "@/src/core/layouts"

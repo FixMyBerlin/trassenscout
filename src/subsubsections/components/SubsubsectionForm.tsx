@@ -3,13 +3,13 @@ import {
   FormProps,
   LabeledCheckbox,
   LabeledCheckboxGroup,
+  LabeledCheckboxProps,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { LabeledFormatNumberField } from "@/src/core/components/forms/LabeledFormatNumberField"
 import { LabeledFormatNumberFieldCalculateLength } from "@/src/core/components/forms/LabeledFormatNumberFieldCalculateLength"
-import { Link } from "@/src/core/components/links"
 import { quote, shortTitle } from "@/src/core/components/text"
 import { useSlugs } from "@/src/core/hooks"
 import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
@@ -24,12 +24,13 @@ import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { z } from "zod"
 import { GeometryInput } from "./GeometryInput/GeometryInput"
+import { LinkWithFormDirtyConfirm } from "./LinkWithFormDirtyConfirm"
 
 export { FORM_ERROR } from "@/src/core/components/forms"
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const { projectSlug } = useSlugs()
-  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
+  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug!, role: "EDITOR" })
 
   const [{ qualityLevels }] = useQuery(getQualityLevelsWithCount, { projectSlug })
   const qualityLevelOptions: [number | string, string][] = [
@@ -60,15 +61,12 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
     }),
   ]
   const [{ subsubsectionSpecials }] = useQuery(getSubsubsectionSpecialsWithCount, { projectSlug })
-  // @ts-ignore
-  const subsubsectionSpecialOptions: [number | string, string][] = subsubsectionSpecials.map(
-    (special) => {
-      return {
-        value: String(special.id),
-        label: special.title,
-      }
-    },
-  )
+  const subsubsectionSpecialOptions = subsubsectionSpecials.map((special) => {
+    return {
+      value: String(special.id),
+      label: special.title,
+    }
+  }) satisfies Omit<LabeledCheckboxProps, "scope">[]
 
   return (
     <Form<S> {...props}>
@@ -83,7 +81,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
 
       <LabeledTextField type="text" name="subTitle" label="Title" optional />
       <GeometryInput />
-      {/* @ts-ignore */}
+      {/* @ts-expect-error the defaults work fine; but the helper should be update at some point */}
       <LabeledCheckbox scope="isExistingInfra" label="Bestandsführung – keine Maßnahme geplant" />
       <div className="flex items-end gap-5">
         <LabeledSelect
@@ -92,9 +90,12 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           options={subsubsectionTaskOptions}
           outerProps={{ className: "grow" }}
         />
-        <Link href={Routes.SubsubsectionTasksPage({ projectSlug: projectSlug! })} className="py-2">
+        <LinkWithFormDirtyConfirm
+          href={Routes.SubsubsectionTasksPage({ projectSlug: projectSlug! })}
+          className="py-2"
+        >
           Maßnahmetypen verwalten…
-        </Link>
+        </LinkWithFormDirtyConfirm>
       </div>
       <div className="flex items-end gap-5">
         <LabeledSelect
@@ -103,29 +104,29 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           options={subsubsectionInfraOptions}
           outerProps={{ className: "grow" }}
         />
-        <Link href={Routes.SubsubsectionInfrasPage({ projectSlug: projectSlug! })} className="py-2">
+        <LinkWithFormDirtyConfirm
+          href={Routes.SubsubsectionInfrasPage({ projectSlug: projectSlug! })}
+          className="py-2"
+        >
           Führungsformen verwalten…
-        </Link>
+        </LinkWithFormDirtyConfirm>
       </div>
-      {/* @ts-ignore */}
       <div>
         <LabeledCheckboxGroup
           scope="specialFeatures"
           label="Besonderheiten"
-          // @ts-ignore
           items={subsubsectionSpecialOptions}
         />
         <div className="mt-4">
-          <Link
+          <LinkWithFormDirtyConfirm
             href={Routes.SubsubsectionSpecialsPage({ projectSlug: projectSlug! })}
             className="py-2"
           >
             Besonderheiten verwalten…
-          </Link>
+          </LinkWithFormDirtyConfirm>
         </div>
       </div>
       <LabeledFormatNumberFieldCalculateLength
-        optional
         name="lengthKm"
         label="Länge"
         help="Dieser Wert kann manuell eingetragen oder aus den vorhandenen Geometrien berechnet werden."
@@ -161,9 +162,12 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           options={qualityLevelOptions}
           outerProps={{ className: "grow" }}
         />
-        <Link href={Routes.QualityLevelsPage({ projectSlug: projectSlug! })} className="py-2">
+        <LinkWithFormDirtyConfirm
+          href={Routes.QualityLevelsPage({ projectSlug: projectSlug! })}
+          className="py-2"
+        >
           Ausbaustandards verwalten…
-        </Link>
+        </LinkWithFormDirtyConfirm>
       </div>
       <div className="flex items-end gap-5">
         <LabeledSelect
@@ -173,12 +177,12 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           options={subsubsectionStatusOptions}
           outerProps={{ className: "grow" }}
         />
-        <Link
+        <LinkWithFormDirtyConfirm
           href={Routes.SubsubsectionStatussPage({ projectSlug: projectSlug! })}
           className="py-2"
         >
           Status verwalten…
-        </Link>
+        </LinkWithFormDirtyConfirm>
       </div>
       <LabeledTextField
         type="text"

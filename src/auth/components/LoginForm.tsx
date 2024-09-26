@@ -1,5 +1,5 @@
 import login from "@/src/auth/mutations/login"
-import { Login } from "@/src/auth/validations"
+import { Login } from "@/src/auth/schema"
 import { DevAdminBox } from "@/src/core/components/AdminBox"
 import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
 import { HiddenField } from "@/src/core/components/forms/HiddenField"

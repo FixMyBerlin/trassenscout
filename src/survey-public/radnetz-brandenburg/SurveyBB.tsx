@@ -38,9 +38,7 @@ const StartContent: React.FC = () => {
 
   return (
     <>
-      <SurveyH1>
-        Beteiligung der Kommunen zur Erstellung des „Radnetz Brandenburg“-Konzepts
-      </SurveyH1>
+      <SurveyH1>Beteiligung der Kommunen an der Konzeption des „Radnetz Brandenburg“ </SurveyH1>
       <SurveyP>
         Mit dem Radnetz Brandenburg wird ein Konzept für ein umfassendes und komfortabel befahrbares
         Wegenetz für den Alltagsverkehr – unter Einbezug der touristischen Radrouten – erstellt. Das
@@ -59,12 +57,11 @@ const StartContent: React.FC = () => {
         Schwerpunkten, Bahnhöfen und weiteren regionalen Schwerpunkten, wie beispielsweise wichtige
         touristische Destinationen. In einem nächsten Schritt wird ein <strong>Zielnetz</strong>{" "}
         entwickelt, in dem das Luftliniennetz auf das bestehende Wegenetz umgelegt wird und so auch
-        wichtige Lückenschlüsse identifiziert werden. Dabei werden auch weitere bedeutende Standorte
-        wie zum Beispiel Schulen und Versorgungsstandorte berücksichtigt. Die Konzeption betrachtet
-        grundsätzlich alle bestehenden Infrastrukturen und Wegeverbindungen, unter anderem
-        straßenbegleitende und selbständige Radwege, Wirtschaftswege, touristische Radrouten und
-        innerörtliche Straßen. So weit wie möglich wird auf die vorhandene Infrastruktur
-        zurückgegriffen.
+        wichtige Lückenschlüsse identifiziert werden. Dabei werden auch weitere wichtige Standorte
+        wie zum Beispiel Schulen berücksichtigt. Die Konzeption betrachtet grundsätzlich alle
+        bestehenden Infrastrukturen und Wegeverbindungen, unter anderem straßenbegleitende und
+        selbständige Radwege, Wirtschaftswege, touristische Radrouten und innerörtliche Straßen. So
+        weit wie möglich wird auf die vorhandene Infrastruktur zurückgegriffen.
       </SurveyP>
       <SurveyP>
         Weiterführende Informationen zum Radnetz Brandenburg finden Sie auf der{" "}
@@ -86,8 +83,8 @@ const StartContent: React.FC = () => {
         vor. Um Ihre Vor-Ort-Expertise und Bedürfnisse als kommunale Baulastträger zu
         berücksichtigen und somit ein bestmögliches Zielnetz entwickeln zu können, ist Ihre
         Rückmeldung von großer Bedeutung. Daher haben Sie im Zeitraum{" "}
-        <strong>vom 16. August bis zum 20. September 2024</strong> die Möglichkeit, den Entwurf des
-        Radnetzkonzeptes zu kommentieren.{" "}
+        <strong>vom 30. September bis zum 08. November 2024</strong> die Möglichkeit, den Entwurf
+        des Radnetzkonzeptes zu kommentieren.{" "}
       </SurveyP>
       <SurveyH3>So geht’s!</SurveyH3>
       <ul className="ml-6 list-disc space-y-2 text-base sm:text-lg">
@@ -97,7 +94,8 @@ const StartContent: React.FC = () => {
         </li>
         <li>
           Nach Start der Beteiligung müssen Sie sich bitte zuerst mit Namen, E-Mail-Adresse und PIN
-          registrieren. Die Felder Institution und Landkreis werden dabei automatisch ausgefüllt.
+          registrieren. Die Felder “Institution” und “Landkreis” werden dabei automatisch
+          ausgefüllt.
         </li>
         <li>
           Bevor Sie Ihre Hinweise zum Netzentwurf abgeben können, möchten wir Sie außerdem bitten,
@@ -112,6 +110,17 @@ const StartContent: React.FC = () => {
           jederzeit weitere Hinweise ergänzen.{" "}
         </li>
         <li>Ihre eingetragenen Hinweise erhalten Sie im Nachgang per E-Mail als Bestätigung. </li>
+        <li>
+          Bei Rückfragen zur Beteiligung oder technischen Schwierigkeiten können Sie sich gerne an
+          die beim durchführenden Unternehmen FixMyCity zuständige Mitarbeiterin, Frau Noemi Kuß,
+          wenden: <br />
+          <br />
+          Mail: <SurveyLink href={`mailto:§{noemi@fixmycity.de}`}>
+            noemi@fixmycity.de
+          </SurveyLink>{" "}
+          <br />
+          Tel.: 030-62939269
+        </li>
       </ul>
       <SurveyH2>Zielnetzentwurf im Radverkehrsatlas ansehen</SurveyH2>
       <SurveyP>
@@ -124,17 +133,16 @@ const StartContent: React.FC = () => {
         Im Radverkehrsatlas sind auch die gesammelten Daten zur Bestandsinfrastruktur und zu
         Radrouten, verschiedene Daten aus OpenStreetMap sowie das Luftliniennetz einsehbar. Eine
         Anleitung zur Nutzung des Radverkehrsatlasses finden Sie{" "}
-        <a
-          target="_blank"
+        <SurveyLink
+          blank
           href={
             isProduction
               ? "https://trassenscout.de/radnetz-brandenburg/anleitung-radverkehrsatlas-beteiligung-bb.pdf"
               : "https://staging.trassenscout.de/radnetz-brandenburg/anleitung-radverkehrsatlas-beteiligung-bb.pdf"
           }
-          className={partcipationLinkStyles}
         >
           hier
-        </a>
+        </SurveyLink>
         .
       </SurveyP>
       <SurveyP>
@@ -199,7 +207,7 @@ const StartContent: React.FC = () => {
 
                   <div className="mt-4">
                     <a
-                      href="https://radverkehrsatlas.de/regionen/bb-beteiligung?map=11%2F52.397%2F13.034&config=z9tzbb.16gdxh.i&data=bb-ramboll-umgelegte-linien&v=2"
+                      href="https://radverkehrsatlas.de/regionen/bb-beteiligung?map=7.6/52.492/13.016&config=z9tzbb.1734h0.i&data=bb-land-klassifiertes-strassennetz,bb-ramboll-netzentwurf-2,bb-ramboll-quellen-ziele&v=2"
                       target="_blank"
                       className={primaryColorButtonStylesForLinkElement}
                       onClick={closeModal}
@@ -264,18 +272,17 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35] hover:text-[#C73C35]",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Wie sieht die Umsetzung des „Radnetz Brandenburg“-Konzepts aus?
               </summary>
               Der erarbeitete und final abgestimmte Zielnetzentwurf soll zukünftig die Grundlage für
               die Bedarfsplanung des Radwegebaus bilden. Erst wenn das Zielnetz vorliegt, kann mit
-              der Umsetzung des Konzepts begonnen werden. Priorität wird dabei das Schließen von
-              Netzlücken haben sowie die Ertüchtigung bestehender Infrastruktur (z.B.
-              Wirtschaftswege), so dass diese ebenfalls sicher und komfortabel durch den Radverkehr
-              genutzt werden können. Gemäß Radverkehrsstrategie 2030 des Landes Brandenburg wird
-              angestrebt, das Netz bis 2045 umzusetzen.
+              der Abstimmung zur Umsetzung des Konzepts zwischen den beteiligten Baulastträgern
+              begonnen werden. Priorität wird dabei das Schließen von Netzlücken haben sowie die
+              Ertüchtigung bestehender Infrastruktur (z.B. Wirtschaftswege), so dass diese ebenfalls
+              sicher und komfortabel durch den Radverkehr genutzt werden können.
             </details>
           </li>
           <li>

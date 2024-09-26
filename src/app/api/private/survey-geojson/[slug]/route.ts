@@ -31,7 +31,7 @@ export async function GET(request: Request, { params }: { params: { slug: string
   const survey = await db.survey.findFirst({
     where: { slug },
     include: {
-      SurveySession: {
+      surveySessions: {
         select: {
           responses: {
             select: {
@@ -51,36 +51,38 @@ export async function GET(request: Request, { params }: { params: { slug: string
     return Response.json({ statusText: "Not Found" }, { status: 404 })
   }
 
-  const results = survey.SurveySession.map((session) => {
-    return session.responses
-      .filter((survey) => survey.surveyPart === 2)
-      .map((response) => {
-        const rawData: any = JSON.parse(response.data)
+  const results = survey.surveySessions
+    .map((session) => {
+      return session.responses
+        .filter((survey) => survey.surveyPart === 2)
+        .map((response) => {
+          const rawData: any = JSON.parse(response.data)
 
-        // Some data is stored on part 1 of the survey
-        const rawPart1 = session.responses.find(
-          (r) => r.surveyPart === 1 && r.surveySessionId === response.surveySessionId,
-        )?.data
-        const part1: any = rawPart1 ? JSON.parse(rawPart1) : undefined
+          // Some data is stored on part 1 of the survey
+          const rawPart1 = session.responses.find(
+            (r) => r.surveyPart === 1 && r.surveySessionId === response.surveySessionId,
+          )?.data
+          const part1: any = rawPart1 ? JSON.parse(rawPart1) : undefined
 
-        // todo survey clean up after survey BB: remove BB specific fields
-        return {
-          reponseId: response.id,
-          sessionCreatedAt: session.createdAt,
-          Author: `${part1?.[1]} ${part1?.[2]}` as string,
-          Institut: part1?.[5] as string,
-          Landkreis: part1?.[6] as string,
-          lineId: rawData[20] as string, // "165-89"
-          lineGeometry: rawData[21]
-            ? (JSON.parse(rawData[21]) as LineString["coordinates"])
-            : undefined,
-          category: categories[rawData[22]],
-          location: rawData[24] as null | { lng: number; lat: number },
-          text: rawData[25] as string,
-        }
-      })
-      .filter((d) => d.lineGeometry !== undefined)
-  }).flat()
+          // todo survey clean up after survey BB: remove BB specific fields
+          return {
+            reponseId: response.id,
+            sessionCreatedAt: session.createdAt,
+            Author: `${part1?.[1]} ${part1?.[2]}` as string,
+            Institut: part1?.[5] as string,
+            Landkreis: part1?.[6] as string,
+            lineId: rawData[20] as string, // "165-89"
+            lineGeometry: rawData[21]
+              ? (JSON.parse(rawData[21]) as LineString["coordinates"])
+              : undefined,
+            category: categories[rawData[22]],
+            location: rawData[24] as null | { lng: number; lat: number },
+            text: rawData[25] as string,
+          }
+        })
+        .filter((d) => d.lineGeometry !== undefined)
+    })
+    .flat()
 
   // return Response.json({ results: results.filter((r) => r.reponseId === 1109) })
 

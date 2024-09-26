@@ -4,7 +4,7 @@ const getProjectIdBySurveyResponse = async (input: Record<string, any>) => {
   const responseId = input.id || null
 
   const surveySession = await db.survey.findFirstOrThrow({
-    where: { SurveySession: { some: { responses: { some: { id: responseId } } } } },
+    where: { surveySessions: { some: { responses: { some: { id: responseId } } } } },
     select: { projectId: true },
   })
 

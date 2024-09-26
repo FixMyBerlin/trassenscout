@@ -11,7 +11,7 @@ export default resolver.pipe(
   async (data) => {
     const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
     m2mFields.forEach((fieldName) => {
-      connect[fieldName] = { connect: data[fieldName].map((id) => ({ id })) }
+      connect[fieldName] = { connect: data[fieldName] ? data[fieldName].map((id) => ({ id })) : [] }
       // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)"
       delete data[fieldName]
     })

@@ -7,7 +7,14 @@ export const emailDefinition: TEmail = {
 
 ## Wie geht es weiter?
 
-Die Beteiligung läuft noch **bis zum 20. September 2024**. Bis dahin können Sie auf dem gleichen Wege noch weitere Hinweise einreichen. Nach Abschluss der Beteiligung werden alle Hinweise fachlich geprüft und vom Planungsbüro bearbeitet. Alle Hinweise fließen in die Abwägung zur Überarbeitung des Zielnetzentwurfs mit ein. Nach Abschluss der Auswertung werden die Hinweise und Rückmeldungen für alle Beteiligten im Radverkehrsatlas veröffentlicht.
+Die Beteiligung läuft noch **bis zum 08. November 2024**. Bis dahin können Sie auf dem gleichen Wege noch weitere Hinweise einreichen. Nach Abschluss der Beteiligung werden alle Hinweise fachlich geprüft und vom Planungsbüro bearbeitet. Alle Hinweise fließen in die Abwägung zur Überarbeitung des Zielnetzentwurfs mit ein. Nach Abschluss der Auswertung werden die Hinweise und Rückmeldungen für alle Beteiligten im Radverkehrsatlas veröffentlicht.
+
+## Noch Fragen?
+
+Bei Rückfragen zur Beteiligung oder technischen Schwierigkeiten können Sie sich gerne an die beim durchführenden Unternehmen FixMyCity zuständige Mitarbeiterin von FixMyCity, Frau Noemi Kuß, wenden:
+
+Mail: [noemi@fixmycity.de](mailto:noemi@fixmycity.de),
+Tel.: 030-62939269
 
 Weiterführende Informationen zum Radnetz Brandenburg finden Sie außerdem auf der Website des Ministeriums für Infrastruktur und Landesplanung.
 

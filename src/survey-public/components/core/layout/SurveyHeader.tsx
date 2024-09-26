@@ -20,6 +20,7 @@ export const SurveyHeader: React.FC<Props> = ({ logoSrc, landingPageUrl }) => {
               sizes="(max-width: 50px)"
               src={logoSrc}
               alt="Projektlogo"
+              priority
             />
           </span>
           <span className="py-5 pl-5">Beteiligung</span>

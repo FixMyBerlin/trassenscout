@@ -8,13 +8,14 @@ import {
 } from "@/src/core/components/forms"
 import { LabeledFormatNumberFieldCalculateLength } from "@/src/core/components/forms/LabeledFormatNumberFieldCalculateLength"
 import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
-import { Link } from "@/src/core/components/links"
 import { quote, shortTitle } from "@/src/core/components/text"
 import { useSlugs } from "@/src/core/hooks"
+import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
 import getNetworkHierarchysWithCount from "@/src/networkHierarchy/queries/getNetworkHierarchysWithCount"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import { LabeledRadiobuttonGroupLabelPos } from "@/src/subsubsections/components/LabeledRadiobuttonGroupLabelPos"
-import { UserSelectOptions, getUserSelectOptions } from "@/src/users/utils"
+import { LinkWithFormDirtyConfirm } from "@/src/subsubsections/components/LinkWithFormDirtyConfirm"
+import { getUserSelectOptions } from "@/src/users/utils"
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { PriorityEnum } from "@prisma/client"
@@ -24,16 +25,15 @@ import { getPriorityTranslation } from "./utils/getPriorityTranslation"
 export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props<S extends z.ZodType<any, any>> = FormProps<S> & {
-  users: UserSelectOptions
   isFeltFieldsReadOnly?: boolean
 }
 
 function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
-  users,
   isFeltFieldsReadOnly,
   ...props
 }: Props<S>) {
   const { projectSlug } = useSlugs()
+  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug!, role: "EDITOR" })
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const [{ networkHierarchys }] = useQuery(getNetworkHierarchysWithCount, { projectSlug })
   const operatorOptions: [number | string, string][] = [
@@ -101,7 +101,6 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
         label="Geometry der Achse (LineString)"
       />
       <LabeledFormatNumberFieldCalculateLength
-        optional
         name="lengthKm"
         label="Länge"
         readOnly={isFeltFieldsReadOnly}
@@ -117,9 +116,12 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
           options={operatorOptions}
           outerProps={{ className: "grow" }}
         />
-        <Link href={Routes.OperatorsPage({ projectSlug: projectSlug! })} className="py-2">
+        <LinkWithFormDirtyConfirm
+          href={Routes.OperatorsPage({ projectSlug: projectSlug! })}
+          className="py-2"
+        >
           Baulastträger verwalten…
-        </Link>
+        </LinkWithFormDirtyConfirm>
       </div>
 
       <LabeledSelect
@@ -137,9 +139,12 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
           options={networkOptions}
           outerProps={{ className: "grow" }}
         />
-        <Link href={Routes.NetworkHierarchysPage({ projectSlug: projectSlug! })} className="py-2">
+        <LinkWithFormDirtyConfirm
+          href={Routes.NetworkHierarchysPage({ projectSlug: projectSlug! })}
+          className="py-2"
+        >
           Netzstufen verwalten…
-        </Link>
+        </LinkWithFormDirtyConfirm>
       </div>
     </Form>
   )

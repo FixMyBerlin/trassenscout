@@ -5,11 +5,11 @@ import { getFullname } from "@/src/users/utils/getFullname"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
 import { RouteUrlObject } from "blitz"
+import { Signup } from "../schema"
 import { getInvite } from "../shared/getInvite"
 import { notifyEditorsAboutNewMembership } from "../shared/notifyEditorsAboutNewMembership"
 import { selectUserFieldsForSession } from "../shared/selectUserFieldsForSession"
 import { updateInvite } from "../shared/updateInvite"
-import { Signup } from "../validations"
 
 export default resolver.pipe(
   resolver.zod(Signup),

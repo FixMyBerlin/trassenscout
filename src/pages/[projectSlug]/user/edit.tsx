@@ -1,6 +1,6 @@
 import UserEditForm from "@/src/auth/components/UserEditForm"
 import updateUser from "@/src/auth/mutations/updateUser"
-import { UpdateUser } from "@/src/auth/validations"
+import { UpdateUser } from "@/src/auth/schema"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"

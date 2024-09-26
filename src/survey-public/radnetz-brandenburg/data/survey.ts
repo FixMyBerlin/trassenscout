@@ -119,7 +119,7 @@ export const surveyDefinition: TSurvey = {
         {
           id: 10,
           label: {
-            de: "Möchten Sie noch etwas ergänzen? ",
+            de: "Was würden Sie dazu gerne noch ergänzen? ",
           },
           component: "text",
           props: {

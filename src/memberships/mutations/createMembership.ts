@@ -6,6 +6,11 @@ export default resolver.pipe(
   resolver.zod(MembershipSchema),
   resolver.authorize("ADMIN"),
   async (input) => {
-    return await db.membership.create({ data: input })
+    const created = await db.membership.create({ data: input })
+
+    // Delete the session of the updated user so she is forced to log in again to update her membership
+    await db.session.deleteMany({ where: { userId: created.userId } })
+
+    return created
   },
 )
