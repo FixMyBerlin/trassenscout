@@ -57,8 +57,8 @@ const StartContent: React.FC = () => {
         Schwerpunkten, Bahnhöfen und weiteren regionalen Schwerpunkten, wie beispielsweise wichtige
         touristische Destinationen. In einem nächsten Schritt wird ein <strong>Zielnetz</strong>{" "}
         entwickelt, in dem das Luftliniennetz auf das bestehende Wegenetz umgelegt wird und so auch
-        wichtige Lückenschlüsse identifiziert werden. Dabei werden auch weitere wichtige Standorte
-        wie zum Beispiel Schulen berücksichtigt. Die Konzeption betrachtet grundsätzlich alle
+        wichtige Lückenschlüsse identifiziert werden. Dabei werden auch weitere wichtige Standorte,
+        wie zum Beispiel Schulen, berücksichtigt. Die Konzeption betrachtet grundsätzlich alle
         bestehenden Infrastrukturen und Wegeverbindungen, unter anderem straßenbegleitende und
         selbständige Radwege, Wirtschaftswege, touristische Radrouten und innerörtliche Straßen. So
         weit wie möglich wird auf die vorhandene Infrastruktur zurückgegriffen.
@@ -83,8 +83,8 @@ const StartContent: React.FC = () => {
         vor. Um Ihre Vor-Ort-Expertise und Bedürfnisse als kommunale Baulastträger zu
         berücksichtigen und somit ein bestmögliches Zielnetz entwickeln zu können, ist Ihre
         Rückmeldung von großer Bedeutung. Daher haben Sie im Zeitraum{" "}
-        <strong>vom 30. September bis zum 08. November 2024</strong> die Möglichkeit, den Entwurf
-        des Radnetzkonzeptes zu kommentieren.{" "}
+        <strong>vom 30. September bis zum 8. November 2024</strong> die Möglichkeit, den Entwurf des
+        Radnetzkonzeptes zu kommentieren.{" "}
       </SurveyP>
       <SurveyH3>So geht’s!</SurveyH3>
       <ul className="ml-6 list-disc space-y-2 text-base sm:text-lg">
@@ -115,9 +115,7 @@ const StartContent: React.FC = () => {
           die beim durchführenden Unternehmen FixMyCity zuständige Mitarbeiterin, Frau Noemi Kuß,
           wenden: <br />
           <br />
-          Mail: <SurveyLink href={`mailto:§{noemi@fixmycity.de}`}>
-            noemi@fixmycity.de
-          </SurveyLink>{" "}
+          Mail: <SurveyLink href={"mailto:noemi@fixmycity.de"}>noemi@fixmycity.de</SurveyLink>{" "}
           <br />
           Tel.: 030-62939269
         </li>
@@ -131,8 +129,8 @@ const StartContent: React.FC = () => {
       </SurveyP>
       <SurveyP>
         Im Radverkehrsatlas sind auch die gesammelten Daten zur Bestandsinfrastruktur und zu
-        Radrouten, verschiedene Daten aus OpenStreetMap sowie das Luftliniennetz einsehbar. Eine
-        Anleitung zur Nutzung des Radverkehrsatlasses finden Sie{" "}
+        Radrouten, verschiedene Daten aus OpenStreetMap sowie die vorab identifizierten Quell- und
+        Zielpunkte einsehbar. Eine Anleitung zur Nutzung des Radverkehrsatlasses finden Sie{" "}
         <SurveyLink
           blank
           href={
@@ -315,12 +313,20 @@ const StartContent: React.FC = () => {
               >
                 Nach welchen Kriterien erfolgt die Netzumlegung?
               </summary>
-              Bei der sogenannten Netzumlegung wurden alle Luftlinien auf tatsächlich bestehende
+              Bei der sogenannten Netzumlegung wurden die Luftlinien auf tatsächlich bestehende
               Straßen- und Wegeverbindungen umgelegt. Dies erfolgte nach der Methodik der
               Bestwegeumlegung, d.h. es wurde stets der kürzeste Weg zwischen den festgelegten
               Zielpunkten gesucht. Dabei wurden – bis auf Autobahnen – alle Straßen- und
               Wegeverbindungen berücksichtigt. Anschließend wurde das Netz hinsichtlich
-              Plausibilität geprüft und im Einzelfall manuell angepasst.
+              Plausibilität geprüft und im Einzelfall manuell angepasst. Des Weiteren wurde der
+              Zielnetzentwurf in Bezug auf die Längen der Verbindungen sowie deren Lage zu den
+              Trassen des Schienenpersonennahverkehrs (SPNV) geprüft. So wurden z.B. sehr lange
+              Verbindungen, die keine weiteren Orte mit größerer Bedeutung (z. B. als Arbeitgeber)
+              anbinden, nicht im Zielnetzentwurf berücksichtigt. Ebenfalls wurden Verbindungen, für
+              die parallel ein SPNV-Angebot mit einem Mindesttakt von 60 Minuten besteht, nicht
+              berücksichtigt. Verbindungen zu den Bahn-Haltepunkten und damit zum SPNV wurden
+              hingegen im Zielnetzentwurf berücksichtigt, da das Fahrrad einen wichtigen Zubringer
+              zum SPNV darstellt.
             </details>
           </li>
           <li>
