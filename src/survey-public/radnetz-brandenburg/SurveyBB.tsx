@@ -207,7 +207,7 @@ const StartContent: React.FC = () => {
 
                   <div className="mt-4">
                     <a
-                      href="https://radverkehrsatlas.de/regionen/bb-beteiligung?map=11%2F52.397%2F13.034&config=z9tzbb.16gdxh.i&data=bb-ramboll-umgelegte-linien&v=2"
+                      href="https://radverkehrsatlas.de/regionen/bb-beteiligung?map=7.6/52.492/13.016&config=z9tzbb.1734h0.i&data=bb-land-klassifiertes-strassennetz,bb-ramboll-netzentwurf-2,bb-ramboll-quellen-ziele&v=2"
                       target="_blank"
                       className={primaryColorButtonStylesForLinkElement}
                       onClick={closeModal}
@@ -272,7 +272,7 @@ const StartContent: React.FC = () => {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35] hover:text-[#C73C35]",
+                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
                 )}
               >
                 Wie sieht die Umsetzung des „Radnetz Brandenburg“-Konzepts aus?
