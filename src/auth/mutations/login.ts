@@ -2,10 +2,10 @@ import db from "@/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
 import { AuthenticationError } from "blitz"
+import { Login } from "../schema"
 import { notifyEditorsAboutNewMembership } from "../shared/notifyEditorsAboutNewMembership"
 import { selectUserFieldsForSession } from "../shared/selectUserFieldsForSession"
 import { updateInvite } from "../shared/updateInvite"
-import { Login } from "../validations"
 
 export const authenticateUser = async (rawEmail: string, rawPassword: string) => {
   const { email, password } = Login.parse({ email: rawEmail, password: rawPassword })

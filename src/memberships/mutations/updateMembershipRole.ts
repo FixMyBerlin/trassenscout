@@ -1,9 +1,9 @@
 import db from "@/db"
+import { UpdateMembershipRole } from "@/src/auth/schema"
 import { authorizeProjectAdmin } from "@/src/authorization/authorizeProjectAdmin"
 import { editorRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
-import { UpdateMembershipRole } from "../../auth/validations"
 
 export default resolver.pipe(
   resolver.zod(UpdateMembershipRole),

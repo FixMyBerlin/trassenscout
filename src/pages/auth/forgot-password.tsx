@@ -1,5 +1,5 @@
 import forgotPassword from "@/src/auth/mutations/forgotPassword"
-import { ForgotPassword } from "@/src/auth/validations"
+import { ForgotPassword } from "@/src/auth/schema"
 import { Form, FORM_ERROR } from "@/src/core/components/forms/Form"
 import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
 import { frenchQuote } from "@/src/core/components/text"

@@ -2,7 +2,7 @@ import db from "@/db"
 import { forgotPasswordMailToUser } from "@/emails/mailers/forgotPasswordMailToUser"
 import { generateToken, hash256 } from "@blitzjs/auth"
 import { resolver } from "@blitzjs/rpc"
-import { ForgotPassword } from "../validations"
+import { ForgotPassword } from "../schema"
 
 const RESET_PASSWORD_TOKEN_EXPIRATION_IN_HOURS = 4
 
