@@ -1,6 +1,5 @@
-import { SurveyMap } from "@/src/survey-public/components/maps/SurveyMap"
 import { TMapProps } from "@/src/survey-public/components/types"
-import { useState } from "react"
+import { SurveyMapExternal } from "@/src/survey-responses/components/feedback/SurveyMapExternal"
 import { useFormContext } from "react-hook-form"
 
 type Props = {
@@ -18,9 +17,6 @@ export const ExternalSurveyResponseFormMap: React.FC<Props> = ({
 }) => {
   const { watch } = useFormContext()
 
-  // the isMapDirty state is useless atm - we just need it as a prop for surveyMap but we do not use it here (yet)
-  const [isMapDirty, setIsMapDirty] = useState(false)
-
   // watch if user choses to set a pin, update component if user choses to set a pin
   const isMap = watch(`single-${isUserLocationQuestionId}`) === "true"
 
@@ -28,7 +24,7 @@ export const ExternalSurveyResponseFormMap: React.FC<Props> = ({
     isMap && (
       <div>
         <p className="mb-4 block text-sm font-medium text-gray-700">Position wählen</p>
-        <SurveyMap
+        <SurveyMapExternal
           pinId={userLocationQuestionId}
           className="!h-64"
           projectMap={{
@@ -41,7 +37,6 @@ export const ExternalSurveyResponseFormMap: React.FC<Props> = ({
               bounds: mapProps.config!.bounds,
             },
           }}
-          setIsMapDirty={setIsMapDirty}
         />
       </div>
     )
