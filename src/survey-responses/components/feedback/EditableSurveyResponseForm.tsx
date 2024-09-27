@@ -227,6 +227,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         {showMap && (
           <div>
             <EditableSurveyResponseFormMap
+              surveySlug={survey.slug}
               marker={
                 // @ts-expect-error `data` is unkown
                 response.data[userLocationQuestionId] as { lat: number; lng: number } | undefined
