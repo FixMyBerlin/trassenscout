@@ -1,7 +1,8 @@
 import { Spinner } from "@/src/core/components/Spinner"
 import SurveyInactivePage from "@/src/survey-public/components/SurveyInactivePage"
-import { SurveyFRM7 } from "@/src/survey-public/frm7/SurveyFRM7"
 import { surveyDefinition as surveyDefinitionFRM7 } from "@/src/survey-public/frm7/data/survey"
+import { SurveyFRM7 } from "@/src/survey-public/frm7/SurveyFRM7"
+import { surveyDefinition as surveyDefinitionBB } from "@/src/survey-public/radnetz-brandenburg/data/survey"
 import { SurveyBB } from "@/src/survey-public/radnetz-brandenburg/SurveyBB"
 import getPublicSurveyBySlug from "@/src/surveys/queries/getPublicSurveyBySlug"
 import { BlitzPage } from "@blitzjs/auth"
@@ -24,7 +25,7 @@ const PublicSurveyPageWithQuery = () => {
     return survey.active ? (
       <SurveyBB surveyId={survey.id} />
     ) : (
-      <SurveyInactivePage surveyDefinition={surveyDefinitionFRM7} />
+      <SurveyInactivePage surveyDefinition={surveyDefinitionBB} />
     )
   return null
 }
