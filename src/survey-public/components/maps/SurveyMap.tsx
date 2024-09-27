@@ -219,16 +219,6 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
             }}
           />
           <Layer
-            id="LayerNetzentwurfClicktarget"
-            type="line"
-            source-layer="default"
-            beforeId="Fühung unklar"
-            paint={{
-              "line-color": "transparent",
-              "line-width": ["interpolate", ["linear"], ["zoom"], 0, 6, 8, 12, 13.8, 10],
-            }}
-          />
-          <Layer
             id="LayerSelectedLine"
             type="line"
             source-layer="default"
