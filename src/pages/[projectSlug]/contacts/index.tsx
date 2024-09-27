@@ -25,10 +25,6 @@ export const ContactsWithQuery = () => {
       : undefined,
   ].filter(Boolean)
 
-  if (!contacts.length) {
-    return <ZeroCase visible={contacts.length} name="Kontakte" />
-  }
-
   return (
     <>
       <PageHeader
@@ -39,7 +35,11 @@ export const ContactsWithQuery = () => {
 
       <Tabs className="mt-7" tabs={tabs} />
 
-      <ContactTable contacts={contacts} />
+      {contacts.length === 0 ? (
+        <ZeroCase visible={contacts.length} name="Kontakte" />
+      ) : (
+        <ContactTable contacts={contacts} />
+      )}
 
       <SuperAdminLogData data={contacts} />
     </>

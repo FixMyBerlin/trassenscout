@@ -50,26 +50,31 @@ export const FeedbackSecondPage: React.FC<Props> = ({
       <SurveyScreenHeader title={title.de} description={description.de} />
       {/* @ts-expect-error */}
       <Question question={questions.find((q) => q.id === isUserLocationQuestionId)} />
-      {/* @ts-expect-error */}
-      <SurveyH2>{questions.find((q) => q.id === userLocationQuestionId)?.label.de} *</SurveyH2>
-      {isMap && (
-        <MapProvider>
-          <SurveyMap
-            setIsMapDirty={setIsMapDirty}
-            projectMap={{
-              maptilerUrl: maptilerUrl,
-              initialMarker: mapProps.marker!,
-              config: mapProps.config,
-            }}
-            pinId={pinId}
-            questionIds={questions?.map((q) => q.id) || []}
-            setIsCompleted={setIsCompleted}
-            // todo survey clean up or refactor after survey BB line selection
-            lineGeometryId={lineGeometryId}
-          />
 
-          {mapProps.legend && <SurveyMapLegend legend={mapProps.legend} />}
-        </MapProvider>
+      {isMap && (
+        <>
+          <SurveyH2>
+            {/* @ts-expect-error */}
+            {questions.find((q) => q.id === userLocationQuestionId)?.label.de} *
+          </SurveyH2>
+          <MapProvider>
+            <SurveyMap
+              setIsMapDirty={setIsMapDirty}
+              projectMap={{
+                maptilerUrl: maptilerUrl,
+                initialMarker: mapProps.marker!,
+                config: mapProps.config,
+              }}
+              pinId={pinId}
+              questionIds={questions?.map((q) => q.id) || []}
+              setIsCompleted={setIsCompleted}
+              // todo survey clean up or refactor after survey BB line selection
+              lineGeometryId={lineGeometryId}
+            />
+
+            {mapProps.legend && <SurveyMapLegend legend={mapProps.legend} />}
+          </MapProvider>
+        </>
       )}
       <div className="pt-8">
         {userTextIndices.map((questionId) => {

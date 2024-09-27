@@ -5,9 +5,8 @@ import {
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
-import { lineString } from "@turf/helpers"
 import { clsx } from "clsx"
-import maplibregl from "maplibre-gl"
+import maplibregl, { MapGeoJSONFeature } from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
@@ -18,6 +17,7 @@ import Map, {
   Source,
   useMap,
 } from "react-map-gl/maplibre"
+import { DebugMapTileBoundaries } from "./DebugMapTileBoundaries"
 import { SurveyMapLineBanner } from "./SurveyMapLineBanner"
 
 export type SurveyMapProps = {
@@ -83,49 +83,45 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
   const { config } = projectMap
 
   const handleMapClick = (event: MapLayerMouseEvent) => {
-    const point = [event.originalEvent.offsetX, event.originalEvent.offsetY]
+    const line = event.features?.[0]
 
-    const boxSize = 10
-
-    const bbox =
-      point[0] && point[1]
-        ? [
-            [point[0] - boxSize, point[1] - boxSize],
-            [point[0] + boxSize, point[1] + boxSize],
-          ]
-        : undefined
-
-    // get line from map
-    const line = bbox
-      ? // @ts-expect-error we know that the geometry is a pointlike pointlike
-        mainMap?.queryRenderedFeatures(bbox, {
-          // todo survey update layer name
-          layers: ["Netzentwurf"],
-        })[0]
-      : undefined
+    if (!line) return
 
     // get data that we need from line
-    const lineId = line?.properties["Verbindung"]
-    const lineFrom = line?.properties["from_name"]
-    const lineTo = line?.properties["to_name"]
-    const lineGeometry = line?.geometry
+    const lineId = line.properties["Verbindung"]
+    const lineFrom = line.properties["from_name"]
+    const lineTo = line.properties["to_name"]
+    const lineGeometry = line.geometry
 
     // set values for line id, geometry and from-to-name in form context
-    if (line) {
-      setValue(
-        `custom-${lineFromToNameQuestionId}`,
-        `${lineFrom || "unbekannt"} - ${lineTo || "unbekannt"}`,
-      )
-      setValue(`custom-${lineQuestionId}`, lineId || "unbekannt")
-      // @ts-expect-error we know that the geometry is a line string
-      setValue(`custom-${geometryQuestionId}`, JSON.stringify(lineGeometry.coordinates))
-    }
+    setValue(
+      `custom-${lineFromToNameQuestionId}`,
+      `${lineFrom || "unbekannt"} - ${lineTo || "unbekannt"}`,
+    )
+    setValue(`custom-${lineQuestionId}`, lineId || "unbekannt")
+    // @ts-expect-error we know that the geometry is a line string
+    setValue(`custom-${geometryQuestionId}`, JSON.stringify(lineGeometry.coordinates))
+
     const values = getValues()
     const completedQuestionIds = getCompletedQuestionIds(values)
 
     // check if all questions from page one have been answered; compare arrays
     setIsCompleted(firstPageQuestionIds!.every((val) => completedQuestionIds.includes(val)))
   }
+
+  const handleMouseMove = ({ features }: MapLayerMouseEvent) => {
+    updateCursor(features)
+  }
+
+  const handleMouseLeave = () => {
+    updateCursor([])
+  }
+
+  const updateCursor = (features: MapGeoJSONFeature[] | undefined) => {
+    setCursorStyle(features?.length ? "pointer" : "grab")
+  }
+
+  const [cursorStyle, setCursorStyle] = useState("grab")
 
   return (
     <div className={clsx("h-[500px]", className)}>
@@ -139,29 +135,61 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
         mapLib={maplibregl}
         RTLTextPlugin={false}
         onClick={handleMapClick}
-        cursor="pointer"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        maxZoom={13}
+        minZoom={7}
+        // hash={true}
+        cursor={cursorStyle}
         // todo survey update layer name
-        interactiveLayerIds={["Netzentwurf"]}
+        interactiveLayerIds={["LayerNetzentwurfClicktarget"]}
       >
         {isMediumScreen && <NavigationControl showCompass={false} />}
-        {selectedLine && (
-          <Source
-            key={"Netzentwurf"}
-            type="geojson"
-            // @ts-expect-error
-            data={lineString(JSON.parse(selectedLine))}
-          >
-            <Layer
-              id={"SelectedLine"}
-              type="line"
-              paint={{
-                "line-width": 5,
-                "line-color": ["case", ["has", "color"], ["get", "color"], "#994F0B"],
-                "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
-              }}
-            />
-          </Source>
-        )}
+        <DebugMapTileBoundaries />
+        <Source
+          key="SourceNetzentwurf"
+          type="vector"
+          minzoom={6}
+          maxzoom={10}
+          tiles={[
+            "https://api.maptiler.com/tiles/b55f82dc-7010-4b20-8fd2-8071fccf72e4/{z}/{x}/{y}.pbf?key=ECOoUBmpqklzSCASXxcu",
+          ]}
+        >
+          <Layer
+            id="LayerNetzentwurf"
+            type="line"
+            source-layer="default"
+            beforeId="Fühung unklar"
+            paint={{
+              "line-color": "hsl(30, 100%, 50%)",
+              "line-width": ["interpolate", ["linear"], ["zoom"], 0, 1, 8, 1.5, 13.8, 5],
+              "line-dasharray": [3, 2],
+            }}
+          />
+          <Layer
+            id="LayerNetzentwurfClicktarget"
+            type="line"
+            source-layer="default"
+            beforeId="Fühung unklar"
+            paint={{
+              "line-color": "transparent",
+              "line-width": ["interpolate", ["linear"], ["zoom"], 0, 6, 8, 12, 13.8, 10],
+            }}
+          />
+          <Layer
+            id="LayerSelectedLine"
+            type="line"
+            source-layer="default"
+            layout={{ visibility: selectedLine ? "visible" : "none" }}
+            filter={["==", "Verbindung", getValues()[`custom-${lineQuestionId}`] || ""]}
+            paint={{
+              "line-width": 5,
+              "line-color": ["case", ["has", "color"], ["get", "color"], "#994F0B"],
+              "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
+            }}
+          />
+        </Source>
+
         <SurveyMapLineBanner
           className="absolute bottom-12"
           lineFromToName={getValues()[`custom-${lineFromToNameQuestionId}`] || null}

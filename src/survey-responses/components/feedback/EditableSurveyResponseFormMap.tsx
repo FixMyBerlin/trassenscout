@@ -2,18 +2,27 @@ import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/Backgro
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useState } from "react"
-import Map, { LngLatBoundsLike, Marker, NavigationControl, useMap } from "react-map-gl/maplibre"
+import Map, {
+  Layer,
+  LngLatBoundsLike,
+  Marker,
+  NavigationControl,
+  Source,
+  useMap,
+} from "react-map-gl/maplibre"
 
 type Props = {
   marker: { lat: number; lng: number } | undefined
   maptilerUrl: string
   defaultViewState?: LngLatBoundsLike
+  surveySlug: string
 }
 
 export const EditableSurveyResponseFormMap: React.FC<Props> = ({
   marker,
   maptilerUrl,
   defaultViewState,
+  surveySlug,
 }) => {
   const { mainMap } = useMap()
 
@@ -42,6 +51,30 @@ export const EditableSurveyResponseFormMap: React.FC<Props> = ({
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         RTLTextPlugin={false}
       >
+        {/*  todo survey clean up after survey BB */}
+        {surveySlug === "radnetz-brandenburg" && (
+          <Source
+            key="SourceNetzentwurf"
+            type="vector"
+            minzoom={6}
+            maxzoom={10}
+            tiles={[
+              "https://api.maptiler.com/tiles/b55f82dc-7010-4b20-8fd2-8071fccf72e4/{z}/{x}/{y}.pbf?key=ECOoUBmpqklzSCASXxcu",
+            ]}
+          >
+            <Layer
+              id="LayerNetzentwurf"
+              type="line"
+              source-layer="default"
+              beforeId="Fühung unklar"
+              paint={{
+                "line-color": "hsl(30, 100%, 50%)",
+                "line-width": ["interpolate", ["linear"], ["zoom"], 0, 1, 8, 1.5, 13.8, 5],
+                "line-dasharray": [3, 2],
+              }}
+            />
+          </Source>
+        )}
         {marker && (
           <Marker
             draggable={false}
