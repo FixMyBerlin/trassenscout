@@ -5,42 +5,42 @@ import { TBackendConfig } from "../../utils/backend-config-defaults"
 
 export const backendConfig: TBackendConfig = {
   status: [
-    { value: "PENDING", label: "AusstehendTEST", colorClass: "bg-yellow-100", icon: "CLOCK" }, // DEFAULT
+    { value: "PENDING", label: "Ausstehend", colorClass: "bg-yellow-100", icon: "CLOCK" }, // DEFAULT
     {
       value: "ASSIGNED",
-      label: "ZugeordnetTEST (BLT)",
+      label: "Zugeordnet (BLT)",
       colorClass: "bg-indigo-100",
       icon: "DOCUMENT",
     },
     {
       value: "IRRELEVANT",
-      label: "NichtTEST relevant",
+      label: "Nicht relevant",
       colorClass: "bg-gray-100",
       icon: "XMARK",
     },
     {
       value: "HANDED_OVER",
-      label: "ÜTESTbergeben Planung",
+      label: "Übergeben Planung",
       colorClass: "bg-indigo-100",
       icon: "DOCUMENT",
     },
     { value: "DONE_FAQ", label: "Erledigt (FAQ)", colorClass: "bg-green-100", icon: "CHECKMARK" },
     {
       value: "DONE_PLANING",
-      label: "ErTESTledigt (Planung)",
+      label: "Erledigt (Planung)",
       colorClass: "bg-green-100",
       icon: "CHECKMARK",
     },
   ],
   labels: {
     note: {
-      sg: "NotiTESTz",
-      help: "BiTESTtte starten Sie immer mit ihrem Namen oder Kürzel.",
+      sg: "Notiz",
+      help: "Bitte starten Sie immer mit ihrem Namen oder Kürzel.",
     },
-    status: { sg: "StaTESTtus" },
-    operator: { sg: "BaTESTulastträger" },
-    topics: { sg: "TaTESTg", pl: "TaTESTgs" },
-    category: { sg: "KategTESTorie" },
-    location: { sg: "OrtsaTESTngabe" },
+    status: { sg: "Status" },
+    operator: { sg: "Baulastträger" },
+    topics: { sg: "Tag", pl: "Tags" },
+    category: { sg: "Kategorie" },
+    location: { sg: "Ortsangabe" },
   },
 }
