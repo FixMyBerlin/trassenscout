@@ -115,7 +115,10 @@ const StartContent: React.FC = () => {
           die beim durchführenden Unternehmen FixMyCity zuständige Mitarbeiterin, Frau Noemi Kuß,
           wenden: <br />
           <br />
-          Mail: <SurveyLink href={"mailto:noemi@fixmycity.de"}>noemi@fixmycity.de</SurveyLink>{" "}
+          Mail:{" "}
+          <SurveyLink href={"mailto:radnetz-brandenburg@fixmycity.de"}>
+            radnetz-brandenburg@fixmycity.de
+          </SurveyLink>{" "}
           <br />
           Tel.: 030-62939269
         </li>
