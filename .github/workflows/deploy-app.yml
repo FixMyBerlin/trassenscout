@@ -8,6 +8,9 @@ on:
       NEXT_PUBLIC_APP_ORIGIN:
         required: true
         type: string
+      NEXT_PUBLIC_APP_ENV:
+        required: true
+        type: string
       SERVICE_NAME:
         required: true
         type: string
