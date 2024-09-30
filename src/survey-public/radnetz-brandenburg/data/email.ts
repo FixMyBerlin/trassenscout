@@ -13,7 +13,7 @@ Die Beteiligung läuft noch **bis zum 8. November 2024**. Bis dahin können Sie 
 
 Bei Rückfragen zur Beteiligung oder technischen Schwierigkeiten können Sie sich gerne an die beim durchführenden Unternehmen FixMyCity zuständige Mitarbeiterin, Frau Noemi Kuß, wenden.
 
-Mail: [noemi@fixmycity.de](mailto:noemi@fixmycity.de),
+Mail: [radnetz-brandenburg@fixmycity.de](mailto:radnetz-brandenburg@fixmycity.de),
 Tel.: 030-62939269
 
 Weiterführende Informationen zum Radnetz Brandenburg finden Sie außerdem auf der Website des Ministeriums für Infrastruktur und Landesplanung.
