@@ -19,12 +19,13 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
 import { clsx } from "clsx"
-import { useRouter } from "next/router"
+import { parseAsJson, useQueryState } from "nuqs"
 import { PropsWithoutRef, useState } from "react"
 import { FormProvider, UseFormProps, useForm } from "react-hook-form"
 import { LngLatBoundsLike } from "react-map-gl/maplibre"
 import { z } from "zod"
 import updateSurveyResponse from "../../mutations/updateSurveyResponse"
+import { filterSchema } from "./EditableSurveyResponseFilterForm"
 import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
 import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
 
@@ -58,7 +59,6 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   showMap,
   backendConfig,
 }: FormProps<S>) {
-  const router = useRouter()
   const methods = useForm<z.infer<S>>({
     mode: "onBlur",
     resolver: schema ? zodResolver(schema) : undefined,
@@ -68,6 +68,8 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   const { projectSlug } = useSlugs()
   const surveyId = useParam("surveyId", "string")
   const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
+
+  const [filter, setFilter] = useQueryState("filter", parseAsJson(filterSchema.parse))
 
   const [updateSurveyResponseMutation] = useMutation(updateSurveyResponse)
   const [surveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
@@ -151,19 +153,8 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
       ])
       // the EditableSurveyResponseFilterForm needs to update when a new topic is added here
       // this hapens with a useEffect in EditableSurveyResponseFilterForm
-      if (router.query.topics)
-        await router.push(
-          {
-            query: {
-              ...router.query,
-              topics: [...(router.query.topics as string[]), String(createdOrFetched.id)],
-            },
-          },
-          undefined,
-          {
-            scroll: false,
-          },
-        )
+      if (filter?.topics)
+        await setFilter({ ...filter, topics: [...filter.topics, String(createdOrFetched.id)] })
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }

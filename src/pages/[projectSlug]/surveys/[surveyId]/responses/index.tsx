@@ -68,7 +68,7 @@ export const SurveyResponse = () => {
 
         <ExternalSurveyResponseFormModal refetch={refetchResponses} />
 
-        <EditableSurveyResponseFilterForm operators={operators} topics={topics} />
+        <EditableSurveyResponseFilterForm operators={operators} topicsDefinition={topics} />
 
         <ZeroCase visible={filteredResponses.length} name={"Beiträge"} />
         {filteredResponses.length === 1 ? (
