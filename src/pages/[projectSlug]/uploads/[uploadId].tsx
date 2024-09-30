@@ -19,7 +19,7 @@ export const Upload = () => {
   const router = useRouter()
   const projectSlug = useProjectSlug()
   const uploadId = useParam("uploadId", "number")
-  const [upload] = useQuery(getUploadWithSubsections, { id: uploadId })
+  const [upload] = useQuery(getUploadWithSubsections, { projectSlug, id: uploadId })
   const params: { returnPath?: string } = useRouterQuery()
   const { subsectionSlug, subsubsectionSlug } = splitReturnTo(params)
   let backUrl = Routes.UploadsPage({ projectSlug: projectSlug! })
