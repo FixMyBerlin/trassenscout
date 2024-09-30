@@ -6,18 +6,19 @@ import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageDescription } from "@/src/core/components/pages/PageDescription"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { quote, seoTitleSlug, shortTitle } from "@/src/core/components/text"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import getProject from "@/src/projects/queries/getProject"
 import { SubsectionTableAdmin } from "@/src/subsections/components/SubsectionTableAdmin"
 import updateSubsectionsWithFeltData from "@/src/subsections/mutations/updateSubsectionsWithFeltData"
 import getSubsections from "@/src/subsections/queries/getSubsections"
-import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
+import { BlitzPage, Routes, useRouterQuery } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { Suspense, useState } from "react"
 
 export const AdminSubsectionsWithQuery = () => {
-  const projectSlug = useParam("projectSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug })
+  const projectSlug = useProjectSlug()
+  const [project] = useQuery(getProject, { projectSlug })
   const [{ subsections }, { refetch }] = useQuery(getSubsections, { projectSlug: projectSlug! })
   const [updateSubsectionMutation] = useMutation(updateSubsectionsWithFeltData)
 

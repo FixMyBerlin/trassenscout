@@ -1,8 +1,9 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import getContactProjectId from "../queries/getContactProjectId"
 
 const DeleteContactSchema = z.object({
   id: z.number(),
@@ -10,6 +11,8 @@ const DeleteContactSchema = z.object({
 
 export default resolver.pipe(
   resolver.zod(DeleteContactSchema),
-  authorizeProjectAdmin(getContactProjectId),
-  async ({ id }) => await db.contact.deleteMany({ where: { id } }),
+  authorizeProjectMember(extractProjectSlug, editorRoles),
+  async ({ id }) => {
+    return await db.contact.deleteMany({ where: { id } })
+  },
 )

@@ -1,16 +1,18 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import getStakeholdernoteProjectId from "../queries/getStakeholdernoteProjectId"
 
-const DeleteStakeholdernoteSchema = z.object({
-  id: z.number(),
-})
+const DeleteStakeholdernoteSchema = ProjectSlugRequiredSchema.merge(z.object({ id: z.number() }))
 
 export default resolver.pipe(
   resolver.zod(DeleteStakeholdernoteSchema),
-  authorizeProjectAdmin(getStakeholdernoteProjectId),
+  authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id }) => {
     return await db.stakeholdernote.deleteMany({ where: { id } })
   },

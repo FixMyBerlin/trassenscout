@@ -1,16 +1,19 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
-import getSubsectionProjectId from "../queries/getSubsectionProjectId"
 import { SubsectionSchema } from "../schema"
 
+const CreateSubsectionSchema = ProjectSlugRequiredSchema.merge(SubsectionSchema)
+
 export default resolver.pipe(
-  resolver.zod(SubsectionSchema),
-  authorizeProjectAdmin(getSubsectionProjectId),
+  resolver.zod(CreateSubsectionSchema),
+  authorizeProjectMember(extractProjectSlug, editorRoles),
   async (input) => {
-    const subsection = await db.subsection.create({
-      data: input,
-    })
-    return subsection
+    return await db.subsection.create({ data: input })
   },
 )

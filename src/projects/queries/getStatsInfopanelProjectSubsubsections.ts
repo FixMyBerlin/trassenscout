@@ -1,9 +1,12 @@
 import db, { Prisma, Subsubsection } from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import { viewerRoles } from "../../authorization/constants"
-import { extractSlug } from "../../authorization/extractSlug"
 import { GetProject } from "./getProject"
 
 type SubsubsectionCategory = {
@@ -36,13 +39,15 @@ type SubsectionWithSubsubsectionsWithSpecialFeaturesCount = {
   }[]
 }
 
+const Schema = ProjectSlugRequiredSchema.merge(GetProject)
+
 export default resolver.pipe(
-  resolver.zod(GetProject),
-  authorizeProjectAdmin(extractSlug, viewerRoles),
-  async ({ slug }) => {
+  resolver.zod(Schema),
+  authorizeProjectMember(extractProjectSlug, viewerRoles),
+  async ({ projectSlug }) => {
     const query = {
       where: {
-        slug: slug,
+        slug: projectSlug,
       },
       include: {
         subsections: {
@@ -63,7 +68,7 @@ export default resolver.pipe(
     const qualityLevels = await db.qualityLevel.findMany({
       where: {
         project: {
-          slug: slug,
+          slug: projectSlug,
         },
       },
     })

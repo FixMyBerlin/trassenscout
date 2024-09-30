@@ -5,7 +5,7 @@ import {
   LabeledTextareaField,
 } from "@/src/core/components/forms"
 import { Link, blueButtonStyles } from "@/src/core/components/links"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import {
   TBackendConfig,
   backendConfig as defaultBackendConfig,
@@ -65,9 +65,9 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
     defaultValues: initialValues,
   })
 
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "string")
-  const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
+  const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
 
   const [filter, setFilter] = useQueryState("filter", parseAsJson(filterSchema.parse))
 
@@ -95,6 +95,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   const handleSubmit = async (values: any) => {
     try {
       await updateSurveyResponseMutation({
+        projectSlug,
         id: response.id,
         source: response.source,
         // We specify what we want to store explicity so that `data` and such is exclued

@@ -5,7 +5,7 @@ import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoIndexTitle } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { TeamInviteDocumentation } from "@/src/invites/components/TeamInviteDocumentation"
 import { TeamInvitesTable } from "@/src/invites/components/TeamInvitesTable"
@@ -13,12 +13,12 @@ import { BlitzPage, Routes } from "@blitzjs/next"
 import { Suspense } from "react"
 
 export const TeamInvitesWithQuery = () => {
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
 
   const tabs = [
-    { name: "Externe Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
-    { name: "Projektteam", href: Routes.ProjectTeamPage({ projectSlug: projectSlug! }) },
-    { name: "Einladungen", href: Routes.ProjectTeamInvitesPage({ projectSlug: projectSlug! }) },
+    { name: "Externe Kontakte", href: Routes.ContactsPage({ projectSlug }) },
+    { name: "Projektteam", href: Routes.ProjectTeamPage({ projectSlug }) },
+    { name: "Einladungen", href: Routes.ProjectTeamInvitesPage({ projectSlug }) },
   ]
 
   return (
@@ -28,11 +28,7 @@ export const TeamInvitesWithQuery = () => {
       <TeamInvitesTable />
 
       <ButtonWrapper className="mt-6">
-        <Link
-          button="blue"
-          icon="plus"
-          href={Routes.NewProjectTeamInvitePage({ projectSlug: projectSlug! })}
-        >
+        <Link button="blue" icon="plus" href={Routes.NewProjectTeamInvitePage({ projectSlug })}>
           Mitwirkende einladen
         </Link>
       </ButtonWrapper>

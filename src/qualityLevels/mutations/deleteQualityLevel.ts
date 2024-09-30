@@ -1,15 +1,19 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import getQualityLevelProjectId from "../queries/getQualityLevelProjectId"
 
-const DeleteQualityLevelSchema = z.object({
-  id: z.number(),
-})
+const DeleteQualityLevelSchema = ProjectSlugRequiredSchema.merge(z.object({ id: z.number() }))
 
 export default resolver.pipe(
   resolver.zod(DeleteQualityLevelSchema),
-  authorizeProjectAdmin(getQualityLevelProjectId),
-  async ({ id }) => await db.qualityLevel.deleteMany({ where: { id } }),
+  authorizeProjectMember(extractProjectSlug, editorRoles),
+  async ({ id }) => {
+    return await db.qualityLevel.deleteMany({ where: { id } })
+  },
 )

@@ -1,24 +1,27 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
+import { getProjectIdBySlug } from "@/src/projects/queries/getProjectIdBySlug"
 import { resolver } from "@blitzjs/rpc"
-import { z } from "zod"
-import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 import { SubsubsectionInfra } from "../schema"
 
-const CreateSubsubsectionInfraSchema = SubsubsectionInfra.omit({ projectId: true }).merge(
-  z.object({
-    projectSlug: z.string(),
-  }),
+const CreateSubsubsectionInfraSchema = ProjectSlugRequiredSchema.merge(
+  SubsubsectionInfra.omit({ projectId: true }),
 )
 
 export default resolver.pipe(
   resolver.zod(CreateSubsubsectionInfraSchema),
-  authorizeProjectAdmin(getProjectIdBySlug),
-  async ({ projectSlug, ...input }) =>
-    await db.subsubsectionInfra.create({
+  authorizeProjectMember(extractProjectSlug, editorRoles),
+  async ({ projectSlug, ...input }) => {
+    return await db.subsubsectionInfra.create({
       data: {
         ...input,
         projectId: await getProjectIdBySlug(projectSlug),
       },
-    }),
+    })
+  },
 )

@@ -1,5 +1,5 @@
 import { Link } from "@/src/core/components/links"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import { Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { NavigationGeneralLogo } from "../NavigationGeneral/NavigationGeneralLogo"
@@ -10,7 +10,7 @@ import { NavigationDesktopLinks } from "./NavigationDesktopLinks"
 
 export const NavigationDesktop: React.FC<NavigationProps> = ({ menuItems, projects }) => {
   const { asPath } = useRouter()
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
 
   return (
     <div className="relative hidden sm:flex sm:flex-row sm:items-center sm:justify-between">

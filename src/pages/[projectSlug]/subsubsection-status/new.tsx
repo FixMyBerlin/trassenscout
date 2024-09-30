@@ -2,7 +2,7 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { SubsubsectionStatusForm } from "@/src/subsubsectionStatus/components/SubsubsectionStatusForm"
 import createSubsubsectionStatus from "@/src/subsubsectionStatus/mutations/createSubsubsectionStatus"
@@ -15,7 +15,7 @@ import { Suspense } from "react"
 
 const NewSubsubsectionStatusPageWithQuery = () => {
   const router = useRouter()
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const [createSubsubsectionStatusMutation] = useMutation(createSubsubsectionStatus)
 
   type HandleSubmit = any // TODO

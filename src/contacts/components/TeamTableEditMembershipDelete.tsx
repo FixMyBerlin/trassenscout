@@ -1,5 +1,5 @@
 import { linkIcons, linkStyles } from "@/src/core/components/links"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import deleteMembership from "@/src/memberships/mutations/deleteMembership"
 import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
@@ -10,8 +10,7 @@ type Props = {
 }
 
 export const TeamTableEditMembershipDelete = ({ membershipId }: Props) => {
-  const { projectSlug } = useSlugs()
-
+  const projectSlug = useProjectSlug()
   const [deleteMembershipMutation] = useMutation(deleteMembership)
   const handleDelete = async () => {
     if (
@@ -20,7 +19,7 @@ export const TeamTableEditMembershipDelete = ({ membershipId }: Props) => {
       )
     ) {
       await deleteMembershipMutation(
-        { id: membershipId },
+        { projectSlug, membershipId },
         {
           onSuccess: async () => {
             const queryKey = getQueryKey(getProjectUsers, { projectSlug: projectSlug! })

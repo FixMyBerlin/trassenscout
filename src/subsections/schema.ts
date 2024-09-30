@@ -1,4 +1,3 @@
-import { Prettify } from "@/src/core/types"
 import { InputNumberOrNullSchema, SlugSchema } from "@/src/core/utils"
 import { LabelPositionEnum } from "@prisma/client"
 import { z } from "zod"
@@ -18,17 +17,12 @@ export const SubsectionSchema = z.object({
   networkHierarchyId: InputNumberOrNullSchema,
 })
 
-export const SubsectionsSchema = z.array(
-  SubsectionSchema.omit({ managerId: true, operatorId: true, description: true }),
-)
 export const SubsectionsFormSchema = z.object({
   prefix: z.string().regex(/^[a-z0-9-.]*$/, {
     message: "Pflichtfeld. Erlaubte Zeichen a-z, 0-9, - (Minus), . (Punkt)",
   }),
   no: z.coerce.number(),
 })
-
-export type TSubsectionSchema = Prettify<z.infer<typeof SubsectionSchema>>
 
 const GeometrySchema = z.object({
   type: z.union([

@@ -1,14 +1,18 @@
 import db from "@/db"
 import { invitationCreatedMailToUser } from "@/emails/mailers/invitationCreatedMailToUser"
 import { invitationCreatedNotificationToEditors } from "@/emails/mailers/invitationCreatedNotificationToEditors"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
 import { shortTitle } from "@/src/core/components/text"
+import { getProjectIdBySlug } from "@/src/projects/queries/getProjectIdBySlug"
 import { getFullname } from "@/src/users/utils"
 import { Ctx, Routes } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { randomBytes } from "crypto"
-import { z } from "zod"
-import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 import { InviteSchema } from "../schema"
 
 function generateToken(length: number = 32) {
@@ -16,15 +20,11 @@ function generateToken(length: number = 32) {
   return buffer.toString("base64url")
 }
 
-const CreateInviteSchema = InviteSchema.merge(
-  z.object({
-    projectSlug: z.string(),
-  }),
-)
+const CreateInviteSchema = ProjectSlugRequiredSchema.merge(InviteSchema)
 
 export default resolver.pipe(
   resolver.zod(CreateInviteSchema),
-  authorizeProjectAdmin(getProjectIdBySlug),
+  authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ projectSlug, ...data }, ctx: Ctx) => {
     const userId = ctx.session.userId
     const projectId = await getProjectIdBySlug(projectSlug)
@@ -72,7 +72,7 @@ export default resolver.pipe(
           },
           projectName: shortTitle(membership.project.slug),
           inviterName: getFullname(invite.inviter)!,
-          path: Routes.ProjectTeamInvitesPage({ projectSlug }),
+          path: Routes.ProjectTeamInvitesPage({ projectSlug: projectSlug! }),
         })
       ).send()
     }

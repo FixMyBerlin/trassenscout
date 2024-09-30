@@ -2,6 +2,7 @@ import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { quote } from "@/src/core/components/text"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 import deleteSurvey from "@/src/surveys/mutations/deleteSurvey"
 import getSurvey from "@/src/surveys/queries/getSurvey"
@@ -14,8 +15,9 @@ import { Suspense } from "react"
 export const AdminSurvey = () => {
   const router = useRouter()
   const surveyId = useParam("surveyId", "number")
+  const projectSlug = useProjectSlug()
   const [deleteSurveyMutation] = useMutation(deleteSurvey)
-  const [survey] = useQuery(getSurvey, { id: surveyId })
+  const [survey] = useQuery(getSurvey, { projectSlug, id: surveyId })
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${survey.id} unwiderruflich löschen?`)) {

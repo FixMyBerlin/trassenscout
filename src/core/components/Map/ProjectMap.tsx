@@ -1,5 +1,6 @@
+import { useProjectSlug } from "@/src/core/hooks"
 import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
-import { Routes, useParam } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { lineString } from "@turf/helpers"
 import { along, featureCollection, length } from "@turf/turf"
 import { useRouter } from "next/router"
@@ -26,7 +27,7 @@ type Props = { subsections: SubsectionWithPosition[] }
 
 export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   const router = useRouter()
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
   const { mainMap } = useMap()
   const userCan = useUserCan()
 

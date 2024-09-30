@@ -1,7 +1,7 @@
 import { Spinner } from "@/src/core/components/Spinner"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { H2 } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import getSubsections from "@/src/subsections/queries/getSubsections"
@@ -22,11 +22,12 @@ import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 
 export const SurveyResponseWithLocation = () => {
-  const { projectSlug, subsectionSlug } = useSlugs()
+  const { subsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "number")
   const surveyResponseId = useParam("surveyResponseId", "number")
 
-  const [survey] = useQuery(getSurvey, { id: surveyId })
+  const [survey] = useQuery(getSurvey, { projectSlug, id: surveyId })
   const [{ surveyResponsesFeedbackPartWithLocation }] = useQuery(getFeedbackResponsesWithLocation, {
     projectSlug,
     surveyId: survey.id,

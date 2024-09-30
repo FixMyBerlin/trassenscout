@@ -4,7 +4,7 @@ import { Link, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { hashStakeholdernotes } from "@/src/stakeholdernotes/components/StakeholderSection"
 import {
@@ -23,11 +23,12 @@ import { Suspense } from "react"
 
 const EditStakeholdernote = () => {
   const router = useRouter()
-  const { projectSlug, subsectionSlug } = useSlugs()
+  const { subsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const stakeholdernoteId = useParam("stakeholdernoteId", "number")
   const [stakeholdernote, { setQueryData }] = useQuery(
     getStakeholdernote,
-    { id: stakeholdernoteId },
+    { projectSlug, id: stakeholdernoteId },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
@@ -59,7 +60,7 @@ const EditStakeholdernote = () => {
   const [deleteStakeholdernoteMutation] = useMutation(deleteStakeholdernote)
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${stakeholdernote.id} unwiderruflich löschen?`)) {
-      await deleteStakeholdernoteMutation({ id: stakeholdernote.id })
+      await deleteStakeholdernoteMutation({ projectSlug, id: stakeholdernote.id })
       await router.push({
         ...Routes.SubsectionDashboardPage({
           projectSlug: projectSlug!,
@@ -95,7 +96,8 @@ const EditStakeholdernote = () => {
 }
 
 const EditStakeholdernotePage: BlitzPage = () => {
-  const { projectSlug, subsectionSlug } = useSlugs()
+  const { subsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
 
   return (
     <LayoutRs>

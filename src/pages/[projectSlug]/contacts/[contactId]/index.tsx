@@ -5,6 +5,7 @@ import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { getFullname } from "@/src/users/utils"
@@ -16,9 +17,9 @@ import { Suspense } from "react"
 export const ContactWithQuery = () => {
   const router = useRouter()
   const contactId = useParam("contactId", "number")
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
   const [deleteContactMutation] = useMutation(deleteContact)
-  const [contact] = useQuery(getContact, { id: contactId })
+  const [contact] = useQuery(getContact, { projectSlug, id: contactId })
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${contact.id} unwiderruflich löschen?`)) {

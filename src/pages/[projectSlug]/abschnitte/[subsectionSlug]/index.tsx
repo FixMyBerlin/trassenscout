@@ -8,7 +8,7 @@ import { Link } from "@/src/core/components/links"
 import { PageDescription } from "@/src/core/components/pages/PageDescription"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { H2, seoTitleSlug, shortTitle, startEnd } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { SubsectionInfoPanel } from "@/src/subsections/components/SubsectionInfoPanel"
@@ -27,7 +27,8 @@ import { Suspense } from "react"
 // Page Renders Subsection _AND_ Subsubsection (as Panel)
 export const SubsectionDashboardWithQuery = () => {
   const router = useRouter()
-  const { projectSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
+  const { subsectionSlug, subsubsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
 
   const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
   const subsection = subsections.find((ss) => ss.slug === subsectionSlug)

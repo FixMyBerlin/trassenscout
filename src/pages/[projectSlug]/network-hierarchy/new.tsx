@@ -2,7 +2,7 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { NetworkHierarchyForm } from "@/src/networkHierarchy/components/NetworkHierarchy"
 import createNetworkHierarchy from "@/src/networkHierarchy/mutations/createNetworkHierarchy"
@@ -15,7 +15,7 @@ import { Suspense } from "react"
 
 const NewNetworkHierarchyPageWithQuery = () => {
   const router = useRouter()
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const [createNetworkHierarchyMutation] = useMutation(createNetworkHierarchy)
 
   type HandleSubmit = any // TODO

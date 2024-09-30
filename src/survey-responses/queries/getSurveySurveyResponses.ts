@@ -1,5 +1,5 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { resolver } from "@blitzjs/rpc"
 import { viewerRoles } from "../../authorization/constants"
 import { extractProjectSlug } from "../../authorization/extractProjectSlug"
@@ -8,7 +8,7 @@ type GetSurveySessionsWithResponsesInput = { projectSlug: string; surveyId: numb
 
 export default resolver.pipe(
   // @ts-ignore
-  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
+  authorizeProjectMember(extractProjectSlug, viewerRoles),
   async ({ projectSlug, surveyId }: GetSurveySessionsWithResponsesInput) => {
     const rawSurveyResponse = await db.surveyResponse.findMany({
       where: {

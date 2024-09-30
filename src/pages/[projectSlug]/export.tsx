@@ -5,10 +5,11 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { whiteButtonStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { H2, longTitle, seoTitleSlug, shortTitle } from "@/src/core/components/text"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import getProject from "@/src/projects/queries/getProject"
 import getSubsections from "@/src/subsections/queries/getSubsections"
-import { BlitzPage, useParam } from "@blitzjs/next"
+import { BlitzPage } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { featureCollection, lineString, multiLineString, point } from "@turf/helpers"
 import { bbox, lineSlice, nearestPointOnLine } from "@turf/turf"
@@ -42,8 +43,8 @@ function stringifyGeoJSON(geojson: any) {
 }
 
 export const ExportWithQuery = () => {
-  const projectSlug = useParam("projectSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug })
+  const projectSlug = useProjectSlug()
+  const [project] = useQuery(getProject, { projectSlug })
   const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
 
   // ===== Base Data =====

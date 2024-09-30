@@ -2,7 +2,7 @@ import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogD
 import { StatusLabel } from "@/src/core/components/Status/StatusLabel"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { LinkMail } from "@/src/core/components/links"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import getInvites from "@/src/invites/queries/getInvites"
 import { roleTranslation } from "@/src/memberships/components/roleTranslation.const"
 import { getFullname } from "@/src/users/utils"
@@ -25,8 +25,8 @@ export const statusTranslations: Record<InviteStatusEnum, string> = {
 }
 
 export const TeamInvitesTable = () => {
-  const { projectSlug } = useSlugs()
-  const [{ invites }] = useQuery(getInvites, { projectSlug: projectSlug! })
+  const projectSlug = useProjectSlug()
+  const [{ invites }] = useQuery(getInvites, { projectSlug })
 
   return (
     <>

@@ -1,7 +1,7 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { LinkMail, LinkTel } from "@/src/core/components/links"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import { UserCanIcon } from "@/src/memberships/components/UserCanIcon"
 import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
 import { getFullname } from "@/src/users/utils"
@@ -10,7 +10,7 @@ import { TeamTableEditMembershipDelete } from "./TeamTableEditMembershipDelete"
 import { TeamTableEditMembershipModal } from "./TeamTableEditMembershipModal"
 
 export const TeamTable = () => {
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
 
   return (

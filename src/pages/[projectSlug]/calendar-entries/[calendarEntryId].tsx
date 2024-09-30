@@ -6,6 +6,7 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { quote } from "@/src/core/components/text"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
@@ -16,13 +17,13 @@ import { Suspense } from "react"
 export const CalendarEntry = () => {
   const router = useRouter()
   const calendarEntryId = useParam("calendarEntryId", "number")
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
   const [deleteCalendarEntryMutation] = useMutation(deleteCalendarEntry)
-  const [calendarEntry] = useQuery(getCalendarEntry, { id: calendarEntryId })
+  const [calendarEntry] = useQuery(getCalendarEntry, { projectSlug, id: calendarEntryId })
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${calendarEntry.id} unwiderruflich löschen?`)) {
-      await deleteCalendarEntryMutation({ id: calendarEntry.id })
+      await deleteCalendarEntryMutation({ projectSlug, id: calendarEntry.id })
       await router.push(Routes.CalendarEntriesPage({ projectSlug: projectSlug! }))
     }
   }

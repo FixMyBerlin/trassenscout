@@ -1,7 +1,6 @@
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { LinkMail, LinkTel } from "@/src/core/components/links"
 import { getFullname } from "@/src/users/utils"
-import { useParam } from "@blitzjs/next"
 import { Contact } from "@prisma/client"
 import { TableWrapper } from "../../core/components/Table/TableWrapper"
 
@@ -10,8 +9,6 @@ type Props = {
 }
 
 export const ContactSingle: React.FC<Props> = ({ contact }) => {
-  const projectSlug = useParam("projectSlug", "string")
-
   return (
     <TableWrapper>
       <table className="min-w-full divide-y divide-gray-300">

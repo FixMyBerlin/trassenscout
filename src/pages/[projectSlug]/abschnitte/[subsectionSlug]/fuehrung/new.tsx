@@ -2,7 +2,7 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { longTitle, seoNewTitle } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import getSubsection from "@/src/subsections/queries/getSubsection"
 import { FORM_ERROR, SubsubsectionForm } from "@/src/subsubsections/components/SubsubsectionForm"
@@ -20,7 +20,8 @@ const NewSubsubsection = () => {
   const router = useRouter()
   const [createSubsubsectionMutation] = useMutation(createSubsubsection)
 
-  const { projectSlug, subsectionSlug } = useSlugs()
+  const { subsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const [subsection] = useQuery(getSubsection, {
     projectSlug: projectSlug!,
     subsectionSlug: subsectionSlug!,
@@ -31,6 +32,7 @@ const NewSubsubsection = () => {
     try {
       const subsubsection = await createSubsubsectionMutation({
         ...values,
+        projectSlug,
         subsectionId: subsection!.id,
         trafficLoadDate: values.trafficLoadDate ? new Date(values.trafficLoadDate) : null,
         estimatedCompletionDate: values.estimatedCompletionDate

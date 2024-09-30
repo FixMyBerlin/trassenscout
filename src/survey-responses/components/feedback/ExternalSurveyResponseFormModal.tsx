@@ -1,5 +1,7 @@
 import { Modal } from "@/src/core/components/Modal"
 import { blueButtonStyles } from "@/src/core/components/links"
+import { useProjectSlug } from "@/src/core/hooks"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import {
   TMapProps,
   TResponse,
@@ -23,9 +25,10 @@ import { ExternalSurveyResponseForm, FORM_ERROR } from "./ExternalSurveyResponse
 
 type Props = { refetch: any }
 
-export const ExternalSurveyResponseFormModal: React.FC<Props> = ({ refetch }) => {
+export const ExternalSurveyResponseFormModal = ({ refetch }: Props) => {
+  const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "string")
-  const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
+  const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
 
   const [open, setOpen] = useState(false)
   const [createSurveySessionMutation] = useMutation(createSurveySession)
@@ -91,7 +94,7 @@ export const ExternalSurveyResponseFormModal: React.FC<Props> = ({ refetch }) =>
   }
 
   return (
-    <>
+    <IfUserCanEdit>
       <button
         onClick={() => setOpen(true)}
         className={clsx("flex flex-row gap-1", blueButtonStyles)}
@@ -113,6 +116,6 @@ export const ExternalSurveyResponseFormModal: React.FC<Props> = ({ refetch }) =>
           handleSubmit={handleSubmit}
         />
       </Modal>
-    </>
+    </IfUserCanEdit>
   )
 }

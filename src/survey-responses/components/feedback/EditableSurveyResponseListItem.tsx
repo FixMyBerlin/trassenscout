@@ -1,5 +1,6 @@
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { linkStyles } from "@/src/core/components/links"
+import { useProjectSlug } from "@/src/core/hooks"
 import { Prettify } from "@/src/core/types"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
@@ -52,7 +53,8 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const params = useRouterQuery()
   const open = !isAccordion ? true : parseInt(String(params.responseDetails)) === response.id
   const surveyId = useParam("surveyId", "string")
-  const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
+  const projectSlug = useProjectSlug()
+  const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
 
   const [deleteCalendarEntryMutation] = useMutation(deleteSurveyResponse)
 

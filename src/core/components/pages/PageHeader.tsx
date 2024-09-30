@@ -1,6 +1,6 @@
-import { useSlugs } from "@/src/core/hooks"
 import { CurrentUserCanIcon } from "@/src/memberships/components/CurrentUserCanIcon"
 import { clsx } from "clsx"
+import { useProjectSlug } from "../../hooks"
 import { DashedLine } from "../DashedLine"
 import { H1, H2 } from "../text/Headings"
 
@@ -21,7 +21,7 @@ export const PageHeader = ({
   action,
   className,
 }: Props) => {
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
 
   const styledDescription =
     typeof description === "string" ? (

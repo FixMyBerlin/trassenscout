@@ -22,7 +22,7 @@
     "migrate:compare": "git diff origin/main... -- db/migrations",
     "db:getDump": "db/remote/get-dump.sh",
     "db:getDump:staging": "USE_STAGING=1 db/remote/get-dump.sh",
-    "db:restoreDump": "npm run predev && db/remote/restore-dump.sh",
+    "db:restoreDump": "npm run predev && db/remote/restore-dump.sh && SEED_USER_ONLY=1 blitz db seed",
     "check": "npm run migrate:check && npm run type-check && npm run lint && npm run format-check && npm run test",
     "type-check": "tsc --noEmit",
     "lint": "eslint --fix --ignore-pattern \"src/core/templates/*\" --ignore-path .gitignore --ext .js,.ts,.tsx .",

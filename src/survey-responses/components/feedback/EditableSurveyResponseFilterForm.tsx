@@ -4,6 +4,7 @@ import {
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { linkStyles } from "@/src/core/components/links"
+import { useProjectSlug } from "@/src/core/hooks"
 import { Prettify } from "@/src/core/types"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import { TResponse, TSingleOrMultiResponseProps } from "@/src/survey-public/components/types"
@@ -59,7 +60,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   const router = useRouter()
 
   const surveyId = useParam("surveyId", "string")
-  const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
+  const projectSlug = useProjectSlug()
+  const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
 
   const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
   const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)

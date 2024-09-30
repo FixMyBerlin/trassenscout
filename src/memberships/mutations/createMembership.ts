@@ -2,8 +2,10 @@ import db from "@/db"
 import { resolver } from "@blitzjs/rpc"
 import { MembershipSchema } from "../schema"
 
+export const CreateMembershipSchema = MembershipSchema
+
 export default resolver.pipe(
-  resolver.zod(MembershipSchema),
+  resolver.zod(CreateMembershipSchema),
   resolver.authorize("ADMIN"),
   async (input) => {
     const created = await db.membership.create({ data: input })

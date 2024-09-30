@@ -1,9 +1,13 @@
 import db from "@/db"
 import { AuthorizationError } from "blitz"
 
-type Input = string | Record<string, any>
+type Input = string | Record<string, any> | undefined | null
 
-const getProjectIdBySlug = async (input: Input) => {
+export const getProjectIdBySlug = async (input: Input) => {
+  if (!input) {
+    throw new AuthorizationError()
+  }
+
   let projectSlug: null | string = null
 
   if (typeof input === "string") {

@@ -1,22 +1,25 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import getQualityLevelProjectId from "../queries/getSubsubsectionInfraProjectId"
 import { SubsubsectionInfra } from "../schema"
 
-const UpdateSubsubsectionInfraSchema = SubsubsectionInfra.merge(
-  z.object({
-    id: z.number(),
-  }),
+const UpdateSubsubsectionInfraSchema = ProjectSlugRequiredSchema.merge(
+  SubsubsectionInfra.merge(z.object({ id: z.number() })),
 )
 
 export default resolver.pipe(
   resolver.zod(UpdateSubsubsectionInfraSchema),
-  authorizeProjectAdmin(getQualityLevelProjectId),
-  async ({ id, ...data }) =>
-    await db.subsubsectionInfra.update({
+  authorizeProjectMember(extractProjectSlug, editorRoles),
+  async ({ id, ...data }) => {
+    return await db.subsubsectionInfra.update({
       where: { id },
       data,
-    }),
+    })
+  },
 )

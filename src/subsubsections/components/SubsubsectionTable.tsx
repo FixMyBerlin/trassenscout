@@ -9,7 +9,7 @@ import {
   shortTitle,
 } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
 import { Routes } from "@blitzjs/next"
@@ -25,7 +25,8 @@ type Props = {
 
 export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact }) => {
   const router = useRouter()
-  const { projectSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
+  const { subsectionSlug, subsubsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
 
   return (
     <section>
@@ -93,7 +94,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
           <tbody className="divide-y divide-gray-200 bg-white">
             {subsubsections.map((subsubsection) => {
               const route = Routes.SubsubsectionDashboardPage({
-                projectSlug: projectSlug!,
+                projectSlug,
                 subsectionSlug: subsectionSlug!,
                 subsubsectionSlug: subsubsection.slug,
               })
@@ -186,7 +187,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
           icon="plus"
           className="mt-4"
           href={Routes.NewSubsubsectionPage({
-            projectSlug: projectSlug!,
+            projectSlug,
             subsectionSlug: subsectionSlug!,
           })}
         >

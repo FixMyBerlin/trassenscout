@@ -1,5 +1,6 @@
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
+import { useProjectSlug } from "@/src/core/hooks"
 import { Routes, useParam } from "@blitzjs/next"
 import "maplibre-gl/dist/maplibre-gl.css"
 import router from "next/router"
@@ -23,7 +24,7 @@ export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
 }) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const surveyId = useParam("surveyId", "number")
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
 
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)

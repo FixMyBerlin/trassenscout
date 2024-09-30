@@ -20,23 +20,34 @@ import seedUsers from "./seeds/users"
  * This seed function is executed when you run `blitz db seed`.
  */
 const seed = async () => {
-  await seedProjects()
+  // It looks like we cannot set ENV variables as prefix to a call in npm run.
+  // But we can hack around this like this…
+  const seedAll = !process.env.npm_lifecycle_script?.includes("SEED_USER_ONLY")
+
+  if (seedAll) {
+    await seedProjects()
+  }
+
+  // When we use `npm run db:restoreDump` we want to seed our test uses
   await seedUsers()
   await seedMemberships()
-  await seedOperators()
-  await seedQualityLevels()
-  await seedSubsections()
-  await seedStakeholdernotes()
-  await seedCalendarEntries()
-  await seedContacts()
-  await seedUploads()
-  await seedSurveys()
-  await seedSurveyResponseTopics()
-  await seedSubsubsectionStatus()
-  await seedSubsubsectionTask()
-  await seedSubsubsectionInfra()
-  await seedSubsubsectionSpecial()
-  await seedDevData()
+
+  if (seedAll) {
+    await seedOperators()
+    await seedQualityLevels()
+    await seedSubsections()
+    await seedStakeholdernotes()
+    await seedCalendarEntries()
+    await seedContacts()
+    await seedUploads()
+    await seedSurveys()
+    await seedSurveyResponseTopics()
+    await seedSubsubsectionStatus()
+    await seedSubsubsectionTask()
+    await seedSubsubsectionInfra()
+    await seedSubsubsectionSpecial()
+    await seedDevData()
+  }
 }
 
 export default seed

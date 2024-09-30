@@ -1,20 +1,17 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 import { SubsectionWithPosition } from "../queries/getSubsection"
-import getSubsectionProjectId from "../queries/getSubsectionProjectId"
 import { SubsectionSchema } from "../schema"
 
-const UpdateSubsectionSchema = SubsectionSchema.merge(
-  z.object({
-    id: z.number(),
-  }),
-)
+const UpdateSubsectionSchema = SubsectionSchema.merge(z.object({ id: z.number() }))
 
 export default resolver.pipe(
   resolver.zod(UpdateSubsectionSchema),
-  authorizeProjectAdmin(getSubsectionProjectId),
+  authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id, ...data }) => {
     const subsection = await db.subsection.update({
       where: { id },

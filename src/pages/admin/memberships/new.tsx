@@ -6,18 +6,20 @@ import { seoNewTitle } from "@/src/core/components/text"
 import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 import { MembershipForm } from "@/src/memberships/components/MembershipForm"
 import createMembership from "@/src/memberships/mutations/createMembership"
+import { MembershipSchema } from "@/src/memberships/schema"
 import { FORM_ERROR } from "@/src/projects/components/ProjectForm"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
+import { z } from "zod"
 
 const AdminNewMembership = () => {
   const router = useRouter()
 
   const [createMembershipMutation] = useMutation(createMembership)
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<typeof MembershipSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await createMembershipMutation(values)
@@ -31,7 +33,10 @@ const AdminNewMembership = () => {
   return (
     <SuperAdminBox>
       <MembershipForm
-        initialValues={{ userId: router.query.userId }}
+        initialValues={{
+          userId: router.query.userId ? Number(router.query.userId) : undefined,
+        }}
+        schema={MembershipSchema}
         submitText="Erstellen"
         onSubmit={handleSubmit}
       />

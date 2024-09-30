@@ -1,18 +1,18 @@
 import db, { Prisma } from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 import { viewerRoles } from "../../authorization/constants"
 import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 
-type GetStakeholdernotesInput = { subsectionId: number } & Pick<
+type GetStakeholdernotesInput = { projectSlug: string; subsectionId: number } & Pick<
   Prisma.StakeholdernoteFindManyArgs,
   "where" | "orderBy" | "skip" | "take"
 >
 
 export default resolver.pipe(
   // @ts-ignore
-  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
+  authorizeProjectMember(extractProjectSlug, viewerRoles),
   async ({
     subsectionId,
     where,

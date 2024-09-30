@@ -4,6 +4,7 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoIndexTitle, shortTitle } from "@/src/core/components/text"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 import deleteMembership from "@/src/memberships/mutations/deleteMembership"
 import getUsersAndMemberships from "@/src/users/queries/getUsersAndMemberships"
@@ -14,6 +15,7 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 
 const AdminMemberships = () => {
+  const projectSlug = useProjectSlug()
   const [{ users: userAndMemberships }] = useQuery(getUsersAndMemberships, {})
 
   const router = useRouter()
@@ -28,7 +30,7 @@ const AdminMemberships = () => {
         )} unwiderruflich löschen?`,
       )
     ) {
-      await deleteMembershipMutation({ id: membership.id })
+      await deleteMembershipMutation({ projectSlug: projectSlug!, membershipId: membership.id })
       await router.push(Routes.AdminMembershipsPage())
     }
   }

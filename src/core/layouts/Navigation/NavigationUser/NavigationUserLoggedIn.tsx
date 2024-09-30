@@ -1,6 +1,7 @@
 import { AdminBox } from "@/src/core/components/AdminBox/AdminBox"
 import { linkStyles } from "@/src/core/components/links"
 import { Link } from "@/src/core/components/links/Link"
+import { useProjectSlug } from "@/src/core/hooks"
 import {
   showMembershipRoleCheckIndicatorCountActions,
   showMembershipRoleCheckIndicatorState,
@@ -8,7 +9,7 @@ import {
 import { isDev, isProduction, isStaging } from "@/src/core/utils/isEnv"
 import { CurrentUser } from "@/src/users/types"
 import { getFullname, getInitials, isAdmin } from "@/src/users/utils"
-import { Routes, useParam } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react"
 import { clsx } from "clsx"
 import { Fragment } from "react"
@@ -18,7 +19,7 @@ type Props = {
 }
 
 export const NavigationUserLoggedIn: React.FC<Props> = ({ user }) => {
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
   const showMembershipRoleCheckIndicator = showMembershipRoleCheckIndicatorState()
   const { toggleShowMembershipRoleCheckIndicator } = showMembershipRoleCheckIndicatorCountActions()
 

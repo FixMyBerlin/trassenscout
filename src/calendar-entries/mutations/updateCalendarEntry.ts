@@ -1,22 +1,25 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import getCalendarEntryProjectId from "../queries/getCalendarEntryProjectId"
 import { CalendarEntrySchema } from "../schema"
 
-const UpdateCalendarEntrySchema = CalendarEntrySchema.merge(
-  z.object({
-    id: z.number(),
-  }),
+const UpdateCalendarEntrySchema = ProjectSlugRequiredSchema.merge(
+  CalendarEntrySchema.merge(z.object({ id: z.number() })),
 )
 
 export default resolver.pipe(
   resolver.zod(UpdateCalendarEntrySchema),
-  authorizeProjectAdmin(getCalendarEntryProjectId),
-  async ({ id, ...data }) =>
-    await db.calendarEntry.update({
+  authorizeProjectMember(extractProjectSlug, editorRoles),
+  async ({ id, ...data }) => {
+    return await db.calendarEntry.update({
       where: { id },
       data,
-    }),
+    })
+  },
 )

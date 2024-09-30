@@ -4,6 +4,7 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { FORM_ERROR, QualityLevelForm } from "@/src/qualityLevels/components/QualityLevelForm"
 import updateQualityLevel from "@/src/qualityLevels/mutations/updateQualityLevel"
@@ -17,11 +18,11 @@ import { Suspense } from "react"
 const EditQualityLevelWithQuery = () => {
   const router = useRouter()
   const qualityLevelId = useParam("qualityLevelId", "number")
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
 
   const [qualityLevel, { setQueryData }] = useQuery(
     getQualityLevel,
-    { id: qualityLevelId },
+    { projectSlug, id: qualityLevelId },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,

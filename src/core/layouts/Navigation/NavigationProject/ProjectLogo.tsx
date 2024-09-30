@@ -1,7 +1,7 @@
 import { Spinner } from "@/src/core/components/Spinner"
+import { useProjectSlug } from "@/src/core/hooks"
 import { getImageSrc } from "@/src/core/utils/getImageSrc"
 import getProject from "@/src/projects/queries/getProject"
-import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { clsx } from "clsx"
 import Image from "next/image"
@@ -18,8 +18,8 @@ const sizeClasses = {
 }
 
 export const ProjectLogoWithQuery: React.FC<Props> = ({ className, size = "5" }) => {
-  const projectSlug = useParam("projectSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug })
+  const projectSlug = useProjectSlug()
+  const [project] = useQuery(getProject, { projectSlug })
 
   if (!project.logoSrc) return null
 

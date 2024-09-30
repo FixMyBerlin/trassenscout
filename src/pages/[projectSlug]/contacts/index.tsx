@@ -5,7 +5,7 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Tabs } from "@/src/core/components/Tabs/Tabs"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useUserCan } from "@/src/memberships/hooks/useUserCan"
 import { BlitzPage, Routes } from "@blitzjs/next"
@@ -13,15 +13,15 @@ import { usePaginatedQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 
 export const ContactsWithQuery = () => {
-  const { projectSlug } = useSlugs()
-  const [{ contacts }] = usePaginatedQuery(getContacts, { projectSlug: projectSlug! })
+  const projectSlug = useProjectSlug()
+  const [{ contacts }] = usePaginatedQuery(getContacts, { projectSlug })
 
   const showInvitesTab = useUserCan().edit
   const tabs = [
-    { name: "Externe Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
-    { name: "Projektteam", href: Routes.ProjectTeamPage({ projectSlug: projectSlug! }) },
+    { name: "Externe Kontakte", href: Routes.ContactsPage({ projectSlug }) },
+    { name: "Projektteam", href: Routes.ProjectTeamPage({ projectSlug }) },
     showInvitesTab
-      ? { name: "Einladungen", href: Routes.ProjectTeamInvitesPage({ projectSlug: projectSlug! }) }
+      ? { name: "Einladungen", href: Routes.ProjectTeamInvitesPage({ projectSlug }) }
       : undefined,
   ].filter(Boolean)
 

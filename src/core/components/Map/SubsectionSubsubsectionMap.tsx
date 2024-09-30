@@ -1,4 +1,4 @@
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
 import { Routes } from "@blitzjs/next"
@@ -27,10 +27,10 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
   subsubsections,
 }) => {
   const {
-    projectSlug,
     subsectionSlug: pageSubsectionSlug, // we use this name a lot, so `page*` is to clarify
     subsubsectionSlug: pageSubsubsectionSlug,
   } = useSlugs()
+  const projectSlug = useProjectSlug()
   const router = useRouter()
 
   type HandleSelectProps = { subsectionSlug: string; subsubsectionSlug: string; edit: boolean }
