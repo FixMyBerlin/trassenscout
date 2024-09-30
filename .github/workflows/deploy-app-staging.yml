@@ -9,6 +9,7 @@ jobs:
     with:
       APP_ORIGIN: http://staging.trassenscout.de
       NEXT_PUBLIC_APP_ORIGIN: http://staging.trassenscout.de
+      NEXT_PUBLIC_APP_ENV: "staging"
       SERVICE_NAME: trassenscout-staging
       S3_UPLOAD_BUCKET: trassenscout
       S3_UPLOAD_REGION: eu-central-1

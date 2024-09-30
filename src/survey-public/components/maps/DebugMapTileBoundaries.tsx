@@ -1,11 +1,11 @@
-import { isDev } from "@/src/core/utils"
+import { isProduction } from "@/src/core/utils"
 import { useState } from "react"
 import { useMap } from "react-map-gl/maplibre"
 
 export const DebugMapTileBoundaries = () => {
   const { mainMap } = useMap()
   const [show, setShow] = useState(false)
-  if (!isDev) return null
+  if (isProduction) return null
 
   return (
     <button

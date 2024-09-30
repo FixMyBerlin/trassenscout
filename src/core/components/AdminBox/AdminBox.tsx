@@ -6,7 +6,7 @@ type Props = {
   children: React.ReactNode
 }
 
-export const AdminBox: React.FC<Props> = ({ label, className, children }) => {
+export const AdminBox = ({ label, className, children }: Props) => {
   return (
     <div
       className={clsx(
