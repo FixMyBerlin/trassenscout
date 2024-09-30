@@ -28,8 +28,6 @@ export const useFilteredResponses = (
     })
     // Handle `topics` which is the `surveyResponseTopics: number[]` as 'string[]'
     .filter((response) => {
-      // no topic selected
-      if (topics.length === 1 && topics.includes("0")) return
       if (topics.includes("0"))
         return (
           topics.map(Number).some((topic) => response.surveyResponseTopics.includes(topic)) ||
