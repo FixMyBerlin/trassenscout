@@ -59,7 +59,7 @@ export const EditableSurveyResponseFormMap: React.FC<Props> = ({
             minzoom={6}
             maxzoom={10}
             tiles={[
-              "https://api.maptiler.com/tiles/b55f82dc-7010-4b20-8fd2-8071fccf72e4/{z}/{x}/{y}.pbf?key=ECOoUBmpqklzSCASXxcu",
+              "https://api.maptiler.com/tiles/650084a4-a206-4873-8873-e3a43171b6ea/{z}/{x}/{y}.pbf?key=ECOoUBmpqklzSCASXxcu",
             ]}
           >
             <Layer
