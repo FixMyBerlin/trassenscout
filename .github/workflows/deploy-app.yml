@@ -122,6 +122,7 @@ jobs:
         env:
           APP_ORIGIN: ${{ inputs.APP_ORIGIN }}
           NEXT_PUBLIC_APP_ORIGIN: ${{ inputs.NEXT_PUBLIC_APP_ORIGIN }}
+          NEXT_PUBLIC_APP_ENV: ${{ inputs.NEXT_PUBLIC_APP_ENV }}
           SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY }}
