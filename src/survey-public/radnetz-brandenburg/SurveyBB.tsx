@@ -1,4 +1,3 @@
-import { isProduction } from "@/src/core/utils"
 import institutions_bboxes from "@/src/survey-public/radnetz-brandenburg/data/institutions_bboxes.json"
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@headlessui/react"
 import { clsx } from "clsx"
@@ -136,11 +135,7 @@ const StartContent: React.FC = () => {
         Zielpunkte einsehbar. Eine Anleitung zur Nutzung des Radverkehrsatlasses finden Sie{" "}
         <SurveyLink
           blank
-          href={
-            isProduction
-              ? "https://trassenscout.de/radnetz-brandenburg/anleitung-radverkehrsatlas-beteiligung-bb.pdf"
-              : "https://staging.trassenscout.de/radnetz-brandenburg/anleitung-radverkehrsatlas-beteiligung-bb.pdf"
-          }
+          href={"/radnetz-brandenburg/anleitung-radverkehrsatlas-beteiligung-bb.pdf"}
         >
           hier
         </SurveyLink>
@@ -208,7 +203,7 @@ const StartContent: React.FC = () => {
 
                   <div className="mt-4">
                     <a
-                      href="https://radverkehrsatlas.de/regionen/bb-beteiligung?map=7.6/52.492/13.016&config=z9tzbb.1734h0.i&data=bb-land-klassifiertes-strassennetz,bb-ramboll-netzentwurf-2,bb-ramboll-quellen-ziele&v=2"
+                      href="https://radverkehrsatlas.de/regionen/bb-beteiligung?map=7.6/52.526/13.016&config=z9tzbb.172uzo.i&data=bb-land-klassifiertes-strassennetz,bb-ramboll-netzentwurf-2,bb-ramboll-quellen-ziele,bb-ramboll-netzentwurf-2-beteiligung&v=2"
                       target="_blank"
                       className={primaryColorButtonStylesForLinkElement}
                       onClick={closeModal}
