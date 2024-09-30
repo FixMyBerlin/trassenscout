@@ -44,6 +44,7 @@ export const LabeledTextareaField = forwardRef<HTMLTextAreaElement, LabeledTexta
           className={clsx(
             textareaClasName,
             "mt-1 block w-full rounded-md shadow-sm sm:text-sm",
+            "disabled:border-gray-200 disabled:bg-gray-100 checked:disabled:bg-gray-500",
             hasError
               ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
               : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",

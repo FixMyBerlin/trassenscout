@@ -2,6 +2,7 @@ import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { linkStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/hooks"
 import { Prettify } from "@/src/core/types"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
 import { TMapProps } from "@/src/survey-public/components/types"
@@ -170,10 +171,12 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             <span className="flex flex-row items-center gap-2">
               <EnvelopeIcon className="h-4 w-4" />
               <span>per {getTranslatedSource(response.source)} eingegangen </span>
-              <span>| </span>
-              <button onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
-                Eintrag löschen
-              </button>
+              <IfUserCanEdit>
+                <span>| </span>
+                <button onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
+                  Eintrag löschen
+                </button>
+              </IfUserCanEdit>
             </span>
           )}
           <div className="mb-10 flex flex-col justify-between gap-12 md:flex-row">

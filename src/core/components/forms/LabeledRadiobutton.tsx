@@ -48,6 +48,7 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
             {...props}
             className={clsx(
               "h-4 w-4",
+              "disabled:border-gray-200 disabled:bg-gray-100 checked:disabled:bg-gray-500",
               hasError
                 ? "border-red-800 text-red-500 shadow-sm shadow-red-200 focus:ring-red-800"
                 : readonly
@@ -64,7 +65,7 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
             "ml-3 block text-sm font-medium",
             readonly
               ? "text-gray-400"
-              : "cursor-pointer whitespace-nowrap text-gray-700 hover:text-gray-800",
+              : "whitespace-nowrap text-gray-700 active:cursor-pointer active:hover:text-gray-800",
           )}
         >
           {label}
