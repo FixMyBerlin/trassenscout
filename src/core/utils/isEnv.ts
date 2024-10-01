@@ -1,14 +1,10 @@
-export const isProduction =
-  process.env.NODE_ENV === "production" &&
-  process.env.NEXT_PUBLIC_APP_ORIGIN === "http://trassenscout.de"
+export const isProduction = process.env.NEXT_PUBLIC_APP_ENV === "production"
 
-// This does not handle tinkering.trassenscout, yet
-// export const isStaging =
-//   process.env.NODE_ENV === "production" &&
-//   process.env.NEXT_PUBLIC_APP_ORIGIN === "http://staging.trassenscout.de"
+export const isStaging = process.env.NEXT_PUBLIC_APP_ENV === "staging"
 
-export const isDev = process.env.NODE_ENV === "development"
+export const isDev =
+  process.env.NEXT_PUBLIC_APP_ENV === "development" && process.env.NODE_ENV === "development"
+
 export const isTest = process.env.NODE_ENV === "test"
 
 export const isBrowser = typeof window !== "undefined"
-export const isSSR = !isBrowser
