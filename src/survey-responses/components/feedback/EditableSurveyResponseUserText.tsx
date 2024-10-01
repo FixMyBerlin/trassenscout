@@ -51,7 +51,7 @@ const EditableSurveyResponseUserText: React.FC<EditableSurveyResponseUserTextPro
             <Markdown markdown={response.data[userTextIndices[1]]} />
           </blockquote>
         )}
-        <div className="mt-2 text-right text-gray-500">{`Bürgerbeitrag vom: ${response.surveySession.createdAt.toLocaleDateString()} um  ${response.surveySession.createdAt.toLocaleTimeString()}`}</div>
+        <div className="mt-2 text-right text-gray-500">{`Bürger:innenbeitrag vom: ${response.surveySession.createdAt.toLocaleDateString()} um  ${response.surveySession.createdAt.toLocaleTimeString()}`}</div>
       </div>
     )
   return (
@@ -69,7 +69,7 @@ const EditableSurveyResponseUserText: React.FC<EditableSurveyResponseUserTextPro
           </blockquote>
         )
       })}
-      <div className="mt-2 text-right text-gray-500">{`Bürgerbeitrag vom: ${response.surveySession.createdAt.toLocaleDateString()} um  ${response.surveySession.createdAt.toLocaleTimeString()}`}</div>
+      <div className="mt-2 text-right text-gray-500">{`Bürger:innenbeitrag vom: ${response.surveySession.createdAt.toLocaleDateString()} um  ${response.surveySession.createdAt.toLocaleTimeString()}`}</div>
     </div>
   )
 }

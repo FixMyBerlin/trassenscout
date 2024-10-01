@@ -56,7 +56,7 @@ const ProjectTeamPage: BlitzPage = () => {
       <MetaTags noindex title="Projektteam" />
       <PageHeader
         title="Projektteam"
-        description="Kontakt zu allen registrierten Mitglieder:innen des Projektes."
+        description="Kontakt zu allen registrierten Mitgliedern des Projektes."
         className="mt-12"
       />
 

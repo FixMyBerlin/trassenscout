@@ -65,7 +65,7 @@ export const SurveyResponse = () => {
       <PageHeader title={survey.title} className="mt-12" description={<SurveyTabs />} />
 
       <div className="mt-12 space-y-4">
-        <H2>Beiträge aus Bürgerbeteiligung </H2>
+        <H2>Beiträge aus Bürger:innenbeteiligung</H2>
 
         <ExternalSurveyResponseFormModal refetch={refetchResponses} />
 
