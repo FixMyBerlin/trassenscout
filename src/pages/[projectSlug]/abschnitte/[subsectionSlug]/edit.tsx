@@ -21,9 +21,9 @@ const EditSubsection = () => {
   const router = useRouter()
   const { subsectionSlug } = useSlugs()
   const projectSlug = useProjectSlug()
-  const [project] = useQuery(getProject, { projectSlug: projectSlug! })
+  const [project] = useQuery(getProject, { projectSlug })
   const [subsection, { setQueryData }] = useQuery(getSubsection, {
-    projectSlug: projectSlug!,
+    projectSlug,
     subsectionSlug: subsectionSlug!,
   })
   const [updateSubsectionMutation] = useMutation(updateSubsection)
@@ -32,14 +32,15 @@ const EditSubsection = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateSubsectionMutation({
-        id: subsection.id,
         ...values,
+        id: subsection.id,
         slug: `pa${values.slug}`,
+        projectSlug,
       })
       await setQueryData(updated)
       await router.push(
         Routes.SubsectionDashboardPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           subsectionSlug: updated.slug,
         }),
       )
@@ -54,7 +55,7 @@ const EditSubsection = () => {
       await deleteSubsectionMutation({ projectSlug, id: subsection.id })
       await router.push(
         Routes.SubsectionDashboardPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           subsectionSlug: subsectionSlug!,
         }),
       )
@@ -100,7 +101,7 @@ const EditSubsectionPage: BlitzPage = () => {
       <p>
         <Link
           href={Routes.SubsectionDashboardPage({
-            projectSlug: projectSlug!,
+            projectSlug,
             subsectionSlug: subsectionSlug!,
           })}
         >

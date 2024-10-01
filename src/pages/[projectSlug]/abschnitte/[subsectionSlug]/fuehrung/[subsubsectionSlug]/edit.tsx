@@ -26,7 +26,7 @@ const EditSubsubsection = () => {
   const [subsubsection, { setQueryData }] = useQuery(
     getSubsubsection,
     {
-      projectSlug: projectSlug!,
+      projectSlug,
       subsectionSlug: subsectionSlug!,
       subsubsectionSlug: subsubsectionSlug!,
     },
@@ -41,8 +41,9 @@ const EditSubsubsection = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateSubsubsectionMutation({
-        id: subsubsection.id,
         ...values,
+        id: subsubsection.id,
+        projectSlug,
         trafficLoadDate: values.trafficLoadDate === "" ? null : new Date(values.trafficLoadDate),
         estimatedCompletionDate:
           values.estimatedCompletionDate === "" ? null : new Date(values.estimatedCompletionDate),
@@ -50,7 +51,7 @@ const EditSubsubsection = () => {
       await setQueryData(updated)
       await router.push(
         Routes.SubsubsectionDashboardPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           subsectionSlug: subsectionSlug!,
           subsubsectionSlug: updated.slug,
         }),
@@ -66,7 +67,7 @@ const EditSubsubsection = () => {
       await deleteSubsectionMutation({ projectSlug, id: subsubsection.id })
       await router.push(
         Routes.SubsectionDashboardPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           subsectionSlug: subsectionSlug!,
         }),
       )
@@ -133,7 +134,7 @@ const EditSubsubsectionPage = () => {
       <p>
         <Link
           href={Routes.SubsubsectionDashboardPage({
-            projectSlug: projectSlug!,
+            projectSlug,
             subsectionSlug: subsectionSlug!,
             subsubsectionSlug: subsubsectionSlug!,
           })}

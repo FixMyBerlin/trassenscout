@@ -18,7 +18,7 @@ const UpdateSubsubsectionSchema = ProjectSlugRequiredSchema.merge(
 export default resolver.pipe(
   resolver.zod(UpdateSubsubsectionSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ id, ...data }) => {
+  async ({ id, projectSlug, ...data }) => {
     const disconnect: Record<M2MFieldsType | string, { set: [] }> = {}
     const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
     m2mFields.forEach((fieldName) => {

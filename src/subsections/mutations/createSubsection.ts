@@ -13,7 +13,7 @@ const CreateSubsectionSchema = ProjectSlugRequiredSchema.merge(SubsectionSchema)
 export default resolver.pipe(
   resolver.zod(CreateSubsectionSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async (input) => {
-    return await db.subsection.create({ data: input })
+  async ({ projectSlug, ...data }) => {
+    return await db.subsection.create({ data })
   },
 )

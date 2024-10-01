@@ -23,7 +23,7 @@ const NewSubsubsection = () => {
   const { subsectionSlug } = useSlugs()
   const projectSlug = useProjectSlug()
   const [subsection] = useQuery(getSubsection, {
-    projectSlug: projectSlug!,
+    projectSlug,
     subsectionSlug: subsectionSlug!,
   })
 
@@ -41,7 +41,7 @@ const NewSubsubsection = () => {
       })
       await router.push(
         Routes.SubsubsectionDashboardPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           subsectionSlug: subsectionSlug!,
           subsubsectionSlug: subsubsection.slug,
         }),

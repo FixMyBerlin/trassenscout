@@ -28,7 +28,7 @@ const EditProjectWithQuery = () => {
     },
   )
   const [updateProjectMutation] = useMutation(updateProject)
-  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
+  const [users] = useQuery(getProjectUsers, { projectSlug })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -37,8 +37,8 @@ const EditProjectWithQuery = () => {
 
     try {
       const updated = await updateProjectMutation({
-        id: project.id,
         ...values,
+        projectSlug,
       })
       await setQueryData(updated)
       await router.push(Routes.ProjectDashboardPage({ projectSlug: updated.slug }))
@@ -77,9 +77,7 @@ const EditProjectPage: BlitzPage = () => {
 
       <hr className="my-5" />
       <p>
-        <Link href={Routes.ProjectDashboardPage({ projectSlug: projectSlug! })}>
-          Zurück zum Projekt
-        </Link>
+        <Link href={Routes.ProjectDashboardPage({ projectSlug })}>Zurück zum Projekt</Link>
       </p>
     </LayoutRs>
   )

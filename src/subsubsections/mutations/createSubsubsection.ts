@@ -14,7 +14,7 @@ const CreateSubsubsectionSchema = ProjectSlugRequiredSchema.merge(SubsubsectionS
 export default resolver.pipe(
   resolver.zod(CreateSubsubsectionSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async (data) => {
+  async ({ projectSlug, ...data }) => {
     const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
     m2mFields.forEach((fieldName) => {
       connect[fieldName] = { connect: data[fieldName] ? data[fieldName].map((id) => ({ id })) : [] }

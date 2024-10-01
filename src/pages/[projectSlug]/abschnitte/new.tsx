@@ -17,7 +17,7 @@ import { Suspense } from "react"
 const NewSubsection = () => {
   const router = useRouter()
   const projectSlug = useProjectSlug()
-  const [project] = useQuery(getProject, { projectSlug: projectSlug! })
+  const [project] = useQuery(getProject, { projectSlug })
   const [createSubsectionMutation] = useMutation(createSubsection)
 
   type HandleSubmit = any // TODO
@@ -26,11 +26,12 @@ const NewSubsection = () => {
       const subsection = await createSubsectionMutation({
         ...values,
         slug: `pa${values.slug}`,
-        projectId: project.id!,
+        projectId: project.id,
+        projectSlug,
       })
       await router.push(
         Routes.SubsectionDashboardPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           subsectionSlug: subsection.slug,
         }),
       )
@@ -66,13 +67,7 @@ const NewSubsectionPage: BlitzPage = () => {
 
       <hr className="my-5" />
       <p>
-        <Link
-          href={Routes.ProjectDashboardPage({
-            projectSlug: projectSlug!,
-          })}
-        >
-          Zurück Übersicht
-        </Link>
+        <Link href={Routes.ProjectDashboardPage({ projectSlug })}>Zurück Übersicht</Link>
       </p>
     </LayoutRs>
   )
