@@ -14,6 +14,7 @@ import {
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
+import { getQuestionsAsArray } from "@/src/survey-public/utils/getQuestionsAsArray"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useParam } from "@blitzjs/next"
@@ -26,14 +27,16 @@ import { clsx } from "clsx"
 import { PropsWithoutRef, useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { z } from "zod"
+import getQuestionResponseOptions from "../../queries/getQuestionResponseOptions"
 import { useDefaultFilterValues } from "./useDefaultFilterValues"
-import { useFilters } from "./useFilters.nuqs"
+import { FilterSchema, useFilters } from "./useFilters.nuqs"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
   "onSubmit"
 > & {
   schema?: S
+  additionalFilters: Prettify<Awaited<ReturnType<typeof getQuestionResponseOptions>>>
   operators: Prettify<Awaited<ReturnType<typeof getOperatorsWithCount>>["operators"]>
   topicsDefinition: Prettify<
     Awaited<ReturnType<typeof getSurveyResponseTopicsByProject>>["surveyResponseTopics"]
@@ -44,6 +47,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   schema,
   operators,
   topicsDefinition,
+  additionalFilters,
 }: FormProps<S>) {
   const surveyId = useParam("surveyId", "string")
   const projectSlug = useProjectSlug()
@@ -52,12 +56,13 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   const filterDefault = useDefaultFilterValues()
 
   const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
-  const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
 
-  const feedbackQuestions = []
-  for (let page of feedbackDefinition.pages) {
-    feedbackQuestions.push(...page.questions)
-  }
+  const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
+  const feedbackQuestions = getQuestionsAsArray({
+    definition: feedbackDefinition,
+    surveyPart: "feedback",
+  })
+
   const categoryQuestionProps = feedbackQuestions.find(
     (q) => q.id === evaluationRefs["feedback-category"],
   )!.props as TSingleOrMultiResponseProps
@@ -66,13 +71,33 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   const backendConfig = getBackendConfigBySurveySlug(survey.slug)
   const surveyResponseStatus = backendConfig.status
 
-  const [{ status, operator, hasnotes, haslocation, categories, topics, searchterm }, setFilter] =
-    useFilters()
+  const [filter, setFilter] = useFilters()
 
   const methods = useForm<z.infer<S>>({
     mode: "onBlur",
     resolver: schema ? zodResolver(schema) : undefined,
     defaultValues: async () => ({
+      ...filter,
+    }),
+  })
+
+  // to update the checked items in the checkbox list when we add a new topic in EditableSurveyResponseForm (with handleNewTopic()), we need to set the form values here
+  useEffect(() => {
+    // @ts-expect-error
+    methods.setValue("topics", filter.topics)
+  }, [methods, filter.topics])
+
+  const handleSubmit = async ({
+    status,
+    operator,
+    hasnotes,
+    haslocation,
+    categories,
+    topics,
+    searchterm,
+    ...additionalFilters
+  }: FilterSchema) => {
+    await setFilter({
       status,
       operator,
       hasnotes,
@@ -80,24 +105,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
       categories,
       topics,
       searchterm,
-    }),
-  })
-
-  // to update the checked items in the checkbox list when we add a new topic in EditableSurveyResponseForm (with handleNewTopic()), we need to set the form values here
-  useEffect(() => {
-    // @ts-expect-error
-    methods.setValue("topics", topics)
-  }, [methods, topics])
-
-  const handleSubmit = async (values: any) => {
-    await setFilter({
-      status: values.status,
-      operator: values.operator,
-      hasnotes: values.hasnotes,
-      haslocation: values.haslocation,
-      categories: values.categories,
-      topics: values.topics,
-      searchterm: values.searchterm,
+      ...additionalFilters,
     })
   }
 
@@ -206,6 +214,21 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 />
               )}
             </div>
+            {additionalFilters && Boolean(additionalFilters?.length) && (
+              <ul>
+                {additionalFilters.map((filter) => (
+                  <li key={filter.id}>
+                    <LabeledRadiobuttonGroup
+                      label={filter.label}
+                      classLabelOverwrite="font-semibold mb-3"
+                      scope={filter.value}
+                      items={filter.options}
+                      // classNameItemWrapper="grid grid-cols-5 grid-rows-6 grid-flow-col-dense"
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
           </form>
           <form
             className="flex items-end gap-4 rounded-b-xl px-4 pb-2 pt-4"

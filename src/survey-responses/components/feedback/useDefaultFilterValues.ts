@@ -33,6 +33,11 @@ export const useDefaultFilterValues = (): FilterSchema => {
     (q) => q.id === evaluationRefs["feedback-category"],
   )!.props as TSingleOrMultiResponseProps
 
+  const defaultAdditionalFiltersQueryValues: Record<string, string> = {}
+  backendConfig.additionalFilters?.forEach(
+    (filter) => (defaultAdditionalFiltersQueryValues[filter.value] = "ALL"),
+  )
+
   return {
     status: [...surveyResponseStatus.map((s) => s.value)],
     operator: "ALL",
@@ -41,5 +46,6 @@ export const useDefaultFilterValues = (): FilterSchema => {
     categories: [...categoryQuestionProps.responses.map((r: TResponse) => String(r.id))],
     topics: [...topics.map((t) => String(t.id)), "0"],
     searchterm: "",
+    ...defaultAdditionalFiltersQueryValues,
   }
 }
