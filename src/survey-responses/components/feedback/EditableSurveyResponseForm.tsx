@@ -101,7 +101,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
         id: response.id,
         source: response.source,
         // We specify what we want to store explicity so that `data` and such is exclued
-        status: values.status,
+        status: values.responseStatus,
         note: values.note,
         // Note: initialValues need to initialize `operatorId: 0`
         operatorId: values.operatorId === (0 || "0") ? null : Number(values.operatorId),
@@ -177,7 +177,8 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                   </h4>
                   <LabeledRadiobuttonGroup
                     classNameItemWrapper="flex-shrink-0"
-                    scope="status"
+                    // the scope has to be different from the other form (filter form)! Otherwise this messes with our filter form and url state.
+                    scope="responseStatus"
                     items={surveyResponseStatus.map(({ value, label }) => {
                       return { value, label }
                     })}
