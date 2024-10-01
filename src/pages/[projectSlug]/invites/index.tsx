@@ -29,7 +29,7 @@ export const TeamInvitesWithQuery = () => {
 
       <ButtonWrapper className="mt-6">
         <Link button="blue" icon="plus" href={Routes.NewProjectTeamInvitePage({ projectSlug })}>
-          Mitwirkende einladen
+          Teammitglied einladen
         </Link>
       </ButtonWrapper>
 

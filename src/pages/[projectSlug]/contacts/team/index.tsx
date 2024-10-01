@@ -30,7 +30,7 @@ export const TeamWithQuery = () => {
       <TeamTable />
 
       <IfUserCanEdit>
-        <ButtonWrapper className="mt-6 justify-end">
+        <ButtonWrapper className="mt-6">
           <Link
             button="blue"
             icon="plus"

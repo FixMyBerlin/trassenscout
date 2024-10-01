@@ -44,10 +44,10 @@ export const TeamInvitesTable = () => {
                 E-Mail
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Recht
+                Rechte
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Einladender
+                Einladung von
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                 Datum
