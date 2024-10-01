@@ -21,7 +21,7 @@ const UpdateSurveyResponseSchema = ProjectSlugRequiredSchema.merge(
 export default resolver.pipe(
   resolver.zod(UpdateSurveyResponseSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ id, ...data }) => {
+  async ({ id, projectSlug, ...data }) => {
     return await db.surveyResponse.update({
       where: { id },
       data,
