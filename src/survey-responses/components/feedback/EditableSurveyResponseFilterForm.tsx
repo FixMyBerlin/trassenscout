@@ -27,7 +27,7 @@ import { PropsWithoutRef, useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { z } from "zod"
 import { useDefaultFilterValues } from "./useDefaultFilterValues"
-import { useFilters } from "./useFilters"
+import { useFilters } from "./useFilters.nuqs"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,

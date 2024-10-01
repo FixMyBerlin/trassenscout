@@ -9,7 +9,7 @@ import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queri
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { FilterSchema } from "./useFilters"
+import { FilterSchema } from "./useFilters.nuqs"
 
 export const useDefaultFilterValues = (): FilterSchema => {
   const projectSlug = useProjectSlug()

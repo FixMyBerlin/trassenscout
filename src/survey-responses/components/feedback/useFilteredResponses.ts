@@ -1,7 +1,7 @@
 import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
 import { getResponseConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"
-import { useFilters } from "./useFilters"
+import { useFilters } from "./useFilters.nuqs"
 
 export const useFilteredResponses = (
   responses: Awaited<ReturnType<typeof getFeedbackSurveyResponses>>,

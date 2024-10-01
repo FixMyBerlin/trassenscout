@@ -28,7 +28,7 @@ import { z } from "zod"
 import updateSurveyResponse from "../../mutations/updateSurveyResponse"
 import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
 import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
-import { useFilters } from "./useFilters"
+import { useFilters } from "./useFilters.nuqs"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
