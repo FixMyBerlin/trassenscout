@@ -21,15 +21,14 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
 import { clsx } from "clsx"
-import { parseAsJson, useQueryState } from "nuqs"
 import { PropsWithoutRef, useState } from "react"
 import { FormProvider, UseFormProps, useForm } from "react-hook-form"
 import { LngLatBoundsLike } from "react-map-gl/maplibre"
 import { z } from "zod"
 import updateSurveyResponse from "../../mutations/updateSurveyResponse"
-import { filterSchema } from "./EditableSurveyResponseFilterForm"
 import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
 import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
+import { useFilters } from "./useFilters"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -72,7 +71,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   const surveyId = useParam("surveyId", "string")
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
 
-  const [filter, setFilter] = useQueryState("filter", parseAsJson(filterSchema.parse))
+  const [filter, setFilter] = useFilters()
 
   const [updateSurveyResponseMutation] = useMutation(updateSurveyResponse)
   const [surveyResponseTopicsOnSurveyResponsesMutation] = useMutation(

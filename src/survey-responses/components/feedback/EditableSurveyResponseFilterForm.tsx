@@ -23,11 +23,11 @@ import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/outline"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
 import { clsx } from "clsx"
-import { useRouter } from "next/router"
-import { parseAsJson, useQueryState } from "nuqs"
 import { PropsWithoutRef, useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { z } from "zod"
+import { useDefaultFilterValues } from "./useDefaultFilterValues"
+import { useFilters } from "./useFilters"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -40,28 +40,16 @@ type FormProps<S extends z.ZodType<any, any>> = Omit<
   >
 }
 
-export const filterSchema = z.object({
-  status: z.array(z.string()),
-  operator: z.string(),
-  hasnotes: z.enum(["true", "false", "ALL"]),
-  haslocation: z.enum(["true", "false", "ALL"]),
-  categories: z.array(z.string()),
-  topics: z.array(z.string()),
-  searchterm: z.string(),
-})
-
-type FilterSchema = z.infer<typeof filterSchema>
-
 export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>({
   schema,
   operators,
   topicsDefinition,
 }: FormProps<S>) {
-  const router = useRouter()
-
   const surveyId = useParam("surveyId", "string")
   const projectSlug = useProjectSlug()
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
+
+  const filterDefault = useDefaultFilterValues()
 
   const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
   const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
@@ -78,23 +66,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   const backendConfig = getBackendConfigBySurveySlug(survey.slug)
   const surveyResponseStatus = backendConfig.status
 
-  const filterDefault: FilterSchema = {
-    status: [...surveyResponseStatus.map((s) => s.value)],
-    operator: "ALL",
-    hasnotes: "ALL",
-    haslocation: "ALL",
-    categories: [...categoryQuestionProps.responses.map((r: TResponse) => String(r.id))],
-    topics: [...topicsDefinition.map((t) => String(t.id)), "0"],
-    searchterm: "",
-  }
-
   const [{ status, operator, hasnotes, haslocation, categories, topics, searchterm }, setFilter] =
-    useQueryState(
-      "filter",
-      parseAsJson(filterSchema.parse).withDefault({
-        ...filterDefault,
-      }),
-    )
+    useFilters()
 
   const methods = useForm<z.infer<S>>({
     mode: "onBlur",

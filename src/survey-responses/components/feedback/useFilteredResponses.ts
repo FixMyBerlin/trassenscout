@@ -1,14 +1,13 @@
 import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
 import { getResponseConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"
-import { parseAsJson, useQueryState } from "nuqs"
-import { filterSchema } from "./EditableSurveyResponseFilterForm"
+import { useFilters } from "./useFilters"
 
 export const useFilteredResponses = (
   responses: Awaited<ReturnType<typeof getFeedbackSurveyResponses>>,
   surveySlug: AllowedSurveySlugs,
 ) => {
-  const [filter] = useQueryState("filter", parseAsJson(filterSchema.parse))
+  const [filter] = useFilters()
 
   if (!filter) return responses
 
