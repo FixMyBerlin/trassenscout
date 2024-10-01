@@ -46,9 +46,9 @@ export const surveyDefinition: TSurvey = {
         },
         {
           id: 4,
-          label: { de: "PIN (6-stellig)" },
+          label: { de: "PIN (4-stellig)" },
           help: {
-            de: "Tragen Sie hier die 6-stellige PIN ein, die Sie von uns per E-Mail erhalten haben.",
+            de: "Tragen Sie hier die 4-stellige PIN ein, die Sie von uns per E-Mail erhalten haben.",
           },
           component: "textfield",
           props: {},
