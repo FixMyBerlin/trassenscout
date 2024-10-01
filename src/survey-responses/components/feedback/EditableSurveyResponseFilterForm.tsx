@@ -64,7 +64,6 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
 
   // backend configurations: status
   const backendConfig = getBackendConfigBySurveySlug(survey.slug)
-  console.log({ backendConfig })
   const surveyResponseStatus = backendConfig.status
 
   const [{ status, operator, hasnotes, haslocation, categories, topics, searchterm }, setFilter] =
