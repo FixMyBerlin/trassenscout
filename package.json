@@ -43,6 +43,11 @@
   "prisma": {
     "schema": "db/schema.prisma"
   },
+  "browserslist": [
+    "defaults",
+    "last 2 IE major versions",
+    "last 4 Edge major versions"
+  ],
   "dependencies": {
     "@aws-sdk/client-s3": "3.651.1",
     "@aws-sdk/client-sts": "3.651.1",
