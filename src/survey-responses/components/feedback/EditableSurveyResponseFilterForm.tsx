@@ -64,6 +64,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
 
   // backend configurations: status
   const backendConfig = getBackendConfigBySurveySlug(survey.slug)
+  console.log({ backendConfig })
   const surveyResponseStatus = backendConfig.status
 
   const [{ status, operator, hasnotes, haslocation, categories, topics, searchterm }, setFilter] =
@@ -164,7 +165,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
           >
             <div className="mt-6 flex flex-col gap-12 sm:flex-row">
               <LabeledCheckboxGroup
-                label="Status"
+                label={labels.status?.sg || defaultBackendConfig.labels.status.sg}
                 classLabelOverwrite="font-semibold mb-3"
                 classNameItemWrapper={clsx("flex-shrink-0")}
                 scope={"status"}
