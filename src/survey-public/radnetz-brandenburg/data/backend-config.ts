@@ -43,4 +43,26 @@ export const backendConfig: TBackendConfig = {
     category: { sg: "Kategorie" },
     location: { sg: "Ortsangabe" },
   },
+  additionalFilters: [
+    {
+      label: "Institution",
+      id: 5,
+      value: "institution",
+    },
+    {
+      label: "Landkreis",
+      id: 6,
+      value: "landkreis",
+    },
+    {
+      label: "Verbindung ID",
+      id: 20,
+      value: "verbindungId",
+    },
+    {
+      label: "Verbindung (Von - Bis)",
+      id: 30,
+      value: "verbindungFromTo",
+    },
+  ],
 }

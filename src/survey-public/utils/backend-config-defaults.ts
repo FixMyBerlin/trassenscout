@@ -8,6 +8,13 @@ type StatusItem = {
   icon: "XMARK" | "CLOCK" | "CHECKMARK" | "DOCUMENT"
 }
 
+type TAdditionalFiltersItem = {
+  label: string
+  value: string
+  id: number
+  // todo: in the future, we might want to add more filter options here, like single or multi select
+}
+
 export type TBackendConfig = {
   // if no status property exists in the config object, the default status items will be used
   status: [StatusItem, ...StatusItem[]]
@@ -20,6 +27,7 @@ export type TBackendConfig = {
     category?: { sg: string }
     location?: { sg: string }
   }
+  additionalFilters?: [TAdditionalFiltersItem, ...TAdditionalFiltersItem[]]
 }
 
 export type TBackendConfigDefaults = {
