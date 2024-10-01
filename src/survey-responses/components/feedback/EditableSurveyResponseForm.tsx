@@ -7,7 +7,6 @@ import {
 import { Link, blueButtonStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/hooks"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import { useUserCan } from "@/src/memberships/hooks/useUserCan"
 import {
   TBackendConfig,
   backendConfig as defaultBackendConfig,
@@ -60,7 +59,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   showMap,
   backendConfig,
 }: FormProps<S>) {
-  const userCanEdit = useUserCan().edit
+  const userCanEdit = false
   const methods = useForm<z.infer<S>>({
     mode: "onBlur",
     resolver: schema ? zodResolver(schema) : undefined,
@@ -172,51 +171,45 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
             <div className="flex w-full flex-col gap-10">
               <div className="grid w-full grid-cols-2 gap-8">
                 <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-                  <fieldset disabled={!userCanEdit}>
-                    <h4 className="mb-3 font-semibold">
-                      {labels.status?.sg || defaultBackendConfig.labels.category.sg}
-                    </h4>
-                    <LabeledRadiobuttonGroup
-                      classNameItemWrapper="flex-shrink-0"
-                      scope="status"
-                      items={surveyResponseStatus.map(({ value, label }) => {
-                        return { value, label }
-                      })}
-                    />
-                  </fieldset>
+                  <h4 className="mb-3 font-semibold">
+                    {labels.status?.sg || defaultBackendConfig.labels.category.sg}
+                  </h4>
+                  <LabeledRadiobuttonGroup
+                    classNameItemWrapper="flex-shrink-0"
+                    scope="status"
+                    items={surveyResponseStatus.map(({ value, label }) => {
+                      return { value, label }
+                    })}
+                    disabled={!userCanEdit}
+                  />
                 </form>
 
                 <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-                  <fieldset disabled={!userCanEdit}>
-                    <h4 className="mb-3 font-semibold">
-                      {labels.operator?.sg || defaultBackendConfig.labels.operator.sg}
-                    </h4>
-                    <LabeledRadiobuttonGroup
-                      scope="operatorId"
-                      items={[...operatorsOptions, { value: "0", label: "Nicht zugeordnet" }]}
-                    />
-                  </fieldset>
+                  <h4 className="mb-3 font-semibold">
+                    {labels.operator?.sg || defaultBackendConfig.labels.operator.sg}
+                  </h4>
+                  <LabeledRadiobuttonGroup
+                    scope="operatorId"
+                    items={[...operatorsOptions, { value: "0", label: "Nicht zugeordnet" }]}
+                    disabled={!userCanEdit}
+                  />
                 </form>
               </div>
-              <form
-                className="flex"
-                onChange={async () => await methods.handleSubmit(handleSubmit)()}
-              >
-                <fieldset disabled={!userCanEdit}>
-                  <h4 className="mb-3 font-semibold">
-                    {labels.topics?.pl || defaultBackendConfig.labels.topics.pl}
-                  </h4>
-                  <LabeledCheckboxGroup
-                    classNameItemWrapper="grid grid-cols-3 grid-rows-10 grid-flow-col-dense"
-                    scope="surveyResponseTopics"
-                    items={topics.map((t) => {
-                      return {
-                        value: String(t.id),
-                        label: t.title,
-                      }
-                    })}
-                  />
-                </fieldset>
+              <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
+                <h4 className="mb-3 font-semibold">
+                  {labels.topics?.pl || defaultBackendConfig.labels.topics.pl}
+                </h4>
+                <LabeledCheckboxGroup
+                  classNameItemWrapper="grid grid-cols-3 grid-rows-10 grid-flow-col-dense"
+                  scope="surveyResponseTopics"
+                  items={topics.map((t) => {
+                    return {
+                      value: String(t.id),
+                      label: t.title,
+                    }
+                  })}
+                  disabled={!userCanEdit}
+                />
               </form>
             </div>
           </div>
@@ -254,26 +247,29 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
 
         <IfUserCanEdit>
           <form
-            className="flex"
             onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
               e.preventDefault()
               await methods.handleSubmit(handleNewTopic)()
               // @ts-expect-error
               methods.resetField("newTopic")
             }}
+            className="min-w-[300px] space-y-2 pb-8 pr-2"
           >
-            <fieldset disabled={!userCanEdit} className="min-w-[300px] space-y-2 pb-8 pr-2">
-              <LabeledTextField
-                placeholder={`${
-                  labels.topics?.sg || defaultBackendConfig.labels.operator.sg
-                } hinzufügen`}
-                name="newTopic"
-                label=""
-              />
-              <button type="submit" className={clsx(blueButtonStyles, "!px-3 !py-2.5")}>
-                Hinzufügen
-              </button>
-            </fieldset>
+            <LabeledTextField
+              placeholder={`${
+                labels.topics?.sg || defaultBackendConfig.labels.operator.sg
+              } hinzufügen`}
+              name="newTopic"
+              label=""
+              disabled={!userCanEdit}
+            />
+            <button
+              type="submit"
+              disabled={!userCanEdit}
+              className={clsx(blueButtonStyles, "!px-3 !py-2.5")}
+            >
+              Hinzufügen
+            </button>
           </form>
         </IfUserCanEdit>
       </div>
@@ -285,7 +281,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           setHasUnsavedChanges(false)
         }}
       >
-        <fieldset disabled={!userCanEdit} className="flex-grow space-y-2 pb-4 pr-2">
+        <fieldset className="flex-grow space-y-2 pb-4 pr-2">
           <p className="mb-3 font-semibold">
             {labels.note?.sg || defaultBackendConfig.labels.note.sg}
           </p>
@@ -300,10 +296,15 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
               hasUnsavedChanges &&
                 "border-yellow-500 ring-yellow-500 focus:border-yellow-500 focus:ring-yellow-500",
             )}
+            disabled={!userCanEdit}
           />
           <IfUserCanEdit>
             <div className="flex items-end justify-between">
-              <button type="submit" className={clsx(blueButtonStyles, "!px-3 !py-2.5")}>
+              <button
+                type="submit"
+                disabled={!userCanEdit}
+                className={clsx(blueButtonStyles, "!px-3 !py-2.5")}
+              >
                 {labels.note?.sg || defaultBackendConfig.labels.note.sg} speichern
               </button>
               <small className={clsx(!hasUnsavedChanges && "opacity-0", "text-yellow-500")}>

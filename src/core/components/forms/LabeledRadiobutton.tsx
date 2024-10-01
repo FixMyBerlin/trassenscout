@@ -15,11 +15,12 @@ export interface LabeledRadiobuttonProps extends PropsWithoutRef<JSX.IntrinsicEl
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
   readonly?: boolean
+  disabled?: boolean
 }
 
 // Note: See also src/participation/components/form/ParticipationLabeledRadiobutton.tsx
 export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobuttonProps>(
-  ({ scope, value, label, help, outerProps, labelProps, readonly, ...props }, _ref) => {
+  ({ scope, value, label, help, outerProps, labelProps, readonly, disabled, ...props }, _ref) => {
     const {
       register,
       formState: { isSubmitting, errors },
@@ -39,7 +40,8 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
         <div className="flex h-5 items-center">
           <input
             type="radio"
-            disabled={isSubmitting || readonly}
+            disabled={disabled || isSubmitting}
+            readOnly={readonly}
             value={value}
             {
               ...register(scope) /* this adds the name property */
@@ -48,24 +50,22 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
             {...props}
             className={clsx(
               "h-4 w-4",
-              "disabled:border-gray-200 disabled:bg-gray-100 checked:disabled:bg-gray-500",
               hasError
                 ? "border-red-800 text-red-500 shadow-sm shadow-red-200 focus:ring-red-800"
-                : readonly
-                  ? "border-gray-300 bg-gray-50"
+                : readonly || disabled
+                  ? "border-gray-200 bg-gray-100 checked:bg-gray-500"
                   : "border-gray-300 text-blue-600 focus:ring-blue-500",
             )}
-            readOnly={readonly}
           />
         </div>
         <label
           {...labelProps}
           htmlFor={key}
           className={clsx(
-            "ml-3 block text-sm font-medium",
-            readonly
+            "ml-3 block whitespace-nowrap text-sm font-medium",
+            readonly || disabled
               ? "text-gray-400"
-              : "whitespace-nowrap text-gray-700 active:cursor-pointer active:hover:text-gray-800",
+              : "cursor-pointer text-gray-700 hover:text-gray-900",
           )}
         >
           {label}

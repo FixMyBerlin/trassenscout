@@ -4,6 +4,7 @@ import { LabeledRadiobutton, LabeledRadiobuttonProps } from "./LabeledRadiobutto
 type Props = {
   label?: string
   optional?: boolean
+  disabled?: boolean
   scope: string
   items: Omit<LabeledRadiobuttonProps, "scope">[]
   classLabelOverwrite?: string
@@ -13,6 +14,7 @@ type Props = {
 export const LabeledRadiobuttonGroup: React.FC<Props> = ({
   label,
   optional,
+  disabled,
   scope,
   items,
   classLabelOverwrite,
@@ -29,7 +31,7 @@ export const LabeledRadiobuttonGroup: React.FC<Props> = ({
       )}
       <div className={clsx(classNameItemWrapper, "space-y-3")}>
         {itemsWithScope.map((item) => {
-          return <LabeledRadiobutton key={item.value} {...item} />
+          return <LabeledRadiobutton key={item.value} {...item} disabled={disabled} />
         })}
       </div>
     </div>

@@ -12,11 +12,22 @@ export interface LabeledTextareaProps extends PropsWithoutRef<JSX.IntrinsicEleme
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
   optional?: boolean
+  disabled?: boolean
 }
 
 export const LabeledTextareaField = forwardRef<HTMLTextAreaElement, LabeledTextareaProps>(
   (
-    { name, label, help, outerProps, labelProps, optional, className: textareaClasName, ...props },
+    {
+      name,
+      label,
+      help,
+      outerProps,
+      labelProps,
+      optional,
+      disabled,
+      className: textareaClasName,
+      ...props
+    },
     ref,
   ) => {
     const {
@@ -37,17 +48,18 @@ export const LabeledTextareaField = forwardRef<HTMLTextAreaElement, LabeledTexta
           {optional && <> (optional)</>}
         </label>
         <textarea
-          disabled={isSubmitting}
+          disabled={disabled || isSubmitting}
           {...register(name)}
           id={name}
           {...props}
           className={clsx(
             textareaClasName,
             "mt-1 block w-full rounded-md shadow-sm sm:text-sm",
-            "disabled:border-gray-200 disabled:bg-gray-100 checked:disabled:bg-gray-500",
             hasError
               ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
-              : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
+              : props.readOnly || disabled
+                ? "border-gray-200 bg-gray-100"
+                : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
           )}
         />
         {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}
