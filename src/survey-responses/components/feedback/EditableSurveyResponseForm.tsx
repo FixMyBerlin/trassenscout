@@ -7,6 +7,7 @@ import {
 import { Link, blueButtonStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/hooks"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import { useUserCan } from "@/src/memberships/hooks/useUserCan"
 import {
   TBackendConfig,
   backendConfig as defaultBackendConfig,
@@ -59,7 +60,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   showMap,
   backendConfig,
 }: FormProps<S>) {
-  const userCanEdit = false
+  const userCanEdit = useUserCan().edit
   const methods = useForm<z.infer<S>>({
     mode: "onBlur",
     resolver: schema ? zodResolver(schema) : undefined,
