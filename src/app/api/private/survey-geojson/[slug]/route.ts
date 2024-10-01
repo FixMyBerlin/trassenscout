@@ -64,6 +64,9 @@ export async function GET(request: Request, { params }: { params: { slug: string
           )?.data
           const part1: any = rawPart1 ? JSON.parse(rawPart1) : undefined
 
+          // ignore all test entries for this API
+          if (part1?.[5] === "FixMyCity") return
+
           // todo survey clean up after survey BB: remove BB specific fields
           return {
             reponseId: response.id,
@@ -80,6 +83,7 @@ export async function GET(request: Request, { params }: { params: { slug: string
             text: rawData[25] as string,
           }
         })
+        .filter(Boolean)
         .filter((d) => d.lineGeometry !== undefined)
     })
     .flat()
