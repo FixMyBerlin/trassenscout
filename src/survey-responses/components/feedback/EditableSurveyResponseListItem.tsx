@@ -23,7 +23,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid"
 import { EnvelopeIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
-import { useRouter } from "next/router"
+import { parseAsInteger, useQueryState } from "nuqs"
 import { useEffect } from "react"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
@@ -50,13 +50,12 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   refetchResponsesAndTopics,
   showMap,
 }) => {
-  const router = useRouter()
   const params = useRouterQuery()
   const open = !isAccordion ? true : parseInt(String(params.responseDetails)) === response.id
   const surveyId = useParam("surveyId", "string")
   const projectSlug = useProjectSlug()
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
-
+  const [responseDetails, setRespnseDetails] = useQueryState("responseDetails", parseAsInteger)
   const [deleteCalendarEntryMutation] = useMutation(deleteSurveyResponse)
 
   useEffect(() => {
@@ -68,12 +67,10 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   }, [survey.slug])
 
   const handleOpen = () => {
-    router.query.responseDetails = String(response.id)
-    void router.push({ query: router.query }, undefined, { scroll: false })
+    void setRespnseDetails(response.id)
   }
   const handleClose = () => {
-    delete router.query.responseDetails
-    void router.push({ query: router.query }, undefined, { scroll: false })
+    void setRespnseDetails(null)
   }
   const operatorSlugWitFallback = response.operator?.slug || "k.A."
 
