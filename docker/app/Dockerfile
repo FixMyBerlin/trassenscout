@@ -10,6 +10,10 @@ RUN npm install-clean --legacy-peer-deps
 # see .dockerignore for what is getting copied
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+
+ARG NEXT_PUBLIC_APP_ORIGIN
+ARG NEXT_PUBLIC_APP_ENV
+
 RUN npx blitz prisma generate && npx blitz build
 
 EXPOSE 3000
