@@ -95,6 +95,9 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           tags: public.ecr.aws/n0p8j4k5/trassenscout/app:${{ github.sha }}
+          build-args: |
+            NEXT_PUBLIC_APP_ENV=${{ inputs.NEXT_PUBLIC_APP_ENV }}
+            NEXT_PUBLIC_APP_ORIGIN=${{ inputs.NEXT_PUBLIC_APP_ORIGIN }}
 
       - name: Build nginx image
         uses: docker/build-push-action@v5
