@@ -1,9 +1,9 @@
 "use client"
-import forgotPassword from "@/src/auth/mutations/forgotPassword"
-import { ForgotPassword } from "@/src/auth/schema"
 import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
 import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
 import { frenchQuote } from "@/src/core/components/text/quote"
+import forgotPassword from "@/src/server/auth/mutations/forgotPassword"
+import { ForgotPassword } from "@/src/server/auth/schema"
 import { useMutation } from "@blitzjs/rpc"
 
 export const ForgotPasswordForm = () => {

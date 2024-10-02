@@ -1,5 +1,5 @@
 import db, { Prisma } from "@/db"
-import { selectUserFieldsForSession } from "@/src/auth/shared/selectUserFieldsForSession"
+import { selectUserFieldsForSession } from "@/src/server/auth/shared/selectUserFieldsForSession"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 

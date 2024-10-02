@@ -1,9 +1,9 @@
 "use client"
-import resetPassword from "@/src/auth/mutations/resetPassword"
-import { ResetPassword } from "@/src/auth/schema"
 import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
 import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
 import { Link } from "@/src/core/components/links"
+import resetPassword from "@/src/server/auth/mutations/resetPassword"
+import { ResetPassword } from "@/src/server/auth/schema"
 import { useMutation } from "@blitzjs/rpc"
 
 type Props = { token: string }

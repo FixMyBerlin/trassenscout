@@ -1,8 +1,8 @@
 import db, { MembershipRoleEnum } from "@/db"
-import { selectUserFieldsForSession } from "@/src/auth/shared/selectUserFieldsForSession"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
+import { selectUserFieldsForSession } from "@/src/server/auth/shared/selectUserFieldsForSession"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 

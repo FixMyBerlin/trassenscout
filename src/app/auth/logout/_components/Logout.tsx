@@ -1,5 +1,5 @@
 "use client"
-import logout from "@/src/auth/mutations/logout"
+import logout from "@/src/server/auth/mutations/logout"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
