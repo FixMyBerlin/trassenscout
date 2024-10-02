@@ -1,9 +1,9 @@
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
+import getStakeholdernotes from "@/src/server/stakeholdernotes/queries/getStakeholdernotes"
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { PromiseReturnType } from "blitz"
 import router from "next/router"
-import getStakeholdernotes from "../queries/getStakeholdernotes"
 import { stakeholderNotesStatus } from "./stakeholdernotesStatus"
 
 type Props = Pick<PromiseReturnType<typeof getStakeholdernotes>, "stakeholdernotes">
