@@ -54,7 +54,10 @@ export const SurveyMainPage: React.FC<Props> = ({
   surveyId,
   institutionsBboxes,
 }) => {
-  const [stage, setStage] = useState<"START" | "SURVEY" | "MORE" | "FEEDBACK" | "EMAIL">("START")
+  const [stage, setStage] = useState<"START" | "SURVEY" | "MORE" | "FEEDBACK" | "EMAIL">(
+    process.env.NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE || "START",
+  )
+
   // todo survey clean up or refactor after survey BB
   const surveySlug = useParam("surveySlug", "string")
   const [progress, setProgress] = useState(1)
