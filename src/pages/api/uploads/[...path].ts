@@ -1,6 +1,6 @@
 import db from "@/db"
 import { getConfig } from "@/src/core/lib/next-s3-upload/src/utils/config"
-import getUploadWithSubsections from "@/src/uploads/queries/getUploadWithSubsections"
+import getUploadWithSubsections from "@/src/server/uploads/queries/getUploadWithSubsections"
 import {
   GetObjectCommand,
   HeadObjectCommand,

@@ -5,7 +5,7 @@ import { useUserCan } from "@/src/memberships/hooks/useUserCan"
 import { DocumentIcon } from "@heroicons/react/24/outline"
 import { Upload } from "@prisma/client"
 import { RouteUrlObject } from "blitz"
-import { uploadUrl } from "../utils"
+import { uploadUrl } from "./utils/uploadUrl"
 
 type Props = {
   upload: Upload

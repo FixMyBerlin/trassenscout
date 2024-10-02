@@ -5,11 +5,11 @@ import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { Routes } from "@blitzjs/next"
 import { PaperClipIcon } from "@heroicons/react/20/solid"
 import { PromiseReturnType } from "blitz"
-import getUploadsWithSubsections from "../queries/getUploadsWithSubsections"
-import { uploadUrl } from "../utils"
+import { uploadUrl } from "./utils/uploadUrl"
 
 type Props = Prettify<
   Pick<PromiseReturnType<typeof getUploadsWithSubsections>, "uploads"> & {
@@ -17,7 +17,7 @@ type Props = Prettify<
   }
 >
 
-export const UploadTable: React.FC<Props> = ({ uploads, withAction = true }) => {
+export const UploadTable = ({ uploads, withAction = true }: Props) => {
   const projectSlug = useProjectSlug()
 
   if (!uploads.length) {
