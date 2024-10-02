@@ -1,6 +1,7 @@
 import { Form, LabeledCheckbox } from "@/src/core/components/forms"
 import { Link, LinkMail, LinkTel, whiteButtonStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
+import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
@@ -13,7 +14,6 @@ import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { Contact } from "@prisma/client"
 import { useRouter } from "next/router"
 import { useState } from "react"
-import { TableWrapper } from "../../core/components/Table/TableWrapper"
 
 type Props = {
   contacts: Contact[]
@@ -21,7 +21,7 @@ type Props = {
   withNotes?: boolean
 }
 
-export const ContactTable: React.FC<Props> = ({ contacts }) => {
+export const ContactTable = ({ contacts }: Props) => {
   const [mailButtonActive, setMailButtonActive] = useState(false)
   const projectSlug = useProjectSlug()
   const router = useRouter()

@@ -1,4 +1,3 @@
-import { TeamTable } from "@/src/contacts/components/TeamTable"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Tabs } from "@/src/core/components/Tabs/Tabs"
@@ -9,6 +8,7 @@ import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { useUserCan } from "@/src/memberships/hooks/useUserCan"
+import { TeamTable } from "@/src/pagesComponents/contacts/TeamTable"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { Suspense } from "react"
 
