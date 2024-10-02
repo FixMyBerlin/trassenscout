@@ -2,7 +2,7 @@
 import { Link } from "@/src/core/components/links/Link"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { useTryProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { CurrentUserCanIcon } from "@/src/memberships/components/CurrentUserCanIcon"
+import { CurrentUserCanIcon } from "@/src/pagesComponents/memberships/CurrentUserCanIcon"
 import { TGetProjects } from "@/src/server/projects/queries/getProjects"
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react"
 import { ChevronDownIcon } from "@heroicons/react/20/solid"

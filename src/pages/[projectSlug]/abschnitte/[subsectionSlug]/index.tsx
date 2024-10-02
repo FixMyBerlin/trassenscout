@@ -11,7 +11,7 @@ import { H2, seoTitleSlug, shortTitle, startEnd } from "@/src/core/components/te
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { SubsectionInfoPanel } from "@/src/pagesComponents/subsections/SubsectionInfoPanel"
 import { SubsectionTabs } from "@/src/pagesComponents/subsections/SubsectionTabs"
 import { SubsubsectionMapSidebar } from "@/src/pagesComponents/subsections/SubsubsectionMapSidebar"

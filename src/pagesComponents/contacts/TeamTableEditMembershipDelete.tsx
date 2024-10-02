@@ -1,8 +1,8 @@
 import { linkIcons, linkStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import deleteMembership from "@/src/memberships/mutations/deleteMembership"
-import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import deleteMembership from "@/src/server/memberships/mutations/deleteMembership"
+import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import { getQueryClient, getQueryKey, useMutation } from "@blitzjs/rpc"
 
 type Props = {

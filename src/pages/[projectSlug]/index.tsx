@@ -23,7 +23,7 @@ import { BlitzPage, Routes, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { MapProvider } from "react-map-gl/maplibre"
-import { IfUserCanEdit } from "../../memberships/components/IfUserCan"
+import { IfUserCanEdit } from "../../pagesComponents/memberships/IfUserCan"
 
 export const ProjectDashboardWithQuery = () => {
   const projectSlug = useProjectSlug()

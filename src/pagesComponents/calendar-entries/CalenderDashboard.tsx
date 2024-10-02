@@ -7,7 +7,7 @@ import { Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { startOfDay } from "date-fns"
 import { Suspense } from "react"
-import { IfUserCanEdit } from "../../memberships/components/IfUserCan"
+import { IfUserCanEdit } from "../memberships/IfUserCan"
 import { DateList } from "./Calender/DateList"
 
 const CalendarDashboardDateList = () => {

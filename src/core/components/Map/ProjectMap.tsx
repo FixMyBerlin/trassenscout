@@ -13,8 +13,8 @@ import {
   ViewStateChangeEvent,
   useMap,
 } from "react-map-gl/maplibre"
-import { IfUserCanEdit } from "../../../memberships/components/IfUserCan"
-import { useUserCan } from "../../../memberships/hooks/useUserCan"
+import { IfUserCanEdit } from "../../../pagesComponents/memberships/IfUserCan"
+import { useUserCan } from "../../../pagesComponents/memberships/hooks/useUserCan"
 import { shortTitle } from "../text"
 import { BaseMap } from "./BaseMap"
 import { SubsectionMapIcon } from "./Icons"

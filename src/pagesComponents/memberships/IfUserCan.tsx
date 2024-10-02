@@ -2,7 +2,7 @@ import { showMembershipRoleCheckIndicatorState } from "@/src/core/store/showMemb
 import { isProduction } from "@/src/core/utils"
 import { useSession } from "@blitzjs/auth"
 import { NoSymbolIcon } from "@heroicons/react/20/solid"
-import { useUserCan } from "../hooks/useUserCan"
+import { useUserCan } from "./hooks/useUserCan"
 
 type Props = {
   children: React.ReactNode

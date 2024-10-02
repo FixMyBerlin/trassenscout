@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { Link } from "@/src/core/components/links"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import { useUserCan } from "@/src/memberships/hooks/useUserCan"
+import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { DocumentIcon } from "@heroicons/react/24/outline"
 import { Upload } from "@prisma/client"
 import { RouteUrlObject } from "blitz"

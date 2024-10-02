@@ -5,7 +5,7 @@ import {
   LabeledRadiobuttonGroup,
   LabeledTextField,
 } from "@/src/core/components/forms"
-import { roleTranslation } from "@/src/memberships/components/roleTranslation.const"
+import { roleTranslation } from "@/src/pagesComponents/memberships/roleTranslation.const"
 import { z } from "zod"
 export { FORM_ERROR } from "@/src/core/components/forms"
 

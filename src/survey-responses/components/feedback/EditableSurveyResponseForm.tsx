@@ -6,8 +6,8 @@ import {
 } from "@/src/core/components/forms"
 import { Link, blueButtonStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import { useUserCan } from "@/src/memberships/hooks/useUserCan"
+import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import {
   TBackendConfig,
   backendConfig as defaultBackendConfig,

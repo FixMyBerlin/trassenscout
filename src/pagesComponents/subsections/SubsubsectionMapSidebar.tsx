@@ -12,7 +12,7 @@ import {
 import { H2 } from "@/src/core/components/text/Headings"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { getFullname } from "@/src/pagesComponents/users/utils"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
