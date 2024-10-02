@@ -7,7 +7,7 @@ import { HiddenField } from "@/src/core/components/forms/HiddenField"
 import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
-import getInvite from "@/src/invites/queries/getInvite"
+import getInvite from "@/src/server/invites/queries/getInvite"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter, useSearchParams } from "next/navigation"
 

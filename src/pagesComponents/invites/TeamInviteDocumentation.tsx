@@ -1,7 +1,10 @@
 import { quote } from "@/src/core/components/text/quote"
-import { statusTranslations } from "@/src/invites/components/TeamInvitesTable"
+import { statusTranslations } from "@/src/pagesComponents/invites/TeamInvitesTable"
+import {
+  INVITE_DAYS_TO_DELETION,
+  INVITE_DAYS_TO_EXPIRED,
+} from "@/src/server/invites/inviteSettings.const"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
-import { INVITE_DAYS_TO_DELETION, INVITE_DAYS_TO_EXPIRED } from "../inviteSettings.const"
 
 export const TeamInviteDocumentation = () => {
   return (
