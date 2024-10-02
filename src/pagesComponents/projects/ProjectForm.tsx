@@ -8,7 +8,7 @@ import {
 } from "@/src/core/components/forms"
 import { Link } from "@/src/core/components/links"
 import { quote } from "@/src/core/components/text/quote"
-import { getUserSelectOptions, UserSelectOptions } from "@/src/users/utils"
+import { getUserSelectOptions, UserSelectOptions } from "@/src/pagesComponents/users/utils"
 import { z } from "zod"
 export { FORM_ERROR } from "@/src/core/components/forms"
 

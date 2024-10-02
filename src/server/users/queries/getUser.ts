@@ -1,5 +1,5 @@
 import db from "@/db"
-import { CurrentUser } from "../types"
+import { CurrentUser } from "@/src/server/users/types"
 
 export default async function getUser(id: number) {
   const user = await db.user.findFirst({

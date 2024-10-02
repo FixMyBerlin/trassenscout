@@ -1,5 +1,5 @@
+import { CurrentUser } from "@/src/server/users/types"
 import { Contact } from "@prisma/client"
-import { CurrentUser } from "../types"
 
 type Props = (Partial<CurrentUser> | Partial<Contact>) & {
   firstName?: string | null

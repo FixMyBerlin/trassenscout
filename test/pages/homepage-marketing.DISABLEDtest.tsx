@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import Homepage from "@/src/app/(marketing)/page"
-import { CurrentUser } from "@/src/users/types"
+import { CurrentUser } from "@/src/server/users/types"
 import { expect, test, vi } from "vitest"
 import { render } from "../utils"
 
@@ -27,7 +27,7 @@ test.skip("Homepage: Render Landingpage Text", () => {
   //   institution: null,
   // } satisfies CurrentUser
 
-  vi.mock("src/users/hooks/useCurrentUser", () => ({
+  vi.mock("src/server/users/hooks/useCurrentUser", () => ({
     useCurrentUser: () => currentUser,
   }))
 

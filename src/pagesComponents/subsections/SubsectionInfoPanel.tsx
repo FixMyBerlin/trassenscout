@@ -1,8 +1,8 @@
 import { Spinner } from "@/src/core/components/Spinner"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
+import { getFullname } from "@/src/pagesComponents/users/utils"
 import getStatsInfopanelSubsectionGeneral from "@/src/server/subsections/queries/getStatsInfopanelSubsectionGeneral"
-import { getFullname } from "@/src/users/utils"
 import { useQuery } from "@blitzjs/rpc"
 import {
   CalendarIcon,

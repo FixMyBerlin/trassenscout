@@ -12,7 +12,7 @@ import { render } from "../utils"
 // }))
 
 test.skip("Homepage: Render Dashboard", () => {
-  vi.mock("src/users/hooks/useCurrentUser", () => ({
+  vi.mock("src/server/users/hooks/useCurrentUser", () => ({
     useCurrentUser: () => mockCurrentUser,
   }))
 

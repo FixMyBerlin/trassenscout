@@ -1,6 +1,6 @@
 "use client"
 import { Link } from "@/src/core/components/links/Link"
-import { useCurrentUser } from "@/src/users/hooks/useCurrentUser"
+import { useCurrentUser } from "@/src/server/users/hooks/useCurrentUser"
 import { UserIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import { NavigationUserLoggedIn } from "./NavigationUserLoggedIn"

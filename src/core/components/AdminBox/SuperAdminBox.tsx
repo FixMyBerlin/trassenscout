@@ -1,7 +1,7 @@
 "use client"
-import { useCurrentUser } from "@/src/users/hooks/useCurrentUser"
+import { isAdmin } from "@/src/pagesComponents/users/utils/isAdmin"
+import { useCurrentUser } from "@/src/server/users/hooks/useCurrentUser"
 import { Suspense } from "react"
-import { isAdmin } from "../../../users/utils/isAdmin"
 import { Spinner } from "../Spinner"
 import { AdminBox } from "./AdminBox"
 

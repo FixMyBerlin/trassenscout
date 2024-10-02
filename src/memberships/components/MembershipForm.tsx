@@ -6,9 +6,9 @@ import {
   LabeledSelect,
 } from "@/src/core/components/forms"
 import { getProjectSelectOptions } from "@/src/pagesComponents/projects/utils/getProjectSelectOptions"
+import { getUserSelectOptions } from "@/src/pagesComponents/users/utils"
 import getProjects from "@/src/server/projects/queries/getProjects"
-import getUsers from "@/src/users/queries/getUsers"
-import { getUserSelectOptions } from "@/src/users/utils"
+import getUsers from "@/src/server/users/queries/getUsers"
 import { useQuery } from "@blitzjs/rpc"
 import { z } from "zod"
 import { roleTranslation } from "./roleTranslation.const"
