@@ -18,7 +18,7 @@ import getQualityLevelsWithCount from "@/src/server/qualityLevels/queries/getQua
 import getSubsubsectionInfrasWithCount from "@/src/server/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
 import getSubsubsectionSpecialsWithCount from "@/src/server/subsubsectionSpecial/queries/getSubsubsectionSpecialsWithCount"
 import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
-import getSubsubsectionTasksWithCount from "@/src/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
+import getSubsubsectionTasksWithCount from "@/src/server/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
 import { getUserSelectOptions } from "@/src/users/utils"
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"

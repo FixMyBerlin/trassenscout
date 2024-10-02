@@ -9,10 +9,10 @@ import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import {
   FORM_ERROR,
   SubsubsectionTaskForm,
-} from "@/src/subsubsectionTask/components/SubsubsectionTaskForm"
-import updateSubsubsectionTask from "@/src/subsubsectionTask/mutations/updateSubsubsectionTask"
-import getSubsubsectionTask from "@/src/subsubsectionTask/queries/getSubsubsectionTask"
-import { SubsubsectionTask } from "@/src/subsubsectionTask/schema"
+} from "@/src/pagesComponents/subsubsectionTask/SubsubsectionTaskForm"
+import updateSubsubsectionTask from "@/src/server/subsubsectionTask/mutations/updateSubsubsectionTask"
+import getSubsubsectionTask from "@/src/server/subsubsectionTask/queries/getSubsubsectionTask"
+import { SubsubsectionTask } from "@/src/server/subsubsectionTask/schema"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
