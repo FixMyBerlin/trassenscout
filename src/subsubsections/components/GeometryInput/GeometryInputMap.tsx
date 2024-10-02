@@ -1,6 +1,6 @@
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { layerColors } from "@/src/core/components/Map/layerColors"
-import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
+import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
 import { featureCollection, lineString, point } from "@turf/helpers"
 import { bbox, distance, lineSlice, nearestPointOnLine } from "@turf/turf"

@@ -1,8 +1,8 @@
-import getStatsInfopanelProjectSubsubsections from "@/src/server/projects/queries/getStatsInfopanelProjectSubsubsections"
 import {
   formatGerKm,
   formatGerPercentage,
-} from "@/src/subsections/components/utils/formatNumericInfo"
+} from "@/src/pagesComponents/subsections/utils/formatNumericInfo"
+import getStatsInfopanelProjectSubsubsections from "@/src/server/projects/queries/getStatsInfopanelProjectSubsubsections"
 import { useQuery } from "@blitzjs/rpc"
 import { Fragment } from "react"
 

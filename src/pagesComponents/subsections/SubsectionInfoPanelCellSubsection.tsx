@@ -1,6 +1,6 @@
+import getStatsInfopanelSubsectionSubsection from "@/src/server/subsections/queries/getStatsInfopanelSubsectionSubsection"
 import { useQuery } from "@blitzjs/rpc"
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
-import getStatsInfopanelSubsection from "../queries/getStatsInfopanelSubsectionSubsection"
 import { getPriorityTranslation } from "./utils/getPriorityTranslation"
 
 type Props = {
@@ -11,10 +11,10 @@ export const SubsectionInfoPanelCellSubsection: React.FC<Props> = ({
   subsectionSlug,
   projectSlug,
 }) => {
-  const [{ subsection, subsubsectionSpecialsWithCount }] = useQuery(getStatsInfopanelSubsection, {
-    subsectionSlug: subsectionSlug!,
-    projectSlug,
-  })
+  const [{ subsection, subsubsectionSpecialsWithCount }] = useQuery(
+    getStatsInfopanelSubsectionSubsection,
+    { subsectionSlug: subsectionSlug!, projectSlug },
+  )
 
   return (
     <>

@@ -8,7 +8,7 @@ import { H2, longTitle, seoTitleSlug, shortTitle } from "@/src/core/components/t
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import getProject from "@/src/server/projects/queries/getProject"
-import getSubsections from "@/src/subsections/queries/getSubsections"
+import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import { BlitzPage } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { featureCollection, lineString, multiLineString, point } from "@turf/helpers"

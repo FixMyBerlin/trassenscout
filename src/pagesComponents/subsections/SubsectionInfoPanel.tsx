@@ -1,6 +1,7 @@
 import { Spinner } from "@/src/core/components/Spinner"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
+import getStatsInfopanelSubsectionGeneral from "@/src/server/subsections/queries/getStatsInfopanelSubsectionGeneral"
 import { getFullname } from "@/src/users/utils"
 import { useQuery } from "@blitzjs/rpc"
 import {
@@ -11,7 +12,6 @@ import {
 } from "@heroicons/react/20/solid"
 import { ArrowUturnRightIcon, DocumentIcon } from "@heroicons/react/24/outline"
 import { Suspense } from "react"
-import getStatsInfopanel from "../queries/getStatsInfopanelSubsectionGeneral"
 import { SubsectionInfoPanelCellCompletion } from "./SubsectionInfoPanelCellCompletion"
 import { SubsectionInfoPanelCellContainer } from "./SubsectionInfoPanelCellContainer"
 import { SubsectionInfoPanelCellCosts } from "./SubsectionInfoPanelCellCosts"
@@ -22,7 +22,7 @@ import { SubsubsectionInfoPanelCellSubsectionsDetails } from "./SubsubsectionInf
 export const SubsectionInfoPanel = () => {
   const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
-  const [subsection] = useQuery(getStatsInfopanel, {
+  const [subsection] = useQuery(getStatsInfopanelSubsectionGeneral, {
     subsectionSlug: subsectionSlug!,
     projectSlug,
   })

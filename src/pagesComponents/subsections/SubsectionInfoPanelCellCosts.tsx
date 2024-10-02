@@ -1,5 +1,5 @@
+import getStatsInfopanelSubsectionCosts from "@/src/server/subsections/queries/getStatsInfopanelSubsectionCosts"
 import { useQuery } from "@blitzjs/rpc"
-import getStatsInfopanelCosts from "../queries/getStatsInfopanelSubsectionCosts"
 import { formatGerCurrency, formatGerKm } from "./utils/formatNumericInfo"
 
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
   projectSlug: string
 }
 export const SubsectionInfoPanelCellCosts: React.FC<Props> = ({ subsectionSlug, projectSlug }) => {
-  const [{ subsection, costStructure }] = useQuery(getStatsInfopanelCosts, {
+  const [{ subsection, costStructure }] = useQuery(getStatsInfopanelSubsectionCosts, {
     subsectionSlug: subsectionSlug!,
     projectSlug,
   })

@@ -10,7 +10,7 @@ import {
 } from "@heroicons/react/20/solid"
 import { CalendarIcon, DocumentIcon } from "@heroicons/react/24/outline"
 import { Suspense } from "react"
-import { SubsectionInfoPanelCellContainer } from "../../subsections/components/SubsectionInfoPanelCellContainer"
+import { SubsectionInfoPanelCellContainer } from "../subsections/SubsectionInfoPanelCellContainer"
 import { ProjectInfoPanelCellCompletion } from "./ProjectInfoPanelCellCompletion"
 import { ProjectInfoPanelCellCosts } from "./ProjectInfoPanelCellCosts"
 import { ProjectInfoPanelCellLeaderboard } from "./ProjectInfoPanelCellLeaderboard"

@@ -5,14 +5,14 @@ import { shortTitle } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { defaultGeometryForMultipleSubsectionForm } from "@/src/pages/admin/[projectSlug]/subsections/multiple-new"
+import deleteSubsection from "@/src/server/subsections/mutations/deleteSubsection"
+import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline"
 import { lineString } from "@turf/helpers"
 import { clsx } from "clsx"
-import deleteSubsection from "../mutations/deleteSubsection"
-import { SubsectionWithPosition } from "../queries/getSubsection"
 
 type Props = {
   subsections: SubsectionWithPosition[]

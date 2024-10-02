@@ -1,4 +1,4 @@
-import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
+import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { BaseMap } from "./BaseMap"
 import { subsectionsBbox } from "./utils"
 

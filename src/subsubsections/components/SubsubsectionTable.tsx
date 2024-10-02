@@ -12,11 +12,11 @@ import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import { mapillaryLink } from "@/src/pagesComponents/subsections/utils/mapillaryLink"
 import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
 import { Routes } from "@blitzjs/next"
 import { clsx } from "clsx"
 import { useRouter } from "next/router"
-import { mapillaryLink } from "../../subsections/components/utils/mapillaryLink"
 import { SubsubsectionTableFooter } from "./SubsubsectionTableFooter"
 
 type Props = {

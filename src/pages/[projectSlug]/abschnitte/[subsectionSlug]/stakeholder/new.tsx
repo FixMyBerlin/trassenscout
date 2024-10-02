@@ -9,7 +9,7 @@ import { FORM_ERROR } from "@/src/pagesComponents/stakeholdernotes/Stakeholderno
 import { StakeholdernoteMultiForm } from "@/src/pagesComponents/stakeholdernotes/StakeholdernoteMultiForm"
 import createStakeholdernote from "@/src/server/stakeholdernotes/mutations/createStakeholdernote"
 import { StakeholdernoteMultiSchema } from "@/src/server/stakeholdernotes/schema"
-import getSubsection from "@/src/subsections/queries/getSubsection"
+import getSubsection from "@/src/server/subsections/queries/getSubsection"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"

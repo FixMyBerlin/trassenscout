@@ -1,9 +1,9 @@
-import getStatsInfopanelProjectCosts from "@/src/server/projects/queries/getStatsInfopanelProjectCosts"
 import {
   formatGerCurrency,
   formatGerKm,
   formatGerPercentage,
-} from "@/src/subsections/components/utils/formatNumericInfo"
+} from "@/src/pagesComponents/subsections/utils/formatNumericInfo"
+import getStatsInfopanelProjectCosts from "@/src/server/projects/queries/getStatsInfopanelProjectCosts"
 import { useQuery } from "@blitzjs/rpc"
 
 type Props = {

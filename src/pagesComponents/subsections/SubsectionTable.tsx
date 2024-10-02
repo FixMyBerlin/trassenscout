@@ -5,12 +5,12 @@ import { longTitle, shortTitle } from "@/src/core/components/text"
 import { startEnd } from "@/src/core/components/text/startEnd"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { StakeholderSummary } from "@/src/pagesComponents/stakeholdernotes/StakeholderSummary"
+import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { Routes } from "@blitzjs/next"
 import { clsx } from "clsx"
 import { useRouter } from "next/router"
-import { IfUserCanEdit } from "../../memberships/components/IfUserCan"
-import { SubsectionWithPosition } from "../queries/getSubsection"
 
 type Props = {
   subsections: SubsectionWithPosition[]

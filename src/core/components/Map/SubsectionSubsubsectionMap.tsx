@@ -1,5 +1,5 @@
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
-import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
+import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
 import { Routes } from "@blitzjs/next"
 import { lineString, point } from "@turf/helpers"

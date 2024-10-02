@@ -1,7 +1,7 @@
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import getProject from "@/src/server/projects/queries/getProject"
-import getSubsection from "@/src/subsections/queries/getSubsection"
+import getSubsection from "@/src/server/subsections/queries/getSubsection"
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { ChevronRightIcon } from "@heroicons/react/20/solid"

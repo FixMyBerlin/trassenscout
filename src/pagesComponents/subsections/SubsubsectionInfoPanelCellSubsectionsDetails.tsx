@@ -1,5 +1,5 @@
+import getStatsInfopanelSubsectionStandards from "@/src/server/subsections/queries/getStatsInfopanelSubsectionStandards"
 import { useQuery } from "@blitzjs/rpc"
-import getStatsInfopanelSubsectionsDetails from "../queries/getStatsInfopanelSubsectionStandards"
 import { formatGerKm, formatGerPercentage } from "./utils/formatNumericInfo"
 
 type Props = {
@@ -11,11 +11,8 @@ export const SubsubsectionInfoPanelCellSubsectionsDetails: React.FC<Props> = ({
   projectSlug,
 }) => {
   const [{ subsection, qualityLevelsWithCount, sumLengthKmSubsubsectionsWithStandard }] = useQuery(
-    getStatsInfopanelSubsectionsDetails,
-    {
-      subsectionSlug: subsectionSlug!,
-      projectSlug,
-    },
+    getStatsInfopanelSubsectionStandards,
+    { subsectionSlug: subsectionSlug!, projectSlug },
   )
   return (
     <>

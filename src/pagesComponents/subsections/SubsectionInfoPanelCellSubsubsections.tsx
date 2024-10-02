@@ -1,6 +1,6 @@
+import getStatsInfopanelSubsectionSubsubsections from "@/src/server/subsections/queries/getStatsInfopanelSubsectionSubsubsections"
 import { useQuery } from "@blitzjs/rpc"
 import { Fragment } from "react"
-import getStatsInfopanelSubsections from "../queries/getStatsInfopanelSubsectionSubsubsections"
 import { formatGerKm, formatGerPercentage } from "./utils/formatNumericInfo"
 
 type Props = {
@@ -11,10 +11,10 @@ export const SubsectionInfoPanelCellSubsubsections: React.FC<Props> = ({
   subsectionSlug,
   projectSlug,
 }) => {
-  const [{ subsection, subsubsectionsCategoryCount }] = useQuery(getStatsInfopanelSubsections, {
-    subsectionSlug: subsectionSlug!,
-    projectSlug,
-  })
+  const [{ subsection, subsubsectionsCategoryCount }] = useQuery(
+    getStatsInfopanelSubsectionSubsubsections,
+    { subsectionSlug: subsectionSlug!, projectSlug },
+  )
 
   return (
     <>

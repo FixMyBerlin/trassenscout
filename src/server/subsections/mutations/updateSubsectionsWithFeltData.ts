@@ -1,8 +1,8 @@
 import db from "@/db"
+import { multilinestringToLinestring } from "@/src/pagesComponents/subsections/utils/multilinestringToLinestring"
 import { resolver } from "@blitzjs/rpc"
 import { length, lineString } from "@turf/turf"
 import { z } from "zod"
-import { multilinestringToLinestring } from "../components/utils/multilinestringToLinestring"
 import { FeltApiResponseSchema, SubsectionSchema } from "../schema"
 
 const UpdateSubsectionsWithFeltDataSchema = z.object({

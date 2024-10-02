@@ -5,7 +5,7 @@ import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
-import getSubsections from "@/src/subsections/queries/getSubsections"
+import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import { TMapProps } from "@/src/survey-public/components/types"
 import {
   getFeedbackDefinitionBySurveySlug,

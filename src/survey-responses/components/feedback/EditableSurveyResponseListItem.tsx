@@ -4,7 +4,7 @@ import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
-import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
+import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { TMapProps } from "@/src/survey-public/components/types"
 import { backendConfig as defaultBackendConfig } from "@/src/survey-public/utils/backend-config-defaults"
 import {

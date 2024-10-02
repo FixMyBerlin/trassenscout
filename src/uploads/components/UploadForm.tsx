@@ -7,7 +7,7 @@ import {
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { shortTitle } from "@/src/core/components/text/titles"
-import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
+import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { z } from "zod"
 export { FORM_ERROR } from "@/src/core/components/forms"
 

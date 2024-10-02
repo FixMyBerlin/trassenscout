@@ -1,6 +1,6 @@
+import getStatsInfopanelSubsectionCompletion from "@/src/server/subsections/queries/getStatsInfopanelSubsectionCompletion"
 import { useQuery } from "@blitzjs/rpc"
 import { getQuarter, getYear } from "date-fns"
-import getStatsInfopanelCompletion from "../queries/getStatsInfopanelSubsectionCompletion"
 
 type Props = {
   subsectionSlug: string
@@ -10,7 +10,7 @@ export const SubsectionInfoPanelCellCompletion: React.FC<Props> = ({
   subsectionSlug,
   projectSlug,
 }) => {
-  const [{ subsection }] = useQuery(getStatsInfopanelCompletion, {
+  const [{ subsection }] = useQuery(getStatsInfopanelSubsectionCompletion, {
     subsectionSlug: subsectionSlug!,
     projectSlug,
   })
