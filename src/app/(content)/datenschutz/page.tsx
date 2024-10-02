@@ -1,7 +1,7 @@
+import { TableOfContents } from "@/src/app/(content)/datenschutz/_components/TableOfContents/TableOfContents"
+import { TocHashLink } from "@/src/app/(content)/datenschutz/_components/TableOfContents/types"
 import { Link, LinkMail, LinkTel } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { TableOfContents } from "@/src/datenschutz/components/TableOfContents/TableOfContents"
-import { TocHashLink } from "@/src/datenschutz/components/TableOfContents/types"
 import { Metadata } from "next"
 import "server-only"
 

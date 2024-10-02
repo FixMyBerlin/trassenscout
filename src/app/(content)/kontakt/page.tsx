@@ -1,9 +1,9 @@
 import { Link, LinkMail, LinkTel } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import svgImageLogoBmdvFoerderung from "@/src/kontakt/assets/logo-bmdv-foerderung.svg"
 import { Metadata } from "next"
 import Image from "next/image"
 import "server-only"
+import svgImageLogoBmdvFoerderung from "./assets/logo-bmdv-foerderung.svg"
 
 export const metadata: Metadata = {
   robots: "noindex",
