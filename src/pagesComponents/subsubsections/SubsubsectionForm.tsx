@@ -17,7 +17,7 @@ import { LabeledRadiobuttonGroupLabelPos } from "@/src/pagesComponents/subsubsec
 import getQualityLevelsWithCount from "@/src/server/qualityLevels/queries/getQualityLevelsWithCount"
 import getSubsubsectionInfrasWithCount from "@/src/server/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
 import getSubsubsectionSpecialsWithCount from "@/src/server/subsubsectionSpecial/queries/getSubsubsectionSpecialsWithCount"
-import getSubsubsectionStatussWithCount from "@/src/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
+import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
 import getSubsubsectionTasksWithCount from "@/src/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
 import { getUserSelectOptions } from "@/src/users/utils"
 import { Routes } from "@blitzjs/next"
