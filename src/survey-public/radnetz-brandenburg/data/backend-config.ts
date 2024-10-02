@@ -69,4 +69,5 @@ export const backendConfig: TBackendConfig = {
       surveyPart: "feedback",
     },
   ],
+  disableExternalSurveyResponseForm: true,
 }

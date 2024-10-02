@@ -6,6 +6,7 @@ import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import getSubsections from "@/src/subsections/queries/getSubsections"
+import { getBackendConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { EditableSurveyResponseFilterForm } from "@/src/survey-responses/components/feedback/EditableSurveyResponseFilterForm"
 import EditableSurveyResponseListItem from "@/src/survey-responses/components/feedback/EditableSurveyResponseListItem"
@@ -23,8 +24,9 @@ export const SurveyResponse = () => {
   const { subsectionSlug } = useSlugs()
   const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "number")
+  const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
+  const backenendConfig = getBackendConfigBySurveySlug(survey.slug)
 
-  const [survey] = useQuery(getSurvey, { projectSlug, id: surveyId })
   const [feedbackSurveyResponses, { refetch: refetchResponses }] = useQuery(
     getFeedbackSurveyResponses,
     { projectSlug, surveyId: survey.id },
@@ -68,8 +70,9 @@ export const SurveyResponse = () => {
       <div className="mt-12 space-y-4">
         <H2>Beiträge aus Bürger:innenbeteiligung</H2>
 
-        <ExternalSurveyResponseFormModal refetch={refetchResponses} />
-
+        {!backenendConfig.disableExternalSurveyResponseForm && (
+          <ExternalSurveyResponseFormModal refetch={refetchResponses} />
+        )}
         <EditableSurveyResponseFilterForm operators={operators} topicsDefinition={topics} />
 
         <ZeroCase visible={filteredResponses.length} name={"Beiträge"} />

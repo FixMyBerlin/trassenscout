@@ -30,6 +30,7 @@ export type TBackendConfig = {
   }
   // additional filters can only be defined for questions of type text for now
   additionalFilters?: [TAdditionalFiltersItem, ...TAdditionalFiltersItem[]]
+  disableExternalSurveyResponseForm?: boolean
 }
 
 export type TBackendConfigDefaults = {
