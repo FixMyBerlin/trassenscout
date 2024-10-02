@@ -13,7 +13,7 @@ import { LabeledFormatNumberFieldCalculateLength } from "@/src/core/components/f
 import { quote, shortTitle } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
-import getQualityLevelsWithCount from "@/src/qualityLevels/queries/getQualityLevelsWithCount"
+import getQualityLevelsWithCount from "@/src/server/qualityLevels/queries/getQualityLevelsWithCount"
 import getSubsubsectionInfrasWithCount from "@/src/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
 import { LabeledRadiobuttonGroupLabelPos } from "@/src/subsubsections/components/LabeledRadiobuttonGroupLabelPos"
 import getSubsubsectionSpecialsWithCount from "@/src/subsubsectionSpecial/queries/getSubsubsectionSpecialsWithCount"
