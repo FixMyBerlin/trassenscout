@@ -184,7 +184,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
               </IfUserCanEdit>
             </span>
           )}
-          <div className="mb-8 flex flex-col gap-8">
+          <div className="mb-8 flex flex-col items-start gap-8">
             <EditableSurveyResponseUserText
               surveyId={surveyId!}
               userTextIndices={[
