@@ -4,14 +4,14 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import getProject from "@/src/projects/queries/getProject"
 import { FORM_ERROR, SubsectionsForm } from "@/src/subsections/components/SubsectionsForm"
 import createSubsections from "@/src/subsections/mutations/createSubsections"
 import getSubsectionMaxOrder from "@/src/subsections/queries/getSubsectionMaxOrder"
 import { SubsectionsFormSchema } from "@/src/subsections/schema"
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { Subsection } from "@prisma/client"
 import { length, lineString } from "@turf/turf"
@@ -25,8 +25,8 @@ export const defaultGeometryForMultipleSubsectionForm = [
 
 const AdminNewSubsections = () => {
   const router = useRouter()
-  const { projectSlug } = useSlugs()
-  const [project] = useQuery(getProject, { slug: projectSlug! })
+  const projectSlug = useProjectSlug()
+  const [project] = useQuery(getProject, { projectSlug })
   const [createSubsectionsMutation] = useMutation(createSubsections)
 
   type HandleSubmit = any // TODO
@@ -51,7 +51,10 @@ const AdminNewSubsections = () => {
       })
     }
     try {
-      const subsections = await createSubsectionsMutation(newSubsections)
+      await createSubsectionsMutation({
+        projectSlug,
+        subsections: newSubsections,
+      })
       await router.push(
         Routes.AdminSubsectionsPage({
           projectSlug: projectSlug!,
@@ -78,7 +81,7 @@ const AdminNewSubsections = () => {
 }
 
 const AdminNewSubsectionsPage: BlitzPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
 
   return (
     <LayoutRs>

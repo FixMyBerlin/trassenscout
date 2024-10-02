@@ -3,19 +3,19 @@ import db from "../index"
 
 type Users = Prisma.UserUncheckedCreateInput[]
 
-export const generateUserEmail = (slug: string) => `${slug}@fixmycity.de`
+export const generateUserEmail = (slug: string) => `${slug}@fixmycity.test`
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
 const seedUsers = async () => {
   const allProjects = await db.project.findMany()
-  // password: dev-team@fixmycity.de
+  // password: dev-team@fixmycity.test
   const hashedPassword =
     "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTIscD0xJDRMWm82dmVrRk91VnVlZTVwcEpiS3ckOHFZcHhyM2RITm0yTGxTeXdqeEcxSWFsZEJCUWhxNVZxdm53eHoxTk4xTQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 
   const genericUsers: Users = [
     {
-      email: "admin@fixmycity.de",
+      email: "admin@fixmycity.test",
       role: "ADMIN",
       firstName: "Admin",
       lastName: "Admin-User",
@@ -23,7 +23,7 @@ const seedUsers = async () => {
       hashedPassword,
     },
     {
-      email: "all-projects-viewer@fixmycity.de",
+      email: "all-projects-viewer@fixmycity.test",
       role: "USER",
       firstName: "All-Projects",
       lastName: "Viewer-User",
@@ -32,7 +32,7 @@ const seedUsers = async () => {
       hashedPassword,
     },
     {
-      email: "all-projects-editor@fixmycity.de",
+      email: "all-projects-editor@fixmycity.test",
       role: "USER",
       firstName: "All-Projects",
       lastName: "Editor-User",
@@ -41,7 +41,7 @@ const seedUsers = async () => {
       hashedPassword,
     },
     {
-      email: "no-project@fixmycity.de",
+      email: "no-project@fixmycity.test",
       role: "USER",
       firstName: "No-Project",
       lastName: "No-Project-User",

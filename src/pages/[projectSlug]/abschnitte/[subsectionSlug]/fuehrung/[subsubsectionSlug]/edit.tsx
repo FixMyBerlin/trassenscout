@@ -5,7 +5,7 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link, linkStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitleSlug } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { FORM_ERROR, SubsubsectionForm } from "@/src/subsubsections/components/SubsubsectionForm"
 import { M2MFieldsType, m2mFields } from "@/src/subsubsections/m2mFields"
@@ -21,11 +21,12 @@ import { Suspense } from "react"
 
 const EditSubsubsection = () => {
   const router = useRouter()
-  const { projectSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
+  const { subsectionSlug, subsubsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const [subsubsection, { setQueryData }] = useQuery(
     getSubsubsection,
     {
-      projectSlug: projectSlug!,
+      projectSlug,
       subsectionSlug: subsectionSlug!,
       subsubsectionSlug: subsubsectionSlug!,
     },
@@ -40,8 +41,9 @@ const EditSubsubsection = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateSubsubsectionMutation({
-        id: subsubsection.id,
         ...values,
+        id: subsubsection.id,
+        projectSlug,
         trafficLoadDate: values.trafficLoadDate === "" ? null : new Date(values.trafficLoadDate),
         estimatedCompletionDate:
           values.estimatedCompletionDate === "" ? null : new Date(values.estimatedCompletionDate),
@@ -49,7 +51,7 @@ const EditSubsubsection = () => {
       await setQueryData(updated)
       await router.push(
         Routes.SubsubsectionDashboardPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           subsectionSlug: subsectionSlug!,
           subsubsectionSlug: updated.slug,
         }),
@@ -62,10 +64,10 @@ const EditSubsubsection = () => {
   const [deleteSubsectionMutation] = useMutation(deleteSubsubsection)
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${subsubsection.id} unwiderruflich löschen?`)) {
-      await deleteSubsectionMutation({ id: subsubsection.id })
+      await deleteSubsectionMutation({ projectSlug, id: subsubsection.id })
       await router.push(
         Routes.SubsectionDashboardPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           subsectionSlug: subsectionSlug!,
         }),
       )
@@ -119,7 +121,8 @@ const EditSubsubsection = () => {
 }
 
 const EditSubsubsectionPage = () => {
-  const { projectSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
+  const { subsectionSlug, subsubsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
 
   return (
     <LayoutRs>
@@ -131,7 +134,7 @@ const EditSubsubsectionPage = () => {
       <p>
         <Link
           href={Routes.SubsubsectionDashboardPage({
-            projectSlug: projectSlug!,
+            projectSlug,
             subsectionSlug: subsectionSlug!,
             subsubsectionSlug: subsubsectionSlug!,
           })}

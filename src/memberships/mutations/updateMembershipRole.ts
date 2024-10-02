@@ -1,13 +1,19 @@
-import db from "@/db"
-import { UpdateMembershipRole } from "@/src/auth/schema"
-import { authorizeProjectAdmin } from "@/src/authorization/authorizeProjectAdmin"
+import db, { MembershipRoleEnum } from "@/db"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { editorRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
+import { z } from "zod"
+
+export const UpdateMembershipSchema = z.object({
+  projectSlug: z.string(),
+  membershipId: z.number(),
+  role: z.nativeEnum(MembershipRoleEnum),
+})
 
 export default resolver.pipe(
-  resolver.zod(UpdateMembershipRole),
-  authorizeProjectAdmin(extractProjectSlug, editorRoles),
+  resolver.zod(UpdateMembershipSchema),
+  authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ membershipId, ...data }) => {
     const updated = await db.membership.update({ where: { id: membershipId }, data })
 

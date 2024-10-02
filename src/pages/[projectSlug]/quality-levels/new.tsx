@@ -2,7 +2,7 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { QualityLevelForm } from "@/src/qualityLevels/components/QualityLevelForm"
 import createQualityLevel from "@/src/qualityLevels/mutations/createQualityLevel"
@@ -15,7 +15,7 @@ import { Suspense } from "react"
 
 const NewQualityLevelPageWithQuery = () => {
   const router = useRouter()
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const [createQualityLevelMutation] = useMutation(createQualityLevel)
 
   type HandleSubmit = any // TODO

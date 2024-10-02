@@ -1,22 +1,25 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import getQualityLevelProjectId from "../queries/getNetworkHierarchyProjectId"
 import { NetworkHierarchySchema } from "../schema"
 
-const UpdateNetworkHierarchySchema = NetworkHierarchySchema.merge(
-  z.object({
-    id: z.number(),
-  }),
+const UpdateNetworkHierarchySchema = ProjectSlugRequiredSchema.merge(
+  NetworkHierarchySchema.merge(z.object({ id: z.number() })),
 )
 
 export default resolver.pipe(
   resolver.zod(UpdateNetworkHierarchySchema),
-  authorizeProjectAdmin(getQualityLevelProjectId),
-  async ({ id, ...data }) =>
-    await db.networkHierarchy.update({
+  authorizeProjectMember(extractProjectSlug, editorRoles),
+  async ({ id, ...data }) => {
+    return await db.networkHierarchy.update({
       where: { id },
       data,
-    }),
+    })
+  },
 )

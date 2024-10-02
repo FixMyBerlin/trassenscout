@@ -4,30 +4,31 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitleSlug } from "@/src/core/components/text"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
 import { FORM_ERROR, ProjectForm } from "@/src/projects/components/ProjectForm"
 import updateProject from "@/src/projects/mutations/updateProject"
 import getProject from "@/src/projects/queries/getProject"
 import { ProjectLogoScrcsInputSchema, ProjectSchema } from "@/src/projects/schema"
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 
 const EditProjectWithQuery = () => {
   const router = useRouter()
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
   const [project, { setQueryData }] = useQuery(
     getProject,
-    { slug: projectSlug },
+    { projectSlug },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
     },
   )
   const [updateProjectMutation] = useMutation(updateProject)
-  const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug! })
+  const [users] = useQuery(getProjectUsers, { projectSlug })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -36,8 +37,8 @@ const EditProjectWithQuery = () => {
 
     try {
       const updated = await updateProjectMutation({
-        id: project.id,
         ...values,
+        projectSlug,
       })
       await setQueryData(updated)
       await router.push(Routes.ProjectDashboardPage({ projectSlug: updated.slug }))
@@ -66,7 +67,7 @@ const EditProjectWithQuery = () => {
 }
 
 const EditProjectPage: BlitzPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
 
   return (
     <LayoutRs>
@@ -76,9 +77,7 @@ const EditProjectPage: BlitzPage = () => {
 
       <hr className="my-5" />
       <p>
-        <Link href={Routes.ProjectDashboardPage({ projectSlug: projectSlug! })}>
-          Zurück zum Projekt
-        </Link>
+        <Link href={Routes.ProjectDashboardPage({ projectSlug })}>Zurück zum Projekt</Link>
       </p>
     </LayoutRs>
   )

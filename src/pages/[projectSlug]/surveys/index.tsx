@@ -2,7 +2,7 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import getSurveys from "@/src/surveys/queries/getSurveys"
 import { BlitzPage, Routes } from "@blitzjs/next"
@@ -12,7 +12,7 @@ import { Suspense } from "react"
 
 export const Surveys = () => {
   const router = useRouter()
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const [{ surveys }] = usePaginatedQuery(getSurveys, { projectSlug: projectSlug! })
 
   if (!surveys.length) {

@@ -1,5 +1,5 @@
 import { shortTitle } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
@@ -9,7 +9,7 @@ import router from "next/router"
 
 export const OperatorFilterDropdown: React.FC = () => {
   const params = useRouterQuery()
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
 
   if (!operators?.length) return null

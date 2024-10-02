@@ -17,8 +17,8 @@ export const TeamInviteDocumentation = () => {
               die einlädt, gespeichert. Alle erfahren, wer eingeladen hat.
             </li>
             <li>
-              Wenn eine neue Einladung erzeugt wird, bekommen alle Mitarbeiter dieses Projekts, die
-              Editor-Rechte haben, eine Hinweis-E-Mail dazu.
+              Wenn eine neue Einladung erzeugt wird, bekommen alle Mitarbeitende dieses Projekts,
+              die Editor-Rechte haben, eine Hinweis-E-Mail dazu.
             </li>
             <li>
               Die eingeladene Person bekommt eine E-Mail mit einem speziellen Link. Über diesen Link
@@ -26,7 +26,7 @@ export const TeamInviteDocumentation = () => {
               geändert werden, da sie fest mit der Einladung verbunden ist.
             </li>
             <li>
-              Wenn eine Einladung angenommen wurde, bekommen alle Mitarbeiter dieses Projekts, die
+              Wenn eine Einladung angenommen wurde, bekommen alle Mitarbeitende dieses Projekts, die
               Editor-Rechte haben, eine Hinweis-E-Mail dazu.
             </li>
             <li>

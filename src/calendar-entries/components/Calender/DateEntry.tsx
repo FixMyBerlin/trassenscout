@@ -1,8 +1,9 @@
 import { Disclosure } from "@/src/core/components/Disclosure"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Link, linkStyles } from "@/src/core/components/links"
+import { useProjectSlug } from "@/src/core/hooks"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import { Routes, useParam } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { ComputerDesktopIcon } from "@heroicons/react/24/outline"
 import { CalendarDaysIcon, MapPinIcon } from "@heroicons/react/24/solid"
@@ -16,7 +17,7 @@ type Props = {
 
 export const DateEntry: React.FC<Props> = ({ calendarEntry, withAction = true }) => {
   const locationDomain = calendarEntry.locationUrl && new URL(calendarEntry.locationUrl).hostname
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
 
   return (
     <Disclosure
@@ -87,22 +88,22 @@ export const DateEntry: React.FC<Props> = ({ calendarEntry, withAction = true })
           <IfUserCanEdit>
             <Link
               href={Routes.EditCalendarEntryPage({
-                projectSlug: projectSlug!,
+                projectSlug,
                 calendarEntryId: calendarEntry.id,
               })}
             >
               <PencilSquareIcon className="h-4 w-4" />
               <span className="sr-only">Bearbeiten</span>
             </Link>
+            <Link
+              href={Routes.ShowCalendarEntryPage({
+                projectSlug,
+                calendarEntryId: calendarEntry.id,
+              })}
+            >
+              <TrashIcon className="h-4 w-4" />
+            </Link>
           </IfUserCanEdit>
-          <Link
-            href={Routes.ShowCalendarEntryPage({
-              projectSlug: projectSlug!,
-              calendarEntryId: calendarEntry.id,
-            })}
-          >
-            <TrashIcon className="h-4 w-4" />
-          </Link>
         </p>
       )}
     </Disclosure>

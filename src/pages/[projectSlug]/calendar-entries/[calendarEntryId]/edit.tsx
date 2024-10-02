@@ -12,6 +12,7 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
@@ -22,10 +23,10 @@ import { z } from "zod"
 const EditCalendarEntry = () => {
   const router = useRouter()
   const calendarEntryId = useParam("calendarEntryId", "number")
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
   const [calendarEntry, { setQueryData }] = useQuery(
     getCalendarEntry,
-    { id: calendarEntryId },
+    { projectSlug, id: calendarEntryId },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
@@ -39,6 +40,7 @@ const EditCalendarEntry = () => {
       const transformedValues = transformValuesWithStartAt(values)
       const updated = await updateCalendarEntryMutation({
         ...transformedValues,
+        projectSlug,
         id: calendarEntry.id,
       })
       await setQueryData(updated)
@@ -84,7 +86,7 @@ const EditCalendarEntry = () => {
 }
 
 const EditCalendarEntryPage: BlitzPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
 
   return (
     <LayoutRs>

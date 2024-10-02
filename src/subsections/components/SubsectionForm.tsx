@@ -9,7 +9,7 @@ import {
 import { LabeledFormatNumberFieldCalculateLength } from "@/src/core/components/forms/LabeledFormatNumberFieldCalculateLength"
 import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
 import { quote, shortTitle } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
 import getNetworkHierarchysWithCount from "@/src/networkHierarchy/queries/getNetworkHierarchysWithCount"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
@@ -32,7 +32,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
   isFeltFieldsReadOnly,
   ...props
 }: Props<S>) {
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug!, role: "EDITOR" })
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const [{ networkHierarchys }] = useQuery(getNetworkHierarchysWithCount, { projectSlug })

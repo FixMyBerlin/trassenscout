@@ -4,9 +4,10 @@ import {
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { linkStyles } from "@/src/core/components/links"
+import { useProjectSlug } from "@/src/core/hooks"
 import { Prettify } from "@/src/core/types"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
-import { TResponse } from "@/src/survey-public/components/types"
+import { TResponse, TSingleOrMultiResponseProps } from "@/src/survey-public/components/types"
 import { backendConfig as defaultBackendConfig } from "@/src/survey-public/utils/backend-config-defaults"
 import {
   getBackendConfigBySurveySlug,
@@ -22,10 +23,11 @@ import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/outline"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
 import { clsx } from "clsx"
-import { useRouter } from "next/router"
 import { PropsWithoutRef, useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { z } from "zod"
+import { useDefaultFilterValues } from "./useDefaultFilterValues"
+import { useFilters } from "./useFilters.nuqs"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -33,7 +35,7 @@ type FormProps<S extends z.ZodType<any, any>> = Omit<
 > & {
   schema?: S
   operators: Prettify<Awaited<ReturnType<typeof getOperatorsWithCount>>["operators"]>
-  topics: Prettify<
+  topicsDefinition: Prettify<
     Awaited<ReturnType<typeof getSurveyResponseTopicsByProject>>["surveyResponseTopics"]
   >
 }
@@ -41,115 +43,71 @@ type FormProps<S extends z.ZodType<any, any>> = Omit<
 export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>({
   schema,
   operators,
-  topics,
+  topicsDefinition,
 }: FormProps<S>) {
-  const router = useRouter()
-  const {
-    operator: queryOperator,
-    statuses: queryStatuses,
-    topics: queryTopics,
-    hasnotes: queryHasnotes,
-    haslocation: queryHaslocation,
-    categories: queryCategories,
-    searchterm: querySearchTerm,
-    additionalFilters: queryAdditionalFilters,
-  } = router.query
-
   const surveyId = useParam("surveyId", "string")
-  const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
+  const projectSlug = useProjectSlug()
+  const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
+
+  const filterDefault = useDefaultFilterValues()
 
   const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
   const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
 
   const feedbackQuestions = []
-
   for (let page of feedbackDefinition.pages) {
     feedbackQuestions.push(...page.questions)
   }
-
-  const feedbackQuestion = feedbackQuestions.find(
+  const categoryQuestionProps = feedbackQuestions.find(
     (q) => q.id === evaluationRefs["feedback-category"],
-  )
-  const searchActive =
-    queryOperator &&
-    queryStatuses &&
-    queryTopics &&
-    queryHasnotes &&
-    queryHaslocation &&
-    queryCategories &&
-    querySearchTerm !== undefined
+  )!.props as TSingleOrMultiResponseProps
 
+  // backend configurations: status
   const backendConfig = getBackendConfigBySurveySlug(survey.slug)
   const surveyResponseStatus = backendConfig.status
-  const labels = backendConfig.labels || defaultBackendConfig.labels
 
-  if (!searchActive) {
-    void router.push(
-      {
-        query: {
-          ...router.query,
-          operator: "ALL", // default: radio "ALL"
-          statuses: [...surveyResponseStatus.map((s) => s.value)], // default: all checked
-          topics: [...topics.map((t) => String(t.id)), "0"], // default: all checked
-          hasnotes: "ALL", // default: radio "ALL"
-          haslocation: "ALL", // default: radio "ALL"
-          //@ts-expect-error
-          categories: [...feedbackQuestion?.props?.responses.map((r: TResponse) => String(r.id))], // default: all checked
-          searchterm: "",
-        },
-      },
-      undefined,
-      { scroll: false },
-    )
-  }
+  const [{ status, operator, hasnotes, haslocation, categories, topics, searchterm }, setFilter] =
+    useFilters()
 
   const methods = useForm<z.infer<S>>({
     mode: "onBlur",
     resolver: schema ? zodResolver(schema) : undefined,
     defaultValues: async () => ({
-      operator: searchActive ? queryOperator : "ALL", // default: radio "ALL"
-      statuses: searchActive ? queryStatuses : [...surveyResponseStatus.map((s) => s.value)], // default: all checked
-      topics: searchActive ? queryTopics : [...topics.map((t) => String(t.id)), "0"], // default: all checked
-      hasnotes: searchActive ? queryHasnotes : "ALL", // default: radio "ALL"
-      searchterm: searchActive ? querySearchTerm : "", // default: radio "ALL"
-      haslocation: searchActive ? queryHaslocation : "ALL", // default: radio "ALL"
-      categories: searchActive
-        ? queryCategories
-        : //@ts-expect-error
-          [...feedbackQuestion?.props?.responses.map((r: TResponse) => String(r.id))], // default: all checked
+      status,
+      operator,
+      hasnotes,
+      haslocation,
+      categories,
+      topics,
+      searchterm,
     }),
   })
 
   // to update the checked items in the checkbox list when we add a new topic in EditableSurveyResponseForm (with handleNewTopic()), we need to set the form values here
   useEffect(() => {
     // @ts-expect-error
-    methods.setValue("operator", router.query.operator)
-    // @ts-expect-error
-    methods.setValue("statuses", router.query.statuses)
-    // @ts-expect-error
-    methods.setValue("topics", router.query.topics)
-    // @ts-expect-error
-    methods.setValue("hasnotes", router.query.hasnotes)
-    // @ts-expect-error
-    methods.setValue("haslocation", router.query.haslocation)
-    // @ts-expect-error
-    methods.setValue("categories", router.query.categories)
-    // @ts-expect-error
-    methods.setValue("searchterm", router.query.searchterm)
-  }, [methods, router])
+    methods.setValue("topics", topics)
+  }, [methods, topics])
 
   const handleSubmit = async (values: any) => {
-    await router.push({ query: { ...router.query, ...values } }, undefined, { scroll: false })
+    await setFilter({
+      status: values.status,
+      operator: values.operator,
+      hasnotes: values.hasnotes,
+      haslocation: values.haslocation,
+      categories: values.categories,
+      topics: values.topics,
+      searchterm: values.searchterm,
+    })
   }
 
   const handleFilterReset = async () => {
     methods.reset()
-    await router.push(
-      { query: { projectSlug: router.query.projectSlug, surveyId: router.query.surveyId } },
-      undefined,
-      { scroll: false },
-    )
+    await setFilter({ ...filterDefault })
   }
+
+  // backend configurations: labels
+  const labels = backendConfig.labels || defaultBackendConfig.labels
 
   const operatorOptions = [
     { value: "ALL", label: "Alle" },
@@ -163,17 +121,16 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
       return { value, label }
     }),
   ]
-  const topicsOptions = topics.length
+  const topicsOptions = topicsDefinition.length
     ? [
-        ...topics.map((t) => {
+        ...topicsDefinition.map((t) => {
           return { value: String(t.id), label: t.title }
         }),
         { value: "0", label: `Ohne ${labels.topics?.sg || "Tag"}` },
       ]
     : []
 
-  // @ts-expect-error
-  const categoriesOptions = feedbackQuestion?.props?.responses.map((r: TResponse) => {
+  const categoriesOptions = categoryQuestionProps?.responses.map((r: TResponse) => {
     return { value: String(r.id), label: r.text.de }
   })
 
@@ -207,10 +164,10 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
           >
             <div className="mt-6 flex flex-col gap-12 sm:flex-row">
               <LabeledCheckboxGroup
-                label="Status"
+                label={labels.status?.sg || defaultBackendConfig.labels.status.sg}
                 classLabelOverwrite="font-semibold mb-3"
                 classNameItemWrapper={clsx("flex-shrink-0")}
-                scope={"statuses"}
+                scope={"status"}
                 items={statusOptions}
               />
               <LabeledRadiobuttonGroup

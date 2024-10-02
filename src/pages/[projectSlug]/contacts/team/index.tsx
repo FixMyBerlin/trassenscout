@@ -5,7 +5,7 @@ import { Tabs } from "@/src/core/components/Tabs/Tabs"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { useUserCan } from "@/src/memberships/hooks/useUserCan"
@@ -13,8 +13,7 @@ import { BlitzPage, Routes } from "@blitzjs/next"
 import { Suspense } from "react"
 
 export const TeamWithQuery = () => {
-  const { projectSlug } = useSlugs()
-
+  const projectSlug = useProjectSlug()
   const showInvitesTab = useUserCan().edit
   const tabs = [
     { name: "Externe Kontakte", href: Routes.ContactsPage({ projectSlug: projectSlug! }) },
@@ -31,7 +30,7 @@ export const TeamWithQuery = () => {
       <TeamTable />
 
       <IfUserCanEdit>
-        <ButtonWrapper className="mt-6 justify-end">
+        <ButtonWrapper className="mt-6">
           <Link
             button="blue"
             icon="plus"
@@ -57,7 +56,7 @@ const ProjectTeamPage: BlitzPage = () => {
       <MetaTags noindex title="Projektteam" />
       <PageHeader
         title="Projektteam"
-        description="Kontakt zu allen registrierten Mitglieder:innen des Projektes."
+        description="Kontakt zu allen registrierten Mitgliedern des Projektes."
         className="mt-12"
       />
 

@@ -11,7 +11,7 @@ import {
 import { LabeledFormatNumberField } from "@/src/core/components/forms/LabeledFormatNumberField"
 import { LabeledFormatNumberFieldCalculateLength } from "@/src/core/components/forms/LabeledFormatNumberFieldCalculateLength"
 import { quote, shortTitle } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
 import getQualityLevelsWithCount from "@/src/qualityLevels/queries/getQualityLevelsWithCount"
 import getSubsubsectionInfrasWithCount from "@/src/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
@@ -29,7 +29,7 @@ import { LinkWithFormDirtyConfirm } from "./LinkWithFormDirtyConfirm"
 export { FORM_ERROR } from "@/src/core/components/forms"
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const [users] = useQuery(getProjectUsers, { projectSlug: projectSlug!, role: "EDITOR" })
 
   const [{ qualityLevels }] = useQuery(getQualityLevelsWithCount, { projectSlug })

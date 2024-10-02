@@ -9,15 +9,16 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 
 const NewCalendarEntry = () => {
   const router = useRouter()
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
   const [createCalendarEntryMutation] = useMutation(createCalendarEntry)
 
   type HandleSubmit = any // TODO
@@ -55,7 +56,7 @@ const NewCalendarEntry = () => {
 }
 
 const NewCalendarEntryPage: BlitzPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
 
   return (
     <LayoutRs>

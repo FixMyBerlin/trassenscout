@@ -18,10 +18,11 @@ export interface LabeledCheckboxProps extends PropsWithoutRef<JSX.IntrinsicEleme
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
   readonly?: boolean
+  disabled?: boolean
 }
 
 export const LabeledCheckbox = forwardRef<HTMLInputElement, LabeledCheckboxProps>(
-  ({ scope, value, label, help, outerProps, labelProps, readonly, ...props }, _ref) => {
+  ({ scope, value, label, help, outerProps, labelProps, readonly, disabled, ...props }, _ref) => {
     const {
       register,
       formState: { isSubmitting, errors },
@@ -38,7 +39,8 @@ export const LabeledCheckbox = forwardRef<HTMLInputElement, LabeledCheckboxProps
         <div className="flex h-5 items-center">
           <input
             type="checkbox"
-            disabled={isSubmitting || readonly}
+            disabled={disabled || isSubmitting}
+            readOnly={readonly}
             value={value}
             {...register(scope)}
             id={key}
@@ -46,22 +48,21 @@ export const LabeledCheckbox = forwardRef<HTMLInputElement, LabeledCheckboxProps
             className={clsx(
               "h-4 w-4 rounded",
               hasError
-                ? "border-red-800 shadow-sm shadow-red-200 focus:ring-red-800"
-                : readonly
-                  ? "text-red-500bg-gray-50 border-gray-300"
+                ? "border-red-800 text-red-500 shadow-sm shadow-red-200 focus:ring-red-800"
+                : readonly || disabled
+                  ? "border-gray-200 bg-gray-100 checked:bg-gray-500"
                   : "border-gray-300 text-blue-600 focus:ring-blue-500",
             )}
-            readOnly={readonly}
           />
         </div>
         <label
           {...labelProps}
           htmlFor={key}
           className={clsx(
-            "ml-3 block text-sm font-medium",
-            readonly
+            "ml-3 block whitespace-nowrap text-sm font-medium",
+            readonly || disabled
               ? "text-gray-400"
-              : "cursor-pointer whitespace-nowrap text-gray-700 hover:text-gray-800",
+              : "cursor-pointer text-gray-700 hover:text-gray-900",
           )}
         >
           {label}

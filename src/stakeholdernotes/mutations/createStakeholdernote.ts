@@ -1,11 +1,14 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
-import getSubsectionProjectId from "@/src/subsections/queries/getSubsectionProjectId"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { StakeholdernoteSchema } from "../schema"
 
 export default resolver.pipe(
   resolver.zod(StakeholdernoteSchema),
-  authorizeProjectAdmin(getSubsectionProjectId),
-  async (input) => await db.stakeholdernote.create({ data: input }),
+  authorizeProjectMember(extractProjectSlug, editorRoles),
+  async (input) => {
+    return await db.stakeholdernote.create({ data: input })
+  },
 )

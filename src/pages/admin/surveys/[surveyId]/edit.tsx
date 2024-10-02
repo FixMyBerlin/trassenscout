@@ -1,5 +1,6 @@
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Spinner } from "@/src/core/components/Spinner"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 import { FORM_ERROR, SurveyForm } from "@/src/surveys/components/SurveyForm"
 import updateSurvey from "@/src/surveys/mutations/updateSurvey"
@@ -12,9 +13,10 @@ import { Suspense } from "react"
 const AdminEditSurvey = () => {
   const router = useRouter()
   const surveyId = useParam("surveyId", "number")
+  const projectSlug = useProjectSlug()
   const [survey, { setQueryData }] = useQuery(
     getSurvey,
-    { id: surveyId },
+    { projectSlug, id: surveyId },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,

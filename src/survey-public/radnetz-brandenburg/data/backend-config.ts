@@ -34,13 +34,35 @@ export const backendConfig: TBackendConfig = {
   ],
   labels: {
     note: {
-      sg: "Notiz",
-      help: "Bitte starten Sie immer mit ihrem Namen oder Kürzel.",
+      sg: "Rückmeldung an Beteiligte",
+      help: "Bitte geben Sie hier die Rückmeldung ein, die Sie an die Beteiligten (Verfasser:in des Hinweises) senden möchten.",
     },
-    status: { sg: "Status" },
+    status: { sg: "Status (Ramboll)" },
     operator: { sg: "Baulastträger" },
     topics: { sg: "Tag", pl: "Tags" },
     category: { sg: "Kategorie" },
     location: { sg: "Ortsangabe" },
   },
+  additionalFilters: [
+    {
+      label: "Institution",
+      id: 5,
+      value: "institution",
+    },
+    {
+      label: "Landkreis",
+      id: 6,
+      value: "landkreis",
+    },
+    {
+      label: "Verbindung ID",
+      id: 20,
+      value: "verbindungId",
+    },
+    {
+      label: "Verbindung (Von - Bis)",
+      id: 30,
+      value: "verbindungFromTo",
+    },
+  ],
 }

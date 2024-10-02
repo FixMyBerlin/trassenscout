@@ -3,7 +3,7 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link, linkStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitleSlug, shortTitle } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import getProject from "@/src/projects/queries/getProject"
 import { FORM_ERROR, SubsectionForm } from "@/src/subsections/components/SubsectionForm"
@@ -19,10 +19,11 @@ import { Suspense } from "react"
 
 const EditSubsection = () => {
   const router = useRouter()
-  const { projectSlug, subsectionSlug } = useSlugs()
-  const [project] = useQuery(getProject, { slug: projectSlug })
+  const { subsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
+  const [project] = useQuery(getProject, { projectSlug })
   const [subsection, { setQueryData }] = useQuery(getSubsection, {
-    projectSlug: projectSlug!,
+    projectSlug,
     subsectionSlug: subsectionSlug!,
   })
   const [updateSubsectionMutation] = useMutation(updateSubsection)
@@ -31,14 +32,15 @@ const EditSubsection = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateSubsectionMutation({
-        id: subsection.id,
         ...values,
+        id: subsection.id,
         slug: `pa${values.slug}`,
+        projectSlug,
       })
       await setQueryData(updated)
       await router.push(
         Routes.SubsectionDashboardPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           subsectionSlug: updated.slug,
         }),
       )
@@ -50,10 +52,10 @@ const EditSubsection = () => {
   const [deleteSubsectionMutation] = useMutation(deleteSubsection)
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${subsection.id} unwiderruflich löschen?`)) {
-      await deleteSubsectionMutation({ id: subsection.id })
+      await deleteSubsectionMutation({ projectSlug, id: subsection.id })
       await router.push(
         Routes.SubsectionDashboardPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           subsectionSlug: subsectionSlug!,
         }),
       )
@@ -86,7 +88,8 @@ const EditSubsection = () => {
 }
 
 const EditSubsectionPage: BlitzPage = () => {
-  const { projectSlug, subsectionSlug } = useSlugs()
+  const { subsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
 
   return (
     <LayoutRs>
@@ -98,7 +101,7 @@ const EditSubsectionPage: BlitzPage = () => {
       <p>
         <Link
           href={Routes.SubsectionDashboardPage({
-            projectSlug: projectSlug!,
+            projectSlug,
             subsectionSlug: subsectionSlug!,
           })}
         >

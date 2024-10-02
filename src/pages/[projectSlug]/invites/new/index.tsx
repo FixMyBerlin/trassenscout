@@ -4,7 +4,7 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoIndexTitle } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { TeamInviteForm } from "@/src/invites/components/TeamInviteForm"
 import createInvite from "@/src/invites/mutations/createInvite"
@@ -17,7 +17,7 @@ import { z } from "zod"
 
 const TeamInviteWithQuery = () => {
   const router = useRouter()
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const [createInviteMutation] = useMutation(createInvite)
 
   type HandleSubmit = z.infer<typeof InviteSchema>
@@ -38,7 +38,7 @@ const TeamInviteWithQuery = () => {
 }
 
 const NewProjectTeamInvitePage: BlitzPage = () => {
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
 
   return (
     <LayoutRs>

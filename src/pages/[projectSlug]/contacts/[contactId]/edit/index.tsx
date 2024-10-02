@@ -7,6 +7,7 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
@@ -16,10 +17,10 @@ import { Suspense } from "react"
 const EditContactWithQuery = () => {
   const router = useRouter()
   const contactId = useParam("contactId", "number")
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
   const [contact, { setQueryData }] = useQuery(
     getContact,
-    { id: contactId },
+    { projectSlug, id: contactId },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
@@ -55,7 +56,7 @@ const EditContactWithQuery = () => {
 }
 
 const EditContactPage: BlitzPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
 
   return (
     <LayoutRs>

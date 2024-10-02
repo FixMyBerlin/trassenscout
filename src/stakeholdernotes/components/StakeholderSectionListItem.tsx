@@ -1,7 +1,7 @@
 import { Disclosure } from "@/src/core/components/Disclosure"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Link } from "@/src/core/components/links"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { Stakeholdernote } from "@prisma/client"
@@ -13,7 +13,8 @@ type Props = {
 }
 
 export const StakeholderSectionListItem: React.FC<Props> = ({ stakeholderNote }) => {
-  const { projectSlug, subsectionSlug } = useSlugs()
+  const { subsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
 
   const router = useRouter()
   const handleOpen = () => {

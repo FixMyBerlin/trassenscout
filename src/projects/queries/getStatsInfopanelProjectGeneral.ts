@@ -1,9 +1,9 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import { viewerRoles } from "../../authorization/constants"
-import { extractSlug } from "../../authorization/extractSlug"
 import { GetProject } from "./getProject"
 
 export type ProjectWithDescription = {
@@ -12,18 +12,12 @@ export type ProjectWithDescription = {
 
 export default resolver.pipe(
   resolver.zod(GetProject),
-  authorizeProjectAdmin(extractSlug, viewerRoles),
-  async ({ slug }) => {
-    const query = {
-      where: {
-        slug: slug,
-      },
-      select: {
-        description: true,
-      },
-    }
-
-    const project = await db.project.findFirst(query)
+  authorizeProjectMember(extractProjectSlug, viewerRoles),
+  async ({ projectSlug }) => {
+    const project = await db.project.findFirst({
+      where: { slug: projectSlug },
+      select: { description: true },
+    })
 
     if (!project) throw new NotFoundError()
     return project as ProjectWithDescription

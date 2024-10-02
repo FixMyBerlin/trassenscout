@@ -11,21 +11,22 @@ import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageDescription } from "@/src/core/components/pages/PageDescription"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoTitleSlug, shortTitle } from "@/src/core/components/text"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { OperatorFilterDropdown } from "@/src/projects/components/OperatorFilterDropdown"
 import { ProjectInfoPanel } from "@/src/projects/components/ProjectInfoPanel"
 import getProject from "@/src/projects/queries/getProject"
 import { SubsectionTable } from "@/src/subsections/components/SubsectionTable"
 import getSubsections from "@/src/subsections/queries/getSubsections"
-import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
+import { BlitzPage, Routes, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 import { MapProvider } from "react-map-gl/maplibre"
 import { IfUserCanEdit } from "../../memberships/components/IfUserCan"
 
 export const ProjectDashboardWithQuery = () => {
-  const projectSlug = useParam("projectSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug })
+  const projectSlug = useProjectSlug()
+  const [project] = useQuery(getProject, { projectSlug })
   const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
   // We use the URL param `operator` to filter the UI
   // Docs: https://blitzjs.com/docs/route-params-query#use-router-query

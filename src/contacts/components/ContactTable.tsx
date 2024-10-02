@@ -2,7 +2,7 @@ import { Form, LabeledCheckbox } from "@/src/core/components/forms"
 import { Link, LinkMail, LinkTel, whiteButtonStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { shortTitle } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import getProject from "@/src/projects/queries/getProject"
 import { useCurrentUser } from "@/src/users/hooks/useCurrentUser"
@@ -23,10 +23,10 @@ type Props = {
 
 export const ContactTable: React.FC<Props> = ({ contacts }) => {
   const [mailButtonActive, setMailButtonActive] = useState(false)
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const router = useRouter()
   const user = useCurrentUser()
-  const [project] = useQuery(getProject, { slug: projectSlug })
+  const [project] = useQuery(getProject, { projectSlug })
 
   const handleSubmit = async ({ selectedContacts }: { selectedContacts: string[] | [] }) => {
     const selectedContactIds = selectedContacts.map(Number)

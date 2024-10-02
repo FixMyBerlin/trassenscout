@@ -1,9 +1,9 @@
 import db, { Prisma } from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 import { editorRoles } from "../../authorization/constants"
-import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 
 type GetInvitesInput = { projectSlug: string } & Pick<
   Prisma.InviteFindManyArgs,
@@ -12,7 +12,7 @@ type GetInvitesInput = { projectSlug: string } & Pick<
 
 export default resolver.pipe(
   // @ts-ignore
-  authorizeProjectAdmin(extractProjectSlug, editorRoles),
+  authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({
     projectSlug,
     where,

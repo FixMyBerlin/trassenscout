@@ -1,4 +1,4 @@
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import getProject from "@/src/projects/queries/getProject"
 import getSubsection from "@/src/subsections/queries/getSubsection"
 import { Routes } from "@blitzjs/next"
@@ -30,11 +30,12 @@ const BreadcrumbStep: React.FC<{ title: string; route?: RouteUrlObject; arrow: b
 }
 
 export const Breadcrumb: React.FC = () => {
-  const { projectSlug, subsectionSlug, subsubsectionSlug } = useSlugs()
+  const { subsectionSlug, subsubsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
 
   // Performance note: We use the same queries that are used on pages, so react query can cache them.
   // This should have better performance then crafting one big selected query just for here.
-  const [project] = useQuery(getProject, { slug: projectSlug! })
+  const [project] = useQuery(getProject, { projectSlug })
   const [subsection] = useQuery(
     getSubsection,
     {

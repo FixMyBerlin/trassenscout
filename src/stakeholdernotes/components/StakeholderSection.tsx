@@ -3,7 +3,7 @@ import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { quote } from "@/src/core/components/text"
 import { H2 } from "@/src/core/components/text/Headings"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
@@ -20,8 +20,9 @@ export const hashStakeholdernotes = "stakeholdernotes"
 
 export const StakeholderSection: React.FC<Props> = ({ subsectionId }) => {
   const params = useRouterQuery()
-  const { projectSlug, subsectionSlug } = useSlugs()
-  const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, { subsectionId })
+  const { subsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
+  const [{ stakeholdernotes }] = useQuery(getStakeholdernotes, { projectSlug, subsectionId })
 
   const filteredStakeholdernotes = params.stakeholderFilter
     ? stakeholdernotes.filter((s) => s.status === params.stakeholderFilter)

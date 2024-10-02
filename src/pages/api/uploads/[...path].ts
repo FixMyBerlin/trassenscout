@@ -1,3 +1,4 @@
+import db from "@/db"
 import { getConfig } from "@/src/core/lib/next-s3-upload/src/utils/config"
 import getUploadWithSubsections from "@/src/uploads/queries/getUploadWithSubsections"
 import {
@@ -14,11 +15,20 @@ import { ZodError } from "zod"
 
 export default async function downloadFile(req: NextApiRequest, res: NextApiResponse) {
   try {
+    const uploadId = Number(req.query.path![0])
+    const {
+      project: { slug: projectSlug },
+    } = await db.upload.findFirstOrThrow({
+      where: { id: uploadId },
+      select: { project: { select: { slug: true } } },
+    })
+    const session = await getSession(req, res)
     const upload = await getUploadWithSubsections(
-      { id: Number(req.query.path![0]) },
+      { projectSlug, id: uploadId },
       // @ts-ignore will work
-      { session: await getSession(req, res) },
+      { session },
     )
+    console.log("xxxx", uploadId, projectSlug, upload)
 
     const { hostname, pathname } = new URL(upload.externalUrl)
     const isAws = hostname.endsWith("amazonaws.com")

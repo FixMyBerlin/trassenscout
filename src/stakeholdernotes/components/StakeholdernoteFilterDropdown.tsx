@@ -1,4 +1,4 @@
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { PromiseReturnType } from "blitz"
 import router from "next/router"
@@ -9,7 +9,8 @@ type Props = Pick<PromiseReturnType<typeof getStakeholdernotes>, "stakeholdernot
 
 export const StakeholdernoteFilterDropdown: React.FC<Props> = ({ stakeholdernotes }) => {
   const params = useRouterQuery()
-  const { projectSlug, subsectionSlug } = useSlugs()
+  const { subsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
 
   const options = Object.entries(stakeholderNotesStatus).map(([key, label]) => {
     const count = stakeholdernotes.filter((s) => s.status === key).length

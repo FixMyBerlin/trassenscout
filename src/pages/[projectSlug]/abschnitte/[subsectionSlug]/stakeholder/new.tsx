@@ -2,7 +2,7 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { longTitle, seoNewTitle } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { hashStakeholdernotes } from "@/src/stakeholdernotes/components/StakeholderSection"
 import { FORM_ERROR } from "@/src/stakeholdernotes/components/StakeholdernoteForm"
@@ -19,7 +19,8 @@ const NewStakeholdernotesWithQuery = () => {
   const router = useRouter()
   const [createStakeholdernoteMutation] = useMutation(createStakeholdernote)
 
-  const { projectSlug, subsectionSlug } = useSlugs()
+  const { subsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const [subsection] = useQuery(getSubsection, {
     projectSlug: projectSlug!,
     subsectionSlug: subsectionSlug!,
@@ -73,7 +74,8 @@ const NewStakeholdernotesWithQuery = () => {
 }
 
 const NewStakeholdernotesPage: BlitzPage = () => {
-  const { projectSlug, subsectionSlug } = useSlugs()
+  const { subsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
 
   return (
     <LayoutRs>

@@ -22,7 +22,7 @@
     "migrate:compare": "git diff origin/main... -- db/migrations",
     "db:getDump": "db/remote/get-dump.sh",
     "db:getDump:staging": "USE_STAGING=1 db/remote/get-dump.sh",
-    "db:restoreDump": "npm run predev && db/remote/restore-dump.sh",
+    "db:restoreDump": "npm run predev && db/remote/restore-dump.sh && SEED_USER_ONLY=1 blitz db seed",
     "check": "npm run migrate:check && npm run type-check && npm run lint && npm run format-check && npm run test",
     "type-check": "tsc --noEmit",
     "lint": "eslint --fix --ignore-pattern \"src/core/templates/*\" --ignore-path .gitignore --ext .js,.ts,.tsx .",
@@ -43,6 +43,11 @@
   "prisma": {
     "schema": "db/schema.prisma"
   },
+  "browserslist": [
+    "defaults",
+    "last 2 IE major versions",
+    "last 4 Edge major versions"
+  ],
   "dependencies": {
     "@aws-sdk/client-s3": "3.651.1",
     "@aws-sdk/client-sts": "3.651.1",
@@ -73,6 +78,7 @@
     "maplibre-gl": "4.7.0",
     "next": "14.2.12",
     "node-mailjet": "6.0.6",
+    "nuqs": "1.19.3",
     "postcss": "8.4.47",
     "prisma": "5.19.1",
     "react": "18.3.1",
@@ -85,6 +91,7 @@
     "recharts": "2.12.7",
     "secure-password": "4.0.0",
     "tailwindcss": "3.4.12",
+    "ua-parser-js": "2.0.0-beta.3",
     "uuid": "10.0.0",
     "zod": "3.23.8",
     "zustand": "5.0.0-rc.2"

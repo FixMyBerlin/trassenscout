@@ -4,6 +4,7 @@ import { LabeledCheckbox, LabeledCheckboxProps } from "./LabeledCheckbox"
 type Props = {
   label?: string
   optional?: boolean
+  disabled?: boolean
   scope: string
   items: Omit<LabeledCheckboxProps, "scope">[]
   classLabelOverwrite?: string
@@ -13,6 +14,7 @@ type Props = {
 export const LabeledCheckboxGroup: React.FC<Props> = ({
   label,
   optional,
+  disabled,
   scope,
   items,
   classLabelOverwrite,
@@ -29,7 +31,7 @@ export const LabeledCheckboxGroup: React.FC<Props> = ({
       )}
       <div className={clsx(classNameItemWrapper, "flex flex-col gap-3")}>
         {itemsWithScope.map((item) => {
-          return <LabeledCheckbox key={item.value} {...item} />
+          return <LabeledCheckbox key={item.value} {...item} disabled={disabled} />
         })}
       </div>
     </div>

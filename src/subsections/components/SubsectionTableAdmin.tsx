@@ -2,7 +2,7 @@ import { SubsectionIcon } from "@/src/core/components/Map/Icons"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
 import { shortTitle } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { defaultGeometryForMultipleSubsectionForm } from "@/src/pages/admin/[projectSlug]/subsections/multiple-new"
 import { Routes } from "@blitzjs/next"
@@ -22,13 +22,13 @@ type Props = {
 
 export const SubsectionTableAdmin: React.FC<Props> = ({ subsections, updatedIds }) => {
   const [deleteSubsectionMutation] = useMutation(deleteSubsection)
-  const { projectSlug } = useSlugs()
   const handleSlugCopyClick = async (slug: string) => {
     await navigator.clipboard.writeText(slug)
   }
+  const projectSlug = useProjectSlug()
   const handleDeleteSubsection = async (subsectionId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${subsectionId} unwiderruflich löschen?`)) {
-      await deleteSubsectionMutation({ id: subsectionId })
+      await deleteSubsectionMutation({ projectSlug, id: subsectionId })
     }
   }
 

@@ -3,7 +3,7 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
 import { longTitle, shortTitle } from "@/src/core/components/text"
 import { startEnd } from "@/src/core/components/text/startEnd"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { StakeholderSummary } from "@/src/stakeholdernotes/components/StakeholderSummary"
 import { Routes } from "@blitzjs/next"
 import { clsx } from "clsx"
@@ -18,7 +18,8 @@ type Props = {
 
 export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = true }) => {
   const router = useRouter()
-  const { projectSlug, subsectionSlug } = useSlugs()
+  const { subsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
 
   return (
     <section>

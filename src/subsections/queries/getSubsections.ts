@@ -1,5 +1,5 @@
 import db, { Prisma } from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 import { viewerRoles } from "../../authorization/constants"
@@ -14,7 +14,7 @@ type GetSubsectionsInput = { projectSlug: string } & Pick<
 
 export default resolver.pipe(
   // @ts-ignore
-  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
+  authorizeProjectMember(extractProjectSlug, viewerRoles),
   async ({
     projectSlug,
     where,

@@ -1,15 +1,19 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import getSubsectionProjectId from "../queries/getSubsectionProjectId"
 
-const DeleteSubsectionSchema = z.object({
-  id: z.number(),
-})
+const DeleteSubsectionSchema = ProjectSlugRequiredSchema.merge(z.object({ id: z.number() }))
 
 export default resolver.pipe(
   resolver.zod(DeleteSubsectionSchema),
-  authorizeProjectAdmin(getSubsectionProjectId),
-  async ({ id }) => await db.subsection.deleteMany({ where: { id } }),
+  authorizeProjectMember(extractProjectSlug, editorRoles),
+  async ({ id }) => {
+    return await db.subsection.deleteMany({ where: { id } })
+  },
 )

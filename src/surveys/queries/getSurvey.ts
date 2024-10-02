@@ -1,5 +1,9 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
 import {
   allowedSurveySlugs,
   AllowedSurveySlugs,
@@ -8,16 +12,17 @@ import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import { z } from "zod"
 import { viewerRoles } from "../../authorization/constants"
-import getSurveyProjectId from "./getSurveyProjectId"
 
-const GetSurveySchema = z.object({
-  // This accepts type of undefined, but is required at runtime
-  id: z.number().optional().refine(Boolean, "Required"),
-})
+const GetSurveySchema = ProjectSlugRequiredSchema.merge(
+  z.object({
+    // This accepts type of undefined, but is required at runtime
+    id: z.number().optional().refine(Boolean, "Required"),
+  }),
+)
 
 export default resolver.pipe(
   resolver.zod(GetSurveySchema),
-  authorizeProjectAdmin(getSurveyProjectId, viewerRoles),
+  authorizeProjectMember(extractProjectSlug, viewerRoles),
   async ({ id }) => {
     const survey = await db.survey.findFirstOrThrow({
       where: { id },

@@ -6,11 +6,12 @@ import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { quote, shortTitle } from "@/src/core/components/text"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import deleteSubsubsectionSpecial from "@/src/subsubsectionSpecial/mutations/deleteSubsubsectionSpecial"
 import getSubsubsectionSpecialsWithCount from "@/src/subsubsectionSpecial/queries/getSubsubsectionSpecialsWithCount"
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import { clsx } from "clsx"
 import { useRouter } from "next/router"
@@ -19,7 +20,7 @@ import { Suspense } from "react"
 const ITEMS_PER_PAGE = 100
 
 export const SubsubsectionSpecialsWithData = () => {
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ subsubsectionSpecials, hasMore }] = usePaginatedQuery(
@@ -37,7 +38,7 @@ export const SubsubsectionSpecialsWithData = () => {
   const [deleteSubsubsectionSpecialMutation] = useMutation(deleteSubsubsectionSpecial)
   const handleDelete = async (subsubsectionSpecialId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${subsubsectionSpecialId} unwiderruflich löschen?`)) {
-      await deleteSubsubsectionSpecialMutation({ id: subsubsectionSpecialId })
+      await deleteSubsubsectionSpecialMutation({ projectSlug, id: subsubsectionSpecialId })
       await router.push(Routes.SubsubsectionSpecialsPage({ projectSlug: projectSlug! }))
     }
   }

@@ -34,7 +34,11 @@ const AdminNewProject = () => {
       // Create a membership for the selected user
       if (project.managerId) {
         try {
-          await createMembershipMutation({ projectId: project.id, userId: project.managerId })
+          await createMembershipMutation({
+            projectId: project.id,
+            userId: project.managerId,
+            role: "EDITOR",
+          })
         } catch (error: any) {
           console.error(error)
           return { [FORM_ERROR]: error }

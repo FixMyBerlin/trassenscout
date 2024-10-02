@@ -6,9 +6,10 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
@@ -18,7 +19,7 @@ const ITEMS_PER_PAGE = 100
 export const CalendarEntriesWithData = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
   const [{ calendarEntries, hasMore }] = usePaginatedQuery(getCalendarEntries, {
     projectSlug: projectSlug!,
     skip: ITEMS_PER_PAGE * page,

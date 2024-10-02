@@ -1,49 +1,32 @@
 import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
 import { getResponseConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"
-import { useRouter } from "next/router"
+import { useFilters } from "./useFilters.nuqs"
 
 export const useFilteredResponses = (
   responses: Awaited<ReturnType<typeof getFeedbackSurveyResponses>>,
   surveySlug: AllowedSurveySlugs,
 ) => {
-  const router = useRouter()
-  const { operator, statuses, topics, hasnotes, haslocation, categories, searchterm } = router.query
+  const [filter] = useFilters()
+
+  if (!filter) return responses
+
+  const { status, operator, hasnotes, haslocation, categories, topics, searchterm } = filter
 
   const { evaluationRefs } = getResponseConfigBySurveySlug(surveySlug)
 
-  if (!operator || !statuses || !topics || !hasnotes || !haslocation || searchterm === undefined)
-    return responses
-
-  // console.log({ operator })
-  // console.log({ statuses })
-  // console.log({ topics })
-  // console.log({ hasnotes })
-  // console.log({ haslocation })
-  // console.log({ categories })
-  // console.log({ searchterm })
-
   const filtered = responses
+    .filter((response) => {
+      return status.includes(response.status || "NEVER")
+    })
     // Handle `operator` which is the `operatorId: number` as 'string'
     .filter((response) => {
-      // "All" Case
       if (operator === "ALL") return response
       if (operator === "0") return response.operatorId === null
       if (typeof operator === "string") return response.operatorId === Number(operator)
-      // string[] with TS guard that will never trigger
-      return operator.map(Number).includes(response.operatorId || 999)
-    })
-    // Handle `statuses` which is the `status: string` as 'string[]'
-    .filter((response) => {
-      if (typeof statuses === "string") return response.status === statuses
-      // string[] with TS guard that will never trigger
-      return statuses.includes(response.status || "NEVER")
     })
     // Handle `topics` which is the `surveyResponseTopics: number[]` as 'string[]'
     .filter((response) => {
-      if (topics === "0") return response.surveyResponseTopics.length === 0
-      if (typeof topics === "string") return response.surveyResponseTopics.includes(Number(topics))
-      // string[]
       if (topics.includes("0"))
         return (
           topics.map(Number).some((topic) => response.surveyResponseTopics.includes(topic)) ||
@@ -77,7 +60,6 @@ export const useFilteredResponses = (
     .filter((response) => {
       if (!searchterm) return response
       return (
-        // @ts-expect-error - searchterm is a string
         response.note?.toLowerCase().includes(searchterm.trim().toLowerCase()) ||
         (response?.data &&
           // @ts-expect-error `data` is of type unkown
@@ -85,7 +67,6 @@ export const useFilteredResponses = (
           // @ts-expect-error `data` is of type unkown
           response?.data[evaluationRefs["feedback-usertext-1"]]
             .toLowerCase()
-            // @ts-expect-error - searchterm is a string
             .includes(searchterm.trim().toLowerCase())) ||
         (response?.data &&
           // @ts-expect-error `data` is of type unkown
@@ -93,7 +74,6 @@ export const useFilteredResponses = (
           // @ts-expect-error `data` is of type unkown
           response?.data[evaluationRefs["feedback-usertext-2"]]
             .toLowerCase()
-            // @ts-expect-error - searchterm is a string
             .includes(searchterm.trim().toLowerCase()))
       )
     })

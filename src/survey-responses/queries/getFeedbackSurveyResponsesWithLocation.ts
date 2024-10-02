@@ -1,5 +1,5 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
 import { getResponseConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import { resolver } from "@blitzjs/rpc"
@@ -11,7 +11,7 @@ type GetFeedbackSurveyResponsesWithLocationInput = { projectSlug: string; survey
 
 export default resolver.pipe(
   // @ts-ignore
-  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
+  authorizeProjectMember(extractProjectSlug, viewerRoles),
   async ({ projectSlug, surveyId }: GetFeedbackSurveyResponsesWithLocationInput) => {
     const rawSurveyResponse = await db.surveyResponse.findMany({
       where: {

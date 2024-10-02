@@ -1,6 +1,6 @@
 import db, { MembershipRoleEnum } from "@/db"
 import { selectUserFieldsForSession } from "@/src/auth/shared/selectUserFieldsForSession"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 import { viewerRoles } from "../../authorization/constants"
@@ -13,7 +13,7 @@ const Schema = z.object({
 
 export default resolver.pipe(
   resolver.zod(Schema),
-  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
+  authorizeProjectMember(extractProjectSlug, viewerRoles),
   async ({ projectSlug, role }) => {
     const whereRole = role ? { role } : {}
     const users = await db.user.findMany({

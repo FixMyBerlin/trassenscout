@@ -1,6 +1,8 @@
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { linkStyles } from "@/src/core/components/links"
+import { useProjectSlug } from "@/src/core/hooks"
 import { Prettify } from "@/src/core/types"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
 import { TMapProps } from "@/src/survey-public/components/types"
@@ -21,7 +23,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid"
 import { EnvelopeIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
-import { useRouter } from "next/router"
+import { parseAsInteger, useQueryState } from "nuqs"
 import { useEffect } from "react"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
@@ -48,12 +50,12 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   refetchResponsesAndTopics,
   showMap,
 }) => {
-  const router = useRouter()
   const params = useRouterQuery()
   const open = !isAccordion ? true : parseInt(String(params.responseDetails)) === response.id
   const surveyId = useParam("surveyId", "string")
-  const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
-
+  const projectSlug = useProjectSlug()
+  const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
+  const [responseDetails, setRespnseDetails] = useQueryState("responseDetails", parseAsInteger)
   const [deleteCalendarEntryMutation] = useMutation(deleteSurveyResponse)
 
   useEffect(() => {
@@ -65,12 +67,10 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   }, [survey.slug])
 
   const handleOpen = () => {
-    router.query.responseDetails = String(response.id)
-    void router.push({ query: router.query }, undefined, { scroll: false })
+    void setRespnseDetails(response.id)
   }
   const handleClose = () => {
-    delete router.query.responseDetails
-    void router.push({ query: router.query }, undefined, { scroll: false })
+    void setRespnseDetails(null)
   }
   const operatorSlugWitFallback = response.operator?.slug || "k.A."
 
@@ -168,10 +168,12 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             <span className="flex flex-row items-center gap-2">
               <EnvelopeIcon className="h-4 w-4" />
               <span>per {getTranslatedSource(response.source)} eingegangen </span>
-              <span>| </span>
-              <button onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
-                Eintrag löschen
-              </button>
+              <IfUserCanEdit>
+                <span>| </span>
+                <button onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
+                  Eintrag löschen
+                </button>
+              </IfUserCanEdit>
             </span>
           )}
           <div className="mb-10 flex flex-col justify-between gap-12 md:flex-row">
@@ -196,10 +198,12 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
           <EditableSurveyResponseForm
             showMap={showMap}
             initialValues={{
-              ...response,
               // Mapping to string is required so the ReactHookForm and our Radiobutton can compare the data to find what is selected
               surveyResponseTopics: response.surveyResponseTopics.map(String),
               operatorId: response.operatorId === null ? "0" : String(response.operatorId),
+              // we can not call this "status"; the scopes of this form have to be different from the other form (filter form)! Otherwise this messes with our filter form and url state.
+              responseStatus: response.status,
+              note: response.note,
             }}
             userLocationQuestionId={evaluationRefs["feedback-location"]}
             response={response}

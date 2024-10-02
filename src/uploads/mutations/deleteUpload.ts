@@ -1,19 +1,21 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
 import { getConfig } from "@/src/core/lib/next-s3-upload/src/utils/config"
 import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import { z } from "zod"
-import getUploadProjectId from "../queries/getUploadProjectId"
 
-const DeleteUploadSchema = z.object({
-  id: z.number(),
-})
+const DeleteUploadSchema = ProjectSlugRequiredSchema.merge(z.object({ id: z.number() }))
 
 export default resolver.pipe(
   resolver.zod(DeleteUploadSchema),
-  authorizeProjectAdmin(getUploadProjectId),
+  authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id }) => {
     const upload = await db.upload.findFirstOrThrow({ where: { id } })
     const { hostname, pathname } = new URL(upload.externalUrl)
@@ -33,5 +35,7 @@ export default resolver.pipe(
 
     return { id }
   },
-  async ({ id }) => await db.upload.deleteMany({ where: { id } }),
+  async ({ id }) => {
+    return await db.upload.deleteMany({ where: { id } })
+  },
 )

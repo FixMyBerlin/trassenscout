@@ -3,6 +3,7 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Link, whiteButtonStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { UploadTable } from "@/src/uploads/components/UploadTable"
@@ -16,9 +17,9 @@ import { Suspense } from "react"
 
 export const Upload = () => {
   const router = useRouter()
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
   const uploadId = useParam("uploadId", "number")
-  const [upload] = useQuery(getUploadWithSubsections, { id: uploadId })
+  const [upload] = useQuery(getUploadWithSubsections, { projectSlug, id: uploadId })
   const params: { returnPath?: string } = useRouterQuery()
   const { subsectionSlug, subsubsectionSlug } = splitReturnTo(params)
   let backUrl = Routes.UploadsPage({ projectSlug: projectSlug! })
@@ -33,7 +34,7 @@ export const Upload = () => {
   const [deleteUploadMutation] = useMutation(deleteUpload)
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${upload.id} unwiderruflich löschen?`)) {
-      await deleteUploadMutation({ id: upload.id })
+      await deleteUploadMutation({ projectSlug, id: upload.id })
       await router.push(backUrl)
     }
   }

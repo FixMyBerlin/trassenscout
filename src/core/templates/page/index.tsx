@@ -9,9 +9,11 @@ if (process.env.parentModel) {
   import { usePaginatedQuery } from "@blitzjs/rpc"
   import { useParam } from "@blitzjs/next"
   import { useRouter } from "next/router"
+  import { useProjectSlug } from "@/src/core/hooks"
 } else {
   import { usePaginatedQuery } from "@blitzjs/rpc"
   import { useRouter } from "next/router"
+  import { useProjectSlug } from "@/src/core/hooks"
 }
 
 const ITEMS_PER_PAGE = 100

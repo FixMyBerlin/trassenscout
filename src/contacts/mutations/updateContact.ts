@@ -1,8 +1,9 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import getContactProjectId from "../queries/getContactProjectId"
 import { ContactSchema } from "../schema"
 
 const UpdateContactSchema = ContactSchema.merge(
@@ -13,10 +14,11 @@ const UpdateContactSchema = ContactSchema.merge(
 
 export default resolver.pipe(
   resolver.zod(UpdateContactSchema),
-  authorizeProjectAdmin(getContactProjectId),
-  async ({ id, ...data }) =>
-    await db.contact.update({
+  authorizeProjectMember(extractProjectSlug, editorRoles),
+  async ({ id, ...data }) => {
+    return await db.contact.update({
       where: { id },
       data,
-    }),
+    })
+  },
 )

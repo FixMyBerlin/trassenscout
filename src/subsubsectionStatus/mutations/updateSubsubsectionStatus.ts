@@ -1,8 +1,9 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import getQualityLevelProjectId from "../queries/getSubsubsectionStatusProjectId"
 import { SubsubsectionStatus } from "../schema"
 
 const UpdateSubsubsectionStatusSchema = SubsubsectionStatus.merge(
@@ -13,7 +14,7 @@ const UpdateSubsubsectionStatusSchema = SubsubsectionStatus.merge(
 
 export default resolver.pipe(
   resolver.zod(UpdateSubsubsectionStatusSchema),
-  authorizeProjectAdmin(getQualityLevelProjectId),
+  authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id, ...data }) =>
     await db.subsubsectionStatus.update({
       where: { id },

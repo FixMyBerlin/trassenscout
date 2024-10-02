@@ -1,24 +1,25 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
+import { getProjectIdBySlug } from "@/src/projects/queries/getProjectIdBySlug"
 import { resolver } from "@blitzjs/rpc"
-import { z } from "zod"
-import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 import { ContactSchema } from "../schema"
 
-const CreateContactSchema = ContactSchema.merge(
-  z.object({
-    projectSlug: z.string(),
-  }),
-)
+const CreateContactSchema = ProjectSlugRequiredSchema.merge(ContactSchema)
 
 export default resolver.pipe(
   resolver.zod(CreateContactSchema),
-  authorizeProjectAdmin(getProjectIdBySlug),
-  async ({ projectSlug, ...input }) =>
-    await db.contact.create({
+  authorizeProjectMember(extractProjectSlug, editorRoles),
+  async ({ projectSlug, ...input }) => {
+    return await db.contact.create({
       data: {
-        projectId: (await getProjectIdBySlug(projectSlug))!,
+        projectId: await getProjectIdBySlug(projectSlug),
         ...input,
       },
-    }),
+    })
+  },
 )

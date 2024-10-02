@@ -23,5 +23,7 @@ namespace NodeJS {
     MAILJET_APIKEY_PUBLIC: string
     MAILJET_APIKEY_PRIVATE: string
     NEXT_PUBLIC_APP_ENV: "development" | "staging" | "production"
+
+    NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE: "START" | "SURVEY" | "MORE" | "FEEDBACK" | "EMAIL"
   }
 }

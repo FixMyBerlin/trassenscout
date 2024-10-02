@@ -1,5 +1,5 @@
 import db, { Subsubsection } from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import { z } from "zod"
@@ -31,7 +31,7 @@ type ProjectSubsectionsWithCostStructure = {
 
 export default resolver.pipe(
   resolver.zod(GetSubsectionsSchema),
-  authorizeProjectAdmin(extractProjectSlug, viewerRoles),
+  authorizeProjectMember(extractProjectSlug, viewerRoles),
   async ({ projectSlug }) => {
     const query = {
       where: {

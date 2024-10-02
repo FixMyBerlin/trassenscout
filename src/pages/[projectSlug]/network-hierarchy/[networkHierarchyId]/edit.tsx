@@ -4,6 +4,7 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import {
   FORM_ERROR,
@@ -20,11 +21,11 @@ import { Suspense } from "react"
 const EditNetworkHierarchyWithQuery = () => {
   const router = useRouter()
   const networkHierarchyId = useParam("networkHierarchyId", "number")
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
 
   const [networkHierarchy, { setQueryData }] = useQuery(
     getNetworkHierarchy,
-    { id: networkHierarchyId },
+    { projectSlug, id: networkHierarchyId },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,

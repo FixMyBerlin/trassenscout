@@ -1,4 +1,5 @@
 import { Spinner } from "@/src/core/components/Spinner"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 import { TFeedbackQuestion, TQuestion } from "@/src/survey-public/components/types"
 import {
@@ -10,13 +11,12 @@ import getSurveySurveyResponses from "@/src/survey-responses/queries/getSurveySu
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/router"
 import { Suspense } from "react"
 
 export const SurveyResponsesList = () => {
-  const router = useRouter()
   const surveyId = useParam("surveyId", "number")
-  const [survey] = useQuery(getSurvey, { id: surveyId })
+  const projectSlug = useProjectSlug()
+  const [survey] = useQuery(getSurvey, { projectSlug, id: surveyId })
   const [surveyResponses] = useQuery(getSurveySurveyResponses, { surveyId })
   const [feedbackResponses] = useQuery(getFeedbackSurveyResponses, { surveyId })
 

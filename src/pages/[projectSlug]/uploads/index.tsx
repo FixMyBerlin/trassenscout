@@ -5,12 +5,13 @@ import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { shortTitle } from "@/src/core/components/text"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import getSubsections from "@/src/subsections/queries/getSubsections"
 import { UploadTable } from "@/src/uploads/components/UploadTable"
 import getUploads from "@/src/uploads/queries/getUploadsWithSubsections"
-import { BlitzPage, Routes, useParam, useRouterQuery } from "@blitzjs/next"
+import { BlitzPage, Routes, useRouterQuery } from "@blitzjs/next"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
@@ -18,7 +19,7 @@ import { Suspense } from "react"
 const ITEMS_PER_PAGE = 100
 
 export const UploadsWithData = () => {
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ uploads, hasMore }] = usePaginatedQuery(getUploads, {

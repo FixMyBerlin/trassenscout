@@ -23,11 +23,15 @@ export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElem
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
   optional?: boolean
+  disabled?: boolean
   inlineLeadingAddon?: string
 }
 
 export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
-  ({ name, label, help, outerProps, labelProps, optional, inlineLeadingAddon, ...props }, ref) => {
+  (
+    { name, label, help, outerProps, labelProps, optional, disabled, inlineLeadingAddon, ...props },
+    ref,
+  ) => {
     const {
       register,
       formState: { isSubmitting, errors },
@@ -60,19 +64,18 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
             </div>
           )}
           <input
-            disabled={isSubmitting}
+            disabled={disabled || isSubmitting}
             {...register(name)}
             id={name}
             {...props}
             className={clsx(
-              props.readOnly &&
-                "cursor-not-allowed bg-gray-50 text-gray-500 ring-gray-200 sm:text-sm sm:leading-6",
-              inlineLeadingAddon && "pl-12",
+              inlineLeadingAddon ? "pl-12" : "",
               "block w-full appearance-none rounded-md border px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none sm:text-sm",
-              "disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 disabled:ring-gray-200",
               hasError
                 ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
-                : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
+                : props.readOnly || disabled
+                  ? "bg-gray-50 text-gray-500 ring-gray-200"
+                  : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
             )}
           />
         </div>

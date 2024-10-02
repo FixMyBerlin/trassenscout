@@ -17,13 +17,13 @@ const seedMemberships = async () => {
 
   const allMembershipsViewer: Memberships = projects.map(({ id }) => ({
     projectId: id,
-    userId: usersByEmail["all-projects-viewer@fixmycity.de"]!.id,
+    userId: usersByEmail["all-projects-viewer@fixmycity.test"]!.id,
     role: "VIEWER",
   }))
 
   const allMembershipsEditor: Memberships = projects.map(({ id }) => ({
     projectId: id,
-    userId: usersByEmail["all-projects-editor@fixmycity.de"]!.id,
+    userId: usersByEmail["all-projects-editor@fixmycity.test"]!.id,
     role: "EDITOR",
   }))
 

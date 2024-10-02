@@ -1,14 +1,20 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
-import getSubsectionProjectId from "@/src/subsections/queries/getSubsectionProjectId"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { m2mFields, M2MFieldsType } from "../m2mFields"
 import { SubsubsectionSchema } from "../schema"
 
+const CreateSubsubsectionSchema = ProjectSlugRequiredSchema.merge(SubsubsectionSchema)
+
 export default resolver.pipe(
-  resolver.zod(SubsubsectionSchema),
-  authorizeProjectAdmin(getSubsectionProjectId),
-  async (data) => {
+  resolver.zod(CreateSubsubsectionSchema),
+  authorizeProjectMember(extractProjectSlug, editorRoles),
+  async ({ projectSlug, ...data }) => {
     const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
     m2mFields.forEach((fieldName) => {
       connect[fieldName] = { connect: data[fieldName] ? data[fieldName].map((id) => ({ id })) : [] }

@@ -2,9 +2,10 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
+import { useProjectSlug } from "@/src/core/hooks"
 import { Prettify } from "@/src/core/types"
 import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import { Routes, useParam } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 import { PaperClipIcon } from "@heroicons/react/20/solid"
 import { PromiseReturnType } from "blitz"
 import getUploadsWithSubsections from "../queries/getUploadsWithSubsections"
@@ -17,7 +18,7 @@ type Props = Prettify<
 >
 
 export const UploadTable: React.FC<Props> = ({ uploads, withAction = true }) => {
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
 
   if (!uploads.length) {
     return <ZeroCase visible={uploads.length} name="Dokumente" />

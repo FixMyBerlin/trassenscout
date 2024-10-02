@@ -2,7 +2,7 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { H2 } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
 import getSubsections from "@/src/subsections/queries/getSubsections"
@@ -11,6 +11,7 @@ import { EditableSurveyResponseFilterForm } from "@/src/survey-responses/compone
 import EditableSurveyResponseListItem from "@/src/survey-responses/components/feedback/EditableSurveyResponseListItem"
 import { ExternalSurveyResponseFormModal } from "@/src/survey-responses/components/feedback/ExternalSurveyResponseFormModal"
 import { useFilteredResponses } from "@/src/survey-responses/components/feedback/useFilteredResponses"
+
 import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"
 import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
@@ -19,10 +20,11 @@ import { useQuery } from "@blitzjs/rpc"
 import { Suspense, useEffect, useRef } from "react"
 
 export const SurveyResponse = () => {
-  const { projectSlug, subsectionSlug } = useSlugs()
+  const { subsectionSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "number")
 
-  const [survey] = useQuery(getSurvey, { id: surveyId })
+  const [survey] = useQuery(getSurvey, { projectSlug, id: surveyId })
   const [feedbackSurveyResponses, { refetch: refetchResponses }] = useQuery(
     getFeedbackSurveyResponses,
     { projectSlug, surveyId: survey.id },
@@ -64,11 +66,11 @@ export const SurveyResponse = () => {
       <PageHeader title={survey.title} className="mt-12" description={<SurveyTabs />} />
 
       <div className="mt-12 space-y-4">
-        <H2>Beiträge aus Bürgerbeteiligung </H2>
+        <H2>Beiträge aus Bürger:innenbeteiligung</H2>
 
         <ExternalSurveyResponseFormModal refetch={refetchResponses} />
 
-        <EditableSurveyResponseFilterForm operators={operators} topics={topics} />
+        <EditableSurveyResponseFilterForm operators={operators} topicsDefinition={topics} />
 
         <ZeroCase visible={filteredResponses.length} name={"Beiträge"} />
         {filteredResponses.length === 1 ? (

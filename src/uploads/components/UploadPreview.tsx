@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { Link } from "@/src/core/components/links"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
 import { useUserCan } from "@/src/memberships/hooks/useUserCan"
 import { DocumentIcon } from "@heroicons/react/24/outline"
 import { Upload } from "@prisma/client"
@@ -54,26 +55,28 @@ export const UploadPreview = ({ upload, editUrl, showUploadUrl, description = tr
           </p>
         )}
       </Link>
-      <div className="absolute -bottom-2 right-0">
-        {editUrl && (
-          <Link
-            icon="edit"
-            href={editUrl}
-            className="rounded border border-transparent hover:border-blue-900"
-          >
-            <span className="sr-only">Grafik bearbeiten</span>
-          </Link>
-        )}
-        {showUploadUrl && (
-          <Link
-            icon="delete"
-            className="rounded border border-transparent hover:border-blue-900"
-            href={showUploadUrl}
-          >
-            <span className="sr-only">Grafik löschen</span>
-          </Link>
-        )}
-      </div>
+      <IfUserCanEdit>
+        <div className="absolute -bottom-2 right-0">
+          {editUrl && (
+            <Link
+              icon="edit"
+              href={editUrl}
+              className="rounded border border-transparent hover:border-blue-900"
+            >
+              <span className="sr-only">Grafik bearbeiten</span>
+            </Link>
+          )}
+          {showUploadUrl && (
+            <Link
+              icon="delete"
+              className="rounded border border-transparent hover:border-blue-900"
+              href={showUploadUrl}
+            >
+              <span className="sr-only">Grafik löschen</span>
+            </Link>
+          )}
+        </div>
+      </IfUserCanEdit>
     </div>
   )
 }

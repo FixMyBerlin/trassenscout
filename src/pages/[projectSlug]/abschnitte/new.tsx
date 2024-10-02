@@ -3,21 +3,21 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import getProject from "@/src/projects/queries/getProject"
 import { FORM_ERROR, SubsectionForm } from "@/src/subsections/components/SubsectionForm"
 import createSubsection from "@/src/subsections/mutations/createSubsection"
 import { SubsectionSchema } from "@/src/subsections/schema"
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 
 const NewSubsection = () => {
   const router = useRouter()
-  const { projectSlug } = useSlugs()
-  const [project] = useQuery(getProject, { slug: projectSlug! })
+  const projectSlug = useProjectSlug()
+  const [project] = useQuery(getProject, { projectSlug })
   const [createSubsectionMutation] = useMutation(createSubsection)
 
   type HandleSubmit = any // TODO
@@ -26,11 +26,12 @@ const NewSubsection = () => {
       const subsection = await createSubsectionMutation({
         ...values,
         slug: `pa${values.slug}`,
-        projectId: project.id!,
+        projectId: project.id,
+        projectSlug,
       })
       await router.push(
         Routes.SubsectionDashboardPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           subsectionSlug: subsection.slug,
         }),
       )
@@ -56,7 +57,7 @@ const NewSubsection = () => {
 }
 
 const NewSubsectionPage: BlitzPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
 
   return (
     <LayoutRs>
@@ -66,13 +67,7 @@ const NewSubsectionPage: BlitzPage = () => {
 
       <hr className="my-5" />
       <p>
-        <Link
-          href={Routes.ProjectDashboardPage({
-            projectSlug: projectSlug!,
-          })}
-        >
-          Zurück Übersicht
-        </Link>
+        <Link href={Routes.ProjectDashboardPage({ projectSlug })}>Zurück Übersicht</Link>
       </p>
     </LayoutRs>
   )

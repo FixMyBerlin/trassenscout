@@ -5,6 +5,7 @@ import {
   LabeledTextareaField,
 } from "@/src/core/components/forms"
 import { H2 } from "@/src/core/components/text"
+import { useProjectSlug } from "@/src/core/hooks"
 import { TMapProps, TResponse, TResponseConfig } from "@/src/survey-public/components/types"
 import { getSurveyDefinitionBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getSurvey from "@/src/surveys/queries/getSurvey"
@@ -30,8 +31,9 @@ export const ExternalSurveyResponseForm: React.FC<Props> = ({
   evaluationRefs,
   handleSubmit,
 }) => {
+  const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "string")
-  const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
+  const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
 
   const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
 

@@ -1,20 +1,19 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
-import { z } from "zod"
-import getProjectIdBySlug from "../queries/getProjectIdBySlug"
 import { ProjectSchema } from "../schema"
 
-const UpdateProject = ProjectSchema.merge(
-  z.object({
-    id: z.number(),
-  }),
-)
+const UpdateProject = ProjectSlugRequiredSchema.merge(ProjectSchema)
 
 export default resolver.pipe(
   resolver.zod(UpdateProject),
-  authorizeProjectAdmin(getProjectIdBySlug),
-  async ({ id, ...data }) => {
-    return await db.project.update({ where: { id }, data })
+  authorizeProjectMember(extractProjectSlug, editorRoles),
+  async ({ projectSlug, ...data }) => {
+    return await db.project.update({ where: { slug: projectSlug }, data })
   },
 )

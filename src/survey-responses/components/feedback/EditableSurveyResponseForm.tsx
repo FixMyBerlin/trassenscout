@@ -5,7 +5,9 @@ import {
   LabeledTextareaField,
 } from "@/src/core/components/forms"
 import { Link, blueButtonStyles } from "@/src/core/components/links"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
+import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import { useUserCan } from "@/src/memberships/hooks/useUserCan"
 import {
   TBackendConfig,
   backendConfig as defaultBackendConfig,
@@ -19,7 +21,6 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
 import { clsx } from "clsx"
-import { useRouter } from "next/router"
 import { PropsWithoutRef, useState } from "react"
 import { FormProvider, UseFormProps, useForm } from "react-hook-form"
 import { LngLatBoundsLike } from "react-map-gl/maplibre"
@@ -27,6 +28,7 @@ import { z } from "zod"
 import updateSurveyResponse from "../../mutations/updateSurveyResponse"
 import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
 import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
+import { useFilters } from "./useFilters.nuqs"
 
 type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
@@ -58,16 +60,18 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   showMap,
   backendConfig,
 }: FormProps<S>) {
-  const router = useRouter()
+  const userCanEdit = useUserCan().edit
   const methods = useForm<z.infer<S>>({
     mode: "onBlur",
     resolver: schema ? zodResolver(schema) : undefined,
     defaultValues: initialValues,
   })
 
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "string")
-  const [survey] = useQuery(getSurvey, { id: Number(surveyId) })
+  const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
+
+  const [filter, setFilter] = useFilters()
 
   const [updateSurveyResponseMutation] = useMutation(updateSurveyResponse)
   const [surveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
@@ -93,10 +97,11 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   const handleSubmit = async (values: any) => {
     try {
       await updateSurveyResponseMutation({
+        projectSlug,
         id: response.id,
         source: response.source,
         // We specify what we want to store explicity so that `data` and such is exclued
-        status: values.status,
+        status: values.responseStatus,
         note: values.note,
         // Note: initialValues need to initialize `operatorId: 0`
         operatorId: values.operatorId === (0 || "0") ? null : Number(values.operatorId),
@@ -151,19 +156,8 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
       ])
       // the EditableSurveyResponseFilterForm needs to update when a new topic is added here
       // this hapens with a useEffect in EditableSurveyResponseFilterForm
-      if (router.query.topics)
-        await router.push(
-          {
-            query: {
-              ...router.query,
-              topics: [...(router.query.topics as string[]), String(createdOrFetched.id)],
-            },
-          },
-          undefined,
-          {
-            scroll: false,
-          },
-        )
+      if (filter?.topics)
+        await setFilter({ ...filter, topics: [...filter.topics, String(createdOrFetched.id)] })
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -182,11 +176,13 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                     {labels.status?.sg || defaultBackendConfig.labels.category.sg}
                   </h4>
                   <LabeledRadiobuttonGroup
-                    classNameItemWrapper={clsx("flex-shrink-0")}
-                    scope={"status"}
+                    classNameItemWrapper="flex-shrink-0"
+                    // the scope has to be different from the other form (filter form)! Otherwise this messes with our filter form and url state.
+                    scope="responseStatus"
                     items={surveyResponseStatus.map(({ value, label }) => {
                       return { value, label }
                     })}
+                    disabled={!userCanEdit}
                   />
                 </form>
 
@@ -197,28 +193,25 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                   <LabeledRadiobuttonGroup
                     scope="operatorId"
                     items={[...operatorsOptions, { value: "0", label: "Nicht zugeordnet" }]}
+                    disabled={!userCanEdit}
                   />
                 </form>
               </div>
-              <form
-                className="flex"
-                onChange={async () => await methods.handleSubmit(handleSubmit)()}
-              >
-                <div>
-                  <h4 className="mb-3 font-semibold">
-                    {labels.topics?.pl || defaultBackendConfig.labels.topics.pl}
-                  </h4>
-                  <LabeledCheckboxGroup
-                    classNameItemWrapper="grid grid-cols-3 grid-rows-10 grid-flow-col-dense"
-                    scope="surveyResponseTopics"
-                    items={topics.map((t) => {
-                      return {
-                        value: String(t.id),
-                        label: t.title,
-                      }
-                    })}
-                  />
-                </div>
+              <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
+                <h4 className="mb-3 font-semibold">
+                  {labels.topics?.pl || defaultBackendConfig.labels.topics.pl}
+                </h4>
+                <LabeledCheckboxGroup
+                  classNameItemWrapper="grid grid-cols-3 grid-rows-10 grid-flow-col-dense"
+                  scope="surveyResponseTopics"
+                  items={topics.map((t) => {
+                    return {
+                      value: String(t.id),
+                      label: t.title,
+                    }
+                  })}
+                  disabled={!userCanEdit}
+                />
               </form>
             </div>
           </div>
@@ -254,28 +247,33 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           </div>
         )}
 
-        <form
-          className="flex"
-          onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault()
-            await methods.handleSubmit(handleNewTopic)()
-            // @ts-expect-error
-            methods.resetField("newTopic")
-          }}
-        >
-          <div className="min-w-[300px] space-y-2 pb-8 pr-2">
+        <IfUserCanEdit>
+          <form
+            onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
+              e.preventDefault()
+              await methods.handleSubmit(handleNewTopic)()
+              // @ts-expect-error
+              methods.resetField("newTopic")
+            }}
+            className="min-w-[300px] space-y-2 pb-8 pr-2"
+          >
             <LabeledTextField
               placeholder={`${
                 labels.topics?.sg || defaultBackendConfig.labels.operator.sg
               } hinzufügen`}
               name="newTopic"
               label=""
+              disabled={!userCanEdit}
             />
-            <button type="submit" className={clsx(blueButtonStyles, "!px-3 !py-2.5")}>
+            <button
+              type="submit"
+              disabled={!userCanEdit}
+              className={clsx(blueButtonStyles, "!px-3 !py-2.5")}
+            >
               Hinzufügen
             </button>
-          </div>
-        </form>
+          </form>
+        </IfUserCanEdit>
       </div>
       <form
         className="mt-6 flex"
@@ -285,12 +283,14 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           setHasUnsavedChanges(false)
         }}
       >
-        <div className="flex-grow space-y-2 pb-4 pr-2">
+        <fieldset className="flex-grow space-y-2 pb-4 pr-2">
           <p className="mb-3 font-semibold">
             {labels.note?.sg || defaultBackendConfig.labels.note.sg}
           </p>
           <LabeledTextareaField
-            help={labels.note?.help || defaultBackendConfig.labels.note.help}
+            help={
+              userCanEdit ? labels.note?.help || defaultBackendConfig.labels.note.help : undefined
+            }
             name="note"
             label=""
             onChange={() => setHasUnsavedChanges(true)}
@@ -298,16 +298,23 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
               hasUnsavedChanges &&
                 "border-yellow-500 ring-yellow-500 focus:border-yellow-500 focus:ring-yellow-500",
             )}
+            disabled={!userCanEdit}
           />
-          <div className="flex items-end justify-between">
-            <button type="submit" className={clsx(blueButtonStyles, "!px-3 !py-2.5")}>
-              {labels.note?.sg || defaultBackendConfig.labels.note.sg} speichern
-            </button>
-            <small className={clsx(!hasUnsavedChanges && "opacity-0", "text-yellow-500")}>
-              ungespeicherte Änderungen
-            </small>
-          </div>
-        </div>
+          <IfUserCanEdit>
+            <div className="flex items-end justify-between">
+              <button
+                type="submit"
+                disabled={!userCanEdit}
+                className={clsx(blueButtonStyles, "!px-3 !py-2.5")}
+              >
+                {labels.note?.sg || defaultBackendConfig.labels.note.sg} speichern
+              </button>
+              <small className={clsx(!hasUnsavedChanges && "opacity-0", "text-yellow-500")}>
+                ungespeicherte Änderungen
+              </small>
+            </div>
+          </IfUserCanEdit>
+        </fieldset>
       </form>
     </FormProvider>
   )

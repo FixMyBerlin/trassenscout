@@ -1,6 +1,6 @@
+import { useProjectSlug } from "@/src/core/hooks"
 import { getImageSrc } from "@/src/core/utils/getImageSrc"
 import getProject from "@/src/projects/queries/getProject"
-import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { clsx } from "clsx"
 import Image from "next/image"
@@ -9,8 +9,8 @@ import { Suspense } from "react"
 type Props = { className?: string }
 
 export const FooterLogosWithQuery = ({ className }: Props) => {
-  const projectSlug = useParam("projectSlug", "string")
-  const [project] = useQuery(getProject, { slug: projectSlug })
+  const projectSlug = useProjectSlug()
+  const [project] = useQuery(getProject, { projectSlug })
 
   const logos = project.partnerLogoSrcs?.filter(Boolean)
 

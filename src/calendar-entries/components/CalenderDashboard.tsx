@@ -1,7 +1,8 @@
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links/Link"
 import { H2 } from "@/src/core/components/text/Headings"
-import { Routes, useParam } from "@blitzjs/next"
+import { useProjectSlug } from "@/src/core/hooks"
+import { Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { startOfDay } from "date-fns"
 import { Suspense } from "react"
@@ -10,9 +11,9 @@ import getCalendarEntries from "../queries/getCalendarEntries"
 import { DateList } from "./Calender/DateList"
 
 const CalendarDashboardDateList: React.FC = () => {
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
   const [{ calendarEntries }] = usePaginatedQuery(getCalendarEntries, {
-    projectSlug: projectSlug,
+    projectSlug,
     take: 3,
     where: {
       startAt: {

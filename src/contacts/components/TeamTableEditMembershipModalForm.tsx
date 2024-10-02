@@ -1,6 +1,6 @@
 import { membershipRoles } from "@/src/authorization/constants"
 import { Form, FormProps, LabeledRadiobuttonGroup } from "@/src/core/components/forms"
-import { useSlugs } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/hooks"
 import { roleTranslation } from "@/src/memberships/components/roleTranslation.const"
 import updateMembershipRole from "@/src/memberships/mutations/updateMembershipRole"
 import getProjectUsers from "@/src/memberships/queries/getProjectUsers"
@@ -18,13 +18,14 @@ const submitSchema = z.object({ role: z.nativeEnum(MembershipRoleEnum) })
 
 type HandleSubmit = z.infer<typeof submitSchema>
 export const TeamTableEditMembershipModalForm = ({ editUser, closeModal }: Props) => {
-  const { projectSlug } = useSlugs()
+  const projectSlug = useProjectSlug()
 
   const [updateUserMutation] = useMutation(updateMembershipRole)
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await updateUserMutation(
         {
+          projectSlug: projectSlug!,
           membershipId: editUser.currentMembershipId,
           role: values.role,
         },

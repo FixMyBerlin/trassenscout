@@ -3,6 +3,7 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
+import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import getSubsections from "@/src/subsections/queries/getSubsections"
 import { FORM_ERROR, UploadForm } from "@/src/uploads/components/UploadForm"
@@ -19,14 +20,14 @@ import { Suspense } from "react"
 const EditUploadWithQuery = () => {
   const router = useRouter()
   const uploadId = useParam("uploadId", "number")
-  const projectSlug = useParam("projectSlug", "string")
+  const projectSlug = useProjectSlug()
 
   const params: { returnPath?: string } = useRouterQuery()
-  let backUrl = Routes.UploadsPage({ projectSlug: projectSlug! })
+  let backUrl = Routes.UploadsPage({ projectSlug })
   const { subsectionSlug, subsubsectionSlug } = splitReturnTo(params)
   if (subsectionSlug && subsubsectionSlug) {
     backUrl = Routes.SubsectionDashboardPage({
-      projectSlug: projectSlug!,
+      projectSlug,
       subsectionSlug: subsectionSlug,
       subsubsectionSlug: subsubsectionSlug,
     })
@@ -34,7 +35,7 @@ const EditUploadWithQuery = () => {
 
   const [upload, { setQueryData }] = useQuery(
     getUploadWithSubsections,
-    { id: uploadId },
+    { projectSlug, id: uploadId },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
@@ -42,14 +43,15 @@ const EditUploadWithQuery = () => {
   )
   const [updateUploadMutation] = useMutation(updateUpload)
 
-  const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateUploadMutation({
-        id: upload.id,
         ...values,
+        id: upload.id,
+        projectSlug,
       })
       await setQueryData(updated)
       await router.push(backUrl)
@@ -88,8 +90,6 @@ const EditUploadWithQuery = () => {
 }
 
 const EditUploadPage: BlitzPage = () => {
-  const projectSlug = useParam("projectSlug", "string")
-
   return (
     <LayoutRs>
       <MetaTags noindex title={seoEditTitle("Dokument")} />

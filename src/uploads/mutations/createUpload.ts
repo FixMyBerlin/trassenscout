@@ -1,24 +1,25 @@
 import db from "@/db"
-import { authorizeProjectAdmin } from "@/src/authorization"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
+import { getProjectIdBySlug } from "@/src/projects/queries/getProjectIdBySlug"
 import { resolver } from "@blitzjs/rpc"
-import { z } from "zod"
-import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 import { UploadSchema } from "../schema"
 
-const CreateUploadSchema = UploadSchema.merge(
-  z.object({
-    projectSlug: z.string(),
-  }),
-)
+const CreateUploadSchema = ProjectSlugRequiredSchema.merge(UploadSchema)
 
 export default resolver.pipe(
   resolver.zod(CreateUploadSchema),
-  authorizeProjectAdmin(getProjectIdBySlug),
-  async ({ projectSlug, ...input }) =>
-    await db.upload.create({
+  authorizeProjectMember(extractProjectSlug, editorRoles),
+  async ({ projectSlug, ...input }) => {
+    return await db.upload.create({
       data: {
         projectId: await getProjectIdBySlug(projectSlug),
         ...input,
       },
-    }),
+    })
+  },
 )
