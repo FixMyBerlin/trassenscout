@@ -1,7 +1,7 @@
 import { layerColors } from "@/src/core/components/Map/layerColors"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import getSubsubsections from "@/src/subsubsections/queries/getSubsubsections"
+import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import { useQuery } from "@blitzjs/rpc"
 import { featureCollection, lineString, point } from "@turf/helpers"
 import { Layer, Source } from "react-map-gl/maplibre"

@@ -1,5 +1,5 @@
 import { formattedEuro, formattedLength, frenchQuote } from "@/src/core/components/text"
-import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
+import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { clsx } from "clsx"
 
 type Props = {

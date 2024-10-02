@@ -5,10 +5,13 @@ import { longTitle, seoNewTitle } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
+import {
+  FORM_ERROR,
+  SubsubsectionForm,
+} from "@/src/pagesComponents/subsubsections/SubsubsectionForm"
 import getSubsection from "@/src/server/subsections/queries/getSubsection"
-import { FORM_ERROR, SubsubsectionForm } from "@/src/subsubsections/components/SubsubsectionForm"
-import createSubsubsection from "@/src/subsubsections/mutations/createSubsubsection"
-import { SubsubsectionSchema } from "@/src/subsubsections/schema"
+import createSubsubsection from "@/src/server/subsubsections/mutations/createSubsubsection"
+import { SubsubsectionSchema } from "@/src/server/subsubsections/schema"
 import { Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"

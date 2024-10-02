@@ -1,5 +1,5 @@
 import { vectorStyle } from "@/src/core/components/Map/BaseMap"
-import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
+import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { CheckBadgeIcon } from "@heroicons/react/24/solid"
 import { lineString, point } from "@turf/helpers"
 import { bbox } from "@turf/turf"
