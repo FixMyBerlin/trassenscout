@@ -2,7 +2,7 @@ import db, { Invite, User } from "@/db"
 import { membershipCreatedNotificationToEditors } from "@/emails/mailers/membershipCreatedNotificationToEditors"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { roleTranslation } from "@/src/pagesComponents/memberships/roleTranslation.const"
-import { getFullname } from "@/src/pagesComponents/users/utils"
+import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import { Routes } from "@blitzjs/next"
 
 type Props = { invite: Invite | null; invitee: Pick<User, "firstName" | "lastName" | "email"> }

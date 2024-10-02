@@ -8,7 +8,9 @@ import {
   showMembershipRoleCheckIndicatorState,
 } from "@/src/core/store/showMembershipRoleCheckIndicator.zustand"
 import { isDev, isProduction, isStaging } from "@/src/core/utils/isEnv"
-import { getFullname, getInitials, isAdmin } from "@/src/pagesComponents/users/utils"
+import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
+import { getInitials } from "@/src/pagesComponents/users/utils/getInitials"
+import { isAdmin } from "@/src/pagesComponents/users/utils/isAdmin"
 import { CurrentUser } from "@/src/server/users/types"
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react"
 import { clsx } from "clsx"

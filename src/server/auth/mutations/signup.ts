@@ -1,7 +1,7 @@
 import db from "@/db"
 import { userCreatedNotificationToAdmin } from "@/emails/mailers/userCreatedNotificationToAdmin"
 import { userCreatedNotificationToUser } from "@/emails/mailers/userCreatedNotificationToUser"
-import { getFullname } from "@/src/pagesComponents/users/utils"
+import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
 import { RouteUrlObject } from "blitz"

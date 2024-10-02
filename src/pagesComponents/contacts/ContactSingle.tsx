@@ -1,6 +1,6 @@
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { LinkMail, LinkTel } from "@/src/core/components/links"
-import { getFullname } from "@/src/pagesComponents/users/utils"
+import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import { Contact } from "@prisma/client"
 import { TableWrapper } from "../../core/components/Table/TableWrapper"
 
