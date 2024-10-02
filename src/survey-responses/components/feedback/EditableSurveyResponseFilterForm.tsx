@@ -6,7 +6,7 @@ import {
 import { linkStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
-import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
+import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
 import { TResponse, TSingleOrMultiResponseProps } from "@/src/survey-public/components/types"
 import { backendConfig as defaultBackendConfig } from "@/src/survey-public/utils/backend-config-defaults"
 import {

@@ -5,7 +5,7 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
-import { OperatorSchema } from "@/src/operators/schema"
+import { OperatorSchema } from "@/src/server/operators/schema"
 import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug"
 import { resolver } from "@blitzjs/rpc"
 

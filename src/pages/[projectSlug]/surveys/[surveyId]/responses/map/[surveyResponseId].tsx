@@ -4,7 +4,7 @@ import { H2 } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
-import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
+import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import { TMapProps } from "@/src/survey-public/components/types"
 import {

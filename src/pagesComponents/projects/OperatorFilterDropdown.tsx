@@ -1,6 +1,6 @@
 import { shortTitle } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
+import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
 import { Routes, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from "@headlessui/react"
