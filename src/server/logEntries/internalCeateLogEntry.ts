@@ -1,5 +1,5 @@
 import db, { LogEntry } from "@/db"
-import { Prettify } from "../core/types"
+import { Prettify } from "@/src/core/types"
 
 type Props = Prettify<
   { apiKey: string } & Partial<Pick<LogEntry, "userId" | "projectId" | "context">> &

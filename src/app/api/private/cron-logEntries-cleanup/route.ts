@@ -1,5 +1,5 @@
 import db from "@/db"
-import { internalCreateLogEntry } from "@/src/logEntries/internalCeateLogEntry"
+import { internalCreateLogEntry } from "@/src/server/logEntries/internalCeateLogEntry"
 import { calculateComparisonDate } from "../../_utils/calculateComparisonDate"
 
 const LOGENTRIES_DAYS_TO_DELETION = 90
