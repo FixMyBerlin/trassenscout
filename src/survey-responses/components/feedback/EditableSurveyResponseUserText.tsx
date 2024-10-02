@@ -51,7 +51,7 @@ const EditableSurveyResponseUserText: React.FC<EditableSurveyResponseUserTextPro
             <Markdown markdown={response.data[userTextIndices[1]]} />
           </blockquote>
         )}
-        <div className="mt-2 text-right text-gray-500">{`Bürger:innenbeitrag vom: ${response.surveySession.createdAt.toLocaleDateString()} um  ${response.surveySession.createdAt.toLocaleTimeString()}`}</div>
+        <div className="mt-2 text-right text-gray-500">{`Bürger:innenbeitrag vom: ${response.surveySession.createdAt.toLocaleDateString()} um  ${response.surveySession.createdAt.toLocaleTimeString("de-DE")}`}</div>
       </div>
     )
   return (
@@ -60,16 +60,13 @@ const EditableSurveyResponseUserText: React.FC<EditableSurveyResponseUserTextPro
         /* @ts-expect-error `data` is of type unkown */
         if (!response.data[userTextIndex]) return null
         return (
-          <blockquote key={userTextIndex} className="my-4 bg-yellow-100 p-4">
-            <h4 className="mb-2 font-semibold">
-              {feedbackQuestions.find((q) => q.id === userTextIndex)?.label.de}
-            </h4>
+          <div key={userTextIndex} className="bg-yellow-100 p-4">
             {/* @ts-expect-error `data` is of type unkown */}
             <Markdown markdown={response.data[userTextIndex]} />
-          </blockquote>
+            <div className="mt-2 text-gray-500">{`Bürger:innenbeitrag vom ${response.surveySession.createdAt.toLocaleDateString()} um  ${response.surveySession.createdAt.toLocaleTimeString()}`}</div>
+          </div>
         )
       })}
-      <div className="mt-2 text-right text-gray-500">{`Bürger:innenbeitrag vom: ${response.surveySession.createdAt.toLocaleDateString()} um  ${response.surveySession.createdAt.toLocaleTimeString()}`}</div>
     </div>
   )
 }
