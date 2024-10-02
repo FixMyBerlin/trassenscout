@@ -1,5 +1,5 @@
 import db from "@/db"
-import { getProjectIdBySlug } from "@/src/projects/queries/getProjectIdBySlug"
+import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug"
 import { resolver } from "@blitzjs/rpc"
 import { CreateSurveySchema } from "../schemas"
 

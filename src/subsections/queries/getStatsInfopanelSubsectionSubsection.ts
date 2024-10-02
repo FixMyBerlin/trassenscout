@@ -1,10 +1,10 @@
 import db, { Prisma } from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { viewerRoles } from "@/src/authorization/constants"
+import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { SubsubsectionWithPositionWithSpecialFeatures } from "@/src/subsubsections/schema"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import { viewerRoles } from "../../authorization/constants"
-import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { GetSubsectionSchema, SubsectionWithPosition } from "./getSubsection"
 
 type SubsectionWithSubsubsectionsWithSpecialFeaturesCount = {

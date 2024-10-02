@@ -1,6 +1,6 @@
+import getStatsInfopanelProjectCompletion from "@/src/server/projects/queries/getStatsInfopanelProjectCompletion"
 import { useQuery } from "@blitzjs/rpc"
 import { compareAsc, getQuarter, getYear } from "date-fns"
-import getStatsInfopanelProjectCompletion from "../queries/getStatsInfopanelProjectCompletion"
 
 type Props = {
   projectSlug: string
@@ -8,9 +8,7 @@ type Props = {
 export const ProjectInfoPanelCellCompletion: React.FC<Props> = ({ projectSlug }) => {
   const [{ subsubsectionsWithEstimatedCompletionDate }] = useQuery(
     getStatsInfopanelProjectCompletion,
-    {
-      projectSlug,
-    },
+    { projectSlug },
   )
 
   if (subsubsectionsWithEstimatedCompletionDate.length === 0)

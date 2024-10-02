@@ -1,12 +1,12 @@
 import db from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { viewerRoles } from "@/src/authorization/constants"
 import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import { viewerRoles } from "../../authorization/constants"
 
 const UploadSchema = ProjectSlugRequiredSchema.merge(
   z.object({

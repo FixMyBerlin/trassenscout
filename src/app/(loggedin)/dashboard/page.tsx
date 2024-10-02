@@ -1,7 +1,7 @@
 import { invoke } from "@/src/blitz-server"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import getProjects from "@/src/projects/queries/getProjects"
+import getProjects from "@/src/server/projects/queries/getProjects"
 import "server-only"
 import { NoProjectMembershipsYet } from "./_components/NoProjectMembershipsYet"
 import { ProjectTable } from "./_components/ProjectTable"

@@ -1,9 +1,9 @@
 import db, { QualityLevel, Subsubsection, SubsubsectionTypeEnum, User } from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { viewerRoles } from "@/src/authorization/constants"
+import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import { viewerRoles } from "../../authorization/constants"
-import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 import { m2mFields } from "../m2mFields"
 
 const GetSubsubsection = z.object({

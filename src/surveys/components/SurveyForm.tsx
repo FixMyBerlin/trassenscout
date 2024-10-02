@@ -6,7 +6,7 @@ import {
   LabeledSelect,
   LabeledTextField,
 } from "@/src/core/components/forms"
-import getProjects from "@/src/projects/queries/getProjects"
+import getProjects from "@/src/server/projects/queries/getProjects"
 import { useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { z } from "zod"

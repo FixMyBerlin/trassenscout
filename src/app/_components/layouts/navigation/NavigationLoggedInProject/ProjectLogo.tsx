@@ -1,7 +1,7 @@
 "use client"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { getProxyImageSrc } from "@/src/core/utils/getProxyImageSrc"
-import getProject from "@/src/projects/queries/getProject"
+import getProject from "@/src/server/projects/queries/getProject"
 import { useQuery } from "@blitzjs/rpc"
 import { clsx } from "clsx"
 import Image from "next/image"

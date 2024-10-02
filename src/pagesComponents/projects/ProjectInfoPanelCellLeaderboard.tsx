@@ -1,7 +1,7 @@
+import getStatsInfopanelProjectLeaderboard from "@/src/server/projects/queries/getStatsInfopanelProjectLeaderboard"
 import { formatGerKm } from "@/src/subsections/components/utils/formatNumericInfo"
 import { useQuery } from "@blitzjs/rpc"
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
-import getStatsInfopanelProjectLeaderboard from "../queries/getStatsInfopanelProjectLeaderboard"
 
 type Props = {
   projectSlug: string

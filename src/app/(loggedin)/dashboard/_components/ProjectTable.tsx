@@ -1,7 +1,7 @@
 "use client"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { longTitle, shortTitle } from "@/src/core/components/text"
-import { TGetProjects } from "@/src/projects/queries/getProjects"
+import { TGetProjects } from "@/src/server/projects/queries/getProjects"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
 

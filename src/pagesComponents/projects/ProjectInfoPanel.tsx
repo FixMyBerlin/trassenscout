@@ -1,5 +1,6 @@
 import { Spinner } from "@/src/core/components/Spinner"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import getStatsInfopanelProjectGeneral from "@/src/server/projects/queries/getStatsInfopanelProjectGeneral"
 import { useQuery } from "@blitzjs/rpc"
 import {
   CheckCircleIcon,
@@ -10,7 +11,6 @@ import {
 import { CalendarIcon, DocumentIcon } from "@heroicons/react/24/outline"
 import { Suspense } from "react"
 import { SubsectionInfoPanelCellContainer } from "../../subsections/components/SubsectionInfoPanelCellContainer"
-import getStatsInfopanelProjectGeneral from "../queries/getStatsInfopanelProjectGeneral"
 import { ProjectInfoPanelCellCompletion } from "./ProjectInfoPanelCellCompletion"
 import { ProjectInfoPanelCellCosts } from "./ProjectInfoPanelCellCosts"
 import { ProjectInfoPanelCellLeaderboard } from "./ProjectInfoPanelCellLeaderboard"

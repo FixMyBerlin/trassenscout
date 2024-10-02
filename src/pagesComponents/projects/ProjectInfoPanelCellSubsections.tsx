@@ -1,15 +1,13 @@
+import getStatsInfopanelProjectSubsections from "@/src/server/projects/queries/getStatsInfopanelProjectSubsections"
 import { formatGerKm } from "@/src/subsections/components/utils/formatNumericInfo"
 import { useQuery } from "@blitzjs/rpc"
-import getStatsInfopanelProjectSubsections from "../queries/getStatsInfopanelProjectSubsections"
 
 type Props = {
   projectSlug: string
 }
 export const ProjectInfoPanelCellSubsections: React.FC<Props> = ({ projectSlug }) => {
   const [{ projectLengthKm, numberOfSubsections, networHierarchiesSubsectionsWithCount }] =
-    useQuery(getStatsInfopanelProjectSubsections, {
-      projectSlug,
-    })
+    useQuery(getStatsInfopanelProjectSubsections, { projectSlug })
 
   return (
     <>

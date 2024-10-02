@@ -1,9 +1,9 @@
 import db, { Prisma } from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
-import { editorRoles } from "../../authorization/constants"
 
 type GetInvitesInput = { projectSlug: string } & Pick<
   Prisma.InviteFindManyArgs,

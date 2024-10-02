@@ -1,5 +1,5 @@
 "use client"
-import getProjects from "@/src/projects/queries/getProjects"
+import getProjects from "@/src/server/projects/queries/getProjects"
 import { useQuery } from "@blitzjs/rpc"
 import { ProjectsSwitch } from "./NavigationLoggedIn/ProjectsSwitch"
 import { NavigationDesktop } from "./wrapper/NavigationDesktop"

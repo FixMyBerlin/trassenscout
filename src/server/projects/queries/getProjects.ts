@@ -1,5 +1,5 @@
 import db, { Prisma } from "@/db"
-import getProjects from "@/src/projects/queries/getProjects"
+import getProjects from "@/src/server/projects/queries/getProjects"
 import { resolver } from "@blitzjs/rpc"
 import { Ctx, NotFoundError, paginate } from "blitz"
 

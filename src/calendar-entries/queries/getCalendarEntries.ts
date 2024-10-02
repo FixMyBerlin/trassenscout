@@ -1,9 +1,9 @@
 import db, { Prisma } from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { viewerRoles } from "@/src/authorization/constants"
+import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
-import { viewerRoles } from "../../authorization/constants"
-import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 
 type GetCalendarEntriesInput = { projectSlug: string } & Pick<
   Prisma.CalendarEntryFindManyArgs,

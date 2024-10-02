@@ -8,7 +8,7 @@ import {
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
 import { shortTitle } from "@/src/core/components/text"
-import { getProjectIdBySlug } from "@/src/projects/queries/getProjectIdBySlug"
+import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug"
 import { getFullname } from "@/src/users/utils"
 import { Ctx, Routes } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"

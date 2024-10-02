@@ -5,8 +5,8 @@ import {
   LabeledRadiobuttonGroup,
   LabeledSelect,
 } from "@/src/core/components/forms"
-import getProjects from "@/src/projects/queries/getProjects"
-import { getProjectSelectOptions } from "@/src/projects/utils/getProjectSelectOptions"
+import { getProjectSelectOptions } from "@/src/pagesComponents/projects/utils/getProjectSelectOptions"
+import getProjects from "@/src/server/projects/queries/getProjects"
 import getUsers from "@/src/users/queries/getUsers"
 import { getUserSelectOptions } from "@/src/users/utils"
 import { useQuery } from "@blitzjs/rpc"

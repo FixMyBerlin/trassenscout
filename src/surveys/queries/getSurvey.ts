@@ -1,5 +1,6 @@
 import db from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { viewerRoles } from "@/src/authorization/constants"
 import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
@@ -11,7 +12,6 @@ import {
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import { z } from "zod"
-import { viewerRoles } from "../../authorization/constants"
 
 const GetSurveySchema = ProjectSlugRequiredSchema.merge(
   z.object({

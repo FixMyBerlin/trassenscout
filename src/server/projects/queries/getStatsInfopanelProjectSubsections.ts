@@ -1,10 +1,10 @@
 import db from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { viewerRoles } from "@/src/authorization/constants"
+import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import { z } from "zod"
-import { viewerRoles } from "../../authorization/constants"
-import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 
 export const GetSubsectionsSchema = z.object({
   projectSlug: z.string(),
