@@ -25,6 +25,8 @@ import { EnvelopeIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import { parseAsInteger, useQueryState } from "nuqs"
 import { useEffect } from "react"
+import getSurveySurveyResponsesBySurveySessionId from "../../queries/getSurveySurveyResponsesBySurveySessionId"
+import EditableSurveyResponseAdditionalFilterFields from "./EditableSurveyResponseAdditionalFilterFields"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
@@ -55,6 +57,10 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const surveyId = useParam("surveyId", "string")
   const projectSlug = useProjectSlug()
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
+  const [parsedSurveyResponse] = useQuery(getSurveySurveyResponsesBySurveySessionId, {
+    projectSlug,
+    surveySessionId: response.surveySession.id,
+  })
   const [responseDetails, setRespnseDetails] = useQueryState("responseDetails", parseAsInteger)
   const [deleteCalendarEntryMutation] = useMutation(deleteSurveyResponse)
 
@@ -110,6 +116,8 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
       Number(response.data[evaluationRefs["feedback-category"]]),
       feedbackQuestion!,
     )
+
+  const additionalFilterFields = backendConfig.additionalFilters
 
   const getTranslatedSource = (s: string) => {
     switch (s) {
@@ -176,7 +184,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
               </IfUserCanEdit>
             </span>
           )}
-          <div className="mb-10 flex flex-col justify-between gap-12 md:flex-row">
+          <div className="mb-8 flex flex-col gap-8">
             <EditableSurveyResponseUserText
               surveyId={surveyId!}
               userTextIndices={[
@@ -186,15 +194,20 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
               feedbackQuestions={feedbackQuestions}
               response={response}
             />
-            <div>
-              <h4 className="mb-5 font-semibold">
+            <div className="flex shrink-0 flex-col items-start gap-4">
+              <h4 className="font-semibold">
                 {labels.category?.sg || defaultBackendConfig.labels.category.sg}
               </h4>
-              <div className="w-48 flex-shrink-0">
-                <span className="rounded bg-gray-300 p-3 px-4">{feedbackUserCategory}</span>
+              <div className="whitespace-nowrap rounded bg-gray-300 p-3 px-4 font-semibold">
+                {feedbackUserCategory}
               </div>
             </div>
           </div>
+          <EditableSurveyResponseAdditionalFilterFields
+            additionalFilterFields={additionalFilterFields}
+            surveyData={parsedSurveyResponse?.data}
+            feedbackData={response.data}
+          />
           <EditableSurveyResponseForm
             showMap={showMap}
             initialValues={{

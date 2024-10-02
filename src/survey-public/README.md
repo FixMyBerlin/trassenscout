@@ -19,7 +19,7 @@ evaluationRefs: {
 It defines:
 - the status enum,
 - the labels of note, status, operator, topics, category, location,
-- additional filters for survey specific fields which are stored in the survey result itself (not in the DB)
+- additional filters for survey specific fields which are stored in the survey result itself (not in the DB); filters can only be defined for questions of type text for now
 
 In `src/survey-public/utils/backend-config-defaults.ts` defines the defaults for the `response-config.ts` files. It can be used as a copy template. If no labels are set in the config file, the survey will take them from this file.
 
