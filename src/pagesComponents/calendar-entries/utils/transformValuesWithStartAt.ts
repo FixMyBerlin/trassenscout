@@ -1,7 +1,8 @@
-import { CalendarEntrySchema } from "../schema"
+import { CalendarEntrySchema } from "@/src/server/calendar-entries/schema"
 
 // We cannot use the datetime-local field because that is broken in Firefox
 // (even though it is green on caniuse.com; but the bug is reported in Firefox)
+
 // We work around this by splitting fields in two and then merging the date again here.
 export const transformValuesWithStartAt = (inputValues: any) => {
   const valuesCopy = structuredClone(inputValues) // not sure if this is needed

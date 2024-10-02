@@ -2,12 +2,12 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links/Link"
 import { H2 } from "@/src/core/components/text/Headings"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import getCalendarEntries from "@/src/server/calendar-entries/queries/getCalendarEntries"
 import { Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { startOfDay } from "date-fns"
 import { Suspense } from "react"
 import { IfUserCanEdit } from "../../memberships/components/IfUserCan"
-import getCalendarEntries from "../queries/getCalendarEntries"
 import { DateList } from "./Calender/DateList"
 
 const CalendarDashboardDateList = () => {

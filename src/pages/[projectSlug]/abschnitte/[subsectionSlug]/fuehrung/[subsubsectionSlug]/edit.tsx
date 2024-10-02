@@ -1,4 +1,3 @@
-import { getDate } from "@/src/calendar-entries/utils/splitStartAt"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
@@ -8,6 +7,7 @@ import { seoEditTitleSlug } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
+import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
 import {
   FORM_ERROR,
   SubsubsectionForm,

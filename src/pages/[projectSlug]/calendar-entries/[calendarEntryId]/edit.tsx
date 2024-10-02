@@ -1,12 +1,3 @@
-import { CalendarEntryForm, FORM_ERROR } from "@/src/calendar-entries/components/CalendarEntryForm"
-import updateCalendarEntry from "@/src/calendar-entries/mutations/updateCalendarEntry"
-import getCalendarEntry from "@/src/calendar-entries/queries/getCalendarEntry"
-import {
-  CalendarEntrySchema,
-  CalendarEntryStartDateStartTimeSchema,
-} from "@/src/calendar-entries/schema"
-import { getDate, getTime } from "@/src/calendar-entries/utils/splitStartAt"
-import { transformValuesWithStartAt } from "@/src/calendar-entries/utils/transformValuesWithStartAt"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
@@ -14,6 +5,18 @@ import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import {
+  CalendarEntryForm,
+  FORM_ERROR,
+} from "@/src/pagesComponents/calendar-entries/CalendarEntryForm"
+import { getDate, getTime } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
+import { transformValuesWithStartAt } from "@/src/pagesComponents/calendar-entries/utils/transformValuesWithStartAt"
+import updateCalendarEntry from "@/src/server/calendar-entries/mutations/updateCalendarEntry"
+import getCalendarEntry from "@/src/server/calendar-entries/queries/getCalendarEntry"
+import {
+  CalendarEntrySchema,
+  CalendarEntryStartDateStartTimeSchema,
+} from "@/src/server/calendar-entries/schema"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
