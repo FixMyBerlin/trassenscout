@@ -9,10 +9,10 @@ import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import {
   FORM_ERROR,
   NetworkHierarchyForm,
-} from "@/src/networkHierarchy/components/NetworkHierarchy"
-import updateNetworkHierarchy from "@/src/networkHierarchy/mutations/updateNetworkHierarchy"
-import getNetworkHierarchy from "@/src/networkHierarchy/queries/getNetworkHierarchy"
-import { NetworkHierarchySchema } from "@/src/networkHierarchy/schema"
+} from "@/src/pagesComponents/networkHierarchy/NetworkHierarchy"
+import updateNetworkHierarchy from "@/src/server/networkHierarchy/mutations/updateNetworkHierarchy"
+import getNetworkHierarchy from "@/src/server/networkHierarchy/queries/getNetworkHierarchy"
+import { NetworkHierarchySchema } from "@/src/server/networkHierarchy/schema"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
