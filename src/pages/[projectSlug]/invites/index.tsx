@@ -36,7 +36,7 @@ export const TeamInvitesWithQuery = () => {
       <TeamInviteDocumentation />
 
       <SuperAdminBox>
-        <Link button="blue" href={Routes.AdminMembershipsPage()}>
+        <Link button="blue" href={`/admin/memberships`}>
           Rechte verwalten
         </Link>
       </SuperAdminBox>
