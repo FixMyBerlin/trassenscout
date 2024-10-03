@@ -13,7 +13,10 @@ const UpdateProject = ProjectSlugRequiredSchema.merge(ProjectSchema)
 export default resolver.pipe(
   resolver.zod(UpdateProject),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ projectSlug, ...data }) => {
-    return await db.project.update({ where: { slug: projectSlug }, data })
+  async ({ projectSlug, partnerLogoSrcs, ...data }) => {
+    return await db.project.update({
+      where: { slug: projectSlug },
+      data: { ...data, partnerLogoSrcs: partnerLogoSrcs || undefined },
+    })
   },
 )

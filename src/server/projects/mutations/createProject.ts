@@ -5,7 +5,9 @@ import { ProjectSchema } from "../schema"
 export default resolver.pipe(
   resolver.zod(ProjectSchema),
   resolver.authorize("ADMIN"),
-  async (data) => {
-    return await db.project.create({ data })
+  async ({ partnerLogoSrcs, ...data }) => {
+    return await db.project.create({
+      data: { ...data, partnerLogoSrcs: partnerLogoSrcs || undefined },
+    })
   },
 )
