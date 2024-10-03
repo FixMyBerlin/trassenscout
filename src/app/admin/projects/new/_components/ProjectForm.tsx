@@ -1,27 +1,67 @@
+"use client"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import {
   Form,
-  FormProps,
+  FORM_ERROR,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
 } from "@/src/core/components/forms"
+import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
 import { quote } from "@/src/core/components/text/quote"
-import {
-  getUserSelectOptions,
-  UserSelectOptions,
-} from "@/src/pagesComponents/users/utils/getUserSelectOptions"
-import { z } from "zod"
+import { getUserSelectOptions } from "@/src/pagesComponents/users/utils/getUserSelectOptions"
+import createMembership from "@/src/server/memberships/mutations/createMembership"
+import createProject from "@/src/server/projects/mutations/createProject"
+import { ProjectLogoScrcsInputSchema, ProjectSchema } from "@/src/server/projects/schema"
+import { useCurrentUser } from "@/src/server/users/hooks/useCurrentUser"
+import getUsers from "@/src/server/users/queries/getUsers"
+import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useRouter } from "next/navigation"
 export { FORM_ERROR } from "@/src/core/components/forms"
 
-export function ProjectForm<S extends z.ZodType<any, any>>(
-  props: FormProps<S> & { users: UserSelectOptions },
-) {
-  const { users } = props
+export const ProjectForm = () => {
+  const router = useRouter()
+  const currentUser = useCurrentUser()
+  const [createProjectMutation] = useMutation(createProject)
+  const [createMembershipMutation] = useMutation(createMembership)
+
+  const [{ users }] = useQuery(getUsers, {})
+
+  type HandleSubmit = any // TODO
+  const handleSubmit = async (values: HandleSubmit) => {
+    const partnerLogoSrcsArray = values.partnerLogoSrcs.split("\n")
+    values = { ...values, partnerLogoSrcs: partnerLogoSrcsArray }
+    try {
+      const project = await createProjectMutation(values)
+
+      // Create a membership for the selected user
+      if (project.managerId) {
+        try {
+          await createMembershipMutation({
+            projectId: project.id,
+            userId: project.managerId,
+            role: "EDITOR",
+          })
+        } catch (error: any) {
+          console.error(error)
+          return { [FORM_ERROR]: error }
+        }
+      }
+
+      router.push("/dashboard")
+    } catch (error: any) {
+      return improveErrorMessage(error, FORM_ERROR, ["slug"])
+    }
+  }
 
   return (
-    <Form<S> {...props}>
+    <Form
+      submitText="Erstellen"
+      onSubmit={handleSubmit}
+      schema={ProjectSchema.merge(ProjectLogoScrcsInputSchema)}
+      initialValues={{ managerId: currentUser!.id }}
+    >
       <LabeledTextField
         type="text"
         name="slug"

@@ -1,22 +1,29 @@
-import { SuperAdminBox } from "@/src/core/components/AdminBox"
-import { Spinner } from "@/src/core/components/Spinner"
+import { invoke } from "@/src/blitz-server"
 import { StatusLabel } from "@/src/core/components/Status/StatusLabel"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
-import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { seoIndexTitle } from "@/src/core/components/text"
-import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 import getLogEntries from "@/src/server/logEntries/queries/getLogEntries"
-import { useQuery } from "@blitzjs/rpc"
 import { format, formatDistanceToNow } from "date-fns"
 import { de } from "date-fns/locale"
-import { Suspense } from "react"
+import { Breadcrumb } from "../_components/Breadcrumb"
+import { HeaderWrapper } from "../_components/HeaderWrapper"
 
-const AdminLogEntries = () => {
-  const [{ logEntries }] = useQuery(getLogEntries, {})
+export const metadata = { title: "LogEntries" }
+
+export default async function AdminLogEntriesPage() {
+  const { logEntries } = await invoke(getLogEntries, {})
 
   return (
-    <SuperAdminBox>
+    <>
+      <HeaderWrapper>
+        <Breadcrumb
+          pages={[
+            { href: "/admin", name: "Dashboard" },
+            { href: "/admin/logEntries", name: "LogEntries" },
+          ]}
+        />
+      </HeaderWrapper>
+
       <p>Maximal 250 Einträge.</p>
       <TableWrapper>
         <table className="min-w-full divide-y divide-gray-300">
@@ -85,28 +92,10 @@ const AdminLogEntries = () => {
           </tbody>
         </table>
       </TableWrapper>
-    </SuperAdminBox>
-  )
-}
-
-const AdminLogEntriesPage = () => {
-  return (
-    <LayoutArticle>
-      <MetaTags noindex title={seoIndexTitle("LogEntries")} />
-      <PageHeader title="LogEntries" className="mt-12" />
-
-      <Suspense fallback={<Spinner page />}>
-        <AdminLogEntries />
-      </Suspense>
-
       <hr className="my-5" />
       <p>
         <Link href="/dashboard">Startseite</Link>
       </p>
-    </LayoutArticle>
+    </>
   )
 }
-
-AdminLogEntriesPage.authenticate = { role: "ADMIN" }
-
-export default AdminLogEntriesPage
