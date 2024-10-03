@@ -7,7 +7,7 @@ import { Metadata } from "next"
 
 export const metadata: Metadata = { title: "Projekte" }
 
-export default async function AdminProjectSubsectionsPage() {
+export default async function AdminProjectsPage() {
   const { projects } = await invoke(getProjects, {})
   return (
     <>

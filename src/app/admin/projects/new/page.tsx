@@ -5,7 +5,7 @@ import { AdminProjectsNewForm } from "./_components/AdminProjectsNewForm"
 
 export const metadata: Metadata = { title: "Projekt hinzufügen" }
 
-export default function AdminProjectsNewPage() {
+export default function AdminProjectNewPage() {
   return (
     <>
       <HeaderWrapper>
