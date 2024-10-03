@@ -1,17 +1,21 @@
 import db from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
-import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import { GetProject } from "./getProject"
+
+const Schema = ProjectSlugRequiredSchema
 
 export type ProjectWithDescription = {
   description: string | null
 }
 
 export default resolver.pipe(
-  resolver.zod(GetProject),
+  resolver.zod(Schema),
   authorizeProjectMember(extractProjectSlug, viewerRoles),
   async ({ projectSlug }) => {
     const project = await db.project.findFirst({

@@ -3,8 +3,7 @@ import { selectUserFieldsForSession } from "@/src/server/auth/shared/selectUserF
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 
-interface GetUsersInput
-  extends Pick<Prisma.UserFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
+type GetUsersInput = Pick<Prisma.UserFindManyArgs, "where" | "orderBy" | "skip" | "take">
 
 export default resolver.pipe(
   resolver.authorize("ADMIN"),

@@ -7,7 +7,8 @@ import {
 } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import { GetProject } from "./getProject"
+
+const Schema = ProjectSlugRequiredSchema
 
 type SubsubsectionCategory = {
   Anzahl: number
@@ -38,8 +39,6 @@ type SubsectionWithSubsubsectionsWithSpecialFeaturesCount = {
     percentage: number
   }[]
 }
-
-const Schema = ProjectSlugRequiredSchema.merge(GetProject)
 
 export default resolver.pipe(
   resolver.zod(Schema),

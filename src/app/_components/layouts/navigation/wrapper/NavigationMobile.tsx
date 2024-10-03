@@ -1,6 +1,6 @@
 "use client"
 import { Link } from "@/src/core/components/links"
-import getProjects from "@/src/server/projects/queries/getProjects"
+import { TGetProjects } from "@/src/server/projects/queries/getProjects"
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
@@ -15,7 +15,7 @@ type Props = {
   homeLink: Route
   homeLinkText: string
   menuItems?: ReturnType<typeof useMenuItems>
-  projects?: Awaited<ReturnType<typeof getProjects>>["projects"]
+  projects?: TGetProjects["projects"]
 }
 
 export const NavigationMobile = ({ homeLink, homeLinkText, menuItems, projects }: Props) => {
