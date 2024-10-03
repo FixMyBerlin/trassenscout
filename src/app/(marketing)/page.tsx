@@ -1,4 +1,5 @@
 import { useAuthenticatedBlitzContext } from "@/src/blitz-server"
+import { Metadata } from "next"
 import "server-only"
 import { MarketingPageContact } from "./_components/MarketingPageContact"
 import { MarketingPageLinks } from "./_components/MarketingPageLinks"
@@ -6,7 +7,9 @@ import { MarketingPagePhotos } from "./_components/MarketingPagePhotos"
 import { NewsItem } from "./_components/news/NewsItem"
 import { newsItems } from "./_components/news/newsItems.const"
 
-// TODO APPDIRECTORY META
+export const metadata: Metadata = {
+  /* Defaults */
+}
 
 // This is the Homepage when not logged in.
 export default async function Homepage() {

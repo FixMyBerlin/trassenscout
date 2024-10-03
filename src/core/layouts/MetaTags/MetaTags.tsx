@@ -16,7 +16,7 @@ type Props = {
   article?: boolean | null
 }
 
-// TODO APPDIRECTORY: Can we remove this component after we migrated?
+// TODO APPDIRECTORY: Can we remove this component after we migrated
 export const MetaTags: React.FC<Props> = ({ noindex, title, description, image, article }) => {
   const { defaultTitle, defaultDescription, baseUrl } = seoDefaultValues
 

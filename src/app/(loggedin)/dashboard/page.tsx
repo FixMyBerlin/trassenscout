@@ -2,11 +2,15 @@ import { invoke } from "@/src/blitz-server"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import getProjects from "@/src/server/projects/queries/getProjects"
+import { Metadata } from "next"
 import "server-only"
 import { NoProjectMembershipsYet } from "./_components/NoProjectMembershipsYet"
 import { ProjectTable } from "./_components/ProjectTable"
 
-// TODO APPDIRECTORY META
+export const metadata: Metadata = {
+  robots: "noindex",
+  title: "Meine Projekte (Dashboard)",
+}
 
 export default async function DashboardPage() {
   const { projects } = await invoke(getProjects, {})
