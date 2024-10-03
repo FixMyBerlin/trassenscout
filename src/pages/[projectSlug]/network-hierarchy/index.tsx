@@ -35,7 +35,13 @@ export const NetworkHierarchysWithData = () => {
   const [deleteNetworkHierarchyMutation] = useMutation(deleteNetworkHierarchy)
   const handleDelete = async (networkHierarchyId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${networkHierarchyId} unwiderruflich löschen?`)) {
-      await deleteNetworkHierarchyMutation({ projectSlug, id: networkHierarchyId })
+      try {
+        await deleteNetworkHierarchyMutation({ projectSlug, id: networkHierarchyId })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
       await router.push(Routes.NetworkHierarchysPage({ projectSlug }))
     }
   }

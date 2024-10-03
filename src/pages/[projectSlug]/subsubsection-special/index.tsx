@@ -38,7 +38,13 @@ export const SubsubsectionSpecialsWithData = () => {
   const [deleteSubsubsectionSpecialMutation] = useMutation(deleteSubsubsectionSpecial)
   const handleDelete = async (subsubsectionSpecialId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${subsubsectionSpecialId} unwiderruflich löschen?`)) {
-      await deleteSubsubsectionSpecialMutation({ projectSlug, id: subsubsectionSpecialId })
+      try {
+        await deleteSubsubsectionSpecialMutation({ projectSlug, id: subsubsectionSpecialId })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
       await router.push(Routes.SubsubsectionSpecialsPage({ projectSlug }))
     }
   }

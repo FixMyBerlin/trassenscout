@@ -23,7 +23,13 @@ export const CalendarEntry = () => {
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${calendarEntry.id} unwiderruflich löschen?`)) {
-      await deleteCalendarEntryMutation({ projectSlug, id: calendarEntry.id })
+      try {
+        await deleteCalendarEntryMutation({ projectSlug, id: calendarEntry.id })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
       await router.push(Routes.CalendarEntriesPage({ projectSlug }))
     }
   }

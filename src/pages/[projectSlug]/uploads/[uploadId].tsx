@@ -34,7 +34,13 @@ export const Upload = () => {
   const [deleteUploadMutation] = useMutation(deleteUpload)
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${upload.id} unwiderruflich löschen?`)) {
-      await deleteUploadMutation({ projectSlug, id: upload.id })
+      try {
+        await deleteUploadMutation({ projectSlug, id: upload.id })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
       await router.push(backUrl)
     }
   }

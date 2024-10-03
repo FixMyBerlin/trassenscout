@@ -35,7 +35,13 @@ export const OperatorsWithData = () => {
   const [deleteOperatorMutation] = useMutation(deleteOperator)
   const handleDelete = async (operatorId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${operatorId} unwiderruflich löschen?`)) {
-      await deleteOperatorMutation({ projectSlug, id: operatorId })
+      try {
+        await deleteOperatorMutation({ projectSlug, id: operatorId })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
       await router.push(Routes.OperatorsPage({ projectSlug }))
     }
   }

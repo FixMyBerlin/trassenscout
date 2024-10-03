@@ -35,7 +35,13 @@ export const SubsubsectionStatussWithData = () => {
   const [deleteSubsubsectionStatusMutation] = useMutation(deleteSubsubsectionStatus)
   const handleDelete = async (subsubsectionStatusId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${subsubsectionStatusId} unwiderruflich löschen?`)) {
-      await deleteSubsubsectionStatusMutation({ projectSlug, id: subsubsectionStatusId })
+      try {
+        await deleteSubsubsectionStatusMutation({ projectSlug, id: subsubsectionStatusId })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
       await router.push(Routes.SubsubsectionStatussPage({ projectSlug }))
     }
   }

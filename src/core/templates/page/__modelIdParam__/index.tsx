@@ -22,7 +22,13 @@ export const __ModelName__ = () => {
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${__modelName__.id} unwiderruflich löschen?`)) {
-      await delete__ModelName__Mutation({ id: __modelName__.id })
+      try {
+        await delete__ModelName__Mutation({ id: __modelName__.id })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
       if (process.env.parentModel) {
         await router.push(Routes.__ModelNames__Page({ __parentModelId__: __parentModelId__! }))
       } else {

@@ -54,7 +54,13 @@ const EditSubsection = () => {
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${subsection.id} unwiderruflich löschen?`)) {
       try {
-        await deleteSubsectionMutation({ projectSlug, id: subsection.id })
+        try {
+          await deleteSubsectionMutation({ projectSlug, id: subsection.id })
+        } catch (error) {
+          alert(
+            "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+          )
+        }
       } catch (error) {
         alert(
           "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",

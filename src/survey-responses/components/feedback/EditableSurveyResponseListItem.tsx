@@ -133,8 +133,14 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
       response.source !== "FORM" &&
       window.confirm(`Den Eintrag mit ID ${response.id} unwiderruflich löschen?`)
     ) {
-      await deleteCalendarEntryMutation({ id: response.id })
-      await refetchResponsesAndTopics()
+      try {
+        await deleteCalendarEntryMutation({ id: response.id })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
+      refetchResponsesAndTopics()
     }
   }
 

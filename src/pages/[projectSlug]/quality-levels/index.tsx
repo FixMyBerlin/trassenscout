@@ -35,7 +35,13 @@ export const QualityLevelsWithData = () => {
   const [deleteQualityLevelMutation] = useMutation(deleteQualityLevel)
   const handleDelete = async (qualityLevelId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${qualityLevelId} unwiderruflich löschen?`)) {
-      await deleteQualityLevelMutation({ projectSlug, id: qualityLevelId })
+      try {
+        await deleteQualityLevelMutation({ projectSlug, id: qualityLevelId })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
       await router.push(Routes.QualityLevelsPage({ projectSlug }))
     }
   }

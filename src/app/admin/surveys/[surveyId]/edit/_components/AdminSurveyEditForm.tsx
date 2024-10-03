@@ -37,7 +37,13 @@ export const AdminSurveyEditForm = () => {
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${survey.id} unwiderruflich löschen?`)) {
-      await deleteSurveyMutation({ id: survey.id })
+      try {
+        await deleteSurveyMutation({ id: survey.id })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
       router.push(`/admin/surveys`)
     }
   }

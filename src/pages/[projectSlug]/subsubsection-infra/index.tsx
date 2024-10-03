@@ -35,7 +35,13 @@ export const SubsubsectionInfrasWithData = () => {
   const [deleteSubsubsectionInfraMutation] = useMutation(deleteSubsubsectionInfra)
   const handleDelete = async (subsubsectionInfraId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${subsubsectionInfraId} unwiderruflich löschen?`)) {
-      await deleteSubsubsectionInfraMutation({ projectSlug, id: subsubsectionInfraId })
+      try {
+        await deleteSubsubsectionInfraMutation({ projectSlug, id: subsubsectionInfraId })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
       await router.push(Routes.SubsubsectionInfrasPage({ projectSlug }))
     }
   }

@@ -62,7 +62,13 @@ const EditStakeholdernote = () => {
   const [deleteStakeholdernoteMutation] = useMutation(deleteStakeholdernote)
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${stakeholdernote.id} unwiderruflich löschen?`)) {
-      await deleteStakeholdernoteMutation({ projectSlug, id: stakeholdernote.id })
+      try {
+        await deleteStakeholdernoteMutation({ projectSlug, id: stakeholdernote.id })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
       await router.push({
         ...Routes.SubsectionDashboardPage({
           projectSlug,
