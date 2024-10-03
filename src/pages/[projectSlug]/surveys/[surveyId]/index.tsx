@@ -5,6 +5,7 @@ import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { H2 } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlugId } from "@/src/core/routes/useSlug"
 import { TSurvey } from "@/src/survey-public/components/types"
 import {
   getFeedbackDefinitionBySurveySlug,
@@ -20,7 +21,7 @@ import {
 import { getFormatDistanceInDays } from "@/src/survey-responses/utils/getFormatDistanceInDays"
 import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage, Routes } from "@blitzjs/next"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 import { isFuture, isPast } from "date-fns"
@@ -28,7 +29,7 @@ import { Suspense } from "react"
 
 export const Survey = () => {
   const projectSlug = useProjectSlug()
-  const surveyId = useParam("surveyId", "number")
+  const surveyId = useSlugId("surveyId")
   const [survey] = useQuery(getSurvey, { projectSlug, id: surveyId })
   const [{ groupedSurveyResponsesFirstPart, surveySessions, surveyResponsesFeedbackPart }] =
     usePaginatedQuery(getGroupedSurveyResponses, { projectSlug, surveyId: survey.id })

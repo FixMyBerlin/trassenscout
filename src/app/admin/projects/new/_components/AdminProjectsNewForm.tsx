@@ -20,7 +20,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
 export { FORM_ERROR } from "@/src/core/components/forms"
 
-export const ProjectForm = () => {
+export const AdminProjectsNewForm = () => {
   const router = useRouter()
   const currentUser = useCurrentUser()
   const [createProjectMutation] = useMutation(createProject)

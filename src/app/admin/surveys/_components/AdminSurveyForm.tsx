@@ -8,24 +8,24 @@ import {
 } from "@/src/core/components/forms"
 import getProjects from "@/src/server/projects/queries/getProjects"
 import { useQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/router"
+import { usePathname } from "next/navigation"
 import { z } from "zod"
 export { FORM_ERROR } from "@/src/core/components/forms"
 
-export function SurveyForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
-  const [{ projects }] = useQuery(getProjects, {})
-  const projectOptions: [number | string, string][] = [
-    ...projects.map((p) => {
-      return [p.slug, `${p.slug}`] as [string, string]
-    }),
-  ]
+type Props = FormProps<z.ZodType<any, any>>
 
-  const router = useRouter()
-  const editForm = router.pathname.endsWith("edit")
+export const AdminSurveyForm = (props: Props) => {
+  const [projects] = useQuery(getProjects, {})
+  const projectOptions: [number | string, string][] = projects?.projects?.map((p) => {
+    return [String(p.id), `${p.slug}`] satisfies [string, string]
+  })
+
+  const pathname = usePathname()
+  const editForm = pathname?.endsWith("edit")
 
   return (
-    <Form<S> {...props}>
-      <SuperAdminLogData data={props} />
+    <Form {...props}>
+      <SuperAdminLogData data={{ projects }} />
       <LabeledTextField type="text" name="slug" label="Slug" />
       <LabeledTextField type="text" name="title" label="Titel" />
       <LabeledCheckbox
@@ -36,7 +36,7 @@ export function SurveyForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
       />
 
       {/* projectSlug is only for the new form */}
-      {!editForm && <LabeledSelect name="projectSlug" label="Projekt" options={projectOptions} />}
+      {!editForm && <LabeledSelect name="projectId" label="Projekt" options={projectOptions} />}
 
       <div className="flex gap-4">
         <LabeledTextField

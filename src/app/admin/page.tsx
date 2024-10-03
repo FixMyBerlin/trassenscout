@@ -1,5 +1,6 @@
 import { Link } from "@/src/core/components/links/Link"
 import { Metadata } from "next"
+import "server-only"
 import { Breadcrumb } from "./_components/Breadcrumb"
 import { HeaderWrapper } from "./_components/HeaderWrapper"
 
@@ -23,10 +24,8 @@ export default function AdminDashboardPage() {
           <Link href="/admin/memberships">Memberships</Link>
         </li>
         <li>
-          <Link href="/admin/survey">Nutzer & Mitgliedschaften</Link>
-        </li>
-        <li>
-          <Link href="/admin/survey">Surveys</Link>
+          <Link href="/admin/surveys">Beteiligungen & Antworten</Link> |{" "}
+          <Link href="/admin/surveys/new">Neue Beteiligung</Link>
         </li>
         <li>
           <Link href="/admin/logEntries">LogEntires</Link>

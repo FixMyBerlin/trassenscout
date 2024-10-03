@@ -28,7 +28,6 @@ export default async function downloadFile(req: NextApiRequest, res: NextApiResp
       // @ts-ignore will work
       { session },
     )
-    console.log("xxxx", uploadId, projectSlug, upload)
 
     const { hostname, pathname } = new URL(upload.externalUrl)
     const isAws = hostname.endsWith("amazonaws.com")

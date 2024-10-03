@@ -7,7 +7,7 @@ import {
 } from "@/src/authorization/extractProjectSlug"
 import {
   allowedSurveySlugs,
-  AllowedSurveySlugs,
+  AllowedSurveySlugsSchema,
 } from "@/src/survey-public/utils/allowedSurveySlugs"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
@@ -30,7 +30,7 @@ export default resolver.pipe(
     if (!allowedSurveySlugs.includes(survey.slug)) {
       throw new NotFoundError()
     }
-    // Get type savety for `slug`
-    return { ...survey, slug: survey.slug as AllowedSurveySlugs }
+    const zod = AllowedSurveySlugsSchema.parse(survey)
+    return { ...survey, slug: zod.slug }
   },
 )
