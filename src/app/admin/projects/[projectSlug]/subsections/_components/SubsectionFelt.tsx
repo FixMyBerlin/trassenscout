@@ -35,7 +35,7 @@ export const SubsectionFelt = ({ project }: Props) => {
         },
         {
           onSuccess: () => {
-            refetch()
+            void refetch()
             setIsFetching(false)
             setError(null)
           },
