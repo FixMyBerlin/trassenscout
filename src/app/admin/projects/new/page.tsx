@@ -3,7 +3,7 @@ import { Breadcrumb } from "../../_components/Breadcrumb"
 import { HeaderWrapper } from "../../_components/HeaderWrapper"
 import { AdminProjectsNewForm } from "./_components/AdminProjectsNewForm"
 
-export const metadata: Metadata = { title: "Trasse hinzufügen" }
+export const metadata: Metadata = { title: "Projekt hinzufügen" }
 
 export default function AdminProjectsNewPage() {
   return (
@@ -12,8 +12,8 @@ export default function AdminProjectsNewPage() {
         <Breadcrumb
           pages={[
             { href: "/admin", name: "Dashboard" },
-            { name: "Trassen" },
-            { name: "Trasse hinzufügen" },
+            { href: "/admin/projects", name: "Projekte" },
+            { name: "Projekt hinzufügen" },
           ]}
         />
       </HeaderWrapper>

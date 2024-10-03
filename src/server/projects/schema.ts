@@ -6,11 +6,16 @@ export const ProjectSchema = z.object({
   subTitle: z.string().nullish(),
   description: z.string().nullish(),
   logoSrc: z.string().nullish(),
-  partnerLogoSrcs: z.string().array(),
+  partnerLogoSrcs: z.array(z.string()).nullish(),
   felt_subsection_geometry_source_url: z.union([z.string().url().nullish(), z.literal("")]),
   managerId: InputNumberOrNullSchema,
 })
 
+export type ProjectType = z.infer<typeof ProjectSchema>
+
 export const ProjectLogoScrcsInputSchema = z.object({
   partnerLogoSrcs: z.string().nullish(),
 })
+
+export const ProjectFormSchema = ProjectSchema.merge(ProjectLogoScrcsInputSchema)
+export type ProjectFormType = z.infer<typeof ProjectFormSchema>

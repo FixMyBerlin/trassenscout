@@ -112,7 +112,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           await deleteSurveyResponseTopicsOnSurveyResponsesMutation({
             surveyResponseId: response.id,
           })
-          for (let v of values.surveyResponseTopics) {
+          for (const v of values.surveyResponseTopics) {
             await surveyResponseTopicsOnSurveyResponsesMutation({
               surveyResponseId: response.id,
               surveyResponseTopicId: Number(v),

@@ -9,11 +9,9 @@ import { RouteUrlObject } from "blitz"
 import { Link } from "../links"
 import { shortTitle } from "../text"
 
-const BreadcrumbStep: React.FC<{ title: string; route?: RouteUrlObject; arrow: boolean }> = ({
-  title,
-  route,
-  arrow,
-}) => {
+type Props = { title: string; route?: RouteUrlObject; arrow: boolean }
+
+const BreadcrumbStep = ({ title, route, arrow }: Props) => {
   return (
     <li className="flex items-center pl-3 first:pl-0">
       {typeof route === "object" ? (

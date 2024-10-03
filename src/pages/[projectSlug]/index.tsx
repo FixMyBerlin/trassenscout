@@ -103,10 +103,10 @@ export const ProjectDashboardWithQuery = () => {
 
       <CalenderDashboard />
       <SuperAdminBox className="flex flex-col items-start gap-4">
-        <Link button href={Routes.AdminNewSubsectionsPage({ projectSlug: project.slug })}>
+        <Link button href={`/admin/projects/${projectSlug}/subsections/multiple-new`}>
           Mehrere Planungsabschnitte erstellen
         </Link>
-        <Link button href={Routes.AdminSubsectionsPage({ projectSlug: project.slug })}>
+        <Link button href={`/admin/projects/${projectSlug}/subsections`}>
           Felt Import für Planungsabschnitte
         </Link>
       </SuperAdminBox>
