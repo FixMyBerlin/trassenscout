@@ -21,7 +21,7 @@ import {
 import { getFormatDistanceInDays } from "@/src/survey-responses/utils/getFormatDistanceInDays"
 import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
-import { BlitzPage, Routes } from "@blitzjs/next"
+import { BlitzPage } from "@blitzjs/next"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 import { isFuture, isPast } from "date-fns"
@@ -212,7 +212,7 @@ export const Survey = () => {
       </SuperAdminBox>
 
       <SuperAdminBox>
-        <Link href={Routes.AdminEditSurveyPage({ surveyId: survey.id })}>Bearbeiten</Link>
+        <Link href={`/admin/surveys/${survey.id}/edit`}>Bearbeiten</Link>
       </SuperAdminBox>
     </>
   )

@@ -1,6 +1,5 @@
 import { Form, FormProps, LabeledTextField } from "@/src/core/components/forms"
 import { z } from "zod"
-export { FORM_ERROR } from "@/src/core/components/forms"
 
 export function SubsubsectionTaskForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const { ...formProps } = props

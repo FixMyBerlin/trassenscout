@@ -2,8 +2,6 @@ import { ProgressContext } from "@/src/survey-public/context/contexts"
 import { clsx } from "clsx"
 import { useContext } from "react"
 
-export { FORM_ERROR } from "@/src/core/components/forms"
-
 const TOTAL = 8
 
 export const ProgressBar = () => {

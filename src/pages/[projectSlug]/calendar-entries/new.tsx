@@ -1,13 +1,11 @@
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
-import {
-  CalendarEntryForm,
-  FORM_ERROR,
-} from "@/src/pagesComponents/calendar-entries/CalendarEntryForm"
+import { CalendarEntryForm } from "@/src/pagesComponents/calendar-entries/CalendarEntryForm"
 import { transformValuesWithStartAt } from "@/src/pagesComponents/calendar-entries/utils/transformValuesWithStartAt"
 import createCalendarEntry from "@/src/server/calendar-entries/mutations/createCalendarEntry"
 import {

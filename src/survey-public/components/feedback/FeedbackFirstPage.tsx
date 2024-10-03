@@ -10,8 +10,6 @@ import { SurveyMapLegend } from "../maps/SurveyMapLegend"
 import { SurveyMapLine } from "../maps/SurveyMapLine"
 import { TInstitutionsBboxes, TLegendItem, TQuestion } from "../types"
 
-export { FORM_ERROR } from "@/src/core/components/forms"
-
 type Props = {
   page: any
   onButtonClick: any // TODO

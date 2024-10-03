@@ -10,7 +10,6 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { Subsection } from "@prisma/client"
 import { length, lineString } from "@turf/turf"
 import { useRouter } from "next/navigation"
-export { FORM_ERROR } from "@/src/core/components/forms"
 
 export const defaultGeometryForMultipleSubsectionForm = [
   [5.98865807458, 47.3024876979],

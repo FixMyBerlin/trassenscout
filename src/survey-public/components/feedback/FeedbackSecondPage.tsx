@@ -11,8 +11,6 @@ import { SurveyLabeledTextareaField } from "../core/form/SurveyLabeledTextareaFi
 import { SurveyMap } from "../maps/SurveyMap"
 import { SurveyMapLegend } from "../maps/SurveyMapLegend"
 
-export { FORM_ERROR } from "@/src/core/components/forms"
-
 type Props = {
   mapProps: TMapProps
   maptilerUrl: string

@@ -26,8 +26,6 @@ import { z } from "zod"
 import { GeometryInput } from "./GeometryInput/GeometryInput"
 import { LinkWithFormDirtyConfirm } from "./LinkWithFormDirtyConfirm"
 
-export { FORM_ERROR } from "@/src/core/components/forms"
-
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const projectSlug = useProjectSlug()
   const [users] = useQuery(getProjectUsers, { projectSlug, role: "EDITOR" })

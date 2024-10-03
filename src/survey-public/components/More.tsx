@@ -4,8 +4,6 @@ import { SurveyButtonWrapper } from "./core/buttons/SurveyButtonWrapper"
 import { SurveyScreenHeader } from "./core/layout/SurveyScreenHeader"
 import { TMore } from "./types"
 
-export { FORM_ERROR } from "@/src/core/components/forms"
-
 type Props = {
   onClickMore: any
   onClickFinish: any

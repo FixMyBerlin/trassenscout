@@ -5,7 +5,6 @@ import {
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { z } from "zod"
-export { FORM_ERROR } from "@/src/core/components/forms"
 
 export function ContactForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (

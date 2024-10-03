@@ -5,7 +5,6 @@ import { CreateSurveySchema, CreateSurveyType } from "@/src/surveys/schemas"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
 import { AdminSurveyForm } from "../../_components/AdminSurveyForm"
-export { FORM_ERROR } from "@/src/core/components/forms"
 
 export const AdminSurveyNewForm = () => {
   const router = useRouter()

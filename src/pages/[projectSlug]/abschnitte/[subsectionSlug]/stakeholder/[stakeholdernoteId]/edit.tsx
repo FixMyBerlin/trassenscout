@@ -1,5 +1,6 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
@@ -8,10 +9,7 @@ import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { hashStakeholdernotes } from "@/src/pagesComponents/stakeholdernotes/StakeholderSection"
-import {
-  FORM_ERROR,
-  StakeholdernoteForm,
-} from "@/src/pagesComponents/stakeholdernotes/StakeholdernoteForm"
+import { StakeholdernoteForm } from "@/src/pagesComponents/stakeholdernotes/StakeholdernoteForm"
 import deleteStakeholdernote from "@/src/server/stakeholdernotes/mutations/deleteStakeholdernote"
 import updateStakeholdernote from "@/src/server/stakeholdernotes/mutations/updateStakeholdernote"
 import getStakeholdernote from "@/src/server/stakeholdernotes/queries/getStakeholdernote"

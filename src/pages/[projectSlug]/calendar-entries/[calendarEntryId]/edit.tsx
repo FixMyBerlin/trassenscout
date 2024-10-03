@@ -1,14 +1,12 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
-import {
-  CalendarEntryForm,
-  FORM_ERROR,
-} from "@/src/pagesComponents/calendar-entries/CalendarEntryForm"
+import { CalendarEntryForm } from "@/src/pagesComponents/calendar-entries/CalendarEntryForm"
 import { getDate, getTime } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
 import { transformValuesWithStartAt } from "@/src/pagesComponents/calendar-entries/utils/transformValuesWithStartAt"
 import updateCalendarEntry from "@/src/server/calendar-entries/mutations/updateCalendarEntry"

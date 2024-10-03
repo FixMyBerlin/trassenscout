@@ -9,7 +9,6 @@ import { useCurrentUser } from "@/src/server/users/hooks/useCurrentUser"
 import getUsers from "@/src/server/users/queries/getUsers"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
-export { FORM_ERROR } from "@/src/core/components/forms"
 
 export const AdminProjectsNewForm = () => {
   const router = useRouter()

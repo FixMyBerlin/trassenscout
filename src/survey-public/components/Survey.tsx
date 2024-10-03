@@ -7,7 +7,6 @@ import { SetStateAction, useContext } from "react"
 import { useFormContext } from "react-hook-form"
 import { stageProgressDefinition } from "../frm7/data/progress"
 import { useAlertBeforeUnload } from "../utils/useAlertBeforeUnload"
-export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props = {
   survey: TSurvey

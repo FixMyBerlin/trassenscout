@@ -22,7 +22,6 @@ import { PriorityEnum } from "@prisma/client"
 import { Suspense } from "react"
 import { z } from "zod"
 import { getPriorityTranslation } from "./utils/getPriorityTranslation"
-export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props<S extends z.ZodType<any, any>> = FormProps<S> & {
   isFeltFieldsReadOnly?: boolean

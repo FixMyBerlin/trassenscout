@@ -10,7 +10,6 @@ import getProjects from "@/src/server/projects/queries/getProjects"
 import { useQuery } from "@blitzjs/rpc"
 import { usePathname } from "next/navigation"
 import { z } from "zod"
-export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props = FormProps<z.ZodType<any, any>>
 

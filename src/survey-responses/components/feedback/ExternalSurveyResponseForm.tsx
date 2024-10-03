@@ -16,8 +16,6 @@ import { MapProvider } from "react-map-gl/maplibre"
 import { z } from "zod"
 import { ExternalSurveyResponseFormMap } from "./ExternalSurveyResponseFormMap"
 
-export { FORM_ERROR } from "@/src/core/components/forms"
-
 type Props = {
   mapProps: TMapProps
   categories: TResponse[]

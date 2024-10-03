@@ -9,7 +9,6 @@ import {
 import { shortTitle } from "@/src/core/components/text/titles"
 import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { z } from "zod"
-export { FORM_ERROR } from "@/src/core/components/forms"
 
 export function UploadForm<S extends z.ZodType<any, any>>(
   props: FormProps<S> & {

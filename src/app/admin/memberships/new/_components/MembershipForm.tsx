@@ -13,7 +13,6 @@ import getProjects from "@/src/server/projects/queries/getProjects"
 import getUsers from "@/src/server/users/queries/getUsers"
 import { useQuery } from "@blitzjs/rpc"
 import { z } from "zod"
-export { FORM_ERROR } from "@/src/core/components/forms"
 
 export function MembershipForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const [{ users }] = useQuery(getUsers, {})

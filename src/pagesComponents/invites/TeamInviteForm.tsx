@@ -7,7 +7,6 @@ import {
 } from "@/src/core/components/forms"
 import { roleTranslation } from "@/src/pagesComponents/memberships/roleTranslation.const"
 import { z } from "zod"
-export { FORM_ERROR } from "@/src/core/components/forms"
 
 export function TeamInviteForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
