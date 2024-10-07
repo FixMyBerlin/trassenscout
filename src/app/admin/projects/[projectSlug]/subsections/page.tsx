@@ -4,6 +4,7 @@ import { invoke } from "@/src/blitz-server"
 import getProject from "@/src/server/projects/queries/getProject"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import { Metadata } from "next"
+import "server-only"
 import { SubsectionFelt } from "./_components/SubsectionFelt"
 import { SubsectionTableAdmin } from "./_components/SubsectionTableAdmin"
 

@@ -5,6 +5,7 @@ import { Link } from "@/src/core/components/links"
 import getLogEntries from "@/src/server/logEntries/queries/getLogEntries"
 import { format, formatDistanceToNow } from "date-fns"
 import { de } from "date-fns/locale"
+import "server-only"
 import { Breadcrumb } from "../_components/Breadcrumb"
 import { HeaderWrapper } from "../_components/HeaderWrapper"
 

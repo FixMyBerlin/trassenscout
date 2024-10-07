@@ -4,11 +4,13 @@ import { invoke } from "@/src/blitz-server"
 import { Link } from "@/src/core/components/links/Link"
 import getProjects from "@/src/server/projects/queries/getProjects"
 import { Metadata } from "next"
+import "server-only"
 
 export const metadata: Metadata = { title: "Projekte" }
 
 export default async function AdminProjectsPage() {
   const { projects } = await invoke(getProjects, {})
+
   return (
     <>
       <HeaderWrapper>

@@ -7,6 +7,7 @@ import { shortTitle } from "@/src/core/components/text"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getUsersAndMemberships from "@/src/server/users/queries/getUsersAndMemberships"
 import { Metadata } from "next"
+import "server-only"
 import { DeleteMembershipForm } from "./_components/DeleteMembershipForm"
 
 export const metadata: Metadata = { title: "Nutzer & Mitgliedschaften" }

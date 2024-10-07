@@ -1,4 +1,5 @@
 import { Metadata } from "next"
+import "server-only"
 import { Breadcrumb } from "../../_components/Breadcrumb"
 import { HeaderWrapper } from "../../_components/HeaderWrapper"
 import { AdminProjectsNewForm } from "./_components/AdminProjectsNewForm"

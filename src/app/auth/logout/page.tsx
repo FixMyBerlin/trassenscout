@@ -1,5 +1,6 @@
 import { Spinner } from "@/src/core/components/Spinner"
 import { Metadata } from "next"
+import "server-only"
 import { TitleBodyWrapper } from "../_components/layouts/TitleBodyWrapper"
 import { Logout } from "./_components/Logout"
 
