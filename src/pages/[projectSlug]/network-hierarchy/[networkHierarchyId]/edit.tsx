@@ -35,8 +35,9 @@ const EditNetworkHierarchyWithQuery = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateNetworkHierarchyMutation({
-        id: networkHierarchy.id,
         ...values,
+        id: networkHierarchy.id,
+        projectSlug,
       })
       await setQueryData(updated)
       await router.push(Routes.NetworkHierarchysPage({ projectSlug }))

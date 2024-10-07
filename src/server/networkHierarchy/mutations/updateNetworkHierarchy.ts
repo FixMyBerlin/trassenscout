@@ -16,7 +16,7 @@ const UpdateNetworkHierarchySchema = ProjectSlugRequiredSchema.merge(
 export default resolver.pipe(
   resolver.zod(UpdateNetworkHierarchySchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ id, ...data }) => {
+  async ({ id, projectSlug, ...data }) => {
     return await db.networkHierarchy.update({
       where: { id },
       data,
