@@ -35,8 +35,9 @@ const EditOperatorWithQuery = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateOperatorMutation({
-        id: operator.id,
         ...values,
+        id: operator.id,
+        projectSlug,
       })
       await setQueryData(updated)
       await router.push(Routes.OperatorsPage({ projectSlug }))

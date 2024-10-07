@@ -16,7 +16,7 @@ const UpdateOperatorSchema = ProjectSlugRequiredSchema.merge(
 export default resolver.pipe(
   resolver.zod(UpdateOperatorSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ id, ...data }) => {
+  async ({ id, projectSlug, ...data }) => {
     return await db.operator.update({
       where: { id },
       data,
