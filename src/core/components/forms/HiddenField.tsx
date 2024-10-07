@@ -5,10 +5,11 @@ export interface HiddenFieldProps extends PropsWithoutRef<JSX.IntrinsicElements[
   name: string
 }
 
-export const HiddenField = forwardRef<HTMLInputElement, HiddenFieldProps>(
-  ({ name, ...props }, ref) => {
-    const { register } = useFormContext()
+export const HiddenField = forwardRef<HTMLInputElement, HiddenFieldProps>(function HiddenField(
+  { name, ...props },
+  ref,
+) {
+  const { register } = useFormContext()
 
-    return <input readOnly={true} type="hidden" {...register(name)} id={name} {...props} />
-  },
-)
+  return <input readOnly={true} type="hidden" {...register(name)} id={name} {...props} />
+})

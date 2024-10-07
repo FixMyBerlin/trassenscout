@@ -20,7 +20,10 @@ export interface SurveyLabeledRadiobuttonProps
 }
 
 export const SurveyLabeledRadiobutton = forwardRef<HTMLInputElement, SurveyLabeledRadiobuttonProps>(
-  ({ scope, name, label, value, help, outerProps, labelProps, ...props }, ref) => {
+  function SurveyLabeledRadiobutton(
+    { scope, name, label, value, help, outerProps, labelProps, ...props },
+    ref,
+  ) {
     const {
       register,
       formState: { isSubmitting, errors },

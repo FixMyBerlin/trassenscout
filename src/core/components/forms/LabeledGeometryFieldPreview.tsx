@@ -28,7 +28,7 @@ type Props = {
 type RouteGeomtry = Position[] // [number, number][]
 type AreaGeometry = Position // [number, number]
 
-export const LabeledGeometryFieldPreview: React.FC<Props> = ({ name, hasError }) => {
+export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
   const { watch, getValues } = useFormContext()
   const geometry = watch(name) as RouteGeomtry | AreaGeometry
   const geometryType = (getValues("type") || "ROUTE") as SubsubsectionWithPosition["type"] // Subsections don't have a `type` but area a ROUTE

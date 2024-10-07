@@ -17,36 +17,37 @@ export type SurveyLinkProps = {
   children: React.ReactNode
 } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href">
 
-export const SurveyLink: React.FC<SurveyLinkProps> = forwardRef<HTMLAnchorElement, SurveyLinkProps>(
-  ({ href, className, classNameOverwrites, children, blank = false, button, ...props }, ref) => {
-    const classNames = clsx(classNameOverwrites ?? selectSurveyLinkStyle(button, className))
+export const SurveyLink = forwardRef<HTMLAnchorElement, SurveyLinkProps>(function SurveyLink(
+  { href, className, classNameOverwrites, children, blank = false, button, ...props },
+  ref,
+) {
+  const classNames = clsx(classNameOverwrites ?? selectSurveyLinkStyle(button, className))
 
-    // external link
-    if (typeof href === "string") {
-      return (
-        <a
-          ref={ref}
-          href={href}
-          className={classNames}
-          rel="noopener noreferrer"
-          {...{ target: blank ? "_blank" : undefined }}
-          {...props}
-        >
-          {children}
-        </a>
-      )
-    }
-
+  // external link
+  if (typeof href === "string") {
     return (
-      <NextLink
-        href={href}
+      <a
         ref={ref}
+        href={href}
         className={classNames}
-        {...props}
+        rel="noopener noreferrer"
         {...{ target: blank ? "_blank" : undefined }}
+        {...props}
       >
         {children}
-      </NextLink>
+      </a>
     )
-  },
-)
+  }
+
+  return (
+    <NextLink
+      href={href}
+      ref={ref}
+      className={classNames}
+      {...props}
+      {...{ target: blank ? "_blank" : undefined }}
+    >
+      {children}
+    </NextLink>
+  )
+})
