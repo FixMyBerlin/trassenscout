@@ -35,8 +35,9 @@ const EditSubsubsectionsTaskWithQuery = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateSubsubsectionTaskMutation({
-        id: subsubsectionTask.id,
         ...values,
+        id: subsubsectionTask.id,
+        projectSlug,
       })
       await setQueryData(updated)
       await router.push(Routes.SubsubsectionTasksPage({ projectSlug }))

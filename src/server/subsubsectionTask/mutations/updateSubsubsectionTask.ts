@@ -16,7 +16,7 @@ const UpdateSubsubsectionTaskSchema = ProjectSlugRequiredSchema.merge(
 export default resolver.pipe(
   resolver.zod(UpdateSubsubsectionTaskSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ id, ...data }) => {
+  async ({ id, projectSlug, ...data }) => {
     return await db.subsubsectionTask.update({
       where: { id },
       data,
