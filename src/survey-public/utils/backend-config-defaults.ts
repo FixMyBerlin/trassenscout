@@ -12,6 +12,7 @@ type TAdditionalFiltersItem = {
   label: string
   value: string
   id: number
+  surveyPart: "survey" | "feedback"
   // todo: in the future, we might want to add more filter options here, like single or multi select
 }
 
@@ -27,7 +28,9 @@ export type TBackendConfig = {
     category?: { sg: string }
     location?: { sg: string }
   }
+  // additional filters can only be defined for questions of type text for now
   additionalFilters?: [TAdditionalFiltersItem, ...TAdditionalFiltersItem[]]
+  disableExternalSurveyResponseForm?: boolean
 }
 
 export type TBackendConfigDefaults = {

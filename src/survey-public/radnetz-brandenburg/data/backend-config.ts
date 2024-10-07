@@ -48,21 +48,26 @@ export const backendConfig: TBackendConfig = {
       label: "Institution",
       id: 5,
       value: "institution",
+      surveyPart: "survey",
     },
     {
       label: "Landkreis",
       id: 6,
       value: "landkreis",
+      surveyPart: "survey",
     },
     {
       label: "Verbindung ID",
       id: 20,
       value: "verbindungId",
+      surveyPart: "feedback",
     },
     {
       label: "Verbindung (Von - Bis)",
       id: 30,
       value: "verbindungFromTo",
+      surveyPart: "feedback",
     },
   ],
+  disableExternalSurveyResponseForm: true,
 }
