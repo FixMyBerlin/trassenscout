@@ -44,6 +44,7 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   useEffect(() => {
     mainMap?.fitBounds(boundingBox, { padding: 60 })
     // @ts-expect-error
+    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mainMap, ...boundingBox])
 

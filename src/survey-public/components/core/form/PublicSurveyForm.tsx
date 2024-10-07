@@ -35,6 +35,8 @@ export function PublicSurveyForm<S extends z.ZodType<any, any>>({
     }
   }, [onChangeValues, ctx])
 
+  // TODO REACTCOMPILER find a propper fix
+  // eslint-disable-next-line react-compiler/react-compiler
   if (onChangeValues) props.onChange = () => onChangeValues(ctx.getValues())
 
   return (

@@ -13,6 +13,7 @@ declare global {
 
 const Zod: BlitzPage = () => {
   if (isBrowser) {
+    // eslint-disable-next-line react-compiler/react-compiler
     window.z = z
   }
 

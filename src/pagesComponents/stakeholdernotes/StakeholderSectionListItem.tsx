@@ -19,12 +19,15 @@ export const StakeholderSectionListItem = ({ stakeholderNote }: Props) => {
 
   const router = useRouter()
   const handleOpen = () => {
-    router.query.stakeholderDetails = String(stakeholderNote.id)
-    void router.push({ query: router.query }, undefined, { scroll: false })
+    void router.push(
+      { query: { ...router.query, stakeholderDetails: String(stakeholderNote.id) } },
+      undefined,
+      { scroll: false },
+    )
   }
   const handleClose = () => {
-    delete router.query.stakeholderDetails
-    void router.push({ query: router.query }, undefined, { scroll: false })
+    const { stakeholderDetails: _, ...restQuery } = router.query
+    void router.push({ query: restQuery }, undefined, { scroll: false })
   }
 
   // Open Disclored for object ID `stakeholderDetails`
