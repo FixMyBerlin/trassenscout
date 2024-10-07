@@ -2,6 +2,7 @@
 import { HomeIcon } from "@heroicons/react/20/solid"
 import { clsx } from "clsx"
 import { Route } from "next"
+import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 export type TBreadcrumb = { name: string; href?: Route }
@@ -15,10 +16,10 @@ export const Breadcrumb = ({ pages }: Props) => {
       <ol role="list" className="my-0 flex space-x-4 rounded-md bg-white px-6 shadow">
         <li className="flex">
           <div className="flex items-center">
-            <a href="/admin" className="text-gray-400 hover:text-gray-500">
+            <Link href="/admin" className="text-gray-400 hover:text-gray-500">
               <HomeIcon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
               <span className="sr-only">Admin</span>
-            </a>
+            </Link>
           </div>
         </li>
 
@@ -38,7 +39,7 @@ export const Breadcrumb = ({ pages }: Props) => {
                   <path d="M.293 0l22 22-22 22h1.414l22-22-22-22H.293z" />
                 </svg>
                 {page.href ? (
-                  <a
+                  <Link
                     href={page.href}
                     aria-disabled={current ? "true" : undefined}
                     className={clsx(
@@ -50,7 +51,7 @@ export const Breadcrumb = ({ pages }: Props) => {
                     aria-current={current ? "page" : undefined}
                   >
                     {page.name}
-                  </a>
+                  </Link>
                 ) : (
                   <span className="ml-4 text-sm font-medium text-gray-500">{page.name}</span>
                 )}
