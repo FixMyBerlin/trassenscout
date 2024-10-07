@@ -138,11 +138,6 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
     }
   }
 
-  if (!parsedSurveyResponse)
-    console.log(
-      `Kein Hinweis-Teil zum Beitrag mit der ID ${response.id} und der surveysession ${response.surveySession.id} gefunden.`,
-    )
-
   return (
     <article data-open={open} className="bg-white">
       <button
