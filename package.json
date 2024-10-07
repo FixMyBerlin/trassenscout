@@ -79,6 +79,7 @@
     "clsx": "2.1.1",
     "csv-writer": "1.6.0",
     "date-fns": "4.1.0",
+    "eslint-plugin-react-compiler": "0.0.0-experimental-9a75bad-20241003",
     "maplibre-gl": "4.7.1",
     "next": "14.2.14",
     "node-mailjet": "6.0.6",
