@@ -27,7 +27,7 @@ const EditableSurveyResponseAdditionalFilterFields = ({
                   : // see comment in src/survey-responses/queries/getSurveySurveyResponsesBySurveySessionId.ts
                     surveyData
                     ? surveyData[String(item.id)]
-                    : "(kein Hinweis-Teil zu diesem Eintrag)"}
+                    : "(kein Umfrage-Teil zu diesem Eintrag)"}
               </td>
             </tr>
           ))}
