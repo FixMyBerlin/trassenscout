@@ -35,8 +35,9 @@ const EditQualityLevelWithQuery = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateQualityLevelMutation({
-        id: qualityLevel.id,
         ...values,
+        id: qualityLevel.id,
+        projectSlug,
       })
       await setQueryData(updated)
       await router.push(Routes.QualityLevelsPage({ projectSlug }))

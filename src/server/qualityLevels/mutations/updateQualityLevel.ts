@@ -16,7 +16,7 @@ const UpdateQualityLevelSchema = ProjectSlugRequiredSchema.merge(
 export default resolver.pipe(
   resolver.zod(UpdateQualityLevelSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ id, ...data }) => {
+  async ({ id, projectSlug, ...data }) => {
     return await db.qualityLevel.update({
       where: { id },
       data,

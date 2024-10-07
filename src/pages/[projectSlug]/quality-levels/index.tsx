@@ -86,28 +86,30 @@ export const QualityLevelsWithData = () => {
                     {qualityLevel.subsubsectionCount} Führungen
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
-                    <ButtonWrapper className="justify-end">
-                      <Link
-                        icon="edit"
-                        href={Routes.QualityLevelsPage({
-                          projectSlug,
-                          qualityLevelId: qualityLevel.id,
-                        })}
-                      >
-                        Bearbeiten
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(qualityLevel.id)}
-                        className={clsx(
-                          linkStyles,
-                          "inline-flex items-center justify-center gap-1",
-                        )}
-                      >
-                        {linkIcons["delete"]}
-                        Löschen
-                      </button>
-                    </ButtonWrapper>
+                    <IfUserCanEdit>
+                      <ButtonWrapper className="justify-end">
+                        <Link
+                          icon="edit"
+                          href={Routes.QualityLevelsPage({
+                            projectSlug,
+                            qualityLevelId: qualityLevel.id,
+                          })}
+                        >
+                          Bearbeiten
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(qualityLevel.id)}
+                          className={clsx(
+                            linkStyles,
+                            "inline-flex items-center justify-center gap-1",
+                          )}
+                        >
+                          {linkIcons["delete"]}
+                          Löschen
+                        </button>
+                      </ButtonWrapper>
+                    </IfUserCanEdit>
                   </td>
                 </tr>
               )
