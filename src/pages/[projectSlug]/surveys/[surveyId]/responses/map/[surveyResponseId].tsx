@@ -15,7 +15,7 @@ import {
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import EditableSurveyResponseListItem from "@/src/survey-responses/components/feedback/EditableSurveyResponseListItem"
 import { SurveyFeedbackWithLocationOverviewMap } from "@/src/survey-responses/components/feedback/SurveyFeedbackWithLocationOverviewMap"
-import getFeedbackResponsesWithLocation from "@/src/survey-responses/queries/getFeedbackSurveyResponsesWithLocation"
+import getFeedbackSurveyResponsesWithSurveySurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponsesWithSurveySurveyResponses"
 import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { BlitzPage, useParam } from "@blitzjs/next"
@@ -29,9 +29,11 @@ export const SurveyResponseWithLocation = () => {
   const surveyResponseId = useParam("surveyResponseId", "number")
 
   const [survey] = useQuery(getSurvey, { projectSlug, id: surveyId })
-  const [{ surveyResponsesFeedbackPartWithLocation }] = useQuery(getFeedbackResponsesWithLocation, {
+  // the returned responses include the surveyPart1 data
+  const [feedbackSurveyResponses] = useQuery(getFeedbackSurveyResponsesWithSurveySurveyResponses, {
     projectSlug,
     surveyId: survey.id,
+    withLocationOnly: true,
   })
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const [{ surveyResponseTopics: topics }, { refetch: refetchTopics }] = useQuery(
@@ -56,11 +58,9 @@ export const SurveyResponseWithLocation = () => {
   const maptilerUrl = surveyDefinition.maptilerUrl
   const defaultViewState = mapProps?.config?.bounds
 
-  if (!surveyResponsesFeedbackPartWithLocation?.length) return
+  if (!feedbackSurveyResponses?.length) return
 
-  const selectedSurveyResponse = surveyResponsesFeedbackPartWithLocation.find(
-    (r) => r.id === surveyResponseId,
-  )
+  const selectedSurveyResponse = feedbackSurveyResponses.find((r) => r.id === surveyResponseId)
 
   if (!selectedSurveyResponse) return
 
@@ -78,7 +78,7 @@ export const SurveyResponseWithLocation = () => {
               maptilerUrl={maptilerUrl}
               defaultViewState={defaultViewState}
               selectedSurveyResponse={selectedSurveyResponse}
-              surveyResponsesFeedbackPartWithLocation={surveyResponsesFeedbackPartWithLocation}
+              surveyResponsesFeedbackPartWithLocation={feedbackSurveyResponses}
               locationRef={locationRef!}
             />
           </section>

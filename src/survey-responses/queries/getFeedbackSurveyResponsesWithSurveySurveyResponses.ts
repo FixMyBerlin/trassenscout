@@ -1,5 +1,7 @@
 import db from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
+import { getResponseConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import { resolver } from "@blitzjs/rpc"
 import { viewerRoles } from "../../authorization/constants"
 import { extractProjectSlug } from "../../authorization/extractProjectSlug"
@@ -7,12 +9,17 @@ import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 type GetFeedbackSurveyResponsesWithSurveySurveyResponsesInput = {
   projectSlug: string
   surveyId: number
+  withLocationOnly?: boolean
 }
 
 export default resolver.pipe(
   // @ts-ignore
   authorizeProjectMember(extractProjectSlug, viewerRoles),
-  async ({ projectSlug, surveyId }: GetFeedbackSurveyResponsesWithSurveySurveyResponsesInput) => {
+  async ({
+    projectSlug,
+    surveyId,
+    withLocationOnly,
+  }: GetFeedbackSurveyResponsesWithSurveySurveyResponsesInput) => {
     const rawFeedbackSurveyResponse = await db.surveyResponse.findMany({
       where: {
         // Only surveyResponse.session.project === projectSlug
@@ -30,7 +37,7 @@ export default resolver.pipe(
       include: {
         operator: { select: { id: true, title: true, slug: true } },
         surveyResponseTopics: true,
-        surveySession: { select: { createdAt: true, id: true } },
+        surveySession: { include: { survey: { select: { slug: true } } } },
       },
     })
 
@@ -48,6 +55,10 @@ export default resolver.pipe(
         surveyPart: 1,
       },
     })
+
+    const { evaluationRefs } = getResponseConfigBySurveySlug(
+      rawFeedbackSurveyResponse[0]!.surveySession.survey.slug as AllowedSurveySlugs,
+    )
 
     const rawFeedbackSurveyResponseWithSurveySurveyResponses = rawFeedbackSurveyResponse.map(
       (response) => {
@@ -73,6 +84,11 @@ export default resolver.pipe(
       // Sometimes the fronted received a different order for unknown reasons
       .sort((a, b) => b.id - a.id)
 
+    if (withLocationOnly)
+      return parsedAndSorted.filter(
+        // @ts-expect-error
+        (response) => response.data[evaluationRefs["feedback-location"]],
+      )
     return parsedAndSorted
   },
 )

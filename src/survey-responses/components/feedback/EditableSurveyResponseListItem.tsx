@@ -15,7 +15,6 @@ import {
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import deleteSurveyResponse from "@/src/survey-responses/mutations/deleteSurveyResponse"
-import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"
 import { getSurveyResponseCategoryById } from "@/src/survey-responses/utils/getSurveyResponseCategoryById"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useParam, useRouterQuery } from "@blitzjs/next"
@@ -25,14 +24,16 @@ import { EnvelopeIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import { parseAsInteger, useQueryState } from "nuqs"
 import { useEffect } from "react"
-import getSurveySurveyResponsesBySurveySessionId from "../../queries/getSurveySurveyResponsesBySurveySessionId"
+import getFeedbackSurveyResponsesWithSurveySurveyResponses from "../../queries/getFeedbackSurveyResponsesWithSurveySurveyResponses"
 import EditableSurveyResponseAdditionalFilterFields from "./EditableSurveyResponseAdditionalFilterFields"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
 
 export type EditableSurveyResponseListItemProps = {
-  response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
+  response: Prettify<
+    Awaited<ReturnType<typeof getFeedbackSurveyResponsesWithSurveySurveyResponses>>[number]
+  >
   operators: Prettify<Awaited<ReturnType<typeof getOperatorsWithCount>>["operators"]>
   topics: Prettify<
     Awaited<ReturnType<typeof getSurveyResponseTopicsByProject>>["surveyResponseTopics"]
@@ -57,10 +58,6 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const surveyId = useParam("surveyId", "string")
   const projectSlug = useProjectSlug()
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
-  const [parsedSurveyResponse] = useQuery(getSurveySurveyResponsesBySurveySessionId, {
-    projectSlug,
-    surveySessionId: response.surveySession.id,
-  })
   const [responseDetails, setRespnseDetails] = useQueryState("responseDetails", parseAsInteger)
   const [deleteCalendarEntryMutation] = useMutation(deleteSurveyResponse)
 
@@ -211,7 +208,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
           </div>
           <EditableSurveyResponseAdditionalFilterFields
             additionalFilterFields={additionalFilterFields}
-            surveyData={parsedSurveyResponse?.data}
+            surveyData={response.surveySurveyResponseData}
             feedbackData={response.data}
           />
           <EditableSurveyResponseForm
