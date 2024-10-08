@@ -97,6 +97,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     searchterm,
     ...additionalFilters
   }: FilterSchema) => {
+    // @ts-expect-error todo zod filter
     await setFilter({
       status,
       operator,

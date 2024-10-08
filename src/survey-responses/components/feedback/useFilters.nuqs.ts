@@ -13,7 +13,7 @@ export const filterSchema = z
     searchterm: z.string(),
   })
   .catchall(z.string()) // Allow additional key-value pairs
-// todo catchall - we do not wat to allow everything do we?
+// todo filter zod / catchall - we do not wat to allow everything do we?
 
 export type FilterSchema = z.infer<typeof filterSchema>
 

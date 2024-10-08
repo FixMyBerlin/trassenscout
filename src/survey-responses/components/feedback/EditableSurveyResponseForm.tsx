@@ -157,6 +157,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
       // the EditableSurveyResponseFilterForm needs to update when a new topic is added here
       // this hapens with a useEffect in EditableSurveyResponseFilterForm
       if (filter?.topics)
+        // @ts-expect-error todo zod filter
         await setFilter({ ...filter, topics: [...filter.topics, String(createdOrFetched.id)] })
     } catch (error: any) {
       console.error(error)

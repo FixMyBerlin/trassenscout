@@ -37,7 +37,7 @@ export const useDefaultFilterValues = (): FilterSchema => {
   backendConfig.additionalFilters?.forEach(
     (filter) => (defaultAdditionalFiltersQueryValues[filter.value] = "ALL"),
   )
-
+  // @ts-expect-error todo zod filter
   return {
     status: [...surveyResponseStatus.map((s) => s.value)],
     operator: "ALL",
