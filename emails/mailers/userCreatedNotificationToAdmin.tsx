@@ -14,7 +14,7 @@ export async function userCreatedNotificationToAdmin(props: Props) {
   const introMarkdown = `
 Liebe Trassenscout-Admins!
 
-# Soeben wurde ein neuer Nutzer-Account erstellt.
+# Soeben wurde ein neuer Nutzer:innen-Account erstellt.
 
 Bitte prüfe den Account und ordne ihn einem Projekt zu.
 
@@ -30,7 +30,7 @@ Bitte prüfe den Account und ordne ihn einem Projekt zu.
   const message: Mail = {
     From: addressNoreply,
     To: [{ Email: process.env.ADMIN_EMAIL }],
-    Subject: "[Admin] Trassenscout: User hat sich registriert",
+    Subject: "[Admin] Trassenscout: Nutzer:in hat sich registriert",
     introMarkdown,
     ctaLink: mailUrl(`/admin/memberships/new?userId=${props.userId}`),
     ctaText: "Rechte vergeben",
