@@ -1,17 +1,17 @@
 import db from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { viewerRoles } from "@/src/authorization/constants"
 import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
 import {
   allowedSurveySlugs,
-  AllowedSurveySlugs,
+  AllowedSurveySlugsSchema,
 } from "@/src/survey-public/utils/allowedSurveySlugs"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import { z } from "zod"
-import { viewerRoles } from "../../authorization/constants"
 
 const GetSurveySchema = ProjectSlugRequiredSchema.merge(
   z.object({
@@ -30,7 +30,7 @@ export default resolver.pipe(
     if (!allowedSurveySlugs.includes(survey.slug)) {
       throw new NotFoundError()
     }
-    // Get type savety for `slug`
-    return { ...survey, slug: survey.slug as AllowedSurveySlugs }
+    const zod = AllowedSurveySlugsSchema.parse(survey)
+    return { ...survey, slug: zod.slug }
   },
 )

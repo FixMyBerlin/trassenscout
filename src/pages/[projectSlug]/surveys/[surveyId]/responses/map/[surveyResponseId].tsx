@@ -1,10 +1,11 @@
 import { Spinner } from "@/src/core/components/Spinner"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { H2 } from "@/src/core/components/text"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
-import getSubsections from "@/src/subsections/queries/getSubsections"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
+import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
+import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import { TMapProps } from "@/src/survey-public/components/types"
 import {
   getFeedbackDefinitionBySurveySlug,
@@ -22,7 +23,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 
 export const SurveyResponseWithLocation = () => {
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "number")
   const surveyResponseId = useParam("surveyResponseId", "number")
@@ -36,11 +37,11 @@ export const SurveyResponseWithLocation = () => {
   const [{ surveyResponseTopics: topics }, { refetch: refetchTopics }] = useQuery(
     getSurveyResponseTopicsByProject,
     {
-      projectSlug: projectSlug!,
+      projectSlug,
     },
   )
   const [{ subsections }] = useQuery(getSubsections, {
-    projectSlug: projectSlug!,
+    projectSlug,
     subsectionSlug: subsectionSlug!,
   })
 

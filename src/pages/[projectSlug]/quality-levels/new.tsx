@@ -1,13 +1,13 @@
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { QualityLevelForm } from "@/src/qualityLevels/components/QualityLevelForm"
-import createQualityLevel from "@/src/qualityLevels/mutations/createQualityLevel"
-import { QualityLevelSchema } from "@/src/qualityLevels/schema"
-import { FORM_ERROR } from "@/src/subsubsections/components/SubsubsectionForm"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { QualityLevelForm } from "@/src/pagesComponents/qualityLevels/QualityLevelForm"
+import createQualityLevel from "@/src/server/qualityLevels/mutations/createQualityLevel"
+import { QualityLevelSchema } from "@/src/server/qualityLevels/schema"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -21,8 +21,8 @@ const NewQualityLevelPageWithQuery = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      await createQualityLevelMutation({ ...values, projectSlug: projectSlug! })
-      await router.push(Routes.QualityLevelsPage({ projectSlug: projectSlug! }))
+      await createQualityLevelMutation({ ...values, projectSlug })
+      await router.push(Routes.QualityLevelsPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }

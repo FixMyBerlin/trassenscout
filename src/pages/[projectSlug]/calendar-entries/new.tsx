@@ -1,16 +1,17 @@
-import { CalendarEntryForm, FORM_ERROR } from "@/src/calendar-entries/components/CalendarEntryForm"
-import createCalendarEntry from "@/src/calendar-entries/mutations/createCalendarEntry"
-import {
-  CalendarEntrySchema,
-  CalendarEntryStartDateStartTimeSchema,
-} from "@/src/calendar-entries/schema"
-import { transformValuesWithStartAt } from "@/src/calendar-entries/utils/transformValuesWithStartAt"
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { CalendarEntryForm } from "@/src/pagesComponents/calendar-entries/CalendarEntryForm"
+import { transformValuesWithStartAt } from "@/src/pagesComponents/calendar-entries/utils/transformValuesWithStartAt"
+import createCalendarEntry from "@/src/server/calendar-entries/mutations/createCalendarEntry"
+import {
+  CalendarEntrySchema,
+  CalendarEntryStartDateStartTimeSchema,
+} from "@/src/server/calendar-entries/schema"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -27,11 +28,11 @@ const NewCalendarEntry = () => {
       const transformedValues = transformValuesWithStartAt(values)
       const calendarEntry = await createCalendarEntryMutation({
         ...transformedValues,
-        projectSlug: projectSlug!,
+        projectSlug,
       })
       await router.push(
         Routes.ShowCalendarEntryPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           calendarEntryId: calendarEntry.id,
         }),
       )
@@ -68,9 +69,7 @@ const NewCalendarEntryPage: BlitzPage = () => {
       </Suspense>
 
       <p className="mt-5">
-        <Link href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>
-          Zurück zur Liste
-        </Link>
+        <Link href={Routes.CalendarEntriesPage({ projectSlug })}>Zurück zur Liste</Link>
       </p>
     </LayoutRs>
   )

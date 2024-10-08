@@ -22,7 +22,10 @@ export interface LabeledCheckboxProps extends PropsWithoutRef<JSX.IntrinsicEleme
 }
 
 export const LabeledCheckbox = forwardRef<HTMLInputElement, LabeledCheckboxProps>(
-  ({ scope, value, label, help, outerProps, labelProps, readonly, disabled, ...props }, _ref) => {
+  function LabeledCheckbox(
+    { scope, value, label, help, outerProps, labelProps, readonly, disabled, ...props },
+    _ref,
+  ) {
     const {
       register,
       formState: { isSubmitting, errors },

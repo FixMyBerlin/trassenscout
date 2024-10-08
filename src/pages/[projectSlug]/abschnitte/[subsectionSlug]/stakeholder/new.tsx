@@ -1,15 +1,15 @@
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { longTitle, seoNewTitle } from "@/src/core/components/text"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { hashStakeholdernotes } from "@/src/stakeholdernotes/components/StakeholderSection"
-import { FORM_ERROR } from "@/src/stakeholdernotes/components/StakeholdernoteForm"
-import { StakeholdernoteMultiForm } from "@/src/stakeholdernotes/components/StakeholdernoteMultiForm"
-import createStakeholdernote from "@/src/stakeholdernotes/mutations/createStakeholdernote"
-import { StakeholdernoteMultiSchema } from "@/src/stakeholdernotes/schema"
-import getSubsection from "@/src/subsections/queries/getSubsection"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
+import { StakeholdernoteMultiForm } from "@/src/pagesComponents/stakeholdernotes/StakeholdernoteMultiForm"
+import createStakeholdernote from "@/src/server/stakeholdernotes/mutations/createStakeholdernote"
+import { StakeholdernoteMultiSchema } from "@/src/server/stakeholdernotes/schema"
+import getSubsection from "@/src/server/subsections/queries/getSubsection"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -19,10 +19,10 @@ const NewStakeholdernotesWithQuery = () => {
   const router = useRouter()
   const [createStakeholdernoteMutation] = useMutation(createStakeholdernote)
 
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
   const [subsection] = useQuery(getSubsection, {
-    projectSlug: projectSlug!,
+    projectSlug,
     subsectionSlug: subsectionSlug!,
   })
 
@@ -37,16 +37,10 @@ const NewStakeholdernotesWithQuery = () => {
       })
 
     try {
-      for (let i = 0; i < createStakeholderNoteArray.length; i++) {
-        await createStakeholdernoteMutation(createStakeholderNoteArray[i])
+      for (const createStakeholderNoteElement of createStakeholderNoteArray) {
+        await createStakeholdernoteMutation({ projectSlug, ...createStakeholderNoteElement })
       }
-      await router.push({
-        ...Routes.SubsectionStakeholdersPage({
-          projectSlug: projectSlug!,
-          subsectionSlug: subsectionSlug!,
-        }),
-        hash: hashStakeholdernotes,
-      })
+      await router.push(Routes.SubsectionStakeholdersPage({ projectSlug, subsectionSlug }))
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
@@ -74,7 +68,7 @@ const NewStakeholdernotesWithQuery = () => {
 }
 
 const NewStakeholdernotesPage: BlitzPage = () => {
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
 
   return (
@@ -84,15 +78,7 @@ const NewStakeholdernotesPage: BlitzPage = () => {
       </Suspense>
 
       <p className="mt-5">
-        <Link
-          href={{
-            ...Routes.SubsectionDashboardPage({
-              projectSlug: projectSlug!,
-              subsectionSlug: subsectionSlug!,
-            }),
-            hash: hashStakeholdernotes,
-          }}
-        >
+        <Link href={Routes.SubsectionStakeholdersPage({ projectSlug, subsectionSlug })}>
           Zurück zum Planungsabschnitt
         </Link>
       </p>

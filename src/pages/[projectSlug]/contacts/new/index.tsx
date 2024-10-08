@@ -1,13 +1,14 @@
-import { ContactForm, FORM_ERROR } from "@/src/contacts/components/ContactForm"
-import createContact from "@/src/contacts/mutations/createContact"
-import { ContactSchema } from "@/src/contacts/schema"
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { ContactForm } from "@/src/pagesComponents/contacts/ContactForm"
+import createContact from "@/src/server/contacts/mutations/createContact"
+import { ContactSchema } from "@/src/server/contacts/schema"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -21,10 +22,10 @@ const NewContactWithQuery: BlitzPage = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const contact = await createContactMutation({ ...values, projectSlug: projectSlug! })
+      const contact = await createContactMutation({ ...values, projectSlug })
       await router.push(
         Routes.ShowContactPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           contactId: contact.id,
         }),
       )
@@ -53,9 +54,7 @@ const NewContactPage: BlitzPage = () => {
       </Suspense>
 
       <p className="mt-5">
-        <Link href={Routes.ContactsPage({ projectSlug: projectSlug! })}>
-          Zurück zur Kontaktliste
-        </Link>
+        <Link href={Routes.ContactsPage({ projectSlug })}>Zurück zur Kontaktliste</Link>
       </p>
     </LayoutRs>
   )

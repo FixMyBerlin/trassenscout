@@ -5,12 +5,12 @@ import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import getSubsections from "@/src/subsections/queries/getSubsections"
-import { UploadTable } from "@/src/uploads/components/UploadTable"
-import getUploads from "@/src/uploads/queries/getUploadsWithSubsections"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import { UploadTable } from "@/src/pagesComponents/uploads/UploadTable"
+import getSubsections from "@/src/server/subsections/queries/getSubsections"
+import getUploads from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { BlitzPage, Routes, useRouterQuery } from "@blitzjs/next"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -23,13 +23,13 @@ export const UploadsWithData = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ uploads, hasMore }] = usePaginatedQuery(getUploads, {
-    projectSlug: projectSlug!,
+    projectSlug,
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
     where: { subsubsectionId: null },
   })
 
-  const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
 
   const selectOptions: [number, string, number][] = [
     [0, `Alle Dateien (${uploads.length})`, uploads.length],
@@ -63,7 +63,7 @@ export const UploadsWithData = () => {
           const sectionOrNull = parseInt(event.target.value) === 0 ? null : event.target.value
           void router.push(
             Routes.UploadsPage({
-              projectSlug: projectSlug!,
+              projectSlug,
               ...(sectionOrNull ? { filterSubsectionId: sectionOrNull } : {}),
             }),
           )
@@ -83,11 +83,7 @@ export const UploadsWithData = () => {
 
       <IfUserCanEdit>
         <ButtonWrapper className="mt-5">
-          <Link
-            button="blue"
-            icon="plus"
-            href={Routes.NewUploadPage({ projectSlug: projectSlug! })}
-          >
+          <Link button="blue" icon="plus" href={Routes.NewUploadPage({ projectSlug })}>
             Datei hochladen
           </Link>
         </ButtonWrapper>

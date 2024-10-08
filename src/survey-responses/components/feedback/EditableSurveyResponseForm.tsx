@@ -5,9 +5,9 @@ import {
   LabeledTextareaField,
 } from "@/src/core/components/forms"
 import { Link, blueButtonStyles } from "@/src/core/components/links"
-import { useProjectSlug } from "@/src/core/hooks"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import { useUserCan } from "@/src/memberships/hooks/useUserCan"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import {
   TBackendConfig,
   backendConfig as defaultBackendConfig,
@@ -112,7 +112,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           await deleteSurveyResponseTopicsOnSurveyResponsesMutation({
             surveyResponseId: response.id,
           })
-          for (let v of values.surveyResponseTopics) {
+          for (const v of values.surveyResponseTopics) {
             await surveyResponseTopicsOnSurveyResponsesMutation({
               surveyResponseId: response.id,
               surveyResponseTopicId: Number(v),
@@ -137,7 +137,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
     try {
       const createdOrFetched = await createSurveyResponseTopicMutation({
         title: newTopicTitle,
-        projectSlug: projectSlug!,
+        projectSlug,
       })
       await createSurveyResponseTopicsOnSurveyResponsesMutation({
         surveyResponseTopicId: createdOrFetched.id,
@@ -234,7 +234,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
                 <div className="pt-4">
                   <Link
                     href={Routes.SurveyResponseWithLocationPage({
-                      projectSlug: projectSlug!,
+                      projectSlug,
                       surveyId: surveyId!,
                       surveyResponseId: response.id,
                     })}

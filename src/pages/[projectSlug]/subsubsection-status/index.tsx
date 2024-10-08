@@ -6,11 +6,11 @@ import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { quote, shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import deleteSubsubsectionStatus from "@/src/subsubsectionStatus/mutations/deleteSubsubsectionStatus"
-import getSubsubsectionStatussWithCount from "@/src/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import deleteSubsubsectionStatus from "@/src/server/subsubsectionStatus/mutations/deleteSubsubsectionStatus"
+import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import { clsx } from "clsx"
@@ -24,7 +24,7 @@ export const SubsubsectionStatussWithData = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ subsubsectionStatuss, hasMore }] = usePaginatedQuery(getSubsubsectionStatussWithCount, {
-    projectSlug: projectSlug!,
+    projectSlug,
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -35,8 +35,14 @@ export const SubsubsectionStatussWithData = () => {
   const [deleteSubsubsectionStatusMutation] = useMutation(deleteSubsubsectionStatus)
   const handleDelete = async (subsubsectionStatusId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${subsubsectionStatusId} unwiderruflich löschen?`)) {
-      await deleteSubsubsectionStatusMutation({ projectSlug, id: subsubsectionStatusId })
-      await router.push(Routes.SubsubsectionStatussPage({ projectSlug: projectSlug! }))
+      try {
+        await deleteSubsubsectionStatusMutation({ projectSlug, id: subsubsectionStatusId })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
+      await router.push(Routes.SubsubsectionStatussPage({ projectSlug }))
     }
   }
 
@@ -85,7 +91,7 @@ export const SubsubsectionStatussWithData = () => {
                         <Link
                           icon="edit"
                           href={Routes.EditSubsubsectionStatusPage({
-                            projectSlug: projectSlug!,
+                            projectSlug,
                             subsubsectionStatusId: status.id,
                           })}
                         >
@@ -117,7 +123,7 @@ export const SubsubsectionStatussWithData = () => {
           button="blue"
           icon="plus"
           className="mt-4"
-          href={Routes.NewSubsubsectionStatusPage({ projectSlug: projectSlug! })}
+          href={Routes.NewSubsubsectionStatusPage({ projectSlug })}
         >
           Neuer Status
         </Link>

@@ -4,7 +4,7 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
   label: string
 }
 
-export const SubsectionIcon: React.FC<Props> = ({ label, ...props }) => (
+export const SubsectionIcon = ({ label, ...props }: Props) => (
   <div
     className={clsx(
       "flex h-9 w-auto flex-none items-center justify-center rounded-lg",
@@ -17,7 +17,7 @@ export const SubsectionIcon: React.FC<Props> = ({ label, ...props }) => (
   </div>
 )
 
-export const SubsectionMapIcon: React.FC<Props> = ({ label, ...props }) => (
+export const SubsectionMapIcon = ({ label, ...props }: Props) => (
   <div
     className={clsx(
       "flex h-5 w-auto flex-none items-center justify-center rounded-md",

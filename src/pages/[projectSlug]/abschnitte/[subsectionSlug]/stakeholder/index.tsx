@@ -4,22 +4,23 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoTitleSlug, shortTitle, startEnd } from "@/src/core/components/text"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import { StakeholderSection } from "@/src/stakeholdernotes/components/StakeholderSection"
-import { SubsectionTabs } from "@/src/subsections/components/SubsectionTabs"
-import getSubsections from "@/src/subsections/queries/getSubsections"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import { StakeholderSection } from "@/src/pagesComponents/stakeholdernotes/StakeholderSection"
+import { SubsectionTabs } from "@/src/pagesComponents/subsections/SubsectionTabs"
+import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
 
 // Page Renders Subsection _AND_ Subsubsection (as Panel)
 export const SubsectionStakeholdersWithQuery = () => {
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
 
-  const [{ subsections }] = useQuery(getSubsections, { projectSlug: projectSlug! })
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   const subsection = subsections.find((ss) => ss.slug === subsectionSlug)
 
   if (!subsection) {
@@ -41,7 +42,7 @@ export const SubsectionStakeholdersWithQuery = () => {
             <Link
               icon="edit"
               href={Routes.EditSubsectionPage({
-                projectSlug: projectSlug!,
+                projectSlug,
                 subsectionSlug: subsectionSlug!,
               })}
             >
@@ -58,7 +59,7 @@ export const SubsectionStakeholdersWithQuery = () => {
 }
 
 const SubsectionStakeholdersPage: BlitzPage = () => {
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   if (subsectionSlug === undefined) return null
 
   return (

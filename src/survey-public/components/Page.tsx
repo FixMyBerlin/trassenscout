@@ -4,7 +4,6 @@ import { Question } from "./Question"
 import { SurveyP } from "./core/Text"
 import { SurveyButtonWithAction } from "./core/buttons/SurveyButtonWithAction"
 import { SurveyButtonWrapper } from "./core/buttons/SurveyButtonWrapper"
-export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props = {
   page: TPage

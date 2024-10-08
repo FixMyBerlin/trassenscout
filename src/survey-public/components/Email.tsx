@@ -3,8 +3,6 @@ import { SurveyScreenHeader } from "./core/layout/SurveyScreenHeader"
 import { SurveyLink } from "./core/links/SurveyLink"
 import { TEmail } from "./types"
 
-export { FORM_ERROR } from "@/src/core/components/forms"
-
 type Props = {
   email: TEmail
 }

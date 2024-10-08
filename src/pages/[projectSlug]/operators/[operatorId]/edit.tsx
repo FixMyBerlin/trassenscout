@@ -1,15 +1,16 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { FORM_ERROR, OperatorForm } from "@/src/operators/components/OperatorForm"
-import updateOperator from "@/src/operators/mutations/updateOperator"
-import getOperator from "@/src/operators/queries/getOperator"
-import { OperatorSchema } from "@/src/operators/schema"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { OperatorForm } from "@/src/pagesComponents/operators/OperatorForm"
+import updateOperator from "@/src/server/operators/mutations/updateOperator"
+import getOperator from "@/src/server/operators/queries/getOperator"
+import { OperatorSchema } from "@/src/server/operators/schema"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -34,11 +35,12 @@ const EditOperatorWithQuery = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateOperatorMutation({
-        id: operator.id,
         ...values,
+        id: operator.id,
+        projectSlug,
       })
       await setQueryData(updated)
-      await router.push(Routes.OperatorsPage({ projectSlug: projectSlug! }))
+      await router.push(Routes.OperatorsPage({ projectSlug }))
     } catch (error: any) {
       if (error.code === "P2002" && error.meta?.target?.includes("slug")) {
         return improveErrorMessage(error, FORM_ERROR, ["slug"])
@@ -57,7 +59,7 @@ const EditOperatorWithQuery = () => {
       />
 
       <p className="mt-5">
-        <Link href={Routes.OperatorsPage({ projectSlug: projectSlug! })}>Zurück zur Übersicht</Link>
+        <Link href={Routes.OperatorsPage({ projectSlug })}>Zurück zur Übersicht</Link>
       </p>
 
       <SuperAdminLogData data={{ operator }} />

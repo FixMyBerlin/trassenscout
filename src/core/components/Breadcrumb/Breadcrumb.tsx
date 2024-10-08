@@ -1,6 +1,7 @@
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
-import getProject from "@/src/projects/queries/getProject"
-import getSubsection from "@/src/subsections/queries/getSubsection"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
+import getProject from "@/src/server/projects/queries/getProject"
+import getSubsection from "@/src/server/subsections/queries/getSubsection"
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { ChevronRightIcon } from "@heroicons/react/20/solid"
@@ -8,11 +9,9 @@ import { RouteUrlObject } from "blitz"
 import { Link } from "../links"
 import { shortTitle } from "../text"
 
-const BreadcrumbStep: React.FC<{ title: string; route?: RouteUrlObject; arrow: boolean }> = ({
-  title,
-  route,
-  arrow,
-}) => {
+type Props = { title: string; route?: RouteUrlObject; arrow: boolean }
+
+const BreadcrumbStep = ({ title, route, arrow }: Props) => {
   return (
     <li className="flex items-center pl-3 first:pl-0">
       {typeof route === "object" ? (
@@ -29,8 +28,9 @@ const BreadcrumbStep: React.FC<{ title: string; route?: RouteUrlObject; arrow: b
   )
 }
 
-export const Breadcrumb: React.FC = () => {
-  const { subsectionSlug, subsubsectionSlug } = useSlugs()
+export const Breadcrumb = () => {
+  const subsectionSlug = useSlug("subsectionSlug")
+  const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
 
   // Performance note: We use the same queries that are used on pages, so react query can cache them.
@@ -39,7 +39,7 @@ export const Breadcrumb: React.FC = () => {
   const [subsection] = useQuery(
     getSubsection,
     {
-      projectSlug: projectSlug!,
+      projectSlug,
       subsectionSlug: subsectionSlug!,
     },
     { enabled: !!projectSlug && !!subsectionSlug },
@@ -51,9 +51,7 @@ export const Breadcrumb: React.FC = () => {
         {subsection && (
           <BreadcrumbStep
             title={shortTitle(project.slug)}
-            route={
-              subsection ? Routes.ProjectDashboardPage({ projectSlug: projectSlug! }) : undefined
-            }
+            route={subsection ? Routes.ProjectDashboardPage({ projectSlug }) : undefined}
             arrow={Boolean(subsection)}
           />
         )}
@@ -63,7 +61,7 @@ export const Breadcrumb: React.FC = () => {
             route={
               subsubsectionSlug
                 ? Routes.SubsectionDashboardPage({
-                    projectSlug: projectSlug!,
+                    projectSlug,
                     subsectionSlug: subsectionSlug!,
                   })
                 : undefined

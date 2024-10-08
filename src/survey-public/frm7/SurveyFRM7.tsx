@@ -10,7 +10,7 @@ type Props = {
   surveyId: number
 }
 
-const StartContent: React.FC = () => {
+const StartContent = () => {
   return (
     <>
       <SurveyH1>Ihre Meinung zählt!</SurveyH1>

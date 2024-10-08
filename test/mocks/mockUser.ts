@@ -1,4 +1,4 @@
-import { CurrentUser } from "@/src/users/types"
+import { CurrentUser } from "@/src/server/users/types"
 import { User } from "@prisma/client"
 
 export const mockUser: User = {

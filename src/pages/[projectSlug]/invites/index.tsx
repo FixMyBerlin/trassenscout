@@ -5,10 +5,10 @@ import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoIndexTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { TeamInviteDocumentation } from "@/src/invites/components/TeamInviteDocumentation"
-import { TeamInvitesTable } from "@/src/invites/components/TeamInvitesTable"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { TeamInviteDocumentation } from "@/src/pagesComponents/invites/TeamInviteDocumentation"
+import { TeamInvitesTable } from "@/src/pagesComponents/invites/TeamInvitesTable"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { Suspense } from "react"
 
@@ -36,7 +36,7 @@ export const TeamInvitesWithQuery = () => {
       <TeamInviteDocumentation />
 
       <SuperAdminBox>
-        <Link button="blue" href={Routes.AdminMembershipsPage()}>
+        <Link button="blue" href={`/admin/memberships`}>
           Rechte verwalten
         </Link>
       </SuperAdminBox>

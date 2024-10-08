@@ -1,14 +1,14 @@
-import { ContactSingle } from "@/src/contacts/components/ContactSingle"
-import deleteContact from "@/src/contacts/mutations/deleteContact"
-import getContact from "@/src/contacts/queries/getContact"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import { getFullname } from "@/src/users/utils"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { ContactSingle } from "@/src/pagesComponents/contacts/ContactSingle"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
+import deleteContact from "@/src/server/contacts/mutations/deleteContact"
+import getContact from "@/src/server/contacts/queries/getContact"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -23,8 +23,14 @@ export const ContactWithQuery = () => {
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${contact.id} unwiderruflich löschen?`)) {
-      await deleteContactMutation({ id: contact.id })
-      await router.push(Routes.ContactsPage({ projectSlug: projectSlug! }))
+      try {
+        await deleteContactMutation({ id: contact.id })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
+      await router.push(Routes.ContactsPage({ projectSlug }))
     }
   }
 
@@ -35,7 +41,7 @@ export const ContactWithQuery = () => {
 
       <IfUserCanEdit>
         <p className="mb-10 space-x-4">
-          <Link href={Routes.EditContactPage({ contactId: contact.id, projectSlug: projectSlug! })}>
+          <Link href={Routes.EditContactPage({ contactId: contact.id, projectSlug })}>
             Eintrag bearbeiten
           </Link>
           <span>–</span>
@@ -52,7 +58,7 @@ export const ContactWithQuery = () => {
         </SuperAdminBox>
       </div>
 
-      <Link href={Routes.ContactsPage({ projectSlug: projectSlug! })}>Zurück zur Kontaktliste</Link>
+      <Link href={Routes.ContactsPage({ projectSlug })}>Zurück zur Kontaktliste</Link>
     </>
   )
 }

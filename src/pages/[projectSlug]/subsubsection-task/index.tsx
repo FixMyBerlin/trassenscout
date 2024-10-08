@@ -6,11 +6,11 @@ import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { quote, shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import deleteSubsubsectionTask from "@/src/subsubsectionTask/mutations/deleteSubsubsectionTask"
-import getSubsubsectionTasksWithCount from "@/src/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import deleteSubsubsectionTask from "@/src/server/subsubsectionTask/mutations/deleteSubsubsectionTask"
+import getSubsubsectionTasksWithCount from "@/src/server/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import { clsx } from "clsx"
@@ -24,7 +24,7 @@ export const SubsubsectionTasksWithData = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ subsubsectionTasks, hasMore }] = usePaginatedQuery(getSubsubsectionTasksWithCount, {
-    projectSlug: projectSlug!,
+    projectSlug,
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -35,8 +35,14 @@ export const SubsubsectionTasksWithData = () => {
   const [deleteSubsubsectionTaskMutation] = useMutation(deleteSubsubsectionTask)
   const handleDelete = async (subsubsectionTaskId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${subsubsectionTaskId} unwiderruflich löschen?`)) {
-      await deleteSubsubsectionTaskMutation({ projectSlug, id: subsubsectionTaskId })
-      await router.push(Routes.SubsubsectionTasksPage({ projectSlug: projectSlug! }))
+      try {
+        await deleteSubsubsectionTaskMutation({ projectSlug, id: subsubsectionTaskId })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
+      await router.push(Routes.SubsubsectionTasksPage({ projectSlug }))
     }
   }
 
@@ -85,7 +91,7 @@ export const SubsubsectionTasksWithData = () => {
                         <Link
                           icon="edit"
                           href={Routes.EditSubsubsectionTaskPage({
-                            projectSlug: projectSlug!,
+                            projectSlug,
                             subsubsectionTaskId: Task.id,
                           })}
                         >
@@ -117,7 +123,7 @@ export const SubsubsectionTasksWithData = () => {
           button="blue"
           icon="plus"
           className="mt-4"
-          href={Routes.NewSubsubsectionTaskPage({ projectSlug: projectSlug! })}
+          href={Routes.NewSubsubsectionTaskPage({ projectSlug })}
         >
           Neue Maßnahme
         </Link>

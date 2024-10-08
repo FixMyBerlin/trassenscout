@@ -1,13 +1,13 @@
-import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { Spinner } from "@/src/core/components/Spinner"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { SubsubsectionSpecialForm } from "@/src/subsubsectionSpecial/components/SubsubsectionSpecialForm"
-import createSubsubsectionSpecial from "@/src/subsubsectionSpecial/mutations/createSubsubsectionSpecial"
-import { SubsubsectionSpecial } from "@/src/subsubsectionSpecial/schema"
-import { FORM_ERROR } from "@/src/subsubsections/components/SubsubsectionForm"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { SubsubsectionSpecialForm } from "@/src/pagesComponents/subsubsectionSpecial/SubsubsectionSpecialForm"
+import createSubsubsectionSpecial from "@/src/server/subsubsectionSpecial/mutations/createSubsubsectionSpecial"
+import { SubsubsectionSpecial } from "@/src/server/subsubsectionSpecial/schema"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -21,8 +21,8 @@ const NewSubsubsectionSpecialPageWithQuery = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      await createSubsubsectionSpecialMutation({ ...values, projectSlug: projectSlug! })
-      await router.push(Routes.SubsubsectionSpecialsPage({ projectSlug: projectSlug! }))
+      await createSubsubsectionSpecialMutation({ ...values, projectSlug })
+      await router.push(Routes.SubsubsectionSpecialsPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }

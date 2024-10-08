@@ -20,7 +20,10 @@ export interface LabeledRadiobuttonProps extends PropsWithoutRef<JSX.IntrinsicEl
 
 // Note: See also src/participation/components/form/ParticipationLabeledRadiobutton.tsx
 export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobuttonProps>(
-  ({ scope, value, label, help, outerProps, labelProps, readonly, disabled, ...props }, _ref) => {
+  function LabeledRadiobutton(
+    { scope, value, label, help, outerProps, labelProps, readonly, disabled, ...props },
+    _ref,
+  ) {
     const {
       register,
       formState: { isSubmitting, errors },

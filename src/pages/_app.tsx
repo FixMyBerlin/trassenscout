@@ -1,24 +1,17 @@
 import { AppProps, ErrorBoundary, ErrorComponent, ErrorFallbackProps } from "@blitzjs/next"
 // https://fontsource.org/fonts/red-hat-text/install => Tab "Static"
+import "@/src/app/_components/layouts/global.css"
 import { withBlitz } from "@/src/blitz-client"
-import "@/src/core/styles/index.css"
-import "@fontsource/red-hat-text/400-italic.css"
-import "@fontsource/red-hat-text/400.css" // regular
-import "@fontsource/red-hat-text/500.css" // medium
-import "@fontsource/red-hat-text/600.css" // semibold
-import "@fontsource/red-hat-text/700.css" // extrabold
 import { init } from "@socialgouv/matomo-next"
 import { AuthenticationError, AuthorizationError } from "blitz"
 import { useEffect, useRef } from "react"
-import LoginPage from "./auth/login"
+import { fontRedHatText } from "../app/_components/layouts/fonts"
 
 const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL
 const MATOMO_SITE_ID = process.env.NEXT_PUBLIC_MATOMO_SITE_ID
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
-  if (error instanceof AuthenticationError) {
-    return <LoginPage messageKey="loginRequired" />
-  } else if (error instanceof AuthorizationError) {
+  if (error instanceof AuthenticationError || error instanceof AuthorizationError) {
     return (
       <ErrorComponent
         statusCode={error.statusCode}
@@ -50,9 +43,17 @@ function MyApp({ Component, pageProps }: AppProps) {
   const getLayout = Component.getLayout || ((page) => page)
 
   return (
-    <ErrorBoundary FallbackComponent={RootErrorFallback}>
-      {getLayout(<Component {...pageProps} />)}
-    </ErrorBoundary>
+    <>
+      {/* This is a work around because adding the font family variable does not work for unkown reasons. The variable is set but TW does not recognize it "variable not defined" */}
+      <style jsx global>{`
+        html {
+          font-family: ${fontRedHatText.style.fontFamily}};
+        }
+      `}</style>
+      <ErrorBoundary FallbackComponent={RootErrorFallback}>
+        {getLayout(<Component {...pageProps} />)}
+      </ErrorBoundary>
+    </>
   )
 }
 

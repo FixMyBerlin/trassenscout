@@ -32,7 +32,7 @@ const removeFormatting = (s: string) => {
 }
 
 export const LabeledFormatNumberField = forwardRef<HTMLInputElement, LabeledFormatNumberFieldProps>(
-  (
+  function LabeledFormatNumberField(
     {
       name,
       label,
@@ -45,7 +45,7 @@ export const LabeledFormatNumberField = forwardRef<HTMLInputElement, LabeledForm
       inlineLeadingAddon,
     },
     ref,
-  ) => {
+  ) {
     const {
       register,
       formState: { isSubmitting, errors },

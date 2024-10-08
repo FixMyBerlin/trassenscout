@@ -1,7 +1,8 @@
 import { Modal } from "@/src/core/components/Modal"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { blueButtonStyles } from "@/src/core/components/links"
-import { useProjectSlug } from "@/src/core/hooks"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import {
   TMapProps,
   TResponse,
@@ -21,7 +22,7 @@ import { PlusIcon } from "@heroicons/react/20/solid"
 import { SurveyResponseSourceEnum } from "@prisma/client"
 import { clsx } from "clsx"
 import { useState } from "react"
-import { ExternalSurveyResponseForm, FORM_ERROR } from "./ExternalSurveyResponseForm"
+import { ExternalSurveyResponseForm } from "./ExternalSurveyResponseForm"
 
 type Props = { refetch: any }
 

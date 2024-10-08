@@ -6,11 +6,11 @@ import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { quote, shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import deleteSubsubsectionSpecial from "@/src/subsubsectionSpecial/mutations/deleteSubsubsectionSpecial"
-import getSubsubsectionSpecialsWithCount from "@/src/subsubsectionSpecial/queries/getSubsubsectionSpecialsWithCount"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import deleteSubsubsectionSpecial from "@/src/server/subsubsectionSpecial/mutations/deleteSubsubsectionSpecial"
+import getSubsubsectionSpecialsWithCount from "@/src/server/subsubsectionSpecial/queries/getSubsubsectionSpecialsWithCount"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import { clsx } from "clsx"
@@ -26,7 +26,7 @@ export const SubsubsectionSpecialsWithData = () => {
   const [{ subsubsectionSpecials, hasMore }] = usePaginatedQuery(
     getSubsubsectionSpecialsWithCount,
     {
-      projectSlug: projectSlug!,
+      projectSlug,
       skip: ITEMS_PER_PAGE * page,
       take: ITEMS_PER_PAGE,
     },
@@ -38,8 +38,14 @@ export const SubsubsectionSpecialsWithData = () => {
   const [deleteSubsubsectionSpecialMutation] = useMutation(deleteSubsubsectionSpecial)
   const handleDelete = async (subsubsectionSpecialId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${subsubsectionSpecialId} unwiderruflich löschen?`)) {
-      await deleteSubsubsectionSpecialMutation({ projectSlug, id: subsubsectionSpecialId })
-      await router.push(Routes.SubsubsectionSpecialsPage({ projectSlug: projectSlug! }))
+      try {
+        await deleteSubsubsectionSpecialMutation({ projectSlug, id: subsubsectionSpecialId })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
+      await router.push(Routes.SubsubsectionSpecialsPage({ projectSlug }))
     }
   }
 
@@ -89,7 +95,7 @@ export const SubsubsectionSpecialsWithData = () => {
                         <Link
                           icon="edit"
                           href={Routes.EditSubsubsectionSpecialPage({
-                            projectSlug: projectSlug!,
+                            projectSlug,
                             subsubsectionSpecialId: Special.id,
                           })}
                         >
@@ -121,7 +127,7 @@ export const SubsubsectionSpecialsWithData = () => {
           button="blue"
           icon="plus"
           className="mt-4"
-          href={Routes.NewSubsubsectionSpecialPage({ projectSlug: projectSlug! })}
+          href={Routes.NewSubsubsectionSpecialPage({ projectSlug })}
         >
           Neue Besonderheit
         </Link>

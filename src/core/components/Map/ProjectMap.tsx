@@ -1,5 +1,5 @@
-import { useProjectSlug } from "@/src/core/hooks"
-import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { Routes } from "@blitzjs/next"
 import { lineString } from "@turf/helpers"
 import { along, featureCollection, length } from "@turf/turf"
@@ -13,8 +13,8 @@ import {
   ViewStateChangeEvent,
   useMap,
 } from "react-map-gl/maplibre"
-import { IfUserCanEdit } from "../../../memberships/components/IfUserCan"
-import { useUserCan } from "../../../memberships/hooks/useUserCan"
+import { IfUserCanEdit } from "../../../pagesComponents/memberships/IfUserCan"
+import { useUserCan } from "../../../pagesComponents/memberships/hooks/useUserCan"
 import { shortTitle } from "../text"
 import { BaseMap } from "./BaseMap"
 import { SubsectionMapIcon } from "./Icons"
@@ -44,6 +44,7 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   useEffect(() => {
     mainMap?.fitBounds(boundingBox, { padding: 60 })
     // @ts-expect-error
+    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mainMap, ...boundingBox])
 

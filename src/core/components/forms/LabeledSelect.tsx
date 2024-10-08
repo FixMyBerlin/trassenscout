@@ -17,7 +17,10 @@ export interface LabeledSelectProps extends PropsWithoutRef<JSX.IntrinsicElement
 }
 
 export const LabeledSelect = forwardRef<HTMLInputElement, LabeledSelectProps>(
-  ({ name, options, label, help, outerProps, labelProps, optional, ...props }, ref) => {
+  function LabeledSelect(
+    { name, options, label, help, outerProps, labelProps, optional, ...props },
+    ref,
+  ) {
     const {
       register,
       formState: { isSubmitting, errors },

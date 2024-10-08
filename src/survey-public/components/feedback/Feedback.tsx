@@ -15,8 +15,6 @@ import {
 import { FeedbackFirstPage } from "./FeedbackFirstPage"
 import { FeedbackSecondPage } from "./FeedbackSecondPage"
 
-export { FORM_ERROR } from "@/src/core/components/forms"
-
 type Props = {
   onBackClick: any
   feedback: TFeedback

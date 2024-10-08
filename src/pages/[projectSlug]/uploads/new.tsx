@@ -9,11 +9,11 @@ import {
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { quote, seoNewTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useS3Upload } from "@/src/core/lib/next-s3-upload/src"
-import createUpload from "@/src/uploads/mutations/createUpload"
-import { splitReturnTo } from "@/src/uploads/utils"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { splitReturnTo } from "@/src/pagesComponents/uploads/utils/splitReturnTo"
+import createUpload from "@/src/server/uploads/mutations/createUpload"
 import { BlitzPage, Routes, useRouterQuery } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { clsx } from "clsx"
@@ -29,11 +29,11 @@ const NewUploadWithQuery = () => {
   const params: { subsubsectionId?: number; returnPath?: string } = useRouterQuery()
   const subsubsectionIdFromParam = params.subsubsectionId || null
 
-  let backUrl = Routes.UploadsPage({ projectSlug: projectSlug! })
+  let backUrl = Routes.UploadsPage({ projectSlug })
   const { subsectionSlug, subsubsectionSlug } = splitReturnTo(params)
   if (subsectionSlug && subsubsectionSlug) {
     backUrl = Routes.SubsubsectionDashboardPage({
-      projectSlug: projectSlug!,
+      projectSlug,
       subsectionSlug: subsectionSlug,
       subsubsectionSlug: subsubsectionSlug,
     })
@@ -88,7 +88,7 @@ const NewUploadWithQuery = () => {
     const file = await createUploadMutation({
       title: fileToUpload!.name,
       externalUrl: url,
-      projectSlug: projectSlug!,
+      projectSlug,
       subsectionId: null, // Users can add this in step 2 /edit
       subsubsectionId: subsubsectionIdFromParam,
     })
@@ -97,7 +97,7 @@ const NewUploadWithQuery = () => {
     setUploadState("FILE_SAVED")
     await router.push(
       Routes.EditUploadPage({
-        projectSlug: projectSlug!,
+        projectSlug,
         uploadId: file.id,
         returnPath: params.returnPath,
       }),

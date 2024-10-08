@@ -16,10 +16,10 @@ export interface LabeledTextareaProps extends PropsWithoutRef<JSX.IntrinsicEleme
 }
 
 export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTextareaProps>(
-  (
+  function LabeledGeometryField(
     { name, label, help, outerProps, labelProps, optional, className: textareaClasName, ...props },
     ref,
-  ) => {
+  ) {
     const {
       register,
       formState: { isSubmitting, errors },

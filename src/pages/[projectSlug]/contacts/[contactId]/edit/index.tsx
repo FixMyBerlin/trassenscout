@@ -1,14 +1,15 @@
-import { ContactForm, FORM_ERROR } from "@/src/contacts/components/ContactForm"
-import updateContact from "@/src/contacts/mutations/updateContact"
-import getContact from "@/src/contacts/queries/getContact"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { ContactForm } from "@/src/pagesComponents/contacts/ContactForm"
+import updateContact from "@/src/server/contacts/mutations/updateContact"
+import getContact from "@/src/server/contacts/queries/getContact"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -38,7 +39,7 @@ const EditContactWithQuery = () => {
       await setQueryData(updated)
       await router.push(
         Routes.ShowContactPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           contactId: updated.id,
         }),
       )
@@ -69,9 +70,7 @@ const EditContactPage: BlitzPage = () => {
 
       <hr className="my-5" />
       <p>
-        <Link href={Routes.ContactsPage({ projectSlug: projectSlug! })}>
-          Zurück zur Kontaktliste
-        </Link>
+        <Link href={Routes.ContactsPage({ projectSlug })}>Zurück zur Kontaktliste</Link>
       </p>
     </LayoutRs>
   )

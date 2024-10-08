@@ -2,28 +2,27 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { H2 } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
-import getSubsections from "@/src/subsections/queries/getSubsections"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlugId } from "@/src/core/routes/useSlug"
+import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
+import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import { getBackendConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { EditableSurveyResponseFilterForm } from "@/src/survey-responses/components/feedback/EditableSurveyResponseFilterForm"
 import EditableSurveyResponseListItem from "@/src/survey-responses/components/feedback/EditableSurveyResponseListItem"
 import { ExternalSurveyResponseFormModal } from "@/src/survey-responses/components/feedback/ExternalSurveyResponseFormModal"
 import { useFilteredResponses } from "@/src/survey-responses/components/feedback/useFilteredResponses"
-
 import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"
 import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
-import { BlitzPage, useParam, useRouterQuery } from "@blitzjs/next"
+import { BlitzPage, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense, useEffect, useRef } from "react"
 
 export const SurveyResponse = () => {
-  const { subsectionSlug } = useSlugs()
   const projectSlug = useProjectSlug()
-  const surveyId = useParam("surveyId", "number")
+  const surveyId = useSlugId("surveyId")
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
   const backenendConfig = getBackendConfigBySurveySlug(survey.slug)
 
@@ -35,7 +34,7 @@ export const SurveyResponse = () => {
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const [{ surveyResponseTopics: topics }, { refetch: refetchTopics }] = useQuery(
     getSurveyResponseTopicsByProject,
-    { projectSlug: projectSlug! },
+    { projectSlug },
   )
 
   // Whenever we submit the form, we also refetch, so the whole accordeon header and everything else is updated
@@ -44,10 +43,7 @@ export const SurveyResponse = () => {
     await refetchResponses()
   }
 
-  const [{ subsections }] = useQuery(getSubsections, {
-    projectSlug: projectSlug!,
-    subsectionSlug: subsectionSlug!,
-  })
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
 
   // Handle scroll into view on page load (like a hash URL) based on a ref and URL param `stakeholderDetails`.
   // The ref is an error of listItems where the array index is the stakeholderNote.id.

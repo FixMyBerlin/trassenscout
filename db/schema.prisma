@@ -156,7 +156,9 @@ model Project {
 }
 
 model Membership {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   project   Project @relation(fields: [projectId], references: [id])
   projectId Int

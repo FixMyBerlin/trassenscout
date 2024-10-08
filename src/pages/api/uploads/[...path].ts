@@ -1,6 +1,6 @@
 import db from "@/db"
 import { getConfig } from "@/src/core/lib/next-s3-upload/src/utils/config"
-import getUploadWithSubsections from "@/src/uploads/queries/getUploadWithSubsections"
+import getUploadWithSubsections from "@/src/server/uploads/queries/getUploadWithSubsections"
 import {
   GetObjectCommand,
   HeadObjectCommand,
@@ -28,7 +28,6 @@ export default async function downloadFile(req: NextApiRequest, res: NextApiResp
       // @ts-ignore will work
       { session },
     )
-    console.log("xxxx", uploadId, projectSlug, upload)
 
     const { hostname, pathname } = new URL(upload.externalUrl)
     const isAws = hostname.endsWith("amazonaws.com")

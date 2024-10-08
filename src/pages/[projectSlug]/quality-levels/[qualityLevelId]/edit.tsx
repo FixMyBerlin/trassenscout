@@ -1,15 +1,16 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { FORM_ERROR, QualityLevelForm } from "@/src/qualityLevels/components/QualityLevelForm"
-import updateQualityLevel from "@/src/qualityLevels/mutations/updateQualityLevel"
-import getQualityLevel from "@/src/qualityLevels/queries/getQualityLevel"
-import { QualityLevelSchema } from "@/src/qualityLevels/schema"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { QualityLevelForm } from "@/src/pagesComponents/qualityLevels/QualityLevelForm"
+import updateQualityLevel from "@/src/server/qualityLevels/mutations/updateQualityLevel"
+import getQualityLevel from "@/src/server/qualityLevels/queries/getQualityLevel"
+import { QualityLevelSchema } from "@/src/server/qualityLevels/schema"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -34,11 +35,12 @@ const EditQualityLevelWithQuery = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateQualityLevelMutation({
-        id: qualityLevel.id,
         ...values,
+        id: qualityLevel.id,
+        projectSlug,
       })
       await setQueryData(updated)
-      await router.push(Routes.QualityLevelsPage({ projectSlug: projectSlug! }))
+      await router.push(Routes.QualityLevelsPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
@@ -55,9 +57,7 @@ const EditQualityLevelWithQuery = () => {
       />
 
       <p className="mt-5">
-        <Link href={Routes.QualityLevelsPage({ projectSlug: projectSlug! })}>
-          Zurück zur Übersicht
-        </Link>
+        <Link href={Routes.QualityLevelsPage({ projectSlug })}>Zurück zur Übersicht</Link>
       </p>
 
       <SuperAdminLogData data={{ qualityLevel }} />

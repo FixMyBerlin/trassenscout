@@ -1,12 +1,13 @@
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
-import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
-import { SubsubsectionWithPosition } from "@/src/subsubsections/queries/getSubsubsection"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
+import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { Routes } from "@blitzjs/next"
 import { lineString, point } from "@turf/helpers"
 import { bbox, featureCollection } from "@turf/turf"
 import { useRouter } from "next/router"
 import { useState } from "react"
 import { LngLatBoundsLike, MapLayerMouseEvent, Marker } from "react-map-gl/maplibre"
+import { useSlug } from "../../routes/usePagesDirectorySlug"
 import { shortTitle } from "../text"
 import { BaseMap } from "./BaseMap"
 import { SubsubsectionMapIcon } from "./Icons"
@@ -26,26 +27,21 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
   selectedSubsection,
   subsubsections,
 }) => {
-  const {
-    subsectionSlug: pageSubsectionSlug, // we use this name a lot, so `page*` is to clarify
-    subsubsectionSlug: pageSubsubsectionSlug,
-  } = useSlugs()
+  const pageSubsectionSlug = useSlug("subsectionSlug")
+  const pageSubsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
   const router = useRouter()
 
   type HandleSelectProps = { subsectionSlug: string; subsubsectionSlug: string; edit: boolean }
   const handleSelect = ({ subsectionSlug, subsubsectionSlug, edit }: HandleSelectProps) => {
     if (!projectSlug) return
-    let url = subsubsectionSlug
-      ? Routes.SubsubsectionDashboardPage({ projectSlug, subsectionSlug, subsubsectionSlug })
-      : Routes.SubsectionDashboardPage({ projectSlug, subsectionSlug })
-
-    // alt+click
-    if (edit) {
-      url = subsubsectionSlug
+    const url = edit
+      ? subsubsectionSlug
         ? Routes.EditSubsubsectionPage({ projectSlug, subsectionSlug, subsubsectionSlug })
         : Routes.EditSubsectionPage({ projectSlug, subsectionSlug })
-    }
+      : subsubsectionSlug
+        ? Routes.SubsubsectionDashboardPage({ projectSlug, subsectionSlug, subsubsectionSlug })
+        : Routes.SubsectionDashboardPage({ projectSlug, subsectionSlug })
 
     void router.push(url, undefined, { scroll: edit ? true : false })
   }

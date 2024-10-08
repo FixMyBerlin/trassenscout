@@ -1,10 +1,10 @@
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { linkStyles } from "@/src/core/components/links"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
-import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
+import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { TMapProps } from "@/src/survey-public/components/types"
 import { backendConfig as defaultBackendConfig } from "@/src/survey-public/utils/backend-config-defaults"
 import {
@@ -133,8 +133,14 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
       response.source !== "FORM" &&
       window.confirm(`Den Eintrag mit ID ${response.id} unwiderruflich löschen?`)
     ) {
-      await deleteCalendarEntryMutation({ id: response.id })
-      await refetchResponsesAndTopics()
+      try {
+        await deleteCalendarEntryMutation({ id: response.id })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
+      refetchResponsesAndTopics()
     }
   }
 

@@ -1,7 +1,7 @@
 import { TagIcon } from "@heroicons/react/24/outline"
 import { LabeledRadiobuttonGroup } from "./LabeledRadiobuttonGroup"
 
-export const LabeledRadiobuttonGroupLabelPos: React.FC = () => {
+export const LabeledRadiobuttonGroupLabelPos = () => {
   return (
     <details>
       <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>

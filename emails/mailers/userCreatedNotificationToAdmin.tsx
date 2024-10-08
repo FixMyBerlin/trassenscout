@@ -1,4 +1,3 @@
-import { Routes } from "@blitzjs/next"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
@@ -33,8 +32,8 @@ Bitte prüfe den Account und ordne ihn einem Projekt zu.
     To: [{ Email: process.env.ADMIN_EMAIL }],
     Subject: "[Admin] Trassenscout: User hat sich registriert",
     introMarkdown,
-    ctaLink: mailUrl(Routes.AdminMembershipsPage()),
-    ctaText: "Rechte verwalten",
+    ctaLink: mailUrl(`/admin/memberships/new?userId=${props.userId}`),
+    ctaText: "Rechte vergeben",
   }
 
   return {

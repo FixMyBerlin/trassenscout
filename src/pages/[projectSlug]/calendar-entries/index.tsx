@@ -1,14 +1,14 @@
-import { Calender } from "@/src/calendar-entries/components/Calender"
-import getCalendarEntries from "@/src/calendar-entries/queries/getCalendarEntries"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Pagination } from "@/src/core/components/Pagination"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { Calender } from "@/src/pagesComponents/calendar-entries/Calender/Calender"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import getCalendarEntries from "@/src/server/calendar-entries/queries/getCalendarEntries"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -21,7 +21,7 @@ export const CalendarEntriesWithData = () => {
   const page = Number(router.query.page) || 0
   const projectSlug = useProjectSlug()
   const [{ calendarEntries, hasMore }] = usePaginatedQuery(getCalendarEntries, {
-    projectSlug: projectSlug!,
+    projectSlug,
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -35,11 +35,7 @@ export const CalendarEntriesWithData = () => {
 
       <IfUserCanEdit>
         <ButtonWrapper className="mt-5">
-          <Link
-            button="blue"
-            icon="plus"
-            href={Routes.NewCalendarEntryPage({ projectSlug: projectSlug! })}
-          >
+          <Link button="blue" icon="plus" href={Routes.NewCalendarEntryPage({ projectSlug })}>
             Termin
           </Link>
         </ButtonWrapper>

@@ -1,13 +1,15 @@
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { longTitle, seoNewTitle } from "@/src/core/components/text"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import getSubsection from "@/src/subsections/queries/getSubsection"
-import { FORM_ERROR, SubsubsectionForm } from "@/src/subsubsections/components/SubsubsectionForm"
-import createSubsubsection from "@/src/subsubsections/mutations/createSubsubsection"
-import { SubsubsectionSchema } from "@/src/subsubsections/schema"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
+import { SubsubsectionForm } from "@/src/pagesComponents/subsubsections/SubsubsectionForm"
+import getSubsection from "@/src/server/subsections/queries/getSubsection"
+import createSubsubsection from "@/src/server/subsubsections/mutations/createSubsubsection"
+import { SubsubsectionSchema } from "@/src/server/subsubsections/schema"
 import { Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -20,7 +22,7 @@ const NewSubsubsection = () => {
   const router = useRouter()
   const [createSubsubsectionMutation] = useMutation(createSubsubsection)
 
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
   const [subsection] = useQuery(getSubsection, {
     projectSlug,

@@ -1,4 +1,4 @@
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { TResponse, TSingleOrMultiResponseProps } from "@/src/survey-public/components/types"
 import {
   getBackendConfigBySurveySlug,
@@ -16,7 +16,7 @@ export const useDefaultFilterValues = (): FilterSchema => {
   const surveyId = useParam("surveyId", "string")
   const [{ slug }] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
   const [{ surveyResponseTopics: topics }] = useQuery(getSurveyResponseTopicsByProject, {
-    projectSlug: projectSlug!,
+    projectSlug,
   })
 
   const backendConfig = getBackendConfigBySurveySlug(slug)

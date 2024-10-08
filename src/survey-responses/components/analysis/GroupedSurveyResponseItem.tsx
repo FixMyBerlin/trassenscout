@@ -1,7 +1,6 @@
 import { H3 } from "@/src/core/components/text"
 import { clsx } from "clsx"
 import { BarChart } from "./BarChart"
-export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props = {
   responseData: { name: string; value: number }[] | undefined

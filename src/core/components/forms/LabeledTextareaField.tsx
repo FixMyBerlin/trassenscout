@@ -16,7 +16,7 @@ export interface LabeledTextareaProps extends PropsWithoutRef<JSX.IntrinsicEleme
 }
 
 export const LabeledTextareaField = forwardRef<HTMLTextAreaElement, LabeledTextareaProps>(
-  (
+  function LabeledTextareaField(
     {
       name,
       label,
@@ -29,7 +29,7 @@ export const LabeledTextareaField = forwardRef<HTMLTextAreaElement, LabeledTexta
       ...props
     },
     ref,
-  ) => {
+  ) {
     const {
       register,
       formState: { isSubmitting, errors },

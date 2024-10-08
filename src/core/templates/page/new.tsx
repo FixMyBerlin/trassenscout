@@ -11,11 +11,13 @@ import { Suspense } from "react"
 if (process.env.parentModel) {
   import { useParam } from "@blitzjs/next"
   import { useRouter } from "next/router"
-  import { useProjectSlug } from "@/src/core/hooks"
+  import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+  import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
   import { useMutation } from "@blitzjs/rpc"
 } else {
   import { useRouter } from "next/router"
-  import { useProjectSlug } from "@/src/core/hooks"
+  import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+  import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
   import { useMutation } from "@blitzjs/rpc"
 }
 
