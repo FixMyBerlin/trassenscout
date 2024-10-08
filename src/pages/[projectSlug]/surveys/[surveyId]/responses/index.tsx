@@ -43,10 +43,7 @@ export const SurveyResponse = () => {
     await refetchResponses()
   }
 
-  const [{ subsections }] = useQuery(getSubsections, {
-    projectSlug,
-    subsectionSlug: subsectionSlug!,
-  })
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
 
   // Handle scroll into view on page load (like a hash URL) based on a ref and URL param `stakeholderDetails`.
   // The ref is an error of listItems where the array index is the stakeholderNote.id.
