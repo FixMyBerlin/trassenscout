@@ -29,6 +29,7 @@ import EditableSurveyResponseAdditionalFilterFields from "./EditableSurveyRespon
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
+import { NewSurveyResponseCommentForm } from "./comments/NewSurveyResponseCommentForm"
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<
@@ -231,6 +232,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             defaultViewState={defaultViewState}
             backendConfig={backendConfig}
           />
+          <NewSurveyResponseCommentForm surveyResponseId={response.id} />
         </div>
       )}
     </article>
