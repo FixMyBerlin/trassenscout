@@ -17,6 +17,8 @@ export const AdminProjectsNewForm = () => {
   const [createMembershipMutation] = useMutation(createMembership)
 
   const [{ users }] = useQuery(getUsers, {})
+  // If we where to pick ourselves, we would create a membership which in turn would delete our session to update it which  would cause weird redirect issues.
+  const usersExceptSelf = users.filter((user) => user.id !== currentUser?.id)
 
   const handleSubmit = async (values: ProjectFormType) => {
     const partnerLogoSrcsArray = values.partnerLogoSrcs?.split("\n")
@@ -24,7 +26,6 @@ export const AdminProjectsNewForm = () => {
     try {
       const project = await createProjectMutation(input)
 
-      // Create a membership for the selected user
       if (project.managerId) {
         try {
           await createMembershipMutation({
@@ -50,7 +51,7 @@ export const AdminProjectsNewForm = () => {
       onSubmit={handleSubmit}
       schema={ProjectFormSchema}
       initialValues={{ managerId: currentUser!.id }}
-      users={users}
+      users={usersExceptSelf}
     />
   )
 }
