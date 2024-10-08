@@ -15,7 +15,7 @@ export const defaultMetadata: Metadata = {
   },
   description:
     "Der Trassenscout unterstützt Kommunen und Regionalverbände bei der Erstellung von Machbarkeitsstudien und Vorplanungen für Radschnellverbindungen und anderen liniengebundenen Bauwerken.",
-  metadataBase: new URL("https://trassenscout.de/rs8"),
+  metadataBase: new URL("https://trassenscout.de"),
   openGraph: {
     images: [
       {
