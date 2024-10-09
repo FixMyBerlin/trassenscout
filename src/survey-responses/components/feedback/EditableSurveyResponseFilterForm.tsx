@@ -1,6 +1,7 @@
 import {
   LabeledCheckboxGroup,
   LabeledRadiobuttonGroup,
+  LabeledSelect,
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { linkStyles } from "@/src/core/components/links"
@@ -168,7 +169,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
         <FormProvider {...methods}>
           <form
             onChange={async () => await methods.handleSubmit(handleSubmit)()}
-            className="flex flex-col items-start justify-start gap-4 rounded-b-xl px-4 py-2"
+            className="flex flex-col items-start justify-start gap-6 rounded-b-xl px-4 py-2"
           >
             <div className="mt-6 flex flex-col gap-12 sm:flex-row">
               <LabeledCheckboxGroup
@@ -207,7 +208,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
               {!!topicsOptions.length && (
                 <LabeledCheckboxGroup
                   label={labels.topics?.pl || defaultBackendConfig.labels.topics.pl}
-                  classLabelOverwrite="font-semibold mb-3"
+                  classLabelOverwrite="font-semibold mb-6"
                   scope="topics"
                   items={topicsOptions}
                   classNameItemWrapper="grid grid-cols-5 grid-rows-6 grid-flow-col-dense"
@@ -215,15 +216,14 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
               )}
             </div>
             {additionalFilters && Boolean(additionalFilters?.length) && (
-              <ul>
+              <ul className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                 {additionalFilters.map((filter) => (
                   <li key={filter.id}>
-                    <LabeledRadiobuttonGroup
+                    <LabeledSelect
                       label={filter.label}
-                      classLabelOverwrite="font-semibold mb-3"
-                      scope={filter.value}
-                      items={filter.options}
-                      // classNameItemWrapper="grid grid-cols-5 grid-rows-6 grid-flow-col-dense"
+                      classLabelOverwrite="font-semibold mb-3 block"
+                      options={filter.options.map((o) => [o.value, o.label])}
+                      name={filter.value}
                     />
                   </li>
                 ))}
