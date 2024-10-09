@@ -122,15 +122,15 @@ export const backendConfig: TBackendConfig = {
   },
   additionalFilters: [
     {
-      label: "Institution",
-      id: 5,
-      value: "institution",
-      surveyPart: "survey",
-    },
-    {
       label: "Landkreis",
       id: 6,
       value: "landkreis",
+      surveyPart: "survey",
+    },
+    {
+      label: "Institution",
+      id: 5,
+      value: "institution",
       surveyPart: "survey",
     },
     {
