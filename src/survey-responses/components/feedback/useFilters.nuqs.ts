@@ -12,8 +12,7 @@ export const filterSchema = z
     topics: z.array(z.string()),
     searchterm: z.string(),
   })
-  .catchall(z.string()) // Allow additional key-value pairs
-// todo filter zod / catchall - we do not wat to allow everything do we?
+  .passthrough() // Allow additional key-value pairs (additional filters)
 
 export type FilterSchema = z.infer<typeof filterSchema>
 
