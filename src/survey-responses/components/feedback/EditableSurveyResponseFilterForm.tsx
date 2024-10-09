@@ -25,9 +25,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Operator } from "@prisma/client"
 import { clsx } from "clsx"
 import { PropsWithoutRef, useEffect } from "react"
-import { FormProvider, useForm } from "react-hook-form"
+import { Controller, FormProvider, useForm } from "react-hook-form"
 import { z } from "zod"
 import getQuestionResponseOptions from "../../queries/getQuestionResponseOptions"
+import ComboBoxWrapper from "./ComboBox"
 import { useDefaultFilterValues } from "./useDefaultFilterValues"
 import { FilterSchema, useFilters } from "./useFilters.nuqs"
 
@@ -160,6 +161,26 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     },
   ]
 
+  // test combobox
+  const test = {
+    label: "Institution",
+    id: 5,
+    value: "institution",
+    surveyPart: "survey",
+    options: [
+      { id: 1, value: "ALL", label: "Alle" },
+      { id: 2, value: "Amt Brüssow (Uckermark)", label: "Amt Brüssow (Uckermark)" },
+      { id: 3, value: "FixMyCity", label: "FixMyCity" },
+      { id: 4, value: "Gemeinde Blankenfelde-Mahlow", label: "Gemeinde Blankenfelde-Mahlow" },
+      { id: 5, value: "Stadt Altlandsberg", label: "Stadt Altlandsberg" },
+      { id: 6, value: "Stadt Angermünde", label: "Stadt Angermünde" },
+      { id: 7, value: "Stadt Bad Freienwalde (Oder)", label: "Stadt Bad Freienwalde (Oder)" },
+      { id: 8, value: "Stadt Zehdenick", label: "Stadt Zehdenick" },
+      { id: 9, value: "invalid", label: "invalid" },
+    ],
+  }
+  const testValue = methods.watch("test")
+
   return (
     <nav className="rounded-xl border border-gray-300">
       <details open>
@@ -215,7 +236,25 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 />
               )}
             </div>
-            {additionalFilters && Boolean(additionalFilters?.length) && (
+            <h1>watch test value: {testValue}</h1>
+            <Controller
+              name="test"
+              control={methods.control}
+              rules={{
+                required: "Please select a testcase",
+              }}
+              render={({ field: { onChange, value, onBlur } }) => (
+                <ComboBoxWrapper
+                  label="Testt combobox"
+                  value={value}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  options={test.options}
+                  error={methods.formState.errors.test}
+                />
+              )}
+            />
+            {/* {additionalFilters && Boolean(additionalFilters?.length) && (
               <ul>
                 {additionalFilters.map((filter) => (
                   <li key={filter.id}>
@@ -229,7 +268,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                   </li>
                 ))}
               </ul>
-            )}
+            )} */}
           </form>
           <form
             className="flex items-end gap-4 rounded-b-xl px-4 pb-2 pt-4"
