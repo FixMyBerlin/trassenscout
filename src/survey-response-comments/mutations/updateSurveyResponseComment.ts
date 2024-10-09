@@ -1,32 +1,34 @@
-// import { resolver } from '@blitzjs/rpc'
-// import { AuthorizationError } from 'blitz'
-// import db from 'db'
-// import { authorizeRegionAdmin } from 'src/authorization/authorizeRegionAdmin'
-// import getRegionIdBySlug from 'src/regions/queries/getRegionIdBySlug'
-// import { z } from 'zod'
+import db from "@/db"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
+import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
+import { resolver } from "@blitzjs/rpc"
+import { AuthorizationError } from "blitz"
 
-// const Schema = z.object({ regionSlug: z.string(), commentId: z.number(), body: z.string() })
+import { z } from "zod"
 
-// export default resolver.pipe(
-//   resolver.zod(Schema),
-//   authorizeRegionAdmin(getRegionIdBySlug),
-//   async ({ commentId, body }, ctx) => {
-//     const { session } = ctx
+const Schema = z.object({ projectSlug: z.string(), commentId: z.number(), body: z.string() })
 
-//     // Only author may update own note comment
-//     const { userId: dbUserId } = await db.noteComment.findFirstOrThrow({
-//       where: { id: commentId },
-//       select: { userId: true },
-//     })
+export default resolver.pipe(
+  resolver.zod(Schema),
+  authorizeProjectMember(extractProjectSlug, editorRoles),
+  async ({ commentId, body }, ctx) => {
+    const { session } = ctx
 
-//     if (!session.userId || dbUserId !== session.userId) {
-//       throw new AuthorizationError()
-//     }
+    // Only author may update own note comment
+    const { userId: dbUserId } = await db.surveyResponseComment.findFirstOrThrow({
+      where: { id: commentId },
+      select: { userId: true },
+    })
 
-//     const result = await db.noteComment.update({
-//       where: { id: commentId },
-//       data: { body },
-//     })
-//     return result
-//   },
-// )
+    if (!session.userId || dbUserId !== session.userId) {
+      throw new AuthorizationError()
+    }
+
+    const result = await db.surveyResponseComment.update({
+      where: { id: commentId },
+      data: { body },
+    })
+    return result
+  },
+)

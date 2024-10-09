@@ -3,11 +3,12 @@ import {
   getBackendConfigBySurveySlug,
   getResponseConfigBySurveySlug,
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
-import getFeedbackSurveyResponsesWithSurveySurveyResponses from "../../queries/getFeedbackSurveyResponsesWithSurveySurveyResponses"
+
+import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { useFilters } from "./useFilters.nuqs"
 
 export const useFilteredResponses = (
-  responses: Awaited<ReturnType<typeof getFeedbackSurveyResponsesWithSurveySurveyResponses>>,
+  responses: Awaited<ReturnType<typeof getFeedbackSurveyResponsesWithSurveyDataAndComments>>,
   surveySlug: AllowedSurveySlugs,
 ) => {
   const [filter] = useFilters()

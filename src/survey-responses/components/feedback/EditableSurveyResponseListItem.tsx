@@ -24,7 +24,7 @@ import { EnvelopeIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import { parseAsInteger, useQueryState } from "nuqs"
 import { useEffect } from "react"
-import getFeedbackSurveyResponsesWithSurveySurveyResponses from "../../queries/getFeedbackSurveyResponsesWithSurveySurveyResponses"
+import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import EditableSurveyResponseAdditionalFilterFields from "./EditableSurveyResponseAdditionalFilterFields"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
@@ -34,7 +34,7 @@ import { SurveyResponseCommentField } from "./comments/SurveyResponseCommentFiel
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<
-    Awaited<ReturnType<typeof getFeedbackSurveyResponsesWithSurveySurveyResponses>>[number]
+    Awaited<ReturnType<typeof getFeedbackSurveyResponsesWithSurveyDataAndComments>>[number]
   >
   operators: Prettify<Awaited<ReturnType<typeof getOperatorsWithCount>>["operators"]>
   topics: Prettify<

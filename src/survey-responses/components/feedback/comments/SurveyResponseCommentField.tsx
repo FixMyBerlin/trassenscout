@@ -4,6 +4,7 @@ import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { proseClasses } from "@/src/core/components/text"
 import { SurveyResponseComment } from "@prisma/client"
 import clsx from "clsx"
+import { EditSurveyResponseCommentForm } from "./EditSurveyResponseCommentForm"
 import { localDateTime } from "./utils/localDateTime"
 import { wasUpdated } from "./utils/wasUpdated"
 
@@ -34,8 +35,8 @@ export const SurveyResponseCommentField = ({ comment }: Props) => {
           {localDateTime(comment.createdAt)}
           {wasUpdated(comment) && <>, aktualisiert {localDateTime(comment.updatedAt)}</>}
         </div>
-        {/* todo */}
-        {/* <EditNoteCommentForm comment={comment} /> */}
+
+        <EditSurveyResponseCommentForm comment={comment} />
       </div>
     </>
   )

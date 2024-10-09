@@ -13,8 +13,8 @@ import { EditableSurveyResponseFilterForm } from "@/src/survey-responses/compone
 import EditableSurveyResponseListItem from "@/src/survey-responses/components/feedback/EditableSurveyResponseListItem"
 import { ExternalSurveyResponseFormModal } from "@/src/survey-responses/components/feedback/ExternalSurveyResponseFormModal"
 import { useFilteredResponses } from "@/src/survey-responses/components/feedback/useFilteredResponses"
+import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 
-import getFeedbackSurveyResponsesWithSurveySurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponsesWithSurveySurveyResponses"
 import getQuestionResponseOptions from "@/src/survey-responses/queries/getQuestionResponseOptions"
 import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
@@ -29,7 +29,7 @@ export const SurveyResponse = () => {
   const backenendConfig = getBackendConfigBySurveySlug(survey.slug)
   // the returned responses include the surveyPart1 data
   const [feedbackSurveyResponses, { refetch: refetchResponses }] = useQuery(
-    getFeedbackSurveyResponsesWithSurveySurveyResponses,
+    getFeedbackSurveyResponsesWithSurveyDataAndComments,
     { projectSlug, surveyId: survey.id },
   )
   const filteredResponses = useFilteredResponses(feedbackSurveyResponses, survey.slug)
