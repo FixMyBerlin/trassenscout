@@ -95,10 +95,12 @@ export const useFilteredResponses = (
     .filter((response) => {
       if (!additionalFilters) return response
       return Object.keys(additionalFilters).every((key) => {
+        if (additionalFilters[key] === "ALL") return response
         const additionalFiltersConfigItem = additionalFiltersDefinition?.find(
           (filter) => filter.value === key,
         )
-        if (additionalFilters[key] === "ALL") return response
+        // if the filter is not defined in the backend config (e.g. broken url), we do not filter by it
+        if (!additionalFiltersConfigItem) return response
         // on dev and staging we have some surveyresponses (Hinweise) that do not have a first part (Umfrage)
         // so we need to check if the first part exists, here we filter out the surveyresponses that do not have a first part when a filter concerning the first part is used; in production these surveyresponses do not exist
         if (
