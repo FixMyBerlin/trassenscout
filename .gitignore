@@ -61,3 +61,7 @@ lib-cov
 # local data
 db/remote/data/dump.sql
 db/zod-schema-inspiration/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

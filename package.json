@@ -5,8 +5,8 @@
   "license": "AGPL-3.0",
   "private": true,
   "scripts": {
-    "start": "blitz start",
-    "dev": "blitz dev",
+    "start": "npm run predev:check_docker && blitz start --hostname 127.0.0.1 --port 5000",
+    "dev": "blitz dev --hostname 127.0.0.1 --port 6173",
     "predev": "npm run codegen && npm run predev:check_docker",
     "predev:check_docker": "if [[ $(docker inspect -f '{{.State.Running}}' rsv-builder-db) = \"true\" ]]; then echo Docker: Skipping – Container already running; else docker compose up --detach; fi",
     "codegen": "blitz codegen",
@@ -16,7 +16,7 @@
     "bleach": "rm -rf node_modules/ && rm -rf .next/ && npm install",
     "bleach:full": "rm package-lock.json && npm run bleach",
     "studio": "blitz prisma studio",
-    "mailpreview": "BLITZ_DEV_SERVER_ORIGIN=http://localhost:3001 email dev",
+    "mailpreview": "NEXT_PUBLIC_APP_ORIGIN=http://localhost:6173 email dev",
     "openTypes": "code \"node_modules/.prisma/client/index.d.ts\"",
     "migrate": "blitz prisma migrate dev",
     "migrate:create": "blitz prisma migrate dev --create-only && npm run migrate:create:openMigration",
@@ -105,7 +105,9 @@
     "zustand": "5.0.0-rc.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "9.0.3",
     "@next/bundle-analyzer": "14.2.14",
+    "@playwright/test": "1.48.0",
     "@tailwindcss/forms": "0.5.9",
     "@tailwindcss/typography": "0.5.15",
     "@testing-library/dom": "10.4.0",
