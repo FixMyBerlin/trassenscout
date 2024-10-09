@@ -30,6 +30,7 @@ import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
 import { NewSurveyResponseCommentForm } from "./comments/NewSurveyResponseCommentForm"
+import { SurveyResponseCommentField } from "./comments/SurveyResponseCommentField"
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<
@@ -232,7 +233,18 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             defaultViewState={defaultViewState}
             backendConfig={backendConfig}
           />
-          <NewSurveyResponseCommentForm surveyResponseId={response.id} />
+          <ul>
+            {response.surveyResponseComments?.map((comment) => {
+              return (
+                <li key={comment.id} className="mt-5 border-t border-t-gray-200 pt-5">
+                  <SurveyResponseCommentField comment={comment} />
+                </li>
+              )
+            })}
+            <li className="mt-5 border-t border-t-gray-200 pt-5">
+              <NewSurveyResponseCommentForm surveyResponseId={response.id} />
+            </li>
+          </ul>
         </div>
       )}
     </article>

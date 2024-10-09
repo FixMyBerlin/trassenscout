@@ -6,7 +6,7 @@ import { resolver } from "@blitzjs/rpc"
 import { viewerRoles } from "../../authorization/constants"
 import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 
-type GetFeedbackSurveyResponsesWithSurveySurveyResponsesInput = {
+type GetFeedbackSurveyResponsesWithSurveyDataAndComments = {
   projectSlug: string
   surveyId: number
   withLocationOnly?: boolean
@@ -19,7 +19,7 @@ export default resolver.pipe(
     projectSlug,
     surveyId,
     withLocationOnly,
-  }: GetFeedbackSurveyResponsesWithSurveySurveyResponsesInput) => {
+  }: GetFeedbackSurveyResponsesWithSurveyDataAndComments) => {
     const rawFeedbackSurveyResponse = await db.surveyResponse.findMany({
       where: {
         // Only surveyResponse.session.project === projectSlug
@@ -38,6 +38,24 @@ export default resolver.pipe(
         operator: { select: { id: true, title: true, slug: true } },
         surveyResponseTopics: true,
         surveySession: { include: { survey: { select: { slug: true } } } },
+        surveyResponseComments: {
+          select: {
+            id: true,
+            surveyResponseId: true,
+            createdAt: true,
+            updatedAt: true,
+            body: true,
+            author: {
+              select: {
+                id: true,
+                role: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+          orderBy: { id: "asc" },
+        },
       },
     })
 
