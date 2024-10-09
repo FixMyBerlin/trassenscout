@@ -1,4 +1,4 @@
-import { Modal } from "@/src/core/components/Modal"
+import { Modal } from "@/src/core/components/Modal/Modal"
 import { linkStyles } from "@/src/core/components/links"
 import { linkIcons } from "@/src/core/components/links/Link"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"

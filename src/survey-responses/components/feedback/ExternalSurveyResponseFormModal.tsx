@@ -1,4 +1,4 @@
-import { Modal } from "@/src/core/components/Modal"
+import { Modal } from "@/src/core/components/Modal/Modal"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
