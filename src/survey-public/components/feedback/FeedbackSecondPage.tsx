@@ -86,7 +86,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
                 <SurveyLabeledTextareaField
                   caption={userTextQuestionProps.caption?.de}
                   key={q.id}
-                  maxLength={200}
+                  maxLength={2000}
                   name={`text-${q.id}`}
                   placeholder={userTextQuestionProps.placeholder?.de}
                   label={""}
