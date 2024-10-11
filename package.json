@@ -40,7 +40,7 @@
     "updatePackages:major": "npx taze major --includeLocked --write --exclude eslint && npm run updatePackages:minor && npm install",
     "updatePackages:minor": "npx taze minor --includeLocked --write && npm install",
     "release": "gh pr create --base main --head develop --title \"Release $(date '+%Y-%m-%d')\" --body \"\"",
-    "prepare": "husky install",
+    "prepare": "husky",
     "calc-lengthkm": "node db/calculate-subsection-subsubsection-lengthkm.js"
   },
   "prisma": {
