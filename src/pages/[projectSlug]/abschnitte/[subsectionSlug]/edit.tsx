@@ -67,12 +67,7 @@ const EditSubsection = () => {
           "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
         )
       }
-      await router.push(
-        Routes.SubsectionDashboardPage({
-          projectSlug,
-          subsectionSlug: subsectionSlug!,
-        }),
-      )
+      await router.push(Routes.ProjectDashboardPage({ projectSlug }))
     }
   }
 
