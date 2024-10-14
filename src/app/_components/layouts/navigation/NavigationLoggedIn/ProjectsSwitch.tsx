@@ -56,6 +56,21 @@ export const ProjectsSwitch = ({ projects }: Props) => {
             >
               <MenuItems className="absolute left-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <div className="p-1.5">
+                  <MenuItem key="dashboard">
+                    {({ focus }) => (
+                      <Link
+                        href="/dashboard"
+                        classNameOverwrites={clsx(
+                          // current && "bg-gray-200",
+                          focus && "bg-gray-100",
+                          "flex items-center rounded-md px-3 py-2 text-sm text-blue-500 hover:text-blue-800",
+                        )}
+                      >
+                        <strong>Meine Projekte</strong>
+                      </Link>
+                    )}
+                  </MenuItem>
+
                   {projectsMenuItems.map((item) => {
                     const current = projectSlug === item.slug
 
@@ -67,7 +82,7 @@ export const ProjectsSwitch = ({ projects }: Props) => {
                             classNameOverwrites={clsx(
                               current && "bg-gray-200",
                               focus && "bg-gray-100",
-                              "my-1.5 flex items-center justify-between gap-2 rounded-md px-3 py-2 text-sm text-blue-500 first:mt-0 last:mb-0 hover:text-blue-800",
+                              "flex items-center justify-between gap-2 rounded-md px-3 py-2 text-sm text-blue-500 hover:text-blue-800",
                             )}
                           >
                             <div className="flex items-center gap-2">
