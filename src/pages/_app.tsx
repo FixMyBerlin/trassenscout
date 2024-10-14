@@ -4,7 +4,7 @@ import "@/src/app/_components/layouts/global.css"
 import { withBlitz } from "@/src/blitz-client"
 import { init } from "@socialgouv/matomo-next"
 import { AuthenticationError, AuthorizationError } from "blitz"
-import { useEffect, useRef } from "react"
+import { Suspense, useEffect, useRef } from "react"
 import { fontRedHatText } from "../app/_components/layouts/fonts"
 
 const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL
@@ -51,7 +51,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         }
       `}</style>
       <ErrorBoundary FallbackComponent={RootErrorFallback}>
-        {getLayout(<Component {...pageProps} />)}
+        <Suspense>{getLayout(<Component {...pageProps} />)}</Suspense>
       </ErrorBoundary>
     </>
   )

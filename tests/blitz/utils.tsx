@@ -4,6 +4,7 @@ import { render as defaultRender } from "@testing-library/react"
 import { renderHook as defaultRenderHook } from "@testing-library/react-hooks"
 import { MemoryRouterProvider } from "next-router-mock/dist/MemoryRouterProvider"
 import { NextRouter } from "next/router"
+import { Suspense } from "react"
 import { vi } from "vitest"
 
 export * from "@testing-library/react"
@@ -40,7 +41,7 @@ export function render(
       <MemoryRouterProvider>
         <BlitzProvider dehydratedState={dehydratedState} client={queryClient}>
           <RouterContext.Provider value={{ ...mockRouter, ...router }}>
-            {children}
+            <Suspense>{children}</Suspense>
           </RouterContext.Provider>
         </BlitzProvider>
       </MemoryRouterProvider>
@@ -69,7 +70,7 @@ export function renderHook(
     wrapper = ({ children }: { children: React.ReactNode }) => (
       <BlitzProvider dehydratedState={dehydratedState} client={queryClient}>
         <RouterContext.Provider value={{ ...mockRouter, ...router }}>
-          {children}
+          <Suspense>{children}</Suspense>
         </RouterContext.Provider>
       </BlitzProvider>
     )
