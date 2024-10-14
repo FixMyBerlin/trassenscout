@@ -11,7 +11,8 @@ export default defineConfig({
   test: {
     dir: "./",
     globals: true,
-    setupFiles: "./test/setup.ts",
+    setupFiles: "./tests/blitz/setup.ts",
+    include: ["**/*.test.ts"], // Exclude .spec.ts which are Playwright tests
     coverage: {
       reporter: ["text", "json", "html"],
     },
