@@ -44,7 +44,7 @@ export const SurveyResponse = () => {
     surveyId,
     questions: getBackendConfigBySurveySlug(survey.slug).additionalFilters,
   })
-  console.log({ additionalFilterQuestionsWithResponseOptions })
+  // console.log({ additionalFilterQuestionsWithResponseOptions })
 
   // Whenever we submit the form, we also refetch, so the whole accordeon header and everything else is updated
   const refetchResponsesAndTopics = async () => {
