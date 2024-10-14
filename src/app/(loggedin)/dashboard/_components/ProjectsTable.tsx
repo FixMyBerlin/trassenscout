@@ -1,15 +1,17 @@
 "use client"
+import { ProjectIcon } from "@/src/core/components/Map/Icons/ProjectIcon"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { longTitle, shortTitle } from "@/src/core/components/text"
-import { TGetProjects } from "@/src/server/projects/queries/getProjects"
+import { roleTranslation } from "@/src/pagesComponents/memberships/roleTranslation.const"
+import { TGetProjectsWithGeometryWithMembershipRole } from "@/src/server/projects/queries/getProjectsWithGeometryWithMembershipRole"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
 
 type Props = {
-  projects: TGetProjects["projects"]
+  projects: TGetProjectsWithGeometryWithMembershipRole
 }
 
-export const ProjectTable = ({ projects }: Props) => {
+export const ProjectsTable = ({ projects }: Props) => {
   const router = useRouter()
 
   return (
@@ -24,14 +26,15 @@ export const ProjectTable = ({ projects }: Props) => {
             >
               Projekt
             </th>
-            <th
-              scope="col"
-              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-            ></th>
+            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              Anzahl Planungsabschnitte
+            </th>
             <th
               scope="col"
               className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
-            ></th>
+            >
+              Meine Rolle
+            </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
@@ -45,13 +48,17 @@ export const ProjectTable = ({ projects }: Props) => {
                 onClick={() => router.push(route)}
               >
                 <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                  {shortTitle(project.slug)}
+                  <ProjectIcon label={shortTitle(project.slug)} />
                 </td>
                 <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                   <strong>{longTitle(project.slug)}</strong>
                 </td>
-                <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50"></td>
-                <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6"></td>
+                <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
+                  {project.subsections.length}
+                </td>
+                <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
+                  {project.memberships[0] ? roleTranslation[project.memberships[0].role] : ""}
+                </td>
               </tr>
             )
           })}

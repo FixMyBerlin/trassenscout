@@ -3,10 +3,10 @@ import { RouteIcon } from "../Icons"
 type Props = {
   icon: React.ReactNode
   subIcon?: string
-  start: string
-  end: string
-  compact?: boolean
-}
+} & (
+  | { start: string; end: string; compact?: true }
+  | { start?: never; end?: never; compact?: false }
+)
 
 export const StartEndLabel = ({ icon, subIcon, start, end, compact }: Props) => (
   <div className="px-1.5 py-1">

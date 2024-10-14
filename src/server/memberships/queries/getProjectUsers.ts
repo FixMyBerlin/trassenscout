@@ -1,15 +1,17 @@
 import db, { MembershipRoleEnum } from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
-import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
 import { selectUserFieldsForSession } from "@/src/server/auth/shared/selectUserFieldsForSession"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 
-const Schema = z.object({
-  projectSlug: z.string(),
-  role: z.nativeEnum(MembershipRoleEnum).optional(),
-})
+const Schema = ProjectSlugRequiredSchema.merge(
+  z.object({ role: z.nativeEnum(MembershipRoleEnum).optional() }),
+)
 
 export default resolver.pipe(
   resolver.zod(Schema),

@@ -10,7 +10,7 @@ export const NoProjectMembershipsYet = () => {
         <Image src={Logo} alt="Trassenscout" height={60} />
 
         <H1 className="mt-12 text-center">Noch keiner Trasse zugeordnet</H1>
-        <div className="rounded-lg bg-white px-8 py-4 text-sm shadow-md">
+        <div className="mt-10 rounded-lg bg-white px-8 py-4 text-sm shadow-md">
           <p>
             Ein Admin wurde unterrichtet. Sobald Sie einer Trasse zugeordnet wurden, bekommen Sie
             eine Nachricht.

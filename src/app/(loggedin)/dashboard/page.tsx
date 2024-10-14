@@ -1,11 +1,12 @@
 import { invoke } from "@/src/blitz-server"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import getProjects from "@/src/server/projects/queries/getProjects"
+import getProjectsWithGeometryWithMembershipRole from "@/src/server/projects/queries/getProjectsWithGeometryWithMembershipRole"
 import { Metadata } from "next"
 import "server-only"
 import { NoProjectMembershipsYet } from "./_components/NoProjectMembershipsYet"
-import { ProjectTable } from "./_components/ProjectTable"
+import { ProjectsMap } from "./_components/ProjectsMap"
+import { ProjectsTable } from "./_components/ProjectsTable"
 
 export const metadata: Metadata = {
   robots: "noindex",
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 }
 
 export default async function DashboardPage() {
-  const { projects } = await invoke(getProjects, {})
+  const projects = await invoke(getProjectsWithGeometryWithMembershipRole, {})
 
   if (!projects.length) {
     return <NoProjectMembershipsYet />
@@ -27,7 +28,8 @@ export default async function DashboardPage() {
         description="Willkommen im Trassenscout. Hier finden Sie alle Projekte, an denen Sie beteiligt sind."
         className="mt-10" // Usually added by the Breadcrumb component
       />
-      <ProjectTable projects={projects} />
+      <ProjectsMap projects={projects} />
+      <ProjectsTable projects={projects} />
       <SuperAdminLogData data={projects} />
     </>
   )

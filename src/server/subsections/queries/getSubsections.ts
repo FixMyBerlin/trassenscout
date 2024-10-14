@@ -13,7 +13,7 @@ type GetSubsectionsInput = { projectSlug: string } & Pick<
 >
 
 export default resolver.pipe(
-  // @ts-ignore
+  // @ts-expect-errors
   authorizeProjectMember(extractProjectSlug, viewerRoles),
   async ({
     projectSlug,
