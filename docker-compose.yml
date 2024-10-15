@@ -1,7 +1,7 @@
 version: "3"
 services:
   db:
-    image: postgres:12-alpine
+    image: postgres:14-alpine
     environment:
       POSTGRES_PASSWORD: password
       LANG: en_US.UTF-8
@@ -11,6 +11,6 @@ services:
     volumes:
       - rsv-data:/var/lib/postgresql/data
     container_name: rsv-builder-db
-    command: ['postgres', '-clog_destination=stderr', '-clog_statement=all']
+    command: ["postgres", "-clog_destination=stderr", "-clog_statement=all"]
 volumes:
   rsv-data:
