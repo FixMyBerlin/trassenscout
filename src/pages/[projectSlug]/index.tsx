@@ -14,8 +14,8 @@ import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useTryProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { CalenderDashboard } from "@/src/pagesComponents/calendar-entries/CalenderDashboard"
+import { ExperimentalProjectInfoPanel } from "@/src/pagesComponents/projects/ExperimentalProjectInfoPanel"
 import { OperatorFilterDropdown } from "@/src/pagesComponents/projects/OperatorFilterDropdown"
-import { ProjectInfoPanel } from "@/src/pagesComponents/projects/ProjectInfoPanel"
 import { SubsectionTable } from "@/src/pagesComponents/subsections/SubsectionTable"
 import getProject from "@/src/server/projects/queries/getProject"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
@@ -78,10 +78,8 @@ export const ProjectDashboardWithQuery = () => {
           </IfUserCanEdit>
         }
       />
-      <details>
-        <summary className="mt-6 cursor-pointer">Info & Auswertung</summary>
-        <ProjectInfoPanel />
-      </details>
+
+      <ExperimentalProjectInfoPanel />
 
       {project.description && (
         <PageDescription>
