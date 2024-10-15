@@ -122,7 +122,7 @@ export const ProjectsMap = ({ projects }: Props) => {
         >
           <StartEndLabel
             icon={<ProjectMapIcon label={shortTitle(projectSlug)} />}
-            compact={false}
+            layout="compact"
           />
         </TipMarker>
       </Marker>

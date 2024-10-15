@@ -123,7 +123,11 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
             start={sub.start}
             end={sub.end}
             // allow details when zoomed in _and_ when hovered
-            compact={expandByZoom(zoom) && !(sub.slug === hoveredMarker || sub.slug === hoveredMap)}
+            layout={
+              expandByZoom(zoom) && !(sub.slug === hoveredMarker || sub.slug === hoveredMap)
+                ? "compact"
+                : "details"
+            }
           />
         </TipMarker>
       </Marker>
