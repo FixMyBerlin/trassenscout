@@ -10,7 +10,7 @@ export const useFilteredResponses = (
   responses: Awaited<ReturnType<typeof getFeedbackSurveyResponsesWithSurveySurveyResponses>>,
   surveySlug: AllowedSurveySlugs,
 ) => {
-  const [filter] = useFilters()
+  const { filter } = useFilters()
 
   if (!filter) return responses
 

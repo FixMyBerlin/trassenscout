@@ -11,7 +11,7 @@ import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { FilterSchema } from "./useFilters.nuqs"
 
-export const useDefaultFilterValues = (): FilterSchema => {
+export const useDefaultFilterValues = () => {
   const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "string")
   const [{ slug }] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
@@ -37,6 +37,7 @@ export const useDefaultFilterValues = (): FilterSchema => {
   backendConfig.additionalFilters?.forEach(
     (filter) => (defaultAdditionalFiltersQueryValues[filter.value] = "ALL"),
   )
+
   return {
     status: [...surveyResponseStatus.map((s) => s.value)],
     operator: "ALL",
@@ -46,5 +47,5 @@ export const useDefaultFilterValues = (): FilterSchema => {
     topics: [...topics.map((t) => String(t.id)), "0"],
     searchterm: "",
     ...defaultAdditionalFiltersQueryValues,
-  }
+  } satisfies FilterSchema
 }

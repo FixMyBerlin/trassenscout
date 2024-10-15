@@ -1,6 +1,5 @@
 import { parseAsJson, useQueryState } from "nuqs"
 import { z } from "zod"
-import { useDefaultFilterValues } from "./useDefaultFilterValues"
 
 export const filterSchema = z
   .object({
@@ -23,11 +22,6 @@ export const filterSchema = z
 export type FilterSchema = z.infer<typeof filterSchema>
 
 export const useFilters = () => {
-  const filterDefault = useDefaultFilterValues()
-  return useQueryState(
-    "filter",
-    parseAsJson(filterSchema.parse).withDefault({
-      ...filterDefault,
-    }),
-  )
+  const [filter, setFilter] = useQueryState("filter", parseAsJson(filterSchema.parse))
+  return { filter, setFilter }
 }
