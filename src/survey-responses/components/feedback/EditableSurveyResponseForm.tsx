@@ -71,7 +71,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
   const surveyId = useParam("surveyId", "string")
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
 
-  const [filter, setFilter] = useFilters()
+  const { filter, setFilter } = useFilters()
 
   const [updateSurveyResponseMutation] = useMutation(updateSurveyResponse)
   const [surveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
