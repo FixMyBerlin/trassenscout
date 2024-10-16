@@ -72,6 +72,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   }, [])
 
   const handleFilterReset = async () => {
+    setSearchterm("")
     await setFilter(defaultFilters)
   }
 
