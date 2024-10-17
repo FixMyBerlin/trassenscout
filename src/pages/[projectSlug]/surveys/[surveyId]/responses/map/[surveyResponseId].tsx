@@ -15,7 +15,7 @@ import {
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import EditableSurveyResponseListItem from "@/src/survey-responses/components/feedback/EditableSurveyResponseListItem"
 import { SurveyFeedbackWithLocationOverviewMap } from "@/src/survey-responses/components/feedback/SurveyFeedbackWithLocationOverviewMap"
-import getFeedbackSurveyResponsesWithSurveySurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponsesWithSurveySurveyResponses"
+import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { BlitzPage, useParam } from "@blitzjs/next"
@@ -30,7 +30,7 @@ export const SurveyResponseWithLocation = () => {
 
   const [survey] = useQuery(getSurvey, { projectSlug, id: surveyId })
   // the returned responses include the surveyPart1 data
-  const [feedbackSurveyResponses] = useQuery(getFeedbackSurveyResponsesWithSurveySurveyResponses, {
+  const [feedbackSurveyResponses] = useQuery(getFeedbackSurveyResponsesWithSurveyDataAndComments, {
     projectSlug,
     surveyId: survey.id,
     withLocationOnly: true,

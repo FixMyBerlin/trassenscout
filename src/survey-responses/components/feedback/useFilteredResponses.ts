@@ -3,11 +3,12 @@ import {
   getBackendConfigBySurveySlug,
   getResponseConfigBySurveySlug,
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
-import getFeedbackSurveyResponsesWithSurveySurveyResponses from "../../queries/getFeedbackSurveyResponsesWithSurveySurveyResponses"
+
+import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { useFilters } from "./useFilters.nuqs"
 
 export const useFilteredResponses = (
-  responses: Awaited<ReturnType<typeof getFeedbackSurveyResponsesWithSurveySurveyResponses>>,
+  responses: Awaited<ReturnType<typeof getFeedbackSurveyResponsesWithSurveyDataAndComments>>,
   surveySlug: AllowedSurveySlugs,
 ) => {
   const { filter } = useFilters()
@@ -75,6 +76,9 @@ export const useFilteredResponses = (
       if (!searchterm) return response
       return (
         response.note?.toLowerCase().includes(searchterm.trim().toLowerCase()) ||
+        response.surveyResponseComments.some((comment) =>
+          comment.body.toLowerCase().includes(searchterm.trim().toLowerCase()),
+        ) ||
         (response?.data &&
           // @ts-expect-error `data` is of type unkown
           response?.data[evaluationRefs["feedback-usertext-1"]] &&
