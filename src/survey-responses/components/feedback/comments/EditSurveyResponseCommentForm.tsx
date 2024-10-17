@@ -96,7 +96,6 @@ export const EditSurveyResponseCommentForm = ({ comment }: Props) => {
           }}
           className={clsx("mt-4 flex w-full items-end justify-end gap-2", linkStyles)}
         >
-          {/* todo button styles */}
           <p>Kommentar löschen</p>
           <TrashIcon className={clsx(linkStyles, "h-6 w-6")} />
         </button>
