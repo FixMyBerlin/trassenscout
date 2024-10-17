@@ -16,7 +16,7 @@ export default function AdminDashboardPage() {
       <ul>
         <li>
           <Link href="/admin/projects">Projekte</Link> |{" "}
-          <Link href="/admin/projects/new">Neues Projekte</Link>
+          <Link href="/admin/projects/new">Neues Projekt</Link>
         </li>
         <li>
           <Link href="/admin/memberships">Nutzer & Mitgliedschaften</Link>
