@@ -26,26 +26,23 @@ export const NewSurveyResponseCommentForm = ({ surveyResponseId }: Props) => {
       },
       {
         onSuccess: () => {
-          // NOTE: Remove once we update to the newest react-compiler-esling-package that fixed this false positive https://github.com/facebook/react/issues/29703#issuecomment-2166763791
-          // eslint-disable-next-line react-compiler/react-compiler
           setBody("")
           invalidateQuery(getFeedbackSurveyResponsesWithSurveyDataAndComments)
         },
       },
     )
   }
-  const handleBodyInputChange = (e: any) => {
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setBody(e.target.value)
   }
 
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col items-start gap-4">
-        <input
-          onChange={handleBodyInputChange}
-          type="textarea"
+        <textarea
+          onChange={handleTextareaChange}
           value={body}
-          onSubmit={handleSubmit}
+          required
           name="body"
           className={
             "block h-24 w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
