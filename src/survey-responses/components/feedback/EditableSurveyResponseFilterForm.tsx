@@ -187,8 +187,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
           onSubmit={handleSubmit}
         >
           <DebugFilterForm filter={filter} />
-          <div className="mt-6 flex flex-col gap-12">
-            <div className="flex flex-col items-start gap-12 sm:flex-row">
+          <div className="mt-6 flex flex-col gap-6">
+            <div className="flex flex-col items-start gap-6 sm:flex-row">
               <FormElementWrapper
                 label={labels.status?.sg || defaultBackendConfig.labels.status.sg}
               >
@@ -203,7 +203,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                   />
                 ))}
               </FormElementWrapper>
-              <div>
+              <div className="flex flex-shrink-0 flex-col gap-4">
                 <FormElementWrapper label={labels.note?.sg || defaultBackendConfig.labels.note.sg}>
                   {hasnotesOptions.map((item) => (
                     <LabeledInputRadioCheckbox
@@ -216,7 +216,6 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                     />
                   ))}
                 </FormElementWrapper>
-
                 <FormElementWrapper
                   label={labels.location?.sg || defaultBackendConfig.labels.location.sg}
                 >
@@ -233,7 +232,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 </FormElementWrapper>
               </div>
               {additionalFilters && Boolean(additionalFilters?.length) && filter && (
-                <ul className="flex flex-col gap-4">
+                <ul className="flex flex-shrink flex-col gap-4">
                   {additionalFilters.map((addFilter) => (
                     <li key={addFilter.id}>
                       <FormElementWrapper label={addFilter.label}>
@@ -258,21 +257,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 </ul>
               )}
             </div>
-            <FormElementWrapper
-              label={labels.operator?.sg || defaultBackendConfig.labels.operator.sg}
-            >
-              {operatorOptions.map((item) => (
-                <LabeledInputRadioCheckbox
-                  type="radio"
-                  item={item}
-                  key={item.value}
-                  name="operator"
-                  onChange={handleInputChange}
-                  checked={filter?.operator === item.value}
-                />
-              ))}
-            </FormElementWrapper>
-            <div className="flex flex-col gap-6 sm:flex-row">
+            <div className="flex flex-col gap-12 sm:flex-row">
               <FormElementWrapper
                 label={labels.category?.sg || defaultBackendConfig.labels.category.sg}
               >
@@ -287,10 +272,26 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                   />
                 ))}
               </FormElementWrapper>
-              {!!topicsOptions.length && (
-                <FormElementWrapper
-                  label={labels.topics?.pl || defaultBackendConfig.labels.topics.pl}
-                >
+              <FormElementWrapper
+                label={labels.operator?.sg || defaultBackendConfig.labels.operator.sg}
+              >
+                {operatorOptions.map((item) => (
+                  <LabeledInputRadioCheckbox
+                    type="radio"
+                    item={item}
+                    key={item.value}
+                    name="operator"
+                    onChange={handleInputChange}
+                    checked={filter?.operator === item.value}
+                  />
+                ))}
+              </FormElementWrapper>
+            </div>
+            {!!topicsOptions.length && (
+              <FormElementWrapper
+                label={labels.topics?.pl || defaultBackendConfig.labels.topics.pl}
+              >
+                <div className="grid grid-cols-2 gap-1.5 md:grid-cols-3 lg:grid-cols-4">
                   {topicsOptions.map((item) => (
                     <LabeledInputRadioCheckbox
                       type="checkbox"
@@ -301,9 +302,9 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                       item={item}
                     />
                   ))}
-                </FormElementWrapper>
-              )}
-            </div>
+                </div>
+              </FormElementWrapper>
+            )}
             <div className="flex items-end gap-4">
               <div className="w-[300px]">
                 <p className="mb-3 font-semibold">Freitextsuche</p>
