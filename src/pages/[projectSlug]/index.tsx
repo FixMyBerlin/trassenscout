@@ -52,7 +52,7 @@ export const ProjectDashboardWithQuery = () => {
             </Link>
           </ButtonWrapper>
         </IfUserCanEdit>
-        <div className="border-t px-4 py-5 text-center text-gray-500">
+        <div className="my-5 border-t px-4 py-5 text-center text-gray-500">
           Noch keine Planungsabschnitte angelegt
         </div>
       </section>

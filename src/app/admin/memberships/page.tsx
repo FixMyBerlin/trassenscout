@@ -47,7 +47,7 @@ export default async function AdminProjectsPage() {
                     <strong>{getFullname(user)}</strong>
                     <br />
                     {user.email}
-                    {user.role === "ADMIN" && <>(Admin)</>}
+                    {user.role === "ADMIN" && <> (Admin)</>}
                   </td>
                   <td className="h-20 py-4 pl-4 pr-3 text-sm sm:pr-6">
                     {user?.memberships?.length === 0 && <>Bisher keine Rechte</>}
