@@ -52,6 +52,8 @@ export const ProjectsTable = ({ projects }: Props) => {
                 </td>
                 <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                   <strong>{longTitle(project.slug)}</strong>
+                  <br />
+                  {project.subTitle}
                 </td>
                 <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
                   {project.subsections.length}
