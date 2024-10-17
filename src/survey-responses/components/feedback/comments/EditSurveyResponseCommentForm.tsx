@@ -68,8 +68,7 @@ export const EditSurveyResponseCommentForm = ({ comment }: Props) => {
           <LabeledTextareaField
             name="body"
             className="min-h-40"
-            label="Antwort bearbeiten (Markdown)"
-            labelClassNameOverwrite="sr-only"
+            label=""
             data-1p-ignore
             data-lpignore
             defaultValue={comment.body}
