@@ -16,9 +16,9 @@ export const Breadcrumb = ({ pages }: Props) => {
       <ol role="list" className="my-0 flex space-x-4 rounded-md bg-white px-6 shadow">
         <li className="flex">
           <div className="flex items-center">
-            <Link href="/admin" className="text-gray-400 hover:text-gray-500">
+            <Link href="/dashboard" className="text-gray-400 hover:text-gray-500">
               <HomeIcon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
-              <span className="sr-only">Admin</span>
+              <span className="sr-only">Meine Projekte (Öffentliche Ansicht)</span>
             </Link>
           </div>
         </li>
