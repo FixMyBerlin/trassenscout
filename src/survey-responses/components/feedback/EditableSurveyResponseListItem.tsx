@@ -24,15 +24,17 @@ import { EnvelopeIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import { parseAsInteger, useQueryState } from "nuqs"
 import { useEffect } from "react"
-import getFeedbackSurveyResponsesWithSurveySurveyResponses from "../../queries/getFeedbackSurveyResponsesWithSurveySurveyResponses"
+import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import EditableSurveyResponseAdditionalFilterFields from "./EditableSurveyResponseAdditionalFilterFields"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
+import { NewSurveyResponseCommentForm } from "./comments/NewSurveyResponseCommentForm"
+import { SurveyResponseCommentField } from "./comments/SurveyResponseCommentField"
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<
-    Awaited<ReturnType<typeof getFeedbackSurveyResponsesWithSurveySurveyResponses>>[number]
+    Awaited<ReturnType<typeof getFeedbackSurveyResponsesWithSurveyDataAndComments>>[number]
   >
   operators: Prettify<Awaited<ReturnType<typeof getOperatorsWithCount>>["operators"]>
   topics: Prettify<
@@ -231,6 +233,21 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             defaultViewState={defaultViewState}
             backendConfig={backendConfig}
           />
+          <p>Interner Kommentar</p>
+          <ul className="max-w-3xl">
+            {response.surveyResponseComments?.map((comment) => {
+              return (
+                <li key={comment.id} className="mt-5">
+                  <SurveyResponseCommentField comment={comment} />
+                </li>
+              )
+            })}
+            <IfUserCanEdit>
+              <li className="mt-5">
+                <NewSurveyResponseCommentForm surveyResponseId={response.id} />
+              </li>
+            </IfUserCanEdit>
+          </ul>
         </div>
       )}
     </article>
