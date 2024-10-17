@@ -129,6 +129,8 @@ export const ProjectsMap = ({ projects }: Props) => {
     )
   })
 
+  if (!selectableLines.features.length) return null
+
   const boundingBox = bbox(selectableLines)
   const bounds = new LngLatBounds(
     [boundingBox[0], boundingBox[1]],
