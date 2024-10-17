@@ -7,6 +7,7 @@ import {
 } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
+import { membershipUpdateSession } from "../_utils/membershipUpdateSession"
 
 export const UpdateMembershipSchema = ProjectSlugRequiredSchema.merge(
   z.object({
@@ -18,11 +19,10 @@ export const UpdateMembershipSchema = ProjectSlugRequiredSchema.merge(
 export default resolver.pipe(
   resolver.zod(UpdateMembershipSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ membershipId, projectSlug, ...data }) => {
+  async ({ membershipId, projectSlug, ...data }, ctx) => {
     const updated = await db.membership.update({ where: { id: membershipId }, data })
 
-    // Delete the session of the updated user so she is forced to log in again to update her membership
-    await db.session.deleteMany({ where: { userId: updated.userId } })
+    membershipUpdateSession(updated.userId, ctx.session)
 
     return updated
   },
