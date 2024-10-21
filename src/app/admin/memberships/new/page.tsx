@@ -14,7 +14,7 @@ export default function AdminMembershipNewPage() {
           pages={[
             { href: "/admin", name: "Dashboard" },
             { href: "/admin/memberships", name: "Nutzer & Mitgliedschaften" },
-            { href: "/admin/memberships/new", name: "Mitglieschaft anlegen" },
+            { href: "/admin/memberships/new", name: "Mitgliedschaft anlegen" },
           ]}
         />
       </HeaderWrapper>
