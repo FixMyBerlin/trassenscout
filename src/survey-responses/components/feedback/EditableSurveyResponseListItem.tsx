@@ -4,7 +4,6 @@ import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
-import { isAdmin } from "@/src/pagesComponents/users/utils/isAdmin"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
 import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { TMapProps } from "@/src/survey-public/components/types"
@@ -19,6 +18,7 @@ import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queri
 import deleteSurveyResponse from "@/src/survey-responses/mutations/deleteSurveyResponse"
 import { getSurveyResponseCategoryById } from "@/src/survey-responses/utils/getSurveyResponseCategoryById"
 import getSurvey from "@/src/surveys/queries/getSurvey"
+import { useSession } from "@blitzjs/auth"
 import { useParam, useRouterQuery } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid"
@@ -66,7 +66,8 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
   const [responseDetails, setRespnseDetails] = useQueryState("responseDetails", parseAsInteger)
   const [deleteCalendarEntryMutation] = useMutation(deleteSurveyResponse)
-  const isEditorOrAdmin = useUserCan().edit || isAdmin
+  const session = useSession()
+  const isEditorOrAdmin = useUserCan().edit || session.role === "ADMIN"
 
   useEffect(() => {
     const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
