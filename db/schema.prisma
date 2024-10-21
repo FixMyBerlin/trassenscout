@@ -45,14 +45,15 @@ model User {
   phone          String?
   institution    String? // Organisation / Kommune
 
-  tokens        Token[]
-  sessions      Session[]
-  projects      Project[]
-  subsections   Subsection[]
-  memberships   Membership[]
-  Subsubsection Subsubsection[]
-  invites       Invite[]
-  logEntries    LogEntry[]
+  tokens                Token[]
+  sessions              Session[]
+  projects              Project[]
+  subsections           Subsection[]
+  memberships           Membership[]
+  Subsubsection         Subsubsection[]
+  invites               Invite[]
+  logEntries            LogEntry[]
+  SurveyResponseComment SurveyResponseComment[]
 }
 
 enum UserRoleEnum {
@@ -156,7 +157,9 @@ model Project {
 }
 
 model Membership {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   project   Project @relation(fields: [projectId], references: [id])
   projectId Int
@@ -504,18 +507,20 @@ model SurveySession {
 }
 
 model SurveyResponse {
-  id                   Int                                     @id @default(autoincrement())
-  surveyPart           Int
-  data                 String
-  status               String?
-  note                 String?
-  source               SurveyResponseSourceEnum                @default(FORM)
+  id                     Int                                     @id @default(autoincrement())
+  surveyPart             Int
+  data                   String
+  status                 String?
+  note                   String?
+  source                 SurveyResponseSourceEnum                @default(FORM)
   //
-  surveySession        SurveySession                           @relation(fields: [surveySessionId], references: [id])
-  surveySessionId      Int
-  operatorId           Int?
-  operator             Operator?                               @relation(fields: [operatorId], references: [id])
-  surveyResponseTopics SurveyResponseTopicsOnSurveyResponses[]
+  surveySession          SurveySession                           @relation(fields: [surveySessionId], references: [id])
+  surveySessionId        Int
+  operatorId             Int?
+  operator               Operator?                               @relation(fields: [operatorId], references: [id])
+  //
+  surveyResponseTopics   SurveyResponseTopicsOnSurveyResponses[]
+  surveyResponseComments SurveyResponseComment[]
 }
 
 enum SurveyResponseSourceEnum {
@@ -542,6 +547,20 @@ model SurveyResponseTopicsOnSurveyResponses {
   surveyResponseTopicId Int
 
   @@id([surveyResponseId, surveyResponseTopicId])
+}
+
+model SurveyResponseComment {
+  id               Int            @id @default(autoincrement())
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  //
+  author           User           @relation(fields: [userId], references: [id])
+  userId           Int
+  //
+  surveyResponse   SurveyResponse @relation(fields: [surveyResponseId], references: [id], onDelete: Cascade)
+  surveyResponseId Int
+  //
+  body             String
 }
 
 model LogEntry {

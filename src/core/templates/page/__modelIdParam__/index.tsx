@@ -3,7 +3,7 @@ import get__ModelName__ from "@/src/__modelNamesPath__/queries/get__ModelName__"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link, linkStyles } from "@/src/core/components/links"
-import { quote } from "@/src/core/components/text"
+import { quote } from "@/src/core/components/text/quote"
 import { LayoutArticle, MetaTags } from "@/src/core/layouts"
 import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
@@ -22,7 +22,13 @@ export const __ModelName__ = () => {
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${__modelName__.id} unwiderruflich löschen?`)) {
-      await delete__ModelName__Mutation({ id: __modelName__.id })
+      try {
+        await delete__ModelName__Mutation({ id: __modelName__.id })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
       if (process.env.parentModel) {
         await router.push(Routes.__ModelNames__Page({ __parentModelId__: __parentModelId__! }))
       } else {

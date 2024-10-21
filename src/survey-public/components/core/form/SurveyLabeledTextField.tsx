@@ -26,7 +26,10 @@ export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElem
 }
 
 export const SurveyLabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
-  ({ name, label, help, outerProps, labelProps, optional, ...props }, ref) => {
+  function SurveyLabeledTextField(
+    { name, label, help, outerProps, labelProps, optional, ...props },
+    ref,
+  ) {
     const {
       register,
       formState: { isSubmitting, errors },

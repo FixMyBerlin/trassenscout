@@ -5,7 +5,7 @@ import {
   LabeledTextareaField,
 } from "@/src/core/components/forms"
 import { H2 } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { TMapProps, TResponse, TResponseConfig } from "@/src/survey-public/components/types"
 import { getSurveyDefinitionBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getSurvey from "@/src/surveys/queries/getSurvey"
@@ -15,8 +15,6 @@ import { SurveyResponseSourceEnum } from "@prisma/client"
 import { MapProvider } from "react-map-gl/maplibre"
 import { z } from "zod"
 import { ExternalSurveyResponseFormMap } from "./ExternalSurveyResponseFormMap"
-
-export { FORM_ERROR } from "@/src/core/components/forms"
 
 type Props = {
   mapProps: TMapProps

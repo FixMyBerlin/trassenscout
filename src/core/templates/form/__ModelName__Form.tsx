@@ -1,6 +1,5 @@
 import { Form, FormProps } from "@/src/core/components/forms"
 import { z } from "zod"
-export { FORM_ERROR } from "@/src/core/components/forms"
 
 export function __ModelName__Form<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (

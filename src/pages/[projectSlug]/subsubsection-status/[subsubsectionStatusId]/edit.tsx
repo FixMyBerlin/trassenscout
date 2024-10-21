@@ -1,18 +1,16 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import {
-  FORM_ERROR,
-  SubsubsectionStatusForm,
-} from "@/src/subsubsectionStatus/components/SubsubsectionStatusForm"
-import updateSubsubsectionStatus from "@/src/subsubsectionStatus/mutations/updateSubsubsectionStatus"
-import getSubsubsectionStatus from "@/src/subsubsectionStatus/queries/getSubsubsectionStatus"
-import { SubsubsectionStatus } from "@/src/subsubsectionStatus/schema"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { SubsubsectionStatusForm } from "@/src/pagesComponents/subsubsectionStatus/SubsubsectionStatusForm"
+import updateSubsubsectionStatus from "@/src/server/subsubsectionStatus/mutations/updateSubsubsectionStatus"
+import getSubsubsectionStatus from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatus"
+import { SubsubsectionStatus } from "@/src/server/subsubsectionStatus/schema"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -41,7 +39,7 @@ const EditSubsubsectionsStatusWithQuery = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(Routes.SubsubsectionStatussPage({ projectSlug: projectSlug! }))
+      await router.push(Routes.SubsubsectionStatussPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
@@ -58,9 +56,7 @@ const EditSubsubsectionsStatusWithQuery = () => {
       />
 
       <p className="mt-5">
-        <Link href={Routes.SubsubsectionStatussPage({ projectSlug: projectSlug! })}>
-          Zurück zur Übersicht
-        </Link>
+        <Link href={Routes.SubsubsectionStatussPage({ projectSlug })}>Zurück zur Übersicht</Link>
       </p>
 
       <SuperAdminLogData data={{ subsubsectionStatus }} />

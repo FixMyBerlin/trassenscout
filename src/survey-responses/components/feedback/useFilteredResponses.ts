@@ -1,19 +1,36 @@
 import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
-import { getResponseConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
-import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"
+import {
+  getBackendConfigBySurveySlug,
+  getResponseConfigBySurveySlug,
+} from "@/src/survey-public/utils/getConfigBySurveySlug"
+
+import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { useFilters } from "./useFilters.nuqs"
 
 export const useFilteredResponses = (
-  responses: Awaited<ReturnType<typeof getFeedbackSurveyResponses>>,
+  responses: Awaited<
+    ReturnType<typeof getFeedbackSurveyResponsesWithSurveyDataAndComments>
+  >["feedbackSurveyResponses"],
   surveySlug: AllowedSurveySlugs,
 ) => {
-  const [filter] = useFilters()
+  const { filter } = useFilters()
 
   if (!filter) return responses
 
-  const { status, operator, hasnotes, haslocation, categories, topics, searchterm } = filter
+  const {
+    status,
+    operator,
+    hasnotes,
+    haslocation,
+    categories,
+    topics,
+    searchterm,
+    ...additionalFilters
+  } = filter
 
   const { evaluationRefs } = getResponseConfigBySurveySlug(surveySlug)
+  const { additionalFilters: additionalFiltersDefinition } =
+    getBackendConfigBySurveySlug(surveySlug)
 
   const filtered = responses
     .filter((response) => {
@@ -61,6 +78,9 @@ export const useFilteredResponses = (
       if (!searchterm) return response
       return (
         response.note?.toLowerCase().includes(searchterm.trim().toLowerCase()) ||
+        response.surveyResponseComments.some((comment) =>
+          comment.body.toLowerCase().includes(searchterm.trim().toLowerCase()),
+        ) ||
         (response?.data &&
           // @ts-expect-error `data` is of type unkown
           response?.data[evaluationRefs["feedback-usertext-1"]] &&
@@ -76,6 +96,31 @@ export const useFilteredResponses = (
             .toLowerCase()
             .includes(searchterm.trim().toLowerCase()))
       )
+    })
+    // Handle additional filters
+    .filter((response) => {
+      if (!additionalFilters) return response
+      return Object.keys(additionalFilters).every((key) => {
+        if (additionalFilters[key] === "ALL") return response
+        const additionalFiltersConfigItem = additionalFiltersDefinition?.find(
+          (filter) => filter.value === key,
+        )
+        // if the filter is not defined in the backend config (e.g. broken url), we do not filter by it
+        if (!additionalFiltersConfigItem) return response
+        // on dev and staging we have some surveyresponses (Hinweise) that do not have a first part (Umfrage)
+        // so we need to check if the first part exists, here we filter out the surveyresponses that do not have a first part when a filter concerning the first part is used; in production these surveyresponses do not exist
+        if (
+          additionalFiltersConfigItem?.surveyPart === "survey" &&
+          !response.surveySurveyResponseData
+        )
+          return false
+        return additionalFiltersConfigItem?.surveyPart === "feedback"
+          ? // @ts-expect-error
+            response.data[additionalFiltersConfigItem.id] === additionalFilters[key]
+          : // @ts-expect-error
+            response.surveySurveyResponseData[additionalFiltersConfigItem.id] ===
+              additionalFilters[key]
+      })
     })
 
   return filtered

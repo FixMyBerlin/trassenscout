@@ -45,7 +45,8 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
     >
     selectableLines?: FeatureCollection<
       LineString,
-      { subsectionSlug: string; subsubsectionSlug?: string; color: string; opacity?: number }
+      | { subsectionSlug: string; subsubsectionSlug?: string; color: string; opacity?: number }
+      | { projectSlug: string; color: string; opacity?: number }
     >
     selectablePoints?: FeatureCollection<
       Point,

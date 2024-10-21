@@ -1,20 +1,19 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { hashStakeholdernotes } from "@/src/stakeholdernotes/components/StakeholderSection"
-import {
-  FORM_ERROR,
-  StakeholdernoteForm,
-} from "@/src/stakeholdernotes/components/StakeholdernoteForm"
-import deleteStakeholdernote from "@/src/stakeholdernotes/mutations/deleteStakeholdernote"
-import updateStakeholdernote from "@/src/stakeholdernotes/mutations/updateStakeholdernote"
-import getStakeholdernote from "@/src/stakeholdernotes/queries/getStakeholdernote"
-import { StakeholdernoteSchema } from "@/src/stakeholdernotes/schema"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
+import { hashStakeholdernotes } from "@/src/pagesComponents/stakeholdernotes/StakeholderSection"
+import { StakeholdernoteForm } from "@/src/pagesComponents/stakeholdernotes/StakeholdernoteForm"
+import deleteStakeholdernote from "@/src/server/stakeholdernotes/mutations/deleteStakeholdernote"
+import updateStakeholdernote from "@/src/server/stakeholdernotes/mutations/updateStakeholdernote"
+import getStakeholdernote from "@/src/server/stakeholdernotes/queries/getStakeholdernote"
+import { StakeholdernoteSchema } from "@/src/server/stakeholdernotes/schema"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { clsx } from "clsx"
@@ -23,7 +22,7 @@ import { Suspense } from "react"
 
 const EditStakeholdernote = () => {
   const router = useRouter()
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
   const stakeholdernoteId = useParam("stakeholdernoteId", "number")
   const [stakeholdernote, { setQueryData }] = useQuery(
@@ -40,13 +39,14 @@ const EditStakeholdernote = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateStakeholdernoteMutation({
-        id: stakeholdernote.id,
         ...values,
+        id: stakeholdernote.id,
+        projectSlug,
       })
       await setQueryData(updated)
       await router.push(
         Routes.SubsectionStakeholdersPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           subsectionSlug: subsectionSlug!,
           stakeholderDetails: updated.id,
         }),
@@ -60,10 +60,16 @@ const EditStakeholdernote = () => {
   const [deleteStakeholdernoteMutation] = useMutation(deleteStakeholdernote)
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${stakeholdernote.id} unwiderruflich löschen?`)) {
-      await deleteStakeholdernoteMutation({ projectSlug, id: stakeholdernote.id })
+      try {
+        await deleteStakeholdernoteMutation({ projectSlug, id: stakeholdernote.id })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
       await router.push({
         ...Routes.SubsectionDashboardPage({
-          projectSlug: projectSlug!,
+          projectSlug,
           subsectionSlug: subsectionSlug!,
         }),
         hash: hashStakeholdernotes,
@@ -96,7 +102,7 @@ const EditStakeholdernote = () => {
 }
 
 const EditStakeholdernotePage: BlitzPage = () => {
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
 
   return (
@@ -110,7 +116,7 @@ const EditStakeholdernotePage: BlitzPage = () => {
         <Link
           href={{
             ...Routes.SubsectionDashboardPage({
-              projectSlug: projectSlug!,
+              projectSlug,
               subsectionSlug: subsectionSlug!,
             }),
             hash: hashStakeholdernotes,

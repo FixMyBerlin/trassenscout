@@ -31,7 +31,7 @@ Das Projektteam kann unter ${mailUrl(props.teamPath)} eingesehen werden.
   const message: Mail = {
     From: addressNoreply,
     To: [{ Email: props.user.email, Name: props.user.name }],
-    Subject: `Trassenscout: Neue:r Mitwirkende:r (${quote(props.projectName)})`,
+    Subject: `Trassenscout: Neues Teammitglied (${quote(props.projectName)})`,
     introMarkdown,
   }
 

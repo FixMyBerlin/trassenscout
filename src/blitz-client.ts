@@ -1,13 +1,9 @@
+"use client"
 import { AuthClientPlugin } from "@blitzjs/auth"
 import { setupBlitzClient } from "@blitzjs/next"
 import { BlitzRpcPlugin } from "@blitzjs/rpc"
-// https://github.com/total-typescript/ts-reset fixes .filter(Boolean) and similar cases
-import "@total-typescript/ts-reset"
+import { authConfig } from "./blitz-auth-config"
 
-export const authConfig = {
-  cookiePrefix: "rsv-builder",
-}
-
-export const { withBlitz } = setupBlitzClient({
+export const { withBlitz, BlitzProvider } = setupBlitzClient({
   plugins: [AuthClientPlugin(authConfig), BlitzRpcPlugin({})],
 })

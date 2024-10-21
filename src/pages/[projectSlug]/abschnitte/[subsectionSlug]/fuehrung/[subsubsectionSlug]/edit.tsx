@@ -1,18 +1,20 @@
-import { getDate } from "@/src/calendar-entries/utils/splitStartAt"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitleSlug } from "@/src/core/components/text"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { FORM_ERROR, SubsubsectionForm } from "@/src/subsubsections/components/SubsubsectionForm"
-import { M2MFieldsType, m2mFields } from "@/src/subsubsections/m2mFields"
-import deleteSubsubsection from "@/src/subsubsections/mutations/deleteSubsubsection"
-import updateSubsubsection from "@/src/subsubsections/mutations/updateSubsubsection"
-import getSubsubsection from "@/src/subsubsections/queries/getSubsubsection"
-import { SubsubsectionFormSchema } from "@/src/subsubsections/schema"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
+import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
+import { SubsubsectionForm } from "@/src/pagesComponents/subsubsections/SubsubsectionForm"
+import { M2MFieldsType, m2mFields } from "@/src/server/subsubsections/m2mFields"
+import deleteSubsubsection from "@/src/server/subsubsections/mutations/deleteSubsubsection"
+import updateSubsubsection from "@/src/server/subsubsections/mutations/updateSubsubsection"
+import getSubsubsection from "@/src/server/subsubsections/queries/getSubsubsection"
+import { SubsubsectionFormSchema } from "@/src/server/subsubsections/schema"
 import { Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { clsx } from "clsx"
@@ -21,7 +23,8 @@ import { Suspense } from "react"
 
 const EditSubsubsection = () => {
   const router = useRouter()
-  const { subsectionSlug, subsubsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
+  const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
   const [subsubsection, { setQueryData }] = useQuery(
     getSubsubsection,
@@ -64,7 +67,13 @@ const EditSubsubsection = () => {
   const [deleteSubsectionMutation] = useMutation(deleteSubsubsection)
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${subsubsection.id} unwiderruflich löschen?`)) {
-      await deleteSubsectionMutation({ projectSlug, id: subsubsection.id })
+      try {
+        await deleteSubsectionMutation({ projectSlug, id: subsubsection.id })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
       await router.push(
         Routes.SubsectionDashboardPage({
           projectSlug,
@@ -121,7 +130,8 @@ const EditSubsubsection = () => {
 }
 
 const EditSubsubsectionPage = () => {
-  const { subsectionSlug, subsubsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
+  const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
 
   return (

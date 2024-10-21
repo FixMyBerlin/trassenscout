@@ -2,11 +2,10 @@ import db, { Prisma } from "@/db"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 
-interface GetSurveySessionsInput
-  extends Pick<
-    Prisma.SurveySessionFindManyArgs,
-    "where" | "orderBy" | "skip" | "take" | "include"
-  > {}
+type GetSurveySessionsInput = Pick<
+  Prisma.SurveySessionFindManyArgs,
+  "where" | "orderBy" | "skip" | "take" | "include"
+>
 
 export default resolver.pipe(
   resolver.authorize("ADMIN"),

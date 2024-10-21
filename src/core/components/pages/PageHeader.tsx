@@ -1,6 +1,7 @@
-import { CurrentUserCanIcon } from "@/src/memberships/components/CurrentUserCanIcon"
+"use client"
+import { CurrentUserCanIcon } from "@/src/pagesComponents/memberships/CurrentUserCanIcon"
 import { clsx } from "clsx"
-import { useProjectSlug } from "../../hooks"
+import { useTryProjectSlug } from "../../routes/useProjectSlug"
 import { DashedLine } from "../DashedLine"
 import { H1, H2 } from "../text/Headings"
 
@@ -21,7 +22,7 @@ export const PageHeader = ({
   action,
   className,
 }: Props) => {
-  const projectSlug = useProjectSlug()
+  const projectSlug = useTryProjectSlug()
 
   const styledDescription =
     typeof description === "string" ? (

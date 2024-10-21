@@ -1,4 +1,4 @@
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { TResponse, TSingleOrMultiResponseProps } from "@/src/survey-public/components/types"
 import {
   getBackendConfigBySurveySlug,
@@ -11,12 +11,12 @@ import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { FilterSchema } from "./useFilters.nuqs"
 
-export const useDefaultFilterValues = (): FilterSchema => {
+export const useDefaultFilterValues = () => {
   const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "string")
   const [{ slug }] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
   const [{ surveyResponseTopics: topics }] = useQuery(getSurveyResponseTopicsByProject, {
-    projectSlug: projectSlug!,
+    projectSlug,
   })
 
   const backendConfig = getBackendConfigBySurveySlug(slug)
@@ -33,6 +33,11 @@ export const useDefaultFilterValues = (): FilterSchema => {
     (q) => q.id === evaluationRefs["feedback-category"],
   )!.props as TSingleOrMultiResponseProps
 
+  const defaultAdditionalFiltersQueryValues: Record<string, string> = {}
+  backendConfig.additionalFilters?.forEach(
+    (filter) => (defaultAdditionalFiltersQueryValues[filter.value] = "ALL"),
+  )
+
   return {
     status: [...surveyResponseStatus.map((s) => s.value)],
     operator: "ALL",
@@ -41,5 +46,6 @@ export const useDefaultFilterValues = (): FilterSchema => {
     categories: [...categoryQuestionProps.responses.map((r: TResponse) => String(r.id))],
     topics: [...topics.map((t) => String(t.id)), "0"],
     searchterm: "",
-  }
+    ...defaultAdditionalFiltersQueryValues,
+  } satisfies FilterSchema
 }

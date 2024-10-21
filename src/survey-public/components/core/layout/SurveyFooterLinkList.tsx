@@ -23,7 +23,7 @@ export const SurveyFooterLinkList: React.FC<Props> = ({ linkList, className }) =
             <Link
               href={item.href}
               blank={item.blank}
-              classNameOverwrites="text-gray-400 text-sm hover:underline"
+              classNameOverwrites="text-sm text-gray-400 hover:underline"
             >
               {item.name}
             </Link>

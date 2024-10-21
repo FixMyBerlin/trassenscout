@@ -10,7 +10,6 @@ import { SurveyLabeledRadiobuttonGroup } from "./core/form/SurveyLabeledRadiobut
 import { SurveyLabeledReadOnlyTextField } from "./core/form/SurveyLabeledReadOnlyTextField"
 import { SurveyLabeledTextField } from "./core/form/SurveyLabeledTextField"
 import { SurveyLabeledTextareaField } from "./core/form/SurveyLabeledTextareaField"
-export { FORM_ERROR } from "@/src/core/components/forms"
 
 type TSingleOrMultuResponseComponentProps = {
   id: number

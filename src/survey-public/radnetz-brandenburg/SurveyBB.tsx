@@ -24,7 +24,7 @@ type Props = {
   surveyId: number
 }
 
-const StartContent: React.FC = () => {
+const StartContent = () => {
   let [isOpen, setIsOpen] = useState(false)
 
   const closeModal = () => {
@@ -238,7 +238,7 @@ const StartContent: React.FC = () => {
         <summary
           className={clsx(
             partcipationLinkStyles,
-            "mb-4 mt-8 cursor-pointer text-lg font-extrabold !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35]",
+            "mb-4 mt-8 cursor-pointer text-lg font-bold !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35]",
           )}
         >
           Häufige Fragen
@@ -447,6 +447,7 @@ export const SurveyBB = ({ surveyId }: Props) => {
     void router.replace({ query: router.query }, undefined, {
       scroll: false,
     })
+    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [institution, landkreis, router.query.id])
 

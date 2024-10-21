@@ -1,14 +1,14 @@
-import { DateEntry } from "@/src/calendar-entries/components/Calender"
-import deleteCalendarEntry from "@/src/calendar-entries/mutations/deleteCalendarEntry"
-import getCalendarEntry from "@/src/calendar-entries/queries/getCalendarEntry"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { quote } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { DateEntry } from "@/src/pagesComponents/calendar-entries/Calender/DateEntry"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import deleteCalendarEntry from "@/src/server/calendar-entries/mutations/deleteCalendarEntry"
+import getCalendarEntry from "@/src/server/calendar-entries/queries/getCalendarEntry"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -23,8 +23,14 @@ export const CalendarEntry = () => {
 
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${calendarEntry.id} unwiderruflich löschen?`)) {
-      await deleteCalendarEntryMutation({ projectSlug, id: calendarEntry.id })
-      await router.push(Routes.CalendarEntriesPage({ projectSlug: projectSlug! }))
+      try {
+        await deleteCalendarEntryMutation({ projectSlug, id: calendarEntry.id })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
+      await router.push(Routes.CalendarEntriesPage({ projectSlug }))
     }
   }
 
@@ -38,7 +44,7 @@ export const CalendarEntry = () => {
           <Link
             href={Routes.EditCalendarEntryPage({
               calendarEntryId: calendarEntry.id,
-              projectSlug: projectSlug!,
+              projectSlug,
             })}
           >
             Eintrag bearbeiten
@@ -58,7 +64,7 @@ export const CalendarEntry = () => {
         <pre>{JSON.stringify(calendarEntry, null, 2)}</pre>
       </SuperAdminBox>
 
-      <Link href={Routes.CalendarEntriesPage({ projectSlug: projectSlug! })}>Zurück Terminen</Link>
+      <Link href={Routes.CalendarEntriesPage({ projectSlug })}>Zurück zu Terminen</Link>
     </>
   )
 }

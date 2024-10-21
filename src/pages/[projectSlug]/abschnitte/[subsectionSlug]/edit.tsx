@@ -1,16 +1,18 @@
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitleSlug, shortTitle } from "@/src/core/components/text"
-import { useProjectSlug, useSlugs } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import getProject from "@/src/projects/queries/getProject"
-import { FORM_ERROR, SubsectionForm } from "@/src/subsections/components/SubsectionForm"
-import deleteSubsection from "@/src/subsections/mutations/deleteSubsection"
-import updateSubsection from "@/src/subsections/mutations/updateSubsection"
-import getSubsection from "@/src/subsections/queries/getSubsection"
-import { SubsectionSchema } from "@/src/subsections/schema"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
+import { SubsectionForm } from "@/src/pagesComponents/subsections/SubsectionForm"
+import getProject from "@/src/server/projects/queries/getProject"
+import deleteSubsection from "@/src/server/subsections/mutations/deleteSubsection"
+import updateSubsection from "@/src/server/subsections/mutations/updateSubsection"
+import getSubsection from "@/src/server/subsections/queries/getSubsection"
+import { SubsectionSchema } from "@/src/server/subsections/schema"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { clsx } from "clsx"
@@ -19,7 +21,7 @@ import { Suspense } from "react"
 
 const EditSubsection = () => {
   const router = useRouter()
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
   const [project] = useQuery(getProject, { projectSlug })
   const [subsection, { setQueryData }] = useQuery(getSubsection, {
@@ -52,13 +54,20 @@ const EditSubsection = () => {
   const [deleteSubsectionMutation] = useMutation(deleteSubsection)
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${subsection.id} unwiderruflich löschen?`)) {
-      await deleteSubsectionMutation({ projectSlug, id: subsection.id })
-      await router.push(
-        Routes.SubsectionDashboardPage({
-          projectSlug,
-          subsectionSlug: subsectionSlug!,
-        }),
-      )
+      try {
+        try {
+          await deleteSubsectionMutation({ projectSlug, id: subsection.id })
+        } catch (error) {
+          alert(
+            "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+          )
+        }
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
+      await router.push(Routes.ProjectDashboardPage({ projectSlug }))
     }
   }
 
@@ -88,7 +97,7 @@ const EditSubsection = () => {
 }
 
 const EditSubsectionPage: BlitzPage = () => {
-  const { subsectionSlug } = useSlugs()
+  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
 
   return (

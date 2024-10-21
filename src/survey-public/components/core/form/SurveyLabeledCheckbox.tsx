@@ -15,7 +15,7 @@ export interface TSurveyLabeledCheckbox extends PropsWithoutRef<JSX.IntrinsicEle
 }
 
 export const SurveyLabeledCheckbox = forwardRef<HTMLInputElement, TSurveyLabeledCheckbox>(
-  ({ name, label, help, outerProps, labelProps, ...props }, ref) => {
+  function SurveyLabeledCheckbox({ name, label, help, outerProps, labelProps, ...props }, ref) {
     const {
       register,
       formState: { isSubmitting, errors },

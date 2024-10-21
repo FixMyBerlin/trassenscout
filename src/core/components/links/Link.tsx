@@ -27,45 +27,43 @@ export const linkIcons = {
   list: <ListBulletIcon className="h-3.5 w-3.5" />,
 }
 
-export const Link: React.FC<LinkProps> = forwardRef<HTMLAnchorElement, LinkProps>(
-  (
-    { href, className, classNameOverwrites, children, blank = false, button, icon, ...props },
-    ref,
-  ) => {
-    const classNames = clsx(
-      icon ? "inline-flex items-center justify-center gap-1" : "", // base styles for icon case
-      icon && button ? "pl-5" : "", // overwrites to `buttonBase` for icon case
-      classNameOverwrites ?? selectLinkStyle(button, className),
-    )
+export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
+  { href, className, classNameOverwrites, children, blank = false, button, icon, ...props },
+  ref,
+) {
+  const classNames = clsx(
+    icon ? "inline-flex items-center justify-center gap-1" : "", // base styles for icon case
+    icon && button ? "pl-5" : "", // overwrites to `buttonBase` for icon case
+    classNameOverwrites ?? selectLinkStyle(button, className),
+  )
 
-    // external link
-    if (typeof href === "string") {
-      return (
-        <a
-          ref={ref}
-          href={href}
-          className={classNames}
-          rel="noopener noreferrer"
-          {...{ target: blank ? "_blank" : undefined }}
-          {...props}
-        >
-          {icon && linkIcons[icon]}
-          {children}
-        </a>
-      )
-    }
-
+  // external link
+  if (typeof href === "string") {
     return (
-      <NextLink
-        href={href}
+      <a
         ref={ref}
+        href={href}
         className={classNames}
-        {...props}
+        rel="noopener noreferrer"
         {...{ target: blank ? "_blank" : undefined }}
+        {...props}
       >
         {icon && linkIcons[icon]}
         {children}
-      </NextLink>
+      </a>
     )
-  },
-)
+  }
+
+  return (
+    <NextLink
+      href={href}
+      ref={ref}
+      className={classNames}
+      {...props}
+      {...{ target: blank ? "_blank" : undefined }}
+    >
+      {icon && linkIcons[icon]}
+      {children}
+    </NextLink>
+  )
+})

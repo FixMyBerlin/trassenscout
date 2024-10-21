@@ -1,10 +1,13 @@
+import { FooterProject } from "@/src/app/_components/layouts/footer/FooterProject"
+import { NavigationLoggedInProject } from "@/src/app/_components/layouts/navigation/NavigationLoggedInProject"
+import { NavigationLoggedOut } from "@/src/app/_components/layouts/navigation/NavigationLoggedOut"
 import { BlitzLayout } from "@blitzjs/next"
 import Head from "next/head"
-import { FooterProject } from "./Footer"
-import { FooterGeneral } from "./Footer/FooterGeneral"
-import { FooterMinimal } from "./Footer/FooterMinimal"
-import { NavigationGeneral, NavigationProject } from "./Navigation"
-import { TailwindResponsiveHelper } from "./TailwindResponsiveHelper/TailwindResponsiveHelper"
+import { Suspense } from "react"
+import { FooterGeneral } from "../../app/_components/layouts/footer/FooterGeneral"
+import { FooterMinimal } from "../../app/_components/layouts/footer/FooterMinimal"
+import { TailwindResponsiveHelper } from "../../app/_components/TailwindResponsiveHelper/TailwindResponsiveHelper"
+import { Spinner } from "../components/Spinner"
 
 type Props = {
   navigation: "general" | "project" | "none"
@@ -26,8 +29,10 @@ export const Layout: BlitzLayout<Props> = ({
       </Head>
 
       <div className="relative flex h-full flex-col overflow-x-hidden">
-        {navigation === "general" && <NavigationGeneral />}
-        {navigation === "project" && <NavigationProject />}
+        <Suspense fallback={<Spinner size="5" />}>
+          {navigation === "general" && <NavigationLoggedOut />}
+          {navigation === "project" && <NavigationLoggedInProject />}
+        </Suspense>
 
         {fullWidth ? (
           <main className="w-full">{children}</main>
@@ -35,9 +40,11 @@ export const Layout: BlitzLayout<Props> = ({
           <main className="mx-auto w-full max-w-7xl px-6 pb-16 md:px-8">{children}</main>
         )}
       </div>
-      {footer === "general" && <FooterGeneral />}
-      {footer === "project" && <FooterProject />}
-      {footer === "minimal" && <FooterMinimal />}
+      <Suspense fallback={<Spinner size="5" />}>
+        {footer === "general" && <FooterGeneral />}
+        {footer === "project" && <FooterProject />}
+        {footer === "minimal" && <FooterMinimal />}
+      </Suspense>
       <TailwindResponsiveHelper />
     </>
   )

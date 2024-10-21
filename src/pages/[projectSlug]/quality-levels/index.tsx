@@ -6,11 +6,11 @@ import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import deleteQualityLevel from "@/src/qualityLevels/mutations/deleteQualityLevel"
-import getQualityLevelsWithCount from "@/src/qualityLevels/queries/getQualityLevelsWithCount"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import deleteQualityLevel from "@/src/server/qualityLevels/mutations/deleteQualityLevel"
+import getQualityLevelsWithCount from "@/src/server/qualityLevels/queries/getQualityLevelsWithCount"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import { clsx } from "clsx"
@@ -24,7 +24,7 @@ export const QualityLevelsWithData = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ qualityLevels, hasMore }] = usePaginatedQuery(getQualityLevelsWithCount, {
-    projectSlug: projectSlug!,
+    projectSlug,
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -35,8 +35,14 @@ export const QualityLevelsWithData = () => {
   const [deleteQualityLevelMutation] = useMutation(deleteQualityLevel)
   const handleDelete = async (qualityLevelId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${qualityLevelId} unwiderruflich löschen?`)) {
-      await deleteQualityLevelMutation({ projectSlug, id: qualityLevelId })
-      await router.push(Routes.QualityLevelsPage({ projectSlug: projectSlug! }))
+      try {
+        await deleteQualityLevelMutation({ projectSlug, id: qualityLevelId })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
+      await router.push(Routes.QualityLevelsPage({ projectSlug }))
     }
   }
 
@@ -80,28 +86,30 @@ export const QualityLevelsWithData = () => {
                     {qualityLevel.subsubsectionCount} Führungen
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
-                    <ButtonWrapper className="justify-end">
-                      <Link
-                        icon="edit"
-                        href={Routes.QualityLevelsPage({
-                          projectSlug: projectSlug!,
-                          qualityLevelId: qualityLevel.id,
-                        })}
-                      >
-                        Bearbeiten
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(qualityLevel.id)}
-                        className={clsx(
-                          linkStyles,
-                          "inline-flex items-center justify-center gap-1",
-                        )}
-                      >
-                        {linkIcons["delete"]}
-                        Löschen
-                      </button>
-                    </ButtonWrapper>
+                    <IfUserCanEdit>
+                      <ButtonWrapper className="justify-end">
+                        <Link
+                          icon="edit"
+                          href={Routes.QualityLevelsPage({
+                            projectSlug,
+                            qualityLevelId: qualityLevel.id,
+                          })}
+                        >
+                          Bearbeiten
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(qualityLevel.id)}
+                          className={clsx(
+                            linkStyles,
+                            "inline-flex items-center justify-center gap-1",
+                          )}
+                        >
+                          {linkIcons["delete"]}
+                          Löschen
+                        </button>
+                      </ButtonWrapper>
+                    </IfUserCanEdit>
                   </td>
                 </tr>
               )
@@ -115,7 +123,7 @@ export const QualityLevelsWithData = () => {
           button="blue"
           icon="plus"
           className="mt-4"
-          href={Routes.NewQualityLevelPage({ projectSlug: projectSlug! })}
+          href={Routes.NewQualityLevelPage({ projectSlug })}
         >
           Neuer Ausbaustandard
         </Link>

@@ -28,7 +28,7 @@ Die Liste aller offenen Einladungen finden Sie unter ${mailUrl(props.path)}.
   const message: Mail = {
     From: addressNoreply,
     To: [{ Email: props.user.email, Name: props.user.name }],
-    Subject: "Trassenscout: Neue:r Mitwirkende:r eingeladen",
+    Subject: "Trassenscout: Neues Teammitglied eingeladen",
     introMarkdown,
   }
 

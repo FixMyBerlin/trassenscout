@@ -1,13 +1,13 @@
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { NetworkHierarchyForm } from "@/src/networkHierarchy/components/NetworkHierarchy"
-import createNetworkHierarchy from "@/src/networkHierarchy/mutations/createNetworkHierarchy"
-import { NetworkHierarchySchema } from "@/src/networkHierarchy/schema"
-import { FORM_ERROR } from "@/src/subsubsections/components/SubsubsectionForm"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { NetworkHierarchyForm } from "@/src/pagesComponents/networkHierarchy/NetworkHierarchy"
+import createNetworkHierarchy from "@/src/server/networkHierarchy/mutations/createNetworkHierarchy"
+import { NetworkHierarchySchema } from "@/src/server/networkHierarchy/schema"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -21,8 +21,8 @@ const NewNetworkHierarchyPageWithQuery = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      await createNetworkHierarchyMutation({ ...values, projectSlug: projectSlug! })
-      await router.push(Routes.NetworkHierarchysPage({ projectSlug: projectSlug! }))
+      await createNetworkHierarchyMutation({ ...values, projectSlug })
+      await router.push(Routes.NetworkHierarchysPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }

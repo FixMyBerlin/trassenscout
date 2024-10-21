@@ -1,13 +1,13 @@
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { OperatorForm } from "@/src/operators/components/OperatorForm"
-import createOperator from "@/src/operators/mutations/createOperator"
-import { OperatorSchema } from "@/src/operators/schema"
-import { FORM_ERROR } from "@/src/subsubsections/components/SubsubsectionForm"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { OperatorForm } from "@/src/pagesComponents/operators/OperatorForm"
+import createOperator from "@/src/server/operators/mutations/createOperator"
+import { OperatorSchema } from "@/src/server/operators/schema"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -21,8 +21,8 @@ const NewOperatorPageWithQuery = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      await createOperatorMutation({ ...values, projectSlug: projectSlug! })
-      await router.push(Routes.OperatorsPage({ projectSlug: projectSlug! }))
+      await createOperatorMutation({ ...values, projectSlug })
+      await router.push(Routes.OperatorsPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }

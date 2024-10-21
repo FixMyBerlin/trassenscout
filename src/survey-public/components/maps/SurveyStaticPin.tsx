@@ -1,6 +1,6 @@
 import * as React from "react"
 
-const SurveyStaticPin: React.FC = () => {
+const SurveyStaticPin = () => {
   return (
     <svg
       width="38"

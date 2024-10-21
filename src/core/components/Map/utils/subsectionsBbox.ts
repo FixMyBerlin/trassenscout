@@ -1,4 +1,4 @@
-import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
+import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import combine from "@turf/combine"
 import { bbox, bboxPolygon, featureCollection, lineString } from "@turf/turf"
 import type { BBox } from "geojson"

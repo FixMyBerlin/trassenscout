@@ -1,18 +1,16 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import {
-  FORM_ERROR,
-  SubsubsectionSpecialForm,
-} from "@/src/subsubsectionSpecial/components/SubsubsectionSpecialForm"
-import updateSubsubsectionSpecial from "@/src/subsubsectionSpecial/mutations/updateSubsubsectionSpecial"
-import getSubsubsectionSpecial from "@/src/subsubsectionSpecial/queries/getSubsubsectionSpecial"
-import { SubsubsectionSpecial } from "@/src/subsubsectionSpecial/schema"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { SubsubsectionSpecialForm } from "@/src/pagesComponents/subsubsectionSpecial/SubsubsectionSpecialForm"
+import updateSubsubsectionSpecial from "@/src/server/subsubsectionSpecial/mutations/updateSubsubsectionSpecial"
+import getSubsubsectionSpecial from "@/src/server/subsubsectionSpecial/queries/getSubsubsectionSpecial"
+import { SubsubsectionSpecial } from "@/src/server/subsubsectionSpecial/schema"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -41,7 +39,7 @@ const EditSubsubsectionsSpecialWithQuery = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(Routes.SubsubsectionSpecialsPage({ projectSlug: projectSlug! }))
+      await router.push(Routes.SubsubsectionSpecialsPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
@@ -58,9 +56,7 @@ const EditSubsubsectionsSpecialWithQuery = () => {
       />
 
       <p className="mt-5">
-        <Link href={Routes.SubsubsectionSpecialsPage({ projectSlug: projectSlug! })}>
-          Zurück zur Übersicht
-        </Link>
+        <Link href={Routes.SubsubsectionSpecialsPage({ projectSlug })}>Zurück zur Übersicht</Link>
       </p>
 
       <SuperAdminLogData data={{ subsubsectionSpecial }} />

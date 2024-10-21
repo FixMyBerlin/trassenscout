@@ -1,10 +1,11 @@
+"use client"
 import { clsx } from "clsx"
 import { pinkButtonStyles } from "../links"
 import { SuperAdminBox } from "./SuperAdminBox"
 
 type Props = { data: any }
 
-export const SuperAdminLogData: React.FC<Props> = ({ data }) => {
+export const SuperAdminLogData = ({ data }: Props) => {
   return (
     <SuperAdminBox>
       <button

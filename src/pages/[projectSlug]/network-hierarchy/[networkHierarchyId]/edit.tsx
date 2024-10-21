@@ -1,18 +1,16 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import {
-  FORM_ERROR,
-  NetworkHierarchyForm,
-} from "@/src/networkHierarchy/components/NetworkHierarchy"
-import updateNetworkHierarchy from "@/src/networkHierarchy/mutations/updateNetworkHierarchy"
-import getNetworkHierarchy from "@/src/networkHierarchy/queries/getNetworkHierarchy"
-import { NetworkHierarchySchema } from "@/src/networkHierarchy/schema"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { NetworkHierarchyForm } from "@/src/pagesComponents/networkHierarchy/NetworkHierarchy"
+import updateNetworkHierarchy from "@/src/server/networkHierarchy/mutations/updateNetworkHierarchy"
+import getNetworkHierarchy from "@/src/server/networkHierarchy/queries/getNetworkHierarchy"
+import { NetworkHierarchySchema } from "@/src/server/networkHierarchy/schema"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -37,11 +35,12 @@ const EditNetworkHierarchyWithQuery = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateNetworkHierarchyMutation({
-        id: networkHierarchy.id,
         ...values,
+        id: networkHierarchy.id,
+        projectSlug,
       })
       await setQueryData(updated)
-      await router.push(Routes.NetworkHierarchysPage({ projectSlug: projectSlug! }))
+      await router.push(Routes.NetworkHierarchysPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
@@ -58,9 +57,7 @@ const EditNetworkHierarchyWithQuery = () => {
       />
 
       <p className="mt-5">
-        <Link href={Routes.NetworkHierarchysPage({ projectSlug: projectSlug! })}>
-          Zurück zur Übersicht
-        </Link>
+        <Link href={Routes.NetworkHierarchysPage({ projectSlug })}>Zurück zur Übersicht</Link>
       </p>
 
       <SuperAdminLogData data={{ networkHierarchy }} />

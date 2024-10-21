@@ -14,10 +14,14 @@ export interface LabeledSelectProps extends PropsWithoutRef<JSX.IntrinsicElement
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
   optional?: boolean
+  classLabelOverwrite?: string
 }
 
 export const LabeledSelect = forwardRef<HTMLInputElement, LabeledSelectProps>(
-  ({ name, options, label, help, outerProps, labelProps, optional, ...props }, ref) => {
+  function LabeledSelect(
+    { name, options, label, help, outerProps, labelProps, optional, classLabelOverwrite, ...props },
+    ref,
+  ) {
     const {
       register,
       formState: { isSubmitting, errors },
@@ -30,7 +34,7 @@ export const LabeledSelect = forwardRef<HTMLInputElement, LabeledSelectProps>(
         <label
           {...labelProps}
           htmlFor={name}
-          className="mb-1 block text-sm font-medium text-gray-700"
+          className={classLabelOverwrite || "mb-1 block text-sm font-medium text-gray-700"}
         >
           {label}
           {optional && <> (optional)</>}

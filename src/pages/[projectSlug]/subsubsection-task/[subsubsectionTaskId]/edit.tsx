@@ -1,18 +1,16 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import {
-  FORM_ERROR,
-  SubsubsectionTaskForm,
-} from "@/src/subsubsectionTask/components/SubsubsectionTaskForm"
-import updateSubsubsectionTask from "@/src/subsubsectionTask/mutations/updateSubsubsectionTask"
-import getSubsubsectionTask from "@/src/subsubsectionTask/queries/getSubsubsectionTask"
-import { SubsubsectionTask } from "@/src/subsubsectionTask/schema"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { SubsubsectionTaskForm } from "@/src/pagesComponents/subsubsectionTask/SubsubsectionTaskForm"
+import updateSubsubsectionTask from "@/src/server/subsubsectionTask/mutations/updateSubsubsectionTask"
+import getSubsubsectionTask from "@/src/server/subsubsectionTask/queries/getSubsubsectionTask"
+import { SubsubsectionTask } from "@/src/server/subsubsectionTask/schema"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -37,11 +35,12 @@ const EditSubsubsectionsTaskWithQuery = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateSubsubsectionTaskMutation({
-        id: subsubsectionTask.id,
         ...values,
+        id: subsubsectionTask.id,
+        projectSlug,
       })
       await setQueryData(updated)
-      await router.push(Routes.SubsubsectionTasksPage({ projectSlug: projectSlug! }))
+      await router.push(Routes.SubsubsectionTasksPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
@@ -58,9 +57,7 @@ const EditSubsubsectionsTaskWithQuery = () => {
       />
 
       <p className="mt-5">
-        <Link href={Routes.SubsubsectionTasksPage({ projectSlug: projectSlug! })}>
-          Zurück zur Übersicht
-        </Link>
+        <Link href={Routes.SubsubsectionTasksPage({ projectSlug })}>Zurück zur Übersicht</Link>
       </p>
 
       <SuperAdminLogData data={{ subsubsectionTask }} />

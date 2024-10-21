@@ -5,6 +5,7 @@ import {
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
+import { playwrightSendMapLoadedEvent } from "@/tests/_utils/customMapLoadedEvent"
 import { clsx } from "clsx"
 import maplibregl, { MapGeoJSONFeature } from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
@@ -121,6 +122,10 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
     setCursorStyle(features?.length ? "pointer" : "grab")
   }
 
+  const handleLoad = () => {
+    playwrightSendMapLoadedEvent()
+  }
+
   const [cursorStyle, setCursorStyle] = useState("grab")
 
   return (
@@ -143,6 +148,7 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
         cursor={cursorStyle}
         // todo survey update layer name
         interactiveLayerIds={["LayerNetzentwurfClicktarget"]}
+        onLoad={handleLoad}
       >
         {isMediumScreen && <NavigationControl showCompass={false} />}
         <DebugMapTileBoundaries />

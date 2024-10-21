@@ -11,7 +11,7 @@ type Props = {
   classNameItemWrapper?: string
 }
 
-export const LabeledRadiobuttonGroup: React.FC<Props> = ({
+export const LabeledRadiobuttonGroup = ({
   label,
   optional,
   disabled,
@@ -19,7 +19,7 @@ export const LabeledRadiobuttonGroup: React.FC<Props> = ({
   items,
   classLabelOverwrite,
   classNameItemWrapper,
-}) => {
+}: Props) => {
   const itemsWithScope = items.map((i) => ({ ...i, scope }))
 
   return (

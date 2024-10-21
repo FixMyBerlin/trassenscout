@@ -6,7 +6,8 @@
     "mikestead.dotenv",
     "mgmcdermott.vscode-language-babel",
     "orta.vscode-jest",
-    "prisma.prisma"
+    "prisma.prisma",
+    "ms-playwright.playwright"
   ],
   "unwantedRecommendations": []
 }

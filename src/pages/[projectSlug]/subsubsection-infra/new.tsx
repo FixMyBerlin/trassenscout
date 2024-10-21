@@ -1,13 +1,13 @@
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { SubsubsectionInfraForm } from "@/src/subsubsectionInfra/components/SubsubsectionInfraForm"
-import createSubsubsectionInfra from "@/src/subsubsectionInfra/mutations/createSubsubsectionInfra"
-import { SubsubsectionInfra } from "@/src/subsubsectionInfra/schema"
-import { FORM_ERROR } from "@/src/subsubsections/components/SubsubsectionForm"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { SubsubsectionInfraForm } from "@/src/pagesComponents/subsubsectionInfra/SubsubsectionInfraForm"
+import createSubsubsectionInfra from "@/src/server/subsubsectionInfra/mutations/createSubsubsectionInfra"
+import { SubsubsectionInfra } from "@/src/server/subsubsectionInfra/schema"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -21,8 +21,8 @@ const NewSubsubsectionInfraPageWithQuery = () => {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      await createSubsubsectionInfraMutation({ ...values, projectSlug: projectSlug! })
-      await router.push(Routes.SubsubsectionInfrasPage({ projectSlug: projectSlug! }))
+      await createSubsubsectionInfraMutation({ ...values, projectSlug })
+      await router.push(Routes.SubsubsectionInfrasPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }

@@ -1,18 +1,16 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
+import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import {
-  FORM_ERROR,
-  SubsubsectionInfraForm,
-} from "@/src/subsubsectionInfra/components/SubsubsectionInfraForm"
-import updateSubsubsectionInfra from "@/src/subsubsectionInfra/mutations/updateSubsubsectionInfra"
-import getSubsubsectionInfra from "@/src/subsubsectionInfra/queries/getSubsubsectionInfra"
-import { SubsubsectionInfra } from "@/src/subsubsectionInfra/schema"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { SubsubsectionInfraForm } from "@/src/pagesComponents/subsubsectionInfra/SubsubsectionInfraForm"
+import updateSubsubsectionInfra from "@/src/server/subsubsectionInfra/mutations/updateSubsubsectionInfra"
+import getSubsubsectionInfra from "@/src/server/subsubsectionInfra/queries/getSubsubsectionInfra"
+import { SubsubsectionInfra } from "@/src/server/subsubsectionInfra/schema"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -41,7 +39,7 @@ const EditSubsubsectionsInfraWithQuery = () => {
         ...values,
       })
       await setQueryData(updated)
-      await router.push(Routes.SubsubsectionInfrasPage({ projectSlug: projectSlug! }))
+      await router.push(Routes.SubsubsectionInfrasPage({ projectSlug }))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
@@ -58,9 +56,7 @@ const EditSubsubsectionsInfraWithQuery = () => {
       />
 
       <p className="mt-5">
-        <Link href={Routes.SubsubsectionInfrasPage({ projectSlug: projectSlug! })}>
-          Zurück zur Übersicht
-        </Link>
+        <Link href={Routes.SubsubsectionInfrasPage({ projectSlug })}>Zurück zur Übersicht</Link>
       </p>
 
       <SuperAdminLogData data={{ subsubsectionInfra }} />

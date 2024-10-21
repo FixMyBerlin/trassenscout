@@ -1,6 +1,6 @@
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Routes, useParam } from "@blitzjs/next"
 import "maplibre-gl/dist/maplibre-gl.css"
 import router from "next/router"
@@ -38,7 +38,7 @@ export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
   const handleSelect = (responseId: number) => {
     void router.push(
       Routes.SurveyResponseWithLocationPage({
-        projectSlug: projectSlug!,
+        projectSlug,
         surveyId: surveyId!,
         surveyResponseId: responseId,
       }),

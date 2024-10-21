@@ -3,8 +3,9 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { Link, whiteButtonStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { H2 } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/hooks"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useSlugId } from "@/src/core/routes/useSlug"
 import { TSurvey } from "@/src/survey-public/components/types"
 import {
   getFeedbackDefinitionBySurveySlug,
@@ -20,7 +21,7 @@ import {
 import { getFormatDistanceInDays } from "@/src/survey-responses/utils/getFormatDistanceInDays"
 import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
+import { BlitzPage } from "@blitzjs/next"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 import { isFuture, isPast } from "date-fns"
@@ -28,7 +29,7 @@ import { Suspense } from "react"
 
 export const Survey = () => {
   const projectSlug = useProjectSlug()
-  const surveyId = useParam("surveyId", "number")
+  const surveyId = useSlugId("surveyId")
   const [survey] = useQuery(getSurvey, { projectSlug, id: surveyId })
   const [{ groupedSurveyResponsesFirstPart, surveySessions, surveyResponsesFeedbackPart }] =
     usePaginatedQuery(getGroupedSurveyResponses, { projectSlug, surveyId: survey.id })
@@ -211,7 +212,7 @@ export const Survey = () => {
       </SuperAdminBox>
 
       <SuperAdminBox>
-        <Link href={Routes.AdminEditSurveyPage({ surveyId: survey.id })}>Bearbeiten</Link>
+        <Link href={`/admin/surveys/${survey.id}/edit`}>Bearbeiten</Link>
       </SuperAdminBox>
     </>
   )

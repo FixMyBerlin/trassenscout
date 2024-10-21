@@ -1,10 +1,11 @@
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { linkStyles } from "@/src/core/components/links"
-import { useProjectSlug } from "@/src/core/hooks"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
-import { IfUserCanEdit } from "@/src/memberships/components/IfUserCan"
-import getOperatorsWithCount from "@/src/operators/queries/getOperatorsWithCount"
-import { SubsectionWithPosition } from "@/src/subsections/queries/getSubsection"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
+import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
+import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { TMapProps } from "@/src/survey-public/components/types"
 import { backendConfig as defaultBackendConfig } from "@/src/survey-public/utils/backend-config-defaults"
 import {
@@ -15,9 +16,9 @@ import {
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import deleteSurveyResponse from "@/src/survey-responses/mutations/deleteSurveyResponse"
-import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"
 import { getSurveyResponseCategoryById } from "@/src/survey-responses/utils/getSurveyResponseCategoryById"
 import getSurvey from "@/src/surveys/queries/getSurvey"
+import { useSession } from "@blitzjs/auth"
 import { useParam, useRouterQuery } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid"
@@ -25,14 +26,20 @@ import { EnvelopeIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import { parseAsInteger, useQueryState } from "nuqs"
 import { useEffect } from "react"
-import getSurveySurveyResponsesBySurveySessionId from "../../queries/getSurveySurveyResponsesBySurveySessionId"
+import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import EditableSurveyResponseAdditionalFilterFields from "./EditableSurveyResponseAdditionalFilterFields"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
 import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
+import { NewSurveyResponseCommentForm } from "./comments/NewSurveyResponseCommentForm"
+import { SurveyResponseCommentField } from "./comments/SurveyResponseCommentField"
 
 export type EditableSurveyResponseListItemProps = {
-  response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
+  response: Prettify<
+    Awaited<
+      ReturnType<typeof getFeedbackSurveyResponsesWithSurveyDataAndComments>
+    >["feedbackSurveyResponses"][number]
+  >
   operators: Prettify<Awaited<ReturnType<typeof getOperatorsWithCount>>["operators"]>
   topics: Prettify<
     Awaited<ReturnType<typeof getSurveyResponseTopicsByProject>>["surveyResponseTopics"]
@@ -57,12 +64,10 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const surveyId = useParam("surveyId", "string")
   const projectSlug = useProjectSlug()
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
-  const [parsedSurveyResponse] = useQuery(getSurveySurveyResponsesBySurveySessionId, {
-    projectSlug,
-    surveySessionId: response.surveySession.id,
-  })
   const [responseDetails, setRespnseDetails] = useQueryState("responseDetails", parseAsInteger)
   const [deleteCalendarEntryMutation] = useMutation(deleteSurveyResponse)
+  const session = useSession()
+  const isEditorOrAdmin = useUserCan().edit || session.role === "ADMIN"
 
   useEffect(() => {
     const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
@@ -133,8 +138,14 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
       response.source !== "FORM" &&
       window.confirm(`Den Eintrag mit ID ${response.id} unwiderruflich löschen?`)
     ) {
-      await deleteCalendarEntryMutation({ id: response.id })
-      await refetchResponsesAndTopics()
+      try {
+        await deleteCalendarEntryMutation({ id: response.id })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
+      refetchResponsesAndTopics()
     }
   }
 
@@ -205,7 +216,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
           </div>
           <EditableSurveyResponseAdditionalFilterFields
             additionalFilterFields={additionalFilterFields}
-            surveyData={parsedSurveyResponse?.data}
+            surveyData={response.surveySurveyResponseData}
             feedbackData={response.data}
           />
           <EditableSurveyResponseForm
@@ -228,6 +239,23 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             defaultViewState={defaultViewState}
             backendConfig={backendConfig}
           />
+          {(!!response.surveyResponseComments.length || isEditorOrAdmin) && (
+            <h4 className="mb-3 font-semibold">Kommentar</h4>
+          )}
+          <ul className="max-w-3xl">
+            {response.surveyResponseComments?.map((comment) => {
+              return (
+                <li key={comment.id} className="mt-5">
+                  <SurveyResponseCommentField comment={comment} />
+                </li>
+              )
+            })}
+            <IfUserCanEdit>
+              <li className="mt-5">
+                <NewSurveyResponseCommentForm surveyResponseId={response.id} />
+              </li>
+            </IfUserCanEdit>
+          </ul>
         </div>
       )}
     </article>

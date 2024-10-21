@@ -1,7 +1,5 @@
-export * from "./Footer"
 export * from "./Layout"
 export * from "./LayoutArticle"
-export * from "./LayoutMiddleBox"
 export * from "./LayoutRs"
 export * from "./Logo"
 export * from "./MetaTags"

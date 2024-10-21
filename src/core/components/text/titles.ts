@@ -4,6 +4,7 @@ export const shortTitle = (slug: string) => {
 
 export const longTitle = (slug: string) => {
   return slug
+    .replace("rs", "Radschnellverbindung ") // Subsection
     .replace("pa", "Planungsabschnitt ") // Subsection
     .replace("rf", "Regelführung ") // Subsubsection
     .replace("sf", "Sonderführung ") // Subsubsection
@@ -19,7 +20,7 @@ export const seoEditTitleSlug = (slug: string) => {
 }
 
 export const seoIndexTitle = (what: string, longWhat?: string | null) => {
-  return [`${what}`, longWhat, "Trassenscout"].filter(Boolean).join(" – ")
+  return [what, longWhat, "Trassenscout"].filter(Boolean).join(" – ")
 }
 
 export const seoEditTitle = (what: string, longWhat?: string | null) => {

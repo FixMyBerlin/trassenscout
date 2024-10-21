@@ -38,35 +38,39 @@ There is a `.env.local` and a `.env.production` file, which provide the keys to 
 ## Getting Started
 
 1. Setup `.env.local`:<br />
-    This will setup up the [Environment Variables](#environment-variables) for PostgreSQL.
-    ```
-    cp .env.local.example .env.local
-    ```
+   This will setup up the [Environment Variables](#environment-variables) for PostgreSQL.
+
+   ```
+   cp .env.local.example .env.local
+   ```
 
 1. Install Docker and open it once to finish the setup:
-    ```
-    brew install --cask docker
-    ```
+
+   ```
+   brew install --cask docker
+   ```
 
 1. Start the PostgreSQL Server<br />
-    This is done automatically with `npm run dev`.
-    ```
-    docker compose up -d
-    ```
+   This is done automatically with `npm run dev`.
+
+   ```
+   docker compose up -d
+   ```
 
 1. Seed your database:<br />
-    Which will also apply migrations.
-    ```
-    npm run seed
-    ```
+   Which will also apply migrations.
+
+   ```
+   npm run seed
+   ```
 
 1. Run your app in the development mode:
-    ```
-    npm run dev
-    ```
+
+   ```
+   npm run dev
+   ```
 
 1. Open [http://localhost:3000](http://localhost:3000).
-
 
 ## Tests
 
@@ -83,6 +87,7 @@ Blitz comes with a test setup using [Vitest](https://vitest.dev/) and [react-tes
 Follow this steps to add a model with forms and pages:
 
 1. Use `blitz g all calendarEntries title:string startAt:dateTime "locationName:string?" "locationUrl:string?" "description:string?" --dry-run` for scaffolding.
+
    - Run `--dry-run` first to check the folder names and file names.
 
 1. Check [db/schema.prisma](./db/schema.prisma) if all was "translated".
@@ -94,10 +99,10 @@ Follow this steps to add a model with forms and pages:
 1. Use `npm run migrate` (`blitz prisma migrate dev`) to apply the migration.
 
 1. Schema:
+
    - Follow the steps in `src/core/templates/page/__modelIdParam__/edit.tsx` to create a shared [Zod schema (Docs)](https://zod.dev/) and add it to the form for client side validations.
    - Update the zod schema to match the Prisma schema.
      - You can use `type UserType = z.infer<typeof UserSchema>` to create a TS schema from zod that can be compared to the prima schema (which are located in `node_modules/.prisma/client/index.d.ts`)
      - You can use https://github.com/CarterGrimmeisen/zod-prisma to generate a starting point for this based on the prisma schema. However, this package should only be used in a separate branch since it collides with blitz in some way.
 
 1. Add seed data in [db/seeds.ts](./db/seeds.ts) – all models should have good seed data.
-
