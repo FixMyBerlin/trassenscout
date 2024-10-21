@@ -1,7 +1,10 @@
 import db from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
-import { getResponseConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
+import {
+  getBackendConfigBySurveySlug,
+  getResponseConfigBySurveySlug,
+} from "@/src/survey-public/utils/getConfigBySurveySlug"
 import { resolver } from "@blitzjs/rpc"
 import { viewerRoles } from "../../authorization/constants"
 import { extractProjectSlug } from "../../authorization/extractProjectSlug"
@@ -74,6 +77,10 @@ export default resolver.pipe(
       },
     })
 
+    const questions = getBackendConfigBySurveySlug(
+      rawFeedbackSurveyResponse[0]!.surveySession.survey.slug as AllowedSurveySlugs,
+    ).additionalFilters
+
     const { evaluationRefs } = getResponseConfigBySurveySlug(
       rawFeedbackSurveyResponse[0]!.surveySession.survey.slug as AllowedSurveySlugs,
     )
@@ -102,11 +109,46 @@ export default resolver.pipe(
       // Sometimes the fronted received a different order for unknown reasons
       .sort((a, b) => b.id - a.id)
 
-    if (withLocationOnly)
-      return parsedAndSorted.filter(
-        // @ts-expect-error
-        (response) => response.data[evaluationRefs["feedback-location"]],
-      )
-    return parsedAndSorted
+    const additionalFilterQuestionsWithResponseOptions = questions?.map((question) => {
+      const questionDatas = parsedAndSorted
+        .map((responseItem) => {
+          let result: string | null
+          if (question.surveyPart === "survey") {
+            result = responseItem.surveySurveyResponseData
+              ? // @ts-expect-error data
+                responseItem.surveySurveyResponseData[String(question.id)]
+              : null
+          } else {
+            // @ts-expect-error data
+            result = responseItem.data[String(question.id)]
+          }
+          return result
+        })
+        .filter(Boolean)
+      // Remove duplicates and sort alphabetically
+      let uniqueSortedResponseOptions = Array.from(new Set(questionDatas))
+        .sort()
+        .map((option) => {
+          return { value: option, label: option }
+        })
+      // Add "Alle" to the beginning of the options array
+      uniqueSortedResponseOptions = [
+        { value: "ALL", label: "Alle" },
+        ...uniqueSortedResponseOptions,
+      ]
+      return { ...question, options: uniqueSortedResponseOptions }
+    })
+
+    return {
+      // for the map view we only return responses with location
+      feedbackSurveyResponses: withLocationOnly
+        ? parsedAndSorted.filter(
+            // @ts-expect-error
+            (response) => response.data[evaluationRefs["feedback-location"]],
+          )
+        : parsedAndSorted,
+      // for the filter form on /responses we return all response options for additional filters
+      additionalFilterQuestionsWithResponseOptions,
+    }
   },
 )

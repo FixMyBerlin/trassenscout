@@ -8,7 +8,9 @@ import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/g
 import { useFilters } from "./useFilters.nuqs"
 
 export const useFilteredResponses = (
-  responses: Awaited<ReturnType<typeof getFeedbackSurveyResponsesWithSurveyDataAndComments>>,
+  responses: Awaited<
+    ReturnType<typeof getFeedbackSurveyResponsesWithSurveyDataAndComments>
+  >["feedbackSurveyResponses"],
   surveySlug: AllowedSurveySlugs,
 ) => {
   const { filter } = useFilters()

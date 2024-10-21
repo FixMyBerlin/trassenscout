@@ -14,8 +14,6 @@ import EditableSurveyResponseListItem from "@/src/survey-responses/components/fe
 import { ExternalSurveyResponseFormModal } from "@/src/survey-responses/components/feedback/ExternalSurveyResponseFormModal"
 import { useFilteredResponses } from "@/src/survey-responses/components/feedback/useFilteredResponses"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
-
-import getQuestionResponseOptions from "@/src/survey-responses/queries/getQuestionResponseOptions"
 import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { BlitzPage, useRouterQuery } from "@blitzjs/next"
@@ -28,23 +26,19 @@ export const SurveyResponse = () => {
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
   const backenendConfig = getBackendConfigBySurveySlug(survey.slug)
   // the returned responses include the surveyPart1 data
-  const [feedbackSurveyResponses, { refetch: refetchResponses }] = useQuery(
-    getFeedbackSurveyResponsesWithSurveyDataAndComments,
-    { projectSlug, surveyId: survey.id },
-  )
+  const [
+    { feedbackSurveyResponses, additionalFilterQuestionsWithResponseOptions },
+    { refetch: refetchResponses },
+  ] = useQuery(getFeedbackSurveyResponsesWithSurveyDataAndComments, {
+    projectSlug,
+    surveyId: survey.id,
+  })
   const filteredResponses = useFilteredResponses(feedbackSurveyResponses, survey.slug)
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const [{ surveyResponseTopics: topics }, { refetch: refetchTopics }] = useQuery(
     getSurveyResponseTopicsByProject,
     { projectSlug },
   )
-
-  const [additionalFilterQuestionsWithResponseOptions] = useQuery(getQuestionResponseOptions, {
-    projectSlug,
-    surveyId,
-    questions: getBackendConfigBySurveySlug(survey.slug).additionalFilters,
-  })
-  // console.log({ additionalFilterQuestionsWithResponseOptions })
 
   // Whenever we submit the form, we also refetch, so the whole accordeon header and everything else is updated
   const refetchResponsesAndTopics = async () => {

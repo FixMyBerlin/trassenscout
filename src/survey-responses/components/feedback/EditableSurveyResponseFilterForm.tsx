@@ -20,7 +20,7 @@ import { Operator } from "@prisma/client"
 import clsx from "clsx"
 import { PropsWithoutRef, useEffect, useState } from "react"
 import { z } from "zod"
-import getQuestionResponseOptions from "../../queries/getQuestionResponseOptions"
+import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { DebugFilterForm } from "./DebugFilterForm"
 import { LabeledInputRadioCheckbox } from "./form/LabeledInputRadioCheckbox"
 import { FormElementWrapper } from "./form/LabeledInputRadioCheckboxWrapper"
@@ -31,7 +31,9 @@ type FormProps<S extends z.ZodType<any, any>> = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
   "onSubmit"
 > & {
-  additionalFilters: Prettify<Awaited<ReturnType<typeof getQuestionResponseOptions>>>
+  additionalFilters: Prettify<
+    Awaited<ReturnType<typeof getFeedbackSurveyResponsesWithSurveyDataAndComments>>
+  >["additionalFilterQuestionsWithResponseOptions"]
   operators: Prettify<Awaited<ReturnType<typeof getOperatorsWithCount>>["operators"]>
   topicsDefinition: Prettify<
     Awaited<ReturnType<typeof getSurveyResponseTopicsByProject>>["surveyResponseTopics"]

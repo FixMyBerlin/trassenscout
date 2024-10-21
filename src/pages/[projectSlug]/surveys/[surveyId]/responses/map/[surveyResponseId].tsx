@@ -30,11 +30,14 @@ export const SurveyResponseWithLocation = () => {
 
   const [survey] = useQuery(getSurvey, { projectSlug, id: surveyId })
   // the returned responses include the surveyPart1 data
-  const [feedbackSurveyResponses] = useQuery(getFeedbackSurveyResponsesWithSurveyDataAndComments, {
-    projectSlug,
-    surveyId: survey.id,
-    withLocationOnly: true,
-  })
+  const [{ feedbackSurveyResponses }] = useQuery(
+    getFeedbackSurveyResponsesWithSurveyDataAndComments,
+    {
+      projectSlug,
+      surveyId: survey.id,
+      withLocationOnly: true,
+    },
+  )
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const [{ surveyResponseTopics: topics }, { refetch: refetchTopics }] = useQuery(
     getSurveyResponseTopicsByProject,

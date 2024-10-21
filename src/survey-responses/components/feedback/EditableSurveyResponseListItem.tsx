@@ -36,7 +36,9 @@ import { SurveyResponseCommentField } from "./comments/SurveyResponseCommentFiel
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<
-    Awaited<ReturnType<typeof getFeedbackSurveyResponsesWithSurveyDataAndComments>>[number]
+    Awaited<
+      ReturnType<typeof getFeedbackSurveyResponsesWithSurveyDataAndComments>
+    >["feedbackSurveyResponses"][number]
   >
   operators: Prettify<Awaited<ReturnType<typeof getOperatorsWithCount>>["operators"]>
   topics: Prettify<
