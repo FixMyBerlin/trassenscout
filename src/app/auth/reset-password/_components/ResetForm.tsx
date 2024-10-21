@@ -14,7 +14,7 @@ export const ResetForm = ({ token }: Props) => {
   type HandleSubmit = { password: string; passwordConfirmation: string }
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      token && (await resetPasswordMutation({ ...values, token }))
+      await resetPasswordMutation({ ...values, token })
     } catch (error: any) {
       if (error.name === "ResetPasswordError") {
         return {
@@ -32,8 +32,10 @@ export const ResetForm = ({ token }: Props) => {
     return (
       <>
         <h2>Passwort erfolgreich zurückgesetzt.</h2>
-        <p>
-          Zur <Link href="/">Startseite</Link>
+        <p className="mt-5">
+          <Link href="/dashboard" button>
+            Zur Startseite
+          </Link>
         </p>
       </>
     )

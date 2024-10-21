@@ -9,7 +9,7 @@ const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
 const seedUsers = async () => {
   const allProjects = await db.project.findMany()
-  // password: dev-team@fixmycity.test
+  // password: dev-team@fixmycity.de
   const hashedPassword =
     "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTIscD0xJDRMWm82dmVrRk91VnVlZTVwcEpiS3ckOHFZcHhyM2RITm0yTGxTeXdqeEcxSWFsZEJCUWhxNVZxdm53eHoxTk4xTQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 

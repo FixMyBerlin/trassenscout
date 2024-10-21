@@ -14,7 +14,7 @@ export async function forgotPasswordMailToUser(props: props) {
     To: [{ Email: props.to }],
     Subject: "Trassenscout: Setzen Sie ihr Passwort zurück",
     introMarkdown: "# Setzen Sie ihr Passwort zurück.",
-    ctaLink: mailUrl(`/auth/forgot-password?token=${props.token}`),
+    ctaLink: mailUrl(`/auth/reset-password?token=${props.token}`),
     ctaText: "Ein neues Passwort vergeben",
   }
 

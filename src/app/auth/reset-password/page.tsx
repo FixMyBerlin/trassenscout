@@ -9,11 +9,15 @@ export const metadata: Metadata = {
   title: "Passwort vergessen",
 }
 
-export default async function ResetPasswordPage({ params }: { params: { token?: string } }) {
-  const token = params?.token
+export default async function ResetPasswordPage({
+  searchParams,
+}: {
+  searchParams: { token?: string }
+}) {
+  const token = searchParams?.token
   await useAuthenticatedBlitzContext({ redirectAuthenticatedTo: "/dashboard" })
 
-  if (typeof token !== "string") {
+  if (typeof token !== "string" || !token) {
     return (
       <TitleBodyWrapper title="Neues Passwort vergeben">
         <h2>Dieser Link ist ungültig.</h2>
