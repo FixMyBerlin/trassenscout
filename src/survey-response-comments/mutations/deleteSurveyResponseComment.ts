@@ -23,7 +23,7 @@ export default resolver.pipe(
       select: { userId: true },
     })
 
-    if (dbUserId !== session.userId) {
+    if (dbUserId !== session.userId && session.role !== "ADMIN") {
       throw new AuthorizationError()
     }
 

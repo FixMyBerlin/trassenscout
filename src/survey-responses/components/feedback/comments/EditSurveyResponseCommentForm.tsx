@@ -9,11 +9,11 @@ import { H3 } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import updateSurveyResponseComment from "@/src/survey-response-comments/mutations/updateSurveyResponseComment"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
+import { useSession } from "@blitzjs/auth"
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 import deleteSurveyResponseComment from "../../../../survey-response-comments/mutations/deleteSurveyResponseComment"
 import { EditableSurveyResponseListItemProps } from "../EditableSurveyResponseListItem"
-import { useIsAuthor } from "./utils/useIsAuthor"
 
 type Props = {
   comment: EditableSurveyResponseListItemProps["response"]["surveyResponseComments"][number]
@@ -26,6 +26,7 @@ export const EditSurveyResponseCommentForm = ({ comment }: Props) => {
   )
   const [deleteSurveyResponseCommentMutation] = useMutation(deleteSurveyResponseComment)
   const [open, setOpen] = useState(false)
+  const session = useSession()
 
   // @ts-expect-error todo
   const handleSubmit = async (values) => {
@@ -46,8 +47,8 @@ export const EditSurveyResponseCommentForm = ({ comment }: Props) => {
     )
   }
 
-  const isAuthor = useIsAuthor(comment.author.id)
-  if (!isAuthor) {
+  const isAuthorOrAdmin = comment.author.id === session.userId || session.role === "ADMIN"
+  if (!isAuthorOrAdmin) {
     return null
   }
 
