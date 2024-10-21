@@ -33,8 +33,9 @@ const EditContactWithQuery = () => {
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateContactMutation({
-        id: contact.id,
         ...values,
+        id: contact.id,
+        projectSlug,
       })
       await setQueryData(updated)
       await router.push(

@@ -24,7 +24,7 @@ export const ContactWithQuery = () => {
   const handleDelete = async () => {
     if (window.confirm(`Den Eintrag mit ID ${contact.id} unwiderruflich löschen?`)) {
       try {
-        await deleteContactMutation({ id: contact.id })
+        await deleteContactMutation({ id: contact.id, projectSlug })
       } catch (error) {
         alert(
           "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
