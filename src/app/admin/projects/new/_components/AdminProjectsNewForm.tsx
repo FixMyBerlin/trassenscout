@@ -1,5 +1,5 @@
 "use client"
-import { ProjectForm } from "@/src/app/(loggedin)/[projectSlug]/edit/_components/ProjectForm"
+import { ProjectForm } from "@/src/app/(loggedInProjects)/[projectSlug]/edit/_components/ProjectForm"
 import { FORM_ERROR } from "@/src/core/components/forms"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import createProject from "@/src/server/projects/mutations/createProject"

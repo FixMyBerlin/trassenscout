@@ -66,25 +66,23 @@ export const NavigationUserLoggedIn = ({ user }: Props) => {
                   )}
 
                   {isAdmin(user) && (
-                    <>
-                      <AdminBox label="Admin" className="divide-y divide-purple-300">
-                        <p className="font-semibold">Rolle: Admin</p>
-                        <button
-                          onClick={toggleShowMembershipRoleCheckIndicator}
-                          className={clsx(linkStyles, "text-left leading-none")}
-                        >
-                          {showMembershipRoleCheckIndicator ? "AN" : "AUS"}: Hervorheben, wo Element
-                          abhängig von der Editor-Rolle angezeigt werden.
-                        </button>
-                        <pre className="text-xs">
-                          Env: {JSON.stringify({ isProduction, isStaging, isDev }, undefined, 2)}
-                          <br />
-                          NEXT_PUBLIC_APP_ENV: {JSON.stringify(process.env.NEXT_PUBLIC_APP_ENV)}
-                          <br />
-                          NODE_ENV: {JSON.stringify(process.env.NODE_ENV)}
-                        </pre>
-                      </AdminBox>
-                    </>
+                    <AdminBox label="Admin" className="divide-y divide-purple-300">
+                      <p className="font-semibold">Rolle: Admin</p>
+                      <button
+                        onClick={toggleShowMembershipRoleCheckIndicator}
+                        className={clsx(linkStyles, "text-left leading-none")}
+                      >
+                        {showMembershipRoleCheckIndicator ? "AN" : "AUS"}: Hervorheben, wo Element
+                        abhängig von der Editor-Rolle angezeigt werden.
+                      </button>
+                      <pre className="text-xs">
+                        Env: {JSON.stringify({ isProduction, isStaging, isDev }, undefined, 2)}
+                        <br />
+                        NEXT_PUBLIC_APP_ENV: {JSON.stringify(process.env.NEXT_PUBLIC_APP_ENV)}
+                        <br />
+                        NODE_ENV: {JSON.stringify(process.env.NODE_ENV)}
+                      </pre>
+                    </AdminBox>
                   )}
                 </div>
                 <div className="border-t border-gray-200 px-4 py-2 text-gray-700">

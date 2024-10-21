@@ -9,7 +9,6 @@ import { ProjectsMap } from "./_components/ProjectsMap"
 import { ProjectsTable } from "./_components/ProjectsTable"
 
 export const metadata: Metadata = {
-  robots: "noindex",
   title: "Meine Projekte (Dashboard)",
 }
 

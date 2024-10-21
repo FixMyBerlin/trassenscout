@@ -1,4 +1,4 @@
-import { ProjectForm } from "@/src/app/(loggedin)/[projectSlug]/edit/_components/ProjectForm"
+import { ProjectForm } from "@/src/app/(loggedInProjects)/[projectSlug]/edit/_components/ProjectForm"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
 import { FORM_ERROR } from "@/src/core/components/forms"
