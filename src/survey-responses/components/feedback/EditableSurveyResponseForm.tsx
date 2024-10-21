@@ -288,6 +288,7 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
             {labels.note?.sg || defaultBackendConfig.labels.note.sg}
           </p>
           <LabeledTextareaField
+            outerProps={{ className: "max-w-3xl" }}
             help={
               userCanEdit ? labels.note?.help || defaultBackendConfig.labels.note.help : undefined
             }
