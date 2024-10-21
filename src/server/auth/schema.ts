@@ -22,12 +22,15 @@ export const Signup = z.object({
   inviteToken: z.string().nullable(), // Signup will create a membership or not…
 })
 
-export const UpdateUser = z.object({
+export const UpdateUserSchema = z.object({
   phone: z.string().nullable(),
   firstName: z.string().min(1, { message: "Pflichtfeld." }),
   lastName: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
   institution: z.string().nullable(),
 })
+
+export type UpdateUserType = z.infer<typeof UpdateUserSchema>
+
 export const UpdateMembershipRole = z.object({
   membershipId: z.number(),
   role: z.nativeEnum(MembershipRoleEnum),

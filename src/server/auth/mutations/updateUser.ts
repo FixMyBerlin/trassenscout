@@ -1,10 +1,10 @@
 import db from "@/db"
 import { resolver } from "@blitzjs/rpc"
-import { UpdateUser } from "../schema"
+import { UpdateUserSchema } from "../schema"
 
 export default resolver.pipe(
-  resolver.zod(UpdateUser),
-  resolver.authorize(/* ok */),
+  resolver.zod(UpdateUserSchema),
+  resolver.authorize(/* ok, we check the user with `ctx.session.userId` */),
   async (data, ctx) => {
     return await db.user.update({ where: { id: ctx.session.userId }, data })
   },

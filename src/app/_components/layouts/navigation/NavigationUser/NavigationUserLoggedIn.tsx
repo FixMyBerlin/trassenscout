@@ -87,17 +87,14 @@ export const NavigationUserLoggedIn = ({ user }: Props) => {
                 </div>
                 <div className="border-t border-gray-200 px-4 py-2 text-gray-700">
                   <div className="my-2 flex flex-col gap-4">
-                    {projectSlug && (
-                      <MenuItem>
-                        <Link
-                          className="text-gray-500 decoration-blue-200 underline-offset-4 hover:text-blue-500 hover:underline"
-                          // TODO APPDIRECTORY: Why projectSlug? Where did this link to?
-                          href={`/${projectSlug}`}
-                        >
-                          Ihr Profil
-                        </Link>
-                      </MenuItem>
-                    )}
+                    <MenuItem>
+                      <Link
+                        className="text-gray-500 decoration-blue-200 underline-offset-4 hover:text-blue-500 hover:underline"
+                        href="/user/edit"
+                      >
+                        Ihr Profil
+                      </Link>
+                    </MenuItem>
                     <MenuItem>
                       <Link
                         className="text-gray-500 decoration-blue-200 underline-offset-4 hover:text-blue-500 hover:underline"
