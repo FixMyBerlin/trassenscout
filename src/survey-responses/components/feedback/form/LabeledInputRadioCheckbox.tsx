@@ -39,7 +39,10 @@ export const LabeledInputRadioCheckbox = ({
             value={item.value}
             checked={checked}
             onChange={onChange}
-            className="mr-2 h-4 w-4 cursor-pointer border-gray-300 leading-none text-blue-600 focus:ring-blue-500"
+            className={clsx(
+              type === "checkbox" && "rounded-sm",
+              "mr-2 h-4 w-4 cursor-pointer border-gray-300 leading-none text-blue-500 focus:ring-blue-500",
+            )}
           />
           {item.label}
         </div>

@@ -5,9 +5,9 @@ type FormElementWrapperProps = {
 
 export const FormElementWrapper = ({ label, children }: FormElementWrapperProps) => {
   return (
-    <div className="flex flex-col gap-1">
+    <div>
       <p className="mb-3 font-semibold">{label}</p>
-      {children}
+      <div className="flex flex-col gap-1">{children}</div>
     </div>
   )
 }

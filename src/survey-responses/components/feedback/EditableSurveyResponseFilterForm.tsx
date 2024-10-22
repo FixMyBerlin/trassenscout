@@ -179,7 +179,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     console.log("handleSubmit", filter)
   }
   return (
-    <nav className="rounded-xl border border-gray-300">
+    <nav className="rounded-lg bg-gray-100">
       <details open>
         <summary className="cursor-pointer rounded-xl px-4 py-2 text-gray-700 hover:bg-gray-50">
           Filter
@@ -234,7 +234,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 </FormElementWrapper>
               </div>
               {additionalFilters && Boolean(additionalFilters?.length) && filter && (
-                <ul className="flex flex-shrink flex-col gap-4">
+                <ul className="flex flex-shrink flex-col gap-6">
                   {additionalFilters.map((addFilter) => (
                     <li key={addFilter.id}>
                       <FormElementWrapper label={addFilter.label}>
@@ -330,7 +330,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
         </form>
         <button
           type="button"
-          className={clsx(linkStyles, "mt-4 flex items-center gap-2 px-4 pb-2")}
+          className={clsx(linkStyles, "mt-4 flex items-center gap-2 px-4 pb-2 font-semibold")}
           onClick={handleFilterReset}
         >
           <XMarkIcon className="h-4 w-4" />
