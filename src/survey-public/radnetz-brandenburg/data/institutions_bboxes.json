@@ -45,7 +45,7 @@
   },
   {
     "institution": "Stadt Angermünde",
-    "landkreis": "Uckermark ",
+    "landkreis": "Uckermark",
     "id": "afs-angermunde",
     "bbox": [
       13.786725,
@@ -210,7 +210,7 @@
   },
   {
     "institution": "Gemeinde Boitzenburger Land",
-    "landkreis": "Uckermark ",
+    "landkreis": "Uckermark",
     "id": "afg-boitzenburger-land",
     "bbox": [
       13.371492,
@@ -276,7 +276,7 @@
   },
   {
     "institution": "Amt Brüssow (Uckermark)",
-    "landkreis": "Uckermark ",
+    "landkreis": "Uckermark",
     "id": "amt-brussow-(uckermark)",
     "bbox": [
       13.864502,
