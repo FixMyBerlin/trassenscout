@@ -13,7 +13,7 @@ const EditableSurveyResponseAdditionalFilterFields = ({
 }: Props) => {
   if (!additionalFilterFields) return null
   return (
-    <div className="my-8 rounded-lg border border-gray-200 bg-white p-2 md:max-w-screen-md">
+    <div className="rounded-lg border border-gray-200 bg-white p-2 md:max-w-screen-md">
       <table className="min-w-full">
         <tbody className="divide-y divide-gray-200 bg-white">
           {additionalFilterFields.map((item) => (
