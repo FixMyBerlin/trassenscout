@@ -15,7 +15,7 @@ const jsonData = lines.slice(1).map((line) => {
     if (header === "bbox" && values[i]) {
       item[header] = JSON.parse(values[i])
     } else {
-      item[header] = values[i]
+      item[header] = values[i].trim()
     }
   })
   return item
