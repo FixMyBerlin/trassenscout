@@ -155,19 +155,10 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
           />
           <EditableSurveyResponseForm
             showMap={showMap}
-            initialValues={{
-              // Mapping to string is required so the ReactHookForm and our Radiobutton can compare the data to find what is selected
-              surveyResponseTopics: response.surveyResponseTopics.map(String),
-              operatorId: response.operatorId === null ? "0" : String(response.operatorId),
-              // we can not call this "status"; the scopes of this form have to be different from the other form (filter form)! Otherwise this messes with our filter form and url state.
-              responseStatus: response.status,
-              note: response.note,
-            }}
             response={response}
             operators={operators}
             topics={topics}
             subsections={subsections}
-            refetchResponsesAndTopics={refetchResponsesAndTopics}
             backendConfig={backendConfig}
           />
           <div>

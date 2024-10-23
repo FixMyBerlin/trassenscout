@@ -1,6 +1,8 @@
 import clsx from "clsx"
 
 type LabeledInputRadioCheckboxProps = {
+  // todo form props...
+  disabled?: boolean
   item: { value: string; label: string }
   checked: boolean | undefined
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
@@ -11,6 +13,7 @@ type LabeledInputRadioCheckboxProps = {
 }
 
 export const LabeledInputRadioCheckbox = ({
+  disabled,
   item,
   checked,
   onChange,
@@ -34,6 +37,7 @@ export const LabeledInputRadioCheckbox = ({
           )}
         >
           <input
+            disabled={disabled}
             type={type}
             name={name}
             value={item.value}
