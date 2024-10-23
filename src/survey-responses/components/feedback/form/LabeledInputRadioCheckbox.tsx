@@ -1,29 +1,21 @@
 import clsx from "clsx"
-
-type LabeledInputRadioCheckboxProps = {
-  // todo form props...
-  disabled?: boolean
-  item: { value: string; label: string }
-  checked: boolean | undefined
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+import { PropsWithoutRef } from "react"
+interface LabeledInputRadioCheckboxProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
   classLabelOverwrite?: string
   classNameItemWrapperOverwrite?: string
-  name: string
+  label?: string
   type: "radio" | "checkbox"
 }
 
 export const LabeledInputRadioCheckbox = ({
-  disabled,
-  item,
-  checked,
-  onChange,
   classLabelOverwrite,
-  classNameItemWrapperOverwrite: classNameItemWrapper,
-  name,
+  classNameItemWrapperOverwrite,
   type,
+  label,
+  ...props
 }: LabeledInputRadioCheckboxProps) => {
   return (
-    <div className={clsx(classNameItemWrapper)}>
+    <div className={clsx(classLabelOverwrite)}>
       <label
         className={
           classLabelOverwrite ||
@@ -32,23 +24,19 @@ export const LabeledInputRadioCheckbox = ({
       >
         <div
           className={clsx(
-            classNameItemWrapper || "flex h-5 items-center justify-start",
+            classNameItemWrapperOverwrite || "flex h-5 items-center justify-start",
             "cursor-pointer",
           )}
         >
           <input
-            disabled={disabled}
             type={type}
-            name={name}
-            value={item.value}
-            checked={checked}
-            onChange={onChange}
+            {...props}
             className={clsx(
               type === "checkbox" && "rounded-sm",
               "mr-2 h-4 w-4 cursor-pointer border-gray-300 leading-none text-blue-500 focus:ring-blue-500",
             )}
           />
-          {item.label}
+          {label}
         </div>
       </label>
     </div>

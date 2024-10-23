@@ -201,7 +201,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                     key={item.value}
                     checked={filter?.status.includes(item.value)}
                     onChange={handleInputChange}
-                    item={item}
+                    label={item.label}
+                    value={item.value}
                   />
                 ))}
               </FormElementWrapper>
@@ -210,7 +211,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                   {hasnotesOptions.map((item) => (
                     <LabeledInputRadioCheckbox
                       type="radio"
-                      item={item}
+                      label={item.label}
+                      value={item.value}
                       key={item.value}
                       name="hasnotes"
                       onChange={handleInputChange}
@@ -224,7 +226,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                   {haslocationOptions.map((item) => (
                     <LabeledInputRadioCheckbox
                       type="radio"
-                      item={item}
+                      label={item.label}
+                      value={item.value}
                       key={item.value}
                       name="haslocation"
                       onChange={handleInputChange}
@@ -266,7 +269,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 {categoriesOptions.map((item) => (
                   <LabeledInputRadioCheckbox
                     type="checkbox"
-                    item={item}
+                    label={item.label}
+                    value={item.value}
                     key={item.value}
                     name="categories"
                     onChange={handleInputChange}
@@ -280,7 +284,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 {operatorOptions.map((item) => (
                   <LabeledInputRadioCheckbox
                     type="radio"
-                    item={item}
+                    label={item.label}
+                    value={item.value}
                     key={item.value}
                     name="operator"
                     onChange={handleInputChange}
@@ -301,7 +306,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                       key={item.value}
                       checked={filter?.topics.includes(item.value)}
                       onChange={handleInputChange}
-                      item={item}
+                      label={item.label}
+                      value={item.value}
                     />
                   ))}
                 </div>
