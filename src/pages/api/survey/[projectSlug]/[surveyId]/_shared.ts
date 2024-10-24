@@ -19,8 +19,12 @@ export const getSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
   let survey: ReturnType<typeof dbGetSurvey>
   try {
     const session = await getSession(req, res)
-    // @ts-expect-error
-    survey = await dbGetSurvey({ id: Number(req.query.surveyId) }, { session })
+    // @ts-ignore
+    survey = await dbGetSurvey(
+      // @ts-ignore
+      { projectSlug: req.query.projectSlug, id: Number(req.query.surveyId) },
+      { session },
+    )
   } catch (e) {
     if (e instanceof AuthorizationError) {
       err(403, "Forbidden")
@@ -29,10 +33,8 @@ export const getSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
     if (e.code === "P2025" || e instanceof ZodError) {
       err(404, "Not Found")
     }
-
     console.error(e)
     err(500, "Internal Server Error")
-
     return
   }
 
