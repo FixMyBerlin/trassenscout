@@ -16,8 +16,8 @@ export const NewSurveyResponseCommentForm = ({ surveyResponseId }: Props) => {
 
   const [body, setBody] = useState("")
 
-  // @ts-expect-error todo
-  const handleSubmit = async (event) => {
+  // todo any
+  const handleSubmit = async (event: any) => {
     event.preventDefault()
     const sanitize = (input: string) => (input ? dompurify.sanitize(input) : input)
     createSurveyResponseCommentMutation(
