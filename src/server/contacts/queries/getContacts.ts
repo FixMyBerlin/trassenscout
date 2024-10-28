@@ -4,6 +4,9 @@ import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
+import getContacts from "./getContacts"
+
+export type TContacts = Awaited<ReturnType<typeof getContacts>>
 
 type GetContactsInput = { projectSlug: string } & Pick<
   Prisma.ContactFindManyArgs,
