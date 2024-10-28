@@ -22,7 +22,7 @@ export const feedbackDefinition: TFeedback = {
         {
           id: 30,
           label: {
-            de: "Bezeichnung der Linie mit Start und Ziel",
+            de: "Verbindung (von - bis)",
           },
           component: "custom",
         },
@@ -30,7 +30,7 @@ export const feedbackDefinition: TFeedback = {
         {
           id: 21,
           label: {
-            de: "Gemetrie der Linie",
+            de: "Geometrie der Linie",
           },
           component: "custom",
         },
