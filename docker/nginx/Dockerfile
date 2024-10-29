@@ -1,4 +1,4 @@
-FROM nginx:latest
+FROM nginx:alpine
 
 COPY default.conf.tpl /default.conf.tpl
 
