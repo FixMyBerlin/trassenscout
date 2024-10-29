@@ -1,0 +1,84 @@
+name: Setup Configuration
+on:
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+      TILES_URL:
+        type: string
+        required: true
+      CACHELESS_URL:
+        type: string
+        required: true
+      NEXT_PUBLIC_APP_ORIGIN:
+        required: true
+        type: string
+      NEXT_PUBLIC_APP_ENV:
+        required: true
+        type: string
+      NEXT_PUBLIC_OSM_API_URL:
+        required: true
+        type: string
+      APP_URL:
+        required: true
+        type: string
+
+jobs:
+  setup_env:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.ENVIRONMENT }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Copy files to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: 'docker-compose.server.yml, docker, .env.example'
+          target: '/srv/trassenscout-${{ inputs.ENVIRONMENT }}'
+          overwrite: true
+
+      - name: Replace environment variables
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            echo "Updating `.env`"
+            cd /srv/trassenscout-${{ inputs.ENVIRONMENT }}
+            rm docker-compose.yml
+            mv docker-compose.staging.yml docker-compose.yml
+            sed -n '/^[^#].*=/s/^\([^=]*\)=.*/\1=/p' .env.example > .env
+            rm .env.example
+            sed -i \
+              -e "s|^ENVIRONMENT=.*$|ENVIRONMENT='${{ inputs.ENVIRONMENT }}'|" \
+              -e "s|^ASSETS_BUCKET_HOST=.*$|ASSETS_BUCKET_HOST='${{ secrets.ASSETS_BUCKET_HOST }}'|" \
+              -e "s|^ASSETS_BUCKET_PATH=.*$|ASSETS_BUCKET_PATH='${{ secrets.ASSETS_BUCKET_PATH }}'|" \
+              -e "s|^ENVIRONMENT=.*$|ENVIRONMENT='${{ inputs.ENVIRONMENT }}'|" \
+              -e "s|^MAILJET_APIKEY_PUBLIC=.*$|MAILJET_APIKEY_PUBLIC='${{ secrets.MAILJET_APIKEY_PUBLIC }}'|" \
+              -e "s|^MAILJET_APIKEY_PRIVATE=.*$|MAILJET_APIKEY_PRIVATE='${{ secrets.MAILJET_APIKEY_PRIVATE }}'|" \
+              -e "s|^POSTGRES_HOST=.*$|POSTGRES_HOST='${{ vars.DATABASE_HOST }}'|" \
+              -e "s|^POSTGRES_USER=.*$|POSTGRES_USER='${{ secrets.DATABASE_USER }}'|" \
+              -e "s|^POSTGRES_PASSWORD=.*$|POSTGRES_PASSWORD='${{ secrets.DATABASE_PASSWORD }}'|" \
+              -e "s|^DATABASE_PASSWORD=.*$|DATABASE_PASSWORD='${{ secrets.DATABASE_PASSWORD }}'|" \
+              -e "s|^POSTGRES_NAME=.*$|POSTGRES_NAME='${{ vars.DATABASE_NAME }}'|" \
+              -e "s|^DATABASE_URL=.*$|DATABASE_URL='postgres://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ vars.DATABASE_HOST }}/${{ vars.DATABASE_NAME }}'|" \
+              -e "s|^SESSION_SECRET_KEY=.*$|SESSION_SECRET_KEY='${{ secrets.SESSION_SECRET_KEY }}'|"\
+              -e "s|^APP_ORIGIN=.*$|APP_ORIGIN='${{ inputs.APP_ORIGIN }}'|"\
+              -e "s|^NEXT_PUBLIC_APP_ORIGIN=.*$|NEXT_PUBLIC_APP_ORIGIN='${{ inputs.NEXT_PUBLIC_APP_ORIGIN }}'|"\
+              -e "s|^NEXT_PUBLIC_APP_ENV=.*$|NEXT_PUBLIC_APP_ENV='${{ inputs.NEXT_PUBLIC_APP_ENV }}'|" \
+              -e "s|^ADMIN_EMAIL=.*$|ADMIN_EMAIL='${{ secrets.ADMIN_EMAIL }}'|" \
+              -e "s|^FELT_TOKEN=.*$|FELT_TOKEN='${{ secrets.FELT_TOKEN }}'|" \
+              -e "s|^S3_UPLOAD_KEY=.*$|S3_UPLOAD_KEY='${{ secrets.S3_UPLOAD_KEY }}'|" \
+              -e "s|^S3_UPLOAD_SECRET=.*$|S3_UPLOAD_SECRET='${{ secrets.S3_UPLOAD_SECRET }}'|" \
+              -e "s|^S3_UPLOAD_ROOTFOLDER=.*$|S3_UPLOAD_ROOTFOLDER='${{ vars.S3_UPLOAD_ROOTFOLDER }}'|" \
+              -e "s|^S3_UPLOAD_BUCKET=.*$|S3_UPLOAD_BUCKET='${{ vars.S3_UPLOAD_BUCKET }}'|" \
+              -e "s|^APP_URL=.*$|APP_URL='${{ vars.APP_URL }}'|" \
+              -e "s|^TS_API_KEY=.*$|TS_API_KEY='${{ secrets.TS_API_KEY }}'|" \
+              .env
