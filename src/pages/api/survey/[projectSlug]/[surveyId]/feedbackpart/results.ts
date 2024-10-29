@@ -190,10 +190,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                       ? // @ts-expect-error data is of type unknown
                         surveyPartData[questionId]
                           .map(
-                            (resultId: string) =>
-                              multipleResponseResponseProps.responses.find(
-                                (r) => String(r.id) === resultId,
-                              )?.text.de,
+                            (resultId: number) =>
+                              multipleResponseResponseProps.responses.find((r) => r.id === resultId)
+                                ?.text.de,
                           )
                           .join(", ")
                       : ""
@@ -229,8 +228,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     ? // @ts-expect-error data is of type unknown
                       data[questionId]
                         .map(
-                          // @ts-expect-error index type
-                          (resultId) =>
+                          (resultId: number) =>
                             multipleResponseResponseProps.responses.find((r) => r.id === resultId)
                               ?.text.de,
                         )
