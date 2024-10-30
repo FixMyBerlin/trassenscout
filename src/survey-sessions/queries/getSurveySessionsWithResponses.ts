@@ -1,44 +1,34 @@
-import db, { Prisma } from "@/db"
+import db from "@/db"
+import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
+import { viewerRoles } from "@/src/authorization/constants"
+import {
+  extractProjectSlug,
+  ProjectSlugRequiredSchema,
+} from "@/src/authorization/extractProjectSlug"
 import { resolver } from "@blitzjs/rpc"
-import { paginate } from "blitz"
+import { z } from "zod"
 
-type GetSurveySessionsInput = Pick<
-  Prisma.SurveySessionFindManyArgs,
-  "where" | "orderBy" | "skip" | "take" | "include"
->
+const Schema = ProjectSlugRequiredSchema.merge(
+  z.object({
+    surveyId: z.number(),
+  }),
+)
 
 export default resolver.pipe(
-  resolver.authorize("ADMIN"),
-  async ({
-    where,
-    orderBy = { id: "desc" },
-    include,
-    skip = 0,
-    take = 100,
-  }: GetSurveySessionsInput) => {
-    const {
-      items: surveySessions,
-      hasMore,
-      nextPage,
-      count,
-    } = await paginate({
-      skip,
-      take,
-      count: () => db.surveySession.count({ where }),
-      query: (paginateArgs) =>
-        db.surveySession.findMany({
-          ...paginateArgs,
-          where,
-          orderBy,
-          include: { responses: true, ...include },
-        }),
+  resolver.zod(Schema),
+  authorizeProjectMember(extractProjectSlug, viewerRoles),
+  async ({ surveyId }) => {
+    const surveySessions = await db.surveySession.findMany({
+      where: { surveyId },
+      include: {
+        responses: {
+          include: {
+            surveyResponseTopics: true,
+            surveyResponseComments: { include: { author: true } },
+          },
+        },
+      },
     })
-
-    return {
-      surveySessions,
-      nextPage,
-      hasMore,
-      count,
-    }
+    return surveySessions
   },
 )

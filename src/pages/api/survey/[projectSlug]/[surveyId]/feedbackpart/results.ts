@@ -1,5 +1,6 @@
-import db from "@/db"
+import { Prettify } from "@/src/core/types"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
+import getProjectOperators from "@/src/server/operators/queries/getProjectOperators"
 import {
   TFeedback,
   TFeedbackQuestion,
@@ -14,6 +15,10 @@ import {
   getResponseConfigBySurveySlug,
   getSurveyDefinitionBySurveySlug,
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
+import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
+import getSurveySessionsWithResponses from "@/src/survey-sessions/queries/getSurveySessionsWithResponses"
+import { getSession } from "@blitzjs/auth"
+import { AuthorizationError } from "blitz"
 import { NextApiRequest, NextApiResponse } from "next"
 import { getSurvey, sendCsv } from "./../surveypart/_shared"
 
@@ -40,29 +45,51 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const surveyQuestions = getQuestions(surveyDefinition) as Record<string, TQuestion>
   const feedbackQuestions = getQuestions(feedbackDefinition) as Record<string, TFeedbackQuestion>
 
-  // get all surveysessions for the survey
-  const surveySessions = await db.surveySession.findMany({
-    where: { surveyId: survey.id },
-    include: {
-      responses: {
-        include: {
-          surveyResponseTopics: true,
-          surveyResponseComments: { include: { author: true } },
-        },
-      },
-    },
-  })
+  const err = (status: number, message: string) => {
+    res.status(status).json({ error: true, status: status, message })
+    res.end()
+  }
 
-  // get all operators for project
-  const operators = await db.operator.findMany({
-    where: { projectId: survey.projectId },
-  })
+  let surveySessions: Prettify<Awaited<ReturnType<typeof getSurveySessionsWithResponses>>>
+  let topics: Prettify<
+    Awaited<ReturnType<typeof getSurveyResponseTopicsByProject>>
+  >["surveyResponseTopics"]
+  let operators: Prettify<Awaited<ReturnType<typeof getProjectOperators>>>
 
-  // get all topics for project
-  const topics = await db.surveyResponseTopic.findMany({ where: { projectId: survey.projectId } })
+  try {
+    const session = await getSession(req, res)
+    // get all surveysessions of survey
+    surveySessions = await getSurveySessionsWithResponses(
+      // @ts-expect-error
+      { projectSlug: req.query.projectSlug, surveyId: survey.id },
+      { session },
+    )
+    // get operators and topics of project
+    const surveyResponseTopics = await getSurveyResponseTopicsByProject(
+      // @ts-expect-error
+      { projectSlug: req.query.projectSlug },
+      { session },
+    )
+    topics = surveyResponseTopics.surveyResponseTopics
+    operators = await getProjectOperators(
+      // @ts-expect-error
+      { projectSlug: req.query.projectSlug },
+      { session },
+    )
+  } catch (e) {
+    if (e instanceof AuthorizationError) {
+      err(403, "Forbidden")
+    }
+    // @ts-ignore
+    if (e.code === "P2025" || e instanceof ZodError) {
+      err(404, "Not Found")
+    }
+    console.error(e)
+    err(500, "Internal Server Error")
+    return
+  }
 
   const statusDefinition = backendConfig.status
-
   const labels = backendConfig.labels
   const defaultLabels = backendConfigDefault.labels
 
@@ -91,9 +118,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     sessionId: string
     responseId: string
     status: string
-    note?: string
-    operator?: string
-    comments?: string
+    note: string | undefined
+    operator: string | undefined
+    comments: string | undefined
   }
 
   // add headers for all questions
