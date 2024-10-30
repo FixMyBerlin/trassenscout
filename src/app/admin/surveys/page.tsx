@@ -38,6 +38,9 @@ export default async function AdminSurveysPage() {
                 <Link button href={`/admin/surveys/${survey.id}/responses`}>
                   Antworten
                 </Link>
+                <Link button href={`/admin/surveys/${survey.id}/responses/test`}>
+                  Testeinträge prüfen und löschen
+                </Link>
               </div>
               <pre>{JSON.stringify(survey, undefined, 2)}</pre>
             </li>
