@@ -83,5 +83,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
   })
 
-  sendCsv(res, headers, csvData, `${format(new Date(), "yyyy/MM/dd")}_fragen_${survey.slug}.csv`)
+  sendCsv(
+    res,
+    headers,
+    csvData,
+    `${format(new Date(), "yyyy/MM/dd")}_umfrage_fragen_${survey.slug}.csv`,
+  )
 }

@@ -199,19 +199,13 @@ export const Survey = () => {
           <button onClick={handleCopyChartDataButtonClick} className={whiteButtonStyles}>
             Beteiligungsergebnisse in die Zwischenablage kopieren - formatiert für Diagramme
           </button>
-          <Link
-            href={`/api/survey/${projectSlug}/${survey.id}/surveypart/questions`}
-            button="white"
-          >
+          <Link href={`/api/survey/${projectSlug}/${survey.id}/survey/questions`} button="white">
             Fragen der Beteiligung als CSV herunterladen
           </Link>
-          <Link
-            href={`/api/survey/${projectSlug}/${survey.id}/surveypart/responses`}
-            button="white"
-          >
+          <Link href={`/api/survey/${projectSlug}/${survey.id}/survey/answers`} button="white">
             Antworten der Beteiligung als CSV herunterladen
           </Link>
-          <Link href={`/api/survey/${projectSlug}/${survey.id}/surveypart/results`} button="white">
+          <Link href={`/api/survey/${projectSlug}/${survey.id}/survey/results`} button="white">
             Ergebnisse der Beteiligung als CSV herunterladen
           </Link>
         </div>

@@ -73,7 +73,7 @@ export const SurveyResponse = () => {
         <div className="mb-6">
           <Link
             className="mb-12 flex gap-1"
-            href={`/api/survey/${projectSlug}/${survey.id}/feedbackpart/results`}
+            href={`/api/survey/${projectSlug}/${survey.id}/feedback/results`}
           >
             <ArrowDownTrayIcon className="mr-1 h-5 w-5" />
             Alle Daten als .csv herunterladen

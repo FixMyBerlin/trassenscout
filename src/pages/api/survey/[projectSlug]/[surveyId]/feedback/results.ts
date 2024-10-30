@@ -21,7 +21,7 @@ import { getSession } from "@blitzjs/auth"
 import { AuthorizationError } from "blitz"
 import { format } from "date-fns"
 import { NextApiRequest, NextApiResponse } from "next"
-import { getSurvey, sendCsv } from "./../surveypart/_shared"
+import { getSurvey, sendCsv } from "./../survey/_shared"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const survey = await getSurvey(req, res)
