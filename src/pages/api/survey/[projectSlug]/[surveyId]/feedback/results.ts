@@ -167,7 +167,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           data = JSON.parse(data)
 
           let row: Result = {
-            createdAt: createdAt.toLocaleDateString("de-DE"),
+            createdAt: format(createdAt, "dd.MM.yyyy"),
             sessionId: String(sessionId),
             responseId: String(responseId),
             // @ts-ignore ?
