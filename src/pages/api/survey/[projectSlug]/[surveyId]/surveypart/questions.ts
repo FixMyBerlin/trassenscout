@@ -1,5 +1,6 @@
 import { TSurvey } from "@/src/survey-public/components/types"
 import { getSurveyDefinitionBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
+import { format } from "date-fns"
 import { NextApiRequest, NextApiResponse } from "next"
 import { getSurvey, sendCsv } from "./_shared"
 
@@ -34,21 +35,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   addQuestions(surveyDefinition)
 
-  // for now we only want questions, not feedback part
-  // in case we want to include the feedack part we cvan uncomment that line
-  // @ts-ignore
-  // addQuestions(feedbackDefinition)
-
-  sendCsv(res, headers, data, "fragen.csv")
-  console.log("data", data)
+  sendCsv(
+    res,
+    headers,
+    data,
+    `${format(new Date(), "yyyy/MM/dd")}_umfrage_fragen_${survey.slug}.csv`,
+  )
 }
-
-// import type { NextApiRequest, NextApiResponse } from "next"
-
-// type ResponseData = {
-//   message: string
-// }
-
-// export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-//   res.status(200).json({ message: "Hello from Next.js!" })
-// }

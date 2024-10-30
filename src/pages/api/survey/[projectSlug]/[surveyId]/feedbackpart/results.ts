@@ -19,6 +19,7 @@ import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queri
 import getSurveySessionsWithResponses from "@/src/survey-sessions/queries/getSurveySessionsWithResponses"
 import { getSession } from "@blitzjs/auth"
 import { AuthorizationError } from "blitz"
+import { format } from "date-fns"
 import { NextApiRequest, NextApiResponse } from "next"
 import { getSurvey, sendCsv } from "./../surveypart/_shared"
 
@@ -289,6 +290,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res,
     headers,
     csvData,
-    `ergebnisse_${survey.slug}_${new Date().toLocaleDateString("de-DE")}.csv`,
+    `${format(new Date(), "yyyy/MM/dd")}_hinweise_ergebnisse_${survey.slug}.csv`,
   )
 }

@@ -3,6 +3,7 @@ import {
   getFeedbackDefinitionBySurveySlug,
   getSurveyDefinitionBySurveySlug,
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
+import { format } from "date-fns"
 import { NextApiRequest, NextApiResponse } from "next"
 import { getSurvey, sendCsv } from "./_shared"
 
@@ -82,5 +83,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
   })
 
-  sendCsv(res, headers, csvData, "ergebnisse.csv")
+  sendCsv(res, headers, csvData, `${format(new Date(), "yyyy/MM/dd")}_fragen_${survey.slug}.csv`)
 }
