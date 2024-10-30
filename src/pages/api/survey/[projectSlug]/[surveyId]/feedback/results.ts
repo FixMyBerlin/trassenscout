@@ -222,7 +222,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                               multipleResponseResponseProps.responses.find((r) => r.id === resultId)
                                 ?.text.de,
                           )
-                          .join(", ")
+                          .join(" | ")
                       : ""
                     break
                   default:
@@ -260,7 +260,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             multipleResponseResponseProps.responses.find((r) => r.id === resultId)
                               ?.text.de,
                         )
-                        .join(", ")
+                        .join(" | ")
                     : ""
                   break
                 case "map":
