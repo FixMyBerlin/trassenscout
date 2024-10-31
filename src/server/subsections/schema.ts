@@ -1,11 +1,11 @@
-import { InputNumberOrNullSchema, SlugSchema } from "@/src/core/utils"
+import { InputNumberOrNullSchema, InputNumberSchema, SlugSchema } from "@/src/core/utils"
 import { LabelPositionEnum } from "@prisma/client"
 import { z } from "zod"
 
 export const SubsectionSchema = z.object({
   slug: SlugSchema,
   order: z.coerce.number(),
-  lengthKm: z.coerce.number({ invalid_type_error: "Pflichtfeld" }),
+  lengthKm: InputNumberSchema,
   description: z.string().nullish(),
   start: z.string().min(1),
   end: z.string().min(1),

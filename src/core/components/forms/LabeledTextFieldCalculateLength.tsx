@@ -2,11 +2,9 @@ import { length, lineString } from "@turf/turf"
 import { clsx } from "clsx"
 import { useFormContext } from "react-hook-form"
 import { blueButtonStyles } from "../links"
-import { LabeledFormatNumberField, LabeledFormatNumberFieldProps } from "./LabeledFormatNumberField"
+import { LabeledTextField, LabeledTextFieldProps } from "./LabeledTextField"
 
-export const LabeledFormatNumberFieldCalculateLength: React.FC<LabeledFormatNumberFieldProps> = (
-  props,
-) => {
+export const LabeledTextFieldCalculateLength: React.FC<LabeledTextFieldProps> = (props) => {
   const { watch, setValue, getValues } = useFormContext()
 
   const isGeometry = watch("geometry")
@@ -40,9 +38,9 @@ export const LabeledFormatNumberFieldCalculateLength: React.FC<LabeledFormatNumb
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
-      <LabeledFormatNumberField
+      <LabeledTextField
         inlineLeadingAddon="km"
-        maxDecimalDigits={3}
+        type="number"
         step="0.001"
         {...props}
         help={helpText}

@@ -1,5 +1,5 @@
 import { Prettify } from "@/src/core/types"
-import { InputNumberOrNullSchema, SlugSchema } from "@/src/core/utils"
+import { InputNumberOrNullSchema, InputNumberSchema, SlugSchema } from "@/src/core/utils"
 import { LabelPositionEnum, SubsubsectionTypeEnum } from "@prisma/client"
 import { z } from "zod"
 import { SubsubsectionWithPosition } from "./queries/getSubsubsection"
@@ -19,7 +19,7 @@ export const SubsubsectionSchema = z.object({
   type: z.nativeEnum(SubsubsectionTypeEnum),
   geometry: PositionSchema.or(PositionArraySchema),
   labelPos: z.nativeEnum(LabelPositionEnum),
-  lengthKm: z.coerce.number({ invalid_type_error: "Pflichtfeld" }), // km
+  lengthKm: InputNumberSchema, // km
   width: InputNumberOrNullSchema, // m
   widthExisting: InputNumberOrNullSchema, // m
   costEstimate: InputNumberOrNullSchema, // €
