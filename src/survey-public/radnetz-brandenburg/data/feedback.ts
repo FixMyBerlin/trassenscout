@@ -242,7 +242,8 @@ export const feedbackDefinition: TFeedback = {
           component: "text",
           props: {
             placeholder: { de: "Beantworten Sie hier..." },
-            caption: { de: "max. 2000 Zeichen" },
+            caption: { de: "max. 5000 Zeichen" },
+            maxLength: 5000,
           },
         },
       ],

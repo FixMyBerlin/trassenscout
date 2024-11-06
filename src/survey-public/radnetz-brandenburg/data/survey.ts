@@ -120,8 +120,8 @@ export const surveyDefinition: TSurvey = {
           },
           component: "text",
           props: {
-            caption: { de: "max. 1000 Zeichen" },
-            maxLength: 1000,
+            caption: { de: "max. 5000 Zeichen" },
+            maxLength: 5000,
           },
         },
       ],
