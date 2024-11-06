@@ -25,7 +25,10 @@ Vielen Dank für Ihre Teilnahme!
 * Ihre gewählte Verbindung im Netzentwurf: ${props.lineFromToName}
 
 Ihr Hinweis:
-> ${props.feedbackText}
+${props.feedbackText
+  .split("\n")
+  .map((line) => `> ${line}`)
+  .join("\n")}
 
 ${
   props.feedbackLocation
