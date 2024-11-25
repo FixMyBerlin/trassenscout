@@ -36,6 +36,8 @@ services:
   db:
     container_name: trassenscout-db-staging
     image: postgres:16-alpine
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_NAME}
