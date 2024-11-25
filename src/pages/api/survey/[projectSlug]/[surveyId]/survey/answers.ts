@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (!page.questions) return
       page.questions.forEach((question) => {
         if (!["singleResponse", "multipleResponse"].includes(question.component)) return
-        // @ts-ignore
+        // @ts-expect-error
         question.props.responses.forEach((response) => {
           data.push({
             questionId: question.id,
@@ -34,7 +34,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
   }
 
-  // @ts-ignore
   addQuestions(surveyDefinition)
 
   sendCsv(

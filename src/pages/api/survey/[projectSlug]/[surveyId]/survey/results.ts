@@ -20,12 +20,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     survey.pages.forEach((page) => {
       if (!page.questions) return
       page.questions.forEach((question) => {
-        // @ts-ignore
         if (["singleResponse", "multipleResponse"].includes(question.component)) {
-          // @ts-ignore
+          // @ts-expect-error
           question.responses = Object.fromEntries(question.props.responses.map((r) => [r.id, r]))
         }
-        // @ts-ignore
+        // @ts-expect-error
         questions[question.id] = question
       })
     })

@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     definition.pages.forEach((page) => {
       if (!page.questions) return
       page.questions.forEach(({ id, component, label }) => {
-        // @ts-ignore
+        // @ts-expect-error
         data.push({ id, type: types[component] || component, question: label.de })
       })
     })

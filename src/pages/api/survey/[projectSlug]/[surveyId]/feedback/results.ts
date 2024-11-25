@@ -81,7 +81,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (e instanceof AuthorizationError) {
       err(403, "Forbidden")
     }
-    // @ts-ignore
+    // @ts-expect-error
     if (e.code === "P2025" || e instanceof ZodError) {
       err(404, "Not Found")
     }
@@ -170,7 +170,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             createdAt: format(createdAt, "dd.MM.yyyy"),
             sessionId: String(sessionId),
             responseId: String(responseId),
-            // @ts-ignore ?
+            // @ts-expect-error ?
             status:
               // statusDefinition.find((s) => s.value === status) is only undefined if the status config is changed after the survey is live, this should not happen in production
               status && statusDefinition.find((s) => s.value === status)?.label

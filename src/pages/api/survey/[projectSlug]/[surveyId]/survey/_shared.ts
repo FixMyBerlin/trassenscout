@@ -29,7 +29,7 @@ export const getSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
     if (e instanceof AuthorizationError) {
       err(403, "Forbidden")
     }
-    // @ts-ignore
+    // @ts-expect-error
     if (e.code === "P2025" || e instanceof ZodError) {
       err(404, "Not Found")
     }
