@@ -119,6 +119,8 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd /srv/trassenscout-${{ inputs.ENVIRONMENT }}
+            rm docker-compose.yml
+            mv docker-compose.server.yml docker-compose.yml
             echo "Pulling latest 'app' image"
             docker compose pull app
             echo "Restarting 'app' container"
