@@ -40,6 +40,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res,
     headers,
     data,
-    `${format(new Date(), "yyyy/MM/dd")}_umfrage_antworten_${survey.slug}.csv`,
+    `${format(new Date(), "yyyy-MM-dd")}_umfrage_antworten_${survey.slug}.csv`,
   )
 }

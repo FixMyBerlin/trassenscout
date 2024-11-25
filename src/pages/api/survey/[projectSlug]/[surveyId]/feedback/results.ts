@@ -290,6 +290,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res,
     headers,
     csvData,
-    `${format(new Date(), "yyyy/MM/dd")}_hinweise_ergebnisse_${survey.slug}.csv`,
+    `${format(new Date(), "yyyy-MM-dd")}_hinweise_ergebnisse_${survey.slug}.csv`,
   )
 }
