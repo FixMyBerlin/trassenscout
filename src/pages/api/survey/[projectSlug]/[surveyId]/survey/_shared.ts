@@ -16,12 +16,10 @@ export const getSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
     res.end()
   }
 
-  let survey: ReturnType<typeof dbGetSurvey>
   try {
     const session = await getSession(req, res)
-    // @ts-ignore
-    survey = await dbGetSurvey(
-      // @ts-ignore
+    return await dbGetSurvey(
+      // @ts-expect-error
       { projectSlug: req.query.projectSlug, id: Number(req.query.surveyId) },
       { session },
     )
@@ -37,8 +35,6 @@ export const getSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
     err(500, "Internal Server Error")
     return
   }
-
-  return survey
 }
 
 export const sendCsv = (

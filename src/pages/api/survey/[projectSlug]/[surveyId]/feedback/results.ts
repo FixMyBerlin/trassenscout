@@ -167,7 +167,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           // @ts-expect-error data is of type unknown
           data = JSON.parse(data)
 
-          let row: Result = {
+          const row: Result = {
             createdAt: format(createdAt, "dd.MM.yyyy"),
             sessionId: String(sessionId),
             responseId: String(responseId),
