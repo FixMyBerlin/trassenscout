@@ -4,9 +4,15 @@ services:
     image: public.ecr.aws/n0p8j4k5/trassenscout/app:${ENVIRONMENT}-latest
     ports:
       - "3000:3000"
+    env_file: ".env"
     environment:
       DATABASE_URL: ${DATABASE_URL}
       SESSION_SECRET_KEY: ${SESSION_SECRET_KEY}
+      NEXT_PUBLIC_APP_ENV: ${ENVIRONMENT}
+      NEXT_PUBLIC_APP_ORIGIN: ${APP_ORIGIN}
+      APP_ORIGIN: ${APP_ORIGIN}
+      MAILJET_APIKEY_PUBLIC: ${MAILJET_APIKEY_PUBLIC}
+      MAILJET_APIKEY_PRIVATE: ${MAILJET_APIKEY_PRIVATE}
     labels:
       traefik.enable: true
       traefik.http.routers.server.rule: Host(`ionos.trassenscout.de`)

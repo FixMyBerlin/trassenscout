@@ -70,6 +70,7 @@ jobs:
               -e "s|^POSTGRES_NAME=.*$|POSTGRES_NAME='${{ vars.DATABASE_NAME }}'|" \
               -e "s|^DATABASE_URL=.*$|DATABASE_URL='postgres://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ vars.DATABASE_HOST }}/${{ vars.DATABASE_NAME }}'|" \
               -e "s|^SESSION_SECRET_KEY=.*$|SESSION_SECRET_KEY='${{ secrets.SESSION_SECRET_KEY }}'|"\
+              -e "s|^APP_ORIGIN=.*$|APP_ORIGIN='${{ inputs.APP_ORIGIN }}'|"\
               -e "s|^NEXT_PUBLIC_APP_ORIGIN=.*$|NEXT_PUBLIC_APP_ORIGIN='${{ inputs.NEXT_PUBLIC_APP_ORIGIN }}'|"\
               -e "s|^NEXT_PUBLIC_APP_ENV=.*$|NEXT_PUBLIC_APP_ENV='${{ inputs.NEXT_PUBLIC_APP_ENV }}'|" \
               -e "s|^ADMIN_EMAIL=.*$|ADMIN_EMAIL='${{ secrets.ADMIN_EMAIL }}'|" \
