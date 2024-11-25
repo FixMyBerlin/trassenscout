@@ -71,21 +71,6 @@ export const feedbackDefinition: TFeedback = {
           },
         },
         {
-          id: 31,
-          label: { de: "Kategorie" },
-          component: "custom",
-        },
-        {
-          id: 32,
-          label: { de: "Ausgewählte Stelle" },
-          component: "custom",
-        },
-        {
-          id: 33,
-          label: { de: "Wählen Sie die Stelle für Ihr Feedback" },
-          component: "custom",
-        },
-        {
           id: 34,
           label: { de: "Was gefällt Ihnen hier besonders?" },
           component: "text",

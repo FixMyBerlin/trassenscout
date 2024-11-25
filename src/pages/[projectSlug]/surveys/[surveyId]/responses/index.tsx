@@ -1,4 +1,5 @@
 import { Spinner } from "@/src/core/components/Spinner"
+import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { H2 } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
@@ -18,6 +19,7 @@ import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { BlitzPage, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
+import { ArrowDownTrayIcon } from "@heroicons/react/24/outline"
 import { Suspense, useEffect, useRef } from "react"
 
 export const SurveyResponse = () => {
@@ -68,6 +70,15 @@ export const SurveyResponse = () => {
 
       <div className="mt-12 space-y-4">
         <H2>Beiträge aus Bürger:innenbeteiligung</H2>
+        <div className="mb-6">
+          <Link
+            className="mb-12 flex gap-1"
+            href={`/api/survey/${projectSlug}/${survey.id}/feedback/results`}
+          >
+            <ArrowDownTrayIcon className="mr-1 h-5 w-5" />
+            Alle Daten als .csv herunterladen
+          </Link>
+        </div>
 
         {!backenendConfig.disableExternalSurveyResponseForm && (
           <ExternalSurveyResponseFormModal refetch={refetchResponses} />

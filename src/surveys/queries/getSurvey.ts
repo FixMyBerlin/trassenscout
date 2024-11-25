@@ -26,6 +26,7 @@ export default resolver.pipe(
   async ({ id }) => {
     const survey = await db.survey.findFirstOrThrow({
       where: { id },
+      include: { project: true },
     })
     if (!allowedSurveySlugs.includes(survey.slug)) {
       throw new NotFoundError()

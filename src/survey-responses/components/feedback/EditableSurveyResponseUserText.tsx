@@ -25,7 +25,7 @@ const EditableSurveyResponseUserText: React.FC<EditableSurveyResponseUserTextPro
       <div>
         {/* @ts-expect-error `data` is of type unkown */}
         {response.data[userTextIndices[0]] && (
-          <blockquote className={clsx("my-4 p-4", "bg-yellow-100")}>
+          <blockquote className={clsx("p-4", "bg-yellow-100")}>
             <h4 className="mb-2 font-semibold">
               {feedbackQuestions.find((q) => q.id === userTextIndices[0])?.label.de}
             </h4>
@@ -37,7 +37,7 @@ const EditableSurveyResponseUserText: React.FC<EditableSurveyResponseUserTextPro
         {response.data[userTextIndices[1]] && (
           <blockquote
             className={clsx(
-              "my-4 p-4",
+              "mt-4 p-4",
               //  @ts-expect-error `data` is of type unkown
               response.data[userTextIndices[0]] && response.data[userTextIndices[1]]
                 ? "bg-blue-50"
@@ -51,7 +51,10 @@ const EditableSurveyResponseUserText: React.FC<EditableSurveyResponseUserTextPro
             <Markdown markdown={response.data[userTextIndices[1]]} />
           </blockquote>
         )}
-        <div className="mt-2 text-right text-gray-500">{`Bürger:innenbeitrag vom: ${response.surveySession.createdAt.toLocaleDateString()} um  ${response.surveySession.createdAt.toLocaleTimeString("de-DE")}`}</div>
+        <div className="mt-2 text-sm text-gray-500">
+          Bürger:innenbeitrag vom: {response.surveySession.createdAt.toLocaleDateString()} um{" "}
+          {response.surveySession.createdAt.toLocaleTimeString("de-DE")}
+        </div>
       </div>
     )
   return (
@@ -63,7 +66,10 @@ const EditableSurveyResponseUserText: React.FC<EditableSurveyResponseUserTextPro
           <div key={userTextIndex} className="bg-yellow-100 p-4">
             {/* @ts-expect-error `data` is of type unkown */}
             <Markdown markdown={response.data[userTextIndex]} />
-            <div className="mt-2 text-gray-500">{`Bürger:innenbeitrag vom ${response.surveySession.createdAt.toLocaleDateString()} um  ${response.surveySession.createdAt.toLocaleTimeString()}`}</div>
+            <div className="mt-2 text-sm text-gray-500">
+              Bürger:innenbeitrag vom: {response.surveySession.createdAt.toLocaleDateString()} um{" "}
+              {response.surveySession.createdAt.toLocaleTimeString("de-DE")}
+            </div>
           </div>
         )
       })}

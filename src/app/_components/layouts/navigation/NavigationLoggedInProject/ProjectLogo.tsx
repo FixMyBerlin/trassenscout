@@ -1,10 +1,10 @@
 "use client"
-import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { getProxyImageSrc } from "@/src/core/utils/getProxyImageSrc"
-import getProject from "@/src/server/projects/queries/getProject"
-import { useQuery } from "@blitzjs/rpc"
-import { clsx } from "clsx"
-import Image from "next/image"
+// import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+// import { getProxyImageSrc } from "@/src/core/utils/getProxyImageSrc"
+// import getProject from "@/src/server/projects/queries/getProject"
+// import { useQuery } from "@blitzjs/rpc"
+// import { clsx } from "clsx"
+// import Image from "next/image"
 
 type Props = {
   className?: string
@@ -17,19 +17,22 @@ const sizeClasses = {
 }
 
 export const ProjectLogo = ({ className, size = "5" }: Props) => {
-  const projectSlug = useProjectSlug()
-  const [project] = useQuery(getProject, { projectSlug })
+  // TEMP: Temporarily disabled https://github.com/FixMyBerlin/private-issues/issues/2155
+  return null
 
-  if (!project.logoSrc) return null
+  // const projectSlug = useProjectSlug()
+  // const [project] = useQuery(getProject, { projectSlug })
 
-  return (
-    <div className={clsx(className, "relative flex-none", sizeClasses[size])}>
-      <Image
-        className="object-contain"
-        fill
-        src={getProxyImageSrc(project.logoSrc)}
-        alt="Projektlogo"
-      />
-    </div>
-  )
+  // if (!project.logoSrc) return null
+
+  // return (
+  //   <div className={clsx(className, "relative flex-none", sizeClasses[size])}>
+  //     <Image
+  //       className="object-contain"
+  //       fill
+  //       src={getProxyImageSrc(project.logoSrc)}
+  //       alt="Projektlogo"
+  //     />
+  //   </div>
+  // )
 }

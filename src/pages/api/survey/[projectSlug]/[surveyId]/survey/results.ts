@@ -3,10 +3,12 @@ import {
   getFeedbackDefinitionBySurveySlug,
   getSurveyDefinitionBySurveySlug,
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
+import { format } from "date-fns"
 import { NextApiRequest, NextApiResponse } from "next"
 import { getSurvey, sendCsv } from "./_shared"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Permissions are checked implicitly by `getSurvey` which will call "@/src/surveys/queries/getSurvey" which uses `authorizeProjectMember`
   const survey = await getSurvey(req, res)
   if (!survey) return
 
@@ -19,12 +21,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     survey.pages.forEach((page) => {
       if (!page.questions) return
       page.questions.forEach((question) => {
-        // @ts-ignore
         if (["singleResponse", "multipleResponse"].includes(question.component)) {
-          // @ts-ignore
+          // @ts-expect-error
           question.responses = Object.fromEntries(question.props.responses.map((r) => [r.id, r]))
         }
-        // @ts-ignore
+        // @ts-expect-error
         questions[question.id] = question
       })
     })
@@ -82,5 +83,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
   })
 
-  sendCsv(res, headers, csvData, "ergebnisse.csv")
+  sendCsv(
+    res,
+    headers,
+    csvData,
+    `${format(new Date(), "yyyy-MM-dd")}_umfrage_fragen_${survey.slug}.csv`,
+  )
 }

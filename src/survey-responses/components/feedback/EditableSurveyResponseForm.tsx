@@ -1,10 +1,4 @@
-import {
-  LabeledCheckboxGroup,
-  LabeledRadiobuttonGroup,
-  LabeledTextField,
-  LabeledTextareaField,
-} from "@/src/core/components/forms"
-import { Link, blueButtonStyles } from "@/src/core/components/links"
+import { blueButtonStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
@@ -15,292 +9,305 @@ import {
 import createSurveyResponseTopicsOnSurveyResponses from "@/src/survey-response-topics-on-survey-responses/mutations/createSurveyResponseTopicsOnSurveyResponses"
 import deleteSurveyResponseTopicsOnSurveyResponses from "@/src/survey-response-topics-on-survey-responses/mutations/deleteSurveyResponseTopicsOnSurveyResponses"
 import createSurveyResponseTopic from "@/src/survey-response-topics/mutations/createSurveyResponseTopic"
-import getSurvey from "@/src/surveys/queries/getSurvey"
-import { Routes, useParam } from "@blitzjs/next"
-import { useMutation, useQuery } from "@blitzjs/rpc"
-import { zodResolver } from "@hookform/resolvers/zod"
+import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
+import { invalidateQuery, useMutation } from "@blitzjs/rpc"
 import { Operator } from "@prisma/client"
 import { clsx } from "clsx"
 import { PropsWithoutRef, useState } from "react"
-import { FormProvider, UseFormProps, useForm } from "react-hook-form"
-import { LngLatBoundsLike } from "react-map-gl/maplibre"
-import { z } from "zod"
 import updateSurveyResponse from "../../mutations/updateSurveyResponse"
-import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
+import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { EditableSurveyResponseListItemProps } from "./EditableSurveyResponseListItem"
+import { LabeledInputRadioCheckbox } from "./form/LabeledInputRadioCheckbox"
+import { FormElementWrapper } from "./form/LabeledInputRadioCheckboxWrapper"
+import { LabeledTextarea } from "./form/LabeledTextarea"
 import { useFilters } from "./useFilters.nuqs"
 
-type FormProps<S extends z.ZodType<any, any>> = Omit<
+type EditableSurveyResponseFormProps = Omit<
   PropsWithoutRef<JSX.IntrinsicElements["form"]>,
   "onSubmit"
 > & {
-  schema?: S
-  initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
-  refetchResponsesAndTopics: () => void
-  userLocationQuestionId: number | undefined
-  maptilerUrl: string
-  defaultViewState: LngLatBoundsLike
-  showMap?: boolean
   backendConfig: TBackendConfig
+  showMap?: boolean
 } & Pick<EditableSurveyResponseListItemProps, "response" | "operators" | "topics" | "subsections">
 
-export const FORM_ERROR = "FORM_ERROR"
-
-export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
-  schema,
+export function EditableSurveyResponseForm({
   response,
   operators,
   topics,
-  defaultViewState,
-  subsections,
-  maptilerUrl,
-  userLocationQuestionId,
-  initialValues,
-  refetchResponsesAndTopics,
-  showMap,
   backendConfig,
-}: FormProps<S>) {
+  showMap,
+}: EditableSurveyResponseFormProps) {
   const userCanEdit = useUserCan().edit
-  const methods = useForm<z.infer<S>>({
-    mode: "onBlur",
-    resolver: schema ? zodResolver(schema) : undefined,
-    defaultValues: initialValues,
-  })
-
   const projectSlug = useProjectSlug()
-  const surveyId = useParam("surveyId", "string")
-  const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
 
   const { filter, setFilter } = useFilters()
 
+  const [createSurveyResponseTopicMutation] = useMutation(createSurveyResponseTopic)
   const [updateSurveyResponseMutation] = useMutation(updateSurveyResponse)
-  const [surveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
-    createSurveyResponseTopicsOnSurveyResponses,
-  )
   const [deleteSurveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
     deleteSurveyResponseTopicsOnSurveyResponses,
   )
-  const [createSurveyResponseTopicMutation] = useMutation(createSurveyResponseTopic)
   const [createSurveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
     createSurveyResponseTopicsOnSurveyResponses,
   )
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+  // local states for controlled forms
+  const [responseOperator, setResponseOperator] = useState(
+    response.operator || { title: "Nicht zugeordnet", slug: "0", id: 0 },
+  )
+  const [responseStatus, setResponseStatus] = useState(response.status)
+  const [responseNote, setResponseNote] = useState(response.note)
+  const [responseTopics, setResponseTopics] = useState(response.surveyResponseTopics.map(String))
+  const [newTopic, setNewTopic] = useState("")
 
   const labels = backendConfig.labels || defaultBackendConfig.labels
-  const surveyResponseStatus = backendConfig.status
 
+  const statusOptions = backendConfig.status
   const operatorsOptions = operators.map((operator: Operator) => {
     return { value: String(operator.id), label: operator.title }
   })
-
-  const handleSubmit = async (values: any) => {
-    try {
-      await updateSurveyResponseMutation({
-        projectSlug,
-        id: response.id,
-        source: response.source,
-        // We specify what we want to store explicity so that `data` and such is exclued
-        status: values.responseStatus,
-        note: values.note,
-        // Note: initialValues need to initialize `operatorId: 0`
-        operatorId: values.operatorId === (0 || "0") ? null : Number(values.operatorId),
+  const topicsOptions = topics.length
+    ? topics.map((t) => {
+        return { value: String(t.id), label: t.title }
       })
+    : []
 
-      if (Boolean(values.surveyResponseTopics)) {
+  const surveyResponseUpdateObject = {
+    projectSlug,
+    id: response.id,
+    source: response.source,
+    // We specify what we want to store explicity so that `data` and such is exclued
+    status: response.status,
+    note: response.note,
+    operatorId: response.operatorId,
+  }
+
+  const handleStatusOperatorTopicsInputChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const { name, value, checked } = event.target
+
+    switch (name) {
+      case "responseOperator":
+        setResponseOperator(
+          // @ts-expect-error todo
+          value === "0"
+            ? { title: "Nicht zugeordnet", slug: "0", id: 0 }
+            : operators.find((operator) => operator.id === Number(value)),
+        )
         try {
+          await updateSurveyResponseMutation({
+            ...surveyResponseUpdateObject,
+            operatorId: value === (0 || "0") ? null : Number(value),
+          })
+        } catch (error: any) {
+          console.error(error)
+        }
+        break
+
+      case "responseStatus":
+        setResponseStatus(value)
+        try {
+          await updateSurveyResponseMutation({
+            ...surveyResponseUpdateObject,
+            status: value,
+          })
+        } catch (error: any) {
+          console.error(error)
+        }
+        break
+
+      case "note":
+        setResponseStatus(value)
+        try {
+          await updateSurveyResponseMutation({
+            ...surveyResponseUpdateObject,
+            status: value,
+          })
+        } catch (error: any) {
+          console.error(error)
+        }
+        break
+
+      case "surveyResponseTopics":
+        const updatedTopics = checked
+          ? [...responseTopics, value]
+          : responseTopics.filter((item) => item !== value)
+        setResponseTopics(updatedTopics)
+        try {
+          await updateSurveyResponseMutation({
+            ...surveyResponseUpdateObject,
+          })
           await deleteSurveyResponseTopicsOnSurveyResponsesMutation({
             surveyResponseId: response.id,
           })
-          for (const v of values.surveyResponseTopics) {
-            await surveyResponseTopicsOnSurveyResponsesMutation({
+          for (const v of updatedTopics) {
+            await createSurveyResponseTopicsOnSurveyResponsesMutation({
               surveyResponseId: response.id,
               surveyResponseTopicId: Number(v),
             })
           }
         } catch (error: any) {
           console.error(error)
-          return { [FORM_ERROR]: error }
         }
-      }
-      await refetchResponsesAndTopics()
-    } catch (error: any) {
-      console.error(error)
-      return { [FORM_ERROR]: error }
+        break
+
+      default:
+        break
     }
+
+    // todo check invalidateQuery
+    invalidateQuery(getFeedbackSurveyResponsesWithSurveyDataAndComments)
   }
 
-  const handleNewTopic = async (values: any) => {
-    const newTopicTitle = values.newTopic?.trim()
-    if (!newTopicTitle) return
+  const handleNoteFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    try {
+      await updateSurveyResponseMutation({
+        ...surveyResponseUpdateObject,
+        note: responseNote,
+      })
+    } catch (error: any) {
+      console.error(error)
+    }
+    // todo check invalidateQuery
+    invalidateQuery(getFeedbackSurveyResponsesWithSurveyDataAndComments)
+    setHasUnsavedChanges(false)
+  }
 
+  const handleNewTopicFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     try {
       const createdOrFetched = await createSurveyResponseTopicMutation({
-        title: newTopicTitle,
+        title: newTopic.trim(),
         projectSlug,
       })
       await createSurveyResponseTopicsOnSurveyResponsesMutation({
         surveyResponseTopicId: createdOrFetched.id,
         surveyResponseId: response.id,
       })
-      await refetchResponsesAndTopics()
-
-      // For some super weird reason, the refetch does not return an updated response
-      // New entries are added via the refetch of topics.
-      // But the surveyResponse values still hold the old topic relation ids
-      // As a workaround, we manually update the form state here…
-      // @ts-expect-error
-      methods.setValue("surveyResponseTopics", [
-        ...values.surveyResponseTopics,
-        String(createdOrFetched.id),
-      ])
-      // the EditableSurveyResponseFilterForm needs to update when a new topic is added here
-      // this hapens with a useEffect in EditableSurveyResponseFilterForm
-      if (filter?.topics)
-        await setFilter({ ...filter, topics: [...filter.topics, String(createdOrFetched.id)] })
+      // todo check invalidateQuery
+      invalidateQuery(getSurveyResponseTopicsByProject)
+      // @ts-expect-error todo
+      setFilter({ ...filter, topics: [...filter.topics, String(createdOrFetched.id)] })
+      setResponseTopics([...responseTopics, String(createdOrFetched.id)])
     } catch (error: any) {
       console.error(error)
-      return { [FORM_ERROR]: error }
     }
+    setNewTopic("")
   }
 
+  // todo fieldset
   return (
-    <FormProvider {...methods}>
-      <div className={clsx(showMap ? "grid-cols-2" : "grid-cols-1", "grid gap-8")}>
-        <div>
-          <div className="col-span-2 flex flex-col justify-between">
-            <div className="flex w-full flex-col gap-10">
-              <div className="grid w-full grid-cols-2 gap-8">
-                <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-                  <h4 className="mb-3 font-semibold">
-                    {labels.status?.sg || defaultBackendConfig.labels.category.sg}
-                  </h4>
-                  <LabeledRadiobuttonGroup
-                    classNameItemWrapper="flex-shrink-0"
-                    // the scope has to be different from the other form (filter form)! Otherwise this messes with our filter form and url state.
-                    scope="responseStatus"
-                    items={surveyResponseStatus.map(({ value, label }) => {
-                      return { value, label }
-                    })}
-                    disabled={!userCanEdit}
-                  />
-                </form>
-
-                <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-                  <h4 className="mb-3 font-semibold">
-                    {labels.operator?.sg || defaultBackendConfig.labels.operator.sg}
-                  </h4>
-                  <LabeledRadiobuttonGroup
-                    scope="operatorId"
-                    items={[...operatorsOptions, { value: "0", label: "Nicht zugeordnet" }]}
-                    disabled={!userCanEdit}
-                  />
-                </form>
-              </div>
-              <form onChange={async () => await methods.handleSubmit(handleSubmit)()}>
-                <h4 className="mb-3 font-semibold">
-                  {labels.topics?.pl || defaultBackendConfig.labels.topics.pl}
-                </h4>
-                <LabeledCheckboxGroup
-                  classNameItemWrapper="grid grid-cols-3 grid-rows-10 grid-flow-col-dense"
-                  scope="surveyResponseTopics"
-                  items={topics.map((t) => {
-                    return {
-                      value: String(t.id),
-                      label: t.title,
-                    }
-                  })}
+    <>
+      <div className="flex flex-col gap-6">
+        <div className={clsx("flex gap-6", showMap ? "flex-row" : "flex-col")}>
+          <form className="flex gap-6">
+            {/* BLT */}
+            <FormElementWrapper
+              label={labels.operator?.sg || defaultBackendConfig.labels.operator.sg}
+            >
+              {[...operatorsOptions, { value: "0", label: "Nicht zugeordnet" }].map((item) => (
+                <LabeledInputRadioCheckbox
+                  type="radio"
+                  name="responseOperator"
+                  key={item.value}
+                  checked={String(responseOperator?.id) === item.value}
+                  onChange={handleStatusOperatorTopicsInputChange}
+                  value={item.value}
+                  label={item.label}
                   disabled={!userCanEdit}
                 />
-              </form>
-            </div>
-          </div>
-        </div>
-
-        {showMap && (
-          <div>
-            <EditableSurveyResponseFormMap
-              surveySlug={survey.slug}
-              marker={
-                // @ts-expect-error `data` is unkown
-                response.data[userLocationQuestionId] as { lat: number; lng: number } | undefined
-              }
-              maptilerUrl={maptilerUrl}
-              defaultViewState={defaultViewState}
-            />
-            {
-              // @ts-expect-error `data` is unkown
-              response.data[userLocationQuestionId] && (
-                <div className="pt-4">
-                  <Link
-                    href={Routes.SurveyResponseWithLocationPage({
-                      projectSlug,
-                      surveyId: surveyId!,
-                      surveyResponseId: response.id,
-                    })}
-                  >
-                    Alle verorteten Beiträge öffnen
-                  </Link>
-                </div>
-              )
-            }
-          </div>
-        )}
-
-        <IfUserCanEdit>
-          <form
-            onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
-              e.preventDefault()
-              await methods.handleSubmit(handleNewTopic)()
-              // @ts-expect-error
-              methods.resetField("newTopic")
-            }}
-            className="min-w-[300px] space-y-2 pb-8 pr-2"
-          >
-            <LabeledTextField
-              placeholder={`${
-                labels.topics?.sg || defaultBackendConfig.labels.operator.sg
-              } hinzufügen`}
-              name="newTopic"
-              label=""
-              disabled={!userCanEdit}
-            />
-            <button
-              type="submit"
-              disabled={!userCanEdit}
-              className={clsx(blueButtonStyles, "!px-3 !py-2.5")}
+              ))}
+            </FormElementWrapper>
+            {/* STATUS */}
+            <FormElementWrapper
+              label={labels.status?.sg || defaultBackendConfig.labels.category.sg}
             >
-              Hinzufügen
-            </button>
+              {statusOptions.map((item) => (
+                <LabeledInputRadioCheckbox
+                  type="radio"
+                  name="responseStatus"
+                  key={item.value}
+                  checked={responseStatus === item.value}
+                  onChange={handleStatusOperatorTopicsInputChange}
+                  value={item.value}
+                  label={item.label}
+                  disabled={!userCanEdit}
+                />
+              ))}
+            </FormElementWrapper>
           </form>
-        </IfUserCanEdit>
+        </div>
+        {/* TAGS */}
+        <div className="flex flex-col items-start gap-4">
+          <form>
+            <FormElementWrapper label={labels.topics?.pl || defaultBackendConfig.labels.topics.pl}>
+              <div className="grid grid-cols-2 gap-1.5 md:grid-cols-3 lg:grid-cols-4">
+                {topicsOptions.map((item) => (
+                  <LabeledInputRadioCheckbox
+                    type="checkbox"
+                    name="surveyResponseTopics"
+                    key={item.value}
+                    checked={responseTopics.includes(item.value)}
+                    onChange={handleStatusOperatorTopicsInputChange}
+                    value={item.value}
+                    label={item.label}
+                    disabled={!userCanEdit}
+                  />
+                ))}
+              </div>
+            </FormElementWrapper>
+          </form>
+          <IfUserCanEdit>
+            <form onSubmit={handleNewTopicFormSubmit} className="min-w-[300px] space-y-2">
+              <input
+                onChange={(e) => setNewTopic(e.target.value)}
+                type="text"
+                value={newTopic}
+                maxLength={35}
+                name="newTopic"
+                placeholder={`${
+                  labels.topics?.sg || defaultBackendConfig.labels.topics.sg
+                } hinzufügen`}
+                className={
+                  "block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                }
+                disabled={!userCanEdit}
+              />
+              <button
+                type="submit"
+                disabled={!userCanEdit}
+                className={clsx(blueButtonStyles, "!px-3 !py-2.5")}
+              >
+                Hinzufügen
+              </button>
+            </form>
+          </IfUserCanEdit>
+        </div>
       </div>
-      <form
-        className="mt-6 flex"
-        onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
-          e.preventDefault()
-          await methods.handleSubmit(handleSubmit)()
-          setHasUnsavedChanges(false)
-        }}
-      >
-        <fieldset className="flex-grow space-y-2 pb-4 pr-2">
-          <p className="mb-3 font-semibold">
-            {labels.note?.sg || defaultBackendConfig.labels.note.sg}
-          </p>
-          <LabeledTextareaField
-            outerProps={{ className: "max-w-3xl" }}
-            help={
-              userCanEdit ? labels.note?.help || defaultBackendConfig.labels.note.help : undefined
-            }
-            name="note"
-            label=""
-            onChange={() => setHasUnsavedChanges(true)}
-            className={clsx(
-              hasUnsavedChanges &&
-                "border-yellow-500 ring-yellow-500 focus:border-yellow-500 focus:ring-yellow-500",
-            )}
-            disabled={!userCanEdit}
-          />
+      {/* NOTE */}
+      <form className="flex" onSubmit={handleNoteFormSubmit}>
+        <fieldset className="max-w-3xl">
+          <FormElementWrapper label={labels.note?.sg || defaultBackendConfig.labels.note.sg}>
+            <LabeledTextarea
+              name="note"
+              value={responseNote || ""}
+              onChange={(e) => {
+                setHasUnsavedChanges(true)
+                setResponseNote(e.target.value)
+              }}
+              className={clsx(
+                hasUnsavedChanges &&
+                  "border-yellow-500 ring-yellow-500 focus:border-yellow-500 focus:ring-yellow-500",
+              )}
+              disabled={!userCanEdit}
+            />
+          </FormElementWrapper>
+          <div className="mt-2 text-sm text-gray-500">
+            {userCanEdit ? labels.note?.help || defaultBackendConfig.labels.note.help : undefined}
+          </div>
           <IfUserCanEdit>
             <div className="flex items-end justify-between">
               <button
@@ -317,6 +324,6 @@ export function EditableSurveyResponseForm<S extends z.ZodType<any, any>>({
           </IfUserCanEdit>
         </fieldset>
       </form>
-    </FormProvider>
+    </>
   )
 }

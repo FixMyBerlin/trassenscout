@@ -1,9 +1,11 @@
 import { TSurvey } from "@/src/survey-public/components/types"
 import { getSurveyDefinitionBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
+import { format } from "date-fns"
 import { NextApiRequest, NextApiResponse } from "next"
 import { getSurvey, sendCsv } from "./_shared"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Permissions are checked implicitly by `getSurvey` which will call "@/src/surveys/queries/getSurvey" which uses `authorizeProjectMember`
   const survey = await getSurvey(req, res)
   if (!survey) return
 
@@ -26,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     definition.pages.forEach((page) => {
       if (!page.questions) return
       page.questions.forEach(({ id, component, label }) => {
-        // @ts-ignore
+        // @ts-expect-error
         data.push({ id, type: types[component] || component, question: label.de })
       })
     })
@@ -34,10 +36,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   addQuestions(surveyDefinition)
 
-  // for now we only want questions, not feedback part
-  // in case we want to include the feedack part we cvan uncomment that line
-  // @ts-ignore
-  // addQuestions(feedbackDefinition)
-
-  sendCsv(res, headers, data, "fragen.csv")
+  sendCsv(
+    res,
+    headers,
+    data,
+    `${format(new Date(), "yyyy-MM-dd")}_umfrage_fragen_${survey.slug}.csv`,
+  )
 }

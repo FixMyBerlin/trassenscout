@@ -16,3 +16,7 @@ export const InputNumberOrNullSchema = z.preprocess(
   (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
   z.number().nullable(),
 )
+export const InputNumberSchema = z.preprocess(
+  (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
+  z.number({ invalid_type_error: "Pflichtfeld" }),
+)

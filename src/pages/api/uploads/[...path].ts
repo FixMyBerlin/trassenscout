@@ -25,7 +25,7 @@ export default async function downloadFile(req: NextApiRequest, res: NextApiResp
     const session = await getSession(req, res)
     const upload = await getUploadWithSubsections(
       { projectSlug, id: uploadId },
-      // @ts-ignore will work
+      // @ts-expect-error will work
       { session },
     )
 
@@ -56,9 +56,9 @@ export default async function downloadFile(req: NextApiRequest, res: NextApiResp
     const stream = response.Body!
 
     await new Promise(async (resolve) => {
-      // @ts-ignore
+      // @ts-expect-error
       stream.pipe(res)
-      // @ts-ignore
+      // @ts-expect-error
       stream.on("end", resolve)
     })
   } catch (err) {

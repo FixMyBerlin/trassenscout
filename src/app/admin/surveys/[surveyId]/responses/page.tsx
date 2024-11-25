@@ -96,8 +96,9 @@ export default async function AdminSurveyResponsesPage({
                         {question?.component === "multipleResponse" &&
                           // @ts-expect-error
                           question?.props?.responses
+                            // we only add this condition for staging; in production the array is never empty
                             // @ts-expect-error
-                            .filter((r) => answerIds.includes(r.id))
+                            .filter((r) => !!answerIds.length && answerIds.includes(r.id))
                             // @ts-expect-error
                             .map((r) => r.text.de + ", ")}
                       </p>

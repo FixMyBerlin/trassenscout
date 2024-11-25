@@ -74,8 +74,7 @@ export const SurveyResponseWithLocation = () => {
 
       <div className="mt-12 space-y-4">
         <H2>Beiträge mit Ortsangabe </H2>
-
-        <div className="flex flex-col gap-2 lg:flex-row">
+        <div className="flex w-full max-w-full flex-col gap-2 lg:flex-row">
           <section className="shrink-0 lg:w-[46%]">
             <SurveyFeedbackWithLocationOverviewMap
               maptilerUrl={maptilerUrl}
@@ -85,7 +84,7 @@ export const SurveyResponseWithLocation = () => {
               locationRef={locationRef!}
             />
           </section>
-          <section className="rounded-md drop-shadow-md">
+          <section className="flex-grow rounded-md drop-shadow-md">
             <EditableSurveyResponseListItem
               key={selectedSurveyResponse?.id}
               response={selectedSurveyResponse!}

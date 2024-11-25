@@ -65,7 +65,7 @@ export const ExternalSurveyResponseFormModal = ({ refetch }: Props) => {
     return newObj
   }
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = any // todo any
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       values = transformKeys(values)

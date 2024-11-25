@@ -13,9 +13,9 @@ export default resolver.pipe(
   resolver.zod(Schema),
   authorizeProjectMember(extractProjectSlug, viewerRoles),
   async ({ projectSlug }) => {
-    const surveyResponseTopics = await db.surveyResponseTopic.findMany({
+    const operators = await db.operator.findMany({
       where: { project: { slug: projectSlug } },
     })
-    return { surveyResponseTopics }
+    return operators
   },
 )

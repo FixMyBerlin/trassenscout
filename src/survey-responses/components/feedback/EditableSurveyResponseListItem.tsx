@@ -1,5 +1,4 @@
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
-import { linkStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
@@ -15,22 +14,18 @@ import {
   getSurveyDefinitionBySurveySlug,
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
-import deleteSurveyResponse from "@/src/survey-responses/mutations/deleteSurveyResponse"
-import { getSurveyResponseCategoryById } from "@/src/survey-responses/utils/getSurveyResponseCategoryById"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useSession } from "@blitzjs/auth"
 import { useParam, useRouterQuery } from "@blitzjs/next"
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid"
-import { EnvelopeIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import { parseAsInteger, useQueryState } from "nuqs"
 import { useEffect } from "react"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
-import EditableSurveyResponseAdditionalFilterFields from "./EditableSurveyResponseAdditionalFilterFields"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
+import EditableSurveyResponseMapAndStaticData from "./EditableSurveyResponseMapAndStaticData"
 import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
-import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
 import { NewSurveyResponseCommentForm } from "./comments/NewSurveyResponseCommentForm"
 import { SurveyResponseCommentField } from "./comments/SurveyResponseCommentField"
 
@@ -65,7 +60,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const projectSlug = useProjectSlug()
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
   const [responseDetails, setRespnseDetails] = useQueryState("responseDetails", parseAsInteger)
-  const [deleteCalendarEntryMutation] = useMutation(deleteSurveyResponse)
+
   const session = useSession()
   const isEditorOrAdmin = useUserCan().edit || session.role === "ADMIN"
 
@@ -100,9 +95,6 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   for (let page of feedbackDefinition.pages) {
     feedbackQuestions.push(...page.questions)
   }
-  const feedbackQuestion = feedbackQuestions.find(
-    (q) => q.id === evaluationRefs["feedback-category"],
-  )
 
   const maptilerUrl = surveyDefinition.maptilerUrl
 
@@ -112,49 +104,13 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
     // @ts-expect-error `data` is of type unkown
     response.data[evaluationRefs["feedback-usertext-2"]]
 
-  const feedbackUserCategory =
-    // @ts-expect-error `data` is of type unkown
-    response.data[evaluationRefs["feedback-category"]] &&
-    evaluationRefs["feedback-category"] &&
-    getSurveyResponseCategoryById(
-      // @ts-expect-error `data` is of type unkown
-      Number(response.data[evaluationRefs["feedback-category"]]),
-      feedbackQuestion!,
-    )
-
-  const additionalFilterFields = backendConfig.additionalFilters
-
-  const getTranslatedSource = (s: string) => {
-    switch (s) {
-      case "LETTER":
-        return "Brief"
-      default:
-        return "Email"
-    }
-  }
-
-  const handleDelete = async () => {
-    if (
-      response.source !== "FORM" &&
-      window.confirm(`Den Eintrag mit ID ${response.id} unwiderruflich löschen?`)
-    ) {
-      try {
-        await deleteCalendarEntryMutation({ id: response.id })
-      } catch (error) {
-        alert(
-          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
-        )
-      }
-      refetchResponsesAndTopics()
-    }
-  }
-
   return (
     <article data-open={open} className="bg-white">
       <button
         className={clsx(
           "group flex w-full items-center justify-between py-4 pr-4 text-left text-sm text-gray-900 hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75 sm:pr-6",
           open ? "bg-gray-50" : "border-b border-gray-300",
+          showMap || "cursor-default",
         )}
         onClick={isAccordion ? () => (open ? handleClose() : handleOpen()) : undefined}
       >
@@ -182,80 +138,48 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
       </button>
 
       {open && (
-        <div className={clsx("overflow-clip p-6", open ? "border-b border-gray-300" : "")}>
-          {response.source !== "FORM" && (
-            <span className="flex flex-row items-center gap-2">
-              <EnvelopeIcon className="h-4 w-4" />
-              <span>per {getTranslatedSource(response.source)} eingegangen </span>
-              <IfUserCanEdit>
-                <span>| </span>
-                <button onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
-                  Eintrag löschen
-                </button>
-              </IfUserCanEdit>
-            </span>
+        <div
+          className={clsx(
+            "flex flex-col gap-6 overflow-clip p-6",
+            open && "border-b border-gray-300",
           )}
-          <div className="mb-8 flex flex-col items-start gap-8">
-            <EditableSurveyResponseUserText
-              surveyId={surveyId!}
-              userTextIndices={[
-                evaluationRefs["feedback-usertext-1"],
-                evaluationRefs["feedback-usertext-2"],
-              ]}
-              feedbackQuestions={feedbackQuestions}
-              response={response}
-            />
-            <div className="flex shrink-0 flex-col items-start gap-4">
-              <h4 className="font-semibold">
-                {labels.category?.sg || defaultBackendConfig.labels.category.sg}
-              </h4>
-              <div className="whitespace-nowrap rounded bg-gray-300 p-3 px-4 font-semibold">
-                {feedbackUserCategory}
-              </div>
-            </div>
-          </div>
-          <EditableSurveyResponseAdditionalFilterFields
-            additionalFilterFields={additionalFilterFields}
-            surveyData={response.surveySurveyResponseData}
-            feedbackData={response.data}
+        >
+          <EditableSurveyResponseMapAndStaticData
+            refetchResponsesAndTopics={refetchResponsesAndTopics}
+            response={response}
+            showMap={showMap}
+            maptilerUrl={maptilerUrl}
+            defaultViewState={defaultViewState}
+            userLocationQuestionId={evaluationRefs["feedback-location"]}
+            categoryLabel={labels.category?.sg || defaultBackendConfig.labels.category.sg}
           />
           <EditableSurveyResponseForm
             showMap={showMap}
-            initialValues={{
-              // Mapping to string is required so the ReactHookForm and our Radiobutton can compare the data to find what is selected
-              surveyResponseTopics: response.surveyResponseTopics.map(String),
-              operatorId: response.operatorId === null ? "0" : String(response.operatorId),
-              // we can not call this "status"; the scopes of this form have to be different from the other form (filter form)! Otherwise this messes with our filter form and url state.
-              responseStatus: response.status,
-              note: response.note,
-            }}
-            userLocationQuestionId={evaluationRefs["feedback-location"]}
             response={response}
             operators={operators}
             topics={topics}
             subsections={subsections}
-            refetchResponsesAndTopics={refetchResponsesAndTopics}
-            maptilerUrl={maptilerUrl}
-            defaultViewState={defaultViewState}
             backendConfig={backendConfig}
           />
-          {(!!response.surveyResponseComments.length || isEditorOrAdmin) && (
-            <h4 className="mb-3 font-semibold">Kommentar</h4>
-          )}
-          <ul className="max-w-3xl">
-            {response.surveyResponseComments?.map((comment) => {
-              return (
-                <li key={comment.id} className="mt-5">
-                  <SurveyResponseCommentField comment={comment} />
+          <div>
+            {(!!response.surveyResponseComments.length || isEditorOrAdmin) && (
+              <h4 className="mb-3 font-semibold">Kommentar</h4>
+            )}
+            <ul className="flex max-w-3xl flex-col gap-4">
+              {response.surveyResponseComments?.map((comment) => {
+                return (
+                  <li key={comment.id}>
+                    <SurveyResponseCommentField comment={comment} />
+                  </li>
+                )
+              })}
+              <IfUserCanEdit>
+                <li>
+                  <NewSurveyResponseCommentForm surveyResponseId={response.id} />
                 </li>
-              )
-            })}
-            <IfUserCanEdit>
-              <li className="mt-5">
-                <NewSurveyResponseCommentForm surveyResponseId={response.id} />
-              </li>
-            </IfUserCanEdit>
-          </ul>
+              </IfUserCanEdit>
+            </ul>
+          </div>
         </div>
       )}
     </article>

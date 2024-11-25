@@ -28,8 +28,8 @@ export const EditSurveyResponseCommentForm = ({ comment }: Props) => {
   const [open, setOpen] = useState(false)
   const session = useSession()
 
-  // @ts-expect-error todo
-  const handleSubmit = async (values) => {
+  // todo any
+  const handleSubmit = async (values: any) => {
     const sanitize = (input: string) => (input ? dompurify.sanitize(input) : input)
     updateSurveyResponseCommentMutation(
       {
