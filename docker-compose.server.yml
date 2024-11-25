@@ -10,7 +10,7 @@ services:
     labels:
       traefik.enable: true
       traefik.http.routers.server.rule: Host(`ionos.trassenscout.de`)
-      traefik.http.routers.server.entrypoints: web
+      traefik.http.routers.server.entrypoints: websecure
       traefik.http.routers.server.tls.certresolver: letsencrypt
       traefik.http.routers.server.tls: true
       traefik.http.services.container.loadbalancer.server.port: 3000
