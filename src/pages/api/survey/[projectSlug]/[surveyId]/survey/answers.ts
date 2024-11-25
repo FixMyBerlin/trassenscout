@@ -5,6 +5,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { getSurvey, sendCsv } from "./_shared"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Permissions are checked implicitly by `getSurvey` which will call "@/src/surveys/queries/getSurvey" which uses `authorizeProjectMember`
   const survey = await getSurvey(req, res)
   if (!survey) return
   const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
