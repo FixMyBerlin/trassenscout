@@ -15,6 +15,6 @@ export default resolver.pipe(
     if (!result) return null
     // Only return minimal data to the public site
     // We use the email to prefill the form
-    return { token: result.token, email: result.email }
+    return { token: result.token, email: result.email.toLowerCase() }
   },
 )
