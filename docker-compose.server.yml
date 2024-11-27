@@ -17,7 +17,7 @@ services:
       FORCE_COLOR: 1
     labels:
       traefik.enable: true
-      traefik.http.routers.server.rule: Host(`ionos.trassenscout.de`)
+      traefik.http.routers.server.rule: Host(`${APP_URL}`) || Host(`www.${APP_URL}`)
       traefik.http.routers.server.entrypoints: websecure
       traefik.http.routers.server.tls.certresolver: letsencrypt
       traefik.http.routers.server.tls: true
