@@ -268,7 +268,7 @@ export const SurveyMainPage: React.FC<Props> = ({
       )
       break
     case "EMAIL":
-      component = <Email email={emailDefinition} />
+      component = <Email email={emailDefinition} onClickMore={handleMoreFeedback} />
       break
   }
 
