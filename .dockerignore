@@ -2,7 +2,7 @@
 !package.json
 !package-lock.json
 !db
-!mailers
+!emails
 !public
 !src
 !.eslintrc.js
