@@ -2,12 +2,15 @@ FROM node:18-bullseye-slim
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package* ./
+
 RUN npm install-clean --legacy-peer-deps
 
 # see .dockerignore for what is getting copied
 COPY . .
+
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV TZ=Europe/Berlin
 
 ARG NEXT_PUBLIC_APP_ORIGIN
 ARG NEXT_PUBLIC_APP_ENV
