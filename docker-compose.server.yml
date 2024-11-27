@@ -5,6 +5,7 @@ services:
     ports:
       - "3000:3000"
     env_file: ".env"
+    restart: unless-stopped
     environment:
       DATABASE_URL: ${DATABASE_URL}
       SESSION_SECRET_KEY: ${SESSION_SECRET_KEY}
@@ -48,6 +49,7 @@ services:
   traefik:
     container_name: traefik
     image: traefik:v3.2
+    restart: unless-stopped
     command:
       - "--log.level=INFO"
       - "--api.insecure=false"
