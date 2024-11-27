@@ -12,8 +12,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ARG NEXT_PUBLIC_APP_ORIGIN
 ARG NEXT_PUBLIC_APP_ENV
 
-RUN npx blitz prisma generate && npx blitz build
+RUN npx blitz@2.1.3 prisma generate
+RUN npx blitz@2.1.3 build
 
 RUN npm install --global pm2
 
-CMD npx blitz prisma migrate deploy && exec pm2-runtime node -- ./node_modules/next/dist/bin/next start -p 3000
+CMD npx blitz@2.1.3 prisma migrate deploy && exec pm2-runtime node -- ./node_modules/next/dist/bin/next start -p 3000
