@@ -14,6 +14,7 @@ services:
       APP_ORIGIN: ${APP_ORIGIN}
       MAILJET_APIKEY_PUBLIC: ${MAILJET_APIKEY_PUBLIC}
       MAILJET_APIKEY_PRIVATE: ${MAILJET_APIKEY_PRIVATE}
+      FORCE_COLOR: 1
     labels:
       traefik.enable: true
       traefik.http.routers.server.rule: Host(`ionos.trassenscout.de`)
