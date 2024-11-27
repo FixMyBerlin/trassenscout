@@ -1,11 +1,6 @@
-*
-!package.json
-!package-lock.json
-!db
-!mailers
-!public
-!src
-!.eslintrc.js
-!next.config.js
-!tsconfig.json
-!types.ts
+.husky
+.next
+integrations
+test
+.env.*
+.editorconfig
