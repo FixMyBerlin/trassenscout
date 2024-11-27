@@ -38,6 +38,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       LANG: en_US.UTF-8
       LC_ALL: en_US.UTF-8
+      TZ: Europe/Berlin
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -51,6 +52,8 @@ services:
     container_name: traefik
     image: traefik:v3.2
     restart: unless-stopped
+    environment:
+      TZ: Europe/Berlin
     command:
       - "--log.level=INFO"
       - "--api.insecure=false"
