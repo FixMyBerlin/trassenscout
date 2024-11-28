@@ -7,8 +7,8 @@ import { AuthenticationError, AuthorizationError } from "blitz"
 import { Suspense, useEffect, useRef } from "react"
 import { fontRedHatText } from "../app/_components/layouts/fonts"
 
-const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL
-const MATOMO_SITE_ID = process.env.NEXT_PUBLIC_MATOMO_SITE_ID
+const MATOMO_URL = "https://s.fixmycity.de"
+const MATOMO_SITE_ID = "7"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError || error instanceof AuthorizationError) {
