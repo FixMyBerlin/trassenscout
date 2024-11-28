@@ -47,10 +47,10 @@ jobs:
             MAILJET_APIKEY_PUBLIC='${{ secrets.MAILJET_APIKEY_PUBLIC }}'
             MAILJET_APIKEY_PRIVATE='${{ secrets.MAILJET_APIKEY_PRIVATE }}'
 
-            POSTGRES_NAME='${{ vars.POSTGRES_NAME }}'
+            POSTGRES_DB='${{ vars.POSTGRES_DB }}'
             POSTGRES_USER='${{ secrets.POSTGRES_USER }}'
             POSTGRES_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}'
-            DATABASE_URL='postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ vars.POSTGRES_HOST }}/${{ vars.POSTGRES_NAME }}'
+            DATABASE_URL='postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ vars.POSTGRES_HOST }}/${{ vars.POSTGRES_DB }}'
 
             SESSION_SECRET_KEY='${{ secrets.SESSION_SECRET_KEY }}'
 

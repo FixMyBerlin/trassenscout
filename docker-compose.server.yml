@@ -28,7 +28,7 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_NAME: ${POSTGRES_NAME}
+      POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       LANG: en_US.UTF-8
@@ -38,7 +38,7 @@ services:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
       # We access `.env` variables directly here
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5

@@ -31,7 +31,7 @@
 |                          |                                  |                                         |
 | `POSTGRES_USER`          | `secrets.POSTGRES_USER`          |                                         |
 | `POSTGRES_PASSWORD`      | `secrets.POSTGRES_PASSWORD`      |                                         |
-| `POSTGRES_NAME`          | `vars.POSTGRES_NAME`             |                                         |
+| `POSTGRES_DB`            | `vars.POSTGRES_DB`               |                                         |
 | `POSTGRES_HOST`          | `vars.POSTGRES_HOST`             |                                         |
 |                          |                                  |                                         |
 | `SESSION_SECRET_KEY`     | `secrets.SESSION_SECRET_KEY`     | [Required by Blitz][session-secret-key] |
