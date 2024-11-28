@@ -8,31 +8,13 @@ jobs:
   setup_env:
     uses: ./.github/workflows/setup-env.yml
     with:
-      ENVIRONMENT: ${{ vars.ENVIRONMENT }}
-      DATABASE_HOST: ${{ vars.DATABASE_HOST }}
-      DATABASE_NAME: ${{ vars.DATABASE_NAME }}
-      APP_DOMAIN: ${{ vars.APP_DOMAIN }}
-      APP_ORIGIN: ${{ vars.APP_ORIGIN }}
-      ADMIN_EMAIL: ${{ vars.ADMIN_EMAIL }}
-    secrets:
-      MAILJET_APIKEY_PUBLIC: ${{ secrets.MAILJET_APIKEY_PUBLIC }}
-      MAILJET_APIKEY_PRIVATE: ${{ secrets.MAILJET_APIKEY_PRIVATE }}
-      DATABASE_USER: ${{ secrets.DATABASE_USER }}
-      DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-      SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY }}
-      FELT_TOKEN: ${{ secrets.FELT_TOKEN }}
-      S3_UPLOAD_KEY: ${{ secrets.S3_UPLOAD_KEY }}
-      S3_UPLOAD_SECRET: ${{ secrets.S3_UPLOAD_SECRET }}
-      TS_API_KEY: ${{ secrets.TS_API_KEY }}
-      SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      ENVIRONMENT: staging
 
   restart_services:
     needs: setup_env
     uses: ./.github/workflows/restart-services.yml
     with:
-      ENVIRONMENT: ${{ vars.ENVIRONMENT }}
+      ENVIRONMENT: staging
     secrets:
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
@@ -43,11 +25,4 @@ jobs:
     uses: ./.github/workflows/deploy-app.yml
     with:
       # CONFIG_CHANGED: ${{ needs.restart_services.outputs.CHANGES == 'true' }}
-      ENVIRONMENT: ${{ vars.ENVIRONMENT }}
-      APP_ORIGIN: ${{ vars.APP_ORIGIN }}
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      ENVIRONMENT: staging

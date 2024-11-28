@@ -6,13 +6,6 @@ on:
       ENVIRONMENT:
         required: true
         type: string
-    secrets:
-      SSH_HOST:
-        required: true
-      SSH_USERNAME:
-        required: true
-      SSH_PASSWORD:
-        required: true
     outputs:
       CHANGES:
         description: "Whether `configs/` or the `docker-compose` files have changed since the last successfull workflow run."
