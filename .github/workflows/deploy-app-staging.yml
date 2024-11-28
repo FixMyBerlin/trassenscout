@@ -19,7 +19,7 @@ jobs:
       ENVIRONMENT: staging
 
   restart-services:
-    needs: call-deploy-app
+    needs: deploy-app
     uses: ./.github/workflows/restart-services.yml
     secrets: inherit
     with:
