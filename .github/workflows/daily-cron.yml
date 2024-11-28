@@ -19,6 +19,7 @@ jobs:
         run: curl --fail -s -S -X GET "https://staging.trassenscout.de/api/private/cron-invites-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
       - name: Cleanup logEntries STAGING
         run: curl --fail -s -S -X GET "https://staging.trassenscout.de/api/private/cron-logEntries-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+
   run-daily-tasks-production:
     runs-on: ubuntu-latest
     environment:

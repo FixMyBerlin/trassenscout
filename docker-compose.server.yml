@@ -1,23 +1,18 @@
 services:
   app:
     container_name: app
-    image: public.ecr.aws/n0p8j4k5/trassenscout/app:${ENVIRONMENT}-latest
+    image: public.ecr.aws/n0p8j4k5/trassenscout/app:${NEXT_PUBLIC_APP_ENV}-latest
     ports:
       - "3000:3000"
-    env_file: ".env"
     restart: unless-stopped
+    env_file: ".env"
     environment:
-      DATABASE_URL: ${DATABASE_URL}
-      SESSION_SECRET_KEY: ${SESSION_SECRET_KEY}
-      NEXT_PUBLIC_APP_ENV: ${ENVIRONMENT}
-      NEXT_PUBLIC_APP_ORIGIN: ${APP_ORIGIN}
-      APP_ORIGIN: ${APP_ORIGIN}
-      MAILJET_APIKEY_PUBLIC: ${MAILJET_APIKEY_PUBLIC}
-      MAILJET_APIKEY_PRIVATE: ${MAILJET_APIKEY_PRIVATE}
       FORCE_COLOR: 1
     labels:
       traefik.enable: true
-      traefik.http.routers.server.rule: Host(`${APP_URL}`) || Host(`www.${APP_URL}`)
+      # traefik.http.routers.server.rule: Host(`${APP_DOMAIN}`) || Host(`www.${APP_DOMAIN}`) ## add back later and add unused www.staging.* domain
+      # We access `.env` variables directly here
+      traefik.http.routers.server.rule: Host(`${APP_DOMAIN}`)`)
       traefik.http.routers.server.entrypoints: websecure
       traefik.http.routers.server.tls.certresolver: letsencrypt
       traefik.http.routers.server.tls: true
@@ -33,16 +28,14 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_DB: ${POSTGRES_NAME}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       LANG: en_US.UTF-8
       LC_ALL: en_US.UTF-8
       TZ: Europe/Berlin
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_NAME}"]
+      # We access `.env` variables directly here
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
