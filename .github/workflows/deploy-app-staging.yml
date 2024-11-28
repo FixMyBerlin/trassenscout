@@ -11,6 +11,6 @@ jobs:
     uses: ./.github/workflows/restart-services.yml
   call-deploy-app:
     needs: restart_services
-    uses: ./.github/workflows/deploy.yml
+    uses: ./.github/workflows/deploy-app.yml
     # with:
     #   CONFIG_CHANGED: ${{ needs.restart_services.outputs.CHANGES == 'true' }}
