@@ -29,10 +29,10 @@
 | `MAILJET_APIKEY_PUBLIC`  | `secrets.MAILJET_APIKEY_PUBLIC`  |                                         |
 | `MAILJET_APIKEY_PRIVATE` | `secrets.MAILJET_APIKEY_PRIVATE` |                                         |
 |                          |                                  |                                         |
-| `DATABASE_NAME`          | `vars.DATABASE_NAME`             |                                         |
-| `DATABASE_USER`          | `secrets.DATABASE_USER`          |                                         |
-| `DATABASE_PASSWORD`      | `secrets.DATABASE_PASSWORD`      |                                         |
-| `DATABASE_HOST`          | `vars.DATABASE_HOST`             |                                         |
+| `POSTGRES_USER`          | `secrets.POSTGRES_USER`          |                                         |
+| `POSTGRES_PASSWORD`      | `secrets.POSTGRES_PASSWORD`      |                                         |
+| `POSTGRES_NAME`          | `vars.POSTGRES_NAME`             |                                         |
+| `POSTGRES_HOST`          | `vars.POSTGRES_HOST`             |                                         |
 |                          |                                  |                                         |
 | `SESSION_SECRET_KEY`     | `secrets.SESSION_SECRET_KEY`     | [Required by Blitz][session-secret-key] |
 |                          |                                  |                                         |
