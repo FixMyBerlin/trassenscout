@@ -12,7 +12,6 @@ namespace NodeJS {
       | "upload-localdev"
 
     S3_UPLOAD_KEY: string
-    S3_UPLOAD_REGION: "eu-central-1"
     S3_UPLOAD_SECRET: string
 
     FELT_TOKEN: `felt_pat_${string}`
