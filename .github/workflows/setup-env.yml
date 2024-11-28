@@ -34,7 +34,6 @@ jobs:
           script: |
             cd /srv/trassenscout-${{ inputs.ENVIRONMENT }}
 
-            #
             rm docker-compose.yml
             mv docker-compose.server.yml docker-compose.yml
 

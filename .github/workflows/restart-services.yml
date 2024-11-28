@@ -6,24 +6,23 @@ on:
       ENVIRONMENT:
         required: true
         type: string
-    outputs:
-      CHANGES:
-        description: "Whether `configs/` or the `docker-compose` files have changed since the last successfull workflow run."
-        value: ${{ jobs.check_config_changes.outputs.CHANGES }}
 
 jobs:
-  check_config_changes:
+  diff_docker:
     uses: ./.github/workflows/diff-last-run.yml
     with:
-      CHECK_DIFF_LOCATIONS: docker-compose* .env.example
+      CHECK_DIFF_LOCATIONS: docker-compose*
+
   restart_services:
-    needs: check_config_changes
-    if: ${{ needs.check_config_changes.outputs.changes == 'true' }}
     runs-on: ubuntu-latest
+    needs: diff_docker
+    if: ${{ needs.diff_docker.outputs.changes == 'true' }}
     environment:
       name: ${{ inputs.ENVIRONMENT }}
+      # `url` adds adds link to the Github UI
+      url: ${{ vars.APP_ORIGIN }}
     steps:
-      - name: Restart containers
+      - name: Stop & Start containers
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -31,7 +30,9 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd /srv/trassenscout-${{ inputs.ENVIRONMENT }}
-            echo "Restarting containers: tiles, db, traefik and proxy"
+            echo "Pull all containers"
             docker compose pull
-            docker compose -f docker-compose.yml up db traefik app nginx -d
+            echo "Restart all containers"
+            docker compose up -d
+            echo "Docker prune images"
             docker image prune -fa
