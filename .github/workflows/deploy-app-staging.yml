@@ -15,10 +15,6 @@ jobs:
     uses: ./.github/workflows/restart-services.yml
     with:
       ENVIRONMENT: staging
-    secrets:
-      SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
 
   call-deploy-app:
     needs: restart_services
