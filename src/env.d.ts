@@ -1,29 +1,34 @@
 namespace NodeJS {
   interface ProcessEnv {
-    DATABASE_URL: `postgresql://${string}`
+    readonly DATABASE_URL: `postgresql://${string}`
 
-    DATABASE_URL_PRODUCTION: `postgresql://${string}`
-    DATABASE_URL_STAGING: `postgresql://${string}`
+    readonly DATABASE_URL_PRODUCTION: `postgresql://${string}`
+    readonly DATABASE_URL_STAGING: `postgresql://${string}`
 
-    S3_UPLOAD_ROOTFOLDER:
-      | "upload-production"
-      | "upload-staging"
-      | "upload-tinkering"
-      | "upload-localdev"
+    readonly S3_UPLOAD_ROOTFOLDER: "upload-production" | "upload-staging" | "upload-localdev"
 
-    S3_UPLOAD_KEY: string
-    S3_UPLOAD_REGION: "eu-central-1"
-    S3_UPLOAD_SECRET: string
+    readonly S3_UPLOAD_KEY: string
+    readonly S3_UPLOAD_SECRET: string
 
-    FELT_TOKEN: `felt_pat_${string}`
+    readonly FELT_TOKEN: `felt_pat_${string}`
 
-    ADMIN_EMAIL: string
+    readonly ADMIN_EMAIL: string
 
-    TS_API_KEY: string
-    MAILJET_APIKEY_PUBLIC: string
-    MAILJET_APIKEY_PRIVATE: string
-    NEXT_PUBLIC_APP_ENV: "development" | "staging" | "production"
+    readonly TS_API_KEY: string
+    readonly MAILJET_APIKEY_PUBLIC: string
+    readonly MAILJET_APIKEY_PRIVATE: string
+    readonly NEXT_PUBLIC_APP_ENV: "development" | "staging" | "production"
+    readonly SESSION_SECRET_KEY: string
 
-    NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE: "START" | "SURVEY" | "MORE" | "FEEDBACK" | "EMAIL"
+    readonly NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE:
+      | "START"
+      | "SURVEY"
+      | "MORE"
+      | "FEEDBACK"
+      | "EMAIL"
+    readonly NEXT_PUBLIC_APP_ORIGIN:
+      | "http://127.0.0.1:5000"
+      | "https://staging,trassenscout.de"
+      | "https://trassenscout.de"
   }
 }
