@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:14-alpine
     environment:
-      POSTGRES_PASSWORD: password
+      DATABASE_PASSWORD: password
       LANG: en_US.UTF-8
       LC_ALL: en_US.UTF-8
     ports:

@@ -2,5 +2,5 @@
 .next
 integrations
 test
-.env.*
+.env
 .editorconfig
