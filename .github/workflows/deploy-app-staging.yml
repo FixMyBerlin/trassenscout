@@ -7,18 +7,21 @@ on:
 jobs:
   setup_env:
     uses: ./.github/workflows/setup-env.yml
+    secrets: inherit
     with:
       ENVIRONMENT: staging
 
   restart_services:
     needs: setup_env
     uses: ./.github/workflows/restart-services.yml
+    secrets: inherit
     with:
       ENVIRONMENT: staging
 
   call-deploy-app:
     needs: restart_services
     uses: ./.github/workflows/deploy-app.yml
+    secrets: inherit
     with:
       # CONFIG_CHANGED: ${{ needs.restart_services.outputs.CHANGES == 'true' }}
       ENVIRONMENT: staging
