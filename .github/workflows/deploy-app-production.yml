@@ -3,14 +3,24 @@ on:
   push:
     branches:
       - main
+
 jobs:
   setup_env:
     uses: ./.github/workflows/setup-env.yml
-  restart_services:
+    secrets: inherit
+    with:
+      ENVIRONMENT: production
+
+  deploy-app:
     needs: setup_env
-    uses: ./.github/workflows/restart-services.yml
-  call-deploy-app:
-    needs: restart_services
     uses: ./.github/workflows/deploy-app.yml
-    # with:
-    #   CONFIG_CHANGED: ${{ needs.restart_services.outputs.CHANGES == 'true' }}
+    secrets: inherit
+    with:
+      ENVIRONMENT: production
+
+  restart-services:
+    needs: call-deploy-app
+    uses: ./.github/workflows/restart-services.yml
+    secrets: inherit
+    with:
+      ENVIRONMENT: production
