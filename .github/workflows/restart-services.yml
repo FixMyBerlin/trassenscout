@@ -2,6 +2,17 @@ name: Restart Services
 
 on:
   workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+    secrets:
+      SSH_HOST:
+        required: true
+      SSH_USERNAME:
+        required: true
+      SSH_PASSWORD:
+        required: true
     outputs:
       CHANGES:
         description: "Whether `configs/` or the `docker-compose` files have changed since the last successfull workflow run."
@@ -17,7 +28,7 @@ jobs:
     if: ${{ needs.check_config_changes.outputs.changes == 'true' }}
     runs-on: ubuntu-latest
     environment:
-      name: ${{ vars.ENVIRONMENT }}
+      name: ${{ inputs.ENVIRONMENT }}
     steps:
       - name: Restart containers
         uses: appleboy/ssh-action@master
@@ -26,7 +37,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd /srv/trassenscout-${{ vars.ENVIRONMENT }}
+            cd /srv/trassenscout-${{ inputs.ENVIRONMENT }}
             echo "Restarting containers: tiles, db, traefik and proxy"
             docker compose pull
             docker compose -f docker-compose.yml up db traefik app nginx -d

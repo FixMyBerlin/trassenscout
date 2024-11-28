@@ -9,8 +9,6 @@
   - Or on Environment level
     - [Staging](https://github.com/FixMyBerlin/trassenscout/settings/environments/2395297920/edit#environment-secrets)
     - [Production](https://github.com/FixMyBerlin/trassenscout/settings/environments/2395358496/edit#environment-secrets)
-- We don't pass variables between workflows but access the Github variables directly in each workflow.
-  - Which also means we don't have to use `workflow_call.inputs`, `workflow_call.secrets`
 - Some variables are dynamically created when feasable to reduce the number of variables in Github
 - Consider adding things that don't change to the code instead of the environment variables/secrets
 

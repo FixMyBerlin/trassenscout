@@ -1,10 +1,27 @@
 name: Deploy App to Ionos
 on:
   workflow_call:
-    # inputs:
-    #   CONFIG_CHANGED:
-    #     required: true
-    #     type: boolean
+    inputs:
+      # CONFIG_CHANGED:
+      #   required: true
+      #   type: boolean
+      ENVIRONMENT:
+        required: true
+        type: string
+      APP_ORIGIN:
+        required: true
+        type: string
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      SSH_HOST:
+        required: true
+      SSH_USERNAME:
+        required: true
+      SSH_PASSWORD:
+        required: true
 
 jobs:
   diff_app:
@@ -17,7 +34,7 @@ jobs:
     needs: diff_app
     if: ${{ needs.diff_app.outputs.changes == 'true' }}
     environment:
-      name: ${{ vars.ENVIRONMENT }}
+      name: ${{ inputs.ENVIRONMENT }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -48,10 +65,10 @@ jobs:
           cache-to: type=gha,mode=max
           tags: |
             public.ecr.aws/n0p8j4k5/trassenscout/app:${{ github.sha }}
-            public.ecr.aws/n0p8j4k5/trassenscout/app:${{ vars.ENVIRONMENT }}-latest
+            public.ecr.aws/n0p8j4k5/trassenscout/app:${{ inputs.ENVIRONMENT }}-latest
           build-args: |
-            NEXT_PUBLIC_APP_ENV=${{ vars.ENVIRONMENT }}
-            NEXT_PUBLIC_APP_ORIGIN=${{ vars.APP_ORIGIN }}
+            NEXT_PUBLIC_APP_ENV=${{ inputs.ENVIRONMENT }}
+            NEXT_PUBLIC_APP_ORIGIN=${{ inputs.APP_ORIGIN }}
 
       - name: Push app image
         run: |
@@ -63,9 +80,9 @@ jobs:
     needs: [diff_app, build_app]
     if: ${{ needs.diff_app.outputs.changes == 'true' || inputs.CONFIG_CHANGED && always() }}
     environment:
-      name: ${{ vars.ENVIRONMENT }}
+      name: ${{ inputs.ENVIRONMENT }}
       # `url` adds adds link to the Github UI
-      url: ${{ vars.APP_ORIGIN }}
+      url: ${{ inputs.APP_ORIGIN }}
     steps:
       - name: Stop & Start container on Server
         uses: appleboy/ssh-action@master
@@ -74,7 +91,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd /srv/trassenscout-${{ vars.ENVIRONMENT }}
+            cd /srv/trassenscout-${{ inputs.ENVIRONMENT }}
             echo "Pulling latest 'app' image"
             docker compose pull app
             echo "Restarting 'app' container"

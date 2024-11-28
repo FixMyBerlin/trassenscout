@@ -1,12 +1,56 @@
 name: Setup Configuration
 on:
   workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+      DATABASE_HOST:
+        required: true
+        type: string
+      DATABASE_NAME:
+        required: true
+        type: string
+      APP_DOMAIN:
+        required: true
+        type: string
+      APP_ORIGIN:
+        required: true
+        type: string
+      ADMIN_EMAIL:
+        required: true
+        type: string
+    secrets:
+      MAILJET_APIKEY_PUBLIC:
+        required: true
+      MAILJET_APIKEY_PRIVATE:
+        required: true
+      DATABASE_USER:
+        required: true
+      DATABASE_PASSWORD:
+        required: true
+      SESSION_SECRET_KEY:
+        required: true
+      FELT_TOKEN:
+        required: true
+      S3_UPLOAD_KEY:
+        required: true
+      S3_UPLOAD_SECRET:
+        required: true
+      TS_API_KEY:
+        required: true
+      SSH_HOST:
+        required: true
+      SSH_USERNAME:
+        required: true
+      SSH_PASSWORD:
+        required: true
 
 jobs:
   setup_env:
     runs-on: ubuntu-latest
     environment:
-      name: ${{ vars.ENVIRONMENT }}
+      name: ${{ inputs.ENVIRONMENT }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -17,8 +61,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "docker-compose.server.yml, docker, .env.example"
-          target: "/srv/trassenscout-${{ vars.ENVIRONMENT }}"
+          source: "docker-compose.server.yml, docker"
+          target: "/srv/trassenscout-${{ inputs.ENVIRONMENT }}"
           overwrite: true
 
       - name: Replace environment variables
@@ -28,7 +72,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd /srv/trassenscout-${{ vars.ENVIRONMENT }}
+            cd /srv/trassenscout-${{ inputs.ENVIRONMENT }}
 
             #
             rm docker-compose.yml
@@ -37,27 +81,27 @@ jobs:
             echo "Updating `.env`"
             rm -f .env
             cat <<EOF > .env
-            NEXT_PUBLIC_APP_ENV='${{ vars.ENVIRONMENT }}'
-            NEXT_PUBLIC_APP_ORIGIN='${{ vars.APP_ORIGIN }}'
-            APP_DOMAIN='${{ vars.APP_DOMAIN }}'
+            NEXT_PUBLIC_APP_ENV='${{ inputs.ENVIRONMENT }}'
+            NEXT_PUBLIC_APP_ORIGIN='${{ inputs.APP_ORIGIN }}'
+            APP_DOMAIN='${{ inputs.APP_DOMAIN }}'
 
             MAILJET_APIKEY_PUBLIC='${{ secrets.MAILJET_APIKEY_PUBLIC }}'
             MAILJET_APIKEY_PRIVATE='${{ secrets.MAILJET_APIKEY_PRIVATE }}'
 
-            DATABASE_NAME='${{ vars.DATABASE_NAME }}'
+            DATABASE_NAME='${{ inputs.DATABASE_NAME }}'
             DATABASE_USER='${{ secrets.DATABASE_USER }}'
             DATABASE_PASSWORD='${{ secrets.DATABASE_PASSWORD }}'
-            DATABASE_URL='postgres://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ vars.DATABASE_HOST }}/${{ vars.DATABASE_NAME }}'
+            DATABASE_URL='postgres://${{ secrets.DATABASE_USER }}:${{ secrets.DATABASE_PASSWORD }}@${{ inputs.DATABASE_HOST }}/${{ inputs.DATABASE_NAME }}'
 
             SESSION_SECRET_KEY='${{ secrets.SESSION_SECRET_KEY }}'
 
-            ADMIN_EMAIL='${{ vars.ADMIN_EMAIL }}'
+            ADMIN_EMAIL='${{ inputs.ADMIN_EMAIL }}'
 
             FELT_TOKEN='${{ secrets.FELT_TOKEN }}'
 
             S3_UPLOAD_KEY='${{ secrets.S3_UPLOAD_KEY }}'
             S3_UPLOAD_SECRET='${{ secrets.S3_UPLOAD_SECRET }}'
-            S3_UPLOAD_ROOTFOLDER='upload-${{ vars.ENVIRONMENT }}'
+            S3_UPLOAD_ROOTFOLDER='upload-${{ inputs.ENVIRONMENT }}'
 
             TS_API_KEY='${{ secrets.TS_API_KEY }}'
             EOF
