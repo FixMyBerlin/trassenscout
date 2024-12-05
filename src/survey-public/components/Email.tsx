@@ -1,13 +1,16 @@
 import IframeResizer from "@iframe-resizer/react"
+import { SurveyButton } from "./core/buttons/SurveyButton"
 import { SurveyScreenHeader } from "./core/layout/SurveyScreenHeader"
 import { SurveyLink } from "./core/links/SurveyLink"
+import { SurveyP } from "./core/Text"
 import { TEmail } from "./types"
 
 type Props = {
   email: TEmail
+  onClickMore: () => void
 }
 
-export const Email: React.FC<Props> = ({ email }) => {
+export const Email: React.FC<Props> = ({ email, onClickMore }) => {
   const { description, button, title, mailjetWidgetUrl, homeUrl } = email
 
   return (
@@ -28,6 +31,13 @@ export const Email: React.FC<Props> = ({ email }) => {
         <SurveyLink blank button={button.color} href={homeUrl}>
           {button.label.de}
         </SurveyLink>
+      </div>
+      <div>
+        <SurveyP>
+          Ist Ihnen noch ein Hinweis eingefallen, den Sie mit uns teilen wolle? Unter dem Button
+          können Sie diesen nachreichen.
+        </SurveyP>
+        <SurveyButton onClick={onClickMore}>Mir ist noch etwas eingefallen</SurveyButton>
       </div>
     </section>
   )

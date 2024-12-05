@@ -14,7 +14,7 @@ export const ProgressBar = () => {
       <div aria-hidden="true">
         <div className="overflow-hidden bg-gray-200">
           <div
-            className={clsx("h-1 bg-[var(--survey-primary-color)]")}
+            className={clsx("h-3 bg-[var(--survey-primary-color)]")}
             style={{ width: `${width}%` }}
           />
         </div>

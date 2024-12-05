@@ -35,6 +35,7 @@ export default resolver.pipe(
         projectId: projectId!,
         inviterId: userId!,
         ...data,
+        email: data.email.toLocaleLowerCase(),
       },
       select: {
         status: true,

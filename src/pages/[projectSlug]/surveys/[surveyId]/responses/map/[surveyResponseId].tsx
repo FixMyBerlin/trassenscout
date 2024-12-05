@@ -82,6 +82,7 @@ export const SurveyResponseWithLocation = () => {
               selectedSurveyResponse={selectedSurveyResponse}
               surveyResponsesFeedbackPartWithLocation={feedbackSurveyResponses}
               locationRef={locationRef!}
+              surveySlug={survey.slug}
             />
           </section>
           <section className="flex-grow rounded-md drop-shadow-md">

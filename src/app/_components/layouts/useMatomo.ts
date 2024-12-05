@@ -2,8 +2,8 @@
 // import { init } from "@socialgouv/matomo-next"
 // import { useEffect, useRef } from "react"
 
-const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL
-const MATOMO_SITE_ID = process.env.NEXT_PUBLIC_MATOMO_SITE_ID
+const MATOMO_URL = "https://s.fixmycity.de"
+const MATOMO_SITE_ID = "7"
 
 export const useMatomo = () => {
   // The Matomo Plugin we use does not work in the app directory ATM
