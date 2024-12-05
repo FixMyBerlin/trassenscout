@@ -227,6 +227,7 @@ export function EditableSurveyResponseForm({
             >
               {statusOptions.map((item) => (
                 <LabeledInputRadioCheckbox
+                  classNameLabelSpan={item.colorClass + " px-2 py-1 rounded-full"}
                   type="radio"
                   name="responseStatus"
                   key={item.value}
