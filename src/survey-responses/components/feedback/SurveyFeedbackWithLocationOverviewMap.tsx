@@ -1,5 +1,6 @@
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
-import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
+import { SurveyStaticPinWithStatusColor } from "@/src/core/components/Map/SurveyStaticPinWithStatusColor"
+
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
 import { Routes, useParam } from "@blitzjs/next"
@@ -102,7 +103,7 @@ export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
             anchor="bottom"
             onClick={() => handleSelect(r.id)}
           >
-            <SurveyStaticPin light />
+            <SurveyStaticPinWithStatusColor status={r.status} surveySlug={surveySlug} small />
           </Marker>
         ))}
         <Marker
@@ -112,7 +113,12 @@ export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
           latitude={selectedSurveyResponse.data[locationRef].lat}
           anchor="bottom"
         >
-          <SurveyStaticPin />
+          <SurveyStaticPinWithStatusColor
+            status={selectedSurveyResponse.status}
+            surveySlug={surveySlug}
+            selected={true}
+            small
+          />
         </Marker>
         <BackgroundSwitcher
           className="absolute left-4 top-4"
