@@ -59,15 +59,17 @@ export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
   }
 
   return (
-    <div className="h-[100vh] overflow-clip rounded-md drop-shadow-md">
+    <div className="h-full rounded-md drop-shadow-md">
       <Map
         id="mainMap"
         initialViewState={{
           bounds: defaultViewState,
+          fitBoundsOptions: { padding: 50 },
         }}
-        scrollZoom={false}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         RTLTextPlugin={false}
+        minZoom={6}
+        maxZoom={16}
       >
         {/*  todo survey clean up after survey BB */}
         {surveySlug === "radnetz-brandenburg" && (

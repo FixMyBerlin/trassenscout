@@ -25,7 +25,8 @@ export const StatusLabel = ({ icon, label, color, className }: Props) => {
         "flex flex-shrink-0 items-center gap-4 whitespace-nowrap rounded-full px-5 py-2",
       )}
     >
-      {icon ? statusIcon[icon] : undefined} {label}
+      {icon && <span>{statusIcon[icon]}</span>}
+      <span className="truncate"> {label}</span>
     </div>
   )
 }

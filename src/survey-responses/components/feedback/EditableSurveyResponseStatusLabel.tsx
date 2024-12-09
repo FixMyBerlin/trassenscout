@@ -5,9 +5,10 @@ import { getBackendConfigBySurveySlug } from "@/src/survey-public/utils/getConfi
 type Props = {
   status?: string | null
   surveySlug: AllowedSurveySlugs
+  short?: boolean
 }
 
-export const EditableSurveyResponseStatusLabel = ({ status, surveySlug }: Props) => {
+export const EditableSurveyResponseStatusLabel = ({ status, surveySlug, short }: Props) => {
   if (!status) return null
 
   const backendConfigStatus = getBackendConfigBySurveySlug(surveySlug).status
@@ -21,6 +22,11 @@ export const EditableSurveyResponseStatusLabel = ({ status, surveySlug }: Props)
   }
 
   return (
-    <StatusLabel icon={statusConfig.icon} label={statusConfig.label} color={statusConfig.color} />
+    <StatusLabel
+      className={short ? "w-[200px] truncate" : ""}
+      icon={statusConfig.icon}
+      label={statusConfig.label}
+      color={statusConfig.color}
+    />
   )
 }

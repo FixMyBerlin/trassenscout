@@ -203,7 +203,7 @@ export function EditableSurveyResponseForm({
     <>
       <div className="flex flex-col gap-6">
         <div className={clsx("flex gap-6", showMap ? "flex-row" : "flex-col")}>
-          <form className="flex gap-6">
+          <form className="flex flex-col gap-6">
             {/* BLT */}
             <FormElementWrapper
               label={labels.operator?.sg || defaultBackendConfig.labels.operator.sg}
