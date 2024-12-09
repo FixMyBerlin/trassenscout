@@ -67,11 +67,11 @@ export default async function AdminLogEntriesPage() {
                   <td className="py-4 pl-4 pr-3 text-sm sm:pr-6">
                     <StatusLabel
                       label={logEntry.logLevel}
-                      colorClass={
+                      className={
                         {
-                          INFO: "text-yellow-700 bg-yellow-100",
-                          WARN: "text-pink-700 bg-pink-100",
-                          ERROR: "text-red-700 bg-red-100",
+                          INFO: "bg-yellow-100 text-yellow-700",
+                          WARN: "bg-pink-100 text-pink-700",
+                          ERROR: "bg-red-100 text-red-700",
                         }[logEntry.logLevel]
                       }
                     >

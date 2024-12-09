@@ -116,7 +116,11 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
       >
         <div className="flex items-center gap-4 px-6 pb-2 pt-3">
           <h3 className="text-gray-700">{response.id} </h3>
-          <EditableSurveyResponseStatusLabel surveySlug={survey.slug} status={response.status} />
+          <EditableSurveyResponseStatusLabel
+            surveySlug={survey.slug}
+            short={!showMap}
+            status={response.status}
+          />
           <div
             className={clsx(
               "flex-shrink-0 rounded-full bg-gray-300 px-4 py-2 text-sm",

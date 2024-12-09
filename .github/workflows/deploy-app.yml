@@ -1,80 +1,32 @@
-name: Deploy to AWS Lightsail
+name: Deploy App to Ionos
 on:
   workflow_call:
     inputs:
-      APP_ORIGIN:
-        required: true
-        type: string
-      NEXT_PUBLIC_APP_ORIGIN:
-        required: true
-        type: string
-      NEXT_PUBLIC_APP_ENV:
-        required: true
-        type: string
-      SERVICE_NAME:
-        required: true
-        type: string
-      S3_UPLOAD_BUCKET:
-        required: true
-        type: string
-      S3_UPLOAD_REGION:
-        required: true
-        type: string
-      S3_UPLOAD_ROOTFOLDER:
-        required: true
-        type: string
       ENVIRONMENT:
+        required: true
         type: string
-        required: true
-      URL:
-        type: string
-        required: true
-    secrets:
-      AWS_ACCESS_KEY_ID:
-        required: true
-      AWS_SECRET_ACCESS_KEY:
-        required: true
-      DATABASE_URL:
-        required: true
-      SESSION_SECRET_KEY:
-        required: true
-      NGINX_HTPASSWD:
-        required: true
-      MAILJET_APIKEY_PUBLIC:
-        required: true
-      MAILJET_APIKEY_PRIVATE:
-        required: true
-      S3_UPLOAD_KEY:
-        required: true
-      S3_UPLOAD_SECRET:
-        required: true
-      FELT_TOKEN:
-        required: true
-      ASSETS_BUCKET_HOST:
-        required: true
-      ASSETS_BUCKET_PATH:
-        required: true
-      ADMIN_EMAIL:
-        required: true
-      TS_API_KEY:
-        required: true
 
 jobs:
-  build-push-deploy-docker-images:
+  # diff_app:
+  #   uses: ./.github/workflows/diff-last-run.yml
+  #   with:
+  #     CHECK_DIFF_LOCATIONS: src/ db/ public/ emails/ docker/
+
+  build_app:
     runs-on: ubuntu-latest
+    # needs: diff_app
+    # if: ${{ needs.diff_app.outputs.changes == 'true' }}
     environment:
       name: ${{ inputs.ENVIRONMENT }}
-      url: https://${{ inputs.URL }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Upgrade AWS CLI version and setup lightsailctl
         run: |
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           unzip awscliv2.zip
           sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
-          sudo curl "https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl" -o "/usr/local/bin/lightsailctl"
-          sudo chmod +x /usr/local/bin/lightsailctl
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -87,67 +39,21 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build app image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           file: ./docker/app/Dockerfile
           push: false
           load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: public.ecr.aws/n0p8j4k5/trassenscout/app:${{ github.sha }}
+          tags: |
+            public.ecr.aws/n0p8j4k5/trassenscout/app:${{ github.sha }}
+            public.ecr.aws/n0p8j4k5/trassenscout/app:${{ inputs.ENVIRONMENT }}-latest
           build-args: |
-            NEXT_PUBLIC_APP_ENV=${{ inputs.NEXT_PUBLIC_APP_ENV }}
-            NEXT_PUBLIC_APP_ORIGIN=${{ inputs.NEXT_PUBLIC_APP_ORIGIN }}
+            NEXT_PUBLIC_APP_ENV=${{ inputs.ENVIRONMENT }}
+            NEXT_PUBLIC_APP_ORIGIN=${{ vars.APP_ORIGIN }}
 
-      - name: Build nginx image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./docker/nginx
-          push: false
-          load: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          tags: public.ecr.aws/n0p8j4k5/trassenscout/nginx:${{ github.sha }}
-
-      - name: Push the app image
+      - name: Push app image
         run: |
-          echo push public.ecr.aws/n0p8j4k5/trassenscout/nginx:${GITHUB_SHA}
-          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/n0p8j4k5/trassenscout
-          docker push public.ecr.aws/n0p8j4k5/trassenscout/app:${GITHUB_SHA}
-
-      - name: Push the nginx image
-        run: |
-          echo push public.ecr.aws/n0p8j4k5/trassenscout/nginx:${GITHUB_SHA}
-          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/n0p8j4k5/trassenscout
-          docker push public.ecr.aws/n0p8j4k5/trassenscout/nginx:${GITHUB_SHA}
-
-      - name: Create deployment-config.yml
-        run: |
-          cat .github/workflows/deployment-config.yml.tpl | envsubst > deployment-config.yml
-          cat deployment-config.yml
-        env:
-          APP_ORIGIN: ${{ inputs.APP_ORIGIN }}
-          NEXT_PUBLIC_APP_ORIGIN: ${{ inputs.NEXT_PUBLIC_APP_ORIGIN }}
-          NEXT_PUBLIC_APP_ENV: ${{ inputs.NEXT_PUBLIC_APP_ENV }}
-          SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY }}
-          NGINX_HTPASSWD: ${{ secrets.NGINX_HTPASSWD }}
-          MAILJET_APIKEY_PUBLIC: ${{ secrets.MAILJET_APIKEY_PUBLIC }}
-          MAILJET_APIKEY_PRIVATE: ${{ secrets.MAILJET_APIKEY_PRIVATE }}
-          S3_UPLOAD_KEY: ${{ secrets.S3_UPLOAD_KEY }}
-          S3_UPLOAD_SECRET: ${{ secrets.S3_UPLOAD_SECRET }}
-          S3_UPLOAD_BUCKET: ${{ inputs.S3_UPLOAD_BUCKET }}
-          S3_UPLOAD_REGION: ${{ inputs.S3_UPLOAD_REGION }}
-          S3_UPLOAD_ROOTFOLDER: ${{ inputs.S3_UPLOAD_ROOTFOLDER }}
-          FELT_TOKEN: ${{ secrets.FELT_TOKEN }}
-          ASSETS_BUCKET_HOST: ${{ secrets.ASSETS_BUCKET_HOST }}
-          ASSETS_BUCKET_PATH: ${{ secrets.ASSETS_BUCKET_PATH }}
-          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-          TS_API_KEY: ${{ secrets.TS_API_KEY }}
-
-      - name: Create Deployment and deploy
-        run: >
-          aws lightsail create-container-service-deployment
-          --cli-input-yaml file://deployment-config.yml
-          --output yaml
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/n0p8j4k5/
+          docker push --all-tags public.ecr.aws/n0p8j4k5/trassenscout/app

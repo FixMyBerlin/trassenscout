@@ -1,5 +1,6 @@
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
+import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useState } from "react"
 import Map, {
@@ -15,7 +16,7 @@ type Props = {
   marker: { lat: number; lng: number } | undefined
   maptilerUrl: string
   defaultViewState?: LngLatBoundsLike
-  surveySlug: string
+  surveySlug: AllowedSurveySlugs
 }
 
 export const EditableSurveyResponseFormMap: React.FC<Props> = ({
@@ -83,7 +84,7 @@ export const EditableSurveyResponseFormMap: React.FC<Props> = ({
             latitude={marker.lat}
             anchor="bottom"
           >
-            <SurveyStaticPin />
+            <SurveyStaticPin surveySlug={surveySlug} />
           </Marker>
         )}
         <BackgroundSwitcher

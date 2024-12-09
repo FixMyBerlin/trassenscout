@@ -1,6 +1,5 @@
 import { Spinner } from "@/src/core/components/Spinner"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { H2 } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
@@ -20,6 +19,7 @@ import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { BlitzPage, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
+import clsx from "clsx"
 import { Suspense } from "react"
 
 export const SurveyResponseWithLocation = () => {
@@ -70,21 +70,33 @@ export const SurveyResponseWithLocation = () => {
   return (
     <>
       <MetaTags noindex title={`Beteiligung ${survey.title}`} />
-      <PageHeader title={survey.title} className="mt-12" description={<SurveyTabs />} />
+      <div className="flex items-center justify-center px-6">
+        <PageHeader
+          title={survey.title}
+          className="mt-12 w-full max-w-7xl"
+          description={<SurveyTabs />}
+        />
+      </div>
 
-      <div className="mt-12 space-y-4">
-        <H2>Beiträge mit Ortsangabe </H2>
-        <div className="flex w-full max-w-full flex-col gap-2 lg:flex-row">
-          <section className="shrink-0 lg:w-[46%]">
+      <div className="mt-12 space-y-4 px-4">
+        <div
+          className={clsx(
+            // todo survey clean up after survey BB (status are too long, blt are not used)
+            survey.slug === "radnetz-brandenburg" && "flex-col",
+            "flex w-full max-w-full gap-2 lg:flex-row",
+          )}
+        >
+          <section className="h-[1000px] flex-grow">
             <SurveyFeedbackWithLocationOverviewMap
               maptilerUrl={maptilerUrl}
               defaultViewState={defaultViewState}
               selectedSurveyResponse={selectedSurveyResponse}
               surveyResponsesFeedbackPartWithLocation={feedbackSurveyResponses}
               locationRef={locationRef!}
+              surveySlug={survey.slug}
             />
           </section>
-          <section className="flex-grow rounded-md drop-shadow-md">
+          <section className="rounded-md drop-shadow-md lg:w-[580px]">
             <EditableSurveyResponseListItem
               key={selectedSurveyResponse?.id}
               response={selectedSurveyResponse!}
@@ -102,7 +114,7 @@ export const SurveyResponseWithLocation = () => {
 
 const SurveyResponseWithLocationPage: BlitzPage = () => {
   return (
-    <LayoutRs>
+    <LayoutRs fullWidth>
       <Suspense fallback={<Spinner page />}>
         <SurveyResponseWithLocation />
       </Suspense>

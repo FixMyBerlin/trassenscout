@@ -17,7 +17,12 @@ export default async function DashboardPage() {
   const projects = await invoke(getProjectsWithGeometryWithMembershipRole, {})
 
   if (!projects.length) {
-    return <NoProjectMembershipsYet />
+    return (
+      <>
+        <NoProjectMembershipsYet />
+        <AdminProjectsList />
+      </>
+    )
   }
 
   return (

@@ -1,6 +1,5 @@
 import seedCalendarEntries from "./seeds/calenderEntries"
 import seedContacts from "./seeds/contacts"
-import seedDevData from "./seeds/devData"
 import seedMemberships from "./seeds/memberships"
 import seedOperators from "./seeds/operators"
 import seedProjects from "./seeds/projects"
@@ -46,7 +45,6 @@ const seed = async () => {
     await seedSubsubsectionTask()
     await seedSubsubsectionInfra()
     await seedSubsubsectionSpecial()
-    await seedDevData()
   }
 }
 
