@@ -26,9 +26,9 @@ export default async function AdminSurveysPage() {
               <div className="flex items-center justify-between">
                 <h2>{survey.slug}</h2>
                 {allowedSurveySlugs.includes(survey.slug) ? (
-                  <StatusLabel label="Ist konfiguriert" colorClass="bg-green-200" />
+                  <StatusLabel label="Ist konfiguriert" className="bg-green-200" />
                 ) : (
-                  <StatusLabel label="NICHT konfiguriert" colorClass="bg-red-700 text-white" />
+                  <StatusLabel label="NICHT konfiguriert" className="bg-red-700 text-white" />
                 )}
               </div>
               <div className="space-x-3">

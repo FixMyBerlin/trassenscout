@@ -17,8 +17,8 @@ export const SurveyStaticPinWithStatusColor: React.FC<Props> = ({
   small,
 }) => {
   const { status: statusConfig } = getBackendConfigBySurveySlug(surveySlug)
-  const statusColorClass = statusConfig
-    .find((s) => s.value === status)
-    ?.colorClass.replace("bg-", "fill-")
-  return <SurveyStaticPin small={small} light={!selected} colorClass={statusColorClass} />
+  const statusColor = statusConfig?.find((s) => s.value === status)?.color
+  return (
+    <SurveyStaticPin surveySlug={surveySlug} small={small} light={!selected} color={statusColor} />
+  )
 }

@@ -21,10 +21,6 @@ export const EditableSurveyResponseStatusLabel = ({ status, surveySlug }: Props)
   }
 
   return (
-    <StatusLabel
-      icon={statusConfig.icon}
-      label={statusConfig.label}
-      colorClass={statusConfig.colorClass}
-    />
+    <StatusLabel icon={statusConfig.icon} label={statusConfig.label} color={statusConfig.color} />
   )
 }
