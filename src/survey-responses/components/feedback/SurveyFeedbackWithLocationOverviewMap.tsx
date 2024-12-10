@@ -64,7 +64,6 @@ export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
         id="mainMap"
         initialViewState={{
           bounds: defaultViewState,
-          fitBoundsOptions: { padding: 50 },
         }}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         RTLTextPlugin={false}
