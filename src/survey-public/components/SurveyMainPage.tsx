@@ -174,7 +174,7 @@ export const SurveyMainPage: React.FC<Props> = ({
     }, 900)
   }
 
-  const handleMoreFeedback = () => {
+  const handleMoreToFeedback = () => {
     setStage("FEEDBACK")
     setProgress(stageProgressDefinition["FEEDBACK"])
     scrollToTopWithDelay()
@@ -224,6 +224,13 @@ export const SurveyMainPage: React.FC<Props> = ({
     ],
   )
 
+  const handleEmailToFeedback = () => {
+    setFeedbackKey(feedbackKey + 1)
+    setStage("FEEDBACK")
+    setProgress(stageProgressDefinition["FEEDBACK"])
+    scrollToTopWithDelay()
+  }
+
   const handleFinish = () => {
     setStage("EMAIL")
     setProgress(stageProgressDefinition["EMAIL"])
@@ -249,7 +256,11 @@ export const SurveyMainPage: React.FC<Props> = ({
       break
     case "MORE":
       component = (
-        <More more={moreDefinition} onClickMore={handleMoreFeedback} onClickFinish={handleFinish} />
+        <More
+          more={moreDefinition}
+          onClickMore={handleMoreToFeedback}
+          onClickFinish={handleFinish}
+        />
       )
       break
     case "FEEDBACK":
@@ -268,7 +279,7 @@ export const SurveyMainPage: React.FC<Props> = ({
       )
       break
     case "EMAIL":
-      component = <Email email={emailDefinition} onClickMore={handleMoreFeedback} />
+      component = <Email email={emailDefinition} onClickMore={handleEmailToFeedback} />
       break
   }
 
