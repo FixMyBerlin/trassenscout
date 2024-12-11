@@ -1,11 +1,19 @@
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
-import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
+import { SurveyStaticPinWithStatusColor } from "@/src/core/components/Map/SurveyStaticPinWithStatusColor"
+
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
 import { Routes, useParam } from "@blitzjs/next"
 import "maplibre-gl/dist/maplibre-gl.css"
 import router from "next/router"
 import { useState } from "react"
-import Map, { LngLatBoundsLike, Marker, NavigationControl } from "react-map-gl/maplibre"
+import Map, {
+  Layer,
+  LngLatBoundsLike,
+  Marker,
+  NavigationControl,
+  Source,
+} from "react-map-gl/maplibre"
 
 type Props = {
   maptilerUrl: string
@@ -13,6 +21,8 @@ type Props = {
   selectedSurveyResponse: any
   surveyResponsesFeedbackPartWithLocation: any[]
   locationRef: number
+  //todo survey clean up after survey BB
+  surveySlug: AllowedSurveySlugs
 }
 
 export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
@@ -21,6 +31,7 @@ export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
   selectedSurveyResponse,
   locationRef,
   surveyResponsesFeedbackPartWithLocation,
+  surveySlug,
 }) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const surveyId = useParam("surveyId", "number")
@@ -48,16 +59,41 @@ export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
   }
 
   return (
-    <div className="h-[100vh] overflow-clip rounded-md drop-shadow-md">
+    <div className="h-full rounded-md drop-shadow-md">
       <Map
         id="mainMap"
         initialViewState={{
           bounds: defaultViewState,
         }}
-        scrollZoom={false}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         RTLTextPlugin={false}
+        minZoom={6}
+        maxZoom={16}
       >
+        {/*  todo survey clean up after survey BB */}
+        {surveySlug === "radnetz-brandenburg" && (
+          <Source
+            key="SourceNetzentwurf"
+            type="vector"
+            minzoom={6}
+            maxzoom={10}
+            tiles={[
+              "https://api.maptiler.com/tiles/650084a4-a206-4873-8873-e3a43171b6ea/{z}/{x}/{y}.pbf?key=ECOoUBmpqklzSCASXxcu",
+            ]}
+          >
+            <Layer
+              id="LayerNetzentwurf"
+              type="line"
+              source-layer="default"
+              beforeId="Fühung unklar"
+              paint={{
+                "line-color": "hsl(30, 100%, 50%)",
+                "line-width": ["interpolate", ["linear"], ["zoom"], 0, 1, 8, 1.5, 13.8, 5],
+                "line-dasharray": [3, 2],
+              }}
+            />
+          </Source>
+        )}
         {surveyResponsesFeedbackPartWithLocation.map((r) => (
           <Marker
             key={r.id}
@@ -68,7 +104,7 @@ export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
             anchor="bottom"
             onClick={() => handleSelect(r.id)}
           >
-            <SurveyStaticPin light />
+            <SurveyStaticPinWithStatusColor status={r.status} surveySlug={surveySlug} small />
           </Marker>
         ))}
         <Marker
@@ -78,7 +114,12 @@ export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
           latitude={selectedSurveyResponse.data[locationRef].lat}
           anchor="bottom"
         >
-          <SurveyStaticPin />
+          <SurveyStaticPinWithStatusColor
+            status={selectedSurveyResponse.status}
+            surveySlug={surveySlug}
+            selected={true}
+            small
+          />
         </Marker>
         <BackgroundSwitcher
           className="absolute left-4 top-4"

@@ -36,7 +36,7 @@ export const StakeholderSectionListItemStatus: React.FC<Props> = ({ status }) =>
     <StatusLabel
       icon={statusIcon[status]}
       label={stakeholderNotesStatus[status]}
-      colorClass={clsx(statusColors[status], "min-w-[200px]")}
+      className={clsx(statusColors[status], "min-w-[200px]")}
     />
   )
 }

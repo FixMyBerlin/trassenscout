@@ -1,0 +1,78 @@
+services:
+  app:
+    container_name: app
+    image: public.ecr.aws/n0p8j4k5/trassenscout/app:${NEXT_PUBLIC_APP_ENV}-latest
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    env_file: ".env"
+    environment:
+      FORCE_COLOR: 1
+    labels:
+      traefik.enable: true
+      # traefik.http.routers.server.rule: Host(`${APP_DOMAIN}`) || Host(`www.${APP_DOMAIN}`) ## add back later and add unused www.staging.* domain
+      # We access `.env` variables directly here
+      traefik.http.routers.server.rule: Host(`${APP_DOMAIN}`)
+      traefik.http.routers.server.entrypoints: websecure
+      traefik.http.routers.server.tls.certresolver: letsencrypt
+      traefik.http.routers.server.tls: true
+      traefik.http.services.container.loadbalancer.server.port: 3000
+    depends_on:
+      db:
+        condition: service_healthy
+    logging:
+      driver: journald
+  db:
+    container_name: db
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+      TZ: Europe/Berlin
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # We access `.env` variables directly here
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: journald
+  traefik:
+    container_name: traefik
+    image: traefik:v3.2
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Berlin
+    command:
+      - "--log.level=INFO"
+      - "--api.insecure=false"
+      - "--api.dashboard=false"
+      - "--providers.docker=true"
+      # Do not expose containers unless explicitly told so
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.email=dev-team@fixmycity.de"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
+    logging:
+      driver: journald
+
+volumes:
+  pgdata:

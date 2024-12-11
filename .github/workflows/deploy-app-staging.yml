@@ -3,31 +3,24 @@ on:
   push:
     branches:
       - develop
+
 jobs:
-  call-deploy-app:
-    uses: ./.github/workflows/deploy-app.yml
+  setup_env:
+    uses: ./.github/workflows/setup-env.yml
+    secrets: inherit
     with:
-      APP_ORIGIN: http://staging.trassenscout.de
-      NEXT_PUBLIC_APP_ORIGIN: http://staging.trassenscout.de
-      NEXT_PUBLIC_APP_ENV: staging
-      SERVICE_NAME: trassenscout-staging
-      S3_UPLOAD_BUCKET: trassenscout
-      S3_UPLOAD_REGION: eu-central-1
-      S3_UPLOAD_ROOTFOLDER: upload-staging
       ENVIRONMENT: staging
-      URL: staging.trassenscout.de
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      SESSION_SECRET_KEY: ${{ secrets.SESSION_SECRET_KEY}}
-      NGINX_HTPASSWD: ${{ secrets.NGINX_HTPASSWD }}
-      MAILJET_APIKEY_PUBLIC: ${{ secrets.MAILJET_APIKEY_PUBLIC }}
-      MAILJET_APIKEY_PRIVATE: ${{ secrets.MAILJET_APIKEY_PRIVATE }}
-      S3_UPLOAD_KEY: ${{ secrets.S3_UPLOAD_KEY }}
-      FELT_TOKEN: ${{ secrets.FELT_TOKEN }}
-      S3_UPLOAD_SECRET: ${{ secrets.S3_UPLOAD_SECRET }}
-      ASSETS_BUCKET_HOST: ${{ secrets.ASSETS_BUCKET_HOST }}
-      ASSETS_BUCKET_PATH: ${{ secrets.ASSETS_BUCKET_PATH }}
-      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-      TS_API_KEY: ${{ secrets.TS_API_KEY }}
+
+  deploy-app:
+    needs: setup_env
+    uses: ./.github/workflows/deploy-app.yml
+    secrets: inherit
+    with:
+      ENVIRONMENT: staging
+
+  restart-services:
+    needs: deploy-app
+    uses: ./.github/workflows/restart-services.yml
+    secrets: inherit
+    with:
+      ENVIRONMENT: staging

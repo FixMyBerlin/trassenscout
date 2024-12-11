@@ -6,7 +6,7 @@ export const updateInvite = async (inviteToken: string | undefined | null, email
 
   // Check if invite is valid and update/invalidate it at the same time
   const invite = await db.invite.update({
-    where: { token: inviteToken, email, status: "PENDING" },
+    where: { token: inviteToken, email: email.toLocaleLowerCase(), status: "PENDING" },
     data: { status: "ACCEPTED" },
   })
 
