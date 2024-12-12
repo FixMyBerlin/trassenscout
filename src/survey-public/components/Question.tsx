@@ -1,8 +1,10 @@
 import {
   TFeedbackQuestion,
   TQuestion,
+  TReadOnlyProps,
   TSingleOrMultiResponseProps,
-  TTextProps,
+  TTextareaProps,
+  TTextfieldProps,
 } from "@/src/survey-public/components/types"
 import { SurveyH2 } from "./core/Text"
 import { SurveyLabeledCheckboxGroup } from "./core/form/SurveyLabeledCheckboxGroup"
@@ -44,19 +46,22 @@ const MultipleResponseComponent: React.FC<TSingleOrMultuResponseComponentProps> 
   />
 )
 
-type TTextResponseComponentProps = {
+type TTextfieldResponseComponentProps = {
   id: number
-} & TTextProps
+} & TTextfieldProps
+
+type TTextareaResponseComponentProps = {
+  id: number
+} & TTextareaProps
+
 type TReadOnlyResponseComponentProps = {
   id: number
-  queryId: string
-} & TTextProps
+} & TReadOnlyProps
 
-const TextResponseComponent: React.FC<TTextResponseComponentProps> = ({
+const TextResponseComponent: React.FC<TTextareaResponseComponentProps> = ({
   id,
   placeholder,
   caption,
-  maxLength,
 }) => (
   <>
     <SurveyLabeledTextareaField
@@ -64,14 +69,24 @@ const TextResponseComponent: React.FC<TTextResponseComponentProps> = ({
       label={""}
       placeholder={placeholder?.de}
       caption={caption?.de}
-      maxLength={maxLength}
+      // we validate max length with zod according to the validation configuration of the survey
+      maxLength={10000}
     />
   </>
 )
 
-const TextFieldResponseComponent: React.FC<TTextResponseComponentProps> = ({ id, placeholder }) => (
+const TextFieldResponseComponent: React.FC<TTextfieldResponseComponentProps> = ({
+  id,
+  placeholder,
+}) => (
   <>
-    <SurveyLabeledTextField name={`text-${id}`} placeholder={placeholder?.de} label={""} />
+    <SurveyLabeledTextField
+      name={`text-${id}`}
+      placeholder={placeholder?.de}
+      label={""}
+      // we validate max length with zod according to the validation configuration of the survey
+      maxLength={10000}
+    />
   </>
 )
 
@@ -81,7 +96,6 @@ const ReadOnlyResponseComponent: React.FC<TReadOnlyResponseComponentProps> = ({ 
   </>
 )
 
-// TODO type
 const CustomComponent = (props: any) => (
   <div className="border-2 border-black bg-gray-200 p-1">
     <code>

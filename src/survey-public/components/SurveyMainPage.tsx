@@ -13,9 +13,10 @@ import surveyFeedbackEmail from "@/src/survey-responses/mutations/surveyFeedback
 import createSurveySession from "@/src/survey-sessions/mutations/createSurveySession"
 import { useParam } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
-import { useCallback, useEffect, useState } from "react"
-import { getCompletedQuestionIds } from "../utils/getCompletedQuestionIds"
+import { useEffect, useState } from "react"
+import { createSurveySchema } from "../utils/createSurveySchema"
 import { getBackendConfigBySurveySlug } from "../utils/getConfigBySurveySlug"
+import { getQuestionsAsArray } from "../utils/getQuestionsAsArray"
 import PublicSurveyForm from "./core/form/PublicSurveyForm"
 import {
   TEmail,
@@ -68,10 +69,27 @@ export const SurveyMainPage: React.FC<Props> = ({
   const [createSurveyResponseMutation] = useMutation(createSurveyResponse)
   const [surveyFeedbackEmailMutation] = useMutation(surveyFeedbackEmail)
   const [surveyPageProgress, setSurveyPageProgress] = useState(0)
-  const [isSurveyPageCompleted, setIsSurveyPageCompleted] = useState(false)
-  const [isFirstPageCompleted, setIsFirstPageCompleted] = useState(false)
-  const [isSecondPageCompleted, setIsSecondPageCompleted] = useState(false)
   const [isMapDirty, setIsMapDirty] = useState(false)
+
+  const surveyFormSchema = createSurveySchema(
+    getQuestionsAsArray({ definition: surveyDefinition, surveyPart: "survey" }),
+  )
+
+  const { evaluationRefs } = responseConfig
+  const feedbackCategoryId = evaluationRefs["feedback-category"]
+  const feedbackLocationId = evaluationRefs["feedback-location"]
+  const feedbackFirstPageQuestions = feedbackDefinition.pages.find((p) => p.id === 1)!.questions
+  let feedbackSecondPageQuestions = feedbackDefinition.pages
+    .find((p) => p.id === 2)!
+    .questions.filter((q) => q.id !== feedbackLocationId)
+  const feedbackQuestions = [
+    feedbackFirstPageQuestions.find((q) => q.id === feedbackCategoryId)!,
+    // todo clean up or refactor after survey BB
+    // for BB we have a the map for line selection on the first page - so we manually add it here for validation
+    feedbackFirstPageQuestions.find((q) => q.id === 21)!,
+    ...feedbackSecondPageQuestions,
+  ]
+  const feedbackFormSchema = createSurveySchema(feedbackQuestions)
 
   useEffect(() => {
     const root = document.documentElement
@@ -89,9 +107,6 @@ export const SurveyMainPage: React.FC<Props> = ({
       return surveySession.id
     }
   }
-
-  const feedbackFirstPageQuestionIds = feedbackDefinition.pages[0]?.questions.map((q) => q.id)
-  const secondPageQuestionIds = feedbackDefinition.pages[1]?.questions.map((q) => q.id)
 
   const isUserLocationQuestionId = responseConfig.evaluationRefs["is-feedback-location"]
   const userLocationQuestionId = responseConfig.evaluationRefs["feedback-location"]
@@ -174,55 +189,18 @@ export const SurveyMainPage: React.FC<Props> = ({
     }, 900)
   }
 
-  const handleMoreFeedback = () => {
+  const handleEmailToFeedback = () => {
+    setFeedbackKey(feedbackKey + 1)
     setStage("FEEDBACK")
     setProgress(stageProgressDefinition["FEEDBACK"])
     scrollToTopWithDelay()
   }
 
-  const handleSurveyChange = useCallback(
-    (values: Record<string, any>) => {
-      const { pages } = surveyDefinition
-      const questions = pages[surveyPageProgress]!.questions
-      const pageQuestionIds = questions?.map((q) => q.id)
-
-      const completedQuestionIds = getCompletedQuestionIds(values)
-
-      if (!questions || !questions.length) {
-        setIsSurveyPageCompleted(true)
-      } else {
-        // check if all questions from page have been answered; compare arrays
-        setIsSurveyPageCompleted(
-          pageQuestionIds!.every((val) => completedQuestionIds.includes(val)),
-        )
-      }
-    },
-    [surveyDefinition, surveyPageProgress],
-  )
-
-  const handleFeedbackChange = useCallback(
-    (values: Record<string, any>) => {
-      const completedQuestionIds = getCompletedQuestionIds(values)
-      // check if all questions from page 1 and 2 have been answered; compare arrays
-      setIsFirstPageCompleted(
-        feedbackFirstPageQuestionIds!.every((val) => completedQuestionIds.includes(val)),
-      )
-      setIsSecondPageCompleted(
-        values[`single-${isUserLocationQuestionId}`] === "1"
-          ? secondPageQuestionIds!.every((val) => completedQuestionIds.includes(val)) && isMapDirty
-          : secondPageQuestionIds!
-              .filter((id) => id !== userLocationQuestionId)
-              .every((val) => completedQuestionIds.includes(val)),
-      )
-    },
-    [
-      isMapDirty,
-      isUserLocationQuestionId,
-      feedbackFirstPageQuestionIds,
-      secondPageQuestionIds,
-      userLocationQuestionId,
-    ],
-  )
+  const handleMoreToFeedback = () => {
+    setStage("FEEDBACK")
+    setProgress(stageProgressDefinition["FEEDBACK"])
+    scrollToTopWithDelay()
+  }
 
   const handleFinish = () => {
     setStage("EMAIL")
@@ -242,14 +220,17 @@ export const SurveyMainPage: React.FC<Props> = ({
         <Survey
           surveyPageProgressProps={{ surveyPageProgress, setSurveyPageProgress }}
           setStage={setStage}
-          isPageCompleted={isSurveyPageCompleted}
           survey={surveyDefinition}
         />
       )
       break
     case "MORE":
       component = (
-        <More more={moreDefinition} onClickMore={handleMoreFeedback} onClickFinish={handleFinish} />
+        <More
+          more={moreDefinition}
+          onClickMore={handleMoreToFeedback}
+          onClickFinish={handleFinish}
+        />
       )
       break
     case "FEEDBACK":
@@ -261,14 +242,12 @@ export const SurveyMainPage: React.FC<Props> = ({
           feedback={feedbackDefinition}
           responseConfig={responseConfig}
           onBackClick={handleFeedbackToMore}
-          isFirstPageCompletedProps={{ isFirstPageCompleted, setIsFirstPageCompleted }}
-          isSecondPageCompletedProps={{ isSecondPageCompleted, setIsSecondPageCompleted }}
           setIsMapDirty={setIsMapDirty}
         />
       )
       break
     case "EMAIL":
-      component = <Email email={emailDefinition} onClickMore={handleMoreFeedback} />
+      component = <Email email={emailDefinition} onClickMore={handleEmailToFeedback} />
       break
   }
 
@@ -304,14 +283,14 @@ export const SurveyMainPage: React.FC<Props> = ({
     <ProgressContext.Provider value={{ progress, setProgress }}>
       <SurveyLayout canonicalUrl={surveyDefinition.canonicalUrl} logoUrl={surveyDefinition.logoUrl}>
         <Debug className="border border-red-500">
-          <code>stage: {stage}</code>{" "}
+          <code>stage: {stage}</code>
         </Debug>
         <div className={isSpinner ? "blur-sm" : ""}>
           {stage === "START" || stage === "SURVEY" ? (
             <PublicSurveyForm
+              schema={surveyFormSchema}
               // key is necessary to reset form state when switching between survey and feedback part
               key={1}
-              onChangeValues={handleSurveyChange}
               onSubmit={handleSurveySubmit}
             >
               {component}
@@ -320,8 +299,8 @@ export const SurveyMainPage: React.FC<Props> = ({
             <PublicSurveyForm
               // feedback key / updating the key is necessary to reset form state when feedback part is filled out multiple times
               key={2 + feedbackKey}
+              schema={feedbackFormSchema}
               onSubmit={handleFeedbackSubmit}
-              onChangeValues={handleFeedbackChange}
             >
               {component}
             </PublicSurveyForm>

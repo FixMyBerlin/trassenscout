@@ -59,7 +59,7 @@ export const SurveyLabeledTextareaField = forwardRef<
           textareaClasName,
           "mt-1 block h-52 w-full rounded-md shadow-sm sm:text-sm",
           hasError
-            ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
+            ? "border-red-500 shadow-red-200 focus:border-red-500 focus:ring-red-500"
             : "border-gray-300 focus:border-[var(--survey-primary-color)] focus:ring-[var(--survey-dark-color)]",
         )}
       />
@@ -67,7 +67,7 @@ export const SurveyLabeledTextareaField = forwardRef<
 
       <ErrorMessage
         render={({ message }) => (
-          <div role="alert" className="mt-1 text-sm text-red-800">
+          <div role="alert" className="mt-1 text-sm text-red-500">
             {message}
           </div>
         )}

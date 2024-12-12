@@ -1,22 +1,24 @@
 import { SurveyScreenHeader } from "@/src/survey-public/components/core/layout/SurveyScreenHeader"
-import { TMapProps, TPage, TTextProps } from "@/src/survey-public/components/types"
-import { Fragment } from "react"
-import { useFormContext } from "react-hook-form"
+import { TMapProps, TPage, TTextareaProps } from "@/src/survey-public/components/types"
+import { Fragment, useState } from "react"
+import { FieldErrors, FieldValues, useFormContext } from "react-hook-form"
 import { MapProvider } from "react-map-gl/maplibre"
+import { getQuestionNames } from "../../utils/getQuestionNames"
 import { Question } from "../Question"
 import { SurveyH2, SurveyP } from "../core/Text"
 import { SurveyButton } from "../core/buttons/SurveyButton"
 import { SurveyButtonWrapper } from "../core/buttons/SurveyButtonWrapper"
+import { SurveyFormErrorsBox } from "../core/form/SurveyFormErrorsBox"
 import { SurveyLabeledTextareaField } from "../core/form/SurveyLabeledTextareaField"
 import { SurveyMap } from "../maps/SurveyMap"
 import { SurveyMapLegend } from "../maps/SurveyMapLegend"
 
 type Props = {
+  formErrors?: FieldErrors<FieldValues>
   mapProps: TMapProps
   maptilerUrl: string
   page: TPage
   onButtonClick: any
-  isCompletedProps: { isCompleted: boolean; setIsCompleted: (value: boolean) => void }
   userTextIndices: (number | undefined)[]
   setIsMapDirty: (value: boolean) => void
   pinId: number
@@ -29,7 +31,6 @@ export const FeedbackSecondPage: React.FC<Props> = ({
   mapProps,
   maptilerUrl,
   page,
-  isCompletedProps: { isCompleted, setIsCompleted },
   onButtonClick,
   userTextIndices,
   setIsMapDirty,
@@ -39,9 +40,23 @@ export const FeedbackSecondPage: React.FC<Props> = ({
   userLocationQuestionId,
 }) => {
   const { title, description, questions, buttons } = page
+  const {
+    formState: { errors },
+    trigger,
+  } = useFormContext()
+  const watchIsMap = useFormContext().watch(`single-${isUserLocationQuestionId}`)
+  const watchIsLocationValue = useFormContext().watch(`map-${userLocationQuestionId}`)
+  const [isButtonTouched, setIsButtonTouched] = useState(false)
 
-  // watch if user choses to set a pin, update component if user choses to set a pin
-  const isMap = useFormContext().watch(`single-${isUserLocationQuestionId}`) === "1"
+  const relevantQuestions = questions!.filter(
+    (q) => ![isUserLocationQuestionId, userLocationQuestionId].includes(q.id),
+  )
+  const relevantQuestionNames = getQuestionNames(relevantQuestions)
+
+  const handleOnClick = () => {
+    setIsButtonTouched(true)
+    trigger(...relevantQuestionNames)
+  }
 
   return (
     <>
@@ -49,7 +64,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
       {/* @ts-expect-error */}
       <Question question={questions.find((q) => q.id === isUserLocationQuestionId)} />
 
-      {isMap && (
+      {watchIsMap === "1" && (
         <>
           <SurveyH2>
             {/* @ts-expect-error */}
@@ -64,8 +79,6 @@ export const FeedbackSecondPage: React.FC<Props> = ({
                 config: mapProps.config,
               }}
               pinId={pinId}
-              questionIds={questions?.map((q) => q.id) || []}
-              setIsCompleted={setIsCompleted}
               // todo survey clean up or refactor after survey BB line selection
               lineGeometryId={lineGeometryId}
             />
@@ -78,7 +91,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
         {userTextIndices.map((questionId) => {
           const q = questions!.find((q) => q.id === questionId)
           if (q) {
-            const userTextQuestionProps = q.props as TTextProps
+            const userTextQuestionProps = q.props as TTextareaProps
             return (
               <Fragment key={q.id}>
                 <SurveyH2>{q.label.de} *</SurveyH2>
@@ -86,7 +99,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
                 <SurveyLabeledTextareaField
                   caption={userTextQuestionProps.caption?.de}
                   key={q.id}
-                  maxLength={userTextQuestionProps.maxLength ?? 2000}
+                  maxLength={userTextQuestionProps.validation?.maxLength ?? 2000}
                   name={`text-${q.id}`}
                   placeholder={userTextQuestionProps.placeholder?.de}
                   label={""}
@@ -96,21 +109,37 @@ export const FeedbackSecondPage: React.FC<Props> = ({
           }
         })}
       </div>
+      {isButtonTouched && (
+        <SurveyFormErrorsBox
+          customErrors={
+            watchIsMap === "1" && !watchIsLocationValue
+              ? {
+                  [`map-${userLocationQuestionId}`]: {
+                    message:
+                      "Sie haben oben angegeben, dass Sie eine konkrete Stelle auswählen möchten. Das Setzen des Pins ist daher verpflichtend.",
+                  },
+                }
+              : undefined
+          }
+          formErrors={errors}
+          surveyPart="feedback"
+        />
+      )}
       <SurveyButtonWrapper>
         <div className="flex flex-col gap-6">
           <SurveyButton
             color={buttons[0]?.color}
-            disabled={!isCompleted}
             id="submit-more"
-            type="submit"
+            onClick={watchIsMap === "1" && !watchIsLocationValue ? handleOnClick : undefined}
+            type={watchIsMap === "1" && !watchIsLocationValue ? "button" : "submit"}
           >
             {buttons![0]?.label.de}
           </SurveyButton>
           <SurveyButton
             color={buttons[1]?.color}
-            disabled={!isCompleted}
             id="submit-finish"
-            type="submit"
+            onClick={watchIsMap === "1" && !watchIsLocationValue ? handleOnClick : undefined}
+            type={watchIsMap === "1" && !watchIsLocationValue ? "button" : "submit"}
           >
             {buttons![1]?.label.de}
           </SurveyButton>

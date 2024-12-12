@@ -1,6 +1,5 @@
 import { LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import { SurveyBackgroundSwitcher } from "@/src/survey-public/components/maps/SurveyBackgroundSwitcher"
-import { getCompletedQuestionIds } from "@/src/survey-public/utils/getCompletedQuestionIds"
 import {
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
@@ -30,14 +29,9 @@ export type SurveyMapProps = {
       bounds: [number, number, number, number]
     }
   }
-  setIsCompleted: (value: boolean) => void
 }
 
-export const SurveyMapLine: React.FC<SurveyMapProps> = ({
-  projectMap,
-  className,
-  setIsCompleted,
-}) => {
+export const SurveyMapLine: React.FC<SurveyMapProps> = ({ projectMap, className }) => {
   const { mainMap } = useMap()
   const [isMediumScreen, setIsMediumScreen] = useState(false)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
@@ -101,13 +95,10 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
     )
     setValue(`custom-${lineQuestionId}`, lineId || "unbekannt")
     // @ts-expect-error we know that the geometry is a line string
-    setValue(`custom-${geometryQuestionId}`, JSON.stringify(lineGeometry.coordinates))
-
-    const values = getValues()
-    const completedQuestionIds = getCompletedQuestionIds(values)
-
-    // check if all questions from page one have been answered; compare arrays
-    setIsCompleted(firstPageQuestionIds!.every((val) => completedQuestionIds.includes(val)))
+    setValue(`custom-${geometryQuestionId}`, JSON.stringify(lineGeometry.coordinates), {
+      shouldValidate: true,
+      shouldDirty: true,
+    })
   }
 
   const handleMouseMove = ({ features }: MapLayerMouseEvent) => {

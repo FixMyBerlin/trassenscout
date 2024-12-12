@@ -3,6 +3,7 @@ import { scrollToTopWithDelay } from "@/src/survey-public/utils/scrollToTopWithD
 import { useAlertBeforeUnload } from "@/src/survey-public/utils/useAlertBeforeUnload"
 import { useContext, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
+import { getQuestionNames } from "../../utils/getQuestionNames"
 import { Debug } from "../core/Debug"
 import {
   TFeedback,
@@ -23,14 +24,6 @@ type Props = {
   maptilerUrl: string
   institutionsBboxes?: TInstitutionsBboxes
   setIsMapDirty: (value: boolean) => void
-  isFirstPageCompletedProps: {
-    isFirstPageCompleted: boolean
-    setIsFirstPageCompleted: (value: boolean) => void
-  }
-  isSecondPageCompletedProps: {
-    isSecondPageCompleted: boolean
-    setIsSecondPageCompleted: (value: boolean) => void
-  }
 }
 
 export const Feedback: React.FC<Props> = ({
@@ -41,16 +34,13 @@ export const Feedback: React.FC<Props> = ({
   responseConfig,
   maptilerUrl,
   setIsMapDirty,
-  isFirstPageCompletedProps: { isFirstPageCompleted, setIsFirstPageCompleted },
-  isSecondPageCompletedProps: { isSecondPageCompleted, setIsSecondPageCompleted },
 }) => {
   const { setProgress } = useContext(ProgressContext)
 
   useAlertBeforeUnload()
 
+  const { getValues, setValue, trigger, clearErrors } = useFormContext()
   const [feedbackPageProgress, setFeedbackPageProgress] = useState(0)
-
-  const { getValues, setValue } = useFormContext()
   const responsesForDebugging = getValues()
   const { evaluationRefs } = responseConfig
   const isUserLocationQuestionId = evaluationRefs["is-feedback-location"]
@@ -71,15 +61,28 @@ export const Feedback: React.FC<Props> = ({
 
   const mapProps = pages[1]?.questions.find((q) => q.id === pinId)?.props as TMapProps
 
-  const handleNextPage = () => {
-    const newFeedbackPageProgress = Math.min(pages.length, feedbackPageProgress + 1)
-    setFeedbackPageProgress(newFeedbackPageProgress)
-    setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
-    scrollToTopWithDelay()
+  const relevantQuestionsSecondPage = [
+    pages[0]!.questions.find((q) => q.id === feedbackCategoryId)!,
+    // todo clean up or refactor after survey BB
+    // for BB we have a the map for line selection on the first page - so we manually add it here for validation
+    pages[0]!.questions.find((q) => q.id === 21)!,
+  ]
+
+  const relevantQuestionNamesFirstPage = getQuestionNames(relevantQuestionsSecondPage)
+
+  const handleFirstToSecondPage = async () => {
+    const isValid = await trigger(relevantQuestionNamesFirstPage)
+    if (isValid) {
+      const newFeedbackPageProgress = 1
+      setFeedbackPageProgress(newFeedbackPageProgress)
+      setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
+      scrollToTopWithDelay()
+    }
   }
 
-  const handleBackPage = () => {
-    const newFeedbackPageProgress = Math.max(0, feedbackPageProgress - 1)
+  const handleSecondToFirstPage = () => {
+    clearErrors()
+    const newFeedbackPageProgress = 0
     setFeedbackPageProgress(newFeedbackPageProgress)
     setProgress(stageProgressDefinition["FEEDBACK"] + newFeedbackPageProgress)
     scrollToTopWithDelay()
@@ -97,12 +100,8 @@ export const Feedback: React.FC<Props> = ({
         <FeedbackFirstPage
           institutionsBboxes={institutionsBboxes}
           maptilerUrl={maptilerUrl}
-          isCompletedProps={{
-            isCompleted: isFirstPageCompleted,
-            setIsCompleted: setIsFirstPageCompleted,
-          }}
           page={pages[0]}
-          onButtonClick={handleNextPage}
+          onButtonClick={handleFirstToSecondPage}
           feedbackCategoryId={feedbackCategoryId!}
           legend={mapProps.legend}
           onBackClick={onBackClick}
@@ -110,15 +109,11 @@ export const Feedback: React.FC<Props> = ({
       )}
       {feedbackPageProgress === 1 && (
         <FeedbackSecondPage
-          isCompletedProps={{
-            isCompleted: isSecondPageCompleted,
-            setIsCompleted: setIsSecondPageCompleted,
-          }}
           setIsMapDirty={setIsMapDirty}
           maptilerUrl={maptilerUrl}
           mapProps={mapProps}
           page={pages[1] as TPage}
-          onButtonClick={handleBackPage}
+          onButtonClick={handleSecondToFirstPage}
           userTextIndices={[userText1Id, userText2Id]}
           pinId={pinId}
           isUserLocationQuestionId={isUserLocationQuestionId!}

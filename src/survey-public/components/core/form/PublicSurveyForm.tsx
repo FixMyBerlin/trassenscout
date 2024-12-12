@@ -28,6 +28,8 @@ export function PublicSurveyForm<S extends z.ZodType<any, any>>({
     mode: "onBlur",
     resolver: schema ? zodResolver(schema) : undefined,
     defaultValues: initialValues,
+    reValidateMode: "onChange",
+    criteriaMode: "all",
   })
   useEffect(() => {
     if (onChangeValues) {

@@ -1,10 +1,12 @@
 import { useParams } from "next/navigation"
 import { useRouter } from "next/router"
+import { useFormContext } from "react-hook-form"
 import { MapProvider } from "react-map-gl/maplibre"
 import { Question } from "../Question"
 import { SurveyH2, SurveyP } from "../core/Text"
 import { SurveyButton } from "../core/buttons/SurveyButton"
 import { SurveyButtonWrapper } from "../core/buttons/SurveyButtonWrapper"
+import { SurveyFormErrorsBox } from "../core/form/SurveyFormErrorsBox"
 import { SurveyScreenHeader } from "../core/layout/SurveyScreenHeader"
 import { SurveyMapLegend } from "../maps/SurveyMapLegend"
 import { SurveyMapLine } from "../maps/SurveyMapLine"
@@ -16,7 +18,6 @@ type Props = {
   onBackClick: any // TODO
   maptilerUrl: string
   feedbackCategoryId: number
-  isCompletedProps: { isCompleted: boolean; setIsCompleted: (value: boolean) => void }
   institutionsBboxes?: TInstitutionsBboxes
   // todo survey clean up or refactor after survey BB: legend for line map
   legend?: Record<string, Record<string, TLegendItem>>
@@ -27,7 +28,6 @@ export const FeedbackFirstPage: React.FC<Props> = ({
   onButtonClick,
   onBackClick,
   maptilerUrl,
-  isCompletedProps: { isCompleted, setIsCompleted },
   feedbackCategoryId,
   institutionsBboxes,
   legend,
@@ -44,6 +44,10 @@ export const FeedbackFirstPage: React.FC<Props> = ({
   ]
   // @ts-ignore
   const { surveySlug } = useParams()
+
+  const {
+    formState: { errors },
+  } = useFormContext()
 
   const { title, description, buttons, questions } = page
 
@@ -67,21 +71,17 @@ export const FeedbackFirstPage: React.FC<Props> = ({
                   ],
                 },
               }}
-              setIsCompleted={setIsCompleted} // todo
             />
           </MapProvider>
           {legend && <SurveyMapLegend legend={legend} />}
         </>
       )}
       {/* Category Question */}
+
       <Question question={questions.find((q: TQuestion) => q.id === feedbackCategoryId)} />
+      <SurveyFormErrorsBox formErrors={errors} surveyPart="feedback" />
       <SurveyButtonWrapper>
-        <SurveyButton
-          color={buttons[0].color}
-          disabled={!isCompleted}
-          type="button"
-          onClick={onButtonClick}
-        >
+        <SurveyButton color={buttons[0].color} type="button" onClick={onButtonClick}>
           {buttons[0].label.de}
         </SurveyButton>
         {buttons[1] && (

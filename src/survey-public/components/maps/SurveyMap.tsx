@@ -1,6 +1,5 @@
 import { LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import { SurveyBackgroundSwitcher } from "@/src/survey-public/components/maps/SurveyBackgroundSwitcher"
-import { getCompletedQuestionIds } from "@/src/survey-public/utils/getCompletedQuestionIds"
 import { bbox, center, lineString, multiLineString } from "@turf/turf"
 import { clsx } from "clsx"
 import maplibregl from "maplibre-gl"
@@ -31,11 +30,6 @@ export type SurveyMapProps = {
   }
   setIsMapDirty: (value: boolean) => void
   pinId: number
-  // todo as we use SurveyMap in the external survey response form, questionids and setcompleted... are optional
-  // we should seperate these components as the public survey will NOT work without these props
-  questionIds?: number[]
-  setIsCompleted?: (value: boolean) => void
-  // todo survey clean up or refactor after survey BBline selection
   lineGeometryId?: number
 }
 
@@ -44,8 +38,6 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
   pinId,
   className,
   setIsMapDirty,
-  questionIds,
-  setIsCompleted,
   lineGeometryId,
   // todo survey clean up or refactor after survey BB line selection
 }) => {
@@ -140,18 +132,14 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
 
   const onMarkerDrag = (event: MarkerDragEvent) => {
     logEvents((_events) => ({ ..._events, onDrag: event.lngLat }))
-    setValue(`map-${pinId}`, {
-      lng: event.lngLat.lng,
-      lat: event.lngLat.lat,
-    })
-    const values = getValues()
-    const completedQuestionIds = getCompletedQuestionIds(values)
-    // todo as we use surveymap in the external survey response form , question ids and setcompleted... are optional
-    // we should seperate these components as the public survey will NOT work without these props
-    // check if all questions from page one have been answered; compare arrays
-    questionIds &&
-      setIsCompleted &&
-      setIsCompleted(questionIds!.every((val) => completedQuestionIds.includes(val)))
+    setValue(
+      `map-${pinId}`,
+      {
+        lng: event.lngLat.lng,
+        lat: event.lngLat.lat,
+      },
+      { shouldValidate: true, shouldDirty: true },
+    )
   }
 
   const onMarkerDragEnd = useCallback((event: MarkerDragEvent) => {

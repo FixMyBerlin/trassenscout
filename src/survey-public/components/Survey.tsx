@@ -10,7 +10,6 @@ import { useAlertBeforeUnload } from "../utils/useAlertBeforeUnload"
 
 type Props = {
   survey: TSurvey
-  isPageCompleted: boolean
   setStage: (value: SetStateAction<"SURVEY" | "MORE" | "FEEDBACK" | "EMAIL" | "START">) => void
   surveyPageProgressProps: {
     surveyPageProgress: number
@@ -21,15 +20,16 @@ type Props = {
 export const Survey: React.FC<Props> = ({
   survey,
   setStage,
-  isPageCompleted,
   surveyPageProgressProps: { surveyPageProgress, setSurveyPageProgress },
 }) => {
   const { setProgress } = useContext(ProgressContext)
 
   useAlertBeforeUnload()
 
-  // for debugging
-  const { getValues } = useFormContext()
+  const {
+    // for debugging
+    getValues,
+  } = useFormContext()
   const responsesForDebugging = getValues()
 
   const handleNextPage = () => {
@@ -66,7 +66,7 @@ export const Survey: React.FC<Props> = ({
           <pre>{JSON.stringify(responsesForDebugging, null, 2)}</pre>
         </code>
       </Debug>
-      {page && <Page page={page} buttonActions={buttonActions} completed={isPageCompleted} />}
+      {page && <Page page={page} buttonActions={buttonActions} />}
     </>
   )
 }

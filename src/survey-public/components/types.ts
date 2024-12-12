@@ -24,7 +24,7 @@ export type TQuestion = {
   component: "singleResponse" | "multipleResponse" | "textfield" | "readOnly" | "text"
   label: TTranslatableText
   help?: TTranslatableText
-  props: TSingleOrMultiResponseProps | TTextProps | TReadOnlyProps
+  props: TSingleOrMultiResponseProps | TReadOnlyProps | TTextfieldProps | TTextareaProps
 }
 
 export type TButtonWithAction = {
@@ -48,6 +48,13 @@ type TTranslatableText = {
 
 export type TSingleOrMultiResponseProps = {
   responses: TResponse[]
+  //validation?: {
+  // optional?: boolean // default is false
+  // todo validation for multiResponse: min/max number of responses
+  // maxResponses?: number
+  // minResponses?: number
+  // customMessage?: string
+  // }
 }
 
 export type TResponse = {
@@ -89,14 +96,34 @@ export type TLegendItem = {
   className?: string
 }
 
-export type TTextProps = {
+export type TTextfieldProps = {
   placeholder?: TTranslatableText
   caption?: TTranslatableText
-  maxLength?: number
+  validation?: {
+    type: "email" | "text" // default is text
+    optional?: boolean // default is false - so if not set it is required
+    maxLength?: number // default is 1000 for text and 5000 for textarea
+    minLength?: number // default is 1 if optional not set to false // if minLength is set then optional id overwritten
+    // customMessage?: string
+    regex?: RegExp // default is undefined
+  }
+}
+export type TTextareaProps = {
+  placeholder?: TTranslatableText
+  caption?: TTranslatableText
+  validation?: {
+    optional?: boolean // default is false - so if not set it is required
+    maxLength?: number // default is 1000 for text and 5000 for textarea
+    minLength?: number // default is 1 if optional not set to true // if minLength is set then optional id overwritten
+    // customMessage?: string
+    regex?: RegExp // default is undefined
+  }
 }
 
 export type TReadOnlyProps = {
   queryId: string
+  placeholder?: TTranslatableText
+  caption?: TTranslatableText
 }
 
 export type TFeedbackQuestion = {
@@ -104,7 +131,7 @@ export type TFeedbackQuestion = {
   id: number
   label: TTranslatableText
   component: "singleResponse" | "multipleResponse" | "text" | "map" | "custom"
-  props?: TSingleOrMultiResponseProps | TMapProps | TTextProps
+  props?: TSingleOrMultiResponseProps | TMapProps | TTextfieldProps | TTextareaProps
 }
 
 export type TFeedback = {
