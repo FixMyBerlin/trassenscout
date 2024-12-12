@@ -24,7 +24,7 @@ jobs:
 
       - name: Upgrade AWS CLI version and setup lightsailctl
         run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          curl --fail -s -S "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           unzip awscliv2.zip
           sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
 

@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Get last run commit SHA
         run: |
-          LAST_RUN_SHA=$(curl --request GET \
+          LAST_RUN_SHA=$(curl --fail -s -S --request GET \
           --url https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=${{ github.head_ref || github.ref_name }} \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           | jq -r '.workflow_runs[] | select(.conclusion == "success") | .head_sha' | head -1)
