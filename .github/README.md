@@ -1,15 +1,15 @@
 # How we work with environment variables and secrets
 
-## In Worflow
+## In Workflow
 
-- All environment variables and secrets are defined in Github:
+- All environment variables and secrets are defined in GitHub:
   - Either on repo level:
     - [Repository secrets](https://github.com/FixMyBerlin/trassenscout/settings/secrets/actions)
     - (We don't use [repository variables](https://github.com/FixMyBerlin/trassenscout/settings/variables/actions) to keep things simpler.)
   - Or on Environment level
     - [Staging](https://github.com/FixMyBerlin/trassenscout/settings/environments/2395297920/edit#environment-secrets)
     - [Production](https://github.com/FixMyBerlin/trassenscout/settings/environments/2395358496/edit#environment-secrets)
-- Some variables are dynamically created when feasable to reduce the number of variables in Github
+- Some variables are dynamically created when feasible to reduce the number of variables in GitHub
 - Consider adding things that don't change to the code instead of the environment variables/secrets
 
 ## In Docker compose
@@ -33,6 +33,7 @@
 | `POSTGRES_PASSWORD`      | `secrets.POSTGRES_PASSWORD`      |                                         |
 | `POSTGRES_DB`            | `vars.POSTGRES_DB`               |                                         |
 | `POSTGRES_HOST`          | `vars.POSTGRES_HOST`             |                                         |
+| `DATABASE_URL`           | `.env`-variable                  | In `.env` as composite value            |
 |                          |                                  |                                         |
 | `SESSION_SECRET_KEY`     | `secrets.SESSION_SECRET_KEY`     | [Required by Blitz][session-secret-key] |
 |                          |                                  |                                         |
@@ -42,7 +43,7 @@
 |                          |                                  |                                         |
 | `S3_UPLOAD_KEY`          | `secrets.S3_UPLOAD_KEY`          |                                         |
 | `S3_UPLOAD_SECRET`       | `secrets.S3_UPLOAD_SECRET`       |                                         |
-| `S3_UPLOAD_ROOTFOLDER`   | `.env`-variable                  | In `.env` as composit value             |
+| `S3_UPLOAD_ROOTFOLDER`   | `.env`-variable                  | In `.env` as composite value            |
 |                          |                                  |                                         |
 | `TS_API_KEY`             | `secrets.TS_API_KEY`             |                                         |
 |                          |                                  |                                         |
