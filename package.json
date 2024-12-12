@@ -8,7 +8,7 @@
     "start": "npm run predev:check_docker && blitz start --hostname 127.0.0.1 --port 5000",
     "dev": "blitz dev --hostname 127.0.0.1 --port 6173",
     "predev": "npm run codegen && npm run predev:check_docker",
-    "predev:check_docker": "if [[ $(docker inspect -f '{{.State.Running}}' rsv-builder-db) = \"true\" ]]; then echo Docker: Skipping – Container already running; else docker compose up --detach; fi",
+    "predev:check_docker": "if [[ $(docker inspect -f '{{.State.Running}}' ts-db) = \"true\" ]]; then echo Docker: Skipping – Container already running; else docker compose up --detach; fi",
     "codegen": "blitz codegen",
     "postdev": "docker compose stop",
     "debug": "DEBUG=blitz:* blitz console",
