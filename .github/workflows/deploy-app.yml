@@ -7,15 +7,15 @@ on:
         type: string
 
 jobs:
-  # diff_app:
-  #   uses: ./.github/workflows/diff-last-run.yml
-  #   with:
-  #     CHECK_DIFF_LOCATIONS: src/ db/ public/ emails/ docker/
+  diff_app:
+    uses: ./.github/workflows/diff-last-run.yml
+    with:
+      CHECK_DIFF_LOCATIONS: src/ db/ public/ emails/ docker/
 
   build_app:
     runs-on: ubuntu-latest
-    # needs: diff_app
-    # if: ${{ needs.diff_app.outputs.changes == 'true' }}
+    needs: diff_app
+    if: ${{ needs.diff_app.outputs.changes == 'true' }}
     environment:
       name: ${{ inputs.ENVIRONMENT }}
     steps:
