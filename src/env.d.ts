@@ -15,8 +15,8 @@ namespace NodeJS {
     readonly ADMIN_EMAIL: string
 
     readonly TS_API_KEY: string
-    readonly MAILJET_APIKEY_PUBLIC: string
-    readonly MAILJET_APIKEY_PRIVATE: string
+    readonly MAILJET_APIKEY_PUBLIC?: string
+    readonly MAILJET_APIKEY_PRIVATE?: string
     readonly NEXT_PUBLIC_APP_ENV: "development" | "staging" | "production"
     readonly SESSION_SECRET_KEY: string
 
@@ -26,9 +26,9 @@ namespace NodeJS {
       | "MORE"
       | "FEEDBACK"
       | "EMAIL"
-    readonly NEXT_PUBLIC_APP_ORIGIN:
-      | "http://127.0.0.1:5000"
-      | "https://staging,trassenscout.de"
+    readonly NEXT_PUBLIC_APP_ORIGIN?:
+      | "http://127.0.0.1:5000" // for `npm run start`
+      | "https://staging.trassenscout.de"
       | "https://trassenscout.de"
   }
 }
