@@ -3,7 +3,7 @@ import { useRouter } from "next/router"
 import { useFormContext } from "react-hook-form"
 import { MapProvider } from "react-map-gl/maplibre"
 import { Question } from "../Question"
-import { SurveyH2, SurveyP } from "../core/Text"
+import { SurveyH2 } from "../core/Text"
 import { SurveyButton } from "../core/buttons/SurveyButton"
 import { SurveyButtonWrapper } from "../core/buttons/SurveyButtonWrapper"
 import { SurveyFormErrorsBox } from "../core/form/SurveyFormErrorsBox"
@@ -90,10 +90,6 @@ export const FeedbackFirstPage: React.FC<Props> = ({
           </SurveyButton>
         )}
       </SurveyButtonWrapper>
-      <SurveyP className="text-sm sm:text-sm">
-        * Pflichtfelder <br />
-        Um fortzufahren, bitte alle Pflichtfelder ausfüllen.
-      </SurveyP>
     </>
   )
 }

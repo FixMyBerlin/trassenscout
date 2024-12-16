@@ -3,7 +3,6 @@ import type { TPage } from "@/src/survey-public/components/types"
 import { useFormContext } from "react-hook-form"
 import { getQuestionNames } from "../utils/getQuestionNames"
 import { Question } from "./Question"
-import { SurveyP } from "./core/Text"
 import { SurveyButtonWithAction } from "./core/buttons/SurveyButtonWithAction"
 import { SurveyButtonWrapper } from "./core/buttons/SurveyButtonWrapper"
 import { SurveyFormErrorsBox } from "./core/form/SurveyFormErrorsBox"
@@ -44,11 +43,6 @@ export const Page = ({ page, buttonActions }: Props) => {
           )
         })}
       </SurveyButtonWrapper>
-      {/* // todo validation */}
-      <SurveyP className="text-sm sm:text-sm">
-        * Pflichtfelder <br />
-        Um fortzufahren, bitte alle Pflichtfelder ausfüllen.
-      </SurveyP>
     </section>
   )
 }

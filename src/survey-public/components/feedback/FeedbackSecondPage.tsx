@@ -5,7 +5,7 @@ import { FieldErrors, FieldValues, useFormContext } from "react-hook-form"
 import { MapProvider } from "react-map-gl/maplibre"
 import { getQuestionNames } from "../../utils/getQuestionNames"
 import { Question } from "../Question"
-import { SurveyH2, SurveyP } from "../core/Text"
+import { SurveyH2 } from "../core/Text"
 import { SurveyButton } from "../core/buttons/SurveyButton"
 import { SurveyButtonWrapper } from "../core/buttons/SurveyButtonWrapper"
 import { SurveyFormErrorsBox } from "../core/form/SurveyFormErrorsBox"
@@ -148,11 +148,6 @@ export const FeedbackSecondPage: React.FC<Props> = ({
           Zurück
         </SurveyButton>
       </SurveyButtonWrapper>
-
-      <SurveyP className="text-sm sm:text-sm">
-        * Pflichtfelder <br />
-        Um fortzufahren, bitte alle Pflichtfelder ausfüllen.
-      </SurveyP>
     </>
   )
 }
