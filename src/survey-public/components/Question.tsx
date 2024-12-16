@@ -119,9 +119,15 @@ export const Question: React.FC<Props> = ({ question, className }) => {
   const { id, help, label, component, props } = question
   // @ts-expect-error
   const Component = components[component] || null
+
+  // todo validation: atm multipleResponse is always optional - we have to change this in the future
+  // @ts-expect-error
+  const isOptional = component === "multipleResponse" || props?.validation?.optional
   return (
     <div className={className} key={id}>
-      <SurveyH2>{label.de} *</SurveyH2>
+      <SurveyH2>
+        {label.de} {isOptional && " (optional)"}
+      </SurveyH2>
       {help && <div className="-mt-4 mb-6 text-sm text-gray-400">{help.de}</div>}
       {/* @ts-ignore */}
       {Component && <Component id={id} {...props} />}

@@ -54,7 +54,7 @@ export const surveyDefinition: TSurvey = {
           },
           component: "textfield",
           props: {
-            validation: { minLength: 4, maxLength: 4 },
+            validation: { maxLength: 4, minLength: 4 },
           },
         },
         {
