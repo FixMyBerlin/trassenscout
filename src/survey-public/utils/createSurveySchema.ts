@@ -121,16 +121,13 @@ export const createSurveySchema = (questions?: TQuestion[] | TFeedbackQuestion[]
 
         break
       case "custom":
-        schemaObject[`custom-${id}`] = z.union(
-          [
-            z.string().trim().min(1, { message: "Pflichtfeld." }),
-            z.number(),
-            z.boolean(),
-            z.object({}).passthrough(),
-            z.array(z.any()),
-          ],
-          { required_error: "Pflichtfeld." },
-        )
+        schemaObject[`custom-${id}`] = z.union([
+          z.string({ required_error: "Pflichtfeld." }).trim().min(1, { message: "Pflichtfeld." }),
+          z.number({ required_error: "Pflichtfeld." }),
+          z.boolean({ required_error: "Pflichtfeld." }),
+          z.object({}, { required_error: "Pflichtfeld." }).passthrough(),
+          z.array(z.any({ required_error: "Pflichtfeld." })),
+        ])
         break
       case "map":
         schemaObject[`map-${id}`] = z.object(
