@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { PropsWithoutRef } from "react"
 interface LabeledInputRadioCheckboxProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
   classLabelOverwrite?: string

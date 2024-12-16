@@ -3,7 +3,7 @@ import { blueButtonStyles } from "@/src/core/components/links"
 import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
 import deleteTestSurveyResponses from "@/src/survey-responses/mutations/deleteTestSurveyResponses"
 import { useMutation } from "@blitzjs/rpc"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useRouter } from "next/navigation"
 
 type DeleteButtonProps = {

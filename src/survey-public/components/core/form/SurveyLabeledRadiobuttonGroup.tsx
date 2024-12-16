@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { useFormContext } from "react-hook-form"
 import { SurveyLabeledRadiobutton, SurveyLabeledRadiobuttonProps } from "./SurveyLabeledRadiobutton"
 
