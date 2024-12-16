@@ -62,6 +62,7 @@ const TextResponseComponent: React.FC<TTextareaResponseComponentProps> = ({
   id,
   placeholder,
   caption,
+  validation,
 }) => (
   <>
     <SurveyLabeledTextareaField
@@ -69,8 +70,7 @@ const TextResponseComponent: React.FC<TTextareaResponseComponentProps> = ({
       label={""}
       placeholder={placeholder?.de}
       caption={caption?.de}
-      // we validate max length with zod according to the validation configuration of the survey
-      maxLength={10000}
+      maxLength={validation?.maxLength}
     />
   </>
 )
@@ -80,13 +80,7 @@ const TextFieldResponseComponent: React.FC<TTextfieldResponseComponentProps> = (
   placeholder,
 }) => (
   <>
-    <SurveyLabeledTextField
-      name={`text-${id}`}
-      placeholder={placeholder?.de}
-      label={""}
-      // we validate max length with zod according to the validation configuration of the survey
-      maxLength={10000}
-    />
+    <SurveyLabeledTextField name={`text-${id}`} placeholder={placeholder?.de} label={""} />
   </>
 )
 
