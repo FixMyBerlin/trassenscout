@@ -43,9 +43,11 @@ export const FeedbackSecondPage: React.FC<Props> = ({
   const {
     formState: { errors },
     trigger,
+    watch,
   } = useFormContext()
-  const watchIsMap = useFormContext().watch(`single-${isUserLocationQuestionId}`)
-  const watchIsLocationValue = useFormContext().watch(`map-${userLocationQuestionId}`)
+  // watch if user choses to set a pin ("1" -> "Ja"), update component if user choses to set a pin
+  const watchIsMap = watch(`single-${isUserLocationQuestionId}`) === "1"
+  const watchIsLocationValue = watch(`map-${userLocationQuestionId}`)
   const [isButtonTouched, setIsButtonTouched] = useState(false)
 
   const relevantQuestions = questions!.filter(
@@ -64,7 +66,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
       {/* @ts-expect-error */}
       <Question question={questions.find((q) => q.id === isUserLocationQuestionId)} />
 
-      {watchIsMap === "1" && (
+      {watchIsMap && (
         <>
           <SurveyH2>
             {/* @ts-expect-error */}
@@ -112,7 +114,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
       {isButtonTouched && (
         <SurveyFormErrorsBox
           customErrors={
-            watchIsMap === "1" && !watchIsLocationValue
+            watchIsMap && !watchIsLocationValue
               ? {
                   [`map-${userLocationQuestionId}`]: {
                     message:
@@ -130,16 +132,16 @@ export const FeedbackSecondPage: React.FC<Props> = ({
           <SurveyButton
             color={buttons[0]?.color}
             id="submit-more"
-            onClick={watchIsMap === "1" && !watchIsLocationValue ? handleOnClick : undefined}
-            type={watchIsMap === "1" && !watchIsLocationValue ? "button" : "submit"}
+            onClick={watchIsMap && !watchIsLocationValue ? handleOnClick : undefined}
+            type={watchIsMap && !watchIsLocationValue ? "button" : "submit"}
           >
             {buttons![0]?.label.de}
           </SurveyButton>
           <SurveyButton
             color={buttons[1]?.color}
             id="submit-finish"
-            onClick={watchIsMap === "1" && !watchIsLocationValue ? handleOnClick : undefined}
-            type={watchIsMap === "1" && !watchIsLocationValue ? "button" : "submit"}
+            onClick={watchIsMap && !watchIsLocationValue ? handleOnClick : undefined}
+            type={watchIsMap && !watchIsLocationValue ? "button" : "submit"}
           >
             {buttons![1]?.label.de}
           </SurveyButton>
