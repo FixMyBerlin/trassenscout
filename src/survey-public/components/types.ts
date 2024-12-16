@@ -48,13 +48,15 @@ type TTranslatableText = {
 
 export type TSingleOrMultiResponseProps = {
   responses: TResponse[]
-  //validation?: {
-  // optional?: boolean // default is false
-  // todo validation for multiResponse: min/max number of responses
-  // maxResponses?: number
-  // minResponses?: number
-  // customMessage?: string
-  // }
+  validation?: {
+    // atm all multiResponse questions are optional, this has to be changed in the future
+    // all singleResponse questions are required by default, this can be changed by setting optional to true
+    optional?: boolean
+    // todo validation for multiResponse: min/max number of responses
+    // maxResponses?: number
+    // minResponses?: number
+    // customMessage?: string
+  }
 }
 
 export type TResponse = {
