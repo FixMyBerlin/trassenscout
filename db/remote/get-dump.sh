@@ -33,7 +33,7 @@ fi
 
 DIR=$( cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P )
 
-docker run -it --rm --entrypoint pg_dump postgres $DATABASE_URL | grep -vE 'rdsadmin;|dbmasteruser;' > $DIR/data/dump.sql
+docker run -it --rm --entrypoint pg_dump postgres:16-alpine $DATABASE_URL | grep -vE 'rdsadmin;|dbmasteruser;' > $DIR/data/dump.sql
 
 # Show first 5 lines
 head -n 5 $DIR/data/dump.sql
