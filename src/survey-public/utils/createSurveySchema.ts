@@ -19,6 +19,31 @@ const defaultZodSchema = {
   }),
 }
 
+/**
+ * @desc The function creates a Zod schema based on provided questions to validate inputs in a public survey form.
+ * Generates several different Zod schemas for a single form to validate inputs of every screen/"page".
+ *
+ * Dynamic Construction:
+ * Constructs a Zod schema based on the provided questions and their component type and validation properties,
+ * which are configured in the respective configuration files of the surveys in `src/survey-public/{surveySlug}`
+ * (at the moment these files are named survey.ts and feedback.ts).
+ * The object keys of the schema are constructed based on the component type and the question id by the helper function getFormfieldName.
+ *
+ * Component Types:
+ * The function supports questions with component types: "singleResponse" | "multipleResponse" | "textfield" | "readOnly" | "text" | "custom" | "map".
+ * The function iterates over each question to build the schema based on the component type and validation properties.
+ * If no validation properties are provided, the function uses default validation properties. (see defaultZodSchema)
+ * Different component types allow different validation properties: see `src/survey-public/components/types.ts`
+ *
+ * Optional Fields:
+ * Fields are required by default unless the `optional` property of the validation object is set to true.
+ * Exception is the multipleResponse field, that can only be optional at the moment. This is a limitation of the current implementation.
+ * see https://github.com/FixMyBerlin/private-issues/issues/1710
+ *
+ * @param {TQuestion[] | TFeedbackQuestion[]} questions - Array of questions to generate the schema from.
+ * @returns {z.ZodObject} - The constructed schema object as a Zod object.
+ */
+
 export const createSurveySchema = (questions?: TQuestion[] | TFeedbackQuestion[]) => {
   if (!questions?.length) return z.object({})
   const schemaObject: Record<string, any> = {}
@@ -143,6 +168,8 @@ export const createSurveySchema = (questions?: TQuestion[] | TFeedbackQuestion[]
 
   return z.object(schemaObject)
 
+  // todo validation: multipleResponse validation
+  // see https://github.com/FixMyBerlin/private-issues/issues/1710
   // if (!multipleResponseKeys?.length)
 
   // // Add custom validation for multipleResponse fields
