@@ -10,4 +10,6 @@ docker exec -i ts-db psql -U postgres dbmaster < $DIR/data/dump.sql
 docker exec -i ts-db psql -U postgres dbmaster < $DIR/sql/post-restore.sql
 
 blitz prisma migrate deploy
-SEED_USER_ONLY=1 blitz db seed
+
+# TODO: It looks like this is broken. Need to do a clean test later(TM)…
+# SEED_USER_ONLY=1 blitz db seed
