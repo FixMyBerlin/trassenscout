@@ -7,28 +7,28 @@ on:
         type: string
 
 jobs:
-  # diff_app:
-  #   uses: ./.github/workflows/diff-last-run.yml
-  #   with:
-  #     CHECK_DIFF_LOCATIONS: src/ db/ public/ emails/ docker/
+  diff_app:
+    uses: ./.github/workflows/diff-last-run.yml
+    with:
+      CHECK_DIFF_LOCATIONS: src/ db/ public/ emails/ docker/
 
   build_app:
     runs-on: ubuntu-latest
-    # needs: diff_app
-    # if: ${{ needs.diff_app.outputs.changes == 'true' }}
+    needs: diff_app
+    if: ${{ needs.diff_app.outputs.changes == 'true' }}
     environment:
       name: ${{ inputs.ENVIRONMENT }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Upgrade AWS CLI version and setup lightsailctl
+      - name: "AWS: Install CLI"
         run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          curl --fail -s -S "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           unzip awscliv2.zip
           sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
 
-      - name: Configure AWS credentials
+      - name: "AWS: Configure credentials"
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}

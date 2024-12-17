@@ -1,4 +1,4 @@
-name: Restart Services
+name: Services
 
 on:
   workflow_call:
@@ -8,21 +8,14 @@ on:
         type: string
 
 jobs:
-  # diff_docker:
-  #   uses: ./.github/workflows/diff-last-run.yml
-  #   with:
-  #     CHECK_DIFF_LOCATIONS: docker-compose*
-
-  restart_services:
+  pull_restart:
     runs-on: ubuntu-latest
-    # needs: diff_docker
-    # if: ${{ needs.diff_docker.outputs.changes == 'true' }}
     environment:
       name: ${{ inputs.ENVIRONMENT }}
       # `url` adds adds link to the Github UI
       url: ${{ vars.APP_ORIGIN }}
     steps:
-      - name: Stop & Start containers
+      - name: Pull, Restart, Cleanup
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}

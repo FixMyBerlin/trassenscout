@@ -26,9 +26,9 @@ namespace NodeJS {
       | "MORE"
       | "FEEDBACK"
       | "EMAIL"
-    readonly NEXT_PUBLIC_APP_ORIGIN:
-      | "http://127.0.0.1:5000"
-      | "https://staging,trassenscout.de"
+    readonly NEXT_PUBLIC_APP_ORIGIN?:
+      | "http://127.0.0.1:5000" // for `npm run start`
+      | "https://staging.trassenscout.de"
       | "https://trassenscout.de"
   }
 }

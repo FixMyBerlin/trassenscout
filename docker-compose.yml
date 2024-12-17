@@ -9,8 +9,8 @@ services:
     ports:
       - "6001:5432"
     volumes:
-      - rsv-data:/var/lib/postgresql/data
-    container_name: rsv-builder-db
+      - ts-data:/var/lib/postgresql/data
+    container_name: ts-db
     command: ["postgres", "-clog_destination=stderr", "-clog_statement=all"]
 volumes:
-  rsv-data:
+  ts-data:
