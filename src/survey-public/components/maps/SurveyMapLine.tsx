@@ -17,6 +17,7 @@ import Map, {
   Source,
   useMap,
 } from "react-map-gl/maplibre"
+import { getFormfieldName } from "../../utils/getFormfieldNames"
 import { DebugMapTileBoundaries } from "./DebugMapTileBoundaries"
 import { SurveyMapLineBanner } from "./SurveyMapLineBanner"
 
@@ -92,15 +93,19 @@ export const SurveyMapLine = ({ projectMap, className }: SurveyMapProps) => {
 
     // set values for line id, geometry and from-to-name in form context
     setValue(
-      `custom-${lineFromToNameQuestionId}`,
+      getFormfieldName("custom", lineFromToNameQuestionId!),
       `${lineFrom || "unbekannt"} - ${lineTo || "unbekannt"}`,
     )
-    setValue(`custom-${lineQuestionId}`, lineId || "unbekannt")
-    // @ts-expect-error we know that the geometry is a line string
-    setValue(`custom-${geometryQuestionId}`, JSON.stringify(lineGeometry.coordinates), {
-      shouldValidate: true,
-      shouldDirty: true,
-    })
+    setValue(getFormfieldName("custom", lineQuestionId!), lineId || "unbekannt")
+    setValue(
+      getFormfieldName("custom", geometryQuestionId!),
+      // @ts-expect-error we know that the geometry is a line string
+      JSON.stringify(lineGeometry.coordinates),
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      },
+    )
   }
 
   const handleMouseMove = ({ features }: MapLayerMouseEvent) => {

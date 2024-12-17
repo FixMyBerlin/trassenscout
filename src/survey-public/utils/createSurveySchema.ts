@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { TFeedbackQuestion, TQuestion, TSingleOrMultiResponseProps } from "../components/types"
+import { getFormfieldName } from "./getFormfieldNames"
 
 const defaultZodSchema = {
   text: z
@@ -53,6 +54,8 @@ export const createSurveySchema = (questions?: TQuestion[] | TFeedbackQuestion[]
     const { id, props, component } = q
     // @ts-expect-error
     const validation = props?.validation || undefined
+    const formfieldName = getFormfieldName(component, id)
+
     switch (component) {
       case "textfield": // input type text
         if (validation) {
@@ -65,7 +68,7 @@ export const createSurveySchema = (questions?: TQuestion[] | TFeedbackQuestion[]
                 // @ts-expect-error this works // to do validtion ?
                 customEmailZodSchema = customEmailZodSchema.nullish().or(z.literal(""))
               }
-              schemaObject[`text-${id}`] = customEmailZodSchema
+              schemaObject[formfieldName] = customEmailZodSchema
               break
             case "text":
             default:
@@ -90,15 +93,15 @@ export const createSurveySchema = (questions?: TQuestion[] | TFeedbackQuestion[]
                   message: "Ungültige Eingabe.",
                 })
               }
-              schemaObject[`text-${id}`] = customTextZodSchema
+              schemaObject[formfieldName] = customTextZodSchema
               break
           }
         } else {
-          schemaObject[`text-${id}`] = defaultZodSchema.text
+          schemaObject[formfieldName] = defaultZodSchema.text
         }
         break
       case "readOnly": // input type text but read only
-        schemaObject[`text-${id}`] = validation?.optional
+        schemaObject[formfieldName] = validation?.optional
           ? defaultZodSchema.text.nullish().or(z.literal(""))
           : defaultZodSchema.text
         break
@@ -124,20 +127,20 @@ export const createSurveySchema = (questions?: TQuestion[] | TFeedbackQuestion[]
             // @ts-expect-error this works // to do validtion ?
             customTextareaZodSchmema = customTextareaZodSchmema.nullish().or(z.literal(""))
           }
-          schemaObject[`text-${id}`] = customTextareaZodSchmema
+          schemaObject[formfieldName] = customTextareaZodSchmema
         } else {
-          schemaObject[`text-${id}`] = defaultZodSchema.textarea
+          schemaObject[formfieldName] = defaultZodSchema.textarea
         }
         break
       case "singleResponse":
-        schemaObject[`single-${id}`] = validation?.optional
+        schemaObject[formfieldName] = validation?.optional
           ? z.string({ message: "Pflichtfeld." }).trim().nullish().or(z.literal(""))
           : defaultZodSchema.single
         break
       case "multipleResponse":
         const multiResponseProps = props as TSingleOrMultiResponseProps
         multiResponseProps.responses.forEach((r) => {
-          const key = `multi-${id}-${r.id}`
+          const key = `${formfieldName}-${r.id}`
           schemaObject[key] = z.boolean()
           // Add key to multipleResponseKeys if not optional
           // if it is optional we do not need to validate if one of the options is selected
@@ -146,7 +149,7 @@ export const createSurveySchema = (questions?: TQuestion[] | TFeedbackQuestion[]
 
         break
       case "custom":
-        schemaObject[`custom-${id}`] = z.union([
+        schemaObject[formfieldName] = z.union([
           z.string({ required_error: "Pflichtfeld." }).trim().min(1, { message: "Pflichtfeld." }),
           z.number({ required_error: "Pflichtfeld." }),
           z.boolean({ required_error: "Pflichtfeld." }),
@@ -155,7 +158,7 @@ export const createSurveySchema = (questions?: TQuestion[] | TFeedbackQuestion[]
         ])
         break
       case "map":
-        schemaObject[`map-${id}`] = z.object(
+        schemaObject[formfieldName] = z.object(
           {
             lng: z.number(),
             lat: z.number(),
@@ -165,7 +168,6 @@ export const createSurveySchema = (questions?: TQuestion[] | TFeedbackQuestion[]
         break
     }
   })
-
   return z.object(schemaObject)
 
   // todo validation: multipleResponse validation

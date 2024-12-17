@@ -3,7 +3,7 @@ import { TMapProps, TPage, TTextareaProps } from "@/src/survey-public/components
 import { Fragment, useState } from "react"
 import { FieldErrors, FieldValues, useFormContext } from "react-hook-form"
 import { MapProvider } from "react-map-gl/maplibre"
-import { getQuestionNames } from "../../utils/getQuestionNames"
+import { getFormfieldName, getFormfieldNamesByQuestions } from "../../utils/getFormfieldNames"
 import { Question } from "../Question"
 import { SurveyH2 } from "../core/Text"
 import { SurveyButton } from "../core/buttons/SurveyButton"
@@ -46,14 +46,14 @@ export const FeedbackSecondPage = ({
     watch,
   } = useFormContext()
   // watch if user choses to set a pin ("1" -> "Ja"), update component if user choses to set a pin
-  const watchIsMap = watch(`single-${isUserLocationQuestionId}`) === "1"
-  const watchIsLocationValue = watch(`map-${userLocationQuestionId}`)
+  const watchIsMap = watch(getFormfieldName("singleResponse", isUserLocationQuestionId)) === "1"
+  const watchIsLocationValue = watch(getFormfieldName("map", userLocationQuestionId))
   const [isButtonTouched, setIsButtonTouched] = useState(false)
 
   const relevantQuestions = questions!.filter(
     (q) => ![isUserLocationQuestionId, userLocationQuestionId].includes(q.id),
   )
-  const relevantQuestionNames = getQuestionNames(relevantQuestions)
+  const relevantQuestionNames = getFormfieldNamesByQuestions(relevantQuestions)
 
   const handleOnClick = () => {
     setIsButtonTouched(true)
@@ -103,7 +103,7 @@ export const FeedbackSecondPage = ({
                   caption={userTextQuestionProps.caption?.de}
                   key={q.id}
                   maxLength={userTextQuestionProps.validation?.maxLength ?? 2000}
-                  name={`text-${q.id}`}
+                  name={getFormfieldName("text", q.id)}
                   placeholder={userTextQuestionProps.placeholder?.de}
                   label={""}
                 />
@@ -117,7 +117,7 @@ export const FeedbackSecondPage = ({
           customErrors={
             watchIsMap && !watchIsLocationValue
               ? {
-                  [`map-${userLocationQuestionId}`]: {
+                  [getFormfieldName("map", userLocationQuestionId)]: {
                     message:
                       "Sie haben oben angegeben, dass Sie eine konkrete Stelle auswählen möchten. Das Setzen des Pins ist daher verpflichtend.",
                   },

@@ -6,6 +6,7 @@ import {
   TTextareaProps,
   TTextfieldProps,
 } from "@/src/survey-public/components/types"
+import { getFormfieldName } from "../utils/getFormfieldNames"
 import { SurveyH2 } from "./core/Text"
 import { SurveyLabeledCheckboxGroup } from "./core/form/SurveyLabeledCheckboxGroup"
 import { SurveyLabeledRadiobuttonGroup } from "./core/form/SurveyLabeledRadiobuttonGroup"
@@ -15,12 +16,17 @@ import { SurveyLabeledTextareaField } from "./core/form/SurveyLabeledTextareaFie
 
 type TSingleOrMultuResponseComponentProps = {
   id: number
+  component: TQuestion["component"] | TFeedbackQuestion["component"]
 } & TSingleOrMultiResponseProps
 
-const SingleResponseComponent = ({ id, responses }: TSingleOrMultuResponseComponentProps) => (
+const SingleResponseComponent = ({
+  id,
+  responses,
+  component,
+}: TSingleOrMultuResponseComponentProps) => (
   <SurveyLabeledRadiobuttonGroup
     items={responses.map((item) => ({
-      scope: `single-${id}`,
+      scope: getFormfieldName(component, id),
       name: `${id}-${item.id}`,
       label: item.text.de,
       help: item?.help?.de,
@@ -29,11 +35,15 @@ const SingleResponseComponent = ({ id, responses }: TSingleOrMultuResponseCompon
   />
 )
 
-const MultipleResponseComponent = ({ id, responses }: TSingleOrMultuResponseComponentProps) => (
+const MultipleResponseComponent = ({
+  id,
+  responses,
+  component,
+}: TSingleOrMultuResponseComponentProps) => (
   <SurveyLabeledCheckboxGroup
     key={id}
     items={responses.map((item) => ({
-      name: `multi-${id}-${item.id}`,
+      name: `${getFormfieldName(component, id)}-${item.id}`,
       label: item.text.de,
       help: item?.help?.de,
     }))}
@@ -42,14 +52,17 @@ const MultipleResponseComponent = ({ id, responses }: TSingleOrMultuResponseComp
 
 type TTextfieldResponseComponentProps = {
   id: number
+  component: TQuestion["component"] | TFeedbackQuestion["component"]
 } & TTextfieldProps
 
 type TTextareaResponseComponentProps = {
   id: number
+  component: TQuestion["component"] | TFeedbackQuestion["component"]
 } & TTextareaProps
 
 type TReadOnlyResponseComponentProps = {
   id: number
+  component: TQuestion["component"] | TFeedbackQuestion["component"]
 } & TReadOnlyProps
 
 const TextResponseComponent = ({
@@ -57,10 +70,11 @@ const TextResponseComponent = ({
   placeholder,
   caption,
   validation,
+  component,
 }: TTextareaResponseComponentProps) => (
   <>
     <SurveyLabeledTextareaField
-      name={`text-${id}`}
+      name={getFormfieldName(component, id)}
       label={""}
       placeholder={placeholder?.de}
       caption={caption?.de}
@@ -69,15 +83,28 @@ const TextResponseComponent = ({
   </>
 )
 
-const TextFieldResponseComponent = ({ id, placeholder }: TTextfieldResponseComponentProps) => (
+const TextFieldResponseComponent = ({
+  id,
+  placeholder,
+  component,
+}: TTextfieldResponseComponentProps) => (
   <>
-    <SurveyLabeledTextField name={`text-${id}`} placeholder={placeholder?.de} label={""} />
+    <SurveyLabeledTextField
+      name={getFormfieldName(component, id)}
+      placeholder={placeholder?.de}
+      label={""}
+    />
   </>
 )
 
-const ReadOnlyResponseComponent = ({ id, queryId }: TReadOnlyResponseComponentProps) => (
+const ReadOnlyResponseComponent = ({ id, queryId, component }: TReadOnlyResponseComponentProps) => (
   <>
-    <SurveyLabeledReadOnlyTextField readOnly name={`text-${id}`} label={""} queryId={queryId} />
+    <SurveyLabeledReadOnlyTextField
+      readOnly
+      name={getFormfieldName(component, id)}
+      label={""}
+      queryId={queryId}
+    />
   </>
 )
 
@@ -115,7 +142,7 @@ export const Question = ({ question, className }: Props) => {
       </SurveyH2>
       {help && <div className="-mt-4 mb-6 text-sm text-gray-400">{help.de}</div>}
       {/* @ts-ignore */}
-      {Component && <Component id={id} {...props} />}
+      {Component && <Component component={component} id={id} {...props} />}
     </div>
   )
 }

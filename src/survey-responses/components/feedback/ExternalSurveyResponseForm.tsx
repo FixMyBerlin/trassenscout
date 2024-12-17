@@ -42,6 +42,7 @@ export const ExternalSurveyResponseForm: React.FC<Props> = ({
 
   const ExternalSurveyResponseFormSchema = z.object({
     source: z.nativeEnum(SurveyResponseSourceEnum),
+    // todo helper function getFormfieldName()
     [`single-${isLocationId}`]: z.string(),
     [`single-${categoryId}`]: z.string(),
     [`text-${userText1Id}`]: z.string().nonempty({ message: "Pflichtfeld." }),

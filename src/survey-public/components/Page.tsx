@@ -1,7 +1,7 @@
 import { SurveyScreenHeader } from "@/src/survey-public/components/core/layout/SurveyScreenHeader"
 import type { TPage } from "@/src/survey-public/components/types"
 import { useFormContext } from "react-hook-form"
-import { getQuestionNames } from "../utils/getQuestionNames"
+import { getFormfieldNamesByQuestions } from "../utils/getFormfieldNames"
 import { Question } from "./Question"
 import { SurveyButtonWithAction } from "./core/buttons/SurveyButtonWithAction"
 import { SurveyButtonWrapper } from "./core/buttons/SurveyButtonWrapper"
@@ -20,7 +20,7 @@ export const Page = ({ page, buttonActions }: Props) => {
   if (!page) return null
   const { id: pageId, title, description, questions, buttons } = page
 
-  const relevantQuestionNames = getQuestionNames(questions!)
+  const relevantQuestionNames = getFormfieldNamesByQuestions(questions!)
 
   return (
     <section>

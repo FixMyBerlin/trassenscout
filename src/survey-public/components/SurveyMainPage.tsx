@@ -16,6 +16,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { useEffect, useState } from "react"
 import { createSurveySchema } from "../utils/createSurveySchema"
 import { getBackendConfigBySurveySlug } from "../utils/getConfigBySurveySlug"
+import { getFormfieldName } from "../utils/getFormfieldNames"
 import { getQuestionsAsArray } from "../utils/getQuestionsAsArray"
 import PublicSurveyForm from "./core/form/PublicSurveyForm"
 import {
@@ -150,8 +151,9 @@ export const SurveyMainPage = ({
   }
 
   const handleFeedbackSubmit = async (values: Record<string, any>, submitterId?: string) => {
-    if (values[`single-${isUserLocationQuestionId}`] === "2")
-      values[`map-${userLocationQuestionId}`] = "" // if "no location" is chosen, set location value to empty string
+    // if "no location" ("2") is chosen, set location value to empty string
+    if (values[getFormfieldName("singleResponse", isUserLocationQuestionId)] === "2")
+      values[getFormfieldName("map", userLocationQuestionId)] = ""
     values = transformValues(values)
     delete values[isUserLocationQuestionId!] // delete map ja/nein response
     // await handleSubmitFeedback({ ...values }, submitterId)

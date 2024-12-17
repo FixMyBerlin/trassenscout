@@ -3,7 +3,7 @@ import { scrollToTopWithDelay } from "@/src/survey-public/utils/scrollToTopWithD
 import { useAlertBeforeUnload } from "@/src/survey-public/utils/useAlertBeforeUnload"
 import { useContext, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { getQuestionNames } from "../../utils/getQuestionNames"
+import { getFormfieldName, getFormfieldNamesByQuestions } from "../../utils/getFormfieldNames"
 import { Debug } from "../core/Debug"
 import {
   TFeedback,
@@ -26,7 +26,7 @@ type Props = {
   setIsMapDirty: (value: boolean) => void
 }
 
-export const Feedback: React.FC<Props> = ({
+export const Feedback = ({
   institutionsBboxes,
   onBackClick,
   feedback,
@@ -34,7 +34,11 @@ export const Feedback: React.FC<Props> = ({
   responseConfig,
   maptilerUrl,
   setIsMapDirty,
-}) => {
+}: Props) => {
+  const {
+    formState: { errors },
+  } = useFormContext()
+  console.log(errors)
   const { setProgress } = useContext(ProgressContext)
 
   useAlertBeforeUnload()
@@ -46,8 +50,8 @@ export const Feedback: React.FC<Props> = ({
   const isUserLocationQuestionId = evaluationRefs["is-feedback-location"]
 
   useEffect(() => {
-    // inital value of is location is set to true
-    setValue(`single-${isUserLocationQuestionId}`, "1")
+    // inital value of is location is set to true ("1")
+    setValue(getFormfieldName("singleResponse", isUserLocationQuestionId), "1")
   }, [isUserLocationQuestionId, setValue])
 
   const { pages } = feedback
@@ -68,7 +72,7 @@ export const Feedback: React.FC<Props> = ({
     pages[0]!.questions.find((q) => q.id === 21)!,
   ]
 
-  const relevantQuestionNamesFirstPage = getQuestionNames(relevantQuestionsSecondPage)
+  const relevantQuestionNamesFirstPage = getFormfieldNamesByQuestions(relevantQuestionsSecondPage)
 
   const handleFirstToSecondPage = async () => {
     const isValid = await trigger(relevantQuestionNamesFirstPage)
