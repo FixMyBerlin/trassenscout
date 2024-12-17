@@ -4,11 +4,10 @@ import { surveyPrimaryColorButtonStyles, surveyWhiteButtonStyles } from "../link
 
 type Props = {
   color?: string
-  disabled?: boolean
   children: string | ReactNode
 } & React.ButtonHTMLAttributes<HTMLButtonElement>
 
-export const SurveyButton: React.FC<Props> = ({ disabled, color, children, ...props }) => {
+export const SurveyButton = ({ color, children, ...props }: Props) => {
   let colorClass: string
   switch (color) {
     case "white":
@@ -22,7 +21,7 @@ export const SurveyButton: React.FC<Props> = ({ disabled, color, children, ...pr
   }
 
   return (
-    <button disabled={disabled} {...props} className={clsx("px-12", colorClass)}>
+    <button {...props} className={clsx("px-12", colorClass)}>
       {children}
     </button>
   )

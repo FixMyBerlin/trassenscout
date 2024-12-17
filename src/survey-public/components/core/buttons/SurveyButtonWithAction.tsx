@@ -6,13 +6,14 @@ type Props = {
   button: TButtonWithAction
   buttonActions: { next: () => void; back: () => void }
   relevantQuestionNames: string[]
-}
+} & React.ButtonHTMLAttributes<HTMLButtonElement>
 
-export const SurveyButtonWithAction: React.FC<Props> = ({
+export const SurveyButtonWithAction = ({
   button,
   relevantQuestionNames,
   buttonActions,
-}) => {
+  ...props
+}: Props) => {
   const { trigger, clearErrors } = useFormContext()
   const { label, color, onClick } = button
 
@@ -29,7 +30,7 @@ export const SurveyButtonWithAction: React.FC<Props> = ({
 
   if (onClick.action === "previousPage") {
     return (
-      <SurveyButton type="button" color={color} onClick={handleBackClick}>
+      <SurveyButton {...props} type="button" color={color} onClick={handleBackClick}>
         {label.de}
       </SurveyButton>
     )
@@ -37,7 +38,7 @@ export const SurveyButtonWithAction: React.FC<Props> = ({
 
   if (onClick.action === "nextPage") {
     return (
-      <SurveyButton color={color} type="button" onClick={handleNextClick}>
+      <SurveyButton {...props} color={color} type="button" onClick={handleNextClick}>
         {label.de}
       </SurveyButton>
     )
@@ -45,7 +46,7 @@ export const SurveyButtonWithAction: React.FC<Props> = ({
 
   if (onClick.action === "submit")
     return (
-      <SurveyButton color={color} type="submit">
+      <SurveyButton {...props} color={color} type="submit">
         {label.de}
       </SurveyButton>
     )

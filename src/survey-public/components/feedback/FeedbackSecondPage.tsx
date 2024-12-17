@@ -41,7 +41,7 @@ export const FeedbackSecondPage = ({
 }: Props) => {
   const { title, description, questions, buttons } = page
   const {
-    formState: { errors },
+    formState: { errors, isSubmitting },
     trigger,
     watch,
   } = useFormContext()
@@ -135,6 +135,7 @@ export const FeedbackSecondPage = ({
             id="submit-more"
             onClick={watchIsMap && !watchIsLocationValue ? handleOnClick : undefined}
             type={watchIsMap && !watchIsLocationValue ? "button" : "submit"}
+            disabled={isSubmitting}
           >
             {buttons![0]?.label.de}
           </SurveyButton>
@@ -143,6 +144,7 @@ export const FeedbackSecondPage = ({
             id="submit-finish"
             onClick={watchIsMap && !watchIsLocationValue ? handleOnClick : undefined}
             type={watchIsMap && !watchIsLocationValue ? "button" : "submit"}
+            disabled={isSubmitting}
           >
             {buttons![1]?.label.de}
           </SurveyButton>

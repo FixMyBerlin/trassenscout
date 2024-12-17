@@ -14,7 +14,7 @@ type Props = {
 
 export const Page = ({ page, buttonActions }: Props) => {
   const {
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useFormContext()
 
   if (!page) return null
@@ -39,6 +39,7 @@ export const Page = ({ page, buttonActions }: Props) => {
               buttonActions={buttonActions}
               relevantQuestionNames={relevantQuestionNames!}
               button={button}
+              disabled={isSubmitting}
             />
           )
         })}
