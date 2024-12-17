@@ -6,7 +6,7 @@ type Props = {
   action?: () => void
 }
 
-export const SurveyMapBanner: React.FC<Props> = ({ status, className, action }) => {
+export const SurveyMapBanner = ({ status, className, action }: Props) => {
   switch (status) {
     case "default":
       return (

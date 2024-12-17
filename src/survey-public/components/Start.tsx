@@ -4,7 +4,7 @@ import { SurveyButtonWrapper } from "./core/buttons/SurveyButtonWrapper"
 
 type Props = { onStartClick: () => void; startContent: React.ReactNode; disabled: boolean }
 
-export const Start: React.FC<Props> = ({ onStartClick, startContent, disabled }) => {
+export const Start = ({ onStartClick, startContent, disabled }: Props) => {
   useAlertBeforeUnload()
 
   return (

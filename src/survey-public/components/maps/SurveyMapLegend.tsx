@@ -3,13 +3,13 @@ import "maplibre-gl/dist/maplibre-gl.css"
 import { Fragment } from "react"
 import { TLegendItem, TMapProps } from "../types"
 
-type SurveyMapLegendProps = { legend: TMapProps["legend"] }
+type Props = { legend: TMapProps["legend"] }
 
-const LegendItemShape: React.FC<{ legendItem: TLegendItem }> = ({ legendItem }) => {
+const LegendItemShape = ({ legendItem }: { legendItem: TLegendItem }) => {
   return <span className={clsx("w-5", legendItem.color, legendItem.className)} />
 }
 
-export const SurveyMapLegend: React.FC<SurveyMapLegendProps> = ({ legend }) => {
+export const SurveyMapLegend = ({ legend }: Props) => {
   return (
     <div className="!-mt-0 flex flex-col gap-3 bg-gray-200 p-4">
       {Object.entries(legend!).map(([key, value]) => (

@@ -7,7 +7,7 @@ type Props = {
   maptilerUrl: string
 }
 
-export const SurveyStaticMap: React.FC<Props> = ({ marker, maptilerUrl }) => {
+export const SurveyStaticMap = ({ marker, maptilerUrl }: Props) => {
   const { mainMap } = useMap()
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
   const vectorStyle = `${maptilerUrl}?key=${maptilerApiKey}`

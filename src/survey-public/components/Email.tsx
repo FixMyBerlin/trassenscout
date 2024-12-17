@@ -10,7 +10,7 @@ type Props = {
   onClickMore: () => void
 }
 
-export const Email: React.FC<Props> = ({ email, onClickMore }) => {
+export const Email = ({ email, onClickMore }: Props) => {
   const { description, button, title, mailjetWidgetUrl, homeUrl } = email
 
   return (

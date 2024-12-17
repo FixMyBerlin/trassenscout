@@ -7,7 +7,7 @@ type Props = {
   className?: string
 }
 
-export const SurveyLabeledRadiobuttonGroup: React.FC<Props> = ({ items, className }) => {
+export const SurveyLabeledRadiobuttonGroup = ({ items, className }: Props) => {
   const {
     formState: { errors },
   } = useFormContext()

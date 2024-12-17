@@ -23,7 +23,7 @@ type Props = {
   legend?: Record<string, Record<string, TLegendItem>>
 }
 
-export const FeedbackFirstPage: React.FC<Props> = ({
+export const FeedbackFirstPage = ({
   page,
   onButtonClick,
   onBackClick,
@@ -31,7 +31,7 @@ export const FeedbackFirstPage: React.FC<Props> = ({
   feedbackCategoryId,
   institutionsBboxes,
   legend,
-}) => {
+}: Props) => {
   // todo survey clean up or refactor after survey BB ? - initial view state of surveymapline depending on institution
   // maybe this logic should be used for SurveyMap in future surveys
   const router = useRouter()

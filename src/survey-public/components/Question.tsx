@@ -17,10 +17,7 @@ type TSingleOrMultuResponseComponentProps = {
   id: number
 } & TSingleOrMultiResponseProps
 
-const SingleResponseComponent: React.FC<TSingleOrMultuResponseComponentProps> = ({
-  id,
-  responses,
-}) => (
+const SingleResponseComponent = ({ id, responses }: TSingleOrMultuResponseComponentProps) => (
   <SurveyLabeledRadiobuttonGroup
     items={responses.map((item) => ({
       scope: `single-${id}`,
@@ -32,10 +29,7 @@ const SingleResponseComponent: React.FC<TSingleOrMultuResponseComponentProps> = 
   />
 )
 
-const MultipleResponseComponent: React.FC<TSingleOrMultuResponseComponentProps> = ({
-  id,
-  responses,
-}) => (
+const MultipleResponseComponent = ({ id, responses }: TSingleOrMultuResponseComponentProps) => (
   <SurveyLabeledCheckboxGroup
     key={id}
     items={responses.map((item) => ({
@@ -58,12 +52,12 @@ type TReadOnlyResponseComponentProps = {
   id: number
 } & TReadOnlyProps
 
-const TextResponseComponent: React.FC<TTextareaResponseComponentProps> = ({
+const TextResponseComponent = ({
   id,
   placeholder,
   caption,
   validation,
-}) => (
+}: TTextareaResponseComponentProps) => (
   <>
     <SurveyLabeledTextareaField
       name={`text-${id}`}
@@ -75,16 +69,13 @@ const TextResponseComponent: React.FC<TTextareaResponseComponentProps> = ({
   </>
 )
 
-const TextFieldResponseComponent: React.FC<TTextfieldResponseComponentProps> = ({
-  id,
-  placeholder,
-}) => (
+const TextFieldResponseComponent = ({ id, placeholder }: TTextfieldResponseComponentProps) => (
   <>
     <SurveyLabeledTextField name={`text-${id}`} placeholder={placeholder?.de} label={""} />
   </>
 )
 
-const ReadOnlyResponseComponent: React.FC<TReadOnlyResponseComponentProps> = ({ id, queryId }) => (
+const ReadOnlyResponseComponent = ({ id, queryId }: TReadOnlyResponseComponentProps) => (
   <>
     <SurveyLabeledReadOnlyTextField readOnly name={`text-${id}`} label={""} queryId={queryId} />
   </>
@@ -109,7 +100,7 @@ const components = {
 
 type Props = { question: TQuestion | TFeedbackQuestion; className?: string }
 
-export const Question: React.FC<Props> = ({ question, className }) => {
+export const Question = ({ question, className }: Props) => {
   const { id, help, label, component, props } = question
   // @ts-expect-error
   const Component = components[component] || null

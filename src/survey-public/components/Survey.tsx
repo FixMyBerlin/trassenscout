@@ -17,11 +17,11 @@ type Props = {
   }
 }
 
-export const Survey: React.FC<Props> = ({
+export const Survey = ({
   survey,
   setStage,
   surveyPageProgressProps: { surveyPageProgress, setSurveyPageProgress },
-}) => {
+}: Props) => {
   const { setProgress } = useContext(ProgressContext)
 
   useAlertBeforeUnload()

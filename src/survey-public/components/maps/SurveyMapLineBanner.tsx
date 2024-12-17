@@ -7,7 +7,7 @@ type Props = {
 
 // todo survey clean up or refactor after survey BB - whole component
 
-export const SurveyMapLineBanner: React.FC<Props> = ({ className, lineFromToName }) => {
+export const SurveyMapLineBanner = ({ className, lineFromToName }: Props) => {
   if (lineFromToName)
     return (
       <div
