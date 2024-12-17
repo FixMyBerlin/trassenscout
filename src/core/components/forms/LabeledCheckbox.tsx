@@ -41,6 +41,7 @@ export const LabeledCheckbox = forwardRef<HTMLInputElement, LabeledCheckboxProps
       >
         <div className="flex h-5 items-center">
           <input
+            aria-describedby={scope + "Hint"}
             type="checkbox"
             disabled={disabled || isSubmitting}
             readOnly={readonly}

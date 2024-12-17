@@ -35,6 +35,7 @@ export const SurveyLabeledRadiobutton = forwardRef<HTMLInputElement, SurveyLabel
       <div {...outerProps} className={clsx(outerProps?.className, "group flex w-full items-start")}>
         <div className="flex h-full min-h-[2.5rem] items-center py-2">
           <input
+            aria-describedby={scope + "Hint"}
             type="radio"
             disabled={isSubmitting}
             value={value}

@@ -27,7 +27,7 @@ type Props = {
   userLocationQuestionId: number
 }
 
-export const FeedbackSecondPage: React.FC<Props> = ({
+export const FeedbackSecondPage = ({
   mapProps,
   maptilerUrl,
   page,
@@ -38,7 +38,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
   isUserLocationQuestionId,
   lineGeometryId,
   userLocationQuestionId,
-}) => {
+}: Props) => {
   const { title, description, questions, buttons } = page
   const {
     formState: { errors },
@@ -83,6 +83,7 @@ export const FeedbackSecondPage: React.FC<Props> = ({
               pinId={pinId}
               // todo survey clean up or refactor after survey BB line selection
               lineGeometryId={lineGeometryId}
+              userLocationQuestionId={userLocationQuestionId}
             />
 
             {mapProps.legend && <SurveyMapLegend legend={mapProps.legend} />}

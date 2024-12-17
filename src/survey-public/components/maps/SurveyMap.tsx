@@ -31,16 +31,18 @@ export type SurveyMapProps = {
   setIsMapDirty: (value: boolean) => void
   pinId: number
   lineGeometryId?: number
+  userLocationQuestionId?: number
 }
 
-export const SurveyMap: React.FC<SurveyMapProps> = ({
+export const SurveyMap = ({
   projectMap,
   pinId,
   className,
   setIsMapDirty,
   lineGeometryId,
+  userLocationQuestionId,
   // todo survey clean up or refactor after survey BB line selection
-}) => {
+}: SurveyMapProps) => {
   const { mainMap } = useMap()
   const [events, logEvents] = useState<Record<string, Object>>({})
   const [isPinInView, setIsPinInView] = useState(true)
@@ -170,7 +172,11 @@ export const SurveyMap: React.FC<SurveyMapProps> = ({
   }
 
   return (
-    <div className={clsx("h-[500px]", className)}>
+    <div
+      className={clsx("h-[500px]", className)}
+      // todo validation getFormfieldName helper
+      aria-describedby={`map-${userLocationQuestionId}Hint`}
+    >
       <Map
         id="mainMap"
         scrollZoom={false}

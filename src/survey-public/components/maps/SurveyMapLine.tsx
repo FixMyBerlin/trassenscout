@@ -31,7 +31,7 @@ export type SurveyMapProps = {
   }
 }
 
-export const SurveyMapLine: React.FC<SurveyMapProps> = ({ projectMap, className }) => {
+export const SurveyMapLine = ({ projectMap, className }: SurveyMapProps) => {
   const { mainMap } = useMap()
   const [isMediumScreen, setIsMediumScreen] = useState(false)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
@@ -50,9 +50,11 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({ projectMap, className 
   const lineFromToNameQuestionId = evaluationRefs["line-from-to-name"]
 
   // take line geometry from form context - if it is not defined use initialMarker fallback from feedback.ts configuration
+  // todo validation getFormfieldName helper
   const selectedLine = getValues()[`custom-${geometryQuestionId}`] || null
 
   //  update the map when we have a new value for the line
+  // todo validation getFormfieldName helper
   const watchLine = watch(`custom-${geometryQuestionId}`)
 
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
@@ -120,7 +122,11 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({ projectMap, className 
   const [cursorStyle, setCursorStyle] = useState("grab")
 
   return (
-    <div className={clsx("h-[500px]", className)}>
+    <div
+      className={clsx("h-[500px]", className)}
+      // todo validation getFormfieldName helper
+      aria-describedby={`custom-${geometryQuestionId}Hint`}
+    >
       <Map
         id="mainMap"
         scrollZoom={false}

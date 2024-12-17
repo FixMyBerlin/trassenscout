@@ -13,7 +13,7 @@ type Props = {
   surveyPart: "survey" | "feedback"
 }
 
-export const SurveyFormErrorsBox: React.FC<Props> = ({ formErrors, surveyPart, customErrors }) => {
+export const SurveyFormErrorsBox = ({ formErrors, surveyPart, customErrors }: Props) => {
   const surveySlug = useParam("surveySlug", "string")
   if (!Object.keys(formErrors).length && !customErrors) return null
 
@@ -36,7 +36,7 @@ export const SurveyFormErrorsBox: React.FC<Props> = ({ formErrors, surveyPart, c
               (question) => question?.id == Number(key.split("-")[1]),
             )?.label.de
             return (
-              <li key={key + error.message} className="text-sm text-red-800">
+              <li key={key + error.message} id={key + "Hint"} className="text-sm text-red-800">
                 <span className="font-semibold">{questionText}</span>: {error.message}
               </li>
             )
@@ -47,7 +47,7 @@ export const SurveyFormErrorsBox: React.FC<Props> = ({ formErrors, surveyPart, c
           )?.label.de
           return (
             // @ts-expect-error
-            <li key={key + error.message} className="text-sm text-red-800">
+            <li key={key + error.message} id={key + "Hint"} className="text-sm text-red-800">
               {/* @ts-expect-error */}
               <span className="font-semibold">{questionText}</span>: {error.message}
             </li>
