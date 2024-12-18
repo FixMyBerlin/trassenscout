@@ -30,6 +30,7 @@ export type SurveyMapProps = {
   }
   setIsMapDirty: (value: boolean) => void
   pinId: number
+  // todo survey clean up or refactor after survey BBline selection
   lineGeometryId?: number
   userLocationQuestionId?: number
 }
