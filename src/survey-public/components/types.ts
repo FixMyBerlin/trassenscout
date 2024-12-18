@@ -49,7 +49,8 @@ type TTranslatableText = {
 export type TSingleOrMultiResponseProps = {
   responses: TResponse[]
   validation?: {
-    // atm all multiResponse questions are optional, this has to be changed in the future
+    // atm all multiResponse questions are optional, this has to be changed in the future:
+    // https://github.com/FixMyBerlin/private-issues/issues/1710
     // all singleResponse questions are required by default, this can be changed by setting optional to true
     optional?: boolean
     // todo validation for multiResponse: min/max number of responses
