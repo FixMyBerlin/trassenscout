@@ -130,11 +130,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     headers.push({ id: questionId, title: question.label.de })
   })
   Object.entries(feedbackQuestions)
-    // exclude the "is-feedback-location" question as it is not explicitley stored in the response data
-    .filter(
-      ([questionId]) =>
-        questionId !== String(responseConfig.evaluationRefs["is-feedback-location"]),
-    )
+    // exclude the "is-location" question as it is not explicitley stored in the response data
+    .filter(([questionId]) => questionId !== String(responseConfig.evaluationRefs["is-location"]))
     .forEach(([questionId, question]) => {
       headers.push({ id: questionId, title: question.label.de })
     })

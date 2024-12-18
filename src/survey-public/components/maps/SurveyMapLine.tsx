@@ -47,7 +47,7 @@ export const SurveyMapLine = ({ projectMap, className }: SurveyMapProps) => {
   const feedbackDefinition = getFeedbackDefinitionBySurveySlug("radnetz-brandenburg")
 
   const lineQuestionId = evaluationRefs["line-id"]
-  const geometryQuestionId = evaluationRefs["line-geometry"]
+  const geometryQuestionId = evaluationRefs["geometry-category"]
   const lineFromToNameQuestionId = evaluationRefs["line-from-to-name"]
 
   // take line geometry from form context - if it is not defined use initialMarker fallback from feedback.ts configuration

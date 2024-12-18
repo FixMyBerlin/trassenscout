@@ -35,10 +35,10 @@ export const ExternalSurveyResponseForm: React.FC<Props> = ({
 
   const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
 
-  const categoryId = evaluationRefs["feedback-category"]
-  const locationId = evaluationRefs["feedback-location"]
-  const isLocationId = evaluationRefs["is-feedback-location"]
-  const userText1Id = evaluationRefs["feedback-usertext-1"]
+  const categoryId = evaluationRefs["category"]
+  const locationId = evaluationRefs["location"]
+  const isLocationId = evaluationRefs["is-location"]
+  const userText1Id = evaluationRefs["usertext-1"]
 
   const ExternalSurveyResponseFormSchema = z.object({
     source: z.nativeEnum(SurveyResponseSourceEnum),
@@ -55,7 +55,7 @@ export const ExternalSurveyResponseForm: React.FC<Props> = ({
       onSubmit={handleSubmit}
       initialValues={{
         source: "EMAIL",
-        [`single-${evaluationRefs["is-feedback-location"]}`]: "true",
+        [`single-${evaluationRefs["is-location"]}`]: "true",
         [`map-${locationId}`]: null,
       }}
       schema={ExternalSurveyResponseFormSchema}
@@ -68,7 +68,7 @@ export const ExternalSurveyResponseForm: React.FC<Props> = ({
 
       <LabeledRadiobuttonGroup
         label="Bezieht sich das Feedback auf eine konkrete Stelle entlang der Route?"
-        scope={`single-${evaluationRefs["is-feedback-location"]}`}
+        scope={`single-${evaluationRefs["is-location"]}`}
         items={[
           { value: "true", label: "Ja" },
           { value: "false", label: "Nein" },
@@ -77,8 +77,8 @@ export const ExternalSurveyResponseForm: React.FC<Props> = ({
 
       <MapProvider>
         <ExternalSurveyResponseFormMap
-          isUserLocationQuestionId={evaluationRefs["is-feedback-location"]!}
-          userLocationQuestionId={evaluationRefs["feedback-location"]!}
+          isUserLocationQuestionId={evaluationRefs["is-location"]!}
+          userLocationQuestionId={evaluationRefs["location"]!}
           mapProps={mapProps}
           maptilerUrl={surveyDefinition.maptilerUrl}
         />
@@ -88,7 +88,7 @@ export const ExternalSurveyResponseForm: React.FC<Props> = ({
         className="h-28"
         label="Hinweis"
         placeholder="Hinweis hier einfügen..."
-        name={`text-${evaluationRefs["feedback-usertext-1"]}`}
+        name={`text-${evaluationRefs["usertext-1"]}`}
       />
 
       <LabeledSelect
@@ -102,7 +102,7 @@ export const ExternalSurveyResponseForm: React.FC<Props> = ({
 
       <LabeledRadiobuttonGroup
         label="Kategorie"
-        scope={`single-${evaluationRefs["feedback-category"]}`}
+        scope={`single-${evaluationRefs["category"]}`}
         classNameItemWrapper="sm:columns-2"
         items={categories.map((category) => {
           return { value: String(category.id), label: category.text.de }

@@ -87,7 +87,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
 
   const mapProps = feedbackDefinition!.pages[1]!.questions.find(
-    (q) => q.id === evaluationRefs["feedback-location"],
+    (q) => q.id === evaluationRefs["location"],
   )!.props as TMapProps
   const defaultViewState = mapProps?.config?.bounds
 
@@ -100,9 +100,9 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
 
   const userTextPreview =
     // @ts-expect-error `data` is of type unkown
-    response.data[evaluationRefs["feedback-usertext-1"]] ||
+    response.data[evaluationRefs["usertext-1"]] ||
     // @ts-expect-error `data` is of type unkown
-    response.data[evaluationRefs["feedback-usertext-2"]]
+    response.data[evaluationRefs["usertext-2"]]
 
   return (
     <article data-open={open} className="bg-white">
@@ -154,7 +154,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             showMap={showMap}
             maptilerUrl={maptilerUrl}
             defaultViewState={defaultViewState}
-            userLocationQuestionId={evaluationRefs["feedback-location"]}
+            userLocationQuestionId={evaluationRefs["location"]}
             categoryLabel={labels.category?.sg || defaultBackendConfig.labels.category.sg}
           />
           <EditableSurveyResponseForm

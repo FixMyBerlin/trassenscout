@@ -144,7 +144,7 @@ export default resolver.pipe(
       feedbackSurveyResponses: withLocationOnly
         ? parsedAndSorted.filter(
             // @ts-expect-error
-            (response) => response.data[evaluationRefs["feedback-location"]],
+            (response) => response.data[evaluationRefs["location"]],
           )
         : parsedAndSorted,
       // for the filter form on /responses we return all response options for additional filters

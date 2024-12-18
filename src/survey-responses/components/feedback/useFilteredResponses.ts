@@ -62,16 +62,16 @@ export const useFilteredResponses = (
     .filter((response) => {
       if (haslocation === "ALL") return response
       // @ts-expect-error `data` is of type unkown
-      if (haslocation === "true") return response.data[evaluationRefs["feedback-location"]]
+      if (haslocation === "true") return response.data[evaluationRefs["location"]]
       // @ts-expect-error `data` is of type unkown
-      if (haslocation === "false") return !response.data[evaluationRefs["feedback-location"]]
+      if (haslocation === "false") return !response.data[evaluationRefs["location"]]
       return response
     })
     // Handle `categories`
     .filter((response) => {
       if (!categories) return
       // @ts-expect-error `data` is of type unkown
-      return categories.includes(String(response.data[evaluationRefs["feedback-category"]]))
+      return categories.includes(String(response.data[evaluationRefs["category"]]))
     })
     // Handle `searchterm`
     .filter((response) => {
@@ -83,16 +83,16 @@ export const useFilteredResponses = (
         ) ||
         (response?.data &&
           // @ts-expect-error `data` is of type unkown
-          response?.data[evaluationRefs["feedback-usertext-1"]] &&
+          response?.data[evaluationRefs["usertext-1"]] &&
           // @ts-expect-error `data` is of type unkown
-          response?.data[evaluationRefs["feedback-usertext-1"]]
+          response?.data[evaluationRefs["usertext-1"]]
             .toLowerCase()
             .includes(searchterm.trim().toLowerCase())) ||
         (response?.data &&
           // @ts-expect-error `data` is of type unkown
-          response?.data[evaluationRefs["feedback-usertext-2"]] &&
+          response?.data[evaluationRefs["usertext-2"]] &&
           // @ts-expect-error `data` is of type unkown
-          response?.data[evaluationRefs["feedback-usertext-2"]]
+          response?.data[evaluationRefs["usertext-2"]]
             .toLowerCase()
             .includes(searchterm.trim().toLowerCase()))
       )

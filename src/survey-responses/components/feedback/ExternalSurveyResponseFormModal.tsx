@@ -43,15 +43,15 @@ export const ExternalSurveyResponseFormModal = ({ refetch }: Props) => {
   for (let page of feedbackDefinition.pages) {
     feedbackQuestions.push(...page.questions)
   }
-  const categoryId = evaluationRefs["feedback-category"]
-  const locationId = evaluationRefs["feedback-location"]
-  const isLocationId = evaluationRefs["is-feedback-location"]
+  const categoryId = evaluationRefs["category"]
+  const locationId = evaluationRefs["location"]
+  const isLocationId = evaluationRefs["is-location"]
 
   const categorieQuestion = feedbackQuestions.find((q) => q.id === categoryId)!
     .props as TSingleOrMultiResponseProps
   const categories: TResponse[] = categorieQuestion!.responses
   const mapProps = feedbackDefinition!.pages[1]!.questions.find(
-    (q) => q.id === evaluationRefs["feedback-location"],
+    (q) => q.id === evaluationRefs["location"],
   )!.props as TMapProps
 
   const transformKeys = (obj: Record<string, any>) => {
@@ -73,7 +73,7 @@ export const ExternalSurveyResponseFormModal = ({ refetch }: Props) => {
       delete values[isLocationId] // delete map ja/nein response
       // in the future we will only have one data field for user text, but we have 2 data fields for user texts in the RS8 survey
       // the following lines are a workaround to have a consistent datastructure among all survey responses of the same survey
-      const additionalUserTextId = evaluationRefs["feedback-usertext-2"]
+      const additionalUserTextId = evaluationRefs["usertext-2"]
       if (additionalUserTextId) values[additionalUserTextId] = null
 
       const defaultStatus = getBackendConfigBySurveySlug(survey.slug).status[0].value

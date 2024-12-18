@@ -44,7 +44,7 @@ export const Survey = () => {
     page.questions && feedbackQuestions.push(...page.questions)
   }
 
-  const userLocationQuestionId = responseConfig?.evaluationRefs["feedback-location"]
+  const userLocationQuestionId = responseConfig?.evaluationRefs["location"]
 
   const surveyResponsesFeedbackPartWithLocation = surveyResponsesFeedbackPart.filter(
     //  @ts-expect-error

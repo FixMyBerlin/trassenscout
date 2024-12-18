@@ -10,7 +10,7 @@ export default resolver.pipe(
   resolver.authorize("ADMIN"),
   async ({ slug }) => {
     const { evaluationRefs } = getResponseConfigBySurveySlug(slug)
-    const userText1Id = evaluationRefs["feedback-usertext-1"]
+    const userText1Id = evaluationRefs["usertext-1"]
 
     const surveySessions = await db.surveySession.findMany({
       where: { survey: { slug: slug } },

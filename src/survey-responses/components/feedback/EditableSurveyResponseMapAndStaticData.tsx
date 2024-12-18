@@ -54,7 +54,7 @@ const EditableSurveyResponseMapAndStaticData: React.FC<EditableSurveyResponseLis
   const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
 
   const mapProps = feedbackDefinition!.pages[1]!.questions.find(
-    (q) => q.id === evaluationRefs["feedback-location"],
+    (q) => q.id === evaluationRefs["location"],
   )!.props as TMapProps
   const defaultViewState = mapProps?.config?.bounds
 
@@ -62,19 +62,17 @@ const EditableSurveyResponseMapAndStaticData: React.FC<EditableSurveyResponseLis
   for (let page of feedbackDefinition.pages) {
     feedbackQuestions.push(...page.questions)
   }
-  const feedbackQuestion = feedbackQuestions.find(
-    (q) => q.id === evaluationRefs["feedback-category"],
-  )
+  const feedbackQuestion = feedbackQuestions.find((q) => q.id === evaluationRefs["category"])
 
   const maptilerUrl = surveyDefinition.maptilerUrl
 
   const feedbackUserCategory =
     // @ts-expect-error `data` is of type unkown
-    response.data[evaluationRefs["feedback-category"]] &&
-    evaluationRefs["feedback-category"] &&
+    response.data[evaluationRefs["category"]] &&
+    evaluationRefs["category"] &&
     getSurveyResponseCategoryById(
       // @ts-expect-error `data` is of type unkown
-      Number(response.data[evaluationRefs["feedback-category"]]),
+      Number(response.data[evaluationRefs["category"]]),
       feedbackQuestion!,
     )
 
@@ -124,10 +122,7 @@ const EditableSurveyResponseMapAndStaticData: React.FC<EditableSurveyResponseLis
         {/* TEXT */}
         <EditableSurveyResponseUserText
           surveyId={surveyId!}
-          userTextIndices={[
-            evaluationRefs["feedback-usertext-1"],
-            evaluationRefs["feedback-usertext-2"],
-          ]}
+          userTextIndices={[evaluationRefs["usertext-1"], evaluationRefs["usertext-2"]]}
           feedbackQuestions={feedbackQuestions}
           response={response}
         />

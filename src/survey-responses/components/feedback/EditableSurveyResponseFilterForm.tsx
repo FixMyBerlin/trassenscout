@@ -57,9 +57,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     surveyPart: "feedback",
   })
 
-  const categoryQuestionProps = feedbackQuestions.find(
-    (q) => q.id === evaluationRefs["feedback-category"],
-  )!.props as TSingleOrMultiResponseProps
+  const categoryQuestionProps = feedbackQuestions.find((q) => q.id === evaluationRefs["category"])!
+    .props as TSingleOrMultiResponseProps
 
   // backend configurations: status
   const backendConfig = getBackendConfigBySurveySlug(survey.slug)

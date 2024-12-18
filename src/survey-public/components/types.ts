@@ -150,13 +150,13 @@ export type TFeedback = {
 
 export type TResponseConfig = {
   evaluationRefs: {
-    "feedback-category": number
-    "is-feedback-location": number
-    "feedback-location": number
-    "feedback-usertext-1": number
-    "feedback-usertext-2"?: number // survey RS8
+    category: number
+    "is-location": number
+    location: number
+    "usertext-1": number
+    "usertext-2"?: number // survey RS8
+    "geometry-category"?: number // this is typed as optional because it is introduced in survey BB, for RS8 and FRM7 we use a fallback geometry-category
     "line-id"?: number // survey BB
-    "line-geometry"?: number // survey BB
     "line-from-to-name"?: number // survey BB
   }
 }

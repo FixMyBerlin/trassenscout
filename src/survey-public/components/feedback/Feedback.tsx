@@ -47,7 +47,7 @@ export const Feedback = ({
   const [feedbackPageProgress, setFeedbackPageProgress] = useState(0)
   const responsesForDebugging = getValues()
   const { evaluationRefs } = responseConfig
-  const isUserLocationQuestionId = evaluationRefs["is-feedback-location"]
+  const isUserLocationQuestionId = evaluationRefs["is-location"]
 
   useEffect(() => {
     // inital value of is location is set to true ("1")
@@ -56,12 +56,12 @@ export const Feedback = ({
 
   const { pages } = feedback
 
-  const lineGeometryId = evaluationRefs["line-geometry"] as number
-  const pinId = evaluationRefs["feedback-location"] as number
-  const userLocationQuestionId = evaluationRefs["feedback-location"]
-  const feedbackCategoryId = evaluationRefs["feedback-category"]
-  const userText1Id = evaluationRefs["feedback-usertext-1"]
-  const userText2Id = evaluationRefs["feedback-usertext-2"]
+  const lineGeometryId = evaluationRefs["geometry-category"] as number
+  const pinId = evaluationRefs["location"] as number
+  const userLocationQuestionId = evaluationRefs["location"]
+  const feedbackCategoryId = evaluationRefs["category"]
+  const userText1Id = evaluationRefs["usertext-1"]
+  const userText2Id = evaluationRefs["usertext-2"]
 
   const mapProps = pages[1]?.questions.find((q) => q.id === pinId)?.props as TMapProps
 

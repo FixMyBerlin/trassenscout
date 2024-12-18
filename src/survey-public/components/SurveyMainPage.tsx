@@ -77,8 +77,8 @@ export const SurveyMainPage = ({
   )
 
   const { evaluationRefs } = responseConfig
-  const feedbackCategoryId = evaluationRefs["feedback-category"]
-  const feedbackLocationId = evaluationRefs["feedback-location"]
+  const feedbackCategoryId = evaluationRefs["category"]
+  const feedbackLocationId = evaluationRefs["location"]
   const feedbackFirstPageQuestions = feedbackDefinition.pages.find((p) => p.id === 1)!.questions
   let feedbackSecondPageQuestions = feedbackDefinition.pages
     .find((p) => p.id === 2)!
@@ -109,8 +109,8 @@ export const SurveyMainPage = ({
     }
   }
 
-  const isUserLocationQuestionId = responseConfig.evaluationRefs["is-feedback-location"]
-  const userLocationQuestionId = responseConfig.evaluationRefs["feedback-location"]
+  const isUserLocationQuestionId = responseConfig.evaluationRefs["is-location"]
+  const userLocationQuestionId = responseConfig.evaluationRefs["location"]
 
   const handleStart = () => {
     setStage("SURVEY")

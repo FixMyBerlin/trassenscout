@@ -54,7 +54,7 @@ export const SurveyResponseWithLocation = () => {
   const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
   const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
 
-  const locationRef = evaluationRefs["feedback-location"]
+  const locationRef = evaluationRefs["location"]
 
   const mapProps = feedbackDefinition!.pages[1]!.questions.find((q) => q.id === locationRef)!
     .props as TMapProps
