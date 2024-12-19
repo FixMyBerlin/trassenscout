@@ -1,3 +1,5 @@
+import { LineString, MultiLineString } from "geojson"
+
 export type TSurvey = {
   part: number
   version: number
@@ -9,6 +11,7 @@ export type TSurvey = {
   darkColor: string
   pages: TPage[]
   deletedQuestions?: TQuestion[]
+  geometryFallback?: LineString["coordinates"] | MultiLineString["coordinates"]
 }
 
 export type TPage = {

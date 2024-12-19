@@ -21,6 +21,7 @@ import { getSession } from "@blitzjs/auth"
 import { AuthorizationError } from "blitz"
 import { format } from "date-fns"
 import { NextApiRequest, NextApiResponse } from "next"
+import { coordinatesToWkt } from "../../../utils/coordinatesToWKT"
 import { getSurvey, sendCsv } from "./../survey/_shared"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -32,6 +33,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
   const backendConfig = getBackendConfigBySurveySlug(survey.slug)
   const responseConfig = getResponseConfigBySurveySlug(survey.slug)
+
+  const geometryCategoryId = responseConfig.evaluationRefs["geometry-category"]
 
   const getQuestions = (definition: TSurvey | TFeedback) => {
     const questions: Record<string, TQuestion | TFeedbackQuestion> = {}
@@ -46,6 +49,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const surveyQuestions = getQuestions(surveyDefinition) as Record<string, TQuestion>
   const feedbackQuestions = getQuestions(feedbackDefinition) as Record<string, TFeedbackQuestion>
+
+  const geometryCategoryType = surveyDefinition["geometryCategoryType"]
 
   const err = (status: number, message: string) => {
     res.status(status).json({ error: true, status: status, message })
@@ -133,7 +138,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // exclude the "is-location" question as it is not explicitley stored in the response data
     .filter(([questionId]) => questionId !== String(responseConfig.evaluationRefs["is-location"]))
     .forEach(([questionId, question]) => {
-      headers.push({ id: questionId, title: question.label.de })
+      if (questionId === String(geometryCategoryId)) {
+        headers.push({ id: questionId, title: "Geometrie-Kategorie als WKT" })
+      } else {
+        headers.push({ id: questionId, title: question.label.de })
+      }
     })
   // add headers for all topics
   topics.forEach((topic) => {
@@ -142,6 +151,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       title: `${(labels || defaultLabels).topics?.sg}: ${topic.title}`,
     })
   })
+  // add header for geometry category
+  // if (geometryCategoryId)
+  //   headers.push({
+  //     id: "geometry-category-wkt",
+  //     title: "Geometrie-Kategorie als WKT",
+  //   })
 
   const csvData: Result[] = []
 
@@ -268,6 +283,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                       JSON.stringify(data[questionId], null, 2)
                     : ""
                   break
+                case "custom":
+                  // the geometry-category question is handled separately: we need to convert the coordinates to WKT to be able to import them into QGIS
+                  if (questionId === String(geometryCategoryId)) {
+                    const categoryCoordinates =
+                      // @ts-expect-error data is of type unknown and index type
+                      geometryCategoryId && data[String(geometryCategoryId)]
+                        ? // @ts-expect-error data is of type unknown and index type
+                          (JSON.parse(data[String(geometryCategoryId)]) as
+                            | number[][]
+                            | number[][][])
+                        : // rs8 and frm7 fallback geometry-category
+                          surveyDefinition.geometryFallback
+                    // @ts-expect-error index type
+                    row[questionId] = coordinatesToWkt(categoryCoordinates)
+                    csvData.push(row)
+                  } else {
+                    // @ts-expect-error index type
+                    row[questionId] = data[questionId] || ""
+                  }
+                  break
                 default:
                   // @ts-expect-error data is of type unknown and index type
                   row[questionId] = data[questionId] || ""
@@ -279,7 +314,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // @ts-expect-error index type
             row[`topic_${t.surveyResponseTopicId}`] = "X"
           })
-          csvData.push(row)
         },
       )
   })
