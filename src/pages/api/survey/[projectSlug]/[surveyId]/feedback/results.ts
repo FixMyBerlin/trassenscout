@@ -35,6 +35,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const responseConfig = getResponseConfigBySurveySlug(survey.slug)
 
   const geometryCategoryId = responseConfig.evaluationRefs["geometry-category"]
+  const locationId = responseConfig.evaluationRefs["location"]
+
   const geometryCategoryType = surveyDefinition["geometryCategoryType"]
 
   const getQuestions = (definition: TSurvey | TFeedback) => {
@@ -136,9 +138,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   Object.entries(feedbackQuestions)
     // exclude the "is-location" question as it is not explicitley stored in the response data
     .filter(([questionId]) => questionId !== String(responseConfig.evaluationRefs["is-location"]))
+    // the geometry-category question is handled separately
     .forEach(([questionId, question]) => {
       if (questionId === String(geometryCategoryId)) {
         headers.push({ id: questionId, title: "Geometrie-Kategorie als WKT" })
+        // the location question is handled separately - lng and lat are separate columns
+      } else if (questionId === String(locationId)) {
+        headers.push({ id: `${questionId}-lat`, title: "Hinweis Verortung Lat" })
+        headers.push({ id: `${questionId}-lng`, title: "Hinweis Verortung Lng" })
       } else {
         headers.push({ id: questionId, title: question.label.de })
       }
@@ -270,11 +277,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     : ""
                   break
                 case "map":
-                  // @ts-expect-error data is of type unknown and index type
-                  row[questionId] = data[questionId]
-                    ? // @ts-expect-error data is of type unknown
-                      JSON.stringify(data[questionId], null, 2)
-                    : ""
+                  // @ts-expect-error data is of type unknown
+                  if (questionId === String(locationId) && data[questionId]) {
+                    // @ts-expect-error data is of type unknown and index type
+                    row[`${questionId}-lat`] = data[questionId].lat
+                    // @ts-expect-error data is of type unknown and index type
+                    row[`${questionId}-lng`] = data[questionId].lng
+                  } else {
+                    // @ts-expect-error data is of type unknown and index type
+                    row[questionId] = data[questionId]
+                      ? // @ts-expect-error data is of type unknown
+                        JSON.stringify(data[questionId], null, 2)
+                      : ""
+                  }
                   break
                 case "custom":
                   // the geometry-category question is handled separately: we need to convert the coordinates to WKT to be able to import them into QGIS
