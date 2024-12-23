@@ -21,7 +21,7 @@ import { getSession } from "@blitzjs/auth"
 import { AuthorizationError } from "blitz"
 import { format } from "date-fns"
 import { NextApiRequest, NextApiResponse } from "next"
-import { coordinatesToWkt } from "../../../utils/coordinatesToWKT"
+import { coordinatesToWkt } from "../../../utils/coordinatesToWkt"
 import { getSurvey, sendCsv } from "./../survey/_shared"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -35,6 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const responseConfig = getResponseConfigBySurveySlug(survey.slug)
 
   const geometryCategoryId = responseConfig.evaluationRefs["geometry-category"]
+  const geometryCategoryType = surveyDefinition["geometryCategoryType"]
 
   const getQuestions = (definition: TSurvey | TFeedback) => {
     const questions: Record<string, TQuestion | TFeedbackQuestion> = {}
@@ -49,8 +50,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const surveyQuestions = getQuestions(surveyDefinition) as Record<string, TQuestion>
   const feedbackQuestions = getQuestions(feedbackDefinition) as Record<string, TFeedbackQuestion>
-
-  const geometryCategoryType = surveyDefinition["geometryCategoryType"]
 
   const err = (status: number, message: string) => {
     res.status(status).json({ error: true, status: status, message })
@@ -151,12 +150,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       title: `${(labels || defaultLabels).topics?.sg}: ${topic.title}`,
     })
   })
-  // add header for geometry category
-  // if (geometryCategoryId)
-  //   headers.push({
-  //     id: "geometry-category-wkt",
-  //     title: "Geometrie-Kategorie als WKT",
-  //   })
 
   const csvData: Result[] = []
 
@@ -296,7 +289,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         : // rs8 and frm7 fallback geometry-category
                           surveyDefinition.geometryFallback
                     // @ts-expect-error index type
-                    row[questionId] = coordinatesToWkt(categoryCoordinates)
+                    row[questionId] = coordinatesToWkt({
+                      coordinates: categoryCoordinates,
+                      type: geometryCategoryType,
+                    })
                     csvData.push(row)
                   } else {
                     // @ts-expect-error index type

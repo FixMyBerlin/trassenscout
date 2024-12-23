@@ -11,6 +11,13 @@ export type TSurvey = {
   darkColor: string
   pages: TPage[]
   deletedQuestions?: TQuestion[]
+  // atm we only have "line" geometryCategoryType, coordinates are of type LineString or MultiLineString (the distinction between those two can be made by checking the shape of the first element in the coordinates array)
+  // we define the geometryCategoryType explicilitly here as we might have "polygon" geometryCategoryTypes in the future we might have "polygon" geometryCategoryTypes
+  // we can not store this information in the geometry atm
+  // will be reworked with https://github.com/FixMyBerlin/private-issues/issues/2196
+  geometryCategoryType: "line" | "polygon"
+  // geometryFallback is used for surveys rs8 adn frm7 that have a geometry-category question
+  // starting with radnetz BB all surveys have geometry-category questions
   geometryFallback?: LineString["coordinates"] | MultiLineString["coordinates"]
 }
 

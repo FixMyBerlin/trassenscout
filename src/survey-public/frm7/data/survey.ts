@@ -9,7 +9,7 @@ export const surveyDefinition: TSurvey = {
   primaryColor: "#D60F3D",
   darkColor: "#5F071B",
   lightColor: "#fecdd3",
-
+  geometryCategoryType: "line",
   pages: [
     {
       id: 2,

@@ -11,6 +11,7 @@ export const surveyDefinition: TSurvey = {
   primaryColor: "#C73C35",
   darkColor: "#651E1B",
   lightColor: "#DF8A86",
+  geometryCategoryType: "line",
   pages: [
     {
       id: 1,
