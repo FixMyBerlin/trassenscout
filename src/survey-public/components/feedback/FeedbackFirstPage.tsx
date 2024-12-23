@@ -58,7 +58,7 @@ export const FeedbackFirstPage = ({
       {/* This map to select a line is custom for BB survey and is going to be deleted afterwards */}
       {surveySlug === "radnetz-brandenburg" && (
         <>
-          <SurveyH2>{questions[0].label.de} *</SurveyH2>
+          <SurveyH2>{questions[0].label.de}</SurveyH2>
           <MapProvider>
             <SurveyMapLine
               projectMap={{

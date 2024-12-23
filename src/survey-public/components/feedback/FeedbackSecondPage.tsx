@@ -70,7 +70,7 @@ export const FeedbackSecondPage = ({
         <>
           <SurveyH2>
             {/* @ts-expect-error */}
-            {questions.find((q) => q.id === userLocationQuestionId)?.label.de} *
+            {questions.find((q) => q.id === userLocationQuestionId)?.label.de}
           </SurveyH2>
           <MapProvider>
             <SurveyMap
@@ -97,7 +97,7 @@ export const FeedbackSecondPage = ({
             const userTextQuestionProps = q.props as TTextareaProps
             return (
               <Fragment key={q.id}>
-                <SurveyH2>{q.label.de} *</SurveyH2>
+                <SurveyH2>{q.label.de}</SurveyH2>
                 {q.help && <div className="-mt-4 mb-6 text-sm text-gray-400">{q.help.de}</div>}
                 <SurveyLabeledTextareaField
                   caption={userTextQuestionProps.caption?.de}
