@@ -18,6 +18,7 @@ export const ExternalSurveyResponseFormMap: React.FC<Props> = ({
   const { watch } = useFormContext()
 
   // watch if user choses to set a pin, update component if user choses to set a pin
+  // todo helper function getFormfieldName()
   const isMap = watch(`single-${isUserLocationQuestionId}`) === "true"
 
   return (

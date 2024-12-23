@@ -5,7 +5,7 @@ type Props = {
   canonicalUrl?: string
 }
 
-export const SurveyMetaTags: React.FC<Props> = ({ title, canonicalUrl }) => {
+export const SurveyMetaTags = ({ title, canonicalUrl }: Props) => {
   return (
     <Head>
       <title>{title}</title>

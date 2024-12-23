@@ -10,7 +10,7 @@ type Props = {
   more: TMore
 }
 
-export const More: React.FC<Props> = ({ more, onClickMore, onClickFinish }) => {
+export const More = ({ more, onClickMore, onClickFinish }: Props) => {
   useAlertBeforeUnload()
 
   const { title, description, questionText, buttons } = more

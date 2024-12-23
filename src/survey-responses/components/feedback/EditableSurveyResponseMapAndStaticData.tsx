@@ -13,7 +13,7 @@ import getSurvey from "@/src/surveys/queries/getSurvey"
 import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { EnvelopeIcon } from "@heroicons/react/20/solid"
-import clsx from "clsx"
+import { clsx } from "clsx"
 
 import { LngLatBoundsLike } from "react-map-gl/dist/esm/exports-maplibre"
 import deleteSurveyResponse from "../../mutations/deleteSurveyResponse"
