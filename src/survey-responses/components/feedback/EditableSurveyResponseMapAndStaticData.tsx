@@ -2,7 +2,7 @@ import { Link, linkStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-import { TMapProps } from "@/src/survey-public/components/types"
+import { TFeedbackQuestion, TMapProps } from "@/src/survey-public/components/types"
 import {
   getBackendConfigBySurveySlug,
   getFeedbackDefinitionBySurveySlug,
@@ -15,6 +15,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { EnvelopeIcon } from "@heroicons/react/20/solid"
 import { clsx } from "clsx"
 
+import { getQuestionsAsArray } from "@/src/survey-public/utils/getQuestionsAsArray"
 import { LngLatBoundsLike } from "react-map-gl/dist/esm/exports-maplibre"
 import deleteSurveyResponse from "../../mutations/deleteSurveyResponse"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
@@ -30,7 +31,6 @@ export type EditableSurveyResponseListItemProps = {
     >["feedbackSurveyResponses"][number]
   >
   categoryLabel: string
-  userLocationQuestionId: number | undefined
   maptilerUrl: string
   defaultViewState: LngLatBoundsLike
   showMap?: boolean
@@ -40,7 +40,6 @@ export type EditableSurveyResponseListItemProps = {
 const EditableSurveyResponseMapAndStaticData: React.FC<EditableSurveyResponseListItemProps> = ({
   response,
   showMap,
-  userLocationQuestionId,
   categoryLabel,
   refetchResponsesAndTopics,
 }) => {
@@ -53,16 +52,17 @@ const EditableSurveyResponseMapAndStaticData: React.FC<EditableSurveyResponseLis
   const backendConfig = getBackendConfigBySurveySlug(survey.slug)
   const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
 
-  const mapProps = feedbackDefinition!.pages[1]!.questions.find(
-    (q) => q.id === evaluationRefs["location"],
-  )!.props as TMapProps
-  const defaultViewState = mapProps?.config?.bounds
+  const feedbackQuestions = getQuestionsAsArray({
+    definition: feedbackDefinition,
+    surveyPart: "feedback",
+  }) as TFeedbackQuestion[]
 
-  const feedbackQuestions = []
-  for (let page of feedbackDefinition.pages) {
-    feedbackQuestions.push(...page.questions)
-  }
-  const feedbackQuestion = feedbackQuestions.find((q) => q.id === evaluationRefs["category"])
+  const mapProps = feedbackQuestions.find((q) => q.id === evaluationRefs["location"])!
+    .props as TMapProps
+
+  const feedbackQuestion = feedbackQuestions.find(
+    (q) => q.id === evaluationRefs["category"],
+  ) as TFeedbackQuestion
 
   const maptilerUrl = surveyDefinition.maptilerUrl
 
@@ -76,7 +76,15 @@ const EditableSurveyResponseMapAndStaticData: React.FC<EditableSurveyResponseLis
       feedbackQuestion!,
     )
 
+  const userLocationQuestionId = evaluationRefs["location"]
+
   const additionalFilterFields = backendConfig.additionalFilters
+
+  const geometryCategoryCoordinates = evaluationRefs["geometry-category"]
+    ? // @ts-expect-error `data` is unkown
+      JSON.parse(response.data[evaluationRefs["geometry-category"]])
+    : // we need to provide a fallback geometry for rs8 & frm7 where the geometry category was not introduced yet
+      surveyDefinition.geometryFallback
 
   const getTranslatedSource = (s: string) => {
     switch (s) {
@@ -149,8 +157,8 @@ const EditableSurveyResponseMapAndStaticData: React.FC<EditableSurveyResponseLis
               // @ts-expect-error `data` is unkown
               response.data[userLocationQuestionId] as { lat: number; lng: number } | undefined
             }
+            geometryCategoryCoordinates={geometryCategoryCoordinates}
             maptilerUrl={maptilerUrl}
-            defaultViewState={defaultViewState}
           />
           {
             // @ts-expect-error `data` is unkown

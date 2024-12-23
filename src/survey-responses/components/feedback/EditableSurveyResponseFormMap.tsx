@@ -1,6 +1,9 @@
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
+import { getSurveyDefinitionBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
+import { lineString, multiLineString, polygon } from "@turf/helpers"
+import { bbox } from "@turf/turf"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useState } from "react"
 import Map, {
@@ -9,25 +12,24 @@ import Map, {
   Marker,
   NavigationControl,
   Source,
-  useMap,
 } from "react-map-gl/maplibre"
 
 type Props = {
   marker: { lat: number; lng: number } | undefined
+  geometryCategoryCoordinates: any
   maptilerUrl: string
-  defaultViewState?: LngLatBoundsLike
   surveySlug: AllowedSurveySlugs
 }
 
 export const EditableSurveyResponseFormMap: React.FC<Props> = ({
   marker,
   maptilerUrl,
-  defaultViewState,
   surveySlug,
+  geometryCategoryCoordinates,
 }) => {
-  const { mainMap } = useMap()
-
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
+
+  const surveyDefinition = getSurveyDefinitionBySurveySlug(surveySlug)
 
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)
@@ -38,6 +40,39 @@ export const EditableSurveyResponseFormMap: React.FC<Props> = ({
   const vectorStyle = `${maptilerUrl}?key=${maptilerApiKey}`
   const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
 
+  const geometryCategoryData =
+    surveyDefinition.geometryCategoryType === "line"
+      ? Array.isArray(geometryCategoryCoordinates[0][0])
+        ? multiLineString(geometryCategoryCoordinates)
+        : lineString(geometryCategoryCoordinates)
+      : polygon(geometryCategoryCoordinates)
+
+  const geometryCategorySource =
+    surveyDefinition.geometryCategoryType === "line" ? (
+      <Source key="geometryCategory" type="geojson" data={geometryCategoryData}>
+        <Layer
+          type="line"
+          paint={{
+            "line-width": 7,
+            "line-color": "#994F0B",
+            "line-opacity": 1,
+          }}
+        />
+      </Source>
+    ) : (
+      <Source key="geometryCategory" type="geojson" data={geometryCategoryData}>
+        <Layer
+          type="fill"
+          paint={{
+            "fill-color": "#994F0B",
+            "fill-opacity": 0.4,
+          }}
+        />
+      </Source>
+    )
+
+  const geometryCategoryBounds = bbox(geometryCategoryData) as LngLatBoundsLike
+
   return (
     <div className="h-[600px]">
       <Map
@@ -45,7 +80,10 @@ export const EditableSurveyResponseFormMap: React.FC<Props> = ({
         initialViewState={{
           latitude: marker?.lat || undefined,
           longitude: marker?.lng || undefined,
-          bounds: marker ? undefined : defaultViewState,
+          // if a marker/location is set, we don't need to fit the bounds
+          // if we don't have a marker/location, we fit the bounds of the geometry category
+          bounds: marker ? undefined : geometryCategoryBounds,
+          fitBoundsOptions: { padding: { top: 50, bottom: 50, left: 50, right: 50 } },
           zoom: marker ? 10.5 : undefined,
         }}
         scrollZoom={false}
@@ -87,6 +125,7 @@ export const EditableSurveyResponseFormMap: React.FC<Props> = ({
             <SurveyStaticPin surveySlug={surveySlug} />
           </Marker>
         )}
+        {geometryCategoryCoordinates && geometryCategorySource}
         <BackgroundSwitcher
           className="absolute left-4 top-4"
           value={selectedLayer}

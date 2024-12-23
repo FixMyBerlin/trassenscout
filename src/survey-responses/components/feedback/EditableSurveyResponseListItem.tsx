@@ -154,7 +154,6 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             showMap={showMap}
             maptilerUrl={maptilerUrl}
             defaultViewState={defaultViewState}
-            userLocationQuestionId={evaluationRefs["location"]}
             categoryLabel={labels.category?.sg || defaultBackendConfig.labels.category.sg}
           />
           <EditableSurveyResponseForm
