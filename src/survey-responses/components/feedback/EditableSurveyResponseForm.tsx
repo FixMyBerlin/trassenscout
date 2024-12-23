@@ -203,7 +203,7 @@ export function EditableSurveyResponseForm({
     <>
       <div className="flex flex-col gap-6">
         <div className={clsx("flex gap-6", showMap ? "flex-row" : "flex-col")}>
-          <form className="flex gap-6">
+          <form className="flex flex-col gap-6">
             {/* BLT */}
             <FormElementWrapper
               label={labels.operator?.sg || defaultBackendConfig.labels.operator.sg}
@@ -227,6 +227,8 @@ export function EditableSurveyResponseForm({
             >
               {statusOptions.map((item) => (
                 <LabeledInputRadioCheckbox
+                  classNameLabelSpan={"px-2 py-1 rounded-full"}
+                  labelSpanStyle={{ backgroundColor: item.color }}
                   type="radio"
                   name="responseStatus"
                   key={item.value}

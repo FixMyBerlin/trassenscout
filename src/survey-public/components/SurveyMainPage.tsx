@@ -191,14 +191,14 @@ export const SurveyMainPage = ({
     }, 900)
   }
 
-  const handleEmailToFeedback = () => {
-    setFeedbackKey(feedbackKey + 1)
+  const handleMoreToFeedback = () => {
     setStage("FEEDBACK")
     setProgress(stageProgressDefinition["FEEDBACK"])
     scrollToTopWithDelay()
   }
 
-  const handleMoreToFeedback = () => {
+  const handleEmailToFeedback = () => {
+    setFeedbackKey(feedbackKey + 1)
     setStage("FEEDBACK")
     setProgress(stageProgressDefinition["FEEDBACK"])
     scrollToTopWithDelay()

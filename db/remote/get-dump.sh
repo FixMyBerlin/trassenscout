@@ -12,7 +12,6 @@ while getopts 'sh' OPTION; do
   esac
 done
 
-. ./.env
 . ./.env.local
 if [ $USE_STAGING ]; then
   if ! [ -v DATABASE_URL_STAGING ]; then
@@ -33,6 +32,9 @@ else
 fi
 
 DIR=$( cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P )
-alias pg_dump="docker run -it --rm --entrypoint pg_dump postgres"
-pg_dump $DATABASE_URL | grep -vE 'rdsadmin;|dbmasteruser;' > $DIR/data/dump.sql
+
+docker run -it --rm --entrypoint pg_dump postgres:16-alpine $DATABASE_URL | grep -vE 'rdsadmin;|dbmasteruser;' > $DIR/data/dump.sql
+
+# Show first 5 lines
+head -n 5 $DIR/data/dump.sql
 ls -l $DIR/data/dump.sql

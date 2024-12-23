@@ -4,7 +4,7 @@
 type StatusItem = {
   value: string
   label: string
-  colorClass: string
+  color: `#${string}`
   icon: "XMARK" | "CLOCK" | "CHECKMARK" | "DOCUMENT"
 }
 
@@ -47,20 +47,20 @@ export type TBackendConfigDefaults = {
 
 export const backendConfig: TBackendConfigDefaults = {
   status: [
-    { value: "PENDING", label: "Ausstehend", colorClass: "bg-yellow-100", icon: "CLOCK" }, // DEFAULT
-    { value: "ASSIGNED", label: "Zugeordnet (BLT)", colorClass: "bg-indigo-100", icon: "DOCUMENT" },
-    { value: "IRRELEVANT", label: "Nicht relevant", colorClass: "bg-gray-100", icon: "XMARK" },
+    { value: "PENDING", label: "Ausstehend", color: "#FDEEBF", icon: "CLOCK" }, // DEFAULT
+    { value: "ASSIGNED", label: "Zugeordnet (BLT)", color: "#e0e7ff", icon: "DOCUMENT" },
+    { value: "IRRELEVANT", label: "Nicht relevant", color: "#f3f4f6", icon: "XMARK" },
     {
       value: "HANDED_OVER",
       label: "Übergeben Planung",
-      colorClass: "bg-indigo-100",
+      color: "#e0e7ff",
       icon: "DOCUMENT",
     },
-    { value: "DONE_FAQ", label: "Erledigt (FAQ)", colorClass: "bg-green-100", icon: "CHECKMARK" },
+    { value: "DONE_FAQ", label: "Erledigt (FAQ)", color: "#D1FAE5", icon: "CHECKMARK" },
     {
       value: "DONE_PLANING",
       label: "Erledigt (Planung)",
-      colorClass: "bg-green-100",
+      color: "#D1FAE5",
       icon: "CHECKMARK",
     },
   ],

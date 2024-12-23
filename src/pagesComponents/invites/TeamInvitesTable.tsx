@@ -60,7 +60,7 @@ export const TeamInvitesTable = () => {
                 <td className="h-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                   <StatusLabel
                     label={statusTranslations[invite.status]}
-                    colorClass={clsx(statusColors[invite.status], "inline-flex")}
+                    className={clsx(statusColors[invite.status], "inline-flex")}
                   />
                 </td>
                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
