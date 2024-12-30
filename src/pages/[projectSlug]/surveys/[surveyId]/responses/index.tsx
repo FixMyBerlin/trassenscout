@@ -53,15 +53,14 @@ export const SurveyResponse = () => {
   // Handle scroll into view on page load (like a hash URL) based on a ref and URL param `stakeholderDetails`.
   // The ref is an error of listItems where the array index is the stakeholderNote.id.
   const params = useRouterQuery()
-  const paramsStakeholderDetails = parseInt(String(params.responseDetails))
+  const paramsSurveyResponseId = parseInt(String(params.responseDetails))
   const accordionRefs = useRef<Array<HTMLDivElement | null>>([])
-
   useEffect(() => {
-    if (paramsStakeholderDetails) {
-      const currentRef = accordionRefs.current?.at(paramsStakeholderDetails)
+    if (paramsSurveyResponseId) {
+      const currentRef = accordionRefs.current?.at(paramsSurveyResponseId)
       currentRef?.scrollIntoView({ behavior: "smooth" })
     }
-  }, [paramsStakeholderDetails])
+  }, [paramsSurveyResponseId])
 
   return (
     <>
