@@ -119,6 +119,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         labels && labels["operator"]?.sg ? labels["operator"]?.sg : defaultLabels["operator"].sg,
     },
     { id: "comments", title: "Kommentare" },
+    { id: "geometry-category", title: "Geometrie-Kategorie als WKT" },
   ]
 
   type Result = {
@@ -129,6 +130,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     note: string | undefined
     operator: string | undefined
     comments: string | undefined
+    "geometry-category": string
   }
 
   // add headers for all questions
@@ -140,10 +142,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .filter(([questionId]) => questionId !== String(responseConfig.evaluationRefs["is-location"]))
     // the geometry-category question is handled separately
     .forEach(([questionId, question]) => {
-      if (questionId === String(geometryCategoryId)) {
-        headers.push({ id: questionId, title: "Geometrie-Kategorie als WKT" })
-        // the location question is handled separately - lng and lat are separate columns
-      } else if (questionId === String(locationId)) {
+      if (questionId === String(locationId)) {
         headers.push({ id: `${questionId}-lat`, title: "Hinweis Verortung Lat" })
         headers.push({ id: `${questionId}-lng`, title: "Hinweis Verortung Lng" })
       } else {
@@ -157,7 +156,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       title: `${(labels || defaultLabels).topics?.sg}: ${topic.title}`,
     })
   })
-
   const csvData: Result[] = []
 
   surveySessions.forEach((surveySession) => {
@@ -292,27 +290,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                   }
                   break
                 case "custom":
-                  // the geometry-category question is handled separately: we need to convert the coordinates to WKT to be able to import them into QGIS
-                  if (questionId === String(geometryCategoryId)) {
-                    const categoryCoordinates =
-                      // @ts-expect-error data is of type unknown and index type
-                      geometryCategoryId && data[String(geometryCategoryId)]
-                        ? // @ts-expect-error data is of type unknown and index type
-                          (JSON.parse(data[String(geometryCategoryId)]) as
-                            | number[][]
-                            | number[][][])
-                        : // rs8 and frm7 fallback geometry-category
-                          surveyDefinition.geometryFallback
-                    // @ts-expect-error index type
-                    row[questionId] = coordinatesToWkt({
-                      coordinates: categoryCoordinates,
-                      type: geometryCategoryType,
-                    })
-                    csvData.push(row)
-                  } else {
-                    // @ts-expect-error index type
-                    row[questionId] = data[questionId] || ""
-                  }
+                  // @ts-expect-error index type
+                  row[questionId] = data[questionId] || ""
                   break
                 default:
                   // @ts-expect-error data is of type unknown and index type
@@ -321,10 +300,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               }
             }
           })
+          // the geometry-category question is handled separately: we need to convert the coordinates to WKT to be able to import them into QGIS
+
+          const categoryCoordinates =
+            // @ts-expect-error data is of type unknown and index type
+            geometryCategoryId && data[String(geometryCategoryId)]
+              ? // @ts-expect-error data is of type unknown and index type
+                (JSON.parse(data[String(geometryCategoryId)]) as number[][] | number[][][])
+              : // rs8 and frm7 fallback geometry-category
+                surveyDefinition.geometryFallback
+
+          row["geometry-category"] =
+            coordinatesToWkt({
+              coordinates: categoryCoordinates,
+              type: geometryCategoryType,
+            }) || ""
+
           surveyResponseTopics.forEach((t) => {
             // @ts-expect-error index type
             row[`topic_${t.surveyResponseTopicId}`] = "X"
           })
+          csvData.push(row)
         },
       )
   })
