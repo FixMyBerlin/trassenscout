@@ -158,13 +158,12 @@ export const createSurveySchema = (questions?: TQuestion[] | TFeedbackQuestion[]
         ])
         break
       case "map":
-        schemaObject[formfieldName] = z.object(
-          {
+        schemaObject[formfieldName] = z
+          .object({
             lng: z.number(),
             lat: z.number(),
-          },
-          { required_error: "Pflichtfeld." },
-        )
+          })
+          .nullish()
         break
     }
   })

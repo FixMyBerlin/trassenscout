@@ -75,22 +75,9 @@ export const SurveyMainPage = ({
   const surveyFormSchema = createSurveySchema(
     getQuestionsAsArray({ definition: surveyDefinition, surveyPart: "survey" }),
   )
-
-  const { evaluationRefs } = responseConfig
-  const feedbackCategoryId = evaluationRefs["category"]
-  const feedbackLocationId = evaluationRefs["location"]
-  const feedbackFirstPageQuestions = feedbackDefinition.pages.find((p) => p.id === 1)!.questions
-  let feedbackSecondPageQuestions = feedbackDefinition.pages
-    .find((p) => p.id === 2)!
-    .questions.filter((q) => q.id !== feedbackLocationId)
-  const feedbackQuestions = [
-    feedbackFirstPageQuestions.find((q) => q.id === feedbackCategoryId)!,
-    // todo clean up or refactor after survey BB
-    // for BB we have a the map for line selection on the first page - so we manually add it here for validation
-    feedbackFirstPageQuestions.find((q) => q.id === 21)!,
-    ...feedbackSecondPageQuestions,
-  ]
-  const feedbackFormSchema = createSurveySchema(feedbackQuestions)
+  const feedbackFormSchema = createSurveySchema(
+    getQuestionsAsArray({ definition: feedbackDefinition, surveyPart: "feedback" }),
+  )
 
   useEffect(() => {
     const root = document.documentElement
