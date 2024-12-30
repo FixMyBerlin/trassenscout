@@ -38,9 +38,8 @@ export const Feedback = ({
   const {
     formState: { errors },
   } = useFormContext()
-  console.log(errors)
-  const { setProgress } = useContext(ProgressContext)
 
+  const { setProgress } = useContext(ProgressContext)
   useAlertBeforeUnload()
 
   const { getValues, setValue, trigger, clearErrors } = useFormContext()
