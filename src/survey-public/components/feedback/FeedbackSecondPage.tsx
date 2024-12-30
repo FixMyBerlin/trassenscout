@@ -133,7 +133,9 @@ export const FeedbackSecondPage = ({
           <SurveyButton
             color={buttons[0]?.color}
             id="submit-more"
-            onClick={watchIsMap && !watchIsLocationValue ? handleOnClick : undefined}
+            onClick={
+              watchIsMap && !watchIsLocationValue ? handleOnClick : () => setIsButtonTouched(true)
+            }
             type={watchIsMap && !watchIsLocationValue ? "button" : "submit"}
             disabled={isSubmitting}
           >
@@ -142,7 +144,9 @@ export const FeedbackSecondPage = ({
           <SurveyButton
             color={buttons[1]?.color}
             id="submit-finish"
-            onClick={watchIsMap && !watchIsLocationValue ? handleOnClick : undefined}
+            onClick={
+              watchIsMap && !watchIsLocationValue ? handleOnClick : () => setIsButtonTouched(true)
+            }
             type={watchIsMap && !watchIsLocationValue ? "button" : "submit"}
             disabled={isSubmitting}
           >
