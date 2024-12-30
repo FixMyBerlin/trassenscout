@@ -2,9 +2,7 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
-import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
-import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import { TMapProps } from "@/src/survey-public/components/types"
 import {
   getFeedbackDefinitionBySurveySlug,
@@ -23,7 +21,6 @@ import clsx from "clsx"
 import { Suspense } from "react"
 
 export const SurveyResponseWithLocation = () => {
-  const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "number")
   const surveyResponseId = useParam("surveyResponseId", "number")
@@ -45,10 +42,6 @@ export const SurveyResponseWithLocation = () => {
       projectSlug,
     },
   )
-  const [{ subsections }] = useQuery(getSubsections, {
-    projectSlug,
-    subsectionSlug: subsectionSlug!,
-  })
 
   const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
   const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
@@ -102,7 +95,6 @@ export const SurveyResponseWithLocation = () => {
               response={selectedSurveyResponse!}
               operators={operators}
               topics={topics}
-              subsections={subsections}
               refetchResponsesAndTopics={refetchTopics}
             />
           </section>

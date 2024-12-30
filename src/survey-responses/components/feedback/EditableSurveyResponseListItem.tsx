@@ -4,7 +4,6 @@ import { Prettify } from "@/src/core/types"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
-import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { TMapProps } from "@/src/survey-public/components/types"
 import { backendConfig as defaultBackendConfig } from "@/src/survey-public/utils/backend-config-defaults"
 import {
@@ -40,7 +39,6 @@ export type EditableSurveyResponseListItemProps = {
     Awaited<ReturnType<typeof getSurveyResponseTopicsByProject>>["surveyResponseTopics"]
   >
   isAccordion?: boolean
-  subsections: SubsectionWithPosition[]
   refetchResponsesAndTopics: () => void
   showMap?: boolean
 }
@@ -49,7 +47,6 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   response,
   operators,
   topics,
-  subsections,
   isAccordion,
   refetchResponsesAndTopics,
   showMap,
@@ -161,7 +158,6 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             response={response}
             operators={operators}
             topics={topics}
-            subsections={subsections}
             backendConfig={backendConfig}
           />
           <div>

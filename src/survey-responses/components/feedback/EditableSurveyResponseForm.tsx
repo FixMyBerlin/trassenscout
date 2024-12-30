@@ -28,7 +28,7 @@ type EditableSurveyResponseFormProps = Omit<
 > & {
   backendConfig: TBackendConfig
   showMap?: boolean
-} & Pick<EditableSurveyResponseListItemProps, "response" | "operators" | "topics" | "subsections">
+} & Pick<EditableSurveyResponseListItemProps, "response" | "operators" | "topics">
 
 export function EditableSurveyResponseForm({
   response,
