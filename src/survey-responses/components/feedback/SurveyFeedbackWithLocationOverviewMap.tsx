@@ -18,7 +18,7 @@ import Map, {
 type Props = {
   maptilerUrl: string
   defaultViewState?: LngLatBoundsLike
-  selectedSurveyResponse: any
+  // selectedSurveyResponse: any
   surveyResponsesFeedbackPartWithLocation: any[]
   locationRef: number
   //todo survey clean up after survey BB
@@ -28,7 +28,7 @@ type Props = {
 export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
   maptilerUrl,
   defaultViewState,
-  selectedSurveyResponse,
+  // selectedSurveyResponse,
   locationRef,
   surveyResponsesFeedbackPartWithLocation,
   surveySlug,
@@ -107,7 +107,7 @@ export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
             <SurveyStaticPinWithStatusColor status={r.status} surveySlug={surveySlug} small />
           </Marker>
         ))}
-        <Marker
+        {/* <Marker
           key={selectedSurveyResponse.id}
           draggable={false}
           longitude={selectedSurveyResponse.data[locationRef].lng}
@@ -120,7 +120,7 @@ export const SurveyFeedbackWithLocationOverviewMap: React.FC<Props> = ({
             selected={true}
             small
           />
-        </Marker>
+        </Marker> */}
         <BackgroundSwitcher
           className="absolute left-4 top-4"
           value={selectedLayer}
