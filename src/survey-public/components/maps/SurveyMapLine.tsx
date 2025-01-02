@@ -76,8 +76,6 @@ export const SurveyMapLine = ({ projectMap, className }: SurveyMapProps) => {
     }
   }, [])
 
-  const firstPageQuestionIds = feedbackDefinition.pages[0]?.questions.map((q) => q.id)
-
   const { config } = projectMap
 
   const handleMapClick = (event: MapLayerMouseEvent) => {

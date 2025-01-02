@@ -11,7 +11,7 @@ import {
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import EditableSurveyResponseListItem from "@/src/survey-responses/components/feedback/EditableSurveyResponseListItem"
-import { SurveyFeedbackWithLocationOverviewMap } from "@/src/survey-responses/components/feedback/SurveyFeedbackWithLocationOverviewMap"
+import { SurveyResponseOverviewMap } from "@/src/survey-responses/components/feedback/SurveyResponseOverviewMap"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
@@ -33,7 +33,6 @@ export const SurveyResponseWithLocation = () => {
     {
       projectSlug,
       surveyId: survey.id,
-      withLocationOnly: true,
     },
   )
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
@@ -64,6 +63,7 @@ export const SurveyResponseWithLocation = () => {
   const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
 
   const locationRef = evaluationRefs["location"]
+  const categoryGeometryRef = evaluationRefs["geometry-category"]
 
   const mapProps = feedbackDefinition!.pages[1]!.questions.find((q) => q.id === locationRef)!
     .props as TMapProps
@@ -92,23 +92,18 @@ export const SurveyResponseWithLocation = () => {
           )}
         >
           <section className="h-[1000px] flex-grow">
-            <SurveyFeedbackWithLocationOverviewMap
+            <SurveyResponseOverviewMap
               maptilerUrl={maptilerUrl}
               defaultViewState={defaultViewState}
+              categoryGeometryRef={categoryGeometryRef}
               // selectedSurveyResponse={1623}
-              surveyResponsesFeedbackPartWithLocation={feedbackSurveyResponses}
+              surveyResponses={feedbackSurveyResponses}
               locationRef={locationRef!}
               surveySlug={survey.slug}
+              surveyDefinition={surveyDefinition}
             />
           </section>
           <section className="rounded-md drop-shadow-md lg:w-[580px]">
-            {/* <EditableSurveyResponseListItem
-              key={selectedSurveyResponse?.id}
-              response={selectedSurveyResponse!}
-              operators={operators}
-              topics={topics}
-              refetchResponsesAndTopics={refetchTopics}
-            /> */}
             {mapSelectedResponses.map((response) => (
               <div
                 key={response.id}
@@ -118,26 +113,17 @@ export const SurveyResponseWithLocation = () => {
                 ref={(element) => (accordionRefs.current[response.id] = element)}
               >
                 <EditableSurveyResponseListItem
-                  showMap
                   isAccordion
                   response={response}
                   operators={operators}
                   topics={topics}
                   refetchResponsesAndTopics={() => {}}
+                  showMap={false}
                 />
               </div>
             ))}
           </section>
         </div>
-        <button
-          className="mt-4"
-          onClick={() => {
-            setMapSelection([1897, 1877])
-          }}
-        >
-          {" "}
-          test
-        </button>
       </div>
     </>
   )
