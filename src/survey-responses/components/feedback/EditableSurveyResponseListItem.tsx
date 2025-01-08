@@ -126,7 +126,10 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             <div>{operatorSlugWitFallback}</div>
           </div>
 
-          <Markdown className="ml-4 line-clamp-2" markdown={userTextPreview} />
+          <Markdown
+            className="ml-4 line-clamp-2 flex-shrink break-all"
+            markdown={userTextPreview}
+          />
         </div>
 
         {isAccordion &&
