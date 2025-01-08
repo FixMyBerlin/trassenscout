@@ -15,11 +15,10 @@ import {
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useSession } from "@blitzjs/auth"
-import { useParam, useRouterQuery } from "@blitzjs/next"
+import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid"
 import { clsx } from "clsx"
-import { parseAsInteger, useQueryState } from "nuqs"
 import { useEffect } from "react"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
@@ -27,6 +26,7 @@ import EditableSurveyResponseMapAndStaticData from "./EditableSurveyResponseMapA
 import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
 import { NewSurveyResponseCommentForm } from "./comments/NewSurveyResponseCommentForm"
 import { SurveyResponseCommentField } from "./comments/SurveyResponseCommentField"
+import { useResponseDetails } from "./useResponseDetails.nuqs"
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<
@@ -51,12 +51,11 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   refetchResponsesAndTopics,
   showMap,
 }) => {
-  const params = useRouterQuery()
-  const open = !isAccordion ? true : parseInt(String(params.responseDetails)) === response.id
+  const { responseDetails, setResponseDetails } = useResponseDetails()
+  const open = !isAccordion ? true : parseInt(String(responseDetails)) === response.id
   const surveyId = useParam("surveyId", "string")
   const projectSlug = useProjectSlug()
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
-  const [responseDetails, setRespnseDetails] = useQueryState("responseDetails", parseAsInteger)
 
   const session = useSession()
   const isEditorOrAdmin = useUserCan().edit || session.role === "ADMIN"
@@ -70,10 +69,10 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   }, [survey.slug])
 
   const handleOpen = () => {
-    void setRespnseDetails(response.id)
+    void setResponseDetails(response.id)
   }
   const handleClose = () => {
-    void setRespnseDetails(null)
+    void setResponseDetails(null)
   }
   const operatorSlugWitFallback = response.operator?.slug || "k.A."
 

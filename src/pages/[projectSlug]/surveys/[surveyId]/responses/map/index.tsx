@@ -12,20 +12,19 @@ import {
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import EditableSurveyResponseListItem from "@/src/survey-responses/components/feedback/EditableSurveyResponseListItem"
 import { SurveyResponseOverviewMap } from "@/src/survey-responses/components/feedback/SurveyResponseOverviewMap"
+import { useMapSelection } from "@/src/survey-responses/components/feedback/useMapSelection.nuqs"
+import { useResponseDetails } from "@/src/survey-responses/components/feedback/useResponseDetails.nuqs"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
-import { BlitzPage, useParam, useRouterQuery } from "@blitzjs/next"
+import { BlitzPage, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
-import { parseAsArrayOf, parseAsInteger, useQueryState } from "nuqs"
 import { Suspense, useEffect, useRef } from "react"
 
 export const SurveyResponseWithLocation = () => {
   const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "number")
-  const params = useRouterQuery()
-  const paramsSurveyResponseId = parseInt(String(params.responseDetails))
   const [survey] = useQuery(getSurvey, { projectSlug, id: surveyId })
   // the returned responses include the surveyPart1 data
   const [{ feedbackSurveyResponses }] = useQuery(
@@ -35,6 +34,12 @@ export const SurveyResponseWithLocation = () => {
       surveyId: survey.id,
     },
   )
+  const { responseDetails } = useResponseDetails()
+
+  const { mapSelection } = useMapSelection(
+    feedbackSurveyResponses?.length ? [feedbackSurveyResponses[0]?.id] : [],
+  )
+
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const [{ surveyResponseTopics: topics }, { refetch: refetchTopics }] = useQuery(
     getSurveyResponseTopicsByProject,
@@ -42,21 +47,18 @@ export const SurveyResponseWithLocation = () => {
       projectSlug,
     },
   )
-  const [mapSelection, setMapSelection] = useQueryState(
-    "selectedResponses",
-    parseAsArrayOf(parseAsInteger),
-  )
+
   const mapSelectedResponses = mapSelection
     ? feedbackSurveyResponses.filter((response) => mapSelection.includes(response.id))
     : []
 
   const accordionRefs = useRef<Array<HTMLDivElement | null>>([])
   useEffect(() => {
-    if (paramsSurveyResponseId) {
-      const currentRef = accordionRefs.current?.at(paramsSurveyResponseId)
+    if (responseDetails) {
+      const currentRef = accordionRefs.current?.at(responseDetails)
       currentRef?.scrollIntoView({ behavior: "smooth" })
     }
-  }, [paramsSurveyResponseId])
+  }, [responseDetails])
 
   const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
   const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)

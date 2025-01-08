@@ -5,7 +5,6 @@ import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs
 import { getBackendConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import { featureCollection, lineString, multiLineString, point, polygon } from "@turf/helpers"
 import "maplibre-gl/dist/maplibre-gl.css"
-import { parseAsArrayOf, parseAsInteger, useQueryState } from "nuqs"
 import { useState } from "react"
 import Map, {
   Layer,
@@ -15,6 +14,8 @@ import Map, {
   NavigationControl,
   Source,
 } from "react-map-gl/maplibre"
+import { useMapSelection } from "./useMapSelection.nuqs"
+import { useResponseDetails } from "./useResponseDetails.nuqs"
 
 type Props = {
   maptilerUrl: string
@@ -39,15 +40,11 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
   surveySlug,
 }) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
-  const [mapSelection, setMapSelection] = useQueryState(
-    "selectedResponses",
-    parseAsArrayOf(parseAsInteger).withDefault([]),
+  const { responseDetails, setResponseDetails } = useResponseDetails()
+  const { mapSelection, setMapSelection } = useMapSelection(
+    surveyResponses?.length ? [surveyResponses[0]?.id] : [],
   )
-  const [responseDetails, setResponseDetails] = useQueryState(
-    "responseDetails",
-    // todo
-    parseAsInteger.withDefault(0),
-  )
+
   const [cursorStyle, setCursorStyle] = useState("grab")
   const surveyResponsesWithLocation = surveyResponses.filter((r) => r.data[locationRef])
 
