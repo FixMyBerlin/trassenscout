@@ -244,9 +244,15 @@ export function EditableSurveyResponseForm({
         </div>
         {/* TAGS */}
         <div className="flex flex-col items-start gap-4">
-          <form>
+          <form className="">
             <FormElementWrapper label={labels.topics?.pl || defaultBackendConfig.labels.topics.pl}>
-              <div className="grid grid-cols-2 gap-1.5 md:grid-cols-3 lg:grid-cols-4">
+              <div
+                // todo container query?
+                className={clsx(
+                  showMap && "md:grid-cols-3 lg:grid-cols-4",
+                  "grid grid-cols-2 gap-1.5",
+                )}
+              >
                 {topicsOptions.map((item) => (
                   <LabeledInputRadioCheckbox
                     type="checkbox"
