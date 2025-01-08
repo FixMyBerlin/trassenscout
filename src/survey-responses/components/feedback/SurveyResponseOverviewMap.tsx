@@ -163,7 +163,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
   const layers: LayerProps[] = [
     {
       filter: ["==", ["get", "geometryType"], "point"],
-      id: "surveyResponsesWithLocation",
+      id: "survey-responses-with-location",
       type: "circle",
       paint: {
         "circle-color": statusColor,
@@ -175,9 +175,9 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
     },
     {
       filter: ["==", ["get", "geometryType"], "line"],
-      id: "surveyRespnsesWithoutLocation",
+      id: "survey-responses-without-location",
       type: "line",
-      beforeId: "surveyResponsesWithLocation",
+      beforeId: "survey-responses-with-location",
       paint: {
         "line-color": "transparent",
         "line-opacity": 0.8,
@@ -187,7 +187,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
     {
       filter: ["==", ["get", "geometryType"], "line"],
       id: "lines-right",
-      beforeId: "surveyResponsesWithLocation",
+      beforeId: "survey-responses-with-location",
       type: "line",
       paint: {
         "line-width": 2,
@@ -199,7 +199,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
     {
       filter: ["==", ["get", "geometryType"], "line"],
       id: "lines-left",
-      beforeId: "surveyResponsesWithLocation",
+      beforeId: "survey-responses-with-location",
       type: "line",
       paint: {
         "line-color": strokeColor,
@@ -210,9 +210,9 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
     },
     {
       filter: ["==", ["get", "geometryType"], "polygon"],
-      id: "surveyRespnsesWithoutLocationPolygonClicktarget",
+      id: "survey-responses-without-location-polygon-clicktarget",
       type: "fill",
-      beforeId: "surveyResponsesWithLocation",
+      beforeId: "survey-responses-with-location",
       paint: {
         "fill-color": "transparent",
         "fill-outline-color": strokeColor,
@@ -220,7 +220,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
     },
     {
       filter: ["==", ["get", "geometryType"], "line"],
-      id: "surveyRespnsesWithoutLocationClicktarget",
+      id: "survey-responses-without-location-clicktarget",
       type: "line",
       paint: {
         "line-color": selectedColor,
@@ -235,7 +235,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
         ["==", ["get", "geometryType"], "point"],
         ["match", ["id"], mapSelection, true, false],
       ],
-      id: "surveyResponsesWithLocation-selected",
+      id: "survey-responses-with-location-selected",
       type: "circle",
       paint: {
         "circle-color": statusColor,
@@ -253,7 +253,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
         ["match", ["id"], ...mapSelection.flatMap((id) => [id, true]), false],
       ],
       id: "lines-right-selected",
-      beforeId: "surveyResponsesWithLocation",
+      beforeId: "survey-responses-with-location",
       type: "line",
       paint: {
         "line-width": selectedStrokeWidth,
@@ -270,7 +270,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
         ["match", ["id"], ...mapSelection.flatMap((id) => [id, true]), false],
       ],
       id: "lines-left-selected",
-      beforeId: "surveyResponsesWithLocation",
+      beforeId: "survey-responses-with-location",
       type: "line",
       paint: {
         "line-color": selectedColor,
@@ -286,9 +286,9 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
         // @ts-expect-error this works todo
         ["match", ["id"], ...mapSelection.flatMap((id) => [id, true]), false],
       ],
-      id: "surveyRespnsesWithoutLocationPolygonClicktarget-selected",
+      id: "survey-responses-without-location-polygon-clicktarget-selected",
       type: "fill",
-      beforeId: "surveyResponsesWithLocation",
+      beforeId: "survey-responses-with-location",
       paint: {
         "fill-color": "transparent",
         "fill-outline-color": selectedColor,
@@ -303,7 +303,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
         // @ts-expect-error this works todo
         ["match", ["id"], ...mapSelection.flatMap((id) => [id, true]), false],
       ],
-      id: "surveyResponsesWithLocation-details",
+      id: "survey-responses-with-location-details",
       type: "circle",
       paint: {
         "circle-color": statusColor,
@@ -322,7 +322,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
         ["match", ["id"], ...mapSelection.flatMap((id) => [id, true]), false],
       ],
       id: "lines-right-details",
-      beforeId: "surveyResponsesWithLocation",
+      beforeId: "survey-responses-with-location",
       type: "line",
       paint: {
         "line-width": selectedStrokeWidth,
@@ -340,7 +340,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
         ["match", ["id"], ...mapSelection.flatMap((id) => [id, true]), false],
       ],
       id: "lines-left-details",
-      beforeId: "surveyResponsesWithLocation",
+      beforeId: "survey-responses-with-location",
       type: "line",
       paint: {
         "line-color": "black",
@@ -357,9 +357,9 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
         // @ts-expect-error this works todo
         ["match", ["id"], ...mapSelection.flatMap((id) => [id, true]), false],
       ],
-      id: "surveyRespnsesWithoutLocationPolygonClicktarget-details",
+      id: "survey-responses-without-location-polygon-clicktarget-details",
       type: "fill",
-      beforeId: "surveyResponsesWithLocation",
+      beforeId: "survey-responses-with-location",
       paint: {
         "fill-color": "transparent",
         "fill-outline-color": "black",
@@ -381,8 +381,8 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
           false,
         ],
       ],
-      id: "selectdResponseGeometryCategory",
-      beforeId: "surveyResponsesWithLocation",
+      id: "selected-response-geometry-category",
+      beforeId: "survey-responses-with-location",
       type: "line",
       paint: {
         "line-color": "black",
@@ -403,8 +403,8 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
           false,
         ],
       ],
-      id: "selectdResponseGeometryCategoryPolygon",
-      beforeId: "surveyResponsesWithLocation",
+      id: "selected-response-geometry-category-polygon",
+      beforeId: "survey-responses-with-location",
       type: "fill",
       paint: {
         "fill-color": "black",
@@ -496,9 +496,9 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         interactiveLayerIds={[
-          "surveyResponsesWithLocation",
-          "surveyRespnsesWithoutLocationClicktarget",
-          "surveyRespnsesWithoutLocationPolygonClicktarget",
+          "survey-responses-with-location",
+          "survey-responses-without-location-clicktarget",
+          "survey-responses-without-location-polygon-clicktarget",
         ]}
         cursor={cursorStyle}
       >
