@@ -55,6 +55,7 @@ export const SurveyMap = ({
   }
   const { getValues, setValue } = useFormContext()
 
+  // todo survey clean up or refactor after survey BB line selection
   const checkLineType = (selectedLine: any): string => {
     if (Array.isArray(selectedLine)) {
       if (Array.isArray(selectedLine[0])) {
@@ -66,7 +67,7 @@ export const SurveyMap = ({
     }
     return "Unknown"
   }
-
+  // todo survey clean up or refactor after survey BB line selection
   const getParsedLine = (selectedLine: any) => {
     if (!selectedLine) return null
     const lineType = checkLineType(JSON.parse(selectedLine))
