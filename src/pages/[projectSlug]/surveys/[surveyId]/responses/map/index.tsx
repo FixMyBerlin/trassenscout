@@ -37,7 +37,7 @@ export const SurveyResponseWithLocation = () => {
   const { responseDetails } = useResponseDetails()
 
   const { mapSelection } = useMapSelection(
-    feedbackSurveyResponses?.length ? [feedbackSurveyResponses[0]?.id] : [],
+    feedbackSurveyResponses?.length ? [feedbackSurveyResponses[0]!.id] : [],
   )
 
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })

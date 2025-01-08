@@ -4,10 +4,12 @@ import { TSurvey } from "@/src/survey-public/components/types"
 import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
 import { getBackendConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import { featureCollection, lineString, multiLineString, point, polygon } from "@turf/helpers"
+import { DataDrivenPropertyValueSpecification } from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useState } from "react"
 import Map, {
   Layer,
+  LayerProps,
   LngLatBoundsLike,
   MapGeoJSONFeature,
   MapLayerMouseEvent,
@@ -64,32 +66,40 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
     .filter(({ hasLocation }) => !hasLocation)
     .map(({ geometryCoordinates, responseId, status }) =>
       surveyDefinition.geometryCategoryType === "line"
-        ? Array.isArray(geometryCoordinates[0][0])
+        ? // @ts-expect-error data is of type unknown
+          Array.isArray(geometryCoordinates[0][0])
           ? multiLineString(
+              // @ts-expect-error data is of type unknown
               geometryCoordinates,
               { status, geometryType: "line" },
               { id: responseId },
             )
-          : lineString(geometryCoordinates, { status, geometryType: "line" }, { id: responseId })
-        : polygon(geometryCoordinates, { status, geometryType: "polygon" }, { id: responseId }),
+          : // @ts-expect-error data is of type unknown
+            lineString(geometryCoordinates, { status, geometryType: "line" }, { id: responseId })
+        : // @ts-expect-error data is of type unknown
+          polygon(geometryCoordinates, { status, geometryType: "polygon" }, { id: responseId }),
     )
 
   const surveyResponsesGeometryCategoryFeatures = surveyResponsesGeometryCategoryCoordinates
     .filter(({ hasLocation }) => hasLocation)
     .map(({ geometryCoordinates, responseId, status }) =>
       surveyDefinition.geometryCategoryType === "line"
-        ? Array.isArray(geometryCoordinates[0][0])
+        ? // @ts-expect-error data is of type unknown
+          Array.isArray(geometryCoordinates[0][0])
           ? multiLineString(
+              // @ts-expect-error data is of type unknown
               geometryCoordinates,
               { status, geometryType: "line", geometryCategoryFor: responseId },
               { id: `geometryCategory-${responseId}` },
             )
           : lineString(
+              // @ts-expect-error data is of type unknown
               geometryCoordinates,
               { status, geometryType: "line", geometryCategoryFor: responseId },
               { id: `geometryCategory-${responseId}` },
             )
         : polygon(
+            // @ts-expect-error data is of type unknown
             geometryCoordinates,
             { status, geometryType: "polygon", geometryCategoryFor: responseId },
             { id: `geometryCategory-${responseId}` },
@@ -103,14 +113,54 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
     ...statusConfig.flatMap(({ value, color }) => [value, color]),
     "white",
   ]
-  const selectedStrokeWidth = ["interpolate", ["linear"], ["zoom"], 0, 2, 8, 2, 14, 6]
-  const lineOffsetLeft = ["interpolate", ["linear"], ["zoom"], 0, -2, 8, -4, 14, -8]
-  const lineOffsetRight = ["interpolate", ["linear"], ["zoom"], 0, 2, 8, 4, 14, 8]
+  const selectedStrokeWidth: DataDrivenPropertyValueSpecification<number> = [
+    "interpolate",
+    ["linear"],
+    ["zoom"],
+    0,
+    2,
+    8,
+    2,
+    14,
+    6,
+  ]
+  const lineOffsetLeft: DataDrivenPropertyValueSpecification<number> = [
+    "interpolate",
+    ["linear"],
+    ["zoom"],
+    0,
+    -2,
+    8,
+    -4,
+    14,
+    -8,
+  ]
+  const lineOffsetRight: DataDrivenPropertyValueSpecification<number> = [
+    "interpolate",
+    ["linear"],
+    ["zoom"],
+    0,
+    2,
+    8,
+    4,
+    14,
+    8,
+  ]
   const strokeColor = "#7c3aed"
   const selectedColor = "#43474d"
-  const circleRadius = ["interpolate", ["linear"], ["zoom"], 0, 1, 8, 4, 14, 12]
+  const circleRadius: DataDrivenPropertyValueSpecification<number> = [
+    "interpolate",
+    ["linear"],
+    ["zoom"],
+    0,
+    1,
+    8,
+    4,
+    14,
+    12,
+  ]
 
-  const layers = [
+  const layers: LayerProps[] = [
     {
       filter: ["==", ["get", "geometryType"], "point"],
       id: "surveyResponsesWithLocation",
@@ -183,7 +233,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
       filter: [
         "all",
         ["==", ["get", "geometryType"], "point"],
-        ["match", ["id"], ...mapSelection.flatMap((id) => [id, true]), false],
+        ["match", ["id"], mapSelection, true, false],
       ],
       id: "surveyResponsesWithLocation-selected",
       type: "circle",
@@ -199,6 +249,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
       filter: [
         "all",
         ["==", ["get", "geometryType"], "line"],
+        // @ts-expect-error this works todo
         ["match", ["id"], ...mapSelection.flatMap((id) => [id, true]), false],
       ],
       id: "lines-right-selected",
@@ -215,6 +266,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
       filter: [
         "all",
         ["==", ["get", "geometryType"], "line"],
+        // @ts-expect-error this works todo
         ["match", ["id"], ...mapSelection.flatMap((id) => [id, true]), false],
       ],
       id: "lines-left-selected",
@@ -231,6 +283,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
       filter: [
         "all",
         ["==", ["get", "geometryType"], "polygon"],
+        // @ts-expect-error this works todo
         ["match", ["id"], ...mapSelection.flatMap((id) => [id, true]), false],
       ],
       id: "surveyRespnsesWithoutLocationPolygonClicktarget-selected",
@@ -247,6 +300,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
         "all",
         ["==", ["get", "geometryType"], "point"],
         ["==", ["id"], responseDetails],
+        // @ts-expect-error this works todo
         ["match", ["id"], ...mapSelection.flatMap((id) => [id, true]), false],
       ],
       id: "surveyResponsesWithLocation-details",
@@ -264,6 +318,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
         "all",
         ["==", ["get", "geometryType"], "line"],
         ["==", ["id"], responseDetails],
+        // @ts-expect-error this works todo
         ["match", ["id"], ...mapSelection.flatMap((id) => [id, true]), false],
       ],
       id: "lines-right-details",
@@ -281,6 +336,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
         "all",
         ["==", ["get", "geometryType"], "line"],
         ["==", ["id"], responseDetails],
+        // @ts-expect-error this works todo
         ["match", ["id"], ...mapSelection.flatMap((id) => [id, true]), false],
       ],
       id: "lines-left-details",
@@ -298,6 +354,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
         "all",
         ["==", ["get", "geometryType"], "polygon"],
         ["==", ["id"], responseDetails],
+        // @ts-expect-error this works todo
         ["match", ["id"], ...mapSelection.flatMap((id) => [id, true]), false],
       ],
       id: "surveyRespnsesWithoutLocationPolygonClicktarget-details",
@@ -310,12 +367,13 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
     },
   ]
 
-  const geometryCategoryLayers = [
+  const geometryCategoryLayers: LayerProps[] = [
     {
       filter: [
         "all",
         ["==", ["get", "geometryType"], "line"],
         ["==", ["get", "geometryCategoryFor"], responseDetails],
+        // @ts-expect-error this works todo
         [
           "match",
           ["get", "geometryCategoryFor"],
@@ -337,6 +395,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
         "all",
         ["==", ["get", "geometryType"], "polygon"],
         ["==", ["get", "geometryCategoryFor"], responseDetails],
+        // @ts-expect-error this works todo
         [
           "match",
           ["get", "geometryCategoryFor"],
@@ -359,6 +418,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
     <Source
       key="surveyResponses"
       type="geojson"
+      // todo type
       data={featureCollection([
         ...surveyResponsesWithoutLocationFeatures,
         ...surveyResponsesWithLocation.map((r) =>
@@ -371,7 +431,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
             { id: r.id },
           ),
         ),
-      ])}
+      ] as any)}
     >
       {layers.map((layer) => (
         <Layer key={layer.id} {...layer} />
@@ -382,7 +442,8 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
     <Source
       key="geometryCategory"
       type="geojson"
-      data={featureCollection(surveyResponsesGeometryCategoryFeatures)}
+      // todo type
+      data={featureCollection(surveyResponsesGeometryCategoryFeatures as any)}
     >
       {geometryCategoryLayers.map((layer) => (
         <Layer key={layer.id} {...layer} />
@@ -405,7 +466,7 @@ export const SurveyResponseOverviewMap: React.FC<Props> = ({
     if (selectedResponses?.length)
       setMapSelection(Array.from(new Set(selectedResponses.map((r) => Number(r.id)))))
     // show details of the first selected response IF there is only one selected
-    if (selectedResponses?.length === 1) setResponseDetails(Number(selectedResponses[0].id))
+    if (selectedResponses?.length === 1) setResponseDetails(Number(selectedResponses[0]!.id))
   }
 
   const handleMouseMove = ({ features }: MapLayerMouseEvent) => {
