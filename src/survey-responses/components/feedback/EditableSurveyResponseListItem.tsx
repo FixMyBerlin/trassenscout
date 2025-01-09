@@ -104,40 +104,45 @@ const EditableSurveyResponseListItem = ({
     <article data-open={open} className="bg-white">
       <button
         className={clsx(
-          "group flex w-full items-center justify-between py-4 pr-4 text-left text-sm text-gray-900 hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75 sm:pr-6",
+          "group w-full py-4 pr-4 text-left text-sm text-gray-900 hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75 sm:pr-6",
           open ? "bg-gray-50" : "border-b border-gray-300",
-          showMap || "cursor-default",
         )}
         onClick={isAccordion ? () => (open ? handleClose() : handleOpen()) : undefined}
       >
-        <div className="flex items-center gap-4 px-6 pb-2 pt-3">
-          <h3 className="text-gray-700">{response.id} </h3>
-          <EditableSurveyResponseStatusLabel
-            surveySlug={survey.slug}
-            short={!showMap}
-            status={response.status}
-          />
-          <div
-            className={clsx(
-              "flex-shrink-0 rounded-full bg-gray-300 px-4 py-2 text-sm",
-              operatorSlugWitFallback !== "k.A." && "uppercase",
-            )}
-          >
-            <div>{operatorSlugWitFallback}</div>
+        <small className="pl-4 text-[#7c3aed]">
+          {/* @ts-expect-error data is unknown */}
+          {response.data[evaluationRefs["location"]] ? "mit" : "ohne"} Verortung
+        </small>
+        <div className="flex w-full items-center justify-between">
+          <div className="flex items-center gap-4 px-6 pb-2 pt-1">
+            <h3 className="text-gray-700">{response.id} </h3>
+            <EditableSurveyResponseStatusLabel
+              surveySlug={survey.slug}
+              short={!showMap}
+              status={response.status}
+            />
+            <div
+              className={clsx(
+                "flex-shrink-0 rounded-full bg-gray-300 px-4 py-2 text-sm",
+                operatorSlugWitFallback !== "k.A." && "uppercase",
+              )}
+            >
+              <div>{operatorSlugWitFallback}</div>
+            </div>
+
+            <Markdown
+              className="ml-4 line-clamp-2 flex-shrink break-all"
+              markdown={userTextPreview}
+            />
           </div>
 
-          <Markdown
-            className="ml-4 line-clamp-2 flex-shrink break-all"
-            markdown={userTextPreview}
-          />
+          {isAccordion &&
+            (open ? (
+              <ChevronUpIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
+            ) : (
+              <ChevronDownIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
+            ))}
         </div>
-
-        {isAccordion &&
-          (open ? (
-            <ChevronUpIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
-          ) : (
-            <ChevronDownIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
-          ))}
       </button>
 
       {open && (

@@ -1,5 +1,6 @@
 import { Spinner } from "@/src/core/components/Spinner"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { H2 } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
@@ -86,6 +87,14 @@ export const SurveyResponseWithLocation = () => {
       </div>
 
       <div className="mt-12 space-y-4 px-4">
+        {mapSelectedResponses.length > 0 && (
+          <div className="flex justify-end">
+            <H2 className="lg:w-[580px]">
+              Ausgewählte{mapSelectedResponses.length === 1 ? "r" : ""} Hinweis
+              {mapSelectedResponses.length !== 1 ? "e" : ""}:
+            </H2>
+          </div>
+        )}
         <div
           className={clsx(
             // todo survey clean up after survey BB (status are too long, blt are not used)
