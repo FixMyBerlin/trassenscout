@@ -489,7 +489,7 @@ export const SurveyResponseOverviewMap = ({
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         RTLTextPlugin={false}
         minZoom={6}
-        maxZoom={16}
+        maxZoom={20}
         onClick={handleMapClick}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
