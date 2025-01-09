@@ -160,22 +160,18 @@ const EditableSurveyResponseMapAndStaticData = ({
             geometryCategoryCoordinates={geometryCategoryCoordinates}
             maptilerUrl={maptilerUrl}
           />
-          {
-            // @ts-expect-error `data` is unkown
-            response.data[userLocationQuestionId] && (
-              <div className="pt-4">
-                <Link
-                  href={Routes.SurveyResponseWithLocationPage({
-                    projectSlug,
-                    surveyId: surveyId!,
-                    surveyResponseId: response.id,
-                  })}
-                >
-                  Alle verorteten Beiträge öffnen
-                </Link>
-              </div>
-            )
-          }
+          <div className="pt-4">
+            <Link
+              href={Routes.SurveyResponseWithLocationPage({
+                projectSlug,
+                surveyId: surveyId!,
+                responseDetails: response.id,
+                selectedResponses: [response.id],
+              })}
+            >
+              In großer Karte öffnen
+            </Link>
+          </div>
         </div>
       )}
     </div>
