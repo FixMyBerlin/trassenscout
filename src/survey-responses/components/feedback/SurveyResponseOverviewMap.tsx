@@ -22,7 +22,6 @@ import { useResponseDetails } from "./useResponseDetails.nuqs"
 type Props = {
   maptilerUrl: string
   defaultViewState?: LngLatBoundsLike
-  // selectedSurveyResponse: any
   surveyResponses: any[]
   locationRef: number
   categoryGeometryRef: number | undefined
@@ -31,16 +30,15 @@ type Props = {
   surveyDefinition: TSurvey
 }
 
-export const SurveyResponseOverviewMap: React.FC<Props> = ({
+export const SurveyResponseOverviewMap = ({
   maptilerUrl,
   defaultViewState,
   categoryGeometryRef,
   surveyDefinition,
-  // selectedSurveyResponse,
   locationRef,
   surveyResponses,
   surveySlug,
-}) => {
+}: Props) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const { responseDetails, setResponseDetails } = useResponseDetails()
   const { mapSelection, setMapSelection } = useMapSelection(

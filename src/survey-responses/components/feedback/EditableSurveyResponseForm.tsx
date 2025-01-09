@@ -22,10 +22,7 @@ import { FormElementWrapper } from "./form/LabeledInputRadioCheckboxWrapper"
 import { LabeledTextarea } from "./form/LabeledTextarea"
 import { useFilters } from "./useFilters.nuqs"
 
-type EditableSurveyResponseFormProps = Omit<
-  PropsWithoutRef<JSX.IntrinsicElements["form"]>,
-  "onSubmit"
-> & {
+type Props = Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> & {
   backendConfig: TBackendConfig
   showMap?: boolean
 } & Pick<EditableSurveyResponseListItemProps, "response" | "operators" | "topics">
@@ -36,7 +33,7 @@ export function EditableSurveyResponseForm({
   topics,
   backendConfig,
   showMap,
-}: EditableSurveyResponseFormProps) {
+}: Props) {
   const userCanEdit = useUserCan().edit
   const projectSlug = useProjectSlug()
 

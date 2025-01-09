@@ -23,12 +23,12 @@ type Props = {
   handleSubmit: any
 }
 
-export const ExternalSurveyResponseForm: React.FC<Props> = ({
+export const ExternalSurveyResponseForm = ({
   mapProps,
   categories,
   evaluationRefs,
   handleSubmit,
-}) => {
+}: Props) => {
   const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "string")
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })

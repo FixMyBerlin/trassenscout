@@ -4,19 +4,19 @@ import { TFeedbackQuestion } from "@/src/survey-public/components/types"
 import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"
 import { clsx } from "clsx"
 
-export type EditableSurveyResponseUserTextProps = {
+type Props = {
   feedbackQuestions: TFeedbackQuestion[]
   response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
   userTextIndices: Array<number | undefined>
   surveyId: string
 }
 
-const EditableSurveyResponseUserText: React.FC<EditableSurveyResponseUserTextProps> = ({
+const EditableSurveyResponseUserText = ({
   response,
   feedbackQuestions,
   userTextIndices,
   surveyId,
-}) => {
+}: Props) => {
   // this is only used for RS8 survey responses
   // wegen des Bugs (nur einer der Texte wurde angezeigt) sollen hier alle vor dem Bugfix nicht angezeigten Texte blau hinterlegt werden
   // if (surveyId === "1") {... sollte gelöscht werden wenn der Bug keine Rolle mehr spielt

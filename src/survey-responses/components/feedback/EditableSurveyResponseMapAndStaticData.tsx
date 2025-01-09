@@ -24,7 +24,7 @@ import EditableSurveyResponseAdditionalFilterFields from "./EditableSurveyRespon
 import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
 
-export type EditableSurveyResponseListItemProps = {
+type Props = {
   response: Prettify<
     Awaited<
       ReturnType<typeof getFeedbackSurveyResponsesWithSurveyDataAndComments>
@@ -37,12 +37,12 @@ export type EditableSurveyResponseListItemProps = {
   refetchResponsesAndTopics: () => void
 }
 
-const EditableSurveyResponseMapAndStaticData: React.FC<EditableSurveyResponseListItemProps> = ({
+const EditableSurveyResponseMapAndStaticData = ({
   response,
   showMap,
   categoryLabel,
   refetchResponsesAndTopics,
-}) => {
+}: Props) => {
   const surveyId = useParam("surveyId", "string")
   const projectSlug = useProjectSlug()
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })

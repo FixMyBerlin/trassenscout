@@ -21,12 +21,12 @@ type Props = {
   surveySlug: AllowedSurveySlugs
 }
 
-export const EditableSurveyResponseFormMap: React.FC<Props> = ({
+export const EditableSurveyResponseFormMap = ({
   marker,
   maptilerUrl,
   surveySlug,
   geometryCategoryCoordinates,
-}) => {
+}: Props) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
 
   const surveyDefinition = getSurveyDefinitionBySurveySlug(surveySlug)

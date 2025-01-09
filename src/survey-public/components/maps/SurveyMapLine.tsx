@@ -21,7 +21,7 @@ import { getFormfieldName } from "../../utils/getFormfieldNames"
 import { DebugMapTileBoundaries } from "./DebugMapTileBoundaries"
 import { SurveyMapLineBanner } from "./SurveyMapLineBanner"
 
-export type SurveyMapProps = {
+type Props = {
   className?: string
   children?: React.ReactNode
   projectMap: {
@@ -32,7 +32,7 @@ export type SurveyMapProps = {
   }
 }
 
-export const SurveyMapLine = ({ projectMap, className }: SurveyMapProps) => {
+export const SurveyMapLine = ({ projectMap, className }: Props) => {
   const { mainMap } = useMap()
   const [isMediumScreen, setIsMediumScreen] = useState(false)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")

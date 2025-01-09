@@ -18,7 +18,7 @@ import { getResponseConfigBySurveySlug } from "../../utils/getConfigBySurveySlug
 import { SurveyMapBanner } from "./SurveyMapBanner"
 import SurveyPin from "./SurveyPin"
 
-export type SurveyMapProps = {
+type Props = {
   className?: string
   children?: React.ReactNode
   projectMap: {
@@ -43,7 +43,7 @@ export const SurveyMap = ({
   lineGeometryId,
   userLocationQuestionId,
   // todo survey clean up or refactor after survey BB line selection
-}: SurveyMapProps) => {
+}: Props) => {
   const { mainMap } = useMap()
   const [events, logEvents] = useState<Record<string, Object>>({})
   const [isPinInView, setIsPinInView] = useState(true)

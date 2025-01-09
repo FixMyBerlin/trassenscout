@@ -43,14 +43,14 @@ export type EditableSurveyResponseListItemProps = {
   showMap?: boolean
 }
 
-const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemProps> = ({
+const EditableSurveyResponseListItem = ({
   response,
   operators,
   topics,
   isAccordion,
   refetchResponsesAndTopics,
   showMap,
-}) => {
+}: EditableSurveyResponseListItemProps) => {
   const { responseDetails, setResponseDetails } = useResponseDetails()
   const open = !isAccordion ? true : parseInt(String(responseDetails)) === response.id
   const surveyId = useParam("surveyId", "string")
