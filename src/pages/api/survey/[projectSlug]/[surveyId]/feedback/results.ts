@@ -119,7 +119,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         labels && labels["operator"]?.sg ? labels["operator"]?.sg : defaultLabels["operator"].sg,
     },
     { id: "comments", title: "Kommentare" },
-    { id: "geometry-category", title: "Geometrie-Kategorie als WKT" },
   ]
 
   type Result = {
@@ -156,6 +155,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       title: `${(labels || defaultLabels).topics?.sg}: ${topic.title}`,
     })
   })
+  headers.push({ id: "geometry-category", title: "Geometrie-Bezug im WKT-Format" })
+
   const csvData: Result[] = []
 
   surveySessions.forEach((surveySession) => {
