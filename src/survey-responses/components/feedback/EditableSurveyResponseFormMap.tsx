@@ -54,8 +54,8 @@ export const EditableSurveyResponseFormMap = ({
           type="line"
           paint={{
             "line-width": 7,
-            "line-color": "#994F0B",
-            "line-opacity": 1,
+            "line-color": "black",
+            "line-opacity": 0.3,
           }}
         />
       </Source>
@@ -64,7 +64,7 @@ export const EditableSurveyResponseFormMap = ({
         <Layer
           type="fill"
           paint={{
-            "fill-color": "#994F0B",
+            "fill-color": "black",
             "fill-opacity": 0.4,
           }}
         />
