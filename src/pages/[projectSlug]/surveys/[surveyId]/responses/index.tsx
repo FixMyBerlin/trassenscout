@@ -7,7 +7,6 @@ import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlugId } from "@/src/core/routes/useSlug"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
-import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import { getBackendConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { EditableSurveyResponseFilterForm } from "@/src/survey-responses/components/feedback/EditableSurveyResponseFilterForm"
@@ -48,20 +47,17 @@ export const SurveyResponse = () => {
     await refetchResponses()
   }
 
-  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
-
   // Handle scroll into view on page load (like a hash URL) based on a ref and URL param `stakeholderDetails`.
   // The ref is an error of listItems where the array index is the stakeholderNote.id.
   const params = useRouterQuery()
-  const paramsStakeholderDetails = parseInt(String(params.responseDetails))
+  const paramsSurveyResponseId = parseInt(String(params.responseDetails))
   const accordionRefs = useRef<Array<HTMLDivElement | null>>([])
-
   useEffect(() => {
-    if (paramsStakeholderDetails) {
-      const currentRef = accordionRefs.current?.at(paramsStakeholderDetails)
+    if (paramsSurveyResponseId) {
+      const currentRef = accordionRefs.current?.at(paramsSurveyResponseId)
       currentRef?.scrollIntoView({ behavior: "smooth" })
     }
-  }, [paramsStakeholderDetails])
+  }, [paramsSurveyResponseId])
 
   return (
     <>
@@ -110,7 +106,6 @@ export const SurveyResponse = () => {
                 response={response}
                 operators={operators}
                 topics={topics}
-                subsections={subsections}
                 refetchResponsesAndTopics={refetchResponsesAndTopics}
               />
             </div>

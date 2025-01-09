@@ -4,19 +4,19 @@ import { TFeedbackQuestion } from "@/src/survey-public/components/types"
 import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"
 import { clsx } from "clsx"
 
-export type EditableSurveyResponseUserTextProps = {
+type Props = {
   feedbackQuestions: TFeedbackQuestion[]
   response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
   userTextIndices: Array<number | undefined>
   surveyId: string
 }
 
-const EditableSurveyResponseUserText: React.FC<EditableSurveyResponseUserTextProps> = ({
+const EditableSurveyResponseUserText = ({
   response,
   feedbackQuestions,
   userTextIndices,
   surveyId,
-}) => {
+}: Props) => {
   // this is only used for RS8 survey responses
   // wegen des Bugs (nur einer der Texte wurde angezeigt) sollen hier alle vor dem Bugfix nicht angezeigten Texte blau hinterlegt werden
   // if (surveyId === "1") {... sollte gelöscht werden wenn der Bug keine Rolle mehr spielt
@@ -25,7 +25,7 @@ const EditableSurveyResponseUserText: React.FC<EditableSurveyResponseUserTextPro
       <div>
         {/* @ts-expect-error `data` is of type unkown */}
         {response.data[userTextIndices[0]] && (
-          <blockquote className={clsx("p-4", "bg-yellow-100")}>
+          <blockquote className={clsx("p-4", "bg-purple-100")}>
             <h4 className="mb-2 font-semibold">
               {feedbackQuestions.find((q) => q.id === userTextIndices[0])?.label.de}
             </h4>
@@ -41,7 +41,7 @@ const EditableSurveyResponseUserText: React.FC<EditableSurveyResponseUserTextPro
               //  @ts-expect-error `data` is of type unkown
               response.data[userTextIndices[0]] && response.data[userTextIndices[1]]
                 ? "bg-blue-50"
-                : "bg-yellow-100",
+                : "bg-purple-100",
             )}
           >
             <h4 className="mb-2 font-semibold">
@@ -63,7 +63,7 @@ const EditableSurveyResponseUserText: React.FC<EditableSurveyResponseUserTextPro
         /* @ts-expect-error `data` is of type unkown */
         if (!response.data[userTextIndex]) return null
         return (
-          <div key={userTextIndex} className="bg-yellow-100 p-4">
+          <div key={userTextIndex} className="bg-purple-100 p-4">
             {/* @ts-expect-error `data` is of type unkown */}
             <Markdown markdown={response.data[userTextIndex]} />
             <div className="mt-2 text-sm text-gray-500">

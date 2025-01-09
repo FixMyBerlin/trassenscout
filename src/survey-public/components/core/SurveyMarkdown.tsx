@@ -37,7 +37,7 @@ const proseClassesSurvey = clsx(
   "prose-h2:mb-4 prose-h2:mt-8 prose-h2:text-lg prose-h2:font-bold prose-h2:text-gray-900 prose-ol:text-base prose-h2:sm:text-xl prose-ol:sm:text-lg",
 )
 
-export const SurveyMarkdown: React.FC<Props> = ({ markdown, className }) => {
+export const SurveyMarkdown = ({ markdown, className }: Props) => {
   if (!markdown) return null
 
   return (

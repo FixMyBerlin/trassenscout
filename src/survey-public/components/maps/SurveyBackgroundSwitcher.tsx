@@ -22,7 +22,7 @@ type Props = {
   className: string
 }
 
-export const SurveyBackgroundSwitcher: React.FC<Props> = ({ value, onChange, className }) => {
+export const SurveyBackgroundSwitcher = ({ value, onChange, className }: Props) => {
   return (
     <div className={className}>
       <Listbox value={value} onChange={onChange}>

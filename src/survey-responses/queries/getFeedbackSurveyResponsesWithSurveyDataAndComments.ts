@@ -12,17 +12,12 @@ import { extractProjectSlug } from "../../authorization/extractProjectSlug"
 type GetFeedbackSurveyResponsesWithSurveyDataAndComments = {
   projectSlug: string
   surveyId: number
-  withLocationOnly?: boolean
 }
 
 export default resolver.pipe(
   // @ts-ignore
   authorizeProjectMember(extractProjectSlug, viewerRoles),
-  async ({
-    projectSlug,
-    surveyId,
-    withLocationOnly,
-  }: GetFeedbackSurveyResponsesWithSurveyDataAndComments) => {
+  async ({ projectSlug, surveyId }: GetFeedbackSurveyResponsesWithSurveyDataAndComments) => {
     const rawFeedbackSurveyResponse = await db.surveyResponse.findMany({
       where: {
         // Only surveyResponse.session.project === projectSlug
@@ -140,13 +135,7 @@ export default resolver.pipe(
     })
 
     return {
-      // for the map view we only return responses with location
-      feedbackSurveyResponses: withLocationOnly
-        ? parsedAndSorted.filter(
-            // @ts-expect-error
-            (response) => response.data[evaluationRefs["feedback-location"]],
-          )
-        : parsedAndSorted,
+      feedbackSurveyResponses: parsedAndSorted,
       // for the filter form on /responses we return all response options for additional filters
       additionalFilterQuestionsWithResponseOptions,
     }

@@ -36,7 +36,7 @@ export const SurveyLabeledCheckbox = forwardRef<HTMLInputElement, TSurveyLabeled
               props?.className,
               "h-4 w-4 cursor-pointer rounded group-hover:border-gray-400",
               hasError
-                ? "border-red-800 text-red-500 shadow-sm shadow-red-200 focus:ring-red-800"
+                ? "border-red-500 text-red-500 shadow-sm shadow-red-200 focus:ring-red-500"
                 : `border-gray-300 text-[var(--survey-primary-color)] focus:ring-0`,
             )}
           />
@@ -53,7 +53,7 @@ export const SurveyLabeledCheckbox = forwardRef<HTMLInputElement, TSurveyLabeled
           {help && <div className="m-0 text-gray-400">{help}</div>}
           <ErrorMessage
             render={({ message }) => (
-              <p role="alert" className="m-0 text-sm text-red-800">
+              <p role="alert" className="m-0 text-sm text-red-500">
                 {message}
               </p>
             )}

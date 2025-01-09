@@ -1,6 +1,5 @@
 import { LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import { SurveyBackgroundSwitcher } from "@/src/survey-public/components/maps/SurveyBackgroundSwitcher"
-import { getCompletedQuestionIds } from "@/src/survey-public/utils/getCompletedQuestionIds"
 import {
   getFeedbackDefinitionBySurveySlug,
   getResponseConfigBySurveySlug,
@@ -18,10 +17,11 @@ import Map, {
   Source,
   useMap,
 } from "react-map-gl/maplibre"
+import { getFormfieldName } from "../../utils/getFormfieldNames"
 import { DebugMapTileBoundaries } from "./DebugMapTileBoundaries"
 import { SurveyMapLineBanner } from "./SurveyMapLineBanner"
 
-export type SurveyMapProps = {
+type Props = {
   className?: string
   children?: React.ReactNode
   projectMap: {
@@ -30,14 +30,9 @@ export type SurveyMapProps = {
       bounds: [number, number, number, number]
     }
   }
-  setIsCompleted: (value: boolean) => void
 }
 
-export const SurveyMapLine: React.FC<SurveyMapProps> = ({
-  projectMap,
-  className,
-  setIsCompleted,
-}) => {
+export const SurveyMapLine = ({ projectMap, className }: Props) => {
   const { mainMap } = useMap()
   const [isMediumScreen, setIsMediumScreen] = useState(false)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
@@ -52,13 +47,15 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
   const feedbackDefinition = getFeedbackDefinitionBySurveySlug("radnetz-brandenburg")
 
   const lineQuestionId = evaluationRefs["line-id"]
-  const geometryQuestionId = evaluationRefs["line-geometry"]
+  const geometryQuestionId = evaluationRefs["geometry-category"]
   const lineFromToNameQuestionId = evaluationRefs["line-from-to-name"]
 
   // take line geometry from form context - if it is not defined use initialMarker fallback from feedback.ts configuration
+  // todo validation getFormfieldName helper
   const selectedLine = getValues()[`custom-${geometryQuestionId}`] || null
 
   //  update the map when we have a new value for the line
+  // todo validation getFormfieldName helper
   const watchLine = watch(`custom-${geometryQuestionId}`)
 
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
@@ -79,8 +76,6 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
     }
   }, [])
 
-  const firstPageQuestionIds = feedbackDefinition.pages[0]?.questions.map((q) => q.id)
-
   const { config } = projectMap
 
   const handleMapClick = (event: MapLayerMouseEvent) => {
@@ -96,18 +91,19 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
 
     // set values for line id, geometry and from-to-name in form context
     setValue(
-      `custom-${lineFromToNameQuestionId}`,
+      getFormfieldName("custom", lineFromToNameQuestionId!),
       `${lineFrom || "unbekannt"} - ${lineTo || "unbekannt"}`,
     )
-    setValue(`custom-${lineQuestionId}`, lineId || "unbekannt")
-    // @ts-expect-error we know that the geometry is a line string
-    setValue(`custom-${geometryQuestionId}`, JSON.stringify(lineGeometry.coordinates))
-
-    const values = getValues()
-    const completedQuestionIds = getCompletedQuestionIds(values)
-
-    // check if all questions from page one have been answered; compare arrays
-    setIsCompleted(firstPageQuestionIds!.every((val) => completedQuestionIds.includes(val)))
+    setValue(getFormfieldName("custom", lineQuestionId!), lineId || "unbekannt")
+    setValue(
+      getFormfieldName("custom", geometryQuestionId!),
+      // @ts-expect-error we know that the geometry is a line string
+      JSON.stringify(lineGeometry.coordinates),
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      },
+    )
   }
 
   const handleMouseMove = ({ features }: MapLayerMouseEvent) => {
@@ -129,7 +125,11 @@ export const SurveyMapLine: React.FC<SurveyMapProps> = ({
   const [cursorStyle, setCursorStyle] = useState("grab")
 
   return (
-    <div className={clsx("h-[500px]", className)}>
+    <div
+      className={clsx("h-[500px]", className)}
+      // todo validation getFormfieldName helper
+      aria-describedby={`custom-${geometryQuestionId}Hint`}
+    >
       <Map
         id="mainMap"
         scrollZoom={false}

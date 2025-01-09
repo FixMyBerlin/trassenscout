@@ -1,9 +1,12 @@
 import {
   TFeedbackQuestion,
   TQuestion,
+  TReadOnlyProps,
   TSingleOrMultiResponseProps,
-  TTextProps,
+  TTextareaProps,
+  TTextfieldProps,
 } from "@/src/survey-public/components/types"
+import { getFormfieldName } from "../utils/getFormfieldNames"
 import { SurveyH2 } from "./core/Text"
 import { SurveyLabeledCheckboxGroup } from "./core/form/SurveyLabeledCheckboxGroup"
 import { SurveyLabeledRadiobuttonGroup } from "./core/form/SurveyLabeledRadiobuttonGroup"
@@ -13,15 +16,17 @@ import { SurveyLabeledTextareaField } from "./core/form/SurveyLabeledTextareaFie
 
 type TSingleOrMultuResponseComponentProps = {
   id: number
+  component: TQuestion["component"] | TFeedbackQuestion["component"]
 } & TSingleOrMultiResponseProps
 
-const SingleResponseComponent: React.FC<TSingleOrMultuResponseComponentProps> = ({
+const SingleResponseComponent = ({
   id,
   responses,
-}) => (
+  component,
+}: TSingleOrMultuResponseComponentProps) => (
   <SurveyLabeledRadiobuttonGroup
     items={responses.map((item) => ({
-      scope: `single-${id}`,
+      scope: getFormfieldName(component, id),
       name: `${id}-${item.id}`,
       label: item.text.de,
       help: item?.help?.de,
@@ -30,58 +35,79 @@ const SingleResponseComponent: React.FC<TSingleOrMultuResponseComponentProps> = 
   />
 )
 
-const MultipleResponseComponent: React.FC<TSingleOrMultuResponseComponentProps> = ({
+const MultipleResponseComponent = ({
   id,
   responses,
-}) => (
+  component,
+}: TSingleOrMultuResponseComponentProps) => (
   <SurveyLabeledCheckboxGroup
     key={id}
     items={responses.map((item) => ({
-      name: `multi-${id}-${item.id}`,
+      name: `${getFormfieldName(component, id)}-${item.id}`,
       label: item.text.de,
       help: item?.help?.de,
     }))}
   />
 )
 
-type TTextResponseComponentProps = {
+type TTextfieldResponseComponentProps = {
   id: number
-} & TTextProps
+  component: TQuestion["component"] | TFeedbackQuestion["component"]
+} & TTextfieldProps
+
+type TTextareaResponseComponentProps = {
+  id: number
+  component: TQuestion["component"] | TFeedbackQuestion["component"]
+} & TTextareaProps
+
 type TReadOnlyResponseComponentProps = {
   id: number
-  queryId: string
-} & TTextProps
+  component: TQuestion["component"] | TFeedbackQuestion["component"]
+} & TReadOnlyProps
 
-const TextResponseComponent: React.FC<TTextResponseComponentProps> = ({
+const TextResponseComponent = ({
   id,
   placeholder,
   caption,
-  maxLength,
-}) => (
+  validation,
+  component,
+}: TTextareaResponseComponentProps) => (
   <>
     <SurveyLabeledTextareaField
-      name={`text-${id}`}
+      name={getFormfieldName(component, id)}
       label={""}
       placeholder={placeholder?.de}
       caption={caption?.de}
-      maxLength={maxLength}
+      maxLength={validation?.maxLength}
     />
   </>
 )
 
-const TextFieldResponseComponent: React.FC<TTextResponseComponentProps> = ({ id, placeholder }) => (
+const TextFieldResponseComponent = ({
+  id,
+  placeholder,
+  component,
+}: TTextfieldResponseComponentProps) => (
   <>
-    <SurveyLabeledTextField name={`text-${id}`} placeholder={placeholder?.de} label={""} />
+    <SurveyLabeledTextField
+      name={getFormfieldName(component, id)}
+      placeholder={placeholder?.de}
+      label={""}
+    />
   </>
 )
 
-const ReadOnlyResponseComponent: React.FC<TReadOnlyResponseComponentProps> = ({ id, queryId }) => (
+const ReadOnlyResponseComponent = ({ id, queryId, component }: TReadOnlyResponseComponentProps) => (
   <>
-    <SurveyLabeledReadOnlyTextField readOnly name={`text-${id}`} label={""} queryId={queryId} />
+    <SurveyLabeledReadOnlyTextField
+      readOnly
+      name={getFormfieldName(component, id)}
+      label={""}
+      queryId={queryId}
+    />
   </>
 )
 
-// TODO type
 const CustomComponent = (props: any) => (
   <div className="border-2 border-black bg-gray-200 p-1">
     <code>
@@ -101,16 +127,22 @@ const components = {
 
 type Props = { question: TQuestion | TFeedbackQuestion; className?: string }
 
-export const Question: React.FC<Props> = ({ question, className }) => {
+export const Question = ({ question, className }: Props) => {
   const { id, help, label, component, props } = question
   // @ts-expect-error
   const Component = components[component] || null
+
+  // todo validation: atm multipleResponse is always optional - we have to change this in the future
+  // @ts-expect-error
+  const isOptional = component === "multipleResponse" || props?.validation?.optional
   return (
     <div className={className} key={id}>
-      <SurveyH2>{label.de} *</SurveyH2>
+      <SurveyH2>
+        {label.de} {isOptional && " (optional)"}
+      </SurveyH2>
       {help && <div className="-mt-4 mb-6 text-sm text-gray-400">{help.de}</div>}
       {/* @ts-ignore */}
-      {Component && <Component id={id} {...props} />}
+      {Component && <Component component={component} id={id} {...props} />}
     </div>
   )
 }

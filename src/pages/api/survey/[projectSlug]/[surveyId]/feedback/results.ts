@@ -21,6 +21,7 @@ import { getSession } from "@blitzjs/auth"
 import { AuthorizationError } from "blitz"
 import { format } from "date-fns"
 import { NextApiRequest, NextApiResponse } from "next"
+import { coordinatesToWkt } from "../../../utils/coordinatesToWkt"
 import { getSurvey, sendCsv } from "./../survey/_shared"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -32,6 +33,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
   const backendConfig = getBackendConfigBySurveySlug(survey.slug)
   const responseConfig = getResponseConfigBySurveySlug(survey.slug)
+
+  const geometryCategoryId = responseConfig.evaluationRefs["geometry-category"]
+  const locationId = responseConfig.evaluationRefs["location"]
+
+  const geometryCategoryType = surveyDefinition["geometryCategoryType"]
 
   const getQuestions = (definition: TSurvey | TFeedback) => {
     const questions: Record<string, TQuestion | TFeedbackQuestion> = {}
@@ -123,6 +129,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     note: string | undefined
     operator: string | undefined
     comments: string | undefined
+    "geometry-category": string
   }
 
   // add headers for all questions
@@ -130,13 +137,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     headers.push({ id: questionId, title: question.label.de })
   })
   Object.entries(feedbackQuestions)
-    // exclude the "is-feedback-location" question as it is not explicitley stored in the response data
-    .filter(
-      ([questionId]) =>
-        questionId !== String(responseConfig.evaluationRefs["is-feedback-location"]),
-    )
+    // exclude the "is-location" question as it is not explicitley stored in the response data
+    .filter(([questionId]) => questionId !== String(responseConfig.evaluationRefs["is-location"]))
+    // the geometry-category question is handled separately
     .forEach(([questionId, question]) => {
-      headers.push({ id: questionId, title: question.label.de })
+      if (questionId === String(locationId)) {
+        headers.push({ id: `${questionId}-lat`, title: "Hinweis Verortung Lat" })
+        headers.push({ id: `${questionId}-lng`, title: "Hinweis Verortung Lng" })
+      } else {
+        headers.push({ id: questionId, title: question.label.de })
+      }
     })
   // add headers for all topics
   topics.forEach((topic) => {
@@ -145,6 +155,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       title: `${(labels || defaultLabels).topics?.sg}: ${topic.title}`,
     })
   })
+  headers.push({ id: "geometry-category", title: "Geometrie-Bezug im WKT-Format" })
 
   const csvData: Result[] = []
 
@@ -265,11 +276,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     : ""
                   break
                 case "map":
-                  // @ts-expect-error data is of type unknown and index type
-                  row[questionId] = data[questionId]
-                    ? // @ts-expect-error data is of type unknown
-                      JSON.stringify(data[questionId], null, 2)
-                    : ""
+                  // @ts-expect-error data is of type unknown
+                  if (questionId === String(locationId) && data[questionId]) {
+                    // @ts-expect-error data is of type unknown and index type
+                    row[`${questionId}-lat`] = data[questionId].lat
+                    // @ts-expect-error data is of type unknown and index type
+                    row[`${questionId}-lng`] = data[questionId].lng
+                  } else {
+                    // @ts-expect-error data is of type unknown and index type
+                    row[questionId] = data[questionId]
+                      ? // @ts-expect-error data is of type unknown
+                        JSON.stringify(data[questionId], null, 2)
+                      : ""
+                  }
+                  break
+                case "custom":
+                  // @ts-expect-error index type
+                  row[questionId] = data[questionId] || ""
                   break
                 default:
                   // @ts-expect-error data is of type unknown and index type
@@ -278,6 +301,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               }
             }
           })
+          // the geometry-category question is handled separately: we need to convert the coordinates to WKT to be able to import them into QGIS
+
+          const categoryCoordinates =
+            // @ts-expect-error data is of type unknown and index type
+            geometryCategoryId && data[String(geometryCategoryId)]
+              ? // @ts-expect-error data is of type unknown and index type
+                (JSON.parse(data[String(geometryCategoryId)]) as number[][] | number[][][])
+              : // rs8 and frm7 fallback geometry-category
+                surveyDefinition.geometryFallback
+
+          row["geometry-category"] =
+            coordinatesToWkt({
+              coordinates: categoryCoordinates,
+              type: geometryCategoryType,
+            }) || ""
+
           surveyResponseTopics.forEach((t) => {
             // @ts-expect-error index type
             row[`topic_${t.surveyResponseTopicId}`] = "X"

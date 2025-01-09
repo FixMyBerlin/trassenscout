@@ -1,12 +1,12 @@
 import { SurveyMarkdown } from "../SurveyMarkdown"
 import { SurveyH1 } from "../Text"
 
-export type SurveyScreenHeaderProps = {
+export type Props = {
   title: string
   description?: string
 }
 
-export const SurveyScreenHeader: React.FC<SurveyScreenHeaderProps> = ({ title, description }) => {
+export const SurveyScreenHeader = ({ title, description }: Props) => {
   return (
     <section className="mb-2">
       <div className="mb-8">

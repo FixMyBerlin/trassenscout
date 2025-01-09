@@ -17,7 +17,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { MagnifyingGlassCircleIcon } from "@heroicons/react/20/solid"
 import { XMarkIcon } from "@heroicons/react/24/outline"
 import { Operator } from "@prisma/client"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { PropsWithoutRef, useEffect, useState } from "react"
 import { z } from "zod"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
@@ -57,9 +57,8 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     surveyPart: "feedback",
   })
 
-  const categoryQuestionProps = feedbackQuestions.find(
-    (q) => q.id === evaluationRefs["feedback-category"],
-  )!.props as TSingleOrMultiResponseProps
+  const categoryQuestionProps = feedbackQuestions.find((q) => q.id === evaluationRefs["category"])!
+    .props as TSingleOrMultiResponseProps
 
   // backend configurations: status
   const backendConfig = getBackendConfigBySurveySlug(survey.slug)

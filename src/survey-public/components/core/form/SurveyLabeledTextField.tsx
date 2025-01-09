@@ -63,7 +63,7 @@ export const SurveyLabeledTextField = forwardRef<HTMLInputElement, LabeledTextFi
           className={clsx(
             "block w-full appearance-none rounded-md border px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none sm:text-sm",
             hasError
-              ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
+              ? "border-red-500 shadow-red-200 focus:border-red-500 focus:ring-red-500"
               : "border-gray-300 focus:border-[var(--survey-primary-color)] focus:ring-[var(--survey-primary-color)]",
           )}
         />
@@ -71,7 +71,7 @@ export const SurveyLabeledTextField = forwardRef<HTMLInputElement, LabeledTextFi
 
         <ErrorMessage
           render={({ message }) => (
-            <div role="alert" className="mt-1 text-sm text-red-800">
+            <div role="alert" className="mt-1 text-sm text-red-500">
               {message}
             </div>
           )}

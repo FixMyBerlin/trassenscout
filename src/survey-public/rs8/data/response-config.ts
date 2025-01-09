@@ -2,10 +2,10 @@ import { TResponseConfig } from "../../components/types"
 
 export const responseConfig: TResponseConfig = {
   evaluationRefs: {
-    "feedback-category": 21,
-    "is-feedback-location": 22,
-    "feedback-location": 23,
-    "feedback-usertext-1": 34,
-    "feedback-usertext-2": 35,
+    category: 21,
+    "is-location": 22,
+    location: 23,
+    "usertext-1": 34,
+    "usertext-2": 35,
   },
 }

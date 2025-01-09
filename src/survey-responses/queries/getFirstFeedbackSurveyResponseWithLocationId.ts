@@ -37,7 +37,7 @@ export default resolver.pipe(
 
     const filteredSurveyResponses = surveyResponses
       //@ts-expect-error
-      .filter((response) => JSON.parse(response.data)[evaluationRefs["feedback-location"]])
+      .filter((response) => JSON.parse(response.data)[evaluationRefs["location"]])
       .sort((a, b) => b.id - a.id)
 
     const surveyResponse = filteredSurveyResponses[0]

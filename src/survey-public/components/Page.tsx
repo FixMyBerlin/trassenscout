@@ -1,19 +1,26 @@
 import { SurveyScreenHeader } from "@/src/survey-public/components/core/layout/SurveyScreenHeader"
 import type { TPage } from "@/src/survey-public/components/types"
+import { useFormContext } from "react-hook-form"
+import { getFormfieldNamesByQuestions } from "../utils/getFormfieldNames"
 import { Question } from "./Question"
-import { SurveyP } from "./core/Text"
 import { SurveyButtonWithAction } from "./core/buttons/SurveyButtonWithAction"
 import { SurveyButtonWrapper } from "./core/buttons/SurveyButtonWrapper"
+import { SurveyFormErrorsBox } from "./core/form/SurveyFormErrorsBox"
 
 type Props = {
   page: TPage
   buttonActions: any
-  completed: boolean
 }
 
-export const Page = ({ page, buttonActions, completed }: Props) => {
+export const Page = ({ page, buttonActions }: Props) => {
+  const {
+    formState: { errors, isSubmitting },
+  } = useFormContext()
+
   if (!page) return null
   const { id: pageId, title, description, questions, buttons } = page
+
+  const relevantQuestionNames = getFormfieldNamesByQuestions(questions!)
 
   return (
     <section>
@@ -23,26 +30,20 @@ export const Page = ({ page, buttonActions, completed }: Props) => {
         questions.map((question) => (
           <Question className="mb-2" key={`${pageId}-${question.id}`} question={question} />
         ))}
+      <SurveyFormErrorsBox formErrors={errors} surveyPart="survey" />
       <SurveyButtonWrapper>
         {buttons?.map((button) => {
-          let disabled = false
-          if (["nextPage", "submit"].includes(button.onClick.action)) {
-            disabled = !completed
-          }
           return (
             <SurveyButtonWithAction
               key={`${pageId}-${button.label.de}`}
               buttonActions={buttonActions}
+              relevantQuestionNames={relevantQuestionNames!}
               button={button}
-              disabled={disabled}
+              disabled={isSubmitting}
             />
           )
         })}
       </SurveyButtonWrapper>
-      <SurveyP className="text-sm sm:text-sm">
-        * Pflichtfelder <br />
-        Um fortzufahren, bitte alle Pflichtfelder ausfüllen.
-      </SurveyP>
     </section>
   )
 }

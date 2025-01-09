@@ -6,7 +6,7 @@ type Props = {
   className?: string
 }
 
-export const SurveyLabeledCheckboxGroup: React.FC<Props> = ({ items, className }) => {
+export const SurveyLabeledCheckboxGroup = ({ items, className }: Props) => {
   return (
     <div className={clsx(className, "space-y-2")}>
       {items.map((item, index) => {

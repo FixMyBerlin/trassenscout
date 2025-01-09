@@ -18,9 +18,9 @@ jobs:
     with:
       ENVIRONMENT: production
 
-  restart-services:
+  services:
     needs: deploy-app
-    uses: ./.github/workflows/restart-services.yml
+    uses: ./.github/workflows/services.yml
     secrets: inherit
     with:
       ENVIRONMENT: production

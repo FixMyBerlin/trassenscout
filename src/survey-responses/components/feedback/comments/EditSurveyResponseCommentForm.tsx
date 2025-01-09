@@ -11,7 +11,7 @@ import updateSurveyResponseComment from "@/src/survey-response-comments/mutation
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { useSession } from "@blitzjs/auth"
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import deleteSurveyResponseComment from "../../../../survey-response-comments/mutations/deleteSurveyResponseComment"
 import { EditableSurveyResponseListItemProps } from "../EditableSurveyResponseListItem"
 

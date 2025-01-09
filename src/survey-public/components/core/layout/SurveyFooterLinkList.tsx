@@ -13,7 +13,7 @@ type Props = {
   className?: string
 }
 
-export const SurveyFooterLinkList: React.FC<Props> = ({ linkList, className }) => {
+export const SurveyFooterLinkList = ({ linkList, className }: Props) => {
   return (
     <div className="space-y-3">
       <p className="text-sm font-semibold text-gray-400">RECHTLICHES</p>

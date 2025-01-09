@@ -9,7 +9,7 @@ import { useCallback, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import Map, { Marker, MarkerDragEvent, NavigationControl, useMap } from "react-map-gl/maplibre"
 
-export type SurveyMapProps = {
+type Props = {
   className?: string
   children?: React.ReactNode
   projectMap: {
@@ -27,12 +27,12 @@ export type SurveyMapProps = {
   // still we have to clean up and rework this component and all survey map components
 }
 
-export const SurveyMapExternal: React.FC<SurveyMapProps> = ({
+export const SurveyMapExternal = ({
   projectMap,
   pinId,
   className,
   // todo survey clean up or refactor after survey BB line selection
-}) => {
+}: Props) => {
   const { mainMap } = useMap()
   const [events, logEvents] = useState<Record<string, Object>>({})
   const [isPinInView, setIsPinInView] = useState(true)

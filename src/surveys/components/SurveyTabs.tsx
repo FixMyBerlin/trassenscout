@@ -35,7 +35,6 @@ export const SurveyTabs = () => {
                 href: Routes.SurveyResponseWithLocationPage({
                   projectSlug,
                   surveyId: surveyId!,
-                  surveyResponseId: surveyResponse.id,
                 }),
               },
             ]

@@ -10,7 +10,7 @@ type Props = {
   onClickMore: () => void
 }
 
-export const Email: React.FC<Props> = ({ email, onClickMore }) => {
+export const Email = ({ email, onClickMore }: Props) => {
   const { description, button, title, mailjetWidgetUrl, homeUrl } = email
 
   return (
@@ -34,10 +34,10 @@ export const Email: React.FC<Props> = ({ email, onClickMore }) => {
       </div>
       <div>
         <SurveyP>
-          Ist Ihnen noch ein Hinweis eingefallen, den Sie mit uns teilen wolle? Unter dem Button
-          können Sie diesen nachreichen.
+          Ist Ihnen noch ein Hinweis eingefallen, den Sie mit uns teilen wollen? Unter dem Button
+          &quot;Zurück zur Beteiligung&quot; können Sie diesen nachreichen.
         </SurveyP>
-        <SurveyButton onClick={onClickMore}>Mir ist noch etwas eingefallen</SurveyButton>
+        <SurveyButton onClick={onClickMore}>Zurück zur Beteiligung</SurveyButton>
       </div>
     </section>
   )

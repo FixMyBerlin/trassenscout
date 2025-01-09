@@ -3,7 +3,7 @@ import { useTryProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlu
 import createSurveyResponseComment from "@/src/survey-response-comments/mutations/createSurveyResponseComment"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { invalidateQuery, useMutation } from "@blitzjs/rpc"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import dompurify from "dompurify"
 import { useState } from "react"
 import { LabeledTextarea } from "../form/LabeledTextarea"

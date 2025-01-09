@@ -1,9 +1,16 @@
 # About
 
-Helper script to pull the production database for local development. Handles anonmization.
+Helper script to pull the production database for local development. Handles data anonymization.
 
-# Steps
+## Initial Setup
 
-1. Add `DATABASE_URL_PRODUCTION` to [`.env.local`](../../.env.local)
-2. `npm run db:getDump`
-3. `npm run db:restoreDump`
+1.  Configure [`.env.local`](../../.env.local) based on [`.env.local.example`](../../.env.local.example)
+2.  Setup SSH tunnels for production and staging
+
+## Run
+
+```sh
+ssh trassenscout-… # tunnel name production or staging – run in separate terminal
+npm run db:getDump # or npm run db:getDump:staging
+npm run db:restoreDump
+```

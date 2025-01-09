@@ -2,7 +2,7 @@ import { Link, linkStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-import { TMapProps } from "@/src/survey-public/components/types"
+import { TFeedbackQuestion, TMapProps } from "@/src/survey-public/components/types"
 import {
   getBackendConfigBySurveySlug,
   getFeedbackDefinitionBySurveySlug,
@@ -13,8 +13,9 @@ import getSurvey from "@/src/surveys/queries/getSurvey"
 import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { EnvelopeIcon } from "@heroicons/react/20/solid"
-import clsx from "clsx"
+import { clsx } from "clsx"
 
+import { getQuestionsAsArray } from "@/src/survey-public/utils/getQuestionsAsArray"
 import { LngLatBoundsLike } from "react-map-gl/dist/esm/exports-maplibre"
 import deleteSurveyResponse from "../../mutations/deleteSurveyResponse"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
@@ -23,27 +24,25 @@ import EditableSurveyResponseAdditionalFilterFields from "./EditableSurveyRespon
 import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
 
-export type EditableSurveyResponseListItemProps = {
+type Props = {
   response: Prettify<
     Awaited<
       ReturnType<typeof getFeedbackSurveyResponsesWithSurveyDataAndComments>
     >["feedbackSurveyResponses"][number]
   >
   categoryLabel: string
-  userLocationQuestionId: number | undefined
   maptilerUrl: string
   defaultViewState: LngLatBoundsLike
   showMap?: boolean
   refetchResponsesAndTopics: () => void
 }
 
-const EditableSurveyResponseMapAndStaticData: React.FC<EditableSurveyResponseListItemProps> = ({
+const EditableSurveyResponseMapAndStaticData = ({
   response,
   showMap,
-  userLocationQuestionId,
   categoryLabel,
   refetchResponsesAndTopics,
-}) => {
+}: Props) => {
   const surveyId = useParam("surveyId", "string")
   const projectSlug = useProjectSlug()
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
@@ -53,32 +52,39 @@ const EditableSurveyResponseMapAndStaticData: React.FC<EditableSurveyResponseLis
   const backendConfig = getBackendConfigBySurveySlug(survey.slug)
   const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
 
-  const mapProps = feedbackDefinition!.pages[1]!.questions.find(
-    (q) => q.id === evaluationRefs["feedback-location"],
-  )!.props as TMapProps
-  const defaultViewState = mapProps?.config?.bounds
+  const feedbackQuestions = getQuestionsAsArray({
+    definition: feedbackDefinition,
+    surveyPart: "feedback",
+  }) as TFeedbackQuestion[]
 
-  const feedbackQuestions = []
-  for (let page of feedbackDefinition.pages) {
-    feedbackQuestions.push(...page.questions)
-  }
+  const mapProps = feedbackQuestions.find((q) => q.id === evaluationRefs["location"])!
+    .props as TMapProps
+
   const feedbackQuestion = feedbackQuestions.find(
-    (q) => q.id === evaluationRefs["feedback-category"],
-  )
+    (q) => q.id === evaluationRefs["category"],
+  ) as TFeedbackQuestion
 
   const maptilerUrl = surveyDefinition.maptilerUrl
 
   const feedbackUserCategory =
     // @ts-expect-error `data` is of type unkown
-    response.data[evaluationRefs["feedback-category"]] &&
-    evaluationRefs["feedback-category"] &&
+    response.data[evaluationRefs["category"]] &&
+    evaluationRefs["category"] &&
     getSurveyResponseCategoryById(
       // @ts-expect-error `data` is of type unkown
-      Number(response.data[evaluationRefs["feedback-category"]]),
+      Number(response.data[evaluationRefs["category"]]),
       feedbackQuestion!,
     )
 
+  const userLocationQuestionId = evaluationRefs["location"]
+
   const additionalFilterFields = backendConfig.additionalFilters
+
+  const geometryCategoryCoordinates = evaluationRefs["geometry-category"]
+    ? // @ts-expect-error `data` is unkown
+      JSON.parse(response.data[evaluationRefs["geometry-category"]])
+    : // we need to provide a fallback geometry for rs8 & frm7 where the geometry category was not introduced yet
+      surveyDefinition.geometryFallback
 
   const getTranslatedSource = (s: string) => {
     switch (s) {
@@ -124,10 +130,7 @@ const EditableSurveyResponseMapAndStaticData: React.FC<EditableSurveyResponseLis
         {/* TEXT */}
         <EditableSurveyResponseUserText
           surveyId={surveyId!}
-          userTextIndices={[
-            evaluationRefs["feedback-usertext-1"],
-            evaluationRefs["feedback-usertext-2"],
-          ]}
+          userTextIndices={[evaluationRefs["usertext-1"], evaluationRefs["usertext-2"]]}
           feedbackQuestions={feedbackQuestions}
           response={response}
         />
@@ -154,25 +157,21 @@ const EditableSurveyResponseMapAndStaticData: React.FC<EditableSurveyResponseLis
               // @ts-expect-error `data` is unkown
               response.data[userLocationQuestionId] as { lat: number; lng: number } | undefined
             }
+            geometryCategoryCoordinates={geometryCategoryCoordinates}
             maptilerUrl={maptilerUrl}
-            defaultViewState={defaultViewState}
           />
-          {
-            // @ts-expect-error `data` is unkown
-            response.data[userLocationQuestionId] && (
-              <div className="pt-4">
-                <Link
-                  href={Routes.SurveyResponseWithLocationPage({
-                    projectSlug,
-                    surveyId: surveyId!,
-                    surveyResponseId: response.id,
-                  })}
-                >
-                  Alle verorteten Beiträge öffnen
-                </Link>
-              </div>
-            )
-          }
+          <div className="pt-4">
+            <Link
+              href={Routes.SurveyResponseWithLocationPage({
+                projectSlug,
+                surveyId: surveyId!,
+                responseDetails: response.id,
+                selectedResponses: [response.id],
+              })}
+            >
+              In großer Karte öffnen
+            </Link>
+          </div>
         </div>
       )}
     </div>

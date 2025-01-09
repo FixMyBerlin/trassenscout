@@ -4,7 +4,6 @@ import { Prettify } from "@/src/core/types"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
-import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { TMapProps } from "@/src/survey-public/components/types"
 import { backendConfig as defaultBackendConfig } from "@/src/survey-public/utils/backend-config-defaults"
 import {
@@ -16,11 +15,10 @@ import {
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useSession } from "@blitzjs/auth"
-import { useParam, useRouterQuery } from "@blitzjs/next"
+import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid"
 import { clsx } from "clsx"
-import { parseAsInteger, useQueryState } from "nuqs"
 import { useEffect } from "react"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
@@ -28,6 +26,7 @@ import EditableSurveyResponseMapAndStaticData from "./EditableSurveyResponseMapA
 import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
 import { NewSurveyResponseCommentForm } from "./comments/NewSurveyResponseCommentForm"
 import { SurveyResponseCommentField } from "./comments/SurveyResponseCommentField"
+import { useResponseDetails } from "./useResponseDetails.nuqs"
 
 export type EditableSurveyResponseListItemProps = {
   response: Prettify<
@@ -40,26 +39,23 @@ export type EditableSurveyResponseListItemProps = {
     Awaited<ReturnType<typeof getSurveyResponseTopicsByProject>>["surveyResponseTopics"]
   >
   isAccordion?: boolean
-  subsections: SubsectionWithPosition[]
   refetchResponsesAndTopics: () => void
   showMap?: boolean
 }
 
-const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemProps> = ({
+const EditableSurveyResponseListItem = ({
   response,
   operators,
   topics,
-  subsections,
   isAccordion,
   refetchResponsesAndTopics,
   showMap,
-}) => {
-  const params = useRouterQuery()
-  const open = !isAccordion ? true : parseInt(String(params.responseDetails)) === response.id
+}: EditableSurveyResponseListItemProps) => {
+  const { responseDetails, setResponseDetails } = useResponseDetails()
+  const open = !isAccordion ? true : parseInt(String(responseDetails)) === response.id
   const surveyId = useParam("surveyId", "string")
   const projectSlug = useProjectSlug()
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
-  const [responseDetails, setRespnseDetails] = useQueryState("responseDetails", parseAsInteger)
 
   const session = useSession()
   const isEditorOrAdmin = useUserCan().edit || session.role === "ADMIN"
@@ -73,10 +69,10 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   }, [survey.slug])
 
   const handleOpen = () => {
-    void setRespnseDetails(response.id)
+    void setResponseDetails(response.id)
   }
   const handleClose = () => {
-    void setRespnseDetails(null)
+    void setResponseDetails(null)
   }
   const operatorSlugWitFallback = response.operator?.slug || "k.A."
 
@@ -87,7 +83,7 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
   const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
 
   const mapProps = feedbackDefinition!.pages[1]!.questions.find(
-    (q) => q.id === evaluationRefs["feedback-location"],
+    (q) => q.id === evaluationRefs["location"],
   )!.props as TMapProps
   const defaultViewState = mapProps?.config?.bounds
 
@@ -100,45 +96,53 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
 
   const userTextPreview =
     // @ts-expect-error `data` is of type unkown
-    response.data[evaluationRefs["feedback-usertext-1"]] ||
+    response.data[evaluationRefs["usertext-1"]] ||
     // @ts-expect-error `data` is of type unkown
-    response.data[evaluationRefs["feedback-usertext-2"]]
+    response.data[evaluationRefs["usertext-2"]]
 
   return (
     <article data-open={open} className="bg-white">
       <button
         className={clsx(
-          "group flex w-full items-center justify-between py-4 pr-4 text-left text-sm text-gray-900 hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75 sm:pr-6",
+          "group w-full py-4 pr-4 text-left text-sm text-gray-900 hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75 sm:pr-6",
           open ? "bg-gray-50" : "border-b border-gray-300",
-          showMap || "cursor-default",
         )}
         onClick={isAccordion ? () => (open ? handleClose() : handleOpen()) : undefined}
       >
-        <div className="flex items-center gap-4 px-6 pb-2 pt-3">
-          <h3 className="text-gray-700">{response.id} </h3>
-          <EditableSurveyResponseStatusLabel
-            surveySlug={survey.slug}
-            short={!showMap}
-            status={response.status}
-          />
-          <div
-            className={clsx(
-              "flex-shrink-0 rounded-full bg-gray-300 px-4 py-2 text-sm",
-              operatorSlugWitFallback !== "k.A." && "uppercase",
-            )}
-          >
-            <div>{operatorSlugWitFallback}</div>
+        <small className="pl-4 text-[#7c3aed]">
+          {/* @ts-expect-error data is unknown */}
+          {response.data[evaluationRefs["location"]] ? "mit" : "ohne"} Verortung
+        </small>
+        <div className="flex w-full items-center justify-between">
+          <div className="flex items-center gap-4 px-6 pb-2 pt-1">
+            <h3 className="text-gray-700">{response.id} </h3>
+            <EditableSurveyResponseStatusLabel
+              surveySlug={survey.slug}
+              short={!showMap}
+              status={response.status}
+            />
+            <div
+              className={clsx(
+                "flex-shrink-0 rounded-full bg-gray-300 px-4 py-2 text-sm",
+                operatorSlugWitFallback !== "k.A." && "uppercase",
+              )}
+            >
+              <div>{operatorSlugWitFallback}</div>
+            </div>
+
+            <Markdown
+              className="ml-4 line-clamp-2 flex-shrink break-all"
+              markdown={userTextPreview}
+            />
           </div>
 
-          <Markdown className="ml-4 line-clamp-2" markdown={userTextPreview} />
+          {isAccordion &&
+            (open ? (
+              <ChevronUpIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
+            ) : (
+              <ChevronDownIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
+            ))}
         </div>
-
-        {isAccordion &&
-          (open ? (
-            <ChevronUpIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
-          ) : (
-            <ChevronDownIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
-          ))}
       </button>
 
       {open && (
@@ -154,7 +158,6 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             showMap={showMap}
             maptilerUrl={maptilerUrl}
             defaultViewState={defaultViewState}
-            userLocationQuestionId={evaluationRefs["feedback-location"]}
             categoryLabel={labels.category?.sg || defaultBackendConfig.labels.category.sg}
           />
           <EditableSurveyResponseForm
@@ -162,7 +165,6 @@ const EditableSurveyResponseListItem: React.FC<EditableSurveyResponseListItemPro
             response={response}
             operators={operators}
             topics={topics}
-            subsections={subsections}
             backendConfig={backendConfig}
           />
           <div>

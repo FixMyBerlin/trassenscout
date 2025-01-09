@@ -29,9 +29,8 @@ export const useDefaultFilterValues = () => {
   for (let page of feedbackDefinition.pages) {
     feedbackQuestions.push(...page.questions)
   }
-  const categoryQuestionProps = feedbackQuestions.find(
-    (q) => q.id === evaluationRefs["feedback-category"],
-  )!.props as TSingleOrMultiResponseProps
+  const categoryQuestionProps = feedbackQuestions.find((q) => q.id === evaluationRefs["category"])!
+    .props as TSingleOrMultiResponseProps
 
   const defaultAdditionalFiltersQueryValues: Record<string, string> = {}
   backendConfig.additionalFilters?.forEach(

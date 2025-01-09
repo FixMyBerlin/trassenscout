@@ -1,3 +1,5 @@
+import { LineString, MultiLineString } from "geojson"
+
 export type TSurvey = {
   part: number
   version: number
@@ -9,6 +11,14 @@ export type TSurvey = {
   darkColor: string
   pages: TPage[]
   deletedQuestions?: TQuestion[]
+  // atm we only have "line" geometryCategoryType, coordinates are of type LineString or MultiLineString (the distinction between those two can be made by checking the shape of the first element in the coordinates array)
+  // we define the geometryCategoryType explicilitly here as we might have "polygon" geometryCategoryTypes in the future we might have "polygon" geometryCategoryTypes
+  // we can not store this information in the geometry atm
+  // will be reworked with https://github.com/FixMyBerlin/private-issues/issues/2196
+  geometryCategoryType: "line" | "polygon"
+  // geometryFallback is used for surveys rs8 adn frm7 that have a geometry-category question
+  // starting with radnetz BB all surveys have geometry-category questions
+  geometryFallback?: LineString["coordinates"] | MultiLineString["coordinates"]
 }
 
 export type TPage = {
@@ -24,7 +34,7 @@ export type TQuestion = {
   component: "singleResponse" | "multipleResponse" | "textfield" | "readOnly" | "text"
   label: TTranslatableText
   help?: TTranslatableText
-  props: TSingleOrMultiResponseProps | TTextProps | TReadOnlyProps
+  props: TSingleOrMultiResponseProps | TReadOnlyProps | TTextfieldProps | TTextareaProps
 }
 
 export type TButtonWithAction = {
@@ -48,6 +58,16 @@ type TTranslatableText = {
 
 export type TSingleOrMultiResponseProps = {
   responses: TResponse[]
+  validation?: {
+    // atm all multiResponse questions are optional, this has to be changed in the future:
+    // https://github.com/FixMyBerlin/private-issues/issues/1710
+    // all singleResponse questions are required by default, this can be changed by setting optional to true
+    optional?: boolean
+    // todo validation for multiResponse: min/max number of responses
+    // maxResponses?: number
+    // minResponses?: number
+    // customMessage?: string
+  }
 }
 
 export type TResponse = {
@@ -89,14 +109,34 @@ export type TLegendItem = {
   className?: string
 }
 
-export type TTextProps = {
+export type TTextfieldProps = {
   placeholder?: TTranslatableText
   caption?: TTranslatableText
-  maxLength?: number
+  validation?: {
+    type: "email" | "text" // default is text
+    optional?: boolean // default is false - so if not set it is required
+    maxLength?: number // default is 1000 for text and 5000 for textarea
+    minLength?: number // default is 1 if optional not set to false // if minLength is set then optional id overwritten
+    // customMessage?: string
+    regex?: RegExp // default is undefined
+  }
+}
+export type TTextareaProps = {
+  placeholder?: TTranslatableText
+  caption?: TTranslatableText
+  validation?: {
+    optional?: boolean // default is false - so if not set it is required
+    maxLength?: number // default is 1000 for text and 5000 for textarea
+    minLength?: number // default is 1 if optional not set to true // if minLength is set then optional id overwritten
+    // customMessage?: string
+    regex?: RegExp // default is undefined
+  }
 }
 
 export type TReadOnlyProps = {
   queryId: string
+  placeholder?: TTranslatableText
+  caption?: TTranslatableText
 }
 
 export type TFeedbackQuestion = {
@@ -104,7 +144,7 @@ export type TFeedbackQuestion = {
   id: number
   label: TTranslatableText
   component: "singleResponse" | "multipleResponse" | "text" | "map" | "custom"
-  props?: TSingleOrMultiResponseProps | TMapProps | TTextProps
+  props?: TSingleOrMultiResponseProps | TMapProps | TTextfieldProps | TTextareaProps
 }
 
 export type TFeedback = {
@@ -120,13 +160,13 @@ export type TFeedback = {
 
 export type TResponseConfig = {
   evaluationRefs: {
-    "feedback-category": number
-    "is-feedback-location": number
-    "feedback-location": number
-    "feedback-usertext-1": number
-    "feedback-usertext-2"?: number // survey RS8
+    category: number
+    "is-location": number
+    location: number
+    "usertext-1": number
+    "usertext-2"?: number // survey RS8
+    "geometry-category"?: number // this is typed as optional because it is introduced in survey BB, for RS8 and FRM7 we use a fallback geometry-category
     "line-id"?: number // survey BB
-    "line-geometry"?: number // survey BB
     "line-from-to-name"?: number // survey BB
   }
 }
