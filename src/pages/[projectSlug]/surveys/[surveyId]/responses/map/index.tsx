@@ -107,7 +107,6 @@ export const SurveyResponseWithLocation = () => {
               maptilerUrl={maptilerUrl}
               defaultViewState={defaultViewState}
               categoryGeometryRef={categoryGeometryRef}
-              // selectedSurveyResponse={1623}
               surveyResponses={feedbackSurveyResponses}
               locationRef={locationRef!}
               surveySlug={survey.slug}
