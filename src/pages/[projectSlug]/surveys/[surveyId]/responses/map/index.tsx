@@ -1,6 +1,7 @@
+import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import { Spinner } from "@/src/core/components/Spinner"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { H2 } from "@/src/core/components/text"
+import { H3 } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
@@ -86,14 +87,22 @@ export const SurveyResponseWithLocation = () => {
         />
       </div>
 
-      <div className="mt-12 space-y-4 px-4">
+      <div className="space-y-4 px-4">
         {mapSelectedResponses.length > 0 && (
-          <div className="flex justify-end">
-            <H2 className="lg:w-[580px]">
-              Ausgewählte{mapSelectedResponses.length === 1 ? "r" : ""} Hinweis
-              {mapSelectedResponses.length !== 1 ? "e" : ""}:
-            </H2>
-          </div>
+          <>
+            <div className="flex justify-end">
+              <div className="lg:w-[580px]">
+                <H3>
+                  Ausgewählte{mapSelectedResponses.length === 1 ? "r" : ""}{" "}
+                  {mapSelectedResponses.length === 1 ? "Beitrag" : "Beiträge"}
+                </H3>
+                <div className="mt-2 flex items-center">
+                  <SurveyStaticPin surveySlug={survey.slug} small />
+                  <small className="pl-4 text-[#7c3aed]">= Beitrag mit Verortung</small>
+                </div>
+              </div>
+            </div>
+          </>
         )}
         <div
           className={clsx(

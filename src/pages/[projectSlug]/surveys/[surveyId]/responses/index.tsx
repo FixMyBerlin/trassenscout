@@ -1,3 +1,4 @@
+import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
@@ -90,6 +91,12 @@ export const SurveyResponse = () => {
           <p>1 Beitrag</p>
         ) : (
           <p>{filteredResponses.length} Beiträge</p>
+        )}
+        {filteredResponses.length !== 0 && (
+          <div className="mt-2 flex items-center">
+            <SurveyStaticPin surveySlug={survey.slug} small />
+            <small className="pl-4 text-[#7c3aed]">= Beitrag mit Verortung</small>
+          </div>
         )}
         <section>
           {filteredResponses.map((response) => (
