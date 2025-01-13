@@ -99,7 +99,7 @@ export const SurveyResponseWithLocation = () => {
           className={clsx(
             // todo survey clean up after survey BB (status are too long, blt are not used)
             survey.slug === "radnetz-brandenburg" && "flex-col",
-            "flex w-full max-w-full gap-2 lg:flex-row",
+            "flex w-full max-w-full gap-2 pb-8 lg:flex-row",
           )}
         >
           <section className="h-[1000px] flex-grow">
