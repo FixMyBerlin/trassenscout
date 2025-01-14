@@ -6,6 +6,7 @@ export type TSurvey = {
   logoUrl: string
   canonicalUrl: string
   maptilerUrl: string
+  atlasUrl?: string
   primaryColor: string
   lightColor: string
   darkColor: string

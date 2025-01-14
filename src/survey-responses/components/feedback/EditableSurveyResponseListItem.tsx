@@ -1,3 +1,4 @@
+import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
@@ -109,10 +110,13 @@ const EditableSurveyResponseListItem = ({
         )}
         onClick={isAccordion ? () => (open ? handleClose() : handleOpen()) : undefined}
       >
-        <small className="pl-4 text-[#7c3aed]">
-          {/* @ts-expect-error data is unknown */}
-          {response.data[evaluationRefs["location"]] ? "mit" : "ohne"} Verortung
-        </small>
+        {/* @ts-expect-error data is unknown */}
+        {response.data[evaluationRefs["location"]] && (
+          <div className="pl-6">
+            <SurveyStaticPin surveySlug={survey.slug} small />
+          </div>
+        )}
+
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center gap-4 px-6 pb-2 pt-1">
             <h3 className="text-gray-700">{response.id} </h3>

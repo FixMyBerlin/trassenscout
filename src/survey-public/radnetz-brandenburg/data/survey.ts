@@ -8,6 +8,8 @@ export const surveyDefinition: TSurvey = {
   canonicalUrl:
     "https://mil.brandenburg.de/mil/de/themen/mobilitaet-verkehr/radverkehr/radnetz-brandenburg/",
   maptilerUrl: "https://api.maptiler.com/maps/1628cd25-069f-45bc-9e1e-9768388fe544/style.json",
+  atlasUrl:
+    "https://radverkehrsatlas.de/regionen/bb-sg?map=MAPPARAM&config=z9tzbb.172uzo.i&data=bb-trassenscout-beteiligung,bb-ramboll-netzentwurf-2,bb-land-klassifiertes-strassennetz&v=2",
   primaryColor: "#C73C35",
   darkColor: "#651E1B",
   lightColor: "#DF8A86",
