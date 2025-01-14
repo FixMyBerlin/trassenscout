@@ -144,19 +144,19 @@ const EditableSurveyResponseMapAndStaticData = ({
     ? surveyDefinition.atlasUrl!.replace(
         "MAPPARAM",
         // @ts-expect-error `data` is unkown
-        `12%2F${response.data[userLocationQuestionId].lat.toFixed(3)}%2F${response.data[userLocationQuestionId].lng.toFixed(3)}`,
+        `11%2F${response.data[userLocationQuestionId].lat.toFixed(3)}%2F${response.data[userLocationQuestionId].lng.toFixed(3)}`,
       )
     : surveyDefinition.atlasUrl!.replace(
         "MAPPARAM",
         // @ts-expect-error `data` is unkown
-        `12%2F${center(getParsedLine(response.data[geometryCategoryId])).geometry.coordinates[1].toFixed(3)}%2F${center(getParsedLine(response.data[geometryCategoryId])).geometry.coordinates[0].toFixed(3)}`,
+        `11%2F${center(getParsedLine(response.data[geometryCategoryId])).geometry.coordinates[1].toFixed(3)}%2F${center(getParsedLine(response.data[geometryCategoryId])).geometry.coordinates[0].toFixed(3)}`,
       )
 
   return (
     <div className={clsx("grid gap-6 md:gap-4", showMap && "md:grid-cols-2")}>
       {surveyDefinition.atlasUrl && !showMap && (
         <Link target="_blank" href={atlasUrl}>
-          Im Radvrekehrsatlas öffnen
+          Im Radverkehrsatlas öffnen
         </Link>
       )}
       {/* LEFT SIDE */}
@@ -219,7 +219,7 @@ const EditableSurveyResponseMapAndStaticData = ({
             </Link>
             {surveyDefinition.atlasUrl && (
               <Link target="_blank" href={atlasUrl}>
-                Im Radvrekehrsatlas öffnen
+                Im Radverkehrsatlas öffnen
               </Link>
             )}
           </div>
