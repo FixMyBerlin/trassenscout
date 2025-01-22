@@ -4,6 +4,7 @@ import "@/src/app/_components/layouts/global.css"
 import { withBlitz } from "@/src/blitz-client"
 import { init } from "@socialgouv/matomo-next"
 import { AuthenticationError, AuthorizationError } from "blitz"
+import { NuqsAdapter } from "nuqs/adapters/next/pages"
 import { Suspense, useEffect, useRef } from "react"
 import { fontRedHatText } from "../app/_components/layouts/fonts"
 
@@ -50,9 +51,11 @@ function MyApp({ Component, pageProps }: AppProps) {
           font-family: ${fontRedHatText.style.fontFamily}};
         }
       `}</style>
-      <ErrorBoundary FallbackComponent={RootErrorFallback}>
-        <Suspense>{getLayout(<Component {...pageProps} />)}</Suspense>
-      </ErrorBoundary>
+      <NuqsAdapter>
+        <ErrorBoundary FallbackComponent={RootErrorFallback}>
+          <Suspense>{getLayout(<Component {...pageProps} />)}</Suspense>
+        </ErrorBoundary>
+      </NuqsAdapter>
     </>
   )
 }
