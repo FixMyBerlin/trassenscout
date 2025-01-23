@@ -50,11 +50,7 @@ export default function KontaktPage() {
           .
         </p>
         <p>
-          Du findest uns auch auf{" "}
-          <Link blank href="https://twitter.com/fixmyberlin">
-            Twitter,{" "}
-          </Link>{" "}
-          und{" "}
+          Sie finden uns auch auf{" "}
           <Link blank href="https://www.linkedin.com/company/fixmycity">
             LinkedIn
           </Link>
@@ -62,11 +58,11 @@ export default function KontaktPage() {
         </p>
         {/* TODO: Update Github- und Lizenz Link! */}
         <p>
-          Sofern du Bugs oder Verbesserungsvorschläge hast, gib uns gerne{" "}
+          Sofern Sie Bugs oder Verbesserungsvorschläge haben, geben Sie uns gerne{" "}
           <Link blank href="https://github.com/FixMyBerlin/trassenscout/issues/new">
             auf GitHub
           </Link>{" "}
-          Feedback. Du kannst den{" "}
+          Feedback. Sie können den{" "}
           <Link href="https://github.com/FixMyBerlin/trassenscout/" blank>
             Source Code auch weiterentwickeln
           </Link>
