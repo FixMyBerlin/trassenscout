@@ -5,7 +5,6 @@ import Image from "next/image"
 import FMCIcon from "./assets/fmc-icon.svg"
 import LinkedInIcon from "./assets/linkedin-logo.svg"
 import RSVIcon from "./assets/rsv-icon.svg"
-import TwitterIcon from "./assets/twitter-icon.svg"
 
 export const MarketingPageLinks = () => {
   const onlineList = [
@@ -18,11 +17,6 @@ export const MarketingPageLinks = () => {
       title: "Weitere Angebote",
       href: "https://www.fixmycity.de/",
       logo: FMCIcon,
-    },
-    {
-      title: "Auf Twitter",
-      href: "https://twitter.com/FixMyBerlin",
-      logo: TwitterIcon,
     },
     {
       title: "Auf LinkedIn",
