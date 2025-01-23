@@ -139,22 +139,24 @@ const EditableSurveyResponseMapAndStaticData = ({
     }
   }
 
-  // @ts-expect-error `data` is unkown
-  const atlasUrl = response.data[userLocationQuestionId]
-    ? surveyDefinition.atlasUrl!.replace(
-        "MAPPARAM",
-        // @ts-expect-error `data` is unkown
-        `11%2F${response.data[userLocationQuestionId].lat.toFixed(3)}%2F${response.data[userLocationQuestionId].lng.toFixed(3)}`,
-      )
-    : surveyDefinition.atlasUrl!.replace(
-        "MAPPARAM",
-        // @ts-expect-error `data` is unkown
-        `11%2F${center(getParsedLine(response.data[geometryCategoryId])).geometry.coordinates[1].toFixed(3)}%2F${center(getParsedLine(response.data[geometryCategoryId])).geometry.coordinates[0].toFixed(3)}`,
-      )
+  const atlasUrl = surveyDefinition.atlasUrl
+    ? // @ts-expect-error `data` is unkown
+      response.data[userLocationQuestionId]
+      ? surveyDefinition.atlasUrl.replace(
+          "MAPPARAM",
+          // @ts-expect-error `data` is unkown
+          `11%2F${response.data[userLocationQuestionId].lat.toFixed(3)}%2F${response.data[userLocationQuestionId].lng.toFixed(3)}`,
+        )
+      : surveyDefinition.atlasUrl.replace(
+          "MAPPARAM",
+          // @ts-expect-error `data` is unkown
+          `11%2F${center(getParsedLine(response.data[geometryCategoryId])).geometry.coordinates[1].toFixed(3)}%2F${center(getParsedLine(response.data[geometryCategoryId])).geometry.coordinates[0].toFixed(3)}`,
+        )
+    : null
 
   return (
     <div className={clsx("grid gap-6 md:gap-4", showMap && "md:grid-cols-2")}>
-      {surveyDefinition.atlasUrl && !showMap && (
+      {atlasUrl && !showMap && (
         <Link target="_blank" href={atlasUrl}>
           Im Radverkehrsatlas öffnen
         </Link>
@@ -217,7 +219,7 @@ const EditableSurveyResponseMapAndStaticData = ({
             >
               In großer Karte öffnen
             </Link>
-            {surveyDefinition.atlasUrl && (
+            {atlasUrl && (
               <Link target="_blank" href={atlasUrl}>
                 Im Radverkehrsatlas öffnen
               </Link>
