@@ -9,6 +9,7 @@ export const ProjectSchema = z.object({
   partnerLogoSrcs: z.array(z.string()).nullish(),
   felt_subsection_geometry_source_url: z.union([z.string().url().nullish(), z.literal("")]),
   managerId: InputNumberOrNullSchema,
+  isExportApi: z.coerce.boolean(),
 })
 
 export type ProjectType = z.infer<typeof ProjectSchema>

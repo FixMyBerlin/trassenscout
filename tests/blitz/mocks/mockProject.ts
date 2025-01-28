@@ -13,4 +13,5 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
   partnerLogoSrcs: ["rsv8-logo.png", "test.png"],
   createdAt: new Date(),
   updatedAt: new Date(),
+  isExportApi: false,
 }

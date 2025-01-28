@@ -4,6 +4,7 @@ import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import {
   Form,
   FormProps,
+  LabeledCheckbox,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
@@ -56,6 +57,7 @@ export const ProjectForm = ({ users, ...props }: Props) => {
           placeholder="https://felt.com/map/beispiel-karte"
           help="Die Felt-Karte muss dem Account info@fixmycity.de gehören."
         />
+        <LabeledCheckbox scope="isExportApi" label="Export-API aktiv" value="isExportApi" />
       </SuperAdminBox>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledTextareaField
