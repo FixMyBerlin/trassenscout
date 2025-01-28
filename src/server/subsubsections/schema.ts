@@ -13,6 +13,25 @@ const PositionArraySchema = z.array(z.tuple([z.number(), z.number()])) // Positi
 //   z.object({ type: z.literal("AREA"), geometry: PositionSchema }), // Point
 // ])
 
+export const NullableDateSchema = z.union([
+  z.coerce
+    .date({
+      // `coerce` makes it that we need to work around a nontranslatable error
+      // Thanks to https://github.com/colinhacks/zod/discussions/1851#discussioncomment-4649675
+      errorMap: ({ code }, { defaultError }) => {
+        if (code == "invalid_date") return { message: "Das Datum ist nicht richtig formatiert." }
+        return { message: defaultError }
+      },
+    })
+    .nullish(),
+  z.literal(""),
+])
+
+export const NullableDateSchemaForm = z.union([
+  z.string().min(8, { message: "Das Datum ist nicht richtig formatiert." }),
+  z.literal(""),
+])
+
 export const SubsubsectionSchema = z.object({
   slug: SlugSchema,
   subTitle: z.string().nullish(),
@@ -34,34 +53,10 @@ export const SubsubsectionSchema = z.object({
   subsubsectionInfraId: InputNumberOrNullSchema,
   maxSpeed: InputNumberOrNullSchema,
   trafficLoad: InputNumberOrNullSchema,
-  trafficLoadDate: z.union([
-    z.coerce
-      .date({
-        // `coerce` makes it that we need to work around a nontranslatable error
-        // Thanks to https://github.com/colinhacks/zod/discussions/1851#discussioncomment-4649675
-        errorMap: ({ code }, { defaultError }) => {
-          if (code == "invalid_date") return { message: "Das Datum ist nicht richtig formatiert." }
-          return { message: defaultError }
-        },
-      })
-      .nullish(),
-    z.literal(""),
-  ]),
+  trafficLoadDate: NullableDateSchema,
   planningPeriod: InputNumberOrNullSchema,
   constructionPeriod: InputNumberOrNullSchema,
-  estimatedCompletionDate: z.union([
-    z.coerce
-      .date({
-        // `coerce` makes it that we need to work around a nontranslatable error
-        // Thanks to https://github.com/colinhacks/zod/discussions/1851#discussioncomment-4649675
-        errorMap: ({ code }, { defaultError }) => {
-          if (code == "invalid_date") return { message: "Das Datum ist nicht richtig formatiert." }
-          return { message: defaultError }
-        },
-      })
-      .nullish(),
-    z.literal(""),
-  ]),
+  estimatedCompletionDate: NullableDateSchema,
   planningCosts: InputNumberOrNullSchema,
   deliveryCosts: InputNumberOrNullSchema,
   constructionCosts: InputNumberOrNullSchema,
@@ -85,26 +80,18 @@ export type SubsubsectionWithPositionWithSpecialFeatures = Omit<
 
 export type TSubsubsectionSchema = Prettify<z.infer<typeof SubsubsectionSchema>>
 
-export const SubsubsectionTrafficLoadDateSchema = z.object({
-  trafficLoadDate: z.union([
-    z.string().min(8, { message: "Das Datum ist nicht richtig formatiert." }),
-    z.literal(""),
-  ]),
-  estimatedCompletionDate: z.union([
-    z.string().min(8, { message: "Das Datum ist nicht richtig formatiert." }),
-    z.literal(""),
-  ]),
-  // LIST ALL m2mFields HERE
-  // We need to do this manually, since dynamic zod types don't work
-  specialFeatures: z
-    .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
-    .transform((v) => v || []),
-})
-
-const FormSchema = SubsubsectionSchema.omit({
+export const SubsubsectionFormSchema = SubsubsectionSchema.omit({
   trafficLoadDate: true,
   estimatedCompletionDate: true,
   specialFeatures: true,
-}).merge(SubsubsectionTrafficLoadDateSchema)
-
-export const SubsubsectionFormSchema = FormSchema
+}).merge(
+  z.object({
+    trafficLoadDate: NullableDateSchemaForm,
+    estimatedCompletionDate: NullableDateSchemaForm,
+    // LIST ALL m2mFields HERE
+    // We need to do this manually, since dynamic zod types don't work
+    specialFeatures: z
+      .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
+      .transform((v) => v || []),
+  }),
+)
