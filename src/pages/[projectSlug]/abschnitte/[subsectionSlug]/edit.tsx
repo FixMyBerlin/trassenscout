@@ -7,12 +7,13 @@ import { seoEditTitleSlug, shortTitle } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
+import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
 import { SubsectionForm } from "@/src/pagesComponents/subsections/SubsectionForm"
 import getProject from "@/src/server/projects/queries/getProject"
 import deleteSubsection from "@/src/server/subsections/mutations/deleteSubsection"
 import updateSubsection from "@/src/server/subsections/mutations/updateSubsection"
 import getSubsection from "@/src/server/subsections/queries/getSubsection"
-import { SubsectionSchema } from "@/src/server/subsections/schema"
+import { SubsectionFormSchema } from "@/src/server/subsections/schema"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { clsx } from "clsx"
@@ -38,6 +39,9 @@ const EditSubsection = () => {
         id: subsection.id,
         slug: `pa${values.slug}`,
         projectSlug,
+        estimatedCompletionDate: values.estimatedCompletionDate
+          ? new Date(values.estimatedCompletionDate)
+          : null,
       })
       await setQueryData(updated)
       await router.push(
@@ -80,8 +84,14 @@ const EditSubsection = () => {
         isFeltFieldsReadOnly={Boolean(project?.felt_subsection_geometry_source_url)}
         className="mt-10"
         submitText="Speichern"
-        schema={SubsectionSchema}
-        initialValues={{ ...subsection, slug: subsection.slug.replace(/^pa/, "") }}
+        schema={SubsectionFormSchema}
+        initialValues={{
+          ...subsection,
+          slug: subsection.slug.replace(/^pa/, ""),
+          estimatedCompletionDate: subsection.estimatedCompletionDate
+            ? getDate(subsection.estimatedCompletionDate)
+            : "",
+        }}
         onSubmit={handleSubmit}
       />
 
