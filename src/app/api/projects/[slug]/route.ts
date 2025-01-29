@@ -21,11 +21,12 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     const subsections = await db.subsection.findMany({
       where: { project: { slug } },
       select: {
+        slug: true,
         geometry: true,
+        // do we want to have the slug here as well?
         operator: { select: { title: true } },
-        // these only exist in the subsubsection model
-        // estimatedCompletionDate: true,
-        // SubsubsectionStatus: { select: { slug: true } },
+        estimatedCompletionDate: true,
+        SubsubsectionStatus: { select: { slug: true, title: true } },
       },
     })
 
@@ -33,6 +34,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
       return new Response("No subsections found for the given project", { status: 404 })
     }
 
+    // we validate the linestring format on create and update with zod, so this should not be necessary, but the databse only "knows" that it is a json field
     const validSubsections = subsections.filter(
       (s) => s.geometry && Array.isArray(s.geometry) && s.geometry.length > 0,
     )
@@ -44,9 +46,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     const projectFeatures = featureCollection(
       validSubsections.map((s) =>
         lineString(s.geometry as [number, number][], {
+          subsectionSlug: s.slug,
+          projectSlug: slug,
           operator: s.operator ? s.operator.title : null,
-          // estimatedCompletionDate: s.estimatedCompletionDate,
-          // status: s.SubsubsectionStatus ? s.SubsubsectionStatus.slug : null,
+          estimatedCompletionDate: s.estimatedCompletionDate,
+          status: s.SubsubsectionStatus
+            ? { slug: s.SubsubsectionStatus.slug, title: s.SubsubsectionStatus.title }
+            : null,
         }),
       ),
     )
