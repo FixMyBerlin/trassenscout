@@ -12,10 +12,17 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     })
 
     if (!project) {
-      return new Response("No project found for that slug", { status: 404 })
+      console.error(`No project found for slug: ${slug}`)
+      return new Response(JSON.stringify({ error: "No project found for that slug" }), {
+        status: 404,
+      })
     }
     if (!project.isExportApi) {
-      return new Response("The export for this project is disabled by the admin", { status: 404 })
+      console.error(`Export API is disabled for project with slug: ${slug}`)
+      return new Response(
+        JSON.stringify({ error: "The export for this project is disabled by the admin" }),
+        { status: 404 },
+      )
     }
 
     const subsections = await db.subsection.findMany({
@@ -31,7 +38,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     })
 
     if (subsections?.length === 0) {
-      return new Response("No subsections found for the given project", { status: 404 })
+      console.error(`No subsections found for project with slug: ${slug}`)
+      return new Response(JSON.stringify({ error: "No subsections found for the given project" }), {
+        status: 404,
+      })
     }
 
     // we validate the linestring format on create and update with zod, so this should not be necessary, but the databse only "knows" that it is a json field
@@ -40,7 +50,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     )
 
     if (validSubsections.length === 0) {
-      return new Response("No valid subsections found for the given project", { status: 404 })
+      console.error(`No valid subsections found for project with slug: ${slug}`)
+      return new Response(
+        JSON.stringify({ error: "No valid subsections found for the given project" }),
+        { status: 404 },
+      )
     }
 
     const projectFeatures = featureCollection(
@@ -62,6 +76,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     })
   } catch (error) {
     console.error("Error fetching subsections:", error)
-    return new Response("Internal Server Error", { status: 500 })
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 })
   }
 }
