@@ -12,13 +12,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     })
 
     if (!project) {
-      console.error(`No project found for slug: ${slug}`)
+      console.log("No project found for slug: ", slug)
       return new Response(JSON.stringify({ error: "No project found for that slug" }), {
         status: 404,
       })
     }
     if (!project.exportEnabled) {
-      console.error(`Export API is disabled for project with slug: ${slug}`)
+      console.log("Export is disabled for project with slug: ", slug)
       return new Response(
         JSON.stringify({ error: "The export for this project is disabled by the admin" }),
         { status: 404 },
@@ -37,28 +37,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
       },
     })
 
-    if (subsections?.length === 0) {
-      console.error(`No subsections found for project with slug: ${slug}`)
-      return new Response(JSON.stringify({ error: "No subsections found for the given project" }), {
-        status: 404,
-      })
-    }
-
-    // we validate the linestring format on create and update with zod, so this should not be necessary, but the databse only "knows" that it is a json field
-    const validSubsections = subsections.filter(
-      (s) => s.geometry && Array.isArray(s.geometry) && s.geometry.length > 0,
-    )
-
-    if (validSubsections.length === 0) {
-      console.error(`No valid subsections found for project with slug: ${slug}`)
-      return new Response(
-        JSON.stringify({ error: "No valid subsections found for the given project" }),
-        { status: 404 },
-      )
-    }
-
     const projectFeatures = featureCollection(
-      validSubsections.map((s) =>
+      subsections.map((s) =>
         lineString(s.geometry as [number, number][], {
           subsectionSlug: s.slug,
           projectSlug: slug,
