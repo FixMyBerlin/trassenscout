@@ -31,7 +31,10 @@ export default async function AdminProjectsPage() {
               <Link button href={`/admin/projects/${project.slug}/subsections`}>
                 Planungsabschnitte
               </Link>
-              <AdminEnableProjectExportApi slug={project.slug} isExportApi={project.isExportApi} />
+              <AdminEnableProjectExportApi
+                slug={project.slug}
+                exportEnabled={project.exportEnabled}
+              />
               <pre>{JSON.stringify(project, undefined, 2)}</pre>
             </li>
           )

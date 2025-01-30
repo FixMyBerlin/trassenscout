@@ -134,7 +134,7 @@ model Project {
   logoSrc                             String?
   partnerLogoSrcs                     String[]
   felt_subsection_geometry_source_url String?
-  isExportApi                         Boolean  @default(false)
+  exportEnabled                       Boolean  @default(false)
   //
   manager                             User?    @relation(fields: [managerId], references: [id])
   managerId                           Int?

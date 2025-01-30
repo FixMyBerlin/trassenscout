@@ -7,7 +7,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     const project = await db.project.findFirst({
       where: { slug },
       select: {
-        isExportApi: true,
+        exportEnabled: true,
       },
     })
 
@@ -17,7 +17,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
         status: 404,
       })
     }
-    if (!project.isExportApi) {
+    if (!project.exportEnabled) {
       console.error(`Export API is disabled for project with slug: ${slug}`)
       return new Response(
         JSON.stringify({ error: "The export for this project is disabled by the admin" }),

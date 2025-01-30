@@ -5,19 +5,19 @@ import React, { useState } from "react"
 
 type Props = {
   slug: string
-  isExportApi: boolean
+  exportEnabled: boolean
 }
 
-export const AdminEnableProjectExportApi = ({ slug, isExportApi }: Props) => {
-  const [isExportApiEnabled, setIsExportApiEnabled] = useState(isExportApi)
+export const AdminEnableProjectExportApi = ({ slug, exportEnabled }: Props) => {
+  const [exportEnabledEnabled, setExportEnabledEnabled] = useState(exportEnabled)
   const [createProjectMutation] = useMutation(updateProjectExportApi)
 
   const handleCheckboxChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked
-    setIsExportApiEnabled(isChecked)
+    setExportEnabledEnabled(isChecked)
 
     try {
-      await createProjectMutation({ isExportApi: isChecked, projectSlug: slug })
+      await createProjectMutation({ exportEnabled: isChecked, projectSlug: slug })
     } catch (error: any) {
       console.error("Error updating project / enable export API:", error)
     }
@@ -29,7 +29,7 @@ export const AdminEnableProjectExportApi = ({ slug, isExportApi }: Props) => {
         <input
           className="mr-3 h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500"
           type="checkbox"
-          checked={isExportApiEnabled}
+          checked={exportEnabledEnabled}
           onChange={handleCheckboxChange}
         />
         Export-API aktiv
