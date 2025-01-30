@@ -42,11 +42,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
         lineString(s.geometry as [number, number][], {
           subsectionSlug: s.slug,
           projectSlug: slug,
-          operator: s.operator ? s.operator.title : null,
+          operator: s.operator?.title,
           estimatedCompletionDate: s.estimatedCompletionDate,
-          status: s.SubsubsectionStatus
-            ? { slug: s.SubsubsectionStatus.slug, title: s.SubsubsectionStatus.title }
-            : null,
+          status: s.SubsubsectionStatus?.title,
         }),
       ),
     )
