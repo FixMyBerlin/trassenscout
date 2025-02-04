@@ -53,8 +53,8 @@ export const ProjectForm = ({ users, ...props }: Props) => {
           type="text"
           name="placemarkUrl"
           label="Placemark Url"
-          placeholder="https://places.nudafa.de/map/beispiel-karte-id"
-          help="Die Placemark-Karte liegt in Fixmycity's Placemark. Hier die Url der nicht öffentlichen Karte (https://places.nudafa.de/map/...) angeben."
+          placeholder="https://placemark.fixmycity.de/map/beispiel-karte-id"
+          help="Die Placemark-Karte liegt in Fixmycity's Placemark. Hier die Url der nicht öffentlichen Karte (https://placemark.fixmycity.de/map/...) angeben."
         />
       </SuperAdminBox>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
