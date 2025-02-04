@@ -15,6 +15,11 @@ export const SubsectionSchema = z.object({
   managerId: InputNumberOrNullSchema,
   operatorId: InputNumberOrNullSchema,
   networkHierarchyId: InputNumberOrNullSchema,
+  subsubsectionStatusId: InputNumberOrNullSchema,
+  estimatedCompletionDateString: z
+    .string()
+    .regex(/^\d{4}-\d{2}$/, { message: "Datum im Format JJJJ-MM" })
+    .nullish(),
 })
 
 export const SubsectionsFormSchema = z.object({

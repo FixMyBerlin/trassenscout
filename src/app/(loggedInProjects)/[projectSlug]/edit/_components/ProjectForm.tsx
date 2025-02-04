@@ -4,6 +4,7 @@ import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import {
   Form,
   FormProps,
+  LabeledCheckbox,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
@@ -56,6 +57,8 @@ export const ProjectForm = ({ users, ...props }: Props) => {
           placeholder="https://placemark.fixmycity.de/map/beispiel-karte-id"
           help="Die Placemark-Karte liegt in Fixmycity's Placemark. Hier die Url der nicht öffentlichen Karte (https://placemark.fixmycity.de/map/...) angeben."
         />
+        {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
+        <LabeledCheckbox scope="exportEnabled" label="Export-API aktiv" />
       </SuperAdminBox>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledTextareaField

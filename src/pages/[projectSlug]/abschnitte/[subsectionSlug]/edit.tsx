@@ -81,7 +81,10 @@ const EditSubsection = () => {
         className="mt-10"
         submitText="Speichern"
         schema={SubsectionSchema}
-        initialValues={{ ...subsection, slug: subsection.slug.replace(/^pa/, "") }}
+        initialValues={{
+          ...subsection,
+          slug: subsection.slug.replace(/^pa/, ""),
+        }}
         onSubmit={handleSubmit}
       />
 

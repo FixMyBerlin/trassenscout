@@ -16,6 +16,7 @@ import { getUserSelectOptions } from "@/src/pagesComponents/users/utils/getUserS
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getNetworkHierarchysWithCount from "@/src/server/networkHierarchy/queries/getNetworkHierarchysWithCount"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
+import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { PriorityEnum } from "@prisma/client"
@@ -53,10 +54,16 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
       ] as [number, string]
     }),
   ]
-
   const prioritySelectOptions = Object.entries(PriorityEnum).map(([priority, value]) => {
     return [priority, getPriorityTranslation(value)] as [string, string]
   })
+  const [{ subsubsectionStatuss }] = useQuery(getSubsubsectionStatussWithCount, { projectSlug })
+  const subsubsectionStatusOptions: [number | string, string][] = [
+    ["", "Status offen"],
+    ...subsubsectionStatuss.map((status) => {
+      return [status.id, status.title] as [number, string]
+    }),
+  ]
 
   return (
     <Form<S> {...props}>
@@ -107,12 +114,33 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
           Baulastträger verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-
+      <div className="flex items-end gap-5">
+        <LabeledSelect
+          name="subsubsectionStatusId"
+          label="Status"
+          optional
+          options={subsubsectionStatusOptions}
+          outerProps={{ className: "grow" }}
+        />
+        <LinkWithFormDirtyConfirm
+          href={Routes.SubsubsectionStatussPage({ projectSlug })}
+          className="py-2"
+        >
+          Status verwalten…
+        </LinkWithFormDirtyConfirm>
+      </div>
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
         optional
         options={getUserSelectOptions(users)}
+      />
+      <LabeledTextField
+        type="text"
+        help="Format: Datum im Format JJJJ-MM, beispielsweise '2026-03'; Wert muss in ein Datum umgewandelt werden können."
+        name="estimatedCompletionDateString"
+        label="Jahr und Monat der geplanten Fertigstellung"
+        optional
       />
       <LabeledSelect name="priority" label="Priorität" optional options={prioritySelectOptions} />
       <div className="flex items-end gap-5">

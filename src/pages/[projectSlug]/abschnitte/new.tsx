@@ -14,6 +14,9 @@ import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
+import { z } from "zod"
+
+const NewSubsectionSchema = SubsectionSchema.omit({ projectId: true })
 
 const NewSubsection = () => {
   const router = useRouter()
@@ -21,7 +24,7 @@ const NewSubsection = () => {
   const [project] = useQuery(getProject, { projectSlug })
   const [createSubsectionMutation] = useMutation(createSubsection)
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<typeof NewSubsectionSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const subsection = await createSubsectionMutation({
@@ -50,7 +53,7 @@ const NewSubsection = () => {
         isPlacemarkFieldsReadOnly={Boolean(project?.placemarkUrl)}
         initialValues={{ labelPos: "bottom" }}
         submitText="Erstellen"
-        schema={SubsectionSchema.omit({ projectId: true })}
+        schema={NewSubsectionSchema}
         onSubmit={handleSubmit}
       />
     </>
