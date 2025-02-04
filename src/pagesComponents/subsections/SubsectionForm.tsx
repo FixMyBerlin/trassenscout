@@ -24,11 +24,11 @@ import { z } from "zod"
 import { getPriorityTranslation } from "./utils/getPriorityTranslation"
 
 type Props<S extends z.ZodType<any, any>> = FormProps<S> & {
-  isFeltFieldsReadOnly?: boolean
+  isPlacemarkFieldsReadOnly?: boolean
 }
 
 function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
-  isFeltFieldsReadOnly,
+  isPlacemarkFieldsReadOnly,
   ...props
 }: Props<S>) {
   const projectSlug = useProjectSlug()
@@ -77,32 +77,22 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
         help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung."
       />
       <div className="grid grid-cols-2 gap-5">
-        <LabeledTextField
-          type="text"
-          name="start"
-          label="Startpunkt"
-          help={isFeltFieldsReadOnly ? `Diese Information kann nur in Felt editiert werden` : ""}
-          readOnly={isFeltFieldsReadOnly}
-        />
-        <LabeledTextField
-          type="text"
-          name="end"
-          label="Endpunkt"
-          help={isFeltFieldsReadOnly ? `Diese Information kann nur in Felt editiert werden` : ""}
-          readOnly={isFeltFieldsReadOnly}
-        />
+        <LabeledTextField type="text" name="start" label="Startpunkt" />
+        <LabeledTextField type="text" name="end" label="Endpunkt" />
       </div>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledGeometryField
-        help={isFeltFieldsReadOnly ? `Diese Information kann nur in Felt editiert werden` : ""}
-        readOnly={isFeltFieldsReadOnly}
+        help={
+          isPlacemarkFieldsReadOnly ? `Diese Information kann nur in Placemark editiert werden` : ""
+        }
+        readOnly={isPlacemarkFieldsReadOnly}
         name="geometry"
         label="Geometry der Achse (LineString)"
       />
       <LabeledTextFieldCalculateLength
+        readOnly={isPlacemarkFieldsReadOnly}
         name="lengthKm"
         label="Länge"
-        readOnly={isFeltFieldsReadOnly}
       />
       <LabeledRadiobuttonGroupLabelPos />
       <div className="flex items-end gap-5">

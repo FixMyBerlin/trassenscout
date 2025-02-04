@@ -51,10 +51,10 @@ export const ProjectForm = ({ users, ...props }: Props) => {
         <LabeledTextField
           optional
           type="text"
-          name="felt_subsection_geometry_source_url"
-          label="Felt Url"
-          placeholder="https://felt.com/map/beispiel-karte"
-          help="Die Felt-Karte muss dem Account info@fixmycity.de gehören."
+          name="placemarkUrl"
+          label="Placemark Url"
+          placeholder="https://places.nudafa.de/map/beispiel-karte-id"
+          help="Die Placemark-Karte liegt in Fixmycity's Placemark. Hier die Url der nicht öffentlichen Karte (https://places.nudafa.de/map/...) angeben."
         />
       </SuperAdminBox>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />

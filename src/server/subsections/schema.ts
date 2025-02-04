@@ -44,11 +44,6 @@ const FeatureSchema = z.object({
   properties: PropertiesSchema,
 })
 
-export const FeltApiResponseSchema = z.object({
-  data: z.object({
-    type: z.string(),
-    metadata: z.record(z.any()),
-    features: z.array(FeatureSchema),
-  }),
-  links: z.any(),
+export const PlacemarkResponseSchema = z.object({
+  features: z.array(FeatureSchema),
 })

@@ -47,7 +47,7 @@ const NewSubsection = () => {
       <PageHeader title="Planungsabschitt hinzufügen" className="mt-12" />
 
       <SubsectionForm
-        isFeltFieldsReadOnly={Boolean(project?.felt_subsection_geometry_source_url)}
+        isPlacemarkFieldsReadOnly={Boolean(project?.placemarkUrl)}
         initialValues={{ labelPos: "bottom" }}
         submitText="Erstellen"
         schema={SubsectionSchema.omit({ projectId: true })}

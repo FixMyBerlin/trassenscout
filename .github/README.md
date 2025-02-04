@@ -39,8 +39,6 @@
 |                          |                                  |                                         |
 | `ADMIN_EMAIL`            | `vars.ADMIN_EMAIL`               |                                         |
 |                          |                                  |                                         |
-| `FELT_TOKEN`             | `secrets.FELT_TOKEN`             |                                         |
-|                          |                                  |                                         |
 | `S3_UPLOAD_KEY`          | `secrets.S3_UPLOAD_KEY`          |                                         |
 | `S3_UPLOAD_SECRET`       | `secrets.S3_UPLOAD_SECRET`       |                                         |
 | `S3_UPLOAD_ROOTFOLDER`   | `.env`-variable                  | In `.env` as composite value            |

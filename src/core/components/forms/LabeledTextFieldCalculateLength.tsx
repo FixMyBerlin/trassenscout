@@ -25,7 +25,7 @@ export const LabeledTextFieldCalculateLength: React.FC<LabeledTextFieldProps> = 
 
   if (props.readOnly) {
     helpText =
-      "Dieser Wert wird aus den Geometrien (Felt) berechnet und kann nicht manuell editiert werden."
+      "Dieser Wert wird aus den Geometrien (Placemark) berechnet und kann nicht manuell editiert werden."
   } else if (!getValues("geometry")) {
     helpText = "Es ist keine Geometrie vorhanden"
   } else if (isPoint(getValues("geometry"))) {

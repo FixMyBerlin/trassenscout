@@ -10,8 +10,6 @@ namespace NodeJS {
     readonly S3_UPLOAD_KEY: string
     readonly S3_UPLOAD_SECRET: string
 
-    readonly FELT_TOKEN: `felt_pat_${string}`
-
     readonly ADMIN_EMAIL: string
 
     readonly TS_API_KEY: string

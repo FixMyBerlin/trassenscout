@@ -5,7 +5,7 @@ import getProject from "@/src/server/projects/queries/getProject"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import { Metadata } from "next"
 import "server-only"
-import { SubsectionFelt } from "./_components/SubsectionFelt"
+import { SubsectionPlacemarkImport } from "./_components/SubsectionPlacemarkImport"
 import { SubsectionTableAdmin } from "./_components/SubsectionTableAdmin"
 
 export const metadata: Metadata = { title: "Planungsabschnitte" }
@@ -29,7 +29,7 @@ export default async function AdminProjectSubsectionsPage({
         />
       </HeaderWrapper>
 
-      <SubsectionFelt project={project} />
+      <SubsectionPlacemarkImport project={project} />
 
       <SubsectionTableAdmin subsections={subsections} />
     </>
