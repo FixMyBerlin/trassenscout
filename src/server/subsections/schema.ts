@@ -1,7 +1,6 @@
 import { InputNumberOrNullSchema, InputNumberSchema, SlugSchema } from "@/src/core/utils"
 import { LabelPositionEnum } from "@prisma/client"
 import { z } from "zod"
-import { NullableDateSchema, NullableDateSchemaForm } from "../subsubsections/schema"
 
 export const SubsectionSchema = z.object({
   slug: SlugSchema,
@@ -17,15 +16,11 @@ export const SubsectionSchema = z.object({
   operatorId: InputNumberOrNullSchema,
   networkHierarchyId: InputNumberOrNullSchema,
   subsubsectionStatusId: InputNumberOrNullSchema,
-  estimatedCompletionDate: NullableDateSchema,
+  estimatedCompletionDateString: z
+    .string()
+    .regex(/^\d{4}-\d{2}$/, { message: "Datum im Format JJJJ-MM" })
+    .nullish(),
 })
-export const SubsectionFormSchema = SubsectionSchema.omit({
-  estimatedCompletionDate: true,
-}).merge(
-  z.object({
-    estimatedCompletionDate: NullableDateSchemaForm,
-  }),
-)
 
 export const SubsectionsFormSchema = z.object({
   prefix: z.string().regex(/^[a-z0-9-.]*$/, {

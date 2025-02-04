@@ -32,7 +32,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
         geometry: true,
         // do we want to have the slug here as well?
         operator: { select: { title: true } },
-        estimatedCompletionDate: true,
+        estimatedCompletionDateString: true,
         SubsubsectionStatus: { select: { slug: true, title: true } },
       },
     })
@@ -43,7 +43,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
           subsectionSlug: s.slug,
           projectSlug: slug,
           operator: s.operator?.title,
-          estimatedCompletionDate: s.estimatedCompletionDate,
+          estimatedCompletionDateString: s.estimatedCompletionDateString,
           status: s.SubsubsectionStatus?.title,
         }),
       ),

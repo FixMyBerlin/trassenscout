@@ -32,9 +32,6 @@ const NewSubsection = () => {
         slug: `pa${values.slug}`,
         projectId: project.id,
         projectSlug,
-        estimatedCompletionDate: values.estimatedCompletionDate
-          ? new Date(values.estimatedCompletionDate)
-          : null,
       })
       await router.push(
         Routes.SubsectionDashboardPage({

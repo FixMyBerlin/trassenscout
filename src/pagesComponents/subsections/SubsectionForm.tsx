@@ -146,9 +146,10 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
         options={getUserSelectOptions(users)}
       />
       <LabeledTextField
-        type="date"
-        name="estimatedCompletionDate"
-        label="Datum geplante Fertigstellung"
+        type="text"
+        help="Format: Datum im Format JJJJ-MM, beispielsweise '2026-03'; Wert muss in ein Datum umgewandelt werden können."
+        name="estimatedCompletionDateString"
+        label="Jahr und Monat der geplanten Fertigstellung"
         optional
       />
       <LabeledSelect name="priority" label="Priorität" optional options={prioritySelectOptions} />
