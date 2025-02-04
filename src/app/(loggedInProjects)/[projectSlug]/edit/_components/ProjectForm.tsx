@@ -52,10 +52,10 @@ export const ProjectForm = ({ users, ...props }: Props) => {
         <LabeledTextField
           optional
           type="text"
-          name="felt_subsection_geometry_source_url"
-          label="Felt Url"
-          placeholder="https://felt.com/map/beispiel-karte"
-          help="Die Felt-Karte muss dem Account info@fixmycity.de gehören."
+          name="placemarkUrl"
+          label="Placemark Url"
+          placeholder="https://placemark.fixmycity.de/map/beispiel-karte-id"
+          help="Die Placemark-Karte liegt in Fixmycity's Placemark. Hier die Url der nicht öffentlichen Karte (https://placemark.fixmycity.de/map/...) angeben."
         />
         {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
         <LabeledCheckbox scope="exportEnabled" label="Export-API aktiv" />

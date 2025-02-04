@@ -77,7 +77,7 @@ const EditSubsection = () => {
       <PageHeader title={`${shortTitle(subsection.slug)} bearbeiten`} className="mt-12" />
 
       <SubsectionForm
-        isFeltFieldsReadOnly={Boolean(project?.felt_subsection_geometry_source_url)}
+        isPlacemarkFieldsReadOnly={Boolean(project?.placemarkUrl)}
         className="mt-10"
         submitText="Speichern"
         schema={SubsectionSchema}

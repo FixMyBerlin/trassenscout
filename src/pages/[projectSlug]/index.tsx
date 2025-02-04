@@ -105,7 +105,7 @@ export const ProjectDashboardWithQuery = () => {
           Mehrere Planungsabschnitte erstellen
         </Link>
         <Link button href={`/admin/projects/${projectSlug}/subsections`}>
-          Felt Import für Planungsabschnitte
+          Placemark Import für Planungsabschnitte
         </Link>
       </SuperAdminBox>
       <SuperAdminLogData data={{ project, subsections, filteredSubsections }} />
