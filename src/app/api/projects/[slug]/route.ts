@@ -1,6 +1,13 @@
 import db from "@/db"
 import { featureCollection, lineString } from "@turf/helpers"
 
+const corsHeaders = {
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+}
+
 export async function GET(request: Request, { params }: { params: Promise<{ slug: string }> }) {
   try {
     const slug = (await params).slug
@@ -15,13 +22,14 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
       console.log("No project found for slug: ", slug)
       return new Response(JSON.stringify({ error: "No project found for that slug" }), {
         status: 404,
+        headers: corsHeaders,
       })
     }
     if (!project.exportEnabled) {
       console.log("Export is disabled for project with slug: ", slug)
       return new Response(
         JSON.stringify({ error: "The export for this project is disabled by the admin" }),
-        { status: 404 },
+        { status: 404, headers: corsHeaders },
       )
     }
 
@@ -50,10 +58,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     )
 
     return new Response(JSON.stringify(projectFeatures), {
-      headers: { "Content-Type": "application/json" },
+      headers: corsHeaders,
     })
   } catch (error) {
     console.error("Error fetching subsections:", error)
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 })
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+      headers: corsHeaders,
+    })
   }
 }
