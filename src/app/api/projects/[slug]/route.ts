@@ -10,7 +10,12 @@ const corsHeaders = {
 
 export async function GET(request: Request, { params }: { params: Promise<{ slug: string }> }) {
   try {
-    const slug = (await params).slug
+    let slug = (await params).slug
+
+    if (slug.endsWith(".json")) {
+      slug = slug.replace(/\.json$/, "")
+    }
+
     const project = await db.project.findFirst({
       where: { slug },
       select: {
