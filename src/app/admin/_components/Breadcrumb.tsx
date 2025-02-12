@@ -2,10 +2,11 @@
 import { HomeIcon } from "@heroicons/react/20/solid"
 import { clsx } from "clsx"
 import { Route } from "next"
-import Link from "next/link"
+import Link from "next/dist/client/link"
+
 import { usePathname } from "next/navigation"
 
-export type TBreadcrumb = { name: string; href?: Route }
+export type TBreadcrumb = { name: string; href?: Route | string }
 type Props = { pages: TBreadcrumb[] }
 
 export const Breadcrumb = ({ pages }: Props) => {

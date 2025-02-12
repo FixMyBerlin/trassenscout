@@ -5,16 +5,22 @@ import "server-only"
 import { MultipleNewSubsectionsForm } from "./_components/MultipleNewSubsectionsForm"
 
 export const metadata: Metadata = { title: "Planungsabschnitte im Bulk-Mode hinzufügen" }
-
-export default function AdminProjectSubsectionMultipleNewPage() {
+export default async function AdminProjectSubsectionMultipleNewPage({
+  params: { projectSlug },
+}: {
+  params: { projectSlug: string }
+}) {
   return (
     <>
       <HeaderWrapper>
         <Breadcrumb
           pages={[
             { href: "/admin", name: "Dashboard" },
-            { name: "Projekte" },
-            { name: "Planungsabschnitte" },
+            { href: "/admin/projects", name: "Projekte" },
+            {
+              href: `/admin/projects/${projectSlug}/subsections`,
+              name: `Projekt ${projectSlug}: Planungsabschnitte`,
+            },
             { name: "Planungsabschnitte im Bulk-Mode hinzufügen" },
           ]}
         />
