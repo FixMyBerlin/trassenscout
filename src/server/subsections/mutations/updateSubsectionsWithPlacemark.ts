@@ -3,7 +3,7 @@ import { multilinestringToLinestring } from "@/src/pagesComponents/subsections/u
 import { resolver } from "@blitzjs/rpc"
 import { length, lineString } from "@turf/turf"
 import { z } from "zod"
-import { PlacemarkResponseSchema, SubsectionSchema } from "../schema"
+import { FeatureCollectionSchema, SubsectionSchema } from "../schema"
 
 const updateSubsectionsWithPlacemarkSchema = z.object({
   subsections: z.array(
@@ -13,30 +13,15 @@ const updateSubsectionsWithPlacemarkSchema = z.object({
       }),
     ),
   ),
-  projectPlacemarkUrl: z.string().url({ message: "Ungültige Url." }).nullish(),
+  newGeometry: FeatureCollectionSchema,
 })
 
 export default resolver.pipe(
   resolver.zod(updateSubsectionsWithPlacemarkSchema),
   resolver.authorize("ADMIN"),
-  // todo
-  async ({ subsections, projectPlacemarkUrl }) => {
-    const url =
-      projectPlacemarkUrl?.replace(
-        "https://placemark.fixmycity.de/map/",
-        "https://placemark.fixmycity.de/api/v1/map/",
-      ) + "/featurecollection"
-
+  async ({ subsections, newGeometry }) => {
     const updatedSubsectionIds: number[] = []
-    if (!projectPlacemarkUrl) return null // todo
-
-    const response = await fetch(url)
-
-    const placemarkDataRaw = await response.json()
-
-    const placemarkData = PlacemarkResponseSchema.parse(placemarkDataRaw)
-
-    const placemarkSubsections = placemarkData.features
+    const placemarkSubsections = newGeometry.features
 
     //iterate over ts-subsections
     for (const tsSubsection of subsections) {
@@ -52,10 +37,12 @@ export default resolver.pipe(
         // so we take the first linestring or we concat the multiple lines (in case last point of line a matches first point of line b)
         const newCoordinates =
           matchingPlacemarkSubsection.geometry.type === "MultiLineString"
-            ? multilinestringToLinestring(matchingPlacemarkSubsection.geometry.coordinates)
+            ? // @ts-expect-error
+              multilinestringToLinestring(matchingPlacemarkSubsection.geometry.coordinates)
             : matchingPlacemarkSubsection.geometry.type === "LineString"
               ? matchingPlacemarkSubsection.geometry.coordinates
-              : tsSubsection.geometry
+              : // if geometry type of matching placemark subsection is not LineString or MultiLineString, we skip this subsection
+                tsSubsection.geometry
         const updatedSubsection = await db.subsection.update({
           where: { id: tsSubsection.id },
           data: {
@@ -64,10 +51,13 @@ export default resolver.pipe(
             lengthKm: length(lineString(newCoordinates)),
           },
         })
+
         updatedSubsectionIds.push(updatedSubsection.id)
       }
     }
-
+    if (updatedSubsectionIds.length === 0) {
+      console.log("No subsections found for placemark data")
+    }
     return updatedSubsectionIds
   },
 )

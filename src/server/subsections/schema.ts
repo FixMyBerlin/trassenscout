@@ -28,6 +28,12 @@ export const SubsectionsFormSchema = z.object({
   }),
   no: z.coerce.number(),
 })
+const PointSchema = z.tuple([z.number(), z.number()]) // [x, y]
+const MultiPointSchema = z.array(PointSchema) // [[x1, y1], [x2, y2], ...]
+const LineStringSchema = z.array(PointSchema) // [[x1, y1], [x2, y2], ...]
+const MultiLineStringSchema = z.array(LineStringSchema) // [[[x1, y1], [x2, y2]], [[x3, y3], [x4, y4]]]
+const PolygonSchema = z.array(LineStringSchema) // Outer ring and inner rings: [[[x1, y1], [x2, y2]], [[x3, y3], [x4, y4]]]
+const MultiPolygonSchema = z.array(PolygonSchema) // Collection of polygons: [[[[x1, y1], [x2, y2]]], [[[x3, y3], [x4, y4]]]]
 
 const GeometrySchema = z.object({
   type: z.union([
@@ -39,16 +45,23 @@ const GeometrySchema = z.object({
     z.literal("MultiPolygon"),
     z.literal("GeometryCollection"),
   ]),
-  coordinates: z.array(z.any()),
+  coordinates: z.union([
+    PointSchema,
+    MultiPointSchema,
+    LineStringSchema,
+    MultiLineStringSchema,
+    PolygonSchema,
+    MultiPolygonSchema,
+  ]),
 })
-
-const PropertiesSchema = z.record(z.any())
 
 const FeatureSchema = z.object({
+  type: z.literal("Feature"),
+  properties: z.record(z.any()),
   geometry: GeometrySchema,
-  properties: PropertiesSchema,
 })
 
-export const PlacemarkResponseSchema = z.object({
+export const FeatureCollectionSchema = z.object({
+  type: z.literal("FeatureCollection"),
   features: z.array(FeatureSchema),
 })

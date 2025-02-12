@@ -49,14 +49,6 @@ export const ProjectForm = ({ users, ...props }: Props) => {
         , von NextJS intern optimiert und hier referenziert.
       </p>
       <SuperAdminBox>
-        <LabeledTextField
-          optional
-          type="text"
-          name="placemarkUrl"
-          label="Placemark Url"
-          placeholder="https://placemark.fixmycity.de/map/beispiel-karte-id"
-          help="Die Placemark-Karte liegt in Fixmycity's Placemark. Hier die Url der nicht öffentlichen Karte (https://placemark.fixmycity.de/map/...) angeben."
-        />
         {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
         <LabeledCheckbox scope="exportEnabled" label="Export-API aktiv" />
       </SuperAdminBox>

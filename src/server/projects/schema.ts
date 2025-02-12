@@ -7,7 +7,6 @@ export const ProjectSchema = z.object({
   description: z.string().nullish(),
   logoSrc: z.string().nullish(),
   partnerLogoSrcs: z.array(z.string()).nullish(),
-  placemarkUrl: z.union([z.string().url().nullish(), z.literal("")]),
   managerId: InputNumberOrNullSchema,
   exportEnabled: z.coerce.boolean(),
 })

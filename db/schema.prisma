@@ -133,7 +133,6 @@ model Project {
   description     String?
   logoSrc         String?
   partnerLogoSrcs String[]
-  placemarkUrl    String?
   exportEnabled   Boolean  @default(false)
   //
   manager         User?    @relation(fields: [managerId], references: [id])

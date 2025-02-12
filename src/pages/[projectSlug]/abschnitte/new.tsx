@@ -50,7 +50,6 @@ const NewSubsection = () => {
       <PageHeader title="Planungsabschitt hinzufügen" className="mt-12" />
 
       <SubsectionForm
-        isPlacemarkFieldsReadOnly={Boolean(project?.placemarkUrl)}
         initialValues={{ labelPos: "bottom" }}
         submitText="Erstellen"
         schema={NewSubsectionSchema}

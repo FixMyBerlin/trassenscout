@@ -24,14 +24,9 @@ import { Suspense } from "react"
 import { z } from "zod"
 import { getPriorityTranslation } from "./utils/getPriorityTranslation"
 
-type Props<S extends z.ZodType<any, any>> = FormProps<S> & {
-  isPlacemarkFieldsReadOnly?: boolean
-}
+type Props<S extends z.ZodType<any, any>> = FormProps<S>
 
-function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
-  isPlacemarkFieldsReadOnly,
-  ...props
-}: Props<S>) {
+function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Props<S>) {
   const projectSlug = useProjectSlug()
   const [users] = useQuery(getProjectUsers, { projectSlug, role: "EDITOR" })
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
@@ -88,19 +83,8 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
         <LabeledTextField type="text" name="end" label="Endpunkt" />
       </div>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
-      <LabeledGeometryField
-        help={
-          isPlacemarkFieldsReadOnly ? `Diese Information kann nur in Placemark editiert werden` : ""
-        }
-        readOnly={isPlacemarkFieldsReadOnly}
-        name="geometry"
-        label="Geometry der Achse (LineString)"
-      />
-      <LabeledTextFieldCalculateLength
-        readOnly={isPlacemarkFieldsReadOnly}
-        name="lengthKm"
-        label="Länge"
-      />
+      <LabeledGeometryField name="geometry" label="Geometry der Achse (LineString)" />
+      <LabeledTextFieldCalculateLength name="lengthKm" label="Länge" />
       <LabeledRadiobuttonGroupLabelPos />
       <div className="flex items-end gap-5">
         <LabeledSelect
