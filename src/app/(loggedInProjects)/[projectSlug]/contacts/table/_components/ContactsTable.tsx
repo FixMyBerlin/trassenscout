@@ -1,7 +1,7 @@
 "use client"
 import { ObjectDump } from "@/src/app/admin/_components/ObjectDump"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
-import { pinkButtonStyles } from "@/src/core/components/links"
+import { Link, pinkButtonStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { isProduction } from "@/src/core/utils"
@@ -152,6 +152,9 @@ export const ContactsTable = () => {
 
   return (
     <>
+      <Link className="pb-4" href={`/${projectSlug}/contacts`}>
+        Zurück zu externen Kontakten
+      </Link>
       <div className="mb-5 flex w-full items-start justify-between gap-5">
         {errors.length > 0 ? (
           <ul className="text-red-800">
@@ -184,7 +187,6 @@ export const ContactsTable = () => {
           </button>
         </ButtonWrapper>
       </div>
-
       <DataSheetGrid
         value={data}
         createRow={() => ({
