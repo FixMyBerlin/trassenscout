@@ -128,7 +128,7 @@ export const SubsectionPlacemarkImport = ({ project }: Props) => {
 
       {project.exportEnabled ? (
         <Link button="blue" blank href={placemarkPlayUrl}>
-          Geometrien in Placemark Play bearbeiten
+          Geometrien in Placemark Play öffnen
         </Link>
       ) : (
         <div>
@@ -152,7 +152,7 @@ export const SubsectionPlacemarkImport = ({ project }: Props) => {
                   "cursor-pointer",
                 )}
               >
-                {selectedFile ? "Andere Datei auswählen" : "Datei auswählen"}
+                {selectedFile ? "Anderes Geojson hochladen" : "Neues Geojson hochladen"}
               </label>
               <input
                 id="file-upload"
