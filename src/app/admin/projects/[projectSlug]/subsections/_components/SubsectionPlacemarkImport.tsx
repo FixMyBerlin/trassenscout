@@ -89,7 +89,7 @@ export const SubsectionPlacemarkImport = ({ project }: Props) => {
             einschalten.
           </li>
           <li>
-            Der Button unten `Geometrien in Placemark Play bearbeiten` öffnet alle Geometrien der
+            Der Button unten ` Geometrien in Placemark Play öffnen` öffnet alle Geometrien der
             Planungsabschnitte dieses Projekts in Placemark Play. Dort Geometrien bearbeiten. Alle
             neu angelegten Planungsabschnitte sind an ihrer Default-Geometrie zu erkennen. Diese
             bearbeiten oder löschen und neu anlegen - für den Re-import{" "}
@@ -103,12 +103,13 @@ export const SubsectionPlacemarkImport = ({ project }: Props) => {
             in der Übersicht, kann der `slug` des Planungsabschnitts eingesehen und kopiert werden.
           </li>
           <li>
-            Die bearbeiteten Geometrien in Placemark Play `File` - `Export` als GeoJSON speichern.
+            Die bearbeiteten Geometrien in Placemark Play über `File` - `Export` als GeoJSON
+            speichern.
           </li>
           <li>
-            Die gespeicherte GeoJSON-Datei hier über `Datei auswählen` auswählen und auf `Geometrien
-            der Planungsabschnitte ersetzen` klicken, um die Geometrien der Planungsabschnitte zu
-            aktualisieren.{" "}
+            Die gespeicherte GeoJSON-Datei hier über `Neues Geojson hochladen` auswählen und auf
+            `Geometrien der Planungsabschnitte ersetzen` klicken, um die Geometrien der
+            Planungsabschnitte zu aktualisieren.{" "}
             <strong>
               Wichtig: Die Geometrien der Planungsabschnitte im TS werden durch die Geometrien in
               der hochgeladenen Datei ersetzt.
