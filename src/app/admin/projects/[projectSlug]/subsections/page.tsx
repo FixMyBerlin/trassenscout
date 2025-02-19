@@ -17,6 +17,7 @@ export default async function AdminProjectSubsectionsPage({
 }) {
   const project = await invoke(getProject, { projectSlug })
   const { subsections } = await invoke(getSubsections, { projectSlug })
+
   return (
     <>
       <HeaderWrapper>
@@ -34,8 +35,11 @@ export default async function AdminProjectSubsectionsPage({
         </Link>
       ) : (
         <div>
-          Um mehrere Geometrien gleichzeitig in Placemark Play zu bearbeiten, muss der Geometrie
-          Export des Projekts <Link href="/admin/projects/">hier</Link> eingeschaltet werden.
+          Um mehrere Geometrien gleichzeitig in Placemark Play zu bearbeiten, muss{" "}
+          <Link href={`${projectSlug}/edit/`}>
+            die Export-API des Projekts eingeschaltet werden
+          </Link>
+          .
         </div>
       )}
       <SubsectionTableAdmin subsections={subsections} />

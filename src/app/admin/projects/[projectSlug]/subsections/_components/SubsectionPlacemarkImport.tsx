@@ -13,6 +13,7 @@ import clsx from "clsx"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { z } from "zod"
+import { defaultGeometryForMultipleSubsectionForm } from "../multiple-new/_components/MultipleNewSubsectionsForm"
 
 type Props = { project: Awaited<ReturnType<typeof getProject>> }
 
@@ -71,59 +72,84 @@ export const SubsectionPlacemarkImport = ({ project }: Props) => {
   return (
     <section className="mt-10 rounded bg-white p-3">
       <div className="prose mb-8">
-        <p>Prozess zum Aktualisieren der Geometrien der Planungsabschnitte eines Projekts:</p>
+        <h2>Prozess zum Aktualisieren der Geometrien der Planungsabschnitte eines Projekts:</h2>
+        <h3>Vorbedingung</h3>
         <ol>
           <li>
-            <strong>Nur für neue Planungsabschnitte:</strong>{" "}
-            <Link blank href={`/admin/projects/${projectSlug}/subsections/multiple-new`}>
-              Hier
-            </Link>{" "}
-            mehrere Planungsabschnitte gleichzeitig anlegen. Die Geometrien der neuen
-            Planungsabschnitte werden mit einer Default-Geometrie angelegt.
+            Export-API für das Projekt aktivieren{" "}
+            <Link href={`/${projectSlug}/edit/`} blank>
+              unter Projekt bearbeiten &ldquo;✔️ Export-API aktiv&rdquo;
+            </Link>
+            .<br />
+            {project.exportEnabled ? (
+              <span className="text-green-600">Aktuell ist der Export aktiv.</span>
+            ) : (
+              <span className="text-red-600">Aktuell ist der Export inaktiv!</span>
+            )}
           </li>
+        </ol>
+        <h3>Vorbereitung für neue Planungsabschnitte</h3>
+        <ol>
           <li>
-            Export des Projekts{" "}
-            <Link blank href="/admin/projects/">
-              hier
-            </Link>{" "}
-            einschalten.
-          </li>
-          <li>
-            Der Button unten ` Geometrien in Placemark Play öffnen` öffnet alle Geometrien der
-            Planungsabschnitte dieses Projekts in Placemark Play. Dort Geometrien bearbeiten. Alle
-            neu angelegten Planungsabschnitte sind an ihrer Default-Geometrie zu erkennen. Diese
-            bearbeiten oder löschen und neu anlegen - für den Re-import{" "}
             <strong>
-              wichtig: die property `subsectionSlug` der Geometrie in Placemark Play muss mit dem
-              `slug` des Planungsabschnitts im TS übereinstimmen.
-            </strong>{" "}
-            <Link blank href={`/admin/projects/${projectSlug}/subsections`}>
-              Hier
-            </Link>{" "}
-            in der Übersicht, kann der `slug` des Planungsabschnitts eingesehen und kopiert werden.
+              <Link blank href={`/admin/projects/${projectSlug}/subsections/multiple-new`}>
+                Mehrere Planungsabschnitte gleichzeitig anlegen
+              </Link>
+            </strong>
+            .
+          </li>
+        </ol>
+
+        <p>
+          Die Abschnitte bekommen Platzhalter-Geometrien, die durch den Upload ersetzt werden.
+          Wichtig sind die <code>slug</code>s, die als Referenz im GeoJSON dienen.
+          <br />
+          <strong>Planungsabschnitte mit Platzhalter-Geometrie:</strong>
+        </p>
+
+        {subsections
+          .filter((subsection) => {
+            return (
+              String(subsection.geometry) === defaultGeometryForMultipleSubsectionForm.join(",")
+            )
+          })
+          .map((subsection) => {
+            return (
+              <li key={subsection.slug}>
+                <Link href={`/${projectSlug}/abschnitte/${subsection.slug}/edit`}>
+                  {subsection.slug}
+                </Link>
+              </li>
+            )
+          })}
+
+        <h3>Aktualisierung der Geometrien</h3>
+        <ol>
+          <li>
+            Über den Button &ldquo;Geometrien in Placemark Play öffnen&rdquo; alle Geometrien der
+            Planungsabschnitte dieses Projekts in Placemark Play öffnen.
           </li>
           <li>
-            Die bearbeiteten Geometrien in Placemark Play über `File` - `Export` als GeoJSON
-            speichern.
+            Die Geometrien in Placemark Play bearbeiten. Alle neu angelegten Planungsabschnitte sind
+            an ihrer Default-Geometrie zu erkennen. Diese bearbeiten oder löschen und neu anlegen.
+            <br />
+            Wichtig: Die Property <code>subsectionSlug</code> muss mit dem <code>slug</code> des
+            Planungsabschnittes übereinstimmen.
           </li>
           <li>
-            Die gespeicherte GeoJSON-Datei hier über `Neues Geojson hochladen` auswählen und auf
-            `Geometrien der Planungsabschnitte ersetzen` klicken, um die Geometrien der
-            Planungsabschnitte zu aktualisieren.{" "}
-            <strong>
-              Wichtig: Die Geometrien der Planungsabschnitte im TS werden durch die Geometrien in
-              der hochgeladenen Datei ersetzt.
-            </strong>{" "}
-            Dies passiert lediglich für die Planungsabshcnitte, für die in der Datei ein Feature mit
-            dem übereinstimmenden Slug gefunden wird.
+            Die bearbeiteten Geometrien in Placemark Play über &ldquo;File&rdquo; -
+            &ldquo;Export&rdquo; als GeoJSON speichern.
           </li>
           <li>
-            In der{" "}
-            <Link blank href={`/admin/projects/${projectSlug}/subsections`}>
-              Übersicht der Planungsabschnitte
-            </Link>{" "}
-            sind die aktualisierten Planungsabschnitte danach blau hinterlegt.
+            Die GeoJSON-Datei unten über &ldquo;Neues Geojson hochladen&rdquo; auswählen und auf
+            &ldquo;Geometrien der Planungsabschnitte ersetzen&rdquo; klicken, um die bestehenden
+            Geometrien zu ersetzen.
+            <br />
+            Hinweis: Es werden nur die Planungsabshcnitte aktualisiert, für die eine passende
+            Geometrie gefunden wurde. Wurden Geometrien gelöscht, müssen die zugehörigen
+            Planungsabschnitte manuell gelöscht werden.
           </li>
+          <li>Nach dem Ersetzen zeigt eine Seite an, welche Daten aktualisiert wurden.</li>
         </ol>
       </div>
 
@@ -132,10 +158,9 @@ export const SubsectionPlacemarkImport = ({ project }: Props) => {
           Geometrien in Placemark Play öffnen
         </Link>
       ) : (
-        <div>
-          Um mehrere Geometrien gleichzeitig in Placemark Play zu bearbeiten, muss der Geometrie
-          Export des Projekts <Link href="/admin/projects/">hier</Link> eingeschaltet werden.
-        </div>
+        <Link button="blue" blank href={"#inactive"} className="line-through">
+          Geometrien in Placemark Play öffnen – EXPORT API INAKTIV
+        </Link>
       )}
       <div className="mt-8">
         {["FILE_SELECTED"].includes(fileState) && (
