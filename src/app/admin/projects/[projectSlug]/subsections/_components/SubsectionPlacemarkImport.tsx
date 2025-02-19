@@ -135,6 +135,9 @@ export const SubsectionPlacemarkImport = ({ project }: Props) => {
             <br />
             Wichtig: Die Property <code>subsectionSlug</code> muss mit dem <code>slug</code> des
             Planungsabschnittes übereinstimmen.
+            <br />
+            Hinweis: Alle anderen Properties können ignoriert werden, da der Upload sie auch
+            ignorieren wird.
           </li>
           <li>
             Die bearbeiteten Geometrien in Placemark Play über &ldquo;File&rdquo; -
@@ -145,7 +148,7 @@ export const SubsectionPlacemarkImport = ({ project }: Props) => {
             &ldquo;Geometrien der Planungsabschnitte ersetzen&rdquo; klicken, um die bestehenden
             Geometrien zu ersetzen.
             <br />
-            Hinweis: Es werden nur die Planungsabshcnitte aktualisiert, für die eine passende
+            Hinweis: Es werden nur die Planungsabschnitte aktualisiert, für die eine passende
             Geometrie gefunden wurde. Wurden Geometrien gelöscht, müssen die zugehörigen
             Planungsabschnitte manuell gelöscht werden.
           </li>
