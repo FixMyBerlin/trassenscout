@@ -16,6 +16,7 @@ import { getUserSelectOptions } from "@/src/pagesComponents/users/utils/getUserS
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getNetworkHierarchysWithCount from "@/src/server/networkHierarchy/queries/getNetworkHierarchysWithCount"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
+import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { PriorityEnum } from "@prisma/client"
@@ -23,14 +24,9 @@ import { Suspense } from "react"
 import { z } from "zod"
 import { getPriorityTranslation } from "./utils/getPriorityTranslation"
 
-type Props<S extends z.ZodType<any, any>> = FormProps<S> & {
-  isFeltFieldsReadOnly?: boolean
-}
+type Props<S extends z.ZodType<any, any>> = FormProps<S>
 
-function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
-  isFeltFieldsReadOnly,
-  ...props
-}: Props<S>) {
+function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Props<S>) {
   const projectSlug = useProjectSlug()
   const [users] = useQuery(getProjectUsers, { projectSlug, role: "EDITOR" })
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
@@ -53,10 +49,16 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
       ] as [number, string]
     }),
   ]
-
   const prioritySelectOptions = Object.entries(PriorityEnum).map(([priority, value]) => {
     return [priority, getPriorityTranslation(value)] as [string, string]
   })
+  const [{ subsubsectionStatuss }] = useQuery(getSubsubsectionStatussWithCount, { projectSlug })
+  const subsubsectionStatusOptions: [number | string, string][] = [
+    ["", "Status offen"],
+    ...subsubsectionStatuss.map((status) => {
+      return [status.id, status.title] as [number, string]
+    }),
+  ]
 
   return (
     <Form<S> {...props}>
@@ -77,33 +79,12 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
         help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung."
       />
       <div className="grid grid-cols-2 gap-5">
-        <LabeledTextField
-          type="text"
-          name="start"
-          label="Startpunkt"
-          help={isFeltFieldsReadOnly ? `Diese Information kann nur in Felt editiert werden` : ""}
-          readOnly={isFeltFieldsReadOnly}
-        />
-        <LabeledTextField
-          type="text"
-          name="end"
-          label="Endpunkt"
-          help={isFeltFieldsReadOnly ? `Diese Information kann nur in Felt editiert werden` : ""}
-          readOnly={isFeltFieldsReadOnly}
-        />
+        <LabeledTextField type="text" name="start" label="Startpunkt" />
+        <LabeledTextField type="text" name="end" label="Endpunkt" />
       </div>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
-      <LabeledGeometryField
-        help={isFeltFieldsReadOnly ? `Diese Information kann nur in Felt editiert werden` : ""}
-        readOnly={isFeltFieldsReadOnly}
-        name="geometry"
-        label="Geometry der Achse (LineString)"
-      />
-      <LabeledTextFieldCalculateLength
-        name="lengthKm"
-        label="Länge"
-        readOnly={isFeltFieldsReadOnly}
-      />
+      <LabeledGeometryField name="geometry" label="Geometry der Achse (LineString)" />
+      <LabeledTextFieldCalculateLength name="lengthKm" label="Länge" />
       <LabeledRadiobuttonGroupLabelPos />
       <div className="flex items-end gap-5">
         <LabeledSelect
@@ -117,12 +98,33 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({
           Baulastträger verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-
+      <div className="flex items-end gap-5">
+        <LabeledSelect
+          name="subsubsectionStatusId"
+          label="Status"
+          optional
+          options={subsubsectionStatusOptions}
+          outerProps={{ className: "grow" }}
+        />
+        <LinkWithFormDirtyConfirm
+          href={Routes.SubsubsectionStatussPage({ projectSlug })}
+          className="py-2"
+        >
+          Status verwalten…
+        </LinkWithFormDirtyConfirm>
+      </div>
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
         optional
         options={getUserSelectOptions(users)}
+      />
+      <LabeledTextField
+        type="text"
+        help="Format: Datum im Format JJJJ-MM, beispielsweise '2026-03'; Wert muss in ein Datum umgewandelt werden können."
+        name="estimatedCompletionDateString"
+        label="Jahr und Monat der geplanten Fertigstellung"
+        optional
       />
       <LabeledSelect name="priority" label="Priorität" optional options={prioritySelectOptions} />
       <div className="flex items-end gap-5">

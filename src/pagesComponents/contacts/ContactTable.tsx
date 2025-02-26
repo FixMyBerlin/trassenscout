@@ -10,7 +10,7 @@ import getProject from "@/src/server/projects/queries/getProject"
 import { useCurrentUser } from "@/src/server/users/hooks/useCurrentUser"
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
+import { TrashIcon } from "@heroicons/react/20/solid"
 import { Contact } from "@prisma/client"
 import { useRouter } from "next/router"
 import { useState } from "react"
@@ -105,7 +105,8 @@ export const ContactTable = ({ contacts }: Props) => {
                 </td>
                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                   <div className="flex items-center justify-end gap-4 text-right">
-                    <IfUserCanEdit>
+                    {/* Disabled in favor of the contacts/table UI */}
+                    {/* <IfUserCanEdit>
                       <Link
                         href={Routes.EditContactPage({
                           contactId: contact.id,
@@ -115,7 +116,7 @@ export const ContactTable = ({ contacts }: Props) => {
                         <PencilSquareIcon className="h-4 w-4" />
                         <span className="sr-only">Bearbeiten</span>
                       </Link>
-                    </IfUserCanEdit>
+                    </IfUserCanEdit> */}
                     <Link
                       href={Routes.ShowContactPage({
                         contactId: contact.id,
@@ -140,8 +141,8 @@ export const ContactTable = ({ contacts }: Props) => {
 
       <ButtonWrapper className="mt-6 justify-between">
         <IfUserCanEdit>
-          <Link button="blue" icon="plus" href={Routes.NewContactPage({ projectSlug })}>
-            Kontakt
+          <Link button="blue" icon="plus" href="contacts/table">
+            Kontakte hinzufügen & bearbeiten
           </Link>
         </IfUserCanEdit>
         <button disabled={!mailButtonActive} className={whiteButtonStyles} type="submit">

@@ -27,8 +27,8 @@ export const AdminSurveyForm = (props: Props) => {
       <SuperAdminLogData data={{ projects }} />
       <LabeledTextField type="text" name="slug" label="Slug" />
       <LabeledTextField type="text" name="title" label="Titel" />
+      {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
       <LabeledCheckbox
-        value="active"
         label="Umfrage aktiv?"
         scope="active"
         help="Wenn deaktiviert, zeigt Umfrage-Seite einen generischen Hinweis an, dass die Umfrage nicht aktiv ist."

@@ -1,15 +1,19 @@
 import { Breadcrumb } from "@/src/app/admin/_components/Breadcrumb"
 import { HeaderWrapper } from "@/src/app/admin/_components/HeaderWrapper"
+import { invoke } from "@/src/blitz-server"
+import getProject from "@/src/server/projects/queries/getProject"
 import { Metadata } from "next"
 import "server-only"
-import { MultipleNewSubsectionsForm } from "./_components/MultipleNewSubsectionsForm"
+import { SubsectionPlacemarkImport } from "../_components/SubsectionPlacemarkImport"
 
-export const metadata: Metadata = { title: "Planungsabschnitte im Bulk-Mode hinzufügen" }
-export default async function AdminProjectSubsectionMultipleNewPage({
+export const metadata: Metadata = { title: "Planungsabschnitte bearbeiten" }
+
+export default async function AdminProjectSubsectionsEditPage({
   params: { projectSlug },
 }: {
   params: { projectSlug: string }
 }) {
+  const project = await invoke(getProject, { projectSlug })
   return (
     <>
       <HeaderWrapper>
@@ -21,12 +25,11 @@ export default async function AdminProjectSubsectionMultipleNewPage({
               href: `/admin/projects/${projectSlug}/subsections`,
               name: `Projekt ${projectSlug}: Planungsabschnitte`,
             },
-            { name: "Planungsabschnitte im Bulk-Mode hinzufügen" },
+            { name: "Geometrien bearbeiten" },
           ]}
         />
       </HeaderWrapper>
-
-      <MultipleNewSubsectionsForm />
+      <SubsectionPlacemarkImport project={project} />
     </>
   )
 }

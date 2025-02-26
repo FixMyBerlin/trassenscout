@@ -5,6 +5,7 @@ import { Link } from "@/src/core/components/links/Link"
 import getProjects from "@/src/server/projects/queries/getProjects"
 import { Metadata } from "next"
 import "server-only"
+import { AdminEnableProjectExportApi } from "./[projectSlug]/subsections/_components/AdminEnableProjectExportApi"
 
 export const metadata: Metadata = { title: "Projekte" }
 
@@ -30,6 +31,10 @@ export default async function AdminProjectsPage() {
               <Link button href={`/admin/projects/${project.slug}/subsections`}>
                 Planungsabschnitte
               </Link>
+              <AdminEnableProjectExportApi
+                slug={project.slug}
+                exportEnabled={project.exportEnabled}
+              />
               <pre>{JSON.stringify(project, undefined, 2)}</pre>
             </li>
           )

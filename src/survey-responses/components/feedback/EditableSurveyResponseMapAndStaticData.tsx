@@ -14,6 +14,7 @@ import getSurvey from "@/src/surveys/queries/getSurvey"
 import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { EnvelopeIcon } from "@heroicons/react/20/solid"
+import { ArrowsPointingOutIcon, ArrowUpRightIcon } from "@heroicons/react/24/outline"
 import { center, lineString, multiLineString } from "@turf/turf"
 import { clsx } from "clsx"
 import { LngLatBoundsLike } from "react-map-gl/maplibre"
@@ -157,7 +158,8 @@ const EditableSurveyResponseMapAndStaticData = ({
   return (
     <div className={clsx("grid gap-6 md:gap-4", showMap && "md:grid-cols-2")}>
       {atlasUrl && !showMap && (
-        <Link target="_blank" href={atlasUrl}>
+        <Link target="_blank" href={atlasUrl} className="flex items-center gap-2">
+          <ArrowUpRightIcon className="h-3 w-3" />
           Im Radverkehrsatlas öffnen
         </Link>
       )}
@@ -216,11 +218,14 @@ const EditableSurveyResponseMapAndStaticData = ({
                 responseDetails: response.id,
                 selectedResponses: [response.id],
               })}
+              className="flex items-center gap-2"
             >
+              <ArrowsPointingOutIcon className="h-4 w-4" />
               In großer Karte öffnen
             </Link>
             {atlasUrl && (
-              <Link target="_blank" href={atlasUrl}>
+              <Link target="_blank" href={atlasUrl} className="flex items-center gap-2">
+                <ArrowUpRightIcon className="h-3 w-3" />
                 Im Radverkehrsatlas öffnen
               </Link>
             )}

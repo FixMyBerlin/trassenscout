@@ -77,11 +77,13 @@ const EditSubsection = () => {
       <PageHeader title={`${shortTitle(subsection.slug)} bearbeiten`} className="mt-12" />
 
       <SubsectionForm
-        isFeltFieldsReadOnly={Boolean(project?.felt_subsection_geometry_source_url)}
         className="mt-10"
         submitText="Speichern"
         schema={SubsectionSchema}
-        initialValues={{ ...subsection, slug: subsection.slug.replace(/^pa/, "") }}
+        initialValues={{
+          ...subsection,
+          slug: subsection.slug.replace(/^pa/, ""),
+        }}
         onSubmit={handleSubmit}
       />
 

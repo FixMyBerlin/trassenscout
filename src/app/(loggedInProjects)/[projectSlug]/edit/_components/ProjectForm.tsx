@@ -4,6 +4,7 @@ import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import {
   Form,
   FormProps,
+  LabeledCheckbox,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
@@ -48,14 +49,8 @@ export const ProjectForm = ({ users, ...props }: Props) => {
         , von NextJS intern optimiert und hier referenziert.
       </p>
       <SuperAdminBox>
-        <LabeledTextField
-          optional
-          type="text"
-          name="felt_subsection_geometry_source_url"
-          label="Felt Url"
-          placeholder="https://felt.com/map/beispiel-karte"
-          help="Die Felt-Karte muss dem Account info@fixmycity.de gehören."
-        />
+        {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
+        <LabeledCheckbox scope="exportEnabled" label="Export-API aktiv" />
       </SuperAdminBox>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledTextareaField

@@ -39,13 +39,14 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
       }
     }
   }
-
   return (
     <section>
       {Boolean(updatedIds?.length) && (
         <p className="mt-8 border-4 border-blue-100 p-8 text-base">
-          Die Planungsabschnitte mit den Ids <code>{JSON.stringify(updatedIds)}</code> (in der
-          Tabelle blau hinterlegt) wurden in Felt erkannt und ggf. aktualisiert.
+          {updatedIds![0] === ""
+            ? "Keine Planungsabschnitte im ausgewählten GeoJSON erkannt."
+            : `Die Planungsabschnitte mit den Ids ${JSON.stringify(updatedIds)} (in der
+            Tabelle blau hinterlegt) wurden im ausgewählten GeoJSON erkannt und ggf. aktualisiert.`}
         </p>
       )}
 
@@ -146,6 +147,8 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
                     )}
                   >
                     {noPreviewForDefaultGeometry ? (
+                      "Geometrie unbekannt (Fallbackgeometrie)"
+                    ) : (
                       <Link
                         blank
                         href={`https://play.placemark.io/?load=data:application/json,${encodeURIComponent(
@@ -154,8 +157,6 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
                       >
                         Auf placemark.io öffnen
                       </Link>
-                    ) : (
-                      "unbekannt"
                     )}
                   </td>
                   <td className="space-y-2 pr-2">

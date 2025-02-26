@@ -124,19 +124,19 @@ model Token {
 // }
 
 model Project {
-  id                                  Int      @id @default(autoincrement())
-  createdAt                           DateTime @default(now())
-  updatedAt                           DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
   //
-  slug                                String   @unique // shortTitle and URL Slug
-  subTitle                            String?
-  description                         String?
-  logoSrc                             String?
-  partnerLogoSrcs                     String[]
-  felt_subsection_geometry_source_url String?
+  slug            String   @unique // shortTitle and URL Slug
+  subTitle        String?
+  description     String?
+  logoSrc         String?
+  partnerLogoSrcs String[]
+  exportEnabled   Boolean  @default(false)
   //
-  manager                             User?    @relation(fields: [managerId], references: [id])
-  managerId                           Int?
+  manager         User?    @relation(fields: [managerId], references: [id])
+  managerId       Int?
 
   surveyResponseTopics  SurveyResponseTopic[]
   subsections           Subsection[]
@@ -238,28 +238,33 @@ model Operator {
 }
 
 model Subsection {
-  id                 Int               @id @default(autoincrement())
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
+  id                            Int               @id @default(autoincrement())
+  createdAt                     DateTime          @default(now())
+  updatedAt                     DateTime          @updatedAt
   //
-  slug               String // shortTitle and URL Slug
-  start              String
-  end                String
-  order              Int               @default(autoincrement())
-  geometry           Json
-  labelPos           LabelPositionEnum @default(top)
-  description        String?
-  lengthKm           Float // Kilometer
-  priority           PriorityEnum      @default(OPEN) // Priorität
+  slug                          String // shortTitle and URL Slug
+  start                         String
+  end                           String
+  order                         Int               @default(autoincrement())
+  geometry                      Json
+  labelPos                      LabelPositionEnum @default(top)
+  description                   String?
+  lengthKm                      Float // Kilometer
+  priority                      PriorityEnum      @default(OPEN) // Priorität
+  estimatedCompletionDateString String? // Jahresquartal der geplanten Fertigstellung als string Form "1-2023"
+
   //
-  project            Project           @relation(fields: [projectId], references: [id])
-  projectId          Int
-  manager            User?             @relation(fields: [managerId], references: [id])
-  managerId          Int?
-  operator           Operator?         @relation(fields: [operatorId], references: [id])
-  operatorId         Int?
-  networkHierarchy   NetworkHierarchy? @relation(fields: [networkHierarchyId], references: [id])
-  networkHierarchyId Int?
+  project               Project              @relation(fields: [projectId], references: [id])
+  projectId             Int
+  manager               User?                @relation(fields: [managerId], references: [id])
+  managerId             Int?
+  operator              Operator?            @relation(fields: [operatorId], references: [id])
+  operatorId            Int?
+  networkHierarchy      NetworkHierarchy?    @relation(fields: [networkHierarchyId], references: [id])
+  networkHierarchyId    Int?
+  SubsubsectionStatus   SubsubsectionStatus? @relation(fields: [subsubsectionStatusId], references: [id])
+  subsubsectionStatusId Int?
+  //
 
   subsubsections   Subsubsection[]
   stakeholdernotes Stakeholdernote[]
@@ -390,6 +395,7 @@ model SubsubsectionStatus {
   project        Project         @relation(fields: [projectId], references: [id])
   projectId      Int
   subsubsections Subsubsection[]
+  Subsection     Subsection[]
 
   @@unique([projectId, slug])
 }
