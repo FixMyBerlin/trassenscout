@@ -44,7 +44,7 @@ export const SubsectionPlacemarkImport = ({ project }: Props) => {
     }
   }
 
-  const placemarkPlayUrl = `https://play.placemark.io/?load=https://${!isProduction && "staging."}trassenscout.de/api/projects/${projectSlug}.json`
+  const placemarkPlayUrl = `https://play.placemark.io/?load=https://${!isProduction ? "staging." : ""}trassenscout.de/api/projects/${projectSlug}.json`
 
   const handleUploadChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files as FileList
