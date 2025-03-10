@@ -2,10 +2,10 @@ type TranslatedMessages = { [key: string]: string }
 
 export const errorMessageTranslations: TranslatedMessages = {
   // INVITATION
-  "PrismaClientKnownRequestError: Invalid `prisma.invite.create()` invocation:Unique constraint failed on the fields: (`email`)":
+  "PrismaClientKnownRequestError: Invalid `prisma.invite.create()` invocation:Unique constraint failed on the fields: (`email`,`projectId`)":
     "Diese E-Mail-Adresse ist bereits eingeladen.",
   // SIGNUP
-  "PrismaClientKnownRequestError: Invalid `prisma.user.create()` invocation:Unique constraint failed on the fields: (`email`)":
+  "PrismaClientKnownRequestError: Invalid `prisma.user.create()` invocation:Unique constraint failed on the fields: (`email`,`projectId`)":
     "Diese E-Mail-Adresse ist bereits registriert.",
   // CONTACT
   "PrismaClientKnownRequestError: Invalid `prisma.contact.create()` invocation:Unique constraint failed on the fields: (`projectId`,`email`)":
