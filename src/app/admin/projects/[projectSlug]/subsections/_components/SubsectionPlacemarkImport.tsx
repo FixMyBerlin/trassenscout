@@ -2,8 +2,8 @@
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { blueButtonStyles, Link, selectLinkStyle } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
+import { getPrdOrStgDomain } from "@/src/core/components/links/getDomain"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { isProduction } from "@/src/core/utils"
 import getProject from "@/src/server/projects/queries/getProject"
 import updateSubsectionsWithPlacemark from "@/src/server/subsections/mutations/updateSubsectionsWithPlacemark"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
@@ -44,7 +44,11 @@ export const SubsectionPlacemarkImport = ({ project }: Props) => {
     }
   }
 
-  const placemarkPlayUrl = `https://play.placemark.io/?load=https://${!isProduction ? "staging." : ""}trassenscout.de/api/projects/${projectSlug}.json`
+  const placemarkPlayUrl = new URL("https://play.placemark.io")
+  placemarkPlayUrl.searchParams.append(
+    "load",
+    `${getPrdOrStgDomain()}/api/projects/${projectSlug}.json`,
+  )
 
   const handleUploadChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files as FileList
@@ -157,7 +161,7 @@ export const SubsectionPlacemarkImport = ({ project }: Props) => {
       </div>
 
       {project.exportEnabled ? (
-        <Link button="blue" blank href={placemarkPlayUrl}>
+        <Link button="blue" blank href={placemarkPlayUrl.toString()}>
           Geometrien in Placemark Play öffnen
         </Link>
       ) : (
