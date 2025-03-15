@@ -1,8 +1,8 @@
-import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
+import { SubsectionWithPositionAndStatus } from "@/src/server/subsections/queries/getSubsections"
 import { BaseMap } from "./BaseMap"
 import { subsectionsBbox } from "./utils"
 
-type Props = { subsections: SubsectionWithPosition[] }
+type Props = { subsections: SubsectionWithPositionAndStatus[] }
 
 export const ProjectMapFallback: React.FC<Props> = ({ subsections }) => {
   return (

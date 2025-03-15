@@ -1,5 +1,5 @@
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
-import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
+import { SubsectionWithPositionAndStatus } from "@/src/server/subsections/queries/getSubsections"
 import { Routes } from "@blitzjs/next"
 import { lineString } from "@turf/helpers"
 import { along, featureCollection, length } from "@turf/turf"
@@ -23,7 +23,7 @@ import { TipMarker } from "./TipMarker"
 import { layerColors } from "./layerColors"
 import { subsectionsBbox } from "./utils"
 
-type Props = { subsections: SubsectionWithPosition[] }
+type Props = { subsections: SubsectionWithPositionAndStatus[] }
 
 export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   const router = useRouter()
