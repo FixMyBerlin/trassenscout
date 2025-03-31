@@ -11,7 +11,7 @@ type Props = Prettify<
 
   internalCreateLogEntry({
     apiKey: process.env.TS_API_KEY
-    logLevel: "ERROR" | "INFO" | "WARN"
+    logLevel: "ERROR" | "INFO"
     message: ""
     context: {}
     userId: undefined
@@ -19,7 +19,7 @@ type Props = Prettify<
   })
 */
 
-export const internalCreateLogEntry = async ({ apiKey, context, ...data }: Props) => {
+export const internalCreateSystemLogEntry = async ({ apiKey, context, ...data }: Props) => {
   if (apiKey !== process.env.TS_API_KEY) {
     return Response.json({ statusText: "Unauthorized" }, { status: 401 })
   }

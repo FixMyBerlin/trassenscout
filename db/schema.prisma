@@ -52,7 +52,7 @@ model User {
   memberships           Membership[]
   Subsubsection         Subsubsection[]
   invites               Invite[]
-  logEntries            LogEntry[]
+  logEntries            SystemLogEntry[]
   SurveyResponseComment SurveyResponseComment[]
 }
 
@@ -155,7 +155,7 @@ model Project {
   subsubsectionSpecials SubsubsectionSpecial[]
   networkHierarchies    NetworkHierarchy[]
   invites               Invite[]
-  logEntries            LogEntry[]
+  logEntries            SystemLogEntry[]
 }
 
 model Membership {
@@ -571,28 +571,22 @@ model SurveyResponseComment {
   body             String
 }
 
-model LogEntry {
-  id        Int          @id @default(autoincrement())
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+model SystemLogEntry {
+  id        Int                @id @default(autoincrement())
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
   //
   userId    Int?
-  user      User?        @relation(fields: [userId], references: [id])
+  user      User?              @relation(fields: [userId], references: [id])
   projectId Int?
-  project   Project?     @relation(fields: [projectId], references: [id])
+  project   Project?           @relation(fields: [projectId], references: [id])
   //
-  logLevel  LogLevelEnum @default(INFO)
+  logLevel  SystemLogLevelEnum @default(INFO)
   message   String
   context   Json?
-
-  // Maybe later…
-  // @@index([createdAt])
-  // @@index([userId])
-  // @@index([projectId])
 }
 
-enum LogLevelEnum {
+enum SystemLogLevelEnum {
   INFO
-  WARN
   ERROR
 }

@@ -2,7 +2,7 @@ import { footerTextMarkdown } from "@/emails/templats/footerTextMarkdown"
 import { MarkdownMail } from "@/emails/templats/MarkdownMail"
 import { signatureTextMarkdown } from "@/emails/templats/signatureTextMarkdown"
 import { isDev, isTest } from "@/src/core/utils"
-import { internalCreateLogEntry } from "@/src/server/logEntries/internalCeateLogEntry"
+import { internalCreateSystemLogEntry } from "@/src/server/systemLogEntries/internalCeateSystemLogEntry"
 import { render } from "@react-email/components"
 import Mailjet, { LibraryResponse, SendEmailV3_1 } from "node-mailjet"
 import { addressDevteam } from "./addresses"
@@ -80,7 +80,7 @@ ${footerTextMarkdown}
 
   // Log status
   for (const messageStatus of result.body.Messages) {
-    await internalCreateLogEntry({
+    await internalCreateSystemLogEntry({
       apiKey: process.env.TS_API_KEY,
       logLevel: messageStatus.Status === "error" ? "ERROR" : "INFO",
       message: `SEND MAIL: ${mailjetMessage.Subject}`,
