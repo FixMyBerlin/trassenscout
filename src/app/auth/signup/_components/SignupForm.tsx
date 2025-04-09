@@ -6,7 +6,7 @@ import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
 import signup from "@/src/server/auth/mutations/signup"
-import { Signup } from "@/src/server/auth/schema"
+import { SignupSchema } from "@/src/server/auth/schema"
 import getInvite from "@/src/server/invites/queries/getInvite"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -40,7 +40,7 @@ export const SignupForm = () => {
     <>
       <Form
         submitText="Registrieren"
-        schema={Signup}
+        schema={SignupSchema}
         initialValues={{
           email: invite?.email || "",
           password: "",

@@ -100,6 +100,7 @@ export const ProjectDashboardWithQuery = () => {
       <SubsectionTable subsections={filteredSubsections} />
 
       <CalenderDashboard />
+
       <SuperAdminBox className="flex flex-col items-start gap-4">
         <Link button href={`/admin/projects/${projectSlug}/subsections/multiple-new`}>
           Mehrere Planungsabschnitte erstellen

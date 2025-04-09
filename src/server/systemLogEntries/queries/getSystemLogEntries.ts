@@ -2,7 +2,10 @@ import db, { Prisma } from "@/db"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 
-type GetLogEntriesInput = Pick<Prisma.LogEntryFindManyArgs, "where" | "orderBy" | "skip" | "take">
+type GetLogEntriesInput = Pick<
+  Prisma.SystemLogEntryFindManyArgs,
+  "where" | "orderBy" | "skip" | "take"
+>
 
 export default resolver.pipe(
   resolver.authorize("ADMIN"),
@@ -15,9 +18,9 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.logEntry.count({ where }),
+      count: () => db.systemLogEntry.count({ where }),
       query: (paginateArgs) =>
-        db.logEntry.findMany({
+        db.systemLogEntry.findMany({
           ...paginateArgs,
           where,
           orderBy,

@@ -52,8 +52,9 @@ model User {
   memberships           Membership[]
   Subsubsection         Subsubsection[]
   invites               Invite[]
-  logEntries            SystemLogEntry[]
   SurveyResponseComment SurveyResponseComment[]
+  LogEntry              LogEntry[]
+  SystemLogEntry        SystemLogEntry[]
 }
 
 enum UserRoleEnum {
@@ -76,6 +77,7 @@ model Invite {
   project   Project            @relation(fields: [projectId], references: [id])
   inviterId Int
   inviter   User               @relation(fields: [inviterId], references: [id])
+  LogEntry  LogEntry[]
 
   @@unique([email, projectId])
 }
@@ -155,7 +157,8 @@ model Project {
   subsubsectionSpecials SubsubsectionSpecial[]
   networkHierarchies    NetworkHierarchy[]
   invites               Invite[]
-  logEntries            SystemLogEntry[]
+  LogEntry              LogEntry[]
+  SystemLogEntry        SystemLogEntry[]
 }
 
 model Membership {
@@ -169,7 +172,8 @@ model Membership {
   user   User @relation(fields: [userId], references: [id])
   userId Int
 
-  role MembershipRoleEnum @default(VIEWER)
+  role     MembershipRoleEnum @default(VIEWER)
+  LogEntry LogEntry[]
 
   @@unique([projectId, userId])
 }
@@ -190,8 +194,9 @@ model CalendarEntry {
   locationUrl  String?
   description  String?
 
-  project   Project @relation(fields: [projectId], references: [id])
+  project   Project    @relation(fields: [projectId], references: [id])
   projectId Int
+  LogEntry  LogEntry[]
 }
 
 model Contact {
@@ -206,8 +211,9 @@ model Contact {
   phone     String?
   role      String?
 
-  project   Project @relation(fields: [projectId], references: [id])
+  project   Project    @relation(fields: [projectId], references: [id])
   projectId Int
+  LogEntry  LogEntry[]
 
   @@unique([projectId, email])
 }
@@ -235,42 +241,42 @@ model Operator {
   projectId       Int
   subsections     Subsection[]
   surveyResponses SurveyResponse[]
+  LogEntry        LogEntry[]
 
   @@unique([projectId, slug])
 }
 
 model Subsection {
-  id                            Int               @id @default(autoincrement())
-  createdAt                     DateTime          @default(now())
-  updatedAt                     DateTime          @updatedAt
+  id                            Int                  @id @default(autoincrement())
+  createdAt                     DateTime             @default(now())
+  updatedAt                     DateTime             @updatedAt
   //
   slug                          String // shortTitle and URL Slug
   start                         String
   end                           String
-  order                         Int               @default(autoincrement())
+  order                         Int                  @default(autoincrement())
   geometry                      Json
-  labelPos                      LabelPositionEnum @default(top)
+  labelPos                      LabelPositionEnum    @default(top)
   description                   String?
   lengthKm                      Float // Kilometer
-  priority                      PriorityEnum      @default(OPEN) // Priorität
+  priority                      PriorityEnum         @default(OPEN) // Priorität
   estimatedCompletionDateString String? // Jahresquartal der geplanten Fertigstellung als string Form "1-2023"
-
   //
-  project               Project              @relation(fields: [projectId], references: [id])
-  projectId             Int
-  manager               User?                @relation(fields: [managerId], references: [id])
-  managerId             Int?
-  operator              Operator?            @relation(fields: [operatorId], references: [id])
-  operatorId            Int?
-  networkHierarchy      NetworkHierarchy?    @relation(fields: [networkHierarchyId], references: [id])
-  networkHierarchyId    Int?
-  SubsubsectionStatus   SubsubsectionStatus? @relation(fields: [subsubsectionStatusId], references: [id])
-  subsubsectionStatusId Int?
+  project                       Project              @relation(fields: [projectId], references: [id])
+  projectId                     Int
+  manager                       User?                @relation(fields: [managerId], references: [id])
+  managerId                     Int?
+  operator                      Operator?            @relation(fields: [operatorId], references: [id])
+  operatorId                    Int?
+  networkHierarchy              NetworkHierarchy?    @relation(fields: [networkHierarchyId], references: [id])
+  networkHierarchyId            Int?
+  SubsubsectionStatus           SubsubsectionStatus? @relation(fields: [subsubsectionStatusId], references: [id])
+  subsubsectionStatusId         Int?
   //
-
-  subsubsections   Subsubsection[]
-  stakeholdernotes Stakeholdernote[]
-  uploads          Upload[]
+  subsubsections                Subsubsection[]
+  stakeholdernotes              Stakeholdernote[]
+  uploads                       Upload[]
+  LogEntry                      LogEntry[]
 
   @@unique([projectId, slug])
   @@unique([projectId, order])
@@ -295,6 +301,7 @@ model NetworkHierarchy {
   project     Project      @relation(fields: [projectId], references: [id])
   projectId   Int
   subsections Subsection[]
+  LogEntry    LogEntry[]
 
   @@unique([projectId, slug])
 }
@@ -382,6 +389,7 @@ model QualityLevel {
   project        Project         @relation(fields: [projectId], references: [id])
   projectId      Int
   subsubsections Subsubsection[]
+  LogEntry       LogEntry[]
 
   @@unique([projectId, slug])
 }
@@ -460,6 +468,7 @@ model Stakeholdernote {
   //
   subsection   Subsection                @relation(fields: [subsectionId], references: [id])
   subsectionId Int
+  LogEntry     LogEntry[]
 }
 
 enum StakeholdernoteStatusEnum {
@@ -483,6 +492,7 @@ model Upload {
   subsectionId    Int?
   Subsubsection   Subsubsection? @relation(fields: [subsubsectionId], references: [id])
   subsubsectionId Int?
+  LogEntry        LogEntry[]
 }
 
 model Survey {
@@ -501,6 +511,7 @@ model Survey {
   project                Project         @relation(fields: [projectId], references: [id])
   //
   surveySessions         SurveySession[]
+  LogEntry               LogEntry[]
 }
 
 model SurveySession {
@@ -589,4 +600,52 @@ model SystemLogEntry {
 enum SystemLogLevelEnum {
   INFO
   ERROR
+}
+
+model LogEntry {
+  id                 Int                @id @default(autoincrement())
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  //
+  // WHO…
+  userId             Int?
+  user               User?              @relation(fields: [userId], references: [id])
+  // DID WHAT…
+  action             LogLevelActionEnum
+  message            String?
+  changes            Json?
+  // RELATED PROJECT…
+  projectId          Int
+  project            Project            @relation(fields: [projectId], references: [id])
+  // OPTIONAL RELATED MODEL…
+  inviteId           Int?
+  invite             Invite?            @relation(fields: [inviteId], references: [id])
+  membershipId       Int?
+  membership         Membership?        @relation(fields: [membershipId], references: [id])
+  calendarentryId    Int?
+  calendarentry      CalendarEntry?     @relation(fields: [calendarentryId], references: [id])
+  contactId          Int?
+  contact            Contact?           @relation(fields: [contactId], references: [id])
+  operatorId         Int?
+  operator           Operator?          @relation(fields: [operatorId], references: [id])
+  subsectionId       Int?
+  subsection         Subsection?        @relation(fields: [subsectionId], references: [id])
+  networkhierarchyId Int?
+  networkhierarchy   NetworkHierarchy?  @relation(fields: [networkhierarchyId], references: [id])
+  qualitylevelId     Int?
+  qualitylevel       QualityLevel?      @relation(fields: [qualitylevelId], references: [id])
+  stakeholdernoteId  Int?
+  stakeholdernote    Stakeholdernote?   @relation(fields: [stakeholdernoteId], references: [id])
+  uploadId           Int?
+  upload             Upload?            @relation(fields: [uploadId], references: [id])
+  surveyId           Int?
+  survey             Survey?            @relation(fields: [surveyId], references: [id])
+
+  @@index([projectId, createdAt])
+}
+
+enum LogLevelActionEnum {
+  CREATE
+  UPDATE
+  DELETE
 }

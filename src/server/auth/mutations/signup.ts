@@ -5,14 +5,15 @@ import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
 import { RouteUrlObject } from "blitz"
-import { Signup } from "../schema"
+import { SignupSchema } from "../schema"
+import { createInviteLogEntry } from "../shared/createInviteLogEntry"
 import { getInvite } from "../shared/getInvite"
 import { notifyEditorsAboutNewMembership } from "../shared/notifyEditorsAboutNewMembership"
 import { selectUserFieldsForSession } from "../shared/selectUserFieldsForSession"
 import { updateInvite } from "../shared/updateInvite"
 
 export default resolver.pipe(
-  resolver.zod(Signup),
+  resolver.zod(SignupSchema),
   async ({ email, firstName, lastName, password, phone, institution, inviteToken }, ctx) => {
     // Case: Invite
     let invite = await getInvite(inviteToken, email)
@@ -69,6 +70,9 @@ export default resolver.pipe(
 
     // Case: Invite
     await notifyEditorsAboutNewMembership({ invite, invitee: user })
+
+    // Case: Logging
+    await createInviteLogEntry({ invite, invitee: user })
 
     return user
   },

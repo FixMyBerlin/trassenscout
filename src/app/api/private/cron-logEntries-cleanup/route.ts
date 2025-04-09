@@ -1,5 +1,5 @@
 import db from "@/db"
-import { internalCreateSystemLogEntry } from "@/src/server/systemLogEntries/internalCeateSystemLogEntry"
+import { guardedCreateSystemLogEntry } from "@/src/server/systemLogEntries/create/guardedCreateSystemLogEntry"
 import { calculateComparisonDate } from "../../_utils/calculateComparisonDate"
 
 const LOGENTRIES_DAYS_TO_DELETION = 90
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     },
   })
 
-  await internalCreateSystemLogEntry({
+  await guardedCreateSystemLogEntry({
     apiKey,
     logLevel: "INFO",
     message: "CRON logging-cleanup",
