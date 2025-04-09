@@ -11,5 +11,5 @@ docker exec -i ts-db psql -U postgres dbmaster < $DIR/sql/post-restore.sql
 
 blitz prisma migrate deploy
 
-# TODO: It looks like this is broken. Need to do a clean test later(TM)…
-# SEED_USER_ONLY=1 blitz db seed
+# See users; this check for the name of this file in `db/seeds.ts` to only seed users.
+blitz db seed
