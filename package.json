@@ -118,7 +118,7 @@
     "@types/dompurify": "3.2.0",
     "@types/geojson": "7946.0.16",
     "@types/iframe-resizer": "3.5.13",
-    "@types/node": "22.14.0",
+    "@types/node": "20.17.30",
     "@types/preview-email": "3.1.0",
     "@types/react": "18.3.20",
     "@types/uuid": "10.0.0",
