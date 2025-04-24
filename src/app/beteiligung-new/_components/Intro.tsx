@@ -1,0 +1,46 @@
+import { SurveyButton } from "@/src/app/beteiligung-new/_components/buttons/SurveyButton"
+import { SurveyButtonGrid } from "@/src/app/beteiligung-new/_components/buttons/SurveyButtonGrid"
+import { SurveyScreenHeader } from "@/src/app/beteiligung-new/_components/layout/SurveyScreenHeader"
+import { Start } from "@/src/app/beteiligung-new/_components/Start"
+import { IntroButton, Stage, TIntro } from "@/src/app/beteiligung-new/_shared/types"
+
+type Props = {
+  handleIntroClick: () => void
+  intro: TIntro
+  customContent: React.ReactNode
+  setStage: (stage: Stage) => void
+  disabled: boolean
+}
+
+export const Intro = ({ handleIntroClick, customContent, disabled, intro, setStage }: Props) => {
+  const buttonsLeft = intro.buttons?.filter((button) => button.position === "left")
+  const buttonsRight = intro.buttons?.filter((button) => button.position === "right")
+
+  const IntroButtonWithAction = ({ button }: { button?: IntroButton }) => {
+    if (!button) return
+    return (
+      <SurveyButton
+        color={button.color || "primaryColor"}
+        // @ts-expect-error we can be sure it is not "next"
+        onClick={button.action === "next" ? handleIntroClick : () => setStage(button.action)}
+      >
+        {button.label}
+      </SurveyButton>
+    )
+  }
+
+  return (
+    <div>
+      {customContent && <Start startContent={customContent} disabled={disabled} />}
+      {intro.mode === "dynamic" && (
+        <SurveyScreenHeader title={intro.title} description={intro.description} />
+      )}
+      <SurveyButtonGrid
+        buttonLeft1={<IntroButtonWithAction button={buttonsLeft?.[0]} />}
+        buttonLeft2={<IntroButtonWithAction button={buttonsLeft?.[1]} />}
+        buttonRight1={<IntroButtonWithAction button={buttonsRight?.[0]} />}
+        buttonRight2={<IntroButtonWithAction button={buttonsRight?.[1]} />}
+      />
+    </div>
+  )
+}

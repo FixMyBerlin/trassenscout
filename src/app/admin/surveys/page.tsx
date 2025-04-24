@@ -1,7 +1,7 @@
+import { allowedSurveySlugs } from "@/src/app/beteiligung-new/_shared/utils/allowedSurveySlugs"
 import { invoke } from "@/src/blitz-server"
 import { Link } from "@/src/core/components/links"
 import { StatusLabel } from "@/src/core/components/Status/StatusLabel"
-import { allowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
 import getAdminSurveys from "@/src/surveys/queries/getAdminSurveys"
 import { Metadata } from "next"
 import "server-only"
