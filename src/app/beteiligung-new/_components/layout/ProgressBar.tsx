@@ -1,0 +1,27 @@
+import { ProgressContext } from "@/src/app/beteiligung-new/_shared/contexts/contexts"
+import { AllowedSurveySlugs } from "@/src/app/beteiligung-new/_shared/utils/allowedSurveySlugs"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung-new/_shared/utils/getConfigBySurveySlug"
+import { clsx } from "clsx"
+import { useParams } from "next/navigation"
+import { useContext } from "react"
+
+export const ProgressBar = () => {
+  const { progress } = useContext(ProgressContext)
+  const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
+  const { progessBarDefinition } = getConfigBySurveySlug(surveySlug, "meta")
+  const width = progress ? (progress / progessBarDefinition["end"]) * 100 : 100
+
+  return (
+    <div>
+      <h4 className="sr-only">Status</h4>
+      <div aria-hidden="true">
+        <div className="overflow-hidden bg-gray-200">
+          <div
+            className={clsx("h-3 bg-[var(--survey-primary-color)]")}
+            style={{ width: `${width}%` }}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}

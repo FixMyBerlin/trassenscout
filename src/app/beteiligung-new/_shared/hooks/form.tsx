@@ -1,0 +1,30 @@
+import { SurveyCheckbox } from "@/src/app/beteiligung-new/_components/form/Checkbox"
+import { SurveyCheckboxGroup } from "@/src/app/beteiligung-new/_components/form/CheckboxGroup"
+import { SurveySimpleMapWithLegend } from "@/src/app/beteiligung-new/_components/form/map/SimpleMapWithLegend"
+import { SurveyPageTitle } from "@/src/app/beteiligung-new/_components/form/PageTitle"
+import { SurveyRadiobuttonGroup } from "@/src/app/beteiligung-new/_components/form/RadiobuttonGroup"
+import { SubscribeButton } from "@/src/app/beteiligung-new/_components/form/SubscribeButton"
+import { SurveyTextarea } from "@/src/app/beteiligung-new/_components/form/Textarea"
+import { SurveyTextfield } from "@/src/app/beteiligung-new/_components/form/Textfield"
+import { SurveyMarkdown } from "@/src/app/beteiligung-new/_components/layout/SurveyMarkdown"
+
+import { fieldContext, formContext } from "@/src/app/beteiligung-new/_shared/hooks/form-context"
+import { createFormHook } from "@tanstack/react-form"
+
+export const { useAppForm } = createFormHook({
+  fieldComponents: {
+    SurveyTextfield,
+    SurveyTextarea,
+    SurveyCheckbox,
+    SurveyCheckboxGroup,
+    SurveyRadiobuttonGroup,
+    SurveySimpleMapWithLegend,
+    SurveyMarkdown,
+    SurveyPageTitle,
+  },
+  formComponents: {
+    SubscribeButton,
+  },
+  fieldContext,
+  formContext,
+})
