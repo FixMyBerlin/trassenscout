@@ -1,4 +1,4 @@
-FROM node:18-bullseye-slim
+FROM node:20-bullseye-slim
 
 WORKDIR /app
 
@@ -15,9 +15,9 @@ ENV TZ=Europe/Berlin
 ARG NEXT_PUBLIC_APP_ORIGIN
 ARG NEXT_PUBLIC_APP_ENV
 
-RUN npx blitz@2.1.3 prisma generate
-RUN npx blitz@2.1.3 build
+RUN npx blitz@2.2.2 prisma generate
+RUN npx blitz@2.2.2 build
 
 RUN npm install --global pm2
 
-CMD npx blitz@2.1.3 prisma migrate deploy && exec pm2-runtime node -- ./node_modules/next/dist/bin/next start -p 3000
+CMD npx blitz@2.2.2 prisma migrate deploy && exec pm2-runtime node -- ./node_modules/next/dist/bin/next start -p 3000

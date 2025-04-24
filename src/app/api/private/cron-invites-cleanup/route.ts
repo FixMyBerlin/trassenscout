@@ -3,7 +3,7 @@ import {
   INVITE_DAYS_TO_DELETION,
   INVITE_DAYS_TO_EXPIRED,
 } from "@/src/server/invites/inviteSettings.const"
-import { internalCreateLogEntry } from "@/src/server/logEntries/internalCeateLogEntry"
+import { guardedCreateSystemLogEntry } from "@/src/server/systemLogEntries/create/guardedCreateSystemLogEntry"
 import { endOfDay, subDays } from "date-fns"
 
 const calculateComparisonDate = (daysToComparison: number) => {
@@ -47,7 +47,7 @@ export async function GET(request: Request) {
   const deletedInvitesCount = await deleteOldInvites()
   const expiredInvitesCount = await expireOldInvites()
 
-  await internalCreateLogEntry({
+  await guardedCreateSystemLogEntry({
     apiKey,
     logLevel: "INFO",
     message: "CRON invite-cleanup",

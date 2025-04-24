@@ -1,25 +1,30 @@
 import db from "@/db"
+import { ProjectSlugRequiredSchema } from "@/src/authorization/extractProjectSlug"
 import { multilinestringToLinestring } from "@/src/pagesComponents/subsections/utils/multilinestringToLinestring"
+import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { length, lineString } from "@turf/turf"
 import { z } from "zod"
+import { createLogEntry } from "../../logEntries/create/createLogEntry"
 import { FeatureCollectionSchema, SubsectionSchema } from "../schema"
 
-const updateSubsectionsWithPlacemarkSchema = z.object({
-  subsections: z.array(
-    SubsectionSchema.merge(
-      z.object({
-        id: z.number(),
-      }),
+const updateSubsectionsWithPlacemarkSchema = ProjectSlugRequiredSchema.merge(
+  z.object({
+    subsections: z.array(
+      SubsectionSchema.merge(
+        z.object({
+          id: z.number(),
+        }),
+      ),
     ),
-  ),
-  newGeometry: FeatureCollectionSchema,
-})
+    newGeometry: FeatureCollectionSchema,
+  }),
+)
 
 export default resolver.pipe(
   resolver.zod(updateSubsectionsWithPlacemarkSchema),
   resolver.authorize("ADMIN"),
-  async ({ subsections, newGeometry }) => {
+  async ({ subsections, newGeometry, projectSlug }, ctx: Ctx) => {
     const updatedSubsectionIds: number[] = []
     const placemarkSubsections = newGeometry.features
 
@@ -57,7 +62,15 @@ export default resolver.pipe(
     }
     if (updatedSubsectionIds.length === 0) {
       console.log("No subsections found for placemark data")
+    } else {
+      await createLogEntry({
+        action: "UPDATE",
+        message: `Geometrien von ${updatedSubsectionIds.length} Planungsabschnitte aktualisiert`,
+        userId: ctx.session.userId,
+        projectSlug,
+      })
     }
+
     return updatedSubsectionIds
   },
 )

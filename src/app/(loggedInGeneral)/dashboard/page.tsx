@@ -4,6 +4,7 @@ import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import getProjectsWithGeometryWithMembershipRole from "@/src/server/projects/queries/getProjectsWithGeometryWithMembershipRole"
 import { Metadata } from "next"
 import "server-only"
+import { AdminLogEntriesDashboard } from "./_components/AdminLogEntriesDashboard"
 import { AdminProjectsList } from "./_components/AdminProjectsList"
 import { NoProjectMembershipsYet } from "./_components/NoProjectMembershipsYet"
 import { ProjectsMap } from "./_components/ProjectsMap"
@@ -36,6 +37,7 @@ export default async function DashboardPage() {
       <ProjectsMap projects={projects} />
       <ProjectsTable projects={projects} />
       <AdminProjectsList />
+      <AdminLogEntriesDashboard />
       <SuperAdminLogData data={projects} />
     </>
   )

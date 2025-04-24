@@ -34,6 +34,7 @@ export const SubsectionPlacemarkImport = ({ project }: Props) => {
       const subsectionIds = await updateSubsectionMutation({
         subsections,
         newGeometry: fileContent,
+        projectSlug: project.slug,
       })
       router.push(
         `/admin/projects/${projectSlug}/subsections?updatedIds=${subsectionIds?.join(",")}`,

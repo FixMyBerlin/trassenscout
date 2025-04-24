@@ -5,8 +5,10 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
+import { createLogEntry } from "../../logEntries/create/createLogEntry"
 import { SubsectionSchema } from "../schema"
 
 export const CreateSubsectionsSchema = ProjectSlugRequiredSchema.merge(
@@ -25,9 +27,18 @@ export const CreateSubsectionsSchema = ProjectSlugRequiredSchema.merge(
 export default resolver.pipe(
   resolver.zod(CreateSubsectionsSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ subsections }) => {
-    return await db.subsection.createMany({
+  async ({ subsections, projectSlug }, ctx: Ctx) => {
+    const records = await db.subsection.createMany({
       data: subsections,
     })
+
+    await createLogEntry({
+      action: "CREATE",
+      message: `${subsections.length} Planungsabschnitte erstellt`,
+      userId: ctx.session.userId,
+      projectSlug,
+    })
+
+    return records
   },
 )

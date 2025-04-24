@@ -7,16 +7,18 @@ import {
 } from "@/src/authorization/extractProjectSlug"
 import { getConfig } from "@/src/core/lib/next-s3-upload/src/utils/config"
 import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3"
+import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import { z } from "zod"
+import { createLogEntry } from "../../logEntries/create/createLogEntry"
 
 const DeleteUploadSchema = ProjectSlugRequiredSchema.merge(z.object({ id: z.number() }))
 
 export default resolver.pipe(
   resolver.zod(DeleteUploadSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ id }) => {
+  async ({ id, projectSlug }) => {
     const upload = await db.upload.findFirstOrThrow({ where: { id } })
     const { hostname, pathname } = new URL(upload.externalUrl)
     const isAws = hostname.endsWith("amazonaws.com")
@@ -33,9 +35,18 @@ export default resolver.pipe(
     })
     await s3Client.send(command)
 
-    return { id }
+    return { id, projectSlug }
   },
-  async ({ id }) => {
-    return await db.upload.deleteMany({ where: { id } })
+  async ({ id, projectSlug }, ctx: Ctx) => {
+    const record = await db.upload.deleteMany({ where: { id } })
+
+    await createLogEntry({
+      action: "DELETE",
+      message: `Dokument gelöscht`,
+      userId: ctx.session.userId,
+      projectSlug,
+    })
+
+    return record
   },
 )

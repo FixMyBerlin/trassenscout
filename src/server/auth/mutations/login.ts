@@ -3,6 +3,7 @@ import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
 import { AuthenticationError } from "blitz"
 import { Login } from "../schema"
+import { createInviteLogEntry } from "../shared/createInviteLogEntry"
 import { notifyEditorsAboutNewMembership } from "../shared/notifyEditorsAboutNewMembership"
 import { selectUserFieldsForSession } from "../shared/selectUserFieldsForSession"
 import { updateInvite } from "../shared/updateInvite"
@@ -52,8 +53,17 @@ export default resolver.pipe(resolver.zod(Login), async ({ email, password, invi
       },
     })
 
-    // @ts-expect-error the `user` types don't get updated inside this block, so they are missing the name props
-    await notifyEditorsAboutNewMembership({ invite, invitee: user })
+    await createInviteLogEntry({
+      invite,
+      // @ts-expect-error the `user` types don't get updated inside this block, so they are missing the name props
+      invitee: user,
+    })
+
+    await notifyEditorsAboutNewMembership({
+      invite,
+      // @ts-expect-error the `user` types don't get updated inside this block, so they are missing the name props
+      invitee: user,
+    })
   }
 
   await ctx.session.$create({
