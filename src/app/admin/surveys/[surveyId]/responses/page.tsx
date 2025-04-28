@@ -39,7 +39,6 @@ export default async function AdminSurveyResponsesPage({
           survey.slug === "radnetz-brandenburg") && (
           <AdminSurveyResponses project={project} surveyId={surveyId} survey={survey} />
         )}
-        {/* @ts-expect-error todo  */}
         {(survey.slug === "rstest" || survey.slug === "frm7-neu") && (
           <AdminSurveyResponsesNew project={project} surveyId={surveyId} survey={survey} />
         )}
