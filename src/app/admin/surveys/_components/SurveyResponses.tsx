@@ -47,7 +47,7 @@ export const AdminSurveyResponses = async ({ project, surveyId, survey }: Props)
             </p>
             <p>Ergebnisse: </p>
             <p>Rohdaten: {JSON.stringify(data)}</p>
-            <p>
+            <div>
               {/*  @ts-expect-error */}
               {Object.entries(data).map(([questionId, answerIds]) => {
                 const question = surveyQuestions.find((q) => q.id === Number(questionId))
@@ -85,7 +85,7 @@ export const AdminSurveyResponses = async ({ project, surveyId, survey }: Props)
                   </Fragment>
                 )
               })}
-            </p>
+            </div>
           </li>
         ))}
       </ul>
@@ -101,7 +101,7 @@ export const AdminSurveyResponses = async ({ project, surveyId, survey }: Props)
               Beitrag vom: {surveySession.createdAt.toLocaleDateString()}{" "}
               {surveySession.createdAt.toLocaleTimeString()}
             </p>
-            <p>
+            <div>
               Ergebnisse:
               {/* @ts-expect-error */}
               {Object.entries(data).map(([questionId, answerIds]) => {
@@ -131,7 +131,7 @@ export const AdminSurveyResponses = async ({ project, surveyId, survey }: Props)
                   </Fragment>
                 )
               })}
-            </p>
+            </div>
           </li>
         ))}
       </ul>
