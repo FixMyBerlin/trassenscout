@@ -39,28 +39,20 @@ export const SurveyPart = ({
   const surveyPart = getConfigBySurveySlug(surveySlug, surveyPartId)
   const { progessBarDefinition } = getConfigBySurveySlug(surveySlug, "meta")
 
-  if (!surveyPart) {
-    return (
-      <div>
-        Dieser Teil der Umfrage wurde nicht defniert. Bitte passe die Konfigurierungsdatei an.
-      </div>
-    )
-  }
-
   // fields of all pages of current stage
-  const allPagesFields = surveyPart.pages.map((page) => page.fields).flat()
+  const allPagesFields = surveyPart?.pages.map((page) => page.fields).flat()
 
   // filter out the non form fields here tbd
-  const allPagesFormFields = allPagesFields.filter((field) => field.componentType === "form")
+  const allPagesFormFields = allPagesFields?.filter((field) => field.componentType === "form")
 
   const schema = z.object(
-    Object.fromEntries(allPagesFormFields.map((field) => [field.name, field.zodSchema]) || []),
+    Object.fromEntries(allPagesFormFields?.map((field) => [field.name, field.zodSchema]) || []),
   )
 
   const form = useAppForm({
-    defaultValues: Object.fromEntries(
-      allPagesFormFields.map((field) => [field.name, field.defaultValue]),
-    ),
+    defaultValues: allPagesFormFields
+      ? Object.fromEntries(allPagesFormFields.map((field) => [field.name, field.defaultValue]))
+      : undefined,
     onSubmitMeta: {} as { again: boolean },
     onSubmit: handleSubmit,
     // @ts-expect-error tbd
@@ -76,6 +68,14 @@ export const SurveyPart = ({
       window.removeEventListener("beforeunload", beforeUnload)
     }
   }, [form.state.isDirty])
+
+  if (!surveyPart) {
+    return (
+      <div>
+        Dieser Teil der Umfrage wurde nicht defniert. Bitte passe die Konfigurierungsdatei an.
+      </div>
+    )
+  }
 
   const handleStart = () => {
     setIsIntro(false)
@@ -213,7 +213,7 @@ export const SurveyPart = ({
                 <FormErrorBox
                   // fieldNamesToValidate={surveyPart.pages[page]?.fields.map((field) => field.name)}
                   fieldMeta={fieldMeta}
-                  fieldsConfig={allPagesFields}
+                  fieldsConfig={allPagesFields || []}
                 />
               )}
             </form.Subscribe>
