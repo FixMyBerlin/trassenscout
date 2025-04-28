@@ -13,6 +13,7 @@ export const FormErrorBox = ({ fieldMeta, fieldsConfig }: Props) => {
       // @ts-expect-error we know form components have props.label tbd
       label: fieldsConfig.find((f) => f.name === key)?.props.label,
       message: value.errorMap.onSubmit[0].message,
+      key,
     }))
 
   if (!errors.length) return null
@@ -20,8 +21,8 @@ export const FormErrorBox = ({ fieldMeta, fieldsConfig }: Props) => {
   return (
     <div className="rounded-xl bg-red-50 p-4">
       <p>Bitte korrigieren Sie die folgenden Angaben:</p>
-      {errors.map(({ label, message }) => (
-        <p className="text-red-500">
+      {errors.map(({ key, label, message }) => (
+        <p key={key} className="text-red-500">
           {label}: <em>{message}</em>
         </p>
       ))}
