@@ -1,4 +1,4 @@
-import { allowedSurveySlugs } from "@/src/app/beteiligung-new/_shared/utils/allowedSurveySlugs"
+import { allowedSurveySlugs } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
 import { invoke } from "@/src/blitz-server"
 import { Link } from "@/src/core/components/links"
 import { StatusLabel } from "@/src/core/components/Status/StatusLabel"
