@@ -28,7 +28,8 @@ type Props = {
 
 export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
   const [stage, setStage] = useState<Stage>(
-    process.env.NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE_NEW || "START",
+    // todo: this will not work in if part1 is conditional in the future
+    process.env.NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE_NEW || "PART1",
   )
   const [isIntro, setIsIntro] = useState(true)
   const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
