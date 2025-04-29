@@ -757,6 +757,17 @@ export const formConfig = {
               },
             },
             zodSchema: z.string().optional(),
+            // example for superrefine - works exacly like the field validator
+            // maybe we delete superrefine option in config as for now it does not add functionality tbd
+            // zodSuperRefine: (data: any, ctx: z.RefinementCtx) => {
+            //   if (data.conditionCase1A === "ja" && data.conditionalCase1A.trim() === "") {
+            //     ctx.addIssue({
+            //       path: ["conditionalCase1A"],
+            //       code: z.ZodIssueCode.custom,
+            //       message: "Pflichtfeld wenn 'ja' gewählt wurde.",
+            //     })
+            //   }
+            // },
             defaultValue: "",
             props: {
               label: "Case 1 A: Welches Fahrrad fahren Sie?",
