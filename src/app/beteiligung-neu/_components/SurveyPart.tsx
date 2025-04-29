@@ -57,6 +57,19 @@ export const SurveyPart = ({
     onSubmit: handleSubmit,
     // @ts-expect-error tbd
     validators: { onSubmit: schema },
+    // this does not work todo
+    // listeners: {
+    //   onSubmit: (value) => {
+    //     console.log("listeners form", value)
+    //     if (
+    //       value.conditionCase1A === "nein"
+    //       // &&
+    //       // (!value.conditionalCase1A || value.conditionalCase1A.trim() === "")
+    //     ) {
+    //       console.log("default setzen")
+    //     }
+    //   },
+    // },
   })
 
   useEffect(() => {
@@ -77,6 +90,10 @@ export const SurveyPart = ({
     )
   }
 
+  // filter out the form fields of current page
+  const allCurrentPageFormFields =
+    surveyPart.pages[page]?.fields.filter((field) => field.componentType === "form") || []
+
   const handleStart = () => {
     setIsIntro(false)
     setPage(0)
@@ -85,7 +102,7 @@ export const SurveyPart = ({
   }
 
   const handleNextClick = () => {
-    if (!pageHasErrors({ part: surveyPart, form, page })) {
+    if (!pageHasErrors({ form, fields: allCurrentPageFormFields })) {
       const newPage = Math.min(surveyPart.pages.length - 1, page + 1)
       setPage(newPage)
       scrollToTopWithDelay()
@@ -208,12 +225,12 @@ export const SurveyPart = ({
             })}
             {/* todo error box styling*/}
             {/* todo error box: filter page errors, show correct translated error messages */}
-            <form.Subscribe selector={(state) => state.fieldMeta}>
+            <form.Subscribe selector={(state) => (state.errors, state.fieldMeta)}>
               {(fieldMeta) => (
                 <FormErrorBox
                   // fieldNamesToValidate={surveyPart.pages[page]?.fields.map((field) => field.name)}
                   fieldMeta={fieldMeta}
-                  fieldsConfig={allPagesFields || []}
+                  fields={allCurrentPageFormFields}
                 />
               )}
             </form.Subscribe>

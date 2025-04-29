@@ -1,20 +1,13 @@
 import { FieldConfig } from "@/src/app/beteiligung-neu/_shared/types"
+import { getFieldsErrors } from "@/src/app/beteiligung-neu/_shared/utils/pageHasErrors"
 import { AnyFieldMeta, DeepKeys } from "@tanstack/react-form"
 
 type Props = {
   fieldMeta: Record<DeepKeys<FormData>, AnyFieldMeta>
-  fieldsConfig: FieldConfig[]
+  fields: FieldConfig[]
 }
-export const FormErrorBox = ({ fieldMeta, fieldsConfig }: Props) => {
-  const errors = Object.entries(fieldMeta)
-    .filter(([key, value]) => fieldsConfig.find((f) => f.name === key)?.componentType === "form")
-    .filter(([_, value]) => value.isTouched && value.errorMap?.onSubmit?.length)
-    .map(([key, value]) => ({
-      // @ts-expect-error we know form components have props.label tbd
-      label: fieldsConfig.find((f) => f.name === key)?.props.label,
-      message: value.errorMap.onSubmit[0].message,
-      key,
-    }))
+export const FormErrorBox = ({ fieldMeta, fields }: Props) => {
+  const errors = getFieldsErrors({ fieldMeta, fields })
 
   if (!errors.length) return null
 
