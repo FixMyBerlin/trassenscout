@@ -343,12 +343,56 @@ export const formConfig = {
             name: "verkehrsmittelBesitz",
             component: "SurveyCheckboxGroup",
             componentType: "form",
-            zodSchema: z.array(z.string()).nonempty({
-              message: "Pflichtfeld.",
-            }),
+            zodSchema: z.array(z.string()),
             defaultValue: [],
             props: {
               label: "Welche Verkehrsmittel besitzen Sie?",
+              options: [
+                { key: "rollstuhl", label: "Rollstuhl" },
+                { key: "bike", label: "Fahrrad (ohne Motor)" },
+                { key: "e_bike", label: "Pedelec / E-Bike" },
+                { key: "e_scooter", label: "E-Scooter" },
+                { key: "motorrad", label: "Roller / Motorrad" },
+                { key: "bus_bahn", label: "Monatsticket Nahverkehr" },
+                { key: "auto", label: "Eigenes Auto" },
+                { key: "car_sharing", label: "Carsharing" },
+              ],
+            },
+          },
+          {
+            name: "verkehrsmittelBesitz_min2",
+            component: "SurveyCheckboxGroup",
+            componentType: "form",
+            zodSchema: z
+              .array(z.string())
+              .min(2, { message: "Bitte mindestens 2 Antworten auswählen" }),
+            defaultValue: [],
+            props: {
+              label: "Welche Verkehrsmittel besitzen Sie? 2",
+              description: "Bitte mindestens 2 Antworten auswählen",
+              options: [
+                { key: "rollstuhl", label: "Rollstuhl" },
+                { key: "bike", label: "Fahrrad (ohne Motor)" },
+                { key: "e_bike", label: "Pedelec / E-Bike" },
+                { key: "e_scooter", label: "E-Scooter" },
+                { key: "motorrad", label: "Roller / Motorrad" },
+                { key: "bus_bahn", label: "Monatsticket Nahverkehr" },
+                { key: "auto", label: "Eigenes Auto" },
+                { key: "car_sharing", label: "Carsharing" },
+              ],
+            },
+          },
+          {
+            name: "verkehrsmittelBesitz_max3",
+            component: "SurveyCheckboxGroup",
+            componentType: "form",
+            zodSchema: z
+              .array(z.string())
+              .max(3, { message: "Bitte maximal 3 Antworten auswählen" }),
+            defaultValue: [],
+            props: {
+              label: "Welche Verkehrsmittel besitzen Sie? 3",
+              description: "Bitte maximal 3 Antworten auswählen",
               options: [
                 { key: "rollstuhl", label: "Rollstuhl" },
                 { key: "bike", label: "Fahrrad (ohne Motor)" },
