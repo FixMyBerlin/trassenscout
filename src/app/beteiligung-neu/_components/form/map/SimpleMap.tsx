@@ -7,6 +7,8 @@ import {
 import { SurveyMapBanner } from "@/src/app/beteiligung-neu/_components/form/map/MapBanner"
 import SurveyPin from "@/src/app/beteiligung-neu/_components/form/map/Pin"
 import { useFieldContext } from "@/src/app/beteiligung-neu/_shared/hooks/form-context"
+import { isDev } from "@/src/core/utils"
+import { installMapGrab } from "@mapgrab/map-interface"
 import { clsx } from "clsx"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
@@ -80,6 +82,15 @@ export const SurveySimpleMap = ({ maptilerUrl, config }: Props) => {
   }
   const handleMapZoom = () => {
     checkPinInView()
+  }
+
+  // atm we install it in dev mode only
+  // todo have something like RUN_ONLY_IN_TEST_ENV to make it run in tests only
+  if (isDev) {
+    if (mainMap) {
+      console.log("install map grab")
+      installMapGrab(mainMap.getMap(), "mainMap")
+    }
   }
 
   return (
