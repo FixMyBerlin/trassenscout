@@ -1,6 +1,7 @@
 // 100% happy path with one feedback without location
 
 import { fakeTextarea } from "@/tests/_utils/faker"
+import { mapDragPin } from "@/tests/_utils/mapDragPin"
 import { expect, test } from "@/tests/_utils/support"
 
 import { MapController, MapLocator } from "@mapgrab/playwright"
@@ -43,7 +44,7 @@ const testPart1 = async (page: Page) => {
   await page.getByRole("button", { name: "Absenden" }).click()
 }
 const testIntro2 = async (page: Page) => {
-  // await expect(page.getByRole("heading", { name: "Ihre Hinweise und Wünsche" })).toBeVisible()
+  await expect(page.getByRole("heading", { name: "Ihre Hinweise und Wünsche" })).toBeVisible()
   await page.getByRole("button", { name: "Weiter" }).click()
 }
 const testPart2Finish = async (page: Page) => {
@@ -77,51 +78,20 @@ const testPart2FinishWithLocation = async ({
   await page.getByRole("button", { name: "Weiter" }).click()
   await page.getByRole("radio", { name: "Ja" }).click()
 
-  // https://stackoverflow.com/questions/67829723/how-do-i-interact-with-a-map-like-google-maps-or-openstreetmaps-with-playwright
-  const mapElement = page.getByLabel("Map", { exact: true })
-  const pinElement = page.getByLabel("Map marker", { exact: true })
-
-  await expect(mapElement).toBeInViewport()
-  await expect(pinElement).toBeVisible()
-
   // tbd do we need this?
   // await mapController("mainMap").waitToMapLoaded()
+  // this works only if Map Grab is installed see README
   const locator = mapLocator("layer[id=Frankfurt]").first()
   await expect(locator).toBeVisibleOnMap()
 
-  // without this click the dragging does not work
-  await mapElement.click({})
+  const mapElement = page.getByLabel("Map", { exact: true })
+  const pinElement = page.getByLabel("Map marker", { exact: true })
 
-  const originalPinPosition = await pinElement.boundingBox()
-
-  if (!originalPinPosition) {
-    throw new Error("Pin bounding box could not be determined")
-  }
-
-  const startX = originalPinPosition.x + originalPinPosition.width / 2
-  const startY = originalPinPosition.y + originalPinPosition.height / 2
-
-  const targetX = startX + 50
-  const targetY = startY + 25
-
-  await page.mouse.move(startX, startY)
-  await page.mouse.down()
-  await page.mouse.move(targetX, targetY, { steps: 5 })
-  await page.mouse.up()
-
-  await page.waitForTimeout(500)
-
-  const newPinPosition = await pinElement.boundingBox()
-  if (!newPinPosition) {
-    throw new Error("Updated pin bounding box could not be determined")
-  }
-
-  expect(newPinPosition.x).not.toBeCloseTo(originalPinPosition.x, 0)
-  expect(newPinPosition.y).not.toBeCloseTo(originalPinPosition.y, 0)
+  await mapDragPin({ page, mapElement, pinElement })
 
   await page.getByRole("textbox", { name: "Was möchten Sie uns mitteilen?" }).click()
   await page.getByRole("textbox", { name: "Was möchten Sie uns mitteilen?" }).fill(fakeTextarea())
-  await page.getByRole("textbox", { name: "Was möchten Sie uns mitteilen?" }).press("ArrowLeft")
+  await page.getByRole("textbox", { name: "Was möchten Sie uns mitteilen?" }).press("Alt+ArrowLeft")
   await page.getByRole("button", { name: "Absenden & Beteiligung" }).click()
 }
 const testEnd = async (page: Page) => {
