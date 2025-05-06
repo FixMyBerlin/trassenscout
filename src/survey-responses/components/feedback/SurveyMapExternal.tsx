@@ -117,7 +117,6 @@ export const SurveyMapExternal = ({
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         onZoom={handleMapZoom}
         mapLib={maplibregl}
-        RTLTextPlugin={false}
       >
         {pinPosition && (
           <Marker

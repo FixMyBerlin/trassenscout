@@ -187,7 +187,6 @@ export const SurveyMap = ({
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         onZoom={handleMapZoom}
         mapLib={maplibregl}
-        RTLTextPlugin={false}
         maxZoom={13}
         minZoom={7}
         // hash={true}

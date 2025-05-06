@@ -251,26 +251,28 @@ export const ExportWithQuery = () => {
         </Source>
 
         {/* ===== Click Feature, NewLine Feature ===== */}
-        <Source
-          // Use key to force a rerender when the data changed
-          key={`newLine_${JSON.stringify([
-            pointOneLine?.geometry?.coordinates,
-            pointTwoLine?.geometry?.coordinates,
-          ])}`}
-          type="geojson"
-          data={newLine}
-        >
-          <Layer
-            id="newLine"
-            type="line"
-            paint={{
-              "line-width": 2,
-              "line-color": "white", //"#E5007D",
-              "line-opacity": 1,
-              "line-dasharray": [0.7, 0.7],
-            }}
-          />
-        </Source>
+        {newLine && (
+          <Source
+            // Use key to force a rerender when the data changed
+            key={`newLine_${JSON.stringify([
+              pointOneLine?.geometry?.coordinates,
+              pointTwoLine?.geometry?.coordinates,
+            ])}`}
+            type="geojson"
+            data={newLine}
+          >
+            <Layer
+              id="newLine"
+              type="line"
+              paint={{
+                "line-width": 2,
+                "line-color": "white", //"#E5007D",
+                "line-opacity": 1,
+                "line-dasharray": [0.7, 0.7],
+              }}
+            />
+          </Source>
+        )}
         <Source
           key="nearestPoint"
           type="geojson"

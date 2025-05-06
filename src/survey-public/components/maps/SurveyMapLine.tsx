@@ -138,7 +138,6 @@ export const SurveyMapLine = ({ projectMap, className }: Props) => {
         }}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         mapLib={maplibregl}
-        RTLTextPlugin={false}
         onClick={handleMapClick}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}

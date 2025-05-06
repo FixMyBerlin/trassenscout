@@ -178,7 +178,6 @@ export const BaseMap: React.FC<BaseMapProps> = ({
             .flat()
             .filter(Boolean)}
           hash={hash || false}
-          RTLTextPlugin={false}
         >
           <NavigationControl showCompass={false} />
           <ScaleControl />
