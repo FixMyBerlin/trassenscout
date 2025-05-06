@@ -154,6 +154,7 @@ type ProgessBarDefinition = {
   part2: number
   part3: number | null
   end: number
+  total: number
 }
 
 export type FormConfig = {

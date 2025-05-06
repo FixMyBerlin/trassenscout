@@ -16,6 +16,7 @@ export const formConfig = {
       part2: 5,
       part3: null,
       end: 7,
+      total: 8,
     },
     geometryCategoryType: "line",
     geometryFallback: [
@@ -836,10 +837,9 @@ export const formConfig = {
     intro: {
       title: "Ihre Hinweise und Wünsche",
       description:
-        "Teil 2 von 3 der Beteiligung ist abgeschlossen. Wenn Sie möchten, können Sie nun konkrete Hinweise zum Radschnellweg abgeben.\n\nDabei interessiert uns besonders, wenn sie Probleme an bestimmten Stellen des Radwegs sehen. Zum Beispiel: Gibt es Orte, die verbessert werden könnten? Oder gibt es Bereiche, die zu Problemen oder Konflikten, zum Beispiel mit zu Fußgehenden oder Autos führen könnten?\n\nIhre speziellen Hinweise, Kommentare oder Ideen sind für uns wichtig. Das hilft uns sehr weiter, den Radschnellweg noch besser zu planen.",
+        "Teil 1 der Beteiligung ist abgeschlossen. Wenn Sie möchten, können Sie nun konkrete Hinweise zum Radschnellweg abgeben.\n\nDabei interessiert uns besonders, wenn sie Probleme an bestimmten Stellen des Radwegs sehen. Zum Beispiel: Gibt es Orte, die verbessert werden könnten? Oder gibt es Bereiche, die zu Problemen oder Konflikten, zum Beispiel mit zu Fußgehenden oder Autos führen könnten?\n\nIhre speziellen Hinweise, Kommentare oder Ideen sind für uns wichtig. Das hilft uns sehr weiter, den Radschnellweg noch besser zu planen.",
       mode: "dynamic",
       buttons: [
-        // todo position color
         { action: "next", label: "Weiter", position: "right" },
         { action: "end", label: "Beteiligung beenden", position: "right" },
       ],
