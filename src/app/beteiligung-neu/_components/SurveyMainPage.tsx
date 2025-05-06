@@ -122,8 +122,6 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
     const newStage = meta.again ? "part2" : part3 ? "part3" : "end"
     const newIntroState = !meta.again
     setFormKey(formKey + 1)
-
-    console.log("submit2")
     console.log({ value })
     setTimeout(() => {
       setStage(newStage)
