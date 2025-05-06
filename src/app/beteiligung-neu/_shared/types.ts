@@ -31,7 +31,7 @@ type FormFieldBase = {
       fieldApi?: AnyFieldApi,
     ) => boolean
   }
-  // superrefine is an alternative to addittional field validators, seems like a good solution as well (had some issues with field validators in combination with from validators at first, taht is why I introduced it), but also limits possibilities (see location where we want to vaidate based on the field meta) tbd
+  // superrefine is an alternative to additional field validators, seems like a good solution as well (had some issues with field validators in combination with from validators at first, taht is why I introduced it), but also limits possibilities (see location where we want to vaidate based on the field meta) tbd
   // see example rs test conditionalCase1A
   // maybe we delete superrefine option in config as for now it does not add functionality tbd
   zodSuperRefine?: (data: any, ctx: z.RefinementCtx) => void
@@ -145,12 +145,18 @@ export type SurveyPart1and3 = {
 export type SurveyPart2 = {
   intro: TIntro
   buttonLabels: { next: string; back: string; submit: string; again: string }
+  // todo
+  // tbd
+  // we need to type that part2 always has fields with id "location" "feedback"...
+  // so checking field names across an array of objects
+  // TypeScript can't fully enforce this constraint afaik
+  // so maybe we have to just "tell" the backend that it can be sure that the pages contain the required fields
   pages: [FormPage, ...FormPage[]]
 }
 
 //
-type ProgessBarDefinition = {
-  part1: number
+type ProgressBarDefinition = {
+  part1: number | null
   part2: number
   part3: number | null
   end: number
@@ -164,7 +170,7 @@ export type FormConfig = {
     canonicalUrl: string
     maptilerUrl: string
     primaryColor: string
-    progessBarDefinition: ProgessBarDefinition
+    progessBarDefinition: ProgressBarDefinition
     darkColor: string
     lightColor: string
     // atm we only have "line" geometryCategoryType, coordinates are of type LineString or MultiLineString (the distinction between those two can be made by checking the shape of the first element in the coordinates array)
@@ -179,7 +185,7 @@ export type FormConfig = {
   }
   // todo make parts optional
   // fka survey part
-  part1: SurveyPart1and3
+  part1: SurveyPart1and3 | null
   // fka feedback part
   part2: SurveyPart2
   // new survey like part

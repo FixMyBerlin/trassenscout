@@ -9,6 +9,7 @@ export const allowedSurveySlugs = [
   "frm7",
   "radnetz-brandenburg",
   "rstest",
+  "rstest-2-3",
   "frm7-neu",
 ] as const
 export type AllowedSurveySlugs = (typeof allowedSurveySlugs)[number]

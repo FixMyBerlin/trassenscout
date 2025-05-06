@@ -26,22 +26,34 @@ type Props = {
   introPart3?: React.ReactNode
 }
 
+const getFirstStage = (surveySlug: AllowedSurveySlugs): Stage => {
+  for (let i = 1; i <= 3; i++) {
+    // @ts-expect-error
+    const config = getConfigBySurveySlug(surveySlug, `part${i}`)
+    if (config) {
+      return `part${i}` as Stage
+    }
+  }
+  return "end"
+}
+
 export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
-  const [stage, setStage] = useState<Stage>(
-    // todo: this will not work in if part1 is conditional in the future
-    process.env.NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE_NEW || "part1",
-  )
   const [isIntro, setIsIntro] = useState(true)
   const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
+  const [stage, setStage] = useState<Stage>(
+    // todo: this will not work in if part1 is conditional in the future
+    process.env.NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE_NEW || getFirstStage(surveySlug),
+  )
   const [isSpinner, setIsSpinner] = useState(false)
   const [surveySessionId, setSurveySessionId] = useState<null | number>(null)
   const [createSurveySessionMutation] = useMutation(createSurveySession)
   const [createSurveyResponseMutation] = useMutation(createSurveyResponse)
   // to reset form when repeated
   const [formKey, setFormKey] = useState(1)
+
   const meta = getConfigBySurveySlug(surveySlug, "meta")
   const { progessBarDefinition } = meta
-  const [progress, setProgress] = useState(progessBarDefinition["part1"])
+  const [progress, setProgress] = useState(progessBarDefinition[getFirstStage(surveySlug)]!)
 
   const part3 = getConfigBySurveySlug(surveySlug, "part3")
 
@@ -81,7 +93,6 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
     console.log({ value })
     setTimeout(() => {
       setStage("part2")
-      // setProgress(stageProgressDefinition["MORE"])
       setIsSpinner(false)
       setIsIntro(true)
       scrollToTopWithDelay()

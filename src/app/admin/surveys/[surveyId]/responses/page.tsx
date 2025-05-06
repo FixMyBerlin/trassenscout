@@ -39,7 +39,9 @@ export default async function AdminSurveyResponsesPage({
           survey.slug === "radnetz-brandenburg") && (
           <AdminSurveyResponses project={project} surveyId={surveyId} survey={survey} />
         )}
-        {(survey.slug === "rstest" || survey.slug === "frm7-neu") && (
+        {(survey.slug === "rstest" ||
+          survey.slug === "frm7-neu" ||
+          survey.slug === "rstest-2-3") && (
           <AdminSurveyResponsesNew project={project} surveyId={surveyId} survey={survey} />
         )}
       </article>
