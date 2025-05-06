@@ -24,7 +24,7 @@ namespace NodeJS {
       | "MORE"
       | "FEEDBACK"
       | "EMAIL"
-    readonly NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE_NEW: "PART1" | "PART2" | "PART3" | "END"
+    readonly NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE_NEW: "part1" | "part2" | "part3" | "end"
     readonly NEXT_PUBLIC_APP_ORIGIN?:
       | "http://127.0.0.1:5000" // for `npm run start`
       | "https://staging.trassenscout.de"

@@ -841,7 +841,7 @@ export const formConfig = {
       buttons: [
         // todo position color
         { action: "next", label: "Weiter", position: "right" },
-        { action: "END", label: "Beteiligung beenden", position: "right" },
+        { action: "end", label: "Beteiligung beenden", position: "right" },
       ],
     },
     buttonLabels: {

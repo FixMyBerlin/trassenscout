@@ -29,7 +29,7 @@ type Props = {
 export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
   const [stage, setStage] = useState<Stage>(
     // todo: this will not work in if part1 is conditional in the future
-    process.env.NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE_NEW || "PART1",
+    process.env.NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE_NEW || "part1",
   )
   const [isIntro, setIsIntro] = useState(true)
   const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
@@ -80,7 +80,7 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
     })()
     console.log({ value })
     setTimeout(() => {
-      setStage("PART2")
+      setStage("part2")
       // setProgress(stageProgressDefinition["MORE"])
       setIsSpinner(false)
       setIsIntro(true)
@@ -108,7 +108,7 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
     })()
 
     const newProgressBar = (part3 && progessBarDefinition["part3"]) || progessBarDefinition["end"]
-    const newStage = meta.again ? "PART2" : part3 ? "PART3" : "END"
+    const newStage = meta.again ? "part2" : part3 ? "part3" : "end"
     const newIntroState = !meta.again
     setFormKey(formKey + 1)
 
@@ -139,7 +139,7 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
     })()
     console.log({ value })
     setTimeout(() => {
-      setStage("END")
+      setStage("end")
       setIsSpinner(false)
       setIsIntro(true)
       scrollToTopWithDelay()
@@ -148,7 +148,7 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
   }
 
   const handleEndToPart2 = () => {
-    setStage("PART2")
+    setStage("part2")
     setProgress(progessBarDefinition["part2"])
     setIsSpinner(false)
     scrollToTopWithDelay()
@@ -156,7 +156,7 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
 
   let component
   switch (stage) {
-    case "PART1":
+    case "part1":
       component = (
         <SurveyPart
           isIntro={isIntro}
@@ -168,7 +168,7 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
         />
       )
       break
-    case "PART2":
+    case "part2":
       component = (
         <SurveyPart
           // reset form when repeated
@@ -181,7 +181,7 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
         />
       )
       break
-    case "PART3":
+    case "part3":
       component = (
         <SurveyPart
           isIntro={isIntro}
@@ -192,7 +192,7 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
         />
       )
       break
-    case "END":
+    case "end":
       component = <SurveyEnd onClickMore={handleEndToPart2} />
       break
   }

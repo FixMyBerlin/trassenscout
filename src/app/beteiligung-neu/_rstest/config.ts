@@ -518,7 +518,7 @@ export const formConfig = {
       buttons: [
         // todo position color
         { action: "next", label: "Weiter", position: "right" },
-        { action: "END", label: "Beteiligung beenden", position: "right" },
+        { action: "end", label: "Beteiligung beenden", position: "right" },
       ],
     },
     buttonLabels: {
@@ -685,14 +685,14 @@ export const formConfig = {
       buttons: [
         // todo position color
         { action: "next", label: "Weiter", position: "right" },
-        { action: "END", label: "Beteiligung beenden", position: "right" },
+        { action: "end", label: "Beteiligung beenden", position: "right" },
         {
-          action: "PART1",
+          action: "part1",
           label: "Zurück zum ersten Teil der Umfrage",
           position: "left",
           color: "white",
         },
-        // { action: "PART2", label: "Zurück zu den Hinweisen" },
+        // { action: "part2", label: "Zurück zu den Hinweisen" },
       ],
     },
     buttonLabels: { next: "Weiter", back: "Zurück", submit: "Absenden" },

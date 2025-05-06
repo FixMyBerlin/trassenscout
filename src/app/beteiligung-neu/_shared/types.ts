@@ -112,7 +112,7 @@ export type FormPage = {
   fields: [FieldConfig, ...FieldConfig[]]
 }
 
-export type Stage = "PART1" | "PART2" | "PART3" | "END"
+export type Stage = "part1" | "part2" | "part3" | "end"
 
 export type IntroButton = {
   label: string
