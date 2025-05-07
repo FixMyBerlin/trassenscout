@@ -40,6 +40,6 @@ const IntroPart1 = () => {
   )
 }
 
-export const SurveyRstest = ({ surveyId }: Props) => {
+export const SurveyRsTest123 = ({ surveyId }: Props) => {
   return <SurveyMainPage surveyId={surveyId} introPart1={<IntroPart1 />} />
 }

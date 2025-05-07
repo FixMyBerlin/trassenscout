@@ -3,6 +3,6 @@ type Props = {
   surveyId: number
 }
 
-export const SurveyRs23Test = ({ surveyId }: Props) => {
+export const SurveyRsTest23 = ({ surveyId }: Props) => {
   return <SurveyMainPage surveyId={surveyId} />
 }

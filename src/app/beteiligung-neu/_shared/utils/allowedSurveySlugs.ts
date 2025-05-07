@@ -8,7 +8,7 @@ export const allowedSurveySlugs = [
   "rs8",
   "frm7",
   "radnetz-brandenburg",
-  "rstest",
+  "rstest-1-2-3",
   "rstest-2-3",
   "rstest-1",
   "rstest-2",
