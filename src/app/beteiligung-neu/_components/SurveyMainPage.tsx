@@ -7,7 +7,10 @@ import { SurveyPart } from "@/src/app/beteiligung-neu/_components/SurveyPart"
 import { ProgressContext } from "@/src/app/beteiligung-neu/_shared/contexts/contexts"
 import { Stage } from "@/src/app/beteiligung-neu/_shared/types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
-import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import {
+  getConfigBySurveySlug,
+  getprogressBarDefinitionBySurveySlug,
+} from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
 
 import { Debug } from "@/src/survey-public/components/core/Debug"
 import { SurveySpinnerLayover } from "@/src/survey-public/components/core/layout/SurveySpinnerLayover"
@@ -55,10 +58,7 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
   const [formKey, setFormKey] = useState(1)
 
   const meta = getConfigBySurveySlug(surveySlug, "meta")
-  const { progessBarDefinition } = meta
-  const [progress, setProgress] = useState(progessBarDefinition[getFirstStage(surveySlug)]!)
-
-  const part3 = getConfigBySurveySlug(surveySlug, "part3")
+  const [progress, setProgress] = useState(getprogressBarDefinitionBySurveySlug(surveySlug, stage))
 
   // todo maybe do this somewhere else
   useEffect(() => {
@@ -100,7 +100,7 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
       setIsSpinner(false)
       setIsIntro(true)
       scrollToTopWithDelay()
-      setProgress(progessBarDefinition[nextStage]!)
+      setProgress(getprogressBarDefinitionBySurveySlug(surveySlug, nextStage))
     }, 900)
   }
   // @ts-expect-error todo
@@ -133,7 +133,7 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
       setIsSpinner(false)
       setIsIntro(newIntroState)
       scrollToTopWithDelay()
-      setProgress(progessBarDefinition[newStage]!)
+      setProgress(getprogressBarDefinitionBySurveySlug(surveySlug, newStage))
     }, 900)
   }
   // @ts-expect-error todo
@@ -157,7 +157,7 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
       setIsSpinner(false)
       setIsIntro(true)
       scrollToTopWithDelay()
-      setProgress(progessBarDefinition["end"]!)
+      setProgress(getprogressBarDefinitionBySurveySlug(surveySlug, "end"))
     }, 900)
   }
 

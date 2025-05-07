@@ -10,12 +10,6 @@ export const formConfig = {
     primaryColor: "#D60F3D",
     darkColor: "#5F071B",
     lightColor: "#fecdd3",
-    progessBarDefinition: {
-      part1: 1,
-      part2: null,
-      part3: null,
-      end: 4,
-    },
     geometryCategoryType: "line",
     geometryFallback: [
       [
@@ -293,6 +287,7 @@ export const formConfig = {
     ],
   },
   part1: {
+    progressBarDefinition: 1,
     intro: {
       mode: "custom",
       buttons: [{ action: "next", label: "Weiter", position: "right" }],
@@ -511,6 +506,7 @@ export const formConfig = {
   part2: null,
   part3: null,
   end: {
+    progressBarDefinition: 4,
     title: "Vielen Dank für Ihre Teilnahme!",
     description:
       "## Was passiert als Nächstes?\n\n\n\nNach Abschluss der Beteiligung (31.03.2024) werden Ihre Anregungen vom Planungsteam ausgewertet. Dabei wird geprüft, ob und inwieweit Ihre Hinweise in die weitere Planung einbezogen werden können. Bitte haben Sie Verständnis dafür, dass wir nicht jeden Hinweis kommentieren können. Nach der Auswertung werden wir zusammenfassend zu den genannten Themen Rückmeldung geben.\n\n ## Möchten Sie uns noch etwas mit auf den Weg geben?\n\nWenn Sie noch weiteres Feedback zur Online-Beteiligung haben, können Sie dies gerne an [info@radschnellverbindungen.info](info@radschnellverbindungen.info) senden.\n\n***Transparenzhinweis:** Die Befragung wurde um die Fragen („Sind Sie bzw. Ihre Eltern in Deutschland geboren“) gekürzt, da diese bei Teilnehmenden zu Irritationen geführt haben. Ziel der Fragen im Rahmen des Forschungsprojekts war die Ermittlung, welche Zielgruppen in zukünftigen Beteiligungen ggf. noch gezielter angesprochen werden müssen. Nach eingängiger Diskussion wurde entschieden, die beiden Fragen zu entfernen.*",

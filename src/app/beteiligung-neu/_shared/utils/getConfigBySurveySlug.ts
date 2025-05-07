@@ -3,7 +3,7 @@ import { formConfig as TestConfig } from "@/src/app/beteiligung-neu/_rstest-1-2-
 import { formConfig as Test1Config } from "@/src/app/beteiligung-neu/_rstest-1/config"
 import { formConfig as Test23Config } from "@/src/app/beteiligung-neu/_rstest-2-3/config"
 import { formConfig as Test2Config } from "@/src/app/beteiligung-neu/_rstest-2/config"
-import { FormConfig } from "@/src/app/beteiligung-neu/_shared/types"
+import { FormConfig, Stage } from "@/src/app/beteiligung-neu/_shared/types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
 
 export const getConfigBySurveySlug = <K extends keyof FormConfig>(
@@ -31,4 +31,8 @@ export const getConfigBySurveySlug = <K extends keyof FormConfig>(
       return FRM7Config[part]
     // todo
   }
+}
+
+export const getprogressBarDefinitionBySurveySlug = (slug: AllowedSurveySlugs, part: Stage) => {
+  return getConfigBySurveySlug(slug, part)!.progressBarDefinition
 }

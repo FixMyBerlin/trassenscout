@@ -1,6 +1,6 @@
 import { ProgressContext } from "@/src/app/beteiligung-neu/_shared/contexts/contexts"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
-import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { getprogressBarDefinitionBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
 import { clsx } from "clsx"
 import { useParams } from "next/navigation"
 import { useContext } from "react"
@@ -8,8 +8,8 @@ import { useContext } from "react"
 export const ProgressBar = () => {
   const { progress } = useContext(ProgressContext)
   const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
-  const { progessBarDefinition } = getConfigBySurveySlug(surveySlug, "meta")
-  const width = progress ? (progress / progessBarDefinition["end"]) * 100 : 100
+  const TOTAL = getprogressBarDefinitionBySurveySlug(surveySlug, "end")
+  const width = progress ? (progress / TOTAL) * 100 : 100
 
   return (
     <div>

@@ -134,6 +134,7 @@ export type TIntro =
     }
 
 export type SurveyPart1and3 = {
+  progressBarDefinition: number
   // todo intro optional?
   // intro null
   // if a intro mode is custom we have to provide the custom componenrt in the SurveyRSX file and pass it to SUrveyMainPage tbd
@@ -143,6 +144,7 @@ export type SurveyPart1and3 = {
 }
 
 export type SurveyPart2 = {
+  progressBarDefinition: number
   intro: TIntro
   buttonLabels: { next: string; back: string; submit: string; again: string }
   // todo
@@ -154,15 +156,6 @@ export type SurveyPart2 = {
   pages: [FormPage, ...FormPage[]]
 }
 
-//
-type ProgressBarDefinition = {
-  part1: number | null
-  part2: number | null
-  part3: number | null
-  end: number
-  total: number
-}
-
 export type FormConfig = {
   meta: {
     version: number
@@ -170,7 +163,6 @@ export type FormConfig = {
     canonicalUrl: string
     maptilerUrl: string
     primaryColor: string
-    progessBarDefinition: ProgressBarDefinition
     darkColor: string
     lightColor: string
     // atm we only have "line" geometryCategoryType, coordinates are of type LineString or MultiLineString (the distinction between those two can be made by checking the shape of the first element in the coordinates array)
@@ -191,6 +183,7 @@ export type FormConfig = {
   // new survey like part
   part3: SurveyPart1and3 | null
   end: {
+    progressBarDefinition: number
     title: string
     description?: string
     mailjetWidgetUrl: string | null

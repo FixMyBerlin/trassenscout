@@ -7,7 +7,10 @@ import { ProgressContext } from "@/src/app/beteiligung-neu/_shared/contexts/cont
 import { useAppForm } from "@/src/app/beteiligung-neu/_shared/hooks/form"
 import { Stage } from "@/src/app/beteiligung-neu/_shared/types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
-import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import {
+  getConfigBySurveySlug,
+  getprogressBarDefinitionBySurveySlug,
+} from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
 import { pageHasErrors } from "@/src/app/beteiligung-neu/_shared/utils/pageHasErrors"
 import { scrollToTopWithDelay } from "@/src/app/beteiligung-neu/_shared/utils/scrollToTopWithDelay"
 import { Debug } from "@/src/survey-public/components/core/Debug"
@@ -37,7 +40,6 @@ export const SurveyPart = ({
   const [page, setPage] = useState(0)
   const { setProgress } = useContext(ProgressContext)
   const surveyPart = getConfigBySurveySlug(surveySlug, surveyPartId)
-  const { progessBarDefinition } = getConfigBySurveySlug(surveySlug, "meta")
 
   // fields of all pages of current stage
   const allPagesFields = surveyPart?.pages.map((page) => page.fields).flat()
@@ -100,11 +102,13 @@ export const SurveyPart = ({
   const allCurrentPageFormFields =
     surveyPart.pages[page]?.fields.filter((field) => field.componentType === "form") || []
 
+  const currentProgressBar = getprogressBarDefinitionBySurveySlug(surveySlug, surveyPartId)
+
   const handleStart = () => {
     setIsIntro(false)
     setPage(0)
     scrollToTopWithDelay()
-    setProgress(progessBarDefinition[surveyPartId]!)
+    setProgress(currentProgressBar)
   }
 
   const handleNextClick = () => {
@@ -112,7 +116,7 @@ export const SurveyPart = ({
       const newPage = Math.min(surveyPart.pages.length - 1, page + 1)
       setPage(newPage)
       scrollToTopWithDelay()
-      setProgress(progessBarDefinition[surveyPartId]! + newPage)
+      setProgress(currentProgressBar + newPage)
     }
   }
 
@@ -123,7 +127,7 @@ export const SurveyPart = ({
       const newPage = Math.max(0, page - 1)
       setPage(newPage)
       scrollToTopWithDelay()
-      setProgress(progessBarDefinition[surveyPartId]! + newPage)
+      setProgress(currentProgressBar + newPage)
     }
   }
 
