@@ -24,9 +24,6 @@ import { useEffect, useState } from "react"
 
 type Props = {
   surveyId: number
-  introPart1?: React.ReactNode
-  introPart2?: React.ReactNode
-  introPart3?: React.ReactNode
 }
 
 const getNextStage = (surveySlug: AllowedSurveySlugs, currentStage: number): Stage => {
@@ -43,7 +40,7 @@ const getFirstStage = (surveySlug: AllowedSurveySlugs): Stage => {
   return getNextStage(surveySlug, 0)
 }
 
-export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
+export const SurveyMainPage = ({ surveyId }: Props) => {
   const [isIntro, setIsIntro] = useState(true)
   const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
   const [stage, setStage] = useState<Stage>(
@@ -171,7 +168,6 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
           setStage={setStage}
           stage="part1"
           handleSubmit={handleSurveyPart1Submit}
-          intro={introPart1}
         />
       )
       break

@@ -9,7 +9,7 @@ import { SurveyMarkdown } from "@/src/app/beteiligung-neu/_components/layout/Sur
 import { AnyFieldApi } from "@tanstack/react-form"
 
 import { LineString, MultiLineString } from "geojson"
-import { ComponentProps } from "react"
+import { ComponentProps, ReactNode } from "react"
 import { z, ZodType } from "zod"
 
 // tbd maybe in the future we want to allow all field options of tanstack form fieldApi
@@ -123,21 +123,19 @@ export type IntroButton = {
 
 export type TIntro =
   | {
-      mode: "custom"
-      buttons?: IntroButton[]
+      type: "custom"
+      customComponent: ReactNode
+      buttons: IntroButton[]
     }
   | {
-      mode: "dynamic"
+      type: "standard"
       title: string
       description: string
-      buttons?: IntroButton[]
+      buttons: IntroButton[]
     }
 
 export type SurveyPart1and3 = {
   progressBarDefinition: number
-  // todo intro optional?
-  // intro null
-  // if a intro mode is custom we have to provide the custom componenrt in the SurveyRSX file and pass it to SUrveyMainPage tbd
   intro: TIntro
   buttonLabels: { next: string; back: string; submit: string }
   pages: [FormPage, ...FormPage[]]

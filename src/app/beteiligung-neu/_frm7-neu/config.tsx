@@ -1,3 +1,4 @@
+import { IntroPart1 } from "@/src/app/beteiligung-neu/_frm7-neu/SurveyFRM7NEU"
 import { FormConfig } from "@/src/app/beteiligung-neu/_shared/types"
 import { AnyFieldApi } from "@tanstack/react-form"
 import { z } from "zod"
@@ -290,7 +291,8 @@ export const formConfig = {
   part1: {
     progressBarDefinition: 1,
     intro: {
-      mode: "custom",
+      type: "custom",
+      customComponent: <IntroPart1 />,
       buttons: [{ action: "next", label: "Weiter", position: "right" }],
     },
     buttonLabels: { next: "Weiter", back: "Zurück", submit: "Absenden" },
@@ -830,10 +832,10 @@ export const formConfig = {
   part2: {
     progressBarDefinition: 5,
     intro: {
+      type: "standard",
       title: "Ihre Hinweise und Wünsche",
       description:
         "Teil 1 der Beteiligung ist abgeschlossen. Wenn Sie möchten, können Sie nun konkrete Hinweise zum Radschnellweg abgeben.\n\nDabei interessiert uns besonders, wenn sie Probleme an bestimmten Stellen des Radwegs sehen. Zum Beispiel: Gibt es Orte, die verbessert werden könnten? Oder gibt es Bereiche, die zu Problemen oder Konflikten, zum Beispiel mit zu Fußgehenden oder Autos führen könnten?\n\nIhre speziellen Hinweise, Kommentare oder Ideen sind für uns wichtig. Das hilft uns sehr weiter, den Radschnellweg noch besser zu planen.",
-      mode: "dynamic",
       buttons: [
         { action: "next", label: "Weiter", position: "right" },
         { action: "end", label: "Beteiligung beenden", position: "right" },

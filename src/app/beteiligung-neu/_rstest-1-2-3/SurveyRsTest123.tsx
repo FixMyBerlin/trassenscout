@@ -4,7 +4,7 @@ type Props = {
   surveyId: number
 }
 
-const IntroPart1 = () => {
+export const IntroPart1 = () => {
   return (
     <>
       <SurveyH1>RS TEST Ihre Meinung zählt!</SurveyH1>
@@ -41,5 +41,5 @@ const IntroPart1 = () => {
 }
 
 export const SurveyRsTest123 = ({ surveyId }: Props) => {
-  return <SurveyMainPage surveyId={surveyId} introPart1={<IntroPart1 />} />
+  return <SurveyMainPage surveyId={surveyId} />
 }

@@ -151,14 +151,11 @@ export const SurveyPart = ({
       >
         {isIntro ? (
           <Intro
-            // atm we have a hard coded custom component as intr for Survey Part 1 as we had too many custom requirements
+            // atm we have a hard coded custom component as intro for Survey Part 1 as we had too many custom requirements
             // todo maybe we can make this more generic in the future
-            // todo disabled?
             intro={surveyPart.intro}
-            customContent={intro}
             handleIntroClick={handleStart}
             setStage={setStage}
-            disabled={false}
           />
         ) : (
           <>

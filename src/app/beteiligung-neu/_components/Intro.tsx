@@ -7,12 +7,10 @@ import { IntroButton, Stage, TIntro } from "@/src/app/beteiligung-neu/_shared/ty
 type Props = {
   handleIntroClick: () => void
   intro: TIntro
-  customContent: React.ReactNode
   setStage: (stage: Stage) => void
-  disabled: boolean
 }
 
-export const Intro = ({ handleIntroClick, customContent, disabled, intro, setStage }: Props) => {
+export const Intro = ({ handleIntroClick, intro, setStage }: Props) => {
   const buttonsLeft = intro.buttons?.filter((button) => button.position === "left")
   const buttonsRight = intro.buttons?.filter((button) => button.position === "right")
 
@@ -31,8 +29,9 @@ export const Intro = ({ handleIntroClick, customContent, disabled, intro, setSta
 
   return (
     <div>
-      {customContent && <Start startContent={customContent} disabled={disabled} />}
-      {intro.mode === "dynamic" && (
+      {intro.type === "custom" ? (
+        <Start startContent={intro.customComponent} />
+      ) : (
         <SurveyScreenHeader title={intro.title} description={intro.description} />
       )}
       <SurveyButtonGrid

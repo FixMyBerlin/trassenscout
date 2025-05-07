@@ -289,7 +289,7 @@ export const formConfig = {
   part1: {
     progressBarDefinition: 1,
     intro: {
-      mode: "dynamic",
+      type: "standard",
       title: "Willkommen zur Online-Beteiligung RS Test 1",
       description: "Hier haben wir nur einen Teil 1 ",
       buttons: [{ action: "next", label: "Weiter", position: "right" }],

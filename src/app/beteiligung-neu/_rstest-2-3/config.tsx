@@ -294,7 +294,7 @@ export const formConfig = {
       title: "In dieser Umfrage steigen wir direkt ein: Ihre Hinweise und Wünsche",
       description:
         "Wenn Sie möchten, können Sie nun konkrete Hinweise zum Radschnellweg abgeben.\n\nDabei interessiert uns besonders, wenn sie Probleme an bestimmten Stellen des Radwegs sehen. Zum Beispiel: Gibt es Orte, die verbessert werden könnten? Oder gibt es Bereiche, die zu Problemen oder Konflikten, zum Beispiel mit zu Fußgehenden oder Autos führen könnten?\n\nIhre speziellen Hinweise, Kommentare oder Ideen sind für uns wichtig. Das hilft uns sehr weiter, den Radschnellweg noch besser zu planen.",
-      mode: "dynamic",
+      type: "standard",
       buttons: [
         { action: "next", label: "Weiter", position: "right" },
         { action: "end", label: "Beteiligung beenden", position: "right" },
@@ -458,7 +458,7 @@ export const formConfig = {
   part3: {
     progressBarDefinition: 3,
     intro: {
-      mode: "dynamic",
+      type: "standard",
       title: "Persönliche Angaben",
       description:
         "Der Hinweis Teil der Beteiligung ist abgeschlossen. Bitte beantworten Sie uns noch folgende Fragen.",

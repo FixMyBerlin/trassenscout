@@ -1,4 +1,4 @@
-type Props = { startContent: React.ReactNode; disabled: boolean }
+type Props = { startContent: React.ReactNode; disabled?: boolean }
 
 export const Start = ({ startContent, disabled }: Props) => {
   return (
