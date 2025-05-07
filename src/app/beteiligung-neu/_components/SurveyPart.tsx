@@ -20,7 +20,7 @@ import { useContext, useEffect, useState } from "react"
 import { z } from "zod"
 
 type Props = {
-  surveyPartId: "part1" | "part2" | "part3"
+  stage: "part1" | "part2" | "part3"
   handleSubmit: ({ value, meta }: { value: FormData; meta: { again: boolean } }) => Promise<void>
   intro?: React.ReactNode
   setStage: (stage: Stage) => void
@@ -29,7 +29,7 @@ type Props = {
 }
 
 export const SurveyPart = ({
-  surveyPartId,
+  stage,
   handleSubmit,
   intro,
   setStage,
@@ -39,7 +39,7 @@ export const SurveyPart = ({
   const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
   const [page, setPage] = useState(0)
   const { setProgress } = useContext(ProgressContext)
-  const surveyPart = getConfigBySurveySlug(surveySlug, surveyPartId)
+  const surveyPart = getConfigBySurveySlug(surveySlug, stage)
 
   // fields of all pages of current stage
   const allPagesFields = surveyPart?.pages.map((page) => page.fields).flat()
@@ -102,7 +102,7 @@ export const SurveyPart = ({
   const allCurrentPageFormFields =
     surveyPart.pages[page]?.fields.filter((field) => field.componentType === "form") || []
 
-  const currentProgressBar = getprogressBarDefinitionBySurveySlug(surveySlug, surveyPartId)
+  const currentProgressBar = getprogressBarDefinitionBySurveySlug(surveySlug, stage)
 
   const handleStart = () => {
     setIsIntro(false)
@@ -268,7 +268,7 @@ export const SurveyPart = ({
                   )
                 }
                 buttonRight2={
-                  surveyPartId === "part2" &&
+                  stage === "part2" &&
                   page === surveyPart.pages.length - 1 && (
                     <div>
                       <form.SubscribeButton id="again" type="submit">

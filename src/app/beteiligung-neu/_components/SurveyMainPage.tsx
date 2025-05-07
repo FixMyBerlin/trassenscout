@@ -169,7 +169,7 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
           isIntro={isIntro}
           setIsIntro={setIsIntro}
           setStage={setStage}
-          surveyPartId="part1"
+          stage="part1"
           handleSubmit={handleSurveyPart1Submit}
           intro={introPart1}
         />
@@ -183,7 +183,7 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
           isIntro={isIntro}
           setIsIntro={setIsIntro}
           setStage={setStage}
-          surveyPartId="part2"
+          stage="part2"
           handleSubmit={handleSurveyPart2Submit}
         />
       )
@@ -194,7 +194,7 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
           isIntro={isIntro}
           setIsIntro={setIsIntro}
           setStage={setStage}
-          surveyPartId="part3"
+          stage="part3"
           handleSubmit={handleSurveyPart3Submit}
         />
       )
