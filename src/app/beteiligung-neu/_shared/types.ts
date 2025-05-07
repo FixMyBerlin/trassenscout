@@ -157,7 +157,7 @@ export type SurveyPart2 = {
 //
 type ProgressBarDefinition = {
   part1: number | null
-  part2: number
+  part2: number | null
   part3: number | null
   end: number
   total: number
@@ -187,7 +187,7 @@ export type FormConfig = {
   // fka survey part
   part1: SurveyPart1and3 | null
   // fka feedback part
-  part2: SurveyPart2
+  part2: SurveyPart2 | null
   // new survey like part
   part3: SurveyPart1and3 | null
   end: {

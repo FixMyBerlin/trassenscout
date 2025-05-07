@@ -41,7 +41,9 @@ export default async function AdminSurveyResponsesPage({
         )}
         {(survey.slug === "rstest" ||
           survey.slug === "frm7-neu" ||
-          survey.slug === "rstest-2-3") && (
+          survey.slug === "rstest-2-3" ||
+          survey.slug === "rstest-2" ||
+          survey.slug === "rstest-1") && (
           <AdminSurveyResponsesNew project={project} surveyId={surveyId} survey={survey} />
         )}
       </article>

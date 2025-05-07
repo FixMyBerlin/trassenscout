@@ -26,8 +26,8 @@ type Props = {
   introPart3?: React.ReactNode
 }
 
-const getFirstStage = (surveySlug: AllowedSurveySlugs): Stage => {
-  for (let i = 1; i <= 3; i++) {
+const getNextStage = (surveySlug: AllowedSurveySlugs, currentStage: number): Stage => {
+  for (let i = currentStage + 1; i <= 3; i++) {
     // @ts-expect-error
     const config = getConfigBySurveySlug(surveySlug, `part${i}`)
     if (config) {
@@ -35,6 +35,9 @@ const getFirstStage = (surveySlug: AllowedSurveySlugs): Stage => {
     }
   }
   return "end"
+}
+const getFirstStage = (surveySlug: AllowedSurveySlugs): Stage => {
+  return getNextStage(surveySlug, 0)
 }
 
 export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
@@ -91,12 +94,13 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
       })
     })()
     console.log({ value })
+    const nextStage = getNextStage(surveySlug, 1)
     setTimeout(() => {
-      setStage("part2")
+      setStage(nextStage)
       setIsSpinner(false)
       setIsIntro(true)
       scrollToTopWithDelay()
-      setProgress(progessBarDefinition["part2"])
+      setProgress(progessBarDefinition[nextStage]!)
     }, 900)
   }
   // @ts-expect-error todo
@@ -117,18 +121,19 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
         status: "PENDING",
       })
     })()
-
-    const newProgressBar = (part3 && progessBarDefinition["part3"]) || progessBarDefinition["end"]
-    const newStage = meta.again ? "part2" : part3 ? "part3" : "end"
+    console.log({ value })
+    const nextStage = getNextStage(surveySlug, 2)
+    // depending on meta (coming from submit button) repeat part2 or go to next existing stage
+    const newStage = meta.again ? "part2" : nextStage
+    // if part2 is repeated we need to set intro to false and reset the form
     const newIntroState = !meta.again
     setFormKey(formKey + 1)
-    console.log({ value })
     setTimeout(() => {
       setStage(newStage)
       setIsSpinner(false)
       setIsIntro(newIntroState)
       scrollToTopWithDelay()
-      setProgress(newProgressBar)
+      setProgress(progessBarDefinition[newStage]!)
     }, 900)
   }
   // @ts-expect-error todo
@@ -154,13 +159,6 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
       scrollToTopWithDelay()
       setProgress(progessBarDefinition["end"]!)
     }, 900)
-  }
-
-  const handleEndToPart2 = () => {
-    setStage("part2")
-    setProgress(progessBarDefinition["part2"])
-    setIsSpinner(false)
-    scrollToTopWithDelay()
   }
 
   let component
@@ -202,7 +200,7 @@ export const SurveyMainPage = ({ surveyId, introPart1 }: Props) => {
       )
       break
     case "end":
-      component = <SurveyEnd onClickMore={handleEndToPart2} />
+      component = <SurveyEnd />
       break
   }
 
