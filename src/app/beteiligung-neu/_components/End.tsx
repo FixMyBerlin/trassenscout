@@ -4,11 +4,7 @@ import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/g
 import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
 import { useParams } from "next/navigation"
 
-type Props = {
-  onClickMore: () => void
-}
-
-export const SurveyEnd = ({ onClickMore }: Props) => {
+export const SurveyEnd = () => {
   const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
   const { description, button, title, homeUrl } = getConfigBySurveySlug(surveySlug, "end")
   return (
