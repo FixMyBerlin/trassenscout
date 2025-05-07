@@ -290,7 +290,7 @@ export const formConfig = {
     progressBarDefinition: 1,
     intro: {
       type: "standard",
-      title: "Willkommen zur Online-Beteiligung RS Test 1",
+      title: "RSTest 1 Willkommen zur Online-Beteiligung RS Test 1",
       description: "Hier haben wir nur einen Teil 1 ",
       buttons: [{ action: "next", label: "Weiter", position: "right" }],
     },
