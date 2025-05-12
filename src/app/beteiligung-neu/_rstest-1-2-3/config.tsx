@@ -683,12 +683,12 @@ export const formConfig = {
       buttons: [
         { action: "next", label: "Weiter", position: "right" },
         { action: "end", label: "Beteiligung beenden", position: "right" },
-        {
-          action: "part1",
-          label: "Zurück zum ersten Teil der Umfrage",
-          position: "left",
-          color: "white",
-        },
+        // {
+        //   action: "part1",
+        //   label: "Zurück zum ersten Teil der Umfrage",
+        //   position: "left",
+        //   color: "white",
+        // },
         // { action: "part2", label: "Zurück zu den Hinweisen" },
       ],
     },
