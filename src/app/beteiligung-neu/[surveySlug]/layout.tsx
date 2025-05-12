@@ -32,10 +32,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default function SurveyLayout({ params: { surveySlug }, children }: Props) {
-  const { canonicalUrl, logoUrl } = getConfigBySurveySlug(surveySlug, "meta")
+  const { canonicalUrl, logoUrl, primaryColor, darkColor, lightColor } = getConfigBySurveySlug(
+    surveySlug,
+    "meta",
+  )
+
+  const themeStyles = `
+    :root {
+      --survey-primary-color: ${primaryColor};
+      --survey-dark-color: ${darkColor};
+      --survey-light-color: ${lightColor};
+    }
+  `
 
   return (
     <>
+      <style dangerouslySetInnerHTML={{ __html: themeStyles }} />
+
       <div className="relative flex h-full flex-col overflow-x-hidden">
         <SurveyHeader landingPageUrl={canonicalUrl} logoSrc={logoUrl} />
         <main className="mx-auto flex w-full flex-col pb-40">{children}</main>

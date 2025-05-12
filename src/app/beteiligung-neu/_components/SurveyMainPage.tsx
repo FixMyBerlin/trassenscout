@@ -20,7 +20,7 @@ import createSurveySession from "@/src/survey-sessions/mutations/createSurveySes
 
 import { useMutation } from "@blitzjs/rpc"
 import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 type Props = {
   surveyId: number
@@ -56,13 +56,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
   const meta = getConfigBySurveySlug(surveySlug, "meta")
   const [progress, setProgress] = useState(getprogressBarDefinitionBySurveySlug(surveySlug, stage))
 
-  // todo maybe do this somewhere else
-  useEffect(() => {
-    const root = document.documentElement
-    root.style.setProperty("--survey-primary-color", meta.primaryColor)
-    root.style.setProperty("--survey-dark-color", meta.darkColor)
-    root.style.setProperty("--survey-light-color", meta.lightColor)
-  }, [meta.darkColor, meta.lightColor, meta.primaryColor])
+  // The useEffect for CSS variables has been removed as it's now handled at the layout level
 
   const getOrCreateSurveySessionId = async () => {
     if (surveySessionId) {
