@@ -18,7 +18,7 @@ export const SurveyRadiobuttonGroup = ({ options, className, label, description 
 
   return (
     <div className={clsx("m-2 w-full gap-2 p-2", hasError && "rounded bg-red-50")}>
-      <div className="mx-auto w-full max-w-md">
+      <div className="mx-auto w-full">
         <p className={formClasses.fieldLabel}>{label}</p>
         {description && (
           <p className={formClasses.fieldDescription} id={`${field.name}-hint`}>
@@ -27,7 +27,7 @@ export const SurveyRadiobuttonGroup = ({ options, className, label, description 
         )}
         <FieldError field={field} />
         <div className={clsx("w-full", className)}>
-          <div className="mx-auto w-full max-w-md">
+          <div className="mx-auto w-full">
             <RadioGroup value={field.state.value} onChange={field.handleChange} aria-label={label}>
               {options.map((option, i) => (
                 <Radio
