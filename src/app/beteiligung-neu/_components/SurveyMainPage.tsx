@@ -44,7 +44,6 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
   const [isIntro, setIsIntro] = useState(true)
   const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
   const [stage, setStage] = useState<Stage>(
-    // todo: this will not work in if part1 is conditional in the future
     process.env.NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE_NEW || getFirstStage(surveySlug),
   )
   const [isSpinner, setIsSpinner] = useState(false)
