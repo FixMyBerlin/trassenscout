@@ -1,3 +1,4 @@
+import { FieldWithErrorContainer } from "@/src/app/beteiligung-neu/_components/form/ErrorContainer"
 import { FieldError } from "@/src/app/beteiligung-neu/_components/form/FieldErrror"
 import { formClasses } from "@/src/app/beteiligung-neu/_components/form/styles"
 import { useFieldContext } from "@/src/app/beteiligung-neu/_shared/hooks/form-context"
@@ -9,21 +10,22 @@ type CheckboxProps = {
   description?: string
   label: string
   options: { key: string; label: string; description?: string }[]
-  className?: string
 }
 
-export const SurveyCheckboxGroup = ({ label, description, options, className }: CheckboxProps) => {
+export const SurveyCheckboxGroup = ({ label, description, options }: CheckboxProps) => {
   const field = useFieldContext<Array<string>>()
   const hasError = field.state.meta.errors.length > 0
 
   return (
-    <div className={clsx("m-2 p-2", hasError && "rounded bg-red-50", className)}>
-      <p className={formClasses.fieldLabel}>{label}</p>
-      {description && (
-        <p className={formClasses.fieldDescription} id={`${field.name}-hint`}>
-          {description}
-        </p>
-      )}
+    <FieldWithErrorContainer hasError={hasError}>
+      <div className="mb-4">
+        <p className={formClasses.fieldLabel}>{label}</p>
+        {description && (
+          <p className={formClasses.fieldDescription} id={`${field.name}-hint`}>
+            {description}
+          </p>
+        )}
+      </div>
       {options.map((option, i) => {
         return (
           <Field className="group" key={i}>
@@ -60,6 +62,6 @@ export const SurveyCheckboxGroup = ({ label, description, options, className }: 
         )
       })}
       <FieldError field={field} />
-    </div>
+    </FieldWithErrorContainer>
   )
 }
