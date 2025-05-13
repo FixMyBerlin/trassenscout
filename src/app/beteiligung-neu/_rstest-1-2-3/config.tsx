@@ -1,5 +1,6 @@
 import { IntroPart1 } from "@/src/app/beteiligung-neu/_rstest-1-2-3/SurveyRsTest123"
 import { FormConfig } from "@/src/app/beteiligung-neu/_shared/types"
+import { isDev } from "@/src/core/utils"
 import { AnyFieldApi } from "@tanstack/react-form"
 import { z } from "zod"
 
@@ -769,9 +770,10 @@ export const formConfig = {
             // there are cases that we want to keep the value of the conditional field even if it the field disappears (see location); we have a workaround for location (we delete the field manually on submit what is easy as location exsits in all survey so far but not ideal)
             listeners: {
               onChange: ({ fieldApi }) => {
-                console.log(
-                  `${fieldApi.name} has changed to: ${fieldApi.state.value} --> resetting conditionalCase1A`,
-                )
+                isDev &&
+                  console.log(
+                    `${fieldApi.name} has changed to: ${fieldApi.state.value} --> resetting conditionalCase1A`,
+                  )
                 fieldApi.state.value === "nein" &&
                   fieldApi.form.setFieldValue("conditionalCase1A", "") // reset value if condition is not met
               },
