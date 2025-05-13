@@ -2,7 +2,6 @@ import { LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import { SurveyBackgroundSwitcher } from "@/src/survey-public/components/maps/SurveyBackgroundSwitcher"
 import { bbox, center, lineString, multiLineString } from "@turf/turf"
 import { clsx } from "clsx"
-import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useCallback, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
@@ -186,7 +185,6 @@ export const SurveyMap = ({
         onMove={handleMapMove}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         onZoom={handleMapZoom}
-        mapLib={maplibregl}
         maxZoom={13}
         minZoom={7}
         // hash={true}

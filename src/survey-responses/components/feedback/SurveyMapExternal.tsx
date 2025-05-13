@@ -3,7 +3,6 @@ import { SurveyBackgroundSwitcher } from "@/src/survey-public/components/maps/Su
 import { SurveyMapBanner } from "@/src/survey-public/components/maps/SurveyMapBanner"
 import SurveyPin from "@/src/survey-public/components/maps/SurveyPin"
 import { clsx } from "clsx"
-import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useCallback, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
@@ -116,7 +115,6 @@ export const SurveyMapExternal = ({
         onMove={handleMapMove}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         onZoom={handleMapZoom}
-        mapLib={maplibregl}
       >
         {pinPosition && (
           <Marker

@@ -9,7 +9,6 @@ import SurveyPin from "@/src/app/beteiligung-neu/_components/form/map/Pin"
 import { installMapGrabIfTest } from "@/src/app/beteiligung-neu/_components/form/map/installMapGrab"
 import { useFieldContext } from "@/src/app/beteiligung-neu/_shared/hooks/form-context"
 import { clsx } from "clsx"
-import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useState } from "react"
 import Map, {
@@ -95,7 +94,6 @@ export const SurveySimpleMap = ({ maptilerUrl, config }: Props) => {
           mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
           scrollZoom={false}
           initialViewState={{ ...mapBounds, fitBoundsOptions: { padding: 100 } }}
-          mapLib={maplibregl}
           maxZoom={13}
           minZoom={7}
           cursor="grab"

@@ -6,7 +6,7 @@ import {
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import { playwrightSendMapLoadedEvent } from "@/tests/_utils/customMapLoadedEvent"
 import { clsx } from "clsx"
-import maplibregl, { MapGeoJSONFeature } from "maplibre-gl"
+import { MapGeoJSONFeature } from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
@@ -137,7 +137,6 @@ export const SurveyMapLine = ({ projectMap, className }: Props) => {
           bounds: config.bounds,
         }}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
-        mapLib={maplibregl}
         onClick={handleMapClick}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
