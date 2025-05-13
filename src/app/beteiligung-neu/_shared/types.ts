@@ -10,7 +10,7 @@ import { AnyFieldApi } from "@tanstack/react-form"
 
 import { LineString, MultiLineString } from "geojson"
 import { ComponentProps, ReactNode } from "react"
-import { z, ZodType } from "zod"
+import { ZodType } from "zod"
 
 // tbd maybe in the future we want to allow all field options of tanstack form fieldApi
 type FormFieldOptions = {
@@ -34,7 +34,7 @@ type FormFieldBase = {
   // superrefine is an alternative to additional field validators, seems like a good solution as well (had some issues with field validators in combination with from validators at first, taht is why I introduced it), but also limits possibilities (see location where we want to vaidate based on the field meta) tbd
   // see example rs test conditionalCase1A
   // maybe we delete superrefine option in config as for now it does not add functionality tbd
-  zodSuperRefine?: (data: any, ctx: z.RefinementCtx) => void
+  // zodSuperRefine?: (data: any, ctx: z.RefinementCtx) => void
 } & FormFieldOptions
 
 type ContentFieldBase = {

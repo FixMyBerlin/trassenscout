@@ -47,15 +47,14 @@ export const SurveyPart = ({
   // filter out the non form fields here tbd
   const allPagesFormFields = allPagesFields?.filter((field) => field.componentType === "form")
 
-  const schema = z
-    .object(
-      Object.fromEntries(allPagesFormFields?.map((field) => [field.name, field.zodSchema]) || []),
-    )
-    .superRefine((data, ctx) => {
-      allPagesFormFields
-        ?.filter((field) => field.zodSuperRefine)
-        ?.map((field) => field.zodSuperRefine!(data, ctx))
-    })
+  const schema = z.object(
+    Object.fromEntries(allPagesFormFields?.map((field) => [field.name, field.zodSchema]) || []),
+  )
+  // .superRefine((data, ctx) => {
+  //   allPagesFormFields
+  //     ?.filter((field) => field.zodSuperRefine)
+  //     ?.map((field) => field.zodSuperRefine!(data, ctx))
+  // })
 
   const form = useAppForm({
     defaultValues: allPagesFormFields
