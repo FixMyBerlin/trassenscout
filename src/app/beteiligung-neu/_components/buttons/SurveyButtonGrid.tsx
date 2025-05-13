@@ -12,17 +12,15 @@ export const SurveyButtonGrid = ({
   buttonRight2,
 }: GridProps) => {
   return (
-    <div className="flex sm:flex-col">
-      <div className="grid grid-cols-2 gap-6 pt-10">
-        {/* button position left */}
-        <div>{buttonLeft1}</div>
-        {/* button position right */}
-        <div className="justify-end sm:flex">{buttonRight1}</div>
-        {/* button position left */}
-        <div>{buttonLeft2}</div>
-        {/* button position right */}
-        <div className="justify-end sm:flex">{buttonRight2}</div>
-      </div>
+    <div className="grid gap-6 pt-10 sm:grid-cols-2">
+      {/* button position left */}
+      <div>{buttonLeft1}</div>
+      {/* button position right */}
+      <div className="justify-end sm:flex">{buttonRight1}</div>
+      {/* button position left */}
+      <div>{buttonLeft2}</div>
+      {/* button position right */}
+      <div className="justify-end sm:flex">{buttonRight2}</div>
     </div>
   )
 }
