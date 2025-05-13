@@ -2,7 +2,7 @@ import { FieldWithErrorContainer } from "@/src/app/beteiligung-neu/_components/f
 import { FieldError } from "@/src/app/beteiligung-neu/_components/form/FieldErrror"
 import { formClasses } from "@/src/app/beteiligung-neu/_components/form/styles"
 import { useFieldContext } from "@/src/app/beteiligung-neu/_shared/hooks/form-context"
-import { Checkbox, Field } from "@headlessui/react"
+import { Checkbox, Description, Field } from "@headlessui/react"
 import { CheckIcon } from "@heroicons/react/16/solid"
 import clsx from "clsx"
 
@@ -30,7 +30,7 @@ export const SurveyCheckboxGroup = ({ label, description, options }: CheckboxPro
         return (
           <Field className="group" key={i}>
             <Checkbox
-              as="button"
+              as="div"
               id={`${field.name}[${i}]`}
               checked={field.state.value.includes(option.key)}
               onChange={(isChecked) => {
@@ -44,17 +44,19 @@ export const SurveyCheckboxGroup = ({ label, description, options }: CheckboxPro
               <div className="flex h-full min-h-[2.5rem] items-center">
                 <span
                   className={clsx(
-                    "group-hover:border-gray-40 relative h-4 w-4 rounded border border-gray-300 text-[var(--survey-primary-color)] focus:ring-0",
+                    "relative h-4 w-4 rounded border border-gray-300 text-[var(--survey-primary-color)] transition-colors focus:ring-0 group-hover:border-gray-400",
                   )}
                 />
                 <span className="absolute h-4 w-4 rounded bg-[var(--survey-primary-color)] opacity-0 transition group-data-[checked]:opacity-100" />
                 <CheckIcon className="absolute hidden size-4 fill-white group-data-[checked]:block" />
               </div>
-              {/* for some reason Headless UI Label and Description component interfer with the hover and other inherited classes */}
+              {/* we do not use the simple pattern from the headless UI demos as we want the whole item to be clickable incl. label etc; we use p instead of Label from headless UI as Label breaks the hover for some reason */}
               <div className={formClasses.labelItemWrapper}>
                 <p className={clsx(formClasses.fieldItemLabel)}>{option.label}</p>
                 {option.description && (
-                  <p className={formClasses.fieldItemDescription}>{option.description}</p>
+                  <Description className={formClasses.fieldItemDescription}>
+                    {option.description}
+                  </Description>
                 )}
               </div>
             </Checkbox>

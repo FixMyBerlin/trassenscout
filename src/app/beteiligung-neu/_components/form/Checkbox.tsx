@@ -2,7 +2,7 @@ import { FieldWithErrorContainer } from "@/src/app/beteiligung-neu/_components/f
 import { FieldError } from "@/src/app/beteiligung-neu/_components/form/FieldErrror"
 import { formClasses } from "@/src/app/beteiligung-neu/_components/form/styles"
 import { useFieldContext } from "@/src/app/beteiligung-neu/_shared/hooks/form-context"
-import { Checkbox, Field } from "@headlessui/react"
+import { Checkbox, Description, Field } from "@headlessui/react"
 import { CheckIcon } from "@heroicons/react/16/solid"
 import clsx from "clsx"
 
@@ -24,7 +24,7 @@ export const SurveyCheckbox = ({
   return (
     <FieldWithErrorContainer hasError={hasError}>
       <div className="mb-4">
-        <p className={formClasses.fieldLabel}>{label}</p>
+        {label && <p className={formClasses.fieldLabel}>{label}</p>}
         {description && (
           <p className={formClasses.fieldDescription} id={`${field.name}-hint`}>
             {description}
@@ -33,29 +33,34 @@ export const SurveyCheckbox = ({
       </div>
       <Field className="flex">
         <Checkbox
-          as="button"
+          as="div"
           id={field.name}
           checked={field.state.value}
           onChange={field.handleChange}
           onBlur={field.handleBlur}
-          className="group flex h-full min-h-[2.5rem] w-full items-center hover:cursor-pointer"
+          className="group flex w-full cursor-pointer items-center"
         >
-          <CheckIcon className="hidden size-4 fill-black group-data-[checked]:block" />
-        </Checkbox>
-        <div className="flex h-full min-h-[2.5rem] items-center">
-          <span
-            className={clsx(
-              "group-hover:border-gray-40 relative h-4 w-4 rounded border border-gray-300 text-[var(--survey-primary-color)] focus:ring-0",
+          <div className="mr-3 flex h-5 items-center">
+            <div className="relative">
+              <span
+                className={clsx(
+                  "block h-4 w-4 rounded border border-gray-300 transition-colors group-hover:border-gray-400",
+                )}
+              />
+              <span className="absolute inset-0 h-4 w-4 rounded bg-[var(--survey-primary-color)] opacity-0 transition group-data-[checked]:opacity-100" />
+              <CheckIcon className="absolute inset-0 size-4 fill-white opacity-0 group-data-[checked]:opacity-100" />
+            </div>
+          </div>
+          {/* we do not use the simple pattern from the headless UI demos as we want the whole item to be clickable incl. label etc; we use p instead of Label from headless UI as Label breaks the hover for some reason */}
+          <div className={formClasses.labelItemWrapper}>
+            <p className={clsx(formClasses.fieldItemLabel)}>{itemLabel}</p>
+            {itemDescription && (
+              <Description className={formClasses.fieldItemDescription}>
+                {itemDescription}
+              </Description>
             )}
-          />
-          <span className="absolute h-4 w-4 rounded bg-[var(--survey-primary-color)] opacity-0 transition group-data-[checked]:opacity-100" />
-          <CheckIcon className="absolute hidden size-4 fill-white group-data-[checked]:block" />
-        </div>
-        {/* for some reason Headless UI Label and Description component interfer with the hover and other inherited classes */}
-        <div className={formClasses.labelItemWrapper}>
-          <p className={clsx(formClasses.fieldItemLabel)}>{itemLabel}</p>
-          {itemDescription && <p className={formClasses.fieldItemDescription}>{itemDescription}</p>}
-        </div>
+          </div>
+        </Checkbox>
       </Field>
       <FieldError field={field} />
     </FieldWithErrorContainer>

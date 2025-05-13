@@ -2,7 +2,7 @@ import { FieldWithErrorContainer } from "@/src/app/beteiligung-neu/_components/f
 import { FieldError } from "@/src/app/beteiligung-neu/_components/form/FieldErrror"
 import { formClasses } from "@/src/app/beteiligung-neu/_components/form/styles"
 import { useFieldContext } from "@/src/app/beteiligung-neu/_shared/hooks/form-context"
-import { Radio, RadioGroup } from "@headlessui/react"
+import { Description, Radio, RadioGroup } from "@headlessui/react"
 import { clsx } from "clsx"
 
 type Props = {
@@ -37,16 +37,18 @@ export const SurveyRadiobuttonGroup = ({ options, label, description }: Props) =
             <div className="flex h-full min-h-[2.5rem] items-center">
               <div
                 className={clsx(
-                  "relative h-4 w-4 cursor-pointer rounded-full border border-gray-300 focus:ring-0 group-hover:border-gray-400",
+                  "relative h-4 w-4 cursor-pointer rounded-full border border-gray-300 transition-colors focus:ring-0 group-hover:border-gray-400",
                 )}
               />
               <span className="absolute m-[2px] size-4 h-3 w-3 rounded-full border-4 border-[var(--survey-primary-color)] opacity-0 transition group-data-[checked]:opacity-100" />
             </div>
-            {/* for some reason Headless UI Label and Description component interfer with the hover and other inherited classes */}
+            {/* we do not use the simple pattern from the headless UI demos as we want the whole item to be clickable incl. label etc; we use p instead of Label from headless UI as Label breaks the hover for some reason */}{" "}
             <div className={formClasses.labelItemWrapper}>
               <p className={clsx(formClasses.fieldItemLabel)}>{option.label}</p>
               {option.description && (
-                <p className={formClasses.fieldItemDescription}>{option.description}</p>
+                <Description className={formClasses.fieldItemDescription}>
+                  {option.description}
+                </Description>
               )}
             </div>
           </Radio>

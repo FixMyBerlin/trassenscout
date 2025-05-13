@@ -87,7 +87,7 @@ export const SurveySimpleMap = ({ maptilerUrl, config }: Props) => {
 
   return (
     <>
-      <div className={clsx("h-[500px]")} aria-describedby={`${field.name}Hint`}>
+      <div className={clsx("h-[500px]")} aria-describedby={field.name + " Hint"}>
         <Map
           id="mainMap"
           onMove={handleMapMove}
