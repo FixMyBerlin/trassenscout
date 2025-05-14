@@ -22,7 +22,6 @@ export const SurveyTextfield = ({
 
   return (
     <FieldWithErrorContainer hasError={hasError}>
-      <FieldError field={field} />
       <Field>
         <div className="mb-4">
           <Label className={formClasses.fieldLabel}>
@@ -40,6 +39,7 @@ export const SurveyTextfield = ({
           {...props}
         />
       </Field>
+      <FieldError field={field} />
     </FieldWithErrorContainer>
   )
 }
