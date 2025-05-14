@@ -11,7 +11,7 @@ export const AdminSurveyResponsesNew = async ({ project, surveyId, survey }: Pro
     projectSlug: project.slug,
     surveyId,
   })
-  console.log({ allSurveyResponses })
+
   const part1 = getConfigBySurveySlug(survey.slug, "part1")
   const part2 = getConfigBySurveySlug(survey.slug, "part2")
   const part3 = getConfigBySurveySlug(survey.slug, "part3")
