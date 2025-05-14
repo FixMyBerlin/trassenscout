@@ -7,11 +7,12 @@ import { clsx } from "clsx"
 
 type Props = {
   description?: string
+  required: boolean
   label: string
   options: { key: string; label: string; description?: string }[]
 }
 
-export const SurveyRadiobuttonGroup = ({ options, label, description }: Props) => {
+export const SurveyRadiobuttonGroup = ({ options, label, description, required }: Props) => {
   const field = useFieldContext<string>()
   // field.state.meta.isTouched && does not make sense here tbd
   const hasError = field.state.meta.errors.length > 0
@@ -19,7 +20,9 @@ export const SurveyRadiobuttonGroup = ({ options, label, description }: Props) =
   return (
     <FieldWithErrorContainer hasError={hasError}>
       <div className="mb-4">
-        <p className={formClasses.fieldLabel}>{label}</p>
+        <p className={formClasses.fieldLabel}>
+          {label} {!required && "(optional)"}
+        </p>
         {description && (
           <p className={formClasses.fieldDescription} id={`${field.name}-hint`}>
             {description}

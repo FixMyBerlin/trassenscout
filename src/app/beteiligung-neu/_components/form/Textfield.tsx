@@ -6,10 +6,17 @@ import { useFieldContext } from "../../_shared/hooks/form-context"
 
 type TextfieldProps = {
   description?: string
+  required: boolean
   label: string
 } & React.InputHTMLAttributes<HTMLInputElement>
 
-export const SurveyTextfield = ({ description, label, placeholder, ...props }: TextfieldProps) => {
+export const SurveyTextfield = ({
+  description,
+  label,
+  placeholder,
+  required,
+  ...props
+}: TextfieldProps) => {
   const field = useFieldContext<string>()
   const hasError = field.state.meta.errors.length > 0
 
@@ -18,7 +25,9 @@ export const SurveyTextfield = ({ description, label, placeholder, ...props }: T
       <FieldError field={field} />
       <Field>
         <div className="mb-4">
-          <Label className={formClasses.fieldLabel}>{label}</Label>
+          <Label className={formClasses.fieldLabel}>
+            {label} {!required && "(optional)"}
+          </Label>
           <Description className={formClasses.fieldDescription}>{description}</Description>
         </div>
         <Input

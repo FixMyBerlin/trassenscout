@@ -7,19 +7,22 @@ import { CheckIcon } from "@heroicons/react/16/solid"
 import clsx from "clsx"
 
 type CheckboxProps = {
+  required: boolean
   description?: string
   label: string
   options: { key: string; label: string; description?: string }[]
 }
 
-export const SurveyCheckboxGroup = ({ label, description, options }: CheckboxProps) => {
+export const SurveyCheckboxGroup = ({ label, description, options, required }: CheckboxProps) => {
   const field = useFieldContext<Array<string>>()
   const hasError = field.state.meta.errors.length > 0
 
   return (
     <FieldWithErrorContainer hasError={hasError}>
       <div className="mb-4">
-        <p className={formClasses.fieldLabel}>{label}</p>
+        <p className={formClasses.fieldLabel}>
+          {label} {!required && "(optional)"}
+        </p>
         {description && (
           <p className={formClasses.fieldDescription} id={`${field.name}-hint`}>
             {description}

@@ -11,10 +11,12 @@ type CheckboxProps = {
   label?: string
   itemDescription?: string
   itemLabel: string
+  required: boolean
 }
 
 export const SurveyCheckbox = ({
   label,
+  required,
   description,
   itemLabel,
   itemDescription,
@@ -53,7 +55,9 @@ export const SurveyCheckbox = ({
           </div>
           {/* we do not use the simple pattern from the headless UI demos as we want the whole item to be clickable incl. label etc; we use p instead of Label from headless UI as Label breaks the hover for some reason */}
           <div className={formClasses.labelItemWrapper}>
-            <p className={clsx(formClasses.fieldItemLabel)}>{itemLabel}</p>
+            <p className={clsx(formClasses.fieldItemLabel)}>
+              {itemLabel} {!required && "(optional)"}
+            </p>
             {itemDescription && (
               <Description className={formClasses.fieldItemDescription}>
                 {itemDescription}

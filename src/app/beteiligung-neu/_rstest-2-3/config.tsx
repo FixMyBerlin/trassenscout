@@ -478,7 +478,7 @@ export const formConfig = {
             validation: fieldValidationEnum["optionalString"],
             defaultValue: "",
             props: {
-              label: "Vorname (optional):",
+              label: "Vorname",
             },
           },
           {
@@ -488,7 +488,7 @@ export const formConfig = {
             validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
-              label: "Nachname:",
+              label: "Nachname",
             },
           },
           {
@@ -558,7 +558,7 @@ export const formConfig = {
                 return undefined
               },
             },
-            validation: fieldValidationEnum["optionalString"],
+            validation: fieldValidationEnum["requiredString"],
             // example for superrefine - works exacly like the field validator
             // maybe we delete superrefine option in config as for now it does not add functionality tbd
             // zodSuperRefine: (data: any, ctx: z.RefinementCtx) => {
@@ -610,7 +610,7 @@ export const formConfig = {
             validation: fieldValidationEnum["optionalString"],
             defaultValue: "",
             props: {
-              label: "Case 1 B: Welches Auto fahren Sie? (optional)",
+              label: "Case 1 B: Welches Auto fahren Sie?",
             },
           },
           {
@@ -679,7 +679,7 @@ export const formConfig = {
             validation: fieldValidationEnum["optionalString"],
             defaultValue: "",
             props: {
-              label: "Case 2: Wie sicher fühlen Sie sich beim Radfahren? (optional)",
+              label: "Case 2: Wie sicher fühlen Sie sich beim Radfahren?",
             },
           },
           {

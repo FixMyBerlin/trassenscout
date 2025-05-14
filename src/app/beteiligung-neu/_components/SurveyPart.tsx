@@ -202,9 +202,14 @@ export const SurveyPart = ({
                               {(field) => {
                                 const Component = field[configField.component]
                                 if (!Component) return null
-                                // typescript does not know that the component is a valid field component
-                                // @ts-expect-error tbd
-                                return <Component {...configField.props} />
+                                return (
+                                  // typescript does not know that the component is a valid field component
+                                  // @ts-expect-error tbd
+                                  <Component
+                                    required={configField.validation.required}
+                                    {...configField.props}
+                                  />
+                                )
                               }}
                             </form.AppField>
                           )
@@ -222,9 +227,14 @@ export const SurveyPart = ({
                       {(field) => {
                         const Component = field[configField.component]
                         if (!Component) return null
-                        // typescript does not know that the component is a valid field component
-                        // @ts-expect-error tbd
-                        return <Component {...configField.props} />
+                        return (
+                          // typescript does not know that the component is a valid field component
+                          // @ts-expect-error tbd
+                          <Component
+                            required={configField.validation.required}
+                            {...configField.props}
+                          />
+                        )
                       }}
                     </form.AppField>
                   )

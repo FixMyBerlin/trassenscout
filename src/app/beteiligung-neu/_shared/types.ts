@@ -50,7 +50,7 @@ export type FieldConfig =
         | (typeof fieldValidationEnum)["optionalString"]
         | (typeof fieldValidationEnum)["requiredString"]
       defaultValue: string
-    } & FormFieldBase & { props: ComponentProps<typeof SurveyTextfield> })
+    } & FormFieldBase & { props: Omit<ComponentProps<typeof SurveyTextfield>, "required"> })
   | ({
       component: "SurveyTextarea"
       componentType: "form"
@@ -58,20 +58,22 @@ export type FieldConfig =
         | (typeof fieldValidationEnum)["optionalString"]
         | (typeof fieldValidationEnum)["requiredString"]
       defaultValue: string
-    } & FormFieldBase & { props: ComponentProps<typeof SurveyTextarea> })
+    } & FormFieldBase & { props: Omit<ComponentProps<typeof SurveyTextarea>, "required"> })
   | ({
       component: "SurveySimpleMapWithLegend"
       componentType: "form"
       validation: (typeof fieldValidationEnum)["requiredLatLng"]
       defaultValue: object | null
-    } & FormFieldBase & { props: ComponentProps<typeof SurveySimpleMapWithLegend> })
+    } & FormFieldBase & {
+        props: Omit<ComponentProps<typeof SurveySimpleMapWithLegend>, "required">
+      })
   | ({
       component: "SurveyCheckbox"
       componentType: "form"
       validation: (typeof fieldValidationEnum)["requiredBoolean"]
       defaultValue: boolean
     } & FormFieldBase & {
-        props: ComponentProps<typeof SurveyCheckbox>
+        props: Omit<ComponentProps<typeof SurveyCheckbox>, "required">
       })
   | ({
       component: "SurveyCheckboxGroup"
@@ -83,7 +85,7 @@ export type FieldConfig =
         | (typeof fieldValidationEnum)["optionalArrayOfStringMax3"]
       defaultValue: Array<string>
     } & FormFieldBase & {
-        props: ComponentProps<typeof SurveyCheckboxGroup>
+        props: Omit<ComponentProps<typeof SurveyCheckboxGroup>, "required">
       })
   | ({
       component: "SurveyRadiobuttonGroup"
@@ -93,7 +95,7 @@ export type FieldConfig =
         | (typeof fieldValidationEnum)["requiredString"]
       defaultValue: string
     } & FormFieldBase & {
-        props: ComponentProps<typeof SurveyRadiobuttonGroup>
+        props: Omit<ComponentProps<typeof SurveyRadiobuttonGroup>, "required">
       })
   | ({
       component: "SurveyPageTitle"
