@@ -48,7 +48,9 @@ export const SurveyPart = ({
   const allPagesFormFields = allPagesFields?.filter((field) => field.componentType === "form")
 
   const schema = z.object(
-    Object.fromEntries(allPagesFormFields?.map((field) => [field.name, field.zodSchema]) || []),
+    Object.fromEntries(
+      allPagesFormFields?.map((field) => [field.name, field.validation.zodSchema]) || [],
+    ),
   )
   // .superRefine((data, ctx) => {
   //   allPagesFormFields

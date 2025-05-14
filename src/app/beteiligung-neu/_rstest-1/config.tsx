@@ -1,5 +1,5 @@
+import { fieldValidationEnum } from "@/src/app/beteiligung-neu/_shared/fieldvalidationEnum"
 import { FormConfig } from "@/src/app/beteiligung-neu/_shared/types"
-import { z } from "zod"
 
 export const formConfig = {
   meta: {
@@ -317,9 +317,7 @@ export const formConfig = {
             name: "verkehrsmittelNutzung",
             component: "SurveyCheckboxGroup",
             componentType: "form",
-            zodSchema: z.array(z.string()).nonempty({
-              message: "Pflichtfeld.",
-            }),
+            validation: fieldValidationEnum["requiredArrayOfString"],
             defaultValue: [],
             props: {
               label: "Welche dieser Verkehrsmittel nutzen Sie täglich oder fast täglich?",
@@ -339,7 +337,7 @@ export const formConfig = {
             name: "verkehrsmittelBesitz",
             component: "SurveyCheckboxGroup",
             componentType: "form",
-            zodSchema: z.array(z.string()),
+            validation: fieldValidationEnum["optionalArrayOfString"],
             defaultValue: [],
             props: {
               label: "Welche Verkehrsmittel besitzen Sie?",
@@ -359,9 +357,7 @@ export const formConfig = {
             name: "verkehrsmittelBesitz_min2",
             component: "SurveyCheckboxGroup",
             componentType: "form",
-            zodSchema: z
-              .array(z.string())
-              .min(2, { message: "Bitte mindestens 2 Antworten auswählen" }),
+            validation: fieldValidationEnum["requiredArrayOfStringMin2"],
             defaultValue: [],
             props: {
               label: "Welche Verkehrsmittel besitzen Sie? 2",
@@ -382,9 +378,7 @@ export const formConfig = {
             name: "verkehrsmittelBesitz_max3",
             component: "SurveyCheckboxGroup",
             componentType: "form",
-            zodSchema: z
-              .array(z.string())
-              .max(3, { message: "Bitte maximal 3 Antworten auswählen" }),
+            validation: fieldValidationEnum["optionalArrayOfStringMax3"],
             defaultValue: [],
             props: {
               label: "Welche Verkehrsmittel besitzen Sie? 3",
@@ -425,10 +419,7 @@ export const formConfig = {
             name: "nutzen",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Würden Sie den FRM7 nutzen?",
@@ -446,10 +437,7 @@ export const formConfig = {
             name: "wichtig",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Was ist Ihnen beim Radfahren besonders wichtig?",
@@ -474,10 +462,7 @@ export const formConfig = {
             name: "autos",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Eine Fahrradstraße, auf der auch Autos erlaubt sind, würde ich...",

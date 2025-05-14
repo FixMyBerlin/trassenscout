@@ -1,6 +1,6 @@
+import { fieldValidationEnum } from "@/src/app/beteiligung-neu/_shared/fieldvalidationEnum"
 import { FormConfig } from "@/src/app/beteiligung-neu/_shared/types"
 import { AnyFieldApi } from "@tanstack/react-form"
-import { z } from "zod"
 
 export const formConfig = {
   meta: {
@@ -320,10 +320,7 @@ export const formConfig = {
             name: "category",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Zu welchem Thema passt Ihr Hinweis?",
@@ -360,10 +357,7 @@ export const formConfig = {
             name: "enableLocation",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "ja",
             props: {
               label: "Bezieht sich Ihr Hinweis auf eine konkrete Stelle entlang der Route?",
@@ -394,7 +388,7 @@ export const formConfig = {
               },
             },
             component: "SurveySimpleMapWithLegend",
-            zodSchema: z.object({ lat: z.number(), lng: z.number() }),
+            validation: fieldValidationEnum["requiredLatLng"],
             defaultValue: {
               lat: 50.13115168672226,
               lng: 8.732094920912573,
@@ -441,10 +435,7 @@ export const formConfig = {
             name: "feedbackText",
             component: "SurveyTextarea",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Ihr Hinweis",

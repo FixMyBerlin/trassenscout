@@ -6,11 +6,11 @@ import { SurveyRadiobuttonGroup } from "@/src/app/beteiligung-neu/_components/fo
 import { SurveyTextarea } from "@/src/app/beteiligung-neu/_components/form/Textarea"
 import { SurveyTextfield } from "@/src/app/beteiligung-neu/_components/form/Textfield"
 import { SurveyMarkdown } from "@/src/app/beteiligung-neu/_components/layout/SurveyMarkdown"
+import { fieldValidationEnum } from "@/src/app/beteiligung-neu/_shared/fieldvalidationEnum"
 import { AnyFieldApi } from "@tanstack/react-form"
 
 import { LineString, MultiLineString } from "geojson"
 import { ComponentProps, ReactNode } from "react"
-import { ZodType } from "zod"
 
 // tbd maybe in the future we want to allow all field options of tanstack form fieldApi
 type FormFieldOptions = {
@@ -45,27 +45,30 @@ type ContentFieldBase = {
 export type FieldConfig =
   | ({
       component: "SurveyTextfield"
-      // componentType tbd
       componentType: "form"
-      zodSchema: ZodType<string> | ZodType<string | undefined | null>
+      validation:
+        | (typeof fieldValidationEnum)["optionalString"]
+        | (typeof fieldValidationEnum)["requiredString"]
       defaultValue: string
     } & FormFieldBase & { props: ComponentProps<typeof SurveyTextfield> })
   | ({
       component: "SurveyTextarea"
       componentType: "form"
-      zodSchema: ZodType<string> | ZodType<string | undefined | null>
+      validation:
+        | (typeof fieldValidationEnum)["optionalString"]
+        | (typeof fieldValidationEnum)["requiredString"]
       defaultValue: string
     } & FormFieldBase & { props: ComponentProps<typeof SurveyTextarea> })
   | ({
       component: "SurveySimpleMapWithLegend"
       componentType: "form"
-      zodSchema: ZodType<object | null | undefined> // actually it will always be the same schema for this custom component, so we do not actually need to configure it...; but for simplicity I leave it like this for now
+      validation: (typeof fieldValidationEnum)["requiredLatLng"]
       defaultValue: object | null
     } & FormFieldBase & { props: ComponentProps<typeof SurveySimpleMapWithLegend> })
   | ({
       component: "SurveyCheckbox"
       componentType: "form"
-      zodSchema: ZodType<boolean | undefined>
+      validation: (typeof fieldValidationEnum)["requiredBoolean"]
       defaultValue: boolean
     } & FormFieldBase & {
         props: ComponentProps<typeof SurveyCheckbox>
@@ -73,7 +76,11 @@ export type FieldConfig =
   | ({
       component: "SurveyCheckboxGroup"
       componentType: "form"
-      zodSchema: ZodType<Array<string>>
+      validation:
+        | (typeof fieldValidationEnum)["optionalArrayOfString"]
+        | (typeof fieldValidationEnum)["requiredArrayOfString"]
+        | (typeof fieldValidationEnum)["requiredArrayOfStringMin2"]
+        | (typeof fieldValidationEnum)["optionalArrayOfStringMax3"]
       defaultValue: Array<string>
     } & FormFieldBase & {
         props: ComponentProps<typeof SurveyCheckboxGroup>
@@ -81,7 +88,9 @@ export type FieldConfig =
   | ({
       component: "SurveyRadiobuttonGroup"
       componentType: "form"
-      zodSchema: ZodType<string>
+      validation:
+        | (typeof fieldValidationEnum)["optionalString"]
+        | (typeof fieldValidationEnum)["requiredString"]
       defaultValue: string
     } & FormFieldBase & {
         props: ComponentProps<typeof SurveyRadiobuttonGroup>
@@ -145,12 +154,10 @@ export type SurveyPart2 = {
   progressBarDefinition: number
   intro: TIntro
   buttonLabels: { next: string; back: string; submit: string; again: string }
-  // todo
-  // tbd
-  // we need to type that part2 always has fields with id "location" "feedback"...
+  // we want to type part2 has fields with id "location" "feedback"...
   // so checking field names across an array of objects
   // TypeScript can't fully enforce this constraint afaik
-  // so maybe we have to just "tell" the backend that it can be sure that the pages contain the required fields
+  // so maybe we have to just "tell" / overrule ts the backend that it can be sure that the pages contain the required fields
   pages: [FormPage, ...FormPage[]]
 }
 

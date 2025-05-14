@@ -1,7 +1,8 @@
 import { IntroPart1 } from "@/src/app/beteiligung-neu/_frm7-neu/SurveyFRM7NEU"
+import { fieldValidationEnum } from "@/src/app/beteiligung-neu/_shared/fieldvalidationEnum"
+
 import { FormConfig } from "@/src/app/beteiligung-neu/_shared/types"
 import { AnyFieldApi } from "@tanstack/react-form"
-import { z } from "zod"
 
 export const formConfig = {
   meta: {
@@ -318,9 +319,7 @@ export const formConfig = {
             name: "1",
             component: "SurveyCheckboxGroup",
             componentType: "form",
-            zodSchema: z.array(z.string()).nonempty({
-              message: "Pflichtfeld.",
-            }),
+            validation: fieldValidationEnum["requiredArrayOfString"],
             defaultValue: [],
             props: {
               label: "Welche dieser Verkehrsmittel nutzen Sie täglich oder fast täglich?",
@@ -340,9 +339,7 @@ export const formConfig = {
             name: "2",
             component: "SurveyCheckboxGroup",
             componentType: "form",
-            zodSchema: z.array(z.string()).nonempty({
-              message: "Pflichtfeld.",
-            }),
+            validation: fieldValidationEnum["requiredArrayOfString"],
             defaultValue: [],
             props: {
               label: "Welche Verkehrsmittel besitzen Sie?",
@@ -362,10 +359,7 @@ export const formConfig = {
             name: "3",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Wie lange dauert Ihre häufigste Fahrradstrecke (ein Weg)?",
@@ -383,9 +377,7 @@ export const formConfig = {
             name: "4",
             component: "SurveyCheckboxGroup",
             componentType: "form",
-            zodSchema: z.array(z.string()).nonempty({
-              message: "Pflichtfeld.",
-            }),
+            validation: fieldValidationEnum["requiredArrayOfString"],
             defaultValue: [],
             props: {
               label: "Wählen Sie aus, welchen Aussagen Sie zustimmen.",
@@ -405,9 +397,7 @@ export const formConfig = {
             name: "5",
             component: "SurveyCheckboxGroup",
             componentType: "form",
-            zodSchema: z.array(z.string()).nonempty({
-              message: "Pflichtfeld.",
-            }),
+            validation: fieldValidationEnum["requiredArrayOfString"],
             defaultValue: [],
             props: {
               label: "Warum können oder wollen Sie nicht öfter Fahrrad fahren?",
@@ -461,10 +451,7 @@ export const formConfig = {
             name: "9",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Würden Sie den FRM7 nutzen?",
@@ -482,10 +469,7 @@ export const formConfig = {
             name: "10",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Wie oft würden Sie den FRM7 nutzen?",
@@ -501,9 +485,7 @@ export const formConfig = {
             name: "11",
             component: "SurveyCheckboxGroup",
             componentType: "form",
-            zodSchema: z.array(z.string()).nonempty({
-              message: "Pflichtfeld.",
-            }),
+            validation: fieldValidationEnum["requiredArrayOfString"],
             defaultValue: [],
             props: {
               label: "Für welche Fahrten würden Sie den FRM7 nutzen?",
@@ -522,10 +504,7 @@ export const formConfig = {
             name: "12",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label:
@@ -553,10 +532,7 @@ export const formConfig = {
             name: "13",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Was ist Ihnen beim Radfahren besonders wichtig?",
@@ -581,10 +557,7 @@ export const formConfig = {
             name: "14",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label:
@@ -613,10 +586,7 @@ export const formConfig = {
             name: "15",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Eine Fahrradstraße, auf der auch Autos erlaubt sind, würde ich...",
@@ -663,10 +633,7 @@ export const formConfig = {
             name: "16",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Wie alt sind Sie?",
@@ -705,10 +672,7 @@ export const formConfig = {
             name: "17",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Haben Sie Kinder unter 12 Jahren?",
@@ -722,9 +686,7 @@ export const formConfig = {
             name: "18",
             component: "SurveyCheckboxGroup",
             componentType: "form",
-            zodSchema: z.array(z.string()).nonempty({
-              message: "Pflichtfeld.",
-            }),
+            validation: fieldValidationEnum["requiredArrayOfString"],
             defaultValue: [],
             props: {
               label: "Welches Geschlecht haben Sie?",
@@ -739,10 +701,7 @@ export const formConfig = {
             name: "20",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Was ist Ihr höchster Bildungsabschluss?",
@@ -759,10 +718,7 @@ export const formConfig = {
             name: "21",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Was ist Ihr höchster Berufsabschluss?",
@@ -794,9 +750,7 @@ export const formConfig = {
             name: "22",
             component: "SurveyCheckboxGroup",
             componentType: "form",
-            zodSchema: z.array(z.string()).nonempty({
-              message: "Pflichtfeld.",
-            }),
+            validation: fieldValidationEnum["requiredArrayOfString"],
             defaultValue: [],
             props: {
               label:
@@ -870,10 +824,7 @@ export const formConfig = {
             name: "category",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Zu welchem Thema passt Ihr Hinweis?",
@@ -910,10 +861,7 @@ export const formConfig = {
             name: "enableLocation",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "ja",
             props: {
               label: "Bezieht sich Ihr Hinweis auf eine konkrete Stelle entlang der Route?",
@@ -943,7 +891,7 @@ export const formConfig = {
               },
             },
             component: "SurveySimpleMapWithLegend",
-            zodSchema: z.object({ lat: z.number(), lng: z.number() }),
+            validation: fieldValidationEnum["requiredLatLng"],
             defaultValue: {
               lat: 50.13115168672226,
               lng: 8.732094920912573,
@@ -990,10 +938,7 @@ export const formConfig = {
             name: "feedbackText",
             component: "SurveyTextarea",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Was möchten Sie uns mitteilen?",

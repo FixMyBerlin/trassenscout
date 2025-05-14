@@ -1,6 +1,6 @@
+import { fieldValidationEnum } from "@/src/app/beteiligung-neu/_shared/fieldvalidationEnum"
 import { FormConfig } from "@/src/app/beteiligung-neu/_shared/types"
 import { AnyFieldApi } from "@tanstack/react-form"
-import { z } from "zod"
 
 export const formConfig = {
   meta: {
@@ -320,10 +320,7 @@ export const formConfig = {
             name: "category",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Zu welchem Thema passt Ihr Hinweis?",
@@ -360,10 +357,7 @@ export const formConfig = {
             name: "enableLocation",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "ja",
             props: {
               label: "Bezieht sich Ihr Hinweis auf eine konkrete Stelle entlang der Route?",
@@ -394,7 +388,7 @@ export const formConfig = {
               },
             },
             component: "SurveySimpleMapWithLegend",
-            zodSchema: z.object({ lat: z.number(), lng: z.number() }),
+            validation: fieldValidationEnum["requiredLatLng"],
             defaultValue: {
               lat: 50.13115168672226,
               lng: 8.732094920912573,
@@ -441,10 +435,7 @@ export const formConfig = {
             name: "feedbackText",
             component: "SurveyTextarea",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Ihr Hinweis",
@@ -484,7 +475,7 @@ export const formConfig = {
             name: "firstName",
             component: "SurveyTextfield",
             componentType: "form",
-            zodSchema: z.string().optional(),
+            validation: fieldValidationEnum["optionalString"],
             defaultValue: "",
             props: {
               label: "Vorname (optional):",
@@ -494,9 +485,7 @@ export const formConfig = {
             name: "lastName",
             component: "SurveyTextfield",
             componentType: "form",
-            zodSchema: z.string().nonempty({
-              message: "Pflichtfeld.",
-            }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Nachname:",
@@ -506,7 +495,7 @@ export const formConfig = {
             name: "isTest",
             component: "SurveyCheckbox",
             componentType: "form",
-            zodSchema: z.boolean(),
+            validation: fieldValidationEnum["requiredBoolean"],
             defaultValue: false,
             props: {
               label: "Möchten Sie diese Checkbox aktivieren?",
@@ -518,10 +507,7 @@ export const formConfig = {
             name: "conditionCase1A",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "nein",
             props: {
               label: "Case 1 A: Fahren Sie Fahrrad?",
@@ -572,7 +558,7 @@ export const formConfig = {
                 return undefined
               },
             },
-            zodSchema: z.string().optional(),
+            validation: fieldValidationEnum["optionalString"],
             // example for superrefine - works exacly like the field validator
             // maybe we delete superrefine option in config as for now it does not add functionality tbd
             // zodSuperRefine: (data: any, ctx: z.RefinementCtx) => {
@@ -593,10 +579,7 @@ export const formConfig = {
             name: "conditionCase1B",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "nein",
             props: {
               label: "Case 1 B: Fahren Sie Auto?",
@@ -624,7 +607,7 @@ export const formConfig = {
               fieldName: "conditionCase1B",
               conditionFn: (fieldValue) => fieldValue === "ja",
             },
-            zodSchema: z.string().optional(),
+            validation: fieldValidationEnum["optionalString"],
             defaultValue: "",
             props: {
               label: "Case 1 B: Welches Auto fahren Sie? (optional)",
@@ -634,9 +617,7 @@ export const formConfig = {
             name: "conditionCase2",
             component: "SurveyCheckboxGroup",
             componentType: "form",
-            zodSchema: z.array(z.string()).nonempty({
-              message: "Pflichtfeld.",
-            }),
+            validation: fieldValidationEnum["requiredArrayOfString"],
             defaultValue: [],
             props: {
               label: "Case 2: Was trifft auf Sie zu?",
@@ -695,7 +676,7 @@ export const formConfig = {
                 return ["manchmal", "oft", "sehr_oft"].some((key) => fieldValue?.includes(key))
               },
             },
-            zodSchema: z.string().optional(),
+            validation: fieldValidationEnum["optionalString"],
             defaultValue: "",
             props: {
               label: "Case 2: Wie sicher fühlen Sie sich beim Radfahren? (optional)",
@@ -705,10 +686,7 @@ export const formConfig = {
             name: "conditionCase3",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "nein",
             props: {
               label: "Case 3: Fahren Sie Fahrrad oder Auto?",
@@ -733,7 +711,7 @@ export const formConfig = {
               conditionFn: (fieldValue) => fieldValue === "fahrrad",
             },
 
-            zodSchema: z.string().optional(),
+            validation: fieldValidationEnum["optionalString"],
             defaultValue: "",
             props: {
               label: "Welches Fahrrad fahren Sie?",
@@ -748,7 +726,7 @@ export const formConfig = {
               conditionFn: (fieldValue) => fieldValue === "auto",
             },
 
-            zodSchema: z.string().optional(),
+            validation: fieldValidationEnum["optionalString"],
             defaultValue: "",
             props: {
               label: "Welches Auto fahren Sie?",
@@ -778,10 +756,7 @@ export const formConfig = {
             name: "nutzen2",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Würden Sie den FRM7 nutzen?",
@@ -799,10 +774,7 @@ export const formConfig = {
             name: "oftNutzen2",
             component: "SurveyRadiobuttonGroup",
             componentType: "form",
-            zodSchema: z
-              .string({ message: "Pflichtfeld." })
-              .trim()
-              .min(1, { message: "Pflichtfeld." }),
+            validation: fieldValidationEnum["requiredString"],
             defaultValue: "",
             props: {
               label: "Wie oft würden Sie den FRM7 nutzen?",
