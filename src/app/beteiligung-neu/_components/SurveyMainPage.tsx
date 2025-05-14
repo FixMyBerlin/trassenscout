@@ -65,6 +65,9 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
     }
   }
 
+  const backendConfig = getConfigBySurveySlug(surveySlug, "backend")
+  const surveyResponseDefaultStatus = backendConfig.status[0].value
+
   // @ts-expect-error todo
   const handleSurveyPart1Submit = async ({ value }) => {
     setIsSpinner(true)
@@ -75,8 +78,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
         surveyPart: 1,
         data: JSON.stringify(value),
         source: "FORM",
-        // todo hard coded default from backend config
-        status: "PENDING",
+        status: surveyResponseDefaultStatus,
       })
     })()
     console.log({ value })
@@ -102,8 +104,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
         surveyPart: 2,
         data: JSON.stringify(value),
         source: "FORM",
-        // todo hard coded default from backend config
-        status: "PENDING",
+        status: surveyResponseDefaultStatus,
       })
     })()
     console.log({ value })
@@ -131,8 +132,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
         surveyPart: 3,
         data: JSON.stringify(value),
         source: "FORM",
-        // todo hard coded default from backend config
-        status: "PENDING",
+        status: surveyResponseDefaultStatus,
       })
     })()
     console.log({ value })
