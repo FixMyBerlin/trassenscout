@@ -511,7 +511,6 @@ model Survey {
   project                Project         @relation(fields: [projectId], references: [id])
   //
   surveySessions         SurveySession[]
-  LogEntry               LogEntry[]
 }
 
 model SurveySession {
@@ -540,6 +539,7 @@ model SurveyResponse {
   //
   surveyResponseTopics   SurveyResponseTopicsOnSurveyResponses[]
   surveyResponseComments SurveyResponseComment[]
+  LogEntry               LogEntry[]
 }
 
 enum SurveyResponseSourceEnum {
@@ -638,8 +638,8 @@ model LogEntry {
   stakeholdernote    Stakeholdernote?   @relation(fields: [stakeholdernoteId], references: [id])
   uploadId           Int?
   upload             Upload?            @relation(fields: [uploadId], references: [id])
-  surveyId           Int?
-  survey             Survey?            @relation(fields: [surveyId], references: [id])
+  surveyResponseId   Int?
+  surveyResponse     SurveyResponse?    @relation(fields: [surveyResponseId], references: [id])
 
   @@index([projectId, createdAt])
 }

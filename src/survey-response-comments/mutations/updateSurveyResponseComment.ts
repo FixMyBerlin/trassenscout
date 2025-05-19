@@ -5,6 +5,8 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { AuthorizationError } from "blitz"
 
@@ -17,23 +19,34 @@ const Schema = ProjectSlugRequiredSchema.merge(
 export default resolver.pipe(
   resolver.zod(Schema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ commentId, body }, ctx) => {
-    const { session } = ctx
-
+  async ({ commentId, body, projectSlug }, ctx: Ctx) => {
     // Only author may update own note comment
     const { userId: dbUserId } = await db.surveyResponseComment.findFirstOrThrow({
       where: { id: commentId },
       select: { userId: true },
     })
 
-    if (dbUserId !== session.userId && session.role !== "ADMIN") {
+    if (dbUserId !== ctx.session.userId && ctx.session.role !== "ADMIN") {
       throw new AuthorizationError()
     }
+
+    const previous = await db.surveyResponseComment.findFirst({ where: { id: commentId } })
 
     const result = await db.surveyResponseComment.update({
       where: { id: commentId },
       data: { body },
     })
+
+    await createLogEntry({
+      action: "UPDATE",
+      message: `Beteiligungs-Beitrag-Kommentar geändert`,
+      userId: ctx.session.userId,
+      projectSlug,
+      previousRecord: previous,
+      updatedRecord: result,
+      surveyResponseId: result.surveyResponseId,
+    })
+
     return result
   },
 )

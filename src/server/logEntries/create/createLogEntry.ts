@@ -17,7 +17,7 @@ type LogEntryCreate = {
   qualitylevelId?: number
   stakeholdernoteId?: number
   uploadId?: number
-  surveyId?: number
+  surveyResponseId?: number
   // To compute the `changes`
   previousRecord?: Record<string, any> | null
   updatedRecord?: Record<string, any>
@@ -53,7 +53,7 @@ export const createLogEntry = async (input: LogEntryCreate) => {
   // We skip the logs for updates if the update only changes the "updatedAt"
   const onlyUpdatedAtChanged =
     diff !== false && diff.filter((e) => e.path.join("") !== "updatedAt").length === 0
-  if (input.action === "UPDATE" && onlyUpdatedAtChanged) {
+  if (input.action === "UPDATE" && (diff === false || onlyUpdatedAtChanged)) {
     return
   }
 
@@ -76,7 +76,7 @@ export const createLogEntry = async (input: LogEntryCreate) => {
       qualitylevelId: data.qualitylevelId,
       stakeholdernoteId: data.stakeholdernoteId,
       uploadId: data.uploadId,
-      surveyId: data.surveyId,
+      surveyResponseId: data.surveyResponseId,
     },
   })
 }
