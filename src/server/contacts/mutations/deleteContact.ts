@@ -5,6 +5,7 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
@@ -16,11 +17,15 @@ export default resolver.pipe(
   resolver.zod(DeleteContactSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id, projectSlug }, ctx: Ctx) => {
+    const contact = await db.contact.findFirst({
+      where: { id },
+      select: { firstName: true, lastName: true },
+    })
     const record = await db.contact.deleteMany({ where: { id } })
 
     await createLogEntry({
       action: "DELETE",
-      message: `Externen Kontakt gelöscht`,
+      message: `Externen Kontakt ${contact ? getFullname(contact) : ""} gelöscht`,
       userId: ctx.session.userId,
       projectSlug,
     })

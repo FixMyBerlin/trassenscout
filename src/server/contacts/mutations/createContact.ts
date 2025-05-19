@@ -5,6 +5,7 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
@@ -27,7 +28,7 @@ export default resolver.pipe(
 
     await createLogEntry({
       action: "CREATE",
-      message: `Neuer externer Kontakt`,
+      message: `Neuer externer Kontakt ${record ? getFullname(record) : ""}`,
       userId: ctx.session.userId,
       projectId,
       contactId: record.id,
