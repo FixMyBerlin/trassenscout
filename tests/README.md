@@ -4,7 +4,8 @@
 - We can only run it in development
 - It would be better, to run it againt a build version `npm run build && npm run start` but that does not work right await because our DB and docker needs to be running as well.
 - We don't have a Github action, yet (see [\_todo](./_todo/)) and we don't have a concept of how to handle the database during CI runs
-- Testing any map component feels fragile. It is solved with a [CustomEvent](./_utils/customMapLoadedEvent.ts) for now. Ideally we find a better…
+- Testing any map components: It was solved with a [CustomEvent](./_utils/customMapLoadedEvent.ts) for now. TODO: for the geo category map (SurveyMapLine) use [MapGrab](https://mapgrab.github.io/docs/getting-started/stage-two/playwright) - [install interface in map component](src/app/beteiligung-neu/_components/form/map/installMapGrab.ts), test: get element by selector and click on layer.
+- Testing map with draggable pin: (e.g. SimpleSurveyMap) MapGrab plus dragging the pin see [FRM7-neu](./survey-frm7-neu.spec.ts) TODO: extract logic.
 
 ## Run tests
 
@@ -28,3 +29,4 @@ The YouTube Videos on the "Playwright" Channel provide a great intro.
 
 - https://playwright.dev/docs/intro
 - https://nextjs.org/docs/app/building-your-application/testing/playwright#running-your-playwright-tests
+- https://mapgrab.github.io/docs/getting-started/stage-two/playwright

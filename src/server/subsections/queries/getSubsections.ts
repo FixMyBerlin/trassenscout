@@ -11,7 +11,13 @@ type GetSubsectionsInput = { projectSlug: string } & Pick<
   // Do not allow `include` or `select` here, since we overwrite the types below.
   "where" | "orderBy" | "skip" | "take"
 >
-
+export type SubsectionWithPositionAndStatus = SubsectionWithPosition & {
+  SubsubsectionStatus: {
+    id: number
+    slug: string
+    title: string
+  } | null
+}
 export default resolver.pipe(
   // @ts-expect-errors
   authorizeProjectMember(extractProjectSlug, viewerRoles),
@@ -43,11 +49,12 @@ export default resolver.pipe(
             operator: { select: { id: true, slug: true, title: true } },
             stakeholdernotes: { select: { id: true, status: true } },
             subsubsections: { select: { id: true } },
+            SubsubsectionStatus: true,
           },
         }),
     })
 
-    const subsectionsWithCounts: SubsectionWithPosition[] = []
+    const subsectionsWithCounts: SubsectionWithPositionAndStatus[] = []
 
     subsections.forEach((subsection) => {
       const relevantStakeholdernotes = subsection.stakeholdernotes.filter(

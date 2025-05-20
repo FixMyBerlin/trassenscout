@@ -76,7 +76,6 @@ export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
               id="preview"
               mapStyle={vectorStyle}
               scrollZoom={false}
-              RTLTextPlugin={false}
             >
               <NavigationControl showCompass={false} />
               <ScaleControl />

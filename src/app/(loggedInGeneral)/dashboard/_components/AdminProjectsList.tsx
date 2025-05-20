@@ -1,15 +1,16 @@
-"use client"
+import { invoke } from "@/src/blitz-server"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Link } from "@/src/core/components/links/Link"
 import { shortTitle } from "@/src/core/components/text"
-import { isAdmin } from "@/src/pagesComponents/users/utils/isAdmin"
 import getProjects from "@/src/server/projects/queries/getProjects"
-import { useCurrentUser } from "@/src/server/users/hooks/useCurrentUser"
-import { useQuery } from "@blitzjs/rpc"
+import getCurrentUser from "@/src/server/users/queries/getCurrentUser"
+import "server-only"
 
-export const AdminProjectsList = () => {
-  const user = useCurrentUser()
-  const [projects] = useQuery(getProjects, {}, { enabled: isAdmin(user) })
+export const AdminProjectsList = async () => {
+  const user = await invoke(getCurrentUser, null)
+  if (user?.role !== "ADMIN") return null
+
+  const projects = await invoke(getProjects, {})
 
   return (
     <SuperAdminBox className="prose">

@@ -6,46 +6,40 @@ import { startEnd } from "@/src/core/components/text/startEnd"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-import { StakeholderSummary } from "@/src/pagesComponents/stakeholdernotes/StakeholderSummary"
-import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
+import { SubsectionWithPositionAndStatus } from "@/src/server/subsections/queries/getSubsections"
 import { Routes } from "@blitzjs/next"
 import { clsx } from "clsx"
 import { useRouter } from "next/router"
 
 type Props = {
-  subsections: SubsectionWithPosition[]
+  subsections: SubsectionWithPositionAndStatus[]
   createButton?: boolean
 }
+
+const tableHeadClasses =
+  "pl-4 py-3.5 pr-3 text-left text-sm font-semibold uppercase text-gray-900  "
 
 export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = true }) => {
   const router = useRouter()
   const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
-
   return (
     <section>
       <TableWrapper className="mt-12">
         <table className="min-w-full divide-y divide-gray-300">
           <thead className="bg-gray-50">
             <tr>
-              <th
-                scope="col"
-                colSpan={2}
-                className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-              >
+              <th scope="col" colSpan={2} className={clsx("sm:pl-6", tableHeadClasses)}>
                 Planungsabschnitt
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th scope="col" className={tableHeadClasses}>
                 Baulastträger
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl Führungen
+              <th scope="col" className={tableHeadClasses}>
+                Status
               </th>
-              <th
-                scope="col"
-                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
-              >
-                TÖBs
+              <th scope="col" className={tableHeadClasses}>
+                Fertigstellung
               </th>
             </tr>
           </thead>
@@ -77,19 +71,13 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                   </td>
                   <td
                     className={clsx(
-                      "py-4 pl-4 pr-3 text-sm font-medium group-hover:bg-gray-50",
-                      subsection.subsubsectionCount === 0
-                        ? "text-gray-300 group-hover:text-gray-500"
-                        : "text-gray-900",
+                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50",
                     )}
                   >
-                    {subsection.subsubsectionCount}
+                    {subsection.SubsubsectionStatus?.title || "–"}
                   </td>
                   <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
-                    <StakeholderSummary
-                      format="number"
-                      stakeholdernotesCounts={subsection.stakeholdernotesCounts}
-                    />
+                    {subsection.estimatedCompletionDateString || "–"}
                   </td>
                 </tr>
               )

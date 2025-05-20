@@ -2,9 +2,8 @@ import { ProgressContext } from "@/src/survey-public/context/contexts"
 import { clsx } from "clsx"
 import { useContext } from "react"
 
-const TOTAL = 8
-
 export const ProgressBar = () => {
+  const TOTAL = 8
   const { progress } = useContext(ProgressContext)
   const width = progress ? (progress / TOTAL) * 100 : 100
 

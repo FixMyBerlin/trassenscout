@@ -13,6 +13,7 @@ import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBy
 import { Ctx, Routes } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { randomBytes } from "crypto"
+import { createLogEntry } from "../../logEntries/create/createLogEntry"
 import { InviteSchema } from "../schema"
 
 function generateToken(length: number = 32) {
@@ -20,7 +21,7 @@ function generateToken(length: number = 32) {
   return buffer.toString("base64url")
 }
 
-const CreateInviteSchema = ProjectSlugRequiredSchema.merge(InviteSchema)
+export const CreateInviteSchema = ProjectSlugRequiredSchema.merge(InviteSchema)
 
 export default resolver.pipe(
   resolver.zod(CreateInviteSchema),
@@ -38,6 +39,7 @@ export default resolver.pipe(
         email: data.email.toLocaleLowerCase(),
       },
       select: {
+        id: true,
         status: true,
         email: true,
         role: true,
@@ -77,6 +79,13 @@ export default resolver.pipe(
         })
       ).send()
     }
+
+    await createLogEntry({
+      action: "UPDATE",
+      message: `${data.email.toLocaleLowerCase()} wurde eingeladen`,
+      userId: ctx.session.userId,
+      projectId,
+    })
 
     const { token, ...saveInvite } = invite
     return saveInvite

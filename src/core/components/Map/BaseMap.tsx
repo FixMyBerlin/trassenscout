@@ -1,7 +1,6 @@
 import { featureCollection, point } from "@turf/helpers"
 import { clsx } from "clsx"
 import type { FeatureCollection, LineString, Point } from "geojson"
-import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useState } from "react"
 import Map, {
@@ -161,7 +160,6 @@ export const BaseMap: React.FC<BaseMapProps> = ({
           id={mapId}
           reuseMaps
           initialViewState={initialViewState}
-          mapLib={maplibregl}
           mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
           scrollZoom={false}
           cursor={cursorStyle}
@@ -178,7 +176,6 @@ export const BaseMap: React.FC<BaseMapProps> = ({
             .flat()
             .filter(Boolean)}
           hash={hash || false}
-          RTLTextPlugin={false}
         >
           <NavigationControl showCompass={false} />
           <ScaleControl />

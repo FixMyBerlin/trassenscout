@@ -1,4 +1,5 @@
 "use client"
+import { AllowedSurveySlugs as AllowedSurveySlugsNew } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
 import deleteTestSurveyResponses from "@/src/survey-responses/mutations/deleteTestSurveyResponses"
@@ -8,7 +9,7 @@ import { useRouter } from "next/navigation"
 
 type DeleteButtonProps = {
   testSurveyResponseIds: number[]
-  surveySlug: AllowedSurveySlugs
+  surveySlug: AllowedSurveySlugs | AllowedSurveySlugsNew
 }
 
 export const DeleteButton = ({ testSurveyResponseIds, surveySlug }: DeleteButtonProps) => {
@@ -21,6 +22,7 @@ export const DeleteButton = ({ testSurveyResponseIds, surveySlug }: DeleteButton
       )
     ) {
       try {
+        // @ts-expect-error todo
         await deleteTestSurveyMutation({ slug: surveySlug, deleteIds: testSurveyResponseIds })
       } catch (error) {
         alert("Beim Löschen ist ein Fehler aufgetreten.")

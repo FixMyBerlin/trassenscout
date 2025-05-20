@@ -487,7 +487,6 @@ export const SurveyResponseOverviewMap = ({
           bounds: defaultViewState,
         }}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
-        RTLTextPlugin={false}
         minZoom={6}
         maxZoom={20}
         onClick={handleMapClick}

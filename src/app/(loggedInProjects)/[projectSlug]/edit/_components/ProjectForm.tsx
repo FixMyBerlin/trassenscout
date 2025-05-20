@@ -1,10 +1,8 @@
 "use client"
 
-import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import {
   Form,
   FormProps,
-  LabeledCheckbox,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
@@ -48,10 +46,6 @@ export const ProjectForm = ({ users, ...props }: Props) => {
         </Link>
         , von NextJS intern optimiert und hier referenziert.
       </p>
-      <SuperAdminBox>
-        {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
-        <LabeledCheckbox scope="exportEnabled" label="Export-API aktiv" />
-      </SuperAdminBox>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledTextareaField
         optional

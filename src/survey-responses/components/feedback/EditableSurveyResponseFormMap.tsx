@@ -88,7 +88,6 @@ export const EditableSurveyResponseFormMap = ({
         }}
         scrollZoom={false}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
-        RTLTextPlugin={false}
       >
         {/*  todo survey clean up after survey BB */}
         {surveySlug === "radnetz-brandenburg" && (

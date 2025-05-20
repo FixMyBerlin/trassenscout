@@ -19,15 +19,15 @@ import seedUsers from "./seeds/users"
  * This seed function is executed when you run `blitz db seed`.
  */
 const seed = async () => {
+  // When we use `npm run db:restoreDump` we want to seed our test users but nothing else.
   // It looks like we cannot set ENV variables as prefix to a call in npm run.
   // But we can hack around this like this…
-  const seedAll = !process.env.npm_lifecycle_script?.includes("SEED_USER_ONLY")
+  const seedAll = !process.env.npm_lifecycle_script?.includes("restore-dump")
 
   if (seedAll) {
     await seedProjects()
   }
 
-  // When we use `npm run db:restoreDump` we want to seed our test uses
   await seedUsers()
   await seedMemberships()
 
