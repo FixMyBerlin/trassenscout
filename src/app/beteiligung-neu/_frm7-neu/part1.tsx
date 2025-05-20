@@ -351,31 +351,31 @@ export const part1Config: SurveyPart1and3 = {
           props: {
             label: "Wie alt sind Sie?",
             options: [
-              { key: "1", label: "Unter 14 Jahre" },
+              { key: "u_14", label: "Unter 14 Jahre" },
               {
-                key: "2",
+                key: "14-18",
                 label: "14 bis 18 Jahre",
               },
               {
-                key: "3",
+                key: "19-24",
                 label: "19 bis 24 Jahre",
               },
-              { key: "4", label: "25 bis 29 Jahre" },
+              { key: "25-29", label: "25 bis 29 Jahre" },
               {
-                key: "5",
+                key: "30-39",
                 label: "30 bis 39 Jahre",
               },
               {
-                key: "6",
+                key: "40-49",
                 label: "40 bis 49 Jahre",
               },
               {
-                key: "7",
+                key: "50-64",
                 label: "50 bis 64 Jahre",
               },
-              { key: "8", label: "65 bis 74 Jahre" },
+              { key: "65-74", label: "65 bis 74 Jahre" },
               {
-                key: "9",
+                key: "ueber_74",
                 label: "Über 74 Jahre",
               },
             ],
