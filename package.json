@@ -80,7 +80,7 @@
     "clsx": "2.1.1",
     "csv-writer": "1.6.0",
     "date-fns": "4.1.0",
-    "datum-merge": "0.9.8",
+    "datum-diff": "0.9.1",
     "dompurify": "3.2.5",
     "maplibre-gl": "5.5.0",
     "next": "14.2.28",
