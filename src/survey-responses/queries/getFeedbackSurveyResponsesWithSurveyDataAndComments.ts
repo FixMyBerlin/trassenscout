@@ -93,9 +93,7 @@ export default resolver.pipe(
       // Make `data` an object to work with…
       .map((response) => {
         const data = JSON.parse(response.data)
-        const surveyResponseTopics = response.surveyResponseTopics.map(
-          (topic) => topic.surveyResponseTopicId,
-        )
+        const surveyResponseTopics = response.surveyResponseTopics.map((topic) => topic.id)
         const surveySurveyResponseData = response.surveySurveyResponseData
           ? JSON.parse(response.surveySurveyResponseData)
           : null

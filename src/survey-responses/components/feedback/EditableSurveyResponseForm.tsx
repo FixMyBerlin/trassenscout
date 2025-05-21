@@ -6,8 +6,6 @@ import {
   TBackendConfig,
   backendConfig as defaultBackendConfig,
 } from "@/src/survey-public/utils/backend-config-defaults"
-import createSurveyResponseTopicsOnSurveyResponses from "@/src/survey-response-topics-on-survey-responses/mutations/createSurveyResponseTopicsOnSurveyResponses"
-import deleteSurveyResponseTopicsOnSurveyResponses from "@/src/survey-response-topics-on-survey-responses/mutations/deleteSurveyResponseTopicsOnSurveyResponses"
 import createSurveyResponseTopic from "@/src/survey-response-topics/mutations/createSurveyResponseTopic"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { invalidateQuery, useMutation } from "@blitzjs/rpc"
@@ -41,13 +39,6 @@ export function EditableSurveyResponseForm({
 
   const [createSurveyResponseTopicMutation] = useMutation(createSurveyResponseTopic)
   const [updateSurveyResponseMutation] = useMutation(updateSurveyResponse)
-  const [deleteSurveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
-    deleteSurveyResponseTopicsOnSurveyResponses,
-  )
-  const [createSurveyResponseTopicsOnSurveyResponsesMutation] = useMutation(
-    createSurveyResponseTopicsOnSurveyResponses,
-  )
-
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   // local states for controlled forms
   const [responseOperator, setResponseOperator] = useState(
@@ -126,7 +117,6 @@ export function EditableSurveyResponseForm({
           console.error(error)
         }
         break
-
       case "surveyResponseTopics":
         const updatedTopics = checked
           ? [...responseTopics, value]
@@ -135,16 +125,12 @@ export function EditableSurveyResponseForm({
         try {
           await updateSurveyResponseMutation({
             ...surveyResponseUpdateObject,
+            surveyResponseTopics: updatedTopics.map((item) => Number(item)),
           })
-          await deleteSurveyResponseTopicsOnSurveyResponsesMutation({
-            surveyResponseId: response.id,
+          console.log("update Object updateSurveyResponseMutation", {
+            ...surveyResponseUpdateObject,
+            surveyResponseTopics: updatedTopics.map((item) => Number(item)),
           })
-          for (const v of updatedTopics) {
-            await createSurveyResponseTopicsOnSurveyResponsesMutation({
-              surveyResponseId: response.id,
-              surveyResponseTopicId: Number(v),
-            })
-          }
         } catch (error: any) {
           console.error(error)
         }
@@ -180,9 +166,9 @@ export function EditableSurveyResponseForm({
         title: newTopic.trim(),
         projectSlug,
       })
-      await createSurveyResponseTopicsOnSurveyResponsesMutation({
-        surveyResponseTopicId: createdOrFetched.id,
-        surveyResponseId: response.id,
+      await updateSurveyResponseMutation({
+        ...surveyResponseUpdateObject,
+        surveyResponseTopics: [...responseTopics.map((t) => Number(t)), createdOrFetched.id],
       })
       // todo check invalidateQuery
       invalidateQuery(getSurveyResponseTopicsByProject)
