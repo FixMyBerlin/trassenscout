@@ -29,7 +29,7 @@ export const SurveyResponseWithLocation = () => {
   const surveyId = useParam("surveyId", "number")
   const [survey] = useQuery(getSurvey, { projectSlug, id: surveyId })
   // the returned responses include the surveyPart1 data
-  const [{ feedbackSurveyResponses }] = useQuery(
+  const [{ feedbackSurveyResponses }, { refetch: refetchResponses }] = useQuery(
     getFeedbackSurveyResponsesWithSurveyDataAndComments,
     {
       projectSlug,
@@ -49,6 +49,12 @@ export const SurveyResponseWithLocation = () => {
       projectSlug,
     },
   )
+
+  // Whenever we submit the form, we also refetch, so the whole accordeon header and everything else is updated
+  const refetchResponsesAndTopics = async () => {
+    await refetchTopics()
+    await refetchResponses()
+  }
 
   const mapSelectedResponses = mapSelection
     ? feedbackSurveyResponses.filter((response) => mapSelection.includes(response.id))
@@ -136,7 +142,7 @@ export const SurveyResponseWithLocation = () => {
                   response={response}
                   operators={operators}
                   topics={topics}
-                  refetchResponsesAndTopics={() => {}}
+                  refetchResponsesAndTopics={refetchResponsesAndTopics}
                   showMap={false}
                 />
               </div>
