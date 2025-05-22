@@ -53,10 +53,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
   // to reset form when repeated
   const [formKey, setFormKey] = useState(1)
 
-  const meta = getConfigBySurveySlug(surveySlug, "meta")
   const [progress, setProgress] = useState(getprogressBarDefinitionBySurveySlug(surveySlug, stage))
-
-  // The useEffect for CSS variables has been removed as it's now handled at the layout level
 
   const getOrCreateSurveySessionId = async () => {
     if (surveySessionId) {
@@ -68,6 +65,9 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
     }
   }
 
+  const backendConfig = getConfigBySurveySlug(surveySlug, "backend")
+  const surveyResponseDefaultStatus = backendConfig.status[0].value
+
   // @ts-expect-error todo
   const handleSurveyPart1Submit = async ({ value }) => {
     setIsSpinner(true)
@@ -75,12 +75,10 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
         surveySessionId: surveySessionId_,
-        // todo hard coded
         surveyPart: 1,
         data: JSON.stringify(value),
         source: "FORM",
-        // todo hard coded default from backend config
-        status: "PENDING",
+        status: surveyResponseDefaultStatus,
       })
     })()
     console.log({ value })
@@ -103,12 +101,10 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
         surveySessionId: surveySessionId_,
-        // todo hard coded
         surveyPart: 2,
         data: JSON.stringify(value),
         source: "FORM",
-        // todo hard coded default from backend config
-        status: "PENDING",
+        status: surveyResponseDefaultStatus,
       })
     })()
     console.log({ value })
@@ -133,12 +129,10 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
       await createSurveyResponseMutation({
         surveySessionId: surveySessionId_,
-        // todo hard coded
         surveyPart: 3,
         data: JSON.stringify(value),
         source: "FORM",
-        // todo hard coded default from backend config
-        status: "PENDING",
+        status: surveyResponseDefaultStatus,
       })
     })()
     console.log({ value })

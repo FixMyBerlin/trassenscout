@@ -3,7 +3,7 @@ import getOperator from "@/src/server/operators/queries/getOperator"
 import { JsonValue } from "@prisma/client/runtime/library"
 import { format } from "date-fns/format"
 import { de } from "date-fns/locale/de"
-import { Diff } from "datum-merge"
+import { Diff } from "datum-diff"
 import "server-only"
 
 type Props = { projectSlug: string; context: JsonValue }

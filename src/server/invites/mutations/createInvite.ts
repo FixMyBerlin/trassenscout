@@ -81,7 +81,7 @@ export default resolver.pipe(
     }
 
     await createLogEntry({
-      action: "UPDATE",
+      action: "CREATE",
       message: `${data.email.toLocaleLowerCase()} wurde eingeladen`,
       userId: ctx.session.userId,
       projectId,

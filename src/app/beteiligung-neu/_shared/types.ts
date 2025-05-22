@@ -6,6 +6,7 @@ import { SurveyRadiobuttonGroup } from "@/src/app/beteiligung-neu/_components/fo
 import { SurveyTextarea } from "@/src/app/beteiligung-neu/_components/form/Textarea"
 import { SurveyTextfield } from "@/src/app/beteiligung-neu/_components/form/Textfield"
 import { SurveyMarkdown } from "@/src/app/beteiligung-neu/_components/layout/SurveyMarkdown"
+import { TBackendConfig } from "@/src/app/beteiligung-neu/_shared/backend-types"
 import { fieldValidationEnum } from "@/src/app/beteiligung-neu/_shared/fieldvalidationEnum"
 import { AnyFieldApi } from "@tanstack/react-form"
 
@@ -200,4 +201,5 @@ export type FormConfig = {
       color?: "white" | "primaryColor"
     }
   }
+  backend: TBackendConfig
 }

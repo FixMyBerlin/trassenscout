@@ -1,5 +1,5 @@
 import db, { LogLevelActionEnum } from "@/db"
-import { deepDiff } from "datum-merge"
+import { diff } from "datum-diff"
 import getProjectIdBySlug from "../../projects/queries/getProjectIdBySlug"
 
 type LogEntryCreate = {
@@ -17,7 +17,7 @@ type LogEntryCreate = {
   qualitylevelId?: number
   stakeholdernoteId?: number
   uploadId?: number
-  surveyId?: number
+  surveyResponseId?: number
   // To compute the `changes`
   previousRecord?: Record<string, any> | null
   updatedRecord?: Record<string, any>
@@ -45,14 +45,13 @@ const replaceGeometryIfPresent = (
 export const createLogEntry = async (input: LogEntryCreate) => {
   const { previousRecord, updatedRecord, ...data } = input
 
-  const diff = deepDiff(
+  const changes = diff(
     replaceGeometryIfPresent(previousRecord),
     replaceGeometryIfPresent(updatedRecord),
   )
 
   // We skip the logs for updates if the update only changes the "updatedAt"
-  const onlyUpdatedAtChanged =
-    diff !== false && diff.filter((e) => e.path.join("") !== "updatedAt").length === 0
+  const onlyUpdatedAtChanged = changes?.filter((e) => e.path.join("") !== "updatedAt").length === 0
   if (input.action === "UPDATE" && onlyUpdatedAtChanged) {
     return
   }
@@ -64,7 +63,7 @@ export const createLogEntry = async (input: LogEntryCreate) => {
       message: data.message,
       projectId:
         "projectSlug" in data ? await getProjectIdBySlug(data.projectSlug) : data.projectId,
-      changes: diff === false ? undefined : diff,
+      changes: changes,
       //
       inviteId: data.inviteId,
       membershipId: data.membershipId,
@@ -76,7 +75,7 @@ export const createLogEntry = async (input: LogEntryCreate) => {
       qualitylevelId: data.qualitylevelId,
       stakeholdernoteId: data.stakeholdernoteId,
       uploadId: data.uploadId,
-      surveyId: data.surveyId,
+      surveyResponseId: data.surveyResponseId,
     },
   })
 }
