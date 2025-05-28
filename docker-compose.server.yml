@@ -8,11 +8,10 @@ services:
     env_file: ".env"
     environment:
       FORCE_COLOR: 1
+    # We access `.env` variables directly here
     labels:
       traefik.enable: true
-      # traefik.http.routers.server.rule: Host(`${APP_DOMAIN}`) || Host(`www.${APP_DOMAIN}`) ## add back later and add unused www.staging.* domain
-      # We access `.env` variables directly here
-      traefik.http.routers.server.rule: Host(`${APP_DOMAIN}`)
+      traefik.http.routers.server.rule: Host(`${APP_DOMAIN}`) || Host(`www.${APP_DOMAIN}`)
       traefik.http.routers.server.entrypoints: websecure
       traefik.http.routers.server.tls.certresolver: letsencrypt
       traefik.http.routers.server.tls: true
