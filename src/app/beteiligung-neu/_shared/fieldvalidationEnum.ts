@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+// todo maybe make this a function so that we can pass min max, required... values?
 export const fieldValidationEnum = {
   optionalString: { zodSchema: z.string().optional(), required: false },
   requiredString: {

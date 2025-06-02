@@ -83,12 +83,12 @@ export const part2Config: SurveyPart2 = {
           component: "SurveyRadiobuttonGroup",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
-          defaultValue: "ja",
+          defaultValue: "1",
           props: {
             label: "Bezieht sich Ihr Hinweis auf eine konkrete Stelle entlang der Route?",
             options: [
-              { key: "ja", label: "Ja" },
-              { key: "nein", label: "Nein" },
+              { key: "1", label: "Ja" },
+              { key: "2", label: "Nein" },
             ],
           },
         },
@@ -97,15 +97,13 @@ export const part2Config: SurveyPart2 = {
           name: "23",
           componentType: "form",
           condition: {
-            fieldName: "enableLocation",
-            conditionFn: (fieldValue) => fieldValue === "ja",
+            // this field is only shown if the user selected "ja" in the previous field
+            fieldName: "22",
+            conditionFn: (fieldValue) => fieldValue === "1",
           },
           validators: {
             onChange: ({ fieldApi }: { fieldApi: AnyFieldApi }) => {
-              if (
-                fieldApi.state.meta.isPristine &&
-                fieldApi.form.getFieldValue("enableLocation") === "ja"
-              ) {
+              if (fieldApi.state.meta.isPristine && fieldApi.form.getFieldValue("22") === "1") {
                 console.log({ fieldApi })
                 return "Bitte wählen Sie einen Ort auf der Karte oder wählen sie oben, dass Sie keinen Ort angeben möchten."
               }

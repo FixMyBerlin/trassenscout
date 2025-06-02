@@ -183,5 +183,85 @@ export const part1Config: SurveyPart1and3 = {
         },
       ],
     },
+    {
+      id: "4",
+      fields: [
+        {
+          name: "titleWegefuhrung",
+          component: "SurveyPageTitle",
+          componentType: "content",
+          props: { title: "Gemeinsame Wegeführung" },
+        },
+        {
+          name: "descriptionWegefuhrung",
+          component: "SurveyMarkdown",
+          componentType: "content",
+          props: {
+            markdown:
+              "Leider wird es nicht überall möglich sein, Wege zu bauen, die ausschließlich dem Radverkehr vorbehalten sind. Wir möchten gerne von Ihnen wissen, welche Folgen das für Ihre Nutzung des RS 8 hätte.",
+          },
+        },
+        {
+          id: 9,
+          label: {
+            de: "Einen Weg, auf dem auch Fußverkehr zugelassen ist, würde ich …",
+          },
+          component: "singleResponse",
+          props: {
+            responses: [
+              { id: 1, text: { de: "ohne Einschränkung mit dem Rad nutzen." } },
+              { id: 2, text: { de: "eher selten mit dem Rad nutzen." } },
+              { id: 3, text: { de: "nie mit dem Rad nutzen." } },
+              { id: 4, text: { de: "Weiß ich nicht." } },
+            ],
+          },
+        },
+        {
+          id: 10,
+          label: {
+            de: "Eine Fahrradstraße, die auch von Kfz befahren werden darf, würde ich …",
+          },
+          component: "singleResponse",
+          props: {
+            responses: [
+              { id: 1, text: { de: "ohne Einschränkung mit dem Rad nutzen." } },
+              { id: 2, text: { de: "eher selten mit dem Rad nutzen." } },
+              { id: 3, text: { de: "nie mit dem Rad nutzen." } },
+              { id: 4, text: { de: "Weiß ich nicht." } },
+            ],
+          },
+        },
+        {
+          id: 11,
+          label: {
+            de: "Einen Radweg, der auch von landwirtschaftlichen Fahrzeugen befahren werden darf, würde ich …",
+          },
+          component: "singleResponse",
+          props: {
+            responses: [
+              { id: 1, text: { de: "ohne Einschränkung mit dem Rad nutzen." } },
+              { id: 2, text: { de: "eher selten mit dem Rad nutzen." } },
+              { id: 3, text: { de: "nie mit dem Rad nutzen." } },
+              { id: 4, text: { de: "Weiß ich nicht." } },
+            ],
+          },
+        },
+        {
+          id: 12,
+          label: {
+            de: "Einen Radweg, der auch von Bussen befahren werden darf, würde ich …",
+          },
+          component: "singleResponse",
+          props: {
+            responses: [
+              { id: 1, text: { de: "ohne Einschränkung mit dem Rad nutzen." } },
+              { id: 2, text: { de: "eher selten mit dem Rad nutzen." } },
+              { id: 3, text: { de: "nie mit dem Rad nutzen." } },
+              { id: 4, text: { de: "Weiß ich nicht." } },
+            ],
+          },
+        },
+      ],
+    },
   ],
 }
