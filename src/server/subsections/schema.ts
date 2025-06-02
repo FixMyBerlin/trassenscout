@@ -18,7 +18,7 @@ export const SubsectionSchema = z.object({
   subsubsectionStatusId: InputNumberOrNullSchema,
   estimatedCompletionDateString: z
     .string()
-    .regex(/^\d{4}-\d{2}$/, { message: "Datum im Format JJJJ-MM" })
+    .regex(/^(\d{4}-\d{2}|)$/, { message: "Datum im Format JJJJ-MM" })
     .nullish(),
 })
 
