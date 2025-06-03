@@ -1,9 +1,12 @@
-import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
 import {
-  getBackendConfigBySurveySlug,
+  AllowedSurveySlugs,
+  isSurveyLegacy,
+  SurveyLegacySlugs,
+} from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
+import {
+  getConfigBySurveySlug,
   getResponseConfigBySurveySlug,
-} from "@/src/survey-public/utils/getConfigBySurveySlug"
-
+} from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { useFilters } from "./useFilters.nuqs"
 
@@ -28,9 +31,24 @@ export const useFilteredResponses = (
     ...additionalFilters
   } = filter
 
-  const { evaluationRefs } = getResponseConfigBySurveySlug(surveySlug)
-  const { additionalFilters: additionalFiltersDefinition } =
-    getBackendConfigBySurveySlug(surveySlug)
+  const isLegacy = isSurveyLegacy(surveySlug)
+  const { additionalFilters: additionalFiltersDefinition } = getConfigBySurveySlug(
+    surveySlug,
+    "backend",
+  )
+
+  const userLocationQuestionId = isLegacy
+    ? getResponseConfigBySurveySlug(surveySlug as SurveyLegacySlugs)?.evaluationRefs["location"]
+    : "location"
+  const userCategoryQuestionId = isLegacy
+    ? getResponseConfigBySurveySlug(surveySlug as SurveyLegacySlugs)?.evaluationRefs["category"]
+    : "category"
+  const userFeedbackTextQuestionId = isLegacy
+    ? getResponseConfigBySurveySlug(surveySlug as SurveyLegacySlugs)?.evaluationRefs["usertext-1"]
+    : "feedbackText"
+  const userFeedbackText2QuestionId = isLegacy
+    ? getResponseConfigBySurveySlug(surveySlug as SurveyLegacySlugs)?.evaluationRefs["usertext-2"]
+    : "feedbackText2"
 
   const filtered = responses
     .filter((response) => {
@@ -62,16 +80,16 @@ export const useFilteredResponses = (
     .filter((response) => {
       if (haslocation === "ALL") return response
       // @ts-expect-error `data` is of type unkown
-      if (haslocation === "true") return response.data[evaluationRefs["location"]]
+      if (haslocation === "true") return response.data[userLocationQuestionId]
       // @ts-expect-error `data` is of type unkown
-      if (haslocation === "false") return !response.data[evaluationRefs["location"]]
+      if (haslocation === "false") return !response.data[userLocationQuestionId]
       return response
     })
     // Handle `categories`
     .filter((response) => {
       if (!categories) return
       // @ts-expect-error `data` is of type unkown
-      return categories.includes(String(response.data[evaluationRefs["category"]]))
+      return categories.includes(String(response.data[userCategoryQuestionId]))
     })
     // Handle `searchterm`
     .filter((response) => {
@@ -83,16 +101,16 @@ export const useFilteredResponses = (
         ) ||
         (response?.data &&
           // @ts-expect-error `data` is of type unkown
-          response?.data[evaluationRefs["usertext-1"]] &&
+          response?.data[userFeedbackTextQuestionId] &&
           // @ts-expect-error `data` is of type unkown
-          response?.data[evaluationRefs["usertext-1"]]
+          response?.data[userFeedbackTextQuestionId]
             .toLowerCase()
             .includes(searchterm.trim().toLowerCase())) ||
         (response?.data &&
           // @ts-expect-error `data` is of type unkown
-          response?.data[evaluationRefs["usertext-2"]] &&
+          response?.data[userFeedbackText2QuestionId] &&
           // @ts-expect-error `data` is of type unkown
-          response?.data[evaluationRefs["usertext-2"]]
+          response?.data[userFeedbackText2QuestionId]
             .toLowerCase()
             .includes(searchterm.trim().toLowerCase()))
       )

@@ -4,7 +4,9 @@
 
 import { z } from "zod"
 
-export const allowedSurveySlugs = ["rs8", "frm7", "radnetz-brandenburg"] as const
-export type AllowedSurveySlugs = (typeof allowedSurveySlugs)[number]
+export const allowedSurveySlugsLegacy = ["rs8", "frm7", "radnetz-brandenburg"] as const
+export type AllowedSurveySlugsLegacy = (typeof allowedSurveySlugsLegacy)[number]
 
-export const AllowedSurveySlugsSchema = z.object({ slug: z.enum(allowedSurveySlugs) }).passthrough()
+export const AllowedSurveySlugsSchemaLegacy = z
+  .object({ slug: z.enum(allowedSurveySlugsLegacy) })
+  .passthrough()

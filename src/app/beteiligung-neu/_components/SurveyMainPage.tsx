@@ -1,8 +1,10 @@
 "use client"
 
+import { Debug } from "@/src/app/beteiligung-neu/_components/Debug"
 import { SurveyEnd } from "@/src/app/beteiligung-neu/_components/End"
 import { ProgressBar } from "@/src/app/beteiligung-neu/_components/layout/ProgressBar"
 import { SurveyContainer } from "@/src/app/beteiligung-neu/_components/layout/SurveyContainer"
+import { SurveySpinnerLayover } from "@/src/app/beteiligung-neu/_components/layout/SurveySpinnerLayover"
 import { SurveyPart } from "@/src/app/beteiligung-neu/_components/SurveyPart"
 import { ProgressContext } from "@/src/app/beteiligung-neu/_shared/contexts/contexts"
 import { Stage } from "@/src/app/beteiligung-neu/_shared/types"
@@ -11,10 +13,8 @@ import {
   getConfigBySurveySlug,
   getprogressBarDefinitionBySurveySlug,
 } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { scrollToTopWithDelay } from "@/src/app/beteiligung-neu/_shared/utils/scrollToTopWithDelay"
 
-import { Debug } from "@/src/survey-public/components/core/Debug"
-import { SurveySpinnerLayover } from "@/src/survey-public/components/core/layout/SurveySpinnerLayover"
-import { scrollToTopWithDelay } from "@/src/survey-public/utils/scrollToTopWithDelay"
 import createSurveyResponse from "@/src/survey-responses/mutations/createSurveyResponse"
 import createSurveySession from "@/src/survey-sessions/mutations/createSurveySession"
 

@@ -1,7 +1,7 @@
 "use client"
-import { AllowedSurveySlugs as AllowedSurveySlugsNew } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
+import { AllowedSurveySlugs } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
 import { blueButtonStyles } from "@/src/core/components/links"
-import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
+
 import deleteTestSurveyResponses from "@/src/survey-responses/mutations/deleteTestSurveyResponses"
 import { useMutation } from "@blitzjs/rpc"
 import { clsx } from "clsx"
@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation"
 
 type DeleteButtonProps = {
   testSurveyResponseIds: number[]
-  surveySlug: AllowedSurveySlugs | AllowedSurveySlugsNew
+  surveySlug: AllowedSurveySlugs
 }
 
 export const DeleteButton = ({ testSurveyResponseIds, surveySlug }: DeleteButtonProps) => {

@@ -1,8 +1,9 @@
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 
 import { TSurvey } from "@/src/survey-public/components/types"
-import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
-import { getBackendConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
+import { AllowedSurveySlugsLegacy } from "@/src/survey-public/utils/allowedSurveySlugs"
+
+import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
 import { featureCollection, lineString, multiLineString, point, polygon } from "@turf/helpers"
 import { DataDrivenPropertyValueSpecification } from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
@@ -26,7 +27,7 @@ type Props = {
   locationRef: number
   categoryGeometryRef: number | undefined
   //todo survey clean up after survey BB
-  surveySlug: AllowedSurveySlugs
+  surveySlug: AllowedSurveySlugsLegacy
   surveyDefinition: TSurvey
 }
 
@@ -104,7 +105,8 @@ export const SurveyResponseOverviewMap = ({
           ),
     )
 
-  const { status: statusConfig } = getBackendConfigBySurveySlug(surveySlug)
+  const { status: statusConfig } = getConfigBySurveySlug(surveySlug, "backend")
+
   const statusColor: any = [
     "match",
     ["get", "status"],

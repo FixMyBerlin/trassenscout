@@ -12,7 +12,7 @@ import {
 import { SurveyLink } from "@/src/app/beteiligung-neu/_components/links/SurveyLink"
 import { SurveyMainPage } from "@/src/app/beteiligung-neu/_components/SurveyMainPage"
 import { SurveyH1, SurveyH2, SurveyH3, SurveyP } from "@/src/app/beteiligung-neu/_components/Text"
-import AtlasImage from "./data/Startseite_Radverkehrstlas.jpg"
+import AtlasImage from "./Startseite_Radverkehrstlas.jpg"
 
 type Props = {
   surveyId: number

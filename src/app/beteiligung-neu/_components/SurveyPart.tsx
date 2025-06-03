@@ -1,6 +1,7 @@
 "use client"
 
 import { SurveyButtonGrid } from "@/src/app/beteiligung-neu/_components/buttons/SurveyButtonGrid"
+import { Debug } from "@/src/app/beteiligung-neu/_components/Debug"
 import { FormErrorBox } from "@/src/app/beteiligung-neu/_components/form/FormErrorBox"
 import { Intro } from "@/src/app/beteiligung-neu/_components/Intro"
 import { ProgressContext } from "@/src/app/beteiligung-neu/_shared/contexts/contexts"
@@ -13,7 +14,6 @@ import {
 } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
 import { pageHasErrors } from "@/src/app/beteiligung-neu/_shared/utils/pageHasErrors"
 import { scrollToTopWithDelay } from "@/src/app/beteiligung-neu/_shared/utils/scrollToTopWithDelay"
-import { Debug } from "@/src/survey-public/components/core/Debug"
 
 import { useParams } from "next/navigation"
 import { useContext, useEffect, useState } from "react"

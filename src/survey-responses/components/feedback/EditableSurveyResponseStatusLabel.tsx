@@ -1,17 +1,17 @@
+import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
 import { StatusLabel } from "@/src/core/components/Status/StatusLabel"
-import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
-import { getBackendConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
+import { AllowedSurveySlugsLegacy } from "@/src/survey-public/utils/allowedSurveySlugs"
 
 type Props = {
   status?: string | null
-  surveySlug: AllowedSurveySlugs
+  surveySlug: AllowedSurveySlugsLegacy
   short?: boolean
 }
 
 export const EditableSurveyResponseStatusLabel = ({ status, surveySlug, short }: Props) => {
   if (!status) return null
 
-  const backendConfigStatus = getBackendConfigBySurveySlug(surveySlug).status
+  const backendConfigStatus = getConfigBySurveySlug(surveySlug, "backend").status
   const statusConfig = backendConfigStatus?.find((s) => s.value === status)
 
   if (!statusConfig) {

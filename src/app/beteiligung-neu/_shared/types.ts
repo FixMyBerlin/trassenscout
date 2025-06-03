@@ -204,3 +204,8 @@ export type FormConfig = {
   }
   backend: TBackendConfig
 }
+
+export type SurveyFieldRadioOrCheckboxGroupConfig = Extract<
+  FieldConfig,
+  { component: "SurveyRadiobuttonGroup" } | { component: "SurveyCheckboxGroup" }
+>

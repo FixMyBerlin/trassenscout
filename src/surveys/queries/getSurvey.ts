@@ -1,14 +1,14 @@
 import db from "@/db"
+import {
+  allowedSurveySlugs,
+  AllowedSurveySlugsSchema,
+} from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
-import {
-  allowedSurveySlugs,
-  AllowedSurveySlugsSchema,
-} from "@/src/survey-public/utils/allowedSurveySlugs"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import { z } from "zod"

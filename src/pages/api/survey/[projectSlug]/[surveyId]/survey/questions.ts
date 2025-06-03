@@ -1,15 +1,33 @@
-import { TSurvey } from "@/src/survey-public/components/types"
-import { getSurveyDefinitionBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+
 import { format } from "date-fns"
 import { NextApiRequest, NextApiResponse } from "next"
 import { getSurvey, sendCsv } from "./_shared"
+
+const translatedComponentTypesLegacy = {
+  singleResponse: "einfach",
+  multipleResponse: "mehrfach",
+  text: "text",
+  textfield: "text",
+  readOnly: "text readonly",
+}
+
+const translatedComponentTypes = {
+  SurveyCheckboxGroup: "mehrfach",
+  SurveyRadiobuttonGroup: "einfach",
+  SurveyTextfield: "text",
+  SurveyTextarea: "text",
+  SurveySimpleMapWithLegend: "geo",
+  SurveyCheckbox: "bool",
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Permissions are checked implicitly by `getSurvey` which will call "@/src/surveys/queries/getSurvey" which uses `authorizeProjectMember`
   const survey = await getSurvey(req, res)
   if (!survey) return
 
-  const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
+  const surveyDefinition = getConfigBySurveySlug(survey.slug, "part1")
+  if (!surveyDefinition) return res.status(404).json({ error: "Umfrageteil 1 nicht gefunden" })
 
   const headers = [
     { id: "id", title: "frage_id" },
@@ -17,24 +35,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     { id: "question", title: "frage" },
   ]
 
-  const types = {
-    singleResponse: "einfach",
-    multipleResponse: "mehrfach",
-  }
-
   type Question = { id: number | string; type: string; question: string }
   let data: Question[] = []
-  const addQuestions = (definition: TSurvey) => {
-    definition.pages.forEach((page) => {
-      if (!page.questions) return
-      page.questions.forEach(({ id, component, label }) => {
-        // @ts-expect-error
-        data.push({ id, type: types[component] || component, question: label.de })
-      })
-    })
-  }
 
-  addQuestions(surveyDefinition)
+  surveyDefinition.pages.forEach((page) => {
+    page.fields
+      .filter((f) => f.componentType === "form")
+      .forEach(({ name, component, props }) => {
+        data.push({
+          id: name,
+          type: translatedComponentTypes[component],
+          question: props.label || "",
+        })
+      })
+  })
 
   sendCsv(
     res,

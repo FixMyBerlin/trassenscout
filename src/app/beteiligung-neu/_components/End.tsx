@@ -1,7 +1,8 @@
 import { SurveyScreenHeader } from "@/src/app/beteiligung-neu/_components/layout/SurveyScreenHeader"
 import { SurveyLink } from "@/src/app/beteiligung-neu/_components/links/SurveyLink"
+import { AllowedSurveySlugs } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
-import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
+
 import { useParams } from "next/navigation"
 
 export const SurveyEnd = () => {

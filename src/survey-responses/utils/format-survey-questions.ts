@@ -1,60 +1,42 @@
-import { TQuestion, TSurvey } from "@/src/survey-public/components/types"
+import {
+  SurveyFieldRadioOrCheckboxGroupConfig,
+  SurveyPart1and3,
+} from "@/src/app/beteiligung-neu/_shared/types"
 
 type QuestionObject = {
-  id: number
+  id: string
   label: string
   component: "singleResponse" | "multipleResponse"
-  props: { responses: { id: number; text: string }[] }
+  options: { key: string; label: string }[]
 }
 
-const transformMultiAndSingleQuestion = (question: TQuestion): QuestionObject => {
+const transformMultiAndSingleQuestion = (
+  field: SurveyFieldRadioOrCheckboxGroupConfig,
+): QuestionObject => {
   return {
-    id: question.id,
-    label: question.label.de,
-    // @ts-expect-error
+    id: field.name,
+    label: field.props.label,
     // for the charts we only want the multi and single response questions to be displayed, we know that the component is either singleResponse or multipleResponse
-    component: question.component,
-    props: {
-      // @ts-expect-error
-      // for the charts we only want the multi and single response questions to be displayed, they always have responses
-      responses: question.props.responses.map((response) => {
-        return {
-          id: response.id,
-          text: response.text.de,
-        }
-      }),
-    },
+    component: field.component === "SurveyRadiobuttonGroup" ? "singleResponse" : "multipleResponse",
+    options: field.props.options,
   }
 }
 
 export const extractAndTransformQuestionsFromPages = (
-  pages: TSurvey["pages"],
+  pages: SurveyPart1and3["pages"],
 ): QuestionObject[] => {
   const transformedArray: QuestionObject[] = []
 
   pages.forEach((page) => {
-    if (!page.questions || page.questions.length === 0) return
-    const transformedQuestions = page.questions
-      .map((question) => {
+    if (!page.fields || page.fields.length === 0) return
+    const transformedQuestions = page.fields
+      .map((field) => {
         // for the charts we only want the multi and single response questions to be displayed
-        if (!(question.component === "singleResponse" || question.component === "multipleResponse"))
-          return
-        return transformMultiAndSingleQuestion(question)
+        if (["SurveyRadiobuttonGroup", "SurveyCheckboxGroup"].includes(field.component))
+          return transformMultiAndSingleQuestion(field as SurveyFieldRadioOrCheckboxGroupConfig)
       })
       .filter(Boolean)
     transformedArray.push(...transformedQuestions)
   })
-  return transformedArray
-}
-
-export const transformDeletedQuestions = (questions: TQuestion[]): QuestionObject[] => {
-  const transformedArray: QuestionObject[] = []
-  const transformedQuestions = questions
-    .map((question) => {
-      if (!("responses" in question.props)) return
-      return transformMultiAndSingleQuestion(question)
-    })
-    .filter(Boolean)
-  transformedArray.push(...transformedQuestions)
   return transformedArray
 }

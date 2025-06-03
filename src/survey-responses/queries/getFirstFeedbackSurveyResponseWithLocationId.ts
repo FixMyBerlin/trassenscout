@@ -1,9 +1,14 @@
 import db from "@/db"
+import {
+  AllowedSurveySlugs,
+  isSurveyLegacy,
+  SurveyLegacySlugs,
+} from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
+import { getResponseConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
-import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
-import { getResponseConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
+
 import { resolver } from "@blitzjs/rpc"
 
 type GetSurveySessionsWithResponsesInput = { projectSlug: string; surveyId: number }
@@ -33,11 +38,15 @@ export default resolver.pipe(
 
     const surveySlug = surveyResponses[0]!.surveySession.survey.slug as AllowedSurveySlugs
 
-    const { evaluationRefs } = getResponseConfigBySurveySlug(surveySlug)
+    const isLegacy = isSurveyLegacy(surveySlug)
+
+    const userLocationQuestionId = isLegacy
+      ? getResponseConfigBySurveySlug(surveySlug as SurveyLegacySlugs)?.evaluationRefs["location"]
+      : "location"
 
     const filteredSurveyResponses = surveyResponses
       //@ts-expect-error
-      .filter((response) => JSON.parse(response.data)[evaluationRefs["location"]])
+      .filter((response) => JSON.parse(response.data)[userLocationQuestionId])
       .sort((a, b) => b.id - a.id)
 
     const surveyResponse = filteredSurveyResponses[0]

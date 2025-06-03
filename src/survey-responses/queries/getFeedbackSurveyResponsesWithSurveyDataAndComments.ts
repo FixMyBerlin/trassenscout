@@ -1,10 +1,8 @@
 import db from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
-import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
-import {
-  getBackendConfigBySurveySlug,
-  getResponseConfigBySurveySlug,
-} from "@/src/survey-public/utils/getConfigBySurveySlug"
+
+import { AllowedSurveySlugs } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
 import { resolver } from "@blitzjs/rpc"
 import { viewerRoles } from "../../authorization/constants"
 import { extractProjectSlug } from "../../authorization/extractProjectSlug"
@@ -72,13 +70,10 @@ export default resolver.pipe(
       },
     })
 
-    const questions = getBackendConfigBySurveySlug(
+    const questions = getConfigBySurveySlug(
       rawFeedbackSurveyResponse[0]!.surveySession.survey.slug as AllowedSurveySlugs,
+      "backend",
     ).additionalFilters
-
-    const { evaluationRefs } = getResponseConfigBySurveySlug(
-      rawFeedbackSurveyResponse[0]!.surveySession.survey.slug as AllowedSurveySlugs,
-    )
 
     const rawFeedbackSurveyResponseWithSurveySurveyResponses = rawFeedbackSurveyResponse.map(
       (response) => {

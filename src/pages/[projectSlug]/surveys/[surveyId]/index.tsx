@@ -1,29 +1,28 @@
+import {
+  isSurveyLegacy,
+  SurveyLegacySlugs,
+} from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
+import {
+  getConfigBySurveySlug,
+  getResponseConfigBySurveySlug,
+} from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
-import { Spinner } from "@/src/core/components/Spinner"
-import { Link, whiteButtonStyles } from "@/src/core/components/links"
+import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { Spinner } from "@/src/core/components/Spinner"
 import { H2 } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlugId } from "@/src/core/routes/useSlug"
-import { TSurvey } from "@/src/survey-public/components/types"
-import {
-  getFeedbackDefinitionBySurveySlug,
-  getResponseConfigBySurveySlug,
-  getSurveyDefinitionBySurveySlug,
-} from "@/src/survey-public/utils/getConfigBySurveySlug"
-import { GroupedSurveyResponseItem } from "@/src/survey-responses/components/analysis/GroupedSurveyResponseItem"
+
+import { SurveyChartAndCsvDownloadSection } from "@/src/survey-responses/components/analysis/SurveyChartAndCsvDownloadSection"
 import getGroupedSurveyResponses from "@/src/survey-responses/queries/getGroupedSurveyResponses"
-import {
-  extractAndTransformQuestionsFromPages,
-  transformDeletedQuestions,
-} from "@/src/survey-responses/utils/format-survey-questions"
 import { getFormatDistanceInDays } from "@/src/survey-responses/utils/getFormatDistanceInDays"
 import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { BlitzPage } from "@blitzjs/next"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/16/solid"
 import { isFuture, isPast } from "date-fns"
 import { Suspense } from "react"
 
@@ -34,20 +33,16 @@ export const Survey = () => {
   const [{ groupedSurveyResponsesFirstPart, surveySessions, surveyResponsesFeedbackPart }] =
     usePaginatedQuery(getGroupedSurveyResponses, { projectSlug, surveyId: survey.id })
 
-  const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
-  const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
-  const responseConfig = getResponseConfigBySurveySlug(survey.slug)
+  const isLegacy = isSurveyLegacy(survey.slug)
 
-  const feedbackQuestions = []
+  const surveyDefinition = getConfigBySurveySlug(survey.slug, "part1")
 
-  for (let page of feedbackDefinition.pages) {
-    page.questions && feedbackQuestions.push(...page.questions)
-  }
-
-  const userLocationQuestionId = responseConfig?.evaluationRefs["location"]
+  const userLocationQuestionId = isLegacy
+    ? getResponseConfigBySurveySlug(survey.slug as SurveyLegacySlugs)?.evaluationRefs["location"]
+    : "location"
 
   const surveyResponsesFeedbackPartWithLocation = surveyResponsesFeedbackPart.filter(
-    //  @ts-expect-error
+    //  @ts-expect-error data is of type unknown
     (r) => JSON.parse(r.data)[userLocationQuestionId],
   )
 
@@ -85,45 +80,8 @@ export const Survey = () => {
     return { [k]: v }
   })
 
-  // get all questions from surveyDefinition and transform them
-  const surveyDefinitionArrayWithLatestQuestions = extractAndTransformQuestionsFromPages(
-    surveyDefinition.pages as TSurvey["pages"],
-  )
-
-  // add th deleted questions to the array and transform them
-  const surveyDefinitionArray = surveyDefinition.deletedQuestions
-    ? surveyDefinitionArrayWithLatestQuestions.concat(
-        transformDeletedQuestions(surveyDefinition.deletedQuestions),
-      )
-    : surveyDefinitionArrayWithLatestQuestions
-
-  const groupedSurveyResponseData = rawData
-    .map((r) => {
-      const questionId = Object.keys(r)[0]
-      const question = surveyDefinitionArray.find((question) => Number(questionId) === question.id)
-
-      if (
-        !question ||
-        !questionId ||
-        // only multiple and single response questions are supported
-        !(question.component === "singleResponse" || question.component === "multipleResponse")
-      )
-        return
-      const response = r[questionId]
-      if (!response) return
-
-      const data = Object.entries(response).map(([key, value]) => ({
-        name: question?.props?.responses?.find((r) => r.id === Number(key))?.text ?? "Missing name",
-        value,
-      }))
-
-      return { questionLabel: question.label, data }
-    })
-    .filter(Boolean)
-
-  const handleCopyChartDataButtonClick = async () => {
-    await navigator.clipboard.writeText(JSON.stringify(groupedSurveyResponseData))
-  }
+  // legacy survey
+  const canonicalUrl = getConfigBySurveySlug(survey.slug, "meta").canonicalUrl
 
   return (
     <>
@@ -137,13 +95,13 @@ export const Survey = () => {
             <p className="mt-5 text-base text-gray-500">
               Dieser Bereich sammelt die Ergebnisse der Umfragen und Beteiligungen.
             </p>
-            {survey.active && surveyDefinition.canonicalUrl && (
+            {survey.active && canonicalUrl && (
               <p className="text-base text-gray-500">
                 Die Beteiligung ist über{" "}
-                <Link blank className="!text-base" href={surveyDefinition.canonicalUrl}>
+                <Link blank className="!text-base" href={canonicalUrl}>
                   diese Seite
                   <ArrowTopRightOnSquareIcon className="mb-1 ml-1 inline-flex h-4 w-4" />
-                </Link>{" "}
+                </Link>
                 erreichbar.
               </p>
             )}
@@ -175,42 +133,21 @@ export const Survey = () => {
       </div>
 
       <div className="mt-12 space-y-4">
-        <H2>Auswertung in Diagrammen und Korrelationen</H2>
-        {isSurveyFuture && <p>Die Beteiligung liegt in der Zukunft</p>}
-
-        {!groupedSurveyResponseData.length ? (
-          <p>Es liegen keine Ergebnisse vor.</p>
+        {!surveyDefinition ? (
+          <p>In der Beteiligung {survey.slug.toUpperCase()} gibt es keinen Umfrageteil 1. </p>
         ) : (
-          groupedSurveyResponseData.map((questionItem) => {
-            return (
-              <GroupedSurveyResponseItem
-                key={questionItem?.questionLabel}
-                chartType={"bar"}
-                responseData={questionItem?.data}
-                questionLabel={questionItem?.questionLabel}
-              />
-            )
-          })
+          <>
+            <H2>Auswertung in Diagrammen und Korrelationen</H2>
+            {isSurveyFuture && <p>Die Beteiligung liegt in der Zukunft</p>}
+            <SurveyChartAndCsvDownloadSection
+              surveyDefinition={surveyDefinition}
+              projectSlug={projectSlug}
+              surveyId={survey.id}
+              rawData={rawData}
+            />
+          </>
         )}
       </div>
-
-      <SuperAdminBox>
-        <div className="flex flex-col items-start gap-4">
-          <button onClick={handleCopyChartDataButtonClick} className={whiteButtonStyles}>
-            Beteiligungsergebnisse in die Zwischenablage kopieren - formatiert für Diagramme
-          </button>
-          <Link href={`/api/survey/${projectSlug}/${survey.id}/survey/questions`} button="white">
-            Fragen der Beteiligung als CSV herunterladen
-          </Link>
-          <Link href={`/api/survey/${projectSlug}/${survey.id}/survey/answers`} button="white">
-            Antworten der Beteiligung als CSV herunterladen
-          </Link>
-          <Link href={`/api/survey/${projectSlug}/${survey.id}/survey/results`} button="white">
-            Ergebnisse der Beteiligung als CSV herunterladen
-          </Link>
-        </div>
-      </SuperAdminBox>
-
       <SuperAdminBox>
         <Link href={`/admin/surveys/${survey.id}/edit`}>Bearbeiten</Link>
       </SuperAdminBox>
