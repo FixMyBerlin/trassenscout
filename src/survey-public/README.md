@@ -9,7 +9,7 @@ evaluationRefs: {
   "category": 21,
   "is-location": 22,
   "location": 23,
-  "usertext-1": 34,
+  "feedbackText": 34,
   "usertext-2": 35 // (optional)
 },
 ```

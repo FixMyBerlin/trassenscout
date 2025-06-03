@@ -1,26 +1,21 @@
+import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getQuestionIdBySurveySlug"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-import { TFeedbackQuestion } from "@/src/survey-public/components/types"
-import {
-  getBackendConfigBySurveySlug,
-  getFeedbackDefinitionBySurveySlug,
-  getResponseConfigBySurveySlug,
-  getSurveyDefinitionBySurveySlug,
-} from "@/src/survey-public/utils/getConfigBySurveySlug"
-import { getQuestionsAsArray } from "@/src/survey-public/utils/getQuestionsAsArray"
+import { getFlatSurveyQuestions } from "@/src/survey-responses/utils/getQuestionsAsArray"
+import { getSurveyCategoryOptions } from "@/src/survey-responses/utils/getSurveyCategoryOptions"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { EnvelopeIcon } from "@heroicons/react/20/solid"
-import { ArrowsPointingOutIcon, ArrowUpRightIcon } from "@heroicons/react/24/outline"
+import { ArrowUpRightIcon, EnvelopeIcon } from "@heroicons/react/20/solid"
+import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline"
 import { center, lineString, multiLineString } from "@turf/turf"
 import { clsx } from "clsx"
 import { LngLatBoundsLike } from "react-map-gl/maplibre"
 import deleteSurveyResponse from "../../mutations/deleteSurveyResponse"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
-import { getSurveyResponseCategoryById } from "../../utils/getSurveyResponseCategoryById"
 import EditableSurveyResponseAdditionalFilterFields from "./EditableSurveyResponseAdditionalFilterFields"
 import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
@@ -48,41 +43,34 @@ const EditableSurveyResponseMapAndStaticData = ({
   const projectSlug = useProjectSlug()
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
   const [deleteCalendarEntryMutation] = useMutation(deleteSurveyResponse)
-  const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
-  const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
-  const backendConfig = getBackendConfigBySurveySlug(survey.slug)
-  const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
-  const feedbackQuestions = getQuestionsAsArray({
-    definition: feedbackDefinition,
-    surveyPart: "feedback",
-  }) as TFeedbackQuestion[]
+  const feedbackDefinition = getConfigBySurveySlug(survey.slug, "part2")
+  const backendConfig = getConfigBySurveySlug(survey.slug, "backend")
+  const metaConfig = getConfigBySurveySlug(survey.slug, "meta")
 
-  const feedbackQuestion = feedbackQuestions.find(
-    (q) => q.id === evaluationRefs["category"],
-  ) as TFeedbackQuestion
+  const feedbackQuestions = getFlatSurveyQuestions(feedbackDefinition)
 
-  const maptilerUrl = surveyDefinition.maptilerUrl
+  const geometryCategoryId = getQuestionIdBySurveySlug(survey.slug, "geometry-category")
+  const feedbackTextId = getQuestionIdBySurveySlug(survey.slug, "feedbackText")
+  const text2Id = getQuestionIdBySurveySlug(survey.slug, "usertext-2")
+  const categoryId = getQuestionIdBySurveySlug(survey.slug, "category")
+  const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
 
-  const feedbackUserCategory =
-    // @ts-expect-error `data` is of type unkown
-    response.data[evaluationRefs["category"]] &&
-    evaluationRefs["category"] &&
-    getSurveyResponseCategoryById(
-      // @ts-expect-error `data` is of type unkown
-      Number(response.data[evaluationRefs["category"]]),
-      feedbackQuestion!,
-    )
+  const maptilerUrl = metaConfig.maptilerUrl
 
-  const userLocationQuestionId = evaluationRefs["location"]
-  const geometryCategoryId = evaluationRefs["geometry-category"]
+  // @ts-expect-error `data` is unkown
+  const userCategoryId = response.data[categoryId]
+  const surveyCategoryOptions = getSurveyCategoryOptions(survey.slug)
+  const userCategoryLabel = surveyCategoryOptions.find((o) => o.value == userCategoryId)?.label
 
   const additionalFilterFields = backendConfig.additionalFilters
 
-  const geometryCategoryCoordinates = geometryCategoryId
-    ? // @ts-expect-error `data` is unkown
-      JSON.parse(response.data[geometryCategoryId])
-    : // we need to provide a fallback geometry for rs8 & frm7 where the geometry category was not introduced yet
-      surveyDefinition.geometryFallback
+  const geometryCategoryCoordinates =
+    // @ts-expect-error `data` is unkown
+    geometryCategoryId && response.data[geometryCategoryId]
+      ? // @ts-expect-error `data` is unkown
+        JSON.parse(response.data[geometryCategoryId])
+      : // we need to provide a fallback geometry for rs8 & frm7 where the geometry category was not introduced yet
+        metaConfig.geometryFallback
 
   const getTranslatedSource = (s: string) => {
     switch (s) {
@@ -140,19 +128,22 @@ const EditableSurveyResponseMapAndStaticData = ({
     }
   }
 
-  const atlasUrl = surveyDefinition.atlasUrl
+  const atlasUrl = metaConfig.atlasUrl
     ? // @ts-expect-error `data` is unkown
-      response.data[userLocationQuestionId]
-      ? surveyDefinition.atlasUrl.replace(
+      response.data[locationId]
+      ? metaConfig.atlasUrl.replace(
           "MAPPARAM",
           // @ts-expect-error `data` is unkown
-          `11%2F${response.data[userLocationQuestionId].lat.toFixed(3)}%2F${response.data[userLocationQuestionId].lng.toFixed(3)}`,
+          `11%2F${response.data[locationId].lat.toFixed(3)}%2F${response.data[locationId].lng.toFixed(3)}`,
         )
-      : surveyDefinition.atlasUrl.replace(
-          "MAPPARAM",
-          // @ts-expect-error `data` is unkown
-          `11%2F${center(getParsedLine(response.data[geometryCategoryId])).geometry.coordinates[1].toFixed(3)}%2F${center(getParsedLine(response.data[geometryCategoryId])).geometry.coordinates[0].toFixed(3)}`,
-        )
+      : // @ts-expect-error `data` is unkown
+        geometryCategoryId && response.data[geometryCategoryId]
+        ? metaConfig.atlasUrl.replace(
+            "MAPPARAM",
+            // @ts-expect-error `data` is unkown
+            `11%2F${center(getParsedLine(response.data[geometryCategoryId])).geometry.coordinates[1].toFixed(3)}%2F${center(getParsedLine(response.data[geometryCategoryId])).geometry.coordinates[0].toFixed(3)}`,
+          )
+        : null
     : null
 
   return (
@@ -180,7 +171,7 @@ const EditableSurveyResponseMapAndStaticData = ({
         {/* TEXT */}
         <EditableSurveyResponseUserText
           surveyId={surveyId!}
-          userTextIndices={[evaluationRefs["usertext-1"], evaluationRefs["usertext-2"]]}
+          userTextIndices={[String(feedbackTextId), String(text2Id)]}
           feedbackQuestions={feedbackQuestions}
           response={response}
         />
@@ -188,7 +179,7 @@ const EditableSurveyResponseMapAndStaticData = ({
         <div className="flex shrink-0 flex-col items-start gap-4">
           <h4 className="font-semibold">{categoryLabel}</h4>
           <div className="whitespace-nowrap rounded bg-gray-300 p-3 px-4 font-semibold">
-            {feedbackUserCategory}
+            {userCategoryLabel}
           </div>
         </div>
         {/* TABEL */}
@@ -205,7 +196,7 @@ const EditableSurveyResponseMapAndStaticData = ({
             surveySlug={survey.slug}
             marker={
               // @ts-expect-error `data` is unkown
-              response.data[userLocationQuestionId] as { lat: number; lng: number } | undefined
+              response.data[locationId] as { lat: number; lng: number } | undefined
             }
             geometryCategoryCoordinates={geometryCategoryCoordinates}
             maptilerUrl={maptilerUrl}

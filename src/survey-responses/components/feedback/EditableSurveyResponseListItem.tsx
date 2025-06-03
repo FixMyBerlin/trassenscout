@@ -1,32 +1,27 @@
+import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getQuestionIdBySurveySlug"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
+import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
-import { TMapProps } from "@/src/survey-public/components/types"
 import { backendConfig as defaultBackendConfig } from "@/src/survey-public/utils/backend-config-defaults"
-import {
-  getBackendConfigBySurveySlug,
-  getFeedbackDefinitionBySurveySlug,
-  getResponseConfigBySurveySlug,
-  getSurveyDefinitionBySurveySlug,
-} from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
+import { NewSurveyResponseCommentForm } from "@/src/survey-responses/components/feedback/comments/NewSurveyResponseCommentForm"
+import { SurveyResponseCommentField } from "@/src/survey-responses/components/feedback/comments/SurveyResponseCommentField"
+import { EditableSurveyResponseForm } from "@/src/survey-responses/components/feedback/EditableSurveyResponseForm"
+import EditableSurveyResponseMapAndStaticData from "@/src/survey-responses/components/feedback/EditableSurveyResponseMapAndStaticData"
+import { EditableSurveyResponseStatusLabel } from "@/src/survey-responses/components/feedback/EditableSurveyResponseStatusLabel"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useSession } from "@blitzjs/auth"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid"
-import { clsx } from "clsx"
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/16/solid"
+import clsx from "clsx"
 import { useEffect } from "react"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
-import { EditableSurveyResponseForm } from "./EditableSurveyResponseForm"
-import EditableSurveyResponseMapAndStaticData from "./EditableSurveyResponseMapAndStaticData"
-import { EditableSurveyResponseStatusLabel } from "./EditableSurveyResponseStatusLabel"
-import { NewSurveyResponseCommentForm } from "./comments/NewSurveyResponseCommentForm"
-import { SurveyResponseCommentField } from "./comments/SurveyResponseCommentField"
 import { useResponseDetails } from "./useResponseDetails.nuqs"
 
 export type EditableSurveyResponseListItemProps = {
@@ -42,6 +37,7 @@ export type EditableSurveyResponseListItemProps = {
   isAccordion?: boolean
   refetchResponsesAndTopics: () => void
   showMap?: boolean
+  mapProps: any
 }
 
 const EditableSurveyResponseListItem = ({
@@ -51,6 +47,7 @@ const EditableSurveyResponseListItem = ({
   isAccordion,
   refetchResponsesAndTopics,
   showMap,
+  mapProps,
 }: EditableSurveyResponseListItemProps) => {
   const { responseDetails, setResponseDetails } = useResponseDetails()
   const open = !isAccordion ? true : parseInt(String(responseDetails)) === response.id
@@ -61,13 +58,18 @@ const EditableSurveyResponseListItem = ({
   const session = useSession()
   const isEditorOrAdmin = useUserCan().edit || session.role === "ADMIN"
 
+  const metaDefinition = getConfigBySurveySlug(survey.slug, "meta")
+
   useEffect(() => {
-    const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
+    // legacy surveys
     const root = document.documentElement
-    root.style.setProperty("--survey-primary-color", surveyDefinition.primaryColor)
-    root.style.setProperty("--survey-dark-color", surveyDefinition.darkColor)
-    root.style.setProperty("--survey-light-color", surveyDefinition.lightColor)
+    root.style.setProperty("--survey-primary-color", metaDefinition.primaryColor)
+    root.style.setProperty("--survey-dark-color", metaDefinition.darkColor)
+    root.style.setProperty("--survey-light-color", metaDefinition.lightColor)
   }, [survey.slug])
+
+  // legacy surveys
+  const backendConfig = getConfigBySurveySlug(survey.slug, "backend")
 
   const handleOpen = () => {
     void setResponseDetails(response.id)
@@ -77,29 +79,19 @@ const EditableSurveyResponseListItem = ({
   }
   const operatorSlugWitFallback = response.operator?.slug || "k.A."
 
-  const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
-  const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
-  const backendConfig = getBackendConfigBySurveySlug(survey.slug)
   const labels = backendConfig.labels || defaultBackendConfig.labels
-  const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
 
-  const mapProps = feedbackDefinition!.pages[1]!.questions.find(
-    (q) => q.id === evaluationRefs["location"],
-  )!.props as TMapProps
   const defaultViewState = mapProps?.config?.bounds
 
-  const feedbackQuestions = []
-  for (let page of feedbackDefinition.pages) {
-    feedbackQuestions.push(...page.questions)
-  }
-
-  const maptilerUrl = surveyDefinition.maptilerUrl
+  const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
+  const text1Id = getQuestionIdBySurveySlug(survey.slug, "feedbackText")
+  const text2Id = getQuestionIdBySurveySlug(survey.slug, "usertext-2")
 
   const userTextPreview =
     // @ts-expect-error `data` is of type unkown
-    response.data[evaluationRefs["usertext-1"]] ||
+    response.data[text1Id] ||
     // @ts-expect-error `data` is of type unkown
-    response.data[evaluationRefs["usertext-2"]]
+    response.data[text2Id]
 
   return (
     <article data-open={open} className="bg-white">
@@ -111,7 +103,7 @@ const EditableSurveyResponseListItem = ({
         onClick={isAccordion ? () => (open ? handleClose() : handleOpen()) : undefined}
       >
         {/* @ts-expect-error data is unknown */}
-        {response.data[evaluationRefs["location"]] && (
+        {response.data[locationId] && (
           <div className="pl-6">
             <SurveyStaticPin surveySlug={survey.slug} small />
           </div>
@@ -160,7 +152,7 @@ const EditableSurveyResponseListItem = ({
             refetchResponsesAndTopics={refetchResponsesAndTopics}
             response={response}
             showMap={showMap}
-            maptilerUrl={maptilerUrl}
+            maptilerUrl={metaDefinition.maptilerUrl}
             defaultViewState={defaultViewState}
             categoryLabel={labels.category?.sg || defaultBackendConfig.labels.category.sg}
           />

@@ -1,8 +1,9 @@
+import { AllowedSurveySlugsLegacy } from "@/src/survey-public/utils/allowedSurveySlugs"
 import {
   getFeedbackDefinitionBySurveySlug,
   getSurveyDefinitionBySurveySlug,
-} from "@/src/survey-public/utils/getConfigBySurveySlug"
-import { getQuestionsAsArray } from "@/src/survey-public/utils/getQuestionsAsArray"
+} from "@/src/survey-responses/utils/getConfigBySurveySlug"
+import { getFlatSurveyQuestions } from "@/src/survey-responses/utils/getQuestionsAsArray"
 import { useParam } from "@blitzjs/next"
 import { XCircleIcon } from "@heroicons/react/20/solid"
 import { FieldErrors, FieldValues } from "react-hook-form"
@@ -19,12 +20,14 @@ export const SurveyFormErrorsBox = ({ formErrors, surveyPart, customErrors }: Pr
 
   const definition =
     surveyPart === "survey"
-      ? // @ts-expect-error
-        getSurveyDefinitionBySurveySlug(surveySlug!)
-      : // @ts-expect-error
-        getFeedbackDefinitionBySurveySlug(surveySlug!)
+      ? getSurveyDefinitionBySurveySlug(surveySlug!)
+      : getFeedbackDefinitionBySurveySlug(surveySlug!)
 
-  const questions = getQuestionsAsArray({ definition, surveyPart })
+  const questions = getFlatSurveyQuestions({
+    definition,
+    surveyPart: surveyPart === "survey" ? "part1" : "part2",
+    slug: surveySlug as AllowedSurveySlugsLegacy,
+  })
 
   return (
     <div className="mt-12 flex gap-4 rounded-lg bg-red-50 p-4">

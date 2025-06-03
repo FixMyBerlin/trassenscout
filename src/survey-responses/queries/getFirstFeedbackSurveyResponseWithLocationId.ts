@@ -8,7 +8,6 @@ import { getResponseConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
-
 import { resolver } from "@blitzjs/rpc"
 
 type GetSurveySessionsWithResponsesInput = { projectSlug: string; surveyId: number }

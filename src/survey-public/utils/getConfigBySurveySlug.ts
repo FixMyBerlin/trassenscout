@@ -3,7 +3,7 @@ import { responseConfig as BBResponseConfig } from "@/src/survey-public/radnetz-
 import { responseConfig as RS8ResponseConfig } from "@/src/survey-public/rs8/data/response-config"
 import { AllowedSurveySlugsLegacy } from "./allowedSurveySlugs"
 
-export const getResponseConfigBySurveySlug = (slug: AllowedSurveySlugsLegacy) => {
+export const getResponseConfigBySurveySlugLegacy = (slug: AllowedSurveySlugsLegacy) => {
   switch (slug) {
     case "rs8":
       return RS8ResponseConfig

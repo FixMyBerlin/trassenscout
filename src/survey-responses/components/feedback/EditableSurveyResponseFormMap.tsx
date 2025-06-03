@@ -29,13 +29,6 @@ export const EditableSurveyResponseFormMap = ({
 }: Props) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
 
-  const surveyDefinition = getConfigBySurveySlug(surveySlug, "part1")
-
-  if (!surveyDefinition) {
-    console.error("Survey definition not found for slug:", surveySlug)
-    return null
-  }
-
   const metaDefinition = getConfigBySurveySlug(surveySlug, "meta")
 
   const handleLayerSwitch = (layer: LayerType) => {

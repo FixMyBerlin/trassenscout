@@ -1,8 +1,8 @@
 import { LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import { SurveyBackgroundSwitcher } from "@/src/survey-public/components/maps/SurveyBackgroundSwitcher"
 import {
-  getFeedbackDefinitionBySurveySlug,
-  getResponseConfigBySurveySlug,
+  getFeedbackDefinitionBySurveySlugLegacy,
+  getResponseConfigBySurveySlugLegacy,
 } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import { playwrightSendMapLoadedEvent } from "@/tests/_utils/customMapLoadedEvent"
 import { clsx } from "clsx"
@@ -43,8 +43,8 @@ export const SurveyMapLine = ({ projectMap, className }: Props) => {
     setSelectedLayer(layer)
   }
   // "radnetz-brandenburg" is hard coded as this component will be deleted anyway
-  const { evaluationRefs } = getResponseConfigBySurveySlug("radnetz-brandenburg")
-  const feedbackDefinition = getFeedbackDefinitionBySurveySlug("radnetz-brandenburg")
+  const { evaluationRefs } = getResponseConfigBySurveySlugLegacy("radnetz-brandenburg")
+  const feedbackDefinition = getFeedbackDefinitionBySurveySlugLegacy("radnetz-brandenburg")
 
   const lineQuestionId = evaluationRefs["line-id"]
   const geometryQuestionId = evaluationRefs["geometry-category"]

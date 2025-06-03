@@ -49,12 +49,12 @@ export const part2Config: SurveyPart2 = {
           props: {
             label: "Zu welchem Thema passt Ihr Feedback?",
             options: [
-              { key: "nutzung", label: "Nutzung" },
-              { key: "streckenfuehrung", label: "Streckenführung" },
-              { key: "zubringer", label: "Zubringer" },
-              { key: "konflikte", label: "Mögliche Konflikte" },
-              { key: "umwelt", label: "Umwelt- und Naturschutz" },
-              { key: "sonstiges", label: "Sonstiges" },
+              { key: "1", label: "Nutzung" },
+              { key: "2", label: "Streckenführung" },
+              { key: "3", label: "Zubringer" },
+              { key: "4", label: "Mögliche Konflikte" },
+              { key: "5", label: "Umwelt- und Naturschutz" },
+              { key: "6", label: "Sonstiges" },
             ],
           },
         },

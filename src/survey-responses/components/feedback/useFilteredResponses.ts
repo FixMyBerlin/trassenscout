@@ -1,12 +1,6 @@
-import {
-  AllowedSurveySlugs,
-  isSurveyLegacy,
-  SurveyLegacySlugs,
-} from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
-import {
-  getConfigBySurveySlug,
-  getResponseConfigBySurveySlug,
-} from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { AllowedSurveySlugs } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getQuestionIdBySurveySlug"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { useFilters } from "./useFilters.nuqs"
 
@@ -31,24 +25,15 @@ export const useFilteredResponses = (
     ...additionalFilters
   } = filter
 
-  const isLegacy = isSurveyLegacy(surveySlug)
   const { additionalFilters: additionalFiltersDefinition } = getConfigBySurveySlug(
     surveySlug,
     "backend",
   )
 
-  const userLocationQuestionId = isLegacy
-    ? getResponseConfigBySurveySlug(surveySlug as SurveyLegacySlugs)?.evaluationRefs["location"]
-    : "location"
-  const userCategoryQuestionId = isLegacy
-    ? getResponseConfigBySurveySlug(surveySlug as SurveyLegacySlugs)?.evaluationRefs["category"]
-    : "category"
-  const userFeedbackTextQuestionId = isLegacy
-    ? getResponseConfigBySurveySlug(surveySlug as SurveyLegacySlugs)?.evaluationRefs["usertext-1"]
-    : "feedbackText"
-  const userFeedbackText2QuestionId = isLegacy
-    ? getResponseConfigBySurveySlug(surveySlug as SurveyLegacySlugs)?.evaluationRefs["usertext-2"]
-    : "feedbackText2"
+  const userLocationQuestionId = getQuestionIdBySurveySlug(surveySlug, "location")
+  const userCategoryQuestionId = getQuestionIdBySurveySlug(surveySlug, "category")
+  const userFeedbackTextQuestionId = getQuestionIdBySurveySlug(surveySlug, "feedbackText")
+  const userFeedbackText2QuestionId = getQuestionIdBySurveySlug(surveySlug, "feedbackText2")
 
   const filtered = responses
     .filter((response) => {

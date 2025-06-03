@@ -1,16 +1,11 @@
+import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
 import { linkStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
-import { TResponse, TSingleOrMultiResponseProps } from "@/src/survey-public/components/types"
 import { backendConfig as defaultBackendConfig } from "@/src/survey-public/utils/backend-config-defaults"
-import {
-  getBackendConfigBySurveySlug,
-  getFeedbackDefinitionBySurveySlug,
-  getResponseConfigBySurveySlug,
-} from "@/src/survey-public/utils/getConfigBySurveySlug"
-import { getQuestionsAsArray } from "@/src/survey-public/utils/getQuestionsAsArray"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
+import { getSurveyCategoryOptions } from "@/src/survey-responses/utils/getSurveyCategoryOptions"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
@@ -49,21 +44,6 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   const projectSlug = useProjectSlug()
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
   const defaultFilters = useDefaultFilterValues()
-  const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
-
-  const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
-  const feedbackQuestions = getQuestionsAsArray({
-    definition: feedbackDefinition,
-    surveyPart: "feedback",
-  })
-
-  const categoryQuestionProps = feedbackQuestions.find((q) => q.id === evaluationRefs["category"])!
-    .props as TSingleOrMultiResponseProps
-
-  // backend configurations: status
-  const backendConfig = getBackendConfigBySurveySlug(survey.slug)
-  const surveyResponseStatus = backendConfig.status
-
   const { filter, setFilter } = useFilters()
   const [searchterm, setSearchterm] = useState("")
 
@@ -71,6 +51,10 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
   useEffect(() => {
     setFilter(filter || defaultFilters)
   }, [])
+
+  // backend configurations: status
+  const backendConfig = getConfigBySurveySlug(survey.slug, "backend")
+  const surveyResponseStatus = backendConfig.status
 
   const handleFilterReset = async () => {
     setSearchterm("")
@@ -101,9 +85,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
       ]
     : []
 
-  const categoriesOptions = categoryQuestionProps?.responses.map((r: TResponse) => {
-    return { value: String(r.id), label: r.text.de }
-  })
+  const categoryOptions = getSurveyCategoryOptions(survey.slug)
 
   const hasnotesOptions = [
     { value: "ALL", label: "Alle" },
@@ -177,6 +159,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
     console.log("handleSubmit", event)
     console.log("handleSubmit", filter)
   }
+
   return (
     <nav className="rounded-lg bg-gray-100">
       <details open>
@@ -265,7 +248,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
               <FormElementWrapper
                 label={labels.category?.sg || defaultBackendConfig.labels.category.sg}
               >
-                {categoriesOptions.map((item) => (
+                {categoryOptions.map((item) => (
                   <LabeledInputRadioCheckbox
                     type="checkbox"
                     label={item.label}

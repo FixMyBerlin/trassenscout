@@ -1,11 +1,8 @@
+import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
 import { invoke } from "@/src/blitz-server"
-import { TFeedbackQuestion, TQuestion } from "@/src/survey-public/components/types"
-import {
-  getFeedbackDefinitionBySurveySlug,
-  getSurveyDefinitionBySurveySlug,
-} from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"
 import getSurveySurveyResponses from "@/src/survey-responses/queries/getSurveySurveyResponses"
+import { getFlatSurveyQuestions } from "@/src/survey-responses/utils/getQuestionsAsArray"
 import { Project } from "@prisma/client"
 import { Fragment } from "react"
 
@@ -21,17 +18,9 @@ export const AdminSurveyResponses = async ({ project, surveyId, survey }: Props)
     surveyId,
   })
 
-  const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
-  const feedbackQuestions: TFeedbackQuestion[] = feedbackDefinition.pages
-    .map((page) => page.questions)
-    .flat()
-    .filter(Boolean)
+  const feedbackQuestions = getFlatSurveyQuestions(getConfigBySurveySlug(survey.slug, "part2"))
+  const surveyQuestions = getFlatSurveyQuestions(getConfigBySurveySlug(survey.slug, "part1"))
 
-  const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
-  const surveyQuestions: TQuestion[] = surveyDefinition.pages
-    .map((page) => page.questions)
-    .flat()
-    .filter(Boolean)
   return (
     <>
       <h3>Survey Responses: 1. Teil Umfrage {surveyResponses.length}</h3>
@@ -48,17 +37,16 @@ export const AdminSurveyResponses = async ({ project, surveyId, survey }: Props)
             <p>Ergebnisse: </p>
             <p>Rohdaten: {JSON.stringify(data)}</p>
             <div>
-              {/*  @ts-expect-error */}
               {Object.entries(data).map(([questionId, answerIds]) => {
-                const question = surveyQuestions.find((q) => q.id === Number(questionId))
+                const question = surveyQuestions.find((q) => String(q.name) === String(questionId))
 
                 return (
                   <Fragment key={questionId}>
                     <p className="font-bold" key={questionId}>
-                      {question?.label.de}
+                      {question?.props?.label}
                     </p>
                     <p>
-                      {question?.component === "singleResponse" &&
+                      {question?.component === "SurveyRadiobuttonGroup" &&
                         // @ts-expect-error
                         (question?.props?.responses.find((r) => r.id === Number(answerIds))
                           ? // @ts-expect-error
@@ -67,7 +55,7 @@ export const AdminSurveyResponses = async ({ project, surveyId, survey }: Props)
                           : "ungültig (diese Antwort ist nicht mehr Teil der Konfiguration)")}
                     </p>
                     <p>
-                      {question?.component === "multipleResponse" &&
+                      {question?.component === "SurveyCheckboxGroup" &&
                         // @ts-expect-error
                         question?.props?.responses
                           // we only add this condition for staging; in production the array is never empty
@@ -77,9 +65,9 @@ export const AdminSurveyResponses = async ({ project, surveyId, survey }: Props)
                           .map((r) => r.text.de + ", ")}
                     </p>
                     <p>
-                      {(question?.component === "textfield" ||
-                        question?.component === "text" ||
-                        question?.component === "readOnly") &&
+                      {(question?.component === "SurveyTextfield" ||
+                        question?.component === "SurveyTextarea" ||
+                        question?.component === "SurveyCheckbox") &&
                         JSON.stringify(answerIds)}
                     </p>
                   </Fragment>
@@ -105,27 +93,29 @@ export const AdminSurveyResponses = async ({ project, surveyId, survey }: Props)
               Ergebnisse:
               {/* @ts-expect-error */}
               {Object.entries(data).map(([questionId, answerIds]) => {
-                const question = feedbackQuestions.find((q) => q.id === Number(questionId))
+                const question = feedbackQuestions.find(
+                  (q) => String(q.name) === String(questionId),
+                )
 
                 return (
                   <Fragment key={questionId}>
                     <p className="font-bold" key={questionId}>
-                      {question?.label.de}
+                      {question?.props.label}
                     </p>
 
                     <p>
-                      {question?.component === "singleResponse" &&
+                      {question?.component === "SurveyRadiobuttonGroup" &&
                         // @ts-expect-error
-                        (question?.props?.responses.find((r) => r.id === Number(answerIds))
+                        (question?.props?.options.find((r) => String(r.id) === String(answerIds))
                           ? // @ts-expect-error
-                            question?.props?.responses.find((r) => r.id === Number(answerIds)).text
-                              .de
+                            question?.props?.options.find((r) => String(r.id) === String(answerIds))
+                              .label
                           : "ungültig (diese Antwort ist nicht mehr Teil der Konfiguration)")}
                     </p>
                     <p>
-                      {(question?.component === "map" ||
-                        question?.component === "text" ||
-                        question?.component === "custom") &&
+                      {(question?.component === "SurveyTextfield" ||
+                        question?.component === "SurveyTextarea" ||
+                        question?.component === "SurveyCheckbox") &&
                         JSON.stringify(answerIds)}
                     </p>
                   </Fragment>

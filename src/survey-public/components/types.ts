@@ -164,7 +164,7 @@ export type TResponseConfig = {
     category: number
     "is-location": number
     location: number
-    "usertext-1": number
+    feedbackText: number
     "usertext-2"?: number // survey RS8
     "geometry-category"?: number // this is typed as optional because it is introduced in survey BB, for RS8 and FRM7 we use a fallback geometry-category
     "line-id"?: number // survey BB

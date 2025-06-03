@@ -1,21 +1,12 @@
+import { SurveyFieldRadioOrCheckboxGroupConfig } from "@/src/app/beteiligung-neu/_shared/types"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getQuestionIdBySurveySlug"
 import { Prettify } from "@/src/core/types"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getProjectOperators from "@/src/server/operators/queries/getProjectOperators"
-import {
-  TFeedback,
-  TFeedbackQuestion,
-  TQuestion,
-  TSingleOrMultiResponseProps,
-  TSurvey,
-} from "@/src/survey-public/components/types"
 import { backendConfig as backendConfigDefault } from "@/src/survey-public/utils/backend-config-defaults"
-import {
-  getBackendConfigBySurveySlug,
-  getFeedbackDefinitionBySurveySlug,
-  getResponseConfigBySurveySlug,
-  getSurveyDefinitionBySurveySlug,
-} from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
+import { getFlatSurveyQuestions } from "@/src/survey-responses/utils/getQuestionsAsArray"
 import getSurveySessionsWithResponses from "@/src/survey-sessions/queries/getSurveySessionsWithResponses"
 import { getSession } from "@blitzjs/auth"
 import { AuthorizationError } from "blitz"
@@ -29,29 +20,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const survey = await getSurvey(req, res)
   if (!survey) return
 
-  const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
-  const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
-  const backendConfig = getBackendConfigBySurveySlug(survey.slug)
-  const responseConfig = getResponseConfigBySurveySlug(survey.slug)
+  const surveyDefinition = getConfigBySurveySlug(survey.slug, "part1")
+  const feedbackDefinition = getConfigBySurveySlug(survey.slug, "part2")
+  const backendDefinition = getConfigBySurveySlug(survey.slug, "backend")
+  const metaDefinition = getConfigBySurveySlug(survey.slug, "meta")
 
-  const geometryCategoryId = responseConfig.evaluationRefs["geometry-category"]
-  const locationId = responseConfig.evaluationRefs["location"]
+  const geometryCategoryId = getQuestionIdBySurveySlug(survey.slug, "geometry-category")
+  const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
 
-  const geometryCategoryType = surveyDefinition["geometryCategoryType"]
+  const geometryCategoryType = metaDefinition["geometryCategoryType"]
 
-  const getQuestions = (definition: TSurvey | TFeedback) => {
-    const questions: Record<string, TQuestion | TFeedbackQuestion> = {}
-    definition.pages.forEach((page) => {
-      if (!page.questions) return
-      page.questions.forEach((question) => {
-        questions[question.id] = question
-      })
-    })
-    return questions
-  }
+  const isLocationQuestionId = getQuestionIdBySurveySlug(survey.slug, "is-location")
 
-  const surveyQuestions = getQuestions(surveyDefinition) as Record<string, TQuestion>
-  const feedbackQuestions = getQuestions(feedbackDefinition) as Record<string, TFeedbackQuestion>
+  const feedbackQuestions = getFlatSurveyQuestions(feedbackDefinition)
+  const surveyQuestions = getFlatSurveyQuestions(surveyDefinition)
 
   const err = (status: number, message: string) => {
     res.status(status).json({ error: true, status: status, message })
@@ -97,8 +79,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return
   }
 
-  const statusDefinition = backendConfig.status
-  const labels = backendConfig.labels
+  const statusDefinition = backendDefinition.status
+  const labels = backendDefinition.labels
   const defaultLabels = backendConfigDefault.labels
 
   const headers = [
@@ -134,20 +116,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // add headers for all questions
   Object.entries(surveyQuestions).forEach(([questionId, question]) => {
-    headers.push({ id: questionId, title: question.label.de })
+    headers.push({ id: questionId, title: question.props.label || question.name })
   })
-  Object.entries(feedbackQuestions)
-    // exclude the "is-location" question as it is not explicitley stored in the response data
-    .filter(([questionId]) => questionId !== String(responseConfig.evaluationRefs["is-location"]))
-    // the geometry-category question is handled separately
-    .forEach(([questionId, question]) => {
-      if (questionId === String(locationId)) {
-        headers.push({ id: `${questionId}-lat`, title: "Hinweis Verortung Lat" })
-        headers.push({ id: `${questionId}-lng`, title: "Hinweis Verortung Lng" })
-      } else {
-        headers.push({ id: questionId, title: question.label.de })
-      }
-    })
+  // Object.entries(feedbackQuestions)
+  //   // exclude the "is-location" question as it is not explicitley stored in the response data
+  //   .filter(([questionId]) => questionId !== String(isLocationQuestionId))
+  //   // the geometry-category question is handled separately
+  //   .forEach(([questionId, question]) => {
+  //     if (questionId === String(locationId)) {
+  //       headers.push({ id: `${questionId}-lat`, title: "Hinweis Verortung Lat" })
+  //       headers.push({ id: `${questionId}-lng`, title: "Hinweis Verortung Lng" })
+  //     } else {
+  //       headers.push({ id: questionId, title: question.props.label || question.name })
+  //     }
+  //   })
   // add headers for all topics
   topics.forEach((topic) => {
     headers.push({
@@ -209,30 +191,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               // @ts-expect-error data is of type unknown
               if (surveyPartData[questionId]) {
                 switch (question.component) {
-                  case "singleResponse":
-                    const singleResponseProps = question.props as TSingleOrMultiResponseProps
+                  case "SurveyRadiobuttonGroup":
+                    const singleResponseProps =
+                      question.props as SurveyFieldRadioOrCheckboxGroupConfig["props"]
                     // @ts-expect-error index type
-                    row[questionId] = singleResponseProps.responses.find(
+                    row[questionId] = singleResponseProps.options.find(
                       // @ts-expect-error data is of type unknown
-                      (r) => r.id === surveyPartData[questionId],
+                      (r) => String(r.key) == surveyPartData[questionId],
                     )
-                      ? singleResponseProps.responses.find(
+                      ? singleResponseProps.options.find(
                           // @ts-expect-error data is of type unknown
-                          (r) => r.id === surveyPartData[questionId],
-                        )?.text.de
+                          (r) => String(r.key) === String(surveyPartData[questionId]),
+                        )?.label
                       : ""
                     break
-                  case "multipleResponse":
+                  case "SurveyCheckboxGroup":
                     const multipleResponseResponseProps =
-                      question.props as TSingleOrMultiResponseProps
+                      question.props as SurveyFieldRadioOrCheckboxGroupConfig["props"]
                     // @ts-expect-error data is of type unknown and index type
                     row[questionId] = !!surveyPartData[questionId].length
                       ? // @ts-expect-error data is of type unknown
                         surveyPartData[questionId]
                           .map(
-                            (resultId: number) =>
-                              multipleResponseResponseProps.responses.find((r) => r.id === resultId)
-                                ?.text.de,
+                            (resultId) =>
+                              multipleResponseResponseProps.options.find(
+                                (r) => String(r.key) === String(resultId),
+                              )?.label,
                           )
                           .join(" | ")
                       : ""
@@ -245,62 +229,61 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               }
             })
           }
-          Object.entries(feedbackQuestions).forEach(([questionId, question]) => {
-            // @ts-expect-error index type
-            if (data[questionId]) {
-              switch (question.component) {
-                case "singleResponse":
-                  const singleResponseProps = question.props as TSingleOrMultiResponseProps
-                  // @ts-expect-error index type
-                  row[questionId] = singleResponseProps.responses.find(
-                    // @ts-expect-error data is of type unknown
-                    (r) => r.id === data[questionId],
-                  )
-                    ? // @ts-expect-error data is of type unknown
-                      singleResponseProps.responses.find((r) => r.id === data[questionId])?.text.de
-                    : ""
-                  break
-                case "multipleResponse":
-                  const multipleResponseResponseProps =
-                    question.props as TSingleOrMultiResponseProps
-                  // @ts-expect-error index type
-                  row[questionId] = data[questionId]
-                    ? // @ts-expect-error data is of type unknown
-                      data[questionId]
-                        .map(
-                          (resultId: number) =>
-                            multipleResponseResponseProps.responses.find((r) => r.id === resultId)
-                              ?.text.de,
-                        )
-                        .join(" | ")
-                    : ""
-                  break
-                case "map":
-                  // @ts-expect-error data is of type unknown
-                  if (questionId === String(locationId) && data[questionId]) {
-                    // @ts-expect-error data is of type unknown and index type
-                    row[`${questionId}-lat`] = data[questionId].lat
-                    // @ts-expect-error data is of type unknown and index type
-                    row[`${questionId}-lng`] = data[questionId].lng
-                  } else {
-                    // @ts-expect-error data is of type unknown and index type
-                    row[questionId] = data[questionId]
-                      ? // @ts-expect-error data is of type unknown
-                        JSON.stringify(data[questionId], null, 2)
-                      : ""
-                  }
-                  break
-                case "custom":
-                  // @ts-expect-error index type
-                  row[questionId] = data[questionId] || ""
-                  break
-                default:
-                  // @ts-expect-error data is of type unknown and index type
-                  row[questionId] = data[questionId] || ""
-                  break
-              }
-            }
-          })
+          // Object.entries(feedbackQuestions).forEach(([questionId, question]) => {
+          //   // @ts-expect-error index type
+          //   if (data[questionId]) {
+          //     switch (question.component) {
+          //       case "SurveyRadiobuttonGroup":
+          //         const singleResponseProps =
+          //           question.props as SurveyFieldRadioOrCheckboxGroupConfig["props"]
+          //         // @ts-expect-error index type
+          //         row[questionId] = singleResponseProps.responses.find(
+          //           // @ts-expect-error data is of type unknown
+          //           (r) => String(r.key) == data[questionId],
+          //         )
+          //           ? // @ts-expect-error data is of type unknown
+          //             singleResponseProps.options.find((r) => String(r.key) == data[questionId])
+          //               ?.label
+          //           : ""
+          //         break
+          //       case "SurveyCheckboxGroup":
+          //         const multipleResponseResponseProps =
+          //           question.props as SurveyFieldRadioOrCheckboxGroupConfig["props"]
+          //         // @ts-expect-error index type
+          //         row[questionId] = data[questionId]
+          //           ? // @ts-expect-error data is of type unknown
+          //             data[questionId]
+          //               .map(
+          //                 (resultId: number) =>
+          //                   multipleResponseResponseProps.options.find(
+          //                     (r) => String(r.key) == String(resultId),
+          //                   )?.label,
+          //               )
+          //               .join(" | ")
+          //           : ""
+          //         break
+          //       case "SurveySimpleMapWithLegend":
+          //         // @ts-expect-error data is of type unknown
+          //         if (questionId === String(locationId) && data[questionId]) {
+          //           // @ts-expect-error data is of type unknown and index type
+          //           row[`${questionId}-lat`] = data[questionId].lat
+          //           // @ts-expect-error data is of type unknown and index type
+          //           row[`${questionId}-lng`] = data[questionId].lng
+          //         } else {
+          //           // @ts-expect-error data is of type unknown and index type
+          //           row[questionId] = data[questionId]
+          //             ? // @ts-expect-error data is of type unknown
+          //               JSON.stringify(data[questionId], null, 2)
+          //             : ""
+          //         }
+          //         break
+          //       default:
+          //         // @ts-expect-error data is of type unknown and index type
+          //         row[questionId] = data[questionId] || ""
+          //         break
+          //     }
+          //   }
+          // })
           // the geometry-category question is handled separately: we need to convert the coordinates to WKT to be able to import them into QGIS
 
           const categoryCoordinates =
@@ -309,7 +292,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               ? // @ts-expect-error data is of type unknown and index type
                 (JSON.parse(data[String(geometryCategoryId)]) as number[][] | number[][][])
               : // rs8 and frm7 fallback geometry-category
-                surveyDefinition.geometryFallback
+                metaDefinition.geometryFallback
 
           row["geometry-category"] =
             coordinatesToWkt({

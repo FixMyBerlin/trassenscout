@@ -31,7 +31,7 @@ export const part1Config: SurveyPart1and3 = {
           },
         },
         {
-          name: 1,
+          name: "1",
           component: "SurveyRadiobuttonGroup",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
@@ -54,7 +54,7 @@ export const part1Config: SurveyPart1and3 = {
           },
         },
         {
-          name: 2,
+          name: "2",
           component: "SurveyRadiobuttonGroup",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
@@ -70,7 +70,7 @@ export const part1Config: SurveyPart1and3 = {
           },
         },
         {
-          name: 3,
+          name: "3",
           component: "SurveyCheckboxGroup",
           componentType: "form",
           validation: fieldValidationEnum["requiredArrayOfString"],
@@ -86,7 +86,7 @@ export const part1Config: SurveyPart1and3 = {
           },
         },
         {
-          name: 4,
+          name: "4",
           component: "SurveyRadiobuttonGroup",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
@@ -102,7 +102,7 @@ export const part1Config: SurveyPart1and3 = {
           },
         },
         {
-          name: 5,
+          name: "5",
           component: "SurveyRadiobuttonGroup",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
@@ -136,7 +136,7 @@ export const part1Config: SurveyPart1and3 = {
           },
         },
         {
-          name: 6,
+          name: "6",
           component: "SurveyRadiobuttonGroup",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
@@ -151,7 +151,7 @@ export const part1Config: SurveyPart1and3 = {
           },
         },
         {
-          name: 7,
+          name: "7",
           component: "SurveyRadiobuttonGroup",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
@@ -166,7 +166,7 @@ export const part1Config: SurveyPart1and3 = {
           },
         },
         {
-          name: 8,
+          name: "8",
           component: "SurveyRadiobuttonGroup",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],

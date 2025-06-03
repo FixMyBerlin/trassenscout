@@ -22,7 +22,6 @@ export const DeleteButton = ({ testSurveyResponseIds, surveySlug }: DeleteButton
       )
     ) {
       try {
-        // @ts-expect-error todo
         await deleteTestSurveyMutation({ slug: surveySlug, deleteIds: testSurveyResponseIds })
       } catch (error) {
         alert("Beim Löschen ist ein Fehler aufgetreten.")

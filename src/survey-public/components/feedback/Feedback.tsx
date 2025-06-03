@@ -59,7 +59,7 @@ export const Feedback = ({
   const pinId = evaluationRefs["location"] as number
   const userLocationQuestionId = evaluationRefs["location"]
   const feedbackCategoryId = evaluationRefs["category"]
-  const userText1Id = evaluationRefs["usertext-1"]
+  const userText1Id = evaluationRefs["feedbackText"]
   const userText2Id = evaluationRefs["usertext-2"]
 
   const mapProps = pages[1]?.questions.find((q) => q.id === pinId)?.props as TMapProps

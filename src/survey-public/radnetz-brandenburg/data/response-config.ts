@@ -8,6 +8,6 @@ export const responseConfig: TResponseConfig = {
     category: 22,
     "is-location": 23,
     location: 24,
-    "usertext-1": 25,
+    feedbackText: 25,
   },
 }

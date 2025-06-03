@@ -13,7 +13,7 @@ import Map, {
   Source,
   useMap,
 } from "react-map-gl/maplibre"
-import { getResponseConfigBySurveySlug } from "../../utils/getConfigBySurveySlug"
+import { getResponseConfigBySurveySlugLegacy } from "../../utils/getConfigBySurveySlug"
 import { SurveyMapBanner } from "./SurveyMapBanner"
 import SurveyPin from "./SurveyPin"
 
@@ -94,7 +94,7 @@ export const SurveyMap = ({
   }
 
   // todo survey clean up or refactor after survey BB
-  const { evaluationRefs } = getResponseConfigBySurveySlug("radnetz-brandenburg")
+  const { evaluationRefs } = getResponseConfigBySurveySlugLegacy("radnetz-brandenburg")
   const lineQuestionId = evaluationRefs["line-id"]
 
   // todo survey clean up or refactor after survey BB  (center of line option)

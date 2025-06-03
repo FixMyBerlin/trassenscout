@@ -1,11 +1,6 @@
-import {
-  isSurveyLegacy,
-  SurveyLegacySlugs,
-} from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
-import {
-  getConfigBySurveySlug,
-  getResponseConfigBySurveySlug,
-} from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { isSurveyLegacy } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getQuestionIdBySurveySlug"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
@@ -14,7 +9,6 @@ import { H2 } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlugId } from "@/src/core/routes/useSlug"
-
 import { SurveyChartAndCsvDownloadSection } from "@/src/survey-responses/components/analysis/SurveyChartAndCsvDownloadSection"
 import getGroupedSurveyResponses from "@/src/survey-responses/queries/getGroupedSurveyResponses"
 import { getFormatDistanceInDays } from "@/src/survey-responses/utils/getFormatDistanceInDays"
@@ -37,9 +31,8 @@ export const Survey = () => {
 
   const surveyDefinition = getConfigBySurveySlug(survey.slug, "part1")
 
-  const userLocationQuestionId = isLegacy
-    ? getResponseConfigBySurveySlug(survey.slug as SurveyLegacySlugs)?.evaluationRefs["location"]
-    : "location"
+  // legacy survey
+  const userLocationQuestionId = getQuestionIdBySurveySlug(survey.slug, "location")
 
   const surveyResponsesFeedbackPartWithLocation = surveyResponsesFeedbackPart.filter(
     //  @ts-expect-error data is of type unknown

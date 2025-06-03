@@ -7,6 +7,7 @@ import { SurveyLayout } from "@/src/survey-public/components/core/layout/SurveyL
 import { SurveySpinnerLayover } from "@/src/survey-public/components/core/layout/SurveySpinnerLayover"
 import { Feedback } from "@/src/survey-public/components/feedback/Feedback"
 import { ProgressContext } from "@/src/survey-public/context/contexts"
+import { AllowedSurveySlugsLegacy } from "@/src/survey-public/utils/allowedSurveySlugs"
 import { scrollToTopWithDelay } from "@/src/survey-public/utils/scrollToTopWithDelay"
 import createSurveyResponse from "@/src/survey-responses/mutations/createSurveyResponse"
 import surveyFeedbackEmail from "@/src/survey-responses/mutations/surveyFeedbackEmail"
@@ -14,10 +15,10 @@ import createSurveySession from "@/src/survey-sessions/mutations/createSurveySes
 import { useParam } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { useEffect, useState } from "react"
+import { getFlatSurveyQuestions } from "../../survey-responses/utils/getQuestionsAsArray"
 import { createSurveySchema } from "../utils/createSurveySchema"
-import { getBackendConfigBySurveySlug } from "../utils/getConfigBySurveySlug"
+import { getBackendConfigBySurveySlugLegacy } from "../utils/getConfigBySurveySlug"
 import { getFormfieldName } from "../utils/getFormfieldNames"
-import { getQuestionsAsArray } from "../utils/getQuestionsAsArray"
 import PublicSurveyForm from "./core/form/PublicSurveyForm"
 import {
   TEmail,
@@ -73,10 +74,18 @@ export const SurveyMainPage = ({
   const [isMapDirty, setIsMapDirty] = useState(false)
 
   const surveyFormSchema = createSurveySchema(
-    getQuestionsAsArray({ definition: surveyDefinition, surveyPart: "survey" }),
+    getFlatSurveyQuestions({
+      definition: surveyDefinition,
+      surveyPart: "part1",
+      slug: surveySlug as AllowedSurveySlugsLegacy,
+    }),
   )
   const feedbackFormSchema = createSurveySchema(
-    getQuestionsAsArray({ definition: feedbackDefinition, surveyPart: "feedback" }),
+    getFlatSurveyQuestions({
+      definition: feedbackDefinition,
+      surveyPart: "part2",
+      slug: surveySlug as AllowedSurveySlugsLegacy,
+    }),
   )
 
   useEffect(() => {
@@ -106,7 +115,7 @@ export const SurveyMainPage = ({
   }
 
   // @ts-expect-error
-  const defaultStatus = getBackendConfigBySurveySlug(surveySlug).status[0].value
+  const defaultStatus = getBackendConfigBySurveySlugLegacy(surveySlug).status[0].value
 
   const handleSurveySubmit = async (surveyResponses: Record<string, any>) => {
     setIsSpinner(true)

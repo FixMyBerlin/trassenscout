@@ -1,19 +1,13 @@
+import { isSurveyLegacy } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getQuestionIdBySurveySlug"
 import { Modal } from "@/src/core/components/Modal"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-import {
-  TMapProps,
-  TResponse,
-  TSingleOrMultiResponseProps,
-} from "@/src/survey-public/components/types"
-import {
-  getBackendConfigBySurveySlug,
-  getFeedbackDefinitionBySurveySlug,
-  getResponseConfigBySurveySlug,
-} from "@/src/survey-public/utils/getConfigBySurveySlug"
 import createSurveyResponse from "@/src/survey-responses/mutations/createSurveyResponse"
+import { getSurveyCategoryOptions } from "@/src/survey-responses/utils/getSurveyCategoryOptions"
 import createSurveySession from "@/src/survey-sessions/mutations/createSurveySession"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useParam } from "@blitzjs/next"
@@ -31,28 +25,24 @@ export const ExternalSurveyResponseFormModal = ({ refetch }: Props) => {
   const surveyId = useParam("surveyId", "string")
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
 
+  // legacy surveys - only for RS8, we want to remove this in the future
+  if (!isSurveyLegacy(survey.slug)) return
+
   const [open, setOpen] = useState(false)
   const [createSurveySessionMutation] = useMutation(createSurveySession)
   const [createSurveyResponseMutation] = useMutation(createSurveyResponse)
 
-  const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
-  const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
+  const feedbackDefinition = getConfigBySurveySlug(survey.slug, "part2")
+  const backendDefinition = getConfigBySurveySlug(survey.slug, "backend")
 
-  const feedbackQuestions = []
+  const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
+  const isLocationId = getQuestionIdBySurveySlug(survey.slug, "is-location")
+  const feedbackText2 = getQuestionIdBySurveySlug(survey.slug, "usertext-2")
 
-  for (let page of feedbackDefinition.pages) {
-    feedbackQuestions.push(...page.questions)
-  }
-  const categoryId = evaluationRefs["category"]
-  const locationId = evaluationRefs["location"]
-  const isLocationId = evaluationRefs["is-location"]
-
-  const categorieQuestion = feedbackQuestions.find((q) => q.id === categoryId)!
-    .props as TSingleOrMultiResponseProps
-  const categories: TResponse[] = categorieQuestion!.responses
-  const mapProps = feedbackDefinition!.pages[1]!.questions.find(
-    (q) => q.id === evaluationRefs["location"],
-  )!.props as TMapProps
+  const categories = getSurveyCategoryOptions(survey.slug)
+  const mapProps = feedbackDefinition!.pages[1]?.fields.find(
+    (q) => String(q.name) === String(locationId),
+  )!.props
 
   const transformKeys = (obj: Record<string, any>) => {
     const newObj: Record<string, any> = {}
@@ -73,10 +63,9 @@ export const ExternalSurveyResponseFormModal = ({ refetch }: Props) => {
       delete values[isLocationId] // delete map ja/nein response
       // in the future we will only have one data field for user text, but we have 2 data fields for user texts in the RS8 survey
       // the following lines are a workaround to have a consistent datastructure among all survey responses of the same survey
-      const additionalUserTextId = evaluationRefs["usertext-2"]
-      if (additionalUserTextId) values[additionalUserTextId] = null
+      if (feedbackText2) values[feedbackText2] = null
 
-      const defaultStatus = getBackendConfigBySurveySlug(survey.slug).status[0].value
+      const defaultStatus = backendDefinition.status[0].value
 
       const surveySession = await createSurveySessionMutation({ surveyId: Number(surveyId) })
       const surveyResponse = await createSurveyResponseMutation({
@@ -111,7 +100,6 @@ export const ExternalSurveyResponseFormModal = ({ refetch }: Props) => {
         }}
       >
         <ExternalSurveyResponseForm
-          evaluationRefs={evaluationRefs}
           categories={categories}
           mapProps={mapProps}
           handleSubmit={handleSubmit}

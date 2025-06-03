@@ -1,10 +1,6 @@
 import db from "@/db"
-import {
-  AllowedSurveySlugsSchema,
-  isSurveyLegacy,
-  SurveyLegacySlugs,
-} from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
-import { getResponseConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { AllowedSurveySlugsSchema } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getQuestionIdBySurveySlug"
 
 import { resolver } from "@blitzjs/rpc"
 
@@ -12,10 +8,7 @@ export default resolver.pipe(
   resolver.zod(AllowedSurveySlugsSchema),
   resolver.authorize("ADMIN"),
   async ({ slug }) => {
-    const isLegacy = isSurveyLegacy(slug)
-    const userFeedbackTextQuestionId = isLegacy
-      ? getResponseConfigBySurveySlug(slug as SurveyLegacySlugs)?.evaluationRefs["usertext-1"]
-      : "feedbackText"
+    const userFeedbackTextQuestionId = getQuestionIdBySurveySlug(slug, "feedbackText")
 
     const surveySessions = await db.surveySession.findMany({
       where: { survey: { slug: slug } },

@@ -169,8 +169,8 @@ export type FormConfig = {
     version: number
     logoUrl: string
     canonicalUrl: string
-    atlasUrl?: string
     maptilerUrl: string
+    atlasUrl?: string
     primaryColor: string
     darkColor: string
     lightColor: string

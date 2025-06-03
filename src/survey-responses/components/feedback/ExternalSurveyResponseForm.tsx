@@ -1,3 +1,5 @@
+import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getQuestionIdBySurveySlug"
 import {
   Form,
   LabeledRadiobuttonGroup,
@@ -6,8 +8,6 @@ import {
 } from "@/src/core/components/forms"
 import { H2 } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { TMapProps, TResponse, TResponseConfig } from "@/src/survey-public/components/types"
-import { getSurveyDefinitionBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
@@ -17,28 +17,24 @@ import { z } from "zod"
 import { ExternalSurveyResponseFormMap } from "./ExternalSurveyResponseFormMap"
 
 type Props = {
-  mapProps: TMapProps
-  categories: TResponse[]
-  evaluationRefs: TResponseConfig["evaluationRefs"]
+  mapProps: any
+  categories: any
   handleSubmit: any
 }
 
-export const ExternalSurveyResponseForm = ({
-  mapProps,
-  categories,
-  evaluationRefs,
-  handleSubmit,
-}: Props) => {
+export const ExternalSurveyResponseForm = ({ mapProps, categories, handleSubmit }: Props) => {
   const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "string")
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
 
-  const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
+  // legacy surveys
+  // we do not refactor it for nw as we want to remove it in the future
+  const metaDefinition = getConfigBySurveySlug(survey.slug, "meta")
 
-  const categoryId = evaluationRefs["category"]
-  const locationId = evaluationRefs["location"]
-  const isLocationId = evaluationRefs["is-location"]
-  const userText1Id = evaluationRefs["usertext-1"]
+  const categoryId = getQuestionIdBySurveySlug(survey.slug, "category")
+  const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
+  const isLocationId = getQuestionIdBySurveySlug(survey.slug, "is-location")
+  const userText1Id = getQuestionIdBySurveySlug(survey.slug, "feedbackText")
 
   const ExternalSurveyResponseFormSchema = z.object({
     source: z.nativeEnum(SurveyResponseSourceEnum),
@@ -55,7 +51,7 @@ export const ExternalSurveyResponseForm = ({
       onSubmit={handleSubmit}
       initialValues={{
         source: "EMAIL",
-        [`single-${evaluationRefs["is-location"]}`]: "true",
+        [`single-${isLocationId}`]: "true",
         [`map-${locationId}`]: null,
       }}
       schema={ExternalSurveyResponseFormSchema}
@@ -68,7 +64,7 @@ export const ExternalSurveyResponseForm = ({
 
       <LabeledRadiobuttonGroup
         label="Bezieht sich das Feedback auf eine konkrete Stelle entlang der Route?"
-        scope={`single-${evaluationRefs["is-location"]}`}
+        scope={`single-${isLocationId}`}
         items={[
           { value: "true", label: "Ja" },
           { value: "false", label: "Nein" },
@@ -77,10 +73,10 @@ export const ExternalSurveyResponseForm = ({
 
       <MapProvider>
         <ExternalSurveyResponseFormMap
-          isUserLocationQuestionId={evaluationRefs["is-location"]!}
-          userLocationQuestionId={evaluationRefs["location"]!}
+          isUserLocationQuestionId={isLocationId!}
+          userLocationQuestionId={locationId!}
           mapProps={mapProps}
-          maptilerUrl={surveyDefinition.maptilerUrl}
+          maptilerUrl={metaDefinition.maptilerUrl}
         />
       </MapProvider>
 
@@ -88,7 +84,7 @@ export const ExternalSurveyResponseForm = ({
         className="h-28"
         label="Hinweis"
         placeholder="Hinweis hier einfügen..."
-        name={`text-${evaluationRefs["usertext-1"]}`}
+        name={`text-${userText1Id}`}
       />
 
       <LabeledSelect
@@ -102,10 +98,11 @@ export const ExternalSurveyResponseForm = ({
 
       <LabeledRadiobuttonGroup
         label="Kategorie"
-        scope={`single-${evaluationRefs["category"]}`}
+        scope={`single-${categoryId}`}
         classNameItemWrapper="sm:columns-2"
+        // @ts-expect-error
         items={categories.map((category) => {
-          return { value: String(category.id), label: category.text.de }
+          return { value: String(category.key), label: category.label }
         })}
       />
     </Form>

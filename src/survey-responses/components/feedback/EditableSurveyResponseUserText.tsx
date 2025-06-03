@@ -1,13 +1,13 @@
+import { SurveyPart2 } from "@/src/app/beteiligung-neu/_shared/types"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Prettify } from "@/src/core/types"
-import { TFeedbackQuestion } from "@/src/survey-public/components/types"
 import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"
-import { clsx } from "clsx"
+import clsx from "clsx"
 
 type Props = {
-  feedbackQuestions: TFeedbackQuestion[]
+  feedbackQuestions: SurveyPart2["pages"][number]["fields"][number][]
   response: Prettify<Awaited<ReturnType<typeof getFeedbackSurveyResponses>>[number]>
-  userTextIndices: Array<number | undefined>
+  userTextIndices: Array<string | undefined>
   surveyId: string
 }
 
@@ -27,7 +27,8 @@ const EditableSurveyResponseUserText = ({
         {response.data[userTextIndices[0]] && (
           <blockquote className={clsx("p-4", "bg-purple-100")}>
             <h4 className="mb-2 font-semibold">
-              {feedbackQuestions.find((q) => q.id === userTextIndices[0])?.label.de}
+              {/* @ts-expect-error */}
+              {feedbackQuestions.find((q) => q.name === userTextIndices[0])?.props.label}
             </h4>
             {/* @ts-expect-error `data` is of type unkown */}
             <Markdown markdown={response.data[userTextIndices[0]]} />
@@ -45,7 +46,8 @@ const EditableSurveyResponseUserText = ({
             )}
           >
             <h4 className="mb-2 font-semibold">
-              {feedbackQuestions.find((q) => q.id === userTextIndices[1])?.label.de}
+              {/* @ts-expect-error */}
+              {feedbackQuestions.find((q) => q.name === userTextIndices[1])?.props.label}
             </h4>
             {/* @ts-expect-error `data` is of type unkown */}
             <Markdown markdown={response.data[userTextIndices[1]]} />
@@ -57,6 +59,7 @@ const EditableSurveyResponseUserText = ({
         </div>
       </div>
     )
+
   return (
     <div>
       {userTextIndices.map((userTextIndex) => {

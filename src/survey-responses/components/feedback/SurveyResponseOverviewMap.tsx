@@ -1,9 +1,6 @@
-import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
-
-import { TSurvey } from "@/src/survey-public/components/types"
-import { AllowedSurveySlugsLegacy } from "@/src/survey-public/utils/allowedSurveySlugs"
-
+import { AllowedSurveySlugs } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import { featureCollection, lineString, multiLineString, point, polygon } from "@turf/helpers"
 import { DataDrivenPropertyValueSpecification } from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
@@ -27,15 +24,13 @@ type Props = {
   locationRef: number
   categoryGeometryRef: number | undefined
   //todo survey clean up after survey BB
-  surveySlug: AllowedSurveySlugsLegacy
-  surveyDefinition: TSurvey
+  surveySlug: AllowedSurveySlugs
 }
 
 export const SurveyResponseOverviewMap = ({
   maptilerUrl,
   defaultViewState,
   categoryGeometryRef,
-  surveyDefinition,
   locationRef,
   surveyResponses,
   surveySlug,
@@ -45,16 +40,17 @@ export const SurveyResponseOverviewMap = ({
   const { mapSelection, setMapSelection } = useMapSelection(
     surveyResponses?.length ? [surveyResponses[0]?.id] : [],
   )
-
+  const metaConfig = getConfigBySurveySlug(surveySlug, "meta")
   const [cursorStyle, setCursorStyle] = useState("grab")
   const surveyResponsesWithLocation = surveyResponses.filter((r) => r.data[locationRef])
 
   const surveyResponsesGeometryCategoryCoordinates = surveyResponses.map((response) => {
     return {
-      geometryCoordinates: categoryGeometryRef
-        ? JSON.parse(response.data[categoryGeometryRef])
-        : // we need to provide a fallback geometry for rs8 & frm7 where the geometry category was not introduced yet
-          surveyDefinition.geometryFallback,
+      geometryCoordinates:
+        categoryGeometryRef && response.data[categoryGeometryRef]
+          ? JSON.parse(response.data[categoryGeometryRef])
+          : // we need to provide a fallback geometry for rs8 & frm7 where the geometry category was not introduced yet
+            metaConfig.geometryFallback,
       responseId: Number(response.id),
       status: response.status,
       hasLocation: Boolean(response.data[locationRef]),
@@ -64,7 +60,7 @@ export const SurveyResponseOverviewMap = ({
   const surveyResponsesWithoutLocationFeatures = surveyResponsesGeometryCategoryCoordinates
     .filter(({ hasLocation }) => !hasLocation)
     .map(({ geometryCoordinates, responseId, status }) =>
-      surveyDefinition.geometryCategoryType === "line"
+      metaConfig.geometryCategoryType === "line"
         ? // @ts-expect-error data is of type unknown
           Array.isArray(geometryCoordinates[0][0])
           ? multiLineString(
@@ -82,7 +78,7 @@ export const SurveyResponseOverviewMap = ({
   const surveyResponsesGeometryCategoryFeatures = surveyResponsesGeometryCategoryCoordinates
     .filter(({ hasLocation }) => hasLocation)
     .map(({ geometryCoordinates, responseId, status }) =>
-      surveyDefinition.geometryCategoryType === "line"
+      metaConfig.geometryCategoryType === "line"
         ? // @ts-expect-error data is of type unknown
           Array.isArray(geometryCoordinates[0][0])
           ? multiLineString(
