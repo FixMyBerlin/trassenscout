@@ -1,4 +1,3 @@
-import { isSurveyLegacy } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
 import { Modal } from "@/src/core/components/Modal"
@@ -24,9 +23,6 @@ export const ExternalSurveyResponseFormModal = ({ refetch }: Props) => {
   const projectSlug = useProjectSlug()
   const surveyId = useParam("surveyId", "string")
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
-
-  // legacy surveys - only for RS8, we want to remove this in the future
-  if (!isSurveyLegacy(survey.slug)) return
 
   const [open, setOpen] = useState(false)
   const [createSurveySessionMutation] = useMutation(createSurveySession)

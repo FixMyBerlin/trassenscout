@@ -69,12 +69,14 @@ export default resolver.pipe(
       },
     })
 
-    const additionalFilters = getConfigBySurveySlug(
-      rawFeedbackSurveyResponse[0]!.surveySession.survey.slug as AllowedSurveySlugs,
-      "backend",
-    ).additionalFilters
+    const additionalFilters = rawFeedbackSurveyResponse.length
+      ? getConfigBySurveySlug(
+          rawFeedbackSurveyResponse[0]?.surveySession.survey.slug as AllowedSurveySlugs,
+          "backend",
+        )?.additionalFilters
+      : []
 
-    const rawFeedbackSurveyResponseWithSurveySurveyResponses = rawFeedbackSurveyResponse.map(
+    const rawFeedbackSurveyResponseWithSurveySurveyResponses = rawFeedbackSurveyResponse?.map(
       (response) => {
         const surveySurveyResponseData = rawSurveySurveyResponse.find(
           (surveyResponse) => surveyResponse.surveySessionId === response.surveySessionId,
