@@ -13,6 +13,7 @@ import {
   getConfigBySurveySlug,
   getprogressBarDefinitionBySurveySlug,
 } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getQuestionIdBySurveySlug"
 import { scrollToTopWithDelay } from "@/src/app/beteiligung-neu/_shared/utils/scrollToTopWithDelay"
 
 import createSurveyResponse from "@/src/survey-responses/mutations/createSurveyResponse"
@@ -94,7 +95,11 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
   // @ts-expect-error todo
   const handleSurveyPart2Submit = async ({ value, meta }) => {
     setIsSpinner(true)
-    if (value.enableLocation === "nein") delete value.location
+    // if the user selected "nein" ("2" in legacy surveys) in the enableLocation-location question, we need to delete the location field from the value object
+    const enableLocationId = getQuestionIdBySurveySlug(surveySlug, "enableLocation")
+    const locationId = getQuestionIdBySurveySlug(surveySlug, "location")
+    if (value[enableLocationId] === "nein" || String(value[enableLocationId]) === "2")
+      delete value[locationId]
     // tbd null or delete?
     // delete value.enableLocation
     void (async () => {
