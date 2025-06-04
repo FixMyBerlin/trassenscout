@@ -446,8 +446,7 @@ export const SurveyBB = ({ surveyId }: Props) => {
   //   void router.replace({ query: router.query }, undefined, {
   //     scroll: false,
   //   })
-  //   // eslint-disable-next-line react-compiler/react-compiler
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // todo maybe we have to disable eslint rule for this line - read docs
   // }, [institution, landkreis, router.query.id])
 
   return <SurveyMainPage surveyId={surveyId} />
