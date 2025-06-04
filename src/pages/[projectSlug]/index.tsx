@@ -5,7 +5,6 @@ import { ProjectMap } from "@/src/core/components/Map/ProjectMap"
 import { ProjectMapFallback } from "@/src/core/components/Map/ProjectMapFallback"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
-import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoTitleSlug, shortTitle } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
@@ -36,44 +35,6 @@ export const ProjectDashboardWithQuery = () => {
       )
     : subsections
 
-  if (!subsections.length) {
-    return (
-      <>
-        <PageHeader
-          title={shortTitle(project.slug)}
-          subtitle={project.subTitle}
-          description={project.description && <div className="mt-4">{project.description}</div>}
-          action={
-            <IfUserCanEdit>
-              <Link icon="edit" href={Routes.EditProjectPage({ projectSlug })}>
-                bearbeiten
-              </Link>
-            </IfUserCanEdit>
-          }
-        />
-        <MapProvider>
-          {/* todo make work wihout subsections */}
-          <ProjectMap subsections={[]} />
-        </MapProvider>
-        <section className="mt-12 p-5">
-          <IfUserCanEdit>
-            <ButtonWrapper>
-              <Link button="blue" href={Routes.NewSubsectionPage({ projectSlug })}>
-                Neuer Planungsabschnitt
-              </Link>
-              <Link button="blue" href={Routes.EditProjectPage({ projectSlug })}>
-                {shortTitle(project.slug)} bearbeiten
-              </Link>
-            </ButtonWrapper>
-          </IfUserCanEdit>
-          <div className="my-5 border-t px-4 py-5 text-center text-gray-500">
-            Noch keine Planungsabschnitte angelegt
-          </div>
-        </section>
-      </>
-    )
-  }
-
   return (
     <>
       <MetaTags noindex title={seoTitleSlug(project.slug)} />
@@ -95,13 +56,18 @@ export const ProjectDashboardWithQuery = () => {
       <ExperimentalProjectInfoPanel />
 
       <OperatorFilterDropdown />
-
-      {Boolean(filteredSubsections.length) ? (
-        <MapProvider>
-          <ProjectMap subsections={filteredSubsections} />
-        </MapProvider>
+      {Boolean(subsections.length) ? (
+        Boolean(filteredSubsections.length) ? (
+          <MapProvider>
+            <ProjectMap subsections={filteredSubsections} />
+          </MapProvider>
+        ) : (
+          <ProjectMapFallback subsections={subsections} />
+        )
       ) : (
-        <ProjectMapFallback subsections={subsections} />
+        <MapProvider>
+          <ProjectMapFallback subsections={[]} />
+        </MapProvider>
       )}
 
       <SubsectionTable subsections={filteredSubsections} />
