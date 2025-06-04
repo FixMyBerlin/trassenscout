@@ -202,62 +202,67 @@ export const part1Config: SurveyPart1and3 = {
           },
         },
         {
-          id: 9,
-          label: {
-            de: "Einen Weg, auf dem auch Fußverkehr zugelassen ist, würde ich …",
-          },
-          component: "singleResponse",
+          name: "9",
+          component: "SurveyRadiobuttonGroup",
+          componentType: "form",
+          validation: fieldValidationEnum["requiredString"],
+          defaultValue: "",
           props: {
-            responses: [
-              { id: 1, text: { de: "ohne Einschränkung mit dem Rad nutzen." } },
-              { id: 2, text: { de: "eher selten mit dem Rad nutzen." } },
-              { id: 3, text: { de: "nie mit dem Rad nutzen." } },
-              { id: 4, text: { de: "Weiß ich nicht." } },
+            label: "Einen Weg, auf dem auch Fußverkehr zugelassen ist, würde ich …",
+            options: [
+              { key: "1", label: "ohne Einschränkung mit dem Rad nutzen." },
+              { key: "2", label: "eher selten mit dem Rad nutzen." },
+              { key: "3", label: "nie mit dem Rad nutzen." },
+              { key: "4", label: "Weiß ich nicht." },
             ],
           },
         },
         {
-          id: 10,
-          label: {
-            de: "Eine Fahrradstraße, die auch von Kfz befahren werden darf, würde ich …",
-          },
-          component: "singleResponse",
+          name: "10",
+          component: "SurveyRadiobuttonGroup",
+          componentType: "form",
+          validation: fieldValidationEnum["requiredString"],
+          defaultValue: "",
           props: {
-            responses: [
-              { id: 1, text: { de: "ohne Einschränkung mit dem Rad nutzen." } },
-              { id: 2, text: { de: "eher selten mit dem Rad nutzen." } },
-              { id: 3, text: { de: "nie mit dem Rad nutzen." } },
-              { id: 4, text: { de: "Weiß ich nicht." } },
+            label: "Eine Fahrradstraße, die auch von Kfz befahren werden darf, würde ich …",
+            options: [
+              { key: "1", label: "ohne Einschränkung mit dem Rad nutzen." },
+              { key: "2", label: "eher selten mit dem Rad nutzen." },
+              { key: "3", label: "nie mit dem Rad nutzen." },
+              { key: "4", label: "Weiß ich nicht." },
             ],
           },
         },
         {
-          id: 11,
-          label: {
-            de: "Einen Radweg, der auch von landwirtschaftlichen Fahrzeugen befahren werden darf, würde ich …",
-          },
-          component: "singleResponse",
+          name: "11",
+          component: "SurveyRadiobuttonGroup",
+          componentType: "form",
+          validation: fieldValidationEnum["requiredString"],
+          defaultValue: "",
           props: {
-            responses: [
-              { id: 1, text: { de: "ohne Einschränkung mit dem Rad nutzen." } },
-              { id: 2, text: { de: "eher selten mit dem Rad nutzen." } },
-              { id: 3, text: { de: "nie mit dem Rad nutzen." } },
-              { id: 4, text: { de: "Weiß ich nicht." } },
+            label:
+              "Einen Radweg, der auch von landwirtschaftlichen Fahrzeugen befahren werden darf, würde ich …",
+            options: [
+              { key: "1", label: "ohne Einschränkung mit dem Rad nutzen." },
+              { key: "2", label: "eher selten mit dem Rad nutzen." },
+              { key: "3", label: "nie mit dem Rad nutzen." },
+              { key: "4", label: "Weiß ich nicht." },
             ],
           },
         },
         {
-          id: 12,
-          label: {
-            de: "Einen Radweg, der auch von Bussen befahren werden darf, würde ich …",
-          },
-          component: "singleResponse",
+          name: "12",
+          component: "SurveyRadiobuttonGroup",
+          componentType: "form",
+          validation: fieldValidationEnum["requiredString"],
+          defaultValue: "",
           props: {
-            responses: [
-              { id: 1, text: { de: "ohne Einschränkung mit dem Rad nutzen." } },
-              { id: 2, text: { de: "eher selten mit dem Rad nutzen." } },
-              { id: 3, text: { de: "nie mit dem Rad nutzen." } },
-              { id: 4, text: { de: "Weiß ich nicht." } },
+            label: "Einen Radweg, der auch von Bussen befahren werden darf, würde ich …",
+            options: [
+              { key: "1", label: "ohne Einschränkung mit dem Rad nutzen." },
+              { key: "2", label: "eher selten mit dem Rad nutzen." },
+              { key: "3", label: "nie mit dem Rad nutzen." },
+              { key: "4", label: "Weiß ich nicht." },
             ],
           },
         },
