@@ -1,8 +1,12 @@
 import db from "@/db"
 import { surveyEntryCreatedNotificationToUser } from "@/emails/mailers/surveyEntryCreatedNotificationToUser"
-import { feedbackDefinition } from "@/src/survey-public/radnetz-brandenburg/data/feedback"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
+
+// this component is hard coded for the survey radnetz-brandenburg part2
+// it is used to send an email to the user with the feedback they provided
+// if we want to use this for other surveys, we need to refactor the code
 
 export const SurveyFeedbackMail = z.object({
   surveySessionId: z.number(),
@@ -17,14 +21,16 @@ export default resolver.pipe(
       where: { surveySessionId: surveySessionId, surveyPart: 1 },
     })
 
+    const feedbackDefinition = getConfigBySurveySlug("radnetz-brandenburg", "part2")
+
     const categories = Object.fromEntries(
       // @ts-expect-error
-      feedbackDefinition.pages[0]?.questions
+      feedbackDefinition.pages[0]?.fields
         // todo survey clean up or refactor after survey BB
         // the category ref is hard coded
-        .find((q) => q.id == 22)
+        .find((q) => String(q.name) == "22")
         // @ts-expect-error
-        .props.responses.map((response) => [response.id, response.text.de]),
+        .props.options.map((option) => [option.key, option.label]),
     )
 
     if (surveyPart1) {

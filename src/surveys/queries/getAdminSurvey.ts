@@ -1,6 +1,6 @@
 import db from "@/db"
-import { allowedSurveySlugs as allowedSurveySlugsNew } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
-import { allowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
+import { allowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
+
 import { resolver } from "@blitzjs/rpc"
 
 import { z } from "zod"
@@ -12,7 +12,7 @@ const GetSurveySchema = z.object({
 
 const CombinedSurveySchema = z
   .object({
-    slug: z.enum([...allowedSurveySlugs, ...allowedSurveySlugsNew] as const),
+    slug: z.enum([...allowedSurveySlugs] as const),
   })
   .passthrough()
 

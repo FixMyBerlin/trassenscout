@@ -1,7 +1,10 @@
 import db, { Prisma } from "@/db"
+import { AllowedSurveySlugsSchema } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
+import { getFlatSurveyQuestions } from "@/src/survey-responses/utils/getQuestionsAsArray"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 
@@ -38,7 +41,7 @@ export default resolver.pipe(
           ...paginateArgs,
           where: safeWhere,
           orderBy,
-          include: { responses: true },
+          include: { responses: true, survey: true },
         }),
     })
 
@@ -63,18 +66,22 @@ export default resolver.pipe(
 
     const groupedSurveyResponsesFirstPart: Record<string, Record<string, number>> = {}
 
-    // the first item of the array is the oldest response
-    // this is important as we need to get the original questions (including the deleted questions in case we delete questions while survey is active see frm7/data/survey.ts)
-    const responseTemplateData = surveyResponsesFirstPart[0]?.data
-    const responseTemplate = responseTemplateData && JSON.parse(responseTemplateData)
+    const zod = AllowedSurveySlugsSchema.parse(surveySessions[0]?.survey)
+
+    const responseTemplate = getFlatSurveyQuestions(getConfigBySurveySlug(zod.slug, "part1")).map(
+      (question) => question.name,
+    )
 
     if (responseTemplate && surveyResponsesFirstPart.length) {
-      Object.keys(responseTemplate).forEach((responseKey) => {
+      responseTemplate.forEach((responseKey) => {
         const result: Record<number, number> = {}
         surveyResponsesFirstPart.forEach((response) => {
           const responseObject = JSON.parse(response.data) as Record<string, number>
-
-          if (typeof responseObject[responseKey] === "number") {
+          console.log({ responseObject, responseKey })
+          if (
+            typeof responseObject[responseKey] === "number" ||
+            typeof responseObject[responseKey] === "string"
+          ) {
             result[responseObject[responseKey]] ||= 0
             // @ts-expect-errors
             result[responseObject[responseKey]] += 1

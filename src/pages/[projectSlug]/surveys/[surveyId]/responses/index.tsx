@@ -1,3 +1,5 @@
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
@@ -8,7 +10,6 @@ import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlugId } from "@/src/core/routes/useSlug"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
-import { getBackendConfigBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { EditableSurveyResponseFilterForm } from "@/src/survey-responses/components/feedback/EditableSurveyResponseFilterForm"
 import EditableSurveyResponseListItem from "@/src/survey-responses/components/feedback/EditableSurveyResponseListItem"
@@ -26,7 +27,25 @@ export const SurveyResponse = () => {
   const projectSlug = useProjectSlug()
   const surveyId = useSlugId("surveyId")
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
-  const backenendConfig = getBackendConfigBySurveySlug(survey.slug)
+
+  const backendConfig = getConfigBySurveySlug(survey.slug, "backend")
+  const feedbackDefinition = getConfigBySurveySlug(survey.slug, "part2")
+
+  if (!feedbackDefinition)
+    return (
+      <>
+        <MetaTags noindex title={`Beteiligung ${survey.title}`} />
+        <PageHeader title={survey.title} className="mt-12" description={<SurveyTabs />} />
+        <div className="mt-12 space-y-4">
+          {" "}
+          <p>In der Beteiligung {survey.slug.toUpperCase()} gibt es keinen Umfrageteil 2. </p>
+        </div>
+      </>
+    )
+
+  // legacy surveys
+  const disableExternalSurveyResponseForm = backendConfig.disableExternalSurveyResponseForm
+
   // the returned responses include the surveyPart1 data
   const [
     { feedbackSurveyResponses, additionalFilterQuestionsWithResponseOptions },
@@ -35,6 +54,7 @@ export const SurveyResponse = () => {
     projectSlug,
     surveyId: survey.id,
   })
+
   const filteredResponses = useFilteredResponses(feedbackSurveyResponses, survey.slug)
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
   const [{ surveyResponseTopics: topics }, { refetch: refetchTopics }] = useQuery(
@@ -60,6 +80,12 @@ export const SurveyResponse = () => {
     }
   }, [paramsSurveyResponseId])
 
+  const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
+
+  const mapProps = feedbackDefinition?.pages
+    .find((page) => page.fields.some((field) => field.name === "location"))
+    ?.fields.find((q) => q.name === locationId)!.props
+
   return (
     <>
       <MetaTags noindex title={`Beteiligung ${survey.title}`} />
@@ -77,9 +103,10 @@ export const SurveyResponse = () => {
           </Link>
         </div>
 
-        {!backenendConfig.disableExternalSurveyResponseForm && (
+        {!disableExternalSurveyResponseForm && (
           <ExternalSurveyResponseFormModal refetch={refetchResponses} />
         )}
+
         <EditableSurveyResponseFilterForm
           additionalFilters={additionalFilterQuestionsWithResponseOptions}
           operators={operators}
@@ -114,6 +141,7 @@ export const SurveyResponse = () => {
                 operators={operators}
                 topics={topics}
                 refetchResponsesAndTopics={refetchResponsesAndTopics}
+                mapProps={mapProps}
               />
             </div>
           ))}

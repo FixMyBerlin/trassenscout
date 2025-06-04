@@ -1,7 +1,7 @@
 "use client"
-import { AllowedSurveySlugs as AllowedSurveySlugsNew } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
+import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { blueButtonStyles } from "@/src/core/components/links"
-import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
+
 import deleteTestSurveyResponses from "@/src/survey-responses/mutations/deleteTestSurveyResponses"
 import { useMutation } from "@blitzjs/rpc"
 import { clsx } from "clsx"
@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation"
 
 type DeleteButtonProps = {
   testSurveyResponseIds: number[]
-  surveySlug: AllowedSurveySlugs | AllowedSurveySlugsNew
+  surveySlug: AllowedSurveySlugs
 }
 
 export const DeleteButton = ({ testSurveyResponseIds, surveySlug }: DeleteButtonProps) => {
@@ -22,7 +22,6 @@ export const DeleteButton = ({ testSurveyResponseIds, surveySlug }: DeleteButton
       )
     ) {
       try {
-        // @ts-expect-error todo
         await deleteTestSurveyMutation({ slug: surveySlug, deleteIds: testSurveyResponseIds })
       } catch (error) {
         alert("Beim Löschen ist ein Fehler aufgetreten.")

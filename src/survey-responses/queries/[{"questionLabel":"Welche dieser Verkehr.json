@@ -1,0 +1,58 @@
+[
+  {
+    "questionLabel": "Welche dieser Verkehrsmittel nutzen Sie täglich oder fast täglich?",
+    "data": [
+      { "name": "Bus & Bahn", "value": 2 },
+      { "name": "Pedelec / E-Bike", "value": 8 },
+      { "name": "Fahrrad (ohne Motor)", "value": 4 },
+      { "name": "Carsharing", "value": 2 },
+      { "name": "Rollstuhl", "value": 4 },
+      { "name": "Zu Fuß (länger als 15 Minuten)", "value": 11 },
+      { "name": "E-Scooter", "value": 4 },
+      { "name": "Auto", "value": 1 }
+    ]
+  },
+  {
+    "questionLabel": "Welche Verkehrsmittel besitzen Sie?",
+    "data": [
+      { "name": "Carsharing", "value": 3 },
+      { "name": "Monatsticket Nahverkehr", "value": 4 },
+      { "name": "Rollstuhl", "value": 3 },
+      { "name": "Fahrrad (ohne Motor)", "value": 4 },
+      { "name": "Pedelec / E-Bike", "value": 2 },
+      { "name": "Roller / Motorrad", "value": 5 },
+      { "name": "E-Scooter", "value": 3 },
+      { "name": "Eigenes Auto", "value": 2 }
+    ]
+  },
+  {
+    "questionLabel": "Würden Sie den FRM7 nutzen?",
+    "data": [
+      { "name": "Ich bin ohnehin nicht zwischen Frankfurt und Hanau unterwegs.", "value": 7 },
+      { "name": "Nein", "value": 14 },
+      { "name": "Ja", "value": 11 }
+    ]
+  },
+  {
+    "questionLabel": "Was ist Ihnen beim Radfahren besonders wichtig?",
+    "data": [
+      {
+        "name": "Ich fahre lieber auf sicheren Radwegen an großen Straßen, weil ich dann zügiger vorankomme.",
+        "value": 15
+      },
+      {
+        "name": "Ich fahre gern in ruhigen Wohnstraßen, auch wenn dort Autos unterwegs sind.",
+        "value": 17
+      }
+    ]
+  },
+  {
+    "questionLabel": "Eine Fahrradstraße, auf der auch Autos erlaubt sind, würde ich...",
+    "data": [
+      { "name": "Nie mit dem Rad nutzen.", "value": 9 },
+      { "name": "Eher selten mit dem Rad nutzen.", "value": 6 },
+      { "name": "Mit dem Rad nutzen.", "value": 16 },
+      { "name": "Keine Angabe", "value": 1 }
+    ]
+  }
+]
