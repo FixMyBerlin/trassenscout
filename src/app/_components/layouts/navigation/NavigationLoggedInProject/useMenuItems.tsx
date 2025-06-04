@@ -42,10 +42,6 @@ export const useMenuItems = () => {
       ],
     },
     {
-      name: "Termine",
-      href: `/${projectSlug}/calendar-entries`,
-    },
-    {
       name: "Dokumente",
       href: `/${projectSlug}/uploads`,
     },
