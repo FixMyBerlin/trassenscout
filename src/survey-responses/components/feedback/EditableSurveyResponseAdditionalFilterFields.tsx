@@ -1,4 +1,4 @@
-import { TBackendConfig } from "@/src/app/beteiligung-neu/_shared/backend-types"
+import { TBackendConfig } from "@/src/app/beteiligung/_shared/backend-types"
 
 type Props = {
   additionalFilterFields: TBackendConfig["additionalFilters"]

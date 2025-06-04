@@ -3,8 +3,8 @@ import {
   AllowedSurveySlugs,
   isSurveyLegacy,
   SurveyLegacySlugs,
-} from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
-import { getResponseConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+} from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
+import { getResponseConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"

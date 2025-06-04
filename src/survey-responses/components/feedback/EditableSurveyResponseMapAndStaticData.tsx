@@ -1,5 +1,5 @@
-import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
-import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getQuestionIdBySurveySlug"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
 import { Link, linkStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { Prettify } from "@/src/core/types"

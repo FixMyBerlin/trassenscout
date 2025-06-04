@@ -1,4 +1,4 @@
-import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { invoke } from "@/src/blitz-server"
 import getSurveyResponses from "@/src/survey-responses/queries/getSurveyResponses"
 import { Project } from "@prisma/client"

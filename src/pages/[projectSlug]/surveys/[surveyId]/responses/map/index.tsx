@@ -1,5 +1,5 @@
-import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
-import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getQuestionIdBySurveySlug"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import { Spinner } from "@/src/core/components/Spinner"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"

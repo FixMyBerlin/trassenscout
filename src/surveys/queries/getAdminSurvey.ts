@@ -1,5 +1,5 @@
 import db from "@/db"
-import { allowedSurveySlugs } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
+import { allowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 
 import { resolver } from "@blitzjs/rpc"
 

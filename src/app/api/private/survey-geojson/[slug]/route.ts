@@ -1,5 +1,5 @@
 import db from "@/db"
-import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import adler32 from "adler-32"
 import type { Feature, LineString, Point, Position } from "geojson"
 

@@ -1,4 +1,4 @@
-import { SurveyPart1and3 } from "@/src/app/beteiligung-neu/_shared/types"
+import { SurveyPart1and3 } from "@/src/app/beteiligung/_shared/types"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Link, whiteButtonStyles } from "@/src/core/components/links"
 import { GroupedSurveyResponseItem } from "@/src/survey-responses/components/analysis/GroupedSurveyResponseItem"

@@ -2,7 +2,7 @@ import db from "@/db"
 import {
   allowedSurveySlugs,
   AllowedSurveySlugsSchema,
-} from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
+} from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import {

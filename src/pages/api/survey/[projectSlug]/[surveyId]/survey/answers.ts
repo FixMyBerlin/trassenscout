@@ -1,5 +1,5 @@
-import { SurveyFieldRadioOrCheckboxGroupConfig } from "@/src/app/beteiligung-neu/_shared/types"
-import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { SurveyFieldRadioOrCheckboxGroupConfig } from "@/src/app/beteiligung/_shared/types"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { format } from "date-fns"
 import { NextApiRequest, NextApiResponse } from "next"
 import { getSurvey, sendCsv } from "./_shared"

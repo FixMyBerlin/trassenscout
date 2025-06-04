@@ -1,7 +1,7 @@
 import {
   SurveyFieldRadioOrCheckboxGroupConfig,
   SurveyPart1and3,
-} from "@/src/app/beteiligung-neu/_shared/types"
+} from "@/src/app/beteiligung/_shared/types"
 
 type QuestionObject = {
   id: string

@@ -1,5 +1,5 @@
 "use client"
-import { AllowedSurveySlugs } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
+import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { blueButtonStyles } from "@/src/core/components/links"
 
 import deleteTestSurveyResponses from "@/src/survey-responses/mutations/deleteTestSurveyResponses"

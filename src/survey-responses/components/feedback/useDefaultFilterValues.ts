@@ -2,7 +2,7 @@ import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 
-import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { getSurveyCategoryOptions } from "@/src/survey-responses/utils/getSurveyCategoryOptions"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useParam } from "@blitzjs/next"

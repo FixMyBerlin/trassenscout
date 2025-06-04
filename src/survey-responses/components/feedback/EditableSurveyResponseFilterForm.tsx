@@ -1,5 +1,5 @@
-import { backendConfig as defaultBackendConfig } from "@/src/app/beteiligung-neu/_shared/backend-types"
-import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { backendConfig as defaultBackendConfig } from "@/src/app/beteiligung/_shared/backend-types"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { linkStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"

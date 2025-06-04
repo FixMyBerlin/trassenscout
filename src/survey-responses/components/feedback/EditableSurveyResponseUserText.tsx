@@ -1,4 +1,4 @@
-import { SurveyPart2 } from "@/src/app/beteiligung-neu/_shared/types"
+import { SurveyPart2 } from "@/src/app/beteiligung/_shared/types"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Prettify } from "@/src/core/types"
 import getFeedbackSurveyResponses from "@/src/survey-responses/queries/getFeedbackSurveyResponses"

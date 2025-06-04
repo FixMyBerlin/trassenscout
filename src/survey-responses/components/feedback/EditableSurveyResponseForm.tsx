@@ -1,7 +1,7 @@
 import {
   TBackendConfig,
   backendConfig as defaultBackendConfig,
-} from "@/src/app/beteiligung-neu/_shared/backend-types"
+} from "@/src/app/beteiligung/_shared/backend-types"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"

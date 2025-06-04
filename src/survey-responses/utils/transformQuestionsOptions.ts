@@ -1,4 +1,4 @@
-import { SurveyFieldRadioOrCheckboxGroupConfig } from "@/src/app/beteiligung-neu/_shared/types"
+import { SurveyFieldRadioOrCheckboxGroupConfig } from "@/src/app/beteiligung/_shared/types"
 
 export const transformQuestionsOptions = (
   options: SurveyFieldRadioOrCheckboxGroupConfig["props"]["options"],

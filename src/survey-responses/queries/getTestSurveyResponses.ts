@@ -1,6 +1,6 @@
 import db from "@/db"
-import { AllowedSurveySlugsSchema } from "@/src/app/beteiligung-neu/_shared/utils/allowedSurveySlugs"
-import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getQuestionIdBySurveySlug"
+import { AllowedSurveySlugsSchema } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
 
 import { resolver } from "@blitzjs/rpc"
 

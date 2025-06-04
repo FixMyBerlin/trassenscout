@@ -1,5 +1,5 @@
 import { LogEntry, Project } from "@/db"
-import { DebugData } from "@/src/app/beteiligung-neu/_components/DebugData"
+import { DebugData } from "@/src/app/beteiligung/_components/DebugData"
 import { invoke } from "@/src/blitz-server"
 import { SuperAdminBox } from "@/src/core/components/AdminBox/SuperAdminBox"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"

@@ -1,6 +1,6 @@
-import { SurveyBackgroundSwitcher } from "@/src/app/beteiligung-neu/_components/form/map/BackgroundSwitcher"
-import { SurveyMapBanner } from "@/src/app/beteiligung-neu/_components/form/map/MapBanner"
-import Pin from "@/src/app/beteiligung-neu/_components/form/map/Pin"
+import { SurveyBackgroundSwitcher } from "@/src/app/beteiligung/_components/form/map/BackgroundSwitcher"
+import { SurveyMapBanner } from "@/src/app/beteiligung/_components/form/map/MapBanner"
+import Pin from "@/src/app/beteiligung/_components/form/map/Pin"
 import { LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 
 import { clsx } from "clsx"

@@ -1,4 +1,4 @@
-import { FieldConfig, SurveyPart1and3, SurveyPart2 } from "@/src/app/beteiligung-neu/_shared/types"
+import { FieldConfig, SurveyPart1and3, SurveyPart2 } from "@/src/app/beteiligung/_shared/types"
 
 export const getFieldsAsArray = ({ definition }: { definition: SurveyPart1and3 | SurveyPart2 }) => {
   const questions = []
