@@ -1,3 +1,4 @@
+import { LabeledTextField } from "@/src/core/components/forms"
 import { TagIcon } from "@heroicons/react/24/outline"
 import { LabeledRadiobuttonGroup } from "../../core/components/forms/LabeledRadiobuttonGroup"
 
@@ -75,6 +76,13 @@ export const LabeledRadiobuttonGroupLabelPos = () => {
             ),
           },
         ]}
+      />
+      <LabeledTextField
+        type="number"
+        step="1"
+        name="order"
+        label="Reihenfolge Planungsabschnitte"
+        help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung."
       />
     </details>
   )
