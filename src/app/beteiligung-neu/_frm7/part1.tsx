@@ -1,4 +1,4 @@
-import { IntroPart1 } from "@/src/app/beteiligung-neu/_frm7-neu/SurveyFRM7NEU"
+import { IntroPart1 } from "@/src/app/beteiligung-neu/_frm7/SurveyFRM7"
 import { fieldValidationEnum } from "@/src/app/beteiligung-neu/_shared/fieldvalidationEnum"
 import { SurveyPart1and3 } from "@/src/app/beteiligung-neu/_shared/types"
 
@@ -37,14 +37,14 @@ export const part1Config: SurveyPart1and3 = {
           props: {
             label: "Welche dieser Verkehrsmittel nutzen Sie täglich oder fast täglich?",
             options: [
-              { key: "zu_fuss", label: "Zu Fuß (länger als 15 Minuten)" },
-              { key: "rollstuhl", label: "Rollstuhl" },
-              { key: "bike", label: "Fahrrad (ohne Motor)" },
-              { key: "e_bike", label: "Pedelec / E-Bike" },
-              { key: "e_scooter", label: "E-Scooter" },
-              { key: "bus_bahn", label: "Bus & Bahn" },
-              { key: "auto", label: "Auto" },
-              { key: "car_sharing", label: "Carsharing" },
+              { key: "1", label: "Zu Fuß (länger als 15 Minuten)" },
+              { key: "2", label: "Rollstuhl" },
+              { key: "3", label: "Fahrrad (ohne Motor)" },
+              { key: "4", label: "Pedelec / E-Bike" },
+              { key: "5", label: "E-Scooter" },
+              { key: "6", label: "Bus & Bahn" },
+              { key: "7", label: "Auto" },
+              { key: "8", label: "Carsharing" },
             ],
           },
         },
@@ -57,14 +57,14 @@ export const part1Config: SurveyPart1and3 = {
           props: {
             label: "Welche Verkehrsmittel besitzen Sie?",
             options: [
-              { key: "rollstuhl", label: "Rollstuhl" },
-              { key: "bike", label: "Fahrrad (ohne Motor)" },
-              { key: "e_bike", label: "Pedelec / E-Bike" },
-              { key: "e_scooter", label: "E-Scooter" },
-              { key: "motorrad", label: "Roller / Motorrad" },
-              { key: "bus_bahn", label: "Monatsticket Nahverkehr" },
-              { key: "auto", label: "Eigenes Auto" },
-              { key: "car_sharing", label: "Carsharing" },
+              { key: "1", label: "Rollstuhl" },
+              { key: "2", label: "Fahrrad (ohne Motor)" },
+              { key: "3", label: "Pedelec / E-Bike" },
+              { key: "4", label: "E-Scooter" },
+              { key: "5", label: "Roller / Motorrad" },
+              { key: "6", label: "Monatsticket Nahverkehr" },
+              { key: "7", label: "Eigenes Auto" },
+              { key: "8", label: "Carsharing" },
             ],
           },
         },
@@ -77,12 +77,12 @@ export const part1Config: SurveyPart1and3 = {
           props: {
             label: "Wie lange dauert Ihre häufigste Fahrradstrecke (ein Weg)?",
             options: [
-              { key: "fahre_kein_fahrrad", label: "Ich fahre kein Fahrrad" },
-              { key: "10", label: "Bis 10 Minuten" },
-              { key: "11_20", label: "11 bis 20 Minuten" },
-              { key: "21_30", label: "21 bis 30 Minuten" },
-              { key: "mehr_30", label: "Mehr als 30 Minuten" },
-              { key: "ka", label: "Keine Angabe" },
+              { key: "1", label: "Ich fahre kein Fahrrad" },
+              { key: "2", label: "Bis 10 Minuten" },
+              { key: "3", label: "11 bis 20 Minuten" },
+              { key: "4", label: "21 bis 30 Minuten" },
+              { key: "5", label: "Mehr als 30 Minuten" },
+              { key: "6", label: "Keine Angabe" },
             ],
           },
         },
@@ -95,12 +95,12 @@ export const part1Config: SurveyPart1and3 = {
           props: {
             label: "Wählen Sie aus, welchen Aussagen Sie zustimmen.",
             options: [
-              { key: "spass", label: "Ich fahre Fahrrad, weil es mir Spaß macht." },
-              { key: "flexibler", label: "Mit dem Fahrrad bin ich zügiger und flexibler." },
-              { key: "wetter", label: "Bei schlechtem Wetter fahre ich kein Fahrrad." },
-              { key: "sicher", label: "Ich fühle mich sicher auf dem Fahrrad im Verkehr." },
+              { key: "1", label: "Ich fahre Fahrrad, weil es mir Spaß macht." },
+              { key: "2", label: "Mit dem Fahrrad bin ich zügiger und flexibler." },
+              { key: "3", label: "Bei schlechtem Wetter fahre ich kein Fahrrad." },
+              { key: "4", label: "Ich fühle mich sicher auf dem Fahrrad im Verkehr." },
               {
-                key: "fahre_kein_fahrrad",
+                key: "5",
                 label: "Keine der Antworten trifft auf mich zu, denn ich fahre kein Fahrrad.",
               },
             ],
@@ -116,25 +116,25 @@ export const part1Config: SurveyPart1and3 = {
             label: "Warum können oder wollen Sie nicht öfter Fahrrad fahren?",
             options: [
               {
-                key: "kann_nicht_fertigkeit",
+                key: "1",
                 label: "Ich kann nicht Fahrrad fahren (fehlende Fertigkeit)",
               },
               {
-                key: "kann_nicht_einschraenkung",
+                key: "2",
                 label: "Ich kann nicht Fahrrad fahren (körperliche Einschränkung)",
               },
-              { key: "keine_infra", label: "Es gibt keine sichere Infrastruktur" },
-              { key: "zu_lang", label: "Meine Strecken sind zu lang" },
+              { key: "3", label: "Es gibt keine sichere Infrastruktur" },
+              { key: "4", label: "Meine Strecken sind zu lang" },
               {
-                key: "wenige_leute_fahren_fahrrad",
+                key: "5",
                 label: "Wenige Leute in meiner Umgebung fahren Fahrrad",
               },
-              { key: "anstrengend", label: "Fahrradfahren ist zu anstrengend" },
-              { key: "kein_fahrrad", label: "Ich habe kein (gutes) Fahrrad" },
-              { key: "kinder", label: "Ich kann keine Kinder mitnehmen" },
-              { key: "andere", label: "Andere Gründe" },
+              { key: "6", label: "Fahrradfahren ist zu anstrengend" },
+              { key: "7", label: "Ich habe kein (gutes) Fahrrad" },
+              { key: "8", label: "Ich kann keine Kinder mitnehmen" },
+              { key: "9", label: "Andere Gründe" },
               {
-                key: "fahre_kein_fahrrad",
+                key: "10",
                 label: "Keine Antwort trifft auf mich zu, denn ich fahre Fahrrad",
               },
             ],
@@ -169,10 +169,10 @@ export const part1Config: SurveyPart1and3 = {
           props: {
             label: "Würden Sie den FRM7 nutzen?",
             options: [
-              { key: "ja", label: "Ja" },
-              { key: "nein", label: "Nein" },
+              { key: "1", label: "Ja" },
+              { key: "2", label: "Nein" },
               {
-                key: "irrelevant",
+                key: "3",
                 label: "Ich bin ohnehin nicht zwischen Frankfurt und Hanau unterwegs.",
               },
             ],
@@ -187,10 +187,10 @@ export const part1Config: SurveyPart1and3 = {
           props: {
             label: "Wie oft würden Sie den FRM7 nutzen?",
             options: [
-              { key: "jtaeglich", label: "Täglich oder fast täglich" },
-              { key: "mehrmals_woche", label: "Mehrmals pro Woche" },
-              { key: "mehrmals_monat", label: "Mehrmals im Monat" },
-              { key: "nie", label: "Seltener oder Nie" },
+              { key: "1", label: "Täglich oder fast täglich" },
+              { key: "2", label: "Mehrmals pro Woche" },
+              { key: "3", label: "Mehrmals im Monat" },
+              { key: "4", label: "Seltener oder Nie" },
             ],
           },
         },
@@ -203,13 +203,13 @@ export const part1Config: SurveyPart1and3 = {
           props: {
             label: "Für welche Fahrten würden Sie den FRM7 nutzen?",
             options: [
-              { key: "arbeit_schule", label: "Zur Arbeit oder Schule pendeln" },
-              { key: "einkaufen", label: "Einkaufen und Besorgungen" },
-              { key: "freizeit", label: "Sport oder Freizeitaktivitäten" },
-              { key: "bringe_kinder", label: "Ich nehme Kind(er) mit dem Rad mit" },
-              { key: "begleite_kinder", label: "Ich begleite Kind(er) mit dem Rad" },
-              { key: "anderes", label: "Anderes" },
-              { key: "ka", label: "Keine Angabe" },
+              { key: "1", label: "Zur Arbeit oder Schule pendeln" },
+              { key: "2", label: "Einkaufen und Besorgungen" },
+              { key: "3", label: "Sport oder Freizeitaktivitäten" },
+              { key: "4", label: "Ich nehme Kind(er) mit dem Rad mit" },
+              { key: "5", label: "Ich begleite Kind(er) mit dem Rad" },
+              { key: "6", label: "Anderes" },
+              { key: "7", label: "Keine Angabe" },
             ],
           },
         },
@@ -223,21 +223,21 @@ export const part1Config: SurveyPart1and3 = {
             label:
               "Würden Sie zukünftig Fahrten, die Sie bisher mit dem Auto machen, stattdessen mit dem Fahrrad über den FRM7 machen?",
             options: [
-              { key: "ja", label: "Ja, auf jeden Fall" },
-              { key: "ja_wahrscheinlich", label: "Ja, wahrscheinlich ab und zu" },
+              { key: "1", label: "Ja, auf jeden Fall" },
+              { key: "2", label: "Ja, wahrscheinlich ab und zu" },
               {
-                key: "nein_weiterhin_auto",
+                key: "3",
                 label: "Nein, ich würde weiterhin mit dem Auto fahren",
               },
               {
-                key: "nein_dort_nicht_unterwegs",
+                key: "4",
                 label: "Nein, ich bin dort ohnehin nicht unterwegs",
               },
               {
-                key: "nein_fahre_bereits_selten_auto",
+                key: "5",
                 label: "Ich fahre bereits selten / nie Auto",
               },
-              { key: "ka", label: "Keine Angabe" },
+              { key: "6", label: "Keine Angabe" },
             ],
           },
         },
@@ -252,12 +252,12 @@ export const part1Config: SurveyPart1and3 = {
 
             options: [
               {
-                key: "sicherheit",
+                key: "1",
                 label:
                   "Ich fahre gern in ruhigen Wohnstraßen, auch wenn dort Autos unterwegs sind.",
               },
               {
-                key: "schnelligkeit",
+                key: "2",
                 label:
                   "Ich fahre lieber auf sicheren Radwegen an großen Straßen, weil ich dann zügiger vorankomme.",
                 description:
@@ -277,19 +277,19 @@ export const part1Config: SurveyPart1and3 = {
               "Ein Weg, auf dem auch Fußgänger und Fußgängerinnen unterwegs sind, würde ich...",
             options: [
               {
-                key: "nicht",
+                key: "1",
                 label: "Mit dem Rad nutzen.",
               },
               {
-                key: "selten",
+                key: "2",
                 label: "Eher selten mit dem Rad nutzen.",
               },
               {
-                key: "nie",
+                key: "3",
                 label: "Nie mit dem Rad nutzen.",
               },
               {
-                key: "keine_angabe",
+                key: "4",
                 label: "Keine Angabe",
               },
             ],
@@ -305,19 +305,19 @@ export const part1Config: SurveyPart1and3 = {
             label: "Eine Fahrradstraße, auf der auch Autos erlaubt sind, würde ich...",
             options: [
               {
-                key: "nicht",
+                key: "1",
                 label: "Mit dem Rad nutzen.",
               },
               {
-                key: "selten",
+                key: "2",
                 label: "Eher selten mit dem Rad nutzen.",
               },
               {
-                key: "nie",
+                key: "3",
                 label: "Nie mit dem Rad nutzen.",
               },
               {
-                key: "keine_angabe",
+                key: "4",
                 label: "Keine Angabe",
               },
             ],
@@ -351,31 +351,31 @@ export const part1Config: SurveyPart1and3 = {
           props: {
             label: "Wie alt sind Sie?",
             options: [
-              { key: "u_14", label: "Unter 14 Jahre" },
+              { key: "1", label: "Unter 14 Jahre" },
               {
-                key: "14-18",
+                key: "2",
                 label: "14 bis 18 Jahre",
               },
               {
-                key: "19-24",
+                key: "3",
                 label: "19 bis 24 Jahre",
               },
-              { key: "25-29", label: "25 bis 29 Jahre" },
+              { key: "4", label: "25 bis 29 Jahre" },
               {
-                key: "30-39",
+                key: "5",
                 label: "30 bis 39 Jahre",
               },
               {
-                key: "40-49",
+                key: "6",
                 label: "40 bis 49 Jahre",
               },
               {
-                key: "50-64",
+                key: "7",
                 label: "50 bis 64 Jahre",
               },
-              { key: "65-74", label: "65 bis 74 Jahre" },
+              { key: "8", label: "65 bis 74 Jahre" },
               {
-                key: "ueber_74",
+                key: "9",
                 label: "Über 74 Jahre",
               },
             ],
@@ -390,8 +390,8 @@ export const part1Config: SurveyPart1and3 = {
           props: {
             label: "Haben Sie Kinder unter 12 Jahren?",
             options: [
-              { key: "ja", label: "Ja" },
-              { key: "nein", label: "Nein" },
+              { key: "1", label: "Ja" },
+              { key: "2", label: "Nein" },
             ],
           },
         },
@@ -404,9 +404,9 @@ export const part1Config: SurveyPart1and3 = {
           props: {
             label: "Welches Geschlecht haben Sie?",
             options: [
-              { key: "m", label: "Weiblich" },
-              { key: "w", label: "Männlich" },
-              { key: "d", label: "Divers (andere)" },
+              { key: "1", label: "Weiblich" },
+              { key: "2", label: "Männlich" },
+              { key: "3", label: "Divers (andere)" },
             ],
           },
         },
@@ -419,11 +419,11 @@ export const part1Config: SurveyPart1and3 = {
           props: {
             label: "Was ist Ihr höchster Bildungsabschluss?",
             options: [
-              { key: "hauptschule", label: "Hauptschulabschluss" },
-              { key: "real", label: "Realschulabschluss" },
-              { key: "abi", label: "Abitur" },
-              { key: "ohne", label: "(Noch) ohne Schulabschluss" },
-              { key: "ka", label: "Keine Angabe" },
+              { key: "1", label: "Hauptschulabschluss" },
+              { key: "2", label: "Realschulabschluss" },
+              { key: "3", label: "Abitur" },
+              { key: "4", label: "(Noch) ohne Schulabschluss" },
+              { key: "5", label: "Keine Angabe" },
             ],
           },
         },
@@ -437,23 +437,23 @@ export const part1Config: SurveyPart1and3 = {
             label: "Was ist Ihr höchster Berufsabschluss?",
             options: [
               {
-                key: "lehre",
+                key: "1",
                 label: "Lehre, Berufsfachschule, Handelsschule",
               },
               {
-                key: "fachschule",
+                key: "2",
                 label: "Meister-/Technikerschule, Fachschule, Berufs-/Fachakademie",
               },
               {
-                key: "hochschule",
+                key: "3",
                 label: "Hoch- oder Fachschulabschluss",
               },
               {
-                key: "keine",
+                key: "4",
                 label: "(Noch) ohne Berufsausbildung",
               },
               {
-                key: "ka",
+                key: "5",
                 label: "Keine Angabe",
               },
             ],
@@ -470,23 +470,23 @@ export const part1Config: SurveyPart1and3 = {
               "Sind Sie aus gesundheitlichen Gründen in Ihrer Mobilität dauerhaft eingeschränkt?",
             options: [
               {
-                key: "ja_gehen",
+                key: "1",
                 label: "Ja, durch Gehbehinderung",
               },
               {
-                key: "ja_sehen",
+                key: "2",
                 label: "Ja, durch Sehbehinderung",
               },
               {
-                key: "ja_andere",
+                key: "3",
                 label: "Ja, durch andere Einschränkung(en)",
               },
               {
-                key: "nein",
+                key: "4",
                 label: "Nein",
               },
               {
-                key: "keine_angabe",
+                key: "5",
                 label: "Keine Angabe",
               },
             ],

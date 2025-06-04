@@ -1,4 +1,4 @@
-import { formConfig as FRM7Config } from "@/src/app/beteiligung-neu/_frm7-neu/config"
+import { formConfig as FRM7Config } from "@/src/app/beteiligung-neu/_frm7/config"
 import { formConfig as BBConfig } from "@/src/app/beteiligung-neu/_radnetz-brandenbrug/config"
 import { formConfig as RS8Config } from "@/src/app/beteiligung-neu/_rs8/config"
 import { formConfig as TestConfig } from "@/src/app/beteiligung-neu/_rstest-1-2-3/config"
@@ -17,7 +17,7 @@ export const getConfigBySurveySlug = <K extends keyof FormConfig>(
 ): FormConfig[K] => {
   switch (slug) {
     // todo frm7
-    case "frm7-neu":
+    case "frm7":
       return FRM7Config[part]
     case "frm7":
       return FRM7Config[part]
@@ -40,7 +40,7 @@ export const getprogressBarDefinitionBySurveySlug = (slug: AllowedSurveySlugs, p
   return getConfigBySurveySlug(slug, part)!.progressBarDefinition
 }
 
-import { responseConfig as FRM7ResponseConfig } from "@/src/app/beteiligung-neu/_frm7-neu/response-config"
+import { responseConfig as FRM7ResponseConfig } from "@/src/app/beteiligung-neu/_frm7/response-config"
 import { responseConfig as BBResponseConfig } from "@/src/app/beteiligung-neu/_radnetz-brandenbrug/response-config"
 import { responseConfig as RS8ResponseConfig } from "@/src/app/beteiligung-neu/_rs8/response-config"
 

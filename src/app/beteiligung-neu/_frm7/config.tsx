@@ -1,5 +1,5 @@
-import { part1Config } from "@/src/app/beteiligung-neu/_frm7-neu/part1"
-import { part2Config } from "@/src/app/beteiligung-neu/_frm7-neu/part2"
+import { part1Config } from "@/src/app/beteiligung-neu/_frm7/part1"
+import { part2Config } from "@/src/app/beteiligung-neu/_frm7/part2"
 
 import { FormConfig } from "@/src/app/beteiligung-neu/_shared/types"
 

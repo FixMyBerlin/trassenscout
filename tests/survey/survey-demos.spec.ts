@@ -31,7 +31,7 @@ const surveyTests = [
   },
   // frm7 has a different part configuration - so we leave it out for now; we could add it below with a condition and import it from the frm-neu test file
   // {
-  //   slug: "frm7-neu",
+  //   slug: "frm7",
   //   parts: ["part1", "part2"],
   //   initialScreen: {
   //     title: "FRM7",

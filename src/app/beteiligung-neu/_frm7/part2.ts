@@ -40,7 +40,7 @@ export const part2Config: SurveyPart2 = {
           },
         },
         {
-          name: "category",
+          name: "21",
           component: "SurveyRadiobuttonGroup",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
@@ -48,11 +48,11 @@ export const part2Config: SurveyPart2 = {
           props: {
             label: "Zu welchem Thema passt Ihr Hinweis?",
             options: [
-              { key: "konflikte", label: "Mögliche Konflikte" },
-              { key: "nutzung", label: "Nutzung" },
-              { key: "streckenfuehrung", label: "Streckenführung" },
-              { key: "umwelt", label: "Umwelt- und Naturschutz" },
-              { key: "sonstiges", label: "Sonstiges" },
+              { key: "1", label: "Mögliche Konflikte" },
+              { key: "2", label: "Nutzung" },
+              { key: "3", label: "Streckenführung" },
+              { key: "4", label: "Umwelt- und Naturschutz" },
+              { key: "5", label: "Sonstiges" },
             ],
           },
         },
@@ -77,32 +77,30 @@ export const part2Config: SurveyPart2 = {
           },
         },
         {
-          name: "enableLocation",
+          name: "22",
           component: "SurveyRadiobuttonGroup",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
-          defaultValue: "ja",
+          defaultValue: "1",
           props: {
             label: "Bezieht sich Ihr Hinweis auf eine konkrete Stelle entlang der Route?",
             options: [
-              { key: "ja", label: "Ja" },
-              { key: "nein", label: "Nein" },
+              { key: "1", label: "Ja" },
+              { key: "2", label: "Nein" },
             ],
           },
         },
         {
-          name: "location",
+          name: "23",
           componentType: "form",
           condition: {
-            fieldName: "enableLocation",
-            conditionFn: (fieldValue) => fieldValue === "ja",
+            // this field is only shown if the user selected "ja" in the previous field
+            fieldName: "22",
+            conditionFn: (fieldValue) => fieldValue === "1",
           },
           validators: {
             onChange: ({ fieldApi }: { fieldApi: AnyFieldApi }) => {
-              if (
-                fieldApi.state.meta.isPristine &&
-                fieldApi.form.getFieldValue("enableLocation") === "ja"
-              ) {
+              if (fieldApi.state.meta.isPristine && fieldApi.form.getFieldValue("22") === "1") {
                 console.log({ fieldApi })
                 return "Bitte wählen Sie einen Ort auf der Karte oder wählen sie oben, dass Sie keinen Ort angeben möchten."
               }
@@ -153,7 +151,7 @@ export const part2Config: SurveyPart2 = {
           },
         },
         {
-          name: "feedbackText",
+          name: "34",
           component: "SurveyTextarea",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],

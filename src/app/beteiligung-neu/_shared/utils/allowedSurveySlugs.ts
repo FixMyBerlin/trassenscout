@@ -6,9 +6,7 @@ import { z } from "zod"
 
 export const allowedSurveySlugs = [
   "rs8",
-  // todo
   "frm7",
-  "frm7-neu",
   "radnetz-brandenburg",
   "rstest-1-2-3",
   "rstest-2-3",
