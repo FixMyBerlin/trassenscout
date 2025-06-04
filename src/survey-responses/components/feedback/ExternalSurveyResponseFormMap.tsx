@@ -1,9 +1,8 @@
-import { TMapProps } from "@/src/survey-public/components/types"
 import { SurveyMapExternal } from "@/src/survey-responses/components/feedback/SurveyMapExternal"
 import { useFormContext } from "react-hook-form"
 
 type Props = {
-  mapProps: TMapProps
+  mapProps: any
   userLocationQuestionId: number
   isUserLocationQuestionId: number
   maptilerUrl: string

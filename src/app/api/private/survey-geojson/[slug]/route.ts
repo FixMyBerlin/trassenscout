@@ -1,15 +1,22 @@
 import db from "@/db"
-import { feedbackDefinition } from "@/src/survey-public/radnetz-brandenburg/data/feedback"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
 import adler32 from "adler-32"
 import type { Feature, LineString, Point, Position } from "geojson"
 
+// this component is hard coded for the survey radnetz-brandenburg part2
+// it is used to send an email to the user with the feedback they provided
+// if we want to use this for other surveys, we need to refactor the code
+
+const feedbackDefinition = getConfigBySurveySlug("radnetz-brandenburg", "part2")
+
 const categories = Object.fromEntries(
-  // todo survey clean up after survey BB: remove or find generic way to do this
   // @ts-expect-error
-  feedbackDefinition.pages[0]?.questions
-    .find((q) => q.id == 22)
+  feedbackDefinition.pages[0]?.fields
+    // todo survey clean up or refactor after survey BB
+    // the category ref is hard coded
+    .find((q) => String(q.name) == "22")
     // @ts-expect-error
-    .props.responses.map((response) => [response.id, response.text.de]),
+    .props.options.map((option) => [option.key, option.label]),
 )
 
 export async function GET(request: Request, { params }: { params: { slug: string } }) {

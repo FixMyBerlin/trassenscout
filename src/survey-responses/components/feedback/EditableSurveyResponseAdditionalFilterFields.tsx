@@ -1,4 +1,4 @@
-import { TBackendConfig } from "@/src/survey-public/utils/backend-config-defaults"
+import { TBackendConfig } from "@/src/app/beteiligung-neu/_shared/backend-types"
 
 type Props = {
   additionalFilterFields: TBackendConfig["additionalFilters"]

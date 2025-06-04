@@ -1,7 +1,8 @@
+import { SurveyBackgroundSwitcher } from "@/src/app/beteiligung-neu/_components/form/map/BackgroundSwitcher"
+import { SurveyMapBanner } from "@/src/app/beteiligung-neu/_components/form/map/MapBanner"
+import Pin from "@/src/app/beteiligung-neu/_components/form/map/Pin"
 import { LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
-import { SurveyBackgroundSwitcher } from "@/src/survey-public/components/maps/SurveyBackgroundSwitcher"
-import { SurveyMapBanner } from "@/src/survey-public/components/maps/SurveyMapBanner"
-import SurveyPin from "@/src/survey-public/components/maps/SurveyPin"
+
 import { clsx } from "clsx"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useCallback, useEffect, useState } from "react"
@@ -126,7 +127,7 @@ export const SurveyMapExternal = ({
             onDrag={onMarkerDrag}
             onDragEnd={onMarkerDragEnd}
           >
-            <SurveyPin />
+            <Pin />
           </Marker>
         )}
         {isMediumScreen && <NavigationControl showCompass={false} />}

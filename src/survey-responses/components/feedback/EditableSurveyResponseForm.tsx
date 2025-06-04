@@ -1,11 +1,11 @@
+import {
+  TBackendConfig,
+  backendConfig as defaultBackendConfig,
+} from "@/src/app/beteiligung-neu/_shared/backend-types"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-import {
-  TBackendConfig,
-  backendConfig as defaultBackendConfig,
-} from "@/src/survey-public/utils/backend-config-defaults"
 import createSurveyResponseTopic from "@/src/survey-response-topics/mutations/createSurveyResponseTopic"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { invalidateQuery, useMutation } from "@blitzjs/rpc"
