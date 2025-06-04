@@ -64,14 +64,17 @@ const AnswerDisplay: React.FC<AnswerDisplayProps> = ({ partConfig, answers }) =>
         return (
           <ul className="list-disc pl-5">
             {value.map((val: string) => {
-              const label = field.props.options.find((opt: any) => opt.key === val)?.label || val
+              const label =
+                field.props.options.find((opt: any) => String(opt.key) === String(val))?.label ||
+                val
               return <li key={val}>{label}</li>
             })}
           </ul>
         )
 
       case "SurveyRadiobuttonGroup":
-        const radioLabel = field.props.options.find((opt: any) => opt.key === value)?.label || value
+        const radioLabel =
+          field.props.options.find((opt: any) => String(opt.key) === String(value))?.label || value
         return <span>{radioLabel}</span>
 
       case "SurveyTextfield":
