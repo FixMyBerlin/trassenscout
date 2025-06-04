@@ -33,7 +33,7 @@ export const ExternalSurveyResponseForm = ({ mapProps, categories, handleSubmit 
 
   const categoryId = getQuestionIdBySurveySlug(survey.slug, "category")
   const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
-  const isLocationId = getQuestionIdBySurveySlug(survey.slug, "is-location")
+  const isLocationId = getQuestionIdBySurveySlug(survey.slug, "enableLocation")
   const userText1Id = getQuestionIdBySurveySlug(survey.slug, "feedbackText")
 
   const ExternalSurveyResponseFormSchema = z.object({

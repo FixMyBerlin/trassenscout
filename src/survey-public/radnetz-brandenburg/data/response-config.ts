@@ -6,7 +6,7 @@ export const responseConfig: TResponseConfig = {
     "geometry-category": 21,
     "line-from-to-name": 30,
     category: 22,
-    "is-location": 23,
+    enableLocation: 23,
     location: 24,
     feedbackText: 25,
   },

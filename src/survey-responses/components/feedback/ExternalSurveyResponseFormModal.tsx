@@ -36,8 +36,8 @@ export const ExternalSurveyResponseFormModal = ({ refetch }: Props) => {
   const backendDefinition = getConfigBySurveySlug(survey.slug, "backend")
 
   const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
-  const isLocationId = getQuestionIdBySurveySlug(survey.slug, "is-location")
-  const feedbackText2 = getQuestionIdBySurveySlug(survey.slug, "usertext-2")
+  const isLocationId = getQuestionIdBySurveySlug(survey.slug, "enableLocation")
+  const feedbackText2 = getQuestionIdBySurveySlug(survey.slug, "feedbackText_2")
 
   const categories = getSurveyCategoryOptions(survey.slug)
   const mapProps = feedbackDefinition!.pages[1]?.fields.find(

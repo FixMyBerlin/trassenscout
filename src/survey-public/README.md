@@ -7,10 +7,10 @@ To reference specific questions/responses (that exist in all surveys but might h
 ```js
 evaluationRefs: {
   "category": 21,
-  "is-location": 22,
+  "enableLocation": 22,
   "location": 23,
   "feedbackText": 34,
-  "usertext-2": 35 // (optional)
+  "feedbackText_2": 35 // (optional)
 },
 ```
 

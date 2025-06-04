@@ -105,7 +105,7 @@ export const SurveyMainPage = ({
     }
   }
 
-  const isUserLocationQuestionId = responseConfig.evaluationRefs["is-location"]
+  const isUserLocationQuestionId = responseConfig.evaluationRefs["enableLocation"]
   const userLocationQuestionId = responseConfig.evaluationRefs["location"]
 
   const handleStart = () => {

@@ -85,7 +85,7 @@ const EditableSurveyResponseListItem = ({
 
   const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
   const text1Id = getQuestionIdBySurveySlug(survey.slug, "feedbackText")
-  const text2Id = getQuestionIdBySurveySlug(survey.slug, "usertext-2")
+  const text2Id = getQuestionIdBySurveySlug(survey.slug, "feedbackText_2")
 
   const userTextPreview =
     // @ts-expect-error `data` is of type unkown

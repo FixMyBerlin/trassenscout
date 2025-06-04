@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const geometryCategoryType = metaDefinition["geometryCategoryType"]
 
-  const isLocationQuestionId = getQuestionIdBySurveySlug(survey.slug, "is-location")
+  const isLocationQuestionId = getQuestionIdBySurveySlug(survey.slug, "enableLocation")
 
   const feedbackQuestions = getFlatSurveyQuestions(feedbackDefinition)
   const surveyQuestions = getFlatSurveyQuestions(surveyDefinition)
@@ -119,7 +119,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     headers.push({ id: questionId, title: question.props.label || question.name })
   })
   // Object.entries(feedbackQuestions)
-  //   // exclude the "is-location" question as it is not explicitley stored in the response data
+  //   // exclude the "enableLocation" question as it is not explicitley stored in the response data
   //   .filter(([questionId]) => questionId !== String(isLocationQuestionId))
   //   // the geometry-category question is handled separately
   //   .forEach(([questionId, question]) => {

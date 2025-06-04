@@ -51,7 +51,7 @@ const EditableSurveyResponseMapAndStaticData = ({
 
   const geometryCategoryId = getQuestionIdBySurveySlug(survey.slug, "geometry-category")
   const feedbackTextId = getQuestionIdBySurveySlug(survey.slug, "feedbackText")
-  const text2Id = getQuestionIdBySurveySlug(survey.slug, "usertext-2")
+  const text2Id = getQuestionIdBySurveySlug(survey.slug, "feedbackText_2")
   const categoryId = getQuestionIdBySurveySlug(survey.slug, "category")
   const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
 
