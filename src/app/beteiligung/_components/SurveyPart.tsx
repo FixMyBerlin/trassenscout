@@ -22,20 +22,12 @@ import { z } from "zod"
 type Props = {
   stage: "part1" | "part2" | "part3"
   handleSubmit: ({ value, meta }: { value: FormData; meta: { again: boolean } }) => Promise<void>
-  intro?: React.ReactNode
   setStage: (stage: Stage) => void
   isIntro: boolean
   setIsIntro: (intro: boolean) => void
 }
 
-export const SurveyPart = ({
-  stage,
-  handleSubmit,
-  intro,
-  setStage,
-  setIsIntro,
-  isIntro,
-}: Props) => {
+export const SurveyPart = ({ stage, handleSubmit, setStage, setIsIntro, isIntro }: Props) => {
   const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
   const [page, setPage] = useState(0)
   const { setProgress } = useContext(ProgressContext)
