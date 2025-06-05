@@ -241,8 +241,6 @@ export const SurveyPart = ({
                 }
               }
             })}
-            {/* todo error box styling*/}
-            {/* todo error box: filter page errors, show correct translated error messages */}
             <form.Subscribe selector={(state) => (state.errors, state.fieldMeta)}>
               {(fieldMeta) => (
                 <FormErrorBox
@@ -252,8 +250,6 @@ export const SurveyPart = ({
                 />
               )}
             </form.Subscribe>
-            {/* todo  maybe single button componnts*/}
-            {/* todo  do we want to disable? then we need to do this inside the component with form.state.errors... */}
             <form.AppForm>
               <SurveyButtonGrid
                 buttonLeft1={
