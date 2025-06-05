@@ -246,7 +246,7 @@ export const SurveyPart = ({
                 <FormErrorBox
                   // fieldNamesToValidate={surveyPart.pages[page]?.fields.map((field) => field.name)}
                   fieldMeta={fieldMeta}
-                  fields={allCurrentPageFormFields}
+                  allCurrentFieldsOfPage={allCurrentPageFormFields}
                 />
               )}
             </form.Subscribe>
