@@ -186,7 +186,10 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         optional
         options={getUserSelectOptions(users)}
       />
-      <LabeledRadiobuttonGroupLabelPos />
+      <details>
+        <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
+        <LabeledRadiobuttonGroupLabelPos />
+      </details>
       <details>
         <summary className="mb-2 cursor-pointer">Verkehrsbelastung</summary>
         <LabeledTextField

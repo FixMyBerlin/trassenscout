@@ -75,7 +75,19 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledGeometryField name="geometry" label="Geometry der Achse (LineString)" />
       <LabeledTextFieldCalculateLength name="lengthKm" label="Länge" />
-      <LabeledRadiobuttonGroupLabelPos />
+      <details>
+        <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
+        <div className="space-y-6">
+          <LabeledRadiobuttonGroupLabelPos />
+          <LabeledTextField
+            type="number"
+            step="1"
+            name="order"
+            label="Reihenfolge Planungsabschnitte"
+            help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung."
+          />
+        </div>
+      </details>
       <div className="flex items-end gap-5">
         <LabeledSelect
           name="operatorId"
