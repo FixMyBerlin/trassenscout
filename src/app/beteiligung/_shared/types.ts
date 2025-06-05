@@ -50,6 +50,7 @@ export type FieldConfig =
       validation:
         | (typeof fieldValidationEnum)["optionalString"]
         | (typeof fieldValidationEnum)["requiredString"]
+        | (typeof fieldValidationEnum)["conditionalRequiredString"]
       defaultValue: string
     } & FormFieldBase & { props: Omit<ComponentProps<typeof SurveyTextfield>, "required"> })
   | ({
@@ -58,12 +59,13 @@ export type FieldConfig =
       validation:
         | (typeof fieldValidationEnum)["optionalString"]
         | (typeof fieldValidationEnum)["requiredString"]
+        | (typeof fieldValidationEnum)["conditionalRequiredString"]
       defaultValue: string
     } & FormFieldBase & { props: Omit<ComponentProps<typeof SurveyTextarea>, "required"> })
   | ({
       component: "SurveySimpleMapWithLegend"
       componentType: "form"
-      validation: (typeof fieldValidationEnum)["requiredLatLng"]
+      validation: (typeof fieldValidationEnum)["conditionalRequiredLatLng"]
       defaultValue: object | null
     } & FormFieldBase & {
         props: Omit<ComponentProps<typeof SurveySimpleMapWithLegend>, "required">
@@ -94,6 +96,7 @@ export type FieldConfig =
       validation:
         | (typeof fieldValidationEnum)["optionalString"]
         | (typeof fieldValidationEnum)["requiredString"]
+        | (typeof fieldValidationEnum)["conditionalRequiredString"]
       defaultValue: string
     } & FormFieldBase & {
         props: Omit<ComponentProps<typeof SurveyRadiobuttonGroup>, "required">

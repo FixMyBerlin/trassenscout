@@ -123,7 +123,7 @@ export const part3Config: SurveyPart1and3 = {
               return undefined
             },
           },
-          validation: fieldValidationEnum["requiredString"],
+          validation: fieldValidationEnum["conditionalRequiredString"],
           // example for superrefine - works exacly like the field validator
           // maybe we delete superrefine option in config as for now it does not add functionality tbd
           // zodSuperRefine: (data: any, ctx: z.RefinementCtx) => {

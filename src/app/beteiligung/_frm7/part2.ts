@@ -108,7 +108,7 @@ export const part2Config: SurveyPart2 = {
             },
           },
           component: "SurveySimpleMapWithLegend",
-          validation: fieldValidationEnum["requiredLatLng"],
+          validation: fieldValidationEnum["conditionalRequiredLatLng"],
           defaultValue: {
             lat: 50.13115168672226,
             lng: 8.732094920912573,

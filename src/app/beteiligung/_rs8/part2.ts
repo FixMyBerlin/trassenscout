@@ -111,7 +111,10 @@ export const part2Config: SurveyPart2 = {
             },
           },
           component: "SurveySimpleMapWithLegend",
-          validation: fieldValidationEnum["requiredLatLng"],
+          // this field is a conditionally required field but we handle it a bit differently than other conditionally required fields
+          // as we want to keep the value in the form state even if enableLocation is "nein", even if we go back and forth, we do not delete the value
+          // we delete the value manually in the SurveyMainPage submit function if enableLocation is "nein"
+          validation: fieldValidationEnum["conditionalRequiredLatLng"],
           defaultValue: {
             lat: 48.87405710508672,
             lng: 9.271044583540359,
