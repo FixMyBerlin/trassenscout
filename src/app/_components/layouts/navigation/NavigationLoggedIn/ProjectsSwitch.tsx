@@ -17,11 +17,13 @@ export const ProjectsSwitch = ({ projects }: Props) => {
   // The 1 case is handeled by the Dashboard Link "Dashbaord RS8"
   if (!projectSlug || !projects?.length || projects.length === 1) return null
 
-  const projectsMenuItems = projects.map((project) => ({
-    name: shortTitle(project.slug),
-    slug: project.slug,
-    href: `/${project.slug}`,
-  }))
+  const projectsMenuItems = projects
+    .map((project) => ({
+      name: shortTitle(project.slug),
+      slug: project.slug,
+      href: `/${project.slug}`,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name))
 
   const currentProject = projects.find((p) => p.slug === projectSlug)
 

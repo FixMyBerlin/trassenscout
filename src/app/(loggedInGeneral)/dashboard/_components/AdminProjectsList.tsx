@@ -16,13 +16,15 @@ export const AdminProjectsList = async () => {
     <SuperAdminBox className="prose">
       <h2 className="mt-0">Alle Projekte</h2>
       <ul>
-        {projects?.projects.map((project) => {
-          return (
-            <li key={project.id}>
-              <Link href={`/${project.slug}`}>{shortTitle(project.slug)}</Link>
-            </li>
-          )
-        })}
+        {projects?.projects
+          .sort((a, b) => a.slug.localeCompare(b.slug))
+          .map((project) => {
+            return (
+              <li key={project.id}>
+                <Link href={`/${project.slug}`}>{shortTitle(project.slug)}</Link>
+              </li>
+            )
+          })}
       </ul>
     </SuperAdminBox>
   )
