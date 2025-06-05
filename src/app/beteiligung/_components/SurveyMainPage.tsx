@@ -45,7 +45,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
   const [isIntro, setIsIntro] = useState(true)
   const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
   const [stage, setStage] = useState<Stage>(
-    process.env.NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE_NEW || getFirstStage(surveySlug),
+    process.env.NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE || getFirstStage(surveySlug),
   )
   const [isSpinner, setIsSpinner] = useState(false)
   const [surveySessionId, setSurveySessionId] = useState<null | number>(null)
