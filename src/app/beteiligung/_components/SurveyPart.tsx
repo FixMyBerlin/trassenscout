@@ -16,7 +16,7 @@ import { pageHasErrors } from "@/src/app/beteiligung/_shared/utils/pageHasErrors
 import { scrollToTopWithDelay } from "@/src/app/beteiligung/_shared/utils/scrollToTopWithDelay"
 
 import { useParams } from "next/navigation"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import { z } from "zod"
 
 type Props = {
@@ -73,15 +73,15 @@ export const SurveyPart = ({ stage, handleSubmit, setStage, setIsIntro, isIntro 
     // },
   })
 
-  useEffect(() => {
-    function beforeUnload(e: BeforeUnloadEvent) {
-      if (form.state.isDirty) return e.preventDefault()
-    }
-    window.addEventListener("beforeunload", beforeUnload)
-    return () => {
-      window.removeEventListener("beforeunload", beforeUnload)
-    }
-  }, [form.state.isDirty])
+  // useEffect(() => {
+  //   function beforeUnload(e: BeforeUnloadEvent) {
+  //     if (form.state.isDirty) return e.preventDefault()
+  //   }
+  //   window.addEventListener("beforeunload", beforeUnload)
+  //   return () => {
+  //     window.removeEventListener("beforeunload", beforeUnload)
+  //   }
+  // }, [form.state.isDirty])
 
   if (!surveyPart) {
     return (
