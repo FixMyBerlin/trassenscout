@@ -3,7 +3,7 @@ import { SurveyLinkProps } from "./SurveyLink"
 
 // BUTTON:
 const buttonBase =
-  "w-full font-medium sm:w-auto shadow-sm text-sm pb-3.5 pt-4 px-6 rounded-lg inline-flex items-center justify-center no-underline"
+  "w-full font-medium sm:w-auto shadow-sm text-sm sm:text-base pb-3.5 pt-4 px-6 rounded-lg inline-flex items-center justify-center no-underline"
 
 // LINK
 export const partcipationLinkStyles =

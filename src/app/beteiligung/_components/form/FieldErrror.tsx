@@ -5,7 +5,7 @@ export const FieldError = ({ field }: { field: AnyFieldApi }) => {
   // console.log("FieldErrorMap", field.state.meta.errorMap)
   return (
     // field.state.meta.isTouched && does not make sense here tbd
-    <div className="pl-2 pt-2">
+    <div className="pt-2">
       {!!field.state.meta.errors.length ? (
         <p id={field.name + " Hint"} className="text-sm font-semibold text-red-800">
           {field.state.meta.errors.map((err) => err.message || err).join(",")}

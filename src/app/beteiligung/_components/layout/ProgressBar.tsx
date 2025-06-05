@@ -12,7 +12,7 @@ export const ProgressBar = () => {
   const width = progress ? (progress / TOTAL) * 100 : 100
 
   return (
-    <div>
+    <div className="mb-4">
       <h4 className="sr-only">Status</h4>
       <div aria-hidden="true">
         <div className="overflow-hidden bg-gray-200">

@@ -48,7 +48,6 @@ export default function SurveyLayout({ params: { surveySlug }, children }: Props
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: themeStyles }} />
-
       <div className="relative flex h-full flex-col overflow-x-hidden">
         <SurveyHeader landingPageUrl={canonicalUrl} logoSrc={logoUrl} />
         <main className="mx-auto flex w-full flex-col pb-40">{children}</main>

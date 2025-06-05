@@ -28,8 +28,6 @@ export const SurveyHeader = ({ logoSrc, landingPageUrl }: Props) => {
           <XMarkIcon className="h-7 w-7" />
         </SurveyLink>
       </div>
-      {/* todo context */}
-      {/* <ProgressBar /> */}
     </nav>
   )
 }

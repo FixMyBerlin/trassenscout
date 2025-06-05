@@ -8,7 +8,6 @@ import { SurveyMapBanner } from "@/src/app/beteiligung/_components/form/map/MapB
 import SurveyPin from "@/src/app/beteiligung/_components/form/map/Pin"
 import { installMapGrabIfTest } from "@/src/app/beteiligung/_components/form/map/installMapGrab"
 import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
-import { clsx } from "clsx"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useState } from "react"
 import Map, {
@@ -86,7 +85,7 @@ export const SurveySimpleMap = ({ maptilerUrl, config }: Props) => {
 
   return (
     <>
-      <div className={clsx("h-[500px]")} aria-describedby={field.name + " Hint"}>
+      <div className="mt-4 h-[500px]" aria-describedby={field.name + " Hint"}>
         <Map
           id="mainMap"
           onMove={handleMapMove}

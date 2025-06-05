@@ -3,7 +3,7 @@ import { SurveyFooterLinkList } from "./SurveyFooterLinkList"
 export const SurveyFooter = () => {
   return (
     <footer className="z-0 bg-gray-100 px-6 py-8">
-      <div className="pt-6">
+      <div className="pt-">
         <div className="flex flex-row justify-between">
           <SurveyFooterLinkList
             linkList={[
