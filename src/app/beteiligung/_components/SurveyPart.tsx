@@ -121,6 +121,18 @@ export const SurveyPart = ({
     }
   }
 
+  const handleSubmitClick = () => {
+    // we need to validate all fields of the current page programmatically
+    // because if no field of (last) page is touched the form is somehow "not submittable" but errors are also not shown - this workaround works ok for now
+    // tbd
+    // form.validateField() does not work as expected - it validates ALL fields
+    allCurrentPageFormFields
+      .map((f) => f.name)
+      ?.forEach((name) => {
+        form.validateField(name, "submit")
+      })
+  }
+
   const handleBackClick = () => {
     if (page === 0) {
       setIsIntro(true)
@@ -241,7 +253,7 @@ export const SurveyPart = ({
                 }
               }
             })}
-            <form.Subscribe selector={(state) => (state.errors, state.fieldMeta)}>
+            <form.Subscribe selector={(state) => state.fieldMeta}>
               {(fieldMeta) => (
                 <FormErrorBox
                   // fieldNamesToValidate={surveyPart.pages[page]?.fields.map((field) => field.name)}
@@ -265,7 +277,7 @@ export const SurveyPart = ({
                   ) : (
                     // this wrapper div seems to prevent the next button submitting the form if we go back and forth with all fields valid; maybe this can be improved
                     <div>
-                      <form.SubscribeButton id="submit" type="submit">
+                      <form.SubscribeButton id="submit" type="submit" onClick={handleSubmitClick}>
                         {surveyPart.buttonLabels.submit}
                       </form.SubscribeButton>
                     </div>
