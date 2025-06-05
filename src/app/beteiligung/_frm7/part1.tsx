@@ -397,10 +397,10 @@ export const part1Config: SurveyPart1and3 = {
         },
         {
           name: "18",
-          component: "SurveyCheckboxGroup",
+          component: "SurveyRadiobuttonGroup",
           componentType: "form",
-          validation: fieldValidationEnum["requiredArrayOfString"],
-          defaultValue: [],
+          validation: fieldValidationEnum["requiredString"],
+          defaultValue: "",
           props: {
             label: "Welches Geschlecht haben Sie?",
             options: [
