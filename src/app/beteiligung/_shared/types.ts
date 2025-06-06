@@ -212,3 +212,16 @@ export type SurveyFieldRadioOrCheckboxGroupConfig = Extract<
   FieldConfig,
   { component: "SurveyRadiobuttonGroup" } | { component: "SurveyCheckboxGroup" }
 >
+
+export type TResponseConfig = {
+  evaluationRefs: {
+    category: number
+    enableLocation: number
+    location: number
+    feedbackText: number
+    feedbackText_2?: number // survey RS8
+    geometryCategory?: number // this is typed as optional because it is introduced in survey BB, for RS8 and FRM7 we use a fallback geometry-category
+    "line-id"?: number // survey BB
+    "line-from-to-name"?: number // survey BB
+  }
+}

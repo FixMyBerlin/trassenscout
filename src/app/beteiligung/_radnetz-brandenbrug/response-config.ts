@@ -1,9 +1,9 @@
-import { TResponseConfig } from "@/src/app/beteiligung/_rs8/response-config"
+import { TResponseConfig } from "@/src/app/beteiligung/_shared/types"
 
 export const responseConfig: TResponseConfig = {
   evaluationRefs: {
     "line-id": 20,
-    "geometry-category": 21,
+    geometryCategory: 21,
     "line-from-to-name": 30,
     category: 22,
     enableLocation: 23,

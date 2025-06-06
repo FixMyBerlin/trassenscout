@@ -1,4 +1,4 @@
-import { TResponseConfig } from "@/src/app/beteiligung/_rs8/response-config"
+import { TResponseConfig } from "@/src/app/beteiligung/_shared/types"
 
 export const responseConfig: TResponseConfig = {
   evaluationRefs: {
