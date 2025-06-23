@@ -2,7 +2,7 @@ import { fieldValidationEnum } from "@/src/app/beteiligung/_shared/fieldvalidati
 import { SurveyPart2 } from "@/src/app/beteiligung/_shared/types"
 import { AnyFieldApi } from "@tanstack/react-form"
 
-export const part12Config: SurveyPart2 = {
+export const part2Config: SurveyPart2 = {
   progressBarDefinition: 4,
   intro: {
     title: "Ihre Hinweise und Wünsche",

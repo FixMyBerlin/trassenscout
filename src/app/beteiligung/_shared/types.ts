@@ -187,7 +187,6 @@ export type FormConfig = {
     geometryFallback?: LineString["coordinates"] | MultiLineString["coordinates"]
     // todo deletedQuestions
   }
-  // todo make parts optional
   // fka survey part
   part1: SurveyPart1and3 | null
   // fka feedback part

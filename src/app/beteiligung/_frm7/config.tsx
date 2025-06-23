@@ -1,6 +1,5 @@
 import { part1Config } from "@/src/app/beteiligung/_frm7/part1"
 import { part2Config } from "@/src/app/beteiligung/_frm7/part2"
-
 import { FormConfig } from "@/src/app/beteiligung/_shared/types"
 
 export const formConfig = {

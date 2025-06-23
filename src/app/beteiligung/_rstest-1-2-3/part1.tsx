@@ -156,7 +156,6 @@ export const part1Config: SurveyPart1and3 = {
           defaultValue: "",
           props: {
             label: "Was ist Ihnen beim Radfahren besonders wichtig?",
-
             options: [
               {
                 key: "sicherheit",

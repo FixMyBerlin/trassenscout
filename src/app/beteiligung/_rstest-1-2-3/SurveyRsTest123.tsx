@@ -16,7 +16,7 @@ export const IntroPart1 = () => {
       <SurveyP>
         Wir möchten, dass viele Menschen diesen neuen Radweg nutzen können – sei es auf dem Weg zur
         Schule, Arbeit, Sport oder beim Einkaufen und Familienausflug. Damit das Projekt zum Erfolg
-        wird, sind Ihre Wünsche und Hinweise von großer Bedeutung.\n\nSie haben bis zum{" "}
+        wird, sind Ihre Wünsche und Hinweise von großer Bedeutung. Sie haben bis zum{" "}
         <strong>31.03.2024</strong> Zeit, sich zu beteiligen.
       </SurveyP>
       <SurveyP>
