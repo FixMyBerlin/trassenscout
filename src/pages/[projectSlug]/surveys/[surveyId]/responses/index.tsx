@@ -13,7 +13,6 @@ import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWi
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import { EditableSurveyResponseFilterForm } from "@/src/survey-responses/components/feedback/EditableSurveyResponseFilterForm"
 import EditableSurveyResponseListItem from "@/src/survey-responses/components/feedback/EditableSurveyResponseListItem"
-import { ExternalSurveyResponseFormModal } from "@/src/survey-responses/components/feedback/ExternalSurveyResponseFormModal"
 import { useFilteredResponses } from "@/src/survey-responses/components/feedback/useFilteredResponses"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
@@ -103,10 +102,6 @@ export const SurveyResponse = () => {
             Alle Daten als .csv herunterladen
           </Link>
         </div>
-
-        {!disableExternalSurveyResponseForm && (
-          <ExternalSurveyResponseFormModal refetch={refetchResponses} />
-        )}
 
         <EditableSurveyResponseFilterForm
           additionalFilters={additionalFilterQuestionsWithResponseOptions}
