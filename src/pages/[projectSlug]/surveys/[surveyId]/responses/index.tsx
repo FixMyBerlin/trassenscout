@@ -84,8 +84,8 @@ export const SurveyResponse = () => {
   const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
 
   const mapProps = feedbackDefinition?.pages
-    .find((page) => page.fields.some((field) => field.name === "location"))
-    ?.fields.find((q) => q.name === locationId)!.props
+    .find((page) => page.fields.some((field) => field.name === String(locationId)))
+    ?.fields.find((q) => q.name === String(locationId))!.props
 
   return (
     <>

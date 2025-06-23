@@ -13,7 +13,6 @@ import { SurveyResponseOverviewMap } from "@/src/survey-responses/components/fee
 import { useMapSelection } from "@/src/survey-responses/components/feedback/useMapSelection.nuqs"
 import { useResponseDetails } from "@/src/survey-responses/components/feedback/useResponseDetails.nuqs"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
-import { getFlatSurveyQuestions } from "@/src/survey-responses/utils/getQuestionsAsArray"
 import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { BlitzPage, useParam } from "@blitzjs/next"
@@ -65,16 +64,16 @@ export const SurveyResponseWithLocation = () => {
     }
   }, [responseDetails])
 
-  const surveyDefinition = getConfigBySurveySlug(survey.slug, "part1")
   const feedbackDefinition = getConfigBySurveySlug(survey.slug, "part2")
   const metaDefinition = getConfigBySurveySlug(survey.slug, "meta")
 
   const geometryCategoryId = getQuestionIdBySurveySlug(survey.slug, "geometryCategory")
   const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
 
-  const mapProps = getFlatSurveyQuestions(feedbackDefinition).find(
-    (q) => String(q.name) === String(locationId),
-  )!.props
+  const mapProps = feedbackDefinition?.pages
+    .find((page) => page.fields.some((field) => field.name === String(locationId)))
+    ?.fields.find((q) => q.name === String(locationId))!.props
+
   const maptilerUrl = metaDefinition.maptilerUrl
   // @ts-expect-error
   const defaultViewState = mapProps.mapProps.config.bounds

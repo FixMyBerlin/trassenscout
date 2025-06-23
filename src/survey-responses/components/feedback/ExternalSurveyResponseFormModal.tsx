@@ -36,9 +36,10 @@ export const ExternalSurveyResponseFormModal = ({ refetch }: Props) => {
   const feedbackText2 = getQuestionIdBySurveySlug(survey.slug, "feedbackText_2")
 
   const categories = getSurveyCategoryOptions(survey.slug)
-  const mapProps = feedbackDefinition!.pages[1]?.fields.find(
-    (q) => String(q.name) === String(locationId),
-  )!.props
+
+  const mapProps = feedbackDefinition?.pages
+    .find((page) => page.fields.some((field) => field.name === String(locationId)))
+    ?.fields.find((q) => q.name === String(locationId))!.props
 
   const transformKeys = (obj: Record<string, any>) => {
     const newObj: Record<string, any> = {}
