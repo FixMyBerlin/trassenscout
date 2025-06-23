@@ -34,6 +34,7 @@ export const SurveyTextarea = ({
           name={field.name}
           value={field.state.value}
           onChange={(e) => field.handleChange(e.target.value)}
+          rows={6}
           className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-[var(--survey-primary-color)] focus:outline-none focus:ring-[var(--survey-primary-color)] sm:text-sm"
           {...props}
         />
