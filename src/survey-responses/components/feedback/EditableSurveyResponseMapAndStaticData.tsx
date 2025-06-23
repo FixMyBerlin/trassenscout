@@ -128,17 +128,17 @@ const EditableSurveyResponseMapAndStaticData = ({
     }
   }
 
-  const atlasUrl = metaConfig.atlasUrl
+  const tildaUrl = metaConfig.tildaUrl
     ? // @ts-expect-error `data` is unkown
       response.data[locationId]
-      ? metaConfig.atlasUrl.replace(
+      ? metaConfig.tildaUrl.replace(
           "MAPPARAM",
           // @ts-expect-error `data` is unkown
           `11%2F${response.data[locationId].lat.toFixed(3)}%2F${response.data[locationId].lng.toFixed(3)}`,
         )
       : // @ts-expect-error `data` is unkown
         geometryCategoryId && response.data[geometryCategoryId]
-        ? metaConfig.atlasUrl.replace(
+        ? metaConfig.tildaUrl.replace(
             "MAPPARAM",
             // @ts-expect-error `data` is unkown
             `11%2F${center(getParsedLine(response.data[geometryCategoryId])).geometry.coordinates[1].toFixed(3)}%2F${center(getParsedLine(response.data[geometryCategoryId])).geometry.coordinates[0].toFixed(3)}`,
@@ -148,10 +148,10 @@ const EditableSurveyResponseMapAndStaticData = ({
 
   return (
     <div className={clsx("grid gap-6 md:gap-4", showMap && "md:grid-cols-2")}>
-      {atlasUrl && !showMap && (
-        <Link target="_blank" href={atlasUrl} className="flex items-center gap-2">
+      {tildaUrl && !showMap && (
+        <Link target="_blank" href={tildaUrl} className="flex items-center gap-2">
           <ArrowUpRightIcon className="h-3 w-3" />
-          Im Radverkehrsatlas öffnen
+          In Tilda öffnen
         </Link>
       )}
       {/* LEFT SIDE */}
@@ -214,10 +214,10 @@ const EditableSurveyResponseMapAndStaticData = ({
               <ArrowsPointingOutIcon className="h-4 w-4" />
               In großer Karte öffnen
             </Link>
-            {atlasUrl && (
-              <Link target="_blank" href={atlasUrl} className="flex items-center gap-2">
+            {tildaUrl && (
+              <Link target="_blank" href={tildaUrl} className="flex items-center gap-2">
                 <ArrowUpRightIcon className="h-3 w-3" />
-                Im Radverkehrsatlas öffnen
+                In Tilda öffnen
               </Link>
             )}
           </div>
