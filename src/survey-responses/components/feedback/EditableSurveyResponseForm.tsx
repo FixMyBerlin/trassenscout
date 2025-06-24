@@ -172,9 +172,8 @@ export function EditableSurveyResponseForm({
       })
       // todo check invalidateQuery
       invalidateQuery(getSurveyResponseTopicsByProject)
-      // @ts-expect-error todo
-      setFilter({ ...filter, topics: [...filter.topics, String(createdOrFetched.id)] })
       setResponseTopics([...responseTopics, String(createdOrFetched.id)])
+      if (filter) setFilter({ ...filter, topics: [...filter.topics, String(createdOrFetched.id)] })
     } catch (error: any) {
       console.error(error)
     }
