@@ -9,6 +9,7 @@ import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { SubsectionForm } from "@/src/pagesComponents/subsections/SubsectionForm"
 import getProject from "@/src/server/projects/queries/getProject"
 import createSubsection from "@/src/server/subsections/mutations/createSubsection"
+import getSubsectionMaxOrder from "@/src/server/subsections/queries/getSubsectionMaxOrder"
 import { SubsectionSchema } from "@/src/server/subsections/schema"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
@@ -23,13 +24,13 @@ const NewSubsection = () => {
   const projectSlug = useProjectSlug()
   const [project] = useQuery(getProject, { projectSlug })
   const [createSubsectionMutation] = useMutation(createSubsection)
+  const [maxOrderSubsections] = useQuery(getSubsectionMaxOrder, project.id)
 
   type HandleSubmit = z.infer<typeof NewSubsectionSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const subsection = await createSubsectionMutation({
         ...values,
-        slug: `pa${values.slug}`,
         projectId: project.id,
         projectSlug,
       })
@@ -43,14 +44,14 @@ const NewSubsection = () => {
       return improveErrorMessage(error, FORM_ERROR, ["order", "slug"])
     }
   }
-
+  console.log({ maxOrderSubsections })
   return (
     <>
       <MetaTags noindex title={seoNewTitle("Planungsabschnitt")} />
       <PageHeader title="Planungsabschitt hinzufügen" className="mt-12" />
 
       <SubsectionForm
-        initialValues={{ labelPos: "bottom" }}
+        initialValues={{ labelPos: "bottom", order: maxOrderSubsections || 0 + 1 }}
         submitText="Erstellen"
         schema={NewSubsectionSchema}
         onSubmit={handleSubmit}

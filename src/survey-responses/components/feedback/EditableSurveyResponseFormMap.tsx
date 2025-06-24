@@ -1,7 +1,7 @@
+import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
-import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
-import { getSurveyDefinitionBySurveySlug } from "@/src/survey-public/utils/getConfigBySurveySlug"
 import { lineString, multiLineString, polygon } from "@turf/helpers"
 import { bbox } from "@turf/turf"
 import "maplibre-gl/dist/maplibre-gl.css"
@@ -29,7 +29,7 @@ export const EditableSurveyResponseFormMap = ({
 }: Props) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
 
-  const surveyDefinition = getSurveyDefinitionBySurveySlug(surveySlug)
+  const metaDefinition = getConfigBySurveySlug(surveySlug, "meta")
 
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)
@@ -41,14 +41,14 @@ export const EditableSurveyResponseFormMap = ({
   const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
 
   const geometryCategoryData =
-    surveyDefinition.geometryCategoryType === "line"
+    metaDefinition.geometryCategoryType === "line"
       ? Array.isArray(geometryCategoryCoordinates[0][0])
         ? multiLineString(geometryCategoryCoordinates)
         : lineString(geometryCategoryCoordinates)
       : polygon(geometryCategoryCoordinates)
 
   const geometryCategorySource =
-    surveyDefinition.geometryCategoryType === "line" ? (
+    metaDefinition.geometryCategoryType === "line" ? (
       <Source key="geometryCategory" type="geojson" data={geometryCategoryData}>
         <Layer
           type="line"

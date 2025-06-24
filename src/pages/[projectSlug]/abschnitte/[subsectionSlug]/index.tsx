@@ -2,10 +2,8 @@ import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogD
 import { Breadcrumb } from "@/src/core/components/Breadcrumb/Breadcrumb"
 import { SubsectionMapIcon } from "@/src/core/components/Map/Icons"
 import { SubsectionSubsubsectionMap } from "@/src/core/components/Map/SubsectionSubsubsectionMap"
-import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
-import { PageDescription } from "@/src/core/components/pages/PageDescription"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { H2, seoTitleSlug, shortTitle, startEnd } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
@@ -13,7 +11,6 @@ import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { ExperimentalSubsectionInfoPanel } from "@/src/pagesComponents/subsections/ExperimentalSubsectionInfoPanel"
-import { SubsectionTabs } from "@/src/pagesComponents/subsections/SubsectionTabs"
 import { SubsubsectionMapSidebar } from "@/src/pagesComponents/subsections/SubsubsectionMapSidebar"
 import { SubsubsectionTable } from "@/src/pagesComponents/subsubsections/SubsubsectionTable"
 import { UploadTable } from "@/src/pagesComponents/uploads/UploadTable"
@@ -61,7 +58,6 @@ export const SubsectionDashboardWithQuery = () => {
         titleIcon={<SubsectionMapIcon label={shortTitle(subsection.slug)} />}
         title={startEnd(subsection)}
         className="mt-12"
-        subtitle={subsection.operator?.title}
         action={
           <IfUserCanEdit>
             <Link
@@ -77,19 +73,12 @@ export const SubsectionDashboardWithQuery = () => {
         }
         description={
           <>
+            {subsection.description && <div className="mt-4">{subsection.description}</div>}
             <ExperimentalSubsectionInfoPanel />
-            <SubsectionTabs />
+            {/* <SubsectionTabs /> */}
           </>
         }
       />
-
-      {subsection.description && (
-        <PageDescription>
-          <div className="flex gap-8">
-            <Markdown markdown={subsection.description} className="leading-snug" />
-          </div>
-        </PageDescription>
-      )}
 
       <div className="relative mt-12 flex w-full gap-10">
         <div className="w-full">
@@ -123,10 +112,12 @@ export const SubsectionDashboardWithQuery = () => {
         )}
       </div>
 
-      <section className="mt-12">
-        <H2 className="mb-5">Relevante Dokumente</H2>
-        <UploadTable uploads={uploads} />
-      </section>
+      {!!uploads.length && (
+        <section className="mt-12">
+          <H2 className="mb-5">Relevante Dokumente</H2>
+          <UploadTable uploads={uploads} />
+        </section>
+      )}
 
       <SuperAdminLogData
         data={{

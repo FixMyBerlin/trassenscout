@@ -1,5 +1,5 @@
 import db from "@/db"
-import { AllowedSurveySlugsSchema } from "@/src/survey-public/utils/allowedSurveySlugs"
+import { AllowedSurveySlugsSchema } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 
@@ -8,10 +8,7 @@ const Schema = AllowedSurveySlugsSchema.merge(z.object({ deleteIds: z.array(z.nu
 export default resolver.pipe(
   resolver.zod(Schema),
   resolver.authorize("ADMIN"),
-  async ({ deleteIds, slug }) => {
-    await db.surveyResponseTopicsOnSurveyResponses.deleteMany({
-      where: { surveyResponse: { id: { in: deleteIds } } },
-    })
+  async ({ deleteIds }) => {
     await db.surveyResponse.deleteMany({ where: { id: { in: deleteIds } } })
     await db.surveySession.deleteMany({
       where: { responses: { some: { id: { in: deleteIds } } } },

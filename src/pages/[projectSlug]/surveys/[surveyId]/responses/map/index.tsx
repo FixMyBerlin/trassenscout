@@ -1,3 +1,5 @@
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import { Spinner } from "@/src/core/components/Spinner"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
@@ -5,12 +7,6 @@ import { H3 } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
-import { TMapProps } from "@/src/survey-public/components/types"
-import {
-  getFeedbackDefinitionBySurveySlug,
-  getResponseConfigBySurveySlug,
-  getSurveyDefinitionBySurveySlug,
-} from "@/src/survey-public/utils/getConfigBySurveySlug"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import EditableSurveyResponseListItem from "@/src/survey-responses/components/feedback/EditableSurveyResponseListItem"
 import { SurveyResponseOverviewMap } from "@/src/survey-responses/components/feedback/SurveyResponseOverviewMap"
@@ -29,7 +25,7 @@ export const SurveyResponseWithLocation = () => {
   const surveyId = useParam("surveyId", "number")
   const [survey] = useQuery(getSurvey, { projectSlug, id: surveyId })
   // the returned responses include the surveyPart1 data
-  const [{ feedbackSurveyResponses }] = useQuery(
+  const [{ feedbackSurveyResponses }, { refetch: refetchResponses }] = useQuery(
     getFeedbackSurveyResponsesWithSurveyDataAndComments,
     {
       projectSlug,
@@ -50,6 +46,12 @@ export const SurveyResponseWithLocation = () => {
     },
   )
 
+  // Whenever we submit the form, we also refetch, so the whole accordeon header and everything else is updated
+  const refetchResponsesAndTopics = async () => {
+    await refetchTopics()
+    await refetchResponses()
+  }
+
   const mapSelectedResponses = mapSelection
     ? feedbackSurveyResponses.filter((response) => mapSelection.includes(response.id))
     : []
@@ -62,17 +64,19 @@ export const SurveyResponseWithLocation = () => {
     }
   }, [responseDetails])
 
-  const { evaluationRefs } = getResponseConfigBySurveySlug(survey.slug)
-  const feedbackDefinition = getFeedbackDefinitionBySurveySlug(survey.slug)
-  const surveyDefinition = getSurveyDefinitionBySurveySlug(survey.slug)
+  const feedbackDefinition = getConfigBySurveySlug(survey.slug, "part2")
+  const metaDefinition = getConfigBySurveySlug(survey.slug, "meta")
 
-  const locationRef = evaluationRefs["location"]
-  const categoryGeometryRef = evaluationRefs["geometry-category"]
+  const geometryCategoryId = getQuestionIdBySurveySlug(survey.slug, "geometryCategory")
+  const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
 
-  const mapProps = feedbackDefinition!.pages[1]!.questions.find((q) => q.id === locationRef)!
-    .props as TMapProps
-  const maptilerUrl = surveyDefinition.maptilerUrl
-  const defaultViewState = mapProps?.config?.bounds
+  const mapProps = feedbackDefinition?.pages
+    .find((page) => page.fields.some((field) => field.name === String(locationId)))
+    ?.fields.find((q) => q.name === String(locationId))!.props
+
+  const maptilerUrl = metaDefinition.maptilerUrl
+  // @ts-expect-error
+  const defaultViewState = mapProps.mapProps.config.bounds
 
   if (!feedbackSurveyResponses?.length) return
 
@@ -115,11 +119,10 @@ export const SurveyResponseWithLocation = () => {
             <SurveyResponseOverviewMap
               maptilerUrl={maptilerUrl}
               defaultViewState={defaultViewState}
-              categoryGeometryRef={categoryGeometryRef}
+              categoryGeometryRef={geometryCategoryId}
               surveyResponses={feedbackSurveyResponses}
-              locationRef={locationRef!}
+              locationRef={locationId}
               surveySlug={survey.slug}
-              surveyDefinition={surveyDefinition}
             />
           </section>
           <section className="rounded-md drop-shadow-md lg:w-[580px]">
@@ -136,8 +139,9 @@ export const SurveyResponseWithLocation = () => {
                   response={response}
                   operators={operators}
                   topics={topics}
-                  refetchResponsesAndTopics={() => {}}
+                  refetchResponsesAndTopics={refetchResponsesAndTopics}
                   showMap={false}
+                  mapProps={mapProps}
                 />
               </div>
             ))}

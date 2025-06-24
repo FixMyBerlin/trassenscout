@@ -7,8 +7,8 @@ export const SubsectionSchema = z.object({
   order: z.coerce.number(),
   lengthKm: InputNumberSchema,
   description: z.string().nullish(),
-  start: z.string().min(1),
-  end: z.string().min(1),
+  start: z.string().min(1, { message: "Pflichtfeld. Mindestens 1 Zeichen." }),
+  end: z.string().min(1, { message: "Pflichtfeld. Mindestens 1 Zeichen." }),
   labelPos: z.nativeEnum(LabelPositionEnum),
   geometry: z.array(z.tuple([z.number(), z.number()])),
   projectId: z.coerce.number(),
@@ -18,7 +18,7 @@ export const SubsectionSchema = z.object({
   subsubsectionStatusId: InputNumberOrNullSchema,
   estimatedCompletionDateString: z
     .string()
-    .regex(/^\d{4}-\d{2}$/, { message: "Datum im Format JJJJ-MM" })
+    .regex(/^(\d{4}-\d{2}|)$/, { message: "Datum im Format JJJJ-MM" })
     .nullish(),
 })
 

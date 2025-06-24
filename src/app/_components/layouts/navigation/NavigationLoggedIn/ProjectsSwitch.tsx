@@ -8,7 +8,6 @@ import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/r
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
 import { clsx } from "clsx"
 import { Fragment } from "react"
-import { ProjectLogo } from "../NavigationLoggedInProject/ProjectLogo"
 
 type Props = { projects: TGetProjects["projects"] }
 
@@ -18,11 +17,13 @@ export const ProjectsSwitch = ({ projects }: Props) => {
   // The 1 case is handeled by the Dashboard Link "Dashbaord RS8"
   if (!projectSlug || !projects?.length || projects.length === 1) return null
 
-  const projectsMenuItems = projects.map((project) => ({
-    name: shortTitle(project.slug),
-    slug: project.slug,
-    href: `/${project.slug}`,
-  }))
+  const projectsMenuItems = projects
+    .map((project) => ({
+      name: shortTitle(project.slug),
+      slug: project.slug,
+      href: `/${project.slug}`,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name))
 
   const currentProject = projects.find((p) => p.slug === projectSlug)
 
@@ -85,8 +86,8 @@ export const ProjectsSwitch = ({ projects }: Props) => {
                               "flex items-center justify-between gap-2 rounded-md px-3 py-2 text-sm text-blue-500 hover:text-blue-800",
                             )}
                           >
-                            <div className="flex items-center gap-2">
-                              {current && <ProjectLogo />}
+                            <div className="flex flex-shrink-0 items-center gap-2 whitespace-nowrap">
+                              {/* {current && <ProjectLogo />} */}
                               {item.name}
                             </div>
                             <CurrentUserCanIcon projectSlug={item.slug} />

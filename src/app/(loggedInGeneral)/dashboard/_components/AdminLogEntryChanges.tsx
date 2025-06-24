@@ -25,6 +25,8 @@ const dateOrData = async (projectSlug: string, path: string[], content: string) 
       return "(Koordinaten)"
 
     case "operatorId":
+      if (!content) return "k.A."
+
       const operator = await invoke(getOperator, {
         projectSlug,
         id: Number(content),

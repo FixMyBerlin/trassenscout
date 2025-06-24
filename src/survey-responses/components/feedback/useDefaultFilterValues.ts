@@ -1,11 +1,9 @@
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { TResponse, TSingleOrMultiResponseProps } from "@/src/survey-public/components/types"
-import {
-  getBackendConfigBySurveySlug,
-  getFeedbackDefinitionBySurveySlug,
-  getResponseConfigBySurveySlug,
-} from "@/src/survey-public/utils/getConfigBySurveySlug"
+
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
+
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
+import { getSurveyCategoryOptions } from "@/src/survey-responses/utils/getSurveyCategoryOptions"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
@@ -19,20 +17,12 @@ export const useDefaultFilterValues = () => {
     projectSlug,
   })
 
-  const backendConfig = getBackendConfigBySurveySlug(slug)
+  const backendConfig = getConfigBySurveySlug(slug, "backend")
   const surveyResponseStatus = backendConfig.status
 
-  const { evaluationRefs } = getResponseConfigBySurveySlug(slug)
-  const feedbackDefinition = getFeedbackDefinitionBySurveySlug(slug)
-
-  const feedbackQuestions = []
-  for (let page of feedbackDefinition.pages) {
-    feedbackQuestions.push(...page.questions)
-  }
-  const categoryQuestionProps = feedbackQuestions.find((q) => q.id === evaluationRefs["category"])!
-    .props as TSingleOrMultiResponseProps
-
+  const categoryOptions = getSurveyCategoryOptions(slug)
   const defaultAdditionalFiltersQueryValues: Record<string, string> = {}
+
   backendConfig.additionalFilters?.forEach(
     (filter) => (defaultAdditionalFiltersQueryValues[filter.value] = "ALL"),
   )
@@ -42,7 +32,7 @@ export const useDefaultFilterValues = () => {
     operator: "ALL",
     hasnotes: "ALL",
     haslocation: "ALL",
-    categories: [...categoryQuestionProps.responses.map((r: TResponse) => String(r.id))],
+    categories: [...categoryOptions.map((c) => String(c.value))],
     topics: [...topics.map((t) => String(t.id)), "0"],
     searchterm: "",
     ...defaultAdditionalFiltersQueryValues,

@@ -1,10 +1,7 @@
 import db from "@/db"
+import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
-import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
-import {
-  getBackendConfigBySurveySlug,
-  getResponseConfigBySurveySlug,
-} from "@/src/survey-public/utils/getConfigBySurveySlug"
 import { resolver } from "@blitzjs/rpc"
 import { viewerRoles } from "../../authorization/constants"
 import { extractProjectSlug } from "../../authorization/extractProjectSlug"
@@ -72,15 +69,14 @@ export default resolver.pipe(
       },
     })
 
-    const questions = getBackendConfigBySurveySlug(
-      rawFeedbackSurveyResponse[0]!.surveySession.survey.slug as AllowedSurveySlugs,
-    ).additionalFilters
+    const additionalFilters = rawFeedbackSurveyResponse.length
+      ? getConfigBySurveySlug(
+          rawFeedbackSurveyResponse[0]?.surveySession.survey.slug as AllowedSurveySlugs,
+          "backend",
+        )?.additionalFilters
+      : []
 
-    const { evaluationRefs } = getResponseConfigBySurveySlug(
-      rawFeedbackSurveyResponse[0]!.surveySession.survey.slug as AllowedSurveySlugs,
-    )
-
-    const rawFeedbackSurveyResponseWithSurveySurveyResponses = rawFeedbackSurveyResponse.map(
+    const rawFeedbackSurveyResponseWithSurveySurveyResponses = rawFeedbackSurveyResponse?.map(
       (response) => {
         const surveySurveyResponseData = rawSurveySurveyResponse.find(
           (surveyResponse) => surveyResponse.surveySessionId === response.surveySessionId,
@@ -93,9 +89,7 @@ export default resolver.pipe(
       // Make `data` an object to work with…
       .map((response) => {
         const data = JSON.parse(response.data)
-        const surveyResponseTopics = response.surveyResponseTopics.map(
-          (topic) => topic.surveyResponseTopicId,
-        )
+        const surveyResponseTopics = response.surveyResponseTopics.map((topic) => topic.id)
         const surveySurveyResponseData = response.surveySurveyResponseData
           ? JSON.parse(response.surveySurveyResponseData)
           : null
@@ -104,7 +98,7 @@ export default resolver.pipe(
       // Sometimes the fronted received a different order for unknown reasons
       .sort((a, b) => b.id - a.id)
 
-    const additionalFilterQuestionsWithResponseOptions = questions?.map((question) => {
+    const additionalFilterQuestionsWithResponseOptions = additionalFilters?.map((question) => {
       const questionDatas = parsedAndSorted
         .map((responseItem) => {
           let result: string | null

@@ -31,7 +31,7 @@ const surveyTests = [
   },
   // frm7 has a different part configuration - so we leave it out for now; we could add it below with a condition and import it from the frm-neu test file
   // {
-  //   slug: "frm7-neu",
+  //   slug: "frm7",
   //   parts: ["part1", "part2"],
   //   initialScreen: {
   //     title: "FRM7",
@@ -42,7 +42,7 @@ const surveyTests = [
 // Basic navigation test
 surveyTests.forEach(({ slug, parts, initialScreen }) => {
   test(`Basic navigation test for ${slug}`, async ({ page }) => {
-    await page.goto(`/beteiligung-neu/${slug}`)
+    await page.goto(`/beteiligung/${slug}`)
     await expect(page.getByRole("heading", { name: initialScreen.title })).toBeVisible()
     await page.getByRole("button", { name: "Weiter" }).click()
     // this only works in dev as its a debug element
@@ -53,7 +53,7 @@ surveyTests.forEach(({ slug, parts, initialScreen }) => {
 // Complete end-to-end flow test for each survey
 surveyTests.forEach(({ slug, parts }) => {
   test(`Complete flow test for ${slug}`, async ({ page }) => {
-    await page.goto(`/beteiligung-neu/${slug}`)
+    await page.goto(`/beteiligung/${slug}`)
     await page.getByRole("button", { name: "Weiter" }).click()
     // @ts-expect-error
     for (let i = 0; i < parts.length; i++) await fillRequiredFields(page, parts[i])

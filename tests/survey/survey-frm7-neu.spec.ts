@@ -101,7 +101,7 @@ const testEnd = async (page: Page) => {
 }
 
 test("happy path # 1 - 1 feedback1 - no location", async ({ page }) => {
-  await page.goto("/beteiligung-neu/frm7-neu")
+  await page.goto("/beteiligung/frm7")
   await testIntro1(page)
   await testPart1(page)
   await testIntro2(page)
@@ -113,7 +113,7 @@ test("happy path # 3 - 1 feedback1 - with location", async ({
   mapLocator,
   mapController,
 }) => {
-  await page.goto("/beteiligung-neu/frm7-neu")
+  await page.goto("/beteiligung/frm7")
   await testIntro1(page)
   await testPart1(page)
   await testIntro2(page)
@@ -121,7 +121,7 @@ test("happy path # 3 - 1 feedback1 - with location", async ({
   await testEnd(page)
 })
 test("happy path # 2 - 3 feedbacks - no location", async ({ page }) => {
-  await page.goto("/beteiligung-neu/frm7-neu")
+  await page.goto("/beteiligung/frm7")
   await testIntro1(page)
   await testPart1(page)
   await testIntro2(page)

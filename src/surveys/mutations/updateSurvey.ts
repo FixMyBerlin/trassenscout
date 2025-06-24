@@ -1,5 +1,6 @@
 import db from "@/db"
-import { AllowedSurveySlugs } from "@/src/survey-public/utils/allowedSurveySlugs"
+
+import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { resolver } from "@blitzjs/rpc"
 import { UpdateSurveySchema } from "../schemas"
 

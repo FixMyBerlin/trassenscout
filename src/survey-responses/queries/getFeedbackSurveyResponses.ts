@@ -26,11 +26,6 @@ export default resolver.pipe(
       orderBy: { id: "desc" },
       include: {
         operator: { select: { id: true, title: true, slug: true } },
-        // surveyResponseTopics: {
-        //   include: {
-        //     surveyResponseTopic: { select: { id: true, title: true } },
-        //   },
-        // },
         surveyResponseTopics: true,
         surveySession: { select: { createdAt: true, id: true } },
       },
@@ -40,9 +35,8 @@ export default resolver.pipe(
       // Make `data` an object to work with…
       .map((response) => {
         const data = JSON.parse(response.data)
-        const surveyResponseTopics = response.surveyResponseTopics.map(
-          (topic) => topic.surveyResponseTopicId,
-        )
+        // maybe we do not need the topics in this query todo
+        const surveyResponseTopics = response.surveyResponseTopics.map((topic) => topic.id)
         return { ...response, data, surveyResponseTopics }
       })
       // Sometimes the fronted received a different order for unknown reasons

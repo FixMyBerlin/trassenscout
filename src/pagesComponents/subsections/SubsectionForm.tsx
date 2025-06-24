@@ -8,7 +8,7 @@ import {
 } from "@/src/core/components/forms"
 import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
 import { LabeledTextFieldCalculateLength } from "@/src/core/components/forms/LabeledTextFieldCalculateLength"
-import { quote, shortTitle } from "@/src/core/components/text"
+import { shortTitle } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { LabeledRadiobuttonGroupLabelPos } from "@/src/pagesComponents/subsubsections/LabeledRadiobuttonGroupLabelPos"
 import { LinkWithFormDirtyConfirm } from "@/src/pagesComponents/subsubsections/LinkWithFormDirtyConfirm"
@@ -63,20 +63,10 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
   return (
     <Form<S> {...props}>
       <LabeledTextField
-        inlineLeadingAddon="pa"
         type="text"
         name="slug"
-        label="Id für Kurz-Titel und URL-Teil"
-        help={`Primäre Auszeichnung des Planungsabschnitts. Wird immer in Großschreibung angezeigt, aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren. Präfix aller Planungsabschnitte ist ${quote(
-          "pa",
-        )}. Zusätzlich muss eine Präfix-Id angegeben werden. Ergebnis: pa[Präfix-Id]`}
-      />
-      <LabeledTextField
-        type="number"
-        step="1"
-        name="order"
-        label="Reihenfolge Planungsabschnitte"
-        help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung."
+        label="Kurztitel"
+        help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
       />
       <div className="grid grid-cols-2 gap-5">
         <LabeledTextField type="text" name="start" label="Startpunkt" />
@@ -85,7 +75,19 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledGeometryField name="geometry" label="Geometry der Achse (LineString)" />
       <LabeledTextFieldCalculateLength name="lengthKm" label="Länge" />
-      <LabeledRadiobuttonGroupLabelPos />
+      <details>
+        <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
+        <div className="space-y-6">
+          <LabeledRadiobuttonGroupLabelPos />
+          <LabeledTextField
+            type="number"
+            step="1"
+            name="order"
+            label="Reihenfolge Planungsabschnitte"
+            help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung."
+          />
+        </div>
+      </details>
       <div className="flex items-end gap-5">
         <LabeledSelect
           name="operatorId"

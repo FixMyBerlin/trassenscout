@@ -36,7 +36,6 @@ const EditSubsection = () => {
       const updated = await updateSubsectionMutation({
         ...values,
         id: subsection.id,
-        slug: `pa${values.slug}`,
         projectSlug,
       })
       await setQueryData(updated)

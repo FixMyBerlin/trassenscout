@@ -18,13 +18,7 @@ namespace NodeJS {
     readonly NEXT_PUBLIC_APP_ENV: "development" | "staging" | "production"
     readonly SESSION_SECRET_KEY: string
 
-    readonly NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE:
-      | "START"
-      | "SURVEY"
-      | "MORE"
-      | "FEEDBACK"
-      | "EMAIL"
-    readonly NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE_NEW: "part1" | "part2" | "part3" | "end"
+    readonly NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE: "part1" | "part2" | "part3" | "end"
     readonly NEXT_PUBLIC_APP_ORIGIN?:
       | "http://127.0.0.1:5000" // for `npm run start`
       | "https://staging.trassenscout.de"

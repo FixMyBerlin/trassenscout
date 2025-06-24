@@ -1,4 +1,4 @@
-import { getConfigBySurveySlug } from "@/src/app/beteiligung-neu/_shared/utils/getConfigBySurveySlug"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { invoke } from "@/src/blitz-server"
 import getSurveyResponses from "@/src/survey-responses/queries/getSurveyResponses"
 import { Project } from "@prisma/client"
@@ -64,14 +64,17 @@ const AnswerDisplay: React.FC<AnswerDisplayProps> = ({ partConfig, answers }) =>
         return (
           <ul className="list-disc pl-5">
             {value.map((val: string) => {
-              const label = field.props.options.find((opt: any) => opt.key === val)?.label || val
+              const label =
+                field.props.options.find((opt: any) => String(opt.key) === String(val))?.label ||
+                val
               return <li key={val}>{label}</li>
             })}
           </ul>
         )
 
       case "SurveyRadiobuttonGroup":
-        const radioLabel = field.props.options.find((opt: any) => opt.key === value)?.label || value
+        const radioLabel =
+          field.props.options.find((opt: any) => String(opt.key) === String(value))?.label || value
         return <span>{radioLabel}</span>
 
       case "SurveyTextfield":
