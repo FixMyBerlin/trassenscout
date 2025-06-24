@@ -1,4 +1,3 @@
-import { Debug } from "@/src/app/beteiligung/_components/Debug"
 import { FieldWithErrorContainer } from "@/src/app/beteiligung/_components/form/ErrorContainer"
 import { FieldConfig } from "@/src/app/beteiligung/_shared/types"
 import { getFieldsErrors } from "@/src/app/beteiligung/_shared/utils/pageHasErrors"
@@ -15,7 +14,6 @@ export const FormErrorBox = ({ fieldMeta, allCurrentFieldsOfPage }: Props) => {
 
   return (
     <>
-      <Debug>{JSON.stringify(errors)}</Debug>
       <FieldWithErrorContainer className="flex gap-2" hasError>
         <XCircleIcon className="h-6 w-6 shrink-0 text-red-500" />
         <ul>
