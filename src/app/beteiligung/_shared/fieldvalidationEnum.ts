@@ -7,6 +7,14 @@ export const fieldValidationEnum = {
     zodSchema: z.string({ message: "Pflichtfeld." }).trim().min(1, { message: "Pflichtfeld." }),
     required: true,
   },
+  requiredEmailString: {
+    zodSchema: z
+      .string({ message: "Pflichtfeld." })
+      .trim()
+      .min(1, { message: "Pflichtfeld." })
+      .email({ message: "Bitte eine gültige E-Mail-Adresse eingeben." }),
+    required: true,
+  },
   // the optional zod schema with "required: true" seems contradictory, but it is used for a field that is required, but only if a condition is met
   // the conditional required validation is handled in the form field logic manually - defined in the config
   // we want to have "required: true" so that the field is marked as required in the UI
@@ -33,6 +41,10 @@ export const fieldValidationEnum = {
 
   conditionalRequiredLatLng: {
     zodSchema: z.object({ lat: z.number(), lng: z.number() }).nullish(),
+    required: true,
+  },
+  requiredLatLng: {
+    zodSchema: z.object({ lat: z.number(), lng: z.number() }),
     required: true,
   },
 }
