@@ -1,4 +1,5 @@
 import { formConfig as FRM7Config } from "@/src/app/beteiligung/_frm7/config"
+import { formConfig as SurveyOhvHaltestellenfoerderungConfig } from "@/src/app/beteiligung/_ohv-haltestellenfoerderung/config"
 import { formConfig as BBConfig } from "@/src/app/beteiligung/_radnetz-brandenbrug/config"
 import { formConfig as RS8Config } from "@/src/app/beteiligung/_rs8/config"
 import { formConfig as TestConfig } from "@/src/app/beteiligung/_rstest-1-2-3/config"
@@ -33,6 +34,8 @@ export const getConfigBySurveySlug = <K extends keyof FormConfig>(
       return RS8Config[part]
     case "radnetz-brandenburg":
       return BBConfig[part]
+    case "ohv-haltestellenfoerderung":
+      return SurveyOhvHaltestellenfoerderungConfig[part]
   }
 }
 
