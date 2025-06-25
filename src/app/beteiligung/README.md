@@ -37,6 +37,7 @@ Types for Form Config `src/app/beteiligung/_shared/types.ts`
 - copy and update `SurveyOhv-haltestellenfoerderung` component
 - import SurveyOhv-haltestellenfoerderung in `src/app/beteiligung/[surveySlug]/page.tsx`
 - add slug in `src/app/beteiligung/_shared/utils/allowedSurveySlugs.ts`
+- import config in `src/app/beteiligung/_shared/utils/getConfigBySurveySlug.ts`
 - create survey via UI `/admin/surveys/new` with slug
 
 ## Referencing survey questions / evaluationRefs
