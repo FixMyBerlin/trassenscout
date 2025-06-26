@@ -33,7 +33,7 @@ export const MapLegend = ({ legendItemsConfig }: LegendProps) => {
                 </>
               )}
               <span
-                className="absolute top-px h-2 w-8 rounded bg-blue-500"
+                className="absolute top-px h-2 w-8 rounded border border-gray-500 bg-blue-500"
                 style={{ backgroundColor: item.color }}
               />
             </span>
