@@ -37,9 +37,15 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
 ## Kontakt
 
 Sollte es noch unbeantwortete Fragen oder Schwierigkeiten bei der Beteiligung geben, können Sie den  Landkreis Oberhavel kontaktieren. Antworten auf häufig gestellte Fragen finden Sie am dieser Seite.
+
 **Ansprechperson:**
-Alexander Greifenberg (Teamleiter Verkehrsplanung)Oberhavel Holding Besitz- und Verwaltungsgesellschaft GmbH   Annahofer Str. 1A,  16515 Oranienburg, Ortsteil Germendorf
-Tel.: +493301699376   Fax: +493301699333   E-Mail: a.greifenberg@ohbv.de
+Alexander Greifenberg (Teamleiter Verkehrsplanung)
+Oberhavel Holding Besitz- und Verwaltungsgesellschaft GmbH
+Annahofer Str. 1A,  16515 Oranienburg, Ortsteil Germendorf
+
+Tel.: +493301699376
+Fax: +493301699333
+E-Mail: [a.greifenberg@ohbv.de](mailto:a.greifenberg@ohbv.de)
 
 **Weitere Informationen**
 
