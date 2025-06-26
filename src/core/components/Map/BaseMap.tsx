@@ -1,3 +1,4 @@
+import { layerColors } from "@/src/core/components/Map/layerColors"
 import { featureCollection, point } from "@turf/helpers"
 import { clsx } from "clsx"
 import type { FeatureCollection, LineString, Point } from "geojson"
@@ -96,7 +97,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
 
   const dotSource = dots ? (
     <Source key="dots" type="geojson" data={featureCollection(dots.map((d) => point(d)))}>
-      <Layer type="circle" paint={{ "circle-color": "RGB(15, 23, 42)", "circle-radius": 6 }} />
+      <Layer type="circle" paint={{ "circle-color": layerColors.dot, "circle-radius": 6 }} />
     </Source>
   ) : null
 
@@ -151,7 +152,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   return (
     <div
       className={clsx(
-        "w-full overflow-clip rounded-md drop-shadow-md",
+        "w-full overflow-clip rounded-t-md drop-shadow-md",
         classHeight ?? "h-96 sm:h-[500px]",
       )}
     >
