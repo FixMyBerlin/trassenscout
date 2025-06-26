@@ -2,7 +2,9 @@ import { layerColors } from "@/src/core/components/Map/layerColors"
 import { LegendItemConfig } from "@/src/core/components/Map/MapLegend"
 
 export const legendItemsConfig: Record<string, LegendItemConfig[]> = {
-  project: [{ text: "Planungsabschnitte", color: layerColors.selectable, shape: "line" }],
+  project: [
+    { text: "Planungsabschnitte", color: layerColors.selectable, shape: "line", dots: true },
+  ],
   subsection: [
     { text: "Regelführung", color: layerColors.selectable, shape: "line", dots: true },
     { text: "Sonderführung", color: layerColors.selectable, shape: "circle" },
