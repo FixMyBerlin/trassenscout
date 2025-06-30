@@ -10,13 +10,7 @@ import { installMapGrabIfTest } from "@/src/app/beteiligung/_components/form/map
 import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useState } from "react"
-import Map, {
-  Marker,
-  MarkerDragEvent,
-  NavigationControl,
-  Source,
-  useMap,
-} from "react-map-gl/maplibre"
+import Map, { Marker, MarkerDragEvent, NavigationControl, useMap } from "react-map-gl/maplibre"
 
 type Props = {
   maptilerUrl: string
@@ -98,16 +92,6 @@ export const SurveySimpleMap = ({ maptilerUrl, config }: Props) => {
           cursor="grab"
         >
           <NavigationControl showCompass={false} />
-          <Source
-            key="SourceNetzentwurf"
-            type="vector"
-            minzoom={6}
-            maxzoom={10}
-            tiles={[
-              "https://api.maptiler.com/tiles/650084a4-a206-4873-8873-e3a43171b6ea/{z}/{x}/{y}.pbf?key=ECOoUBmpqklzSCASXxcu",
-            ]}
-          ></Source>
-
           {markerPosition && (
             <Marker
               // @ts-expect-error todo
