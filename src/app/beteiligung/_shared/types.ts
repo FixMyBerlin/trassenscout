@@ -3,6 +3,7 @@ import { SurveyCheckboxGroup } from "@/src/app/beteiligung/_components/form/Chec
 import { SurveySimpleMapWithLegend } from "@/src/app/beteiligung/_components/form/map/SimpleMapWithLegend"
 import { SurveyPageTitle } from "@/src/app/beteiligung/_components/form/PageTitle"
 import { SurveyRadiobuttonGroup } from "@/src/app/beteiligung/_components/form/RadiobuttonGroup"
+import { SurveySelect } from "@/src/app/beteiligung/_components/form/Select"
 import { SurveyTextarea } from "@/src/app/beteiligung/_components/form/Textarea"
 import { SurveyTextfield } from "@/src/app/beteiligung/_components/form/Textfield"
 import { SurveyMarkdown } from "@/src/app/beteiligung/_components/layout/SurveyMarkdown"
@@ -100,6 +101,17 @@ export type FieldConfig =
       defaultValue: string
     } & FormFieldBase & {
         props: Omit<ComponentProps<typeof SurveyRadiobuttonGroup>, "required">
+      })
+  | ({
+      component: "SurveySelect"
+      componentType: "form"
+      validation:
+        | (typeof fieldValidationEnum)["optionalString"]
+        | (typeof fieldValidationEnum)["requiredString"]
+        | (typeof fieldValidationEnum)["conditionalRequiredString"]
+      defaultValue: string
+    } & FormFieldBase & {
+        props: Omit<ComponentProps<typeof SurveySelect>, "required">
       })
   | ({
       component: "SurveyPageTitle"

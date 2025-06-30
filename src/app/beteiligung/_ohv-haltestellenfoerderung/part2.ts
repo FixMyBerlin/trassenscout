@@ -189,13 +189,18 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über "+/-" verkle
         },
         {
           name: "commune",
-          component: "SurveyTextfield",
+          component: "SurveySelect",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
           defaultValue: "",
           props: {
             label: "Name der meldenden Kommune",
-            description: "todo: das wird ein Dropdown",
+            placeholder: "Kommune auswählen",
+            options: [
+              { key: "commune1", label: "Kommune 1" },
+              { key: "commune2", label: "Kommune 2" },
+              { key: "commune3", label: "Kommune 3" },
+            ],
           },
         },
         {

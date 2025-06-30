@@ -14,6 +14,7 @@ const translatedComponentTypesLegacy = {
 const translatedComponentTypes = {
   SurveyCheckboxGroup: "mehrfach",
   SurveyRadiobuttonGroup: "einfach",
+  SurveySelect: "einfach",
   SurveyTextfield: "text",
   SurveyTextarea: "text",
   SurveySimpleMapWithLegend: "geo",

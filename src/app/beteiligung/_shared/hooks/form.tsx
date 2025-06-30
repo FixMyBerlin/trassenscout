@@ -3,6 +3,7 @@ import { SurveyCheckboxGroup } from "@/src/app/beteiligung/_components/form/Chec
 import { SurveySimpleMapWithLegend } from "@/src/app/beteiligung/_components/form/map/SimpleMapWithLegend"
 import { SurveyPageTitle } from "@/src/app/beteiligung/_components/form/PageTitle"
 import { SurveyRadiobuttonGroup } from "@/src/app/beteiligung/_components/form/RadiobuttonGroup"
+import { SurveySelect } from "@/src/app/beteiligung/_components/form/Select"
 import { SubscribeButton } from "@/src/app/beteiligung/_components/form/SubscribeButton"
 import { SurveyTextarea } from "@/src/app/beteiligung/_components/form/Textarea"
 import { SurveyTextfield } from "@/src/app/beteiligung/_components/form/Textfield"
@@ -18,6 +19,7 @@ export const { useAppForm } = createFormHook({
     SurveyCheckbox,
     SurveyCheckboxGroup,
     SurveyRadiobuttonGroup,
+    SurveySelect,
     SurveySimpleMapWithLegend,
     SurveyMarkdown,
     SurveyPageTitle,
