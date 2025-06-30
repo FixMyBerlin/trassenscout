@@ -1,6 +1,5 @@
 import { fieldValidationEnum } from "@/src/app/beteiligung/_shared/fieldvalidationEnum"
 import { SurveyPart2 } from "@/src/app/beteiligung/_shared/types"
-import { AnyFieldApi } from "@tanstack/react-form"
 
 export const part2Config: SurveyPart2 = {
   progressBarDefinition: 2,
@@ -118,31 +117,22 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über "+/-" verkle
         {
           name: "geometryCategory",
           componentType: "form",
-          component: "SurveySimpleMapWithLegend",
-          validation: fieldValidationEnum["conditionalRequiredLatLng"],
-          defaultValue: {
-            lat: 48.87405710508672,
-            lng: 9.271044583540359,
-          },
-          validators: {
-            onChange: ({ fieldApi }: { fieldApi: AnyFieldApi }) => {
-              if (fieldApi.state.meta.isPristine) {
-                console.log({ fieldApi })
-                return "Bitte wählen Sie einen Ort auf der Karte oder wählen sie oben, dass Sie keinen Ort angeben möchten."
-              }
-              return undefined
-            },
-          },
+          component: "SurveyGeoCategoryMapWithLegend",
+          validation: fieldValidationEnum["requiredString"],
+          defaultValue: null,
           props: {
             label: "Maßnahmenverortung",
-            description: "todo: das wird eigentlich ein anderes component und eine andere Karte",
             mapProps: {
+              // todo update property name
+              additionalData: [
+                { dataKey: "hsName", propertyName: "from_name", label: "Name der Haltestelle" },
+              ],
+              // todo update property name
+              geoCategoryIdPropertyName: "Verbindung",
               maptilerUrl:
                 "https://api.maptiler.com/maps/b09268b1-91d0-42e2-9518-321a1a94738f/style.json",
               config: {
-                bounds: [
-                  9.103949029818097, 48.81629635563661, 9.387312714501604, 48.90390202531458,
-                ],
+                bounds: [11.26, 51.36, 14.77, 53.56],
               },
             },
             legendProps: {
@@ -157,15 +147,16 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über "+/-" verkle
           },
         },
         {
-          name: "hsName",
-          component: "SurveyTextfield",
+          name: "geometryCategoryId",
           componentType: "form",
-          validation: fieldValidationEnum["requiredString"],
-          defaultValue: "",
-          props: {
-            label: "Haltestellen Name",
-            description: "todo: dieser Wert wird nicht eingegeben sondern aus den Geodaten gelesen",
-          },
+          component: "hidden",
+          props: { label: "ID der ausgewählten Haltestelle" },
+        },
+        {
+          name: "hsName",
+          componentType: "form",
+          component: "hidden",
+          props: { label: "Name der ausgewählten Haltestelle" },
         },
         {
           name: "feedbackText",

@@ -283,6 +283,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                       : ""
                   }
                   break
+                // todo
+                // case "SurveyGeoCategoryMapWithLegend":
                 default:
                   // @ts-expect-error data is of type unknown and index type
                   row[questionId] = data[questionId] || ""

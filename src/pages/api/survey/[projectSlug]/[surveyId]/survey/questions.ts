@@ -18,7 +18,9 @@ const translatedComponentTypes = {
   SurveyTextfield: "text",
   SurveyTextarea: "text",
   SurveySimpleMapWithLegend: "geo",
+  SurveyGeoCategoryMapWithLegend: "geo",
   SurveyCheckbox: "bool",
+  hidden: "hidden",
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
