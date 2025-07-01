@@ -1,3 +1,4 @@
+import communes_bboxes from "@/src/app/beteiligung/_ohv-haltestellenfoerderung/communes_bboxes.json"
 import { fieldValidationEnum } from "@/src/app/beteiligung/_shared/fieldvalidationEnum"
 import { SurveyPart2 } from "@/src/app/beteiligung/_shared/types"
 
@@ -152,6 +153,14 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über "+/-" verkle
           props: {
             label: "Maßnahmenverortung",
             mapProps: {
+              setInitialBounds: {
+                initialBoundsDefintion: communes_bboxes as {
+                  name: string
+                  bbox: [number, number, number, number]
+                  id: string
+                }[],
+                queryId: "commune",
+              },
               // todo update property name
               additionalData: [
                 { dataKey: "hsName", propertyName: "from_name", label: "Name der Haltestelle" },
