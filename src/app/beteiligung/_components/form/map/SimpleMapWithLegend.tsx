@@ -20,7 +20,7 @@ export const SurveySimpleMapWithLegend = ({ mapProps, legendProps, label, descri
 
   return (
     <MapProvider>
-      <div className={clsx("m-2 mb-24 w-full p-2", hasError && "rounded bg-red-50")}>
+      <div className={clsx("mb-24 mt-8 w-full p-2", hasError && "rounded bg-red-50")}>
         <p className={formClasses.fieldLabel}>{label}</p>
         {description && (
           <p className={formClasses.fieldDescription} id={`${field.name}-hint`}>
