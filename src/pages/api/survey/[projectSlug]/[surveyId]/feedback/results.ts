@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const backendDefinition = getConfigBySurveySlug(survey.slug, "backend")
   const metaDefinition = getConfigBySurveySlug(survey.slug, "meta")
 
-  const geometryCategoryId = getQuestionIdBySurveySlug(survey.slug, "geometry-category")
+  const geometryCategoryId = getQuestionIdBySurveySlug(survey.slug, "geometryCategory")
   const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
 
   const geometryCategoryType = metaDefinition["geometryCategoryType"]
