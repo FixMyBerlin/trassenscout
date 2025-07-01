@@ -11,8 +11,6 @@ export const SurveyOhvHaltestellenfoerderung = ({ surveyId }: Props) => {
   const searchParams = useSearchParams()
   const router = useRouter()
   const id = searchParams?.get("id") || "unbekannt"
-  console.log({ router })
-  console.log(searchParams?.values())
   const commune = communes_bboxes.find((i) => i.id === id)?.name || "unbekannt"
 
   // in survey ohv, the commune id is passed as a query parameter in the original url sent to the user
