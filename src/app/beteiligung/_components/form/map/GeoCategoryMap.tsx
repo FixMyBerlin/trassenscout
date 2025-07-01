@@ -6,6 +6,7 @@ import { installMapGrabIfTest } from "@/src/app/beteiligung/_components/form/map
 import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
 import { playwrightSendMapLoadedEvent } from "@/tests/_utils/customMapLoadedEvent"
 import "maplibre-gl/dist/maplibre-gl.css"
+import { useSearchParams } from "next/navigation"
 import { useState } from "react"
 import Map, {
   Layer,
@@ -26,6 +27,13 @@ type Props = {
   config: {
     bounds: [number, number, number, number]
   }
+  setInitialBounds?: {
+    initialBoundsDefintion: ({ name: string; bbox: [number, number, number, number] } & Record<
+      string,
+      any
+    >)[]
+    queryId: string
+  }
 }
 
 // todo
@@ -38,13 +46,25 @@ export const SurveyGeoCategoryMap = ({
   config,
   additionalData,
   geoCategoryIdPropertyName,
+  setInitialBounds,
 }: Props) => {
   const { mainMap } = useMap()
   const field = useFieldContext<object>()
+  const searchParams = useSearchParams()
 
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
 
   if (mainMap) installMapGrabIfTest(mainMap.getMap(), "mainMap")
+
+  const initialBounds =
+    setInitialBounds &&
+    setInitialBounds.initialBoundsDefintion.find(
+      (d) => d.name === searchParams?.get(setInitialBounds?.queryId),
+    )
+      ? setInitialBounds.initialBoundsDefintion.find(
+          (d) => d.name === searchParams?.get(setInitialBounds?.queryId),
+        )?.bbox
+      : config.bounds
 
   const selectedGeometry = field.form.getFieldValue("geometryCategoryId") || null
 
@@ -101,7 +121,7 @@ export const SurveyGeoCategoryMap = ({
         id="mainMap"
         scrollZoom={false}
         initialViewState={{
-          bounds: config.bounds,
+          bounds: initialBounds,
         }}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         onClick={handleMapClick}
