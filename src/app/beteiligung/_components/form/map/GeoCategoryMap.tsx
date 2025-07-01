@@ -39,10 +39,6 @@ export const SurveyGeoCategoryMap = ({
   additionalData,
   geoCategoryIdPropertyName,
 }: Props) => {
-  const mapBounds: { bounds: [number, number, number, number] } = {
-    bounds: config.bounds,
-  }
-
   const { mainMap } = useMap()
   const field = useFieldContext<object>()
 
@@ -61,13 +57,11 @@ export const SurveyGeoCategoryMap = ({
   }
 
   const handleMapClick = (event: MapLayerMouseEvent) => {
-    const line = event.features?.[0]
+    const feature = event.features?.[0]
+    if (!feature) return
 
-    // todo line
-    if (!line) return
-
-    const geoCategoryId = line.properties[geoCategoryIdPropertyName]
-    const geometry = line.geometry
+    const geoCategoryId = feature.properties[geoCategoryIdPropertyName]
+    const geometry = feature.geometry
 
     // geometry and id are always set here
     field.form.setFieldValue("geometryCategoryId", geoCategoryId)
@@ -78,7 +72,7 @@ export const SurveyGeoCategoryMap = ({
     {
       additionalData.map((data) => {
         const { dataKey, propertyName } = data
-        field.form.setFieldValue(dataKey, line.properties[propertyName])
+        field.form.setFieldValue(dataKey, feature.properties[propertyName])
       })
     }
   }
@@ -132,7 +126,7 @@ export const SurveyGeoCategoryMap = ({
             "https://api.maptiler.com/tiles/650084a4-a206-4873-8873-e3a43171b6ea/{z}/{x}/{y}.pbf?key=ECOoUBmpqklzSCASXxcu",
           ]}
         >
-          {/* todo dynamic layer */}
+          {/* todo dynamic layers and styles */}
           <Layer
             id="LayerNetzentwurf"
             type="line"
@@ -154,14 +148,15 @@ export const SurveyGeoCategoryMap = ({
               "line-width": ["interpolate", ["linear"], ["zoom"], 0, 6, 8, 12, 13.8, 10],
             }}
           />
-          {/* todo line */}
+          {/* todo point / polygon */}
+          {/* todo styles dynamic */}
           <Layer
-            id="LayerSelectedLine"
+            id="LayerSelectedGeoCategory"
             type="line"
             source-layer="default"
             // todo
             layout={{ visibility: selectedGeometry ? "visible" : "none" }}
-            filter={["==", "Verbindung", selectedGeometry || ""]}
+            filter={["==", geoCategoryIdPropertyName, selectedGeometry || ""]}
             paint={{
               "line-width": 5,
               "line-color": ["case", ["has", "color"], ["get", "color"], "#994F0B"],
