@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Hennigsdorf",
+    "id": "hennigsdorf",
+    "bbox": [13.496662, 52.545565, 13.686099, 52.654593]
+  },
+  {
+    "name": "Oranienburg",
+    "id": "oranienburg",
+    "bbox": [13.833523, 51.540285, 14.2175, 51.713934]
+  },
+  {
+    "name": "Velten",
+    "id": "velten",
+    "bbox": [13.668648, 52.539719, 13.938829, 52.64761]
+  },
+  {
+    "name": "Hohen Neuendorf",
+    "id": "hohenneuendorf",
+    "bbox": [13.298255, 52.086761, 13.467352, 52.212231]
+  }
+]
