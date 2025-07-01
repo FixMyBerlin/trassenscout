@@ -34,11 +34,17 @@ export default resolver.pipe(
       connect[fieldName] = { connect: data[fieldName] ? data[fieldName].map((id) => ({ id })) : [] }
       delete data[fieldName]
     })
+
+    await db.surveyResponse.update({
+      where: { id },
+      data: disconnect,
+    })
+
     const record = await db.surveyResponse.update({
       where: { id },
       // copied from updateSubsubsection.ts
       // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
-      data: { ...data, ...disconnect, ...connect },
+      data: { ...data, ...connect },
     })
 
     await createLogEntry({
