@@ -4,6 +4,7 @@ import { SurveyGeoCategoryMapWithLegend } from "@/src/app/beteiligung/_component
 import { SurveySimpleMapWithLegend } from "@/src/app/beteiligung/_components/form/map/SimpleMapWithLegend"
 import { SurveyPageTitle } from "@/src/app/beteiligung/_components/form/PageTitle"
 import { SurveyRadiobuttonGroup } from "@/src/app/beteiligung/_components/form/RadiobuttonGroup"
+import { SurveyReadonlyTextfield } from "@/src/app/beteiligung/_components/form/ReadOnlyTextfield"
 import { SurveySelect } from "@/src/app/beteiligung/_components/form/Select"
 import { SurveyTextarea } from "@/src/app/beteiligung/_components/form/Textarea"
 import { SurveyTextfield } from "@/src/app/beteiligung/_components/form/Textfield"
@@ -55,6 +56,15 @@ export type FieldConfig =
         | (typeof fieldValidationEnum)["conditionalRequiredString"]
       defaultValue: string
     } & FormFieldBase & { props: Omit<ComponentProps<typeof SurveyTextfield>, "required"> })
+  | ({
+      component: "SurveyReadonlyTextfield"
+      componentType: "form"
+      validation:
+        | (typeof fieldValidationEnum)["optionalString"]
+        | (typeof fieldValidationEnum)["requiredString"]
+        | (typeof fieldValidationEnum)["conditionalRequiredString"]
+      defaultValue: string
+    } & FormFieldBase & { props: Omit<ComponentProps<typeof SurveyReadonlyTextfield>, "required"> })
   | ({
       component: "SurveyTextarea"
       componentType: "form"

@@ -4,6 +4,7 @@ import { SurveyGeoCategoryMapWithLegend } from "@/src/app/beteiligung/_component
 import { SurveySimpleMapWithLegend } from "@/src/app/beteiligung/_components/form/map/SimpleMapWithLegend"
 import { SurveyPageTitle } from "@/src/app/beteiligung/_components/form/PageTitle"
 import { SurveyRadiobuttonGroup } from "@/src/app/beteiligung/_components/form/RadiobuttonGroup"
+import { SurveyReadonlyTextfield } from "@/src/app/beteiligung/_components/form/ReadOnlyTextfield"
 import { SurveySelect } from "@/src/app/beteiligung/_components/form/Select"
 import { SubscribeButton } from "@/src/app/beteiligung/_components/form/SubscribeButton"
 import { SurveyTextarea } from "@/src/app/beteiligung/_components/form/Textarea"
@@ -16,6 +17,7 @@ import { createFormHook } from "@tanstack/react-form"
 export const { useAppForm } = createFormHook({
   fieldComponents: {
     SurveyTextfield,
+    SurveyReadonlyTextfield,
     SurveyTextarea,
     SurveyCheckbox,
     SurveyCheckboxGroup,
