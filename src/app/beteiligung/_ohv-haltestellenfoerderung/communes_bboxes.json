@@ -1,22 +1,72 @@
 [
   {
+    "name": "Birkenwerder",
+    "id": "birkenwerder",
+    "bbox": [13.2195, 52.6101, 13.3192, 52.6604]
+  },
+  {
+    "name": "Fürstenberg/Havel",
+    "id": "fuerstenberg",
+    "bbox": [13.067, 52.9365, 13.171, 52.994]
+  },
+  {
+    "name": "Glienicke/Nordbahn",
+    "id": "glienickenordbahn",
+    "bbox": [13.304, 52.624, 13.338, 52.656]
+  },
+  {
+    "name": "Gransee",
+    "id": "gransee",
+    "bbox": [13.05, 53.0, 13.15, 53.08]
+  },
+  {
     "name": "Hennigsdorf",
     "id": "hennigsdorf",
-    "bbox": [13.496662, 52.545565, 13.686099, 52.654593]
-  },
-  {
-    "name": "Oranienburg",
-    "id": "oranienburg",
-    "bbox": [13.833523, 51.540285, 14.2175, 51.713934]
-  },
-  {
-    "name": "Velten",
-    "id": "velten",
-    "bbox": [13.668648, 52.539719, 13.938829, 52.64761]
+    "bbox": [13.18, 52.59, 13.28, 52.65]
   },
   {
     "name": "Hohen Neuendorf",
     "id": "hohenneuendorf",
-    "bbox": [13.298255, 52.086761, 13.467352, 52.212231]
+    "bbox": [13.278, 52.63, 13.36, 52.69]
+  },
+  {
+    "name": "Kremmen",
+    "id": "kremmen",
+    "bbox": [13.08, 52.7, 13.24, 52.81]
+  },
+  {
+    "name": "Leegebruch",
+    "id": "leegebruch",
+    "bbox": [13.15, 52.7, 13.22, 52.76]
+  },
+  {
+    "name": "Liebenwalde",
+    "id": "liebenwalde",
+    "bbox": [13.1, 53.05, 13.2, 53.15]
+  },
+  {
+    "name": "Löwenberger Land",
+    "id": "loewenbergerland",
+    "bbox": [13.035, 52.88, 13.16, 52.985]
+  },
+  {
+    "name": "Mühlenbecker Land",
+    "id": "muehlenbeckerland",
+    "bbox": [13.31, 52.765, 13.425, 52.855]
+  },
+  {
+    "name": "Oberkrämer",
+    "id": "oberkaemer",
+    "bbox": [13.2, 52.88, 13.34, 52.96]
+  },
+  {
+    "name": "Oranienburg",
+    "id": "oranienburg",
+    "bbox": [13.11, 52.745, 13.21, 52.835]
+  },
+  {
+    "name": "Velten",
+    "id": "velten",
+    "bbox": [13.26, 52.7, 13.33, 52.76]
   }
 ]

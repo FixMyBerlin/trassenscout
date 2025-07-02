@@ -1,6 +1,10 @@
 import communes_bboxes from "@/src/app/beteiligung/_ohv-haltestellenfoerderung/communes_bboxes.json"
+import { mapData } from "@/src/app/beteiligung/_ohv-haltestellenfoerderung/mapData.const"
 import { fieldValidationEnum } from "@/src/app/beteiligung/_shared/fieldvalidationEnum"
-import { SurveyPart2 } from "@/src/app/beteiligung/_shared/types"
+import {
+  geoCategorySetInitialBoundsDefinition,
+  SurveyPart2,
+} from "@/src/app/beteiligung/_shared/types"
 
 export const part2Config: SurveyPart2 = {
   progressBarDefinition: 2,
@@ -124,7 +128,7 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
           props: {
             label: "Name der meldenden Kommune",
             description: "Dieses Feld wird automatisch ausgefüllt.",
-            placeholder: "Kommune auswählen",
+            // placeholder: "Kommune auswählen",
             queryId: "commune",
             // options: [
             //   { key: "hennigsdorf", label: "Hennigsdorf" },
@@ -152,25 +156,25 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
           defaultValue: null,
           props: {
             label: "Maßnahmenverortung",
+            description:
+              "Wählen Sie eine Bushaltestelle aus, zu welcher Sie eine Maßnahme melden möchten.",
             mapProps: {
+              mapData: mapData,
               setInitialBounds: {
-                initialBoundsDefintion: communes_bboxes as {
-                  name: string
-                  bbox: [number, number, number, number]
-                  id: string
-                }[],
-                queryId: "commune",
+                initialBoundsDefinition:
+                  communes_bboxes as unknown as geoCategorySetInitialBoundsDefinition,
+                queryParameter: "id",
               },
-              // todo update property name
               additionalData: [
-                { dataKey: "hsName", propertyName: "from_name", label: "Name der Haltestelle" },
+                { dataKey: "hsName", propertyName: "stop_name", label: "Name der Haltestelle" },
+                { dataKey: "routeIds", propertyName: "route_ids", label: "IDs der Routen" },
               ],
-              // todo update property name
-              geoCategoryIdPropertyName: "Verbindung",
+              geoCategoryIdDefinition: { dataKey: "geometryCategoryId", propertyName: "stop_id" },
+              // todo remove
               maptilerUrl:
                 "https://api.maptiler.com/maps/b09268b1-91d0-42e2-9518-321a1a94738f/style.json",
               config: {
-                bounds: [11.26, 51.36, 14.77, 53.56],
+                bounds: [12.824965, 52.586742, 13.520948, 53.251088], // Bounding box for Oberhavel to be validated
               },
             },
             legendProps: {
@@ -195,6 +199,12 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
           componentType: "form",
           component: "hidden",
           props: { label: "Name der ausgewählten Haltestelle" },
+        },
+        {
+          name: "routeIds",
+          componentType: "form",
+          component: "hidden",
+          props: { label: "IDs der Routen" },
         },
         {
           name: "feedbackText",
