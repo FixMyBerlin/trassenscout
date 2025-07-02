@@ -91,11 +91,11 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
 
 Die Meldung wird nicht zwischengespeichert, d.h. bei dem Verlassen der Seite gehen alle eingetragenen Informationen verloren. Nach dem Absenden der Maßnahmenmeldung können Sie nicht mehr auf Ihre getätigten Eingaben zugreifen.
 
-**Wählen Sie eine Bushaltestelle aus oder setzen Sie einen freien Marker, zu der Sie Maßnahmenmeldungen geben möchten!**
+**Wählen Sie eine Bushaltestelle aus, zu der Sie Maßnahmenvorschläge geben möchten!**
 
-Wählen Sie eine Bushaltestelle durch Klicken auf den gewünschten orangen Punkt auf der Karte aus. Wenn Sie einen freien Marker setzen wollen, selektieren Sie unter "Punktsetzung" "freien Marker setzen". Nun können Sie unabhängig von der Bushaltestelle Ihren gewünschten Punkt setzen.
+Wählen Sie eine Bushaltestelle durch Klicken auf den gewünschten orangen Punkt auf der Karte aus. Nun können Sie zu der gewählten Bushaltestelle eine Maßnahme melden.
 
-Bei Bedarf können Sie die Ansicht der Karte verschieben oder über "+/-" verkleinern oder vergrößern.`,
+Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” verkleinern oder vergrößern.`,
           },
         },
         {
