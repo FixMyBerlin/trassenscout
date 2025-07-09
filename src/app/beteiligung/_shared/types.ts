@@ -12,9 +12,39 @@ import { SurveyMarkdown } from "@/src/app/beteiligung/_components/layout/SurveyM
 import { TBackendConfig } from "@/src/app/beteiligung/_shared/backend-types"
 import { fieldValidationEnum } from "@/src/app/beteiligung/_shared/fieldvalidationEnum"
 import { AnyFieldApi } from "@tanstack/react-form"
-
 import { LineString, MultiLineString } from "geojson"
+import type {
+  CircleLayerSpecification,
+  FillLayerSpecification,
+  HeatmapLayerSpecification,
+  LineLayerSpecification,
+  SymbolLayerSpecification,
+} from "maplibre-gl"
 import { ComponentProps, ReactNode } from "react"
+
+export type MapData = {
+  sources: {
+    // Source `id`
+    [sourceId: string]: {
+      pmTilesUrl: string
+      layers: ((
+        | Omit<FillLayerSpecification, "source" | "source-layer" | "metadata">
+        | Omit<LineLayerSpecification, "source" | "source-layer" | "metadata">
+        | Omit<SymbolLayerSpecification, "source" | "source-layer" | "metadata">
+        | Omit<CircleLayerSpecification, "source" | "source-layer" | "metadata">
+        | Omit<HeatmapLayerSpecification, "source" | "source-layer" | "metadata">
+      ) & {
+        beforeId?: string
+      })[]
+      interactiveLayerIds?: string[]
+    }
+  }
+  colorClass: string
+}
+
+export type geoCategorySetInitialBoundsDefinition = NonNullable<
+  ComponentProps<typeof SurveyGeoCategoryMapWithLegend>["mapProps"]["setInitialBounds"]
+>["initialBoundsDefinition"]
 
 // tbd maybe in the future we want to allow all field options of tanstack form fieldApi
 type FormFieldOptions = {

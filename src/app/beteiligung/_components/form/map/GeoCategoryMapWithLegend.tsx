@@ -32,7 +32,7 @@ export const SurveyGeoCategoryMapWithLegend = ({
             {description}
           </p>
         )}
-        <SurveyGeoCategoryMap {...mapProps} />
+        <SurveyGeoCategoryMap description={description} {...mapProps} />
         <SurveyMapLegend {...legendProps} />
         <FieldError field={field} />
       </div>
