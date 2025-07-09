@@ -21,8 +21,8 @@ type Props = {
   maptilerUrl: string
   defaultViewState?: LngLatBoundsLike
   surveyResponses: any[]
-  locationRef: number
-  categoryGeometryRef: number | undefined
+  locationRef: string
+  categoryGeometryRef?: string
   //todo survey clean up after survey BB
   surveySlug: AllowedSurveySlugs
 }
