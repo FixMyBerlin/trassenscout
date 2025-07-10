@@ -15,7 +15,7 @@ export default resolver.pipe(
   // @ts-ignore
   authorizeProjectMember(extractProjectSlug, viewerRoles),
   async ({ projectSlug, surveyId }: GetFeedbackSurveyResponsesWithSurveyDataAndComments) => {
-    const rawFeedbackSurveyResponse = await db.surveyResponse.findMany({
+    const rawSurveyResponsePart2 = await db.surveyResponse.findMany({
       where: {
         // Only surveyResponse.session.project === projectSlug
         surveySession: {
@@ -54,7 +54,7 @@ export default resolver.pipe(
       },
     })
 
-    const rawSurveySurveyResponse = await db.surveyResponse.findMany({
+    const rawSurveyResponsePart1 = await db.surveyResponse.findMany({
       where: {
         // Only surveyResponse.session.project === projectSlug
         surveySession: {
@@ -69,31 +69,58 @@ export default resolver.pipe(
       },
     })
 
-    const additionalFilters = rawFeedbackSurveyResponse.length
+    const rawSurveyResponsePart3 = await db.surveyResponse.findMany({
+      where: {
+        // Only surveyResponse.session.project === projectSlug
+        surveySession: {
+          survey: { project: { slug: projectSlug } },
+          // Only surveyResponse.surveyId === surveyId
+          surveyId,
+        },
+        // Only surveyResponse.surveyPart === 2
+        // the field here just represents first or second part of the survey json
+        // surveyPart `1` in survey.ts
+        surveyPart: 3,
+      },
+    })
+
+    const additionalFilters = rawSurveyResponsePart2.length
       ? getConfigBySurveySlug(
-          rawFeedbackSurveyResponse[0]?.surveySession.survey.slug as AllowedSurveySlugs,
+          rawSurveyResponsePart2[0]?.surveySession.survey.slug as AllowedSurveySlugs,
           "backend",
         )?.additionalFilters
       : []
 
-    const rawFeedbackSurveyResponseWithSurveySurveyResponses = rawFeedbackSurveyResponse?.map(
-      (response) => {
-        const surveySurveyResponseData = rawSurveySurveyResponse.find(
-          (surveyResponse) => surveyResponse.surveySessionId === response.surveySessionId,
+    const rawSurveyResponsePart2WithPart1AndPart3Responses = rawSurveyResponsePart2?.map(
+      (responsePart2) => {
+        const surveyPart1ResponseData = rawSurveyResponsePart1.find(
+          (responsePart1) => responsePart1.surveySessionId === responsePart2.surveySessionId,
         )?.data
-        return { ...response, surveySurveyResponseData }
+        const surveyPart3ResponseData = rawSurveyResponsePart3.find(
+          (responsePart1) => responsePart1.surveySessionId === responsePart2.surveySessionId,
+        )?.data
+        return { ...responsePart2, surveyPart1ResponseData, surveyPart3ResponseData }
       },
     )
 
-    const parsedAndSorted = rawFeedbackSurveyResponseWithSurveySurveyResponses
+    const parsedAndSorted = rawSurveyResponsePart2WithPart1AndPart3Responses
       // Make `data` an object to work with…
       .map((response) => {
         const data = JSON.parse(response.data)
         const surveyResponseTopics = response.surveyResponseTopics.map((topic) => topic.id)
-        const surveySurveyResponseData = response.surveySurveyResponseData
-          ? JSON.parse(response.surveySurveyResponseData)
+        const surveyPart1ResponseData = response.surveyPart1ResponseData
+          ? JSON.parse(response.surveyPart1ResponseData)
           : null
-        return { ...response, data, surveyResponseTopics, surveySurveyResponseData }
+        const surveyPart3ResponseData = response.surveyPart3ResponseData
+          ? JSON.parse(response.surveyPart3ResponseData)
+          : null
+        return {
+          ...response,
+          data,
+          surveyResponseTopics,
+          surveyPart1ResponseData,
+          surveyPart3ResponseData,
+        }
       })
       // Sometimes the fronted received a different order for unknown reasons
       .sort((a, b) => b.id - a.id)
@@ -102,10 +129,15 @@ export default resolver.pipe(
       const questionDatas = parsedAndSorted
         .map((responseItem) => {
           let result: string | null
-          if (question.surveyPart === "survey") {
-            result = responseItem.surveySurveyResponseData
+          if (question.surveyPart === "part1") {
+            result = responseItem.surveyPart1ResponseData
               ? // @ts-expect-error data
-                responseItem.surveySurveyResponseData[String(question.id)]
+                responseItem.surveyPart1ResponseData[String(question.id)]
+              : null
+          } else if (question.surveyPart === "part3") {
+            result = responseItem.surveyPart3ResponseData
+              ? // @ts-expect-error data
+                responseItem.surveyPart3ResponseData[String(question.id)]
               : null
           } else {
             // @ts-expect-error data

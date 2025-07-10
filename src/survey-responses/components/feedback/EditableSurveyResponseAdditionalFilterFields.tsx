@@ -2,14 +2,16 @@ import { TBackendConfig } from "@/src/app/beteiligung/_shared/backend-types"
 
 type Props = {
   additionalFilterFields: TBackendConfig["additionalFilters"]
-  surveyData: any
-  feedbackData: any
+  surveyPart1ResponseData: any
+  surveyPart3ResponseData: any
+  surveyPart2ResponseData: any
 }
 
 const EditableSurveyResponseAdditionalFilterFields = ({
   additionalFilterFields,
-  surveyData,
-  feedbackData,
+  surveyPart1ResponseData,
+  surveyPart3ResponseData,
+  surveyPart2ResponseData,
 }: Props) => {
   if (!additionalFilterFields) return null
   return (
@@ -22,12 +24,17 @@ const EditableSurveyResponseAdditionalFilterFields = ({
                 {item.label}
               </td>
               <td className="px-6 py-4 text-sm text-gray-500">
-                {item.surveyPart === "feedback"
-                  ? feedbackData[String(item.id)] || "-"
-                  : // see comment in src/survey-responses/queries/getSurveySurveyResponsesBySurveySessionId.ts
-                    surveyData
-                    ? surveyData[String(item.id)]
-                    : "(kein Umfrage-Teil zu diesem Eintrag)"}
+                {item.surveyPart === "part1"
+                  ? surveyPart1ResponseData
+                    ? surveyPart1ResponseData[String(item.id)] || "-"
+                    : "(kein Umfrage-Teil zu diesem Eintrag)"
+                  : item.surveyPart === "part2"
+                    ? surveyPart2ResponseData[String(item.id)] || "-"
+                    : item.surveyPart === "part3"
+                      ? surveyPart3ResponseData
+                        ? surveyPart3ResponseData[String(item.id)] || "-"
+                        : "(kein Umfrage-Teil zu diesem Eintrag)"
+                      : "(unbekannter Umfrage-Teil)"}
               </td>
             </tr>
           ))}

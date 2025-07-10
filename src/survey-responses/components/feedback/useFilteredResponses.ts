@@ -113,16 +113,35 @@ export const useFilteredResponses = (
         // on dev and staging we have some surveyresponses (Hinweise) that do not have a first part (Umfrage)
         // so we need to check if the first part exists, here we filter out the surveyresponses that do not have a first part when a filter concerning the first part is used; in production these surveyresponses do not exist
         if (
-          additionalFiltersConfigItem?.surveyPart === "survey" &&
-          !response.surveySurveyResponseData
+          additionalFiltersConfigItem?.surveyPart === "part1" &&
+          !response.surveyPart1ResponseData
         )
           return false
-        return additionalFiltersConfigItem?.surveyPart === "feedback"
-          ? // @ts-expect-error
-            response.data[additionalFiltersConfigItem.id] === additionalFilters[key]
-          : // @ts-expect-error
-            response.surveySurveyResponseData[additionalFiltersConfigItem.id] ===
+        if (
+          additionalFiltersConfigItem?.surveyPart === "part3" &&
+          !response.surveyPart3ResponseData
+        )
+          return false
+        switch (additionalFiltersConfigItem?.surveyPart) {
+          case "part1":
+            return (
+              // @ts-expect-error
+              response.surveyPart1ResponseData[additionalFiltersConfigItem.id] ===
               additionalFilters[key]
+            )
+          case "part2":
+            // @ts-expect-error
+            return response.data[additionalFiltersConfigItem.id] === additionalFilters[key]
+          case "part3":
+            return (
+              // @ts-expect-error
+              response.surveyPart3ResponseData[additionalFiltersConfigItem.id] ===
+              additionalFilters[key]
+            )
+          default:
+            // If surveyPart is not recognized, don't filter
+            return true
+        }
       })
     })
 
