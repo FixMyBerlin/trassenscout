@@ -29,6 +29,14 @@ export const formConfig: FormConfig = {
     },
   },
   backend: {
+    additionalFilters: [
+      {
+        label: "Kommune",
+        id: "commune",
+        value: "commune",
+        surveyPart: "part2",
+      },
+    ],
     status: [
       { value: "PENDING", label: "Ausstehend", color: "#FDEEBF", icon: "CLOCK" },
       { value: "REJECTED", label: "Abgelehnt", color: "#FEE2E2", icon: "XMARK" },
