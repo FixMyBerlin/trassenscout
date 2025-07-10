@@ -1,26 +1,44 @@
-// atm we only support LineString and MultiLineString
-export const coordinatesToWkt = ({
-  coordinates,
-  type,
-}: {
-  coordinates: number[][] | number[][][] | undefined
-  type: "line" | "polygon" | "point"
-}) => {
-  if (!coordinates) return
-  // Check if the input (shape) is a MultiLineString / Polygon
-  if (Array.isArray(coordinates[0]) && Array.isArray(coordinates[0][0])) {
-    const multiLineStringOrPolygonCoordinates = coordinates as number[][][]
-    const wktString = multiLineStringOrPolygonCoordinates
-      .map((lineString) => `(${lineString.map((coord) => coord.join(" ")).join(", ")})`)
-      .join(", ")
-    // check in configuration if the geometry is a polygon or a type line
-    return type === "polygon"
-      ? `POLYGON (${wktString})`
-      : type === "point"
-        ? `POINT (${wktString})`
-        : `MULTILINESTRING (${wktString})`
+import { detectGeometryType } from "@/src/app/beteiligung/_components/form/map/utils"
+
+export const coordinatesToWkt = (coordinatesString: string) => {
+  if (!coordinatesString) return
+
+  try {
+    const coordinates = JSON.parse(coordinatesString)
+    const geometryType = detectGeometryType(coordinatesString)
+
+    switch (geometryType) {
+      case "point": {
+        const pointCoordinates = coordinates as [number, number]
+        return `POINT (${pointCoordinates.join(" ")})`
+      }
+
+      case "lineString": {
+        const lineStringCoordinates = coordinates as [number, number][]
+        const wktString = lineStringCoordinates.map((coord) => coord.join(" ")).join(", ")
+        return `LINESTRING (${wktString})`
+      }
+
+      case "multiLineString": {
+        const multiLineStringCoordinates = coordinates as [number, number][][]
+        const wktString = multiLineStringCoordinates
+          .map((lineString) => `(${lineString.map((coord) => coord.join(" ")).join(", ")})`)
+          .join(", ")
+        return `MULTILINESTRING (${wktString})`
+      }
+
+      case "polygon": {
+        const polygonCoordinates = coordinates as [number, number][]
+        const wktString = polygonCoordinates.map((coord) => coord.join(" ")).join(", ")
+        return `POLYGON ((${wktString}))`
+      }
+
+      default:
+        console.error(`Unsupported geometry type: ${geometryType}`)
+        return undefined
+    }
+  } catch (error) {
+    console.error("Error parsing coordinates:", error)
+    return undefined
   }
-  const lineStringCoordinates = coordinates as number[][]
-  const wktString = lineStringCoordinates.map((coord) => coord.join(" ")).join(", ")
-  return `LINESTRING (${wktString})`
 }

@@ -12,7 +12,7 @@ import { SurveyMarkdown } from "@/src/app/beteiligung/_components/layout/SurveyM
 import { TBackendConfig } from "@/src/app/beteiligung/_shared/backend-types"
 import { fieldValidationEnum } from "@/src/app/beteiligung/_shared/fieldvalidationEnum"
 import { AnyFieldApi } from "@tanstack/react-form"
-import { LineString, MultiLineString } from "geojson"
+import { LineString, MultiLineString, Point, Polygon } from "geojson"
 import type {
   CircleLayerSpecification,
   FillLayerSpecification,
@@ -246,14 +246,13 @@ export type FormConfig = {
     primaryColor: string
     darkColor: string
     lightColor: string
-    // atm we only have "line" geometryCategoryType, coordinates are of type LineString or MultiLineString (the distinction between those two can be made by checking the shape of the first element in the coordinates array)
-    // we define the geometryCategoryType explicilitly here as we might have "polygon" geometryCategoryTypes in the future we might have "polygon" geometryCategoryTypes
-    // we can not store this information in the geometry atm
-    // will be reworked with https://github.com/FixMyBerlin/private-issues/issues/2196
-    geometryCategoryType: "line" | "polygon" | "point"
     // geometryFallback is used for surveys rs8 adn frm7 that have a geometry-category question
     // starting with radnetz BB all surveys have geometry-category questions
-    geometryFallback?: LineString["coordinates"] | MultiLineString["coordinates"]
+    geoCategoryFallback?:
+      | LineString["coordinates"]
+      | MultiLineString["coordinates"]
+      | Polygon["coordinates"]
+      | Point["coordinates"]
     // todo deletedQuestions
   }
   // fka survey part

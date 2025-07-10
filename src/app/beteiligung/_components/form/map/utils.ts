@@ -49,19 +49,41 @@ export const detectGeometryType = (geometryString: string): GeometryType => {
   }
 }
 
-export const createGeoJSONFromString = (geometryString: string) => {
+export const createGeoJSONFromString = (
+  geometryString: string,
+  properties?: {
+    [name: string]: any
+  },
+  options?: { [id: string]: string | number },
+) => {
   const geometryType = detectGeometryType(geometryString)
   const parsedGeometry = JSON.parse(geometryString)
 
   switch (geometryType) {
     case "point":
-      return point(parsedGeometry as [number, number])
+      return point(
+        parsedGeometry as [number, number],
+        { ...properties, geometryType: "point" },
+        options,
+      )
     case "lineString":
-      return lineString(parsedGeometry as [number, number][])
+      return lineString(
+        parsedGeometry as [number, number][],
+        { ...properties, geometryType: "line" },
+        options,
+      )
     case "multiLineString":
-      return multiLineString(parsedGeometry as [number, number][][])
+      return multiLineString(
+        parsedGeometry as [number, number][][],
+        { ...properties, geometryType: "line" },
+        options,
+      )
     case "polygon":
-      return polygon([parsedGeometry as [number, number][]])
+      return polygon(
+        [parsedGeometry as [number, number][]],
+        { ...properties, geometryType: "polygon" },
+        options,
+      )
     default:
       throw new Error(`Unsupported geometry type: ${geometryType}`)
   }

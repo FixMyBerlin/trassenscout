@@ -49,7 +49,7 @@ export const EditableSurveyResponseFormMap = ({
   }, [])
 
   const metaDefinition = getConfigBySurveySlug(surveySlug, "meta")
-  const fallbackGeometry = metaDefinition.geometryFallback
+  const fallbackGeometry = JSON.stringify(metaDefinition.geoCategoryFallback)
 
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)
@@ -66,10 +66,10 @@ export const EditableSurveyResponseFormMap = ({
   }
 
   const geometryCategoryGeoJSON = createGeoJSONFromString(
-    geometryCategoryCoordinates ? geometryCategoryCoordinates : JSON.stringify(fallbackGeometry),
+    geometryCategoryCoordinates ? geometryCategoryCoordinates : fallbackGeometry || "[]",
   )
   const geometryCategoryGeometryType = detectGeometryType(
-    geometryCategoryCoordinates ? geometryCategoryCoordinates : JSON.stringify(fallbackGeometry),
+    geometryCategoryCoordinates ? geometryCategoryCoordinates : fallbackGeometry || "[]",
   )
 
   // Define different paint styles for different geometry types
@@ -139,23 +139,20 @@ export const EditableSurveyResponseFormMap = ({
     if (!geometryCategoryCoordinates || geometryCategoryGeometryType === "unknown") {
       return null
     }
-    const baseProps = {
-      key: "geometryCategory-layer",
-    }
     switch (geometryCategoryGeometryType) {
       case "point":
-        return <Layer {...baseProps} type="circle" paint={geometryPaintMap.point} />
+        return <Layer key="geometryCategory-layer" type="circle" paint={geometryPaintMap.point} />
       case "lineString":
       case "multiLineString":
         return (
           <Layer
-            {...baseProps}
+            key="geometryCategory-layer"
             type="line"
             paint={geometryPaintMap[geometryCategoryGeometryType]}
           />
         )
       case "polygon":
-        return <Layer {...baseProps} type="fill" paint={geometryPaintMap.polygon} />
+        return <Layer key="geometryCategory-layer" type="fill" paint={geometryPaintMap.polygon} />
       default:
         return null
     }

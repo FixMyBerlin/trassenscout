@@ -1,3 +1,4 @@
+import { createGeoJSONFromString } from "@/src/app/beteiligung/_components/form/map/utils"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
 import { Link, linkStyles } from "@/src/core/components/links"
@@ -11,7 +12,7 @@ import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { ArrowUpRightIcon, EnvelopeIcon } from "@heroicons/react/20/solid"
 import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline"
-import { center, lineString, multiLineString } from "@turf/turf"
+import { center } from "@turf/turf"
 import { clsx } from "clsx"
 import { LngLatBoundsLike, MapProvider } from "react-map-gl/maplibre"
 import deleteSurveyResponse from "../../mutations/deleteSurveyResponse"
@@ -95,37 +96,6 @@ const EditableSurveyResponseMapAndStaticData = ({
     }
   }
 
-  // todo survey clean up or refactor after survey BB line selection
-  // we have the same functions in SurveyMap.tsx
-  // todo handle geometry as features in the db, see ticket "TS: Refactoring: Beteiligung Geometrie-Kategorie als Feature speichern"
-  // todo survey clean up or refactor after survey BB line selection
-  const checkLineType = (selectedLine: any): string => {
-    if (Array.isArray(selectedLine)) {
-      if (Array.isArray(selectedLine[0])) {
-        if (Array.isArray(selectedLine[0][0])) {
-          return "MultiLineString" // 3D array
-        }
-        return "LineString" // 2D array
-      }
-    }
-    return "Unknown"
-  }
-  const getParsedLine = (selectedLine: any) => {
-    if (!selectedLine) return null
-    const lineType = checkLineType(JSON.parse(selectedLine))
-
-    switch (lineType) {
-      case "LineString":
-        // @ts-expect-error
-        return lineString(JSON.parse(selectedLine))
-      case "MultiLineString":
-        // @ts-expect-error
-        return multiLineString(JSON.parse(selectedLine))
-      default:
-        return null
-    }
-  }
-
   const tildaUrl = metaConfig.tildaUrl
     ? // @ts-expect-error `data` is unkown
       response.data[locationId]
@@ -134,12 +104,15 @@ const EditableSurveyResponseMapAndStaticData = ({
           // @ts-expect-error `data` is unkown
           `11%2F${response.data[locationId].lat.toFixed(3)}%2F${response.data[locationId].lng.toFixed(3)}`,
         )
-      : // @ts-expect-error `data` is unkown
-        geometryCategoryId && response.data[geometryCategoryId]
+      : geometryCategoryId &&
+          // @ts-expect-error `data` is unkown
+          response.data[geometryCategoryId] &&
+          // @ts-expect-error `data` is unkown
+          createGeoJSONFromString(response.data[geometryCategoryId])
         ? metaConfig.tildaUrl.replace(
             "MAPPARAM",
-            // @ts-expect-error `data` is unkown
-            `11%2F${center(getParsedLine(response.data[geometryCategoryId])).geometry.coordinates[1].toFixed(3)}%2F${center(getParsedLine(response.data[geometryCategoryId])).geometry.coordinates[0].toFixed(3)}`,
+            // @ts-expect-error object is possibly 'undefined'
+            `11%2F${center(createGeoJSONFromString(response.data[geometryCategoryId])).geometry.coordinates[1].toFixed(3)}%2F${center(createGeoJSONFromString(response.data[geometryCategoryId])).geometry.coordinates[0].toFixed(3)}`,
           )
         : null
     : null

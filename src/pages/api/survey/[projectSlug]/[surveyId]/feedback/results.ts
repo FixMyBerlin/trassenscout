@@ -28,8 +28,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const geometryCategoryId = getQuestionIdBySurveySlug(survey.slug, "geometryCategory")
   const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
 
-  const geometryCategoryType = metaDefinition["geometryCategoryType"]
-
   const isLocationQuestionId = getQuestionIdBySurveySlug(survey.slug, "enableLocation")
 
   const feedbackQuestions = getFlatSurveyQuestions(feedbackDefinition)
@@ -293,20 +291,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
           })
           // the geometry-category question is handled separately: we need to convert the coordinates to WKT to be able to import them into QGIS
-
-          const categoryCoordinates =
-            // @ts-expect-error data is of type unknown and index type
-            geometryCategoryId && data[String(geometryCategoryId)]
-              ? // @ts-expect-error data is of type unknown and index type
-                (JSON.parse(data[String(geometryCategoryId)]) as number[][] | number[][][])
-              : // rs8 and frm7 fallback geometry-category
-                metaDefinition.geometryFallback
-
           row["geometry-category"] =
-            coordinatesToWkt({
-              coordinates: categoryCoordinates,
-              type: geometryCategoryType,
-            }) || ""
+            coordinatesToWkt(
+              // @ts-expect-error data is of type unknown
+              data[geometryCategoryId] || JSON.stringify(metaDefinition.geoCategoryFallback),
+            ) || ""
 
           surveyResponseTopics.forEach((t) => {
             // @ts-expect-error data is of type unknown and index type

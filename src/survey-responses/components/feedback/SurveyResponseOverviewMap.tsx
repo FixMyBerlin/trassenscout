@@ -1,7 +1,8 @@
+import { createGeoJSONFromString } from "@/src/app/beteiligung/_components/form/map/utils"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
-import { featureCollection, lineString, multiLineString, point, polygon } from "@turf/helpers"
+import { featureCollection, point } from "@turf/helpers"
 import { DataDrivenPropertyValueSpecification } from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useState } from "react"
@@ -48,9 +49,9 @@ export const SurveyResponseOverviewMap = ({
     return {
       geometryCoordinates:
         categoryGeometryRef && response.data[categoryGeometryRef]
-          ? JSON.parse(response.data[categoryGeometryRef])
+          ? response.data[categoryGeometryRef]
           : // we need to provide a fallback geometry for rs8 & frm7 where the geometry category was not introduced yet
-            metaConfig.geometryFallback,
+            JSON.stringify(metaConfig.geoCategoryFallback),
       responseId: Number(response.id),
       status: response.status,
       hasLocation: Boolean(response.data[locationRef]),
@@ -60,45 +61,17 @@ export const SurveyResponseOverviewMap = ({
   const surveyResponsesWithoutLocationFeatures = surveyResponsesGeometryCategoryCoordinates
     .filter(({ hasLocation }) => !hasLocation)
     .map(({ geometryCoordinates, responseId, status }) =>
-      metaConfig.geometryCategoryType === "line"
-        ? // @ts-expect-error data is of type unknown
-          Array.isArray(geometryCoordinates[0][0])
-          ? multiLineString(
-              // @ts-expect-error data is of type unknown
-              geometryCoordinates,
-              { status, geometryType: "line" },
-              { id: responseId },
-            )
-          : // @ts-expect-error data is of type unknown
-            lineString(geometryCoordinates, { status, geometryType: "line" }, { id: responseId })
-        : // @ts-expect-error data is of type unknown
-          polygon(geometryCoordinates, { status, geometryType: "polygon" }, { id: responseId }),
+      createGeoJSONFromString(geometryCoordinates, { status, id: responseId }, { id: responseId }),
     )
 
   const surveyResponsesGeometryCategoryFeatures = surveyResponsesGeometryCategoryCoordinates
     .filter(({ hasLocation }) => hasLocation)
     .map(({ geometryCoordinates, responseId, status }) =>
-      metaConfig.geometryCategoryType === "line"
-        ? // @ts-expect-error data is of type unknown
-          Array.isArray(geometryCoordinates[0][0])
-          ? multiLineString(
-              // @ts-expect-error data is of type unknown
-              geometryCoordinates,
-              { status, geometryType: "line", geometryCategoryFor: responseId },
-              { id: `geometryCategory-${responseId}` },
-            )
-          : lineString(
-              // @ts-expect-error data is of type unknown
-              geometryCoordinates,
-              { status, geometryType: "line", geometryCategoryFor: responseId },
-              { id: `geometryCategory-${responseId}` },
-            )
-        : polygon(
-            // @ts-expect-error data is of type unknown
-            geometryCoordinates,
-            { status, geometryType: "polygon", geometryCategoryFor: responseId },
-            { id: `geometryCategory-${responseId}` },
-          ),
+      createGeoJSONFromString(
+        geometryCoordinates,
+        { status, geometryCategoryFor: responseId },
+        { id: `geometryCategory-${responseId}` },
+      ),
     )
 
   const { status: statusConfig } = getConfigBySurveySlug(surveySlug, "backend")

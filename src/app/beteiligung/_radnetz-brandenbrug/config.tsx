@@ -14,7 +14,6 @@ export const formConfig = {
     primaryColor: "#C73C35",
     darkColor: "#651E1B",
     lightColor: "#DF8A86",
-    geometryCategoryType: "line",
   },
   part1: part1Config,
   part2: part2Config,
