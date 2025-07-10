@@ -178,12 +178,27 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
               },
             },
             legendProps: {
-              items: {
-                variant1: {
-                  label: "foo",
-                  color: "bg-[#006EFF]",
+              Legende: {
+                hs: {
+                  label: "Auswählbare Bushaltestellen",
+                  color: "bg-[#F5814D]",
+                  className: "h-3 !w-3 rounded-full flex-shrink-0",
+                },
+                blockedArea: {
+                  label: "Buslinie",
+                  color: "bg-[#E9CA3099]",
                   className: "h-[5px]",
                 },
+                // bordersLandkreis: {
+                //   label: "Landkreisgrenzen",
+                //   color: "bg-[#FFD900]",
+                //   className: "h-[5px]",
+                // },
+                // bordersGemeinde: {
+                //   label: "Gemeindegrenzen",
+                //   color: "bg-[#000]",
+                //   className: "h-[5px]",
+                // },
               },
             },
           },
