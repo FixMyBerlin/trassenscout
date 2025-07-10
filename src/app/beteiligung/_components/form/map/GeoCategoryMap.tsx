@@ -5,7 +5,7 @@ import {
   SurveyBackgroundSwitcher,
 } from "@/src/app/beteiligung/_components/form/map/BackgroundSwitcher"
 import { installMapGrabIfTest } from "@/src/app/beteiligung/_components/form/map/installMapGrab"
-import { createBboxFromGeometryString } from "@/src/app/beteiligung/_components/form/map/utils"
+import { getInitialBoundsFromGeometry } from "@/src/app/beteiligung/_components/form/map/utils"
 
 import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
 import { MapData } from "@/src/app/beteiligung/_shared/types"
@@ -99,14 +99,6 @@ export const SurveyGeoCategoryMap = ({
   }, [mainMap, mapLoading])
 
   if (mainMap) installMapGrabIfTest(mainMap.getMap(), "mainMap")
-
-  // Create initial bounds based on existing geometry value
-  const getInitialBoundsFromGeometry = (v: any): [number, number, number, number] | null => {
-    if (!v || typeof v !== "string") {
-      return null
-    }
-    return createBboxFromGeometryString(v)
-  }
 
   const initialBounds: [number, number, number, number] | undefined =
     // if we have a selected geometry category already, use its bbox

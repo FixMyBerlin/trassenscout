@@ -13,11 +13,14 @@ import { ArrowUpRightIcon, EnvelopeIcon } from "@heroicons/react/20/solid"
 import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline"
 import { center, lineString, multiLineString } from "@turf/turf"
 import { clsx } from "clsx"
-import { LngLatBoundsLike } from "react-map-gl/maplibre"
+import { LngLatBoundsLike, MapProvider } from "react-map-gl/maplibre"
 import deleteSurveyResponse from "../../mutations/deleteSurveyResponse"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "../../queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import EditableSurveyResponseAdditionalFilterFields from "./EditableSurveyResponseAdditionalFilterFields"
-import { EditableSurveyResponseFormMap } from "./EditableSurveyResponseFormMap"
+import {
+  EditableSurveyResponseFormMap,
+  GeoCategoryFieldConfig,
+} from "./EditableSurveyResponseFormMap"
 import EditableSurveyResponseUserText from "./EditableSurveyResponseUserText"
 
 type Props = {
@@ -43,6 +46,7 @@ const EditableSurveyResponseMapAndStaticData = ({
   const projectSlug = useProjectSlug()
   const [survey] = useQuery(getSurvey, { projectSlug, id: Number(surveyId) })
   const [deleteCalendarEntryMutation] = useMutation(deleteSurveyResponse)
+
   const feedbackDefinition = getConfigBySurveySlug(survey.slug, "part2")
   const backendConfig = getConfigBySurveySlug(survey.slug, "backend")
   const metaConfig = getConfigBySurveySlug(survey.slug, "meta")
@@ -55,6 +59,8 @@ const EditableSurveyResponseMapAndStaticData = ({
   const categoryId = getQuestionIdBySurveySlug(survey.slug, "category")
   const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
 
+  const geoCategoryQuestion = feedbackQuestions.find((q) => q.name === geometryCategoryId)
+
   const maptilerUrl = metaConfig.maptilerUrl
 
   // @ts-expect-error `data` is unkown
@@ -63,14 +69,6 @@ const EditableSurveyResponseMapAndStaticData = ({
   const userCategoryLabel = surveyCategoryOptions.find((o) => o.value == userCategoryId)?.label
 
   const additionalFilterFields = backendConfig.additionalFilters
-
-  const geometryCategoryCoordinates =
-    // @ts-expect-error `data` is unkown
-    geometryCategoryId && response.data[geometryCategoryId]
-      ? // @ts-expect-error `data` is unkown
-        JSON.parse(response.data[geometryCategoryId])
-      : // we need to provide a fallback geometry for rs8 & frm7 where the geometry category was not introduced yet
-        metaConfig.geometryFallback
 
   const getTranslatedSource = (s: string) => {
     switch (s) {
@@ -185,22 +183,30 @@ const EditableSurveyResponseMapAndStaticData = ({
         {/* TABEL */}
         <EditableSurveyResponseAdditionalFilterFields
           additionalFilterFields={additionalFilterFields}
-          surveyData={response.surveySurveyResponseData}
-          feedbackData={response.data}
+          surveyPart1ResponseData={response.surveyPart1ResponseData}
+          surveyPart3ResponseData={response.surveyPart3ResponseData}
+          surveyPart2ResponseData={response.data}
         />
       </div>
       {/* RIGHT SIDE */}
       {showMap && (
         <div>
-          <EditableSurveyResponseFormMap
-            surveySlug={survey.slug}
-            marker={
-              // @ts-expect-error `data` is unkown
-              response.data[locationId] as { lat: number; lng: number } | undefined
-            }
-            geometryCategoryCoordinates={geometryCategoryCoordinates}
-            maptilerUrl={maptilerUrl}
-          />
+          <MapProvider>
+            <EditableSurveyResponseFormMap
+              surveySlug={survey.slug}
+              marker={
+                // @ts-expect-error `data` is unkown
+                response.data[locationId] as { lat: number; lng: number } | undefined
+              }
+              geometryCategoryCoordinates={
+                geometryCategoryId &&
+                // @ts-expect-error `data` is unkown
+                response.data[geometryCategoryId]
+              }
+              geoCategoryQuestion={geoCategoryQuestion as GeoCategoryFieldConfig}
+              maptilerUrl={maptilerUrl}
+            />
+          </MapProvider>
           <div className="flex flex-col items-start pt-4">
             <Link
               href={Routes.SurveyResponseWithLocationPage({

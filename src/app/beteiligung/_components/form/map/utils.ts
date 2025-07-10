@@ -78,3 +78,11 @@ export const createBboxFromGeometryString = (
     return null
   }
 }
+
+// Create initial bounds based on existing geometry value
+export const getInitialBoundsFromGeometry = (v: any): [number, number, number, number] | null => {
+  if (!v || typeof v !== "string") {
+    return null
+  }
+  return createBboxFromGeometryString(v)
+}
