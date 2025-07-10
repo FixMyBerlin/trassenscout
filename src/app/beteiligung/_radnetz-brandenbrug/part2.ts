@@ -96,8 +96,6 @@ export const part2Config: SurveyPart2 = {
                 { dataKey: "30", propertyName: "from_name", label: "Verbindung (von - bis)" },
               ],
               geoCategoryIdDefinition: { dataKey: "20", propertyName: "Verbindung" },
-              maptilerUrl:
-                "https://api.maptiler.com/maps/b09268b1-91d0-42e2-9518-321a1a94738f/style.json",
               config: {
                 bounds: [11.2688, 51.3592, 14.7655, 53.5586],
               },
@@ -201,9 +199,6 @@ export const part2Config: SurveyPart2 = {
           props: {
             label: "Wählen Sie die Stelle für Ihren Hinweis",
             mapProps: {
-              // tbd maptiler url per component or (only) in meta
-              maptilerUrl:
-                "https://api.maptiler.com/maps/1628cd25-069f-45bc-9e1e-9768388fe544/style.json",
               config: {
                 bounds: [
                   10.634343374814875, 50.99884540733649, 15.169801938047982, 53.769864338023126,

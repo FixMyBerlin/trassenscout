@@ -171,8 +171,6 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
               ],
               geoCategoryIdDefinition: { dataKey: "geometryCategoryId", propertyName: "stop_id" },
               // todo remove
-              maptilerUrl:
-                "https://api.maptiler.com/maps/b09268b1-91d0-42e2-9518-321a1a94738f/style.json",
               config: {
                 bounds: [12.824965, 52.586742, 13.520948, 53.251088], // Bounding box for Oberhavel to be validated
               },

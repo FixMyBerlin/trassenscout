@@ -9,11 +9,13 @@ import { getInitialBoundsFromGeometry } from "@/src/app/beteiligung/_components/
 
 import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
 import { MapData } from "@/src/app/beteiligung/_shared/types"
+import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { isProduction } from "@/src/core/utils"
 import { playwrightSendMapLoadedEvent } from "@/tests/_utils/customMapLoadedEvent"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
-import { useSearchParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 import * as pmtiles from "pmtiles"
 import { useEffect, useState } from "react"
 import Map, {
@@ -26,7 +28,6 @@ import Map, {
 type Props = {
   description?: string
   mapData: MapData
-  maptilerUrl: string
   // defines the additional data that we want to read from the geometries
   // datakey: the key for the survey response data object
   // propertyName: the name of the property in the geojson that we want to read
@@ -49,7 +50,6 @@ type Props = {
 }
 
 export const SurveyGeoCategoryMap = ({
-  maptilerUrl,
   config,
   additionalData,
   geoCategoryIdDefinition,
@@ -63,6 +63,7 @@ export const SurveyGeoCategoryMap = ({
   const [mapLoading, setMapLoading] = useState(true)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const [cursorStyle, setCursorStyle] = useState("grab")
+  const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
 
   // Setup pmtiles
   useEffect(() => {
@@ -118,6 +119,7 @@ export const SurveyGeoCategoryMap = ({
       : // generally use the normal config bounds
         config.bounds)
 
+  const { maptilerUrl } = getConfigBySurveySlug(surveySlug, "meta")
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
   const vectorStyle = `${maptilerUrl}?key=${maptilerApiKey}`
   const satelliteStyle = `${"https://api.maptiler.com/maps/hybrid/style.json"}?key=${maptilerApiKey}`
