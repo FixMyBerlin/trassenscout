@@ -93,11 +93,9 @@ export const part2Config: SurveyPart2 = {
                 queryParameter: "id",
               },
               additionalData: [
-                // im Netzentwurf der realen Beteiligung "from_name" bzw "to_name"; nach dem Refactoring ist dies nicht mehr der orig. Daten auch nur dummy Felder
-                { dataKey: "30", propertyName: "name", label: "Verbindung (von - bis)" },
+                { dataKey: "30", propertyName: "from_name", label: "Verbindung (von - bis)" },
               ],
-              // im Netzentwurf der realen Beteiligung "Verbindung"; nach dem Refactoring ist dies nicht mehr der orig. Daten auch nur dummy Felder
-              geoCategoryIdDefinition: { dataKey: "20", propertyName: "name" },
+              geoCategoryIdDefinition: { dataKey: "20", propertyName: "Verbindung" },
               maptilerUrl:
                 "https://api.maptiler.com/maps/b09268b1-91d0-42e2-9518-321a1a94738f/style.json",
               config: {
