@@ -7,7 +7,7 @@ import {
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { LabeledTextFieldCalculateLength } from "@/src/core/components/forms/LabeledTextFieldCalculateLength"
-import { quote, shortTitle } from "@/src/core/components/text"
+import { shortTitle } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { LabeledRadiobuttonGroupLabelPos } from "@/src/pagesComponents/subsubsections/LabeledRadiobuttonGroupLabelPos"
 import { getUserSelectOptions } from "@/src/pagesComponents/users/utils/getUserSelectOptions"
@@ -66,10 +66,8 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       <LabeledTextField
         type="text"
         name="slug"
-        label="Kurz-Titel und URL-Teil"
-        help={`Bspw. ${quote("rf1")} oder ${quote(
-          "sf2a",
-        )}. Primäre Auszeichnung der Führung. Wird immer in Großschreibung angezeigt aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
+        label="Kurztitel"
+        help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
       />
       {/* <LabeledTextField type="text" name="subTitle" label="Title" optional /> */}
       <GeometryInput />
