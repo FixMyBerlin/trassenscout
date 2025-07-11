@@ -35,7 +35,7 @@ export const ProjectInfoPanelCellCompletion: React.FC<Props> = ({ projectSlug })
       </p>
 
       <div>
-        <p>Realisierung Führungen nach Jahren:</p>
+        <p>Realisierung Maßnahmen nach Jahren:</p>
         <ul>
           {subsubsectionsWithEstimatedCompletionDate.map((s) => (
             <li className="space-x-2" key={s.id}>

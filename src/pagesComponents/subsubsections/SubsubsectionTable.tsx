@@ -41,7 +41,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                 colSpan={2}
                 className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
               >
-                Führungen
+                Maßnahmen
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                 Maßnahmentyp
@@ -178,7 +178,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
         </table>
         {!subsubsections.length && (
           <div className="border-t px-3 py-5">
-            <ZeroCase visible={subsubsections.length} name="Führungen" />
+            <ZeroCase visible={subsubsections.length} name="Maßnahmen" />
           </div>
         )}
       </TableWrapper>
@@ -193,7 +193,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
             subsectionSlug: subsectionSlug!,
           })}
         >
-          Neue Führung
+          Neue Maßnahme
         </Link>
       </IfUserCanEdit>
     </section>

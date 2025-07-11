@@ -39,11 +39,11 @@ export const GeometryInput = () => {
   return (
     <>
       <LabeledRadiobuttonGroup
-        label="Typ der Führung"
+        label="Geometrie der Maßnahme"
         scope="type"
         items={[
-          { value: "ROUTE", label: "Regelführung (RF) – Linie" },
-          { value: "AREA", label: "Sonderführung (SF) – Punkt" },
+          { value: "ROUTE", label: "Linie" }, // fka Regelführung (RF)
+          { value: "AREA", label: "Punkt" }, // fka Sonderführung (SF)
         ]}
         classNameItemWrapper="flex gap-5 !space-y-0 items-center"
       />

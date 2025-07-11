@@ -47,10 +47,10 @@ export const ExperimentalProjectInfoPanel = () => {
             </Suspense>
           </SubsectionInfoPanelCellContainer>
 
-          {/* Führungen */}
+          {/* Maßnahmen */}
           <SubsectionInfoPanelCellContainer
             icon={<CheckCircleIcon className="h-4 w-4" />}
-            title="Führungen"
+            title="Maßnahmen"
           >
             <Suspense fallback={<Spinner />}>
               <ProjectInfoPanelCellSubsubsections projectSlug={projectSlug!} />

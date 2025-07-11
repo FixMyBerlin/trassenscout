@@ -62,7 +62,7 @@ export const SubsubsectionTasksWithData = () => {
                 Titel
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl Führungen mit dieser Maßnahme
+                Anzahl Maßnahmen mit dem Maßnahmentyp
               </th>
               <th
                 scope="col"
@@ -83,7 +83,7 @@ export const SubsubsectionTasksWithData = () => {
                     <strong className="font-semibold">{Task.title}</strong>
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {Task.subsubsectionCount} Führungen mit der Maßnahme {quote(Task.title)}
+                    {Task.subsubsectionCount} Maßnahmen mit dem Maßnahmentyp {quote(Task.title)}
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
                     <IfUserCanEdit>

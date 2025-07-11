@@ -81,7 +81,7 @@ const EditUploadWithQuery = () => {
 
       <p className="mt-5">
         <Link href={backUrl}>
-          {isSubsubsectionUpload ? "Zurück zur Führung" : "Zurück zu Dokumenten"}
+          {isSubsubsectionUpload ? "Zurück zur Maßnahme" : "Zurück zu Dokumenten"}
         </Link>
       </p>
 

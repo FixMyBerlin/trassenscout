@@ -6,8 +6,8 @@ export const legendItemsConfig: Record<string, LegendItemConfig[]> = {
     { text: "Planungsabschnitte", color: layerColors.selectable, shape: "line", dots: true },
   ],
   subsection: [
-    { text: "Regelführung", color: layerColors.selectable, shape: "line", dots: true },
-    { text: "Sonderführung", color: layerColors.selectable, shape: "circle" },
+    { text: "Maßnahme", color: layerColors.selectable, shape: "line", dots: true },
+    { text: "Punktuelle Maßnahme", color: layerColors.selectable, shape: "circle" },
     {
       text: "Ausgewählter Planungsabschnitt",
       color: layerColors.unselectableCurrent,
@@ -16,10 +16,10 @@ export const legendItemsConfig: Record<string, LegendItemConfig[]> = {
     { text: "Andere Planungsabschnitte", color: layerColors.unselectable, shape: "line" },
   ],
   subsubsection: [
-    { text: "Ausgewählte Regelführung", color: layerColors.selected, shape: "line", dots: true },
-    { text: "Regelführung", color: layerColors.selectable, shape: "line", dots: true },
-    { text: "Ausgewählte Sonderführung", color: layerColors.selected, shape: "circle" },
-    { text: "Sonderführung", color: layerColors.selectable, shape: "circle" },
+    { text: "Ausgewählte Maßnahme", color: layerColors.selected, shape: "line", dots: true },
+    { text: "Maßnahme", color: layerColors.selectable, shape: "line", dots: true },
+    { text: "Ausgewählte Punktuelle Maßnahme", color: layerColors.selected, shape: "circle" },
+    { text: "Punktuelle Maßnahme", color: layerColors.selectable, shape: "circle" },
     {
       text: "Ausgewählter Planungsabschnitt",
       color: layerColors.unselectableCurrent,

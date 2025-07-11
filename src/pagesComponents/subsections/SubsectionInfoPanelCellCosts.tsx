@@ -20,7 +20,7 @@ export const SubsectionInfoPanelCellCosts: React.FC<Props> = ({ subsectionSlug, 
           {formatGerKm(subsection.lengthKm)} km definiert
         </p>
       </div>
-      <p className="font-bold">Führungen mit Kostendefinition</p>
+      <p className="font-bold">Maßnahmen mit Kostendefinition</p>
       <ul>
         {Object.entries(costStructure).map(([key, value]) => (
           <li className="" key={key}>

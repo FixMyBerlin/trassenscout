@@ -65,7 +65,7 @@ export const SubsubsectionSpecialsWithData = () => {
                 Titel
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl Führungen mit dieser Besonderheit
+                Anzahl Maßnahmen mit dieser Besonderheit
               </th>
               <th
                 scope="col"
@@ -86,7 +86,7 @@ export const SubsubsectionSpecialsWithData = () => {
                     <strong className="font-semibold">{Special.title}</strong>
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {Special.subsubsectionCount} Führungen mit der Besonderheit{" "}
+                    {Special.subsubsectionCount} Maßnahmen mit der Besonderheit{" "}
                     {quote(Special.title)}
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">

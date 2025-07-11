@@ -18,7 +18,7 @@ export const SubsectionInfoPanelCellCompletion: React.FC<Props> = ({
   if (subsection.subsubsections.length === 0)
     return (
       <div>
-        <p>k. Führungen eingetragen</p>
+        <p>k. Maßnahmen eingetragen</p>
       </div>
     )
   return (

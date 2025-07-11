@@ -313,7 +313,7 @@ model Subsubsection {
   //
   slug            String // shortTitle and URL Slug
   subTitle        String?
-  type            SubsubsectionTypeEnum @default(ROUTE) // Führungform
+  type            SubsubsectionTypeEnum @default(ROUTE) // Maßnahmen Geometrietyp - fka Führungsform
   geometry        Json
   labelPos        LabelPositionEnum     @default(top)
   task            String? // Maßnahmentyp - UNUSED
@@ -374,8 +374,8 @@ model Subsubsection {
 }
 
 enum SubsubsectionTypeEnum {
-  ROUTE // Regelführung Strecke RF
-  AREA // Sonderführung Punkt (Bereich) SF
+  ROUTE // fka Regelführung Strecke RF
+  AREA // Punktuelle Maßnahme- fka Sonderführung Punkt (Bereich) SF
 }
 
 model QualityLevel {

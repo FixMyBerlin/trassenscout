@@ -28,7 +28,7 @@ export const SubsectionInfoPanelCellSubsubsections: React.FC<Props> = ({
       </div>
       <div>
         {subsection.subsubsections.length === 0
-          ? "auf diesem PA wurden noch keine Führungen eingetragen"
+          ? "auf diesem PA wurden noch keine Maßnahmen eingetragen"
           : Object.entries(subsubsectionsCategoryCount).map(([key, value]) => (
               <Fragment key={key}>
                 <div className="font-bold">{key}</div>

@@ -44,7 +44,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
       <div className="mt-3 flex items-center justify-between">
         <div className="flex items-center justify-start gap-2">
           <SubsubsectionIcon label={shortTitle(subsubsection.slug)} />
-          {subsubsection.type === "ROUTE" ? "Regelführung" : "Sonderführung"}
+          {subsubsection.type === "ROUTE" ? "Maßnahme" : "Punktuelle Maßnahme"}
         </div>
         <div className="flex items-center gap-3">
           <IfUserCanEdit>
