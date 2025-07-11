@@ -69,6 +69,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label="Kurztitel"
         help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
       />
+      <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       {/* <LabeledTextField type="text" name="subTitle" label="Title" optional /> */}
       <GeometryInput />
       {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
@@ -172,7 +173,6 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         optional
         help="Die Mapillary Bild Referenz kann aus der URL als 'pKey' kopiert werden. Das ausgewählte Bild wird dann als eingebettete Vorschau auf der Seite angezeigt."
       />
-      <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"
