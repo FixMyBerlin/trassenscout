@@ -93,7 +93,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           Maßnahmetypen verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-      <div className="flex items-end gap-5">
+      {/* <div className="flex items-end gap-5">
         <LabeledSelect
           name="subsubsectionInfraId"
           label="Führungsform"
@@ -106,7 +106,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         >
           Führungsformen verwalten…
         </LinkWithFormDirtyConfirm>
-      </div>
+      </div> */}
       <div>
         <LabeledCheckboxGroup
           scope="specialFeatures"
