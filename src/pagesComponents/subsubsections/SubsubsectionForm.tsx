@@ -75,8 +75,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           "sf2a",
         )}. Primäre Auszeichnung der Führung. Wird immer in Großschreibung angezeigt aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
       />
-
-      <LabeledTextField type="text" name="subTitle" label="Title" optional />
+      {/* <LabeledTextField type="text" name="subTitle" label="Title" optional /> */}
       <GeometryInput />
       {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
       <LabeledCheckbox scope="isExistingInfra" label="Bestand – keine Maßnahme geplant" />

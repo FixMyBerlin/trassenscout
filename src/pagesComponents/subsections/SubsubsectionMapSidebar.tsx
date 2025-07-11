@@ -67,7 +67,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
           </button>
         </div>
       </div>
-      <H2 className="mt-2">{subsubsection.subTitle}</H2>
+      {subsubsection.subTitle && <H2 className="mt-2">{subsubsection.subTitle}</H2>}
 
       <PageDescription className="mt-5 !p-3">
         <Markdown markdown={subsubsection.description} className="leading-tight" />
