@@ -2,8 +2,6 @@ import {
   Form,
   FormProps,
   LabeledCheckbox,
-  LabeledCheckboxGroup,
-  LabeledCheckboxProps,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
@@ -15,8 +13,6 @@ import { LabeledRadiobuttonGroupLabelPos } from "@/src/pagesComponents/subsubsec
 import { getUserSelectOptions } from "@/src/pagesComponents/users/utils/getUserSelectOptions"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getQualityLevelsWithCount from "@/src/server/qualityLevels/queries/getQualityLevelsWithCount"
-import getSubsubsectionInfrasWithCount from "@/src/server/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
-import getSubsubsectionSpecialsWithCount from "@/src/server/subsubsectionSpecial/queries/getSubsubsectionSpecialsWithCount"
 import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
 import getSubsubsectionTasksWithCount from "@/src/server/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
 import { Routes } from "@blitzjs/next"
@@ -50,20 +46,20 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       return [task.id, task.title] as [number, string]
     }),
   ]
-  const [{ subsubsectionInfras }] = useQuery(getSubsubsectionInfrasWithCount, { projectSlug })
-  const subsubsectionInfraOptions: [number | string, string][] = [
-    ["", "-"],
-    ...subsubsectionInfras.map((infra) => {
-      return [infra.id, infra.title] as [number, string]
-    }),
-  ]
-  const [{ subsubsectionSpecials }] = useQuery(getSubsubsectionSpecialsWithCount, { projectSlug })
-  const subsubsectionSpecialOptions = subsubsectionSpecials.map((special) => {
-    return {
-      value: String(special.id),
-      label: special.title,
-    }
-  }) satisfies Omit<LabeledCheckboxProps, "scope">[]
+  // const [{ subsubsectionInfras }] = useQuery(getSubsubsectionInfrasWithCount, { projectSlug })
+  // const subsubsectionInfraOptions: [number | string, string][] = [
+  //   ["", "-"],
+  //   ...subsubsectionInfras.map((infra) => {
+  //     return [infra.id, infra.title] as [number, string]
+  //   }),
+  // ]
+  // const [{ subsubsectionSpecials }] = useQuery(getSubsubsectionSpecialsWithCount, { projectSlug })
+  // const subsubsectionSpecialOptions = subsubsectionSpecials.map((special) => {
+  //   return {
+  //     value: String(special.id),
+  //     label: special.title,
+  //   }
+  // }) satisfies Omit<LabeledCheckboxProps, "scope">[]
 
   return (
     <Form<S> {...props}>
@@ -107,7 +103,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           Führungsformen verwalten…
         </LinkWithFormDirtyConfirm>
       </div> */}
-      <div>
+      {/* <div>
         <LabeledCheckboxGroup
           scope="specialFeatures"
           label="Besonderheiten"
@@ -121,7 +117,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
             Besonderheiten verwalten…
           </LinkWithFormDirtyConfirm>
         </div>
-      </div>
+      </div> */}
       <LabeledTextFieldCalculateLength
         name="lengthKm"
         label="Länge"
