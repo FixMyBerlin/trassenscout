@@ -123,7 +123,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label="Länge"
         help="Dieser Wert kann manuell eingetragen oder aus den vorhandenen Geometrien berechnet werden."
       />
-      <LabeledTextField
+      {/* <LabeledTextField
         inlineLeadingAddon="m"
         type="number"
         step="0.01"
@@ -138,7 +138,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         name="widthExisting"
         label="Breite Bestand"
         optional
-      />
+      /> */}
       <LabeledTextField name="costEstimate" inlineLeadingAddon="€" label="Kostenschätzung" />
       <div className="flex items-end gap-5">
         <LabeledSelect

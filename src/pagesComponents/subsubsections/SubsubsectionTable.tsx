@@ -1,13 +1,7 @@
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
-import {
-  formattedEuro,
-  formattedLength,
-  formattedWidth,
-  longTitle,
-  shortTitle,
-} from "@/src/core/components/text"
+import { formattedEuro, formattedLength, longTitle, shortTitle } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
@@ -55,7 +49,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
               >
                 Länge
               </th>
-              <th
+              {/* <th
                 scope="col"
                 className={clsx(
                   compact ? "hidden" : "",
@@ -63,7 +57,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                 )}
               >
                 Breite
-              </th>
+              </th> */}
               <th
                 scope="col"
                 className={clsx(
@@ -132,14 +126,14 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   >
                     {formattedLength(subsubsection.lengthKm)}
                   </td>
-                  <td
+                  {/* <td
                     className={clsx(
                       compact ? "hidden" : "",
                       "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
                     )}
                   >
                     {formattedWidth(subsubsection.width)}
-                  </td>
+                  </td> */}
                   <td
                     className={clsx(
                       compact ? "hidden" : "",

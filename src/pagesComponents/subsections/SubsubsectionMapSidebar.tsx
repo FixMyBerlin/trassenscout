@@ -109,14 +109,16 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   {formattedLength(subsubsection.lengthKm)}
                 </td>
               </tr>
-              <tr>
-                <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
-                  Breite
-                </th>
-                <td className="break-words px-3 py-4 text-sm text-gray-500">
-                  {formattedWidth(subsubsection.width)}
-                </td>
-              </tr>
+              {subsubsection.width && (
+                <tr>
+                  <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
+                    Breite
+                  </th>
+                  <td className="break-words px-3 py-4 text-sm text-gray-500">
+                    {formattedWidth(subsubsection.width)}
+                  </td>
+                </tr>
+              )}
               <tr>
                 <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
                   Kostenschätzung
