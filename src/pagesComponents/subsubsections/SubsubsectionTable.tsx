@@ -116,7 +116,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                     {subsubsection.subTitle}
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
-                    {subsubsection.task}
+                    {subsubsection.SubsubsectionTask?.title || "k.A."}
                   </td>
                   <td
                     className={clsx(

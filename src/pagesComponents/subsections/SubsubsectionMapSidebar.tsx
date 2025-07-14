@@ -98,7 +98,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   Maßnahmentyp
                 </th>
                 <td className="break-words px-3 py-4 text-sm text-gray-500">
-                  {subsubsection.task}
+                  {subsubsection.SubsubsectionTask?.title || "k.A."}
                 </td>
               </tr>
               <tr>
