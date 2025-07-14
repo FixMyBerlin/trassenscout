@@ -135,8 +135,8 @@ model Project {
   slug            String   @unique // shortTitle and URL Slug
   subTitle        String?
   description     String?
-  logoSrc         String?
-  partnerLogoSrcs String[]
+  logoSrc         String? // - UNUSED
+  partnerLogoSrcs String[] // - UNUSED
   exportEnabled   Boolean  @default(false)
   //
   manager         User?    @relation(fields: [managerId], references: [id])
@@ -313,13 +313,13 @@ model Subsubsection {
   //
   slug            String // shortTitle and URL Slug
   subTitle        String?
-  type            SubsubsectionTypeEnum @default(ROUTE) // Maßnahmen Geometrietyp - fka Führungsform
+  type            SubsubsectionTypeEnum @default(ROUTE) // Maßnahmen Geometrietyp - fka Führungsform - UNUSED
   geometry        Json
   labelPos        LabelPositionEnum     @default(top)
   task            String? // Maßnahmentyp - UNUSED
   lengthKm        Float // Kilometer
-  width           Float? // Meter
-  widthExisting   Float? // Meter
+  width           Float? // Meter - UNUSED
+  widthExisting   Float? // Meter - UNUSED
   description     String? // Anmerkungen
   mapillaryKey    String?
   isExistingInfra Boolean?              @default(false) // Bestandsführung
@@ -368,7 +368,7 @@ model Subsubsection {
   SubsubsectionInfra    SubsubsectionInfra?  @relation(fields: [subsubsectionInfraId], references: [id])
   subsubsectionInfraId  Int?
 
-  specialFeatures SubsubsectionSpecial[]
+  specialFeatures SubsubsectionSpecial[] // - UNUSED
 
   @@unique([subsectionId, slug])
 }
@@ -442,6 +442,7 @@ model SubsubsectionInfra {
   @@unique([projectId, slug])
 }
 
+// UNUSED
 model SubsubsectionSpecial {
   id             Int             @id @default(autoincrement())
   createdAt      DateTime        @default(now())
