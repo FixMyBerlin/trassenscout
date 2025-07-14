@@ -167,7 +167,7 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
         >
           <TitleLabel
             icon={<SubsubsectionMapIcon label={shortTitle(subsub.slug)} />}
-            title={subsub.subTitle}
+            // title={subsub.subTitle} // subTitle is now UNUSED
             subtitle={subsub.SubsubsectionTask?.title}
           />
         </TipMarker>

@@ -49,6 +49,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
               >
                 Länge
               </th>
+              {/* UNUSED */}
               {/* <th
                 scope="col"
                 className={clsx(
@@ -126,6 +127,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   >
                     {formattedLength(subsubsection.lengthKm)}
                   </td>
+                  {/* UNUSED */}
                   {/* <td
                     className={clsx(
                       compact ? "hidden" : "",

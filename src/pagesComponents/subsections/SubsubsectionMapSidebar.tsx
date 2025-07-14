@@ -3,12 +3,7 @@ import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Link, whiteButtonStyles } from "@/src/core/components/links"
 import { PageDescription } from "@/src/core/components/pages/PageDescription"
-import {
-  formattedEuro,
-  formattedLength,
-  formattedWidth,
-  shortTitle,
-} from "@/src/core/components/text"
+import { formattedEuro, formattedLength, shortTitle } from "@/src/core/components/text"
 import { H2 } from "@/src/core/components/text/Headings"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
@@ -67,7 +62,8 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
           </button>
         </div>
       </div>
-      {subsubsection.subTitle && <H2 className="mt-2">{subsubsection.subTitle}</H2>}
+      {/* UNUSED */}
+      {/* <H2 className="mt-2">{subsubsection.subTitle}</H2> */}
 
       <PageDescription className="mt-5 !p-3">
         <Markdown markdown={subsubsection.description} className="leading-tight" />
@@ -109,7 +105,8 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   {formattedLength(subsubsection.lengthKm)}
                 </td>
               </tr>
-              {subsubsection.width && (
+              {/* UNUSED */}
+              {/* {!!subsubsection.width && (
                 <tr>
                   <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
                     Breite
@@ -118,7 +115,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                     {formattedWidth(subsubsection.width)}
                   </td>
                 </tr>
-              )}
+              )} */}
               <tr>
                 <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
                   Kostenschätzung
