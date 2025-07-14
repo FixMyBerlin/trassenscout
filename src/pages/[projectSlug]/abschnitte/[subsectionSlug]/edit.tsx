@@ -81,7 +81,6 @@ const EditSubsection = () => {
         schema={SubsectionSchema}
         initialValues={{
           ...subsection,
-          slug: subsection.slug.replace(/^pa/, ""),
         }}
         onSubmit={handleSubmit}
       />
