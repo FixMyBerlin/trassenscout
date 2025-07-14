@@ -186,7 +186,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
 
       <section className="mt-10">
         <H2>Straßenansicht (Mapillary)</H2>
-        {subsubsection.mapillaryKey ? (
+        {/* {subsubsection.mapillaryKey ? (
           <iframe
             title="Mapillary Image Preview"
             src={`https://www.mapillary.com/embed?image_key=${subsubsection.mapillaryKey}&style=photo`}
@@ -198,6 +198,11 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
               Mapillary öffnen
             </Link>
           )
+        )} */}
+        {mapillaryHref && (
+          <Link blank href={mapillaryHref} className="mt-3 block">
+            Mapillary öffnen
+          </Link>
         )}
       </section>
 
