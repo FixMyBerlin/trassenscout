@@ -25,6 +25,7 @@ export const ProjectForm = ({ users, ...props }: Props) => {
         help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
       />
       <LabeledTextField type="text" name="subTitle" label="Untertitel" optional />
+      {/* UNUSED */}
       {/* <LabeledTextField
         optional
         type="text"
@@ -43,6 +44,7 @@ export const ProjectForm = ({ users, ...props }: Props) => {
         , von NextJS intern optimiert und hier referenziert.
       </p> */}
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
+      {/* UNUSED */}
       {/* <LabeledTextareaField
         optional
         name="partnerLogoSrcs"

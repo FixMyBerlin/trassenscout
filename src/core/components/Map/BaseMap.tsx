@@ -1,3 +1,4 @@
+import { layerColors } from "@/src/core/components/Map/layerColors"
 import { featureCollection, point } from "@turf/helpers"
 import { clsx } from "clsx"
 import type { FeatureCollection, LineString, Point } from "geojson"
@@ -96,14 +97,33 @@ export const BaseMap: React.FC<BaseMapProps> = ({
 
   const dotSource = dots ? (
     <Source key="dots" type="geojson" data={featureCollection(dots.map((d) => point(d)))}>
-      <Layer type="circle" paint={{ "circle-color": "RGB(15, 23, 42)", "circle-radius": 6 }} />
+      <Layer type="circle" paint={{ "circle-color": layerColors.dot, "circle-radius": 6 }} />
     </Source>
   ) : null
 
   const featuresSource = lines ? (
     <Source key="lines" type="geojson" data={lines}>
+      {/* Background outline layer */}
+      <Layer
+        id="lines-outline"
+        type="line"
+        layout={{
+          "line-cap": "round",
+          "line-join": "round"
+        }}
+        paint={{
+          "line-width": 9,
+          "line-color": layerColors.dot,
+          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.6],
+        }}
+      />
+      {/* Main colored line layer */}
       <Layer
         type="line"
+        layout={{
+          "line-cap": "round",
+          "line-join": "round"
+        }}
         paint={{
           "line-width": ["case", ["has", "width"], ["get", "width"], 7],
           "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
@@ -115,9 +135,28 @@ export const BaseMap: React.FC<BaseMapProps> = ({
 
   const selectableLineFeaturesSource = selectableLines ? (
     <Source key={selectableLineLayerId} type="geojson" data={selectableLines}>
+      {/* Background outline layer */}
+      <Layer
+        id={`${selectableLineLayerId}-outline`}
+        type="line"
+        layout={{
+          "line-cap": "round",
+          "line-join": "round"
+        }}
+        paint={{
+          "line-width": 9,
+          "line-color": layerColors.dot,
+          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.6],
+        }}
+      />
+      {/* Main colored line layer */}
       <Layer
         id={selectableLineLayerId}
         type="line"
+        layout={{
+          "line-cap": "round",
+          "line-join": "round"
+        }}
         paint={{
           "line-width": 7,
           "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
@@ -151,7 +190,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   return (
     <div
       className={clsx(
-        "w-full overflow-clip rounded-md drop-shadow-md",
+        "w-full overflow-clip rounded-t-md drop-shadow-md",
         classHeight ?? "h-96 sm:h-[500px]",
       )}
     >
@@ -170,7 +209,8 @@ export const BaseMap: React.FC<BaseMapProps> = ({
           onLoad={handleOnLoad}
           interactiveLayerIds={[
             interactiveLayerIds,
-            selectableLines && selectableLineLayerId,
+            lines && "lines-outline",
+            selectableLines && [selectableLineLayerId, `${selectableLineLayerId}-outline`],
             selectablePoints && selectablePointLayerId,
           ]
             .flat()

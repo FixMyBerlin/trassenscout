@@ -1,8 +1,11 @@
 import { SurveyCheckbox } from "@/src/app/beteiligung/_components/form/Checkbox"
 import { SurveyCheckboxGroup } from "@/src/app/beteiligung/_components/form/CheckboxGroup"
+import { SurveyGeoCategoryMapWithLegend } from "@/src/app/beteiligung/_components/form/map/GeoCategoryMapWithLegend"
 import { SurveySimpleMapWithLegend } from "@/src/app/beteiligung/_components/form/map/SimpleMapWithLegend"
 import { SurveyPageTitle } from "@/src/app/beteiligung/_components/form/PageTitle"
 import { SurveyRadiobuttonGroup } from "@/src/app/beteiligung/_components/form/RadiobuttonGroup"
+import { SurveyReadonlyTextfield } from "@/src/app/beteiligung/_components/form/ReadOnlyTextfield"
+import { SurveySelect } from "@/src/app/beteiligung/_components/form/Select"
 import { SurveyTextarea } from "@/src/app/beteiligung/_components/form/Textarea"
 import { SurveyTextfield } from "@/src/app/beteiligung/_components/form/Textfield"
 import { SurveyMarkdown } from "@/src/app/beteiligung/_components/layout/SurveyMarkdown"
@@ -54,6 +57,15 @@ export type FieldConfig =
       defaultValue: string
     } & FormFieldBase & { props: Omit<ComponentProps<typeof SurveyTextfield>, "required"> })
   | ({
+      component: "SurveyReadonlyTextfield"
+      componentType: "form"
+      validation:
+        | (typeof fieldValidationEnum)["optionalString"]
+        | (typeof fieldValidationEnum)["requiredString"]
+        | (typeof fieldValidationEnum)["conditionalRequiredString"]
+      defaultValue: string
+    } & FormFieldBase & { props: Omit<ComponentProps<typeof SurveyReadonlyTextfield>, "required"> })
+  | ({
       component: "SurveyTextarea"
       componentType: "form"
       validation:
@@ -69,6 +81,14 @@ export type FieldConfig =
       defaultValue: object | null
     } & FormFieldBase & {
         props: Omit<ComponentProps<typeof SurveySimpleMapWithLegend>, "required">
+      })
+  | ({
+      component: "SurveyGeoCategoryMapWithLegend"
+      componentType: "form"
+      validation: (typeof fieldValidationEnum)["requiredString"]
+      defaultValue: object | null
+    } & FormFieldBase & {
+        props: Omit<ComponentProps<typeof SurveyGeoCategoryMapWithLegend>, "required">
       })
   | ({
       component: "SurveyCheckbox"
@@ -101,6 +121,25 @@ export type FieldConfig =
     } & FormFieldBase & {
         props: Omit<ComponentProps<typeof SurveyRadiobuttonGroup>, "required">
       })
+  | ({
+      component: "SurveySelect"
+      componentType: "form"
+      validation:
+        | (typeof fieldValidationEnum)["optionalString"]
+        | (typeof fieldValidationEnum)["requiredString"]
+        | (typeof fieldValidationEnum)["conditionalRequiredString"]
+      defaultValue: string
+    } & FormFieldBase & {
+        props: Omit<ComponentProps<typeof SurveySelect>, "required">
+      })
+  | {
+      component: "hidden"
+      componentType: "form"
+      name: string
+      props: {
+        label: string
+      }
+    }
   | ({
       component: "SurveyPageTitle"
       componentType: "content"
@@ -181,7 +220,7 @@ export type FormConfig = {
     // we define the geometryCategoryType explicilitly here as we might have "polygon" geometryCategoryTypes in the future we might have "polygon" geometryCategoryTypes
     // we can not store this information in the geometry atm
     // will be reworked with https://github.com/FixMyBerlin/private-issues/issues/2196
-    geometryCategoryType: "line" | "polygon"
+    geometryCategoryType: "line" | "polygon" | "point"
     // geometryFallback is used for surveys rs8 adn frm7 that have a geometry-category question
     // starting with radnetz BB all surveys have geometry-category questions
     geometryFallback?: LineString["coordinates"] | MultiLineString["coordinates"]

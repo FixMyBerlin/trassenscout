@@ -1,13 +1,7 @@
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
-import {
-  formattedEuro,
-  formattedLength,
-  formattedWidth,
-  longTitle,
-  shortTitle,
-} from "@/src/core/components/text"
+import { formattedEuro, formattedLength, longTitle, shortTitle } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
@@ -41,7 +35,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                 colSpan={2}
                 className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
               >
-                Führungen
+                Maßnahmen
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                 Maßnahmentyp
@@ -55,7 +49,8 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
               >
                 Länge
               </th>
-              <th
+              {/* UNUSED */}
+              {/* <th
                 scope="col"
                 className={clsx(
                   compact ? "hidden" : "",
@@ -63,7 +58,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                 )}
               >
                 Breite
-              </th>
+              </th> */}
               <th
                 scope="col"
                 className={clsx(
@@ -122,7 +117,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                     {subsubsection.subTitle}
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
-                    {subsubsection.task}
+                    {subsubsection.SubsubsectionTask?.title || "k.A."}
                   </td>
                   <td
                     className={clsx(
@@ -132,14 +127,15 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   >
                     {formattedLength(subsubsection.lengthKm)}
                   </td>
-                  <td
+                  {/* UNUSED */}
+                  {/* <td
                     className={clsx(
                       compact ? "hidden" : "",
                       "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
                     )}
                   >
                     {formattedWidth(subsubsection.width)}
-                  </td>
+                  </td> */}
                   <td
                     className={clsx(
                       compact ? "hidden" : "",
@@ -178,7 +174,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
         </table>
         {!subsubsections.length && (
           <div className="border-t px-3 py-5">
-            <ZeroCase visible={subsubsections.length} name="Führungen" />
+            <ZeroCase visible={subsubsections.length} name="Maßnahmen" />
           </div>
         )}
       </TableWrapper>
@@ -193,7 +189,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
             subsectionSlug: subsectionSlug!,
           })}
         >
-          Neue Führung
+          Neue Maßnahme
         </Link>
       </IfUserCanEdit>
     </section>

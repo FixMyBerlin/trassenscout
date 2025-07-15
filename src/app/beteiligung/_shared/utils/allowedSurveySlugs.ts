@@ -12,6 +12,7 @@ export const allowedSurveySlugs = [
   "rstest-2-3",
   "rstest-1",
   "rstest-2",
+  "ohv-haltestellenfoerderung",
 ] as const
 export type AllowedSurveySlugs = (typeof allowedSurveySlugs)[number]
 export const AllowedSurveySlugsSchema = z.object({ slug: z.enum(allowedSurveySlugs) }).passthrough()

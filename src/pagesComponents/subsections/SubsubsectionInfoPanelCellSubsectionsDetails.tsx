@@ -27,7 +27,7 @@ export const SubsubsectionInfoPanelCellSubsectionsDetails: React.FC<Props> = ({
 
       <div>
         <p className="font-bold">Standards</p>
-        <p>von allen Führungen mit Ausbaustandard sind:</p>
+        <p>von allen Maßnahmen mit Ausbaustandard sind:</p>
       </div>
       <div>
         <ul>

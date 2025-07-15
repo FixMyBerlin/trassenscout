@@ -17,6 +17,7 @@ const sizeClasses = {
 }
 
 export const ProjectLogo = ({ className, size = "5" }: Props) => {
+  // UNUSED
   // TEMP: Temporarily disabled https://github.com/FixMyBerlin/private-issues/issues/2155
   return null
 

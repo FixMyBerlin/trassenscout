@@ -37,7 +37,9 @@ export const SurveyPart = ({ stage, handleSubmit, setStage, setIsIntro, isIntro 
   const allPagesFields = surveyPart?.pages.map((page) => page.fields).flat()
 
   // filter out the non form fields here tbd
-  const allPagesFormFields = allPagesFields?.filter((field) => field.componentType === "form")
+  const allPagesFormFields = allPagesFields?.filter(
+    (field) => field.componentType === "form" && field.component !== "hidden",
+  )
 
   const schema = z.object(
     Object.fromEntries(
@@ -164,87 +166,89 @@ export const SurveyPart = ({ stage, handleSubmit, setStage, setIsIntro, isIntro 
           />
         ) : (
           <>
-            {surveyPart.pages[page]?.fields.map((configField) => {
-              // CONTNENT FIELDS
-              if (configField.componentType === "content") {
-                return (
-                  // @ts-expect-error tbd ?
-                  <form.AppField name={configField.name} key={configField.name}>
-                    {(field) => {
-                      const Component = field[configField.component]
-                      if (!Component) return null
-                      // typescript does not know that the component is a valid field component
-                      // @ts-expect-error tbd
-                      return <Component {...configField.props} />
-                    }}
-                  </form.AppField>
-                )
-              } else {
-                // FORM FIELDS
-                // if config field has a condition we wrap it in a subscribe
-                if (configField.condition) {
+            {surveyPart.pages[page]?.fields
+              .filter((field) => field.component !== "hidden")
+              .map((configField) => {
+                // CONTNENT FIELDS
+                if (configField.componentType === "content") {
                   return (
-                    <form.Subscribe
-                      key={configField.name}
-                      selector={(state) => {
-                        return {
-                          // @ts-expect-error tbd ?
-                          dependendFieldValue: state.values[configField.condition!.fieldName],
-                        }
-                      }}
-                    >
-                      {({ dependendFieldValue }) => {
-                        // check if condition is met
-                        if (configField.condition!.conditionFn(dependendFieldValue))
-                          return (
-                            <form.AppField
-                              validators={configField.validators}
-                              listeners={configField.listeners}
-                              name={configField.name}
-                              key={configField.name}
-                            >
-                              {(field) => {
-                                const Component = field[configField.component]
-                                if (!Component) return null
-                                return (
-                                  // typescript does not know that the component is a valid field component
-                                  // @ts-expect-error tbd
-                                  <Component
-                                    required={configField.validation.required}
-                                    {...configField.props}
-                                  />
-                                )
-                              }}
-                            </form.AppField>
-                          )
-                      }}
-                    </form.Subscribe>
-                  )
-                } else {
-                  return (
-                    <form.AppField
-                      validators={configField.validators}
-                      listeners={configField.listeners}
-                      name={configField.name}
-                      key={configField.name}
-                    >
+                    // @ts-expect-error tbd ?
+                    <form.AppField name={configField.name} key={configField.name}>
                       {(field) => {
                         const Component = field[configField.component]
                         if (!Component) return null
-                        return (
-                          // typescript does not know that the component is a valid field component
-                          // @ts-expect-error tbd
-                          <Component
-                            required={configField.validation.required}
-                            {...configField.props}
-                          />
-                        )
+                        // typescript does not know that the component is a valid field component
+                        // @ts-expect-error tbd
+                        return <Component {...configField.props} />
                       }}
                     </form.AppField>
                   )
+                } else {
+                  // FORM FIELDS
+                  // if config field has a condition we wrap it in a subscribe
+                  if (configField.condition) {
+                    return (
+                      <form.Subscribe
+                        key={configField.name}
+                        selector={(state) => {
+                          return {
+                            // @ts-expect-error tbd ?
+                            dependendFieldValue: state.values[configField.condition!.fieldName],
+                          }
+                        }}
+                      >
+                        {({ dependendFieldValue }) => {
+                          // check if condition is met
+                          if (configField.condition!.conditionFn(dependendFieldValue))
+                            return (
+                              <form.AppField
+                                validators={configField.validators}
+                                listeners={configField.listeners}
+                                name={configField.name}
+                                key={configField.name}
+                              >
+                                {(field) => {
+                                  const Component = field[configField.component]
+                                  if (!Component) return null
+                                  return (
+                                    // typescript does not know that the component is a valid field component
+                                    // @ts-expect-error tbd
+                                    <Component
+                                      required={configField.validation.required}
+                                      {...configField.props}
+                                    />
+                                  )
+                                }}
+                              </form.AppField>
+                            )
+                        }}
+                      </form.Subscribe>
+                    )
+                  } else {
+                    return (
+                      <form.AppField
+                        validators={configField.validators}
+                        listeners={configField.listeners}
+                        name={configField.name}
+                        key={configField.name}
+                      >
+                        {(field) => {
+                          const Component = field[configField.component]
+                          if (!Component) return null
+                          return (
+                            // typescript does not know that the component is a valid field component
+                            // @ts-expect-error tbd
+                            <Component
+                              required={configField.validation.required}
+                              {...configField.props}
+                            />
+                          )
+                        }}
+                      </form.AppField>
+                    )
+                  }
                 }
-              }
-            })}
+              })}
             <form.Subscribe selector={(state) => state.fieldMeta}>
               {(fieldMeta) => (
                 <FormErrorBox

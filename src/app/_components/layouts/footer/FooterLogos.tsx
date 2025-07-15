@@ -9,6 +9,7 @@
 type Props = { className?: string }
 
 export const FooterLogos = ({ className }: Props) => {
+  // UNUSED
   // TEMP: Temporarily disabled https://github.com/FixMyBerlin/private-issues/issues/2155
   return null
 

@@ -3,12 +3,7 @@ import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Link, whiteButtonStyles } from "@/src/core/components/links"
 import { PageDescription } from "@/src/core/components/pages/PageDescription"
-import {
-  formattedEuro,
-  formattedLength,
-  formattedWidth,
-  shortTitle,
-} from "@/src/core/components/text"
+import { formattedEuro, formattedLength, shortTitle } from "@/src/core/components/text"
 import { H2 } from "@/src/core/components/text/Headings"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
@@ -44,7 +39,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
       <div className="mt-3 flex items-center justify-between">
         <div className="flex items-center justify-start gap-2">
           <SubsubsectionIcon label={shortTitle(subsubsection.slug)} />
-          {subsubsection.type === "ROUTE" ? "Regelführung" : "Sonderführung"}
+          {subsubsection.type === "ROUTE" ? "Maßnahme" : "Punktuelle Maßnahme"}
         </div>
         <div className="flex items-center gap-3">
           <IfUserCanEdit>
@@ -67,7 +62,8 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
           </button>
         </div>
       </div>
-      <H2 className="mt-2">{subsubsection.subTitle}</H2>
+      {/* UNUSED */}
+      {/* <H2 className="mt-2">{subsubsection.subTitle}</H2> */}
 
       <PageDescription className="mt-5 !p-3">
         <Markdown markdown={subsubsection.description} className="leading-tight" />
@@ -98,7 +94,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   Maßnahmentyp
                 </th>
                 <td className="break-words px-3 py-4 text-sm text-gray-500">
-                  {subsubsection.task}
+                  {subsubsection.SubsubsectionTask?.title || "k.A."}
                 </td>
               </tr>
               <tr>
@@ -109,14 +105,17 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   {formattedLength(subsubsection.lengthKm)}
                 </td>
               </tr>
-              <tr>
-                <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
-                  Breite
-                </th>
-                <td className="break-words px-3 py-4 text-sm text-gray-500">
-                  {formattedWidth(subsubsection.width)}
-                </td>
-              </tr>
+              {/* UNUSED */}
+              {/* {!!subsubsection.width && (
+                <tr>
+                  <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
+                    Breite
+                  </th>
+                  <td className="break-words px-3 py-4 text-sm text-gray-500">
+                    {formattedWidth(subsubsection.width)}
+                  </td>
+                </tr>
+              )} */}
               <tr>
                 <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
                   Kostenschätzung
@@ -187,7 +186,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
 
       <section className="mt-10">
         <H2>Straßenansicht (Mapillary)</H2>
-        {subsubsection.mapillaryKey ? (
+        {/* {subsubsection.mapillaryKey ? (
           <iframe
             title="Mapillary Image Preview"
             src={`https://www.mapillary.com/embed?image_key=${subsubsection.mapillaryKey}&style=photo`}
@@ -199,6 +198,11 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
               Mapillary öffnen
             </Link>
           )
+        )} */}
+        {mapillaryHref && (
+          <Link blank href={mapillaryHref} className="mt-3 block">
+            Mapillary öffnen
+          </Link>
         )}
       </section>
 

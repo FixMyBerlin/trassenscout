@@ -18,7 +18,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     page.fields
       .filter((f) => f.componentType === "form")
       .forEach((field) => {
-        if (["SurveyCheckboxGroup", "SurveyRadiobuttonGroup"].includes(field.component)) {
+        if (
+          ["SurveyCheckboxGroup", "SurveyRadiobuttonGroup", "SurveySelect"].includes(
+            field.component,
+          )
+        ) {
           const fieldProps = field.props as SurveyFieldRadioOrCheckboxGroupConfig["props"]
           // @ts-expect-error
           field.responses = Object.fromEntries(fieldProps.options.map((r) => [r.key, r]))

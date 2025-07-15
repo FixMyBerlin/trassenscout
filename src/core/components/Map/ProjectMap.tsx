@@ -1,3 +1,4 @@
+import { legendItemsConfig } from "@/src/core/components/Map/legendConfig"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { SubsectionWithPositionAndStatus } from "@/src/server/subsections/queries/getSubsections"
 import { Routes } from "@blitzjs/next"
@@ -19,6 +20,7 @@ import { shortTitle } from "../text"
 import { BaseMap } from "./BaseMap"
 import { SubsectionMapIcon } from "./Icons"
 import { StartEndLabel } from "./Labels"
+import { MapLegend } from "./MapLegend"
 import { TipMarker } from "./TipMarker"
 import { layerColors } from "./layerColors"
 import { subsectionsBbox } from "./utils"
@@ -152,6 +154,7 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
       >
         {markers}
       </BaseMap>
+      <MapLegend legendItemsConfig={legendItemsConfig.project} />
       <IfUserCanEdit>
         <p className="mt-2 text-right text-xs text-gray-400">
           Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)

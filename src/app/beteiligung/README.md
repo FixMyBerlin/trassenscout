@@ -32,11 +32,12 @@ Types for Form Config `src/app/beteiligung/_shared/types.ts`
 
 ## Set up new survey
 
-- create folder `_rsx` in `src/app/beteiligung`
+- create folder `_ohv-haltestellenfoerderung` in `src/app/beteiligung`
 - copy and define `config.tsx`
-- copy and update `SurveyRsX` component
-- import SurveyRsX in `src/app/beteiligung/[surveySlug]/page.tsx`
+- copy and update `SurveyOhv-haltestellenfoerderung` component
+- import SurveyOhv-haltestellenfoerderung in `src/app/beteiligung/[surveySlug]/page.tsx`
 - add slug in `src/app/beteiligung/_shared/utils/allowedSurveySlugs.ts`
+- import config in `src/app/beteiligung/_shared/utils/getConfigBySurveySlug.ts`
 - create survey via UI `/admin/surveys/new` with slug
 
 ## Referencing survey questions / evaluationRefs

@@ -4,7 +4,7 @@ export const coordinatesToWkt = ({
   type,
 }: {
   coordinates: number[][] | number[][][] | undefined
-  type: "line" | "polygon"
+  type: "line" | "polygon" | "point"
 }) => {
   if (!coordinates) return
   // Check if the input (shape) is a MultiLineString / Polygon
@@ -14,7 +14,11 @@ export const coordinatesToWkt = ({
       .map((lineString) => `(${lineString.map((coord) => coord.join(" ")).join(", ")})`)
       .join(", ")
     // check in configuration if the geometry is a polygon or a type line
-    return type === "polygon" ? `POLYGON (${wktString})` : `MULTILINESTRING (${wktString})`
+    return type === "polygon"
+      ? `POLYGON (${wktString})`
+      : type === "point"
+        ? `POINT (${wktString})`
+        : `MULTILINESTRING (${wktString})`
   }
   const lineStringCoordinates = coordinates as number[][]
   const wktString = lineStringCoordinates.map((coord) => coord.join(" ")).join(", ")

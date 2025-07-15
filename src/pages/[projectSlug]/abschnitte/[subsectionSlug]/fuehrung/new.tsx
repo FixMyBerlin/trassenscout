@@ -55,9 +55,9 @@ const NewSubsubsection = () => {
 
   return (
     <>
-      <MetaTags noindex title={seoNewTitle("Führung")} />
+      <MetaTags noindex title={seoNewTitle("Maßnahme")} />
       <PageHeader
-        title="Führung hinzufügen"
+        title="Maßnahme hinzufügen"
         subtitle={longTitle(subsection.slug)}
         className="mt-12"
       />

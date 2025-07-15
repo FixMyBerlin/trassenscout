@@ -2,21 +2,17 @@ import {
   Form,
   FormProps,
   LabeledCheckbox,
-  LabeledCheckboxGroup,
-  LabeledCheckboxProps,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { LabeledTextFieldCalculateLength } from "@/src/core/components/forms/LabeledTextFieldCalculateLength"
-import { quote, shortTitle } from "@/src/core/components/text"
+import { shortTitle } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { LabeledRadiobuttonGroupLabelPos } from "@/src/pagesComponents/subsubsections/LabeledRadiobuttonGroupLabelPos"
 import { getUserSelectOptions } from "@/src/pagesComponents/users/utils/getUserSelectOptions"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getQualityLevelsWithCount from "@/src/server/qualityLevels/queries/getQualityLevelsWithCount"
-import getSubsubsectionInfrasWithCount from "@/src/server/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
-import getSubsubsectionSpecialsWithCount from "@/src/server/subsubsectionSpecial/queries/getSubsubsectionSpecialsWithCount"
 import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
 import getSubsubsectionTasksWithCount from "@/src/server/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
 import { Routes } from "@blitzjs/next"
@@ -50,36 +46,34 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       return [task.id, task.title] as [number, string]
     }),
   ]
-  const [{ subsubsectionInfras }] = useQuery(getSubsubsectionInfrasWithCount, { projectSlug })
-  const subsubsectionInfraOptions: [number | string, string][] = [
-    ["", "-"],
-    ...subsubsectionInfras.map((infra) => {
-      return [infra.id, infra.title] as [number, string]
-    }),
-  ]
-  const [{ subsubsectionSpecials }] = useQuery(getSubsubsectionSpecialsWithCount, { projectSlug })
-  const subsubsectionSpecialOptions = subsubsectionSpecials.map((special) => {
-    return {
-      value: String(special.id),
-      label: special.title,
-    }
-  }) satisfies Omit<LabeledCheckboxProps, "scope">[]
+  // const [{ subsubsectionInfras }] = useQuery(getSubsubsectionInfrasWithCount, { projectSlug })
+  // const subsubsectionInfraOptions: [number | string, string][] = [
+  //   ["", "-"],
+  //   ...subsubsectionInfras.map((infra) => {
+  //     return [infra.id, infra.title] as [number, string]
+  //   }),
+  // ]
+  // const [{ subsubsectionSpecials }] = useQuery(getSubsubsectionSpecialsWithCount, { projectSlug })
+  // const subsubsectionSpecialOptions = subsubsectionSpecials.map((special) => {
+  //   return {
+  //     value: String(special.id),
+  //     label: special.title,
+  //   }
+  // }) satisfies Omit<LabeledCheckboxProps, "scope">[]
 
   return (
     <Form<S> {...props}>
       <LabeledTextField
         type="text"
         name="slug"
-        label="Kurz-Titel und URL-Teil"
-        help={`Bspw. ${quote("rf1")} oder ${quote(
-          "sf2a",
-        )}. Primäre Auszeichnung der Führung. Wird immer in Großschreibung angezeigt aber in Kleinschreibung editiert. Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren.`}
+        label="Kurztitel"
+        help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
       />
-
-      <LabeledTextField type="text" name="subTitle" label="Title" optional />
+      <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
+      {/* <LabeledTextField type="text" name="subTitle" label="Title" optional /> */}
       <GeometryInput />
       {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
-      <LabeledCheckbox scope="isExistingInfra" label="Bestandsführung – keine Maßnahme geplant" />
+      <LabeledCheckbox scope="isExistingInfra" label="Bestand – keine Maßnahme geplant" />
       <div className="flex items-end gap-5">
         <LabeledSelect
           name="subsubsectionTaskId"
@@ -94,7 +88,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           Maßnahmetypen verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-      <div className="flex items-end gap-5">
+      {/* <div className="flex items-end gap-5">
         <LabeledSelect
           name="subsubsectionInfraId"
           label="Führungsform"
@@ -107,8 +101,8 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         >
           Führungsformen verwalten…
         </LinkWithFormDirtyConfirm>
-      </div>
-      <div>
+      </div> */}
+      {/* <div>
         <LabeledCheckboxGroup
           scope="specialFeatures"
           label="Besonderheiten"
@@ -122,13 +116,13 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
             Besonderheiten verwalten…
           </LinkWithFormDirtyConfirm>
         </div>
-      </div>
+      </div> */}
       <LabeledTextFieldCalculateLength
         name="lengthKm"
         label="Länge"
         help="Dieser Wert kann manuell eingetragen oder aus den vorhandenen Geometrien berechnet werden."
       />
-      <LabeledTextField
+      {/* <LabeledTextField
         inlineLeadingAddon="m"
         type="number"
         step="0.01"
@@ -143,7 +137,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         name="widthExisting"
         label="Breite Bestand"
         optional
-      />
+      /> */}
       <LabeledTextField name="costEstimate" inlineLeadingAddon="€" label="Kostenschätzung" />
       <div className="flex items-end gap-5">
         <LabeledSelect
@@ -179,7 +173,6 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         optional
         help="Die Mapillary Bild Referenz kann aus der URL als 'pKey' kopiert werden. Das ausgewählte Bild wird dann als eingebettete Vorschau auf der Seite angezeigt."
       />
-      <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledSelect
         name="managerId"
         label="Projektleiter:in"

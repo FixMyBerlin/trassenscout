@@ -45,7 +45,7 @@ export const ProjectInfoPanelCellSubsubsections: React.FC<Props> = ({ projectSlu
           ))}
         </div>
       ) : (
-        <p>Es wurden bisher keine Führungen eingetragen.</p>
+        <p>Es wurden bisher keine Maßnahmen eingetragen.</p>
       )}
       {qualityLevelsWithCount.length ? (
         <>

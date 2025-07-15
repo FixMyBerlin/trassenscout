@@ -3,6 +3,7 @@ import SurveyInactivePage from "@/src/app/beteiligung/_components/SurveyInactive
 import { SurveyRsTest23 } from "@/src/app/beteiligung/_rstest-2-3/SurveyRsTest23"
 
 import { SurveyBB } from "@/src/app/beteiligung/_radnetz-brandenbrug/SurveyBB"
+import { SurveyOhvHaltestellenfoerderung } from "@/src/app/beteiligung/_ohv-haltestellenfoerderung/SurveyOhvHaltestellenfoerderung"
 import { SurveyRS8 } from "@/src/app/beteiligung/_rs8/SurveyRS8"
 import { SurveyRsTest123 } from "@/src/app/beteiligung/_rstest-1-2-3/SurveyRsTest123"
 import { SurveyRsTest1 } from "@/src/app/beteiligung/_rstest-1/SurveyRsTest1"
@@ -34,6 +35,8 @@ export default async function PublicSurveyPage({
     if (surveySlug === "rstest-2-3") return <SurveyRsTest23 surveyId={survey.id} />
     if (surveySlug === "rstest-2") return <SurveyRsTest2 surveyId={survey.id} />
     if (surveySlug === "rstest-1") return <SurveyRsTest1 surveyId={survey.id} />
+    if (surveySlug === "ohv-haltestellenfoerderung")
+      return <SurveyOhvHaltestellenfoerderung surveyId={survey.id} />
     return null
   }
 }

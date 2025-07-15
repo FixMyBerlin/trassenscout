@@ -29,7 +29,7 @@ export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry"> &
       }
   ) & { manager: User } & { subsection: { slug: string } } & {
     qualityLevel?: Pick<QualityLevel, "title" | "slug">
-  }
+  } & { SubsubsectionTask?: { title: string } }
 
 export default resolver.pipe(
   resolver.zod(GetSubsubsection),

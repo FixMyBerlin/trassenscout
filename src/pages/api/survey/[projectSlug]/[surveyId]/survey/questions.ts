@@ -14,10 +14,14 @@ const translatedComponentTypesLegacy = {
 const translatedComponentTypes = {
   SurveyCheckboxGroup: "mehrfach",
   SurveyRadiobuttonGroup: "einfach",
+  SurveySelect: "einfach",
   SurveyTextfield: "text",
   SurveyTextarea: "text",
   SurveySimpleMapWithLegend: "geo",
+  SurveyGeoCategoryMapWithLegend: "geo",
+  SurveyReadonlyTextfield: "text readonly",
   SurveyCheckbox: "bool",
+  hidden: "hidden",
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

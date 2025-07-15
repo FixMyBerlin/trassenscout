@@ -62,7 +62,7 @@ export const SubsubsectionInfrasWithData = () => {
                 Titel
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl Führungen mit diesem Infra
+                Anzahl Maßnahmen mit diesem Infra
               </th>
               <th
                 scope="col"
@@ -83,7 +83,7 @@ export const SubsubsectionInfrasWithData = () => {
                     <strong className="font-semibold">{Infra.title}</strong>
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {Infra.subsubsectionCount} Führungen mit der Form {quote(Infra.title)}
+                    {Infra.subsubsectionCount} Maßnahmen mit der Form {quote(Infra.title)}
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
                     <IfUserCanEdit>

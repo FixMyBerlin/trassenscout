@@ -4,4 +4,5 @@ export const layerColors = {
   selectable: "#2C62A9", // blue-500
   hovered: "#F8C62B", // yellow-400
   selected: "#F8C62B", // yellow-400
+  dot: "#0F172A", // slate-900
 }
