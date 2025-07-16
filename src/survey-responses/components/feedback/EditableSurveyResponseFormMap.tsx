@@ -1,9 +1,9 @@
 import { AllLayers, generateLayers } from "@/src/app/beteiligung/_components/form/map/AllLayers"
 import { AllSources } from "@/src/app/beteiligung/_components/form/map/AllSources"
 import {
-  createBboxFromGeometryString,
   createGeoJSONFromString,
   detectGeometryType,
+  getInitialViewStateFromGeometryString,
 } from "@/src/app/beteiligung/_components/form/map/utils"
 import { FieldConfig } from "@/src/app/beteiligung/_shared/types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
@@ -106,33 +106,14 @@ export const EditableSurveyResponseFormMap = ({
       return {
         latitude: marker.lat,
         longitude: marker.lng,
-        zoom: 10.5,
+        zoom: 12,
       }
     }
 
     const geometryString = geometryCategoryCoordinates || JSON.stringify(fallbackGeometry)
 
-    if (geometryCategoryGeometryType === "point") {
-      // For points, center on the point with a reasonable zoom level
-      const geoJSON = createGeoJSONFromString(geometryString)
-      if (geoJSON && geoJSON.type === "Feature" && geoJSON.geometry.type === "Point") {
-        const [lng, lat] = geoJSON.geometry.coordinates
-        return {
-          latitude: lat,
-          longitude: lng,
-          zoom: 12, // Adjust this zoom level as needed
-        }
-      }
-    }
-
-    // For lines, polygons, and other geometries, use bbox
-    const bbox = createBboxFromGeometryString(geometryString)
-    if (bbox) {
-      return {
-        bounds: bbox,
-        fitBoundsOptions: { padding: 70 },
-      }
-    }
+    console.log(!geometryCategoryCoordinates && "fallback")
+    return getInitialViewStateFromGeometryString(geometryString)
   }
 
   const renderGeometryLayer = () => {

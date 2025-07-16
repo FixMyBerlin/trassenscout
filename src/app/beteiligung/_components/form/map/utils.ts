@@ -102,9 +102,30 @@ export const createBboxFromGeometryString = (
 }
 
 // Create initial bounds based on existing geometry value
-export const getInitialBoundsFromGeometry = (v: any): [number, number, number, number] | null => {
-  if (!v || typeof v !== "string") {
+export const getInitialViewStateFromGeometryString = (geometryString: string): any | null => {
+  if (!geometryString || typeof geometryString !== "string") {
     return null
   }
-  return createBboxFromGeometryString(v)
+
+  const geometryType = detectGeometryType(geometryString)
+
+  if (geometryType === "point") {
+    // For points, center on the point with a reasonable zoom level
+    const geoJSON = createGeoJSONFromString(geometryString)
+    const [lng, lat] = geoJSON.geometry.coordinates
+    return {
+      latitude: lat,
+      longitude: lng,
+      zoom: 12,
+    }
+  }
+
+  // For lines, polygons, and other geometries, use bbox
+  const bbox = createBboxFromGeometryString(geometryString)
+  if (bbox) {
+    return {
+      bounds: bbox,
+      fitBoundsOptions: { padding: 70 },
+    }
+  }
 }

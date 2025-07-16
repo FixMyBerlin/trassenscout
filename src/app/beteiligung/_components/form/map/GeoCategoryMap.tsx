@@ -6,7 +6,7 @@ import {
 } from "@/src/app/beteiligung/_components/form/map/BackgroundSwitcher"
 import { installMapGrabIfTest } from "@/src/app/beteiligung/_components/form/map/installMapGrab"
 import { SurveyMapGeoCategoryInfoPanel } from "@/src/app/beteiligung/_components/form/map/MapGeoCategoryInfoPanel"
-import { getInitialBoundsFromGeometry } from "@/src/app/beteiligung/_components/form/map/utils"
+import { getInitialViewStateFromGeometryString } from "@/src/app/beteiligung/_components/form/map/utils"
 
 import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
 import { MapData } from "@/src/app/beteiligung/_shared/types"
@@ -60,7 +60,7 @@ export const SurveyGeoCategoryMap = ({
   infoPanelText,
 }: GeoCategoryMapProps) => {
   const { mainMap } = useMap()
-  const field = useFieldContext<object>()
+  const field = useFieldContext<string>()
   const searchParams = useSearchParams()
   const [mapLoading, setMapLoading] = useState(true)
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
@@ -103,23 +103,27 @@ export const SurveyGeoCategoryMap = ({
 
   if (mainMap) installMapGrabIfTest(mainMap.getMap(), "mainMap")
 
-  const initialBounds: [number, number, number, number] | undefined =
+  const initialViewState =
     // if we have a selected geometry category already, use its bbox
-    getInitialBoundsFromGeometry(field.state.value) ||
-    // if we have a setInitialBounds config, set the bbox depending on the search params
-    // this allows us to set the initial bounds based on a query parameter (e.g. set in a read only field)
-    (setInitialBounds &&
-    setInitialBounds.initialBoundsDefinition.find(
-      (d) =>
-        d[setInitialBounds.queryParameter] === searchParams?.get(setInitialBounds.queryParameter),
-    )
-      ? setInitialBounds.initialBoundsDefinition.find(
+    getInitialViewStateFromGeometryString(field.state.value) || {
+      bounds:
+        setInitialBounds &&
+        setInitialBounds.initialBoundsDefinition.find(
           (d) =>
             d[setInitialBounds.queryParameter] ===
             searchParams?.get(setInitialBounds.queryParameter),
-        )?.bbox
-      : // generally use the normal config bounds
-        config.bounds)
+        )
+          ? setInitialBounds.initialBoundsDefinition.find(
+              (d) =>
+                d[setInitialBounds.queryParameter] ===
+                searchParams?.get(setInitialBounds.queryParameter),
+            )?.bbox
+          : // generally use the normal config bounds
+            config.bounds,
+      fitBoundsOptions: { padding: 70 },
+    }
+  // if we have a setInitialBounds config, set the bbox depending on the search params
+  // this allows us to set the initial bounds based on a query parameter (e.g. set in a read only field)
 
   const { maptilerUrl } = getConfigBySurveySlug(surveySlug, "meta")
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
@@ -212,10 +216,7 @@ export const SurveyGeoCategoryMap = ({
       <Map
         id="mainMap"
         scrollZoom={false}
-        initialViewState={{
-          bounds: initialBounds,
-          fitBoundsOptions: { padding: field.state.value ? 150 : 0 },
-        }}
+        initialViewState={initialViewState}
         mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
         onClick={handleMapClick}
         onMouseMove={handleMouseMove}
