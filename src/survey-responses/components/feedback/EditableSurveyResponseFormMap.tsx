@@ -112,7 +112,6 @@ export const EditableSurveyResponseFormMap = ({
 
     const geometryString = geometryCategoryCoordinates || JSON.stringify(fallbackGeometry)
 
-    console.log(!geometryCategoryCoordinates && "fallback")
     return getInitialViewStateFromGeometryString(geometryString)
   }
 
