@@ -64,16 +64,13 @@ export const useFilteredResponses = (
     // Handle `haslocation`
     .filter((response) => {
       if (haslocation === "ALL") return response
-      // @ts-expect-error `data` is of type unkown
       if (haslocation === "true") return response.data[userLocationQuestionId]
-      // @ts-expect-error `data` is of type unkown
       if (haslocation === "false") return !response.data[userLocationQuestionId]
       return response
     })
     // Handle `categories`
     .filter((response) => {
       if (!categories) return
-      // @ts-expect-error `data` is of type unkown
       return categories.includes(String(response.data[userCategoryQuestionId]))
     })
     // Handle `searchterm`
@@ -85,16 +82,12 @@ export const useFilteredResponses = (
           comment.body.toLowerCase().includes(searchterm.trim().toLowerCase()),
         ) ||
         (response?.data &&
-          // @ts-expect-error `data` is of type unkown
           response?.data[userFeedbackTextQuestionId] &&
-          // @ts-expect-error `data` is of type unkown
           response?.data[userFeedbackTextQuestionId]
             .toLowerCase()
             .includes(searchterm.trim().toLowerCase())) ||
         (response?.data &&
-          // @ts-expect-error `data` is of type unkown
           response?.data[userFeedbackText2QuestionId] &&
-          // @ts-expect-error `data` is of type unkown
           response?.data[userFeedbackText2QuestionId]
             .toLowerCase()
             .includes(searchterm.trim().toLowerCase()))
@@ -130,7 +123,6 @@ export const useFilteredResponses = (
               additionalFilters[key]
             )
           case "part2":
-            // @ts-expect-error
             return response.data[additionalFiltersConfigItem.id] === additionalFilters[key]
           case "part3":
             return (

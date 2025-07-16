@@ -106,13 +106,13 @@ export default resolver.pipe(
     const parsedAndSorted = rawSurveyResponsePart2WithPart1AndPart3Responses
       // Make `data` an object to work with…
       .map((response) => {
-        const data = JSON.parse(response.data)
+        const data = JSON.parse(response.data) as Record<string, any>
         const surveyResponseTopics = response.surveyResponseTopics.map((topic) => topic.id)
         const surveyPart1ResponseData = response.surveyPart1ResponseData
-          ? JSON.parse(response.surveyPart1ResponseData)
+          ? (JSON.parse(response.surveyPart1ResponseData) as Record<string, any>)
           : null
         const surveyPart3ResponseData = response.surveyPart3ResponseData
-          ? JSON.parse(response.surveyPart3ResponseData)
+          ? (JSON.parse(response.surveyPart3ResponseData) as Record<string, any>)
           : null
         return {
           ...response,
@@ -131,16 +131,13 @@ export default resolver.pipe(
           let result: string | null
           if (question.surveyPart === "part1") {
             result = responseItem.surveyPart1ResponseData
-              ? // @ts-expect-error data
-                responseItem.surveyPart1ResponseData[String(question.id)]
+              ? responseItem.surveyPart1ResponseData[String(question.id)]
               : null
           } else if (question.surveyPart === "part3") {
             result = responseItem.surveyPart3ResponseData
-              ? // @ts-expect-error data
-                responseItem.surveyPart3ResponseData[String(question.id)]
+              ? responseItem.surveyPart3ResponseData[String(question.id)]
               : null
           } else {
-            // @ts-expect-error data
             result = responseItem.data[String(question.id)]
           }
           return result

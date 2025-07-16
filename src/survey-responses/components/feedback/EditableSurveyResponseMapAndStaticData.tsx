@@ -64,7 +64,6 @@ const EditableSurveyResponseMapAndStaticData = ({
 
   const maptilerUrl = metaConfig.maptilerUrl
 
-  // @ts-expect-error `data` is unkown
   const userCategoryId = response.data[categoryId]
   const surveyCategoryOptions = getSurveyCategoryOptions(survey.slug)
   const userCategoryLabel = surveyCategoryOptions.find((o) => o.value == userCategoryId)?.label
@@ -97,17 +96,13 @@ const EditableSurveyResponseMapAndStaticData = ({
   }
 
   const tildaUrl = metaConfig.tildaUrl
-    ? // @ts-expect-error `data` is unkown
-      response.data[locationId]
+    ? response.data[locationId]
       ? metaConfig.tildaUrl.replace(
           "MAPPARAM",
-          // @ts-expect-error `data` is unkown
           `11%2F${response.data[locationId].lat.toFixed(3)}%2F${response.data[locationId].lng.toFixed(3)}`,
         )
       : geometryCategoryId &&
-          // @ts-expect-error `data` is unkown
           response.data[geometryCategoryId] &&
-          // @ts-expect-error `data` is unkown
           createGeoJSONFromString(response.data[geometryCategoryId])
         ? metaConfig.tildaUrl.replace(
             "MAPPARAM",
@@ -156,6 +151,7 @@ const EditableSurveyResponseMapAndStaticData = ({
         {/* TABEL */}
         <EditableSurveyResponseAdditionalFilterFields
           additionalFilterFields={additionalFilterFields}
+          surveySlug={survey.slug}
           surveyPart1ResponseData={response.surveyPart1ResponseData}
           surveyPart3ResponseData={response.surveyPart3ResponseData}
           surveyPart2ResponseData={response.data}
@@ -167,15 +163,8 @@ const EditableSurveyResponseMapAndStaticData = ({
           <MapProvider>
             <EditableSurveyResponseFormMap
               surveySlug={survey.slug}
-              marker={
-                // @ts-expect-error `data` is unkown
-                response.data[locationId] as { lat: number; lng: number } | undefined
-              }
-              geometryCategoryCoordinates={
-                geometryCategoryId &&
-                // @ts-expect-error `data` is unkown
-                response.data[geometryCategoryId]
-              }
+              marker={response.data[locationId] as { lat: number; lng: number } | undefined}
+              geometryCategoryCoordinates={geometryCategoryId && response.data[geometryCategoryId]}
               geoCategoryQuestion={geoCategoryQuestion as GeoCategoryFieldConfig}
               maptilerUrl={maptilerUrl}
             />

@@ -114,7 +114,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // add headers for all questions
   surveyQuestions.forEach((question) => {
-    // @ts-expect-error
     headers.push({ id: question.name, title: question.props.label || question.name })
   })
   feedbackQuestions
@@ -127,7 +126,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         headers.push({ id: `${questionId}-lat`, title: "Hinweis Verortung Lat" })
         headers.push({ id: `${questionId}-lng`, title: "Hinweis Verortung Lng" })
       } else {
-        // @ts-expect-error
         headers.push({ id: questionId, title: question.props.label || question.name })
       }
     })
