@@ -1,11 +1,14 @@
+import { AllLayers, generateLayers } from "@/src/app/beteiligung/_components/form/map/AllLayers"
+import { AllSources } from "@/src/app/beteiligung/_components/form/map/AllSources"
 import { createGeoJSONFromString } from "@/src/app/beteiligung/_components/form/map/utils"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import { featureCollection, point } from "@turf/helpers"
-import { DataDrivenPropertyValueSpecification } from "maplibre-gl"
+import maplibregl, { DataDrivenPropertyValueSpecification } from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
-import { useState } from "react"
+import * as pmtiles from "pmtiles"
+import { useEffect, useState } from "react"
 import Map, {
   Layer,
   LayerProps,
@@ -26,6 +29,7 @@ type Props = {
   categoryGeometryRef?: string
   //todo survey clean up after survey BB
   surveySlug: AllowedSurveySlugs
+  additionalMapData?: any
 }
 
 export const SurveyResponseOverviewMap = ({
@@ -35,6 +39,7 @@ export const SurveyResponseOverviewMap = ({
   locationRef,
   surveyResponses,
   surveySlug,
+  additionalMapData,
 }: Props) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const { responseDetails, setResponseDetails } = useResponseDetails()
@@ -44,6 +49,14 @@ export const SurveyResponseOverviewMap = ({
   const metaConfig = getConfigBySurveySlug(surveySlug, "meta")
   const [cursorStyle, setCursorStyle] = useState("grab")
   const surveyResponsesWithLocation = surveyResponses.filter((r) => r.data[locationRef])
+  // Setup pmtiles
+  useEffect(() => {
+    const protocol = new pmtiles.Protocol()
+    maplibregl.addProtocol("pmtiles", protocol.tile)
+    return () => {
+      maplibregl.removeProtocol("pmtiles")
+    }
+  }, [])
 
   const surveyResponsesGeometryCategoryCoordinates = surveyResponses.map((response) => {
     return {
@@ -470,29 +483,11 @@ export const SurveyResponseOverviewMap = ({
         ]}
         cursor={cursorStyle}
       >
-        {/*  todo survey clean up after survey BB */}
-        {surveySlug === "radnetz-brandenburg" && (
-          <Source
-            key="SourceNetzentwurf"
-            type="vector"
-            minzoom={6}
-            maxzoom={10}
-            tiles={[
-              "https://api.maptiler.com/tiles/650084a4-a206-4873-8873-e3a43171b6ea/{z}/{x}/{y}.pbf?key=ECOoUBmpqklzSCASXxcu",
-            ]}
-          >
-            <Layer
-              id="LayerNetzentwurf"
-              type="line"
-              source-layer="default"
-              beforeId="Fühung unklar"
-              paint={{
-                "line-color": "hsl(30, 100%, 50%)",
-                "line-width": ["interpolate", ["linear"], ["zoom"], 0, 1, 8, 1.5, 13.8, 5],
-                "line-dasharray": [3, 2],
-              }}
-            />
-          </Source>
+        {additionalMapData && (
+          <>
+            <AllSources mapData={additionalMapData} />
+            <AllLayers layers={[...generateLayers(additionalMapData)]} />
+          </>
         )}
         {surveyResponsesSource}
         {geometryCategorySource}
