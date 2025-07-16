@@ -5,7 +5,7 @@ import { Link, linkStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-import { getFlatSurveyQuestions } from "@/src/survey-responses/utils/getQuestionsAsArray"
+import { getFlatSurveyFormFields } from "@/src/survey-responses/utils/getFlatSurveyFormFields"
 import { getSurveyCategoryOptions } from "@/src/survey-responses/utils/getSurveyCategoryOptions"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { Routes, useParam } from "@blitzjs/next"
@@ -52,7 +52,7 @@ const EditableSurveyResponseMapAndStaticData = ({
   const backendConfig = getConfigBySurveySlug(survey.slug, "backend")
   const metaConfig = getConfigBySurveySlug(survey.slug, "meta")
 
-  const feedbackQuestions = getFlatSurveyQuestions(feedbackDefinition)
+  const feedbackQuestions = getFlatSurveyFormFields(feedbackDefinition)
 
   const geometryCategoryId = getQuestionIdBySurveySlug(survey.slug, "geometryCategory")
   const feedbackTextId = getQuestionIdBySurveySlug(survey.slug, "feedbackText")

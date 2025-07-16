@@ -2,7 +2,7 @@ import { TBackendConfig } from "@/src/app/beteiligung/_shared/backend-types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
-import { getFlatSurveyFormFields } from "@/src/survey-responses/utils/getQuestionsAsArray"
+import { getFlatSurveyFormFields } from "@/src/survey-responses/utils/getFlatSurveyFormFields"
 
 type Props = {
   additionalFilterFields: TBackendConfig["additionalFilters"]

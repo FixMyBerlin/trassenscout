@@ -11,7 +11,7 @@ export const getFieldsAsArray = ({ definition }: { definition: SurveyPart1and3 |
   return questions as FormFieldConfig[]
 }
 
-export const getFlatSurveyQuestions = (
+export const getFlatSurveyFormFields = (
   definition: SurveyPart1and3 | SurveyPart2 | null,
 ): FormFieldConfig[] => {
   if (!definition) return []

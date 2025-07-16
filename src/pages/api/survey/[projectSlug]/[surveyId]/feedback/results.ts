@@ -6,7 +6,7 @@ import { Prettify } from "@/src/core/types"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getProjectOperators from "@/src/server/operators/queries/getProjectOperators"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
-import { getFlatSurveyQuestions } from "@/src/survey-responses/utils/getQuestionsAsArray"
+import { getFlatSurveyFormFields } from "@/src/survey-responses/utils/getFlatSurveyFormFields"
 import getSurveySessionsWithResponses from "@/src/survey-sessions/queries/getSurveySessionsWithResponses"
 import { getSession } from "@blitzjs/auth"
 import { AuthorizationError } from "blitz"
@@ -30,8 +30,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const isLocationQuestionId = getQuestionIdBySurveySlug(survey.slug, "enableLocation")
 
-  const feedbackQuestions = getFlatSurveyQuestions(feedbackDefinition)
-  const surveyQuestions = getFlatSurveyQuestions(surveyDefinition)
+  const feedbackQuestions = getFlatSurveyFormFields(feedbackDefinition)
+  const surveyQuestions = getFlatSurveyFormFields(surveyDefinition)
 
   const err = (status: number, message: string) => {
     res.status(status).json({ error: true, status: status, message })
