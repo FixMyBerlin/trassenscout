@@ -11,8 +11,8 @@ type StatusItem = {
 type TAdditionalFiltersItem = {
   label: string
   value: string
-  id: number
-  surveyPart: "survey" | "feedback"
+  id: number | string
+  surveyPart: "part1" | "part2" | "part3"
   // todo: in the future, we might want to add more filter options here, like single or multi select
 }
 

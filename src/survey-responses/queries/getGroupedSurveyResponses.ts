@@ -4,7 +4,7 @@ import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getCo
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
-import { getFlatSurveyQuestions } from "@/src/survey-responses/utils/getQuestionsAsArray"
+import { getFlatSurveyFormFields } from "@/src/survey-responses/utils/getFlatSurveyFormFields"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 
@@ -68,7 +68,7 @@ export default resolver.pipe(
 
     const zod = AllowedSurveySlugsSchema.parse(surveySessions[0]?.survey)
 
-    const responseTemplate = getFlatSurveyQuestions(getConfigBySurveySlug(zod.slug, "part1")).map(
+    const responseTemplate = getFlatSurveyFormFields(getConfigBySurveySlug(zod.slug, "part1")).map(
       (question) => question.name,
     )
 

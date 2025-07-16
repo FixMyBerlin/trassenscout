@@ -13,6 +13,7 @@ import { SurveyResponseOverviewMap } from "@/src/survey-responses/components/fee
 import { useMapSelection } from "@/src/survey-responses/components/feedback/useMapSelection.nuqs"
 import { useResponseDetails } from "@/src/survey-responses/components/feedback/useResponseDetails.nuqs"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
+import { getFlatSurveyFormFields } from "@/src/survey-responses/utils/getFlatSurveyFormFields"
 import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { BlitzPage, useParam } from "@blitzjs/next"
@@ -64,19 +65,21 @@ export const SurveyResponseWithLocation = () => {
     }
   }, [responseDetails])
 
-  const feedbackDefinition = getConfigBySurveySlug(survey.slug, "part2")
+  const part2Definition = getConfigBySurveySlug(survey.slug, "part2")
+  const part2Fields = getFlatSurveyFormFields(part2Definition)
   const metaDefinition = getConfigBySurveySlug(survey.slug, "meta")
 
   const geometryCategoryId = getQuestionIdBySurveySlug(survey.slug, "geometryCategory")
   const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
 
-  const mapProps = feedbackDefinition?.pages
-    .find((page) => page.fields.some((field) => field.name === String(locationId)))
-    ?.fields.find((q) => q.name === String(locationId))!.props
+  const mapProps = // @ts-expect-error
+    part2Fields.find((q) => [locationId, geometryCategoryId].includes(q.name))?.props.mapProps
 
   const maptilerUrl = metaDefinition.maptilerUrl
+
+  const geoCategoryQuestion = part2Fields.find((q) => q.name === geometryCategoryId)
   // @ts-expect-error
-  const defaultViewState = mapProps.mapProps.config.bounds
+  const mapData = geoCategoryQuestion ? geoCategoryQuestion.props.mapProps.mapData : undefined
 
   if (!feedbackSurveyResponses?.length) return
 
@@ -118,11 +121,12 @@ export const SurveyResponseWithLocation = () => {
           <section className="h-[1000px] flex-grow">
             <SurveyResponseOverviewMap
               maptilerUrl={maptilerUrl}
-              defaultViewState={defaultViewState}
+              defaultViewState={mapProps.config.bounds}
               categoryGeometryRef={geometryCategoryId}
               surveyResponses={feedbackSurveyResponses}
               locationRef={locationId}
               surveySlug={survey.slug}
+              additionalMapData={mapData}
             />
           </section>
           <section className="rounded-md drop-shadow-md lg:w-[580px]">

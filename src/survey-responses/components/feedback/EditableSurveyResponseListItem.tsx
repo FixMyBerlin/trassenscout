@@ -87,11 +87,7 @@ const EditableSurveyResponseListItem = ({
   const text1Id = getQuestionIdBySurveySlug(survey.slug, "feedbackText")
   const text2Id = getQuestionIdBySurveySlug(survey.slug, "feedbackText_2")
 
-  const userTextPreview =
-    // @ts-expect-error `data` is of type unkown
-    response.data[text1Id] ||
-    // @ts-expect-error `data` is of type unkown
-    response.data[text2Id]
+  const userTextPreview = response.data[text1Id] || response.data[text2Id]
 
   return (
     <article data-open={open} className="bg-white">
@@ -102,7 +98,6 @@ const EditableSurveyResponseListItem = ({
         )}
         onClick={isAccordion ? () => (open ? handleClose() : handleOpen()) : undefined}
       >
-        {/* @ts-expect-error data is unknown */}
         {response.data[locationId] && (
           <div className="pl-6">
             <SurveyStaticPin surveySlug={survey.slug} small />

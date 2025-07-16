@@ -40,6 +40,43 @@ Types for Form Config `src/app/beteiligung/_shared/types.ts`
 - import config in `src/app/beteiligung/_shared/utils/getConfigBySurveySlug.ts`
 - create survey via UI `/admin/surveys/new` with slug
 
+## Geo data Integration
+
+To integrate geodata/maps into surveys:
+
+#### 1. Prepare Geodata
+
+- Upload geo data to Drive project folder as GeoJSON
+
+#### 2. Static Data TILDA
+
+- Data becomes visible in TILDA as static data (on staging) TBD
+- GitHub repository:
+  https://github.com/FixMyBerlin/tilda-static-data/tree/main/geojson/trassenscout-umfragen
+
+The `trassenscout-umfragen` region is used for survey-specific static data. If a TILDA region already exists for the project, that can be used instead.
+
+Example URLs:
+
+- `https://staging.tilda-geo.de/api/uploads/ohv-busverbindungen`
+- `https://staging.tilda-geo.de/api/uploads/ohv-haltestellen`
+
+PMTiles URLs can be found by:
+
+- Opening the Inspector's Network tab
+- Filtering for "/api/uploads/"
+- Toggling layers on/off
+
+Note: These are PMTiles format and require the `pmtiles://https://staging...` prefix in the URL.
+
+The PMTiles URLs are referenced in a mapData file that is imoportet in the config for the respective map component (- so far we only use this for GeoCategoryMap, but in eventually we want to see the geo data also in the location Map component in case both are combined in a survey)
+
+#### 3. Styling
+
+- Styles are defined (location for style specifications is TBD)
+- defined in a mapData file that is imoportet in the config
+- Styles may also be integrated into TILDA
+
 ## Referencing survey questions / evaluationRefs
 
 Legacy surveys (rs8, frm7, radnetz-bb) - have arbitrary keys for location, category etc. in the data object. So we have a response-config.ts file in the legacy folders and get the question ids with `getQuestionIdBySurveySlug()`.

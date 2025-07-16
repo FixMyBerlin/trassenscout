@@ -122,9 +122,6 @@ export const part2Config: SurveyPart2 = {
           props: {
             label: "Markieren Sie die Stelle, zu der Sie etwas sagen möchten.",
             mapProps: {
-              // tbd maptiler url per component or (only) in meta
-              maptilerUrl:
-                "https://api.maptiler.com/maps/b09268b1-91d0-42e2-9518-321a1a94738f/style.json",
               config: {
                 bounds: [
                   9.103949029818097, 48.81629635563661, 9.387312714501604, 48.90390202531458,

@@ -10,8 +10,6 @@ export const formConfig: FormConfig = {
     primaryColor: "#006ab2",
     darkColor: "#00375D",
     lightColor: "#B8D5E9",
-    // todo point
-    geometryCategoryType: "line",
   },
   part1: null,
   part2: part2Config,
@@ -29,6 +27,14 @@ export const formConfig: FormConfig = {
     },
   },
   backend: {
+    additionalFilters: [
+      {
+        label: "Kommune",
+        id: "commune",
+        value: "commune",
+        surveyPart: "part2",
+      },
+    ],
     status: [
       { value: "PENDING", label: "Ausstehend", color: "#FDEEBF", icon: "CLOCK" },
       { value: "REJECTED", label: "Abgelehnt", color: "#FEE2E2", icon: "XMARK" },

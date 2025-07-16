@@ -1,10 +1,14 @@
+import { AllLayers, generateLayers } from "@/src/app/beteiligung/_components/form/map/AllLayers"
+import { AllSources } from "@/src/app/beteiligung/_components/form/map/AllSources"
+import { createGeoJSONFromString } from "@/src/app/beteiligung/_components/form/map/utils"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
-import { featureCollection, lineString, multiLineString, point, polygon } from "@turf/helpers"
-import { DataDrivenPropertyValueSpecification } from "maplibre-gl"
+import { featureCollection, point } from "@turf/helpers"
+import maplibregl, { DataDrivenPropertyValueSpecification } from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
-import { useState } from "react"
+import * as pmtiles from "pmtiles"
+import { useEffect, useState } from "react"
 import Map, {
   Layer,
   LayerProps,
@@ -21,10 +25,11 @@ type Props = {
   maptilerUrl: string
   defaultViewState?: LngLatBoundsLike
   surveyResponses: any[]
-  locationRef: number
-  categoryGeometryRef: number | undefined
+  locationRef: string
+  categoryGeometryRef?: string
   //todo survey clean up after survey BB
   surveySlug: AllowedSurveySlugs
+  additionalMapData?: any
 }
 
 export const SurveyResponseOverviewMap = ({
@@ -34,6 +39,7 @@ export const SurveyResponseOverviewMap = ({
   locationRef,
   surveyResponses,
   surveySlug,
+  additionalMapData,
 }: Props) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const { responseDetails, setResponseDetails } = useResponseDetails()
@@ -43,14 +49,22 @@ export const SurveyResponseOverviewMap = ({
   const metaConfig = getConfigBySurveySlug(surveySlug, "meta")
   const [cursorStyle, setCursorStyle] = useState("grab")
   const surveyResponsesWithLocation = surveyResponses.filter((r) => r.data[locationRef])
+  // Setup pmtiles
+  useEffect(() => {
+    const protocol = new pmtiles.Protocol()
+    maplibregl.addProtocol("pmtiles", protocol.tile)
+    return () => {
+      maplibregl.removeProtocol("pmtiles")
+    }
+  }, [])
 
   const surveyResponsesGeometryCategoryCoordinates = surveyResponses.map((response) => {
     return {
       geometryCoordinates:
         categoryGeometryRef && response.data[categoryGeometryRef]
-          ? JSON.parse(response.data[categoryGeometryRef])
+          ? response.data[categoryGeometryRef]
           : // we need to provide a fallback geometry for rs8 & frm7 where the geometry category was not introduced yet
-            metaConfig.geometryFallback,
+            JSON.stringify(metaConfig.geoCategoryFallback),
       responseId: Number(response.id),
       status: response.status,
       hasLocation: Boolean(response.data[locationRef]),
@@ -60,45 +74,17 @@ export const SurveyResponseOverviewMap = ({
   const surveyResponsesWithoutLocationFeatures = surveyResponsesGeometryCategoryCoordinates
     .filter(({ hasLocation }) => !hasLocation)
     .map(({ geometryCoordinates, responseId, status }) =>
-      metaConfig.geometryCategoryType === "line"
-        ? // @ts-expect-error data is of type unknown
-          Array.isArray(geometryCoordinates[0][0])
-          ? multiLineString(
-              // @ts-expect-error data is of type unknown
-              geometryCoordinates,
-              { status, geometryType: "line" },
-              { id: responseId },
-            )
-          : // @ts-expect-error data is of type unknown
-            lineString(geometryCoordinates, { status, geometryType: "line" }, { id: responseId })
-        : // @ts-expect-error data is of type unknown
-          polygon(geometryCoordinates, { status, geometryType: "polygon" }, { id: responseId }),
+      createGeoJSONFromString(geometryCoordinates, { status, id: responseId }, { id: responseId }),
     )
 
   const surveyResponsesGeometryCategoryFeatures = surveyResponsesGeometryCategoryCoordinates
     .filter(({ hasLocation }) => hasLocation)
     .map(({ geometryCoordinates, responseId, status }) =>
-      metaConfig.geometryCategoryType === "line"
-        ? // @ts-expect-error data is of type unknown
-          Array.isArray(geometryCoordinates[0][0])
-          ? multiLineString(
-              // @ts-expect-error data is of type unknown
-              geometryCoordinates,
-              { status, geometryType: "line", geometryCategoryFor: responseId },
-              { id: `geometryCategory-${responseId}` },
-            )
-          : lineString(
-              // @ts-expect-error data is of type unknown
-              geometryCoordinates,
-              { status, geometryType: "line", geometryCategoryFor: responseId },
-              { id: `geometryCategory-${responseId}` },
-            )
-        : polygon(
-            // @ts-expect-error data is of type unknown
-            geometryCoordinates,
-            { status, geometryType: "polygon", geometryCategoryFor: responseId },
-            { id: `geometryCategory-${responseId}` },
-          ),
+      createGeoJSONFromString(
+        geometryCoordinates,
+        { status, geometryCategoryFor: responseId },
+        { id: `geometryCategory-${responseId}` },
+      ),
     )
 
   const { status: statusConfig } = getConfigBySurveySlug(surveySlug, "backend")
@@ -497,29 +483,11 @@ export const SurveyResponseOverviewMap = ({
         ]}
         cursor={cursorStyle}
       >
-        {/*  todo survey clean up after survey BB */}
-        {surveySlug === "radnetz-brandenburg" && (
-          <Source
-            key="SourceNetzentwurf"
-            type="vector"
-            minzoom={6}
-            maxzoom={10}
-            tiles={[
-              "https://api.maptiler.com/tiles/650084a4-a206-4873-8873-e3a43171b6ea/{z}/{x}/{y}.pbf?key=ECOoUBmpqklzSCASXxcu",
-            ]}
-          >
-            <Layer
-              id="LayerNetzentwurf"
-              type="line"
-              source-layer="default"
-              beforeId="Fühung unklar"
-              paint={{
-                "line-color": "hsl(30, 100%, 50%)",
-                "line-width": ["interpolate", ["linear"], ["zoom"], 0, 1, 8, 1.5, 13.8, 5],
-                "line-dasharray": [3, 2],
-              }}
-            />
-          </Source>
+        {additionalMapData && (
+          <>
+            <AllSources mapData={additionalMapData} />
+            <AllLayers layers={[...generateLayers(additionalMapData)]} />
+          </>
         )}
         {surveyResponsesSource}
         {geometryCategorySource}

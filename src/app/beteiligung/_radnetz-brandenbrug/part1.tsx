@@ -71,28 +71,28 @@ export const part1Config: SurveyPart1and3 = {
               "Tragen Sie hier die 4-stellige PIN ein, die Sie von uns per E-Mail erhalten haben.",
           },
         },
-        // origininally readonly field, but not relevant for backend
         {
           name: "5",
-          component: "SurveyTextfield",
+          component: "SurveyReadonlyTextfield",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
           defaultValue: "",
           props: {
             label: "Institution",
             description: "Ihre Institution wird automatisch eingetragen.",
+            queryId: "institution",
           },
         },
-        // origininally readonly field, but not relevant for backend
         {
           name: "6",
-          component: "SurveyTextfield",
+          component: "SurveyReadonlyTextfield",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
           defaultValue: "",
           props: {
             label: "Landkreis",
             description: "Ihr Landkreis wird automatisch eingetragen.",
+            queryId: "landkreis",
           },
         },
       ],

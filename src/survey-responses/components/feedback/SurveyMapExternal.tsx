@@ -1,5 +1,5 @@
 import { SurveyBackgroundSwitcher } from "@/src/app/beteiligung/_components/form/map/BackgroundSwitcher"
-import { SurveyMapBanner } from "@/src/app/beteiligung/_components/form/map/MapBanner"
+import { SurveyMapOutOfViewPanel } from "@/src/app/beteiligung/_components/form/map/MapOutOfViewPanel"
 import Pin from "@/src/app/beteiligung/_components/form/map/Pin"
 import { LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 
@@ -131,8 +131,7 @@ export const SurveyMapExternal = ({
           </Marker>
         )}
         {isMediumScreen && <NavigationControl showCompass={false} />}
-        <SurveyMapBanner
-          className="absolute bottom-12"
+        <SurveyMapOutOfViewPanel
           action={easeToPin}
           status={isPinInView ? "default" : "pinOutOfView"}
         />

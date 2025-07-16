@@ -11,5 +11,5 @@ export const getQuestionIdBySurveySlug = (slug: AllowedSurveySlugs, questionId: 
   }
   const { evaluationRefs } = getResponseConfigBySurveySlug(slug as SurveyLegacySlugs)
   // @ts-expect-error todo types
-  return evaluationRefs[questionId]
+  return String(evaluationRefs[questionId])
 }

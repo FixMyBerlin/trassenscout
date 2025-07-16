@@ -4,27 +4,29 @@ import {
   LayerType,
   SurveyBackgroundSwitcher,
 } from "@/src/app/beteiligung/_components/form/map/BackgroundSwitcher"
-import { SurveyMapBanner } from "@/src/app/beteiligung/_components/form/map/MapBanner"
+import { SurveyMapOutOfViewPanel } from "@/src/app/beteiligung/_components/form/map/MapOutOfViewPanel"
 import SurveyPin from "@/src/app/beteiligung/_components/form/map/Pin"
 import { installMapGrabIfTest } from "@/src/app/beteiligung/_components/form/map/installMapGrab"
 import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
+import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import "maplibre-gl/dist/maplibre-gl.css"
+import { useParams } from "next/navigation"
 import { useState } from "react"
 import Map, { Marker, MarkerDragEvent, NavigationControl, useMap } from "react-map-gl/maplibre"
 
 type Props = {
-  maptilerUrl: string
   config: {
     bounds: [number, number, number, number]
   }
   // field: ReturnType<typeof useFieldContext>
 }
 
-export const SurveySimpleMap = ({ maptilerUrl, config }: Props) => {
+export const SurveySimpleMap = ({ config }: Props) => {
   const mapBounds: { bounds: [number, number, number, number] } = {
     bounds: config.bounds,
   }
-
+  const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
   const { mainMap } = useMap()
   const field = useFieldContext<object>()
   // tbd - maybe we do not need another internal state here
@@ -34,6 +36,7 @@ export const SurveySimpleMap = ({ maptilerUrl, config }: Props) => {
 
   if (mainMap) installMapGrabIfTest(mainMap.getMap(), "mainMap")
 
+  const { maptilerUrl } = getConfigBySurveySlug(surveySlug, "meta")
   const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
   const vectorStyle = `${maptilerUrl}?key=${maptilerApiKey}`
   const satelliteStyle = `${"https://api.maptiler.com/maps/hybrid/style.json"}?key=${maptilerApiKey}`
@@ -106,8 +109,7 @@ export const SurveySimpleMap = ({ maptilerUrl, config }: Props) => {
               <SurveyPin />
             </Marker>
           )}
-          <SurveyMapBanner
-            className="absolute bottom-12"
+          <SurveyMapOutOfViewPanel
             action={easeToPin}
             status={isPinInView ? "default" : "pinOutOfView"}
           />
