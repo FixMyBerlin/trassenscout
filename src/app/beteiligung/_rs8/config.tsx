@@ -11,7 +11,6 @@ export const formConfig = {
     primaryColor: "#e5007d",
     darkColor: "#1e293b",
     lightColor: "#ffcce8",
-
     geoCategoryFallback: [
       [
         [9.194367, 48.893241],

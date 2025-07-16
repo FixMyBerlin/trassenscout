@@ -109,7 +109,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
         type="line"
         layout={{
           "line-cap": "round",
-          "line-join": "round"
+          "line-join": "round",
         }}
         paint={{
           "line-width": 9,
@@ -122,7 +122,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
         type="line"
         layout={{
           "line-cap": "round",
-          "line-join": "round"
+          "line-join": "round",
         }}
         paint={{
           "line-width": ["case", ["has", "width"], ["get", "width"], 7],
@@ -141,7 +141,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
         type="line"
         layout={{
           "line-cap": "round",
-          "line-join": "round"
+          "line-join": "round",
         }}
         paint={{
           "line-width": 9,
@@ -155,7 +155,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
         type="line"
         layout={{
           "line-cap": "round",
-          "line-join": "round"
+          "line-join": "round",
         }}
         paint={{
           "line-width": 7,

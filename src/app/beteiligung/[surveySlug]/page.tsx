@@ -1,12 +1,10 @@
 import SurveyInactivePage from "@/src/app/beteiligung/_components/SurveyInactivePage"
-
-import { SurveyRsTest23 } from "@/src/app/beteiligung/_rstest-2-3/SurveyRsTest23"
-
-import { SurveyBB } from "@/src/app/beteiligung/_radnetz-brandenbrug/SurveyBB"
 import { SurveyOhvHaltestellenfoerderung } from "@/src/app/beteiligung/_ohv-haltestellenfoerderung/SurveyOhvHaltestellenfoerderung"
+import { SurveyBB } from "@/src/app/beteiligung/_radnetz-brandenbrug/SurveyBB"
 import { SurveyRS8 } from "@/src/app/beteiligung/_rs8/SurveyRS8"
 import { SurveyRsTest123 } from "@/src/app/beteiligung/_rstest-1-2-3/SurveyRsTest123"
 import { SurveyRsTest1 } from "@/src/app/beteiligung/_rstest-1/SurveyRsTest1"
+import { SurveyRsTest23 } from "@/src/app/beteiligung/_rstest-2-3/SurveyRsTest23"
 import { SurveyRsTest2 } from "@/src/app/beteiligung/_rstest-2/SurveyRsTest2"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { invoke } from "@/src/blitz-server"
