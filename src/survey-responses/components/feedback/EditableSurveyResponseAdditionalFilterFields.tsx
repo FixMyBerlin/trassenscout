@@ -1,7 +1,8 @@
 import { TBackendConfig } from "@/src/app/beteiligung/_shared/backend-types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
-import { getFlatSurveyQuestions } from "@/src/survey-responses/utils/getQuestionsAsArray"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
+import { getFlatSurveyFormFields } from "@/src/survey-responses/utils/getQuestionsAsArray"
 
 type Props = {
   additionalFilterFields: TBackendConfig["additionalFilters"]
@@ -19,17 +20,28 @@ const EditableSurveyResponseAdditionalFilterFields = ({
   surveySlug,
 }: Props) => {
   const standardFieldsForFilter = [
-    "feedbackText",
-    "category",
-    "geometryCategory",
-    "location",
+    getQuestionIdBySurveySlug(surveySlug, "feedbackText"),
+    getQuestionIdBySurveySlug(surveySlug, "feedbackText_2"),
+    getQuestionIdBySurveySlug(surveySlug, "category"),
+    getQuestionIdBySurveySlug(surveySlug, "geometryCategory"),
+    getQuestionIdBySurveySlug(surveySlug, "location"),
+    getQuestionIdBySurveySlug(surveySlug, "enableLocation"),
     "geometryCategorySourceId",
     "geometryCategoryFeatureId",
   ]
   const additionaFilterKeysPart2ForFilter =
     additionalFilterFields?.filter((f) => f.surveyPart === "part2").map((f) => f.id) || []
   const part2Config = getConfigBySurveySlug(surveySlug, "part2")
-  const part2Fields = getFlatSurveyQuestions(part2Config)
+  const part2Fields = getFlatSurveyFormFields(part2Config)
+
+  const filteredPart2Responses = Object.entries(surveyPart2ResponseData).filter(
+    ([key]) =>
+      !standardFieldsForFilter.includes(key) &&
+      // !key.startsWith("geometry") &&
+      !additionaFilterKeysPart2ForFilter.includes(key),
+  )
+
+  if (!additionalFilterFields?.length && !filteredPart2Responses.length) return null
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-2 md:max-w-screen-md">
@@ -56,31 +68,24 @@ const EditableSurveyResponseAdditionalFilterFields = ({
                 </td>
               </tr>
             ))}
-          {Object.entries(surveyPart2ResponseData)
-            .filter(
-              ([key]) =>
-                !standardFieldsForFilter.includes(key) &&
-                // !key.startsWith("geometry") &&
-                !additionaFilterKeysPart2ForFilter.includes(key),
-            )
-            .map(([key, value]) => {
-              let displayValue: string
-              try {
-                const parsedValue = JSON.parse(value)
-                displayValue = Array.isArray(parsedValue) ? parsedValue.join(", ") : value
-              } catch {
-                displayValue = value
-              }
+          {filteredPart2Responses.map(([key, value]) => {
+            let displayValue: string
+            try {
+              const parsedValue = JSON.parse(value)
+              displayValue = Array.isArray(parsedValue) ? parsedValue.join(", ") : value
+            } catch {
+              displayValue = value
+            }
 
-              return (
-                <tr key={key}>
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                    {part2Fields.find((field) => field.name === key)?.props.label || key}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{displayValue || "-"}</td>
-                </tr>
-              )
-            })}
+            return (
+              <tr key={key}>
+                <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                  {part2Fields.find((field) => field.name === key)?.props.label || key}
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-500">{displayValue || "-"}</td>
+              </tr>
+            )
+          })}
         </tbody>
       </table>
     </div>
