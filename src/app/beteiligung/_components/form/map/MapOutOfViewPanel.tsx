@@ -1,33 +1,22 @@
-import { clsx } from "clsx"
+import { SurveyMapPanelContainer } from "@/src/app/beteiligung/_components/form/map/MapPanelContainer"
 
 type Props = {
   status: "default" | "pinOutOfView"
-  className?: string
   action?: () => void
 }
 
-export const SurveyMapBanner = ({ status, className, action }: Props) => {
+export const SurveyMapOutOfViewPanel = ({ status, action }: Props) => {
   switch (status) {
     case "default":
       return (
-        <div
-          className={clsx(
-            "inset-x-0 mx-4 bg-white/80 p-4 px-8 text-center font-sans text-base font-semibold",
-            className,
-          )}
-        >
+        <SurveyMapPanelContainer>
           Bewegen Sie den Pin auf die gewünschte Position.
-        </div>
+        </SurveyMapPanelContainer>
       )
       break
     case "pinOutOfView":
       return (
-        <div
-          className={clsx(
-            "inset-x-0 mx-4 bg-white/80 p-4 px-8 text-center font-sans text-base font-semibold",
-            className,
-          )}
-        >
+        <SurveyMapPanelContainer>
           Pin liegt außerhalb der aktuellen Ansicht.{" "}
           <button
             className="text-[var(--survey-primary-color)] hover:underline"
@@ -36,7 +25,7 @@ export const SurveyMapBanner = ({ status, className, action }: Props) => {
           >
             Zentrieren
           </button>
-        </div>
+        </SurveyMapPanelContainer>
       )
   }
 }

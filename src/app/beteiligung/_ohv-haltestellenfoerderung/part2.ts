@@ -157,7 +157,7 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
           props: {
             label: "Maßnahmenverortung",
             description:
-              "Wählen Sie eine Bushaltestelle aus, zu welcher Sie eine Maßnahme melden möchten.",
+              "Wählen Sie eine Bushaltestelle aus, zu welcher Sie eine Maßnahme melden möchten. Die Bushaltestellen sind auf der Karte mit orangen Punkten markiert. Klicken Sie auf einen Punkt, um die Haltestelle auszuwählen. Die Karte kann bei Bedarf verschoben oder über die Schaltflächen „+/-“ verkleinert oder vergrößert werden.",
             mapProps: {
               mapData: mapData,
               setInitialBounds: {
@@ -170,7 +170,8 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
                 { dataKey: "routeIds", propertyName: "route_ids", label: "IDs der Routen" },
               ],
               geoCategoryIdDefinition: { dataKey: "geometryCategoryId", propertyName: "stop_id" },
-              // todo remove
+              infoPanelText:
+                "Wählen Sie eine Bushaltestelle aus, zu welcher Sie eine Maßnahme melden möchten.",
               config: {
                 bounds: [12.824965, 52.586742, 13.520948, 53.251088], // Bounding box for Oberhavel to be validated
               },

@@ -5,13 +5,13 @@ import {
   SurveyBackgroundSwitcher,
 } from "@/src/app/beteiligung/_components/form/map/BackgroundSwitcher"
 import { installMapGrabIfTest } from "@/src/app/beteiligung/_components/form/map/installMapGrab"
+import { SurveyMapGeoCategoryInfoPanel } from "@/src/app/beteiligung/_components/form/map/MapGeoCategoryInfoPanel"
 import { getInitialBoundsFromGeometry } from "@/src/app/beteiligung/_components/form/map/utils"
 
 import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
 import { MapData } from "@/src/app/beteiligung/_shared/types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
-import { isProduction } from "@/src/core/utils"
 import { playwrightSendMapLoadedEvent } from "@/tests/_utils/customMapLoadedEvent"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
@@ -25,7 +25,7 @@ import Map, {
   useMap,
 } from "react-map-gl/maplibre"
 
-type Props = {
+export type GeoCategoryMapProps = {
   description?: string
   mapData: MapData
   // defines the additional data that we want to read from the geometries
@@ -34,6 +34,7 @@ type Props = {
   additionalData: { dataKey: string; propertyName: string; label: string }[]
   // the property name in the geojson that we strore as the id for the geometry category
   geoCategoryIdDefinition: { dataKey: string; propertyName: string }
+  infoPanelText?: string
   config: {
     bounds: [number, number, number, number]
   }
@@ -56,7 +57,8 @@ export const SurveyGeoCategoryMap = ({
   setInitialBounds,
   description,
   mapData,
-}: Props) => {
+  infoPanelText,
+}: GeoCategoryMapProps) => {
   const { mainMap } = useMap()
   const field = useFieldContext<object>()
   const searchParams = useSearchParams()
@@ -230,36 +232,12 @@ export const SurveyGeoCategoryMap = ({
         <NavigationControl showCompass={false} />
         <AllSources mapData={mapData} />
         <AllLayers layers={[...generateLayers(mapData)]} />
-        {field.form.getFieldValue(geoCategoryIdDefinition.dataKey) ? (
-          <div className="absolute inset-x-20 bottom-8 rounded-sm bg-white/70 p-2 text-sm">
-            <ul>
-              {!isProduction && (
-                <li className="font-mono">
-                  <small>
-                    <strong>ID:</strong>{" "}
-                    {field.form.getFieldValue(geoCategoryIdDefinition.dataKey) || "Keine Auswahl"} (
-                    {geoCategoryIdDefinition.propertyName})
-                  </small>
-                </li>
-              )}
-              {additionalData.map((data) => {
-                const { label, dataKey, propertyName } = data
-                const value = field.form.getFieldValue(dataKey)
-                return (
-                  <li key={dataKey} className="text-black">
-                    <strong>{label}: </strong>
-                    {value || "Keine Auswahl"}{" "}
-                    {!isProduction && <small className="font-mono">({propertyName})</small>}
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-        ) : (
-          <div className="absolute inset-x-20 bottom-8 rounded-sm bg-white/70 p-2 text-sm">
-            {description || "Bitte treffen Sie eine Auswahl."}
-          </div>
-        )}
+        <SurveyMapGeoCategoryInfoPanel
+          description={description}
+          infoPanelText={infoPanelText}
+          additionalData={additionalData}
+          geoCategoryIdDefinition={geoCategoryIdDefinition}
+        />
         <SurveyBackgroundSwitcher
           className="absolute left-4 top-4"
           value={selectedLayer}

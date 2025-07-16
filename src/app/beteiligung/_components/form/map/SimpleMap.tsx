@@ -4,7 +4,7 @@ import {
   LayerType,
   SurveyBackgroundSwitcher,
 } from "@/src/app/beteiligung/_components/form/map/BackgroundSwitcher"
-import { SurveyMapBanner } from "@/src/app/beteiligung/_components/form/map/MapBanner"
+import { SurveyMapOutOfViewPanel } from "@/src/app/beteiligung/_components/form/map/MapOutOfViewPanel"
 import SurveyPin from "@/src/app/beteiligung/_components/form/map/Pin"
 import { installMapGrabIfTest } from "@/src/app/beteiligung/_components/form/map/installMapGrab"
 import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
@@ -109,8 +109,7 @@ export const SurveySimpleMap = ({ config }: Props) => {
               <SurveyPin />
             </Marker>
           )}
-          <SurveyMapBanner
-            className="absolute bottom-12"
+          <SurveyMapOutOfViewPanel
             action={easeToPin}
             status={isPinInView ? "default" : "pinOutOfView"}
           />
