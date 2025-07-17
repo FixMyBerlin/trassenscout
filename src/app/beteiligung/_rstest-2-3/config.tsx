@@ -322,4 +322,5 @@ export const formConfig = {
       },
     ],
   },
+  email: null,
 } satisfies FormConfig

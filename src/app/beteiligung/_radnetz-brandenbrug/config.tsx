@@ -190,4 +190,5 @@ Weiterführende Informationen zum Radnetz Brandenburg finden Sie außerdem auf d
     ],
     disableExternalSurveyResponseForm: true,
   },
+  email: null,
 } satisfies FormConfig

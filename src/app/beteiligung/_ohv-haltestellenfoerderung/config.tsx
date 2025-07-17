@@ -42,4 +42,46 @@ export const formConfig: FormConfig = {
       { value: "PUBLISHED", label: "Veröffentlicht", color: "#BBF7D0", icon: "DOCUMENT" },
     ],
   },
+  email: {
+    subject: "Bestätigung Ihrer Maßnahmenmeldung zur Haltestellenförderung im Landkreis Oberhavel",
+    markdown: `Sehr geehrte Damen und Herren,
+
+vielen Dank für Ihre Eingabe im Rahmen der digitalen Maßnahmenmeldung zur Haltestellenförderung des Landkreises Oberhavel.
+
+Wir bestätigen den Eingang Ihrer Meldung über das Online-Formular unter folgendem Link:
+https://staging.trassenscout.de/beteiligung/ohv-haltestellenfoerderung?id=TODO
+
+Folgende Angaben wurden übermittelt:
+
+- **Fördergegenstand**: {{category}}
+- **Kommune**: {{commune}}
+- **Verortung der Maßnahme:** {{geometryCategory}}
+- **Name der Haltestelle**: {{hsName}}
+- **Maßnahmenbeschreibung und Zielsetzung**: {{feedbackText}}
+- **Kostenschätzung**: {{costs}}
+- **Kontaktperson (optional)**: {{contact}}
+- **Telefonnummer (optional)**: {{phone}}
+- **E-Mail-Adresse**: {{email}}
+
+Ihre Meldung wird nun durch die zuständige Stelle bei der OHBV als Hauptaufgabenträger und anschließend durch den Landkreis geprüft. Bei Rückfragen werden wir uns gegebenenfalls bei Ihnen melden.
+
+Sollten Sie weitere Maßnahmen melden wollen, können Sie das Formular erneut ausfüllen.
+
+Mit freundlichen Grüßen
+
+i. A. Alexander Greifenberg
+im Auftrag des Landkreises Oberhavel
+`,
+    fields: [
+      "commune",
+      "category",
+      "hsName",
+      "feedbackText",
+      "costs",
+      "contact",
+      "phone",
+      "email",
+      "geometryCategory",
+    ],
+  },
 }

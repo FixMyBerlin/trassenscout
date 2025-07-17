@@ -17,6 +17,7 @@ import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/g
 import { scrollToTopWithDelay } from "@/src/app/beteiligung/_shared/utils/scrollToTopWithDelay"
 
 import createSurveyResponse from "@/src/survey-responses/mutations/createSurveyResponse"
+import surveyFeedbackEmail from "@/src/survey-responses/mutations/surveyFeedbackEmail"
 import createSurveySession from "@/src/survey-sessions/mutations/createSurveySession"
 
 import { useMutation } from "@blitzjs/rpc"
@@ -51,6 +52,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
   const [surveySessionId, setSurveySessionId] = useState<null | number>(null)
   const [createSurveySessionMutation] = useMutation(createSurveySession)
   const [createSurveyResponseMutation] = useMutation(createSurveyResponse)
+  const [surveyFeedbackEmailMutation] = useMutation(surveyFeedbackEmail)
   // to reset form when repeated
   const [formKey, setFormKey] = useState(1)
 
@@ -110,6 +112,11 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
         data: JSON.stringify(value),
         source: "FORM",
         status: surveyResponseDefaultStatus,
+      })
+      await surveyFeedbackEmailMutation({
+        surveySessionId: surveySessionId_,
+        data: value,
+        surveySlug,
       })
     })()
     console.log({ value })

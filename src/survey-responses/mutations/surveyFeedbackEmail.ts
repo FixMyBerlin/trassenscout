@@ -1,58 +1,83 @@
 import db from "@/db"
 import { surveyEntryCreatedNotificationToUser } from "@/emails/mailers/surveyEntryCreatedNotificationToUser"
+import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
+import { getFlatSurveyFormFields } from "@/src/survey-responses/utils/getFlatSurveyFormFields"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-
-// this component is hard coded for the survey radnetz-brandenburg part2
-// it is used to send an email to the user with the feedback they provided
-// if we want to use this for other surveys, we need to refactor the code
 
 export const SurveyFeedbackMail = z.object({
   surveySessionId: z.number(),
   data: z.record(z.any()),
+  surveySlug: z.string() as z.ZodType<AllowedSurveySlugs>,
 })
 
 export default resolver.pipe(
   resolver.zod(SurveyFeedbackMail),
-  async ({ surveySessionId, data }) => {
-    // Get first survey part for personal data and email adress
+  async ({ surveySessionId, data, surveySlug }) => {
+    // Get email configuration from survey config
+    const emailConfig = getConfigBySurveySlug(surveySlug, "email")
+
+    if (!emailConfig) {
+      return { success: false, message: "No email configuration found for this survey" }
+    }
+
+    // Get first survey part for personal data and email address
     const surveyPart1 = await db.surveyResponse.findFirst({
       where: { surveySessionId: surveySessionId, surveyPart: 1 },
     })
+    const parsedSurveyPart1 = surveyPart1
+      ? (JSON.parse(surveyPart1.data) as Record<string, any>)
+      : {}
 
-    const feedbackDefinition = getConfigBySurveySlug("radnetz-brandenburg", "part2")
+    // Extract email from survey data - check both surveyPart1 and part2 data
+    const userEmail = (parsedSurveyPart1["email"] || data["email"]) as string
 
-    const categories = Object.fromEntries(
-      // @ts-expect-error
-      feedbackDefinition.pages[0]?.fields
-        // todo survey clean up or refactor after survey BB
-        // the category ref is hard coded
-        .find((q) => String(q.name) == "22")
-        // @ts-expect-error
-        .props.options.map((option) => [option.key, option.label]),
-    )
-
-    if (surveyPart1) {
-      const parsedSurveyPart1 = JSON.parse(surveyPart1?.data)
-      // Send the email
-      // todo survey clean up or refactor after survey BB
-      // the refs are hard coded to reduce the complexity of the code as we do not know if we keep this feature
-      await (
-        await surveyEntryCreatedNotificationToUser({
-          // @ts-expect-error
-          userMail: parsedSurveyPart1["3"],
-          // @ts-expect-error
-          userFirstname: parsedSurveyPart1["1"],
-          // @ts-expect-error
-          userLastname: parsedSurveyPart1["2"],
-          feedbackLocation: data["24"],
-          feedbackCategory: categories[data["22"]],
-          feedbackText: data["25"],
-          lineFromToName: data["30"],
-        })
-      ).send()
+    if (!userEmail) {
+      return { success: false, message: "User email not found in survey data" }
     }
-    return
+
+    // Get part2 configuration to extract field labels
+    const part2Config = getConfigBySurveySlug(surveySlug, "part2")
+    const part2Fields = getFlatSurveyFormFields(part2Config)
+
+    // Build field values based on email configuration
+    const fieldValues: Record<string, string> = {}
+
+    emailConfig.fields.forEach((fieldName) => {
+      const field = part2Fields.find((f) => String(f.name) === fieldName)
+      const label = field?.props?.label || fieldName
+      // todo fields might be in parsedSurveyPart1 or parsedSurveyPart3
+      const value = data[fieldName] || ""
+
+      // Handle different field types
+      if (
+        field?.component === "SurveyRadiobuttonGroup" ||
+        field?.component === "SurveyCheckboxGroup"
+      ) {
+        // For radio/checkbox groups, get the label from options
+        const props = field.props as any
+        if (props.options) {
+          const option = props.options.find((opt: any) => opt.key === value)
+          fieldValues[fieldName] = option?.label || value
+        } else {
+          fieldValues[fieldName] = value
+        }
+      } else {
+        fieldValues[fieldName] = value
+      }
+    })
+
+    // Create dynamic email mailer
+    const message = await surveyEntryCreatedNotificationToUser({
+      userEmail,
+      subject: emailConfig.subject,
+      markdown: emailConfig.markdown,
+      fieldValues,
+    })
+
+    await message.send()
+
+    return { success: true, message: "Email sent successfully" }
   },
 )

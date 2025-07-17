@@ -198,6 +198,12 @@ export type FormPage = {
 
 export type Stage = "part1" | "part2" | "part3" | "end"
 
+export type EmailConfig = {
+  subject: string
+  markdown: string
+  fields: string[] // Array of field names to include in email as [label]: value
+}
+
 export type IntroButton = {
   label: string
   action: Stage | "next"
@@ -273,6 +279,7 @@ export type FormConfig = {
     }
   }
   backend: TBackendConfig
+  email: EmailConfig | null
 }
 
 export type SurveyFieldRadioOrCheckboxGroupConfig = Extract<
