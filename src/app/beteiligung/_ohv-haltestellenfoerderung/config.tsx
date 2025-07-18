@@ -49,7 +49,7 @@ export const formConfig: FormConfig = {
 vielen Dank für Ihre Eingabe im Rahmen der digitalen Maßnahmenmeldung zur Haltestellenförderung des Landkreises Oberhavel.
 
 Wir bestätigen den Eingang Ihrer Meldung über das Online-Formular unter folgendem Link:
-https://staging.trassenscout.de/beteiligung/ohv-haltestellenfoerderung?id=TODO
+{{surveyUrl}}
 
 Folgende Angaben wurden übermittelt:
 
@@ -82,6 +82,7 @@ im Auftrag des Landkreises Oberhavel
       "phone",
       "email",
       "geometryCategory",
+      "surveyUrl",
     ],
   },
 }

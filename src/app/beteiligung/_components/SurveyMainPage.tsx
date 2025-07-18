@@ -21,7 +21,7 @@ import surveyFeedbackEmail from "@/src/survey-responses/mutations/surveyFeedback
 import createSurveySession from "@/src/survey-sessions/mutations/createSurveySession"
 
 import { useMutation } from "@blitzjs/rpc"
-import { useParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 import { useState } from "react"
 
 type Props = {
@@ -55,6 +55,8 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
   const [surveyFeedbackEmailMutation] = useMutation(surveyFeedbackEmail)
   // to reset form when repeated
   const [formKey, setFormKey] = useState(1)
+  const searchParams = useSearchParams()
+  const allParams = searchParams ? Object.fromEntries(searchParams.entries()) : null
 
   const [progress, setProgress] = useState(getprogressBarDefinitionBySurveySlug(surveySlug, stage))
 
@@ -117,6 +119,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
         surveySessionId: surveySessionId_,
         data: value,
         surveySlug,
+        searchParams: allParams,
       })
     })()
     console.log({ value })

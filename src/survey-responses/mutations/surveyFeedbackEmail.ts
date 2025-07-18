@@ -10,11 +10,12 @@ export const SurveyFeedbackMail = z.object({
   surveySessionId: z.number(),
   data: z.record(z.any()),
   surveySlug: z.string() as z.ZodType<AllowedSurveySlugs>,
+  searchParams: z.record(z.string()).nullable(),
 })
 
 export default resolver.pipe(
   resolver.zod(SurveyFeedbackMail),
-  async ({ surveySessionId, data, surveySlug }) => {
+  async ({ surveySessionId, data, surveySlug, searchParams }) => {
     // Get email configuration from survey config
     const emailConfig = getConfigBySurveySlug(surveySlug, "email")
 
@@ -46,25 +47,31 @@ export default resolver.pipe(
 
     emailConfig.fields.forEach((fieldName) => {
       const field = part2Fields.find((f) => String(f.name) === fieldName)
-      const label = field?.props?.label || fieldName
       // todo fields might be in parsedSurveyPart1 or parsedSurveyPart3
       const value = data[fieldName] || ""
 
-      // Handle different field types
-      if (
-        field?.component === "SurveyRadiobuttonGroup" ||
-        field?.component === "SurveyCheckboxGroup"
-      ) {
-        // For radio/checkbox groups, get the label from options
-        const props = field.props as any
-        if (props.options) {
-          const option = props.options.find((opt: any) => opt.key === value)
-          fieldValues[fieldName] = option?.label || value
+      if (fieldName === "surveyUrl" && searchParams) {
+        const queryParams = Object.entries(searchParams)
+          .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+          .join("&")
+        fieldValues[fieldName] = `https://trassenscout.de/beteiligung/${surveySlug}/?${queryParams}`
+      } else {
+        // Handle different field types
+        if (
+          field?.component === "SurveyRadiobuttonGroup" ||
+          field?.component === "SurveyCheckboxGroup"
+        ) {
+          // For radio/checkbox groups, get the label from options
+          const props = field.props as any
+          if (props.options) {
+            const option = props.options.find((opt: any) => opt.key === value)
+            fieldValues[fieldName] = option?.label || value
+          } else {
+            fieldValues[fieldName] = value
+          }
         } else {
           fieldValues[fieldName] = value
         }
-      } else {
-        fieldValues[fieldName] = value
       }
     })
 
