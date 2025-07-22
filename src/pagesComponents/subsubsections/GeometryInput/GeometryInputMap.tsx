@@ -127,17 +127,12 @@ export const GeometryInputMap = ({ subsection }: Props) => {
                 id="nearestPoint"
                 type="circle"
                 paint={{
-                  "circle-radius": ["case", ["has", "radius"], ["get", "radius"], 14],
-                  "circle-color": ["case", ["has", "color"], ["get", "color"], "#E5007D"],
-                  "circle-opacity": 0.5,
-                }}
-              />
-              <Layer
-                type="circle"
-                paint={{
                   "circle-radius": 4,
                   "circle-color": "black",
                   "circle-opacity": 0.6,
+                  "circle-stroke-width": 12,
+                  "circle-stroke-color": "#E5007D",
+                  "circle-stroke-opacity": 0.5,
                 }}
               />
             </Source>
