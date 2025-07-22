@@ -33,18 +33,14 @@ export const GeometryInputMap = ({ subsection }: Props) => {
   const [pointTwoOnLine, setPointTwoOnLine] = useState<Feature<Point> | undefined>(undefined)
 
   const handleClickGeometryTypeArea = (event: MapLayerMouseEvent) => {
-    // Change back to the simpler… once https://github.com/visgl/react-map-gl/issues/2239 is resolved
-    // const clickedPoint = point(event.lngLat.toArray())
-    const clickedPoint = point([event.lngLat.lng, event.lngLat.lat])
+    const clickedPoint = point(event.lngLat.toArray())
     const nearestPoint = nearestPointOnLine(lineString(subsection.geometry), clickedPoint)
 
     setValue("geometry", nearestPoint.geometry.coordinates)
   }
 
   const handleClickGeometryTypeRoute = (event: MapLayerMouseEvent) => {
-    // Change back to the simpler… once https://github.com/visgl/react-map-gl/issues/2239 is resolved
-    // const clickedPoint = point(event.lngLat.toArray())
-    const clickedPoint = point([event.lngLat.lng, event.lngLat.lat])
+    const clickedPoint = point(event.lngLat.toArray())
     const nearestPoint = nearestPointOnLine(lineString(subsection.geometry), clickedPoint)
     let newLine = undefined
 
