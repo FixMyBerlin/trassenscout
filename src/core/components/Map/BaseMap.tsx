@@ -209,7 +209,6 @@ export const BaseMap: React.FC<BaseMapProps> = ({
           onLoad={handleOnLoad}
           interactiveLayerIds={[
             interactiveLayerIds,
-            lines && "lines-outline",
             selectableLines && [selectableLineLayerId, `${selectableLineLayerId}-outline`],
             selectablePoints && selectablePointLayerId,
           ]
