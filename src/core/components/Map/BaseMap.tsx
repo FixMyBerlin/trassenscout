@@ -209,8 +209,8 @@ export const BaseMap: React.FC<BaseMapProps> = ({
           onLoad={handleOnLoad}
           interactiveLayerIds={[
             interactiveLayerIds,
-            selectableLines && [selectableLineLayerId, `${selectableLineLayerId}-outline`],
             selectablePoints && selectablePointLayerId,
+            selectableLines && selectableLineLayerId,
           ]
             .flat()
             .filter(Boolean)}
