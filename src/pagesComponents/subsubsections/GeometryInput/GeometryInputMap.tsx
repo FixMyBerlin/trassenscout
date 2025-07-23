@@ -18,12 +18,12 @@ type RouteGeometry = Position[] // [number, number][]
 type AreaGeometry = Position // [number, number]
 
 export const GeometryInputMap = ({ subsection }: Props) => {
+  if (!subsection.geometry.length) return null
+
   const { watch, setValue } = useFormContext()
   const { preview } = useMap()
   const geometry = watch("geometry") as RouteGeometry | AreaGeometry
   const geometryType = watch("type") as SubsubsectionWithPosition["type"]
-
-  if (!subsection.geometry.length) return null
 
   const subsectionFeature = featureCollection([
     lineString(subsection.geometry, { color: layerColors.unselectableCurrent }),
