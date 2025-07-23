@@ -94,12 +94,12 @@ export const GeometryInputMap = ({ subsection }: Props) => {
             <>
               {/* nearest Points to where clicked */}
               <Source
-                key="nearestPoint"
+                key="nearestPoint-route"
                 type="geojson"
                 data={featureCollection([pointOneOnLine, pointTwoOnLine].filter(Boolean))}
               >
                 <Layer
-                  id="nearestPoint"
+                  id="nearestPoint-route"
                   type="circle"
                   paint={{
                     "circle-radius": ["case", ["has", "radius"], ["get", "radius"], 14],
@@ -122,9 +122,9 @@ export const GeometryInputMap = ({ subsection }: Props) => {
               </Source>
             </>
           ) : (
-            <Source type="geojson" data={point(geometry as AreaGeometry)}>
+            <Source key="nearestPoint-area" type="geojson" data={point(geometry as AreaGeometry)}>
               <Layer
-                id="nearestPoint"
+                id="nearestPoint-area"
                 type="circle"
                 paint={{
                   "circle-radius": 4,
