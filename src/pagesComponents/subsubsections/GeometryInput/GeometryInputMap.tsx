@@ -33,17 +33,16 @@ export const GeometryInputMap = ({ subsection }: Props) => {
   const [pointOneOnLine, setPointOneOnLine] = useState<Feature<Point> | undefined>(undefined)
   const [pointTwoOnLine, setPointTwoOnLine] = useState<Feature<Point> | undefined>(undefined)
 
-  if (!subsection.geometry.length) return null
-
   const handleClickGeometryTypeArea = (event: MapLayerMouseEvent) => {
-    const allLayers = preview?.getStyle()?.layers
-    const cleanLayers = allLayers?.filter(
-      (layer) =>
-        "source" in layer &&
-        !layer.source.includes("maptiler") &&
-        !layer.source.includes("openmaptiles"),
-    )
-    console.log(cleanLayers)
+    // const allSources = preview?.getStyle()?.sources
+    // const allLayers = preview?.getStyle()?.layers
+    // const cleanLayers = allLayers?.filter(
+    //   (layer) =>
+    //     "source" in layer &&
+    //     !layer.source.includes("maptiler") &&
+    //     !layer.source.includes("openmaptiles"),
+    // )
+    // console.log({ allSources, allLayers, cleanLayers })
     const clickedPoint = point(event.lngLat.toArray())
     const nearestPoint = nearestPointOnLine(lineString(subsection.geometry), clickedPoint)
 
@@ -51,14 +50,15 @@ export const GeometryInputMap = ({ subsection }: Props) => {
   }
 
   const handleClickGeometryTypeRoute = (event: MapLayerMouseEvent) => {
-    const allLayers = preview?.getStyle()?.layers
-    const cleanLayers = allLayers?.filter(
-      (layer) =>
-        "source" in layer &&
-        !layer.source.includes("maptiler") &&
-        !layer.source.includes("openmaptiles"),
-    )
-    console.log(cleanLayers)
+    // const allSources = preview?.getStyle()?.sources
+    // const allLayers = preview?.getStyle()?.layers
+    // const cleanLayers = allLayers?.filter(
+    //   (layer) =>
+    //     "source" in layer &&
+    //     !layer.source.includes("maptiler") &&
+    //     !layer.source.includes("openmaptiles"),
+    // )
+    // console.log({ allSources, allLayers, cleanLayers })
     const clickedPoint = point(event.lngLat.toArray())
     const nearestPoint = nearestPointOnLine(lineString(subsection.geometry), clickedPoint)
     let newLine = undefined
@@ -109,41 +109,61 @@ export const GeometryInputMap = ({ subsection }: Props) => {
           }
         >
           <GeometryInputMapSubsubsections />
+
           {geometryType === "ROUTE" && (
             <>
               {/* nearest Points to where clicked */}
               <Source
+                id="nearestPoint-route"
                 key="nearestPoint-route"
                 type="geojson"
                 data={featureCollection([pointOneOnLine, pointTwoOnLine].filter(Boolean))}
-              >
-                <Layer
-                  id="nearestPoint-route"
-                  type="circle"
-                  paint={{
-                    "circle-radius": ["case", ["has", "radius"], ["get", "radius"], 14],
-                    "circle-color": ["case", ["has", "color"], ["get", "color"], "#E5007D"],
-                    "circle-opacity": 0.5,
-                  }}
-                />
-              </Source>
+              />
+              <Layer
+                id="nearestPoint-route"
+                key="nearestPoint-route"
+                source="nearestPoint-route"
+                type="circle"
+                paint={{
+                  "circle-radius": ["case", ["has", "radius"], ["get", "radius"], 14],
+                  "circle-color": ["case", ["has", "color"], ["get", "color"], "#E5007D"],
+                  "circle-opacity": 0.5,
+                }}
+              />
 
               {/* Geometry from form */}
-              <Source key="geometry" type="geojson" data={lineString(geometry as RouteGeometry)}>
-                <Layer
-                  type="line"
-                  paint={{
-                    "line-width": 4,
-                    "line-color": "black",
-                    "line-opacity": 0.6,
-                  }}
-                />
-              </Source>
+              <Source
+                id="geometry"
+                key="geometry"
+                type="geojson"
+                data={lineString(geometry as RouteGeometry)}
+              />
+              <Layer
+                id="geometry"
+                key="geometry"
+                source="geometry"
+                type="line"
+                paint={{
+                  "line-width": 4,
+                  "line-color": "black",
+                  "line-opacity": 0.6,
+                }}
+              />
             </>
           )}
+
           {geometryType === "AREA" && (
-            <Source key="nearestPoint-area" type="geojson" data={point(geometry as AreaGeometry)}>
+            <>
+              <Source
+                id="nearestPoint-area"
+                key="nearestPoint-area"
+                type="geojson"
+                data={point(geometry as AreaGeometry)}
+              />
               <Layer
+                id="nearestPoint-area-layer"
+                key="nearestPoint-area-layer"
+                source="nearestPoint-area"
                 type="circle"
                 paint={{
                   "circle-radius": 4,
@@ -154,7 +174,7 @@ export const GeometryInputMap = ({ subsection }: Props) => {
                   "circle-stroke-opacity": 0.5,
                 }}
               />
-            </Source>
+            </>
           )}
         </BaseMap>
       </div>

@@ -140,7 +140,12 @@ export const EditableSurveyResponseFormMap = ({
 
   const geometryCategorySource =
     geometryCategoryCoordinates && geometryCategoryGeometryType !== "unknown" ? (
-      <Source key="geometryCategory" type="geojson" data={geometryCategoryGeoJSON}>
+      <Source
+        id="geometryCategory"
+        key="geometryCategory"
+        type="geojson"
+        data={geometryCategoryGeoJSON}
+      >
         {renderGeometryLayer()}
       </Source>
     ) : undefined

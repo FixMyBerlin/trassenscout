@@ -79,32 +79,57 @@ export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
             >
               <NavigationControl showCompass={false} />
               <ScaleControl />
+
               {geometryType === "ROUTE" ? (
                 <>
-                  <Source type="geojson" data={lineString(geometry as RouteGeomtry)}>
-                    <Layer
-                      type="line"
-                      paint={{
-                        "line-width": 4,
-                        "line-color": "black",
-                        "line-opacity": 0.6,
-                      }}
-                    />
-                  </Source>
+                  <Source
+                    id="geometryFieldRoute"
+                    key="geometryFieldRoute"
+                    type="geojson"
+                    data={lineString(geometry as RouteGeomtry)}
+                  />
+                  <Layer
+                    id="geometryFieldRoute-layer"
+                    key="geometryFieldRoute-layer"
+                    source="geometryFieldRoute"
+                    type="line"
+                    paint={{
+                      "line-width": 4,
+                      "line-color": "black",
+                      "line-opacity": 0.6,
+                    }}
+                  />
+
                   {/* Highlight the start of a Geometry so help understand the direction */}
-                  <Source key="dot" type="geojson" data={point(geometry[0] as Position)}>
-                    <Layer
-                      type="circle"
-                      paint={{
-                        "circle-radius": 6,
-                        "circle-color": "black",
-                      }}
-                    />
-                  </Source>
+                  <Source
+                    id="geometryFieldRoutePoint"
+                    key="geometryFieldRoutePoint"
+                    type="geojson"
+                    data={point(geometry[0] as Position)}
+                  />
+                  <Layer
+                    id="geometryFieldRoutePoint-layer"
+                    key="geometryFieldRoutePoint-layer"
+                    source="geometryFieldRoutePoint"
+                    type="circle"
+                    paint={{
+                      "circle-radius": 6,
+                      "circle-color": "black",
+                    }}
+                  />
                 </>
               ) : (
-                <Source type="geojson" data={point(geometry as AreaGeometry)}>
+                <>
+                  <Source
+                    id="geometryFieldArea"
+                    key="geometryFieldArea"
+                    type="geojson"
+                    data={point(geometry as AreaGeometry)}
+                  />
                   <Layer
+                    id="geometryFieldArea-layer"
+                    key="geometryFieldArea-layer"
+                    source="geometryFieldArea"
                     type="circle"
                     paint={{
                       "circle-radius": 4,
@@ -112,10 +137,11 @@ export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
                       "circle-opacity": 0.6,
                     }}
                   />
-                </Source>
+                </>
               )}
             </Map>
           </div>
+
           <details className="prose prose-sm">
             <summary className="cursor-pointer">Geometry</summary>
             <Link

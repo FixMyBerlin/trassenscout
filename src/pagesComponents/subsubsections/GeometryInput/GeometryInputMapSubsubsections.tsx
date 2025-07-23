@@ -31,58 +31,75 @@ export const GeometryInputMapSubsubsections = () => {
 
   return (
     <>
-      <Source key="otherSubsubsectionsLine" type="geojson" data={subsubsectionLineFeatures}>
-        <Layer
-          id="otherSubsubsectionsLine"
-          type="line"
-          paint={{
-            "line-width": 4,
-            "line-color": layerColors.unselectable,
-          }}
-        />
-        <Layer
-          id="otherSubsubsectionsLineLabel"
-          type="symbol"
-          layout={{
-            "text-field": ["get", "name"],
-            "text-size": 14,
-            "text-anchor": "center",
-            "symbol-placement": "line",
-            "text-transform": "uppercase",
-          }}
-          paint={{
-            "text-color": "white",
-            "text-halo-color": layerColors.unselectable,
-            "text-halo-width": 2,
-          }}
-        />
-      </Source>
-      <Source key="otherSubsubsectionsPoints" type="geojson" data={subsubsectionPointFeatures}>
-        <Layer
-          id="otherSubsubsectionsPoints"
-          type="circle"
-          paint={{
-            "circle-radius": 14,
-            "circle-color": layerColors.unselectable,
-          }}
-        />
-        <Layer
-          id="otherSubsubsectionsPointsLabel"
-          type="symbol"
-          layout={{
-            "text-field": ["get", "name"],
-            "text-size": 14,
-            "text-anchor": "center",
-            "text-offset": [0.1, 0],
-            "text-transform": "uppercase",
-          }}
-          paint={{
-            "text-color": "white",
-            "text-halo-color": layerColors.unselectable,
-            "text-halo-width": 2,
-          }}
-        />
-      </Source>
+      <Source
+        id="otherSubsubsectionsLine"
+        key="otherSubsubsectionsLine"
+        type="geojson"
+        data={subsubsectionLineFeatures}
+      />
+      <Layer
+        id="otherSubsubsectionsLine-layer"
+        key="otherSubsubsectionsLine-layer"
+        source="otherSubsubsectionsLine"
+        type="line"
+        paint={{
+          "line-width": 4,
+          "line-color": layerColors.unselectable,
+        }}
+      />
+      <Layer
+        id="otherSubsubsectionsLineLabel-layer"
+        key="otherSubsubsectionsLineLabel-layer"
+        source="otherSubsubsectionsLine"
+        type="symbol"
+        layout={{
+          "text-field": ["get", "name"],
+          "text-size": 14,
+          "text-anchor": "center",
+          "symbol-placement": "line",
+          "text-transform": "uppercase",
+        }}
+        paint={{
+          "text-color": "white",
+          "text-halo-color": layerColors.unselectable,
+          "text-halo-width": 2,
+        }}
+      />
+
+      <Source
+        id="otherSubsubsectionsPoints"
+        key="otherSubsubsectionsPoints"
+        type="geojson"
+        data={subsubsectionPointFeatures}
+      />
+      <Layer
+        id="otherSubsubsectionsPoints-layer"
+        key="otherSubsubsectionsPoints-layer"
+        source="otherSubsubsectionsPoints"
+        type="circle"
+        paint={{
+          "circle-radius": 14,
+          "circle-color": layerColors.unselectable,
+        }}
+      />
+      <Layer
+        id="otherSubsubsectionsPointsLabel-layer"
+        key="otherSubsubsectionsPointsLabel-layer"
+        source="otherSubsubsectionsPoints"
+        type="symbol"
+        layout={{
+          "text-field": ["get", "name"],
+          "text-size": 14,
+          "text-anchor": "center",
+          "text-offset": [0.1, 0],
+          "text-transform": "uppercase",
+        }}
+        paint={{
+          "text-color": "white",
+          "text-halo-color": layerColors.unselectable,
+          "text-halo-width": 2,
+        }}
+      />
     </>
   )
 }

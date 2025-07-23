@@ -398,6 +398,7 @@ export const SurveyResponseOverviewMap = ({
 
   const surveyResponsesSource = (
     <Source
+      id="surveyResponses"
       key="surveyResponses"
       type="geojson"
       // todo type
@@ -422,6 +423,7 @@ export const SurveyResponseOverviewMap = ({
   )
   const geometryCategorySource = (
     <Source
+      id="geometryCategory"
       key="geometryCategory"
       type="geojson"
       // todo type
