@@ -7,7 +7,7 @@ import { bbox, distance, lineSlice, nearestPointOnLine } from "@turf/turf"
 import type { Feature, Point, Position } from "geojson"
 import { useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { Layer, LngLatBoundsLike, MapLayerMouseEvent, Source } from "react-map-gl/maplibre"
+import { Layer, LngLatBoundsLike, MapLayerMouseEvent, Source, useMap } from "react-map-gl/maplibre"
 import { GeometryInputMapSubsubsections } from "./GeometryInputMapSubsubsections"
 
 type Props = {
@@ -19,6 +19,7 @@ type AreaGeometry = Position // [number, number]
 
 export const GeometryInputMap = ({ subsection }: Props) => {
   const { watch, setValue } = useFormContext()
+  const { preview } = useMap()
   const geometry = watch("geometry") as RouteGeometry | AreaGeometry
   const geometryType = watch("type") as SubsubsectionWithPosition["type"]
 
@@ -33,6 +34,14 @@ export const GeometryInputMap = ({ subsection }: Props) => {
   const [pointTwoOnLine, setPointTwoOnLine] = useState<Feature<Point> | undefined>(undefined)
 
   const handleClickGeometryTypeArea = (event: MapLayerMouseEvent) => {
+    const allLayers = preview?.getStyle()?.layers
+    const cleanLayers = allLayers?.filter(
+      (layer) =>
+        "source" in layer &&
+        !layer.source.includes("maptiler") &&
+        !layer.source.includes("openmaptiles"),
+    )
+    console.log(cleanLayers)
     const clickedPoint = point(event.lngLat.toArray())
     const nearestPoint = nearestPointOnLine(lineString(subsection.geometry), clickedPoint)
 
@@ -40,6 +49,14 @@ export const GeometryInputMap = ({ subsection }: Props) => {
   }
 
   const handleClickGeometryTypeRoute = (event: MapLayerMouseEvent) => {
+    const allLayers = preview?.getStyle()?.layers
+    const cleanLayers = allLayers?.filter(
+      (layer) =>
+        "source" in layer &&
+        !layer.source.includes("maptiler") &&
+        !layer.source.includes("openmaptiles"),
+    )
+    console.log(cleanLayers)
     const clickedPoint = point(event.lngLat.toArray())
     const nearestPoint = nearestPointOnLine(lineString(subsection.geometry), clickedPoint)
     let newLine = undefined

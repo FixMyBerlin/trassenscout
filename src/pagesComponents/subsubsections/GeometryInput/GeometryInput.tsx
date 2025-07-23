@@ -7,6 +7,7 @@ import getSubsection from "@/src/server/subsections/queries/getSubsection"
 import { useQuery } from "@blitzjs/rpc"
 import { useEffect } from "react"
 import { useFormContext } from "react-hook-form"
+import { MapProvider } from "react-map-gl/maplibre"
 import { z } from "zod"
 import { GeometryInputMap } from "./GeometryInputMap"
 
@@ -21,7 +22,8 @@ export const GeometryInput = () => {
   const { setValue, watch } = useFormContext()
   const geometry = watch("geometry")
   const type = watch("type")
-
+  console.log({ geometry })
+  console.log({ subsection })
   const LineStringSchema = z.array(z.array(z.number()).min(2).max(2).nonempty()).nonempty()
   const PointSchema = z.array(z.number()).min(2).max(2).nonempty()
   const schemaResult =
@@ -47,8 +49,11 @@ export const GeometryInput = () => {
         ]}
         classNameItemWrapper="flex gap-5 !space-y-0 items-center"
       />
-
-      {schemaResult.success && <GeometryInputMap subsection={subsection} />}
+      <MapProvider>
+        {schemaResult.success && subsection.geometry && (
+          <GeometryInputMap subsection={subsection} />
+        )}
+      </MapProvider>
 
       <details className="rounded border-gray-300 p-4 open:border open:bg-gray-50">
         <summary className="mb-4 cursor-pointer text-sm font-medium text-gray-700">
