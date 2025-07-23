@@ -18,8 +18,6 @@ type RouteGeometry = Position[] // [number, number][]
 type AreaGeometry = Position // [number, number]
 
 export const GeometryInputMap = ({ subsection }: Props) => {
-  if (!subsection.geometry.length) return null
-
   const { watch, setValue } = useFormContext()
   const { preview } = useMap()
   const geometry = watch("geometry") as RouteGeometry | AreaGeometry
@@ -34,6 +32,8 @@ export const GeometryInputMap = ({ subsection }: Props) => {
 
   const [pointOneOnLine, setPointOneOnLine] = useState<Feature<Point> | undefined>(undefined)
   const [pointTwoOnLine, setPointTwoOnLine] = useState<Feature<Point> | undefined>(undefined)
+
+  if (!subsection.geometry.length) return null
 
   const handleClickGeometryTypeArea = (event: MapLayerMouseEvent) => {
     const allLayers = preview?.getStyle()?.layers
