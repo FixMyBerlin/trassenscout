@@ -15,6 +15,7 @@ export interface FormProps<S extends z.ZodType<any, any>>
   /** Text to display in the submit button */
   submitText?: string
   submitClassName?: string
+  resetOnSubmit?: boolean
   schema?: S
   onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
@@ -31,6 +32,7 @@ export function Form<S extends z.ZodType<any, any>>({
   children,
   submitText,
   submitClassName,
+  resetOnSubmit,
   schema,
   initialValues,
   onSubmit,
@@ -43,7 +45,6 @@ export function Form<S extends z.ZodType<any, any>>({
     defaultValues: initialValues,
   })
   const [formError, setFormError] = useState<string | null>(null)
-
   return (
     <IntlProvider messages={errorMessageTranslations} locale="de" defaultLocale="de">
       <FormProvider {...ctx}>
@@ -68,6 +69,13 @@ export function Form<S extends z.ZodType<any, any>>({
                   message: value,
                 })
               }
+            }
+            // Reset form state if resetOnSubmit is true and no FORM_ERROR is present
+            // introduced for Protocolform
+            if (resetOnSubmit && !result.FORM_ERROR) {
+              console.log("Resetting form state")
+              ctx.reset()
+              setFormError(null)
             }
           })}
           {...props}

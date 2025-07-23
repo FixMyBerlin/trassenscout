@@ -159,6 +159,8 @@ model Project {
   invites               Invite[]
   LogEntry              LogEntry[]
   SystemLogEntry        SystemLogEntry[]
+  protocols             Protocol[]
+  protocolTopics        ProtocolTopic[]
 }
 
 model Membership {
@@ -277,6 +279,7 @@ model Subsection {
   stakeholdernotes              Stakeholdernote[]
   uploads                       Upload[]
   LogEntry                      LogEntry[]
+  Protocol                      Protocol[]
 
   @@unique([projectId, slug])
   @@unique([projectId, order])
@@ -631,6 +634,8 @@ model LogEntry {
   upload             Upload?            @relation(fields: [uploadId], references: [id])
   surveyResponseId   Int?
   surveyResponse     SurveyResponse?    @relation(fields: [surveyResponseId], references: [id])
+  Protocol           Protocol?          @relation(fields: [protocolId], references: [id])
+  protocolId         Int?
 
   @@index([projectId, createdAt])
 }
@@ -639,4 +644,34 @@ enum LogLevelActionEnum {
   CREATE
   UPDATE
   DELETE
+}
+
+model Protocol {
+  id             Int             @id @default(autoincrement())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  //
+  date           DateTime
+  title          String
+  description    String?
+  //
+  project        Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId      Int
+  //
+  subsection     Subsection?     @relation(fields: [subsectionId], references: [id], onDelete: Cascade)
+  subsectionId   Int?
+  //
+  protocolTopics ProtocolTopic[]
+  LogEntry       LogEntry[]
+}
+
+model ProtocolTopic {
+  id        Int        @id @default(autoincrement())
+  title     String
+  //
+  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId Int
+  protocols Protocol[]
+
+  @@unique([title, projectId])
 }
