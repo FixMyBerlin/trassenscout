@@ -1,10 +1,6 @@
 import db from "@/db"
-import {
-  AllowedSurveySlugs,
-  isSurveyLegacy,
-  SurveyLegacySlugs,
-} from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
-import { getResponseConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
+import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
@@ -37,15 +33,17 @@ export default resolver.pipe(
 
     const surveySlug = surveyResponses[0]!.surveySession.survey.slug as AllowedSurveySlugs
 
-    const isLegacy = isSurveyLegacy(surveySlug)
-
-    const userLocationQuestionId = isLegacy
-      ? getResponseConfigBySurveySlug(surveySlug as SurveyLegacySlugs)?.evaluationRefs["location"]
-      : "location"
+    const userLocationQuestionId = getQuestionIdBySurveySlug(surveySlug, "location")
+    const geoCategoryId = getQuestionIdBySurveySlug(surveySlug, "geometryCategory")
 
     const filteredSurveyResponses = surveyResponses
-      //@ts-expect-error
-      .filter((response) => JSON.parse(response.data)[userLocationQuestionId])
+      .filter(
+        (response) =>
+          //@ts-expect-error
+          JSON.parse(response.data)[userLocationQuestionId] ||
+          //@ts-expect-error
+          JSON.parse(response.data)[geoCategoryId],
+      )
       .sort((a, b) => b.id - a.id)
 
     const surveyResponse = filteredSurveyResponses[0]

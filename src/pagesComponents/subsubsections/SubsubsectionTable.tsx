@@ -1,7 +1,7 @@
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
-import { formattedEuro, formattedLength, longTitle, shortTitle } from "@/src/core/components/text"
+import { formattedEuro, formattedLength, shortTitle } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
@@ -32,7 +32,6 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
             <tr>
               <th
                 scope="col"
-                colSpan={2}
                 className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
               >
                 Maßnahmen
@@ -110,11 +109,6 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                 >
                   <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                     <SubsubsectionIcon label={shortTitle(subsubsection.slug)} />
-                  </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
-                    <strong>{longTitle(subsubsection.slug)}</strong>
-                    {subsubsection.subTitle && <br />}
-                    {subsubsection.subTitle}
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
                     {subsubsection.SubsubsectionTask?.title || "k.A."}

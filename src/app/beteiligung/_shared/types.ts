@@ -12,9 +12,39 @@ import { SurveyMarkdown } from "@/src/app/beteiligung/_components/layout/SurveyM
 import { TBackendConfig } from "@/src/app/beteiligung/_shared/backend-types"
 import { fieldValidationEnum } from "@/src/app/beteiligung/_shared/fieldvalidationEnum"
 import { AnyFieldApi } from "@tanstack/react-form"
-
-import { LineString, MultiLineString } from "geojson"
+import { LineString, MultiLineString, Point, Polygon } from "geojson"
+import type {
+  CircleLayerSpecification,
+  FillLayerSpecification,
+  HeatmapLayerSpecification,
+  LineLayerSpecification,
+  SymbolLayerSpecification,
+} from "maplibre-gl"
 import { ComponentProps, ReactNode } from "react"
+
+export type MapData = {
+  sources: {
+    // Source `id`
+    [sourceId: string]: {
+      pmTilesUrl: string
+      layers: ((
+        | Omit<FillLayerSpecification, "source" | "source-layer" | "metadata">
+        | Omit<LineLayerSpecification, "source" | "source-layer" | "metadata">
+        | Omit<SymbolLayerSpecification, "source" | "source-layer" | "metadata">
+        | Omit<CircleLayerSpecification, "source" | "source-layer" | "metadata">
+        | Omit<HeatmapLayerSpecification, "source" | "source-layer" | "metadata">
+      ) & {
+        beforeId?: string
+      })[]
+      interactiveLayerIds?: string[]
+    }
+  }
+  colorClass: string
+}
+
+export type geoCategorySetInitialBoundsDefinition = NonNullable<
+  ComponentProps<typeof SurveyGeoCategoryMapWithLegend>["mapProps"]["setInitialBounds"]
+>["initialBoundsDefinition"]
 
 // tbd maybe in the future we want to allow all field options of tanstack form fieldApi
 type FormFieldOptions = {
@@ -168,6 +198,12 @@ export type FormPage = {
 
 export type Stage = "part1" | "part2" | "part3" | "end"
 
+export type EmailConfig = {
+  subject: string
+  markdown: string
+  fields: string[] // Array of field names to include in email as [label]: value
+}
+
 export type IntroButton = {
   label: string
   action: Stage | "next"
@@ -216,14 +252,13 @@ export type FormConfig = {
     primaryColor: string
     darkColor: string
     lightColor: string
-    // atm we only have "line" geometryCategoryType, coordinates are of type LineString or MultiLineString (the distinction between those two can be made by checking the shape of the first element in the coordinates array)
-    // we define the geometryCategoryType explicilitly here as we might have "polygon" geometryCategoryTypes in the future we might have "polygon" geometryCategoryTypes
-    // we can not store this information in the geometry atm
-    // will be reworked with https://github.com/FixMyBerlin/private-issues/issues/2196
-    geometryCategoryType: "line" | "polygon" | "point"
     // geometryFallback is used for surveys rs8 adn frm7 that have a geometry-category question
     // starting with radnetz BB all surveys have geometry-category questions
-    geometryFallback?: LineString["coordinates"] | MultiLineString["coordinates"]
+    geoCategoryFallback?:
+      | LineString["coordinates"]
+      | MultiLineString["coordinates"]
+      | Polygon["coordinates"]
+      | Point["coordinates"]
     // todo deletedQuestions
   }
   // fka survey part
@@ -244,6 +279,7 @@ export type FormConfig = {
     }
   }
   backend: TBackendConfig
+  email: EmailConfig | null
 }
 
 export type SurveyFieldRadioOrCheckboxGroupConfig = Extract<

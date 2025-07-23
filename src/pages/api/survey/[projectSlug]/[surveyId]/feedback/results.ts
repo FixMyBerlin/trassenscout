@@ -6,7 +6,7 @@ import { Prettify } from "@/src/core/types"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getProjectOperators from "@/src/server/operators/queries/getProjectOperators"
 import getSurveyResponseTopicsByProject from "@/src/survey-response-topics/queries/getSurveyResponseTopicsByProject"
-import { getFlatSurveyQuestions } from "@/src/survey-responses/utils/getQuestionsAsArray"
+import { getFlatSurveyFormFields } from "@/src/survey-responses/utils/getFlatSurveyFormFields"
 import getSurveySessionsWithResponses from "@/src/survey-sessions/queries/getSurveySessionsWithResponses"
 import { getSession } from "@blitzjs/auth"
 import { AuthorizationError } from "blitz"
@@ -28,12 +28,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const geometryCategoryId = getQuestionIdBySurveySlug(survey.slug, "geometryCategory")
   const locationId = getQuestionIdBySurveySlug(survey.slug, "location")
 
-  const geometryCategoryType = metaDefinition["geometryCategoryType"]
-
   const isLocationQuestionId = getQuestionIdBySurveySlug(survey.slug, "enableLocation")
 
-  const feedbackQuestions = getFlatSurveyQuestions(feedbackDefinition)
-  const surveyQuestions = getFlatSurveyQuestions(surveyDefinition)
+  const feedbackQuestions = getFlatSurveyFormFields(feedbackDefinition)
+  const surveyQuestions = getFlatSurveyFormFields(surveyDefinition)
 
   const err = (status: number, message: string) => {
     res.status(status).json({ error: true, status: status, message })
@@ -116,7 +114,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // add headers for all questions
   surveyQuestions.forEach((question) => {
-    // @ts-expect-error
     headers.push({ id: question.name, title: question.props.label || question.name })
   })
   feedbackQuestions
@@ -129,7 +126,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         headers.push({ id: `${questionId}-lat`, title: "Hinweis Verortung Lat" })
         headers.push({ id: `${questionId}-lng`, title: "Hinweis Verortung Lng" })
       } else {
-        // @ts-expect-error
         headers.push({ id: questionId, title: question.props.label || question.name })
       }
     })
@@ -293,20 +289,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
           })
           // the geometry-category question is handled separately: we need to convert the coordinates to WKT to be able to import them into QGIS
-
-          const categoryCoordinates =
-            // @ts-expect-error data is of type unknown and index type
-            geometryCategoryId && data[String(geometryCategoryId)]
-              ? // @ts-expect-error data is of type unknown and index type
-                (JSON.parse(data[String(geometryCategoryId)]) as number[][] | number[][][])
-              : // rs8 and frm7 fallback geometry-category
-                metaDefinition.geometryFallback
-
           row["geometry-category"] =
-            coordinatesToWkt({
-              coordinates: categoryCoordinates,
-              type: geometryCategoryType,
-            }) || ""
+            coordinatesToWkt(
+              // @ts-expect-error data is of type unknown
+              data[geometryCategoryId] || JSON.stringify(metaDefinition.geoCategoryFallback),
+            ) || ""
 
           surveyResponseTopics.forEach((t) => {
             // @ts-expect-error data is of type unknown and index type

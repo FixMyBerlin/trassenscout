@@ -64,16 +64,13 @@ export const useFilteredResponses = (
     // Handle `haslocation`
     .filter((response) => {
       if (haslocation === "ALL") return response
-      // @ts-expect-error `data` is of type unkown
       if (haslocation === "true") return response.data[userLocationQuestionId]
-      // @ts-expect-error `data` is of type unkown
       if (haslocation === "false") return !response.data[userLocationQuestionId]
       return response
     })
     // Handle `categories`
     .filter((response) => {
       if (!categories) return
-      // @ts-expect-error `data` is of type unkown
       return categories.includes(String(response.data[userCategoryQuestionId]))
     })
     // Handle `searchterm`
@@ -85,16 +82,12 @@ export const useFilteredResponses = (
           comment.body.toLowerCase().includes(searchterm.trim().toLowerCase()),
         ) ||
         (response?.data &&
-          // @ts-expect-error `data` is of type unkown
           response?.data[userFeedbackTextQuestionId] &&
-          // @ts-expect-error `data` is of type unkown
           response?.data[userFeedbackTextQuestionId]
             .toLowerCase()
             .includes(searchterm.trim().toLowerCase())) ||
         (response?.data &&
-          // @ts-expect-error `data` is of type unkown
           response?.data[userFeedbackText2QuestionId] &&
-          // @ts-expect-error `data` is of type unkown
           response?.data[userFeedbackText2QuestionId]
             .toLowerCase()
             .includes(searchterm.trim().toLowerCase()))
@@ -113,16 +106,34 @@ export const useFilteredResponses = (
         // on dev and staging we have some surveyresponses (Hinweise) that do not have a first part (Umfrage)
         // so we need to check if the first part exists, here we filter out the surveyresponses that do not have a first part when a filter concerning the first part is used; in production these surveyresponses do not exist
         if (
-          additionalFiltersConfigItem?.surveyPart === "survey" &&
-          !response.surveySurveyResponseData
+          additionalFiltersConfigItem?.surveyPart === "part1" &&
+          !response.surveyPart1ResponseData
         )
           return false
-        return additionalFiltersConfigItem?.surveyPart === "feedback"
-          ? // @ts-expect-error
-            response.data[additionalFiltersConfigItem.id] === additionalFilters[key]
-          : // @ts-expect-error
-            response.surveySurveyResponseData[additionalFiltersConfigItem.id] ===
+        if (
+          additionalFiltersConfigItem?.surveyPart === "part3" &&
+          !response.surveyPart3ResponseData
+        )
+          return false
+        switch (additionalFiltersConfigItem?.surveyPart) {
+          case "part1":
+            return (
+              // @ts-expect-error
+              response.surveyPart1ResponseData[additionalFiltersConfigItem.id] ===
               additionalFilters[key]
+            )
+          case "part2":
+            return response.data[additionalFiltersConfigItem.id] === additionalFilters[key]
+          case "part3":
+            return (
+              // @ts-expect-error
+              response.surveyPart3ResponseData[additionalFiltersConfigItem.id] ===
+              additionalFilters[key]
+            )
+          default:
+            // If surveyPart is not recognized, don't filter
+            return true
+        }
       })
     })
 

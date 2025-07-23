@@ -1,9 +1,4 @@
 "use client"
-import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@headlessui/react"
-import { clsx } from "clsx"
-import Image from "next/image"
-import { Fragment, useState } from "react"
-
 import {
   partcipationLinkStyles,
   primaryColorButtonStylesForLinkElement,
@@ -12,13 +7,22 @@ import {
 import { SurveyLink } from "@/src/app/beteiligung/_components/links/SurveyLink"
 import { SurveyMainPage } from "@/src/app/beteiligung/_components/SurveyMainPage"
 import { SurveyH1, SurveyH2, SurveyH3, SurveyP } from "@/src/app/beteiligung/_components/Text"
+import institutions_bboxes from "@/src/app/beteiligung/_radnetz-brandenbrug/institutions_bboxes.json"
+import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@headlessui/react"
+import { clsx } from "clsx"
+import Image from "next/image"
+import { useRouter, useSearchParams } from "next/navigation"
+import { Fragment, useEffect, useState } from "react"
 import AtlasImage from "./Startseite_Radverkehrstlas.jpg"
 
 type Props = {
   surveyId: number
 }
 
-export const IntroPart1 = () => {
+// Using function declaration instead of const arrow function to avoid
+// "Cannot access before initialization" error when imported by part1.tsx
+// Function declarations are hoisted, while const declarations are not
+export function IntroPart1() {
   let [isOpen, setIsOpen] = useState(false)
 
   const closeModal = () => {
@@ -420,34 +424,31 @@ export const IntroPart1 = () => {
     </>
   )
 }
-
 export const SurveyBB = ({ surveyId }: Props) => {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const id = searchParams?.get("id") || "unbekannt"
+  const institution = institutions_bboxes.find((i) => i.id === id)?.name || "unbekannt"
+  const landkreis = institutions_bboxes.find((i) => i.id === id)?.landkreis || "unbekannt"
+
+  // in survey bb, the institution id is passed as a query parameter in the original url sent to the user
+  // the institution and landkreis name should appear in the survey response
+  // we need to update the query parameter here to include the names (we get it from the institutions_bboxes by the id)
+  // the ReadOnlyTextfield gets the institution name from the url, displays it and saves it in the survey response
+
   // originally we passed isUrlInvalid to SurveyMainPage
   // this is not relevant fot the backend, so we can remove it for now
-  // we have not migrated the read only survey field yet
-  // todo: if we need this in the future, we have to migrate the field and we can pass isUrlInvalid down as a prop again
 
-  // in survey radnetz-brandenburg, the institution id is passed as a query parameter in the original url sent to the user
-  // the institution name should appear in the survey response
-  // we need to update the query parameter here to include the institution name (we get it from the institutions_bboxes by the institution id)
-  // the ReadOnlyResponseComponent in Question.tsx gets the institution name from the url, displays it and saves it in the survey response
-
-  // const router = useRouter()
-  // const [isUrlInvalid, setIsUrlInvalid] = useState(false)
-  // const { id } = router.query
-  // const institution = institutions_bboxes.find((i) => i.id === id)?.institution || "unbekannt"
-  // const landkreis = institutions_bboxes.find((i) => i.id === id)?.landkreis || "unbekannt"
-
-  // todo survey ? effect and dependency router?
-  // useEffect(() => {
-  //   if (institution === "unbekannt" || landkreis === "unbekannt") setIsUrlInvalid(true)
-  //   router.query.institution = encodeURIComponent(institution)
-  //   router.query.landkreis = encodeURIComponent(landkreis)
-  //   void router.replace({ query: router.query }, undefined, {
-  //     scroll: false,
-  //   })
-  // todo maybe we have to disable eslint rule for this line - read docs
-  // }, [institution, landkreis, router.query.id])
+  useEffect(() => {
+    void router.replace(
+      `?id=${id}&institution=${encodeURIComponent(institution)}&landkreis=${encodeURIComponent(landkreis)}`,
+      {
+        scroll: false,
+      },
+    )
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [landkreis, institution, id])
 
   return <SurveyMainPage surveyId={surveyId} />
 }

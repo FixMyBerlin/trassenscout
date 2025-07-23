@@ -90,7 +90,7 @@ export const QualityLevelsWithData = () => {
                       <ButtonWrapper className="justify-end">
                         <Link
                           icon="edit"
-                          href={Routes.QualityLevelsPage({
+                          href={Routes.EditQualityLevelPage({
                             projectSlug,
                             qualityLevelId: qualityLevel.id,
                           })}

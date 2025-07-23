@@ -238,7 +238,7 @@ export const ExportWithQuery = () => {
         hash
       >
         {/* ===== Base Data ===== */}
-        <Source key="export" type="geojson" data={geoJsonFeatureCollection}>
+        <Source id="export" key="export" type="geojson" data={geoJsonFeatureCollection}>
           <Layer
             id="export"
             type="line"
@@ -253,6 +253,7 @@ export const ExportWithQuery = () => {
         {/* ===== Click Feature, NewLine Feature ===== */}
         {newLine && (
           <Source
+            id="newLine"
             // Use key to force a rerender when the data changed
             key={`newLine_${JSON.stringify([
               pointOneLine?.geometry?.coordinates,
@@ -274,6 +275,7 @@ export const ExportWithQuery = () => {
           </Source>
         )}
         <Source
+          id="nearestPoint"
           key="nearestPoint"
           type="geojson"
           data={featureCollection(
@@ -291,6 +293,7 @@ export const ExportWithQuery = () => {
           />
         </Source>
         <Source
+          id="nearestPointLine"
           key="nearestPointLine"
           type="geojson"
           data={multiLineString(
@@ -349,6 +352,7 @@ export const ExportWithQuery = () => {
             )
           })}
         <Source
+          id="testPointsOnLine"
           key="testPointsOnLine"
           type="geojson"
           data={featureCollection(testPointsOnLine || [])}
@@ -363,7 +367,12 @@ export const ExportWithQuery = () => {
             }}
           />
         </Source>
-        <Source key="testPoints" type="geojson" data={featureCollection(testPoints || [])}>
+        <Source
+          id="testPoints"
+          key="testPoints"
+          type="geojson"
+          data={featureCollection(testPoints || [])}
+        >
           <Layer
             id="testPoints"
             type="circle"

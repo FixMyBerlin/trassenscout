@@ -44,14 +44,14 @@ const NewSubsection = () => {
       return improveErrorMessage(error, FORM_ERROR, ["order", "slug"])
     }
   }
-  console.log({ maxOrderSubsections })
+
   return (
     <>
       <MetaTags noindex title={seoNewTitle("Planungsabschnitt")} />
       <PageHeader title="Planungsabschitt hinzufügen" className="mt-12" />
 
       <SubsectionForm
-        initialValues={{ labelPos: "bottom", order: maxOrderSubsections || 0 + 1 }}
+        initialValues={{ labelPos: "bottom", order: (maxOrderSubsections || 0) + 1 }}
         submitText="Erstellen"
         schema={NewSubsectionSchema}
         onSubmit={handleSubmit}

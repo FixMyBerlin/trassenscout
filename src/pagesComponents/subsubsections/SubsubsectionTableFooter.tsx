@@ -16,7 +16,7 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
     <tfoot className={clsx("bg-gray-50", { hidden: !subsubsections.length || compact })}>
       <tr>
         <td
-          colSpan={3}
+          colSpan={2}
           className="pb-2 pl-4 pr-3 pt-4 text-right text-xs font-medium uppercase text-gray-500"
         >
           Gesamt:
@@ -28,14 +28,6 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
           )}
         >
           {formattedLength(subsubsections.reduce((acc, sub) => acc + (sub.lengthKm || 0), 0))}
-        </td>
-        <td
-          className={clsx(
-            compact ? "hidden" : "",
-            "whitespace-nowrap pb-2 pl-4 pr-3 pt-4 text-sm font-medium text-gray-900",
-          )}
-        >
-          -
         </td>
         <td
           className={clsx(
@@ -57,7 +49,7 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
         return (
           <tr key={qualityLevel.slug}>
             <td
-              colSpan={3}
+              colSpan={2}
               className="py-2 pl-4 pr-3 text-right text-xs font-medium uppercase text-gray-500"
             >
               Standard {frenchQuote(qualityLevel.title)}:
@@ -71,14 +63,6 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
               {formattedLength(
                 subsubsectionForQualityLevel.reduce((acc, sub) => acc + (sub.lengthKm || 0), 0),
               )}
-            </td>
-            <td
-              className={clsx(
-                compact ? "hidden" : "",
-                "py-2 pl-4 pr-3 text-sm font-medium text-gray-900",
-              )}
-            >
-              -
             </td>
             <td
               className={clsx(

@@ -1,7 +1,7 @@
 import { SubsectionIcon } from "@/src/core/components/Map/Icons"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
-import { longTitle, shortTitle } from "@/src/core/components/text"
+import { shortTitle } from "@/src/core/components/text"
 import { startEnd } from "@/src/core/components/text/startEnd"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
@@ -59,8 +59,6 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                     <SubsectionIcon label={shortTitle(subsection.slug)} />
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
-                    <strong>{longTitle(subsection.slug)}</strong>
-                    <br />
                     {startEnd(subsection)}
                   </td>
                   <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50">

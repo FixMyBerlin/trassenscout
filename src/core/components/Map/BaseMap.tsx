@@ -96,20 +96,20 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   }
 
   const dotSource = dots ? (
-    <Source key="dots" type="geojson" data={featureCollection(dots.map((d) => point(d)))}>
+    <Source id="dots" key="dots" type="geojson" data={featureCollection(dots.map((d) => point(d)))}>
       <Layer type="circle" paint={{ "circle-color": layerColors.dot, "circle-radius": 6 }} />
     </Source>
   ) : null
 
   const featuresSource = lines ? (
-    <Source key="lines" type="geojson" data={lines}>
+    <Source id="lines" key="lines" type="geojson" data={lines}>
       {/* Background outline layer */}
       <Layer
-        id="lines-outline"
+        id="lines-layer-outline"
         type="line"
         layout={{
           "line-cap": "round",
-          "line-join": "round"
+          "line-join": "round",
         }}
         paint={{
           "line-width": 9,
@@ -119,10 +119,11 @@ export const BaseMap: React.FC<BaseMapProps> = ({
       />
       {/* Main colored line layer */}
       <Layer
+        id="lines-layer"
         type="line"
         layout={{
           "line-cap": "round",
-          "line-join": "round"
+          "line-join": "round",
         }}
         paint={{
           "line-width": ["case", ["has", "width"], ["get", "width"], 7],
@@ -134,14 +135,19 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   ) : null
 
   const selectableLineFeaturesSource = selectableLines ? (
-    <Source key={selectableLineLayerId} type="geojson" data={selectableLines}>
+    <Source
+      id={selectableLineLayerId}
+      key={selectableLineLayerId}
+      type="geojson"
+      data={selectableLines}
+    >
       {/* Background outline layer */}
       <Layer
         id={`${selectableLineLayerId}-outline`}
         type="line"
         layout={{
           "line-cap": "round",
-          "line-join": "round"
+          "line-join": "round",
         }}
         paint={{
           "line-width": 9,
@@ -155,7 +161,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
         type="line"
         layout={{
           "line-cap": "round",
-          "line-join": "round"
+          "line-join": "round",
         }}
         paint={{
           "line-width": 7,
@@ -167,7 +173,12 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   ) : null
 
   const selectablePointFeaturesSource = selectablePoints ? (
-    <Source key={selectablePointLayerId} type="geojson" data={selectablePoints}>
+    <Source
+      id={selectablePointLayerId}
+      key={selectablePointLayerId}
+      type="geojson"
+      data={selectablePoints}
+    >
       <Layer
         id={selectablePointLayerId}
         type="circle"
@@ -209,9 +220,8 @@ export const BaseMap: React.FC<BaseMapProps> = ({
           onLoad={handleOnLoad}
           interactiveLayerIds={[
             interactiveLayerIds,
-            lines && "lines-outline",
-            selectableLines && [selectableLineLayerId, `${selectableLineLayerId}-outline`],
             selectablePoints && selectablePointLayerId,
+            selectableLines && selectableLineLayerId,
           ]
             .flat()
             .filter(Boolean)}

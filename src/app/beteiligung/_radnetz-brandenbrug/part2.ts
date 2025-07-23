@@ -1,5 +1,10 @@
+import institutions_bboxes from "@/src/app/beteiligung/_radnetz-brandenbrug/institutions_bboxes.json"
+import { mapData } from "@/src/app/beteiligung/_radnetz-brandenbrug/mapData.const"
 import { fieldValidationEnum } from "@/src/app/beteiligung/_shared/fieldvalidationEnum"
-import { SurveyPart2 } from "@/src/app/beteiligung/_shared/types"
+import {
+  geoCategorySetInitialBoundsDefinition,
+  SurveyPart2,
+} from "@/src/app/beteiligung/_shared/types"
 import { AnyFieldApi } from "@tanstack/react-form"
 
 export const part2Config: SurveyPart2 = {
@@ -45,25 +50,26 @@ export const part2Config: SurveyPart2 = {
             markdown: `Wählen Sie die Verbindung durch Klicken auf eine der orangen Linien auf der Karte aus. Bedenken Sie dabei jedoch, dass sich Ihre Hinweise auf die Linien in Ihrem **Amts- oder Zuständigkeitsbereich** beschränken sollten. Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” verkleinern oder vergrößern.`,
           },
         },
+        // {
+        //   name: "geometryCategoryId",
+        //   componentType: "form",
+        //   component: "hidden",
+        //   props: { label: "ID der ausgewählten Haltestelle" },
+        // },
         // ID der Linie
         {
           name: "20",
           componentType: "form",
-          component: "SurveyTextfield", // Using SurveyTextfield as a substitute for custom
-          validation: fieldValidationEnum["requiredString"],
-          defaultValue: "",
+          component: "hidden", // Using SurveyTextfield as a substitute for custom
           props: {
-            label:
-              "Wählen Sie eine Verbindung aus dem Radnetz-Konzept aus, zu der Sie einen Hinweis geben möchten.",
+            label: "Id der Verbindung aus dem Radnetz-Konzept",
           },
         },
         // Bezeichnung der Linie
         {
           name: "30",
           componentType: "form",
-          component: "SurveyTextfield", // Using SurveyTextfield as a substitute for custom
-          validation: fieldValidationEnum["optionalString"],
-          defaultValue: "",
+          component: "hidden", // Using SurveyTextfield as a substitute for custom
           props: {
             label: "Verbindung (von - bis)",
           },
@@ -72,11 +78,37 @@ export const part2Config: SurveyPart2 = {
         {
           name: "21",
           componentType: "form",
-          component: "SurveyTextfield", // Using SurveyTextfield as a substitute for custom
-          validation: fieldValidationEnum["optionalString"],
-          defaultValue: "",
+          component: "SurveyGeoCategoryMapWithLegend",
+          validation: fieldValidationEnum["requiredString"],
+          defaultValue: null,
           props: {
-            label: "Geometrie der Linie",
+            label: "Verbindung auswählen",
+            description:
+              "Wählen Sie eine Verbindung aus dem Radnetz-Konzept aus, zu der Sie einen Hinweis geben möchten.",
+            mapProps: {
+              mapData: mapData,
+              setInitialBounds: {
+                initialBoundsDefinition:
+                  institutions_bboxes as unknown as geoCategorySetInitialBoundsDefinition,
+                queryParameter: "id",
+              },
+              additionalData: [
+                { dataKey: "30", propertyName: "from_name", label: "Verbindung (von - bis)" },
+              ],
+              geoCategoryIdDefinition: { dataKey: "20", propertyName: "Verbindung" },
+              config: {
+                bounds: [11.2688, 51.3592, 14.7655, 53.5586],
+              },
+            },
+            legendProps: {
+              items: {
+                variant1: {
+                  label: "foo",
+                  color: "bg-[#006EFF]",
+                  className: "h-[5px]",
+                },
+              },
+            },
           },
         },
         // category
@@ -167,9 +199,6 @@ export const part2Config: SurveyPart2 = {
           props: {
             label: "Wählen Sie die Stelle für Ihren Hinweis",
             mapProps: {
-              // tbd maptiler url per component or (only) in meta
-              maptilerUrl:
-                "https://api.maptiler.com/maps/1628cd25-069f-45bc-9e1e-9768388fe544/style.json",
               config: {
                 bounds: [
                   10.634343374814875, 50.99884540733649, 15.169801938047982, 53.769864338023126,

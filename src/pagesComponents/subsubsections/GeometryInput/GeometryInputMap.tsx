@@ -7,7 +7,7 @@ import { bbox, distance, lineSlice, nearestPointOnLine } from "@turf/turf"
 import type { Feature, Point, Position } from "geojson"
 import { useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { Layer, LngLatBoundsLike, MapLayerMouseEvent, Source } from "react-map-gl/maplibre"
+import { Layer, LngLatBoundsLike, MapLayerMouseEvent, Source, useMap } from "react-map-gl/maplibre"
 import { GeometryInputMapSubsubsections } from "./GeometryInputMapSubsubsections"
 
 type Props = {
@@ -19,6 +19,7 @@ type AreaGeometry = Position // [number, number]
 
 export const GeometryInputMap = ({ subsection }: Props) => {
   const { watch, setValue } = useFormContext()
+  const { preview } = useMap()
   const geometry = watch("geometry") as RouteGeometry | AreaGeometry
   const geometryType = watch("type") as SubsubsectionWithPosition["type"]
 
@@ -33,18 +34,32 @@ export const GeometryInputMap = ({ subsection }: Props) => {
   const [pointTwoOnLine, setPointTwoOnLine] = useState<Feature<Point> | undefined>(undefined)
 
   const handleClickGeometryTypeArea = (event: MapLayerMouseEvent) => {
-    // Change back to the simpler… once https://github.com/visgl/react-map-gl/issues/2239 is resolved
-    // const clickedPoint = point(event.lngLat.toArray())
-    const clickedPoint = point([event.lngLat.lng, event.lngLat.lat])
+    // const allSources = preview?.getStyle()?.sources
+    // const allLayers = preview?.getStyle()?.layers
+    // const cleanLayers = allLayers?.filter(
+    //   (layer) =>
+    //     "source" in layer &&
+    //     !layer.source.includes("maptiler") &&
+    //     !layer.source.includes("openmaptiles"),
+    // )
+    // console.log({ allSources, allLayers, cleanLayers })
+    const clickedPoint = point(event.lngLat.toArray())
     const nearestPoint = nearestPointOnLine(lineString(subsection.geometry), clickedPoint)
 
     setValue("geometry", nearestPoint.geometry.coordinates)
   }
 
   const handleClickGeometryTypeRoute = (event: MapLayerMouseEvent) => {
-    // Change back to the simpler… once https://github.com/visgl/react-map-gl/issues/2239 is resolved
-    // const clickedPoint = point(event.lngLat.toArray())
-    const clickedPoint = point([event.lngLat.lng, event.lngLat.lat])
+    // const allSources = preview?.getStyle()?.sources
+    // const allLayers = preview?.getStyle()?.layers
+    // const cleanLayers = allLayers?.filter(
+    //   (layer) =>
+    //     "source" in layer &&
+    //     !layer.source.includes("maptiler") &&
+    //     !layer.source.includes("openmaptiles"),
+    // )
+    // console.log({ allSources, allLayers, cleanLayers })
+    const clickedPoint = point(event.lngLat.toArray())
     const nearestPoint = nearestPointOnLine(lineString(subsection.geometry), clickedPoint)
     let newLine = undefined
 
@@ -94,41 +109,20 @@ export const GeometryInputMap = ({ subsection }: Props) => {
           }
         >
           <GeometryInputMapSubsubsections />
-          {geometryType === "ROUTE" ? (
+
+          {geometryType === "ROUTE" && (
             <>
               {/* nearest Points to where clicked */}
               <Source
-                key="nearestPoint"
+                id="nearestPoint-route"
+                key="nearestPoint-route"
                 type="geojson"
                 data={featureCollection([pointOneOnLine, pointTwoOnLine].filter(Boolean))}
-              >
-                <Layer
-                  id="nearestPoint"
-                  type="circle"
-                  paint={{
-                    "circle-radius": ["case", ["has", "radius"], ["get", "radius"], 14],
-                    "circle-color": ["case", ["has", "color"], ["get", "color"], "#E5007D"],
-                    "circle-opacity": 0.5,
-                  }}
-                />
-              </Source>
-
-              {/* Geometry from form */}
-              <Source key="geometry" type="geojson" data={lineString(geometry as RouteGeometry)}>
-                <Layer
-                  type="line"
-                  paint={{
-                    "line-width": 4,
-                    "line-color": "black",
-                    "line-opacity": 0.6,
-                  }}
-                />
-              </Source>
-            </>
-          ) : (
-            <Source type="geojson" data={point(geometry as AreaGeometry)}>
+              />
               <Layer
-                id="nearestPoint"
+                id="nearestPoint-route"
+                key="nearestPoint-route"
+                source="nearestPoint-route"
                 type="circle"
                 paint={{
                   "circle-radius": ["case", ["has", "radius"], ["get", "radius"], 14],
@@ -136,15 +130,51 @@ export const GeometryInputMap = ({ subsection }: Props) => {
                   "circle-opacity": 0.5,
                 }}
               />
+
+              {/* Geometry from form */}
+              <Source
+                id="geometry"
+                key="geometry"
+                type="geojson"
+                data={lineString(geometry as RouteGeometry)}
+              />
               <Layer
+                id="geometry"
+                key="geometry"
+                source="geometry"
+                type="line"
+                paint={{
+                  "line-width": 4,
+                  "line-color": "black",
+                  "line-opacity": 0.6,
+                }}
+              />
+            </>
+          )}
+
+          {geometryType === "AREA" && (
+            <>
+              <Source
+                id="nearestPoint-area"
+                key="nearestPoint-area"
+                type="geojson"
+                data={point(geometry as AreaGeometry)}
+              />
+              <Layer
+                id="nearestPoint-area-layer"
+                key="nearestPoint-area-layer"
+                source="nearestPoint-area"
                 type="circle"
                 paint={{
                   "circle-radius": 4,
                   "circle-color": "black",
                   "circle-opacity": 0.6,
+                  "circle-stroke-width": 12,
+                  "circle-stroke-color": "#E5007D",
+                  "circle-stroke-opacity": 0.5,
                 }}
               />
-            </Source>
+            </>
           )}
         </BaseMap>
       </div>

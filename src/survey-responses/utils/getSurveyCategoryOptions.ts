@@ -2,12 +2,12 @@ import { SurveyFieldRadioOrCheckboxGroupConfig } from "@/src/app/beteiligung/_sh
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
-import { getFlatSurveyQuestions } from "@/src/survey-responses/utils/getQuestionsAsArray"
+import { getFlatSurveyFormFields } from "@/src/survey-responses/utils/getFlatSurveyFormFields"
 import { transformQuestionsOptions } from "@/src/survey-responses/utils/transformQuestionsOptions"
 
 export const getSurveyCategoryOptions = (slug: AllowedSurveySlugs) => {
   const feedbackDefinition = getConfigBySurveySlug(slug, "part2")
-  const feedbackQuestions = getFlatSurveyQuestions(feedbackDefinition)
+  const feedbackQuestions = getFlatSurveyFormFields(feedbackDefinition)
   const categoryId = getQuestionIdBySurveySlug(slug, "category")
 
   const categoryQuestion = feedbackQuestions.find(

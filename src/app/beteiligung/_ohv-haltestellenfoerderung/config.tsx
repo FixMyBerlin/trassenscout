@@ -10,8 +10,6 @@ export const formConfig: FormConfig = {
     primaryColor: "#006ab2",
     darkColor: "#00375D",
     lightColor: "#B8D5E9",
-    // todo point
-    geometryCategoryType: "line",
   },
   part1: null,
   part2: part2Config,
@@ -29,11 +27,62 @@ export const formConfig: FormConfig = {
     },
   },
   backend: {
+    additionalFilters: [
+      {
+        label: "Kommune",
+        id: "commune",
+        value: "commune",
+        surveyPart: "part2",
+      },
+    ],
     status: [
       { value: "PENDING", label: "Ausstehend", color: "#FDEEBF", icon: "CLOCK" },
       { value: "REJECTED", label: "Abgelehnt", color: "#FEE2E2", icon: "XMARK" },
       { value: "ACCEPTED", label: "Angenommen", color: "#D1FAE5", icon: "CHECKMARK" },
       { value: "PUBLISHED", label: "Veröffentlicht", color: "#BBF7D0", icon: "DOCUMENT" },
+    ],
+  },
+  email: {
+    subject: "Bestätigung Ihrer Maßnahmenmeldung zur Haltestellenförderung im Landkreis Oberhavel",
+    markdown: `Sehr geehrte Damen und Herren,
+
+vielen Dank für Ihre Eingabe im Rahmen der digitalen Maßnahmenmeldung zur Haltestellenförderung des Landkreises Oberhavel.
+
+Wir bestätigen den Eingang Ihrer Meldung über das Online-Formular unter folgendem Link:
+{{surveyUrl}}
+
+Folgende Angaben wurden übermittelt:
+
+- **Fördergegenstand**: {{category}}
+- **Kommune**: {{commune}}
+- **Verortung der Maßnahme:** {{geometryCategory}}
+- **Name der Haltestelle**: {{hsName}}
+- **Maßnahmenbeschreibung und Zielsetzung**: {{feedbackText}}
+- **Kostenschätzung**: {{costs}}
+- **Kontaktperson (optional)**: {{contact}}
+- **Telefonnummer (optional)**: {{phone}}
+- **E-Mail-Adresse**: {{email}}
+
+Ihre Meldung wird nun durch die zuständige Stelle bei der OHBV als Hauptaufgabenträger und anschließend durch den Landkreis geprüft. Bei Rückfragen werden wir uns gegebenenfalls bei Ihnen melden.
+
+Sollten Sie weitere Maßnahmen melden wollen, können Sie das Formular erneut ausfüllen.
+
+Mit freundlichen Grüßen
+
+i. A. Alexander Greifenberg
+im Auftrag des Landkreises Oberhavel
+`,
+    fields: [
+      "commune",
+      "category",
+      "hsName",
+      "feedbackText",
+      "costs",
+      "contact",
+      "phone",
+      "email",
+      "geometryCategory",
+      "surveyUrl",
     ],
   },
 }
