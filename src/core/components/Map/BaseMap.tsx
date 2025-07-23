@@ -105,7 +105,6 @@ export const BaseMap: React.FC<BaseMapProps> = ({
     <Source key="lines" type="geojson" data={lines}>
       {/* Background outline layer */}
       <Layer
-        id="lines-outline"
         type="line"
         layout={{
           "line-cap": "round",

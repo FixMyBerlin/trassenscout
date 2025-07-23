@@ -50,9 +50,7 @@ export const GeometryInput = () => {
         classNameItemWrapper="flex gap-5 !space-y-0 items-center"
       />
       <MapProvider>
-        {schemaResult.success && subsection.geometry && (
-          <GeometryInputMap subsection={subsection} />
-        )}
+        {schemaResult.success && <GeometryInputMap subsection={subsection} />}
       </MapProvider>
 
       <details className="rounded border-gray-300 p-4 open:border open:bg-gray-50">

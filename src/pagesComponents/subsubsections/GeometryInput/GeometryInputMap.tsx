@@ -23,6 +23,8 @@ export const GeometryInputMap = ({ subsection }: Props) => {
   const geometry = watch("geometry") as RouteGeometry | AreaGeometry
   const geometryType = watch("type") as SubsubsectionWithPosition["type"]
 
+  if (!subsection.geometry.length) return null
+
   const subsectionFeature = featureCollection([
     lineString(subsection.geometry, { color: layerColors.unselectableCurrent }),
   ])
@@ -142,7 +144,6 @@ export const GeometryInputMap = ({ subsection }: Props) => {
           {geometryType === "AREA" && (
             <Source key="nearestPoint-area" type="geojson" data={point(geometry as AreaGeometry)}>
               <Layer
-                id="nearestPoint-area"
                 type="circle"
                 paint={{
                   "circle-radius": 4,
