@@ -90,7 +90,7 @@ export const GeometryInputMap = ({ subsection }: Props) => {
           }
         >
           <GeometryInputMapSubsubsections />
-          {geometryType === "ROUTE" ? (
+          {geometryType === "ROUTE" && (
             <>
               {/* nearest Points to where clicked */}
               <Source
@@ -121,7 +121,8 @@ export const GeometryInputMap = ({ subsection }: Props) => {
                 />
               </Source>
             </>
-          ) : (
+          )}
+          {geometryType === "AREA" && (
             <Source key="nearestPoint-area" type="geojson" data={point(geometry as AreaGeometry)}>
               <Layer
                 id="nearestPoint-area"
