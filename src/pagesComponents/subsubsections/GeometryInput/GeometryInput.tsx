@@ -1,6 +1,5 @@
 import { midPoint } from "@/src/core/components/Map/utils"
 import { LabeledRadiobuttonGroup } from "@/src/core/components/forms"
-import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import getSubsection from "@/src/server/subsections/queries/getSubsection"
@@ -53,16 +52,16 @@ export const GeometryInput = () => {
         {schemaResult.success && <GeometryInputMap subsection={subsection} />}
       </MapProvider>
 
-      <details className="rounded border-gray-300 p-4 open:border open:bg-gray-50">
+      {/* Disabled for now. We don't really need this. And might have cause issues with how the map worked on staging/production */}
+      {/* <details className="rounded border-gray-300 p-4 open:border open:bg-gray-50">
         <summary className="mb-4 cursor-pointer text-sm font-medium text-gray-700">
           Geometrie
         </summary>
-
         <LabeledGeometryField
           name="geometry"
           label="Geometry der Achse (`LineString` oder `Point`)"
         />
-      </details>
+      </details> */}
     </>
   )
 }
