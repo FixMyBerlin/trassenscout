@@ -37,9 +37,25 @@ export const formConfig: FormConfig = {
     ],
     status: [
       { value: "PENDING", label: "Ausstehend", color: "#FDEEBF", icon: "CLOCK" },
-      { value: "REJECTED", label: "Abgelehnt", color: "#FEE2E2", icon: "XMARK" },
-      { value: "ACCEPTED", label: "Angenommen", color: "#D1FAE5", icon: "CHECKMARK" },
-      { value: "PUBLISHED", label: "Veröffentlicht", color: "#BBF7D0", icon: "DOCUMENT" },
+      {
+        value: "DOCUMENTS_MISSING",
+        label: "Unterlagen nachzureichen",
+        color: "#FEF3C7",
+        icon: "DOCUMENT",
+      },
+      {
+        value: "REJECTED",
+        label: "Maßnahme abgelehnt (Haushaltsvorbehalt)",
+        color: "#FEE2E2",
+        icon: "XMARK",
+      },
+      {
+        value: "REJECTED",
+        label: "Maßnahme abgelehnt",
+        color: "#FECACA",
+        icon: "XMARK",
+      },
+      { value: "ACCEPTED", label: "Maßnahme freigegeben", color: "#D1FAE5", icon: "CHECKMARK" },
     ],
   },
   email: {
