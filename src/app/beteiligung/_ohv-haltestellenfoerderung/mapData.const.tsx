@@ -3,7 +3,7 @@ import { MapData } from "@/src/app/beteiligung/_shared/types"
 export const mapData: MapData = {
   sources: {
     haltestellen: {
-      pmTilesUrl: "https://staging.tilda-geo.de/api/uploads/ohv-haltestellen",
+      pmTilesUrl: "https://tilda-geo.de/api/uploads/ohv-haltestellen",
       layers: [
         {
           id: "ohv-haltestellen--circle--highlight",
@@ -74,7 +74,7 @@ export const mapData: MapData = {
       interactiveLayerIds: ["ohv-haltestellen--circle", "ohv-haltestellen--circle--highlight"],
     },
     buslinien: {
-      pmTilesUrl: "https://staging.tilda-geo.de/api/uploads/ohv-busverbindungen",
+      pmTilesUrl: "https://tilda-geo.de/api/uploads/ohv-busverbindungen",
       layers: [
         {
           id: "ohv-busverbindungen--line",
@@ -89,6 +89,44 @@ export const mapData: MapData = {
             "line-opacity": 0.9,
           },
           beforeId: "haltestellen-ohv-haltestellen--circle",
+        },
+      ],
+    },
+    grenzenGemeinde: {
+      pmTilesUrl: "https://tilda-geo.de/api/uploads/ohv-grenzen-gemeinden",
+      layers: [
+        {
+          id: "ohv-grenzen-gemeinden--line",
+          type: "line",
+          filter: ["all"],
+          layout: {
+            visibility: "visible",
+          },
+          paint: {
+            "line-color": "#FFB6C1",
+            "line-width": 2,
+            "line-opacity": 0.8,
+          },
+          beforeId: "buslinien-ohv-busverbindungen--line",
+        },
+      ],
+    },
+    grenzenLandkreis: {
+      pmTilesUrl: "https://tilda-geo.de/api/uploads/ohv-grenzen-landkreis",
+      layers: [
+        {
+          id: "ohv-grenzen-landkreis--line",
+          type: "line",
+          filter: ["all"],
+          layout: {
+            visibility: "visible",
+          },
+          paint: {
+            "line-color": "#4682B4",
+            "line-width": 2,
+            "line-opacity": 0.8,
+          },
+          beforeId: "buslinien-ohv-busverbindungen--line",
         },
       ],
     },
