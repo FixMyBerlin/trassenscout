@@ -17,8 +17,15 @@ export const formConfig: FormConfig = {
   end: {
     progressBarDefinition: 7,
     title: "Vielen Dank für Ihre Teilnahme!",
-    description:
-      "Ihre Angaben wurden gespeichert. Die Auswertung werden wir nach Ende der Beteiligungsphase auf der Projektwebseite veröffentlichen.",
+    description: `Vielen Dank für Ihre Rückmeldung. Die von Ihnen gemeldeten Maßnahmen sind bei uns eingegangen und wurden gespeichert. Sie haben zur Bestätigung für jede von Ihnen gemeldete Maßnahme eine E-Mail erhalten.
+
+
+## Wie geht es weiter?
+
+Das digitale Meldeverfahren läuft noch bis zum 30.09.2025. Bis dahin können Sie auf dem gleichen Wege noch weitere Maßnahmen melden. Nach Abschluss des Meldeverfahrens werden die eingegangenen Meldungen durch die OHBV gesichtet und in Rücksprache mit dem Landkreis geprüft. Die Entscheidung über die Aufnahme in das 5-Jahresprogramm liegt beim Landkreis. Der Landkreis zieht ggf. intern weitere Abteilungen hinzu, wie z. B. für Schulwegsicherheit.
+
+Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen übermittelt. Die E-Mail enthält als Anlage die Zusammenstellung der aufgenommenen Maßnahmen. Die Kommunen erhalten auf dieser Grundlage in einem gesonderten Schritt die Aufforderung zur Antragstellung.
+`,
     mailjetWidgetUrl: null,
     homeUrl: "https://www.oberhavel.de/",
     button: {
