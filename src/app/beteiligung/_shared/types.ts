@@ -245,6 +245,7 @@ export type SurveyPart2 = {
 export type FormConfig = {
   meta: {
     version: number
+    title: string
     logoUrl: string
     canonicalUrl: string
     maptilerUrl: string

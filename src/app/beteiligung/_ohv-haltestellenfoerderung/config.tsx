@@ -4,6 +4,7 @@ import { FormConfig } from "@/src/app/beteiligung/_shared/types"
 export const formConfig: FormConfig = {
   meta: {
     version: 1,
+    title: "Maßnahmenmeldung",
     logoUrl: "https://www.oberhavel.de/media/custom/2244_71430_1_g.PNG?1606723864",
     canonicalUrl: "https://www.oberhavel.de/",
     maptilerUrl: "https://api.maptiler.com/maps/b09268b1-91d0-42e2-9518-321a1a94738f/style.json",

@@ -11,10 +11,10 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { surveySlug } = params
-  const { logoUrl, canonicalUrl } = getConfigBySurveySlug(surveySlug, "meta")
+  const { logoUrl, canonicalUrl, title } = getConfigBySurveySlug(surveySlug, "meta")
 
   return {
-    title: `Beteiligung ${surveySlug?.toUpperCase()}`,
+    title: `${title} ${surveySlug?.toUpperCase()}`,
     alternates: {
       canonical: canonicalUrl,
     },
@@ -32,10 +32,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default function SurveyLayout({ params: { surveySlug }, children }: Props) {
-  const { canonicalUrl, logoUrl, primaryColor, darkColor, lightColor } = getConfigBySurveySlug(
-    surveySlug,
-    "meta",
-  )
+  const { canonicalUrl, logoUrl, primaryColor, darkColor, lightColor, title } =
+    getConfigBySurveySlug(surveySlug, "meta")
 
   const themeStyles = `
     :root {
@@ -49,7 +47,7 @@ export default function SurveyLayout({ params: { surveySlug }, children }: Props
     <>
       <style dangerouslySetInnerHTML={{ __html: themeStyles }} />
       <div className="relative flex h-full flex-col overflow-x-hidden">
-        <SurveyHeader landingPageUrl={canonicalUrl} logoSrc={logoUrl} />
+        <SurveyHeader landingPageUrl={canonicalUrl} logoSrc={logoUrl} title={title} />
         <main className="mx-auto flex w-full flex-col pb-40">{children}</main>
         <SurveyFooter />
       </div>

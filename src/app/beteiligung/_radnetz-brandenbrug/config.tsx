@@ -5,6 +5,7 @@ import { FormConfig } from "@/src/app/beteiligung/_shared/types"
 export const formConfig = {
   meta: {
     version: 1,
+    title: "Beteiligung",
     logoUrl: "https://trassenscout.de/radnetz-brandenburg/bb-logo.png",
     canonicalUrl:
       "https://mil.brandenburg.de/mil/de/themen/mobilitaet-verkehr/radverkehr/radnetz-brandenburg/",
