@@ -52,7 +52,7 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
         icon: "DOCUMENT",
       },
       {
-        value: "REJECTED",
+        value: "REJECTED_HOUSEHOLD_RESERVATION",
         label: "Maßnahme abgelehnt (Haushaltsvorbehalt)",
         color: "#FEE2E2",
         icon: "XMARK",
