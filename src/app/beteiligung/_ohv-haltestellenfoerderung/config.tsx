@@ -30,7 +30,7 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
     mailjetWidgetUrl: null,
     homeUrl: "https://www.oberhavel.de/",
     button: {
-      label: "Zurück zur Startseite",
+      label: "Zur Webseite des Lankreis Oberhavel",
       color: "primaryColor",
     },
   },
