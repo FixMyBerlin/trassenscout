@@ -33,7 +33,7 @@ const components = {
 }
 
 const proseClassesSurvey = clsx(
-  "prose-p:text-base prose-p:text-gray-700 prose-p:sm:text-lg",
+  "prose-p:text-base prose-p:text-gray-700",
   "prose-h2:mb-4 prose-h2:mt-8 prose-h2:text-lg prose-h2:font-bold prose-h2:text-gray-900 prose-ol:text-base prose-h2:sm:text-xl prose-ol:sm:text-lg",
 )
 
