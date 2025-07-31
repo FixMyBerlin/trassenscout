@@ -196,7 +196,7 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
                 bordersGemeinde: {
                   label: "Gemeindegrenzen",
                   color: "bg-[#333333] opacity-70",
-                  className: "h-[2px]",
+                  className: "h-[1.5px]",
                 },
               },
             },
