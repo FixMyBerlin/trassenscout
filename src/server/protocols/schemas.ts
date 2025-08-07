@@ -14,7 +14,7 @@ export const ProtocolSchema = z.object({
     },
   }),
   title: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
-  description: z.string().optional(),
+  description: z.string().nullish(),
   subsectionId: InputNumberOrNullSchema,
   // copied from SUbsubsection m2m2
   // LIST ALL m2mFields HERE
