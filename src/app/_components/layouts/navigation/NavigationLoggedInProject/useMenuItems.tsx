@@ -35,6 +35,7 @@ export const useMenuItems = () => {
     {
       name: "Protokoll",
       href: `/${projectSlug}/protocols`,
+      alsoHighlightPaths: [`/${projectSlug}/protocols/`],
     },
     {
       name: "Kontakte",
