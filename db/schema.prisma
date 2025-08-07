@@ -263,6 +263,7 @@ model Subsection {
   lengthKm                      Float // Kilometer
   priority                      PriorityEnum         @default(OPEN) // Priorität
   estimatedCompletionDateString String? // Jahresquartal der geplanten Fertigstellung als string Form "1-2023"
+  isFinalRoute                  Boolean              @default(true) // Trassenverlauf des PA final geklärt
   //
   project                       Project              @relation(fields: [projectId], references: [id])
   projectId                     Int

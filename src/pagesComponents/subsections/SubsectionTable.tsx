@@ -41,6 +41,9 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
               <th scope="col" className={tableHeadClasses}>
                 Fertigstellung
               </th>
+              {/* <th scope="col" className={tableHeadClasses}>
+                Trassenverlauf geklärt
+              </th> */}
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
@@ -69,7 +72,7 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                   </td>
                   <td
                     className={clsx(
-                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50",
+                      "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50",
                     )}
                   >
                     {subsection.SubsubsectionStatus?.title || "–"}
@@ -77,6 +80,9 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                   <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
                     {subsection.estimatedCompletionDateString || "–"}
                   </td>
+                  {/* <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
+                    {subsection.isFinalRoute ? "Ja" : "Nein"}
+                  </td> */}
                 </tr>
               )
             })}

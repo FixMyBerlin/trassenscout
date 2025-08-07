@@ -51,7 +51,11 @@ const NewSubsection = () => {
       <PageHeader title="Planungsabschitt hinzufügen" className="mt-12" />
 
       <SubsectionForm
-        initialValues={{ labelPos: "bottom", order: (maxOrderSubsections || 0) + 1 }}
+        initialValues={{
+          labelPos: "bottom",
+          order: (maxOrderSubsections || 0) + 1,
+          isFinalRoute: true,
+        }}
         submitText="Erstellen"
         schema={NewSubsectionSchema}
         onSubmit={handleSubmit}
