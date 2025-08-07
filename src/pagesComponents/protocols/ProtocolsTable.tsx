@@ -23,7 +23,7 @@ export const ProtocolsTable = ({
   const projectSlug = useProjectSlug()
   const [deleteProtocolMutation] = useMutation(deleteProtocol)
   protocols.sort((a, b) => {
-    return a.date < b.date ? 1 : -1
+    return a.date && b.date && a.date < b.date ? 1 : -1
   })
 
   const handleDelete = async (protocolId: number) => {

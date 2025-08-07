@@ -7,11 +7,12 @@ import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
 import { ProtocolForm } from "@/src/pagesComponents/protocols/ProtocolForm"
 import { m2mFields, M2MFieldsType } from "@/src/server/protocols/m2mFields"
 import updateProtocol from "@/src/server/protocols/mutations/updateProtocol"
 import getProtocol from "@/src/server/protocols/queries/getProtocol"
-import { ProtocolSchema } from "@/src/server/protocols/schemas"
+import { ProtocolFormSchema } from "@/src/server/protocols/schemas"
 import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -31,6 +32,7 @@ const EditProtocolWithQuery = () => {
       const updated = await updateProtocolMutation({
         ...values,
         id: protocol.id,
+        date: values.date === "" ? null : new Date(values.date),
         projectSlug,
       })
       await refetch()
@@ -55,9 +57,13 @@ const EditProtocolWithQuery = () => {
       <ProtocolForm
         className="grow"
         submitText="Speichern"
-        schema={ProtocolSchema}
+        schema={ProtocolFormSchema}
         // @ts-expect-error some null<>undefined missmatch
-        initialValues={{ ...protocol, ...m2mFieldsInitialValues }}
+        initialValues={{
+          ...protocol,
+          date: protocol.date ? getDate(protocol.date) : "",
+          ...m2mFieldsInitialValues,
+        }}
         onSubmit={handleSubmit}
       />
 

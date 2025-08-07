@@ -651,7 +651,7 @@ model Protocol {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   //
-  date           DateTime
+  date           DateTime?
   title          String
   description    String?
   //

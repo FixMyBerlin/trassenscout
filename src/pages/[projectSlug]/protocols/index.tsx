@@ -6,6 +6,7 @@ import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { H3, seoIndexTitle } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { ProtocolForm } from "@/src/pagesComponents/protocols/ProtocolForm"
 import { ProtocolsTable } from "@/src/pagesComponents/protocols/ProtocolsTable"
@@ -26,6 +27,7 @@ export const ProtocolsWithQuery = () => {
     try {
       const protocol = await createProtocolMutation({
         ...values,
+        date: values.date ? new Date(values.date) : null,
         projectSlug,
       })
       refetch()
@@ -56,7 +58,7 @@ export const ProtocolsWithQuery = () => {
             resetOnSubmit
             onSubmit={handleSubmit}
             submitText="Protokoll speichern"
-            initialValues={{ date: new Date() }}
+            initialValues={{ date: getDate(new Date()) }}
           />
         </Disclosure>
       </IfUserCanEdit>
