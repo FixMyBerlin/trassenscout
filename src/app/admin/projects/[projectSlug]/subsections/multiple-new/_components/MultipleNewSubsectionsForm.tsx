@@ -28,7 +28,7 @@ export const MultipleNewSubsectionsForm = () => {
     const newSubsections: Array<
       { geometry: [number, number][] } & Pick<
         Subsection,
-        "projectId" | "labelPos" | "start" | "end" | "slug" | "order" | "lengthKm"
+        "projectId" | "labelPos" | "start" | "end" | "slug" | "order" | "lengthKm" | "isFinalRoute"
       >
     > = []
     for (let i = 0; i < Number(values.no); i++) {
@@ -41,6 +41,7 @@ export const MultipleNewSubsectionsForm = () => {
         order: maxOrderSubsections + i + 1,
         geometry: defaultGeometryForMultipleSubsectionForm,
         lengthKm: length(lineString(defaultGeometryForMultipleSubsectionForm)),
+        isFinalRoute: true,
       })
     }
     try {

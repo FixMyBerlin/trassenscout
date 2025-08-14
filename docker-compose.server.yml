@@ -11,11 +11,22 @@ services:
     # We access `.env` variables directly here
     labels:
       traefik.enable: true
-      traefik.http.routers.server.rule: Host(`${APP_DOMAIN}`) || Host(`www.${APP_DOMAIN}`)
+      # Main router for trassenscout.de
+      traefik.http.routers.server.rule: Host(`${APP_DOMAIN}`)
       traefik.http.routers.server.entrypoints: websecure
       traefik.http.routers.server.tls.certresolver: letsencrypt
       traefik.http.routers.server.tls: true
       traefik.http.services.container.loadbalancer.server.port: 3000
+      # WWW redirect router
+      traefik.http.routers.www-redirect.rule: Host(`www.${APP_DOMAIN}`)
+      traefik.http.routers.www-redirect.entrypoints: websecure
+      traefik.http.routers.www-redirect.tls.certresolver: letsencrypt
+      traefik.http.routers.www-redirect.tls: true
+      traefik.http.routers.www-redirect.middlewares: www-redirect-middleware
+      # WWW redirect middleware
+      traefik.http.middlewares.www-redirect-middleware.redirectregex.regex: ^https://www\.(.*)
+      traefik.http.middlewares.www-redirect-middleware.redirectregex.replacement: https://$${1}
+      traefik.http.middlewares.www-redirect-middleware.redirectregex.permanent: true
     depends_on:
       db:
         condition: service_healthy

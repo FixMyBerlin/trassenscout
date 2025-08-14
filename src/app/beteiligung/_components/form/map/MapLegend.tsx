@@ -22,11 +22,11 @@ export const SurveyMapLegend = (legend: Props) => {
           <p>{key}</p>
           <div className="grid-flow-row grid-cols-2 space-y-1 sm:grid md:grid-cols-2">
             {Object.entries(value!).map(([key, value]) => (
-              <div key={key} className="flex gap-4">
+              <div key={key} className="flex items-center gap-2">
                 <div className="flex h-6 flex-col justify-center">
                   <LegendItemShape legendItem={value} />
                 </div>
-                <div className="text-sm font-semibold">{value.label}</div>
+                <div className="text-sm font-semibold leading-none">{value.label}</div>
               </div>
             ))}
           </div>

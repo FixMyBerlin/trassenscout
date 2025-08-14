@@ -45,8 +45,14 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
     >
     selectableLines?: FeatureCollection<
       LineString,
-      | { subsectionSlug: string; subsubsectionSlug?: string; color: string; opacity?: number }
-      | { projectSlug: string; color: string; opacity?: number }
+      | {
+          subsectionSlug: string
+          subsubsectionSlug?: string
+          color: string
+          opacity?: number
+          dashed?: boolean
+        }
+      | { projectSlug: string; color: string; opacity?: number; dashed?: boolean }
     >
     selectablePoints?: FeatureCollection<
       Point,
@@ -141,7 +147,6 @@ export const BaseMap: React.FC<BaseMapProps> = ({
       type="geojson"
       data={selectableLines}
     >
-      {/* Background outline layer */}
       <Layer
         id={`${selectableLineLayerId}-outline`}
         type="line"
@@ -155,9 +160,24 @@ export const BaseMap: React.FC<BaseMapProps> = ({
           "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.6],
         }}
       />
-      {/* Main colored line layer */}
+      {/* Background outline layer for dashed lines */}
       <Layer
-        id={selectableLineLayerId}
+        id={`${selectableLineLayerId}-bg`}
+        type="line"
+        layout={{
+          "line-cap": "round",
+          "line-join": "round",
+        }}
+        paint={{
+          "line-width": 7,
+          "line-color": layerColors.background,
+          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.9],
+        }}
+        filter={["get", "dashed"]}
+      />
+      {/* Main colored line layer - solid lines */}
+      <Layer
+        id={`${selectableLineLayerId}-solid`}
         type="line"
         layout={{
           "line-cap": "round",
@@ -168,6 +188,20 @@ export const BaseMap: React.FC<BaseMapProps> = ({
           "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
           "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
         }}
+        // do not apply for lines that have the dashed property
+        filter={["any", ["!", ["has", "dashed"]], ["!", ["get", "dashed"]]]}
+      />
+      {/* Main colored line layer - dashed lines */}
+      <Layer
+        id={`${selectableLineLayerId}-dashed`}
+        type="line"
+        paint={{
+          "line-width": 7,
+          "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
+          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
+          "line-dasharray": [1, 1],
+        }}
+        filter={["get", "dashed"]}
       />
     </Source>
   ) : null
@@ -221,7 +255,8 @@ export const BaseMap: React.FC<BaseMapProps> = ({
           interactiveLayerIds={[
             interactiveLayerIds,
             selectablePoints && selectablePointLayerId,
-            selectableLines && selectableLineLayerId,
+            selectableLines && `${selectableLineLayerId}-solid`,
+            selectableLines && `${selectableLineLayerId}-dashed`,
           ]
             .flat()
             .filter(Boolean)}

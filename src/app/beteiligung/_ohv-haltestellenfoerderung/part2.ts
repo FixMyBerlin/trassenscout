@@ -42,25 +42,25 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
 
 Sollte es noch unbeantwortete Fragen oder Schwierigkeiten bei der Beteiligung geben, können Sie den  Landkreis Oberhavel kontaktieren. Antworten auf häufig gestellte Fragen finden Sie am dieser Seite.
 
-**Ansprechperson:**
-Alexander Greifenberg (Teamleiter Verkehrsplanung)
-Oberhavel Holding Besitz- und Verwaltungsgesellschaft GmbH
-Annahofer Str. 1A,  16515 Oranienburg, Ortsteil Germendorf
-
-Tel.: +493301699376
-Fax: +493301699333
+**Ansprechperson** \\
+Alexander Greifenberg (Teamleiter Verkehrsplanung)\\
+Oberhavel Holding Besitz- und Verwaltungsgesellschaft GmbH\\
+Annahofer Str. 1A\\
+16515 Oranienburg\\
+Ortsteil Germendorf\\
+Tel.: +493301699376\\
+Fax: +493301699333\\
 E-Mail: [a.greifenberg@ohbv.de](mailto:a.greifenberg@ohbv.de)
 
-**Weitere Informationen**
-
+**Weitere Informationen**\\
 Die Maßnahmenmeldung wird nicht zwischengespeichert, d.h. bei Verlassen der Seite gehen alle eingetragenen Informationen verloren. Nach dem Absenden der Beteiligung können Sie nicht mehr auf Ihre getätigten Eingaben zugreifen. Deshalb ist es sinnvoll die Maßnahmenmeldung erst dann auszufüllen und abzusenden, sobald Sie alle wichtigen Informationen für die Maßnahmenmeldung beisammen haben. Folgende Informationen werden im Rahmen der Maßnahmenmeldung abgefragt:
-Auswahl des Fördergegenstands
-Bezug zu vorhandener Haltestelle durch Auswahl auf Karte
-Maßnahmenbeschreibung und Zielsetzung
-Angaben zum geschätzten Kostenaufwand
-Upload-Möglichkeit für ergänzende Dateien (z. B. Skizzen oder Bilder)
-Name der meldenden Kommune
-Name, Telefonnummer und E-Mail-Adresse der zuständigen Kontaktperson
+- Auswahl des Fördergegenstands
+- Bezug zu vorhandener Haltestelle durch Auswahl auf Karte
+- Maßnahmenbeschreibung und Zielsetzung
+- Angaben zum geschätzten Kostenaufwand
+- Upload-Möglichkeit für ergänzende Dateien (z. B. Skizzen oder Bilder)
+- Name der meldenden Kommune
+- Name, Telefonnummer und E-Mail-Adresse der zuständigen Kontaktperson
 
 Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://trassenscout.de/datenschutz) zu. Die Daten werden gemäß DSGVO verarbeitet und nur für die Durchführung dieser Beteiligung gespeichert.`,
     buttons: [
@@ -180,24 +180,24 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
               Legende: {
                 hs: {
                   label: "Auswählbare Bushaltestellen",
-                  color: "bg-[#F5814D]",
-                  className: "h-3 !w-3 rounded-full flex-shrink-0",
+                  color: "bg-[#f5824d]",
+                  className: "!h-2 !w-2 rounded-full flex-shrink-0",
                 },
-                blockedArea: {
-                  label: "Buslinie",
-                  color: "bg-[#E9CA3099]",
-                  className: "h-[5px]",
+                bordersLandkreis: {
+                  label: "Landkreisgrenzen",
+                  color: "bg-[#333333] opacity-70",
+                  className: "h-[3px]",
                 },
-                // bordersLandkreis: {
-                //   label: "Landkreisgrenzen",
-                //   color: "bg-[#FFD900]",
-                //   className: "h-[5px]",
-                // },
-                // bordersGemeinde: {
-                //   label: "Gemeindegrenzen",
-                //   color: "bg-[#000]",
-                //   className: "h-[5px]",
-                // },
+                bus: {
+                  label: "Buslinien",
+                  color: "bg-[#e9ca3099]",
+                  className: "h-[2px]",
+                },
+                bordersGemeinde: {
+                  label: "Gemeindegrenzen",
+                  color: "bg-[#333333] opacity-70",
+                  className: "h-[1.5px]",
+                },
               },
             },
           },

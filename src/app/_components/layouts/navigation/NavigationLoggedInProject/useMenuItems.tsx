@@ -33,6 +33,11 @@ export const useMenuItems = () => {
       alsoHighlightPaths: [`/${projectSlug}/abschnitte/`],
     },
     {
+      name: "Protokoll",
+      href: `/${projectSlug}/protocols`,
+      alsoHighlightPaths: [`/${projectSlug}/protocols/`],
+    },
+    {
       name: "Kontakte",
       href: `/${projectSlug}/contacts`,
       alsoHighlightPaths: [
@@ -41,10 +46,10 @@ export const useMenuItems = () => {
         `/${projectSlug}/invites/`,
       ],
     },
-    {
-      name: "Dokumente",
-      href: `/${projectSlug}/uploads`,
-    },
+    // {
+    //   name: "Dokumente",
+    //   href: `/${projectSlug}/uploads`,
+    // },
     {
       name: "Beteiligung",
       href: `/${projectSlug}/surveys`,

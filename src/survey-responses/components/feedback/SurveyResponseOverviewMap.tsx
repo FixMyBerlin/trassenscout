@@ -417,10 +417,11 @@ export const SurveyResponseOverviewMap = ({
       ] as any)}
     >
       {layers.map((layer) => (
-        <Layer key={layer.id} {...layer} />
+        <Layer id={layer.id} key={layer.id} {...layer} />
       ))}
     </Source>
   )
+
   const geometryCategorySource = (
     <Source
       id="geometryCategory"
@@ -430,7 +431,7 @@ export const SurveyResponseOverviewMap = ({
       data={featureCollection(surveyResponsesGeometryCategoryFeatures as any)}
     >
       {geometryCategoryLayers.map((layer) => (
-        <Layer key={layer.id} {...layer} />
+        <Layer id={layer.id} key={layer.id} {...layer} />
       ))}
     </Source>
   )

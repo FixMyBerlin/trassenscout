@@ -4,6 +4,7 @@ import { FormConfig } from "@/src/app/beteiligung/_shared/types"
 export const formConfig: FormConfig = {
   meta: {
     version: 1,
+    title: "Maßnahmenmeldung",
     logoUrl: "https://www.oberhavel.de/media/custom/2244_71430_1_g.PNG?1606723864",
     canonicalUrl: "https://www.oberhavel.de/",
     maptilerUrl: "https://api.maptiler.com/maps/b09268b1-91d0-42e2-9518-321a1a94738f/style.json",
@@ -17,12 +18,19 @@ export const formConfig: FormConfig = {
   end: {
     progressBarDefinition: 7,
     title: "Vielen Dank für Ihre Teilnahme!",
-    description:
-      "Ihre Angaben wurden gespeichert. Die Auswertung werden wir nach Ende der Beteiligungsphase auf der Projektwebseite veröffentlichen.",
+    description: `Vielen Dank für Ihre Rückmeldung. Die von Ihnen gemeldeten Maßnahmen sind bei uns eingegangen und wurden gespeichert. Sie haben zur Bestätigung für jede von Ihnen gemeldete Maßnahme eine E-Mail erhalten.
+
+
+## Wie geht es weiter?
+
+Das digitale Meldeverfahren läuft noch bis zum 30.09.2025. Bis dahin können Sie auf dem gleichen Wege noch weitere Maßnahmen melden. Nach Abschluss des Meldeverfahrens werden die eingegangenen Meldungen durch die OHBV gesichtet und in Rücksprache mit dem Landkreis geprüft. Die Entscheidung über die Aufnahme in das 5-Jahresprogramm liegt beim Landkreis. Der Landkreis zieht ggf. intern weitere Abteilungen hinzu, wie z. B. für Schulwegsicherheit.
+
+Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen übermittelt. Die E-Mail enthält als Anlage die Zusammenstellung der aufgenommenen Maßnahmen. Die Kommunen erhalten auf dieser Grundlage in einem gesonderten Schritt die Aufforderung zur Antragstellung.
+`,
     mailjetWidgetUrl: null,
     homeUrl: "https://www.oberhavel.de/",
     button: {
-      label: "Zurück zur Startseite",
+      label: "Zur Webseite des Lankreis Oberhavel",
       color: "primaryColor",
     },
   },
@@ -37,9 +45,25 @@ export const formConfig: FormConfig = {
     ],
     status: [
       { value: "PENDING", label: "Ausstehend", color: "#FDEEBF", icon: "CLOCK" },
-      { value: "REJECTED", label: "Abgelehnt", color: "#FEE2E2", icon: "XMARK" },
-      { value: "ACCEPTED", label: "Angenommen", color: "#D1FAE5", icon: "CHECKMARK" },
-      { value: "PUBLISHED", label: "Veröffentlicht", color: "#BBF7D0", icon: "DOCUMENT" },
+      {
+        value: "DOCUMENTS_MISSING",
+        label: "Unterlagen nachzureichen",
+        color: "#FEF3C7",
+        icon: "DOCUMENT",
+      },
+      {
+        value: "REJECTED_HOUSEHOLD_RESERVATION",
+        label: "Maßnahme abgelehnt (Haushaltsvorbehalt)",
+        color: "#FEE2E2",
+        icon: "XMARK",
+      },
+      {
+        value: "REJECTED",
+        label: "Maßnahme abgelehnt",
+        color: "#FECACA",
+        icon: "XMARK",
+      },
+      { value: "ACCEPTED", label: "Maßnahme freigegeben", color: "#D1FAE5", icon: "CHECKMARK" },
     ],
   },
   email: {

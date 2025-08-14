@@ -4,6 +4,13 @@ import { LegendItemConfig } from "@/src/core/components/Map/MapLegend"
 export const legendItemsConfig: Record<string, LegendItemConfig[]> = {
   project: [
     { text: "Planungsabschnitte", color: layerColors.selectable, shape: "line", dots: true },
+    {
+      text: "Planungsabschnitte - Trassenverlauf ungeklärt",
+      color: layerColors.selectable,
+      shape: "dashedLine",
+      dots: true,
+      secondColor: layerColors.background,
+    },
   ],
   subsection: [
     { text: "Maßnahme", color: layerColors.selectable, shape: "line", dots: true },

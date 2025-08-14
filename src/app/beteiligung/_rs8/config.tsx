@@ -5,6 +5,7 @@ import { FormConfig } from "@/src/app/beteiligung/_shared/types"
 export const formConfig = {
   meta: {
     version: 1,
+    title: "Beteiligung",
     logoUrl: "https://radschnellweg8-lb-wn.de/_astro/image.BNSTrDGZ_Z1ksyyY.webp",
     canonicalUrl: "https://radschnellweg8-lb-wn.de/beteiligung/",
     maptilerUrl: "https://api.maptiler.com/maps/b09268b1-91d0-42e2-9518-321a1a94738f/style.json",

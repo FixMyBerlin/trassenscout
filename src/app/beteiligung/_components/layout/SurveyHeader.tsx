@@ -5,9 +5,10 @@ import Image from "next/image"
 type Props = {
   logoSrc: string
   landingPageUrl: string
+  title: string
 }
 
-export const SurveyHeader = ({ logoSrc, landingPageUrl }: Props) => {
+export const SurveyHeader = ({ logoSrc, landingPageUrl, title }: Props) => {
   return (
     <nav className="z-20 shadow-xl">
       <div className="mx-auto flex items-center justify-between px-2 text-gray-500 sm:px-6 lg:pl-5 lg:pr-2.5">
@@ -22,7 +23,7 @@ export const SurveyHeader = ({ logoSrc, landingPageUrl }: Props) => {
               priority
             />
           </span>
-          <span className="py-5 pl-5">Beteiligung</span>
+          <span className="py-5 pl-5">{title}</span>
         </div>
         <SurveyLink classNameOverwrites="text-gray-900" href={landingPageUrl}>
           <XMarkIcon className="h-7 w-7" />

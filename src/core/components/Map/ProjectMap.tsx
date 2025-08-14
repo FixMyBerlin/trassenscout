@@ -93,6 +93,8 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
     subsections.map((subsection) =>
       lineString(subsection.geometry, {
         subsectionSlug: subsection.slug,
+        dashed: !subsection.isFinalRoute ? true : undefined,
+        // backgroundColor: "#FED7AA",
         color:
           hoveredMap === subsection.slug || hoveredMarker === subsection.slug
             ? layerColors.hovered
