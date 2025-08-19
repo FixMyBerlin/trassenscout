@@ -58,9 +58,9 @@ function ProtocolFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Prop
   }
   return (
     <Form<S> {...props}>
+      <LabeledTextField type="date" name="date" label="am/bis" placeholder="" />
       <LabeledTextField name="title" label="Titel" />
       <LabeledTextareaField name="description" optional label="Niederschrift (Markdown)" />
-      <LabeledTextField type="date" name="date" label="Datum" placeholder="" />
       {subsectionOptions.length > 0 && (
         <LabeledSelect
           optional
