@@ -1,28 +1,34 @@
+"use client"
+
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { Spinner } from "@/src/core/components/Spinner"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
-import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { seoEditTitle } from "@/src/core/components/text"
-import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
-import { ProtocolForm } from "@/src/pagesComponents/protocols/ProtocolForm"
 import { m2mFields, M2MFieldsType } from "@/src/server/protocols/m2mFields"
 import updateProtocol from "@/src/server/protocols/mutations/updateProtocol"
 import getProtocol from "@/src/server/protocols/queries/getProtocol"
 import { ProtocolFormSchema } from "@/src/server/protocols/schemas"
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/router"
-import { Suspense } from "react"
+import { useRouter } from "next/navigation"
+import { ProtocolForm } from "../../../_components/ProtocolForm"
 
-const EditProtocolWithQuery = () => {
+export const EditProtocolForm = ({
+  initialProtocol,
+  projectSlug,
+  protocolId,
+}: {
+  initialProtocol: Awaited<ReturnType<typeof getProtocol>>
+  projectSlug: string
+  protocolId: number
+}) => {
   const router = useRouter()
-  const projectSlug = useProjectSlug()
-  const protocolId = useParam("protocolId", "number")
-  const [protocol, { refetch }] = useQuery(getProtocol, { projectSlug, id: protocolId })
+  const [protocol, { refetch }] = useQuery(
+    getProtocol,
+    { projectSlug, id: protocolId },
+    // todo check if this works as expected
+    { initialData: initialProtocol },
+  )
 
   const [updateProtocolMutation] = useMutation(updateProtocol)
 
@@ -36,7 +42,7 @@ const EditProtocolWithQuery = () => {
         projectSlug,
       })
       await refetch()
-      await router.push(Routes.ProtocolsPage({ projectSlug }))
+      router.push(`/${projectSlug}/protocols`)
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
@@ -68,26 +74,10 @@ const EditProtocolWithQuery = () => {
       />
 
       <p className="mt-5">
-        <Link href={Routes.ProtocolsPage({ projectSlug })}>Zurück zur Übersicht</Link>
+        <Link href={`/${projectSlug}/protocols`}>Zurück zur Übersicht</Link>
       </p>
 
       <SuperAdminLogData data={{ protocol }} />
     </>
   )
 }
-
-const EditProtocolPage: BlitzPage = () => {
-  return (
-    <LayoutRs>
-      <MetaTags noindex title={seoEditTitle("Projektprotokoll")} />
-      <PageHeader title="Projektprotokoll bearbeiten" className="mt-12" />
-      <Suspense fallback={<Spinner page />}>
-        <EditProtocolWithQuery />
-      </Suspense>
-    </LayoutRs>
-  )
-}
-
-EditProtocolPage.authenticate = true
-
-export default EditProtocolPage

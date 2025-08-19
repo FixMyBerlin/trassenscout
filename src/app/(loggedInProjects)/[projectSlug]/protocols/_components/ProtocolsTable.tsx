@@ -1,3 +1,5 @@
+"use client"
+
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Disclosure } from "@/src/core/components/Disclosure"
 import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
@@ -5,11 +7,10 @@ import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import deleteProtocol from "@/src/server/protocols/mutations/deleteProtocol"
 import getProtocols from "@/src/server/protocols/queries/getProtocols"
-import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { format } from "date-fns"
@@ -89,10 +90,7 @@ export const ProtocolsTable = ({
                       <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
                         {protocol.subsection ? (
                           <Link
-                            href={Routes.SubsectionDashboardPage({
-                              projectSlug,
-                              subsectionSlug: protocol.subsection.slug,
-                            })}
+                            href={`/${projectSlug}/subsections/${protocol.subsection.slug}`}
                             className="text-blue-500 hover:text-blue-700"
                           >
                             {shortTitle(protocol.subsection.slug)}
@@ -124,13 +122,7 @@ export const ProtocolsTable = ({
                   )}
                   <IfUserCanEdit>
                     <ButtonWrapper className="flex flex-col justify-end gap-3">
-                      <Link
-                        icon="edit"
-                        href={Routes.EditProtocolPage({
-                          projectSlug,
-                          protocolId: protocol.id,
-                        })}
-                      >
+                      <Link icon="edit" href={`/${projectSlug}/protocols/${protocol.id}/edit`}>
                         Bearbeiten
                       </Link>
                       <button

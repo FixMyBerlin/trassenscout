@@ -1,4 +1,5 @@
-import { Spinner } from "@/src/core/components/Spinner"
+"use client"
+
 import {
   Form,
   FormProps,
@@ -14,12 +15,12 @@ import getProtocolTopicsByProject from "@/src/server/protocol-topics/queries/get
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
-import { Suspense, useState } from "react"
+import { useState } from "react"
 import { z } from "zod"
 
 type Props<S extends z.ZodType<any, any>> = FormProps<S>
 
-function ProtocolFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Props<S>) {
+export function ProtocolForm<S extends z.ZodType<any, any>>({ ...props }: Props<S>) {
   const projectSlug = useProjectSlug()
   const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   const [{ protocolTopics }, { refetch }] = useQuery(getProtocolTopicsByProject, {
@@ -100,13 +101,5 @@ function ProtocolFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Prop
         </div>
       </div>
     </Form>
-  )
-}
-
-export function ProtocolForm<S extends z.ZodType<any, any>>(props: Props<S>) {
-  return (
-    <Suspense fallback={<Spinner />}>
-      <ProtocolFormWithQuery {...props} />
-    </Suspense>
   )
 }
