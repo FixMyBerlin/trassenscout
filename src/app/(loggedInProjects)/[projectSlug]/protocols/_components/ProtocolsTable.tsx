@@ -2,16 +2,14 @@
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Disclosure } from "@/src/core/components/Disclosure"
-import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
+import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-import deleteProtocol from "@/src/server/protocols/mutations/deleteProtocol"
 import getProtocols from "@/src/server/protocols/queries/getProtocols"
-import { useMutation } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
@@ -22,22 +20,9 @@ export const ProtocolsTable = ({
   protocols: Awaited<ReturnType<typeof getProtocols>>
 }) => {
   const projectSlug = useProjectSlug()
-  const [deleteProtocolMutation] = useMutation(deleteProtocol)
   protocols.sort((a, b) => {
     return a.date && b.date && a.date < b.date ? 1 : -1
   })
-
-  const handleDelete = async (protocolId: number) => {
-    if (window.confirm(`Den Eintrag mit ID ${protocolId} unwiderruflich löschen?`)) {
-      try {
-        await deleteProtocolMutation({ projectSlug, id: protocolId })
-      } catch (error) {
-        alert(
-          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
-        )
-      }
-    }
-  }
 
   const spaceClasses = "px-3 py-2"
 
@@ -125,17 +110,6 @@ export const ProtocolsTable = ({
                       <Link icon="edit" href={`/${projectSlug}/protocols/${protocol.id}/edit`}>
                         Bearbeiten
                       </Link>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(protocol.id)}
-                        className={clsx(
-                          linkStyles,
-                          "inline-flex items-center justify-center gap-1",
-                        )}
-                      >
-                        {linkIcons["delete"]}
-                        Löschen
-                      </button>
                     </ButtonWrapper>
                   </IfUserCanEdit>
                 </Disclosure>
