@@ -1,3 +1,8 @@
+"use client"
+
+// we added "use client" to the existing Markdown component to easily use this component in the app dir / server components
+// Later optimization: we should consider using ServerMarkdown for static content
+
 import { clsx } from "clsx"
 import { Remark } from "react-remark"
 import { Link } from "../links/Link"

@@ -105,13 +105,14 @@ export const ProtocolsTable = ({
                       </ul>
                     </div>
                   )}
-                  <IfUserCanEdit>
-                    <ButtonWrapper className="flex flex-col justify-end gap-3">
+                  <ButtonWrapper className="flex flex-col justify-end gap-3">
+                    <IfUserCanEdit>
                       <Link icon="edit" href={`/${projectSlug}/protocols/${protocol.id}/edit`}>
                         Bearbeiten
                       </Link>
-                    </ButtonWrapper>
-                  </IfUserCanEdit>
+                      <Link href={`/${projectSlug}/protocols/${protocol.id}`}>Detailansicht</Link>
+                    </IfUserCanEdit>
+                  </ButtonWrapper>
                 </Disclosure>
               </div>
             ))}

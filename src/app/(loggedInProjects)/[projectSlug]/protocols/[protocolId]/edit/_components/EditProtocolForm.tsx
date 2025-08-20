@@ -42,7 +42,7 @@ export const EditProtocolForm = ({
         projectSlug,
       })
       await refetch()
-      router.push(`/${projectSlug}/protocols`)
+      router.push(`/${projectSlug}/protocols/${protocol.id}`)
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
@@ -74,7 +74,7 @@ export const EditProtocolForm = ({
       />
 
       <p className="mt-5">
-        <Link href={`/${projectSlug}/protocols`}>Zurück zur Übersicht</Link>
+        <Link href={`/${projectSlug}/protocols`}>← Zurück zur Protokoll-Übersicht</Link>
       </p>
 
       <SuperAdminLogData data={{ protocol }} />

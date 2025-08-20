@@ -1,3 +1,8 @@
+"use client"
+
+// we added use client to the existing IfUserCan component to easily use this component in the app dir / server components
+// Later optimization: we could consider using ServerIfUserCan for non interactive pages...? with invoke(getCurrentUser...
+
 import { showMembershipRoleCheckIndicatorState } from "@/src/core/store/showMembershipRoleCheckIndicator.zustand"
 import { isProduction } from "@/src/core/utils"
 import { useSession } from "@blitzjs/auth"
