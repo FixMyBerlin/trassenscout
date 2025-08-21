@@ -89,11 +89,8 @@ export const ProtocolsTable = ({
                     </div>
                   }
                 >
-                  {protocol.description && (
-                    <Markdown
-                      className="rounded-md bg-purple-100 p-2"
-                      markdown={protocol.description}
-                    />
+                  {protocol.body && (
+                    <Markdown className="rounded-md bg-purple-100 p-2" markdown={protocol.body} />
                   )}
                   {!!protocol.protocolTopics.length && (
                     <div>

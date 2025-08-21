@@ -55,11 +55,11 @@ export default async function ProtocolDetail({
           </div>
         )}
 
-        {protocol.description && (
+        {protocol.body && (
           <div className="rounded-md bg-purple-100 p-4">
             <Markdown
               className="prose-p:text-base prose-ol:leading-tight prose-ul:list-disc prose-ul:leading-tight"
-              markdown={protocol.description}
+              markdown={protocol.body}
             />
           </div>
         )}

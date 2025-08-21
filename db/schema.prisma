@@ -654,7 +654,7 @@ model Protocol {
   //
   date           DateTime?
   title          String
-  description    String?
+  body           String?
   //
   project        Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId      Int

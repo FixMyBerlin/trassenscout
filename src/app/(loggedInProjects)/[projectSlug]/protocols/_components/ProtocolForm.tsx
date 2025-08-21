@@ -75,7 +75,7 @@ const ProtocolFormFields = () => {
           label="Planungsabschnitt"
         />
       )}
-      <LabeledTextareaField name="description" optional label="Notizen (Markdown)" rows={10} />
+      <LabeledTextareaField name="body" optional label="Notizen (Markdown)" rows={10} />
 
       <div className="flex flex-col gap-3">
         <LabeledCheckboxGroup
