@@ -118,6 +118,7 @@ export function ProtocolForm<S extends z.ZodType<any, any>>({ mode, ...props }: 
           <Disclosure
             classNameButton="py-4 px-6 text-left bg-gray-100 rounded-t-md pb-6"
             classNamePanel="px-6 pb-3 bg-gray-100 rounded-b-md space-y-6"
+            open
             button={
               <div className="flex-auto">
                 <H3 className={clsx("pr-10 md:pr-0")}>Neuer Protokolleintrag</H3>

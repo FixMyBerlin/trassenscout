@@ -16,8 +16,10 @@ import { de } from "date-fns/locale"
 
 export const ProtocolsTable = ({
   protocols,
+  highlightId,
 }: {
   protocols: Awaited<ReturnType<typeof getProtocols>>
+  highlightId: number | null
 }) => {
   const projectSlug = useProjectSlug()
   protocols.sort((a, b) => {
@@ -63,7 +65,10 @@ export const ProtocolsTable = ({
               <div key={protocol.id}>
                 <Disclosure
                   classNamePanel="p-3 text-sm flex gap-4 items-start"
-                  classNameButton="hover:bg-gray-50 text-left"
+                  classNameButton={clsx(
+                    "text-left hover:bg-gray-50",
+                    highlightId === protocol.id && "bg-green-50",
+                  )}
                   button={
                     <div className="grid flex-grow grid-cols-3">
                       <div className={clsx(spaceClasses, "text-sm font-medium text-gray-900")}>
