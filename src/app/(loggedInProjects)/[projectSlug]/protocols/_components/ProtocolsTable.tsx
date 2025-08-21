@@ -40,7 +40,7 @@ export const ProtocolsTable = ({
                   "text-left text-sm font-semibold uppercase text-gray-900",
                 )}
               >
-                DATUM
+                Datum
               </div>
               <div
                 className={clsx(
@@ -48,7 +48,7 @@ export const ProtocolsTable = ({
                   "text-left text-sm font-semibold uppercase text-gray-900",
                 )}
               >
-                TITEL
+                Titel
               </div>
               <div
                 className={clsx(
@@ -56,7 +56,7 @@ export const ProtocolsTable = ({
                   "text-left text-sm font-semibold uppercase text-gray-900",
                 )}
               >
-                PLANUNGSABSCHNITT
+                Planungsabschnitt
               </div>
             </div>
           </div>
@@ -79,10 +79,7 @@ export const ProtocolsTable = ({
                       </div>
                       <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
                         {protocol.subsection ? (
-                          <Link
-                            href={`/${projectSlug}/subsections/${protocol.subsection.slug}`}
-                            className="text-blue-500 hover:text-blue-700"
-                          >
+                          <Link href={`/${projectSlug}/subsections/${protocol.subsection.slug}`}>
                             {shortTitle(protocol.subsection.slug)}
                           </Link>
                         ) : (

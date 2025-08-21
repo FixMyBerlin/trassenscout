@@ -49,10 +49,7 @@ export default async function ProtocolDetail({
         {protocol.subsection && (
           <div className="flex items-end gap-2">
             <span className="font-medium text-gray-500">Planungsabschnitt: </span>
-            <Link
-              href={`/${params.projectSlug}/abschnitte/${protocol.subsection.slug}`}
-              className="text-blue-500 hover:text-blue-700"
-            >
+            <Link href={`/${params.projectSlug}/abschnitte/${protocol.subsection.slug}`}>
               <SubsectionIcon label={shortTitle(protocol.subsection.slug)} />
             </Link>
           </div>
