@@ -35,7 +35,7 @@ export const ProtocolsFormAndTable = ({
       const timeout = setTimeout(() => {
         setShowSuccess(false)
         setCreatedProtocolId(null)
-      }, 3000)
+      }, 4000)
       return () => clearTimeout(timeout)
     }
   }, [showSuccess])
