@@ -1,7 +1,8 @@
 import db from "@/db"
+import { toLineGeometry } from "@/src/app/api/_utils/inferLineGeometryType"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import adler32 from "adler-32"
-import type { Feature, LineString, Point, Position } from "geojson"
+import type { Feature, LineString, MultiLineString, Point, Position } from "geojson"
 
 // this component is hard coded for the survey radnetz-brandenburg part2
 // it is used to send an email to the user with the feedback they provided
@@ -83,7 +84,9 @@ export async function GET(request: Request, { params }: { params: { slug: string
             Landkreis: part1?.[6] as string,
             lineId: rawData[20] as string, // "165-89"
             lineGeometry: rawData[21]
-              ? (JSON.parse(rawData[21]) as LineString["coordinates"])
+              ? (JSON.parse(rawData[21]) as
+                  | LineString["coordinates"]
+                  | MultiLineString["coordinates"])
               : undefined,
             category: categories[rawData[22]],
             location: rawData[24] as null | { lng: number; lat: number },
@@ -101,12 +104,11 @@ export async function GET(request: Request, { params }: { params: { slug: string
     .map(({ lineGeometry, location, ...result }) => {
       if (lineGeometry === undefined) return
 
-      const features: (Feature<LineString> | Feature<Point>)[] = [
+      const features: (Feature<LineString | MultiLineString> | Feature<Point>)[] = [
         {
           type: "Feature",
           geometry: {
-            type: "LineString",
-            coordinates: lineGeometry,
+            ...toLineGeometry(lineGeometry),
           },
           // Maplibre GL JS requires the feature.id ot be an integer.
           // If not, the hover/select process fails in Atlas.
