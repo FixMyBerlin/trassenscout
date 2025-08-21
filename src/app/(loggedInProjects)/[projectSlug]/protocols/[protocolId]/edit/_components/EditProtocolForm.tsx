@@ -80,7 +80,7 @@ export const EditProtocolForm = ({
     <>
       <ProtocolForm
         className="grow"
-        submitText="Speichern"
+        submitText="Protokoll speichern"
         schema={ProtocolFormSchema}
         // @ts-expect-error some null<>undefined missmatch
         initialValues={{
@@ -89,6 +89,7 @@ export const EditProtocolForm = ({
           ...m2mFieldsInitialValues,
         }}
         onSubmit={handleSubmit}
+        mode="edit"
       />
 
       <p className="mt-10">
