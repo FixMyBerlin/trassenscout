@@ -56,7 +56,7 @@ export default async function ProtocolDetail({
         )}
 
         {protocol.body && (
-          <div className="rounded-md bg-purple-100 p-4">
+          <div className="max-w-3xl rounded-md bg-purple-100 p-4">
             <Markdown
               className="prose-p:text-base prose-ol:leading-tight prose-ul:list-disc prose-ul:leading-tight"
               markdown={protocol.body}
