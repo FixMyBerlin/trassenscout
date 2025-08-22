@@ -1,4 +1,4 @@
-import { FooterBuildByLine } from "./FooterBuildByLine"
+import { FooterBuildByLineAndFeedback } from "./FooterBuildByLineAndFeedback"
 import { FooterLinkList } from "./FooterLinkList"
 import { links } from "./links.const"
 
@@ -10,7 +10,7 @@ export const FooterGeneral = () => {
           <FooterLinkList linkList={links} className="ml-auto mr-4 flex-none sm:pr-[12vw]" />
         </div>
       </div>
-      <FooterBuildByLine />
+      <FooterBuildByLineAndFeedback />
     </footer>
   )
 }
