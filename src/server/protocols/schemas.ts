@@ -8,7 +8,7 @@ export const ProtocolSchema = z.object({
   // todo tbd zod update v4
   date: NullableDateSchema,
   title: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
-  description: z.string().nullish(),
+  body: z.string().nullish(),
   subsectionId: InputNumberOrNullSchema,
   // copied from SUbsubsection m2m2
   // LIST ALL m2mFields HERE

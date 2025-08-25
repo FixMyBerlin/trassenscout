@@ -1,6 +1,6 @@
+import { FooterProject } from "@/src/app/_components/layouts/footer/FooterProject"
 import { useAuthenticatedBlitzContext } from "@/src/blitz-server"
 import type { Metadata } from "next"
-import { FooterMinimal } from "../_components/layouts/footer/FooterMinimal"
 import { NavigationLoggedInProject } from "../_components/layouts/navigation/NavigationLoggedInProject"
 
 export const metadata: Metadata = {
@@ -20,8 +20,7 @@ export default async function LoggedInProjectsLayout({ children }: { children: R
         <NavigationLoggedInProject />
         <main className="mx-auto w-full max-w-7xl px-6 pb-16 md:px-8">{children}</main>
       </div>
-      {/* <FooterProject /> <-- get nicht, da es auf pages directory helper zurück greift */}
-      <FooterMinimal />
+      <FooterProject />
     </>
   )
 }

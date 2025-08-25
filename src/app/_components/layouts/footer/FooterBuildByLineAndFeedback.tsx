@@ -1,9 +1,9 @@
 import { Link } from "@/src/core/components/links"
 
-export const FooterBuildByLine = () => {
+export const FooterBuildByLineAndFeedback = () => {
   return (
     <div className="mt-8 border-t border-gray-400 pt-8 md:flex md:items-center md:justify-between">
-      <p className="mt-8 text-sm text-gray-400 md:order-1 md:mt-0">
+      <p className="text-sm text-gray-400 md:mt-0">
         Gebaut mit{" "}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -33,6 +33,12 @@ export const FooterBuildByLine = () => {
         von{" "}
         <Link classNameOverwrites="gray-400 underline" href="https://www.fixmycity.de" blank>
           FixMyCity.de
+        </Link>
+      </p>
+      <p className="text-sm text-gray-400">
+        Fragen oder Feedback? Schreiben Sie uns:{" "}
+        <Link classNameOverwrites="gray-400 underline" href="mailto:feedback@fixmycity.de">
+          feedback@fixmycity.de
         </Link>
       </p>
     </div>

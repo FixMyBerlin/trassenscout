@@ -1,3 +1,8 @@
+"use client"
+
+// we added "use client" to the existing Markdown component to easily use this component in the app dir / server components
+// Later optimization: we should consider using ServerMarkdown for static content
+
 import { clsx } from "clsx"
 import { Remark } from "react-remark"
 import { Link } from "../links/Link"
@@ -50,8 +55,24 @@ const components = {
   a: MdA,
 }
 
+const autoLinkUrls = (text: string): string => {
+  // Regex to match URLs that start with http:// or https://
+  // This regex looks for URLs that are not already wrapped in markdown link syntax
+  const urlRegex = /(?<!\]\()(https?:\/\/[^\s\)]+)(?!\))/g
+
+  return text.replace(urlRegex, (url) => {
+    // Remove trailing punctuation that's likely not part of the URL
+    const cleanUrl = url.replace(/[.,;:!?]+$/, "")
+    const trailingPunc = url.slice(cleanUrl.length)
+
+    return `[${cleanUrl}](${cleanUrl})${trailingPunc}`
+  })
+}
+
 export const Markdown = ({ markdown, className }: Props) => {
   if (!markdown) return null
+
+  const processedMarkdown = autoLinkUrls(markdown)
 
   return (
     <div className={clsx(proseClasses, className)}>
@@ -59,7 +80,7 @@ export const Markdown = ({ markdown, className }: Props) => {
         remarkToRehypeOptions={{ allowDangerousHtml: true }}
         rehypeReactOptions={{ components }}
       >
-        {markdown}
+        {processedMarkdown}
       </Remark>
     </div>
   )

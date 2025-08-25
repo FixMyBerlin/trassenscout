@@ -1,30 +1,54 @@
+"use client"
+
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { Spinner } from "@/src/core/components/Spinner"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
-import { Link } from "@/src/core/components/links"
-import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { seoEditTitle } from "@/src/core/components/text"
-import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { Link, linkStyles } from "@/src/core/components/links"
 import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
-import { ProtocolForm } from "@/src/pagesComponents/protocols/ProtocolForm"
 import { m2mFields, M2MFieldsType } from "@/src/server/protocols/m2mFields"
+import deleteProtocol from "@/src/server/protocols/mutations/deleteProtocol"
 import updateProtocol from "@/src/server/protocols/mutations/updateProtocol"
 import getProtocol from "@/src/server/protocols/queries/getProtocol"
 import { ProtocolFormSchema } from "@/src/server/protocols/schemas"
-import { BlitzPage, Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/router"
-import { Suspense } from "react"
+import clsx from "clsx"
+import { useRouter } from "next/navigation"
+import { ProtocolForm } from "../../../_components/ProtocolForm"
 
-const EditProtocolWithQuery = () => {
+export const EditProtocolForm = ({
+  initialProtocol,
+  projectSlug,
+  protocolId,
+}: {
+  initialProtocol: Awaited<ReturnType<typeof getProtocol>>
+  projectSlug: string
+  protocolId: number
+}) => {
   const router = useRouter()
-  const projectSlug = useProjectSlug()
-  const protocolId = useParam("protocolId", "number")
-  const [protocol, { refetch }] = useQuery(getProtocol, { projectSlug, id: protocolId })
+  const [protocol, { refetch }] = useQuery(
+    getProtocol,
+    { projectSlug, id: protocolId },
+    // todo check if this works as expected
+    { initialData: initialProtocol },
+  )
 
   const [updateProtocolMutation] = useMutation(updateProtocol)
+  const [deleteProtocolMutation] = useMutation(deleteProtocol)
+
+  const handleDelete = async () => {
+    if (window.confirm(`Den Eintrag mit ID ${protocolId} unwiderruflich löschen?`)) {
+      try {
+        await deleteProtocolMutation({
+          id: protocolId,
+          projectSlug,
+        })
+      } catch (error) {
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
+    }
+  }
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -36,7 +60,7 @@ const EditProtocolWithQuery = () => {
         projectSlug,
       })
       await refetch()
-      await router.push(Routes.ProtocolsPage({ projectSlug }))
+      router.push(`/${projectSlug}/protocols/${protocol.id}`)
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
@@ -56,7 +80,7 @@ const EditProtocolWithQuery = () => {
     <>
       <ProtocolForm
         className="grow"
-        submitText="Speichern"
+        submitText="Protokoll speichern"
         schema={ProtocolFormSchema}
         // @ts-expect-error some null<>undefined missmatch
         initialValues={{
@@ -65,29 +89,20 @@ const EditProtocolWithQuery = () => {
           ...m2mFieldsInitialValues,
         }}
         onSubmit={handleSubmit}
+        mode="edit"
       />
 
-      <p className="mt-5">
-        <Link href={Routes.ProtocolsPage({ projectSlug })}>Zurück zur Übersicht</Link>
+      <p className="mt-10">
+        <Link href={`/${projectSlug}/protocols`}>← Zurück zur Protokoll-Übersicht</Link>
       </p>
+
+      <hr className="my-5" />
+
+      <button type="button" onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
+        Löschen
+      </button>
 
       <SuperAdminLogData data={{ protocol }} />
     </>
   )
 }
-
-const EditProtocolPage: BlitzPage = () => {
-  return (
-    <LayoutRs>
-      <MetaTags noindex title={seoEditTitle("Projektprotokoll")} />
-      <PageHeader title="Projektprotokoll bearbeiten" className="mt-12" />
-      <Suspense fallback={<Spinner page />}>
-        <EditProtocolWithQuery />
-      </Suspense>
-    </LayoutRs>
-  )
-}
-
-EditProtocolPage.authenticate = true
-
-export default EditProtocolPage

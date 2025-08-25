@@ -1,11 +1,17 @@
 import db from "@/db"
+import { toLineGeometry } from "@/src/app/api/_utils/inferLineGeometryType"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import adler32 from "adler-32"
-import type { Feature, LineString, Point, Position } from "geojson"
+import type { Feature, LineString, MultiLineString, Point, Position } from "geojson"
 
-// this component is hard coded for the survey radnetz-brandenburg part2
-// it is used to send an email to the user with the feedback they provided
-// if we want to use this for other surveys, we need to refactor the code
+// READ THIS:
+// This API is custom made for BB.
+// There is more on how we use this in TILDA at `app/scripts/StaticDatasets/geojson/region-bb/_bb-trassenscout-beteiligung/README.md`
+// If we ever use this again, we need to come up with a plan on how to make the API response more stable for different clients.
+// Because depending on the usage, we want the `Author` (commented out ATM) … or not (privacy).
+// One idea would be, do define an `keys` param with an allowed list of the fields listed below.
+// And allow the consumers to specify the list of fields that they need.
+// This requires the API response to always be server-to-server, which it has to be anyways due to the `apiKey` param.
 
 const feedbackDefinition = getConfigBySurveySlug("radnetz-brandenburg", "part2")
 
@@ -46,6 +52,9 @@ export async function GET(request: Request, { params }: { params: { slug: string
               data: true,
               surveyPart: true,
               surveySessionId: true,
+              status: true,
+              surveyResponseTopics: { select: { title: true } },
+              note: true,
             },
           },
           createdAt: true,
@@ -74,20 +83,24 @@ export async function GET(request: Request, { params }: { params: { slug: string
           // ignore all test entries for this API
           if (part1?.[5] === "FixMyCity") return
 
-          // todo survey clean up after survey BB: remove BB specific fields
           return {
             reponseId: response.id,
             sessionCreatedAt: session.createdAt,
-            Author: `${part1?.[1]} ${part1?.[2]}` as string,
+            // Author: `${part1?.[1]} ${part1?.[2]}` as string,
             Institut: part1?.[5] as string,
             Landkreis: part1?.[6] as string,
             lineId: rawData[20] as string, // "165-89"
             lineGeometry: rawData[21]
-              ? (JSON.parse(rawData[21]) as LineString["coordinates"])
+              ? (JSON.parse(rawData[21]) as
+                  | LineString["coordinates"]
+                  | MultiLineString["coordinates"])
               : undefined,
             category: categories[rawData[22]],
             location: rawData[24] as null | { lng: number; lat: number },
             text: rawData[25] as string,
+            note: response.note,
+            status: response.status,
+            topics: response.surveyResponseTopics.map((t) => t.title),
           }
         })
         .filter(Boolean)
@@ -95,18 +108,15 @@ export async function GET(request: Request, { params }: { params: { slug: string
     })
     .flat()
 
-  // return Response.json({ results: results.filter((r) => r.reponseId === 1109) })
-
   const features = results
     .map(({ lineGeometry, location, ...result }) => {
       if (lineGeometry === undefined) return
 
-      const features: (Feature<LineString> | Feature<Point>)[] = [
+      const features: (Feature<LineString | MultiLineString> | Feature<Point>)[] = [
         {
           type: "Feature",
           geometry: {
-            type: "LineString",
-            coordinates: lineGeometry,
+            ...toLineGeometry(lineGeometry),
           },
           // Maplibre GL JS requires the feature.id ot be an integer.
           // If not, the hover/select process fails in Atlas.
