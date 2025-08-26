@@ -7,7 +7,12 @@ import { useParams } from "next/navigation"
 
 export const SurveyEnd = () => {
   const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
-  const { description, button, title, homeUrl } = getConfigBySurveySlug(surveySlug, "end")
+  const {
+    description,
+    buttonLink: button,
+    title,
+    homeUrl,
+  } = getConfigBySurveySlug(surveySlug, "end")
   return (
     <section>
       <SurveyScreenHeader title={title} description={description} />

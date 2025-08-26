@@ -274,7 +274,7 @@ export type FormConfig = {
     description?: string
     mailjetWidgetUrl: string | null
     homeUrl: string
-    button: {
+    buttonLink: {
       label: string
       color?: "white" | "primaryColor"
     }
