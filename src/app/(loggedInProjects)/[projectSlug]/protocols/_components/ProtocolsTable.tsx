@@ -90,7 +90,11 @@ export const ProtocolsTable = ({
                   }
                 >
                   {protocol.body && (
-                    <Markdown className="rounded-md bg-purple-100 p-2" markdown={protocol.body} />
+                    // for some reasons prose modifiers did not work here
+                    <Markdown
+                      className="rounded-md bg-purple-100 p-2 [&_ol]:ml-4 [&_ol]:list-decimal [&_ol]:leading-tight [&_p]:text-base [&_ul]:ml-4 [&_ul]:list-disc [&_ul]:leading-tight"
+                      markdown={protocol.body}
+                    />
                   )}
                   {!!protocol.protocolTopics.length && (
                     <div>
