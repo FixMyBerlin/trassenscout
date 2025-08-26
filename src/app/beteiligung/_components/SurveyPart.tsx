@@ -281,12 +281,13 @@ export const SurveyPart = ({ stage, handleSubmit, setStage, setIsIntro, isIntro 
                 }
                 buttonRight2={
                   stage === "part2" &&
-                  page === surveyPart.pages.length - 1 && (
+                  page === surveyPart.pages.length - 1 &&
+                  // @ts-expect-error
+                  surveyPart.buttonLabels.again && (
                     <div>
                       <form.SubscribeButton id="again" type="submit">
-                        {/* @ts-expect-error we know again exists in part2 */}
-                        {surveyPart.buttonLabels.again ||
-                          "Ich möchte diesen Umfrageteil erneut ausfüllen"}
+                        {/* @ts-expect-error  */}
+                        {surveyPart.buttonLabels.again}
                       </form.SubscribeButton>
                     </div>
                   )

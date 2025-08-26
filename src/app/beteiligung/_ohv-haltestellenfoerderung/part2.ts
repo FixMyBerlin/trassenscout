@@ -68,7 +68,6 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
   buttonLabels: {
     next: "Weiter",
     back: "Zurück",
-    again: "Weitere Maßnahme melden",
     submit: "Maßnahme absenden",
   },
   pages: [
