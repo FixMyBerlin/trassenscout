@@ -34,13 +34,13 @@ Die Kommunen können Maßnahmenvorschläge zu allen förderfähigen Gegenstände
 
 ## Fristen
 
-Die Beteiligung läuft noch bis zum 30.09.2025. Bis dahin können Sie auf dem gleichen Wege noch weitere Maßnahmen melden. Nach Abschluss des Meldeverfahrens werden die eingegangenen Meldungen durch die OHV gesichtet und in Rücksprache mit dem Landkreis geprüft. Die Entscheidung über die Aufnahme in das 5-Jahresprogramm liegt beim Landkreis. Der Landkreis zieht ggf. intern weitere Abteilungen hinzu, wie z. B. für Schulwegsicherheit.
+Das digitale Meldeverfahren läuft noch bis zum 30.09.2025. Bis dahin können Sie auf dem gleichen Wege noch weitere Maßnahmen melden. Nach Abschluss des Meldeverfahrens werden die eingegangenen Meldungen durch die OHV gesichtet und in Rücksprache mit dem Landkreis geprüft. Die Entscheidung über die Aufnahme in das 5-Jahresprogramm liegt beim Landkreis. Der Landkreis zieht ggf. intern weitere Abteilungen hinzu, wie z. B. für Schulwegsicherheit.
 
 Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen übermittelt. Die E-Mail enthält als Anlage die Zusammenstellung der aufgenommenen Maßnahmen. Die Kommunen erhalten auf dieser Grundlage in einem gesonderten Schritt die Aufforderung zur Antragstellung.
 
 ## Kontakt
 
-Sollte es noch unbeantwortete Fragen oder Schwierigkeiten bei der Beteiligung geben, können Sie den  Landkreis Oberhavel kontaktieren. Antworten auf häufig gestellte Fragen finden Sie am dieser Seite.
+Sollte es noch unbeantwortete Fragen oder Schwierigkeiten bei dem digitalen Meldeverfahren geben, können Sie den  Landkreis Oberhavel kontaktieren. Antworten auf häufig gestellte Fragen finden Sie am dieser Seite.
 
 **Ansprechperson** \\
 Alexander Greifenberg (Teamleiter Verkehrsplanung)\\
@@ -53,16 +53,14 @@ Fax: +493301699333\\
 E-Mail: [a.greifenberg@ohbv.de](mailto:a.greifenberg@ohbv.de)
 
 **Weitere Informationen**\\
-Die Maßnahmenmeldung wird nicht zwischengespeichert, d.h. bei Verlassen der Seite gehen alle eingetragenen Informationen verloren. Nach dem Absenden der Beteiligung können Sie nicht mehr auf Ihre getätigten Eingaben zugreifen. Deshalb ist es sinnvoll die Maßnahmenmeldung erst dann auszufüllen und abzusenden, sobald Sie alle wichtigen Informationen für die Maßnahmenmeldung beisammen haben. Folgende Informationen werden im Rahmen der Maßnahmenmeldung abgefragt:
+Die Maßnahmenmeldung wird nicht zwischengespeichert, d.h. bei Verlassen der Seite gehen alle eingetragenen Informationen verloren. Nach dem Absenden der Maßnahmenmeldung können Sie nicht mehr auf Ihre getätigten Eingaben zugreifen. Deshalb ist es sinnvoll die Maßnahmenmeldung erst dann auszufüllen und abzusenden, sobald Sie alle wichtigen Informationen für die Maßnahmenmeldung beisammen haben. Folgende Informationen werden im Rahmen der Maßnahmenmeldung abgefragt:
 - Auswahl des Fördergegenstands
 - Bezug zu vorhandener Haltestelle durch Auswahl auf Karte
 - Maßnahmenbeschreibung und Zielsetzung
 - Angaben zum geschätzten Kostenaufwand
-- Upload-Möglichkeit für ergänzende Dateien (z. B. Skizzen oder Bilder)
-- Name der meldenden Kommune
 - Name, Telefonnummer und E-Mail-Adresse der zuständigen Kontaktperson
 
-Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://trassenscout.de/datenschutz) zu. Die Daten werden gemäß DSGVO verarbeitet und nur für die Durchführung dieser Beteiligung gespeichert.`,
+Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://trassenscout.de/datenschutz) zu. Die Daten werden gemäß DSGVO verarbeitet und nur für die Durchführung dieses digitalen Meldeverfahrens gespeichert.`,
     buttons: [
       { action: "next", label: "Maßnahme melden", position: "right", color: "primaryColor" },
     ],
@@ -93,9 +91,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           props: {
             markdown: `Bitte nutzen Sie das Formular für jeweils nur eine Maßnahmenmeldung. Sie können weitere Maßnahmenmeldungen in einem weiteren Schritt hinzufügen und absenden.
 
-Die Meldung wird nicht zwischengespeichert, d.h. bei dem Verlassen der Seite gehen alle eingetragenen Informationen verloren. Nach dem Absenden der Maßnahmenmeldung können Sie nicht mehr auf Ihre getätigten Eingaben zugreifen.
-
-**Wählen Sie eine Bushaltestelle aus, zu der Sie Maßnahmenvorschläge geben möchten!**
+**Wählen Sie eine Bushaltestelle aus, zu der Sie Maßnahmenvorschläge geben möchten.**
 
 Wählen Sie eine Bushaltestelle durch Klicken auf den gewünschten orangen Punkt auf der Karte aus. Nun können Sie zu der gewählten Bushaltestelle eine Maßnahme melden.
 
@@ -109,7 +105,7 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
           validation: fieldValidationEnum["requiredString"],
           defaultValue: "",
           props: {
-            label: "Bitte wählen Sie den Fördergegenstand aus!",
+            label: "Bitte wählen Sie den Fördergegenstand aus.",
             options: [
               { key: "zob", label: "Bau oder Ausbau von Zentralen Omnibusbahnhöfen (ZOB)" },
               { key: "haltestelleneinrichtungen", label: "Haltestelleneinrichtungen" },
@@ -267,7 +263,7 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
           validation: fieldValidationEnum["requiredEmailString"],
           defaultValue: "",
           props: {
-            label: "Emailadresse zur Bestätigung der Maßnahmenmeldung",
+            label: "E-Mail-Adresse zur Bestätigung der Maßnahmenmeldung",
           },
         },
       ],

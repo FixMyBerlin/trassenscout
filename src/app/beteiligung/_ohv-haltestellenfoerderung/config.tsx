@@ -30,7 +30,7 @@ Nach Erstellung des Ma√ünahmenprogramms wird dieses per E-Mail an die Kommunen √
     mailjetWidgetUrl: null,
     homeUrl: "https://www.oberhavel.de/",
     button: {
-      label: "Zur Webseite des Lankreis Oberhavel",
+      label: "Zur Website des Lankreis Oberhavel",
       color: "primaryColor",
     },
   },
