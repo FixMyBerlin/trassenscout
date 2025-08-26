@@ -198,7 +198,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
       )
       break
     case "end":
-      component = <SurveyEnd />
+      component = <SurveyEnd setStage={setStage} />
       break
   }
 

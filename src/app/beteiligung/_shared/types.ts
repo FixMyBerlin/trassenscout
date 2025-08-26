@@ -211,6 +211,13 @@ export type IntroButton = {
   position: "left" | "right"
 }
 
+export type EndButton = {
+  label: string
+  action: Stage
+  color?: "primaryColor" | "white"
+  position: "left" | "right"
+}
+
 export type TIntro =
   | {
       type: "custom"
@@ -274,6 +281,7 @@ export type FormConfig = {
     description?: string
     mailjetWidgetUrl: string | null
     homeUrl: string
+    buttons: EndButton[] | null
     buttonLink: {
       label: string
       color?: "white" | "primaryColor"

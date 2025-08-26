@@ -39,6 +39,7 @@ Weiterführende Informationen zum Radnetz Brandenburg finden Sie außerdem auf d
 
 `,
     mailjetWidgetUrl: null,
+    buttons: null,
     homeUrl:
       "https://mil.brandenburg.de/mil/de/themen/mobilitaet-verkehr/radverkehr/radnetz-brandenburg/",
     buttonLink: {

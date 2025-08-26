@@ -28,6 +28,14 @@ Das digitale Meldeverfahren läuft noch bis zum 30.09.2025. Bis dahin können Si
 Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen übermittelt. Die E-Mail enthält als Anlage die Zusammenstellung der aufgenommenen Maßnahmen. Die Kommunen erhalten auf dieser Grundlage in einem gesonderten Schritt die Aufforderung zur Antragstellung.
 `,
     mailjetWidgetUrl: null,
+    buttons: [
+      {
+        action: "part2",
+        label: "Weitere Maßnahme melden",
+        position: "left",
+        color: "primaryColor",
+      },
+    ],
     homeUrl: "https://www.oberhavel.de/",
     buttonLink: {
       label: "Zur Website des Lankreis Oberhavel",
