@@ -1,3 +1,9 @@
+// This is a copy of /src/pagesComponents/memberships/IfUserCan.tsx
+// The only difference is that it uses useUserCan from "./hooks/useUserCan"
+// which internally uses the app directory version of useProjectSlug
+
+"use client"
+
 import { showMembershipRoleCheckIndicatorState } from "@/src/core/store/showMembershipRoleCheckIndicator.zustand"
 import { isProduction } from "@/src/core/utils"
 import { useSession } from "@blitzjs/auth"

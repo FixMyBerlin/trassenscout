@@ -10,6 +10,7 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getProtocols from "@/src/server/protocols/queries/getProtocols"
 import { ProtocolType } from "@prisma/client"
