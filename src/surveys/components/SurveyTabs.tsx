@@ -18,10 +18,6 @@ export const SurveyTabs = () => {
       className="mt-7"
       tabs={[
         {
-          name: "Auswertung",
-          href: Routes.SurveyPage({ projectSlug, surveyId: surveyId! }),
-        },
-        {
           name: "Beiträge",
           href: Routes.SurveyResponsePage({
             projectSlug,
@@ -39,6 +35,10 @@ export const SurveyTabs = () => {
               },
             ]
           : []),
+        {
+          name: "Auswertung",
+          href: Routes.SurveyPage({ projectSlug, surveyId: surveyId! }),
+        },
       ]}
     />
   )

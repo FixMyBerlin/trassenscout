@@ -1,5 +1,6 @@
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
@@ -66,7 +67,9 @@ export const SurveyResponse = () => {
         <PageHeader title={survey.title} className="mt-12" description={<SurveyTabs />} />
         <div className="mt-12 space-y-4">
           {" "}
-          <p>In der Beteiligung {survey.slug.toUpperCase()} gibt es keinen Umfrageteil 2. </p>
+          <SuperAdminBox>
+            <p>In der Beteiligung {survey.slug.toUpperCase()} gibt es keinen Umfrageteil 2. </p>
+          </SuperAdminBox>
         </div>
       </>
     )
@@ -92,7 +95,7 @@ export const SurveyResponse = () => {
       <PageHeader title={survey.title} className="mt-12" description={<SurveyTabs />} />
 
       <div className="mt-12 space-y-4">
-        <H2>Beiträge aus Bürger:innenbeteiligung</H2>
+        <H2>Beiträge</H2>
         <div className="mb-6">
           <Link
             className="mb-12 flex gap-1"

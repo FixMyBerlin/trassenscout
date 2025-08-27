@@ -16,7 +16,6 @@ import { SurveyTabs } from "@/src/surveys/components/SurveyTabs"
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { BlitzPage } from "@blitzjs/next"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/16/solid"
 import { isFuture, isPast } from "date-fns"
 import { Suspense } from "react"
 
@@ -79,31 +78,9 @@ export const Survey = () => {
   return (
     <>
       <MetaTags noindex title={`Beteiligung ${survey.title}`} />
-      <PageHeader
-        title={survey.title}
-        className="mt-12"
-        description={
-          <>
-            <SurveyTabs />
-            <p className="mt-5 text-base text-gray-500">
-              Dieser Bereich sammelt die Ergebnisse der Umfragen und Beteiligungen.
-            </p>
-            {survey.active && canonicalUrl && (
-              <p className="text-base text-gray-500">
-                Die Beteiligung ist über{" "}
-                <Link blank className="!text-base" href={canonicalUrl}>
-                  diese Seite
-                  <ArrowTopRightOnSquareIcon className="mb-1 ml-1 inline-flex h-4 w-4" />
-                </Link>
-                erreichbar.
-              </p>
-            )}
-          </>
-        }
-      />
+      <PageHeader title={survey.title} className="mt-12" description={<SurveyTabs />} />
 
       <div className="mt-12">
-        <H2>Allgemeine Infos </H2>
         <div className="mt-4 flex flex-col gap-y-2.5 rounded bg-gray-100 p-6">
           {generalSurveyInformation.map((row, i) => {
             return (
@@ -127,7 +104,9 @@ export const Survey = () => {
 
       <div className="mt-12 space-y-4">
         {!surveyDefinition ? (
-          <p>In der Beteiligung {survey.slug.toUpperCase()} gibt es keinen Umfrageteil 1. </p>
+          <SuperAdminBox>
+            <p>In der Beteiligung {survey.slug.toUpperCase()} gibt es keinen Umfrageteil 1. </p>
+          </SuperAdminBox>
         ) : (
           <>
             <H2>Auswertung in Diagrammen und Korrelationen</H2>
