@@ -1,5 +1,6 @@
 "use client"
 
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Disclosure } from "@/src/core/components/Disclosure"
 import { Link } from "@/src/core/components/links"
@@ -9,10 +10,23 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getProtocols from "@/src/server/protocols/queries/getProtocols"
+import { ProtocolType } from "@prisma/client"
 import clsx from "clsx"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
+
+export const ProtocolTypePill = ({ type }: { type: ProtocolType }) => (
+  <span
+    className={clsx(
+      "inline-flex items-center rounded-full border border-gray-200 px-2 py-0.5 font-medium text-gray-500",
+      type === ProtocolType.USER ? "bg-blue-100" : "bg-gray-100",
+    )}
+  >
+    {type}
+  </span>
+)
 
 export const ProtocolsTable = ({
   protocols,
@@ -108,14 +122,31 @@ export const ProtocolsTable = ({
                       </ul>
                     </div>
                   )}
-                  <ButtonWrapper className="flex flex-col justify-end gap-3">
-                    <IfUserCanEdit>
-                      <Link icon="edit" href={`/${projectSlug}/protocols/${protocol.id}/edit`}>
-                        Bearbeiten
-                      </Link>
-                      <Link href={`/${projectSlug}/protocols/${protocol.id}`}>Detailansicht</Link>
-                    </IfUserCanEdit>
-                  </ButtonWrapper>
+                  <div>
+                    <ButtonWrapper className="flex flex-col justify-end gap-3">
+                      <IfUserCanEdit>
+                        <Link icon="edit" href={`/${projectSlug}/protocols/${protocol.id}/edit`}>
+                          Bearbeiten
+                        </Link>
+                        <Link href={`/${projectSlug}/protocols/${protocol.id}`}>Detailansicht</Link>
+                      </IfUserCanEdit>
+                    </ButtonWrapper>
+                    <SuperAdminBox>
+                      <p className="text-xs">
+                        <span>Erstellt von </span>
+                        <ProtocolTypePill type={protocol.protocolAuthorType} />
+                        {protocol.protocolAuthorType === ProtocolType.USER && protocol.author && (
+                          <span>{getFullname(protocol.author)}</span>
+                        )}
+                      </p>
+                      <p className="mt-2 text-xs">
+                        <span>Zuletzt bearbeitet von </span>
+                        <ProtocolTypePill type={protocol.protocolUpdatedByType} />{" "}
+                        {protocol.protocolUpdatedByType === ProtocolType.USER &&
+                          protocol.updatedBy && <span>{getFullname(protocol.updatedBy)}</span>}
+                      </p>
+                    </SuperAdminBox>
+                  </div>
                 </Disclosure>
               </div>
             ))}

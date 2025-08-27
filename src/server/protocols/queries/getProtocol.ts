@@ -22,7 +22,24 @@ export default resolver.pipe(
   async ({ id }) => {
     const protocol = await db.protocol.findFirst({
       where: { id },
-      include: { protocolTopics: true, subsection: true },
+      include: { 
+        protocolTopics: true, 
+        subsection: true,
+        author: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        updatedBy: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     })
 
     if (!protocol) throw new NotFoundError()

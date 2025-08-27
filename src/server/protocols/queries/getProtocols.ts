@@ -19,6 +19,20 @@ export default resolver.pipe(
       include: {
         protocolTopics: true,
         subsection: true,
+        author: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        updatedBy: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
       },
     })
 
