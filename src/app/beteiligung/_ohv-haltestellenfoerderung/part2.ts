@@ -17,7 +17,7 @@ Im Rahmen dieses Projekts wird nun diese Plattform für das landkreisweite Förd
 
 ## Förderlinie
 
-Grundlage für die Maßnahmenmeldung ist die Förderrichtlinie des Landes Brandenburg zur Verbesserung der Infrastruktur im öffentlichen Personennahverkehr. Im Fokus stehen kommunale Maßnahmen, die zur Attraktivitätssteigerung und besseren Nutzbarkeit des ÖPNV beitragen.
+[Grundlage für die Maßnahmenmeldung ist die Förderrichtlinie des Landes Brandenburg zur Verbesserung der Infrastruktur im öffentlichen Personennahverkehr.](https://drive.google.com/file/d/10Gz4PWZYTVBen2wnlOnL3E68Cpctgwz5/view) Im Fokus stehen kommunale Maßnahmen, die zur Attraktivitätssteigerung und besseren Nutzbarkeit des ÖPNV beitragen.
 
 Die Förderlinie verfolgt das Ziel, die Mobilität in der Region zu stärken, klimafreundliche Verkehrsangebote auszubauen und die Erreichbarkeit im ländlichen Raum zu sichern. Voraussetzung für eine Förderung ist die nachvollziehbare Begründung des Bedarfs, eine Einordnung in kommunale oder regionale Planungen sowie die Einhaltung technischer und qualitativer Standards.
 

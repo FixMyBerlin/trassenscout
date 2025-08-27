@@ -18,7 +18,7 @@ export const formConfig: FormConfig = {
   end: {
     progressBarDefinition: 7,
     title: "Vielen Dank für Ihre Teilnahme!",
-    description: `Vielen Dank für Ihre Rückmeldung. Die von Ihnen gemeldeten Maßnahmen sind bei uns eingegangen und wurden gespeichert. Sie haben zur Bestätigung für jede von Ihnen gemeldete Maßnahme eine E-Mail erhalten.
+    description: `Vielen Dank für Ihre Rückmeldung. Die von Ihnen gemeldeten Maßnahmen sind bei uns eingegangen und wurden gespeichert. Sie haben zur Bestätigung eine E-Mail erhalten.
 
 
 ## Wie geht es weiter?
