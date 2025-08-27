@@ -2,12 +2,13 @@
 
 import { ProtocolForm } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/ProtocolForm"
 import { ProtocolsTable } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/ProtocolsTable"
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { FORM_ERROR } from "@/src/core/components/forms"
 import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+
 import createProtocol from "@/src/server/protocols/mutations/createProtocol"
 import getProtocols from "@/src/server/protocols/queries/getProtocols"
 import { useMutation, useQuery } from "@blitzjs/rpc"
