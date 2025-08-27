@@ -55,6 +55,8 @@ model User {
   SurveyResponseComment SurveyResponseComment[]
   LogEntry              LogEntry[]
   SystemLogEntry        SystemLogEntry[]
+  protocolsAuthored     Protocol[]              @relation("ProtocolAuthor")
+  protocolsUpdated      Protocol[]              @relation("ProtocolUpdatedBy")
 }
 
 enum UserRoleEnum {
@@ -648,22 +650,35 @@ enum LogLevelActionEnum {
 }
 
 model Protocol {
-  id             Int             @id @default(autoincrement())
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  id                    Int             @id @default(autoincrement())
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
   //
-  date           DateTime?
-  title          String
-  body           String?
+  date                  DateTime?
+  title                 String
+  body                  String?
   //
-  project        Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId      Int
+  project               Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId             Int
   //
-  subsection     Subsection?     @relation(fields: [subsectionId], references: [id], onDelete: Cascade)
-  subsectionId   Int?
+  subsection            Subsection?     @relation(fields: [subsectionId], references: [id], onDelete: Cascade)
+  subsectionId          Int?
   //
-  protocolTopics ProtocolTopic[]
-  LogEntry       LogEntry[]
+  author                User?           @relation("ProtocolAuthor", fields: [userId], references: [id])
+  userId                Int?
+  protocolAuthorType    ProtocolType    @default(SYSTEM)
+  //
+  updatedBy             User?           @relation("ProtocolUpdatedBy", fields: [updatedById], references: [id])
+  updatedById           Int?
+  protocolUpdatedByType ProtocolType    @default(SYSTEM)
+  //
+  protocolTopics        ProtocolTopic[]
+  LogEntry              LogEntry[]
+}
+
+enum ProtocolType {
+  SYSTEM
+  USER
 }
 
 model ProtocolTopic {

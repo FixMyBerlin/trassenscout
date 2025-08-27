@@ -11,6 +11,7 @@ import { ProtocolSchema } from "@/src/server/protocols/schemas"
 
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
+import { ProtocolType } from "@prisma/client"
 import db from "db"
 
 const CreateProtocolSchema = ProjectSlugRequiredSchema.merge(ProtocolSchema)
@@ -19,7 +20,6 @@ export default resolver.pipe(
   resolver.zod(CreateProtocolSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ projectSlug, ...data }, ctx: Ctx) => {
-    console.log("Hello create protocol", { data })
     // copied from updateSubsubsection.ts
     // const disconnect: Record<M2MFieldsType | string, { set: [] }> = {}
     const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
@@ -28,9 +28,21 @@ export default resolver.pipe(
       delete data[fieldName]
     })
     const projectId = await getProjectIdBySlug(projectSlug)
+    const currentUserId = ctx.session.userId
+
     const record = await db.protocol.create({
       // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
-      data: { projectId, ...data, ...connect },
+      data: {
+        projectId,
+        ...data,
+        ...connect,
+        // Set both author and updatedBy to current user on creation
+        // we only have USER type for now
+        userId: currentUserId,
+        protocolAuthorType: ProtocolType.USER,
+        updatedById: currentUserId,
+        protocolUpdatedByType: ProtocolType.USER,
+      },
     })
 
     await createLogEntry({

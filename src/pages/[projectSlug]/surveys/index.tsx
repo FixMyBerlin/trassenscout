@@ -27,11 +27,7 @@ export const Surveys = () => {
 
   return (
     <>
-      <PageHeader
-        title="Beteiligungen"
-        description="Dieser Bereich sammelt die Ergebnisse der Umfragen und Beteiligungen."
-        className="mt-12"
-      />
+      <PageHeader title="Beteiligungen" className="mt-12" />
       <div className="flex flex-col gap-4">
         {surveys.map((survey) => (
           <Link key={survey.id} href={Routes.SurveyPage({ projectSlug, surveyId: survey.id })}>

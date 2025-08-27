@@ -1,11 +1,15 @@
+import { ProtocolTypePill } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/ProtocolsTable"
 import { invoke } from "@/src/blitz-server"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Link } from "@/src/core/components/links"
 import { SubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { shortTitle } from "@/src/core/components/text"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getProtocol from "@/src/server/protocols/queries/getProtocol"
+import { ProtocolType } from "@prisma/client"
 
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
@@ -37,6 +41,23 @@ export default async function ProtocolDetail({
           </IfUserCanEdit>
         }
       />
+
+      <SuperAdminBox>
+        <p className="text-xs">
+          <span>Erstellt von </span>
+          <ProtocolTypePill type={protocol.protocolAuthorType} />
+          {protocol.protocolAuthorType === ProtocolType.USER && protocol.author && (
+            <span>{getFullname(protocol.author)}</span>
+          )}
+        </p>
+        <p className="mt-2 text-xs">
+          <span>Zuletzt bearbeitet von </span>
+          <ProtocolTypePill type={protocol.protocolUpdatedByType} />{" "}
+          {protocol.protocolUpdatedByType === ProtocolType.USER && protocol.updatedBy && (
+            <span>{getFullname(protocol.updatedBy)}</span>
+          )}
+        </p>
+      </SuperAdminBox>
 
       <div className="mt-7 space-y-4">
         <div>

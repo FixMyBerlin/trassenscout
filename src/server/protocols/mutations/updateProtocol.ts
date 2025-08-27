@@ -10,6 +10,7 @@ import getProjectIdBySlug from "@/src/server/projects/queries/getProjectIdBySlug
 import { m2mFields, M2MFieldsType } from "@/src/server/protocols/m2mFields"
 import { ProtocolSchema } from "@/src/server/protocols/schemas"
 import { resolver } from "@blitzjs/rpc"
+import { ProtocolType } from "@prisma/client"
 import { Ctx } from "blitz"
 import db from "db"
 import { z } from "zod"
@@ -24,6 +25,8 @@ export default resolver.pipe(
   async ({ id, projectSlug, ...data }, ctx: Ctx) => {
     const previous = await db.protocol.findFirst({ where: { id } })
     const projectId = await getProjectIdBySlug(projectSlug)
+    const currentUserId = ctx.session.userId
+
     // copied from updateSubsubsection.ts
     const disconnect: Record<M2MFieldsType | string, { set: [] }> = {}
     const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
@@ -42,7 +45,14 @@ export default resolver.pipe(
       where: { id },
       // copied from updateSubsubsection.ts
       // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
-      data: { projectId, ...data, ...connect },
+      data: {
+        projectId,
+        ...data,
+        ...connect,
+        updatedById: currentUserId,
+        // we only have USER type for now
+        protocolUpdatedByType: ProtocolType.USER,
+      },
     })
 
     await createLogEntry({

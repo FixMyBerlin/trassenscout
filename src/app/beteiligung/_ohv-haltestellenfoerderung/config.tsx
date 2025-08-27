@@ -18,7 +18,7 @@ export const formConfig: FormConfig = {
   end: {
     progressBarDefinition: 7,
     title: "Vielen Dank für Ihre Teilnahme!",
-    description: `Vielen Dank für Ihre Rückmeldung. Die von Ihnen gemeldeten Maßnahmen sind bei uns eingegangen und wurden gespeichert. Sie haben zur Bestätigung für jede von Ihnen gemeldete Maßnahme eine E-Mail erhalten.
+    description: `Vielen Dank für Ihre Rückmeldung. Die von Ihnen gemeldeten Maßnahmen sind bei uns eingegangen und wurden gespeichert. Sie haben zur Bestätigung eine E-Mail erhalten.
 
 
 ## Wie geht es weiter?
@@ -28,9 +28,17 @@ Das digitale Meldeverfahren läuft noch bis zum 30.09.2025. Bis dahin können Si
 Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen übermittelt. Die E-Mail enthält als Anlage die Zusammenstellung der aufgenommenen Maßnahmen. Die Kommunen erhalten auf dieser Grundlage in einem gesonderten Schritt die Aufforderung zur Antragstellung.
 `,
     mailjetWidgetUrl: null,
+    buttons: [
+      {
+        action: "part2",
+        label: "Weitere Maßnahme melden",
+        position: "left",
+        color: "primaryColor",
+      },
+    ],
     homeUrl: "https://www.oberhavel.de/",
-    button: {
-      label: "Zur Webseite des Lankreis Oberhavel",
+    buttonLink: {
+      label: "Zur Website des Lankreis Oberhavel",
       color: "primaryColor",
     },
   },

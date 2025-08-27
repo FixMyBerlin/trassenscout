@@ -1,6 +1,7 @@
 import { ProjectSlugRequiredSchema } from "@/src/authorization/extractProjectSlug"
 import { InputNumberOrNullSchema } from "@/src/core/utils"
 import { NullableDateSchema, NullableDateSchemaForm } from "@/src/server/subsubsections/schema"
+import { ProtocolType } from "@prisma/client"
 import { z } from "zod"
 
 export const ProtocolSchema = z.object({
@@ -10,6 +11,10 @@ export const ProtocolSchema = z.object({
   title: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
   body: z.string().nullish(),
   subsectionId: InputNumberOrNullSchema,
+  userId: InputNumberOrNullSchema,
+  protocolAuthorType: z.nativeEnum(ProtocolType).default(ProtocolType.SYSTEM),
+  updatedById: InputNumberOrNullSchema,
+  protocolUpdatedByType: z.nativeEnum(ProtocolType).default(ProtocolType.SYSTEM),
   // copied from SUbsubsection m2m2
   // LIST ALL m2mFields HERE
   // We need to do this manually, since dynamic zod types don't work
@@ -25,6 +30,10 @@ export const DeleteProtocolSchema = ProjectSlugRequiredSchema.merge(
 export const ProtocolFormSchema = ProtocolSchema.omit({
   date: true,
   protocolTopics: true,
+  userId: true,
+  protocolAuthorType: true,
+  updatedById: true,
+  protocolUpdatedByType: true,
 }).merge(
   z.object({
     date: NullableDateSchemaForm,

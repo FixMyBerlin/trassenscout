@@ -211,6 +211,13 @@ export type IntroButton = {
   position: "left" | "right"
 }
 
+export type EndButton = {
+  label: string
+  action: Stage
+  color?: "primaryColor" | "white"
+  position: "left" | "right"
+}
+
 export type TIntro =
   | {
       type: "custom"
@@ -234,7 +241,7 @@ export type SurveyPart1and3 = {
 export type SurveyPart2 = {
   progressBarDefinition: number
   intro: TIntro
-  buttonLabels: { next: string; back: string; submit: string; again: string }
+  buttonLabels: { next: string; back: string; submit: string; again?: string }
   // we want to type part2 has fields with id "location" "feedback"...
   // so checking field names across an array of objects
   // TypeScript can't fully enforce this constraint afaik
@@ -274,7 +281,8 @@ export type FormConfig = {
     description?: string
     mailjetWidgetUrl: string | null
     homeUrl: string
-    button: {
+    buttons: EndButton[] | null
+    buttonLink: {
       label: string
       color?: "white" | "primaryColor"
     }
