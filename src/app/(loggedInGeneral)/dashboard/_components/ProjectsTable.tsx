@@ -1,7 +1,7 @@
 "use client"
 import { ProjectIcon } from "@/src/core/components/Map/Icons/ProjectIcon"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
-import { longTitle, shortTitle } from "@/src/core/components/text"
+import { shortTitle } from "@/src/core/components/text"
 import { roleTranslation } from "@/src/pagesComponents/memberships/roleTranslation.const"
 import { TGetProjectsWithGeometryWithMembershipRole } from "@/src/server/projects/queries/getProjectsWithGeometryWithMembershipRole"
 import { Route } from "next"
@@ -51,8 +51,6 @@ export const ProjectsTable = ({ projects }: Props) => {
                   <ProjectIcon label={shortTitle(project.slug)} />
                 </td>
                 <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
-                  <strong>{longTitle(project.slug)}</strong>
-                  <br />
                   {project.subTitle}
                 </td>
                 <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
