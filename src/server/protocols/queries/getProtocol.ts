@@ -22,8 +22,8 @@ export default resolver.pipe(
   async ({ id }) => {
     const protocol = await db.protocol.findFirst({
       where: { id },
-      include: { 
-        protocolTopics: true, 
+      include: {
+        protocolTopics: true,
         subsection: true,
         author: {
           select: {

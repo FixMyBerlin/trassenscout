@@ -1,5 +1,6 @@
 "use client"
 
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Disclosure } from "@/src/core/components/Disclosure"
@@ -10,8 +11,6 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getProtocols from "@/src/server/protocols/queries/getProtocols"
 import { ProtocolType } from "@prisma/client"

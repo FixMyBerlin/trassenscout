@@ -7,11 +7,9 @@ import { SubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { shortTitle } from "@/src/core/components/text"
-
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getProtocol from "@/src/server/protocols/queries/getProtocol"
 import { ProtocolType } from "@prisma/client"
-
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
 import { Metadata } from "next"
