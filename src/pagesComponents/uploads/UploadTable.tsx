@@ -14,10 +14,11 @@ import { uploadUrl } from "./utils/uploadUrl"
 type Props = Prettify<
   Pick<PromiseReturnType<typeof getUploadsWithSubsections>, "uploads"> & {
     withAction?: boolean
+    withSubsectionColumn?: boolean
   }
 >
 
-export const UploadTable = ({ uploads, withAction = true }: Props) => {
+export const UploadTable = ({ uploads, withAction = true, withSubsectionColumn = true }: Props) => {
   const projectSlug = useProjectSlug()
 
   if (!uploads.length) {
@@ -38,9 +39,11 @@ export const UploadTable = ({ uploads, withAction = true }: Props) => {
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               Hochgeladen
             </th>
-            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-              Planungsabschnitt
-            </th>
+            {withSubsectionColumn && (
+              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                Planungsabschnitt
+              </th>
+            )}
             <th
               scope="col"
               className="px-3 py-4 text-right text-sm font-semibold text-gray-900 sm:pr-6"
@@ -62,9 +65,11 @@ export const UploadTable = ({ uploads, withAction = true }: Props) => {
                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {upload.createdAt.toLocaleDateString()}
                 </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {upload.subsection && `${upload.subsection.start}–${upload.subsection.end}`}
-                </td>
+                {withSubsectionColumn && (
+                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    {upload.subsection && `${upload.subsection.start}–${upload.subsection.end}`}
+                  </td>
+                )}
                 <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
                   <ButtonWrapper className="justify-end">
                     <Link blank icon="download" href={uploadUrl(upload)}>

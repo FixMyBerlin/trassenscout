@@ -26,7 +26,6 @@ export const UploadsWithData = () => {
     projectSlug,
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
-    where: { subsubsectionId: null },
   })
 
   const [{ subsections }] = useQuery(getSubsections, { projectSlug })
