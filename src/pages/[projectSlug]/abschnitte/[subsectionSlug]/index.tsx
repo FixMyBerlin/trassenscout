@@ -115,7 +115,7 @@ export const SubsectionDashboardWithQuery = () => {
       {!!uploads.length && (
         <section className="mt-12">
           <H2 className="mb-5">Relevante Dokumente</H2>
-          <UploadTable uploads={uploads} />
+          <UploadTable withAction={false} withSubsectionColumn={false} uploads={uploads} />
         </section>
       )}
 
