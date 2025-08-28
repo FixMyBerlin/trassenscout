@@ -28,7 +28,11 @@ export function UploadForm<S extends z.ZodType<any, any>>(
     <Form<S> {...formProps}>
       <LabeledTextField type="text" name="title" label="Kurzbeschreibung" />
       {!isSubsubsectionUpload && (
-        <LabeledSelect name="subsectionId" label="Zuordnung zu Teilstrecke" options={options} />
+        <LabeledSelect
+          name="subsectionId"
+          label="Zuordnung zum Planungsabschnitt"
+          options={options}
+        />
       )}
       <SuperAdminBox>
         <LabeledTextField type="text" name="externalUrl" label="Externe Datei-URL" readOnly />
