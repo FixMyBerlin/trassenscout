@@ -5,7 +5,6 @@ import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Disclosure } from "@/src/core/components/Disclosure"
 import { Link } from "@/src/core/components/links"
-import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text"
@@ -127,16 +126,14 @@ export const ProtocolsTable = ({
                       </div>
                     )}
                     <div>
-                      <ButtonWrapper className="flex flex-col justify-end gap-3">
+                      <div className="flex flex-col items-start gap-3">
                         <IfUserCanEdit>
                           <Link icon="edit" href={`/${projectSlug}/protocols/${protocol.id}/edit`}>
                             Bearbeiten
                           </Link>
-                          <Link href={`/${projectSlug}/protocols/${protocol.id}`}>
-                            Detailansicht
-                          </Link>
                         </IfUserCanEdit>
-                      </ButtonWrapper>
+                        <Link href={`/${projectSlug}/protocols/${protocol.id}`}>Detailansicht</Link>
+                      </div>
                       <SuperAdminBox>
                         <p className="text-xs">
                           <span>Erstellt von </span>
