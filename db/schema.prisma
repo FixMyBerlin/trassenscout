@@ -698,6 +698,16 @@ enum LogLevelActionEnum {
   DELETE
 }
 
+model ProtocolEmail {
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  //
+  text      String
+  //
+  protocols Protocol[]
+}
+
 model Protocol {
   id                    Int             @id @default(autoincrement())
   createdAt             DateTime        @default(now())
@@ -720,6 +730,9 @@ model Protocol {
   updatedBy             User?           @relation("ProtocolUpdatedBy", fields: [updatedById], references: [id])
   updatedById           Int?
   protocolUpdatedByType ProtocolType    @default(SYSTEM)
+  //
+  protocolEmail         ProtocolEmail?  @relation(fields: [protocolEmailId], references: [id], onDelete: SetNull)
+  protocolEmailId       Int?
   //
   protocolTopics        ProtocolTopic[]
   LogEntry              LogEntry[]

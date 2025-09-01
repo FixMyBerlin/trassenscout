@@ -15,6 +15,8 @@ export const ProtocolSchema = z.object({
   protocolAuthorType: z.nativeEnum(ProtocolType).default(ProtocolType.SYSTEM),
   updatedById: InputNumberOrNullSchema,
   protocolUpdatedByType: z.nativeEnum(ProtocolType).default(ProtocolType.SYSTEM),
+  protocolEmailId: InputNumberOrNullSchema,
+  projectId: z.number(),
   // copied from SUbsubsection m2m2
   // LIST ALL m2mFields HERE
   // We need to do this manually, since dynamic zod types don't work

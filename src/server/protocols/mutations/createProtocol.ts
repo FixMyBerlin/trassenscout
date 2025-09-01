@@ -14,7 +14,9 @@ import { resolver } from "@blitzjs/rpc"
 import { ProtocolType } from "@prisma/client"
 import db from "db"
 
-const CreateProtocolSchema = ProjectSlugRequiredSchema.merge(ProtocolSchema)
+const CreateProtocolSchema = ProjectSlugRequiredSchema.merge(ProtocolSchema).omit({
+  projectId: true,
+})
 
 export default resolver.pipe(
   resolver.zod(CreateProtocolSchema),
