@@ -390,6 +390,7 @@ model QualityLevel {
   //
   slug           String // shortTitle and URL Slug
   title          String
+  url            String?
   //
   project        Project         @relation(fields: [projectId], references: [id])
   projectId      Int

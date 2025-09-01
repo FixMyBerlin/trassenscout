@@ -41,7 +41,7 @@ export default resolver.pipe(
           include: {
             manager: { select: { firstName: true, lastName: true } },
             subsection: { select: { slug: true } },
-            qualityLevel: { select: { title: true, slug: true } },
+            qualityLevel: { select: { title: true, slug: true, url: true } },
             SubsubsectionTask: { select: { title: true } }, // Include subsubsectionTask if needed
           },
         }),

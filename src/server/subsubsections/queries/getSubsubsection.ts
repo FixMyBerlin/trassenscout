@@ -28,7 +28,7 @@ export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry"> &
         geometry: [number, number][] // Position[]
       }
   ) & { manager: User } & { subsection: { slug: string } } & {
-    qualityLevel?: Pick<QualityLevel, "title" | "slug">
+    qualityLevel?: Pick<QualityLevel, "title" | "slug" | "url">
   } & { SubsubsectionTask?: { title: string } }
 
 export default resolver.pipe(
@@ -48,7 +48,7 @@ export default resolver.pipe(
       include: {
         manager: { select: { firstName: true, lastName: true } },
         subsection: { select: { slug: true } },
-        qualityLevel: { select: { title: true, slug: true } },
+        qualityLevel: { select: { title: true, slug: true, url: true } },
         ...includeM2mFields,
       },
     }

@@ -4,6 +4,13 @@ import { z } from "zod"
 export const QualityLevelSchema = z.object({
   slug: SlugSchema,
   title: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
+  url: z
+    .union([
+      z.string().url({ message: "Ungültige URL." }).optional().or(z.literal("")),
+      // The form sumits `""` so in order to allow the field to be empty, this union is needed.
+      z.literal(""),
+    ])
+    .nullable(),
   projectId: z.coerce.number(),
 })
 

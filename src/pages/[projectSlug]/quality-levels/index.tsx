@@ -13,6 +13,7 @@ import deleteQualityLevel from "@/src/server/qualityLevels/mutations/deleteQuali
 import getQualityLevelsWithCount from "@/src/server/qualityLevels/queries/getQualityLevelsWithCount"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
+import { ArrowUpRightIcon } from "@heroicons/react/16/solid"
 import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
@@ -59,7 +60,7 @@ export const QualityLevelsWithData = () => {
                 Kurz-Titel
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Titel
+                Titel (mit externem Link, wenn vorhanden)
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                 Anzahl der Maßnahmen
@@ -80,7 +81,16 @@ export const QualityLevelsWithData = () => {
                     <strong className="font-semibold">{shortTitle(qualityLevel.slug)}</strong>
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <strong className="font-semibold">{qualityLevel.title}</strong>
+                    {qualityLevel.url ? (
+                      <Link
+                        className="flex items-center gap-1 font-semibold"
+                        href={qualityLevel.url}
+                      >
+                        <ArrowUpRightIcon className="h-4 w-4" /> {qualityLevel.title}
+                      </Link>
+                    ) : (
+                      <strong className="font-semibold">{qualityLevel.title}</strong>
+                    )}
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     {qualityLevel.subsubsectionCount} Maßnahmen
