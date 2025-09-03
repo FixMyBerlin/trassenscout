@@ -9,7 +9,6 @@ import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { mapillaryLink } from "@/src/pagesComponents/subsections/utils/mapillaryLink"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { Routes } from "@blitzjs/next"
-import { ArrowUpRightIcon } from "@heroicons/react/16/solid"
 import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import { SubsubsectionTableFooter } from "./SubsubsectionTableFooter"
@@ -145,17 +144,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                       "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
                     )}
                   >
-                    {subsubsection.qualityLevel?.url ? (
-                      <Link
-                        className="flex items-center gap-1"
-                        href={subsubsection.qualityLevel.url}
-                      >
-                        <ArrowUpRightIcon className="h-4 w-4" />{" "}
-                        {subsubsection.qualityLevel.title || "k.A."}
-                      </Link>
-                    ) : (
-                      subsubsection.qualityLevel?.title || "k.A."
-                    )}
+                    {subsubsection.qualityLevel?.title || "k.A."}
                   </td>
                   <td className={clsx(compact ? "hidden" : "", "break-words text-sm font-medium")}>
                     {mapillaryHref && (

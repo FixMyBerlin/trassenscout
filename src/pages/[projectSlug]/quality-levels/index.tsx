@@ -83,10 +83,11 @@ export const QualityLevelsWithData = () => {
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     {qualityLevel.url ? (
                       <Link
+                        blank
                         className="flex items-center gap-1 font-semibold"
                         href={qualityLevel.url}
                       >
-                        <ArrowUpRightIcon className="h-4 w-4" /> {qualityLevel.title}
+                        {qualityLevel.title} <ArrowUpRightIcon className="h-4 w-4" />
                       </Link>
                     ) : (
                       <strong className="font-semibold">{qualityLevel.title}</strong>

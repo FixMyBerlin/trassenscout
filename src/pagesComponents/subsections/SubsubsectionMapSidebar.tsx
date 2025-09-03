@@ -130,9 +130,12 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                 </th>
                 <td className="break-words px-3 py-4 text-sm text-gray-500">
                   {subsubsection.qualityLevel?.url ? (
-                    <Link className="flex items-center gap-1" href={subsubsection.qualityLevel.url}>
-                      <ArrowUpRightIcon className="h-4 w-4" />{" "}
-                      {subsubsection.qualityLevel.title || "k.A."}
+                    <Link
+                      blank
+                      className="flex items-center gap-1"
+                      href={subsubsection.qualityLevel.url}
+                    >
+                      {subsubsection.qualityLevel.title} <ArrowUpRightIcon className="h-4 w-4" />
                     </Link>
                   ) : (
                     subsubsection.qualityLevel?.title || "k.A."
