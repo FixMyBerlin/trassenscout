@@ -21,7 +21,7 @@ export const Surveys = () => {
 
   // Navigation always links to /survey. But this redirects to the survey Page when only one is present.
   if (surveys.length === 1) {
-    void router.push(Routes.SurveyPage({ projectSlug, surveyId: surveys[0]!.id }))
+    void router.push(Routes.SurveyResponsePage({ projectSlug, surveyId: surveys[0]!.id }))
     return <Spinner page />
   }
 
