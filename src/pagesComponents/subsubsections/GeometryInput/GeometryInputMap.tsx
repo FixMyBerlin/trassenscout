@@ -91,7 +91,10 @@ export const GeometryInputMap = ({ subsection }: Props) => {
   }
 
   return (
-    <div className="rounded border bg-gray-100 p-3 text-gray-700">
+    <div
+      aria-describedby="geometry-input-help"
+      className="rounded border bg-gray-100 p-3 text-gray-700"
+    >
       <h3 className="m-0 mb-3 flex items-center gap-1 text-sm font-medium">
         {geometryType === "ROUTE" ? "Liniengeometrie" : "Punktgeometrie"} zeichnen
       </h3>

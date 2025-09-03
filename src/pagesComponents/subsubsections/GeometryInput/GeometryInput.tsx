@@ -21,8 +21,6 @@ export const GeometryInput = () => {
   const { setValue, watch } = useFormContext()
   const geometry = watch("geometry")
   const type = watch("type")
-  console.log({ geometry })
-  console.log({ subsection })
   const LineStringSchema = z.array(z.array(z.number()).min(2).max(2).nonempty()).nonempty()
   const PointSchema = z.array(z.number()).min(2).max(2).nonempty()
   const schemaResult =
@@ -48,6 +46,18 @@ export const GeometryInput = () => {
         ]}
         classNameItemWrapper="flex gap-5 !space-y-0 items-center"
       />
+      {type === "ROUTE" ? (
+        <div id="geometry-input-help" className="m-0 text-gray-500">
+          Klicken Sie innerhalb des blau markierten Planungsabschnitts auf die gewünschte Stelle, um
+          die Maßnahme dort zu verorten. Achten Sie darauf, dass die neue Maßnahmelinie nicht auf
+          bereits vorhandenen (grau dargestellten) Linien verläuft.
+        </div>
+      ) : (
+        <div id="geometry-input-help" className="m-0 text-gray-500">
+          Klicken Sie innerhalb des blau markierten Planungsabschnitts, um den Anfangspunkt der
+          Maßnahme zu setzen. Mit einem zweiten Klick legen Sie den Endpunkt fest.
+        </div>
+      )}
       <MapProvider>
         {schemaResult.success && <GeometryInputMap subsection={subsection} />}
       </MapProvider>
