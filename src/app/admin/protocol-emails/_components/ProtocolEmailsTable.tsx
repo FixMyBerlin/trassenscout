@@ -2,12 +2,43 @@
 
 import { Link } from "@/src/core/components/links"
 import { ProtocolEmailWithRelations } from "@/src/server/protocol-emails/queries/getProtocolEmails"
+import { useState } from "react"
 
 type Props = {
   protocolEmails: ProtocolEmailWithRelations[]
 }
 
 export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
+  const [processing, setProcessing] = useState<number | null>(null)
+
+  const handleProcessEmail = async (protocolEmailId: number) => {
+    setProcessing(protocolEmailId)
+    try {
+      const response = await fetch("/api/process-protocol-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // This does not make a lot of sense in a client request, but needed for system calls in the future
+          // "process-email-api-key": process.env.INTERNAL_API_SECRET,
+        },
+        body: JSON.stringify({ protocolEmailId }),
+      })
+
+      if (response.ok) {
+        const result = (await response.json()) as { protocolId: number }
+        alert(`Protokoll erfolgreich erstellt! ID: ${result.protocolId}`)
+      } else {
+        alert("Fehler beim Verarbeiten der E-Mail")
+      }
+    } catch (error) {
+      console.error("Error:", error)
+      alert("Fehler beim Verarbeiten der E-Mail")
+    } finally {
+      setProcessing(null)
+      // router push
+    }
+  }
+
   if (!protocolEmails.length) {
     return (
       <div className="rounded-md bg-gray-50 p-4">
@@ -74,7 +105,14 @@ export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
                   "—"
                 )}
               </td>
-              <td className="px-6 py-4 text-right text-sm font-medium">
+              <td className="space-x-2 px-6 py-4 text-right text-sm font-medium">
+                <button
+                  onClick={() => handleProcessEmail(email.id)}
+                  disabled={processing === email.id}
+                  className="text-blue-600 hover:text-blue-800 disabled:opacity-50"
+                >
+                  {processing === email.id ? "Verarbeite..." : "Prozessieren"}
+                </button>
                 <Link
                   href={`/admin/protocol-emails/${email.id}/edit`}
                   className="text-blue-600 hover:text-blue-800"
