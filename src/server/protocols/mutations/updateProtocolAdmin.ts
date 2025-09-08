@@ -1,9 +1,3 @@
-import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
-import { editorRoles } from "@/src/authorization/constants"
-import {
-  extractProjectSlug,
-  ProjectSlugRequiredSchema,
-} from "@/src/authorization/extractProjectSlug"
 import { longTitle } from "@/src/core/components/text"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { m2mFields, M2MFieldsType } from "@/src/server/protocols/m2mFields"
@@ -14,19 +8,17 @@ import { Ctx } from "blitz"
 import db from "db"
 import { z } from "zod"
 
-const UpdateProtocolSchema = ProjectSlugRequiredSchema.merge(
-  ProtocolSchema.omit({
-    reviewState: true,
-    reviewedAt: true,
-    reviewedById: true,
-    reviewNotes: true,
-  }).merge(z.object({ id: z.number() })),
-)
+const UpdateProtocolAdminSchema = ProtocolSchema.omit({
+  reviewState: true,
+  reviewedAt: true,
+  reviewedById: true,
+  reviewNotes: true,
+}).merge(z.object({ id: z.number() }))
 
 export default resolver.pipe(
-  resolver.zod(UpdateProtocolSchema),
-  authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ id, projectSlug, ...data }, ctx: Ctx) => {
+  resolver.zod(UpdateProtocolAdminSchema),
+  resolver.authorize("ADMIN"),
+  async ({ id, ...data }, ctx: Ctx) => {
     const previous = await db.protocol.findFirst({ where: { id } })
     const currentUserId = ctx.session.userId
 
@@ -59,7 +51,7 @@ export default resolver.pipe(
 
     await createLogEntry({
       action: "UPDATE",
-      message: `Protokoll mit der ID ${longTitle(String(record.id))} bearbeitet`,
+      message: `Protokoll mit der ID ${longTitle(String(record.id))} bearbeitet (Admin)`,
       userId: ctx.session.userId,
       projectId: record.projectId,
       previousRecord: previous,

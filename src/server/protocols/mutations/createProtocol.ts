@@ -11,7 +11,7 @@ import { ProtocolSchema } from "@/src/server/protocols/schemas"
 
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
-import { ProtocolType } from "@prisma/client"
+import { ProtocolReviewState, ProtocolType } from "@prisma/client"
 import db from "db"
 
 const CreateProtocolSchema = ProjectSlugRequiredSchema.merge(ProtocolSchema).omit({
@@ -44,6 +44,10 @@ export default resolver.pipe(
         protocolAuthorType: ProtocolType.USER,
         updatedById: currentUserId,
         protocolUpdatedByType: ProtocolType.USER,
+        // New protocols are immediately marked as APPROVED when created by editors/admins
+        reviewState: ProtocolReviewState.APPROVED,
+        reviewedById: currentUserId,
+        reviewedAt: new Date(),
       },
     })
 

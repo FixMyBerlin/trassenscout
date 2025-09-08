@@ -45,7 +45,7 @@ export default async function ProtocolDetail({
       <SuperAdminBox>
         <p className="text-xs">
           <span>Erstellt von </span>
-          <ProtocolTypePill type={protocol.protocolAuthorType} />
+          <ProtocolTypePill type={protocol.protocolAuthorType} />{" "}
           {protocol.protocolAuthorType === ProtocolType.USER && protocol.author && (
             <span>{getFullname(protocol.author)}</span>
           )}
@@ -101,6 +101,21 @@ export default async function ProtocolDetail({
             </ul>
           </div>
         )}
+
+        <SuperAdminBox>
+          <div>
+            <p className="mb-2 font-medium text-gray-500">Review-Status: {protocol.reviewState}</p>
+          </div>
+          <div>
+            <p className="mb-2 font-medium text-gray-500">Review-Notizen: {protocol.reviewNotes}</p>
+          </div>
+          <div>
+            <p className="mb-2 font-medium text-gray-500">
+              Review von:
+              {protocol.reviewedBy?.firstName} {protocol.reviewedBy?.lastName}
+            </p>
+          </div>
+        </SuperAdminBox>
 
         <div className="mt-8 border-t border-gray-200 pt-4">
           <Link href={`/${params.projectSlug}/protocols`}>← Zurück zur Protokoll-Übersicht</Link>

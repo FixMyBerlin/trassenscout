@@ -13,6 +13,7 @@ export default resolver.pipe(
     const protocols = await db.protocol.findMany({
       where: {
         project: { slug: projectSlug },
+        reviewState: { in: ["REVIEWED", "APPROVED"] }, // Only show reviewed or approved protocols to normal users
       },
       orderBy: { date: "desc" },
       include: {
