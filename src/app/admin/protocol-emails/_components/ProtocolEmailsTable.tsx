@@ -2,6 +2,7 @@
 
 import { Link } from "@/src/core/components/links"
 import { ProtocolEmailWithRelations } from "@/src/server/protocol-emails/queries/getProtocolEmails"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 type Props = {
@@ -10,6 +11,7 @@ type Props = {
 
 export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
   const [processing, setProcessing] = useState<number | null>(null)
+  const router = useRouter()
 
   const handleProcessEmail = async (protocolEmailId: number) => {
     setProcessing(protocolEmailId)
@@ -27,6 +29,7 @@ export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
       if (response.ok) {
         const result = (await response.json()) as { protocolId: number }
         alert(`Protokoll erfolgreich erstellt! ID: ${result.protocolId}`)
+        router.push("/admin/protocols")
       } else {
         alert("Fehler beim Verarbeiten der E-Mail")
       }
@@ -35,7 +38,6 @@ export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
       alert("Fehler beim Verarbeiten der E-Mail")
     } finally {
       setProcessing(null)
-      // router push
     }
   }
 
@@ -94,13 +96,13 @@ export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
               </td>
               <td className="px-6 py-4 text-sm text-gray-500">
                 {email.protocols.length > 0 ? (
-                  <div className="space-y-1">
+                  <ul className="space-y-1">
                     {email.protocols.map((protocol: any) => (
-                      <div key={protocol.id}>
-                        <span className="text-blue-600">{protocol.title}</span>
-                      </div>
+                      <li key={protocol.id}>
+                        <Link href={`/admin/protocols/${protocol.id}/review`}>{protocol.id}</Link>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 ) : (
                   "—"
                 )}
