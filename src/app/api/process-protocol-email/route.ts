@@ -2,7 +2,12 @@ import { getBlitzContext } from "@/src/blitz-server"
 import { model } from "@/src/models"
 import { generateObject, NoObjectGeneratedError } from "ai"
 import db from "db"
+import { Langfuse } from "langfuse"
 import { z } from "zod"
+
+const langfuse = new Langfuse({
+  environment: process.env.NODE_ENV,
+})
 
 const ProcessProtocolEmailSchema = z.object({
   protocolEmailId: z.number(),
@@ -54,6 +59,9 @@ export async function POST(request: Request) {
       },
     })
 
+    //  tbd
+    const trace = langfuse.trace({ sessionId: "some-session-id", name: "process-protocol-email" })
+
     // Stage 1: Process email with AI to identify project
     let firstStageResult
     try {
@@ -61,6 +69,13 @@ export async function POST(request: Request) {
         model: model,
         output: "enum",
         enum: [...projects.map((p) => p.id.toString()), "no project"],
+        experimental_telemetry: {
+          isEnabled: true,
+          functionId: "process-protocol-email-stage-1",
+          metadata: {
+            langfuseTraceId: trace.id,
+          },
+        },
         system:
           "You are an AI assistant that can read and process emails and gather information to identify the related project for a protocol entry.",
         prompt: `EMAIL: ${protocolEmail.text}
@@ -137,6 +152,13 @@ Please identify the project the email is related to. These are the projects in t
       const result = await generateObject({
         model: model,
         schema: finalExtractionSchema,
+        experimental_telemetry: {
+          isEnabled: true,
+          functionId: "process-protocol-email-stage-2",
+          metadata: {
+            langfuseTraceId: trace.id,
+          },
+        },
         system:
           "You are an AI assistant that can read and process Emails and gather information to create a protocol entry.",
         prompt: `EMAIL: ${protocolEmail.text}
@@ -197,6 +219,9 @@ Please identify the project the email is related to. These are the projects in t
     })
 
     console.log("Created Protocol:", protocol)
+
+    // in ai stream functions: onFinish
+    await langfuse.flushAsync()
 
     return Response.json({
       success: true,
