@@ -1,5 +1,5 @@
 import { getBlitzContext } from "@/src/blitz-server"
-import { model } from "@/src/models"
+import { gpt41Mini, gpt5Mini } from "@/src/models"
 import { generateObject, NoObjectGeneratedError } from "ai"
 import db from "db"
 import { Langfuse } from "langfuse"
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     let firstStageResult
     try {
       const result = await generateObject({
-        model: model,
+        model: gpt41Mini,
         output: "enum",
         enum: [...projects.map((p) => p.id.toString()), "no project"],
         experimental_telemetry: {
@@ -82,7 +82,7 @@ export async function POST(request: Request) {
 
 This is an MIME type email text. The email was forwarded to a system email address ts@ki.ts - which collects the emails which should be processed. The original email might have been sent from different email providers and servers.
 
-The original / main email is part of a conversation of administration staff and related stakeholders in the context of an infrastructural planning project. Your task is to get necessary information from the raw email text to create a project protocol entry in our task manager app.
+The original / main email is part of a conversation of administration staff and related stakeholders in the context of an infrastructural planning project. Your task is to get necessary information from the raw email text to create a project protocol entry in a task manager app.
 
 Please identify the project the email is related to. These are the projects in the format ID (SHORTTITLE - SUBTITLE): ${projects.map((p) => `${p.id} (${p.slug.toUpperCase()} - ${p.subTitle})`).join(", ")}. The short titles of projects are often acronyms of the terms "Radschnellweg" (RS) or "Radschnellverbindung" (RSV) in combination with a number like: "RSV 1" or "RS21" or the combination of municipality acronyms with a number like: "FRM 1". If you can not find a relation to one of the projects, DO NOT GUESS BUT USE "no project" as value.`,
       })
@@ -101,9 +101,10 @@ Please identify the project the email is related to. These are the projects in t
 
     console.log("Stage 1 AI extraction result:", JSON.stringify(firstStageResult, null, 2))
 
-    // 8. Stage 2: Determine project and fetch subsections if applicable
+    // Stage 1: Determine project
     let finalProjectId: string
     let subsections: Array<{ id: number; slug: string; start: string; end: string }> = []
+    let protocolTopics: Array<{ id: number; title: string }> = []
     let reviewNote = ""
 
     if (!firstStageResult || firstStageResult === "no project") {
@@ -129,6 +130,16 @@ Please identify the project the email is related to. These are the projects in t
         orderBy: { order: "asc" },
       })
       console.log(`Found ${subsections.length} subsections for project ${finalProjectId}`)
+
+      // Fetch protocol topics for this project
+      protocolTopics = await db.protocolTopic.findMany({
+        where: { projectId: Number(finalProjectId) },
+        select: {
+          id: true,
+          title: true,
+        },
+      })
+      console.log(`Found ${protocolTopics.length} protocol topics for project ${finalProjectId}`)
     }
 
     // Stage 2: Final AI call with subsection information
@@ -140,17 +151,28 @@ Please identify the project the email is related to. These are the projects in t
         subsections.length > 0
           ? z
               .enum(subsections.map((s) => s.id.toString()) as [string, ...string[]])
-              .nullish()
+              .nullable()
               .describe(
                 `The subsection / 'Abschnitt' ID this email relates to, if applicable. Available subsections: ${subsections.map((s) => `${s.id} (${s.slug} - ${s.start} bis ${s.end})`).join(", ")}. Or null if no specific subsection relation is found.`,
               )
           : z.null().describe("No subsections available for this project"),
+      protocolTopics: z
+        .array(
+          protocolTopics.length > 0
+            ? z.enum(protocolTopics.map((t) => t.id.toString()) as [string, ...string[]])
+            : z.string(),
+        )
+        .describe(
+          protocolTopics.length > 0
+            ? `Array of protocol topic IDs that this email relates to. Available topics: ${protocolTopics.map((t) => `${t.id} (${t.title})`).join(", ")}. Select all relevant topics based on the email content.`
+            : "No protocol topics available for this project, return an empty array.",
+        ),
     })
 
     let finalResult
     try {
       const result = await generateObject({
-        model: model,
+        model: gpt5Mini,
         schema: finalExtractionSchema,
         experimental_telemetry: {
           isEnabled: true,
@@ -163,9 +185,19 @@ Please identify the project the email is related to. These are the projects in t
           "You are an AI assistant that can read and process Emails and gather information to create a protocol entry.",
         prompt: `EMAIL: ${protocolEmail.text}
 
+This is an MIME type email text. The email was forwarded to a system email address ts@ki.ts - which collects the emails which should be processed. The original email might have been sent from different email providers and servers.
+
+The original / main email is part of a conversation of administration staff and related stakeholders in the context of an infrastructural planning project. Your task is to get necessary information from the raw email text to create a project protocol entry in a task manager app.
+
+Attachements: All attachements are Base64-encoded. Ignore images. If there are PDF attachements, extract ONLY text from them if they contain relevant information.
+
     Identify the following fields:
 
-        - BODY: The body of the email. In html the body is wrapped by <body> tags. Format the body in markdown - e.g. **bold text** for important sections and highlight ## headings. Format links as inline links in markdown format: [loremipsum.de](https://www.loremipsum.de/). Do not delete any parts of the body, even if they seem unimportant.
+        - BODY: Should contain two parts:
+          1. Start this section with "# EMAIL TEXT"
+           Here we need the actual text body of the email ONLY - and only once. In html the body is wrapped by <body> tags. Format the body in markdown - e.g. **bold text** for important sections and highlight ## headings. Format links as inline links in markdown format: [loremipsum.de](https://www.loremipsum.de/). Do not delete any parts of the body, even if they seem unimportant.
+          2. Start this section with "# EMAIL ANHÄNGE"
+          If there are PDF attachements, extract their text content and add it under a new section heading "### Anhang: FILENAME.pdf" (replace FILENAME.pdf with the actual filename). Examine the entire document closely, paying attention to structure, content, and formatting. Format this text content in markdown as well.
         - DATE: The relevant date for the protocol entry. If nothing else is found, find the date the original email was sent.
         - TITLE: Generate a meaningful title.
         - SUBSECTIONID: ${
@@ -175,6 +207,14 @@ Please identify the project the email is related to. These are the projects in t
 
     Look for references to specific route sections, kilometer markers, street names, or geographic locations that might match the subsection start/end points or slugs.`
             : "No subsections available for this project so set it to null."
+        }
+        - PROTOCOLTOPICS: ${
+          protocolTopics.length > 0
+            ? `A list of protocol topic IDs / 'Tags' that this email relates to. Based on the email content, identify which topics are relevant:
+    Available protocol topics for this project: ${protocolTopics.map((t) => `${t.id} (${t.title})`).join(", ")}
+
+    Look for keywords, themes, or subjects mentioned in the email that match these topic titles. Select all relevant topics - an email can relate to multiple topics. If no topics are clearly relevant, return an empty array.`
+            : "No protocol topics available for this project, return an empty array."
         }
     `,
       })
@@ -200,6 +240,10 @@ Please identify the project the email is related to. These are the projects in t
         finalResult.subsectionId && finalResult.subsectionId !== "no project"
           ? parseInt(finalResult.subsectionId)
           : null,
+      protocolTopics:
+        finalResult.protocolTopics && Array.isArray(finalResult.protocolTopics)
+          ? finalResult.protocolTopics.map((id) => parseInt(id))
+          : [],
     }
 
     // Create a DB entry Protocol with AI-extracted data
@@ -215,6 +259,9 @@ Please identify the project the email is related to. These are the projects in t
         reviewState: "NEEDSREVIEW", // protocols created by SYSTEM need review
         protocolEmailId: protocolEmailId,
         reviewNotes: reviewNote || null,
+        protocolTopics: {
+          connect: combinedResult.protocolTopics.map((id) => ({ id })),
+        },
       },
     })
 

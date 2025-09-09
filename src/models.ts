@@ -1,6 +1,7 @@
 import { openai } from "@ai-sdk/openai"
 
 // OpenAI Models
+export const gpt5Mini = openai("gpt-5-mini")
 export const gpt41Mini = openai("gpt-4.1-mini")
 // GPT-4.1 - Smartest non-reasoning model
 // tool calling
