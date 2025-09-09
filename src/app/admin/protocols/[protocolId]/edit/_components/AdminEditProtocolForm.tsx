@@ -64,7 +64,7 @@ export const AdminEditProtocolForm = ({
         date: values.date === "" ? null : new Date(values.date),
       })
       await refetch()
-      router.push(`/admin/protocols/${protocol.id}`)
+      router.push(`/admin/protocols/${protocol.id}/review`)
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
@@ -101,9 +101,11 @@ export const AdminEditProtocolForm = ({
         <ProtocolFormFields projectSlug={protocol.project.slug} />
       </Form>
 
-      <p className="mt-10">
-        <Link href={`/admin/protocols/${protocol.id}`}>← Zurück zur Protokoll-Details</Link>
-      </p>
+      <div className="mt-10">
+        <Link href={`/admin/protocols/${protocol.id}/review`}>← Zurück zur Protokoll-Review</Link>
+        <br />
+        <Link href="/admin/protocols">← Zurück zur Protokoll-Übersicht</Link>
+      </div>
 
       <hr className="my-5" />
 

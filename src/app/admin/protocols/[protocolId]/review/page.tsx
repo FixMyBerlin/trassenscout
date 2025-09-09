@@ -1,5 +1,6 @@
 import { AdminReviewProtocolForm } from "@/src/app/admin/protocols/[protocolId]/review/_components/AdminReviewProtocolForm"
 import { invoke } from "@/src/blitz-server"
+import { Link } from "@/src/core/components/links/Link"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import getProtocolAdmin from "@/src/server/protocols/queries/getProtocolAdmin"
 import { Metadata } from "next"
@@ -19,7 +20,17 @@ export default async function AdminReviewProtocolPage({
 
   return (
     <>
-      <PageHeader title={`Review: ${protocol.title}`} className="mt-12" />
+      <PageHeader
+        title={`Review: ${protocol.title}`}
+        className="mt-12"
+        action={
+          <div className="flex flex-col gap-2">
+            <Link icon="edit" href={`/admin/protocols/${protocolId}/edit`}>
+              Bearbeiten
+            </Link>
+          </div>
+        }
+      />
       <AdminReviewProtocolForm initialProtocol={protocol} protocolId={protocolId} />
     </>
   )

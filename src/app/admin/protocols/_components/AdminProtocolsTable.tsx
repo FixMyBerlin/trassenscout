@@ -37,7 +37,15 @@ export const AdminProtocolsTable = ({ protocols }: { protocols: AdminProtocolWit
       <TableWrapper className="mt-7">
         <div className="min-w-full divide-y divide-gray-300">
           <div className="bg-gray-50">
-            <div className="grid grid-cols-5">
+            <div className="grid grid-cols-6">
+              <div
+                className={clsx(
+                  spaceClasses,
+                  "text-left text-sm font-semibold uppercase text-gray-900",
+                )}
+              >
+                ID
+              </div>
               <div
                 className={clsx(
                   spaceClasses,
@@ -49,7 +57,7 @@ export const AdminProtocolsTable = ({ protocols }: { protocols: AdminProtocolWit
               <div
                 className={clsx(
                   spaceClasses,
-                  "text-left text-sm font-semibold uppercase text-gray-900",
+                  "col-span-2 text-left text-sm font-semibold uppercase text-gray-900",
                 )}
               >
                 Titel
@@ -68,27 +76,22 @@ export const AdminProtocolsTable = ({ protocols }: { protocols: AdminProtocolWit
                   "text-left text-sm font-semibold uppercase text-gray-900",
                 )}
               >
-                Review-Status
-              </div>
-              <div
-                className={clsx(
-                  spaceClasses,
-                  "text-left text-sm font-semibold uppercase text-gray-900",
-                )}
-              >
-                Aktionen
+                Review
               </div>
             </div>
           </div>
           <div className="divide-y divide-gray-200 bg-white">
             {!!protocols.length ? (
               protocols.map((protocol) => (
-                <div key={protocol.id} className="grid grid-cols-5">
+                <div key={protocol.id} className="grid grid-cols-6">
+                  <div className={clsx(spaceClasses, "text-sm text-gray-900")}>{protocol.id}</div>
                   <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
                     {protocol.date ? format(new Date(protocol.date), "P", { locale: de }) : "—"}
                   </div>
-                  <div className={clsx(spaceClasses, "text-sm font-semibold text-blue-500")}>
-                    <Link href={`/admin/protocols/${protocol.id}`}>{protocol.title}</Link>
+                  <div
+                    className={clsx(spaceClasses, "col-span-2 text-sm font-semibold text-blue-500")}
+                  >
+                    <Link href={`/admin/protocols/${protocol.id}/review`}>{protocol.title}</Link>
                   </div>
                   <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
                     <Link href={`/${protocol.project.slug}/protocols`}>
@@ -96,12 +99,14 @@ export const AdminProtocolsTable = ({ protocols }: { protocols: AdminProtocolWit
                     </Link>
                   </div>
                   <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
-                    <ProtocolReviewStatePill state={protocol.reviewState} />
-                  </div>
-                  <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
-                    <div className="flex gap-2">
-                      <Link href={`/admin/protocols/${protocol.id}/edit`}>Bearbeiten</Link>
-                      <Link href={`/admin/protocols/${protocol.id}/review`}>Review</Link>
+                    <div className="flex flex-col gap-1">
+                      <ProtocolReviewStatePill state={protocol.reviewState} />
+                      <Link
+                        href={`/admin/protocols/${protocol.id}/review`}
+                        className="text-blue-500 hover:underline"
+                      >
+                        Review
+                      </Link>
                     </div>
                   </div>
                 </div>
