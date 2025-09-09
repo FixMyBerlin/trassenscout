@@ -21,6 +21,12 @@ export const LabeledTextFieldCalculateLength: React.FC<LabeledTextFieldProps> = 
     setValue(props.name, calculatedLength)
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      e.preventDefault()
+    }
+  }
+
   let helpText: string
 
   if (props.readOnly) {
@@ -44,6 +50,7 @@ export const LabeledTextFieldCalculateLength: React.FC<LabeledTextFieldProps> = 
         step="0.001"
         {...props}
         help={helpText}
+        onKeyDown={handleKeyDown}
       />
 
       <button
