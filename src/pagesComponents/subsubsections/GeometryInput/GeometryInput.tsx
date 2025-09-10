@@ -6,6 +6,7 @@ import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import getSubsection from "@/src/server/subsections/queries/getSubsection"
 import { useQuery } from "@blitzjs/rpc"
+import { clsx } from "clsx"
 import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { MapProvider } from "react-map-gl/maplibre"
@@ -22,7 +23,6 @@ export const GeometryInput = () => {
 
   const { setValue, watch } = useFormContext()
   const [geometryInputMode, setGeometryInputMode] = useState<"MAP" | "RAW">("MAP")
-  if (!subsection) return null
   const geometry = watch("geometry")
   const type = watch("type")
   const LineStringSchema = z.array(z.array(z.number()).min(2).max(2).nonempty()).nonempty()
@@ -62,25 +62,68 @@ export const GeometryInput = () => {
           Maßnahme zu setzen. Mit einem zweiten Klick legen Sie den Endpunkt fest.
         </div>
       )}
-      {geometry &&
-        (geometryInputMode === "MAP" ? (
-          <MapProvider>
-            schemaResult.success && <GeometryInputMap subsection={subsection} />
-          </MapProvider>
-        ) : (
-          <LabeledGeometryField
-            name="geometry"
-            label="Geometry der Achse (`LineString` oder `Point`)"
-          />
-        ))}
-      <button
-        className={linkStyles}
-        onClick={() => setGeometryInputMode(geometryInputMode === "MAP" ? "RAW" : "MAP")}
-      >
-        {geometryInputMode === "MAP"
-          ? "Geometrie als GeoJSON bearbeiten"
-          : "Geometrie in Karte bearbeiten"}
-      </button>
+      {geometry && (
+        <div>
+          <nav>
+            <div className="sm:hidden">
+              <label htmlFor="geometry-tabs" className="sr-only">
+                Geometrie-Eingabemodus
+              </label>
+              <select
+                id="geometry-tabs"
+                name="geometry-tabs"
+                className="block w-full rounded-md border-gray-300 focus:border-gray-100 focus:ring-gray-500"
+                value={geometryInputMode}
+                onChange={(event) => {
+                  setGeometryInputMode(event.target.value as "MAP" | "RAW")
+                }}
+              >
+                <option value="MAP">Karte</option>
+                <option value="RAW">GeoJSON</option>
+              </select>
+            </div>
+            <div className="hidden sm:flex">
+              <nav className="-mb-px flex w-full" aria-label="Geometry Input Tabs">
+                {[
+                  { key: "MAP", label: "Karte" },
+                  { key: "RAW", label: "GeoJSON" },
+                ].map((tab) => {
+                  const current = geometryInputMode === tab.key
+
+                  return (
+                    <button
+                      key={tab.key}
+                      type="button"
+                      onClick={() => setGeometryInputMode(tab.key as "MAP" | "RAW")}
+                      className={clsx(
+                        current ? "bg-gray-100" : "bg-gray-50",
+                        "flex rounded-t-md px-3 py-2 text-sm",
+                        linkStyles,
+                      )}
+                      aria-current={current ? "page" : undefined}
+                    >
+                      {tab.label}
+                    </button>
+                  )
+                })}
+              </nav>
+            </div>
+          </nav>
+
+          <div className="rounded-b-md rounded-r-md bg-gray-100 p-2">
+            {geometryInputMode === "MAP" ? (
+              <MapProvider>
+                {schemaResult.success && <GeometryInputMap subsection={subsection} />}
+              </MapProvider>
+            ) : (
+              <LabeledGeometryField
+                name="geometry"
+                label="Geometry der Achse (`LineString` oder `Point`)"
+              />
+            )}
+          </div>
+        </div>
+      )}
     </>
   )
 }
