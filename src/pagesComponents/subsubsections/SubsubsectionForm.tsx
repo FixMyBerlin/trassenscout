@@ -138,7 +138,12 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label="Breite Bestand"
         optional
       /> */}
-      <LabeledTextField name="costEstimate" inlineLeadingAddon="€" label="Kostenschätzung" />
+      <LabeledTextField
+        name="costEstimate"
+        type="number"
+        inlineLeadingAddon="€"
+        label="Kostenschätzung"
+      />
       <div className="flex items-end gap-5">
         <LabeledSelect
           name="qualityLevelId"
