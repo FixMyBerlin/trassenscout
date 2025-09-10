@@ -46,6 +46,14 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
     // if (value && props.type === "datetime-local") {
     //   setValue(name, new Date(value as string).toISOString().split(".")[0])
     // }
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      // Prevent default behaviour of arrow up/down in number inputs which increases/decreases the value
+      if (props.type === "number" && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
+        e.preventDefault()
+      }
+      // Always call the original onKeyDown handler if provided
+      props.onKeyDown?.(e)
+    }
 
     return (
       <div {...outerProps}>
@@ -68,6 +76,7 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
             {...register(name)}
             id={name}
             {...props}
+            onKeyDown={handleKeyDown}
             className={clsx(
               inlineLeadingAddon ? "pl-12" : "",
               "block w-full appearance-none rounded-md border px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none sm:text-sm",
