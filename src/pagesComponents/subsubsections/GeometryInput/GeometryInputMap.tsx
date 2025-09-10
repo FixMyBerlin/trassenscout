@@ -104,7 +104,7 @@ export const GeometryInputMap = ({ subsection }: Props) => {
             bounds: sectionBounds,
             fitBoundsOptions: { padding: 100 },
           }}
-          id="preview"
+          id="preview-input"
           dots={[]}
           lines={subsectionFeature}
           onClick={
@@ -123,8 +123,8 @@ export const GeometryInputMap = ({ subsection }: Props) => {
                 data={featureCollection([pointOneOnLine, pointTwoOnLine].filter(Boolean))}
               />
               <Layer
-                id="nearestPoint-route"
-                key="nearestPoint-route"
+                id="nearestPoint-route-layer"
+                key="nearestPoint-route-layer"
                 source="nearestPoint-route"
                 type="circle"
                 paint={{
@@ -142,8 +142,8 @@ export const GeometryInputMap = ({ subsection }: Props) => {
                 data={lineString(geometry as RouteGeometry)}
               />
               <Layer
-                id="geometry"
-                key="geometry"
+                id="geometry-layer"
+                key="geometry-layer"
                 source="geometry"
                 type="line"
                 paint={{

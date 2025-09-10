@@ -1,10 +1,12 @@
 import { midPoint } from "@/src/core/components/Map/utils"
 import { LabeledRadiobuttonGroup } from "@/src/core/components/forms"
+import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
+import { linkStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import getSubsection from "@/src/server/subsections/queries/getSubsection"
 import { useQuery } from "@blitzjs/rpc"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { MapProvider } from "react-map-gl/maplibre"
 import { z } from "zod"
@@ -19,6 +21,8 @@ export const GeometryInput = () => {
   })
 
   const { setValue, watch } = useFormContext()
+  const [geometryInputMode, setGeometryInputMode] = useState<"MAP" | "RAW">("MAP")
+  if (!subsection) return null
   const geometry = watch("geometry")
   const type = watch("type")
   const LineStringSchema = z.array(z.array(z.number()).min(2).max(2).nonempty()).nonempty()
@@ -58,20 +62,25 @@ export const GeometryInput = () => {
           Maßnahme zu setzen. Mit einem zweiten Klick legen Sie den Endpunkt fest.
         </div>
       )}
-      <MapProvider>
-        {schemaResult.success && <GeometryInputMap subsection={subsection} />}
-      </MapProvider>
-
-      {/* Disabled for now. We don't really need this. And might have cause issues with how the map worked on staging/production */}
-      {/* <details className="rounded border-gray-300 p-4 open:border open:bg-gray-50">
-        <summary className="mb-4 cursor-pointer text-sm font-medium text-gray-700">
-          Geometrie
-        </summary>
-        <LabeledGeometryField
-          name="geometry"
-          label="Geometry der Achse (`LineString` oder `Point`)"
-        />
-      </details> */}
+      {geometry &&
+        (geometryInputMode === "MAP" ? (
+          <MapProvider>
+            schemaResult.success && <GeometryInputMap subsection={subsection} />
+          </MapProvider>
+        ) : (
+          <LabeledGeometryField
+            name="geometry"
+            label="Geometry der Achse (`LineString` oder `Point`)"
+          />
+        ))}
+      <button
+        className={linkStyles}
+        onClick={() => setGeometryInputMode(geometryInputMode === "MAP" ? "RAW" : "MAP")}
+      >
+        {geometryInputMode === "MAP"
+          ? "Geometrie als GeoJSON bearbeiten"
+          : "Geometrie in Karte bearbeiten"}
+      </button>
     </>
   )
 }
