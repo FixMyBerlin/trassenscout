@@ -45,33 +45,12 @@ export const ProtocolsTable = ({
   return (
     <>
       <TableWrapper className="mt-7">
-        <div className="min-w-full divide-y divide-gray-300">
+        <div className="min-w-full divide-y divide-gray-300 text-sm text-gray-900">
           <div className="bg-gray-50 pr-5">
             <div className="grid grid-cols-3">
-              <div
-                className={clsx(
-                  spaceClasses,
-                  "text-left text-sm font-semibold uppercase text-gray-900",
-                )}
-              >
-                Datum
-              </div>
-              <div
-                className={clsx(
-                  spaceClasses,
-                  "text-left text-sm font-semibold uppercase text-gray-900",
-                )}
-              >
-                Titel
-              </div>
-              <div
-                className={clsx(
-                  spaceClasses,
-                  "text-left text-sm font-semibold uppercase text-gray-900",
-                )}
-              >
-                Planungsabschnitt
-              </div>
+              <div className={clsx(spaceClasses, "font-medium uppercase")}>Datum</div>
+              <div className={clsx(spaceClasses, "font-medium uppercase")}>Titel</div>
+              <div className={clsx(spaceClasses, "font-medium uppercase")}>Tags</div>
             </div>
           </div>
           <div className="divide-y divide-gray-200 bg-white">
@@ -86,19 +65,26 @@ export const ProtocolsTable = ({
                     )}
                     button={
                       <div className="grid flex-grow grid-cols-3">
-                        <div className={clsx(spaceClasses, "text-sm font-medium text-gray-900")}>
+                        <div className={spaceClasses}>
                           {protocol.date
                             ? format(new Date(protocol.date), "P", { locale: de })
                             : "—"}
                         </div>
-                        <div className={clsx(spaceClasses, "text-sm font-semibold text-blue-500")}>
+                        <div className={clsx(spaceClasses, "font-semibold text-blue-500")}>
                           {protocol.title}
                         </div>
-                        <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
-                          {protocol.subsection ? (
-                            <Link href={`/${projectSlug}/subsections/${protocol.subsection.slug}`}>
-                              {shortTitle(protocol.subsection.slug)}
-                            </Link>
+                        <div className={spaceClasses}>
+                          {protocol.protocolTopics.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {protocol.protocolTopics.map((topic) => (
+                                <span
+                                  key={topic.id}
+                                  className="inline-block rounded bg-gray-100 px-2 py-1 text-xs"
+                                >
+                                  # {topic.title}
+                                </span>
+                              ))}
+                            </div>
                           ) : (
                             "-"
                           )}
@@ -113,16 +99,12 @@ export const ProtocolsTable = ({
                         markdown={protocol.body}
                       />
                     )}
-                    {!!protocol.protocolTopics.length && (
+                    {protocol.subsection && (
                       <div>
-                        <p className="mb-4 font-medium text-gray-500">Tags</p>
-                        <ul className="list-inside list-none">
-                          {protocol.protocolTopics.map((topic) => (
-                            <li className="whitespace-nowrap" key={topic.id}>
-                              # {topic.title}
-                            </li>
-                          ))}
-                        </ul>
+                        <p className="mb-2">Planungsabschnitt: </p>
+                        <Link href={`/${projectSlug}/abschnitte/${protocol.subsection.slug}`}>
+                          {shortTitle(protocol.subsection.slug)}
+                        </Link>
                       </div>
                     )}
                     <div>
@@ -132,7 +114,9 @@ export const ProtocolsTable = ({
                             Bearbeiten
                           </Link>
                         </IfUserCanEdit>
-                        <Link href={`/${projectSlug}/protocols/${protocol.id}`}>Detailansicht</Link>
+                        <Link icon="details" href={`/${projectSlug}/protocols/${protocol.id}`}>
+                          Detailansicht
+                        </Link>
                       </div>
                       <SuperAdminBox>
                         <p className="text-xs">
