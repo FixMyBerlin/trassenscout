@@ -113,11 +113,9 @@ export const SurveyResponse = () => {
         />
 
         <ZeroCase visible={filteredResponses.length} name={"Beiträge"} />
-        {filteredResponses.length === 1 ? (
-          <p>1 Beitrag</p>
-        ) : (
-          <p>{filteredResponses.length} Beiträge</p>
-        )}
+        <p className="mt-4 text-sm text-gray-500">
+          {filteredResponses.length} {filteredResponses.length === 1 ? "Beitrag" : "Beiträge"}
+        </p>
         {filteredResponses.length !== 0 && (
           <div className="mt-2 flex items-center">
             <SurveyStaticPin surveySlug={survey.slug} small />
