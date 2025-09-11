@@ -1,7 +1,7 @@
 "use client"
 
+import { FilteredProtocols } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/FilteredProtocols"
 import { ProtocolForm } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/ProtocolForm"
-import { ProtocolsTable } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/ProtocolsTable"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { FORM_ERROR } from "@/src/core/components/forms"
 import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
@@ -76,11 +76,11 @@ export const ProtocolsFormAndTable = ({
           initialValues={{ date: getDate(new Date()) }}
           mode="new"
         />
-        <div className="pt-6" id="toast">
+        <div className="mb-4 pt-4" id="toast">
           <FormSuccess message="Neues Protokoll erstellt" show={showSuccess} />
         </div>
       </IfUserCanEdit>
-      <ProtocolsTable highlightId={createdProtocolId} protocols={protocols} />
+      <FilteredProtocols highlightId={createdProtocolId} protocols={protocols} />
     </>
   )
 }

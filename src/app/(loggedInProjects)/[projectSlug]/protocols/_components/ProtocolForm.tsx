@@ -100,7 +100,7 @@ const ProtocolFormFields = () => {
           <button
             type="button"
             onClick={handleNewTopicFormSubmit}
-            className={clsx(blueButtonStyles, "!h-3 !px-3")}
+            className={clsx(blueButtonStyles, "!h-9 !px-3")}
           >
             Hinzufügen
           </button>
