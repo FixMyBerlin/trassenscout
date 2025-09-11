@@ -10,12 +10,12 @@ type SubsectionWithSubsubsectionsWithPositionWithQualityLevelCalc = {
   subsection: SubsectionWithPosition & {
     subsubsections: {
       id: number
-      lengthKm: number
+      lengthM: number
       qualityLevel: { id: number; slug: string } | null
     }[]
-  } & { sumLengthKmSubsubsections: number }
-  qualityLevelsWithCount: { slug: string; sumOfLengthKm: number; sumOfLengthKmPercentage: number }[]
-  sumLengthKmSubsubsectionsWithStandard: number
+  } & { sumLengthMSubsubsections: number }
+  qualityLevelsWithCount: { slug: string; sumOfLengthM: number; sumOfLengthMPercentage: number }[]
+  sumLengthMSubsubsectionsWithStandard: number
 }
 
 export default resolver.pipe(
@@ -31,7 +31,7 @@ export default resolver.pipe(
       },
       include: {
         subsubsections: {
-          select: { lengthKm: true, id: true, qualityLevel: true },
+          select: { lengthM: true, id: true, qualityLevel: true },
           orderBy: { slug: "asc" as Prisma.SortOrder },
         },
       },
@@ -49,35 +49,35 @@ export default resolver.pipe(
 
     if (!newSubsection) throw new NotFoundError()
 
-    const sumLengthKmSubsubsections = Number(
-      newSubsection?.subsubsections.reduce((acc, s) => acc + (s.lengthKm ?? 0), 0).toFixed(3),
+    const sumLengthMSubsubsections = Number(
+      newSubsection?.subsubsections.reduce((acc, s) => acc + (s.lengthM ?? 0), 0).toFixed(3),
     )
 
     const subsubsectionsWithStandard = newSubsection?.subsubsections.filter((s) => s.qualityLevel)
 
-    const sumLengthKmSubsubsectionsWithStandard = Number(
-      subsubsectionsWithStandard.reduce((acc, s) => acc + (s.lengthKm ?? 0), 0).toFixed(3),
+    const sumLengthMSubsubsectionsWithStandard = Number(
+      subsubsectionsWithStandard.reduce((acc, s) => acc + (s.lengthM ?? 0), 0).toFixed(3),
     )
 
     const qualityLevelsWithCount = qualityLevels.map((ql) => {
       return {
         slug: ql.slug,
-        sumOfLengthKm: subsubsectionsWithStandard
+        sumOfLengthM: subsubsectionsWithStandard
           .filter((s) => s.qualityLevel?.id === ql.id)
-          .reduce((acc, s) => acc + (s.lengthKm ?? 0), 0),
-        sumOfLengthKmPercentage:
+          .reduce((acc, s) => acc + (s.lengthM ?? 0), 0),
+        sumOfLengthMPercentage:
           (subsubsectionsWithStandard
             .filter((s) => s.qualityLevel?.id === ql.id)
-            .reduce((acc, s) => acc + (s.lengthKm ?? 0), 0) /
-            sumLengthKmSubsubsectionsWithStandard) *
+            .reduce((acc, s) => acc + (s.lengthM ?? 0), 0) /
+            sumLengthMSubsubsectionsWithStandard) *
           100,
       }
     })
 
     return {
-      subsection: { ...newSubsection, sumLengthKmSubsubsections },
+      subsection: { ...newSubsection, sumLengthMSubsubsections },
       qualityLevelsWithCount,
-      sumLengthKmSubsubsectionsWithStandard,
+      sumLengthMSubsubsectionsWithStandard,
     } as SubsectionWithSubsubsectionsWithPositionWithQualityLevelCalc
   },
 )

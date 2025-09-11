@@ -23,19 +23,19 @@ type SububsectionsCategoryCount = {
 
 type SubsectionWithSubsubsectionsWithSpecialFeaturesCount = {
   project: {
-    projectLengthKm: number
+    projectLengthM: number
     subsubsections: {
       id: number
       type: "ROUTE" | "AREA"
       isExistingInfra: boolean
-      lengthKm: number
+      lengthM: number
     }[]
-  } & { sumLengthKmSubsubsections: number }
+  } & { sumLengthMSubsubsections: number }
   subsubsectionsCategoryCount: SububsectionsCategoryCount
   qualityLevelsWithCount: {
     slug: string
     count: number
-    lengthKm: number
+    lengthM: number
     percentage: number
   }[]
 }
@@ -102,11 +102,11 @@ export default resolver.pipe(
       }
     }
 
-    let subsubsectionsSumLengthKm = 0
+    let subsubsectionsSumLengthM = 0
 
     for (const subsection of newProject.subsections) {
-      subsubsectionsSumLengthKm += subsection.subsubsections.reduce(
-        (acc, s) => acc + (s.lengthKm ?? 0),
+      subsubsectionsSumLengthM += subsection.subsubsections.reduce(
+        (acc, s) => acc + (s.lengthM ?? 0),
         0,
       )
     }
@@ -115,17 +115,17 @@ export default resolver.pipe(
       "RF (kein Bestand)": {
         Anzahl: subsubsectionsNotIsExistingInfraAndRoute.length, // Summe aller subsubsections aller Subasections des Projects mit type === "ROUTE" && !isExistingInfra
         Summe: subsubsectionsNotIsExistingInfraAndRoute.reduce(
-          (acc, s) => acc + (s.lengthKm ?? 0),
+          (acc, s) => acc + (s.lengthM ?? 0),
           0,
         ),
       },
       "RF (Bestand)": {
         Anzahl: subsubsectionsIsExistingInfraAndRoute.length, // Summe aller subsubsections aller Subasections des Projects mit type === "ROUTE" && !isExistingInfra
-        Summe: subsubsectionsIsExistingInfraAndRoute.reduce((acc, s) => acc + (s.lengthKm ?? 0), 0),
+        Summe: subsubsectionsIsExistingInfraAndRoute.reduce((acc, s) => acc + (s.lengthM ?? 0), 0),
       },
       SF: {
         Anzahl: subsubsectionsArea.length, // Summe aller subsubsections aller Subasections des Projects mit type === "ROUTE" && !isExistingInfra
-        Summe: subsubsectionsArea.reduce((acc, s) => acc + (s.lengthKm ?? 0), 0),
+        Summe: subsubsectionsArea.reduce((acc, s) => acc + (s.lengthM ?? 0), 0),
       },
     }
 
@@ -140,32 +140,32 @@ export default resolver.pipe(
         subsubsectionsWithQualityLevel.push(...newSubsubsectionsWithQualityLevel)
     })
 
-    const subsubsectionsWithQualityLevelLengthKm = subsubsectionsWithQualityLevel.reduce(
-      (acc, a) => acc + (a?.lengthKm || 0),
+    const subsubsectionsWithQualityLevelLengthM = subsubsectionsWithQualityLevel.reduce(
+      (acc, a) => acc + (a?.lengthM || 0),
       0,
     )
 
     const qualityLevelsWithCount = qualityLevels.map((level) => {
-      const subsubsectionsWithCertainQualityLevelLengthKm: number = subsubsectionsWithQualityLevel
+      const subsubsectionsWithCertainQualityLevelLengthM: number = subsubsectionsWithQualityLevel
         .filter((subsub) => subsub.qualityLevelId === level.id)
-        .reduce((acc, a) => acc + (a?.lengthKm || 0), 0)
+        .reduce((acc, a) => acc + (a?.lengthM || 0), 0)
       return {
         slug: level.slug,
         count: subsubsectionsWithQualityLevel.filter((subsub) => subsub.qualityLevelId === level.id)
           .length,
-        lengthKm: subsubsectionsWithCertainQualityLevelLengthKm,
+        lengthM: subsubsectionsWithCertainQualityLevelLengthM,
         percentage:
-          subsubsectionsWithCertainQualityLevelLengthKm /
-          (subsubsectionsWithQualityLevelLengthKm / 100),
+          subsubsectionsWithCertainQualityLevelLengthM /
+          (subsubsectionsWithQualityLevelLengthM / 100),
       }
     })
 
     return {
       project: {
-        projectLengthKm: Number(
-          newProject.subsections.reduce((acc, s) => acc + (s.lengthKm ?? 0), 0),
+        projectLengthM: Number(
+          newProject.subsections.reduce((acc, s) => acc + (s.lengthM ?? 0), 0),
         ), // reduce length of all subsections of the project
-        sumLengthKmSubsubsections: subsubsectionsSumLengthKm, // reduce length of all subsubsections of all subsections of the project
+        sumLengthMSubsubsections: subsubsectionsSumLengthM, // reduce length of all subsubsections of all subsections of the project
       },
       subsubsectionsCategoryCount,
       qualityLevelsWithCount,

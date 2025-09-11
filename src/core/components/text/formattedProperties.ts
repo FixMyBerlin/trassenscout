@@ -3,7 +3,7 @@ export const formattedLength = (length?: number | null) => {
     return "k.A."
   }
 
-  return length.toLocaleString() + " km"
+  return length.toLocaleString() + " m"
 }
 
 export const formattedWidth = (width?: number | null) => {

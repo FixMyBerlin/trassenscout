@@ -1,9 +1,9 @@
-export const formatGerKm = (n: number) => {
+export const formatGerM = (n: number) => {
   if (n === 0) {
-    return "0 km"
+    return "0 m"
   }
 
-  return n.toFixed(2).replace(".", ",") + " km"
+  return n.toFixed(2).replace(".", ",") + " m"
 }
 export const formatGerPercentage = (n: number) => {
   if (n === 0) {

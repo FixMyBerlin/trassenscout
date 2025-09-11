@@ -40,7 +40,7 @@
     "updatePackages:minor": "npx taze minor --includeLocked --write && npm install",
     "release": "gh pr create --base main --head develop --title \"Release $(date '+%Y-%m-%d')\" --body \"\"",
     "prepare": "husky",
-    "calc-lengthkm": "node db/calculate-subsection-subsubsection-lengthkm.js"
+    "calc-lengthm": "node db/calculate-subsection-subsubsection-lengthm.js"
   },
   "prisma": {
     "schema": "db/schema.prisma"

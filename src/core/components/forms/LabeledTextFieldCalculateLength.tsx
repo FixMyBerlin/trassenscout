@@ -17,7 +17,13 @@ export const LabeledTextFieldCalculateLength: React.FC<LabeledTextFieldProps> = 
 
   const calculateLength = () => {
     const geometry = getValues("geometry")
-    const calculatedLength = Number(length(lineString(geometry)).toFixed(3))
+    const calculatedLength = Number(
+      (
+        length(lineString(geometry), {
+          units: "kilometers",
+        }) * 1000
+      ).toFixed(0),
+    ) // in m
     setValue(props.name, calculatedLength)
   }
 
@@ -38,13 +44,7 @@ export const LabeledTextFieldCalculateLength: React.FC<LabeledTextFieldProps> = 
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
-      <LabeledTextField
-        inlineLeadingAddon="km"
-        type="number"
-        step="0.001"
-        {...props}
-        help={helpText}
-      />
+      <LabeledTextField inlineLeadingAddon="m" type="number" step="1" {...props} help={helpText} />
 
       <button
         type="button"

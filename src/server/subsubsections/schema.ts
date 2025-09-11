@@ -38,7 +38,7 @@ export const SubsubsectionSchema = z.object({
   type: z.nativeEnum(SubsubsectionTypeEnum),
   geometry: PositionSchema.or(PositionArraySchema),
   labelPos: z.nativeEnum(LabelPositionEnum),
-  lengthKm: InputNumberSchema, // km
+  lengthM: InputNumberSchema, // m
   width: InputNumberOrNullSchema, // m
   widthExisting: InputNumberOrNullSchema, // m
   costEstimate: InputNumberOrNullSchema, // €

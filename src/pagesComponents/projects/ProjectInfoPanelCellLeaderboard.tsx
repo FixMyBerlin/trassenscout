@@ -1,4 +1,4 @@
-import { formatGerKm } from "@/src/pagesComponents/subsections/utils/formatNumericInfo"
+import { formatGerM } from "@/src/pagesComponents/subsections/utils/formatNumericInfo"
 import getStatsInfopanelProjectLeaderboard from "@/src/server/projects/queries/getStatsInfopanelProjectLeaderboard"
 import { useQuery } from "@blitzjs/rpc"
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
@@ -22,7 +22,7 @@ export const ProjectInfoPanelCellLeaderboard: React.FC<Props> = ({ projectSlug }
             {operatorsWithCount.map((s) => {
               return (
                 <p key={s.id}>
-                  {s.title}: {s.count} PAs, {formatGerKm(s.lengthKm)}
+                  {s.title}: {s.count} PAs, {formatGerM(s.lengthM)}
                 </p>
               )
             })}

@@ -1,6 +1,6 @@
 import getStatsInfopanelSubsectionStandards from "@/src/server/subsections/queries/getStatsInfopanelSubsectionStandards"
 import { useQuery } from "@blitzjs/rpc"
-import { formatGerKm, formatGerPercentage } from "./utils/formatNumericInfo"
+import { formatGerM, formatGerPercentage } from "./utils/formatNumericInfo"
 
 type Props = {
   subsectionSlug: string
@@ -10,17 +10,17 @@ export const SubsubsectionInfoPanelCellSubsectionsDetails: React.FC<Props> = ({
   subsectionSlug,
   projectSlug,
 }) => {
-  const [{ subsection, qualityLevelsWithCount, sumLengthKmSubsubsectionsWithStandard }] = useQuery(
+  const [{ subsection, qualityLevelsWithCount, sumLengthMSubsubsectionsWithStandard }] = useQuery(
     getStatsInfopanelSubsectionStandards,
     { subsectionSlug: subsectionSlug!, projectSlug },
   )
   return (
     <>
       <p className="text-red-500">
-        {formatGerKm(sumLengthKmSubsubsectionsWithStandard)} von{" "}
-        {formatGerKm(subsection.sumLengthKmSubsubsections)} (
+        {formatGerM(sumLengthMSubsubsectionsWithStandard)} von{" "}
+        {formatGerM(subsection.sumLengthMSubsubsections)} (
         {formatGerPercentage(
-          sumLengthKmSubsubsectionsWithStandard / (subsection.sumLengthKmSubsubsections / 100),
+          sumLengthMSubsubsectionsWithStandard / (subsection.sumLengthMSubsubsections / 100),
         )}
         ) sind definiert
       </p>
@@ -34,8 +34,8 @@ export const SubsubsectionInfoPanelCellSubsectionsDetails: React.FC<Props> = ({
           {qualityLevelsWithCount.map((ql) => (
             <li className="space-x-2" key={ql.slug}>
               <span className="font-bold uppercase">{ql.slug}: </span>
-              <span>{formatGerPercentage(ql.sumOfLengthKmPercentage)}</span>
-              <span>{formatGerKm(ql.sumOfLengthKm)}</span>
+              <span>{formatGerPercentage(ql.sumOfLengthMPercentage)}</span>
+              <span>{formatGerM(ql.sumOfLengthM)}</span>
             </li>
           ))}
         </ul>

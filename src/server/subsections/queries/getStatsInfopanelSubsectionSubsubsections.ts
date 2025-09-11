@@ -23,9 +23,9 @@ type SubsectionWithSubsubsectionsWithSpecialFeaturesCount = {
       id: number
       type: "ROUTE" | "AREA"
       isExistingInfra: boolean
-      lengthKm: number
+      lengthM: number
     }[]
-  } & { sumLengthKmSubsubsections: number }
+  } & { sumLengthMSubsubsections: number }
   subsubsectionsCategoryCount: SububsectionsCategoryCount
 }
 
@@ -42,7 +42,7 @@ export default resolver.pipe(
       },
       include: {
         subsubsections: {
-          select: { type: true, isExistingInfra: true, lengthKm: true, id: true },
+          select: { type: true, isExistingInfra: true, lengthM: true, id: true },
           orderBy: { slug: "asc" as Prisma.SortOrder },
         },
       },
@@ -60,7 +60,7 @@ export default resolver.pipe(
         Summe: Number(
           newSubsection?.subsubsections
             .filter((s) => s.type === "ROUTE" && !s.isExistingInfra)
-            .reduce((acc, s) => acc + (s.lengthKm ?? 0), 0)
+            .reduce((acc, s) => acc + (s.lengthM ?? 0), 0)
             .toFixed(3),
         ),
       },
@@ -70,7 +70,7 @@ export default resolver.pipe(
         Summe: Number(
           newSubsection?.subsubsections
             .filter((s) => s.type === "ROUTE" && s.isExistingInfra)
-            .reduce((acc, s) => acc + (s.lengthKm ?? 0), 0)
+            .reduce((acc, s) => acc + (s.lengthM ?? 0), 0)
             .toFixed(3),
         ),
       },
@@ -79,7 +79,7 @@ export default resolver.pipe(
         Summe: Number(
           newSubsection?.subsubsections
             .filter((s) => s.type === "AREA")
-            .reduce((acc, s) => acc + (s.lengthKm ?? 0), 0)
+            .reduce((acc, s) => acc + (s.lengthM ?? 0), 0)
             .toFixed(3),
         ),
       },
@@ -88,8 +88,8 @@ export default resolver.pipe(
     return {
       subsection: {
         ...newSubsection,
-        sumLengthKmSubsubsections: Number(
-          newSubsection?.subsubsections.reduce((acc, s) => acc + (s.lengthKm ?? 0), 0).toFixed(3),
+        sumLengthMSubsubsections: Number(
+          newSubsection?.subsubsections.reduce((acc, s) => acc + (s.lengthM ?? 0), 0).toFixed(3),
         ),
       },
       subsubsectionsCategoryCount,
