@@ -27,7 +27,7 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
             "whitespace-nowrap pb-2 pl-4 pr-3 pt-4 text-sm font-medium text-gray-900",
           )}
         >
-          {formattedLength(subsubsections.reduce((acc, sub) => acc + (sub.lengthKm || 0), 0))}
+          {formattedLength(subsubsections.reduce((acc, sub) => acc + (sub.lengthM || 0), 0))}
         </td>
         <td
           className={clsx(
@@ -61,7 +61,7 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
               )}
             >
               {formattedLength(
-                subsubsectionForQualityLevel.reduce((acc, sub) => acc + (sub.lengthKm || 0), 0),
+                subsubsectionForQualityLevel.reduce((acc, sub) => acc + (sub.lengthM || 0), 0),
               )}
             </td>
             <td

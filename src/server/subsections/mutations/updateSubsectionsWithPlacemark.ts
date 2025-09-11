@@ -52,8 +52,17 @@ export default resolver.pipe(
           where: { id: tsSubsection.id },
           data: {
             geometry: newCoordinates,
-            // @ts-expect-error
-            lengthKm: length(lineString(newCoordinates)),
+            lengthM: newCoordinates
+              ? Number(
+                  // prettier-ignore
+                  // @ts-expect-error
+                  (length(lineString(newCoordinates), {
+                      units: "kilometers",
+                    }) * 1000).toFixed(
+                    0,
+                  ),
+                )
+              : 0, // in m
           },
         })
 

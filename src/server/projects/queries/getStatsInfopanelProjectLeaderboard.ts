@@ -20,7 +20,7 @@ type SpecialsOperatorsManagersCount = {
     id: number
     title: string
     count: number
-    lengthKm: number
+    lengthM: number
   }[]
   managersWithCount: Record<string, number>
 }
@@ -88,7 +88,7 @@ export default resolver.pipe(
       return {
         ...operator,
         count: subsectionWithOperator.length,
-        lengthKm: subsectionWithOperator.reduce((acc, sub) => acc + sub.lengthKm, 0),
+        lengthM: subsectionWithOperator.reduce((acc, sub) => acc + sub.lengthM, 0),
       }
     })
 

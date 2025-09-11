@@ -28,7 +28,7 @@ export const MultipleNewSubsectionsForm = () => {
     const newSubsections: Array<
       { geometry: [number, number][] } & Pick<
         Subsection,
-        "projectId" | "labelPos" | "start" | "end" | "slug" | "order" | "lengthKm" | "isFinalRoute"
+        "projectId" | "labelPos" | "start" | "end" | "slug" | "order" | "lengthM" | "isFinalRoute"
       >
     > = []
     for (let i = 0; i < Number(values.no); i++) {
@@ -40,7 +40,13 @@ export const MultipleNewSubsectionsForm = () => {
         slug: `pa${values.prefix}.${maxOrderSubsections + i + 1}`,
         order: maxOrderSubsections + i + 1,
         geometry: defaultGeometryForMultipleSubsectionForm,
-        lengthKm: length(lineString(defaultGeometryForMultipleSubsectionForm)),
+        lengthM: Number(
+          (
+            length(lineString(defaultGeometryForMultipleSubsectionForm), {
+              units: "kilometers",
+            }) * 1000
+          ).toFixed(0),
+        ), // in m
         isFinalRoute: true,
       })
     }

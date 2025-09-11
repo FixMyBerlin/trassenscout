@@ -121,7 +121,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         </div>
       </div> */}
       <LabeledTextFieldCalculateLength
-        name="lengthKm"
+        name="lengthM"
         label="Länge"
         help="Dieser Wert kann manuell eingetragen oder aus den vorhandenen Geometrien berechnet werden."
       />

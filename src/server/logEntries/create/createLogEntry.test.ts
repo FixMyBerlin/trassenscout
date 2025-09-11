@@ -32,7 +32,7 @@ describe("createLogEntry mutation", async () => {
   const subsectionInput = {
     slug: "test",
     order: 99,
-    lengthKm: 99,
+    lengthM: 99,
     start: "start string",
     end: "end string",
     labelPos: "top" as LabelPositionEnum,
@@ -64,10 +64,10 @@ describe("createLogEntry mutation", async () => {
   it("UPDATE case with diff for real changes", async () => {
     expect(true).toBe(true)
 
-    const input = { ...subsectionInput, id: subsection.id, lengthKm: 100 }
+    const input = { ...subsectionInput, id: subsection.id, lengthM: 100 }
     const updatedSubsection = await updateSubsection({ ...input }, mockCtx)
     expect(updatedSubsection?.slug).toBe(subsectionInput.slug)
-    expect(updatedSubsection?.lengthKm).toBe(100)
+    expect(updatedSubsection?.lengthM).toBe(100)
 
     const logEntries = await db.logEntry.findMany()
     expect(logEntries.length).toBe(2)
@@ -78,7 +78,7 @@ describe("createLogEntry mutation", async () => {
     expect(Array.isArray(logEntry?.changes) && logEntry?.changes?.at(1)).toStrictEqual({
       kind: "E",
       lhs: 99,
-      path: ["lengthKm"],
+      path: ["lengthM"],
       rhs: 100,
     })
   })
@@ -87,10 +87,10 @@ describe("createLogEntry mutation", async () => {
     expect(true).toBe(true)
 
     // Idential changes to the second test, so nothing changes except updatedAt
-    const input = { ...subsectionInput, id: subsection.id, lengthKm: 100 }
+    const input = { ...subsectionInput, id: subsection.id, lengthM: 100 }
     const updatedSubsection = await updateSubsection({ ...input }, mockCtx)
     expect(updatedSubsection?.slug).toBe(subsectionInput.slug)
-    expect(updatedSubsection?.lengthKm).toBe(100)
+    expect(updatedSubsection?.lengthM).toBe(100)
 
     const logEntriesCount = await db.logEntry.count()
     expect(logEntriesCount).toBe(2)

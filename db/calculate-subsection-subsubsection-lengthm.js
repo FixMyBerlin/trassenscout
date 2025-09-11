@@ -4,40 +4,47 @@ const { PrismaClient } = require("@prisma/client")
 
 const db = new PrismaClient()
 /*
- * This function is executed when you run `calc-lengthkm`.
+ * This function is executed when you run `calc-lengthM`.
  */
-const calculateLengthKm = async () => {
+const calculateLengthM = async () => {
   const subsections = await db.subsection.findMany()
   console.log("subsections successfully fetched")
   subsections.forEach(async (subsection) => {
-    const calculatedLengthKm = Number(
-      length(lineString(subsection.geometry), { units: "kilometers" }).toFixed(3),
-    )
+    const calculatedlengthM = Number(
+      (
+        length(lineString(subsection.geometry), {
+          units: "kilometers",
+        }) * 1000
+      ).toFixed(0),
+    ) // in m
     const updatedSubsection = await db.subsection.update({
       where: { id: subsection.id },
-      data: { lengthKm: calculatedLengthKm },
+      data: { lengthM: calculatedlengthM },
     })
-    console.log(
-      `updated subsection ${updatedSubsection.id} successfuly`,
-      updatedSubsection.lengthKm,
-    )
+    console.log(`updated subsection ${updatedSubsection.id} successfuly`, updatedSubsection.lengthM)
   })
   const subsubsections = await db.subsubsection.findMany()
   console.log("subsubsections successfully fetched")
   subsubsections.forEach(async (subsubsection) => {
-    const calculatedLengthKm =
+    const calculatedlengthM =
       subsubsection.type === "AREA"
-        ? 0.1 // AREAs are SF, they have no length so they get a default
-        : Number(length(lineString(subsubsection.geometry), { units: "kilometers" }).toFixed(3))
+        ? 100 // AREAs are SF, they have no length so they get a default
+        : Number(
+            (
+              length(lineString(subsubsection.geometry), {
+                units: "kilometers",
+              }) * 1000
+            ).toFixed(0),
+          ) // in m
     const updatedSubsubsection = await db.subsubsection.update({
       where: { id: subsubsection.id },
-      data: { lengthKm: calculatedLengthKm },
+      data: { lengthM: calculatedlengthM },
     })
     console.log(
       `updated subsubsection ${updatedSubsubsection.id} successfuly`,
-      updatedSubsubsection.lengthKm,
+      updatedSubsubsection.lengthM,
     )
   })
 }
 
-calculateLengthKm()
+calculateLengthM()

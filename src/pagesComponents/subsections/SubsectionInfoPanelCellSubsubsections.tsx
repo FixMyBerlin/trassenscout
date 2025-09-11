@@ -1,7 +1,7 @@
 import getStatsInfopanelSubsectionSubsubsections from "@/src/server/subsections/queries/getStatsInfopanelSubsectionSubsubsections"
 import { useQuery } from "@blitzjs/rpc"
 import { Fragment } from "react"
-import { formatGerKm, formatGerPercentage } from "./utils/formatNumericInfo"
+import { formatGerM, formatGerPercentage } from "./utils/formatNumericInfo"
 
 type Props = {
   subsectionSlug: string
@@ -21,9 +21,9 @@ export const SubsectionInfoPanelCellSubsubsections: React.FC<Props> = ({
       <div>
         <p className="font-bold">Planungsabschnitt</p>
         <p className="text-red-500">
-          {formatGerKm(subsection.sumLengthKmSubsubsections)} von {formatGerKm(subsection.lengthKm)}{" "}
-          ({formatGerPercentage(subsection.sumLengthKmSubsubsections / (subsection.lengthKm / 100))}
-          ) sind definiert
+          {formatGerM(subsection.sumLengthMSubsubsections)} von {formatGerM(subsection.lengthM)} (
+          {formatGerPercentage(subsection.sumLengthMSubsubsections / (subsection.lengthM / 100))})
+          sind definiert
         </p>
       </div>
       <div>
@@ -35,7 +35,7 @@ export const SubsectionInfoPanelCellSubsubsections: React.FC<Props> = ({
 
                 {Object.entries(value).map(([k, v]) => (
                   <div key={k}>
-                    <span>{k}</span>: <span>{k === "Summe" ? formatGerKm(v) : v}</span>
+                    <span>{k}</span>: <span>{k === "Summe" ? formatGerM(v) : v}</span>
                   </div>
                 ))}
               </Fragment>

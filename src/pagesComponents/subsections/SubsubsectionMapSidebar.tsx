@@ -102,7 +102,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   Länge
                 </th>
                 <td className="break-words px-3 py-4 text-sm text-gray-500">
-                  {formattedLength(subsubsection.lengthKm)}
+                  {formattedLength(subsubsection.lengthM)}
                 </td>
               </tr>
               {/* UNUSED */}

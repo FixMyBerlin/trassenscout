@@ -13,7 +13,7 @@ const Schema = ProjectSlugRequiredSchema
 type CostStructureCategory = {
   numberSubsubs: number | undefined
   costs?: number
-  sumLengthKm: number
+  sumLengthM: number
 }
 
 type CostStructure = {
@@ -24,9 +24,9 @@ type CostStructure = {
 
 type ProjectSubsectionsWithCostStructure = {
   accCosts: number
-  projectLengthKm: number
+  projectLengthM: number
   costStructure: CostStructure
-  subsubsectionsWithCostsLengthKm: number
+  subsubsectionsWithCostsLengthM: number
 }
 
 export default resolver.pipe(
@@ -44,7 +44,7 @@ export default resolver.pipe(
           select: {
             costEstimate: true,
             id: true,
-            lengthKm: true,
+            lengthM: true,
             type: true,
             isExistingInfra: true,
           },
@@ -58,7 +58,7 @@ export default resolver.pipe(
 
     const subsubsectionsWithCosts: Pick<
       Subsubsection,
-      "costEstimate" | "id" | "lengthKm" | "type" | "isExistingInfra"
+      "costEstimate" | "id" | "lengthM" | "type" | "isExistingInfra"
     >[] = []
 
     // filter all susbsubsections with costs OR BRF ("Bestandsregelführung")
@@ -78,8 +78,8 @@ export default resolver.pipe(
       (acc, a) => acc + (a?.costEstimate || 0),
       0,
     )
-    const subsubsectionsWithCostsLengthKm = subsubsectionsWithCosts?.reduce(
-      (acc, a) => acc + (a?.lengthKm || 0),
+    const subsubsectionsWithCostsLengthM = subsubsectionsWithCosts?.reduce(
+      (acc, a) => acc + (a?.lengthM || 0),
       0,
     )
 
@@ -97,24 +97,24 @@ export default resolver.pipe(
       "RF (kein Bestand)": {
         numberSubsubs: rfWithCosts?.length,
         costs: rfWithCosts?.reduce((acc, a) => acc + (a?.costEstimate || 0), 0),
-        sumLengthKm: rfWithCosts?.reduce((acc, a) => acc + (a?.lengthKm || 0), 0),
+        sumLengthM: rfWithCosts?.reduce((acc, a) => acc + (a?.lengthM || 0), 0),
       },
       SF: {
         numberSubsubs: sfWithCosts?.length,
         costs: sfWithCosts?.reduce((acc, a) => acc + (a?.costEstimate || 0), 0),
-        sumLengthKm: sfWithCosts?.reduce((acc, a) => acc + (a?.lengthKm || 0), 0),
+        sumLengthM: sfWithCosts?.reduce((acc, a) => acc + (a?.lengthM || 0), 0),
       },
       "RF (Bestand)": {
         numberSubsubs: brf?.length,
         costs: undefined,
-        sumLengthKm: brf?.reduce((acc, a) => acc + (a?.lengthKm || 0), 0),
+        sumLengthM: brf?.reduce((acc, a) => acc + (a?.lengthM || 0), 0),
       },
     }
 
     return {
       accCosts: subsubsectionsWithCostsAccCosts,
-      projectLengthKm: newSubsections.reduce((acc, s) => acc + (s.lengthKm ?? 0), 0),
-      subsubsectionsWithCostsLengthKm,
+      projectLengthM: newSubsections.reduce((acc, s) => acc + (s.lengthM ?? 0), 0),
+      subsubsectionsWithCostsLengthM,
       costStructure,
     } as ProjectSubsectionsWithCostStructure
   },

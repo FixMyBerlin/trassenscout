@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client"
 
-// lengthKm is NOT calculated here but arbitrary values to satisfy the schema
+// lengthM is NOT calculated here but arbitrary values to satisfy the schema
 
 export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "subsectionId">[] = [
   {
@@ -13,7 +13,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
       [13.357157800454104, 52.517204842057566],
     ],
     labelPos: "topLeft",
-    lengthKm: 0.487,
+    lengthM: 487,
     width: 3,
     costEstimate: 10_000,
     qualityLevelId: 1,
@@ -47,7 +47,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
       [13.33966126837197, 52.52233448255228],
     ],
     labelPos: "bottomLeft",
-    lengthKm: 0.922,
+    lengthM: 922,
     width: 3,
     costEstimate: null,
     qualityLevelId: 2,
@@ -80,7 +80,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
       [13.322641914435906, 52.5248506909908],
     ],
     labelPos: "left",
-    lengthKm: 1.293,
+    lengthM: 1293,
     width: 4,
     costEstimate: 20_000,
     qualityLevelId: null,
@@ -108,7 +108,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     type: "AREA",
     geometry: [13.329078172644188, 52.5225862734311],
     labelPos: "top",
-    lengthKm: 3,
+    lengthM: 3000,
     width: 2,
     costEstimate: 30_000,
     qualityLevelId: 4,
@@ -141,7 +141,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     type: "AREA",
     geometry: [13.350034203659277, 52.51973770393019],
     labelPos: "top",
-    lengthKm: 0.5,
+    lengthM: 500,
     width: 2,
     costEstimate: 10_000,
     qualityLevelId: null,
