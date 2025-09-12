@@ -45,6 +45,7 @@ export const ProtocolsFormAndTable = ({
     if (element) {
       element.scrollIntoView({
         behavior: "smooth",
+        block: "start",
       })
     }
   }
