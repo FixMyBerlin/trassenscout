@@ -36,9 +36,8 @@ export const ProtocolsTable = ({
   highlightId: number | null
 }) => {
   const projectSlug = useProjectSlug()
-  protocols.sort((a, b) => {
-    return a.date && b.date && a.date < b.date ? 1 : -1
-  })
+
+  if (!protocols.length) return null
 
   const spaceClasses = "px-3 py-2"
 
