@@ -1,10 +1,12 @@
 "use client"
 
 import { linkStyles } from "@/src/core/components/links"
+import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import getProtocols from "@/src/server/protocols/queries/getProtocols"
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid"
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { ProtocolsTable } from "./ProtocolsTable"
 import { useFilteredProtocols } from "./useFilteredProtocols"
@@ -16,6 +18,7 @@ type FilteredProtocolsProps = {
 }
 
 export const FilteredProtocols = ({ protocols, highlightId }: FilteredProtocolsProps) => {
+  const router = useRouter()
   const { filter, setFilter } = useFilters()
   const [searchterm, setSearchterm] = useState("")
 
@@ -26,6 +29,17 @@ export const FilteredProtocols = ({ protocols, highlightId }: FilteredProtocolsP
   useEffect(() => {
     setSearchterm(filter?.searchterm || "")
   }, [filter])
+
+  // Scroll to filter input and list when there's a search term from navigation
+  useEffect(() => {
+    if (filter?.searchterm && window.location.hash === "#filter") {
+      const filterElement = document.getElementById("protocol-filter")
+      if (filterElement) filterElement.scrollIntoView({ behavior: "smooth", block: "start" })
+      // Remove the hash so subsequent search updates don't trigger scroll
+      const urlWithoutHash = window.location.pathname + window.location.search
+      router.replace(urlWithoutHash as any)
+    }
+  }, [filter?.searchterm, router])
 
   const handleSearchtermInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target
@@ -43,7 +57,8 @@ export const FilteredProtocols = ({ protocols, highlightId }: FilteredProtocolsP
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     await setFilter({
-      searchterm: searchterm,
+      ...filter,
+      searchterm,
     })
   }
 
@@ -56,7 +71,7 @@ export const FilteredProtocols = ({ protocols, highlightId }: FilteredProtocolsP
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form id="protocol-filter" onSubmit={handleSubmit}>
         <div className="flex items-end gap-4">
           <div className="w-[300px]">
             <input
@@ -87,7 +102,11 @@ export const FilteredProtocols = ({ protocols, highlightId }: FilteredProtocolsP
       <p className="mt-4 text-sm text-gray-500">
         {filteredProtocols.length} Protokoll{filteredProtocols.length !== 1 ? "e" : ""}
       </p>
-      <ProtocolsTable protocols={filteredProtocols} highlightId={highlightId} />
+      {protocols.length === 0 ? (
+        <ZeroCase visible={protocols.length} name="Protokolle" />
+      ) : (
+        <ProtocolsTable protocols={filteredProtocols} highlightId={highlightId} />
+      )}
     </>
   )
 }

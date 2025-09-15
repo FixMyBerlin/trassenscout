@@ -1,3 +1,4 @@
+import { createProtocolFilterUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/createFilterUrl"
 import { ProtocolTypePill } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/ProtocolsTable"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { invoke } from "@/src/blitz-server"
@@ -90,7 +91,11 @@ export default async function ProtocolDetail({
             <ul className="list-inside list-none space-y-1">
               {protocol.protocolTopics.map((topic) => (
                 <li className="whitespace-nowrap text-gray-700" key={topic.id}>
-                  # {topic.title}
+                  <Link
+                    href={createProtocolFilterUrl(params.projectSlug, { searchterm: topic.title })}
+                  >
+                    #{topic.title}
+                  </Link>
                 </li>
               ))}
             </ul>
