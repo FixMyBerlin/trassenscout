@@ -3,7 +3,7 @@ import { layerColors } from "@/src/core/components/Map/layerColors"
 import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { featureCollection, lineString, point } from "@turf/helpers"
-import { bbox, distance, lineSlice, nearestPointOnLine } from "@turf/turf"
+import { bbox, cleanCoords, distance, lineSlice, nearestPointOnLine } from "@turf/turf"
 import type { Feature, Point, Position } from "geojson"
 import { useState } from "react"
 import { useFormContext } from "react-hook-form"
@@ -44,7 +44,11 @@ export const GeometryInputMap = ({ subsection }: Props) => {
     // )
     // console.log({ allSources, allLayers, cleanLayers })
     const clickedPoint = point(event.lngLat.toArray())
-    const nearestPoint = nearestPointOnLine(lineString(subsection.geometry), clickedPoint)
+
+    // nearestPointOnLine() requires a LineString without duplicate coordinates - this is a bug reported here: https://github.com/Turfjs/turf/issues/2808#event-3187358882
+    // when the fix is released we can remove cleanCoords()
+    const cleanedSubsection = cleanCoords(lineString(subsection.geometry))
+    const nearestPoint = nearestPointOnLine(cleanedSubsection, clickedPoint)
 
     setValue("geometry", nearestPoint.geometry.coordinates)
   }
@@ -60,7 +64,11 @@ export const GeometryInputMap = ({ subsection }: Props) => {
     // )
     // console.log({ allSources, allLayers, cleanLayers })
     const clickedPoint = point(event.lngLat.toArray())
-    const nearestPoint = nearestPointOnLine(lineString(subsection.geometry), clickedPoint)
+
+    // nearestPointOnLine() requires a LineString without duplicate coordinates - this is a bug reported here: https://github.com/Turfjs/turf/issues/2808#event-3187358882
+    // when the fix is released we can remove cleanCoords()
+    const cleanedSubsection = cleanCoords(lineString(subsection.geometry))
+    const nearestPoint = nearestPointOnLine(cleanedSubsection, clickedPoint)
     let newLine = undefined
 
     // First set point one and point two
@@ -71,7 +79,7 @@ export const GeometryInputMap = ({ subsection }: Props) => {
 
     if (!pointTwoOnLine) {
       setPointTwoOnLine(nearestPoint)
-      newLine = lineSlice(pointOneOnLine, nearestPoint, lineString(subsection.geometry))
+      newLine = lineSlice(pointOneOnLine, nearestPoint, cleanedSubsection)
       setValue("geometry", newLine.geometry.coordinates)
       return
     }
@@ -82,10 +90,10 @@ export const GeometryInputMap = ({ subsection }: Props) => {
 
     if (distanceNewPointToPointOne < distanceNewPointToPointTwo) {
       setPointOneOnLine(nearestPoint)
-      newLine = lineSlice(nearestPoint, pointTwoOnLine, lineString(subsection.geometry))
+      newLine = lineSlice(nearestPoint, pointTwoOnLine, cleanedSubsection)
     } else {
       setPointTwoOnLine(nearestPoint)
-      newLine = lineSlice(pointOneOnLine, nearestPoint, lineString(subsection.geometry))
+      newLine = lineSlice(pointOneOnLine, nearestPoint, cleanedSubsection)
     }
     newLine && setValue("geometry", newLine.geometry.coordinates)
   }

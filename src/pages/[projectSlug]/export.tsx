@@ -12,7 +12,7 @@ import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import { BlitzPage } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { featureCollection, lineString, multiLineString, point } from "@turf/helpers"
-import { bbox, lineSlice, nearestPointOnLine } from "@turf/turf"
+import { bbox, cleanCoords, lineSlice, nearestPointOnLine } from "@turf/turf"
 import { clsx } from "clsx"
 import type { Feature, LineString, Point } from "geojson"
 import { Suspense, useState } from "react"
@@ -67,6 +67,10 @@ export const ExportWithQuery = () => {
   )
   const geoJsonLinestring = lineString(subsections.map((subs) => subs.geometry).flat())
 
+  // nearestPointOnLine() requires a LineString without duplicate coordinates - this is a bug reported here: https://github.com/Turfjs/turf/issues/2808#event-3187358882
+  // when the fix is released we can remove cleanCoords()
+  const cleanedGeoJsonLinestring = cleanCoords(geoJsonLinestring)
+
   const dotsGeoms = subsections
     .map((subsection) => [subsection.geometry.at(0), subsection.geometry.at(-1)])
     .flat()
@@ -88,16 +92,16 @@ export const ExportWithQuery = () => {
       // const clickedPoint = point(event.lngLat.toArray())
       const clickedPoint = point([event.lngLat.lng, event.lngLat.lat])
       setPointOneClicked(point(clickedPoint.geometry.coordinates, { color: "#B68C06", radius: 8 }))
-      const nearestPoint = nearestPointOnLine(geoJsonLinestring, clickedPoint)
+      const nearestPoint = nearestPointOnLine(cleanedGeoJsonLinestring, clickedPoint)
       setPointOneLine(nearestPoint)
     } else {
       // const clickedPoint = point(event.lngLat.toArray())
       const clickedPoint = point([event.lngLat.lng, event.lngLat.lat])
       setPointTwoClicked(point(clickedPoint.geometry.coordinates, { color: "#B68C06", radius: 8 }))
-      const nearestPoint = nearestPointOnLine(geoJsonLinestring, clickedPoint)
+      const nearestPoint = nearestPointOnLine(cleanedGeoJsonLinestring, clickedPoint)
       setPointTwoLine(nearestPoint)
 
-      const newLine = lineSlice(pointOneLine, nearestPoint, geoJsonLinestring)
+      const newLine = lineSlice(pointOneLine, nearestPoint, cleanedGeoJsonLinestring)
       setNewLine(newLine)
     }
   }
@@ -133,7 +137,7 @@ export const ExportWithQuery = () => {
     }, [])
     setTestPoints(points.map((p) => point(p)))
     const testPointsOnLine = points.map((p) =>
-      point(nearestPointOnLine(geoJsonLinestring, p).geometry.coordinates),
+      point(nearestPointOnLine(cleanedGeoJsonLinestring, p).geometry.coordinates),
     )
     setTestPointsOnLine(testPointsOnLine)
 
@@ -142,7 +146,7 @@ export const ExportWithQuery = () => {
       const startPoint = pointPoint
       const endPoint = testPointsOnLine.at(index + 1)
       if (endPoint) {
-        const segment = lineSlice(startPoint, endPoint, geoJsonLinestring)
+        const segment = lineSlice(startPoint, endPoint, cleanedGeoJsonLinestring)
         setTestPontLineSegments((prev) => [...(prev || []), segment])
       }
     })
