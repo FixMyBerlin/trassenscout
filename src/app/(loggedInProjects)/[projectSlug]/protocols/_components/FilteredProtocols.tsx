@@ -90,6 +90,9 @@ export const FilteredProtocols = ({ protocols, highlightId }: FilteredProtocolsP
             <MagnifyingGlassIcon className="h-9 w-9 rounded-md bg-blue-500 p-2 text-white hover:bg-blue-800" />
           </button>
         </div>
+        <p className="mt-2 text-sm text-gray-500">
+          Tags, Titel, Inhalte und Abschnitte durchsuchen
+        </p>
       </form>
       <button
         type="button"

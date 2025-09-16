@@ -10,13 +10,17 @@ export const useFilteredProtocols = (protocols: Awaited<ReturnType<typeof getPro
 
   const filtered = protocols.filter((protocol) => {
     if (!searchterm) return protocol
+
+    // Remove hashtags from search term and trim any remaining whitespace
+    const cleanedSearchterm = searchterm.trim().toLowerCase().replace(/#/g, "").trim()
+
     return (
-      protocol.title?.toLowerCase().includes(searchterm.trim().toLowerCase()) ||
-      protocol.body?.toLowerCase().includes(searchterm.trim().toLowerCase()) ||
+      protocol.title?.toLowerCase().includes(cleanedSearchterm) ||
+      protocol.body?.toLowerCase().includes(cleanedSearchterm) ||
       protocol.protocolTopics.some((topic) =>
-        topic.title.toLowerCase().includes(searchterm.trim().toLowerCase()),
+        topic.title.toLowerCase().includes(cleanedSearchterm),
       ) ||
-      protocol.subsection?.slug.toLowerCase().includes(searchterm.trim().toLowerCase())
+      protocol.subsection?.slug.toLowerCase().includes(cleanedSearchterm)
     )
   })
 
