@@ -2,6 +2,7 @@
 
 import { FilteredProtocols } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/FilteredProtocols"
 import { ProtocolForm } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/ProtocolForm"
+import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/useFilters.nuqs"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { FORM_ERROR } from "@/src/core/components/forms"
 import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
@@ -28,6 +29,7 @@ export const ProtocolsFormAndTable = ({
   const [createProtocolMutation] = useMutation(createProtocol)
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdProtocolId, setCreatedProtocolId] = useState<null | number>(null)
+  const { setFilter } = useFilters()
 
   // Hide success message after 3 seconds
   useEffect(() => {
@@ -61,6 +63,7 @@ export const ProtocolsFormAndTable = ({
       refetch()
       setShowSuccess(true)
       setCreatedProtocolId(protocol.id)
+      setFilter({ searchterm: "" })
       scrollToElement("toast")
     } catch (error: any) {
       // todo ?
