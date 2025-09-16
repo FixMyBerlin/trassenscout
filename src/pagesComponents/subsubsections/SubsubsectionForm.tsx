@@ -70,6 +70,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
       />
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
+      {/* UNUSED */}
       {/* <LabeledTextField type="text" name="subTitle" label="Title" optional /> */}
       <GeometryInput />
       {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
@@ -88,6 +89,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           Maßnahmetypen verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
+      {/* UNUSED */}
       {/* <div className="flex items-end gap-5">
         <LabeledSelect
           name="subsubsectionInfraId"
@@ -102,6 +104,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           Führungsformen verwalten…
         </LinkWithFormDirtyConfirm>
       </div> */}
+      {/* UNUSED */}
       {/* <div>
         <LabeledCheckboxGroup
           scope="specialFeatures"
@@ -118,10 +121,11 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         </div>
       </div> */}
       <LabeledTextFieldCalculateLength
-        name="lengthKm"
+        name="lengthM"
         label="Länge"
         help="Dieser Wert kann manuell eingetragen oder aus den vorhandenen Geometrien berechnet werden."
       />
+      {/* UNUSED */}
       {/* <LabeledTextField
         inlineLeadingAddon="m"
         type="number"
@@ -138,7 +142,12 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label="Breite Bestand"
         optional
       /> */}
-      <LabeledTextField name="costEstimate" inlineLeadingAddon="€" label="Kostenschätzung" />
+      <LabeledTextField
+        name="costEstimate"
+        type="number"
+        inlineLeadingAddon="€"
+        label="Kostenschätzung"
+      />
       <div className="flex items-end gap-5">
         <LabeledSelect
           name="qualityLevelId"

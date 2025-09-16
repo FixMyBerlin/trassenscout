@@ -1,9 +1,4 @@
-import { quote } from "@/src/core/components/text/quote"
-import { statusTranslations } from "@/src/pagesComponents/invites/TeamInvitesTable"
-import {
-  INVITE_DAYS_TO_DELETION,
-  INVITE_DAYS_TO_EXPIRED,
-} from "@/src/server/invites/inviteSettings.const"
+import { INVITE_DAYS_TO_DELETION } from "@/src/server/invites/inviteSettings.const"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 
 export const TeamInviteDocumentation = () => {
@@ -33,10 +28,9 @@ export const TeamInviteDocumentation = () => {
               Editor-Rechte haben, eine Hinweis-E-Mail dazu.
             </li>
             <li>
-              Nach {INVITE_DAYS_TO_EXPIRED} Tagen werden die Einladungen ungültig und erhalten den
-              Status {quote(statusTranslations.EXPIRED)}.
+              Nach {INVITE_DAYS_TO_DELETION} Tagen werden Einladungen aus der Liste gelöscht. Damit
+              ist der Link in der Einladungs-E-Mail nicht mehr gültig.
             </li>
-            <li>Nach {INVITE_DAYS_TO_DELETION} Tagen werden Einladungen aus der Liste gelöscht.</li>
           </ul>
         </div>
       </div>

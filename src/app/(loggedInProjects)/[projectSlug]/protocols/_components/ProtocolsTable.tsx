@@ -1,17 +1,19 @@
 "use client"
 
+import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/useFilters.nuqs"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { Disclosure } from "@/src/core/components/Disclosure"
-import { Link } from "@/src/core/components/links"
+import { Link, linkStyles } from "@/src/core/components/links"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text"
-import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getProtocols from "@/src/server/protocols/queries/getProtocols"
+import { Disclosure, DisclosureButton, DisclosurePanel, Transition } from "@headlessui/react"
+import { ChevronDownIcon } from "@heroicons/react/20/solid"
+
 import { ProtocolType } from "@prisma/client"
 import clsx from "clsx"
 import { format } from "date-fns"
@@ -36,126 +38,152 @@ export const ProtocolsTable = ({
   highlightId: number | null
 }) => {
   const projectSlug = useProjectSlug()
-  protocols.sort((a, b) => {
-    return a.date && b.date && a.date < b.date ? 1 : -1
-  })
+  const { filter, setFilter } = useFilters()
+
+  if (!protocols.length) return null
 
   const spaceClasses = "px-3 py-2"
+
+  const handleTopicClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
+    const topic = event.currentTarget.value
+    if (topic) setFilter({ ...filter, searchterm: topic })
+  }
 
   return (
     <>
       <TableWrapper className="mt-7">
-        <div className="min-w-full divide-y divide-gray-300">
-          <div className="bg-gray-50 pr-5">
+        <div className="min-w-full divide-y divide-gray-300 text-sm text-gray-900">
+          <div className="bg-gray-50">
             <div className="grid grid-cols-3">
-              <div
-                className={clsx(
-                  spaceClasses,
-                  "text-left text-sm font-semibold uppercase text-gray-900",
-                )}
-              >
-                Datum
-              </div>
-              <div
-                className={clsx(
-                  spaceClasses,
-                  "text-left text-sm font-semibold uppercase text-gray-900",
-                )}
-              >
-                Titel
-              </div>
-              <div
-                className={clsx(
-                  spaceClasses,
-                  "text-left text-sm font-semibold uppercase text-gray-900",
-                )}
-              >
-                Planungsabschnitt
-              </div>
+              <div className={clsx(spaceClasses, "font-medium uppercase")}>Datum</div>
+              <div className={clsx(spaceClasses, "font-medium uppercase")}>Titel</div>
+              <div className={clsx(spaceClasses, "font-medium uppercase")}>Tags</div>
             </div>
           </div>
           <div className="divide-y divide-gray-200 bg-white">
-            {!!protocols.length ? (
-              protocols.map((protocol) => (
-                <div key={protocol.id}>
-                  <Disclosure
-                    classNamePanel="p-3 text-sm flex gap-4 items-start"
-                    classNameButton={clsx(
-                      "text-left hover:bg-gray-50",
-                      highlightId === protocol.id && "bg-green-50",
-                    )}
-                    button={
-                      <div className="grid flex-grow grid-cols-3">
-                        <div className={clsx(spaceClasses, "text-sm font-medium text-gray-900")}>
-                          {protocol.date
-                            ? format(new Date(protocol.date), "P", { locale: de })
-                            : "—"}
-                        </div>
-                        <div className={clsx(spaceClasses, "text-sm font-semibold text-blue-500")}>
-                          {protocol.title}
-                        </div>
-                        <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
-                          {protocol.subsection ? (
-                            <Link href={`/${projectSlug}/subsections/${protocol.subsection.slug}`}>
-                              {shortTitle(protocol.subsection.slug)}
-                            </Link>
+            {protocols.map((protocol) => (
+              <div key={protocol.id}>
+                <Disclosure>
+                  {({ open }) => (
+                    <>
+                      <div
+                        className={clsx(
+                          "group grid grid-cols-3 hover:bg-gray-50",
+                          highlightId === protocol.id && "bg-green-50",
+                        )}
+                      >
+                        <DisclosureButton
+                          className={clsx(
+                            "group col-span-2 text-left focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75",
+                            { "border-b border-gray-100": !open },
+                          )}
+                        >
+                          <div className="grid grid-cols-2">
+                            <div className={clsx(spaceClasses, "flex justify-start")}>
+                              <ChevronDownIcon className="mr-3 h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black group-data-[open]:rotate-180" />
+                              {protocol.date
+                                ? format(new Date(protocol.date), "P", { locale: de })
+                                : "—"}
+                            </div>
+                            <div className={clsx(spaceClasses, "font-semibold text-blue-500")}>
+                              {protocol.title}
+                            </div>
+                          </div>
+                        </DisclosureButton>
+                        <div className={spaceClasses}>
+                          {protocol.protocolTopics.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {protocol.protocolTopics.map((topic) => (
+                                <button
+                                  key={topic.id}
+                                  className={clsx(
+                                    linkStyles,
+                                    "inline-block rounded bg-gray-100 px-2 py-1 text-xs",
+                                  )}
+                                  onClick={handleTopicClick}
+                                  type="button"
+                                  value={topic.title}
+                                >
+                                  # {topic.title}
+                                </button>
+                              ))}
+                            </div>
                           ) : (
                             "-"
                           )}
                         </div>
                       </div>
-                    }
-                  >
-                    {protocol.body && (
-                      // for some reasons prose modifiers did not work here
-                      <Markdown
-                        className="rounded-md bg-purple-100 p-2 [&_ol]:ml-4 [&_ol]:list-decimal [&_ol]:leading-tight [&_p]:text-base [&_ul]:ml-4 [&_ul]:list-disc [&_ul]:leading-tight"
-                        markdown={protocol.body}
-                      />
-                    )}
-                    {!!protocol.protocolTopics.length && (
-                      <div>
-                        <p className="mb-4 font-medium text-gray-500">Tags</p>
-                        <ul className="list-inside list-none">
-                          {protocol.protocolTopics.map((topic) => (
-                            <li className="whitespace-nowrap" key={topic.id}>
-                              # {topic.title}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    <div>
-                      <div className="flex flex-col items-start gap-3">
-                        <IfUserCanEdit>
-                          <Link icon="edit" href={`/${projectSlug}/protocols/${protocol.id}/edit`}>
-                            Bearbeiten
-                          </Link>
-                        </IfUserCanEdit>
-                        <Link href={`/${projectSlug}/protocols/${protocol.id}`}>Detailansicht</Link>
-                      </div>
-                      <SuperAdminBox>
-                        <p className="text-xs">
-                          <span>Erstellt von </span>
-                          <ProtocolTypePill type={protocol.protocolAuthorType} />
-                          {protocol.protocolAuthorType === ProtocolType.USER && protocol.author && (
-                            <span>{getFullname(protocol.author)}</span>
+                      <Transition
+                        show={open}
+                        enter="transition duration-100 ease-out"
+                        enterFrom="transform scale-95 opacity-0"
+                        enterTo="transform scale-100 opacity-100"
+                        leave="transition duration-75 ease-out"
+                        leaveFrom="transform scale-100 opacity-100"
+                        leaveTo="transform scale-95 opacity-0"
+                      >
+                        <DisclosurePanel
+                          static
+                          className={clsx("flex items-start gap-4 overflow-clip p-3 text-sm", {
+                            "border-b border-gray-100": open,
+                          })}
+                        >
+                          {protocol.body && (
+                            // for some reasons prose modifiers did not work here
+                            <Markdown
+                              className="rounded-md bg-purple-100 p-2 [&_ol]:ml-4 [&_ol]:list-decimal [&_ol]:leading-tight [&_p]:text-base [&_ul]:ml-4 [&_ul]:list-disc [&_ul]:leading-tight"
+                              markdown={protocol.body}
+                            />
                           )}
-                        </p>
-                        <p className="mt-2 text-xs">
-                          <span>Zuletzt bearbeitet von </span>
-                          <ProtocolTypePill type={protocol.protocolUpdatedByType} />{" "}
-                          {protocol.protocolUpdatedByType === ProtocolType.USER &&
-                            protocol.updatedBy && <span>{getFullname(protocol.updatedBy)}</span>}
-                        </p>
-                      </SuperAdminBox>
-                    </div>
-                  </Disclosure>
-                </div>
-              ))
-            ) : (
-              <ZeroCase visible={protocols.length} name="Protokolle" />
-            )}
+                          {protocol.subsection && (
+                            <div>
+                              <p className="mb-2">Planungsabschnitt: </p>
+                              <Link href={`/${projectSlug}/abschnitte/${protocol.subsection.slug}`}>
+                                {shortTitle(protocol.subsection.slug)}
+                              </Link>
+                            </div>
+                          )}
+                          <div>
+                            <div className="flex flex-col items-start gap-3">
+                              <IfUserCanEdit>
+                                <Link
+                                  icon="edit"
+                                  href={`/${projectSlug}/protocols/${protocol.id}/edit`}
+                                >
+                                  Bearbeiten
+                                </Link>
+                              </IfUserCanEdit>
+                              <Link
+                                icon="details"
+                                href={`/${projectSlug}/protocols/${protocol.id}`}
+                              >
+                                Detailansicht
+                              </Link>
+                            </div>
+                            <SuperAdminBox>
+                              <p className="text-xs">
+                                <span>Erstellt von </span>
+                                <ProtocolTypePill type={protocol.protocolAuthorType} />
+                                {protocol.protocolAuthorType === ProtocolType.USER &&
+                                  protocol.author && <span>{getFullname(protocol.author)}</span>}
+                              </p>
+                              <p className="mt-2 text-xs">
+                                <span>Zuletzt bearbeitet von </span>
+                                <ProtocolTypePill type={protocol.protocolUpdatedByType} />{" "}
+                                {protocol.protocolUpdatedByType === ProtocolType.USER &&
+                                  protocol.updatedBy && (
+                                    <span>{getFullname(protocol.updatedBy)}</span>
+                                  )}
+                              </p>
+                            </SuperAdminBox>
+                          </div>
+                        </DisclosurePanel>
+                      </Transition>
+                    </>
+                  )}
+                </Disclosure>
+              </div>
+            ))}
           </div>
         </div>
       </TableWrapper>

@@ -1,5 +1,5 @@
 import {
-  formatGerKm,
+  formatGerM,
   formatGerPercentage,
 } from "@/src/pagesComponents/subsections/utils/formatNumericInfo"
 import getStatsInfopanelProjectSubsubsections from "@/src/server/projects/queries/getStatsInfopanelProjectSubsubsections"
@@ -20,10 +20,9 @@ export const ProjectInfoPanelCellSubsubsections: React.FC<Props> = ({ projectSlu
       <div>
         <p className="font-bold">Projekt</p>
         <p className="text-red-500">
-          {formatGerKm(project.sumLengthKmSubsubsections)} von{" "}
-          {formatGerKm(project.projectLengthKm)} (
-          {formatGerPercentage(project.sumLengthKmSubsubsections / (project.projectLengthKm / 100))}
-          ) sind definiert
+          {formatGerM(project.sumLengthMSubsubsections)} von {formatGerM(project.projectLengthM)} (
+          {formatGerPercentage(project.sumLengthMSubsubsections / (project.projectLengthM / 100))})
+          sind definiert
         </p>
       </div>
       {/* check if there are any subsubsections at all */}
@@ -38,7 +37,7 @@ export const ProjectInfoPanelCellSubsubsections: React.FC<Props> = ({ projectSlu
 
               {Object.entries(value).map(([k, v]) => (
                 <div key={k}>
-                  <span>{k}</span>: <span>{k === "Summe" ? formatGerKm(v) : v}</span>
+                  <span>{k}</span>: <span>{k === "Summe" ? formatGerM(v) : v}</span>
                 </div>
               ))}
             </Fragment>
@@ -54,7 +53,7 @@ export const ProjectInfoPanelCellSubsubsections: React.FC<Props> = ({ projectSlu
             {Object.entries(qualityLevelsWithCount).map(([key, value]) => (
               <li className="" key={key}>
                 <span className="font-bold uppercase">{value.slug}</span>{" "}
-                <span>({value.count})</span>: <span>{formatGerKm(value.lengthKm)}</span>,{" "}
+                <span>({value.count})</span>: <span>{formatGerM(value.lengthM)}</span>,{" "}
                 <span>{!value.percentage ? "-" : formatGerPercentage(value.percentage)}</span>
               </li>
             ))}

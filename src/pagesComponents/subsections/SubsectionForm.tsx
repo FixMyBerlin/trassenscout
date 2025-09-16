@@ -81,7 +81,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
         help="Wenn diese Option nicht aktiviert ist, wird der Abschnitt in der Karte der Projektansicht als ungeklärt (gestrichelte Linie) angezeigt."
         scope="isFinalRoute"
       />
-      <LabeledTextFieldCalculateLength name="lengthKm" label="Länge" />
+      <LabeledTextFieldCalculateLength name="lengthM" label="Länge" />
       <details>
         <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
         <div className="space-y-6">

@@ -262,7 +262,7 @@ model Subsection {
   geometry                      Json
   labelPos                      LabelPositionEnum    @default(top)
   description                   String?
-  lengthKm                      Float // Kilometer
+  lengthM                       Float // Meter
   priority                      PriorityEnum         @default(OPEN) // Priorität
   estimatedCompletionDateString String? // Jahresquartal der geplanten Fertigstellung als string Form "1-2023"
   isFinalRoute                  Boolean              @default(true) // Trassenverlauf des PA final geklärt
@@ -322,7 +322,7 @@ model Subsubsection {
   type            SubsubsectionTypeEnum @default(ROUTE) // Maßnahmen Geometrietyp - fka Führungsform - UNUSED
   geometry        Json
   labelPos        LabelPositionEnum     @default(top)
-  lengthKm        Float // Kilometer
+  lengthM         Float // Meter
   width           Float? // Meter - UNUSED
   widthExisting   Float? // Meter - UNUSED
   description     String? // Anmerkungen
@@ -390,6 +390,7 @@ model QualityLevel {
   //
   slug           String // shortTitle and URL Slug
   title          String
+  url            String?
   //
   project        Project         @relation(fields: [projectId], references: [id])
   projectId      Int

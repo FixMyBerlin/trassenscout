@@ -14,8 +14,7 @@ export default resolver.pipe(
       where: {
         project: { slug: projectSlug },
       },
-      // todo
-      // orderBy: { id: "desc" },
+      orderBy: { date: "desc" },
       include: {
         protocolTopics: true,
         subsection: true,

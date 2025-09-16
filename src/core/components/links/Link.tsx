@@ -1,3 +1,4 @@
+import { MagnifyingGlassPlusIcon } from "@heroicons/react/16/solid"
 import { ArrowDownTrayIcon, ListBulletIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { PencilIcon } from "@heroicons/react/24/outline"
 import { RouteUrlObject } from "blitz"
@@ -25,6 +26,7 @@ export const linkIcons = {
   download: <ArrowDownTrayIcon className="h-3.5 w-3.5" />,
   delete: <TrashIcon className="h-3.5 w-3.5" />,
   list: <ListBulletIcon className="h-3.5 w-3.5" />,
+  details: <MagnifyingGlassPlusIcon className="h-4 w-4" />,
 }
 
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(

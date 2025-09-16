@@ -9,7 +9,7 @@ import { GetSubsectionSchema } from "./getSubsection"
 type CostStructureCategory = {
   numberSubsubs: number | undefined
   costs?: number
-  sumLengthKm: number
+  sumLengthM: number
 }
 
 type CostStructure = {
@@ -22,7 +22,7 @@ type SubsectionWithAccCosts = Subsection & {
   subsubsections: Subsubsection[]
   accCosts: number
   subsubsectionsWithCostsLength: number
-  subsubsectionsWithCostsLengthKm: number
+  subsubsectionsWithCostsLengthM: number
 }
 
 type SubsectionWithCostStructure = {
@@ -46,7 +46,7 @@ export default resolver.pipe(
           select: {
             costEstimate: true,
             id: true,
-            lengthKm: true,
+            lengthM: true,
             type: true,
             isExistingInfra: true,
           },
@@ -70,10 +70,10 @@ export default resolver.pipe(
       (acc, a) => acc + (a?.costEstimate || 0),
       0,
     )
-    // sum of km of subsubsections with costs plus km of brf (existing infra, because they don't cost anything)
-    const subsubsectionsWithCostsLengthKm =
-      subsubsectionsWithCosts?.reduce((acc, a) => acc + (a?.lengthKm || 0), 0) ||
-      0 + (brf?.reduce((acc, a) => acc + (a?.lengthKm || 0), 0) || 0)
+    // sum of m of subsubsections with costs plus m of brf (existing infra, because they don't cost anything)
+    const subsubsectionsWithCostsLengthM =
+      subsubsectionsWithCosts?.reduce((acc, a) => acc + (a?.lengthM || 0), 0) ||
+      0 + (brf?.reduce((acc, a) => acc + (a?.lengthM || 0), 0) || 0)
 
     // RF with costs
     const rfWithCosts = newSubsection?.subsubsections?.filter(
@@ -88,17 +88,17 @@ export default resolver.pipe(
       RF: {
         numberSubsubs: rfWithCosts?.length,
         costs: rfWithCosts?.reduce((acc, a) => acc + (a?.costEstimate || 0), 0),
-        sumLengthKm: rfWithCosts?.reduce((acc, a) => acc + (a?.lengthKm || 0), 0),
+        sumLengthM: rfWithCosts?.reduce((acc, a) => acc + (a?.lengthM || 0), 0),
       },
       SF: {
         numberSubsubs: sfWithCosts?.length,
         costs: sfWithCosts?.reduce((acc, a) => acc + (a?.costEstimate || 0), 0),
-        sumLengthKm: sfWithCosts?.reduce((acc, a) => acc + (a?.lengthKm || 0), 0),
+        sumLengthM: sfWithCosts?.reduce((acc, a) => acc + (a?.lengthM || 0), 0),
       },
       BRF: {
         numberSubsubs: brf?.length,
         costs: undefined,
-        sumLengthKm: brf?.reduce((acc, a) => acc + (a?.lengthKm || 0), 0),
+        sumLengthM: brf?.reduce((acc, a) => acc + (a?.lengthM || 0), 0),
       },
     }
 
@@ -106,7 +106,7 @@ export default resolver.pipe(
       ...newSubsection,
       subsubsectionsWithCostsLength: subsubsectionsWithCosts?.length,
       accCosts: subsubsectionsWithCostsAccCosts,
-      subsubsectionsWithCostsLengthKm,
+      subsubsectionsWithCostsLengthM,
     }
 
     if (!subsection) throw new NotFoundError()

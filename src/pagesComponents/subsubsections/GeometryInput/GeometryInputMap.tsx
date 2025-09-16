@@ -3,7 +3,7 @@ import { layerColors } from "@/src/core/components/Map/layerColors"
 import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { featureCollection, lineString, point } from "@turf/helpers"
-import { bbox, distance, lineSlice, nearestPointOnLine } from "@turf/turf"
+import { bbox, cleanCoords, distance, lineSlice, nearestPointOnLine } from "@turf/turf"
 import type { Feature, Point, Position } from "geojson"
 import { useState } from "react"
 import { useFormContext } from "react-hook-form"
@@ -44,7 +44,11 @@ export const GeometryInputMap = ({ subsection }: Props) => {
     // )
     // console.log({ allSources, allLayers, cleanLayers })
     const clickedPoint = point(event.lngLat.toArray())
-    const nearestPoint = nearestPointOnLine(lineString(subsection.geometry), clickedPoint)
+
+    // nearestPointOnLine() requires a LineString without duplicate coordinates - this is a bug reported here: https://github.com/Turfjs/turf/issues/2808#event-3187358882
+    // when the fix is released we can remove cleanCoords()
+    const cleanedSubsection = cleanCoords(lineString(subsection.geometry))
+    const nearestPoint = nearestPointOnLine(cleanedSubsection, clickedPoint)
 
     setValue("geometry", nearestPoint.geometry.coordinates)
   }
@@ -60,7 +64,11 @@ export const GeometryInputMap = ({ subsection }: Props) => {
     // )
     // console.log({ allSources, allLayers, cleanLayers })
     const clickedPoint = point(event.lngLat.toArray())
-    const nearestPoint = nearestPointOnLine(lineString(subsection.geometry), clickedPoint)
+
+    // nearestPointOnLine() requires a LineString without duplicate coordinates - this is a bug reported here: https://github.com/Turfjs/turf/issues/2808#event-3187358882
+    // when the fix is released we can remove cleanCoords()
+    const cleanedSubsection = cleanCoords(lineString(subsection.geometry))
+    const nearestPoint = nearestPointOnLine(cleanedSubsection, clickedPoint)
     let newLine = undefined
 
     // First set point one and point two
@@ -71,7 +79,7 @@ export const GeometryInputMap = ({ subsection }: Props) => {
 
     if (!pointTwoOnLine) {
       setPointTwoOnLine(nearestPoint)
-      newLine = lineSlice(pointOneOnLine, nearestPoint, lineString(subsection.geometry))
+      newLine = lineSlice(pointOneOnLine, nearestPoint, cleanedSubsection)
       setValue("geometry", newLine.geometry.coordinates)
       return
     }
@@ -82,16 +90,19 @@ export const GeometryInputMap = ({ subsection }: Props) => {
 
     if (distanceNewPointToPointOne < distanceNewPointToPointTwo) {
       setPointOneOnLine(nearestPoint)
-      newLine = lineSlice(nearestPoint, pointTwoOnLine, lineString(subsection.geometry))
+      newLine = lineSlice(nearestPoint, pointTwoOnLine, cleanedSubsection)
     } else {
       setPointTwoOnLine(nearestPoint)
-      newLine = lineSlice(pointOneOnLine, nearestPoint, lineString(subsection.geometry))
+      newLine = lineSlice(pointOneOnLine, nearestPoint, cleanedSubsection)
     }
     newLine && setValue("geometry", newLine.geometry.coordinates)
   }
 
   return (
-    <div className="rounded border bg-gray-100 p-3 text-gray-700">
+    <div
+      aria-describedby="geometry-input-help"
+      className="rounded border bg-gray-100 p-3 text-gray-700"
+    >
       <h3 className="m-0 mb-3 flex items-center gap-1 text-sm font-medium">
         {geometryType === "ROUTE" ? "Liniengeometrie" : "Punktgeometrie"} zeichnen
       </h3>
@@ -101,7 +112,7 @@ export const GeometryInputMap = ({ subsection }: Props) => {
             bounds: sectionBounds,
             fitBoundsOptions: { padding: 100 },
           }}
-          id="preview"
+          id="preview-input"
           dots={[]}
           lines={subsectionFeature}
           onClick={
@@ -120,8 +131,8 @@ export const GeometryInputMap = ({ subsection }: Props) => {
                 data={featureCollection([pointOneOnLine, pointTwoOnLine].filter(Boolean))}
               />
               <Layer
-                id="nearestPoint-route"
-                key="nearestPoint-route"
+                id="nearestPoint-route-layer"
+                key="nearestPoint-route-layer"
                 source="nearestPoint-route"
                 type="circle"
                 paint={{
@@ -139,8 +150,8 @@ export const GeometryInputMap = ({ subsection }: Props) => {
                 data={lineString(geometry as RouteGeometry)}
               />
               <Layer
-                id="geometry"
-                key="geometry"
+                id="geometry-layer"
+                key="geometry-layer"
                 source="geometry"
                 type="line"
                 paint={{

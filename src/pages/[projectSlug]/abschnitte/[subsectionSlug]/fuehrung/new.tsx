@@ -2,7 +2,7 @@ import { Spinner } from "@/src/core/components/Spinner"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { longTitle, seoNewTitle } from "@/src/core/components/text"
+import { seoNewTitle } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
@@ -58,12 +58,12 @@ const NewSubsubsection = () => {
       <MetaTags noindex title={seoNewTitle("Maßnahme")} />
       <PageHeader
         title="Maßnahme hinzufügen"
-        subtitle={longTitle(subsection.slug)}
-        className="mt-12"
+        subtitle={subsection.slug}
+        className="mt-12 uppercase"
       />
 
       <SubsubsectionForm
-        initialValues={{ type: "AREA", labelPos: "bottom" }}
+        initialValues={{ type: "ROUTE", labelPos: "bottom" }}
         className="mt-10"
         submitText="Erstellen"
         schema={NewSubsubsectionSchema}

@@ -5,7 +5,7 @@ import { z } from "zod"
 export const SubsectionSchema = z.object({
   slug: SlugSchema,
   order: z.coerce.number(),
-  lengthKm: InputNumberSchema,
+  lengthM: InputNumberSchema,
   description: z.string().nullish(),
   start: z.string().min(1, { message: "Pflichtfeld. Mindestens 1 Zeichen." }),
   end: z.string().min(1, { message: "Pflichtfeld. Mindestens 1 Zeichen." }),

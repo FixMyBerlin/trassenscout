@@ -13,6 +13,7 @@ import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/g
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
+import { ArrowUpRightIcon } from "@heroicons/react/16/solid"
 import { clsx } from "clsx"
 import { UploadPreview } from "../uploads/UploadPreview"
 import { mapillaryLink } from "./utils/mapillaryLink"
@@ -33,7 +34,6 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
   })
 
   const mapillaryHref = mapillaryLink(subsubsection)
-
   return (
     <section className="overlflow-y-scroll h-full w-[55rem] overflow-x-hidden rounded-md border border-gray-400/10 bg-white p-3 drop-shadow-md">
       <div className="mt-3 flex items-center justify-between">
@@ -102,7 +102,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   Länge
                 </th>
                 <td className="break-words px-3 py-4 text-sm text-gray-500">
-                  {formattedLength(subsubsection.lengthKm)}
+                  {formattedLength(subsubsection.lengthM)}
                 </td>
               </tr>
               {/* UNUSED */}
@@ -129,7 +129,17 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   Ausbaustandard
                 </th>
                 <td className="break-words px-3 py-4 text-sm text-gray-500">
-                  {subsubsection.qualityLevel?.title || "k.A."}
+                  {subsubsection.qualityLevel?.url ? (
+                    <Link
+                      blank
+                      className="flex items-center gap-1"
+                      href={subsubsection.qualityLevel.url}
+                    >
+                      {subsubsection.qualityLevel.title} <ArrowUpRightIcon className="h-4 w-4" />
+                    </Link>
+                  ) : (
+                    subsubsection.qualityLevel?.title || "k.A."
+                  )}
                 </td>
               </tr>
               <tr>

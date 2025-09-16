@@ -5,11 +5,12 @@ import { LinkMail } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { roleTranslation } from "@/src/pagesComponents/memberships/roleTranslation.const"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
+import { INVITE_DAYS_TO_DELETION } from "@/src/server/invites/inviteSettings.const"
 import getInvites from "@/src/server/invites/queries/getInvites"
 import { useQuery } from "@blitzjs/rpc"
 import { InviteStatusEnum } from "@prisma/client"
 import { clsx } from "clsx"
-import { format } from "date-fns"
+import { endOfDay, format, formatDistanceStrict, subDays } from "date-fns"
 import { de } from "date-fns/locale"
 
 const statusColors: Record<InviteStatusEnum, string> = {
@@ -27,6 +28,8 @@ export const statusTranslations: Record<InviteStatusEnum, string> = {
 export const TeamInvitesTable = () => {
   const projectSlug = useProjectSlug()
   const [{ invites }] = useQuery(getInvites, { projectSlug })
+
+  const currentDate = endOfDay(new Date())
 
   return (
     <>
@@ -52,6 +55,9 @@ export const TeamInvitesTable = () => {
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                 Datum
               </th>
+              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                Gültigkeit
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
@@ -74,6 +80,16 @@ export const TeamInvitesTable = () => {
                 <td className="px-3 py-4 text-sm text-gray-500">{getFullname(invite.inviter)}</td>
                 <td className="px-3 py-4 text-sm text-gray-500">
                   {format(new Date(invite.updatedAt), "Pp", { locale: de })}
+                </td>
+                <td className="px-3 py-4 text-sm text-gray-500">
+                  {formatDistanceStrict(
+                    subDays(currentDate, INVITE_DAYS_TO_DELETION),
+                    invite.updatedAt,
+                    {
+                      locale: de,
+                      unit: "day",
+                    },
+                  )}
                 </td>
               </tr>
             ))}

@@ -2,7 +2,7 @@ import db from "@/db"
 import { guardedCreateSystemLogEntry } from "@/src/server/systemLogEntries/create/guardedCreateSystemLogEntry"
 import { calculateComparisonDate } from "../../_utils/calculateComparisonDate"
 
-const LOGENTRIES_DAYS_TO_DELETION = 90
+const LOGENTRIES_DAYS_TO_DELETION = 180
 
 export async function GET(request: Request) {
   const apiKey = new URL(request.url).searchParams.get("apiKey")

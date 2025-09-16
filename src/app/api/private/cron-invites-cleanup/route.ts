@@ -1,8 +1,5 @@
 import db from "@/db"
-import {
-  INVITE_DAYS_TO_DELETION,
-  INVITE_DAYS_TO_EXPIRED,
-} from "@/src/server/invites/inviteSettings.const"
+import { INVITE_DAYS_TO_DELETION } from "@/src/server/invites/inviteSettings.const"
 import { guardedCreateSystemLogEntry } from "@/src/server/systemLogEntries/create/guardedCreateSystemLogEntry"
 import { endOfDay, subDays } from "date-fns"
 
@@ -23,20 +20,24 @@ const deleteOldInvites = async () => {
   return deletedInvitesCount
 }
 
-const expireOldInvites = async () => {
-  const compareDate = calculateComparisonDate(INVITE_DAYS_TO_EXPIRED)
-  // Update records where createdAt is older than the calculated date
-  const { count: expiredInvitesCount } = await db.invite.updateMany({
-    where: {
-      createdAt: { lt: compareDate },
-      status: "PENDING",
-    },
-    data: {
-      status: "EXPIRED",
-    },
-  })
-  return expiredInvitesCount
-}
+// Currently disabled to prevent duplicate invite conflicts:
+// Users cannot be re-invited while expired invites remain in the database
+// In the future we might want to re-enable invite expiration feature
+
+// const expireOldInvites = async () => {
+//   const compareDate = calculateComparisonDate(INVITE_DAYS_TO_EXPIRED)
+//   // Update records where createdAt is older than the calculated date
+//   const { count: expiredInvitesCount } = await db.invite.updateMany({
+//     where: {
+//       createdAt: { lt: compareDate },
+//       status: "PENDING",
+//     },
+//     data: {
+//       status: "EXPIRED",
+//     },
+//   })
+//   return expiredInvitesCount
+// }
 
 export async function GET(request: Request) {
   const apiKey = new URL(request.url).searchParams.get("apiKey")
@@ -45,7 +46,7 @@ export async function GET(request: Request) {
   }
 
   const deletedInvitesCount = await deleteOldInvites()
-  const expiredInvitesCount = await expireOldInvites()
+  // const expiredInvitesCount = await expireOldInvites()
 
   await guardedCreateSystemLogEntry({
     apiKey,
@@ -53,7 +54,7 @@ export async function GET(request: Request) {
     message: "CRON invite-cleanup",
     context: {
       deletedInvites: { INVITE_DAYS_TO_DELETION, deletedInvitesCount },
-      expiredInvites: { INVITE_DAYS_TO_EXPIRED, expiredInvitesCount },
+      // expiredInvites: { INVITE_DAYS_TO_EXPIRED, expiredInvitesCount },
     },
   })
 

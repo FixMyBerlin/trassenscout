@@ -9,7 +9,7 @@ import { getSurveyCategoryOptions } from "@/src/survey-responses/utils/getSurvey
 import getSurvey from "@/src/surveys/queries/getSurvey"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { MagnifyingGlassCircleIcon } from "@heroicons/react/20/solid"
+import { MagnifyingGlassIcon } from "@heroicons/react/20/solid"
 import { XMarkIcon } from "@heroicons/react/24/outline"
 import { Operator } from "@prisma/client"
 import { clsx } from "clsx"
@@ -310,15 +310,15 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                   }
                 />
               </div>
-              <button type="button" className="h-full pb-2">
-                <MagnifyingGlassCircleIcon className="h-6 w-6 text-blue-500 hover:text-blue-800" />
+              <button type="button" className="h-full">
+                <MagnifyingGlassIcon className="h-9 w-9 rounded-md bg-blue-500 p-2 text-white hover:bg-blue-800" />
               </button>
             </div>
           </div>
         </form>
         <button
           type="button"
-          className={clsx(linkStyles, "mt-4 flex items-center gap-2 px-4 pb-2 font-semibold")}
+          className={clsx(linkStyles, "mt-4 flex items-center gap-2 px-4 pb-2")}
           onClick={handleFilterReset}
         >
           <XMarkIcon className="h-4 w-4" />

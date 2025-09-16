@@ -11,12 +11,12 @@ import { NotFoundError } from "blitz"
 export const Schema = ProjectSlugRequiredSchema
 
 type ProjectSubsectionsWithCostStructure = {
-  projectLengthKm: number
+  projectLengthM: number
   numberOfSubsections: number
   networHierarchiesSubsectionsWithCount: {
     title: string
     count: number
-    lengthKm: number
+    lengthM: number
   }[]
 }
 
@@ -52,14 +52,14 @@ export default resolver.pipe(
       return {
         title: level.title,
         count: newSubsections.filter((sub) => sub.networkHierarchyId === level.id).length,
-        lengthKm: newSubsections
+        lengthM: newSubsections
           .filter((sub) => sub.networkHierarchyId === level.id)
-          .reduce((acc, a) => acc + (a?.lengthKm || 0), 0),
+          .reduce((acc, a) => acc + (a?.lengthM || 0), 0),
       }
     })
 
     return {
-      projectLengthKm: newSubsections.reduce((acc, s) => acc + (s.lengthKm ?? 0), 0),
+      projectLengthM: newSubsections.reduce((acc, s) => acc + (s.lengthM ?? 0), 0),
       numberOfSubsections: newSubsections.length,
       networHierarchiesSubsectionsWithCount: networHierarchiesSubsectionsCount,
     } as ProjectSubsectionsWithCostStructure

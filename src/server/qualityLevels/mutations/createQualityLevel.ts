@@ -5,16 +5,16 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
-import { OperatorSchema } from "@/src/server/operators/schema"
 import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug"
+import { QualityLevelSchema } from "@/src/server/qualityLevels/schema"
 import { resolver } from "@blitzjs/rpc"
 
-const CreateOperatorSchema = ProjectSlugRequiredSchema.merge(
-  OperatorSchema.omit({ projectId: true }),
+const CreateQualityLevelSchema = ProjectSlugRequiredSchema.merge(
+  QualityLevelSchema.omit({ projectId: true }),
 )
 
 export default resolver.pipe(
-  resolver.zod(CreateOperatorSchema),
+  resolver.zod(CreateQualityLevelSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ projectSlug, ...input }) => {
     return await db.qualityLevel.create({
