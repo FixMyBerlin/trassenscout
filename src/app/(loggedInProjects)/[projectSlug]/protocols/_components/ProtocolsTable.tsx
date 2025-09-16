@@ -53,7 +53,7 @@ export const ProtocolsTable = ({
     <>
       <TableWrapper className="mt-7">
         <div className="min-w-full divide-y divide-gray-300 text-sm text-gray-900">
-          <div className="bg-gray-50 pr-5">
+          <div className="bg-gray-50">
             <div className="grid grid-cols-3">
               <div className={clsx(spaceClasses, "font-medium uppercase")}>Datum</div>
               <div className={clsx(spaceClasses, "font-medium uppercase")}>Titel</div>
@@ -74,12 +74,12 @@ export const ProtocolsTable = ({
                       >
                         <DisclosureButton
                           className={clsx(
-                            "group col-span-2 flex w-full items-center justify-between text-left focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75",
+                            "group col-span-2 text-left focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75",
                             { "border-b border-gray-100": !open },
                           )}
                         >
-                          <div className="grid flex-grow grid-cols-2">
-                            <div className={clsx("flex justify-start", spaceClasses)}>
+                          <div className="grid grid-cols-2">
+                            <div className={clsx(spaceClasses, "flex justify-start")}>
                               <ChevronDownIcon className="mr-3 h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black group-data-[open]:rotate-180" />
                               {protocol.date
                                 ? format(new Date(protocol.date), "P", { locale: de })
