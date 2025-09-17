@@ -90,6 +90,7 @@ const NewUploadWithQuery = () => {
       externalUrl: url,
       projectSlug,
       subsectionId: null, // Users can add this in step 2 /edit
+      summary: null, // Users can add this in step 2 /edit
       subsubsectionId: subsubsectionIdFromParam,
     })
 

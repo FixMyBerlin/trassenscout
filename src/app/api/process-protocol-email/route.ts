@@ -1,5 +1,5 @@
 import { getBlitzContext } from "@/src/blitz-server"
-import { gpt41Mini, gpt5Mini } from "@/src/models"
+import { gpt5Mini, model } from "@/src/models"
 import { generateObject, NoObjectGeneratedError } from "ai"
 import db from "db"
 import { Langfuse } from "langfuse"
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     let firstStageResult
     try {
       const result = await generateObject({
-        model: gpt41Mini,
+        model: model,
         output: "enum",
         enum: [...projects.map((p) => p.id.toString()), "no project"],
         experimental_telemetry: {

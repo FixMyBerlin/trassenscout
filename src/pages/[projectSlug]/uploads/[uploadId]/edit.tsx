@@ -76,6 +76,7 @@ const EditUploadWithQuery = () => {
           onSubmit={handleSubmit}
           subsections={subsections}
           isSubsubsectionUpload={isSubsubsectionUpload}
+          uploadId={upload.id}
         />
       </div>
 
