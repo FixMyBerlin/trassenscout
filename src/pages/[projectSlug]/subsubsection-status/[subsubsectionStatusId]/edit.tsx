@@ -36,6 +36,7 @@ const EditSubsubsectionsStatusWithQuery = () => {
     try {
       const updated = await updateSubsubsectionStatusMutation({
         id: subsubsectionStatus.id,
+        projectSlug,
         ...values,
       })
       await setQueryData(updated)
