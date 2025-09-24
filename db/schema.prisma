@@ -323,7 +323,7 @@ model Subsubsection {
   geometry        Json
   labelPos        LabelPositionEnum     @default(top)
   lengthM         Float // Meter
-  width           Float? // Meter - UNUSED
+  width           Float? // Meter
   widthExisting   Float? // Meter - UNUSED
   description     String? // Anmerkungen
   mapillaryKey    String?

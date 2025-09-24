@@ -13,6 +13,7 @@ import { LabeledRadiobuttonGroupLabelPos } from "@/src/pagesComponents/subsubsec
 import { getUserSelectOptions } from "@/src/pagesComponents/users/utils/getUserSelectOptions"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getQualityLevelsWithCount from "@/src/server/qualityLevels/queries/getQualityLevelsWithCount"
+import getSubsubsectionInfrasWithCount from "@/src/server/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
 import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
 import getSubsubsectionTasksWithCount from "@/src/server/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
 import { Routes } from "@blitzjs/next"
@@ -46,13 +47,13 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       return [task.id, task.title] as [number, string]
     }),
   ]
-  // const [{ subsubsectionInfras }] = useQuery(getSubsubsectionInfrasWithCount, { projectSlug })
-  // const subsubsectionInfraOptions: [number | string, string][] = [
-  //   ["", "-"],
-  //   ...subsubsectionInfras.map((infra) => {
-  //     return [infra.id, infra.title] as [number, string]
-  //   }),
-  // ]
+  const [{ subsubsectionInfras }] = useQuery(getSubsubsectionInfrasWithCount, { projectSlug })
+  const subsubsectionInfraOptions: [number | string, string][] = [
+    ["", "-"],
+    ...subsubsectionInfras.map((infra) => {
+      return [infra.id, infra.title] as [number, string]
+    }),
+  ]
   // const [{ subsubsectionSpecials }] = useQuery(getSubsubsectionSpecialsWithCount, { projectSlug })
   // const subsubsectionSpecialOptions = subsubsectionSpecials.map((special) => {
   //   return {
@@ -89,21 +90,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           Maßnahmetypen verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-      {/* UNUSED */}
-      {/* <div className="flex items-end gap-5">
-        <LabeledSelect
-          name="subsubsectionInfraId"
-          label="Führungsform"
-          options={subsubsectionInfraOptions}
-          outerProps={{ className: "grow" }}
-        />
-        <LinkWithFormDirtyConfirm
-          href={Routes.SubsubsectionInfrasPage({ projectSlug })}
-          className="py-2"
-        >
-          Führungsformen verwalten…
-        </LinkWithFormDirtyConfirm>
-      </div> */}
+
       {/* UNUSED */}
       {/* <div>
         <LabeledCheckboxGroup
@@ -125,15 +112,16 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label="Länge"
         help="Dieser Wert kann manuell eingetragen oder aus den vorhandenen Geometrien berechnet werden."
       />
-      {/* UNUSED */}
-      {/* <LabeledTextField
+      <LabeledTextField
         inlineLeadingAddon="m"
         type="number"
         step="0.01"
         name="width"
-        label="Breite RVA"
+        label="Breite"
         optional
       />
+      {/* UNUSED */}
+      {/*
       <LabeledTextField
         inlineLeadingAddon="m"
         type="number"
@@ -156,6 +144,20 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           options={qualityLevelOptions}
           outerProps={{ className: "grow" }}
         />
+        <div className="flex items-end gap-5">
+          <LabeledSelect
+            name="subsubsectionInfraId"
+            label="Führungsform"
+            options={subsubsectionInfraOptions}
+            outerProps={{ className: "grow" }}
+          />
+          <LinkWithFormDirtyConfirm
+            href={Routes.SubsubsectionInfrasPage({ projectSlug })}
+            className="py-2"
+          >
+            Führungsformen verwalten…
+          </LinkWithFormDirtyConfirm>
+        </div>
         <LinkWithFormDirtyConfirm href={Routes.QualityLevelsPage({ projectSlug })} className="py-2">
           Ausbaustandards verwalten…
         </LinkWithFormDirtyConfirm>
