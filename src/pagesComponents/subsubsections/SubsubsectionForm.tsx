@@ -179,6 +179,12 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         </LinkWithFormDirtyConfirm>
       </div>
       <LabeledTextField
+        help="Format: Datum im Format JJJJ, beispielsweise '2026'"
+        name="estimatedConstructionDateString"
+        label="Angestrebtes Baujahr"
+        optional
+      />
+      <LabeledTextField
         type="text"
         name="mapillaryKey"
         label="Mapillary Bild Referenz"
@@ -318,7 +324,6 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           optional
           max={100}
         />
-
         <LabeledTextField
           type="date"
           name="estimatedCompletionDate"

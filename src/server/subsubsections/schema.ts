@@ -57,6 +57,10 @@ export const SubsubsectionSchema = z.object({
   planningPeriod: InputNumberOrNullSchema,
   constructionPeriod: InputNumberOrNullSchema,
   estimatedCompletionDate: NullableDateSchema,
+  estimatedConstructionDateString: z
+    .string()
+    .regex(/^(\d{4}|)$/, { message: "Datum im Format JJJJ" })
+    .nullish(),
   planningCosts: InputNumberOrNullSchema,
   deliveryCosts: InputNumberOrNullSchema,
   constructionCosts: InputNumberOrNullSchema,
