@@ -131,6 +131,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         optional
       /> */}
       <LabeledTextField
+        optional
         name="costEstimate"
         type="number"
         inlineLeadingAddon="€"
