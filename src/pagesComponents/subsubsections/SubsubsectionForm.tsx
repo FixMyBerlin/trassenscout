@@ -2,6 +2,7 @@ import {
   Form,
   FormProps,
   LabeledCheckbox,
+  LabeledRadiobuttonGroup,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
@@ -90,7 +91,16 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           Maßnahmetypen verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-
+      <LabeledRadiobuttonGroup
+        label="Lage"
+        scope="location"
+        items={[
+          { value: "URBAN", label: "innerorts" },
+          { value: "RURAL", label: "außerorts" },
+          { value: "", label: "keine Angabe" },
+        ]}
+        classNameItemWrapper="flex gap-5 !space-y-0 items-center"
+      />
       {/* UNUSED */}
       {/* <div>
         <LabeledCheckboxGroup

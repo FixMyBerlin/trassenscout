@@ -12,11 +12,17 @@ import createSubsubsection from "@/src/server/subsubsections/mutations/createSub
 import { SubsubsectionSchema } from "@/src/server/subsubsections/schema"
 import { Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
+import { LocationEnum } from "@prisma/client"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { z } from "zod"
 
-const NewSubsubsectionSchema = SubsubsectionSchema.omit({ subsectionId: true })
+const NewSubsubsectionSchema = SubsubsectionSchema.omit({
+  subsectionId: true,
+  location: true,
+}).extend({
+  location: z.union([z.nativeEnum(LocationEnum), z.literal("")]),
+})
 
 const NewSubsubsection = () => {
   const router = useRouter()
@@ -36,6 +42,7 @@ const NewSubsubsection = () => {
         ...values,
         projectSlug,
         subsectionId: subsection!.id,
+        location: values.location === "" ? null : values.location,
         trafficLoadDate: values.trafficLoadDate ? new Date(values.trafficLoadDate) : null,
         estimatedCompletionDate: values.estimatedCompletionDate
           ? new Date(values.estimatedCompletionDate)
@@ -63,7 +70,7 @@ const NewSubsubsection = () => {
       />
 
       <SubsubsectionForm
-        initialValues={{ type: "ROUTE", labelPos: "bottom" }}
+        initialValues={{ type: "ROUTE", labelPos: "bottom", location: "" }}
         className="mt-10"
         submitText="Erstellen"
         schema={NewSubsubsectionSchema}
