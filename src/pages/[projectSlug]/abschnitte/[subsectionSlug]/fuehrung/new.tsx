@@ -7,6 +7,7 @@ import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { SubsubsectionForm } from "@/src/pagesComponents/subsubsections/SubsubsectionForm"
+import { SubsubsectionSchemaAdminBox } from "@/src/pagesComponents/subsubsections/SubsubsectionSchemaAdminBox"
 import getSubsection from "@/src/server/subsections/queries/getSubsection"
 import createSubsubsection from "@/src/server/subsubsections/mutations/createSubsubsection"
 import { SubsubsectionSchema } from "@/src/server/subsubsections/schema"
@@ -76,6 +77,8 @@ const NewSubsubsection = () => {
         schema={NewSubsubsectionSchema}
         onSubmit={handleSubmit}
       />
+
+      <SubsubsectionSchemaAdminBox className="mt-8" projectSlug={projectSlug} />
     </>
   )
 }
