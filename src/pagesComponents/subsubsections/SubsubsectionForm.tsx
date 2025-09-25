@@ -72,12 +72,19 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label={subsubsectionFieldTranslations.slug}
         help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
       />
-      <LabeledTextareaField name="description" label={`${subsubsectionFieldTranslations.description} (Markdown)`} optional />
+      <LabeledTextareaField
+        name="description"
+        label={`${subsubsectionFieldTranslations.description} (Markdown)`}
+        optional
+      />
       {/* UNUSED */}
       {/* <LabeledTextField type="text" name="subTitle" label="Title" optional /> */}
       <GeometryInput />
       {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
-      <LabeledCheckbox scope="isExistingInfra" label={subsubsectionFieldTranslations.isExistingInfra} />
+      <LabeledCheckbox
+        scope="isExistingInfra"
+        label={subsubsectionFieldTranslations.isExistingInfra}
+      />
       <div className="flex items-end gap-5">
         <LabeledSelect
           name="subsubsectionTaskId"
@@ -156,22 +163,22 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           options={qualityLevelOptions}
           outerProps={{ className: "grow" }}
         />
-        <div className="flex items-end gap-5">
-          <LabeledSelect
-            name="subsubsectionInfraId"
-            label={subsubsectionFieldTranslations.subsubsectionInfraId}
-            options={subsubsectionInfraOptions}
-            outerProps={{ className: "grow" }}
-          />
-          <LinkWithFormDirtyConfirm
-            href={Routes.SubsubsectionInfrasPage({ projectSlug })}
-            className="py-2"
-          >
-            Führungsformen verwalten…
-          </LinkWithFormDirtyConfirm>
-        </div>
         <LinkWithFormDirtyConfirm href={Routes.QualityLevelsPage({ projectSlug })} className="py-2">
           Ausbaustandards verwalten…
+        </LinkWithFormDirtyConfirm>
+      </div>
+      <div className="flex items-end gap-5">
+        <LabeledSelect
+          name="subsubsectionInfraId"
+          label={subsubsectionFieldTranslations.subsubsectionInfraId}
+          options={subsubsectionInfraOptions}
+          outerProps={{ className: "grow" }}
+        />
+        <LinkWithFormDirtyConfirm
+          href={Routes.SubsubsectionInfrasPage({ projectSlug })}
+          className="py-2"
+        >
+          Führungsformen verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
       <div className="flex items-end gap-5">
