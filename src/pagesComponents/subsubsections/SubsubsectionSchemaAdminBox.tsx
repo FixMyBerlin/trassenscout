@@ -88,7 +88,7 @@ export const SubsubsectionSchemaAdminBox = ({
               <div className="ml-2">
                 {qualityLevels.map((ql) => (
                   <div key={ql.id}>
-                    ID: {ql.id} - SLUG: "{ql.slug}" - Title: "{ql.title}"
+                    ID: {ql.id} - SLUG: &quot;{ql.slug}&quot; - Title: &quot;{ql.title}&quot;
                   </div>
                 ))}
               </div>
@@ -99,7 +99,8 @@ export const SubsubsectionSchemaAdminBox = ({
               <div className="ml-2">
                 {subsubsectionStatuss.map((status) => (
                   <div key={status.id}>
-                    ID: {status.id} - SLUG: "{status.slug}" - Title: "{status.title}"
+                    ID: {status.id} - SLUG: &quot;{status.slug}&quot; - Title: &quot;{status.title}
+                    &quot;
                   </div>
                 ))}
               </div>
@@ -110,7 +111,7 @@ export const SubsubsectionSchemaAdminBox = ({
               <div className="ml-2">
                 {subsubsectionTasks.map((task) => (
                   <div key={task.id}>
-                    ID: {task.id} - SLUG: "{task.slug}" - Title: "{task.title}"
+                    ID: {task.id} - SLUG: &quot;{task.slug}&quot; - Title: &quot;{task.title}&quot;
                   </div>
                 ))}
               </div>
@@ -121,7 +122,8 @@ export const SubsubsectionSchemaAdminBox = ({
               <div className="ml-2">
                 {subsubsectionInfras.map((infra) => (
                   <div key={infra.id}>
-                    ID: {infra.id} - SLUG: "{infra.slug}" - Title: "{infra.title}"
+                    ID: {infra.id} - SLUG: &quot;{infra.slug}&quot; - Title: &quot;{infra.title}
+                    &quot;
                   </div>
                 ))}
               </div>
@@ -132,7 +134,7 @@ export const SubsubsectionSchemaAdminBox = ({
               <div className="ml-2">
                 {subsubsectionSpecials.map((special) => (
                   <div key={special.id}>
-                    ID: {special.id} - Title: "{special.title}"
+                    ID: {special.id} - Title: &quot;{special.title}&quot;
                   </div>
                 ))}
               </div>
