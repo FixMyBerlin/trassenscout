@@ -2,6 +2,7 @@
 
 import { Link } from "@/src/core/components/links"
 import { ProtocolEmailWithRelations } from "@/src/server/protocol-emails/queries/getProtocolEmails"
+import { SparklesIcon } from "@heroicons/react/16/solid"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
@@ -136,13 +137,15 @@ export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
                   "—"
                 )}
               </td>
-              <td className="space-x-2 px-6 py-4 text-right text-sm font-medium">
+              <td className="flex flex-col items-start gap-2 px-6 py-4 text-sm font-medium">
                 <button
+                  type="button"
                   onClick={() => handleProcessEmail(email.id)}
                   disabled={processing === email.id}
-                  className="text-blue-600 hover:text-blue-800 disabled:opacity-50"
+                  className="flex items-center gap-1 rounded bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700 disabled:opacity-50"
                 >
-                  {processing === email.id ? "Verarbeite..." : "Prozessieren"}
+                  <SparklesIcon className="h-3 w-3" />
+                  {processing === email.id ? "Verarbeite..." : "Mit KI prozessieren"}
                 </button>
                 <Link
                   href={`/admin/protocol-emails/${email.id}/edit`}
