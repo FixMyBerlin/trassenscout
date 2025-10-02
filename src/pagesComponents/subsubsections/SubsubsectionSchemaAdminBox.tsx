@@ -1,4 +1,5 @@
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
+import { quote } from "@/src/core/components/text/quote"
 import {
   fieldDataTypes,
   requiredFields,
@@ -88,7 +89,7 @@ export const SubsubsectionSchemaAdminBox = ({
               <div className="ml-2">
                 {qualityLevels.map((ql) => (
                   <div key={ql.id}>
-                    ID: {ql.id} - SLUG: &quot;{ql.slug}&quot; - Title: &quot;{ql.title}&quot;
+                    ID: {ql.id} - SLUG: {quote(ql.slug)} - Title: {quote(ql.title)}
                   </div>
                 ))}
               </div>
@@ -99,8 +100,7 @@ export const SubsubsectionSchemaAdminBox = ({
               <div className="ml-2">
                 {subsubsectionStatuss.map((status) => (
                   <div key={status.id}>
-                    ID: {status.id} - SLUG: &quot;{status.slug}&quot; - Title: &quot;{status.title}
-                    &quot;
+                    ID: {status.id} - SLUG: {quote(status.slug)} - Title: {quote(status.title)}
                   </div>
                 ))}
               </div>
@@ -111,7 +111,7 @@ export const SubsubsectionSchemaAdminBox = ({
               <div className="ml-2">
                 {subsubsectionTasks.map((task) => (
                   <div key={task.id}>
-                    ID: {task.id} - SLUG: &quot;{task.slug}&quot; - Title: &quot;{task.title}&quot;
+                    ID: {task.id} - SLUG: {quote(task.slug)} - Title: {quote(task.title)}
                   </div>
                 ))}
               </div>
@@ -122,8 +122,7 @@ export const SubsubsectionSchemaAdminBox = ({
               <div className="ml-2">
                 {subsubsectionInfras.map((infra) => (
                   <div key={infra.id}>
-                    ID: {infra.id} - SLUG: &quot;{infra.slug}&quot; - Title: &quot;{infra.title}
-                    &quot;
+                    ID: {infra.id} - SLUG: {quote(infra.slug)} - Title: {quote(infra.title)}
                   </div>
                 ))}
               </div>
@@ -134,7 +133,7 @@ export const SubsubsectionSchemaAdminBox = ({
               <div className="ml-2">
                 {subsubsectionSpecials.map((special) => (
                   <div key={special.id}>
-                    ID: {special.id} - Title: &quot;{special.title}&quot;
+                    ID: {special.id} - Title: {quote(special.title)}
                   </div>
                 ))}
               </div>
