@@ -3,7 +3,7 @@ import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { Metadata } from "next"
 import Image from "next/image"
 import "server-only"
-import svgImageLogoBmdvFoerderung from "./assets/logo-bmdv-foerderung.svg"
+import svgImageLogoBmftrFoerderung from "./assets/BMFTR_de_DTP_CMYK_gef_durch.svg"
 
 export const metadata: Metadata = {
   robots: "noindex",
@@ -82,21 +82,24 @@ export default function KontaktPage() {
         </p>
         <h2>Förderung</h2>
         <p>
-          Diese Website wird im Rahmen des NRVP-Projektes “Modulares System für
-          Radschnellverbindungen” vom Bundesministerium für Digitales und Verkehr (BMDV) gefördert.{" "}
+          Der Trassenscout wird als Plattform im Rahmen der Fördermaßnahme „Nachhaltige Mobilität in
+          regionalen Transformationsräumen – in Metropolregionen, Regiopolregionen und
+          interkommunalen Verbünden“ gefördert. Er ist Teil des Projekts „Die Regionale
+          Verkehrswende beschleunigen – Digitale Planungstools, schnellere Verwaltungsprozesse und
+          Change Management für eine effektive Umsetzung von Maßnahmen (RegioProzess)“
           <br />
-          (Förderkennzeichen VB2025,{" "}
+          (Förderkennzeichen 01UV2471,{" "}
           <Link
             blank
-            href="https://www.mobilitaetsforum.bund.de/DE/Themen/Wissenspool/Projekte/Projektbeispiele/Projekte/22936_modulares_system_fuer_radschnellverbindu.html"
+            href="https://www.zukunft-nachhaltige-mobilitaet.de/regioprozess-die-regionale-verkehrswende-beschleunigen-digitale-planungstools-schnellere-verwaltungsprozesse-und-change-management-fuer-eine-effektivere-umsetzung-von-massnahmen"
           >
             <strong>Projektsteckbrief</strong>
           </Link>
           )
         </p>
         <div className="grid grid-cols-2 gap-2">
-          <Link blank href="https://bmdv.bund.de/">
-            <Image src={svgImageLogoBmdvFoerderung} alt="Förderung durch BMDV" />
+          <Link blank href="https://www.bmftr.bund.de/">
+            <Image src={svgImageLogoBmftrFoerderung} alt="Förderung durch BMDV" className="my-0" />
           </Link>
         </div>
       </section>

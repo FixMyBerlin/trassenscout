@@ -47,6 +47,7 @@ const EditSubsubsection = () => {
         ...values,
         id: subsubsection.id,
         projectSlug,
+        location: values.location === "" ? null : values.location,
         trafficLoadDate: values.trafficLoadDate === "" ? null : new Date(values.trafficLoadDate),
         estimatedCompletionDate:
           values.estimatedCompletionDate === "" ? null : new Date(values.estimatedCompletionDate),
@@ -108,6 +109,7 @@ const EditSubsubsection = () => {
         initialValues={{
           ...subsubsection,
           ...m2mFieldsInitialValues,
+          location: subsubsection.location || "",
           trafficLoadDate: subsubsection.trafficLoadDate
             ? getDate(subsubsection.trafficLoadDate)
             : "",

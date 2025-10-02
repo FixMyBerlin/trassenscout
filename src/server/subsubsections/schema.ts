@@ -1,6 +1,6 @@
 import { Prettify } from "@/src/core/types"
 import { InputNumberOrNullSchema, InputNumberSchema, SlugSchema } from "@/src/core/utils"
-import { LabelPositionEnum, SubsubsectionTypeEnum } from "@prisma/client"
+import { LabelPositionEnum, LocationEnum, SubsubsectionTypeEnum } from "@prisma/client"
 import { z } from "zod"
 import { SubsubsectionWithPosition } from "./queries/getSubsubsection"
 
@@ -36,6 +36,7 @@ export const SubsubsectionSchema = z.object({
   slug: SlugSchema,
   subTitle: z.string().nullish(),
   type: z.nativeEnum(SubsubsectionTypeEnum),
+  location: z.union([z.nativeEnum(LocationEnum), z.null()]),
   geometry: PositionSchema.or(PositionArraySchema),
   labelPos: z.nativeEnum(LabelPositionEnum),
   lengthM: InputNumberSchema, // m
@@ -57,6 +58,10 @@ export const SubsubsectionSchema = z.object({
   planningPeriod: InputNumberOrNullSchema,
   constructionPeriod: InputNumberOrNullSchema,
   estimatedCompletionDate: NullableDateSchema,
+  estimatedConstructionDateString: z
+    .string()
+    .regex(/^(\d{4}|)$/, { message: "Datum im Format JJJJ" })
+    .nullish(),
   planningCosts: InputNumberOrNullSchema,
   deliveryCosts: InputNumberOrNullSchema,
   constructionCosts: InputNumberOrNullSchema,
@@ -84,10 +89,12 @@ export const SubsubsectionFormSchema = SubsubsectionSchema.omit({
   trafficLoadDate: true,
   estimatedCompletionDate: true,
   specialFeatures: true,
+  location: true,
 }).merge(
   z.object({
     trafficLoadDate: NullableDateSchemaForm,
     estimatedCompletionDate: NullableDateSchemaForm,
+    location: z.union([z.nativeEnum(LocationEnum), z.literal("")]),
     // LIST ALL m2mFields HERE
     // We need to do this manually, since dynamic zod types don't work
     specialFeatures: z

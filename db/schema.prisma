@@ -320,10 +320,11 @@ model Subsubsection {
   slug            String // shortTitle and URL Slug
   subTitle        String?
   type            SubsubsectionTypeEnum @default(ROUTE) // Maßnahmen Geometrietyp - fka Führungsform - UNUSED
+  location        LocationEnum? // Lage: innerorts/außerorts
   geometry        Json
   labelPos        LabelPositionEnum     @default(top)
   lengthM         Float // Meter
-  width           Float? // Meter - UNUSED
+  width           Float? // Meter
   widthExisting   Float? // Meter - UNUSED
   description     String? // Anmerkungen
   mapillaryKey    String?
@@ -333,9 +334,11 @@ model Subsubsection {
   trafficLoad     Int? // Verkehrsbelastung
   trafficLoadDate DateTime? // Datum der Verkehrsbelastung
 
-  planningPeriod                Float? //  Planungsdauer in Monaten
-  constructionPeriod            Float? // Baudauer in Monaten
-  estimatedCompletionDate       DateTime? // Jahresquartal der geplanten Fertigstellung als string Form "1-2023"
+  planningPeriod                  Float? //  Planungsdauer in Monaten
+  constructionPeriod              Float? // Baudauer in Monaten
+  estimatedCompletionDate         DateTime? // Datum der geplanten Fertigstellung
+  estimatedConstructionDateString String? // Jahr des geplanten Baujahres als string Form "2023"
+
   //
   costEstimate                  Float? // Euro
   //
@@ -381,6 +384,11 @@ model Subsubsection {
 enum SubsubsectionTypeEnum {
   ROUTE // fka Regelführung Strecke RF
   AREA // Punktuelle Maßnahme- fka Sonderführung Punkt (Bereich) SF
+}
+
+enum LocationEnum {
+  URBAN // innerorts
+  RURAL // außerorts
 }
 
 model QualityLevel {
