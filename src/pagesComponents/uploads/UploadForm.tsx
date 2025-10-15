@@ -38,8 +38,8 @@ export function UploadForm<S extends z.ZodType<any, any>>(
           options={options}
         />
       )}
-      <SummaryField 
-        uploadId={uploadId} 
+      <SummaryField
+        uploadId={uploadId}
         isGeneratingSummary={isGeneratingSummary}
         setIsGeneratingSummary={setIsGeneratingSummary}
       />
