@@ -129,7 +129,6 @@ export const AdminReviewProtocolForm = ({
         </div>
       </div>
 
-      {/* Review Form */}
       <Form
         schema={ProtocolReviewFormSchema}
         initialValues={{
@@ -140,12 +139,17 @@ export const AdminReviewProtocolForm = ({
         className="max-w-2xl"
       >
         <H3>Review durchführen</H3>
-        <div className="text-sm">
-          <span className="font-medium text-gray-500">Zuletzt reviewt von: </span>
-          <span className="text-gray-900">
-            {protocol.reviewedBy ? getFullname(protocol.reviewedBy) : "—"}
-          </span>
-        </div>
+        {protocol.reviewState !== ProtocolReviewState.NEEDSREVIEW && (
+          <div className="text-sm">
+            <span className="font-medium text-gray-500">
+              {protocol.reviewState === ProtocolReviewState.APPROVED ? "Genehmigt" : "Abgelehnt"}{" "}
+              von:{" "}
+            </span>
+            <span className="text-gray-900">
+              {protocol.reviewedBy ? getFullname(protocol.reviewedBy) : "—"}
+            </span>
+          </div>
+        )}
 
         <div className="space-y-4">
           <LabeledRadiobuttonGroup
@@ -153,8 +157,8 @@ export const AdminReviewProtocolForm = ({
             label="Review-Status"
             items={[
               {
-                value: ProtocolReviewState.REVIEWED,
-                label: "Reviewed - Protokoll ist korrekt und kann veröffentlicht werden",
+                value: ProtocolReviewState.APPROVED,
+                label: "Genehmigt - Protokoll ist korrekt",
               },
               {
                 value: ProtocolReviewState.NEEDSREVIEW,
@@ -169,7 +173,7 @@ export const AdminReviewProtocolForm = ({
 
           <LabeledTextareaField
             name="reviewNotes"
-            label="Review-Notizen (optional)"
+            label="Review-Notizen"
             placeholder="Kommentare, Verbesserungsvorschläge oder Begründung für die Entscheidung..."
             rows={5}
             optional

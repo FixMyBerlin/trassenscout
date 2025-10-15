@@ -1,5 +1,6 @@
 import { getBlitzContext } from "@/src/blitz-server"
-import { gpt5Mini, model } from "@/src/models"
+import { gpt5Mini } from "@/src/models"
+import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { generateObject, NoObjectGeneratedError } from "ai"
 import db from "db"
 import { Langfuse } from "langfuse"
@@ -41,108 +42,57 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { protocolEmailId } = ProcessProtocolEmailSchema.parse(body)
 
+    // todo
+    // In the future the email and the project will be part of the request
+    // todo: protocolEmail db entry will be created here with relation to project
+    // todo: check if sender address is allowed to submit emails (part of project team)
+    // if not, create the ProtocolEmail but set NEEDSADMINREVIEW and add review note
+    // send email to admins that email was received from unapproved sender and needs review
+    const isSenderApproved = true
+
     // Get the ProtocolEmail
     const protocolEmail = await db.protocolEmail.findFirst({
       where: { id: protocolEmailId },
     })
-
     if (!protocolEmail) {
       return Response.json({ error: "ProtocolEmail not found" }, { status: 404 })
     }
 
-    // Get all projects
-    const projects = await db.project.findMany({
-      select: {
-        id: true,
-        slug: true,
-        subTitle: true,
-      },
-    })
+    // todo attachements: create documents in db and create relations to email and protocol
 
     //  tbd
     const trace = langfuse.trace({ sessionId: "some-session-id", name: "process-protocol-email" })
 
-    // Stage 1: Process email with AI to identify project
-    let firstStageResult
-    try {
-      const result = await generateObject({
-        model: model,
-        output: "enum",
-        enum: [...projects.map((p) => p.id.toString()), "no project"],
-        experimental_telemetry: {
-          isEnabled: true,
-          functionId: "process-protocol-email-stage-1",
-          metadata: {
-            langfuseTraceId: trace.id,
-          },
-        },
-        system:
-          "You are an AI assistant that can read and process emails and gather information to identify the related project for a protocol entry.",
-        prompt: `EMAIL: ${protocolEmail.text}
-
-This is an MIME type email text. The email was forwarded to a system email address ts@ki.ts - which collects the emails which should be processed. The original email might have been sent from different email providers and servers.
-
-The original / main email is part of a conversation of administration staff and related stakeholders in the context of an infrastructural planning project. Your task is to get necessary information from the raw email text to create a project protocol entry in a task manager app.
-
-Please identify the project the email is related to. These are the projects in the format ID (SHORTTITLE - SUBTITLE): ${projects.map((p) => `${p.id} (${p.slug.toUpperCase()} - ${p.subTitle})`).join(", ")}. The short titles of projects are often acronyms of the terms "Radschnellweg" (RS) or "Radschnellverbindung" (RSV) in combination with a number like: "RSV 1" or "RS21" or the combination of municipality acronyms with a number like: "FRM 1". If you can not find a relation to one of the projects, DO NOT GUESS BUT USE "no project" as value.`,
-      })
-      firstStageResult = result.object
-    } catch (error) {
-      if (NoObjectGeneratedError.isInstance(error)) {
-        console.log("NoObjectGeneratedError in stage 1")
-        console.log("Cause:", error.cause)
-        console.log("Text:", error.text)
-        console.log("Response:", error.response)
-        console.log("Usage:", error.usage)
-      }
-      console.error("Error in AI processing (stage 1):", error)
-      return Response.json({ error: "Failed to process email with AI" }, { status: 500 })
-    }
-
-    console.log("Stage 1 AI extraction result:", JSON.stringify(firstStageResult, null, 2))
-
-    // Stage 1: Determine project
-    let finalProjectId: string
     let subsections: Array<{ id: number; slug: string; start: string; end: string }> = []
     let protocolTopics: Array<{ id: number; title: string }> = []
     let reviewNote = ""
 
-    if (!firstStageResult || firstStageResult === "no project") {
-      // No matching project found, use first project and add review note
-      if (!projects[0]) {
-        return Response.json({ error: "No projects available in database" }, { status: 500 })
-      }
-      finalProjectId = String(projects[0].id)
-      reviewNote =
-        "No matching project was found by the AI. Using first available project as fallback."
-      console.log("No project match found, using fallback project:", finalProjectId)
-    } else {
-      finalProjectId = String(firstStageResult)
-      // Fetch subsections for this project
-      subsections = await db.subsection.findMany({
-        where: { projectId: Number(finalProjectId) },
-        select: {
-          id: true,
-          slug: true,
-          start: true,
-          end: true,
-        },
-        orderBy: { order: "asc" },
-      })
-      console.log(`Found ${subsections.length} subsections for project ${finalProjectId}`)
+    // Fetch subsections for this project
+    subsections = await db.subsection.findMany({
+      where: { projectId: protocolEmail.projectId },
+      select: {
+        id: true,
+        slug: true,
+        start: true,
+        end: true,
+      },
+      orderBy: { order: "asc" },
+    })
+    console.log(`Found ${subsections.length} subsections for project ${protocolEmail.projectId}`)
 
-      // Fetch protocol topics for this project
-      protocolTopics = await db.protocolTopic.findMany({
-        where: { projectId: Number(finalProjectId) },
-        select: {
-          id: true,
-          title: true,
-        },
-      })
-      console.log(`Found ${protocolTopics.length} protocol topics for project ${finalProjectId}`)
-    }
+    // Fetch protocol topics for this project
+    protocolTopics = await db.protocolTopic.findMany({
+      where: { projectId: protocolEmail.projectId },
+      select: {
+        id: true,
+        title: true,
+      },
+    })
+    console.log(
+      `Found ${protocolTopics.length} protocol topics for project ${protocolEmail.projectId}`,
+    )
 
-    // Stage 2: Final AI call with subsection information
+    // Stage 2: AI call
     const finalExtractionSchema = z.object({
       body: z.string().min(1).describe("The main content/body of the email"),
       title: z.string().min(1).describe("A meaningful title for the protocol entry"),
@@ -193,11 +143,7 @@ Attachements: All attachements are Base64-encoded. Ignore images. If there are P
 
     Identify the following fields:
 
-        - BODY: Should contain two parts:
-          1. Start this section with "# EMAIL TEXT"
-           Here we need the actual text body of the email ONLY - and only once. In html the body is wrapped by <body> tags. Format the body in markdown - e.g. **bold text** for important sections and highlight ## headings. Format links as inline links in markdown format: [loremipsum.de](https://www.loremipsum.de/). Do not delete any parts of the body, even if they seem unimportant.
-          2. Start this section with "# EMAIL ANHÄNGE"
-          If there are PDF attachements, extract their text content and add it under a new section heading "### Anhang: FILENAME.pdf" (replace FILENAME.pdf with the actual filename). Examine the entire document closely, paying attention to structure, content, and formatting. Format this text content in markdown as well.
+        - BODY: Here we need the actual text body of the email ONLY - and only once. In html the body is wrapped by <body> tags. Format the body in markdown - e.g. **bold text** for important sections and highlight ## headings. Format links as inline links in markdown format: [loremipsum.de](https://www.loremipsum.de/). Do not delete any parts of the body, even if they seem unimportant.
         - DATE: The relevant date for the protocol entry. If nothing else is found, find the date the original email was sent.
         - TITLE: Generate a meaningful title.
         - SUBSECTIONID: ${
@@ -235,11 +181,9 @@ Attachements: All attachements are Base64-encoded. Ignore images. If there are P
 
     const combinedResult = {
       ...finalResult,
-      projectId: finalProjectId.toString(),
-      subsectionId:
-        finalResult.subsectionId && finalResult.subsectionId !== "no project"
-          ? parseInt(finalResult.subsectionId)
-          : null,
+      // tbd
+      projectId: protocolEmail.projectId,
+      subsectionId: finalResult.subsectionId ? parseInt(finalResult.subsectionId) : null,
       protocolTopics:
         finalResult.protocolTopics && Array.isArray(finalResult.protocolTopics)
           ? finalResult.protocolTopics.map((id) => parseInt(id))
@@ -253,16 +197,25 @@ Attachements: All attachements are Base64-encoded. Ignore images. If there are P
         body: combinedResult.body,
         date: new Date(combinedResult.date),
         subsectionId: combinedResult.subsectionId,
-        projectId: Number(combinedResult.projectId),
+        projectId: combinedResult.projectId,
         protocolAuthorType: "SYSTEM",
         protocolUpdatedByType: "SYSTEM",
-        reviewState: "NEEDSREVIEW", // protocols created by SYSTEM need review
+        reviewState: isSenderApproved ? "NEEDSREVIEW" : "NEEDSADMINREVIEW",
         protocolEmailId: protocolEmailId,
         reviewNotes: reviewNote || null,
         protocolTopics: {
           connect: combinedResult.protocolTopics.map((id) => ({ id })),
         },
       },
+    })
+
+    await createLogEntry({
+      action: "CREATE",
+      message: `Neues Projektprotokoll ${protocol.title} per KI aus Email mir ID ${protocolEmail.id} erstellt`,
+      // tbd maybe we need an AI/SYSTEM user type here
+      userId: null,
+      projectId: protocol.projectId,
+      protocolId: protocol.id,
     })
 
     console.log("Created Protocol:", protocol)

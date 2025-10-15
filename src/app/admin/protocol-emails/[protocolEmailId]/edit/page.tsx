@@ -1,5 +1,6 @@
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import getProjects from "@/src/server/projects/queries/getProjects"
 import getProtocolEmail from "@/src/server/protocol-emails/queries/getProtocolEmail"
 import { Metadata } from "next"
 import "server-only"
@@ -18,6 +19,7 @@ export default async function EditProtocolEmailPage({
   const protocolEmail = await invoke(getProtocolEmail, {
     id: protocolEmailId,
   })
+  const { projects } = await invoke(getProjects, {})
 
   return (
     <>
@@ -26,6 +28,7 @@ export default async function EditProtocolEmailPage({
       <EditProtocolEmailForm
         initialProtocolEmail={protocolEmail}
         protocolEmailId={protocolEmailId}
+        projects={projects}
       />
     </>
   )

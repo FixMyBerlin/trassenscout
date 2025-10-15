@@ -23,11 +23,14 @@ export default resolver.pipe(
     const protocol = await db.protocol.findFirst({
       where: {
         id,
-        reviewState: { in: ["REVIEWED", "APPROVED"] }, // Only show reviewed or approved protocols to normal users
+        reviewState: { in: ["NEEDSREVIEW", "APPROVED"] }, // Only show reviewed or approved protocols to normal users
       },
       include: {
         protocolTopics: true,
         subsection: true,
+        project: {
+          select: { slug: true },
+        },
         author: {
           select: {
             id: true,

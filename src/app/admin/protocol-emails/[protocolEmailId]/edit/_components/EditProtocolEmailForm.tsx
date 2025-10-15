@@ -3,6 +3,7 @@
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link, linkStyles } from "@/src/core/components/links"
+import { TGetProjects } from "@/src/server/projects/queries/getProjects"
 import deleteProtocolEmail from "@/src/server/protocol-emails/mutations/deleteProtocolEmail"
 import updateProtocolEmail from "@/src/server/protocol-emails/mutations/updateProtocolEmail"
 import { ProtocolEmailFormSchema } from "@/src/server/protocol-emails/schema"
@@ -14,9 +15,11 @@ import { ProtocolEmailForm } from "../../../_components/ProtocolEmailForm"
 export const EditProtocolEmailForm = ({
   initialProtocolEmail,
   protocolEmailId,
+  projects,
 }: {
   initialProtocolEmail: any // TODO: Type this properly
   protocolEmailId: number
+  projects: TGetProjects["projects"]
 }) => {
   const router = useRouter()
   const [updateProtocolEmailMutation] = useMutation(updateProtocolEmail)
@@ -60,6 +63,7 @@ export const EditProtocolEmailForm = ({
           ...initialProtocolEmail,
         }}
         onSubmit={handleSubmit}
+        projects={projects}
       />
 
       <div className="mt-8">

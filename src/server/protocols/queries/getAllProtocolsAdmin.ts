@@ -34,8 +34,8 @@ export default resolver.pipe(resolver.authorize("ADMIN"), async () => {
   // Sort protocols by review state first, then by date
   protocols.sort((a, b) => {
     const stateOrder = {
-      [ProtocolReviewState.NEEDSREVIEW]: 0,
-      [ProtocolReviewState.REVIEWED]: 1,
+      [ProtocolReviewState.NEEDSADMINREVIEW]: 0,
+      [ProtocolReviewState.NEEDSREVIEW]: 1,
       [ProtocolReviewState.REJECTED]: 2,
       [ProtocolReviewState.APPROVED]: 3,
     }

@@ -18,7 +18,7 @@ export const ProtocolSchema = z.object({
   protocolEmailId: InputNumberOrNullSchema,
   projectId: z.number(),
   // Review fields
-  reviewState: z.nativeEnum(ProtocolReviewState).default(ProtocolReviewState.NEEDSREVIEW),
+  reviewState: z.nativeEnum(ProtocolReviewState).default(ProtocolReviewState.APPROVED),
   reviewedAt: z.date().nullish(),
   reviewedById: InputNumberOrNullSchema,
   reviewNotes: z.string().nullish(),

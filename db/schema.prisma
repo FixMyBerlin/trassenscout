@@ -167,6 +167,7 @@ model Project {
   SystemLogEntry                   SystemLogEntry[]
   protocols                        Protocol[]
   protocolTopics                   ProtocolTopic[]
+  ProtocolEmail                    ProtocolEmail[]
 }
 
 model Membership {
@@ -706,6 +707,9 @@ model ProtocolEmail {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   //
+  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId Int
+  //
   text      String
   //
   protocols Protocol[]
@@ -754,7 +758,7 @@ enum ProtocolType {
 
 enum ProtocolReviewState {
   NEEDSREVIEW // System-generated protocols awaiting review
-  REVIEWED // System-generated protocols that have been reviewed and approved
+  NEEDSADMINREVIEW // System-generated protocols where sender of email could not be approved - admin review needed
   REJECTED // System-generated protocols that have been reviewed and rejected
   APPROVED // User-created protocols that are automatically approved (no review needed)
 }

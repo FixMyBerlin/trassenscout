@@ -65,6 +65,9 @@ export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
               ID
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
+              Projekt
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
               Inhalt (Vorschau)
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
@@ -89,8 +92,10 @@ export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
                   #{email.id}
                 </Link>
               </td>
-              <td className="px-6 py-4 text-sm text-gray-500">
-                <div className="max-w-xs truncate">{email.text.substring(0, 100)}...</div>
+              <td className="px-6 py-4 text-sm text-gray-900">Projekt #{email.projectId}</td>
+              <td className="px-6 py-4 text-sm text-gray-900">
+                {email.text.slice(0, 50)}
+                {email.text.length > 50 ? "..." : ""}
               </td>
               <td className="px-6 py-4 text-sm text-gray-500">
                 {new Date(email.createdAt).toLocaleDateString("de-DE")}

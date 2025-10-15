@@ -16,16 +16,16 @@ export const ProtocolReviewStatePill = ({ state }: { state: ProtocolReviewState 
       "inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium",
       {
         [ProtocolReviewState.NEEDSREVIEW]: "border-yellow-200 bg-yellow-100 text-yellow-800",
-        [ProtocolReviewState.REVIEWED]: "border-green-200 bg-green-100 text-green-800",
+        [ProtocolReviewState.NEEDSADMINREVIEW]: "border-yellow-200 bg-yellow-300 text-yellow-800",
         [ProtocolReviewState.REJECTED]: "border-red-200 bg-red-100 text-red-800",
-        [ProtocolReviewState.APPROVED]: "border-gray-200 bg-gray-100 text-gray-800",
+        [ProtocolReviewState.APPROVED]: "border-green-200 bg-green-100 text-gray-800",
       }[state],
     )}
   >
     {state === ProtocolReviewState.NEEDSREVIEW && "Benötigt Review"}
-    {state === ProtocolReviewState.REVIEWED && "Reviewed"}
+    {state === ProtocolReviewState.NEEDSADMINREVIEW && "Benötigt Admin-Review"}
     {state === ProtocolReviewState.REJECTED && "Abgelehnt"}
-    {state === ProtocolReviewState.APPROVED && "Genehmigt (USER)"}
+    {state === ProtocolReviewState.APPROVED && "Genehmigt"}
   </span>
 )
 

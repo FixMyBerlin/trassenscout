@@ -28,8 +28,11 @@ export default resolver.pipe(
       reviewNotes,
     }
 
-    // Set reviewedAt and reviewedById when marking as REVIEWED
-    if (reviewState === ProtocolReviewState.REVIEWED) {
+    // Set reviewedAt and reviewedById when marking as APPROVED/REJECTED
+    if (
+      reviewState === ProtocolReviewState.APPROVED ||
+      reviewState === ProtocolReviewState.REJECTED
+    ) {
       updateData.reviewedAt = new Date()
       updateData.reviewedById = currentUserId
     }
