@@ -12,7 +12,6 @@ type Props = {
 
 export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
   const [processing, setProcessing] = useState<number | null>(null)
-  const [processingDoc, setProcessingDoc] = useState<boolean>(false)
   const router = useRouter()
 
   const handleProcessEmail = async (protocolEmailId: number) => {
@@ -43,32 +42,6 @@ export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
     }
   }
 
-  const handleProcessDoc = async () => {
-    setProcessingDoc(true)
-    try {
-      const response = await fetch("/api/process-document", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // This does not make a lot of sense in a client request, but needed for system calls in the future
-          // "process-email-api-key": process.env.INTERNAL_API_SECRET,
-        },
-      })
-
-      if (response.ok) {
-        const result = (await response.json()) as { result: any }
-        alert(`erfolg!`)
-      } else {
-        alert("Fehler beim Verarbeiten des Documents")
-      }
-    } catch (error) {
-      console.error("Error:", error)
-      alert("Fehler")
-    } finally {
-      setProcessingDoc(false)
-    }
-  }
-
   if (!protocolEmails.length) {
     return (
       <div className="rounded-md bg-gray-50 p-4">
@@ -85,8 +58,6 @@ export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
 
   return (
     <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-      <div>{processingDoc && <p>Dokument wird verarbeitet...</p>}</div>
-      <button onClick={handleProcessDoc}>Test Doc Process</button>
       <table className="min-w-full divide-y divide-gray-300">
         <thead className="bg-gray-50">
           <tr>
