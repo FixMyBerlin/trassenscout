@@ -3,6 +3,51 @@ import { Link } from "@/src/core/components/links"
 export type TNewsItem = (typeof newsItems)[number]
 
 export const newsItems = [
+        {
+        slug: "release-2025-09-16",
+        title: "Neue Funktionen im Trassenscout",
+        date: "2025-09-16",
+        body: (
+          <>
+            <p>
+              Mit dem aktuellen Release hat sich im Trassenscout einiges getan. Nutzer:innen profitieren
+              von einer neuen Filterfunktion für Fortschrittsprotokolle, präziseren Längenangaben in Metern
+              sowie einer überarbeiteten Eingabe von Maßnahmen. Auch die Qualitätsstandards und die
+              Einladungsverwaltung wurden verbessert, um die Zusammenarbeit in Projekten noch effizienter zu
+              gestalten.
+            </p>
+          </>
+        ),
+      },
+
+      {
+      slug: "massnahmenverwaltung-2025",
+      title: "Digitale Maßnahmenverwaltung für Förderprogramme",
+      date: "2025-08-01",
+      body: (
+        <>
+          <p>
+            Der Trassenscout unterstützt jetzt auch die digitale Erfassung und Verwaltung von
+            Fördermaßnahmen. Kommunen und Verwaltungen können Projekte online melden, prüfen und
+            koordinieren – für mehr Transparenz und strukturierte Abläufe bei Planung und Umsetzung.
+          </p>
+        </>
+      ),
+    },
+    {
+    slug: "machbarkeitsstudien-import",
+    title: "Automatischer Import von Machbarkeitsstudien in Vorbereitung",
+    date: "2025-03-10",
+    body: (
+      <>
+        <p>
+          Künftig sollen Inhalte aus Machbarkeitsstudien automatisiert in den Trassenscout übernommen
+          werden. Damit wird die Übertragung bestehender Planungsdaten vereinfacht und die
+          Weiterarbeit an Projekten beschleunigt.
+        </p>
+      </>
+    ),
+  },
   {
     slug: "radnetz-brandenburg-abschluss",
     title: "Starke Beteiligung: Über 1.000 Hinweise zum Radnetz Brandenburg eingegangen",
