@@ -7,7 +7,7 @@ import {
 import { StatusStyleEnum } from "@prisma/client"
 import { z } from "zod"
 
-export function SubsubsectionStatusForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+export function SubsectionStatusForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const { ...formProps } = props
 
   return (

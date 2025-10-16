@@ -18,7 +18,7 @@ export const CreateSubsectionsSchema = ProjectSlugRequiredSchema.merge(
         managerId: true,
         operatorId: true,
         description: true,
-        subsubsectionStatusId: true,
+        subsectionStatusId: true,
       }),
     ),
   }),

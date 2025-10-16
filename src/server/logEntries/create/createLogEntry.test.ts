@@ -45,7 +45,7 @@ describe("createLogEntry mutation", async () => {
     managerId: null,
     operatorId: null,
     networkHierarchyId: null,
-    subsubsectionStatusId: null,
+    subsectionStatusId: null,
     estimatedCompletionDateString: null,
     isFinalRoute: true,
   }

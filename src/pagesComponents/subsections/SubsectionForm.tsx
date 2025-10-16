@@ -17,7 +17,7 @@ import { getUserSelectOptions } from "@/src/pagesComponents/users/utils/getUserS
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getNetworkHierarchysWithCount from "@/src/server/networkHierarchy/queries/getNetworkHierarchysWithCount"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
-import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
+import getSubsectionStatussWithCount from "@/src/server/subsectionStatus/queries/getSubsectionStatussWithCount"
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { PriorityEnum } from "@prisma/client"
@@ -53,10 +53,10 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
   const prioritySelectOptions = Object.entries(PriorityEnum).map(([priority, value]) => {
     return [priority, getPriorityTranslation(value)] as [string, string]
   })
-  const [{ subsubsectionStatuss }] = useQuery(getSubsubsectionStatussWithCount, { projectSlug })
-  const subsubsectionStatusOptions: [number | string, string][] = [
+  const [{ subsectionStatuss }] = useQuery(getSubsectionStatussWithCount, { projectSlug })
+  const subsectionStatusOptions: [number | string, string][] = [
     ["", "Status offen"],
-    ...subsubsectionStatuss.map((status) => {
+    ...subsectionStatuss.map((status) => {
       return [status.id, status.title] as [number, string]
     }),
   ]
@@ -109,14 +109,14 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
       </div>
       <div className="flex items-end gap-5">
         <LabeledSelect
-          name="subsubsectionStatusId"
+          name="subsectionStatusId"
           label="Status"
           optional
-          options={subsubsectionStatusOptions}
+          options={subsectionStatusOptions}
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
-          href={Routes.SubsubsectionStatussPage({ projectSlug })}
+          href={Routes.SubsectionStatussPage({ projectSlug })}
           className="py-2"
         >
           Status verwalten…

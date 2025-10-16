@@ -146,6 +146,7 @@ model Project {
 
   surveyResponseTopics  SurveyResponseTopic[]
   subsections           Subsection[]
+  subsectionStatuses    SubsectionStatus[]
   calendarEntries       CalendarEntry[]
   contacts              Contact[]
   uploads               Upload[]
@@ -251,32 +252,32 @@ model Operator {
 }
 
 model Subsection {
-  id                            Int                  @id @default(autoincrement())
-  createdAt                     DateTime             @default(now())
-  updatedAt                     DateTime             @updatedAt
+  id                            Int               @id @default(autoincrement())
+  createdAt                     DateTime          @default(now())
+  updatedAt                     DateTime          @updatedAt
   //
   slug                          String // shortTitle and URL Slug
   start                         String
   end                           String
-  order                         Int                  @default(autoincrement())
+  order                         Int               @default(autoincrement())
   geometry                      Json
-  labelPos                      LabelPositionEnum    @default(top)
+  labelPos                      LabelPositionEnum @default(top)
   description                   String?
   lengthM                       Float // Meter
-  priority                      PriorityEnum         @default(OPEN) // Priorität
+  priority                      PriorityEnum      @default(OPEN) // Priorität
   estimatedCompletionDateString String? // Jahresquartal der geplanten Fertigstellung als string Form "1-2023"
-  isFinalRoute                  Boolean              @default(true) // Trassenverlauf des PA final geklärt
+  isFinalRoute                  Boolean           @default(true) // Trassenverlauf des PA final geklärt
   //
-  project                       Project              @relation(fields: [projectId], references: [id])
+  project                       Project           @relation(fields: [projectId], references: [id])
   projectId                     Int
-  manager                       User?                @relation(fields: [managerId], references: [id])
+  manager                       User?             @relation(fields: [managerId], references: [id])
   managerId                     Int?
-  operator                      Operator?            @relation(fields: [operatorId], references: [id])
+  operator                      Operator?         @relation(fields: [operatorId], references: [id])
   operatorId                    Int?
-  networkHierarchy              NetworkHierarchy?    @relation(fields: [networkHierarchyId], references: [id])
+  networkHierarchy              NetworkHierarchy? @relation(fields: [networkHierarchyId], references: [id])
   networkHierarchyId            Int?
-  SubsubsectionStatus           SubsubsectionStatus? @relation(fields: [subsubsectionStatusId], references: [id])
-  subsubsectionStatusId         Int?
+  SubsectionStatus              SubsectionStatus? @relation(fields: [subsectionStatusId], references: [id])
+  subsectionStatusId            Int?
   //
   subsubsections                Subsubsection[]
   stakeholdernotes              Stakeholdernote[]
@@ -391,6 +392,11 @@ enum LocationEnum {
   RURAL // außerorts
 }
 
+enum StatusStyleEnum {
+  REGULAR
+  DASHED
+}
+
 model QualityLevel {
   id             Int             @id @default(autoincrement())
   createdAt      DateTime        @default(now())
@@ -415,11 +421,11 @@ model SubsubsectionStatus {
   //
   slug           String // shortTitle and URL Slug
   title          String
+  style          StatusStyleEnum @default(REGULAR)
   //
   project        Project         @relation(fields: [projectId], references: [id])
   projectId      Int
   subsubsections Subsubsection[]
-  Subsection     Subsection[]
 
   @@unique([projectId, slug])
 }
@@ -469,6 +475,22 @@ model SubsubsectionSpecial {
   projectId      Int
   //
   subsubsections Subsubsection[]
+
+  @@unique([projectId, slug])
+}
+
+model SubsectionStatus {
+  id         Int             @id @default(autoincrement())
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  //
+  slug       String // shortTitle and URL Slug
+  title      String
+  style      StatusStyleEnum @default(REGULAR)
+  //
+  project    Project         @relation(fields: [projectId], references: [id])
+  projectId  Int
+  Subsection Subsection[]
 
   @@unique([projectId, slug])
 }

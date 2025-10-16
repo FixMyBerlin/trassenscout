@@ -15,7 +15,7 @@ export const SubsectionSchema = z.object({
   managerId: InputNumberOrNullSchema,
   operatorId: InputNumberOrNullSchema,
   networkHierarchyId: InputNumberOrNullSchema,
-  subsubsectionStatusId: InputNumberOrNullSchema,
+  subsectionStatusId: InputNumberOrNullSchema,
   isFinalRoute: z.boolean(),
   estimatedCompletionDateString: z
     .string()
