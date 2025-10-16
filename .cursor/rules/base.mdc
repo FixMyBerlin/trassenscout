@@ -1,0 +1,7 @@
+---
+alwaysApply: true
+---
+
+## Prisma
+
+- Do not use prisma directly, but via blitz instead. For example, to create a migration use `npm run migrate:create`
