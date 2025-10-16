@@ -80,9 +80,6 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                   <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
                     {subsection.estimatedCompletionDateString || "–"}
                   </td>
-                  {/* <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
-                    {subsection.isFinalRoute ? "Ja" : "Nein"}
-                  </td> */}
                 </tr>
               )
             })}

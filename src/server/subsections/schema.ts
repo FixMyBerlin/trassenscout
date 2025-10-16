@@ -16,7 +16,6 @@ export const SubsectionSchema = z.object({
   operatorId: InputNumberOrNullSchema,
   networkHierarchyId: InputNumberOrNullSchema,
   subsectionStatusId: InputNumberOrNullSchema,
-  isFinalRoute: z.boolean(),
   estimatedCompletionDateString: z
     .string()
     .regex(/^(\d{4}-\d{2}|)$/, { message: "Datum im Format JJJJ-MM" })

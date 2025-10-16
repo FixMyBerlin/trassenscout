@@ -16,6 +16,7 @@ export type SubsectionWithPositionAndStatus = SubsectionWithPosition & {
     id: number
     slug: string
     title: string
+    style: string
   } | null
 }
 export default resolver.pipe(

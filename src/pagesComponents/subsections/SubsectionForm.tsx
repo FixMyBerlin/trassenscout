@@ -2,7 +2,6 @@ import { Spinner } from "@/src/core/components/Spinner"
 import {
   Form,
   FormProps,
-  LabeledCheckbox,
   LabeledSelect,
   LabeledTextField,
   LabeledTextareaField,
@@ -75,12 +74,6 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
       </div>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledGeometryField name="geometry" label="Geometry der Achse (LineString)" />
-      {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
-      <LabeledCheckbox
-        label="Trassenverlauf geklärt"
-        help="Wenn diese Option nicht aktiviert ist, wird der Abschnitt in der Karte der Projektansicht als ungeklärt (gestrichelte Linie) angezeigt."
-        scope="isFinalRoute"
-      />
       <LabeledTextFieldCalculateLength name="lengthM" label="Länge" />
       <details>
         <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>

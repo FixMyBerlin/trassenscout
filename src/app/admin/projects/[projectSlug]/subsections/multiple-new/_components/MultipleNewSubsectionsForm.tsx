@@ -28,7 +28,7 @@ export const MultipleNewSubsectionsForm = () => {
     const newSubsections: Array<
       { geometry: [number, number][] } & Pick<
         Subsection,
-        "projectId" | "labelPos" | "start" | "end" | "slug" | "order" | "lengthM" | "isFinalRoute"
+        "projectId" | "labelPos" | "start" | "end" | "slug" | "order" | "lengthM"
       >
     > = []
     for (let i = 0; i < Number(values.no); i++) {
@@ -47,7 +47,6 @@ export const MultipleNewSubsectionsForm = () => {
             }) * 1000
           ).toFixed(0),
         ), // in m
-        isFinalRoute: true,
       })
     }
     try {
