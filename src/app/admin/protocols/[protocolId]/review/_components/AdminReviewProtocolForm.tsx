@@ -10,7 +10,7 @@ import { SubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { H3, shortTitle } from "@/src/core/components/text"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
-import updateProtocolReview from "@/src/server/protocols/mutations/updateProtocolReview"
+import updateProtocolReview from "@/src/server/protocols/mutations/updateProtocolReviewAdmin"
 import getProtocolAdmin from "@/src/server/protocols/queries/getProtocolAdmin"
 import { ProtocolReviewFormSchema } from "@/src/server/protocols/schemas"
 import { useMutation, useQuery } from "@blitzjs/rpc"
@@ -159,6 +159,10 @@ export const AdminReviewProtocolForm = ({
               {
                 value: ProtocolReviewState.APPROVED,
                 label: "Genehmigt - Protokoll ist korrekt",
+              },
+              {
+                value: ProtocolReviewState.NEEDSADMINREVIEW,
+                label: "Benötigt Admin-Review",
               },
               {
                 value: ProtocolReviewState.NEEDSREVIEW,

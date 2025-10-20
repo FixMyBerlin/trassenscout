@@ -33,6 +33,13 @@ export default resolver.pipe(
             lastName: true,
           },
         },
+        reviewedBy: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
       },
     })
 
