@@ -173,19 +173,27 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
         )}
       </TableWrapper>
 
-      <IfUserCanEdit>
-        <Link
-          button="blue"
-          icon="plus"
-          className="mt-4"
-          href={Routes.NewSubsubsectionPage({
-            projectSlug,
-            subsectionSlug: subsectionSlug!,
-          })}
-        >
-          Neuer Eintrag
-        </Link>
-      </IfUserCanEdit>
+      <div className="mt-4 flex gap-3">
+        <IfUserCanEdit>
+          <Link
+            button="blue"
+            icon="plus"
+            href={Routes.NewSubsubsectionPage({
+              projectSlug,
+              subsectionSlug: subsectionSlug!,
+            })}
+          >
+            Neuer Eintrag
+          </Link>
+          <Link
+            button="white"
+            icon="download"
+            href={`/api/subsubsections/${projectSlug}/${subsectionSlug}/export`}
+          >
+            Einträge herunterladen (CSV)
+          </Link>
+        </IfUserCanEdit>
+      </div>
     </section>
   )
 }
