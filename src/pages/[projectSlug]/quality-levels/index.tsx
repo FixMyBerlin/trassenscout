@@ -63,7 +63,7 @@ export const QualityLevelsWithData = () => {
                 Titel (mit externem Link, wenn vorhanden)
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl der Maßnahmen
+                Anzahl der Einträge
               </th>
               <th
                 scope="col"
@@ -94,7 +94,7 @@ export const QualityLevelsWithData = () => {
                     )}
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {qualityLevel.subsubsectionCount} Maßnahmen
+                    {qualityLevel.subsubsectionCount} Einträge
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
                     <IfUserCanEdit>
