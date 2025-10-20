@@ -1,5 +1,5 @@
 import db, { LocationEnum } from "@/db"
-import { withProjectMembership } from "@/src/app/api/_utils/withProjectMembership"
+import { withProjectMembership } from "@/src/app/api/(auth)/_utils/withProjectMembership"
 import { viewerRoles } from "@/src/authorization/constants"
 import { createObjectCsvStringifier } from "csv-writer"
 import { format } from "date-fns"
