@@ -16,6 +16,9 @@ import db from "db"
 
 const CreateProtocolSchema = ProjectSlugRequiredSchema.merge(ProtocolSchema).omit({
   projectId: true,
+  protocolAuthorType: true,
+  protocolUpdatedByType: true,
+  reviewState: true,
 })
 
 export default resolver.pipe(

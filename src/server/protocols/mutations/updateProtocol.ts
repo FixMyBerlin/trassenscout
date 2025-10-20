@@ -20,6 +20,8 @@ const UpdateProtocolSchema = ProjectSlugRequiredSchema.merge(
     reviewedAt: true,
     reviewedById: true,
     reviewNotes: true,
+    protocolAuthorType: true,
+    protocolUpdatedByType: true,
   }).merge(z.object({ id: z.number() })),
 )
 
