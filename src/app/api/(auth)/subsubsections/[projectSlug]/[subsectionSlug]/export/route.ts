@@ -1,4 +1,4 @@
-import db from "@/db"
+import db, { LocationEnum } from "@/db"
 import { withProjectMembership } from "@/src/app/api/_utils/withProjectMembership"
 import { viewerRoles } from "@/src/authorization/constants"
 import { createObjectCsvStringifier } from "csv-writer"
@@ -23,50 +23,72 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
     },
     orderBy: { slug: "asc" },
   })
+  type Subsubsection = (typeof subsubsections)[number]
 
-  const headers = [
-    { id: "titel", title: "Titel" },
-    { id: "status", title: "Status" },
-    { id: "foerdergegenstand", title: "Fördergegenstand" },
-    { id: "ansprechpartner", title: "Ansprechpartner:in" },
-    { id: "kostenschaetzung_euro", title: "Kostenschätzung (Euro)" },
-    { id: "planungsabschnitt", title: "Planungsabschnitt" },
-    { id: "laenge_m", title: "Länge (m)" },
-    { id: "breite_m", title: "Breite (m)" },
-    { id: "beschreibung", title: "Beschreibung" },
-    { id: "fuehrungsform", title: "Führungsform" },
-    { id: "lage", title: "Lage" },
-    { id: "fertigstellung", title: "Fertigstellung" },
-  ]
+  const columns = {
+    titel: {
+      title: "Titel",
+      value: (s: Subsubsection) => s.slug,
+    },
+    status: {
+      title: "Status",
+      value: (s: Subsubsection) => s.SubsubsectionStatus?.title || "",
+    },
+    foerdergegenstand: {
+      title: "Fördergegenstand",
+      value: (s: Subsubsection) => s.SubsubsectionTask?.title || "",
+    },
+    ansprechpartner: {
+      title: "Ansprechpartner:in",
+      value: (s: Subsubsection) =>
+        s.manager ? `${s.manager.firstName} ${s.manager.lastName}` : "",
+    },
+    kostenschaetzung_euro: {
+      title: "Kostenschätzung (Euro)",
+      value: (s: Subsubsection) => s.costEstimate?.toString() || "",
+    },
+    planungsabschnitt: {
+      title: "Planungsabschnitt",
+      value: (s: Subsubsection) => s.subsection.slug,
+    },
+    laenge_m: {
+      title: "Länge (m)",
+      value: (s: Subsubsection) => s.lengthM?.toString() || "",
+    },
+    breite_m: {
+      title: "Breite (m)",
+      value: (s: Subsubsection) => s.width?.toString() || "",
+    },
+    beschreibung: {
+      title: "Beschreibung",
+      value: (s: Subsubsection) => s.description || "",
+    },
+    fuehrungsform: {
+      title: "Führungsform",
+      value: (s: Subsubsection) => s.SubsubsectionInfra?.title || "",
+    },
+    lage: {
+      title: "Lage",
+      value: (s: Subsubsection) => {
+        const labelMap: Record<keyof typeof LocationEnum, string> = {
+          URBAN: "innerorts",
+          RURAL: "außerorts",
+        }
+        return (s.location && labelMap[s.location]) ?? ""
+      },
+    },
+    fertigstellung: {
+      title: "Fertigstellung",
+      value: (s: Subsubsection) =>
+        s.estimatedCompletionDate ? format(new Date(s.estimatedCompletionDate), "dd.MM.yyyy") : "",
+    },
+  }
 
-  const csvData = subsubsections.map((subsubsection) => {
-    const locationCode = String(subsubsection.location ?? "")
-    const lage =
-      locationCode.toUpperCase() === "INNERORTS"
-        ? "innerorts"
-        : locationCode.toUpperCase() === "OUTERORTS"
-          ? "außerorts"
-          : ""
+  const headers = Object.entries(columns).map(([id, { title }]) => ({ id, title }))
 
-    return {
-      titel: subsubsection.slug,
-      status: subsubsection.SubsubsectionStatus?.title || "",
-      foerdergegenstand: subsubsection.SubsubsectionTask?.title || "",
-      ansprechpartner: subsubsection.manager
-        ? `${subsubsection.manager.firstName} ${subsubsection.manager.lastName}`
-        : "",
-      kostenschaetzung_euro: subsubsection.costEstimate?.toString() || "",
-      planungsabschnitt: subsubsection.subsection.slug,
-      laenge_m: subsubsection.lengthM?.toString() || "",
-      breite_m: subsubsection.width?.toString() || "",
-      beschreibung: subsubsection.description || "",
-      fuehrungsform: subsubsection.SubsubsectionInfra?.title || "",
-      lage,
-      fertigstellung: subsubsection.estimatedCompletionDate
-        ? format(new Date(subsubsection.estimatedCompletionDate), "dd.MM.yyyy")
-        : "",
-    }
-  })
+  const csvData = subsubsections.map((s) =>
+    Object.fromEntries(Object.entries(columns).map(([id, col]) => [id, (col as any).value(s)])),
+  )
 
   const csvStringifier = createObjectCsvStringifier({
     header: headers,
