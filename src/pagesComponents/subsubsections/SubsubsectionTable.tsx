@@ -185,13 +185,15 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
           >
             Neuer Eintrag
           </Link>
-          <Link
-            button="white"
-            icon="download"
-            href={`/api/subsubsections/${projectSlug}/${subsectionSlug}/export`}
-          >
-            Einträge herunterladen (CSV)
-          </Link>
+          {subsubsections.length > 0 && (
+            <Link
+              button="white"
+              icon="download"
+              href={`/api/subsubsections/${projectSlug}/${subsectionSlug}/export`}
+            >
+              Einträge herunterladen (CSV)
+            </Link>
+          )}
         </IfUserCanEdit>
       </div>
     </section>
