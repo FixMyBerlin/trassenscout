@@ -5,7 +5,7 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { quote, shortTitle } from "@/src/core/components/text"
+import { shortTitle } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
@@ -62,7 +62,8 @@ export const SubsubsectionTasksWithData = () => {
                 Titel
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl Maßnahmen mit dem Maßnahmentyp
+                Anzahl Einträge mit <br />
+                diesem Eintragstyp
               </th>
               <th
                 scope="col"
@@ -82,8 +83,8 @@ export const SubsubsectionTasksWithData = () => {
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     <strong className="font-semibold">{Task.title}</strong>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {Task.subsubsectionCount} Maßnahmen mit dem Maßnahmentyp {quote(Task.title)}
+                  <td className="px-3 py-4 text-sm text-gray-500">
+                    {Task.subsubsectionCount} {Task.subsubsectionCount > 1 ? "Einträge" : "Eintrag"}
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
                     <IfUserCanEdit>
@@ -125,7 +126,7 @@ export const SubsubsectionTasksWithData = () => {
           className="mt-4"
           href={Routes.NewSubsubsectionTaskPage({ projectSlug })}
         >
-          Neue Maßnahme
+          Neuer Eintragstyp
         </Link>
       </IfUserCanEdit>
 
@@ -144,8 +145,8 @@ export const SubsubsectionTasksWithData = () => {
 const SubsubsectionTasksPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title="Maßnahmentypen" />
-      <PageHeader title="Maßnahmentypen" className="mt-12" />
+      <MetaTags noindex title="Eintragstypen" />
+      <PageHeader title="Eintragstypen" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
         <SubsubsectionTasksWithData />

@@ -383,7 +383,7 @@ model Subsubsection {
 
 enum SubsubsectionTypeEnum {
   ROUTE // fka Regelführung Strecke RF
-  AREA // Punktuelle Maßnahme- fka Sonderführung Punkt (Bereich) SF
+  AREA // Punktuelle Einträge (Maßnahmen) fka Sonderführung Punkt (Bereich) SF
 }
 
 enum LocationEnum {

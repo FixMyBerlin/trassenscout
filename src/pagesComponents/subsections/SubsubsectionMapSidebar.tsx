@@ -39,7 +39,6 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
       <div className="mt-3 flex items-center justify-between">
         <div className="flex items-center justify-start gap-2">
           <SubsubsectionIcon label={shortTitle(subsubsection.slug)} />
-          {subsubsection.type === "ROUTE" ? "Maßnahme" : "Punktuelle Maßnahme"}
         </div>
         <div className="flex items-center gap-3">
           <IfUserCanEdit>
@@ -91,7 +90,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
             <tbody className="divide-y divide-gray-200 bg-white">
               <tr>
                 <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
-                  Maßnahmentyp
+                  Eintragstyp
                 </th>
                 <td className="break-words px-3 py-4 text-sm text-gray-500">
                   {subsubsection.SubsubsectionTask?.title || "k.A."}

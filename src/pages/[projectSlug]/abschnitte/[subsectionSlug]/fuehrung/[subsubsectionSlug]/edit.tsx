@@ -99,7 +99,7 @@ const EditSubsubsection = () => {
   return (
     <>
       <MetaTags noindex title={seoEditTitleSlug(subsubsection.slug)} />
-      <PageHeader title="Maßnahme bearbeiten" className="mt-12" />
+      <PageHeader title="Eintrag bearbeiten" className="mt-12" />
 
       <SubsubsectionForm
         className="mt-10"
@@ -151,7 +151,7 @@ const EditSubsubsectionPage = () => {
             subsubsectionSlug: subsubsectionSlug!,
           })}
         >
-          Zurück zur Maßnahme
+          Zurück zum Eintrag
         </Link>
       </p>
     </LayoutRs>

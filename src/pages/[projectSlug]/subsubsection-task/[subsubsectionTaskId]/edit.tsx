@@ -68,8 +68,8 @@ const EditSubsubsectionsTaskWithQuery = () => {
 const EditSubsubsectionTaskPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title={seoEditTitle("Maßnahmentyp")} />
-      <PageHeader title="Maßnahmentyp bearbeiten" className="mt-12" />
+      <MetaTags noindex title={seoEditTitle("Eintragstyp")} />
+      <PageHeader title="Eintragstyp bearbeiten" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
         <EditSubsubsectionsTaskWithQuery />

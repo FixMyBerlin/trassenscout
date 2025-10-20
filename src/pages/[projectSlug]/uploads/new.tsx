@@ -133,12 +133,11 @@ const NewUploadWithQuery = () => {
     <>
       {subsubsectionIdFromParam && (
         <p className="py-5">
-          Die Datei wird der Maßnahme mit ID {quote(subsubsectionIdFromParam.toString())}{" "}
-          zugeordnet.
+          Die Datei wird dem Eintrag mit ID {quote(subsubsectionIdFromParam.toString())} zugeordnet.
         </p>
       )}
       {/* {selectedSubsection && (
-        <p>Die Datei wird der Maßnahme {quote(selectedSubsection.title)} zugeordnet.</p>
+        <p>Die Datei wird dem Eintrag {quote(selectedSubsection.title)} zugeordnet.</p>
       )} */}
 
       {["FILE_SELECTED", "FILE_UPLOADING", "FILE_ERROR", "FILE_UPLOADED", "FILE_SAVED"].includes(
@@ -169,7 +168,7 @@ const NewUploadWithQuery = () => {
 
         {subsubsectionIdFromParam && (
           <Link href={backUrl}>
-            {subsubsectionIdFromParam ? "Zurück zur Maßnahme" : "Zurück zu Dokumenten"}
+            {subsubsectionIdFromParam ? "Zurück zum Eintrag" : "Zurück zu Dokumenten"}
           </Link>
         )}
       </ButtonWrapper>

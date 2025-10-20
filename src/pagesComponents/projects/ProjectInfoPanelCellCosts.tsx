@@ -28,7 +28,7 @@ export const ProjectInfoPanelCellCosts: React.FC<Props> = ({ projectSlug }) => {
       </div>
       {accCosts !== 0 ? (
         <>
-          <p className="font-bold">Maßnahmen mit Kostendefinition</p>
+          <p className="font-bold">Einträge mit Kostendefinition</p>
           <ul>
             {Object.entries(costStructure).map(([key, value]) => (
               <li className="" key={key}>

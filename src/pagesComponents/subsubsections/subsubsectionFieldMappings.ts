@@ -6,7 +6,7 @@ export const subsubsectionFieldTranslations = {
   type: "Typ der Geometrie",
   geometry: "Geometrie",
   isExistingInfra: "Bestand – keine Maßnahme geplant",
-  subsubsectionTaskId: "Maßnahmentyp",
+  subsubsectionTaskId: "Eintragstyp",
   location: "Lage",
   lengthM: "Länge",
   width: "Breite",
