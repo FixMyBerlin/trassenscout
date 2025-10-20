@@ -25,6 +25,10 @@ export function withProjectMembership<TParams extends { projectSlug: string; [k:
         return new Response("Unauthorized", { status: 401 })
       }
 
+      if (ctx.session.role === "ADMIN") {
+        return await handler({ userId, params: resolved, request })
+      }
+
       const membership = await db.membership.findFirst({
         where: { userId, project: { slug: projectSlug }, role: { in: allowedRoles } },
         select: { id: true },
