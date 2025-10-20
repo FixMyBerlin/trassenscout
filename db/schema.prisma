@@ -551,6 +551,7 @@ model Upload {
   subsectionId    Int?
   Subsubsection   Subsubsection? @relation(fields: [subsubsectionId], references: [id])
   subsubsectionId Int?
+  protocols       Protocol[]
   LogEntry        LogEntry[]
 }
 
@@ -743,6 +744,7 @@ model Protocol {
   //
   protocolTopics        ProtocolTopic[]
   LogEntry              LogEntry[]
+  uploads               Upload[]
   //
   reviewState           ProtocolReviewState @default(APPROVED)
   reviewedAt            DateTime? // review metadata tbd

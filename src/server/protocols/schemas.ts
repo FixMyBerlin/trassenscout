@@ -26,6 +26,7 @@ export const ProtocolSchema = z.object({
   // LIST ALL m2mFields HERE
   // We need to do this manually, since dynamic zod types don't work
   protocolTopics: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
+  uploads: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
 })
 
 export const DeleteProtocolSchema = ProjectSlugRequiredSchema.merge(
@@ -37,6 +38,7 @@ export const DeleteProtocolSchema = ProjectSlugRequiredSchema.merge(
 export const ProtocolFormSchema = ProtocolSchema.omit({
   date: true,
   protocolTopics: true,
+  uploads: true,
   userId: true,
   protocolAuthorType: true,
   updatedById: true,
@@ -51,6 +53,9 @@ export const ProtocolFormSchema = ProtocolSchema.omit({
     // LIST ALL m2mFields HERE
     // We need to do this manually, since dynamic zod types don't work
     protocolTopics: z
+      .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
+      .transform((v) => v || []),
+    uploads: z
       .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
       .transform((v) => v || []),
   }),

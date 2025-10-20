@@ -74,6 +74,7 @@ export const AdminEditProtocolForm = ({
   const m2mFieldsInitialValues: Record<M2MFieldsType | string, string[]> = {}
   m2mFields.forEach((fieldName) => {
     if (fieldName in protocol) {
+      // @ts-expect-error
       m2mFieldsInitialValues[fieldName] = Array.from(protocol[fieldName].values(), (obj) =>
         String(obj.id),
       )

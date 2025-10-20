@@ -2,7 +2,7 @@ import { getBlitzContext } from "@/src/blitz-server"
 import { gpt5Mini } from "@/src/models"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { generateObject, NoObjectGeneratedError } from "ai"
-import db from "db"
+import db, { ProtocolReviewState, ProtocolType } from "db"
 import { Langfuse } from "langfuse"
 import { z } from "zod"
 
@@ -198,9 +198,11 @@ Attachements: All attachements are Base64-encoded. Ignore images. If there are P
         date: new Date(combinedResult.date),
         subsectionId: combinedResult.subsectionId,
         projectId: combinedResult.projectId,
-        protocolAuthorType: "SYSTEM",
-        protocolUpdatedByType: "SYSTEM",
-        reviewState: isSenderApproved ? "NEEDSREVIEW" : "NEEDSADMINREVIEW",
+        protocolAuthorType: ProtocolType.SYSTEM,
+        protocolUpdatedByType: ProtocolType.SYSTEM,
+        reviewState: isSenderApproved
+          ? ProtocolReviewState.NEEDSREVIEW
+          : ProtocolReviewState.NEEDSADMINREVIEW,
         protocolEmailId: protocolEmailId,
         reviewNotes: reviewNote || null,
         protocolTopics: {

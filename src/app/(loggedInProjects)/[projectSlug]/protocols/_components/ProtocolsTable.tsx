@@ -172,6 +172,25 @@ export const ProtocolsTable = ({
                               </Link>
                             </div>
                           )}
+                          {protocol.uploads && protocol.uploads.length > 0 && (
+                            <div>
+                              <p className="mb-2 font-medium text-gray-500">Dokumente:</p>
+                              <ul className="list-inside list-disc space-y-1">
+                                {protocol.uploads.map((upload) => (
+                                  <li key={upload.id} className="text-gray-700">
+                                    <a
+                                      href={upload.externalUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-blue-600 hover:text-blue-800 hover:underline"
+                                    >
+                                      {upload.title}
+                                    </a>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
                           <CreateEditReviewHistory protocol={protocol} />
                           <div className="flex flex-col items-start gap-3">
                             <IfUserCanEdit>

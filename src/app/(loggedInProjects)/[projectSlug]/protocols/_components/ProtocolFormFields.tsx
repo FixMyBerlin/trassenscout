@@ -6,10 +6,11 @@ import {
   LabeledTextareaField,
   LabeledTextField,
 } from "@/src/core/components/forms"
-import { blueButtonStyles } from "@/src/core/components/links"
+import { blueButtonStyles, Link } from "@/src/core/components/links"
 import createProtocolTopic from "@/src/server/protocol-topics/mutations/createProtocolTopic"
 import getProtocolTopicsByProject from "@/src/server/protocol-topics/queries/getProtocolTopicsByProject"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
+import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useState } from "react"
@@ -23,12 +24,21 @@ export const ProtocolFormFields = ({ projectSlug }: ProtocolFormFieldsProps) => 
   const [{ protocolTopics }, { refetch }] = useQuery(getProtocolTopicsByProject, {
     projectSlug,
   })
+  const [{ uploads }] = useQuery(getUploadsWithSubsections, {
+    projectSlug,
+  })
   const [newTopic, setNewTopic] = useState("")
   const [createProtocolTopicMutation] = useMutation(createProtocolTopic)
 
   const topicsOptions = protocolTopics.length
     ? protocolTopics.map((t) => {
         return { value: String(t.id), label: t.title }
+      })
+    : []
+
+  const uploadsOptions = uploads.length
+    ? uploads.map((u) => {
+        return { value: String(u.id), label: u.title }
       })
     : []
 
@@ -96,6 +106,30 @@ export const ProtocolFormFields = ({ projectSlug }: ProtocolFormFieldsProps) => 
           >
             Hinzufügen
           </button>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        {!!uploadsOptions.length ? (
+          <LabeledCheckboxGroup
+            scope="uploads"
+            classNameItemWrapper="grid grid-cols-2 gap-1.5 w-full"
+            items={uploadsOptions}
+            label="Dokumente"
+          />
+        ) : (
+          <p>
+            Es sind wurden keine Dokumente hochgeladen. Um Dokumente hochzuladen, verwenden Sie
+            bitte die Upload-Funktion.
+          </p>
+        )}
+        <div className="text-sm">
+          <Link blank href={`/${projectSlug}/uploads/new`} icon="plus">
+            Neues Dokument hochladen
+          </Link>
+          <p className="mt-1 text-gray-500">
+            Lade ein Dokument im Projekt hoch und verknüpfe es danach mit diesem Protokoll
+          </p>
         </div>
       </div>
     </>

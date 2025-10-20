@@ -19,6 +19,13 @@ export default resolver.pipe(
       include: {
         protocolTopics: true,
         subsection: true,
+        uploads: {
+          select: {
+            id: true,
+            title: true,
+            externalUrl: true,
+          },
+        },
         author: {
           select: {
             id: true,

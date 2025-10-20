@@ -1,13 +1,14 @@
 import { ProtocolTypePill } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/ProtocolsTable"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getProtocol from "@/src/server/protocols/queries/getProtocol"
+import getProtocols from "@/src/server/protocols/queries/getProtocols"
 import { ProtocolReviewState, ProtocolType } from "@prisma/client"
 
 export const CreateEditReviewHistory = ({
   protocol,
   className,
 }: {
-  protocol: Awaited<ReturnType<typeof getProtocol>>
+  protocol: Awaited<ReturnType<typeof getProtocols>>[0] | Awaited<ReturnType<typeof getProtocol>>
   className?: string
 }) => {
   return (

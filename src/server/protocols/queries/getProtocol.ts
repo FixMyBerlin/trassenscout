@@ -26,7 +26,6 @@ export default resolver.pipe(
         reviewState: { in: ["NEEDSREVIEW", "APPROVED"] }, // Only show reviewed or approved protocols to normal users
       },
       include: {
-        protocolTopics: true,
         subsection: true,
         project: {
           select: { slug: true },
@@ -50,6 +49,19 @@ export default resolver.pipe(
             id: true,
             firstName: true,
             lastName: true,
+          },
+        },
+        uploads: {
+          select: {
+            id: true,
+            title: true,
+            externalUrl: true,
+          },
+        },
+        protocolTopics: {
+          select: {
+            id: true,
+            title: true,
           },
         },
       },

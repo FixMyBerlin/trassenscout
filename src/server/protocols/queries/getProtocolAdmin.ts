@@ -22,6 +22,13 @@ export default resolver.pipe(
         },
         protocolTopics: true,
         subsection: true,
+        uploads: {
+          select: {
+            id: true,
+            title: true,
+            externalUrl: true,
+          },
+        },
         author: {
           select: {
             id: true,
