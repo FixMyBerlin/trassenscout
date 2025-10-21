@@ -4,15 +4,19 @@ import { getConfig } from "@/src/core/lib/next-s3-upload/src/utils/config"
 import { model } from "@/src/models"
 import { GetObjectCommand, S3Client, S3ServiceException } from "@aws-sdk/client-s3"
 import { generateText } from "ai"
+import { Langfuse } from "langfuse"
 
 // TODO
-// if this is really a feature in the future we should consider:
+// in the future we should consider:
 // split in 1. get the file 2. send to ai 3. save summary to db
 // so we can call it externally (e.g., as a tool or in email processing pipeline)
 // Note: External calls would need different authentication mechanism
 // use streamText() from ai for user experience
-// add langfuse
 // add hint for user in UI
+
+const langfuse = new Langfuse({
+  environment: process.env.NODE_ENV,
+})
 
 export async function POST(request: Request, { params }: { params: { uploadId: string } }) {
   try {
@@ -96,6 +100,11 @@ export async function POST(request: Request, { params }: { params: { uploadId: s
 
     console.log("Generating summary with AI...")
 
+    const trace = langfuse.trace({
+      name: "summarize-upload",
+      userId: String(session?.userId),
+    })
+
     // Generate summary using AI
     const { text } = await generateText({
       model: model,
@@ -114,10 +123,20 @@ export async function POST(request: Request, { params }: { params: { uploadId: s
           content: [{ type: "file", data: pdfData, mimeType: "application/pdf" }],
         },
       ],
+      experimental_telemetry: {
+        isEnabled: true,
+        functionId: "summarize-upload-function",
+        metadata: {
+          langfuseTraceId: trace.id,
+        },
+      },
     })
 
     console.log("AI Summary generated successfully")
     console.log("Summary:", text)
+
+    // in ai stream functions: onFinish
+    await langfuse.flushAsync()
 
     return Response.json({
       success: true,
