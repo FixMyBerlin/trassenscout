@@ -22,7 +22,7 @@ export const SummaryField = ({ uploadId, isGeneratingSummary, setIsGeneratingSum
       })
 
       if (!response.ok) {
-        throw new Error("Failed to generate summary")
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
 
       const data = (await response.json()) as {
@@ -31,11 +31,12 @@ export const SummaryField = ({ uploadId, isGeneratingSummary, setIsGeneratingSum
         summary: string
         title: string
       }
-      console.log("Summary generated:", data)
 
-      // Set the summary value in the form
-      if (data.summary) {
+      if (data.success && data.summary) {
         setValue("summary", data.summary)
+        console.log("Summary generated successfully")
+      } else {
+        throw new Error("Invalid response data")
       }
     } catch (error) {
       console.error("Error generating summary:", error)
