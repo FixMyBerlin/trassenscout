@@ -134,8 +134,14 @@ export async function POST(request: Request) {
     // Get the IDs of created uploads to connect to the protocol
     const uploadIds = createdUploads.map((upload) => upload!.id)
 
-    //  tbd
-    const trace = langfuse.trace({ sessionId: "some-session-id", name: "process-protocol-email" })
+    // tbd
+    // sessions: atm we do not need sessions; might be useful if we have a chat-like iterative ai process
+    // see langfuse docs: https://langfuse.com/docs/observability/features/sessions
+    // const trace = langfuse.trace({ sessionId: "some-session-id", name: "process-protocol-email" })
+    const trace = langfuse.trace({
+      name: "process-protocol-email",
+      userId: String(session?.userId) || "SYSTEM",
+    })
 
     let subsections: Array<{ id: number; slug: string; start: string; end: string }> = []
     let protocolTopics: Array<{ id: number; title: string }> = []
@@ -224,7 +230,7 @@ export async function POST(request: Request) {
         schema: finalExtractionSchema,
         experimental_telemetry: {
           isEnabled: true,
-          functionId: "process-protocol-email-stage-2",
+          functionId: "process-protocol-email-function",
           metadata: {
             langfuseTraceId: trace.id,
           },
@@ -298,17 +304,17 @@ Do not include any explanations or commentary.
       finalResult = result.object
     } catch (error) {
       if (NoObjectGeneratedError.isInstance(error)) {
-        console.log("NoObjectGeneratedError in stage 2")
+        console.log("NoObjectGeneratedError")
         console.log("Cause:", error.cause)
         console.log("Text:", error.text)
         console.log("Response:", error.response)
         console.log("Usage:", error.usage)
       }
       console.error("Error in AI processing (stage 2):", error)
-      return Response.json({ error: "Failed to process email with AI (stage 2)" }, { status: 500 })
+      return Response.json({ error: "Failed to process email with AI" }, { status: 500 })
     }
 
-    console.log("Stage 2 AI extraction result:", JSON.stringify(finalResult, null, 2))
+    console.log("AI extraction result:", JSON.stringify(finalResult, null, 2))
 
     const combinedResult = {
       ...finalResult,
