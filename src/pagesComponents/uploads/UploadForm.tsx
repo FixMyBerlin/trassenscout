@@ -29,7 +29,7 @@ export function UploadForm<S extends z.ZodType<any, any>>(
   })
 
   return (
-    <Form<S> {...formProps}>
+    <Form<S> disabled={isGeneratingSummary} {...formProps}>
       <LabeledTextField type="text" name="title" label="Kurzbeschreibung" />
       {!isSubsubsectionUpload && (
         <LabeledSelect
