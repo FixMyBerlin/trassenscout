@@ -551,6 +551,8 @@ model Upload {
   subsectionId    Int?
   Subsubsection   Subsubsection? @relation(fields: [subsubsectionId], references: [id])
   subsubsectionId Int?
+  protocolEmail   ProtocolEmail? @relation(fields: [protocolEmailId], references: [id])
+  protocolEmailId Int?
   protocols       Protocol[]
   LogEntry        LogEntry[]
 }
@@ -714,6 +716,7 @@ model ProtocolEmail {
   text      String
   //
   protocols Protocol[]
+  uploads   Upload[]
 }
 
 model Protocol {
