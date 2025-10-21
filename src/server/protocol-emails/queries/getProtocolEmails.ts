@@ -11,6 +11,13 @@ export default resolver.pipe(resolver.authorize("ADMIN"), async () => {
           title: true,
         },
       },
+      uploads: {
+        select: {
+          id: true,
+          title: true,
+          externalUrl: true,
+        },
+      },
     },
   })
 

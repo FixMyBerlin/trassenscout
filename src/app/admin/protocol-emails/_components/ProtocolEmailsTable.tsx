@@ -61,7 +61,7 @@ export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
   }
 
   return (
-    <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+    <div>
       <table className="min-w-full divide-y divide-gray-300">
         <thead className="bg-gray-50">
           <tr>
@@ -79,6 +79,9 @@ export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
               Protokolle
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
+              Dokumente
             </th>
             <th className="relative px-6 py-3">
               <span className="sr-only">Aktionen</span>
@@ -117,6 +120,29 @@ export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
                   "—"
                 )}
               </td>
+              <td className="px-6 py-4 text-sm text-gray-500">
+                {email.uploads.length > 0 ? (
+                  <ul className="space-y-1">
+                    {email.uploads.map((upload: any) => (
+                      <li key={upload.id}>
+                        <a
+                          href={upload.externalUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 hover:underline"
+                          title={upload.title}
+                        >
+                          {upload.title.length > 30
+                            ? `${upload.title.slice(0, 30)}...`
+                            : upload.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  "—"
+                )}
+              </td>
               <td className="flex flex-col items-start gap-2 px-6 py-4 text-sm font-medium">
                 <button
                   type="button"
@@ -139,14 +165,12 @@ export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
         </tbody>
       </table>
 
-      <div className="bg-gray-50 px-6 py-3">
-        <Link
-          href="/admin/protocol-emails/new"
-          className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          Neue E-Mail hinzufügen
-        </Link>
-      </div>
+      <Link
+        href="/admin/protocol-emails/new"
+        className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      >
+        Neue E-Mail hinzufügen
+      </Link>
     </div>
   )
 }
