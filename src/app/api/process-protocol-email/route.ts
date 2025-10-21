@@ -1,6 +1,8 @@
 import { getBlitzContext } from "@/src/blitz-server"
 import { gpt5Mini } from "@/src/models"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { parseEmail } from "@/src/server/protocol-emails/parseEmail"
+import { uploadEmailAttachment } from "@/src/server/protocol-emails/uploadEmailAttachment"
 import { generateObject, NoObjectGeneratedError } from "ai"
 import db, { ProtocolReviewState, ProtocolType } from "db"
 import { Langfuse } from "langfuse"
@@ -58,7 +60,79 @@ export async function POST(request: Request) {
       return Response.json({ error: "ProtocolEmail not found" }, { status: 404 })
     }
 
-    // todo attachements: create documents in db and create relations to email and protocol
+    // Parse the raw MIME email to separate body from attachments
+    console.log("Parsing email to extract body and attachments...")
+    let emailBody: string
+    let attachments: Array<{
+      filename: string
+      contentType: string
+      size: number
+      content: Buffer
+    }> = []
+
+    try {
+      const parsed = await parseEmail(protocolEmail.text)
+      emailBody = parsed.body
+      attachments = parsed.attachments
+      console.log(
+        `Extracted email body (${emailBody.length} chars) and ${attachments.length} attachments`,
+      )
+    } catch (error) {
+      console.error("Error parsing email:", error)
+      // If parsing fails, use the original text as body
+      emailBody = protocolEmail.text
+      console.log("Failed to parse email, using original text as body")
+    }
+
+    // (if upload is commented out for testing) just log attachment information
+    // if (attachments.length > 0) {
+    //   console.log("=== ATTACHMENTS FOUND ===")
+    //   attachments.forEach((attachment, index) => {
+    //     console.log(`Attachment ${index + 1}:`)
+    //     console.log(`  - Filename: ${attachment.filename}`)
+    //     console.log(`  - Content-Type: ${attachment.contentType}`)
+    //     console.log(`  - Size: ${attachment.size} bytes`)
+    //     console.log(`  - Content preview: ${attachment.content.slice(0, 50).toString("base64")}...`)
+    //   })
+    //   console.log("=========================")
+    // } else {
+    //   console.log("No attachments found in email")
+    // }
+
+    // Upload attachments to S3 and create Upload records (DISABLED FOR TESTING)
+    const uploadPromises = attachments.map(async (attachment) => {
+      console.log(`Uploading attachment: ${attachment.filename} (${attachment.size} bytes)`)
+
+      try {
+        // Upload to S3
+        const uploadedFile = await uploadEmailAttachment(attachment, protocolEmail.projectId)
+
+        // Create Upload record in database
+        const upload = await db.upload.create({
+          data: {
+            title: attachment.filename,
+            externalUrl: uploadedFile.url,
+            projectId: protocolEmail.projectId,
+            protocolEmailId: protocolEmailId,
+            // tbd: summary
+          },
+        })
+
+        console.log(`Created Upload record ${upload.id} for ${attachment.filename}`)
+        return upload
+      } catch (error) {
+        console.error(`Error uploading attachment ${attachment.filename}:`, error)
+        // Continue processing other attachments even if one fails
+        return null
+      }
+    })
+
+    const uploadResults = await Promise.all(uploadPromises)
+    const createdUploads = uploadResults.filter((u) => u !== null)
+    console.log(`Successfully processed ${createdUploads.length}/${attachments.length} attachments`)
+
+    // Get the IDs of created uploads to connect to the protocol
+    const uploadIds = createdUploads.map((upload) => upload!.id)
 
     //  tbd
     const trace = langfuse.trace({ sessionId: "some-session-id", name: "process-protocol-email" })
@@ -133,13 +207,11 @@ export async function POST(request: Request) {
         },
         system:
           "You are an AI assistant that can read and process Emails and gather information to create a protocol entry.",
-        prompt: `EMAIL: ${protocolEmail.text}
+        prompt: `EMAIL: ${emailBody}
 
-This is an MIME type email text. The email was forwarded to a system email address ts@ki.ts - which collects the emails which should be processed. The original email might have been sent from different email providers and servers.
+This email was forwarded to a system email address and has been pre-processed to extract the plain text body. Attachments have been separated and stored separately.
 
-The original / main email is part of a conversation of administration staff and related stakeholders in the context of an infrastructural planning project. Your task is to get necessary information from the raw email text to create a project protocol entry in a task manager app.
-
-Attachements: All attachements are Base64-encoded. Ignore images. If there are PDF attachements, extract ONLY text from them if they contain relevant information.
+The email is part of a conversation of administration staff and related stakeholders in the context of an infrastructural planning project. Your task is to get necessary information from the email text to create a project protocol entry in a task manager app.
 
     Identify the following fields:
 
@@ -208,6 +280,9 @@ Attachements: All attachements are Base64-encoded. Ignore images. If there are P
         protocolTopics: {
           connect: combinedResult.protocolTopics.map((id) => ({ id })),
         },
+        uploads: {
+          connect: uploadIds.map((id) => ({ id })),
+        },
       },
     })
 
@@ -228,7 +303,8 @@ Attachements: All attachements are Base64-encoded. Ignore images. If there are P
     return Response.json({
       success: true,
       protocolId: protocol.id,
-      message: "Protocol created successfully",
+      uploadIds: uploadIds,
+      message: `Protocol created successfully with ${createdUploads.length} attachment(s)`,
     })
   } catch (error) {
     console.error("Error processing protocol email:", error)

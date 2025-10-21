@@ -28,8 +28,12 @@ export const ProtocolEmailsTable = ({ protocolEmails }: Props) => {
       })
 
       if (response.ok) {
-        const result = (await response.json()) as { protocolId: number }
-        alert(`Protokoll erfolgreich erstellt! ID: ${result.protocolId}`)
+        const result = (await response.json()) as { protocolId: number; uploadIds?: number[] }
+        const message = `Protokoll erfolgreich erstellt! ID: ${result.protocolId}`
+        const documentsMessage = result.uploadIds?.length
+          ? `\nDokumente mit den IDs: ${result.uploadIds.join(", ")} erstellt und verknüpft.`
+          : ""
+        alert(message + documentsMessage)
         router.push("/admin/protocols")
       } else {
         alert("Fehler beim Verarbeiten der E-Mail")
