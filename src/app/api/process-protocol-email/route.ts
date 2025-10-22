@@ -168,18 +168,38 @@ export async function POST(request: Request) {
 
     // Stage 2: AI call
     const finalExtractionSchema = z.object({
-      body: z.string().min(1).describe("The main content/body of the email"),
-      title: z.string().min(1).describe("A meaningful title for the protocol entry"),
-      date: z.string().describe("The relevant date from the email (ISO format)"),
+      body: z
+        .string()
+        .min(1)
+        .trim()
+        .describe("The full text content of the email body, formatted in clean Markdown."),
+
+      title: z
+        .string()
+        .min(1)
+        .max(150)
+        .trim()
+        .describe("A concise and meaningful title summarizing the email's main purpose or topic."),
+
+      date: z
+        .string()
+        .nullable()
+        .describe(
+          "The relevant date (or sent date) for the protocol entry in ISO format if available.",
+        ),
+
       subsectionId:
         subsections.length > 0
           ? z
               .enum(subsections.map((s) => s.id.toString()) as [string, ...string[]])
               .nullable()
               .describe(
-                `The subsection / 'Abschnitt' ID this email relates to, if applicable. Available subsections: ${subsections.map((s) => `${s.id} (${s.slug} - ${s.start} bis ${s.end})`).join(", ")}. Or null if no specific subsection relation is found.`,
+                `The subsection ('Abschnitt') ID this email relates to, if applicable. Available subsections: ${subsections
+                  .map((s) => `${s.id} (${s.slug} - ${s.start} bis ${s.end})`)
+                  .join(", ")}. Return null if no clear subsection is identified.`,
               )
-          : z.null().describe("No subsections available for this project"),
+          : z.null().describe("Null as no subsections are available for this project."),
+
       protocolTopics: z
         .array(
           protocolTopics.length > 0
@@ -188,8 +208,12 @@ export async function POST(request: Request) {
         )
         .describe(
           protocolTopics.length > 0
-            ? `Array of protocol topic IDs that this email relates to. Available topics: ${protocolTopics.map((t) => `${t.id} (${t.title})`).join(", ")}. Select all relevant topics based on the email content.`
-            : "No protocol topics available for this project, return an empty array.",
+            ? `Array of protocol topic IDs ('Tags') this email relates to. Available topics: ${protocolTopics
+                .map((t) => `${t.id} (${t.title})`)
+                .join(
+                  ", ",
+                )}. Select all that apply based on the email's content. Return [] if none are relevant.`
+            : "Empty array as no protocol topics are available for this project.",
         ),
     })
 
@@ -206,35 +230,70 @@ export async function POST(request: Request) {
           },
         },
         system:
-          "You are an AI assistant that can read and process Emails and gather information to create a protocol entry.",
-        prompt: `EMAIL: ${emailBody}
+          "You are an AI assistant that can read and process Emails and gather information from them.",
+        prompt: `EMAIL CONTENT:
+${emailBody}
 
-This email was forwarded to a system email address and has been pre-processed to extract the plain text body. Attachments have been separated and stored separately.
+---
 
-The email is part of a conversation of administration staff and related stakeholders in the context of an infrastructural planning project. Your task is to get necessary information from the email text to create a project protocol entry in a task manager app.
+### CONTEXT
+This email was pre-processed to extract the plain text body. Attachments have already been separated and stored elsewhere.
 
-    Identify the following fields:
+It is part of a professional discussion among administrative staff and stakeholders involved in an **infrastructural planning project**.
+Your task is to extract structured information to create a **protocol entry** for a task manager application.
 
-        - BODY: Here we need the actual text body of the email ONLY - and only once. In html the body is wrapped by <body> tags. Format the body in markdown - e.g. **bold text** for important sections and highlight ## headings. Format links as inline links in markdown format: [loremipsum.de](https://www.loremipsum.de/). Do not delete any parts of the body, even if they seem unimportant.
-        - DATE: The relevant date for the protocol entry. If nothing else is found, find the date the original email was sent.
-        - TITLE: Generate a meaningful title.
-        - SUBSECTIONID: ${
-          subsections.length > 0
-            ? `The subsection / 'Abschnitt' ID this email relates to. Based on the project context, please identify if this email relates to a specific subsection / 'Abschnitt' / 'Planungsabschnitt' / 'Bauabschnitt':
-    Available subsections for this project: ${subsections.map((s) => `${s.id} (${s.slug.toUpperCase()} - ${s.start}(Start) bis ${s.end}(Ende)`).join(", ")}
+---
 
-    Look for references to specific route sections, kilometer markers, street names, or geographic locations that might match the subsection start/end points or slugs.`
-            : "No subsections available for this project so set it to null."
-        }
-        - PROTOCOLTOPICS: ${
-          protocolTopics.length > 0
-            ? `A list of protocol topic IDs / 'Tags' that this email relates to. Based on the email content, identify which topics are relevant:
-    Available protocol topics for this project: ${protocolTopics.map((t) => `${t.id} (${t.title})`).join(", ")}
+### TASK
+Analyze the email and identify the following fields:
 
-    Look for keywords, themes, or subjects mentioned in the email that match these topic titles. Select all relevant topics - an email can relate to multiple topics. If no topics are clearly relevant, return an empty array.`
-            : "No protocol topics available for this project, return an empty array."
-        }
-    `,
+#### BODY
+- Provide the main readable text body of the email **once**.
+- Convert to **Markdown**:
+  - Use **bold** for key terms or names.
+  - Use ## Headings for sections or topics.
+  - Convert links into Markdown link format: [example.de](https://www.example.de).
+- Do **not** remove parts of the text even if they seem unimportant.
+- You may omit repetitive quoted reply chains (previous messages) if they add no new information.
+
+#### DATE
+- Extract the most relevant or explicitly mentioned date, like a deadline.
+- If none is found, use the original sent date of the email.
+- If no date can be determined, return null.
+- Output in ISO 8601 format if possible.
+
+#### TITLE
+- Generate a meaningful, concise title that reflects the email’s main subject or purpose.
+
+#### SUBSECTIONID
+${
+  subsections.length > 0
+    ? `Identify whether this email content relates to a specific route subsection ('Abschnitt' / 'Planungsabschnitt' / 'Bauabschnitt').
+
+Available subsections:
+${subsections
+  .map((s) => `${s.id} (${s.slug.toUpperCase()} - ${s.start}(Start) bis ${s.end}(Ende))`)
+  .join(", ")}
+
+Match based on route sections, kilometer markers, street names, or geographic references. If unclear, return null.`
+    : "No subsections available for this project; always return null."
+}
+
+#### PROTOCOLTOPICS
+${
+  protocolTopics.length > 0
+    ? `Select all relevant topic IDs from the list below based on the email’s content, themes, or keywords.
+Available protocol topics:
+${protocolTopics.map((t) => `${t.id} (${t.title})`).join(", ")}
+
+If no topic clearly applies, return an empty array.`
+    : "No protocol topics are defined for this project; return an empty array."
+}
+
+---
+
+Do not include any explanations or commentary.
+`,
       })
       finalResult = result.object
     } catch (error) {
@@ -267,7 +326,8 @@ The email is part of a conversation of administration staff and related stakehol
       data: {
         title: combinedResult.title,
         body: combinedResult.body,
-        date: new Date(combinedResult.date),
+        // if date is null or invalid, use current date
+        date: combinedResult.date ? new Date(combinedResult.date) || new Date() : new Date(),
         subsectionId: combinedResult.subsectionId,
         projectId: combinedResult.projectId,
         protocolAuthorType: ProtocolType.SYSTEM,
