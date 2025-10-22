@@ -1,6 +1,7 @@
 import db, { LocationEnum } from "@/db"
 import { withProjectMembership } from "@/src/app/api/(auth)/_utils/withProjectMembership"
 import { viewerRoles } from "@/src/authorization/constants"
+import { coordinatesToWkt } from "@/src/pages/api/survey/utils/coordinatesToWkt"
 import { createObjectCsvStringifier } from "csv-writer"
 import { format } from "date-fns"
 
@@ -16,10 +17,16 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
     },
     include: {
       manager: { select: { firstName: true, lastName: true } },
-      subsection: { select: { slug: true } },
+      subsection: {
+        select: {
+          slug: true,
+          networkHierarchy: { select: { title: true } },
+        },
+      },
       SubsubsectionTask: { select: { title: true } },
       SubsubsectionStatus: { select: { title: true } },
       SubsubsectionInfra: { select: { title: true } },
+      qualityLevel: { select: { title: true } },
     },
     orderBy: { slug: "asc" },
   })
@@ -34,9 +41,13 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
       title: "Status",
       value: (s: Subsubsection) => s.SubsubsectionStatus?.title || "",
     },
-    foerdergegenstand: {
-      title: "Fördergegenstand",
+    eintragstyp: {
+      title: "Eintragstyp",
       value: (s: Subsubsection) => s.SubsubsectionTask?.title || "",
+    },
+    ausbaustandard: {
+      title: "Ausbaustandard",
+      value: (s: Subsubsection) => s.subsection.networkHierarchy?.title || "",
     },
     ansprechpartner: {
       title: "Ansprechpartner:in",
@@ -81,6 +92,15 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
       title: "Fertigstellung",
       value: (s: Subsubsection) =>
         s.estimatedCompletionDate ? format(new Date(s.estimatedCompletionDate), "dd.MM.yyyy") : "",
+    },
+    geometrie: {
+      title: "Geometrie (WKT)",
+      value: (s: Subsubsection) => {
+        if (s.geometry) {
+          return coordinatesToWkt(JSON.stringify(s.geometry)) || ""
+        }
+        return ""
+      },
     },
   }
 
