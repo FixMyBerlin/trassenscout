@@ -1,7 +1,6 @@
 import db, { LocationEnum } from "@/db"
 import { withProjectMembership } from "@/src/app/api/(auth)/_utils/withProjectMembership"
 import { viewerRoles } from "@/src/authorization/constants"
-import { coordinatesToWkt } from "@/src/pages/api/survey/utils/coordinatesToWkt"
 import { createObjectCsvStringifier } from "csv-writer"
 import { format } from "date-fns"
 
@@ -89,18 +88,17 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
     },
     fertigstellung: {
       title: "Fertigstellung",
-      value: (s: Subsubsection) =>
-        s.estimatedCompletionDate ? format(new Date(s.estimatedCompletionDate), "dd.MM.yyyy") : "",
+      value: (s: Subsubsection) => s.estimatedCompletionDate || "",
     },
-    geometrie: {
-      title: "Geometrie (WKT)",
-      value: (s: Subsubsection) => {
-        if (s.geometry) {
-          return coordinatesToWkt(JSON.stringify(s.geometry)) || ""
-        }
-        return ""
-      },
-    },
+    // geometrie: {
+    //   title: "Geometrie (WKT)",
+    //   value: (s: Subsubsection) => {
+    //     if (s.geometry) {
+    //       return coordinatesToWkt(JSON.stringify(s.geometry)) || ""
+    //     }
+    //     return ""
+    //   },
+    // },
   }
 
   const headers = Object.entries(columns).map(([id, { title }]) => ({ id, title }))
