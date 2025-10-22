@@ -5,7 +5,7 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { quote, shortTitle } from "@/src/core/components/text"
+import { shortTitle } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
@@ -82,8 +82,9 @@ export const SubsubsectionStatussWithData = () => {
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     <strong className="font-semibold">{status.title}</strong>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {status.subsubsectionCount} Maßnahmen mit dem Status {quote(status.title)}
+                  <td className="px-3 py-4 text-sm text-gray-500">
+                    {status.subsubsectionCount}{" "}
+                    {status.subsubsectionCount > 1 ? "Maßnahmen" : "Maßnahme"}
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
                     <IfUserCanEdit>
