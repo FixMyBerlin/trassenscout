@@ -115,32 +115,36 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   </td>
                 </tr>
               )} */}
-              <tr>
-                <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
-                  Kostenschätzung
-                </th>
-                <td className="break-words px-3 py-4 text-sm text-gray-500">
-                  {formattedEuro(subsubsection.costEstimate)}
-                </td>
-              </tr>
-              <tr>
-                <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
-                  Ausbaustandard
-                </th>
-                <td className="break-words px-3 py-4 text-sm text-gray-500">
-                  {subsubsection.qualityLevel?.url ? (
-                    <Link
-                      blank
-                      className="flex items-center gap-1"
-                      href={subsubsection.qualityLevel.url}
-                    >
-                      {subsubsection.qualityLevel.title} <ArrowUpRightIcon className="h-4 w-4" />
-                    </Link>
-                  ) : (
-                    subsubsection.qualityLevel?.title || "k.A."
-                  )}
-                </td>
-              </tr>
+              {subsubsection.costEstimate && (
+                <tr>
+                  <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
+                    Kostenschätzung
+                  </th>
+                  <td className="break-words px-3 py-4 text-sm text-gray-500">
+                    {formattedEuro(subsubsection.costEstimate)}
+                  </td>
+                </tr>
+              )}
+              {subsubsection.qualityLevel?.title && (
+                <tr>
+                  <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
+                    Ausbaustandard
+                  </th>
+                  <td className="break-words px-3 py-4 text-sm text-gray-500">
+                    {subsubsection.qualityLevel.url ? (
+                      <Link
+                        blank
+                        className="flex items-center gap-1"
+                        href={subsubsection.qualityLevel.url}
+                      >
+                        {subsubsection.qualityLevel.title} <ArrowUpRightIcon className="h-4 w-4" />
+                      </Link>
+                    ) : (
+                      subsubsection.qualityLevel.title
+                    )}
+                  </td>
+                </tr>
+              )}
               {subsubsection.SubsubsectionInfrastructureType?.title && (
                 <tr>
                   <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
@@ -151,14 +155,16 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   </td>
                 </tr>
               )}
-              <tr>
-                <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
-                  Ansprechpartner:in
-                </th>
-                <td className="break-words px-3 py-4 text-sm text-gray-500">
-                  {getFullname(subsubsection.manager)}
-                </td>
-              </tr>
+              {subsubsection.manager && (
+                <tr>
+                  <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
+                    Ansprechpartner:in
+                  </th>
+                  <td className="break-words px-3 py-4 text-sm text-gray-500">
+                    {getFullname(subsubsection.manager)}
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
