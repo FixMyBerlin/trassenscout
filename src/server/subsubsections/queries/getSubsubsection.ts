@@ -29,7 +29,9 @@ export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry"> &
       }
   ) & { manager: User } & { subsection: { slug: string } } & {
     qualityLevel?: Pick<QualityLevel, "title" | "slug" | "url">
-  } & { SubsubsectionTask?: { title: string } }
+  } & { SubsubsectionTask?: { title: string } } & {
+    SubsubsectionInfrastructureType?: { title: string }
+  }
 
 export default resolver.pipe(
   resolver.zod(GetSubsubsection),
@@ -49,6 +51,7 @@ export default resolver.pipe(
         manager: { select: { firstName: true, lastName: true } },
         subsection: { select: { slug: true } },
         qualityLevel: { select: { title: true, slug: true, url: true } },
+        SubsubsectionInfrastructureType: { select: { title: true } },
         ...includeM2mFields,
       },
     }

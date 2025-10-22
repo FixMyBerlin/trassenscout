@@ -52,6 +52,7 @@ export const SubsubsectionSchema = z.object({
   subsubsectionStatusId: InputNumberOrNullSchema,
   subsubsectionTaskId: InputNumberOrNullSchema,
   subsubsectionInfraId: InputNumberOrNullSchema,
+  subsubsectionInfrastructureTypeId: InputNumberOrNullSchema,
   maxSpeed: InputNumberOrNullSchema,
   trafficLoad: InputNumberOrNullSchema,
   trafficLoadDate: NullableDateSchema,

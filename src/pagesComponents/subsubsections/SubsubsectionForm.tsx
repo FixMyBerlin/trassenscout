@@ -16,6 +16,7 @@ import { getUserSelectOptions } from "@/src/pagesComponents/users/utils/getUserS
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getQualityLevelsWithCount from "@/src/server/qualityLevels/queries/getQualityLevelsWithCount"
 import getSubsubsectionInfrasWithCount from "@/src/server/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
+import getSubsubsectionInfrastructureTypesWithCount from "@/src/server/subsubsectionInfrastructureType/queries/getSubsubsectionInfrastructureTypesWithCount"
 import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
 import getSubsubsectionTasksWithCount from "@/src/server/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
 import { Routes } from "@blitzjs/next"
@@ -54,6 +55,16 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
     ["", "-"],
     ...subsubsectionInfras.map((infra) => {
       return [infra.id, infra.title] as [number, string]
+    }),
+  ]
+  const [{ subsubsectionInfrastructureTypes }] = useQuery(
+    getSubsubsectionInfrastructureTypesWithCount,
+    { projectSlug },
+  )
+  const subsubsectionInfrastructureTypeOptions: [number | string, string][] = [
+    ["", "-"],
+    ...subsubsectionInfrastructureTypes.map((type) => {
+      return [type.id, type.title] as [number, string]
     }),
   ]
   // const [{ subsubsectionSpecials }] = useQuery(getSubsubsectionSpecialsWithCount, { projectSlug })
@@ -155,6 +166,21 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         inlineLeadingAddon="€"
         label={subsubsectionFieldTranslations.costEstimate}
       />
+      <div className="flex items-end gap-5">
+        <LabeledSelect
+          name="subsubsectionInfrastructureTypeId"
+          label={subsubsectionFieldTranslations.subsubsectionInfrastructureTypeId}
+          optional
+          options={subsubsectionInfrastructureTypeOptions}
+          outerProps={{ className: "grow" }}
+        />
+        <LinkWithFormDirtyConfirm
+          href={Routes.SubsubsectionInfrastructureTypesPage({ projectSlug })}
+          className="py-2"
+        >
+          Fördergegenstand verwalten…
+        </LinkWithFormDirtyConfirm>
+      </div>
       <div className="flex items-end gap-5">
         <LabeledSelect
           name="qualityLevelId"

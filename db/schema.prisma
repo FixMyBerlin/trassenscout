@@ -144,26 +144,27 @@ model Project {
   manager         User?    @relation(fields: [managerId], references: [id])
   managerId       Int?
 
-  surveyResponseTopics  SurveyResponseTopic[]
-  subsections           Subsection[]
-  subsectionStatuses    SubsectionStatus[]
-  calendarEntries       CalendarEntry[]
-  contacts              Contact[]
-  uploads               Upload[]
-  memberships           Membership[]
-  operators             Operator[]
-  surveys               Survey[]
-  qualityLevels         QualityLevel[]
-  subsubsectionStatuses SubsubsectionStatus[]
-  subsubsectionTasks    SubsubsectionTask[]
-  subsubsectionInfras   SubsubsectionInfra[]
-  subsubsectionSpecials SubsubsectionSpecial[]
-  networkHierarchies    NetworkHierarchy[]
-  invites               Invite[]
-  LogEntry              LogEntry[]
-  SystemLogEntry        SystemLogEntry[]
-  protocols             Protocol[]
-  protocolTopics        ProtocolTopic[]
+  surveyResponseTopics             SurveyResponseTopic[]
+  subsections                      Subsection[]
+  subsectionStatuses               SubsectionStatus[]
+  calendarEntries                  CalendarEntry[]
+  contacts                         Contact[]
+  uploads                          Upload[]
+  memberships                      Membership[]
+  operators                        Operator[]
+  surveys                          Survey[]
+  qualityLevels                    QualityLevel[]
+  subsubsectionStatuses            SubsubsectionStatus[]
+  subsubsectionTasks               SubsubsectionTask[]
+  subsubsectionInfras              SubsubsectionInfra[]
+  subsubsectionInfrastructureTypes SubsubsectionInfrastructureType[]
+  subsubsectionSpecials            SubsubsectionSpecial[]
+  networkHierarchies               NetworkHierarchy[]
+  invites                          Invite[]
+  LogEntry                         LogEntry[]
+  SystemLogEntry                   SystemLogEntry[]
+  protocols                        Protocol[]
+  protocolTopics                   ProtocolTopic[]
 }
 
 model Membership {
@@ -356,25 +357,28 @@ model Subsubsection {
   grantsOtherFunding            Float? //  Zuwendungen aus anderen Förderprogrammen
   ownFunds                      Float? //  Einsatz Eigenmittel
 
-  qualityLevel          QualityLevel?        @relation(fields: [qualityLevelId], references: [id])
-  qualityLevelId        Int?
+  qualityLevel                      QualityLevel?                    @relation(fields: [qualityLevelId], references: [id])
+  qualityLevelId                    Int?
   //
-  manager               User?                @relation(fields: [managerId], references: [id])
-  managerId             Int?
+  manager                           User?                            @relation(fields: [managerId], references: [id])
+  managerId                         Int?
   //
-  subsection            Subsection           @relation(fields: [subsectionId], references: [id])
-  subsectionId          Int
+  subsection                        Subsection                       @relation(fields: [subsectionId], references: [id])
+  subsectionId                      Int
   //
-  uploads               Upload[]
+  uploads                           Upload[]
   //
-  SubsubsectionStatus   SubsubsectionStatus? @relation(fields: [subsubsectionStatusId], references: [id])
-  subsubsectionStatusId Int?
+  SubsubsectionStatus               SubsubsectionStatus?             @relation(fields: [subsubsectionStatusId], references: [id])
+  subsubsectionStatusId             Int?
   //
-  SubsubsectionTask     SubsubsectionTask?   @relation(fields: [subsubsectionTaskId], references: [id])
-  subsubsectionTaskId   Int?
+  SubsubsectionTask                 SubsubsectionTask?               @relation(fields: [subsubsectionTaskId], references: [id])
+  subsubsectionTaskId               Int?
   //
-  SubsubsectionInfra    SubsubsectionInfra?  @relation(fields: [subsubsectionInfraId], references: [id])
-  subsubsectionInfraId  Int?
+  SubsubsectionInfra                SubsubsectionInfra?              @relation(fields: [subsubsectionInfraId], references: [id])
+  subsubsectionInfraId              Int?
+  //
+  SubsubsectionInfrastructureType   SubsubsectionInfrastructureType? @relation(fields: [subsubsectionInfrastructureTypeId], references: [id])
+  subsubsectionInfrastructureTypeId Int?
 
   specialFeatures SubsubsectionSpecial[] // - UNUSED
 
@@ -447,6 +451,21 @@ model SubsubsectionTask {
 
 // Führungsform
 model SubsubsectionInfra {
+  id             Int             @id @default(autoincrement())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  //
+  slug           String // shortTitle and URL Slug
+  title          String
+  //
+  project        Project         @relation(fields: [projectId], references: [id])
+  projectId      Int
+  subsubsections Subsubsection[]
+
+  @@unique([projectId, slug])
+}
+
+model SubsubsectionInfrastructureType {
   id             Int             @id @default(autoincrement())
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt

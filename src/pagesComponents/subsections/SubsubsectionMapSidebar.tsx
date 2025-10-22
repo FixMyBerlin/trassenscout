@@ -141,6 +141,16 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   )}
                 </td>
               </tr>
+              {subsubsection.SubsubsectionInfrastructureType?.title && (
+                <tr>
+                  <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
+                    Fördergegenstand
+                  </th>
+                  <td className="break-words px-3 py-4 text-sm text-gray-500">
+                    {subsubsection.SubsubsectionInfrastructureType.title}
+                  </td>
+                </tr>
+              )}
               <tr>
                 <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
                   Ansprechpartner:in
