@@ -26,7 +26,6 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
       SubsubsectionTask: { select: { title: true } },
       SubsubsectionStatus: { select: { title: true } },
       SubsubsectionInfra: { select: { title: true } },
-      qualityLevel: { select: { title: true } },
     },
     orderBy: { slug: "asc" },
   })
