@@ -4,6 +4,7 @@ import {
   LabeledRadiobuttonGroup,
   LabeledTextField,
 } from "@/src/core/components/forms"
+import { statusStyleTranslations } from "@/src/pagesComponents/subsectionStatus/SubsectionStatusForm"
 import { StatusStyleEnum } from "@prisma/client"
 import { z } from "zod"
 
@@ -17,7 +18,10 @@ export function SubsubsectionStatusForm<S extends z.ZodType<any, any>>(props: Fo
       <LabeledRadiobuttonGroup
         label="Darstellung"
         scope="style"
-        items={Object.entries(StatusStyleEnum).map(([key, value]) => ({ value, label: value }))}
+        items={Object.entries(StatusStyleEnum).map(([key, value]) => ({
+          value,
+          label: statusStyleTranslations[value],
+        }))}
         classNameItemWrapper="flex gap-5 !space-y-0 items-center"
       />
     </Form>

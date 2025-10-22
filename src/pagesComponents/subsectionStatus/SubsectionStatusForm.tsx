@@ -7,6 +7,11 @@ import {
 import { StatusStyleEnum } from "@prisma/client"
 import { z } from "zod"
 
+export const statusStyleTranslations: Record<StatusStyleEnum, string> = {
+  [StatusStyleEnum.REGULAR]: "Standard",
+  [StatusStyleEnum.DASHED]: "Gestrichelt",
+}
+
 export function SubsectionStatusForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const { ...formProps } = props
 
@@ -17,7 +22,10 @@ export function SubsectionStatusForm<S extends z.ZodType<any, any>>(props: FormP
       <LabeledRadiobuttonGroup
         label="Darstellung"
         scope="style"
-        items={Object.entries(StatusStyleEnum).map(([key, value]) => ({ value, label: value }))}
+        items={Object.entries(StatusStyleEnum).map(([key, value]) => ({
+          value,
+          label: statusStyleTranslations[value],
+        }))}
         classNameItemWrapper="flex gap-5 !space-y-0 items-center"
       />
     </Form>
