@@ -54,6 +54,7 @@ const EditUploadWithQuery = () => {
         id: upload.id,
         projectSlug,
       })
+      // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
       await setQueryData(updated)
       await router.push(backUrl)
     } catch (error: any) {
@@ -76,6 +77,7 @@ const EditUploadWithQuery = () => {
           onSubmit={handleSubmit}
           subsections={subsections}
           isSubsubsectionUpload={isSubsubsectionUpload}
+          uploadId={upload.id}
         />
       </div>
 

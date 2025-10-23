@@ -21,10 +21,15 @@ export default resolver.pipe(
   authorizeProjectMember(extractProjectSlug, viewerRoles),
   async ({ id }) => {
     const protocol = await db.protocol.findFirst({
-      where: { id },
+      where: {
+        id,
+        reviewState: { in: ["NEEDSREVIEW", "APPROVED"] }, // Only show reviewed or approved protocols to normal users
+      },
       include: {
-        protocolTopics: true,
         subsection: true,
+        project: {
+          select: { slug: true },
+        },
         author: {
           select: {
             id: true,
@@ -37,6 +42,26 @@ export default resolver.pipe(
             id: true,
             firstName: true,
             lastName: true,
+          },
+        },
+        reviewedBy: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        uploads: {
+          select: {
+            id: true,
+            title: true,
+            externalUrl: true,
+          },
+        },
+        protocolTopics: {
+          select: {
+            id: true,
+            title: true,
           },
         },
       },
