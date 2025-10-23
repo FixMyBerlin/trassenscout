@@ -79,12 +79,6 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       />
       {/* UNUSED */}
       {/* <LabeledTextField type="text" name="subTitle" label="Title" optional /> */}
-      <GeometryInput />
-      {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
-      <LabeledCheckbox
-        scope="isExistingInfra"
-        label={subsubsectionFieldTranslations.isExistingInfra}
-      />
       <div className="flex items-end gap-5">
         <LabeledSelect
           name="subsubsectionTaskId"
@@ -96,9 +90,15 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           href={Routes.SubsubsectionTasksPage({ projectSlug })}
           className="py-2"
         >
-          Maßnahmetypen verwalten…
+          Eintragstypen verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
+      <GeometryInput />
+      {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
+      <LabeledCheckbox
+        scope="isExistingInfra"
+        label={subsubsectionFieldTranslations.isExistingInfra}
+      />
       <LabeledRadiobuttonGroup
         label={subsubsectionFieldTranslations.location}
         scope="location"

@@ -5,7 +5,7 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { quote, shortTitle } from "@/src/core/components/text"
+import { shortTitle } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
@@ -65,7 +65,7 @@ export const SubsubsectionSpecialsWithData = () => {
                 Titel
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl Maßnahmen mit dieser Besonderheit
+                Anzahl Einträge mit dieser Besonderheit
               </th>
               <th
                 scope="col"
@@ -85,9 +85,9 @@ export const SubsubsectionSpecialsWithData = () => {
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     <strong className="font-semibold">{Special.title}</strong>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {Special.subsubsectionCount} Maßnahmen mit der Besonderheit{" "}
-                    {quote(Special.title)}
+                  <td className="px-3 py-4 text-sm text-gray-500">
+                    {Special.subsubsectionCount}{" "}
+                    {Special.subsubsectionCount > 1 ? "Einträge" : "Eintrag"}
                   </td>
                   <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
                     <IfUserCanEdit>

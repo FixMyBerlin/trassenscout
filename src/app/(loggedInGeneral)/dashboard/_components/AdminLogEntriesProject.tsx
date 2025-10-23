@@ -34,7 +34,7 @@ export const AdminLogEntriesProject = async ({ projectId, projectSlug }: Props) 
   const { logEntries } = await invoke(getLogEntries, {
     projectSlug,
     where: { projectId },
-    take: 20,
+    take: 50,
   })
 
   return (

@@ -1,5 +1,3 @@
-import { MapLegend } from "@/src/core/components/Map/MapLegend"
-import { legendItemsConfig } from "@/src/core/components/Map/legendConfig"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
@@ -193,11 +191,12 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
       >
         {markers}
       </BaseMap>
-      <MapLegend
+      {/* MapLegend temporarily hidden */}
+      {/* <MapLegend
         legendItemsConfig={
           pageSubsubsectionSlug ? legendItemsConfig.subsubsection : legendItemsConfig.subsection
         }
-      />
+      /> */}
       <p className="mt-2 text-right text-xs text-gray-400">
         Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)
       </p>

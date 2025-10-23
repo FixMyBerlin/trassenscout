@@ -34,10 +34,10 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                 scope="col"
                 className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
               >
-                Maßnahmen
+                Einträge
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Maßnahmentyp
+                Eintragstyp
               </th>
               <th
                 scope="col"
@@ -168,24 +168,34 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
         </table>
         {!subsubsections.length && (
           <div className="border-t px-3 py-5">
-            <ZeroCase visible={subsubsections.length} name="Maßnahmen" />
+            <ZeroCase visible={subsubsections.length} name="Einträge" />
           </div>
         )}
       </TableWrapper>
 
-      <IfUserCanEdit>
-        <Link
-          button="blue"
-          icon="plus"
-          className="mt-4"
-          href={Routes.NewSubsubsectionPage({
-            projectSlug,
-            subsectionSlug: subsectionSlug!,
-          })}
-        >
-          Neue Maßnahme
-        </Link>
-      </IfUserCanEdit>
+      <div className="mt-4 flex gap-3">
+        <IfUserCanEdit>
+          <Link
+            button="blue"
+            icon="plus"
+            href={Routes.NewSubsubsectionPage({
+              projectSlug,
+              subsectionSlug: subsectionSlug!,
+            })}
+          >
+            Neuer Eintrag
+          </Link>
+          {subsubsections.length > 0 && (
+            <Link
+              button="white"
+              icon="download"
+              href={`/api/subsubsections/${projectSlug}/${subsectionSlug}/export`}
+            >
+              Einträge herunterladen (CSV)
+            </Link>
+          )}
+        </IfUserCanEdit>
+      </div>
     </section>
   )
 }

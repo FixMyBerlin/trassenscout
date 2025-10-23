@@ -6,6 +6,7 @@ import seedProjects from "./seeds/projects"
 import seedQualityLevels from "./seeds/qualityLevels"
 import seedStakeholdernotes from "./seeds/stakeholdernotes"
 import seedSubsections from "./seeds/subsections"
+import seedSubsectionStatus from "./seeds/subsectionStatus"
 import seedSubsubsectionInfra from "./seeds/subsubsectionInfra"
 import seedSubsubsectionSpecial from "./seeds/subsubsectionSpecial"
 import seedSubsubsectionStatus from "./seeds/subsubsectionStatus"
@@ -41,6 +42,7 @@ const seed = async () => {
     await seedUploads()
     await seedSurveys()
     await seedSurveyResponseTopics()
+    await seedSubsectionStatus()
     await seedSubsubsectionStatus()
     await seedSubsubsectionTask()
     await seedSubsubsectionInfra()

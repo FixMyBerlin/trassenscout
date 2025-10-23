@@ -48,7 +48,7 @@ export const ExperimentalSubsectionInfoPanel = () => {
         <div className="grid grid-cols-3 divide-x text-sm md:grid-cols-4 lg:grid-cols-6">
           <SubsectionInfoPanelCellContainer
             icon={<CheckCircleIcon className="h-4 w-4" />}
-            title="Maßnahmen"
+            title="Einträge"
           >
             <Suspense fallback={<Spinner />}>
               <SubsectionInfoPanelCellSubsubsections

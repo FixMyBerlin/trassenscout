@@ -45,9 +45,8 @@ describe("createLogEntry mutation", async () => {
     managerId: null,
     operatorId: null,
     networkHierarchyId: null,
-    subsubsectionStatusId: null,
+    subsectionStatusId: null,
     estimatedCompletionDateString: null,
-    isFinalRoute: true,
   }
   const subsection = await createSubsection({ ...subsectionInput }, mockCtx)
 

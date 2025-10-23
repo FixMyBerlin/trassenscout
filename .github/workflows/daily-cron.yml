@@ -16,9 +16,9 @@ jobs:
         # --fail makes the github action fail on error
         # -s (silent) removes the progress bar
         # -S (show error) makes sure errors show even with -s active
-        run: curl --fail -s -S -X GET "https://staging.trassenscout.de/api/private/cron-invites-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+        run: curl --fail -s -S -X GET "https://staging.trassenscout.de/api/cron-invites-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
       - name: Cleanup logEntries STAGING
-        run: curl --fail -s -S -X GET "https://staging.trassenscout.de/api/private/cron-logEntries-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+        run: curl --fail -s -S -X GET "https://staging.trassenscout.de/api/cron-logEntries-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
 
   run-daily-tasks-production:
     runs-on: ubuntu-latest
@@ -26,6 +26,6 @@ jobs:
       name: production
     steps:
       - name: Cleanup invites PRODUCTION
-        run: curl --fail -s -S -X GET "https://trassenscout.de/api/private/cron-invites-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+        run: curl --fail -s -S -X GET "https://trassenscout.de/api/cron-invites-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
       - name: Cleanup logEntries PRODUCTION
-        run: curl --fail -s -S -X GET "https://trassenscout.de/api/private/cron-logEntries-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+        run: curl --fail -s -S -X GET "https://trassenscout.de/api/cron-logEntries-cleanup?apiKey=${{ secrets.TS_API_KEY }}"

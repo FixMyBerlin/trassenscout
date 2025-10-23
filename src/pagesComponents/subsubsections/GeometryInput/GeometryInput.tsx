@@ -42,7 +42,7 @@ export const GeometryInput = () => {
   return (
     <>
       <LabeledRadiobuttonGroup
-        label="Geometrie der Maßnahme"
+        label="Geometrie des Eintrags"
         scope="type"
         items={[
           { value: "ROUTE", label: "Linie" }, // fka Regelführung (RF)
@@ -53,13 +53,13 @@ export const GeometryInput = () => {
       {type === "ROUTE" ? (
         <div id="geometry-input-help" className="m-0 text-gray-500">
           Klicken Sie innerhalb des blau markierten Planungsabschnitts auf die gewünschte Stelle, um
-          die Maßnahme dort zu verorten. Achten Sie darauf, dass die neue Maßnahmelinie nicht auf
-          bereits vorhandenen (grau dargestellten) Linien verläuft.
+          den Eintrag dort zu verorten. Achten Sie darauf, dass die neue Linie nicht auf bereits
+          vorhandenen (grau dargestellten) Linien verläuft.
         </div>
       ) : (
         <div id="geometry-input-help" className="m-0 text-gray-500">
-          Klicken Sie innerhalb des blau markierten Planungsabschnitts, um den Anfangspunkt der
-          Maßnahme zu setzen. Mit einem zweiten Klick legen Sie den Endpunkt fest.
+          Klicken Sie innerhalb des blau markierten Planungsabschnitts, um den Anfangspunkt des
+          Eintrags zu setzen. Mit einem zweiten Klick legen Sie den Endpunkt fest.
         </div>
       )}
       {geometry && (

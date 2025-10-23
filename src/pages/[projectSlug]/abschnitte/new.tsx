@@ -54,7 +54,6 @@ const NewSubsection = () => {
         initialValues={{
           labelPos: "bottom",
           order: (maxOrderSubsections || 0) + 1,
-          isFinalRoute: true,
         }}
         submitText="Erstellen"
         schema={NewSubsectionSchema}

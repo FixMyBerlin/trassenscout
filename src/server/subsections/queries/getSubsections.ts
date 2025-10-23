@@ -12,10 +12,11 @@ type GetSubsectionsInput = { projectSlug: string } & Pick<
   "where" | "orderBy" | "skip" | "take"
 >
 export type SubsectionWithPositionAndStatus = SubsectionWithPosition & {
-  SubsubsectionStatus: {
+  SubsectionStatus: {
     id: number
     slug: string
     title: string
+    style: string
   } | null
 }
 export default resolver.pipe(
@@ -49,7 +50,7 @@ export default resolver.pipe(
             operator: { select: { id: true, slug: true, title: true } },
             stakeholdernotes: { select: { id: true, status: true } },
             subsubsections: { select: { id: true } },
-            SubsubsectionStatus: true,
+            SubsectionStatus: true,
           },
         }),
     })

@@ -1,4 +1,11 @@
-import { Form, FormProps, LabeledTextField } from "@/src/core/components/forms"
+import {
+  Form,
+  FormProps,
+  LabeledRadiobuttonGroup,
+  LabeledTextField,
+} from "@/src/core/components/forms"
+import { statusStyleTranslations } from "@/src/pagesComponents/subsectionStatus/SubsectionStatusForm"
+import { StatusStyleEnum } from "@prisma/client"
 import { z } from "zod"
 
 export function SubsubsectionStatusForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
@@ -8,6 +15,15 @@ export function SubsubsectionStatusForm<S extends z.ZodType<any, any>>(props: Fo
     <Form<S> {...formProps}>
       <LabeledTextField type="text" name="slug" label="Kurz-Titel und URL-Teil" />
       <LabeledTextField type="text" name="title" label="Titel" />
+      <LabeledRadiobuttonGroup
+        label="Darstellung"
+        scope="style"
+        items={Object.entries(StatusStyleEnum).map(([key, value]) => ({
+          value,
+          label: statusStyleTranslations[value],
+        }))}
+        classNameItemWrapper="flex gap-5 !space-y-0 items-center"
+      />
     </Form>
   )
 }
