@@ -53,7 +53,7 @@ export const ReviewProtocolForm = ({
     <>
       <CreateEditReviewHistory protocol={protocol} />
 
-      <ProtocolSummary protocol={protocol} projectSlug={protocol.project.slug} />
+      <ProtocolSummary protocol={protocol} />
 
       <Form
         schema={ProtocolReviewFormSchema}

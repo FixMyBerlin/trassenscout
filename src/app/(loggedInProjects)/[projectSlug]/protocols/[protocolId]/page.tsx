@@ -1,5 +1,5 @@
+import { ProtocolDetailClient } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/[protocolId]/_components/ProtocolDetailClient"
 import { CreateEditReviewHistory } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/CreateEditReviewHistory"
-import { ProtocolSummary } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/ProtocolSummary"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { invoke } from "@/src/blitz-server"
 import { Link } from "@/src/core/components/links"
@@ -33,9 +33,10 @@ export default async function ProtocolDetail({
           </IfUserCanEdit>
         }
       />
+
       <CreateEditReviewHistory protocol={protocol} />
 
-      <ProtocolSummary protocol={protocol} projectSlug={params.projectSlug} />
+      <ProtocolDetailClient protocol={protocol} protocolId={protocolId} />
 
       <div className="mt-8 border-t border-gray-200 pt-4">
         <Link href={`/${params.projectSlug}/protocols`}>← Zurück zur Protokoll-Übersicht</Link>

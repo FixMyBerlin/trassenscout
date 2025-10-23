@@ -9,27 +9,29 @@ import { createProtocolFilterUrl } from "./createFilterUrl"
 
 type ProtocolSummaryProps = {
   protocol: Awaited<ReturnType<typeof getProtocol>>
-  projectSlug: string
 }
 
-export const ProtocolSummary = ({ protocol, projectSlug }: ProtocolSummaryProps) => {
+export const ProtocolSummary = ({ protocol }: ProtocolSummaryProps) => {
   return (
     <div className="mt-7 space-y-4">
       <div>
         <span className="font-medium text-gray-500">am/bis: </span>
-        <span className="text-gray-900">
-          {format(new Date(protocol.date!), "P", { locale: de })}
-        </span>
+        <span>{format(new Date(protocol.date!), "P", { locale: de })}</span>
       </div>
-
-      {protocol.subsection && (
-        <div className="flex items-end gap-2">
-          <span className="font-medium text-gray-500">Planungsabschnitt: </span>
-          <Link href={`/${projectSlug}/abschnitte/${protocol.subsection.slug}`}>
+      <div>
+        <span className="font-medium text-gray-500">Titel: </span>
+        <span>{protocol.title}</span>
+      </div>
+      <div>
+        <span className="font-medium text-gray-500">Planungsabschnitt: </span>
+        {protocol.subsection ? (
+          <Link href={`/${protocol.project.slug}/abschnitte/${protocol.subsection.slug}`}>
             <SubsectionIcon label={shortTitle(protocol.subsection.slug)} />
           </Link>
-        </div>
-      )}
+        ) : (
+          <span>Keine Angabe</span>
+        )}
+      </div>
 
       {protocol.body && (
         <div className="max-w-3xl rounded-md bg-purple-100 p-4">
@@ -40,24 +42,28 @@ export const ProtocolSummary = ({ protocol, projectSlug }: ProtocolSummaryProps)
         </div>
       )}
 
-      {!!protocol.protocolTopics.length && (
-        <div>
-          <p className="mb-2 font-medium text-gray-500">Tags</p>
+      <div>
+        <p className="mb-2 font-medium text-gray-500">Tags: </p>
+        {!!protocol.protocolTopics.length ? (
           <ul className="list-inside list-none space-y-1">
             {protocol.protocolTopics.map((topic) => (
               <li className="whitespace-nowrap text-gray-700" key={topic.id}>
-                <Link href={createProtocolFilterUrl(projectSlug, { searchterm: topic.title })}>
+                <Link
+                  href={createProtocolFilterUrl(protocol.project.slug, { searchterm: topic.title })}
+                >
                   #{topic.title}
                 </Link>
               </li>
             ))}
           </ul>
-        </div>
-      )}
+        ) : (
+          <span>Keine Tags zugeordnet</span>
+        )}
+      </div>
 
-      {!!protocol.uploads?.length && (
-        <div>
-          <p className="mb-2 font-medium text-gray-500">Verknüpfte Dokumente</p>
+      <div>
+        <p className="mb-2 font-medium text-gray-500">Verknüpfte Dokumente</p>
+        {!!protocol.uploads?.length ? (
           <ul className="list-inside list-disc space-y-1">
             {protocol.uploads.map((upload) => (
               <li key={upload.id} className="text-gray-700">
@@ -72,8 +78,10 @@ export const ProtocolSummary = ({ protocol, projectSlug }: ProtocolSummaryProps)
               </li>
             ))}
           </ul>
-        </div>
-      )}
+        ) : (
+          <span>Keine Dokumente verknüpft</span>
+        )}
+      </div>
     </div>
   )
 }
