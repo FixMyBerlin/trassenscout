@@ -4,6 +4,7 @@ import { ProtocolSummary } from "@/src/app/(loggedInProjects)/[projectSlug]/prot
 import { ReprocessProtocolButton } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/ReprocessProtocolButton"
 import { ReprocessProtocolEditForm } from "@/src/app/(loggedInProjects)/[projectSlug]/protocols/_components/ReprocessProtocolEditForm"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import getProtocol from "@/src/server/protocols/queries/getProtocol"
 import { useEffect, useState } from "react"
 
@@ -45,33 +46,35 @@ export const ProtocolDetailClient = ({ protocol, protocolId }: Props) => {
     <>
       {aiSuggestions ? (
         // Split view: Protocol view on left, AI suggestions form on right
-        <div id="ai-suggestions-form" className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <div>
-            <h2 className="mb-4 text-lg font-medium">Aktuelles Protokoll</h2>
-            <ProtocolSummary protocol={protocol} />
-          </div>
+        <SuperAdminBox>
+          <div id="ai-suggestions-form" className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div>
+              <h2 className="mb-4 text-lg font-medium">Aktuelles Protokoll</h2>
+              <ProtocolSummary protocol={protocol} />
+            </div>
 
-          <div>
-            <IfUserCanEdit>
-              <ReprocessProtocolEditForm
-                protocol={protocol}
-                aiSuggestions={aiSuggestions}
-                onCancel={handleCancelAiSuggestions}
-              />
-            </IfUserCanEdit>
+            <div>
+              <IfUserCanEdit>
+                <ReprocessProtocolEditForm
+                  protocol={protocol}
+                  aiSuggestions={aiSuggestions}
+                  onCancel={handleCancelAiSuggestions}
+                />
+              </IfUserCanEdit>
+            </div>
           </div>
-        </div>
+        </SuperAdminBox>
       ) : (
         // Normal view
         <>
-          <div className="mt-6">
+          <SuperAdminBox>
             <IfUserCanEdit>
               <ReprocessProtocolButton
                 protocolId={protocolId}
                 onAiSuggestions={handleAiSuggestions}
               />
             </IfUserCanEdit>
-          </div>
+          </SuperAdminBox>
 
           <ProtocolSummary protocol={protocol} />
         </>
