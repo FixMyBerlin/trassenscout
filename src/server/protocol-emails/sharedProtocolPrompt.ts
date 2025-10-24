@@ -11,14 +11,13 @@ export function createFieldInstructions({
 }) {
   return `
 #### BODY
-- Provide the main readable text body of the ${isReprocessing ? "protocol" : "email"} **once**.${isReprocessing ? " Current Protocol Body is the MOST IMPORTANT source." : ""}
+- Summarize the content of the ${isReprocessing ? "protocol" : "email"} **once**.${isReprocessing ? " Current Protocol Body is the MOST IMPORTANT source." : ""}
+- Do not leave out any important details.
 ${hasUploads ? `Enhance the content by incorporating relevant information from the document summaries provided above. They are LESS IMPORTANT than the protocol body! All documents must be considered, use information from EVERY document summary.` : ""}
 - Convert to **Markdown**:
   - Use **bold** for key terms or names.
   - Use ## Headings for sections or topics.
-  - Convert links into Markdown link format: [example.de](https://www.example.de).
-- Do **not** remove parts of the text even if they seem unimportant.
-- You may omit repetitive quoted reply chains (previous messages) if they add no new information.
+  - Convert links into Markdown link format: [example](https://www.example.de).
 
 #### DATE
 - Extract the most relevant or explicitly mentioned date, like a deadline.${!isReprocessing ? "\n- If none is found, use the original sent date of the email." : ""}
