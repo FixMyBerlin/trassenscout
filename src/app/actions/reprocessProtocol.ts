@@ -118,7 +118,7 @@ export async function reprocessProtocol(protocolId: number) {
   // Call generateObject with shared schema and prompt
   const trace = langfuse.trace({
     name: "reprocess-protocol",
-    userId: String(session?.userId) || "SYSTEM",
+    userId: String(session?.userId),
   })
 
   const finalExtractionSchema = createProtocolExtractionSchema(subsections, protocolTopics)

@@ -47,10 +47,10 @@ export default resolver.pipe(
         protocolAuthorType: ProtocolType.USER,
         updatedById: currentUserId,
         protocolUpdatedByType: ProtocolType.USER,
-        // New protocols are immediately marked as APPROVED when created by editors/admins
+        // New protocols are immediately marked as APPROVED when created by users
         reviewState: ProtocolReviewState.APPROVED,
-        reviewedById: currentUserId,
-        reviewedAt: new Date(),
+        reviewedById: null,
+        reviewedAt: null,
       },
     })
 

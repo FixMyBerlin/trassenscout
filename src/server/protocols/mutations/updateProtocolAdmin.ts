@@ -13,6 +13,9 @@ const UpdateProtocolAdminSchema = ProtocolSchema.omit({
   reviewedAt: true,
   reviewedById: true,
   reviewNotes: true,
+  userId: true,
+  protocolAuthorType: true,
+  protocolUpdatedByType: true,
 }).merge(z.object({ id: z.number() }))
 
 export default resolver.pipe(
