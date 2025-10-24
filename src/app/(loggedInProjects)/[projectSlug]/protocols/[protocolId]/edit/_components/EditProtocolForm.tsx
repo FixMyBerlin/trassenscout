@@ -42,6 +42,7 @@ export const EditProtocolForm = ({
           id: protocolId,
           projectSlug,
         })
+        router.push(`/${projectSlug}/protocols`)
       } catch (error) {
         alert(
           "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
