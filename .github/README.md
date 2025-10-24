@@ -45,6 +45,12 @@
 |                          |                                  |                                         |
 | `TS_API_KEY`             | `secrets.TS_API_KEY`             |                                         |
 |                          |                                  |                                         |
+| `OPENAI_API_KEY`         | `secrets.OPENAI_API_KEY`         |                                         |
+|                          |                                  |                                         |
+| `LANGFUSE_SECRET_KEY`    | `secrets.LANGFUSE_SECRET_KEY`    |                                         |
+| `LANGFUSE_PUBLIC_KEY`    | `secrets.LANGFUSE_PUBLIC_KEY`    |                                         |
+| `LANGFUSE_BASEURL`       | `vars.LANGFUSE_BASEURL`          |                                         |
+|                          |                                  |                                         |
 | `AWS_ACCESS_KEY_ID`      | `secrets.AWS_ACCESS_KEY_ID`      | Repository secret                       |
 | `AWS_SECRET_ACCESS_KEY`  | `secrets.AWS_SECRET_ACCESS_KEY`  | Repository secret                       |
 | `SSH_HOST`               | `secrets.SSH_HOST`               |                                         |
