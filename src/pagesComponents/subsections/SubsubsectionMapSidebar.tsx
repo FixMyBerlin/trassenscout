@@ -115,7 +115,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   </td>
                 </tr>
               )} */}
-              {subsubsection.costEstimate && (
+              {subsubsection.costEstimate !== null && subsubsection.costEstimate !== undefined && (
                 <tr>
                   <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
                     Kostenschätzung
