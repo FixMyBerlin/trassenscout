@@ -45,20 +45,20 @@ model User {
   phone          String?
   institution    String? // Organisation / Kommune
 
-  tokens                Token[]
-  sessions              Session[]
-  projects              Project[]
-  subsections           Subsection[]
-  memberships           Membership[]
-  Subsubsection         Subsubsection[]
-  invites               Invite[]
-  SurveyResponseComment SurveyResponseComment[]
-  LogEntry              LogEntry[]
-  SystemLogEntry        SystemLogEntry[]
+  tokens                 Token[]
+  sessions               Session[]
+  projects               Project[]
+  subsections            Subsection[]
+  memberships            Membership[]
+  Subsubsection          Subsubsection[]
+  invites                Invite[]
+  SurveyResponseComment  SurveyResponseComment[]
+  LogEntry               LogEntry[]
+  SystemLogEntry         SystemLogEntry[]
   //
-  protocolsAuthored     Protocol[]              @relation("ProtocolAuthor")
-  protocolsUpdated      Protocol[]              @relation("ProtocolUpdatedBy")
-  protocolsReviewed     Protocol[]              @relation("ProtocolReviewedBy")
+  projectRecordsAuthored ProjectRecord[]         @relation("ProjectRecordAuthor")
+  projectRecordsUpdated  ProjectRecord[]         @relation("ProjectRecordUpdatedBy")
+  projectRecordsReviewed ProjectRecord[]         @relation("ProjectRecordReviewedBy")
 }
 
 enum UserRoleEnum {
@@ -165,9 +165,9 @@ model Project {
   invites                          Invite[]
   LogEntry                         LogEntry[]
   SystemLogEntry                   SystemLogEntry[]
-  protocols                        Protocol[]
-  protocolTopics                   ProtocolTopic[]
-  ProtocolEmail                    ProtocolEmail[]
+  projectRecords                   ProjectRecord[]
+  projectRecordTopics              ProjectRecordTopic[]
+  ProjectRecordEmail               ProjectRecordEmail[]
 }
 
 model Membership {
@@ -286,7 +286,7 @@ model Subsection {
   stakeholdernotes              Stakeholdernote[]
   uploads                       Upload[]
   LogEntry                      LogEntry[]
-  Protocol                      Protocol[]
+  ProjectRecord                 ProjectRecord[]
 
   @@unique([projectId, slug])
   @@unique([projectId, order])
@@ -537,24 +537,24 @@ enum StakeholdernoteStatusEnum {
 }
 
 model Upload {
-  id              Int            @id @default(autoincrement())
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id                   Int                 @id @default(autoincrement())
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
   //
-  title           String
-  externalUrl     String
-  summary         String?
+  title                String
+  externalUrl          String
+  summary              String?
   //
-  project         Project        @relation(fields: [projectId], references: [id])
-  projectId       Int
-  subsection      Subsection?    @relation(fields: [subsectionId], references: [id])
-  subsectionId    Int?
-  Subsubsection   Subsubsection? @relation(fields: [subsubsectionId], references: [id])
-  subsubsectionId Int?
-  protocolEmail   ProtocolEmail? @relation(fields: [protocolEmailId], references: [id])
-  protocolEmailId Int?
-  protocols       Protocol[]
-  LogEntry        LogEntry[]
+  project              Project             @relation(fields: [projectId], references: [id])
+  projectId            Int
+  subsection           Subsection?         @relation(fields: [subsectionId], references: [id])
+  subsectionId         Int?
+  Subsubsection        Subsubsection?      @relation(fields: [subsubsectionId], references: [id])
+  subsubsectionId      Int?
+  projectRecordEmail   ProjectRecordEmail? @relation(fields: [projectRecordEmailId], references: [id])
+  projectRecordEmailId Int?
+  projectRecords       ProjectRecord[]
+  LogEntry             LogEntry[]
 }
 
 model Survey {
@@ -693,8 +693,8 @@ model LogEntry {
   upload             Upload?            @relation(fields: [uploadId], references: [id])
   surveyResponseId   Int?
   surveyResponse     SurveyResponse?    @relation(fields: [surveyResponseId], references: [id])
-  Protocol           Protocol?          @relation(fields: [protocolId], references: [id])
-  protocolId         Int?
+  ProjectRecord      ProjectRecord?     @relation(fields: [projectRecordId], references: [id])
+  projectRecordId    Int?
 
   @@index([projectId, createdAt])
 }
@@ -705,76 +705,76 @@ enum LogLevelActionEnum {
   DELETE
 }
 
-model ProtocolEmail {
-  id        Int        @id @default(autoincrement())
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+model ProjectRecordEmail {
+  id             Int             @id @default(autoincrement())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   //
-  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId Int
+  project        Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId      Int
   //
-  text      String
+  text           String
   //
-  protocols Protocol[]
-  uploads   Upload[]
+  projectRecords ProjectRecord[]
+  uploads        Upload[]
 }
 
-model Protocol {
-  id                    Int                 @id @default(autoincrement())
-  createdAt             DateTime            @default(now())
-  updatedAt             DateTime            @updatedAt
+model ProjectRecord {
+  id                         Int                      @id @default(autoincrement())
+  createdAt                  DateTime                 @default(now())
+  updatedAt                  DateTime                 @updatedAt
   //
-  date                  DateTime?
-  title                 String
-  body                  String?
+  date                       DateTime?
+  title                      String
+  body                       String?
   //
-  project               Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId             Int
+  project                    Project                  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId                  Int
   //
-  subsection            Subsection?         @relation(fields: [subsectionId], references: [id], onDelete: Cascade)
-  subsectionId          Int?
+  subsection                 Subsection?              @relation(fields: [subsectionId], references: [id], onDelete: Cascade)
+  subsectionId               Int?
   //
-  author                User?               @relation("ProtocolAuthor", fields: [userId], references: [id])
-  userId                Int?
-  protocolAuthorType    ProtocolType        @default(SYSTEM)
+  author                     User?                    @relation("ProjectRecordAuthor", fields: [userId], references: [id])
+  userId                     Int?
+  projectRecordAuthorType    ProjectRecordType        @default(SYSTEM)
   //
-  updatedBy             User?               @relation("ProtocolUpdatedBy", fields: [updatedById], references: [id])
-  updatedById           Int?
-  protocolUpdatedByType ProtocolType        @default(SYSTEM)
+  updatedBy                  User?                    @relation("ProjectRecordUpdatedBy", fields: [updatedById], references: [id])
+  updatedById                Int?
+  projectRecordUpdatedByType ProjectRecordType        @default(SYSTEM)
   //
-  protocolEmail         ProtocolEmail?      @relation(fields: [protocolEmailId], references: [id], onDelete: SetNull)
-  protocolEmailId       Int?
+  projectRecordEmail         ProjectRecordEmail?      @relation(fields: [projectRecordEmailId], references: [id], onDelete: SetNull)
+  projectRecordEmailId       Int?
   //
-  protocolTopics        ProtocolTopic[]
-  LogEntry              LogEntry[]
-  uploads               Upload[]
+  projectRecordTopics        ProjectRecordTopic[]
+  LogEntry                   LogEntry[]
+  uploads                    Upload[]
   //
-  reviewState           ProtocolReviewState @default(APPROVED)
-  reviewedAt            DateTime? // review metadata tbd
-  reviewedBy            User?               @relation("ProtocolReviewedBy", fields: [reviewedById], references: [id])
-  reviewedById          Int?
-  reviewNotes           String?
+  reviewState                ProjectRecordReviewState @default(APPROVED)
+  reviewedAt                 DateTime? // review metadata tbd
+  reviewedBy                 User?                    @relation("ProjectRecordReviewedBy", fields: [reviewedById], references: [id])
+  reviewedById               Int?
+  reviewNotes                String?
 }
 
-enum ProtocolType {
+enum ProjectRecordType {
   SYSTEM
   USER
 }
 
-enum ProtocolReviewState {
-  NEEDSREVIEW // System-generated protocols awaiting review
-  NEEDSADMINREVIEW // System-generated protocols where sender of email could not be approved - admin review needed
-  REJECTED // System-generated protocols that have been reviewed and rejected
-  APPROVED // User-created protocols that are automatically approved (no review needed)
+enum ProjectRecordReviewState {
+  NEEDSREVIEW // System-generated project records awaiting review
+  NEEDSADMINREVIEW // System-generated project records where sender of email could not be approved - admin review needed
+  REJECTED // System-generated project records that have been reviewed and rejected
+  APPROVED // User-created project records that are automatically approved (no review needed)
 }
 
-model ProtocolTopic {
-  id        Int        @id @default(autoincrement())
-  title     String
+model ProjectRecordTopic {
+  id             Int             @id @default(autoincrement())
+  title          String
   //
-  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId Int
-  protocols Protocol[]
+  project        Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId      Int
+  projectRecords ProjectRecord[]
 
   @@unique([title, projectId])
 }

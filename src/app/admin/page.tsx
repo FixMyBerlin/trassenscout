@@ -22,7 +22,7 @@ export default function AdminDashboardPage() {
           <Link href="/admin/memberships">Nutzer & Mitgliedschaften</Link>
         </li>
         <li>
-          <Link href="/admin/protocols">Protokolle (Review)</Link>
+          <Link href="/admin/project-records">Protokolle (Review)</Link>
         </li>
         <li>
           <Link href="/admin/surveys">Beteiligungen & Antworten</Link> |{" "}

@@ -11,7 +11,7 @@ type LogEntryCreate = {
   membershipId?: number
   calendarentryId?: number
   contactId?: number
-  protocolId?: number
+  projectRecordId?: number
   operatorId?: number
   subsectionId?: number
   networkhierarchyId?: number
