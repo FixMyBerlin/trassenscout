@@ -1,28 +1,33 @@
 import { z } from "zod"
 
-export function createProtocolExtractionSchema(
-  subsections: Array<{ id: number; slug: string; start: string; end: string }>,
-  protocolTopics: Array<{ id: number; title: string }>,
-) {
+export function createProtocolExtractionSchema({
+  subsections,
+  protocolTopics,
+  isReprocessing,
+}: {
+  subsections: Array<{ id: number; slug: string; start: string; end: string }>
+  protocolTopics: Array<{ id: number; title: string }>
+  isReprocessing?: boolean
+}) {
   return z.object({
     body: z
       .string()
       .min(1)
       .trim()
-      .describe("The full text content of the email body, formatted in clean Markdown."),
+      .describe(`The complete text content of the ${isReprocessing ? 'record entry' : 'email body'}, formatted in clean Markdown."`),
 
     title: z
       .string()
       .min(1)
       .max(150)
       .trim()
-      .describe("A concise and meaningful title summarizing the email's main purpose or topic."),
+      .describe(`A concise and meaningful title summarizing the ${isReprocessing ? 'record entry' : 'email'}'s main purpose or topic.`),
 
     date: z
       .string()
       .nullable()
       .describe(
-        "The relevant date (or sent date) for the protocol entry in ISO format if available.",
+        "The relevant date (or sent date) for the created project record entry in ISO format if available.",
       ),
 
     subsectionId:
@@ -31,13 +36,12 @@ export function createProtocolExtractionSchema(
             .enum(subsections.map((s) => s.id.toString()) as [string, ...string[]])
             .nullable()
             .describe(
-              `The subsection ('Abschnitt') ID this email relates to, if applicable. Available subsections: ${subsections
-                .map((s) => `${s.id} (${s.slug} - ${s.start} bis ${s.end})`)
+              `The subsection ('Abschnitt') ID this ${isReprocessing ? 'record entry' : 'email'} relates to, if applicable. Available subsections: ${subsections
+                .map((s) => `${s.id} (${s.slug} - ${s.start} to ${s.end})`)
                 .join(", ")}. Return null if no clear subsection is identified.`,
             )
         : z.null().describe("Null as no subsections are available for this project."),
-
-    protocolTopics: z
+    topics: z
       .array(
         protocolTopics.length > 0
           ? z.enum(protocolTopics.map((t) => t.id.toString()) as [string, ...string[]])
@@ -45,12 +49,12 @@ export function createProtocolExtractionSchema(
       )
       .describe(
         protocolTopics.length > 0
-          ? `Array of protocol topic IDs ('Tags') this email relates to. Available topics: ${protocolTopics
+          ? `Array of topic IDs ('Tags') this ${isReprocessing ? 'record entry' : 'email'} relates to. Available topics: ${protocolTopics
               .map((t) => `${t.id} (${t.title})`)
               .join(
                 ", ",
-              )}. Select all that apply based on the email's content. Return [] if none are relevant.`
-          : "Empty array as no protocol topics are available for this project.",
+              )}. Select all that apply based on the ${isReprocessing ? 'record entry' : 'email'}'s content. Return [] if none are relevant.`
+          : "Empty array as no topics are available for this project.",
       ),
   })
 }

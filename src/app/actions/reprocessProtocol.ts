@@ -121,7 +121,7 @@ export async function reprocessProtocol(protocolId: number) {
     userId: String(session?.userId),
   })
 
-  const finalExtractionSchema = createProtocolExtractionSchema(subsections, protocolTopics)
+  const finalExtractionSchema = createProtocolExtractionSchema({subsections, protocolTopics})
   const fieldInstructions = createFieldInstructions({
     subsections,
     protocolTopics,
@@ -161,27 +161,24 @@ export async function reprocessProtocol(protocolId: number) {
         },
       },
       system:
-        "You are an AI assistant that can read protocol entries to refine and extract structured information.",
-      prompt: `### PROTOCOL
+        "You are an AI assistant that can refine project record entries.",
+      prompt: `### PROJECT RECORD
 
-**Current Protocol Body (IMPORTANT!):**
+**Current record entry (IMPORTANT!):**
 ${protocol.body}
 
-${emailBody ? `**Original Email Body (from which Current Protocol Body was generated):**\n${emailBody}\n` : ""}
+${emailBody ? `**Original Email Body (from which the current record entry was generated):**\n${emailBody}\n` : ""}
 ${uploadsContext}
 
 ---
 
 ### CONTEXT
-This protocol entry was previously generated from an email and needs to be reprocessed with refined information.
-
-It is part of a professional discussion among administrative staff and stakeholders involved in an **infrastructural planning project**.
-Your task is to extract and refine structured information for the protocol entry.
+Your task is to extract structured information to refine a **project record entry** for a task manager application.
 
 ---
 
 ### TASK
-Analyze the protocol body${emailBody ? " and original email body" : ""} and identify the following fields:
+Analyze the current record entry ${emailBody ? " and original email body" : ""} ${uploads.length > 0 ? " and related document summaries" : ""} and identify the following fields:
 
 ${fieldInstructions}
 `,
@@ -214,7 +211,7 @@ ${fieldInstructions}
       body: finalResult.body,
       date: finalResult.date ? new Date(finalResult.date) : new Date(),
       subsectionId: finalResult.subsectionId ? parseInt(finalResult.subsectionId) : undefined,
-      protocolTopics: finalResult.protocolTopics?.map((id) => parseInt(id)) || [],
+      protocolTopics: finalResult.topics?.map((id) => parseInt(id)) || [],
     },
     message: "Protocol reprocessed successfully",
   }

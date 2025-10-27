@@ -175,7 +175,7 @@ export async function POST(request: Request) {
     )
 
     // Stage 2: AI call
-    const finalExtractionSchema = createProtocolExtractionSchema(subsections, protocolTopics)
+    const finalExtractionSchema = createProtocolExtractionSchema({subsections, protocolTopics})
     const fieldInstructions = createFieldInstructions({
       subsections,
       protocolTopics,
@@ -196,8 +196,8 @@ export async function POST(request: Request) {
           },
         },
         system:
-          "You are an AI assistant that can read and process Emails and gather information from them.",
-        prompt: `EMAIL CONTENT:
+          "You are an AI assistant that can read and process emails and gather information from them.",
+        prompt: `EMAIL BODY:
 ${emailBody}
 
 ---
@@ -205,60 +205,15 @@ ${emailBody}
 ### CONTEXT
 This email was pre-processed to extract the plain text body. Attachments have already been separated and stored elsewhere.
 
-It is part of a professional discussion among administrative staff and stakeholders involved in an **infrastructural planning project**.
-Your task is to extract structured information to create a **protocol entry** for a task manager application.
+It is part of a professional discussion among administrative staff and stakeholders involved in an infrastructural planning project.
+Your task is to extract structured information to create a **project record entry** for a task manager application.
 
 ---
 
 ### TASK
 Analyze the email and identify the following fields:
 
-#### BODY
-- Provide the main readable text body of the email **once**.
-- Convert to **Markdown**:
-  - Use **bold** for key terms or names.
-  - Use ## Headings for sections or topics.
-  - Convert links into Markdown link format: [example.de](https://www.example.de).
-- Do **not** remove parts of the text even if they seem unimportant.
-- You may omit repetitive quoted reply chains (previous messages) if they add no new information.
-
-#### DATE
-- Extract the most relevant or explicitly mentioned date, like a deadline.
-- If none is found, use the original sent date of the email.
-- If no date can be determined, return null.
-- Output in ISO 8601 format if possible.
-
-#### TITLE
-- Generate a meaningful, concise title that reflects the email’s main subject or purpose.
-
-#### SUBSECTIONID
-${
-  subsections.length > 0
-    ? `Identify whether this email content relates to a specific route subsection ('Abschnitt' / 'Planungsabschnitt' / 'Bauabschnitt').
-
-Available subsections:
-${subsections
-  .map((s) => `${s.id} (${s.slug.toUpperCase()} - ${s.start}(Start) bis ${s.end}(Ende))`)
-  .join(", ")}
-
-Match based on route sections, kilometer markers, street names, or geographic references. If unclear, return null.`
-    : "No subsections available for this project; always return null."
-}
-
-#### PROTOCOLTOPICS
-${
-  protocolTopics.length > 0
-    ? `Select all relevant topic IDs from the list below based on the email’s content, themes, or keywords.
-Available protocol topics:
-${protocolTopics.map((t) => `${t.id} (${t.title})`).join(", ")}
-
-If no topic clearly applies, return an empty array.`
-    : "No protocol topics are defined for this project; return an empty array."
-}
-
----
-
-Do not include any explanations or commentary.
+${fieldInstructions}
 `,
       })
       finalResult = result.object
@@ -282,8 +237,8 @@ Do not include any explanations or commentary.
       projectId: protocolEmail.projectId,
       subsectionId: finalResult.subsectionId ? parseInt(finalResult.subsectionId) : null,
       protocolTopics:
-        finalResult.protocolTopics && Array.isArray(finalResult.protocolTopics)
-          ? finalResult.protocolTopics.map((id) => parseInt(id))
+        finalResult.topics && Array.isArray(finalResult.topics)
+          ? finalResult.topics.map((id) => parseInt(id))
           : [],
     }
 
