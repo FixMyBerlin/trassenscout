@@ -191,7 +191,6 @@ export const ProtocolsTable = ({
                               </ul>
                             </div>
                           )}
-                          <CreateEditReviewHistory protocol={protocol} />
                           <div className="flex flex-col items-start gap-3">
                             <IfUserCanEdit>
                               {protocol.reviewState === "NEEDSREVIEW" && (
