@@ -1,5 +1,5 @@
 import { getBlitzContext } from "@/src/blitz-server"
-import { gpt5Mini } from "@/src/models"
+import { gpt5Mini } from "@/src/core/ai/models"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { parseEmail } from "@/src/server/ProjectRecordEmails/parseEmail"
 import { createFieldInstructions } from "@/src/server/ProjectRecordEmails/sharedProjectRecordPrompt"

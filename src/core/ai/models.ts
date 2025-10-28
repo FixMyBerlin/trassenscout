@@ -1,11 +1,14 @@
 import { openai } from "@ai-sdk/openai"
 
 // OpenAI Models
+// https://platform.openai.com/docs/models/compare
+
 export const gpt5Mini = openai("gpt-5-mini")
 export const gpt41Mini = openai("gpt-4.1-mini")
 // GPT-4.1 - Smartest non-reasoning model
 // tool calling
 // no reasoning
+// context window
 
 export const gpt4Turbo = openai("gpt-4-turbo")
 // GPT-4 Turbo - Fast and capable

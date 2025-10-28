@@ -1,7 +1,7 @@
 import db from "@/db"
 import { getBlitzContext } from "@/src/blitz-server"
+import { model } from "@/src/core/ai/models"
 import { getConfig } from "@/src/core/lib/next-s3-upload/src/utils/config"
-import { model } from "@/src/models"
 import { GetObjectCommand, S3Client, S3ServiceException } from "@aws-sdk/client-s3"
 import { generateText } from "ai"
 import { Langfuse } from "langfuse"

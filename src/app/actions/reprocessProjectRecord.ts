@@ -1,7 +1,7 @@
 "use server"
 
 import { getBlitzContext } from "@/src/blitz-server"
-import { gpt5Mini } from "@/src/models"
+import { gpt5Mini } from "@/src/core/ai/models"
 import { parseEmail } from "@/src/server/ProjectRecordEmails/parseEmail"
 import { createFieldInstructions } from "@/src/server/ProjectRecordEmails/sharedProjectRecordPrompt"
 import { createProjectRecordExtractionSchema } from "@/src/server/ProjectRecordEmails/sharedProjectRecordSchema"
