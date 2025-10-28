@@ -8,7 +8,9 @@ type ProjectRecordEmailFormProps<S extends z.ZodType<any, any>> = FormProps<S> &
   projects: TGetProjects["projects"]
 }
 
-export function ProjectRecordEmailForm<S extends z.ZodType<any, any>>(props: ProjectRecordEmailFormProps<S>) {
+export function ProjectRecordEmailForm<S extends z.ZodType<any, any>>(
+  props: ProjectRecordEmailFormProps<S>,
+) {
   const { projects, ...formProps } = props
   const projectOptions: [string | number, string][] = projects.map(
     (project) => [String(project.id), project.slug] as [string, string],

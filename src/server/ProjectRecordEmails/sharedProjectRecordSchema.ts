@@ -14,14 +14,18 @@ export function createProjectRecordExtractionSchema({
       .string()
       .min(1)
       .trim()
-      .describe(`The complete text content of the ${isReprocessing ? 'record entry' : 'email body'}, formatted in clean Markdown."`),
+      .describe(
+        `The complete text content of the ${isReprocessing ? "record entry" : "email body"}, formatted in clean Markdown."`,
+      ),
 
     title: z
       .string()
       .min(1)
       .max(150)
       .trim()
-      .describe(`A concise and meaningful title summarizing the ${isReprocessing ? 'record entry' : 'email'}'s main purpose or topic.`),
+      .describe(
+        `A concise and meaningful title summarizing the ${isReprocessing ? "record entry" : "email"}'s main purpose or topic.`,
+      ),
 
     date: z
       .string()
@@ -36,7 +40,7 @@ export function createProjectRecordExtractionSchema({
             .enum(subsections.map((s) => s.id.toString()) as [string, ...string[]])
             .nullable()
             .describe(
-              `The subsection ('Abschnitt') ID this ${isReprocessing ? 'record entry' : 'email'} relates to, if applicable. Available subsections: ${subsections
+              `The subsection ('Abschnitt') ID this ${isReprocessing ? "record entry" : "email"} relates to, if applicable. Available subsections: ${subsections
                 .map((s) => `${s.id} (${s.slug} - ${s.start} to ${s.end})`)
                 .join(", ")}. Return null if no clear subsection is identified.`,
             )
@@ -49,11 +53,11 @@ export function createProjectRecordExtractionSchema({
       )
       .describe(
         projectRecordTopics.length > 0
-          ? `Array of topic IDs ('Tags') this ${isReprocessing ? 'record entry' : 'email'} relates to. Available topics: ${projectRecordTopics
+          ? `Array of topic IDs ('Tags') this ${isReprocessing ? "record entry" : "email"} relates to. Available topics: ${projectRecordTopics
               .map((t) => `${t.id} (${t.title})`)
               .join(
                 ", ",
-              )}. Select all that apply based on the ${isReprocessing ? 'record entry' : 'email'}'s content. Return [] if none are relevant.`
+              )}. Select all that apply based on the ${isReprocessing ? "record entry" : "email"}'s content. Return [] if none are relevant.`
           : "Empty array as no topics are available for this project.",
       ),
   })
