@@ -778,3 +778,10 @@ model ProjectRecordTopic {
 
   @@unique([title, projectId])
 }
+
+model Meta {
+  key   String @id
+  value String
+
+  @@map("_Meta")
+}
