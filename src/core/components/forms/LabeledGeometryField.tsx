@@ -3,6 +3,7 @@ import { clsx } from "clsx"
 import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { LabeledGeometryFieldPreview } from "./LabeledGeometryFieldPreview"
+import { extractCoordinatesFromGeoJSON } from "./_utils/extractCoordinatesFromGeoJSON"
 
 export interface LabeledTextareaProps extends PropsWithoutRef<JSX.IntrinsicElements["textarea"]> {
   /** Field name. */
@@ -36,6 +37,32 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
 
     const [hasJsonParseError, setJsonParseError] = useState(false)
     const hasError = Boolean(errors[name])
+
+    // Handle paste event for GeoJSON
+    const handlePaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      const pastedText = event.clipboardData.getData("text")
+      if (!pastedText.trim()) return
+
+      const extracted = extractCoordinatesFromGeoJSON(pastedText)
+      if (!extracted) {
+        // Not valid GeoJSON or doesn't match expected format, allow normal paste
+        return
+      }
+
+      // Validate geometry type matches form selection
+      const expectedType = geometryType === "ROUTE" ? "LineString" : "Point"
+      if (extracted.geometryType !== expectedType) {
+        event.preventDefault()
+        setJsonParseError(true)
+        return
+      }
+
+      // Prevent default paste and update form value
+      event.preventDefault()
+      setValue(name, extracted.coordinates, { shouldValidate: true })
+      setJsonParseError(false)
+      // valueString will be updated by useEffect when value changes
+    }
 
     // Convert the JSON value to a string
     const handleTextareaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -73,6 +100,7 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
               onChange={handleTextareaChange}
               onBlur={handleTextareaChange}
               onSubmit={handleTextareaChange}
+              onPaste={handlePaste}
               className={clsx(
                 textareaClasName,
                 "block w-full grow rounded-md font-mono text-xs shadow-sm",
@@ -96,6 +124,9 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
                   <code>[[9.1943,48.8932],[9.2043,48.8933]]</code>.
                 </>
               )}
+            </p>
+            <p className="mt-2 text-sm text-gray-500">
+              Es kann eine GeoJSON Feature in das Eingabefeld kopiert (strg+v) werden.
             </p>
           </div>
           <div>
