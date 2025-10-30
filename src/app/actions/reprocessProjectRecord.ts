@@ -161,7 +161,7 @@ export async function reprocessProjectRecord(projectRecordId: number) {
       schema: finalExtractionSchema,
       experimental_telemetry: {
         isEnabled: true,
-        functionId: "protocol-function",
+        functionId: "email-to-protocol-function",
         metadata: {
           langfuseTraceId: trace.id,
         },
