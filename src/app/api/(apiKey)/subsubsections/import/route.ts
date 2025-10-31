@@ -2,6 +2,7 @@ import db from "@/db"
 import { m2mFields, type M2MFieldsType } from "@/src/server/subsubsections/m2mFields"
 import { SubsubsectionSchema } from "@/src/server/subsubsections/schema"
 import { z } from "zod"
+import { withApiKey } from "../../_utils/withApiKey"
 
 const ImportSubsubsectionRequestSchema = z.object({
   projectSlug: z.string(),
@@ -17,39 +18,8 @@ const ImportSubsubsectionRequestSchema = z.object({
   }),
 })
 
-type Environment = "dev" | "staging" | "production"
-
-function getApiKeyForEnv(env: Environment): string | undefined {
-  switch (env) {
-    case "dev":
-      return process.env.TS_API_KEY
-    case "staging":
-      return process.env.TS_API_KEY_STAGING
-    case "production":
-      return process.env.TS_API_KEY_PRODUCTION
-  }
-}
-
-export async function POST(request: Request) {
+export const POST = withApiKey(async ({ request }) => {
   try {
-    // Get API key from header or query param
-    const apiKeyHeader = request.headers.get("x-api-key")
-    const url = new URL(request.url)
-    const apiKeyQuery = url.searchParams.get("apiKey")
-    const apiKey = apiKeyHeader || apiKeyQuery
-
-    // Determine environment from request header (optional, defaults to dev)
-    const envHeader = request.headers.get("x-api-env") || "dev"
-    const env = (
-      ["dev", "staging", "production"].includes(envHeader) ? envHeader : "dev"
-    ) as Environment
-
-    // Validate API key
-    const expectedApiKey = getApiKeyForEnv(env)
-    if (!apiKey || apiKey !== expectedApiKey) {
-      return Response.json({ error: "Invalid or missing API key" }, { status: 401 })
-    }
-
     // Parse and validate request body
     const body = await request.json()
     const parsed = ImportSubsubsectionRequestSchema.safeParse(body)
@@ -257,4 +227,4 @@ export async function POST(request: Request) {
       { status: 500 },
     )
   }
-}
+})
