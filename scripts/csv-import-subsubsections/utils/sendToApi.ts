@@ -22,12 +22,13 @@ export async function sendToApi(
   data: Record<string, any>,
 ) {
   try {
-    const response = await fetch(apiEndpoint, {
+    const url = new URL(apiEndpoint)
+    url.searchParams.set("apiKey", apiKey)
+
+    const response = await fetch(url.toString(), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "x-api-env": env,
       },
       body: JSON.stringify({
         projectSlug,
