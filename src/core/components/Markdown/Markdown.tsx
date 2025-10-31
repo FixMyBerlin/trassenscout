@@ -73,6 +73,8 @@ export const Markdown = ({ markdown, className }: Props) => {
   if (!markdown) return null
 
   const processedMarkdown = autoLinkUrls(markdown)
+    // Process newlines: convert single newlines to line breaks
+    .replace(/\n(?!\n)/g, "  \n")
 
   return (
     <div className={clsx(proseClasses, className)}>
