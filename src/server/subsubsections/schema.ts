@@ -4,8 +4,8 @@ import { LabelPositionEnum, LocationEnum, SubsubsectionTypeEnum } from "@prisma/
 import { z } from "zod"
 import { SubsubsectionWithPosition } from "./queries/getSubsubsection"
 
-const PositionSchema = z.tuple([z.number(), z.number()]) // Position
-const PositionArraySchema = z.array(z.tuple([z.number(), z.number()])) // Position[]
+export const PositionSchema = z.tuple([z.number(), z.number()]) // Position
+export const PositionArraySchema = z.array(z.tuple([z.number(), z.number()])) // Position[]
 
 // TODO Later: Did not get this working with `schema={SubsubsectionSchema.omit({ subsectionId: true })}` in new-subsubsection.tsx
 // const SubsubsectionGeometrySchema = z.discriminatedUnion("type", [

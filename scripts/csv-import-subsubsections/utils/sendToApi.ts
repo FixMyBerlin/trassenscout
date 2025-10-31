@@ -1,0 +1,51 @@
+import type { Environment } from "./env"
+
+interface ApiResponse {
+  success?: boolean
+  action?: string
+  error?: string
+  details?: Array<{ path?: string; message?: string }>
+}
+
+/**
+ * Sends subsubsection data to the API endpoint
+ * Returns success status and response data
+ */
+export async function sendToApi(
+  apiEndpoint: string,
+  apiKey: string,
+  env: Environment,
+  projectSlug: string,
+  subsectionSlug: string,
+  slug: string,
+  userId: number,
+  data: Record<string, any>,
+) {
+  try {
+    const response = await fetch(apiEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "x-api-env": env,
+      },
+      body: JSON.stringify({
+        projectSlug,
+        subsectionSlug,
+        slug,
+        userId,
+        data,
+      }),
+    })
+
+    const responseData = (await response.json()) as ApiResponse
+
+    return {
+      success: response.ok,
+      response: responseData,
+    }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown network error"
+    throw new Error(message)
+  }
+}
