@@ -205,7 +205,7 @@ export const POST = withApiKey(async ({ request }) => {
       // Create log entry for update
       await createLogEntry({
         action: "UPDATE",
-        message: `Maßnahme ${shortTitle(result.slug)} aktualisiert via CSV import`,
+        message: `Maßnahme ${shortTitle(result.slug)} wurde über CSV-Import aktualisiert`,
         userId,
         projectId: project.id,
         subsectionId: subsection.id,
@@ -223,7 +223,7 @@ export const POST = withApiKey(async ({ request }) => {
       // Create log entry for create
       await createLogEntry({
         action: "CREATE",
-        message: `Neue Maßnahme ${shortTitle(result.slug)} via CSV import`,
+        message: `Neue Maßnahme ${shortTitle(result.slug)} per CSV-Import`,
         userId,
         projectId: project.id,
         subsectionId: subsection.id,
