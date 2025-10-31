@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 
 // This is the Homepage when not logged in.
 export default async function Homepage() {
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- useAuthenticatedBlitzContext is not a hook despite the "use" prefix
   await useAuthenticatedBlitzContext({ redirectAuthenticatedTo: "/dashboard" })
 
   return (
