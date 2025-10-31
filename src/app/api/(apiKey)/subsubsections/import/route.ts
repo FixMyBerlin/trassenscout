@@ -1,4 +1,6 @@
 import db from "@/db"
+import { shortTitle } from "@/src/core/components/text/titles"
+import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { m2mFields, type M2MFieldsType } from "@/src/server/subsubsections/m2mFields"
 import { SubsubsectionSchema } from "@/src/server/subsubsections/schema"
 import { z } from "zod"
@@ -134,7 +136,6 @@ export const POST = withApiKey(async ({ request }) => {
         slug,
         subsectionId: subsection.id,
       },
-      select: { id: true },
     })
 
     // Handle geometry fallback: if description has placeholder marker, use subsection's bottom left corner
@@ -200,6 +201,17 @@ export const POST = withApiKey(async ({ request }) => {
         data: { ...subsubsectionData, ...connect },
       })
       action = "updated"
+
+      // Create log entry for update
+      await createLogEntry({
+        action: "UPDATE",
+        message: `Maßnahme ${shortTitle(result.slug)} aktualisiert via CSV import`,
+        userId,
+        projectId: project.id,
+        subsectionId: subsection.id,
+        previousRecord: existing,
+        updatedRecord: result,
+      })
     } else {
       // Create
       result = await db.subsubsection.create({
@@ -207,6 +219,15 @@ export const POST = withApiKey(async ({ request }) => {
         data: { ...subsubsectionData, ...connect },
       })
       action = "created"
+
+      // Create log entry for create
+      await createLogEntry({
+        action: "CREATE",
+        message: `Neue Maßnahme ${shortTitle(result.slug)} via CSV import`,
+        userId,
+        projectId: project.id,
+        subsectionId: subsection.id,
+      })
     }
 
     return Response.json({
