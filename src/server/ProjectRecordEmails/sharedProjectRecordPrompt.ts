@@ -39,7 +39,7 @@ ${subsections
   .map((s) => `${s.id} (${s.slug.toUpperCase()} - ${s.start}(start) to ${s.end}(end))`)
   .join(", ")}
 
-Match based on route sections, kilometer markers, street names, or geographic references. If unclear, return null.`
+Assign based on the abbreviations mentioned in the text. Sometimes the abbreviations vary slightly, e.g., 'PA1' can also be written as 'PA 1'. If unclear, return null.`
     : "No subsections available for this project; always return null."
 }
 
@@ -50,10 +50,13 @@ ${
 
 Available subsubsections:
 ${subsubsections
-  .map((s) => `${s.id} (${s.slug.toUpperCase()} - part of subsection ${s.subsectionId})`)
+  .map(
+    (s) =>
+      `${s.id} (short title: ${s.slug.toUpperCase()} - part of subsection with ID ${s.subsectionId})`,
+  )
   .join(", ")}
 
-Match based on route sections, kilometer markers, street names, or geographic references. If unclear, return null.`
+Assign based on the abbreviations mentioned in the text. Sometimes the abbreviations vary slightly, e.g., 'RF12' can also be written as 'RF 12'. If unclear, return null.`
     : "No subsubsections available for this project; always return null."
 }
 
