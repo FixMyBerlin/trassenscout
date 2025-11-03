@@ -11,6 +11,7 @@ export const ProjectRecordSchema = z.object({
   title: z.string().min(2, { message: "Pflichtfeld. Mindestens 2 Zeichen." }),
   body: z.string().nullish(),
   subsectionId: InputNumberOrNullSchema,
+  subsubsectionId: InputNumberOrNullSchema,
   userId: InputNumberOrNullSchema,
   projectRecordAuthorType: z.nativeEnum(ProjectRecordType),
   updatedById: InputNumberOrNullSchema,

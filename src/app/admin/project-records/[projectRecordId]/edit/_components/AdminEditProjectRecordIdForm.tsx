@@ -96,9 +96,7 @@ export const AdminEditProjectRecordForm = ({
         onSubmit={handleSubmit}
       >
         <div className="space-y-6">
-          {projectOptions.length > 0 && (
-            <LabeledSelect name="projectId" options={projectOptions} label="Projekt" />
-          )}
+          <LabeledSelect name="projectId" options={projectOptions} label="Projekt" />
         </div>
         <ProjectRecordFormFields projectSlug={projectRecord.project.slug} />
       </Form>

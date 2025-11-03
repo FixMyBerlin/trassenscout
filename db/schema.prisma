@@ -370,6 +370,7 @@ model Subsubsection {
   subsectionId                      Int
   //
   uploads                           Upload[]
+  projectRecords                    ProjectRecord[]
   //
   SubsubsectionStatus               SubsubsectionStatus?             @relation(fields: [subsubsectionStatusId], references: [id])
   subsubsectionStatusId             Int?
@@ -733,6 +734,9 @@ model ProjectRecord {
   //
   subsection                 Subsection?              @relation(fields: [subsectionId], references: [id], onDelete: Cascade)
   subsectionId               Int?
+  //
+  subsubsection              Subsubsection?           @relation(fields: [subsubsectionId], references: [id], onDelete: Cascade)
+  subsubsectionId            Int?
   //
   author                     User?                    @relation("ProjectRecordAuthor", fields: [userId], references: [id])
   userId                     Int?

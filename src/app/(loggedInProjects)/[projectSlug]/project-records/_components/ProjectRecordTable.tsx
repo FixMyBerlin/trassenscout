@@ -175,6 +175,16 @@ export const ProjectRecordsTable = ({
                               </Link>
                             </div>
                           )}
+                          {projectRecord.subsubsection && (
+                            <div>
+                              <p className="mb-2">Eintrag: </p>
+                              <Link
+                                href={`/${projectSlug}/abschnitte/${projectRecord.subsubsection.subsection.slug}/fuehrung/${projectRecord.subsubsection.slug}`}
+                              >
+                                {shortTitle(projectRecord.subsubsection.slug)}
+                              </Link>
+                            </div>
+                          )}
                           {projectRecord.uploads && projectRecord.uploads.length > 0 && (
                             <div>
                               <p className="mb-2 font-medium text-gray-500">Dokumente:</p>

@@ -22,6 +22,13 @@ export default resolver.pipe(
         },
         projectRecordTopics: true,
         subsection: true,
+        subsubsection: {
+          include: {
+            subsection: {
+              select: { slug: true },
+            },
+          },
+        },
         uploads: {
           select: {
             id: true,

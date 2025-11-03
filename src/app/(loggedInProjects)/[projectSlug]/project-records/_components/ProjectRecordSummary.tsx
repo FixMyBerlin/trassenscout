@@ -1,5 +1,5 @@
 import { Link } from "@/src/core/components/links"
-import { SubsectionIcon } from "@/src/core/components/Map/Icons"
+import { SubsectionIcon, SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { shortTitle } from "@/src/core/components/text"
 import getProjectRecord from "@/src/server/projectRecord/queries/getProjectRecord"
@@ -27,6 +27,19 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
         {projectRecord.subsection ? (
           <Link href={`/${projectRecord.project.slug}/abschnitte/${projectRecord.subsection.slug}`}>
             <SubsectionIcon label={shortTitle(projectRecord.subsection.slug)} />
+          </Link>
+        ) : (
+          <span>Keine Angabe</span>
+        )}
+      </div>
+
+      <div>
+        <span className="font-medium text-gray-500">Eintrag: </span>
+        {projectRecord.subsubsection ? (
+          <Link
+            href={`/${projectRecord.project.slug}/abschnitte/${projectRecord.subsubsection.subsection.slug}/fuehrung/${projectRecord.subsubsection.slug}`}
+          >
+            <SubsubsectionIcon label={shortTitle(projectRecord.subsubsection.slug)} />
           </Link>
         ) : (
           <span>Keine Angabe</span>
