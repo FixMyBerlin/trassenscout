@@ -2,10 +2,12 @@ import { z } from "zod"
 
 export function createProjectRecordExtractionSchema({
   subsections,
+  subsubsections,
   projectRecordTopics,
   isReprocessing,
 }: {
   subsections: Array<{ id: number; slug: string; start: string; end: string }>
+  subsubsections: Array<{ id: number; slug: string; subsectionId: number }>
   projectRecordTopics: Array<{ id: number; title: string }>
   isReprocessing?: boolean
 }) {
@@ -45,6 +47,17 @@ export function createProjectRecordExtractionSchema({
                 .join(", ")}. Return null if no clear subsection is identified.`,
             )
         : z.null().describe("Null as no subsections are available for this project."),
+    subsubsectionId:
+      subsubsections.length > 0
+        ? z
+            .enum(subsubsections.map((s) => s.id.toString()) as [string, ...string[]])
+            .nullable()
+            .describe(
+              `The subsubsection ('Abschnitt') ID this ${isReprocessing ? "record entry" : "email"} relates to, if applicable. Available subsubsections: ${subsubsections
+                .map((s) => `${s.id} (${s.slug} - part of subsection ${s.subsectionId})`)
+                .join(", ")}. Return null if no clear subsubsection is identified.`,
+            )
+        : z.null().describe("Null as no subsubsections are available for this project."),
     topics: z
       .array(
         projectRecordTopics.length > 0

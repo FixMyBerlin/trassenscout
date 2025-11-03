@@ -1,10 +1,12 @@
 export function createFieldInstructions({
   subsections,
+  subsubsections,
   projectRecordTopics,
   isReprocessing,
   hasUploads,
 }: {
   subsections: Array<{ id: number; slug: string; start: string; end: string }>
+  subsubsections: Array<{ id: number; slug: string; subsectionId: number }>
   projectRecordTopics: Array<{ id: number; title: string }>
   isReprocessing: boolean
   hasUploads: boolean
@@ -39,6 +41,20 @@ ${subsections
 
 Match based on route sections, kilometer markers, street names, or geographic references. If unclear, return null.`
     : "No subsections available for this project; always return null."
+}
+
+#### SUBSUBSECTIONID
+${
+  subsubsections.length > 0
+    ? `Identify whether this ${isReprocessing ? "record" : "email"} content relates to a specific route subsubsection ('Maßnahme', 'Unterabschnitt', 'Führung'). ${hasUploads ? `The related document summaries must be considered as well.` : ""}
+
+Available subsubsections:
+${subsubsections
+  .map((s) => `${s.id} (${s.slug.toUpperCase()} - part of subsection ${s.subsectionId})`)
+  .join(", ")}
+
+Match based on route sections, kilometer markers, street names, or geographic references. If unclear, return null.`
+    : "No subsubsections available for this project; always return null."
 }
 
 #### TOPICS

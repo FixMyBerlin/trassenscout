@@ -147,6 +147,7 @@ export async function POST(request: Request) {
     })
 
     let subsections: Array<{ id: number; slug: string; start: string; end: string }> = []
+    let subsubsections: Array<{ id: number; slug: string; subsectionId: number }> = []
     let projectRecordTopics: Array<{ id: number; title: string }> = []
     let reviewNote = ""
 
@@ -164,6 +165,20 @@ export async function POST(request: Request) {
     console.log(
       `Found ${subsections.length} subsections for project ${projectRecordEmail.projectId}`,
     )
+    // Fetch subsubsections for this project
+    // tbd: we might want a pipeline where we first find the matching subsection and then only fetch subsubsections for that subsection
+    // tbd: do we want to fetch more data (like Führungsform etc.) to improve matching?
+    subsubsections = await db.subsubsection.findMany({
+      where: { subsection: { projectId: projectRecordEmail.projectId } },
+      select: {
+        id: true,
+        slug: true,
+        subsectionId: true,
+      },
+    })
+    console.log(
+      `Found ${subsubsections.length} subsubsections for project ${projectRecordEmail.projectId}`,
+    )
 
     // Fetch projectRecord topics for this project
     projectRecordTopics = await db.projectRecordTopic.findMany({
@@ -180,10 +195,12 @@ export async function POST(request: Request) {
     // Stage 2: AI call
     const finalExtractionSchema = createProjectRecordExtractionSchema({
       subsections,
+      subsubsections,
       projectRecordTopics,
     })
     const fieldInstructions = createFieldInstructions({
       subsections,
+      subsubsections,
       projectRecordTopics,
       isReprocessing: false,
       hasUploads: false, // attachments are uploaded but not yet used in prompt for initial processing
@@ -242,6 +259,7 @@ ${fieldInstructions}
       // tbd
       projectId: projectRecordEmail.projectId,
       subsectionId: finalResult.subsectionId ? parseInt(finalResult.subsectionId) : null,
+      subsubsectionId: finalResult.subsubsectionId ? parseInt(finalResult.subsubsectionId) : null,
       projectRecordTopics:
         finalResult.topics && Array.isArray(finalResult.topics)
           ? finalResult.topics.map((id) => parseInt(id))
@@ -256,6 +274,7 @@ ${fieldInstructions}
         // if date is null or invalid, use current date
         date: combinedResult.date ? new Date(combinedResult.date) || new Date() : new Date(),
         subsectionId: combinedResult.subsectionId,
+        subsubsectionId: combinedResult.subsubsectionId,
         projectId: combinedResult.projectId,
         projectRecordAuthorType: ProjectRecordType.SYSTEM,
         projectRecordUpdatedByType: ProjectRecordType.SYSTEM,

@@ -10,7 +10,7 @@ import { generateObject, NoObjectGeneratedError } from "ai"
 import db from "db"
 import { Langfuse } from "langfuse"
 
-// tbd blitz mutation or server function?
+// tbd: do we want to overwrite relations (subsections, subsubsections, uploads, tags) or only recreate the body?
 
 const langfuse = new Langfuse({
   environment: process.env.NODE_ENV,
@@ -97,6 +97,18 @@ export async function reprocessProjectRecord(projectRecordId: number) {
   })
   console.log(`Found ${subsections.length} subsections for project ${projectRecord.projectId}`)
 
+  const subsubsections = await db.subsubsection.findMany({
+    where: { subsection: { projectId: projectRecord.projectId } },
+    select: {
+      id: true,
+      slug: true,
+      subsectionId: true,
+    },
+  })
+  console.log(
+    `Found ${subsubsections.length} subsubsections for project ${projectRecord.projectId}`,
+  )
+
   const projectRecordTopics = await db.projectRecordTopic.findMany({
     where: { projectId: projectRecord.projectId },
     select: {
@@ -116,10 +128,12 @@ export async function reprocessProjectRecord(projectRecordId: number) {
 
   const finalExtractionSchema = createProjectRecordExtractionSchema({
     subsections,
+    subsubsections,
     projectRecordTopics,
   })
   const fieldInstructions = createFieldInstructions({
     subsections,
+    subsubsections,
     projectRecordTopics,
     isReprocessing: true,
     hasUploads: uploads.length > 0,
