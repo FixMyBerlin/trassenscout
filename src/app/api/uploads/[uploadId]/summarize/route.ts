@@ -23,8 +23,10 @@ export async function POST(request: Request, { params }: { params: { uploadId: s
     const { session } = await getBlitzContext()
 
     // Authentication check
-    if (!session?.userId) {
-      return Response.json({ error: "Authentication required" }, { status: 401 })
+    if (session?.userId) {
+      if (session.role !== "ADMIN") {
+        return Response.json({ error: "Admin access required" }, { status: 403 })
+      }
     }
 
     console.log("Summarize API called by user:", session.userId)

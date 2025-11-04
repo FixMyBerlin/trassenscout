@@ -50,17 +50,7 @@ export async function reprocessProjectRecord(projectRecordId: number) {
   const isAdmin = session.role === "ADMIN"
 
   if (!isAdmin) {
-    const membership = await db.membership.findFirst({
-      where: {
-        userId: session.userId,
-        projectId: projectRecord.projectId,
-        role: "EDITOR",
-      },
-    })
-
-    if (!membership) {
-      throw new Error("You must be an admin or project editor to reprocess projectRecords")
-    }
+    throw new Error("You must be an admin or project editor to reprocess projectRecords")
   }
 
   // Fetch the related projectRecord-email and parse it to extract body
