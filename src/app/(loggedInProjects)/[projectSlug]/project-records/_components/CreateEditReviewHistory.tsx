@@ -1,4 +1,4 @@
-import { ProjectRecordTypePill } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTable"
+import { ProjectRecordTypePill } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTypePill"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getProjectRecord from "@/src/server/projectRecord/queries/getProjectRecord"
 import getProjectRecords from "@/src/server/projectRecord/queries/getProjectRecords"

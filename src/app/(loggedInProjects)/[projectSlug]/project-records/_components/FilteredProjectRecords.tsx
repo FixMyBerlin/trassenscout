@@ -111,7 +111,13 @@ export const FilteredProjectRecords = ({
       {projectRecords.length === 0 ? (
         <ZeroCase visible={projectRecords.length} name="Protokolle" />
       ) : (
-        <ProjectRecordsTable projectRecords={filteredProjectRecords} highlightId={highlightId} />
+        <ProjectRecordsTable
+          isTopicFilter
+          withSubsection
+          withSubsubsection
+          projectRecords={filteredProjectRecords}
+          highlightId={highlightId}
+        />
       )}
     </>
   )

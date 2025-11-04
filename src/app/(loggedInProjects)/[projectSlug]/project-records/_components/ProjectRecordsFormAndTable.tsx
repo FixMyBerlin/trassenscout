@@ -3,6 +3,7 @@
 import { FilteredProjectRecords } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/FilteredProjectRecords"
 import { ProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordForm"
 import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/useFilters.nuqs"
+import { useInitialFormValues } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/useInitialFormValues.nuqs"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { FORM_ERROR } from "@/src/core/components/forms"
 import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
@@ -30,6 +31,7 @@ export const ProjectRecordsFormAndTable = ({
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
   const { setFilter } = useFilters()
+  const { initialFormValues, setInitialFormValues } = useInitialFormValues()
 
   // Hide success message after 3 seconds
   useEffect(() => {
@@ -64,11 +66,20 @@ export const ProjectRecordsFormAndTable = ({
       setShowSuccess(true)
       setCreatedProjectRecordId(projectRecord.id)
       setFilter({ searchterm: "" })
+      setInitialFormValues(null)
       scrollToElement("toast")
     } catch (error: any) {
       // todo ?
       return improveErrorMessage(error, FORM_ERROR, [])
     }
+  }
+
+  const formInitialValues = {
+    date: getDate(new Date()),
+    // Set initial form values based on URL params
+    ...(initialFormValues?.subsubsectionId && {
+      subsubsectionId: initialFormValues.subsubsectionId,
+    }),
   }
 
   return (
@@ -77,7 +88,7 @@ export const ProjectRecordsFormAndTable = ({
         <ProjectRecordForm
           resetOnSubmit
           onSubmit={handleSubmit}
-          initialValues={{ date: getDate(new Date()) }}
+          initialValues={formInitialValues}
           mode="new"
         />
         <div className="mb-4 pt-4" id="toast">
