@@ -3,6 +3,31 @@ import type { CsvRow } from "./parseCsv"
 import { validateAndExtractGeometry } from "./validateGeometry"
 
 /**
+ * Normalizes numeric string by handling comma/decimal separators
+ * - If both comma and dot exist: remove commas (thousands separator)
+ *   Example: "1,000.00" -> "1000.00"
+ * - If only comma exists: replace with dot (decimal separator)
+ *   Example: "1,11" -> "1.11"
+ * - Otherwise: keep as-is
+ */
+function normalizeNumericString(value: string): string {
+  const trimmed = value.trim()
+  const hasComma = trimmed.includes(",")
+  const hasDot = trimmed.includes(".")
+
+  if (hasComma && hasDot) {
+    // Both exist: comma is thousands separator, remove it
+    return trimmed.replace(/,/g, "")
+  } else if (hasComma && !hasDot) {
+    // Only comma: it's a decimal separator, replace with dot
+    return trimmed.replace(/,/g, ".")
+  }
+
+  // No comma or already has dot: keep as-is
+  return trimmed
+}
+
+/**
  * Maps CSV row data to subsubsection schema format with type conversions
  */
 export function mapRowToSchema(row: CsvRow) {
@@ -79,24 +104,30 @@ export function mapRowToSchema(row: CsvRow) {
     // Handle geometry - validate and extract coordinates
     if (fieldName === "geometry") {
       geometryProvided = true
-      if (csvValue) {
-        const geometryResult = validateAndExtractGeometry(
-          typeof csvValue === "string" ? csvValue : csvValue,
-        )
+      // Check if geometry value is empty (null, undefined, empty string, or whitespace-only)
+      const isEmpty =
+        csvValue === null ||
+        csvValue === undefined ||
+        csvValue === "" ||
+        (typeof csvValue === "string" && csvValue.trim() === "")
+
+      if (isEmpty) {
+        // Empty geometry value - mark as provided but empty
+        value = undefined
+      } else {
+        const geometryResult = validateAndExtractGeometry(csvValue)
         if (geometryResult.isValid) {
           value = geometryResult.coordinates
         } else {
           // If validation fails, keep the original value so Zod can show it in error message
           // Parse JSON if string to show the actual value, not the string representation
           try {
-            value = typeof csvValue === "string" ? JSON.parse(csvValue) : csvValue
+            value = JSON.parse(csvValue)
           } catch {
             value = csvValue
           }
+          // Note: Invalid geometry will NOT trigger fallback - only empty geometry does
         }
-      } else {
-        // Empty geometry value - mark as provided but empty
-        value = undefined
       }
     }
     // Handle enums - normalize to uppercase
@@ -126,7 +157,7 @@ export function mapRowToSchema(row: CsvRow) {
       // If it's a valid number string, use it; otherwise set to null
       value = isNaN(parsed) ? null : parsed
     }
-    // Handle other numeric fields
+    // Handle numeric fields - normalize comma/decimal separators and parse as numbers
     else if (
       fieldName === "lengthM" ||
       fieldName === "width" ||
@@ -148,8 +179,10 @@ export function mapRowToSchema(row: CsvRow) {
       fieldName === "grantsOtherFunding" ||
       fieldName === "ownFunds"
     ) {
-      // Try to parse as number, keep as string if parsing fails (Zod will handle it)
-      const parsed = Number(csvValue)
+      // Normalize numeric string (handle comma as decimal or thousands separator)
+      const normalized = normalizeNumericString(String(csvValue))
+      const parsed = Number(normalized)
+      // If parsing fails, keep original value (Zod will handle validation)
       value = isNaN(parsed) ? csvValue : parsed
     }
     // Numbers will be coerced by Zod, but we can ensure they're strings or numbers
@@ -179,13 +212,15 @@ export function mapRowToSchema(row: CsvRow) {
     mappedData.lengthM = 0 // Default to 0 if not provided
   }
 
-  // Handle geometry - if not provided, set type to AREA and mark for fallback
-  // Only use fallback if geometry column wasn't provided at all (not if it was invalid)
-  if (!geometryProvided) {
+  // Handle geometry - if not provided or empty, set type to AREA and mark for fallback
+  // Only use fallback if geometry column was empty (not if it was invalid)
+  // Invalid geometry will be caught by Zod validation and reported as an error
+  if (!geometryProvided || mappedData.geometry === undefined) {
     mappedData.type = "AREA" // Use point geometry type
     mappedData.geometry = [0, 0] // Placeholder - API will replace with subsection's bottom left corner
 
     // Prefix description with placeholder marker
+    // Only add notice when geometry is empty (not when invalid)
     const existingDescription = mappedData.description || ""
     mappedData.description = existingDescription
       ? `‼️ Platzhalter-Geometrie\n\n${existingDescription}`
