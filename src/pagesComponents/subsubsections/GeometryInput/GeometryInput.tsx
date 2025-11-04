@@ -63,7 +63,7 @@ export const GeometryInput = () => {
         </div>
       )}
       {geometry && (
-        <div>
+        <section>
           <nav>
             <div className="sm:hidden">
               <label htmlFor="geometry-tabs" className="sr-only">
@@ -82,31 +82,29 @@ export const GeometryInput = () => {
                 <option value="RAW">GeoJSON</option>
               </select>
             </div>
-            <div className="hidden sm:flex">
-              <nav className="-mb-px flex w-full" aria-label="Geometry Input Tabs">
-                {[
-                  { key: "MAP", label: "Karte" },
-                  { key: "RAW", label: "GeoJSON" },
-                ].map((tab) => {
-                  const current = geometryInputMode === tab.key
+            <div className="-mb-px hidden w-full gap-1 sm:flex" aria-label="Geometry Input Tabs">
+              {[
+                { key: "MAP", label: "Karte" },
+                { key: "RAW", label: "GeoJSON" },
+              ].map((tab) => {
+                const current = geometryInputMode === tab.key
 
-                  return (
-                    <button
-                      key={tab.key}
-                      type="button"
-                      onClick={() => setGeometryInputMode(tab.key as "MAP" | "RAW")}
-                      className={clsx(
-                        current ? "bg-gray-100" : "bg-gray-50",
-                        "flex rounded-t-md px-3 py-2 text-sm",
-                        linkStyles,
-                      )}
-                      aria-current={current ? "page" : undefined}
-                    >
-                      {tab.label}
-                    </button>
-                  )
-                })}
-              </nav>
+                return (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => setGeometryInputMode(tab.key as "MAP" | "RAW")}
+                    className={clsx(
+                      current ? "bg-gray-100" : "bg-gray-50",
+                      "flex rounded-t-md px-3 py-2 text-sm",
+                      linkStyles,
+                    )}
+                    aria-current={current ? "page" : undefined}
+                  >
+                    {tab.label}
+                  </button>
+                )
+              })}
             </div>
           </nav>
 
@@ -122,7 +120,7 @@ export const GeometryInput = () => {
               />
             )}
           </div>
-        </div>
+        </section>
       )}
     </>
   )

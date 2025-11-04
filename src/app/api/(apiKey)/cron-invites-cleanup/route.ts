@@ -2,6 +2,7 @@ import db from "@/db"
 import { INVITE_DAYS_TO_DELETION } from "@/src/server/invites/inviteSettings.const"
 import { guardedCreateSystemLogEntry } from "@/src/server/systemLogEntries/create/guardedCreateSystemLogEntry"
 import { endOfDay, subDays } from "date-fns"
+import { withApiKey } from "../_utils/withApiKey"
 
 const calculateComparisonDate = (daysToComparison: number) => {
   const currentDate = endOfDay(new Date())
@@ -39,12 +40,7 @@ const deleteOldInvites = async () => {
 //   return expiredInvitesCount
 // }
 
-export async function GET(request: Request) {
-  const apiKey = new URL(request.url).searchParams.get("apiKey")
-  if (apiKey !== process.env.TS_API_KEY) {
-    return Response.json({ statusText: "Unauthorized" }, { status: 401 })
-  }
-
+export const GET = withApiKey(async ({ apiKey }) => {
   const deletedInvitesCount = await deleteOldInvites()
   // const expiredInvitesCount = await expireOldInvites()
 
@@ -59,4 +55,4 @@ export async function GET(request: Request) {
   })
 
   return Response.json({ statusText: "Success" }, { status: 200 })
-}
+})

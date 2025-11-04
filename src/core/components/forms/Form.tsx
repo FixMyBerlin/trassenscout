@@ -19,6 +19,7 @@ export interface FormProps<S extends z.ZodType<any, any>>
   schema?: S
   onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
+  disabled?: boolean
 }
 
 interface OnSubmitResult {
@@ -37,12 +38,14 @@ export function Form<S extends z.ZodType<any, any>>({
   initialValues,
   onSubmit,
   className,
+  disabled,
   ...props
 }: FormProps<S>) {
   const ctx = useForm<z.infer<S>>({
     mode: "onBlur",
     resolver: schema ? zodResolver(schema) : undefined,
     defaultValues: initialValues,
+    disabled,
   })
   const [formError, setFormError] = useState<string | null>(null)
   return (
@@ -71,7 +74,7 @@ export function Form<S extends z.ZodType<any, any>>({
               }
             }
             // Reset form state if resetOnSubmit is true and no FORM_ERROR is present
-            // introduced for Protocolform
+            // introduced for ProjectRecordform
             if (resetOnSubmit && !result.FORM_ERROR) {
               console.log("Resetting form state")
               ctx.reset()

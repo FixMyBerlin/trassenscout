@@ -35,7 +35,7 @@ const MultiLineStringSchema = z.array(LineStringSchema) // [[[x1, y1], [x2, y2]]
 const PolygonSchema = z.array(LineStringSchema) // Outer ring and inner rings: [[[x1, y1], [x2, y2]], [[x3, y3], [x4, y4]]]
 const MultiPolygonSchema = z.array(PolygonSchema) // Collection of polygons: [[[[x1, y1], [x2, y2]]], [[[x3, y3], [x4, y4]]]]
 
-const GeometrySchema = z.object({
+export const GeometrySchema = z.object({
   type: z.union([
     z.literal("Point"),
     z.literal("MultiPoint"),
@@ -55,7 +55,7 @@ const GeometrySchema = z.object({
   ]),
 })
 
-const FeatureSchema = z.object({
+export const FeatureSchema = z.object({
   type: z.literal("Feature"),
   properties: z.record(z.any()),
   geometry: GeometrySchema,

@@ -22,6 +22,9 @@ export default function AdminDashboardPage() {
           <Link href="/admin/memberships">Nutzer & Mitgliedschaften</Link>
         </li>
         <li>
+          <Link href="/admin/project-records">Protokolle (Review)</Link>
+        </li>
+        <li>
           <Link href="/admin/surveys">Beteiligungen & Antworten</Link> |{" "}
           <Link href="/admin/surveys/new">Neue Beteiligung</Link>
         </li>

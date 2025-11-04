@@ -1,6 +1,7 @@
-import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
+import { Markdown } from "@/src/core/components/Markdown/Markdown"
+import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
@@ -56,11 +57,23 @@ export const UploadTable = ({ uploads, withAction = true, withSubsectionColumn =
           {uploads.map((upload) => {
             return (
               <tr key={upload.id}>
-                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                <td className="py-4 pl-4 pr-3 text-sm sm:pl-6">
                   <Link blank href={uploadUrl(upload)} className="flex items-center gap-2">
                     <PaperClipIcon className="h-6 w-6 text-gray-500" />
-                    <strong className="font-semibold">{upload.title}</strong>
+                    <strong className="font-semibold">{upload.title}</strong>{" "}
                   </Link>
+                  <div className="flex flex-col">
+                    {upload.summary && (
+                      <details className="mb-1 mt-2">
+                        <summary className="cursor-pointer text-xs text-gray-600 hover:text-gray-800">
+                          Zusammenfassung
+                        </summary>
+                        <div className="mt-1 whitespace-normal text-xs text-gray-700">
+                          <Markdown className="prose-sm" markdown={upload.summary} />
+                        </div>
+                      </details>
+                    )}
+                  </div>
                 </td>
                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {upload.createdAt.toLocaleDateString()}

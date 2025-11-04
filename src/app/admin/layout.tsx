@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 }
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- useAuthenticatedBlitzContext is not a hook despite the "use" prefix
   await useAuthenticatedBlitzContext({ role: ["ADMIN"], redirectTo: "/auth/login" })
   const ctx = await getBlitzContext()
   const user = await getCurrentUser(null, ctx)

@@ -14,7 +14,7 @@ import Map, {
   Source,
 } from "react-map-gl/maplibre"
 import { z } from "zod"
-import { Link } from "../links"
+import { Link } from "../links/Link"
 
 type Props = {
   name: string
@@ -48,11 +48,25 @@ export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
         schemaResult.success ? "bg-gray-100" : "border-red-800 bg-red-100",
       )}
     >
-      <h3 className="m-0 mb-3 flex items-center gap-1 text-sm font-semibold">
-        Geometrieprüfung: {geometryType === "ROUTE" ? "Liniengeometrie" : "Punktgeometrie"}
-        {schemaResult.success && !hasError && (
-          <CheckBadgeIcon className="h-5 w-5 pb-0.5 text-green-700" />
-        )}
+      <h3 className="m-0 mb-3 flex items-center justify-between gap-1 text-sm font-semibold">
+        <span className="flex items-center gap-1">
+          Geometrieprüfung: {geometryType === "ROUTE" ? "Liniengeometrie" : "Punktgeometrie"}
+          {schemaResult.success && !hasError && (
+            <CheckBadgeIcon className="h-5 w-5 pb-0.5 text-green-700" />
+          )}
+        </span>
+        <Link
+          blank
+          href={`http://play.placemark.io/?load=data:application/json,${encodeURIComponent(
+            JSON.stringify(
+              geometryType === "ROUTE"
+                ? lineString(geometry as RouteGeomtry)
+                : point(geometry as AreaGeometry),
+            ),
+          )}`}
+        >
+          Auf placemark.io öffnen
+        </Link>
       </h3>
       {schemaResult.success ? (
         <>
@@ -144,18 +158,6 @@ export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
 
           <details className="prose prose-sm">
             <summary className="cursor-pointer">Geometry</summary>
-            <Link
-              blank
-              href={`http://play.placemark.io/?load=data:application/json,${encodeURIComponent(
-                JSON.stringify(
-                  geometryType === "ROUTE"
-                    ? lineString(geometry as RouteGeomtry)
-                    : point(geometry as AreaGeometry),
-                ),
-              )}`}
-            >
-              Auf placemark.io öffnen
-            </Link>
             <pre className="m-0 text-xs leading-none">{JSON.stringify(geometry, undefined, 2)}</pre>
           </details>
         </>

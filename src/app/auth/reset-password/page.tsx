@@ -15,6 +15,7 @@ export default async function ResetPasswordPage({
   searchParams: { token?: string }
 }) {
   const token = searchParams?.token
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- useAuthenticatedBlitzContext is not a hook despite the "use" prefix
   await useAuthenticatedBlitzContext({ redirectAuthenticatedTo: "/dashboard" })
 
   if (typeof token !== "string" || !token) {

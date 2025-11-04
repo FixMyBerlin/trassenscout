@@ -15,6 +15,7 @@ export type LoginFormMessageKeys = "loginRequired"
 type Props = { params: { messageKey?: LoginFormMessageKeys } }
 
 export default async function LoginPage({ params: { messageKey } }: Props) {
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- useAuthenticatedBlitzContext is not a hook despite the "use" prefix
   await useAuthenticatedBlitzContext({ redirectAuthenticatedTo: "/dashboard" })
 
   return (

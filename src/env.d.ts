@@ -13,10 +13,18 @@ namespace NodeJS {
     readonly ADMIN_EMAIL: string
 
     readonly TS_API_KEY: string
+    readonly TS_API_KEY_STAGING: string
+    readonly TS_API_KEY_PRODUCTION: string
     readonly MAILJET_APIKEY_PUBLIC: string
     readonly MAILJET_APIKEY_PRIVATE: string
     readonly NEXT_PUBLIC_APP_ENV: "development" | "staging" | "production"
     readonly SESSION_SECRET_KEY: string
+
+    readonly OPENAI_API_KEY: string
+    readonly LANGFUSE_SECRET_KEY: string
+    readonly LANGFUSE_PUBLIC_KEY: string
+    readonly LANGFUSE_BASEURL: string
+    readonly INTERNAL_API_SECRET: string
 
     readonly NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE: "part1" | "part2" | "part3" | "end"
     readonly NEXT_PUBLIC_APP_ORIGIN?:

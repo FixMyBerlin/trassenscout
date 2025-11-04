@@ -25,6 +25,7 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
       SubsubsectionTask: { select: { title: true } },
       SubsubsectionStatus: { select: { title: true } },
       SubsubsectionInfra: { select: { title: true } },
+      SubsubsectionInfrastructureType: { select: { title: true } },
     },
     orderBy: { slug: "asc" },
   })
@@ -75,6 +76,10 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
     fuehrungsform: {
       title: "Führungsform",
       value: (s: Subsubsection) => s.SubsubsectionInfra?.title || "",
+    },
+    foerdergegenstand: {
+      title: "Fördergegenstand",
+      value: (s: Subsubsection) => s.SubsubsectionInfrastructureType?.title || "",
     },
     lage: {
       title: "Lage",

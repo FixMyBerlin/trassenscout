@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 }
 
 export default async function ForgotPasswordPage() {
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- useAuthenticatedBlitzContext is not a hook despite the "use" prefix
   await useAuthenticatedBlitzContext({ redirectAuthenticatedTo: "/dashboard" })
 
   return (
