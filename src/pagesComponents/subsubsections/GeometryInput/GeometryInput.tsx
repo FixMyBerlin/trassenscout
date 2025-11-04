@@ -48,7 +48,7 @@ export const GeometryInput = () => {
           { value: "ROUTE", label: "Linie" }, // fka Regelführung (RF)
           { value: "AREA", label: "Punkt" }, // fka Sonderführung (SF)
         ]}
-        classNameItemWrapper="flex gap-5 !space-y-0 items-center"
+        classNameItemWrapper="flex gap-5 space-y-0! items-center"
       />
       {type === "ROUTE" ? (
         <div id="geometry-input-help" className="m-0 text-gray-500">

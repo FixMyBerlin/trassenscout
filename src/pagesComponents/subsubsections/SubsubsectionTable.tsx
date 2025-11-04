@@ -146,7 +146,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   >
                     {subsubsection.qualityLevel?.title || "k.A."}
                   </td>
-                  <td className={clsx(compact ? "hidden" : "", "break-words text-sm font-medium")}>
+                  <td className={clsx(compact ? "hidden" : "", "wrap-break-word text-sm font-medium")}>
                     {mapillaryHref && (
                       <Link
                         href={mapillaryHref}

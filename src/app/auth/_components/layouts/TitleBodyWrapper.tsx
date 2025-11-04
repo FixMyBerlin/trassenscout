@@ -21,7 +21,7 @@ export const TitleBodyWrapper = ({ title, subtitle, children }: Props) => {
         {Boolean(subtitle) && <p className="mt-2 text-center text-sm text-gray-600">{subtitle}</p>}
       </div>
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">{children}</div>
+        <div className="bg-white px-4 py-8 shadow-sm sm:rounded-lg sm:px-10">{children}</div>
       </div>
     </>
   )

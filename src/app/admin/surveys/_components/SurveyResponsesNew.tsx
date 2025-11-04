@@ -32,7 +32,10 @@ export const AdminSurveyResponsesNew = async ({ project, surveyId, survey }: Pro
               <p className="text-gray-500">Keine Antworten vorhanden.</p>
             ) : (
               responsesForPart.map((response, index) => (
-                <div key={response.id || index} className="mb-6 rounded border border-gray-300 p-4">
+                <div
+                  key={response.id || index}
+                  className="mb-6 rounded-sm border border-gray-300 p-4"
+                >
                   <p>Surveysession ID: {response.surveySession.id}</p>
                   {/* @ts-expect-error */}
                   <AnswerDisplay partConfig={config} answers={response.data} />
@@ -86,7 +89,7 @@ const AnswerDisplay: React.FC<AnswerDisplayProps> = ({ partConfig, answers }) =>
 
       case "SurveySimpleMapWithLegend":
         return (
-          <pre className="overflow-x-auto rounded bg-gray-100 p-2 text-sm text-black">
+          <pre className="overflow-x-auto rounded-sm bg-gray-100 p-2 text-sm text-black">
             {JSON.stringify(value, null, 2)}
           </pre>
         )
@@ -100,7 +103,7 @@ const AnswerDisplay: React.FC<AnswerDisplayProps> = ({ partConfig, answers }) =>
     <div className="space-y-6">
       {/* @ts-expect-error */}
       {partConfig.pages.map((page) => (
-        <div key={page.id} className="rounded-lg border bg-gray-50 p-4">
+        <div key={page.id} className="border-gray-200bg-gray-50 rounded-lg border p-4">
           {page.fields.map((field: any) => {
             // Skip fields (e.g., markdown, title)
             if (field.component === "SurveyPageTitle" || field.component === "SurveyMarkdown")

@@ -19,7 +19,7 @@ export const SurveyMapOutOfViewPanel = ({ status, action }: Props) => {
         <SurveyMapPanelContainer>
           Pin liegt außerhalb der aktuellen Ansicht.{" "}
           <button
-            className="text-[var(--survey-primary-color)] hover:underline"
+            className="text-(--survey-primary-color) hover:underline"
             onClick={action}
             type="button"
           >

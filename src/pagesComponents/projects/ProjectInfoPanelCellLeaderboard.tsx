@@ -51,7 +51,7 @@ export const ProjectInfoPanelCellLeaderboard: React.FC<Props> = ({ projectSlug }
         {Boolean(subsubsectionSpecialsWithCount?.length) ? (
           <>
             <p className="flex gap-2">
-              <ExclamationTriangleIcon className="h-4 flex-shrink-0" />
+              <ExclamationTriangleIcon className="h-4 shrink-0" />
               <span>Herausforderungen: </span>
             </p>
             {subsubsectionSpecialsWithCount.map((s) => {

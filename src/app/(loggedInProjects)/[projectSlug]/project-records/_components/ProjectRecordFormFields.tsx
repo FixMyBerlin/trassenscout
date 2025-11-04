@@ -95,14 +95,14 @@ export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFields
             name="newTopic"
             placeholder="Neues Tag"
             className={
-              "block w-full flex-grow appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+              "block w-full grow appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
             }
             label=""
           />
           <button
             type="button"
             onClick={handleNewTopicFormSubmit}
-            className={clsx(blueButtonStyles, "!h-3 !px-3")}
+            className={clsx(blueButtonStyles, "h-3! px-3!")}
           >
             Hinzufügen
           </button>

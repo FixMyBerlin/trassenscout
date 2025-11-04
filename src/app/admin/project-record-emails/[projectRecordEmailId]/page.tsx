@@ -23,7 +23,7 @@ export default async function ProjectRecordEmailDetailPage({
     <>
       <PageHeader title={`Protokoll-E-Mail #${projectRecordEmail.id}`} className="mt-12" />
 
-      <div className="overflow-hidden bg-white shadow sm:rounded-lg">
+      <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
         <div className="border-t border-gray-200">
           <dl>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

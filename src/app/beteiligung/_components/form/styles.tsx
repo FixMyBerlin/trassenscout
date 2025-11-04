@@ -4,5 +4,5 @@ export const formClasses = {
   fieldLabel: "text-base font-semibold text-gray-900 sm:text-lg",
   fieldDescription: "text-sm text-gray-400 pt-1",
   labelItemWrapper:
-    "-ml-6 items-start flex h-full min-h-[2.5rem] w-full flex-col justify-center py-2 pl-9",
+    "-ml-6 items-start flex h-full min-h-10 w-full flex-col justify-center py-2 pl-9",
 }

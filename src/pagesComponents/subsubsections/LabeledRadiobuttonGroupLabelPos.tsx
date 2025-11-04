@@ -12,7 +12,7 @@ export const LabeledRadiobuttonGroupLabelPos = () => {
           value: "top",
           label: (
             <span className="flex items-center gap-1.5">
-              <TagIcon className="h-5 w-5 rotate-[225deg]" /> Pfeil unten
+              <TagIcon className="h-5 w-5 rotate-225" /> Pfeil unten
             </span>
           ),
         },
@@ -20,7 +20,7 @@ export const LabeledRadiobuttonGroupLabelPos = () => {
           value: "topRight",
           label: (
             <span className="flex items-center gap-1.5">
-              <TagIcon className="h-5 w-5 rotate-[265deg]" /> Pfeil unten links
+              <TagIcon className="h-5 w-5 rotate-265" /> Pfeil unten links
             </span>
           ),
         },
@@ -28,7 +28,7 @@ export const LabeledRadiobuttonGroupLabelPos = () => {
           value: "right",
           label: (
             <span className="flex items-center gap-1.5">
-              <TagIcon className="h-5 w-5 rotate-[315deg]" /> Pfeil links
+              <TagIcon className="h-5 w-5 rotate-315" /> Pfeil links
             </span>
           ),
         },
@@ -36,7 +36,7 @@ export const LabeledRadiobuttonGroupLabelPos = () => {
           value: "bottomRight",
           label: (
             <span className="flex items-center gap-1.5">
-              <TagIcon className="h-5 w-5 rotate-[365deg]" /> Pfeil oben links
+              <TagIcon className="h-5 w-5 rotate-365" /> Pfeil oben links
             </span>
           ),
         },
@@ -44,7 +44,7 @@ export const LabeledRadiobuttonGroupLabelPos = () => {
           value: "bottom",
           label: (
             <span className="flex items-center gap-1.5">
-              <TagIcon className="h-5 w-5 rotate-[45deg]" /> Pfeil oben
+              <TagIcon className="h-5 w-5 rotate-45" /> Pfeil oben
             </span>
           ),
         },
@@ -52,7 +52,7 @@ export const LabeledRadiobuttonGroupLabelPos = () => {
           value: "bottomLeft",
           label: (
             <span className="flex items-center gap-1.5">
-              <TagIcon className="h-5 w-5 rotate-[95deg]" /> Pfeil oben rechts
+              <TagIcon className="h-5 w-5 rotate-95" /> Pfeil oben rechts
             </span>
           ),
         },
@@ -60,7 +60,7 @@ export const LabeledRadiobuttonGroupLabelPos = () => {
           value: "left",
           label: (
             <span className="flex items-center gap-1.5">
-              <TagIcon className="h-5 w-5 rotate-[135deg]" /> Pfeil rechts
+              <TagIcon className="h-5 w-5 rotate-135" /> Pfeil rechts
             </span>
           ),
         },
@@ -68,7 +68,7 @@ export const LabeledRadiobuttonGroupLabelPos = () => {
           value: "topLeft",
           label: (
             <span className="flex items-center gap-1.5">
-              <TagIcon className="h-5 w-5 rotate-[175deg]" /> Pfeil unten rechts
+              <TagIcon className="h-5 w-5 rotate-175" /> Pfeil unten rechts
             </span>
           ),
         },

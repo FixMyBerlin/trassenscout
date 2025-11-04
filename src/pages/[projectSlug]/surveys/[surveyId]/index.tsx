@@ -81,7 +81,7 @@ export const Survey = () => {
       <PageHeader title={survey.title} className="mt-12" description={<SurveyTabs />} />
 
       <div className="mt-12">
-        <div className="mt-4 flex flex-col gap-y-2.5 rounded bg-gray-100 p-6">
+        <div className="mt-4 flex flex-col gap-y-2.5 rounded-sm bg-gray-100 p-6">
           {generalSurveyInformation.map((row, i) => {
             return (
               // eslint-disable-next-line react/jsx-key
@@ -90,7 +90,7 @@ export const Survey = () => {
                   ([label, value]) => {
                     return (
                       <div key={label} className="flex flex-col justify-between gap-2.5">
-                        <p className="!text-sm text-gray-500">{label}</p>
+                        <p className="text-sm! text-gray-500">{label}</p>
                         <p className="font-semibold">{value}</p>
                       </div>
                     )

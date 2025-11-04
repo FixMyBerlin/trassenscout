@@ -37,7 +37,7 @@ export const GroupedSurveyResponseItem: React.FC<Props> = ({
       heightClass = "h-[650px]"
   }
   return (
-    <div className="rounded border py-3.5">
+    <div className="border-gray-200py-3.5 rounded-sm border">
       {questionLabel && <H3 className="border-b px-3.5 pb-3.5">{questionLabel}</H3>}
 
       <div className={clsx("px-3.5", heightClass)}>

@@ -65,22 +65,22 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
       <table className="min-w-full divide-y divide-gray-300">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
+            <th className="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase">
               ID
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
+            <th className="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase">
               Projekt
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
+            <th className="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase">
               Inhalt (Vorschau)
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
+            <th className="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase">
               Erstellt am
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
+            <th className="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase">
               Protokolle
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
+            <th className="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase">
               Dokumente
             </th>
             <th className="relative px-6 py-3">
@@ -150,7 +150,7 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
                   type="button"
                   onClick={() => handleProcessEmail(email.id)}
                   disabled={processing === email.id}
-                  className="flex items-center gap-1 rounded bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700 disabled:opacity-50"
+                  className="flex items-center gap-1 rounded-sm bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700 disabled:opacity-50"
                 >
                   <SparklesIcon className="h-3 w-3" />
                   {processing === email.id ? "Verarbeite..." : "Mit KI prozessieren"}
@@ -169,7 +169,7 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
 
       <Link
         href="/admin/project-record-emails/new"
-        className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-xs hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden"
       >
         Neue E-Mail hinzufügen
       </Link>

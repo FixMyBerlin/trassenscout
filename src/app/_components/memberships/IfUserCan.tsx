@@ -26,7 +26,7 @@ export const AdminHint = ({ children }: Props) => {
     return (
       <>
         <span
-          className="m-1 inline-block rounded border border-purple-300 bg-purple-100 p-1"
+          className="m-1 inline-block rounded-sm border border-purple-300 bg-purple-100 p-1"
           title="An dieser Stelle erscheint ein UI Element nur für Nutzer, die bestimmte Rechte haben."
         >
           <NoSymbolIcon className="h-4 w-4 text-purple-700" />

@@ -10,7 +10,7 @@ export const SurveySpinnerLayover = () => {
             className={clsx(
               "h-12 w-12",
               "my-20",
-              "dark:[var(--survey-dark-color)] inline animate-spin fill-[var(--survey-primary-color)] text-gray-200",
+              "dark:[var(--survey-dark-color)] inline animate-spin fill-(--survey-primary-color) text-gray-200",
             )}
             viewBox="0 0 100 101"
             fill="none"

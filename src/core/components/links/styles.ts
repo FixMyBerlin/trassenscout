@@ -3,14 +3,15 @@ import { LinkProps } from "./Link"
 
 // BUTTON:
 const buttonBase =
-  "w-full font-medium sm:w-auto shadow-sm text-sm py-3.5 px-6 rounded-lg inline-flex items-center justify-center no-underline disabled:text-gray-400 disabled:bg-white disabled:ring-1 disabled:ring-gray-400"
+  "w-full font-medium sm:w-auto shadow-xs text-sm py-3.5 px-6 rounded-lg inline-flex items-center justify-center no-underline disabled:text-gray-400 disabled:bg-white disabled:ring-1 disabled:ring-gray-400"
 
 // LINK
 export const linkStyles = "text-blue-500 hover:text-blue-800"
 
 // HOVER and ACTIVE
 // for button elements
-const hoverStyleForButtonElement = "enabled:hover:bg-blue-800 enabled:hover:text-white"
+const hoverStyleForButtonElement =
+  "enabled:hover:bg-blue-800 enabled:hover:text-white hover:cursor-pointer"
 const activeStyleBlueButtonElement =
   "enabled:active:ring-2 enabled:active:ring-blue-800 enabled:active:bg-blue-500"
 const activeStyleWhiteButtonElement =

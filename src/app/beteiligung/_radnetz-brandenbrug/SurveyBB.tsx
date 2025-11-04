@@ -236,7 +236,7 @@ export function IntroPart1() {
         <summary
           className={clsx(
             partcipationLinkStyles,
-            "mb-4 mt-8 cursor-pointer text-lg font-bold !text-black hover:!text-[#C73C35] hover:!decoration-[#C73C35]",
+            "mb-4 mt-8 cursor-pointer text-lg font-bold text-black! hover:text-[#C73C35]! hover:decoration-[#C73C35]!",
           )}
         >
           Häufige Fragen
@@ -247,7 +247,7 @@ export function IntroPart1() {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
+                  "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
               >
                 Was bedeutet baulastträgerübergreifendes Radnetz?
@@ -266,7 +266,7 @@ export function IntroPart1() {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
+                  "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
               >
                 Wie sieht die Umsetzung des „Radnetz Brandenburg“-Konzepts aus?
@@ -284,7 +284,7 @@ export function IntroPart1() {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
+                  "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
               >
                 Wie wurden die Zielpunkte für das Luftliniennetz ausgewählt?
@@ -304,7 +304,7 @@ export function IntroPart1() {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
+                  "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
               >
                 Nach welchen Kriterien erfolgt die Netzumlegung?
@@ -330,7 +330,7 @@ export function IntroPart1() {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
+                  "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
               >
                 Wie werden die Hinweise der Kommunen ausgewertet?
@@ -346,7 +346,7 @@ export function IntroPart1() {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
+                  "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
               >
                 Werden Radschnellverbindungen (RSV) und Radvorrangrouten (RVR) berücksichtigt?
@@ -363,7 +363,7 @@ export function IntroPart1() {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
+                  "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
               >
                 Wird das „Radnetz Brandenburg“-Konzept verschiedene Hierarchieebenen
@@ -379,7 +379,7 @@ export function IntroPart1() {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
+                  "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
               >
                 Welche Qualitäts- und Ausbaustandards soll das Radnetz aufweisen?
@@ -393,7 +393,7 @@ export function IntroPart1() {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
+                  "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
               >
                 Wie werden die Radverkehrsverbindungen des Radnetz-Konzepts finanziert?{" "}
@@ -407,7 +407,7 @@ export function IntroPart1() {
               <summary
                 className={clsx(
                   partcipationLinkStyles,
-                  "hover:!decoration-[#C73C35 cursor-pointer !text-black hover:!text-[#C73C35]",
+                  "hover:!decoration-[#C73C35 cursor-pointer text-black! hover:text-[#C73C35]!",
                 )}
               >
                 Werden auch Radwegeplanungen benachbarter Länder berücksichtigt?{" "}

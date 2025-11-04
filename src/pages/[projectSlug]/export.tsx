@@ -166,7 +166,7 @@ export const ExportWithQuery = () => {
       <H2>Planungsabschnitte Karte</H2>
 
       {/* ===== Points via Textarea ===== */}
-      <details className="mb-5 rounded border p-2">
+      <details className="border-gray-200p-2 mb-5 rounded-sm border">
         <summary className="cursor-pointer">Testdaten auf der Karte anzeigen</summary>
         <form onSubmit={handleSubmit(handleShowPoints)} className="space-y-2">
           <div className="mt-6 flex gap-4">
@@ -176,9 +176,9 @@ export const ExportWithQuery = () => {
               </h4>
               <textarea
                 {...register("testPointsString")}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="block w-full rounded-md border-gray-300 shadow-xs focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               />
-              <button type="submit" className={clsx(whiteButtonStyles, "!pb-1 !pt-1 pl-2 pr-2")}>
+              <button type="submit" className={clsx(whiteButtonStyles, "pt-1! pr-2 pb-1! pl-2")}>
                 Punkte anzeigen
               </button>
             </div>
@@ -186,7 +186,7 @@ export const ExportWithQuery = () => {
               <div className="flex flex-1 flex-col gap-2">
                 <h4 className="font-semibold">
                   Erkannte, gemappte Punkte{" "}
-                  <span className="font-light ml-0.5 text-gray-500">
+                  <span className="ml-0.5 font-light text-gray-500">
                     (Rot; Gelb der original Punkt)
                   </span>
                 </h4>
@@ -201,7 +201,7 @@ export const ExportWithQuery = () => {
             )}
           </div>
           {testPointsOnLine && (
-            <div className="prose !mt-6 max-w-none">
+            <div className="prose mt-6! max-w-none">
               <details>
                 <summary className="cursor-pointer font-semibold">Teilstrecken</summary>
                 <div className="grid gap-2 sm:grid-cols-3">
@@ -331,7 +331,7 @@ export const ExportWithQuery = () => {
                 longitude={point[0]}
                 anchor="right"
               >
-                <div className="mr-3 rounded bg-gray-700 px-1 py-0 text-xs text-gray-50">
+                <div className="mr-3 rounded-sm bg-gray-700 px-1 py-0 text-xs text-gray-50">
                   {point[0].toFixed(4)}, {point[1].toFixed(4)}
                 </div>
               </Marker>
@@ -348,7 +348,7 @@ export const ExportWithQuery = () => {
                 longitude={point.geometry.coordinates[0] as number}
                 anchor="left"
               >
-                <div className="ml-3 rounded bg-red-700 px-1 py-0 text-xs text-red-50">
+                <div className="ml-3 rounded-sm bg-red-700 px-1 py-0 text-xs text-red-50">
                   {index}: {point.geometry.coordinates[0]?.toFixed(3)},{" "}
                   {point.geometry.coordinates[1]?.toFixed(3)}
                 </div>
@@ -421,7 +421,7 @@ export const ExportWithQuery = () => {
             <div>
               <button
                 onClick={handleResetMapPoints}
-                className={clsx(whiteButtonStyles, "!pb-1 !pt-1 pl-2 pr-2")}
+                className={clsx(whiteButtonStyles, "pt-1! pr-2 pb-1! pl-2")}
               >
                 Reset
               </button>
@@ -440,7 +440,7 @@ export const ExportWithQuery = () => {
       </div>
 
       {/* ===== Click Feature, NewLine Feature ===== */}
-      <div className="prose mb-12 mt-2 max-w-none">
+      <div className="prose mt-2 mb-12 max-w-none">
         {clickedFeatures?.map((feature) => {
           return (
             <div key={feature.properties?.slug} className="grid gap-3 md:grid-cols-2">

@@ -26,7 +26,7 @@ export const SubsectionInfoPanelCellSubsection: React.FC<Props> = ({
       </div>
       <div>
         <p className="flex gap-2">
-          <ExclamationTriangleIcon className="h-4 flex-shrink-0" />
+          <ExclamationTriangleIcon className="h-4 shrink-0" />
           <span>Herausforderungen: </span>
         </p>
         <div className="text-red-500">

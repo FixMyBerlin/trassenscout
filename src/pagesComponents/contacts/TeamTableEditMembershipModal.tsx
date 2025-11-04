@@ -18,7 +18,7 @@ export const TeamTableEditMembershipModal = ({ editUser }: Props) => {
         Ändern
       </button>
       <Modal
-        className="sm:!max-w-[600px]"
+        className="sm:max-w-[600px]!"
         open={open}
         handleClose={() => {
           setOpen(false)

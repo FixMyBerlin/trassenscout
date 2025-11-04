@@ -14,7 +14,7 @@ export const FormSuccess = ({ message, show, className }: Props) => {
       role={show ? "alert" : undefined}
       className={clsx(
         proseClasses,
-        "flex items-center gap-2 rounded px-2 py-2",
+        "flex items-center gap-2 rounded-sm px-2 py-2",
         show ? "bg-green-50 text-green-800" : "invisible",
         className,
       )}

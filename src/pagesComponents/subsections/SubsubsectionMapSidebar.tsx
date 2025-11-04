@@ -35,7 +35,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
 
   const mapillaryHref = mapillaryLink(subsubsection)
   return (
-    <section className="overlflow-y-scroll h-full w-[55rem] overflow-x-hidden rounded-md border border-gray-400/10 bg-white p-3 drop-shadow-md">
+    <section className="overlflow-y-scroll h-full w-220 overflow-x-hidden rounded-md border border-gray-400/10 bg-white p-3 drop-shadow-md">
       <div className="mt-3 flex items-center justify-between">
         <div className="flex items-center justify-start gap-2">
           <SubsubsectionIcon label={shortTitle(subsubsection.slug)} />
@@ -54,7 +54,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
             </Link>
           </IfUserCanEdit>
           <button
-            className={clsx("h-8 !w-8 !rounded-full !p-0", whiteButtonStyles)}
+            className={clsx("h-8 w-8! rounded-full! p-0!", whiteButtonStyles)}
             onClick={onClose}
           >
             &times;
@@ -64,7 +64,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
       {/* UNUSED */}
       {/* <H2 className="mt-2">{subsubsection.subTitle}</H2> */}
 
-      <PageDescription className="mt-5 !p-3">
+      <PageDescription className="mt-5 p-3!">
         <Markdown markdown={subsubsection.description} className="leading-tight" />
       </PageDescription>
 
@@ -92,7 +92,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                 <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
                   Eintragstyp
                 </th>
-                <td className="break-words px-3 py-4 text-sm text-gray-500">
+                <td className="wrap-break-word px-3 py-4 text-sm text-gray-500">
                   {subsubsection.SubsubsectionTask?.title || "k.A."}
                 </td>
               </tr>
@@ -100,7 +100,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                 <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
                   Länge
                 </th>
-                <td className="break-words px-3 py-4 text-sm text-gray-500">
+                <td className="wrap-break-word px-3 py-4 text-sm text-gray-500">
                   {formattedLength(subsubsection.lengthM)}
                 </td>
               </tr>
@@ -110,7 +110,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
                     Breite
                   </th>
-                  <td className="break-words px-3 py-4 text-sm text-gray-500">
+                  <td className="wrap-break-word px-3 py-4 text-sm text-gray-500">
                     {formattedWidth(subsubsection.width)}
                   </td>
                 </tr>
@@ -120,7 +120,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
                     Kostenschätzung
                   </th>
-                  <td className="break-words px-3 py-4 text-sm text-gray-500">
+                  <td className="wrap-break-word px-3 py-4 text-sm text-gray-500">
                     {formattedEuro(subsubsection.costEstimate)}
                   </td>
                 </tr>
@@ -130,7 +130,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
                     Ausbaustandard
                   </th>
-                  <td className="break-words px-3 py-4 text-sm text-gray-500">
+                  <td className="wrap-break-word px-3 py-4 text-sm text-gray-500">
                     {subsubsection.qualityLevel.url ? (
                       <Link
                         blank
@@ -150,7 +150,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
                     Fördergegenstand
                   </th>
-                  <td className="break-words px-3 py-4 text-sm text-gray-500">
+                  <td className="wrap-break-word px-3 py-4 text-sm text-gray-500">
                     {subsubsection.SubsubsectionInfrastructureType.title}
                   </td>
                 </tr>
@@ -160,7 +160,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
                   <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
                     Ansprechpartner:in
                   </th>
-                  <td className="break-words px-3 py-4 text-sm text-gray-500">
+                  <td className="wrap-break-word px-3 py-4 text-sm text-gray-500">
                     {getFullname(subsubsection.manager)}
                   </td>
                 </tr>

@@ -23,7 +23,7 @@ export const LabeledInputRadioCheckbox = ({
       <label
         className={
           classNameLabelOverwrite ||
-          "gray-700 block text-sm font-medium leading-none lg:whitespace-nowrap"
+          "gray-700 block text-sm leading-none font-medium lg:whitespace-nowrap"
         }
       >
         <div
@@ -36,7 +36,7 @@ export const LabeledInputRadioCheckbox = ({
             type={type}
             {...props}
             className={clsx(
-              type === "checkbox" && "rounded-sm",
+              type === "checkbox" && "rounded-xs",
               "mr-2 h-4 w-4 cursor-pointer border-gray-300 leading-none text-blue-500 focus:ring-blue-500",
             )}
           />

@@ -77,7 +77,7 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                   >
                     {subsection.SubsectionStatus?.title || "–"}
                   </td>
-                  <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
+                  <td className="wrap-break-word py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
                     {subsection.estimatedCompletionDateString || "–"}
                   </td>
                 </tr>

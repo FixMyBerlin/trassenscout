@@ -13,7 +13,7 @@ export const FormError = ({ formError }: Props) => {
   if (!formError) return null
 
   return (
-    <div role="alert" className={clsx(proseClasses, "rounded bg-red-50 px-2 py-1 text-red-800")}>
+    <div role="alert" className={clsx(proseClasses, "rounded-sm bg-red-50 px-2 py-1 text-red-800")}>
       {formError.name === "ZodError" ? (
         <>
           {(formError?.issues || formError?.message || []).map((error: any) => (

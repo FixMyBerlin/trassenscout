@@ -118,7 +118,7 @@ export const SurveyResponseWithLocation = () => {
             "flex w-full max-w-full gap-2 pb-8 lg:flex-row",
           )}
         >
-          <section className="h-[1000px] flex-grow">
+          <section className="h-[1000px] grow">
             <SurveyResponseOverviewMap
               maptilerUrl={maptilerUrl}
               defaultViewState={mapProps.config.bounds}

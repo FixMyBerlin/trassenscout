@@ -56,7 +56,7 @@ export const ProjectsTable = ({ projects }: Props) => {
                 <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
                   {project.subsections.length}
                 </td>
-                <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
+                <td className="wrap-break-word py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
                   {project.memberships[0] ? roleTranslation[project.memberships[0].role] : ""}
                 </td>
               </tr>

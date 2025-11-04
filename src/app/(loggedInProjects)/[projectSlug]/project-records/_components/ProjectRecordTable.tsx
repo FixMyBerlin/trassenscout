@@ -90,13 +90,13 @@ export const ProjectRecordsTable = ({
                       >
                         <DisclosureButton
                           className={clsx(
-                            "group col-span-2 text-left focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75",
+                            "group focus-visible:ring-opacity-75 col-span-2 text-left focus:outline-hidden focus-visible:ring focus-visible:ring-gray-500",
                             { "border-b border-gray-100": !open },
                           )}
                         >
                           <div className="grid grid-cols-2">
                             <div className={clsx(spaceClasses, "flex justify-start")}>
-                              <ChevronDownIcon className="mr-3 h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black group-data-[open]:rotate-180" />
+                              <ChevronDownIcon className="mr-3 h-5 w-5 shrink-0 text-gray-700 group-hover:text-black group-data-open:rotate-180" />
                               {projectRecord.date
                                 ? format(new Date(projectRecord.date), "P", { locale: de })
                                 : "—"}
@@ -115,7 +115,7 @@ export const ProjectRecordsTable = ({
                                     key={topic.id}
                                     className={clsx(
                                       linkStyles,
-                                      "inline-block rounded bg-gray-100 px-2 py-1 text-xs",
+                                      "inline-block rounded-sm bg-gray-100 px-2 py-1 text-xs",
                                     )}
                                     onClick={handleTopicClick}
                                     type="button"

@@ -16,7 +16,7 @@ const LegendItemShape = ({ legendItem }: { legendItem: TLegendItem }) => {
 
 export const SurveyMapLegend = (legend: Props) => {
   return (
-    <div className="!-mt-0 flex flex-col gap-3 bg-gray-200 p-4">
+    <div className="mt-0! flex flex-col gap-3 bg-gray-200 p-4">
       {Object.entries(legend!).map(([key, value]) => (
         <Fragment key={key}>
           <p>{key}</p>

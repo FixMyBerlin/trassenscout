@@ -35,7 +35,7 @@ export const ReprocessProjectRecordButton = ({ projectRecordId, onAiSuggestions 
   return (
     <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
       <div className="flex items-start gap-3">
-        <SparklesIcon className={"mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600"} />
+        <SparklesIcon className={"mt-0.5 h-5 w-5 shrink-0 text-blue-600"} />
         <div className="flex-1">
           <h3 className="text-sm font-medium text-gray-900">KI-gestützte Verbesserung</h3>
           <p className="mb-3 mt-1 text-sm text-gray-600">

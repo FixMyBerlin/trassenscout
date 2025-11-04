@@ -16,8 +16,8 @@ export default function ErrorGlobalLayout({ error }: Props) {
   return (
     <html>
       <body>
-        <div className="flex min-h-full flex-grow flex-col bg-white">
-          <main className="mx-auto flex w-full max-w-7xl flex-grow flex-col justify-center px-4 sm:px-6 lg:px-8">
+        <div className="flex min-h-full grow flex-col bg-white">
+          <main className="mx-auto flex w-full max-w-7xl grow flex-col justify-center px-4 sm:px-6 lg:px-8">
             <div className="py-16">
               <div className="text-center">
                 <p className="text-amber-500 text-base font-semibold">:-(</p>

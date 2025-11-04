@@ -22,7 +22,7 @@ export const StatusLabel = ({ icon, label, color, className }: Props) => {
       style={{ backgroundColor: color }}
       className={clsx(
         className,
-        "flex flex-shrink-0 items-center gap-4 whitespace-nowrap rounded-full px-5 py-2",
+        "flex shrink-0 items-center gap-4 whitespace-nowrap rounded-full px-5 py-2",
       )}
     >
       {icon && <span>{statusIcon[icon]}</span>}

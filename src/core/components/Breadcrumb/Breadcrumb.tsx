@@ -25,7 +25,7 @@ const BreadcrumbStep = ({ title, route, arrow }: Props) => {
           {title}
         </span>
       )}
-      {arrow && <ChevronRightIcon className="mb-0.5 h-5 w-5 flex-shrink-0 text-gray-900" />}
+      {arrow && <ChevronRightIcon className="mb-0.5 h-5 w-5 shrink-0 text-gray-900" />}
     </li>
   )
 }

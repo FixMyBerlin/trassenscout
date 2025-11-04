@@ -103,7 +103,7 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
               onPaste={handlePaste}
               className={clsx(
                 textareaClasName,
-                "block w-full grow rounded-md font-mono text-xs shadow-sm",
+                "block w-full grow rounded-md font-mono text-xs shadow-xs",
                 hasError
                   ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
                   : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
@@ -140,7 +140,7 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
               name={name}
             />
             {hasJsonParseError && (
-              <div role="alert" className="mb-3 rounded bg-red-800 p-3 text-sm text-white">
+              <div role="alert" className="mb-3 rounded-sm bg-red-800 p-3 text-sm text-white">
                 Es ist ein Fehler beim Verarbeiten der Geometrie aufgetreten. Die Änderung wurde
                 daher verworfen. Es könnte sein, dass ein Syntaxfehler vorlag, bspw. durch ein Komma
                 zu viel/wenig.

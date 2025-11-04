@@ -26,7 +26,7 @@ export function SubsectionStatusForm<S extends z.ZodType<any, any>>(props: FormP
           value,
           label: statusStyleTranslations[value],
         }))}
-        classNameItemWrapper="flex gap-5 !space-y-0 items-center"
+        classNameItemWrapper="flex gap-5 space-y-0! items-center"
       />
     </Form>
   )

@@ -15,7 +15,7 @@ export const CreateEditReviewHistory = ({
 }) => {
   return (
     <div
-      className={`flex flex-shrink-0 flex-col gap-1 rounded-lg border border-gray-300 p-2 ${className || ""}`}
+      className={`flex shrink-0 flex-col gap-1 rounded-lg border border-gray-300 p-2 ${className || ""}`}
     >
       <p className="text-xs">
         <span>Erstellt von </span>

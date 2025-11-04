@@ -18,7 +18,7 @@ export const Breadcrumb = ({ pages }: Props) => {
         <li className="flex">
           <div className="flex items-center">
             <Link href="/dashboard" className="text-gray-400 hover:text-gray-500">
-              <HomeIcon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
+              <HomeIcon className="h-5 w-5 shrink-0" aria-hidden="true" />
               <span className="sr-only">Meine Projekte (Öffentliche Ansicht)</span>
             </Link>
           </div>
@@ -31,7 +31,7 @@ export const Breadcrumb = ({ pages }: Props) => {
             <li key={page.name} className="flex">
               <div className="flex items-center">
                 <svg
-                  className="h-full w-6 flex-shrink-0 text-gray-200"
+                  className="h-full w-6 shrink-0 text-gray-200"
                   viewBox="0 0 24 44"
                   preserveAspectRatio="none"
                   fill="currentColor"

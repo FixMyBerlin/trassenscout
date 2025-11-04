@@ -47,7 +47,7 @@ export const NewSurveyResponseCommentForm = ({ surveyResponseId }: Props) => {
         name="body"
         help="Dieser Kommentar wird extern nicht sichtbar sein."
       />
-      <button className={clsx(blueButtonStyles, "mt-2 !px-3 !py-2.5")} type="submit">
+      <button className={clsx(blueButtonStyles, "mt-2 px-3! py-2.5!")} type="submit">
         Kommentar hinzufügen
       </button>
     </form>

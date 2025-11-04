@@ -188,7 +188,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                   />
                 ))}
               </FormElementWrapper>
-              <div className="flex flex-shrink-0 flex-col gap-4">
+              <div className="flex shrink-0 flex-col gap-4">
                 <FormElementWrapper label={labels.note?.sg || defaultBackendConfig.labels.note.sg}>
                   {hasnotesOptions.map((item) => (
                     <LabeledInputRadioCheckbox
@@ -219,7 +219,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 </FormElementWrapper>
               </div>
               {additionalFilters && Boolean(additionalFilters?.length) && filter && (
-                <ul className="flex flex-shrink flex-col gap-6">
+                <ul className="flex shrink flex-col gap-6">
                   {additionalFilters.map((addFilter) => (
                     <li key={addFilter.id}>
                       <FormElementWrapper label={addFilter.label}>
@@ -229,7 +229,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                           // @ts-ignore todo
                           value={filter[addFilter.value]}
                           className={
-                            "w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                            "w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
                           }
                         >
                           {addFilter.options.map(({ value, label }) => (
@@ -306,7 +306,7 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                   name="searchterm"
                   placeholder="Beiträge nach Suchwort filtern"
                   className={
-                    "block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                    "block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
                   }
                 />
               </div>
