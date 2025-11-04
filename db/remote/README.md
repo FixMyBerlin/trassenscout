@@ -15,7 +15,7 @@ Unified database tooling for local development and staging synchronization using
 Pull production or staging data to your local development environment:
 
 ```sh
-# First, pull a fresh dump
+# FIRST: Pull fresh data from PRODUCTION
 # Terminal 1:
 ssh trassenscout-production-postgres-tunnel
 # Terminal 2:
@@ -23,7 +23,7 @@ npm run db:getDump
 # Now exit in Terminal 1:
 exit
 
-# OR, to use staging…
+# OR: Pull fresh data from STAGING
 # Terminal 1:
 ssh trassenscout-staging-postgres-tunnel
 # Terminal 2:
@@ -31,7 +31,7 @@ npm run db:getDump:staging
 # Now exit in Terminal 1:
 exit
 
-# Then run…
+# THEN: Replace LOCAL data
 npm run db:restore:local
 ```
 
@@ -40,7 +40,7 @@ npm run db:restore:local
 Restore production data to the staging environment with anonymization, from your development machine:
 
 ```sh
-# First, pull a fresh dump (run this manually when needed)
+# FIRST: Pull fresh data from PRODUCTION
 # Terminal 1:
 ssh trassenscout-production-postgres-tunnel
 # Terminal 2:
@@ -48,7 +48,7 @@ npm run db:getDump
 # Now exit in Terminal 1:
 exit
 
-# Then restore to staging (uses existing dump.sql)
+# THEN: Replace STAGING data
 # Terminal 1:
 ssh trassenscout-staging-postgres-tunnel
 # Terminal 2:

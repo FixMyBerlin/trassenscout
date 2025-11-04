@@ -37,11 +37,9 @@ await resetDatabase(targetDbUrl, sqlDir)
 
 await restoreDump(targetDbUrl, dumpPath)
 
-await anonymizeData(targetDbUrl)
+await anonymizeData(targetDbUrl, "development")
 
 await runMigrations()
 await runSeed()
 
-console.log("✅ Local database restore completed successfully!")
-console.log("📧 All emails have been anonymized (except @fixmycity.de addresses)")
-console.log("👥 Test users have been seeded for local development")
+console.log("✅ DONE")
