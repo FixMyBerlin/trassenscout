@@ -54,7 +54,7 @@ export const SubsubsectionInfrasWithData = () => {
             <tr>
               <th
                 scope="col"
-                className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
               >
                 Kurz-Titel
               </th>
@@ -76,17 +76,17 @@ export const SubsubsectionInfrasWithData = () => {
             {subsubsectionInfras.map((Infra) => {
               return (
                 <tr key={Infra.id}>
-                  <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                  <td className="py-4 pr-3 pl-4 text-sm whitespace-nowrap sm:pl-6">
                     <strong className="font-semibold">{shortTitle(Infra.slug)}</strong>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
                     <strong className="font-semibold">{Infra.title}</strong>
                   </td>
                   <td className="px-3 py-4 text-sm text-gray-500">
                     {Infra.subsubsectionCount}{" "}
                     {Infra.subsubsectionCount > 1 ? "Einträge" : "Eintrag"}
                   </td>
-                  <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
+                  <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
                     <IfUserCanEdit>
                       <ButtonWrapper className="justify-end">
                         <Link

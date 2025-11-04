@@ -39,7 +39,7 @@ export const OperatorFilterDropdown = () => {
               clsx(
                 active ? "" : "",
                 checked ? "bg-blue-900 text-white" : "bg-white ring-1 ring-gray-300",
-                "relative inline-flex items-center whitespace-nowrap rounded-md px-3 py-2 text-sm text-gray-900 ring-0 hover:cursor-pointer hover:ring-gray-600 focus:z-10",
+                "relative inline-flex items-center rounded-md px-3 py-2 text-sm whitespace-nowrap text-gray-900 ring-0 hover:cursor-pointer hover:ring-gray-600 focus:z-10",
               )
             }
           >
@@ -55,7 +55,7 @@ export const OperatorFilterDropdown = () => {
                 clsx(
                   active ? "" : "",
                   checked ? "bg-blue-900 text-white" : "bg-white ring-1 ring-gray-300",
-                  "relative inline-flex items-center whitespace-nowrap rounded-md px-3 py-2 text-sm text-gray-900 ring-0 hover:cursor-pointer hover:ring-gray-600 focus:z-10",
+                  "relative inline-flex items-center rounded-md px-3 py-2 text-sm whitespace-nowrap text-gray-900 ring-0 hover:cursor-pointer hover:ring-gray-600 focus:z-10",
                 )
               }
             >

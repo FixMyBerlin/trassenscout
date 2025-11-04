@@ -10,7 +10,7 @@ export const SurveyFooter = () => {
               { name: "Kontakt & Impressum", href: "/kontakt", blank: true },
               { name: "Datenschutz", href: "/datenschutz", blank: true },
             ]}
-            className="ml-auto mr-4 flex-none sm:pr-[12vw]"
+            className="mr-4 ml-auto flex-none sm:pr-[12vw]"
           />
         </div>
       </div>

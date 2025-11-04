@@ -108,7 +108,7 @@ export const GeometryInput = () => {
             </div>
           </nav>
 
-          <div className="rounded-b-md rounded-r-md bg-gray-100 p-2">
+          <div className="rounded-r-md rounded-b-md bg-gray-100 p-2">
             {geometryInputMode === "MAP" ? (
               <MapProvider>
                 {schemaResult.success && <GeometryInputMap subsection={subsection} />}

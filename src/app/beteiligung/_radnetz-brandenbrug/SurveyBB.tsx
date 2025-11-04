@@ -188,7 +188,7 @@ export function IntroPart1() {
                 leaveTo="opacity-0 scale-95"
               >
                 <DialogPanel className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <DialogTitle as="h3" className="text-lg font-bold leading-6 text-gray-700">
+                  <DialogTitle as="h3" className="text-lg leading-6 font-bold text-gray-700">
                     Achtung:
                   </DialogTitle>
                   <div className="mt-2">
@@ -236,7 +236,7 @@ export function IntroPart1() {
         <summary
           className={clsx(
             partcipationLinkStyles,
-            "mb-4 mt-8 cursor-pointer text-lg font-bold text-black! hover:text-[#C73C35]! hover:decoration-[#C73C35]!",
+            "mt-8 mb-4 cursor-pointer text-lg font-bold text-black! hover:text-[#C73C35]! hover:decoration-[#C73C35]!",
           )}
         >
           Häufige Fragen

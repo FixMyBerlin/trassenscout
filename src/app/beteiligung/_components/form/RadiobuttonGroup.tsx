@@ -40,7 +40,7 @@ export const SurveyRadiobuttonGroup = ({ options, label, description, required }
             <div className="flex h-full min-h-10 items-center">
               <div
                 className={clsx(
-                  "relative h-4 w-4 cursor-pointer rounded-full border border-gray-300 transition-colors focus:ring-0 group-hover:border-gray-400",
+                  "relative h-4 w-4 cursor-pointer rounded-full border border-gray-300 transition-colors group-hover:border-gray-400 focus:ring-0",
                 )}
               />
               <span className="absolute m-[2px] size-4 h-3 w-3 rounded-full border-4 border-(--survey-primary-color) opacity-0 transition group-data-checked:opacity-100" />

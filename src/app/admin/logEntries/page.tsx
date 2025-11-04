@@ -30,7 +30,7 @@ export default async function AdminLogEntriesPage() {
         <table className="min-w-full divide-y divide-gray-300">
           <thead className="bg-gray-50">
             <tr>
-              <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6">
+              <th scope="col" className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold sm:pl-6">
                 Datum
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold sm:pr-6">
@@ -45,7 +45,7 @@ export default async function AdminLogEntriesPage() {
             {logEntries.map((logEntry) => {
               return (
                 <tr key={logEntry.id}>
-                  <td className="py-4 pl-4 pr-3 text-sm sm:pl-6">
+                  <td className="py-4 pr-3 pl-4 text-sm sm:pl-6">
                     {format(new Date(logEntry.createdAt), "Pp", { locale: de })}
                     {format(new Date(logEntry.createdAt), "Pp") !==
                       format(new Date(logEntry.updatedAt), "Pp") && (
@@ -64,7 +64,7 @@ export default async function AdminLogEntriesPage() {
                       })}
                     </span>
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm sm:pr-6">
+                  <td className="py-4 pr-3 pl-4 text-sm sm:pr-6">
                     <StatusLabel
                       label={logEntry.logLevel}
                       className={
@@ -78,7 +78,7 @@ export default async function AdminLogEntriesPage() {
                       {}
                     </StatusLabel>
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm sm:pr-6">
+                  <td className="py-4 pr-3 pl-4 text-sm sm:pr-6">
                     <strong>{logEntry.message}</strong>
                     <br />
                     <pre>{JSON.stringify(logEntry.context, undefined, 2)}</pre>

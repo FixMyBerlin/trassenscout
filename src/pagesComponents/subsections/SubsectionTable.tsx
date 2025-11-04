@@ -58,13 +58,13 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                   className="group cursor-pointer hover:bg-gray-50"
                   onClick={() => router.push(route)}
                 >
-                  <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                  <td className="h-20 w-20 py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
                     <SubsectionIcon label={shortTitle(subsection.slug)} />
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
+                  <td className="py-4 pr-3 pl-4 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                     {startEnd(subsection)}
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
+                  <td className="py-4 pr-3 pl-4 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
                     {subsection.operator?.title || "–"}{" "}
                     {subsection.operator?.slug && (
                       <span className="uppercase">({subsection.operator?.slug})</span>
@@ -72,12 +72,12 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                   </td>
                   <td
                     className={clsx(
-                      "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50",
+                      "py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 group-hover:bg-gray-50",
                     )}
                   >
                     {subsection.SubsectionStatus?.title || "–"}
                   </td>
-                  <td className="wrap-break-word py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
+                  <td className="py-4 pr-4 pl-3 text-sm font-medium wrap-break-word sm:pr-6">
                     {subsection.estimatedCompletionDateString || "–"}
                   </td>
                 </tr>

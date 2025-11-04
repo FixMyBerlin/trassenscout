@@ -114,7 +114,7 @@ export const SurveySimpleMap = ({ config }: Props) => {
             status={isPinInView ? "default" : "pinOutOfView"}
           />
           <SurveyBackgroundSwitcher
-            className="absolute left-4 top-4"
+            className="absolute top-4 left-4"
             value={selectedLayer}
             onChange={handleLayerSwitch}
           />

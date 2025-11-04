@@ -35,7 +35,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
 
   const mapillaryHref = mapillaryLink(subsubsection)
   return (
-    <section className="overlflow-y-scroll h-full w-220 overflow-x-hidden rounded-md border border-gray-400/10 bg-white p-3 drop-shadow-md">
+    <section className="overlflow-y-scroll @container h-full w-[950px] overflow-x-hidden rounded-md border border-gray-400/10 bg-white p-3 drop-shadow-md">
       <div className="mt-3 flex items-center justify-between">
         <div className="flex items-center justify-start gap-2">
           <SubsubsectionIcon label={shortTitle(subsubsection.slug)} />
@@ -75,7 +75,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
               <tr>
                 <th
                   scope="col"
-                  className="py-3.5 pl-3 pr-3 text-left text-sm font-semibold text-gray-900"
+                  className="py-3.5 pr-3 pl-3 text-left text-sm font-semibold text-gray-900"
                 >
                   Attribut
                 </th>
@@ -89,18 +89,18 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
               <tr>
-                <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
+                <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
                   Eintragstyp
                 </th>
-                <td className="wrap-break-word px-3 py-4 text-sm text-gray-500">
+                <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
                   {subsubsection.SubsubsectionTask?.title || "k.A."}
                 </td>
               </tr>
               <tr>
-                <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
+                <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
                   Länge
                 </th>
-                <td className="wrap-break-word px-3 py-4 text-sm text-gray-500">
+                <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
                   {formattedLength(subsubsection.lengthM)}
                 </td>
               </tr>
@@ -117,20 +117,20 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
               )} */}
               {subsubsection.costEstimate !== null && subsubsection.costEstimate !== undefined && (
                 <tr>
-                  <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
                     Kostenschätzung
                   </th>
-                  <td className="wrap-break-word px-3 py-4 text-sm text-gray-500">
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
                     {formattedEuro(subsubsection.costEstimate)}
                   </td>
                 </tr>
               )}
               {subsubsection.qualityLevel?.title && (
                 <tr>
-                  <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
                     Ausbaustandard
                   </th>
-                  <td className="wrap-break-word px-3 py-4 text-sm text-gray-500">
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
                     {subsubsection.qualityLevel.url ? (
                       <Link
                         blank
@@ -147,20 +147,20 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
               )}
               {subsubsection.SubsubsectionInfrastructureType?.title && (
                 <tr>
-                  <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
                     Fördergegenstand
                   </th>
-                  <td className="wrap-break-word px-3 py-4 text-sm text-gray-500">
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
                     {subsubsection.SubsubsectionInfrastructureType.title}
                   </td>
                 </tr>
               )}
               {subsubsection.manager && (
                 <tr>
-                  <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
                     Ansprechpartner:in
                   </th>
-                  <td className="wrap-break-word px-3 py-4 text-sm text-gray-500">
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
                     {getFullname(subsubsection.manager)}
                   </td>
                 </tr>

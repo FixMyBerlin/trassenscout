@@ -10,7 +10,7 @@ type ErrorContainerProps = {
 export const FieldWithErrorContainer = ({ children, hasError, className }: ErrorContainerProps) => {
   return (
     <div
-      className={clsx("mb-4 mt-8 w-full p-2 py-3", hasError && "rounded-lg bg-red-50", className)}
+      className={clsx("mt-8 mb-4 w-full p-2 py-3", hasError && "rounded-lg bg-red-50", className)}
     >
       {children}
     </div>

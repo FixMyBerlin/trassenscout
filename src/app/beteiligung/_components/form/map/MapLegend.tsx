@@ -26,7 +26,7 @@ export const SurveyMapLegend = (legend: Props) => {
                 <div className="flex h-6 flex-col justify-center">
                   <LegendItemShape legendItem={value} />
                 </div>
-                <div className="text-sm font-semibold leading-none">{value.label}</div>
+                <div className="text-sm leading-none font-semibold">{value.label}</div>
               </div>
             ))}
           </div>

@@ -55,7 +55,7 @@ export const QualityLevelsWithData = () => {
             <tr>
               <th
                 scope="col"
-                className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
               >
                 Kurz-Titel
               </th>
@@ -77,10 +77,10 @@ export const QualityLevelsWithData = () => {
             {qualityLevels.map((qualityLevel) => {
               return (
                 <tr key={qualityLevel.id}>
-                  <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                  <td className="py-4 pr-3 pl-4 text-sm whitespace-nowrap sm:pl-6">
                     <strong className="font-semibold">{shortTitle(qualityLevel.slug)}</strong>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
                     {qualityLevel.url ? (
                       <Link
                         blank
@@ -93,10 +93,10 @@ export const QualityLevelsWithData = () => {
                       <strong className="font-semibold">{qualityLevel.title}</strong>
                     )}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
                     {qualityLevel.subsubsectionCount} Einträge
                   </td>
-                  <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
+                  <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
                     <IfUserCanEdit>
                       <ButtonWrapper className="justify-end">
                         <Link

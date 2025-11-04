@@ -17,14 +17,14 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
       <tr>
         <td
           colSpan={2}
-          className="pb-2 pl-4 pr-3 pt-4 text-right text-xs font-medium uppercase text-gray-500"
+          className="pt-4 pr-3 pb-2 pl-4 text-right text-xs font-medium text-gray-500 uppercase"
         >
           Gesamt:
         </td>
         <td
           className={clsx(
             compact ? "hidden" : "",
-            "whitespace-nowrap pb-2 pl-4 pr-3 pt-4 text-sm font-medium text-gray-900",
+            "pt-4 pr-3 pb-2 pl-4 text-sm font-medium whitespace-nowrap text-gray-900",
           )}
         >
           {formattedLength(subsubsections.reduce((acc, sub) => acc + (sub.lengthM || 0), 0))}
@@ -32,7 +32,7 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
         <td
           className={clsx(
             compact ? "hidden" : "",
-            "whitespace-nowrap pb-2 pl-4 pr-3 pt-4 text-sm font-medium text-gray-900",
+            "pt-4 pr-3 pb-2 pl-4 text-sm font-medium whitespace-nowrap text-gray-900",
           )}
         >
           {formattedEuro(subsubsections.reduce((acc, sub) => acc + (sub.costEstimate || 0), 0))}
@@ -50,14 +50,14 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
           <tr key={qualityLevel.slug}>
             <td
               colSpan={2}
-              className="py-2 pl-4 pr-3 text-right text-xs font-medium uppercase text-gray-500"
+              className="py-2 pr-3 pl-4 text-right text-xs font-medium text-gray-500 uppercase"
             >
               Standard {frenchQuote(qualityLevel.title)}:
             </td>
             <td
               className={clsx(
                 compact ? "hidden" : "",
-                "py-2 pl-4 pr-3 text-sm font-medium text-gray-900",
+                "py-2 pr-3 pl-4 text-sm font-medium text-gray-900",
               )}
             >
               {formattedLength(
@@ -67,7 +67,7 @@ export const SubsubsectionTableFooter: React.FC<Props> = ({ subsubsections, comp
             <td
               className={clsx(
                 compact ? "hidden" : "",
-                "py-2 pl-4 pr-3 text-sm font-medium text-gray-900",
+                "py-2 pr-3 pl-4 text-sm font-medium text-gray-900",
               )}
             >
               {formattedEuro(

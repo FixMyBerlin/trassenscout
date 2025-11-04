@@ -9,7 +9,7 @@ export const ProjectIcon = ({ label, ...props }: Props) => (
     className={clsx(
       "flex h-9 w-auto flex-none items-center justify-center rounded-lg",
       "border-2 border-yellow-500 bg-yellow-500 px-1.5",
-      "text-yellow-950 font-sans text-xl font-semibold leading-none",
+      "font-sans text-xl leading-none font-semibold text-yellow-950",
     )}
     {...props}
   >
@@ -22,7 +22,7 @@ export const ProjectMapIcon = ({ label, ...props }: Props) => (
     className={clsx(
       "flex h-5 w-auto flex-none items-center justify-center rounded-md",
       "border-2 border-yellow-500 bg-yellow-500 px-1.5",
-      "text-yellow-950 font-sans text-xs font-semibold leading-none",
+      "font-sans text-xs leading-none font-semibold text-yellow-950",
     )}
     {...props}
   >

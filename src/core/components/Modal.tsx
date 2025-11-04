@@ -22,7 +22,7 @@ export const Modal = ({ children, open, handleClose, className }: Props) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          <div className="bg-opacity-75 fixed inset-0 bg-gray-500 transition-opacity" />
         </TransitionChild>
 
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
@@ -38,7 +38,7 @@ export const Modal = ({ children, open, handleClose, className }: Props) => {
             >
               <DialogPanel
                 className={clsx(
-                  "relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6",
+                  "relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6",
                   className,
                 )}
               >

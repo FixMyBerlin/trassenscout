@@ -30,7 +30,7 @@ export default async function AdminProjectsPage() {
         <table className="min-w-full divide-y divide-gray-300">
           <thead className="bg-gray-50">
             <tr>
-              <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6">
+              <th scope="col" className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold sm:pl-6">
                 User
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold sm:pr-6">
@@ -43,13 +43,13 @@ export default async function AdminProjectsPage() {
             {userAndMemberships.map((user) => {
               return (
                 <tr key={user.id}>
-                  <td className="h-20 py-4 pl-4 pr-3 text-sm sm:pl-6">
+                  <td className="h-20 py-4 pr-3 pl-4 text-sm sm:pl-6">
                     <strong>{getFullname(user)}</strong>
                     <br />
                     {user.email}
                     {user.role === "ADMIN" && <> (Admin)</>}
                   </td>
-                  <td className="h-20 py-4 pl-4 pr-3 text-sm sm:pr-6">
+                  <td className="h-20 py-4 pr-3 pl-4 text-sm sm:pr-6">
                     {user?.memberships?.length === 0 && <>Bisher keine Rechte</>}
                     {user?.memberships?.map((membership) => {
                       return (

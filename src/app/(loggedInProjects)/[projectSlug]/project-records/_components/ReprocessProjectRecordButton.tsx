@@ -38,7 +38,7 @@ export const ReprocessProjectRecordButton = ({ projectRecordId, onAiSuggestions 
         <SparklesIcon className={"mt-0.5 h-5 w-5 shrink-0 text-blue-600"} />
         <div className="flex-1">
           <h3 className="text-sm font-medium text-gray-900">KI-gestützte Verbesserung</h3>
-          <p className="mb-3 mt-1 text-sm text-gray-600">
+          <p className="mt-1 mb-3 text-sm text-gray-600">
             Dieses Protokoll kann mit KI verbessert werden. Dabei werden verknüpfte Dokumente und
             deren Zusammenfassungen berücksichtigt.
           </p>

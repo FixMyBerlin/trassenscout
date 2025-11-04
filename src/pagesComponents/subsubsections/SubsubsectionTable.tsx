@@ -32,7 +32,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
             <tr>
               <th
                 scope="col"
-                className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
               >
                 Einträge
               </th>
@@ -107,16 +107,16 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   )}
                   onClick={() => router.push(route, undefined, { scroll: false })}
                 >
-                  <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                  <td className="h-20 w-20 py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
                     <SubsubsectionIcon label={shortTitle(subsubsection.slug)} />
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
+                  <td className="py-4 pr-3 pl-4 text-sm font-medium text-gray-900">
                     {subsubsection.SubsubsectionTask?.title || "k.A."}
                   </td>
                   <td
                     className={clsx(
                       compact ? "hidden" : "",
-                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
+                      "py-4 pr-3 pl-4 text-sm font-medium text-gray-900",
                     )}
                   >
                     {formattedLength(subsubsection.lengthM)}
@@ -133,7 +133,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   <td
                     className={clsx(
                       compact ? "hidden" : "",
-                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
+                      "py-4 pr-3 pl-4 text-sm font-medium text-gray-900",
                     )}
                   >
                     {formattedEuro(subsubsection.costEstimate)}
@@ -141,18 +141,20 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   <td
                     className={clsx(
                       compact ? "hidden" : "",
-                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
+                      "py-4 pr-3 pl-4 text-sm font-medium text-gray-900",
                     )}
                   >
                     {subsubsection.qualityLevel?.title || "k.A."}
                   </td>
-                  <td className={clsx(compact ? "hidden" : "", "wrap-break-word text-sm font-medium")}>
+                  <td
+                    className={clsx(compact ? "hidden" : "", "text-sm font-medium wrap-break-word")}
+                  >
                     {mapillaryHref && (
                       <Link
                         href={mapillaryHref}
                         blank
                         // Trying to get the Link to fill the whole cell (only partial solution…)
-                        className="py-4 pl-3 pr-4 sm:pr-6"
+                        className="py-4 pr-4 pl-3 sm:pr-6"
                         // This will prevent the <tr> onClick from firing. `pointer-events-none` does something differnet, it prevent this link from being clickable.
                         onClick={(e) => e.stopPropagation()}
                       >
