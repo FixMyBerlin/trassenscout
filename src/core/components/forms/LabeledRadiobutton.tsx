@@ -19,9 +19,9 @@ export interface LabeledRadiobuttonProps extends PropsWithoutRef<JSX.IntrinsicEl
 }
 
 // Note: See also src/participation/components/form/ParticipationLabeledRadiobutton.tsx
-export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobuttonProps>(
+export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobuttonProps & { _onChange?: (value: string) => void }>(
   function LabeledRadiobutton(
-    { scope, value, label, help, outerProps, labelProps, readonly, disabled, ...props },
+    { scope, value, label, help, outerProps, labelProps, readonly, disabled, _onChange, ...props },
     _ref,
   ) {
     const {
@@ -31,6 +31,12 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
 
     const hasError = Boolean(errors[value])
     const key = [scope, value].join("-")
+
+    const { onChange: registerOnChange, ...registerProps } = register(scope, {
+      onChange: (e) => {
+        _onChange?.(e.target.value)
+      },
+    })
 
     return (
       <div
@@ -46,11 +52,12 @@ export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobutto
             disabled={disabled || isSubmitting}
             readOnly={readonly}
             value={value}
-            {
-              ...register(scope) /* this adds the name property */
-            }
+            {...registerProps}
+            onChange={(e) => {
+              registerOnChange(e)
+              props.onChange?.(e)
+            }}
             id={key}
-            {...props}
             className={clsx(
               "h-4 w-4 cursor-pointer",
               hasError

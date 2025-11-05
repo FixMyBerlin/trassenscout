@@ -1,17 +1,43 @@
 import { Prettify } from "@/src/core/types"
 import { InputNumberOrNullSchema, InputNumberSchema, SlugSchema } from "@/src/core/utils"
+import {
+  LineStringGeometrySchema,
+  MultiLineStringGeometrySchema,
+  MultiPolygonGeometrySchema,
+  PointGeometrySchema,
+  PolygonGeometrySchema,
+} from "@/src/core/utils/geojson-schemas"
 import { LabelPositionEnum, LocationEnum, SubsubsectionTypeEnum } from "@prisma/client"
 import { z } from "zod"
-import { SubsubsectionWithPosition } from "./queries/getSubsubsection"
+import type { SubsubsectionWithPosition } from "./queries/getSubsubsection"
 
-export const PositionSchema = z.tuple([z.number(), z.number()]) // Position
-export const PositionArraySchema = z.array(z.tuple([z.number(), z.number()])) // Position[]
+// Type helper: infer geometry type from SubsubsectionTypeEnum
+export type GeometryBySubsubsectionType<T extends SubsubsectionTypeEnum> = T extends "POINT"
+  ? z.infer<typeof PointGeometrySchema>
+  : T extends "LINE"
+    ? z.infer<typeof LineStringGeometrySchema> | z.infer<typeof MultiLineStringGeometrySchema>
+    : T extends "POLYGON"
+      ? z.infer<typeof PolygonGeometrySchema> | z.infer<typeof MultiPolygonGeometrySchema>
+      : never
 
-// TODO Later: Did not get this working with `schema={SubsubsectionSchema.omit({ subsectionId: true })}` in new-subsubsection.tsx
-// const SubsubsectionGeometrySchema = z.discriminatedUnion("type", [
-//   z.object({ type: z.literal("ROUTE"), geometry: PositionArraySchema }), // Line
-//   z.object({ type: z.literal("AREA"), geometry: PositionSchema }), // Point
-// ])
+/**
+ * Validates a geometry object based on the subsubsection type.
+ * Returns the same result as SubsubsectionGeometrySchema but only validates the geometry part.
+ */
+export const validateGeometryByType = (type: SubsubsectionTypeEnum, geometry: unknown) => {
+  switch (type) {
+    case "POINT":
+      return PointGeometrySchema.safeParse(geometry)
+    case "LINE":
+      return LineStringGeometrySchema.or(MultiLineStringGeometrySchema).safeParse(geometry)
+    case "POLYGON":
+      return PolygonGeometrySchema.or(MultiPolygonGeometrySchema).safeParse(geometry)
+    default:
+      // Exhaustive check - TypeScript will error if a new enum value is added
+      const _exhaustive: never = type
+      return z.never().safeParse(geometry)
+  }
+}
 
 export const NullableDateSchema = z.union([
   z.coerce
@@ -32,12 +58,19 @@ export const NullableDateSchemaForm = z.union([
   z.literal(""),
 ])
 
-export const SubsubsectionSchema = z.object({
+// Base schema without refinement (for use with .omit())
+export const SubsubsectionBaseSchema = z.object({
   slug: SlugSchema,
   subTitle: z.string().nullish(),
   type: z.nativeEnum(SubsubsectionTypeEnum),
   location: z.union([z.nativeEnum(LocationEnum), z.null()]),
-  geometry: PositionSchema.or(PositionArraySchema),
+  geometry: z.union([
+    PointGeometrySchema,
+    LineStringGeometrySchema,
+    MultiLineStringGeometrySchema,
+    PolygonGeometrySchema,
+    MultiPolygonGeometrySchema,
+  ]),
   labelPos: z.nativeEnum(LabelPositionEnum),
   lengthM: InputNumberSchema, // m
   width: InputNumberOrNullSchema, // m
@@ -79,6 +112,35 @@ export const SubsubsectionSchema = z.object({
   specialFeatures: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
 })
 
+// Shared geometry type validation refinement function
+export const geometryTypeValidationRefine = <T extends z.ZodTypeAny>(schema: T) =>
+  schema.refine(
+    (data: any) => {
+      // Validate that geometry type matches enum type
+      if (data.type === "POINT" && data.geometry.type !== "Point") return false
+      if (
+        data.type === "LINE" &&
+        data.geometry.type !== "LineString" &&
+        data.geometry.type !== "MultiLineString"
+      )
+        return false
+      if (
+        data.type === "POLYGON" &&
+        data.geometry.type !== "Polygon" &&
+        data.geometry.type !== "MultiPolygon"
+      )
+        return false
+      return true
+    },
+    {
+      message:
+        "Geometry type must match enum type (POINT→Point, LINE→LineString/MultiLineString, POLYGON→Polygon/MultiPolygon)",
+    },
+  )
+
+// Refined schema with geometry type validation
+export const SubsubsectionSchema = geometryTypeValidationRefine(SubsubsectionBaseSchema)
+
 export type SubsubsectionWithPositionWithSpecialFeatures = Omit<
   SubsubsectionWithPosition,
   "manager" | "qualityLevel"
@@ -86,20 +148,13 @@ export type SubsubsectionWithPositionWithSpecialFeatures = Omit<
 
 export type TSubsubsectionSchema = Prettify<z.infer<typeof SubsubsectionSchema>>
 
-export const SubsubsectionFormSchema = SubsubsectionSchema.omit({
-  trafficLoadDate: true,
-  estimatedCompletionDate: true,
-  specialFeatures: true,
-  location: true,
-}).merge(
-  z.object({
-    trafficLoadDate: NullableDateSchemaForm,
-    estimatedCompletionDate: NullableDateSchemaForm,
-    location: z.union([z.nativeEnum(LocationEnum), z.literal("")]),
-    // LIST ALL m2mFields HERE
-    // We need to do this manually, since dynamic zod types don't work
-    specialFeatures: z
-      .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
-      .transform((v) => v || []),
-  }),
-)
+export const SubsubsectionFormSchema = SubsubsectionBaseSchema.extend({
+  trafficLoadDate: NullableDateSchemaForm,
+  estimatedCompletionDate: NullableDateSchemaForm,
+  location: z.union([z.nativeEnum(LocationEnum), z.literal("")]),
+  // LIST ALL m2mFields HERE
+  // We need to do this manually, since dynamic zod types don't work
+  specialFeatures: z
+    .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
+    .transform((v) => v || []),
+})

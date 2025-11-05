@@ -1,7 +1,7 @@
 import { layerColors } from "@/src/core/components/Map/layerColors"
 import { featureCollection, point } from "@turf/helpers"
 import { clsx } from "clsx"
-import type { FeatureCollection, LineString, Point } from "geojson"
+import type { FeatureCollection, LineString, Point, Polygon } from "geojson"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useState } from "react"
 import Map, {
@@ -21,6 +21,7 @@ export const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925
 const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
 const selectableLineLayerId = "layer_selectable_line_features"
 const selectablePointLayerId = "layer_selectable_point_features"
+const selectablePolygonLayerId = "layer_selectable_polygon_features"
 
 export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
   Partial<
@@ -58,12 +59,16 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
       Point,
       { subsectionSlug: string; subsubsectionSlug?: string; color: string; opacity?: number }
     >
+    selectablePolygons?: FeatureCollection<
+      Polygon,
+      { subsectionSlug: string; subsubsectionSlug?: string; color: string; opacity?: number }
+    >
     dots?: [number, number][]
     classHeight?: string
     children?: React.ReactNode
   }
 
-export const BaseMap: React.FC<BaseMapProps> = ({
+export const BaseMap = ({
   id: mapId,
   initialViewState,
   onMouseEnter,
@@ -76,10 +81,11 @@ export const BaseMap: React.FC<BaseMapProps> = ({
   lines,
   selectableLines,
   selectablePoints,
+  selectablePolygons,
   dots,
   classHeight,
   children,
-}) => {
+}: BaseMapProps) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)
@@ -232,6 +238,33 @@ export const BaseMap: React.FC<BaseMapProps> = ({
     </Source>
   ) : null
 
+  const selectablePolygonFeaturesSource = selectablePolygons ? (
+    <Source
+      id={selectablePolygonLayerId}
+      key={selectablePolygonLayerId}
+      type="geojson"
+      data={selectablePolygons}
+    >
+      <Layer
+        id={`${selectablePolygonLayerId}-fill`}
+        type="fill"
+        paint={{
+          "fill-color": ["case", ["has", "color"], ["get", "color"], "black"],
+          "fill-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.3],
+        }}
+      />
+      <Layer
+        id={`${selectablePolygonLayerId}-outline`}
+        type="line"
+        paint={{
+          "line-width": 3,
+          "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
+          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.8],
+        }}
+      />
+    </Source>
+  ) : null
+
   return (
     <div
       className={clsx(
@@ -257,6 +290,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
             selectablePoints && selectablePointLayerId,
             selectableLines && `${selectableLineLayerId}-solid`,
             selectableLines && `${selectableLineLayerId}-dashed`,
+            selectablePolygons && `${selectablePolygonLayerId}-fill`,
           ]
             .flat()
             .filter(Boolean)}
@@ -267,6 +301,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
           {featuresSource}
           {selectableLineFeaturesSource}
           {selectablePointFeaturesSource}
+          {selectablePolygonFeaturesSource}
           {dotSource}
           {children}
         </Map>

@@ -1,7 +1,7 @@
 import { clsx } from "clsx"
 import { LabeledRadiobutton, LabeledRadiobuttonProps } from "./LabeledRadiobutton"
 
-type Props = {
+export type LabeledRadiobuttonGroupProps = {
   label?: string
   optional?: boolean
   disabled?: boolean
@@ -9,6 +9,10 @@ type Props = {
   items: Omit<LabeledRadiobuttonProps, "scope">[]
   classLabelOverwrite?: string
   classNameItemWrapper?: string
+  /** Callback fired when the value changes */
+  onChange?: (value: string) => void
+  /** Help text displayed below the radio button group */
+  help?: string | React.ReactNode
 }
 
 export const LabeledRadiobuttonGroup = ({
@@ -19,8 +23,15 @@ export const LabeledRadiobuttonGroup = ({
   items,
   classLabelOverwrite,
   classNameItemWrapper,
-}: Props) => {
-  const itemsWithScope = items.map((i) => ({ ...i, scope }))
+  onChange,
+  help,
+}: LabeledRadiobuttonGroupProps) => {
+  const itemsWithScope = items.map((i) => ({
+    ...i,
+    scope,
+    // Pass onChange to register, not as input prop
+    _onChange: onChange,
+  }))
 
   return (
     <div>
@@ -29,11 +40,12 @@ export const LabeledRadiobuttonGroup = ({
           {label} {optional && <> (optional)</>}
         </p>
       )}
-      <div className={clsx(classNameItemWrapper, "space-y-3")}>
+      <div className={clsx(classNameItemWrapper || "space-y-3")}>
         {itemsWithScope.map((item) => {
           return <LabeledRadiobutton key={item.value} {...item} disabled={disabled} />
         })}
       </div>
+      {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}
     </div>
   )
 }

@@ -9,10 +9,10 @@ import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 import { m2mFields, type M2MFieldsType } from "../m2mFields"
 import { SubsubsectionWithPosition } from "../queries/getSubsubsection"
-import { SubsubsectionSchema } from "../schema"
+import { geometryTypeValidationRefine, SubsubsectionBaseSchema } from "../schema"
 
-const UpdateSubsubsectionSchema = ProjectSlugRequiredSchema.merge(
-  SubsubsectionSchema.merge(z.object({ id: z.number() })),
+const UpdateSubsubsectionSchema = geometryTypeValidationRefine(
+  ProjectSlugRequiredSchema.merge(SubsubsectionBaseSchema.merge(z.object({ id: z.number() }))),
 )
 
 export default resolver.pipe(
@@ -23,7 +23,9 @@ export default resolver.pipe(
     const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
     m2mFields.forEach((fieldName) => {
       disconnect[fieldName] = { set: [] }
-      connect[fieldName] = { connect: data[fieldName] ? data[fieldName].map((id) => ({ id })) : [] }
+      connect[fieldName] = {
+        connect: data[fieldName] ? data[fieldName].map((id: number) => ({ id })) : [],
+      }
       delete data[fieldName]
     })
 
@@ -33,7 +35,6 @@ export default resolver.pipe(
     })
     const subsubsection = await db.subsubsection.update({
       where: { id },
-      // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
       data: { ...data, ...connect },
     })
     return subsubsection as SubsubsectionWithPosition // Tip: Validate type shape with `satisfies`

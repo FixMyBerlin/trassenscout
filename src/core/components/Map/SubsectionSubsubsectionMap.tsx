@@ -2,7 +2,7 @@ import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { Routes } from "@blitzjs/next"
-import { lineString, point } from "@turf/helpers"
+import { lineString } from "@turf/helpers"
 import { bbox, featureCollection } from "@turf/turf"
 import { useRouter } from "next/router"
 import { useState } from "react"
@@ -14,7 +14,10 @@ import { SubsubsectionMapIcon } from "./Icons"
 import { TitleLabel } from "./Labels"
 import { TipMarker } from "./TipMarker"
 import { layerColors } from "./layerColors"
-import { midPoint } from "./utils"
+import { getCenterOfMass } from "./utils/getCenterOfMass"
+import { lineStringToGeoJSON } from "./utils/lineStringToGeoJSON"
+import { pointToGeoJSON } from "./utils/pointToGeoJSON"
+import { polygonToGeoJSON } from "./utils/polygonToGeoJSON"
 
 type Props = {
   subsections: SubsectionWithPosition[]
@@ -83,60 +86,89 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
 
   const selectableLines = featureCollection(
     subsubsections
-      .map(
-        (sec) =>
-          sec.type === "ROUTE" &&
-          lineString(sec.geometry, {
-            subsectionSlug: sec.subsection.slug,
-            subsubsectionSlug: sec.slug,
-            color:
-              sec.slug === pageSubsubsectionSlug
-                ? layerColors.selected
-                : hoveredMap === sec.slug || hoveredMarker === sec.slug
-                  ? layerColors.hovered
-                  : layerColors.selectable,
-          }),
-      )
-      .filter(Boolean),
+      .filter((sec) => sec.type === "LINE")
+      .flatMap((sec) => {
+        const properties = {
+          subsectionSlug: sec.subsection.slug,
+          subsubsectionSlug: sec.slug,
+          color:
+            sec.slug === pageSubsubsectionSlug
+              ? layerColors.selected
+              : hoveredMap === sec.slug || hoveredMarker === sec.slug
+                ? layerColors.hovered
+                : layerColors.selectable,
+        }
+        return lineStringToGeoJSON<typeof properties>(sec.geometry, properties) ?? []
+      }),
   )
 
   const selectablePoints = featureCollection(
     subsubsections
-      .map(
-        (sec) =>
-          sec.type === "AREA" &&
-          point(sec.geometry, {
-            subsectionSlug: sec.subsection.slug,
-            subsubsectionSlug: sec.slug,
-            opacity: 0.3,
-            color:
-              sec.slug === pageSubsubsectionSlug
-                ? layerColors.selected
-                : hoveredMap === sec.slug || hoveredMarker === sec.slug
-                  ? layerColors.hovered
-                  : layerColors.selectable,
-            radius: 10,
-            "border-width": 3,
-            "border-color":
-              sec.slug === pageSubsubsectionSlug
-                ? layerColors.selected
-                : hoveredMap === sec.slug || hoveredMarker === sec.slug
-                  ? layerColors.hovered
-                  : layerColors.selectable,
-          }),
-      )
+      .filter((sec) => sec.type === "POINT")
+      .map((sec) => {
+        const properties = {
+          subsectionSlug: sec.subsection.slug,
+          subsubsectionSlug: sec.slug,
+          opacity: 0.3,
+          color:
+            sec.slug === pageSubsubsectionSlug
+              ? layerColors.selected
+              : hoveredMap === sec.slug || hoveredMarker === sec.slug
+                ? layerColors.hovered
+                : layerColors.selectable,
+          radius: 10,
+          "border-width": 3,
+          "border-color":
+            sec.slug === pageSubsubsectionSlug
+              ? layerColors.selected
+              : hoveredMap === sec.slug || hoveredMarker === sec.slug
+                ? layerColors.hovered
+                : layerColors.selectable,
+        }
+        return pointToGeoJSON<typeof properties>(sec.geometry, properties)
+      })
       .filter(Boolean),
   )
 
-  // Dots are only for Subsubsections of type ROUTE
+  const selectablePolygons = featureCollection(
+    subsubsections
+      .filter((sec) => sec.type === "POLYGON")
+      .flatMap((sec) => {
+        const properties = {
+          subsectionSlug: sec.subsection.slug,
+          subsubsectionSlug: sec.slug,
+          color:
+            sec.slug === pageSubsubsectionSlug
+              ? layerColors.selected
+              : hoveredMap === sec.slug || hoveredMarker === sec.slug
+                ? layerColors.hovered
+                : layerColors.selectable,
+        }
+        return polygonToGeoJSON<typeof properties>(sec.geometry, properties)
+      })
+      .filter(Boolean),
+  )
+
+  // Dots are only for Subsubsections of type LINE
+  // Collect start and end points from all lines (including all lines in MultiLineString)
   const dotsGeoms = subsubsections
-    .map((sec) => sec.type === "ROUTE" && [sec.geometry[0], sec.geometry.at(-1)])
-    .flat()
+    .flatMap((sec) => {
+      if (sec.type !== "LINE") return []
+      if (sec.geometry.type === "LineString") {
+        return [sec.geometry.coordinates[0], sec.geometry.coordinates.at(-1)]
+      } else if (sec.geometry.type === "MultiLineString") {
+        // Collect start and end points from all lines in MultiLineString
+        return sec.geometry.coordinates.flatMap((line) => {
+          if (!line || line.length === 0) return []
+          return [line[0], line.at(-1)]
+        })
+      }
+      return []
+    })
     .filter(Boolean)
 
   const markers = subsubsections.map((subsub) => {
-    const [longitude, latitude] =
-      subsub.type === "ROUTE" ? midPoint(subsub.geometry) : subsub.geometry
+    const [longitude, latitude] = getCenterOfMass(subsub.geometry)
 
     return (
       <Marker
@@ -187,6 +219,7 @@ export const SubsectionSubsubsectionMap: React.FC<Props> = ({
         lines={lines}
         selectableLines={selectableLines}
         selectablePoints={selectablePoints}
+        selectablePolygons={selectablePolygons}
         dots={dotsGeoms}
       >
         {markers}

@@ -1,8 +1,11 @@
 import {
-  PositionArraySchema,
-  PositionSchema,
-  SubsubsectionSchema,
-} from "@/src/server/subsubsections/schema"
+  LineStringGeometrySchema,
+  MultiLineStringGeometrySchema,
+  MultiPolygonGeometrySchema,
+  PointGeometrySchema,
+  PolygonGeometrySchema,
+} from "@/src/core/utils/geojson-schemas"
+import { SubsubsectionBaseSchema } from "@/src/server/subsubsections/schema"
 import type { CsvRow } from "./parseCsv"
 
 /**
@@ -36,7 +39,7 @@ function normalizeNumericString(value: string): string {
  */
 export function mapRowToSchema(row: CsvRow) {
   const mappedData: Record<string, any> = {}
-  const schemaShape = SubsubsectionSchema.shape
+  const schemaShape = SubsubsectionBaseSchema.shape
   const unmatchedColumns: string[] = []
 
   // Map standard fields
@@ -80,13 +83,21 @@ export function mapRowToSchema(row: CsvRow) {
         }
         mappedData.geometry = geometry
 
-        // Infer type from geometry: Point (AREA) vs LineString (ROUTE)
-        const pointResult = PositionSchema.safeParse(geometry)
-        const lineStringResult = PositionArraySchema.safeParse(geometry)
+        // Infer type from GeoJSON geometry: Point (POINT), LineString/MultiLineString (LINE), Polygon/MultiPolygon (POLYGON)
+        const pointResult = PointGeometrySchema.safeParse(geometry)
+        const lineStringResult = LineStringGeometrySchema.or(
+          MultiLineStringGeometrySchema,
+        ).safeParse(geometry)
+        const polygonResult = PolygonGeometrySchema.or(MultiPolygonGeometrySchema).safeParse(
+          geometry,
+        )
+
         if (pointResult.success) {
-          mappedData.type = "AREA"
+          mappedData.type = "POINT"
         } else if (lineStringResult.success) {
-          mappedData.type = "ROUTE"
+          mappedData.type = "LINE"
+        } else if (polygonResult.success) {
+          mappedData.type = "POLYGON"
         }
         // If geometry is invalid, don't set type - let Zod validation handle it
         continue

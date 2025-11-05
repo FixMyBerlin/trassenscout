@@ -23,7 +23,7 @@ import { StartEndLabel } from "./Labels"
 import { MapLegend } from "./MapLegend"
 import { TipMarker } from "./TipMarker"
 import { layerColors } from "./layerColors"
-import { subsectionsBbox } from "./utils"
+import { subsectionsBbox } from "./utils/subsectionsBbox"
 
 type Props = { subsections: SubsectionWithPositionAndStatus[] }
 

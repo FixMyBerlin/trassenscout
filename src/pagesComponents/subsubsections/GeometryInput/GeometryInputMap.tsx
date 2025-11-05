@@ -1,26 +1,26 @@
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { layerColors } from "@/src/core/components/Map/layerColors"
+import { lineStringToGeoJSON } from "@/src/core/components/Map/utils/lineStringToGeoJSON"
+import { pointToGeoJSON } from "@/src/core/components/Map/utils/pointToGeoJSON"
+import { polygonToGeoJSON } from "@/src/core/components/Map/utils/polygonToGeoJSON"
 import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { featureCollection, lineString, point } from "@turf/helpers"
 import { bbox, cleanCoords, distance, lineSlice, nearestPointOnLine } from "@turf/turf"
-import type { Feature, Point, Position } from "geojson"
+import type { Feature, Geometry, Point } from "geojson"
 import { useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { Layer, LngLatBoundsLike, MapLayerMouseEvent, Source, useMap } from "react-map-gl/maplibre"
+import { Layer, LngLatBoundsLike, MapLayerMouseEvent, Source } from "react-map-gl/maplibre"
 import { GeometryInputMapSubsubsections } from "./GeometryInputMapSubsubsections"
 
 type Props = {
   subsection: SubsectionWithPosition
 }
 
-type RouteGeometry = Position[] // [number, number][]
-type AreaGeometry = Position // [number, number]
-
 export const GeometryInputMap = ({ subsection }: Props) => {
   const { watch, setValue } = useFormContext()
-  const { preview } = useMap()
-  const geometry = watch("geometry") as RouteGeometry | AreaGeometry
+  // const { preview } = useMap()
+  const geometry = watch("geometry") as Geometry
   const geometryType = watch("type") as SubsubsectionWithPosition["type"]
 
   const subsectionFeature = featureCollection([
@@ -33,16 +33,7 @@ export const GeometryInputMap = ({ subsection }: Props) => {
   const [pointOneOnLine, setPointOneOnLine] = useState<Feature<Point> | undefined>(undefined)
   const [pointTwoOnLine, setPointTwoOnLine] = useState<Feature<Point> | undefined>(undefined)
 
-  const handleClickGeometryTypeArea = (event: MapLayerMouseEvent) => {
-    // const allSources = preview?.getStyle()?.sources
-    // const allLayers = preview?.getStyle()?.layers
-    // const cleanLayers = allLayers?.filter(
-    //   (layer) =>
-    //     "source" in layer &&
-    //     !layer.source.includes("maptiler") &&
-    //     !layer.source.includes("openmaptiles"),
-    // )
-    // console.log({ allSources, allLayers, cleanLayers })
+  const handleClickGeometryTypePoint = (event: MapLayerMouseEvent) => {
     const clickedPoint = point(event.lngLat.toArray())
 
     // nearestPointOnLine() requires a LineString without duplicate coordinates - this is a bug reported here: https://github.com/Turfjs/turf/issues/2808#event-3187358882
@@ -50,10 +41,14 @@ export const GeometryInputMap = ({ subsection }: Props) => {
     const cleanedSubsection = cleanCoords(lineString(subsection.geometry))
     const nearestPoint = nearestPointOnLine(cleanedSubsection, clickedPoint)
 
-    setValue("geometry", nearestPoint.geometry.coordinates)
+    // Set geometry as GeoJSON Point object
+    setValue("geometry", {
+      type: "Point",
+      coordinates: nearestPoint.geometry.coordinates,
+    })
   }
 
-  const handleClickGeometryTypeRoute = (event: MapLayerMouseEvent) => {
+  const handleClickGeometryTypeLine = (event: MapLayerMouseEvent) => {
     // const allSources = preview?.getStyle()?.sources
     // const allLayers = preview?.getStyle()?.layers
     // const cleanLayers = allLayers?.filter(
@@ -80,7 +75,10 @@ export const GeometryInputMap = ({ subsection }: Props) => {
     if (!pointTwoOnLine) {
       setPointTwoOnLine(nearestPoint)
       newLine = lineSlice(pointOneOnLine, nearestPoint, cleanedSubsection)
-      setValue("geometry", newLine.geometry.coordinates)
+      setValue("geometry", {
+        type: "LineString",
+        coordinates: newLine.geometry.coordinates,
+      })
       return
     }
 
@@ -95,7 +93,18 @@ export const GeometryInputMap = ({ subsection }: Props) => {
       setPointTwoOnLine(nearestPoint)
       newLine = lineSlice(pointOneOnLine, nearestPoint, cleanedSubsection)
     }
-    newLine && setValue("geometry", newLine.geometry.coordinates)
+    if (newLine) {
+      setValue("geometry", {
+        type: "LineString",
+        coordinates: newLine.geometry.coordinates,
+      })
+    }
+  }
+
+  const handleClickGeometryTypePolygon = (event: MapLayerMouseEvent) => {
+    // TODO: Implement polygon drawing with maplibre-gl-terradraw
+    // For now, this is a placeholder - polygon drawing will be implemented with terradraw
+    console.log("Polygon drawing not yet implemented - will use terradraw")
   }
 
   return (
@@ -104,7 +113,12 @@ export const GeometryInputMap = ({ subsection }: Props) => {
       className="rounded-sm border border-gray-200 bg-gray-100 p-3 text-gray-700"
     >
       <h3 className="m-0 mb-3 flex items-center gap-1 text-sm font-medium">
-        {geometryType === "ROUTE" ? "Liniengeometrie" : "Punktgeometrie"} zeichnen
+        {geometryType === "LINE"
+          ? "Liniengeometrie"
+          : geometryType === "POINT"
+            ? "Punktgeometrie"
+            : "Geometrie"}{" "}
+        zeichnen
       </h3>
       <div className="mb-3 h-[500px] w-full overflow-clip rounded-md drop-shadow-md">
         <BaseMap
@@ -116,24 +130,29 @@ export const GeometryInputMap = ({ subsection }: Props) => {
           dots={[]}
           lines={subsectionFeature}
           onClick={
-            geometryType === "ROUTE" ? handleClickGeometryTypeRoute : handleClickGeometryTypeArea
+            geometryType === "LINE"
+              ? handleClickGeometryTypeLine
+              : geometryType === "POINT"
+                ? handleClickGeometryTypePoint
+                : // POLYGON type is read-only - editing only via text input
+                  undefined
           }
         >
           <GeometryInputMapSubsubsections />
 
-          {geometryType === "ROUTE" && (
+          {geometryType === "LINE" && geometry && (
             <>
               {/* nearest Points to where clicked */}
               <Source
-                id="nearestPoint-route"
-                key="nearestPoint-route"
+                id="nearestPoint-line"
+                key="nearestPoint-line"
                 type="geojson"
                 data={featureCollection([pointOneOnLine, pointTwoOnLine].filter(Boolean))}
               />
               <Layer
-                id="nearestPoint-route-layer"
-                key="nearestPoint-route-layer"
-                source="nearestPoint-route"
+                id="nearestPoint-line-layer"
+                key="nearestPoint-line-layer"
+                source="nearestPoint-line"
                 type="circle"
                 paint={{
                   "circle-radius": ["case", ["has", "radius"], ["get", "radius"], 14],
@@ -143,50 +162,93 @@ export const GeometryInputMap = ({ subsection }: Props) => {
               />
 
               {/* Geometry from form */}
-              <Source
-                id="geometry"
-                key="geometry"
-                type="geojson"
-                data={lineString(geometry as RouteGeometry)}
-              />
-              <Layer
-                id="geometry-layer"
-                key="geometry-layer"
-                source="geometry"
-                type="line"
-                paint={{
-                  "line-width": 4,
-                  "line-color": "black",
-                  "line-opacity": 0.6,
-                }}
-              />
+              {(geometry.type === "LineString" || geometry.type === "MultiLineString") &&
+                lineStringToGeoJSON(geometry) && (
+                  <>
+                    <Source
+                      id="geometry-line"
+                      key="geometry-line"
+                      type="geojson"
+                      data={featureCollection(lineStringToGeoJSON(geometry)!)}
+                    />
+                    <Layer
+                      id="geometry-line-layer"
+                      key="geometry-line-layer"
+                      source="geometry-line"
+                      type="line"
+                      paint={{
+                        "line-width": 4,
+                        "line-color": "black",
+                        "line-opacity": 0.6,
+                      }}
+                    />
+                  </>
+                )}
             </>
           )}
 
-          {geometryType === "AREA" && (
-            <>
-              <Source
-                id="nearestPoint-area"
-                key="nearestPoint-area"
-                type="geojson"
-                data={point(geometry as AreaGeometry)}
-              />
-              <Layer
-                id="nearestPoint-area-layer"
-                key="nearestPoint-area-layer"
-                source="nearestPoint-area"
-                type="circle"
-                paint={{
-                  "circle-radius": 4,
-                  "circle-color": "black",
-                  "circle-opacity": 0.6,
-                  "circle-stroke-width": 12,
-                  "circle-stroke-color": "#E5007D",
-                  "circle-stroke-opacity": 0.5,
-                }}
-              />
-            </>
-          )}
+          {geometryType === "POINT" &&
+            geometry &&
+            geometry.type === "Point" &&
+            pointToGeoJSON(geometry) && (
+              <>
+                <Source
+                  id="geometry-point"
+                  key="geometry-point"
+                  type="geojson"
+                  data={pointToGeoJSON(geometry)!}
+                />
+                <Layer
+                  id="geometry-point-layer"
+                  key="geometry-point-layer"
+                  source="geometry-point"
+                  type="circle"
+                  paint={{
+                    "circle-radius": 4,
+                    "circle-color": "black",
+                    "circle-opacity": 0.6,
+                    "circle-stroke-width": 12,
+                    "circle-stroke-color": "#E5007D",
+                    "circle-stroke-opacity": 0.5,
+                  }}
+                />
+              </>
+            )}
+
+          {geometryType === "POLYGON" &&
+            geometry &&
+            (geometry.type === "Polygon" || geometry.type === "MultiPolygon") &&
+            polygonToGeoJSON(geometry) && (
+              <>
+                <Source
+                  id="geometry-polygon"
+                  key="geometry-polygon"
+                  type="geojson"
+                  data={featureCollection(polygonToGeoJSON(geometry)!)}
+                />
+                <Layer
+                  id="geometry-polygon-fill"
+                  key="geometry-polygon-fill"
+                  source="geometry-polygon"
+                  type="fill"
+                  paint={{
+                    "fill-color": "black",
+                    "fill-opacity": 0.3,
+                  }}
+                />
+                <Layer
+                  id="geometry-polygon-outline"
+                  key="geometry-polygon-outline"
+                  source="geometry-polygon"
+                  type="line"
+                  paint={{
+                    "line-width": 3,
+                    "line-color": "black",
+                    "line-opacity": 0.8,
+                  }}
+                />
+              </>
+            )}
         </BaseMap>
       </div>
     </div>

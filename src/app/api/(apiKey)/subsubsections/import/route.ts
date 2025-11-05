@@ -133,7 +133,7 @@ export const POST = withApiKey(async ({ request }) => {
     })
 
     // Calculate fallback geometry for new records when geometry is not provided
-    const calculateFallbackGeometry = (): [number, number] => {
+    const calculateFallbackGeometry = (): { type: "Point"; coordinates: [number, number] } => {
       const subsectionGeometry = subsection.geometry as [number, number][]
       if (subsectionGeometry && subsectionGeometry.length > 0) {
         let minLng = subsectionGeometry[0]![0]
@@ -144,9 +144,9 @@ export const POST = withApiKey(async ({ request }) => {
           if (lat < minLat) minLat = lat
         }
 
-        return [minLng, minLat] as [number, number]
+        return { type: "Point", coordinates: [minLng, minLat] }
       }
-      return [0, 0] as [number, number]
+      return { type: "Point", coordinates: [0, 0] }
     }
 
     // 1. When geometry is provided, use that; overwrite existing data
@@ -155,7 +155,7 @@ export const POST = withApiKey(async ({ request }) => {
     const applyFallback = !data.geometry && !existing
     if (applyFallback) {
       // Creating new record - apply fallback geometry and add warning to description
-      data.type = "AREA"
+      data.type = "POINT"
       data.geometry = calculateFallbackGeometry()
       // Add placeholder marker to description when fallback is applied
       data.description = ["‼️ Platzhalter-Geometrie", data.description].filter(Boolean).join("\n\n")

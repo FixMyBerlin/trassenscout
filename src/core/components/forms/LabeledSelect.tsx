@@ -3,7 +3,8 @@ import { clsx } from "clsx"
 import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef } from "react"
 import { useFormContext } from "react-hook-form"
 
-export interface LabeledSelectProps extends PropsWithoutRef<JSX.IntrinsicElements["select"]> {
+export interface LabeledSelectProps
+  extends Omit<PropsWithoutRef<JSX.IntrinsicElements["select"]>, "onChange"> {
   /** Select name. */
   name: string
   /** Options: [value, text], use `""` for `null` in some cases, see src/pages/[projectSlug]/uploads/[uploadId]/edit.tsx */
@@ -15,11 +16,24 @@ export interface LabeledSelectProps extends PropsWithoutRef<JSX.IntrinsicElement
   labelProps?: ComponentPropsWithoutRef<"label">
   optional?: boolean
   classLabelOverwrite?: string
+  /** Callback fired when the value changes */
+  onChange?: (value: string) => void
 }
 
 export const LabeledSelect = forwardRef<HTMLInputElement, LabeledSelectProps>(
   function LabeledSelect(
-    { name, options, label, help, outerProps, labelProps, optional, classLabelOverwrite, ...props },
+    {
+      name,
+      options,
+      label,
+      help,
+      outerProps,
+      labelProps,
+      optional,
+      classLabelOverwrite,
+      onChange,
+      ...props
+    },
     ref,
   ) {
     const {
@@ -28,6 +42,12 @@ export const LabeledSelect = forwardRef<HTMLInputElement, LabeledSelectProps>(
     } = useFormContext()
 
     const hasError = Boolean(errors[name])
+
+    const { onChange: registerOnChange, ...registerProps } = register(name, {
+      onChange: (e) => {
+        onChange?.(e.target.value)
+      },
+    })
 
     return (
       <div {...outerProps}>
@@ -41,9 +61,9 @@ export const LabeledSelect = forwardRef<HTMLInputElement, LabeledSelectProps>(
         </label>
         <select
           disabled={isSubmitting}
-          {...register(name)}
+          {...registerProps}
+          onChange={registerOnChange}
           id={name}
-          {...props}
           className={clsx(
             "w-full rounded-md border border-gray-200 bg-white px-3 py-2 shadow-xs focus:outline-hidden sm:text-sm",
             hasError

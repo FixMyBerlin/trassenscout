@@ -1,5 +1,5 @@
+import { getCenterOfMass } from "@/src/core/components/Map/utils/getCenterOfMass"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
-import { bbox, lineString } from "@turf/turf"
 
 //** @desc A mapillary link, either for a given key *OR* for a given lat/lng */
 export const mapillaryLink = (subsubsection: SubsubsectionWithPosition) => {
@@ -7,10 +7,7 @@ export const mapillaryLink = (subsubsection: SubsubsectionWithPosition) => {
   if (subsubsection.mapillaryKey) {
     url.searchParams.append("pKey", subsubsection.mapillaryKey)
   } else {
-    const [lng, _1, _2, lat] =
-      subsubsection.type === "ROUTE"
-        ? bbox(lineString(subsubsection.geometry))
-        : bbox(lineString([subsubsection.geometry, subsubsection.geometry]))
+    const [lng, lat] = getCenterOfMass(subsubsection.geometry)
     url.searchParams.append("lat", String(lat))
     url.searchParams.append("lng", String(lng))
     url.searchParams.append("z", String(12)) // does not really matter, Mapillary will zoom on the pKey image.

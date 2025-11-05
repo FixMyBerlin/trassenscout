@@ -1,16 +1,17 @@
-import { midPoint } from "@/src/core/components/Map/utils"
-import { LabeledRadiobuttonGroup } from "@/src/core/components/forms"
+import { getCenterOfMass } from "@/src/core/components/Map/utils/getCenterOfMass"
 import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
+import { LabeledRadiobuttonGroup } from "@/src/core/components/forms/LabeledRadiobuttonGroup"
 import { linkStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import getSubsection from "@/src/server/subsections/queries/getSubsection"
+import { validateGeometryByType } from "@/src/server/subsubsections/schema"
 import { useQuery } from "@blitzjs/rpc"
+import { bbox, bboxPolygon, lineString } from "@turf/turf"
 import { clsx } from "clsx"
 import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { MapProvider } from "react-map-gl/maplibre"
-import { z } from "zod"
 import { GeometryInputMap } from "./GeometryInputMap"
 
 export const GeometryInput = () => {
@@ -22,47 +23,85 @@ export const GeometryInput = () => {
   })
 
   const { setValue, watch } = useFormContext()
-  const [geometryInputMode, setGeometryInputMode] = useState<"MAP" | "RAW">("MAP")
   const geometry = watch("geometry")
   const type = watch("type")
-  const LineStringSchema = z.array(z.array(z.number()).min(2).max(2).nonempty()).nonempty()
-  const PointSchema = z.array(z.number()).min(2).max(2).nonempty()
-  const schemaResult =
-    type === "ROUTE" ? LineStringSchema.safeParse(geometry) : PointSchema.safeParse(geometry)
+  const [geometryInputMode, setGeometryInputMode] = useState<"MAP" | "RAW">(
+    type === "POLYGON" ? "RAW" : "MAP",
+  )
+
+  const schemaResult = validateGeometryByType(type || "LINE", geometry)
+
+  const handleTypeChange = (newType: string) => {
+    if (newType === "POLYGON") {
+      setGeometryInputMode("RAW")
+    } else if (newType === "LINE" || newType === "POINT") {
+      setGeometryInputMode("MAP")
+    }
+  }
 
   useEffect(() => {
     const invalidGeometry = !schemaResult.success
-    if (invalidGeometry) {
-      type === "ROUTE"
-        ? setValue("geometry", subsection.geometry)
-        : setValue("geometry", midPoint(subsection.geometry))
+    if (invalidGeometry && geometry !== undefined) {
+      // Set default geometry based on type
+      switch (type) {
+        case "LINE":
+          // Default to subsection geometry as LineString
+          setValue("geometry", {
+            type: "LineString",
+            coordinates: subsection.geometry,
+          })
+          break
+        case "POINT":
+          // Default to center of subsection as Point
+          const center = getCenterOfMass({ type: "LineString", coordinates: subsection.geometry })
+          setValue("geometry", {
+            type: "Point",
+            coordinates: center,
+          })
+          break
+        case "POLYGON":
+          // Create a polygon from the subsection's bounding box
+          const subsectionLine = lineString(subsection.geometry)
+          const subsectionBbox = bbox(subsectionLine)
+          const bboxPoly = bboxPolygon(subsectionBbox)
+          setValue("geometry", bboxPoly.geometry)
+          break
+      }
     }
-  }, [schemaResult.success, setValue, subsection.geometry, type])
+  }, [schemaResult.success, setValue, subsection.geometry, type, geometry])
 
   return (
     <>
       <LabeledRadiobuttonGroup
-        label="Geometrie des Eintrags"
         scope="type"
+        label="Geometrie des Eintrags"
+        classNameItemWrapper="flex flex-wrap gap-4"
         items={[
-          { value: "ROUTE", label: "Linie" }, // fka Regelführung (RF)
-          { value: "AREA", label: "Punkt" }, // fka Sonderführung (SF)
+          {
+            value: "LINE",
+            label: "Linie", // fka Regelführung (RF) - unterstützt LineString und MultiLineString
+          },
+          {
+            value: "POINT",
+            label: "Punkt", // fka Sonderführung (SF)
+          },
+          {
+            value: "POLYGON",
+            label: "Fläche", // unterstützt Polygon und MultiPolygon
+          },
         ]}
-        classNameItemWrapper="flex gap-5 space-y-0! items-center"
+        onChange={handleTypeChange}
+        help={
+          type === "LINE"
+            ? "Klicken Sie innerhalb des blau markierten Planungsabschnitts auf die gewünschte Stelle, um den Eintrag dort zu verorten. Achten Sie darauf, dass die neue Linie nicht auf bereits vorhandenen (grau dargestellten) Linien verläuft."
+            : type === "POINT"
+              ? "Klicken Sie innerhalb des blau markierten Planungsabschnitts, um den Punkt zu setzen."
+              : type === "POLYGON"
+                ? "Geben Sie die Polygon-Geometrie als GeoJSON ein (oder fügen Sie sie ein). Die Geometrie wird auf der Karte angezeigt. Unterstützt Polygon und MultiPolygon."
+                : undefined
+        }
       />
-      {type === "ROUTE" ? (
-        <div id="geometry-input-help" className="m-0 text-gray-500">
-          Klicken Sie innerhalb des blau markierten Planungsabschnitts auf die gewünschte Stelle, um
-          den Eintrag dort zu verorten. Achten Sie darauf, dass die neue Linie nicht auf bereits
-          vorhandenen (grau dargestellten) Linien verläuft.
-        </div>
-      ) : (
-        <div id="geometry-input-help" className="m-0 text-gray-500">
-          Klicken Sie innerhalb des blau markierten Planungsabschnitts, um den Anfangspunkt des
-          Eintrags zu setzen. Mit einem zweiten Klick legen Sie den Endpunkt fest.
-        </div>
-      )}
-      {geometry && (
+      {type && (
         <section>
           <nav>
             <div className="sm:hidden">
@@ -111,12 +150,12 @@ export const GeometryInput = () => {
           <div className="rounded-r-md rounded-b-md bg-gray-100 p-2">
             {geometryInputMode === "MAP" ? (
               <MapProvider>
-                {schemaResult.success && <GeometryInputMap subsection={subsection} />}
+                <GeometryInputMap subsection={subsection} />
               </MapProvider>
             ) : (
               <LabeledGeometryField
                 name="geometry"
-                label="Geometrie des Eintrags (`LineString` oder `Point`)"
+                label="GeoJSON Geometrie (`Point`, `LineString`, `MultiLineString`, `Polygon`, oder `MultiPolygon`)"
                 outerProps={{
                   className: "rounded-sm border border-gray-200 bg-gray-100 p-3 text-gray-700",
                 }}
