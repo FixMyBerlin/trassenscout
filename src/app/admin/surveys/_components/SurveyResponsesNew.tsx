@@ -103,7 +103,7 @@ const AnswerDisplay: React.FC<AnswerDisplayProps> = ({ partConfig, answers }) =>
     <div className="space-y-6">
       {/* @ts-expect-error */}
       {partConfig.pages.map((page) => (
-        <div key={page.id} className="border-gray-200bg-gray-50 rounded-lg border p-4">
+        <div key={page.id} className="rounded-lg border border-gray-200 bg-gray-50 p-4">
           {page.fields.map((field: any) => {
             // Skip fields (e.g., markdown, title)
             if (field.component === "SurveyPageTitle" || field.component === "SurveyMarkdown")

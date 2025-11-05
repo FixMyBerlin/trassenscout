@@ -72,7 +72,7 @@ export const EditProjectRecordEmailForm = ({
         <Link href="/admin/project-record-emails">← Zurück zur E-Mail-Übersicht</Link>
       </div>
 
-      <hr className="my-5" />
+      <hr className="my-5 text-gray-200" />
 
       <button type="button" onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
         E-Mail löschen

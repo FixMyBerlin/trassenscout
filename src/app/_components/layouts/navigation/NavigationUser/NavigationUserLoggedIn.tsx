@@ -55,7 +55,7 @@ export const NavigationUserLoggedIn = ({ user }: Props) => {
             >
               <MenuItems
                 static
-                className="ring-opacity-5 absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-md bg-gray-50 py-1 shadow-lg ring-1 ring-black focus:outline-hidden"
+                className="ring-opacity-5 absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-md bg-gray-50 py-1 shadow-lg ring-1 ring-gray-200 focus:outline-hidden"
               >
                 <div className="px-4 py-2 leading-6 text-gray-700">
                   <p className="mb-2 text-xs text-gray-400">Angemeldet als</p>

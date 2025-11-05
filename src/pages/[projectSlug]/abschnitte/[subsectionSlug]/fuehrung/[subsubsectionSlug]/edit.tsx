@@ -120,7 +120,7 @@ const EditSubsubsection = () => {
         onSubmit={handleSubmit}
       />
 
-      <hr className="my-5" />
+      <hr className="my-5 text-gray-200" />
 
       <button type="button" onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
         Löschen
@@ -142,7 +142,7 @@ const EditSubsubsectionPage = () => {
         <EditSubsubsection />
       </Suspense>
 
-      <hr className="my-5" />
+      <hr className="my-5 text-gray-200" />
       <p>
         <Link
           href={Routes.SubsubsectionDashboardPage({

@@ -166,7 +166,7 @@ export const ExportWithQuery = () => {
       <H2>Planungsabschnitte Karte</H2>
 
       {/* ===== Points via Textarea ===== */}
-      <details className="border-gray-200p-2 mb-5 rounded-sm border">
+      <details className="mb-5 rounded-sm border border-gray-200 p-2">
         <summary className="cursor-pointer">Testdaten auf der Karte anzeigen</summary>
         <form onSubmit={handleSubmit(handleShowPoints)} className="space-y-2">
           <div className="mt-6 flex gap-4">

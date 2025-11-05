@@ -62,7 +62,7 @@ export default async function AdminProjectsPage() {
                         </div>
                       )
                     })}
-                    <div className="mt-2 border-t pt-2">
+                    <div className="mt-2 border-t border-gray-200 pt-2">
                       <Link icon="plus" href={`/admin/memberships/new?userId=${user.id}`}>
                         Rechte
                       </Link>

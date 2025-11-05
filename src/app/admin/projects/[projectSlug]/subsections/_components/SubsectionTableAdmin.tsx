@@ -178,7 +178,7 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
         </table>
 
         {!subsections.length && (
-          <div className="border-t px-3 py-5 text-center text-gray-500">
+          <div className="border-t border-gray-200 px-3 py-5 text-center text-gray-500">
             Noch keine Planungsabschnitte angelegt
           </div>
         )}

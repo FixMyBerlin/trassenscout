@@ -44,7 +44,7 @@ export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
   return (
     <div
       className={clsx(
-        "border-gray-200p-3 rounded-sm border text-gray-700",
+        "rounded-sm border border-gray-200 p-3 text-gray-700",
         schemaResult.success ? "bg-gray-100" : "border-red-800 bg-red-100",
       )}
     >

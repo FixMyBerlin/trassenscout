@@ -56,7 +56,7 @@ export const CalendarEntry = () => {
         </p>
       </IfUserCanEdit>
 
-      <div className="border-gray-200shadow max-w-prose rounded-sm border">
+      <div className="max-w-prose rounded-sm border border-gray-200 shadow">
         <DateEntry withAction={false} calendarEntry={calendarEntry} />
       </div>
 

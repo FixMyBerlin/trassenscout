@@ -23,10 +23,10 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
         <span>{projectRecord.title}</span>
       </div>
       <div>
-        <span className="font-medium text-gray-500">Planungsabschnitt: </span>
+        <div className="font-medium text-gray-500">Planungsabschnitt: </div>
         {projectRecord.subsection ? (
           <Link
-            className="inline-flex"
+            className="mt-2 inline-flex"
             href={`/${projectRecord.project.slug}/abschnitte/${projectRecord.subsection.slug}`}
           >
             <SubsectionIcon label={shortTitle(projectRecord.subsection.slug)} />
@@ -37,10 +37,10 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
       </div>
 
       <div>
-        <span className="font-medium text-gray-500">Eintrag: </span>
+        <div className="font-medium text-gray-500">Eintrag: </div>
         {projectRecord.subsubsection ? (
           <Link
-            className="inline-flex"
+            className="mt-2 inline-flex"
             href={`/${projectRecord.project.slug}/abschnitte/${projectRecord.subsubsection.subsection.slug}/fuehrung/${projectRecord.subsubsection.slug}`}
           >
             <SubsubsectionIcon label={shortTitle(projectRecord.subsubsection.slug)} />

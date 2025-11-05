@@ -159,7 +159,7 @@ export const ProjectRecordsTable = ({
                           {/* Uploads */}
                           {projectRecord.uploads && projectRecord.uploads.length > 0 && (
                             <div>
-                              <p className="mb-2 font-medium text-gray-500">Dokumente:</p>
+                              <p className="mb-2">Dokumente:</p>
                               <ul className="list-inside list-disc space-y-1">
                                 {projectRecord.uploads.map((upload) => (
                                   <li key={upload.id}>

@@ -169,7 +169,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
           <SubsubsectionTableFooter subsubsections={subsubsections} compact={compact} />
         </table>
         {!subsubsections.length && (
-          <div className="border-t px-3 py-5">
+          <div className="border-t border-gray-200 px-3 py-5">
             <ZeroCase visible={subsubsections.length} name="Einträge" />
           </div>
         )}

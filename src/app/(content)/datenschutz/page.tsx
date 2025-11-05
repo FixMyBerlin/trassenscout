@@ -26,7 +26,7 @@ const MatomoIframe = () => {
   return (
     <iframe
       title="Matomo Opt Out Tracking"
-      className="border-gray-200bg-[#f0fdf4] h-52 w-full border p-2"
+      className="h-52 w-full border border-gray-200 bg-[#f0fdf4] p-2"
       src="https://s.fixmycity.de/index.php?module=CoreAdminHome&action=optOut&language=de&backgroundColor=f0fdf4&fontColor=374151&fontSize=16px&fontFamily=Arial"
     />
   )
