@@ -67,7 +67,7 @@ export const Notice: React.FC<Props> = ({ type, title, children, actionText, act
   const { icon, wrapperClass, titleClasses, textClasses, actionClasses } = typeConfig[type]
 
   return (
-    <div className={clsx(wrapperClass, "border-gray-200p-4 mb-5 rounded-md border")}>
+    <div className={clsx(wrapperClass, "mb-5 rounded-md border border-gray-200 p-4")}>
       <div className="flex">
         <div className="shrink-0">{icon}</div>
 

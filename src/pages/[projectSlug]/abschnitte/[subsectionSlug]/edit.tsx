@@ -85,13 +85,13 @@ const EditSubsection = () => {
         onSubmit={handleSubmit}
       />
 
-      <hr className="my-5" />
+      <hr className="my-5 text-gray-200" />
 
       <button type="button" onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
         Löschen
       </button>
 
-      <hr className="my-5" />
+      <hr className="my-5 text-gray-200" />
     </>
   )
 }
@@ -105,8 +105,6 @@ const EditSubsectionPage: BlitzPage = () => {
       <Suspense fallback={<Spinner page />}>
         <EditSubsection />
       </Suspense>
-
-      <hr className="my-5" />
       <p>
         <Link
           href={Routes.SubsectionDashboardPage({

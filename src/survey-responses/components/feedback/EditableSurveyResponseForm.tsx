@@ -262,7 +262,7 @@ export function EditableSurveyResponseForm({
                   labels.topics?.sg || defaultBackendConfig.labels.topics.sg
                 } hinzufügen`}
                 className={
-                  "block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
+                  "block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-none sm:text-sm"
                 }
                 disabled={!userCanEdit}
               />

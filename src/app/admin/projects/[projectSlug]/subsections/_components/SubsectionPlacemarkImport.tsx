@@ -172,7 +172,7 @@ export const SubsectionPlacemarkImport = ({ project }: Props) => {
       )}
       <div className="mt-8">
         {["FILE_SELECTED"].includes(fileState) && (
-          <div className="border-gray-200px-4 rounded-lg border py-2">
+          <div className="rounded-lg border border-gray-200 px-4 py-2">
             Ausgewählte Datei: <strong>{selectedFile!.name}</strong>
           </div>
         )}

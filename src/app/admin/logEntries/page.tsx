@@ -93,7 +93,7 @@ export default async function AdminLogEntriesPage() {
           </tbody>
         </table>
       </TableWrapper>
-      <hr className="my-5" />
+      <hr className="my-5 text-gray-200" />
       <p>
         <Link href="/dashboard">Startseite</Link>
       </p>

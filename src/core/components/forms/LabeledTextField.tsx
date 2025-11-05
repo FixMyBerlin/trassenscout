@@ -79,7 +79,7 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
             onKeyDown={handleKeyDown}
             className={clsx(
               inlineLeadingAddon ? "pl-12" : "",
-              "border-gray-200px-3 block w-full appearance-none rounded-md border py-2 placeholder-gray-400 shadow-xs focus:outline-hidden sm:text-sm",
+              "block w-full appearance-none rounded-md border border-gray-200 px-3 py-2 placeholder-gray-400 shadow-xs focus:outline-hidden sm:text-sm",
               hasError
                 ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
                 : props.readOnly || disabled

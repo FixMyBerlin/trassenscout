@@ -13,7 +13,7 @@ import { de } from "date-fns/locale"
 export const ProjectRecordReviewStatePill = ({ state }: { state: ProjectRecordReviewState }) => (
   <span
     className={clsx(
-      "border-gray-200px-2 inline-flex items-center rounded-full border py-0.5 text-xs font-medium",
+      "inline-flex items-center rounded-full border border-gray-200 px-2 py-0.5 text-xs font-medium",
       {
         [ProjectRecordReviewState.NEEDSREVIEW]: "border-yellow-200 bg-yellow-100 text-yellow-800",
         [ProjectRecordReviewState.NEEDSADMINREVIEW]:

@@ -32,7 +32,7 @@ export const DeleteButton = ({ testSurveyResponseIds, surveySlug }: DeleteButton
 
   return (
     <>
-      <hr />
+      <hr className="my-5 text-gray-200" />
       <button type="button" onClick={handleDelete} className={clsx(blueButtonStyles, "ml-2")}>
         Diese {testSurveyResponseIds.length} Testeinträge und dazugehörige Sessions löschen
       </button>

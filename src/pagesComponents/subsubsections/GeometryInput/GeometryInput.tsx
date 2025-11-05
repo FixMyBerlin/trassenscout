@@ -116,7 +116,10 @@ export const GeometryInput = () => {
             ) : (
               <LabeledGeometryField
                 name="geometry"
-                label="Geometry der Achse (`LineString` oder `Point`)"
+                label="Geometrie des Eintrags (`LineString` oder `Point`)"
+                outerProps={{
+                  className: "rounded-sm border border-gray-200 bg-gray-100 p-3 text-gray-700",
+                }}
               />
             )}
           </div>
