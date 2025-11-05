@@ -1,4 +1,4 @@
-import { ImportSubsubsectionDataSchema } from "@/src/app/api/(apiKey)/subsubsections/import/route"
+import { ImportSubsubsectionDataSchema } from "@/src/server/subsubsections/importSchema"
 import { z } from "zod"
 
 /**
