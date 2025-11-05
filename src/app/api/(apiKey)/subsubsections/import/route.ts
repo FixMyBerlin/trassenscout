@@ -2,25 +2,9 @@ import db from "@/db"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { m2mFields, type M2MFieldsType } from "@/src/server/subsubsections/m2mFields"
-import { SubsubsectionSchema } from "@/src/server/subsubsections/schema"
+import { ImportSubsubsectionDataSchema } from "@/src/server/subsubsections/importSchema"
 import { z } from "zod"
 import { withApiKey } from "../../_utils/withApiKey"
-
-// Shared schema for import data - used by both CSV script validation and API route
-export const ImportSubsubsectionDataSchema = SubsubsectionSchema.omit({ subsectionId: true })
-  .extend({
-    // Allow slug fields in addition to ID fields
-    qualityLevelSlug: z.string().optional(),
-    subsubsectionStatusSlug: z.string().optional(),
-    subsubsectionInfraSlug: z.string().optional(),
-    subsubsectionTaskSlug: z.string().optional(),
-  })
-  .extend({
-    // Allow geometry and type to be optional for imports
-    // Type is inferred from geometry in CSV script, so only set when geometry is provided
-    geometry: SubsubsectionSchema.shape.geometry.optional(),
-    type: SubsubsectionSchema.shape.type.optional(),
-  })
 
 const ImportSubsubsectionRequestSchema = z.object({
   projectSlug: z.string(),
