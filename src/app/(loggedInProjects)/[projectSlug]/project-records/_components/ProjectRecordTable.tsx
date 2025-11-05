@@ -160,11 +160,13 @@ export const ProjectRecordsTable = ({
                           {projectRecord.uploads && projectRecord.uploads.length > 0 && (
                             <div>
                               <p className="mb-2 font-medium text-gray-500">Dokumente:</p>
-                              <ul className="list-inside list-disc space-y-1">
+                              <ul className="space-y-1">
                                 {projectRecord.uploads.map((upload) => (
                                   <li key={upload.id}>
                                     <Link href={upload.externalUrl} blank>
-                                      {upload.title}
+                                      <p className="max-w-1/2 truncate @lg:max-w-52">
+                                        {upload.title}
+                                      </p>
                                     </Link>
                                   </li>
                                 ))}
@@ -188,7 +190,7 @@ export const ProjectRecordsTable = ({
                             </div>
                           </div>
                           {/* Action Buttons */}
-                          <div className="flex items-start gap-3 @lg:flex-col">
+                          <div className="flex grow items-end gap-3 @lg:flex-col">
                             <IfUserCanEdit>
                               {projectRecord.reviewState === "NEEDSREVIEW" && (
                                 <Link
