@@ -8,6 +8,7 @@ import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { uploadUrl } from "@/src/pagesComponents/uploads/utils/uploadUrl"
 import getProjectRecords from "@/src/server/projectRecord/queries/getProjectRecords"
 import { Disclosure, DisclosureButton, DisclosurePanel, Transition } from "@headlessui/react"
 import { ChevronDownIcon, SparklesIcon } from "@heroicons/react/20/solid"
@@ -163,7 +164,7 @@ export const ProjectRecordsTable = ({
                               <ul className="space-y-1">
                                 {projectRecord.uploads.map((upload) => (
                                   <li key={upload.id}>
-                                    <Link href={upload.externalUrl} blank>
+                                    <Link href={uploadUrl(upload)} blank>
                                       <p className="max-w-1/2 truncate @lg:max-w-52">
                                         {upload.title}
                                       </p>

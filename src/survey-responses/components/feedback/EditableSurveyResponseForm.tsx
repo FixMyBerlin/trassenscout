@@ -295,7 +295,7 @@ export function EditableSurveyResponseForm({
               disabled={!userCanEdit}
             />
           </FormElementWrapper>
-          <div className="mt-2 text-sm text-gray-500">
+          <div className="my-2 text-sm text-gray-500">
             {userCanEdit ? labels.note?.help || defaultBackendConfig.labels.note.help : undefined}
           </div>
           <IfUserCanEdit>
