@@ -2,6 +2,7 @@ import { Link } from "@/src/core/components/links"
 import { SubsectionIcon, SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { shortTitle } from "@/src/core/components/text"
+import { uploadUrl } from "@/src/pagesComponents/uploads/utils/uploadUrl"
 import getProjectRecord from "@/src/server/projectRecord/queries/getProjectRecord"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
@@ -81,17 +82,12 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
       <div>
         <p className="mr-2 mb-3 text-gray-500">Verknüpfte Dokumente</p>
         {!!projectRecord.uploads?.length ? (
-          <ul className="list-inside list-disc space-y-1">
+          <ul className="space-y-1">
             {projectRecord.uploads.map((upload) => (
               <li key={upload.id} className="text-gray-700">
-                <a
-                  href={upload.externalUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 hover:underline"
-                >
-                  {upload.title}
-                </a>
+                <Link href={uploadUrl(upload)} blank>
+                  <p className="max-w-1/2 truncate @lg:max-w-52">{upload.title}</p>
+                </Link>
               </li>
             ))}
           </ul>
