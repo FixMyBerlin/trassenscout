@@ -1,3 +1,4 @@
+import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { SubsectionWithPositionAndStatus } from "@/src/server/subsections/queries/getSubsections"
 import { LngLatBoundsLike } from "react-map-gl/maplibre"
 import { BaseMap } from "./BaseMap"
@@ -19,9 +20,7 @@ export const ProjectMapFallback: React.FC<Props> = ({ subsections }) => {
           fitBoundsOptions: { padding: 60 },
         }}
       />
-      <div className="absolute inset-x-0 bottom-12 mx-4 bg-white/80 p-4 px-8 text-center font-sans">
-        Noch keine Planungsabschnitte angelegt
-      </div>
+      <ZeroCase visible name="Planungsabschnitte" />
     </section>
   )
 }

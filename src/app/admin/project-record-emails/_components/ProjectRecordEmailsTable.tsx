@@ -1,6 +1,7 @@
 "use client"
 
 import { Link } from "@/src/core/components/links"
+import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { ProjectRecordEmailWithRelations } from "@/src/server/ProjectRecordEmails/queries/getProjectRecordEmails"
 import { SparklesIcon } from "@heroicons/react/16/solid"
 import { useRouter } from "next/navigation"
@@ -49,7 +50,7 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
   if (!projectRecordEmails.length) {
     return (
       <div className="rounded-md bg-gray-50 p-4">
-        <p className="text-gray-500">Noch keine E-Mails vorhanden.</p>
+        <ZeroCase visible name="Emails" />
         <Link
           href="/admin/project-record-emails/new"
           className="mt-2 inline-block text-blue-600 hover:text-blue-800"

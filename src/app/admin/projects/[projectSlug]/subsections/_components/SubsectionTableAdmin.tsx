@@ -4,6 +4,7 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { shortTitle } from "@/src/core/components/text"
+import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import deleteSubsection from "@/src/server/subsections/mutations/deleteSubsection"
 import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
@@ -177,11 +178,7 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
           </tbody>
         </table>
 
-        {!subsections.length && (
-          <div className="border-t border-gray-200 px-3 py-5 text-center text-gray-500">
-            Noch keine Planungsabschnitte angelegt
-          </div>
-        )}
+        {!subsections.length && <ZeroCase small visible name="Planungsabschnitte" />}
       </TableWrapper>
 
       <ButtonWrapper className="mt-5">
