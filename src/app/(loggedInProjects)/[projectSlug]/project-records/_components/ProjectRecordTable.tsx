@@ -137,7 +137,7 @@ export const ProjectRecordsTable = ({
                           {/* PA */}
                           {withSubsection && projectRecord.subsection && (
                             <div>
-                              <p className="mb-2">Planungsabschnitt: </p>
+                              <p className="mb-2 font-medium text-gray-500">Abschnitt: </p>
                               <Link
                                 href={`/${projectSlug}/abschnitte/${projectRecord.subsection.slug}`}
                               >
@@ -148,7 +148,7 @@ export const ProjectRecordsTable = ({
                           {/* Eintrag */}
                           {withSubsubsection && projectRecord.subsubsection && (
                             <div>
-                              <p className="mb-2">Eintrag: </p>
+                              <p className="mb-2 font-medium text-gray-500">Eintrag: </p>
                               <Link
                                 href={`/${projectSlug}/abschnitte/${projectRecord.subsubsection.subsection.slug}/fuehrung/${projectRecord.subsubsection.slug}`}
                               >
@@ -159,7 +159,7 @@ export const ProjectRecordsTable = ({
                           {/* Uploads */}
                           {projectRecord.uploads && projectRecord.uploads.length > 0 && (
                             <div>
-                              <p className="mb-2">Dokumente:</p>
+                              <p className="mb-2 font-medium text-gray-500">Dokumente:</p>
                               <ul className="list-inside list-disc space-y-1">
                                 {projectRecord.uploads.map((upload) => (
                                   <li key={upload.id}>
