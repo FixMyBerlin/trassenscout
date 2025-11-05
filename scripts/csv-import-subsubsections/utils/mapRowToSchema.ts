@@ -1,6 +1,5 @@
 import { SubsubsectionSchema } from "@/src/server/subsubsections/schema"
 import type { CsvRow } from "./parseCsv"
-import { validateAndExtractGeometry } from "./validateGeometry"
 
 /**
  * Normalizes numeric string by handling comma/decimal separators
@@ -29,13 +28,14 @@ function normalizeNumericString(value: string): string {
 
 /**
  * Maps CSV row data to subsubsection schema format with type conversions
+ * Returns mapped data and list of unmatched columns
  */
 export function mapRowToSchema(row: CsvRow) {
   const mappedData: Record<string, any> = {}
   const schemaShape = SubsubsectionSchema.shape
-  let geometryProvided = false
+  const unmatchedColumns: string[] = []
 
-  // Map standard fields (skip the ones we handle specially)
+  // Map standard fields
   const rowEntries = Object.entries(row || {})
   for (const [csvKey, csvValue] of rowEntries) {
     // Skip required CSV fields that are used for lookup only (not part of subsubsection data)
@@ -43,7 +43,7 @@ export function mapRowToSchema(row: CsvRow) {
       continue
     }
 
-    // Map slug field directly (it's required) - lowercase
+    // Handle slug field
     if (csvKey === "slug") {
       if (csvValue) {
         mappedData.slug = String(csvValue).trim().toLowerCase()
@@ -51,7 +51,8 @@ export function mapRowToSchema(row: CsvRow) {
       continue
     }
 
-    // Handle slug fields - map to special field names that API will convert to IDs - lowercase
+    // Handle special slug fields - these are not in schema
+    // Map to special field names that API will convert to IDs - lowercase
     if (
       csvKey === "qualityLevelSlug" ||
       csvKey === "subsubsectionStatusSlug" ||
@@ -66,72 +67,42 @@ export function mapRowToSchema(row: CsvRow) {
       continue
     }
 
-    // Skip empty values
-    if (csvValue === null || csvValue === undefined || csvValue === "") {
+    // If field doesn't match schema and isn't a special case, track it as unmatched
+    // Check if column name exactly matches a schema field
+    const fieldName = csvKey in schemaShape ? csvKey : undefined
+    if (!fieldName) {
+      unmatchedColumns.push(csvKey)
       continue
     }
 
-    // Map CSV column names to schema field names
-    // Handle common variations and naming differences
-    const normalizedKey = csvKey.toLowerCase().replace(/\s+/g, "").replace(/-/g, "")
-    const originalKey = csvKey
-
-    // Try to find matching field in schema
-    let fieldName: string | undefined
-    const possibleKeys = [
-      normalizedKey,
-      originalKey.toLowerCase(),
-      originalKey.replace(/\s+/g, ""),
-      originalKey.replace(/-/g, ""),
-      originalKey,
-    ]
-
-    for (const key of possibleKeys) {
-      if (key in schemaShape) {
-        fieldName = key
-        break
-      }
+    // Skip empty values for all fields (including geometry)
+    // API route will preserve existing geometry on updates or add fallback for new records
+    if (
+      csvValue === null ||
+      csvValue === undefined ||
+      csvValue === "" ||
+      (typeof csvValue === "string" && csvValue.trim() === "")
+    ) {
+      continue
     }
 
-    if (!fieldName) {
-      // Field doesn't match schema, skip it
+    // Handle geometry column - parse JSON if string, otherwise pass on as-is
+    // Zod validation in validateRow will check and report errors
+    if (csvKey === "geometry") {
+      // Try to parse JSON - if it fails (invalid JSON or non-string), pass through as-is
+      try {
+        mappedData.geometry = JSON.parse(csvValue)
+      } catch {
+        // If JSON parse fails, pass through value - Zod will handle validation
+        mappedData.geometry = csvValue
+      }
       continue
     }
 
     // Handle special type conversions
     let value: any = csvValue
-
-    // Handle geometry - validate and extract coordinates
-    if (fieldName === "geometry") {
-      geometryProvided = true
-      // Check if geometry value is empty (null, undefined, empty string, or whitespace-only)
-      const isEmpty =
-        csvValue === null ||
-        csvValue === undefined ||
-        csvValue === "" ||
-        (typeof csvValue === "string" && csvValue.trim() === "")
-
-      if (isEmpty) {
-        // Empty geometry value - mark as provided but empty
-        value = undefined
-      } else {
-        const geometryResult = validateAndExtractGeometry(csvValue)
-        if (geometryResult.isValid) {
-          value = geometryResult.coordinates
-        } else {
-          // If validation fails, keep the original value so Zod can show it in error message
-          // Parse JSON if string to show the actual value, not the string representation
-          try {
-            value = JSON.parse(csvValue)
-          } catch {
-            value = csvValue
-          }
-          // Note: Invalid geometry will NOT trigger fallback - only empty geometry does
-        }
-      }
-    }
     // Handle enums - normalize to uppercase
-    else if (fieldName === "type") {
+    if (fieldName === "type") {
       value = String(csvValue).toUpperCase().trim()
     } else if (fieldName === "location") {
       value = String(csvValue).toUpperCase().trim()
@@ -196,7 +167,7 @@ export function mapRowToSchema(row: CsvRow) {
 
   // Set required fields with defaults if not provided
   if (!mappedData.type) {
-    mappedData.type = "ROUTE" // Default to ROUTE
+    mappedData.type = "AREA" // Fallback to AREA (Which is POINT)
   }
   if (!mappedData.labelPos) {
     mappedData.labelPos = "top" // Default to top
@@ -212,20 +183,7 @@ export function mapRowToSchema(row: CsvRow) {
     mappedData.lengthM = 0 // Default to 0 if not provided
   }
 
-  // Handle geometry - if not provided or empty, set type to AREA and mark for fallback
-  // Only use fallback if geometry column was empty (not if it was invalid)
-  // Invalid geometry will be caught by Zod validation and reported as an error
-  if (!geometryProvided || mappedData.geometry === undefined) {
-    mappedData.type = "AREA" // Use point geometry type
-    mappedData.geometry = [0, 0] // Placeholder - API will replace with subsection's bottom left corner
-
-    // Prefix description with placeholder marker
-    // Only add notice when geometry is empty (not when invalid)
-    const existingDescription = mappedData.description || ""
-    mappedData.description = existingDescription
-      ? `‼️ Platzhalter-Geometrie\n\n${existingDescription}`
-      : "‼️ Platzhalter-Geometrie"
-  }
-
-  return mappedData
+  // CSV script only transforms geometry column to Position array or undefined
+  // API route handles all fallback logic including placeholder geometry and description warnings
+  return { mappedData, unmatchedColumns }
 }

@@ -29,6 +29,7 @@ async function main() {
   let successCount = 0
   let errorCount = 0
   const errors: Array<{ row: number; reason: string; details?: any }> = []
+  const unmatchedColumnsSet = new Set<string>()
 
   console.log("Processing rows...")
   console.log("-".repeat(80))
@@ -57,7 +58,13 @@ async function main() {
     }
 
     // Map CSV row to schema format
-    const mappedData = mapRowToSchema(row)
+    const { mappedData, unmatchedColumns } = mapRowToSchema(row)
+
+    // Track unmatched columns
+    if (unmatchedColumns.length > 0) {
+      unmatchedColumns.forEach((col) => unmatchedColumnsSet.add(col))
+      console.log(`Row ${rowNum}: ⚠️  Unmatched columns: ${unmatchedColumns.join(", ")}`)
+    }
 
     // Validate with Zod schema
     const validationErrors = validateRow(mappedData)
@@ -139,6 +146,20 @@ async function main() {
   console.log(`Successful: ${successCount}`)
   console.log(`Errors: ${errorCount}`)
   console.log(`Skipped: ${skippedCount}`)
+
+  // Report unmatched columns
+  if (unmatchedColumnsSet.size > 0) {
+    const unmatchedColumnsList = Array.from(unmatchedColumnsSet).sort()
+    console.log("-".repeat(80))
+    console.log("UNMATCHED COLUMNS:")
+    console.log("-".repeat(80))
+    console.log(
+      "The following columns were not recognized and were ignored. Please use exact column names matching the schema.",
+    )
+    unmatchedColumnsList.forEach((col) => {
+      console.log(`  - ${col}`)
+    })
+  }
 
   if (errors.length > 0) {
     console.log("ERRORS:")
