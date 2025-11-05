@@ -106,6 +106,7 @@ export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFields
         name="subsubsectionId"
         options={subsubsectionOptions}
         label="Eintrag"
+        help="Nach Auswahl eines Planungsabschnitts werden hier nur dessen Einträge angezeigt."
       />
 
       <LabeledTextareaField name="body" optional label="Notizen (Markdown)" rows={10} />
