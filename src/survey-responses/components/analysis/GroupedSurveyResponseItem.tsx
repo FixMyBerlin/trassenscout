@@ -37,8 +37,8 @@ export const GroupedSurveyResponseItem: React.FC<Props> = ({
       heightClass = "h-[650px]"
   }
   return (
-    <div className="rounded border py-3.5">
-      {questionLabel && <H3 className="border-b px-3.5 pb-3.5">{questionLabel}</H3>}
+    <div className="rounded-sm border border-gray-200 py-3.5">
+      {questionLabel && <H3 className="border-b border-gray-200 px-3.5 pb-3.5">{questionLabel}</H3>}
 
       <div className={clsx("px-3.5", heightClass)}>
         {chartType === "bar" && <BarChart data={responseData} />}

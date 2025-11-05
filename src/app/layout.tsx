@@ -20,7 +20,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <BlitzProvider>
           <NuqsAdapter>
             <Suspense>
-              <div className="flex h-full w-full flex-none flex-grow flex-col">{children}</div>
+              <div className="flex h-full w-full flex-none grow flex-col">{children}</div>
             </Suspense>
           </NuqsAdapter>
         </BlitzProvider>

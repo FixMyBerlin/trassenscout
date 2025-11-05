@@ -10,7 +10,7 @@ export const SurveyMapPanelContainer = ({ children, className }: Props) => {
   return (
     <div
       className={clsx(
-        "absolute inset-x-0 bottom-10 mx-12 rounded-sm bg-white/80 p-4 px-8 text-center text-base",
+        "absolute inset-x-0 bottom-10 mx-12 rounded-xs bg-white/80 p-4 px-8 text-center text-base",
         className,
       )}
     >

@@ -21,11 +21,11 @@ const BreadcrumbStep = ({ title, route, arrow }: Props) => {
           {title}
         </Link>
       ) : (
-        <span className="select-none pr-3 text-sm font-medium text-gray-500" aria-current="page">
+        <span className="pr-3 text-sm font-medium text-gray-500 select-none" aria-current="page">
           {title}
         </span>
       )}
-      {arrow && <ChevronRightIcon className="mb-0.5 h-5 w-5 flex-shrink-0 text-gray-900" />}
+      {arrow && <ChevronRightIcon className="mb-0.5 h-5 w-5 shrink-0 text-gray-900" />}
     </li>
   )
 }

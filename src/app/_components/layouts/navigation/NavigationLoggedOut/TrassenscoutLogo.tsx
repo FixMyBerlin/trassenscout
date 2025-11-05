@@ -13,7 +13,7 @@ export const NavigationGeneralLogo = ({ beta = true }: Props) => {
         height={30}
         width={84}
       />
-      {beta && <span className="ml-2 text-xs uppercase text-gray-400">Beta</span>}
+      {beta && <span className="ml-2 text-xs text-gray-400 uppercase">Beta</span>}
     </div>
   )
 }

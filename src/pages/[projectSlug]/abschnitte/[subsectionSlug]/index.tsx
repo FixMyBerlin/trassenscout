@@ -10,7 +10,6 @@ import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-import { ExperimentalSubsectionInfoPanel } from "@/src/pagesComponents/subsections/ExperimentalSubsectionInfoPanel"
 import { SubsubsectionMapSidebar } from "@/src/pagesComponents/subsections/SubsubsectionMapSidebar"
 import { SubsubsectionTable } from "@/src/pagesComponents/subsubsections/SubsubsectionTable"
 import { UploadTable } from "@/src/pagesComponents/uploads/UploadTable"
@@ -74,7 +73,6 @@ export const SubsectionDashboardWithQuery = () => {
         description={
           <>
             {subsection.description && <div className="mt-4">{subsection.description}</div>}
-            <ExperimentalSubsectionInfoPanel />
             {/* <SubsectionTabs /> */}
           </>
         }

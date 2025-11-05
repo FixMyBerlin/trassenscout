@@ -16,9 +16,9 @@ export const NavigationDesktop = ({ homeLink, homeLinkText, children }: Props) =
 
   return (
     <div className="relative hidden sm:flex sm:flex-row sm:items-center sm:justify-between">
-      <div className="relative flex min-h-[4rem] items-center justify-between gap-4 sm:h-16">
+      <div className="relative flex min-h-16 items-center justify-between gap-4 sm:h-16">
         <div className="flex flex-1 items-center justify-start sm:items-stretch">
-          <div className="flex flex-shrink-0 items-center justify-center">
+          <div className="flex shrink-0 items-center justify-center">
             {pathname === homeLink ? (
               <NavigationGeneralLogo beta={false} />
             ) : (

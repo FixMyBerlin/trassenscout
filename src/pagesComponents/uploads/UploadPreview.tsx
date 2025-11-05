@@ -29,7 +29,7 @@ export const UploadPreview = ({ upload, editUrl, showUploadUrl, description = tr
       <Link
         blank
         href={uploadUrl(upload)}
-        className="relative flex cursor-pointer flex-col items-start justify-center rounded-md bg-white text-xs hover:bg-gray-50 hover:outline-none hover:ring hover:ring-opacity-50 hover:ring-offset-4"
+        className="hover:ring-opacity-50 relative flex cursor-pointer flex-col items-start justify-center rounded-md bg-white text-xs hover:bg-gray-50 hover:ring hover:ring-offset-4 hover:outline-hidden"
         title={upload.title}
       >
         <span className="h-40 w-full overflow-hidden rounded-md">
@@ -56,12 +56,12 @@ export const UploadPreview = ({ upload, editUrl, showUploadUrl, description = tr
         )}
       </Link>
       <IfUserCanEdit>
-        <div className="absolute -bottom-2 right-0">
+        <div className="absolute right-0 -bottom-2">
           {editUrl && (
             <Link
               icon="edit"
               href={editUrl}
-              className="rounded border border-transparent hover:border-blue-900"
+              className="rounded-sm border border-transparent hover:border-blue-900"
             >
               <span className="sr-only">Grafik bearbeiten</span>
             </Link>
@@ -69,7 +69,7 @@ export const UploadPreview = ({ upload, editUrl, showUploadUrl, description = tr
           {showUploadUrl && (
             <Link
               icon="delete"
-              className="rounded border border-transparent hover:border-blue-900"
+              className="rounded-sm border border-transparent hover:border-blue-900"
               href={showUploadUrl}
             >
               <span className="sr-only">Grafik löschen</span>

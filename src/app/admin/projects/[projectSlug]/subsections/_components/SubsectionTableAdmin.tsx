@@ -4,6 +4,7 @@ import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { shortTitle } from "@/src/core/components/text"
+import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import deleteSubsection from "@/src/server/subsections/mutations/deleteSubsection"
 import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
@@ -56,7 +57,7 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
             <tr>
               <th
                 scope="col"
-                className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
               >
                 Planungsabschnitt
               </th>
@@ -105,11 +106,11 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
                     updatedIds?.includes(String(subsection.id)) && "bg-blue-100",
                   )}
                 >
-                  <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                  <td className="h-20 w-20 py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
                     <SubsectionIcon label={shortTitle(subsection.slug)} />
                   </td>
 
-                  <td className="cursor-pointer py-4 pl-4 pr-3 text-sm font-medium text-blue-500 hover:text-blue-800">
+                  <td className="cursor-pointer py-4 pr-3 pl-4 text-sm font-medium text-blue-500 hover:text-blue-800">
                     <button onClick={() => handleSlugCopyClick(subsection.slug)}>
                       <div className="flex gap-5">
                         <p>{subsection.slug}</p>
@@ -118,12 +119,12 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
                       </div>
                     </button>
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
+                  <td className="py-4 pr-3 pl-4 text-sm font-medium text-gray-900">
                     {subsection.order}
                   </td>
                   <td
                     className={clsx(
-                      "py-4 pl-4 pr-3 text-sm font-medium",
+                      "py-4 pr-3 pl-4 text-sm font-medium",
                       subsection.end === "unbekannt" ? "text-gray-300" : "text-gray-900",
                     )}
                   >
@@ -131,7 +132,7 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
                   </td>
                   <td
                     className={clsx(
-                      "py-4 pl-4 pr-3 text-sm font-medium",
+                      "py-4 pr-3 pl-4 text-sm font-medium",
                       subsection.end === "unbekannt" ? "text-gray-300" : "text-gray-900",
                     )}
                   >
@@ -140,7 +141,7 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
 
                   <td
                     className={clsx(
-                      "py-4 pl-4 pr-3 text-sm font-medium group-hover:bg-gray-50",
+                      "py-4 pr-3 pl-4 text-sm font-medium group-hover:bg-gray-50",
                       noPreviewForDefaultGeometry
                         ? "text-gray-300 group-hover:text-gray-500"
                         : "text-gray-900",
@@ -177,11 +178,7 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
           </tbody>
         </table>
 
-        {!subsections.length && (
-          <div className="border-t px-3 py-5 text-center text-gray-500">
-            Noch keine Planungsabschnitte angelegt
-          </div>
-        )}
+        {!subsections.length && <ZeroCase small visible name="Planungsabschnitte" />}
       </TableWrapper>
 
       <ButtonWrapper className="mt-5">

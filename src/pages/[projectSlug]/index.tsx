@@ -10,7 +10,6 @@ import { H2, seoTitleSlug, shortTitle } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useTryProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { ExperimentalProjectInfoPanel } from "@/src/pagesComponents/projects/ExperimentalProjectInfoPanel"
 import { OperatorFilterDropdown } from "@/src/pagesComponents/projects/OperatorFilterDropdown"
 import { SubsectionTable } from "@/src/pagesComponents/subsections/SubsectionTable"
 import { UploadTable } from "@/src/pagesComponents/uploads/UploadTable"
@@ -59,8 +58,6 @@ export const ProjectDashboardWithQuery = () => {
           </IfUserCanEdit>
         }
       />
-
-      <ExperimentalProjectInfoPanel />
 
       <OperatorFilterDropdown />
       {Boolean(subsections.length) ? (

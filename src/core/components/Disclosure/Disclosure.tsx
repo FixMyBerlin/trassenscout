@@ -34,7 +34,7 @@ export const Disclosure: React.FC<Props> = ({
         <>
           <DisclosureButton
             className={clsx(
-              "group flex w-full items-center justify-between focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75",
+              "group focus-visible:ring-opacity-75 flex w-full items-center justify-between focus:outline-hidden focus-visible:ring focus-visible:ring-gray-500",
               { "border-b border-gray-100": !open },
               classNameButton,
             )}
@@ -46,9 +46,9 @@ export const Disclosure: React.FC<Props> = ({
             {button}
 
             {open ? (
-              <ChevronUpIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
+              <ChevronUpIcon className="h-5 w-5 shrink-0 text-gray-700 group-hover:text-black" />
             ) : (
-              <ChevronDownIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
+              <ChevronDownIcon className="h-5 w-5 shrink-0 text-gray-700 group-hover:text-black" />
             )}
           </DisclosureButton>
           <Transition

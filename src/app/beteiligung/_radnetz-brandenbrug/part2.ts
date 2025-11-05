@@ -249,32 +249,32 @@ export const part2Config: SurveyPart2 = {
                 schools: {
                   label: "Schulen",
                   color: "bg-[#2880FB]",
-                  className: "h-3 rounded-full !w-3",
+                  className: "h-3 rounded-full w-3!",
                 },
                 kindergarden: {
                   label: "Kindergarten",
                   color: "bg-[#00B4CC]",
-                  className: "h-3 rounded-full !w-3",
+                  className: "h-3 rounded-full w-3!",
                 },
                 universities: {
                   label: "Universitäten",
                   color: "bg-[#B377FE]",
-                  className: "h-3 rounded-full !w-3",
+                  className: "h-3 rounded-full w-3!",
                 },
                 basics: {
                   label: "Grundversorgung",
                   color: "bg-[#F5814D]",
-                  className: "h-3 rounded-full !w-3",
+                  className: "h-3 rounded-full w-3!",
                 },
                 shopping: {
                   label: "Einkauf",
                   color: "bg-[#78E5D2]",
-                  className: "h-3 rounded-full !w-3",
+                  className: "h-3 rounded-full w-3!",
                 },
                 freetime: {
                   label: "Freizeit",
                   color: "bg-[#AEE66D]",
-                  className: "h-3 rounded-full !w-3",
+                  className: "h-3 rounded-full w-3!",
                 },
               },
               "Radinfrastruktur Führungsformen (Bestand) (wird erst ab Zoomstufe 10 angezeigt)": {

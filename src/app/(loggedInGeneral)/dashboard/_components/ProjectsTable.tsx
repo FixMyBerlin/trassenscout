@@ -22,7 +22,7 @@ export const ProjectsTable = ({ projects }: Props) => {
             <th
               scope="col"
               colSpan={2}
-              className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
             >
               Projekt
             </th>
@@ -47,16 +47,16 @@ export const ProjectsTable = ({ projects }: Props) => {
                 className="group cursor-pointer hover:bg-gray-50"
                 onClick={() => router.push(route)}
               >
-                <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                <td className="h-20 w-20 py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
                   <ProjectIcon label={shortTitle(project.slug)} />
                 </td>
-                <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
+                <td className="py-4 pr-3 pl-4 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                   {project.subTitle}
                 </td>
-                <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
+                <td className="py-4 pr-3 pl-4 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
                   {project.subsections.length}
                 </td>
-                <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
+                <td className="py-4 pr-4 pl-3 text-sm font-medium wrap-break-word sm:pr-6">
                   {project.memberships[0] ? roleTranslation[project.memberships[0].role] : ""}
                 </td>
               </tr>

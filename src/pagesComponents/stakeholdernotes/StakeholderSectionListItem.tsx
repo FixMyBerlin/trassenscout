@@ -44,16 +44,16 @@ export const StakeholderSectionListItem = ({ stakeholderNote }: Props) => {
       classNamePanel="pb-3"
       button={
         <div className="flex">
-          <div className="w-52 flex-none pb-2 pl-4 pr-3 pt-3 sm:w-64 sm:pl-6">
+          <div className="w-52 flex-none pt-3 pr-3 pb-2 pl-4 sm:w-64 sm:pl-6">
             <StakeholderSectionListItemStatus status={stakeholderNote.status} />
           </div>
-          <div className="flex grow items-center px-3 pb-2 pt-3 font-medium text-blue-500">
+          <div className="flex grow items-center px-3 pt-3 pb-2 font-medium text-blue-500">
             <strong>{stakeholderNote.title}</strong>
           </div>
         </div>
       }
     >
-      <div className="ml-3 px-3 pb-2 pt-6 sm:ml-64">
+      <div className="ml-3 px-3 pt-6 pb-2 sm:ml-64">
         {stakeholderNote.statusText ? (
           <Markdown className="prose-sm mt-3" markdown={stakeholderNote.statusText} />
         ) : (

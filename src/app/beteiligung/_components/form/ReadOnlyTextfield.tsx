@@ -50,7 +50,7 @@ export const SurveyReadonlyTextfield = ({
           value={field.state.value}
           onChange={(e) => field.handleChange(e.target.value)}
           readOnly
-          className="block w-full appearance-none rounded-md border border-gray-300 bg-gray-200 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-[var(--survey-primary-color)] focus:outline-none focus:ring-[var(--survey-primary-color)] sm:text-sm"
+          className="block w-full appearance-none rounded-md border border-gray-300 bg-gray-200 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-(--survey-primary-color) focus:ring-(--survey-primary-color) focus:outline-hidden sm:text-sm"
           {...props}
         />
       </Field>

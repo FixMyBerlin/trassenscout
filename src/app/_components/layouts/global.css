@@ -1,15 +1,86 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@config "../../../../tailwind.config.js";
+
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/forms";
+
+/* Configure where Tailwind should look for classes */
+@source "../../..";
+
+/* https://tailwindcss.com/docs/theme */
+@theme {
+  /* Font weights - only support these weights (see src/app/_components/layouts/fonts.ts) */
+  /* overwrite the entire font-weight namespace */
+  --font-weight-*: initial;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  /* Custom colors */
+  /* overwrite the default theme variables */
+  --color-blue-50: #dfe9f7;
+  --color-blue-100: #b6ceec;
+  --color-blue-200: #8eb2e1;
+  --color-blue-300: #6697d7;
+  --color-blue-400: #3d7bcc;
+  --color-blue-500: #2c62a9;
+  --color-blue-600: #224b81;
+  --color-blue-700: #173459;
+  --color-blue-800: #0d1c31;
+  --color-blue-900: #020508;
+
+  --color-yellow-50: #fffbf0;
+  --color-yellow-100: #fdeebf;
+  --color-yellow-200: #fbe08d;
+  --color-yellow-300: #fad35c;
+  --color-yellow-400: #f8c62b;
+  --color-yellow-500: #eab308;
+  --color-yellow-600: #b68c06;
+  --color-yellow-700: #856605;
+  --color-yellow-800: #544003;
+  --color-yellow-900: #231a01;
+
+  --color-pink-50: #ffe5f3;
+  --color-pink-100: #ffb3dc;
+  --color-pink-200: #ff80c5;
+  --color-pink-300: #ff4cae;
+  --color-pink-400: #ff1a97;
+  --color-pink-500: #e5007d;
+  --color-pink-600: #b20061;
+  --color-pink-700: #800046;
+  --color-pink-800: #4d002a;
+  --color-pink-900: #1a000e;
+
+  --color-red-50: #fff1f2;
+  --color-red-100: #ffe4e6;
+  --color-red-200: #fecdd3;
+  --color-red-300: #fda4af;
+  --color-red-400: #fb7185;
+  --color-red-500: #f43f5e;
+  --color-red-600: #e11d48;
+  --color-red-700: #be123c;
+  --color-red-800: #9f1239;
+  --color-red-900: #9f1239;
+
+  --color-green-50: #ecfdf5;
+  --color-green-100: #d1fae5;
+  --color-green-200: #a7f3d0;
+  --color-green-300: #6ee7b7;
+  --color-green-400: #34d399;
+  --color-green-500: #10b981;
+  --color-green-600: #059669;
+  --color-green-700: #047857;
+  --color-green-800: #065f46;
+  --color-green-900: #064e3b;
+
+  --font-sans:
+    var(--font-red-hat-text), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
 
 @layer base {
-  /*
-  Styles based on …
-  - https://github.com/tailwindlabs/play.tailwindcss.com/blob/master/src/pages/_document.js
-  - Tailwind UI Components
-  Update: Styles for <html> and <body> move to _document.tsx
-  */
-  /* TODO APPDIRECTORY: DELETE */
+  /* TODO APPDIRECTORY: DELETE when project is fully migrated to App Router */
   #__next {
     @apply flex h-full w-full flex-none flex-col;
   }

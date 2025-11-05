@@ -176,7 +176,7 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
                 hs: {
                   label: "Auswählbare Bushaltestellen",
                   color: "bg-[#f5824d]",
-                  className: "!h-2 !w-2 rounded-full flex-shrink-0",
+                  className: "h-2! w-2! rounded-full shrink-0",
                 },
                 bordersLandkreis: {
                   label: "Landkreisgrenzen",

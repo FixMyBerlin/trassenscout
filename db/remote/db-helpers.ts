@@ -14,7 +14,7 @@ function normalizeUrlForBunSql(dbUrl: string): string {
 }
 
 // Helper function to check database connection and SSH tunnel
-async function checkDatabaseConnection(targetDbUrl: string) {
+export async function checkDatabaseConnection(targetDbUrl: string) {
   const normalizedUrl = normalizeUrlForBunSql(targetDbUrl)
   const db = new SQL(normalizedUrl)
 
@@ -121,7 +121,7 @@ export function showSshTunnelInstructions(targetDbUrlOrStaging: string | boolean
 
 // Function to reset database using pre-restore.sql
 export async function resetDatabase(targetDbUrl: string, sqlDir: string) {
-  console.log(chalk.inverse("🗑️ Resetting database..."))
+  console.log(chalk.inverse("🗑️  Resetting database..."))
 
   const maintenanceUrl = targetDbUrl
     .replace("@localhost", "@host.docker.internal")
@@ -167,13 +167,20 @@ export async function restoreDump(targetDbUrl: string, dumpFilePath: string) {
 }
 
 // Function to anonymize data using Bun's native SQL API
-export async function anonymizeData(targetDbUrl: string) {
+export async function anonymizeData(targetDbUrl: string, expectedEnv: "development" | "staging") {
   console.log(chalk.inverse("🔒 Anonymizing data..."))
 
   const normalizedUrl = normalizeUrlForBunSql(targetDbUrl)
   const db = new SQL(normalizedUrl)
 
   try {
+    // Update _Meta.ENV to match the target environment (critical for verification)
+    await db`
+      INSERT INTO "_Meta" (key, value)
+      VALUES ('ENV', ${expectedEnv})
+      ON CONFLICT (key) DO UPDATE SET value = ${expectedEnv}
+    `
+
     await db`
       UPDATE public."User"
       SET email = email || '.invalid'
@@ -191,6 +198,7 @@ export async function anonymizeData(targetDbUrl: string) {
     `
 
     console.log("✅ Data anonymization completed")
+    console.log(`✅ Updated _Meta.ENV to: ${expectedEnv}`)
   } finally {
     db.close()
   }

@@ -54,7 +54,7 @@ export const Tabs: React.FC<Props> = ({ tabs, className }) => {
                 href={tab.href}
                 className={clsx(
                   current
-                    ? "border-b-2 border-gray-900 !text-gray-900"
+                    ? "border-b-2 border-gray-900 text-gray-900!"
                     : "border-b border-transparent hover:border-gray-300 hover:text-gray-700",
                   "flex px-3 py-3 text-sm font-medium",
                 )}

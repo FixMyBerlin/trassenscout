@@ -37,7 +37,7 @@ export const NavigationUserLoggedIn = ({ user }: Props) => {
           >
             <span className="sr-only">User-Menü</span>
             <div
-              className="flex h-8 w-8 items-center justify-center text-lg font-semibold uppercase tracking-tighter text-gray-50"
+              className="flex h-8 w-8 items-center justify-center text-lg font-semibold tracking-tighter text-gray-50 uppercase"
               aria-hidden="true"
             >
               {getInitials(user)}
@@ -55,7 +55,7 @@ export const NavigationUserLoggedIn = ({ user }: Props) => {
             >
               <MenuItems
                 static
-                className="absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-md bg-gray-50 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                className="ring-opacity-5 absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-md bg-gray-50 py-1 shadow-lg ring-1 ring-gray-200 focus:outline-hidden"
               >
                 <div className="px-4 py-2 leading-6 text-gray-700">
                   <p className="mb-2 text-xs text-gray-400">Angemeldet als</p>

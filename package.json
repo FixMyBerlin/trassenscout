@@ -40,8 +40,7 @@
     "updatePackages:major": "npx taze major --includeLocked --write --exclude eslint && npm run updatePackages:minor && npm install",
     "updatePackages:minor": "npx taze minor --includeLocked --write && npm install",
     "release": "gh pr create --base main --head develop --title \"Release $(date '+%Y-%m-%d')\" --body \"\"",
-    "prepare": "husky",
-    "calc-lengthm": "node db/calculate-subsection-subsubsection-lengthm.js"
+    "prepare": "husky"
   },
   "prisma": {
     "schema": "db/schema.prisma"
@@ -75,6 +74,7 @@
     "@prisma/client": "5.22.0",
     "@react-email/components": "0.0.25",
     "@socialgouv/matomo-next": "1.9.2",
+    "@tailwindcss/postcss": "4.1.16",
     "@tanstack/react-form": "1.10.0",
     "@turf/helpers": "7.2.0",
     "@turf/turf": "7.2.0",
@@ -112,7 +112,7 @@
     "secure-password": "4.0.0",
     "server-only": "0.0.1",
     "sharp": "^0.34.0",
-    "tailwindcss": "3.4.17",
+    "tailwindcss": "4.1.16",
     "tiny-invariant": "1.3.3",
     "ua-parser-js": "2.0.3",
     "uuid": "11.1.0",
@@ -152,7 +152,7 @@
     "prettier": "3.5.3",
     "prettier-plugin-organize-imports": "4.1.0",
     "prettier-plugin-prisma": "5.0.0",
-    "prettier-plugin-tailwindcss": "0.6.11",
+    "prettier-plugin-tailwindcss": "0.7.1",
     "preview-email": "3.1.0",
     "react-email": "3.0.7",
     "typescript": "5.8.3",

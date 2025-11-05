@@ -144,7 +144,7 @@ const NewUploadWithQuery = () => {
       {["FILE_SELECTED", "FILE_UPLOADING", "FILE_ERROR", "FILE_UPLOADED", "FILE_SAVED"].includes(
         uploadState,
       ) && (
-        <div className="rounded-lg border px-4 py-2">
+        <div className="rounded-lg border border-gray-200 px-4 py-2">
           Ausgewählte Datei: <strong>{fileToUpload!.name}</strong>
           <br />{" "}
           {["FILE_UPLOADING", "FILE_ERROR", "FILE_UPLOADED", "FILE_SAVED"].includes(

@@ -5,7 +5,8 @@
 
 import { $ } from "bun"
 import chalk from "chalk"
-import { showSshTunnelInstructions } from "./db-helpers"
+import { statSync } from "node:fs"
+import { checkDatabaseConnection, showSshTunnelInstructions } from "./db-helpers"
 
 // Parse command line arguments
 const args = process.argv.slice(2)
@@ -44,17 +45,79 @@ if (useStaging) {
 const DIR = import.meta.dir
 await $`mkdir -p ${DIR}/data`
 
+// Check SSH connection before attempting dump
+console.log(chalk.inverse("🔍 Checking SSH connection..."))
+const connected = await checkDatabaseConnection(databaseUrl)
+if (!connected) {
+  console.error("")
+  console.error(chalk.red("❌ Failed to connect to database."))
+  console.error("")
+  process.exit(1)
+}
+
 // Pull database dump in plain SQL format
 console.log(chalk.inverse("📥 Pulling database dump..."))
 
 const dockerDbUrl = databaseUrl.replace("@localhost", "@host.docker.internal")
+const dumpFile = `${DIR}/data/dump.sql`
+const tempDumpFile = `${DIR}/data/dump.sql.tmp`
+
+// Remove temp file if it exists from previous failed run
+await $`rm -f ${tempDumpFile}`.quiet()
+
+const MIN_DUMP_SIZE = 3 * 1024 * 1024 // 3 MB minimum for a valid dump
 
 try {
-  await $`docker run --rm --entrypoint pg_dump postgres:16-alpine -Fp --no-owner --no-privileges ${dockerDbUrl} | grep -vE 'rdsadmin;|dbmasteruser;' > ${DIR}/data/dump.sql`.quiet()
+  // Write to temporary file first to avoid truncating the final file on failure
+  await $`docker run --rm --entrypoint pg_dump postgres:16-alpine -Fp --no-owner --no-privileges ${dockerDbUrl} | grep -vE 'rdsadmin;|dbmasteruser;' > ${tempDumpFile}`.quiet()
+
+  // Verify the dump file has content (at least 3 MB for a valid dump)
+  let size = 0
+  try {
+    const stats = statSync(tempDumpFile)
+    size = stats.size
+  } catch {
+    // File doesn't exist or can't be accessed
+    size = 0
+  }
+
+  if (size < MIN_DUMP_SIZE) {
+    await $`rm -f ${tempDumpFile}`.quiet()
+    console.error("")
+    console.error(
+      chalk.red(
+        `❌ Dump file is too small (${(size / 1024 / 1024).toFixed(2)} MB). Expected at least 3 MB.`,
+      ),
+    )
+    console.error(chalk.red("   pg_dump may have failed silently."))
+    console.error("")
+    throw new Error("Dump file is too small")
+  }
+
+  // Move temp file to final location only on success
+  await $`mv ${tempDumpFile} ${dumpFile}`
+
+  // Show file size
+  const finalSize = await $`ls -lh ${dumpFile}`.text()
+  console.log(`✅ Dump created: ${finalSize.trim()}`)
 } catch (error) {
+  // Clean up temp file on failure
+  await $`rm -f ${tempDumpFile}`.quiet()
+
   const errorStr = String(error)
   if (errorStr.includes("Connection refused") || errorStr.includes("connection to server")) {
     showSshTunnelInstructions(useStaging)
   }
+
+  // Remove empty or too-small dump.sql if it exists from previous failed run
+  try {
+    const stats = statSync(dumpFile)
+    if (stats.size < MIN_DUMP_SIZE) {
+      await $`rm -f ${dumpFile}`.quiet()
+    }
+  } catch {
+    // File doesn't exist, which is fine
+  }
+
   throw error
 }

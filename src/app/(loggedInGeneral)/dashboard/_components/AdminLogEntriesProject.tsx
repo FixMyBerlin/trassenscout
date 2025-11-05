@@ -49,7 +49,7 @@ export const AdminLogEntriesProject = async ({ projectId, projectSlug }: Props) 
             <tr>
               <th
                 scope="col"
-                className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
               >
                 Date
               </th>
@@ -61,7 +61,7 @@ export const AdminLogEntriesProject = async ({ projectId, projectSlug }: Props) 
               </th>
               <th
                 scope="col"
-                className="py-3.5 pl-3 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6"
+                className="py-3.5 pr-4 pl-3 text-left text-sm font-semibold text-gray-900 sm:pr-6"
               >
                 Benutzer
               </th>
@@ -71,7 +71,7 @@ export const AdminLogEntriesProject = async ({ projectId, projectSlug }: Props) 
           <tbody className="divide-y divide-gray-200 bg-white">
             {logEntries.map((entry) => (
               <tr key={entry.id}>
-                <td className="py-4 pl-4 pr-3 align-top text-sm leading-tight sm:pl-6">
+                <td className="py-4 pr-3 pl-4 align-top text-sm leading-tight sm:pl-6">
                   {format(entry.createdAt, "Pp", { locale: de })}
                   <br />
                   <span className="text-xs text-gray-500">
@@ -100,7 +100,7 @@ export const AdminLogEntriesProject = async ({ projectId, projectSlug }: Props) 
                     entry.message
                   )}
                 </td>
-                <td className="py-4 pl-3 pr-4 align-top text-sm sm:pr-6">
+                <td className="py-4 pr-4 pl-3 align-top text-sm sm:pr-6">
                   {entry.user ? getFullname(entry.user) : null}
                 </td>
               </tr>

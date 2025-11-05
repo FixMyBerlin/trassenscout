@@ -2,7 +2,7 @@ import db from "@/db"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { m2mFields, type M2MFieldsType } from "@/src/server/subsubsections/m2mFields"
-import { SubsubsectionSchema } from "@/src/server/subsubsections/schema"
+import { ImportSubsubsectionDataSchema } from "@/src/server/subsubsections/importSchema"
 import { z } from "zod"
 import { withApiKey } from "../../_utils/withApiKey"
 
@@ -11,13 +11,7 @@ const ImportSubsubsectionRequestSchema = z.object({
   subsectionSlug: z.string(),
   slug: z.string(),
   userId: z.number(),
-  data: SubsubsectionSchema.omit({ subsectionId: true }).extend({
-    // Allow slug fields in addition to ID fields
-    qualityLevelSlug: z.string().optional(),
-    subsubsectionStatusSlug: z.string().optional(),
-    subsubsectionInfraSlug: z.string().optional(),
-    subsubsectionTaskSlug: z.string().optional(),
-  }),
+  data: ImportSubsubsectionDataSchema,
 })
 
 export const POST = withApiKey(async ({ request }) => {
@@ -138,14 +132,8 @@ export const POST = withApiKey(async ({ request }) => {
       },
     })
 
-    // Handle geometry fallback: if description has placeholder marker, use subsection's bottom left corner
-    let finalGeometry = data.geometry
-    if (
-      data.type === "AREA" &&
-      data.description &&
-      data.description.startsWith("‼️ Platzhalter-Geometrie")
-    ) {
-      // Calculate bottom left corner (minimum longitude and minimum latitude)
+    // Calculate fallback geometry for new records when geometry is not provided
+    const calculateFallbackGeometry = (): [number, number] => {
       const subsectionGeometry = subsection.geometry as [number, number][]
       if (subsectionGeometry && subsectionGeometry.length > 0) {
         let minLng = subsectionGeometry[0]![0]
@@ -156,14 +144,26 @@ export const POST = withApiKey(async ({ request }) => {
           if (lat < minLat) minLat = lat
         }
 
-        finalGeometry = [minLng, minLat] as [number, number]
+        return [minLng, minLat] as [number, number]
       }
+      return [0, 0] as [number, number]
     }
 
-    // Prepare data with subsectionId and final geometry
-    const subsubsectionData = {
+    // 1. When geometry is provided, use that; overwrite existing data
+    // 2. When no geometry provided and updating existing record, preserve existing geometry (omit from update)
+    // 3. When no geometry provided and creating new record, fall back to placeholder
+    const applyFallback = !data.geometry && !existing
+    if (applyFallback) {
+      // Creating new record - apply fallback geometry and add warning to description
+      data.type = "AREA"
+      data.geometry = calculateFallbackGeometry()
+      // Add placeholder marker to description when fallback is applied
+      data.description = ["‼️ Platzhalter-Geometrie", data.description].filter(Boolean).join("\n\n")
+    }
+
+    // Prepare data with subsectionId
+    const subsubsectionData: Record<string, any> = {
       ...data,
-      geometry: finalGeometry,
       subsectionId: subsection.id,
     }
 
@@ -197,7 +197,6 @@ export const POST = withApiKey(async ({ request }) => {
 
       result = await db.subsubsection.update({
         where: { id: existing.id },
-        // @ts-expect-error - m2mFields handling
         data: { ...subsubsectionData, ...connect },
       })
       action = "updated"
@@ -205,7 +204,7 @@ export const POST = withApiKey(async ({ request }) => {
       // Create log entry for update
       await createLogEntry({
         action: "UPDATE",
-        message: `Maßnahme ${shortTitle(result.slug)} wurde über CSV-Import aktualisiert`,
+        message: `Eintrag ${shortTitle(result.slug)} wurde über CSV-Import aktualisiert`,
         userId,
         projectId: project.id,
         subsectionId: subsection.id,
@@ -223,7 +222,7 @@ export const POST = withApiKey(async ({ request }) => {
       // Create log entry for create
       await createLogEntry({
         action: "CREATE",
-        message: `Neue Maßnahme ${shortTitle(result.slug)} per CSV-Import`,
+        message: `Neuer Eintrag ${shortTitle(result.slug)} per CSV-Import`,
         userId,
         projectId: project.id,
         subsectionId: subsection.id,

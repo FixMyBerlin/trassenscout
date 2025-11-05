@@ -98,7 +98,7 @@ export const EditProjectRecordForm = ({
         <Link href={`/${projectSlug}/project-records`}>← Zurück zur Protokoll-Übersicht</Link>
       </p>
 
-      <hr className="my-5" />
+      <hr className="my-5 text-gray-200" />
 
       <button type="button" onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
         Löschen

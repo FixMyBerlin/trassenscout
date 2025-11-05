@@ -96,9 +96,7 @@ export const AdminEditProjectRecordForm = ({
         onSubmit={handleSubmit}
       >
         <div className="space-y-6">
-          {projectOptions.length > 0 && (
-            <LabeledSelect name="projectId" options={projectOptions} label="Projekt" />
-          )}
+          <LabeledSelect name="projectId" options={projectOptions} label="Projekt" />
         </div>
         <ProjectRecordFormFields projectSlug={projectRecord.project.slug} />
       </Form>
@@ -111,7 +109,7 @@ export const AdminEditProjectRecordForm = ({
         <Link href="/admin/project-records">← Zurück zur Protokoll-Übersicht</Link>
       </div>
 
-      <hr className="my-5" />
+      <hr className="my-5 text-gray-200" />
 
       <button type="button" onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
         Löschen

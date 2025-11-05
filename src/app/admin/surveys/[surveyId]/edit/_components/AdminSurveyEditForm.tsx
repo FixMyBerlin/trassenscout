@@ -55,7 +55,7 @@ export const AdminSurveyEditForm = () => {
         initialValues={survey}
         onSubmit={handleSubmit}
       />
-      <hr />
+      <hr className="my-5 text-gray-200" />
       <button type="button" onClick={handleDelete} className={clsx(linkStyles, "ml-2")}>
         Löschen
       </button>

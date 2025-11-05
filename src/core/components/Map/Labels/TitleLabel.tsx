@@ -9,8 +9,8 @@ export const TitleLabel: React.FC<Props> = ({ icon, title, subtitle }) => (
     <div className="flex">
       <div className="flex items-center">{icon}</div>
       <div className="ml-1.5 text-[14px] leading-4">
-        {title && <div className="max-w-[13rem] truncate">{title}</div>}
-        {subtitle && <div className="max-w-[13rem] truncate text-gray-500">{subtitle}</div>}
+        {title && <div className="max-w-52 truncate">{title}</div>}
+        {subtitle && <div className="max-w-52 truncate text-gray-500">{subtitle}</div>}
       </div>
     </div>
   </div>

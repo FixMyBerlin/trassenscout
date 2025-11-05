@@ -111,7 +111,7 @@ const EditStakeholdernotePage: BlitzPage = () => {
         <EditStakeholdernote />
       </Suspense>
 
-      <hr className="my-5" />
+      <hr className="my-5 text-gray-200" />
       <p>
         <Link
           href={{

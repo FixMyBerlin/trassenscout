@@ -93,7 +93,7 @@ const EditableSurveyResponseListItem = ({
     <article data-open={open} className="bg-white">
       <button
         className={clsx(
-          "group w-full py-4 pr-4 text-left text-sm text-gray-900 hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-gray-500 focus-visible:ring-opacity-75 sm:pr-6",
+          "group focus-visible:ring-opacity-75 w-full py-4 pr-4 text-left text-sm text-gray-900 hover:bg-gray-50 focus:outline-hidden focus-visible:ring focus-visible:ring-gray-500 sm:pr-6",
           open ? "bg-gray-50" : "border-b border-gray-300",
         )}
         onClick={isAccordion ? () => (open ? handleClose() : handleOpen()) : undefined}
@@ -105,7 +105,7 @@ const EditableSurveyResponseListItem = ({
         )}
 
         <div className="flex w-full items-center justify-between">
-          <div className="flex items-center gap-4 px-6 pb-2 pt-1">
+          <div className="flex items-center gap-4 px-6 pt-1 pb-2">
             <h3 className="text-gray-700">{response.id} </h3>
             <EditableSurveyResponseStatusLabel
               surveySlug={survey.slug}
@@ -114,24 +114,21 @@ const EditableSurveyResponseListItem = ({
             />
             <div
               className={clsx(
-                "flex-shrink-0 rounded-full bg-gray-300 px-4 py-2 text-sm",
+                "shrink-0 rounded-full bg-gray-300 px-4 py-2 text-sm",
                 operatorSlugWitFallback !== "k.A." && "uppercase",
               )}
             >
               <div>{operatorSlugWitFallback}</div>
             </div>
 
-            <Markdown
-              className="ml-4 line-clamp-2 flex-shrink break-all"
-              markdown={userTextPreview}
-            />
+            <Markdown className="ml-4 line-clamp-2 shrink break-all" markdown={userTextPreview} />
           </div>
 
           {isAccordion &&
             (open ? (
-              <ChevronUpIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
+              <ChevronUpIcon className="h-5 w-5 shrink-0 text-gray-700 group-hover:text-black" />
             ) : (
-              <ChevronDownIcon className="h-5 w-5 flex-shrink-0 text-gray-700 group-hover:text-black" />
+              <ChevronDownIcon className="h-5 w-5 shrink-0 text-gray-700 group-hover:text-black" />
             ))}
         </div>
       </button>

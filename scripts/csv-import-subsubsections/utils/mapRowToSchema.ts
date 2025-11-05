@@ -1,170 +1,168 @@
-import { SubsubsectionSchema } from "@/src/server/subsubsections/schema"
+import {
+  PositionArraySchema,
+  PositionSchema,
+  SubsubsectionSchema,
+} from "@/src/server/subsubsections/schema"
 import type { CsvRow } from "./parseCsv"
-import { validateAndExtractGeometry } from "./validateGeometry"
+
+/**
+ * Normalizes numeric string by handling comma/decimal separators
+ * - If both comma and dot exist: remove commas (thousands separator)
+ *   Example: "1,000.00" -> "1000.00"
+ * - If only comma exists: replace with dot (decimal separator)
+ *   Example: "1,11" -> "1.11"
+ * - Otherwise: keep as-is
+ */
+function normalizeNumericString(value: string): string {
+  const trimmed = value.trim()
+  const hasComma = trimmed.includes(",")
+  const hasDot = trimmed.includes(".")
+
+  if (hasComma && hasDot) {
+    // Both exist: comma is thousands separator, remove it
+    return trimmed.replace(/,/g, "")
+  } else if (hasComma && !hasDot) {
+    // Only comma: it's a decimal separator, replace with dot
+    return trimmed.replace(/,/g, ".")
+  }
+
+  // No comma or already has dot: keep as-is
+  return trimmed
+}
 
 /**
  * Maps CSV row data to subsubsection schema format with type conversions
+ * Returns mapped data and list of unmatched columns
  */
 export function mapRowToSchema(row: CsvRow) {
   const mappedData: Record<string, any> = {}
   const schemaShape = SubsubsectionSchema.shape
-  let geometryProvided = false
+  const unmatchedColumns: string[] = []
 
-  // Map standard fields (skip the ones we handle specially)
+  // Map standard fields
   const rowEntries = Object.entries(row || {})
   for (const [csvKey, csvValue] of rowEntries) {
-    // Skip required CSV fields that are used for lookup only (not part of subsubsection data)
-    if (csvKey === "project" || csvKey === "pa-slug") {
-      continue
-    }
-
-    // Map slug field directly (it's required) - lowercase
-    if (csvKey === "slug") {
-      if (csvValue) {
-        mappedData.slug = String(csvValue).trim().toLowerCase()
-      }
-      continue
-    }
-
-    // Handle slug fields - map to special field names that API will convert to IDs - lowercase
+    // Skip empty values for all fields
+    // API route will preserve existing geometry on updates or add fallback for new records
     if (
-      csvKey === "qualityLevelSlug" ||
-      csvKey === "subsubsectionStatusSlug" ||
-      csvKey === "subsubsectionInfraSlug" ||
-      csvKey === "subsubsectionTaskSlug"
+      csvValue === null ||
+      csvValue === undefined ||
+      csvValue === "" ||
+      (typeof csvValue === "string" && csvValue.trim() === "")
     ) {
-      const str = String(csvValue).trim().toLowerCase()
-      if (str) {
-        // Store with the slug field name - API will convert to ID
-        mappedData[csvKey] = str
-      }
       continue
     }
 
-    // Skip empty values
-    if (csvValue === null || csvValue === undefined || csvValue === "") {
-      continue
-    }
-
-    // Map CSV column names to schema field names
-    // Handle common variations and naming differences
-    const normalizedKey = csvKey.toLowerCase().replace(/\s+/g, "").replace(/-/g, "")
-    const originalKey = csvKey
-
-    // Try to find matching field in schema
-    let fieldName: string | undefined
-    const possibleKeys = [
-      normalizedKey,
-      originalKey.toLowerCase(),
-      originalKey.replace(/\s+/g, ""),
-      originalKey.replace(/-/g, ""),
-      originalKey,
-    ]
-
-    for (const key of possibleKeys) {
-      if (key in schemaShape) {
-        fieldName = key
-        break
-      }
-    }
-
-    if (!fieldName) {
-      // Field doesn't match schema, skip it
-      continue
-    }
-
-    // Handle special type conversions
-    let value: any = csvValue
-
-    // Handle geometry - validate and extract coordinates
-    if (fieldName === "geometry") {
-      geometryProvided = true
-      if (csvValue) {
-        const geometryResult = validateAndExtractGeometry(
-          typeof csvValue === "string" ? csvValue : csvValue,
-        )
-        if (geometryResult.isValid) {
-          value = geometryResult.coordinates
-        } else {
-          // If validation fails, keep the original value so Zod can show it in error message
-          // Parse JSON if string to show the actual value, not the string representation
-          try {
-            value = typeof csvValue === "string" ? JSON.parse(csvValue) : csvValue
-          } catch {
-            value = csvValue
-          }
+    switch (csvKey) {
+      case "project":
+      case "pa-slug":
+        // Skip lookup-only fields
+        continue
+      case "slug":
+        // Handle slug field
+        mappedData.slug = String(csvValue).trim().toLowerCase()
+        continue
+      case "qualityLevelSlug":
+      case "subsubsectionStatusSlug":
+      case "subsubsectionInfraSlug":
+      case "subsubsectionTaskSlug":
+        // Handle special slug fields - API will convert to IDs
+        mappedData[csvKey] = String(csvValue).trim().toLowerCase()
+        continue
+      case "geometry": {
+        // Parse JSON if string, otherwise pass on as-is
+        let geometry: unknown
+        try {
+          geometry = JSON.parse(csvValue)
+        } catch {
+          // If JSON parse fails, pass through value - Zod will handle validation
+          geometry = csvValue
         }
-      } else {
-        // Empty geometry value - mark as provided but empty
-        value = undefined
+        mappedData.geometry = geometry
+
+        // Infer type from geometry: Point (AREA) vs LineString (ROUTE)
+        const pointResult = PositionSchema.safeParse(geometry)
+        const lineStringResult = PositionArraySchema.safeParse(geometry)
+        if (pointResult.success) {
+          mappedData.type = "AREA"
+        } else if (lineStringResult.success) {
+          mappedData.type = "ROUTE"
+        }
+        // If geometry is invalid, don't set type - let Zod validation handle it
+        continue
+      }
+      case "type":
+        // Type is inferred from geometry - track as unmatched if provided
+        unmatchedColumns.push(csvKey)
+        continue
+      case "location":
+        // Handle enum - normalize to uppercase
+        mappedData[csvKey] = String(csvValue).toUpperCase().trim()
+        continue
+      case "labelPos":
+        // Handle enum - normalize to lowercase
+        mappedData[csvKey] = String(csvValue).toLowerCase().trim()
+        continue
+      case "isExistingInfra": {
+        // Handle boolean
+        const str = String(csvValue).toLowerCase().trim()
+        mappedData[csvKey] = str === "true" || str === "1" || str === "yes" || str === "ja"
+        continue
+      }
+      case "qualityLevelId":
+      case "subsubsectionStatusId":
+      case "subsubsectionInfraId":
+      case "subsubsectionTaskId":
+      case "subsubsectionInfrastructureTypeId":
+      case "managerId": {
+        // Handle ID fields - try to parse as number
+        const str = String(csvValue).trim()
+        const parsed = Number(str)
+        mappedData[csvKey] = isNaN(parsed) ? null : parsed
+        continue
+      }
+      case "lengthM":
+      case "width":
+      case "widthExisting":
+      case "costEstimate":
+      case "maxSpeed":
+      case "trafficLoad":
+      case "planningPeriod":
+      case "constructionPeriod":
+      case "planningCosts":
+      case "deliveryCosts":
+      case "constructionCosts":
+      case "landAcquisitionCosts":
+      case "expensesOfficialOrders":
+      case "expensesTechnicalVerification":
+      case "nonEligibleExpenses":
+      case "revenuesEconomicIncome":
+      case "contributionsThirdParties":
+      case "grantsOtherFunding":
+      case "ownFunds": {
+        // Handle numeric fields - normalize comma/decimal separators and parse as numbers
+        const normalized = normalizeNumericString(String(csvValue))
+        const parsed = Number(normalized)
+        mappedData[csvKey] = isNaN(parsed) ? csvValue : parsed
+        continue
+      }
+      default: {
+        // Check if column name exactly matches a schema field
+        const fieldName = csvKey in schemaShape ? csvKey : undefined
+        if (!fieldName) {
+          // Unmatched column - add to list and skip
+          unmatchedColumns.push(csvKey)
+          continue
+        }
+        // Schema field not explicitly handled - keep value as-is, Zod will handle coercion
+        mappedData[fieldName] = csvValue
+        continue
       }
     }
-    // Handle enums - normalize to uppercase
-    else if (fieldName === "type") {
-      value = String(csvValue).toUpperCase().trim()
-    } else if (fieldName === "location") {
-      value = String(csvValue).toUpperCase().trim()
-    } else if (fieldName === "labelPos") {
-      value = String(csvValue).toLowerCase().trim()
-    }
-    // Handle booleans
-    else if (fieldName === "isExistingInfra") {
-      const str = String(csvValue).toLowerCase().trim()
-      value = str === "true" || str === "1" || str === "yes" || str === "ja"
-    }
-    // Handle ID fields - try to parse as number, or leave as-is for API to handle
-    else if (
-      fieldName === "qualityLevelId" ||
-      fieldName === "subsubsectionStatusId" ||
-      fieldName === "subsubsectionInfraId" ||
-      fieldName === "subsubsectionTaskId" ||
-      fieldName === "subsubsectionInfrastructureTypeId" ||
-      fieldName === "managerId"
-    ) {
-      const str = String(csvValue).trim()
-      const parsed = Number(str)
-      // If it's a valid number string, use it; otherwise set to null
-      value = isNaN(parsed) ? null : parsed
-    }
-    // Handle other numeric fields
-    else if (
-      fieldName === "lengthM" ||
-      fieldName === "width" ||
-      fieldName === "widthExisting" ||
-      fieldName === "costEstimate" ||
-      fieldName === "maxSpeed" ||
-      fieldName === "trafficLoad" ||
-      fieldName === "planningPeriod" ||
-      fieldName === "constructionPeriod" ||
-      fieldName === "planningCosts" ||
-      fieldName === "deliveryCosts" ||
-      fieldName === "constructionCosts" ||
-      fieldName === "landAcquisitionCosts" ||
-      fieldName === "expensesOfficialOrders" ||
-      fieldName === "expensesTechnicalVerification" ||
-      fieldName === "nonEligibleExpenses" ||
-      fieldName === "revenuesEconomicIncome" ||
-      fieldName === "contributionsThirdParties" ||
-      fieldName === "grantsOtherFunding" ||
-      fieldName === "ownFunds"
-    ) {
-      // Try to parse as number, keep as string if parsing fails (Zod will handle it)
-      const parsed = Number(csvValue)
-      value = isNaN(parsed) ? csvValue : parsed
-    }
-    // Numbers will be coerced by Zod, but we can ensure they're strings or numbers
-    else {
-      // Keep value as-is, Zod will handle coercion
-      value = csvValue
-    }
-
-    mappedData[fieldName] = value
   }
 
   // Set required fields with defaults if not provided
-  if (!mappedData.type) {
-    mappedData.type = "ROUTE" // Default to ROUTE
-  }
+  // Type is inferred from geometry - only set when geometry is provided
   if (!mappedData.labelPos) {
     mappedData.labelPos = "top" // Default to top
   }
@@ -179,18 +177,7 @@ export function mapRowToSchema(row: CsvRow) {
     mappedData.lengthM = 0 // Default to 0 if not provided
   }
 
-  // Handle geometry - if not provided, set type to AREA and mark for fallback
-  // Only use fallback if geometry column wasn't provided at all (not if it was invalid)
-  if (!geometryProvided) {
-    mappedData.type = "AREA" // Use point geometry type
-    mappedData.geometry = [0, 0] // Placeholder - API will replace with subsection's bottom left corner
-
-    // Prefix description with placeholder marker
-    const existingDescription = mappedData.description || ""
-    mappedData.description = existingDescription
-      ? `‼️ Platzhalter-Geometrie\n\n${existingDescription}`
-      : "‼️ Platzhalter-Geometrie"
-  }
-
-  return mappedData
+  // CSV script only transforms geometry column to Position array or undefined
+  // API route handles all fallback logic including placeholder geometry and description warnings
+  return { mappedData, unmatchedColumns }
 }

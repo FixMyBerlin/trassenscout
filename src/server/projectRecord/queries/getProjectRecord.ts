@@ -27,6 +27,13 @@ export default resolver.pipe(
       },
       include: {
         subsection: true,
+        subsubsection: {
+          include: {
+            subsection: {
+              select: { slug: true },
+            },
+          },
+        },
         project: {
           select: { slug: true },
         },

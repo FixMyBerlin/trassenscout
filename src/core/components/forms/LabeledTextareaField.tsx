@@ -54,7 +54,7 @@ export const LabeledTextareaField = forwardRef<HTMLTextAreaElement, LabeledTexta
           {...props}
           className={clsx(
             textareaClasName,
-            "mt-1 block w-full rounded-md shadow-sm sm:text-sm",
+            "mt-1 block w-full rounded-md shadow-xs sm:text-sm",
             hasError
               ? "border-red-800 shadow-red-200 focus:border-red-800 focus:ring-red-800"
               : props.readOnly || disabled

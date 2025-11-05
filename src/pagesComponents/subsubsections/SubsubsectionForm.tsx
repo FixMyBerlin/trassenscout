@@ -118,7 +118,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           { value: "RURAL", label: "außerorts" },
           { value: "", label: "keine Angabe" },
         ]}
-        classNameItemWrapper="flex gap-5 !space-y-0 items-center"
+        classNameItemWrapper="flex gap-5 space-y-0! items-center"
       />
       {/* UNUSED */}
       {/* <div>

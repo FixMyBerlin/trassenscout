@@ -37,7 +37,7 @@ export const StakeholdernoteFilterDropdown: React.FC<Props> = ({ stakeholdernote
             { scroll: false },
           )
         }}
-        className="block w-80 text-ellipsis rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-blue-600 sm:text-sm sm:leading-6"
+        className="block w-80 rounded-md border-0 py-1.5 pr-10 pl-3 text-ellipsis text-gray-900 ring-1 ring-gray-300 ring-inset focus:ring-2 focus:ring-blue-600 sm:text-sm sm:leading-6"
       >
         <option key="" value="">
           Alles ({stakeholdernotes.length})

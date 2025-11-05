@@ -58,6 +58,7 @@ export const ContactWithQuery = () => {
         </SuperAdminBox>
       </div>
 
+      <hr className="my-5 text-gray-200" />
       <Link href={Routes.ContactsPage({ projectSlug })}>Zurück zur Kontaktliste</Link>
     </>
   )

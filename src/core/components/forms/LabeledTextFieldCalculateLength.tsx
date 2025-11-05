@@ -50,7 +50,7 @@ export const LabeledTextFieldCalculateLength: React.FC<LabeledTextFieldProps> = 
         type="button"
         disabled={!isGeometry || isPoint(getValues("geometry")) || props.readOnly}
         onClick={calculateLength}
-        className={clsx(blueButtonStyles, "!px-2 !py-1")}
+        className={clsx(blueButtonStyles, "px-2! py-1!")}
       >
         Länge aus Geometrie berechnen
       </button>

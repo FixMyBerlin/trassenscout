@@ -44,7 +44,7 @@ export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
   return (
     <div
       className={clsx(
-        "rounded border p-3 text-gray-700",
+        "rounded-sm border border-gray-200 p-3 text-gray-700",
         schemaResult.success ? "bg-gray-100" : "border-red-800 bg-red-100",
       )}
     >
@@ -162,7 +162,7 @@ export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
           </details>
         </>
       ) : (
-        <p className="mb-0 mt-2 min-h-[300px] text-sm">
+        <p className="mt-2 mb-0 min-h-[300px] text-sm">
           <strong>Achtung Validierung:</strong> Dieser Fehler muss behoben werden. Aus technischen
           Gründen kann man das Formular trotzdem speichern. Das würde dann aber zu einer defekten
           Appliation führen.

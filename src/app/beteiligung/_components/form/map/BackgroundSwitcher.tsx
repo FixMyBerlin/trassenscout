@@ -28,7 +28,7 @@ export const SurveyBackgroundSwitcher = ({ value, onChange, className }: Props) 
       <Listbox value={value} onChange={onChange}>
         {({ open }) => (
           <div className="relative mt-1">
-            <ListboxButton className="focus:border-black-500 relative cursor-default rounded-md border border-gray-300 bg-white py-1 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-[var(--survey-primary-color)] sm:text-sm">
+            <ListboxButton className="focus:border-black-500 relative cursor-default rounded-md border border-gray-300 bg-white py-1 pr-10 pl-3 text-left shadow-xs focus:ring-1 focus:ring-(--survey-primary-color) focus:outline-hidden sm:text-sm">
               <span className="block truncate">{labels[value]}</span>
               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                 <ChevronDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -42,14 +42,14 @@ export const SurveyBackgroundSwitcher = ({ value, onChange, className }: Props) 
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <ListboxOptions className="absolute z-50 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <ListboxOptions className="ring-opacity-5 absolute z-50 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-gray-200 focus:outline-hidden sm:text-sm">
                 {Object.keys(labels).map((id) => (
                   <ListboxOption
                     key={id}
                     className={({}) =>
                       clsx(
                         "text-gray-900",
-                        "relative cursor-default select-none py-1 pl-3 pr-9 text-sm",
+                        "relative cursor-default py-1 pr-9 pl-3 text-sm select-none",
                       )
                     }
                     value={id}

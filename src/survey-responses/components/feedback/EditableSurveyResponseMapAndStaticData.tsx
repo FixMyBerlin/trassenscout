@@ -144,7 +144,7 @@ const EditableSurveyResponseMapAndStaticData = ({
         {/* CATEGORY */}
         <div className="flex shrink-0 flex-col items-start gap-4">
           <h4 className="font-semibold">{categoryLabel}</h4>
-          <div className="whitespace-nowrap rounded bg-gray-300 p-3 px-4 font-semibold">
+          <div className="rounded-sm bg-gray-300 p-3 px-4 font-semibold whitespace-nowrap">
             {userCategoryLabel}
           </div>
         </div>

@@ -11,7 +11,7 @@ type Props = {
 export const SurveyHeader = ({ logoSrc, landingPageUrl, title }: Props) => {
   return (
     <nav className="z-20 shadow-xl">
-      <div className="mx-auto flex items-center justify-between px-2 text-gray-500 sm:px-6 lg:pl-5 lg:pr-2.5">
+      <div className="mx-auto flex items-center justify-between px-2 text-gray-500 sm:px-6 lg:pr-2.5 lg:pl-5">
         <div className="flex h-full items-center justify-start">
           <span className="relative h-[50px] w-[50px]">
             <Image

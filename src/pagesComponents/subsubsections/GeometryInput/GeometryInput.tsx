@@ -48,7 +48,7 @@ export const GeometryInput = () => {
           { value: "ROUTE", label: "Linie" }, // fka Regelführung (RF)
           { value: "AREA", label: "Punkt" }, // fka Sonderführung (SF)
         ]}
-        classNameItemWrapper="flex gap-5 !space-y-0 items-center"
+        classNameItemWrapper="flex gap-5 space-y-0! items-center"
       />
       {type === "ROUTE" ? (
         <div id="geometry-input-help" className="m-0 text-gray-500">
@@ -108,7 +108,7 @@ export const GeometryInput = () => {
             </div>
           </nav>
 
-          <div className="rounded-b-md rounded-r-md bg-gray-100 p-2">
+          <div className="rounded-r-md rounded-b-md bg-gray-100 p-2">
             {geometryInputMode === "MAP" ? (
               <MapProvider>
                 {schemaResult.success && <GeometryInputMap subsection={subsection} />}
@@ -116,7 +116,10 @@ export const GeometryInput = () => {
             ) : (
               <LabeledGeometryField
                 name="geometry"
-                label="Geometry der Achse (`LineString` oder `Point`)"
+                label="Geometrie des Eintrags (`LineString` oder `Point`)"
+                outerProps={{
+                  className: "rounded-sm border border-gray-200 bg-gray-100 p-3 text-gray-700",
+                }}
               />
             )}
           </div>

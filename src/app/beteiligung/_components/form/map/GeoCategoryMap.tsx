@@ -240,7 +240,7 @@ export const SurveyGeoCategoryMap = ({
           geoCategoryIdDefinition={geoCategoryIdDefinition}
         />
         <SurveyBackgroundSwitcher
-          className="absolute left-4 top-4"
+          className="absolute top-4 left-4"
           value={selectedLayer}
           onChange={handleLayerSwitch}
         />

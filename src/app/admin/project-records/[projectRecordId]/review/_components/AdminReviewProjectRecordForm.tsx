@@ -1,22 +1,19 @@
 "use client"
 
-import { ProjectRecordTypePill } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTable"
+import { CreateEditReviewHistory } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/CreateEditReviewHistory"
+import { ProjectRecordSummary } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordSummary"
 import { Form, LabeledRadiobuttonGroup, LabeledTextareaField } from "@/src/core/components/forms"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { SubmitButton } from "@/src/core/components/forms/SubmitButton"
 import { Link } from "@/src/core/components/links"
-import { SubsectionIcon } from "@/src/core/components/Map/Icons"
-import { Markdown } from "@/src/core/components/Markdown/Markdown"
-import { H3, shortTitle } from "@/src/core/components/text"
+import { H3 } from "@/src/core/components/text"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import updateProjectRecordReview from "@/src/server/projectRecord/mutations/updateProjectRecordReview"
 import getProjectRecordAdmin from "@/src/server/projectRecord/queries/getProjectRecordAdmin"
 import { ProjectRecordReviewFormSchema } from "@/src/server/projectRecord/schemas"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { ProjectRecordReviewState, ProjectRecordType } from "@prisma/client"
-import { format } from "date-fns"
-import { de } from "date-fns/locale"
+import { ProjectRecordReviewState } from "@prisma/client"
 import { useRouter } from "next/navigation"
 
 export const AdminReviewProjectRecordForm = ({
@@ -52,82 +49,9 @@ export const AdminReviewProjectRecordForm = ({
 
   return (
     <>
-      {/* ProjectRecord Summary */}
-      <div className="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-6">
-        <div className="flex items-center justify-between">
-          <h3 className="mb-4 text-lg font-semibold">Protokoll-Übersicht</h3>
-          <Link icon="edit" href={`/admin/project-records/${projectRecordId}/edit`}>
-            Protokoll bearbeiten
-          </Link>
-        </div>
-        <div className="mt-7 space-y-4">
-          <div>
-            <span className="font-medium text-gray-500">Datum: </span>
-            <span className="text-gray-900">
-              {projectRecord.date ? format(new Date(projectRecord.date), "P", { locale: de }) : "—"}
-            </span>
-          </div>
-          <div>
-            <span className="font-medium text-gray-500">Projekt: </span>
-            <Link href={`/${projectRecord.project.slug}/project-records`}>
-              {shortTitle(projectRecord.project.slug)}
-            </Link>
-          </div>
-          <div className="flex items-end gap-2">
-            <span className="font-medium text-gray-500">Planungsabschnitt: </span>
-            {projectRecord.subsection ? (
-              <Link
-                href={`/${projectRecord.project.slug}/abschnitte/${projectRecord.subsection.slug}`}
-              >
-                <SubsectionIcon label={shortTitle(projectRecord.subsection.slug)} />
-              </Link>
-            ) : (
-              "k.A."
-            )}
-          </div>
-        </div>
+      <CreateEditReviewHistory projectRecord={projectRecord} />
 
-        <div>
-          <p className="mb-2 font-medium text-gray-500">Tags: </p>
-          <ul className="list-inside list-none space-y-1">
-            {!!projectRecord.projectRecordTopics.length ? (
-              projectRecord.projectRecordTopics.map((topic) => (
-                <li className="whitespace-nowrap text-gray-700" key={topic.id}>
-                  # {topic.title}
-                </li>
-              ))
-            ) : (
-              <li className="whitespace-nowrap text-gray-700">Keine Tags zugeordnet</li>
-            )}
-          </ul>
-        </div>
-
-        {projectRecord.body && (
-          <div className="mt-4">
-            <span className="font-medium text-gray-500">Body:</span>
-            <div className="mt-2 max-w-3xl rounded-md bg-white p-4">
-              <Markdown markdown={projectRecord.body} />
-            </div>
-          </div>
-        )}
-
-        <div className="border-t border-gray-200 pt-4">
-          <div className="text-sm text-gray-500">
-            <p className="text-xs">
-              <span>Erstellt von </span>
-              <ProjectRecordTypePill type={projectRecord.projectRecordAuthorType} />
-              {projectRecord.projectRecordAuthorType === ProjectRecordType.USER &&
-                projectRecord.author && <span>{getFullname(projectRecord.author)}</span>}
-            </p>
-            <p className="mt-2 text-xs">
-              <span>Zuletzt bearbeitet von </span>
-              <ProjectRecordTypePill type={projectRecord.projectRecordUpdatedByType} />{" "}
-              {projectRecord.projectRecordUpdatedByType === ProjectRecordType.USER &&
-                projectRecord.updatedBy && <span>{getFullname(projectRecord.updatedBy)}</span>}
-            </p>
-          </div>
-        </div>
-      </div>
+      <ProjectRecordSummary projectRecord={projectRecord} />
 
       <Form
         schema={ProjectRecordReviewFormSchema}
@@ -136,7 +60,7 @@ export const AdminReviewProjectRecordForm = ({
           reviewNotes: projectRecord.reviewNotes || "",
         }}
         onSubmit={handleSubmit}
-        className="max-w-2xl"
+        className="mt-6 max-w-2xl rounded-md bg-gray-200 p-4"
       >
         <H3>Review durchführen</H3>
         {projectRecord.reviewState !== ProjectRecordReviewState.NEEDSREVIEW && (

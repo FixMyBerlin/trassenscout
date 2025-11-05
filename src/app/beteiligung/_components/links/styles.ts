@@ -3,26 +3,25 @@ import { SurveyLinkProps } from "./SurveyLink"
 
 // BUTTON:
 const buttonBase =
-  "w-full font-medium sm:w-auto shadow-sm text-sm sm:text-base pb-3.5 pt-4 px-6 rounded-lg inline-flex items-center justify-center no-underline"
+  "w-full font-medium sm:w-auto shadow-xs text-sm sm:text-base pb-3.5 pt-4 px-6 rounded-lg inline-flex items-center justify-center no-underline"
 
 // LINK
 export const partcipationLinkStyles =
-  "underline text-[var(--survey-primary-color)] decoreation-[var(--survey-primary-color)] hover:text-[var(--survey-dark-color)] hover:decoration-[var(--survey-dark-color)]"
+  "underline text-(--survey-primary-color) decoreation-[var(--survey-primary-color)] hover:text-(--survey-dark-color) hover:decoration-(--survey-dark-color)"
 
 // HOVER and ACTIVE
 // for button elements
-const hoverStyleForButtonElement =
-  "enabled:hover:bg-[var(--survey-dark-color)] enabled:hover:text-white"
+const hoverStyleForButtonElement = "enabled:hover:bg-(--survey-dark-color) enabled:hover:text-white"
 const activeStyleWhiteButtonElement =
-  "enabled:active:ring-2 enabled:active:ring-[var(--survey-dark-color)] enabled:active:bg-white enabled:active:text-black"
+  "enabled:active:ring-2 enabled:active:ring-(--survey-dark-color) enabled:active:bg-white enabled:active:text-black"
 const activeStylePrimaryColorButtonElement =
-  "enabled:active:ring-2 enabled:active:ring-[var(--survey-dark-color)] enabled:active:bg-[var(--survey-primary-color)] enabled:hover:bg-[var(--survey-dark-color)] enabled:hover:text-white"
+  "enabled:active:ring-2 enabled:active:ring-(--survey-dark-color) enabled:active:bg-(--survey-primary-color) enabled:hover:bg-(--survey-dark-color) enabled:hover:text-white"
 // for link elements
-const hoverStyleForLinkElement = "hover:bg-[var(--survey-dark-color)] hover:text-white"
+const hoverStyleForLinkElement = "hover:bg-(--survey-dark-color) hover:text-white"
 const activeStylePrimaryColorLinkElement =
-  "active:ring-2 active:ring-[var(--survey-dark-color)] active:bg-[var(--survey-primary-color)] hover:bg-[var(--survey-dark-color)] hover:text-white"
+  "active:ring-2 active:ring-(--survey-dark-color) active:bg-(--survey-primary-color) hover:bg-(--survey-dark-color) hover:text-white"
 const activeStyleWhiteLinkElement =
-  "active:ring-2 active:ring-[var(--survey-dark-color)] active:bg-white active:text-black"
+  "active:ring-2 active:ring-(--survey-dark-color) active:bg-white active:text-black"
 
 // WHITE BUTTON
 // for link elements
@@ -45,14 +44,14 @@ export const surveyWhiteButtonStyles = clsx(
 // for link elements
 export const primaryColorButtonStylesForLinkElement = clsx(
   buttonBase,
-  "bg-[var(--survey-primary-color)] text-white",
+  "bg-(--survey-primary-color) text-white",
   activeStylePrimaryColorLinkElement,
 )
 // for button elements
 export const surveyPrimaryColorButtonStyles = clsx(
   buttonBase,
-  "bg-[var(--survey-primary-color)] enabled:text-white",
-  "disabled:bg-[var(--survey-light-color)] disabled:text-white",
+  "bg-(--survey-primary-color) enabled:text-white",
+  "disabled:bg-(--survey-light-color) disabled:text-white",
   activeStylePrimaryColorButtonElement,
 )
 

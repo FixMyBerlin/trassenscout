@@ -54,7 +54,7 @@ export const SubsubsectionStatussWithData = () => {
             <tr>
               <th
                 scope="col"
-                className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
               >
                 Kurz-Titel
               </th>
@@ -76,17 +76,17 @@ export const SubsubsectionStatussWithData = () => {
             {subsubsectionStatuss.map((status) => {
               return (
                 <tr key={status.id}>
-                  <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                  <td className="py-4 pr-3 pl-4 text-sm whitespace-nowrap sm:pl-6">
                     <strong className="font-semibold">{shortTitle(status.slug)}</strong>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
                     <strong className="font-semibold">{status.title}</strong>
                   </td>
                   <td className="px-3 py-4 text-sm text-gray-500">
                     {status.subsubsectionCount}{" "}
                     {status.subsubsectionCount > 1 ? "Maßnahmen" : "Maßnahme"}
                   </td>
-                  <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
+                  <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
                     <IfUserCanEdit>
                       <ButtonWrapper className="justify-end">
                         <Link

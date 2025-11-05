@@ -63,7 +63,7 @@ export const MarkdownMail = ({
                 <Section className="my-5 flex items-center justify-center text-center">
                   <center>
                     <Button
-                      className="block min-w-52 rounded bg-blue-500 px-4 py-3.5 text-center font-sans text-base text-white no-underline"
+                      className="block min-w-52 rounded-sm bg-blue-500 px-4 py-3.5 text-center font-sans text-base text-white no-underline"
                       href={ctaLink}
                     >
                       {ctaText}
@@ -87,7 +87,7 @@ export const MarkdownMail = ({
               ) : null}
             </Section>
             <Hr />
-            <Section className="px-9 pb-6 pt-4">
+            <Section className="px-9 pt-4 pb-6">
               <Markdown
                 markdownCustomStyles={{
                   h1,

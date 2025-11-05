@@ -67,9 +67,9 @@ export const Notice: React.FC<Props> = ({ type, title, children, actionText, act
   const { icon, wrapperClass, titleClasses, textClasses, actionClasses } = typeConfig[type]
 
   return (
-    <div className={clsx(wrapperClass, "mb-5 rounded-md border p-4")}>
+    <div className={clsx(wrapperClass, "mb-5 rounded-md border border-gray-200 p-4")}>
       <div className="flex">
-        <div className="flex-shrink-0">{icon}</div>
+        <div className="shrink-0">{icon}</div>
 
         <div className="ml-3">
           <h3 className={clsx(titleClasses, "text-sm font-medium")}>{title}</h3>
@@ -85,7 +85,7 @@ export const Notice: React.FC<Props> = ({ type, title, children, actionText, act
                   type="button"
                   className={clsx(
                     actionClasses,
-                    "rounded-md px-2 py-1.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2",
+                    "rounded-md px-2 py-1.5 text-sm font-medium focus:ring-2 focus:ring-offset-2 focus:outline-hidden",
                   )}
                   onClick={action}
                 >

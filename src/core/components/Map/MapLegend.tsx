@@ -49,7 +49,7 @@ export const MapLegend = ({ legendItemsConfig }: LegendProps) => {
               <span className="relative h-2.5 w-8">
                 {item.dots && <LegendDots />}
                 <span
-                  className="absolute top-px h-2 w-8 rounded border border-gray-500 bg-blue-500"
+                  className="absolute top-px h-2 w-8 rounded-sm border border-gray-500 bg-blue-500"
                   style={{ backgroundColor: item.color }}
                 />
               </span>
@@ -73,11 +73,11 @@ export const MapLegend = ({ legendItemsConfig }: LegendProps) => {
                   style={{ backgroundColor: item.secondColor }}
                 />
                 <span
-                  className="absolute left-2.5 top-px h-2 w-1"
+                  className="absolute top-px left-2.5 h-2 w-1"
                   style={{ backgroundColor: item.secondColor }}
                 />
                 <span
-                  className="absolute left-5 top-px h-2 w-1"
+                  className="absolute top-px left-5 h-2 w-1"
                   style={{ backgroundColor: item.secondColor }}
                 />
               </span>
@@ -88,7 +88,7 @@ export const MapLegend = ({ legendItemsConfig }: LegendProps) => {
         if (item.shape === "circle") {
           return (
             <LegendItem text={item.text} key={item.text}>
-              <span className="relative size-[18px] flex-shrink-0">
+              <span className="relative size-[18px] shrink-0">
                 <span
                   className="absolute inline-block size-[18px] rounded-full border-[3px]"
                   style={{ borderColor: item.color }}

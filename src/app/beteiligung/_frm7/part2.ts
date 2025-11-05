@@ -135,7 +135,7 @@ export const part2Config: SurveyPart2 = {
                 },
                 irrelevant: {
                   label: "Bereits beschlossene Strecke (außerhalb von Frankfurt)",
-                  color: "bg-[#000]",
+                  color: "bg-black",
                   className: "h-[5px]",
                 },
                 blockedArea: {

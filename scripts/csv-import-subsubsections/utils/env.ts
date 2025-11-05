@@ -1,7 +1,7 @@
 export type Environment = "dev" | "staging" | "production"
 
 export const apiUrls = {
-  dev: "http://localhost:6173",
+  dev: "http://127.0.0.1:6173",
   staging: "https://staging.trassenscout.de",
   production: "https://trassenscout.de",
 }

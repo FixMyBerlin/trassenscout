@@ -53,9 +53,8 @@ const NewContactPage: BlitzPage = () => {
         <NewContactWithQuery />
       </Suspense>
 
-      <p className="mt-5">
-        <Link href={Routes.ContactsPage({ projectSlug })}>Zurück zur Kontaktliste</Link>
-      </p>
+      <hr className="my-5 text-gray-200" />
+      <Link href={Routes.ContactsPage({ projectSlug })}>Zurück zur Kontaktliste</Link>
     </LayoutRs>
   )
 }

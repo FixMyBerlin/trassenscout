@@ -13,7 +13,7 @@ import { de } from "date-fns/locale"
 export const ProjectRecordReviewStatePill = ({ state }: { state: ProjectRecordReviewState }) => (
   <span
     className={clsx(
-      "inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium",
+      "inline-flex items-center rounded-full border border-gray-200 px-2 py-0.5 text-xs font-medium",
       {
         [ProjectRecordReviewState.NEEDSREVIEW]: "border-yellow-200 bg-yellow-100 text-yellow-800",
         [ProjectRecordReviewState.NEEDSADMINREVIEW]:
@@ -46,7 +46,7 @@ export const AdminProjectRecordsTable = ({
               <div
                 className={clsx(
                   spaceClasses,
-                  "text-left text-sm font-semibold uppercase text-gray-900",
+                  "text-left text-sm font-semibold text-gray-900 uppercase",
                 )}
               >
                 ID
@@ -54,7 +54,7 @@ export const AdminProjectRecordsTable = ({
               <div
                 className={clsx(
                   spaceClasses,
-                  "text-left text-sm font-semibold uppercase text-gray-900",
+                  "text-left text-sm font-semibold text-gray-900 uppercase",
                 )}
               >
                 Datum
@@ -62,7 +62,7 @@ export const AdminProjectRecordsTable = ({
               <div
                 className={clsx(
                   spaceClasses,
-                  "col-span-2 text-left text-sm font-semibold uppercase text-gray-900",
+                  "col-span-2 text-left text-sm font-semibold text-gray-900 uppercase",
                 )}
               >
                 Titel
@@ -70,7 +70,7 @@ export const AdminProjectRecordsTable = ({
               <div
                 className={clsx(
                   spaceClasses,
-                  "text-left text-sm font-semibold uppercase text-gray-900",
+                  "text-left text-sm font-semibold text-gray-900 uppercase",
                 )}
               >
                 Projekt
@@ -78,7 +78,7 @@ export const AdminProjectRecordsTable = ({
               <div
                 className={clsx(
                   spaceClasses,
-                  "text-left text-sm font-semibold uppercase text-gray-900",
+                  "text-left text-sm font-semibold text-gray-900 uppercase",
                 )}
               >
                 Review

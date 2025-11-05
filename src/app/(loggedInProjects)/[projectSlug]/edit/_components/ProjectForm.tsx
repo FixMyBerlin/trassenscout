@@ -33,7 +33,7 @@ export const ProjectForm = ({ users, ...props }: Props) => {
         label="Logo"
         placeholder="beispiel.png"
       /> */}
-      {/* <p className="!mt-1 text-sm text-gray-500">
+      {/* <p className="mt-1! text-sm text-gray-500">
         Das Logo wird von FixMyCity{" "}
         <Link
           href="https://s3.console.aws.amazon.com/s3/buckets/trassenscout-public?prefix=assets/&region=eu-central-1"
@@ -51,7 +51,7 @@ export const ProjectForm = ({ users, ...props }: Props) => {
         label="Partner-Logos (ein Logo pro Zeile)"
         placeholder="beispiel.png"
       />
-      <p className="!mt-1 text-sm text-gray-500">
+      <p className="mt-1! text-sm text-gray-500">
         Die Logos werden von FixMyCity{" "}
         <Link
           href="https://s3.console.aws.amazon.com/s3/buckets/trassenscout-public?prefix=assets/&region=eu-central-1"

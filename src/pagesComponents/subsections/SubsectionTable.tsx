@@ -2,6 +2,7 @@ import { SubsectionIcon } from "@/src/core/components/Map/Icons"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
 import { shortTitle } from "@/src/core/components/text"
+import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { startEnd } from "@/src/core/components/text/startEnd"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
@@ -58,13 +59,13 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                   className="group cursor-pointer hover:bg-gray-50"
                   onClick={() => router.push(route)}
                 >
-                  <td className="h-20 w-20 whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                  <td className="h-20 w-20 py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
                     <SubsectionIcon label={shortTitle(subsection.slug)} />
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-blue-500 group-hover:text-blue-800">
+                  <td className="py-4 pr-3 pl-4 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                     {startEnd(subsection)}
                   </td>
-                  <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
+                  <td className="py-4 pr-3 pl-4 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
                     {subsection.operator?.title || "–"}{" "}
                     {subsection.operator?.slug && (
                       <span className="uppercase">({subsection.operator?.slug})</span>
@@ -72,12 +73,12 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                   </td>
                   <td
                     className={clsx(
-                      "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 group-hover:bg-gray-50",
+                      "py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 group-hover:bg-gray-50",
                     )}
                   >
                     {subsection.SubsectionStatus?.title || "–"}
                   </td>
-                  <td className="break-words py-4 pl-3 pr-4 text-sm font-medium sm:pr-6">
+                  <td className="py-4 pr-4 pl-3 text-sm font-medium wrap-break-word sm:pr-6">
                     {subsection.estimatedCompletionDateString || "–"}
                   </td>
                 </tr>
@@ -85,11 +86,7 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
             })}
           </tbody>
         </table>
-        {!subsections.length && (
-          <div className="border-t px-3 py-5 text-center text-gray-500">
-            Noch keine Planungsabschnitte angelegt
-          </div>
-        )}
+        {!subsections.length && <ZeroCase visible name="Planungsabschnitte" />}
       </TableWrapper>
 
       {createButton && (

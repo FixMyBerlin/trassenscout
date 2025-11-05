@@ -33,7 +33,7 @@ export const UploadTable = ({ uploads, withAction = true, withSubsectionColumn =
           <tr>
             <th
               scope="col"
-              className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
             >
               Titel
             </th>
@@ -57,33 +57,33 @@ export const UploadTable = ({ uploads, withAction = true, withSubsectionColumn =
           {uploads.map((upload) => {
             return (
               <tr key={upload.id}>
-                <td className="py-4 pl-4 pr-3 text-sm sm:pl-6">
+                <td className="py-4 pr-3 pl-4 text-sm sm:pl-6">
                   <Link blank href={uploadUrl(upload)} className="flex items-center gap-2">
                     <PaperClipIcon className="h-6 w-6 text-gray-500" />
                     <strong className="font-semibold">{upload.title}</strong>{" "}
                   </Link>
                   <div className="flex flex-col">
                     {upload.summary && (
-                      <details className="mb-1 mt-2">
+                      <details className="mt-2 mb-1">
                         <summary className="cursor-pointer text-xs text-gray-600 hover:text-gray-800">
                           Zusammenfassung
                         </summary>
-                        <div className="mt-1 whitespace-normal text-xs text-gray-700">
+                        <div className="mt-1 text-xs whitespace-normal text-gray-700">
                           <Markdown className="prose-sm" markdown={upload.summary} />
                         </div>
                       </details>
                     )}
                   </div>
                 </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
                   {upload.createdAt.toLocaleDateString()}
                 </td>
                 {withSubsectionColumn && (
-                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
                     {upload.subsection && `${upload.subsection.start}–${upload.subsection.end}`}
                   </td>
                 )}
-                <td className="whitespace-nowrap py-4 text-sm font-medium sm:pr-6">
+                <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
                   <ButtonWrapper className="justify-end">
                     <Link blank icon="download" href={uploadUrl(upload)}>
                       Download

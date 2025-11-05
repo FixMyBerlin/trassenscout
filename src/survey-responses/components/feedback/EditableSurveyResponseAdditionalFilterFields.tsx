@@ -44,13 +44,13 @@ const EditableSurveyResponseAdditionalFilterFields = ({
   if (!additionalFilterFields?.length && !filteredPart2Responses.length) return null
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-2 md:max-w-screen-md">
+    <div className="rounded-lg border border-gray-200 bg-white p-2 md:max-w-(--breakpoint-md)">
       <table className="min-w-full">
         <tbody className="divide-y divide-gray-200 bg-white">
           {additionalFilterFields &&
             additionalFilterFields.map((item) => (
               <tr key={item.id}>
-                <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
                   {item.label}
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
