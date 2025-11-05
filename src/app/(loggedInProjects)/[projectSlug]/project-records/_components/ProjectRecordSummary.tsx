@@ -13,40 +13,38 @@ type ProjectRecordSummaryProps = {
 
 export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProps) => {
   return (
-    <div className="mt-7 space-y-4">
-      <div>
-        <span className="font-medium text-gray-500">am/bis: </span>
-        <span>{format(new Date(projectRecord.date!), "P", { locale: de })}</span>
-      </div>
-      <div>
-        <span className="font-medium text-gray-500">Titel: </span>
-        <span>{projectRecord.title}</span>
-      </div>
-      <div>
-        <div className="font-medium text-gray-500">Planungsabschnitt: </div>
+    <div className="my-6 space-y-6 font-medium">
+      <div className="grid max-w-3xl grid-cols-6 gap-3">
+        <span className="text-gray-500">am/bis: </span>
+        <span className="col-span-5">
+          {format(new Date(projectRecord.date!), "P", { locale: de })}
+        </span>
+
+        <span className="text-gray-500">Titel: </span>
+        <span className="col-span-5">{projectRecord.title}</span>
+
+        <div className="text-gray-500">Abschnitt: </div>
         {projectRecord.subsection ? (
           <Link
-            className="mt-2 inline-flex"
+            className="col-span-5 mt-2 inline-flex"
             href={`/${projectRecord.project.slug}/abschnitte/${projectRecord.subsection.slug}`}
           >
             <SubsectionIcon label={shortTitle(projectRecord.subsection.slug)} />
           </Link>
         ) : (
-          <span>Keine Angabe</span>
+          <span className="col-span-5">Keine Angabe</span>
         )}
-      </div>
 
-      <div>
-        <div className="font-medium text-gray-500">Eintrag: </div>
+        <div className="text-gray-500">Eintrag: </div>
         {projectRecord.subsubsection ? (
           <Link
-            className="mt-2 inline-flex"
+            className="col-span-5 mt-2 inline-flex"
             href={`/${projectRecord.project.slug}/abschnitte/${projectRecord.subsubsection.subsection.slug}/fuehrung/${projectRecord.subsubsection.slug}`}
           >
             <SubsubsectionIcon label={shortTitle(projectRecord.subsubsection.slug)} />
           </Link>
         ) : (
-          <span>Keine Angabe</span>
+          <span className="col-span-5">Keine Angabe</span>
         )}
       </div>
 
@@ -60,7 +58,7 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
       )}
 
       <div>
-        <p className="mb-2 font-medium text-gray-500">Tags: </p>
+        <p className="mb-3 text-gray-500">Tags: </p>
         {!!projectRecord.projectRecordTopics.length ? (
           <ul className="list-inside list-none space-y-1">
             {projectRecord.projectRecordTopics.map((topic) => (
@@ -81,7 +79,7 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
       </div>
 
       <div>
-        <p className="mb-2 font-medium text-gray-500">Verknüpfte Dokumente</p>
+        <p className="mr-2 mb-3 text-gray-500">Verknüpfte Dokumente</p>
         {!!projectRecord.uploads?.length ? (
           <ul className="list-inside list-disc space-y-1">
             {projectRecord.uploads.map((upload) => (
