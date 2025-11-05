@@ -1,8 +1,8 @@
 import db from "@/db"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
-import { m2mFields, type M2MFieldsType } from "@/src/server/subsubsections/m2mFields"
 import { ImportSubsubsectionDataSchema } from "@/src/server/subsubsections/importSchema"
+import { m2mFields, type M2MFieldsType } from "@/src/server/subsubsections/m2mFields"
 import { z } from "zod"
 import { withApiKey } from "../../_utils/withApiKey"
 
