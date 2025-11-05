@@ -185,14 +185,17 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
         ) : (
           <ZeroCase small visible name="Protokolleinträge" />
         )}
-        <Link
-          blank
-          button
-          icon="plus"
-          href={`/${projectSlug}/project-records?initialValues=${encodeURIComponent(JSON.stringify({ subsubsectionId: subsubsection.id }))}`}
-        >
-          Neuer Protokolleintrag
-        </Link>
+        <IfUserCanEdit>
+          <Link
+            blank
+            className="mt-4"
+            button
+            icon="plus"
+            href={`/${projectSlug}/project-records?initialValues=${encodeURIComponent(JSON.stringify({ subsubsectionId: subsubsection.id }))}`}
+          >
+            Neuer Protokolleintrag
+          </Link>
+        </IfUserCanEdit>
       </section>
 
       <section className="mt-10">
