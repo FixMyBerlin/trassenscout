@@ -16,7 +16,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="de" className={clsx(fontClasses, "h-full scroll-smooth")}>
-      <body className="flex min-h-full w-full flex-col text-gray-800 antialiased">
+      <body className="flex min-h-full w-full flex-col bg-white text-gray-800 antialiased">
         <BlitzProvider>
           <NuqsAdapter>
             <Suspense>
