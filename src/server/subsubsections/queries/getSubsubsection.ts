@@ -2,6 +2,7 @@ import db, { QualityLevel, Subsubsection, SubsubsectionTypeEnum, User } from "@/
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
+import { GeometryBySubsubsectionType } from "@/src/server/subsubsections/schema"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 import { m2mFields } from "../m2mFields"
@@ -16,16 +17,20 @@ const includeM2mFields = {}
 // @ts-ignore
 m2mFields.forEach((fieldName) => (includeM2mFields[fieldName] = { select: { id: true } }))
 
-// We lie with TypeScript here, because we know better. All `geometry` fields are Position. We make sure of that in our Form. They are also required, so never empty.
+// We store full GeoJSON geometry objects. The geometry type must match the enum type.
 export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry"> &
   (
     | {
-        type: typeof SubsubsectionTypeEnum.AREA
-        geometry: [number, number] // Position
+        type: typeof SubsubsectionTypeEnum.POINT
+        geometry: GeometryBySubsubsectionType<"POINT">
       }
     | {
-        type: typeof SubsubsectionTypeEnum.ROUTE
-        geometry: [number, number][] // Position[]
+        type: typeof SubsubsectionTypeEnum.LINE
+        geometry: GeometryBySubsubsectionType<"LINE">
+      }
+    | {
+        type: typeof SubsubsectionTypeEnum.POLYGON
+        geometry: GeometryBySubsubsectionType<"POLYGON">
       }
   ) & { manager: User } & { subsection: { slug: string } } & {
     qualityLevel?: Pick<QualityLevel, "title" | "slug" | "url">

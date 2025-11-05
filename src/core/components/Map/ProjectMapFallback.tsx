@@ -2,7 +2,7 @@ import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { SubsectionWithPositionAndStatus } from "@/src/server/subsections/queries/getSubsections"
 import { LngLatBoundsLike } from "react-map-gl/maplibre"
 import { BaseMap } from "./BaseMap"
-import { subsectionsBbox } from "./utils"
+import { subsectionsBbox } from "./utils/subsectionsBbox"
 
 type Props = { subsections: SubsectionWithPositionAndStatus[] }
 

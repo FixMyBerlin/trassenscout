@@ -10,7 +10,7 @@ import { SubsubsectionForm } from "@/src/pagesComponents/subsubsections/Subsubse
 import { SubsubsectionSchemaAdminBox } from "@/src/pagesComponents/subsubsections/SubsubsectionSchemaAdminBox"
 import getSubsection from "@/src/server/subsections/queries/getSubsection"
 import createSubsubsection from "@/src/server/subsubsections/mutations/createSubsubsection"
-import { SubsubsectionSchema } from "@/src/server/subsubsections/schema"
+import { SubsubsectionBaseSchema } from "@/src/server/subsubsections/schema"
 import { Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { LocationEnum } from "@prisma/client"
@@ -18,7 +18,7 @@ import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { z } from "zod"
 
-const NewSubsubsectionSchema = SubsubsectionSchema.omit({
+const NewSubsubsectionSchema = SubsubsectionBaseSchema.omit({
   subsectionId: true,
   location: true,
 }).extend({
@@ -39,7 +39,7 @@ const NewSubsubsection = () => {
   type HandleSubmit = z.infer<typeof NewSubsubsectionSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const subsubsection = await createSubsubsectionMutation({
+      const mutationPayload = {
         ...values,
         projectSlug,
         subsectionId: subsection!.id,
@@ -48,7 +48,9 @@ const NewSubsubsection = () => {
         estimatedCompletionDate: values.estimatedCompletionDate
           ? new Date(values.estimatedCompletionDate)
           : null,
-      })
+      }
+      const subsubsection = await createSubsubsectionMutation(mutationPayload)
+
       await router.push(
         Routes.SubsubsectionDashboardPage({
           projectSlug,
@@ -71,7 +73,7 @@ const NewSubsubsection = () => {
       />
 
       <SubsubsectionForm
-        initialValues={{ type: "ROUTE", labelPos: "bottom", location: "" }}
+        initialValues={{ type: "LINE", labelPos: "bottom", location: "" }}
         className="mt-10"
         submitText="Erstellen"
         schema={NewSubsubsectionSchema}

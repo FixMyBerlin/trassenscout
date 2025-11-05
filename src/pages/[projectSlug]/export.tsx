@@ -1,6 +1,6 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
-import { subsectionsBbox } from "@/src/core/components/Map/utils"
+import { subsectionsBbox } from "@/src/core/components/Map/utils/subsectionsBbox"
 import { Spinner } from "@/src/core/components/Spinner"
 import { whiteButtonStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"

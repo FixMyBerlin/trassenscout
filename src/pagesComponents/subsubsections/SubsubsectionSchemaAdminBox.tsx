@@ -8,7 +8,7 @@ import {
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getQualityLevelsWithCount from "@/src/server/qualityLevels/queries/getQualityLevelsWithCount"
 import getSubsubsectionInfrasWithCount from "@/src/server/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
-import { SubsubsectionSchema } from "@/src/server/subsubsections/schema"
+import { SubsubsectionBaseSchema } from "@/src/server/subsubsections/schema"
 import getSubsubsectionSpecialsWithCount from "@/src/server/subsubsectionSpecial/queries/getSubsubsectionSpecialsWithCount"
 import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
 import getSubsubsectionTasksWithCount from "@/src/server/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
@@ -23,8 +23,8 @@ type SubsubsectionSchemaAdminBoxProps = {
 
 // Extract all field names from the actual schema to ensure completeness
 const getAllSchemaFields = () => {
-  const schemaShape = SubsubsectionSchema.shape
-  return Object.keys(schemaShape) as (keyof z.infer<typeof SubsubsectionSchema>)[]
+  const schemaShape = SubsubsectionBaseSchema.shape
+  return Object.keys(schemaShape) as (keyof z.infer<typeof SubsubsectionBaseSchema>)[]
 }
 
 export const SubsubsectionSchemaAdminBox = ({

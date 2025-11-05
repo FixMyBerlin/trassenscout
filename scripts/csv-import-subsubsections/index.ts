@@ -63,7 +63,10 @@ async function main() {
     // Track unmatched columns
     if (unmatchedColumns.length > 0) {
       unmatchedColumns.forEach((col) => unmatchedColumnsSet.add(col))
-      console.log(`Row ${rowNum}: ⚠️  Unmatched columns: ${unmatchedColumns.join(", ")}`)
+      const filteredUnmatched = unmatchedColumns.filter((col) => col !== "type")
+      if (filteredUnmatched.length > 0) {
+        console.log(`Row ${rowNum}: ⚠️  Unmatched columns: ${filteredUnmatched.join(", ")}`)
+      }
     }
 
     // Inform about missing geometry (not an error - API will preserve existing or add fallback)
