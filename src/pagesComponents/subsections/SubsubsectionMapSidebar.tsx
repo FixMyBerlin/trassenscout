@@ -6,6 +6,7 @@ import { Link, whiteButtonStyles } from "@/src/core/components/links"
 import { PageDescription } from "@/src/core/components/pages/PageDescription"
 import { formattedEuro, formattedLength, shortTitle } from "@/src/core/components/text"
 import { H2 } from "@/src/core/components/text/Headings"
+import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
@@ -182,9 +183,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
         {projectRecords.length > 0 ? (
           <ProjectRecordsTable projectRecords={projectRecords} openLinksInNewTab />
         ) : (
-          <p className="mt-3 text-sm text-gray-500">
-            Es gibt noch keine Protokolleinträge für diesen Eintrag.
-          </p>
+          <ZeroCase small visible name="Protokolleinträge" />
         )}
         <Link
           blank
@@ -212,7 +211,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
             </Link>
           </IfUserCanEdit>
         </div>
-        {!uploads.length && <p>Es gibt noch keine Grafiken für diese Planung</p>}
+        {!uploads.length && <ZeroCase small visible name="Grafiken" />}
         <div className="grid grid-cols-2 gap-3">
           {uploads.map((upload) => {
             return (

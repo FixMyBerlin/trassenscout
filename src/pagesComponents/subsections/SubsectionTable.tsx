@@ -2,6 +2,7 @@ import { SubsectionIcon } from "@/src/core/components/Map/Icons"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
 import { shortTitle } from "@/src/core/components/text"
+import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { startEnd } from "@/src/core/components/text/startEnd"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
@@ -85,11 +86,7 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
             })}
           </tbody>
         </table>
-        {!subsections.length && (
-          <div className="border-t border-gray-200 px-3 py-5 text-center text-gray-500">
-            Noch keine Planungsabschnitte angelegt
-          </div>
-        )}
+        {!subsections.length && <ZeroCase visible name="Planungsabschnitte" />}
       </TableWrapper>
 
       {createButton && (
