@@ -1,0 +1,23 @@
+{
+  "name": "imap-listener",
+  "version": "0.0.1",
+  "description": "IMAP listener service for Trassenscout",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc && node --watch dist/index.js",
+    "dev:build": "tsc --watch"
+  },
+  "dependencies": {
+    "imapflow": "^1.0.170"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

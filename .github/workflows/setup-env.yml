@@ -67,4 +67,19 @@ jobs:
             LANGFUSE_SECRET_KEY='${{ secrets.LANGFUSE_SECRET_KEY }}'
             LANGFUSE_PUBLIC_KEY='${{ secrets.LANGFUSE_PUBLIC_KEY }}'
             LANGFUSE_BASEURL='${{ vars.LANGFUSE_BASEURL }}'
+
+            # IMAP Listener Configuration
+            IMAP_HOST='${{ vars.IMAP_HOST }}'
+            IMAP_PORT='${{ vars.IMAP_PORT }}'
+            IMAP_USER='${{ vars.IMAP_USER }}'
+            IMAP_PASSWORD='${{ secrets.IMAP_PASSWORD }}'
+            IMAP_SECURE='true'
+            IMAP_INBOX_FOLDER='INBOX'
+            IMAP_DONE_FOLDER='INBOX.DONE'
+            IMAP_ERROR_FOLDER='INBOX.ERROR'
+            TS_API_WEBHOOK_URL='http://app:3000/api/webhooks/process-mail'
+            API_TIMEOUT='30000'
+            MAIL_PROCESSING_DELAY='10000'
+            MAX_RETRIES='3'
+            HEALTH_PORT='3100'
             EOF

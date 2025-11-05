@@ -18,8 +18,15 @@ jobs:
     with:
       ENVIRONMENT: staging
 
+  deploy-imap-listener:
+    needs: setup_env
+    uses: ./.github/workflows/deploy-imap-listener.yml
+    secrets: inherit
+    with:
+      ENVIRONMENT: staging
+
   services:
-    needs: deploy-app
+    needs: [deploy-app, deploy-imap-listener]
     uses: ./.github/workflows/services.yml
     secrets: inherit
     with:
