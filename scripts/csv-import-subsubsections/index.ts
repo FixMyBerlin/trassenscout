@@ -66,6 +66,13 @@ async function main() {
       console.log(`Row ${rowNum}: ⚠️  Unmatched columns: ${unmatchedColumns.join(", ")}`)
     }
 
+    // Inform about missing geometry (not an error - API will preserve existing or add fallback)
+    if (!("geometry" in mappedData)) {
+      console.log(
+        `Row ${rowNum}: ℹ️  Geometry not provided - will preserve existing or use fallback`,
+      )
+    }
+
     // Validate with Zod schema
     const validationErrors = validateRow(mappedData)
     if (validationErrors) {

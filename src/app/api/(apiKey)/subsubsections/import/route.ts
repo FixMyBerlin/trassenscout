@@ -6,23 +6,28 @@ import { SubsubsectionSchema } from "@/src/server/subsubsections/schema"
 import { z } from "zod"
 import { withApiKey } from "../../_utils/withApiKey"
 
+// Shared schema for import data - used by both CSV script validation and API route
+export const ImportSubsubsectionDataSchema = SubsubsectionSchema.omit({ subsectionId: true })
+  .extend({
+    // Allow slug fields in addition to ID fields
+    qualityLevelSlug: z.string().optional(),
+    subsubsectionStatusSlug: z.string().optional(),
+    subsubsectionInfraSlug: z.string().optional(),
+    subsubsectionTaskSlug: z.string().optional(),
+  })
+  .extend({
+    // Allow geometry and type to be optional for imports
+    // Type is inferred from geometry in CSV script, so only set when geometry is provided
+    geometry: SubsubsectionSchema.shape.geometry.optional(),
+    type: SubsubsectionSchema.shape.type.optional(),
+  })
+
 const ImportSubsubsectionRequestSchema = z.object({
   projectSlug: z.string(),
   subsectionSlug: z.string(),
   slug: z.string(),
   userId: z.number(),
-  data: SubsubsectionSchema.omit({ subsectionId: true })
-    .extend({
-      // Allow slug fields in addition to ID fields
-      qualityLevelSlug: z.string().optional(),
-      subsubsectionStatusSlug: z.string().optional(),
-      subsubsectionInfraSlug: z.string().optional(),
-      subsubsectionTaskSlug: z.string().optional(),
-    })
-    .extend({
-      // Allow geometry to be optional for imports (empty = preserve existing)
-      geometry: SubsubsectionSchema.shape.geometry.optional(),
-    }),
+  data: ImportSubsubsectionDataSchema,
 })
 
 export const POST = withApiKey(async ({ request }) => {

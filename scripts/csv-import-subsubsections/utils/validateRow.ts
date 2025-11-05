@@ -1,15 +1,17 @@
-import { SubsubsectionSchema } from "@/src/server/subsubsections/schema"
+import { ImportSubsubsectionDataSchema } from "@/src/app/api/(apiKey)/subsubsections/import/route"
 import { z } from "zod"
 
 /**
- * Validates row data against the SubsubsectionSchema
+ * Validates row data against the ImportSubsubsectionDataSchema
  * Returns error details if validation fails, null if valid
+ * Uses the same schema as the API route to ensure consistency
  */
 export function validateRow(mappedData: Record<string, any>) {
   try {
     // Validate the data (without subsectionId, as it's set by the API)
+    // Use the same schema as the API route to ensure consistency
     const validationData = { ...mappedData, subsectionId: 1 } // Temporary, will be replaced by API
-    SubsubsectionSchema.parse(validationData)
+    ImportSubsubsectionDataSchema.parse(validationData)
     return null
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {

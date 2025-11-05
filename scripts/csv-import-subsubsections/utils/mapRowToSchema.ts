@@ -1,4 +1,8 @@
-import { SubsubsectionSchema } from "@/src/server/subsubsections/schema"
+import {
+  PositionArraySchema,
+  PositionSchema,
+  SubsubsectionSchema,
+} from "@/src/server/subsubsections/schema"
 import type { CsvRow } from "./parseCsv"
 
 /**
@@ -67,17 +71,32 @@ export function mapRowToSchema(row: CsvRow) {
         continue
       case "geometry": {
         // Parse JSON if string, otherwise pass on as-is
+        let geometry: unknown
         try {
-          mappedData.geometry = JSON.parse(csvValue)
+          geometry = JSON.parse(csvValue)
         } catch {
           // If JSON parse fails, pass through value - Zod will handle validation
-          mappedData.geometry = csvValue
+          geometry = csvValue
         }
+        mappedData.geometry = geometry
+
+        // Infer type from geometry: Point (AREA) vs LineString (ROUTE)
+        const pointResult = PositionSchema.safeParse(geometry)
+        const lineStringResult = PositionArraySchema.safeParse(geometry)
+        if (pointResult.success) {
+          mappedData.type = "AREA"
+        } else if (lineStringResult.success) {
+          mappedData.type = "ROUTE"
+        }
+        // If geometry is invalid, don't set type - let Zod validation handle it
         continue
       }
       case "type":
+        // Type is inferred from geometry - track as unmatched if provided
+        unmatchedColumns.push(csvKey)
+        continue
       case "location":
-        // Handle enums - normalize to uppercase
+        // Handle enum - normalize to uppercase
         mappedData[csvKey] = String(csvValue).toUpperCase().trim()
         continue
       case "labelPos":
@@ -143,9 +162,7 @@ export function mapRowToSchema(row: CsvRow) {
   }
 
   // Set required fields with defaults if not provided
-  if (!mappedData.type) {
-    mappedData.type = "AREA" // Fallback to AREA (Which is POINT)
-  }
+  // Type is inferred from geometry - only set when geometry is provided
   if (!mappedData.labelPos) {
     mappedData.labelPos = "top" // Default to top
   }
