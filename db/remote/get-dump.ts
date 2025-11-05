@@ -5,8 +5,8 @@
 
 import { $ } from "bun"
 import chalk from "chalk"
-import { checkDatabaseConnection, showSshTunnelInstructions } from "./db-helpers"
 import { statSync } from "node:fs"
+import { checkDatabaseConnection, showSshTunnelInstructions } from "./db-helpers"
 
 // Parse command line arguments
 const args = process.argv.slice(2)
@@ -84,7 +84,11 @@ try {
   if (size < MIN_DUMP_SIZE) {
     await $`rm -f ${tempDumpFile}`.quiet()
     console.error("")
-    console.error(chalk.red(`❌ Dump file is too small (${(size / 1024 / 1024).toFixed(2)} MB). Expected at least 3 MB.`))
+    console.error(
+      chalk.red(
+        `❌ Dump file is too small (${(size / 1024 / 1024).toFixed(2)} MB). Expected at least 3 MB.`,
+      ),
+    )
     console.error(chalk.red("   pg_dump may have failed silently."))
     console.error("")
     throw new Error("Dump file is too small")
