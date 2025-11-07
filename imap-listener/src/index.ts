@@ -17,11 +17,11 @@ type ServiceStatus = {
 let serviceStatus: ServiceStatus = {
   isHealthy: false,
   lastCheck: null,
-  error: null
-};
+  error: null,
+}
 
-let client: ImapFlow | null = null;
-let isProcessing = false;
+let client: ImapFlow | null = null
+let isProcessing = false
 
 /**
  * Process unseen emails in inbox (TEST implementation)
@@ -29,15 +29,15 @@ let isProcessing = false;
  */
 async function processUnseenMails(client: ImapFlow): Promise<void> {
   if (isProcessing) {
-    log.info('Already processing mails, skipping...');
-    return;
+    log.info("Already processing mails, skipping...")
+    return
   }
 
-  isProcessing = true;
+  isProcessing = true
 
   try {
     // Lock and open inbox
-    const lock = await client.getMailboxLock(config.folders.inbox);
+    const lock = await client.getMailboxLock(config.folders.inbox)
 
     try {
       // Search for unseen messages
@@ -96,26 +96,25 @@ async function processUnseenMails(client: ImapFlow): Promise<void> {
     } finally {
       lock.release()
     }
-
   } catch (error) {
-    log.error('Error processing unseen mails', error);
+    log.error("Error processing unseen mails", error)
   } finally {
-    isProcessing = false;
+    isProcessing = false
   }
 }
 
 async function verifyImapFolders(client: ImapFlow): Promise<boolean> {
   try {
-    log.info('Verifying IMAP folder structure...');
+    log.info("Verifying IMAP folder structure...")
 
     const mailboxes: ListResponse[] = await client.list()
     const existingFolders = mailboxes.map((mb) => mb.path)
 
-    log.info('Available IMAP folders', { availableFolders: existingFolders });
+    log.info("Available IMAP folders", { availableFolders: existingFolders })
 
     const requiredFolders = [config.folders.inbox, config.folders.done, config.folders.error]
 
-    const missingFolders = requiredFolders.filter(folder => !existingFolders.includes(folder));
+    const missingFolders = requiredFolders.filter((folder) => !existingFolders.includes(folder))
 
     if (missingFolders.length > 0) {
       log.error("Required IMAP folders are missing", new Error("Missing folders"), {
@@ -126,11 +125,11 @@ async function verifyImapFolders(client: ImapFlow): Promise<boolean> {
       return false
     }
 
-    log.success('All required IMAP folders exist');
-    return true;
+    log.success("All required IMAP folders exist")
+    return true
   } catch (error) {
-    log.error('Error verifying IMAP folders', error);
-    return false;
+    log.error("Error verifying IMAP folders", error)
+    return false
   }
 }
 
@@ -221,15 +220,15 @@ async function shutdown(): Promise<void> {
   process.exit(0)
 }
 
-process.on('SIGTERM', shutdown);
-process.on('SIGINT', shutdown);
+process.on("SIGTERM", shutdown)
+process.on("SIGINT", shutdown)
 
-process.on('unhandledRejection', (reason) => {
-  log.error('Unhandled Promise Rejection', reason);
-  shutdown();
-});
+process.on("unhandledRejection", (reason) => {
+  log.error("Unhandled Promise Rejection", reason)
+  shutdown()
+})
 
 startImapListener().catch((error) => {
-  log.error('Fatal error during startup', error);
-  process.exit(1);
-});
+  log.error("Fatal error during startup", error)
+  process.exit(1)
+})

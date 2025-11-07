@@ -26,7 +26,6 @@ Erstelle dafür aus der `.env.example` eine die `.env` Datei für das lokale Set
 - **Retries**: Versuchsanzahl, Fehlergrund
 - **Fehler**: Vollständige Error-Objekte mit Stack-Trace
 
-
 ## Health Check
 
 Der Service stellt einen HTTP-Endpoint auf Port 3100 bereit:
@@ -36,6 +35,7 @@ GET /health
 ```
 
 Response:
+
 ```json
 {
   "status": "ok",

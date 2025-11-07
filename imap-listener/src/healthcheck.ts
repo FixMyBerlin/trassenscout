@@ -2,7 +2,7 @@
  * Health Check Server
  */
 
-import http, { type IncomingMessage, type ServerResponse } from 'http';
+import http, { type IncomingMessage, type ServerResponse } from "http"
 import { config, getMailboxStats, log } from "./helpers/index.js"
 
 const port = config.health.port

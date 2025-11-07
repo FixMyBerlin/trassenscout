@@ -2,8 +2,8 @@
  * IMAP Helper Functions
  */
 
-import { ImapFlow, type ImapFlowOptions } from 'imapflow';
-import { config } from './config.js';
+import { ImapFlow, type ImapFlowOptions } from "imapflow"
+import { config } from "./config.js"
 
 /**
  * Creates an IMAP client with the configured settings
@@ -17,60 +17,60 @@ export function createImapClient(): ImapFlow {
       user: config.imap.auth.user,
       pass: config.imap.auth.pass,
     },
-  };
+  }
 
-  return new ImapFlow(imapConfig);
+  return new ImapFlow(imapConfig)
 }
 
 /**
  * Gets mailbox statistics (unseen in inbox and total in error folder)
  */
 export async function getMailboxStats() {
-  let client: ImapFlow | null = null;
+  let client: ImapFlow | null = null
 
   try {
-    client = createImapClient();
-    await client.connect();
+    client = createImapClient()
+    await client.connect()
 
     // Get unseen count in INBOX
-    let lock = await client.getMailboxLock(config.folders.inbox);
-    let inboxUnseen = 0;
+    let lock = await client.getMailboxLock(config.folders.inbox)
+    let inboxUnseen = 0
     try {
-      const unseenMessages = await client.search({ seen: false });
-      inboxUnseen = unseenMessages === false ? 0 : unseenMessages.length;
+      const unseenMessages = await client.search({ seen: false })
+      inboxUnseen = unseenMessages === false ? 0 : unseenMessages.length
     } finally {
-      lock.release();
+      lock.release()
     }
 
     // Get message count in ERROR folder
-    let errorCount = 0;
+    let errorCount = 0
     try {
-      lock = await client.getMailboxLock(config.folders.error);
+      lock = await client.getMailboxLock(config.folders.error)
       try {
-        const status = await client.status(config.folders.error, { messages: true });
-        errorCount = status.messages || 0;
+        const status = await client.status(config.folders.error, { messages: true })
+        errorCount = status.messages || 0
       } finally {
-        lock.release();
+        lock.release()
       }
     } catch (error) {
       // Error folder might not exist, that's okay
-      console.error('Could not access ERROR folder:', error);
+      console.error("Could not access ERROR folder:", error)
     }
 
-    await client.logout();
+    await client.logout()
 
     return {
       inboxUnseen,
       errorCount,
-    };
+    }
   } catch (error) {
     if (client) {
       try {
-        await client.logout();
+        await client.logout()
       } catch (logoutError) {
         // Ignore logout errors
       }
     }
-    throw error;
+    throw error
   }
 }

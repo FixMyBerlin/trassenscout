@@ -4,26 +4,26 @@
 
 export type Config = {
   imap: {
-    host: string;
-    port: number;
-    secure: boolean;
+    host: string
+    port: number
+    secure: boolean
     auth: {
-      user: string;
-      pass: string;
-    };
-  };
+      user: string
+      pass: string
+    }
+  }
   folders: {
-    inbox: string;
-    done: string;
-    error: string;
-  };
+    inbox: string
+    done: string
+    error: string
+  }
   processing: {
-    delay: number;
-    maxRetries: number;
-  };
+    delay: number
+    maxRetries: number
+  }
   health: {
-    port: number;
-  };
+    port: number
+  }
 }
 
 export const config: Config = {
@@ -48,4 +48,4 @@ export const config: Config = {
   health: {
     port: 3100,
   },
-};
+}
