@@ -6,8 +6,8 @@ import { lineString } from "@turf/helpers"
 import { bbox, featureCollection } from "@turf/turf"
 import { Feature, Geometry } from "geojson"
 import { useRouter } from "next/router"
-import { useState } from "react"
-import { LngLatBoundsLike, MapLayerMouseEvent, Marker } from "react-map-gl/maplibre"
+import { useMemo, useState } from "react"
+import { MapLayerMouseEvent, Marker } from "react-map-gl/maplibre"
 import { useSlug } from "../../routes/usePagesDirectorySlug"
 import { shortTitle } from "../text"
 import { BaseMap } from "./BaseMap"
@@ -36,6 +36,43 @@ export const SubsectionSubsubsectionMap = ({
   const projectSlug = useProjectSlug()
   const router = useRouter()
 
+  /**
+   * Calculates bbox including subsection and optionally a subsubsection
+   */
+  const calculateBbox = (
+    subsectionGeometry: number[][],
+    subsubsection: SubsubsectionWithPosition | undefined,
+  ) => {
+    const geometriesToInclude: Feature<Geometry>[] = [lineString(subsectionGeometry)]
+
+    if (subsubsection) {
+      // Convert subsubsection geometry to features using existing helpers
+      switch (subsubsection.geometry.type) {
+        case "Point": {
+          const feature = pointToGeoJSON(subsubsection.geometry)
+          if (feature) geometriesToInclude.push(feature)
+          break
+        }
+        case "LineString":
+        case "MultiLineString": {
+          const features = lineStringToGeoJSON(subsubsection.geometry)
+          if (features) geometriesToInclude.push(...features)
+          break
+        }
+        case "Polygon":
+        case "MultiPolygon": {
+          const features = polygonToGeoJSON(subsubsection.geometry)
+          if (features) geometriesToInclude.push(...features)
+          break
+        }
+      }
+    }
+
+    // Calculate combined bbox from all geometries
+    const combinedFeatures = featureCollection(geometriesToInclude)
+    return bbox(combinedFeatures)
+  }
+
   type HandleSelectProps = { subsectionSlug: string; subsubsectionSlug: string; edit: boolean }
   const handleSelect = ({ subsectionSlug, subsubsectionSlug, edit }: HandleSelectProps) => {
     if (!projectSlug) return
@@ -55,6 +92,24 @@ export const SubsectionSubsubsectionMap = ({
     const subsubsectionSlug = e.features?.at(0)?.properties?.subsubsectionSlug
     if (subsectionSlug && subsubsectionSlug) {
       handleSelect({ subsectionSlug, subsubsectionSlug, edit: e.originalEvent?.altKey })
+
+      // Fly to bounds of clicked subsubsection
+      const map = e.target
+      if (map) {
+        const clickedSubsubsection = subsubsections.find(
+          (subsub) => subsub.slug === subsubsectionSlug,
+        )
+        if (clickedSubsubsection) {
+          const bboxResult = calculateBbox(selectedSubsection.geometry, clickedSubsubsection)
+
+          // Fly to new bounds
+          map.fitBounds([bboxResult[0], bboxResult[1], bboxResult[2], bboxResult[3]], {
+            padding: 60,
+            duration: 1000,
+            linear: false, // Use easeInOut animation
+          })
+        }
+      }
     }
   }
 
@@ -68,38 +123,13 @@ export const SubsectionSubsubsectionMap = ({
     setHoveredMap(null)
   }
 
-  // Calculate bbox including subsection and selected subsubsection if present
-  const geometriesToInclude: Feature<Geometry>[] = [lineString(selectedSubsection.geometry)]
-  const selectedSubsubsection = subsubsections.find(
-    (subsub) => subsub.slug === pageSubsubsectionSlug,
-  )
-  if (selectedSubsubsection) {
-    // Convert subsubsection geometry to features using existing helpers
-    switch (selectedSubsubsection.geometry.type) {
-      case "Point": {
-        const feature = pointToGeoJSON(selectedSubsubsection.geometry)
-        if (feature) geometriesToInclude.push(feature)
-        break
-      }
-      case "LineString":
-      case "MultiLineString": {
-        const features = lineStringToGeoJSON(selectedSubsubsection.geometry)
-        if (features) geometriesToInclude.push(...features)
-        break
-      }
-      case "Polygon":
-      case "MultiPolygon": {
-        const features = polygonToGeoJSON(selectedSubsubsection.geometry)
-        if (features) geometriesToInclude.push(...features)
-        break
-      }
-    }
-  }
-
-  // Calculate combined bbox from all geometries
-  const combinedFeatures = featureCollection(geometriesToInclude)
-  const [minX, minY, maxX, maxY] = bbox(combinedFeatures)
-  const mapBounds: LngLatBoundsLike = [minX, minY, maxX, maxY]
+  // Calculate bbox including subsection and selected subsubsection if present (for initial view)
+  const mapBbox = useMemo(() => {
+    const selectedSubsubsection = subsubsections.find(
+      (subsub) => subsub.slug === pageSubsubsectionSlug,
+    )
+    return calculateBbox(selectedSubsection.geometry, selectedSubsubsection)
+  }, [selectedSubsection.geometry, subsubsections, pageSubsubsectionSlug])
 
   const lines = featureCollection(
     subsections
@@ -241,7 +271,7 @@ export const SubsectionSubsubsectionMap = ({
       <BaseMap
         id="mainMap"
         initialViewState={{
-          bounds: mapBounds,
+          bounds: [mapBbox[0], mapBbox[1], mapBbox[2], mapBbox[3]],
           fitBoundsOptions: { padding: 60 },
         }}
         onClick={handleClickMap}
