@@ -33,27 +33,27 @@ interface Config {
 
 const config: Config = {
   imap: {
-    host: process.env.IMAP_HOST || 'localhost',
-    port: parseInt(process.env.IMAP_PORT || '993'),
-    secure: process.env.IMAP_SECURE === 'true',
+    host: process.env.IMAP_HOST || "localhost",
+    port: parseInt(process.env.IMAP_PORT || "993"),
+    secure: process.env.IMAP_SECURE === "true",
     auth: {
-      user: process.env.IMAP_USER || '',
-      pass: process.env.IMAP_PASSWORD || ''
-    }
+      user: process.env.IMAP_USER || "",
+      pass: process.env.IMAP_PASSWORD || "",
+    },
   },
   folders: {
-    inbox: process.env.IMAP_INBOX_FOLDER || 'INBOX',
-    done: process.env.IMAP_DONE_FOLDER || 'INBOX.DONE',
-    error: process.env.IMAP_ERROR_FOLDER || 'INBOX.ERROR'
+    inbox: "INBOX",
+    done: "INBOX.DONE",
+    error: "INBOX.ERROR",
   },
   processing: {
-    delay: parseInt(process.env.MAIL_PROCESSING_DELAY || '10000'),
-    maxRetries: parseInt(process.env.MAX_RETRIES || '3')
+    delay: 10000, // 10 seconds delay between processing messages
+    maxRetries: 3,
   },
   health: {
-    port: parseInt(process.env.HEALTH_CHECK_PORT || '3100')
-  }
-};
+    port: 3100,
+  },
+}
 
 const log = {
   info: (message: string, data: Record<string, unknown> = {}) => {

@@ -4,7 +4,7 @@
 
 import http, { type IncomingMessage, type ServerResponse } from 'http';
 
-const port = parseInt(process.env.HEALTH_CHECK_PORT || '3100');
+const port = 3100
 
 http.createServer((req: IncomingMessage, res: ServerResponse) => {
   if (req.url === '/health') {

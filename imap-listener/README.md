@@ -11,11 +11,11 @@ Long-running Node.js Service, der ein IMAP-Postfach überwacht und neue E-Mails 
   - API-Call an TS-API (Webhook)
   - Bei Erfolg → Mail als SEEN markieren + Move zu `/DONE`
   - Bei Fehler → Retry → Mail als SEEN markieren + Move zu `/ERROR`
-- **Optional**: 30 Sekunden Delay zwischen Aufträgen zur API-Entlastung
+- **Verarbeitung**: 10 Sekunden Delay zwischen Aufträgen zur API-Entlastung
 
 ## Konfiguration
 
-Die Konfiguration findet in `.env` statt bzw. über GtiHub Secrets statt.
+Die Konfiguration findet in `.env` statt bzw. über GitHub Secrets statt.
 Erstelle dafür aus der `.env.example` eine die `.env` Datei für das lokale Setup.
 
 ### Log-Ereignisse
