@@ -29,7 +29,7 @@ let isProcessing = false
  * Process unseen emails in inbox (TEST implementation)
  * TODO: Replace with actual API call logic in #2772
  */
-async function processUnseenMails(client: ImapFlow): Promise<void> {
+async function processUnseenMails(client: ImapFlow) {
   if (isProcessing) {
     log.info("Already processing mails, skipping...")
     return
@@ -105,7 +105,7 @@ async function processUnseenMails(client: ImapFlow): Promise<void> {
   }
 }
 
-async function verifyImapFolders(client: ImapFlow): Promise<boolean> {
+async function verifyImapFolders(client: ImapFlow) {
   try {
     log.info("Verifying IMAP folder structure...")
 
@@ -115,9 +115,7 @@ async function verifyImapFolders(client: ImapFlow): Promise<boolean> {
     log.info("Available IMAP folders", { availableFolders: existingFolders })
 
     const requiredFolders = [config.folders.inbox, config.folders.done, config.folders.error]
-
     const missingFolders = requiredFolders.filter((folder) => !existingFolders.includes(folder))
-
     if (missingFolders.length > 0) {
       log.error("Required IMAP folders are missing", new Error("Missing folders"), {
         missingFolders,
@@ -135,7 +133,7 @@ async function verifyImapFolders(client: ImapFlow): Promise<boolean> {
   }
 }
 
-async function startImapListener(): Promise<void> {
+async function startImapListener() {
   try {
     log.info("Starting IMAP Listener Service", {
       host: config.imap.host,
@@ -207,7 +205,7 @@ async function startImapListener(): Promise<void> {
   }
 }
 
-async function shutdown(): Promise<void> {
+async function shutdown() {
   log.info("Shutting down gracefully...")
 
   if (client) {
