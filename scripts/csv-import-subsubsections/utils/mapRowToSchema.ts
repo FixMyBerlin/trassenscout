@@ -5,6 +5,7 @@ import {
   PointGeometrySchema,
   PolygonGeometrySchema,
 } from "@/src/core/utils/geojson-schemas"
+import { FeatureSchema } from "@/src/server/subsections/schema"
 import { SubsubsectionBaseSchema } from "@/src/server/subsubsections/schema"
 import type { CsvRow } from "./parseCsv"
 
@@ -74,13 +75,26 @@ export function mapRowToSchema(row: CsvRow) {
         continue
       case "geometry": {
         // Parse JSON if string, otherwise pass on as-is
-        let geometry: unknown
+        let parsed: unknown
         try {
-          geometry = JSON.parse(csvValue)
+          parsed = JSON.parse(csvValue)
         } catch {
           // If JSON parse fails, pass through value - Zod will handle validation
-          geometry = csvValue
+          parsed = csvValue
         }
+
+        // First, try to parse as GeoJSON Feature
+        const featureResult = FeatureSchema.safeParse(parsed)
+        let geometry: unknown
+
+        if (featureResult.success) {
+          // It's a Feature - extract geometry
+          geometry = featureResult.data.geometry
+        } else {
+          // Not a Feature - treat as direct geometry
+          geometry = parsed
+        }
+
         mappedData.geometry = geometry
 
         // Infer type from GeoJSON geometry: Point (POINT), LineString/MultiLineString (LINE), Polygon/MultiPolygon (POLYGON)
