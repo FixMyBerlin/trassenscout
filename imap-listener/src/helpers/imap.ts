@@ -2,24 +2,14 @@
  * IMAP Helper Functions
  */
 
-import { ImapFlow, type ImapFlowOptions } from "imapflow"
+import { ImapFlow } from "imapflow"
 import { config } from "./config"
 
 /**
  * Creates an IMAP client with the configured settings
  */
-export function createImapClient(): ImapFlow {
-  const imapConfig: ImapFlowOptions = {
-    host: config.imap.host,
-    port: config.imap.port,
-    secure: config.imap.secure,
-    auth: {
-      user: config.imap.auth.user,
-      pass: config.imap.auth.pass,
-    },
-  }
-
-  return new ImapFlow(imapConfig)
+export function createImapClient() {
+  return new ImapFlow(config.imap)
 }
 
 /**
