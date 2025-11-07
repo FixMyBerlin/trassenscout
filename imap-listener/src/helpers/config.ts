@@ -2,31 +2,7 @@
  * Shared Configuration
  */
 
-export type Config = {
-  imap: {
-    host: string
-    port: number
-    secure: boolean
-    auth: {
-      user: string
-      pass: string
-    }
-  }
-  folders: {
-    inbox: string
-    done: string
-    error: string
-  }
-  processing: {
-    delay: number
-    maxRetries: number
-  }
-  health: {
-    port: number
-  }
-}
-
-export const config: Config = {
+export const config = {
   imap: {
     host: process.env.IMAP_HOST || "localhost",
     port: parseInt(process.env.IMAP_PORT || "993"),
@@ -48,4 +24,4 @@ export const config: Config = {
   health: {
     port: 3100,
   },
-}
+} as const
