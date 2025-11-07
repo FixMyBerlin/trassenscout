@@ -5,90 +5,13 @@
  * an die Trassenscout-API weiter.
  */
 
-import { ImapFlow, type ImapFlowOptions, type ListResponse } from 'imapflow';
+import { ImapFlow, type ListResponse } from "imapflow"
+import { config, createImapClient, log } from "./helpers/index.js"
 
-interface Config {
-  imap: {
-    host: string;
-    port: number;
-    secure: boolean;
-    auth: {
-      user: string;
-      pass: string;
-    };
-  };
-  folders: {
-    inbox: string;
-    done: string;
-    error: string;
-  };
-  processing: {
-    delay: number;
-    maxRetries: number;
-  };
-  health: {
-    port: number;
-  };
-}
-
-const config: Config = {
-  imap: {
-    host: process.env.IMAP_HOST || "localhost",
-    port: parseInt(process.env.IMAP_PORT || "993"),
-    secure: process.env.IMAP_SECURE === "true",
-    auth: {
-      user: process.env.IMAP_USER || "",
-      pass: process.env.IMAP_PASSWORD || "",
-    },
-  },
-  folders: {
-    inbox: "INBOX",
-    done: "INBOX.DONE",
-    error: "INBOX.ERROR",
-  },
-  processing: {
-    delay: 10000, // 10 seconds delay between processing messages
-    maxRetries: 3,
-  },
-  health: {
-    port: 3100,
-  },
-}
-
-const log = {
-  info: (message: string, data: Record<string, unknown> = {}) => {
-    console.log(JSON.stringify({
-      timestamp: new Date().toISOString(),
-      level: 'info',
-      message,
-      ...data
-    }));
-  },
-  error: (message: string, error: Error | unknown, data: Record<string, unknown> = {}) => {
-    const errorObj = error instanceof Error ? error : new Error(String(error));
-    console.error(JSON.stringify({
-      timestamp: new Date().toISOString(),
-      level: 'error',
-      message,
-      error: errorObj.message,
-      stack: errorObj.stack,
-      ...data
-    }));
-  },
-  success: (message: string, data: Record<string, unknown> = {}) => {
-    console.log(JSON.stringify({
-      timestamp: new Date().toISOString(),
-      level: 'success',
-      message,
-      ...data
-    }));
-  }
-};
-
-interface ServiceStatus {
-  isHealthy: boolean;
-  lastCheck: string | null;
-  error: string | null;
+type ServiceStatus = {
+  isHealthy: boolean
+  lastCheck: string | null
+  error: string | null
 }
 
 let serviceStatus: ServiceStatus = {
@@ -223,16 +146,7 @@ async function startImapListener(): Promise<void> {
       throw new Error("IMAP_USER and IMAP_PASSWORD environment variables are required")
     }
 
-    const imapConfig: ImapFlowOptions = {
-      host: config.imap.host,
-      port: config.imap.port,
-      secure: config.imap.secure,
-      auth: {
-        user: config.imap.auth.user,
-        pass: config.imap.auth.pass,
-      },
-    }
-    client = new ImapFlow(imapConfig)
+    client = createImapClient()
 
     await client.connect()
     log.success("Connected to IMAP server")
@@ -253,7 +167,7 @@ async function startImapListener(): Promise<void> {
     await processUnseenMails(client)
 
     // Set up error handler
-    client.on("error", (error) => {
+    client.on("error", (error: Error) => {
       log.error("IMAP connection error", error)
       serviceStatus.isHealthy = false
       serviceStatus.error = error instanceof Error ? error.message : String(error)
@@ -277,7 +191,7 @@ async function startImapListener(): Promise<void> {
     }
 
     // Listen for new messages
-    client.on("exists", async (data) => {
+    client.on("exists", async (data: { count: number }) => {
       log.info("New message detected", { count: data.count })
       await processMailbox()
     })

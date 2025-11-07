@@ -97,7 +97,6 @@ services:
       - db
     logging:
       driver: journald
-    # Health check wird im Dockerfile definiert
 
 volumes:
   pgdata:

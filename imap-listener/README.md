@@ -10,7 +10,7 @@ Long-running Node.js Service, der ein IMAP-Postfach überwacht und neue E-Mails 
   - Inhalt lesen
   - API-Call an TS-API (Webhook)
   - Bei Erfolg → Mail als SEEN markieren + Move zu `/DONE`
-  - Bei Fehler → Retry → Mail als SEEN markieren + Move zu `/ERROR`
+  - Bei Fehler → Mail als SEEN markieren + Move zu `/ERROR`
 - **Verarbeitung**: 10 Sekunden Delay zwischen Aufträgen zur API-Entlastung
 
 ## Konfiguration

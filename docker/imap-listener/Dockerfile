@@ -19,9 +19,5 @@ RUN npm run build
 # Zeitzone setzen
 ENV TZ=Europe/Berlin
 
-# Health Check für Container-Monitoring
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD node dist/healthcheck.js || exit 1
-
 # Entrypoint: IMAP-Listener starten
 ENTRYPOINT ["node", "dist/index.js"]
