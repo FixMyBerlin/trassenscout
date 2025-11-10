@@ -1,5 +1,6 @@
 "use client"
 
+import { processProjectRecordEmail } from "@/src/app/actions/processProjectRecordEmail"
 import { Link } from "@/src/core/components/links"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { ProjectRecordEmailWithRelations } from "@/src/server/ProjectRecordEmails/queries/getProjectRecordEmails"
@@ -18,27 +19,14 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
   const handleProcessEmail = async (projectRecordEmailId: number) => {
     setProcessing(projectRecordEmailId)
     try {
-      const response = await fetch("/api/process-project-record-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // This does not make a lot of sense in a client request, but needed for system calls in the future
-          // "process-email-api-key": process.env.INTERNAL_API_SECRET,
-        },
-        body: JSON.stringify({ projectRecordEmailId }),
-      })
+      const result = await processProjectRecordEmail({ projectRecordEmailId })
 
-      if (response.ok) {
-        const result = (await response.json()) as { projectRecordId: number; uploadIds?: number[] }
-        const message = `Protokoll erfolgreich erstellt! ID: ${result.projectRecordId}`
-        const documentsMessage = result.uploadIds?.length
-          ? `\nDokumente mit den IDs: ${result.uploadIds.join(", ")} erstellt und verknüpft.`
-          : ""
-        alert(message + documentsMessage)
-        router.push("/admin/project-records")
-      } else {
-        alert("Fehler beim Verarbeiten der E-Mail")
-      }
+      const message = `Protokoll erfolgreich erstellt! ID: ${result.projectRecordId}`
+      const documentsMessage = result.uploadIds?.length
+        ? `\nDokumente mit den IDs: ${result.uploadIds.join(", ")} erstellt und verknüpft.`
+        : ""
+      alert(message + documentsMessage)
+      router.push("/admin/project-records")
     } catch (error) {
       console.error("Error:", error)
       alert("Fehler beim Verarbeiten der E-Mail")

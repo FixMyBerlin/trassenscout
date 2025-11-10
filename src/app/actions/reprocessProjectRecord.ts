@@ -2,7 +2,7 @@
 
 import { getBlitzContext } from "@/src/blitz-server"
 import { gpt5Mini } from "@/src/core/ai/models"
-import { parseEmail } from "@/src/server/ProjectRecordEmails/parseEmail"
+import { parseEmail } from "@/src/server/ProjectRecordEmails/processEmail/parseEmail"
 import { createFieldInstructions } from "@/src/server/ProjectRecordEmails/sharedProjectRecordPrompt"
 import { createProjectRecordExtractionSchema } from "@/src/server/ProjectRecordEmails/sharedProjectRecordSchema"
 
@@ -16,7 +16,11 @@ const langfuse = new Langfuse({
   environment: process.env.NODE_ENV,
 })
 
-export async function reprocessProjectRecord(projectRecordId: number) {
+type ReprocessProjectRecordParams = {
+  projectRecordId: number
+}
+
+export const reprocessProjectRecord = async ({ projectRecordId }: ReprocessProjectRecordParams) => {
   // Authenticate request
   const { session } = await getBlitzContext()
 
@@ -64,16 +68,9 @@ export async function reprocessProjectRecord(projectRecordId: number) {
 
     // Parse the email to extract only the body (not the full MIME text)
     if (projectRecordEmail) {
-      try {
-        const parsed = await parseEmail(projectRecordEmail.text)
-        emailBody = parsed.body
-        console.log(`Extracted email body.`)
-      } catch (error) {
-        console.error("Error parsing email:", error)
-        // If parsing fails, use the original text as body
-        emailBody = projectRecordEmail.text
-        console.log("Failed to parse email, using original text as body")
-      }
+      const parsed = await parseEmail({ rawEmailText: projectRecordEmail.text })
+      emailBody = parsed.body
+      console.log(`Extracted email body.`)
     }
   } else {
     console.log("No related projectRecord email found")
