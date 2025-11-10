@@ -1,17 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
+"use client"
+
+import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
 import { Link } from "@/src/core/components/links"
 import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { DocumentIcon } from "@heroicons/react/24/outline"
 import { Upload } from "@prisma/client"
-import { RouteUrlObject } from "blitz"
-import { uploadUrl } from "./utils/uploadUrl"
 
 type Props = {
   upload: Upload
   /** @desc No editUrl will hide the edit button */
-  editUrl?: RouteUrlObject
-  showUploadUrl?: RouteUrlObject
+  editUrl?: string
+  showUploadUrl?: string
   description?: boolean
 }
 

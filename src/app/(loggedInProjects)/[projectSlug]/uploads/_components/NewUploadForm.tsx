@@ -1,5 +1,6 @@
+"use client"
+
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
-import { Spinner } from "@/src/core/components/Spinner"
 import {
   Link,
   blueButtonStyles,
@@ -7,36 +8,30 @@ import {
   whiteButtonStyles,
 } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
-import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { quote, seoNewTitle } from "@/src/core/components/text"
-import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { quote } from "@/src/core/components/text"
 import { useS3Upload } from "@/src/core/lib/next-s3-upload/src"
-import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
-import { splitReturnTo } from "@/src/pagesComponents/uploads/utils/splitReturnTo"
 import createUpload from "@/src/server/uploads/mutations/createUpload"
-import { BlitzPage, Routes, useRouterQuery } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import { clsx } from "clsx"
-import { useRouter } from "next/router"
-import { Suspense, useState } from "react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { splitReturnTo } from "./utils/splitReturnTo"
 
-// Flow: /new goes to /edit on success
-// On /edit users can modify the title and section relation
-const NewUploadWithQuery = () => {
+type Props = {
+  projectSlug: string
+  subsubsectionId?: number
+  returnPath?: string
+}
+
+export const NewUploadForm = ({ projectSlug, subsubsectionId, returnPath }: Props) => {
   const router = useRouter()
   const [createUploadMutation] = useMutation(createUpload)
-  const projectSlug = useProjectSlug()
-  const params: { subsubsectionId?: number; returnPath?: string } = useRouterQuery()
-  const subsubsectionIdFromParam = params.subsubsectionId || null
+  const subsubsectionIdFromParam = subsubsectionId || null
 
-  let backUrl = Routes.UploadsPage({ projectSlug })
-  const { subsectionSlug, subsubsectionSlug } = splitReturnTo(params)
+  let backUrl = `/${projectSlug}/uploads`
+  const { subsectionSlug, subsubsectionSlug } = splitReturnTo({ returnPath })
   if (subsectionSlug && subsubsectionSlug) {
-    backUrl = Routes.SubsubsectionDashboardPage({
-      projectSlug,
-      subsectionSlug: subsectionSlug,
-      subsubsectionSlug: subsubsectionSlug,
-    })
+    backUrl = `/${projectSlug}/abschnitte/${subsectionSlug}/fuehrung/${subsubsectionSlug}`
   }
 
   const [fileToUpload, setFileToUpload] = useState<File | null>(null)
@@ -50,7 +45,7 @@ const NewUploadWithQuery = () => {
   const [uploadState, setUploadState] = useState<FileUploadState>("INITIAL")
   const [fileUrl, setFileUrl] = useState<string | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
-  const { uploadToS3, files } = useS3Upload() // sure
+  const { uploadToS3, files } = useS3Upload()
 
   const handleUploadChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files as FileList
@@ -96,12 +91,10 @@ const NewUploadWithQuery = () => {
 
     await wait(1000)
     setUploadState("FILE_SAVED")
-    await router.push(
-      Routes.EditUploadPage({
-        projectSlug,
-        uploadId: file.id,
-        returnPath: params.returnPath,
-      }),
+    const params = new URLSearchParams()
+    if (returnPath) params.set("returnPath", returnPath)
+    router.push(
+      `/${projectSlug}/uploads/${file.id}/edit${params.toString() ? `?${params.toString()}` : ""}`,
     )
   }
 
@@ -137,9 +130,6 @@ const NewUploadWithQuery = () => {
           Die Datei wird dem Eintrag mit ID {quote(subsubsectionIdFromParam.toString())} zugeordnet.
         </p>
       )}
-      {/* {selectedSubsection && (
-        <p>Die Datei wird dem Eintrag {quote(selectedSubsection.title)} zugeordnet.</p>
-      )} */}
 
       {["FILE_SELECTED", "FILE_UPLOADING", "FILE_ERROR", "FILE_UPLOADED", "FILE_SAVED"].includes(
         uploadState,
@@ -199,20 +189,3 @@ const NewUploadWithQuery = () => {
     </>
   )
 }
-
-const NewUploadPage: BlitzPage = () => {
-  return (
-    <LayoutRs>
-      <MetaTags noindex title={seoNewTitle("Dokument")} />
-      <PageHeader title="Dokument hinzufügen" className="mt-12" />
-
-      <Suspense fallback={<Spinner page />}>
-        <NewUploadWithQuery />
-      </Suspense>
-    </LayoutRs>
-  )
-}
-
-NewUploadPage.authenticate = true
-
-export default NewUploadPage

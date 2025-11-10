@@ -1,3 +1,4 @@
+import { UploadTable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadTable"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "@/src/core/components/Breadcrumb/Breadcrumb"
@@ -12,7 +13,6 @@ import { useTryProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlu
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { OperatorFilterDropdown } from "@/src/pagesComponents/projects/OperatorFilterDropdown"
 import { SubsectionTable } from "@/src/pagesComponents/subsections/SubsectionTable"
-import { UploadTable } from "@/src/pagesComponents/uploads/UploadTable"
 import getProject from "@/src/server/projects/queries/getProject"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"

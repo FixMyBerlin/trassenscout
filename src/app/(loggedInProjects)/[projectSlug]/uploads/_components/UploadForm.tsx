@@ -1,3 +1,6 @@
+"use client"
+
+import { SummaryField } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/SummaryField"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import {
   Form,
@@ -10,7 +13,6 @@ import { shortTitle } from "@/src/core/components/text/titles"
 import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import { useState } from "react"
 import { z } from "zod"
-import { SummaryField } from "./SummaryField"
 
 export function UploadForm<S extends z.ZodType<any, any>>(
   props: FormProps<S> & {

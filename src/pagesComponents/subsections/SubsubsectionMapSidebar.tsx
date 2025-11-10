@@ -1,4 +1,5 @@
 import { ProjectRecordsTable } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTable"
+import { UploadPreview } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreview"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
@@ -18,7 +19,6 @@ import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { ArrowUpRightIcon } from "@heroicons/react/16/solid"
 import { clsx } from "clsx"
-import { UploadPreview } from "../uploads/UploadPreview"
 import { mapillaryLink } from "./utils/mapillaryLink"
 
 type Props = {
@@ -204,11 +204,7 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
           <IfUserCanEdit>
             <Link
               icon="plus"
-              href={Routes.NewUploadPage({
-                projectSlug,
-                subsubsectionId: subsubsection.id,
-                returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
-              })}
+              href={`/${projectSlug}/uploads/new?subsubsectionId=${subsubsection.id}&returnPath=${[subsectionSlug, subsubsectionSlug].join("/")}`}
             >
               Grafik
             </Link>
@@ -217,20 +213,17 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
         {!uploads.length && <ZeroCase small visible name="Grafiken" />}
         <div className="grid grid-cols-2 gap-3">
           {uploads.map((upload) => {
+            const returnPath = [subsectionSlug, subsubsectionSlug].join("/")
             return (
               <UploadPreview
                 key={upload.id}
                 upload={upload}
-                editUrl={Routes.EditUploadPage({
-                  projectSlug,
-                  uploadId: upload.id,
-                  returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
-                })}
-                showUploadUrl={Routes.ShowUploadPage({
-                  projectSlug,
-                  uploadId: upload.id,
-                  returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
-                })}
+                editUrl={
+                  `/${projectSlug}/uploads/${upload.id}/edit?returnPath=${returnPath}` as any
+                }
+                showUploadUrl={
+                  `/${projectSlug}/uploads/${upload.id}?returnPath=${returnPath}` as any
+                }
               />
             )
           })}
