@@ -7,8 +7,8 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link, linkStyles } from "@/src/core/components/links"
 import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecord/m2mFields"
-import deleteProjectRecordAdmin from "@/src/server/projectRecord/mutations/deleteProjectRecordAdmin"
-import updateProjectRecordAdmin from "@/src/server/projectRecord/mutations/updateProjectRecordAdmin"
+import deleteProjectRecord from "@/src/server/projectRecord/mutations/deleteProjectRecord"
+import updateProjectRecord from "@/src/server/projectRecord/mutations/updateProjectRecord"
 import getProjectRecordAdmin from "@/src/server/projectRecord/queries/getProjectRecordAdmin"
 import { ProjectRecordUpdateAdminFormSchema } from "@/src/server/projectRecord/schemas"
 import getProjects from "@/src/server/projects/queries/getProjects"
@@ -32,8 +32,8 @@ export const AdminEditProjectRecordForm = ({
   )
   const [{ projects }] = useQuery(getProjects, {})
 
-  const [updateProjectRecordMutation] = useMutation(updateProjectRecordAdmin)
-  const [deleteProjectRecordMutation] = useMutation(deleteProjectRecordAdmin)
+  const [updateProjectRecordMutation] = useMutation(updateProjectRecord)
+  const [deleteProjectRecordMutation] = useMutation(deleteProjectRecord)
 
   const projectOptions: [string | number, string][] = projects.map((project) => [
     project.id,
@@ -46,6 +46,7 @@ export const AdminEditProjectRecordForm = ({
       try {
         await deleteProjectRecordMutation({
           id: projectRecordId,
+          projectSlug: projectRecord.project.slug,
         })
         router.push("/admin/project-records")
       } catch (error) {
@@ -62,6 +63,7 @@ export const AdminEditProjectRecordForm = ({
       const updated = await updateProjectRecordMutation({
         ...values,
         id: projectRecord.id,
+        projectSlug: projectRecord.project.slug,
         date: values.date === "" ? null : new Date(values.date),
       })
       await refetch()
