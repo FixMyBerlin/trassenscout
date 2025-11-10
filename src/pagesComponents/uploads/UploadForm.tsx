@@ -38,11 +38,13 @@ export function UploadForm<S extends z.ZodType<any, any>>(
           options={options}
         />
       )}
-      <SummaryField
-        uploadId={uploadId}
-        isGeneratingSummary={isGeneratingSummary}
-        setIsGeneratingSummary={setIsGeneratingSummary}
-      />
+      {uploadId && (
+        <SummaryField
+          uploadId={uploadId}
+          isGeneratingSummary={isGeneratingSummary}
+          setIsGeneratingSummary={setIsGeneratingSummary}
+        />
+      )}
       <SuperAdminBox>
         <LabeledTextField type="text" name="externalUrl" label="Externe Datei-URL" readOnly />
       </SuperAdminBox>
