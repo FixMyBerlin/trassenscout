@@ -1,3 +1,6 @@
+"use client"
+
+import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
@@ -7,10 +10,8 @@ import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
-import { Routes } from "@blitzjs/next"
 import { PaperClipIcon } from "@heroicons/react/20/solid"
 import { PromiseReturnType } from "blitz"
-import { uploadUrl } from "./utils/uploadUrl"
 
 type Props = Prettify<
   Pick<PromiseReturnType<typeof getUploadsWithSubsections>, "uploads"> & {
@@ -90,22 +91,10 @@ export const UploadTable = ({ uploads, withAction = true, withSubsectionColumn =
                     </Link>
                     {withAction && (
                       <IfUserCanEdit>
-                        <Link
-                          icon="edit"
-                          href={Routes.EditUploadPage({
-                            projectSlug,
-                            uploadId: upload.id,
-                          })}
-                        >
+                        <Link icon="edit" href={`/${projectSlug}/uploads/${upload.id}/edit`}>
                           Bearbeiten
                         </Link>
-                        <Link
-                          icon="delete"
-                          href={Routes.ShowUploadPage({
-                            projectSlug,
-                            uploadId: upload.id,
-                          })}
-                        >
+                        <Link icon="delete" href={`/${projectSlug}/uploads/${upload.id}`}>
                           Löschen
                         </Link>
                       </IfUserCanEdit>
