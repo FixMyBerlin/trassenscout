@@ -18,7 +18,7 @@ export const ReprocessProjectRecordButton = ({ projectRecordId, onAiSuggestions 
   const handleImproveProjectRecord = async () => {
     setIsProcessing(true)
     try {
-      const data = await reprocessProjectRecord(projectRecordId)
+      const data = await reprocessProjectRecord({ projectRecordId })
       if (data.success && data.aiSuggestions) {
         setIsProcessing(false)
         onAiSuggestions(data.aiSuggestions)

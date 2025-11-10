@@ -1,28 +1,18 @@
 import { getClient } from "@/src/core/lib/next-s3-upload/src/utils/client"
 import { getConfig } from "@/src/core/lib/next-s3-upload/src/utils/config"
 import { sanitizeKey, uuid } from "@/src/core/lib/next-s3-upload/src/utils/keys"
+import { extractEmailAttachments } from "@/src/server/ProjectRecordEmails/processEmail/parseEmail"
 import { PutObjectCommand } from "@aws-sdk/client-s3"
-import { ParsedEmailAttachment } from "./parseEmail"
 
-export interface UploadedAttachment {
-  filename: string
-  url: string
-  contentType: string
-  size: number
-  key: string
+type UploadEmailAttachmentParams = {
+  attachment: Awaited<ReturnType<typeof extractEmailAttachments>>[0]
+  projectId: number
 }
 
-/**
- * Uploads an email attachment to S3 using the same mechanism as next-s3-upload
- * This follows the same pattern as the s3-upload.ts API route for consistency
- * @param attachment - The parsed email attachment
- * @param projectId - The project ID for organizing uploads
- * @returns Information about the uploaded file including its S3 URL
- */
-export async function uploadEmailAttachment(
-  attachment: ParsedEmailAttachment,
-  projectId: number,
-): Promise<UploadedAttachment> {
+export const uploadEmailAttachment = async ({
+  attachment,
+  projectId,
+}: UploadEmailAttachmentParams) => {
   const config = getConfig()
   const s3Client = getClient()
 
