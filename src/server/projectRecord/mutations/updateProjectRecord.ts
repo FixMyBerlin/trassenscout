@@ -9,7 +9,7 @@ import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecord/m2mFields"
 import { ProjectRecordSchema } from "@/src/server/projectRecord/schemas"
 import { resolver } from "@blitzjs/rpc"
-import { ProjectRecordType } from "@prisma/client"
+import { ProjectRecordType, UserRoleEnum } from "@prisma/client"
 import { Ctx } from "blitz"
 import db from "db"
 import { z } from "zod"
@@ -32,6 +32,7 @@ export default resolver.pipe(
   async ({ id, projectSlug, ...data }, ctx: Ctx) => {
     const previous = await db.projectRecord.findFirst({ where: { id } })
     const currentUserId = ctx.session.userId
+    const isAdmin = ctx.session.role === UserRoleEnum.ADMIN
 
     // copied from updateSubsubsection.ts
     const disconnect: Record<M2MFieldsType | string, { set: [] }> = {}
@@ -62,7 +63,7 @@ export default resolver.pipe(
 
     await createLogEntry({
       action: "UPDATE",
-      message: `Protokoll mit der ID ${longTitle(String(record.id))} bearbeitet`,
+      message: `Protokoll mit der ID ${longTitle(String(record.id))} bearbeitet${isAdmin ? " (Admin)" : ""}`,
       userId: ctx.session.userId,
       projectId: record.projectId,
       previousRecord: previous,

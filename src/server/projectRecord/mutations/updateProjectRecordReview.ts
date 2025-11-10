@@ -7,7 +7,7 @@ import {
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { ProjectRecordSchema } from "@/src/server/projectRecord/schemas"
 import { resolver } from "@blitzjs/rpc"
-import { ProjectRecordReviewState } from "@prisma/client"
+import { ProjectRecordReviewState, UserRoleEnum } from "@prisma/client"
 import { Ctx } from "blitz"
 import db from "db"
 import { z } from "zod"
@@ -25,6 +25,7 @@ export default resolver.pipe(
   async ({ id, reviewState, reviewNotes }, ctx: Ctx) => {
     const previous = await db.projectRecord.findFirst({ where: { id } })
     const currentUserId = ctx.session.userId
+    const isAdmin = ctx.session.role === UserRoleEnum.ADMIN
 
     // Only update review fields
     const updateData: any = {
@@ -53,7 +54,7 @@ export default resolver.pipe(
 
     await createLogEntry({
       action: "UPDATE",
-      message: `Protokoll-Review-Status mit der ID ${record.id} geändert zu ${reviewState}`,
+      message: `Protokoll-Review-Status mit der ID ${record.id} geändert zu ${reviewState} ${isAdmin ? " (Admin)" : ""}`,
       userId: ctx.session.userId,
       projectId: record.projectId,
       previousRecord: previous,
