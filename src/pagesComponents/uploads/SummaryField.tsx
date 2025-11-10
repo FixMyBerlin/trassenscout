@@ -1,3 +1,6 @@
+"use client"
+
+import { summarizeProjectRecord } from "@/src/app/actions/summarizeProjectRecord"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { LabeledTextareaField } from "@/src/core/components/forms"
 import { SparklesIcon } from "@heroicons/react/16/solid"
@@ -5,7 +8,7 @@ import { Dispatch, SetStateAction } from "react"
 import { useFormContext } from "react-hook-form"
 
 type Props = {
-  uploadId?: number
+  uploadId: number
   isGeneratingSummary: boolean
   setIsGeneratingSummary: Dispatch<SetStateAction<boolean>>
 }
@@ -14,27 +17,11 @@ export const SummaryField = ({ uploadId, isGeneratingSummary, setIsGeneratingSum
   const { setValue } = useFormContext()
 
   const handleSummarize = async () => {
-    if (!uploadId) return
-
     setIsGeneratingSummary(true)
     try {
-      const response = await fetch(`/api/uploads/${uploadId}/summarize`, {
-        method: "POST",
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = (await response.json()) as {
-        success: boolean
-        uploadId: number
-        summary: string
-        title: string
-      }
-
-      if (data.success && data.summary) {
-        setValue("summary", data.summary)
+      const { summary } = await summarizeProjectRecord({ uploadId })
+      if (summary) {
+        setValue("summary", summary)
         console.log("Summary generated successfully")
       } else {
         throw new Error("Invalid response data")
