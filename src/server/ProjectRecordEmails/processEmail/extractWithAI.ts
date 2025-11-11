@@ -1,15 +1,25 @@
 import { gpt5Mini } from "@/src/core/ai/models"
-import { fetchProjectContext } from "@/src/server/ProjectRecordEmails/processEmail/fetchProjectContext"
 import { createFieldInstructions } from "@/src/server/ProjectRecordEmails/sharedProjectRecordPrompt"
-import { createProjectRecordExtractionSchema } from "@/src/server/ProjectRecordEmails/sharedProjectRecordSchema"
+import {
+  createProjectRecordExtractionSchema,
+  CreateProjectRecordExtractionSchemaParams,
+} from "@/src/server/ProjectRecordEmails/sharedProjectRecordSchema"
 import { generateObject, NoObjectGeneratedError } from "ai"
 import { langfuse } from "./langfuseClient"
 
 type ExtractWithAIParams = {
   emailBody: string
-  projectContext: Awaited<ReturnType<typeof fetchProjectContext>>
+  projectContext: Pick<
+    CreateProjectRecordExtractionSchemaParams,
+    "subsections" | "subsubsections" | "projectRecordTopics"
+  >
   userId: string
 }
+
+// tbd
+// subsubsections: should we filter by subsection?
+// we might want a pipeline where we first find the matching subsection and then only fetch subsubsections for that subsection
+// do we want to fetch more data (like Führungsform etc.) to improve matching?
 
 export const extractWithAI = async ({ emailBody, projectContext, userId }: ExtractWithAIParams) => {
   const trace = langfuse.trace({
@@ -72,7 +82,7 @@ ${fieldInstructions}
       console.log("Response:", error.response)
       console.log("Usage:", error.usage)
     }
-    console.error("Error in AI processing (stage 2):", error)
+    console.error("Error in AI processing:", error)
     throw new Error("Failed to process email with AI")
   }
 

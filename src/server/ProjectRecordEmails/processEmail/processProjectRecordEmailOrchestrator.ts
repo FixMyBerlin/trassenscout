@@ -6,13 +6,11 @@ import { langfuse } from "./langfuseClient"
 import { parseEmail } from "./parseEmail"
 import { uploadEmailAttachments } from "./uploadEmailAttachments"
 
-type ProcessProjectRecordEmailOrchestratorParams = {
-  projectRecordEmailId: number
-}
-
 export const processProjectRecordEmailOrchestrator = async ({
   projectRecordEmailId,
-}: ProcessProjectRecordEmailOrchestratorParams) => {
+}: {
+  projectRecordEmailId: number
+}) => {
   // todo
   // In the future the email and the project will be part of the request
   // todo: projectRecordEmail db entry will be created here with relation to project
@@ -40,11 +38,6 @@ export const processProjectRecordEmailOrchestrator = async ({
     projectId: projectRecordEmail.projectId,
     projectRecordEmailId,
   })
-
-  // tbd
-  // sessions: atm we do not need sessions; might be useful if we have a chat-like iterative ai process
-  // see langfuse docs: https://langfuse.com/docs/observability/features/sessions
-  // const trace = langfuse.trace({ sessionId: "some-session-id", name: "process-projectRecord-email" })
 
   let reviewNote = ""
 

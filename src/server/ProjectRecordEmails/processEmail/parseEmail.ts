@@ -1,14 +1,10 @@
 import { ParsedMail, simpleParser } from "mailparser"
 
-type ParseEmailContentParams = {
-  rawEmailText: string
-}
-
-export const parseEmail = async ({ rawEmailText }: ParseEmailContentParams) => {
+export const parseEmail = async ({ rawEmailText }: { rawEmailText: string }) => {
   console.log("Parsing email to extract body and attachments...")
 
   try {
-    const parsed: ParsedMail = await simpleParser(rawEmailText)
+    const parsed = await simpleParser(rawEmailText)
 
     // Extract body - prefer text over html, or convert html to text
     let emailBody = ""

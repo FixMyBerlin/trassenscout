@@ -3,7 +3,7 @@ import db from "db"
 export const fetchProjectContext = async ({ projectId }: { projectId: number }) => {
   // Fetch subsections for this project
   const subsections = await db.subsection.findMany({
-    where: { projectId: projectId },
+    where: { projectId },
     select: {
       id: true,
       slug: true,
@@ -14,9 +14,6 @@ export const fetchProjectContext = async ({ projectId }: { projectId: number }) 
   })
   console.log(`Found ${subsections.length} subsections for project ${projectId}`)
 
-  // Fetch subsubsections for this project
-  // tbd: we might want a pipeline where we first find the matching subsection and then only fetch subsubsections for that subsection
-  // tbd: do we want to fetch more data (like Führungsform etc.) to improve matching?
   const subsubsections = await db.subsubsection.findMany({
     where: { subsection: { projectId: projectId } },
     include: { subsection: { select: { id: true, slug: true } } },
@@ -25,7 +22,7 @@ export const fetchProjectContext = async ({ projectId }: { projectId: number }) 
 
   // Fetch projectRecord topics for this project
   const projectRecordTopics = await db.projectRecordTopic.findMany({
-    where: { projectId: projectId },
+    where: { projectId },
     select: {
       id: true,
       title: true,
