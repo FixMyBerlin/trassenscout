@@ -3,7 +3,7 @@ import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3"
 
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024 // 10MB
 
-export const fetchPdfFromS3 = async (externalUrl: string) => {
+export const fetchPdfFromS3 = async ({ externalUrl }: { externalUrl: string }) => {
   const { hostname, pathname } = new URL(externalUrl)
 
   const { accessKeyId, secretAccessKey, region } = getConfig()

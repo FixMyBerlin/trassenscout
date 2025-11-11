@@ -3,20 +3,22 @@
 import db from "@/db"
 import { editorRoles } from "@/src/authorization/constants"
 import { getBlitzContext } from "@/src/blitz-server"
+import { fetchProjectContext } from "@/src/server/ProjectRecordEmails/processEmail/fetchProjectContext"
 import { fetchPdfFromS3 } from "@/src/server/uploads/summarize/fetchPdfFromS3"
 import { generatePdfSummaryWithAI } from "@/src/server/uploads/summarize/generatePdfSummaryWithAI"
 import { validatePdfFile } from "@/src/server/uploads/summarize/validatePdfFile"
 import { S3ServiceException } from "@aws-sdk/client-s3"
 
-type SummarizeProjectRecordParams = {
-  uploadId: number
-}
-
-const authorizeUserForUpload = async (
-  userId: number,
-  userRole: string | null | undefined,
-  projectSlug: string,
-) => {
+// tbd authorization can be moved to a shared
+const authorizeUserForUpload = async ({
+  userId,
+  userRole,
+  projectSlug,
+}: {
+  userId: number
+  userRole: string | null | undefined
+  projectSlug: string
+}) => {
   // Check if user is admin
   if (userRole === "ADMIN") {
     return
@@ -32,7 +34,7 @@ const authorizeUserForUpload = async (
   }
 }
 
-export const summarizeUpload = async ({ uploadId }: SummarizeProjectRecordParams) => {
+export const summarizeUpload = async ({ uploadId }: { uploadId: number }) => {
   try {
     const { session } = await getBlitzContext()
 
@@ -47,20 +49,31 @@ export const summarizeUpload = async ({ uploadId }: SummarizeProjectRecordParams
     // Get upload details with project info for authorization
     const upload = await db.upload.findFirstOrThrow({
       where: { id: uploadId },
-      include: { project: { select: { slug: true } } },
+      include: { project: { select: { slug: true, id: true } } },
     })
 
     // Authorization check
-    await authorizeUserForUpload(session.userId, session.role, upload.project.slug)
+    await authorizeUserForUpload({
+      userId: session.userId,
+      userRole: session.role,
+      projectSlug: upload.project.slug,
+    })
 
     // Validate PDF file
-    validatePdfFile(upload)
+    validatePdfFile({ upload })
 
     // Fetch PDF from S3
-    const pdfData = await fetchPdfFromS3(upload.externalUrl)
+    const pdfData = await fetchPdfFromS3({ externalUrl: upload.externalUrl })
+
+    // Fetch project context
+    const projectContext = await fetchProjectContext({ projectId: upload.project.id })
 
     // Generate summary
-    const summary = await generatePdfSummaryWithAI(pdfData, session.userId)
+    const summary = await generatePdfSummaryWithAI({
+      pdfData,
+      userId: session.userId,
+      projectContext,
+    })
 
     return { summary }
   } catch (error) {
