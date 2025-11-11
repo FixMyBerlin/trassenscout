@@ -1,14 +1,48 @@
 import { model } from "@/src/core/ai/models"
 import { generateText } from "ai"
+import {
+  createProjectContextPromptSection,
+  CreateProjectContextPromptSectionParams,
+} from "./createProjectContextPromptSection"
 import { langfuse } from "./langfuseClient"
 
-export const generatePdfSummaryWithAI = async (pdfData: Buffer, userId: number) => {
+type GeneratePdfSummaryWithAIParams = {
+  pdfData: Buffer
+  userId: number
+  projectContext: CreateProjectContextPromptSectionParams
+}
+
+export const generatePdfSummaryWithAI = async ({
+  pdfData,
+  userId,
+  projectContext,
+}: GeneratePdfSummaryWithAIParams) => {
   console.log("Generating summary with AI...")
 
   const trace = langfuse.trace({
     name: "summarize-upload",
     userId: String(userId),
   })
+
+  const projectContextSection = createProjectContextPromptSection(projectContext)
+
+  const prompt = `# Task: Create Document Summary
+
+## Summary Requirements
+Create a concise summary of the following PDF document. Capture the main points and insights of the document with these specifications:
+
+### Language and Style
+- Write the summary in **German**
+- Focus on clarity and conciseness
+
+### Formatting
+- Use Markdown formatting for better readability:
+  - Use **bold** for emphasis
+  - Use *italic* where appropriate
+  - Use lists for structured information
+  - Format links as inline links: [example.com](https://www.example.com/)
+${projectContextSection}
+`
 
   const { text } = await generateText({
     model: model,
@@ -18,7 +52,7 @@ export const generatePdfSummaryWithAI = async (pdfData: Buffer, userId: number) 
         content: [
           {
             type: "text",
-            text: `Create a concise summary of the following PDF document. The summary should be written in German and capture the main points and insights of the document. Focus on clarity and conciseness. Use Markdown formatting for better readability (e.g., **bold**, *italic*, lists, etc.). Format links as inline links like: [example.com](https://www.example.com/).`,
+            text: prompt,
           },
         ],
       },

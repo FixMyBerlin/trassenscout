@@ -1,10 +1,6 @@
 import db from "db"
 
-type FetchProjectContextParams = {
-  projectId: number
-}
-
-export const fetchProjectContext = async ({ projectId }: FetchProjectContextParams) => {
+export const fetchProjectContext = async ({ projectId }: { projectId: number }) => {
   // Fetch subsections for this project
   const subsections = await db.subsection.findMany({
     where: { projectId: projectId },
@@ -23,11 +19,7 @@ export const fetchProjectContext = async ({ projectId }: FetchProjectContextPara
   // tbd: do we want to fetch more data (like Führungsform etc.) to improve matching?
   const subsubsections = await db.subsubsection.findMany({
     where: { subsection: { projectId: projectId } },
-    select: {
-      id: true,
-      slug: true,
-      subsectionId: true,
-    },
+    include: { subsection: { select: { id: true, slug: true } } },
   })
   console.log(`Found ${subsubsections.length} subsubsections for project ${projectId}`)
 
