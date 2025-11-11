@@ -1,6 +1,6 @@
 "use client"
 
-import { summarizeProjectRecord } from "@/src/app/actions/summarizeProjectRecord"
+import { summarizeUpload } from "@/src/app/actions/summarizeUpload"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { LabeledTextareaField } from "@/src/core/components/forms"
 import { SparklesIcon } from "@heroicons/react/16/solid"
@@ -19,7 +19,7 @@ export const SummaryField = ({ uploadId, isGeneratingSummary, setIsGeneratingSum
   const handleSummarize = async () => {
     setIsGeneratingSummary(true)
     try {
-      const { summary } = await summarizeProjectRecord({ uploadId })
+      const { summary } = await summarizeUpload({ uploadId })
       if (summary) {
         setValue("summary", summary)
         console.log("Summary generated successfully")
