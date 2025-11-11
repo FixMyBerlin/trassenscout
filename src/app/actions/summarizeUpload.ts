@@ -32,7 +32,7 @@ const authorizeUserForUpload = async (
   }
 }
 
-export const summarizeProjectRecord = async ({ uploadId }: SummarizeProjectRecordParams) => {
+export const summarizeUpload = async ({ uploadId }: SummarizeProjectRecordParams) => {
   try {
     const { session } = await getBlitzContext()
 
