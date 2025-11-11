@@ -1,16 +1,18 @@
-export function createFieldInstructions({
+type CreateFieldInstructionsParams = {
+  subsections: Array<{ id: number; slug: string; start: string; end: string }>
+  subsubsections: Array<{ id: number; slug: string; subsection: { slug: string; id: number } }>
+  projectRecordTopics: Array<{ id: number; title: string }>
+  isReprocessing?: boolean
+  hasUploads: boolean
+}
+
+export const createFieldInstructions = ({
   subsections,
   subsubsections,
   projectRecordTopics,
   isReprocessing,
   hasUploads,
-}: {
-  subsections: Array<{ id: number; slug: string; start: string; end: string }>
-  subsubsections: Array<{ id: number; slug: string; subsectionId: number }>
-  projectRecordTopics: Array<{ id: number; title: string }>
-  isReprocessing: boolean
-  hasUploads: boolean
-}) {
+}: CreateFieldInstructionsParams) => {
   return `
 #### BODY
 - Summarize the content of the ${isReprocessing ? "record entry" : "email body"} **once**.${isReprocessing ? " Current record entry itself is the MOST IMPORTANT source." : ""}
@@ -51,8 +53,7 @@ ${
 Available subsubsections:
 ${subsubsections
   .map(
-    (s) =>
-      `${s.id} (short title: ${s.slug.toUpperCase()} - part of subsection with ID ${s.subsectionId})`,
+    (s) => `${s.id} (short title: ${s.slug.toUpperCase()} - part of subsection ${s.subsectionId})`,
   )
   .join(", ")}
 

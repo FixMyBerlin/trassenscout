@@ -1,11 +1,10 @@
 import { getClient } from "@/src/core/lib/next-s3-upload/src/utils/client"
 import { getConfig } from "@/src/core/lib/next-s3-upload/src/utils/config"
 import { sanitizeKey, uuid } from "@/src/core/lib/next-s3-upload/src/utils/keys"
-import { extractEmailAttachments } from "@/src/server/ProjectRecordEmails/processEmail/parseEmail"
 import { PutObjectCommand } from "@aws-sdk/client-s3"
 
 type UploadEmailAttachmentParams = {
-  attachment: Awaited<ReturnType<typeof extractEmailAttachments>>[0]
+  attachment: { filename: string; contentType: string; size: number; content: Buffer }
   projectId: number
 }
 

@@ -1,9 +1,8 @@
-import { extractEmailAttachments } from "@/src/server/ProjectRecordEmails/processEmail/parseEmail"
 import { uploadEmailAttachment } from "@/src/server/ProjectRecordEmails/processEmail/uploadEmailAttachment"
 import db from "db"
 
 type ProcessEmailAttachmentsParams = {
-  attachments: Awaited<ReturnType<typeof extractEmailAttachments>>
+  attachments: { filename: string; contentType: string; size: number; content: Buffer }[]
   projectId: number
   projectRecordEmailId: number
 }

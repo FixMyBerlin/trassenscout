@@ -1,16 +1,18 @@
 import { z } from "zod"
 
-export function createProjectRecordExtractionSchema({
+export type CreateProjectRecordExtractionSchemaParams = {
+  subsections: Array<{ id: number; slug: string; start: string; end: string }>
+  subsubsections: Array<{ id: number; slug: string; subsection: { slug: string; id: number } }>
+  projectRecordTopics: Array<{ id: number; title: string }>
+  isReprocessing?: boolean
+}
+
+export const createProjectRecordExtractionSchema = ({
   subsections,
   subsubsections,
   projectRecordTopics,
   isReprocessing,
-}: {
-  subsections: Array<{ id: number; slug: string; start: string; end: string }>
-  subsubsections: Array<{ id: number; slug: string; subsectionId: number }>
-  projectRecordTopics: Array<{ id: number; title: string }>
-  isReprocessing?: boolean
-}) {
+}: CreateProjectRecordExtractionSchemaParams) => {
   return z.object({
     body: z
       .string()
@@ -54,7 +56,7 @@ export function createProjectRecordExtractionSchema({
             .nullable()
             .describe(
               `The subsubsection ('Abschnitt') ID this ${isReprocessing ? "record entry" : "email"} relates to, if applicable. Available subsubsections: ${subsubsections
-                .map((s) => `${s.id} (${s.slug} - part of subsection ${s.subsectionId})`)
+                .map((s) => `${s.id} (${s.slug} - part of subsection ${s.subsection.slug})`)
                 .join(", ")}. Return null if no clear subsubsection is identified.`,
             )
         : z.null().describe("Null as no subsubsections are available for this project."),

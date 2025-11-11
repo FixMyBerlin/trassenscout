@@ -9,13 +9,11 @@ import { parseEmail } from "@/src/server/ProjectRecordEmails/processEmail/parseE
 import { uploadEmailAttachments } from "@/src/server/ProjectRecordEmails/processEmail/uploadEmailAttachments"
 import db, { ProjectRecordReviewState, ProjectRecordType } from "db"
 
-type ProcessProjectRecordEmailInternalParams = {
-  projectRecordEmailId: number
-}
-
 export const processProjectRecordEmail = async ({
   projectRecordEmailId,
-}: ProcessProjectRecordEmailInternalParams) => {
+}: {
+  projectRecordEmailId: number
+}) => {
   // Authenticate request
   const { session } = await getBlitzContext()
 
@@ -108,10 +106,12 @@ export const processProjectRecordEmail = async ({
 
   await langfuse.flushAsync()
 
+  console.log(
+    `Created projectRecord ${projectRecord.id} from projectRecordEmail ${projectRecordEmailId}`,
+  )
+
   return {
-    success: true,
     projectRecordId: projectRecord.id,
     uploadIds: uploadIds,
-    message: `ProjectRecord created successfully with ${uploadIds.length} attachment(s)`,
   }
 }
