@@ -1,17 +1,19 @@
-export type CreateProjectContextPromptSectionParams =
-  | {
-      subsections: { id: number; slug: string; start: string; end: string }[]
-      subsubsections: { id: number; slug: string; subsection: { id: number; slug: string } }[]
-      projectRecordTopics: { id: number; title: string }[]
-    }
-  | undefined
+export type CreateProjectContextPromptSectionParams = {
+  projectContext: {
+    subsections: { id: number; slug: string; start: string; end: string }[]
+    subsubsections: { id: number; slug: string; subsection: { id: number; slug: string } }[]
+    projectRecordTopics: { id: number; title: string }[]
+  }
+}
 
-export const createProjectContextPromptSection = (
-  projectContext: CreateProjectContextPromptSectionParams,
-) => {
+export const createProjectContextPromptSection = ({
+  projectContext,
+}: CreateProjectContextPromptSectionParams) => {
   if (!projectContext) {
     return ""
   }
+
+  const { subsections, subsubsections, projectRecordTopics } = projectContext
 
   return `
 
@@ -28,9 +30,9 @@ When summarizing this document, pay special attention to the following:
 
 ### PREDEFINED TOPICS
 ${
-  projectContext.projectRecordTopics.length > 0
+  projectRecordTopics.length > 0
     ? `This project has the following predefined topics for reference:
-${projectContext.projectRecordTopics.map((t) => `- ${t.title}`).join("\n")}
+${projectRecordTopics.map((t) => `- ${t.title}`).join("\n")}
 
 If the document relates to any of these topics, mention them explicitly in the summary. However, also identify and include other relevant topics not in this list.`
     : "No predefined topics for this project. Identify and include the most relevant topics from the document content."
@@ -38,9 +40,9 @@ If the document relates to any of these topics, mention them explicitly in the s
 
 ### PREDEFINED SUBSECTIONS (Route Sections / Planungsabschnitte / Bauabschnitte / Abschnitte)
 ${
-  projectContext.subsections.length > 0
+  subsections.length > 0
     ? `This project has the following predefined route subsections:
-${projectContext.subsections
+${subsections
   .map((s) => `- **${s.slug.toUpperCase()}**: ${s.start} (start) to ${s.end} (end)`)
   .join("\n")}
 
@@ -50,9 +52,9 @@ If the document mentions any of these subsection abbreviations (e.g., 'PA1', 'BA
 
 ### PREDEFINED SUBSUBSECTIONS (Route Subsubsections / Maßnahmen / Unterabschnitte / Führungen / Einträge)
 ${
-  projectContext.subsubsections.length > 0
+  subsubsections.length > 0
     ? `This project has the following predefined route subsubsections:
-${projectContext.subsubsections
+${subsubsections
   .map(
     (s) => `- **${s.slug.toUpperCase()}** (part of subsection ${s.subsection.slug.toUpperCase()})`,
   )
