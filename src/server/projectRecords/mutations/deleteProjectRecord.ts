@@ -1,7 +1,7 @@
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { editorRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
-import { DeleteProjectRecordSchema } from "@/src/server/projectRecord/schemas"
+import { DeleteProjectRecordSchema } from "@/src/server/projectRecords/schemas"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 

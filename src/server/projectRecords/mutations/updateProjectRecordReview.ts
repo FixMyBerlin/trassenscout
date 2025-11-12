@@ -5,7 +5,7 @@ import {
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
-import { ProjectRecordSchema } from "@/src/server/projectRecord/schemas"
+import { ProjectRecordSchema } from "@/src/server/projectRecords/schemas"
 import { resolver } from "@blitzjs/rpc"
 import { ProjectRecordReviewState, UserRoleEnum } from "@prisma/client"
 import { Ctx } from "blitz"

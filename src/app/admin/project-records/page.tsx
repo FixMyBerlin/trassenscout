@@ -1,7 +1,7 @@
 import { AdminProjectRecordsTable } from "@/src/app/admin/project-records/_components/AdminProjectRecordTable"
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import getAllProjectRecordsAdmin from "@/src/server/projectRecord/queries/getAllProjectRecordsAdmin"
+import getAllProjectRecordsAdmin from "@/src/server/projectRecords/queries/getAllProjectRecordsAdmin"
 import { Metadata } from "next"
 import "server-only"
 

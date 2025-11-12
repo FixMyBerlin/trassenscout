@@ -4,7 +4,7 @@ import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { invoke } from "@/src/blitz-server"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import getProjectRecord from "@/src/server/projectRecord/queries/getProjectRecord"
+import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 
 import { Metadata } from "next"
 import "server-only"

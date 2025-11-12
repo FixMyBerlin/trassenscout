@@ -1,7 +1,7 @@
 import { ProjectRecordTypePill } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTypePill"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
-import getProjectRecord from "@/src/server/projectRecord/queries/getProjectRecord"
-import getProjectRecords from "@/src/server/projectRecord/queries/getProjectRecords"
+import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
+import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
 import { ProjectRecordReviewState, ProjectRecordType } from "@prisma/client"
 
 export const CreateEditReviewHistory = ({
