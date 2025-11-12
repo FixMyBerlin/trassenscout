@@ -3,7 +3,7 @@
 import { ProjectRecordsTable } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTable"
 import { linkStyles } from "@/src/core/components/links"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import getProjectRecords from "@/src/server/projectRecord/queries/getProjectRecords"
+import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid"
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"

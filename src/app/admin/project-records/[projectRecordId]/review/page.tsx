@@ -2,7 +2,7 @@ import { AdminReviewProjectRecordForm } from "@/src/app/admin/project-records/[p
 import { invoke } from "@/src/blitz-server"
 import { Link } from "@/src/core/components/links/Link"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import getProjectRecordAdmin from "@/src/server/projectRecord/queries/getProjectRecordAdmin"
+import getProjectRecordAdmin from "@/src/server/projectRecords/queries/getProjectRecordAdmin"
 import { Metadata } from "next"
 import "server-only"
 

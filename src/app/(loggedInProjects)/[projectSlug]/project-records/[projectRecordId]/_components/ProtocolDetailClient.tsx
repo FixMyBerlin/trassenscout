@@ -5,7 +5,7 @@ import { ReprocessProjectRecordButton } from "@/src/app/(loggedInProjects)/[proj
 import { ReprocessProjectRecordEditForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReprocessProjectRecordEditForm"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
-import getProjectRecord from "@/src/server/projectRecord/queries/getProjectRecord"
+import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 
 import { useEffect, useState } from "react"
 

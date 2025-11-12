@@ -5,8 +5,8 @@ import {
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
-import { m2mFields, M2MFieldsType } from "@/src/server/projectRecord/m2mFields"
-import { ProjectRecordSchema } from "@/src/server/projectRecord/schemas"
+import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
+import { ProjectRecordSchema } from "@/src/server/projectRecords/schemas"
 import getProjectIdBySlug from "@/src/server/projects/queries/getProjectIdBySlug"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"

@@ -2,7 +2,7 @@ import { ReviewProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSl
 import { invoke } from "@/src/blitz-server"
 import { Link } from "@/src/core/components/links/Link"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import getProjectRecord from "@/src/server/projectRecord/queries/getProjectRecord"
+import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { Metadata } from "next"
 import "server-only"
 

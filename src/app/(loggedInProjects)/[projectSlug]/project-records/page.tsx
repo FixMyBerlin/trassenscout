@@ -1,6 +1,6 @@
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import getProjectRecords from "@/src/server/projectRecord/queries/getProjectRecords"
+import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
 import { Metadata } from "next"
 import "server-only"
 import { ProjectRecordsFormAndTable } from "./_components/ProjectRecordsFormAndTable"

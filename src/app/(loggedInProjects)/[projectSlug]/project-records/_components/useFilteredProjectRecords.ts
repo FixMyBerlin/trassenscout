@@ -1,4 +1,4 @@
-import getProjectRecords from "@/src/server/projectRecord/queries/getProjectRecords"
+import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
 import { useFilters } from "./useFilters.nuqs"
 
 export const useFilteredProjectRecords = (
