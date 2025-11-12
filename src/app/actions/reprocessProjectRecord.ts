@@ -1,26 +1,15 @@
 "use server"
 
 import { getBlitzContext } from "@/src/blitz-server"
-import { gpt5Mini } from "@/src/core/ai/models"
-import { parseEmail } from "@/src/server/ProjectRecordEmails/processEmail/parseEmail"
-import { createFieldInstructions } from "@/src/server/ProjectRecordEmails/sharedProjectRecordPrompt"
-import { createProjectRecordExtractionSchema } from "@/src/server/ProjectRecordEmails/sharedProjectRecordSchema"
 
-import { generateObject, NoObjectGeneratedError } from "ai"
+import { fetchProjectContext } from "@/src/server/ProjectRecordEmails/processEmail/fetchProjectContext"
+import { parseEmail } from "@/src/server/ProjectRecordEmails/processEmail/parseEmail"
+import { generateProjectRecordWithAI } from "@/src/server/projectRecords/reprocess/generateProjectRecordWithAI"
+
 import db from "db"
-import { Langfuse } from "langfuse"
 
 // tbd: do we want to overwrite relations (subsections, subsubsections, uploads, tags) or only recreate the body?
-
-const langfuse = new Langfuse({
-  environment: process.env.NODE_ENV,
-})
-
-type ReprocessProjectRecordParams = {
-  projectRecordId: number
-}
-
-export const reprocessProjectRecord = async ({ projectRecordId }: ReprocessProjectRecordParams) => {
+export const reprocessProjectRecord = async ({ projectRecordId }: { projectRecordId: number }) => {
   // Authenticate request
   const { session } = await getBlitzContext()
 
@@ -58,160 +47,40 @@ export const reprocessProjectRecord = async ({ projectRecordId }: ReprocessProje
   }
 
   // Fetch the related projectRecord-email and parse it to extract body
-  let projectRecordEmail = null
-  let emailBody: string | null = null
+  let initialEmailBody = null
+
   if (projectRecord.projectRecordEmailId) {
-    projectRecordEmail = await db.projectRecordEmail.findUnique({
+    const projectRecordEmail = await db.projectRecordEmail.findUnique({
       where: { id: projectRecord.projectRecordEmailId },
     })
     console.log(`Found related projectRecord email ${projectRecord.projectRecordEmailId}`)
 
-    // Parse the email to extract only the body (not the full MIME text)
     if (projectRecordEmail) {
       const parsed = await parseEmail({ rawEmailText: projectRecordEmail.text })
-      emailBody = parsed.body
+      initialEmailBody = parsed.body
       console.log(`Extracted email body.`)
     }
   } else {
     console.log("No related projectRecord email found")
   }
 
-  // Get uploads from projectRecord
-  const uploads = projectRecord.uploads
+  console.log(`Found ${projectRecord.uploads.length} uploads related to projectRecord`)
 
-  console.log(`Found ${uploads.length} uploads related to projectRecord`)
-
-  // Fetch project topics and subsections
-  const subsections = await db.subsection.findMany({
-    where: { projectId: projectRecord.projectId },
-    select: {
-      id: true,
-      slug: true,
-      start: true,
-      end: true,
-    },
-    orderBy: { order: "asc" },
-  })
-  console.log(`Found ${subsections.length} subsections for project ${projectRecord.projectId}`)
-
-  const subsubsections = await db.subsubsection.findMany({
-    where: { subsection: { projectId: projectRecord.projectId } },
-    select: {
-      id: true,
-      slug: true,
-      subsectionId: true,
-    },
-  })
-  console.log(
-    `Found ${subsubsections.length} subsubsections for project ${projectRecord.projectId}`,
-  )
-
-  const projectRecordTopics = await db.projectRecordTopic.findMany({
-    where: { projectId: projectRecord.projectId },
-    select: {
-      id: true,
-      title: true,
-    },
-  })
-  console.log(
-    `Found ${projectRecordTopics.length} projectRecord topics for project ${projectRecord.projectId}`,
-  )
-
-  // Call generateObject with shared schema and prompt
-  const trace = langfuse.trace({
-    name: "reprocess-protocol",
-    userId: String(session?.userId),
+  // Fetch project context
+  const projectContext = await fetchProjectContext({
+    projectId: projectRecord.projectId,
   })
 
-  const finalExtractionSchema = createProjectRecordExtractionSchema({
-    subsections,
-    subsubsections,
-    projectRecordTopics,
+  // Call AI generation
+  const finalResult = await generateProjectRecordWithAI({
+    projectRecordBody: projectRecord.body || "",
+    emailBody: initialEmailBody,
+    uploads: projectRecord.uploads,
+    projectContext,
+    userId: session.userId,
   })
-  const fieldInstructions = createFieldInstructions({
-    subsections,
-    subsubsections,
-    projectRecordTopics,
-    isReprocessing: true,
-    hasUploads: uploads.length > 0,
-  })
-
-  // Build uploads context
-  let uploadsContext = ""
-  if (uploads.length > 0) {
-    uploadsContext = `
-
-    ---
-
-### RELATED DOCUMENTS (less important)
-
-`
-    uploads.forEach((upload) => {
-      uploadsContext += `- **${upload.title}**`
-      if (upload.summary) {
-        uploadsContext += `\n  Summary: ${upload.summary}`
-      }
-      uploadsContext += "\n"
-    })
-  }
-
-  let finalResult
-  try {
-    const result = await generateObject({
-      model: gpt5Mini,
-      schema: finalExtractionSchema,
-      experimental_telemetry: {
-        isEnabled: true,
-        functionId: "email-to-protocol-function",
-        metadata: {
-          langfuseTraceId: trace.id,
-        },
-      },
-      system: "You are an AI assistant that can refine project record entries.",
-      prompt: `### PROJECT RECORD
-
-**Current record entry (IMPORTANT!):**
-${projectRecord.body}
-
-${emailBody ? `**Original Email Body (from which the current record entry was generated):**\n${emailBody}\n` : ""}
-${uploadsContext}
-
----
-
-### CONTEXT
-Your task is to extract structured information to refine a **project record entry** for a task manager application.
-
----
-
-### TASK
-Analyze the current record entry ${emailBody ? " and original email body" : ""} ${uploads.length > 0 ? " and related document summaries" : ""} and identify the following fields:
-
-${fieldInstructions}
-`,
-    })
-    finalResult = result.object
-  } catch (error) {
-    if (NoObjectGeneratedError.isInstance(error)) {
-      console.log("NoObjectGeneratedError")
-      console.log("Cause:", error.cause)
-      console.log("Text:", error.text)
-      console.log("Response:", error.response)
-      console.log("Usage:", error.usage)
-    }
-    console.error("Error in AI processing:", error)
-    throw new Error("Failed to reprocess projectRecord with AI")
-  }
-
-  // Console.log the result
-  console.log("=== AI REPROCESSING RESULT ===")
-  console.log(JSON.stringify(finalResult, null, 2))
-  console.log("==============================")
-
-  await langfuse.flushAsync()
 
   return {
-    success: true,
-    projectRecordId: projectRecord.id,
     aiSuggestions: {
       title: finalResult.title,
       body: finalResult.body,
@@ -219,6 +88,5 @@ ${fieldInstructions}
       subsectionId: finalResult.subsectionId ? parseInt(finalResult.subsectionId) : undefined,
       projectRecordTopics: finalResult.topics?.map((id) => parseInt(id)) || [],
     },
-    message: "ProjectRecord reprocessed successfully",
   }
 }
