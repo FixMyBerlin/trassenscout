@@ -9,7 +9,7 @@ import { langfuse } from "./langfuseClient"
 type GeneratePdfSummaryWithAIParams = {
   pdfData: Buffer
   userId: number
-  projectContext: CreateProjectContextPromptSectionParams
+  projectContext: CreateProjectContextPromptSectionParams["projectContext"]
 }
 
 export const generatePdfSummaryWithAI = async ({
@@ -24,7 +24,7 @@ export const generatePdfSummaryWithAI = async ({
     userId: String(userId),
   })
 
-  const projectContextSection = createProjectContextPromptSection(projectContext)
+  const projectContextSection = createProjectContextPromptSection({ projectContext })
 
   const prompt = `# Task: Create Document Summary
 
