@@ -15,8 +15,15 @@ export const fetchProjectContext = async ({ projectId }: { projectId: number }) 
   console.log(`Found ${subsections.length} subsections for project ${projectId}`)
 
   const subsubsections = await db.subsubsection.findMany({
-    where: { subsection: { projectId: projectId } },
-    include: { subsection: { select: { id: true, slug: true } } },
+    where: { subsection: { projectId } },
+    include: {
+      subsection: {
+        select: {
+          id: true,
+          slug: true,
+        },
+      },
+    },
   })
   console.log(`Found ${subsubsections.length} subsubsections for project ${projectId}`)
 

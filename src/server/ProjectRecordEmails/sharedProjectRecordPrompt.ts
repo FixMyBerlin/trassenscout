@@ -53,7 +53,8 @@ ${
 Available subsubsections:
 ${subsubsections
   .map(
-    (s) => `${s.id} (short title: ${s.slug.toUpperCase()} - part of subsection ${s.subsectionId})`,
+    (s) =>
+      `${s.id} (short title: ${s.slug.toUpperCase()} - part of subsection ${s.subsection.slug.toUpperCase()})`,
   )
   .join(", ")}
 
