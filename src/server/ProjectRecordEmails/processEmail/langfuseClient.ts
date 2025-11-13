@@ -1,5 +1,5 @@
 import { Langfuse } from "langfuse"
 
 export const langfuse = new Langfuse({
-  environment: process.env.NODE_ENV,
+  environment: process.env.NEXT_PUBLIC_APP_ENV,
 })
