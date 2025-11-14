@@ -84,6 +84,19 @@ services:
       - "./letsencrypt:/letsencrypt"
     logging:
       driver: journald
+  imap-listener:
+    container_name: imap-listener
+    image: public.ecr.aws/n0p8j4k5/trassenscout/imap-listener:${NEXT_PUBLIC_APP_ENV}-latest
+    restart: unless-stopped
+    env_file: ".env"
+    environment:
+      TZ: Europe/Berlin
+      NODE_ENV: production
+    depends_on:
+      - app
+      - db
+    logging:
+      driver: journald
 
 volumes:
   pgdata:
