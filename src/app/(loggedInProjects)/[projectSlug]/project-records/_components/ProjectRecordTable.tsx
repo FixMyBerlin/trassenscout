@@ -1,13 +1,18 @@
 "use client"
 
 import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/useFilters.nuqs"
-import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
+import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/core/components/links"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text"
+import {
+  projectRecordDetailRoute,
+  projectRecordEditRoute,
+  projectRecordReviewRoute,
+} from "@/src/core/routes/projectRecordRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
 import { Disclosure, DisclosureButton, DisclosurePanel, Transition } from "@headlessui/react"
@@ -161,17 +166,16 @@ export const ProjectRecordsTable = ({
                           {projectRecord.uploads && projectRecord.uploads.length > 0 && (
                             <div>
                               <p className="mb-2 font-medium text-gray-500">Dokumente:</p>
-                              <ul className="space-y-1">
+                              <div className="flex flex-wrap gap-2">
                                 {projectRecord.uploads.map((upload) => (
-                                  <li key={upload.id}>
-                                    <Link href={uploadUrl(upload)} blank>
-                                      <p className="max-w-1/2 truncate @lg:max-w-52">
-                                        {upload.title}
-                                      </p>
-                                    </Link>
-                                  </li>
+                                  <UploadPreviewClickable
+                                    key={upload.id}
+                                    uploadId={upload.id}
+                                    projectSlug={projectSlug}
+                                    size="table"
+                                  />
                                 ))}
-                              </ul>
+                              </div>
                             </div>
                           )}
                           {/* Topics and "Freigabe"-Pill */}
@@ -196,7 +200,7 @@ export const ProjectRecordsTable = ({
                               {projectRecord.reviewState === "NEEDSREVIEW" && (
                                 <Link
                                   className="inline-flex items-center justify-center gap-1"
-                                  href={`/${projectSlug}/project-records/${projectRecord.id}/review`}
+                                  href={projectRecordReviewRoute(projectSlug, projectRecord.id)}
                                   blank={openLinksInNewTab}
                                 >
                                   <SparklesIcon className="h-3.5 w-3.5" />
@@ -205,7 +209,7 @@ export const ProjectRecordsTable = ({
                               )}
                               <Link
                                 icon="edit"
-                                href={`/${projectSlug}/project-records/${projectRecord.id}/edit`}
+                                href={projectRecordEditRoute(projectSlug, projectRecord.id)}
                                 blank={openLinksInNewTab}
                               >
                                 Bearbeiten
@@ -213,7 +217,7 @@ export const ProjectRecordsTable = ({
                             </IfUserCanEdit>
                             <Link
                               icon="details"
-                              href={`/${projectSlug}/project-records/${projectRecord.id}`}
+                              href={projectRecordDetailRoute(projectSlug, projectRecord.id)}
                               blank={openLinksInNewTab}
                             >
                               Detailansicht

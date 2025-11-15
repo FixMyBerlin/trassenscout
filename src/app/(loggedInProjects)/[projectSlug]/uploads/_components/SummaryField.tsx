@@ -1,5 +1,6 @@
 "use client"
 
+import { isPdf } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { summarizeUpload } from "@/src/app/actions/summarizeUpload"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { LabeledTextareaField } from "@/src/core/components/forms"
@@ -9,12 +10,22 @@ import { useFormContext } from "react-hook-form"
 
 type Props = {
   uploadId: number
+  mimeType: string | null
   isGeneratingSummary: boolean
   setIsGeneratingSummary: Dispatch<SetStateAction<boolean>>
 }
 
-export const SummaryField = ({ uploadId, isGeneratingSummary, setIsGeneratingSummary }: Props) => {
+export const SummaryField = ({
+  uploadId,
+  mimeType,
+  isGeneratingSummary,
+  setIsGeneratingSummary,
+}: Props) => {
   const { setValue } = useFormContext()
+
+  if (!isPdf(mimeType)) {
+    return null
+  }
 
   const handleSummarize = async () => {
     setIsGeneratingSummary(true)
@@ -22,7 +33,6 @@ export const SummaryField = ({ uploadId, isGeneratingSummary, setIsGeneratingSum
       const { summary } = await summarizeUpload({ uploadId })
       if (summary) {
         setValue("summary", summary)
-        console.log("Summary generated successfully")
       } else {
         throw new Error("Invalid response data")
       }

@@ -16,7 +16,7 @@ export default resolver.pipe(
   async ({
     projectSlug,
     where,
-    orderBy = { id: "asc" },
+    orderBy = { createdAt: "desc" },
     skip = 0,
     take = 100,
   }: GetUploadsInput) => {
@@ -38,6 +38,27 @@ export default resolver.pipe(
           orderBy,
           include: {
             subsection: { select: { id: true, slug: true, start: true, end: true } },
+            Subsubsection: { select: { id: true, slug: true } },
+            projectRecords: {
+              select: {
+                id: true,
+                title: true,
+                date: true,
+              },
+            },
+            projectRecordEmail: {
+              select: {
+                id: true,
+                createdAt: true,
+              },
+            },
+            createdBy: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
           },
         }),
     })

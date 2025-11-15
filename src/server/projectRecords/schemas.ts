@@ -48,6 +48,8 @@ export const ProjectRecordFormSchema = ProjectRecordSchema.omit({
   reviewedById: true,
   reviewState: true,
   reviewNotes: true,
+  projectId: true,
+  projectRecordEmailId: true,
 }).merge(
   z.object({
     date: NullableDateSchemaForm,

@@ -16,7 +16,9 @@ export const UploadSchema = z.object({
   projectRecordEmailId: InputNumberOrNullSchema,
   subsubsectionId: InputNumberOrNullSchema, // TODO Make this more fancy and guard against a case where both subsectionId and subsubsectionId are given
   externalUrl: z.string().url(),
-  mimeType: z.string().nullable(),
+  mimeType: z.string().nullable().optional(),
+  latitude: z.number().nullable().optional(),
+  longitude: z.number().nullable().optional(),
   // m2mFields
   projectRecords: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
 })

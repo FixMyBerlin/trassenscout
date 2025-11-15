@@ -1,5 +1,6 @@
 "use client"
 
+import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { processProjectRecordEmail } from "@/src/app/actions/processProjectRecordEmail"
 import { Link } from "@/src/core/components/links"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
@@ -114,23 +115,16 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
               </td>
               <td className="px-6 py-4 text-sm text-gray-500">
                 {email.uploads.length > 0 ? (
-                  <ul className="space-y-1">
+                  <div className="flex flex-wrap gap-2">
                     {email.uploads.map((upload: any) => (
-                      <li key={upload.id}>
-                        <a
-                          href={upload.externalUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 hover:underline"
-                          title={upload.title}
-                        >
-                          {upload.title.length > 30
-                            ? `${upload.title.slice(0, 30)}...`
-                            : upload.title}
-                        </a>
-                      </li>
+                      <UploadPreviewClickable
+                        key={upload.id}
+                        uploadId={upload.id}
+                        projectSlug={email.project.slug}
+                        size="table"
+                      />
                     ))}
-                  </ul>
+                  </div>
                 ) : (
                   "—"
                 )}

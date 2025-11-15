@@ -1,96 +1,57 @@
-/* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
-import { Link } from "@/src/core/components/links"
-import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-import { DocumentIcon } from "@heroicons/react/24/outline"
-import { Upload } from "@prisma/client"
+import { UploadIcon } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadIcon"
+import {
+  UPLOAD_SIZES,
+  UploadSize,
+} from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadSizes"
+import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
+import { useQuery } from "@blitzjs/rpc"
+import { twJoin } from "tailwind-merge"
 
 type Props = {
-  upload: Upload
-  /** @desc No editUrl will hide the edit button */
-  editUrl?: string
-  showUploadUrl?: string
-  description?: boolean
+  uploadId: number
+  projectSlug: string
+  size: UploadSize
+  showTitle: boolean
+  onClick?: () => void
 }
 
-export const UploadPreview = ({ upload, editUrl, showUploadUrl, description = true }: Props) => {
-  // Use mimeType if available, otherwise fall back to file extension
-  const mimeType = upload.mimeType
-  const isImage = mimeType
-    ? mimeType.startsWith("image/")
-    : ["png", "jpg", "jpeg", "gif", "webp"].includes(
-        (upload.externalUrl.split(".").at(-1) || "").toLowerCase(),
-      )
+export const UploadPreview = ({ uploadId, projectSlug, size, showTitle, onClick }: Props) => {
+  const [upload] = useQuery(getUploadWithRelations, { projectSlug, id: uploadId })
 
-  // Get file type label for display
-  const fileType = mimeType
-    ? mimeType.split("/")[1]?.toUpperCase()
-    : upload.externalUrl.toLowerCase().endsWith(".pdf") ||
-        upload.title.toLowerCase().endsWith(".pdf")
-      ? "PDF"
-      : ""
+  if (!upload) return null
 
-  const canEdit = useUserCan().edit
-  if (!canEdit) {
-    editUrl = undefined
+  const sizeConfig = UPLOAD_SIZES[size]
+
+  const iconContainer = (
+    <span className={twJoin(sizeConfig.containerHeight, "w-full overflow-hidden rounded-md")}>
+      <UploadIcon upload={upload} projectSlug={projectSlug} size={size} />
+    </span>
+  )
+
+  const descriptionText = showTitle ? (
+    <p className="mt-1 w-full flex-none truncate text-left">{upload.title || "-"}</p>
+  ) : null
+
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className="relative flex cursor-pointer flex-col items-start justify-center rounded-md bg-white text-xs ring-1 ring-gray-200/30 hover:bg-gray-50 hover:ring-2 hover:ring-gray-300/60 hover:outline-hidden"
+        title={upload.title}
+      >
+        {iconContainer}
+        {descriptionText}
+      </button>
+    )
   }
 
   return (
-    <div key={upload.id} className="relative">
-      <Link
-        blank
-        href={uploadUrl(upload)}
-        className="hover:ring-opacity-50 relative flex cursor-pointer flex-col items-start justify-center rounded-md bg-white text-xs hover:bg-gray-50 hover:ring hover:ring-offset-4 hover:outline-hidden"
-        title={upload.title}
-      >
-        <span className="h-40 w-full overflow-hidden rounded-md">
-          {isImage ? (
-            <img
-              alt=""
-              src={uploadUrl(upload)}
-              className="h-full w-full object-cover object-center"
-            />
-          ) : (
-            <div className="relative flex h-full w-full items-center justify-center bg-gray-50 text-gray-700 hover:text-blue-800">
-              <DocumentIcon className="h-20 w-20 opacity-95" />
-              <span className="text-md absolute mt-4 font-semibold uppercase">{fileType}</span>
-            </div>
-          )}
-        </span>
-        {description && (
-          <p
-            className="mt-1 w-full flex-none truncate text-left"
-            style={editUrl ? { width: "calc(100% - 2.5rem)" } : {}}
-          >
-            {upload.title || "-"}
-          </p>
-        )}
-      </Link>
-      <IfUserCanEdit>
-        <div className="absolute right-0 -bottom-2">
-          {editUrl && (
-            <Link
-              icon="edit"
-              href={editUrl}
-              className="rounded-sm border border-transparent hover:border-blue-900"
-            >
-              <span className="sr-only">Grafik bearbeiten</span>
-            </Link>
-          )}
-          {showUploadUrl && (
-            <Link
-              icon="delete"
-              className="rounded-sm border border-transparent hover:border-blue-900"
-              href={showUploadUrl}
-            >
-              <span className="sr-only">Grafik löschen</span>
-            </Link>
-          )}
-        </div>
-      </IfUserCanEdit>
+    <div className="relative">
+      {iconContainer}
+      {descriptionText}
     </div>
   )
 }

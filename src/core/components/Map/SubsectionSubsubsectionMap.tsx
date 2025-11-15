@@ -14,6 +14,7 @@ import { BaseMap } from "./BaseMap"
 import { SubsubsectionMapIcon } from "./Icons"
 import { TitleLabel } from "./Labels"
 import { TipMarker } from "./TipMarker"
+import { UploadMarkers } from "./UploadMarkers"
 import { layerColors } from "./layerColors"
 import { getCenterOfMass } from "./utils/getCenterOfMass"
 import { lineStringToGeoJSON } from "./utils/lineStringToGeoJSON"
@@ -284,6 +285,7 @@ export const SubsectionSubsubsectionMap = ({
         dots={dotsGeoms}
       >
         {markers}
+        <UploadMarkers projectSlug={projectSlug} interactive={true} />
       </BaseMap>
       {/* MapLegend temporarily hidden */}
       {/* <MapLegend

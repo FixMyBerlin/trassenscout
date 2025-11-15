@@ -5,8 +5,10 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
-import { getConfig } from "@/src/core/lib/next-s3-upload/src/utils/config"
-import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3"
+import { getConfiguredS3Client } from "@/src/server/uploads/_utils/client"
+import { S3_BUCKET } from "@/src/server/uploads/_utils/config"
+import { getS3KeyFromUrl } from "@/src/server/uploads/_utils/url"
+import { deleteObject } from "@better-upload/server/helpers"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
@@ -20,20 +22,19 @@ export default resolver.pipe(
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id, projectSlug }) => {
     const upload = await db.upload.findFirstOrThrow({ where: { id } })
-    const { hostname, pathname } = new URL(upload.externalUrl)
-    const isAws = hostname.endsWith("amazonaws.com")
-    if (!isAws) throw new NotFoundError()
+    const key = getS3KeyFromUrl(upload.externalUrl)
+    const rootFolder = process.env.S3_UPLOAD_ROOTFOLDER
 
-    const { accessKeyId, secretAccessKey, region } = getConfig()
-    const s3Client = new S3Client({
-      credentials: { accessKeyId, secretAccessKey },
-      region,
-    })
-    const command = new DeleteObjectCommand({
-      Bucket: hostname.split(".")[0],
-      Key: pathname.substring(1),
-    })
-    await s3Client.send(command)
+    // Security: Only allow deletion of files in the current environment's root folder
+    // This prevents accidentally deleting production files when using a copied production database locally
+    if (!key.startsWith(rootFolder)) {
+      throw new NotFoundError(
+        `File does not belong to current environment (expected root folder: ${rootFolder})`,
+      )
+    }
+
+    const s3 = getConfiguredS3Client()
+    await deleteObject(s3, { bucket: S3_BUCKET, key })
 
     return { id, projectSlug }
   },

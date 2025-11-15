@@ -3,6 +3,7 @@ import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
 import { ProjectRecordReviewState, ProjectRecordType } from "@prisma/client"
+import { twJoin } from "tailwind-merge"
 
 export const CreateEditReviewHistory = ({
   projectRecord,
@@ -15,7 +16,10 @@ export const CreateEditReviewHistory = ({
 }) => {
   return (
     <div
-      className={`flex shrink-0 flex-col gap-1 rounded-lg border border-gray-300 p-2 ${className || ""}`}
+      className={twJoin(
+        "flex shrink-0 flex-col gap-1 rounded-lg border border-gray-300 p-2",
+        className,
+      )}
     >
       <p className="text-xs">
         <span>Erstellt von </span>

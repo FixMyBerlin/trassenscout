@@ -1,4 +1,3 @@
-import { UploadTable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadTable"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "@/src/core/components/Breadcrumb/Breadcrumb"
 import { SubsectionMapIcon } from "@/src/core/components/Map/Icons"
@@ -6,16 +5,16 @@ import { SubsectionSubsubsectionMap } from "@/src/core/components/Map/Subsection
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { H2, seoTitleSlug, shortTitle, startEnd } from "@/src/core/components/text"
+import { seoTitleSlug, shortTitle, startEnd } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import { SubsectionUploadsSection } from "@/src/pagesComponents/subsections/SubsectionUploadsSection"
 import { SubsubsectionMapSidebar } from "@/src/pagesComponents/subsections/SubsubsectionMapSidebar"
 import { SubsubsectionTable } from "@/src/pagesComponents/subsubsections/SubsubsectionTable"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
-import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
@@ -38,11 +37,6 @@ export const SubsectionDashboardWithQuery = () => {
     (subsub) => subsub.subsectionId === subsection?.id,
   )
   const subsubsection = subsubsectionsForSubsection.find((ss) => ss.slug === subsubsectionSlug)
-
-  const [{ uploads }] = useQuery(getUploadsWithSubsections, {
-    projectSlug,
-    where: { subsectionId: subsection?.id },
-  })
 
   if (!subsection) {
     return <Spinner page />
@@ -110,12 +104,7 @@ export const SubsectionDashboardWithQuery = () => {
         )}
       </div>
 
-      {!!uploads.length && (
-        <section className="mt-12">
-          <H2 className="mb-5">Relevante Dokumente</H2>
-          <UploadTable withAction={false} withSubsectionColumn={false} uploads={uploads} />
-        </section>
-      )}
+      <SubsectionUploadsSection subsectionId={subsection.id} />
 
       <SuperAdminLogData
         data={{
@@ -124,7 +113,6 @@ export const SubsectionDashboardWithQuery = () => {
           subsubsections,
           subsubsectionsForSubsection,
           subsubsection,
-          uploads,
         }}
       />
     </>

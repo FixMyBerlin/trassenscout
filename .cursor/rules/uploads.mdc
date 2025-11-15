@@ -1,0 +1,7 @@
+---
+globs: **/uploads/**.*,src/server/uploads/_utils/client.ts
+alwaysApply: false
+---
+
+Whenever changes to the Uploads and AWS / S3 integration need to happen, check the docs at https://better-upload.com/llms-full.txt.
+Prefer using the better upload S3 client unless features are needed to use the AWS SDK direclty.

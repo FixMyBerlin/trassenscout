@@ -4,6 +4,7 @@ import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { invoke } from "@/src/blitz-server"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { projectRecordEditRoute } from "@/src/core/routes/projectRecordRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 
 import { Metadata } from "next"
@@ -31,10 +32,7 @@ export default async function ProjectRecordDetail({
         className="mt-12"
         action={
           <IfUserCanEdit>
-            <Link
-              icon="edit"
-              href={`/${params.projectSlug}/project-records/${projectRecordId}/edit`}
-            >
+            <Link icon="edit" href={projectRecordEditRoute(params.projectSlug, projectRecordId)}>
               Bearbeiten
             </Link>
           </IfUserCanEdit>
@@ -43,7 +41,7 @@ export default async function ProjectRecordDetail({
 
       <CreateEditReviewHistory projectRecord={projectRecord} />
 
-      <ProjectRecordDetailClient projectRecord={projectRecord} projectRecordId={projectRecordId} />
+      <ProjectRecordDetailClient projectRecord={projectRecord} />
 
       <div className="mt-8 border-t border-gray-200 pt-4">
         <Link href={`/${params.projectSlug}/project-records`}>

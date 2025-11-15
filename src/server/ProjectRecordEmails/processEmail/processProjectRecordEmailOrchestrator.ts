@@ -46,6 +46,7 @@ export const processProjectRecordEmailOrchestrator = async ({
   const uploadIds = await uploadEmailAttachments({
     attachments,
     projectId,
+    projectSlug,
     projectRecordEmailId: projectRecordEmail.id,
   })
 

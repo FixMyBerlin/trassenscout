@@ -1,13 +1,20 @@
 "use client"
 
+import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
+import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneContainer"
+import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import {
   LabeledCheckboxGroup,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
 } from "@/src/core/components/forms"
-import { blueButtonStyles, Link } from "@/src/core/components/links"
-import { shortTitle } from "@/src/core/components/text"
+import { blueButtonStyles } from "@/src/core/components/links"
+import { frenchQuote, shortTitle } from "@/src/core/components/text"
+import { projectRecordUploadEditRoute } from "@/src/core/routes/uploadRoutes"
+import { useTrySlugId } from "@/src/core/routes/useSlug"
+import { NumberArraySchema } from "@/src/core/utils/schema-shared"
+import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import createProjectRecordTopic from "@/src/server/ProjectRecordTopics/mutations/createProjectRecordTopic"
 import getProjectRecordTopicsByProject from "@/src/server/ProjectRecordTopics/queries/getProjectRecordTopicsByProject"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
@@ -15,46 +22,51 @@ import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsect
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useFormContext } from "react-hook-form"
+import { z } from "zod"
 
 type ProjectRecordFormFieldsProps = {
   projectSlug: string
 }
 
 export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFieldsProps) => {
+  const urlProjectRecordId = useTrySlugId("projectRecordId")
+
   const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
-  const [{ projectRecordTopics }, { refetch }] = useQuery(getProjectRecordTopicsByProject, {
-    projectSlug,
-  })
-  const [{ uploads }] = useQuery(getUploadsWithSubsections, {
-    projectSlug,
-  })
+  const [{ projectRecordTopics }, { refetch: refetchTopics }] = useQuery(
+    getProjectRecordTopicsByProject,
+    { projectSlug },
+  )
   const [newTopic, setNewTopic] = useState("")
   const [createProjectRecordTopicMutation] = useMutation(createProjectRecordTopic)
-  const { watch, setValue, getValues } = useFormContext()
+  const { watch, setValue } = useFormContext<z.infer<typeof ProjectRecordFormSchema>>()
   const subsectionId = watch("subsectionId")
+  const uploadsValue = watch("uploads")
+  const uploadIds = NumberArraySchema.parse(uploadsValue)
 
-  useEffect(() => {
-    const subsubsectionId = getValues("subsubsectionId")
-    if (subsectionId && subsubsectionId) {
-      const selectedSubsubsection = subsubsections.find((s) => s.id === Number(subsubsectionId))
-      if (selectedSubsubsection && selectedSubsubsection.subsectionId !== Number(subsectionId)) {
-        setValue("subsubsectionId", "")
+  const [{ uploads: selectedUploads = [] } = { uploads: [] }] = useQuery(
+    getUploadsWithSubsections,
+    { projectSlug, where: { id: { in: uploadIds } } },
+    { enabled: uploadIds.length > 0 },
+  )
+
+  const handleSubsectionChange = (newSubsectionId: string) => {
+    const currentSubsubsectionId = watch("subsubsectionId")
+    if (currentSubsubsectionId) {
+      const selectedSubsubsection = subsubsections.find(
+        (s) => s.id === Number(currentSubsubsectionId),
+      )
+      if (selectedSubsubsection && selectedSubsubsection.subsectionId !== Number(newSubsectionId)) {
+        setValue("subsubsectionId", null)
       }
     }
-  }, [subsectionId, subsubsections, getValues, setValue])
+  }
 
   const topicsOptions = projectRecordTopics.length
     ? projectRecordTopics.map((t) => {
         return { value: String(t.id), label: t.title }
-      })
-    : []
-
-  const uploadsOptions = uploads.length
-    ? uploads.map((u) => {
-        return { value: String(u.id), label: u.title }
       })
     : []
 
@@ -73,6 +85,14 @@ export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFields
     ])
   subsubsectionOptions.unshift(["", "Keine Angabe"])
 
+  const selectedSubsection = subsectionId
+    ? subsections.find((s) => s.id === Number(subsectionId))
+    : null
+
+  const subsubsectionLabel = selectedSubsection
+    ? `Einträge für ${frenchQuote(shortTitle(selectedSubsection.slug))}`
+    : "Alle Einträge"
+
   const handleNewTopicFormSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     if (!newTopic.trim()) return
@@ -81,7 +101,7 @@ export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFields
         title: newTopic.trim(),
         projectSlug,
       })
-      refetch()
+      refetchTopics()
     } catch (error: any) {
       console.error(error)
     }
@@ -90,24 +110,31 @@ export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFields
 
   return (
     <>
-      <LabeledTextField type="date" name="date" label="am/bis" placeholder="" />
+      <div className="flex gap-4">
+        <div className="w-48">
+          <LabeledTextField type="date" name="date" label="am/bis" placeholder="" />
+        </div>
+        <div className="flex-1">
+          <LabeledTextField name="title" label="Titel" />
+        </div>
+      </div>
 
-      <LabeledTextField name="title" label="Titel" />
+      <div className="grid grid-cols-2 gap-4">
+        <LabeledSelect
+          optional
+          name="subsectionId"
+          options={subsectionOptions}
+          label="Planungsabschnitt"
+          onChange={handleSubsectionChange}
+        />
 
-      <LabeledSelect
-        optional
-        name="subsectionId"
-        options={subsectionOptions}
-        label="Planungsabschnitt"
-      />
-
-      <LabeledSelect
-        optional
-        name="subsubsectionId"
-        options={subsubsectionOptions}
-        label="Eintrag"
-        help="Nach Auswahl eines Planungsabschnitts werden hier nur dessen Einträge angezeigt."
-      />
+        <LabeledSelect
+          optional
+          name="subsubsectionId"
+          options={subsubsectionOptions}
+          label={subsubsectionLabel}
+        />
+      </div>
 
       <LabeledTextareaField name="body" optional label="Notizen (Markdown)" rows={10} />
 
@@ -142,26 +169,39 @@ export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFields
       </div>
 
       <div className="flex flex-col gap-2">
-        {!!uploads.length ? (
-          <LabeledCheckboxGroup
-            scope="uploads"
-            classNameItemWrapper="grid grid-cols-2 gap-1.5 w-full"
-            items={uploadsOptions}
-            label="Dokumente"
-          />
-        ) : (
-          <p>
-            Es sind wurden keine Dokumente hochgeladen. Um Dokumente hochzuladen, verwenden Sie
-            bitte die Upload-Funktion.
-          </p>
-        )}
-        <div className="text-sm">
-          <Link blank href={`/${projectSlug}/uploads/new`} icon="plus">
-            Neues Dokument hochladen
-          </Link>
-          <p className="mt-1 text-gray-500">
-            Lade ein Dokument im Projekt hoch und verknüpfe es danach mit diesem Protokoll
-          </p>
+        <label className="text-sm font-medium text-gray-700">Dokumente (optional)</label>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          {selectedUploads.map((upload) => {
+            return (
+              <UploadPreviewClickable
+                key={upload.id}
+                uploadId={upload.id}
+                projectSlug={projectSlug}
+                size="grid"
+                editUrl={
+                  urlProjectRecordId
+                    ? projectRecordUploadEditRoute(projectSlug, urlProjectRecordId, upload.id)
+                    : undefined
+                }
+                onDeleted={async () => {
+                  const existingUploads = Array.isArray(uploadsValue) ? uploadsValue : []
+                  const newUploads = existingUploads.filter((id: number) => id !== upload.id)
+                  setValue("uploads", newUploads, { shouldDirty: true })
+                }}
+              />
+            )
+          })}
+          <UploadDropzoneContainer className="h-40 border border-gray-300 p-2">
+            <UploadDropzone
+              fillContainer
+              onUploadComplete={async (newUploadIds) => {
+                // Add new upload IDs to the form
+                const existingUploads = Array.isArray(uploadsValue) ? uploadsValue : []
+                const newUploads = [...new Set([...existingUploads, ...newUploadIds])]
+                setValue("uploads", newUploads, { shouldDirty: true })
+              }}
+            />
+          </UploadDropzoneContainer>
         </div>
       </div>
     </>

@@ -2,6 +2,7 @@ import { ReviewProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSl
 import { invoke } from "@/src/blitz-server"
 import { Link } from "@/src/core/components/links/Link"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { projectRecordEditRoute } from "@/src/core/routes/projectRecordRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { Metadata } from "next"
 import "server-only"
@@ -29,10 +30,7 @@ export default async function ReviewProjectRecordPage({
         className="mt-12"
         action={
           <div className="flex flex-col gap-2">
-            <Link
-              icon="edit"
-              href={`/${params.projectSlug}/project-records/${projectRecordId}/edit`}
-            >
+            <Link icon="edit" href={projectRecordEditRoute(params.projectSlug, projectRecordId)}>
               Bearbeiten
             </Link>
           </div>

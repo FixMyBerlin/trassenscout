@@ -4,8 +4,9 @@ import { useState } from "react"
 
 import { Form, LabeledTextareaField } from "@/src/core/components/forms"
 import { linkStyles } from "@/src/core/components/links"
-import { Modal } from "@/src/core/components/Modal"
+import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
 import { H3 } from "@/src/core/components/text"
+import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import updateSurveyResponseComment from "@/src/survey-response-comments/mutations/updateSurveyResponseComment"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
@@ -64,7 +65,11 @@ export const EditSurveyResponseCommentForm = ({ comment }: Props) => {
       </button>
 
       <Modal open={open} handleClose={() => setOpen(false)}>
-        <H3 className="mb-2">Kommentar bearbeiten</H3>
+        <HeadingWithAction className="mb-2">
+          <H3>Kommentar bearbeiten</H3>
+          <ModalCloseButton onClose={() => setOpen(false)} />
+        </HeadingWithAction>
+
         <Form onSubmit={handleSubmit} submitText="Kommentar speichern">
           <LabeledTextareaField
             name="body"
@@ -78,6 +83,7 @@ export const EditSurveyResponseCommentForm = ({ comment }: Props) => {
           {/* @ts-expect-errors TODO Research how the error message is provided by Blitz */}
           {error ? <p className="text-red-500">{error.message}</p> : null}
         </Form>
+
         <button
           type="button"
           title="Kommentar löschen"

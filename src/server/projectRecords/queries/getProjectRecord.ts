@@ -61,8 +61,6 @@ export default resolver.pipe(
         uploads: {
           select: {
             id: true,
-            title: true,
-            externalUrl: true,
           },
         },
         projectRecordTopics: {

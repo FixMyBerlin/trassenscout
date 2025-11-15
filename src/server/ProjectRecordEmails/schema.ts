@@ -3,6 +3,7 @@ import { z } from "zod"
 export const ProjectRecordEmailSchema = z.object({
   text: z.string().min(1, { message: "E-Mail-Inhalt ist ein Pflichtfeld." }),
   projectId: z.coerce.number(),
+  projectSlug: z.string(),
   date: z.date().nullish(),
   from: z.string().nullish(),
   subject: z.string().nullish(),

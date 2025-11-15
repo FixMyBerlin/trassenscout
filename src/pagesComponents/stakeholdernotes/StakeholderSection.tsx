@@ -1,6 +1,7 @@
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
-import { H2 } from "@/src/core/components/text/Headings"
+import { H2 } from "@/src/core/components/text"
+import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { quote } from "@/src/core/components/text/quote"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
@@ -33,13 +34,13 @@ export const StakeholderSection: React.FC<Props> = ({ subsectionId }) => {
 
   return (
     <section className="mt-12" id={hashStakeholdernotes}>
-      <div className="mb-5 flex items-center justify-between">
+      <HeadingWithAction className="mb-5">
         <H2>
           Abstimmung mit <abbr title="Träger öffentlicher Belange"> TÖB</abbr>s
           {statusLabel && ` – Status ${quote(statusLabel)}`}
         </H2>
         <StakeholdernoteFilterDropdown stakeholdernotes={stakeholdernotes} />
-      </div>
+      </HeadingWithAction>
 
       <ZeroCase
         visible={filteredStakeholdernotes.length}

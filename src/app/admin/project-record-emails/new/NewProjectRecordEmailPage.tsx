@@ -9,6 +9,7 @@ import { ProjectRecordEmailFormSchema } from "@/src/server/ProjectRecordEmails/s
 import { TGetProjects } from "@/src/server/projects/queries/getProjects"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 import { ProjectRecordEmailForm } from "../_components/ProjectRecordEmailForm"
 
 type Props = {
@@ -19,10 +20,13 @@ export function NewProjectRecordEmailPage({ projects }: Props) {
   const router = useRouter()
   const [createProjectRecordEmailMutation] = useMutation(createProjectRecordEmail)
 
-  type HandleSubmit = any // TODO
-  const handleSubmit = async (values: HandleSubmit) => {
+  const handleSubmit = async (values: z.infer<typeof ProjectRecordEmailFormSchema>) => {
     try {
-      const projectRecordEmail = await createProjectRecordEmailMutation(values)
+      const project = projects.find((p) => p.id === values.projectId)!
+      const projectRecordEmail = await createProjectRecordEmailMutation({
+        ...values,
+        projectSlug: project.slug,
+      })
       router.push(`/admin/project-record-emails/${projectRecordEmail.id}`)
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["body"])

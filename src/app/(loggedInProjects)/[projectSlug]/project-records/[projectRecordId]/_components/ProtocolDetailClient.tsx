@@ -19,10 +19,9 @@ export type ReprocessedProjectRecord = {
 
 type Props = {
   projectRecord: Awaited<ReturnType<typeof getProjectRecord>>
-  projectRecordId: number
 }
 
-export const ProjectRecordDetailClient = ({ projectRecord, projectRecordId }: Props) => {
+export const ProjectRecordDetailClient = ({ projectRecord }: Props) => {
   const [aiSuggestions, setAiSuggestions] = useState<ReprocessedProjectRecord | null>(null)
 
   const handleAiSuggestions = (suggestions: ReprocessedProjectRecord) => {
@@ -71,7 +70,7 @@ export const ProjectRecordDetailClient = ({ projectRecord, projectRecordId }: Pr
           <SuperAdminBox>
             <IfUserCanEdit>
               <ReprocessProjectRecordButton
-                projectRecordId={projectRecordId}
+                projectRecordId={projectRecord.id}
                 onAiSuggestions={handleAiSuggestions}
               />
             </IfUserCanEdit>
