@@ -3,34 +3,27 @@
 import { UploadTable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadTable"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Pagination } from "@/src/core/components/Pagination"
-import { Link } from "@/src/core/components/links"
-import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { shortTitle } from "@/src/core/components/text"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
-
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
+import { useQuery } from "@blitzjs/rpc"
 import { PromiseReturnType } from "blitz"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 type Props = {
   uploads: PromiseReturnType<typeof getUploadsWithSubsections>["uploads"]
-  subsections: SubsectionWithPosition[]
   hasMore: boolean
   page: number
-  projectSlug: string
-  filterSubsectionId?: string
+  onDelete?: () => Promise<void>
 }
 
-export const UploadsTableWithFilter = ({
-  uploads,
-  subsections,
-  hasMore,
-  page,
-  projectSlug,
-  filterSubsectionId,
-}: Props) => {
+export const UploadsTableWithFilter = ({ uploads, hasMore, page, onDelete }: Props) => {
+  const projectSlug = useProjectSlug()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const filterSubsectionId = searchParams?.get("filterSubsectionId") || undefined
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
 
   const selectOptions: [number, string, number][] = [
     [0, `Alle Dateien (${uploads.length})`, uploads.length],
@@ -81,15 +74,7 @@ export const UploadsTableWithFilter = ({
         })}
       </select>
 
-      <UploadTable uploads={filteredUploads} />
-
-      <IfUserCanEdit>
-        <ButtonWrapper className="mt-5">
-          <Link button="blue" icon="plus" href={`/${projectSlug}/uploads/new`}>
-            Datei hochladen
-          </Link>
-        </ButtonWrapper>
-      </IfUserCanEdit>
+      <UploadTable uploads={filteredUploads} onDelete={onDelete} />
 
       <Pagination
         hasMore={hasMore}

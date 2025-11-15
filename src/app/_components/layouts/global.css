@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @config "../../../../tailwind.config.js";
+@import "../../(loggedInProjects)/[projectSlug]/uploads/_components/upload-progress-animations.css";
 
 @plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/forms";

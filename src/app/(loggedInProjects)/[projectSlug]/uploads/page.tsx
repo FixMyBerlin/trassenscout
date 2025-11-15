@@ -1,10 +1,8 @@
-import { UploadsTableWithFilter } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadsTableWithFilter"
-import { invoke } from "@/src/blitz-server"
+import { UploadsPageContent } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadsPageContent"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import getSubsections from "@/src/server/subsections/queries/getSubsections"
-import getUploads from "@/src/server/uploads/queries/getUploadsWithSubsections"
+import { Spinner } from "@/src/core/components/Spinner"
 import { Metadata } from "next"
-import "server-only"
+import { Suspense } from "react"
 
 export const metadata: Metadata = {
   title: "Dokumente",
@@ -13,23 +11,7 @@ export const metadata: Metadata = {
   },
 }
 
-type Props = {
-  params: { projectSlug: string }
-  searchParams: { page?: string; filterSubsectionId?: string }
-}
-
-const ITEMS_PER_PAGE = 100
-
-export default async function UploadsPage({ params, searchParams }: Props) {
-  const page = Number(searchParams.page) || 0
-  const { uploads, hasMore } = await invoke(getUploads, {
-    projectSlug: params.projectSlug,
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
-
-  const { subsections } = await invoke(getSubsections, { projectSlug: params.projectSlug })
-
+export default async function UploadsPage() {
   return (
     <>
       <PageHeader
@@ -37,14 +19,9 @@ export default async function UploadsPage({ params, searchParams }: Props) {
         description="Dokumente und Grafiken hochladen und bei Bedarf mit einem Planungsabschnitt verknüpfen."
         className="mt-12"
       />
-      <UploadsTableWithFilter
-        uploads={uploads}
-        subsections={subsections}
-        hasMore={hasMore}
-        page={page}
-        projectSlug={params.projectSlug}
-        filterSubsectionId={searchParams.filterSubsectionId}
-      />
+      <Suspense fallback={<Spinner page />}>
+        <UploadsPageContent />
+      </Suspense>
     </>
   )
 }

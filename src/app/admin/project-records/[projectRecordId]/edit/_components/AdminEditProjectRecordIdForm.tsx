@@ -68,7 +68,6 @@ export const AdminEditProjectRecordForm = ({
   const m2mFieldsInitialValues: Record<M2MFieldsType | string, string[]> = {}
   m2mFields.forEach((fieldName) => {
     if (fieldName in projectRecord) {
-      // @ts-expect-error
       m2mFieldsInitialValues[fieldName] = Array.from(projectRecord[fieldName].values(), (obj) =>
         String(obj.id),
       )

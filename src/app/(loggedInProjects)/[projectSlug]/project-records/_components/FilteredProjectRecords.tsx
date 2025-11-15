@@ -40,7 +40,8 @@ export const FilteredProjectRecords = ({
       if (filterElement) filterElement.scrollIntoView({ behavior: "smooth", block: "start" })
       // Remove the hash so subsequent search updates don't trigger scroll
       const urlWithoutHash = window.location.pathname + window.location.search
-      router.replace(urlWithoutHash as any)
+      // @ts-expect-error - router.replace expects Route type but we're constructing from window.location
+      router.replace(urlWithoutHash)
     }
   }, [filter?.searchterm, router])
 

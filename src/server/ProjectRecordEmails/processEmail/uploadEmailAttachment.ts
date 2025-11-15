@@ -1,39 +1,41 @@
-import { getClient } from "@/src/core/lib/next-s3-upload/src/utils/client"
-import { getConfig } from "@/src/core/lib/next-s3-upload/src/utils/config"
-import { sanitizeKey, uuid } from "@/src/core/lib/next-s3-upload/src/utils/keys"
+import { getAwsSdkS3Client } from "@/src/server/uploads/_utils/client"
+import { S3_BUCKET } from "@/src/server/uploads/_utils/config"
+import { generateS3Key } from "@/src/server/uploads/_utils/keys"
+import { uploadSource } from "@/src/server/uploads/_utils/sources"
+import { getS3Url } from "@/src/server/uploads/_utils/url"
 import { PutObjectCommand } from "@aws-sdk/client-s3"
 
 type UploadEmailAttachmentParams = {
   attachment: { filename: string; contentType: string; size: number; content: Buffer }
-  projectId: number
+  projectSlug: string
+  projectRecordEmailId: number
 }
 
 export const uploadEmailAttachment = async ({
   attachment,
-  projectId,
+  projectSlug,
+  projectRecordEmailId,
 }: UploadEmailAttachmentParams) => {
-  const config = getConfig()
-  const s3Client = getClient()
+  const s3Client = getAwsSdkS3Client()
+  const key = generateS3Key(projectSlug, attachment.filename)
+  const url = getS3Url(key)
 
-  // Generate a unique key for the file using the same pattern as next-s3-upload
-  // Format: {rootFolder}/projectRecord-emails/{projectId}/{uuid}/{sanitized-filename}
-  const sanitizedFilename = sanitizeKey(attachment.filename)
-  const key = `${config.rootFolder}/projectRecord-emails/${projectId}/${uuid()}/${sanitizedFilename}`
-
-  // Use the same PutObjectCommand structure as the s3-upload.ts presigned strategy
+  // Upload file to S3 using native AWS SDK PutObjectCommand
+  // Using native SDK instead of Better Upload's putObject helper because
+  // the helper doesn't properly handle Buffer uploads with Content-Length,
+  // causing "NotImplemented" errors with chunked transfer encoding
   const command = new PutObjectCommand({
-    Bucket: config.bucket,
+    Bucket: S3_BUCKET,
     Key: key,
     Body: attachment.content,
     ContentType: attachment.contentType,
     ContentLength: attachment.size,
-    CacheControl: "max-age=630720000", // Same cache control as next-s3-upload
+    Metadata: {
+      projectrecordemailid: String(projectRecordEmailId),
+      source: uploadSource.emailAttachment,
+    },
   })
-
   await s3Client.send(command)
-
-  // Construct the S3 URL - same format as other uploads
-  const url = `https://${config.bucket}.s3.${config.region}.amazonaws.com/${key}`
 
   return {
     filename: attachment.filename,

@@ -17,6 +17,13 @@ export const useSlug = (inputSlug: string) => {
   return slug!
 }
 
+export const useTrySlugId = (slugId: string) => {
+  const rawId = useParams()?.[slugId]
+  const id = Array.isArray(rawId) ? rawId[0] : rawId
+
+  return id ? Number(id) : undefined
+}
+
 export const useSlugId = (slugId: string) => {
   const rawId = useParams()?.[slugId]
   const id = Array.isArray(rawId) ? rawId[0] : rawId

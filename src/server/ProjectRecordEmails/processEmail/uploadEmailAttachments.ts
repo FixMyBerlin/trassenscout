@@ -4,12 +4,14 @@ import db from "db"
 type ProcessEmailAttachmentsParams = {
   attachments: { filename: string; contentType: string; size: number; content: Buffer }[]
   projectId: number
+  projectSlug: string
   projectRecordEmailId: number
 }
 
 export const uploadEmailAttachments = async ({
   attachments,
   projectId,
+  projectSlug,
   projectRecordEmailId,
 }: ProcessEmailAttachmentsParams) => {
   // Upload attachments to S3 and create Upload records (DISABLED FOR TESTING)
@@ -18,9 +20,14 @@ export const uploadEmailAttachments = async ({
 
     try {
       // Upload to S3
-      const uploadedFile = await uploadEmailAttachment({ attachment, projectId })
+      const uploadedFile = await uploadEmailAttachment({
+        attachment,
+        projectSlug,
+        projectRecordEmailId,
+      })
 
       // Create Upload record in database
+      // Email attachments are system-created, so createdById and updatedById are null
       const upload = await db.upload.create({
         data: {
           title: attachment.filename,
@@ -28,6 +35,8 @@ export const uploadEmailAttachments = async ({
           projectId: projectId,
           projectRecordEmailId: projectRecordEmailId,
           mimeType: uploadedFile.contentType, // Store the MIME type from email attachment
+          createdById: null, // System-created via email
+          updatedById: null, // System-created via email
           // tbd: summary
         },
       })

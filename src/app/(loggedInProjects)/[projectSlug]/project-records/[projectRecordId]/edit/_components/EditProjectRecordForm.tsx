@@ -1,9 +1,11 @@
 "use client"
 
+import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
+import { Form, FORM_ERROR } from "@/src/core/components/forms"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link, linkStyles } from "@/src/core/components/links"
+import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import deleteProjectRecord from "@/src/server/projectRecords/mutations/deleteProjectRecord"
@@ -13,7 +15,6 @@ import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/navigation"
-import { ProjectRecordForm } from "../../../_components/ProjectRecordForm"
 
 export const EditProjectRecordForm = ({
   projectRecord,
@@ -52,7 +53,7 @@ export const EditProjectRecordForm = ({
         date: values.date === "" ? null : new Date(values.date),
         projectSlug,
       })
-      router.push(`/${projectSlug}/project-records/${projectRecord.id}`)
+      router.push(projectRecordDetailRoute(projectSlug, projectRecord.id))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
@@ -70,7 +71,7 @@ export const EditProjectRecordForm = ({
 
   return (
     <>
-      <ProjectRecordForm
+      <Form
         className="grow"
         submitText="Protokoll speichern"
         schema={ProjectRecordFormSchema}
@@ -81,8 +82,11 @@ export const EditProjectRecordForm = ({
           ...m2mFieldsInitialValues,
         }}
         onSubmit={handleSubmit}
-        mode="edit"
-      />
+      >
+        <div className="space-y-6">
+          <ProjectRecordFormFields projectSlug={projectSlug} />
+        </div>
+      </Form>
 
       <p className="mt-10">
         <Link href={`/${projectSlug}/project-records`}>← Zurück zur Protokoll-Übersicht</Link>

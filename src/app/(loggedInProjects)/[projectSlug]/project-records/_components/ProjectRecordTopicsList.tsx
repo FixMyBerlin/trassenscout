@@ -24,11 +24,11 @@ export const ProjectRecordTopicsList = ({
             onClick={() => onTopicClick?.(topic.title)}
             type="button"
           >
-            # {topic.title}
+            #{topic.title}
           </button>
         ) : (
           <span key={topic.id} className="inline-block rounded-sm bg-gray-100 px-2 py-1 text-xs">
-            # {topic.title}
+            #{topic.title}
           </span>
         ),
       )}

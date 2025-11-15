@@ -20,3 +20,12 @@ export const InputNumberSchema = z.preprocess(
   (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
   z.number({ invalid_type_error: "Pflichtfeld" }),
 )
+
+/**
+ * Schema for an array of numbers, coercing strings to numbers and filtering out invalid values.
+ * Useful for form values that might be strings (from HTML inputs) or numbers.
+ */
+export const NumberArraySchema = z
+  .array(z.coerce.number())
+  .transform((arr) => arr.filter((n) => !isNaN(n)))
+  .catch([])

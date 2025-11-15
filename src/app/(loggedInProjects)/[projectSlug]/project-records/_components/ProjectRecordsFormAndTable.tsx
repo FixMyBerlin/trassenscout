@@ -1,18 +1,23 @@
 "use client"
 
 import { FilteredProjectRecords } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/FilteredProjectRecords"
-import { ProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordForm"
+import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
 import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/useFilters.nuqs"
 import { useInitialFormValues } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/useInitialFormValues.nuqs"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
-import { FORM_ERROR } from "@/src/core/components/forms"
+import { Disclosure } from "@/src/core/components/Disclosure"
+import { Form, FORM_ERROR } from "@/src/core/components/forms"
 import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
+import { SubmitButton } from "@/src/core/components/forms/SubmitButton"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import { H3 } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
 import createProjectRecord from "@/src/server/projectRecords/mutations/createProjectRecord"
 import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
+import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation, useQuery } from "@blitzjs/rpc"
+import { clsx } from "clsx"
 import { useEffect, useState } from "react"
 
 export const ProjectRecordsFormAndTable = ({
@@ -85,12 +90,32 @@ export const ProjectRecordsFormAndTable = ({
   return (
     <>
       <IfUserCanEdit>
-        <ProjectRecordForm
+        <Form
           resetOnSubmit
           onSubmit={handleSubmit}
           initialValues={formInitialValues}
-          mode="new"
-        />
+          schema={ProjectRecordFormSchema}
+        >
+          <div>
+            <Disclosure
+              classNameButton="py-4 px-6 text-left bg-gray-100 rounded-t-md pb-6"
+              classNamePanel="px-6 pb-3 bg-gray-100 rounded-b-md space-y-6"
+              open
+              button={
+                <div className="flex-auto">
+                  <H3 className={clsx("pr-10 md:pr-0")}>Neuer Protokolleintrag</H3>
+                  <small>
+                    Neuen Protokolleintrag verfassen. Zum Ein- oder Ausklappen auf den Pfeil oben
+                    rechts klicken.
+                  </small>
+                </div>
+              }
+            >
+              <ProjectRecordFormFields projectSlug={projectSlug} />
+              <SubmitButton>Protokoll speichern</SubmitButton>
+            </Disclosure>
+          </div>
+        </Form>
         <div className="mb-4 pt-4" id="toast">
           <FormSuccess message="Neues Protokoll erstellt" show={showSuccess} />
         </div>

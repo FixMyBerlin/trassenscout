@@ -28,7 +28,7 @@ export const processProjectRecordEmail = async ({
 
   console.log("Processing projectRecord email from user:", session.userId)
 
-  // Get the ProjectRecordEmail
+  // Get the ProjectRecordEmail with project slug
   const projectRecordEmail = await db.projectRecordEmail.findFirst({
     where: { id: projectRecordEmailId },
     include: { uploads: { select: { id: true } } },
@@ -92,7 +92,7 @@ export const processProjectRecordEmail = async ({
   // Create log entry
   await createLogEntry({
     action: "CREATE",
-    message: `Neues Projektprotokoll ${projectRecord.title} per KI aus Email mir ID ${projectRecordEmailId} erstellt`,
+    message: `Neues Projektprotokoll ${projectRecord.title} per KI aus E-Mail #${projectRecordEmailId} erstellt`,
     userId: session.userId,
     projectId: projectRecord.projectId,
     projectRecordId: projectRecord.id,

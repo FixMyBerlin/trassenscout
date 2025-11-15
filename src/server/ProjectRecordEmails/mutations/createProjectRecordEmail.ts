@@ -8,7 +8,7 @@ export default resolver.pipe(
   resolver.zod(ProjectRecordEmailSchema),
   // TODO System and auth ?
   resolver.authorize("ADMIN"),
-  async ({ text, projectId, ...data }) => {
+  async ({ text, projectId, projectSlug, ...data }) => {
     // Parse email to extract metadata if not already provided
     const parsed = await parseEmail({ rawEmailText: text })
 
@@ -28,6 +28,7 @@ export default resolver.pipe(
     const uploadIds = await uploadEmailAttachments({
       attachments: parsed.attachments,
       projectId,
+      projectSlug,
       projectRecordEmailId: record.id,
     })
 

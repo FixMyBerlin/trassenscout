@@ -59,6 +59,8 @@ model User {
   projectRecordsAuthored ProjectRecord[]         @relation("ProjectRecordAuthor")
   projectRecordsUpdated  ProjectRecord[]         @relation("ProjectRecordUpdatedBy")
   projectRecordsReviewed ProjectRecord[]         @relation("ProjectRecordReviewedBy")
+  uploadsCreated         Upload[]                @relation("UploadCreatedBy")
+  uploadsUpdated         Upload[]                @relation("UploadUpdatedBy")
 }
 
 enum UserRoleEnum {
@@ -547,6 +549,8 @@ model Upload {
   externalUrl          String
   summary              String?
   mimeType             String?
+  latitude             Float?
+  longitude            Float?
   //
   project              Project             @relation(fields: [projectId], references: [id])
   projectId            Int
@@ -558,6 +562,11 @@ model Upload {
   projectRecordEmailId Int?
   projectRecords       ProjectRecord[]
   LogEntry             LogEntry[]
+  //
+  createdBy            User?               @relation("UploadCreatedBy", fields: [createdById], references: [id])
+  createdById          Int?
+  updatedBy            User?               @relation("UploadUpdatedBy", fields: [updatedById], references: [id])
+  updatedById          Int?
 }
 
 model Survey {

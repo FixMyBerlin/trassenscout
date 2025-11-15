@@ -1,5 +1,7 @@
 import { ProjectRecordsTable } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTable"
-import { UploadPreview } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreview"
+import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
+import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneContainer"
+import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
@@ -8,6 +10,7 @@ import { PageDescription } from "@/src/core/components/pages/PageDescription"
 import { formattedEuro, formattedLength, shortTitle } from "@/src/core/components/text"
 import { H2 } from "@/src/core/components/text/Headings"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
+import { subsubsectionUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
@@ -26,12 +29,12 @@ type Props = {
   onClose: () => void
 }
 
-export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClose }) => {
+export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
 
-  const [{ uploads }] = useQuery(getUploadsWithSubsections, {
+  const [{ uploads }, { refetch: refetchUploads }] = useQuery(getUploadsWithSubsections, {
     projectSlug,
     where: { subsubsectionId: subsubsection.id },
   })
@@ -199,34 +202,39 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
       </section>
 
       <section className="mt-10">
-        <div className="mb-2 flex items-center justify-between">
-          <H2>Grafiken</H2>
-          <IfUserCanEdit>
-            <Link
-              icon="plus"
-              href={`/${projectSlug}/uploads/new?subsubsectionId=${subsubsection.id}&returnPath=${[subsectionSlug, subsubsectionSlug].join("/")}`}
-            >
-              Grafik
-            </Link>
-          </IfUserCanEdit>
-        </div>
+        <H2>Grafiken</H2>
         {!uploads.length && <ZeroCase small visible name="Grafiken" />}
         <div className="grid grid-cols-2 gap-3">
           {uploads.map((upload) => {
-            const returnPath = [subsectionSlug, subsubsectionSlug].join("/")
             return (
-              <UploadPreview
+              <UploadPreviewClickable
                 key={upload.id}
-                upload={upload}
-                editUrl={
-                  `/${projectSlug}/uploads/${upload.id}/edit?returnPath=${returnPath}` as any
-                }
-                showUploadUrl={
-                  `/${projectSlug}/uploads/${upload.id}?returnPath=${returnPath}` as any
-                }
+                uploadId={upload.id}
+                projectSlug={projectSlug}
+                size="grid"
+                editUrl={subsubsectionUploadEditRoute(
+                  projectSlug,
+                  subsectionSlug!,
+                  subsubsectionSlug!,
+                  upload.id,
+                )}
+                onDeleted={async () => {
+                  await refetchUploads()
+                }}
               />
             )
           })}
+          <IfUserCanEdit>
+            <UploadDropzoneContainer className="h-44 rounded-md p-0">
+              <UploadDropzone
+                fillContainer
+                subsubsectionId={subsubsection.id}
+                onUploadComplete={async (_) => {
+                  await refetchUploads()
+                }}
+              />
+            </UploadDropzoneContainer>
+          </IfUserCanEdit>
         </div>
       </section>
 

@@ -1,8 +1,9 @@
-import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
+import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { Link } from "@/src/core/components/links"
 import { SubsectionIcon, SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { shortTitle } from "@/src/core/components/text"
+import { projectRecordUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
@@ -80,17 +81,23 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
       </div>
 
       <div>
-        <p className="mr-2 mb-3 text-gray-500">Verknüpfte Dokumente</p>
+        <p className="mr-2 mb-3 text-gray-500">Dokumente:</p>
         {!!projectRecord.uploads?.length ? (
-          <ul className="space-y-1">
+          <div className="flex gap-3">
             {projectRecord.uploads.map((upload) => (
-              <li key={upload.id} className="text-gray-700">
-                <Link href={uploadUrl(upload)} blank>
-                  <p className="max-w-1/2 truncate @lg:max-w-52">{upload.title}</p>
-                </Link>
-              </li>
+              <UploadPreviewClickable
+                key={upload.id}
+                uploadId={upload.id}
+                projectSlug={projectRecord.project.slug}
+                size="grid"
+                editUrl={projectRecordUploadEditRoute(
+                  projectRecord.project.slug,
+                  projectRecord.id,
+                  upload.id,
+                )}
+              />
             ))}
-          </ul>
+          </div>
         ) : (
           <span>Keine Dokumente verknüpft</span>
         )}

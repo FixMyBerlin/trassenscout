@@ -76,7 +76,6 @@ export function Form<S extends z.ZodType<any, any>>({
             // Reset form state if resetOnSubmit is true and no FORM_ERROR is present
             // introduced for ProjectRecordform
             if (resetOnSubmit && !result.FORM_ERROR) {
-              console.log("Resetting form state")
               ctx.reset()
               setFormError(null)
             }
