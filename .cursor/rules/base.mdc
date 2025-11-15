@@ -8,4 +8,4 @@ alwaysApply: true
 
 ## TypeScript
 
-- Avoid explicitly specifying return types unless absolutely necessary to resolve typing issues.
+- Do not use explicit return types unless absolutely necessary to resolve typing issues.
