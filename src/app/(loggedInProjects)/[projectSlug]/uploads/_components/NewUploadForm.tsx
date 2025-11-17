@@ -80,6 +80,11 @@ export const NewUploadForm = ({ projectSlug, subsubsectionId, returnPath }: Prop
 
     setUploadState("FILE_UPLOADED")
     setFileUrl(url)
+
+    // Extract MIME type from browser's File object
+    // The browser provides reliable MIME type detection for user-selected files
+    const mimeType = fileToUpload!.type || null
+
     const file = await createUploadMutation({
       title: fileToUpload!.name,
       externalUrl: url,
@@ -87,6 +92,7 @@ export const NewUploadForm = ({ projectSlug, subsubsectionId, returnPath }: Prop
       subsectionId: null, // Users can add this in step 2 /edit
       summary: null, // Users can add this in step 2 /edit
       subsubsectionId: subsubsectionIdFromParam,
+      mimeType,
     })
 
     await wait(1000)

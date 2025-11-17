@@ -49,6 +49,7 @@ export function UploadForm<S extends z.ZodType<any, any>>(
       )}
       <SuperAdminBox>
         <LabeledTextField type="text" name="externalUrl" label="Externe Datei-URL" readOnly />
+        <LabeledTextField type="text" name="mimeType" label="MIME Type" readOnly />
       </SuperAdminBox>
     </Form>
   )

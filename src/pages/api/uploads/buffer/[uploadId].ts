@@ -1,6 +1,7 @@
 import db from "@/db"
 import { getConfig } from "@/src/core/lib/next-s3-upload/src/utils/config"
 import getUploadWithSubsections from "@/src/server/uploads/queries/getUploadWithSubsections"
+import { validatePdfFile } from "@/src/server/uploads/summarize/validatePdfFile"
 import { GetObjectCommand, S3Client, S3ServiceException } from "@aws-sdk/client-s3"
 import { getSession } from "@blitzjs/auth"
 import { NotFoundError } from "@prisma/client/runtime/library"
@@ -63,9 +64,7 @@ export default async function getUploadBuffer(req: NextApiRequest, res: NextApiR
     if (!isAws) throw ["ts", 409, "Conflict"]
 
     // Check if file is a PDF based on URL and title
-    const isPdf =
-      upload.externalUrl.toLowerCase().endsWith(".pdf") ||
-      upload.title.toLowerCase().endsWith(".pdf")
+    const isPdf = validatePdfFile({ upload })
 
     if (!isPdf) {
       throw ["ts", 400, "Only PDF files are supported for buffer processing"]

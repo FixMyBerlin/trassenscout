@@ -17,8 +17,21 @@ type Props = {
 }
 
 export const UploadPreview = ({ upload, editUrl, showUploadUrl, description = true }: Props) => {
-  const fileType = upload.externalUrl.split(".").at(-1) || "?"
-  const isImage = ["png", "jpg"].includes(fileType.toLowerCase())
+  // Use mimeType if available, otherwise fall back to file extension
+  const mimeType = upload.mimeType
+  const isImage = mimeType
+    ? mimeType.startsWith("image/")
+    : ["png", "jpg", "jpeg", "gif", "webp"].includes(
+        (upload.externalUrl.split(".").at(-1) || "").toLowerCase(),
+      )
+
+  // Get file type label for display
+  const fileType = mimeType
+    ? mimeType.split("/")[1]?.toUpperCase()
+    : upload.externalUrl.toLowerCase().endsWith(".pdf") ||
+        upload.title.toLowerCase().endsWith(".pdf")
+      ? "PDF"
+      : ""
 
   const canEdit = useUserCan().edit
   if (!canEdit) {

@@ -27,6 +27,7 @@ export const uploadEmailAttachments = async ({
           externalUrl: uploadedFile.url,
           projectId: projectId,
           projectRecordEmailId: projectRecordEmailId,
+          mimeType: uploadedFile.contentType, // Store the MIME type from email attachment
           // tbd: summary
         },
       })

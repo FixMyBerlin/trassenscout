@@ -12,6 +12,7 @@ import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { PaperClipIcon } from "@heroicons/react/20/solid"
 import { PromiseReturnType } from "blitz"
+import { MimeTypePill } from "./MimeTypePill"
 
 type Props = Prettify<
   Pick<PromiseReturnType<typeof getUploadsWithSubsections>, "uploads"> & {
@@ -61,7 +62,8 @@ export const UploadTable = ({ uploads, withAction = true, withSubsectionColumn =
                 <td className="py-4 pr-3 pl-4 text-sm sm:pl-6">
                   <Link blank href={uploadUrl(upload)} className="flex items-center gap-2">
                     <PaperClipIcon className="h-6 w-6 text-gray-500" />
-                    <strong className="font-semibold">{upload.title}</strong>{" "}
+                    <MimeTypePill mimeType={upload.mimeType} />
+                    <strong className="font-semibold">{upload.title}</strong>
                   </Link>
                   <div className="flex flex-col">
                     {upload.summary && (
