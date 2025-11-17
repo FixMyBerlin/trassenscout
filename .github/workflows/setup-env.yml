@@ -77,7 +77,7 @@ jobs:
             IMAP_INBOX_FOLDER='INBOX'
             IMAP_DONE_FOLDER='INBOX.DONE'
             IMAP_ERROR_FOLDER='INBOX.ERROR'
-            TS_API_WEBHOOK_URL='http://app:3000/api/webhooks/process-mail'
+            TS_API_WEBHOOK_URL='http://app:3000/api/process-project-record-email'
             MAIL_PROCESSING_DELAY='10000'
             MAX_RETRIES='3'
             HEALTH_PORT='3100'
