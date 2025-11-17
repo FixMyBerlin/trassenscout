@@ -50,6 +50,14 @@ Response:
 
 Docker führt automatisch Health Checks durch (alle 30s).
 
+## Restart
+
+Der Service startet automatisch bei jedem Deploy neu.
+
+**Manueller Restart**: Um alle E-Mails in der INBOX erneut zu verarbeiten (z.B. wenn vorher ein Fehler aufgetreten ist oder die Verarbeitung übersprungen wurde), einfach den Service neu starten.
+
+Beim Neustart werden alle nicht-SEEN E-Mails in der INBOX erneut verarbeitet.
+
 ## Entwicklung
 
 ### Lokal testen
