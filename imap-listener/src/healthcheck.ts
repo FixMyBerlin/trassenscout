@@ -3,6 +3,7 @@
  */
 
 import http, { type IncomingMessage, type ServerResponse } from "http"
+import { berlinTimeString } from "./helpers/berlinTime.js"
 import { config } from "./helpers/config.js"
 import { getMailboxStats } from "./helpers/imap.js"
 import { log } from "./helpers/logger.js"
@@ -20,7 +21,7 @@ http
           JSON.stringify({
             status: "healthy",
             service: "imap-listener",
-            timestamp: new Date().toISOString(),
+            timestamp: berlinTimeString(new Date()),
             mailbox: {
               inboxUnseen: stats.inboxUnseen,
               errorCount: stats.errorCount,
@@ -33,7 +34,7 @@ http
           JSON.stringify({
             status: "unhealthy",
             service: "imap-listener",
-            timestamp: new Date().toISOString(),
+            timestamp: berlinTimeString(new Date()),
             error: error instanceof Error ? error.message : String(error),
           }),
         )

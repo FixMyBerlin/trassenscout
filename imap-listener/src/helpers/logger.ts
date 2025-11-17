@@ -2,11 +2,13 @@
  * Logging Helper Functions
  */
 
+import { berlinTimeString } from "./berlinTime.js"
+
 export const log = {
   info: (message: string, data: Record<string, unknown> = {}) => {
     console.log(
       JSON.stringify({
-        timestamp: new Date().toISOString(),
+        timestamp: berlinTimeString(new Date()),
         level: "info",
         message,
         ...data,
@@ -17,7 +19,7 @@ export const log = {
     const errorObj = error instanceof Error ? error : new Error(String(error))
     console.error(
       JSON.stringify({
-        timestamp: new Date().toISOString(),
+        timestamp: berlinTimeString(new Date()),
         level: "error",
         message,
         error: errorObj.message,
@@ -29,7 +31,7 @@ export const log = {
   success: (message: string, data: Record<string, unknown> = {}) => {
     console.log(
       JSON.stringify({
-        timestamp: new Date().toISOString(),
+        timestamp: berlinTimeString(new Date()),
         level: "success",
         message,
         ...data,
