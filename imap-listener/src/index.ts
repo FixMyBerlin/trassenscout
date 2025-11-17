@@ -71,27 +71,57 @@ async function processUnseenMails(client: ImapFlow) {
             continue
           }
 
-          // Log message details to console (TEST output)
-          // api ${TS_API_WEBHOOK_URL}?apiKey=${TS_API_KEY}
+          // Log message details
           log.info("Processing email", {
             uid: message.uid,
             from: message.envelope?.from?.[0]?.address || "unknown",
             subject: message.envelope?.subject || "(no subject)",
             date: message.envelope?.date?.toISOString() || "unknown",
             size: message.source?.length || 0,
-            rawEmailText: message.source?.toString() || "",
-            test: "test",
           })
 
-          // Mark as seen
-          await client.messageFlagsAdd(uid.toString(), ["\\Seen"])
-          log.info("Marked message as seen", { uid: message.uid })
+          const rawEmailText = message.source?.toString() || ""
 
-          // Move to ERROR folder
-          // todo
-          // Move to DONE folder
-          await client.messageMove(uid.toString(), config.folders.done)
-          log.success("Moved message to DONE folder", { uid: message.uid })
+          // Call Trassenscout API
+          let apiSuccess = false
+          try {
+            const apiUrl = `${config.api.webhookUrl}?apiKey=${config.api.apiKey}`
+            log.info("Calling API", { url: apiUrl })
+
+            const response = await fetch(apiUrl, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              // todo: projectSlug should be dynamic based on email sub adressing
+              body: JSON.stringify({ rawEmailText, projectSlug: "rs8" }),
+            })
+
+            if (!response.ok) {
+              throw new Error(`API returned ${response.status}: ${response.statusText}`)
+            }
+
+            const result = await response.json()
+            log.success("API call successful", { uid: message.uid, result })
+            apiSuccess = true
+          } catch (apiError) {
+            log.error("API call failed", apiError, { uid: message.uid })
+          } finally {
+            // Mark as seen and move to appropriate folder
+            await client.messageFlagsAdd(uid.toString(), ["\\Seen"])
+            log.info("Marked message as seen", { uid: message.uid })
+
+            const targetFolder = apiSuccess ? config.folders.done : config.folders.error
+            await client.messageMove(uid.toString(), targetFolder)
+
+            if (apiSuccess) {
+              log.success(`Moved message to ${targetFolder} folder`, { uid: message.uid })
+            } else {
+              log.error(`Moved message to ${targetFolder} folder`, new Error("API call failed"), {
+                uid: message.uid,
+              })
+            }
+          }
 
           // Delay between messages
           if (config.processing.delay > 0) {

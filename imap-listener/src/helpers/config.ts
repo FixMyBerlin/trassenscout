@@ -12,6 +12,10 @@ export const config = {
       pass: process.env.IMAP_PASSWORD || "",
     },
   },
+  api: {
+    webhookUrl: process.env.TS_API_WEBHOOK_URL || "",
+    apiKey: process.env.TS_API_KEY || "",
+  },
   folders: {
     inbox: "INBOX",
     done: "INBOX.DONE",
