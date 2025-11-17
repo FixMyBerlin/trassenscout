@@ -3,9 +3,9 @@
  */
 
 import http, { type IncomingMessage, type ServerResponse } from "http"
-import { config } from "./helpers/config"
-import { getMailboxStats } from "./helpers/imap"
-import { log } from "./helpers/logger"
+import { config } from "./helpers/config.js"
+import { getMailboxStats } from "./helpers/imap.js"
+import { log } from "./helpers/logger.js"
 
 const port = config.health.port
 

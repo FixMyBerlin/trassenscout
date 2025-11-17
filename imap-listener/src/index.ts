@@ -6,9 +6,9 @@
  */
 
 import { ImapFlow, type ListResponse } from "imapflow"
-import { config } from "./helpers/config"
-import { createImapClient } from "./helpers/imap"
-import { log } from "./helpers/logger"
+import { config } from "./helpers/config.js"
+import { createImapClient } from "./helpers/imap.js"
+import { log } from "./helpers/logger.js"
 
 type ServiceStatus = {
   isHealthy: boolean

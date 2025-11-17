@@ -3,7 +3,7 @@
  */
 
 import { ImapFlow } from "imapflow"
-import { config } from "./config"
+import { config } from "./config.js"
 
 /**
  * Creates an IMAP client with the configured settings
