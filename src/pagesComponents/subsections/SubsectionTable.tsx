@@ -40,6 +40,9 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                 Status
               </th>
               <th scope="col" className={tableHeadClasses}>
+                Einträge
+              </th>
+              <th scope="col" className={tableHeadClasses}>
                 Fertigstellung
               </th>
               {/* <th scope="col" className={tableHeadClasses}>
@@ -77,6 +80,11 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                     )}
                   >
                     {subsection.SubsectionStatus?.title || "–"}
+                  </td>
+                  <td className="py-4 pr-3 pl-4 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
+                    {subsection.subsubsectionCount && subsection.subsubsectionCount > 0
+                      ? subsection.subsubsectionCount
+                      : "–"}
                   </td>
                   <td className="py-4 pr-4 pl-3 text-sm font-medium wrap-break-word sm:pr-6">
                     {subsection.estimatedCompletionDateString || "–"}
