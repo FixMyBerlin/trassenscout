@@ -2,15 +2,21 @@ import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import db, { ProjectRecordReviewState, ProjectRecordType } from "db"
 import { extractWithAI } from "./extractWithAI"
 import { fetchProjectContext } from "./fetchProjectContext"
+import { getProjectIdFromSlug } from "./getProjectIdFromSlug"
 import { langfuse } from "./langfuseClient"
 import { parseEmail } from "./parseEmail"
 import { uploadEmailAttachments } from "./uploadEmailAttachments"
 
 export const processProjectRecordEmailOrchestrator = async ({
-  projectRecordEmailId,
+  projectSlug,
+  rawEmailText,
 }: {
-  projectRecordEmailId: number
+  rawEmailText: string
+  projectSlug: string
 }) => {
+  // Fetch project ID from slug
+  const projectId = await getProjectIdFromSlug(projectSlug)
+
   // todo
   // In the future the email and the project will be part of the request
   // todo: projectRecordEmail db entry will be created here with relation to project
@@ -19,30 +25,28 @@ export const processProjectRecordEmailOrchestrator = async ({
   // send email to admins that email was received from unapproved sender and needs review
   const isSenderApproved = true
 
-  // Get the ProjectRecordEmail
-  const projectRecordEmail = await db.projectRecordEmail.findFirst({
-    where: { id: projectRecordEmailId },
-  })
-  if (!projectRecordEmail) {
-    throw new Error("ProjectRecordEmail not found")
-  }
-
   // Parse the email, separate body from attachments
   const { body: emailBody, attachments } = await parseEmail({
-    rawEmailText: projectRecordEmail.text,
+    rawEmailText,
+  })
+
+  // Store email in DB
+  // todo update schema and store parsed additional data: parsed body, sender, subject..
+  const projectRecordEmail = await db.projectRecordEmail.create({
+    data: { text: rawEmailText, projectId },
   })
 
   // Upload attachments to S3 and create Upload records
   const uploadIds = await uploadEmailAttachments({
     attachments,
-    projectId: projectRecordEmail.projectId,
-    projectRecordEmailId,
+    projectId,
+    projectRecordEmailId: projectRecordEmail.id,
   })
 
   let reviewNote = ""
 
   // Fetch subsections, subsubsections, and projectRecord topics for this project
-  const projectContext = await fetchProjectContext({ projectId: projectRecordEmail.projectId })
+  const projectContext = await fetchProjectContext({ projectId })
 
   // AI extraction
   const finalResult = await extractWithAI({
@@ -78,7 +82,7 @@ export const processProjectRecordEmailOrchestrator = async ({
       reviewState: isSenderApproved
         ? ProjectRecordReviewState.NEEDSREVIEW
         : ProjectRecordReviewState.NEEDSADMINREVIEW,
-      projectRecordEmailId: projectRecordEmailId,
+      projectRecordEmailId: projectRecordEmail.id,
       reviewNotes: reviewNote || null,
       projectRecordTopics: {
         connect: combinedResult.projectRecordTopics.map((id) => ({ id })),
@@ -92,7 +96,7 @@ export const processProjectRecordEmailOrchestrator = async ({
   // Create log entry
   await createLogEntry({
     action: "CREATE",
-    message: `Neues Projektprotokoll ${projectRecord.title} per KI aus Email mir ID ${projectRecordEmailId} erstellt`,
+    message: `Neues Projektprotokoll ${projectRecord.title} per KI aus Email mir ID ${projectRecordEmail.id} erstellt`,
     // tbd maybe we need an AI/SYSTEM user type here
     userId: null,
     projectId: projectRecord.projectId,
