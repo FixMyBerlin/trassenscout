@@ -1,4 +1,4 @@
-import { SlugSchema } from "@/src/core/utils"
+import { SlugSchema } from "@/src/core/utils/schema-shared"
 import { z } from "zod"
 
 export const QualityLevelSchema = z.object({

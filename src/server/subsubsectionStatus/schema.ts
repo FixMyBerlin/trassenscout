@@ -1,4 +1,4 @@
-import { SlugSchema } from "@/src/core/utils"
+import { SlugSchema } from "@/src/core/utils/schema-shared"
 import { StatusStyleEnum } from "@prisma/client"
 import { z } from "zod"
 

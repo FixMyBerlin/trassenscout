@@ -1,5 +1,5 @@
 import { Prettify } from "@/src/core/types"
-import { InputNumberOrNullSchema, InputNumberSchema, SlugSchema } from "@/src/core/utils"
+import { InputNumberOrNullSchema, InputNumberSchema, SlugSchema } from "@/src/core/utils/schema-shared"
 import {
   LineStringGeometrySchema,
   MultiLineStringGeometrySchema,

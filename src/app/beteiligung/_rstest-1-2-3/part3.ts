@@ -1,6 +1,6 @@
 import { fieldValidationEnum } from "@/src/app/beteiligung/_shared/fieldvalidationEnum"
 import { SurveyPart1and3 } from "@/src/app/beteiligung/_shared/types"
-import { isDev } from "@/src/core/utils"
+import { isDev } from "@/src/core/utils/isEnv"
 import { AnyFieldApi } from "@tanstack/react-form"
 
 export const part3Config: SurveyPart1and3 = {

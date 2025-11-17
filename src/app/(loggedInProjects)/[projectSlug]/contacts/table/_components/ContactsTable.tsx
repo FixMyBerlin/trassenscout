@@ -4,7 +4,7 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { Link, pinkButtonStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { isProduction } from "@/src/core/utils"
+import { isProduction } from "@/src/core/utils/isEnv"
 import createContact from "@/src/server/contacts/mutations/createContact"
 import updateContact from "@/src/server/contacts/mutations/updateContact"
 import getContacts, { TContacts } from "@/src/server/contacts/queries/getContacts"

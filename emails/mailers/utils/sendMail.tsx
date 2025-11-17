@@ -1,7 +1,7 @@
 import { footerTextMarkdown } from "@/emails/templats/footerTextMarkdown"
 import { MarkdownMail } from "@/emails/templats/MarkdownMail"
 import { signatureTextMarkdown } from "@/emails/templats/signatureTextMarkdown"
-import { isDev, isTest } from "@/src/core/utils"
+import { isDev, isTest } from "@/src/core/utils/isEnv"
 import { guardedCreateSystemLogEntry } from "@/src/server/systemLogEntries/create/guardedCreateSystemLogEntry"
 import { render } from "@react-email/components"
 import Mailjet, { LibraryResponse, SendEmailV3_1 } from "node-mailjet"

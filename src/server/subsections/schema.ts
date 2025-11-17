@@ -1,4 +1,4 @@
-import { InputNumberOrNullSchema, InputNumberSchema, SlugSchema } from "@/src/core/utils"
+import { InputNumberOrNullSchema, InputNumberSchema, SlugSchema } from "@/src/core/utils/schema-shared"
 import { LabelPositionEnum } from "@prisma/client"
 import { z } from "zod"
 
