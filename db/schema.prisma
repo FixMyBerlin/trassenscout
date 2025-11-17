@@ -546,6 +546,7 @@ model Upload {
   title                String
   externalUrl          String
   summary              String?
+  mimeType             String?
   //
   project              Project             @relation(fields: [projectId], references: [id])
   projectId            Int

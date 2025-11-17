@@ -11,6 +11,7 @@ const seedUploads = async () => {
       subsubsectionId: null,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
     },
     {
       title: "AWS S3 Image",
@@ -21,6 +22,7 @@ const seedUploads = async () => {
       subsubsectionId: null,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
     },
     {
       title: "Trassenplanung Projekt 1",
@@ -31,6 +33,7 @@ const seedUploads = async () => {
       subsubsectionId: null,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
     },
     {
       title: "FAQ Baulastträger 1",
@@ -41,6 +44,7 @@ const seedUploads = async () => {
       subsubsectionId: null,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
     },
     {
       title: "FAQ Baulastträger 2",
@@ -51,6 +55,7 @@ const seedUploads = async () => {
       subsubsectionId: null,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
     },
     {
       title: "Protokoll Gesamttreffen Projekt 2",
@@ -61,6 +66,7 @@ const seedUploads = async () => {
       subsubsectionId: null,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
     },
     {
       title: "Protokoll ADFC",
@@ -71,6 +77,7 @@ const seedUploads = async () => {
       subsubsectionId: null,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
     },
     {
       title: "Planungsdokument",
@@ -81,6 +88,7 @@ const seedUploads = async () => {
       subsubsectionId: 1,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
     },
     {
       title: "Super langer Text in der Beschreibung sehr lang",
@@ -91,6 +99,7 @@ const seedUploads = async () => {
       subsubsectionId: 1,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
     },
     {
       title: "Kurz",
@@ -101,6 +110,7 @@ const seedUploads = async () => {
       subsubsectionId: 1,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
     },
   ]
 

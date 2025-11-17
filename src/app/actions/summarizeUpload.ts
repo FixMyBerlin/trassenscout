@@ -60,7 +60,10 @@ export const summarizeUpload = async ({ uploadId }: { uploadId: number }) => {
     })
 
     // Validate PDF file
-    validatePdfFile({ upload })
+    const isPdf = validatePdfFile({ upload })
+    if (!isPdf) {
+      throw new Error("Only PDF files are supported for summarization")
+    }
 
     // Fetch PDF from S3
     const pdfData = await fetchPdfFromS3({ externalUrl: upload.externalUrl })
