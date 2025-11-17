@@ -62,7 +62,7 @@ export const SubsubsectionInfrasWithData = () => {
                 Titel
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl Einträge mit dieser Infra
+                Anzahl Einträge mit dieser Führungsform
               </th>
               <th
                 scope="col"
