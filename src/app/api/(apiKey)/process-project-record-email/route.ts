@@ -3,28 +3,18 @@ import { processProjectRecordEmailOrchestrator } from "@/src/server/ProjectRecor
 import { z } from "zod"
 
 const ProcessProjectRecordEmailSchema = z.object({
-  projectRecordEmailId: z.number(),
+  rawEmailText: z.string(),
+  projectSlug: z.string().min(1),
 })
 
-export const GET = withApiKey(async ({ request }) => {
+export const POST = withApiKey(async ({ request }) => {
   try {
-    // Security: Check authentication - prioritize session over API key
-    // const { session } = await getBlitzContext()
-    // const apiKey = request.headers.get("process-email-api-key")
-
-    // First, check if this is an authenticated admin user
-    // if (session?.userId) {
-    //   if (session.role !== "ADMIN") {
-    //     return Response.json({ error: "Admin access required" }, { status: 403 })
-    //   }
-    //   console.log("Processing email from admin user:", session.userId)
-    // }
-
     // Parse and validate request body
     const body = await request.json()
-    const { projectRecordEmailId } = ProcessProjectRecordEmailSchema.parse(body)
+    const { rawEmailText, projectSlug } = ProcessProjectRecordEmailSchema.parse(body)
 
-    await processProjectRecordEmailOrchestrator({ projectRecordEmailId })
+    // todo project
+    await processProjectRecordEmailOrchestrator({ rawEmailText, projectSlug })
 
     return Response.json({ statusText: "Success" }, { status: 200 })
   } catch (error) {
