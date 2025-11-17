@@ -65,7 +65,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
       <LabeledTextField
         type="text"
         name="slug"
-        label="Kurztitel"
+        label="Kürzel"
         help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
       />
       <div className="grid grid-cols-2 gap-5">

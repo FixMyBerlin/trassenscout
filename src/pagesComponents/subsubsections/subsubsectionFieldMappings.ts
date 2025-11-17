@@ -1,7 +1,7 @@
 // Field translations for subsubsection form fields
 export const subsubsectionFieldTranslations = {
   subsectionId: "Planungsabschnitt ID",
-  slug: "Kurztitel",
+  slug: "Kürzel",
   description: "Beschreibung",
   type: "Typ der Geometrie",
   geometry: "Geometrie",
