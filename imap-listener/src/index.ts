@@ -42,25 +42,27 @@ async function processUnseenMails(client: ImapFlow) {
     const lock = await client.getMailboxLock(config.folders.inbox)
 
     try {
-      // Search for unseen messages
-      const unseenMessages = await client.search({ seen: false })
+      // Search for unseen messages in current mailbox
+      // query object https://imapflow.com/global.html#SearchObject
+      const unseenMessageUids = await client.search({ seen: false })
 
       // Check if search returned results
-      if (!unseenMessages || unseenMessages.length === 0) {
+      if (!unseenMessageUids || unseenMessageUids.length === 0) {
         log.info("No unseen messages found")
         return
       }
 
-      log.info("Found unseen messages", { count: unseenMessages.length })
+      log.info("Found unseen messages", { count: unseenMessageUids.length })
 
       // Process each message
-      for (const uid of unseenMessages) {
+      for (const uid of unseenMessageUids) {
         try {
           // Fetch message details
           const message = await client.fetchOne(uid.toString(), {
-            envelope: true,
+            // options: https://imapflow.com/global.html#FetchMessageObject
+            envelope: true, // Email metadata (from, to, subject, date)
             bodyStructure: true,
-            source: true,
+            source: true, // Raw email source
           })
 
           // Check if message was fetched successfully
@@ -70,18 +72,23 @@ async function processUnseenMails(client: ImapFlow) {
           }
 
           // Log message details to console (TEST output)
+          // api ${TS_API_WEBHOOK_URL}?apiKey=${TS_API_KEY}
           log.info("Processing email", {
             uid: message.uid,
             from: message.envelope?.from?.[0]?.address || "unknown",
             subject: message.envelope?.subject || "(no subject)",
             date: message.envelope?.date?.toISOString() || "unknown",
             size: message.source?.length || 0,
+            rawEmailText: message.source?.toString() || "",
+            test: "test",
           })
 
           // Mark as seen
           await client.messageFlagsAdd(uid.toString(), ["\\Seen"])
           log.info("Marked message as seen", { uid: message.uid })
 
+          // Move to ERROR folder
+          // todo
           // Move to DONE folder
           await client.messageMove(uid.toString(), config.folders.done)
           log.success("Moved message to DONE folder", { uid: message.uid })
