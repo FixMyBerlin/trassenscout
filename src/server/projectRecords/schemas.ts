@@ -1,5 +1,5 @@
 import { ProjectSlugRequiredSchema } from "@/src/authorization/extractProjectSlug"
-import { InputNumberOrNullSchema } from "@/src/core/utils"
+import { InputNumberOrNullSchema } from "@/src/core/utils/schema-shared"
 import { NullableDateSchema, NullableDateSchemaForm } from "@/src/server/subsubsections/schema"
 import { ProjectRecordReviewState, ProjectRecordType } from "@prisma/client"
 import { z } from "zod"

@@ -5,7 +5,7 @@
 "use client"
 
 import { showMembershipRoleCheckIndicatorState } from "@/src/core/store/showMembershipRoleCheckIndicator.zustand"
-import { isProduction } from "@/src/core/utils"
+import { isProduction } from "@/src/core/utils/isEnv"
 import { useSession } from "@blitzjs/auth"
 import { NoSymbolIcon } from "@heroicons/react/20/solid"
 import { useUserCan } from "./hooks/useUserCan"

@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { isProduction } from "../utils"
+import { isProduction } from "../utils/isEnv"
 
 export type TShowMembershipRoleCheckIndicator = {
   showMembershipRoleCheckIndicator: boolean

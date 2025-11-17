@@ -1,4 +1,4 @@
-import { InputNumberOrNullSchema } from "@/src/core/utils"
+import { InputNumberOrNullSchema } from "@/src/core/utils/schema-shared"
 import { z } from "zod"
 
 // tbd mimeType

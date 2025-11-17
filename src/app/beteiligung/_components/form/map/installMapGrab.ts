@@ -1,4 +1,4 @@
-import { isDev } from "@/src/core/utils"
+import { isDev } from "@/src/core/utils/isEnv"
 
 export const installMapGrabIfTest = (map: any, mapId: string) => {
   // tbd useEffect

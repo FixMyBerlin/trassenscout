@@ -1,7 +1,7 @@
 import { DevAdminBox } from "@/src/core/components/AdminBox"
 import { Link } from "@/src/core/components/links"
 import { MetaTags } from "@/src/core/layouts"
-import { isBrowser } from "@/src/core/utils"
+import { isBrowser } from "@/src/core/utils/isEnv"
 import { BlitzPage } from "@blitzjs/next"
 import { z } from "zod"
 

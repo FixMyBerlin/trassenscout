@@ -1,4 +1,4 @@
-import { isDev } from "@/src/core/utils"
+import { isDev } from "@/src/core/utils/isEnv"
 
 export const DebugFilterForm = ({ filter }: { filter: any }) => {
   if (isDev)

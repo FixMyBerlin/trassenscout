@@ -1,5 +1,5 @@
 import SocialSharingImage from "@/src/app/_components/layouts/assets/og-image-default.png"
-import { isProduction } from "@/src/core/utils"
+import { isProduction } from "@/src/core/utils/isEnv"
 import { Metadata } from "next"
 
 // https://nextjs.org/docs/app/building-your-application/optimizing/metadata

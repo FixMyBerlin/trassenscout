@@ -1,7 +1,7 @@
 import type { GeoCategoryMapProps } from "@/src/app/beteiligung/_components/form/map/GeoCategoryMap"
 import { SurveyMapPanelContainer } from "@/src/app/beteiligung/_components/form/map/MapPanelContainer"
 import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
-import { isProduction } from "@/src/core/utils"
+import { isProduction } from "@/src/core/utils/isEnv"
 
 type Props = {
   description?: GeoCategoryMapProps["description"]
