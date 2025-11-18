@@ -1,3 +1,4 @@
+import { Link } from "@/src/core/components/links"
 import { vectorStyle } from "@/src/core/components/Map/BaseMap"
 import { lineStringToGeoJSON } from "@/src/core/components/Map/utils/lineStringToGeoJSON"
 import { pointToGeoJSON } from "@/src/core/components/Map/utils/pointToGeoJSON"
@@ -17,7 +18,6 @@ import Map, {
   ScaleControl,
   Source,
 } from "react-map-gl/maplibre"
-import { Link } from "../links/Link"
 
 type Props = {
   name: string
