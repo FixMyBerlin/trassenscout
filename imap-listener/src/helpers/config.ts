@@ -18,8 +18,8 @@ export const config = {
   },
   folders: {
     inbox: "INBOX",
-    done: "INBOX.DONE",
-    error: "INBOX.ERROR",
+    done: "INBOX/DONE",
+    error: "INBOX/ERROR",
   },
   processing: {
     delay: 10000, // 10 seconds delay between processing messages
