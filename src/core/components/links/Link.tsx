@@ -21,12 +21,12 @@ export type LinkProps = {
 } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href">
 
 export const linkIcons = {
-  plus: <PlusIcon className="h-3.5 w-3.5" />,
-  edit: <PencilIcon className="h-3.5 w-3.5" />,
-  download: <ArrowDownTrayIcon className="h-3.5 w-3.5" />,
-  delete: <TrashIcon className="h-3.5 w-3.5" />,
-  list: <ListBulletIcon className="h-3.5 w-3.5" />,
-  details: <MagnifyingGlassPlusIcon className="h-4 w-4" />,
+  plus: <PlusIcon className="size-3.5" />,
+  edit: <PencilIcon className="size-3.5" />,
+  download: <ArrowDownTrayIcon className="size-3.5" />,
+  delete: <TrashIcon className="size-3.5" />,
+  list: <ListBulletIcon className="size-3.5" />,
+  details: <MagnifyingGlassPlusIcon className="size-4" />,
 }
 
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
