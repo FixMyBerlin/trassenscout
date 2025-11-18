@@ -86,7 +86,6 @@ Blitz comes with a test setup using [Vitest](https://vitest.dev/) and [react-tes
 Follow this steps to add a model with forms and pages:
 
 1. Use `blitz g all calendarEntries title:string startAt:dateTime "locationName:string?" "locationUrl:string?" "description:string?" --dry-run` for scaffolding.
-
    - Run `--dry-run` first to check the folder names and file names.
 
 1. Check [db/schema.prisma](./db/schema.prisma) if all was "translated".
@@ -98,7 +97,6 @@ Follow this steps to add a model with forms and pages:
 1. Use `npm run migrate` (`blitz prisma migrate dev`) to apply the migration.
 
 1. Schema:
-
    - Follow the steps in `src/core/templates/page/__modelIdParam__/edit.tsx` to create a shared [Zod schema (Docs)](https://zod.dev/) and add it to the form for client side validations.
    - Update the Zod schema to match the Prisma schema.
      - You can use `type UserType = z.infer<typeof UserSchema>` to create a TS schema from Zod that can be compared to the prisma schema (which are located in `node_modules/.prisma/client/index.d.ts`)
