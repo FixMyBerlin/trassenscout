@@ -34,7 +34,7 @@ export const Disclosure: React.FC<Props> = ({
         <>
           <DisclosureButton
             className={clsx(
-              "group focus-visible:ring-opacity-75 flex w-full items-center justify-between focus:outline-hidden focus-visible:ring focus-visible:ring-gray-500",
+              "group flex w-full items-center justify-between focus:outline-hidden focus-visible:ring focus-visible:ring-gray-500/75",
               { "border-b border-gray-100": !open },
               classNameButton,
             )}

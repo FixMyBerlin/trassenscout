@@ -42,7 +42,7 @@ export const BackgroundSwitcher: React.FC<Props> = ({ value, onChange, className
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <ListboxOptions className="ring-opacity-5 absolute z-10 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-gray-200 focus:outline-hidden sm:text-sm">
+              <ListboxOptions className="absolute z-10 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-gray-200/5 focus:outline-hidden sm:text-sm">
                 {Object.keys(labels).map((id) => (
                   <ListboxOption
                     key={id}

@@ -46,7 +46,7 @@ export const StakeholdernotesList: React.FC<props> = ({ stakeholdernotes }) => {
   }
 
   return (
-    <div className="not-prose ring-opacity-5 overflow-hidden shadow-sm ring-1 ring-gray-200 md:rounded-lg">
+    <div className="not-prose overflow-hidden shadow-sm ring-1 ring-gray-200/5 md:rounded-lg">
       <div className="flex border-b border-gray-100 text-xs text-gray-500 uppercase">
         <div className="w-64 pt-3 pr-3 pb-2 pl-4 sm:pl-6">Status</div>
         <div className="grow px-3 pt-3 pb-2">TÖB</div>
