@@ -25,11 +25,7 @@ export default async function EditProjectRecordPage({
     <>
       <PageHeader title="Projektprotokoll bearbeiten" className="mt-12" />
 
-      <EditProjectRecordForm
-        initialProjectRecord={projectRecord}
-        projectSlug={params.projectSlug}
-        projectRecordId={projectRecordId}
-      />
+      <EditProjectRecordForm projectRecord={projectRecord} projectSlug={params.projectSlug} />
     </>
   )
 }

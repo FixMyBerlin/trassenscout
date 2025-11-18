@@ -10,36 +10,28 @@ import deleteProjectRecord from "@/src/server/projectRecords/mutations/deletePro
 import updateProjectRecord from "@/src/server/projectRecords/mutations/updateProjectRecord"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/navigation"
 import { ProjectRecordForm } from "../../../_components/ProjectRecordForm"
 
 export const EditProjectRecordForm = ({
-  initialProjectRecord,
+  projectRecord,
   projectSlug,
-  projectRecordId,
 }: {
-  initialProjectRecord: Awaited<ReturnType<typeof getProjectRecord>>
+  projectRecord: Awaited<ReturnType<typeof getProjectRecord>>
   projectSlug: string
-  projectRecordId: number
 }) => {
   const router = useRouter()
-  const [projectRecord, { refetch }] = useQuery(
-    getProjectRecord,
-    { projectSlug, id: projectRecordId },
-    // todo check if this works as expected
-    { initialData: initialProjectRecord },
-  )
 
   const [updateProjectRecordMutation] = useMutation(updateProjectRecord)
   const [deleteProjectRecordMutation] = useMutation(deleteProjectRecord)
 
   const handleDelete = async () => {
-    if (window.confirm(`Den Eintrag mit ID ${projectRecordId} unwiderruflich löschen?`)) {
+    if (window.confirm(`Den Eintrag mit ID ${projectRecord.id} unwiderruflich löschen?`)) {
       try {
         await deleteProjectRecordMutation({
-          id: projectRecordId,
+          id: projectRecord.id,
           projectSlug,
         })
         router.push(`/${projectSlug}/project-records`)
@@ -60,7 +52,6 @@ export const EditProjectRecordForm = ({
         date: values.date === "" ? null : new Date(values.date),
         projectSlug,
       })
-      await refetch()
       router.push(`/${projectSlug}/project-records/${projectRecord.id}`)
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])

@@ -17,18 +17,11 @@ import clsx from "clsx"
 import { useRouter } from "next/navigation"
 
 export const AdminEditProjectRecordForm = ({
-  initialProjectRecord,
-  projectRecordId,
+  projectRecord,
 }: {
-  initialProjectRecord: Awaited<ReturnType<typeof getProjectRecordAdmin>>
-  projectRecordId: number
+  projectRecord: Awaited<ReturnType<typeof getProjectRecordAdmin>>
 }) => {
   const router = useRouter()
-  const [projectRecord, { refetch }] = useQuery(
-    getProjectRecordAdmin,
-    { id: projectRecordId },
-    { initialData: initialProjectRecord },
-  )
   const [{ projects }] = useQuery(getProjects, {})
 
   const [updateProjectRecordMutation] = useMutation(updateProjectRecord)
@@ -41,10 +34,10 @@ export const AdminEditProjectRecordForm = ({
   projectOptions.unshift(["", "Keine Angabe"])
 
   const handleDelete = async () => {
-    if (window.confirm(`Den Eintrag mit ID ${projectRecordId} unwiderruflich löschen?`)) {
+    if (window.confirm(`Den Eintrag mit ID ${projectRecord.id} unwiderruflich löschen?`)) {
       try {
         await deleteProjectRecordMutation({
-          id: projectRecordId,
+          id: projectRecord.id,
           projectSlug: projectRecord.project.slug,
         })
         router.push("/admin/project-records")
@@ -65,7 +58,6 @@ export const AdminEditProjectRecordForm = ({
         projectSlug: projectRecord.project.slug,
         date: values.date === "" ? null : new Date(values.date),
       })
-      await refetch()
       router.push(`/admin/project-records/${projectRecord.id}/review`)
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])

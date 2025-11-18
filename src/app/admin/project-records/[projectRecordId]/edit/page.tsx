@@ -20,10 +20,7 @@ export default async function AdminEditProjectRecordPage({
   return (
     <>
       <PageHeader title="Admin: Protokoll bearbeiten" className="mt-12" />
-      <AdminEditProjectRecordForm
-        initialProjectRecord={projectRecord}
-        projectRecordId={projectRecordId}
-      />
+      <AdminEditProjectRecordForm projectRecord={projectRecord} />
     </>
   )
 }
