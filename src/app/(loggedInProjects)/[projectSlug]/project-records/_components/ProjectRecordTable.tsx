@@ -68,7 +68,7 @@ export const ProjectRecordsTable = ({
                     <>
                       <DisclosureButton
                         className={clsx(
-                          "group focus-visible:ring-opacity-75 w-full text-left focus:outline-hidden focus-visible:ring focus-visible:ring-gray-500",
+                          "group w-full text-left focus:outline-hidden focus-visible:ring focus-visible:ring-gray-500/75",
                           { "border-b border-gray-100": !open },
                         )}
                       >
