@@ -1,3 +1,4 @@
+import { Link } from "@/src/core/components/links"
 import { vectorStyle } from "@/src/core/components/Map/BaseMap"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { CheckBadgeIcon } from "@heroicons/react/24/solid"
@@ -14,7 +15,6 @@ import Map, {
   Source,
 } from "react-map-gl/maplibre"
 import { z } from "zod"
-import { Link } from "../links/Link"
 
 type Props = {
   name: string
@@ -55,18 +55,20 @@ export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
             <CheckBadgeIcon className="h-5 w-5 pb-0.5 text-green-700" />
           )}
         </span>
-        <Link
-          blank
-          href={`http://play.placemark.io/?load=data:application/json,${encodeURIComponent(
-            JSON.stringify(
-              geometryType === "ROUTE"
-                ? lineString(geometry as RouteGeomtry)
-                : point(geometry as AreaGeometry),
-            ),
-          )}`}
-        >
-          Auf placemark.io öffnen
-        </Link>
+        {geometry && (
+          <Link
+            blank
+            href={`http://play.placemark.io/?load=data:application/json,${encodeURIComponent(
+              JSON.stringify(
+                geometryType === "ROUTE"
+                  ? lineString(geometry as RouteGeomtry)
+                  : point(geometry as AreaGeometry),
+              ),
+            )}`}
+          >
+            Auf placemark.io öffnen
+          </Link>
+        )}
       </h3>
       {schemaResult.success ? (
         <>
