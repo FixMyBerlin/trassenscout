@@ -4,14 +4,14 @@ FROM node:22-bullseye-slim
 # Arbeitsverzeichnis setzen
 WORKDIR /app
 
-# Package-Dateien kopieren (aus Root-Level imap-listener/)
-COPY imap-listener/package*.json ./
+# Package-Dateien kopieren
+COPY package*.json ./
 
 # Dependencies installieren
 RUN npm ci
 
-# Sourcecode kopieren (aus Root-Level imap-listener/)
-COPY imap-listener/ .
+# Sourcecode kopieren
+COPY . .
 
 # TypeScript kompilieren
 RUN npm run build

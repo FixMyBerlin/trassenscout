@@ -13,8 +13,8 @@ services:
     command: ["postgres", "-clog_destination=stderr", "-clog_statement=all"]
   imap-listener:
     build:
-      context: .
-      dockerfile: docker/imap-listener/Dockerfile
+      context: ./imap-listener
+      dockerfile: ../docker/imap-listener/Dockerfile
     container_name: ts-imap-listener
     restart: unless-stopped
     env_file: "./imap-listener/.env"
