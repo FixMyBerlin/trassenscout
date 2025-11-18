@@ -9,3 +9,7 @@ alwaysApply: true
 ## TypeScript
 
 - Do not use explicit return types unless absolutely necessary to resolve typing issues.
+
+## CSS / Tailwind CSS
+
+- Use `size-5` instead of `h-5 w-5`
