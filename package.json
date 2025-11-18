@@ -60,6 +60,7 @@
     "@blitzjs/auth": "2.2.2",
     "@blitzjs/next": "2.2.2",
     "@blitzjs/rpc": "2.2.2",
+    "@date-fns/tz": "1.4.1",
     "@fontsource/red-hat-text": "5.2.5",
     "@headlessui/react": "2.2.2",
     "@heroicons/react": "2.2.0",
