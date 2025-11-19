@@ -50,18 +50,13 @@ export const parseEmail = async ({ rawEmailText }: { rawEmailText: string }) => 
 export const extractEmailAttachments = (parsed: ParsedMail) => {
   const attachments = []
 
-  if (parsed.attachments && parsed.attachments.length > 0) {
-    for (const attachment of parsed.attachments) {
-      // Filter out inline images and only keep actual file attachments
-      if (!attachment.contentDisposition || attachment.contentDisposition === "attachment") {
-        attachments.push({
-          filename: attachment.filename || "unnamed",
-          contentType: attachment.contentType,
-          size: attachment.size,
-          content: attachment.content,
-        })
-      }
-    }
+  for (const attachment of parsed.attachments) {
+    attachments.push({
+      filename: attachment.filename || "unnamed",
+      contentType: attachment.contentType,
+      size: attachment.size,
+      content: attachment.content,
+    })
   }
 
   return attachments
