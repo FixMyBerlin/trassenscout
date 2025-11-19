@@ -1,5 +1,4 @@
 import { create } from "zustand"
-import { isProduction } from "../utils/isEnv"
 
 export type TShowMembershipRoleCheckIndicator = {
   showMembershipRoleCheckIndicator: boolean
@@ -7,7 +6,7 @@ export type TShowMembershipRoleCheckIndicator = {
 }
 
 const showMembershipRoleCheckIndicator = create<TShowMembershipRoleCheckIndicator>()((set) => ({
-  showMembershipRoleCheckIndicator: !isProduction,
+  showMembershipRoleCheckIndicator: false,
   actions: {
     toggleShowMembershipRoleCheckIndicator: () => {
       set((state) => ({
