@@ -96,8 +96,8 @@ export default async function ProjectRecordEmailDetailPage({
                   <summary className="cursor-pointer text-blue-600 hover:text-blue-800">
                     Rohdaten anzeigen
                   </summary>
-                  <div className="mt-2 prose max-w-none">
-                    <pre className="whitespace-pre-wrap text-xs">{projectRecordEmail.text}</pre>
+                  <div className="prose mt-2 max-w-none">
+                    <pre className="text-xs whitespace-pre-wrap">{projectRecordEmail.text}</pre>
                   </div>
                 </details>
               </dd>

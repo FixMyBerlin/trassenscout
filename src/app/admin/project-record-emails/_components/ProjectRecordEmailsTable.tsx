@@ -92,12 +92,8 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
                 </Link>
               </td>
               <td className="px-6 py-4 text-sm text-gray-900">Projekt #{email.projectId}</td>
-              <td className="px-6 py-4 text-sm text-gray-900">
-                {email.from || "—"}
-              </td>
-              <td className="px-6 py-4 text-sm text-gray-900">
-                {email.subject || "—"}
-              </td>
+              <td className="px-6 py-4 text-sm text-gray-900">{email.from || "—"}</td>
+              <td className="px-6 py-4 text-sm text-gray-900">{email.subject || "—"}</td>
               <td className="px-6 py-4 text-sm text-gray-500">
                 {new Date(email.createdAt).toLocaleDateString("de-DE")}
               </td>
