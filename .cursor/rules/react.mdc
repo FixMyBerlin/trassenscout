@@ -1,0 +1,16 @@
+---
+globs: *.tsx,*.ts
+alwaysApply: false
+---
+
+## TypeScript
+
+- Do not use explicit return types unless absolutely necessary to resolve typing issues.
+
+## CSS / Tailwind CSS
+
+- Always use `size-5` instead of `h-5 w-5`
+
+## Barrel files
+
+- Never add to an existing barrel file or create one; we want to migrate away from them whenever possible. New imports should always be explicit.
