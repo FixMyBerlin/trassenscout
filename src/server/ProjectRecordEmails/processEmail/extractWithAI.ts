@@ -8,7 +8,7 @@ import { generateObject, NoObjectGeneratedError } from "ai"
 import { langfuse } from "./langfuseClient"
 
 type ExtractWithAIParams = {
-  emailBody: string
+  body: string
   projectContext: Pick<
     CreateProjectRecordExtractionSchemaParams,
     "subsections" | "subsubsections" | "projectRecordTopics"
@@ -21,7 +21,7 @@ type ExtractWithAIParams = {
 // we might want a pipeline where we first find the matching subsection and then only fetch subsubsections for that subsection
 // do we want to fetch more data (like Führungsform etc.) to improve matching?
 
-export const extractWithAI = async ({ emailBody, projectContext, userId }: ExtractWithAIParams) => {
+export const extractWithAI = async ({ body, projectContext, userId }: ExtractWithAIParams) => {
   const trace = langfuse.trace({
     name: "process-protocol-email",
     userId,
@@ -55,7 +55,7 @@ export const extractWithAI = async ({ emailBody, projectContext, userId }: Extra
       system:
         "You are an AI assistant that can read and process emails and gather information from them.",
       prompt: `EMAIL BODY:
-${emailBody}
+${body}
 
 ---
 

@@ -19,11 +19,19 @@ export const parseEmail = async ({ rawEmailText }: { rawEmailText: string }) => 
     const body = emailBody.trim()
     const attachments = extractEmailAttachments(parsed)
 
+    // Extract additional metadata
+    const from = parsed.from?.text || null
+    const subject = parsed.subject || null
+    const date = parsed.date || null
+
     console.log(`Extracted email body (${body.length} chars) and ${attachments.length} attachments`)
 
     return {
       body,
       attachments,
+      from,
+      subject,
+      date,
     }
   } catch (error) {
     console.error("Error parsing email:", error)
@@ -32,6 +40,9 @@ export const parseEmail = async ({ rawEmailText }: { rawEmailText: string }) => 
     return {
       body: rawEmailText,
       attachments: [],
+      from: null,
+      subject: null,
+      date: null,
     }
   }
 }

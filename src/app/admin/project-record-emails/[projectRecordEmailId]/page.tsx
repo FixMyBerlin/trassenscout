@@ -27,6 +27,26 @@ export default async function ProjectRecordEmailDetailPage({
         <div className="border-t border-gray-200">
           <dl>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">Von</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                {projectRecordEmail.from || "—"}
+              </dd>
+            </div>
+            <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">Betreff</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                {projectRecordEmail.subject || "—"}
+              </dd>
+            </div>
+            <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">E-Mail-Datum</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                {projectRecordEmail.date
+                  ? new Date(projectRecordEmail.date).toLocaleString("de-DE")
+                  : "—"}
+              </dd>
+            </div>
+            <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="text-sm font-medium text-gray-500">Erstellt am</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                 {new Date(projectRecordEmail.createdAt).toLocaleDateString("de-DE")}
@@ -35,7 +55,7 @@ export default async function ProjectRecordEmailDetailPage({
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="text-sm font-medium text-gray-500">Projekt-ID</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                projectRecordEmail.projectId
+                {projectRecordEmail.projectId}
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -60,11 +80,26 @@ export default async function ProjectRecordEmailDetailPage({
               </dd>
             </div>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">E-Mail-Inhalt</dt>
+              <dt className="text-sm font-medium text-gray-500">E-Mail-Text</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                 <div className="prose max-w-none">
-                  <pre className="whitespace-pre-wrap">{projectRecordEmail.text}</pre>
+                  <pre className="whitespace-pre-wrap">
+                    {projectRecordEmail.textBody || projectRecordEmail.text}
+                  </pre>
                 </div>
+              </dd>
+            </div>
+            <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">Roher E-Mail-Inhalt</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                <details>
+                  <summary className="cursor-pointer text-blue-600 hover:text-blue-800">
+                    Rohdaten anzeigen
+                  </summary>
+                  <div className="mt-2 prose max-w-none">
+                    <pre className="whitespace-pre-wrap text-xs">{projectRecordEmail.text}</pre>
+                  </div>
+                </details>
               </dd>
             </div>
           </dl>

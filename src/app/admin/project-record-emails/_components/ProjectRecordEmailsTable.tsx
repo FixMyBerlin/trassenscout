@@ -61,7 +61,10 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
               Projekt
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase">
-              Inhalt (Vorschau)
+              Von
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase">
+              Betreff
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase">
               Erstellt am
@@ -90,8 +93,10 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
               </td>
               <td className="px-6 py-4 text-sm text-gray-900">Projekt #{email.projectId}</td>
               <td className="px-6 py-4 text-sm text-gray-900">
-                {email.text.slice(0, 50)}
-                {email.text.length > 50 ? "..." : ""}
+                {email.from || "—"}
+              </td>
+              <td className="px-6 py-4 text-sm text-gray-900">
+                {email.subject || "—"}
               </td>
               <td className="px-6 py-4 text-sm text-gray-500">
                 {new Date(email.createdAt).toLocaleDateString("de-DE")}

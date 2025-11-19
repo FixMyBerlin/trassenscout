@@ -38,7 +38,7 @@ export const processProjectRecordEmail = async ({
   }
 
   // Parse the email, separate body from attachments
-  const { body: emailBody, attachments } = await parseEmail({
+  const { body, attachments } = await parseEmail({
     rawEmailText: projectRecordEmail.text,
   })
 
@@ -54,7 +54,7 @@ export const processProjectRecordEmail = async ({
 
   // AI extraction with authenticated user
   const finalResult = await extractWithAI({
-    emailBody,
+    body,
     projectContext,
     userId: String(session.userId),
   })

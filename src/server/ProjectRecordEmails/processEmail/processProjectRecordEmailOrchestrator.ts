@@ -26,14 +26,20 @@ export const processProjectRecordEmailOrchestrator = async ({
   const isSenderApproved = true
 
   // Parse the email, separate body from attachments
-  const { body: emailBody, attachments } = await parseEmail({
+  const { body, attachments, from, subject, date } = await parseEmail({
     rawEmailText,
   })
 
   // Store email in DB
-  // todo update schema and store parsed additional data: parsed body, sender, subject..
   const projectRecordEmail = await db.projectRecordEmail.create({
-    data: { text: rawEmailText, projectId },
+    data: {
+      text: rawEmailText,
+      projectId,
+      textBody: body,
+      from,
+      subject,
+      date,
+    },
   })
 
   // Upload attachments to S3 and create Upload records
@@ -50,7 +56,7 @@ export const processProjectRecordEmailOrchestrator = async ({
 
   // AI extraction
   const finalResult = await extractWithAI({
-    emailBody,
+    body,
     projectContext,
     userId: "SYSTEM",
   })

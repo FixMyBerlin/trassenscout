@@ -56,9 +56,13 @@ export const reprocessProjectRecord = async ({ projectRecordId }: { projectRecor
     console.log(`Found related projectRecord email ${projectRecord.projectRecordEmailId}`)
 
     if (projectRecordEmail) {
-      const parsed = await parseEmail({ rawEmailText: projectRecordEmail.text })
-      initialEmailBody = parsed.body
-      console.log(`Extracted email body.`)
+      // Use textBody if available, otherwise parse the raw email
+      if (projectRecordEmail.textBody) {
+        initialEmailBody = projectRecordEmail.textBody
+      } else {
+        const parsed = await parseEmail({ rawEmailText: projectRecordEmail.text })
+        initialEmailBody = parsed.body
+      }
     }
   } else {
     console.log("No related projectRecord email found")

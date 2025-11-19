@@ -22,9 +22,7 @@ export function NewProjectRecordEmailPage({ projects }: Props) {
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
-      const projectRecordEmail = await createProjectRecordEmailMutation({
-        ...values,
-      })
+      const projectRecordEmail = await createProjectRecordEmailMutation(values)
       router.push(`/admin/project-record-emails/${projectRecordEmail.id}`)
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["body"])
