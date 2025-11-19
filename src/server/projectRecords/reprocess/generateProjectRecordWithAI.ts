@@ -17,6 +17,8 @@ type GenerateProjectRecordWithAIParams = {
     "subsections" | "subsubsections" | "projectRecordTopics"
   >
   userId: number
+  subject?: string | null
+  from?: string | null
 }
 
 export const generateProjectRecordWithAI = async ({
@@ -25,11 +27,13 @@ export const generateProjectRecordWithAI = async ({
   uploads,
   projectContext,
   userId,
+  subject,
+  from,
 }: GenerateProjectRecordWithAIParams) => {
   console.log("Generating project record with AI...")
 
   const trace = langfuse.trace({
-    name: "reprocess-protocol",
+    name: "reprocess-project-record",
     userId: String(userId),
   })
 
@@ -47,6 +51,7 @@ export const generateProjectRecordWithAI = async ({
     projectRecordTopics,
     isReprocessing: true,
     hasUploads: uploads.length > 0,
+    subject,
   })
 
   // Build uploads context
@@ -73,7 +78,7 @@ export const generateProjectRecordWithAI = async ({
     schema: finalExtractionSchema,
     experimental_telemetry: {
       isEnabled: true,
-      functionId: "email-to-protocol-function",
+      functionId: "reprocess-project-record-function",
       metadata: {
         langfuseTraceId: trace.id,
       },
@@ -82,9 +87,11 @@ export const generateProjectRecordWithAI = async ({
     prompt: `### PROJECT RECORD
 
 **Current record entry (IMPORTANT!):**
+${subject && `SUBJECT: ${subject}\n`}
+
 ${projectRecordBody}
 
-${emailBody ? `**Original Email Body (from which the current record entry was generated):**\n${emailBody}\n` : ""}
+${emailBody ? `**Original Email Body (from which the current record entry was generated):**\n${subject && `SUBJECT: ${subject}\n`}${emailBody}\n` : ""}
 ${uploadsContext}
 
 ---

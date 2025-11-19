@@ -2,11 +2,10 @@
 
 import { getBlitzContext } from "@/src/blitz-server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { extractEmailData } from "@/src/server/ProjectRecordEmails/processEmail/extractEmailData"
 import { extractWithAI } from "@/src/server/ProjectRecordEmails/processEmail/extractWithAI"
 import { fetchProjectContext } from "@/src/server/ProjectRecordEmails/processEmail/fetchProjectContext"
 import { langfuse } from "@/src/server/ProjectRecordEmails/processEmail/langfuseClient"
-import { parseEmail } from "@/src/server/ProjectRecordEmails/processEmail/parseEmail"
-import { uploadEmailAttachments } from "@/src/server/ProjectRecordEmails/processEmail/uploadEmailAttachments"
 import db, { ProjectRecordReviewState, ProjectRecordType } from "db"
 
 export const processProjectRecordEmail = async ({
@@ -32,22 +31,15 @@ export const processProjectRecordEmail = async ({
   // Get the ProjectRecordEmail
   const projectRecordEmail = await db.projectRecordEmail.findFirst({
     where: { id: projectRecordEmailId },
+    include: { uploads: { select: { id: true } } },
   })
   if (!projectRecordEmail) {
     throw new Error("ProjectRecordEmail not found")
   }
 
-  // Parse the email, separate body from attachments
-  const { body, attachments } = await parseEmail({
-    rawEmailText: projectRecordEmail.text,
-  })
-
-  // Upload attachments to S3 and create Upload records
-  const uploadIds = await uploadEmailAttachments({
-    attachments,
-    projectId: projectRecordEmail.projectId,
-    projectRecordEmailId,
-  })
+  // check if already processed and in db otherwise parse email
+  // replace this function if subject/body/date are required
+  const { subject, body, from } = await extractEmailData({ projectRecordEmail })
 
   // Fetch subsections, subsubsections, and projectRecord topics for this project
   const projectContext = await fetchProjectContext({ projectId: projectRecordEmail.projectId })
@@ -55,6 +47,8 @@ export const processProjectRecordEmail = async ({
   // AI extraction with authenticated user
   const finalResult = await extractWithAI({
     body,
+    subject,
+    from,
     projectContext,
     userId: String(session.userId),
   })
@@ -90,7 +84,7 @@ export const processProjectRecordEmail = async ({
         connect: combinedResult.projectRecordTopics.map((id) => ({ id })),
       },
       uploads: {
-        connect: uploadIds.map((id) => ({ id })),
+        connect: projectRecordEmail.uploads.map((upload) => ({ id: upload.id })),
       },
     },
   })
@@ -112,6 +106,6 @@ export const processProjectRecordEmail = async ({
 
   return {
     projectRecordId: projectRecord.id,
-    uploadIds: uploadIds,
+    uploadIds: projectRecordEmail.uploads.map((upload) => ({ id: upload.id })),
   }
 }

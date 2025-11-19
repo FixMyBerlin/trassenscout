@@ -57,6 +57,8 @@ export const processProjectRecordEmailOrchestrator = async ({
   // AI extraction
   const finalResult = await extractWithAI({
     body,
+    subject: subject,
+    from: from,
     projectContext,
     userId: "SYSTEM",
   })

@@ -4,6 +4,7 @@ type CreateFieldInstructionsParams = {
   projectRecordTopics: Array<{ id: number; title: string }>
   isReprocessing?: boolean
   hasUploads: boolean
+  subject?: string | null
 }
 
 export const createFieldInstructions = ({
@@ -12,6 +13,7 @@ export const createFieldInstructions = ({
   projectRecordTopics,
   isReprocessing,
   hasUploads,
+  subject,
 }: CreateFieldInstructionsParams) => {
   return `
 #### BODY
@@ -29,7 +31,7 @@ ${hasUploads ? `- Integrate relevant information from the document summaries pro
 - Output in ISO 8601 format if possible.
 
 #### TITLE
-- Generate a meaningful, concise title that reflects the ${isReprocessing ? "record's" : "email's"} main topic or purpose.
+- Generate a meaningful, concise title that reflects the ${isReprocessing ? "record's" : "email's"} main topic or purpose.${!isReprocessing && subject ? `\n- **Important:** The email subject is "${subject}". Use this as the primary source for the title.` : ""}
 
 #### SUBSECTIONID
 ${
@@ -41,7 +43,7 @@ ${subsections
   .map((s) => `${s.id} (${s.slug.toUpperCase()} - ${s.start}(start) to ${s.end}(end))`)
   .join(", ")}
 
-Assign based on the abbreviations mentioned in the text. Sometimes the abbreviations vary slightly, e.g., 'PA1' can also be written as 'PA 1'. If unclear, return null.`
+Assign based on the abbreviations mentioned in the text${subject ? ` and subject` : ""}. Sometimes the abbreviations vary slightly, e.g., 'PA1' can also be written as 'PA 1'. If unclear, return null.`
     : "No subsections available for this project; always return null."
 }
 
@@ -58,14 +60,14 @@ ${subsubsections
   )
   .join(", ")}
 
-Assign based on the abbreviations mentioned in the text. Sometimes the abbreviations vary slightly, e.g., 'RF12' can also be written as 'RF 12'. If unclear, return null.`
+Assign based on the abbreviations mentioned in the text${subject ? ` and subject` : ""}. Sometimes the abbreviations vary slightly, e.g., 'RF12' can also be written as 'RF 12'. If unclear, return null.`
     : "No subsubsections available for this project; always return null."
 }
 
 #### TOPICS
 ${
   projectRecordTopics.length > 0
-    ? `Select all relevant topic IDs from the list below based on the email's content, themes, or keywords. ${hasUploads ? `The related document summaries must be considered as well.` : ""}
+    ? `Select all relevant topic IDs from the list below based on the ${isReprocessing ? "record" : "email"}'s content${subject ? `, subject` : ""}, themes, or keywords. ${hasUploads ? `The related document summaries must be considered as well.` : ""}
 Available topics:
 ${projectRecordTopics.map((t) => `${t.id} (${t.title})`).join(", ")}
 

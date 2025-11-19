@@ -1,4 +1,5 @@
 import { parseEmail } from "@/src/server/ProjectRecordEmails/processEmail/parseEmail"
+import { uploadEmailAttachments } from "@/src/server/ProjectRecordEmails/processEmail/uploadEmailAttachments"
 import { ProjectRecordEmailSchema } from "@/src/server/ProjectRecordEmails/schema"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
@@ -21,6 +22,13 @@ export default resolver.pipe(
         date: parsed.date,
         ...data,
       },
+    })
+
+    // Upload attachments to S3 and create Upload records
+    const uploadIds = await uploadEmailAttachments({
+      attachments: parsed.attachments,
+      projectId,
+      projectRecordEmailId: record.id,
     })
 
     // TODO logEntry?

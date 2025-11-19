@@ -9,6 +9,8 @@ import { langfuse } from "./langfuseClient"
 
 type ExtractWithAIParams = {
   body: string
+  subject?: string | null
+  from?: string | null
   projectContext: Pick<
     CreateProjectRecordExtractionSchemaParams,
     "subsections" | "subsubsections" | "projectRecordTopics"
@@ -21,9 +23,15 @@ type ExtractWithAIParams = {
 // we might want a pipeline where we first find the matching subsection and then only fetch subsubsections for that subsection
 // do we want to fetch more data (like Führungsform etc.) to improve matching?
 
-export const extractWithAI = async ({ body, projectContext, userId }: ExtractWithAIParams) => {
+export const extractWithAI = async ({
+  body,
+  subject,
+  from,
+  projectContext,
+  userId,
+}: ExtractWithAIParams) => {
   const trace = langfuse.trace({
-    name: "process-protocol-email",
+    name: "process-email-to-project-record",
     userId,
   })
 
@@ -38,6 +46,7 @@ export const extractWithAI = async ({ body, projectContext, userId }: ExtractWit
     projectRecordTopics: projectContext.projectRecordTopics,
     isReprocessing: false,
     hasUploads: false, // attachments are uploaded but not yet used in prompt for initial processing
+    subject,
   })
 
   let finalResult
@@ -47,14 +56,14 @@ export const extractWithAI = async ({ body, projectContext, userId }: ExtractWit
       schema: finalExtractionSchema,
       experimental_telemetry: {
         isEnabled: true,
-        functionId: "process-protocol-email-function",
+        functionId: "process-email-to-project-record-function",
         metadata: {
           langfuseTraceId: trace.id,
         },
       },
       system:
         "You are an AI assistant that can read and process emails and gather information from them.",
-      prompt: `EMAIL BODY:
+      prompt: `${subject ? `EMAIL SUBJECT:\n${subject}\n\n---\n\n` : ""}${from ? `FROM:\n${from}\n\n---\n\n` : ""}EMAIL BODY:
 ${body}
 
 ---

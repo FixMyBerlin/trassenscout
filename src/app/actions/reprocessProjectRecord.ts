@@ -2,8 +2,8 @@
 
 import { getBlitzContext } from "@/src/blitz-server"
 
+import { extractEmailData } from "@/src/server/ProjectRecordEmails/processEmail/extractEmailData"
 import { fetchProjectContext } from "@/src/server/ProjectRecordEmails/processEmail/fetchProjectContext"
-import { parseEmail } from "@/src/server/ProjectRecordEmails/processEmail/parseEmail"
 import { generateProjectRecordWithAI } from "@/src/server/projectRecords/reprocess/generateProjectRecordWithAI"
 
 import db from "db"
@@ -46,23 +46,24 @@ export const reprocessProjectRecord = async ({ projectRecordId }: { projectRecor
     throw new Error("You must be an admin or project editor to reprocess projectRecords")
   }
 
-  // Fetch the related projectRecord-email and parse it to extract body
-  let initialEmailBody = null
+  // Fetch the related projectRecord-email and parse it to extract body, subject, and from
+  let initialEmailBody: string | null = null
+  let emailSubject: string | null = null
+  let emailFrom: string | null = null
 
   if (projectRecord.projectRecordEmailId) {
     const projectRecordEmail = await db.projectRecordEmail.findUnique({
       where: { id: projectRecord.projectRecordEmailId },
     })
-    console.log(`Found related projectRecord email ${projectRecord.projectRecordEmailId}`)
 
     if (projectRecordEmail) {
-      // Use textBody if available, otherwise parse the raw email
-      if (projectRecordEmail.textBody) {
-        initialEmailBody = projectRecordEmail.textBody
-      } else {
-        const parsed = await parseEmail({ rawEmailText: projectRecordEmail.text })
-        initialEmailBody = parsed.body
-      }
+      console.log(`Found related projectRecord email ${projectRecord.projectRecordEmailId}`)
+      // check if already processed and in db otherwise parse email
+      // replace this function if subject/body/date are required
+      const emailData = await extractEmailData({ projectRecordEmail })
+      initialEmailBody = emailData.body
+      emailSubject = emailData.subject
+      emailFrom = emailData.from
     }
   } else {
     console.log("No related projectRecord email found")
@@ -82,6 +83,8 @@ export const reprocessProjectRecord = async ({ projectRecordId }: { projectRecor
     uploads: projectRecord.uploads,
     projectContext,
     userId: session.userId,
+    subject: emailSubject,
+    from: emailFrom,
   })
 
   return {
