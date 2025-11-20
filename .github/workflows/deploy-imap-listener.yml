@@ -41,7 +41,7 @@ jobs:
       - name: Build IMAP listener image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./imap-listener
           file: ./docker/imap-listener/Dockerfile
           push: false
           load: true
