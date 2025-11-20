@@ -22,6 +22,7 @@ export default function AdminDashboardPage() {
           <Link href="/admin/memberships">Nutzer & Mitgliedschaften</Link>
         </li>
         <li>
+          <Link href="/admin/project-record-emails">Unprozessierte Protokoll-Emails</Link> |{" "}
           <Link href="/admin/project-records">Protokolle (Review)</Link>
         </li>
         <li>
