@@ -1,9 +1,12 @@
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import db, { ProjectRecordReviewState, ProjectRecordType } from "db"
+
+import { isAdminOrProjectMember } from "@/src/server/ProjectRecordEmails/processEmail/checkSenderApproval"
 import { extractWithAI } from "./extractWithAI"
 import { fetchProjectContext } from "./fetchProjectContext"
 import { getProjectIdFromSlug } from "./getProjectIdFromSlug"
 import { langfuse } from "./langfuseClient"
+import { notifyAdminsAboutUnapprovedSender } from "./notifyEditorsAboutUnapprovedSender"
 import { parseEmail } from "./parseEmail"
 import { uploadEmailAttachments } from "./uploadEmailAttachments"
 
@@ -17,17 +20,15 @@ export const processProjectRecordEmailOrchestrator = async ({
   // Fetch project ID from slug
   const projectId = await getProjectIdFromSlug(projectSlug)
 
-  // todo
-  // In the future the email and the project will be part of the request
-  // todo: projectRecordEmail db entry will be created here with relation to project
-  // todo: check if sender address is allowed to submit emails (part of project team)
-  // if not, create the ProjectRecordEmail but set NEEDSADMINREVIEW and add review note
-  // send email to admins that email was received from unapproved sender and needs review
-  const isSenderApproved = true
-
   // Parse the email, separate body from attachments
   const { body, attachments, from, subject, date } = await parseEmail({
     rawEmailText,
+  })
+
+  // Check if sender is approved (project team member or admin)
+  const isSenderApproved = await isAdminOrProjectMember({
+    projectId,
+    email: from,
   })
 
   // Store email in DB
@@ -50,7 +51,11 @@ export const processProjectRecordEmailOrchestrator = async ({
     projectRecordEmailId: projectRecordEmail.id,
   })
 
+  // Prepare review note for unapproved senders
   let reviewNote = ""
+  if (!isSenderApproved) {
+    reviewNote = `Email von unbekannter Absenderadresse erhalten: ${from || "Unbekannt"}. Bitte prüfen Sie, ob dieser Absender berechtigt ist, Projektprotokolle für Projekt ${projectSlug} einzureichen.`
+  }
 
   // Fetch subsections, subsubsections, and projectRecord topics for this project
   const projectContext = await fetchProjectContext({ projectId })
@@ -111,6 +116,17 @@ export const processProjectRecordEmailOrchestrator = async ({
     projectId: projectRecord.projectId,
     projectRecordId: projectRecord.id,
   })
+
+  // Notify editors if sender is not approved
+  if (!isSenderApproved) {
+    await notifyAdminsAboutUnapprovedSender({
+      projectId,
+      projectSlug,
+      senderEmail: from || "Unbekannt",
+      emailSubject: subject,
+      projectRecordId: projectRecord.id,
+    })
+  }
 
   await langfuse.flushAsync()
 
