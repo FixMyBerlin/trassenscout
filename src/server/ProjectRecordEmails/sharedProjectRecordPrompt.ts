@@ -17,7 +17,7 @@ export const createFieldInstructions = ({
 }: CreateFieldInstructionsParams) => {
   return `
 #### BODY
-- Summarize the content of the ${isReprocessing ? "record entry" : "email body"} **once**.${isReprocessing ? " Current record entry itself is the MOST IMPORTANT source." : ""}
+- Summarize the content of the ${isReprocessing ? "record entry" : "email body"}  - **once and in German language**.${isReprocessing ? " Current record entry itself is the MOST IMPORTANT source." : ""}
 - Do not leave out any important details.
 ${hasUploads ? `- Integrate relevant information from the document summaries provided above. They are **secondary** to the main ${isReprocessing ? "record entry" : "email"}. Every document summary should be reviewed and relevant content included.` : ""}
 - Convert to **Markdown**:
@@ -31,7 +31,7 @@ ${hasUploads ? `- Integrate relevant information from the document summaries pro
 - Output in ISO 8601 format if possible.
 
 #### TITLE
-- Generate a meaningful, concise title that reflects the ${isReprocessing ? "record's" : "email's"} main topic or purpose.${!isReprocessing && subject ? `\n- **Important:** The email subject is "${subject}". Use this as the primary source for the title.` : ""}
+- Generate a meaningful, concise title that reflects the ${isReprocessing ? "record's" : "email's"} main topic or purpose **in German language**.${!isReprocessing && subject ? `\n- **Important:** The email subject is "${subject}". Use this as the primary source for the title.` : ""}
 
 #### SUBSECTIONID
 ${
