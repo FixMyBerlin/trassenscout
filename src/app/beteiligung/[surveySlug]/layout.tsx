@@ -1,5 +1,6 @@
 import { SurveyFooter } from "@/src/app/beteiligung/_components/layout/SurveyFooter"
 import { SurveyHeader } from "@/src/app/beteiligung/_components/layout/SurveyHeader"
+import "@/src/app/beteiligung/_components/stripe-backgrounds.css"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { Metadata } from "next"
