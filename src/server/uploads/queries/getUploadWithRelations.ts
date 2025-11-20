@@ -52,6 +52,12 @@ export default resolver.pipe(
             lastName: true,
           },
         },
+        project: {
+          select: {
+            aiEnabled: true,
+            slug: true,
+          },
+        },
       },
     })
 

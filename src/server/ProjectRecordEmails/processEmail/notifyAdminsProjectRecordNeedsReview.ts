@@ -1,5 +1,5 @@
 import db from "@/db"
-import { unapprovedSenderNotificationToAdmins } from "@/emails/mailers/unapprovedSenderNotificationToAdmins"
+import { projectRecordNeedsReviewNotificationToAdmins } from "@/emails/mailers/projectRecordNeedsReviewNotificationToAdmins"
 
 type Props = {
   projectId: number
@@ -7,17 +7,22 @@ type Props = {
   senderEmail: string
   emailSubject: string | null
   projectRecordId: number
+  isAiEnabled: boolean
+  isSenderApproved: boolean
 }
 
 /**
- * Notifies all system admins about an email received from an unapproved sender.
+ * Notifies all system admins about an email that requires manual review.
+ * Reasons can include: unapproved sender, disabled AI features, or both.
  * Sends an email to each user with ADMIN role.
  */
-export const notifyAdminsAboutUnapprovedSender = async ({
+export const notifyAdminsProjectRecordNeedsReview = async ({
   projectId,
   senderEmail,
   emailSubject,
   projectRecordId,
+  isAiEnabled,
+  isSenderApproved,
 }: Props) => {
   // Fetch project details for the email
   const project = await db.project.findUnique({
@@ -31,11 +36,13 @@ export const notifyAdminsAboutUnapprovedSender = async ({
 
   // Send notification to admin
   await (
-    await unapprovedSenderNotificationToAdmins({
+    await projectRecordNeedsReviewNotificationToAdmins({
       projectSlug: project.slug,
       senderEmail,
       emailSubject,
       projectRecordReviewUrl: `admin/project-records/${projectRecordId}/review`,
+      isAiEnabled,
+      isSenderApproved,
     })
   ).send()
 }

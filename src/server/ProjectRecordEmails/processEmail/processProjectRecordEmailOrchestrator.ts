@@ -1,12 +1,13 @@
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import db, { ProjectRecordReviewState, ProjectRecordType } from "db"
 
+import { checkProjectAiEnabled } from "@/src/server/ProjectRecordEmails/processEmail/checkProjectAiEnabled"
 import { isAdminOrProjectMember } from "@/src/server/ProjectRecordEmails/processEmail/checkSenderApproval"
 import { extractWithAI } from "./extractWithAI"
 import { fetchProjectContext } from "./fetchProjectContext"
 import { getProjectIdFromSlug } from "./getProjectIdFromSlug"
 import { langfuse } from "./langfuseClient"
-import { notifyAdminsAboutUnapprovedSender } from "./notifyEditorsAboutUnapprovedSender"
+import { notifyAdminsProjectRecordNeedsReview } from "./notifyAdminsProjectRecordNeedsReview"
 import { parseEmail } from "./parseEmail"
 import { uploadEmailAttachments } from "./uploadEmailAttachments"
 
@@ -24,6 +25,9 @@ export const processProjectRecordEmailOrchestrator = async ({
   const { body, attachments, from, subject, date } = await parseEmail({
     rawEmailText,
   })
+
+  // Check if AI features are enabled for the project
+  const isAiEnabled = await checkProjectAiEnabled(projectId)
 
   // Check if sender is approved (project team member or admin)
   const isSenderApproved = await isAdminOrProjectMember({
@@ -51,11 +55,21 @@ export const processProjectRecordEmailOrchestrator = async ({
     projectRecordEmailId: projectRecordEmail.id,
   })
 
-  // Prepare review note for unapproved senders
-  let reviewNote = ""
+  // Prepare review note for unapproved senders or disabled AI
+  const reviewNotes: string[] = []
+
   if (!isSenderApproved) {
-    reviewNote = `Email von unbekannter Absenderadresse erhalten: ${from || "Unbekannt"}. Bitte prüfen Sie, ob dieser Absender berechtigt ist, Projektprotokolle für Projekt ${projectSlug} einzureichen.`
+    reviewNotes.push(
+      `Email von unbekannter Absenderadresse erhalten: ${from || "Unbekannt"}. Bitte prüfen Sie, ob dieser Absender berechtigt ist, Projektprotokolle für Projekt ${projectSlug} einzureichen.`,
+    )
   }
+
+  if (!isAiEnabled) {
+    reviewNotes.push(
+      "AI-Funktionen sind für dieses Projekt deaktiviert. Manuelle Überprüfung erforderlich.",
+    )
+  }
+  const reviewNote = reviewNotes.join(" ")
 
   // Fetch subsections, subsubsections, and projectRecord topics for this project
   const projectContext = await fetchProjectContext({ projectId })
@@ -93,9 +107,10 @@ export const processProjectRecordEmailOrchestrator = async ({
       projectId: combinedResult.projectId,
       projectRecordAuthorType: ProjectRecordType.SYSTEM,
       projectRecordUpdatedByType: ProjectRecordType.SYSTEM,
-      reviewState: isSenderApproved
-        ? ProjectRecordReviewState.NEEDSREVIEW
-        : ProjectRecordReviewState.NEEDSADMINREVIEW,
+      reviewState:
+        isSenderApproved && isAiEnabled
+          ? ProjectRecordReviewState.NEEDSREVIEW
+          : ProjectRecordReviewState.NEEDSADMINREVIEW,
       projectRecordEmailId: projectRecordEmail.id,
       reviewNotes: reviewNote || null,
       projectRecordTopics: {
@@ -117,14 +132,16 @@ export const processProjectRecordEmailOrchestrator = async ({
     projectRecordId: projectRecord.id,
   })
 
-  // Notify editors if sender is not approved
-  if (!isSenderApproved) {
-    await notifyAdminsAboutUnapprovedSender({
+  // Notify editors if sender is not approved or AI is disabled
+  if (!isSenderApproved || !isAiEnabled) {
+    await notifyAdminsProjectRecordNeedsReview({
       projectId,
       projectSlug,
       senderEmail: from || "Unbekannt",
       emailSubject: subject,
       projectRecordId: projectRecord.id,
+      isAiEnabled,
+      isSenderApproved,
     })
   }
 

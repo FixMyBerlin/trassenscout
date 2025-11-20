@@ -3,6 +3,7 @@
 import db from "@/db"
 import { editorRoles } from "@/src/authorization/constants"
 import { getBlitzContext } from "@/src/blitz-server"
+import { checkProjectAiEnabled } from "@/src/server/ProjectRecordEmails/processEmail/checkProjectAiEnabled"
 import { fetchProjectContext } from "@/src/server/ProjectRecordEmails/processEmail/fetchProjectContext"
 import { fetchPdfFromS3 } from "@/src/server/uploads/summarize/fetchPdfFromS3"
 import { generatePdfSummaryWithAI } from "@/src/server/uploads/summarize/generatePdfSummaryWithAI"
@@ -51,6 +52,9 @@ export const summarizeUpload = async ({ uploadId }: { uploadId: number }) => {
       where: { id: uploadId },
       include: { project: { select: { slug: true, id: true } } },
     })
+
+    // Check if AI enabled for the project
+    await checkProjectAiEnabled(upload.project.id)
 
     // Authorization check
     await authorizeUserForUpload({

@@ -11,6 +11,7 @@ export const ProjectSchema = z.object({
   partnerLogoSrcs: z.array(z.string()).nullish(),
   managerId: InputNumberOrNullSchema,
   exportEnabled: z.coerce.boolean(),
+  aiEnabled: z.coerce.boolean(),
 })
 
 export type ProjectType = z.infer<typeof ProjectSchema>

@@ -114,6 +114,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
               mimeType={upload.mimeType}
               isGeneratingSummary={isGeneratingSummary}
               setIsGeneratingSummary={setIsGeneratingSummary}
+              isAiEnabled={upload.project.aiEnabled}
             />
           )}
           <div>

@@ -26,7 +26,10 @@ describe("createInvite mutation", () => {
     expect(true).toBe(true)
 
     // Create Project
-    const project = await createProject({ slug: "test", exportEnabled: false }, mockCtx)
+    const project = await createProject(
+      { slug: "test", exportEnabled: false, aiEnabled: false },
+      mockCtx,
+    )
     expect(project.slug).toBe("test")
 
     // Create Inviter

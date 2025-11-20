@@ -6,6 +6,7 @@ import getProjects from "@/src/server/projects/queries/getProjects"
 import { Metadata } from "next"
 import "server-only"
 import { AdminEnableProjectExportApi } from "./[projectSlug]/subsections/_components/AdminEnableProjectExportApi"
+import { AdminEnableProjectAi } from "./_components/AdminEnableProjectAi"
 
 export const metadata: Metadata = { title: "Projekte" }
 
@@ -35,6 +36,7 @@ export default async function AdminProjectsPage() {
                 slug={project.slug}
                 exportEnabled={project.exportEnabled}
               />
+              <AdminEnableProjectAi slug={project.slug} aiEnabled={project.aiEnabled} />
               <pre>{JSON.stringify(project, undefined, 2)}</pre>
             </li>
           )

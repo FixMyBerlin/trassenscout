@@ -28,7 +28,10 @@ describe("createLogEntry mutation", async () => {
       role: mockCtx.session.role,
     },
   })
-  const project = await createProject({ slug: "test", exportEnabled: false }, mockCtx)
+  const project = await createProject(
+    { slug: "test", exportEnabled: false, aiEnabled: false },
+    mockCtx,
+  )
   const subsectionInput = {
     slug: "test",
     order: 99,

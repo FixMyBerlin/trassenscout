@@ -4,7 +4,9 @@ import { isPdf } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_compo
 import { summarizeUpload } from "@/src/app/actions/summarizeUpload"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { LabeledTextareaField } from "@/src/core/components/forms"
+import { Link } from "@/src/core/components/links"
 import { SparklesIcon } from "@heroicons/react/16/solid"
+import clsx from "clsx"
 import { Dispatch, SetStateAction } from "react"
 import { useFormContext } from "react-hook-form"
 
@@ -13,6 +15,7 @@ type Props = {
   mimeType: string | null
   isGeneratingSummary: boolean
   setIsGeneratingSummary: Dispatch<SetStateAction<boolean>>
+  isAiEnabled: boolean
 }
 
 export const SummaryField = ({
@@ -20,10 +23,11 @@ export const SummaryField = ({
   mimeType,
   isGeneratingSummary,
   setIsGeneratingSummary,
+  isAiEnabled,
 }: Props) => {
   const { setValue } = useFormContext()
 
-  if (!isPdf(mimeType)) {
+  if (!isPdf(mimeType) || !isAiEnabled) {
     return null
   }
 
@@ -46,30 +50,47 @@ export const SummaryField = ({
 
   return (
     <div className="relative">
-      <SuperAdminBox>
-        {uploadId && (
-          <button
-            type="button"
-            onClick={handleSummarize}
-            disabled={isGeneratingSummary}
-            // absolute position only makes sense without SuperAdminBox
-            // className="absolute right-5 top-8 flex items-center gap-1 rounded-sm bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700 disabled:opacity-50"
-            className="flex items-center gap-1 rounded-sm bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700 disabled:opacity-50"
-          >
-            <SparklesIcon className="h-3 w-3" />
-            {isGeneratingSummary ? "Generiere..." : "Mit KI zusammenfassen"}
-          </button>
-        )}
-      </SuperAdminBox>
       <LabeledTextareaField
-        // commented out as it is an admin feature for now
-        // help="PDFs lassen sich mit KI zusammenfassen. Beachten Sie, dass nach Drücken des Buttons eine eventuell bereits vorhandene Zusammenfassung im Textfeld überschrieben wird."
+        help="PDFs lassen sich mit KI zusammenfassen. Beachten Sie, dass nach Drücken des Buttons eine bereits vorhandene Zusammenfassung im Textfeld überschrieben wird."
         optional
         rows={12}
         name="summary"
         label="Zusammenfassung"
         disabled={isGeneratingSummary}
       />
+      {!isAiEnabled && isPdf(mimeType) && (
+        <SuperAdminBox className="mt-4">
+          <p className="mb-2 font-semibold">KI-Funktionen sind deaktiviert</p>
+          <p className="mb-3 text-sm">
+            Um die automatische Zusammenfassung von PDF-Dokumenten zu nutzen, müssen die
+            KI-Funktionen für dieses Projekt aktiviert werden.
+          </p>
+          <Link
+            href={`/admin/projects`}
+            className="text-sm text-blue-600 underline hover:text-blue-800"
+          >
+            Zu den Projekt-Einstellungen
+          </Link>
+        </SuperAdminBox>
+      )}
+      {uploadId && (
+        <button
+          type="button"
+          onClick={handleSummarize}
+          disabled={isGeneratingSummary}
+          className={clsx(
+            "absolute top-8 right-5 flex items-center gap-1 rounded-sm bg-blue-500 px-2 py-1 text-xs text-white disabled:bg-white disabled:text-gray-400",
+            !isGeneratingSummary && "hover:cursor-pointer hover:bg-blue-700",
+          )}
+        >
+          <SparklesIcon className="h-3 w-3" />
+          <p className={isGeneratingSummary ? "animate-pulse" : ""}>
+            {isGeneratingSummary
+              ? "Dokument wird mit KI zusammengefasst..."
+              : "Dokument mit KI zusammenfassen"}
+          </p>
+        </button>
+      )}
     </div>
   )
 }

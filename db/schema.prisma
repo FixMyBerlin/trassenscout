@@ -144,6 +144,7 @@ model Project {
   logoSrc         String? // - UNUSED
   partnerLogoSrcs String[] // - UNUSED
   exportEnabled   Boolean  @default(false)
+  aiEnabled       Boolean  @default(false)
   //
   manager         User?    @relation(fields: [managerId], references: [id])
   managerId       Int?

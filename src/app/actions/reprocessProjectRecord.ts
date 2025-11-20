@@ -40,6 +40,11 @@ export const reprocessProjectRecord = async ({ projectRecordId }: { projectRecor
   // Check if user is admin or a project member with editor permissions
   const isAdmin = session.role === "ADMIN"
 
+  // atm this is an ADMIN feature
+  // uncomment if necessary
+  // Check if AI enabled for the project
+  // await checkProjectAiEnabled(projectRecord.projectId)
+
   if (!isAdmin) {
     throw new Error("You must be an admin or project editor to reprocess projectRecords")
   }

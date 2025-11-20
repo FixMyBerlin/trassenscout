@@ -2,6 +2,7 @@
 
 import { getBlitzContext } from "@/src/blitz-server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { checkProjectAiEnabled } from "@/src/server/ProjectRecordEmails/processEmail/checkProjectAiEnabled"
 import { extractEmailData } from "@/src/server/ProjectRecordEmails/processEmail/extractEmailData"
 import { extractWithAI } from "@/src/server/ProjectRecordEmails/processEmail/extractWithAI"
 import { fetchProjectContext } from "@/src/server/ProjectRecordEmails/processEmail/fetchProjectContext"
@@ -36,6 +37,9 @@ export const processProjectRecordEmail = async ({
   if (!projectRecordEmail) {
     throw new Error("ProjectRecordEmail not found")
   }
+
+  // Check if AI enabled for the project
+  const isAiEnabled = await checkProjectAiEnabled(projectRecordEmail.projectId)
 
   // check if already processed and in db otherwise parse email
   // replace this function if subject/body/date are required
@@ -77,9 +81,13 @@ export const processProjectRecordEmail = async ({
       projectId: combinedResult.projectId,
       projectRecordAuthorType: ProjectRecordType.SYSTEM,
       projectRecordUpdatedByType: ProjectRecordType.SYSTEM,
-      reviewState: ProjectRecordReviewState.NEEDSREVIEW,
+      reviewState: !isAiEnabled
+        ? ProjectRecordReviewState.NEEDSADMINREVIEW
+        : ProjectRecordReviewState.NEEDSREVIEW,
       projectRecordEmailId: projectRecordEmailId,
-      reviewNotes: null,
+      reviewNotes: !isAiEnabled
+        ? "AI-Funktionen sind für dieses Projekt deaktiviert. Manuelle Überprüfung erforderlich."
+        : null,
       projectRecordTopics: {
         connect: combinedResult.projectRecordTopics.map((id) => ({ id })),
       },
