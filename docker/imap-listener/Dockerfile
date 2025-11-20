@@ -1,4 +1,3 @@
-# Node.js 22 Bullseye Slim als Basis (konsistent mit der Hauptanwendung)
 FROM node:22-bullseye-slim
 
 # Arbeitsverzeichnis setzen

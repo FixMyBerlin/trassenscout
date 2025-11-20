@@ -57,7 +57,7 @@ services:
       driver: journald
   traefik:
     container_name: traefik
-    image: traefik:v3.5
+    image: traefik:v3.6
     restart: unless-stopped
     environment:
       TZ: Europe/Berlin
