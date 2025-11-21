@@ -7,9 +7,8 @@ import { uploadSource } from "@/src/server/uploads/_utils/sources"
 import { route, Router } from "@better-upload/server"
 import { toRouteHandler } from "@better-upload/server/adapters/next"
 
-const s3Client = getConfiguredS3Client()
-
 function createRouter(projectSlug: string, userId: number) {
+  const s3Client = getConfiguredS3Client()
   return {
     client: s3Client,
     bucketName: S3_BUCKET,
