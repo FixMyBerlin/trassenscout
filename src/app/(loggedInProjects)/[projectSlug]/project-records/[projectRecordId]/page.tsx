@@ -2,6 +2,7 @@ import { ProjectRecordDetailClient } from "@/src/app/(loggedInProjects)/[project
 import { CreateEditReviewHistory } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/CreateEditReviewHistory"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { invoke } from "@/src/blitz-server"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { projectRecordEditRoute } from "@/src/core/routes/projectRecordRoutes"
@@ -38,8 +39,13 @@ export default async function ProjectRecordDetail({
           </IfUserCanEdit>
         }
       />
-
-      <CreateEditReviewHistory projectRecord={projectRecord} />
+      {projectRecord.project.aiEnabled ? (
+        <CreateEditReviewHistory projectRecord={projectRecord} />
+      ) : (
+        <SuperAdminBox>
+          <CreateEditReviewHistory projectRecord={projectRecord} />
+        </SuperAdminBox>
+      )}
 
       <ProjectRecordDetailClient projectRecord={projectRecord} />
 

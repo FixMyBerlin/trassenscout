@@ -35,7 +35,7 @@ export default resolver.pipe(
           },
         },
         project: {
-          select: { slug: true },
+          select: { slug: true, aiEnabled: true },
         },
         author: {
           select: {
