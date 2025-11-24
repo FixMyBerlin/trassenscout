@@ -1,11 +1,13 @@
+import { ProjectRecordNewModal } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordNewModal"
 import { ProjectRecordsTable } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTable"
 import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
 import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneContainer"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
+import { blueButtonStyles, Link, whiteButtonStyles } from "@/src/core/components/links"
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
-import { Link, whiteButtonStyles } from "@/src/core/components/links"
 import { PageDescription } from "@/src/core/components/pages/PageDescription"
 import { formattedEuro, formattedLength, shortTitle } from "@/src/core/components/text"
 import { H2 } from "@/src/core/components/text/Headings"
@@ -20,8 +22,9 @@ import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/g
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { ArrowUpRightIcon } from "@heroicons/react/16/solid"
+import { ArrowUpRightIcon, PlusIcon } from "@heroicons/react/16/solid"
 import { clsx } from "clsx"
+import { useState } from "react"
 import { mapillaryLink } from "./utils/mapillaryLink"
 
 type Props = {
@@ -33,16 +36,22 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
+  const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
 
   const [{ uploads }, { refetch: refetchUploads }] = useQuery(getUploadsWithSubsections, {
     projectSlug,
     where: { subsubsectionId: subsubsection.id },
   })
 
-  const [projectRecords] = useQuery(getProjectRecordsBySubsubsection, {
-    projectSlug,
-    subsubsectionId: subsubsection.id,
-  })
+  const [projectRecords, { refetch: refetchProjectRecords }] = useQuery(
+    getProjectRecordsBySubsubsection,
+    {
+      projectSlug,
+      subsubsectionId: subsubsection.id,
+    },
+  )
 
   const mapillaryHref = mapillaryLink(subsubsection)
   return (
@@ -183,22 +192,40 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
 
       <section className="mt-10">
         <H2>Protokolleinträge</H2>
+        {showSuccess && <FormSuccess message="Protokoll erfolgreich erstellt" show={showSuccess} />}
         {projectRecords.length > 0 ? (
-          <ProjectRecordsTable projectRecords={projectRecords} openLinksInNewTab />
+          <ProjectRecordsTable
+            projectRecords={projectRecords}
+            openLinksInNewTab
+            highlightId={createdProjectRecordId}
+          />
         ) : (
           <ZeroCase small visible name="Protokolleinträge" />
         )}
         <IfUserCanEdit>
-          <Link
-            blank
-            className="mt-4"
-            button
-            icon="plus"
-            href={`/${projectSlug}/project-records?initialValues=${encodeURIComponent(JSON.stringify({ subsubsectionId: subsubsection.id }))}`}
+          <button
+            onClick={() => setIsProjectRecordModalOpen(true)}
+            className={clsx(blueButtonStyles, "items-center justify-center gap-1")}
           >
-            Neuer Protokolleintrag
-          </Link>
+            <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
+          </button>
         </IfUserCanEdit>
+
+        <ProjectRecordNewModal
+          projectSlug={projectSlug}
+          open={isProjectRecordModalOpen}
+          onClose={() => setIsProjectRecordModalOpen(false)}
+          onSuccess={async (projectRecordId) => {
+            setCreatedProjectRecordId(projectRecordId)
+            setShowSuccess(true)
+            setTimeout(() => {
+              setShowSuccess(false)
+              setCreatedProjectRecordId(null)
+            }, 3000)
+            await refetchProjectRecords()
+          }}
+          initialValues={{ subsubsectionId: subsubsection.id }}
+        />
       </section>
 
       <section className="mt-10">

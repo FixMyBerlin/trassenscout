@@ -49,16 +49,6 @@ export const ProjectRecordsFormAndTable = ({
     }
   }, [showSuccess])
 
-  const scrollToElement = (elementId: string) => {
-    const element = document.getElementById(elementId)
-    if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      })
-    }
-  }
-
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
@@ -72,7 +62,7 @@ export const ProjectRecordsFormAndTable = ({
       setCreatedProjectRecordId(projectRecord.id)
       setFilter({ searchterm: "" })
       setInitialFormValues(null)
-      scrollToElement("toast")
+      setTimeout(() => window.scrollTo(0, 0), 150)
     } catch (error: any) {
       // todo ?
       return improveErrorMessage(error, FORM_ERROR, [])
@@ -88,7 +78,14 @@ export const ProjectRecordsFormAndTable = ({
   }
 
   return (
-    <>
+    <div className="relative">
+      <div className="absolute top-0 right-0">
+        <FormSuccess message="Neues Protokoll erstellt" show={showSuccess} />
+      </div>
+      <FilteredProjectRecords
+        highlightId={createdProjectRecordId}
+        projectRecords={projectRecords}
+      />
       <IfUserCanEdit>
         <Form
           resetOnSubmit
@@ -116,14 +113,7 @@ export const ProjectRecordsFormAndTable = ({
             </Disclosure>
           </div>
         </Form>
-        <div className="mb-4 pt-4" id="toast">
-          <FormSuccess message="Neues Protokoll erstellt" show={showSuccess} />
-        </div>
       </IfUserCanEdit>
-      <FilteredProjectRecords
-        highlightId={createdProjectRecordId}
-        projectRecords={projectRecords}
-      />
-    </>
+    </div>
   )
 }
