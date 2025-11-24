@@ -23,6 +23,7 @@ const UpdateProjectRecordSchema = ProjectSlugRequiredSchema.merge(
     userId: true,
     projectRecordAuthorType: true,
     projectRecordUpdatedByType: true,
+    projectId: true,
   }).merge(z.object({ id: z.number() })),
 )
 
