@@ -107,7 +107,8 @@ export const FilteredProjectRecords = ({
         <span>Filter zurücksetzen</span>
       </button>
       <p className="mt-4 text-sm text-gray-500">
-        {filteredProjectRecords.length} Protokoll{filteredProjectRecords.length !== 1 ? "e" : ""}
+        {filteredProjectRecords.length} Protokoll
+        {filteredProjectRecords.length !== 1 ? "einträge" : "eintrag"}
       </p>
       {projectRecords.length === 0 ? (
         <ZeroCase visible={projectRecords.length} name="Protokolle" />
