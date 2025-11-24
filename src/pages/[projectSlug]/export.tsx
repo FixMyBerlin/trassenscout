@@ -67,9 +67,7 @@ export const ExportWithQuery = () => {
       })
     }),
   )
-  const geoJsonLinestring = lineString(
-    subsections.map((subs) => subs.geometry.coordinates).flat(),
-  )
+  const geoJsonLinestring = lineString(subsections.map((subs) => subs.geometry.coordinates).flat())
 
   // nearestPointOnLine() requires a LineString without duplicate coordinates - this is a bug reported here: https://github.com/Turfjs/turf/issues/2808#event-3187358882
   // when the fix is released we can remove cleanCoords()

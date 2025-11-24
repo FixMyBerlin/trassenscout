@@ -26,7 +26,9 @@ export const UploadMarkers = ({ projectSlug, interactive }: Props) => {
     setSelectedUploadId(uploadId)
   }
 
-  const filteredUploads = excludeUploadId ? uploads.filter((upload) => upload.id !== excludeUploadId) : uploads
+  const filteredUploads = excludeUploadId
+    ? uploads.filter((upload) => upload.id !== excludeUploadId)
+    : uploads
 
   return (
     <>

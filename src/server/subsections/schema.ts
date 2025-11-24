@@ -1,9 +1,9 @@
+import { LineStringGeometrySchema } from "@/src/core/utils/geojson-schemas"
 import {
   InputNumberOrNullSchema,
   InputNumberSchema,
   SlugSchema,
 } from "@/src/core/utils/schema-shared"
-import { LineStringGeometrySchema } from "@/src/core/utils/geojson-schemas"
 import { LabelPositionEnum } from "@prisma/client"
 import { z } from "zod"
 
