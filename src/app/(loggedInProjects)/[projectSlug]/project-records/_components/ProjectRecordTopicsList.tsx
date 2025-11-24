@@ -10,9 +10,7 @@ export const ProjectRecordTopicsList = ({
   isInteractive?: boolean
   onTopicClick?: (topic: string) => void
 }) => {
-  if (topics.length === 0) {
-    return <span>-</span>
-  }
+  if (topics.length === 0) return
 
   return (
     <div className="flex flex-wrap gap-1">
