@@ -1,8 +1,6 @@
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { Link } from "@/src/core/components/links"
-import { SubsectionIcon, SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
-import { shortTitle } from "@/src/core/components/text"
 import { projectRecordUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import getProjectRecordAdmin from "@/src/server/projectRecords/queries/getProjectRecordAdmin"
@@ -28,10 +26,10 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
         <div className="text-gray-500">Abschnitt: </div>
         {projectRecord.subsection ? (
           <Link
-            className="col-span-5 mt-2 inline-flex"
+            className="col-span-5 uppercase"
             href={`/${projectRecord.project.slug}/abschnitte/${projectRecord.subsection.slug}`}
           >
-            <SubsectionIcon label={shortTitle(projectRecord.subsection.slug)} />
+            {projectRecord.subsection.slug}
           </Link>
         ) : (
           <span className="col-span-5">Keine Angabe</span>
@@ -40,10 +38,10 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
         <div className="text-gray-500">Eintrag: </div>
         {projectRecord.subsubsection ? (
           <Link
-            className="col-span-5 mt-2 inline-flex"
+            className="col-span-5 uppercase"
             href={`/${projectRecord.project.slug}/abschnitte/${projectRecord.subsubsection.subsection.slug}/fuehrung/${projectRecord.subsubsection.slug}`}
           >
-            <SubsubsectionIcon label={shortTitle(projectRecord.subsubsection.slug)} />
+            {projectRecord.subsubsection.slug}
           </Link>
         ) : (
           <span className="col-span-5">Keine Angabe</span>
