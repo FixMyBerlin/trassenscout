@@ -1,4 +1,4 @@
-import db, { Prisma } from "@/db"
+import db, { Prisma, ProjectRecordReviewState } from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
@@ -20,7 +20,22 @@ export default resolver.pipe(
     skip = 0,
     take = 100,
   }: GetUploadsInput) => {
-    const safeWhere = { project: { slug: projectSlug }, ...where }
+    const safeWhere = {
+      project: { slug: projectSlug },
+      OR: [
+        { projectRecords: { none: {} } },
+        {
+          projectRecords: {
+            some: {
+              reviewState: {
+                in: [ProjectRecordReviewState.APPROVED, ProjectRecordReviewState.NEEDSREVIEW],
+              },
+            },
+          },
+        },
+      ],
+      ...where,
+    }
 
     const {
       items: uploads,
