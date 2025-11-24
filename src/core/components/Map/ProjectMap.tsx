@@ -85,13 +85,13 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   }
 
   const dotsGeoms = subsections
-    .map((ss) => [ss.geometry.at(0), ss.geometry.at(-1)])
+    .map((ss) => [ss.geometry.coordinates.at(0), ss.geometry.coordinates.at(-1)])
     .flat()
     .filter(Boolean)
 
   const selectableLines = featureCollection(
     subsections.map((subsection) =>
-      lineString(subsection.geometry, {
+      lineString(subsection.geometry.coordinates, {
         subsectionSlug: subsection.slug,
         dashed: subsection.SubsectionStatus?.style === "DASHED" ? true : undefined,
         // backgroundColor: "#FED7AA",
@@ -104,7 +104,7 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   )
 
   const markers = subsections.map((sub) => {
-    const midLine = lineString(sub.geometry)
+    const midLine = lineString(sub.geometry.coordinates)
     const midLengthHalf = length(midLine) / 2
     const midPoint = along(midLine, midLengthHalf)
 

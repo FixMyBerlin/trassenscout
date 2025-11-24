@@ -24,7 +24,7 @@ export const SubsectionSourceLayers = ({ selectedSubsectionId }: Props) => {
   const selectableLines = useMemo(() => {
     return featureCollection(
       subsections.map((ss) =>
-        lineString(ss.geometry, {
+        lineString(ss.geometry.coordinates, {
           subsectionSlug: ss.slug,
           color: ss.id === selectedSubsectionId ? "#2563eb" : "#64748b",
           opacity: ss.id === selectedSubsectionId ? 1 : 0.6,

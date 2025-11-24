@@ -41,10 +41,10 @@ export const SubsectionSubsubsectionMap = ({
    * Calculates bbox including subsection and optionally a subsubsection
    */
   const calculateBbox = (
-    subsectionGeometry: number[][],
+    subsectionGeometry: SubsectionWithPosition["geometry"],
     subsubsection: SubsubsectionWithPosition | undefined,
   ) => {
-    const geometriesToInclude: Feature<Geometry>[] = [lineString(subsectionGeometry)]
+    const geometriesToInclude: Feature<Geometry>[] = [lineString(subsectionGeometry.coordinates)]
 
     if (subsubsection) {
       // Convert subsubsection geometry to features using existing helpers
@@ -135,7 +135,7 @@ export const SubsectionSubsubsectionMap = ({
   const lines = featureCollection(
     subsections
       .map((subsection) =>
-        lineString(subsection.geometry, {
+        lineString(subsection.geometry.coordinates, {
           color:
             subsection.slug === selectedSubsection.slug
               ? layerColors.unselectableCurrent

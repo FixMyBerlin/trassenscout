@@ -24,10 +24,10 @@ export const GeometryInputMap = ({ subsection }: Props) => {
   const geometryType = watch("type") as SubsubsectionWithPosition["type"]
 
   const subsectionFeature = featureCollection([
-    lineString(subsection.geometry, { color: layerColors.unselectableCurrent }),
+    lineString(subsection.geometry.coordinates, { color: layerColors.unselectableCurrent }),
   ])
 
-  const [minX, minY, maxX, maxY] = bbox(lineString(subsection.geometry))
+  const [minX, minY, maxX, maxY] = bbox(lineString(subsection.geometry.coordinates))
   const sectionBounds: LngLatBoundsLike = [minX, minY, maxX, maxY]
 
   const [pointOneOnLine, setPointOneOnLine] = useState<Feature<Point> | undefined>(undefined)
@@ -38,7 +38,7 @@ export const GeometryInputMap = ({ subsection }: Props) => {
 
     // nearestPointOnLine() requires a LineString without duplicate coordinates - this is a bug reported here: https://github.com/Turfjs/turf/issues/2808#event-3187358882
     // when the fix is released we can remove cleanCoords()
-    const cleanedSubsection = cleanCoords(lineString(subsection.geometry))
+    const cleanedSubsection = cleanCoords(lineString(subsection.geometry.coordinates))
     const nearestPoint = nearestPointOnLine(cleanedSubsection, clickedPoint)
 
     // Set geometry as GeoJSON Point object
@@ -62,7 +62,7 @@ export const GeometryInputMap = ({ subsection }: Props) => {
 
     // nearestPointOnLine() requires a LineString without duplicate coordinates - this is a bug reported here: https://github.com/Turfjs/turf/issues/2808#event-3187358882
     // when the fix is released we can remove cleanCoords()
-    const cleanedSubsection = cleanCoords(lineString(subsection.geometry))
+    const cleanedSubsection = cleanCoords(lineString(subsection.geometry.coordinates))
     const nearestPoint = nearestPointOnLine(cleanedSubsection, clickedPoint)
     let newLine = undefined
 

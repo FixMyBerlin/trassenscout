@@ -46,14 +46,11 @@ export const GeometryInput = () => {
       switch (type) {
         case "LINE":
           // Default to subsection geometry as LineString
-          setValue("geometry", {
-            type: "LineString",
-            coordinates: subsection.geometry,
-          })
+          setValue("geometry", subsection.geometry)
           break
         case "POINT":
           // Default to center of subsection as Point
-          const center = getCenterOfMass({ type: "LineString", coordinates: subsection.geometry })
+          const center = getCenterOfMass(subsection.geometry)
           setValue("geometry", {
             type: "Point",
             coordinates: center,
@@ -61,14 +58,14 @@ export const GeometryInput = () => {
           break
         case "POLYGON":
           // Create a polygon from the subsection's bounding box
-          const subsectionLine = lineString(subsection.geometry)
+          const subsectionLine = lineString(subsection.geometry.coordinates)
           const subsectionBbox = bbox(subsectionLine)
           const bboxPoly = bboxPolygon(subsectionBbox)
           setValue("geometry", bboxPoly.geometry)
           break
       }
     }
-  }, [schemaResult.success, setValue, subsection.geometry, type, geometry])
+  }, [schemaResult.success, setValue, subsection.geometry.coordinates, type, geometry])
 
   return (
     <>

@@ -58,8 +58,7 @@ export const ProjectsMap = ({ projects }: Props) => {
     projects
       .map((project) =>
         project.subsections.map((subsection) =>
-          // @ts-expect-error TS issue where geometry is not the rigth type of [number, number]
-          lineString(subsection.geometry, {
+          lineString(subsection.geometry.coordinates, {
             projectSlug: project.slug,
             color:
               hoveredMap === project.slug || hoveredMarker === project.slug

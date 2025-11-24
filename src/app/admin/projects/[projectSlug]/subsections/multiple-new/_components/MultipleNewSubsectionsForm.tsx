@@ -4,17 +4,22 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProject from "@/src/server/projects/queries/getProject"
 import createSubsections from "@/src/server/subsections/mutations/createSubsections"
+import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
 import getSubsectionMaxOrder from "@/src/server/subsections/queries/getSubsectionMaxOrder"
 import { SubsectionsFormSchema } from "@/src/server/subsections/schema"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { Subsection } from "@prisma/client"
 import { length, lineString } from "@turf/turf"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 
-export const defaultGeometryForMultipleSubsectionForm = [
-  [5.98865807458, 47.3024876979],
-  [15.0169958839, 54.983104153],
-] satisfies [[number, number], [number, number]]
+export const defaultGeometryForMultipleSubsectionForm = {
+  type: "LineString" as const,
+  coordinates: [
+    [5.98865807458, 47.3024876979],
+    [15.0169958839, 54.983104153],
+  ],
+} satisfies SubsectionWithPosition["geometry"]
 
 export const MultipleNewSubsectionsForm = () => {
   const router = useRouter()
@@ -22,11 +27,10 @@ export const MultipleNewSubsectionsForm = () => {
   const [project] = useQuery(getProject, { projectSlug })
   const [createSubsectionsMutation] = useMutation(createSubsections)
 
-  type HandleSubmit = any // TODO
-  const handleSubmit = async (values: HandleSubmit) => {
+  const handleSubmit = async (values: z.infer<typeof SubsectionsFormSchema>) => {
     const maxOrderSubsections = (await getSubsectionMaxOrder(project.id)) || 0
     const newSubsections: Array<
-      { geometry: [number, number][] } & Pick<
+      { geometry: SubsectionWithPosition["geometry"] } & Pick<
         Subsection,
         "projectId" | "labelPos" | "start" | "end" | "slug" | "order" | "lengthM"
       >
@@ -42,7 +46,7 @@ export const MultipleNewSubsectionsForm = () => {
         geometry: defaultGeometryForMultipleSubsectionForm,
         lengthM: Number(
           (
-            length(lineString(defaultGeometryForMultipleSubsectionForm), {
+            length(lineString(defaultGeometryForMultipleSubsectionForm.coordinates), {
               units: "kilometers",
             }) * 1000
           ).toFixed(0),

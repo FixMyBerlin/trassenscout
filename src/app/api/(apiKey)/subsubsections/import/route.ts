@@ -1,5 +1,6 @@
 import db from "@/db"
 import { shortTitle } from "@/src/core/components/text/titles"
+import { LineStringGeometrySchema, PointGeometrySchema } from "@/src/core/utils/geojson-schemas"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { ImportSubsubsectionDataSchema } from "@/src/server/subsubsections/importSchema"
 import { m2mFields, type M2MFieldsType } from "@/src/server/subsubsections/m2mFields"
@@ -62,6 +63,19 @@ export const POST = withApiKey(async ({ request }) => {
         { status: 404 },
       )
     }
+
+    // Parse and validate subsection geometry
+    const subsectionGeometryResult = LineStringGeometrySchema.safeParse(subsection.geometry)
+    if (!subsectionGeometryResult.success) {
+      return Response.json(
+        {
+          error: "Invalid subsection geometry",
+          details: subsectionGeometryResult.error.errors,
+        },
+        { status: 500 },
+      )
+    }
+    const subsectionGeometry = subsectionGeometryResult.data
 
     // Look up IDs from slugs if provided
     if (data.qualityLevelSlug) {
@@ -133,20 +147,24 @@ export const POST = withApiKey(async ({ request }) => {
     })
 
     // Calculate fallback geometry for new records when geometry is not provided
-    const calculateFallbackGeometry = (): { type: "Point"; coordinates: [number, number] } => {
-      const subsectionGeometry = subsection.geometry as [number, number][]
-      if (subsectionGeometry && subsectionGeometry.length > 0) {
-        let minLng = subsectionGeometry[0]![0]
-        let minLat = subsectionGeometry[0]![1]
+    const calculateFallbackGeometry = () => {
+      let coordinates: [number, number] = [0, 0]
 
-        for (const [lng, lat] of subsectionGeometry) {
+      if (subsectionGeometry.coordinates && subsectionGeometry.coordinates.length > 0) {
+        let minLng = subsectionGeometry.coordinates[0]![0]
+        let minLat = subsectionGeometry.coordinates[0]![1]
+
+        for (const [lng, lat] of subsectionGeometry.coordinates) {
           if (lng < minLng) minLng = lng
           if (lat < minLat) minLat = lat
         }
-
-        return { type: "Point", coordinates: [minLng, minLat] }
+        coordinates = [minLng, minLat]
       }
-      return { type: "Point", coordinates: [0, 0] }
+
+      return PointGeometrySchema.parse({
+        type: "Point",
+        coordinates,
+      })
     }
 
     // 1. When geometry is provided, use that; overwrite existing data

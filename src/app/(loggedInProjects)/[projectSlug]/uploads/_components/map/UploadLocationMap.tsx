@@ -44,7 +44,7 @@ export const UploadLocationMap = () => {
   const mapBbox = useMemo(() => {
     // 1. If we have a subsection from URL params, use its bbox
     if (currentSubsection) {
-      return bbox(lineString(currentSubsection.geometry)) as Bbox
+      return bbox(lineString(currentSubsection.geometry.coordinates)) as Bbox
     }
     // 2. Otherwise, use project bbox
     if (subsections.length > 0) {

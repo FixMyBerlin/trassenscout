@@ -76,7 +76,7 @@ export default resolver.pipe(
 
       subsectionsWithCounts.push({
         ...subsection,
-        geometry: subsection.geometry as [number, number][],
+        geometry: subsection.geometry as SubsectionWithPosition["geometry"],
         stakeholdernotesCounts: { relevant: relevantStakeholdernotes, done: doneStakeholdernotes },
         subsubsectionCount,
       })

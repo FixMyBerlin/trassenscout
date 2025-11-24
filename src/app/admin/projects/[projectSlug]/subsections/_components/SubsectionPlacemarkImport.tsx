@@ -115,7 +115,8 @@ export const SubsectionPlacemarkImport = ({ project }: Props) => {
         {subsections
           .filter((subsection) => {
             return (
-              String(subsection.geometry) === defaultGeometryForMultipleSubsectionForm.join(",")
+              String(subsection.geometry.coordinates) ===
+              defaultGeometryForMultipleSubsectionForm.coordinates.join(",")
             )
           })
           .map((subsection) => {

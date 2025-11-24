@@ -39,10 +39,13 @@ describe("createLogEntry mutation", async () => {
     start: "start string",
     end: "end string",
     labelPos: "top" as LabelPositionEnum,
-    geometry: [
-      [1, 1],
-      [2, 2],
-    ] as [number, number][],
+    geometry: {
+      type: "LineString" as const,
+      coordinates: [
+        [1, 1],
+        [2, 2],
+      ] as [number, number][],
+    },
     projectSlug: project.slug,
     projectId: project.id,
     managerId: null,

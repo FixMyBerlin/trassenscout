@@ -11,7 +11,6 @@ import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubs
 import { useMutation } from "@blitzjs/rpc"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline"
-import { lineString } from "@turf/helpers"
 import { clsx } from "clsx"
 import { useSearchParams } from "next/navigation"
 import { defaultGeometryForMultipleSubsectionForm } from "../multiple-new/_components/MultipleNewSubsectionsForm"
@@ -96,7 +95,8 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
           <tbody className="divide-y divide-gray-200 bg-white">
             {subsections.map((subsection) => {
               const noPreviewForDefaultGeometry =
-                String(subsection.geometry) === defaultGeometryForMultipleSubsectionForm.join(",")
+                String(subsection.geometry.coordinates) ===
+                defaultGeometryForMultipleSubsectionForm.coordinates.join(",")
 
               return (
                 <tr
@@ -153,7 +153,7 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
                       <Link
                         blank
                         href={`https://play.placemark.io/?load=data:application/json,${encodeURIComponent(
-                          JSON.stringify(lineString(subsection.geometry)),
+                          JSON.stringify(subsection.geometry),
                         )}`}
                       >
                         Auf placemark.io öffnen

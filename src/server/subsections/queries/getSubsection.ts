@@ -2,13 +2,14 @@ import db, { Subsection } from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
+import { LineStringGeometrySchema } from "@/src/core/utils/geojson-schemas"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import { z } from "zod"
 
-// We lie with TypeScript here, because we know better. All `geometry` fields are Position. We make sure of that in our Form. They are also required, so never empty.
+// Subsection geometry is always a LineString GeoJSON object
 export type SubsectionWithPosition = Omit<Subsection, "geometry"> & {
-  geometry: [number, number][] // Position[]
+  geometry: z.infer<typeof LineStringGeometrySchema>
 } & { operator: { id: number; slug: string; title: string } | null } & {
   stakeholdernotesCounts: { relevant: number; done: number }
   subsubsectionCount: number
@@ -57,7 +58,7 @@ export default resolver.pipe(
 
     const subsectionWithCounts: SubsectionWithPosition = {
       ...subsection,
-      geometry: subsection.geometry as [number, number][],
+      geometry: subsection.geometry as z.infer<typeof LineStringGeometrySchema>,
       stakeholdernotesCounts: { relevant: relevantStakeholdernotes, done: doneStakeholdernotes },
       subsubsectionCount,
     }

@@ -47,11 +47,11 @@ export default resolver.pipe(
             : matchingPlacemarkSubsection.geometry.type === "LineString"
               ? matchingPlacemarkSubsection.geometry.coordinates
               : // if geometry type of matching placemark subsection is not LineString or MultiLineString, we skip this subsection
-                tsSubsection.geometry
+                tsSubsection.geometry.coordinates
         const updatedSubsection = await db.subsection.update({
           where: { id: tsSubsection.id },
           data: {
-            geometry: newCoordinates,
+            geometry: { type: "LineString", coordinates: newCoordinates },
             lengthM: newCoordinates
               ? Number(
                   // prettier-ignore

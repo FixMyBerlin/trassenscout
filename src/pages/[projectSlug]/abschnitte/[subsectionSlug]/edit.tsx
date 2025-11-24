@@ -69,7 +69,7 @@ const EditSubsection = () => {
       await router.push(Routes.ProjectDashboardPage({ projectSlug }))
     }
   }
-  console.log({ subsection })
+
   return (
     <>
       <MetaTags noindex title={seoEditTitleSlug(subsection.slug)} />

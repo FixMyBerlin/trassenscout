@@ -50,15 +50,16 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     })
 
     const projectFeatures = featureCollection(
-      subsections.map((s) =>
-        lineString(s.geometry as [number, number][], {
+      subsections.map((s) => {
+        const geometry = s.geometry as { type: "LineString"; coordinates: [number, number][] }
+        return lineString(geometry.coordinates, {
           subsectionSlug: s.slug,
           projectSlug: slug,
           operator: s.operator?.title,
           estimatedCompletionDateString: s.estimatedCompletionDateString,
           status: s.SubsectionStatus?.title,
-        }),
-      ),
+        })
+      }),
     )
 
     return new Response(JSON.stringify(projectFeatures), {
