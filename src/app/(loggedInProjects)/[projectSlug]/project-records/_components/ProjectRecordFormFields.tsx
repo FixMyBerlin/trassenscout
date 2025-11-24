@@ -11,8 +11,6 @@ import {
 } from "@/src/core/components/forms"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { frenchQuote, shortTitle } from "@/src/core/components/text"
-import { projectRecordUploadEditRoute } from "@/src/core/routes/uploadRoutes"
-import { useTrySlugId } from "@/src/core/routes/useSlug"
 import { NumberArraySchema } from "@/src/core/utils/schema-shared"
 import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import createProjectRecordTopic from "@/src/server/ProjectRecordTopics/mutations/createProjectRecordTopic"
@@ -31,8 +29,6 @@ type ProjectRecordFormFieldsProps = {
 }
 
 export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFieldsProps) => {
-  const urlProjectRecordId = useTrySlugId("projectRecordId")
-
   const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
   const [{ projectRecordTopics }, { refetch: refetchTopics }] = useQuery(
@@ -178,11 +174,6 @@ export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFields
                 uploadId={upload.id}
                 projectSlug={projectSlug}
                 size="grid"
-                editUrl={
-                  urlProjectRecordId
-                    ? projectRecordUploadEditRoute(projectSlug, urlProjectRecordId, upload.id)
-                    : undefined
-                }
                 onDeleted={async () => {
                   const existingUploads = Array.isArray(uploadsValue) ? uploadsValue : []
                   const newUploads = existingUploads.filter((id: number) => id !== upload.id)

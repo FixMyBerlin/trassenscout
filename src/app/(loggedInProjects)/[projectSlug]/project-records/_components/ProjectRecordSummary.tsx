@@ -81,19 +81,21 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
         <p className="mr-2 mb-3 text-gray-500">Dokumente:</p>
         {!!projectRecord.uploads?.length ? (
           <div className="flex gap-3">
-            {projectRecord.uploads.map((upload) => (
-              <UploadPreviewClickable
-                key={upload.id}
-                uploadId={upload.id}
-                projectSlug={projectRecord.project.slug}
-                size="grid"
-                editUrl={projectRecordUploadEditRoute(
-                  projectRecord.project.slug,
-                  projectRecord.id,
-                  upload.id,
-                )}
-              />
-            ))}
+            {projectRecord.uploads
+              .sort((a, b) => a.title.localeCompare(b.title))
+              .map((upload) => (
+                <UploadPreviewClickable
+                  key={upload.id}
+                  uploadId={upload.id}
+                  projectSlug={projectRecord.project.slug}
+                  size="grid"
+                  editUrl={projectRecordUploadEditRoute(
+                    projectRecord.project.slug,
+                    projectRecord.id,
+                    upload.id,
+                  )}
+                />
+              ))}
           </div>
         ) : (
           <span>Keine Dokumente verknüpft</span>

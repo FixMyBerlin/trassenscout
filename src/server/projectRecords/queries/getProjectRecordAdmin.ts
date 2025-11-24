@@ -31,6 +31,7 @@ export default resolver.pipe(
         },
         uploads: {
           select: {
+            title: true,
             id: true,
           },
         },

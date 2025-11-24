@@ -167,14 +167,16 @@ export const ProjectRecordsTable = ({
                             <div>
                               <p className="mb-2 font-medium text-gray-500">Dokumente:</p>
                               <div className="flex flex-wrap gap-2">
-                                {projectRecord.uploads.map((upload) => (
-                                  <UploadPreviewClickable
-                                    key={upload.id}
-                                    uploadId={upload.id}
-                                    projectSlug={projectSlug}
-                                    size="table"
-                                  />
-                                ))}
+                                {projectRecord.uploads
+                                  .sort((a, b) => a.title.localeCompare(b.title))
+                                  .map((upload) => (
+                                    <UploadPreviewClickable
+                                      key={upload.id}
+                                      uploadId={upload.id}
+                                      projectSlug={projectSlug}
+                                      size="table"
+                                    />
+                                  ))}
                               </div>
                             </div>
                           )}
