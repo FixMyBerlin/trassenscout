@@ -12,6 +12,7 @@ import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { SubsectionUploadsSection } from "@/src/pagesComponents/subsections/SubsectionUploadsSection"
 import { SubsubsectionMapSidebar } from "@/src/pagesComponents/subsections/SubsubsectionMapSidebar"
+import { mapillaryLink } from "@/src/pagesComponents/subsections/utils/mapillaryLink"
 import { SubsubsectionTable } from "@/src/pagesComponents/subsubsections/SubsubsectionTable"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
@@ -41,6 +42,8 @@ export const SubsectionDashboardWithQuery = () => {
   if (!subsection) {
     return <Spinner page />
   }
+
+  const mapillaryHref = subsubsection && mapillaryLink(subsubsection)
 
   return (
     <>
@@ -81,6 +84,11 @@ export const SubsectionDashboardWithQuery = () => {
             selectedSubsection={subsection}
             subsubsections={subsubsections}
           />
+          {mapillaryHref && (
+            <Link blank href={mapillaryHref} className="block text-xs">
+              Mapillary öffnen
+            </Link>
+          )}
           <SubsubsectionTable
             subsubsections={subsubsectionsForSubsection}
             compact={Boolean(subsubsection)}

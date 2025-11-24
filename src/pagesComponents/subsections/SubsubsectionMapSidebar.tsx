@@ -25,7 +25,6 @@ import { useQuery } from "@blitzjs/rpc"
 import { ArrowUpRightIcon, PlusIcon } from "@heroicons/react/16/solid"
 import { clsx } from "clsx"
 import { useState } from "react"
-import { mapillaryLink } from "./utils/mapillaryLink"
 
 type Props = {
   subsubsection: SubsubsectionWithPosition
@@ -53,7 +52,6 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
     },
   )
 
-  const mapillaryHref = mapillaryLink(subsubsection)
   return (
     <section className="overlflow-y-scroll h-full w-[950px] overflow-x-hidden rounded-md border border-gray-400/10 bg-white p-3 drop-shadow-md">
       <div className="mt-3 flex items-center justify-between">
@@ -263,28 +261,6 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
             </UploadDropzoneContainer>
           </IfUserCanEdit>
         </div>
-      </section>
-
-      <section className="mt-10">
-        <H2>Straßenansicht (Mapillary)</H2>
-        {/* {subsubsection.mapillaryKey ? (
-          <iframe
-            title="Mapillary Image Preview"
-            src={`https://www.mapillary.com/embed?image_key=${subsubsection.mapillaryKey}&style=photo`}
-            className="mt-2 aspect-video w-full"
-          />
-        ) : (
-          mapillaryHref && (
-            <Link blank href={mapillaryHref} className="mt-3 block">
-              Mapillary öffnen
-            </Link>
-          )
-        )} */}
-        {mapillaryHref && (
-          <Link blank href={mapillaryHref} className="mt-3 block">
-            Mapillary öffnen
-          </Link>
-        )}
       </section>
 
       <SuperAdminLogData data={{ subsubsection, uploads, projectRecords }} />
