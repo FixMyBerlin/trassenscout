@@ -133,7 +133,7 @@ export const ProjectRecordsTable = ({
                         >
                           {projectRecord.body && (
                             // for some reasons prose modifiers did not work here
-                            <div className="rounded-md bg-purple-100 p-2">
+                            <div className="rounded-md border border-gray-200 p-2">
                               <Markdown
                                 className="line-clamp-6 [&_ol]:ml-4 [&_ol]:list-decimal [&_ol]:leading-tight [&_p]:text-base [&_ul]:ml-4 [&_ul]:list-disc [&_ul]:leading-tight"
                                 markdown={projectRecord.body}

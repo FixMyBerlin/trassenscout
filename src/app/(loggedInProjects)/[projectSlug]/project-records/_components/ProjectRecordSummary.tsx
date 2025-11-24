@@ -5,12 +5,15 @@ import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { shortTitle } from "@/src/core/components/text"
 import { projectRecordUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
+import getProjectRecordAdmin from "@/src/server/projectRecords/queries/getProjectRecordAdmin"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
 import { createProjectRecordFilterUrl } from "./createFilterUrl"
 
 type ProjectRecordSummaryProps = {
-  projectRecord: Awaited<ReturnType<typeof getProjectRecord>>
+  projectRecord:
+    | Awaited<ReturnType<typeof getProjectRecord>>
+    | Awaited<ReturnType<typeof getProjectRecordAdmin>>
 }
 
 export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProps) => {
@@ -48,7 +51,7 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
       </div>
 
       {projectRecord.body && (
-        <div className="max-w-3xl rounded-md bg-purple-100 p-4">
+        <div className="max-w-3xl rounded-md border border-gray-200 p-4">
           <Markdown
             className="prose-p:text-base prose-ol:leading-tight prose-ul:list-disc prose-ul:leading-tight"
             markdown={projectRecord.body}
