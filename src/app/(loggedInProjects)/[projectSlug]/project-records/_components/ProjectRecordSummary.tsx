@@ -22,9 +22,6 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
           {format(new Date(projectRecord.date!), "P", { locale: de })}
         </span>
 
-        <span className="text-gray-500">Titel: </span>
-        <span className="col-span-5">{projectRecord.title}</span>
-
         <div className="text-gray-500">Abschnitt: </div>
         {projectRecord.subsection ? (
           <Link
