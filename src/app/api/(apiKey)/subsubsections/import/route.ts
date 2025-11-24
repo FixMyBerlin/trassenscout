@@ -1,6 +1,7 @@
 import db from "@/db"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { LineStringGeometrySchema, PointGeometrySchema } from "@/src/core/utils/geojson-schemas"
+import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { ImportSubsubsectionDataSchema } from "@/src/server/subsubsections/importSchema"
 import { m2mFields, type M2MFieldsType } from "@/src/server/subsubsections/m2mFields"
@@ -65,17 +66,8 @@ export const POST = withApiKey(async ({ request }) => {
     }
 
     // Parse and validate subsection geometry
-    const subsectionGeometryResult = LineStringGeometrySchema.safeParse(subsection.geometry)
-    if (!subsectionGeometryResult.success) {
-      return Response.json(
-        {
-          error: "Invalid subsection geometry",
-          details: subsectionGeometryResult.error.errors,
-        },
-        { status: 500 },
-      )
-    }
-    const subsectionGeometry = subsectionGeometryResult.data
+    const typedSubsection = typeSubsectionGeometry(subsection)
+    const subsectionGeometry = typedSubsection.geometry
 
     // Look up IDs from slugs if provided
     if (data.qualityLevelSlug) {

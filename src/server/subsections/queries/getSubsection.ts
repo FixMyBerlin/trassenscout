@@ -3,6 +3,7 @@ import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMemb
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { LineStringGeometrySchema } from "@/src/core/utils/geojson-schemas"
+import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import { z } from "zod"
@@ -56,9 +57,9 @@ export default resolver.pipe(
     // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)" is true but not relevant here
     delete subsection.subsubsections
 
+    const typedSubsection = typeSubsectionGeometry(subsection)
     const subsectionWithCounts: SubsectionWithPosition = {
-      ...subsection,
-      geometry: subsection.geometry as z.infer<typeof LineStringGeometrySchema>,
+      ...typedSubsection,
       stakeholdernotesCounts: { relevant: relevantStakeholdernotes, done: doneStakeholdernotes },
       subsubsectionCount,
     }

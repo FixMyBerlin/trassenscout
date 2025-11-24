@@ -1,4 +1,5 @@
 import db from "@/db"
+import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
 import { featureCollection, lineString } from "@turf/helpers"
 
 const corsHeaders = {
@@ -51,13 +52,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
 
     const projectFeatures = featureCollection(
       subsections.map((s) => {
-        const geometry = s.geometry as { type: "LineString"; coordinates: [number, number][] }
-        return lineString(geometry.coordinates, {
-          subsectionSlug: s.slug,
+        const subsection = typeSubsectionGeometry(s)
+        return lineString(subsection.geometry.coordinates, {
+          subsectionSlug: subsection.slug,
           projectSlug: slug,
-          operator: s.operator?.title,
-          estimatedCompletionDateString: s.estimatedCompletionDateString,
-          status: s.SubsectionStatus?.title,
+          operator: subsection.operator?.title,
+          estimatedCompletionDateString: subsection.estimatedCompletionDateString,
+          status: subsection.SubsectionStatus?.title,
         })
       }),
     )

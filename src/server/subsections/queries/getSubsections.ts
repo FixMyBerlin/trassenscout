@@ -2,6 +2,7 @@ import db, { Prisma } from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
+import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 import { SubsectionWithPosition } from "./getSubsection"
@@ -74,9 +75,9 @@ export default resolver.pipe(
       // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)" is true but not relevant here
       delete subsection.subsubsections
 
+      const typedSubsection = typeSubsectionGeometry(subsection)
       subsectionsWithCounts.push({
-        ...subsection,
-        geometry: subsection.geometry as SubsectionWithPosition["geometry"],
+        ...typedSubsection,
         stakeholdernotesCounts: { relevant: relevantStakeholdernotes, done: doneStakeholdernotes },
         subsubsectionCount,
       })

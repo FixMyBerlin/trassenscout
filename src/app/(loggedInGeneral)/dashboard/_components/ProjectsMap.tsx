@@ -6,6 +6,7 @@ import { layerColors } from "@/src/core/components/Map/layerColors"
 import { TipMarker } from "@/src/core/components/Map/TipMarker"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { TGetProjectsWithGeometryWithMembershipRole } from "@/src/server/projects/queries/getProjectsWithGeometryWithMembershipRole"
+import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
 import { useSession } from "@blitzjs/auth"
 import { lineString } from "@turf/helpers"
 import { along, bbox, featureCollection, length } from "@turf/turf"
@@ -55,19 +56,18 @@ export const ProjectsMap = ({ projects }: Props) => {
   }
 
   const selectableLines = featureCollection(
-    projects
-      .map((project) =>
-        project.subsections.map((subsection) =>
-          lineString(subsection.geometry.coordinates, {
-            projectSlug: project.slug,
-            color:
-              hoveredMap === project.slug || hoveredMarker === project.slug
-                ? layerColors.hovered
-                : layerColors.selectable,
-          }),
-        ),
-      )
-      .flat(),
+    projects.flatMap((project) =>
+      project.subsections.map((subsection) => {
+        const typed = typeSubsectionGeometry(subsection)
+        return lineString(typed.geometry.coordinates, {
+          projectSlug: project.slug,
+          color:
+            hoveredMap === project.slug || hoveredMarker === project.slug
+              ? layerColors.hovered
+              : layerColors.selectable,
+        })
+      }),
+    ),
   )
 
   const dotsGeomsBeginningOfLine = selectableLines.features.map(

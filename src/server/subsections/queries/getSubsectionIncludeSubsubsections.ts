@@ -31,6 +31,7 @@ export default resolver.pipe(
     }
     const subsection = await db.subsection.findFirst(query)
     if (!subsection) throw new NotFoundError()
+    // Hint: We cannot use `typeSubsectionGeometry` here due to the subsubsection geometry which is not handled by the helper
     return subsection as SubsectionWithSubsubsectionsWithPosition // Tip: Validate type shape with `satisfies`
   },
 )
