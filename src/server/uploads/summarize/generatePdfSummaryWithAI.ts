@@ -29,11 +29,14 @@ export const generatePdfSummaryWithAI = async ({
   const prompt = `# Task: Create Document Summary
 
 ## Summary Requirements
-Create a concise summary of the following PDF document. Capture the main points and insights of the document with these specifications:
+Create a concise summary of the document. Capture the main points and insights of the document with these specifications:
 
 ### Language and Style
 - Write the summary in **German**
 - Focus on clarity and conciseness
+
+### Documents Without Sufficient Text
+- If the document contains only images or insufficient text for a meaningful summary, respond with: "Das Dokument enthält nicht auswertbaren Inhalt für eine KI-gestützte Zusammenfassung"
 
 ### Formatting
 - Use Markdown formatting for better readability:
@@ -41,6 +44,8 @@ Create a concise summary of the following PDF document. Capture the main points 
   - Use *italic* where appropriate
   - Use lists for structured information
   - Format links as inline links: [example.com](https://www.example.com/)
+  - When referring to pages, use the absolute page count (not printed page numbers)
+
 ${projectContextSection}
 `
 
