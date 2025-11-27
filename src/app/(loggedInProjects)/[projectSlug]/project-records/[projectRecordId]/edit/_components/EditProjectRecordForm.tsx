@@ -15,6 +15,7 @@ import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 
 export const EditProjectRecordForm = ({
   projectRecord,
@@ -44,14 +45,17 @@ export const EditProjectRecordForm = ({
     }
   }
 
-  type HandleSubmit = any // TODO
-  const handleSubmit = async (values: HandleSubmit) => {
+  const handleSubmit = async (values: z.infer<typeof ProjectRecordFormSchema>) => {
     try {
       const updated = await updateProjectRecordMutation({
         ...values,
         id: projectRecord.id,
         date: values.date === "" ? null : new Date(values.date),
         projectSlug,
+        // Normalize m2m fields: convert true to false (empty array)
+        projectRecordTopics:
+          values.projectRecordTopics === true ? false : values.projectRecordTopics,
+        uploads: values.uploads === true ? false : values.uploads,
       })
       router.push(projectRecordDetailRoute(projectSlug, projectRecord.id))
     } catch (error: any) {
