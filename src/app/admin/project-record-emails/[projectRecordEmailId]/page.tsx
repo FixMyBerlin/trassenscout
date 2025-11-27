@@ -93,7 +93,7 @@ export default async function ProjectRecordEmailDetailPage({
                         size="grid"
                       />
                     ) : (
-                      <p>{upload.id}</p>
+                      <p key={upload.id}>{upload.id}</p>
                     ),
                   )}
                 </div>
