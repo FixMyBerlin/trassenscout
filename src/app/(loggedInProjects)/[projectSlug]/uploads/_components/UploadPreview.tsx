@@ -18,9 +18,22 @@ type Props = {
 }
 
 export const UploadPreview = ({ uploadId, projectSlug, size, showTitle, onClick }: Props) => {
-  const [upload] = useQuery(getUploadWithRelations, { projectSlug, id: uploadId })
+  const [upload] = useQuery(
+    getUploadWithRelations,
+    { projectSlug, id: uploadId },
+    {
+      // Prevent refetching to avoid NotFoundError when upload is deleted
+      retry: false,
+      retryOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      // Keep stale data to prevent refetch when upload is deleted
+      staleTime: Infinity,
+    },
+  )
 
-  if (!upload) return null
+  // Check if upload was marked as deleted or is null
+  if (!upload || (upload as any).__deleted) return null
 
   const sizeConfig = UPLOAD_SIZES[size]
 

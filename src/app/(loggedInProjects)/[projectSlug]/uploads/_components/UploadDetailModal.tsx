@@ -42,7 +42,8 @@ export const UploadDetailModal = ({
     { enabled: open && uploadId !== null },
   )
 
-  if (!upload) return null
+  // Check if upload was marked as deleted or is null
+  if (!upload || (upload as any).__deleted) return null
 
   const hasSubsection = upload.subsection !== null
   const hasSubsubsection = upload.Subsubsection !== null
