@@ -3,6 +3,7 @@
 import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
 import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneContainer"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
+import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import {
   LabeledCheckboxGroup,
   LabeledSelect,
@@ -175,8 +176,8 @@ export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFields
                 projectSlug={projectSlug}
                 size="grid"
                 onDeleted={async () => {
-                  const existingUploads = Array.isArray(uploadsValue) ? uploadsValue : []
-                  const newUploads = existingUploads.filter((id: number) => id !== upload.id)
+                  const existingUploads = NumberArraySchema.parse(uploadsValue)
+                  const newUploads = existingUploads.filter((id) => id !== upload.id)
                   setValue("uploads", newUploads, { shouldDirty: true })
                 }}
               />
@@ -186,8 +187,8 @@ export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFields
             <UploadDropzone
               fillContainer
               onUploadComplete={async (newUploadIds) => {
-                // Add new upload IDs to the form
-                const existingUploads = Array.isArray(uploadsValue) ? uploadsValue : []
+                // Add new upload IDs to the form, ensuring all are numbers
+                const existingUploads = NumberArraySchema.parse(uploadsValue)
                 const newUploads = [...new Set([...existingUploads, ...newUploadIds])]
                 setValue("uploads", newUploads, { shouldDirty: true })
               }}
@@ -195,6 +196,8 @@ export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFields
           </UploadDropzoneContainer>
         </div>
       </div>
+
+      <SuperAdminLogData data={{ subsectionId, uploadsValue, uploadIds }} />
     </>
   )
 }

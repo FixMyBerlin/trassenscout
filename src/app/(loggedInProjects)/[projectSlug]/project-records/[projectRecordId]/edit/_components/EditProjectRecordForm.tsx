@@ -102,7 +102,7 @@ export const EditProjectRecordForm = ({
         Löschen
       </button>
 
-      <SuperAdminLogData data={{ projectRecord }} />
+      <SuperAdminLogData data={{ initialValues: projectRecord }} />
     </>
   )
 }
