@@ -3,7 +3,7 @@ import { getFileTypeLabel } from "@/src/app/(loggedInProjects)/[projectSlug]/upl
 import type { FileUploadInfo, UploadHookControl, UploadStatus } from "@better-upload/client"
 import { formatBytes } from "@better-upload/client/helpers"
 import { ArrowUpTrayIcon } from "@heroicons/react/20/solid"
-import { useId } from "react"
+import { useEffect, useId, useMemo, useRef } from "react"
 import { useDropzone } from "react-dropzone"
 import { twMerge } from "tailwind-merge"
 import { Progress } from "./UploadProgress"
@@ -60,6 +60,32 @@ export function UploadDropzoneProgress({
   },
 }: UploadDropzoneProgressProps) {
   const id = useId()
+  const completionTimesRef = useRef<Map<string, number>>(new Map())
+
+  // Track when items complete
+  useEffect(() => {
+    progresses.forEach((progress) => {
+      if (
+        progress.status === "complete" &&
+        !completionTimesRef.current.has(progress.objectInfo.key)
+      ) {
+        completionTimesRef.current.set(progress.objectInfo.key, Date.now())
+      }
+    })
+  }, [progresses])
+
+  // Filter out items that completed more than 5.5 seconds ago (after animation completes)
+  const visibleProgresses = useMemo(() => {
+    const now = Date.now()
+    const ANIMATION_DURATION_MS = 5500 // 5s animation + 0.5s buffer
+
+    return progresses.filter((progress) => {
+      if (progress.status !== "complete") return true
+      const completionTime = completionTimesRef.current.get(progress.objectInfo.key)
+      if (!completionTime) return true
+      return now - completionTime < ANIMATION_DURATION_MS
+    })
+  }, [progresses])
 
   const { getRootProps, getInputProps, isDragActive, inputRef } = useDropzone({
     onDrop: (files) => {
@@ -142,7 +168,7 @@ export function UploadDropzoneProgress({
       </div>
 
       <div className="grid gap-2">
-        {progresses.map((progress: FileUploadInfo<UploadStatus>) => (
+        {visibleProgresses.map((progress: FileUploadInfo<UploadStatus>) => (
           <FileUploadItem
             key={progress.objectInfo.key}
             progress={progress}
