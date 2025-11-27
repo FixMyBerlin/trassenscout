@@ -49,7 +49,7 @@ export const UploadDetail = ({ upload }: Props) => {
         </ButtonWrapper>
       </IfUserCanEdit>
 
-      <UploadTable withAction={false} uploads={[upload]} />
+      <UploadTable withAction={false} withRelations={true} uploads={[upload]} />
 
       <SuperAdminLogData data={upload} />
     </>

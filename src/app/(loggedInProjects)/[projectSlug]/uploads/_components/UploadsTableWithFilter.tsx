@@ -74,7 +74,7 @@ export const UploadsTableWithFilter = ({ uploads, hasMore, page, onDelete }: Pro
         })}
       </select>
 
-      <UploadTable uploads={filteredUploads} onDelete={onDelete} />
+      <UploadTable withRelations={true} uploads={filteredUploads} onDelete={onDelete} />
 
       <Pagination
         hasMore={hasMore}

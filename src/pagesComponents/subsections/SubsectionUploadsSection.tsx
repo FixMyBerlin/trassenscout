@@ -49,7 +49,7 @@ export const SubsectionUploadsSection = ({ subsectionId }: Props) => {
 
       <UploadTable
         withAction={false}
-        withSubsectionColumn={false}
+        withRelations={false}
         uploads={uploads}
         onDelete={async () => {
           await refetchUploads()

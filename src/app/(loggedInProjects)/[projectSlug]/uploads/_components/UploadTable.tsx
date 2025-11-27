@@ -7,8 +7,13 @@ import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
+import { shortTitle } from "@/src/core/components/text/titles"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { subsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"
+import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
+import {
+  subsectionDashboardRoute,
+  subsubsectionDashboardRoute,
+} from "@/src/core/routes/subsectionRoutes"
 import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
@@ -22,17 +27,12 @@ import { PromiseReturnType } from "blitz"
 type Props = Prettify<
   Pick<PromiseReturnType<typeof getUploadsWithSubsections>, "uploads"> & {
     withAction?: boolean
-    withSubsectionColumn?: boolean
+    withRelations: boolean
     onDelete?: () => Promise<void>
   }
 >
 
-export const UploadTable = ({
-  uploads,
-  withAction = true,
-  withSubsectionColumn = true,
-  onDelete,
-}: Props) => {
+export const UploadTable = ({ uploads, withAction = true, withRelations, onDelete }: Props) => {
   const projectSlug = useProjectSlug()
 
   if (!uploads.length) {
@@ -56,9 +56,9 @@ export const UploadTable = ({
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               Hochgeladen
             </th>
-            {withSubsectionColumn && (
+            {withRelations && (
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Planungsabschnitt
+                Verknüpfungen
               </th>
             )}
             <th
@@ -76,7 +76,7 @@ export const UploadTable = ({
               upload={upload}
               projectSlug={projectSlug}
               withAction={withAction}
-              withSubsectionColumn={withSubsectionColumn}
+              withRelations={withRelations}
               onDelete={onDelete}
             />
           ))}
@@ -90,13 +90,13 @@ const UploadTableRow = ({
   upload,
   projectSlug,
   withAction,
-  withSubsectionColumn,
+  withRelations,
   onDelete,
 }: {
   upload: PromiseReturnType<typeof getUploadsWithSubsections>["uploads"][number]
   projectSlug: string
   withAction: boolean
-  withSubsectionColumn: boolean
+  withRelations: boolean
   onDelete?: () => Promise<void>
 }) => {
   const hasLocation = upload.latitude !== null && upload.longitude !== null
@@ -136,13 +136,39 @@ const UploadTableRow = ({
         </div>
         {upload.createdBy && <>von {getFullname(upload.createdBy)}</>}
       </td>
-      {withSubsectionColumn && (
-        <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
-          {upload.subsection ? (
-            <Link href={subsectionDashboardRoute(projectSlug, upload.subsection.slug)}>
-              {upload.subsection.start}–{upload.subsection.end}
-            </Link>
-          ) : null}
+      {withRelations && (
+        <td className="px-3 py-4 text-sm text-gray-500">
+          <ul className="flex flex-col gap-1">
+            {upload.subsection && (
+              <li>
+                <Link href={subsectionDashboardRoute(projectSlug, upload.subsection.slug)}>
+                  Planungsabschnitt: {upload.subsection.start}–{upload.subsection.end}
+                </Link>
+              </li>
+            )}
+            {upload.Subsubsection && (
+              <li>
+                <Link
+                  href={subsubsectionDashboardRoute(
+                    projectSlug,
+                    upload.Subsubsection.subsection.slug,
+                    upload.Subsubsection.slug,
+                  )}
+                >
+                  Eintrag: {shortTitle(upload.Subsubsection.slug)}
+                </Link>
+              </li>
+            )}
+            {upload.projectRecords &&
+              upload.projectRecords.length > 0 &&
+              upload.projectRecords.map((projectRecord) => (
+                <li key={projectRecord.id}>
+                  <Link href={projectRecordDetailRoute(projectSlug, projectRecord.id)}>
+                    Protokoll: {projectRecord.title}
+                  </Link>
+                </li>
+              ))}
+          </ul>
         </td>
       )}
       <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
