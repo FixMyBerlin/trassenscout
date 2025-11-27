@@ -2,6 +2,7 @@
 
 import { getAcceptAttribute } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES } from "@/src/server/uploads/_utils/config"
 import { getS3Url } from "@/src/server/uploads/_utils/url"
 import createUpload from "@/src/server/uploads/mutations/createUpload"
 import type { FileUploadInfo } from "@better-upload/client"
@@ -65,13 +66,15 @@ export const UploadDropzone = ({
     },
   })
 
+  const maxFileSizeMB = S3_MAX_FILE_SIZE_BYTES / (1024 * 1024)
+
   return (
     <UploadDropzoneProgress
       control={uploader.control}
       accept={getAcceptAttribute()}
       fillContainer={fillContainer}
       description={{
-        fileTypes: "Bilder, PDF, Office-Dokumente",
+        fileTypes: `Bilder, PDF, Office-Dokumente bis ${maxFileSizeMB} MB`,
         maxFiles: S3_MAX_FILES,
       }}
       translations={{
