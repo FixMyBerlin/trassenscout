@@ -1,7 +1,7 @@
 import { withProjectMembership } from "@/src/app/api/(auth)/_utils/withProjectMembership"
 import { editorRoles } from "@/src/authorization/constants"
 import { getConfiguredS3Client } from "@/src/server/uploads/_utils/client"
-import { S3_BUCKET, S3_MAX_FILE_SIZE_BYTES } from "@/src/server/uploads/_utils/config"
+import { S3_BUCKET, S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES } from "@/src/server/uploads/_utils/config"
 import { generateS3Key } from "@/src/server/uploads/_utils/keys"
 import { uploadSource } from "@/src/server/uploads/_utils/sources"
 import { route, Router } from "@better-upload/server"
@@ -16,6 +16,7 @@ function createRouter(projectSlug: string, userId: number) {
       upload: route({
         multipleFiles: true,
         maxFileSize: S3_MAX_FILE_SIZE_BYTES,
+        maxFiles: S3_MAX_FILES,
         onBeforeUpload: async ({ req, files, clientMetadata }) => {
           return {
             generateObjectInfo: ({ file }) => {

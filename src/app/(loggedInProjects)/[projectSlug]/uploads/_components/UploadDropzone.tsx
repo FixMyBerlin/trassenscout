@@ -72,6 +72,7 @@ export const UploadDropzone = ({
       fillContainer={fillContainer}
       description={{
         fileTypes: "Bilder, PDF, Office-Dokumente",
+        maxFiles: S3_MAX_FILES,
       }}
       translations={{
         dragAndDrop: "Dateien hierher ziehen und ablegen",
