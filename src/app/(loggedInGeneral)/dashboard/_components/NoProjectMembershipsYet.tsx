@@ -17,7 +17,7 @@ export const NoProjectMembershipsYet = () => {
           </p>
           <p>
             Kam es zu einem Fehler?{" "}
-            <LinkMail mailto="hello@trassenscout.de">Admin kontaktieren</LinkMail>
+            <LinkMail mailto="trassenscout@fixmycity.de">Admin kontaktieren</LinkMail>
           </p>
         </div>
       </div>
