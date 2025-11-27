@@ -27,9 +27,7 @@ export const DeleteUploadButton = ({
   variant = "link",
   className,
 }: Props) => {
-  // temorary early return to disable deletion of uploads
   const [deleteUploadMutation] = useMutation(deleteUpload)
-  return
 
   const handleDelete = async () => {
     if (
