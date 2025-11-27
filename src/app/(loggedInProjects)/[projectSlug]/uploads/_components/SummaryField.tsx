@@ -79,7 +79,7 @@ export const SummaryField = ({
           onClick={handleSummarize}
           disabled={isGeneratingSummary}
           className={clsx(
-            "absolute top-8 right-5 flex items-center gap-1 rounded-sm bg-blue-500 px-2 py-1 text-xs text-white disabled:bg-white disabled:text-gray-400",
+            "absolute top-8 right-5 flex items-center gap-1 rounded-sm bg-blue-500 px-2 py-1 text-xs text-white disabled:bg-white disabled:text-gray-600",
             !isGeneratingSummary && "hover:cursor-pointer hover:bg-blue-700",
           )}
         >
