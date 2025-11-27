@@ -12,6 +12,7 @@ import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
+import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import updateUpload from "@/src/server/uploads/mutations/updateUploadWithSubsections"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import { UploadSchema } from "@/src/server/uploads/schema"
@@ -24,6 +25,58 @@ import { z } from "zod"
 import { DeleteUploadButton } from "./DeleteUploadButton"
 import { UploadPreview } from "./UploadPreview"
 
+type UploadSubsectionFieldsProps = {
+  subsections: Awaited<ReturnType<typeof getSubsections>>["subsections"]
+  subsubsections: Awaited<ReturnType<typeof getSubsubsections>>["subsubsections"]
+  returnPath: Route
+}
+
+const UploadSubsectionFields = ({
+  subsections,
+  subsubsections,
+  returnPath,
+}: UploadSubsectionFieldsProps) => {
+  // We use `""` here to signify the "All" case which gets translated to `NULL`
+  const subsectionOptions: LabeledSelectProps["options"] = [["", "Übergreifendes Dokument"]]
+  subsections.forEach((ss) => {
+    subsectionOptions.push([ss.id, `${shortTitle(ss.slug)} – ${ss.start}–${ss.end}`] as [
+      number,
+      string,
+    ])
+  })
+
+  // Sort by subsection first, then by subsubsection slug, and include subsection in label
+  const subsubsectionOptions: LabeledSelectProps["options"] = subsubsections
+    .sort((a, b) => {
+      const subsectionCompare = a.subsection.slug.localeCompare(b.subsection.slug)
+      if (subsectionCompare !== 0) return subsectionCompare
+      return a.slug.localeCompare(b.slug)
+    })
+    .map(
+      (subsubsection) =>
+        [
+          subsubsection.id,
+          `${shortTitle(subsubsection.slug)} (${shortTitle(subsubsection.subsection.slug)})`,
+        ] as [number, string],
+    )
+  subsubsectionOptions.unshift(["", "Keine Angabe"])
+
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      <LabeledSelect
+        name="subsectionId"
+        label="Zuordnung zum Planungsabschnitt"
+        options={subsectionOptions}
+      />
+      <LabeledSelect
+        name="subsubsectionId"
+        label="Zuordnung zum Eintrag"
+        options={subsubsectionOptions}
+      />
+    </div>
+  )
+}
+
 type Props = {
   upload: PromiseReturnType<typeof getUploadWithRelations>
   returnPath: Route
@@ -32,16 +85,10 @@ type Props = {
 
 export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
   const router = useRouter()
-  const isSubsubsectionUpload = typeof upload.subsubsectionId === "number"
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false)
   const projectSlug = useProjectSlug()
   const [{ subsections }] = useQuery(getSubsections, { projectSlug })
-
-  // We use `""` here to signify the "All" case which gets translated to `NULL`
-  const options: LabeledSelectProps["options"] = [["", "Übergreifendes Dokument"]]
-  subsections.forEach((ss) => {
-    options.push([ss.id, `${shortTitle(ss.slug)} – ${ss.start}–${ss.end}`] as [number, string])
-  })
+  const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
 
   const [updateUploadMutation] = useMutation(updateUpload)
 
@@ -101,13 +148,11 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
           disabled={isGeneratingSummary}
         >
           <LabeledTextField type="text" name="title" label="Kurzbeschreibung" />
-          {!isSubsubsectionUpload && (
-            <LabeledSelect
-              name="subsectionId"
-              label="Zuordnung zum Planungsabschnitt"
-              options={options}
-            />
-          )}
+          <UploadSubsectionFields
+            subsections={subsections}
+            subsubsections={subsubsections}
+            returnPath={returnPath}
+          />
           {upload.id && (
             <SummaryField
               uploadId={upload.id}
