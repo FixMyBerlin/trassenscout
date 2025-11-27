@@ -2,7 +2,6 @@
 
 import { SummaryField } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/SummaryField"
 import { UploadLocationMap } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/map/UploadLocationMap"
-import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { LabeledSelect, LabeledSelectProps, LabeledTextField } from "@/src/core/components/forms"
 import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
@@ -168,10 +167,6 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
             </label>
             <UploadLocationMap />
           </div>
-          <SuperAdminBox>
-            <LabeledTextField type="text" name="externalUrl" label="Externe Datei-URL" readOnly />
-            <LabeledTextField type="text" name="mimeType" label="MIME Type" readOnly />
-          </SuperAdminBox>
         </Form>
       </div>
 
