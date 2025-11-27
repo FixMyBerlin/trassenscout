@@ -8,6 +8,7 @@ import createUpload from "@/src/server/uploads/mutations/createUpload"
 import type { FileUploadInfo } from "@better-upload/client"
 import { useUploadFiles } from "@better-upload/client"
 import { useMutation } from "@blitzjs/rpc"
+import { useState } from "react"
 import { UploadDropzoneProgress } from "./UploadDropzoneProgress"
 
 type Props = {
@@ -25,20 +26,26 @@ export const UploadDropzone = ({
 }: Props) => {
   const projectSlug = useProjectSlug()
   const [createUploadMutation] = useMutation(createUpload)
+  const [uploadError, setUploadError] = useState<string | null>(null)
 
   const uploader = useUploadFiles({
     route: "upload",
     api: `/api/${projectSlug}/upload`,
     onError: (error) => {
       console.error("Upload error:", error)
+      // Follow better-upload pattern: use error.message with fallback
+      // See: https://github.com/Nic13Gamer/better-upload/blob/main/apps/docs/content/docs/guides/forms/react-hook-form.mdx
+      // This handles pre-upload errors (e.g., "Too many files")
+      // Per-file errors are shown in the FileUploadItem component
+      const errorMessage =
+        (error instanceof Error ? error.message : String(error)) || "Ein Fehler ist aufgetreten."
+      setUploadError(errorMessage)
     },
     onUploadFail: ({ succeededFiles, failedFiles }) => {
       console.error("Upload failed:", { succeededFiles, failedFiles })
     },
     onUploadComplete: async ({ files }: { files: FileUploadInfo<"complete">[] }) => {
       const uploadIds: number[] = []
-
-      // Create upload records for each successfully uploaded file
       for (const file of files) {
         try {
           const upload = await createUploadMutation({
@@ -73,6 +80,8 @@ export const UploadDropzone = ({
       control={uploader.control}
       accept={getAcceptAttribute()}
       fillContainer={fillContainer}
+      error={uploadError}
+      onErrorDismiss={() => setUploadError(null)}
       description={{
         fileTypes: `Bilder, PDF, Office-Dokumente bis ${maxFileSizeMB} MB`,
         maxFiles: S3_MAX_FILES,
