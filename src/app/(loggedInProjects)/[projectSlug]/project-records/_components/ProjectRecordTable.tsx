@@ -94,11 +94,15 @@ export const ProjectRecordsTable = ({
                             </div>
                             <div className={clsx("hidden @lg:block", spaceClasses)}>
                               <div className="flex items-center justify-between gap-2">
-                                <ProjectRecordTopicsList
-                                  topics={projectRecord.projectRecordTopics}
-                                  isInteractive={isTopicFilter}
-                                  onTopicClick={handleTopicClick}
-                                />
+                                {/* workaround with stopPropagation to Prevent disclosure toggle */}
+                                {/* for now we use this workaround since we propably do not use the disclosure component in the table anyway  */}
+                                <div onClick={(e) => e.stopPropagation()}>
+                                  <ProjectRecordTopicsList
+                                    topics={projectRecord.projectRecordTopics}
+                                    isInteractive={isTopicFilter}
+                                    onTopicClick={handleTopicClick}
+                                  />
+                                </div>
                                 <div className="flex shrink-0 items-center gap-2">
                                   <ProjectRecordReviewBadge
                                     authorType={projectRecord.projectRecordAuthorType}
@@ -183,11 +187,13 @@ export const ProjectRecordsTable = ({
                           {/* Topics and "Freigabe"-Pill */}
                           <div className="@lg:hidden">
                             <div className="flex flex-col gap-6">
-                              <ProjectRecordTopicsList
-                                topics={projectRecord.projectRecordTopics}
-                                isInteractive={isTopicFilter}
-                                onTopicClick={handleTopicClick}
-                              />
+                              <div onClick={(e) => e.stopPropagation()}>
+                                <ProjectRecordTopicsList
+                                  topics={projectRecord.projectRecordTopics}
+                                  isInteractive={isTopicFilter}
+                                  onTopicClick={handleTopicClick}
+                                />
+                              </div>
                               <div className="flex shrink-0 items-center gap-2">
                                 <ProjectRecordReviewBadge
                                   authorType={projectRecord.projectRecordAuthorType}
