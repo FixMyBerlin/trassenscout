@@ -20,6 +20,8 @@ export const config = {
     inbox: "INBOX",
     done: "INBOX/DONE",
     error: "INBOX/ERROR",
+    // Folders to exclude from monitoring
+    excluded: ["INBOX/DONE", "INBOX/ERROR", "Junk", "Trash", "Sent", "Drafts", "Archive"],
   },
   processing: {
     delay: 10000, // 10 seconds delay between processing messages
