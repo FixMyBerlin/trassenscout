@@ -1,6 +1,6 @@
 import { quote } from "@/src/core/components/text/quote"
 import { addressNoreply } from "./utils/addresses"
-import { sendMail } from "./utils/sendMail"
+import { sendMailWithoutPreview } from "./utils/sendMailWithoutPreview"
 import { Mail } from "./utils/types"
 
 type Props = {
@@ -52,7 +52,7 @@ Bitte ordnen Sie die Email einem Projekt zu und prozessieren Sie sie im Admin In
 
   return {
     async send() {
-      await sendMail(message)
+      await sendMailWithoutPreview(message)
     },
   }
 }

@@ -1,6 +1,6 @@
 import { quote } from "@/src/core/components/text/quote"
 import { addressNoreply } from "./utils/addresses"
-import { sendMail } from "./utils/sendMail"
+import { sendMailWithoutPreview } from "./utils/sendMailWithoutPreview"
 import { Mail } from "./utils/types"
 
 type Props = {
@@ -72,7 +72,7 @@ Das Projektprotokoll können Sie unter ${props.projectRecordReviewUrl} einsehen 
 
   return {
     async send() {
-      await sendMail(message)
+      await sendMailWithoutPreview(message)
     },
   }
 }
