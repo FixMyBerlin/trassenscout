@@ -5,8 +5,8 @@ import { checkProjectAiEnabled } from "@/src/server/ProjectRecordEmails/processE
 import { isAdminOrProjectMember } from "@/src/server/ProjectRecordEmails/processEmail/checkSenderApproval"
 import { extractWithAI } from "./extractWithAI"
 import { fetchProjectContext } from "./fetchProjectContext"
-import { getProjectIdFromSlug } from "./getProjectIdFromSlug"
 import { langfuse } from "./langfuseClient"
+import { notifyAdminsProjectRecordEmailWithoutProject } from "./notifyAdminsProjectRecordEmailWithoutProject"
 import { notifyAdminsProjectRecordNeedsReview } from "./notifyAdminsProjectRecordNeedsReview"
 import { parseEmail } from "./parseEmail"
 import { uploadEmailAttachments } from "./uploadEmailAttachments"
@@ -16,15 +16,49 @@ export const processProjectRecordEmailOrchestrator = async ({
   rawEmailText,
 }: {
   rawEmailText: string
-  projectSlug: string
+  projectSlug?: string
 }) => {
-  // Fetch project ID from slug
-  const projectId = await getProjectIdFromSlug(projectSlug)
+  // Check if project exists in database
+  const project = await db.project.findUnique({
+    where: { slug: projectSlug },
+  })
 
   // Parse the email, separate body from attachments
   const { body, attachments, from, subject, date } = await parseEmail({
     rawEmailText,
   })
+
+  // If project does not exist, create ProjectRecordEmail with project NULL and skip processing and uploading attachments
+  if (!project) {
+    const projectRecordEmail = await db.projectRecordEmail.create({
+      data: {
+        text: rawEmailText,
+        textBody: body,
+        from,
+        subject,
+        date,
+      },
+    })
+
+    // Notify admins about email without project
+    await notifyAdminsProjectRecordEmailWithoutProject({
+      projectSlug,
+      senderEmail: from || "Unbekannt",
+      emailSubject: subject,
+      projectRecordEmailId: projectRecordEmail.id,
+    })
+
+    return {
+      success: false,
+      projectRecordEmailId: projectRecordEmail.id,
+      message: !projectSlug
+        ? `No Project Slug provided. Email stored but not processed.`
+        : `Project with slug '${projectSlug}' not found. Email stored but not processed.`,
+    }
+  }
+
+  // Project exists, continue with normal flow
+  const projectId = project.id
 
   // Check if AI features are enabled for the project
   const isAiEnabled = await checkProjectAiEnabled(projectId)
@@ -51,7 +85,7 @@ export const processProjectRecordEmailOrchestrator = async ({
   const uploadIds = await uploadEmailAttachments({
     attachments,
     projectId,
-    projectSlug,
+    projectSlug: project.slug,
     projectRecordEmailId: projectRecordEmail.id,
   })
 
@@ -85,8 +119,7 @@ export const processProjectRecordEmailOrchestrator = async ({
 
   const combinedResult = {
     ...finalResult,
-    // tbd
-    projectId: projectRecordEmail.projectId,
+    projectId,
     subsectionId: finalResult.subsectionId ? parseInt(finalResult.subsectionId) : null,
     subsubsectionId: finalResult.subsubsectionId ? parseInt(finalResult.subsubsectionId) : null,
     projectRecordTopics:
@@ -136,7 +169,7 @@ export const processProjectRecordEmailOrchestrator = async ({
   if (!isSenderApproved || !isAiEnabled) {
     await notifyAdminsProjectRecordNeedsReview({
       projectId,
-      projectSlug,
+      projectSlug: project.slug,
       senderEmail: from || "Unbekannt",
       emailSubject: subject,
       projectRecordId: projectRecord.id,

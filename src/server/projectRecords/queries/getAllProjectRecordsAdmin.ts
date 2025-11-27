@@ -31,7 +31,7 @@ export default resolver.pipe(resolver.authorize("ADMIN"), async () => {
     },
   })
 
-  // Sort projectRecords by review state first, then by date
+  // Sort projectRecords by review state first, then by created at
   projectRecords.sort((a, b) => {
     const stateOrder = {
       [ProjectRecordReviewState.NEEDSADMINREVIEW]: 0,
@@ -44,7 +44,7 @@ export default resolver.pipe(resolver.authorize("ADMIN"), async () => {
       return stateOrder[a.reviewState] - stateOrder[b.reviewState]
     }
 
-    return a.date && b.date && a.date < b.date ? 1 : -1
+    return a.createdAt < b.createdAt ? 1 : -1
   })
 
   return projectRecords

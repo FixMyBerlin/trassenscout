@@ -12,9 +12,10 @@ export function ProjectRecordEmailForm<S extends z.ZodType<any, any>>(
   props: ProjectRecordEmailFormProps<S>,
 ) {
   const { projects, ...formProps } = props
-  const projectOptions: [string | number, string][] = projects.map(
-    (project) => [String(project.id), project.slug] as [string, string],
-  )
+  const projectOptions: [string | number, string][] = [
+    ["", "Kein Projekt"],
+    ...projects.map((project) => [String(project.id), project.slug] as [string, string]),
+  ]
 
   return (
     <Form<S> {...formProps}>

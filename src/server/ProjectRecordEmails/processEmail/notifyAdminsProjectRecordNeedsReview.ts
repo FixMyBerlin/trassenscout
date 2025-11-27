@@ -24,7 +24,6 @@ export const notifyAdminsProjectRecordNeedsReview = async ({
   isAiEnabled,
   isSenderApproved,
 }: Props) => {
-  // Fetch project details for the email
   const project = await db.project.findUnique({
     where: { id: projectId },
     select: { slug: true },

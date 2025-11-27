@@ -728,8 +728,8 @@ model ProjectRecordEmail {
   subject        String?
   textBody       String?
   //
-  project        Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId      Int
+  project        Project?        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId      Int?
   //
   projectRecords ProjectRecord[]
   uploads        Upload[]

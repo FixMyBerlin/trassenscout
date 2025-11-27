@@ -56,7 +56,7 @@ export default async function ProjectRecordEmailDetailPage({
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="text-sm font-medium text-gray-500">Projekt-ID</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {projectRecordEmail.projectId}
+                {projectRecordEmail.projectId || "Kein Projekt"}
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -84,14 +84,18 @@ export default async function ProjectRecordEmailDetailPage({
               <dt className="text-sm font-medium text-gray-500">Anhänge</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                 <div className="flex gap-3">
-                  {projectRecordEmail.uploads.map((upload) => (
-                    <UploadPreviewClickable
-                      key={upload.id}
-                      uploadId={upload.id}
-                      projectSlug={projectRecordEmail.project.slug}
-                      size="grid"
-                    />
-                  ))}
+                  {projectRecordEmail.uploads.map((upload) =>
+                    projectRecordEmail.project ? (
+                      <UploadPreviewClickable
+                        key={upload.id}
+                        uploadId={upload.id}
+                        projectSlug={projectRecordEmail.project?.slug}
+                        size="grid"
+                      />
+                    ) : (
+                      <p>{upload.id}</p>
+                    ),
+                  )}
                 </div>
               </dd>
             </div>

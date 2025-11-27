@@ -48,6 +48,7 @@ export const EditProjectRecordEmailForm = ({
       const updated = await updateProjectRecordEmailMutation({
         ...values,
         id: projectRecordEmailId,
+        projectId: values.projectId ?? null,
       })
       router.push(`/admin/project-record-emails/${projectRecordEmailId}`)
     } catch (error: any) {

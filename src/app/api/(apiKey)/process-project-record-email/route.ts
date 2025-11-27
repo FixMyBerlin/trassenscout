@@ -4,7 +4,7 @@ import { z } from "zod"
 
 const ProcessProjectRecordEmailSchema = z.object({
   rawEmailText: z.string(),
-  projectSlug: z.string().min(1),
+  projectSlug: z.string().min(1).optional(),
 })
 
 export const POST = withApiKey(async ({ request }) => {
@@ -13,7 +13,6 @@ export const POST = withApiKey(async ({ request }) => {
     const body = await request.json()
     const { rawEmailText, projectSlug } = ProcessProjectRecordEmailSchema.parse(body)
 
-    // todo project
     await processProjectRecordEmailOrchestrator({ rawEmailText, projectSlug })
 
     return Response.json({ statusText: "Success" }, { status: 200 })

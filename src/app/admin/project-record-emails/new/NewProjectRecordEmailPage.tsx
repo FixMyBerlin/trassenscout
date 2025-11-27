@@ -22,10 +22,9 @@ export function NewProjectRecordEmailPage({ projects }: Props) {
 
   const handleSubmit = async (values: z.infer<typeof ProjectRecordEmailFormSchema>) => {
     try {
-      const project = projects.find((p) => p.id === values.projectId)!
       const projectRecordEmail = await createProjectRecordEmailMutation({
         ...values,
-        projectSlug: project.slug,
+        projectId: values.projectId ?? null,
       })
       router.push(`/admin/project-record-emails/${projectRecordEmail.id}`)
     } catch (error: any) {
