@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { SlugSchema } from "../core/utils"
+import { SlugSchema } from "../core/utils/schema-shared"
 
 export const CreateSurveySchema = z.object({
   projectId: z.coerce.number(),

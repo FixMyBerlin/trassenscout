@@ -14,6 +14,12 @@ export default resolver.pipe(
     const projectRecordEmail = await db.projectRecordEmail.findFirst({
       where: { id },
       include: {
+        project: {
+          select: {
+            id: true,
+            slug: true,
+          },
+        },
         projectRecords: {
           include: {
             author: {
@@ -23,6 +29,13 @@ export default resolver.pipe(
                 lastName: true,
               },
             },
+          },
+        },
+        uploads: {
+          select: {
+            id: true,
+            title: true,
+            externalUrl: true,
           },
         },
       },

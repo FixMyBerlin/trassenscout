@@ -1,0 +1,63 @@
+import { ParsedMail, simpleParser } from "mailparser"
+
+export const parseEmail = async ({ rawEmailText }: { rawEmailText: string }) => {
+  console.log("Parsing email to extract body and attachments...")
+
+  try {
+    const parsed = await simpleParser(rawEmailText)
+
+    // Extract body - prefer text over html, or convert html to text
+    let emailBody = ""
+    if (parsed.text) {
+      emailBody = parsed.text
+    } else if (parsed.html) {
+      // Simple HTML to text conversion - strip tags
+      // For production, consider using a library like 'html-to-text'
+      emailBody = parsed.html.toString().replace(/<[^>]*>/g, "")
+    }
+
+    const body = emailBody.trim()
+    const attachments = extractEmailAttachments(parsed)
+
+    // Extract additional metadata
+    const from = parsed.from?.text || null
+    const subject = parsed.subject || null
+    const date = parsed.date || null
+
+    console.log(`Extracted email body (${body.length} chars) and ${attachments.length} attachments`)
+
+    return {
+      body,
+      attachments,
+      from,
+      subject,
+      date,
+    }
+  } catch (error) {
+    console.error("Error parsing email:", error)
+    // If parsing fails, use the original text as body
+    console.log("Failed to parse email, using original text as body")
+    return {
+      body: rawEmailText,
+      attachments: [],
+      from: null,
+      subject: null,
+      date: null,
+    }
+  }
+}
+
+export const extractEmailAttachments = (parsed: ParsedMail) => {
+  const attachments = []
+
+  for (const attachment of parsed.attachments) {
+    attachments.push({
+      filename: attachment.filename || "unnamed",
+      contentType: attachment.contentType,
+      size: attachment.size,
+      content: attachment.content,
+    })
+  }
+
+  return attachments
+}

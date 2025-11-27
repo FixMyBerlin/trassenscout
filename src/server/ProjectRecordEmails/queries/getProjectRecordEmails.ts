@@ -5,6 +5,12 @@ export default resolver.pipe(resolver.authorize("ADMIN"), async () => {
   const projectRecordEmails = await db.projectRecordEmail.findMany({
     orderBy: { createdAt: "desc" },
     include: {
+      project: {
+        select: {
+          id: true,
+          slug: true,
+        },
+      },
       projectRecords: {
         select: {
           id: true,

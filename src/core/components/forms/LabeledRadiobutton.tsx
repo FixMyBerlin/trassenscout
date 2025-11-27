@@ -19,71 +19,76 @@ export interface LabeledRadiobuttonProps extends PropsWithoutRef<JSX.IntrinsicEl
 }
 
 // Note: See also src/participation/components/form/ParticipationLabeledRadiobutton.tsx
-export const LabeledRadiobutton = forwardRef<HTMLInputElement, LabeledRadiobuttonProps>(
-  function LabeledRadiobutton(
-    { scope, value, label, help, outerProps, labelProps, readonly, disabled, ...props },
-    _ref,
-  ) {
-    const {
-      register,
-      formState: { isSubmitting, errors },
-    } = useFormContext()
+export const LabeledRadiobutton = forwardRef<
+  HTMLInputElement,
+  LabeledRadiobuttonProps & { _onChange?: (value: string) => void }
+>(function LabeledRadiobutton(
+  { scope, value, label, help, outerProps, labelProps, readonly, disabled, _onChange, ...props },
+  _ref,
+) {
+  const {
+    register,
+    formState: { isSubmitting, errors },
+  } = useFormContext()
 
-    const hasError = Boolean(errors[value])
-    const key = [scope, value].join("-")
+  const hasError = Boolean(errors[value])
+  const key = [scope, value].join("-")
 
-    return (
-      <div
-        {...outerProps}
+  const { onChange: registerOnChange, ...registerProps } = register(scope, {
+    onChange: (e) => {
+      _onChange?.(e.target.value)
+    },
+  })
+
+  return (
+    <div
+      {...outerProps}
+      className={clsx(outerProps?.className, "flex break-inside-avoid items-center justify-start")}
+    >
+      <div className="flex h-5 items-center">
+        <input
+          type="radio"
+          disabled={disabled || isSubmitting}
+          readOnly={readonly}
+          value={value}
+          {...registerProps}
+          onChange={(e) => {
+            registerOnChange(e)
+            props.onChange?.(e)
+          }}
+          id={key}
+          className={clsx(
+            "h-4 w-4 cursor-pointer",
+            hasError
+              ? "border-red-800 text-red-500 shadow-xs shadow-red-200 focus:ring-red-800"
+              : readonly || disabled
+                ? "border-gray-200 bg-gray-100 checked:bg-gray-500"
+                : "border-gray-300 text-blue-600 focus:ring-blue-500",
+          )}
+        />
+      </div>
+      <label
+        {...labelProps}
+        htmlFor={key}
         className={clsx(
-          outerProps?.className,
-          "flex break-inside-avoid items-center justify-start",
+          "block pl-3 text-sm font-medium whitespace-nowrap",
+          readonly || disabled
+            ? "text-gray-400"
+            : "cursor-pointer text-gray-700 hover:text-gray-900",
         )}
       >
-        <div className="flex h-5 items-center">
-          <input
-            type="radio"
-            disabled={disabled || isSubmitting}
-            readOnly={readonly}
-            value={value}
-            {
-              ...register(scope) /* this adds the name property */
-            }
-            id={key}
-            {...props}
-            className={clsx(
-              "h-4 w-4 cursor-pointer",
-              hasError
-                ? "border-red-800 text-red-500 shadow-xs shadow-red-200 focus:ring-red-800"
-                : readonly || disabled
-                  ? "border-gray-200 bg-gray-100 checked:bg-gray-500"
-                  : "border-gray-300 text-blue-600 focus:ring-blue-500",
-            )}
-          />
-        </div>
-        <label
-          {...labelProps}
-          htmlFor={key}
-          className={clsx(
-            "block pl-3 text-sm font-medium whitespace-nowrap",
-            readonly || disabled
-              ? "text-gray-400"
-              : "cursor-pointer text-gray-700 hover:text-gray-900",
+        {label}
+        {help && <div className="m-0 text-gray-500">{help}</div>}
+        <ErrorMessage
+          render={({ message }) => (
+            <p role="alert" className="m-0 text-sm text-red-800">
+              {message}
+            </p>
           )}
-        >
-          {label}
-          {help && <div className="m-0 text-gray-500">{help}</div>}
-          <ErrorMessage
-            render={({ message }) => (
-              <p role="alert" className="m-0 text-sm text-red-800">
-                {message}
-              </p>
-            )}
-            errors={errors}
-            name={value}
-          />
-        </label>
-      </div>
-    )
-  },
-)
+          errors={errors}
+          name={value}
+        />
+      </label>
+    </div>
+  )
+})

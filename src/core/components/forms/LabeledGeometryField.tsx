@@ -3,7 +3,7 @@ import { clsx } from "clsx"
 import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { LabeledGeometryFieldPreview } from "./LabeledGeometryFieldPreview"
-import { extractCoordinatesFromGeoJSON } from "./_utils/extractCoordinatesFromGeoJSON"
+import { extractGeometryFromGeoJSON } from "./_utils/extractGeometryFromGeoJSON"
 
 export interface LabeledTextareaProps extends PropsWithoutRef<JSX.IntrinsicElements["textarea"]> {
   /** Field name. */
@@ -28,7 +28,7 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
       watch,
     } = useFormContext()
 
-    const geometryType = watch("type") || "ROUTE" // Subsections don't have a `type` but area a ROUTE
+    const geometryType = watch("type") || "LINE" // Subsections don't have a `type` but are LINE
     const value = watch(name)
     const [valueString, setValueString] = useState("")
     useEffect(() => {
@@ -43,23 +43,37 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
       const pastedText = event.clipboardData.getData("text")
       if (!pastedText.trim()) return
 
-      const extracted = extractCoordinatesFromGeoJSON(pastedText)
+      const extracted = extractGeometryFromGeoJSON(pastedText)
       if (!extracted) {
         // Not valid GeoJSON or doesn't match expected format, allow normal paste
         return
       }
 
       // Validate geometry type matches form selection
-      const expectedType = geometryType === "ROUTE" ? "LineString" : "Point"
-      if (extracted.geometryType !== expectedType) {
+      let isValid = false
+      if (geometryType === "POINT" && extracted.geometryType === "Point") {
+        isValid = true
+      } else if (
+        geometryType === "LINE" &&
+        (extracted.geometryType === "LineString" || extracted.geometryType === "MultiLineString")
+      ) {
+        isValid = true
+      } else if (
+        geometryType === "POLYGON" &&
+        (extracted.geometryType === "Polygon" || extracted.geometryType === "MultiPolygon")
+      ) {
+        isValid = true
+      }
+
+      if (!isValid) {
         event.preventDefault()
         setJsonParseError(true)
         return
       }
 
-      // Prevent default paste and update form value
+      // Prevent default paste and update form value with full GeoJSON geometry
       event.preventDefault()
-      setValue(name, extracted.coordinates, { shouldValidate: true })
+      setValue(name, extracted.geometry, { shouldValidate: true })
       setJsonParseError(false)
       // valueString will be updated by useEffect when value changes
     }
@@ -114,15 +128,45 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
               Das richtige Koordinatensystem ist EPSG:4326 / WGS84.
             </p>
             <p className="mt-2 text-sm text-gray-500">
-              {geometryType === "ROUTE" ? (
-                <>
-                  Das richtige Format für eine Linie ist <code>[9.1943,48.8932]</code>.
-                </>
-              ) : (
+              {geometryType === "POINT" ? (
                 <>
                   Das richtige Format für einen Punkt ist{" "}
-                  <code>[[9.1943,48.8932],[9.2043,48.8933]]</code>.
+                  <code>{JSON.stringify({ type: "Point", coordinates: [9.1943, 48.8932] })}</code>.
                 </>
+              ) : geometryType === "LINE" ? (
+                <>
+                  Das richtige Format für eine Linie ist{" "}
+                  <code>
+                    {JSON.stringify({
+                      type: "LineString",
+                      coordinates: [
+                        [9.1943, 48.8932],
+                        [9.2043, 48.8933],
+                      ],
+                    })}
+                  </code>
+                  . Unterstützt auch MultiLineString.
+                </>
+              ) : geometryType === "POLYGON" ? (
+                <>
+                  Das richtige Format für ein Polygon ist{" "}
+                  <code>
+                    {JSON.stringify({
+                      type: "Polygon",
+                      coordinates: [
+                        [
+                          [9.1943, 48.8932],
+                          [9.2043, 48.8933],
+                          [9.2143, 48.8943],
+                          [9.1943, 48.8932],
+                        ],
+                      ],
+                    })}
+                  </code>
+                  . Unterstützt auch MultiPolygon.
+                </>
+              ) : (
+                <>Bitte wählen Sie einen Geometrietyp aus.</>
               )}
             </p>
             <p className="mt-2 text-sm text-gray-500">

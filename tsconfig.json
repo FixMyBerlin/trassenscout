@@ -16,7 +16,7 @@
     "noUncheckedIndexedAccess": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -33,6 +33,6 @@
       }
     ]
   },
-  "exclude": ["node_modules", "**/*.e2e.ts", "cypress", "src/core/templates"],
+  "exclude": ["node_modules", "**/*.e2e.ts", "cypress", "src/core/templates", "imap-listener"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "types", ".next/types/**/*.ts"]
 }

@@ -1,4 +1,4 @@
-import db, { Prisma } from "@/db"
+import db, { Prisma, ProjectRecordReviewState } from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
@@ -16,11 +16,26 @@ export default resolver.pipe(
   async ({
     projectSlug,
     where,
-    orderBy = { id: "asc" },
+    orderBy = { createdAt: "desc" },
     skip = 0,
     take = 100,
   }: GetUploadsInput) => {
-    const safeWhere = { project: { slug: projectSlug }, ...where }
+    const safeWhere = {
+      project: { slug: projectSlug },
+      OR: [
+        { projectRecords: { none: {} } },
+        {
+          projectRecords: {
+            some: {
+              reviewState: {
+                in: [ProjectRecordReviewState.APPROVED, ProjectRecordReviewState.NEEDSREVIEW],
+              },
+            },
+          },
+        },
+      ],
+      ...where,
+    }
 
     const {
       items: uploads,
@@ -38,6 +53,27 @@ export default resolver.pipe(
           orderBy,
           include: {
             subsection: { select: { id: true, slug: true, start: true, end: true } },
+            Subsubsection: { select: { id: true, slug: true } },
+            projectRecords: {
+              select: {
+                id: true,
+                title: true,
+                date: true,
+              },
+            },
+            projectRecordEmail: {
+              select: {
+                id: true,
+                createdAt: true,
+              },
+            },
+            createdBy: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
           },
         }),
     })

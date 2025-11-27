@@ -59,6 +59,8 @@ model User {
   projectRecordsAuthored ProjectRecord[]         @relation("ProjectRecordAuthor")
   projectRecordsUpdated  ProjectRecord[]         @relation("ProjectRecordUpdatedBy")
   projectRecordsReviewed ProjectRecord[]         @relation("ProjectRecordReviewedBy")
+  uploadsCreated         Upload[]                @relation("UploadCreatedBy")
+  uploadsUpdated         Upload[]                @relation("UploadUpdatedBy")
 }
 
 enum UserRoleEnum {
@@ -142,6 +144,7 @@ model Project {
   logoSrc         String? // - UNUSED
   partnerLogoSrcs String[] // - UNUSED
   exportEnabled   Boolean  @default(false)
+  aiEnabled       Boolean  @default(false)
   //
   manager         User?    @relation(fields: [managerId], references: [id])
   managerId       Int?
@@ -323,7 +326,7 @@ model Subsubsection {
   //
   slug            String // shortTitle and URL Slug
   subTitle        String?
-  type            SubsubsectionTypeEnum @default(ROUTE) // Maßnahmen Geometrietyp - fka Führungsform - UNUSED
+  type            SubsubsectionTypeEnum @default(LINE) // Maßnahmen Geometrietyp - fka Führungsform - UNUSED
   location        LocationEnum? // Lage: innerorts/außerorts
   geometry        Json
   labelPos        LabelPositionEnum     @default(top)
@@ -390,8 +393,9 @@ model Subsubsection {
 }
 
 enum SubsubsectionTypeEnum {
-  ROUTE // fka Regelführung Strecke RF
-  AREA // Punktuelle Einträge (Maßnahmen) fka Sonderführung Punkt (Bereich) SF
+  POINT // Punktuelle Einträge (Maßnahmen) fka Sonderführung Punkt (Bereich) SF
+  LINE // fka Regelführung Strecke RF
+  POLYGON // Polygon- und MultiPolygon-Geometrien
 }
 
 enum LocationEnum {
@@ -545,6 +549,9 @@ model Upload {
   title                String
   externalUrl          String
   summary              String?
+  mimeType             String?
+  latitude             Float?
+  longitude            Float?
   //
   project              Project             @relation(fields: [projectId], references: [id])
   projectId            Int
@@ -556,6 +563,11 @@ model Upload {
   projectRecordEmailId Int?
   projectRecords       ProjectRecord[]
   LogEntry             LogEntry[]
+  //
+  createdBy            User?               @relation("UploadCreatedBy", fields: [createdById], references: [id])
+  createdById          Int?
+  updatedBy            User?               @relation("UploadUpdatedBy", fields: [updatedById], references: [id])
+  updatedById          Int?
 }
 
 model Survey {
@@ -710,11 +722,14 @@ model ProjectRecordEmail {
   id             Int             @id @default(autoincrement())
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+  text           String // raw email text
+  date           DateTime? // email date
+  from           String?
+  subject        String?
+  textBody       String?
   //
-  project        Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId      Int
-  //
-  text           String
+  project        Project?        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId      Int?
   //
   projectRecords ProjectRecord[]
   uploads        Upload[]

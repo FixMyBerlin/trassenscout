@@ -1,0 +1,31 @@
+/* Animation for fading out and collapsing upload progress items */
+@theme {
+  --animate-fade-out-collapse: fade-out-collapse 0.5s ease-in-out 5s forwards;
+
+  @keyframes fade-out-collapse {
+    0% {
+      opacity: 1;
+      max-height: 200px;
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-width: 1px;
+    }
+    50% {
+      opacity: 0;
+      max-height: 200px;
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-width: 1px;
+    }
+    100% {
+      opacity: 0;
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border-width: 0;
+    }
+  }
+}

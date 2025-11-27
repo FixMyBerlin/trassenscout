@@ -1,15 +1,17 @@
+import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { Link } from "@/src/core/components/links"
-import { SubsectionIcon, SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
-import { shortTitle } from "@/src/core/components/text"
-import { uploadUrl } from "@/src/pagesComponents/uploads/utils/uploadUrl"
-import getProjectRecord from "@/src/server/projectRecord/queries/getProjectRecord"
+import { projectRecordUploadEditRoute } from "@/src/core/routes/uploadRoutes"
+import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
+import getProjectRecordAdmin from "@/src/server/projectRecords/queries/getProjectRecordAdmin"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
 import { createProjectRecordFilterUrl } from "./createFilterUrl"
 
 type ProjectRecordSummaryProps = {
-  projectRecord: Awaited<ReturnType<typeof getProjectRecord>>
+  projectRecord:
+    | Awaited<ReturnType<typeof getProjectRecord>>
+    | Awaited<ReturnType<typeof getProjectRecordAdmin>>
 }
 
 export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProps) => {
@@ -21,16 +23,13 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
           {format(new Date(projectRecord.date!), "P", { locale: de })}
         </span>
 
-        <span className="text-gray-500">Titel: </span>
-        <span className="col-span-5">{projectRecord.title}</span>
-
         <div className="text-gray-500">Abschnitt: </div>
         {projectRecord.subsection ? (
           <Link
-            className="col-span-5 mt-2 inline-flex"
+            className="col-span-5 uppercase"
             href={`/${projectRecord.project.slug}/abschnitte/${projectRecord.subsection.slug}`}
           >
-            <SubsectionIcon label={shortTitle(projectRecord.subsection.slug)} />
+            {projectRecord.subsection.slug}
           </Link>
         ) : (
           <span className="col-span-5">Keine Angabe</span>
@@ -39,10 +38,10 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
         <div className="text-gray-500">Eintrag: </div>
         {projectRecord.subsubsection ? (
           <Link
-            className="col-span-5 mt-2 inline-flex"
+            className="col-span-5 uppercase"
             href={`/${projectRecord.project.slug}/abschnitte/${projectRecord.subsubsection.subsection.slug}/fuehrung/${projectRecord.subsubsection.slug}`}
           >
-            <SubsubsectionIcon label={shortTitle(projectRecord.subsubsection.slug)} />
+            {projectRecord.subsubsection.slug}
           </Link>
         ) : (
           <span className="col-span-5">Keine Angabe</span>
@@ -50,7 +49,7 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
       </div>
 
       {projectRecord.body && (
-        <div className="max-w-3xl rounded-md bg-purple-100 p-4">
+        <div className="max-w-3xl rounded-md border border-gray-200 p-4">
           <Markdown
             className="prose-p:text-base prose-ol:leading-tight prose-ul:list-disc prose-ul:leading-tight"
             markdown={projectRecord.body}
@@ -80,17 +79,25 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
       </div>
 
       <div>
-        <p className="mr-2 mb-3 text-gray-500">Verknüpfte Dokumente</p>
+        <p className="mr-2 mb-3 text-gray-500">Dokumente:</p>
         {!!projectRecord.uploads?.length ? (
-          <ul className="space-y-1">
-            {projectRecord.uploads.map((upload) => (
-              <li key={upload.id} className="text-gray-700">
-                <Link href={uploadUrl(upload)} blank>
-                  <p className="max-w-1/2 truncate @lg:max-w-52">{upload.title}</p>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div className="flex gap-3">
+            {projectRecord.uploads
+              .sort((a, b) => a.title.localeCompare(b.title))
+              .map((upload) => (
+                <UploadPreviewClickable
+                  key={upload.id}
+                  uploadId={upload.id}
+                  projectSlug={projectRecord.project.slug}
+                  size="grid"
+                  editUrl={projectRecordUploadEditRoute(
+                    projectRecord.project.slug,
+                    projectRecord.id,
+                    upload.id,
+                  )}
+                />
+              ))}
+          </div>
         ) : (
           <span>Keine Dokumente verknüpft</span>
         )}

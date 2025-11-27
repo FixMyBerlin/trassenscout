@@ -1,8 +1,10 @@
 import db from "@/db"
 import { shortTitle } from "@/src/core/components/text/titles"
+import { PointGeometrySchema } from "@/src/core/utils/geojson-schemas"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
-import { m2mFields, type M2MFieldsType } from "@/src/server/subsubsections/m2mFields"
+import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
 import { ImportSubsubsectionDataSchema } from "@/src/server/subsubsections/importSchema"
+import { m2mFields, type M2MFieldsType } from "@/src/server/subsubsections/m2mFields"
 import { z } from "zod"
 import { withApiKey } from "../../_utils/withApiKey"
 
@@ -62,6 +64,10 @@ export const POST = withApiKey(async ({ request }) => {
         { status: 404 },
       )
     }
+
+    // Parse and validate subsection geometry
+    const typedSubsection = typeSubsectionGeometry(subsection)
+    const subsectionGeometry = typedSubsection.geometry
 
     // Look up IDs from slugs if provided
     if (data.qualityLevelSlug) {
@@ -133,20 +139,24 @@ export const POST = withApiKey(async ({ request }) => {
     })
 
     // Calculate fallback geometry for new records when geometry is not provided
-    const calculateFallbackGeometry = (): [number, number] => {
-      const subsectionGeometry = subsection.geometry as [number, number][]
-      if (subsectionGeometry && subsectionGeometry.length > 0) {
-        let minLng = subsectionGeometry[0]![0]
-        let minLat = subsectionGeometry[0]![1]
+    const calculateFallbackGeometry = () => {
+      let coordinates: [number, number] = [0, 0]
 
-        for (const [lng, lat] of subsectionGeometry) {
+      if (subsectionGeometry.coordinates && subsectionGeometry.coordinates.length > 0) {
+        let minLng = subsectionGeometry.coordinates[0]![0]
+        let minLat = subsectionGeometry.coordinates[0]![1]
+
+        for (const [lng, lat] of subsectionGeometry.coordinates) {
           if (lng < minLng) minLng = lng
           if (lat < minLat) minLat = lat
         }
-
-        return [minLng, minLat] as [number, number]
+        coordinates = [minLng, minLat]
       }
-      return [0, 0] as [number, number]
+
+      return PointGeometrySchema.parse({
+        type: "Point",
+        coordinates,
+      })
     }
 
     // 1. When geometry is provided, use that; overwrite existing data
@@ -155,7 +165,7 @@ export const POST = withApiKey(async ({ request }) => {
     const applyFallback = !data.geometry && !existing
     if (applyFallback) {
       // Creating new record - apply fallback geometry and add warning to description
-      data.type = "AREA"
+      data.type = "POINT"
       data.geometry = calculateFallbackGeometry()
       // Add placeholder marker to description when fallback is applied
       data.description = ["‼️ Platzhalter-Geometrie", data.description].filter(Boolean).join("\n\n")

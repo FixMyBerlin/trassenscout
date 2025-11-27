@@ -1,6 +1,6 @@
 import { SubsectionWithPositionAndStatus } from "@/src/server/subsections/queries/getSubsections"
 import combine from "@turf/combine"
-import { bbox, bboxPolygon, featureCollection, lineString } from "@turf/turf"
+import { bbox, bboxPolygon, featureCollection } from "@turf/turf"
 import type { BBox } from "geojson"
 import type { LngLatBoundsLike } from "react-map-gl/maplibre"
 
@@ -8,7 +8,7 @@ export const subsectionsBbox = (subsections: SubsectionWithPositionAndStatus[]) 
   // Calculate the bbox of all subSections by first creating a bbox per subSection, then make a polygon out of those, then calculate the bbox for all those polygons. It's likely this could be done easier…
   const subSectionBboxes: BBox[] = []
   subsections.forEach((ss) => {
-    subSectionBboxes.push(bbox(lineString(ss.geometry)))
+    subSectionBboxes.push(bbox(ss.geometry))
   })
   const subSectionBoxes = combine(
     featureCollection(subSectionBboxes.map((box) => bboxPolygon(box))),

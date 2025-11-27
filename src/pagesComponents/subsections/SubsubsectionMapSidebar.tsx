@@ -1,47 +1,57 @@
+import { ProjectRecordNewModal } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordNewModal"
 import { ProjectRecordsTable } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTable"
+import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
+import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneContainer"
+import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
+import { blueButtonStyles, Link, whiteButtonStyles } from "@/src/core/components/links"
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
-import { Link, whiteButtonStyles } from "@/src/core/components/links"
 import { PageDescription } from "@/src/core/components/pages/PageDescription"
 import { formattedEuro, formattedLength, shortTitle } from "@/src/core/components/text"
 import { H2 } from "@/src/core/components/text/Headings"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
+import { subsubsectionUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
-import getProjectRecordsBySubsubsection from "@/src/server/projectRecord/queries/getProjectRecordsBySubsubsection"
+import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { ArrowUpRightIcon } from "@heroicons/react/16/solid"
+import { ArrowUpRightIcon, PlusIcon } from "@heroicons/react/16/solid"
 import { clsx } from "clsx"
-import { UploadPreview } from "../uploads/UploadPreview"
-import { mapillaryLink } from "./utils/mapillaryLink"
+import { useState } from "react"
 
 type Props = {
   subsubsection: SubsubsectionWithPosition
   onClose: () => void
 }
 
-export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClose }) => {
+export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
+  const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
 
-  const [{ uploads }] = useQuery(getUploadsWithSubsections, {
+  const [{ uploads }, { refetch: refetchUploads }] = useQuery(getUploadsWithSubsections, {
     projectSlug,
     where: { subsubsectionId: subsubsection.id },
   })
 
-  const [projectRecords] = useQuery(getProjectRecordsBySubsubsection, {
-    projectSlug,
-    subsubsectionId: subsubsection.id,
-  })
+  const [projectRecords, { refetch: refetchProjectRecords }] = useQuery(
+    getProjectRecordsBySubsubsection,
+    {
+      projectSlug,
+      subsubsectionId: subsubsection.id,
+    },
+  )
 
-  const mapillaryHref = mapillaryLink(subsubsection)
   return (
     <section className="overlflow-y-scroll h-full w-[950px] overflow-x-hidden rounded-md border border-gray-400/10 bg-white p-3 drop-shadow-md">
       <div className="mt-3 flex items-center justify-between">
@@ -180,83 +190,77 @@ export const SubsubsectionMapSidebar: React.FC<Props> = ({ subsubsection, onClos
 
       <section className="mt-10">
         <H2>Protokolleinträge</H2>
+        {showSuccess && <FormSuccess message="Protokoll erfolgreich erstellt" show={showSuccess} />}
         {projectRecords.length > 0 ? (
-          <ProjectRecordsTable projectRecords={projectRecords} openLinksInNewTab />
+          <ProjectRecordsTable
+            projectRecords={projectRecords}
+            openLinksInNewTab
+            highlightId={createdProjectRecordId}
+          />
         ) : (
           <ZeroCase small visible name="Protokolleinträge" />
         )}
         <IfUserCanEdit>
-          <Link
-            blank
-            className="mt-4"
-            button
-            icon="plus"
-            href={`/${projectSlug}/project-records?initialValues=${encodeURIComponent(JSON.stringify({ subsubsectionId: subsubsection.id }))}`}
+          <button
+            onClick={() => setIsProjectRecordModalOpen(true)}
+            className={clsx(blueButtonStyles, "items-center justify-center gap-1")}
           >
-            Neuer Protokolleintrag
-          </Link>
+            <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
+          </button>
         </IfUserCanEdit>
+
+        <ProjectRecordNewModal
+          projectSlug={projectSlug}
+          open={isProjectRecordModalOpen}
+          onClose={() => setIsProjectRecordModalOpen(false)}
+          onSuccess={async (projectRecordId) => {
+            setCreatedProjectRecordId(projectRecordId)
+            setShowSuccess(true)
+            setTimeout(() => {
+              setShowSuccess(false)
+              setCreatedProjectRecordId(null)
+            }, 3000)
+            await refetchProjectRecords()
+          }}
+          initialValues={{ subsubsectionId: subsubsection.id }}
+        />
       </section>
 
       <section className="mt-10">
-        <div className="mb-2 flex items-center justify-between">
-          <H2>Grafiken</H2>
-          <IfUserCanEdit>
-            <Link
-              icon="plus"
-              href={Routes.NewUploadPage({
-                projectSlug,
-                subsubsectionId: subsubsection.id,
-                returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
-              })}
-            >
-              Grafik
-            </Link>
-          </IfUserCanEdit>
-        </div>
+        <H2>Grafiken</H2>
         {!uploads.length && <ZeroCase small visible name="Grafiken" />}
         <div className="grid grid-cols-2 gap-3">
           {uploads.map((upload) => {
             return (
-              <UploadPreview
+              <UploadPreviewClickable
                 key={upload.id}
-                upload={upload}
-                editUrl={Routes.EditUploadPage({
+                uploadId={upload.id}
+                projectSlug={projectSlug}
+                size="grid"
+                editUrl={subsubsectionUploadEditRoute(
                   projectSlug,
-                  uploadId: upload.id,
-                  returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
-                })}
-                showUploadUrl={Routes.ShowUploadPage({
-                  projectSlug,
-                  uploadId: upload.id,
-                  returnPath: [subsectionSlug, subsubsectionSlug].join("/"),
-                })}
+                  subsectionSlug!,
+                  subsubsectionSlug!,
+                  upload.id,
+                )}
+                onDeleted={async () => {
+                  await refetchUploads()
+                }}
               />
             )
           })}
+          <IfUserCanEdit>
+            <UploadDropzoneContainer className="h-44 rounded-md p-0">
+              <UploadDropzone
+                fillContainer
+                subsubsectionId={subsubsection.id}
+                onUploadComplete={async (_) => {
+                  await refetchUploads()
+                }}
+              />
+            </UploadDropzoneContainer>
+          </IfUserCanEdit>
         </div>
-      </section>
-
-      <section className="mt-10">
-        <H2>Straßenansicht (Mapillary)</H2>
-        {/* {subsubsection.mapillaryKey ? (
-          <iframe
-            title="Mapillary Image Preview"
-            src={`https://www.mapillary.com/embed?image_key=${subsubsection.mapillaryKey}&style=photo`}
-            className="mt-2 aspect-video w-full"
-          />
-        ) : (
-          mapillaryHref && (
-            <Link blank href={mapillaryHref} className="mt-3 block">
-              Mapillary öffnen
-            </Link>
-          )
-        )} */}
-        {mapillaryHref && (
-          <Link blank href={mapillaryHref} className="mt-3 block">
-            Mapillary öffnen
-          </Link>
-        )}
       </section>
 
       <SuperAdminLogData data={{ subsubsection, uploads, projectRecords }} />

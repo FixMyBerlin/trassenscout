@@ -21,7 +21,7 @@ export const ProjectForm = ({ users, ...props }: Props) => {
       <LabeledTextField
         type="text"
         name="slug"
-        label="Kurztitel"
+        label="Kürzel"
         help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
       />
       <LabeledTextField type="text" name="subTitle" label="Untertitel" optional />

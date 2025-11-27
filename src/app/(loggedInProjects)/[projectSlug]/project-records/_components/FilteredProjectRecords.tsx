@@ -3,7 +3,7 @@
 import { ProjectRecordsTable } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTable"
 import { linkStyles } from "@/src/core/components/links"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import getProjectRecords from "@/src/server/projectRecord/queries/getProjectRecords"
+import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid"
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
@@ -40,7 +40,8 @@ export const FilteredProjectRecords = ({
       if (filterElement) filterElement.scrollIntoView({ behavior: "smooth", block: "start" })
       // Remove the hash so subsequent search updates don't trigger scroll
       const urlWithoutHash = window.location.pathname + window.location.search
-      router.replace(urlWithoutHash as any)
+      // @ts-expect-error - router.replace expects Route type but we're constructing from window.location
+      router.replace(urlWithoutHash)
     }
   }, [filter?.searchterm, router])
 
@@ -106,7 +107,8 @@ export const FilteredProjectRecords = ({
         <span>Filter zurücksetzen</span>
       </button>
       <p className="mt-4 text-sm text-gray-500">
-        {filteredProjectRecords.length} Protokoll{filteredProjectRecords.length !== 1 ? "e" : ""}
+        {filteredProjectRecords.length} Protokoll
+        {filteredProjectRecords.length !== 1 ? "einträge" : "eintrag"}
       </p>
       {projectRecords.length === 0 ? (
         <ZeroCase visible={projectRecords.length} name="Protokolle" />

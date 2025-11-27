@@ -55,7 +55,7 @@ export const ProjectsSwitch = ({ projects }: Props) => {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <MenuItems className="ring-opacity-5 absolute left-0 z-10 mt-2 max-h-[60vh] w-56 origin-top-right divide-y divide-gray-100 overflow-y-auto rounded-md bg-white shadow-lg ring-1 ring-gray-200 focus:outline-hidden">
+              <MenuItems className="absolute left-0 z-10 mt-2 max-h-[60vh] w-56 origin-top-right divide-y divide-gray-100 overflow-y-auto rounded-md bg-white shadow-lg ring-1 ring-gray-200/5 focus:outline-hidden">
                 <div className="p-1.5">
                   <MenuItem key="dashboard">
                     {({ focus }) => (

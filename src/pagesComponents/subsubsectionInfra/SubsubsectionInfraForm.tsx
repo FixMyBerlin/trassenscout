@@ -6,7 +6,7 @@ export function SubsubsectionInfraForm<S extends z.ZodType<any, any>>(props: For
 
   return (
     <Form<S> {...formProps}>
-      <LabeledTextField type="text" name="slug" label="Kurz-Titel und URL-Teil" />
+      <LabeledTextField type="text" name="slug" label="Kürzel" />
       <LabeledTextField type="text" name="title" label="Titel" />
     </Form>
   )

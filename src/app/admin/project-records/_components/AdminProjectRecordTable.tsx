@@ -4,7 +4,7 @@ import { Link } from "@/src/core/components/links"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { AdminProjectRecordWithRelations } from "@/src/server/projectRecord/queries/getAllProjectRecordsAdmin"
+import { AdminProjectRecordWithRelations } from "@/src/server/projectRecords/queries/getAllProjectRecordsAdmin"
 import { ProjectRecordReviewState } from "@prisma/client"
 import clsx from "clsx"
 import { format } from "date-fns"
@@ -42,7 +42,7 @@ export const AdminProjectRecordsTable = ({
       <TableWrapper className="mt-7">
         <div className="min-w-full divide-y divide-gray-300">
           <div className="bg-gray-50">
-            <div className="grid grid-cols-6">
+            <div className="grid grid-cols-7">
               <div
                 className={clsx(
                   spaceClasses,
@@ -57,7 +57,15 @@ export const AdminProjectRecordsTable = ({
                   "text-left text-sm font-semibold text-gray-900 uppercase",
                 )}
               >
-                Datum
+                Datum Email
+              </div>
+              <div
+                className={clsx(
+                  spaceClasses,
+                  "text-left text-sm font-semibold text-gray-900 uppercase",
+                )}
+              >
+                Prozessiert am
               </div>
               <div
                 className={clsx(
@@ -88,13 +96,20 @@ export const AdminProjectRecordsTable = ({
           <div className="divide-y divide-gray-200 bg-white">
             {!!projectRecords.length ? (
               projectRecords.map((projectRecord) => (
-                <div key={projectRecord.id} className="grid grid-cols-6">
+                <div key={projectRecord.id} className="grid grid-cols-7">
                   <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
                     {projectRecord.id}
                   </div>
                   <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
                     {projectRecord.date
-                      ? format(new Date(projectRecord.date), "P", { locale: de })
+                      ? format(new Date(projectRecord.date), "dd. MMMM yyyy, HH:mm", { locale: de })
+                      : "—"}
+                  </div>
+                  <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
+                    {projectRecord.createdAt
+                      ? format(new Date(projectRecord.createdAt), "dd. MMMM yyyy, HH:mm", {
+                          locale: de,
+                        })
                       : "—"}
                   </div>
                   <div

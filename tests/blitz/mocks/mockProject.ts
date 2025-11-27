@@ -13,4 +13,5 @@ Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
   createdAt: new Date(),
   updatedAt: new Date(),
   exportEnabled: false,
+  aiEnabled: false,
 }

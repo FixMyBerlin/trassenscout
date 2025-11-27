@@ -6,7 +6,6 @@ import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-import { mapillaryLink } from "@/src/pagesComponents/subsections/utils/mapillaryLink"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { Routes } from "@blitzjs/next"
 import { clsx } from "clsx"
@@ -76,15 +75,6 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
               >
                 Ausbaustandard
               </th>
-              <th
-                scope="col"
-                className={clsx(
-                  compact ? "hidden" : "",
-                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6",
-                )}
-              >
-                -
-              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
@@ -94,8 +84,6 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                 subsectionSlug: subsectionSlug!,
                 subsubsectionSlug: subsubsection.slug,
               })
-
-              const mapillaryHref = mapillaryLink(subsubsection)
 
               return (
                 <tr
@@ -146,22 +134,6 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   >
                     {subsubsection.qualityLevel?.title || "k.A."}
                   </td>
-                  <td
-                    className={clsx(compact ? "hidden" : "", "text-sm font-medium wrap-break-word")}
-                  >
-                    {mapillaryHref && (
-                      <Link
-                        href={mapillaryHref}
-                        blank
-                        // Trying to get the Link to fill the whole cell (only partial solution…)
-                        className="py-4 pr-4 pl-3 sm:pr-6"
-                        // This will prevent the <tr> onClick from firing. `pointer-events-none` does something differnet, it prevent this link from being clickable.
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        Mapillary
-                      </Link>
-                    )}
-                  </td>
                 </tr>
               )
             })}
@@ -191,7 +163,7 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
             <Link
               button="white"
               icon="download"
-              href={`/api/subsubsections/${projectSlug}/${subsectionSlug}/export`}
+              href={`/api/${projectSlug}/subsections/${subsectionSlug}/subsubsections/export`}
             >
               Einträge herunterladen (CSV)
             </Link>

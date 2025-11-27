@@ -1,15 +1,20 @@
 "use client"
 
 import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/useFilters.nuqs"
+import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/core/components/links"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text"
+import {
+  projectRecordDetailRoute,
+  projectRecordEditRoute,
+  projectRecordReviewRoute,
+} from "@/src/core/routes/projectRecordRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { uploadUrl } from "@/src/pagesComponents/uploads/utils/uploadUrl"
-import getProjectRecords from "@/src/server/projectRecord/queries/getProjectRecords"
+import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
 import { Disclosure, DisclosureButton, DisclosurePanel, Transition } from "@headlessui/react"
 import { ChevronDownIcon, SparklesIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
@@ -68,7 +73,7 @@ export const ProjectRecordsTable = ({
                     <>
                       <DisclosureButton
                         className={clsx(
-                          "group focus-visible:ring-opacity-75 w-full text-left focus:outline-hidden focus-visible:ring focus-visible:ring-gray-500",
+                          "group w-full text-left focus:outline-hidden focus-visible:ring focus-visible:ring-gray-500/75",
                           { "border-b border-gray-100": !open },
                         )}
                       >
@@ -89,11 +94,15 @@ export const ProjectRecordsTable = ({
                             </div>
                             <div className={clsx("hidden @lg:block", spaceClasses)}>
                               <div className="flex items-center justify-between gap-2">
-                                <ProjectRecordTopicsList
-                                  topics={projectRecord.projectRecordTopics}
-                                  isInteractive={isTopicFilter}
-                                  onTopicClick={handleTopicClick}
-                                />
+                                {/* workaround with stopPropagation to Prevent disclosure toggle */}
+                                {/* for now we use this workaround since we propably do not use the disclosure component in the table anyway  */}
+                                <div onClick={(e) => e.stopPropagation()}>
+                                  <ProjectRecordTopicsList
+                                    topics={projectRecord.projectRecordTopics}
+                                    isInteractive={isTopicFilter}
+                                    onTopicClick={handleTopicClick}
+                                  />
+                                </div>
                                 <div className="flex shrink-0 items-center gap-2">
                                   <ProjectRecordReviewBadge
                                     authorType={projectRecord.projectRecordAuthorType}
@@ -128,7 +137,7 @@ export const ProjectRecordsTable = ({
                         >
                           {projectRecord.body && (
                             // for some reasons prose modifiers did not work here
-                            <div className="rounded-md bg-purple-100 p-2">
+                            <div className="rounded-md border border-gray-200 p-2">
                               <Markdown
                                 className="line-clamp-6 [&_ol]:ml-4 [&_ol]:list-decimal [&_ol]:leading-tight [&_p]:text-base [&_ul]:ml-4 [&_ul]:list-disc [&_ul]:leading-tight"
                                 markdown={projectRecord.body}
@@ -161,27 +170,30 @@ export const ProjectRecordsTable = ({
                           {projectRecord.uploads && projectRecord.uploads.length > 0 && (
                             <div>
                               <p className="mb-2 font-medium text-gray-500">Dokumente:</p>
-                              <ul className="space-y-1">
-                                {projectRecord.uploads.map((upload) => (
-                                  <li key={upload.id}>
-                                    <Link href={uploadUrl(upload)} blank>
-                                      <p className="max-w-1/2 truncate @lg:max-w-52">
-                                        {upload.title}
-                                      </p>
-                                    </Link>
-                                  </li>
-                                ))}
-                              </ul>
+                              <div className="flex flex-wrap gap-2">
+                                {projectRecord.uploads
+                                  .sort((a, b) => a.title.localeCompare(b.title))
+                                  .map((upload) => (
+                                    <UploadPreviewClickable
+                                      key={upload.id}
+                                      uploadId={upload.id}
+                                      projectSlug={projectSlug}
+                                      size="table"
+                                    />
+                                  ))}
+                              </div>
                             </div>
                           )}
                           {/* Topics and "Freigabe"-Pill */}
                           <div className="@lg:hidden">
                             <div className="flex flex-col gap-6">
-                              <ProjectRecordTopicsList
-                                topics={projectRecord.projectRecordTopics}
-                                isInteractive={isTopicFilter}
-                                onTopicClick={handleTopicClick}
-                              />
+                              <div onClick={(e) => e.stopPropagation()}>
+                                <ProjectRecordTopicsList
+                                  topics={projectRecord.projectRecordTopics}
+                                  isInteractive={isTopicFilter}
+                                  onTopicClick={handleTopicClick}
+                                />
+                              </div>
                               <div className="flex shrink-0 items-center gap-2">
                                 <ProjectRecordReviewBadge
                                   authorType={projectRecord.projectRecordAuthorType}
@@ -196,7 +208,7 @@ export const ProjectRecordsTable = ({
                               {projectRecord.reviewState === "NEEDSREVIEW" && (
                                 <Link
                                   className="inline-flex items-center justify-center gap-1"
-                                  href={`/${projectSlug}/project-records/${projectRecord.id}/review`}
+                                  href={projectRecordReviewRoute(projectSlug, projectRecord.id)}
                                   blank={openLinksInNewTab}
                                 >
                                   <SparklesIcon className="h-3.5 w-3.5" />
@@ -205,7 +217,7 @@ export const ProjectRecordsTable = ({
                               )}
                               <Link
                                 icon="edit"
-                                href={`/${projectSlug}/project-records/${projectRecord.id}/edit`}
+                                href={projectRecordEditRoute(projectSlug, projectRecord.id)}
                                 blank={openLinksInNewTab}
                               >
                                 Bearbeiten
@@ -213,7 +225,7 @@ export const ProjectRecordsTable = ({
                             </IfUserCanEdit>
                             <Link
                               icon="details"
-                              href={`/${projectSlug}/project-records/${projectRecord.id}`}
+                              href={projectRecordDetailRoute(projectSlug, projectRecord.id)}
                               blank={openLinksInNewTab}
                             >
                               Detailansicht

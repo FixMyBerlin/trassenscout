@@ -1,7 +1,10 @@
 import db, { Upload } from "../index"
 
 const seedUploads = async () => {
-  const seedFiles: Omit<Upload, "id" | "createdAt" | "updatedAt">[] = [
+  const seedFiles: Omit<
+    Upload,
+    "id" | "createdAt" | "updatedAt" | "createdById" | "updatedById"
+  >[] = [
     {
       title: "Protokoll Gesamttreffen",
       externalUrl:
@@ -11,6 +14,9 @@ const seedUploads = async () => {
       subsubsectionId: null,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
+      latitude: null,
+      longitude: null,
     },
     {
       title: "AWS S3 Image",
@@ -21,6 +27,9 @@ const seedUploads = async () => {
       subsubsectionId: null,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
+      latitude: null,
+      longitude: null,
     },
     {
       title: "Trassenplanung Projekt 1",
@@ -31,6 +40,9 @@ const seedUploads = async () => {
       subsubsectionId: null,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
+      latitude: 52.52039883952099,
+      longitude: 13.317392954811083,
     },
     {
       title: "FAQ Baulastträger 1",
@@ -41,6 +53,9 @@ const seedUploads = async () => {
       subsubsectionId: null,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
+      latitude: 52.52243126246529,
+      longitude: 13.392787102151175,
     },
     {
       title: "FAQ Baulastträger 2",
@@ -51,6 +66,9 @@ const seedUploads = async () => {
       subsubsectionId: null,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
+      latitude: 52.52204414153442,
+      longitude: 13.387538142526438,
     },
     {
       title: "Protokoll Gesamttreffen Projekt 2",
@@ -61,6 +79,9 @@ const seedUploads = async () => {
       subsubsectionId: null,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
+      latitude: null,
+      longitude: null,
     },
     {
       title: "Protokoll ADFC",
@@ -71,6 +92,9 @@ const seedUploads = async () => {
       subsubsectionId: null,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
+      latitude: null,
+      longitude: null,
     },
     {
       title: "Planungsdokument",
@@ -81,6 +105,9 @@ const seedUploads = async () => {
       subsubsectionId: 1,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
+      latitude: 52.51831791403984,
+      longitude: 13.360259458454504,
     },
     {
       title: "Super langer Text in der Beschreibung sehr lang",
@@ -91,6 +118,9 @@ const seedUploads = async () => {
       subsubsectionId: 1,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
+      latitude: 52.51831791403984,
+      longitude: 13.360259458454504,
     },
     {
       title: "Kurz",
@@ -101,11 +131,25 @@ const seedUploads = async () => {
       subsubsectionId: 1,
       summary: null,
       projectRecordEmailId: null,
+      mimeType: "image/jpeg",
+      latitude: null,
+      longitude: null,
     },
   ]
 
   for (const data of seedFiles) {
-    await db.upload.create({ data })
+    // For seed data, assign a default user (user 1) as creator
+    // Some uploads have been updated, so they get updatedById set
+    const hasBeenUpdated =
+      data.title.includes("Protokoll") || data.title.includes("Planungsdokument")
+
+    await db.upload.create({
+      data: {
+        ...data,
+        createdById: 1, // Seed data - assign to user 1
+        updatedById: hasBeenUpdated ? 1 : null, // Only set if upload has been updated
+      },
+    })
   }
 }
 

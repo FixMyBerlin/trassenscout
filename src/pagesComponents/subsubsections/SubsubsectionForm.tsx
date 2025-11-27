@@ -228,13 +228,14 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label={subsubsectionFieldTranslations.estimatedConstructionDateString}
         optional
       />
-      <LabeledTextField
+      {/* UNUSED */}
+      {/* <LabeledTextField
         type="text"
         name="mapillaryKey"
         label={subsubsectionFieldTranslations.mapillaryKey}
         optional
         help="Die Mapillary Bild Referenz kann aus der URL als 'pKey' kopiert werden. Das ausgewählte Bild wird dann als eingebettete Vorschau auf der Seite angezeigt."
-      />
+      /> */}
       <LabeledSelect
         name="managerId"
         label={subsubsectionFieldTranslations.managerId}

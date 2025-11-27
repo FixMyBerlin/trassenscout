@@ -1,4 +1,4 @@
-import { InputNumberOrNullSchema, SlugSchema } from "@/src/core/utils"
+import { InputNumberOrNullSchema, SlugSchema } from "@/src/core/utils/schema-shared"
 import { z } from "zod"
 
 const ProjectSlugSchema = SlugSchema.max(15, { message: "Pflichtfeld. Maximal 15 Zeichen." })
@@ -11,6 +11,7 @@ export const ProjectSchema = z.object({
   partnerLogoSrcs: z.array(z.string()).nullish(),
   managerId: InputNumberOrNullSchema,
   exportEnabled: z.coerce.boolean(),
+  aiEnabled: z.coerce.boolean(),
 })
 
 export type ProjectType = z.infer<typeof ProjectSchema>

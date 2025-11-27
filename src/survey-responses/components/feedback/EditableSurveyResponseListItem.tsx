@@ -93,7 +93,7 @@ const EditableSurveyResponseListItem = ({
     <article data-open={open} className="bg-white">
       <button
         className={clsx(
-          "group focus-visible:ring-opacity-75 w-full py-4 pr-4 text-left text-sm text-gray-900 hover:bg-gray-50 focus:outline-hidden focus-visible:ring focus-visible:ring-gray-500 sm:pr-6",
+          "group w-full py-4 pr-4 text-left text-sm text-gray-900 hover:bg-gray-50 focus:outline-hidden focus-visible:ring focus-visible:ring-gray-500/75 sm:pr-6",
           open ? "bg-gray-50" : "border-b border-gray-300",
         )}
         onClick={isAccordion ? () => (open ? handleClose() : handleOpen()) : undefined}

@@ -1,12 +1,27 @@
 import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react"
-import { clsx } from "clsx"
+import { XMarkIcon } from "@heroicons/react/24/outline"
 import { Fragment } from "react"
+import { twMerge } from "tailwind-merge"
 
 type Props = {
   children?: React.ReactNode
   open: boolean
   handleClose: () => void
   className?: string
+}
+
+export const ModalCloseButton = ({ onClose }: { onClose: () => void }) => {
+  return (
+    <button
+      type="button"
+      onClick={onClose}
+      className="text-gray-400 hover:text-gray-500 focus:outline-hidden"
+      aria-label="Schließen"
+    >
+      <span className="sr-only">Schließen</span>
+      <XMarkIcon className="h-6 w-6" />
+    </button>
+  )
 }
 
 export const Modal = ({ children, open, handleClose, className }: Props) => {
@@ -22,7 +37,7 @@ export const Modal = ({ children, open, handleClose, className }: Props) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="bg-opacity-75 fixed inset-0 bg-gray-500 transition-opacity" />
+          <div className="fixed inset-0 bg-gray-500/75 transition-opacity" />
         </TransitionChild>
 
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
@@ -37,12 +52,12 @@ export const Modal = ({ children, open, handleClose, className }: Props) => {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <DialogPanel
-                className={clsx(
+                className={twMerge(
                   "relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6",
                   className,
                 )}
               >
-                <div className="mt-5 sm:mt-6">{children}</div>
+                {children}
               </DialogPanel>
             </TransitionChild>
           </div>

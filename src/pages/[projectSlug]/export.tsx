@@ -1,6 +1,6 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
-import { subsectionsBbox } from "@/src/core/components/Map/utils"
+import { subsectionsBbox } from "@/src/core/components/Map/utils/subsectionsBbox"
 import { Spinner } from "@/src/core/components/Spinner"
 import { whiteButtonStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
@@ -58,21 +58,26 @@ export const ExportWithQuery = () => {
         longTitle: longTitle(subs.slug),
         start: subs.start,
         end: subs.end,
-        startGeom: subs.geometry.at(0),
-        endGeom: subs.geometry.at(-1),
+        startGeom: subs.geometry.coordinates.at(0),
+        endGeom: subs.geometry.coordinates.at(-1),
         color: index % 2 === 0 ? "#0D1C31" : "#2C62A9",
       }
-      return lineString(subs.geometry, properties, { bbox: bbox(lineString(subs.geometry)) })
+      return lineString(subs.geometry.coordinates, properties, {
+        bbox: bbox(lineString(subs.geometry.coordinates)),
+      })
     }),
   )
-  const geoJsonLinestring = lineString(subsections.map((subs) => subs.geometry).flat())
+  const geoJsonLinestring = lineString(subsections.map((subs) => subs.geometry.coordinates).flat())
 
   // nearestPointOnLine() requires a LineString without duplicate coordinates - this is a bug reported here: https://github.com/Turfjs/turf/issues/2808#event-3187358882
   // when the fix is released we can remove cleanCoords()
   const cleanedGeoJsonLinestring = cleanCoords(geoJsonLinestring)
 
   const dotsGeoms = subsections
-    .map((subsection) => [subsection.geometry.at(0), subsection.geometry.at(-1)])
+    .map((subsection) => [
+      subsection.geometry.coordinates.at(0),
+      subsection.geometry.coordinates.at(-1),
+    ])
     .flat()
     .filter(Boolean)
 

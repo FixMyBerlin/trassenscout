@@ -1,21 +1,27 @@
 import { ProjectRecordTypePill } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTypePill"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
-import getProjectRecord from "@/src/server/projectRecord/queries/getProjectRecord"
-import getProjectRecords from "@/src/server/projectRecord/queries/getProjectRecords"
+import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
+import getProjectRecordAdmin from "@/src/server/projectRecords/queries/getProjectRecordAdmin"
+import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
 import { ProjectRecordReviewState, ProjectRecordType } from "@prisma/client"
+import { twJoin } from "tailwind-merge"
 
 export const CreateEditReviewHistory = ({
   projectRecord,
   className,
 }: {
   projectRecord:
+    | Awaited<ReturnType<typeof getProjectRecordAdmin>>
     | Awaited<ReturnType<typeof getProjectRecords>>[0]
     | Awaited<ReturnType<typeof getProjectRecord>>
   className?: string
 }) => {
   return (
     <div
-      className={`flex shrink-0 flex-col gap-1 rounded-lg border border-gray-300 p-2 ${className || ""}`}
+      className={twJoin(
+        "inline-flex shrink-0 flex-col gap-1 rounded-lg border border-gray-300 p-2 py-2.5",
+        className,
+      )}
     >
       <p className="text-xs">
         <span>Erstellt von </span>

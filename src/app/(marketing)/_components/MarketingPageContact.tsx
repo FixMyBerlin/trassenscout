@@ -11,7 +11,7 @@ export const MarketingPageContact = () => {
       <p className="mt-2 text-sm leading-6">
         <strong>FixMyCity GmbH</strong>
         <br />
-        <LinkMail>hello@trassenscout.de</LinkMail>
+        <LinkMail>trassenscout@fixmycity.de</LinkMail>
         <br />
         <LinkTel>+49-30 / 549 08 665</LinkTel>
       </p>

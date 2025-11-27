@@ -35,11 +35,13 @@ export default resolver.pipe(
       data: disconnect,
     })
 
+    const currentUserId = ctx.session.userId
+
     return await db.upload.update({
       where: { id },
       // copied from updateSubsubsection.ts
       // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
-      data: { ...data, ...connect },
+      data: { ...data, ...connect, updatedById: currentUserId },
       include: { subsection: { select: { id: true, slug: true, start: true, end: true } } },
     })
   },

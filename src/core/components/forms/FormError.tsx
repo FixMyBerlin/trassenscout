@@ -1,4 +1,4 @@
-import { isDev } from "@/src/core/utils"
+import { isDev } from "@/src/core/utils/isEnv"
 import { clsx } from "clsx"
 import { Fragment } from "react"
 import { FormattedMessage } from "react-intl"

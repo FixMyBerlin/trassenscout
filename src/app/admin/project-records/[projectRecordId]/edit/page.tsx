@@ -1,7 +1,7 @@
 import { AdminEditProjectRecordForm } from "@/src/app/admin/project-records/[projectRecordId]/edit/_components/AdminEditProjectRecordIdForm"
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import getProjectRecordAdmin from "@/src/server/projectRecord/queries/getProjectRecordAdmin"
+import getProjectRecordAdmin from "@/src/server/projectRecords/queries/getProjectRecordAdmin"
 import { Metadata } from "next"
 import "server-only"
 
@@ -20,10 +20,7 @@ export default async function AdminEditProjectRecordPage({
   return (
     <>
       <PageHeader title="Admin: Protokoll bearbeiten" className="mt-12" />
-      <AdminEditProjectRecordForm
-        initialProjectRecord={projectRecord}
-        projectRecordId={projectRecordId}
-      />
+      <AdminEditProjectRecordForm projectRecord={projectRecord} />
     </>
   )
 }

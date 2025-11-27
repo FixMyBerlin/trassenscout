@@ -13,7 +13,7 @@ export function SubsubsectionStatusForm<S extends z.ZodType<any, any>>(props: Fo
 
   return (
     <Form<S> {...formProps}>
-      <LabeledTextField type="text" name="slug" label="Kurz-Titel und URL-Teil" />
+      <LabeledTextField type="text" name="slug" label="Kürzel" />
       <LabeledTextField type="text" name="title" label="Titel" />
       <LabeledRadiobuttonGroup
         label="Darstellung"

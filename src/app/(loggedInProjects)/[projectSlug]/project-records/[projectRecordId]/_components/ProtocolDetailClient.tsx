@@ -5,7 +5,7 @@ import { ReprocessProjectRecordButton } from "@/src/app/(loggedInProjects)/[proj
 import { ReprocessProjectRecordEditForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReprocessProjectRecordEditForm"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
-import getProjectRecord from "@/src/server/projectRecord/queries/getProjectRecord"
+import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 
 import { useEffect, useState } from "react"
 
@@ -19,10 +19,9 @@ export type ReprocessedProjectRecord = {
 
 type Props = {
   projectRecord: Awaited<ReturnType<typeof getProjectRecord>>
-  projectRecordId: number
 }
 
-export const ProjectRecordDetailClient = ({ projectRecord, projectRecordId }: Props) => {
+export const ProjectRecordDetailClient = ({ projectRecord }: Props) => {
   const [aiSuggestions, setAiSuggestions] = useState<ReprocessedProjectRecord | null>(null)
 
   const handleAiSuggestions = (suggestions: ReprocessedProjectRecord) => {
@@ -71,7 +70,7 @@ export const ProjectRecordDetailClient = ({ projectRecord, projectRecordId }: Pr
           <SuperAdminBox>
             <IfUserCanEdit>
               <ReprocessProjectRecordButton
-                projectRecordId={projectRecordId}
+                projectRecordId={projectRecord.id}
                 onAiSuggestions={handleAiSuggestions}
               />
             </IfUserCanEdit>

@@ -1,18 +1,18 @@
 "use client"
 
 import { ReprocessedProjectRecord } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/_components/ProtocolDetailClient"
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
+import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
+import { Form, FORM_ERROR } from "@/src/core/components/forms"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
-import { m2mFields, M2MFieldsType } from "@/src/server/projectRecord/m2mFields"
-import updateProjectRecord from "@/src/server/projectRecord/mutations/updateProjectRecord"
-import getProjectRecord from "@/src/server/projectRecord/queries/getProjectRecord"
-import { ProjectRecordFormSchema } from "@/src/server/projectRecord/schemas"
+import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
+import updateProjectRecord from "@/src/server/projectRecords/mutations/updateProjectRecord"
+import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
+import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation } from "@blitzjs/rpc"
 import { SparklesIcon } from "@heroicons/react/20/solid"
 import { useRouter } from "next/navigation"
-import { ProjectRecordForm } from "./ProjectRecordForm"
 
 type Props = {
   projectRecord: Awaited<ReturnType<typeof getProjectRecord>>
@@ -91,15 +91,18 @@ export const ReprocessProjectRecordEditForm = ({
         </p>
       </div>
 
-      <ProjectRecordForm
+      <Form
         className="grow"
         submitText="Änderungen übernehmen"
         schema={ProjectRecordFormSchema}
         // @ts-expect-error some null<>undefined missmatch
         initialValues={initialValues}
         onSubmit={handleSubmit}
-        mode="edit"
-      />
+      >
+        <div className="space-y-6">
+          <ProjectRecordFormFields projectSlug={projectSlug} />
+        </div>
+      </Form>
     </div>
   )
 }
