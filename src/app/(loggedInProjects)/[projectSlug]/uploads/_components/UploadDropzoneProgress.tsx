@@ -1,6 +1,7 @@
 import { getFileIcon } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileIcon"
 import { getFileTypeLabel } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { SpinnerIcon } from "@/src/core/components/Spinner"
+import { errorMessageTranslations } from "@/src/core/components/forms/errorMessageTranslations"
 import type { FileUploadInfo, UploadHookControl, UploadStatus } from "@better-upload/client"
 import { formatBytes } from "@better-upload/client/helpers"
 import { ArrowUpTrayIcon, XMarkIcon } from "@heroicons/react/20/solid"
@@ -276,13 +277,16 @@ function FileUploadItem({ progress, translations, onDismiss }: FileUploadItemPro
   const fileTypeLabel = getFileTypeLabel(progress.type)
   const isComplete = progress.status === "complete"
   const isFailed = progress.status === "failed"
-  // Extract error message from progress if available
-  const errorMessage =
+  // Extract error message from progress if available and translate it
+  const rawErrorMessage =
     isFailed && "error" in progress && progress.error
       ? progress.error instanceof Error
         ? progress.error.message
         : String(progress.error)
       : null
+  const errorMessage = rawErrorMessage
+    ? errorMessageTranslations[rawErrorMessage] || rawErrorMessage
+    : null
 
   return (
     <div

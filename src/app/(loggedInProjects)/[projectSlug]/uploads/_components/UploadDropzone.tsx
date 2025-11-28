@@ -1,6 +1,7 @@
 "use client"
 
 import { getAcceptAttribute } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
+import { errorMessageTranslations } from "@/src/core/components/forms/errorMessageTranslations"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES } from "@/src/server/uploads/_utils/config"
 import { getS3Url } from "@/src/server/uploads/_utils/url"
@@ -32,17 +33,20 @@ export const UploadDropzone = ({
     route: "upload",
     api: `/api/${projectSlug}/upload`,
     onError: (error) => {
-      console.error("Upload error:", error)
       // Follow better-upload pattern: use error.message with fallback
       // See: https://github.com/Nic13Gamer/better-upload/blob/main/apps/docs/content/docs/guides/forms/react-hook-form.mdx
       // This handles pre-upload errors (e.g., "Too many files")
       // Per-file errors are shown in the FileUploadItem component
-      const errorMessage =
-        (error instanceof Error ? error.message : String(error)) || "Ein Fehler ist aufgetreten."
+      const errorString =
+        (error instanceof Error ? error.message : String(error)) ||
+        "Ein unbekannter Fehler ist aufgetreten."
+
+      // Translate error message using the same system as Prisma errors
+      const errorMessage = errorMessageTranslations[errorString] || errorString
       setUploadError(errorMessage)
     },
     onUploadFail: ({ succeededFiles, failedFiles }) => {
-      console.error("Upload failed:", { succeededFiles, failedFiles })
+      // Silent fail - errors are shown per-file in the UI
     },
     onUploadComplete: async ({ files }: { files: FileUploadInfo<"complete">[] }) => {
       const uploadIds: number[] = []

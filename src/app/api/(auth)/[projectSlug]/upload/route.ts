@@ -1,3 +1,4 @@
+import { isSupportedMimeType } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { withProjectMembership } from "@/src/app/api/(auth)/_utils/withProjectMembership"
 import { editorRoles } from "@/src/authorization/constants"
 import { getConfiguredS3Client } from "@/src/server/uploads/_utils/client"
@@ -18,6 +19,14 @@ function createRouter(projectSlug: string, userId: number) {
         maxFileSize: S3_MAX_FILE_SIZE_BYTES,
         maxFiles: S3_MAX_FILES,
         onBeforeUpload: async ({ req, files, clientMetadata }) => {
+          for (const file of files) {
+            if (!isSupportedMimeType(file.type)) {
+              throw new Error(
+                `Dateityp nicht erlaubt: ${file.type || "unbekannt"}. Erlaubt sind Bilder, PDF und Office-Dokumente.`,
+              )
+            }
+          }
+
           return {
             generateObjectInfo: ({ file }) => {
               const key = generateS3Key(projectSlug, file.name)
