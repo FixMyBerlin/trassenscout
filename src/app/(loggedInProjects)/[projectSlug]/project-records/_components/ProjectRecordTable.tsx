@@ -89,7 +89,13 @@ export const ProjectRecordsTable = ({
                                 ? format(new Date(projectRecord.date), "P", { locale: de })
                                 : "—"}
                             </div>
-                            <div className={clsx(spaceClasses, "font-semibold text-blue-500")}>
+                            <div
+                              className={clsx(
+                                spaceClasses,
+                                "min-w-0 max-w-xs truncate font-semibold text-blue-500",
+                              )}
+                              title={projectRecord.title}
+                            >
                               {projectRecord.title}
                             </div>
                             <div className={clsx("hidden @lg:block", spaceClasses)}>

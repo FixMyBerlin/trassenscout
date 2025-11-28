@@ -104,7 +104,7 @@ const UploadTableRow = ({
   return (
     <tr>
       <td className="py-4 pr-3 pl-4 text-sm sm:pl-6">
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           <UploadPreviewClickable
             uploadId={upload.id}
             projectSlug={projectSlug}
@@ -112,7 +112,12 @@ const UploadTableRow = ({
             editUrl={uploadEditRoute(projectSlug, upload.id)}
             onDeleted={onDelete}
           />
-          <span className="text-sm text-gray-900">{upload.title || "-"}</span>
+          <span
+            className="min-w-0 max-w-xs truncate text-sm text-gray-900"
+            title={upload.title || undefined}
+          >
+            {upload.title || "-"}
+          </span>
         </div>
         <div className="flex flex-col">
           {upload.summary && (
