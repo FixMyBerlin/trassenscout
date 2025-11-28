@@ -16,7 +16,7 @@ export default resolver.pipe(
   async ({
     projectSlug,
     where,
-    orderBy = { createdAt: "desc" },
+    orderBy = { id: "desc" },
     skip = 0,
     take = 100,
   }: GetUploadsInput) => {

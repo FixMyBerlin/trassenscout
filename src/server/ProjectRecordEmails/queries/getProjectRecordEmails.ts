@@ -18,6 +18,7 @@ export default resolver.pipe(resolver.authorize("ADMIN"), async () => {
         },
       },
       uploads: {
+        orderBy: { id: "desc" },
         select: {
           id: true,
           title: true,

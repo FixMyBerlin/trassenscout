@@ -28,6 +28,7 @@ export default resolver.pipe(
         latitude: { not: null },
         longitude: { not: null },
       },
+      orderBy: { id: "desc" },
       select: {
         id: true,
         mimeType: true,

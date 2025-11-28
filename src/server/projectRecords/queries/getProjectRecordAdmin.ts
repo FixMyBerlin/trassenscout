@@ -30,6 +30,7 @@ export default resolver.pipe(
           },
         },
         uploads: {
+          orderBy: { id: "desc" },
           select: {
             title: true,
             id: true,
