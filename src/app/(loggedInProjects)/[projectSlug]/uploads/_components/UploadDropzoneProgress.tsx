@@ -72,6 +72,20 @@ export function UploadDropzoneProgress({
   const selectedFilesCountRef = useRef<number>(0)
   const [dismissedFiles, setDismissedFiles] = useState<Set<string>>(new Set())
 
+  // Warn user when closing tab during upload (same logic as spinner)
+  useEffect(() => {
+    function beforeUnload(e: BeforeUnloadEvent) {
+      if (isPending || isProcessingFiles) {
+        e.preventDefault()
+        e.returnValue = ""
+      }
+    }
+    window.addEventListener("beforeunload", beforeUnload)
+    return () => {
+      window.removeEventListener("beforeunload", beforeUnload)
+    }
+  }, [isPending, isProcessingFiles])
+
   // Track when items complete
   useEffect(() => {
     progresses.forEach((progress) => {
