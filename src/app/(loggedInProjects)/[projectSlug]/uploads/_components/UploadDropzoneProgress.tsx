@@ -198,11 +198,13 @@ export function UploadDropzoneProgress({
                 description
               ) : (
                 <>
-                  {description?.maxFiles &&
-                    `${translations.youCanUpload} ${description.maxFiles} ${description.maxFiles !== 1 ? translations.files : translations.file}.`}{" "}
-                  {description?.maxFileSize &&
-                    `${description.maxFiles !== 1 ? translations.eachUpTo : translations.upTo} ${description.maxFileSize}.`}{" "}
-                  {description?.fileTypes && `${translations.accepted} ${description.fileTypes}.`}
+                  {description?.fileTypes && `${translations.accepted} ${description.fileTypes}`}
+                  {description?.maxFiles && (
+                    <>
+                      {description?.fileTypes ? ". " : ""}
+                      Max. {description.maxFiles} {description.maxFiles !== 1 ? translations.files : translations.file}.
+                    </>
+                  )}
                 </>
               )}
             </p>
