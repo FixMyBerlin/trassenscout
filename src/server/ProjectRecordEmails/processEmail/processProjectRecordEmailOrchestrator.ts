@@ -37,6 +37,7 @@ export const processProjectRecordEmailOrchestrator = async ({
         from,
         subject,
         date,
+        projectId: null,
       },
     })
 
