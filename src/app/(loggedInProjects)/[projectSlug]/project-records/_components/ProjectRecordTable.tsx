@@ -94,7 +94,7 @@ export const ProjectRecordsTable = ({
                             <div
                               className={clsx(
                                 spaceClasses,
-                                "min-w-0 max-w-xs truncate font-semibold text-blue-500",
+                                "max-w-xs min-w-0 truncate font-semibold text-blue-500",
                               )}
                               title={projectRecord.title}
                             >

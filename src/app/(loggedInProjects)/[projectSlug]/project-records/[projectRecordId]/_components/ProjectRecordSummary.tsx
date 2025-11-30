@@ -99,9 +99,7 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
       </div>
 
       <div>
-        <p className="mr-2 mb-3 text-gray-500">
-          Dokumente ({projectRecord.uploads?.length || 0})
-        </p>
+        <p className="mr-2 mb-3 text-gray-500">Dokumente ({projectRecord.uploads?.length || 0})</p>
         {projectRecord.uploads && projectRecord.uploads.length > 0 && (
           <div className="flex flex-wrap gap-3">
             {projectRecord.uploads.map((upload) => (

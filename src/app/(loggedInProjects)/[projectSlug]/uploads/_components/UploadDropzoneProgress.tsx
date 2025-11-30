@@ -202,7 +202,8 @@ export function UploadDropzoneProgress({
                   {description?.maxFiles && (
                     <>
                       {description?.fileTypes ? ". " : ""}
-                      Max. {description.maxFiles} {description.maxFiles !== 1 ? translations.files : translations.file}.
+                      Max. {description.maxFiles}{" "}
+                      {description.maxFiles !== 1 ? translations.files : translations.file}.
                     </>
                   )}
                 </>
