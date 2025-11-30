@@ -41,6 +41,7 @@ export default resolver.pipe(
           select: {
             id: true,
             createdAt: true,
+            subject: true,
           },
         },
         createdBy: {
