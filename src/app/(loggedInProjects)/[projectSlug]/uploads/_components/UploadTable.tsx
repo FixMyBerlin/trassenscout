@@ -5,7 +5,6 @@ import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlu
 import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
-import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
@@ -113,23 +112,11 @@ const UploadTableRow = ({
             onDeleted={onDelete}
           />
           <span
-            className="min-w-0 max-w-xs truncate text-sm text-gray-900"
+            className="max-w-xs min-w-0 truncate text-sm text-gray-900"
             title={upload.title || undefined}
           >
             {upload.title || "-"}
           </span>
-        </div>
-        <div className="flex flex-col">
-          {upload.summary && (
-            <details className="mt-2 mb-1">
-              <summary className="cursor-pointer text-xs text-gray-600 hover:text-gray-800">
-                Zusammenfassung
-              </summary>
-              <div className="mt-1 text-xs whitespace-normal text-gray-700">
-                <Markdown className="prose-sm" markdown={upload.summary} />
-              </div>
-            </details>
-          )}
         </div>
       </td>
       <td className="px-3 py-4 text-center text-sm">
