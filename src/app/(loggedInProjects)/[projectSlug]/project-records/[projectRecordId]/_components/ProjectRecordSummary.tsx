@@ -1,12 +1,14 @@
+import { ProjectRecordEmailSourceText } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/edit/_components/ProjectRecordEmailSource"
+import { createProjectRecordFilterUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/filter/createFilterUrl"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
-import { Link } from "@/src/core/components/links"
+import { Link, linkStyles } from "@/src/core/components/links"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { projectRecordUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import getProjectRecordAdmin from "@/src/server/projectRecords/queries/getProjectRecordAdmin"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
-import { createProjectRecordFilterUrl } from "./createFilterUrl"
+import { twJoin } from "tailwind-merge"
 
 type ProjectRecordSummaryProps = {
   projectRecord:
@@ -54,6 +56,24 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
             className="prose-p:text-base prose-ol:leading-tight prose-ul:list-disc prose-ul:leading-tight"
             markdown={projectRecord.body}
           />
+        </div>
+      )}
+
+      {projectRecord.projectRecordEmail && (
+        <div className="mb-6">
+          <details className="mb-3 w-full rounded-lg border border-gray-300 px-3 py-2">
+            <summary className={twJoin(linkStyles, "cursor-pointer")}>
+              Quellnachricht (unverarbeitet)
+            </summary>
+            <div className="mt-4">
+              <ProjectRecordEmailSourceText email={projectRecord.projectRecordEmail} />
+            </div>
+          </details>
+          <p className="font-normal text-gray-600">
+            Die „Quellnachricht“ zeigt die unveränderte E-Mail, bevor die KI sie zusammengefasst
+            hat. Nutzen Sie diese Ansicht gern zur Kontrolle, wenn Sie sich bei einzelnen
+            Formulierungen oder Inhalten unsicher sind.
+          </p>
         </div>
       )}
 

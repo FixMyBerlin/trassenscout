@@ -26,7 +26,7 @@ export const ProjectRecordTypePill = ({
     ) : (
       <span className="inline-flex items-center gap-1">
         <SparklesIcon className="h-3.5 w-3.5" />
-        System
+        KI-Assistent
       </span>
     )}
   </span>

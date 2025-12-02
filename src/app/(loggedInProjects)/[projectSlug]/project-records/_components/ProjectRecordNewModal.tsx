@@ -10,7 +10,7 @@ import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import createProjectRecord from "@/src/server/projectRecords/mutations/createProjectRecord"
-import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
+import { NewProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation } from "@blitzjs/rpc"
 
 type Props = {
@@ -68,7 +68,7 @@ export const ProjectRecordNewModal = ({
           resetOnSubmit
           onSubmit={handleSubmit}
           initialValues={formInitialValues}
-          schema={ProjectRecordFormSchema}
+          schema={NewProjectRecordFormSchema}
         >
           <div className="space-y-6">
             <ProjectRecordFormFields projectSlug={projectSlug} />

@@ -17,6 +17,7 @@ export default resolver.pipe(
       },
       orderBy: { date: "desc" },
       include: {
+        project: { select: { slug: true, aiEnabled: true } },
         projectRecordTopics: true,
         subsection: true,
         subsubsection: {

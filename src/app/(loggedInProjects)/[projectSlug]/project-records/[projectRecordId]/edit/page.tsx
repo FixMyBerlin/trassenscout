@@ -2,6 +2,7 @@ import { EditProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSlug
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
+import { ProjectRecordReviewState } from "@prisma/client"
 
 import { Metadata } from "next"
 import "server-only"
@@ -21,10 +22,14 @@ export default async function EditProjectRecordPage({
     id: projectRecordId,
   })
 
+  const needsReview = projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+  const pageTitle = needsReview
+    ? "Projektprotokoll bearbeiten und freigeben"
+    : "Projektprotokoll bearbeiten"
+
   return (
     <>
-      <PageHeader title="Projektprotokoll bearbeiten" className="mt-12" />
-
+      <PageHeader title={pageTitle} className="mt-12" />
       <EditProjectRecordForm projectRecord={projectRecord} projectSlug={params.projectSlug} />
     </>
   )

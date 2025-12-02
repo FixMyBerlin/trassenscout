@@ -115,12 +115,10 @@ export const AdminProjectRecordsTable = ({
                   <div
                     className={clsx(spaceClasses, "col-span-2 text-sm font-semibold text-blue-500")}
                   >
-                    <Link href={`/admin/project-records/${projectRecord.id}/review`}>
-                      {projectRecord.title}
-                    </Link>
+                    {projectRecord.title}
                   </div>
                   <div className={clsx(spaceClasses, "text-sm text-gray-900")}>
-                    <Link href={`/${projectRecord.project.slug}/project-records`}>
+                    <Link blank href={`/${projectRecord.project.slug}/project-records`}>
                       {shortTitle(projectRecord.project.slug)}
                     </Link>
                   </div>
@@ -128,7 +126,8 @@ export const AdminProjectRecordsTable = ({
                     <div className="flex flex-col gap-1">
                       <ProjectRecordReviewStatePill state={projectRecord.reviewState} />
                       <Link
-                        href={`/admin/project-records/${projectRecord.id}/review`}
+                        blank
+                        href={`/admin/project-records/${projectRecord.id}/edit`}
                         className="text-blue-500 hover:underline"
                       >
                         Review

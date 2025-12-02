@@ -1,6 +1,6 @@
 "use client"
 
-import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/useFilters.nuqs"
+import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/filter/useFilters.nuqs"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
@@ -11,16 +11,16 @@ import { shortTitle } from "@/src/core/components/text"
 import {
   projectRecordDetailRoute,
   projectRecordEditRoute,
-  projectRecordReviewRoute,
 } from "@/src/core/routes/projectRecordRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
+import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
 import { Disclosure, DisclosureButton, DisclosurePanel, Transition } from "@headlessui/react"
 import { ChevronDownIcon, SparklesIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
-import { ProjectRecordReviewBadge } from "./ProjectRecordReviewBadge"
+import { ProjectRecordReviewBadge } from "../[projectRecordId]/_components/ProjectRecordReviewBadge"
 import { ProjectRecordTopicsList } from "./ProjectRecordTopicsList"
 
 export const ProjectRecordsTable = ({
@@ -31,7 +31,9 @@ export const ProjectRecordsTable = ({
   withSubsubsection,
   openLinksInNewTab,
 }: {
-  projectRecords: Awaited<ReturnType<typeof getProjectRecords>>
+  projectRecords:
+    | Awaited<ReturnType<typeof getProjectRecords>>
+    | Awaited<ReturnType<typeof getProjectRecordsBySubsubsection>>
   highlightId?: number | null
   isTopicFilter?: boolean
   withSubsection?: boolean
@@ -111,7 +113,6 @@ export const ProjectRecordsTable = ({
                                 </div>
                                 <div className="flex shrink-0 items-center gap-2">
                                   <ProjectRecordReviewBadge
-                                    authorType={projectRecord.projectRecordAuthorType}
                                     reviewState={projectRecord.reviewState}
                                   />
                                 </div>
@@ -202,10 +203,7 @@ export const ProjectRecordsTable = ({
                                 />
                               </div>
                               <div className="flex shrink-0 items-center gap-2">
-                                <ProjectRecordReviewBadge
-                                  authorType={projectRecord.projectRecordAuthorType}
-                                  reviewState={projectRecord.reviewState}
-                                />
+                                <ProjectRecordReviewBadge reviewState={projectRecord.reviewState} />
                               </div>
                             </div>
                           </div>
@@ -215,7 +213,7 @@ export const ProjectRecordsTable = ({
                               {projectRecord.reviewState === "NEEDSREVIEW" && (
                                 <Link
                                   className="inline-flex items-center justify-center gap-1"
-                                  href={projectRecordReviewRoute(projectSlug, projectRecord.id)}
+                                  href={projectRecordEditRoute(projectSlug, projectRecord.id)}
                                   blank={openLinksInNewTab}
                                 >
                                   <SparklesIcon className="h-3.5 w-3.5" />

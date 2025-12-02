@@ -9,17 +9,15 @@ import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import { ProjectRecordSchema } from "@/src/server/projectRecords/schemas"
 import { resolver } from "@blitzjs/rpc"
-import { ProjectRecordType, UserRoleEnum } from "@prisma/client"
+import { ProjectRecordReviewState, ProjectRecordType, UserRoleEnum } from "@prisma/client"
 import { Ctx } from "blitz"
 import db from "db"
 import { z } from "zod"
 
 const UpdateProjectRecordSchema = ProjectSlugRequiredSchema.merge(
   ProjectRecordSchema.omit({
-    reviewState: true,
     reviewedAt: true,
     reviewedById: true,
-    reviewNotes: true,
     userId: true,
     projectRecordAuthorType: true,
     projectRecordUpdatedByType: true,
@@ -30,10 +28,31 @@ const UpdateProjectRecordSchema = ProjectSlugRequiredSchema.merge(
 export default resolver.pipe(
   resolver.zod(UpdateProjectRecordSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ id, projectSlug, ...data }, ctx: Ctx) => {
+  async ({ id, projectSlug, reviewState, ...data }, ctx: Ctx) => {
     const previous = await db.projectRecord.findFirst({ where: { id } })
     const currentUserId = ctx.session.userId
     const isAdmin = ctx.session.role === UserRoleEnum.ADMIN
+
+    let reviewedAt: Date | null | undefined = undefined
+    let reviewedById: number | null | undefined = undefined
+
+    // Set reviewedAt and reviewedById if the reviewState is changing to APPROVED or REJECTED
+    if (
+      (reviewState === ProjectRecordReviewState.APPROVED ||
+        reviewState === ProjectRecordReviewState.REJECTED) &&
+      previous?.reviewState !== reviewState
+    ) {
+      reviewedAt = new Date()
+      reviewedById = currentUserId
+    }
+    // Clear review metadata when returning to NEEDSREVIEW
+    else if (
+      reviewState === ProjectRecordReviewState.NEEDSREVIEW ||
+      reviewState === ProjectRecordReviewState.NEEDSADMINREVIEW
+    ) {
+      reviewedAt = null
+      reviewedById = null
+    }
 
     // copied from updateSubsubsection.ts
     const disconnect: Record<M2MFieldsType | string, { set: [] }> = {}
@@ -56,8 +75,10 @@ export default resolver.pipe(
       data: {
         ...data,
         ...connect,
-        updatedById: currentUserId,
-        // we only have USER type for now
+        updatedById: currentUserId, // always set updatedById on edit
+        reviewedAt,
+        reviewedById,
+        reviewState,
         projectRecordUpdatedByType: ProjectRecordType.USER,
       },
     })

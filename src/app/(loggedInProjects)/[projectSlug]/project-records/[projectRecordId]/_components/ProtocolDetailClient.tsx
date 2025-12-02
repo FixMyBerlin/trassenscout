@@ -1,8 +1,9 @@
 "use client"
 
-import { ProjectRecordSummary } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordSummary"
-import { ReprocessProjectRecordButton } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReprocessProjectRecordButton"
-import { ReprocessProjectRecordEditForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReprocessProjectRecordEditForm"
+import { CreateEditReviewHistory } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/_components/CreateEditReviewHistory"
+import { ProjectRecordSummary } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/_components/ProjectRecordSummary"
+import { ReprocessProjectRecordButton } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/_components/ReprocessProjectRecordButton"
+import { ReprocessProjectRecordEditForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/_components/ReprocessProjectRecordEditForm"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
@@ -77,6 +78,7 @@ export const ProjectRecordDetailClient = ({ projectRecord }: Props) => {
           </SuperAdminBox>
 
           <ProjectRecordSummary projectRecord={projectRecord} />
+          <CreateEditReviewHistory projectRecord={projectRecord} />
         </>
       )}
     </>

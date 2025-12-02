@@ -1,12 +1,14 @@
-import { AdminEditProjectRecordForm } from "@/src/app/admin/project-records/[projectRecordId]/edit/_components/AdminEditProjectRecordIdForm"
+import { EditProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/edit/_components/EditProjectRecordForm"
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import getProjectRecordAdmin from "@/src/server/projectRecords/queries/getProjectRecordAdmin"
+import { ProjectRecordReviewState } from "@prisma/client"
+
 import { Metadata } from "next"
 import "server-only"
 
 export const metadata: Metadata = {
-  title: "Admin: Protokoll bearbeiten",
+  title: "Projektprotokoll bearbeiten",
 }
 
 export default async function AdminEditProjectRecordPage({
@@ -15,12 +17,22 @@ export default async function AdminEditProjectRecordPage({
   params: { projectRecordId: string }
 }) {
   const projectRecordId = parseInt(params.projectRecordId)
-  const projectRecord = await invoke(getProjectRecordAdmin, { id: projectRecordId })
+  const projectRecord = await invoke(getProjectRecordAdmin, {
+    id: projectRecordId,
+  })
+
+  const needsReview = projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+  const pageTitle = needsReview
+    ? "Projektprotokoll bearbeiten und freigeben"
+    : "Projektprotokoll bearbeiten"
 
   return (
     <>
-      <PageHeader title="Admin: Protokoll bearbeiten" className="mt-12" />
-      <AdminEditProjectRecordForm projectRecord={projectRecord} />
+      <PageHeader title={pageTitle} className="mt-12" />
+      <EditProjectRecordForm
+        projectRecord={projectRecord}
+        projectSlug={projectRecord.project.slug}
+      />
     </>
   )
 }

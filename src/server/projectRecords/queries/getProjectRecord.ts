@@ -71,6 +71,15 @@ export default resolver.pipe(
             title: true,
           },
         },
+        projectRecordEmail: {
+          select: {
+            id: true,
+            textBody: true,
+            from: true,
+            date: true,
+            subject: true,
+          },
+        },
       },
     })
 
