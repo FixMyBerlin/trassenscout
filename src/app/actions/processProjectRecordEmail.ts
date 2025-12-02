@@ -138,8 +138,8 @@ export const processProjectRecordEmail = async ({
     data: {
       title: combinedResult.title,
       body: combinedResult.body,
-      // if date is null or invalid, use current date
-      date: combinedResult.date ? new Date(combinedResult.date) || new Date() : new Date(),
+      // if date is null or invalid, use parsed date or current date
+      date: combinedResult.date ? new Date(combinedResult.date) : date || new Date(),
       subsectionId: combinedResult.subsectionId,
       subsubsectionId: combinedResult.subsubsectionId,
       projectId: combinedResult.projectId,
