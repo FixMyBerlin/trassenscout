@@ -1,5 +1,5 @@
-import { Breadcrumb } from "@/src/app/admin/_components/Breadcrumb"
-import { HeaderWrapper } from "@/src/app/admin/_components/HeaderWrapper"
+import { Breadcrumb } from "@/src/app/(admin)/admin/_components/Breadcrumb"
+import { HeaderWrapper } from "@/src/app/(admin)/admin/_components/HeaderWrapper"
 import { Metadata } from "next"
 import "server-only"
 import { MultipleNewSubsectionsForm } from "./_components/MultipleNewSubsectionsForm"

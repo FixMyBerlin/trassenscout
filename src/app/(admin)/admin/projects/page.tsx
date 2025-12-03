@@ -1,5 +1,5 @@
-import { Breadcrumb } from "@/src/app/admin/_components/Breadcrumb"
-import { HeaderWrapper } from "@/src/app/admin/_components/HeaderWrapper"
+import { Breadcrumb } from "@/src/app/(admin)/admin/_components/Breadcrumb"
+import { HeaderWrapper } from "@/src/app/(admin)/admin/_components/HeaderWrapper"
 import { invoke } from "@/src/blitz-server"
 import { Link } from "@/src/core/components/links/Link"
 import getProjects from "@/src/server/projects/queries/getProjects"

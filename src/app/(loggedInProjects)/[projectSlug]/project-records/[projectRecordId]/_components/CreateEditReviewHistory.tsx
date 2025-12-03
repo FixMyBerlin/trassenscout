@@ -1,5 +1,5 @@
+import { ProjectRecordReviewStatePill } from "@/src/app/(admin)/admin/project-records/_components/AdminProjectRecordTable"
 import { ProjectRecordTypePill } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTypePill"
-import { ProjectRecordReviewStatePill } from "@/src/app/admin/project-records/_components/AdminProjectRecordTable"
 import { SuperAdminBox } from "@/src/core/components/AdminBox/SuperAdminBox"
 import { isAdmin } from "@/src/pagesComponents/users/utils/isAdmin"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"

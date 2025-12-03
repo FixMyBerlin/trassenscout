@@ -1,5 +1,5 @@
 "use client"
-import { MembershipForm } from "@/src/app/admin/memberships/new/_components/MembershipForm"
+import { MembershipForm } from "@/src/app/(admin)/admin/memberships/new/_components/MembershipForm"
 import { FORM_ERROR } from "@/src/core/components/forms"
 import createMembership from "@/src/server/memberships/mutations/createMembership"
 import { MembershipSchema } from "@/src/server/memberships/schema"

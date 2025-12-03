@@ -1,4 +1,4 @@
-import { AdminProjectRecordsTable } from "@/src/app/admin/project-records/_components/AdminProjectRecordTable"
+import { AdminProjectRecordsTable } from "@/src/app/(admin)/admin/project-records/_components/AdminProjectRecordTable"
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import getAllProjectRecordsAdmin from "@/src/server/projectRecords/queries/getAllProjectRecordsAdmin"
