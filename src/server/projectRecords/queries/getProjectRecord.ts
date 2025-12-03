@@ -85,6 +85,11 @@ export default resolver.pipe(
 
     if (!projectRecord) throw new NotFoundError()
 
+    // If the project has AI disabled, entries created by the system are excluded from the results.
+    if (!projectRecord.project?.aiEnabled && projectRecord.projectRecordAuthorType === "SYSTEM") {
+      throw new NotFoundError()
+    }
+
     return projectRecord
   },
 )
