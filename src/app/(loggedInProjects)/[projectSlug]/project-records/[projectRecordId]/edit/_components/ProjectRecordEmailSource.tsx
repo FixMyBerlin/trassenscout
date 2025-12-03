@@ -1,5 +1,3 @@
-import { SuperAdminBox } from "@/src/core/components/AdminBox"
-
 type ProjectRecordEmailSourceProps = {
   adminView?: boolean
   reviewView?: boolean
@@ -44,34 +42,13 @@ export const ProjectRecordEmailSourceText = ({
   )
 }
 
-const ProjectRecordEmailSourceComponent = ({
-  email,
-}: {
-  email: ProjectRecordEmailSourceProps["email"]
-}) => (
-  <div className="w-96 shrink-0">
-    <h4 className="mb-1 text-sm font-medium">Quellnachricht (unverarbeitet)</h4>
-    <div className="space-y-2 rounded-md border border-gray-200 bg-gray-50 p-4">
-      <ProjectRecordEmailSourceText email={email} />
-    </div>
-  </div>
-)
-
-export const ProjectRecordEmailSource = ({
-  email,
-  adminView,
-  reviewView,
-}: ProjectRecordEmailSourceProps) => {
-  if (!adminView && !reviewView) return
-
-  if (reviewView) {
-    return <ProjectRecordEmailSourceComponent email={email} />
-  }
-
-  // Admins always see the email source
+export const ProjectRecordEmailSource = ({ email }: ProjectRecordEmailSourceProps) => {
   return (
-    <SuperAdminBox>
-      <ProjectRecordEmailSourceComponent email={email} />
-    </SuperAdminBox>
+    <div className="w-96 shrink-0">
+      <h4 className="mb-1 text-sm font-medium">Quellnachricht (unverarbeitet)</h4>
+      <div className="space-y-2 rounded-md border border-gray-200 bg-gray-50 p-4">
+        <ProjectRecordEmailSourceText email={email} />
+      </div>
+    </div>
   )
 }

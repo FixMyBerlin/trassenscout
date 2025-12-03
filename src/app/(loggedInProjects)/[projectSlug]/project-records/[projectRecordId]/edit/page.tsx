@@ -30,7 +30,7 @@ export default async function EditProjectRecordPage({
   return (
     <>
       <PageHeader title={pageTitle} className="mt-12" />
-      <EditProjectRecordForm projectRecord={projectRecord} projectSlug={params.projectSlug} />
+      <EditProjectRecordForm projectRecord={projectRecord} />
     </>
   )
 }

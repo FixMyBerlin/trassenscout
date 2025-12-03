@@ -126,7 +126,6 @@ export const AdminProjectRecordsTable = ({
                     <div className="flex flex-col gap-1">
                       <ProjectRecordReviewStatePill state={projectRecord.reviewState} />
                       <Link
-                        blank
                         href={`/admin/project-records/${projectRecord.id}/edit`}
                         className="text-blue-500 hover:underline"
                       >

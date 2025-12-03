@@ -1,43 +1,28 @@
 "use client"
 
 import { CreateEditReviewHistory } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/_components/CreateEditReviewHistory"
+import { NeedsReviewBanner } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/edit/_components/EditProjectRecordForm"
 import { ReviewProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/edit/_components/ReviewProtocolForm"
 import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
-import { SuperAdminBox } from "@/src/core/components/AdminBox"
-import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Form, FORM_ERROR } from "@/src/core/components/forms"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link, linkStyles } from "@/src/core/components/links"
-import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import deleteProjectRecord from "@/src/server/projectRecords/mutations/deleteProjectRecord"
 import updateProjectRecord from "@/src/server/projectRecords/mutations/updateProjectRecord"
-import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
+import getProjectRecordAdmin from "@/src/server/projectRecords/queries/getProjectRecordAdmin"
 import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation } from "@blitzjs/rpc"
-import { SparklesIcon } from "@heroicons/react/20/solid"
 import { ProjectRecordReviewState } from "@prisma/client"
 import clsx from "clsx"
 import { useRouter } from "next/navigation"
 import { z } from "zod"
 
-export const NeedsReviewBanner = () => (
-  <div className="mb-6 inline-flex flex-col space-y-2 rounded-md border border-gray-200 bg-yellow-100 p-4 text-gray-700">
-    <div className="flex items-center gap-2">
-      <SparklesIcon className="size-5" />
-      <h3 className="font-semibold">Protokoll-Freigabe erforderlich</h3>
-    </div>
-    <p className="text-sm">
-      Dieses Protokoll wurde per KI-Assistent erstellt und muss noch freigegeben werden.
-    </p>
-  </div>
-)
-
-export const EditProjectRecordForm = ({
+export const AdminEditProjectRecordForm = ({
   projectRecord,
 }: {
-  projectRecord: Awaited<ReturnType<typeof getProjectRecord>>
+  projectRecord: Awaited<ReturnType<typeof getProjectRecordAdmin>>
 }) => {
   const router = useRouter()
   const needsReview = projectRecord.reviewState !== ProjectRecordReviewState.APPROVED
@@ -53,7 +38,7 @@ export const EditProjectRecordForm = ({
           id: projectRecord.id,
           projectSlug,
         })
-        router.push(`/${projectSlug}/project-records`)
+        router.push("/admin/project-records")
       } catch (error) {
         alert(
           "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
@@ -75,11 +60,7 @@ export const EditProjectRecordForm = ({
         uploads: values.uploads === true ? false : values.uploads,
         projectRecordEmailId: projectRecord.projectRecordEmailId,
       })
-      if (values.reviewState === ProjectRecordReviewState.REJECTED)
-        router.push(`/${projectSlug}/project-records`)
-      else {
-        router.push(projectRecordDetailRoute(projectSlug, projectRecord.id))
-      }
+      router.push(`/admin/project-records`)
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
@@ -97,20 +78,16 @@ export const EditProjectRecordForm = ({
 
   return (
     <>
-      {needsReview && <NeedsReviewBanner />}
-      {projectRecord.projectRecordAuthorType === "SYSTEM" && (
-        <SuperAdminBox className="mb-6">
-          In die{" "}
-          <Link
-            blank
-            href={`/admin/project-records/${projectRecord.id}/edit`}
-            className="text-blue-500 hover:underline"
-          >
-            Admin-Ansicht
-          </Link>{" "}
-          wechseln, um Freigabe-Status zu ändern und Quellnachricht zu sehen.
-        </SuperAdminBox>
+      {!projectRecord.project.aiEnabled && projectRecord.projectRecordAuthorType === "SYSTEM" && (
+        <div className="mb-6 inline-flex flex-col space-y-2 rounded-md border border-gray-200 bg-red-200 p-4 text-gray-700">
+          <p className="text-sm">
+            In diesem Projekt ist die KI-Unterstützung deaktiviert. Damit Protokolle für
+            Projektmitglieder sichtbar werden, müssen KI Features aktiviert werden.
+          </p>
+        </div>
       )}
+      {needsReview && <NeedsReviewBanner />}
+
       <Form
         submitText="Änderungen speichern"
         schema={ProjectRecordFormSchema}
@@ -122,20 +99,23 @@ export const EditProjectRecordForm = ({
         }}
         onSubmit={handleSubmit}
       >
+        <p>
+          Projekt: <span className="font-medium uppercase">{projectSlug}</span>
+        </p>
         <div className="space-y-6">
           <ProjectRecordFormFields
             projectSlug={projectSlug}
-            splitView={needsReview}
+            splitView={true}
             emailSource={projectRecord.projectRecordEmail}
           />
         </div>
-        {needsReview && <ReviewProjectRecordForm />}
+        <ReviewProjectRecordForm admin />
       </Form>
 
       <CreateEditReviewHistory projectRecord={projectRecord} />
 
       <p className="mt-10">
-        <Link href={`/${projectSlug}/project-records`}>← Zurück zur Protokoll-Übersicht</Link>
+        <Link href="/admin/project-records">← Zurück zur Protokoll-Übersicht</Link>
       </p>
 
       <hr className="my-5 text-gray-200" />
@@ -143,8 +123,6 @@ export const EditProjectRecordForm = ({
       <button type="button" onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
         Löschen
       </button>
-
-      <SuperAdminLogData data={{ initialValues: projectRecord }} />
     </>
   )
 }

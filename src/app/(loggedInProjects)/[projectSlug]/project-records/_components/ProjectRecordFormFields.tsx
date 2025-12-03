@@ -25,8 +25,7 @@ import { useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 type ProjectRecordFormFieldsProps = {
-  adminView?: boolean
-  reviewView?: boolean
+  splitView?: boolean
   projectSlug: string
   emailSource?: {
     from: string | null
@@ -39,8 +38,7 @@ type ProjectRecordFormFieldsProps = {
 export const ProjectRecordFormFields = ({
   projectSlug,
   emailSource,
-  reviewView,
-  adminView,
+  splitView,
 }: ProjectRecordFormFieldsProps) => {
   const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
@@ -54,8 +52,6 @@ export const ProjectRecordFormFields = ({
   const subsectionId = watch("subsectionId")
   const uploadsValue = watch("uploads")
   const uploadIds = NumberArraySchema.parse(uploadsValue)
-
-  const isSplitLayout = Boolean(emailSource) && (reviewView || adminView)
 
   const [{ uploads: selectedUploads = [] } = { uploads: [] }] = useQuery(
     getUploadsWithSubsections,
@@ -121,8 +117,8 @@ export const ProjectRecordFormFields = ({
 
   return (
     <>
-      <div className={isSplitLayout ? "flex gap-6" : ""}>
-        <div className={isSplitLayout ? "flex-1 space-y-6" : "space-y-6"}>
+      <div className={splitView ? "flex gap-6" : ""}>
+        <div className={splitView ? "flex-1 space-y-6" : "space-y-6"}>
           <div className="flex gap-4">
             <div className="w-48">
               <LabeledTextField type="date" name="date" label="am/bis" placeholder="" />
@@ -181,13 +177,7 @@ export const ProjectRecordFormFields = ({
           </div>
         </div>
 
-        {emailSource && (
-          <ProjectRecordEmailSource
-            reviewView={reviewView}
-            adminView={adminView}
-            email={emailSource}
-          />
-        )}
+        {emailSource && splitView && <ProjectRecordEmailSource email={emailSource} />}
       </div>
 
       <div className="flex flex-col gap-2">

@@ -1,4 +1,4 @@
-import { EditProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/edit/_components/EditProjectRecordForm"
+import { AdminEditProjectRecordForm } from "@/src/app/(admin)/admin/project-records/[projectRecordId]/edit/_components/AdminEditProjectRecordForm"
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import getProjectRecordAdmin from "@/src/server/projectRecords/queries/getProjectRecordAdmin"
@@ -29,10 +29,7 @@ export default async function AdminEditProjectRecordPage({
   return (
     <>
       <PageHeader title={pageTitle} className="mt-12" />
-      <EditProjectRecordForm
-        projectRecord={projectRecord}
-        projectSlug={projectRecord.project.slug}
-      />
+      <AdminEditProjectRecordForm projectRecord={projectRecord} />
     </>
   )
 }
