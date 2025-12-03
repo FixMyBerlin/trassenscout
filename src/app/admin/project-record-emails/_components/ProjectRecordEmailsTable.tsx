@@ -148,7 +148,7 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
                   <ul className="space-y-1">
                     {email.projectRecords.map((projectRecord: any) => (
                       <li key={projectRecord.id}>
-                        <Link href={`/admin/project-records/${projectRecord.id}/review`}>
+                        <Link href={`/admin/project-records/${projectRecord.id}/edit`}>
                           {projectRecord.id}
                         </Link>
                       </li>
