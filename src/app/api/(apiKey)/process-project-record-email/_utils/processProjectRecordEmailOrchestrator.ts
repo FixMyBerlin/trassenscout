@@ -1,15 +1,14 @@
+import { checkProjectAiEnabled } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/checkProjectAiEnabled"
+import { isAdminOrProjectMember } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/checkSenderApproval"
+import { uploadEmailAttachments } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/uploadEmailAttachments"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import db, { ProjectRecordReviewState, ProjectRecordType } from "db"
-
-import { checkProjectAiEnabled } from "@/src/server/ProjectRecordEmails/processEmail/checkProjectAiEnabled"
-import { isAdminOrProjectMember } from "@/src/server/ProjectRecordEmails/processEmail/checkSenderApproval"
 import { extractWithAI } from "./extractWithAI"
 import { fetchProjectContext } from "./fetchProjectContext"
 import { langfuse } from "./langfuseClient"
 import { notifyAdminsProjectRecordEmailWithoutProject } from "./notifyAdminsProjectRecordEmailWithoutProject"
 import { notifyAdminsProjectRecordNeedsReview } from "./notifyAdminsProjectRecordNeedsReview"
 import { parseEmail } from "./parseEmail"
-import { uploadEmailAttachments } from "./uploadEmailAttachments"
 
 export const processProjectRecordEmailOrchestrator = async ({
   projectSlug,

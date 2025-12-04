@@ -1,4 +1,4 @@
-import { uploadEmailAttachment } from "@/src/server/ProjectRecordEmails/processEmail/uploadEmailAttachment"
+import { uploadEmailAttachment } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/uploadEmailAttachment"
 import db from "db"
 
 type ProcessEmailAttachmentsParams = {

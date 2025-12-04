@@ -1,10 +1,10 @@
-import { gpt5Mini } from "@/src/core/ai/models"
-import { createFieldInstructions } from "@/src/server/ProjectRecordEmails/sharedProjectRecordPrompt"
+import { langfuse } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_actions/summarizeUpload/langfuseClient"
+import { createFieldInstructions } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/sharedProjectRecordPrompt"
 import {
   createProjectRecordExtractionSchema,
   CreateProjectRecordExtractionSchemaParams,
-} from "@/src/server/ProjectRecordEmails/sharedProjectRecordSchema"
-import { langfuse } from "@/src/server/uploads/summarize/langfuseClient"
+} from "@/src/app/api/(apiKey)/process-project-record-email/_utils/sharedProjectRecordSchema"
+import { gpt5Mini } from "@/src/core/ai/models"
 import { Upload } from "@prisma/client"
 import { generateObject } from "ai"
 

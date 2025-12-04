@@ -1,15 +1,15 @@
 "use server"
 
 import { authorizeAdmin } from "@/src/app/(admin)/_utils/authorizeAdmin"
+import { checkProjectAiEnabled } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/checkProjectAiEnabled"
+import { isAdminOrProjectMember } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/checkSenderApproval"
+import { extractWithAI } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/extractWithAI"
+import { fetchProjectContext } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/fetchProjectContext"
+import { langfuse } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/langfuseClient"
+import { parseEmail } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/parseEmail"
+import { uploadEmailAttachments } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/uploadEmailAttachments"
 import { getBlitzContext } from "@/src/blitz-server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
-import { checkProjectAiEnabled } from "@/src/server/ProjectRecordEmails/processEmail/checkProjectAiEnabled"
-import { isAdminOrProjectMember } from "@/src/server/ProjectRecordEmails/processEmail/checkSenderApproval"
-import { extractWithAI } from "@/src/server/ProjectRecordEmails/processEmail/extractWithAI"
-import { fetchProjectContext } from "@/src/server/ProjectRecordEmails/processEmail/fetchProjectContext"
-import { langfuse } from "@/src/server/ProjectRecordEmails/processEmail/langfuseClient"
-import { parseEmail } from "@/src/server/ProjectRecordEmails/processEmail/parseEmail"
-import { uploadEmailAttachments } from "@/src/server/ProjectRecordEmails/processEmail/uploadEmailAttachments"
 import db, { ProjectRecordReviewState, ProjectRecordType } from "db"
 
 export const processProjectRecordEmail = async ({

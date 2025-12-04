@@ -1,5 +1,5 @@
+import { parseEmail } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/parseEmail"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
-import { parseEmail } from "@/src/server/ProjectRecordEmails/processEmail/parseEmail"
 import { ProjectRecordEmailSchema } from "@/src/server/ProjectRecordEmails/schema"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"

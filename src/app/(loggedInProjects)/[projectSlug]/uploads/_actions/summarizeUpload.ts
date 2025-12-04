@@ -1,14 +1,15 @@
 "use server"
 
 import db from "@/db"
+import { fetchPdfFromS3 } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_actions/summarizeUpload/fetchPdfFromS3"
+import { generatePdfSummaryWithAI } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_actions/summarizeUpload/generatePdfSummaryWithAI"
+import { validatePdfFile } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_actions/summarizeUpload/validatePdfFile"
 import { authorizeProjectMember } from "@/src/app/(loggedInProjects)/_utils/authorizeProjectMember"
+import { checkProjectAiEnabled } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/checkProjectAiEnabled"
+import { fetchProjectContext } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/fetchProjectContext"
 import { editorRoles } from "@/src/authorization/constants"
 import { getBlitzContext } from "@/src/blitz-server"
-import { checkProjectAiEnabled } from "@/src/server/ProjectRecordEmails/processEmail/checkProjectAiEnabled"
-import { fetchProjectContext } from "@/src/server/ProjectRecordEmails/processEmail/fetchProjectContext"
-import { fetchPdfFromS3 } from "@/src/server/uploads/summarize/fetchPdfFromS3"
-import { generatePdfSummaryWithAI } from "@/src/server/uploads/summarize/generatePdfSummaryWithAI"
-import { validatePdfFile } from "@/src/server/uploads/summarize/validatePdfFile"
+
 import { S3ServiceException } from "@aws-sdk/client-s3"
 
 // if we use ai streaming in future, we need to handle this as an api route (not a server function)

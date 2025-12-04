@@ -1,7 +1,7 @@
 "use client"
 
 import { ReprocessedProjectRecord } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/_components/ProtocolDetailClient"
-import { reprocessProjectRecord } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_actions/reprocessProjectRecord"
+import { reprocessProjectRecord } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_actions/reprocessProjectRecord/reprocessProjectRecord"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { SparklesIcon } from "@heroicons/react/20/solid"

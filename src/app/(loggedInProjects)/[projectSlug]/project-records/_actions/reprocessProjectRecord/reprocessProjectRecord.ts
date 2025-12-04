@@ -1,11 +1,12 @@
 "use server"
 
+import { generateProjectRecordWithAI } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_actions/reprocessProjectRecord/generateProjectRecordWithAI"
 import { authorizeProjectMember } from "@/src/app/(loggedInProjects)/_utils/authorizeProjectMember"
+import { extractEmailData } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/extractEmailData"
+import { fetchProjectContext } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/fetchProjectContext"
 import { editorRoles } from "@/src/authorization/constants"
 import { getBlitzContext } from "@/src/blitz-server"
-import { extractEmailData } from "@/src/server/ProjectRecordEmails/processEmail/extractEmailData"
-import { fetchProjectContext } from "@/src/server/ProjectRecordEmails/processEmail/fetchProjectContext"
-import { generateProjectRecordWithAI } from "@/src/server/projectRecords/reprocess/generateProjectRecordWithAI"
+
 import db from "db"
 
 // tbd: do we want to overwrite relations (subsections, subsubsections, uploads, tags) or only recreate the body?

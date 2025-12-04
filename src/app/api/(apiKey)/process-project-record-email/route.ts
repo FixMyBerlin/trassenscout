@@ -1,5 +1,6 @@
 import { withApiKey } from "@/src/app/api/(apiKey)/_utils/withApiKey"
-import { processProjectRecordEmailOrchestrator } from "@/src/server/ProjectRecordEmails/processEmail/processProjectRecordEmailOrchestrator"
+import { processProjectRecordEmailOrchestrator } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/processProjectRecordEmailOrchestrator"
+
 import { z } from "zod"
 
 const ProcessProjectRecordEmailSchema = z.object({

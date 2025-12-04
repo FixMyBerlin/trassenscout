@@ -1,9 +1,9 @@
-import { gpt5Mini } from "@/src/core/ai/models"
-import { createFieldInstructions } from "@/src/server/ProjectRecordEmails/sharedProjectRecordPrompt"
+import { createFieldInstructions } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/sharedProjectRecordPrompt"
 import {
   createProjectRecordExtractionSchema,
   CreateProjectRecordExtractionSchemaParams,
-} from "@/src/server/ProjectRecordEmails/sharedProjectRecordSchema"
+} from "@/src/app/api/(apiKey)/process-project-record-email/_utils/sharedProjectRecordSchema"
+import { gpt5Mini } from "@/src/core/ai/models"
 import { generateObject, NoObjectGeneratedError } from "ai"
 import { langfuse } from "./langfuseClient"
 
