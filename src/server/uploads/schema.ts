@@ -19,11 +19,8 @@ export const UploadSchema = z.object({
   mimeType: z.string().nullable().optional(),
   latitude: z.number().nullable().optional(),
   longitude: z.number().nullable().optional(),
-  collaborationUrl: z
-    .union([z.string(), z.null(), z.undefined()])
-    .transform((val) => (val === "" ? null : val))
-    .pipe(z.union([z.string().url(), z.null()]))
-    .nullish(),
+  collaborationUrl: z.string().url().nullable().optional(),
+  collaborationPath: z.string().nullable().optional(),
   // m2mFields
   projectRecords: z.union([z.literal(false), z.array(z.coerce.number())]).optional(),
 })

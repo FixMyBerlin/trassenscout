@@ -18,6 +18,7 @@ const seedUploads = async () => {
       latitude: null,
       longitude: null,
       collaborationUrl: "https://fixmycity.de/",
+      collaborationPath: null,
     },
     {
       title: "AWS S3 Image",
@@ -32,6 +33,7 @@ const seedUploads = async () => {
       latitude: null,
       longitude: null,
       collaborationUrl: null,
+      collaborationPath: null,
     },
     {
       title: "Trassenplanung Projekt 1",
@@ -46,6 +48,7 @@ const seedUploads = async () => {
       latitude: 52.52039883952099,
       longitude: 13.317392954811083,
       collaborationUrl: null,
+      collaborationPath: null,
     },
     {
       title: "FAQ Baulastträger 1",
@@ -60,6 +63,7 @@ const seedUploads = async () => {
       latitude: 52.52243126246529,
       longitude: 13.392787102151175,
       collaborationUrl: null,
+      collaborationPath: null,
     },
     {
       title: "FAQ Baulastträger 2",
@@ -74,6 +78,7 @@ const seedUploads = async () => {
       latitude: 52.52204414153442,
       longitude: 13.387538142526438,
       collaborationUrl: null,
+      collaborationPath: null,
     },
     {
       title: "Protokoll Gesamttreffen Projekt 2",
@@ -88,6 +93,7 @@ const seedUploads = async () => {
       latitude: null,
       longitude: null,
       collaborationUrl: null,
+      collaborationPath: null,
     },
     {
       title: "Protokoll ADFC",
@@ -102,6 +108,7 @@ const seedUploads = async () => {
       latitude: null,
       longitude: null,
       collaborationUrl: null,
+      collaborationPath: null,
     },
     {
       title: "Planungsdokument",
@@ -116,6 +123,7 @@ const seedUploads = async () => {
       latitude: 52.51831791403984,
       longitude: 13.360259458454504,
       collaborationUrl: null,
+      collaborationPath: null,
     },
     {
       title: "Super langer Text in der Beschreibung sehr lang",
@@ -130,6 +138,7 @@ const seedUploads = async () => {
       latitude: 52.51831791403984,
       longitude: 13.360259458454504,
       collaborationUrl: null,
+      collaborationPath: null,
     },
     {
       title: "Kurz",
@@ -144,6 +153,7 @@ const seedUploads = async () => {
       latitude: null,
       longitude: null,
       collaborationUrl: null,
+      collaborationPath: null,
     },
   ]
 

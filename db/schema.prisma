@@ -549,6 +549,7 @@ model Upload {
   title                String
   externalUrl          String
   collaborationUrl     String?
+  collaborationPath    String?
   summary              String?
   mimeType             String?
   latitude             Float?
