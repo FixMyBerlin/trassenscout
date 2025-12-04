@@ -66,11 +66,13 @@ const UploadSubsectionFields = ({
         name="subsectionId"
         label="Zuordnung zum Planungsabschnitt"
         options={subsectionOptions}
+        optional
       />
       <LabeledSelect
         name="subsubsectionId"
         label="Zuordnung zum Eintrag"
         options={subsubsectionOptions}
+        optional
       />
     </div>
   )
@@ -165,6 +167,11 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
             <label className="mb-1 block text-sm font-medium text-gray-700">
               Standort (optional)
             </label>
+            <p className="mb-2 text-sm text-gray-500">
+              Dokumente und Bilder lassen sich unabhängig von Planungsabschnitten oder Einträgen auf
+              der Karte verorten. <br />
+              Sobald ein Standort gesetzt ist, erscheint das Dokument auf der Karte.
+            </p>
             <UploadLocationMap />
           </div>
         </Form>
