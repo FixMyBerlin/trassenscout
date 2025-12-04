@@ -36,6 +36,7 @@ const EditSubsubsectionsInfraWithQuery = () => {
     try {
       const updated = await updateSubsubsectionInfraMutation({
         id: subsubsectionInfra.id,
+        projectSlug,
         ...values,
       })
       await setQueryData(updated)

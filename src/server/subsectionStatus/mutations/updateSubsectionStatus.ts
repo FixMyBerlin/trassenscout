@@ -5,14 +5,10 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
-import getProjectIdBySlug from "@/src/server/projects/queries/getProjectIdBySlug"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import { SubsectionStatus } from "../schema"
 
-const UpdateSubsectionStatusSchema = ProjectSlugRequiredSchema.merge(
-  SubsectionStatus.omit({ projectId: true }).merge(z.object({ id: z.number() })),
-)
+const UpdateSubsectionStatusSchema = ProjectSlugRequiredSchema.merge(z.object({ id: z.number() }))
 
 export default resolver.pipe(
   resolver.zod(UpdateSubsectionStatusSchema),
@@ -20,6 +16,6 @@ export default resolver.pipe(
   async ({ id, projectSlug, ...data }) =>
     await db.subsectionStatus.update({
       where: { id },
-      data: { ...data, projectId: await getProjectIdBySlug(projectSlug) },
+      data,
     }),
 )
