@@ -8,11 +8,11 @@ import {
   LabeledTextField,
 } from "@/src/core/components/forms"
 import { LabeledTextFieldCalculateLength } from "@/src/core/components/forms/LabeledTextFieldCalculateLength"
-import { shortTitle } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { LabeledRadiobuttonGroupLabelPos } from "@/src/pagesComponents/subsubsections/LabeledRadiobuttonGroupLabelPos"
 import { subsubsectionFieldTranslations } from "@/src/pagesComponents/subsubsections/subsubsectionFieldMappings"
 import { getUserSelectOptions } from "@/src/pagesComponents/users/utils/getUserSelectOptions"
+import { createFormOptions } from "@/src/pagesComponents/utils/createFormOptions"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getQualityLevelsWithCount from "@/src/server/qualityLevels/queries/getQualityLevelsWithCount"
 import getSubsubsectionInfrasWithCount from "@/src/server/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
@@ -30,50 +30,41 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
   const [users] = useQuery(getProjectUsers, { projectSlug, role: "EDITOR" })
 
   const [{ qualityLevels }] = useQuery(getQualityLevelsWithCount, { projectSlug })
-  const qualityLevelOptions: [number | string, string][] = [
-    ["", "Ausbaustandard offen"],
-    ...qualityLevels.map((ql) => {
-      return [ql.id, `${ql.title} – ${shortTitle(ql.slug)}`] as [number, string]
-    }),
-  ]
+  const qualityLevelOptions = createFormOptions(
+    qualityLevels,
+    subsubsectionFieldTranslations.qualityLevelId,
+    { optional: true, slugInLabel: true },
+  )
+
   const [{ subsubsectionStatuss }] = useQuery(getSubsubsectionStatussWithCount, { projectSlug })
-  const subsubsectionStatusOptions: [number | string, string][] = [
-    ["", "Status offen"],
-    ...subsubsectionStatuss.map((status) => {
-      return [status.id, status.title] as [number, string]
-    }),
-  ]
+  const subsubsectionStatusOptions = createFormOptions(
+    subsubsectionStatuss,
+    subsubsectionFieldTranslations.subsubsectionStatusId,
+    { optional: true, slugInLabel: false },
+  )
+
   const [{ subsubsectionTasks }] = useQuery(getSubsubsectionTasksWithCount, { projectSlug })
-  const subsubsectionTaskOptions: [number | string, string][] = [
-    ["", "-"],
-    ...subsubsectionTasks.map((task) => {
-      return [task.id, task.title] as [number, string]
-    }),
-  ]
+  const subsubsectionTaskOptions = createFormOptions(
+    subsubsectionTasks,
+    subsubsectionFieldTranslations.subsubsectionTaskId,
+  )
+
   const [{ subsubsectionInfras }] = useQuery(getSubsubsectionInfrasWithCount, { projectSlug })
-  const subsubsectionInfraOptions: [number | string, string][] = [
-    ["", "-"],
-    ...subsubsectionInfras.map((infra) => {
-      return [infra.id, infra.title] as [number, string]
-    }),
-  ]
+  const subsubsectionInfraOptions = createFormOptions(
+    subsubsectionInfras,
+    subsubsectionFieldTranslations.subsubsectionInfraId,
+    { optional: true, slugInLabel: true },
+  )
+
   const [{ subsubsectionInfrastructureTypes }] = useQuery(
     getSubsubsectionInfrastructureTypesWithCount,
     { projectSlug },
   )
-  const subsubsectionInfrastructureTypeOptions: [number | string, string][] = [
-    ["", "-"],
-    ...subsubsectionInfrastructureTypes.map((type) => {
-      return [type.id, type.title] as [number, string]
-    }),
-  ]
-  // const [{ subsubsectionSpecials }] = useQuery(getSubsubsectionSpecialsWithCount, { projectSlug })
-  // const subsubsectionSpecialOptions = subsubsectionSpecials.map((special) => {
-  //   return {
-  //     value: String(special.id),
-  //     label: special.title,
-  //   }
-  // }) satisfies Omit<LabeledCheckboxProps, "scope">[]
+  const subsubsectionInfrastructureTypeOptions = createFormOptions(
+    subsubsectionInfrastructureTypes,
+    subsubsectionFieldTranslations.subsubsectionInfrastructureTypeId,
+    { optional: true, slugInLabel: true },
+  )
 
   return (
     <Form<S> {...props}>
