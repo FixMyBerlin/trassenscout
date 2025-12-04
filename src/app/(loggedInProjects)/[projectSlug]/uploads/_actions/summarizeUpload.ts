@@ -21,9 +21,7 @@ const authorizeUserForUpload = async ({
   projectSlug: string
 }) => {
   // Check if user is admin
-  if (userRole === "ADMIN") {
-    return
-  }
+  if (userRole === "ADMIN") return
 
   // Check if user is member of the project with editor rights
   const membership = await db.membership.findFirst({

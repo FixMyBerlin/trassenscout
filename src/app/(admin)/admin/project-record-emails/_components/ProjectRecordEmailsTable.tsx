@@ -1,6 +1,6 @@
 "use client"
 
-import { processProjectRecordEmail } from "@/src/app/actions/processProjectRecordEmail"
+import { processProjectRecordEmail } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_actions/processProjectRecordEmail"
 import { Link } from "@/src/core/components/links"
 import { shortTitle } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
