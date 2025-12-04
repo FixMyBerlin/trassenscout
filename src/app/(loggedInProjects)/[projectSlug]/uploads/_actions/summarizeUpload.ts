@@ -1,6 +1,7 @@
 "use server"
 
 import db from "@/db"
+import { authorizeProjectMember } from "@/src/app/(loggedInProjects)/_utils/authorizeProjectMember"
 import { editorRoles } from "@/src/authorization/constants"
 import { getBlitzContext } from "@/src/blitz-server"
 import { checkProjectAiEnabled } from "@/src/server/ProjectRecordEmails/processEmail/checkProjectAiEnabled"
@@ -10,37 +11,19 @@ import { generatePdfSummaryWithAI } from "@/src/server/uploads/summarize/generat
 import { validatePdfFile } from "@/src/server/uploads/summarize/validatePdfFile"
 import { S3ServiceException } from "@aws-sdk/client-s3"
 
-// tbd authorization can be moved to a shared
-const authorizeUserForUpload = async ({
-  userId,
-  userRole,
+// if we use ai streaming in future, we need to handle this as an api route (not a server function)
+
+export const summarizeUpload = async ({
+  uploadId,
   projectSlug,
 }: {
-  userId: number
-  userRole: string | null | undefined
+  uploadId: number
   projectSlug: string
 }) => {
-  // Check if user is admin
-  if (userRole === "ADMIN") return
-
-  // Check if user is member of the project with editor rights
-  const membership = await db.membership.findFirst({
-    where: { project: { slug: projectSlug }, user: { id: userId } },
-  })
-
-  if (!membership || !editorRoles.includes(membership.role)) {
-    throw new Error("Editor access required")
-  }
-}
-
-export const summarizeUpload = async ({ uploadId }: { uploadId: number }) => {
   try {
-    const { session } = await getBlitzContext()
+    await authorizeProjectMember(projectSlug, editorRoles)
 
-    // Authentication check
-    if (!session?.userId) {
-      throw new Error("Authentication required")
-    }
+    const { session } = await getBlitzContext()
 
     console.log("Summarize called by user:", session.userId)
     console.log("Upload ID:", uploadId)
@@ -53,13 +36,6 @@ export const summarizeUpload = async ({ uploadId }: { uploadId: number }) => {
 
     // Check if AI enabled for the project
     await checkProjectAiEnabled(upload.project.id)
-
-    // Authorization check
-    await authorizeUserForUpload({
-      userId: session.userId,
-      userRole: session.role,
-      projectSlug: upload.project.slug,
-    })
 
     // Validate PDF file
     const isPdf = validatePdfFile({ upload })
@@ -76,7 +52,8 @@ export const summarizeUpload = async ({ uploadId }: { uploadId: number }) => {
     // Generate summary
     const summary = await generatePdfSummaryWithAI({
       pdfData,
-      userId: session.userId,
+      // We are sure that userId is defined here due to the authorization check above
+      userId: session.userId!,
       projectContext,
     })
 

@@ -3,6 +3,7 @@
 import { ReprocessedProjectRecord } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/_components/ProtocolDetailClient"
 import { reprocessProjectRecord } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_actions/reprocessProjectRecord"
 import { blueButtonStyles } from "@/src/core/components/links"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { SparklesIcon } from "@heroicons/react/20/solid"
 import { clsx } from "clsx"
 import { useState } from "react"
@@ -14,11 +15,12 @@ type Props = {
 
 export const ReprocessProjectRecordButton = ({ projectRecordId, onAiSuggestions }: Props) => {
   const [isProcessing, setIsProcessing] = useState(false)
+  const projectSlug = useProjectSlug()
 
   const handleImproveProjectRecord = async () => {
     setIsProcessing(true)
     try {
-      const data = await reprocessProjectRecord({ projectRecordId })
+      const data = await reprocessProjectRecord({ projectRecordId, projectSlug })
       if (data.aiSuggestions) {
         setIsProcessing(false)
         onAiSuggestions(data.aiSuggestions)

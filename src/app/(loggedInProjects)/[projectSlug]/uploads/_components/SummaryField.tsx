@@ -1,10 +1,11 @@
 "use client"
 
+import { summarizeUpload } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_actions/summarizeUpload"
 import { isPdf } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
-import { summarizeUpload } from "@/src/app/actions/summarizeUpload"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { LabeledTextareaField } from "@/src/core/components/forms"
 import { Link } from "@/src/core/components/links"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { SparklesIcon } from "@heroicons/react/16/solid"
 import clsx from "clsx"
 import { Dispatch, SetStateAction } from "react"
@@ -26,6 +27,7 @@ export const SummaryField = ({
   isAiEnabled,
 }: Props) => {
   const { setValue } = useFormContext()
+  const projectSlug = useProjectSlug()
 
   if (!isPdf(mimeType) || !isAiEnabled) {
     return null
@@ -34,7 +36,7 @@ export const SummaryField = ({
   const handleSummarize = async () => {
     setIsGeneratingSummary(true)
     try {
-      const { summary } = await summarizeUpload({ uploadId })
+      const { summary } = await summarizeUpload({ uploadId, projectSlug })
       if (summary) {
         setValue("summary", summary)
       } else {

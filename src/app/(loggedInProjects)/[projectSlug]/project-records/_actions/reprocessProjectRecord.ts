@@ -1,5 +1,7 @@
 "use server"
 
+import { authorizeProjectMember } from "@/src/app/(loggedInProjects)/_utils/authorizeProjectMember"
+import { editorRoles } from "@/src/authorization/constants"
 import { getBlitzContext } from "@/src/blitz-server"
 import { extractEmailData } from "@/src/server/ProjectRecordEmails/processEmail/extractEmailData"
 import { fetchProjectContext } from "@/src/server/ProjectRecordEmails/processEmail/fetchProjectContext"
@@ -7,13 +9,16 @@ import { generateProjectRecordWithAI } from "@/src/server/projectRecords/reproce
 import db from "db"
 
 // tbd: do we want to overwrite relations (subsections, subsubsections, uploads, tags) or only recreate the body?
-export const reprocessProjectRecord = async ({ projectRecordId }: { projectRecordId: number }) => {
-  // Authenticate request
-  const { session } = await getBlitzContext()
+export const reprocessProjectRecord = async ({
+  projectRecordId,
+  projectSlug,
+}: {
+  projectRecordId: number
+  projectSlug: string
+}) => {
+  await authorizeProjectMember(projectSlug, editorRoles)
 
-  if (!session?.userId) {
-    throw new Error("Authentication required")
-  }
+  const { session } = await getBlitzContext()
 
   console.log("Reprocessing projectRecord from user:", session.userId)
 
@@ -21,6 +26,7 @@ export const reprocessProjectRecord = async ({ projectRecordId }: { projectRecor
   const projectRecord = await db.projectRecord.findFirst({
     where: { id: projectRecordId },
     include: {
+      project: { select: { slug: true } },
       uploads: {
         select: {
           id: true,
@@ -36,18 +42,6 @@ export const reprocessProjectRecord = async ({ projectRecordId }: { projectRecor
   }
 
   console.log(`Found projectRecord ${projectRecordId} for project ${projectRecord.projectId}`)
-
-  // Check if user is admin or a project member with editor permissions
-  const isAdmin = session.role === "ADMIN"
-
-  // atm this is an ADMIN feature
-  // uncomment if necessary
-  // Check if AI enabled for the project
-  // await checkProjectAiEnabled(projectRecord.projectId)
-
-  if (!isAdmin) {
-    throw new Error("You must be an admin or project editor to reprocess projectRecords")
-  }
 
   // Fetch the related projectRecord-email and parse it to extract body, subject, and from
   let initialEmailBody: string | null = null
@@ -85,7 +79,8 @@ export const reprocessProjectRecord = async ({ projectRecordId }: { projectRecor
     emailBody: initialEmailBody,
     uploads: projectRecord.uploads,
     projectContext,
-    userId: session.userId,
+    // We are sure that userId is defined here due to the authorization check above
+    userId: session.userId!,
     subject: emailSubject,
     from: emailFrom,
   })

@@ -1,5 +1,6 @@
 "use server"
 
+import { authorizeAdmin } from "@/src/app/(admin)/_utils/authorizeAdmin"
 import { getBlitzContext } from "@/src/blitz-server"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { checkProjectAiEnabled } from "@/src/server/ProjectRecordEmails/processEmail/checkProjectAiEnabled"
@@ -16,19 +17,8 @@ export const processProjectRecordEmail = async ({
 }: {
   projectRecordEmailId: number
 }) => {
-  // Authenticate request
+  await authorizeAdmin()
   const { session } = await getBlitzContext()
-
-  if (!session?.userId) {
-    throw new Error("Authentication required")
-  }
-
-  // Check if user is admin
-  if (session.role !== "ADMIN") {
-    // For now, require admin access
-    throw new Error("You must be an admin to process projectRecord emails")
-  }
-
   console.log("Processing projectRecord email from user:", session.userId)
 
   // Get the ProjectRecordEmail with project slug
@@ -36,6 +26,7 @@ export const processProjectRecordEmail = async ({
     where: { id: projectRecordEmailId },
     include: { uploads: { select: { id: true } } },
   })
+
   if (!initialProjectRecordEmail) {
     throw new Error("ProjectRecordEmail not found")
   }
@@ -65,7 +56,6 @@ export const processProjectRecordEmail = async ({
   // Project exists, continue with normal flow
   const projectId = project.id
   const projectSlug = project.slug
-
   // Check if AI enabled for the project
   const isAiEnabled = await checkProjectAiEnabled(project.id)
 
