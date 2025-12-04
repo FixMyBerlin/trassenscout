@@ -1,6 +1,6 @@
 import { MagnifyingGlassPlusIcon } from "@heroicons/react/16/solid"
 import { ArrowDownTrayIcon, ListBulletIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid"
-import { PencilIcon } from "@heroicons/react/24/outline"
+import { ArrowTopRightOnSquareIcon, PencilIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { RouteUrlObject } from "blitz"
 import { clsx } from "clsx"
 import NextLink from "next/link"
@@ -27,6 +27,8 @@ export const linkIcons = {
   delete: <TrashIcon className="size-3.5" />,
   list: <ListBulletIcon className="size-3.5" />,
   details: <MagnifyingGlassPlusIcon className="size-4" />,
+  action: <ArrowTopRightOnSquareIcon className="size-3.5" />,
+  collaboration: <UserGroupIcon className="-ml-0.5 size-5" />,
 }
 
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(

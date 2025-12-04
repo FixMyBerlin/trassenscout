@@ -3,6 +3,7 @@
 import { DeleteUploadButton } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/DeleteUploadButton"
 import { UploadPreview } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreview"
 import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
+import { AdminBox } from "@/src/core/components/AdminBox/AdminBox"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
@@ -156,14 +157,27 @@ export const UploadDetailModal = ({
         </div>
 
         <div className="border-t border-gray-200 pt-3">
-          <Link
-            blank
-            href={uploadUrl(upload, projectSlug)}
-            className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800"
-          >
-            Datei öffnen
-            <ArrowTopRightOnSquareIcon className="size-4" />
-          </Link>
+          {upload.collaborationUrl ? (
+            <div className="space-y-2">
+              <Link blank button="blue" icon="collaboration" href={upload.collaborationUrl}>
+                Dokument gemeinsam bearbeiten
+              </Link>
+              <AdminBox label="Admin">
+                <Link blank href={uploadUrl(upload, projectSlug)}>
+                  Original-Datei (S3)
+                </Link>
+              </AdminBox>
+            </div>
+          ) : (
+            <Link
+              blank
+              href={uploadUrl(upload, projectSlug)}
+              className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800"
+            >
+              Datei öffnen
+              <ArrowTopRightOnSquareIcon className="size-4" />
+            </Link>
+          )}
         </div>
       </div>
 

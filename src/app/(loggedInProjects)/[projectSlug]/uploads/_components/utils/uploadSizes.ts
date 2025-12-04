@@ -1,8 +1,8 @@
 export const UPLOAD_SIZES = {
   table: {
-    iconSize: "size-6" as const,
-    iconPx: 24,
-    containerHeight: "h-6",
+    iconSize: "size-12" as const,
+    iconPx: 48,
+    containerHeight: "h-12",
   },
   grid: {
     iconSize: "size-40" as const,

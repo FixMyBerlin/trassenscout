@@ -2,6 +2,7 @@
 
 import { SummaryField } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/SummaryField"
 import { UploadLocationMap } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/map/UploadLocationMap"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { LabeledSelect, LabeledSelectProps, LabeledTextField } from "@/src/core/components/forms"
 import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
@@ -104,6 +105,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
     mimeType: upload.mimeType,
     latitude: upload.latitude,
     longitude: upload.longitude,
+    collaborationUrl: upload.collaborationUrl,
     projectRecords: upload.projectRecords?.map((pr) => pr.id) ?? [],
   }
 
@@ -149,6 +151,14 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
           disabled={isGeneratingSummary}
         >
           <LabeledTextField type="text" name="title" label="Kurzbeschreibung" />
+          <SuperAdminBox>
+            <LabeledTextField
+              type="text"
+              name="collaborationUrl"
+              label="Collaboration URL (Luckycloud)"
+              help="Das Dokument bei Luckycloud muss manuell angelegt werden und per URL für alle editierbar sein. Solange eine Collaborations URL hinterlegt ist, wird der Original-Upload nicht angezeigt."
+            />
+          </SuperAdminBox>
           <UploadSubsectionFields
             subsections={subsections}
             subsubsections={subsubsections}

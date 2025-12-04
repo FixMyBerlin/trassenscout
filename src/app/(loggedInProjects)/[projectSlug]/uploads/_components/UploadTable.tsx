@@ -20,7 +20,7 @@ import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
-import { MapPinIcon } from "@heroicons/react/24/outline"
+import { MapPinIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { PromiseReturnType } from "blitz"
 
 type Props = Prettify<
@@ -102,15 +102,22 @@ const UploadTableRow = ({
 
   return (
     <tr>
-      <td className="py-4 pr-3 pl-4 text-sm sm:pl-6">
+      <td className="py-2 pr-3 pl-4 text-sm sm:pl-6">
         <div className="flex min-w-0 items-center gap-3">
-          <UploadPreviewClickable
-            uploadId={upload.id}
-            projectSlug={projectSlug}
-            size="table"
-            editUrl={uploadEditRoute(projectSlug, upload.id)}
-            onDeleted={onDelete}
-          />
+          <div className="-mt-0.5 -mb-0.5 -ml-1">
+            <UploadPreviewClickable
+              uploadId={upload.id}
+              projectSlug={projectSlug}
+              size="table"
+              editUrl={uploadEditRoute(projectSlug, upload.id)}
+              onDeleted={onDelete}
+            />
+          </div>
+          {upload.collaborationUrl && (
+            <div className="shrink-0 rounded-full bg-yellow-500 p-1.5">
+              <UserGroupIcon className="size-4 text-white" />
+            </div>
+          )}
           <span
             className="max-w-xs min-w-0 truncate text-sm text-gray-900"
             title={upload.title || undefined}
@@ -119,17 +126,17 @@ const UploadTableRow = ({
           </span>
         </div>
       </td>
-      <td className="px-3 py-4 text-center text-sm">
+      <td className="px-3 py-2 text-center text-sm">
         {hasLocation && <MapPinIcon className="h-4 w-4 text-gray-400" title="Ist Geolokalisiert" />}
       </td>
-      <td className="px-3 py-4 text-sm text-gray-500">
+      <td className="px-3 py-2 text-sm text-gray-500">
         <div className="whitespace-nowrap">
           {formatBerlinTime(upload.createdAt, "dd.MM.yyyy, HH:mm")}
         </div>
         {upload.createdBy && <>von {getFullname(upload.createdBy)}</>}
       </td>
       {withRelations && (
-        <td className="px-3 py-4 text-sm text-gray-500">
+        <td className="px-3 py-2 text-sm text-gray-500">
           <ul className="flex flex-col gap-1">
             {upload.subsection && (
               <li>
@@ -163,7 +170,7 @@ const UploadTableRow = ({
           </ul>
         </td>
       )}
-      <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
+      <td className="py-2 text-sm font-medium whitespace-nowrap sm:pr-6">
         <ButtonWrapper className="justify-end">
           <Link blank icon="download" href={uploadUrl(upload, projectSlug)}>
             Download

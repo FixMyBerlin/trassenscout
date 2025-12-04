@@ -7,6 +7,7 @@ import {
 } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadSizes"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import { useQuery } from "@blitzjs/rpc"
+import { UserGroupIcon } from "@heroicons/react/24/outline"
 import { twJoin } from "tailwind-merge"
 
 type Props = {
@@ -47,6 +48,13 @@ export const UploadPreview = ({ uploadId, projectSlug, size, showTitle, onClick 
     <p className="mt-1 w-full flex-none truncate text-left">{upload.title || "-"}</p>
   ) : null
 
+  const collaborationIcon =
+    upload.collaborationUrl && size !== "table" ? (
+      <div className="absolute -top-1 -right-1 z-10 rounded-full bg-yellow-500 p-1.5">
+        <UserGroupIcon className="size-4 text-white" />
+      </div>
+    ) : null
+
   if (onClick) {
     return (
       <button
@@ -55,6 +63,7 @@ export const UploadPreview = ({ uploadId, projectSlug, size, showTitle, onClick 
         className="relative flex cursor-pointer flex-col items-start justify-center rounded-md bg-white text-xs ring-1 ring-gray-200/30 hover:bg-gray-50 hover:ring-2 hover:ring-gray-300/60 hover:outline-hidden"
         title={upload.title}
       >
+        {collaborationIcon}
         {iconContainer}
         {descriptionText}
       </button>
@@ -63,6 +72,7 @@ export const UploadPreview = ({ uploadId, projectSlug, size, showTitle, onClick 
 
   return (
     <div className="relative">
+      {collaborationIcon}
       {iconContainer}
       {descriptionText}
     </div>
