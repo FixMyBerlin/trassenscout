@@ -210,7 +210,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           href={Routes.SubsubsectionStatussPage({ projectSlug })}
           className="py-2"
         >
-          Status verwalten…
+          Phase verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
       <LabeledTextField

@@ -13,7 +13,7 @@ export const subsubsectionFieldTranslations = {
   costEstimate: "Kostenschätzung",
   qualityLevelId: "Ausbaustandard",
   subsubsectionInfraId: "Führungsform",
-  subsubsectionStatusId: "Status",
+  subsubsectionStatusId: "Phase",
   subsubsectionInfrastructureTypeId: "Fördergegenstand",
   estimatedConstructionDateString: "Angestrebtes Baujahr",
   mapillaryKey: "Mapillary Bild Referenz",
