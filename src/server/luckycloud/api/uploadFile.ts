@@ -1,18 +1,17 @@
 import { z } from "zod"
-import { getDefaultRepoId, luckyCloudApiRequest } from "../_utils/client"
+import { buildEndpoint, getDefaultRepoId, luckyCloudApiRequest } from "../_utils/client"
 import { truncateErrorText } from "../_utils/errorTruncation"
-import { getLuckyCloudFolder } from "../_utils/folders"
+import { getLuckyCloudProjectPath } from "../_utils/folders"
 
-// Upload link API returns a plain string URL, not an object
 const UploadLinkResponseSchema = z.string().url()
 
 export async function uploadFileToLuckyCloud(
   fileBuffer: Buffer,
   filename: string,
-  folderPath?: string,
+  projectSlug: string,
 ) {
   const repoId = await getDefaultRepoId()
-  const folder = folderPath || getLuckyCloudFolder()
+  const projectPath = getLuckyCloudProjectPath(projectSlug)
 
   const uploadLinkResponse = await luckyCloudApiRequest(
     "RepoUploadLink",
@@ -23,19 +22,22 @@ export async function uploadFileToLuckyCloud(
 
   if (!uploadLinkResponse.ok) {
     const errorText = await uploadLinkResponse.text()
+    const url = buildEndpoint("RepoUploadLink", { repoId }, { p: "/" })
     throw new Error(
-      `Failed to get upload link: ${uploadLinkResponse.status} ${truncateErrorText(errorText)}`,
+      `Failed to get upload link: ${uploadLinkResponse.status} ${truncateErrorText(errorText)} (URL: ${url})`,
     )
   }
 
   const uploadLink = UploadLinkResponseSchema.parse(await uploadLinkResponse.json())
 
-  // Use relative_path to create folder structure recursively if it doesn't exist
+  // relative_path is relative to parent_dir (no leading slash)
+  const relativePath = `${projectPath.substring(1)}/`
+
   const formData = new FormData()
   const blob = new Blob([new Uint8Array(fileBuffer)])
   formData.append("file", blob, filename)
   formData.append("parent_dir", "/")
-  formData.append("relative_path", `${folder}/`)
+  formData.append("relative_path", relativePath)
 
   const uploadResponse = await fetch(uploadLink, {
     method: "POST",
@@ -45,9 +47,9 @@ export async function uploadFileToLuckyCloud(
   if (!uploadResponse.ok) {
     const errorText = await uploadResponse.text()
     throw new Error(
-      `Failed to upload file: ${uploadResponse.status} ${truncateErrorText(errorText)}`,
+      `Failed to upload file: ${uploadResponse.status} ${truncateErrorText(errorText)} (Upload URL: ${uploadLink}, relative_path: ${relativePath})`,
     )
   }
 
-  return `/${folder}/${filename}`
+  return `${projectPath}/${filename}` as const
 }

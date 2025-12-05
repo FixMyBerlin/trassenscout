@@ -33,7 +33,7 @@ export async function deleteShares(filePath: string) {
 
   for (const share of shares) {
     const deleteResponse = await luckyCloudApiRequest(
-      "ShareLinkDetail",
+      "DeleteShareLink",
       { method: "DELETE" },
       { shareToken: share.token },
     )

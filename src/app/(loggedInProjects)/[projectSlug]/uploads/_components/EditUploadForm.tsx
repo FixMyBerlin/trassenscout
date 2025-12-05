@@ -29,6 +29,7 @@ import { useState } from "react"
 import { z } from "zod"
 import { DeleteUploadButton } from "./DeleteUploadButton"
 import { UploadPreview } from "./UploadPreview"
+import { uploadUrl } from "./utils/uploadUrl"
 
 type UploadSubsectionFieldsProps = {
   subsections: Awaited<ReturnType<typeof getSubsections>>["subsections"]
@@ -146,8 +147,6 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
       })
       await queryClient.invalidateQueries(uploadQueryKey)
       router.refresh()
-
-      alert("Datei wurde erfolgreich zu Lucky Cloud kopiert.")
     } catch (error: any) {
       console.error("Error copying to Lucky Cloud:", error)
       const errorMessage = error.message || "Unbekannter Fehler"
@@ -160,7 +159,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
   const handleEndCollaboration = async () => {
     if (
       !window.confirm(
-        "Möchten Sie die Collaboration wirklich beenden? Das Dokument wird von Lucky Cloud heruntergeladen und die Freigaben werden gelöscht.",
+        "Möchten Sie die Collaboration wirklich beenden? Das Dokument wird von Lucky Cloud heruntergeladen und archiviert und die Freigaben werden gelöscht.",
       )
     ) {
       return
@@ -176,8 +175,6 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
       })
       await queryClient.invalidateQueries(uploadQueryKey)
       router.refresh()
-
-      alert("Collaboration wurde beendet. Das Dokument wurde aktualisiert.")
     } catch (error: any) {
       console.error("Error ending collaboration:", error)
       const errorMessage = error.message || "Unbekannter Fehler"
@@ -230,6 +227,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
                 label="Collaboration Path (Luckycloud)"
                 help="Der Pfad zur Datei in Lucky Cloud."
               />
+
               <div className="space-y-2">
                 {!hasCollaborationUrl && (
                   <button
@@ -260,19 +258,30 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
                       {isEndingCollaboration ? "Wird beendet..." : "Collaboration beenden"}
                     </button>
                     {upload.collaborationUrl && (
-                      <div className="text-sm text-gray-600">
-                        <a
-                          href={upload.collaborationUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-500 hover:underline"
-                        >
+                      <div>
+                        <Link href={upload.collaborationUrl} blank>
                           Dokument in Lucky Cloud öffnen
-                        </a>
+                        </Link>
                       </div>
                     )}
+
+                    <div className="rounded-md bg-blue-50 p-3 text-sm text-blue-800">
+                      <p className="font-medium">Hinweis für Administratoren:</p>
+                      <p className="mt-1">
+                        Die Nachverfolgung von Änderungen muss manuell in Lucky Cloud aktiviert
+                        werden: Cloud:
+                        <br />
+                        Dokument → Reiter &quot;Zusammenarbeit&quot; → &quot;Nachverfolgen von
+                        Änderungen&quot; → &quot;AKTIVIERT für alle&quot;
+                      </p>
+                    </div>
                   </div>
                 )}
+                <div>
+                  <Link href={uploadUrl(upload, projectSlug)} blank>
+                    Original S3 Datei öffnen
+                  </Link>
+                </div>
               </div>
             </div>
           </SuperAdminBox>

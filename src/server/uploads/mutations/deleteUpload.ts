@@ -5,6 +5,8 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { deleteFileFromLuckyCloud } from "@/src/server/luckycloud/api/deleteFile"
+import { deleteShares } from "@/src/server/luckycloud/api/deleteShares"
 import { getConfiguredS3Client } from "@/src/server/uploads/_utils/client"
 import { S3_BUCKET } from "@/src/server/uploads/_utils/config"
 import { getS3KeyFromUrl } from "@/src/server/uploads/_utils/url"
@@ -21,7 +23,15 @@ export default resolver.pipe(
   resolver.zod(DeleteUploadSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id, projectSlug }) => {
-    const upload = await db.upload.findFirstOrThrow({ where: { id } })
+    const upload = await db.upload.findFirstOrThrow({
+      where: { id },
+      select: {
+        id: true,
+        externalUrl: true,
+        collaborationUrl: true,
+        collaborationPath: true,
+      },
+    })
     const key = getS3KeyFromUrl(upload.externalUrl)
     const rootFolder = process.env.S3_UPLOAD_ROOTFOLDER
 
@@ -31,6 +41,21 @@ export default resolver.pipe(
       throw new NotFoundError(
         `File does not belong to current environment (expected root folder: ${rootFolder})`,
       )
+    }
+
+    // Delete from Lucky Cloud if file is in collaboration mode or archived
+    if (upload.collaborationPath) {
+      try {
+        // If in active collaboration, delete shares first
+        if (upload.collaborationUrl) {
+          await deleteShares(upload.collaborationPath)
+        }
+        // Delete the file from Lucky Cloud (works for both active and archived files)
+        await deleteFileFromLuckyCloud(upload.collaborationPath)
+      } catch (error) {
+        // Log but don't fail - file might already be deleted in Lucky Cloud
+        console.warn("Failed to delete file from Lucky Cloud:", error)
+      }
     }
 
     const s3 = getConfiguredS3Client()

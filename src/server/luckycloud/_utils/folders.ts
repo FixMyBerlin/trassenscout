@@ -1,4 +1,6 @@
-export function getLuckyCloudFolder() {
+export const LUCKY_CLOUD_ARCHIVE_FOLDER_NAME = "_ARCHIVE" as const
+
+export function getLuckyCloudLibraryName() {
   const env = process.env.NEXT_PUBLIC_APP_ENV
 
   switch (env) {
@@ -11,8 +13,11 @@ export function getLuckyCloudFolder() {
   }
 }
 
-// Archive folder is at root level (/_ARCHIV), not inside ENV folders
-// UI may show nested path, but API requires root level
-export function getLuckyCloudArchivFolder() {
-  return "_ARCHIV"
+export function getLuckyCloudProjectPath(projectSlug: string) {
+  return `/${projectSlug}` as const
+}
+
+// Returns the relative path from the library root: /projectSlug/_ARCHIVE
+export function getLuckyCloudArchivePath(projectSlug: string) {
+  return `/${projectSlug}/${LUCKY_CLOUD_ARCHIVE_FOLDER_NAME}` as const
 }

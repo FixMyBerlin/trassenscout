@@ -1,24 +1,28 @@
 import { z } from "zod"
 import { truncateErrorText } from "./errorTruncation"
+import { getLuckyCloudLibraryName } from "./folders"
 
 const LUCKY_CLOUD_DOMAIN = "https://sync.luckycloud.de"
 
-// Lucky Cloud uses different API base paths for different endpoints
-// Some use /api2/, others use /api/v2.1/
-const API_BASE_V2_1 = `${LUCKY_CLOUD_DOMAIN}/api/v2.1/`
-const API_BASE_API2 = `${LUCKY_CLOUD_DOMAIN}/api2/`
+// Different endpoints use different API base paths
+const API_BASE_V2_1 = `${LUCKY_CLOUD_DOMAIN}/api/v2.1` as const
+const API_BASE_API2 = `${LUCKY_CLOUD_DOMAIN}/api2` as const
 
-// Endpoint definitions: [path_template, api_base_path]
-// Paths should not start with / so they append to the base URL correctly
+// Endpoint definitions: full URL templates with placeholders like {repoId}
 export const LuckyCloudEndpoints = {
-  Repos: ["repos/", API_BASE_API2],
-  RepoUploadLink: ["repos/{repoId}/upload-link/", API_BASE_API2],
-  RepoDir: ["repos/{repoId}/dir/", API_BASE_API2],
-  RepoFile: ["repos/{repoId}/file/", API_BASE_API2],
-  RepoFileDetail: ["repos/{repoId}/file/detail/", API_BASE_API2],
-  ShareLinks: ["share-links/", API_BASE_V2_1],
-  ShareLinkDetail: ["share-links/{shareToken}/", API_BASE_V2_1],
-  BatchMoveItem: ["repos/sync-batch-move-item/", API_BASE_V2_1],
+  // "repos" are the top level folders which are called "Libraries" in the API Docs
+  // Docs: https://storage.luckycloud.de/published/api-dokumentation/v2.1/libraries.md#user-content-List%20Libraries
+  Repos: `${API_BASE_API2}/repos/`,
+  // Docs: https://storage.luckycloud.de/published/api-dokumentation/v2.1/file-upload.md#user-content-Upload%20File
+  RepoUploadLink: `${API_BASE_API2}/repos/{repoId}/upload-link/`,
+  // Docs: https://storage.luckycloud.de/published/api-dokumentation/v2.1/file.md#user-content-List%20Items%20in%20Directory
+  RepoFile: `${API_BASE_API2}/repos/{repoId}/file/`,
+  // Docs: https://storage.luckycloud.de/published/api-dokumentation/v2.1/directories.md#user-content-Create%20New%20Directory
+  RepoDir: `${API_BASE_API2}/repos/{repoId}/dir/`,
+  // Docs: https://storage.luckycloud.de/published/api-dokumentation/v2.1/share-links.md
+  ShareLinks: `${API_BASE_V2_1}/share-links/`,
+  // Docs: https://storage.luckycloud.de/published/api-dokumentation/v2.1/share-links.md#user-content-Delete%20Share%20Link
+  DeleteShareLink: `${API_BASE_V2_1}/share-links/{shareToken}/`,
 } as const
 
 export type LuckyCloudEndpoint = keyof typeof LuckyCloudEndpoints
@@ -36,13 +40,13 @@ export function buildEndpoint(
   replacements: Record<string, string>,
   queryParams?: Record<string, string>,
 ): string {
-  const [template, apiBase] = LuckyCloudEndpoints[endpointKey]
-  let endpoint: string = template
+  let urlString: string = LuckyCloudEndpoints[endpointKey]
+
   for (const [key, value] of Object.entries(replacements)) {
-    endpoint = endpoint.replace(`{${key}}`, value)
+    urlString = urlString.replace(`{${key}}`, value)
   }
 
-  const url = new URL(endpoint, apiBase)
+  const url = new URL(urlString)
 
   if (queryParams) {
     for (const [key, value] of Object.entries(queryParams)) {
@@ -109,13 +113,19 @@ export async function getDefaultRepoId() {
   const repos = RepoListResponseSchema.parse(jsonData)
 
   if (repos.length === 0) {
-    throw new Error("No repositories found. Please create a repository in Lucky Cloud first.")
+    throw new Error("No libraries found. Please create a library in Lucky Cloud first.")
   }
 
-  const firstRepo = repos[0]
-  if (!firstRepo) {
-    throw new Error("No repositories found. Please create a repository in Lucky Cloud first.")
+  const expectedLibraryName = getLuckyCloudLibraryName()
+  const matchingRepo = repos.find((repo) => repo.name === expectedLibraryName)
+
+  if (!matchingRepo) {
+    const availableLibraries = repos.map((r) => r.name || r.id).join(", ")
+    throw new Error(
+      `Library "${expectedLibraryName}" not found. Available libraries: ${availableLibraries}. ` +
+        `Please ensure the library name matches the environment (${process.env.NEXT_PUBLIC_APP_ENV}).`,
+    )
   }
 
-  return firstRepo.id
+  return matchingRepo.id
 }
