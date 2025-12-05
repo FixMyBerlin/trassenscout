@@ -17,6 +17,7 @@ import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
+import { formatFileSize } from "@/src/core/utils/formatFileSize"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
@@ -51,6 +52,9 @@ export const UploadTable = ({ uploads, withAction = true, withRelations, onDelet
             </th>
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               <span className="sr-only">Standort</span>
+            </th>
+            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <span className="sr-only">Dateigröße</span>
             </th>
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               Hochgeladen
@@ -129,6 +133,7 @@ const UploadTableRow = ({
       <td className="px-3 py-2 text-center text-sm">
         {hasLocation && <MapPinIcon className="h-4 w-4 text-gray-400" title="Ist Geolokalisiert" />}
       </td>
+      <td className="px-3 py-2 text-sm text-gray-500">{formatFileSize(upload.fileSize)}</td>
       <td className="px-3 py-2 text-sm text-gray-500">
         <div className="whitespace-nowrap">
           {formatBerlinTime(upload.createdAt, "dd.MM.yyyy, HH:mm")}

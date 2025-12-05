@@ -35,6 +35,7 @@ export const uploadEmailAttachments = async ({
           projectId: projectId,
           projectRecordEmailId: projectRecordEmailId,
           mimeType: uploadedFile.contentType, // Store the MIME type from email attachment
+          fileSize: attachment.size,
           createdById: null, // System-created via email
           updatedById: null, // System-created via email
           // tbd: summary

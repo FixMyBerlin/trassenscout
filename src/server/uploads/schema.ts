@@ -17,6 +17,7 @@ export const UploadSchema = z.object({
   subsubsectionId: InputNumberOrNullSchema, // TODO Make this more fancy and guard against a case where both subsectionId and subsubsectionId are given
   externalUrl: z.string().url(),
   mimeType: z.string().nullable().optional(),
+  fileSize: z.number().int().positive().nullable().optional(),
   latitude: z.number().nullable().optional(),
   longitude: z.number().nullable().optional(),
   collaborationUrl: z.string().url().nullable().optional(),
