@@ -106,6 +106,7 @@ export const UploadLocationMap = () => {
               blueButtonStyles,
               "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
               "shadow-2xl ring-8 ring-white/90",
+              "w-auto px-3 py-2 text-xs whitespace-nowrap sm:px-6 sm:py-3.5 sm:text-sm",
             )}
           >
             Datei auf der Karte verorten

@@ -67,7 +67,7 @@ const UploadSubsectionFields = ({
   subsubsectionOptions.unshift(["", "Keine Angabe"])
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <LabeledSelect
         name="subsectionId"
         label="Zuordnung zum Planungsabschnitt"
@@ -196,13 +196,15 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
         />
       </div>
 
-      <div className="flex gap-10">
-        <UploadPreview
-          uploadId={upload.id}
-          projectSlug={projectSlug}
-          size="grid"
-          showTitle={false}
-        />
+      <div className="flex flex-col gap-6 sm:flex-row sm:gap-10">
+        <div className="flex justify-center sm:block">
+          <UploadPreview
+            uploadId={upload.id}
+            projectSlug={projectSlug}
+            size="grid"
+            showTitle={false}
+          />
+        </div>
         <Form
           key={`${upload.collaborationUrl}-${upload.collaborationPath}`}
           className="grow"
