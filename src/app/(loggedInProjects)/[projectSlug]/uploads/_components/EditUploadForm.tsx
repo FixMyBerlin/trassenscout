@@ -201,7 +201,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
           uploadId={upload.id}
           projectSlug={projectSlug}
           size="grid"
-          showTitle={true}
+          showTitle={false}
         />
         <Form
           key={`${upload.collaborationUrl}-${upload.collaborationPath}`}
