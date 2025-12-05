@@ -10,6 +10,7 @@ import deleteUpload from "@/src/server/uploads/mutations/deleteUpload"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import { useMutation } from "@blitzjs/rpc"
 import { PromiseReturnType } from "blitz"
+import { clsx } from "clsx"
 import { useRouter } from "next/navigation"
 import { UploadTable } from "./UploadTable"
 
@@ -42,7 +43,11 @@ export const UploadDetail = ({ upload }: Props) => {
           <Link button="blue" href={uploadEditRoute(projectSlug, upload.id)}>
             Bearbeiten
           </Link>
-          <button type="button" onClick={handleDelete} className={whiteButtonStyles}>
+          <button
+            type="button"
+            onClick={handleDelete}
+            className={clsx(whiteButtonStyles, "cursor-pointer")}
+          >
             Löschen
           </button>
           <Link href={uploadsListRoute(projectSlug)}>Zurück zu Dokumenten</Link>
