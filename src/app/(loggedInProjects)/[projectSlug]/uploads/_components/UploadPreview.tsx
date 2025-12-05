@@ -55,7 +55,7 @@ export const UploadPreview = ({ uploadId, projectSlug, size, showTitle, onClick 
       </div>
     ) : null
 
-  const containerClassName = size === "grid" ? "max-w-[160px]" : ""
+  const containerClassName = size === "grid" ? "max-w-[112px]" : ""
 
   if (onClick) {
     return (
