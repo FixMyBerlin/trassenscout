@@ -55,12 +55,17 @@ export const UploadPreview = ({ uploadId, projectSlug, size, showTitle, onClick 
       </div>
     ) : null
 
+  const containerClassName = size === "grid" ? "max-w-[160px]" : ""
+
   if (onClick) {
     return (
       <button
         type="button"
         onClick={onClick}
-        className="relative flex cursor-pointer flex-col items-start justify-center rounded-md bg-white text-xs ring-1 ring-gray-200/30 hover:bg-gray-50 hover:ring-2 hover:ring-gray-300/60 hover:outline-hidden"
+        className={twJoin(
+          "relative flex cursor-pointer flex-col items-start justify-center rounded-md bg-white text-xs ring-1 ring-gray-200/30 hover:bg-gray-50 hover:ring-2 hover:ring-gray-300/60 hover:outline-hidden",
+          containerClassName,
+        )}
         title={upload.title}
       >
         {collaborationIcon}
@@ -71,7 +76,7 @@ export const UploadPreview = ({ uploadId, projectSlug, size, showTitle, onClick 
   }
 
   return (
-    <div className="relative">
+    <div className={twJoin("relative", containerClassName)}>
       {collaborationIcon}
       {iconContainer}
       {descriptionText}
