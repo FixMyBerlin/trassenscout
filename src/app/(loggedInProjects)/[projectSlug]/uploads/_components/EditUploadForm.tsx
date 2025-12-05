@@ -148,9 +148,9 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
       await queryClient.invalidateQueries(uploadQueryKey)
       router.refresh()
     } catch (error: any) {
-      console.error("Error copying to Lucky Cloud:", error)
+      console.error("Error copying to Luckycloud:", error)
       const errorMessage = error.message || "Unbekannter Fehler"
-      alert(`Fehler beim Kopieren zu Lucky Cloud: ${truncateErrorText(errorMessage)}`)
+      alert(`Fehler beim Kopieren zu Luckycloud: ${truncateErrorText(errorMessage)}`)
     } finally {
       setIsCopyingToLuckyCloud(false)
     }
@@ -159,7 +159,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
   const handleEndCollaboration = async () => {
     if (
       !window.confirm(
-        "Möchten Sie die Collaboration wirklich beenden? Das Dokument wird von Lucky Cloud heruntergeladen und archiviert und die Freigaben werden gelöscht.",
+        "Möchten Sie die Kollaboration wirklich beenden? Das Dokument wird archiviert und die Freigaben werden gelöscht.",
       )
     ) {
       return
@@ -178,7 +178,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
     } catch (error: any) {
       console.error("Error ending collaboration:", error)
       const errorMessage = error.message || "Unbekannter Fehler"
-      alert(`Fehler beim Beenden der Collaboration: ${truncateErrorText(errorMessage)}`)
+      alert(`Fehler beim Beenden der Kollaboration: ${truncateErrorText(errorMessage)}`)
     } finally {
       setIsEndingCollaboration(false)
     }
@@ -218,14 +218,14 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
               <LabeledTextField
                 type="text"
                 name="collaborationUrl"
-                label="Collaboration URL (Luckycloud)"
-                help="Das Dokument bei Luckycloud muss manuell angelegt werden und per URL für alle editierbar sein. Solange eine Collaborations URL hinterlegt ist, wird der Original-Upload nicht angezeigt."
+                label="Kollaborations-URL (Luckycloud)"
+                help="Das Dokument bei Luckycloud muss manuell angelegt werden und per URL für alle editierbar sein. Solange eine Kollaborations-URL hinterlegt ist, wird der Original-Upload nicht angezeigt."
               />
               <LabeledTextField
                 type="text"
                 name="collaborationPath"
-                label="Collaboration Path (Luckycloud)"
-                help="Der Pfad zur Datei in Lucky Cloud."
+                label="Kollaborations-Pfad (Luckycloud)"
+                help="Der Pfad zur Datei in Luckycloud."
               />
 
               <div className="space-y-2">
@@ -255,12 +255,12 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
                         "disabled:cursor-not-allowed disabled:opacity-50",
                       )}
                     >
-                      {isEndingCollaboration ? "Wird beendet..." : "Collaboration beenden"}
+                      {isEndingCollaboration ? "Wird beendet..." : "Kollaboration beenden"}
                     </button>
                     {upload.collaborationUrl && (
                       <div>
                         <Link href={upload.collaborationUrl} blank>
-                          Dokument in Lucky Cloud öffnen
+                          Dokument in Luckycloud öffnen
                         </Link>
                       </div>
                     )}
@@ -268,8 +268,8 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
                     <div className="rounded-md bg-blue-50 p-3 text-sm text-blue-800">
                       <p className="font-medium">Hinweis für Administratoren:</p>
                       <p className="mt-1">
-                        Die Nachverfolgung von Änderungen muss manuell in Lucky Cloud aktiviert
-                        werden: Cloud:
+                        Die Nachverfolgung von Änderungen muss manuell in Luckycloud aktiviert
+                        werden:
                         <br />
                         Dokument → Reiter &quot;Zusammenarbeit&quot; → &quot;Nachverfolgen von
                         Änderungen&quot; → &quot;AKTIVIERT für alle&quot;

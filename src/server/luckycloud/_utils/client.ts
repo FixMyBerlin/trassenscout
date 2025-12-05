@@ -113,7 +113,7 @@ export async function getDefaultRepoId() {
   const repos = RepoListResponseSchema.parse(jsonData)
 
   if (repos.length === 0) {
-    throw new Error("No libraries found. Please create a library in Lucky Cloud first.")
+    throw new Error("No libraries found. Please create a library in Luckycloud first.")
   }
 
   const expectedLibraryName = getLuckyCloudLibraryName()

@@ -18,7 +18,7 @@ export async function deleteFileFromLuckyCloud(filePath: string) {
     const errorText = await response.text()
     const url = buildEndpoint("RepoFile", { repoId }, { p: filePath })
     throw new Error(
-      `Failed to delete file from Lucky Cloud: ${response.status} ${truncateErrorText(errorText)} (URL: ${url})`,
+      `Failed to delete file from Luckycloud: ${response.status} ${truncateErrorText(errorText)} (URL: ${url})`,
     )
   }
 }

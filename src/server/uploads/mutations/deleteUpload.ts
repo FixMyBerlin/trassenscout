@@ -43,18 +43,18 @@ export default resolver.pipe(
       )
     }
 
-    // Delete from Lucky Cloud if file is in collaboration mode or archived
+    // Delete from Luckycloud if file is in collaboration mode or archived
     if (upload.collaborationPath) {
       try {
         // If in active collaboration, delete shares first
         if (upload.collaborationUrl) {
           await deleteShares(upload.collaborationPath)
         }
-        // Delete the file from Lucky Cloud (works for both active and archived files)
+        // Delete the file from Luckycloud (works for both active and archived files)
         await deleteFileFromLuckyCloud(upload.collaborationPath)
       } catch (error) {
-        // Log but don't fail - file might already be deleted in Lucky Cloud
-        console.warn("Failed to delete file from Lucky Cloud:", error)
+        // Log but don't fail - file might already be deleted in Luckycloud
+        console.warn("Failed to delete file from Luckycloud:", error)
       }
     }
 

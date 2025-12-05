@@ -39,7 +39,7 @@ export default resolver.pipe(
     })
 
     if (upload.collaborationUrl) {
-      throw new Error("Upload already has a collaboration URL")
+      throw new Error("Upload already has a Kollaborations-URL")
     }
 
     // Download file from S3

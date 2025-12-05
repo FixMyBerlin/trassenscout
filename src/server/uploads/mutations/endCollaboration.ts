@@ -40,7 +40,7 @@ export default resolver.pipe(
     })
 
     if (!upload.collaborationUrl || !upload.collaborationPath) {
-      throw new Error("Upload does not have a collaboration URL")
+      throw new Error("Upload does not have a Kollaborations-URL")
     }
 
     const filePath = upload.collaborationPath
