@@ -1,3 +1,4 @@
+import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
@@ -80,6 +81,8 @@ const EditSubsection = () => {
       />
 
       <BackLink href={showPath} text="Zurück zum Planungsabschnitt" />
+
+      <SuperAdminLogData data={subsection} />
     </>
   )
 }

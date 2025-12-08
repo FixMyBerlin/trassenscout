@@ -1,15 +1,35 @@
 import { Subsection } from "@/db"
-import { LineStringGeometrySchema } from "@/src/core/utils/geojson-schemas"
+import { GeometryByGeometryType } from "@/src/server/shared/utils/geometrySchemas"
+import { typeGeometry } from "@/src/server/shared/utils/typeGeometry"
+import { GeometryTypeEnum } from "@prisma/client"
 
 /**
- * Validates and types a subsection's geometry JSON field using Zod to be LineStringGeometrySchema
+ * Transforms a subsection by typing its geometry based on its type field.
+ * Returns a discriminated union where the geometry type is narrowed based on the type field.
+ *
+ * Type assertion is safe: typeGeometry validates at runtime that the geometry matches the type field,
+ * ensuring the discriminated union is correctly formed even though TypeScript can't verify this narrowing.
  */
-export const typeSubsectionGeometry = <T extends Pick<Subsection, "geometry">>(
+export const typeSubsectionGeometry = <T extends Pick<Subsection, "geometry" | "type">>(
   subsection: T,
-): Omit<T, "geometry"> & { geometry: ReturnType<typeof LineStringGeometrySchema.parse> } => {
-  const parsedGeometry = LineStringGeometrySchema.parse(subsection.geometry)
-  return {
-    ...subsection,
-    geometry: parsedGeometry,
+) => {
+  const typedGeometry = typeGeometry(subsection.geometry, ["LINE", "POLYGON"])
+
+  if (subsection.type === GeometryTypeEnum.LINE) {
+    return {
+      ...subsection,
+      type: subsection.type as typeof GeometryTypeEnum.LINE,
+      geometry: typedGeometry as GeometryByGeometryType<"LINE">,
+    }
   }
+
+  if (subsection.type === GeometryTypeEnum.POLYGON) {
+    return {
+      ...subsection,
+      type: subsection.type as typeof GeometryTypeEnum.POLYGON,
+      geometry: typedGeometry as GeometryByGeometryType<"POLYGON">,
+    }
+  }
+
+  throw new Error(`Unsupported geometry type: ${subsection.type}`)
 }

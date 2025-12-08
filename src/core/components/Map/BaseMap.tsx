@@ -1,27 +1,37 @@
-import { layerColors } from "@/src/core/components/Map/layerColors"
-import { featureCollection, point } from "@turf/helpers"
 import { clsx } from "clsx"
-import type { FeatureCollection, LineString, Point, Polygon } from "geojson"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useState } from "react"
 import Map, {
-  Layer,
   MapEvent,
   MapLayerMouseEvent,
   MapProps,
   NavigationControl,
   ScaleControl,
-  Source,
   ViewStateChangeEvent,
 } from "react-map-gl/maplibre"
 import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher"
+import { DotsLayer, type DotsLayerProps } from "./layers/DotsLayer"
+import { LinesLayer, type LinesLayerProps } from "./layers/LinesLayer"
+import { PolygonsLayer, type PolygonsLayerProps } from "./layers/PolygonsLayer"
+import {
+  getSelectableLineLayerId,
+  SelectableLinesLayer,
+  type SelectableLinesLayerProps,
+} from "./layers/SelectableLinesLayer"
+import {
+  getSelectablePointLayerId,
+  SelectablePointsLayer,
+  type SelectablePointsLayerProps,
+} from "./layers/SelectablePointsLayer"
+import {
+  getSelectablePolygonLayerId,
+  SelectablePolygonsLayer,
+  type SelectablePolygonsLayerProps,
+} from "./layers/SelectablePolygonsLayer"
 
 const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
 export const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
 const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
-const selectableLineLayerId = "layer_selectable_line_features"
-const selectablePointLayerId = "layer_selectable_point_features"
-const selectablePolygonLayerId = "layer_selectable_polygon_features"
 
 export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
   Partial<
@@ -35,37 +45,17 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
       | "interactiveLayerIds"
       | "hash"
     >
-  > & {
-    lines?: FeatureCollection<
-      LineString,
-      {
-        color?: string
-        width?: number
-        opacity?: number
-      }
-    >
-    selectableLines?: FeatureCollection<
-      LineString,
-      | {
-          subsectionSlug: string
-          subsubsectionSlug?: string
-          color: string
-          opacity?: number
-          dashed?: boolean
-        }
-      | { projectSlug: string; color: string; opacity?: number; dashed?: boolean }
-    >
-    selectablePoints?: FeatureCollection<
-      Point,
-      { subsectionSlug: string; subsubsectionSlug?: string; color: string; opacity?: number }
-    >
-    selectablePolygons?: FeatureCollection<
-      Polygon,
-      { subsectionSlug: string; subsubsectionSlug?: string; color: string; opacity?: number }
-    >
-    dots?: [number, number][]
+  > &
+  LinesLayerProps &
+  PolygonsLayerProps &
+  SelectableLinesLayerProps &
+  SelectablePointsLayerProps &
+  SelectablePolygonsLayerProps &
+  DotsLayerProps & {
     classHeight?: string
     children?: React.ReactNode
+    backgroundSwitcherPosition?: "top-left" | "top-right" | "bottom-left" | "bottom-right"
+    selectableLayerIdSuffix?: string
   }
 
 export const BaseMap = ({
@@ -79,12 +69,15 @@ export const BaseMap = ({
   interactiveLayerIds,
   hash,
   lines,
+  polygons,
   selectableLines,
   selectablePoints,
   selectablePolygons,
   dots,
   classHeight,
   children,
+  backgroundSwitcherPosition = "top-left",
+  selectableLayerIdSuffix,
 }: BaseMapProps) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const handleLayerSwitch = (layer: LayerType) => {
@@ -106,164 +99,6 @@ export const BaseMap = ({
   const handleOnLoad = (e: MapEvent) => {
     if (onLoad) onLoad(e)
   }
-
-  const dotSource = dots ? (
-    <Source id="dots" key="dots" type="geojson" data={featureCollection(dots.map((d) => point(d)))}>
-      <Layer type="circle" paint={{ "circle-color": layerColors.dot, "circle-radius": 6 }} />
-    </Source>
-  ) : null
-
-  const featuresSource = lines ? (
-    <Source id="lines" key="lines" type="geojson" data={lines}>
-      {/* Background outline layer */}
-      <Layer
-        id="lines-layer-outline"
-        type="line"
-        layout={{
-          "line-cap": "round",
-          "line-join": "round",
-        }}
-        paint={{
-          "line-width": 9,
-          "line-color": layerColors.dot,
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.6],
-        }}
-      />
-      {/* Main colored line layer */}
-      <Layer
-        id="lines-layer"
-        type="line"
-        layout={{
-          "line-cap": "round",
-          "line-join": "round",
-        }}
-        paint={{
-          "line-width": ["case", ["has", "width"], ["get", "width"], 7],
-          "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
-        }}
-      />
-    </Source>
-  ) : null
-
-  const selectableLineFeaturesSource = selectableLines ? (
-    <Source
-      id={selectableLineLayerId}
-      key={selectableLineLayerId}
-      type="geojson"
-      data={selectableLines}
-    >
-      <Layer
-        id={`${selectableLineLayerId}-outline`}
-        type="line"
-        layout={{
-          "line-cap": "round",
-          "line-join": "round",
-        }}
-        paint={{
-          "line-width": 9,
-          "line-color": layerColors.dot,
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.6],
-        }}
-      />
-      {/* Background outline layer for dashed lines */}
-      <Layer
-        id={`${selectableLineLayerId}-bg`}
-        type="line"
-        layout={{
-          "line-cap": "round",
-          "line-join": "round",
-        }}
-        paint={{
-          "line-width": 7,
-          "line-color": layerColors.background,
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.9],
-        }}
-        filter={["get", "dashed"]}
-      />
-      {/* Main colored line layer - solid lines */}
-      <Layer
-        id={`${selectableLineLayerId}-solid`}
-        type="line"
-        layout={{
-          "line-cap": "round",
-          "line-join": "round",
-        }}
-        paint={{
-          "line-width": 7,
-          "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
-        }}
-        // do not apply for lines that have the dashed property
-        filter={["any", ["!", ["has", "dashed"]], ["!", ["get", "dashed"]]]}
-      />
-      {/* Main colored line layer - dashed lines */}
-      <Layer
-        id={`${selectableLineLayerId}-dashed`}
-        type="line"
-        paint={{
-          "line-width": 7,
-          "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
-          "line-dasharray": [1, 1],
-        }}
-        filter={["get", "dashed"]}
-      />
-    </Source>
-  ) : null
-
-  const selectablePointFeaturesSource = selectablePoints ? (
-    <Source
-      id={selectablePointLayerId}
-      key={selectablePointLayerId}
-      type="geojson"
-      data={selectablePoints}
-    >
-      <Layer
-        id={selectablePointLayerId}
-        type="circle"
-        paint={{
-          "circle-radius": ["case", ["has", "radius"], ["get", "radius"], 17],
-          "circle-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "circle-stroke-width": ["case", ["has", "border-width"], ["get", "border-width"], 0],
-          "circle-stroke-color": [
-            "case",
-            ["has", "border-color"],
-            ["get", "border-color"],
-            "transparent",
-          ],
-          "circle-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
-        }}
-      />
-    </Source>
-  ) : null
-
-  const selectablePolygonFeaturesSource = selectablePolygons ? (
-    <Source
-      id={selectablePolygonLayerId}
-      key={selectablePolygonLayerId}
-      type="geojson"
-      data={selectablePolygons}
-    >
-      <Layer
-        id={`${selectablePolygonLayerId}-fill`}
-        type="fill"
-        paint={{
-          "fill-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "fill-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.3],
-        }}
-      />
-      <Layer
-        id={`${selectablePolygonLayerId}-outline`}
-        type="line"
-        paint={{
-          "line-width": 3,
-          "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.8],
-        }}
-      />
-    </Source>
-  ) : null
 
   return (
     <div
@@ -287,10 +122,11 @@ export const BaseMap = ({
           onLoad={handleOnLoad}
           interactiveLayerIds={[
             interactiveLayerIds,
-            selectablePoints && selectablePointLayerId,
-            selectableLines && `${selectableLineLayerId}-solid`,
-            selectableLines && `${selectableLineLayerId}-dashed`,
-            selectablePolygons && `${selectablePolygonLayerId}-fill`,
+            selectablePoints &&
+              `${getSelectablePointLayerId(selectableLayerIdSuffix)}-click-target`,
+            selectableLines && `${getSelectableLineLayerId(selectableLayerIdSuffix)}-click-target`,
+            selectablePolygons &&
+              `${getSelectablePolygonLayerId(selectableLayerIdSuffix)}-click-target`,
           ]
             .flat()
             .filter(Boolean)}
@@ -298,15 +134,25 @@ export const BaseMap = ({
         >
           <NavigationControl showCompass={false} />
           <ScaleControl />
-          {featuresSource}
-          {selectableLineFeaturesSource}
-          {selectablePointFeaturesSource}
-          {selectablePolygonFeaturesSource}
-          {dotSource}
+          <LinesLayer lines={lines} />
+          <PolygonsLayer polygons={polygons} />
+          <SelectableLinesLayer
+            selectableLines={selectableLines}
+            layerIdSuffix={selectableLayerIdSuffix}
+          />
+          <SelectablePointsLayer
+            selectablePoints={selectablePoints}
+            layerIdSuffix={selectableLayerIdSuffix}
+          />
+          <SelectablePolygonsLayer
+            selectablePolygons={selectablePolygons}
+            layerIdSuffix={selectableLayerIdSuffix}
+          />
+          <DotsLayer dots={dots} />
           {children}
         </Map>
         <BackgroundSwitcher
-          className="absolute top-4 left-4 z-10"
+          position={backgroundSwitcherPosition}
           value={selectedLayer}
           onChange={handleLayerSwitch}
         />

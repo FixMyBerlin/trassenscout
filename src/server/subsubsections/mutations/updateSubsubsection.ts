@@ -5,13 +5,15 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { subsubsectionGeometryTypeValidationRefine } from "@/src/server/shared/utils/geometryTypeValidation"
+import { typeSubsubsectionGeometry } from "@/src/server/subsubsections/utils/typeSubsubsectionGeometry"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 import { m2mFields, type M2MFieldsType } from "../m2mFields"
 import { SubsubsectionWithPosition } from "../queries/getSubsubsection"
-import { geometryTypeValidationRefine, SubsubsectionBaseSchema } from "../schema"
+import { SubsubsectionBaseSchema } from "../schema"
 
-const UpdateSubsubsectionSchema = geometryTypeValidationRefine(
+const UpdateSubsubsectionSchema = subsubsectionGeometryTypeValidationRefine(
   ProjectSlugRequiredSchema.merge(SubsubsectionBaseSchema.merge(z.object({ id: z.number() }))),
 )
 
@@ -37,6 +39,8 @@ export default resolver.pipe(
       where: { id },
       data: { ...data, ...connect },
     })
-    return subsubsection as SubsubsectionWithPosition // Tip: Validate type shape with `satisfies`
+    // WARN: Cast needed because update doesn't fetch all relations required by SubsubsectionWithPosition
+    // (like manager, subsection, qualityLevel, etc.). The geometry is properly typed via typeSubsubsectionGeometry.
+    return typeSubsubsectionGeometry(subsubsection) as SubsubsectionWithPosition
   },
 )

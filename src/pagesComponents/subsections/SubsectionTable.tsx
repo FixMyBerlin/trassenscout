@@ -1,4 +1,5 @@
 import { SubsectionIcon } from "@/src/core/components/Map/Icons"
+import { GeometryIcon } from "@/src/core/components/Map/Icons/GeometryIcon"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
 import { shortTitle } from "@/src/core/components/text"
@@ -7,20 +8,20 @@ import { startEnd } from "@/src/core/components/text/startEnd"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-import { SubsectionWithPositionAndStatus } from "@/src/server/subsections/queries/getSubsections"
+import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { Routes } from "@blitzjs/next"
 import { clsx } from "clsx"
 import { useRouter } from "next/router"
 
 type Props = {
-  subsections: SubsectionWithPositionAndStatus[]
+  subsections: TSubsections
   createButton?: boolean
 }
 
 const tableHeadClasses =
   "pl-4 py-3.5 pr-3 text-left text-sm font-semibold uppercase text-gray-900  "
 
-export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = true }) => {
+export const SubsectionTable = ({ subsections, createButton = true }: Props) => {
   const router = useRouter()
   const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
@@ -63,7 +64,10 @@ export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = t
                   onClick={() => router.push(route)}
                 >
                   <td className="h-20 w-20 py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
-                    <SubsectionIcon label={shortTitle(subsection.slug)} />
+                    <div className="flex items-center gap-2">
+                      <SubsectionIcon label={shortTitle(subsection.slug)} />
+                      <GeometryIcon type={subsection.type} className="size-4" />
+                    </div>
                   </td>
                   <td className="py-4 pr-3 pl-4 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                     {startEnd(subsection)}

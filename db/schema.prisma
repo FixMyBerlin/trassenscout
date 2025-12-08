@@ -247,6 +247,7 @@ model Subsection {
   start                         String
   end                           String
   order                         Int               @default(autoincrement())
+  type                          GeometryTypeEnum  @default(LINE) // Geometry type
   geometry                      Json
   labelPos                      LabelPositionEnum @default(top)
   description                   String?
@@ -300,22 +301,22 @@ model NetworkHierarchy {
 }
 
 model Subsubsection {
-  id              Int                   @id @default(autoincrement())
-  createdAt       DateTime              @default(now())
-  updatedAt       DateTime              @updatedAt
+  id              Int               @id @default(autoincrement())
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
   //
   slug            String // shortTitle and URL Slug
   subTitle        String?
-  type            SubsubsectionTypeEnum @default(LINE) // Maßnahmen Geometrietyp - fka Führungsform - UNUSED
+  type            GeometryTypeEnum  @default(LINE) // Maßnahmen Geometrietyp - fka Führungsform - UNUSED
   location        LocationEnum? // Lage: innerorts/außerorts
   geometry        Json
-  labelPos        LabelPositionEnum     @default(top)
+  labelPos        LabelPositionEnum @default(top)
   lengthM         Float? // Meter
   width           Float? // Meter
   widthExisting   Float? // Meter - UNUSED
   description     String? // Anmerkungen
   mapillaryKey    String?
-  isExistingInfra Boolean?              @default(false) // Bestandsführung
+  isExistingInfra Boolean?          @default(false) // Bestandsführung
 
   maxSpeed        Float? // Maximalgeschwindigkeit
   trafficLoad     Int? // Verkehrsbelastung
@@ -372,7 +373,7 @@ model Subsubsection {
   @@unique([subsectionId, slug])
 }
 
-enum SubsubsectionTypeEnum {
+enum GeometryTypeEnum {
   POINT // Punktuelle Einträge (Maßnahmen) fka Sonderführung Punkt (Bereich) SF
   LINE // fka Regelführung Strecke RF
   POLYGON // Polygon- und MultiPolygon-Geometrien

@@ -1,14 +1,15 @@
 "use client"
 
 import { layerColors } from "@/src/core/components/Map/layerColors"
+import { SelectableLinesLayer } from "@/src/core/components/Map/layers/SelectableLinesLayer"
+import { SelectablePolygonsLayer } from "@/src/core/components/Map/layers/SelectablePolygonsLayer"
+import { lineStringToGeoJSON } from "@/src/core/components/Map/utils/lineStringToGeoJSON"
+import { polygonToGeoJSON } from "@/src/core/components/Map/utils/polygonToGeoJSON"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import { useQuery } from "@blitzjs/rpc"
-import { featureCollection, lineString } from "@turf/helpers"
+import { featureCollection } from "@turf/helpers"
 import { useMemo } from "react"
-import { Layer, Source } from "react-map-gl/maplibre"
-
-const selectableLineLayerId = "layer_selectable_line_features"
 
 type Props = {
   selectedSubsectionId?: number | null
@@ -23,46 +24,45 @@ export const SubsectionSourceLayers = ({ selectedSubsectionId }: Props) => {
 
   const selectableLines = useMemo(() => {
     return featureCollection(
-      subsections.map((ss) =>
-        lineString(ss.geometry.coordinates, {
-          subsectionSlug: ss.slug,
-          color: ss.id === selectedSubsectionId ? "#2563eb" : "#64748b",
-          opacity: ss.id === selectedSubsectionId ? 1 : 0.6,
+      subsections
+        .filter((subsection) => subsection.type === "LINE")
+        .flatMap((subsection) => {
+          const properties = {
+            subsectionSlug: subsection.slug,
+            color:
+              subsection.id === selectedSubsectionId
+                ? layerColors.selectedBlue
+                : layerColors.unselectedGray,
+            opacity: subsection.id === selectedSubsectionId ? 1 : 0.6,
+          }
+          return lineStringToGeoJSON<typeof properties>(subsection.geometry, properties)
         }),
-      ),
     )
   }, [subsections, selectedSubsectionId])
 
-  if (!selectableLines.features.length) return null
+  const selectablePolygons = useMemo(() => {
+    return featureCollection(
+      subsections
+        .filter((subsection) => subsection.type === "POLYGON")
+        .flatMap((subsection) => {
+          const properties = {
+            subsectionSlug: subsection.slug,
+            color:
+              subsection.id === selectedSubsectionId
+                ? layerColors.selectedBlue
+                : layerColors.unselectedGray,
+            opacity: subsection.id === selectedSubsectionId ? 1 : 0.6,
+          }
+          return polygonToGeoJSON<typeof properties>(subsection.geometry, properties)
+        })
+        .filter(Boolean),
+    )
+  }, [subsections, selectedSubsectionId])
 
   return (
-    <Source id={selectableLineLayerId} type="geojson" data={selectableLines}>
-      <Layer
-        id={`${selectableLineLayerId}-outline`}
-        type="line"
-        layout={{
-          "line-cap": "round",
-          "line-join": "round",
-        }}
-        paint={{
-          "line-width": 9,
-          "line-color": layerColors.dot,
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.6],
-        }}
-      />
-      <Layer
-        id={`${selectableLineLayerId}-solid`}
-        type="line"
-        layout={{
-          "line-cap": "round",
-          "line-join": "round",
-        }}
-        paint={{
-          "line-width": 7,
-          "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
-        }}
-      />
-    </Source>
+    <>
+      <SelectableLinesLayer selectableLines={selectableLines} />
+      <SelectablePolygonsLayer selectablePolygons={selectablePolygons} />
+    </>
   )
 }

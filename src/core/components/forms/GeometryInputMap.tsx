@@ -1,0 +1,102 @@
+import { DrawingToolbar } from "@/src/core/components/Map/TerraDraw/DrawingToolbar"
+import { TerraDrawMap } from "@/src/core/components/Map/TerraDraw/TerraDrawMap"
+import { SnappingControls } from "@/src/pagesComponents/subsubsections/SubsubsectionGeometryInput/SnappingControls"
+import { mapGeoTypeToEnum } from "@/src/server/shared/utils/mapGeoTypeToEnum"
+import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
+import { bbox } from "@turf/turf"
+import type { Geometry } from "geojson"
+import { useMemo, useRef } from "react"
+import { useFormContext } from "react-hook-form"
+import type { LngLatBoundsLike } from "react-map-gl/maplibre"
+
+type AllowedType = "point" | "line" | "polygon"
+
+type Props = {
+  allowedTypes: AllowedType[]
+  subsection?: TGetSubsection
+}
+
+export const GeometryInputMap = ({ allowedTypes, subsection }: Props) => {
+  const { watch, setValue } = useFormContext()
+  const geometry = watch("geometry") as Geometry
+  const updateTerraDrawRef = useRef<
+    ((geometry: Geometry | null, ignoreChangeEvents?: boolean) => void) | null
+  >(null)
+
+  const showPoint = allowedTypes.includes("point")
+  const showLine = allowedTypes.includes("line")
+  const showPolygon = allowedTypes.includes("polygon")
+
+  // Calculate initial view bounds (priority order):
+  // 1. If geometry exists (editing mode): use geometry bounds
+  // 2. Else if subsection provided: use subsection bounds
+  // 3. Otherwise: undefined (will use default view)
+  const initialViewState = useMemo(() => {
+    let targetGeometry: Geometry | undefined
+
+    if (geometry) {
+      targetGeometry = geometry
+    } else if (subsection) {
+      targetGeometry = subsection.geometry
+    }
+
+    if (targetGeometry) {
+      const [minX, minY, maxX, maxY] = bbox(targetGeometry)
+      const bounds: LngLatBoundsLike = [minX, minY, maxX, maxY]
+      return {
+        bounds,
+        fitBoundsOptions: { padding: 100 },
+      }
+    }
+
+    return undefined
+  }, [geometry, subsection])
+
+  const handleChange = (geo: Geometry | null, geoType: string | null) => {
+    if (geo && geoType) {
+      setValue("geometry", geo, { shouldValidate: true })
+      setValue("type", mapGeoTypeToEnum(geoType), { shouldValidate: true })
+    } else {
+      setValue("geometry", undefined, { shouldValidate: true })
+      setValue("type", undefined, { shouldValidate: true })
+    }
+  }
+
+  return (
+    <div className="space-y-2">
+      <TerraDrawMap
+        initialGeometry={geometry}
+        onChange={handleChange}
+        initialViewState={initialViewState}
+      >
+        {({ mode, setMode, clear, updateFeatures, enabledButtons }) => {
+          // Store updateFeatures in ref so SnappingControls can use it
+          updateTerraDrawRef.current = updateFeatures
+          return (
+            <>
+              {subsection && (
+                <SnappingControls
+                  subsection={subsection}
+                  geometry={geometry}
+                  handleChange={handleChange}
+                  updateTerraDraw={(geo, ignoreChangeEvents) =>
+                    updateTerraDrawRef.current?.(geo, ignoreChangeEvents)
+                  }
+                />
+              )}
+              <DrawingToolbar
+                mode={mode}
+                setMode={setMode}
+                onClear={clear}
+                showPoint={showPoint}
+                showLine={showLine}
+                showPolygon={showPolygon}
+                enabledButtons={enabledButtons}
+              />
+            </>
+          )
+        }}
+      </TerraDrawMap>
+    </div>
+  )
+}

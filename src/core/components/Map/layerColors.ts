@@ -1,9 +1,13 @@
 export const layerColors = {
-  unselectable: "#9ca3af", // gray-400
-  unselectableCurrent: "#B6CEEC", // blue-100
-  selectable: "#2C62A9", // blue-500
-  hovered: "#F8C62B", // yellow-400
-  selected: "#F8C62B", // yellow-400
-  dot: "#0F172A", // slate-900
-  background: "#FED7AA", // orange-200
+  unselectable: "#9ca3af",
+  unselectableCurrent: "#B6CEEC",
+  selectable: "#2C62A9",
+  hovered: "#F8C62B",
+  selected: "#F8C62B",
+  dot: "#0F172A",
+  background: "#FED7AA",
+  selectedBlue: "#2563eb",
+  unselectedGray: "#64748b",
+  drawing: "#B377FE",
+  selectedDark: "#333333",
 }

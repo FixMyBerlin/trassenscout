@@ -33,6 +33,11 @@ export type LegendItemConfig =
       text: string
       color: string
     }
+  | {
+      shape: "polygon"
+      text: string
+      color: string
+    }
 
 type LegendProps = {
   legendItemsConfig?: LegendItemConfig[]
@@ -96,6 +101,19 @@ export const MapLegend = ({ legendItemsConfig }: LegendProps) => {
                 <span
                   className="absolute inline-block size-[18px] rounded-full opacity-20"
                   style={{ backgroundColor: item.color }}
+                />
+              </span>
+            </LegendItem>
+          )
+        }
+
+        if (item.shape === "polygon") {
+          return (
+            <LegendItem text={item.text} key={item.text}>
+              <span className="relative size-[18px] shrink-0">
+                <span
+                  className="absolute inline-block size-[18px] rounded border-2"
+                  style={{ borderColor: item.color, backgroundColor: `${item.color}30` }}
                 />
               </span>
             </LegendItem>

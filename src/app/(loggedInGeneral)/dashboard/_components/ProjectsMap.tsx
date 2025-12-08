@@ -4,17 +4,20 @@ import { ProjectMapIcon } from "@/src/core/components/Map/Icons/ProjectIcon"
 import { StartEndLabel } from "@/src/core/components/Map/Labels/StartEndLabel"
 import { layerColors } from "@/src/core/components/Map/layerColors"
 import { TipMarker } from "@/src/core/components/Map/TipMarker"
+import { extractLineEndpoints } from "@/src/core/components/Map/utils/extractLineEndpoints"
+import { getCenterOfMass } from "@/src/core/components/Map/utils/getCenterOfMass"
+import { lineStringToGeoJSON } from "@/src/core/components/Map/utils/lineStringToGeoJSON"
+import { polygonToGeoJSON } from "@/src/core/components/Map/utils/polygonToGeoJSON"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { TGetProjectsWithGeometryWithMembershipRole } from "@/src/server/projects/queries/getProjectsWithGeometryWithMembershipRole"
-import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
 import { useSession } from "@blitzjs/auth"
-import { lineString } from "@turf/helpers"
-import { along, bbox, featureCollection, length } from "@turf/turf"
-import { Feature, LineString, Point } from "geojson"
+import { featureCollection } from "@turf/helpers"
+import { bbox } from "@turf/turf"
+import type { Feature, Position } from "geojson"
 import { LngLatBounds } from "maplibre-gl"
 import type { Route } from "next"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useRouter } from "next/router"
+import { useCallback, useMemo, useState } from "react"
 import { MapLayerMouseEvent, Marker } from "react-map-gl/maplibre"
 
 type Props = {
@@ -26,17 +29,20 @@ export const ProjectsMap = ({ projects }: Props) => {
   const session = useSession()
 
   type HandleSelectProps = { projectSlug: string; edit: boolean }
-  const handleSelect = ({ projectSlug, edit }: HandleSelectProps) => {
-    if (!projectSlug) return
-    if (!session) return
-    if (!session.memberships) return
-    const userCanEdit = session.memberships
-      .filter((m) => m.role === "EDITOR")
-      .some((m) => m.project.slug === projectSlug)
-    // alt+click
-    const url = userCanEdit && edit ? `/${projectSlug}/edit` : `/${projectSlug}`
-    void router.push(url as Route)
-  }
+  const handleSelect = useCallback(
+    ({ projectSlug, edit }: HandleSelectProps) => {
+      if (!projectSlug) return
+      if (!session) return
+      if (!session.memberships) return
+      const userCanEdit = session.memberships
+        .filter((m) => m.role === "EDITOR")
+        .some((m) => m.project.slug === projectSlug)
+      // alt+click
+      const url = userCanEdit && edit ? `/${projectSlug}/edit` : `/${projectSlug}`
+      void router.push(url as Route)
+    },
+    [router, session],
+  )
 
   const handleClickMap = (e: MapLayerMouseEvent) => {
     const projectSlug = e.features?.at(0)?.properties?.slug
@@ -55,82 +61,94 @@ export const ProjectsMap = ({ projects }: Props) => {
     setHoveredMap(null)
   }
 
-  const selectableLines = featureCollection(
-    projects.flatMap((project) =>
-      project.subsections.map((subsection) => {
-        const typed = typeSubsectionGeometry(subsection)
-        return lineString(typed.geometry.coordinates, {
-          projectSlug: project.slug,
-          color:
-            hoveredMap === project.slug || hoveredMarker === project.slug
-              ? layerColors.hovered
-              : layerColors.selectable,
-        })
-      }),
-    ),
-  )
+  const selectableLines = useMemo(() => {
+    return featureCollection(
+      projects.flatMap((project) =>
+        project.subsections
+          .filter((subsection) => subsection.type === "LINE")
+          .flatMap((subsection) => {
+            const properties = {
+              projectSlug: project.slug,
+              color:
+                hoveredMap === project.slug || hoveredMarker === project.slug
+                  ? layerColors.hovered
+                  : layerColors.selectable,
+            }
+            return lineStringToGeoJSON<typeof properties>(subsection.geometry, properties)
+          }),
+      ),
+    )
+  }, [projects, hoveredMap, hoveredMarker])
 
-  const dotsGeomsBeginningOfLine = selectableLines.features.map(
-    (line) => line.geometry.coordinates.at(1) as [number, number],
-  )
-  const dotGeomEndOfLastLine = selectableLines.features.at(-1)?.geometry?.coordinates?.at(-1) as [
-    number,
-    number,
-  ]
-  const dotsGeoms = [dotGeomEndOfLastLine, ...dotsGeomsBeginningOfLine].filter(Boolean)
+  const selectablePolygons = useMemo(() => {
+    return featureCollection(
+      projects.flatMap((project) =>
+        project.subsections
+          .filter((subsection) => subsection.type === "POLYGON")
+          .flatMap((subsection) => {
+            const properties = {
+              projectSlug: project.slug,
+              color:
+                hoveredMap === project.slug || hoveredMarker === project.slug
+                  ? layerColors.hovered
+                  : layerColors.selectable,
+            }
+            return polygonToGeoJSON<typeof properties>(subsection.geometry, properties)
+          })
+          .filter(Boolean),
+      ),
+    )
+  }, [projects, hoveredMap, hoveredMarker])
 
-  const groupedSubsections: { [key: string]: Feature<LineString>[] } = {}
-  selectableLines.features.forEach((feature) => {
-    const projectSlug = feature.properties.projectSlug
+  const dotsGeoms = useMemo(() => {
+    const lineDots: Position[] = []
+    selectableLines.features.forEach((line) => {
+      const endpoints = extractLineEndpoints(line.geometry)
+      lineDots.push(...endpoints)
+    })
+    return lineDots
+  }, [selectableLines])
 
-    if (!groupedSubsections[projectSlug]) {
-      groupedSubsections[projectSlug] = []
-    }
-    groupedSubsections[projectSlug].push(feature)
-  })
-
-  const groupedSubsectionMiddles: { [key: string]: Feature<Point> } = {}
-  Object.entries(groupedSubsections).map(([projectSlug, lineStrings]) => {
-    let longestLineString = lineStrings[0]!
-    let maxLength = 0
-
-    lineStrings.forEach((lineString) => {
-      const lineLength = length(lineString)
-      if (lineLength > maxLength) {
-        maxLength = lineLength
-        longestLineString = lineString
-      }
+  const markers = useMemo(() => {
+    const projectGeometries: {
+      [key: string]: TGetProjectsWithGeometryWithMembershipRole[number]["subsections"]
+    } = {}
+    projects.forEach((project) => {
+      projectGeometries[project.slug] = project.subsections
     })
 
-    groupedSubsectionMiddles[projectSlug] = along(longestLineString, maxLength / 2)
-  })
+    return Object.entries(projectGeometries).map(([projectSlug, subsections]) => {
+      if (subsections.length === 0) return null
 
-  const markers = Object.entries(groupedSubsectionMiddles).map(([projectSlug, midPoint]) => {
-    return (
-      <Marker
-        key={projectSlug}
-        longitude={midPoint.geometry.coordinates[0] as number}
-        latitude={midPoint.geometry.coordinates[1] as number}
-        anchor="center"
-        onClick={(e) => handleSelect({ projectSlug, edit: e.originalEvent.altKey })}
-      >
-        <TipMarker
-          anchor="top"
-          onMouseEnter={() => setHoveredMarker(projectSlug)}
-          onMouseLeave={() => setHoveredMarker(null)}
+      const center = getCenterOfMass(subsections[0]!.geometry)
+
+      return (
+        <Marker
+          key={projectSlug}
+          longitude={center[0]}
+          latitude={center[1]}
+          anchor="center"
+          onClick={(e) => handleSelect({ projectSlug, edit: e.originalEvent.altKey })}
         >
-          <StartEndLabel
-            icon={<ProjectMapIcon label={shortTitle(projectSlug)} />}
-            layout="compact"
-          />
-        </TipMarker>
-      </Marker>
-    )
-  })
+          <TipMarker
+            anchor="top"
+            onMouseEnter={() => setHoveredMarker(projectSlug)}
+            onMouseLeave={() => setHoveredMarker(null)}
+          >
+            <StartEndLabel
+              icon={<ProjectMapIcon label={shortTitle(projectSlug)} />}
+              layout="compact"
+            />
+          </TipMarker>
+        </Marker>
+      )
+    })
+  }, [projects, handleSelect])
 
-  if (!selectableLines.features.length) return null
+  const allFeatures: Feature[] = [...selectableLines.features, ...selectablePolygons.features]
+  if (allFeatures.length === 0) return null
 
-  const boundingBox = bbox(selectableLines)
+  const boundingBox = bbox(featureCollection(allFeatures))
   const bounds = new LngLatBounds(
     [boundingBox[0], boundingBox[1]],
     [boundingBox[2], boundingBox[3]],
@@ -148,6 +166,7 @@ export const ProjectsMap = ({ projects }: Props) => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         selectableLines={selectableLines}
+        selectablePolygons={selectablePolygons}
         dots={dotsGeoms}
       >
         {markers}

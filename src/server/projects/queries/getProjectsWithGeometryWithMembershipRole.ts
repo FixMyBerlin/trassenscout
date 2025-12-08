@@ -1,11 +1,8 @@
 import db from "@/db"
 import getProjectsWithGeometryWithMembershipRole from "@/src/server/projects/queries/getProjectsWithGeometryWithMembershipRole"
+import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
 import { resolver } from "@blitzjs/rpc"
 import { Ctx, NotFoundError } from "blitz"
-
-export type TGetProjectsWithGeometryWithMembershipRole = Awaited<
-  ReturnType<typeof getProjectsWithGeometryWithMembershipRole>
->
 
 export default resolver.pipe(
   resolver.authorize(/* ok: being logged in is enough to request the list */),
@@ -20,11 +17,19 @@ export default resolver.pipe(
         id: true,
         slug: true,
         subTitle: true,
-        subsections: { select: { geometry: true } },
+        subsections: { select: { geometry: true, type: true } },
         memberships: { select: { role: true }, where: { userId: session.userId } },
       },
     })
 
-    return projectsWithGeometryWithMembershipRole
+    // Transform geometry from JsonValue to typed SupportedGeometry
+    return projectsWithGeometryWithMembershipRole.map((project) => ({
+      ...project,
+      subsections: project.subsections.map((subsection) => typeSubsectionGeometry(subsection)),
+    }))
   },
 )
+
+export type TGetProjectsWithGeometryWithMembershipRole = Awaited<
+  ReturnType<typeof getProjectsWithGeometryWithMembershipRole>
+>

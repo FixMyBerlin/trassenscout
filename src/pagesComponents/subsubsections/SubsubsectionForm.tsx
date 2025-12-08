@@ -23,8 +23,8 @@ import { useQuery } from "@blitzjs/rpc"
 import { Route } from "next"
 import { z } from "zod"
 import { subsubsectionLocationLabelMap } from "../utils/subsubsectionLocationLabelMap"
-import { GeometryInput } from "./GeometryInput/GeometryInput"
 import { LinkWithFormDirtyConfirm } from "./LinkWithFormDirtyConfirm"
+import { SubsubsectionGeometryInput } from "./SubsubsectionGeometryInput"
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const projectSlug = useProjectSlug()
@@ -98,7 +98,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           Eintragstypen verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-      <GeometryInput />
+      <SubsubsectionGeometryInput />
       {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
       <LabeledCheckbox
         scope="isExistingInfra"

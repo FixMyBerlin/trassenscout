@@ -51,7 +51,10 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
 
       // Validate geometry type matches form selection
       let isValid = false
-      if (geometryType === "POINT" && extracted.geometryType === "Point") {
+      if (
+        geometryType === "POINT" &&
+        (extracted.geometryType === "Point" || extracted.geometryType === "MultiPoint")
+      ) {
         isValid = true
       } else if (
         geometryType === "LINE" &&
@@ -132,6 +135,7 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
                 <>
                   Das richtige Format für einen Punkt ist{" "}
                   <code>{JSON.stringify({ type: "Point", coordinates: [9.1943, 48.8932] })}</code>.
+                  Unterstützt auch MultiPoint.
                 </>
               ) : geometryType === "LINE" ? (
                 <>

@@ -13,7 +13,7 @@ import getSubsubsectionSpecialsWithCount from "@/src/server/subsubsectionSpecial
 import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
 import getSubsubsectionTasksWithCount from "@/src/server/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
 import { useQuery } from "@blitzjs/rpc"
-import { LabelPositionEnum, LocationEnum, SubsubsectionTypeEnum } from "@prisma/client"
+import { GeometryTypeEnum, LabelPositionEnum, LocationEnum } from "@prisma/client"
 import { z } from "zod"
 
 type SubsubsectionSchemaAdminBoxProps = {
@@ -56,8 +56,8 @@ export const SubsubsectionSchemaAdminBox = ({
           <h4 className="mb-2 font-semibold text-purple-600">Enum Values:</h4>
           <div className="grid gap-2 text-xs">
             <div>
-              <strong>type (SubsubsectionTypeEnum) - Enum:</strong>{" "}
-              {Object.values(SubsubsectionTypeEnum).join(", ")}
+              <strong>type (GeometryTypeEnum) - Enum:</strong>{" "}
+              {Object.values(GeometryTypeEnum).join(", ")}
             </div>
             <div>
               <strong>location (LocationEnum) - Enum:</strong>{" "}

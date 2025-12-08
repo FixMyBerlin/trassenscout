@@ -1,4 +1,5 @@
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
+import { GeometryIcon } from "@/src/core/components/Map/Icons/GeometryIcon"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link } from "@/src/core/components/links"
 import { formattedEuro, formattedLength, shortTitle } from "@/src/core/components/text"
@@ -96,7 +97,10 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   onClick={() => router.push(route, undefined, { scroll: false })}
                 >
                   <td className="h-20 w-20 py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
-                    <SubsubsectionIcon label={shortTitle(subsubsection.slug)} />
+                    <div className="flex items-center gap-2">
+                      <SubsubsectionIcon label={shortTitle(subsubsection.slug)} />
+                      <GeometryIcon type={subsubsection.type} className="size-4" />
+                    </div>
                   </td>
                   <td className="py-4 pr-3 pl-4 text-sm font-medium text-gray-900">
                     {subsubsection.SubsubsectionTask?.title || "k.A."}

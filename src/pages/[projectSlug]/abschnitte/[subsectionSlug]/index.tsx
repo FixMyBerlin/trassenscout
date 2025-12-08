@@ -28,12 +28,16 @@ export const SubsectionDashboardWithQuery = () => {
   const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
 
-  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
+  const [subsectionsResult] = useQuery(getSubsections, { projectSlug }, { enabled: !!projectSlug })
+  const subsections = subsectionsResult?.subsections ?? []
   const subsection = subsections.find((ss) => ss.slug === subsectionSlug)
 
-  const [{ subsubsections }] = useQuery(getSubsubsections, {
-    projectSlug,
-  })
+  const [subsubsectionsResult] = useQuery(
+    getSubsubsections,
+    { projectSlug },
+    { enabled: !!projectSlug },
+  )
+  const subsubsections = subsubsectionsResult?.subsubsections ?? []
   const subsubsectionsForSubsection = subsubsections.filter(
     (subsub) => subsub.subsectionId === subsection?.id,
   )

@@ -1,16 +1,21 @@
-import { PointGeometrySchema } from "@/src/core/utils/geojson-schemas"
 import { point } from "@turf/helpers"
-import type { GeoJsonProperties, Point } from "geojson"
+import type { GeoJsonProperties, MultiPoint, Point } from "geojson"
 
 /**
- * Converts Point geometry to GeoJSON Point.
- * Uses Zod schema to validate geometry before conversion.
- * Returns null for invalid geometries.
+ * Converts Point or MultiPoint geometry to an array of GeoJSON Features.
+ * Geometry data is expected to be validated at the server boundary.
  */
-export const pointToGeoJSON = <T extends GeoJsonProperties>(geometry: Point, properties?: T) => {
-  const validationResult = PointGeometrySchema.safeParse(geometry)
-  if (validationResult.success) {
-    return point(geometry.coordinates, properties)
+export const pointToGeoJSON = <T extends GeoJsonProperties>(
+  geometry: Point | MultiPoint,
+  properties?: T,
+) => {
+  if (geometry.type === "Point") {
+    return [point(geometry.coordinates, properties)]
   }
-  return null
+
+  if (geometry.type === "MultiPoint") {
+    return geometry.coordinates.map((coords) => point(coords, properties))
+  }
+
+  return []
 }

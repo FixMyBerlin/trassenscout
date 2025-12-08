@@ -30,7 +30,7 @@ const EditSubsubsection = () => {
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
-  const [subsubsection, { setQueryData }] = useQuery(
+  const [subsubsection] = useQuery(
     getSubsubsection,
     {
       projectSlug,
@@ -56,7 +56,6 @@ const EditSubsubsection = () => {
         estimatedCompletionDate:
           values.estimatedCompletionDate === "" ? null : new Date(values.estimatedCompletionDate),
       })
-      await setQueryData(updated)
       await router.push(
         Routes.SubsubsectionDashboardPage({
           projectSlug,

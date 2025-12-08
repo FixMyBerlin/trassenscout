@@ -5,6 +5,7 @@ import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlu
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Link } from "@/src/core/components/links"
+import { GeometryIcon } from "@/src/core/components/Map/Icons/GeometryIcon"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text"
@@ -150,22 +151,34 @@ export const ProjectRecordsTable = ({
                           {withSubsection && projectRecord.subsection && (
                             <div>
                               <p className="mb-2 font-medium text-gray-500">Abschnitt: </p>
-                              <Link
-                                href={`/${projectSlug}/abschnitte/${projectRecord.subsection.slug}`}
-                              >
-                                {shortTitle(projectRecord.subsection.slug)}
-                              </Link>
+                              <div className="flex items-center gap-2">
+                                <Link
+                                  href={`/${projectSlug}/abschnitte/${projectRecord.subsection.slug}`}
+                                >
+                                  {shortTitle(projectRecord.subsection.slug)}
+                                </Link>
+                                <GeometryIcon
+                                  type={projectRecord.subsection.type}
+                                  className="size-4"
+                                />
+                              </div>
                             </div>
                           )}
                           {/* Eintrag */}
                           {withSubsubsection && projectRecord.subsubsection && (
                             <div>
                               <p className="mb-2 font-medium text-gray-500">Eintrag: </p>
-                              <Link
-                                href={`/${projectSlug}/abschnitte/${projectRecord.subsubsection.subsection.slug}/fuehrung/${projectRecord.subsubsection.slug}`}
-                              >
-                                {shortTitle(projectRecord.subsubsection.slug)}
-                              </Link>
+                              <div className="flex items-center gap-2">
+                                <Link
+                                  href={`/${projectSlug}/abschnitte/${projectRecord.subsubsection.subsection.slug}/fuehrung/${projectRecord.subsubsection.slug}`}
+                                >
+                                  {shortTitle(projectRecord.subsubsection.slug)}
+                                </Link>
+                                <GeometryIcon
+                                  type={projectRecord.subsubsection.type}
+                                  className="size-4"
+                                />
+                              </div>
                             </div>
                           )}
                           {/* Uploads */}

@@ -10,11 +10,12 @@ import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 import { createLogEntry } from "../../logEntries/create/createLogEntry"
-import { SubsectionWithPosition } from "../queries/getSubsection"
-import { SubsectionSchema } from "../schema"
+import { subsectionGeometryTypeValidationRefine } from "../../shared/utils/geometryTypeValidation"
+import { TGetSubsection } from "../queries/getSubsection"
+import { SubsectionBaseSchema } from "../schema"
 
-const UpdateSubsectionSchema = ProjectSlugRequiredSchema.merge(
-  SubsectionSchema.merge(z.object({ id: z.number() })),
+const UpdateSubsectionSchema = subsectionGeometryTypeValidationRefine(
+  ProjectSlugRequiredSchema.merge(SubsectionBaseSchema.merge(z.object({ id: z.number() }))),
 )
 
 export default resolver.pipe(
@@ -38,6 +39,6 @@ export default resolver.pipe(
       subsectionId: record.id,
     })
 
-    return record as SubsectionWithPosition // Tip: Validate type shape with `satisfies`
+    return record as TGetSubsection // Tip: Validate type shape with `satisfies`
   },
 )

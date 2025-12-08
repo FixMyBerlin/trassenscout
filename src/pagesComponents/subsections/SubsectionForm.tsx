@@ -7,7 +7,6 @@ import {
   LabeledTextField,
   LabeledTextareaField,
 } from "@/src/core/components/forms"
-import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
 import { LabeledTextFieldCalculateLength } from "@/src/core/components/forms/LabeledTextFieldCalculateLength"
 import { createFormOptions } from "@/src/core/components/forms/_utils/createFormOptions"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
@@ -22,6 +21,7 @@ import { PriorityEnum } from "@prisma/client"
 import { Route } from "next"
 import { Suspense } from "react"
 import { z } from "zod"
+import { SubsectionGeometryInput } from "./SubsectionGeometryInput"
 import { getPriorityTranslation } from "./utils/getPriorityTranslation"
 
 type Props<S extends z.ZodType<any, any>> = FormProps<S>
@@ -62,7 +62,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
         <LabeledTextField type="text" name="end" label="Endpunkt" />
       </div>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
-      <LabeledGeometryField name="geometry" label="Geometry der Achse (LineString)" />
+      <SubsectionGeometryInput />
       <LabeledTextFieldCalculateLength name="lengthM" label="Länge" optional />
       <details>
         <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>

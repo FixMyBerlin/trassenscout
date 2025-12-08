@@ -2,15 +2,20 @@ import db, { Prisma } from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
+import { typeSubsubsectionGeometry } from "@/src/server/subsubsections/utils/typeSubsubsectionGeometry"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
 import { SubsubsectionWithPosition } from "./getSubsubsection"
+import getSubsubsections from "./getSubsubsections"
 
 type GetSubsubsectionsInput = { projectSlug: string } & Pick<
   Prisma.SubsubsectionFindManyArgs,
   // Do not allow `include` or `select` here, since we overwrite the types below.
   "where" | "orderBy" | "skip" | "take"
 >
+
+export type TGetSubsubsections = Awaited<ReturnType<typeof getSubsubsections>>
+export type TSubsubsections = TGetSubsubsections["subsubsections"]
 
 export default resolver.pipe(
   // @ts-ignore
@@ -50,8 +55,15 @@ export default resolver.pipe(
         }),
     })
 
+    // Type assertion needed: TypeScript can't infer the discriminated union relationship
+    // between `type` and `geometry` fields, even though typeSubsubsectionGeometry ensures
+    // they match at runtime.
+    const roundedSubsubsections = subsubsections.map(
+      (ss) => typeSubsubsectionGeometry(ss) as SubsubsectionWithPosition,
+    )
+
     return {
-      subsubsections: subsubsections as SubsubsectionWithPosition[], // Tip: Validate type shape with `satisfies`
+      subsubsections: roundedSubsubsections as SubsubsectionWithPosition[],
       nextPage,
       hasMore,
       count,
