@@ -5,11 +5,12 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { SubsubsectionInfrastructureType } from "@/src/server/subsubsectionInfrastructureType/schema"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 
 const UpdateSubsubsectionInfrastructureTypeSchema = ProjectSlugRequiredSchema.merge(
-  z.object({ id: z.number() }),
+  SubsubsectionInfrastructureType.omit({ projectId: true }).merge(z.object({ id: z.number() })),
 )
 
 export default resolver.pipe(

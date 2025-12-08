@@ -5,13 +5,13 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { SubsubsectionSpecial } from "@/src/server/subsubsectionSpecial/schema"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 
 const UpdateSubsubsectionSpecialSchema = ProjectSlugRequiredSchema.merge(
-  z.object({ id: z.number() }),
+  SubsubsectionSpecial.merge(z.object({ id: z.number() })),
 )
-
 export default resolver.pipe(
   resolver.zod(UpdateSubsubsectionSpecialSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),

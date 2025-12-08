@@ -5,10 +5,13 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { SubsubsectionInfra } from "@/src/server/subsubsectionInfra/schema"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 
-const UpdateSubsubsectionInfraSchema = ProjectSlugRequiredSchema.merge(z.object({ id: z.number() }))
+const UpdateSubsubsectionInfraSchema = ProjectSlugRequiredSchema.merge(
+  SubsubsectionInfra.merge(z.object({ id: z.number() })),
+)
 
 export default resolver.pipe(
   resolver.zod(UpdateSubsubsectionInfraSchema),
