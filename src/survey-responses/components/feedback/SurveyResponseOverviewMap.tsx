@@ -495,7 +495,7 @@ export const SurveyResponseOverviewMap = ({
         {surveyResponsesSource}
         {geometryCategorySource}
         <BackgroundSwitcher
-          className="absolute top-4 left-4"
+          position="top-left"
           value={selectedLayer}
           onChange={handleLayerSwitch}
         />

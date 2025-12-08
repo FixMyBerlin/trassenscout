@@ -81,7 +81,7 @@ export const fieldDataTypes = {
   estimatedCompletionDate: "Date",
   subsectionId: "Relation (Number)",
   specialFeatures: "Relation (Array)",
-  type: "Enum (SubsubsectionTypeEnum)",
+  type: "Enum (GeometryTypeEnum)",
 } as const
 
 // Required fields from schema - static

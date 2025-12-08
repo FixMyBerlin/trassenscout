@@ -3,16 +3,13 @@
 import { blueButtonStyles, whiteButtonStyles } from "@/src/core/components/links/styles"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { UploadMarkers } from "@/src/core/components/Map/UploadMarkers"
-import { subsectionsBbox } from "@/src/core/components/Map/utils/subsectionsBbox"
+import { geometriesBbox, geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import getSubsections, {
-  SubsectionWithPositionAndStatus,
-} from "@/src/server/subsections/queries/getSubsections"
+import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
+import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import { UploadSchema } from "@/src/server/uploads/schema"
 import { useQuery } from "@blitzjs/rpc"
 import { TrashIcon } from "@heroicons/react/24/outline"
-import { lineString } from "@turf/helpers"
-import { bbox } from "@turf/turf"
 import { useMemo } from "react"
 import { useFormContext } from "react-hook-form"
 import { Marker, MarkerDragEvent } from "react-map-gl/maplibre"
@@ -22,8 +19,6 @@ import { SubsectionSourceLayers } from "./SubsectionSourceLayers"
 import { SubsubsectionSourceLayers } from "./SubsubsectionSourceLayers"
 import { UploadPin } from "./UploadPin"
 
-type Bbox = [number, number, number, number]
-
 export const UploadLocationMap = () => {
   const { setValue, watch } = useFormContext<z.infer<typeof UploadSchema>>()
   const latitude = watch("latitude")
@@ -31,11 +26,8 @@ export const UploadLocationMap = () => {
   const subsectionId = watch("subsectionId")
   const projectSlug = useProjectSlug()
 
-  const [{ subsections }] = useQuery(getSubsections, {
-    projectSlug,
-    take: 500,
-  })
-  const currentSubsection = subsections.find((ss: SubsectionWithPositionAndStatus) => {
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug, take: 500 })
+  const currentSubsection = subsections.find((ss: TGetSubsection) => {
     return ss.id === subsectionId
   })
 
@@ -45,11 +37,12 @@ export const UploadLocationMap = () => {
   const mapBbox = useMemo(() => {
     // 1. If we have a subsection from URL params, use its bbox
     if (currentSubsection) {
-      return bbox(lineString(currentSubsection.geometry.coordinates)) as Bbox
+      return geometryBbox(currentSubsection.geometry)
     }
     // 2. Otherwise, use project bbox
     if (subsections.length > 0) {
-      return subsectionsBbox(subsections) as Bbox
+      const geometries = subsections.map((ss) => ss.geometry)
+      return geometriesBbox(geometries)
     }
   }, [currentSubsection, subsections])
 

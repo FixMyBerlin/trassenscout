@@ -1,3 +1,4 @@
+import type { ControlPosition } from "@/src/core/components/Map/BackgroundSwitcher"
 import {
   Listbox,
   ListboxButton,
@@ -16,15 +17,28 @@ const labels: { [index: string]: string } = {
   satellite: "Satellit",
 }
 
+const positionClasses: Record<ControlPosition, string> = {
+  "top-left": "absolute top-4 left-4",
+  "top-right": "absolute top-4 right-4",
+  "bottom-left": "absolute bottom-4 left-4",
+  "bottom-right": "absolute bottom-4 right-4",
+}
+
 type Props = {
   value: LayerType
   onChange: (_: LayerType) => void
-  className: string
+  position?: ControlPosition
+  className?: string
 }
 
-export const SurveyBackgroundSwitcher = ({ value, onChange, className }: Props) => {
+export const SurveyBackgroundSwitcher = ({
+  value,
+  onChange,
+  position = "top-left",
+  className,
+}: Props) => {
   return (
-    <div className={className}>
+    <div className={clsx(positionClasses[position], className)}>
       <Listbox value={value} onChange={onChange}>
         {({ open }) => (
           <div className="relative mt-1">

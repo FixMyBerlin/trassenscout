@@ -5,9 +5,9 @@ import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import { GetSubsectionSchema, SubsectionWithPosition } from "./getSubsection"
+import { GetSubsectionSchema, TGetSubsection } from "./getSubsection"
 
-export type SubsectionWithSubsubsectionsWithPosition = SubsectionWithPosition & {
+export type SubsectionWithSubsubsectionsWithPosition = TGetSubsection & {
   subsubsections: SubsubsectionWithPosition[]
 }
 

@@ -8,16 +8,19 @@ import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { SubsectionForm } from "@/src/pagesComponents/subsections/SubsectionForm"
 import getProject from "@/src/server/projects/queries/getProject"
+import { geometryTypeValidationRefine } from "@/src/server/shared/utils/geometryTypeValidation"
 import createSubsection from "@/src/server/subsections/mutations/createSubsection"
 import getSubsectionMaxOrder from "@/src/server/subsections/queries/getSubsectionMaxOrder"
-import { SubsectionSchema } from "@/src/server/subsections/schema"
+import { SubsectionBaseSchema } from "@/src/server/subsections/schema"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 import { z } from "zod"
 
-const NewSubsectionSchema = SubsectionSchema.omit({ projectId: true })
+const NewSubsectionSchema = geometryTypeValidationRefine(
+  SubsectionBaseSchema.omit({ projectId: true }),
+)
 
 const NewSubsection = () => {
   const router = useRouter()

@@ -3,7 +3,7 @@ import { FeatureCollectionSchema, FeatureSchema } from "@/src/server/subsections
 /**
  * Extracts GeoJSON geometry from input (Feature, FeatureCollection, or Geometry)
  * Returns the full GeoJSON geometry object that can be stored directly.
- * Supports: Point, LineString, MultiLineString, Polygon, MultiPolygon
+ * Supports: Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon
  */
 export const extractGeometryFromGeoJSON = (text: string) => {
   let parsed: unknown
@@ -18,6 +18,7 @@ export const extractGeometryFromGeoJSON = (text: string) => {
     const t = geometry.type as string
     if (
       t === "Point" ||
+      t === "MultiPoint" ||
       t === "LineString" ||
       t === "MultiLineString" ||
       t === "Polygon" ||
@@ -36,6 +37,12 @@ export const extractGeometryFromGeoJSON = (text: string) => {
 
     if (geometries.length === 0) return null
 
+    // Check if all geometries are Point - combine into MultiPoint
+    if (geometries.every((g) => g?.type === "Point")) {
+      const coordinates = geometries.map((g) => g!.coordinates as number[])
+      return processGeometry({ type: "MultiPoint", coordinates })
+    }
+
     // Check if all geometries are LineString - combine into MultiLineString
     if (geometries.every((g) => g?.type === "LineString")) {
       const coordinates = geometries.map((g) => g!.coordinates as number[][])
@@ -48,9 +55,10 @@ export const extractGeometryFromGeoJSON = (text: string) => {
       return processGeometry({ type: "MultiPolygon", coordinates })
     }
 
-    // If there's a MultiLineString or MultiPolygon, use the first one
+    // If there's a MultiPoint, MultiLineString or MultiPolygon, use the first one
     const multiGeometry = geometries.find(
-      (g) => g?.type === "MultiLineString" || g?.type === "MultiPolygon",
+      (g) =>
+        g?.type === "MultiPoint" || g?.type === "MultiLineString" || g?.type === "MultiPolygon",
     )
     if (multiGeometry) {
       return processGeometry(multiGeometry)

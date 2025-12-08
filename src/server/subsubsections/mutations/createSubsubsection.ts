@@ -5,9 +5,10 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { geometryTypeValidationRefine } from "@/src/server/shared/utils/geometryTypeValidation"
 import { resolver } from "@blitzjs/rpc"
 import { m2mFields, M2MFieldsType } from "../m2mFields"
-import { geometryTypeValidationRefine, SubsubsectionBaseSchema } from "../schema"
+import { SubsubsectionBaseSchema } from "../schema"
 
 const CreateSubsubsectionSchema = geometryTypeValidationRefine(
   ProjectSlugRequiredSchema.merge(SubsubsectionBaseSchema),

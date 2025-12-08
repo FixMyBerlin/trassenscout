@@ -63,9 +63,10 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
       Polygon,
       { subsectionSlug: string; subsubsectionSlug?: string; color: string; opacity?: number }
     >
-    dots?: [number, number][]
+    dots?: Array<[number, number] | GeoJSON.Position>
     classHeight?: string
     children?: React.ReactNode
+    backgroundSwitcherPosition?: "top-left" | "top-right" | "bottom-left" | "bottom-right"
   }
 
 export const BaseMap = ({
@@ -85,6 +86,7 @@ export const BaseMap = ({
   dots,
   classHeight,
   children,
+  backgroundSwitcherPosition = "top-left",
 }: BaseMapProps) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const handleLayerSwitch = (layer: LayerType) => {
@@ -306,7 +308,7 @@ export const BaseMap = ({
           {children}
         </Map>
         <BackgroundSwitcher
-          className="absolute top-4 left-4"
+          position={backgroundSwitcherPosition}
           value={selectedLayer}
           onChange={handleLayerSwitch}
         />

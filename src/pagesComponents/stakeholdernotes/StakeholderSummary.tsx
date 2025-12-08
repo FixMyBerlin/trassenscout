@@ -1,6 +1,6 @@
-import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
+import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 
-type Props = Pick<SubsectionWithPosition, "stakeholdernotesCounts"> & {
+type Props = Pick<TGetSubsection, "stakeholdernotesCounts"> & {
   format: "number" | "labelNumber"
 }
 

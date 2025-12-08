@@ -21,15 +21,19 @@ export const SubsectionSourceLayers = ({ selectedSubsectionId }: Props) => {
     take: 500,
   })
 
+  // TODO: Handle other geometry types
   const selectableLines = useMemo(() => {
     return featureCollection(
-      subsections.map((ss) =>
-        lineString(ss.geometry.coordinates, {
-          subsectionSlug: ss.slug,
-          color: ss.id === selectedSubsectionId ? "#2563eb" : "#64748b",
-          opacity: ss.id === selectedSubsectionId ? 1 : 0.6,
-        }),
-      ),
+      subsections
+        .map((subsection) => {
+          if (subsection.geometry.type !== "LineString") return null
+          return lineString(subsection.geometry.coordinates, {
+            subsectionSlug: subsection.slug,
+            color: subsection.id === selectedSubsectionId ? "#2563eb" : "#64748b",
+            opacity: subsection.id === selectedSubsectionId ? 1 : 0.6,
+          })
+        })
+        .filter(Boolean),
     )
   }, [subsections, selectedSubsectionId])
 

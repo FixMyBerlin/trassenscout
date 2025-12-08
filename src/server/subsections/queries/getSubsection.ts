@@ -1,20 +1,14 @@
-import db, { Subsection } from "@/db"
+import db from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
-import { LineStringGeometrySchema } from "@/src/core/utils/geojson-schemas"
 import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import { z } from "zod"
+import getSubsection from "./getSubsection"
 
-// Subsection geometry is always a LineString GeoJSON object
-export type SubsectionWithPosition = Omit<Subsection, "geometry"> & {
-  geometry: z.infer<typeof LineStringGeometrySchema>
-} & { operator: { id: number; slug: string; title: string } | null } & {
-  stakeholdernotesCounts: { relevant: number; done: number }
-  subsubsectionCount: number
-}
+export type TGetSubsection = Awaited<ReturnType<typeof getSubsection>>
 
 export const GetSubsectionSchema = z.object({
   projectSlug: z.string(),
@@ -36,6 +30,7 @@ export default resolver.pipe(
         operator: { select: { id: true, slug: true, title: true } },
         stakeholdernotes: { select: { id: true, status: true } },
         subsubsections: { select: { id: true } },
+        SubsectionStatus: { select: { slug: true, title: true, style: true } },
       },
     }
     const subsection = await db.subsection.findFirst(query)
@@ -51,15 +46,15 @@ export default resolver.pipe(
 
     const subsubsectionCount = subsection.subsubsections.length
 
-    // We only needed those for the counts, we don't actually want the full list to be returned
-    // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)" is true but not relevant here
-    delete subsection.stakeholdernotes
-    // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)" is true but not relevant here
-    delete subsection.subsubsections
+    const {
+      stakeholdernotes: _delete1,
+      subsubsections: _delete2,
+      ...typedSubsection
+    } = typeSubsectionGeometry(subsection)
 
-    const typedSubsection = typeSubsectionGeometry(subsection)
-    const subsectionWithCounts: SubsectionWithPosition = {
+    const subsectionWithCounts = {
       ...typedSubsection,
+      type: subsection.type,
       stakeholdernotesCounts: { relevant: relevantStakeholdernotes, done: doneStakeholdernotes },
       subsubsectionCount,
     }

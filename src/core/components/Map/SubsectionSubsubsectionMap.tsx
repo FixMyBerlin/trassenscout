@@ -1,10 +1,8 @@
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
-import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
+import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { Routes } from "@blitzjs/next"
-import { lineString } from "@turf/helpers"
-import { bbox, featureCollection } from "@turf/turf"
-import { Feature, Geometry } from "geojson"
+import { featureCollection, lineString } from "@turf/helpers"
 import { useRouter } from "next/router"
 import { useMemo, useState } from "react"
 import { MapLayerMouseEvent, Marker } from "react-map-gl/maplibre"
@@ -16,14 +14,15 @@ import { TitleLabel } from "./Labels"
 import { TipMarker } from "./TipMarker"
 import { UploadMarkers } from "./UploadMarkers"
 import { layerColors } from "./layerColors"
+import { geometriesBbox } from "./utils/bboxHelpers"
 import { getCenterOfMass } from "./utils/getCenterOfMass"
 import { lineStringToGeoJSON } from "./utils/lineStringToGeoJSON"
 import { pointToGeoJSON } from "./utils/pointToGeoJSON"
 import { polygonToGeoJSON } from "./utils/polygonToGeoJSON"
 
 type Props = {
-  subsections: SubsectionWithPosition[]
-  selectedSubsection: SubsectionWithPosition
+  subsections: TGetSubsection[]
+  selectedSubsection: TGetSubsection
   subsubsections: SubsubsectionWithPosition[]
 }
 
@@ -36,43 +35,6 @@ export const SubsectionSubsubsectionMap = ({
   const pageSubsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
   const router = useRouter()
-
-  /**
-   * Calculates bbox including subsection and optionally a subsubsection
-   */
-  const calculateBbox = (
-    subsectionGeometry: SubsectionWithPosition["geometry"],
-    subsubsection: SubsubsectionWithPosition | undefined,
-  ) => {
-    const geometriesToInclude: Feature<Geometry>[] = [lineString(subsectionGeometry.coordinates)]
-
-    if (subsubsection) {
-      // Convert subsubsection geometry to features using existing helpers
-      switch (subsubsection.geometry.type) {
-        case "Point": {
-          const feature = pointToGeoJSON(subsubsection.geometry)
-          if (feature) geometriesToInclude.push(feature)
-          break
-        }
-        case "LineString":
-        case "MultiLineString": {
-          const features = lineStringToGeoJSON(subsubsection.geometry)
-          if (features) geometriesToInclude.push(...features)
-          break
-        }
-        case "Polygon":
-        case "MultiPolygon": {
-          const features = polygonToGeoJSON(subsubsection.geometry)
-          if (features) geometriesToInclude.push(...features)
-          break
-        }
-      }
-    }
-
-    // Calculate combined bbox from all geometries
-    const combinedFeatures = featureCollection(geometriesToInclude)
-    return bbox(combinedFeatures)
-  }
 
   type HandleSelectProps = { subsectionSlug: string; subsubsectionSlug: string; edit: boolean }
   const handleSelect = ({ subsectionSlug, subsubsectionSlug, edit }: HandleSelectProps) => {
@@ -101,10 +63,13 @@ export const SubsectionSubsubsectionMap = ({
           (subsub) => subsub.slug === subsubsectionSlug,
         )
         if (clickedSubsubsection) {
-          const bboxResult = calculateBbox(selectedSubsection.geometry, clickedSubsubsection)
+          const bboxResult = geometriesBbox([
+            selectedSubsection.geometry,
+            clickedSubsubsection.geometry,
+          ])
 
           // Fly to new bounds
-          map.fitBounds([bboxResult[0], bboxResult[1], bboxResult[2], bboxResult[3]], {
+          map.fitBounds(bboxResult, {
             padding: 60,
             duration: 1000,
             linear: false, // Use easeInOut animation
@@ -129,20 +94,26 @@ export const SubsectionSubsubsectionMap = ({
     const selectedSubsubsection = subsubsections.find(
       (subsub) => subsub.slug === pageSubsubsectionSlug,
     )
-    return calculateBbox(selectedSubsection.geometry, selectedSubsubsection)
+    const geometries = [selectedSubsection.geometry]
+    if (selectedSubsubsection) {
+      geometries.push(selectedSubsubsection.geometry)
+    }
+    return geometriesBbox(geometries)
   }, [selectedSubsection.geometry, subsubsections, pageSubsubsectionSlug])
 
+  // TODO: Handle other geometry types
   const lines = featureCollection(
     subsections
-      .map((subsection) =>
-        lineString(subsection.geometry.coordinates, {
+      .map((subsection) => {
+        if (subsection.geometry.type !== "LineString") return null
+        return lineString(subsection.geometry.coordinates, {
           color:
             subsection.slug === selectedSubsection.slug
               ? layerColors.unselectableCurrent
               : layerColors.unselectable,
           // opacity: subsection.slug === selectedSubsection.slug ? 0.4 : 0.35,
-        }),
-      )
+        })
+      })
       .filter(Boolean),
   )
 
@@ -167,7 +138,7 @@ export const SubsectionSubsubsectionMap = ({
   const selectablePoints = featureCollection(
     subsubsections
       .filter((sec) => sec.type === "POINT")
-      .map((sec) => {
+      .flatMap((sec) => {
         const properties = {
           subsectionSlug: sec.subsection.slug,
           subsubsectionSlug: sec.slug,
@@ -187,9 +158,8 @@ export const SubsectionSubsubsectionMap = ({
                 ? layerColors.hovered
                 : layerColors.selectable,
         }
-        return pointToGeoJSON<typeof properties>(sec.geometry, properties)
-      })
-      .filter(Boolean),
+        return pointToGeoJSON<typeof properties>(sec.geometry, properties) ?? []
+      }),
   )
 
   const selectablePolygons = featureCollection(
@@ -272,7 +242,7 @@ export const SubsectionSubsubsectionMap = ({
       <BaseMap
         id="mainMap"
         initialViewState={{
-          bounds: [mapBbox[0], mapBbox[1], mapBbox[2], mapBbox[3]],
+          bounds: mapBbox,
           fitBoundsOptions: { padding: 60 },
         }}
         onClick={handleClickMap}

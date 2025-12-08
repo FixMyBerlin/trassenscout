@@ -56,8 +56,8 @@ export const SubsubsectionSourceLayers = () => {
       "border-width": 3,
       "border-color": layerColors.selectable,
     }
-    const feature = pointToGeoJSON<typeof properties>(subsubsection.geometry, properties)
-    return feature ? featureCollection([feature]) : featureCollection([])
+    const features = pointToGeoJSON<typeof properties>(subsubsection.geometry, properties) ?? []
+    return featureCollection(features)
   }, [subsubsection])
 
   const selectablePolygons = useMemo(() => {

@@ -7,20 +7,20 @@ import { startEnd } from "@/src/core/components/text/startEnd"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-import { SubsectionWithPositionAndStatus } from "@/src/server/subsections/queries/getSubsections"
+import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { Routes } from "@blitzjs/next"
 import { clsx } from "clsx"
 import { useRouter } from "next/router"
 
 type Props = {
-  subsections: SubsectionWithPositionAndStatus[]
+  subsections: TSubsections
   createButton?: boolean
 }
 
 const tableHeadClasses =
   "pl-4 py-3.5 pr-3 text-left text-sm font-semibold uppercase text-gray-900  "
 
-export const SubsectionTable: React.FC<Props> = ({ subsections, createButton = true }) => {
+export const SubsectionTable = ({ subsections, createButton = true }: Props) => {
   const router = useRouter()
   const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()

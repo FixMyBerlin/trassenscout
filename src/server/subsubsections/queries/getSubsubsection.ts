@@ -1,8 +1,8 @@
-import db, { QualityLevel, Subsubsection, SubsubsectionTypeEnum, User } from "@/db"
+import db, { QualityLevel, Subsubsection, User } from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
-import { GeometryBySubsubsectionType } from "@/src/server/subsubsections/schema"
+import { GeometryWithTypeDiscriminated } from "@/src/server/shared/utils/geometrySchemas"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 import { m2mFields } from "../m2mFields"
@@ -18,21 +18,8 @@ const includeM2mFields = {}
 m2mFields.forEach((fieldName) => (includeM2mFields[fieldName] = { select: { id: true } }))
 
 // We store full GeoJSON geometry objects. The geometry type must match the enum type.
-export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry"> &
-  (
-    | {
-        type: typeof SubsubsectionTypeEnum.POINT
-        geometry: GeometryBySubsubsectionType<"POINT">
-      }
-    | {
-        type: typeof SubsubsectionTypeEnum.LINE
-        geometry: GeometryBySubsubsectionType<"LINE">
-      }
-    | {
-        type: typeof SubsubsectionTypeEnum.POLYGON
-        geometry: GeometryBySubsubsectionType<"POLYGON">
-      }
-  ) & { manager: User } & { subsection: { slug: string } } & {
+export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry" | "type"> &
+  GeometryWithTypeDiscriminated & { manager: User } & { subsection: { slug: string } } & {
     qualityLevel?: Pick<QualityLevel, "title" | "slug" | "url">
   } & { SubsubsectionTask?: { title: string } } & {
     SubsubsectionInfrastructureType?: { title: string }

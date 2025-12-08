@@ -14,7 +14,6 @@ import { OperatorFilterDropdown } from "@/src/pagesComponents/projects/OperatorF
 import { SubsectionTable } from "@/src/pagesComponents/subsections/SubsectionTable"
 import getProject from "@/src/server/projects/queries/getProject"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
-import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { BlitzPage, Routes, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Suspense } from "react"
@@ -28,11 +27,6 @@ export const ProjectDashboardWithQuery = () => {
   // We use the URL param `operator` to filter the UI
   // Docs: https://blitzjs.com/docs/route-params-query#use-router-query
   const params = useRouterQuery()
-
-  const [{ uploads }] = useQuery(getUploadsWithSubsections, {
-    projectSlug,
-    where: { subsectionId: null },
-  })
 
   const filteredSubsections = params.operator
     ? subsections.filter(

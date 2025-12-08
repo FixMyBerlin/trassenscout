@@ -15,6 +15,11 @@ export const PointGeometrySchema = z.object({
   coordinates: PositionSchema,
 })
 
+export const MultiPointGeometrySchema = z.object({
+  type: z.literal("MultiPoint"),
+  coordinates: PositionArraySchema,
+})
+
 export const LineStringGeometrySchema = z.object({
   type: z.literal("LineString"),
   coordinates: PositionArraySchema.min(2),

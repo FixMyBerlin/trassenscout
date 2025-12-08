@@ -34,6 +34,7 @@ describe("createLogEntry mutation", async () => {
   )
   const subsectionInput = {
     slug: "test",
+    type: "LINE" as const,
     order: 99,
     lengthM: 99,
     start: "start string",

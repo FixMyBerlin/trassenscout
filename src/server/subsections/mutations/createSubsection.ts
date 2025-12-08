@@ -6,17 +6,22 @@ import {
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
 import { shortTitle } from "@/src/core/components/text/titles"
+import { geometryTypeValidationRefine } from "@/src/server/shared/utils/geometryTypeValidation"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
+import { z } from "zod"
 import { createLogEntry } from "../../logEntries/create/createLogEntry"
-import { SubsectionSchema } from "../schema"
+import { SubsectionBaseSchema } from "../schema"
 
-const CreateSubsectionSchema = ProjectSlugRequiredSchema.merge(SubsectionSchema)
+const BaseCreateSubsectionSchema = ProjectSlugRequiredSchema.merge(SubsectionBaseSchema)
+const CreateSubsectionSchema = geometryTypeValidationRefine(BaseCreateSubsectionSchema)
+
+type CreateSubsectionInput = z.infer<typeof BaseCreateSubsectionSchema>
 
 export default resolver.pipe(
   resolver.zod(CreateSubsectionSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
-  async ({ projectSlug, ...data }, ctx: Ctx) => {
+  async ({ projectSlug, ...data }: CreateSubsectionInput, ctx: Ctx) => {
     const record = await db.subsection.create({ data })
 
     await createLogEntry({

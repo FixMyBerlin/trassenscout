@@ -1,13 +1,12 @@
 import { legendItemsConfig } from "@/src/core/components/Map/legendConfig"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
-import { SubsectionWithPositionAndStatus } from "@/src/server/subsections/queries/getSubsections"
+import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { Routes } from "@blitzjs/next"
 import { lineString } from "@turf/helpers"
 import { along, featureCollection, length } from "@turf/turf"
 import { useRouter } from "next/router"
 import { useEffect, useMemo, useState } from "react"
 import {
-  LngLatBoundsLike,
   MapEvent,
   MapLayerMouseEvent,
   Marker,
@@ -23,11 +22,11 @@ import { StartEndLabel } from "./Labels"
 import { MapLegend } from "./MapLegend"
 import { TipMarker } from "./TipMarker"
 import { layerColors } from "./layerColors"
-import { subsectionsBbox } from "./utils/subsectionsBbox"
+import { geometriesBbox } from "./utils/bboxHelpers"
 
-type Props = { subsections: SubsectionWithPositionAndStatus[] }
+type Props = { subsections: TSubsections }
 
-export const ProjectMap: React.FC<Props> = ({ subsections }) => {
+export const ProjectMap = ({ subsections }: Props) => {
   const router = useRouter()
   const projectSlug = useProjectSlug()
   const { mainMap } = useMap()
@@ -35,7 +34,8 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
 
   // bundingBox only changes when subsections change / subsections array is created
   const boundingBox = useMemo(() => {
-    return subsectionsBbox(subsections) as LngLatBoundsLike
+    const geometries = subsections.map((ss) => ss.geometry)
+    return geometriesBbox(geometries)
   }, [subsections])
 
   // we do not want to fitBounds everytime the subsections array is created (tanstack query refetches subsections on window focus)
@@ -45,10 +45,7 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
   // we spread boundingBox in the dependency array to make sure the effect runs when the values of boundingBox change (not everytime the array is created)
   useEffect(() => {
     mainMap?.fitBounds(boundingBox, { padding: 60 })
-    // @ts-expect-error
-    // eslint-disable-next-line react-compiler/react-compiler
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mainMap, ...boundingBox])
+  }, [mainMap, boundingBox])
 
   type HandleSelectProps = { subsectionSlug: string; edit: boolean }
   const handleSelect = ({ subsectionSlug, edit }: HandleSelectProps) => {
@@ -84,26 +81,35 @@ export const ProjectMap: React.FC<Props> = ({ subsections }) => {
     setHoveredMap(null)
   }
 
+  // TODO: Handle other geometry types
   const dotsGeoms = subsections
-    .map((ss) => [ss.geometry.coordinates.at(0), ss.geometry.coordinates.at(-1)])
-    .flat()
+    .flatMap((ss) => {
+      if (ss.geometry.type !== "LineString") return null
+      return [ss.geometry.coordinates.at(0), ss.geometry.coordinates.at(-1)]
+    })
     .filter(Boolean)
 
+  // TODO: Handle other geometry types
   const selectableLines = featureCollection(
-    subsections.map((subsection) =>
-      lineString(subsection.geometry.coordinates, {
-        subsectionSlug: subsection.slug,
-        dashed: subsection.SubsectionStatus?.style === "DASHED" ? true : undefined,
-        // backgroundColor: "#FED7AA",
-        color:
-          hoveredMap === subsection.slug || hoveredMarker === subsection.slug
-            ? layerColors.hovered
-            : layerColors.selectable,
-      }),
-    ),
+    subsections
+      .map((subsection) => {
+        if (subsection.geometry.type !== "LineString") return null
+        return lineString(subsection.geometry.coordinates, {
+          subsectionSlug: subsection.slug,
+          dashed: subsection.SubsectionStatus?.style === "DASHED" ? true : undefined,
+          // backgroundColor: "#FED7AA",
+          color:
+            hoveredMap === subsection.slug || hoveredMarker === subsection.slug
+              ? layerColors.hovered
+              : layerColors.selectable,
+        })
+      })
+      .filter(Boolean),
   )
 
   const markers = subsections.map((sub) => {
+    // TODO: Handle other geometry types
+    if (sub.geometry.type !== "LineString") return null
     const midLine = lineString(sub.geometry.coordinates)
     const midLengthHalf = length(midLine) / 2
     const midPoint = along(midLine, midLengthHalf)

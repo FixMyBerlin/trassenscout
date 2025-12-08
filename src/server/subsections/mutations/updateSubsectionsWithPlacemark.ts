@@ -1,20 +1,23 @@
 import db from "@/db"
 import { ProjectSlugRequiredSchema } from "@/src/authorization/extractProjectSlug"
 import { multilinestringToLinestring } from "@/src/pagesComponents/subsections/utils/multilinestringToLinestring"
+import { geometryTypeValidationRefine } from "@/src/server/shared/utils/geometryTypeValidation"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { length, lineString } from "@turf/turf"
 import { z } from "zod"
 import { createLogEntry } from "../../logEntries/create/createLogEntry"
-import { FeatureCollectionSchema, SubsectionSchema } from "../schema"
+import { FeatureCollectionSchema, SubsectionBaseSchema } from "../schema"
 
 const updateSubsectionsWithPlacemarkSchema = ProjectSlugRequiredSchema.merge(
   z.object({
     subsections: z.array(
-      SubsectionSchema.merge(
-        z.object({
-          id: z.number(),
-        }),
+      geometryTypeValidationRefine(
+        SubsectionBaseSchema.merge(
+          z.object({
+            id: z.number(),
+          }),
+        ),
       ),
     ),
     newGeometry: FeatureCollectionSchema,
@@ -55,7 +58,6 @@ export default resolver.pipe(
             lengthM: newCoordinates
               ? Number(
                   // prettier-ignore
-                  // @ts-expect-error
                   (length(lineString(newCoordinates), {
                       units: "kilometers",
                     }) * 1000).toFixed(

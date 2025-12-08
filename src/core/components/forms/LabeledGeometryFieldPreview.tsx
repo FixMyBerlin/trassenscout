@@ -3,8 +3,8 @@ import { vectorStyle } from "@/src/core/components/Map/BaseMap"
 import { lineStringToGeoJSON } from "@/src/core/components/Map/utils/lineStringToGeoJSON"
 import { pointToGeoJSON } from "@/src/core/components/Map/utils/pointToGeoJSON"
 import { polygonToGeoJSON } from "@/src/core/components/Map/utils/polygonToGeoJSON"
+import { validateGeometryByType } from "@/src/server/shared/utils/validateGeometryByType"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
-import { validateGeometryByType } from "@/src/server/subsubsections/schema"
 import { CheckBadgeIcon } from "@heroicons/react/24/solid"
 import { featureCollection, lineString, point } from "@turf/helpers"
 import { bbox } from "@turf/turf"
@@ -94,7 +94,14 @@ export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
                       longitude: geometry.coordinates[0],
                       zoom: 14,
                     }
-                  : {}),
+                  : geometry && geometry.type === "MultiPoint" && geometry.coordinates.length > 0
+                    ? {
+                        bounds: bbox(
+                          featureCollection(pointToGeoJSON(geometry) ?? []),
+                        ) as LngLatBoundsLike,
+                        fitBoundsOptions: { padding: 40 },
+                      }
+                    : {}),
               }}
               id="preview"
               mapStyle={vectorStyle}
@@ -103,27 +110,29 @@ export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
               <NavigationControl showCompass={false} />
               <ScaleControl />
 
-              {geometry && geometry.type === "Point" && pointToGeoJSON(geometry) && (
-                <>
-                  <Source
-                    id="geometryFieldPoint"
-                    key="geometryFieldPoint"
-                    type="geojson"
-                    data={pointToGeoJSON(geometry)!}
-                  />
-                  <Layer
-                    id="geometryFieldPoint-layer"
-                    key="geometryFieldPoint-layer"
-                    source="geometryFieldPoint"
-                    type="circle"
-                    paint={{
-                      "circle-radius": 4,
-                      "circle-color": "black",
-                      "circle-opacity": 0.6,
-                    }}
-                  />
-                </>
-              )}
+              {geometry &&
+                (geometry.type === "Point" || geometry.type === "MultiPoint") &&
+                pointToGeoJSON(geometry) && (
+                  <>
+                    <Source
+                      id="geometryFieldPoint"
+                      key="geometryFieldPoint"
+                      type="geojson"
+                      data={featureCollection(pointToGeoJSON(geometry)!)}
+                    />
+                    <Layer
+                      id="geometryFieldPoint-layer"
+                      key="geometryFieldPoint-layer"
+                      source="geometryFieldPoint"
+                      type="circle"
+                      paint={{
+                        "circle-radius": 4,
+                        "circle-color": "black",
+                        "circle-opacity": 0.6,
+                      }}
+                    />
+                  </>
+                )}
 
               {geometry &&
                 (geometry.type === "LineString" || geometry.type === "MultiLineString") &&

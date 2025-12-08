@@ -7,7 +7,7 @@ import { shortTitle } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import deleteSubsection from "@/src/server/subsections/mutations/deleteSubsection"
-import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
+import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import { useMutation } from "@blitzjs/rpc"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline"
@@ -16,7 +16,7 @@ import { useSearchParams } from "next/navigation"
 import { defaultGeometryForMultipleSubsectionForm } from "../multiple-new/_components/MultipleNewSubsectionsForm"
 
 type Props = {
-  subsections: SubsectionWithPosition[]
+  subsections: TGetSubsection[]
 }
 
 export const SubsectionTableAdmin = ({ subsections }: Props) => {

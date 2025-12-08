@@ -5,11 +5,12 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { geometryTypeValidationRefine } from "@/src/server/shared/utils/geometryTypeValidation"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 import { m2mFields, type M2MFieldsType } from "../m2mFields"
 import { SubsubsectionWithPosition } from "../queries/getSubsubsection"
-import { geometryTypeValidationRefine, SubsubsectionBaseSchema } from "../schema"
+import { SubsubsectionBaseSchema } from "../schema"
 
 const UpdateSubsubsectionSchema = geometryTypeValidationRefine(
   ProjectSlugRequiredSchema.merge(SubsubsectionBaseSchema.merge(z.object({ id: z.number() }))),

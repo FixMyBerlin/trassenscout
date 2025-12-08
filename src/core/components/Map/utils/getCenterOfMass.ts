@@ -1,4 +1,4 @@
-import { lineString, multiLineString, multiPolygon, polygon } from "@turf/helpers"
+import { lineString, multiLineString, multiPoint, multiPolygon, polygon } from "@turf/helpers"
 import { centerOfMass } from "@turf/turf"
 import type { Feature, Geometry } from "geojson"
 
@@ -7,11 +7,19 @@ type Dot = [number, number]
 /**
  * Calculate the center of mass for a GeoJSON geometry.
  * For points, returns the coordinates directly.
+ * For MultiPoint, calculates center of all points.
  * For lines and polygons, uses turf.centerOfMass.
  */
 export const getCenterOfMass = (geometry: Geometry): Dot => {
   if (geometry.type === "Point") {
     return geometry.coordinates as Dot
+  }
+
+  if (geometry.type === "MultiPoint") {
+    // Calculate center of all points in MultiPoint
+    const feature = multiPoint(geometry.coordinates)
+    const center = centerOfMass(feature)
+    return center.geometry.coordinates as Dot
   }
 
   // Create a feature from the geometry for turf operations

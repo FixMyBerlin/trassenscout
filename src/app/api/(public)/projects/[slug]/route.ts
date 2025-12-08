@@ -42,6 +42,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
       where: { project: { slug } },
       select: {
         slug: true,
+        // gets typed below with `typeSubsectionGeometry`
         geometry: true,
         // do we want to have the slug here as well?
         operator: { select: { title: true } },
@@ -50,17 +51,21 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
       },
     })
 
+    // TODO: Handle other geometry types
     const projectFeatures = featureCollection(
-      subsections.map((s) => {
-        const subsection = typeSubsectionGeometry(s)
-        return lineString(subsection.geometry.coordinates, {
-          subsectionSlug: subsection.slug,
-          projectSlug: slug,
-          operator: subsection.operator?.title,
-          estimatedCompletionDateString: subsection.estimatedCompletionDateString,
-          status: subsection.SubsectionStatus?.title,
+      subsections
+        .map((subsection) => {
+          const { geometry } = typeSubsectionGeometry(subsection)
+          if (geometry.type != "LineString") return null
+          return lineString(geometry.coordinates, {
+            subsectionSlug: subsection.slug,
+            projectSlug: slug,
+            operator: subsection.operator?.title,
+            estimatedCompletionDateString: subsection.estimatedCompletionDateString,
+            status: subsection.SubsectionStatus?.title,
+          })
         })
-      }),
+        .filter(Boolean),
     )
 
     return new Response(JSON.stringify(projectFeatures), {
