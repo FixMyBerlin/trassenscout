@@ -46,7 +46,10 @@ export const SubsectionUploadsSection = ({ subsectionId }: Props) => {
           </button>
         </IfUserCanEdit>
       </HeadingWithAction>
-
+      {/* NOTE:
+      UploadTable uses App Router "IfUserCanEdit" which does not work in Pages Router.
+      As long as we use it with withAction=false here, it works fine in the Pages Router.
+      We'll leave this component as-is for now and plan to migrate all remaining pages to the app dir soon. */}
       <UploadTable
         withAction={false}
         withRelations={false}
@@ -55,7 +58,6 @@ export const SubsectionUploadsSection = ({ subsectionId }: Props) => {
           await refetchUploads()
         }}
       />
-
       <Modal
         open={isUploadModalOpen}
         handleClose={() => setIsUploadModalOpen(false)}

@@ -3,6 +3,7 @@
 import { DeleteUploadButton } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/DeleteUploadButton"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
@@ -18,11 +19,16 @@ import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
 import { formatFileSize } from "@/src/core/utils/formatFileSize"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { MapPinIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { PromiseReturnType } from "blitz"
+
+// NOTE:
+// This version of "IfUserCanEdit" currently only works in the Next.js app directory.
+// Reason: it relies on app router features.
+// This component is also used in SubsectionUploadsSection (legacy pages router) but with withAction=false.
+// We'll leave this page as-is for now and plan to migrate all remaining pages to the app dir soon.
 
 type Props = Prettify<
   Pick<PromiseReturnType<typeof getUploadsWithSubsections>, "uploads"> & {
@@ -103,7 +109,7 @@ const UploadTableRow = ({
   onDelete?: () => Promise<void>
 }) => {
   const hasLocation = upload.latitude !== null && upload.longitude !== null
-
+  console.log({ withAction })
   return (
     <tr>
       <td className="py-2 pr-3 pl-4 text-sm sm:pl-6">
