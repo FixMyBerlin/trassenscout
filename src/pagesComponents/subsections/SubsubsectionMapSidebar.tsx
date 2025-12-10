@@ -124,14 +124,16 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
                   </td>
                 </tr>
               )}
-              <tr>
-                <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
-                  Länge
-                </th>
-                <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
-                  {formattedLength(subsubsection.lengthM)}
-                </td>
-              </tr>
+              {subsubsection.lengthM && (
+                <tr>
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
+                    Länge
+                  </th>
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
+                    {formattedLength(subsubsection.lengthM)}
+                  </td>
+                </tr>
+              )}
               {/* UNUSED */}
               {/* {!!subsubsection.width && (
                 <tr>

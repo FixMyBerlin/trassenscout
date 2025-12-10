@@ -76,7 +76,7 @@ export const SubsubsectionBaseSchema = z.object({
     MultiPolygonGeometrySchema,
   ]),
   labelPos: z.nativeEnum(LabelPositionEnum),
-  lengthM: InputNumberSchema, // m
+  lengthM: InputNumberOrNullSchema, // m
   width: InputNumberOrNullSchema, // m
   widthExisting: InputNumberOrNullSchema, // m
   costEstimate: InputNumberOrNullSchema, // €

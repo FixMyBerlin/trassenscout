@@ -90,7 +90,6 @@ export const requiredFields = [
   "type",
   "geometry",
   "labelPos",
-  "lengthM",
   "isExistingInfra",
   "subsectionId",
 ] as const
