@@ -7,8 +7,7 @@ import { LabeledTextField, LabeledTextFieldProps } from "./LabeledTextField"
 export const LabeledTextFieldCalculateLength: React.FC<LabeledTextFieldProps> = (props) => {
   const { watch, setValue, getValues } = useFormContext()
 
-  const isGeometry = watch("geometry")
-  const geometryType = watch("type")
+  const geometryType = watch("type") || "LINE"
 
   function isPoint(geometry: any) {
     // Check if it's a Point GeoJSON geometry
@@ -24,11 +23,9 @@ export const LabeledTextFieldCalculateLength: React.FC<LabeledTextFieldProps> = 
 
   const calculateLength = () => {
     const geometry = getValues("geometry")
-    let calculatedLength = 0
+    let calculatedLength = null
 
-    if (!geometry || !geometry.type) {
-      calculatedLength = 0
-    } else {
+    if (geometry && geometry.type) {
       // Handle GeoJSON geometry objects with type property
       switch (geometry.type) {
         case "LineString":
@@ -50,11 +47,11 @@ export const LabeledTextFieldCalculateLength: React.FC<LabeledTextFieldProps> = 
         case "Polygon":
         case "MultiPolygon":
           // For points and polygons, return 0 - length calculation not applicable
-          calculatedLength = 0
+          calculatedLength = null
           break
         default:
           // Unknown geometry type - return 0
-          calculatedLength = 0
+          calculatedLength = null
       }
     }
 
@@ -89,7 +86,7 @@ export const LabeledTextFieldCalculateLength: React.FC<LabeledTextFieldProps> = 
         onClick={calculateLength}
         className={clsx(blueButtonStyles, "px-2! py-1!")}
       >
-        {geometryType === "LINE" ? "Länge aus Geometrie ermitteln" : "Länge auf 0 setzen"}
+        {geometryType === "LINE" ? "Länge aus Geometrie ermitteln" : "Länge zurücksetzen"}
       </button>
     </div>
   )
