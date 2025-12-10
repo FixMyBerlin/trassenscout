@@ -114,6 +114,16 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
                   {subsubsection.SubsubsectionTask?.title || "k.A."}
                 </td>
               </tr>
+              {subsubsection.subsubsectionStatusId && (
+                <tr>
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
+                    Phase
+                  </th>
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
+                    {subsubsection.SubsubsectionStatus?.title || "k.A."}
+                  </td>
+                </tr>
+              )}
               <tr>
                 <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
                   Länge
