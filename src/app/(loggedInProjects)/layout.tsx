@@ -17,7 +17,7 @@ export default async function LoggedInProjectsLayout({ children }: { children: R
 
   return (
     <>
-      <div className="relative flex h-full flex-col overflow-x-hidden">
+      <div className="relative flex h-full grow flex-col overflow-x-hidden">
         <NavigationLoggedInProject />
         <main className="mx-auto w-full max-w-7xl px-6 pb-16 md:px-8">{children}</main>
       </div>
