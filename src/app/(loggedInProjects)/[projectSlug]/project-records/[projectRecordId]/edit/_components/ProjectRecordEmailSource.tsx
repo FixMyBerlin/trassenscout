@@ -6,6 +6,7 @@ type ProjectRecordEmailSourceProps = {
     subject: string | null
     date: Date | null
     textBody: string | null
+    uploads: { id: number; title: string }[]
   }
 }
 
@@ -15,7 +16,7 @@ export const ProjectRecordEmailSourceText = ({
   email: ProjectRecordEmailSourceProps["email"]
 }) => {
   return (
-    <div className="space-y-2 text-sm">
+    <div className="space-y-2">
       {email.from && (
         <div>
           <span className="font-semibold">Von:</span> <span>{email.from}</span>
@@ -38,11 +39,22 @@ export const ProjectRecordEmailSourceText = ({
           <div className="mt-1 text-xs whitespace-pre-wrap">{email.textBody}</div>
         </div>
       )}
+      {email.uploads && email.uploads.length > 0 && (
+        <div className="text-sm">
+          <span className="font-semibold">Anhänge:</span>
+          <ul className="mt-1 ml-4 list-disc">
+            {email.uploads.map((upload) => (
+              <li key={upload.id}>{upload.title}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   )
 }
 
 export const ProjectRecordEmailSource = ({ email }: ProjectRecordEmailSourceProps) => {
+  console.log({ email })
   return (
     <div className="w-96 shrink-0">
       <h4 className="mb-1 text-sm font-medium">Quellnachricht (unverarbeitet)</h4>

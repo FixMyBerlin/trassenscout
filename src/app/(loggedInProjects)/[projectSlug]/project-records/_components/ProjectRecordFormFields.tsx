@@ -32,6 +32,7 @@ type ProjectRecordFormFieldsProps = {
     subject: string | null
     date: Date | null
     textBody: string | null
+    uploads: { id: number; title: string }[]
   } | null
 }
 

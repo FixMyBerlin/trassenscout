@@ -78,6 +78,7 @@ export default resolver.pipe(
             from: true,
             date: true,
             subject: true,
+            uploads: { select: { id: true, title: true } },
           },
         },
       },
