@@ -192,7 +192,7 @@ export const ProjectRecordsTable = ({
                               </div>
                             </div>
                           )}
-                          {/* Topics and "Freigabe"-Pill */}
+                          {/* Topics and " Bestätigung"-Pill */}
                           <div className="@lg:hidden">
                             <div className="flex flex-col gap-6">
                               <div onClick={(e) => e.stopPropagation()}>
@@ -217,7 +217,7 @@ export const ProjectRecordsTable = ({
                                   blank={openLinksInNewTab}
                                 >
                                   <SparklesIcon className="h-3.5 w-3.5" />
-                                  Freigabe
+                                  Bestätigen
                                 </Link>
                               )}
                               <Link

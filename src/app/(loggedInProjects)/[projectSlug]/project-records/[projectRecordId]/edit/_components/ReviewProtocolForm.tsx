@@ -12,7 +12,7 @@ export const ReviewProjectRecordForm = ({ admin }: { admin?: boolean }) => {
     },
     {
       value: ProjectRecordReviewState.NEEDSREVIEW,
-      label: "Benötigt Review",
+      label: "Benötigt Bestätigung",
     },
     {
       value: ProjectRecordReviewState.REJECTED,
@@ -25,7 +25,7 @@ export const ReviewProjectRecordForm = ({ admin }: { admin?: boolean }) => {
       ...reviewStateOptions,
       {
         value: ProjectRecordReviewState.NEEDSADMINREVIEW,
-        label: "Benötigt Admin-Review",
+        label: "Benötigt Admin-Bestätigung",
       },
     ]
   }
@@ -34,7 +34,7 @@ export const ReviewProjectRecordForm = ({ admin }: { admin?: boolean }) => {
     <div className="mt-8 mb-6 space-y-2 rounded-md border border-gray-200 bg-yellow-50 p-4 text-gray-700">
       <div className="flex items-center gap-2">
         <SparklesIcon className="size-5" />
-        <h3 className="font-semibold">Protokoll-Freigabe</h3>
+        <h3 className="font-semibold">Protokoll- Bestätigung</h3>
       </div>
       <div className="space-y-4">
         <p className="text-sm text-gray-500">
@@ -44,7 +44,7 @@ export const ReviewProjectRecordForm = ({ admin }: { admin?: boolean }) => {
 
         <LabeledTextareaField
           name="reviewNotes"
-          label="Review-Notizen"
+          label="Bestätigung-Notizen"
           placeholder="Kommentare, Verbesserungsvorschläge oder Begründung für die Entscheidung..."
           rows={5}
           optional

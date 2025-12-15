@@ -30,11 +30,11 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
         : ""
       const aiDisabledMessage =
         result.isAiEnabled === false
-          ? "\nHinweis: KI-Unterstützung ist für dieses Projekt deaktiviert. Protokoll muss manuell überprüft und freigegeben werden."
+          ? "\nHinweis: KI-Unterstützung ist für dieses Projekt deaktiviert. Protokoll muss manuell überprüft und  bestätigt werden."
           : ""
       const isSenderUnapprovedMessage =
         result.isSenderApproved === false
-          ? "\nHinweis: Der Absender ist nicht für dieses Projekt genehmigt. Protokoll muss manuell überprüft und freigegeben werden."
+          ? "\nHinweis: Der Absender ist nicht für dieses Projekt genehmigt. Protokoll muss manuell überprüft und  bestätigt werden."
           : ""
       alert(message + documentsMessage + aiDisabledMessage + isSenderUnapprovedMessage)
       router.push("/admin/project-records")

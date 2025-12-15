@@ -23,10 +23,10 @@ export const ProjectRecordReviewStatePill = ({ state }: { state: ProjectRecordRe
       }[state],
     )}
   >
-    {state === ProjectRecordReviewState.NEEDSREVIEW && "Benötigt Review"}
-    {state === ProjectRecordReviewState.NEEDSADMINREVIEW && "Benötigt Admin-Review"}
+    {state === ProjectRecordReviewState.NEEDSREVIEW && "Benötigt Bestätigung"}
+    {state === ProjectRecordReviewState.NEEDSADMINREVIEW && "Benötigt Admin-Bestätigung"}
     {state === ProjectRecordReviewState.REJECTED && "Abgelehnt"}
-    {state === ProjectRecordReviewState.APPROVED && "Genehmigt"}
+    {state === ProjectRecordReviewState.APPROVED && "Bestätigt"}
   </span>
 )
 
@@ -89,7 +89,7 @@ export const AdminProjectRecordsTable = ({
                   "text-left text-sm font-semibold text-gray-900 uppercase",
                 )}
               >
-                Review
+                Bestätigung
               </div>
             </div>
           </div>
@@ -129,7 +129,7 @@ export const AdminProjectRecordsTable = ({
                         href={`/admin/project-records/${projectRecord.id}/edit`}
                         className="text-blue-500 hover:underline"
                       >
-                        Review
+                        Bestätigen
                       </Link>
                     </div>
                   </div>

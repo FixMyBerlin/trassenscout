@@ -13,7 +13,7 @@ export const ProjectRecordReviewBadge = ({
   return (
     <span className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-yellow-100 px-2 py-0.5 font-medium text-gray-700">
       <SparklesIcon className="size-3.5" />
-      Freigabe erforderlich
+      Bestätigung erforderlich
     </span>
   )
 }

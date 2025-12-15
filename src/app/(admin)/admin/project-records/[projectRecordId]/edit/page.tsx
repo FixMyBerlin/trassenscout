@@ -23,7 +23,7 @@ export default async function AdminEditProjectRecordPage({
 
   const needsReview = projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
   const pageTitle = needsReview
-    ? "Projektprotokoll bearbeiten und freigeben"
+    ? "Projektprotokoll bearbeiten und  bestätigen"
     : "Projektprotokoll bearbeiten"
 
   return (
