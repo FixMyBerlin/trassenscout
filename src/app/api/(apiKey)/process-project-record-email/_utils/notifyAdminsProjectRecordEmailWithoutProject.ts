@@ -1,4 +1,5 @@
 import { projectRecordEmailWithoutProjectNotificationToAdmins } from "@/emails/mailers/projectRecordEmailWithoutProjectNotificationToAdmins"
+import { mailUrl } from "@/emails/mailers/utils/mailUrl"
 
 type Props = {
   projectSlug: string | undefined
@@ -24,7 +25,8 @@ export const notifyAdminsProjectRecordEmailWithoutProject = async ({
       projectSlug,
       senderEmail,
       emailSubject,
-      projectRecordEmailUrl: `admin/project-record-emails/${projectRecordEmailId}`,
+      // @ts-expect-error bypass the strict type checking for the Route type
+      projectRecordEmailUrl: mailUrl(`/admin/project-record-emails/${projectRecordEmailId}/edit`),
     })
   ).send()
 }
