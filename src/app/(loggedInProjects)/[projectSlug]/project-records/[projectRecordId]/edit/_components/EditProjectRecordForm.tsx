@@ -8,12 +8,16 @@ import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogD
 import { Form, FORM_ERROR } from "@/src/core/components/forms"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link, linkStyles } from "@/src/core/components/links"
-import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
+import {
+  projectRecordDetailRoute,
+  projectRecordEditRoute,
+} from "@/src/core/routes/projectRecordRoutes"
 import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import deleteProjectRecord from "@/src/server/projectRecords/mutations/deleteProjectRecord"
 import updateProjectRecord from "@/src/server/projectRecords/mutations/updateProjectRecord"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
+import getProjectRecordAdmin from "@/src/server/projectRecords/queries/getProjectRecordAdmin"
 import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation } from "@blitzjs/rpc"
 import { SparklesIcon } from "@heroicons/react/20/solid"
@@ -22,7 +26,15 @@ import clsx from "clsx"
 import { useRouter } from "next/navigation"
 import { z } from "zod"
 
-export const NeedsReviewBanner = () => (
+export const NeedsReviewBanner = ({
+  withAction,
+  projectRecord,
+}: {
+  withAction?: boolean
+  projectRecord:
+    | Awaited<ReturnType<typeof getProjectRecord>>
+    | Awaited<ReturnType<typeof getProjectRecordAdmin>>
+}) => (
   <div className="mb-6 inline-flex flex-col space-y-2 rounded-md border border-gray-200 bg-yellow-100 p-4 text-gray-700">
     <div className="flex items-center gap-2">
       <SparklesIcon className="size-5" />
@@ -31,6 +43,14 @@ export const NeedsReviewBanner = () => (
     <p className="text-sm">
       Dieses Protokoll wurde per KI-Assistent erstellt und muss noch bestätigt werden.
     </p>
+    {withAction && (
+      <Link
+        href={projectRecordEditRoute(projectRecord.project.slug, projectRecord.id)}
+        className="text-sm"
+      >
+        Zur Bestätigung
+      </Link>
+    )}
   </div>
 )
 
@@ -97,7 +117,7 @@ export const EditProjectRecordForm = ({
 
   return (
     <>
-      {needsReview && <NeedsReviewBanner />}
+      {needsReview && <NeedsReviewBanner projectRecord={projectRecord} />}
       {projectRecord.projectRecordAuthorType === "SYSTEM" && (
         <SuperAdminBox className="mb-6">
           In die{" "}

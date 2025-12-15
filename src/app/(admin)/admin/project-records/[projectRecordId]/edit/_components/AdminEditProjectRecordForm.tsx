@@ -86,7 +86,7 @@ export const AdminEditProjectRecordForm = ({
           </p>
         </div>
       )}
-      {needsReview && <NeedsReviewBanner />}
+      {needsReview && <NeedsReviewBanner projectRecord={projectRecord} />}
 
       <Form
         submitText="Änderungen speichern"

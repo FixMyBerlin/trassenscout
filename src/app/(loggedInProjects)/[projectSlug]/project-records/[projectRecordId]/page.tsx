@@ -40,7 +40,7 @@ export default async function ProjectRecordDetail({
           </IfUserCanEdit>
         }
       />
-      {needsReview && <NeedsReviewBanner />}
+      {needsReview && <NeedsReviewBanner projectRecord={projectRecord} withAction />}
 
       <ProjectRecordDetailClient projectRecord={projectRecord} />
 
