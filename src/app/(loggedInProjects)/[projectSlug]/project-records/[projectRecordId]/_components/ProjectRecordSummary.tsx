@@ -48,7 +48,7 @@ export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProp
       </div>
 
       {projectRecord.body && (
-        <div className="max-w-3xl rounded-md border border-gray-200 p-4">
+        <div className="max-w-3xl rounded-md bg-blue-50 p-4">
           <Markdown
             className="prose-p:text-base prose-ol:leading-tight prose-ul:list-disc prose-ul:leading-tight"
             markdown={projectRecord.body}
