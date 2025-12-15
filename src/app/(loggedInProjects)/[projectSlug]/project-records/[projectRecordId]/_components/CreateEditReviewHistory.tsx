@@ -1,5 +1,6 @@
 import { ProjectRecordReviewStatePill } from "@/src/app/(admin)/admin/project-records/_components/AdminProjectRecordTable"
 import { ProjectRecordTypePill } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordTypePill"
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminBox } from "@/src/core/components/AdminBox/SuperAdminBox"
 import { isAdmin } from "@/src/pagesComponents/users/utils/isAdmin"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
@@ -71,7 +72,12 @@ export const CreateEditReviewHistory = ({
 
   if (!aiEnabled && !isUserAdmin) return null
 
-  if (aiEnabled) return <CreateEditReviewHistoryComponent projectRecord={projectRecord} />
+  if (aiEnabled)
+    return (
+      <IfUserCanEdit>
+        <CreateEditReviewHistoryComponent projectRecord={projectRecord} />
+      </IfUserCanEdit>
+    )
 
   // Admins always see the create edit review details
   return (
