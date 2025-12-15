@@ -6,11 +6,7 @@ import {
   PointGeometrySchema,
   PolygonGeometrySchema,
 } from "@/src/core/utils/geojson-schemas"
-import {
-  InputNumberOrNullSchema,
-  InputNumberSchema,
-  SlugSchema,
-} from "@/src/core/utils/schema-shared"
+import { InputNumberOrNullSchema, SlugSchema } from "@/src/core/utils/schema-shared"
 import { LabelPositionEnum, LocationEnum, SubsubsectionTypeEnum } from "@prisma/client"
 import { z } from "zod"
 import type { SubsubsectionWithPosition } from "./queries/getSubsubsection"

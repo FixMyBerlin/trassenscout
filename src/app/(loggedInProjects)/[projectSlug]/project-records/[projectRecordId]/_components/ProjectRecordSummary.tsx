@@ -5,15 +5,12 @@ import { Link, linkStyles } from "@/src/core/components/links"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { projectRecordUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
-import getProjectRecordAdmin from "@/src/server/projectRecords/queries/getProjectRecordAdmin"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
 import { twJoin } from "tailwind-merge"
 
 type ProjectRecordSummaryProps = {
-  projectRecord:
-    | Awaited<ReturnType<typeof getProjectRecord>>
-    | Awaited<ReturnType<typeof getProjectRecordAdmin>>
+  projectRecord: Awaited<ReturnType<typeof getProjectRecord>>
 }
 
 export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProps) => {
