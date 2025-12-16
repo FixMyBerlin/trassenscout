@@ -29,7 +29,7 @@ export const SummaryField = ({
   const { setValue } = useFormContext()
   const projectSlug = useProjectSlug()
 
-  if (!isPdf(mimeType) || !isAiEnabled) {
+  if (!isPdf(mimeType)) {
     return null
   }
 
@@ -50,10 +50,16 @@ export const SummaryField = ({
     }
   }
 
+  const showAiButton = isPdf(mimeType) && isAiEnabled
+
   return (
     <div className="relative">
       <LabeledTextareaField
-        help="PDFs lassen sich mit KI zusammenfassen. Beachten Sie, dass nach Drücken des Buttons eine bereits vorhandene Zusammenfassung im Textfeld überschrieben wird."
+        help={
+          showAiButton
+            ? "PDFs lassen sich mit KI zusammenfassen. Beachten Sie, dass nach Drücken des Buttons eine bereits vorhandene Zusammenfassung im Textfeld überschrieben wird."
+            : undefined
+        }
         optional
         rows={12}
         name="summary"
@@ -75,7 +81,7 @@ export const SummaryField = ({
           </Link>
         </SuperAdminBox>
       )}
-      {uploadId && (
+      {showAiButton && uploadId && (
         <button
           type="button"
           onClick={handleSummarize}
