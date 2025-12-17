@@ -109,7 +109,6 @@ const UploadTableRow = ({
   onDelete?: () => Promise<void>
 }) => {
   const hasLocation = upload.latitude !== null && upload.longitude !== null
-  console.log({ withAction })
   return (
     <tr>
       <td className="py-2 pr-3 pl-4 text-sm sm:pl-6">
