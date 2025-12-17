@@ -4,12 +4,12 @@ import { summarizeUpload } from "@/src/app/(loggedInProjects)/[projectSlug]/uplo
 import { isPdf } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { LabeledTextareaField } from "@/src/core/components/forms"
-import { Link } from "@/src/core/components/links"
+import { blueButtonStyles, Link } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { SparklesIcon } from "@heroicons/react/16/solid"
-import clsx from "clsx"
 import { Dispatch, SetStateAction } from "react"
 import { useFormContext } from "react-hook-form"
+import { twJoin } from "tailwind-merge"
 
 type Props = {
   uploadId: number
@@ -53,7 +53,7 @@ export const SummaryField = ({
   const showAiButton = isPdf(mimeType) && isAiEnabled
 
   return (
-    <div className="relative">
+    <div>
       <LabeledTextareaField
         help={
           showAiButton
@@ -86,10 +86,7 @@ export const SummaryField = ({
           type="button"
           onClick={handleSummarize}
           disabled={isGeneratingSummary}
-          className={clsx(
-            "absolute top-8 right-5 flex items-center gap-1 rounded-sm bg-blue-500 px-2 py-1 text-xs text-white disabled:bg-white disabled:text-gray-600",
-            !isGeneratingSummary && "hover:cursor-pointer hover:bg-blue-700",
-          )}
+          className={twJoin(blueButtonStyles, "mt-2 gap-1")}
         >
           <SparklesIcon className="h-3 w-3" />
           <p className={isGeneratingSummary ? "animate-pulse" : ""}>
