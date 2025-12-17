@@ -77,7 +77,7 @@ export const processProjectRecordEmail = async ({
   })
 
   // Upload attachments to S3 and create Upload records
-  const uploadIds = await uploadEmailAttachments({
+  const { uploadIds, skippedAttachments } = await uploadEmailAttachments({
     attachments,
     projectId,
     projectSlug,
@@ -96,6 +96,15 @@ export const processProjectRecordEmail = async ({
   if (!isAiEnabled) {
     reviewNotes.push(
       "AI-Funktionen sind für dieses Projekt deaktiviert. Manuelle Überprüfung erforderlich.",
+    )
+  }
+
+  if (skippedAttachments.length > 0) {
+    const skippedFilesList = skippedAttachments
+      .map((att) => `"${att.filename}" (${att.reason})`)
+      .join(", ")
+    reviewNotes.push(
+      `${skippedAttachments.length} Anhang/Anhänge wurden nicht hochgeladen: ${skippedFilesList}`,
     )
   }
   const reviewNote = reviewNotes.join(" ")
