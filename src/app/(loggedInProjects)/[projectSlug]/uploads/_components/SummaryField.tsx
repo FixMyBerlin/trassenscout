@@ -29,10 +29,6 @@ export const SummaryField = ({
   const { setValue } = useFormContext()
   const projectSlug = useProjectSlug()
 
-  if (!isPdf(mimeType)) {
-    return null
-  }
-
   const handleSummarize = async () => {
     setIsGeneratingSummary(true)
     try {
