@@ -41,7 +41,7 @@ export const NeedsReviewBanner = ({
       <h3 className="font-semibold">Protokoll- Bestätigung erforderlich</h3>
     </div>
     <p className="text-sm">
-      Dieses Protokoll wurde per KI-Assistent erstellt und muss noch bestätigt werden.
+      Dieses Protokoll wurde per KI erstellt und muss noch bestätigt werden.
     </p>
     {withAction && (
       <Link
