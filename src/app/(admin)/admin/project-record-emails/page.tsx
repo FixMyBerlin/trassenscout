@@ -16,7 +16,7 @@ export default async function ProjectRecordEmailsPage() {
   return (
     <>
       <PageHeader title="Protokoll-E-Mails" className="mt-12" />
-      <Link href="/admin/project-records">Zu den Protokollen</Link>
+      <Link href="/admin/project-records">Zu den Protokolleinträgen</Link>
       <ProjectRecordEmailsTable projectRecordEmails={projectRecordEmails} />
     </>
   )

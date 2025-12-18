@@ -111,7 +111,7 @@ export const FilteredProjectRecords = ({
         {filteredProjectRecords.length !== 1 ? "einträge" : "eintrag"}
       </p>
       {projectRecords.length === 0 ? (
-        <ZeroCase visible={projectRecords.length} name="Protokolle" />
+        <ZeroCase visible={projectRecords.length} name="Protokolleinträge" />
       ) : (
         <ProjectRecordsTable
           isTopicFilter

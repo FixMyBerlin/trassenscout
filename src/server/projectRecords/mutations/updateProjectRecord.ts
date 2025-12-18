@@ -85,7 +85,7 @@ export default resolver.pipe(
 
     await createLogEntry({
       action: "UPDATE",
-      message: `Protokoll mit der ID ${longTitle(String(record.id))} bearbeitet${isAdmin ? " (Admin)" : ""}`,
+      message: `Protokolleintrag mit der ID ${longTitle(String(record.id))} bearbeitet${isAdmin ? " (Admin)" : ""}`,
       userId: ctx.session.userId,
       projectId: record.projectId,
       previousRecord: previous,

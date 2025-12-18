@@ -107,7 +107,7 @@ export const processProjectRecordEmailOrchestrator = async ({
 
   if (!isSenderApproved) {
     reviewNotes.push(
-      `Email von unbekannter Absenderadresse erhalten: ${from || "Unbekannt"}. Bitte prüfen Sie, ob dieser Absender berechtigt ist, Projektprotokolle für Projekt ${projectSlug} einzureichen.`,
+      `Email von unbekannter Absenderadresse erhalten: ${from || "Unbekannt"}. Bitte prüfen Sie, ob dieser Absender berechtigt ist, Protokolleinträge für Projekt ${projectSlug} einzureichen.`,
     )
   }
 
@@ -179,7 +179,7 @@ export const processProjectRecordEmailOrchestrator = async ({
   // Create log entry
   await createLogEntry({
     action: "CREATE",
-    message: `Neues Projektprotokoll ${projectRecord.title} per KI aus Email mir ID ${projectRecordEmail.id} erstellt`,
+    message: `Neuer Protokolleintrag ${projectRecord.title} per KI aus Email mir ID ${projectRecordEmail.id} erstellt`,
     // tbd maybe we need an AI/SYSTEM user type here
     userId: null,
     projectId: projectRecord.projectId,

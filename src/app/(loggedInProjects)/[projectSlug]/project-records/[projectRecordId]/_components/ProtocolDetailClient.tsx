@@ -50,7 +50,7 @@ export const ProjectRecordDetailClient = ({ projectRecord }: Props) => {
         <SuperAdminBox>
           <div id="ai-suggestions-form" className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <div>
-              <h2 className="mb-4 text-lg font-medium">Aktuelles Protokoll</h2>
+              <h2 className="mb-4 text-lg font-medium">Aktueller Protokolleintrag</h2>
               <ProjectRecordSummary projectRecord={projectRecord} />
             </div>
 

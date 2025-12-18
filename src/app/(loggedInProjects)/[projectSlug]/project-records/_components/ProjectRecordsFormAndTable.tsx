@@ -81,7 +81,7 @@ export const ProjectRecordsFormAndTable = ({
   return (
     <div className="relative">
       <div className="absolute top-0 right-0">
-        <FormSuccess message="Neues Protokoll erstellt" show={showSuccess} />
+        <FormSuccess message="Neuen Protokolleintrag erstellt" show={showSuccess} />
       </div>
       <FilteredProjectRecords
         highlightId={createdProjectRecordId}
@@ -110,7 +110,7 @@ export const ProjectRecordsFormAndTable = ({
               }
             >
               <ProjectRecordFormFields projectSlug={projectSlug} />
-              <SubmitButton>Protokoll speichern</SubmitButton>
+              <SubmitButton>Protokolleintrag speichern</SubmitButton>
             </Disclosure>
           </div>
         </Form>

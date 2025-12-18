@@ -55,7 +55,7 @@ export default resolver.pipe(
 
     await createLogEntry({
       action: "CREATE",
-      message: `Neues Projektprotokoll ${record ? record.title : ""}`,
+      message: `Neuer Protokolleintrag ${record ? record.title : ""}`,
       userId: ctx.session.userId,
       projectId,
       projectRecordId: record.id,

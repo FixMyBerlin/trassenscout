@@ -173,7 +173,7 @@ const UploadTableRow = ({
               upload.projectRecords.map((projectRecord) => (
                 <li key={projectRecord.id}>
                   <Link href={projectRecordDetailRoute(projectSlug, projectRecord.id)}>
-                    Protokoll: {projectRecord.title}
+                    Protokolleintrag: {projectRecord.title}
                   </Link>
                 </li>
               ))}

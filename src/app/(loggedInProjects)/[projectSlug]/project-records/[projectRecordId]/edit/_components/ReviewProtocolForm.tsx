@@ -8,7 +8,7 @@ export const ReviewProjectRecordForm = ({ admin }: { admin?: boolean }) => {
   let reviewStateOptions: { value: ProjectRecordReviewState; label: string }[] = [
     {
       value: ProjectRecordReviewState.APPROVED,
-      label: "Genehmigt - Protokoll ist korrekt",
+      label: "Genehmigt - Protokolleintrag ist korrekt",
     },
     {
       value: ProjectRecordReviewState.NEEDSREVIEW,
@@ -16,7 +16,7 @@ export const ReviewProjectRecordForm = ({ admin }: { admin?: boolean }) => {
     },
     {
       value: ProjectRecordReviewState.REJECTED,
-      label: "Abgelehnt - Protokoll entspricht nicht den Standards",
+      label: "Abgelehnt - Protokolleintrag entspricht nicht den Standards",
     },
   ]
 
@@ -34,11 +34,12 @@ export const ReviewProjectRecordForm = ({ admin }: { admin?: boolean }) => {
     <div className="mt-8 mb-6 space-y-2 rounded-md border border-gray-200 bg-yellow-50 p-4 text-gray-700">
       <div className="flex items-center gap-2">
         <SparklesIcon className="size-5" />
-        <h3 className="font-semibold">Protokoll- Bestätigung</h3>
+        <h3 className="font-semibold">Protokolleintrag- Bestätigung</h3>
       </div>
       <div className="space-y-4">
         <p className="text-sm text-gray-500">
-          Hinweis: Abgelehnte Protokolle werden nicht mehr in der Protokoll-Liste angezeigt.
+          Hinweis: Abgelehnte Protokolleinträge werden nicht mehr in der Protokoll-Übersicht
+          angezeigt.
         </p>
         <LabeledRadiobuttonGroup scope="reviewState" items={reviewStateOptions} />
 

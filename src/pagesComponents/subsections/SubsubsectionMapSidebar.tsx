@@ -202,7 +202,9 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
 
       <section className="mt-10">
         <H2>Protokolleinträge</H2>
-        {showSuccess && <FormSuccess message="Protokoll erfolgreich erstellt" show={showSuccess} />}
+        {showSuccess && (
+          <FormSuccess message="Protokolleintrag erfolgreich erstellt" show={showSuccess} />
+        )}
         {projectRecords.length > 0 ? (
           <ProjectRecordsTable
             projectRecords={projectRecords}

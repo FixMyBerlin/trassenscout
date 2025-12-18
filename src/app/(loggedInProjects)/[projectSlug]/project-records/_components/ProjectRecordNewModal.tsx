@@ -72,7 +72,7 @@ export const ProjectRecordNewModal = ({
         >
           <div className="space-y-6">
             <ProjectRecordFormFields projectSlug={projectSlug} />
-            <SubmitButton>Protokoll speichern</SubmitButton>
+            <SubmitButton>Protokolleintrag speichern</SubmitButton>
           </div>
         </Form>
       </Modal>

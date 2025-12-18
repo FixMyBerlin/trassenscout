@@ -314,7 +314,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
       {/* Related Project Records */}
       {upload.projectRecords && upload.projectRecords.length > 0 && (
         <div className="mt-8">
-          <h3 className="mb-3 text-sm font-semibold text-gray-700">Verknüpfte Projektprotokolle</h3>
+          <h3 className="mb-3 text-sm font-semibold text-gray-700">Verknüpfte Protokolleinträge</h3>
           <ul className="space-y-2">
             {upload.projectRecords.map((projectRecord) => (
               <li key={projectRecord.id} className="flex items-center gap-2 text-sm">

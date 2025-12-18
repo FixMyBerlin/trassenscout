@@ -23,7 +23,7 @@ export default function AdminDashboardPage() {
         </li>
         <li>
           <Link href="/admin/project-record-emails">Unprozessierte Protokoll-Emails</Link> |{" "}
-          <Link href="/admin/project-records">Protokolle (Review)</Link>
+          <Link href="/admin/project-records">Protokolleinträge (Review)</Link>
         </li>
         <li>
           <Link href="/admin/surveys">Beteiligungen & Antworten</Link> |{" "}

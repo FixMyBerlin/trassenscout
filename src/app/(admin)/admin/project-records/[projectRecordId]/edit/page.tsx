@@ -8,7 +8,7 @@ import { Metadata } from "next"
 import "server-only"
 
 export const metadata: Metadata = {
-  title: "Projektprotokoll bearbeiten",
+  title: "Protokolleintrag bearbeiten",
 }
 
 export default async function AdminEditProjectRecordPage({
@@ -23,8 +23,8 @@ export default async function AdminEditProjectRecordPage({
 
   const needsReview = projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
   const pageTitle = needsReview
-    ? "Projektprotokoll bearbeiten und  bestätigen"
-    : "Projektprotokoll bearbeiten"
+    ? "Protokolleintrag bearbeiten und  bestätigen"
+    : "Protokolleintrag bearbeiten"
 
   return (
     <>
