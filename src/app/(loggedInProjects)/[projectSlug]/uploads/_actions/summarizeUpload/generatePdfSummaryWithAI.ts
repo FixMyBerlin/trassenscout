@@ -38,13 +38,14 @@ Create a concise summary of the document. Capture the main points and insights o
 ### Documents Without Sufficient Text
 - If the document contains only images or insufficient text for a meaningful summary, respond with: "Das Dokument enthält nicht auswertbaren Inhalt für eine KI-gestützte Zusammenfassung"
 
-### Formatting
-- Use Markdown formatting for better readability:
-  - Use **bold** for emphasis
-  - Use *italic* where appropriate
-  - Use lists for structured information
-  - Format links as inline links: [example.com](https://www.example.com/)
-  - When referring to pages, use the absolute page count (not printed page numbers)
+### Formatting: Use Markdown formatting for better readability:
+- Use ## Headings for sections or topics
+- Use lists for structured information
+- Convert links into Markdown link format: [example](https://www.example.de)
+- Do not use bold formatting in running text
+- Write in gender-neutral German, preferring neutral participle forms (e.g., Bearbeitende) and otherwise using colon forms (e.g., Nutzer:innen, Autor:in)
+- When referring to pages, use the absolute page count (not printed page numbers)
+
 
 ${projectContextSection}
 `

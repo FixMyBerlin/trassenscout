@@ -21,9 +21,11 @@ export const createFieldInstructions = ({
 - Do not leave out any important details.
 ${hasUploads ? `- Integrate relevant information from the document summaries provided above. They are **secondary** to the main ${isReprocessing ? "record entry" : "email"}. Every document summary should be reviewed and relevant content included.` : ""}
 - Convert to **Markdown**:
-  - Use **bold** for key terms or names.
-  - Use ## Headings for sections or topics.
-  - Convert links into Markdown link format: [example](https://www.example.de).
+  - Use ## Headings for sections or topics
+  - Use lists for structured information
+  - Convert links into Markdown link format: [example](https://www.example.de)
+  - Do not use bold formatting in running text
+  - Write in gender-neutral German, preferring neutral participle forms (e.g., Bearbeitende) and otherwise using colon forms (e.g., Nutzer:innen, Autor:in)
 
 #### DATE
 - Extract the most relevant or explicitly mentioned date, like a deadline.${!isReprocessing ? "\n- If none is found, use the original sent date of the email." : ""}
