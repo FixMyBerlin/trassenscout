@@ -89,6 +89,15 @@ export const processProjectRecordEmailOrchestrator = async ({
     projectRecordEmailId: projectRecordEmail.id,
   })
 
+  // If email body is empty and no attachments, don't create a ProjectRecord
+  if (!body?.trim() && uploadIds.length === 0) {
+    return {
+      success: false,
+      projectRecordEmailId: projectRecordEmail.id,
+      message: "Email body is empty and no attachments. No ProjectRecord created.",
+    }
+  }
+
   // Prepare review note for unapproved senders or disabled AI
   const reviewNotes: string[] = []
 
