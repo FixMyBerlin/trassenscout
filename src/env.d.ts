@@ -25,6 +25,8 @@ namespace NodeJS {
     readonly LANGFUSE_PUBLIC_KEY: string
     readonly LANGFUSE_BASEURL: string
 
+    readonly LUCKY_CLOUD_TOKEN: string
+
     readonly NEXT_PUBLIC_PUBLIC_SURVEY_START_STAGE: "part1" | "part2" | "part3" | "end"
     readonly NEXT_PUBLIC_APP_ORIGIN?:
       | "http://127.0.0.1:5000" // for `npm run start`

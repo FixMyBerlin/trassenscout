@@ -68,6 +68,8 @@ jobs:
             LANGFUSE_PUBLIC_KEY='${{ secrets.LANGFUSE_PUBLIC_KEY }}'
             LANGFUSE_BASEURL='${{ vars.LANGFUSE_BASEURL }}'
 
+            LUCKY_CLOUD_TOKEN='${{ secrets.LUCKY_CLOUD_TOKEN }}'
+
             # IMAP Listener Configuration
             IMAP_HOST='${{ vars.IMAP_HOST }}'
             IMAP_PORT='${{ vars.IMAP_PORT }}'

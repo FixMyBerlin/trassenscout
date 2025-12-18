@@ -8,11 +8,11 @@ import {
 } from "@/src/core/components/forms"
 import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
 import { LabeledTextFieldCalculateLength } from "@/src/core/components/forms/LabeledTextFieldCalculateLength"
-import { shortTitle } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { LabeledRadiobuttonGroupLabelPos } from "@/src/pagesComponents/subsubsections/LabeledRadiobuttonGroupLabelPos"
 import { LinkWithFormDirtyConfirm } from "@/src/pagesComponents/subsubsections/LinkWithFormDirtyConfirm"
 import { getUserSelectOptions } from "@/src/pagesComponents/users/utils/getUserSelectOptions"
+import { createFormOptions } from "@/src/pagesComponents/utils/createFormOptions"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getNetworkHierarchysWithCount from "@/src/server/networkHierarchy/queries/getNetworkHierarchysWithCount"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
@@ -29,36 +29,25 @@ type Props<S extends z.ZodType<any, any>> = FormProps<S>
 function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Props<S>) {
   const projectSlug = useProjectSlug()
   const [users] = useQuery(getProjectUsers, { projectSlug, role: "EDITOR" })
+
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
+  const operatorOptions = createFormOptions(operators, "Baulastträger", {
+    optional: true,
+    slugInLabel: true,
+  })
+
   const [{ networkHierarchys }] = useQuery(getNetworkHierarchysWithCount, { projectSlug })
-  const operatorOptions: [number | string, string][] = [
-    ["", "Baulastträger offen"],
-    ...operators.map((o) => {
-      return [
-        o.id,
-        `${o.title} – ${shortTitle(o.slug)} (bisher ${o.subsectionCount} Planungsabschnitte)`,
-      ] as [number, string]
-    }),
-  ]
-  const networkOptions: [number | string, string][] = [
-    ["", "Netzstufe offen"],
-    ...networkHierarchys.map((nh) => {
-      return [
-        nh.id,
-        `${nh.title} – ${shortTitle(nh.slug)} (bisher ${nh.subsectionCount} Planungsabschnitte)`,
-      ] as [number, string]
-    }),
-  ]
+  const networkOptions = createFormOptions(networkHierarchys, "Netzstufe", {
+    optional: true,
+    slugInLabel: true,
+  })
+
   const prioritySelectOptions = Object.entries(PriorityEnum).map(([priority, value]) => {
     return [priority, getPriorityTranslation(value)] as [string, string]
   })
+
   const [{ subsectionStatuss }] = useQuery(getSubsectionStatussWithCount, { projectSlug })
-  const subsectionStatusOptions: [number | string, string][] = [
-    ["", "Status offen"],
-    ...subsectionStatuss.map((status) => {
-      return [status.id, status.title] as [number, string]
-    }),
-  ]
+  const subsectionStatusOptions = createFormOptions(subsectionStatuss, "Status", { optional: true })
 
   return (
     <Form<S> {...props}>
@@ -74,7 +63,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
       </div>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <LabeledGeometryField name="geometry" label="Geometry der Achse (LineString)" />
-      <LabeledTextFieldCalculateLength name="lengthM" label="Länge" />
+      <LabeledTextFieldCalculateLength name="lengthM" label="Länge" optional />
       <details>
         <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
         <div className="space-y-6">

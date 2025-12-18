@@ -1,16 +1,12 @@
 import { LineStringGeometrySchema } from "@/src/core/utils/geojson-schemas"
-import {
-  InputNumberOrNullSchema,
-  InputNumberSchema,
-  SlugSchema,
-} from "@/src/core/utils/schema-shared"
+import { InputNumberOrNullSchema, SlugSchema } from "@/src/core/utils/schema-shared"
 import { LabelPositionEnum } from "@prisma/client"
 import { z } from "zod"
 
 export const SubsectionSchema = z.object({
   slug: SlugSchema,
   order: z.coerce.number(),
-  lengthM: InputNumberSchema,
+  lengthM: InputNumberOrNullSchema,
   description: z.string().nullish(),
   start: z.string().min(1, { message: "Pflichtfeld. Mindestens 1 Zeichen." }),
   end: z.string().min(1, { message: "Pflichtfeld. Mindestens 1 Zeichen." }),

@@ -46,17 +46,6 @@ export function mapRowToSchema(row: CsvRow) {
   // Map standard fields
   const rowEntries = Object.entries(row || {})
   for (const [csvKey, csvValue] of rowEntries) {
-    // Skip empty values for all fields
-    // API route will preserve existing geometry on updates or add fallback for new records
-    if (
-      csvValue === null ||
-      csvValue === undefined ||
-      csvValue === "" ||
-      (typeof csvValue === "string" && csvValue.trim() === "")
-    ) {
-      continue
-    }
-
     switch (csvKey) {
       case "project":
       case "pa-slug":
@@ -74,10 +63,16 @@ export function mapRowToSchema(row: CsvRow) {
         mappedData[csvKey] = String(csvValue).trim().toLowerCase()
         continue
       case "geometry": {
+        // Skip empty geometry - API route will preserve existing or add fallback
+        const geometryStr = String(csvValue || "").trim()
+        if (geometryStr === "") {
+          continue
+        }
+
         // Parse JSON if string, otherwise pass on as-is
         let parsed: unknown
         try {
-          parsed = JSON.parse(csvValue)
+          parsed = JSON.parse(geometryStr)
         } catch {
           // If JSON parse fails, pass through value - Zod will handle validation
           parsed = csvValue
@@ -121,8 +116,13 @@ export function mapRowToSchema(row: CsvRow) {
         unmatchedColumns.push(csvKey)
         continue
       case "location":
-        // Handle enum - normalize to uppercase
-        mappedData[csvKey] = String(csvValue).toUpperCase().trim()
+        // Handle enum - normalize to uppercase, but allow null/empty
+        const locationStr = String(csvValue || "").trim()
+        if (locationStr === "" || locationStr === "null" || locationStr === "NULL") {
+          mappedData[csvKey] = null
+        } else {
+          mappedData[csvKey] = locationStr.toUpperCase()
+        }
         continue
       case "labelPos":
         // Handle enum - normalize to lowercase
@@ -200,6 +200,10 @@ export function mapRowToSchema(row: CsvRow) {
     mappedData.lengthM === ""
   ) {
     mappedData.lengthM = 0 // Default to 0 if not provided
+  }
+  // Location is required but nullable - set to null if not provided
+  if (mappedData.location === undefined) {
+    mappedData.location = null
   }
 
   // CSV script only transforms geometry column to Position array or undefined

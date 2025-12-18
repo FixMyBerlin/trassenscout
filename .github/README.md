@@ -56,5 +56,7 @@
 | `SSH_HOST`               | `secrets.SSH_HOST`               |                                         |
 | `SSH_USERNAME`           | `secrets.SSH_USERNAME`           |                                         |
 | `SSH_PASSWORD`           | `secrets.SSH_PASSWORD`           |                                         |
+|                          |                                  |                                         |
+| `LUCKY_CLOUD_TOKEN`      | `secrets.LUCKY_CLOUD_TOKEN`      | Repository secret                       |
 
 [session-secret-key]: https://blitzjs.com/docs/auth-setup#production-deployment-requirements

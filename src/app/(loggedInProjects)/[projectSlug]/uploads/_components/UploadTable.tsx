@@ -3,36 +3,42 @@
 import { DeleteUploadButton } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/DeleteUploadButton"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
-import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
+import { shortTitle } from "@/src/core/components/text/titles"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { subsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"
+import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
+import {
+  subsectionDashboardRoute,
+  subsubsectionDashboardRoute,
+} from "@/src/core/routes/subsectionRoutes"
 import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import { formatFileSize } from "@/src/core/utils/formatFileSize"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
-import { MapPinIcon } from "@heroicons/react/24/outline"
+import { MapPinIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { PromiseReturnType } from "blitz"
+
+// NOTE:
+// This version of "IfUserCanEdit" currently only works in the Next.js app directory.
+// Reason: it relies on app router features.
+// This component is also used in SubsectionUploadsSection (legacy pages router) but with withAction=false.
+// We'll leave this page as-is for now and plan to migrate all remaining pages to the app dir soon.
 
 type Props = Prettify<
   Pick<PromiseReturnType<typeof getUploadsWithSubsections>, "uploads"> & {
     withAction?: boolean
-    withSubsectionColumn?: boolean
+    withRelations: boolean
     onDelete?: () => Promise<void>
   }
 >
 
-export const UploadTable = ({
-  uploads,
-  withAction = true,
-  withSubsectionColumn = true,
-  onDelete,
-}: Props) => {
+export const UploadTable = ({ uploads, withAction = true, withRelations, onDelete }: Props) => {
   const projectSlug = useProjectSlug()
 
   if (!uploads.length) {
@@ -54,11 +60,14 @@ export const UploadTable = ({
               <span className="sr-only">Standort</span>
             </th>
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <span className="sr-only">Dateigröße</span>
+            </th>
+            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               Hochgeladen
             </th>
-            {withSubsectionColumn && (
+            {withRelations && (
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Planungsabschnitt
+                Verknüpfungen
               </th>
             )}
             <th
@@ -76,7 +85,7 @@ export const UploadTable = ({
               upload={upload}
               projectSlug={projectSlug}
               withAction={withAction}
-              withSubsectionColumn={withSubsectionColumn}
+              withRelations={withRelations}
               onDelete={onDelete}
             />
           ))}
@@ -90,62 +99,88 @@ const UploadTableRow = ({
   upload,
   projectSlug,
   withAction,
-  withSubsectionColumn,
+  withRelations,
   onDelete,
 }: {
   upload: PromiseReturnType<typeof getUploadsWithSubsections>["uploads"][number]
   projectSlug: string
   withAction: boolean
-  withSubsectionColumn: boolean
+  withRelations: boolean
   onDelete?: () => Promise<void>
 }) => {
   const hasLocation = upload.latitude !== null && upload.longitude !== null
-
   return (
     <tr>
-      <td className="py-4 pr-3 pl-4 text-sm sm:pl-6">
-        <div className="flex items-center gap-3">
-          <UploadPreviewClickable
-            uploadId={upload.id}
-            projectSlug={projectSlug}
-            size="table"
-            editUrl={uploadEditRoute(projectSlug, upload.id)}
-            onDeleted={onDelete}
-          />
-          <span className="text-sm text-gray-900">{upload.title || "-"}</span>
-        </div>
-        <div className="flex flex-col">
-          {upload.summary && (
-            <details className="mt-2 mb-1">
-              <summary className="cursor-pointer text-xs text-gray-600 hover:text-gray-800">
-                Zusammenfassung
-              </summary>
-              <div className="mt-1 text-xs whitespace-normal text-gray-700">
-                <Markdown className="prose-sm" markdown={upload.summary} />
-              </div>
-            </details>
+      <td className="py-2 pr-3 pl-4 text-sm sm:pl-6">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="-mt-0.5 -mb-0.5 -ml-1">
+            <UploadPreviewClickable
+              uploadId={upload.id}
+              projectSlug={projectSlug}
+              size="table"
+              editUrl={uploadEditRoute(projectSlug, upload.id)}
+              onDeleted={onDelete}
+            />
+          </div>
+          {upload.collaborationUrl && (
+            <div className="shrink-0 rounded-full bg-yellow-500 p-1.5">
+              <UserGroupIcon className="size-4 text-white" />
+            </div>
           )}
+          <span
+            className="max-w-xs min-w-0 truncate text-sm text-gray-900"
+            title={upload.title || undefined}
+          >
+            {upload.title || "-"}
+          </span>
         </div>
       </td>
-      <td className="px-3 py-4 text-center text-sm">
+      <td className="px-3 py-2 text-center text-sm">
         {hasLocation && <MapPinIcon className="h-4 w-4 text-gray-400" title="Ist Geolokalisiert" />}
       </td>
-      <td className="px-3 py-4 text-sm text-gray-500">
+      <td className="px-3 py-2 text-sm text-gray-500">{formatFileSize(upload.fileSize)}</td>
+      <td className="px-3 py-2 text-sm text-gray-500">
         <div className="whitespace-nowrap">
           {formatBerlinTime(upload.createdAt, "dd.MM.yyyy, HH:mm")}
         </div>
         {upload.createdBy && <>von {getFullname(upload.createdBy)}</>}
       </td>
-      {withSubsectionColumn && (
-        <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
-          {upload.subsection ? (
-            <Link href={subsectionDashboardRoute(projectSlug, upload.subsection.slug)}>
-              {upload.subsection.start}–{upload.subsection.end}
-            </Link>
-          ) : null}
+      {withRelations && (
+        <td className="px-3 py-2 text-sm text-gray-500">
+          <ul className="flex flex-col gap-1">
+            {upload.subsection && (
+              <li>
+                <Link href={subsectionDashboardRoute(projectSlug, upload.subsection.slug)}>
+                  Planungsabschnitt: {upload.subsection.start}–{upload.subsection.end}
+                </Link>
+              </li>
+            )}
+            {upload.Subsubsection && (
+              <li>
+                <Link
+                  href={subsubsectionDashboardRoute(
+                    projectSlug,
+                    upload.Subsubsection.subsection.slug,
+                    upload.Subsubsection.slug,
+                  )}
+                >
+                  Eintrag: {shortTitle(upload.Subsubsection.slug)}
+                </Link>
+              </li>
+            )}
+            {upload.projectRecords &&
+              upload.projectRecords.length > 0 &&
+              upload.projectRecords.map((projectRecord) => (
+                <li key={projectRecord.id}>
+                  <Link href={projectRecordDetailRoute(projectSlug, projectRecord.id)}>
+                    Protokoll: {projectRecord.title}
+                  </Link>
+                </li>
+              ))}
+          </ul>
         </td>
       )}
-      <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
+      <td className="py-2 text-sm font-medium whitespace-nowrap sm:pr-6">
         <ButtonWrapper className="justify-end">
           <Link blank icon="download" href={uploadUrl(upload, projectSlug)}>
             Download

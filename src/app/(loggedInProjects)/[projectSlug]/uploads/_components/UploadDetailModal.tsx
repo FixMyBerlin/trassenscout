@@ -3,6 +3,7 @@
 import { DeleteUploadButton } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/DeleteUploadButton"
 import { UploadPreview } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreview"
 import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
+import { SuperAdminBox } from "@/src/core/components/AdminBox/SuperAdminBox"
 import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
@@ -12,6 +13,7 @@ import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
+import { formatFileSize } from "@/src/core/utils/formatFileSize"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
@@ -42,7 +44,8 @@ export const UploadDetailModal = ({
     { enabled: open && uploadId !== null },
   )
 
-  if (!upload) return null
+  // Check if upload was marked as deleted or is null
+  if (!upload || (upload as any).__deleted) return null
 
   const hasSubsection = upload.subsection !== null
   const hasSubsubsection = upload.Subsubsection !== null
@@ -80,7 +83,6 @@ export const UploadDetailModal = ({
         )}
 
         <div className="border-t border-gray-200 pt-3">
-          <span className="font-medium text-gray-900">Hochgeladen:</span>
           <p className="text-gray-600">
             Erstellt
             {upload.createdBy ? (
@@ -88,6 +90,12 @@ export const UploadDetailModal = ({
             ) : (
               " von Unbekannt"
             )} am {formatBerlinTime(upload.createdAt, "dd.MM.yyyy, HH:mm")}
+            {upload.fileSize && (
+              <>
+                {" · "}
+                {formatFileSize(upload.fileSize)}
+              </>
+            )}
           </p>
           {upload.updatedBy && (
             <p className="mt-1 text-gray-600">
@@ -155,14 +163,27 @@ export const UploadDetailModal = ({
         </div>
 
         <div className="border-t border-gray-200 pt-3">
-          <Link
-            blank
-            href={uploadUrl(upload, projectSlug)}
-            className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800"
-          >
-            Datei öffnen
-            <ArrowTopRightOnSquareIcon className="size-4" />
-          </Link>
+          {upload.collaborationUrl ? (
+            <div className="space-y-2">
+              <Link blank button="blue" icon="collaboration" href={upload.collaborationUrl}>
+                Dokument gemeinsam bearbeiten
+              </Link>
+              <SuperAdminBox>
+                <Link blank href={uploadUrl(upload, projectSlug)}>
+                  Original-Datei (S3)
+                </Link>
+              </SuperAdminBox>
+            </div>
+          ) : (
+            <Link
+              blank
+              href={uploadUrl(upload, projectSlug)}
+              className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800"
+            >
+              Datei öffnen
+              <ArrowTopRightOnSquareIcon className="size-4" />
+            </Link>
+          )}
         </div>
       </div>
 

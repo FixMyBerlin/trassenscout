@@ -18,6 +18,7 @@ export default resolver.pipe(
           select: {
             id: true,
             slug: true,
+            aiEnabled: true,
           },
         },
         projectRecordTopics: true,
@@ -30,6 +31,7 @@ export default resolver.pipe(
           },
         },
         uploads: {
+          orderBy: { id: "desc" },
           select: {
             title: true,
             id: true,
@@ -54,6 +56,16 @@ export default resolver.pipe(
             id: true,
             firstName: true,
             lastName: true,
+          },
+        },
+        projectRecordEmail: {
+          select: {
+            id: true,
+            textBody: true,
+            from: true,
+            date: true,
+            subject: true,
+            uploads: { select: { id: true, title: true } },
           },
         },
       },

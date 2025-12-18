@@ -62,7 +62,7 @@ export const SubsubsectionStatussWithData = () => {
                 Titel
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl Maßnahmen mit diesem Status
+                Anzahl Maßnahmen in dieser Phase
               </th>
               <th
                 scope="col"
@@ -126,7 +126,7 @@ export const SubsubsectionStatussWithData = () => {
           className="mt-4"
           href={Routes.NewSubsubsectionStatusPage({ projectSlug })}
         >
-          Neuer Status
+          Neue Phase
         </Link>
       </IfUserCanEdit>
 
@@ -145,8 +145,8 @@ export const SubsubsectionStatussWithData = () => {
 const SubsubsectionStatussPage: BlitzPage = () => {
   return (
     <LayoutRs>
-      <MetaTags noindex title="Status" />
-      <PageHeader title="Status" className="mt-12" />
+      <MetaTags noindex title="Phase" />
+      <PageHeader title="Phase" className="mt-12" />
 
       <Suspense fallback={<Spinner page />}>
         <SubsubsectionStatussWithData />

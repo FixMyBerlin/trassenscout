@@ -36,6 +36,7 @@ const EditSubsubsectionsSpecialWithQuery = () => {
     try {
       const updated = await updateSubsubsectionSpecialMutation({
         id: subsubsectionSpecial.id,
+        projectSlug,
         ...values,
       })
       await setQueryData(updated)

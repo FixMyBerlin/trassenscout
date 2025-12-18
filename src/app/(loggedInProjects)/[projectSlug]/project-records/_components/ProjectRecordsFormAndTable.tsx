@@ -2,7 +2,7 @@
 
 import { FilteredProjectRecords } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/FilteredProjectRecords"
 import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
-import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/useFilters.nuqs"
+import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/filter/useFilters.nuqs"
 import { useInitialFormValues } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/useInitialFormValues.nuqs"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { Disclosure } from "@/src/core/components/Disclosure"
@@ -15,7 +15,7 @@ import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
 import createProjectRecord from "@/src/server/projectRecords/mutations/createProjectRecord"
 import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
-import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
+import { NewProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { clsx } from "clsx"
 import { useEffect, useState } from "react"
@@ -51,6 +51,7 @@ export const ProjectRecordsFormAndTable = ({
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
+    console.log({ values })
     try {
       const projectRecord = await createProjectRecordMutation({
         ...values,
@@ -91,7 +92,7 @@ export const ProjectRecordsFormAndTable = ({
           resetOnSubmit
           onSubmit={handleSubmit}
           initialValues={formInitialValues}
-          schema={ProjectRecordFormSchema}
+          schema={NewProjectRecordFormSchema}
         >
           <div>
             <Disclosure

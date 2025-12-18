@@ -18,7 +18,7 @@ export const subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "sub
     costEstimate: 10_000,
     qualityLevelId: 1,
     description:
-      "Ausweitung des Straßenbegleitenden **Feldweges zum Radweg**. Freigabe für landwirtschaftlichen Verkehr.",
+      "Ausweitung des Straßenbegleitenden **Feldweges zum Radweg**.  Bestätigung für landwirtschaftlichen Verkehr.",
     mapillaryKey: "797685018581574",
     managerId: 1,
     maxSpeed: null,

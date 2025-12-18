@@ -1,8 +1,10 @@
 "use client"
 
+import { ProjectRecordEmailSource } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/edit/_components/ProjectRecordEmailSource"
 import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
 import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneContainer"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
+import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import {
   LabeledCheckboxGroup,
   LabeledSelect,
@@ -12,7 +14,6 @@ import {
 import { blueButtonStyles } from "@/src/core/components/links"
 import { frenchQuote, shortTitle } from "@/src/core/components/text"
 import { NumberArraySchema } from "@/src/core/utils/schema-shared"
-import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import createProjectRecordTopic from "@/src/server/ProjectRecordTopics/mutations/createProjectRecordTopic"
 import getProjectRecordTopicsByProject from "@/src/server/ProjectRecordTopics/queries/getProjectRecordTopicsByProject"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
@@ -22,13 +23,24 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { z } from "zod"
 
 type ProjectRecordFormFieldsProps = {
+  splitView?: boolean
   projectSlug: string
+  emailSource?: {
+    from: string | null
+    subject: string | null
+    date: Date | null
+    textBody: string | null
+    uploads: { id: number; title: string }[]
+  } | null
 }
 
-export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFieldsProps) => {
+export const ProjectRecordFormFields = ({
+  projectSlug,
+  emailSource,
+  splitView,
+}: ProjectRecordFormFieldsProps) => {
   const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
   const [{ projectRecordTopics }, { refetch: refetchTopics }] = useQuery(
@@ -37,7 +49,7 @@ export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFields
   )
   const [newTopic, setNewTopic] = useState("")
   const [createProjectRecordTopicMutation] = useMutation(createProjectRecordTopic)
-  const { watch, setValue } = useFormContext<z.infer<typeof ProjectRecordFormSchema>>()
+  const { watch, setValue } = useFormContext()
   const subsectionId = watch("subsectionId")
   const uploadsValue = watch("uploads")
   const uploadIds = NumberArraySchema.parse(uploadsValue)
@@ -106,62 +118,67 @@ export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFields
 
   return (
     <>
-      <div className="flex gap-4">
-        <div className="w-48">
-          <LabeledTextField type="date" name="date" label="am/bis" placeholder="" />
+      <div className={splitView ? "flex gap-6" : ""}>
+        <div className={splitView ? "flex-1 space-y-6" : "space-y-6"}>
+          <div className="flex gap-4">
+            <div className="w-48">
+              <LabeledTextField type="date" name="date" label="am/bis" placeholder="" />
+            </div>
+            <div className="flex-1">
+              <LabeledTextField name="title" label="Titel" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <LabeledSelect
+              optional
+              name="subsectionId"
+              options={subsectionOptions}
+              label="Planungsabschnitt"
+              onChange={handleSubsectionChange}
+            />
+
+            <LabeledSelect
+              optional
+              name="subsubsectionId"
+              options={subsubsectionOptions}
+              label={subsubsectionLabel}
+            />
+          </div>
+
+          <LabeledTextareaField name="body" optional label="Notizen (Markdown)" rows={20} />
+          <div className="flex flex-col gap-3">
+            <LabeledCheckboxGroup
+              scope="projectRecordTopics"
+              classNameItemWrapper="grid grid-cols-4 gap-1.5 w-full"
+              items={topicsOptions}
+              label="Tags"
+              optional
+            />
+            <div className="flex w-full items-end gap-2">
+              <LabeledTextField
+                onChange={(e) => setNewTopic(e.target.value)}
+                value={newTopic}
+                maxLength={35}
+                name="newTopic"
+                placeholder="Neues Tag"
+                className={
+                  "block w-full grow appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
+                }
+                label=""
+              />
+              <button
+                type="button"
+                onClick={handleNewTopicFormSubmit}
+                className={clsx(blueButtonStyles, "h-3! px-3!")}
+              >
+                Hinzufügen
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="flex-1">
-          <LabeledTextField name="title" label="Titel" />
-        </div>
-      </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <LabeledSelect
-          optional
-          name="subsectionId"
-          options={subsectionOptions}
-          label="Planungsabschnitt"
-          onChange={handleSubsectionChange}
-        />
-
-        <LabeledSelect
-          optional
-          name="subsubsectionId"
-          options={subsubsectionOptions}
-          label={subsubsectionLabel}
-        />
-      </div>
-
-      <LabeledTextareaField name="body" optional label="Notizen (Markdown)" rows={10} />
-
-      <div className="flex flex-col gap-3">
-        <LabeledCheckboxGroup
-          scope="projectRecordTopics"
-          classNameItemWrapper="grid grid-cols-4 gap-1.5 w-full"
-          items={topicsOptions}
-          label="Tags"
-          optional
-        />
-        <div className="flex w-full items-end gap-2">
-          <LabeledTextField
-            onChange={(e) => setNewTopic(e.target.value)}
-            value={newTopic}
-            maxLength={35}
-            name="newTopic"
-            placeholder="Neues Tag"
-            className={
-              "block w-full grow appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
-            }
-            label=""
-          />
-          <button
-            type="button"
-            onClick={handleNewTopicFormSubmit}
-            className={clsx(blueButtonStyles, "h-3! px-3!")}
-          >
-            Hinzufügen
-          </button>
-        </div>
+        {emailSource && splitView && <ProjectRecordEmailSource email={emailSource} />}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -175,8 +192,8 @@ export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFields
                 projectSlug={projectSlug}
                 size="grid"
                 onDeleted={async () => {
-                  const existingUploads = Array.isArray(uploadsValue) ? uploadsValue : []
-                  const newUploads = existingUploads.filter((id: number) => id !== upload.id)
+                  const existingUploads = NumberArraySchema.parse(uploadsValue)
+                  const newUploads = existingUploads.filter((id) => id !== upload.id)
                   setValue("uploads", newUploads, { shouldDirty: true })
                 }}
               />
@@ -186,8 +203,8 @@ export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFields
             <UploadDropzone
               fillContainer
               onUploadComplete={async (newUploadIds) => {
-                // Add new upload IDs to the form
-                const existingUploads = Array.isArray(uploadsValue) ? uploadsValue : []
+                // Add new upload IDs to the form, ensuring all are numbers
+                const existingUploads = NumberArraySchema.parse(uploadsValue)
                 const newUploads = [...new Set([...existingUploads, ...newUploadIds])]
                 setValue("uploads", newUploads, { shouldDirty: true })
               }}
@@ -195,6 +212,8 @@ export const ProjectRecordFormFields = ({ projectSlug }: ProjectRecordFormFields
           </UploadDropzoneContainer>
         </div>
       </div>
+
+      <SuperAdminLogData data={{ subsectionId, uploadsValue, uploadIds }} />
     </>
   )
 }

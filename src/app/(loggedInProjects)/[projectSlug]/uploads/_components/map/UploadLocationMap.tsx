@@ -1,6 +1,6 @@
 "use client"
 
-import { blueButtonStyles } from "@/src/core/components/links/styles"
+import { blueButtonStyles, whiteButtonStyles } from "@/src/core/components/links/styles"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { UploadMarkers } from "@/src/core/components/Map/UploadMarkers"
 import { subsectionsBbox } from "@/src/core/components/Map/utils/subsectionsBbox"
@@ -10,6 +10,7 @@ import getSubsections, {
 } from "@/src/server/subsections/queries/getSubsections"
 import { UploadSchema } from "@/src/server/uploads/schema"
 import { useQuery } from "@blitzjs/rpc"
+import { TrashIcon } from "@heroicons/react/24/outline"
 import { lineString } from "@turf/helpers"
 import { bbox } from "@turf/turf"
 import { useMemo } from "react"
@@ -74,6 +75,11 @@ export const UploadLocationMap = () => {
     setValue("longitude", (minLng + maxLng) / 2, { shouldValidate: true })
   }
 
+  const handleDeleteLocation = () => {
+    setValue("latitude", null, { shouldValidate: true })
+    setValue("longitude", null, { shouldValidate: true })
+  }
+
   return (
     <>
       <div className="relative">
@@ -106,22 +112,35 @@ export const UploadLocationMap = () => {
               blueButtonStyles,
               "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
               "shadow-2xl ring-8 ring-white/90",
+              "w-auto px-3 py-2 text-xs whitespace-nowrap sm:px-6 sm:py-3.5 sm:text-sm",
             )}
           >
             Datei auf der Karte verorten
           </button>
         )}
       </div>
-      <p className="mt-2 text-sm text-gray-500">
-        Geokoordinaten:{" "}
-        {typeof latitude === "number" && typeof longitude === "number" ? (
-          <>
-            {latitude.toFixed(6)}, {longitude.toFixed(6)}
-          </>
-        ) : (
-          "—"
+      <div className="mt-2 flex items-center justify-between gap-2">
+        <p className="text-sm text-gray-500">
+          <span className="hidden sm:inline">Geokoordinaten: </span>
+          {typeof latitude === "number" && typeof longitude === "number" ? (
+            <>
+              {latitude.toFixed(6)}, {longitude.toFixed(6)}
+            </>
+          ) : (
+            "—"
+          )}
+        </p>
+        {hasPosition && (
+          <button
+            type="button"
+            onClick={handleDeleteLocation}
+            className={twMerge(whiteButtonStyles, "w-auto px-2 py-1.5", "cursor-pointer")}
+            title="Standort löschen"
+          >
+            <TrashIcon className="size-5" />
+          </button>
         )}
-      </p>
+      </div>
     </>
   )
 }

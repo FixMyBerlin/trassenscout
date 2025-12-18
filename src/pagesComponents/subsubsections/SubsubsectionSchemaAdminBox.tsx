@@ -96,7 +96,7 @@ export const SubsubsectionSchemaAdminBox = ({
             </div>
 
             <div>
-              <strong>subsubsectionStatusId (Status) - Relation:</strong>
+              <strong>subsubsectionStatusId (Phase) - Relation:</strong>
               <div className="ml-2">
                 {subsubsectionStatuss.map((status) => (
                   <div key={status.id}>

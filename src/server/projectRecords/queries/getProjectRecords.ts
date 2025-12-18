@@ -17,6 +17,7 @@ export default resolver.pipe(
       },
       orderBy: { date: "desc" },
       include: {
+        project: { select: { slug: true, aiEnabled: true } },
         projectRecordTopics: true,
         subsection: true,
         subsubsection: {
@@ -27,6 +28,7 @@ export default resolver.pipe(
           },
         },
         uploads: {
+          orderBy: { id: "desc" },
           select: {
             id: true,
             title: true,
@@ -57,6 +59,10 @@ export default resolver.pipe(
       },
     })
 
+    // If the project has AI disabled, entries created by the system are excluded from the results.
+    if (projectRecords.length > 0 && !projectRecords[0]?.project?.aiEnabled) {
+      return projectRecords.filter((record) => record.projectRecordAuthorType !== "SYSTEM")
+    }
     return projectRecords
   },
 )

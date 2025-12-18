@@ -40,6 +40,7 @@ export const useMenuItems = () => {
     {
       name: "Dokumente",
       href: `/${projectSlug}/uploads`,
+      alsoHighlightPaths: [`/${projectSlug}/uploads/`],
     },
     {
       name: "Kontakte",

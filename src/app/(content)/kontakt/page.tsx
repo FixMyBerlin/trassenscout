@@ -3,6 +3,7 @@ import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { Metadata } from "next"
 import Image from "next/image"
 import "server-only"
+import svgImageLogoFona from "./assets/BMBF_FONA_Logo_rgb.svg"
 import svgImageLogoBmftrFoerderung from "./assets/BMFTR_de_DTP_CMYK_gef_durch.svg"
 
 export const metadata: Metadata = {
@@ -97,9 +98,18 @@ export default function KontaktPage() {
           </Link>
           )
         </p>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 items-start gap-2">
           <Link blank href="https://www.bmftr.bund.de/">
             <Image src={svgImageLogoBmftrFoerderung} alt="Förderung durch BMDV" className="my-0" />
+          </Link>
+          <Link blank href="https://www.fona.de/">
+            <Image
+              src={svgImageLogoFona}
+              alt="Förderung durch FONA"
+              className="my-0"
+              width={250}
+              height={160}
+            />
           </Link>
         </div>
       </section>

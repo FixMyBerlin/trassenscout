@@ -1,14 +1,15 @@
 "use client"
 
+import { summarizeUpload } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_actions/summarizeUpload"
 import { isPdf } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
-import { summarizeUpload } from "@/src/app/actions/summarizeUpload"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { LabeledTextareaField } from "@/src/core/components/forms"
-import { Link } from "@/src/core/components/links"
+import { blueButtonStyles, Link } from "@/src/core/components/links"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { SparklesIcon } from "@heroicons/react/16/solid"
-import clsx from "clsx"
 import { Dispatch, SetStateAction } from "react"
 import { useFormContext } from "react-hook-form"
+import { twJoin } from "tailwind-merge"
 
 type Props = {
   uploadId: number
@@ -26,15 +27,12 @@ export const SummaryField = ({
   isAiEnabled,
 }: Props) => {
   const { setValue } = useFormContext()
-
-  if (!isPdf(mimeType) || !isAiEnabled) {
-    return null
-  }
+  const projectSlug = useProjectSlug()
 
   const handleSummarize = async () => {
     setIsGeneratingSummary(true)
     try {
-      const { summary } = await summarizeUpload({ uploadId })
+      const { summary } = await summarizeUpload({ uploadId, projectSlug })
       if (summary) {
         setValue("summary", summary)
       } else {
@@ -48,10 +46,16 @@ export const SummaryField = ({
     }
   }
 
+  const showAiButton = isPdf(mimeType) && isAiEnabled
+
   return (
-    <div className="relative">
+    <div>
       <LabeledTextareaField
-        help="PDFs lassen sich mit KI zusammenfassen. Beachten Sie, dass nach Drücken des Buttons eine bereits vorhandene Zusammenfassung im Textfeld überschrieben wird."
+        help={
+          showAiButton
+            ? "PDFs lassen sich mit KI zusammenfassen. Beachten Sie, dass nach Drücken des Buttons eine bereits vorhandene Zusammenfassung im Textfeld überschrieben wird."
+            : undefined
+        }
         optional
         rows={12}
         name="summary"
@@ -73,15 +77,12 @@ export const SummaryField = ({
           </Link>
         </SuperAdminBox>
       )}
-      {uploadId && (
+      {showAiButton && uploadId && (
         <button
           type="button"
           onClick={handleSummarize}
           disabled={isGeneratingSummary}
-          className={clsx(
-            "absolute top-8 right-5 flex items-center gap-1 rounded-sm bg-blue-500 px-2 py-1 text-xs text-white disabled:bg-white disabled:text-gray-600",
-            !isGeneratingSummary && "hover:cursor-pointer hover:bg-blue-700",
-          )}
+          className={twJoin(blueButtonStyles, "mt-2 gap-1")}
         >
           <SparklesIcon className="h-3 w-3" />
           <p className={isGeneratingSummary ? "animate-pulse" : ""}>

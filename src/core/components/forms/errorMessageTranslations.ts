@@ -44,5 +44,10 @@ export const errorMessageTranslations: TranslatedMessages = {
     "Dieses URL-Segment ist bereits für einen anderen Status vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
   "PrismaClientKnownRequestError: Invalid `prisma.subsubsectionStatus.update()` invocation:Unique constraint failed on the fields: (`projectId`,`slug`)":
     "Dieses URL-Segment ist bereits für einen anderen Status vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
-  // "Dies ist keine gültige E-Mail-Adresse.",
+  // UPLOAD ERRORS
+  // NOTE: Some translation are from src/app/api/(auth)/[projectSlug]/upload/route.ts
+  "Error: Too many files.":
+    "Zu viele Dateien. Sie können maximal 10 Dateien gleichzeitig hochladen.",
+  "Error: One or more files are too large.":
+    "Eine oder mehrere Dateien sind zu groß. Die maximale Dateigröße beträgt 10 MB.",
 }

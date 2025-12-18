@@ -15,8 +15,11 @@ const seedUploads = async () => {
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
+      fileSize: 2450000, // 2.45 MB - protocol document
       latitude: null,
       longitude: null,
+      collaborationUrl: "https://fixmycity.de/",
+      collaborationPath: null,
     },
     {
       title: "AWS S3 Image",
@@ -28,8 +31,11 @@ const seedUploads = async () => {
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
+      fileSize: 1800000, // 1.8 MB - medium image
       latitude: null,
       longitude: null,
+      collaborationUrl: null,
+      collaborationPath: null,
     },
     {
       title: "Trassenplanung Projekt 1",
@@ -41,8 +47,11 @@ const seedUploads = async () => {
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
+      fileSize: 4200000, // 4.2 MB - large planning document
       latitude: 52.52039883952099,
       longitude: 13.317392954811083,
+      collaborationUrl: null,
+      collaborationPath: null,
     },
     {
       title: "FAQ Baulastträger 1",
@@ -54,8 +63,11 @@ const seedUploads = async () => {
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
+      fileSize: 850000, // 850 KB - FAQ document
       latitude: 52.52243126246529,
       longitude: 13.392787102151175,
+      collaborationUrl: null,
+      collaborationPath: null,
     },
     {
       title: "FAQ Baulastträger 2",
@@ -67,8 +79,11 @@ const seedUploads = async () => {
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
+      fileSize: 920000, // 920 KB - FAQ document
       latitude: 52.52204414153442,
       longitude: 13.387538142526438,
+      collaborationUrl: null,
+      collaborationPath: null,
     },
     {
       title: "Protokoll Gesamttreffen Projekt 2",
@@ -80,8 +95,11 @@ const seedUploads = async () => {
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
+      fileSize: 2100000, // 2.1 MB - protocol document
       latitude: null,
       longitude: null,
+      collaborationUrl: null,
+      collaborationPath: null,
     },
     {
       title: "Protokoll ADFC",
@@ -93,8 +111,11 @@ const seedUploads = async () => {
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
+      fileSize: 1500000, // 1.5 MB - protocol document
       latitude: null,
       longitude: null,
+      collaborationUrl: null,
+      collaborationPath: null,
     },
     {
       title: "Planungsdokument",
@@ -106,8 +127,11 @@ const seedUploads = async () => {
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
+      fileSize: 3700000, // 3.7 MB - planning document
       latitude: 52.51831791403984,
       longitude: 13.360259458454504,
+      collaborationUrl: null,
+      collaborationPath: null,
     },
     {
       title: "Super langer Text in der Beschreibung sehr lang",
@@ -119,8 +143,11 @@ const seedUploads = async () => {
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
+      fileSize: null, // null - missing file size data
       latitude: 52.51831791403984,
       longitude: 13.360259458454504,
+      collaborationUrl: null,
+      collaborationPath: null,
     },
     {
       title: "Kurz",
@@ -132,8 +159,11 @@ const seedUploads = async () => {
       summary: null,
       projectRecordEmailId: null,
       mimeType: "image/jpeg",
+      fileSize: 320000, // 320 KB - small image
       latitude: null,
       longitude: null,
+      collaborationUrl: null,
+      collaborationPath: null,
     },
   ]
 

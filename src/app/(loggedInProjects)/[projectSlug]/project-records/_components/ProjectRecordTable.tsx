@@ -1,6 +1,6 @@
 "use client"
 
-import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/useFilters.nuqs"
+import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/filter/useFilters.nuqs"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
@@ -11,16 +11,16 @@ import { shortTitle } from "@/src/core/components/text"
 import {
   projectRecordDetailRoute,
   projectRecordEditRoute,
-  projectRecordReviewRoute,
 } from "@/src/core/routes/projectRecordRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
+import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
 import { Disclosure, DisclosureButton, DisclosurePanel, Transition } from "@headlessui/react"
 import { ChevronDownIcon, SparklesIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
-import { ProjectRecordReviewBadge } from "./ProjectRecordReviewBadge"
+import { ProjectRecordReviewBadge } from "../[projectRecordId]/_components/ProjectRecordReviewBadge"
 import { ProjectRecordTopicsList } from "./ProjectRecordTopicsList"
 
 export const ProjectRecordsTable = ({
@@ -31,7 +31,9 @@ export const ProjectRecordsTable = ({
   withSubsubsection,
   openLinksInNewTab,
 }: {
-  projectRecords: Awaited<ReturnType<typeof getProjectRecords>>
+  projectRecords:
+    | Awaited<ReturnType<typeof getProjectRecords>>
+    | Awaited<ReturnType<typeof getProjectRecordsBySubsubsection>>
   highlightId?: number | null
   isTopicFilter?: boolean
   withSubsection?: boolean
@@ -89,7 +91,13 @@ export const ProjectRecordsTable = ({
                                 ? format(new Date(projectRecord.date), "P", { locale: de })
                                 : "—"}
                             </div>
-                            <div className={clsx(spaceClasses, "font-semibold text-blue-500")}>
+                            <div
+                              className={clsx(
+                                spaceClasses,
+                                "max-w-xs min-w-0 truncate font-semibold text-blue-500",
+                              )}
+                              title={projectRecord.title}
+                            >
                               {projectRecord.title}
                             </div>
                             <div className={clsx("hidden @lg:block", spaceClasses)}>
@@ -105,7 +113,6 @@ export const ProjectRecordsTable = ({
                                 </div>
                                 <div className="flex shrink-0 items-center gap-2">
                                   <ProjectRecordReviewBadge
-                                    authorType={projectRecord.projectRecordAuthorType}
                                     reviewState={projectRecord.reviewState}
                                   />
                                 </div>
@@ -137,7 +144,7 @@ export const ProjectRecordsTable = ({
                         >
                           {projectRecord.body && (
                             // for some reasons prose modifiers did not work here
-                            <div className="rounded-md border border-gray-200 p-2">
+                            <div className="rounded-md bg-blue-50 p-2">
                               <Markdown
                                 className="line-clamp-6 [&_ol]:ml-4 [&_ol]:list-decimal [&_ol]:leading-tight [&_p]:text-base [&_ul]:ml-4 [&_ul]:list-disc [&_ul]:leading-tight"
                                 markdown={projectRecord.body}
@@ -169,22 +176,23 @@ export const ProjectRecordsTable = ({
                           {/* Uploads */}
                           {projectRecord.uploads && projectRecord.uploads.length > 0 && (
                             <div>
-                              <p className="mb-2 font-medium text-gray-500">Dokumente:</p>
+                              <p className="mb-2 font-medium text-gray-500">
+                                Dokumente ({projectRecord.uploads.length}):
+                              </p>
                               <div className="flex flex-wrap gap-2">
-                                {projectRecord.uploads
-                                  .sort((a, b) => a.title.localeCompare(b.title))
-                                  .map((upload) => (
-                                    <UploadPreviewClickable
-                                      key={upload.id}
-                                      uploadId={upload.id}
-                                      projectSlug={projectSlug}
-                                      size="table"
-                                    />
-                                  ))}
+                                {projectRecord.uploads.slice(0, 5).map((upload) => (
+                                  <UploadPreviewClickable
+                                    key={upload.id}
+                                    uploadId={upload.id}
+                                    projectSlug={projectSlug}
+                                    size="table"
+                                  />
+                                ))}
+                                {projectRecord.uploads.length > 5 && <span>…</span>}
                               </div>
                             </div>
                           )}
-                          {/* Topics and "Freigabe"-Pill */}
+                          {/* Topics and " Bestätigung"-Pill */}
                           <div className="@lg:hidden">
                             <div className="flex flex-col gap-6">
                               <div onClick={(e) => e.stopPropagation()}>
@@ -195,10 +203,7 @@ export const ProjectRecordsTable = ({
                                 />
                               </div>
                               <div className="flex shrink-0 items-center gap-2">
-                                <ProjectRecordReviewBadge
-                                  authorType={projectRecord.projectRecordAuthorType}
-                                  reviewState={projectRecord.reviewState}
-                                />
+                                <ProjectRecordReviewBadge reviewState={projectRecord.reviewState} />
                               </div>
                             </div>
                           </div>
@@ -208,11 +213,11 @@ export const ProjectRecordsTable = ({
                               {projectRecord.reviewState === "NEEDSREVIEW" && (
                                 <Link
                                   className="inline-flex items-center justify-center gap-1"
-                                  href={projectRecordReviewRoute(projectSlug, projectRecord.id)}
+                                  href={projectRecordEditRoute(projectSlug, projectRecord.id)}
                                   blank={openLinksInNewTab}
                                 >
                                   <SparklesIcon className="h-3.5 w-3.5" />
-                                  Freigabe
+                                  Bestätigen
                                 </Link>
                               )}
                               <Link

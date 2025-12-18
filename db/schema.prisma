@@ -270,7 +270,7 @@ model Subsection {
   geometry                      Json
   labelPos                      LabelPositionEnum @default(top)
   description                   String?
-  lengthM                       Float // Meter
+  lengthM                       Float? // Meter
   priority                      PriorityEnum      @default(OPEN) // Priorität
   estimatedCompletionDateString String? // Jahresquartal der geplanten Fertigstellung als string Form "1-2023"
   //
@@ -330,7 +330,7 @@ model Subsubsection {
   location        LocationEnum? // Lage: innerorts/außerorts
   geometry        Json
   labelPos        LabelPositionEnum     @default(top)
-  lengthM         Float // Meter
+  lengthM         Float? // Meter
   width           Float? // Meter
   widthExisting   Float? // Meter - UNUSED
   description     String? // Anmerkungen
@@ -548,8 +548,11 @@ model Upload {
   //
   title                String
   externalUrl          String
+  collaborationUrl     String?
+  collaborationPath    String?
   summary              String?
   mimeType             String?
+  fileSize             Int?
   latitude             Float?
   longitude            Float?
   //

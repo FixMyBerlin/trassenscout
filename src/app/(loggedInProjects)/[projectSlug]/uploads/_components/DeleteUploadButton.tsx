@@ -27,9 +27,7 @@ export const DeleteUploadButton = ({
   variant = "link",
   className,
 }: Props) => {
-  // temorary early return to disable deletion of uploads
   const [deleteUploadMutation] = useMutation(deleteUpload)
-  return
 
   const handleDelete = async () => {
     if (
@@ -42,15 +40,24 @@ export const DeleteUploadButton = ({
         // When we delete a file, some other queries on the page can try to re-fetch the deleted upload and fail.
         // Testing hint: Sometimes this requires a reload of the page to trigger the error between upload and deletion.
         // To fix this, we have to invalidate or even remove all kinds of queries that might be affected by the deletion.
-        await deleteUploadMutation({ projectSlug, id: uploadId })
-        // Remove the specific upload query from cache (no refetch to avoid errors)
+        const queryClient = getQueryClient()
         const uploadQueryKey = getQueryKey(getUploadWithRelations, { projectSlug, id: uploadId })
-        void getQueryClient().removeQueries({ queryKey: uploadQueryKey })
+
+        // Cancel any in-flight requests for this upload
+        await queryClient.cancelQueries({ queryKey: uploadQueryKey })
+
+        await deleteUploadMutation({ projectSlug, id: uploadId })
+
+        // Set query data to a deleted marker object to prevent refetches
+        // This keeps the query in cache but marks it as deleted
+        // We keep it in cache (don't remove) so React Query won't try to refetch it
+        queryClient.setQueryData(uploadQueryKey, { __deleted: true } as any)
+
         // Invalidate the uploads lists so they refetch without the deleted upload
         const geolocatedQueryKey = getQueryKey(getGeolocatedUploads, { projectSlug })
-        void getQueryClient().invalidateQueries(geolocatedQueryKey)
+        void queryClient.invalidateQueries(geolocatedQueryKey)
         const uploadsListQueryKey = getQueryKey(getUploadsWithSubsections, { projectSlug })
-        void getQueryClient().invalidateQueries(uploadsListQueryKey)
+        void queryClient.invalidateQueries(uploadsListQueryKey)
         await onDeleted()
       } catch (error) {
         console.error("Error deleting upload:", error)
@@ -66,7 +73,7 @@ export const DeleteUploadButton = ({
       <button
         type="button"
         onClick={handleDelete}
-        className={clsx(linkStyles, className)}
+        className={clsx(linkStyles, "cursor-pointer", className)}
         title="Dokument löschen"
       >
         <TrashIcon className="size-5" />
@@ -76,7 +83,11 @@ export const DeleteUploadButton = ({
       <button
         type="button"
         onClick={handleDelete}
-        className={clsx("inline-flex items-center justify-center gap-1", linkStyles, className)}
+        className={clsx(
+          "inline-flex cursor-pointer items-center justify-center gap-1",
+          linkStyles,
+          className,
+        )}
       >
         {linkIcons["delete"]}
         Löschen

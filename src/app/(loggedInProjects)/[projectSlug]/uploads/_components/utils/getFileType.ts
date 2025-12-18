@@ -32,6 +32,15 @@ type SupportedMimeType = keyof typeof MIME_TO_EXTENSIONS_MAP
 const SUPPORTED_MIME_TYPES = Object.keys(MIME_TO_EXTENSIONS_MAP) as SupportedMimeType[]
 
 /**
+ * Check if a MIME type is supported/allowed for uploads
+ */
+export const isSupportedMimeType = (mimeType: string | null | undefined): boolean => {
+  if (!mimeType) return false
+  if (isImage(mimeType)) return true
+  return mimeType in MIME_TO_EXTENSIONS_MAP
+}
+
+/**
  * Generates the accept attribute string from supported MIME types
  * This ensures the accept attribute stays in sync with SUPPORTED_MIME_TYPES
  * Iterates over SUPPORTED_MIME_TYPES and uses MIME_TO_EXTENSIONS for conversion

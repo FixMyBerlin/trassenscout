@@ -114,14 +114,26 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
                   {subsubsection.SubsubsectionTask?.title || "k.A."}
                 </td>
               </tr>
-              <tr>
-                <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
-                  Länge
-                </th>
-                <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
-                  {formattedLength(subsubsection.lengthM)}
-                </td>
-              </tr>
+              {subsubsection.subsubsectionStatusId && (
+                <tr>
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
+                    Phase
+                  </th>
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
+                    {subsubsection.SubsubsectionStatus?.title || "k.A."}
+                  </td>
+                </tr>
+              )}
+              {subsubsection.lengthM && (
+                <tr>
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
+                    Länge
+                  </th>
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
+                    {formattedLength(subsubsection.lengthM)}
+                  </td>
+                </tr>
+              )}
               {/* UNUSED */}
               {/* {!!subsubsection.width && (
                 <tr>
@@ -250,7 +262,7 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
             )
           })}
           <IfUserCanEdit>
-            <UploadDropzoneContainer className="h-44 rounded-md p-0">
+            <UploadDropzoneContainer className="h-28 rounded-md p-0">
               <UploadDropzone
                 fillContainer
                 subsubsectionId={subsubsection.id}

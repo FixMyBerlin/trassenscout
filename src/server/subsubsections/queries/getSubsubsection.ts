@@ -36,7 +36,7 @@ export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry"> &
     qualityLevel?: Pick<QualityLevel, "title" | "slug" | "url">
   } & { SubsubsectionTask?: { title: string } } & {
     SubsubsectionInfrastructureType?: { title: string }
-  }
+  } & { SubsubsectionStatus?: { title: string } }
 
 export default resolver.pipe(
   resolver.zod(GetSubsubsection),

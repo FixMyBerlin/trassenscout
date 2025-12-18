@@ -1,5 +1,5 @@
 "use client"
-import { ObjectDump } from "@/src/app/admin/_components/ObjectDump"
+import { ObjectDump } from "@/src/app/(admin)/admin/_components/ObjectDump"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link, pinkButtonStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"

@@ -36,7 +36,7 @@ export const DeleteProjectRecordSchema = ProjectSlugRequiredSchema.merge(
   }),
 )
 
-export const ProjectRecordFormSchema = ProjectRecordSchema.omit({
+export const NewProjectRecordFormSchema = ProjectRecordSchema.omit({
   date: true,
   projectRecordTopics: true,
   uploads: true,
@@ -45,9 +45,9 @@ export const ProjectRecordFormSchema = ProjectRecordSchema.omit({
   updatedById: true,
   projectRecordUpdatedByType: true,
   reviewedAt: true,
-  reviewedById: true,
-  reviewState: true,
   reviewNotes: true,
+  reviewState: true,
+  reviewedById: true,
   projectId: true,
   projectRecordEmailId: true,
 }).merge(
@@ -64,13 +64,28 @@ export const ProjectRecordFormSchema = ProjectRecordSchema.omit({
   }),
 )
 
-export const ProjectRecordUpdateAdminFormSchema = ProjectRecordFormSchema.merge(
+export const ProjectRecordFormSchema = ProjectRecordSchema.omit({
+  date: true,
+  projectRecordTopics: true,
+  uploads: true,
+  userId: true,
+  projectRecordAuthorType: true,
+  updatedById: true,
+  projectRecordUpdatedByType: true,
+  reviewedAt: true,
+  reviewedById: true,
+  projectId: true,
+  projectRecordEmailId: true,
+}).merge(
   z.object({
-    projectId: z.coerce.number(),
+    date: NullableDateSchemaForm,
+    // LIST ALL m2mFields HERE
+    // We need to do this manually, since dynamic zod types don't work
+    projectRecordTopics: z
+      .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
+      .transform((v) => v || []),
+    uploads: z
+      .union([z.undefined(), z.boolean(), z.array(z.coerce.number())])
+      .transform((v) => v || []),
   }),
 )
-
-export const ProjectRecordReviewFormSchema = ProjectRecordSchema.pick({
-  reviewState: true,
-  reviewNotes: true,
-})

@@ -59,6 +59,7 @@ export default resolver.pipe(
           },
         },
         uploads: {
+          orderBy: { id: "desc" },
           select: {
             id: true,
             title: true,
@@ -70,10 +71,25 @@ export default resolver.pipe(
             title: true,
           },
         },
+        projectRecordEmail: {
+          select: {
+            id: true,
+            textBody: true,
+            from: true,
+            date: true,
+            subject: true,
+            uploads: { select: { id: true, title: true } },
+          },
+        },
       },
     })
 
     if (!projectRecord) throw new NotFoundError()
+
+    // If the project has AI disabled, entries created by the system are excluded from the results.
+    if (!projectRecord.project?.aiEnabled && projectRecord.projectRecordAuthorType === "SYSTEM") {
+      throw new NotFoundError()
+    }
 
     return projectRecord
   },

@@ -1,8 +1,8 @@
+import { ProjectRecordReviewState } from "@/db"
 import { ProjectRecordDetailClient } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/_components/ProtocolDetailClient"
-import { CreateEditReviewHistory } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/CreateEditReviewHistory"
+import { NeedsReviewBanner } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/edit/_components/EditProjectRecordForm"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { invoke } from "@/src/blitz-server"
-import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { projectRecordEditRoute } from "@/src/core/routes/projectRecordRoutes"
@@ -25,6 +25,7 @@ export default async function ProjectRecordDetail({
     projectSlug: params.projectSlug,
     id: projectRecordId,
   })
+  const needsReview = projectRecord.reviewState !== ProjectRecordReviewState.APPROVED
 
   return (
     <>
@@ -39,13 +40,7 @@ export default async function ProjectRecordDetail({
           </IfUserCanEdit>
         }
       />
-      {projectRecord.project.aiEnabled ? (
-        <CreateEditReviewHistory projectRecord={projectRecord} />
-      ) : (
-        <SuperAdminBox>
-          <CreateEditReviewHistory projectRecord={projectRecord} />
-        </SuperAdminBox>
-      )}
+      {needsReview && <NeedsReviewBanner projectRecord={projectRecord} withAction />}
 
       <ProjectRecordDetailClient projectRecord={projectRecord} />
 

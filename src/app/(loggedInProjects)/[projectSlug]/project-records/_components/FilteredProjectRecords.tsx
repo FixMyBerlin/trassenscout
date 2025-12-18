@@ -9,8 +9,8 @@ import { XMarkIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { useFilteredProjectRecords } from "./useFilteredProjectRecords"
-import { useFilters } from "./useFilters.nuqs"
+import { useFilteredProjectRecords } from "./filter/useFilteredProjectRecords"
+import { useFilters } from "./filter/useFilters.nuqs"
 
 type FilteredProjectRecordsProps = {
   projectRecords: Awaited<ReturnType<typeof getProjectRecords>>
