@@ -6,9 +6,12 @@ import { extractEmailData } from "@/src/app/api/(apiKey)/process-project-record-
 import { fetchProjectContext } from "@/src/app/api/(apiKey)/process-project-record-email/_utils/fetchProjectContext"
 import { editorRoles } from "@/src/authorization/constants"
 import { getBlitzContext } from "@/src/blitz-server"
-
 import db from "db"
 
+/**
+ * NOTE: All parts related to subsections and subsubsections are temporarily commented out
+ * as we are not yet sure how the customer uses this feature.
+ */
 // tbd: do we want to overwrite relations (subsections, subsubsections, uploads, tags) or only recreate the body?
 export const reprocessProjectRecord = async ({
   projectRecordId,
@@ -91,7 +94,8 @@ export const reprocessProjectRecord = async ({
       title: finalResult.title,
       body: finalResult.body,
       date: finalResult.date ? new Date(finalResult.date) : new Date(),
-      subsectionId: finalResult.subsectionId ? parseInt(finalResult.subsectionId) : undefined,
+      // subsectionId: finalResult.subsectionId ? parseInt(finalResult.subsectionId) : undefined,
+      // subsubsectionId: finalResult.subsubsectionId ? parseInt(finalResult.subsubsectionId) : undefined,
       projectRecordTopics: finalResult.topics?.map((id) => parseInt(id)) || [],
     },
   }

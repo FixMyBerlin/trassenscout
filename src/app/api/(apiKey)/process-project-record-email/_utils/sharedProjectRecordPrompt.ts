@@ -1,6 +1,6 @@
 type CreateFieldInstructionsParams = {
-  subsections: Array<{ id: number; slug: string; start: string; end: string }>
-  subsubsections: Array<{ id: number; slug: string; subsection: { slug: string; id: number } }>
+  // subsections: Array<{ id: number; slug: string; start: string; end: string }>
+  // subsubsections: Array<{ id: number; slug: string; subsection: { slug: string; id: number } }>
   projectRecordTopics: Array<{ id: number; title: string }>
   isReprocessing?: boolean
   hasUploads: boolean
@@ -8,8 +8,8 @@ type CreateFieldInstructionsParams = {
 }
 
 export const createFieldInstructions = ({
-  subsections,
-  subsubsections,
+  // subsections,
+  // subsubsections,
   projectRecordTopics,
   isReprocessing,
   hasUploads,
@@ -35,37 +35,6 @@ ${hasUploads ? `- Integrate relevant information from the document summaries pro
 #### TITLE
 - Generate a meaningful, concise title that reflects the ${isReprocessing ? "record's" : "email's"} main topic or purpose **in German language**.${!isReprocessing && subject ? `\n- **Important:** The email subject is "${subject}". Use this as the primary source for the title.` : ""}
 
-#### SUBSECTIONID
-${
-  subsections.length > 0
-    ? `Identify whether this ${isReprocessing ? "record" : "email"} content relates to a specific route subsection ('Abschnitt' / 'Planungsabschnitt' / 'Bauabschnitt'). ${hasUploads ? `The related document summaries must be considered as well.` : ""}
-
-Available subsections:
-${subsections
-  .map((s) => `${s.id} (${s.slug.toUpperCase()} - ${s.start}(start) to ${s.end}(end))`)
-  .join(", ")}
-
-Assign based on the abbreviations mentioned in the text${subject ? ` and subject` : ""}. Sometimes the abbreviations vary slightly, e.g., 'PA1' can also be written as 'PA 1'. If unclear, return null.`
-    : "No subsections available for this project; always return null."
-}
-
-#### SUBSUBSECTIONID
-${
-  subsubsections.length > 0
-    ? `Identify whether this ${isReprocessing ? "record" : "email"} content relates to a specific route subsubsection ('Maßnahme', 'Unterabschnitt', 'Führung'). ${hasUploads ? `The related document summaries must be considered as well.` : ""}
-
-Available subsubsections:
-${subsubsections
-  .map(
-    (s) =>
-      `${s.id} (short title: ${s.slug.toUpperCase()} - part of subsection ${s.subsection.slug.toUpperCase()})`,
-  )
-  .join(", ")}
-
-Assign based on the abbreviations mentioned in the text${subject ? ` and subject` : ""}. Sometimes the abbreviations vary slightly, e.g., 'RF12' can also be written as 'RF 12'. If unclear, return null.`
-    : "No subsubsections available for this project; always return null."
-}
-
 #### TOPICS
 ${
   projectRecordTopics.length > 0
@@ -82,3 +51,34 @@ If no topic clearly applies, return an empty array.`
 Do not include any explanations or commentary.
 `
 }
+
+// #### SUBSECTIONID
+// ${
+//   subsections.length > 0
+//     ? `Identify whether this ${isReprocessing ? "record" : "email"} content relates to a specific route subsection ('Abschnitt' / 'Planungsabschnitt' / 'Bauabschnitt'). ${hasUploads ? `The related document summaries must be considered as well.` : ""}
+
+// Available subsections:
+// ${subsections
+//   .map((s) => `${s.id} (${s.slug.toUpperCase()} - ${s.start}(start) to ${s.end}(end))`)
+//   .join(", ")}
+
+// Assign based on the abbreviations mentioned in the text${subject ? ` and subject` : ""}. Sometimes the abbreviations vary slightly, e.g., 'PA1' can also be written as 'PA 1'. If unclear, return null.`
+//     : "No subsections available for this project; always return null."
+// }
+
+// #### SUBSUBSECTIONID
+// ${
+//   subsubsections.length > 0
+//     ? `Identify whether this ${isReprocessing ? "record" : "email"} content relates to a specific route subsubsection ('Maßnahme', 'Unterabschnitt', 'Führung'). ${hasUploads ? `The related document summaries must be considered as well.` : ""}
+
+// Available subsubsections:
+// ${subsubsections
+//   .map(
+//     (s) =>
+//       `${s.id} (short title: ${s.slug.toUpperCase()} - part of subsection ${s.subsection.slug.toUpperCase()})`,
+//   )
+//   .join(", ")}
+
+// Assign based on the abbreviations mentioned in the text${subject ? ` and subject` : ""}. Sometimes the abbreviations vary slightly, e.g., 'RF12' can also be written as 'RF 12'. If unclear, return null.`
+//     : "No subsubsections available for this project; always return null."
+// }

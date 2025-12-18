@@ -13,7 +13,7 @@ type ExtractWithAIParams = {
   from?: string | null
   projectContext: Pick<
     CreateProjectRecordExtractionSchemaParams,
-    "subsections" | "subsubsections" | "projectRecordTopics"
+    /*  "subsections" | "subsubsections" |*/ "projectRecordTopics"
   >
   userId: string
 }
@@ -36,13 +36,13 @@ export const extractWithAI = async ({
   })
 
   const finalExtractionSchema = createProjectRecordExtractionSchema({
-    subsections: projectContext.subsections,
-    subsubsections: projectContext.subsubsections,
+    // subsections: projectContext.subsections,
+    // subsubsections: projectContext.subsubsections,
     projectRecordTopics: projectContext.projectRecordTopics,
   })
   const fieldInstructions = createFieldInstructions({
-    subsections: projectContext.subsections,
-    subsubsections: projectContext.subsubsections,
+    // subsections: projectContext.subsections,
+    // subsubsections: projectContext.subsubsections,
     projectRecordTopics: projectContext.projectRecordTopics,
     isReprocessing: false,
     hasUploads: false, // attachments are uploaded but not yet used in prompt for initial processing

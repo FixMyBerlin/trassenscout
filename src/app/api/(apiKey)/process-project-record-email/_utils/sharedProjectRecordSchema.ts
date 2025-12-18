@@ -1,15 +1,15 @@
 import { z } from "zod"
 
 export type CreateProjectRecordExtractionSchemaParams = {
-  subsections: Array<{ id: number; slug: string; start: string; end: string }>
-  subsubsections: Array<{ id: number; slug: string; subsection: { slug: string; id: number } }>
+  // subsections: Array<{ id: number; slug: string; start: string; end: string }>
+  // subsubsections: Array<{ id: number; slug: string; subsection: { slug: string; id: number } }>
   projectRecordTopics: Array<{ id: number; title: string }>
   isReprocessing?: boolean
 }
 
 export const createProjectRecordExtractionSchema = ({
-  subsections,
-  subsubsections,
+  // subsections,
+  // subsubsections,
   projectRecordTopics,
   isReprocessing,
 }: CreateProjectRecordExtractionSchemaParams) => {
@@ -38,28 +38,28 @@ export const createProjectRecordExtractionSchema = ({
         "The relevant date (or sent date) for the created project record entry in ISO format if available.",
       ),
 
-    subsectionId:
-      subsections.length > 0
-        ? z
-            .enum(subsections.map((s) => s.id.toString()) as [string, ...string[]])
-            .nullable()
-            .describe(
-              `The subsection ('Abschnitt') ID this ${isReprocessing ? "record entry" : "email"} relates to, if applicable. Available subsections: ${subsections
-                .map((s) => `${s.id} (${s.slug} - ${s.start} to ${s.end})`)
-                .join(", ")}. Return null if no clear subsection is identified.`,
-            )
-        : z.null().describe("Null as no subsections are available for this project."),
-    subsubsectionId:
-      subsubsections.length > 0
-        ? z
-            .enum(subsubsections.map((s) => s.id.toString()) as [string, ...string[]])
-            .nullable()
-            .describe(
-              `The subsubsection ('Abschnitt') ID this ${isReprocessing ? "record entry" : "email"} relates to, if applicable. Available subsubsections: ${subsubsections
-                .map((s) => `${s.id} (${s.slug} - part of subsection ${s.subsection.slug})`)
-                .join(", ")}. Return null if no clear subsubsection is identified.`,
-            )
-        : z.null().describe("Null as no subsubsections are available for this project."),
+    // subsectionId:
+    //   subsections.length > 0
+    //     ? z
+    //         .enum(subsections.map((s) => s.id.toString()) as [string, ...string[]])
+    //         .nullable()
+    //         .describe(
+    //           `The subsection ('Abschnitt') ID this ${isReprocessing ? "record entry" : "email"} relates to, if applicable. Available subsections: ${subsections
+    //             .map((s) => `${s.id} (${s.slug} - ${s.start} to ${s.end})`)
+    //             .join(", ")}. Return null if no clear subsection is identified.`,
+    //         )
+    //     : z.null().describe("Null as no subsections are available for this project."),
+    // subsubsectionId:
+    //   subsubsections.length > 0
+    //     ? z
+    //         .enum(subsubsections.map((s) => s.id.toString()) as [string, ...string[]])
+    //         .nullable()
+    //         .describe(
+    //           `The subsubsection ('Abschnitt') ID this ${isReprocessing ? "record entry" : "email"} relates to, if applicable. Available subsubsections: ${subsubsections
+    //             .map((s) => `${s.id} (${s.slug} - part of subsection ${s.subsection.slug})`)
+    //             .join(", ")}. Return null if no clear subsubsection is identified.`,
+    //         )
+    //     : z.null().describe("Null as no subsubsections are available for this project."),
     topics: z
       .array(
         projectRecordTopics.length > 0

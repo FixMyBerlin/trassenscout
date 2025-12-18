@@ -14,7 +14,7 @@ type GenerateProjectRecordWithAIParams = {
   uploads: Pick<Upload, "id" | "title" | "summary">[]
   projectContext: Pick<
     CreateProjectRecordExtractionSchemaParams,
-    "subsections" | "subsubsections" | "projectRecordTopics"
+    /* "subsections" | "subsubsections" |*/ "projectRecordTopics"
   >
   userId: number
   subject?: string | null
@@ -37,17 +37,17 @@ export const generateProjectRecordWithAI = async ({
     userId: String(userId),
   })
 
-  const { subsections, subsubsections, projectRecordTopics } = projectContext
+  const { /* subsections, subsubsections, */ projectRecordTopics } = projectContext
 
   const finalExtractionSchema = createProjectRecordExtractionSchema({
-    subsections,
-    subsubsections,
+    // subsections,
+    // subsubsections,
     projectRecordTopics,
   })
 
   const fieldInstructions = createFieldInstructions({
-    subsections,
-    subsubsections,
+    // subsections,
+    // subsubsections,
     projectRecordTopics,
     isReprocessing: true,
     hasUploads: uploads.length > 0,
