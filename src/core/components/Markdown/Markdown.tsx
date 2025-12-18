@@ -56,17 +56,33 @@ const components = {
 }
 
 const autoLinkUrls = (text: string): string => {
-  // Regex to match URLs that start with http:// or https://
-  // This regex looks for URLs that are not already wrapped in markdown link syntax
-  const urlRegex = /(?<!\]\()(https?:\/\/[^\s\)]+)(?!\))/g
+  // First, protect existing markdown links by temporarily replacing them
+  const markdownLinks: string[] = []
+  const placeholder = "___MARKDOWN_LINK___"
 
-  return text.replace(urlRegex, (url) => {
-    // Remove trailing punctuation that's likely not part of the URL
+  // Match and store all existing markdown links [text](url)
+  let textWithPlaceholders = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match) => {
+    markdownLinks.push(match)
+    return `${placeholder}${markdownLinks.length - 1}${placeholder}`
+  })
+
+  // Now auto-link plain URLs
+  const urlRegex = /https?:\/\/\S+/g
+  textWithPlaceholders = textWithPlaceholders.replace(urlRegex, (url) => {
     const cleanUrl = url.replace(/[.,;:!?]+$/, "")
     const trailingPunc = url.slice(cleanUrl.length)
-
     return `[${cleanUrl}](${cleanUrl})${trailingPunc}`
   })
+
+  // Restore the original markdown links
+  markdownLinks.forEach((link, index) => {
+    textWithPlaceholders = textWithPlaceholders.replace(
+      `${placeholder}${index}${placeholder}`,
+      link,
+    )
+  })
+
+  return textWithPlaceholders
 }
 
 export const Markdown = ({ markdown, className }: Props) => {
