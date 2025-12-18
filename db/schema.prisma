@@ -762,7 +762,7 @@ model ProjectRecord {
   //
   updatedBy                  User?                    @relation("ProjectRecordUpdatedBy", fields: [updatedById], references: [id])
   updatedById                Int?
-  projectRecordUpdatedByType ProjectRecordType        @default(SYSTEM)
+  projectRecordUpdatedByType ProjectRecordType?
   //
   projectRecordEmail         ProjectRecordEmail?      @relation(fields: [projectRecordEmailId], references: [id], onDelete: SetNull)
   projectRecordEmailId       Int?

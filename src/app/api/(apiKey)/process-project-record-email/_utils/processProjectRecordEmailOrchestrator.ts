@@ -161,7 +161,6 @@ export const processProjectRecordEmailOrchestrator = async ({
       // subsubsectionId: combinedResult.subsubsectionId,
       projectId: combinedResult.projectId,
       projectRecordAuthorType: ProjectRecordType.SYSTEM,
-      projectRecordUpdatedByType: ProjectRecordType.SYSTEM,
       reviewState:
         isSenderApproved && isAiEnabled
           ? ProjectRecordReviewState.NEEDSREVIEW
