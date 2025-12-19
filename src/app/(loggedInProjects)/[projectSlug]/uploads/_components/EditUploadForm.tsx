@@ -288,15 +288,6 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
             </div>
           </SuperAdminBox>
           <UploadSubsectionFields subsections={subsections} subsubsections={subsubsections} />
-          {upload.id && (
-            <SummaryField
-              uploadId={upload.id}
-              mimeType={upload.mimeType}
-              isGeneratingSummary={isGeneratingSummary}
-              setIsGeneratingSummary={setIsGeneratingSummary}
-              isAiEnabled={upload.project.aiEnabled}
-            />
-          )}
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
               Standort (optional)
@@ -308,6 +299,15 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
             </p>
             <UploadLocationMap />
           </div>
+          {upload.id && (
+            <SummaryField
+              uploadId={upload.id}
+              mimeType={upload.mimeType}
+              isGeneratingSummary={isGeneratingSummary}
+              setIsGeneratingSummary={setIsGeneratingSummary}
+              isAiEnabled={upload.project.aiEnabled}
+            />
+          )}
         </Form>
       </div>
 

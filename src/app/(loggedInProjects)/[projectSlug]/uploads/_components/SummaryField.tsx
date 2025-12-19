@@ -60,7 +60,7 @@ export const SummaryField = ({
             : undefined
         }
         optional
-        rows={12}
+        rows={20}
         name="summary"
         label="Zusammenfassung"
         disabled={isGeneratingSummary}
