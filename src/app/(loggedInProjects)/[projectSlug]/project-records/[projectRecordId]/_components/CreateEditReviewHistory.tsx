@@ -40,7 +40,7 @@ const CreateEditReviewHistoryComponent = ({
     {projectRecord.projectRecordAuthorType === ProjectRecordType.SYSTEM &&
       projectRecord.reviewState !== ProjectRecordReviewState.APPROVED && (
         <p className="mt-2 text-xs">
-          <span> Bestätigung-Status </span>
+          <span> Bestätigungsstatus </span>
           <ProjectRecordReviewStatePill state={projectRecord.reviewState} />
         </p>
       )}
@@ -56,7 +56,7 @@ const CreateEditReviewHistoryComponent = ({
     {projectRecord.projectRecordAuthorType === ProjectRecordType.SYSTEM &&
       projectRecord.reviewNotes && (
         <p className="mt-2 text-xs">
-          <span>Freigebe-Notiz: </span>
+          <span>Bestätigtungsnotiz: </span>
           <span>{projectRecord.reviewNotes}</span>
         </p>
       )}
