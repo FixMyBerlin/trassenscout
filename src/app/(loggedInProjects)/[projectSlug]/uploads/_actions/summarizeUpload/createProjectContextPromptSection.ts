@@ -23,10 +23,11 @@ export const createProjectContextPromptSection = ({
 
 When summarizing this document, pay special attention to the following:
 
-### GENERAL REQUIREMENTS (Always Include)
+### GENERAL REQUIREMENTS (Always Include **if mentioned**)
 - **Topics**: Always identify and include the most relevant topics or themes in the summary, even if they are not in the predefined project topics list below.
 - **Route Section Names**: Always include any route section names, abbreviations, or identifiers mentioned (e.g., 'PA1', 'Planungsabschnitt 2', 'Bauabschnitt 3').
-- **⚠️ IMPORTANT - Geographic Information**: Always include all names of routes, municipalities (Gemeinden), cities (Städte), districts (Ortsteile), streets (Straßen), and places of any kind mentioned in the document. These are critical reference points and must never be omitted.
+- **⚠️ IMPORTANT - Geographic Information**: Always include all names of routes, municipalities (Gemeinden), cities (Städte), districts (Ortsteile), streets (Straßen), and places of any kind mentioned in the document. These are critical reference points and must never be omitted. Do not merge, interpret, or generalize locations (e.g. do not replace street names with city names).
+- do **not** guess or invent information: only include route Section Names, geo information and topics if they explicitly mentioned
 
 ### PREDEFINED TOPICS
 ${
