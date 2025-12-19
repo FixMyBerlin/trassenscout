@@ -75,41 +75,43 @@ export const FilteredProjectRecords = ({
 
   return (
     <>
-      <form id="projectRecord-filter" onSubmit={handleSubmit}>
-        <div className="flex items-end gap-4">
-          <div className="w-[300px]">
-            <input
-              onChange={handleSearchtermInputChange}
-              type="text"
-              value={searchterm}
-              // onBlur={handleSearchtermInputBlur}
-              name="searchterm"
-              placeholder="Beiträge nach Suchwort filtern"
-              className={
-                "block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
-              }
-            />
+      <div>
+        <form id="projectRecord-filter" onSubmit={handleSubmit}>
+          <div className="flex items-end gap-3">
+            <div className="w-[300px]">
+              <input
+                onChange={handleSearchtermInputChange}
+                type="text"
+                value={searchterm}
+                // onBlur={handleSearchtermInputBlur}
+                name="searchterm"
+                placeholder="Beiträge nach Suchwort filtern"
+                className={
+                  "block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
+                }
+              />
+            </div>
+            <button type="submit" className="h-full">
+              <MagnifyingGlassIcon className="h-9 w-9 rounded-md bg-blue-500 p-2 text-white hover:bg-blue-800" />
+            </button>
           </div>
-          <button type="submit" className="h-full">
-            <MagnifyingGlassIcon className="h-9 w-9 rounded-md bg-blue-500 p-2 text-white hover:bg-blue-800" />
-          </button>
-        </div>
-        <p className="mt-2 text-sm text-gray-500">
-          Tags, Titel, Inhalte und Abschnitte durchsuchen
+          <p className="mt-2 text-sm text-gray-500">
+            Tags, Titel, Inhalte und Abschnitte durchsuchen
+          </p>
+        </form>
+        <button
+          type="button"
+          className={clsx(linkStyles, "mt-4 flex items-center gap-2")}
+          onClick={handleFilterReset}
+        >
+          <XMarkIcon className="h-4 w-4" />
+          <span>Filter zurücksetzen</span>
+        </button>
+        <p className="mt-4 text-sm text-gray-500">
+          {filteredProjectRecords.length} Protokoll
+          {filteredProjectRecords.length !== 1 ? "einträge" : "eintrag"}
         </p>
-      </form>
-      <button
-        type="button"
-        className={clsx(linkStyles, "mt-4 flex items-center gap-2")}
-        onClick={handleFilterReset}
-      >
-        <XMarkIcon className="h-4 w-4" />
-        <span>Filter zurücksetzen</span>
-      </button>
-      <p className="mt-4 text-sm text-gray-500">
-        {filteredProjectRecords.length} Protokoll
-        {filteredProjectRecords.length !== 1 ? "einträge" : "eintrag"}
-      </p>
+      </div>
       {projectRecords.length === 0 ? (
         <ZeroCase visible={projectRecords.length} name="Protokolleinträge" />
       ) : (

@@ -79,7 +79,7 @@ export const ProjectRecordsFormAndTable = ({
   }
 
   return (
-    <div className="relative">
+    <div className="relative flex flex-col gap-8">
       <div className="absolute top-0 right-0">
         <FormSuccess message="Neuen Protokolleintrag erstellt" show={showSuccess} />
       </div>
