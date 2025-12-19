@@ -38,10 +38,10 @@ export const NeedsReviewBanner = ({
   <div className="mb-6 inline-flex flex-col space-y-2 rounded-md border border-gray-200 bg-yellow-100 p-4 text-gray-700">
     <div className="flex items-center gap-2">
       <SparklesIcon className="size-5" />
-      <h3 className="font-semibold">Protokoll- Bestätigung erforderlich</h3>
+      <h3 className="font-semibold">Bestätigung erforderlich</h3>
     </div>
     <p className="text-sm">
-      Dieses Protokoll wurde per KI-Assistent erstellt und muss noch bestätigt werden.
+      Dieser Protokolleintrag wurde per KI erstellt und muss noch bestätigt werden.
     </p>
     {withAction && (
       <Link
@@ -128,7 +128,7 @@ export const EditProjectRecordForm = ({
           >
             Admin-Ansicht
           </Link>{" "}
-          wechseln, um Bestätigung-Status zu ändern und Quellnachricht zu sehen.
+          wechseln, um Bestätigungsstatus zu ändern und Quellnachricht zu sehen.
         </SuperAdminBox>
       )}
       <Form

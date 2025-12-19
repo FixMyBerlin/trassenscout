@@ -29,7 +29,7 @@ export const ReprocessProjectRecordButton = ({ projectRecordId, onAiSuggestions 
       }
     } catch (error) {
       console.error("Error improving projectRecord:", error)
-      alert("Fehler beim Verbessern des Protokolls")
+      alert("Fehler beim Verbessern des Protokolleintrags")
       setIsProcessing(false)
     }
   }
@@ -41,8 +41,8 @@ export const ReprocessProjectRecordButton = ({ projectRecordId, onAiSuggestions 
         <div className="flex-1">
           <h3 className="text-sm font-medium text-gray-900">KI-gestützte Verbesserung</h3>
           <p className="mt-1 mb-3 text-sm text-gray-600">
-            Dieses Protokoll kann mit KI verbessert werden. Dabei werden verknüpfte Dokumente und
-            deren Zusammenfassungen berücksichtigt.
+            Dieses Protokolleintrag kann mit KI verbessert werden. Dabei werden verknüpfte Dokumente
+            und deren Zusammenfassungen berücksichtigt.
           </p>
           <button
             type="button"
@@ -51,7 +51,7 @@ export const ReprocessProjectRecordButton = ({ projectRecordId, onAiSuggestions 
             className={clsx(blueButtonStyles, "flex gap-1")}
           >
             <SparklesIcon className="h-4 w-4" />
-            {isProcessing ? "Wird verbessert..." : "Protokoll verbessern"}
+            {isProcessing ? "Wird verbessert..." : "Protokolleintrag verbessern"}
           </button>
         </div>
       </div>

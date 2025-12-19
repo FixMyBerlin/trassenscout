@@ -29,12 +29,15 @@ export const SummaryField = ({
   const { setValue } = useFormContext()
   const projectSlug = useProjectSlug()
 
+  const disclaimerText =
+    "\n\n*Die Zusammenfassung wurde mit KI erstellt und dient der Orientierung und ersetzt nicht die Prüfung des Originaldokuments*"
+
   const handleSummarize = async () => {
     setIsGeneratingSummary(true)
     try {
       const { summary } = await summarizeUpload({ uploadId, projectSlug })
       if (summary) {
-        setValue("summary", summary)
+        setValue("summary", summary + disclaimerText, { shouldDirty: true })
       } else {
         throw new Error("Invalid response data")
       }
@@ -57,7 +60,7 @@ export const SummaryField = ({
             : undefined
         }
         optional
-        rows={12}
+        rows={20}
         name="summary"
         label="Zusammenfassung"
         disabled={isGeneratingSummary}

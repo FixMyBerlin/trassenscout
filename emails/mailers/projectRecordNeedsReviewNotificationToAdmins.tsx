@@ -33,22 +33,22 @@ export async function projectRecordNeedsReviewNotificationToAdmins(props: Props)
   if (!props.isAiEnabled) {
     actionItems.push("- Die AI-generierten Inhalte überprüft und ggf. korrigiert werden müssen")
   }
-  actionItems.push("- Das Projektprotokoll genehmigt oder abgelehnt werden soll")
+  actionItems.push("- Der Protokolleintrag genehmigt oder abgelehnt werden soll")
 
   const introMarkdown = `
 Hallo Trassenscout-Admin!
 
 # Eine Email benötigt Admin-Prüfung im Projekt ${quote(props.projectSlug)}
 
-Die Email wurde automatisch als Projektprotokoll erfasst, benötigt jedoch eine Admin-Prüfung, da ${reasonText}.
+Die Email wurde automatisch als Protokolleintrag erfasst, benötigt jedoch eine Admin-Prüfung, da ${reasonText}.
 
 **Absenderadresse:** ${props.senderEmail}
 **Betreff:** ${props.emailSubject || "(kein Betreff)"}
 
-Bitte prüfen Sie das erstellte Projektprotokoll und entscheiden Sie, ob:
+Bitte prüfen Sie den erstellten Protokolleintrag und entscheiden Sie, ob:
 ${actionItems.join("\n")}
 
-Das Projektprotokoll können Sie unter ${props.projectRecordReviewUrl} einsehen und bearbeiten.
+Den Protokolleintrag können Sie unter ${props.projectRecordReviewUrl} einsehen und bearbeiten.
 `
 
   // Generate subject based on the reason(s)
@@ -67,7 +67,7 @@ Das Projektprotokoll können Sie unter ${props.projectRecordReviewUrl} einsehen 
     Subject: `[Admin] Trassenscout: ${subjectSuffix} in Projekt ${quote(props.projectSlug)}`,
     introMarkdown,
     ctaLink: props.projectRecordReviewUrl,
-    ctaText: "Projektprotokoll prüfen",
+    ctaText: "Protokolleintrag prüfen",
   }
 
   return {

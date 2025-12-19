@@ -24,17 +24,17 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
     try {
       const result = await processProjectRecordEmail({ projectRecordEmailId })
 
-      const message = `Protokoll erfolgreich erstellt! ID: ${result.projectRecordId}`
+      const message = `Protokolleintrag erfolgreich erstellt! ID: ${result.projectRecordId}`
       const documentsMessage = result.uploadIds?.length
         ? `\nDokumente mit den IDs: ${result.uploadIds.join(", ")} erstellt und verknüpft.`
         : ""
       const aiDisabledMessage =
         result.isAiEnabled === false
-          ? "\nHinweis: KI-Unterstützung ist für dieses Projekt deaktiviert. Protokoll muss manuell überprüft und  bestätigt werden."
+          ? "\nHinweis: KI-Unterstützung ist für dieses Projekt deaktiviert. Protokolleintrag muss manuell überprüft und  bestätigt werden."
           : ""
       const isSenderUnapprovedMessage =
         result.isSenderApproved === false
-          ? "\nHinweis: Der Absender ist nicht für dieses Projekt genehmigt. Protokoll muss manuell überprüft und  bestätigt werden."
+          ? "\nHinweis: Der Absender ist nicht für dieses Projekt genehmigt. Protokolleintrag muss manuell überprüft und  bestätigt werden."
           : ""
       alert(message + documentsMessage + aiDisabledMessage + isSenderUnapprovedMessage)
       router.push("/admin/project-records")
@@ -64,8 +64,8 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
     <div>
       <div className="mb-4 rounded-md bg-blue-50 p-4 text-blue-800">
         <p className="mb-2">
-          <strong>Hinweis:</strong> E-Mails ohne Protokolle (gelb markiert) müssen noch prozessiert
-          werden. <br />
+          <strong>Hinweis:</strong> E-Mails ohne Protokolleinträge (gelb markiert) müssen noch
+          prozessiert werden. <br />
           ‼️ E-Mails ohne zugeordnetes Projekt können nicht mit KI prozessiert werden und müssen
           zunächst bearbeitet werden.
         </p>
@@ -94,7 +94,7 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
               Betreff
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase">
-              Protokolle
+              Protokolleinträge
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase">
               Dokumente*

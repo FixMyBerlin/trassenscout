@@ -73,7 +73,7 @@ export const ReprocessProjectRecordEditForm = ({
       <div className="mb-4 flex items-center justify-between">
         <h2 className="flex items-center gap-2 text-lg font-medium">
           <SparklesIcon className="h-5 w-5 text-blue-600" />
-          KI-Vorschlag für verbessertes Protokoll
+          KI-Vorschlag für verbesserten Protokolleintrag
         </h2>
         <button
           type="button"
@@ -86,8 +86,9 @@ export const ReprocessProjectRecordEditForm = ({
 
       <div className="mb-4 rounded-lg border border-blue-200 bg-blue-100 p-4">
         <p className="text-sm text-gray-700">
-          Die KI hat Verbesserungsvorschläge für dieses Protokoll erstellt. Bitte überprüfen Sie die
-          vorgeschlagenen Änderungen und speichern Sie das Formular, wenn Sie zufrieden sind.
+          Die KI hat Verbesserungsvorschläge für diesen Protokolleintrag erstellt. Bitte überprüfen
+          Sie die vorgeschlagenen Änderungen und speichern Sie das Formular, wenn Sie zufrieden
+          sind.
         </p>
       </div>
 

@@ -81,7 +81,7 @@ export const AdminEditProjectRecordForm = ({
       {!projectRecord.project.aiEnabled && projectRecord.projectRecordAuthorType === "SYSTEM" && (
         <div className="mb-6 inline-flex flex-col space-y-2 rounded-md border border-gray-200 bg-red-200 p-4 text-gray-700">
           <p className="text-sm">
-            In diesem Projekt ist die KI-Unterstützung deaktiviert. Damit Protokolle für
+            In diesem Projekt ist die KI-Unterstützung deaktiviert. Damit Protokolleinträge für
             Projektmitglieder sichtbar werden, müssen KI Features aktiviert werden.
           </p>
         </div>
@@ -115,7 +115,7 @@ export const AdminEditProjectRecordForm = ({
       <CreateEditReviewHistory projectRecord={projectRecord} />
 
       <p className="mt-10">
-        <Link href="/admin/project-records">← Zurück zur Protokoll-Übersicht</Link>
+        <Link href="/admin/project-records">← Zurück zum Protokoll</Link>
       </p>
 
       <hr className="my-5 text-gray-200" />

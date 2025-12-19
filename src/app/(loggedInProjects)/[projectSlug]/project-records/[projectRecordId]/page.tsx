@@ -12,7 +12,7 @@ import { Metadata } from "next"
 import "server-only"
 
 export const metadata: Metadata = {
-  title: "Projektprotokoll",
+  title: "Protokolleintrag",
 }
 
 export default async function ProjectRecordDetail({

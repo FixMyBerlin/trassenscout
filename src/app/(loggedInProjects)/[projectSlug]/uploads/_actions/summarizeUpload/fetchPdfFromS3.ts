@@ -1,11 +1,9 @@
 import { isPdf } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { isDev } from "@/src/core/utils/isEnv"
 import { getConfiguredS3Client } from "@/src/server/uploads/_utils/client"
-import { S3_BUCKET } from "@/src/server/uploads/_utils/config"
+import { S3_BUCKET, S3_MAX_FILE_SIZE_BYTES } from "@/src/server/uploads/_utils/config"
 import { getS3KeyFromUrl } from "@/src/server/uploads/_utils/url"
 import { getObject } from "@better-upload/server/helpers"
-
-const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024 // 10MB
 
 export const fetchPdfFromS3 = async ({ externalUrl }: { externalUrl: string }) => {
   if (isDev) {
@@ -22,7 +20,7 @@ export const fetchPdfFromS3 = async ({ externalUrl }: { externalUrl: string }) =
   }
 
   // Check file size using S3 metadata (before downloading the full file)
-  if (response.contentLength && response.contentLength > MAX_FILE_SIZE_BYTES) {
+  if (response.contentLength && response.contentLength > S3_MAX_FILE_SIZE_BYTES) {
     throw new Error("File too large for processing")
   }
 

@@ -136,7 +136,7 @@ export const AdminProjectRecordsTable = ({
                 </div>
               ))
             ) : (
-              <ZeroCase visible={projectRecords.length} name="Protokolle" />
+              <ZeroCase visible={projectRecords.length} name="Protokolleintrag" />
             )}
           </div>
         </div>

@@ -288,15 +288,6 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
             </div>
           </SuperAdminBox>
           <UploadSubsectionFields subsections={subsections} subsubsections={subsubsections} />
-          {upload.id && (
-            <SummaryField
-              uploadId={upload.id}
-              mimeType={upload.mimeType}
-              isGeneratingSummary={isGeneratingSummary}
-              setIsGeneratingSummary={setIsGeneratingSummary}
-              isAiEnabled={upload.project.aiEnabled}
-            />
-          )}
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
               Standort (optional)
@@ -308,13 +299,22 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
             </p>
             <UploadLocationMap />
           </div>
+          {upload.id && (
+            <SummaryField
+              uploadId={upload.id}
+              mimeType={upload.mimeType}
+              isGeneratingSummary={isGeneratingSummary}
+              setIsGeneratingSummary={setIsGeneratingSummary}
+              isAiEnabled={upload.project.aiEnabled}
+            />
+          )}
         </Form>
       </div>
 
       {/* Related Project Records */}
       {upload.projectRecords && upload.projectRecords.length > 0 && (
         <div className="mt-8">
-          <h3 className="mb-3 text-sm font-semibold text-gray-700">Verknüpfte Projektprotokolle</h3>
+          <h3 className="mb-3 text-sm font-semibold text-gray-700">Verknüpfte Protokolleinträge</h3>
           <ul className="space-y-2">
             {upload.projectRecords.map((projectRecord) => (
               <li key={projectRecord.id} className="flex items-center gap-2 text-sm">

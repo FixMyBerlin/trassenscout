@@ -76,7 +76,7 @@ export const UploadDetailModal = ({
         {upload.summary && (
           <div>
             <h4 className="mb-1 font-medium text-gray-900">Zusammenfassung</h4>
-            <div className="text-gray-700">
+            <div className="max-h-60 space-y-3 overflow-y-auto text-gray-700">
               <Markdown className="prose-sm" markdown={upload.summary} />
             </div>
           </div>

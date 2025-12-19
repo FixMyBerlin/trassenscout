@@ -36,11 +36,11 @@ export const ProjectRecordEmailSourceText = ({
       {email.textBody && (
         <div className="mt-3 max-h-[600px] overflow-y-auto">
           <span className="font-semibold">Nachrichtentext:</span>
-          <div className="mt-1 text-xs whitespace-pre-wrap">{email.textBody}</div>
+          <div className="mt-1 whitespace-pre-wrap">{email.textBody}</div>
         </div>
       )}
       {email.uploads && email.uploads.length > 0 && (
-        <div className="text-sm">
+        <div>
           <span className="font-semibold">Anhänge:</span>
           <ul className="mt-1 ml-4 list-disc">
             {email.uploads.map((upload) => (
@@ -56,8 +56,8 @@ export const ProjectRecordEmailSourceText = ({
 export const ProjectRecordEmailSource = ({ email }: ProjectRecordEmailSourceProps) => {
   console.log({ email })
   return (
-    <div className="w-96 shrink-0">
-      <h4 className="mb-1 text-sm font-medium">Quellnachricht (unverarbeitet)</h4>
+    <div className="w-96 shrink-0 text-xs">
+      <h4 className="mb-1 font-medium">Quellnachricht (unverarbeitet)</h4>
       <div className="space-y-2 rounded-md border border-gray-200 bg-gray-50 p-4">
         <ProjectRecordEmailSourceText email={email} />
       </div>

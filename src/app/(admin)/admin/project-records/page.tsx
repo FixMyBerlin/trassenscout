@@ -7,7 +7,7 @@ import { Metadata } from "next"
 import "server-only"
 
 export const metadata: Metadata = {
-  title: "Admin: Alle Protokolle",
+  title: "Admin: Protokoll",
 }
 
 export default async function AdminProjectRecordsPage() {
@@ -15,7 +15,7 @@ export default async function AdminProjectRecordsPage() {
 
   return (
     <>
-      <PageHeader title="Admin: Alle Protokolle" className="mt-12" />
+      <PageHeader title="Admin: Protokoll" className="mt-12" />
       <Link href="/admin/project-record-emails">Zu den unprozessierten Protokoll-Emails</Link>{" "}
       <AdminProjectRecordsTable projectRecords={projectRecords} />
     </>
