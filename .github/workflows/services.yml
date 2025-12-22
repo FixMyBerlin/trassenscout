@@ -22,6 +22,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
+            set -e
             cd /srv/trassenscout-${{ inputs.ENVIRONMENT }}
             echo "Pull all containers"
             docker compose pull
