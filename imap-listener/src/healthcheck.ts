@@ -16,7 +16,6 @@ http
       res.end(
         JSON.stringify({
           status: "ok",
-          service: "imap-listener",
           timestamp: new Date().toISOString(),
         }),
       )
