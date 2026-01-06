@@ -62,7 +62,7 @@ export const SubsubsectionStatussWithData = () => {
                 Titel
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                Anzahl Maßnahmen in dieser Phase
+                Anzahl Einträge in dieser Phase
               </th>
               <th
                 scope="col"
@@ -84,7 +84,7 @@ export const SubsubsectionStatussWithData = () => {
                   </td>
                   <td className="px-3 py-4 text-sm text-gray-500">
                     {status.subsubsectionCount}{" "}
-                    {status.subsubsectionCount > 1 ? "Maßnahmen" : "Maßnahme"}
+                    {status.subsubsectionCount > 1 ? "Einträge" : "Eintrag"}
                   </td>
                   <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
                     <IfUserCanEdit>
