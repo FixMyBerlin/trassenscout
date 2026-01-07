@@ -306,7 +306,7 @@ export const BaseMap = ({
           {children}
         </Map>
         <BackgroundSwitcher
-          className="absolute top-4 left-4"
+          className="absolute top-4 left-4 z-10"
           value={selectedLayer}
           onChange={handleLayerSwitch}
         />
