@@ -9,13 +9,19 @@ import { blueButtonStyles, Link, whiteButtonStyles } from "@/src/core/components
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { PageDescription } from "@/src/core/components/pages/PageDescription"
-import { formattedEuro, formattedLength, shortTitle } from "@/src/core/components/text"
+import {
+  formattedEuro,
+  formattedLength,
+  formattedWidth,
+  shortTitle,
+} from "@/src/core/components/text"
 import { H2 } from "@/src/core/components/text/Headings"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { subsubsectionUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import { subsectionLocationLabelMap } from "@/src/pagesComponents/subsubsections/SubsubsectionForm"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
@@ -38,6 +44,9 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
   const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
+  const locationLabel = subsubsection.location
+    ? subsectionLocationLabelMap[subsubsection.location]
+    : null
 
   const [{ uploads }, { refetch: refetchUploads }] = useQuery(getUploadsWithSubsections, {
     projectSlug,
@@ -106,25 +115,27 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
-              <tr>
-                <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
-                  Eintragstyp
-                </th>
-                <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
-                  {subsubsection.SubsubsectionTask?.title || "k.A."}
-                </td>
-              </tr>
-              {subsubsection.subsubsectionStatusId && (
+              {subsubsection.SubsubsectionTask?.title && (
                 <tr>
                   <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
-                    Phase
+                    Eintragstyp
                   </th>
                   <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
-                    {subsubsection.SubsubsectionStatus?.title || "k.A."}
+                    {subsubsection.SubsubsectionTask.title}
                   </td>
                 </tr>
               )}
-              {subsubsection.lengthM && (
+              {locationLabel && (
+                <tr>
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
+                    Lage
+                  </th>
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
+                    {locationLabel}
+                  </td>
+                </tr>
+              )}
+              {subsubsection.lengthM !== null && subsubsection.lengthM !== undefined && (
                 <tr>
                   <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
                     Länge
@@ -134,24 +145,33 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
                   </td>
                 </tr>
               )}
-              {/* UNUSED */}
-              {/* {!!subsubsection.width && (
+              {subsubsection.width !== null && subsubsection.width !== undefined && (
                 <tr>
-                  <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
                     Breite
                   </th>
-                  <td className="wrap-break-word px-3 py-4 text-sm text-gray-500">
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
                     {formattedWidth(subsubsection.width)}
                   </td>
                 </tr>
-              )} */}
-              {subsubsection.costEstimate !== null && subsubsection.costEstimate !== undefined && (
+              )}
+              {!!subsubsection.costEstimate && (
                 <tr>
                   <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
                     Kostenschätzung
                   </th>
                   <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
                     {formattedEuro(subsubsection.costEstimate)}
+                  </td>
+                </tr>
+              )}
+              {subsubsection.SubsubsectionInfrastructureType?.title && (
+                <tr>
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
+                    Fördergegenstand
+                  </th>
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
+                    {subsubsection.SubsubsectionInfrastructureType.title}
                   </td>
                 </tr>
               )}
@@ -175,13 +195,35 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
                   </td>
                 </tr>
               )}
-              {subsubsection.SubsubsectionInfrastructureType?.title && (
+              {subsubsection.SubsubsectionInfra?.title && (
                 <tr>
                   <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
-                    Fördergegenstand
+                    Führungsform
                   </th>
                   <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
-                    {subsubsection.SubsubsectionInfrastructureType.title}
+                    {shortTitle(subsubsection.SubsubsectionInfra.slug)} -{" "}
+                    {subsubsection.SubsubsectionInfra.title}
+                  </td>
+                </tr>
+              )}
+              {subsubsection.SubsubsectionStatus?.title && (
+                <tr>
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
+                    Phase
+                  </th>
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
+                    {shortTitle(subsubsection.SubsubsectionStatus.slug)} -{" "}
+                    {subsubsection.SubsubsectionStatus.title}
+                  </td>
+                </tr>
+              )}
+              {subsubsection.estimatedConstructionDateString && (
+                <tr>
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
+                    Angestrebtes Baujahr
+                  </th>
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
+                    {subsubsection.estimatedConstructionDateString}
                   </td>
                 </tr>
               )}

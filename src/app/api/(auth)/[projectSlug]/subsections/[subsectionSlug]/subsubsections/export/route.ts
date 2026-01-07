@@ -1,6 +1,7 @@
-import db, { LocationEnum } from "@/db"
+import db from "@/db"
 import { withProjectMembership } from "@/src/app/api/(auth)/_utils/withProjectMembership"
 import { viewerRoles } from "@/src/authorization/constants"
+import { subsectionLocationLabelMap } from "@/src/pagesComponents/subsubsections/SubsubsectionForm"
 import { createObjectCsvStringifier } from "csv-writer"
 import { format } from "date-fns"
 
@@ -84,11 +85,7 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
     lage: {
       title: "Lage",
       value: (s: Subsubsection) => {
-        const labelMap: Record<keyof typeof LocationEnum, string> = {
-          URBAN: "innerorts",
-          RURAL: "außerorts",
-        }
-        return (s.location && labelMap[s.location]) ?? ""
+        return (s.location && subsectionLocationLabelMap[s.location]) ?? ""
       },
     },
     fertigstellung: {

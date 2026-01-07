@@ -36,7 +36,9 @@ export type SubsubsectionWithPosition = Omit<Subsubsection, "geometry"> &
     qualityLevel?: Pick<QualityLevel, "title" | "slug" | "url">
   } & { SubsubsectionTask?: { title: string } } & {
     SubsubsectionInfrastructureType?: { title: string }
-  } & { SubsubsectionStatus?: { title: string } }
+  } & { SubsubsectionStatus?: { title: string; slug: string } } & {
+    SubsubsectionInfra?: { title: string; slug: string }
+  }
 
 export default resolver.pipe(
   resolver.zod(GetSubsubsection),
@@ -57,6 +59,8 @@ export default resolver.pipe(
         subsection: { select: { slug: true } },
         qualityLevel: { select: { title: true, slug: true, url: true } },
         SubsubsectionInfrastructureType: { select: { title: true } },
+        SubsubsectionInfra: { select: { title: true, slug: true } },
+        SubsubsectionStatus: { select: { title: true, slug: true } },
         ...includeM2mFields,
       },
     }
