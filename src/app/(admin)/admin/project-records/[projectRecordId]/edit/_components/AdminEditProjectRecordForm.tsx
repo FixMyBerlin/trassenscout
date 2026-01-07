@@ -61,6 +61,7 @@ export const AdminEditProjectRecordForm = ({
         projectRecordEmailId: projectRecord.projectRecordEmailId,
       })
       router.push(`/admin/project-records`)
+      router.refresh()
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }

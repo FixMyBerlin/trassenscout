@@ -100,6 +100,7 @@ export const EditProjectRecordForm = ({
       else {
         router.push(projectRecordDetailRoute(projectSlug, projectRecord.id))
       }
+      router.refresh()
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])
     }
