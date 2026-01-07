@@ -54,7 +54,6 @@ export const ProjectRecordEmailSourceText = ({
 }
 
 export const ProjectRecordEmailSource = ({ email }: ProjectRecordEmailSourceProps) => {
-  console.log({ email })
   return (
     <div className="w-96 shrink-0 text-xs">
       <h4 className="mb-1 font-medium">Quellnachricht (unverarbeitet)</h4>

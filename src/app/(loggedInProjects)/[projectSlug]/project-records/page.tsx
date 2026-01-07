@@ -1,6 +1,6 @@
-import { invoke } from "@/src/blitz-server"
 import { checkProjectMemberRole } from "@/src/app/(loggedInProjects)/_utils/checkProjectMemberRole"
 import { editorRoles } from "@/src/authorization/constants"
+import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { TabsApp } from "@/src/core/components/Tabs/TabsApp"
 import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
