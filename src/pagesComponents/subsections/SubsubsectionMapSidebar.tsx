@@ -242,7 +242,7 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
         </div>
       </div>
 
-      <section className="mt-10">
+      <section className="mt-10 space-y-3">
         <H2>Protokolleinträge</H2>
         {showSuccess && (
           <FormSuccess message="Protokolleintrag erfolgreich erstellt" show={showSuccess} />
@@ -259,7 +259,7 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
         <IfUserCanEdit>
           <button
             onClick={() => setIsProjectRecordModalOpen(true)}
-            className={clsx(blueButtonStyles, "items-center justify-center gap-1")}
+            className={clsx(blueButtonStyles, "mt-5 items-center justify-center gap-1")}
           >
             <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
           </button>
@@ -282,8 +282,8 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
         />
       </section>
 
-      <section className="mt-10">
-        <H2>Grafiken</H2>
+      <section className="mt-10 space-y-3">
+        <H2>Dokumente</H2>
         {!uploads.length && <ZeroCase small visible name="Grafiken" />}
         <div className="grid grid-cols-2 gap-3">
           {uploads.map((upload) => {
