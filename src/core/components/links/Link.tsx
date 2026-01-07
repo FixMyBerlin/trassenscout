@@ -3,6 +3,7 @@ import { ArrowDownTrayIcon, ListBulletIcon, PlusIcon, TrashIcon } from "@heroico
 import { ArrowTopRightOnSquareIcon, PencilIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { RouteUrlObject } from "blitz"
 import { clsx } from "clsx"
+import { Route } from "next"
 import NextLink from "next/link"
 import { forwardRef } from "react"
 import { UrlObject } from "url"
@@ -10,6 +11,7 @@ import { selectLinkStyle } from "./styles"
 
 export type LinkProps = {
   href: RouteUrlObject | UrlObject | string
+  prefetch?: boolean
   className?: string
   classNameOverwrites?: string
   /** @default `false` */
@@ -32,7 +34,17 @@ export const linkIcons = {
 }
 
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
-  { href, className, classNameOverwrites, children, blank = false, button, icon, ...props },
+  {
+    href,
+    className,
+    classNameOverwrites,
+    children,
+    blank = false,
+    button,
+    icon,
+    prefetch,
+    ...props
+  },
   ref,
 ) {
   const classNames = clsx(
@@ -42,7 +54,7 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
   )
 
   // external link
-  if (typeof href === "string") {
+  if (typeof href === "string" && !href.startsWith("/")) {
     return (
       <a
         ref={ref}
@@ -60,7 +72,8 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
 
   return (
     <NextLink
-      href={href}
+      prefetch={true}
+      href={href as Route}
       ref={ref}
       className={classNames}
       {...props}
