@@ -72,7 +72,7 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
 
   return (
     <NextLink
-      prefetch={true}
+      prefetch={prefetch}
       href={href as Route}
       ref={ref}
       className={classNames}
