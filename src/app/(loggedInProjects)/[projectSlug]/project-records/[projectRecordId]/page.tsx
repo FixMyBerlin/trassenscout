@@ -45,7 +45,13 @@ export default async function ProjectRecordDetail({
       <ProjectRecordDetailClient projectRecord={projectRecord} />
 
       <div className="mt-8 border-t border-gray-200 pt-4">
-        <Link href={`/${params.projectSlug}/project-records`}>
+        <Link
+          href={
+            projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+              ? `/${params.projectSlug}/project-records/needsreview`
+              : `/${params.projectSlug}/project-records`
+          }
+        >
           ← Zurück zur Protokoll-Übersicht
         </Link>
       </div>

@@ -155,7 +155,15 @@ export const EditProjectRecordForm = ({
       <CreateEditReviewHistory projectRecord={projectRecord} />
 
       <p className="mt-10">
-        <Link href={`/${projectSlug}/project-records`}>← Zurück zur Protokoll-Übersicht</Link>
+        <Link
+          href={
+            projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+              ? `/${projectSlug}/project-records/needsreview`
+              : `/${projectSlug}/project-records`
+          }
+        >
+          ← Zurück zur Protokoll-Übersicht
+        </Link>
       </p>
 
       <hr className="my-5 text-gray-200" />
