@@ -9,7 +9,7 @@ import { Route } from "next"
 export const getProjectRecordsTabs = (projectSlug: string, showNeedsReviewTab: boolean = false) => {
   return [
     {
-      name: "Alle Einträge",
+      name: "Protokolleinträge",
       href: `/${projectSlug}/project-records` as Route,
     },
     ...(showNeedsReviewTab
