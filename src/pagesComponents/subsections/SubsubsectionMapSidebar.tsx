@@ -306,7 +306,7 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
             )
           })}
           <IfUserCanEdit>
-            <UploadDropzoneContainer className="h-28 rounded-md p-0">
+            <UploadDropzoneContainer className="h-36 rounded-md p-0">
               <UploadDropzone
                 fillContainer
                 subsubsectionId={subsubsection.id}
