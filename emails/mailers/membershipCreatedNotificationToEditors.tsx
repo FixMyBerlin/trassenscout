@@ -1,5 +1,6 @@
 import { quote } from "@/src/core/components/text/quote"
 import { RouteUrlObject } from "blitz"
+import { Route } from "next"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
@@ -10,7 +11,7 @@ type Props = {
   projectName: string
   invinteeName: string
   roleName: string
-  teamPath: RouteUrlObject
+  teamPath: RouteUrlObject | Route
 }
 
 export async function membershipCreatedNotificationToEditors(props: Props) {

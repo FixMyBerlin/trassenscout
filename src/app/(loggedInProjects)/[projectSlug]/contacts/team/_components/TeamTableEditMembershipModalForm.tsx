@@ -6,6 +6,7 @@ import updateMembershipRole from "@/src/server/memberships/mutations/updateMembe
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import { getQueryClient, getQueryKey, useMutation } from "@blitzjs/rpc"
 import { MembershipRoleEnum } from "@prisma/client"
+import { useRouter } from "next/navigation"
 import { z } from "zod"
 
 type Props = {
@@ -18,6 +19,7 @@ const submitSchema = z.object({ role: z.nativeEnum(MembershipRoleEnum) })
 type HandleSubmit = z.infer<typeof submitSchema>
 export const TeamTableEditMembershipModalForm = ({ editUser, closeModal }: Props) => {
   const projectSlug = useProjectSlug()
+  const router = useRouter()
 
   const [updateUserMutation] = useMutation(updateMembershipRole)
   const handleSubmit = async (values: HandleSubmit) => {
@@ -32,6 +34,7 @@ export const TeamTableEditMembershipModalForm = ({ editUser, closeModal }: Props
           onSuccess: async () => {
             const queryKey = getQueryKey(getProjectUsers, { projectSlug })
             void getQueryClient().invalidateQueries(queryKey)
+            router.refresh()
             closeModal()
           },
         },

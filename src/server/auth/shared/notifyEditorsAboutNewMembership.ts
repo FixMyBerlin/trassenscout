@@ -3,7 +3,7 @@ import { membershipCreatedNotificationToEditors } from "@/emails/mailers/members
 import { shortTitle } from "@/src/core/components/text/titles"
 import { roleTranslation } from "@/src/pagesComponents/memberships/roleTranslation.const"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
-import { Routes } from "@blitzjs/next"
+import { Route } from "next"
 
 type Props = { invite: Invite | null; invitee: Pick<User, "firstName" | "lastName" | "email"> }
 
@@ -25,7 +25,7 @@ export const notifyEditorsAboutNewMembership = async ({ invite, invitee }: Props
         projectName: shortTitle(membership.project.slug),
         invinteeName: getFullname(invitee)!,
         roleName: roleTranslation[invite.role],
-        teamPath: Routes.ProjectTeamPage({ projectSlug: membership.project.slug }),
+        teamPath: `/${membership.project.slug}/contacts/team` as Route,
       })
     ).send()
   }

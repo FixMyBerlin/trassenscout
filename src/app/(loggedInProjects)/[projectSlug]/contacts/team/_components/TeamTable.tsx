@@ -1,18 +1,19 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { LinkMail, LinkTel } from "@/src/core/components/links"
-import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { UserCanIcon } from "@/src/pagesComponents/memberships/UserCanIcon"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
-import { useQuery } from "@blitzjs/rpc"
+import { PromiseReturnType } from "blitz"
 import { TeamTableEditMembershipDelete } from "./TeamTableEditMembershipDelete"
 import { TeamTableEditMembershipModal } from "./TeamTableEditMembershipModal"
 
-export const TeamTable = () => {
-  const projectSlug = useProjectSlug()
-  const [users] = useQuery(getProjectUsers, { projectSlug })
+type Props = {
+  users: PromiseReturnType<typeof getProjectUsers>
+  projectSlug: string
+}
 
+export const TeamTable = ({ users }: Props) => {
   return (
     <>
       <TableWrapper className="mt-7">

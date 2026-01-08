@@ -1,31 +1,29 @@
+"use client"
+
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { Form, LabeledCheckbox } from "@/src/core/components/forms"
 import { Link, LinkMail, LinkTel, whiteButtonStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text"
-import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getProject from "@/src/server/projects/queries/getProject"
-import { useCurrentUser } from "@/src/server/users/hooks/useCurrentUser"
-import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { TrashIcon } from "@heroicons/react/20/solid"
 import { Contact } from "@prisma/client"
-import { useRouter } from "next/router"
+import { Route } from "next"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 type Props = {
   contacts: Contact[]
-  withAction?: boolean
-  withNotes?: boolean
+  currentUserEmail?: string | null
+  projectSlug: string
 }
 
-export const ContactTable = ({ contacts }: Props) => {
+export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props) => {
   const [mailButtonActive, setMailButtonActive] = useState(false)
-  const projectSlug = useProjectSlug()
   const router = useRouter()
-  const user = useCurrentUser()
   const [project] = useQuery(getProject, { projectSlug })
 
   const handleSubmit = async ({ selectedContacts }: { selectedContacts: string[] | [] }) => {
@@ -37,7 +35,7 @@ export const ContactTable = ({ contacts }: Props) => {
       .join(",")
 
     void router.push(
-      `mailto:${user?.email}?bcc=${contactMailString}&subject=Infos zu ${shortTitle(project.slug)}`,
+      `mailto:${currentUserEmail || ""}?bcc=${contactMailString}&subject=Infos zu ${shortTitle(project.slug)}`,
     )
   }
 
@@ -94,35 +92,11 @@ export const ContactTable = ({ contacts }: Props) => {
                   <LinkMail subject="Abstimmung zum RS 8">{contact.email}</LinkMail>
                 </td>
                 <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
-                  <Link
-                    href={Routes.ShowContactPage({
-                      projectSlug,
-                      contactId: contact.id,
-                    })}
-                  >
-                    Details
-                  </Link>
+                  <Link href={`/${projectSlug}/contacts/${contact.id}` as Route}>Details</Link>
                 </td>
                 <td className="relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6">
                   <div className="flex items-center justify-end gap-4 text-right">
-                    {/* Disabled in favor of the contacts/table UI */}
-                    {/* <IfUserCanEdit>
-                      <Link
-                        href={Routes.EditContactPage({
-                          contactId: contact.id,
-                          projectSlug,
-                        })}
-                      >
-                        <PencilSquareIcon className="h-4 w-4" />
-                        <span className="sr-only">Bearbeiten</span>
-                      </Link>
-                    </IfUserCanEdit> */}
-                    <Link
-                      href={Routes.ShowContactPage({
-                        contactId: contact.id,
-                        projectSlug,
-                      })}
-                    >
+                    <Link href={`/${projectSlug}/contacts/${contact.id}` as Route}>
                       <TrashIcon className="h-4 w-4" />
                     </Link>
                     <LabeledCheckbox
@@ -141,7 +115,7 @@ export const ContactTable = ({ contacts }: Props) => {
 
       <ButtonWrapper className="mt-6 justify-between">
         <IfUserCanEdit>
-          <Link button="blue" icon="plus" href="contacts/table">
+          <Link button="blue" icon="plus" href={`/${projectSlug}/contacts/table` as Route}>
             Kontakte hinzufügen & bearbeiten
           </Link>
         </IfUserCanEdit>

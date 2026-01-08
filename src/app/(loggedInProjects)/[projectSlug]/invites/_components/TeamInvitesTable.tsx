@@ -1,14 +1,15 @@
+"use client"
+
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { StatusLabel } from "@/src/core/components/Status/StatusLabel"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { LinkMail } from "@/src/core/components/links"
-import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { roleTranslation } from "@/src/pagesComponents/memberships/roleTranslation.const"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import { INVITE_DAYS_TO_DELETION } from "@/src/server/invites/inviteSettings.const"
 import getInvites from "@/src/server/invites/queries/getInvites"
-import { useQuery } from "@blitzjs/rpc"
 import { InviteStatusEnum } from "@prisma/client"
+import { PromiseReturnType } from "blitz"
 import { clsx } from "clsx"
 import { endOfDay, format, formatDistanceStrict, subDays } from "date-fns"
 import { de } from "date-fns/locale"
@@ -25,10 +26,11 @@ export const statusTranslations: Record<InviteStatusEnum, string> = {
   EXPIRED: "Abgelaufen",
 }
 
-export const TeamInvitesTable = () => {
-  const projectSlug = useProjectSlug()
-  const [{ invites }] = useQuery(getInvites, { projectSlug })
+type Props = {
+  invites: PromiseReturnType<typeof getInvites>["invites"]
+}
 
+export const TeamInvitesTable = ({ invites }: Props) => {
   const currentDate = endOfDay(new Date())
 
   return (

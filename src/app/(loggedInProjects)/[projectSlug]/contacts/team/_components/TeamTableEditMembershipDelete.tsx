@@ -1,9 +1,12 @@
+"use client"
+
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { linkIcons, linkStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import deleteMembership from "@/src/server/memberships/mutations/deleteMembership"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import { getQueryClient, getQueryKey, useMutation } from "@blitzjs/rpc"
+import { useRouter } from "next/navigation"
 
 type Props = {
   membershipId: number
@@ -11,6 +14,7 @@ type Props = {
 
 export const TeamTableEditMembershipDelete = ({ membershipId }: Props) => {
   const projectSlug = useProjectSlug()
+  const router = useRouter()
   const [deleteMembershipMutation] = useMutation(deleteMembership)
   const handleDelete = async () => {
     if (
@@ -25,6 +29,7 @@ export const TeamTableEditMembershipDelete = ({ membershipId }: Props) => {
             onSuccess: async () => {
               const queryKey = getQueryKey(getProjectUsers, { projectSlug })
               void getQueryClient().invalidateQueries(queryKey)
+              router.refresh()
             },
           },
         )
