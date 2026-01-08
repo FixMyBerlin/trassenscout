@@ -21,15 +21,10 @@ import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/q
 import getSubsubsectionTasksWithCount from "@/src/server/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { LocationEnum } from "@prisma/client"
 import { z } from "zod"
+import { subsubsectionLocationLabelMap } from "../utils/subsubsectionLocationLabelMap"
 import { GeometryInput } from "./GeometryInput/GeometryInput"
 import { LinkWithFormDirtyConfirm } from "./LinkWithFormDirtyConfirm"
-
-export const subsectionLocationLabelMap: Record<keyof typeof LocationEnum, string> = {
-  URBAN: "innerorts",
-  RURAL: "außerorts",
-} as const
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const projectSlug = useProjectSlug()
@@ -111,8 +106,8 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label={subsubsectionFieldTranslations.location}
         scope="location"
         items={[
-          { value: "URBAN", label: subsectionLocationLabelMap.URBAN },
-          { value: "RURAL", label: subsectionLocationLabelMap.RURAL },
+          { value: "URBAN", label: subsubsectionLocationLabelMap.URBAN },
+          { value: "RURAL", label: subsubsectionLocationLabelMap.RURAL },
           { value: "", label: "keine Angabe" },
         ]}
         classNameItemWrapper="flex gap-5 space-y-0! items-center"

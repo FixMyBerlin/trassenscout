@@ -21,8 +21,8 @@ import { subsubsectionUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-import { subsectionLocationLabelMap } from "@/src/pagesComponents/subsubsections/SubsubsectionForm"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
+import { subsubsectionLocationLabelMap } from "@/src/pagesComponents/utils/subsubsectionLocationLabelMap"
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
@@ -45,7 +45,7 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
   const locationLabel = subsubsection.location
-    ? subsectionLocationLabelMap[subsubsection.location]
+    ? subsubsectionLocationLabelMap[subsubsection.location]
     : null
 
   const [{ uploads }, { refetch: refetchUploads }] = useQuery(getUploadsWithSubsections, {
