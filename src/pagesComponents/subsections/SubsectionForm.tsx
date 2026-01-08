@@ -20,6 +20,7 @@ import getSubsectionStatussWithCount from "@/src/server/subsectionStatus/queries
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { PriorityEnum } from "@prisma/client"
+import { Route } from "next"
 import { Suspense } from "react"
 import { z } from "zod"
 import { getPriorityTranslation } from "./utils/getPriorityTranslation"
@@ -85,7 +86,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
           options={operatorOptions}
           outerProps={{ className: "grow" }}
         />
-        <LinkWithFormDirtyConfirm href={Routes.OperatorsPage({ projectSlug })} className="py-2">
+        <LinkWithFormDirtyConfirm href={`/${projectSlug}/operators` as Route} className="py-2">
           Baulastträger verwalten…
         </LinkWithFormDirtyConfirm>
       </div>

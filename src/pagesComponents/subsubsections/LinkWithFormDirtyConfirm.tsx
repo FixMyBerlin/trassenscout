@@ -1,8 +1,9 @@
 import { Link } from "@/src/core/components/links/Link"
 import { RouteUrlObject } from "blitz"
+import { Route } from "next"
 import { useFormState } from "react-hook-form"
 
-type Props = { href: RouteUrlObject; className?: string; children: React.ReactNode }
+type Props = { href: RouteUrlObject | Route; className?: string; children: React.ReactNode }
 
 export const LinkWithFormDirtyConfirm = ({ href, className, children }: Props) => {
   const { isDirty } = useFormState()

@@ -1,49 +1,58 @@
-import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+"use client"
+
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { Pagination } from "@/src/core/components/Pagination"
-import { Spinner } from "@/src/core/components/Spinner"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
-import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { shortTitle } from "@/src/core/components/text"
-import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import deleteOperator from "@/src/server/operators/mutations/deleteOperator"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
-import { BlitzPage, Routes } from "@blitzjs/next"
-import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
+import { PromiseReturnType } from "blitz"
 import { clsx } from "clsx"
-import { useRouter } from "next/router"
-import { Suspense } from "react"
+import { Route } from "next"
+import { useRouter, useSearchParams } from "next/navigation"
 
-const ITEMS_PER_PAGE = 100
+type Props = {
+  operators: PromiseReturnType<typeof getOperatorsWithCount>["operators"]
+  hasMore: boolean
+  page: number
+}
 
-export const OperatorsWithData = () => {
+export const OperatorsTable = ({ operators, hasMore, page }: Props) => {
   const projectSlug = useProjectSlug()
   const router = useRouter()
-  const page = Number(router.query.page) || 0
-  const [{ operators, hasMore }] = usePaginatedQuery(getOperatorsWithCount, {
-    projectSlug,
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
-
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  const searchParams = useSearchParams()
 
   const [deleteOperatorMutation] = useMutation(deleteOperator)
+
   const handleDelete = async (operatorId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${operatorId} unwiderruflich löschen?`)) {
       try {
         await deleteOperatorMutation({ projectSlug, id: operatorId })
+        const currentPage = searchParams?.get("page") || "0"
+        router.push(`/${projectSlug}/operators?page=${currentPage}` as Route)
+        router.refresh()
       } catch (error) {
         alert(
           "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
         )
       }
-      await router.push(Routes.OperatorsPage({ projectSlug }))
     }
+  }
+
+  const goToPreviousPage = () => {
+    const params = new URLSearchParams(searchParams?.toString() || "")
+    params.set("page", String(page - 1))
+    router.push(`/${projectSlug}/operators?${params.toString()}` as Route)
+  }
+
+  const goToNextPage = () => {
+    const params = new URLSearchParams(searchParams?.toString() || "")
+    params.set("page", String(page + 1))
+    router.push(`/${projectSlug}/operators?${params.toString()}` as Route)
   }
 
   return (
@@ -90,10 +99,7 @@ export const OperatorsWithData = () => {
                       <ButtonWrapper className="justify-end">
                         <Link
                           icon="edit"
-                          href={Routes.EditOperatorPage({
-                            projectSlug,
-                            operatorId: operator.id,
-                          })}
+                          href={`/${projectSlug}/operators/${operator.id}/edit` as Route}
                         >
                           Bearbeiten
                         </Link>
@@ -123,7 +129,7 @@ export const OperatorsWithData = () => {
           button="blue"
           icon="plus"
           className="mt-4"
-          href={Routes.NewOperatorPage({ projectSlug })}
+          href={`/${projectSlug}/operators/new` as Route}
         >
           Neuer Baulastträger
         </Link>
@@ -135,25 +141,6 @@ export const OperatorsWithData = () => {
         handlePrev={goToPreviousPage}
         handleNext={goToNextPage}
       />
-
-      <SuperAdminLogData data={{ operators }} />
     </>
   )
 }
-
-const OperatorsPage: BlitzPage = () => {
-  return (
-    <LayoutRs>
-      <MetaTags noindex title="Baulastträger" />
-      <PageHeader title="Baulastträger" className="mt-12" />
-
-      <Suspense fallback={<Spinner page />}>
-        <OperatorsWithData />
-      </Suspense>
-    </LayoutRs>
-  )
-}
-
-OperatorsPage.authenticate = true
-
-export default OperatorsPage
