@@ -33,8 +33,7 @@ export default async function ProjectRecordsNeedsReviewPage({
     throw error
   }
 
-  // Since we're already authorized (query check passed), we know user can edit
-  const tabs = getProjectRecordsTabs(params.projectSlug, true)
+  const tabs = await getProjectRecordsTabs(params.projectSlug)
 
   return (
     <>

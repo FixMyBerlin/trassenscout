@@ -1,5 +1,3 @@
-import { checkProjectMemberRole } from "@/src/app/(loggedInProjects)/_utils/checkProjectMemberRole"
-import { editorRoles } from "@/src/authorization/constants"
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { TabsApp } from "@/src/core/components/Tabs/TabsApp"
@@ -19,9 +17,7 @@ export default async function ProjectProjectRecordsPage({
   params: { projectSlug: string }
 }) {
   const projectRecords = await invoke(getProjectRecords, { projectSlug: params.projectSlug })
-  const canEdit = await checkProjectMemberRole(params.projectSlug, editorRoles)
-
-  const tabs = getProjectRecordsTabs(params.projectSlug, canEdit)
+  const tabs = await getProjectRecordsTabs(params.projectSlug)
 
   return (
     <>

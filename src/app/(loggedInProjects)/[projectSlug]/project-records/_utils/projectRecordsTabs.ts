@@ -1,18 +1,22 @@
+import { checkProjectMemberRole } from "@/src/app/(loggedInProjects)/_utils/checkProjectMemberRole"
+import { editorRoles } from "@/src/authorization/constants"
 import { Route } from "next"
+import "server-only"
 
 /**
  * Creates the tabs configuration for project records pages.
  * @param projectSlug - The project slug
- * @param showNeedsReviewTab - Whether to show the "Bestätigung erforderlich" tab (default: false)
  * @returns Array of tab configurations
  */
-export const getProjectRecordsTabs = (projectSlug: string, showNeedsReviewTab: boolean = false) => {
+export async function getProjectRecordsTabs(projectSlug: string) {
+  const canEdit = await checkProjectMemberRole(projectSlug, editorRoles)
+
   return [
     {
       name: "Protokolleinträge",
       href: `/${projectSlug}/project-records` as Route,
     },
-    ...(showNeedsReviewTab
+    ...(canEdit
       ? [
           {
             name: "Bestätigung erforderlich",
