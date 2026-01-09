@@ -122,7 +122,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         />
         <div className="mt-4">
           <LinkWithFormDirtyConfirm
-            href={Routes.SubsubsectionSpecialsPage({ projectSlug })}
+            href={`/${projectSlug}/subsubsection-special` as Route}
             className="py-2"
           >
             Besonderheiten verwalten…

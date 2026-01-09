@@ -1,3 +1,5 @@
+"use client"
+
 import { Form, FormProps, LabeledTextField } from "@/src/core/components/forms"
 import { z } from "zod"
 
