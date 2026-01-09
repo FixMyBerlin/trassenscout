@@ -21,6 +21,7 @@ import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/q
 import getSubsubsectionTasksWithCount from "@/src/server/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
+import { Route } from "next"
 import { z } from "zod"
 import { subsubsectionLocationLabelMap } from "../utils/subsubsectionLocationLabelMap"
 import { GeometryInput } from "./GeometryInput/GeometryInput"
@@ -90,7 +91,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
-          href={Routes.SubsubsectionTasksPage({ projectSlug })}
+          href={`/${projectSlug}/subsubsection-task` as Route}
           className="py-2"
         >
           Eintragstypen verwalten…
