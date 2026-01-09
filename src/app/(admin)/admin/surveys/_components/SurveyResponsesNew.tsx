@@ -1,6 +1,6 @@
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { invoke } from "@/src/blitz-server"
-import getSurveyResponses from "@/src/survey-responses/queries/getSurveyResponses"
+import getSurveyResponses from "@/src/server/survey-responses/queries/getSurveyResponses"
 import { Project } from "@prisma/client"
 import React from "react"
 

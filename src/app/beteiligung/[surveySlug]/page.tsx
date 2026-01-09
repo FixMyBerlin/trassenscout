@@ -8,7 +8,7 @@ import { SurveyRsTest23 } from "@/src/app/beteiligung/_rstest-2-3/SurveyRsTest23
 import { SurveyRsTest2 } from "@/src/app/beteiligung/_rstest-2/SurveyRsTest2"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { invoke } from "@/src/blitz-server"
-import getPublicSurveyBySlug from "@/src/surveys/queries/getPublicSurveyBySlug"
+import getPublicSurveyBySlug from "@/src/server/surveys/queries/getPublicSurveyBySlug"
 import { SurveyFRM7 } from "../_frm7/SurveyFRM7"
 
 // todo metadata

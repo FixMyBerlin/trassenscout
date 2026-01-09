@@ -1,5 +1,5 @@
 import { api } from "@/src/blitz-server"
-import dbGetSurvey from "@/src/surveys/queries/getSurvey"
+import dbGetSurvey from "@/src/server/surveys/queries/getSurvey"
 import { getSession } from "@blitzjs/auth"
 import { AuthorizationError } from "blitz"
 import { createObjectCsvStringifier } from "csv-writer"
