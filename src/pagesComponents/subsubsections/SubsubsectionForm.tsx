@@ -195,7 +195,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
-          href={Routes.SubsubsectionInfrasPage({ projectSlug })}
+          href={`/${projectSlug}/subsubsection-infra` as Route}
           className="py-2"
         >
           Führungsformen verwalten…

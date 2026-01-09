@@ -1,48 +1,42 @@
-import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { Pagination } from "@/src/core/components/Pagination"
-import { Spinner } from "@/src/core/components/Spinner"
+"use client"
+
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
-import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { shortTitle } from "@/src/core/components/text"
-import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import deleteSubsubsectionInfra from "@/src/server/subsubsectionInfra/mutations/deleteSubsubsectionInfra"
 import getSubsubsectionInfrasWithCount from "@/src/server/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
-import { BlitzPage, Routes } from "@blitzjs/next"
-import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
+import { PromiseReturnType } from "blitz"
 import { clsx } from "clsx"
-import { useRouter } from "next/router"
-import { Suspense } from "react"
+import { Route } from "next"
+import { useRouter } from "next/navigation"
 
-const ITEMS_PER_PAGE = 100
+type Props = {
+  subsubsectionInfras: PromiseReturnType<
+    typeof getSubsubsectionInfrasWithCount
+  >["subsubsectionInfras"]
+}
 
-export const SubsubsectionInfrasWithData = () => {
+export const SubsubsectionInfrasTable = ({ subsubsectionInfras }: Props) => {
   const projectSlug = useProjectSlug()
   const router = useRouter()
-  const page = Number(router.query.page) || 0
-  const [{ subsubsectionInfras, hasMore }] = usePaginatedQuery(getSubsubsectionInfrasWithCount, {
-    projectSlug,
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
-
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
   const [deleteSubsubsectionInfraMutation] = useMutation(deleteSubsubsectionInfra)
+
   const handleDelete = async (subsubsectionInfraId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${subsubsectionInfraId} unwiderruflich löschen?`)) {
       try {
         await deleteSubsubsectionInfraMutation({ projectSlug, id: subsubsectionInfraId })
+        router.push(`/${projectSlug}/subsubsection-infra` as Route)
+        router.refresh()
       } catch (error) {
         alert(
           "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
         )
       }
-      await router.push(Routes.SubsubsectionInfrasPage({ projectSlug }))
     }
   }
 
@@ -91,10 +85,7 @@ export const SubsubsectionInfrasWithData = () => {
                       <ButtonWrapper className="justify-end">
                         <Link
                           icon="edit"
-                          href={Routes.EditSubsubsectionInfraPage({
-                            projectSlug,
-                            subsubsectionInfraId: Infra.id,
-                          })}
+                          href={`/${projectSlug}/subsubsection-infra/${Infra.id}/edit` as Route}
                         >
                           Bearbeiten
                         </Link>
@@ -118,43 +109,6 @@ export const SubsubsectionInfrasWithData = () => {
           </tbody>
         </table>
       </TableWrapper>
-
-      <IfUserCanEdit>
-        <Link
-          button="blue"
-          icon="plus"
-          className="mt-4"
-          href={Routes.NewSubsubsectionInfraPage({ projectSlug })}
-        >
-          Neue Führungsform
-        </Link>
-      </IfUserCanEdit>
-
-      <Pagination
-        hasMore={hasMore}
-        page={page}
-        handlePrev={goToPreviousPage}
-        handleNext={goToNextPage}
-      />
-
-      <SuperAdminLogData data={{ subsubsectionInfras }} />
     </>
   )
 }
-
-const SubsubsectionInfrasPage: BlitzPage = () => {
-  return (
-    <LayoutRs>
-      <MetaTags noindex title="Führungsformen" />
-      <PageHeader title="Führungsformen" className="mt-12" />
-
-      <Suspense fallback={<Spinner page />}>
-        <SubsubsectionInfrasWithData />
-      </Suspense>
-    </LayoutRs>
-  )
-}
-
-SubsubsectionInfrasPage.authenticate = true
-
-export default SubsubsectionInfrasPage
