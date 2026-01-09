@@ -1,4 +1,4 @@
-import { FilterSchema } from "@/src/survey-responses/components/feedback/useFilters.nuqs"
+import { FilterSchema } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/filter/useFilters.nuqs"
 
 export const createFilterUrl = (baseUrl: string, filters: Partial<FilterSchema>, hash?: string) => {
   const filterParams = new URLSearchParams()
