@@ -1,10 +1,10 @@
+import { statusStyleTranslations } from "@/src/app/(loggedInProjects)/[projectSlug]/subsection-status/_utils/statusStyleTranslations"
 import {
   Form,
   FormProps,
   LabeledRadiobuttonGroup,
   LabeledTextField,
 } from "@/src/core/components/forms"
-import { statusStyleTranslations } from "@/src/pagesComponents/subsectionStatus/SubsectionStatusForm"
 import { StatusStyleEnum } from "@prisma/client"
 import { z } from "zod"
 

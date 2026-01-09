@@ -1,3 +1,4 @@
+import { statusStyleTranslations } from "@/src/app/(loggedInProjects)/[projectSlug]/subsection-status/_utils/statusStyleTranslations"
 import {
   Form,
   FormProps,
@@ -6,11 +7,6 @@ import {
 } from "@/src/core/components/forms"
 import { StatusStyleEnum } from "@prisma/client"
 import { z } from "zod"
-
-export const statusStyleTranslations: Record<StatusStyleEnum, string> = {
-  [StatusStyleEnum.REGULAR]: "Standard",
-  [StatusStyleEnum.DASHED]: "Gestrichelt",
-}
 
 export function SubsectionStatusForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const { ...formProps } = props

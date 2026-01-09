@@ -17,7 +17,6 @@ import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getNetworkHierarchysWithCount from "@/src/server/networkHierarchy/queries/getNetworkHierarchysWithCount"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
 import getSubsectionStatussWithCount from "@/src/server/subsectionStatus/queries/getSubsectionStatussWithCount"
-import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { PriorityEnum } from "@prisma/client"
 import { Route } from "next"
@@ -99,7 +98,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
-          href={Routes.SubsectionStatussPage({ projectSlug })}
+          href={`/${projectSlug}/subsection-status` as Route}
           className="py-2"
         >
           Status verwalten…
@@ -128,7 +127,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
-          href={Routes.NetworkHierarchysPage({ projectSlug })}
+          href={`/${projectSlug}/network-hierarchy` as Route}
           className="py-2"
         >
           Netzstufen verwalten…
