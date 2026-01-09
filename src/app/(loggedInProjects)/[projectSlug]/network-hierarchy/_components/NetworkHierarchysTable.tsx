@@ -1,48 +1,40 @@
-import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { Pagination } from "@/src/core/components/Pagination"
-import { Spinner } from "@/src/core/components/Spinner"
+"use client"
+
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
-import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { shortTitle } from "@/src/core/components/text"
-import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import deleteNetworkHierarchy from "@/src/server/networkHierarchy/mutations/deleteNetworkHierarchy"
 import getNetworkHierarchyWithCount from "@/src/server/networkHierarchy/queries/getNetworkHierarchysWithCount"
-import { BlitzPage, Routes } from "@blitzjs/next"
-import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
+import { PromiseReturnType } from "blitz"
 import { clsx } from "clsx"
-import { useRouter } from "next/router"
-import { Suspense } from "react"
+import { Route } from "next"
+import { useRouter } from "next/navigation"
 
-const ITEMS_PER_PAGE = 100
+type Props = {
+  networkHierarchys: PromiseReturnType<typeof getNetworkHierarchyWithCount>["networkHierarchys"]
+}
 
-export const NetworkHierarchysWithData = () => {
+export const NetworkHierarchysTable = ({ networkHierarchys }: Props) => {
   const projectSlug = useProjectSlug()
   const router = useRouter()
-  const page = Number(router.query.page) || 0
-  const [{ networkHierarchys, hasMore }] = usePaginatedQuery(getNetworkHierarchyWithCount, {
-    projectSlug,
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
-
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
   const [deleteNetworkHierarchyMutation] = useMutation(deleteNetworkHierarchy)
+
   const handleDelete = async (networkHierarchyId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${networkHierarchyId} unwiderruflich löschen?`)) {
       try {
         await deleteNetworkHierarchyMutation({ projectSlug, id: networkHierarchyId })
+        router.push(`/${projectSlug}/network-hierarchy` as Route)
+        router.refresh()
       } catch (error) {
         alert(
           "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
         )
       }
-      await router.push(Routes.NetworkHierarchysPage({ projectSlug }))
     }
   }
 
@@ -90,10 +82,9 @@ export const NetworkHierarchysWithData = () => {
                       <ButtonWrapper className="justify-end">
                         <Link
                           icon="edit"
-                          href={Routes.EditNetworkHierarchyPage({
-                            projectSlug,
-                            networkHierarchyId: networkHierarchy.id,
-                          })}
+                          href={
+                            `/${projectSlug}/network-hierarchy/${networkHierarchy.id}/edit` as Route
+                          }
                         >
                           Bearbeiten
                         </Link>
@@ -117,43 +108,6 @@ export const NetworkHierarchysWithData = () => {
           </tbody>
         </table>
       </TableWrapper>
-
-      <IfUserCanEdit>
-        <Link
-          button="blue"
-          icon="plus"
-          className="mt-4"
-          href={Routes.NewNetworkHierarchyPage({ projectSlug })}
-        >
-          Neue Netzstufe
-        </Link>
-      </IfUserCanEdit>
-
-      <Pagination
-        hasMore={hasMore}
-        page={page}
-        handlePrev={goToPreviousPage}
-        handleNext={goToNextPage}
-      />
-
-      <SuperAdminLogData data={{ networkHierarchys }} />
     </>
   )
 }
-
-const NetworkHierarchysPage: BlitzPage = () => {
-  return (
-    <LayoutRs>
-      <MetaTags noindex title="Netzstufen" />
-      <PageHeader title="Netzstufen" className="mt-12" />
-
-      <Suspense fallback={<Spinner page />}>
-        <NetworkHierarchysWithData />
-      </Suspense>
-    </LayoutRs>
-  )
-}
-
-NetworkHierarchysPage.authenticate = true
-
-export default NetworkHierarchysPage
