@@ -107,11 +107,11 @@ export function EditableSurveyResponseForm({
         break
 
       case "note":
-        setResponseStatus(value)
+        setResponseNote(value)
         try {
           await updateSurveyResponseMutation({
             ...surveyResponseUpdateObject,
-            status: value,
+            note: value,
           })
         } catch (error: any) {
           console.error(error)

@@ -26,19 +26,27 @@ export default resolver.pipe(
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id, projectSlug, ...data }, ctx: Ctx) => {
     const previous = await db.surveyResponse.findFirst({ where: { id } })
+    // Important: only touch m2m fields if they were explicitly provided.
+    // Otherwise a "status-only" update would clear all existing relations.
     // copied from updateSubsubsection.ts
-    const disconnect: Record<M2MFieldsType | string, { set: [] }> = {}
-    const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
+    const disconnect: Partial<Record<M2MFieldsType, { set: [] }>> = {}
+    const connect: Partial<Record<M2MFieldsType, { connect: { id: number }[] }>> = {}
     m2mFields.forEach((fieldName) => {
+      if (typeof data[fieldName] === "undefined") return
+
       disconnect[fieldName] = { set: [] }
-      connect[fieldName] = { connect: data[fieldName] ? data[fieldName].map((id) => ({ id })) : [] }
+      connect[fieldName] = {
+        connect: Array.isArray(data[fieldName]) ? data[fieldName].map((id) => ({ id })) : [],
+      }
       delete data[fieldName]
     })
 
-    await db.surveyResponse.update({
-      where: { id },
-      data: disconnect,
-    })
+    if (Object.keys(disconnect).length > 0) {
+      await db.surveyResponse.update({
+        where: { id },
+        data: disconnect,
+      })
+    }
 
     const record = await db.surveyResponse.update({
       where: { id },
