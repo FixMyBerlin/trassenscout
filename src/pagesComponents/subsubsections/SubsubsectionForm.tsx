@@ -19,7 +19,6 @@ import getSubsubsectionInfrasWithCount from "@/src/server/subsubsectionInfra/que
 import getSubsubsectionInfrastructureTypesWithCount from "@/src/server/subsubsectionInfrastructureType/queries/getSubsubsectionInfrastructureTypesWithCount"
 import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
 import getSubsubsectionTasksWithCount from "@/src/server/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
-import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { Route } from "next"
 import { z } from "zod"
@@ -210,7 +209,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
-          href={Routes.SubsubsectionStatussPage({ projectSlug })}
+          href={`/${projectSlug}/subsubsection-status` as Route}
           className="py-2"
         >
           Phase verwalten…

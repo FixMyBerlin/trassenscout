@@ -1,48 +1,42 @@
-import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { Pagination } from "@/src/core/components/Pagination"
-import { Spinner } from "@/src/core/components/Spinner"
+"use client"
+
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
-import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { shortTitle } from "@/src/core/components/text"
-import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import deleteSubsubsectionStatus from "@/src/server/subsubsectionStatus/mutations/deleteSubsubsectionStatus"
 import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
-import { BlitzPage, Routes } from "@blitzjs/next"
-import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
+import { PromiseReturnType } from "blitz"
 import { clsx } from "clsx"
-import { useRouter } from "next/router"
-import { Suspense } from "react"
+import { Route } from "next"
+import { useRouter } from "next/navigation"
 
-const ITEMS_PER_PAGE = 100
+type Props = {
+  subsubsectionStatuss: PromiseReturnType<
+    typeof getSubsubsectionStatussWithCount
+  >["subsubsectionStatuss"]
+}
 
-export const SubsubsectionStatussWithData = () => {
+export const SubsubsectionStatussTable = ({ subsubsectionStatuss }: Props) => {
   const projectSlug = useProjectSlug()
   const router = useRouter()
-  const page = Number(router.query.page) || 0
-  const [{ subsubsectionStatuss, hasMore }] = usePaginatedQuery(getSubsubsectionStatussWithCount, {
-    projectSlug,
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
-
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
   const [deleteSubsubsectionStatusMutation] = useMutation(deleteSubsubsectionStatus)
+
   const handleDelete = async (subsubsectionStatusId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${subsubsectionStatusId} unwiderruflich löschen?`)) {
       try {
         await deleteSubsubsectionStatusMutation({ projectSlug, id: subsubsectionStatusId })
+        router.push(`/${projectSlug}/subsubsection-status` as Route)
+        router.refresh()
       } catch (error) {
         alert(
           "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
         )
       }
-      await router.push(Routes.SubsubsectionStatussPage({ projectSlug }))
     }
   }
 
@@ -91,10 +85,7 @@ export const SubsubsectionStatussWithData = () => {
                       <ButtonWrapper className="justify-end">
                         <Link
                           icon="edit"
-                          href={Routes.EditSubsubsectionStatusPage({
-                            projectSlug,
-                            subsubsectionStatusId: status.id,
-                          })}
+                          href={`/${projectSlug}/subsubsection-status/${status.id}/edit` as Route}
                         >
                           Bearbeiten
                         </Link>
@@ -118,43 +109,6 @@ export const SubsubsectionStatussWithData = () => {
           </tbody>
         </table>
       </TableWrapper>
-
-      <IfUserCanEdit>
-        <Link
-          button="blue"
-          icon="plus"
-          className="mt-4"
-          href={Routes.NewSubsubsectionStatusPage({ projectSlug })}
-        >
-          Neue Phase
-        </Link>
-      </IfUserCanEdit>
-
-      <Pagination
-        hasMore={hasMore}
-        page={page}
-        handlePrev={goToPreviousPage}
-        handleNext={goToNextPage}
-      />
-
-      <SuperAdminLogData data={{ subsubsectionStatuss }} />
     </>
   )
 }
-
-const SubsubsectionStatussPage: BlitzPage = () => {
-  return (
-    <LayoutRs>
-      <MetaTags noindex title="Phase" />
-      <PageHeader title="Phase" className="mt-12" />
-
-      <Suspense fallback={<Spinner page />}>
-        <SubsubsectionStatussWithData />
-      </Suspense>
-    </LayoutRs>
-  )
-}
-
-SubsubsectionStatussPage.authenticate = true
-
-export default SubsubsectionStatussPage
