@@ -1,49 +1,41 @@
-import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { Pagination } from "@/src/core/components/Pagination"
-import { Spinner } from "@/src/core/components/Spinner"
+"use client"
+
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
-import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { shortTitle } from "@/src/core/components/text"
-import { LayoutRs, MetaTags } from "@/src/core/layouts"
-import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import deleteQualityLevel from "@/src/server/qualityLevels/mutations/deleteQualityLevel"
 import getQualityLevelsWithCount from "@/src/server/qualityLevels/queries/getQualityLevelsWithCount"
-import { BlitzPage, Routes } from "@blitzjs/next"
-import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import { ArrowUpRightIcon } from "@heroicons/react/16/solid"
+import { PromiseReturnType } from "blitz"
 import { clsx } from "clsx"
-import { useRouter } from "next/router"
-import { Suspense } from "react"
+import { Route } from "next"
+import { useRouter } from "next/navigation"
 
-const ITEMS_PER_PAGE = 100
+type Props = {
+  qualityLevels: PromiseReturnType<typeof getQualityLevelsWithCount>["qualityLevels"]
+}
 
-export const QualityLevelsWithData = () => {
+export const QualityLevelsTable = ({ qualityLevels }: Props) => {
   const projectSlug = useProjectSlug()
   const router = useRouter()
-  const page = Number(router.query.page) || 0
-  const [{ qualityLevels, hasMore }] = usePaginatedQuery(getQualityLevelsWithCount, {
-    projectSlug,
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
-
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
   const [deleteQualityLevelMutation] = useMutation(deleteQualityLevel)
+
   const handleDelete = async (qualityLevelId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${qualityLevelId} unwiderruflich löschen?`)) {
       try {
         await deleteQualityLevelMutation({ projectSlug, id: qualityLevelId })
+        router.push(`/${projectSlug}/quality-levels` as Route)
+        router.refresh()
       } catch (error) {
         alert(
           "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
         )
       }
-      await router.push(Routes.QualityLevelsPage({ projectSlug }))
     }
   }
 
@@ -101,10 +93,7 @@ export const QualityLevelsWithData = () => {
                       <ButtonWrapper className="justify-end">
                         <Link
                           icon="edit"
-                          href={Routes.EditQualityLevelPage({
-                            projectSlug,
-                            qualityLevelId: qualityLevel.id,
-                          })}
+                          href={`/${projectSlug}/quality-levels/${qualityLevel.id}/edit` as Route}
                         >
                           Bearbeiten
                         </Link>
@@ -128,43 +117,6 @@ export const QualityLevelsWithData = () => {
           </tbody>
         </table>
       </TableWrapper>
-
-      <IfUserCanEdit>
-        <Link
-          button="blue"
-          icon="plus"
-          className="mt-4"
-          href={Routes.NewQualityLevelPage({ projectSlug })}
-        >
-          Neuer Ausbaustandard
-        </Link>
-      </IfUserCanEdit>
-
-      <Pagination
-        hasMore={hasMore}
-        page={page}
-        handlePrev={goToPreviousPage}
-        handleNext={goToNextPage}
-      />
-
-      <SuperAdminLogData data={{ qualityLevels }} />
     </>
   )
 }
-
-const QualityLevelsPage: BlitzPage = () => {
-  return (
-    <LayoutRs>
-      <MetaTags noindex title="Ausbaustandards" />
-      <PageHeader title="Ausbaustandards" className="mt-12" />
-
-      <Suspense fallback={<Spinner page />}>
-        <QualityLevelsWithData />
-      </Suspense>
-    </LayoutRs>
-  )
-}
-
-QualityLevelsPage.authenticate = true
-
-export default QualityLevelsPage
