@@ -16,7 +16,7 @@ jobs:
       url: ${{ vars.APP_ORIGIN }}
     steps:
       - name: Pull, Restart, Cleanup
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
