@@ -199,7 +199,7 @@ export const ProjectRecordFormFields = ({
               />
             )
           })}
-          <UploadDropzoneContainer className="h-40 border border-gray-300 p-2">
+          <UploadDropzoneContainer className="col-span-2 h-40 border border-gray-300 p-2">
             <UploadDropzone
               fillContainer
               onUploadComplete={async (newUploadIds) => {
