@@ -48,7 +48,7 @@ export default async function ProjectRecordDetail({
         <Link
           href={
             projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
-              ? `/${params.projectSlug}/project-records/needsreview`
+              ? `/${params.projectSlug}/project-records/needreview`
               : `/${params.projectSlug}/project-records`
           }
         >

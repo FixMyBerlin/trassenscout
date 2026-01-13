@@ -159,7 +159,7 @@ export const EditProjectRecordForm = ({
         <Link
           href={
             projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
-              ? `/${projectSlug}/project-records/needsreview`
+              ? `/${projectSlug}/project-records/needreview`
               : `/${projectSlug}/project-records`
           }
         >
