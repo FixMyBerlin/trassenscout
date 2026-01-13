@@ -1,22 +1,20 @@
 "use client"
 
 import { FilteredProjectRecords } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/FilteredProjectRecords"
-import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
+import { ProjectRecordNewModal } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordNewModal"
 import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/filter/useFilters.nuqs"
 import { useInitialFormValues } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/useInitialFormValues.nuqs"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
-import { Disclosure } from "@/src/core/components/Disclosure"
-import { Form, FORM_ERROR } from "@/src/core/components/forms"
+import { FORM_ERROR } from "@/src/core/components/forms"
 import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
-import { SubmitButton } from "@/src/core/components/forms/SubmitButton"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
-import { H3 } from "@/src/core/components/text"
+import { blueButtonStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
 import createProjectRecord from "@/src/server/projectRecords/mutations/createProjectRecord"
 import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
-import { NewProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation, useQuery } from "@blitzjs/rpc"
+import { PlusIcon } from "@heroicons/react/16/solid"
 import { clsx } from "clsx"
 import { useEffect, useState } from "react"
 
@@ -37,6 +35,7 @@ export const ProjectRecordsFormAndTable = ({
   const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
   const { setFilter } = useFilters()
   const { initialFormValues, setInitialFormValues } = useInitialFormValues()
+  const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
 
   // Hide success message after 3 seconds
   useEffect(() => {
@@ -80,6 +79,31 @@ export const ProjectRecordsFormAndTable = ({
 
   return (
     <div className="relative flex flex-col gap-8">
+      <IfUserCanEdit>
+        <div>
+          <button
+            onClick={() => setIsProjectRecordModalOpen(true)}
+            className={clsx(blueButtonStyles, "items-center justify-center gap-1")}
+          >
+            <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
+          </button>
+        </div>
+      </IfUserCanEdit>
+
+      <ProjectRecordNewModal
+        projectSlug={projectSlug}
+        open={isProjectRecordModalOpen}
+        onClose={() => setIsProjectRecordModalOpen(false)}
+        onSuccess={async (projectRecordId) => {
+          setCreatedProjectRecordId(projectRecordId)
+          setShowSuccess(true)
+          setTimeout(() => {
+            setShowSuccess(false)
+            setCreatedProjectRecordId(null)
+          }, 3000)
+          await refetch()
+        }}
+      />
       <div className="absolute top-0 right-0">
         <FormSuccess message="Neuen Protokolleintrag erstellt" show={showSuccess} />
       </div>
@@ -87,34 +111,6 @@ export const ProjectRecordsFormAndTable = ({
         highlightId={createdProjectRecordId}
         projectRecords={projectRecords}
       />
-      <IfUserCanEdit>
-        <Form
-          resetOnSubmit
-          onSubmit={handleSubmit}
-          initialValues={formInitialValues}
-          schema={NewProjectRecordFormSchema}
-        >
-          <div>
-            <Disclosure
-              classNameButton="py-4 px-6 text-left bg-gray-100 rounded-t-md pb-6"
-              classNamePanel="px-6 pb-3 bg-gray-100 rounded-b-md space-y-6"
-              open
-              button={
-                <div className="flex-auto">
-                  <H3 className={clsx("pr-10 md:pr-0")}>Neuer Protokolleintrag</H3>
-                  <small>
-                    Neuen Protokolleintrag verfassen. Zum Ein- oder Ausklappen auf den Pfeil oben
-                    rechts klicken.
-                  </small>
-                </div>
-              }
-            >
-              <ProjectRecordFormFields projectSlug={projectSlug} />
-              <SubmitButton>Protokolleintrag speichern</SubmitButton>
-            </Disclosure>
-          </div>
-        </Form>
-      </IfUserCanEdit>
     </div>
   )
 }
