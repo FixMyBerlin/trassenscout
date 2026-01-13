@@ -1,6 +1,6 @@
 "use client"
 
-import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/filter/useFilters.nuqs"
+import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/filter/useFilters.nuqs"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
@@ -20,7 +20,7 @@ import { ChevronDownIcon, SparklesIcon } from "@heroicons/react/20/solid"
 import clsx from "clsx"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
-import { ProjectRecordReviewBadge } from "../[projectRecordId]/_components/ProjectRecordReviewBadge"
+import { ProjectRecordReviewBadge } from "./ProjectRecordReviewBadge"
 import { ProjectRecordTopicsList } from "./ProjectRecordTopicsList"
 
 export const ProjectRecordsTable = ({
