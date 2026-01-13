@@ -1,6 +1,6 @@
 import { ProjectRecordReviewState } from "@/db"
-import { NeedsReviewBanner } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/EditProjectRecordForm"
 import { ProjectRecordDetailClient } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordDetailClient"
+import { ProjectRecordNeedsReviewBanner } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordNeedsReviewBanner"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { invoke } from "@/src/blitz-server"
 import { Link } from "@/src/core/components/links"
@@ -40,7 +40,13 @@ export default async function ProjectRecordDetail({
           </IfUserCanEdit>
         }
       />
-      {needsReview && <NeedsReviewBanner projectRecord={projectRecord} withAction />}
+      {needsReview && (
+        <ProjectRecordNeedsReviewBanner
+          withAction
+          projectSlug={params.projectSlug}
+          projectRecordId={projectRecordId}
+        />
+      )}
 
       <ProjectRecordDetailClient projectRecord={projectRecord} />
 

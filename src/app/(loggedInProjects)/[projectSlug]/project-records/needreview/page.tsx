@@ -7,6 +7,7 @@ import { AuthorizationError } from "blitz"
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
 import "server-only"
+import { ProjectRecordsNeedsReviewInfoBanner } from "../_components/ProjectRecordNeedsReviewBanner"
 import { ProjectRecordsTable } from "../_components/ProjectRecordTable"
 import { getProjectRecordsTabs } from "../_utils/projectRecordsTabs"
 
@@ -40,9 +41,15 @@ export default async function ProjectRecordsNeedsReviewPage({
       <PageHeader title="Projektprotokoll" className="mt-12" />
       <TabsApp tabs={tabs} className="mt-7" />
       {projectRecords.length === 0 ? (
-        <ZeroCase visible={projectRecords.length} name="Protokolleinträge" />
+        <ZeroCase
+          visible={projectRecords.length}
+          text="Momentan gibt es keine Protokolleinträge, die Bestätigung benötigen."
+        />
       ) : (
-        <ProjectRecordsTable projectRecords={projectRecords} withSubsection withSubsubsection />
+        <>
+          <ProjectRecordsNeedsReviewInfoBanner />
+          <ProjectRecordsTable projectRecords={projectRecords} withSubsection withSubsubsection />
+        </>
       )}
     </>
   )

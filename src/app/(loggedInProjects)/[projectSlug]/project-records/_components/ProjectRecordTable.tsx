@@ -111,11 +111,6 @@ export const ProjectRecordsTable = ({
                                     onTopicClick={handleTopicClick}
                                   />
                                 </div>
-                                <div className="flex shrink-0 items-center gap-2">
-                                  <ProjectRecordReviewBadge
-                                    reviewState={projectRecord.reviewState}
-                                  />
-                                </div>
                               </div>
                             </div>
                           </div>
