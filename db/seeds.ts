@@ -1,4 +1,3 @@
-import seedCalendarEntries from "./seeds/calenderEntries"
 import seedContacts from "./seeds/contacts"
 import seedMemberships from "./seeds/memberships"
 import seedOperators from "./seeds/operators"
@@ -36,7 +35,6 @@ const seed = async () => {
     await seedQualityLevels()
     await seedSubsections()
     await seedStakeholdernotes()
-    await seedCalendarEntries()
     await seedContacts()
     await seedUploads()
     await seedSurveys()

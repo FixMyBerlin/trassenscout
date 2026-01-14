@@ -152,7 +152,6 @@ model Project {
   surveyResponseTopics             SurveyResponseTopic[]
   subsections                      Subsection[]
   subsectionStatuses               SubsectionStatus[]
-  calendarEntries                  CalendarEntry[]
   contacts                         Contact[]
   uploads                          Upload[]
   memberships                      Membership[]
@@ -193,22 +192,6 @@ model Membership {
 enum MembershipRoleEnum {
   VIEWER
   EDITOR
-}
-
-model CalendarEntry {
-  id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  //
-  title        String
-  startAt      DateTime
-  locationName String?
-  locationUrl  String?
-  description  String?
-
-  project   Project    @relation(fields: [projectId], references: [id])
-  projectId Int
-  LogEntry  LogEntry[]
 }
 
 model Contact {
@@ -691,8 +674,6 @@ model LogEntry {
   invite             Invite?            @relation(fields: [inviteId], references: [id])
   membershipId       Int?
   membership         Membership?        @relation(fields: [membershipId], references: [id])
-  calendarentryId    Int?
-  calendarentry      CalendarEntry?     @relation(fields: [calendarentryId], references: [id])
   contactId          Int?
   contact            Contact?           @relation(fields: [contactId], references: [id])
   operatorId         Int?

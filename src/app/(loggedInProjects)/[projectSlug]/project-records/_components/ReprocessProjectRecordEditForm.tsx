@@ -2,10 +2,10 @@
 
 import { ReprocessedProjectRecord } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordDetailClient"
 import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
+import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { Form, FORM_ERROR } from "@/src/core/components/forms"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { getDate } from "@/src/pagesComponents/calendar-entries/utils/splitStartAt"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import updateProjectRecord from "@/src/server/projectRecords/mutations/updateProjectRecord"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
