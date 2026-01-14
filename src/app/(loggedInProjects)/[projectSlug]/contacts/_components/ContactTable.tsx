@@ -96,9 +96,11 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
                 </td>
                 <td className="relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6">
                   <div className="flex items-center justify-end gap-4 text-right">
-                    <Link href={`/${projectSlug}/contacts/${contact.id}` as Route}>
-                      <TrashIcon className="h-4 w-4" />
-                    </Link>
+                    <IfUserCanEdit>
+                      <Link href={`/${projectSlug}/contacts/${contact.id}` as Route}>
+                        <TrashIcon className="h-4 w-4" />
+                      </Link>
+                    </IfUserCanEdit>
                     <LabeledCheckbox
                       scope="selectedContacts"
                       value={String(contact.id)}
