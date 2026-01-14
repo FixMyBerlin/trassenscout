@@ -19,13 +19,6 @@ export const SubsectionTabs = () => {
             subsectionSlug,
           }),
         },
-        {
-          name: "TÖBs",
-          href: Routes.SubsectionStakeholdersPage({
-            projectSlug,
-            subsectionSlug,
-          }),
-        },
       ]}
     />
   )
