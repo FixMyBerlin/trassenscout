@@ -1,3 +1,4 @@
+import { getUserSelectOptions } from "@/src/app/_components/users/utils/getUserSelectOptions"
 import {
   Form,
   FormProps,
@@ -11,7 +12,6 @@ import { LabeledTextFieldCalculateLength } from "@/src/core/components/forms/Lab
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { LabeledRadiobuttonGroupLabelPos } from "@/src/pagesComponents/subsubsections/LabeledRadiobuttonGroupLabelPos"
 import { subsubsectionFieldTranslations } from "@/src/pagesComponents/subsubsections/subsubsectionFieldMappings"
-import { getUserSelectOptions } from "@/src/pagesComponents/users/utils/getUserSelectOptions"
 import { createFormOptions } from "@/src/pagesComponents/utils/createFormOptions"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getQualityLevelsWithCount from "@/src/server/qualityLevels/queries/getQualityLevelsWithCount"

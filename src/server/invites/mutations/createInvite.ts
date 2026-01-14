@@ -1,6 +1,7 @@
 import db from "@/db"
 import { invitationCreatedMailToUser } from "@/emails/mailers/invitationCreatedMailToUser"
 import { invitationCreatedNotificationToEditors } from "@/emails/mailers/invitationCreatedNotificationToEditors"
+import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { editorRoles } from "@/src/authorization/constants"
 import {
@@ -8,7 +9,6 @@ import {
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
 import { shortTitle } from "@/src/core/components/text"
-import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"

@@ -1,11 +1,11 @@
 import db from "@/db"
+import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { editorRoles } from "@/src/authorization/constants"
 import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
-import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"

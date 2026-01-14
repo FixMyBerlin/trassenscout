@@ -1,3 +1,4 @@
+import { getUserSelectOptions } from "@/src/app/_components/users/utils/getUserSelectOptions"
 import { Spinner } from "@/src/core/components/Spinner"
 import {
   Form,
@@ -11,7 +12,6 @@ import { LabeledTextFieldCalculateLength } from "@/src/core/components/forms/Lab
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { LabeledRadiobuttonGroupLabelPos } from "@/src/pagesComponents/subsubsections/LabeledRadiobuttonGroupLabelPos"
 import { LinkWithFormDirtyConfirm } from "@/src/pagesComponents/subsubsections/LinkWithFormDirtyConfirm"
-import { getUserSelectOptions } from "@/src/pagesComponents/users/utils/getUserSelectOptions"
 import { createFormOptions } from "@/src/pagesComponents/utils/createFormOptions"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getNetworkHierarchysWithCount from "@/src/server/networkHierarchy/queries/getNetworkHierarchysWithCount"

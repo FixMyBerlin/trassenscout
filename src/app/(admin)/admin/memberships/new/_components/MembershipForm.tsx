@@ -1,5 +1,6 @@
 "use client"
 import { roleTranslation } from "@/src/app/_components/memberships/roleTranslation.const"
+import { getUserSelectOptions } from "@/src/app/_components/users/utils/getUserSelectOptions"
 import { membershipRoles } from "@/src/authorization/constants"
 import {
   Form,
@@ -8,7 +9,6 @@ import {
   LabeledSelect,
 } from "@/src/core/components/forms"
 import { getProjectSelectOptions } from "@/src/pagesComponents/projects/utils/getProjectSelectOptions"
-import { getUserSelectOptions } from "@/src/pagesComponents/users/utils/getUserSelectOptions"
 import getProjects from "@/src/server/projects/queries/getProjects"
 import getUsers from "@/src/server/users/queries/getUsers"
 import { useQuery } from "@blitzjs/rpc"

@@ -1,7 +1,7 @@
+import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { LinkMail, LinkTel } from "@/src/core/components/links"
-import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import { Contact } from "@prisma/client"
 
 type Props = {

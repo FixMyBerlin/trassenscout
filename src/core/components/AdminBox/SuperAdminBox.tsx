@@ -1,5 +1,5 @@
 "use client"
-import { isAdmin } from "@/src/pagesComponents/users/utils/isAdmin"
+import { isAdmin } from "@/src/app/_components/users/utils/isAdmin"
 import { useCurrentUser } from "@/src/server/users/hooks/useCurrentUser"
 import { Suspense } from "react"
 import { Spinner } from "../Spinner"

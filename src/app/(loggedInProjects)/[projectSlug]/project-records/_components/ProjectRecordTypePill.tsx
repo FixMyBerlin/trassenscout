@@ -1,4 +1,4 @@
-import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
+import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { SparklesIcon } from "@heroicons/react/16/solid"
 import { ProjectRecordType } from "@prisma/client"

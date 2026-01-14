@@ -1,8 +1,8 @@
 import db, { Invite, User } from "@/db"
 import { membershipCreatedNotificationToEditors } from "@/emails/mailers/membershipCreatedNotificationToEditors"
 import { roleTranslation } from "@/src/app/_components/memberships/roleTranslation.const"
+import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { shortTitle } from "@/src/core/components/text/titles"
-import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import { Route } from "next"
 
 type Props = { invite: Invite | null; invitee: Pick<User, "firstName" | "lastName" | "email"> }
