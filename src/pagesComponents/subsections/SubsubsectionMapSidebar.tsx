@@ -91,13 +91,14 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
       {/* UNUSED */}
       {/* <H2 className="mt-2">{subsubsection.subTitle}</H2> */}
 
-      <PageDescription className="mt-5 p-3!">
-        <Markdown markdown={subsubsection.description} className="leading-tight" />
-      </PageDescription>
-
+      {subsubsection.description && (
+        <PageDescription className="mt-5 p-3!">
+          <Markdown markdown={subsubsection.description} className="leading-tight" />
+        </PageDescription>
+      )}
       <div className="-mx-3 -my-2 mt-5 overflow-x-auto">
         <div className="inline-block min-w-full py-2 align-middle">
-          <table className="min-w-full divide-y divide-gray-300 border-b border-b-gray-300">
+          <table className="min-w-full divide-y divide-gray-300 border-y border-y-gray-300">
             <thead className="sr-only">
               <tr>
                 <th
