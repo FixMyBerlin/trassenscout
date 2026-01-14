@@ -1,10 +1,10 @@
 "use client"
 
+import { roleTranslation } from "@/src/app/_components/memberships/roleTranslation.const"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { StatusLabel } from "@/src/core/components/Status/StatusLabel"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { LinkMail } from "@/src/core/components/links"
-import { roleTranslation } from "@/src/pagesComponents/memberships/roleTranslation.const"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import { INVITE_DAYS_TO_DELETION } from "@/src/server/invites/inviteSettings.const"
 import getInvites from "@/src/server/invites/queries/getInvites"

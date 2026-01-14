@@ -1,3 +1,4 @@
+import { roleTranslation } from "@/src/app/_components/memberships/roleTranslation.const"
 import { membershipRoles } from "@/src/authorization/constants"
 import {
   Form,
@@ -5,7 +6,6 @@ import {
   LabeledRadiobuttonGroup,
   LabeledTextField,
 } from "@/src/core/components/forms"
-import { roleTranslation } from "@/src/pagesComponents/memberships/roleTranslation.const"
 import { z } from "zod"
 
 export function TeamInviteForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {

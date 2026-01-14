@@ -1,6 +1,7 @@
 "use client"
+
+import { UserCanIcon } from "@/src/app/_components/memberships/UserCanIcon"
 import { useSession } from "@blitzjs/auth"
-import { UserCanIcon } from "./UserCanIcon"
 
 type Props = { projectSlug: string; className?: string }
 

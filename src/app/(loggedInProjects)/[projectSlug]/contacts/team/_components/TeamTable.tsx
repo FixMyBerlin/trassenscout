@@ -1,7 +1,7 @@
+import { UserCanIcon } from "@/src/app/_components/memberships/UserCanIcon"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { LinkMail, LinkTel } from "@/src/core/components/links"
-import { UserCanIcon } from "@/src/pagesComponents/memberships/UserCanIcon"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import { PromiseReturnType } from "blitz"

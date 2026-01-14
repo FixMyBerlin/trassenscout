@@ -1,4 +1,5 @@
 import { EditableSurveyResponseListItemProps } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/EditableSurveyResponseListItem"
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import {
   TBackendConfig,
   backendConfig as defaultBackendConfig,
@@ -6,7 +7,6 @@ import {
 import { blueButtonStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import createSurveyResponseTopic from "@/src/server/survey-response-topics/mutations/createSurveyResponseTopic"
 import getSurveyResponseTopicsByProject from "@/src/server/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import updateSurveyResponse from "@/src/server/survey-responses/mutations/updateSurveyResponse"

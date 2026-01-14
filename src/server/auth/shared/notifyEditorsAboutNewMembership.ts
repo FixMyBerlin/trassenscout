@@ -1,7 +1,7 @@
 import db, { Invite, User } from "@/db"
 import { membershipCreatedNotificationToEditors } from "@/emails/mailers/membershipCreatedNotificationToEditors"
+import { roleTranslation } from "@/src/app/_components/memberships/roleTranslation.const"
 import { shortTitle } from "@/src/core/components/text/titles"
-import { roleTranslation } from "@/src/pagesComponents/memberships/roleTranslation.const"
 import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import { Route } from "next"
 

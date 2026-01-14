@@ -1,7 +1,7 @@
+import { roleTranslation } from "@/src/app/_components/memberships/roleTranslation.const"
 import { membershipRoles } from "@/src/authorization/constants"
 import { Form, FORM_ERROR, FormProps, LabeledRadiobuttonGroup } from "@/src/core/components/forms"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { roleTranslation } from "@/src/pagesComponents/memberships/roleTranslation.const"
 import updateMembershipRole from "@/src/server/memberships/mutations/updateMembershipRole"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import { getQueryClient, getQueryKey, useMutation } from "@blitzjs/rpc"

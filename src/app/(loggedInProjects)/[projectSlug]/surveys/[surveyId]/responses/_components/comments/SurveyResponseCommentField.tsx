@@ -1,9 +1,8 @@
-import dompurify from "dompurify"
-
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { proseClasses } from "@/src/core/components/text"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import { clsx } from "clsx"
+import dompurify from "dompurify"
 import { EditableSurveyResponseListItemProps } from "../EditableSurveyResponseListItem"
 import { EditSurveyResponseCommentForm } from "./EditSurveyResponseCommentForm"
 import { localDateTime } from "./utils/localDateTime"

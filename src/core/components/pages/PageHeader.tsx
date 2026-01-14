@@ -1,5 +1,6 @@
 "use client"
-import { CurrentUserCanIcon } from "@/src/pagesComponents/memberships/CurrentUserCanIcon"
+
+import { CurrentUserCanIcon } from "@/src/app/_components/memberships/CurrentUserCanIcon"
 import { clsx } from "clsx"
 import { useTryProjectSlug } from "../../routes/useProjectSlug"
 import { DashedLine } from "../DashedLine"
