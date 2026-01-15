@@ -285,7 +285,7 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
 
       <section className="mt-10 space-y-3">
         <H2>Dokumente</H2>
-        {!uploads.length && <ZeroCase small visible name="Grafiken" />}
+        {!uploads.length && <ZeroCase small visible name="Dokumente" />}
         <div className="grid grid-cols-2 gap-3">
           {uploads.map((upload) => {
             return (
