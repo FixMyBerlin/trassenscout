@@ -107,7 +107,7 @@ export function SurveyResponses({ projectSlug, surveyId, survey, tabs }: Props) 
         <div className="mb-6">
           <Link
             className="mb-12 flex gap-1"
-            href={`/api/survey/${projectSlug}/${survey.id}/feedback/results`}
+            href={`/api/${projectSlug}/surveys/${survey.id}/part2/results`}
           >
             <ArrowDownTrayIcon className="mr-1 h-5 w-5" />
             Alle Daten als .csv herunterladen

@@ -1,24 +1,33 @@
 import { getFlatSurveyFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_utils/getFlatSurveyFormFields"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
+import { coordinatesToWkt } from "@/src/app/api/(auth)/[projectSlug]/surveys/[surveyId]/_utils/coordinatesToWkt"
+import { getSurveyForExport } from "@/src/app/api/(auth)/[projectSlug]/surveys/[surveyId]/_utils/getSurveyForExport"
+import { sendCsvResponse } from "@/src/app/api/(auth)/[projectSlug]/surveys/[surveyId]/_utils/sendCsvResponse"
+import { withProjectMembership } from "@/src/app/api/(auth)/_utils/withProjectMembership"
 import { backendConfig as backendConfigDefault } from "@/src/app/beteiligung/_shared/backend-types"
 import { SurveyFieldRadioOrCheckboxGroupConfig } from "@/src/app/beteiligung/_shared/types"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
+import { viewerRoles } from "@/src/authorization/constants"
+import { invoke } from "@/src/blitz-server"
 import { Prettify } from "@/src/core/types"
 import getProjectOperators from "@/src/server/operators/queries/getProjectOperators"
 import getSurveyResponseTopicsByProject from "@/src/server/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import getSurveySessionsWithResponses from "@/src/server/survey-sessions/queries/getSurveySessionsWithResponses"
-import { getSession } from "@blitzjs/auth"
 import { AuthorizationError } from "blitz"
 import { format } from "date-fns"
-import { NextApiRequest, NextApiResponse } from "next"
-import { coordinatesToWkt } from "../../../utils/coordinatesToWkt"
-import { getSurvey, sendCsv } from "./../survey/_shared"
+import { ZodError } from "zod"
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Permissions are checked implicitly by `getSurvey` which will call "@/src/surveys/queries/getSurvey" which uses `authorizeProjectMember`
-  const survey = await getSurvey(req, res)
-  if (!survey) return
+// Blitz session + Prisma are Node runtime concerns; avoid Edge runtime
+export const runtime = "nodejs"
+// Cookie-authenticated, user-specific CSV; avoid accidental caching
+export const dynamic = "force-dynamic"
+
+export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
+  const { projectSlug, surveyId } = params
+  const surveyIdNum = Number(surveyId)
+
+  const survey = await getSurveyForExport(projectSlug, surveyIdNum)
 
   const surveyDefinition = getConfigBySurveySlug(survey.slug, "part1")
   const feedbackDefinition = getConfigBySurveySlug(survey.slug, "part2")
@@ -33,11 +42,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const feedbackQuestions = getFlatSurveyFormFields(feedbackDefinition)
   const surveyQuestions = getFlatSurveyFormFields(surveyDefinition)
 
-  const err = (status: number, message: string) => {
-    res.status(status).json({ error: true, status: status, message })
-    res.end()
-  }
-
   let surveySessions: Prettify<Awaited<ReturnType<typeof getSurveySessionsWithResponses>>>
   let topics: Prettify<
     Awaited<ReturnType<typeof getSurveyResponseTopicsByProject>>
@@ -45,36 +49,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   let operators: Prettify<Awaited<ReturnType<typeof getProjectOperators>>>
 
   try {
-    const session = await getSession(req, res)
     // get all surveysessions of survey
-    surveySessions = await getSurveySessionsWithResponses(
-      // @ts-expect-error
-      { projectSlug: req.query.projectSlug, surveyId: survey.id },
-      { session },
-    )
+    surveySessions = await invoke(getSurveySessionsWithResponses, {
+      projectSlug,
+      surveyId: survey.id,
+    })
     // get operators and topics of project
-    const surveyResponseTopics = await getSurveyResponseTopicsByProject(
-      // @ts-expect-error
-      { projectSlug: req.query.projectSlug },
-      { session },
-    )
+    const surveyResponseTopics = await invoke(getSurveyResponseTopicsByProject, {
+      projectSlug,
+    })
     topics = surveyResponseTopics.surveyResponseTopics
-    operators = await getProjectOperators(
-      // @ts-expect-error
-      { projectSlug: req.query.projectSlug },
-      { session },
-    )
+    operators = await invoke(getProjectOperators, { projectSlug })
   } catch (e) {
     if (e instanceof AuthorizationError) {
-      err(403, "Forbidden")
+      return new Response("Forbidden", { status: 403 })
     }
     // @ts-expect-error
     if (e.code === "P2025" || e instanceof ZodError) {
-      err(404, "Not Found")
+      return new Response("Not Found", { status: 404 })
     }
     console.error(e)
-    err(500, "Internal Server Error")
-    return
+    return new Response("Internal Server Error", { status: 500 })
   }
 
   const statusDefinition = backendDefinition.status
@@ -258,7 +253,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         .map(
                           (resultId: number) =>
                             multipleResponseResponseProps.options.find(
-                              (r) => String(r.key) == String(resultId),
+                              (r) => String(r.key) === String(resultId),
                             )?.label,
                         )
                         .join(" | ")
@@ -304,10 +299,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       )
   })
 
-  sendCsv(
-    res,
+  return sendCsvResponse(
     headers,
     csvData,
-    `${format(new Date(), "yyyy-MM-dd")}_hinweise_ergebnisse_${survey.slug}.csv`,
+    `${format(new Date(), "yyyy-MM-dd")}_beteiligung_teil2_ergebnisse_${survey.slug}.csv`,
   )
-}
+})

@@ -70,16 +70,16 @@ export const SurveyChartAndCsvDownloadSection = ({
         {surveyDefinition && (
           <div className="flex flex-col items-start gap-4">
             <button onClick={handleCopyChartDataButtonClick} className={whiteButtonStyles}>
-              Beteiligungsergebnisse in die Zwischenablage kopieren - formatiert für Diagramme
+              Ergebnisse Umfrageteil 1 in die Zwischenablage kopieren - formatiert für Diagramme
             </button>
-            <Link href={`/api/survey/${projectSlug}/${surveyId}/survey/questions`} button="white">
-              Fragen der Beteiligung als CSV herunterladen
+            <Link href={`/api/${projectSlug}/surveys/${surveyId}/part1/questions`} button="white">
+              Fragen des Umfrageteils 1 als CSV herunterladen
             </Link>
-            <Link href={`/api/survey/${projectSlug}/${surveyId}/survey/answers`} button="white">
-              Antworten der Beteiligung als CSV herunterladen
+            <Link href={`/api/${projectSlug}/surveys/${surveyId}/part1/answers`} button="white">
+              Antworten des Umfrageteils 1 als CSV herunterladen
             </Link>
-            <Link href={`/api/survey/${projectSlug}/${surveyId}/survey/results`} button="white">
-              Ergebnisse der Beteiligung als CSV herunterladen
+            <Link href={`/api/${projectSlug}/surveys/${surveyId}/part1/results`} button="white">
+              Ergebnisse des Umfrageteils 1 als CSV herunterladen
             </Link>
           </div>
         )}
