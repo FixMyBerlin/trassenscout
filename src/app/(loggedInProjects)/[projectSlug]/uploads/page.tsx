@@ -16,7 +16,7 @@ export default async function UploadsPage() {
     <>
       <PageHeader
         title="Dokumente"
-        description="Dokumente und Grafiken hochladen und bei Bedarf mit einem Planungsabschnitt verknüpfen."
+        description="Dokumente und Grafiken hochladen und bei Bedarf verknüpfen."
         className="mt-12"
       />
       <Suspense fallback={<Spinner page />}>

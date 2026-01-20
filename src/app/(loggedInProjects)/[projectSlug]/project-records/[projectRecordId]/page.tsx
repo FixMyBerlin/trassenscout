@@ -1,6 +1,6 @@
 import { ProjectRecordReviewState } from "@/db"
-import { ProjectRecordDetailClient } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/_components/ProtocolDetailClient"
-import { NeedsReviewBanner } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/edit/_components/EditProjectRecordForm"
+import { ProjectRecordDetailClient } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordDetailClient"
+import { ProjectRecordNeedsReviewBanner } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordNeedsReviewBanner"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { invoke } from "@/src/blitz-server"
 import { Link } from "@/src/core/components/links"
@@ -40,12 +40,24 @@ export default async function ProjectRecordDetail({
           </IfUserCanEdit>
         }
       />
-      {needsReview && <NeedsReviewBanner projectRecord={projectRecord} withAction />}
+      {needsReview && (
+        <ProjectRecordNeedsReviewBanner
+          withAction
+          projectSlug={params.projectSlug}
+          projectRecordId={projectRecordId}
+        />
+      )}
 
       <ProjectRecordDetailClient projectRecord={projectRecord} />
 
       <div className="mt-8 border-t border-gray-200 pt-4">
-        <Link href={`/${params.projectSlug}/project-records`}>
+        <Link
+          href={
+            projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+              ? `/${params.projectSlug}/project-records/needreview`
+              : `/${params.projectSlug}/project-records`
+          }
+        >
           ← Zurück zur Protokoll-Übersicht
         </Link>
       </div>

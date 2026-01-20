@@ -16,12 +16,13 @@ jobs:
       url: ${{ vars.APP_ORIGIN }}
     steps:
       - name: Pull, Restart, Cleanup
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
+            set -e
             cd /srv/trassenscout-${{ inputs.ENVIRONMENT }}
             echo "Pull all containers"
             docker compose pull

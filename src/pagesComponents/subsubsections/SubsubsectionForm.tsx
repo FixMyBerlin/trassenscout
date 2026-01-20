@@ -1,3 +1,4 @@
+import { getUserSelectOptions } from "@/src/app/_components/users/utils/getUserSelectOptions"
 import {
   Form,
   FormProps,
@@ -7,21 +8,21 @@ import {
   LabeledTextareaField,
   LabeledTextField,
 } from "@/src/core/components/forms"
+import { createFormOptions } from "@/src/core/components/forms/_utils/createFormOptions"
 import { LabeledTextFieldCalculateLength } from "@/src/core/components/forms/LabeledTextFieldCalculateLength"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { LabeledRadiobuttonGroupLabelPos } from "@/src/pagesComponents/subsubsections/LabeledRadiobuttonGroupLabelPos"
 import { subsubsectionFieldTranslations } from "@/src/pagesComponents/subsubsections/subsubsectionFieldMappings"
-import { getUserSelectOptions } from "@/src/pagesComponents/users/utils/getUserSelectOptions"
-import { createFormOptions } from "@/src/pagesComponents/utils/createFormOptions"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getQualityLevelsWithCount from "@/src/server/qualityLevels/queries/getQualityLevelsWithCount"
 import getSubsubsectionInfrasWithCount from "@/src/server/subsubsectionInfra/queries/getSubsubsectionInfrasWithCount"
 import getSubsubsectionInfrastructureTypesWithCount from "@/src/server/subsubsectionInfrastructureType/queries/getSubsubsectionInfrastructureTypesWithCount"
 import getSubsubsectionStatussWithCount from "@/src/server/subsubsectionStatus/queries/getSubsubsectionStatussWithCount"
 import getSubsubsectionTasksWithCount from "@/src/server/subsubsectionTask/queries/getSubsubsectionTasksWithCount"
-import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
+import { Route } from "next"
 import { z } from "zod"
+import { subsubsectionLocationLabelMap } from "../utils/subsubsectionLocationLabelMap"
 import { GeometryInput } from "./GeometryInput/GeometryInput"
 import { LinkWithFormDirtyConfirm } from "./LinkWithFormDirtyConfirm"
 
@@ -89,7 +90,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
-          href={Routes.SubsubsectionTasksPage({ projectSlug })}
+          href={`/${projectSlug}/subsubsection-task` as Route}
           className="py-2"
         >
           Eintragstypen verwalten…
@@ -105,8 +106,8 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label={subsubsectionFieldTranslations.location}
         scope="location"
         items={[
-          { value: "URBAN", label: "innerorts" },
-          { value: "RURAL", label: "außerorts" },
+          { value: "URBAN", label: subsubsectionLocationLabelMap.URBAN },
+          { value: "RURAL", label: subsubsectionLocationLabelMap.RURAL },
           { value: "", label: "keine Angabe" },
         ]}
         classNameItemWrapper="flex gap-5 space-y-0! items-center"
@@ -120,7 +121,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         />
         <div className="mt-4">
           <LinkWithFormDirtyConfirm
-            href={Routes.SubsubsectionSpecialsPage({ projectSlug })}
+            href={`/${projectSlug}/subsubsection-special` as Route}
             className="py-2"
           >
             Besonderheiten verwalten…
@@ -167,7 +168,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
-          href={Routes.SubsubsectionInfrastructureTypesPage({ projectSlug })}
+          href={`/${projectSlug}/subsubsection-infrastructure-type` as Route}
           className="py-2"
         >
           Fördergegenstand verwalten…
@@ -181,7 +182,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           options={qualityLevelOptions}
           outerProps={{ className: "grow" }}
         />
-        <LinkWithFormDirtyConfirm href={Routes.QualityLevelsPage({ projectSlug })} className="py-2">
+        <LinkWithFormDirtyConfirm href={`/${projectSlug}/quality-levels` as Route} className="py-2">
           Ausbaustandards verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
@@ -193,7 +194,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
-          href={Routes.SubsubsectionInfrasPage({ projectSlug })}
+          href={`/${projectSlug}/subsubsection-infra` as Route}
           className="py-2"
         >
           Führungsformen verwalten…
@@ -208,7 +209,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
-          href={Routes.SubsubsectionStatussPage({ projectSlug })}
+          href={`/${projectSlug}/subsubsection-status` as Route}
           className="py-2"
         >
           Phase verwalten…

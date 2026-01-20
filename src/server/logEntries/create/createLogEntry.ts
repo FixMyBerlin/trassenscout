@@ -9,7 +9,6 @@ type LogEntryCreate = {
   //
   inviteId?: number
   membershipId?: number
-  calendarentryId?: number
   contactId?: number
   projectRecordId?: number
   operatorId?: number
@@ -68,7 +67,6 @@ export const createLogEntry = async (input: LogEntryCreate) => {
       //
       inviteId: data.inviteId,
       membershipId: data.membershipId,
-      calendarentryId: data.calendarentryId,
       contactId: data.contactId,
       operatorId: data.operatorId,
       subsectionId: data.subsectionId,

@@ -1,6 +1,6 @@
 "use client"
 
-import { ProjectRecordEmailSource } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/[projectRecordId]/edit/_components/ProjectRecordEmailSource"
+import { ProjectRecordEmailSource } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordEmailSource"
 import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
 import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneContainer"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
@@ -199,7 +199,7 @@ export const ProjectRecordFormFields = ({
               />
             )
           })}
-          <UploadDropzoneContainer className="h-40 border border-gray-300 p-2">
+          <UploadDropzoneContainer className="col-span-2 h-40 border border-gray-300 p-2">
             <UploadDropzone
               fillContainer
               onUploadComplete={async (newUploadIds) => {

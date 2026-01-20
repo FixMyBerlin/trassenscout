@@ -1,11 +1,11 @@
 "use client"
 
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Link, whiteButtonStyles } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { uploadEditRoute, uploadsListRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
 import deleteUpload from "@/src/server/uploads/mutations/deleteUpload"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import { useMutation } from "@blitzjs/rpc"

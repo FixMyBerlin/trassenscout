@@ -1,44 +1,24 @@
 /**
  * Health Check Server
+ * Simple HTTP endpoint for Docker health checks and external monitoring
  */
 
 import http, { type IncomingMessage, type ServerResponse } from "http"
-import { berlinTimeString } from "./helpers/berlinTime.js"
 import { config } from "./helpers/config.js"
-import { getMailboxStats } from "./helpers/imap.js"
 import { log } from "./helpers/logger.js"
 
 const port = config.health.port
 
 http
-  .createServer(async (req: IncomingMessage, res: ServerResponse) => {
+  .createServer((req: IncomingMessage, res: ServerResponse) => {
     if (req.url === "/health") {
-      try {
-        const stats = await getMailboxStats()
-
-        res.writeHead(200, { "Content-Type": "application/json" })
-        res.end(
-          JSON.stringify({
-            status: "healthy",
-            service: "imap-listener",
-            timestamp: berlinTimeString(new Date()),
-            mailbox: {
-              inboxUnseen: stats.inboxUnseen,
-              errorCount: stats.errorCount,
-            },
-          }),
-        )
-      } catch (error) {
-        res.writeHead(503, { "Content-Type": "application/json" })
-        res.end(
-          JSON.stringify({
-            status: "unhealthy",
-            service: "imap-listener",
-            timestamp: berlinTimeString(new Date()),
-            error: error instanceof Error ? error.message : String(error),
-          }),
-        )
-      }
+      res.writeHead(200, { "Content-Type": "application/json" })
+      res.end(
+        JSON.stringify({
+          status: "ok",
+          timestamp: new Date().toISOString(),
+        }),
+      )
     } else {
       res.writeHead(404, { "Content-Type": "application/json" })
       res.end(JSON.stringify({ error: "Not Found" }))

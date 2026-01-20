@@ -1,16 +1,16 @@
 "use client"
 
 import {
+  getUserSelectOptions,
+  UserSelectOptions,
+} from "@/src/app/_components/users/utils/getUserSelectOptions"
+import {
   Form,
   FormProps,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
 } from "@/src/core/components/forms"
-import {
-  getUserSelectOptions,
-  UserSelectOptions,
-} from "@/src/pagesComponents/users/utils/getUserSelectOptions"
 import { z } from "zod"
 
 type Props = FormProps<z.ZodType<any, any>> & { users: UserSelectOptions }

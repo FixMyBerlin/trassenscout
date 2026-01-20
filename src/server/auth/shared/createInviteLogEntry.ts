@@ -1,6 +1,6 @@
 import { Invite, User } from "@/db"
-import { roleTranslation } from "@/src/pagesComponents/memberships/roleTranslation.const"
-import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
+import { roleTranslation } from "@/src/app/_components/memberships/roleTranslation.const"
+import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { createLogEntry } from "../../logEntries/create/createLogEntry"
 
 type Props = {

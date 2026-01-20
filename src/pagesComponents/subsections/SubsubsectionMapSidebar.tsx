@@ -3,20 +3,26 @@ import { ProjectRecordsTable } from "@/src/app/(loggedInProjects)/[projectSlug]/
 import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
 import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneContainer"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
+import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
 import { blueButtonStyles, Link, whiteButtonStyles } from "@/src/core/components/links"
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { PageDescription } from "@/src/core/components/pages/PageDescription"
-import { formattedEuro, formattedLength, shortTitle } from "@/src/core/components/text"
+import {
+  formattedEuro,
+  formattedLength,
+  formattedWidth,
+  shortTitle,
+} from "@/src/core/components/text"
 import { H2 } from "@/src/core/components/text/Headings"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { subsubsectionUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import { IfUserCanEdit } from "@/src/pagesComponents/memberships/IfUserCan"
-import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
+import { subsubsectionLocationLabelMap } from "@/src/pagesComponents/utils/subsubsectionLocationLabelMap"
 import getProjectRecordsBySubsubsection from "@/src/server/projectRecords/queries/getProjectRecordsBySubsubsection"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
@@ -38,6 +44,9 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
   const [isProjectRecordModalOpen, setIsProjectRecordModalOpen] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdProjectRecordId, setCreatedProjectRecordId] = useState<null | number>(null)
+  const locationLabel = subsubsection.location
+    ? subsubsectionLocationLabelMap[subsubsection.location]
+    : null
 
   const [{ uploads }, { refetch: refetchUploads }] = useQuery(getUploadsWithSubsections, {
     projectSlug,
@@ -82,13 +91,14 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
       {/* UNUSED */}
       {/* <H2 className="mt-2">{subsubsection.subTitle}</H2> */}
 
-      <PageDescription className="mt-5 p-3!">
-        <Markdown markdown={subsubsection.description} className="leading-tight" />
-      </PageDescription>
-
+      {subsubsection.description && (
+        <PageDescription className="mt-5 p-3!">
+          <Markdown markdown={subsubsection.description} className="leading-tight" />
+        </PageDescription>
+      )}
       <div className="-mx-3 -my-2 mt-5 overflow-x-auto">
         <div className="inline-block min-w-full py-2 align-middle">
-          <table className="min-w-full divide-y divide-gray-300 border-b border-b-gray-300">
+          <table className="min-w-full divide-y divide-gray-300 border-y border-y-gray-300">
             <thead className="sr-only">
               <tr>
                 <th
@@ -106,25 +116,27 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
-              <tr>
-                <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
-                  Eintragstyp
-                </th>
-                <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
-                  {subsubsection.SubsubsectionTask?.title || "k.A."}
-                </td>
-              </tr>
-              {subsubsection.subsubsectionStatusId && (
+              {subsubsection.SubsubsectionTask?.title && (
                 <tr>
                   <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
-                    Phase
+                    Eintragstyp
                   </th>
                   <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
-                    {subsubsection.SubsubsectionStatus?.title || "k.A."}
+                    {subsubsection.SubsubsectionTask.title}
                   </td>
                 </tr>
               )}
-              {subsubsection.lengthM && (
+              {locationLabel && (
+                <tr>
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
+                    Lage
+                  </th>
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
+                    {locationLabel}
+                  </td>
+                </tr>
+              )}
+              {subsubsection.lengthM !== null && subsubsection.lengthM !== undefined && (
                 <tr>
                   <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
                     Länge
@@ -134,24 +146,33 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
                   </td>
                 </tr>
               )}
-              {/* UNUSED */}
-              {/* {!!subsubsection.width && (
+              {subsubsection.width !== null && subsubsection.width !== undefined && (
                 <tr>
-                  <th className="py-4 pl-3 pr-3 text-left text-sm font-medium text-gray-900">
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
                     Breite
                   </th>
-                  <td className="wrap-break-word px-3 py-4 text-sm text-gray-500">
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
                     {formattedWidth(subsubsection.width)}
                   </td>
                 </tr>
-              )} */}
-              {subsubsection.costEstimate !== null && subsubsection.costEstimate !== undefined && (
+              )}
+              {!!subsubsection.costEstimate && (
                 <tr>
                   <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
                     Kostenschätzung
                   </th>
                   <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
                     {formattedEuro(subsubsection.costEstimate)}
+                  </td>
+                </tr>
+              )}
+              {subsubsection.SubsubsectionInfrastructureType?.title && (
+                <tr>
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
+                    Fördergegenstand
+                  </th>
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
+                    {subsubsection.SubsubsectionInfrastructureType.title}
                   </td>
                 </tr>
               )}
@@ -175,13 +196,35 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
                   </td>
                 </tr>
               )}
-              {subsubsection.SubsubsectionInfrastructureType?.title && (
+              {subsubsection.SubsubsectionInfra?.title && (
                 <tr>
                   <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
-                    Fördergegenstand
+                    Führungsform
                   </th>
                   <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
-                    {subsubsection.SubsubsectionInfrastructureType.title}
+                    {shortTitle(subsubsection.SubsubsectionInfra.slug)} -{" "}
+                    {subsubsection.SubsubsectionInfra.title}
+                  </td>
+                </tr>
+              )}
+              {subsubsection.SubsubsectionStatus?.title && (
+                <tr>
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
+                    Phase
+                  </th>
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
+                    {shortTitle(subsubsection.SubsubsectionStatus.slug)} -{" "}
+                    {subsubsection.SubsubsectionStatus.title}
+                  </td>
+                </tr>
+              )}
+              {subsubsection.estimatedConstructionDateString && (
+                <tr>
+                  <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
+                    Angestrebtes Baujahr
+                  </th>
+                  <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
+                    {subsubsection.estimatedConstructionDateString}
                   </td>
                 </tr>
               )}
@@ -200,7 +243,7 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
         </div>
       </div>
 
-      <section className="mt-10">
+      <section className="mt-10 space-y-3">
         <H2>Protokolleinträge</H2>
         {showSuccess && (
           <FormSuccess message="Protokolleintrag erfolgreich erstellt" show={showSuccess} />
@@ -217,7 +260,7 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
         <IfUserCanEdit>
           <button
             onClick={() => setIsProjectRecordModalOpen(true)}
-            className={clsx(blueButtonStyles, "items-center justify-center gap-1")}
+            className={clsx(blueButtonStyles, "mt-5 items-center justify-center gap-1")}
           >
             <PlusIcon className="size-3.5" /> Neuer Protokolleintrag
           </button>
@@ -240,9 +283,9 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
         />
       </section>
 
-      <section className="mt-10">
-        <H2>Grafiken</H2>
-        {!uploads.length && <ZeroCase small visible name="Grafiken" />}
+      <section className="mt-10 space-y-3">
+        <H2>Dokumente</H2>
+        {!uploads.length && <ZeroCase small visible name="Dokumente" />}
         <div className="grid grid-cols-2 gap-3">
           {uploads.map((upload) => {
             return (
@@ -264,7 +307,7 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
             )
           })}
           <IfUserCanEdit>
-            <UploadDropzoneContainer className="h-28 rounded-md p-0">
+            <UploadDropzoneContainer className="h-36 rounded-md p-0">
               <UploadDropzone
                 fillContainer
                 subsubsectionId={subsubsection.id}

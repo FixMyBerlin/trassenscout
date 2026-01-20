@@ -1,3 +1,4 @@
+import { getUserSelectOptions } from "@/src/app/_components/users/utils/getUserSelectOptions"
 import { Spinner } from "@/src/core/components/Spinner"
 import {
   Form,
@@ -8,18 +9,17 @@ import {
 } from "@/src/core/components/forms"
 import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
 import { LabeledTextFieldCalculateLength } from "@/src/core/components/forms/LabeledTextFieldCalculateLength"
+import { createFormOptions } from "@/src/core/components/forms/_utils/createFormOptions"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { LabeledRadiobuttonGroupLabelPos } from "@/src/pagesComponents/subsubsections/LabeledRadiobuttonGroupLabelPos"
 import { LinkWithFormDirtyConfirm } from "@/src/pagesComponents/subsubsections/LinkWithFormDirtyConfirm"
-import { getUserSelectOptions } from "@/src/pagesComponents/users/utils/getUserSelectOptions"
-import { createFormOptions } from "@/src/pagesComponents/utils/createFormOptions"
 import getProjectUsers from "@/src/server/memberships/queries/getProjectUsers"
 import getNetworkHierarchysWithCount from "@/src/server/networkHierarchy/queries/getNetworkHierarchysWithCount"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
 import getSubsectionStatussWithCount from "@/src/server/subsectionStatus/queries/getSubsectionStatussWithCount"
-import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { PriorityEnum } from "@prisma/client"
+import { Route } from "next"
 import { Suspense } from "react"
 import { z } from "zod"
 import { getPriorityTranslation } from "./utils/getPriorityTranslation"
@@ -85,7 +85,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
           options={operatorOptions}
           outerProps={{ className: "grow" }}
         />
-        <LinkWithFormDirtyConfirm href={Routes.OperatorsPage({ projectSlug })} className="py-2">
+        <LinkWithFormDirtyConfirm href={`/${projectSlug}/operators` as Route} className="py-2">
           Baulastträger verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
@@ -98,7 +98,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
-          href={Routes.SubsectionStatussPage({ projectSlug })}
+          href={`/${projectSlug}/subsection-status` as Route}
           className="py-2"
         >
           Status verwalten…
@@ -127,7 +127,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
-          href={Routes.NetworkHierarchysPage({ projectSlug })}
+          href={`/${projectSlug}/network-hierarchy` as Route}
           className="py-2"
         >
           Netzstufen verwalten…

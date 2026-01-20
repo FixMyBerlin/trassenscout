@@ -1,7 +1,7 @@
 import { AdminSurveyResponsesNew } from "@/src/app/(admin)/admin/surveys/_components/SurveyResponsesNew"
 import { invoke } from "@/src/blitz-server"
 import getAdminProject from "@/src/server/projects/queries/getAdminProject"
-import getAdminSurvey from "@/src/surveys/queries/getAdminSurvey"
+import getAdminSurvey from "@/src/server/surveys/queries/getAdminSurvey"
 import { Metadata } from "next"
 import "server-only"
 import { Breadcrumb } from "../../../_components/Breadcrumb"

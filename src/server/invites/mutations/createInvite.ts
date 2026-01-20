@@ -1,6 +1,7 @@
 import db from "@/db"
 import { invitationCreatedMailToUser } from "@/emails/mailers/invitationCreatedMailToUser"
 import { invitationCreatedNotificationToEditors } from "@/emails/mailers/invitationCreatedNotificationToEditors"
+import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { editorRoles } from "@/src/authorization/constants"
 import {
@@ -8,11 +9,11 @@ import {
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
 import { shortTitle } from "@/src/core/components/text"
-import { getFullname } from "@/src/pagesComponents/users/utils/getFullname"
 import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug"
-import { Ctx, Routes } from "@blitzjs/next"
+import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { randomBytes } from "crypto"
+import { Route } from "next"
 import { createLogEntry } from "../../logEntries/create/createLogEntry"
 import { InviteSchema } from "../schema"
 
@@ -75,7 +76,7 @@ export default resolver.pipe(
           },
           projectName: shortTitle(membership.project.slug),
           inviterName: getFullname(invite.inviter)!,
-          path: Routes.ProjectTeamInvitesPage({ projectSlug }),
+          path: `/${projectSlug}/invites` as Route,
         })
       ).send()
     }

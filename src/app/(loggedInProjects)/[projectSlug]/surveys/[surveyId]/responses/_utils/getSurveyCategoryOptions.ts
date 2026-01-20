@@ -1,0 +1,19 @@
+import { getFlatSurveyFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_utils/getFlatSurveyFormFields"
+import { transformQuestionsOptions } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_utils/transformQuestionsOptions"
+import { SurveyFieldRadioOrCheckboxGroupConfig } from "@/src/app/beteiligung/_shared/types"
+import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
+import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
+import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
+
+export const getSurveyCategoryOptions = (slug: AllowedSurveySlugs) => {
+  const feedbackDefinition = getConfigBySurveySlug(slug, "part2")
+  const feedbackQuestions = getFlatSurveyFormFields(feedbackDefinition)
+  const categoryId = getQuestionIdBySurveySlug(slug, "category")
+
+  const categoryQuestion = feedbackQuestions.find(
+    (q) => String(q.name) === String(categoryId),
+  )! as SurveyFieldRadioOrCheckboxGroupConfig
+  const categoryQuestionOptions = categoryQuestion.props.options
+
+  return [...transformQuestionsOptions(categoryQuestionOptions)]
+}

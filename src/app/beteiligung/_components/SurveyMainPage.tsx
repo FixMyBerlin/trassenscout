@@ -16,9 +16,9 @@ import {
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
 import { scrollToTopWithDelay } from "@/src/app/beteiligung/_shared/utils/scrollToTopWithDelay"
 
-import createSurveyResponse from "@/src/survey-responses/mutations/createSurveyResponse"
-import surveyFeedbackEmail from "@/src/survey-responses/mutations/surveyFeedbackEmail"
-import createSurveySession from "@/src/survey-sessions/mutations/createSurveySession"
+import createSurveyResponse from "@/src/server/survey-responses/mutations/createSurveyResponse"
+import surveyFeedbackEmail from "@/src/server/survey-responses/mutations/surveyFeedbackEmail"
+import createSurveySession from "@/src/server/survey-sessions/mutations/createSurveySession"
 
 import { useMutation } from "@blitzjs/rpc"
 import { useParams, useSearchParams } from "next/navigation"

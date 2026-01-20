@@ -6,6 +6,7 @@
  */
 
 import { ImapFlow, type ListResponse } from "imapflow"
+import "./healthcheck.js"
 import { config } from "./helpers/config.js"
 import { createImapClient } from "./helpers/imap.js"
 import { log } from "./helpers/logger.js"

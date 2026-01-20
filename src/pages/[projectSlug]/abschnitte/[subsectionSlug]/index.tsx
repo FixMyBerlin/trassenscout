@@ -68,10 +68,7 @@ export const SubsectionDashboardWithQuery = () => {
           </IfUserCanEdit>
         }
         description={
-          <>
-            {subsection.description && <div className="mt-4">{subsection.description}</div>}
-            {/* <SubsectionTabs /> */}
-          </>
+          <>{subsection.description && <div className="mt-4">{subsection.description}</div>}</>
         }
       />
 

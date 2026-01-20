@@ -2,7 +2,7 @@
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { blueButtonStyles } from "@/src/core/components/links"
 
-import deleteTestSurveyResponses from "@/src/survey-responses/mutations/deleteTestSurveyResponses"
+import deleteTestSurveyResponses from "@/src/server/survey-responses/mutations/deleteTestSurveyResponses"
 import { useMutation } from "@blitzjs/rpc"
 import { clsx } from "clsx"
 import { useRouter } from "next/navigation"

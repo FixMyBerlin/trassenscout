@@ -92,9 +92,17 @@ services:
     environment:
       TZ: Europe/Berlin
       NODE_ENV: production
+    ports:
+      - "3100:3100"  # Health check endpoint
     depends_on:
       - app
       - db
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3100/health', (res) => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     logging:
       driver: journald
 
