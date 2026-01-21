@@ -15,7 +15,7 @@ type Props = {
   uploadId: number
   uploadTitle: string
   onDeleted: () => Promise<void> | void
-  variant?: "link" | "icon"
+  variant?: "link" | "icon" | "linkWithIcon"
   className?: string
 }
 
@@ -24,7 +24,7 @@ export const DeleteUploadButton = ({
   uploadId,
   uploadTitle,
   onDeleted,
-  variant = "link",
+  variant = "linkWithIcon",
   className,
 }: Props) => {
   const [deleteUploadMutation] = useMutation(deleteUpload)
@@ -88,6 +88,15 @@ export const DeleteUploadButton = ({
           linkStyles,
           className,
         )}
+      >
+        Dokument löschen
+      </button>
+    ),
+    linkWithIcon: (
+      <button
+        type="button"
+        onClick={handleDelete}
+        className={clsx("inline-flex cursor-pointer items-center justify-center gap-1", linkStyles, className)}
       >
         {linkIcons["delete"]}
         Löschen

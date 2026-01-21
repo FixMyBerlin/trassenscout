@@ -12,9 +12,11 @@ import { shortTitle } from "@/src/core/components/text/titles"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
+import { formatFileSize } from "@/src/core/utils/formatFileSize"
 import { truncateErrorText } from "@/src/server/luckycloud/_utils/errorTruncation"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
+import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import copyToLuckyCloud from "@/src/server/uploads/mutations/copyToLuckyCloud"
 import endCollaboration from "@/src/server/uploads/mutations/endCollaboration"
 import updateUpload from "@/src/server/uploads/mutations/updateUploadWithSubsections"
@@ -186,24 +188,36 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
 
   return (
     <>
-      <div className="mb-6 flex items-center justify-end">
-        <DeleteUploadButton
-          projectSlug={projectSlug}
-          uploadId={upload.id}
-          uploadTitle={upload.title}
-          variant="icon"
-          onDeleted={() => router.push(returnPath)}
-        />
-      </div>
-
-      <div className="flex flex-col gap-6 sm:flex-row sm:gap-10">
+      <div className="flex flex-col gap-6 sm:gap-10">
         <div className="flex justify-center sm:block">
-          <UploadPreview
-            uploadId={upload.id}
-            projectSlug={projectSlug}
-            size="grid"
-            showTitle={false}
-          />
+          <div className="flex flex-col gap-10 sm:flex-row">
+            <UploadPreview
+              uploadId={upload.id}
+              projectSlug={projectSlug}
+              size="grid"
+              showTitle={false}
+            />
+            <div className="flex flex-col gap-1">
+              <div>
+                <label htmlFor="filename" className="mb-1 block text-sm font-medium text-gray-700">
+                  Dateiname
+                </label>
+                <p className="text-sm text-gray-500">{getFilenameFromS3(upload.externalUrl)}</p>
+              </div>
+
+              {upload.fileSize && (
+                <div>
+                  <label
+                    htmlFor="filename"
+                    className="mb-1 block text-sm font-medium text-gray-700"
+                  >
+                    Größe
+                  </label>
+                  <p className="text-sm text-gray-500"> {formatFileSize(upload.fileSize)}</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
         <Form
           key={`${upload.collaborationUrl}-${upload.collaborationPath}`}
@@ -351,6 +365,16 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
       </p>
 
       <SuperAdminLogData data={{ upload, subsections, returnPath, returnText }} />
+      <hr className="my-5 text-gray-200" />
+      <div className="mb-6 flex items-center">
+        <DeleteUploadButton
+          projectSlug={projectSlug}
+          uploadId={upload.id}
+          uploadTitle={upload.title}
+          variant="link"
+          onDeleted={() => router.push(returnPath)}
+        />
+      </div>
     </>
   )
 }

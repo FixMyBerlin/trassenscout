@@ -40,5 +40,10 @@ export const UploadIcon = ({ upload, projectSlug, size }: Props) => {
     )
   }
 
-  return <FileIcon className={twJoin(sizeConfig.iconSize, "text-gray-500")} title={fileType} />
+  return (
+    <FileIcon
+      className={twJoin(sizeConfig.iconSize, "rounded-lg border border-gray-200 text-gray-500")}
+      title={fileType}
+    />
+  )
 }

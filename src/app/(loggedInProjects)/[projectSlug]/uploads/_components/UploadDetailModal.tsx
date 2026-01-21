@@ -16,6 +16,7 @@ import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
 import { formatFileSize } from "@/src/core/utils/formatFileSize"
+import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import { useQuery } from "@blitzjs/rpc"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
@@ -62,25 +63,36 @@ export const UploadDetailModal = ({
       </HeadingWithAction>
 
       {/* Preview */}
-      <div className="flex justify-center">
+      <div className="flex gap-4">
         <UploadPreview
           uploadId={upload.id}
           projectSlug={projectSlug}
           size="grid"
           showTitle={false}
         />
+        <div className="flex flex-col gap-1">
+              <div>
+                <h4 className="mb-1 text-sm font-medium text-gray-700">
+                  Dateiname
+                </h4>
+                <p className="text-sm text-gray-500">{getFilenameFromS3(upload.externalUrl)}</p>
+              </div>
+
+              {upload.fileSize && (
+                <div>
+                  <h4
+                    className="mb-1 block text-sm font-medium text-gray-700"
+                  >
+                    Größe
+                  </h4>
+                  <p className="text-sm text-gray-500"> {formatFileSize(upload.fileSize)}</p>
+                </div>
+              )}
+            </div>
       </div>
 
       {/* Details */}
       <div className="space-y-3 text-sm">
-        {upload.summary && (
-          <div>
-            <h4 className="mb-1 font-medium text-gray-900">Zusammenfassung</h4>
-            <div className="max-h-60 space-y-3 overflow-y-auto text-gray-700">
-              <Markdown className="prose-sm" markdown={upload.summary} />
-            </div>
-          </div>
-        )}
 
         <div className="border-t border-gray-200 pt-3">
           <p className="text-gray-600">
@@ -90,12 +102,6 @@ export const UploadDetailModal = ({
             ) : (
               " von Unbekannt"
             )} am {formatBerlinTime(upload.createdAt, "dd.MM.yyyy, HH:mm")}
-            {upload.fileSize && (
-              <>
-                {" · "}
-                {formatFileSize(upload.fileSize)}
-              </>
-            )}
           </p>
           {upload.updatedBy && (
             <p className="mt-1 text-gray-600">
@@ -108,9 +114,17 @@ export const UploadDetailModal = ({
             </p>
           )}
         </div>
-
+<div className="border-t border-gray-200 pt-3">
+        {upload.summary && (
+<>            <h4 className="mb-1 font-medium text-gray-700">Zusammenfassung</h4>
+            <div className="max-h-60 space-y-3 overflow-y-auto text-gray-500">
+              <Markdown className="prose-sm" markdown={upload.summary} />
+            </div>
+  </>
+        )}
+</div>
         <div className="border-t border-gray-200 pt-3">
-          <h4 className="mb-2 font-medium text-gray-900">Verknüpfungen:</h4>
+          <h4 className="mb-1 text-sm font-medium text-gray-700">Verknüpfungen:</h4>
           {hasRelations ? (
             <div className="space-y-2 text-sm">
               {hasSubsection && (
@@ -158,9 +172,14 @@ export const UploadDetailModal = ({
               )}
             </div>
           ) : (
-            <ZeroCase visible={0} name="Verknüpfungen" small />
+            <p className="text-gray-500 text-sm">Es wurden noch keine Verknüpfungen eingetragen.</p>
           )}
         </div>
+
+       {upload.latitude && upload.longitude && <div className="border-t border-gray-200 pt-3">
+          <h4 className="mb-1 text-sm font-medium text-gray-700">Standort:</h4>
+          <p className="text-gray-500 text-sm">{upload.latitude}, {upload.longitude}</p>
+          </div>}
 
         <div className="border-t border-gray-200 pt-3">
           {upload.collaborationUrl ? (
@@ -181,7 +200,6 @@ export const UploadDetailModal = ({
               className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800"
             >
               Datei öffnen
-              <ArrowTopRightOnSquareIcon className="size-4" />
             </Link>
           )}
         </div>
@@ -205,6 +223,7 @@ export const UploadDetailModal = ({
                   await onDeleted()
                   onClose()
                 }}
+                className="text-sm"
               />
             )}
           </ButtonWrapper>
