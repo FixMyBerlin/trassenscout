@@ -96,7 +96,11 @@ export const DeleteUploadButton = ({
       <button
         type="button"
         onClick={handleDelete}
-        className={clsx("inline-flex cursor-pointer items-center justify-center gap-1", linkStyles, className)}
+        className={clsx(
+          "inline-flex cursor-pointer items-center justify-center gap-1",
+          linkStyles,
+          className,
+        )}
       >
         {linkIcons["delete"]}
         Löschen

@@ -12,14 +12,12 @@ import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
 import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
-import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
 import { formatFileSize } from "@/src/core/utils/formatFileSize"
 import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import { useQuery } from "@blitzjs/rpc"
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 import { Route } from "next"
 
 type Props = {
@@ -71,29 +69,22 @@ export const UploadDetailModal = ({
           showTitle={false}
         />
         <div className="flex flex-col gap-1">
-              <div>
-                <h4 className="mb-1 text-sm font-medium text-gray-700">
-                  Dateiname
-                </h4>
-                <p className="text-sm text-gray-500">{getFilenameFromS3(upload.externalUrl)}</p>
-              </div>
+          <div>
+            <h4 className="mb-1 text-sm font-medium text-gray-700">Dateiname</h4>
+            <p className="text-sm text-gray-500">{getFilenameFromS3(upload.externalUrl)}</p>
+          </div>
 
-              {upload.fileSize && (
-                <div>
-                  <h4
-                    className="mb-1 block text-sm font-medium text-gray-700"
-                  >
-                    Größe
-                  </h4>
-                  <p className="text-sm text-gray-500"> {formatFileSize(upload.fileSize)}</p>
-                </div>
-              )}
+          {upload.fileSize && (
+            <div>
+              <h4 className="mb-1 block text-sm font-medium text-gray-700">Größe</h4>
+              <p className="text-sm text-gray-500"> {formatFileSize(upload.fileSize)}</p>
             </div>
+          )}
+        </div>
       </div>
 
       {/* Details */}
       <div className="space-y-3 text-sm">
-
         <div className="border-t border-gray-200 pt-3">
           <p className="text-gray-600">
             Erstellt
@@ -114,15 +105,17 @@ export const UploadDetailModal = ({
             </p>
           )}
         </div>
-<div className="border-t border-gray-200 pt-3">
-        {upload.summary && (
-<>            <h4 className="mb-1 font-medium text-gray-700">Zusammenfassung</h4>
-            <div className="max-h-60 space-y-3 overflow-y-auto text-gray-500">
-              <Markdown className="prose-sm" markdown={upload.summary} />
-            </div>
-  </>
-        )}
-</div>
+        <div className="border-t border-gray-200 pt-3">
+          {upload.summary && (
+            <>
+              {" "}
+              <h4 className="mb-1 font-medium text-gray-700">Zusammenfassung</h4>
+              <div className="max-h-60 space-y-3 overflow-y-auto text-gray-500">
+                <Markdown className="prose-sm" markdown={upload.summary} />
+              </div>
+            </>
+          )}
+        </div>
         <div className="border-t border-gray-200 pt-3">
           <h4 className="mb-1 text-sm font-medium text-gray-700">Verknüpfungen:</h4>
           {hasRelations ? (
@@ -172,14 +165,18 @@ export const UploadDetailModal = ({
               )}
             </div>
           ) : (
-            <p className="text-gray-500 text-sm">Es wurden noch keine Verknüpfungen eingetragen.</p>
+            <p className="text-sm text-gray-500">Es wurden noch keine Verknüpfungen eingetragen.</p>
           )}
         </div>
 
-       {upload.latitude && upload.longitude && <div className="border-t border-gray-200 pt-3">
-          <h4 className="mb-1 text-sm font-medium text-gray-700">Standort:</h4>
-          <p className="text-gray-500 text-sm">{upload.latitude}, {upload.longitude}</p>
-          </div>}
+        {upload.latitude && upload.longitude && (
+          <div className="border-t border-gray-200 pt-3">
+            <h4 className="mb-1 text-sm font-medium text-gray-700">Standort:</h4>
+            <p className="text-sm text-gray-500">
+              {upload.latitude}, {upload.longitude}
+            </p>
+          </div>
+        )}
 
         <div className="border-t border-gray-200 pt-3">
           {upload.collaborationUrl ? (
