@@ -105,17 +105,14 @@ export const UploadDetailModal = ({
             </p>
           )}
         </div>
-        <div className="border-t border-gray-200 pt-3">
-          {upload.summary && (
-            <>
-              {" "}
-              <h4 className="mb-1 font-medium text-gray-700">Zusammenfassung</h4>
-              <div className="max-h-60 space-y-3 overflow-y-auto text-gray-500">
-                <Markdown className="prose-sm" markdown={upload.summary} />
-              </div>
-            </>
-          )}
-        </div>
+        {upload.summary && (
+          <div className="border-t border-gray-200 pt-3">
+            <h4 className="mb-1 font-medium text-gray-700">Zusammenfassung</h4>
+            <div className="max-h-60 space-y-3 overflow-y-auto text-gray-500">
+              <Markdown className="prose-sm" markdown={upload.summary} />
+            </div>
+          </div>
+        )}
         <div className="border-t border-gray-200 pt-3">
           <h4 className="mb-1 text-sm font-medium text-gray-700">Verknüpfungen:</h4>
           {hasRelations ? (
