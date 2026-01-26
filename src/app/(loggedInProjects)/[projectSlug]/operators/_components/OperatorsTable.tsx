@@ -73,6 +73,9 @@ export const OperatorsTable = ({ operators, hasMore, page }: Props) => {
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                 Anzahl Planungsabschnitt
               </th>
+              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                Reihenfolge (Sortierung Liste und Karte)
+              </th>
               <th
                 scope="col"
                 className="px-3 py-4 text-right text-sm font-semibold text-gray-900 sm:pr-6"
@@ -93,6 +96,9 @@ export const OperatorsTable = ({ operators, hasMore, page }: Props) => {
                   </td>
                   <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
                     {operator.subsectionCount} Planungsabschnitte
+                  </td>
+                  <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
+                    {operator.order}
                   </td>
                   <td className="py-4 text-sm font-medium whitespace-nowrap sm:pr-6">
                     <IfUserCanEdit>

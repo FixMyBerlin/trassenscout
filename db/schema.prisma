@@ -228,6 +228,7 @@ model Operator {
   id              Int              @id @default(autoincrement())
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
+  order           Int              @default(autoincrement())
   //
   slug            String // shortTitle and URL Slug
   title           String

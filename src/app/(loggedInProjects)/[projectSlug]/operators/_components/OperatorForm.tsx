@@ -10,6 +10,12 @@ export function OperatorForm<S extends z.ZodType<any, any>>(props: FormProps<S>)
     <Form<S> {...formProps}>
       <LabeledTextField type="text" name="slug" label="Kürzel" />
       <LabeledTextField type="text" name="title" label="Titel" />
+      <LabeledTextField
+        type="number"
+        name="order"
+        label="Reihenfolge"
+        help="Die Reihenfolge wird lediglich für die Sortierung der Baulastträger in der Liste und auf der Karte verwendet."
+      />
     </Form>
   )
 }

@@ -47,7 +47,7 @@ export default resolver.pipe(
     )
 
     return {
-      operators: operatorsWithCount,
+      operators: operatorsWithCount.sort((a, b) => a.order - b.order),
       nextPage,
       hasMore,
       count,
