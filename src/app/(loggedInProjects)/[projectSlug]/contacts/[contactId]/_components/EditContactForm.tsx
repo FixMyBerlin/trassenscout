@@ -2,8 +2,10 @@
 
 import { ContactForm } from "@/src/app/(loggedInProjects)/[projectSlug]/contacts/_components/ContactForm"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import deleteContact from "@/src/server/contacts/mutations/deleteContact"
 import updateContact from "@/src/server/contacts/mutations/updateContact"
 import { useMutation } from "@blitzjs/rpc"
 import { Contact } from "@prisma/client"
@@ -18,6 +20,7 @@ type Props = {
 export const EditContactForm = ({ contact, projectSlug }: Props) => {
   const router = useRouter()
   const [updateContactMutation] = useMutation(updateContact)
+  const [deleteContactMutation] = useMutation(deleteContact)
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -37,6 +40,15 @@ export const EditContactForm = ({ contact, projectSlug }: Props) => {
   return (
     <>
       <ContactForm submitText="Speichern" initialValues={contact} onSubmit={handleSubmit} />
+
+      <DeleteAndBackLinkFooter
+        fieldName="Kontakt"
+        id={contact.id}
+        deleteAction={{ mutate: () => deleteContactMutation({ id: contact.id, projectSlug }) }}
+        backHref={`/${projectSlug}/contacts` as Route}
+        backText="Zurück zu den Kontakten"
+      />
+
       <SuperAdminLogData data={contact} />
     </>
   )

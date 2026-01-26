@@ -2,6 +2,7 @@ import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { invoke } from "@/src/blitz-server"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
+import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import getContact from "@/src/server/contacts/queries/getContact"
@@ -44,8 +45,12 @@ export default async function ShowContactPage({ params: { projectSlug, contactId
         </SuperAdminBox>
       </div>
 
-      <hr className="my-5 text-gray-200" />
-      <Link href={`/${projectSlug}/contacts` as Route}>Zurück zur Kontaktliste</Link>
+      <DeleteAndBackLinkFooter
+        fieldName="Kontakt"
+        id={contact.id}
+        backHref={`/${projectSlug}/contacts` as Route}
+        backText="Zurück zur Kontaktliste"
+      />
     </>
   )
 }

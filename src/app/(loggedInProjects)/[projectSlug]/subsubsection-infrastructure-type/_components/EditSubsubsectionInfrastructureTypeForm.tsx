@@ -1,8 +1,10 @@
 "use client"
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import deleteSubsubsectionInfrastructureType from "@/src/server/subsubsectionInfrastructureType/mutations/deleteSubsubsectionInfrastructureType"
 import updateSubsubsectionInfrastructureType from "@/src/server/subsubsectionInfrastructureType/mutations/updateSubsubsectionInfrastructureType"
 import getSubsubsectionInfrastructureType from "@/src/server/subsubsectionInfrastructureType/queries/getSubsubsectionInfrastructureType"
 import { SubsubsectionInfrastructureType } from "@/src/server/subsubsectionInfrastructureType/schema"
@@ -26,6 +28,11 @@ export const EditSubsubsectionInfrastructureTypeForm = ({
   const [updateSubsubsectionInfrastructureTypeMutation] = useMutation(
     updateSubsubsectionInfrastructureType,
   )
+  const [deleteSubsubsectionInfrastructureTypeMutation] = useMutation(
+    deleteSubsubsectionInfrastructureType,
+  )
+
+  const returnPath = `/${projectSlug}/subsubsection-infrastructure-type` as Route
 
   type HandleSubmit = Omit<z.infer<typeof SubsubsectionInfrastructureType>, "projectId">
   const handleSubmit = async (values: HandleSubmit) => {
@@ -51,6 +58,21 @@ export const EditSubsubsectionInfrastructureTypeForm = ({
         initialValues={subsubsectionInfrastructureType}
         onSubmit={handleSubmit}
       />
+
+      <DeleteAndBackLinkFooter
+        id={subsubsectionInfrastructureType.id}
+        deleteAction={{
+          mutate: () =>
+            deleteSubsubsectionInfrastructureTypeMutation({
+              id: subsubsectionInfrastructureType.id,
+              projectSlug,
+            }),
+        }}
+        fieldName="Fördergegenstand"
+        backHref={returnPath}
+        backText="Zurück zu den Fördergegenständen"
+      />
+
       <SuperAdminLogData data={{ subsubsectionInfrastructureType }} />
     </>
   )

@@ -1,5 +1,11 @@
 import { MagnifyingGlassPlusIcon } from "@heroicons/react/16/solid"
-import { ArrowDownTrayIcon, ListBulletIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid"
+import {
+  ArrowDownTrayIcon,
+  ArrowLeftIcon,
+  ListBulletIcon,
+  PlusIcon,
+  TrashIcon,
+} from "@heroicons/react/20/solid"
 import { ArrowTopRightOnSquareIcon, PencilIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { RouteUrlObject } from "blitz"
 import { clsx } from "clsx"
@@ -23,6 +29,7 @@ export type LinkProps = {
 } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href">
 
 export const linkIcons = {
+  back: <ArrowLeftIcon className="size-3.5" />,
   plus: <PlusIcon className="size-3.5" />,
   edit: <PencilIcon className="size-3.5" />,
   download: <ArrowDownTrayIcon className="size-3.5" />,

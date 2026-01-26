@@ -105,6 +105,7 @@ const EditSubsectionPage: BlitzPage = () => {
       <Suspense fallback={<Spinner page />}>
         <EditSubsection />
       </Suspense>
+      {/* replace with DeleteAndBackLinkFooter component when migrated to /app */}
       <p>
         <Link
           href={Routes.SubsectionDashboardPage({

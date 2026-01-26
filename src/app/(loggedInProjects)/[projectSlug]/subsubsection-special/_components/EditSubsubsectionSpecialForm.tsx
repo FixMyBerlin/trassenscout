@@ -1,8 +1,10 @@
 "use client"
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import deleteSubsubsectionSpecial from "@/src/server/subsubsectionSpecial/mutations/deleteSubsubsectionSpecial"
 import updateSubsubsectionSpecial from "@/src/server/subsubsectionSpecial/mutations/updateSubsubsectionSpecial"
 import getSubsubsectionSpecial from "@/src/server/subsubsectionSpecial/queries/getSubsubsectionSpecial"
 import { SubsubsectionSpecial } from "@/src/server/subsubsectionSpecial/schema"
@@ -20,6 +22,9 @@ type Props = {
 export const EditSubsubsectionSpecialForm = ({ subsubsectionSpecial, projectSlug }: Props) => {
   const router = useRouter()
   const [updateSubsubsectionSpecialMutation] = useMutation(updateSubsubsectionSpecial)
+  const [deleteSubsubsectionSpecialMutation] = useMutation(deleteSubsubsectionSpecial)
+
+  const returnPath = `/${projectSlug}/subsubsection-special` as Route
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -45,6 +50,18 @@ export const EditSubsubsectionSpecialForm = ({ subsubsectionSpecial, projectSlug
         initialValues={subsubsectionSpecial}
         onSubmit={handleSubmit}
       />
+
+      <DeleteAndBackLinkFooter
+        id={subsubsectionSpecial.id}
+        deleteAction={{
+          mutate: () =>
+            deleteSubsubsectionSpecialMutation({ id: subsubsectionSpecial.id, projectSlug }),
+        }}
+        fieldName="Besonderheit"
+        backHref={returnPath}
+        backText="Zurück zu den Besonderheiten"
+      />
+
       <SuperAdminLogData data={{ subsubsectionSpecial }} />
     </>
   )

@@ -141,7 +141,7 @@ const EditSubsubsectionPage = () => {
       <Suspense fallback={<Spinner page />}>
         <EditSubsubsection />
       </Suspense>
-
+      {/* replace with DeleteAndBackLinkFooter component when migrated to /app */}
       <hr className="my-5 text-gray-200" />
       <p>
         <Link

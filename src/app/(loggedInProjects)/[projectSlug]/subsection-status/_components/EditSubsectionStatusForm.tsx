@@ -1,9 +1,10 @@
 "use client"
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
-import { Link } from "@/src/core/components/links"
+import deleteSubsectionStatus from "@/src/server/subsectionStatus/mutations/deleteSubsectionStatus"
 import updateSubsectionStatus from "@/src/server/subsectionStatus/mutations/updateSubsectionStatus"
 import getSubsectionStatus from "@/src/server/subsectionStatus/queries/getSubsectionStatus"
 import { SubsectionStatus } from "@/src/server/subsectionStatus/schema"
@@ -21,6 +22,9 @@ type Props = {
 export const EditSubsectionStatusForm = ({ subsectionStatus, projectSlug }: Props) => {
   const router = useRouter()
   const [updateSubsectionStatusMutation] = useMutation(updateSubsectionStatus)
+  const [deleteSubsectionStatusMutation] = useMutation(deleteSubsectionStatus)
+
+  const returnPath = `/${projectSlug}/subsection-status` as Route
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -46,9 +50,17 @@ export const EditSubsectionStatusForm = ({ subsectionStatus, projectSlug }: Prop
         initialValues={subsectionStatus}
         onSubmit={handleSubmit}
       />
-      <p className="mt-5">
-        <Link href={`/${projectSlug}/subsection-status` as Route}>Zurück zur Übersicht</Link>
-      </p>
+
+      <DeleteAndBackLinkFooter
+        id={subsectionStatus.id}
+        deleteAction={{
+          mutate: () => deleteSubsectionStatusMutation({ id: subsectionStatus.id, projectSlug }),
+        }}
+        fieldName="Status"
+        backHref={returnPath}
+        backText="Zurück zu den Status-Einträgen"
+      />
+
       <SuperAdminLogData data={{ subsectionStatus }} />
     </>
   )

@@ -1,8 +1,10 @@
 "use client"
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import deleteNetworkHierarchy from "@/src/server/networkHierarchy/mutations/deleteNetworkHierarchy"
 import updateNetworkHierarchy from "@/src/server/networkHierarchy/mutations/updateNetworkHierarchy"
 import getNetworkHierarchy from "@/src/server/networkHierarchy/queries/getNetworkHierarchy"
 import { NetworkHierarchySchema } from "@/src/server/networkHierarchy/schema"
@@ -20,6 +22,9 @@ type Props = {
 export const EditNetworkHierarchyForm = ({ networkHierarchy, projectSlug }: Props) => {
   const router = useRouter()
   const [updateNetworkHierarchyMutation] = useMutation(updateNetworkHierarchy)
+  const [deleteNetworkHierarchyMutation] = useMutation(deleteNetworkHierarchy)
+
+  const returnPath = `/${projectSlug}/network-hierarchy` as Route
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -45,6 +50,17 @@ export const EditNetworkHierarchyForm = ({ networkHierarchy, projectSlug }: Prop
         initialValues={networkHierarchy}
         onSubmit={handleSubmit}
       />
+
+      <DeleteAndBackLinkFooter
+        id={networkHierarchy.id}
+        deleteAction={{
+          mutate: () => deleteNetworkHierarchyMutation({ id: networkHierarchy.id, projectSlug }),
+        }}
+        fieldName="Netzstufe"
+        backHref={returnPath}
+        backText="Zurück zu den Netzstufen"
+      />
+
       <SuperAdminLogData data={{ networkHierarchy }} />
     </>
   )

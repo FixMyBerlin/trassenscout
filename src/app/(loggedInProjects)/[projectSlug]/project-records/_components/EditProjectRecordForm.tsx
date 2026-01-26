@@ -8,8 +8,9 @@ import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-reco
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Form, FORM_ERROR } from "@/src/core/components/forms"
+import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
-import { Link, linkStyles } from "@/src/core/components/links"
+import { Link } from "@/src/core/components/links"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import deleteProjectRecord from "@/src/server/projectRecords/mutations/deleteProjectRecord"
@@ -18,7 +19,6 @@ import getProjectRecord from "@/src/server/projectRecords/queries/getProjectReco
 import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation } from "@blitzjs/rpc"
 import { ProjectRecordReviewState } from "@prisma/client"
-import clsx from "clsx"
 import { useRouter } from "next/navigation"
 import { z } from "zod"
 
@@ -33,22 +33,6 @@ export const EditProjectRecordForm = ({
   const [deleteProjectRecordMutation] = useMutation(deleteProjectRecord)
 
   const projectSlug = projectRecord.project.slug
-
-  const handleDelete = async () => {
-    if (window.confirm(`Den Eintrag mit ID ${projectRecord.id} unwiderruflich löschen?`)) {
-      try {
-        await deleteProjectRecordMutation({
-          id: projectRecord.id,
-          projectSlug,
-        })
-        router.push(`/${projectSlug}/project-records`)
-      } catch (error) {
-        alert(
-          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
-        )
-      }
-    }
-  }
 
   const handleSubmit = async (values: z.infer<typeof ProjectRecordFormSchema>) => {
     try {
@@ -123,23 +107,23 @@ export const EditProjectRecordForm = ({
 
       <CreateEditReviewHistory projectRecord={projectRecord} />
 
-      <p className="mt-10">
-        <Link
-          href={
-            projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
-              ? `/${projectSlug}/project-records/needreview`
-              : `/${projectSlug}/project-records`
-          }
-        >
-          ← Zurück zur Protokoll-Übersicht
-        </Link>
-      </p>
-
-      <hr className="my-5 text-gray-200" />
-
-      <button type="button" onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
-        Löschen
-      </button>
+      <DeleteAndBackLinkFooter
+        id={projectRecord.id}
+        deleteAction={{
+          mutate: () => deleteProjectRecordMutation({ id: projectRecord.id, projectSlug }),
+        }}
+        fieldName="Protokolleintrag"
+        backHref={
+          projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+            ? (`/${projectSlug}/project-records/needreview` as const)
+            : (`/${projectSlug}/project-records` as const)
+        }
+        backText={
+          projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+            ? "Zurück zu den Protokolleinträgen zur Bestätigung"
+            : "Zurück zu den Protokolleinträgen"
+        }
+      />
 
       <SuperAdminLogData data={{ initialValues: projectRecord }} />
     </>

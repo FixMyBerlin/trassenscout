@@ -5,6 +5,7 @@ import { UploadLocationMap } from "@/src/app/(loggedInProjects)/[projectSlug]/up
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { LabeledSelect, LabeledSelectProps, LabeledTextField } from "@/src/core/components/forms"
+import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
 import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
 import { Link } from "@/src/core/components/links"
 import { blueButtonStyles } from "@/src/core/components/links/styles"
@@ -360,21 +361,23 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
         </div>
       )}
 
-      <p className="mt-5">
-        <Link href={returnPath}>{returnText}</Link>
-      </p>
+      <DeleteAndBackLinkFooter
+        fieldName="Upload"
+        id={upload.id}
+        deleteButton={
+          <DeleteUploadButton
+            projectSlug={projectSlug}
+            uploadId={upload.id}
+            uploadTitle={upload.title}
+            variant="link"
+            onDeleted={() => router.push(returnPath)}
+          />
+        }
+        backHref={returnPath}
+        backText={returnText}
+      />
 
       <SuperAdminLogData data={{ upload, subsections, returnPath, returnText }} />
-      <hr className="my-5 text-gray-200" />
-      <div className="mb-6 flex items-center">
-        <DeleteUploadButton
-          projectSlug={projectSlug}
-          uploadId={upload.id}
-          uploadTitle={upload.title}
-          variant="link"
-          onDeleted={() => router.push(returnPath)}
-        />
-      </div>
     </>
   )
 }

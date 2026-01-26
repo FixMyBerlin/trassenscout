@@ -2,8 +2,10 @@
 
 import { OperatorForm } from "@/src/app/(loggedInProjects)/[projectSlug]/operators/_components/OperatorForm"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import deleteOperator from "@/src/server/operators/mutations/deleteOperator"
 import updateOperator from "@/src/server/operators/mutations/updateOperator"
 import getOperator from "@/src/server/operators/queries/getOperator"
 import { OperatorSchema } from "@/src/server/operators/schema"
@@ -20,6 +22,9 @@ type Props = {
 export const EditOperatorForm = ({ operator, projectSlug }: Props) => {
   const router = useRouter()
   const [updateOperatorMutation] = useMutation(updateOperator)
+  const [deleteOperatorMutation] = useMutation(deleteOperator)
+
+  const returnPath = `/${projectSlug}/operators` as Route
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -47,6 +52,15 @@ export const EditOperatorForm = ({ operator, projectSlug }: Props) => {
         initialValues={operator}
         onSubmit={handleSubmit}
       />
+
+      <DeleteAndBackLinkFooter
+        id={operator.id}
+        deleteAction={{ mutate: () => deleteOperatorMutation({ id: operator.id, projectSlug }) }}
+        fieldName="Baulastträger"
+        backHref={returnPath}
+        backText="Zurück zu den Baulastträgern"
+      />
+
       <SuperAdminLogData data={{ operator }} />
     </>
   )

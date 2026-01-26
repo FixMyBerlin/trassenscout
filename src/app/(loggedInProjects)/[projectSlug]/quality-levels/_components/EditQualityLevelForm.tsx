@@ -1,8 +1,10 @@
 "use client"
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import deleteQualityLevel from "@/src/server/qualityLevels/mutations/deleteQualityLevel"
 import updateQualityLevel from "@/src/server/qualityLevels/mutations/updateQualityLevel"
 import getQualityLevel from "@/src/server/qualityLevels/queries/getQualityLevel"
 import { QualityLevelSchema } from "@/src/server/qualityLevels/schema"
@@ -20,6 +22,9 @@ type Props = {
 export const EditQualityLevelForm = ({ qualityLevel, projectSlug }: Props) => {
   const router = useRouter()
   const [updateQualityLevelMutation] = useMutation(updateQualityLevel)
+  const [deleteQualityLevelMutation] = useMutation(deleteQualityLevel)
+
+  const returnPath = `/${projectSlug}/quality-levels` as Route
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -45,6 +50,17 @@ export const EditQualityLevelForm = ({ qualityLevel, projectSlug }: Props) => {
         initialValues={qualityLevel}
         onSubmit={handleSubmit}
       />
+
+      <DeleteAndBackLinkFooter
+        id={qualityLevel.id}
+        deleteAction={{
+          mutate: () => deleteQualityLevelMutation({ id: qualityLevel.id, projectSlug }),
+        }}
+        fieldName="Ausbaustandard"
+        backHref={returnPath}
+        backText="Zurück zu den Ausbaustandards"
+      />
+
       <SuperAdminLogData data={{ qualityLevel }} />
     </>
   )

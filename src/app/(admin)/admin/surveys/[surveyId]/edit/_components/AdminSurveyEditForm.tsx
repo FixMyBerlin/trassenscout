@@ -1,12 +1,11 @@
 "use client"
 import { FORM_ERROR } from "@/src/core/components/forms"
-import { linkStyles } from "@/src/core/components/links/styles"
+import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
 import deleteSurvey from "@/src/server/surveys/mutations/deleteSurvey"
 import updateSurvey from "@/src/server/surveys/mutations/updateSurvey"
 import getAdminSurvey from "@/src/server/surveys/queries/getAdminSurvey"
 import { CreateSurveySchema, CreateSurveyType } from "@/src/server/surveys/schemas"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { clsx } from "clsx"
 import { useParams, useRouter } from "next/navigation"
 import { AdminSurveyForm } from "../../../_components/AdminSurveyForm"
 
@@ -34,19 +33,6 @@ export const AdminSurveyEditForm = () => {
 
   const [deleteSurveyMutation] = useMutation(deleteSurvey)
 
-  const handleDelete = async () => {
-    if (window.confirm(`Den Eintrag mit ID ${survey.id} unwiderruflich löschen?`)) {
-      try {
-        await deleteSurveyMutation({ id: survey.id })
-      } catch (error) {
-        alert(
-          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
-        )
-      }
-      router.push(`/admin/surveys`)
-    }
-  }
-
   return (
     <>
       <AdminSurveyForm
@@ -55,10 +41,16 @@ export const AdminSurveyEditForm = () => {
         initialValues={survey}
         onSubmit={handleSubmit}
       />
-      <hr className="my-5 text-gray-200" />
-      <button type="button" onClick={handleDelete} className={clsx(linkStyles, "ml-2")}>
-        Löschen
-      </button>
+
+      <DeleteAndBackLinkFooter
+        fieldName="Beteiligung"
+        id={survey.id}
+        deleteAction={{
+          mutate: () => deleteSurveyMutation({ id: survey.id }),
+        }}
+        backHref="/admin/surveys"
+        backText="Zurück zu den Beteiligungen"
+      />
     </>
   )
 }

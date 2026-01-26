@@ -24,7 +24,7 @@ export default async function EditUploadPage({ params: { projectSlug, uploadId }
   })
 
   const returnPath: Route = `/${projectSlug}/uploads` as Route
-  const returnText = "Zurück zu Dokumenten"
+  const returnText = "Zurück zu den Dokumenten"
 
   return (
     <>

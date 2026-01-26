@@ -1,5 +1,6 @@
 import { ProjectRecordReviewState } from "@/db"
 import { ProjectRecordDetailClient } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordDetailClient"
+import { ProjectRecordFooterWithDeleteAction } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFooterWithDeleteAction"
 import { ProjectRecordNeedsReviewBanner } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordNeedsReviewBanner"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { invoke } from "@/src/blitz-server"
@@ -50,17 +51,20 @@ export default async function ProjectRecordDetail({
 
       <ProjectRecordDetailClient projectRecord={projectRecord} />
 
-      <div className="mt-8 border-t border-gray-200 pt-4">
-        <Link
-          href={
-            projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
-              ? `/${params.projectSlug}/project-records/needreview`
-              : `/${params.projectSlug}/project-records`
-          }
-        >
-          ← Zurück zur Protokoll-Übersicht
-        </Link>
-      </div>
+      <ProjectRecordFooterWithDeleteAction
+        projectSlug={params.projectSlug}
+        projectRecordId={projectRecord.id}
+        backHref={
+          projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+            ? (`/${params.projectSlug}/project-records/needreview` as const)
+            : (`/${params.projectSlug}/project-records` as const)
+        }
+        backText={
+          projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+            ? "Zurück zu den Protokolleinträgen zur Bestätigung"
+            : "Zurück zu den Protokolleinträgen"
+        }
+      />
     </>
   )
 }

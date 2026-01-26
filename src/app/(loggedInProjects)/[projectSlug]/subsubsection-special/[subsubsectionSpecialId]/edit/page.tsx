@@ -1,10 +1,9 @@
 import { EditSubsubsectionSpecialForm } from "@/src/app/(loggedInProjects)/[projectSlug]/subsubsection-special/_components/EditSubsubsectionSpecialForm"
 import { invoke } from "@/src/blitz-server"
-import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitle } from "@/src/core/components/text"
 import getSubsubsectionSpecial from "@/src/server/subsubsectionSpecial/queries/getSubsubsectionSpecial"
-import { Metadata, Route } from "next"
+import { Metadata } from "next"
 import "server-only"
 
 export const metadata: Metadata = {
@@ -33,8 +32,6 @@ export default async function EditSubsubsectionSpecialPage({
         subsubsectionSpecial={subsubsectionSpecial}
         projectSlug={projectSlug}
       />
-      <hr className="my-5 text-gray-200" />
-      <Link href={`/${projectSlug}/subsubsection-special` as Route}>Zurück zur Übersicht</Link>
     </>
   )
 }
