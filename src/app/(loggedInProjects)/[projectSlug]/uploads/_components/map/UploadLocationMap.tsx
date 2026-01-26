@@ -1,6 +1,6 @@
 "use client"
 
-import { blueButtonStyles, whiteButtonStyles } from "@/src/core/components/links/styles"
+import { blueButtonStyles, linkStyles } from "@/src/core/components/links/styles"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import { UploadMarkers } from "@/src/core/components/Map/UploadMarkers"
 import { subsectionsBbox } from "@/src/core/components/Map/utils/subsectionsBbox"
@@ -10,7 +10,7 @@ import getSubsections, {
 } from "@/src/server/subsections/queries/getSubsections"
 import { UploadSchema } from "@/src/server/uploads/schema"
 import { useQuery } from "@blitzjs/rpc"
-import { TrashIcon } from "@heroicons/react/24/outline"
+import { XMarkIcon } from "@heroicons/react/16/solid"
 import { lineString } from "@turf/helpers"
 import { bbox } from "@turf/turf"
 import { useMemo } from "react"
@@ -132,12 +132,12 @@ export const UploadLocationMap = () => {
         </p>
         {hasPosition && (
           <button
-            type="button"
+            className={twMerge(linkStyles, "flex cursor-pointer items-center gap-2")}
             onClick={handleDeleteLocation}
-            className={twMerge(whiteButtonStyles, "w-auto px-2 py-1.5", "cursor-pointer")}
             title="Standort löschen"
           >
-            <TrashIcon className="size-5" />
+            <XMarkIcon className="size-5" />
+            Standort zurücksetzen
           </button>
         )}
       </div>
