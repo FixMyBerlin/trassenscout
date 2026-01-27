@@ -8,5 +8,5 @@ type Input = Prettify<
 >
 
 export const startEnd = (object: Input) => {
-  return `${object.start} ▸ ${object.end}`
+  return `${object.start} - ${object.end}`
 }

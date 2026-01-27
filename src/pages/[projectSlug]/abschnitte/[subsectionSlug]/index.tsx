@@ -52,7 +52,7 @@ export const SubsectionDashboardWithQuery = () => {
       <Breadcrumb />
       <PageHeader
         titleIcon={<SubsectionMapIcon label={shortTitle(subsection.slug)} />}
-        title={startEnd(subsection)}
+        titleIconText={startEnd(subsection)}
         className="mt-12"
         action={
           <IfUserCanEdit>
