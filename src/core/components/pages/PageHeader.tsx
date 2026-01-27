@@ -8,7 +8,8 @@ import { H1, H2 } from "../text/Headings"
 
 type Props = {
   titleIcon?: React.ReactNode
-  title: string
+  titleIconText?: string
+  title?: string
   subtitle?: string | null
   description?: string | React.ReactNode
   action?: React.ReactNode
@@ -17,6 +18,7 @@ type Props = {
 
 export const PageHeader = ({
   titleIcon,
+  titleIconText,
   title,
   subtitle,
   description,
@@ -37,9 +39,12 @@ export const PageHeader = ({
       {(titleIcon || action) && (
         <div className="mt-5 flex items-start justify-between">
           {/* empty span should be rendered if no title icon to keep position of action */}
-          <span style={{ zoom: 1.8 }} className="mb-1 shrink-0">
-            {titleIcon}
-          </span>
+          <div className="flex items-center gap-3">
+            <span style={{ zoom: 1.8 }} className="mb-1 shrink-0">
+              {titleIcon}
+            </span>
+            {titleIconText && <H2 className="mb-1">{titleIconText}</H2>}
+          </div>
           <div className="flex items-center gap-2">
             {action} <CurrentUserCanIcon projectSlug={projectSlug!} />
           </div>
