@@ -18,6 +18,7 @@ export const MembershipNewForm = () => {
     try {
       await createMembershipMutation(values)
       router.push("/admin/memberships")
+      router.refresh()
     } catch (error: any) {
       console.error(error)
       return { [FORM_ERROR]: error }
