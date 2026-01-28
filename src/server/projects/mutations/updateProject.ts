@@ -5,6 +5,7 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { membershipUpdateSession } from "@/src/server/memberships/_utils/membershipUpdateSession"
 import { longTitle } from "@/src/core/components/text"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
@@ -32,6 +33,12 @@ export default resolver.pipe(
       previousRecord: previous,
       updatedRecord: project,
     })
+
+    // If the slug changed, the session public data can get stale (we store project.slug in session memberships).
+    // Refresh session so client-side checks like `useUserCan()` keep working after redirect.
+    if (previous?.slug && previous.slug !== project.slug) {
+      await membershipUpdateSession(ctx.session.userId!, ctx.session)
+    }
 
     return project
   },
