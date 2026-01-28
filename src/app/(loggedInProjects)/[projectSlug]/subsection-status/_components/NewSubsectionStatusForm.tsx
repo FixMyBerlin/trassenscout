@@ -5,6 +5,7 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import createSubsectionStatus from "@/src/server/subsectionStatus/mutations/createSubsectionStatus"
 import { SubsectionStatus } from "@/src/server/subsectionStatus/schema"
 import { useMutation } from "@blitzjs/rpc"
+import { StatusStyleEnum } from "@prisma/client"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
 import { SubsectionStatusForm } from "./SubsectionStatusForm"
@@ -34,6 +35,9 @@ export const NewSubsectionStatusForm = ({ projectSlug }: Props) => {
       submitText="Erstellen"
       schema={SubsectionStatus.omit({ projectId: true })}
       onSubmit={handleSubmit}
+      initialValues={{
+        style: StatusStyleEnum.REGULAR,
+      }}
     />
   )
 }
