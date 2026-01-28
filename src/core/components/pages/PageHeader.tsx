@@ -3,7 +3,6 @@
 import { CurrentUserCanIcon } from "@/src/app/_components/memberships/CurrentUserCanIcon"
 import { clsx } from "clsx"
 import { useTryProjectSlug } from "../../routes/useProjectSlug"
-import { DashedLine } from "../DashedLine"
 import { H1, H2 } from "../text/Headings"
 
 type Props = {
@@ -55,8 +54,6 @@ export const PageHeader = ({
 
         {Boolean(subtitle) && <H2 className="mt-3">{subtitle}</H2>}
         {Boolean(description) && styledDescription}
-
-        <DashedLine />
       </div>
     </section>
   )
