@@ -5,8 +5,8 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
-import { membershipUpdateSession } from "@/src/server/memberships/_utils/membershipUpdateSession"
 import { longTitle } from "@/src/core/components/text"
+import { membershipUpdateSession } from "@/src/server/memberships/_utils/membershipUpdateSession"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { createLogEntry } from "../../logEntries/create/createLogEntry"
