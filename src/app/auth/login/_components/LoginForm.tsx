@@ -35,6 +35,7 @@ export const LoginForm = () => {
       const next = paramNext ? decodeURIComponent(paramNext) : "/"
       // TS: I don't see a way to validate the nextParam, so we overwrite TS here
       router.push(next as Route<string>)
+      router.refresh()
     } catch (error: any) {
       if (error instanceof AuthenticationError) {
         return { [FORM_ERROR]: "Diese Anmeldedaten sind ungültig." }
