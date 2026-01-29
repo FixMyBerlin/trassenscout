@@ -11,6 +11,7 @@ export const Logout = () => {
   const handleLogout = async () => {
     await logoutMutation()
     router.push("/")
+    router.refresh()
   }
 
   useEffect(() => {

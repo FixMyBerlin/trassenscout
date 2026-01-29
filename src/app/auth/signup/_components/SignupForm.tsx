@@ -31,6 +31,7 @@ export const SignupForm = () => {
     try {
       await signupMutation(values)
       router.push("/")
+      router.refresh()
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["email"])
     }
