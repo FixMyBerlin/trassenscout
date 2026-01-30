@@ -16,7 +16,7 @@ export const SubmitButton = ({ children, className }: SubmitButtonProps) => {
     <button
       type="submit"
       disabled={formState.isSubmitting || formState.disabled}
-      className={clsx("mt-5", className || blueButtonStyles)}
+      className={clsx(className || blueButtonStyles)}
     >
       {children}
     </button>

@@ -7,6 +7,7 @@ import {
 } from "@/src/authorization/extractProjectSlug"
 import { createShareLink } from "@/src/server/luckycloud/api/createShareLink"
 import { uploadFileToLuckyCloud } from "@/src/server/luckycloud/api/uploadFile"
+import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug"
 import { getConfiguredS3Client } from "@/src/server/uploads/_utils/client"
 import { S3_BUCKET } from "@/src/server/uploads/_utils/config"
 import { generateUniqueFilename } from "@/src/server/uploads/_utils/keys"

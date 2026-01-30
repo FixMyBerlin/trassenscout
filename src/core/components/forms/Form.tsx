@@ -13,13 +13,17 @@ export interface FormProps<S extends z.ZodType<any, any>>
   /** All your form fields */
   children?: ReactNode
   /** Text to display in the submit button */
-  submitText?: string
+  submitText: string
   submitClassName?: string
   resetOnSubmit?: boolean
   schema?: S
   onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
   disabled?: boolean
+  /** Action bar content to display next to submit button (on the left) */
+  actionBarLeft?: ReactNode
+  /** Action bar content to display on the right side of the action bar */
+  actionBarRight?: ReactNode
 }
 
 interface OnSubmitResult {
@@ -39,6 +43,8 @@ export function Form<S extends z.ZodType<any, any>>({
   onSubmit,
   className,
   disabled,
+  actionBarLeft,
+  actionBarRight,
   ...props
 }: FormProps<S>) {
   const ctx = useForm<z.infer<S>>({
@@ -86,7 +92,18 @@ export function Form<S extends z.ZodType<any, any>>({
           {children}
 
           <FormError formError={formError} />
-          {submitText && <SubmitButton className={submitClassName}>{submitText}</SubmitButton>}
+
+          <div className="flex items-center justify-between gap-4 rounded-md bg-gray-100 p-4">
+            <div className="flex items-center gap-4">
+              <SubmitButton className={submitClassName}>{submitText}</SubmitButton>
+              {actionBarLeft}
+            </div>
+            {actionBarRight && (
+              <div className="flex items-center gap-4">
+                {actionBarRight}
+              </div>
+            )}
+          </div>
         </form>
       </FormProvider>
     </IntlProvider>
