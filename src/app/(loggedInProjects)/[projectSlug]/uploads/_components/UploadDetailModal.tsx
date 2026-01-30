@@ -1,12 +1,12 @@
 "use client"
 
 import { DeleteUploadButton } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/DeleteUploadButton"
+import { LuckyCloudDocumentLink } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/LuckyCloudDocumentLink"
 import { UploadPreview } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreview"
 import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
-import { SuperAdminBox } from "@/src/core/components/AdminBox/SuperAdminBox"
-import { Link } from "@/src/core/components/links"
+import { Link, blueButtonStylesForLinkElement } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
@@ -18,6 +18,7 @@ import { formatFileSize } from "@/src/core/utils/formatFileSize"
 import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import { useQuery } from "@blitzjs/rpc"
+import { clsx } from "clsx"
 import { Route } from "next"
 
 type Props = {
@@ -61,31 +62,40 @@ export const UploadDetailModal = ({
       </HeadingWithAction>
 
       {/* Preview */}
-      <div className="flex gap-4">
+      <div className="flex gap-6">
         <UploadPreview
           uploadId={upload.id}
           projectSlug={projectSlug}
           size="grid"
           showTitle={false}
         />
-        <div className="flex flex-col gap-1">
+        <div className="space-y-5">
           <div>
-            <h4 className="mb-1 text-sm font-medium text-gray-700">Dateiname</h4>
-            <p className="text-sm text-gray-500">{getFilenameFromS3(upload.externalUrl)}</p>
+            <h4 className="text-sm font-medium text-gray-700">
+              Dateiname {upload.fileSize && "(Größe)"}
+            </h4>
+            <p className="text-sm text-gray-500">
+              {getFilenameFromS3(upload.externalUrl)}
+              {upload.fileSize && ` (${formatFileSize(upload.fileSize)})`}
+            </p>
           </div>
-
-          {upload.fileSize && (
-            <div>
-              <h4 className="mb-1 block text-sm font-medium text-gray-700">Größe</h4>
-              <p className="text-sm text-gray-500"> {formatFileSize(upload.fileSize)}</p>
-            </div>
+          {upload.collaborationUrl ? (
+            <LuckyCloudDocumentLink collaborationUrl={upload.collaborationUrl} />
+          ) : (
+            <Link
+              blank
+              href={uploadUrl(upload, projectSlug)}
+              className={clsx(blueButtonStylesForLinkElement, "inline-flex items-center gap-2")}
+            >
+              Datei öffnen
+            </Link>
           )}
         </div>
       </div>
 
       {/* Details */}
       <div className="space-y-3 text-sm">
-        <div className="border-t border-gray-200 pt-3">
+        <div>
           <p className="text-gray-600">
             Erstellt
             {upload.createdBy ? (
@@ -105,16 +115,18 @@ export const UploadDetailModal = ({
             </p>
           )}
         </div>
+
         {upload.summary && (
           <div className="border-t border-gray-200 pt-3">
-            <h4 className="mb-1 font-medium text-gray-700">Zusammenfassung</h4>
+            <h4 className="font-medium text-gray-700">Zusammenfassung</h4>
             <div className="max-h-60 space-y-3 overflow-y-auto text-gray-500">
               <Markdown className="prose-sm" markdown={upload.summary} />
             </div>
           </div>
         )}
+
         <div className="border-t border-gray-200 pt-3">
-          <h4 className="mb-1 text-sm font-medium text-gray-700">Verknüpfungen:</h4>
+          <h4 className="text-sm font-medium text-gray-700">Verknüpfungen:</h4>
           {hasRelations ? (
             <div className="space-y-2 text-sm">
               {hasSubsection && (
@@ -168,35 +180,12 @@ export const UploadDetailModal = ({
 
         {upload.latitude && upload.longitude && (
           <div className="border-t border-gray-200 pt-3">
-            <h4 className="mb-1 text-sm font-medium text-gray-700">Standort:</h4>
+            <h4 className="text-sm font-medium text-gray-700">Standort:</h4>
             <p className="text-sm text-gray-500">
               {upload.latitude}, {upload.longitude}
             </p>
           </div>
         )}
-
-        <div className="border-t border-gray-200 pt-3">
-          {upload.collaborationUrl ? (
-            <div className="space-y-2">
-              <Link blank button="blue" icon="collaboration" href={upload.collaborationUrl}>
-                Dokument gemeinsam bearbeiten
-              </Link>
-              <SuperAdminBox>
-                <Link blank href={uploadUrl(upload, projectSlug)}>
-                  Original-Datei (S3)
-                </Link>
-              </SuperAdminBox>
-            </div>
-          ) : (
-            <Link
-              blank
-              href={uploadUrl(upload, projectSlug)}
-              className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800"
-            >
-              Datei öffnen
-            </Link>
-          )}
-        </div>
       </div>
 
       {/* Actions */}
