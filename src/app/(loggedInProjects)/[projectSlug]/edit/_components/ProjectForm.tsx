@@ -1,13 +1,9 @@
 "use client"
 
-import {
-  getUserSelectOptions,
-  UserSelectOptions,
-} from "@/src/app/_components/users/utils/getUserSelectOptions"
+import { UserSelectOptions } from "@/src/app/_components/users/utils/getUserSelectOptions"
 import {
   Form,
   FormProps,
-  LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
 } from "@/src/core/components/forms"
@@ -61,13 +57,6 @@ export const ProjectForm = ({ users, ...props }: Props) => {
         </Link>
         , von NextJS intern optimiert und hier referenziert.
       </p> */}
-      <LabeledSelect
-        name="managerId"
-        label="Projektleiter:in"
-        optional
-        options={getUserSelectOptions(users)}
-        help="Wir geben dieser Nutzer:in automatisch Zugriffsrechte auf dem Projekt"
-      />
     </Form>
   )
 }
