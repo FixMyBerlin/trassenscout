@@ -16,6 +16,7 @@ import { getS3KeyFromUrl } from "@/src/server/uploads/_utils/url"
 import { PutObjectCommand } from "@aws-sdk/client-s3"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
+import { NotFoundError } from "blitz"
 import { z } from "zod"
 
 const EndCollaborationSchema = ProjectSlugRequiredSchema.merge(
@@ -28,9 +29,13 @@ export default resolver.pipe(
   resolver.zod(EndCollaborationSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id, projectSlug }, ctx: Ctx) => {
-    // Get upload
-    const upload = await db.upload.findFirstOrThrow({
-      where: { id },
+    // Verify upload belongs to project
+    const projectId = await getProjectIdBySlug(projectSlug)
+    const upload = await db.upload.findFirst({
+      where: {
+        id,
+        projectId,
+      },
       select: {
         id: true,
         externalUrl: true,
@@ -39,6 +44,10 @@ export default resolver.pipe(
         mimeType: true,
       },
     })
+
+    if (!upload) {
+      throw new NotFoundError("Upload not found or does not belong to this project")
+    }
 
     if (!upload.collaborationUrl || !upload.collaborationPath) {
       throw new Error("Upload does not have a Kollaborations-URL")
