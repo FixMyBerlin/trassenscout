@@ -7,7 +7,7 @@ import { LabeledTextareaField } from "@/src/core/components/forms"
 import { blueButtonStyles, Link } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { SparklesIcon } from "@heroicons/react/16/solid"
-import { Dispatch, SetStateAction } from "react"
+import { Dispatch, SetStateAction, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { twJoin } from "tailwind-merge"
 
@@ -17,6 +17,7 @@ type Props = {
   isGeneratingSummary: boolean
   setIsGeneratingSummary: Dispatch<SetStateAction<boolean>>
   isAiEnabled: boolean
+  initialSummary?: string | null
 }
 
 export const SummaryField = ({
@@ -25,9 +26,17 @@ export const SummaryField = ({
   isGeneratingSummary,
   setIsGeneratingSummary,
   isAiEnabled,
+  initialSummary,
 }: Props) => {
-  const { setValue } = useFormContext()
+  const { setValue, watch } = useFormContext()
   const projectSlug = useProjectSlug()
+  const [isFocused, setIsFocused] = useState(false)
+  const summaryValue = watch("summary")
+
+  const hasContent = Boolean(summaryValue && summaryValue.trim())
+  const hasInitialContent = Boolean(initialSummary && initialSummary.trim())
+  const shouldExpand = isFocused || hasContent || hasInitialContent
+  const rows = shouldExpand ? 20 : 2
 
   const disclaimerText =
     "\n\n*Die Zusammenfassung wurde mit KI erstellt und dient der Orientierung und ersetzt nicht die Prüfung des Originaldokuments*"
@@ -60,10 +69,12 @@ export const SummaryField = ({
             : undefined
         }
         optional
-        rows={20}
+        rows={rows}
         name="summary"
         label="Zusammenfassung"
         disabled={isGeneratingSummary}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
       />
       {!isAiEnabled && isPdf(mimeType) && (
         <SuperAdminBox className="mt-4">

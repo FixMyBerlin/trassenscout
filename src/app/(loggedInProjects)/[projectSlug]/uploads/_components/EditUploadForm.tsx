@@ -190,36 +190,6 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
   return (
     <>
       <div className="flex flex-col gap-6 sm:gap-10">
-        <div className="flex justify-center sm:block">
-          <div className="flex flex-col gap-10 sm:flex-row">
-            <UploadPreview
-              uploadId={upload.id}
-              projectSlug={projectSlug}
-              size="grid"
-              showTitle={false}
-            />
-            <div className="flex flex-col gap-1">
-              <div>
-                <label htmlFor="filename" className="mb-1 block text-sm font-medium text-gray-700">
-                  Dateiname
-                </label>
-                <p className="text-sm text-gray-500">{getFilenameFromS3(upload.externalUrl)}</p>
-              </div>
-
-              {upload.fileSize && (
-                <div>
-                  <label
-                    htmlFor="filename"
-                    className="mb-1 block text-sm font-medium text-gray-700"
-                  >
-                    Größe
-                  </label>
-                  <p className="text-sm text-gray-500"> {formatFileSize(upload.fileSize)}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
         <Form
           key={`${upload.collaborationUrl}-${upload.collaborationPath}`}
           className="grow"
@@ -229,7 +199,67 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
           onSubmit={handleSubmit}
           disabled={isGeneratingSummary}
         >
-          <LabeledTextField type="text" name="title" label="Kurzbeschreibung" />
+          <div className="flex justify-center sm:block">
+            <div className="flex flex-col gap-10 sm:flex-row">
+              <UploadPreview
+                uploadId={upload.id}
+                projectSlug={projectSlug}
+                size="grid"
+                showTitle={false}
+              />
+              <div className="flex flex-1 flex-col gap-4">
+                <div>
+                  <label
+                    htmlFor="filename"
+                    className="mb-1 block text-sm font-medium text-gray-700"
+                  >
+                    Dateiname
+                  </label>
+                  <p className="text-sm text-gray-500">{getFilenameFromS3(upload.externalUrl)}</p>
+                </div>
+
+                {upload.fileSize && (
+                  <div>
+                    <label
+                      htmlFor="filename"
+                      className="mb-1 block text-sm font-medium text-gray-700"
+                    >
+                      Größe
+                    </label>
+                    <p className="text-sm text-gray-500"> {formatFileSize(upload.fileSize)}</p>
+                  </div>
+                )}
+
+                <div className="w-full">
+                  <LabeledTextField type="text" name="title" label="Kurzbeschreibung" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <UploadSubsectionFields subsections={subsections} subsubsections={subsubsections} />
+          {upload.id && (
+            <SummaryField
+              uploadId={upload.id}
+              mimeType={upload.mimeType}
+              isGeneratingSummary={isGeneratingSummary}
+              setIsGeneratingSummary={setIsGeneratingSummary}
+              isAiEnabled={upload.project.aiEnabled}
+              initialSummary={upload.summary}
+            />
+          )}
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Standort (optional)
+            </label>
+            <p className="mb-2 text-sm text-gray-500">
+              Dokumente und Bilder lassen sich unabhängig von Planungsabschnitten oder Einträgen auf
+              der Karte verorten. <br />
+              Sobald ein Standort gesetzt ist, erscheint das Dokument auf der Karte.
+            </p>
+            <UploadLocationMap />
+          </div>
+
           <SuperAdminBox>
             <div className="space-y-4">
               <LabeledTextField
@@ -302,27 +332,6 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
               </div>
             </div>
           </SuperAdminBox>
-          <UploadSubsectionFields subsections={subsections} subsubsections={subsubsections} />
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Standort (optional)
-            </label>
-            <p className="mb-2 text-sm text-gray-500">
-              Dokumente und Bilder lassen sich unabhängig von Planungsabschnitten oder Einträgen auf
-              der Karte verorten. <br />
-              Sobald ein Standort gesetzt ist, erscheint das Dokument auf der Karte.
-            </p>
-            <UploadLocationMap />
-          </div>
-          {upload.id && (
-            <SummaryField
-              uploadId={upload.id}
-              mimeType={upload.mimeType}
-              isGeneratingSummary={isGeneratingSummary}
-              setIsGeneratingSummary={setIsGeneratingSummary}
-              isAiEnabled={upload.project.aiEnabled}
-            />
-          )}
         </Form>
       </div>
 
