@@ -1,7 +1,5 @@
-import { blueButtonStylesForLinkElement } from "@/src/core/components/links"
-import { clsx } from "clsx"
+import { Link } from "@/src/core/components/links"
 import { UserGroupIcon } from "@heroicons/react/24/outline"
-import Link from "next/link"
 
 type Props = {
   collaborationUrl: string | null
@@ -13,11 +11,10 @@ export const LuckyCloudDocumentLink = ({ collaborationUrl }: Props) => {
   return (
     <Link
       href={collaborationUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={clsx(blueButtonStylesForLinkElement, "inline-flex items-center gap-2")}
+      blank
+      button
+      icon={<UserGroupIcon className="size-5 text-yellow-400" />}
     >
-      <UserGroupIcon className="size-5 text-yellow-400" />
       Dokument öffnen (Kollaboration)
     </Link>
   )

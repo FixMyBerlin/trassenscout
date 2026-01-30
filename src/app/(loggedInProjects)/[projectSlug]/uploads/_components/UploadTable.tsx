@@ -5,7 +5,7 @@ import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlu
 import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
-import { Link, blueButtonStylesForLinkElement } from "@/src/core/components/links"
+import { Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text/titles"
@@ -22,7 +22,6 @@ import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { MapPinIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { PromiseReturnType } from "blitz"
-import { twMerge } from "tailwind-merge"
 
 // NOTE:
 // This version of "IfUserCanEdit" currently only works in the Next.js app directory.
@@ -137,7 +136,7 @@ const UploadTableRow = ({
         {upload.createdBy && (
           <span
             className="inline-block max-w-[150px] truncate"
-            title={getFullname(upload.createdBy)}
+            title={getFullname(upload.createdBy) || undefined}
           >
             {getFullname(upload.createdBy)}
           </span>
@@ -183,13 +182,11 @@ const UploadTableRow = ({
           {upload.collaborationUrl && (
             <Link
               blank
+              button
               href={upload.collaborationUrl}
-              className={twMerge(
-                blueButtonStylesForLinkElement,
-                "inline-flex items-center gap-1 px-3 py-2 text-sm",
-              )}
+              icon={<UserGroupIcon className="size-4 text-yellow-400" />}
+              className="px-3 py-2 text-sm"
             >
-              <UserGroupIcon className="size-4 text-yellow-400" />
               Kollaboration
             </Link>
           )}

@@ -8,10 +8,10 @@ import {
 } from "@heroicons/react/20/solid"
 import { ArrowTopRightOnSquareIcon, PencilIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { RouteUrlObject } from "blitz"
-import { clsx } from "clsx"
 import { Route } from "next"
 import NextLink from "next/link"
 import { forwardRef } from "react"
+import { twMerge } from "tailwind-merge"
 import { UrlObject } from "url"
 import { selectLinkStyle } from "./styles"
 
@@ -24,7 +24,7 @@ export type LinkProps = {
   blank?: boolean
   /** @desc Style Link as Button */
   button?: true | "blue" | "white" | "pink"
-  icon?: keyof typeof linkIcons
+  icon?: keyof typeof linkIcons | React.ReactNode
   children: React.ReactNode
 } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href">
 
@@ -54,11 +54,19 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
   },
   ref,
 ) {
-  const classNames = clsx(
+  const classNames = twMerge(
     icon ? "inline-flex items-center justify-center gap-1" : "", // base styles for icon case
     icon && button ? "pl-5" : "", // overwrites to `buttonBase` for icon case
     classNameOverwrites ?? selectLinkStyle(button, className),
   )
+
+  // Determine if icon is a React component or a string key
+  const iconElement =
+    icon && typeof icon === "string" && icon in linkIcons
+      ? linkIcons[icon as keyof typeof linkIcons]
+      : icon
+        ? (icon as React.ReactNode)
+        : null
 
   // external link
   if (typeof href === "string" && !href.startsWith("/")) {
@@ -71,7 +79,7 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
         {...{ target: blank ? "_blank" : undefined }}
         {...props}
       >
-        {icon && linkIcons[icon]}
+        {iconElement}
         {children}
       </a>
     )
@@ -86,7 +94,7 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
       {...props}
       {...{ target: blank ? "_blank" : undefined }}
     >
-      {icon && linkIcons[icon]}
+      {iconElement}
       {children}
     </NextLink>
   )
