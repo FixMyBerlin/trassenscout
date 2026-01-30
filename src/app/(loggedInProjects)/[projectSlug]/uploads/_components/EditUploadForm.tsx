@@ -26,6 +26,7 @@ import { useState } from "react"
 import { z } from "zod"
 import { DeleteUploadActionBar } from "./DeleteUploadActionBar"
 import { LuckyCloudActionBar } from "./LuckyCloudActionBar"
+import { LuckyCloudDocumentLink } from "./LuckyCloudDocumentLink"
 import { LuckyCloudNotice } from "./LuckyCloudNotice"
 import { SuperAdminLuckyCloud } from "./SuperAdminLuckyCloud"
 import { UploadPreview } from "./UploadPreview"
@@ -159,23 +160,21 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
                 size="grid"
                 showTitle={false}
               />
-              <div className="flex flex-1 flex-col gap-4">
-                <div>
-                  <label
-                    htmlFor="filename"
-                    className="mb-1 block text-sm font-medium text-gray-700"
-                  >
-                    Dateiname {upload.fileSize && "(Größe)"}
-                  </label>
-                  <p className="text-sm text-gray-500">
-                    {getFilenameFromS3(upload.externalUrl)}
-                    {upload.fileSize && ` (${formatFileSize(upload.fileSize)})`}
-                  </p>
+              <div className="grow space-y-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label htmlFor="filename" className="block text-sm font-medium text-gray-700">
+                      Dateiname {upload.fileSize && "(Größe)"}
+                    </label>{" "}
+                    <p className="text-sm text-gray-500">
+                      {getFilenameFromS3(upload.externalUrl)}
+                      {upload.fileSize && ` (${formatFileSize(upload.fileSize)})`}
+                    </p>
+                  </div>
+                  <LuckyCloudDocumentLink collaborationUrl={upload.collaborationUrl} />
                 </div>
 
-                <div className="w-full">
-                  <LabeledTextField type="text" name="title" label="Kurzbeschreibung" />
-                </div>
+                <LabeledTextField type="text" name="title" label="Kurzbeschreibung" />
               </div>
             </div>
           </div>
