@@ -1,3 +1,4 @@
+import { ActionBar } from "@/src/core/components/forms/ActionBar"
 import { SubmitButton } from "@/src/core/components/forms/SubmitButton"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { clsx } from "clsx"
@@ -93,17 +94,15 @@ export function Form<S extends z.ZodType<any, any>>({
 
           <FormError formError={formError} />
 
-          <div className="flex items-center justify-between gap-4 rounded-md bg-gray-100 p-4">
-            <div className="flex items-center gap-4">
-              <SubmitButton className={submitClassName}>{submitText}</SubmitButton>
-              {actionBarLeft}
-            </div>
-            {actionBarRight && (
-              <div className="flex items-center gap-4">
-                {actionBarRight}
-              </div>
-            )}
-          </div>
+          <ActionBar
+            left={
+              <>
+                <SubmitButton className={submitClassName}>{submitText}</SubmitButton>
+                {actionBarLeft}
+              </>
+            }
+            right={actionBarRight}
+          />
         </form>
       </FormProvider>
     </IntlProvider>

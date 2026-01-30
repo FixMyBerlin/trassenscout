@@ -1,7 +1,8 @@
 "use client"
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import deleteSubsubsectionInfra from "@/src/server/subsubsectionInfra/mutations/deleteSubsubsectionInfra"
@@ -49,18 +50,18 @@ export const EditSubsubsectionInfraForm = ({ subsubsectionInfra, projectSlug }: 
         schema={SubsubsectionInfra}
         initialValues={subsubsectionInfra}
         onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={subsubsectionInfra.title}
+            onDelete={() =>
+              deleteSubsubsectionInfraMutation({ id: subsubsectionInfra.id, projectSlug })
+            }
+            returnPath={returnPath}
+          />
+        }
       />
 
-      <DeleteAndBackLinkFooter
-        id={subsubsectionInfra.id}
-        deleteAction={{
-          mutate: () =>
-            deleteSubsubsectionInfraMutation({ id: subsubsectionInfra.id, projectSlug }),
-        }}
-        fieldName="Führungsform"
-        backHref={returnPath}
-        backText="Zurück zu den Führungsformen"
-      />
+      <BackLink href={returnPath} text="Zurück zu den Führungsformen" />
 
       <SuperAdminLogData data={{ subsubsectionInfra }} />
     </>

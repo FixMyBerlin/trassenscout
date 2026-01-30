@@ -1,7 +1,8 @@
 "use client"
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import deleteSubsubsectionInfrastructureType from "@/src/server/subsubsectionInfrastructureType/mutations/deleteSubsubsectionInfrastructureType"
@@ -57,21 +58,21 @@ export const EditSubsubsectionInfrastructureTypeForm = ({
         schema={SubsubsectionInfrastructureType}
         initialValues={subsubsectionInfrastructureType}
         onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={subsubsectionInfrastructureType.title}
+            onDelete={() =>
+              deleteSubsubsectionInfrastructureTypeMutation({
+                id: subsubsectionInfrastructureType.id,
+                projectSlug,
+              })
+            }
+            returnPath={returnPath}
+          />
+        }
       />
 
-      <DeleteAndBackLinkFooter
-        id={subsubsectionInfrastructureType.id}
-        deleteAction={{
-          mutate: () =>
-            deleteSubsubsectionInfrastructureTypeMutation({
-              id: subsubsectionInfrastructureType.id,
-              projectSlug,
-            }),
-        }}
-        fieldName="Fördergegenstand"
-        backHref={returnPath}
-        backText="Zurück zu den Fördergegenständen"
-      />
+      <BackLink href={returnPath} text="Zurück zu den Fördergegenständen" />
 
       <SuperAdminLogData data={{ subsubsectionInfrastructureType }} />
     </>

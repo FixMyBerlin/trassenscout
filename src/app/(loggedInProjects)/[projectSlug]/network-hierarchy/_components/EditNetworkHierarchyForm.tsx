@@ -1,7 +1,8 @@
 "use client"
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import deleteNetworkHierarchy from "@/src/server/networkHierarchy/mutations/deleteNetworkHierarchy"
@@ -49,17 +50,18 @@ export const EditNetworkHierarchyForm = ({ networkHierarchy, projectSlug }: Prop
         schema={NetworkHierarchySchema}
         initialValues={networkHierarchy}
         onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={networkHierarchy.title}
+            onDelete={() =>
+              deleteNetworkHierarchyMutation({ id: networkHierarchy.id, projectSlug })
+            }
+            returnPath={returnPath}
+          />
+        }
       />
 
-      <DeleteAndBackLinkFooter
-        id={networkHierarchy.id}
-        deleteAction={{
-          mutate: () => deleteNetworkHierarchyMutation({ id: networkHierarchy.id, projectSlug }),
-        }}
-        fieldName="Netzstufe"
-        backHref={returnPath}
-        backText="Zurück zu den Netzstufen"
-      />
+      <BackLink href={returnPath} text="Zurück zu den Netzstufen" />
 
       <SuperAdminLogData data={{ networkHierarchy }} />
     </>

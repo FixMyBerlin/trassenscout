@@ -5,7 +5,6 @@ import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-reco
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { Form, FORM_ERROR } from "@/src/core/components/forms"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
-import { SubmitButton } from "@/src/core/components/forms/SubmitButton"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
 import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
@@ -69,11 +68,9 @@ export const ProjectRecordNewModal = ({
           onSubmit={handleSubmit}
           initialValues={formInitialValues}
           schema={NewProjectRecordFormSchema}
+          submitText="Protokolleintrag speichern"
         >
-          <div className="space-y-6">
-            <ProjectRecordFormFields projectSlug={projectSlug} />
-            <SubmitButton>Protokolleintrag speichern</SubmitButton>
-          </div>
+          <ProjectRecordFormFields projectSlug={projectSlug} />
         </Form>
       </Modal>
     </IfUserCanEdit>

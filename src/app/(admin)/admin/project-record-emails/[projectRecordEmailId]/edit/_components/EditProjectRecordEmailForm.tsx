@@ -1,6 +1,6 @@
 "use client"
 
-import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import deleteProjectRecordEmail from "@/src/server/ProjectRecordEmails/mutations/deleteProjectRecordEmail"
@@ -49,16 +49,13 @@ export const EditProjectRecordEmailForm = ({
         }}
         onSubmit={handleSubmit}
         projects={projects}
-      />
-
-      <DeleteAndBackLinkFooter
-        fieldName="E-Mail"
-        id={initialProjectRecordEmail.id}
-        deleteAction={{
-          mutate: () => deleteProjectRecordEmailMutation({ id: initialProjectRecordEmail.id }),
-        }}
-        backHref="/admin/project-record-emails"
-        backText="Zurück zu den Protokoll-E-Mails"
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={initialProjectRecordEmail.subject || "E-Mail"}
+            onDelete={() => deleteProjectRecordEmailMutation({ id: initialProjectRecordEmail.id })}
+            returnPath="/admin/project-record-emails"
+          />
+        }
       />
     </>
   )

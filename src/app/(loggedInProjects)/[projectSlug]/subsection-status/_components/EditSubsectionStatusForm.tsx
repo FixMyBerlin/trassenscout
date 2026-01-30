@@ -1,7 +1,8 @@
 "use client"
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import deleteSubsectionStatus from "@/src/server/subsectionStatus/mutations/deleteSubsectionStatus"
@@ -49,17 +50,18 @@ export const EditSubsectionStatusForm = ({ subsectionStatus, projectSlug }: Prop
         schema={SubsectionStatus}
         initialValues={subsectionStatus}
         onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={subsectionStatus.title}
+            onDelete={() =>
+              deleteSubsectionStatusMutation({ id: subsectionStatus.id, projectSlug })
+            }
+            returnPath={returnPath}
+          />
+        }
       />
 
-      <DeleteAndBackLinkFooter
-        id={subsectionStatus.id}
-        deleteAction={{
-          mutate: () => deleteSubsectionStatusMutation({ id: subsectionStatus.id, projectSlug }),
-        }}
-        fieldName="Status"
-        backHref={returnPath}
-        backText="Zurück zu den Status-Einträgen"
-      />
+      <BackLink href={returnPath} text="Zurück zu den Status-Einträgen" />
 
       <SuperAdminLogData data={{ subsectionStatus }} />
     </>

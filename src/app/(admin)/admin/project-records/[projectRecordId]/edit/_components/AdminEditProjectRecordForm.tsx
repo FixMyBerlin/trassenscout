@@ -6,7 +6,7 @@ import { ProjectRecordNeedsReviewBanner } from "@/src/app/(loggedInProjects)/[pr
 import { ReviewProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReviewProjectRecordForm"
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { Form, FORM_ERROR } from "@/src/core/components/forms"
-import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import deleteProjectRecord from "@/src/server/projectRecords/mutations/deleteProjectRecord"
@@ -82,6 +82,13 @@ export const AdminEditProjectRecordForm = ({
           ...m2mFieldsInitialValues,
         }}
         onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={projectRecord.title}
+            onDelete={() => deleteProjectRecordMutation({ id: projectRecord.id, projectSlug })}
+            returnPath="/admin/project-records"
+          />
+        }
       >
         <p>
           Projekt: <span className="font-medium uppercase">{projectSlug}</span>
@@ -97,16 +104,6 @@ export const AdminEditProjectRecordForm = ({
       </Form>
 
       <CreateEditReviewHistory projectRecord={projectRecord} />
-
-      <DeleteAndBackLinkFooter
-        fieldName="Protokolleintrag"
-        id={projectRecord.id}
-        deleteAction={{
-          mutate: () => deleteProjectRecordMutation({ id: projectRecord.id, projectSlug }),
-        }}
-        backHref="/admin/project-records"
-        backText="Zurück zu den Protokolleinträgen"
-      />
     </>
   )
 }

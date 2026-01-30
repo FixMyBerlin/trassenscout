@@ -8,7 +8,8 @@ import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-reco
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Form, FORM_ERROR } from "@/src/core/components/forms"
-import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
@@ -19,6 +20,7 @@ import getProjectRecord from "@/src/server/projectRecords/queries/getProjectReco
 import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation } from "@blitzjs/rpc"
 import { ProjectRecordReviewState } from "@prisma/client"
+import { Route } from "next"
 import { useRouter } from "next/navigation"
 import { z } from "zod"
 
@@ -68,6 +70,12 @@ export const EditProjectRecordForm = ({
     }
   })
 
+  const showPath = projectRecordDetailRoute(projectSlug, projectRecord.id)
+  const indexPath =
+    projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+      ? (`/${projectSlug}/project-records/needreview` as Route)
+      : (`/${projectSlug}/project-records` as Route)
+
   return (
     <>
       {needsReview && <ProjectRecordNeedsReviewBanner />}
@@ -94,36 +102,26 @@ export const EditProjectRecordForm = ({
           ...m2mFieldsInitialValues,
         }}
         onSubmit={handleSubmit}
-      >
-        <div className="space-y-6">
-          <ProjectRecordFormFields
-            projectSlug={projectSlug}
-            splitView={needsReview}
-            emailSource={projectRecord.projectRecordEmail}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={projectRecord.title}
+            onDelete={() => deleteProjectRecordMutation({ id: projectRecord.id, projectSlug })}
+            returnPath={indexPath}
           />
-        </div>
+        }
+      >
+        <ProjectRecordFormFields
+          projectSlug={projectSlug}
+          splitView={needsReview}
+          emailSource={projectRecord.projectRecordEmail}
+        />
+
         {needsReview && <ReviewProjectRecordForm />}
       </Form>
 
       <CreateEditReviewHistory projectRecord={projectRecord} />
 
-      <DeleteAndBackLinkFooter
-        id={projectRecord.id}
-        deleteAction={{
-          mutate: () => deleteProjectRecordMutation({ id: projectRecord.id, projectSlug }),
-        }}
-        fieldName="Protokolleintrag"
-        backHref={
-          projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
-            ? (`/${projectSlug}/project-records/needreview` as const)
-            : (`/${projectSlug}/project-records` as const)
-        }
-        backText={
-          projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
-            ? "Zurück zu den Protokolleinträgen zur Bestätigung"
-            : "Zurück zu den Protokolleinträgen"
-        }
-      />
+      <BackLink href={showPath} text="Zurück zum Protokolleintrag" />
 
       <SuperAdminLogData data={{ initialValues: projectRecord }} />
     </>

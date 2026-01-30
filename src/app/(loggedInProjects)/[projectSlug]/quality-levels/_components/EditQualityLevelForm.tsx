@@ -1,7 +1,8 @@
 "use client"
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import deleteQualityLevel from "@/src/server/qualityLevels/mutations/deleteQualityLevel"
@@ -49,17 +50,16 @@ export const EditQualityLevelForm = ({ qualityLevel, projectSlug }: Props) => {
         schema={QualityLevelSchema}
         initialValues={qualityLevel}
         onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={qualityLevel.title}
+            onDelete={() => deleteQualityLevelMutation({ id: qualityLevel.id, projectSlug })}
+            returnPath={returnPath}
+          />
+        }
       />
 
-      <DeleteAndBackLinkFooter
-        id={qualityLevel.id}
-        deleteAction={{
-          mutate: () => deleteQualityLevelMutation({ id: qualityLevel.id, projectSlug }),
-        }}
-        fieldName="Ausbaustandard"
-        backHref={returnPath}
-        backText="Zurück zu den Ausbaustandards"
-      />
+      <BackLink href={returnPath} text="Zurück zu den Ausbaustandards" />
 
       <SuperAdminLogData data={{ qualityLevel }} />
     </>

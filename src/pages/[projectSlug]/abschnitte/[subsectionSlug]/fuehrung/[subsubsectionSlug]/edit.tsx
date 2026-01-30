@@ -1,12 +1,17 @@
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Spinner } from "@/src/core/components/Spinner"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
-import { Link, linkStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { seoEditTitleSlug } from "@/src/core/components/text"
+import { seoEditTitleSlug, shortTitle } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import {
+  subsectionDashboardRoute,
+  subsubsectionDashboardRoute,
+} from "@/src/core/routes/subsectionRoutes"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { SubsubsectionForm } from "@/src/pagesComponents/subsubsections/SubsubsectionForm"
@@ -17,7 +22,6 @@ import getSubsubsection from "@/src/server/subsubsections/queries/getSubsubsecti
 import { SubsubsectionFormSchema } from "@/src/server/subsubsections/schema"
 import { Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { clsx } from "clsx"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 
@@ -66,23 +70,9 @@ const EditSubsubsection = () => {
   }
 
   const [deleteSubsectionMutation] = useMutation(deleteSubsubsection)
-  const handleDelete = async () => {
-    if (window.confirm(`Den Eintrag mit ID ${subsubsection.id} unwiderruflich löschen?`)) {
-      try {
-        await deleteSubsectionMutation({ projectSlug, id: subsubsection.id })
-      } catch (error) {
-        alert(
-          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
-        )
-      }
-      await router.push(
-        Routes.SubsectionDashboardPage({
-          projectSlug,
-          subsectionSlug: subsectionSlug!,
-        }),
-      )
-    }
-  }
+
+  const showPath = subsubsectionDashboardRoute(projectSlug, subsectionSlug!, subsubsection.slug)
+  const indexPath = subsectionDashboardRoute(projectSlug, subsectionSlug!)
 
   const m2mFieldsInitialValues: Record<M2MFieldsType | string, string[]> = {}
   m2mFields.forEach((fieldName) => {
@@ -118,13 +108,16 @@ const EditSubsubsection = () => {
             : "",
         }}
         onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={shortTitle(subsubsection.slug)}
+            onDelete={() => deleteSubsectionMutation({ projectSlug, id: subsubsection.id })}
+            returnPath={indexPath}
+          />
+        }
       />
 
-      <hr className="my-5 text-gray-200" />
-
-      <button type="button" onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
-        Löschen
-      </button>
+      <BackLink href={showPath} text="Zurück zum Eintrag" />
 
       <SuperAdminLogData data={subsubsection} />
     </>
@@ -132,28 +125,11 @@ const EditSubsubsection = () => {
 }
 
 const EditSubsubsectionPage = () => {
-  const subsectionSlug = useSlug("subsectionSlug")
-  const subsubsectionSlug = useSlug("subsubsectionSlug")
-  const projectSlug = useProjectSlug()
-
   return (
     <LayoutRs>
       <Suspense fallback={<Spinner page />}>
         <EditSubsubsection />
       </Suspense>
-      {/* replace with DeleteAndBackLinkFooter component when migrated to /app */}
-      <hr className="my-5 text-gray-200" />
-      <p>
-        <Link
-          href={Routes.SubsubsectionDashboardPage({
-            projectSlug,
-            subsectionSlug: subsectionSlug!,
-            subsubsectionSlug: subsubsectionSlug!,
-          })}
-        >
-          Zurück zum Eintrag
-        </Link>
-      </p>
     </LayoutRs>
   )
 }

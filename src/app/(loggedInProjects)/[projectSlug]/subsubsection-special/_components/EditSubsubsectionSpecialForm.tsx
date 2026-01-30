@@ -1,7 +1,8 @@
 "use client"
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import deleteSubsubsectionSpecial from "@/src/server/subsubsectionSpecial/mutations/deleteSubsubsectionSpecial"
@@ -49,18 +50,18 @@ export const EditSubsubsectionSpecialForm = ({ subsubsectionSpecial, projectSlug
         schema={SubsubsectionSpecial}
         initialValues={subsubsectionSpecial}
         onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={subsubsectionSpecial.title}
+            onDelete={() =>
+              deleteSubsubsectionSpecialMutation({ id: subsubsectionSpecial.id, projectSlug })
+            }
+            returnPath={returnPath}
+          />
+        }
       />
 
-      <DeleteAndBackLinkFooter
-        id={subsubsectionSpecial.id}
-        deleteAction={{
-          mutate: () =>
-            deleteSubsubsectionSpecialMutation({ id: subsubsectionSpecial.id, projectSlug }),
-        }}
-        fieldName="Besonderheit"
-        backHref={returnPath}
-        backText="Zurück zu den Besonderheiten"
-      />
+      <BackLink href={returnPath} text="Zurück zu den Besonderheiten" />
 
       <SuperAdminLogData data={{ subsubsectionSpecial }} />
     </>

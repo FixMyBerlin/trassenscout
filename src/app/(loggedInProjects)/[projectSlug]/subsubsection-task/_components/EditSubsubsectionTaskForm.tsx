@@ -1,7 +1,8 @@
 "use client"
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import deleteSubsubsectionTask from "@/src/server/subsubsectionTask/mutations/deleteSubsubsectionTask"
@@ -49,17 +50,18 @@ export const EditSubsubsectionTaskForm = ({ subsubsectionTask, projectSlug }: Pr
         schema={SubsubsectionTask}
         initialValues={subsubsectionTask}
         onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={subsubsectionTask.title}
+            onDelete={() =>
+              deleteSubsubsectionTaskMutation({ id: subsubsectionTask.id, projectSlug })
+            }
+            returnPath={returnPath}
+          />
+        }
       />
 
-      <DeleteAndBackLinkFooter
-        id={subsubsectionTask.id}
-        deleteAction={{
-          mutate: () => deleteSubsubsectionTaskMutation({ id: subsubsectionTask.id, projectSlug }),
-        }}
-        fieldName="Eintragstyp"
-        backHref={returnPath}
-        backText="Zurück zu den Eintragstypen"
-      />
+      <BackLink href={returnPath} text="Zurück zu den Eintragstypen" />
 
       <SuperAdminLogData data={{ subsubsectionTask }} />
     </>

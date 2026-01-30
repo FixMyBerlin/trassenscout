@@ -1,6 +1,6 @@
 "use client"
 import { FORM_ERROR } from "@/src/core/components/forms"
-import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import deleteSurvey from "@/src/server/surveys/mutations/deleteSurvey"
 import updateSurvey from "@/src/server/surveys/mutations/updateSurvey"
 import getAdminSurvey from "@/src/server/surveys/queries/getAdminSurvey"
@@ -40,16 +40,13 @@ export const AdminSurveyEditForm = () => {
         schema={CreateSurveySchema}
         initialValues={survey}
         onSubmit={handleSubmit}
-      />
-
-      <DeleteAndBackLinkFooter
-        fieldName="Beteiligung"
-        id={survey.id}
-        deleteAction={{
-          mutate: () => deleteSurveyMutation({ id: survey.id }),
-        }}
-        backHref="/admin/surveys"
-        backText="Zurück zu den Beteiligungen"
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={survey.title}
+            onDelete={() => deleteSurveyMutation({ id: survey.id })}
+            returnPath="/admin/surveys"
+          />
+        }
       />
     </>
   )

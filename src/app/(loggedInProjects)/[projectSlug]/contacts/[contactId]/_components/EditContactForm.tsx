@@ -1,8 +1,10 @@
 "use client"
 
 import { ContactForm } from "@/src/app/(loggedInProjects)/[projectSlug]/contacts/_components/ContactForm"
+import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import deleteContact from "@/src/server/contacts/mutations/deleteContact"
@@ -22,6 +24,9 @@ export const EditContactForm = ({ contact, projectSlug }: Props) => {
   const [updateContactMutation] = useMutation(updateContact)
   const [deleteContactMutation] = useMutation(deleteContact)
 
+  const showPath = `/${projectSlug}/contacts/${contact.id}` as Route
+  const indexPath = `/${projectSlug}/contacts` as Route
+
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
     try {
@@ -39,15 +44,20 @@ export const EditContactForm = ({ contact, projectSlug }: Props) => {
 
   return (
     <>
-      <ContactForm submitText="Speichern" initialValues={contact} onSubmit={handleSubmit} />
-
-      <DeleteAndBackLinkFooter
-        fieldName="Kontakt"
-        id={contact.id}
-        deleteAction={{ mutate: () => deleteContactMutation({ id: contact.id, projectSlug }) }}
-        backHref={`/${projectSlug}/contacts` as Route}
-        backText="Zurück zu den Kontakten"
+      <ContactForm
+        submitText="Speichern"
+        initialValues={contact}
+        onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={getFullname(contact) || "Kontakt"}
+            onDelete={() => deleteContactMutation({ id: contact.id, projectSlug })}
+            returnPath={indexPath}
+          />
+        }
       />
+
+      <BackLink href={showPath} text="Zurück zum Kontakt" />
 
       <SuperAdminLogData data={contact} />
     </>

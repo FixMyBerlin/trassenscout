@@ -2,7 +2,8 @@
 
 import { OperatorForm } from "@/src/app/(loggedInProjects)/[projectSlug]/operators/_components/OperatorForm"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { DeleteAndBackLinkFooter } from "@/src/core/components/forms/DeleteAndBackLinkFooter"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import deleteOperator from "@/src/server/operators/mutations/deleteOperator"
@@ -51,15 +52,16 @@ export const EditOperatorForm = ({ operator, projectSlug }: Props) => {
         schema={OperatorSchema}
         initialValues={operator}
         onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={operator.title}
+            onDelete={() => deleteOperatorMutation({ id: operator.id, projectSlug })}
+            returnPath={returnPath}
+          />
+        }
       />
 
-      <DeleteAndBackLinkFooter
-        id={operator.id}
-        deleteAction={{ mutate: () => deleteOperatorMutation({ id: operator.id, projectSlug }) }}
-        fieldName="Baulastträger"
-        backHref={returnPath}
-        backText="Zurück zu den Baulastträgern"
-      />
+      <BackLink href={returnPath} text="Zurück zu den Baulastträgern" />
 
       <SuperAdminLogData data={{ operator }} />
     </>

@@ -3,6 +3,7 @@
 import { SummaryField } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/SummaryField"
 import { UploadLocationMap } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/map/UploadLocationMap"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { BackLink } from "@/src/core/components/forms/BackLink"
 import { LabeledSelect, LabeledSelectProps, LabeledTextField } from "@/src/core/components/forms"
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
@@ -237,12 +238,12 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
               {" "}
               ({formatBerlinTime(upload.projectRecordEmail.createdAt, "dd.MM.yyyy")})
             </span>
-            DeleteAndBackLinkFooter
           </p>
         </div>
       )}
 
       <SuperAdminLuckyCloud upload={upload} projectSlug={projectSlug} />
+      <BackLink href={returnPath} text={returnText} />
       <SuperAdminLogData data={{ upload, subsections, returnPath, returnText }} />
     </>
   )
