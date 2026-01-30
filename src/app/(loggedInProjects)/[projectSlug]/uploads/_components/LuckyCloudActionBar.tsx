@@ -1,5 +1,6 @@
 "use client"
 
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { blueButtonStyles } from "@/src/core/components/links/styles"
 import { truncateErrorText } from "@/src/server/luckycloud/_utils/errorTruncation"
 import copyToLuckyCloud from "@/src/server/uploads/mutations/copyToLuckyCloud"
@@ -79,7 +80,7 @@ export const LuckyCloudActionBar = ({ upload, projectSlug }: Props) => {
   }
 
   return (
-    <>
+    <IfUserCanEdit>
       {!hasCollaborationUrl && (
         <button
           type="button"
@@ -108,6 +109,6 @@ export const LuckyCloudActionBar = ({ upload, projectSlug }: Props) => {
           {isEndingCollaboration ? "Wird beendet..." : "Kollaboration beenden"}
         </button>
       )}
-    </>
+    </IfUserCanEdit>
   )
 }
