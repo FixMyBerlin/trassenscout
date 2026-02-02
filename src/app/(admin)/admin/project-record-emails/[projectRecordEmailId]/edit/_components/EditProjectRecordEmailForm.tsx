@@ -1,14 +1,13 @@
 "use client"
 
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
-import { Link, linkStyles } from "@/src/core/components/links"
 import deleteProjectRecordEmail from "@/src/server/ProjectRecordEmails/mutations/deleteProjectRecordEmail"
 import updateProjectRecordEmail from "@/src/server/ProjectRecordEmails/mutations/updateProjectRecordEmail"
 import { ProjectRecordEmailFormSchema } from "@/src/server/ProjectRecordEmails/schema"
 import { TGetProjects } from "@/src/server/projects/queries/getProjects"
 import { useMutation } from "@blitzjs/rpc"
-import clsx from "clsx"
 import { useRouter } from "next/navigation"
 import { ProjectRecordEmailForm } from "../../../_components/ProjectRecordEmailForm"
 
@@ -24,23 +23,6 @@ export const EditProjectRecordEmailForm = ({
   const router = useRouter()
   const [updateProjectRecordEmailMutation] = useMutation(updateProjectRecordEmail)
   const [deleteProjectRecordEmailMutation] = useMutation(deleteProjectRecordEmail)
-
-  const handleDelete = async () => {
-    if (
-      window.confirm(
-        `Die E-Mail mit der ID ${initialProjectRecordEmail.id} unwiderruflich löschen?`,
-      )
-    ) {
-      try {
-        await deleteProjectRecordEmailMutation({ id: initialProjectRecordEmail.id })
-        router.push("/admin/project-record-emails")
-      } catch (error) {
-        alert(
-          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
-        )
-      }
-    }
-  }
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -67,17 +49,14 @@ export const EditProjectRecordEmailForm = ({
         }}
         onSubmit={handleSubmit}
         projects={projects}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={initialProjectRecordEmail.subject || "E-Mail"}
+            onDelete={() => deleteProjectRecordEmailMutation({ id: initialProjectRecordEmail.id })}
+            returnPath="/admin/project-record-emails"
+          />
+        }
       />
-
-      <div className="mt-8">
-        <Link href="/admin/project-record-emails">← Zurück zur E-Mail-Übersicht</Link>
-      </div>
-
-      <hr className="my-5 text-gray-200" />
-
-      <button type="button" onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
-        E-Mail löschen
-      </button>
     </>
   )
 }

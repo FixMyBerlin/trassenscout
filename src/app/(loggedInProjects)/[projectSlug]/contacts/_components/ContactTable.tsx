@@ -47,7 +47,12 @@ export const ContactTable = ({ contacts, currentUserEmail, projectSlug }: Props)
   }
 
   return (
-    <Form className="mt-7" onSubmit={handleSubmit} onChange={handleChange}>
+    <Form
+      className="mt-7"
+      onSubmit={handleSubmit}
+      onChange={handleChange}
+      submitText="Mail schreiben"
+    >
       <TableWrapper>
         <table className="min-w-full divide-y divide-gray-300">
           <thead className="bg-gray-50">

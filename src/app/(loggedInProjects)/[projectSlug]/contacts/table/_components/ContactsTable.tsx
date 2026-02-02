@@ -1,7 +1,7 @@
 "use client"
 import { ObjectDump } from "@/src/app/(admin)/admin/_components/ObjectDump"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
-import { Link, pinkButtonStyles } from "@/src/core/components/links"
+import { blueButtonStyles, Link } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { isProduction } from "@/src/core/utils/isEnv"
@@ -10,7 +10,13 @@ import updateContact from "@/src/server/contacts/mutations/updateContact"
 import getContacts, { TContacts } from "@/src/server/contacts/queries/getContacts"
 import { getQueryClient, getQueryKey, useMutation, useQuery } from "@blitzjs/rpc"
 import { useState } from "react"
-import { Column, DataSheetGrid, keyColumn, textColumn } from "react-datasheet-grid"
+import {
+  Column,
+  createAddRowsComponent,
+  DataSheetGrid,
+  keyColumn,
+  textColumn,
+} from "react-datasheet-grid"
 import "react-datasheet-grid/dist/style.css"
 
 type Row = {
@@ -60,6 +66,11 @@ export const ContactsTable = () => {
 
   const [createContactMutation, { isSuccess: isCreateSuccess }] = useMutation(createContact)
   const [updateContactMutation, { isSuccess: isUpdateSuccess }] = useMutation(updateContact)
+
+  const AddRows = createAddRowsComponent({
+    button: "hinzufügen", // Add
+    unit: "Zeile(n)", // rows
+  })
 
   const NEW_ID_VALUE = "NEU"
   const columns: Column<Row>[] = [
@@ -182,13 +193,15 @@ export const ContactsTable = () => {
           {!formDirty && (isCreateSuccess || isUpdateSuccess) && (
             <span className="text-green-500">Gespeichert</span>
           )}
-          <button onClick={handleUpdate} className={pinkButtonStyles} disabled={!formDirty}>
+          <button onClick={handleUpdate} className={blueButtonStyles} disabled={!formDirty}>
             Speichern
           </button>
         </ButtonWrapper>
       </div>
       <DataSheetGrid
         value={data}
+        // @ts-expect-error this works
+        addRowsComponent={AddRows}
         createRow={() => ({
           id: NEW_ID_VALUE,
           firstName: null,

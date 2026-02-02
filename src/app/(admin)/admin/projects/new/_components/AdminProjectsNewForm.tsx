@@ -31,7 +31,6 @@ export const AdminProjectsNewForm = () => {
       submitText="Erstellen"
       onSubmit={handleSubmit}
       schema={ProjectFormSchema}
-      initialValues={{ managerId: currentUser!.id }}
       users={users}
     />
   )

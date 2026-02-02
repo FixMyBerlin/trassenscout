@@ -3,8 +3,9 @@
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import createOperator from "@/src/server/operators/mutations/createOperator"
+import getOperatorMaxOrder from "@/src/server/operators/queries/getOperatorMaxOrder"
 import { OperatorSchema } from "@/src/server/operators/schema"
-import { useMutation } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
 import { OperatorForm } from "./OperatorForm"
@@ -16,6 +17,7 @@ type Props = {
 export const NewOperatorForm = ({ projectSlug }: Props) => {
   const router = useRouter()
   const [createOperatorMutation] = useMutation(createOperator)
+  const [maxOrderOperators] = useQuery(getOperatorMaxOrder, projectSlug)
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -34,6 +36,9 @@ export const NewOperatorForm = ({ projectSlug }: Props) => {
       submitText="Erstellen"
       schema={OperatorSchema.omit({ projectId: true })}
       onSubmit={handleSubmit}
+      initialValues={{
+        order: (maxOrderOperators || 0) + 1,
+      }}
     />
   )
 }

@@ -10,6 +10,7 @@ import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
+import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import {
   subsectionDashboardRoute,
@@ -19,7 +20,6 @@ import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
-import { formatFileSize } from "@/src/core/utils/formatFileSize"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { MapPinIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { PromiseReturnType } from "blitz"
@@ -58,9 +58,6 @@ export const UploadTable = ({ uploads, withAction = true, withRelations, onDelet
             </th>
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               <span className="sr-only">Standort</span>
-            </th>
-            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-              <span className="sr-only">Dateigröße</span>
             </th>
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               Hochgeladen
@@ -122,11 +119,6 @@ const UploadTableRow = ({
               onDeleted={onDelete}
             />
           </div>
-          {upload.collaborationUrl && (
-            <div className="shrink-0 rounded-full bg-yellow-500 p-1.5">
-              <UserGroupIcon className="size-4 text-white" />
-            </div>
-          )}
           <span
             className="max-w-xs min-w-0 truncate text-sm text-gray-900"
             title={upload.title || undefined}
@@ -135,15 +127,25 @@ const UploadTableRow = ({
           </span>
         </div>
       </td>
-      <td className="px-3 py-2 text-center text-sm">
-        {hasLocation && <MapPinIcon className="h-4 w-4 text-gray-400" title="Ist Geolokalisiert" />}
+      <td className="px-1.5 py-2 text-center text-sm">
+        {hasLocation && (
+          <Tooltip content="Ist Geolokalisiert">
+            <MapPinIcon className="h-4 w-4 text-gray-400" />
+          </Tooltip>
+        )}
       </td>
-      <td className="px-3 py-2 text-sm text-gray-500">{formatFileSize(upload.fileSize)}</td>
       <td className="px-3 py-2 text-sm text-gray-500">
         <div className="whitespace-nowrap">
           {formatBerlinTime(upload.createdAt, "dd.MM.yyyy, HH:mm")}
         </div>
-        {upload.createdBy && <>von {getFullname(upload.createdBy)}</>}
+        {upload.createdBy && (
+          <span
+            className="inline-block max-w-[150px] truncate"
+            title={getFullname(upload.createdBy) || undefined}
+          >
+            {getFullname(upload.createdBy)}
+          </span>
+        )}
       </td>
       {withRelations && (
         <td className="px-3 py-2 text-sm text-gray-500">
@@ -182,9 +184,22 @@ const UploadTableRow = ({
       )}
       <td className="py-2 text-sm font-medium whitespace-nowrap sm:pr-6">
         <ButtonWrapper className="justify-end">
-          <Link blank icon="download" href={uploadUrl(upload, projectSlug)}>
-            Download
-          </Link>
+          {upload.collaborationUrl && (
+            <Link
+              blank
+              button
+              href={upload.collaborationUrl}
+              icon={<UserGroupIcon className="size-4 text-yellow-400" />}
+              className="px-3 py-2 text-sm"
+            >
+              Kollaboration
+            </Link>
+          )}
+          {!upload.collaborationUrl && (
+            <Link blank icon="download" href={uploadUrl(upload, projectSlug)}>
+              Download
+            </Link>
+          )}
           {withAction && (
             <IfUserCanEdit>
               <Link icon="edit" href={uploadEditRoute(projectSlug, upload.id)}>

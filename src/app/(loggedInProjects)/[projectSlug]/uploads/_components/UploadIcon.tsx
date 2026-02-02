@@ -10,6 +10,7 @@ import {
   UploadSize,
 } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadSizes"
 import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
+import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
 import { Upload } from "@prisma/client"
 import Image from "next/image"
 import { useState } from "react"
@@ -40,5 +41,11 @@ export const UploadIcon = ({ upload, projectSlug, size }: Props) => {
     )
   }
 
-  return <FileIcon className={twJoin(sizeConfig.iconSize, "text-gray-500")} title={fileType} />
+  return (
+    <Tooltip content={fileType}>
+      <FileIcon
+        className={twJoin(sizeConfig.iconSize, "rounded-lg border border-gray-200 text-gray-500")}
+      />
+    </Tooltip>
+  )
 }

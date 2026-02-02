@@ -34,7 +34,7 @@ const SUPPORTED_MIME_TYPES = Object.keys(MIME_TO_EXTENSIONS_MAP) as SupportedMim
 /**
  * Check if a MIME type is supported/allowed for uploads
  */
-export const isSupportedMimeType = (mimeType: string | null | undefined): boolean => {
+export const isSupportedMimeType = (mimeType: string | null | undefined) => {
   if (!mimeType) return false
   if (isImage(mimeType)) return true
   return mimeType in MIME_TO_EXTENSIONS_MAP
@@ -90,6 +90,53 @@ export const isImage = (mimeType: string | null | undefined) => {
 
 export const isPdf = (mimeType: string | null | undefined) => {
   return mimeType === "application/pdf"
+}
+
+/**
+ * MIME types that support Lucky Cloud collaboration
+ * Text documents and spreadsheets, but not presentations
+ */
+const TEXT_DOCUMENT_MIME_TYPES = [
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.oasis.opendocument.text",
+] as const
+const COLLABORATION_SUPPORTED_MIME_TYPES = [
+  // Text documents
+  ...TEXT_DOCUMENT_MIME_TYPES,
+  // Spreadsheets
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.oasis.opendocument.spreadsheet",
+] as const
+
+export const isTextDocument = (mimeType: string | null | undefined) => {
+  if (!mimeType) return false
+  return new Set<string>(TEXT_DOCUMENT_MIME_TYPES).has(mimeType)
+}
+
+export const canCollaborateInLuckyCloud = (mimeType: string | null | undefined) => {
+  if (!mimeType) return false
+  return new Set<string>(COLLABORATION_SUPPORTED_MIME_TYPES).has(mimeType)
+}
+
+/**
+ * Get the list of file extensions that support Lucky Cloud collaboration
+ * Returns extensions like [".doc", ".docx", ".odt", ".xls", ".xlsx", ".ods"]
+ */
+export const getCollaborationSupportedExtensions = () => {
+  const extensions = new Set<string>()
+  for (const mimeType of COLLABORATION_SUPPORTED_MIME_TYPES) {
+    if (mimeType in MIME_TO_EXTENSIONS_MAP) {
+      const mimeExtensions = MIME_TO_EXTENSIONS_MAP[mimeType as SupportedMimeType]
+      mimeExtensions.forEach((ext) => {
+        if (ext.startsWith(".")) {
+          extensions.add(ext)
+        }
+      })
+    }
+  }
+  return Array.from(extensions).sort()
 }
 
 /**

@@ -1,8 +1,11 @@
 "use client"
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import deleteSubsubsectionInfra from "@/src/server/subsubsectionInfra/mutations/deleteSubsubsectionInfra"
 import updateSubsubsectionInfra from "@/src/server/subsubsectionInfra/mutations/updateSubsubsectionInfra"
 import getSubsubsectionInfra from "@/src/server/subsubsectionInfra/queries/getSubsubsectionInfra"
 import { SubsubsectionInfra } from "@/src/server/subsubsectionInfra/schema"
@@ -20,6 +23,9 @@ type Props = {
 export const EditSubsubsectionInfraForm = ({ subsubsectionInfra, projectSlug }: Props) => {
   const router = useRouter()
   const [updateSubsubsectionInfraMutation] = useMutation(updateSubsubsectionInfra)
+  const [deleteSubsubsectionInfraMutation] = useMutation(deleteSubsubsectionInfra)
+
+  const returnPath = `/${projectSlug}/subsubsection-infra` as Route
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -44,7 +50,19 @@ export const EditSubsubsectionInfraForm = ({ subsubsectionInfra, projectSlug }: 
         schema={SubsubsectionInfra}
         initialValues={subsubsectionInfra}
         onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={subsubsectionInfra.title}
+            onDelete={() =>
+              deleteSubsubsectionInfraMutation({ id: subsubsectionInfra.id, projectSlug })
+            }
+            returnPath={returnPath}
+          />
+        }
       />
+
+      <BackLink href={returnPath} text="Zurück zu den Führungsformen" />
+
       <SuperAdminLogData data={{ subsubsectionInfra }} />
     </>
   )

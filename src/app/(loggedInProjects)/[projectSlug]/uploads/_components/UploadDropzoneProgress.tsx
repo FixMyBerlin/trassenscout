@@ -1,6 +1,7 @@
 import { getFileIcon } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileIcon"
 import { getFileTypeLabel } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { SpinnerIcon } from "@/src/core/components/Spinner"
+import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
 import { errorMessageTranslations } from "@/src/core/components/forms/errorMessageTranslations"
 import type { FileUploadInfo, UploadHookControl, UploadStatus } from "@better-upload/client"
 import { formatBytes } from "@better-upload/client/helpers"
@@ -314,7 +315,9 @@ function FileUploadItem({ progress, translations, onDismiss }: FileUploadItemPro
       )}
     >
       <span className="size-14 shrink-0 overflow-hidden rounded-md">
-        <FileIcon className="size-14 text-gray-500" title={fileTypeLabel || undefined} />
+        <Tooltip content={fileTypeLabel}>
+          <FileIcon className="size-14 text-gray-500" />
+        </Tooltip>
       </span>
 
       <div className="grid grow gap-1">

@@ -1,10 +1,12 @@
 import { Spinner } from "@/src/core/components/Spinner"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
-import { Link, linkStyles } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoEditTitleSlug, shortTitle } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
+import { subsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
 import { SubsectionForm } from "@/src/pagesComponents/subsections/SubsectionForm"
@@ -15,7 +17,7 @@ import getSubsection from "@/src/server/subsections/queries/getSubsection"
 import { SubsectionSchema } from "@/src/server/subsections/schema"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { clsx } from "clsx"
+import { Route } from "next"
 import { useRouter } from "next/router"
 import { Suspense } from "react"
 
@@ -51,24 +53,9 @@ const EditSubsection = () => {
   }
 
   const [deleteSubsectionMutation] = useMutation(deleteSubsection)
-  const handleDelete = async () => {
-    if (window.confirm(`Den Eintrag mit ID ${subsection.id} unwiderruflich löschen?`)) {
-      try {
-        try {
-          await deleteSubsectionMutation({ projectSlug, id: subsection.id })
-        } catch (error) {
-          alert(
-            "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
-          )
-        }
-      } catch (error) {
-        alert(
-          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
-        )
-      }
-      await router.push(Routes.ProjectDashboardPage({ projectSlug }))
-    }
-  }
+
+  const showPath = subsectionDashboardRoute(projectSlug, subsection.slug)
+  const indexPath = `/${projectSlug}` as Route
 
   return (
     <>
@@ -83,38 +70,26 @@ const EditSubsection = () => {
           ...subsection,
         }}
         onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={shortTitle(subsection.slug)}
+            onDelete={() => deleteSubsectionMutation({ projectSlug, id: subsection.id })}
+            returnPath={indexPath}
+          />
+        }
       />
 
-      <hr className="my-5 text-gray-200" />
-
-      <button type="button" onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
-        Löschen
-      </button>
-
-      <hr className="my-5 text-gray-200" />
+      <BackLink href={showPath} text="Zurück zum Planungsabschnitt" />
     </>
   )
 }
 
 const EditSubsectionPage: BlitzPage = () => {
-  const subsectionSlug = useSlug("subsectionSlug")
-  const projectSlug = useProjectSlug()
-
   return (
     <LayoutRs>
       <Suspense fallback={<Spinner page />}>
         <EditSubsection />
       </Suspense>
-      <p>
-        <Link
-          href={Routes.SubsectionDashboardPage({
-            projectSlug,
-            subsectionSlug: subsectionSlug!,
-          })}
-        >
-          Zurück zum Planungsabschnitt
-        </Link>
-      </p>
     </LayoutRs>
   )
 }

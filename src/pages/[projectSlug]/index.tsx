@@ -10,7 +10,7 @@ import { seoTitleSlug, shortTitle } from "@/src/core/components/text"
 import { LayoutRs, MetaTags } from "@/src/core/layouts"
 import { useTryProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { OperatorFilterDropdown } from "@/src/pagesComponents/projects/OperatorFilterDropdown"
+import { OperatorFilter } from "@/src/pagesComponents/projects/OperatorFilter"
 import { SubsectionTable } from "@/src/pagesComponents/subsections/SubsectionTable"
 import getProject from "@/src/server/projects/queries/getProject"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
@@ -58,7 +58,7 @@ export const ProjectDashboardWithQuery = () => {
         }
       />
 
-      <OperatorFilterDropdown />
+      <OperatorFilter />
       {Boolean(subsections.length) ? (
         Boolean(filteredSubsections.length) ? (
           <MapProvider>

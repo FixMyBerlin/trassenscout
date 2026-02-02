@@ -6,8 +6,8 @@ import { ProjectRecordNeedsReviewBanner } from "@/src/app/(loggedInProjects)/[pr
 import { ReviewProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReviewProjectRecordForm"
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { Form, FORM_ERROR } from "@/src/core/components/forms"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
-import { Link, linkStyles } from "@/src/core/components/links"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import deleteProjectRecord from "@/src/server/projectRecords/mutations/deleteProjectRecord"
 import updateProjectRecord from "@/src/server/projectRecords/mutations/updateProjectRecord"
@@ -15,7 +15,6 @@ import getProjectRecordAdmin from "@/src/server/projectRecords/queries/getProjec
 import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation } from "@blitzjs/rpc"
 import { ProjectRecordReviewState } from "@prisma/client"
-import clsx from "clsx"
 import { useRouter } from "next/navigation"
 import { z } from "zod"
 
@@ -30,22 +29,6 @@ export const AdminEditProjectRecordForm = ({
   const [deleteProjectRecordMutation] = useMutation(deleteProjectRecord)
 
   const projectSlug = projectRecord.project.slug
-
-  const handleDelete = async () => {
-    if (window.confirm(`Den Eintrag mit ID ${projectRecord.id} unwiderruflich löschen?`)) {
-      try {
-        await deleteProjectRecordMutation({
-          id: projectRecord.id,
-          projectSlug,
-        })
-        router.push("/admin/project-records")
-      } catch (error) {
-        alert(
-          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
-        )
-      }
-    }
-  }
 
   const handleSubmit = async (values: z.infer<typeof ProjectRecordFormSchema>) => {
     try {
@@ -99,6 +82,13 @@ export const AdminEditProjectRecordForm = ({
           ...m2mFieldsInitialValues,
         }}
         onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={projectRecord.title}
+            onDelete={() => deleteProjectRecordMutation({ id: projectRecord.id, projectSlug })}
+            returnPath="/admin/project-records"
+          />
+        }
       >
         <p>
           Projekt: <span className="font-medium uppercase">{projectSlug}</span>
@@ -114,16 +104,6 @@ export const AdminEditProjectRecordForm = ({
       </Form>
 
       <CreateEditReviewHistory projectRecord={projectRecord} />
-
-      <p className="mt-10">
-        <Link href="/admin/project-records">← Zurück zum Protokoll</Link>
-      </p>
-
-      <hr className="my-5 text-gray-200" />
-
-      <button type="button" onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
-        Löschen
-      </button>
     </>
   )
 }

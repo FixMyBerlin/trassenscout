@@ -6,11 +6,13 @@ const seedOperators = async () => {
       projectId: 1,
       slug: "ban",
       title: "Bezirk Nord",
+      order: 1,
     },
     {
       projectId: 1,
       slug: "bas",
       title: "Bezirk Süd",
+      order: 2,
     },
   ]
 

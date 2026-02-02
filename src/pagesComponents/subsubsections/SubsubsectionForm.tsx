@@ -48,6 +48,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
   const subsubsectionTaskOptions = createFormOptions(
     subsubsectionTasks,
     subsubsectionFieldTranslations.subsubsectionTaskId,
+    { optional: true },
   )
 
   const [{ subsubsectionInfras }] = useQuery(getSubsubsectionInfrasWithCount, { projectSlug })
@@ -88,6 +89,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           label={subsubsectionFieldTranslations.subsubsectionTaskId}
           options={subsubsectionTaskOptions}
           outerProps={{ className: "grow" }}
+          optional
         />
         <LinkWithFormDirtyConfirm
           href={`/${projectSlug}/subsubsection-task` as Route}

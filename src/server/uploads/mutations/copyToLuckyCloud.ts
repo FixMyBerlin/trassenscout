@@ -7,6 +7,7 @@ import {
 } from "@/src/authorization/extractProjectSlug"
 import { createShareLink } from "@/src/server/luckycloud/api/createShareLink"
 import { uploadFileToLuckyCloud } from "@/src/server/luckycloud/api/uploadFile"
+import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug"
 import { getConfiguredS3Client } from "@/src/server/uploads/_utils/client"
 import { S3_BUCKET } from "@/src/server/uploads/_utils/config"
 import { generateUniqueFilename } from "@/src/server/uploads/_utils/keys"
@@ -14,6 +15,7 @@ import { getFilenameFromS3, getS3KeyFromUrl } from "@/src/server/uploads/_utils/
 import { getObject } from "@better-upload/server/helpers"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
+import { NotFoundError } from "blitz"
 import { z } from "zod"
 
 const CopyToLuckyCloudSchema = ProjectSlugRequiredSchema.merge(
@@ -26,9 +28,13 @@ export default resolver.pipe(
   resolver.zod(CopyToLuckyCloudSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ id, projectSlug }, ctx: Ctx) => {
-    // Get upload
-    const upload = await db.upload.findFirstOrThrow({
-      where: { id },
+    // Verify upload belongs to project
+    const projectId = await getProjectIdBySlug(projectSlug)
+    const upload = await db.upload.findFirst({
+      where: {
+        id,
+        projectId,
+      },
       select: {
         id: true,
         externalUrl: true,
@@ -37,6 +43,10 @@ export default resolver.pipe(
         collaborationPath: true,
       },
     })
+
+    if (!upload) {
+      throw new NotFoundError("Upload not found or does not belong to this project")
+    }
 
     if (upload.collaborationUrl) {
       throw new Error("Upload already has a Kollaborations-URL")

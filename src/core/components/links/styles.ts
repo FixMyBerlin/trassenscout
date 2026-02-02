@@ -28,7 +28,7 @@ const activeStyleWhiteLinkElement =
 
 // BLUE BUTTON
 // for link elements
-const blueButtonStylesForLinkElement = clsx(
+export const blueButtonStylesForLinkElement = clsx(
   buttonBase,
   "bg-blue-500 text-white",
   hoverStyleForLinkElement,
@@ -44,7 +44,7 @@ export const blueButtonStyles = clsx(
 
 // WHITE BUTTON
 // for link elements
-const whiteButtonStylesForLinkElement = clsx(
+export const whiteButtonStylesForLinkElement = clsx(
   buttonBase,
   "bg-white ring-1 ring-gray-400",
   hoverStyleForLinkElement,

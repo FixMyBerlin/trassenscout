@@ -1,8 +1,11 @@
 "use client"
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import deleteSubsubsectionInfrastructureType from "@/src/server/subsubsectionInfrastructureType/mutations/deleteSubsubsectionInfrastructureType"
 import updateSubsubsectionInfrastructureType from "@/src/server/subsubsectionInfrastructureType/mutations/updateSubsubsectionInfrastructureType"
 import getSubsubsectionInfrastructureType from "@/src/server/subsubsectionInfrastructureType/queries/getSubsubsectionInfrastructureType"
 import { SubsubsectionInfrastructureType } from "@/src/server/subsubsectionInfrastructureType/schema"
@@ -26,6 +29,11 @@ export const EditSubsubsectionInfrastructureTypeForm = ({
   const [updateSubsubsectionInfrastructureTypeMutation] = useMutation(
     updateSubsubsectionInfrastructureType,
   )
+  const [deleteSubsubsectionInfrastructureTypeMutation] = useMutation(
+    deleteSubsubsectionInfrastructureType,
+  )
+
+  const returnPath = `/${projectSlug}/subsubsection-infrastructure-type` as Route
 
   type HandleSubmit = Omit<z.infer<typeof SubsubsectionInfrastructureType>, "projectId">
   const handleSubmit = async (values: HandleSubmit) => {
@@ -50,7 +58,22 @@ export const EditSubsubsectionInfrastructureTypeForm = ({
         schema={SubsubsectionInfrastructureType}
         initialValues={subsubsectionInfrastructureType}
         onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={subsubsectionInfrastructureType.title}
+            onDelete={() =>
+              deleteSubsubsectionInfrastructureTypeMutation({
+                id: subsubsectionInfrastructureType.id,
+                projectSlug,
+              })
+            }
+            returnPath={returnPath}
+          />
+        }
       />
+
+      <BackLink href={returnPath} text="Zurück zu den Fördergegenständen" />
+
       <SuperAdminLogData data={{ subsubsectionInfrastructureType }} />
     </>
   )

@@ -1,24 +1,24 @@
 "use client"
 
 import { DeleteUploadButton } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/DeleteUploadButton"
+import { LuckyCloudDocumentLink } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/LuckyCloudDocumentLink"
 import { UploadPreview } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreview"
 import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
-import { SuperAdminBox } from "@/src/core/components/AdminBox/SuperAdminBox"
-import { Link } from "@/src/core/components/links"
+import { Link, blueButtonStylesForLinkElement } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
 import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
-import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
 import { formatFileSize } from "@/src/core/utils/formatFileSize"
+import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import { useQuery } from "@blitzjs/rpc"
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
+import { clsx } from "clsx"
 import { Route } from "next"
 
 type Props = {
@@ -62,27 +62,40 @@ export const UploadDetailModal = ({
       </HeadingWithAction>
 
       {/* Preview */}
-      <div className="flex justify-center">
+      <div className="flex gap-6">
         <UploadPreview
           uploadId={upload.id}
           projectSlug={projectSlug}
           size="grid"
           showTitle={false}
         />
+        <div className="space-y-5">
+          <div>
+            <h4 className="text-sm font-medium text-gray-700">
+              Dateiname {upload.fileSize && "(Größe)"}
+            </h4>
+            <p className="text-sm text-gray-500">
+              {getFilenameFromS3(upload.externalUrl)}
+              {upload.fileSize && ` (${formatFileSize(upload.fileSize)})`}
+            </p>
+          </div>
+          {upload.collaborationUrl ? (
+            <LuckyCloudDocumentLink collaborationUrl={upload.collaborationUrl} />
+          ) : (
+            <Link
+              blank
+              href={uploadUrl(upload, projectSlug)}
+              className={clsx(blueButtonStylesForLinkElement, "inline-flex items-center gap-2")}
+            >
+              Datei öffnen
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Details */}
       <div className="space-y-3 text-sm">
-        {upload.summary && (
-          <div>
-            <h4 className="mb-1 font-medium text-gray-900">Zusammenfassung</h4>
-            <div className="max-h-60 space-y-3 overflow-y-auto text-gray-700">
-              <Markdown className="prose-sm" markdown={upload.summary} />
-            </div>
-          </div>
-        )}
-
-        <div className="border-t border-gray-200 pt-3">
+        <div>
           <p className="text-gray-600">
             Erstellt
             {upload.createdBy ? (
@@ -90,12 +103,6 @@ export const UploadDetailModal = ({
             ) : (
               " von Unbekannt"
             )} am {formatBerlinTime(upload.createdAt, "dd.MM.yyyy, HH:mm")}
-            {upload.fileSize && (
-              <>
-                {" · "}
-                {formatFileSize(upload.fileSize)}
-              </>
-            )}
           </p>
           {upload.updatedBy && (
             <p className="mt-1 text-gray-600">
@@ -109,8 +116,17 @@ export const UploadDetailModal = ({
           )}
         </div>
 
+        {upload.summary && (
+          <div className="border-t border-gray-200 pt-3">
+            <h4 className="font-medium text-gray-700">Zusammenfassung</h4>
+            <div className="max-h-60 space-y-3 overflow-y-auto text-gray-500">
+              <Markdown className="prose-sm" markdown={upload.summary} />
+            </div>
+          </div>
+        )}
+
         <div className="border-t border-gray-200 pt-3">
-          <h4 className="mb-2 font-medium text-gray-900">Verknüpfungen:</h4>
+          <h4 className="text-sm font-medium text-gray-700">Verknüpfungen:</h4>
           {hasRelations ? (
             <div className="space-y-2 text-sm">
               {hasSubsection && (
@@ -158,33 +174,18 @@ export const UploadDetailModal = ({
               )}
             </div>
           ) : (
-            <ZeroCase visible={0} name="Verknüpfungen" small />
+            <p className="text-sm text-gray-500">Es wurden noch keine Verknüpfungen eingetragen.</p>
           )}
         </div>
 
-        <div className="border-t border-gray-200 pt-3">
-          {upload.collaborationUrl ? (
-            <div className="space-y-2">
-              <Link blank button="blue" icon="collaboration" href={upload.collaborationUrl}>
-                Dokument gemeinsam bearbeiten
-              </Link>
-              <SuperAdminBox>
-                <Link blank href={uploadUrl(upload, projectSlug)}>
-                  Original-Datei (S3)
-                </Link>
-              </SuperAdminBox>
-            </div>
-          ) : (
-            <Link
-              blank
-              href={uploadUrl(upload, projectSlug)}
-              className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800"
-            >
-              Datei öffnen
-              <ArrowTopRightOnSquareIcon className="size-4" />
-            </Link>
-          )}
-        </div>
+        {upload.latitude && upload.longitude && (
+          <div className="border-t border-gray-200 pt-3">
+            <h4 className="text-sm font-medium text-gray-700">Standort:</h4>
+            <p className="text-sm text-gray-500">
+              {upload.latitude}, {upload.longitude}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Actions */}
@@ -205,6 +206,7 @@ export const UploadDetailModal = ({
                   await onDeleted()
                   onClose()
                 }}
+                className="text-sm"
               />
             )}
           </ButtonWrapper>

@@ -1,9 +1,11 @@
 "use client"
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
-import { Link } from "@/src/core/components/links"
+import deleteSubsectionStatus from "@/src/server/subsectionStatus/mutations/deleteSubsectionStatus"
 import updateSubsectionStatus from "@/src/server/subsectionStatus/mutations/updateSubsectionStatus"
 import getSubsectionStatus from "@/src/server/subsectionStatus/queries/getSubsectionStatus"
 import { SubsectionStatus } from "@/src/server/subsectionStatus/schema"
@@ -21,6 +23,9 @@ type Props = {
 export const EditSubsectionStatusForm = ({ subsectionStatus, projectSlug }: Props) => {
   const router = useRouter()
   const [updateSubsectionStatusMutation] = useMutation(updateSubsectionStatus)
+  const [deleteSubsectionStatusMutation] = useMutation(deleteSubsectionStatus)
+
+  const returnPath = `/${projectSlug}/subsection-status` as Route
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -45,10 +50,19 @@ export const EditSubsectionStatusForm = ({ subsectionStatus, projectSlug }: Prop
         schema={SubsectionStatus}
         initialValues={subsectionStatus}
         onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={subsectionStatus.title}
+            onDelete={() =>
+              deleteSubsectionStatusMutation({ id: subsectionStatus.id, projectSlug })
+            }
+            returnPath={returnPath}
+          />
+        }
       />
-      <p className="mt-5">
-        <Link href={`/${projectSlug}/subsection-status` as Route}>Zurück zur Übersicht</Link>
-      </p>
+
+      <BackLink href={returnPath} text="Zurück zu den Status-Einträgen" />
+
       <SuperAdminLogData data={{ subsectionStatus }} />
     </>
   )

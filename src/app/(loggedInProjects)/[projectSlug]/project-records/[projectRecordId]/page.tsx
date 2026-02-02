@@ -1,14 +1,16 @@
 import { ProjectRecordReviewState } from "@/db"
+import { ProjectRecordDeleteActionBar } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordDeleteActionBar"
 import { ProjectRecordDetailClient } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordDetailClient"
 import { ProjectRecordNeedsReviewBanner } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordNeedsReviewBanner"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { invoke } from "@/src/blitz-server"
+import { ActionBar } from "@/src/core/components/forms/ActionBar"
+import { BackLink } from "@/src/core/components/forms/BackLink"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { projectRecordEditRoute } from "@/src/core/routes/projectRecordRoutes"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
-
-import { Metadata } from "next"
+import { Metadata, Route } from "next"
 import "server-only"
 
 export const metadata: Metadata = {
@@ -26,6 +28,10 @@ export default async function ProjectRecordDetail({
     id: projectRecordId,
   })
   const needsReview = projectRecord.reviewState !== ProjectRecordReviewState.APPROVED
+  const returnPath =
+    projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+      ? (`/${params.projectSlug}/project-records/needreview` as Route)
+      : (`/${params.projectSlug}/project-records` as Route)
 
   return (
     <>
@@ -50,17 +56,25 @@ export default async function ProjectRecordDetail({
 
       <ProjectRecordDetailClient projectRecord={projectRecord} />
 
-      <div className="mt-8 border-t border-gray-200 pt-4">
-        <Link
-          href={
-            projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
-              ? `/${params.projectSlug}/project-records/needreview`
-              : `/${params.projectSlug}/project-records`
-          }
-        >
-          ← Zurück zur Protokoll-Übersicht
-        </Link>
-      </div>
+      <ActionBar
+        className="mt-6"
+        right={
+          <ProjectRecordDeleteActionBar
+            projectSlug={params.projectSlug}
+            projectRecordId={projectRecord.id}
+            projectRecordTitle={projectRecord.title}
+            returnPath={returnPath}
+          />
+        }
+      />
+      <BackLink
+        href={returnPath}
+        text={
+          projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+            ? "Zurück zu den Protokolleinträgen zur Bestätigung"
+            : "Zurück zu den Protokolleinträgen"
+        }
+      />
     </>
   )
 }

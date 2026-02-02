@@ -1,8 +1,11 @@
 "use client"
+import {
+  blueButtonStylesForLinkElement,
+  whiteButtonStylesForLinkElement,
+} from "@/src/core/components/links"
 import { Link } from "@/src/core/components/links/Link"
 import { useCurrentUser } from "@/src/server/users/hooks/useCurrentUser"
-import { UserIcon } from "@heroicons/react/24/outline"
-import { clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
 import { NavigationUserLoggedIn } from "./NavigationUserLoggedIn"
 
 export const NavigationUser = () => {
@@ -13,16 +16,26 @@ export const NavigationUser = () => {
       {user ? (
         <NavigationUserLoggedIn user={user} />
       ) : (
-        <Link
-          className={clsx(
-            "flex rounded-full bg-gray-800 p-1 text-sm",
-            "hover:bg-gray-700 focus:bg-gray-700",
-          )}
-          href="/auth/login"
-        >
-          <span className="sr-only">Anmelden</span>
-          <UserIcon className="h-6 w-6 text-gray-300" aria-hidden="true" />
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            button="white"
+            // overwrites the default styles for the link element - not very neat
+            // maybe we want twMerge in selectLinkStyles() and a small prop for button links in the future
+            classNameOverwrites={twMerge(whiteButtonStylesForLinkElement, "px-3 py-2")}
+            href={{
+              pathname: "/auth/signup",
+            }}
+          >
+            Registrieren
+          </Link>
+          <Link
+            button="blue"
+            classNameOverwrites={twMerge(blueButtonStylesForLinkElement, "px-3 py-2")}
+            href="/auth/login"
+          >
+            Anmelden
+          </Link>
+        </div>
       )}
     </div>
   )

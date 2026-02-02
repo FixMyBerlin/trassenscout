@@ -1,8 +1,11 @@
 "use client"
 
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
+import deleteSubsubsectionTask from "@/src/server/subsubsectionTask/mutations/deleteSubsubsectionTask"
 import updateSubsubsectionTask from "@/src/server/subsubsectionTask/mutations/updateSubsubsectionTask"
 import getSubsubsectionTask from "@/src/server/subsubsectionTask/queries/getSubsubsectionTask"
 import { SubsubsectionTask } from "@/src/server/subsubsectionTask/schema"
@@ -20,6 +23,9 @@ type Props = {
 export const EditSubsubsectionTaskForm = ({ subsubsectionTask, projectSlug }: Props) => {
   const router = useRouter()
   const [updateSubsubsectionTaskMutation] = useMutation(updateSubsubsectionTask)
+  const [deleteSubsubsectionTaskMutation] = useMutation(deleteSubsubsectionTask)
+
+  const returnPath = `/${projectSlug}/subsubsection-task` as Route
 
   type HandleSubmit = any // TODO
   const handleSubmit = async (values: HandleSubmit) => {
@@ -44,7 +50,19 @@ export const EditSubsubsectionTaskForm = ({ subsubsectionTask, projectSlug }: Pr
         schema={SubsubsectionTask}
         initialValues={subsubsectionTask}
         onSubmit={handleSubmit}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={subsubsectionTask.title}
+            onDelete={() =>
+              deleteSubsubsectionTaskMutation({ id: subsubsectionTask.id, projectSlug })
+            }
+            returnPath={returnPath}
+          />
+        }
       />
+
+      <BackLink href={returnPath} text="Zurück zu den Eintragstypen" />
+
       <SuperAdminLogData data={{ subsubsectionTask }} />
     </>
   )

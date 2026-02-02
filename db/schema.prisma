@@ -47,7 +47,6 @@ model User {
 
   tokens                 Token[]
   sessions               Session[]
-  projects               Project[]
   subsections            Subsection[]
   memberships            Membership[]
   Subsubsection          Subsubsection[]
@@ -134,21 +133,18 @@ model Token {
 // }
 
 model Project {
-  id              Int      @id @default(autoincrement())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                               Int                               @id @default(autoincrement())
+  createdAt                        DateTime                          @default(now())
+  updatedAt                        DateTime                          @updatedAt
   //
-  slug            String   @unique // shortTitle and URL Slug
-  subTitle        String?
-  description     String?
-  logoSrc         String? // - UNUSED
-  partnerLogoSrcs String[] // - UNUSED
-  exportEnabled   Boolean  @default(false)
-  aiEnabled       Boolean  @default(false)
+  slug                             String                            @unique // shortTitle and URL Slug
+  subTitle                         String?
+  description                      String?
+  logoSrc                          String? // - UNUSED
+  partnerLogoSrcs                  String[] // - UNUSED
+  exportEnabled                    Boolean                           @default(false)
+  aiEnabled                        Boolean                           @default(false)
   //
-  manager         User?    @relation(fields: [managerId], references: [id])
-  managerId       Int?
-
   surveyResponseTopics             SurveyResponseTopic[]
   subsections                      Subsection[]
   subsectionStatuses               SubsectionStatus[]
@@ -228,6 +224,7 @@ model Operator {
   id              Int              @id @default(autoincrement())
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
+  order           Int              @default(autoincrement())
   //
   slug            String // shortTitle and URL Slug
   title           String

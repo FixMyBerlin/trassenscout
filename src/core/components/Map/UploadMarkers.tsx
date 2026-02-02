@@ -47,38 +47,33 @@ export const UploadMarkers = ({ projectSlug, interactive }: Props) => {
             </Marker>
           )
         })}
-      <div className="absolute top-16 left-4 z-10">
-        <button
-          type="button"
-          onClick={() => setIsVisible(!isVisible)}
-          disabled={filteredUploads.length === 0}
-          className={twMerge(
-            "relative rounded-md border border-gray-300 p-1.5 shadow-xs",
-            "focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-hidden",
-            "hover:bg-gray-50",
-            "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white",
-            isVisible && filteredUploads.length > 0 ? "bg-blue-50" : "bg-white",
-          )}
-          title={
-            filteredUploads.length === 0
-              ? "Keine verorteten Dokumente"
-              : isVisible
-                ? "verortete Dokumente ausblenden"
-                : "verortete Dokumente anzeigen"
-          }
-        >
-          <PhotoIcon className="size-5 text-gray-700" />
-          <span
-            className={
-              isVisible && filteredUploads.length > 0
-                ? "absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full border border-blue-600 bg-blue-600 px-1 text-xs font-medium text-white"
-                : "absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full border border-blue-600 bg-white px-1 text-xs font-medium text-blue-600"
-            }
+      {filteredUploads.length > 0 && (
+        <div className="absolute top-16 left-4 z-10">
+          <button
+            type="button"
+            onClick={() => setIsVisible(!isVisible)}
+            className={twMerge(
+              "relative rounded-md border border-gray-300 p-1.5 shadow-xs",
+              "focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-hidden",
+              "hover:bg-gray-50",
+              "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white",
+              isVisible ? "bg-blue-50" : "bg-white",
+            )}
+            title={isVisible ? "verortete Dokumente ausblenden" : "verortete Dokumente anzeigen"}
           >
-            {filteredUploads.length}
-          </span>
-        </button>
-      </div>
+            <PhotoIcon className="size-5 text-gray-700" />
+            <span
+              className={
+                isVisible
+                  ? "absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full border border-blue-600 bg-blue-600 px-1 text-xs font-medium text-white"
+                  : "absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full border border-blue-600 bg-white px-1 text-xs font-medium text-blue-600"
+              }
+            >
+              {filteredUploads.length}
+            </span>
+          </button>
+        </div>
+      )}
       {interactive && (
         <UploadDetailModal
           uploadId={selectedUploadId}

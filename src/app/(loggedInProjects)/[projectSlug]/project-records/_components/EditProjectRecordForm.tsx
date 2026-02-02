@@ -8,8 +8,10 @@ import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-reco
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Form, FORM_ERROR } from "@/src/core/components/forms"
+import { BackLink } from "@/src/core/components/forms/BackLink"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
-import { Link, linkStyles } from "@/src/core/components/links"
+import { Link } from "@/src/core/components/links"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
 import deleteProjectRecord from "@/src/server/projectRecords/mutations/deleteProjectRecord"
@@ -18,7 +20,7 @@ import getProjectRecord from "@/src/server/projectRecords/queries/getProjectReco
 import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation } from "@blitzjs/rpc"
 import { ProjectRecordReviewState } from "@prisma/client"
-import clsx from "clsx"
+import { Route } from "next"
 import { useRouter } from "next/navigation"
 import { z } from "zod"
 
@@ -33,22 +35,6 @@ export const EditProjectRecordForm = ({
   const [deleteProjectRecordMutation] = useMutation(deleteProjectRecord)
 
   const projectSlug = projectRecord.project.slug
-
-  const handleDelete = async () => {
-    if (window.confirm(`Den Eintrag mit ID ${projectRecord.id} unwiderruflich löschen?`)) {
-      try {
-        await deleteProjectRecordMutation({
-          id: projectRecord.id,
-          projectSlug,
-        })
-        router.push(`/${projectSlug}/project-records`)
-      } catch (error) {
-        alert(
-          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
-        )
-      }
-    }
-  }
 
   const handleSubmit = async (values: z.infer<typeof ProjectRecordFormSchema>) => {
     try {
@@ -84,6 +70,12 @@ export const EditProjectRecordForm = ({
     }
   })
 
+  const showPath = projectRecordDetailRoute(projectSlug, projectRecord.id)
+  const indexPath =
+    projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
+      ? (`/${projectSlug}/project-records/needreview` as Route)
+      : (`/${projectSlug}/project-records` as Route)
+
   return (
     <>
       {needsReview && <ProjectRecordNeedsReviewBanner />}
@@ -110,36 +102,26 @@ export const EditProjectRecordForm = ({
           ...m2mFieldsInitialValues,
         }}
         onSubmit={handleSubmit}
-      >
-        <div className="space-y-6">
-          <ProjectRecordFormFields
-            projectSlug={projectSlug}
-            splitView={needsReview}
-            emailSource={projectRecord.projectRecordEmail}
+        actionBarRight={
+          <DeleteActionBar
+            itemTitle={projectRecord.title}
+            onDelete={() => deleteProjectRecordMutation({ id: projectRecord.id, projectSlug })}
+            returnPath={indexPath}
           />
-        </div>
+        }
+      >
+        <ProjectRecordFormFields
+          projectSlug={projectSlug}
+          splitView={needsReview}
+          emailSource={projectRecord.projectRecordEmail}
+        />
+
         {needsReview && <ReviewProjectRecordForm />}
       </Form>
 
       <CreateEditReviewHistory projectRecord={projectRecord} />
 
-      <p className="mt-10">
-        <Link
-          href={
-            projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
-              ? `/${projectSlug}/project-records/needreview`
-              : `/${projectSlug}/project-records`
-          }
-        >
-          ← Zurück zur Protokoll-Übersicht
-        </Link>
-      </p>
-
-      <hr className="my-5 text-gray-200" />
-
-      <button type="button" onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
-        Löschen
-      </button>
+      <BackLink href={showPath} text="Zurück zum Protokolleintrag" />
 
       <SuperAdminLogData data={{ initialValues: projectRecord }} />
     </>

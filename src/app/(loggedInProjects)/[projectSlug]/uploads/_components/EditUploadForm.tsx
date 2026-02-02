@@ -2,34 +2,34 @@
 
 import { SummaryField } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/SummaryField"
 import { UploadLocationMap } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/map/UploadLocationMap"
-import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { LabeledSelect, LabeledSelectProps, LabeledTextField } from "@/src/core/components/forms"
+import { BackLink } from "@/src/core/components/forms/BackLink"
 import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
 import { Link } from "@/src/core/components/links"
-import { blueButtonStyles } from "@/src/core/components/links/styles"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
-import { truncateErrorText } from "@/src/server/luckycloud/_utils/errorTruncation"
+import { formatFileSize } from "@/src/core/utils/formatFileSize"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
-import copyToLuckyCloud from "@/src/server/uploads/mutations/copyToLuckyCloud"
-import endCollaboration from "@/src/server/uploads/mutations/endCollaboration"
+import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import updateUpload from "@/src/server/uploads/mutations/updateUploadWithSubsections"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import { UploadSchema } from "@/src/server/uploads/schema"
-import { getQueryClient, getQueryKey, useMutation, useQuery } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { PromiseReturnType } from "blitz"
-import { clsx } from "clsx"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { z } from "zod"
-import { DeleteUploadButton } from "./DeleteUploadButton"
+import { DeleteUploadActionBar } from "./DeleteUploadActionBar"
+import { LuckyCloudActionBar } from "./LuckyCloudActionBar"
+import { LuckyCloudDocumentLink } from "./LuckyCloudDocumentLink"
+import { LuckyCloudNotice } from "./LuckyCloudNotice"
+import { SuperAdminLuckyCloud } from "./SuperAdminLuckyCloud"
 import { UploadPreview } from "./UploadPreview"
-import { uploadUrl } from "./utils/uploadUrl"
 
 type UploadSubsectionFieldsProps = {
   subsections: Awaited<ReturnType<typeof getSubsections>>["subsections"]
@@ -93,17 +93,11 @@ type Props = {
 export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
   const router = useRouter()
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false)
-  const [isCopyingToLuckyCloud, setIsCopyingToLuckyCloud] = useState(false)
-  const [isEndingCollaboration, setIsEndingCollaboration] = useState(false)
   const projectSlug = useProjectSlug()
   const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
 
   const [updateUploadMutation] = useMutation(updateUpload)
-  const [copyToLuckyCloudMutation] = useMutation(copyToLuckyCloud)
-  const [endCollaborationMutation] = useMutation(endCollaboration)
-
-  const hasCollaborationUrl = !!upload.collaborationUrl
 
   // Extract only form-relevant fields for initialValues (form expects array of IDs, not full objects)
   const initialValues: z.infer<typeof UploadSchema> = {
@@ -135,76 +129,9 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
     }
   }
 
-  const handleCopyToLuckyCloud = async () => {
-    setIsCopyingToLuckyCloud(true)
-    try {
-      await copyToLuckyCloudMutation({ id: upload.id, projectSlug })
-
-      const queryClient = getQueryClient()
-      const uploadQueryKey = getQueryKey(getUploadWithRelations, {
-        projectSlug,
-        id: upload.id,
-      })
-      await queryClient.invalidateQueries(uploadQueryKey)
-      router.refresh()
-    } catch (error: any) {
-      console.error("Error copying to Luckycloud:", error)
-      const errorMessage = error.message || "Unbekannter Fehler"
-      alert(`Fehler beim Kopieren zu Luckycloud: ${truncateErrorText(errorMessage)}`)
-    } finally {
-      setIsCopyingToLuckyCloud(false)
-    }
-  }
-
-  const handleEndCollaboration = async () => {
-    if (
-      !window.confirm(
-        "Möchten Sie die Kollaboration wirklich beenden? Das Dokument wird archiviert und die Freigaben werden gelöscht.",
-      )
-    ) {
-      return
-    }
-
-    setIsEndingCollaboration(true)
-    try {
-      await endCollaborationMutation({ id: upload.id, projectSlug })
-      const queryClient = getQueryClient()
-      const uploadQueryKey = getQueryKey(getUploadWithRelations, {
-        projectSlug,
-        id: upload.id,
-      })
-      await queryClient.invalidateQueries(uploadQueryKey)
-      router.refresh()
-    } catch (error: any) {
-      console.error("Error ending collaboration:", error)
-      const errorMessage = error.message || "Unbekannter Fehler"
-      alert(`Fehler beim Beenden der Kollaboration: ${truncateErrorText(errorMessage)}`)
-    } finally {
-      setIsEndingCollaboration(false)
-    }
-  }
-
   return (
     <>
-      <div className="mb-6 flex items-center justify-end">
-        <DeleteUploadButton
-          projectSlug={projectSlug}
-          uploadId={upload.id}
-          uploadTitle={upload.title}
-          variant="icon"
-          onDeleted={() => router.push(returnPath)}
-        />
-      </div>
-
-      <div className="flex flex-col gap-6 sm:flex-row sm:gap-10">
-        <div className="flex justify-center sm:block">
-          <UploadPreview
-            uploadId={upload.id}
-            projectSlug={projectSlug}
-            size="grid"
-            showTitle={false}
-          />
-        </div>
+      <div className="flex flex-col gap-6 sm:gap-10">
         <Form
           key={`${upload.collaborationUrl}-${upload.collaborationPath}`}
           className="grow"
@@ -213,81 +140,56 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
           initialValues={initialValues}
           onSubmit={handleSubmit}
           disabled={isGeneratingSummary}
+          actionBarRight={
+            <>
+              <LuckyCloudActionBar upload={upload} projectSlug={projectSlug} />
+              <DeleteUploadActionBar
+                projectSlug={projectSlug}
+                uploadId={upload.id}
+                uploadTitle={upload.title}
+                returnPath={returnPath}
+              />
+            </>
+          }
         >
-          <LabeledTextField type="text" name="title" label="Kurzbeschreibung" />
-          <SuperAdminBox>
-            <div className="space-y-4">
-              <LabeledTextField
-                type="text"
-                name="collaborationUrl"
-                label="Kollaborations-URL (Luckycloud)"
-                help="Das Dokument bei Luckycloud muss manuell angelegt werden und per URL für alle editierbar sein. Solange eine Kollaborations-URL hinterlegt ist, wird der Original-Upload nicht angezeigt."
+          <div className="flex justify-center sm:block">
+            <div className="flex flex-col gap-10 sm:flex-row">
+              <UploadPreview
+                uploadId={upload.id}
+                projectSlug={projectSlug}
+                size="grid"
+                showTitle={false}
               />
-              <LabeledTextField
-                type="text"
-                name="collaborationPath"
-                label="Kollaborations-Pfad (Luckycloud)"
-                help="Der Pfad zur Datei in Luckycloud."
-              />
-
-              <div className="space-y-2">
-                {!hasCollaborationUrl && (
-                  <button
-                    type="button"
-                    onClick={handleCopyToLuckyCloud}
-                    disabled={isCopyingToLuckyCloud || isEndingCollaboration}
-                    className={clsx(
-                      "rounded px-4 py-2 text-sm font-medium",
-                      blueButtonStyles,
-                      "disabled:cursor-not-allowed disabled:opacity-50",
-                    )}
-                  >
-                    {isCopyingToLuckyCloud ? "Wird kopiert..." : "Datei in Luckycloud kopieren"}
-                  </button>
-                )}
-                {hasCollaborationUrl && (
-                  <div className="space-y-2">
-                    <button
-                      type="button"
-                      onClick={handleEndCollaboration}
-                      disabled={isCopyingToLuckyCloud || isEndingCollaboration}
-                      className={clsx(
-                        "rounded px-4 py-2 text-sm font-medium",
-                        blueButtonStyles,
-                        "disabled:cursor-not-allowed disabled:opacity-50",
-                      )}
-                    >
-                      {isEndingCollaboration ? "Wird beendet..." : "Kollaboration beenden"}
-                    </button>
-                    {upload.collaborationUrl && (
-                      <div>
-                        <Link href={upload.collaborationUrl} blank>
-                          Dokument in Luckycloud öffnen
-                        </Link>
-                      </div>
-                    )}
-
-                    <div className="rounded-md bg-blue-50 p-3 text-sm text-blue-800">
-                      <p className="font-medium">Hinweis für Administratoren:</p>
-                      <p className="mt-1">
-                        Die Nachverfolgung von Änderungen muss manuell in Luckycloud aktiviert
-                        werden:
-                        <br />
-                        Dokument → Reiter &quot;Zusammenarbeit&quot; → &quot;Nachverfolgen von
-                        Änderungen&quot; → &quot;AKTIVIERT für alle&quot;
-                      </p>
-                    </div>
+              <div className="grow space-y-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label htmlFor="filename" className="block text-sm font-medium text-gray-700">
+                      Dateiname {upload.fileSize && "(Größe)"}
+                    </label>{" "}
+                    <p className="text-sm text-gray-500">
+                      {getFilenameFromS3(upload.externalUrl)}
+                      {upload.fileSize && ` (${formatFileSize(upload.fileSize)})`}
+                    </p>
                   </div>
-                )}
-                <div>
-                  <Link href={uploadUrl(upload, projectSlug)} blank>
-                    Original S3 Datei öffnen
-                  </Link>
+                  <LuckyCloudDocumentLink collaborationUrl={upload.collaborationUrl} />
                 </div>
+
+                <LabeledTextField type="text" name="title" label="Kurzbeschreibung" />
               </div>
             </div>
-          </SuperAdminBox>
+          </div>
           <UploadSubsectionFields subsections={subsections} subsubsections={subsubsections} />
+          {upload.id && (
+            <SummaryField
+              uploadId={upload.id}
+              mimeType={upload.mimeType}
+              isGeneratingSummary={isGeneratingSummary}
+              setIsGeneratingSummary={setIsGeneratingSummary}
+              isAiEnabled={upload.project.aiEnabled}
+              initialSummary={upload.summary}
+            />
+          )}
+
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
               Standort (optional)
@@ -299,15 +201,8 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
             </p>
             <UploadLocationMap />
           </div>
-          {upload.id && (
-            <SummaryField
-              uploadId={upload.id}
-              mimeType={upload.mimeType}
-              isGeneratingSummary={isGeneratingSummary}
-              setIsGeneratingSummary={setIsGeneratingSummary}
-              isAiEnabled={upload.project.aiEnabled}
-            />
-          )}
+
+          <LuckyCloudNotice collaborationUrl={upload.collaborationUrl} mimeType={upload.mimeType} />
         </Form>
       </div>
 
@@ -346,10 +241,8 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
         </div>
       )}
 
-      <p className="mt-5">
-        <Link href={returnPath}>{returnText}</Link>
-      </p>
-
+      <SuperAdminLuckyCloud upload={upload} projectSlug={projectSlug} />
+      <BackLink href={returnPath} text={returnText} />
       <SuperAdminLogData data={{ upload, subsections, returnPath, returnText }} />
     </>
   )

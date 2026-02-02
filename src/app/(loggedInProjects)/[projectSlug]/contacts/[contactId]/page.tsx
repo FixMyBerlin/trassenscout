@@ -2,12 +2,14 @@ import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { invoke } from "@/src/blitz-server"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
+import { ActionBar } from "@/src/core/components/forms/ActionBar"
+import { BackLink } from "@/src/core/components/forms/BackLink"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import getContact from "@/src/server/contacts/queries/getContact"
 import { Metadata, Route } from "next"
 import "server-only"
-import { ContactActions } from "../_components/ContactActions"
+import { ContactDeleteActionBar } from "../_components/ContactDeleteActionBar"
 import { ContactSingle } from "../_components/ContactSingle"
 
 export const metadata: Metadata = {
@@ -28,13 +30,22 @@ export default async function ShowContactPage({ params: { projectSlug, contactId
     <>
       <PageHeader title={`Kontakt von ${getFullname(contact)}`} className="mt-12" />
       <IfUserCanEdit>
-        <p className="mb-10 space-x-4">
-          <Link href={`/${projectSlug}/contacts/${contactId}/edit` as Route}>
-            Eintrag bearbeiten
-          </Link>
-          <span>–</span>
-          <ContactActions contactId={Number(contactId)} projectSlug={projectSlug} />
-        </p>
+        <ActionBar
+          className="mb-10"
+          left={
+            <Link href={`/${projectSlug}/contacts/${contactId}/edit` as Route} button>
+              Eintrag bearbeiten
+            </Link>
+          }
+          right={
+            <ContactDeleteActionBar
+              contactId={contact.id}
+              projectSlug={projectSlug}
+              contactTitle={getFullname(contact) || "Kontakt"}
+              returnPath={`/${projectSlug}/contacts` as Route}
+            />
+          }
+        />
       </IfUserCanEdit>
 
       <div>
@@ -44,8 +55,7 @@ export default async function ShowContactPage({ params: { projectSlug, contactId
         </SuperAdminBox>
       </div>
 
-      <hr className="my-5 text-gray-200" />
-      <Link href={`/${projectSlug}/contacts` as Route}>Zurück zur Kontaktliste</Link>
+      <BackLink href={`/${projectSlug}/contacts` as Route} text="Zurück zur Kontaktliste" />
     </>
   )
 }

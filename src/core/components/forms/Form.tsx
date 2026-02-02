@@ -1,3 +1,4 @@
+import { ActionBar } from "@/src/core/components/forms/ActionBar"
 import { SubmitButton } from "@/src/core/components/forms/SubmitButton"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { clsx } from "clsx"
@@ -13,13 +14,17 @@ export interface FormProps<S extends z.ZodType<any, any>>
   /** All your form fields */
   children?: ReactNode
   /** Text to display in the submit button */
-  submitText?: string
+  submitText: string
   submitClassName?: string
   resetOnSubmit?: boolean
   schema?: S
   onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
   disabled?: boolean
+  /** Action bar content to display next to submit button (on the left) */
+  actionBarLeft?: ReactNode
+  /** Action bar content to display on the right side of the action bar */
+  actionBarRight?: ReactNode
 }
 
 interface OnSubmitResult {
@@ -39,6 +44,8 @@ export function Form<S extends z.ZodType<any, any>>({
   onSubmit,
   className,
   disabled,
+  actionBarLeft,
+  actionBarRight,
   ...props
 }: FormProps<S>) {
   const ctx = useForm<z.infer<S>>({
@@ -86,7 +93,16 @@ export function Form<S extends z.ZodType<any, any>>({
           {children}
 
           <FormError formError={formError} />
-          {submitText && <SubmitButton className={submitClassName}>{submitText}</SubmitButton>}
+
+          <ActionBar
+            left={
+              <>
+                <SubmitButton className={submitClassName}>{submitText}</SubmitButton>
+                {actionBarLeft}
+              </>
+            }
+            right={actionBarRight}
+          />
         </form>
       </FormProvider>
     </IntlProvider>

@@ -1,4 +1,5 @@
 import { MembershipRole } from "@/src/authorization/types"
+import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
 import { LockClosedIcon, LockOpenIcon } from "@heroicons/react/20/solid"
 import { clsx } from "clsx"
 import { roleTranslation } from "./roleTranslation.const"
@@ -11,8 +12,16 @@ export const UserCanIcon = ({ role, isAdmin, className }: Props) => {
 
   switch (role) {
     case "VIEWER":
-      return <LockClosedIcon title={title} className={classes} />
+      return (
+        <Tooltip content={title}>
+          <LockClosedIcon className={classes} />
+        </Tooltip>
+      )
     case "EDITOR":
-      return <LockOpenIcon title={title} className={classes} />
+      return (
+        <Tooltip content={title}>
+          <LockOpenIcon className={classes} />
+        </Tooltip>
+      )
   }
 }
