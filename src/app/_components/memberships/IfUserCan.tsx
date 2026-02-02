@@ -4,6 +4,7 @@
 
 "use client"
 
+import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
 import { showMembershipRoleCheckIndicatorState } from "@/src/core/store/showMembershipRoleCheckIndicator.zustand"
 import { isProduction } from "@/src/core/utils/isEnv"
 import { useSession } from "@blitzjs/auth"
@@ -25,12 +26,11 @@ export const AdminHint = ({ children }: Props) => {
   if (session.role === "ADMIN") {
     return (
       <>
-        <span
-          className="m-1 inline-block rounded-sm border border-purple-300 bg-purple-100 p-1"
-          title="An dieser Stelle erscheint ein UI Element nur für Nutzer, die bestimmte Rechte haben."
-        >
-          <NoSymbolIcon className="h-4 w-4 text-purple-700" />
-        </span>
+        <Tooltip content="An dieser Stelle erscheint ein UI Element nur für Nutzer, die bestimmte Rechte haben.">
+          <span className="m-1 inline-block rounded-sm border border-purple-300 bg-purple-100 p-1">
+            <NoSymbolIcon className="h-4 w-4 text-purple-700" />
+          </span>
+        </Tooltip>
         {children}
       </>
     )

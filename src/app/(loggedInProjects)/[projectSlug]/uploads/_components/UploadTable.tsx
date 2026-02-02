@@ -10,6 +10,7 @@ import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
+import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import {
   subsectionDashboardRoute,
@@ -127,7 +128,11 @@ const UploadTableRow = ({
         </div>
       </td>
       <td className="px-1.5 py-2 text-center text-sm">
-        {hasLocation && <MapPinIcon className="h-4 w-4 text-gray-400" title="Ist Geolokalisiert" />}
+        {hasLocation && (
+          <Tooltip content="Ist Geolokalisiert">
+            <MapPinIcon className="h-4 w-4 text-gray-400" />
+          </Tooltip>
+        )}
       </td>
       <td className="px-3 py-2 text-sm text-gray-500">
         <div className="whitespace-nowrap">

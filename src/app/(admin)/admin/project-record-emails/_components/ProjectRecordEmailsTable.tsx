@@ -4,6 +4,7 @@ import { processProjectRecordEmail } from "@/src/app/(loggedInProjects)/[project
 import { Link } from "@/src/core/components/links"
 import { shortTitle } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
+import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
 import { ProjectRecordEmailWithRelations } from "@/src/server/ProjectRecordEmails/queries/getProjectRecordEmails"
 import { SparklesIcon } from "@heroicons/react/16/solid"
 import { format } from "date-fns"
@@ -146,7 +147,7 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
               <td className="px-6 py-4 text-sm text-gray-500">
                 {email.projectRecords.length > 0 ? (
                   <ul className="space-y-1">
-                    {email.projectRecords.map((projectRecord: any) => (
+                    {email.projectRecords.map((projectRecord) => (
                       <li key={projectRecord.id}>
                         <Link href={`/admin/project-records/${projectRecord.id}/edit`}>
                           {projectRecord.id}
@@ -164,20 +165,23 @@ export const ProjectRecordEmailsTable = ({ projectRecordEmails }: Props) => {
                   : "—"}
               </td>
               <td className="flex flex-col items-start gap-2 px-6 py-4 text-sm font-medium">
-                <button
-                  type="button"
-                  onClick={() => handleProcessEmail(email.id)}
-                  disabled={processing === email.id || !email.projectId}
-                  title={
+                <Tooltip
+                  content={
                     !email.projectId
                       ? "Kein Projekt zugeordnet - bitte zuerst Projekt zuweisen"
                       : undefined
                   }
-                  className="flex items-center gap-1 rounded-sm bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  <SparklesIcon className="h-3 w-3" />
-                  {processing === email.id ? "Verarbeite..." : "Mit KI prozessieren"}
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => handleProcessEmail(email.id)}
+                    disabled={processing === email.id || !email.projectId}
+                    className="flex items-center gap-1 rounded-sm bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <SparklesIcon className="h-3 w-3" />
+                    {processing === email.id ? "Verarbeite..." : "Mit KI prozessieren"}
+                  </button>
+                </Tooltip>
                 <Link
                   href={`/admin/project-record-emails/${email.id}/edit`}
                   className="text-blue-600 hover:text-blue-800"

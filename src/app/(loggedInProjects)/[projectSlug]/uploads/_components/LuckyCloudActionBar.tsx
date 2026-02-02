@@ -5,6 +5,7 @@ import {
   getCollaborationSupportedExtensions,
 } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
+import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
 import { blueButtonStyles } from "@/src/core/components/links/styles"
 import { truncateErrorText } from "@/src/server/luckycloud/_utils/errorTruncation"
 import copyToLuckyCloud from "@/src/server/uploads/mutations/copyToLuckyCloud"
@@ -90,21 +91,36 @@ export const LuckyCloudActionBar = ({ upload, projectSlug }: Props) => {
 
   return (
     <IfUserCanEdit>
-      {!hasCollaborationUrl && (
-        <button
-          type="button"
-          onClick={handleCopyToLuckyCloud}
-          disabled={isCopyingToLuckyCloud || isEndingCollaboration || !canCollaborate}
-          title={tooltipText}
-          className={clsx(
-            "rounded px-4 py-2 text-sm font-medium",
-            blueButtonStyles,
-            "disabled:cursor-not-allowed disabled:opacity-50",
-          )}
-        >
-          {isCopyingToLuckyCloud ? "Wird gestartet..." : "Kollaboration starten"}
-        </button>
-      )}
+      {!hasCollaborationUrl &&
+        (tooltipText ? (
+          <Tooltip content={tooltipText}>
+            <button
+              type="button"
+              onClick={handleCopyToLuckyCloud}
+              disabled={isCopyingToLuckyCloud || isEndingCollaboration || !canCollaborate}
+              className={clsx(
+                "rounded px-4 py-2 text-sm font-medium",
+                blueButtonStyles,
+                "disabled:cursor-not-allowed disabled:opacity-50",
+              )}
+            >
+              {isCopyingToLuckyCloud ? "Wird gestartet..." : "Kollaboration starten"}
+            </button>
+          </Tooltip>
+        ) : (
+          <button
+            type="button"
+            onClick={handleCopyToLuckyCloud}
+            disabled={isCopyingToLuckyCloud || isEndingCollaboration || !canCollaborate}
+            className={clsx(
+              "rounded px-4 py-2 text-sm font-medium",
+              blueButtonStyles,
+              "disabled:cursor-not-allowed disabled:opacity-50",
+            )}
+          >
+            {isCopyingToLuckyCloud ? "Wird gestartet..." : "Kollaboration starten"}
+          </button>
+        ))}
       {hasCollaborationUrl && (
         <button
           type="button"
