@@ -1,4 +1,4 @@
-FROM node:22-trixie-slim
+FROM node:24-trixie-slim
 
 # Arbeitsverzeichnis setzen
 WORKDIR /app
