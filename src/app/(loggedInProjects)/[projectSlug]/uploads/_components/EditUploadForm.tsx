@@ -202,7 +202,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
             <UploadLocationMap />
           </div>
 
-          <LuckyCloudNotice collaborationUrl={upload.collaborationUrl} />
+          <LuckyCloudNotice collaborationUrl={upload.collaborationUrl} mimeType={upload.mimeType} />
         </Form>
       </div>
 

@@ -1,5 +1,9 @@
 "use client"
 
+import {
+  canCollaborateInLuckyCloud,
+  getCollaborationSupportedExtensions,
+} from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { blueButtonStyles } from "@/src/core/components/links/styles"
 import { truncateErrorText } from "@/src/server/luckycloud/_utils/errorTruncation"
@@ -7,16 +11,16 @@ import copyToLuckyCloud from "@/src/server/uploads/mutations/copyToLuckyCloud"
 import endCollaboration from "@/src/server/uploads/mutations/endCollaboration"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
 import { getQueryClient, getQueryKey, useMutation } from "@blitzjs/rpc"
+import { PromiseReturnType } from "blitz"
 import { clsx } from "clsx"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 type Props = {
-  upload: {
-    id: number
-    collaborationUrl: string | null
-    externalUrl: string
-  }
+  upload: Pick<
+    PromiseReturnType<typeof getUploadWithRelations>,
+    "id" | "collaborationUrl" | "externalUrl" | "mimeType"
+  >
   projectSlug: string
 }
 
@@ -29,6 +33,11 @@ export const LuckyCloudActionBar = ({ upload, projectSlug }: Props) => {
   const [endCollaborationMutation] = useMutation(endCollaboration)
 
   const hasCollaborationUrl = !!upload.collaborationUrl
+  const canCollaborate = canCollaborateInLuckyCloud(upload.mimeType)
+  const supportedExtensions = getCollaborationSupportedExtensions()
+  const tooltipText = !canCollaborate
+    ? `Kollaboration nur für Office-Dokumente wie ${supportedExtensions.join(", ")} möglich`
+    : undefined
 
   const handleCopyToLuckyCloud = async () => {
     setIsCopyingToLuckyCloud(true)
@@ -85,7 +94,8 @@ export const LuckyCloudActionBar = ({ upload, projectSlug }: Props) => {
         <button
           type="button"
           onClick={handleCopyToLuckyCloud}
-          disabled={isCopyingToLuckyCloud || isEndingCollaboration}
+          disabled={isCopyingToLuckyCloud || isEndingCollaboration || !canCollaborate}
+          title={tooltipText}
           className={clsx(
             "rounded px-4 py-2 text-sm font-medium",
             blueButtonStyles,
