@@ -3,7 +3,7 @@
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { ActionBar } from "@/src/core/components/forms/ActionBar"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
-import { blueButtonStyles, Link } from "@/src/core/components/links"
+import { Link } from "@/src/core/components/links"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import {
   subsectionDashboardRoute,
