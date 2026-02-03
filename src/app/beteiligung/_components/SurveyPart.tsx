@@ -14,20 +14,35 @@ import {
 } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { pageHasErrors } from "@/src/app/beteiligung/_shared/utils/pageHasErrors"
 import { scrollToTopWithDelay } from "@/src/app/beteiligung/_shared/utils/scrollToTopWithDelay"
-
 import { useParams } from "next/navigation"
 import { useContext, useEffect, useState } from "react"
 import { z } from "zod"
 
 type Props = {
   stage: "part1" | "part2" | "part3"
-  handleSubmit: ({ value, meta }: { value: FormData; meta: { again: boolean } }) => Promise<void>
+  handleSubmit: ({
+    value,
+    meta,
+  }: {
+    value: FormData
+    meta: { again: boolean; surveyResponseId: number }
+  }) => Promise<void>
   setStage: (stage: Stage) => void
   isIntro: boolean
   setIsIntro: (intro: boolean) => void
+  surveyResponseId: number | null
+  onStartPart: () => Promise<void>
 }
 
-export const SurveyPart = ({ stage, handleSubmit, setStage, setIsIntro, isIntro }: Props) => {
+export const SurveyPart = ({
+  stage,
+  handleSubmit,
+  setStage,
+  setIsIntro,
+  isIntro,
+  surveyResponseId,
+  onStartPart,
+}: Props) => {
   const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
   const [page, setPage] = useState(0)
   const { setProgress } = useContext(ProgressContext)
@@ -56,7 +71,7 @@ export const SurveyPart = ({ stage, handleSubmit, setStage, setIsIntro, isIntro 
     defaultValues: allPagesFormFields
       ? Object.fromEntries(allPagesFormFields.map((field) => [field.name, field.defaultValue]))
       : undefined,
-    onSubmitMeta: {} as { again: boolean },
+    onSubmitMeta: {} as { again: boolean; surveyResponseId: number },
     onSubmit: handleSubmit,
     // @ts-expect-error tbd
     validators: { onSubmit: schema },
@@ -99,7 +114,9 @@ export const SurveyPart = ({ stage, handleSubmit, setStage, setIsIntro, isIntro 
 
   const currentProgressBar = getprogressBarDefinitionBySurveySlug(surveySlug, stage)
 
-  const handleStart = () => {
+  const handleStart = async () => {
+    // Create pending CREATED response before starting the form
+    await onStartPart()
     setIsIntro(false)
     setPage(0)
     scrollToTopWithDelay()
@@ -152,8 +169,13 @@ export const SurveyPart = ({ stage, handleSubmit, setStage, setIsIntro, isIntro 
         onSubmit={(e) => {
           e.preventDefault()
           e.stopPropagation()
-          // @ts-expect-error
-          form.handleSubmit({ again: e.nativeEvent.submitter.id === "again" })
+          if (!surveyResponseId) {
+            console.error("Cannot submit: surveyResponseId is null")
+            return
+          }
+          const submitter = (e.nativeEvent as SubmitEvent).submitter
+          const again = submitter?.id === "again"
+          form.handleSubmit({ again, surveyResponseId })
         }}
       >
         {isIntro ? (

@@ -1,4 +1,4 @@
-import db from "@/db"
+import db, { SurveyResponseStateEnum } from "@/db"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 
@@ -12,7 +12,7 @@ export default resolver.pipe(
   async ({ id }) => {
     return await db.surveySession.findFirstOrThrow({
       include: {
-        responses: true,
+        responses: { where: { state: SurveyResponseStateEnum.SUBMITTED } },
       },
       where: { id },
     })

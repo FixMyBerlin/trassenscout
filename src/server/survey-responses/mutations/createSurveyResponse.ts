@@ -1,6 +1,6 @@
 import db from "@/db"
 import { resolver } from "@blitzjs/rpc"
-import { SurveyResponseSourceEnum } from "@prisma/client"
+import { SurveyResponseSourceEnum, SurveyResponseStateEnum } from "@prisma/client"
 import { z } from "zod"
 
 const CreateSurveyResponseSchema = z.object({
@@ -9,6 +9,7 @@ const CreateSurveyResponseSchema = z.object({
   data: z.string(),
   source: z.nativeEnum(SurveyResponseSourceEnum),
   status: z.string(),
+  state: z.nativeEnum(SurveyResponseStateEnum).default(SurveyResponseStateEnum.SUBMITTED),
 })
 
 export default resolver.pipe(

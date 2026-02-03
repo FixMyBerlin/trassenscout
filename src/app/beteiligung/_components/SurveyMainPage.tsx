@@ -15,11 +15,10 @@ import {
 } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
 import { scrollToTopWithDelay } from "@/src/app/beteiligung/_shared/utils/scrollToTopWithDelay"
-
 import createSurveyResponse from "@/src/server/survey-responses/mutations/createSurveyResponse"
-import surveyFeedbackEmail from "@/src/server/survey-responses/mutations/surveyFeedbackEmail"
+import surveyFeedbackEmail from "@/src/server/survey-responses/mutations/surveyPart2Email"
+import updateSurveyResponsePublic from "@/src/server/survey-responses/mutations/updateSurveyResponsePublic"
 import createSurveySession from "@/src/server/survey-sessions/mutations/createSurveySession"
-
 import { useMutation } from "@blitzjs/rpc"
 import { useParams, useSearchParams } from "next/navigation"
 import { useState } from "react"
@@ -52,11 +51,19 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
   const [surveySessionId, setSurveySessionId] = useState<null | number>(null)
   const [createSurveySessionMutation] = useMutation(createSurveySession)
   const [createSurveyResponseMutation] = useMutation(createSurveyResponse)
-  const [surveyFeedbackEmailMutation] = useMutation(surveyFeedbackEmail)
+  const [updateSurveyResponsePublicMutation] = useMutation(updateSurveyResponsePublic)
+  const [surveyPart2EmailMutation] = useMutation(surveyFeedbackEmail)
   // to reset form when repeated
   const [formKey, setFormKey] = useState(1)
   const searchParams = useSearchParams()
   const allParams = searchParams ? Object.fromEntries(searchParams.entries()) : null
+
+  // Track response IDs per part
+  const [responseIdByPart, setResponseIdByPart] = useState<Record<1 | 2 | 3, number | null>>({
+    1: null,
+    2: null,
+    3: null,
+  })
 
   const [progress, setProgress] = useState(getprogressBarDefinitionBySurveySlug(surveySlug, stage))
 
@@ -73,20 +80,50 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
   const backendConfig = getConfigBySurveySlug(surveySlug, "backend")
   const surveyResponseDefaultStatus = backendConfig.status[0].value
 
+  // Create a (CREATED) response when starting a part
+  const createPendingResponse = async (part: 1 | 2 | 3) => {
+    const surveySessionId_ = await getOrCreateSurveySessionId()
+    const response = await createSurveyResponseMutation({
+      surveySessionId: surveySessionId_,
+      surveyPart: part,
+      data: "{}",
+      source: "FORM",
+      status: surveyResponseDefaultStatus,
+      state: "CREATED",
+    })
+    setResponseIdByPart((prev) => ({ ...prev, [part]: response.id }))
+    return response.id
+  }
+
+  // Update response to SUBMITTED on submit
+  const updateResponseSubmitted = async ({
+    id,
+    surveySessionId: sessionId,
+    value,
+  }: {
+    id: number
+    surveySessionId: number
+    value: unknown
+  }) => {
+    const response = await updateSurveyResponsePublicMutation({
+      id,
+      surveySessionId: sessionId,
+      data: JSON.stringify(value),
+      state: "SUBMITTED",
+    })
+  }
+
   // @ts-expect-error todo
-  const handleSurveyPart1Submit = async ({ value }) => {
+  const handleSurveyPart1Submit = async ({ value, meta }) => {
     setIsSpinner(true)
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
-      await createSurveyResponseMutation({
+      await updateResponseSubmitted({
+        id: meta.surveyResponseId,
         surveySessionId: surveySessionId_,
-        surveyPart: 1,
-        data: JSON.stringify(value),
-        source: "FORM",
-        status: surveyResponseDefaultStatus,
+        value,
       })
     })()
-    console.log({ value })
     const nextStage = getNextStage(surveySlug, 1)
     setTimeout(() => {
       setStage(nextStage)
@@ -96,6 +133,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
       setProgress(getprogressBarDefinitionBySurveySlug(surveySlug, nextStage))
     }, 900)
   }
+
   // @ts-expect-error todo
   const handleSurveyPart2Submit = async ({ value, meta }) => {
     setIsSpinner(true)
@@ -108,21 +146,22 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
     // delete value.enableLocation
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
-      await createSurveyResponseMutation({
+      await updateResponseSubmitted({
+        id: meta.surveyResponseId,
         surveySessionId: surveySessionId_,
-        surveyPart: 2,
-        data: JSON.stringify(value),
-        source: "FORM",
-        status: surveyResponseDefaultStatus,
+        value,
       })
-      await surveyFeedbackEmailMutation({
+      await surveyPart2EmailMutation({
         surveySessionId: surveySessionId_,
         data: value,
         surveySlug,
         searchParams: allParams,
       })
+      // If part2 is repeated, create a new pending (CREATED) response immediately
+      if (meta.again) {
+        await createPendingResponse(2)
+      }
     })()
-    console.log({ value })
     const nextStage = getNextStage(surveySlug, 2)
     // depending on meta (coming from submit button) repeat part2 or go to next existing stage
     const newStage = meta.again ? "part2" : nextStage
@@ -137,17 +176,16 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
       setProgress(getprogressBarDefinitionBySurveySlug(surveySlug, newStage))
     }, 900)
   }
+
   // @ts-expect-error todo
-  const handleSurveyPart3Submit = async ({ value }) => {
+  const handleSurveyPart3Submit = async ({ value, meta }) => {
     setIsSpinner(true)
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
-      await createSurveyResponseMutation({
+      await updateResponseSubmitted({
+        id: meta.surveyResponseId,
         surveySessionId: surveySessionId_,
-        surveyPart: 3,
-        data: JSON.stringify(value),
-        source: "FORM",
-        status: surveyResponseDefaultStatus,
+        value,
       })
     })()
     console.log({ value })
@@ -160,6 +198,11 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
     }, 900)
   }
 
+  // Handler for when a part starts (called from SurveyPart)
+  const handleStartPart = async (part: 1 | 2 | 3) => {
+    await createPendingResponse(part)
+  }
+
   let component
   switch (stage) {
     case "part1":
@@ -170,6 +213,8 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           setStage={setStage}
           stage="part1"
           handleSubmit={handleSurveyPart1Submit}
+          surveyResponseId={responseIdByPart[1]}
+          onStartPart={() => handleStartPart(1)}
         />
       )
       break
@@ -183,6 +228,8 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           setStage={setStage}
           stage="part2"
           handleSubmit={handleSurveyPart2Submit}
+          surveyResponseId={responseIdByPart[2]}
+          onStartPart={() => handleStartPart(2)}
         />
       )
       break
@@ -194,6 +241,8 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           setStage={setStage}
           stage="part3"
           handleSubmit={handleSurveyPart3Submit}
+          surveyResponseId={responseIdByPart[3]}
+          onStartPart={() => handleStartPart(3)}
         />
       )
       break
@@ -210,6 +259,10 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           <code>stage: {stage}</code>
           <br />
           <code>progressbar: {progress}</code>
+          <br />
+          <code>surveySessionId: {surveySessionId ?? "null"}</code>
+          <br />
+          <code>responseIdByPart: {JSON.stringify(responseIdByPart, null, 2)}</code>
         </Debug>
         <div className={isSpinner ? "blur-sm" : ""}>{component}</div>
         {isSpinner && <SurveySpinnerLayover />}

@@ -1,4 +1,4 @@
-import db, { Prisma } from "@/db"
+import db, { Prisma, SurveyResponseStateEnum } from "@/db"
 import { getFlatSurveyFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_utils/getFlatSurveyFormFields"
 import { AllowedSurveySlugsSchema } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
@@ -24,7 +24,11 @@ export default resolver.pipe(
     skip = 0,
     take = 1000,
   }: GetSurveySessionsWithResponsesInput) => {
-    const safeWhere = { survey: { project: { slug: projectSlug } }, surveyId, ...where }
+    const safeWhere = {
+      survey: { project: { slug: projectSlug } },
+      surveyId,
+      ...where,
+    }
 
     const {
       items: surveySessions,
@@ -52,6 +56,7 @@ export default resolver.pipe(
       .map((session) => session.responses)
       .flat()
       .filter((response) => response.surveyPart === 1)
+      .filter((response) => response.state === SurveyResponseStateEnum.SUBMITTED)
       // sort: oldest first
       .sort((a, b) => a.id - b.id)
 
@@ -60,6 +65,7 @@ export default resolver.pipe(
       .map((session) => session.responses)
       .flat()
       .filter((response) => response.surveyPart === 2)
+      .filter((response) => response.state === SurveyResponseStateEnum.SUBMITTED)
       // sort: latest first
       // We need to sort again; the frontend received different orders before…
       .sort((a, b) => b.id - a.id)

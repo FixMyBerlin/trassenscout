@@ -1,4 +1,4 @@
-import db from "@/db"
+import db, { SurveyResponseStateEnum } from "@/db"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
@@ -17,6 +17,7 @@ export default resolver.pipe(
   async ({ projectSlug, surveyId }: GetFeedbackSurveyResponsesWithSurveyDataAndComments) => {
     const rawSurveyResponsePart2 = await db.surveyResponse.findMany({
       where: {
+        state: SurveyResponseStateEnum.SUBMITTED,
         // Only surveyResponse.session.project === projectSlug
         surveySession: {
           survey: { project: { slug: projectSlug } },
