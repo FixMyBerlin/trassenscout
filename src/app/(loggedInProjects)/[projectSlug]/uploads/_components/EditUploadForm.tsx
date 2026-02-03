@@ -29,6 +29,7 @@ import { LuckyCloudActionBar } from "./LuckyCloudActionBar"
 import { LuckyCloudDocumentLink } from "./LuckyCloudDocumentLink"
 import { LuckyCloudNotice } from "./LuckyCloudNotice"
 import { SuperAdminLuckyCloud } from "./SuperAdminLuckyCloud"
+import { UploadAuthorAndDates } from "./UploadAuthorAndDates"
 import { UploadPreview } from "./UploadPreview"
 
 type UploadSubsectionFieldsProps = {
@@ -243,6 +244,13 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
 
       <SuperAdminLuckyCloud upload={upload} projectSlug={projectSlug} />
       <BackLink href={returnPath} text={returnText} />
+      <UploadAuthorAndDates
+        className="mt-4"
+        createdBy={upload.createdBy}
+        createdAt={upload.createdAt}
+        updatedBy={upload.updatedBy ?? undefined}
+        updatedAt={upload.updatedAt ?? undefined}
+      />
       <SuperAdminLogData data={{ upload, subsections, returnPath, returnText }} />
     </>
   )

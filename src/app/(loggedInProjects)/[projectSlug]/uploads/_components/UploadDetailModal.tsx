@@ -2,10 +2,10 @@
 
 import { DeleteUploadButton } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/DeleteUploadButton"
 import { LuckyCloudDocumentLink } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/LuckyCloudDocumentLink"
+import { UploadAuthorAndDates } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadAuthorAndDates"
 import { UploadPreview } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreview"
 import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
-import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { Link, blueButtonStylesForLinkElement } from "@/src/core/components/links"
 import { ButtonWrapper } from "@/src/core/components/links/ButtonWrapper"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
@@ -95,26 +95,12 @@ export const UploadDetailModal = ({
 
       {/* Details */}
       <div className="space-y-3 text-sm">
-        <div>
-          <p className="text-gray-600">
-            Erstellt
-            {upload.createdBy ? (
-              <> von {getFullname(upload.createdBy)}</>
-            ) : (
-              " von Unbekannt"
-            )} am {formatBerlinTime(upload.createdAt, "dd.MM.yyyy, HH:mm")}
-          </p>
-          {upload.updatedBy && (
-            <p className="mt-1 text-gray-600">
-              Aktualisiert
-              {upload.updatedBy ? (
-                <> von {getFullname(upload.updatedBy)}</>
-              ) : (
-                " von Unbekannt"
-              )} am {formatBerlinTime(upload.updatedAt, "dd.MM.yyyy, HH:mm")}
-            </p>
-          )}
-        </div>
+        <UploadAuthorAndDates
+          createdBy={upload.createdBy}
+          createdAt={upload.createdAt}
+          updatedBy={upload.updatedBy ?? undefined}
+          updatedAt={upload.updatedAt ?? undefined}
+        />
 
         {upload.summary && (
           <div className="border-t border-gray-200 pt-3">

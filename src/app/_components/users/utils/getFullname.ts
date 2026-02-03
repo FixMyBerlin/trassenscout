@@ -1,10 +1,7 @@
-import { CurrentUser } from "@/src/server/users/types"
-import { Contact } from "@prisma/client"
-
-type Props = (Partial<CurrentUser> | Partial<Contact>) & {
+type Props = {
   firstName?: string | null
   lastName?: string | null
-}
+} | null
 
 export const getFullname = (user: Props) => {
   if (!user) return null
