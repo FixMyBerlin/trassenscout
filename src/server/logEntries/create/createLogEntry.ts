@@ -75,6 +75,7 @@ export const createLogEntry = async (input: LogEntryCreate) => {
       stakeholdernoteId: data.stakeholdernoteId,
       uploadId: data.uploadId,
       surveyResponseId: data.surveyResponseId,
+      projectRecordId: data.projectRecordId,
     },
   })
 }

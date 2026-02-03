@@ -10,19 +10,40 @@ import { twMerge } from "tailwind-merge"
 
 type Props = {
   itemTitle: string
-  onDelete: () => Promise<unknown>
+  onDelete?: () => Promise<unknown>
+  onClick?: () => Promise<unknown> | void
   returnPath: Route
   variant?: "text" | "icon"
 }
 
-export const DeleteActionBar = ({ itemTitle, onDelete, returnPath, variant = "icon" }: Props) => {
+export const DeleteActionBar = ({
+  itemTitle,
+  onDelete,
+  onClick,
+  returnPath,
+  variant = "icon",
+}: Props) => {
   const router = useRouter()
 
   const handleDelete = async () => {
+    if (onClick) {
+      try {
+        await onClick()
+      } catch (error) {
+        console.error(`Error deleting ${itemTitle}:`, error)
+        alert(
+          "Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.",
+        )
+      }
+      return
+    }
+
+    if (!onDelete) return
+
     if (window.confirm(`Möchten Sie ${frenchQuote(itemTitle)} wirklich unwiderruflich löschen?`)) {
       try {
         await onDelete()
-        await router.push(returnPath as Route<string>)
+        router.push(returnPath as Route<string>)
         router.refresh()
       } catch (error) {
         console.error(`Error deleting ${itemTitle}:`, error)

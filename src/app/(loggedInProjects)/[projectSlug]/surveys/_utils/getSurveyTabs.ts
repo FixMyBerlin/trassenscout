@@ -1,5 +1,5 @@
 import { invoke } from "@/src/blitz-server"
-import getFirstFeedbackSurveyResponseWithLocationId from "@/src/server/survey-responses/queries/getFirstFeedbackSurveyResponseWithLocationId"
+import getFirstFeedbackSurveyResponseWithLocationId from "@/src/server/survey-responses/queries/getFirstPart2SurveyResponseWithLocationId"
 import { Route } from "next"
 import "server-only"
 import { surveyHref, surveyResponsesHref, surveyResponsesMapHref } from "./SurveyHrefs"
