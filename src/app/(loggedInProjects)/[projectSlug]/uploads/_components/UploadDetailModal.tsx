@@ -4,6 +4,7 @@ import { DeleteUploadButton } from "@/src/app/(loggedInProjects)/[projectSlug]/u
 import { LuckyCloudDocumentLink } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/LuckyCloudDocumentLink"
 import { UploadAuthorAndDates } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadAuthorAndDates"
 import { UploadPreview } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreview"
+import { UploadVerknuepfungen } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadVerknuepfungen"
 import { uploadUrl } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/uploadUrl"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { Link, blueButtonStylesForLinkElement } from "@/src/core/components/links"
@@ -12,8 +13,6 @@ import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
 import { H3 } from "@/src/core/components/text"
 import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
-import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
-import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
 import { formatFileSize } from "@/src/core/utils/formatFileSize"
 import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import getUploadWithRelations from "@/src/server/uploads/queries/getUploadWithRelations"
@@ -46,13 +45,6 @@ export const UploadDetailModal = ({
 
   // Check if upload was marked as deleted or is null
   if (!upload || (upload as any).__deleted) return null
-
-  const hasSubsection = upload.subsection !== null
-  const hasSubsubsection = upload.Subsubsection !== null
-  const hasProjectRecords = upload.projectRecords && upload.projectRecords.length > 0
-  const hasProjectRecordEmail = upload.projectRecordEmail !== null
-  const hasRelations =
-    hasSubsection || hasSubsubsection || hasProjectRecords || hasProjectRecordEmail
 
   return (
     <Modal open={open} handleClose={onClose} className="space-y-4 sm:max-w-2xl">
@@ -112,56 +104,13 @@ export const UploadDetailModal = ({
         )}
 
         <div className="border-t border-gray-200 pt-3">
-          <h4 className="text-sm font-medium text-gray-700">Verknüpfungen:</h4>
-          {hasRelations ? (
-            <div className="space-y-2 text-sm">
-              {hasSubsection && (
-                <div>
-                  <span className="font-medium text-gray-900">Planungsabschnitt: </span>
-                  <span className="text-gray-600">
-                    {upload.subsection!.start}–{upload.subsection!.end}
-                  </span>
-                </div>
-              )}
-              {hasSubsubsection && (
-                <div>
-                  <span className="font-medium text-gray-900">Eintrag: </span>
-                  <span className="text-gray-600">{upload.Subsubsection!.slug}</span>
-                </div>
-              )}
-              {hasProjectRecords && (
-                <div>
-                  <span className="font-medium text-gray-900">Protokolleinträge: </span>
-                  <div className="mt-1 space-y-1">
-                    {upload.projectRecords!.map((record) => (
-                      <Link
-                        key={record.id}
-                        href={projectRecordDetailRoute(projectSlug, record.id)}
-                        className="block text-blue-600 hover:text-blue-800"
-                      >
-                        {record.title}
-                        {record.date && (
-                          <span className="ml-2 text-gray-500">
-                            ({formatBerlinTime(record.date, "P")})
-                          </span>
-                        )}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {hasProjectRecordEmail && (
-                <div>
-                  <span className="font-medium text-gray-900">E-Mail-Anhang: </span>
-                  <span className="text-gray-600">
-                    {formatBerlinTime(upload.projectRecordEmail!.createdAt, "dd.MM.yyyy, HH:mm")}
-                  </span>
-                </div>
-              )}
-            </div>
-          ) : (
-            <p className="text-sm text-gray-500">Es wurden noch keine Verknüpfungen eingetragen.</p>
-          )}
+          <UploadVerknuepfungen
+            projectSlug={projectSlug}
+            subsection={upload.subsection}
+            subsubsection={upload.Subsubsection}
+            projectRecords={upload.projectRecords}
+            projectRecordEmail={upload.projectRecordEmail}
+          />
         </div>
 
         {upload.latitude && upload.longitude && (
