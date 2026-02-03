@@ -1,6 +1,8 @@
 "use client"
 
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
+import { ActionBar } from "@/src/core/components/forms/ActionBar"
+import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { blueButtonStyles, Link } from "@/src/core/components/links"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import {
@@ -37,8 +39,6 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
     return actions
   })
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
   const toggleUploadAction = (uploadId: number) => {
     setUploadActions((prev) => ({
       ...prev,
@@ -67,7 +67,6 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
       return
     }
 
-    setIsSubmitting(true)
     try {
       const keepUploadIds = Object.entries(uploadActions)
         .filter(([_, action]) => action === "save")
@@ -83,7 +82,6 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
     } catch (error) {
       console.error("Error deleting project record:", error)
       alert("Beim Löschen ist ein Fehler aufgetreten. Eventuell existieren noch verknüpfte Daten.")
-      setIsSubmitting(false)
     }
   }
 
@@ -193,11 +191,9 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
                 <Switch
                   checked={isSave}
                   onChange={() => toggleUploadAction(upload.id)}
-                  disabled={isSubmitting}
                   className={twJoin(
                     "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
                     isSave ? "bg-green-600" : "bg-red-600",
-                    isSubmitting && "cursor-not-allowed opacity-50",
                   )}
                 >
                   <span className="sr-only">
@@ -217,20 +213,15 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
           )
         })}
       </div>
-
-      <div className="mt-8 flex flex-col justify-end gap-4 sm:flex-row">
-        <Link button="white" href={returnPath}>
-          Abbrechen
-        </Link>
-        <button
-          type="button"
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-          className={twJoin(blueButtonStyles, isSubmitting && "cursor-not-allowed opacity-50")}
-        >
-          {isSubmitting ? "Löschen..." : "Protokolleintrag löschen"}
-        </button>
-      </div>
+      <ActionBar
+        right={
+          <DeleteActionBar
+            itemTitle="Protokolleintrag"
+            onClick={handleSubmit}
+            returnPath={returnPath}
+          />
+        }
+      />
     </div>
   )
 }
