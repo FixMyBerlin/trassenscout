@@ -6,7 +6,7 @@ import {
 } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
-import { blueButtonStyles } from "@/src/core/components/links/styles"
+import { whiteButtonStyles } from "@/src/core/components/links/styles"
 import { truncateErrorText } from "@/src/server/luckycloud/_utils/errorTruncation"
 import copyToLuckyCloud from "@/src/server/uploads/mutations/copyToLuckyCloud"
 import endCollaboration from "@/src/server/uploads/mutations/endCollaboration"
@@ -100,7 +100,7 @@ export const LuckyCloudActionBar = ({ upload, projectSlug }: Props) => {
               disabled={isCopyingToLuckyCloud || isEndingCollaboration || !canCollaborate}
               className={clsx(
                 "rounded px-4 py-2 text-sm font-medium",
-                blueButtonStyles,
+                whiteButtonStyles,
                 "disabled:cursor-not-allowed disabled:opacity-50",
               )}
             >
@@ -114,7 +114,7 @@ export const LuckyCloudActionBar = ({ upload, projectSlug }: Props) => {
             disabled={isCopyingToLuckyCloud || isEndingCollaboration || !canCollaborate}
             className={clsx(
               "rounded px-4 py-2 text-sm font-medium",
-              blueButtonStyles,
+              whiteButtonStyles,
               "disabled:cursor-not-allowed disabled:opacity-50",
             )}
           >
@@ -128,7 +128,7 @@ export const LuckyCloudActionBar = ({ upload, projectSlug }: Props) => {
           disabled={isCopyingToLuckyCloud || isEndingCollaboration}
           className={clsx(
             "rounded px-4 py-2 text-sm font-medium",
-            blueButtonStyles,
+            whiteButtonStyles,
             "disabled:cursor-not-allowed disabled:opacity-50",
           )}
         >
