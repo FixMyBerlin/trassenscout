@@ -9,6 +9,8 @@ export type LinesLayerProps = {
       color?: string
       width?: number
       opacity?: number
+      dashed?: boolean
+      secondColor?: string
     }
   >
 }
@@ -32,7 +34,26 @@ export const LinesLayer = ({ lines }: LinesLayerProps) => {
         }}
       />
       <Layer
-        id="lines-layer"
+        id="lines-layer-bg"
+        type="line"
+        layout={{
+          "line-cap": "round",
+          "line-join": "round",
+        }}
+        paint={{
+          "line-width": ["case", ["has", "width"], ["get", "width"], 7],
+          "line-color": [
+            "case",
+            ["has", "secondColor"],
+            ["get", "secondColor"],
+            layerColors.background,
+          ],
+          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.9],
+        }}
+        filter={["get", "dashed"]}
+      />
+      <Layer
+        id="lines-layer-solid"
         type="line"
         layout={{
           "line-cap": "round",
@@ -43,6 +64,22 @@ export const LinesLayer = ({ lines }: LinesLayerProps) => {
           "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
           "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
         }}
+        filter={["any", ["!", ["has", "dashed"]], ["!", ["get", "dashed"]]]}
+      />
+      <Layer
+        id="lines-layer-dashed"
+        type="line"
+        layout={{
+          "line-cap": "round",
+          "line-join": "round",
+        }}
+        paint={{
+          "line-width": ["case", ["has", "width"], ["get", "width"], 7],
+          "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
+          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
+          "line-dasharray": [1, 1],
+        }}
+        filter={["get", "dashed"]}
       />
     </Source>
   )

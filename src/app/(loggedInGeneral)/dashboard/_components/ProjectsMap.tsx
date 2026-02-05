@@ -5,6 +5,7 @@ import { StartEndLabel } from "@/src/core/components/Map/Labels/StartEndLabel"
 import { layerColors } from "@/src/core/components/Map/layerColors"
 import { TipMarker } from "@/src/core/components/Map/TipMarker"
 import { extractLineEndpoints } from "@/src/core/components/Map/utils/extractLineEndpoints"
+import { point } from "@turf/helpers"
 import { getCenterOfMass } from "@/src/core/components/Map/utils/getCenterOfMass"
 import { lineStringToGeoJSON } from "@/src/core/components/Map/utils/lineStringToGeoJSON"
 import { polygonToGeoJSON } from "@/src/core/components/Map/utils/polygonToGeoJSON"
@@ -101,12 +102,11 @@ export const ProjectsMap = ({ projects }: Props) => {
   }, [projects, hoveredMap, hoveredMarker])
 
   const dotsGeoms = useMemo(() => {
-    const lineDots: Position[] = []
-    selectableLines.features.forEach((line) => {
+    const lineDots = selectableLines.features.flatMap((line) => {
       const endpoints = extractLineEndpoints(line.geometry)
-      lineDots.push(...endpoints)
+      return endpoints.map((endpoint) => point(endpoint, { radius: 6 }))
     })
-    return lineDots
+    return featureCollection(lineDots)
   }, [selectableLines])
 
   const markers = useMemo(() => {

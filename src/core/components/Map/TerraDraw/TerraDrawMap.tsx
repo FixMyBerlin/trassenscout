@@ -93,7 +93,7 @@ export const TerraDrawMap = ({ initialGeometry, onChange, initialViewState, chil
       <BaseMap
         id="terra-draw-map"
         initialViewState={initialViewState || defaultViewState}
-        dots={[]}
+        dots={undefined}
         lines={undefined}
         backgroundSwitcherPosition="bottom-left"
       >

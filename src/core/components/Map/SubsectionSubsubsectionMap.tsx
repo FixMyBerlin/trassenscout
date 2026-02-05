@@ -30,7 +30,17 @@ export const SubsectionSubsubsectionMap = ({
   const projectSlug = useProjectSlug()
   const router = useRouter()
 
-  type HandleSelectProps = { subsectionSlug: string; subsubsectionSlug: string; edit: boolean }
+  // Filter subsubsections to only include entries belonging to the selected subsection
+  const filteredSubsubsections = useMemo(
+    () => subsubsections.filter((subsub) => subsub.subsectionId === selectedSubsection.id),
+    [subsubsections, selectedSubsection.id],
+  )
+
+  type HandleSelectProps = {
+    subsectionSlug: string
+    subsubsectionSlug?: string
+    edit: boolean
+  }
   const handleSelect = ({ subsectionSlug, subsubsectionSlug, edit }: HandleSelectProps) => {
     if (!projectSlug) return
     const url = edit
@@ -47,13 +57,24 @@ export const SubsectionSubsubsectionMap = ({
   const handleClickMap = (e: MapLayerMouseEvent) => {
     const subsectionSlug = e.features?.at(0)?.properties?.subsectionSlug
     const subsubsectionSlug = e.features?.at(0)?.properties?.subsubsectionSlug
+
+    // Handle subsection click (when subsectionSlug exists but no subsubsectionSlug)
+    if (subsectionSlug && !subsubsectionSlug) {
+      // Skip if clicking the selected subsection
+      if (subsectionSlug === selectedSubsection.slug) return
+
+      handleSelect({ subsectionSlug, edit: e.originalEvent?.altKey })
+      return
+    }
+
+    // Handle subsubsection click
     if (subsectionSlug && subsubsectionSlug) {
       handleSelect({ subsectionSlug, subsubsectionSlug, edit: e.originalEvent?.altKey })
 
       // Fly to bounds of clicked subsubsection
       const map = e.target
       if (map) {
-        const clickedSubsubsection = subsubsections.find(
+        const clickedSubsubsection = filteredSubsubsections.find(
           (subsub) => subsub.slug === subsubsectionSlug,
         )
         if (clickedSubsubsection) {
@@ -77,7 +98,15 @@ export const SubsectionSubsubsectionMap = ({
   const [hoveredMap, setHoveredMap] = useState<string | number | null>(null)
   const [hoveredMarker, setHoveredMarker] = useState<string | number | null>(null)
   const handleMouseEnter = (e: MapLayerMouseEvent) => {
-    setHoveredMap(e.features?.at(0)?.properties?.subsubsectionSlug || null)
+    const subsectionSlug = e.features?.at(0)?.properties?.subsectionSlug
+    const subsubsectionSlug = e.features?.at(0)?.properties?.subsubsectionSlug
+
+    // Skip hover for selected subsection
+    if (subsectionSlug === selectedSubsection.slug && !subsubsectionSlug) {
+      return
+    }
+
+    setHoveredMap(subsubsectionSlug || null)
   }
   const handleMouseLeave = () => {
     setHoveredMap(null)
@@ -85,7 +114,7 @@ export const SubsectionSubsubsectionMap = ({
 
   // Calculate bbox including subsection and selected subsubsection if present (for initial view)
   const mapBbox = useMemo(() => {
-    const selectedSubsubsection = subsubsections.find(
+    const selectedSubsubsection = filteredSubsubsections.find(
       (subsub) => subsub.slug === pageSubsubsectionSlug,
     )
     const geometries: SupportedGeometry[] = [selectedSubsection.geometry]
@@ -93,9 +122,13 @@ export const SubsectionSubsubsectionMap = ({
       geometries.push(selectedSubsubsection.geometry)
     }
     return geometriesBbox(geometries)
-  }, [selectedSubsection.geometry, subsubsections, pageSubsubsectionSlug])
+  }, [selectedSubsection.geometry, filteredSubsubsections, pageSubsubsectionSlug])
 
-  const { lines: subsectionLines, polygons: subsectionPolygons } = useMemo(
+  const {
+    lines: subsectionLines,
+    polygons: subsectionPolygons,
+    dots: subsectionDotsGeoms,
+  } = useMemo(
     () =>
       getSubsectionFeatures({
         subsections,
@@ -104,16 +137,32 @@ export const SubsectionSubsubsectionMap = ({
     [subsections, selectedSubsection.slug],
   )
 
-  const { selectableLines, selectablePoints, selectablePolygons, dotsGeoms } = useMemo(
+  const {
+    selectableLines,
+    selectablePoints,
+    selectablePolygons,
+    dotsGeoms: entryDotsGeoms,
+  } = useMemo(
     () =>
       getSubsubsectionFeatures({
-        subsubsections,
+        subsubsections: filteredSubsubsections,
         selectedSubsubsectionSlug: pageSubsubsectionSlug,
         hoveredMap,
         hoveredMarker,
       }),
-    [subsubsections, pageSubsubsectionSlug, hoveredMap, hoveredMarker],
+    [filteredSubsubsections, pageSubsubsectionSlug, hoveredMap, hoveredMarker],
   )
+
+  // Combine subsection dots and entry dots
+  const allDotsGeoms = useMemo(() => {
+    if (!subsectionDotsGeoms && !entryDotsGeoms) return undefined
+    const subsectionFeatures = subsectionDotsGeoms?.features || []
+    const entryFeatures = entryDotsGeoms?.features || []
+    return {
+      type: "FeatureCollection" as const,
+      features: [...subsectionFeatures, ...entryFeatures],
+    }
+  }, [subsectionDotsGeoms, entryDotsGeoms])
 
   return (
     <>
@@ -131,10 +180,10 @@ export const SubsectionSubsubsectionMap = ({
         selectableLines={selectableLines}
         selectablePoints={selectablePoints}
         selectablePolygons={selectablePolygons}
-        dots={dotsGeoms}
+        dots={allDotsGeoms}
       >
         <SubsubsectionMarkers
-          subsubsections={subsubsections}
+          subsubsections={filteredSubsubsections}
           pageSubsectionSlug={pageSubsectionSlug}
           onSelect={handleSelect}
           onMarkerHover={setHoveredMarker}

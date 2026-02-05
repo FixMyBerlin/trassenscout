@@ -1,6 +1,7 @@
 import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
-import { featureCollection } from "@turf/helpers"
+import { featureCollection, point } from "@turf/helpers"
 import { layerColors } from "../layerColors"
+import { extractLineEndpoints } from "./extractLineEndpoints"
 import { lineStringToGeoJSON } from "./lineStringToGeoJSON"
 import { polygonToGeoJSON } from "./polygonToGeoJSON"
 
@@ -14,11 +15,13 @@ export const getSubsectionFeatures = ({ subsections, selectedSubsectionSlug }: P
     subsections
       .flatMap((subsection) => {
         if (subsection.type === "LINE") {
+          const isSelected = subsection.slug === selectedSubsectionSlug
+          const isDashed = subsection.SubsectionStatus?.style === "DASHED"
           const properties = {
-            color:
-              subsection.slug === selectedSubsectionSlug
-                ? layerColors.unselectableCurrent
-                : layerColors.unselectable,
+            subsectionSlug: subsection.slug,
+            color: isSelected ? layerColors.selectedSubsection : layerColors.unselectableSubsection,
+            dashed: isDashed ? true : undefined,
+            secondColor: isDashed ? layerColors.dashedSubsectionSecondary : undefined,
           }
           return lineStringToGeoJSON(subsection.geometry, properties)
         }
@@ -31,11 +34,10 @@ export const getSubsectionFeatures = ({ subsections, selectedSubsectionSlug }: P
     subsections
       .flatMap((subsection) => {
         if (subsection.type === "POLYGON") {
+          const isSelected = subsection.slug === selectedSubsectionSlug
           const properties = {
-            color:
-              subsection.slug === selectedSubsectionSlug
-                ? layerColors.unselectableCurrent
-                : layerColors.unselectable,
+            subsectionSlug: subsection.slug,
+            color: isSelected ? layerColors.selectedSubsection : layerColors.unselectableSubsection,
           }
           return polygonToGeoJSON(subsection.geometry, properties)
         }
@@ -44,5 +46,16 @@ export const getSubsectionFeatures = ({ subsections, selectedSubsectionSlug }: P
       .filter(Boolean),
   )
 
-  return { lines, polygons }
+  // Extract dots for subsection start/end points (default size 6)
+  const dots = featureCollection(
+    subsections.flatMap((subsection) => {
+      if (subsection.type === "LINE") {
+        const endpoints = extractLineEndpoints(subsection.geometry)
+        return endpoints.map((endpoint) => point(endpoint, { radius: 6 }))
+      }
+      return []
+    }),
+  )
+
+  return { lines, polygons, dots }
 }

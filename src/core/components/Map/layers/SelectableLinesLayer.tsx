@@ -18,8 +18,15 @@ export type SelectableLinesLayerProps = {
         color: string
         opacity?: number
         dashed?: boolean
+        secondColor?: string
       }
-    | { projectSlug: string; color: string; opacity?: number; dashed?: boolean }
+    | {
+        projectSlug: string
+        color: string
+        opacity?: number
+        dashed?: boolean
+        secondColor?: string
+      }
   >
   layerIdSuffix?: string
 }
@@ -56,7 +63,12 @@ export const SelectableLinesLayer = ({
         }}
         paint={{
           "line-width": 7,
-          "line-color": layerColors.background,
+          "line-color": [
+            "case",
+            ["has", "secondColor"],
+            ["get", "secondColor"],
+            layerColors.background,
+          ],
           "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.9],
         }}
         filter={["get", "dashed"]}

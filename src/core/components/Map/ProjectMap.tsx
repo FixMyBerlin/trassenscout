@@ -2,7 +2,7 @@ import { legendItemsConfig } from "@/src/core/components/Map/legendConfig"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { Routes } from "@blitzjs/next"
-import { featureCollection } from "@turf/helpers"
+import { featureCollection, point } from "@turf/helpers"
 import { useRouter } from "next/router"
 import { useEffect, useMemo, useState } from "react"
 import { MapEvent, MapLayerMouseEvent, ViewStateChangeEvent, useMap } from "react-map-gl/maplibre"
@@ -74,14 +74,16 @@ export const ProjectMap = ({ subsections }: Props) => {
   }
 
   const dotsGeoms = useMemo(() => {
-    return subsections
+    const dots = subsections
       .filter((ss) => ss.type === "LINE")
       .flatMap((ss) => {
         if (ss.geometry.type === "LineString" || ss.geometry.type === "MultiLineString") {
-          return extractLineEndpoints(ss.geometry)
+          const endpoints = extractLineEndpoints(ss.geometry)
+          return endpoints.map((endpoint) => point(endpoint, { radius: 6 }))
         }
         return []
       })
+    return featureCollection(dots)
   }, [subsections])
 
   const selectableLines = useMemo(() => {

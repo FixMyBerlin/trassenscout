@@ -1,5 +1,5 @@
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
-import { featureCollection } from "@turf/helpers"
+import { featureCollection, point } from "@turf/helpers"
 import { layerColors } from "../layerColors"
 import { extractLineEndpoints } from "./extractLineEndpoints"
 import { lineStringToGeoJSON } from "./lineStringToGeoJSON"
@@ -23,15 +23,19 @@ export const getSubsubsectionFeatures = ({
     subsubsections
       .filter((sec) => sec.type === "LINE")
       .flatMap((sec) => {
+        const isSelected = sec.slug === selectedSubsubsectionSlug
+        const isHovered = hoveredMap === sec.slug || hoveredMarker === sec.slug
+        const isDashed = sec.SubsubsectionStatus?.style === "DASHED"
         const properties = {
           subsectionSlug: sec.subsection.slug,
           subsubsectionSlug: sec.slug,
-          color:
-            sec.slug === selectedSubsubsectionSlug
-              ? layerColors.selected
-              : hoveredMap === sec.slug || hoveredMarker === sec.slug
-                ? layerColors.hovered
-                : layerColors.selectable,
+          color: isSelected
+            ? layerColors.selected
+            : isHovered
+              ? layerColors.hovered
+              : layerColors.entryDefault,
+          dashed: isDashed ? true : undefined,
+          secondColor: isDashed ? layerColors.dashedEntrySecondary : undefined,
         }
         return lineStringToGeoJSON<typeof properties>(sec.geometry, properties)
       }),
@@ -41,24 +45,21 @@ export const getSubsubsectionFeatures = ({
     subsubsections
       .filter((sec) => sec.type === "POINT")
       .flatMap((sec) => {
+        const isSelected = sec.slug === selectedSubsubsectionSlug
+        const isHovered = hoveredMap === sec.slug || hoveredMarker === sec.slug
+        const color = isSelected
+          ? layerColors.selected
+          : isHovered
+            ? layerColors.hovered
+            : layerColors.entryDefault
         const properties = {
           subsectionSlug: sec.subsection.slug,
           subsubsectionSlug: sec.slug,
           opacity: 0.3,
-          color:
-            sec.slug === selectedSubsubsectionSlug
-              ? layerColors.selected
-              : hoveredMap === sec.slug || hoveredMarker === sec.slug
-                ? layerColors.hovered
-                : layerColors.selectable,
+          color,
           radius: 10,
           "border-width": 3,
-          "border-color":
-            sec.slug === selectedSubsubsectionSlug
-              ? layerColors.selected
-              : hoveredMap === sec.slug || hoveredMarker === sec.slug
-                ? layerColors.hovered
-                : layerColors.selectable,
+          "border-color": color,
         }
         return pointToGeoJSON<typeof properties>(sec.geometry, properties)
       }),
@@ -68,27 +69,32 @@ export const getSubsubsectionFeatures = ({
     subsubsections
       .filter((sec) => sec.type === "POLYGON")
       .flatMap((sec) => {
+        const isSelected = sec.slug === selectedSubsubsectionSlug
+        const isHovered = hoveredMap === sec.slug || hoveredMarker === sec.slug
         const properties = {
           subsectionSlug: sec.subsection.slug,
           subsubsectionSlug: sec.slug,
-          color:
-            sec.slug === selectedSubsubsectionSlug
-              ? layerColors.selected
-              : hoveredMap === sec.slug || hoveredMarker === sec.slug
-                ? layerColors.hovered
-                : layerColors.selectable,
+          color: isSelected
+            ? layerColors.selected
+            : isHovered
+              ? layerColors.hovered
+              : layerColors.entryDefault,
         }
         return polygonToGeoJSON<typeof properties>(sec.geometry, properties)
       })
       .filter(Boolean),
   )
 
-  const dotsGeoms = subsubsections.flatMap((sec) => {
-    if (sec.geometry.type === "LineString" || sec.geometry.type === "MultiLineString") {
-      return extractLineEndpoints(sec.geometry)
-    }
-    return []
-  })
+  // Extract dots for entry start/end points (smaller size 4)
+  const dotsGeoms = featureCollection(
+    subsubsections.flatMap((sec) => {
+      if (sec.geometry.type === "LineString" || sec.geometry.type === "MultiLineString") {
+        const endpoints = extractLineEndpoints(sec.geometry)
+        return endpoints.map((endpoint) => point(endpoint, { radius: 4 }))
+      }
+      return []
+    }),
+  )
 
   return {
     selectableLines,
