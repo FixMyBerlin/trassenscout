@@ -587,10 +587,10 @@ model SurveyResponse {
   id                     Int                      @id @default(autoincrement())
   surveyPart             Int
   data                   String
-  status                 String?
+  status                 String? // status that user sets in the app (configurable in config)
   note                   String?
   source                 SurveyResponseSourceEnum @default(FORM)
-  state                  SurveyResponseStateEnum  @default(SUBMITTED)
+  state                  SurveyResponseStateEnum  @default(SUBMITTED) // state of survey (set internally by the app) (CREATED, SUBMITTED)
   //
   surveySession          SurveySession            @relation(fields: [surveySessionId], references: [id])
   surveySessionId        Int
