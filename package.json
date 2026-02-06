@@ -10,7 +10,7 @@
     "predev": "npm run codegen && npm run predev:check_docker",
     "predev:check_docker": "if [[ $(docker inspect -f '{{.State.Running}}' ts-db) = \"true\" ]]; then echo Docker: Skipping – Container already running; else docker compose up --detach; fi",
     "codegen": "blitz codegen",
-    "postdev": "docker compose stop",
+    "postdev": "bun scripts/ask-stop-docker.ts",
     "debug": "DEBUG=blitz:* blitz console",
     "build": "blitz build",
     "bleach": "rm -rf node_modules/ && rm -rf .next/ && npm install",
@@ -124,6 +124,7 @@
     "zustand": "5.0.4"
   },
   "devDependencies": {
+    "@clack/prompts": "^0.7.0",
     "@faker-js/faker": "9.7.0",
     "@next/bundle-analyzer": "14.2.28",
     "@playwright/test": "1.52.0",
