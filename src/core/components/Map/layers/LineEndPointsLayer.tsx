@@ -10,7 +10,9 @@ const baseLineEndPointsLayerId = "layer_line_endpoints"
 export const getLineEndPointsLayerId = (suffix: string) => `${baseLineEndPointsLayerId}${suffix}`
 
 export type LineEndPointsLayerProps = {
-  lineEndPoints: FeatureCollection<Point, { lineId?: string | number; featureId?: string }> | undefined
+  lineEndPoints:
+    | FeatureCollection<Point, { lineId?: string | number; featureId?: string }>
+    | undefined
   layerIdSuffix: string
   colorSchema: "subsection" | "subsubsection"
 }
@@ -31,15 +33,14 @@ export const LineEndPointsLayer = ({
   const colorExpression: ExpressionSpecification = [
     "case",
     [
-      "all",
-      ["boolean", ["feature-state", "hover"], false],
-      ["boolean", ["feature-state", "selected"], false],
+      "==",
+      // DashboardMap uses `projectSlug` to highlight all Subsections of the given project
+      ["coalesce", ["get", "projectSlug"], ["get", "lineId"]],
+      ["coalesce", ["global-state", "highlightSlug"], ""],
     ],
-    sharedColors.selected,
+    sharedColors.hovered,
     ["boolean", ["feature-state", "selected"], false],
     sharedColors.selected,
-    ["boolean", ["feature-state", "hover"], false],
-    sharedColors.hovered,
     colors.lineDotSelected, // Inner fill color
   ]
 

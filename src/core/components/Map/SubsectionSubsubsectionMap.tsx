@@ -3,7 +3,6 @@ import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { Routes } from "@blitzjs/next"
-import { featureCollection } from "@turf/helpers"
 import { useRouter } from "next/router"
 import { useEffect, useMemo } from "react"
 import { MapLayerMouseEvent, useMap } from "react-map-gl/maplibre"
@@ -177,7 +176,10 @@ export const SubsectionSubsubsectionMap = ({
       allLines.features.forEach((f) => {
         const featureId = f.properties?.featureId
         if (featureId) {
-          map.setFeatureState({ source: getLineLayerId(suffix), id: featureId }, { selected: false })
+          map.setFeatureState(
+            { source: getLineLayerId(suffix), id: featureId },
+            { selected: false },
+          )
         }
       })
     }
@@ -194,7 +196,10 @@ export const SubsectionSubsubsectionMap = ({
       allPolygons.features.forEach((f) => {
         const featureId = f.properties?.featureId
         if (featureId) {
-          map.setFeatureState({ source: getPolygonLayerId(suffix), id: featureId }, { selected: false })
+          map.setFeatureState(
+            { source: getPolygonLayerId(suffix), id: featureId },
+            { selected: false },
+          )
         }
       })
     }

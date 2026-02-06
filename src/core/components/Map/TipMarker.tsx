@@ -1,5 +1,6 @@
 import { clsx } from "clsx"
 import { CSSProperties } from "react"
+import { useMap } from "react-map-gl/maplibre"
 
 type Props = React.HTMLAttributes<HTMLDivElement> & {
   anchor:
@@ -11,6 +12,7 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
     | "top"
     | "topRight"
     | "right"
+  slug: string
 }
 
 const createSvg = (style: CSSProperties, rotation: number, path: JSX.Element) => {
@@ -58,9 +60,40 @@ const divStyles = {
   right: { ...shadow, top: 0, left: 14, transform: "translateY(-50%)" },
 }
 
-export const TipMarker: React.FC<Props> = ({ className, anchor, children, ...props }) => {
+export const TipMarker = ({
+  className,
+  anchor,
+  children,
+  slug,
+  onMouseEnter: propsOnMouseEnter,
+  onMouseLeave: propsOnMouseLeave,
+  ...props
+}: Props) => {
+  const { mainMap } = useMap()
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    const map = mainMap?.getMap()
+    if (map) {
+      map.setGlobalStateProperty("highlightSlug", String(slug))
+    }
+    propsOnMouseEnter?.(e)
+  }
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    const map = mainMap?.getMap()
+    if (map) {
+      map.setGlobalStateProperty("highlightSlug", null)
+    }
+    propsOnMouseLeave?.(e)
+  }
+
   return (
-    <div className={clsx("cursor-pointer whitespace-nowrap", className)} {...props}>
+    <div
+      className={clsx("cursor-pointer whitespace-nowrap", className)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      {...props}
+    >
       <div
         style={divStyles[anchor]}
         className="absolute rounded-md border border-gray-400 bg-white"

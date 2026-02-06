@@ -44,7 +44,12 @@ export const PolygonsLayer = ({
 
   const colorExpression: ExpressionSpecification = [
     "case",
-    ["boolean", ["feature-state", "hover"], false],
+    [
+      "==",
+      // DashboardMap uses `projectSlug` to highlight all Subsections of the given project
+      ["coalesce", ["get", "projectSlug"], ["get", "subsubsectionSlug"], ["get", "subsectionSlug"]],
+      ["coalesce", ["global-state", "highlightSlug"], ""],
+    ],
     sharedColors.hovered,
     ["boolean", ["feature-state", "selected"], false],
     colors.current, // Selected subsubsections use light blue (not yellow)

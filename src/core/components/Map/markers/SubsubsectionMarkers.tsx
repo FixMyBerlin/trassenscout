@@ -2,7 +2,6 @@ import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/g
 import { Marker } from "react-map-gl/maplibre"
 import { shortTitle } from "../../text"
 import { SubsubsectionMapIcon } from "../Icons"
-import { useMarkerHover } from "./useMarkerHover"
 import { TitleLabel } from "../Labels"
 import { TipMarker } from "../TipMarker"
 import { getCenterOfMass } from "../utils/getCenterOfMass"
@@ -25,7 +24,6 @@ const SubsubsectionMarker = ({
   onSelect,
 }: SubsubsectionMarkerProps) => {
   const [longitude, latitude] = getCenterOfMass(subsubsection.geometry)
-  const hoverHandlers = useMarkerHover(subsubsection.slug)
 
   return (
     <Marker
@@ -47,7 +45,7 @@ const SubsubsectionMarker = ({
             ? "opacity-100"
             : "opacity-50 hover:opacity-100"
         }
-        {...hoverHandlers}
+        slug={subsubsection.slug}
       >
         <TitleLabel
           icon={<SubsubsectionMapIcon label={shortTitle(subsubsection.slug)} />}

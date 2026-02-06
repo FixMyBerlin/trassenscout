@@ -2,7 +2,6 @@ import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { Marker } from "react-map-gl/maplibre"
 import { shortTitle } from "../../text"
 import { SubsectionMapIcon } from "../Icons"
-import { useMarkerHover } from "./useMarkerHover"
 import { StartEndLabel } from "../Labels"
 import { TipMarker } from "../TipMarker"
 import { getCenterOfMass } from "../utils/getCenterOfMass"
@@ -23,7 +22,6 @@ type SubsectionMarkerProps = {
 
 const SubsectionMarker = ({ subsection, zoom, onSelect }: SubsectionMarkerProps) => {
   const [longitude, latitude] = getCenterOfMass(subsection.geometry)
-  const hoverHandlers = useMarkerHover(subsection.slug)
 
   return (
     <Marker
@@ -32,7 +30,7 @@ const SubsectionMarker = ({ subsection, zoom, onSelect }: SubsectionMarkerProps)
       anchor="center"
       onClick={(e) => onSelect({ subsectionSlug: subsection.slug, edit: e.originalEvent.altKey })}
     >
-      <TipMarker anchor={subsection.labelPos} {...hoverHandlers}>
+      <TipMarker anchor={subsection.labelPos} slug={subsection.slug}>
         <StartEndLabel
           icon={<SubsectionMapIcon label={shortTitle(subsection.slug)} />}
           subIcon={subsection.operator?.slug}

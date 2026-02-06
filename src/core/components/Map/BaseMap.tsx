@@ -1,7 +1,6 @@
 import { clsx } from "clsx"
-import type { Map as MapLibreMap } from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
-import { createContext, useContext, useState } from "react"
+import { useState } from "react"
 import MapComponent, {
   MapEvent,
   MapLayerMouseEvent,
@@ -23,21 +22,6 @@ import { PolygonsLayer, getPolygonLayerId, type PolygonsLayerProps } from "./lay
 const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
 export const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
 const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
-
-type MapHighlightContextValue = {
-  highlightFeaturesBySlug: (map: MapLibreMap, slug: string) => void
-  clearHoverState: (map: MapLibreMap) => void
-}
-
-const MapHighlightContext = createContext<MapHighlightContextValue | null>(null)
-
-export const useMapHighlight = () => {
-  const context = useContext(MapHighlightContext)
-  if (!context) {
-    throw new Error("useMapHighlight must be used within BaseMap")
-  }
-  return context
-}
 
 export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
   Partial<
@@ -94,7 +78,7 @@ export const BaseMap = ({
 
   const [cursorStyle, setCursorStyle] = useState("grab")
 
-  // Map layer source IDs - shared across all handlers
+  // Map layer source IDs - shared across all handlers (still needed for selected state)
   const sourceIds = {
     line: getLineLayerId(selectableLayerIdSuffix),
     polygon: getPolygonLayerId(selectableLayerIdSuffix),
@@ -102,7 +86,7 @@ export const BaseMap = ({
     endPoints: getLineEndPointsLayerId(selectableLayerIdSuffix),
   }
 
-  // Build feature map grouped by slug (subsubsectionSlug or subsectionSlug)
+  // Build feature map grouped by slug (only needed for selected state, not hover)
   // This allows highlighting all features belonging to the same subsubsection/subsection
   type SlugFeatureIds = {
     lineIds: string[]
@@ -190,77 +174,7 @@ export const BaseMap = ({
 
   const slugFeatureMap = map
 
-  // Helper function to highlight features by slug (used by both map hover and marker hover)
-  const highlightFeaturesBySlug = (map: MapLibreMap, slug: string) => {
-    const featureIds = slugFeatureMap.get(slug)
-    if (featureIds) {
-      // Set hover on all features from this subsubsection/subsection
-      featureIds.lineIds.forEach((id) => {
-        map.setFeatureState({ source: sourceIds.line, id }, { hover: true })
-      })
-
-      featureIds.polygonIds.forEach((id) => {
-        map.setFeatureState({ source: sourceIds.polygon, id }, { hover: true })
-      })
-
-      featureIds.pointIds.forEach((id) => {
-        map.setFeatureState({ source: sourceIds.point, id }, { hover: true })
-      })
-
-      featureIds.endPointIds.forEach((id) => {
-        map.setFeatureState({ source: sourceIds.endPoints, id }, { hover: true })
-      })
-    }
-  }
-
-  // Helper function to clear hover state (used by both map hover and marker hover)
-  const clearHoverState = (map: MapLibreMap) => {
-    // Reset hover for ALL features in all sources using our GeoJSON data
-    if (lines) {
-      lines.features.forEach((f) => {
-        const featureId = f.properties?.featureId
-        if (featureId) {
-          map.setFeatureState({ source: sourceIds.line, id: featureId }, { hover: false })
-        }
-      })
-    }
-
-    if (points) {
-      points.features.forEach((f) => {
-        const featureId = f.properties?.featureId
-        if (featureId) {
-          map.setFeatureState({ source: sourceIds.point, id: featureId }, { hover: false })
-        }
-      })
-    }
-
-    if (polygons) {
-      polygons.features.forEach((f) => {
-        const featureId = f.properties?.featureId
-        if (featureId) {
-          map.setFeatureState({ source: sourceIds.polygon, id: featureId }, { hover: false })
-        }
-      })
-    }
-
-    // Reset hover for endpoints
-    if (lineEndPoints) {
-      lineEndPoints.features.forEach((f) => {
-        const featureId = f.properties?.featureId
-        if (featureId) {
-          map.setFeatureState({ source: sourceIds.endPoints, id: featureId }, { hover: false })
-        }
-      })
-    }
-  }
-
-  // Context value for marker components
-  const highlightContextValue = {
-    highlightFeaturesBySlug,
-    clearHoverState,
-  }
-
-  // Handle hover state via setFeatureState
+  // Handle hover state via MapLibre internal global state
   const handleMouseEnterInternal = (e: MapLayerMouseEvent) => {
     const map = e.target
     const features = e.features || []
@@ -280,15 +194,17 @@ export const BaseMap = ({
       return
     }
 
-    // Extract slug to find all matching features
+    // Extract slug to set MapLibre internal global state
+    // DashboardMap uses projectSlug to highlight all subsections for a project
     const rawSlug =
+      feature.properties?.projectSlug ||
       feature.properties?.subsubsectionSlug ||
       feature.properties?.subsectionSlug ||
       feature.properties?.lineId
     const lookupSlug = rawSlug ? String(rawSlug) : undefined
 
     if (lookupSlug) {
-      highlightFeaturesBySlug(map, lookupSlug)
+      map.setGlobalStateProperty("highlightSlug", lookupSlug)
     }
 
     setCursorStyle("pointer")
@@ -303,7 +219,7 @@ export const BaseMap = ({
       return
     }
 
-    clearHoverState(map)
+    map.setGlobalStateProperty("highlightSlug", null)
 
     setCursorStyle("grab")
     if (onMouseLeave) onMouseLeave(e)
@@ -401,7 +317,9 @@ export const BaseMap = ({
 
   // Normalize external interactiveLayerIds to array
   if (interactiveLayerIds) {
-    const normalized = Array.isArray(interactiveLayerIds) ? interactiveLayerIds : [interactiveLayerIds]
+    const normalized = Array.isArray(interactiveLayerIds)
+      ? interactiveLayerIds
+      : [interactiveLayerIds]
     ids.push(...normalized)
   }
 
@@ -497,9 +415,7 @@ export const BaseMap = ({
               colorSchema={colorSchema}
             />
           )}
-          <MapHighlightContext.Provider value={highlightContextValue}>
-            {children}
-          </MapHighlightContext.Provider>
+          {children}
         </MapComponent>
         <BackgroundSwitcher
           position={backgroundSwitcherPosition}
