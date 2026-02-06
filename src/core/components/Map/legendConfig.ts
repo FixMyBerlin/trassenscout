@@ -1,76 +1,129 @@
-import { layerColors } from "@/src/core/components/Map/layerColors"
+import { sharedColors } from "@/src/core/components/Map/colors/sharedColors"
+import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
+import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
 import { LegendItemConfig } from "@/src/core/components/Map/MapLegend"
 import { GeometryTypeEnum } from "@prisma/client"
 
 export const legendItemsConfig: Record<string, LegendItemConfig[]> = {
   project: [
-    { text: "Planungsabschnitte", color: layerColors.selectable, shape: GeometryTypeEnum.LINE, dots: true },
     {
-      text: "Planungsabschnitte - Trassenverlauf ungeklärt",
-      color: layerColors.selectable,
-      shape: GeometryTypeEnum.LINE,
+      shapes: [GeometryTypeEnum.LINE, GeometryTypeEnum.POLYGON],
+      text: "Planungsabschnitte",
+      color: subsectionColors.selected,
       dots: true,
-      isDashed: true,
-      secondColor: layerColors.dashedSubsectionSecondary,
     },
-    { text: "Planungsabschnitte (Fläche)", color: layerColors.selectable, shape: GeometryTypeEnum.POLYGON },
+    {
+      text: "Verlauf ungeklärt",
+      color: subsectionColors.selected,
+      shape: GeometryTypeEnum.LINE,
+      dots: false,
+      isDashed: true,
+      secondColor: subsectionColors.dashedSecondary,
+    },
   ],
   subsection: [
-    { text: "Eintrag", color: layerColors.entryDefault, shape: GeometryTypeEnum.LINE, dots: true },
-    { text: "Punktueller Eintrag", color: layerColors.entryDefault, shape: GeometryTypeEnum.POINT },
-    { text: "Eintrag (Fläche)", color: layerColors.entryDefault, shape: GeometryTypeEnum.POLYGON },
+    {
+      text: "Eintrag",
+      color: subsubsectionColors.current,
+      shape: GeometryTypeEnum.LINE,
+      dots: true,
+    },
+    {
+      text: "Punktueller Eintrag",
+      color: subsubsectionColors.current,
+      shape: GeometryTypeEnum.POINT,
+    },
+    {
+      text: "Eintrag (Fläche)",
+      color: subsubsectionColors.current,
+      shape: GeometryTypeEnum.POLYGON,
+    },
     {
       text: "Eintrag - Gestrichelt",
-      color: layerColors.entryDefault,
+      color: subsubsectionColors.current,
       shape: GeometryTypeEnum.LINE,
       dots: true,
       isDashed: true,
-      secondColor: layerColors.dashedEntrySecondary,
+      secondColor: subsubsectionColors.dashedSecondary,
     },
     {
       text: "Ausgewählter Planungsabschnitt",
-      color: layerColors.selectedSubsection,
+      color: subsectionColors.selected,
       shape: GeometryTypeEnum.LINE,
     },
     {
       text: "Ausgewählter Planungsabschnitt (Fläche)",
-      color: layerColors.selectedSubsection,
+      color: subsectionColors.selected,
       shape: GeometryTypeEnum.POLYGON,
     },
-    { text: "Andere Planungsabschnitte", color: layerColors.unselectableSubsection, shape: GeometryTypeEnum.LINE },
+    {
+      text: "Andere Planungsabschnitte",
+      color: subsectionColors.unselected,
+      shape: GeometryTypeEnum.LINE,
+    },
     {
       text: "Andere Planungsabschnitte (Fläche)",
-      color: layerColors.unselectableSubsection,
+      color: subsectionColors.unselected,
       shape: GeometryTypeEnum.POLYGON,
     },
     {
-      text: "Planungsabschnitte - Trassenverlauf ungeklärt",
-      color: layerColors.selectedSubsection,
+      text: "Planungsabschnitte - Verlauf ungeklärt",
+      color: subsectionColors.selected,
       shape: GeometryTypeEnum.LINE,
       isDashed: true,
-      secondColor: layerColors.dashedSubsectionSecondary,
+      secondColor: subsectionColors.dashedSecondary,
     },
   ],
   subsubsection: [
-    { text: "Ausgewählter Eintrag", color: layerColors.selected, shape: GeometryTypeEnum.LINE, dots: true },
-    { text: "Eintrag", color: layerColors.entryDefault, shape: GeometryTypeEnum.LINE, dots: true },
-    { text: "Ausgewählter Punktueller Eintrag", color: layerColors.selected, shape: GeometryTypeEnum.POINT },
-    { text: "Punktueller Eintrag", color: layerColors.entryDefault, shape: GeometryTypeEnum.POINT },
-    { text: "Ausgewählter Eintrag (Fläche)", color: layerColors.selected, shape: GeometryTypeEnum.POLYGON },
-    { text: "Eintrag (Fläche)", color: layerColors.entryDefault, shape: GeometryTypeEnum.POLYGON },
+    {
+      text: "Ausgewählter Eintrag",
+      color: sharedColors.selected,
+      shape: GeometryTypeEnum.LINE,
+      dots: true,
+    },
+    {
+      text: "Eintrag",
+      color: subsubsectionColors.current,
+      shape: GeometryTypeEnum.LINE,
+      dots: true,
+    },
+    {
+      text: "Ausgewählter Punktueller Eintrag",
+      color: sharedColors.selected,
+      shape: GeometryTypeEnum.POINT,
+    },
+    {
+      text: "Punktueller Eintrag",
+      color: subsubsectionColors.current,
+      shape: GeometryTypeEnum.POINT,
+    },
+    {
+      text: "Ausgewählter Eintrag (Fläche)",
+      color: sharedColors.selected,
+      shape: GeometryTypeEnum.POLYGON,
+    },
+    {
+      text: "Eintrag (Fläche)",
+      color: subsubsectionColors.current,
+      shape: GeometryTypeEnum.POLYGON,
+    },
     {
       text: "Eintrag - Gestrichelt",
-      color: layerColors.entryDefault,
+      color: subsubsectionColors.current,
       shape: GeometryTypeEnum.LINE,
       dots: true,
       isDashed: true,
-      secondColor: layerColors.dashedEntrySecondary,
+      secondColor: subsubsectionColors.dashedSecondary,
     },
     {
       text: "Ausgewählter Planungsabschnitt",
-      color: layerColors.selectedSubsection,
+      color: subsectionColors.selected,
       shape: GeometryTypeEnum.LINE,
     },
-    { text: "Andere Planungsabschnitte", color: layerColors.unselectableSubsection, shape: GeometryTypeEnum.LINE },
+    {
+      text: "Andere Planungsabschnitte",
+      color: subsectionColors.unselected,
+      shape: GeometryTypeEnum.LINE,
+    },
   ],
 }

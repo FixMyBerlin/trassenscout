@@ -1,4 +1,5 @@
-import { layerColors } from "@/src/core/components/Map/layerColors"
+import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
+import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
 import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 
@@ -7,8 +8,8 @@ export const getLegendIconPropsForSubsection = (subsection: TSubsections[number]
   return {
     type: subsection.type,
     isDashed,
-    color: layerColors.selectable,
-    secondColor: isDashed ? layerColors.dashedSubsectionSecondary : undefined,
+    color: subsectionColors.selected,
+    secondColor: isDashed ? subsectionColors.dashedSecondary : undefined,
     showDots: subsection.type === "LINE",
   }
 }
@@ -18,8 +19,8 @@ export const getLegendIconPropsForSubsubsection = (subsubsection: SubsubsectionW
   return {
     type: subsubsection.type,
     isDashed,
-    color: layerColors.entryDefault,
-    secondColor: isDashed ? layerColors.dashedEntrySecondary : undefined,
+    color: subsubsectionColors.current,
+    secondColor: isDashed ? subsubsectionColors.dashedSecondary : undefined,
     showDots: subsubsection.type === "LINE",
   }
 }

@@ -3,11 +3,19 @@ import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { Routes } from "@blitzjs/next"
+import { featureCollection } from "@turf/helpers"
 import { useRouter } from "next/router"
-import { useMemo, useState } from "react"
-import { MapLayerMouseEvent } from "react-map-gl/maplibre"
+import { useEffect, useMemo } from "react"
+import { MapLayerMouseEvent, useMap } from "react-map-gl/maplibre"
 import { useSlug } from "../../routes/usePagesDirectorySlug"
 import { BaseMap } from "./BaseMap"
+import { getLineEndPointsLayerId } from "./layers/LineEndPointsLayer"
+import { getLineLayerId } from "./layers/LinesLayer"
+import { getPointLayerId } from "./layers/PointsLayer"
+import { getPolygonLayerId } from "./layers/PolygonsLayer"
+import { SubsectionHullsLayer } from "./layers/SubsectionHullsLayer"
+import { legendItemsConfig } from "./legendConfig"
+import { MapLegend } from "./MapLegend"
 import { SubsubsectionMarkers } from "./markers/SubsubsectionMarkers"
 import { UploadMarkers } from "./UploadMarkers"
 import { geometriesBbox } from "./utils/bboxHelpers"
@@ -29,6 +37,7 @@ export const SubsectionSubsubsectionMap = ({
   const pageSubsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
   const router = useRouter()
+  const { mainMap } = useMap()
 
   // Filter subsubsections to only include entries belonging to the selected subsection
   const filteredSubsubsections = useMemo(
@@ -94,24 +103,6 @@ export const SubsectionSubsubsectionMap = ({
     }
   }
 
-  // We need to separate the state to work around the issue when a marker overlaps a line and both interact
-  const [hoveredMap, setHoveredMap] = useState<string | number | null>(null)
-  const [hoveredMarker, setHoveredMarker] = useState<string | number | null>(null)
-  const handleMouseEnter = (e: MapLayerMouseEvent) => {
-    const subsectionSlug = e.features?.at(0)?.properties?.subsectionSlug
-    const subsubsectionSlug = e.features?.at(0)?.properties?.subsubsectionSlug
-
-    // Skip hover for selected subsection
-    if (subsectionSlug === selectedSubsection.slug && !subsubsectionSlug) {
-      return
-    }
-
-    setHoveredMap(subsubsectionSlug || null)
-  }
-  const handleMouseLeave = () => {
-    setHoveredMap(null)
-  }
-
   // Calculate bbox including subsection and selected subsubsection if present (for initial view)
   const mapBbox = useMemo(() => {
     const geometries: SupportedGeometry[] = [selectedSubsection.geometry]
@@ -137,42 +128,139 @@ export const SubsectionSubsubsectionMap = ({
   const {
     lines: subsectionLines,
     polygons: subsectionPolygons,
-    dots: subsectionDotsGeoms,
+    lineEndPoints: subsectionLineEndPointsGeoms,
   } = useMemo(
     () =>
       getSubsectionFeatures({
         subsections,
+        highlight: "currentSubsection",
         selectedSubsectionSlug: selectedSubsection.slug,
       }),
     [subsections, selectedSubsection.slug],
   )
 
   const {
-    selectableLines,
-    selectablePoints,
-    selectablePolygons,
-    dotsGeoms: entryDotsGeoms,
+    lines: subsubsectionLines,
+    points: subsubsectionPoints,
+    polygons: subsubsectionPolygons,
+    lineEndPoints: subsubsectionLineEndPointsGeoms,
   } = useMemo(
     () =>
       getSubsubsectionFeatures({
         subsubsections: filteredSubsubsections,
         selectedSubsubsectionSlug: pageSubsubsectionSlug,
-        hoveredMap,
-        hoveredMarker,
       }),
-    [filteredSubsubsections, pageSubsubsectionSlug, hoveredMap, hoveredMarker],
+    [filteredSubsubsections, pageSubsubsectionSlug],
   )
 
-  // Combine subsection dots and entry dots
-  const allDotsGeoms = useMemo(() => {
-    if (!subsectionDotsGeoms && !entryDotsGeoms) return undefined
-    const subsectionFeatures = subsectionDotsGeoms?.features || []
-    const entryFeatures = entryDotsGeoms?.features || []
-    return {
-      type: "FeatureCollection" as const,
-      features: [...subsectionFeatures, ...entryFeatures],
+  // Only include subsubsection lines (subsection lines are shown as hulls via SubsectionHullsLayer)
+  const allLines = subsubsectionLines?.features.length ? subsubsectionLines : undefined
+
+  // Only include subsubsection polygons (subsection polygons are shown as hulls via SubsectionHullsLayer for LINE, or not shown for POLYGON)
+  const allPolygons = subsubsectionPolygons?.features.length ? subsubsectionPolygons : undefined
+
+  // Only include subsubsection line endpoints (subsection endpoints are not shown)
+  const allLineEndPointsGeoms = subsubsectionLineEndPointsGeoms?.features.length
+    ? subsubsectionLineEndPointsGeoms
+    : undefined
+
+  // Set selected state via setFeatureState when selection changes
+  useEffect(() => {
+    if (!mainMap) return
+
+    const map = mainMap.getMap()
+    const suffix = "_subsubsection"
+
+    // Reset all selected states first
+    // All features in BaseMap are subsubsections (subsection features are handled by hulls)
+    if (allLines) {
+      allLines.features.forEach((f) => {
+        const featureId = f.properties?.featureId
+        if (featureId) {
+          map.setFeatureState({ source: getLineLayerId(suffix), id: featureId }, { selected: false })
+        }
+      })
     }
-  }, [subsectionDotsGeoms, entryDotsGeoms])
+    if (subsubsectionPoints) {
+      subsubsectionPoints.features.forEach((f) => {
+        const featureId = f.properties?.featureId
+        if (featureId) {
+          const sourceId = getPointLayerId(suffix)
+          map.setFeatureState({ source: sourceId, id: featureId }, { selected: false })
+        }
+      })
+    }
+    if (allPolygons) {
+      allPolygons.features.forEach((f) => {
+        const featureId = f.properties?.featureId
+        if (featureId) {
+          map.setFeatureState({ source: getPolygonLayerId(suffix), id: featureId }, { selected: false })
+        }
+      })
+    }
+
+    // Set selected state for current selection
+    if (pageSubsubsectionSlug) {
+      // Find and set selected subsubsection
+      const selectedSubsubsection = filteredSubsubsections.find(
+        (subsub) => subsub.slug === pageSubsubsectionSlug,
+      )
+      if (selectedSubsubsection) {
+        const geometryType = selectedSubsubsection.type
+        const sourceId =
+          geometryType === "LINE"
+            ? getLineLayerId(suffix)
+            : geometryType === "POINT"
+              ? getPointLayerId(suffix)
+              : getPolygonLayerId(suffix)
+
+        // Find features matching this subsubsection
+        const featuresToSelect =
+          geometryType === "LINE"
+            ? allLines?.features.filter(
+                (f) => (f.properties as any)?.subsubsectionSlug === pageSubsubsectionSlug,
+              ) || []
+            : geometryType === "POINT"
+              ? subsubsectionPoints?.features.filter(
+                  (f) => f.properties?.subsubsectionSlug === pageSubsubsectionSlug,
+                ) || []
+              : allPolygons?.features.filter(
+                  (f) => (f.properties as any)?.subsubsectionSlug === pageSubsubsectionSlug,
+                ) || []
+
+        featuresToSelect.forEach((f) => {
+          const featureId = f.properties?.featureId
+          if (featureId) {
+            map.setFeatureState({ source: sourceId, id: featureId }, { selected: true })
+          }
+        })
+
+        // Also set selected state on matching line endpoints if it's a LINE
+        if (selectedSubsubsection.type === "LINE") {
+          const endPointsSourceId = getLineEndPointsLayerId(suffix)
+          const matchingEndPoints =
+            allLineEndPointsGeoms?.features.filter(
+              (endPoint) => endPoint.properties?.lineId === pageSubsubsectionSlug,
+            ) || []
+
+          matchingEndPoints.forEach((endPoint) => {
+            const featureId = endPoint.properties?.featureId
+            if (featureId) {
+              map.setFeatureState({ source: endPointsSourceId, id: featureId }, { selected: true })
+            }
+          })
+        }
+      }
+    }
+  }, [
+    mainMap,
+    pageSubsubsectionSlug,
+    filteredSubsubsections,
+    allLines,
+    subsubsectionPoints,
+    allPolygons,
+    allLineEndPointsGeoms,
+  ])
 
   return (
     <>
@@ -183,29 +271,30 @@ export const SubsectionSubsubsectionMap = ({
           fitBoundsOptions: { padding: 60 },
         }}
         onClick={handleClickMap}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        lines={subsectionLines}
-        polygons={subsectionPolygons}
-        selectableLines={selectableLines}
-        selectablePoints={selectablePoints}
-        selectablePolygons={selectablePolygons}
-        dots={allDotsGeoms}
+        lines={allLines}
+        polygons={allPolygons}
+        points={subsubsectionPoints}
+        lineEndPoints={allLineEndPointsGeoms}
+        selectableLayerIdSuffix="_subsubsection"
+        colorSchema="subsubsection"
       >
+        <SubsectionHullsLayer
+          lines={subsectionLines}
+          polygons={subsectionPolygons}
+          layerIdSuffix="_subsubsection"
+        />
         <SubsubsectionMarkers
           subsubsections={filteredSubsubsections}
           pageSubsectionSlug={pageSubsectionSlug}
           onSelect={handleSelect}
-          onMarkerHover={setHoveredMarker}
         />
         <UploadMarkers projectSlug={projectSlug} interactive={true} />
       </BaseMap>
-      {/* MapLegend temporarily hidden */}
-      {/* <MapLegend
+      <MapLegend
         legendItemsConfig={
           pageSubsubsectionSlug ? legendItemsConfig.subsubsection : legendItemsConfig.subsection
         }
-      /> */}
+      />
       <p className="mt-2 text-right text-xs text-gray-400">
         Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)
       </p>

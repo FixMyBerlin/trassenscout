@@ -1,7 +1,7 @@
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { LegendIcon } from "@/src/core/components/Map/Icons/LegendIcon"
-import { getLegendIconPropsForSubsubsection } from "@/src/core/components/Map/utils/getLegendIconProps"
 import { GEOMETRY_TYPE_TOOLTIPS } from "@/src/core/components/Map/utils/geometryTypeTranslations"
+import { getLegendIconPropsForSubsubsection } from "@/src/core/components/Map/utils/getLegendIconProps"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
 import { Link } from "@/src/core/components/links"

@@ -1,0 +1,85 @@
+import { sharedColors } from "@/src/core/components/Map/colors/sharedColors"
+import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
+import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
+import type { FeatureCollection, Point } from "geojson"
+import { ExpressionSpecification } from "maplibre-gl"
+import { Layer, Source } from "react-map-gl/maplibre"
+
+const baseLineEndPointsLayerId = "layer_line_endpoints"
+
+export const getLineEndPointsLayerId = (suffix: string) => `${baseLineEndPointsLayerId}${suffix}`
+
+export type LineEndPointsLayerProps = {
+  lineEndPoints: FeatureCollection<Point, { lineId?: string | number; featureId?: string }> | undefined
+  layerIdSuffix: string
+  colorSchema: "subsection" | "subsubsection"
+}
+
+export const LineEndPointsLayer = ({
+  lineEndPoints,
+  layerIdSuffix,
+  colorSchema,
+}: LineEndPointsLayerProps) => {
+  if (!lineEndPoints || lineEndPoints.features.length === 0) return null
+
+  const sourceId = getLineEndPointsLayerId(layerIdSuffix)
+  const layerId = getLineEndPointsLayerId(layerIdSuffix)
+
+  // Import colors based on colorSchema
+  const colors = colorSchema === "subsubsection" ? subsubsectionColors : subsectionColors
+
+  const sortKeyExpression: ExpressionSpecification = [
+    "case",
+    [
+      "all",
+      ["boolean", ["feature-state", "hover"], false],
+      ["boolean", ["feature-state", "selected"], false],
+    ],
+    3, // Both hovered and selected
+    ["boolean", ["feature-state", "selected"], false],
+    2, // Selected only
+    ["boolean", ["feature-state", "hover"], false],
+    1, // Hovered only
+    0, // Default
+  ]
+
+  const colorExpression: ExpressionSpecification = [
+    "case",
+    [
+      "all",
+      ["boolean", ["feature-state", "hover"], false],
+      ["boolean", ["feature-state", "selected"], false],
+    ],
+    sharedColors.selected,
+    ["boolean", ["feature-state", "selected"], false],
+    sharedColors.selected,
+    ["boolean", ["feature-state", "hover"], false],
+    sharedColors.hovered,
+    colors.lineDotSelected, // Inner fill color
+  ]
+
+  const strokeColorExpression: ExpressionSpecification = [
+    "case",
+    ["boolean", ["feature-state", "selected"], false],
+    sharedColors.selected, // Yellow border when selected
+    colors.lineDotRing, // Dark border on hover and default
+  ]
+
+  return (
+    <Source id={sourceId} key={sourceId} type="geojson" data={lineEndPoints} promoteId="featureId">
+      <Layer
+        id={layerId}
+        type="circle"
+        layout={{
+          "circle-sort-key": sortKeyExpression,
+        }}
+        paint={{
+          "circle-color": colorExpression, // Inner fill
+          "circle-radius": colors.lineDotRadius,
+          "circle-stroke-color": strokeColorExpression, // Border color responds to hover/selected
+          "circle-stroke-width": colors.lineDotStrokeWidth,
+        }}
+      />
+    </Source>
+  )
+}

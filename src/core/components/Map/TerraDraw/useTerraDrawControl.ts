@@ -1,4 +1,3 @@
-import { layerColors } from "@/src/core/components/Map/layerColors"
 import { isDev } from "@/src/core/utils/isEnv"
 import type { Geometry } from "geojson"
 import type { Map as MapLibreMap } from "maplibre-gl"
@@ -14,6 +13,11 @@ import {
   TerraDrawSelectMode,
 } from "terra-draw"
 import { TerraDrawMapLibreGLAdapter } from "terra-draw-maplibre-gl-adapter"
+
+const TERRA_DRAW_COLORS = {
+  drawing: "#B377FE" as const,
+  selectedDark: "#333333" as const,
+}
 
 export type TerraDrawMode = "point" | "linestring" | "freehand-linestring" | "polygon" | "select"
 
@@ -172,16 +176,16 @@ class TerraDrawControl {
       modes: [
         // DOCS STYLING: https://github.com/JamesLMilner/terra-draw/blob/main/guides/5.STYLING.md
         new TerraDrawPointMode({
-          styles: { pointColor: layerColors.drawing as `#${string}` },
+          styles: { pointColor: TERRA_DRAW_COLORS.drawing },
         }),
         new TerraDrawLineStringMode({
-          styles: { lineStringColor: layerColors.drawing as `#${string}` },
+          styles: { lineStringColor: TERRA_DRAW_COLORS.drawing },
         }),
         new TerraDrawFreehandLineStringMode({
-          styles: { lineStringColor: layerColors.drawing as `#${string}` },
+          styles: { lineStringColor: TERRA_DRAW_COLORS.drawing },
         }),
         new TerraDrawPolygonMode({
-          styles: { outlineColor: layerColors.drawing as `#${string}` },
+          styles: { outlineColor: TERRA_DRAW_COLORS.drawing },
         }),
         new TerraDrawSelectMode({
           flags: {
@@ -212,10 +216,10 @@ class TerraDrawControl {
           },
           styles: {
             // https://github.com/JamesLMilner/terra-draw/blob/main/guides/5.STYLING.md#selection-points
-            selectedPointColor: layerColors.drawing as `#${string}`,
-            selectionPointColor: layerColors.drawing as `#${string}`,
-            selectedLineStringColor: layerColors.selectedDark as `#${string}`,
-            selectedPolygonColor: layerColors.selectedDark as `#${string}`,
+            selectedPointColor: TERRA_DRAW_COLORS.drawing,
+            selectionPointColor: TERRA_DRAW_COLORS.drawing,
+            selectedLineStringColor: TERRA_DRAW_COLORS.selectedDark,
+            selectedPolygonColor: TERRA_DRAW_COLORS.selectedDark,
           },
         }),
       ],

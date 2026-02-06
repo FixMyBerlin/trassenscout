@@ -1,4 +1,5 @@
-import { layerColors } from "@/src/core/components/Map/layerColors"
+import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
+import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
 import { GeometryTypeEnum } from "@prisma/client"
 import { clsx } from "clsx"
 
@@ -14,17 +15,24 @@ type Props = {
 const LegendDots = () => (
   <>
     <span
-      className="absolute top-1/2 -translate-y-1/2 z-10 size-2.5 rounded-full"
-      style={{ backgroundColor: layerColors.dot }}
+      className="absolute top-1/2 z-10 size-2.5 -translate-y-1/2 rounded-full"
+      style={{ backgroundColor: subsectionColors.lineDotSelected }}
     />
     <span
-      className="absolute top-1/2 -translate-y-1/2 left-6 z-10 size-2.5 rounded-full"
-      style={{ backgroundColor: layerColors.dot }}
+      className="absolute top-1/2 left-6 z-10 size-2.5 -translate-y-1/2 rounded-full"
+      style={{ backgroundColor: subsectionColors.lineDotSelected }}
     />
   </>
 )
 
-export const LegendIcon = ({ type, isDashed = false, color, secondColor, showDots = false, className }: Props) => {
+export const LegendIcon = ({
+  type,
+  isDashed = false,
+  color,
+  secondColor,
+  showDots = false,
+  className,
+}: Props) => {
   switch (type) {
     case "LINE":
       if (isDashed) {
@@ -32,20 +40,20 @@ export const LegendIcon = ({ type, isDashed = false, color, secondColor, showDot
           <span className={clsx("relative h-2.5 w-8", className)}>
             {showDots && <LegendDots />}
             <span
-              className="absolute top-1/2 -translate-y-1/2 h-2 w-8 rounded"
+              className="absolute top-1/2 h-2 w-8 -translate-y-1/2 rounded"
               style={{ backgroundColor: color }}
             />
             <span
-              className="absolute top-1/2 -translate-y-1/2 h-2 w-1 rounded-l"
-              style={{ backgroundColor: secondColor || layerColors.dashedEntrySecondary }}
+              className="absolute top-1/2 h-2 w-1 -translate-y-1/2 rounded-l"
+              style={{ backgroundColor: secondColor || subsubsectionColors.dashedSecondary }}
             />
             <span
-              className="absolute top-1/2 -translate-y-1/2 left-2.5 h-2 w-1"
-              style={{ backgroundColor: secondColor || layerColors.dashedEntrySecondary }}
+              className="absolute top-1/2 left-2.5 h-2 w-1 -translate-y-1/2"
+              style={{ backgroundColor: secondColor || subsubsectionColors.dashedSecondary }}
             />
             <span
-              className="absolute top-1/2 -translate-y-1/2 left-5 h-2 w-1"
-              style={{ backgroundColor: secondColor || layerColors.dashedEntrySecondary }}
+              className="absolute top-1/2 left-5 h-2 w-1 -translate-y-1/2"
+              style={{ backgroundColor: secondColor || subsubsectionColors.dashedSecondary }}
             />
           </span>
         )
@@ -55,7 +63,7 @@ export const LegendIcon = ({ type, isDashed = false, color, secondColor, showDot
         <span className={clsx("relative h-2.5 w-8", className)}>
           {showDots && <LegendDots />}
           <span
-            className="absolute top-1/2 -translate-y-1/2 h-2 w-8 rounded-sm border border-gray-500 bg-blue-500"
+            className="absolute top-1/2 h-2 w-8 -translate-y-1/2 rounded-sm border border-gray-500 bg-blue-500"
             style={{ backgroundColor: color }}
           />
         </span>

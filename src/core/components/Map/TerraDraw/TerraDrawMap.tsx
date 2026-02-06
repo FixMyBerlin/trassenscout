@@ -93,9 +93,8 @@ export const TerraDrawMap = ({ initialGeometry, onChange, initialViewState, chil
       <BaseMap
         id="terra-draw-map"
         initialViewState={initialViewState || defaultViewState}
-        dots={undefined}
-        lines={undefined}
         backgroundSwitcherPosition="bottom-left"
+        colorSchema="subsection"
       >
         <TerraDrawControls initialGeometry={initialGeometry} onChange={onChange}>
           {children}

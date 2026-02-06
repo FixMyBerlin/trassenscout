@@ -7,7 +7,12 @@ const seedSubsectionStatus = async () => {
     { projectId: 1, slug: "inProgress", title: "in Umsetzung", style: StatusStyleEnum.REGULAR },
     { projectId: 1, slug: "done", title: "abgeschlossen", style: StatusStyleEnum.REGULAR },
     { projectId: 1, slug: "onHold", title: "pausiert", style: StatusStyleEnum.DASHED },
-    { projectId: 1, slug: "trassenverlauf-ungeklaert", title: "Trassenverlauf ungeklärt", style: StatusStyleEnum.DASHED },
+    {
+      projectId: 1,
+      slug: "trassenverlauf-ungeklaert",
+      title: "Trassenverlauf ungeklärt",
+      style: StatusStyleEnum.DASHED,
+    },
   ]
 
   for (const data of seedFiles) {

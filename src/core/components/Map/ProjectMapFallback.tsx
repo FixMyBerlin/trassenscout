@@ -20,6 +20,7 @@ export const ProjectMapFallback = ({ subsections }: Props) => {
           bounds: subsections.length ? bounds : fallbackBoundsGermany,
           fitBoundsOptions: { padding: 60 },
         }}
+        colorSchema="subsection"
       />
       <ZeroCase visible name="Planungsabschnitte" />
     </section>

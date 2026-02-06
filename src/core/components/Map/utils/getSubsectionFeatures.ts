@@ -1,61 +1,112 @@
-import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
-import { featureCollection, point } from "@turf/helpers"
-import { layerColors } from "../layerColors"
+import type { GeometryByGeometryType } from "@/src/server/shared/utils/geometrySchemas"
+import { GeometryTypeEnum } from "@prisma/client"
+import { feature, featureCollection, point } from "@turf/helpers"
+import type { Feature, LineString, Point, Polygon } from "geojson"
 import { extractLineEndpoints } from "./extractLineEndpoints"
 import { lineStringToGeoJSON } from "./lineStringToGeoJSON"
 import { polygonToGeoJSON } from "./polygonToGeoJSON"
 
-type Props = {
-  subsections: TGetSubsection[]
-  selectedSubsectionSlug: string
+type SubsectionForFeatures =
+  | {
+      slug: string
+      type: typeof GeometryTypeEnum.LINE
+      geometry: GeometryByGeometryType<"LINE">
+      SubsectionStatus?: { style: "REGULAR" | "DASHED" } | null
+    }
+  | {
+      slug: string
+      type: typeof GeometryTypeEnum.POLYGON
+      geometry: GeometryByGeometryType<"POLYGON">
+      SubsectionStatus?: { style: "REGULAR" | "DASHED" } | null
+    }
+
+type Props =
+  | {
+      subsections: SubsectionForFeatures[]
+      highlight: "all"
+    }
+  | {
+      subsections: SubsectionForFeatures[]
+      highlight: "currentSubsection"
+      selectedSubsectionSlug: string
+    }
+
+export type LineProperties = {
+  subsectionSlug: string
+  style: "REGULAR" | "DASHED"
+  isCurrent: boolean
+  featureId: string
 }
 
-export const getSubsectionFeatures = ({ subsections, selectedSubsectionSlug }: Props) => {
-  const lines = featureCollection(
-    subsections
-      .flatMap((subsection) => {
-        if (subsection.type === "LINE") {
-          const isSelected = subsection.slug === selectedSubsectionSlug
-          const isDashed = subsection.SubsectionStatus?.style === "DASHED"
-          const properties = {
-            subsectionSlug: subsection.slug,
-            color: isSelected ? layerColors.selectedSubsection : layerColors.unselectableSubsection,
-            dashed: isDashed ? true : undefined,
-            secondColor: isDashed ? layerColors.dashedSubsectionSecondary : undefined,
-          }
-          return lineStringToGeoJSON(subsection.geometry, properties)
-        }
-        return []
-      })
-      .filter(Boolean),
-  )
+export type PolygonProperties = {
+  subsectionSlug: string
+  style: "REGULAR" | "DASHED"
+  isCurrent: boolean
+  featureId: string
+}
 
-  const polygons = featureCollection(
-    subsections
-      .flatMap((subsection) => {
-        if (subsection.type === "POLYGON") {
-          const isSelected = subsection.slug === selectedSubsectionSlug
-          const properties = {
-            subsectionSlug: subsection.slug,
-            color: isSelected ? layerColors.selectedSubsection : layerColors.unselectableSubsection,
-          }
-          return polygonToGeoJSON(subsection.geometry, properties)
-        }
-        return []
-      })
-      .filter(Boolean),
-  )
+export type LineEndPointProperties = {
+  lineId: string
+  featureId: string
+}
 
-  // Extract dots for subsection start/end points (default size 6)
-  const dots = featureCollection(
-    subsections.flatMap((subsection) => {
-      if (subsection.type === "LINE") {
+export const getSubsectionFeatures = (props: Props) => {
+  const { subsections } = props
+  const lineFeatures: Feature<LineString, LineProperties>[] = []
+  const lineEndPointFeatures: Feature<Point, LineEndPointProperties>[] = []
+  const polygonFeatures: Feature<Polygon, PolygonProperties>[] = []
+
+  for (const subsection of subsections) {
+    const isDashed = subsection.SubsectionStatus?.style === "DASHED"
+    const isCurrent =
+      props.highlight === "all" ? true : subsection.slug === props.selectedSubsectionSlug
+    switch (subsection.type) {
+      case "LINE": {
+        const features = lineStringToGeoJSON(subsection.geometry, {
+          subsectionSlug: subsection.slug,
+          style: isDashed ? ("DASHED" as const) : ("REGULAR" as const),
+          isCurrent,
+        })
+        features.forEach((feat, featureIndex) => {
+          const featureId = `subsection-line-${subsection.slug}-${featureIndex}`
+          lineFeatures.push(
+            feature(feat.geometry, { ...feat.properties, featureId } satisfies LineProperties),
+          )
+        })
+
+        // Extract line endpoints for subsection start/end points
         const endpoints = extractLineEndpoints(subsection.geometry)
-        return endpoints.map((endpoint) => point(endpoint, { radius: 6 }))
+        endpoints.forEach((endpoint, endpointIndex) => {
+          const featureId = `subsection-endpoint-${subsection.slug}-${endpointIndex}`
+          lineEndPointFeatures.push(
+            point(endpoint, {
+              lineId: subsection.slug,
+              featureId,
+            } satisfies LineEndPointProperties),
+          )
+        })
+        break
       }
-      return []
-    }),
-  )
+      case "POLYGON": {
+        const features = polygonToGeoJSON(subsection.geometry, {
+          subsectionSlug: subsection.slug,
+          style: isDashed ? ("DASHED" as const) : ("REGULAR" as const),
+          isCurrent,
+        })
+        features.forEach((feat, featureIndex) => {
+          const featureId = `subsection-polygon-${subsection.slug}-${featureIndex}`
+          polygonFeatures.push(
+            feature(feat.geometry, { ...feat.properties, featureId } satisfies PolygonProperties),
+          )
+        })
+        break
+      }
+    }
+  }
 
-  return { lines, polygons, dots }
+  return {
+    lines: featureCollection(lineFeatures),
+    lineEndPoints: featureCollection(lineEndPointFeatures),
+    polygons: featureCollection(polygonFeatures),
+  }
 }

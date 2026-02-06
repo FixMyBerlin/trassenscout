@@ -2,7 +2,6 @@ import { legendItemsConfig } from "@/src/core/components/Map/legendConfig"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { Routes } from "@blitzjs/next"
-import { featureCollection, point } from "@turf/helpers"
 import { useRouter } from "next/router"
 import { useEffect, useMemo, useState } from "react"
 import { MapEvent, MapLayerMouseEvent, ViewStateChangeEvent, useMap } from "react-map-gl/maplibre"
@@ -10,12 +9,9 @@ import { IfUserCanEdit } from "../../../pagesComponents/memberships/IfUserCan"
 import { useUserCan } from "../../../pagesComponents/memberships/hooks/useUserCan"
 import { BaseMap } from "./BaseMap"
 import { MapLegend } from "./MapLegend"
-import { layerColors } from "./layerColors"
 import { SubsectionMarkers } from "./markers/SubsectionMarkers"
 import { geometriesBbox } from "./utils/bboxHelpers"
-import { extractLineEndpoints } from "./utils/extractLineEndpoints"
-import { lineStringToGeoJSON } from "./utils/lineStringToGeoJSON"
-import { polygonToGeoJSON } from "./utils/polygonToGeoJSON"
+import { getSubsectionFeatures } from "./utils/getSubsectionFeatures"
 
 type Props = { subsections: TSubsections }
 
@@ -63,64 +59,11 @@ export const ProjectMap = ({ subsections }: Props) => {
   const handleZoomEnd = (e: ViewStateChangeEvent) => setZoom(e.viewState.zoom)
   const handleZoomOnLoad = (e: MapEvent) => setZoom(e.target.getZoom())
 
-  // We need to separate the state to work around the issue when a marker overlaps a line and both interact
-  const [hoveredMap, setHoveredMap] = useState<string | null>(null)
-  const [hoveredMarker, setHoveredMarker] = useState<string | null>(null)
-  const handleMouseEnter = (e: MapLayerMouseEvent) => {
-    setHoveredMap(e.features?.at(0)?.properties?.subsectionSlug || null)
-  }
-  const handleMouseLeave = () => {
-    setHoveredMap(null)
-  }
-
-  const dotsGeoms = useMemo(() => {
-    const dots = subsections
-      .filter((ss) => ss.type === "LINE")
-      .flatMap((ss) => {
-        if (ss.geometry.type === "LineString" || ss.geometry.type === "MultiLineString") {
-          const endpoints = extractLineEndpoints(ss.geometry)
-          return endpoints.map((endpoint) => point(endpoint, { radius: 6 }))
-        }
-        return []
-      })
-    return featureCollection(dots)
-  }, [subsections])
-
-  const selectableLines = useMemo(() => {
-    return featureCollection(
-      subsections
-        .filter((subsection) => subsection.type === "LINE")
-        .flatMap((subsection) => {
-          const properties = {
-            subsectionSlug: subsection.slug,
-            dashed: subsection.SubsectionStatus?.style === "DASHED" ? true : undefined,
-            color:
-              hoveredMap === subsection.slug || hoveredMarker === subsection.slug
-                ? layerColors.hovered
-                : layerColors.selectable,
-          }
-          return lineStringToGeoJSON<typeof properties>(subsection.geometry, properties)
-        }),
-    )
-  }, [subsections, hoveredMap, hoveredMarker])
-
-  const selectablePolygons = useMemo(() => {
-    return featureCollection(
-      subsections
-        .filter((subsection) => subsection.type === "POLYGON")
-        .flatMap((subsection) => {
-          const properties = {
-            subsectionSlug: subsection.slug,
-            color:
-              hoveredMap === subsection.slug || hoveredMarker === subsection.slug
-                ? layerColors.hovered
-                : layerColors.selectable,
-          }
-          return polygonToGeoJSON<typeof properties>(subsection.geometry, properties)
-        })
-        .filter(Boolean),
-    )
-  }, [subsections, hoveredMap, hoveredMarker])
+  const {
+    lines: selectableLines,
+    polygons: selectablePolygons,
+    lineEndPoints: lineEndPointsGeoms,
+  } = useMemo(() => getSubsectionFeatures({ subsections, highlight: "all" }), [subsections])
 
   return (
     <section className="mt-3">
@@ -131,24 +74,16 @@ export const ProjectMap = ({ subsections }: Props) => {
           fitBoundsOptions: { padding: 60 },
         }}
         onClick={handleClickMap}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
         onZoomEnd={handleZoomEnd}
         onLoad={handleZoomOnLoad}
-        selectableLines={selectableLines}
-        selectablePolygons={selectablePolygons}
-        dots={dotsGeoms}
+        lines={selectableLines}
+        polygons={selectablePolygons}
+        lineEndPoints={lineEndPointsGeoms}
+        colorSchema="subsection"
       >
-        <SubsectionMarkers
-          subsections={subsections}
-          hoveredMarker={hoveredMarker}
-          hoveredMap={hoveredMap}
-          zoom={zoom}
-          onSelect={handleSelect}
-          onMarkerHover={setHoveredMarker}
-        />
+        <SubsectionMarkers subsections={subsections} zoom={zoom} onSelect={handleSelect} />
       </BaseMap>
-      <MapLegend legendItemsConfig={legendItemsConfig.project} />
+      <MapLegend legendItemsConfig={legendItemsConfig.project} title="" />
       <IfUserCanEdit>
         <p className="mt-2 text-right text-xs text-gray-400">
           Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)

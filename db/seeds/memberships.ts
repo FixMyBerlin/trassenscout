@@ -46,7 +46,7 @@ const seedMemberships = async () => {
           projectId: rs23Project.id,
           userId: user.id,
           role: "VIEWER",
-        }
+        },
       )
     }
   }

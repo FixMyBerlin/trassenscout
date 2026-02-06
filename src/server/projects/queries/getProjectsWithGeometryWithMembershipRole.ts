@@ -17,7 +17,14 @@ export default resolver.pipe(
         id: true,
         slug: true,
         subTitle: true,
-        subsections: { select: { geometry: true, type: true } },
+        subsections: {
+          select: {
+            slug: true,
+            geometry: true,
+            type: true,
+            SubsectionStatus: { select: { style: true } },
+          },
+        },
         memberships: { select: { role: true }, where: { userId: session.userId } },
       },
     })

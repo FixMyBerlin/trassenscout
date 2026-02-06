@@ -6,8 +6,8 @@ import { Metadata } from "next"
 import "server-only"
 import { AdminLogEntriesDashboard } from "./_components/AdminLogEntriesDashboard"
 import { AdminProjectsList } from "./_components/AdminProjectsList"
+import { DashboardMap } from "./_components/DashboardMap"
 import { NoProjectMembershipsYet } from "./_components/NoProjectMembershipsYet"
-import { ProjectsMap } from "./_components/ProjectsMap"
 import { ProjectsTable } from "./_components/ProjectsTable"
 
 export const metadata: Metadata = {
@@ -34,7 +34,7 @@ export default async function DashboardPage() {
         description="Willkommen im Trassenscout. Hier finden Sie alle Projekte, an denen Sie beteiligt sind."
         className="mt-10" // Usually added by the Breadcrumb component
       />
-      <ProjectsMap projects={projects} />
+      <DashboardMap projects={projects} />
       <ProjectsTable projects={projects} />
       <AdminProjectsList />
       <AdminLogEntriesDashboard />

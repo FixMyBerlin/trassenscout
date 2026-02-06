@@ -2,62 +2,55 @@ import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { Marker } from "react-map-gl/maplibre"
 import { shortTitle } from "../../text"
 import { SubsectionMapIcon } from "../Icons"
+import { useMarkerHover } from "./useMarkerHover"
 import { StartEndLabel } from "../Labels"
 import { TipMarker } from "../TipMarker"
 import { getCenterOfMass } from "../utils/getCenterOfMass"
 
 type Props = {
   subsections: TSubsections
-  hoveredMarker: string | null
-  hoveredMap: string | null
   zoom: number | null
   onSelect: (props: { subsectionSlug: string; edit: boolean }) => void
-  onMarkerHover: (slug: string | null) => void
 }
 
 const expandByZoom = (zoom: number | null) => !!zoom && zoom < 13
 
-export const SubsectionMarkers = ({
-  subsections,
-  hoveredMarker,
-  hoveredMap,
-  zoom,
-  onSelect,
-  onMarkerHover,
-}: Props) => {
+type SubsectionMarkerProps = {
+  subsection: TSubsections[number]
+  zoom: number | null
+  onSelect: (props: { subsectionSlug: string; edit: boolean }) => void
+}
+
+const SubsectionMarker = ({ subsection, zoom, onSelect }: SubsectionMarkerProps) => {
+  const [longitude, latitude] = getCenterOfMass(subsection.geometry)
+  const hoverHandlers = useMarkerHover(subsection.slug)
+
+  return (
+    <Marker
+      longitude={longitude}
+      latitude={latitude}
+      anchor="center"
+      onClick={(e) => onSelect({ subsectionSlug: subsection.slug, edit: e.originalEvent.altKey })}
+    >
+      <TipMarker anchor={subsection.labelPos} {...hoverHandlers}>
+        <StartEndLabel
+          icon={<SubsectionMapIcon label={shortTitle(subsection.slug)} />}
+          subIcon={subsection.operator?.slug}
+          start={subsection.start}
+          end={subsection.end}
+          layout={expandByZoom(zoom) ? "compact" : "details"}
+        />
+      </TipMarker>
+    </Marker>
+  )
+}
+
+export const SubsectionMarkers = ({ subsections, zoom, onSelect }: Props) => {
   return (
     <>
-      {subsections.map((sub) => {
-        const [longitude, latitude] = getCenterOfMass(sub.geometry)
-
-        return (
-          <Marker
-            key={sub.id}
-            longitude={longitude as number}
-            latitude={latitude as number}
-            anchor="center"
-            onClick={(e) => onSelect({ subsectionSlug: sub.slug, edit: e.originalEvent.altKey })}
-          >
-            <TipMarker
-              anchor={sub.labelPos}
-              onMouseEnter={() => onMarkerHover(sub.slug)}
-              onMouseLeave={() => onMarkerHover(null)}
-            >
-              <StartEndLabel
-                icon={<SubsectionMapIcon label={shortTitle(sub.slug)} />}
-                subIcon={sub.operator?.slug}
-                start={sub.start}
-                end={sub.end}
-                layout={
-                  expandByZoom(zoom) && !(sub.slug === hoveredMarker || sub.slug === hoveredMap)
-                    ? "compact"
-                    : "details"
-                }
-              />
-            </TipMarker>
-          </Marker>
-        )
-      })}
+      {subsections.map((sub) => (
+        <SubsectionMarker key={sub.id} subsection={sub} zoom={zoom} onSelect={onSelect} />
+      ))}
     </>
   )
 }

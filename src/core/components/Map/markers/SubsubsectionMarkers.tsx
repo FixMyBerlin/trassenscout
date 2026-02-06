@@ -2,6 +2,7 @@ import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/g
 import { Marker } from "react-map-gl/maplibre"
 import { shortTitle } from "../../text"
 import { SubsubsectionMapIcon } from "../Icons"
+import { useMarkerHover } from "./useMarkerHover"
 import { TitleLabel } from "../Labels"
 import { TipMarker } from "../TipMarker"
 import { getCenterOfMass } from "../utils/getCenterOfMass"
@@ -10,52 +11,64 @@ type Props = {
   subsubsections: SubsubsectionWithPosition[]
   pageSubsectionSlug: string | null
   onSelect: (props: { subsectionSlug: string; subsubsectionSlug: string; edit: boolean }) => void
-  onMarkerHover: (slug: string | number | null) => void
 }
 
-export const SubsubsectionMarkers = ({
-  subsubsections,
+type SubsubsectionMarkerProps = {
+  subsubsection: SubsubsectionWithPosition
+  pageSubsectionSlug: string | null
+  onSelect: (props: { subsectionSlug: string; subsubsectionSlug: string; edit: boolean }) => void
+}
+
+const SubsubsectionMarker = ({
+  subsubsection,
   pageSubsectionSlug,
   onSelect,
-  onMarkerHover,
-}: Props) => {
+}: SubsubsectionMarkerProps) => {
+  const [longitude, latitude] = getCenterOfMass(subsubsection.geometry)
+  const hoverHandlers = useMarkerHover(subsubsection.slug)
+
+  return (
+    <Marker
+      longitude={longitude as number}
+      latitude={latitude as number}
+      anchor="center"
+      onClick={(e) => {
+        onSelect({
+          subsectionSlug: subsubsection.subsection.slug,
+          subsubsectionSlug: subsubsection.slug,
+          edit: e.originalEvent.altKey,
+        })
+      }}
+    >
+      <TipMarker
+        anchor={subsubsection.labelPos}
+        className={
+          subsubsection.subsection.slug === pageSubsectionSlug
+            ? "opacity-100"
+            : "opacity-50 hover:opacity-100"
+        }
+        {...hoverHandlers}
+      >
+        <TitleLabel
+          icon={<SubsubsectionMapIcon label={shortTitle(subsubsection.slug)} />}
+          subtitle={subsubsection.SubsubsectionTask?.title}
+        />
+      </TipMarker>
+    </Marker>
+  )
+}
+
+export const SubsubsectionMarkers = ({ subsubsections, pageSubsectionSlug, onSelect }: Props) => {
   return (
     <>
-      {subsubsections.map((subsub) => {
-        const [longitude, latitude] = getCenterOfMass(subsub.geometry)
-
-        return (
-          <Marker
-            key={subsub.id}
-            longitude={longitude as number}
-            latitude={latitude as number}
-            anchor="center"
-            onClick={(e) => {
-              onSelect({
-                subsectionSlug: subsub.subsection.slug,
-                subsubsectionSlug: subsub.slug,
-                edit: e.originalEvent.altKey,
-              })
-            }}
-          >
-            <TipMarker
-              anchor={subsub.labelPos}
-              onMouseEnter={() => onMarkerHover(subsub.slug)}
-              onMouseLeave={() => onMarkerHover(null)}
-              className={
-                subsub.subsection.slug === pageSubsectionSlug
-                  ? "opacity-100"
-                  : "opacity-50 hover:opacity-100"
-              }
-            >
-              <TitleLabel
-                icon={<SubsubsectionMapIcon label={shortTitle(subsub.slug)} />}
-                subtitle={subsub.SubsubsectionTask?.title}
-              />
-            </TipMarker>
-          </Marker>
-        )
-      })}
+      {subsubsections.map((subsub) => (
+        <SubsubsectionMarker
+          key={subsub.id}
+          subsubsection={subsub}
+          pageSubsectionSlug={pageSubsectionSlug}
+          onSelect={onSelect}
+        />
+      ))}
     </>
   )
 }

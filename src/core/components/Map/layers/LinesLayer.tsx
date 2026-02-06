@@ -1,86 +1,147 @@
-import { layerColors } from "@/src/core/components/Map/layerColors"
+import { sharedColors } from "@/src/core/components/Map/colors/sharedColors"
+import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
+import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
 import type { FeatureCollection, LineString } from "geojson"
+import { ExpressionSpecification } from "maplibre-gl"
 import { Layer, Source } from "react-map-gl/maplibre"
 
+const baseLineLayerId = "layer_line_features"
+
+export const getLineLayerId = (suffix: string) => `${baseLineLayerId}${suffix}`
+
 export type LinesLayerProps = {
-  lines?: FeatureCollection<
-    LineString,
-    {
-      color?: string
-      width?: number
-      opacity?: number
-      dashed?: boolean
-      secondColor?: string
-    }
-  >
+  lines:
+    | FeatureCollection<
+        LineString,
+        {
+          subsectionSlug?: string
+          subsubsectionSlug?: string
+          projectSlug?: string
+          style?: "REGULAR" | "DASHED"
+          isCurrent?: boolean
+          featureId?: string
+        }
+      >
+    | undefined
+  layerIdSuffix: string
+  interactive?: boolean
+  colorSchema: "subsection" | "subsubsection"
 }
 
-export const LinesLayer = ({ lines }: LinesLayerProps) => {
+export const LinesLayer = ({
+  lines,
+  layerIdSuffix,
+  interactive = true,
+  colorSchema,
+}: LinesLayerProps) => {
   if (!lines || lines.features.length === 0) return null
 
+  const sourceId = getLineLayerId(layerIdSuffix)
+  const layerId = getLineLayerId(layerIdSuffix)
+
+  // Import colors based on colorSchema
+  const colors = colorSchema === "subsubsection" ? subsubsectionColors : subsectionColors
+
+  const sortKeyExpression: ExpressionSpecification = [
+    "case",
+    [
+      "all",
+      ["boolean", ["feature-state", "hover"], false],
+      ["boolean", ["feature-state", "selected"], false],
+    ],
+    3, // Both hovered and selected
+    ["boolean", ["feature-state", "selected"], false],
+    2, // Selected only
+    ["boolean", ["feature-state", "hover"], false],
+    1, // Hovered only
+    0, // Default
+  ]
+
+  const colorExpression: ExpressionSpecification = [
+    "case",
+    ["boolean", ["feature-state", "hover"], false],
+    sharedColors.hovered,
+    ["boolean", ["feature-state", "selected"], false],
+    colors.current, // Selected subsubsections use light blue (not yellow)
+    ["case", ["get", "isCurrent"], colors.current, colors.unselected],
+  ]
+
   return (
-    <Source id="lines" key="lines" type="geojson" data={lines}>
+    <Source id={sourceId} key={sourceId} type="geojson" data={lines} promoteId="featureId">
       <Layer
-        id="lines-layer-outline"
+        id={`${layerId}-outline`}
         type="line"
         layout={{
-          "line-cap": "round",
+          "line-cap": colors.lineCap,
           "line-join": "round",
+          "line-sort-key": sortKeyExpression,
         }}
         paint={{
-          "line-width": 9,
-          "line-color": layerColors.dot,
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.6],
+          "line-width": colors.lineOutlineWidth,
+          "line-color": subsectionColors.lineDotSelected,
+          "line-opacity": 0.6,
         }}
       />
       <Layer
-        id="lines-layer-bg"
+        id={`${layerId}-bg`}
         type="line"
         layout={{
-          "line-cap": "round",
+          "line-cap": colors.lineCap,
           "line-join": "round",
+          "line-sort-key": sortKeyExpression,
         }}
         paint={{
-          "line-width": ["case", ["has", "width"], ["get", "width"], 7],
-          "line-color": [
-            "case",
-            ["has", "secondColor"],
-            ["get", "secondColor"],
-            layerColors.background,
-          ],
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.9],
+          "line-width": colors.lineWidth,
+          "line-color": colors.dashedSecondary,
+          "line-opacity": 0.9,
         }}
-        filter={["get", "dashed"]}
+        filter={["==", ["get", "style"], "DASHED"]}
       />
       <Layer
-        id="lines-layer-solid"
+        id={`${layerId}-solid`}
         type="line"
         layout={{
-          "line-cap": "round",
+          "line-cap": colors.lineCap,
           "line-join": "round",
+          "line-sort-key": sortKeyExpression,
         }}
         paint={{
-          "line-width": ["case", ["has", "width"], ["get", "width"], 7],
-          "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
+          "line-width": colors.lineWidth,
+          "line-color": colorExpression,
+          "line-opacity": 1,
         }}
-        filter={["any", ["!", ["has", "dashed"]], ["!", ["get", "dashed"]]]}
+        filter={["==", ["get", "style"], "REGULAR"]}
       />
       <Layer
-        id="lines-layer-dashed"
+        id={`${layerId}-dashed`}
         type="line"
         layout={{
-          "line-cap": "round",
+          "line-cap": colors.lineCap,
           "line-join": "round",
+          "line-sort-key": sortKeyExpression,
         }}
         paint={{
-          "line-width": ["case", ["has", "width"], ["get", "width"], 7],
-          "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
+          "line-width": colors.lineWidth,
+          "line-color": colorExpression,
+          "line-opacity": 1,
           "line-dasharray": [1, 1],
         }}
-        filter={["get", "dashed"]}
+        filter={["==", ["get", "style"], "DASHED"]}
       />
+      {interactive && (
+        <Layer
+          id={`${layerId}-click-target`}
+          type="line"
+          layout={{
+            "line-cap": colors.lineCap,
+            "line-join": "round",
+          }}
+          paint={{
+            "line-width": 20,
+            "line-opacity": 0,
+          }}
+        />
+      )}
     </Source>
   )
 }
