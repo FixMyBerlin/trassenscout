@@ -42,21 +42,6 @@ export const LinesLayer = ({
   // Import colors based on colorSchema
   const colors = colorSchema === "subsubsection" ? subsubsectionColors : subsectionColors
 
-  const sortKeyExpression: ExpressionSpecification = [
-    "case",
-    [
-      "all",
-      ["boolean", ["feature-state", "hover"], false],
-      ["boolean", ["feature-state", "selected"], false],
-    ],
-    3, // Both hovered and selected
-    ["boolean", ["feature-state", "selected"], false],
-    2, // Selected only
-    ["boolean", ["feature-state", "hover"], false],
-    1, // Hovered only
-    0, // Default
-  ]
-
   const colorExpression: ExpressionSpecification = [
     "case",
     ["boolean", ["feature-state", "hover"], false],
@@ -74,7 +59,6 @@ export const LinesLayer = ({
         layout={{
           "line-cap": colors.lineCap,
           "line-join": "round",
-          "line-sort-key": sortKeyExpression,
         }}
         paint={{
           "line-width": colors.lineOutlineWidth,
@@ -88,7 +72,6 @@ export const LinesLayer = ({
         layout={{
           "line-cap": colors.lineCap,
           "line-join": "round",
-          "line-sort-key": sortKeyExpression,
         }}
         paint={{
           "line-width": colors.lineWidth,
@@ -103,7 +86,6 @@ export const LinesLayer = ({
         layout={{
           "line-cap": colors.lineCap,
           "line-join": "round",
-          "line-sort-key": sortKeyExpression,
         }}
         paint={{
           "line-width": colors.lineWidth,
@@ -118,7 +100,6 @@ export const LinesLayer = ({
         layout={{
           "line-cap": colors.lineCap,
           "line-join": "round",
-          "line-sort-key": sortKeyExpression,
         }}
         paint={{
           "line-width": colors.lineWidth,

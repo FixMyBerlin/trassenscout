@@ -40,21 +40,6 @@ export const PointsLayer = ({
   // Import colors based on colorSchema (points are typically subsubsection)
   const colors = colorSchema === "subsubsection" ? subsubsectionColors : subsubsectionColors
 
-  const sortKeyExpression: ExpressionSpecification = [
-    "case",
-    [
-      "all",
-      ["boolean", ["feature-state", "hover"], false],
-      ["boolean", ["feature-state", "selected"], false],
-    ],
-    3, // Both hovered and selected
-    ["boolean", ["feature-state", "selected"], false],
-    2, // Selected only
-    ["boolean", ["feature-state", "hover"], false],
-    1, // Hovered only
-    0, // Default
-  ]
-
   const colorExpression: ExpressionSpecification = [
     "case",
     ["boolean", ["feature-state", "selected"], false],
@@ -80,9 +65,6 @@ export const PointsLayer = ({
       <Layer
         id={`${layerId}-bg`}
         type="circle"
-        layout={{
-          "circle-sort-key": sortKeyExpression,
-        }}
         paint={{
           "circle-radius": [
             "+",
@@ -98,9 +80,6 @@ export const PointsLayer = ({
       <Layer
         id={layerId}
         type="circle"
-        layout={{
-          "circle-sort-key": sortKeyExpression,
-        }}
         paint={{
           "circle-radius": 10, // radius for subsubsection points
           "circle-color": colorExpression,
@@ -114,9 +93,6 @@ export const PointsLayer = ({
       <Layer
         id={`${layerId}-dashed`}
         type="circle"
-        layout={{
-          "circle-sort-key": sortKeyExpression,
-        }}
         paint={{
           "circle-radius": 10, // radius for subsubsection points
           "circle-color": colorExpression,

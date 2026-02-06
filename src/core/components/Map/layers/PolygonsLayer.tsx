@@ -42,21 +42,6 @@ export const PolygonsLayer = ({
   // Import colors based on colorSchema
   const colors = colorSchema === "subsubsection" ? subsubsectionColors : subsectionColors
 
-  const sortKeyExpression: ExpressionSpecification = [
-    "case",
-    [
-      "all",
-      ["boolean", ["feature-state", "hover"], false],
-      ["boolean", ["feature-state", "selected"], false],
-    ],
-    3, // Both hovered and selected
-    ["boolean", ["feature-state", "selected"], false],
-    2, // Selected only
-    ["boolean", ["feature-state", "hover"], false],
-    1, // Hovered only
-    0, // Default
-  ]
-
   const colorExpression: ExpressionSpecification = [
     "case",
     ["boolean", ["feature-state", "hover"], false],
@@ -78,9 +63,6 @@ export const PolygonsLayer = ({
       <Layer
         id={`${layerId}-fill`}
         type="fill"
-        layout={{
-          "fill-sort-key": sortKeyExpression,
-        }}
         paint={{
           "fill-color": colorExpression,
           "fill-opacity": 0.3,
@@ -93,7 +75,6 @@ export const PolygonsLayer = ({
         layout={{
           "line-cap": "round",
           "line-join": "round",
-          "line-sort-key": sortKeyExpression,
         }}
         paint={{
           "line-width": 3,
@@ -109,7 +90,6 @@ export const PolygonsLayer = ({
         layout={{
           "line-cap": "round",
           "line-join": "round",
-          "line-sort-key": sortKeyExpression,
         }}
         paint={{
           "line-width": 3,
@@ -125,7 +105,6 @@ export const PolygonsLayer = ({
         layout={{
           "line-cap": "round",
           "line-join": "round",
-          "line-sort-key": sortKeyExpression,
         }}
         paint={{
           "line-width": 3,
