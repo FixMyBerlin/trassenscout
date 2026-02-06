@@ -114,13 +114,23 @@ export const SubsectionSubsubsectionMap = ({
 
   // Calculate bbox including subsection and selected subsubsection if present (for initial view)
   const mapBbox = useMemo(() => {
-    const selectedSubsubsection = filteredSubsubsections.find(
-      (subsub) => subsub.slug === pageSubsubsectionSlug,
-    )
     const geometries: SupportedGeometry[] = [selectedSubsection.geometry]
-    if (selectedSubsubsection) {
-      geometries.push(selectedSubsubsection.geometry)
+
+    if (pageSubsubsectionSlug) {
+      // When a subsubsection is selected: include only the selected one
+      const selectedSubsubsection = filteredSubsubsections.find(
+        (subsub) => subsub.slug === pageSubsubsectionSlug,
+      )
+      if (selectedSubsubsection) {
+        geometries.push(selectedSubsubsection.geometry)
+      }
+    } else {
+      // When nothing is selected: include all subsubsections
+      filteredSubsubsections.forEach((subsub) => {
+        geometries.push(subsub.geometry)
+      })
     }
+
     return geometriesBbox(geometries)
   }, [selectedSubsection.geometry, filteredSubsubsections, pageSubsubsectionSlug])
 
