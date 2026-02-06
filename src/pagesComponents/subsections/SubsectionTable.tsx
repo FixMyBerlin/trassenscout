@@ -1,6 +1,9 @@
 import { SubsectionIcon } from "@/src/core/components/Map/Icons"
-import { GeometryIcon } from "@/src/core/components/Map/Icons/GeometryIcon"
+import { LegendIcon } from "@/src/core/components/Map/Icons/LegendIcon"
+import { getLegendIconPropsForSubsection } from "@/src/core/components/Map/utils/getLegendIconProps"
+import { GEOMETRY_TYPE_TOOLTIPS } from "@/src/core/components/Map/utils/geometryTypeTranslations"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
+import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
 import { Link } from "@/src/core/components/links"
 import { shortTitle } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
@@ -31,8 +34,14 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
         <table className="min-w-full divide-y divide-gray-300">
           <thead className="bg-gray-50">
             <tr>
-              <th scope="col" colSpan={2} className={clsx("sm:pl-6", tableHeadClasses)}>
+              <th scope="col" className={clsx("sm:pl-6", tableHeadClasses)}>
                 Planungsabschnitt
+              </th>
+              <th scope="col" className={tableHeadClasses}>
+                Von–Bis
+              </th>
+              <th scope="col" className={tableHeadClasses}>
+                <span className="sr-only">Geometrietyp</span>
               </th>
               <th scope="col" className={tableHeadClasses}>
                 Baulastträger
@@ -64,13 +73,17 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
                   onClick={() => router.push(route)}
                 >
                   <td className="h-20 w-20 py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
-                    <div className="flex items-center gap-2">
-                      <SubsectionIcon label={shortTitle(subsection.slug)} />
-                      <GeometryIcon type={subsection.type} className="size-4" />
-                    </div>
+                    <SubsectionIcon label={shortTitle(subsection.slug)} />
                   </td>
                   <td className="py-4 pr-3 pl-4 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                     {startEnd(subsection)}
+                  </td>
+                  <td className="px-1.5 py-2 text-sm">
+                    <div className="flex items-center justify-center">
+                      <Tooltip content={GEOMETRY_TYPE_TOOLTIPS[subsection.type]}>
+                        <LegendIcon {...getLegendIconPropsForSubsection(subsection)} />
+                      </Tooltip>
+                    </div>
                   </td>
                   <td className="py-4 pr-3 pl-4 text-sm font-medium text-gray-900 group-hover:bg-gray-50">
                     {subsection.operator?.title || "–"}{" "}

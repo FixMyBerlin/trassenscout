@@ -1,0 +1,88 @@
+import { layerColors } from "@/src/core/components/Map/layerColors"
+import { GeometryTypeEnum } from "@prisma/client"
+import { clsx } from "clsx"
+
+type Props = {
+  type: GeometryTypeEnum
+  isDashed?: boolean
+  color: string
+  secondColor?: string
+  showDots?: boolean
+  className?: string
+}
+
+const LegendDots = () => (
+  <>
+    <span
+      className="absolute top-1/2 -translate-y-1/2 z-10 size-2.5 rounded-full"
+      style={{ backgroundColor: layerColors.dot }}
+    />
+    <span
+      className="absolute top-1/2 -translate-y-1/2 left-6 z-10 size-2.5 rounded-full"
+      style={{ backgroundColor: layerColors.dot }}
+    />
+  </>
+)
+
+export const LegendIcon = ({ type, isDashed = false, color, secondColor, showDots = false, className }: Props) => {
+  switch (type) {
+    case "LINE":
+      if (isDashed) {
+        return (
+          <span className={clsx("relative h-2.5 w-8", className)}>
+            {showDots && <LegendDots />}
+            <span
+              className="absolute top-1/2 -translate-y-1/2 h-2 w-8 rounded"
+              style={{ backgroundColor: color }}
+            />
+            <span
+              className="absolute top-1/2 -translate-y-1/2 h-2 w-1 rounded-l"
+              style={{ backgroundColor: secondColor || layerColors.dashedEntrySecondary }}
+            />
+            <span
+              className="absolute top-1/2 -translate-y-1/2 left-2.5 h-2 w-1"
+              style={{ backgroundColor: secondColor || layerColors.dashedEntrySecondary }}
+            />
+            <span
+              className="absolute top-1/2 -translate-y-1/2 left-5 h-2 w-1"
+              style={{ backgroundColor: secondColor || layerColors.dashedEntrySecondary }}
+            />
+          </span>
+        )
+      }
+
+      return (
+        <span className={clsx("relative h-2.5 w-8", className)}>
+          {showDots && <LegendDots />}
+          <span
+            className="absolute top-1/2 -translate-y-1/2 h-2 w-8 rounded-sm border border-gray-500 bg-blue-500"
+            style={{ backgroundColor: color }}
+          />
+        </span>
+      )
+
+    case "POINT":
+      return (
+        <span className={clsx("relative size-[18px] shrink-0", className)}>
+          <span
+            className="absolute inline-block size-[18px] rounded-full border-[3px]"
+            style={{ borderColor: color }}
+          />
+          <span
+            className="absolute inline-block size-[18px] rounded-full opacity-20"
+            style={{ backgroundColor: color }}
+          />
+        </span>
+      )
+
+    case "POLYGON":
+      return (
+        <span className={clsx("relative size-[18px] shrink-0", className)}>
+          <span
+            className="absolute inline-block size-[18px] rounded border-2"
+            style={{ borderColor: color, backgroundColor: `${color}30` }}
+          />
+        </span>
+      )
+  }
+}

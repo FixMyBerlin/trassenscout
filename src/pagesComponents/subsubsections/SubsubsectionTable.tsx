@@ -1,6 +1,9 @@
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
-import { GeometryIcon } from "@/src/core/components/Map/Icons/GeometryIcon"
+import { LegendIcon } from "@/src/core/components/Map/Icons/LegendIcon"
+import { getLegendIconPropsForSubsubsection } from "@/src/core/components/Map/utils/getLegendIconProps"
+import { GEOMETRY_TYPE_TOOLTIPS } from "@/src/core/components/Map/utils/geometryTypeTranslations"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
+import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
 import { Link } from "@/src/core/components/links"
 import { formattedEuro, formattedLength, shortTitle } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
@@ -39,6 +42,9 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                 Eintragstyp
               </th>
+              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                <span className="sr-only">Geometrietyp</span>
+              </th>
               <th
                 scope="col"
                 className={clsx(
@@ -48,16 +54,6 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
               >
                 Länge
               </th>
-              {/* UNUSED */}
-              {/* <th
-                scope="col"
-                className={clsx(
-                  compact ? "hidden" : "",
-                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900",
-                )}
-              >
-                Breite
-              </th> */}
               <th
                 scope="col"
                 className={clsx(
@@ -97,13 +93,17 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   onClick={() => router.push(route, undefined, { scroll: false })}
                 >
                   <td className="h-20 w-20 py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
-                    <div className="flex items-center gap-2">
-                      <SubsubsectionIcon label={shortTitle(subsubsection.slug)} />
-                      <GeometryIcon type={subsubsection.type} className="size-4" />
-                    </div>
+                    <SubsubsectionIcon label={shortTitle(subsubsection.slug)} />
                   </td>
-                  <td className="py-4 pr-3 pl-4 text-sm font-medium text-gray-900">
+                  <td className="py-4 pr-3 pl-4 text-sm font-medium text-blue-500 group-hover:text-blue-800">
                     {subsubsection.SubsubsectionTask?.title || "k.A."}
+                  </td>
+                  <td className="px-1.5 py-2 text-sm">
+                    <div className="flex items-center justify-center">
+                      <Tooltip content={GEOMETRY_TYPE_TOOLTIPS[subsubsection.type]}>
+                        <LegendIcon {...getLegendIconPropsForSubsubsection(subsubsection)} />
+                      </Tooltip>
+                    </div>
                   </td>
                   <td
                     className={clsx(
@@ -113,15 +113,6 @@ export const SubsubsectionTable: React.FC<Props> = ({ subsubsections, compact })
                   >
                     {formattedLength(subsubsection.lengthM)}
                   </td>
-                  {/* UNUSED */}
-                  {/* <td
-                    className={clsx(
-                      compact ? "hidden" : "",
-                      "py-4 pl-4 pr-3 text-sm font-medium text-gray-900",
-                    )}
-                  >
-                    {formattedWidth(subsubsection.width)}
-                  </td> */}
                   <td
                     className={clsx(
                       compact ? "hidden" : "",
