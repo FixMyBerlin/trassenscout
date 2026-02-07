@@ -11,7 +11,7 @@ import { useDropzone } from "react-dropzone"
 import { twMerge } from "tailwind-merge"
 import { Progress } from "./UploadProgress"
 
-type UploadDropzoneProgressProps = {
+type Props = {
   control: UploadHookControl<true>
   id?: string
   accept?: string
@@ -66,7 +66,7 @@ export function UploadDropzoneProgress({
     file: "file",
     files: "files",
   },
-}: UploadDropzoneProgressProps) {
+}: Props) {
   const id = useId()
   const completionTimesRef = useRef<Map<string, number>>(new Map())
   const [isProcessingFiles, setIsProcessingFiles] = useState(false)
@@ -286,7 +286,7 @@ export function UploadDropzoneProgress({
 
 type FileUploadItemProps = {
   progress: FileUploadInfo<UploadStatus>
-  translations: NonNullable<UploadDropzoneProgressProps["translations"]>
+  translations: NonNullable<Props["translations"]>
   onDismiss?: () => void
 }
 

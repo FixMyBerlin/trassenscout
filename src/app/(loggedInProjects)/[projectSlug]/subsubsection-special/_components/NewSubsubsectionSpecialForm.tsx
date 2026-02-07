@@ -7,6 +7,7 @@ import { SubsubsectionSpecial } from "@/src/server/subsubsectionSpecial/schema"
 import { useMutation } from "@blitzjs/rpc"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 import { SubsubsectionSpecialForm } from "./SubsubsectionSpecialForm"
 
 type Props = {
@@ -17,7 +18,7 @@ export const NewSubsubsectionSpecialForm = ({ projectSlug }: Props) => {
   const router = useRouter()
   const [createSubsubsectionSpecialMutation] = useMutation(createSubsubsectionSpecial)
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<ReturnType<typeof SubsubsectionSpecial.omit<{ projectId: true }>>>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await createSubsubsectionSpecialMutation({ ...values, projectSlug })

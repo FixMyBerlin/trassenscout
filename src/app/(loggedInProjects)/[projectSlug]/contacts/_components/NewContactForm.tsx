@@ -7,6 +7,7 @@ import { ContactSchema } from "@/src/server/contacts/schema"
 import { useMutation } from "@blitzjs/rpc"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 import { ContactForm } from "./ContactForm"
 
 type Props = {
@@ -17,7 +18,7 @@ export const NewContactForm = ({ projectSlug }: Props) => {
   const router = useRouter()
   const [createContactMutation] = useMutation(createContact)
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<typeof ContactSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const contact = await createContactMutation({ ...values, projectSlug })

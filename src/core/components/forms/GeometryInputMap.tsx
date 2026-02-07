@@ -1,6 +1,6 @@
+import { SnappingControls } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/_components/SubsubsectionGeometryInput/SnappingControls"
 import { DrawingToolbar } from "@/src/core/components/Map/TerraDraw/DrawingToolbar"
 import { TerraDrawMap } from "@/src/core/components/Map/TerraDraw/TerraDrawMap"
-import { SnappingControls } from "@/src/pagesComponents/subsubsections/SubsubsectionGeometryInput/SnappingControls"
 import { mapGeoTypeToEnum } from "@/src/server/shared/utils/mapGeoTypeToEnum"
 import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import { bbox } from "@turf/turf"

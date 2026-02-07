@@ -275,6 +275,7 @@ export const SurveyPart = ({
               {(fieldMeta) => (
                 <FormErrorBox
                   // fieldNamesToValidate={surveyPart.pages[page]?.fields.map((field) => field.name)}
+                  // @ts-expect-error this worked before but now shows a TS error; we should fix this…
                   fieldMeta={fieldMeta}
                   allCurrentFieldsOfPage={allCurrentPageFormFields}
                 />

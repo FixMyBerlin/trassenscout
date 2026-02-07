@@ -1,7 +1,7 @@
 import db from "@/db"
 import { withProjectMembership } from "@/src/app/api/(auth)/_utils/withProjectMembership"
 import { viewerRoles } from "@/src/authorization/constants"
-import { subsubsectionLocationLabelMap } from "@/src/pagesComponents/utils/subsubsectionLocationLabelMap"
+import { subsubsectionLocationLabelMap } from "@/src/core/utils/subsubsectionLocationLabelMap"
 import { createObjectCsvStringifier } from "csv-writer"
 import { format } from "date-fns"
 

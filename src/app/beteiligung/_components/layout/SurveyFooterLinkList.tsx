@@ -1,10 +1,10 @@
 import { Link } from "@/src/core/components/links"
-import { RouteUrlObject } from "blitz"
 import { clsx } from "clsx"
+import { Route } from "next"
 
 type TSurveyFooterLink = {
   name: string
-  href: RouteUrlObject | string
+  href: Route | string
   blank: boolean
 }
 

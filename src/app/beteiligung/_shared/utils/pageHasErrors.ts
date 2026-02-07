@@ -30,6 +30,7 @@ export const pageHasErrors = ({ form, fields }: { form: AnyFormApi; fields: Fiel
     form.validateField(name, "submit")
   })
 
+  // @ts-expect-error this worked before but now shows a TS error; we should fix this…
   const errors = getFieldsErrors({ fieldMeta: form.state.fieldMeta, fields })
   // console.log({ errorMap: form.state.errorMap })
   // console.log({ error: form.state.errors })

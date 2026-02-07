@@ -1,0 +1,172 @@
+"use client"
+
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
+import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
+import { LegendIcon } from "@/src/core/components/Map/Icons/LegendIcon"
+import { GEOMETRY_TYPE_TOOLTIPS } from "@/src/core/components/Map/utils/geometryTypeTranslations"
+import { getLegendIconPropsForSubsubsection } from "@/src/core/components/Map/utils/getLegendIconProps"
+import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
+import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
+import { Link } from "@/src/core/components/links"
+import { formattedEuro, formattedLength } from "@/src/core/components/text"
+import { ZeroCase } from "@/src/core/components/text/ZeroCase"
+import {
+  subsubsectionDashboardRoute,
+  subsubsectionNewRoute,
+} from "@/src/core/routes/subsectionRoutes"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { useSlug } from "@/src/core/routes/useSlug"
+import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
+import { clsx } from "clsx"
+import { useRouter } from "next/navigation"
+import { SubsubsectionTableFooter } from "./SubsubsectionTableFooter"
+
+type Props = {
+  subsubsections: SubsubsectionWithPosition[]
+  compact: boolean
+}
+
+export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
+  const router = useRouter()
+  const subsectionSlug = useSlug("subsectionSlug")
+  const subsubsectionSlug = useSlug("subsubsectionSlug")
+  const projectSlug = useProjectSlug()
+
+  return (
+    <section>
+      <TableWrapper className="mt-10">
+        <table className="min-w-full divide-y divide-gray-300">
+          <thead className="bg-gray-50">
+            <tr>
+              <th
+                scope="col"
+                className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              >
+                Einträge
+              </th>
+              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                Eintragstyp
+              </th>
+              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                <span className="sr-only">Geometrietyp</span>
+              </th>
+              <th
+                scope="col"
+                className={clsx(
+                  compact ? "hidden" : "",
+                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900",
+                )}
+              >
+                Länge
+              </th>
+              <th
+                scope="col"
+                className={clsx(
+                  compact ? "hidden" : "",
+                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900",
+                )}
+              >
+                Kostenschätzung
+              </th>
+              <th
+                scope="col"
+                className={clsx(
+                  compact ? "hidden" : "",
+                  "px-3 py-3.5 text-left text-sm font-semibold text-gray-900",
+                )}
+              >
+                Ausbaustandard
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200 bg-white">
+            {subsubsections.map((subsubsection) => {
+              const route = subsubsectionDashboardRoute(
+                projectSlug,
+                subsectionSlug!,
+                subsubsection.slug,
+              )
+
+              return (
+                <tr
+                  key={subsubsection.id}
+                  className={clsx(
+                    subsubsection.slug === subsubsectionSlug
+                      ? "bg-gray-100"
+                      : "group cursor-pointer hover:bg-gray-50",
+                  )}
+                  onClick={() => router.push(route, { scroll: false })}
+                >
+                  <td className="size-20 py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
+                    <SubsubsectionIcon slug={subsubsection.slug} />
+                  </td>
+                  <td className="py-4 pr-3 pl-4 text-sm font-medium text-blue-500 group-hover:text-blue-800">
+                    {subsubsection.SubsubsectionTask?.title || "k.A."}
+                  </td>
+                  <td className="px-1.5 py-2 text-sm">
+                    <div className="flex items-center justify-center">
+                      <Tooltip content={GEOMETRY_TYPE_TOOLTIPS[subsubsection.type]}>
+                        <LegendIcon {...getLegendIconPropsForSubsubsection(subsubsection)} />
+                      </Tooltip>
+                    </div>
+                  </td>
+                  <td
+                    className={clsx(
+                      compact ? "hidden" : "",
+                      "py-4 pr-3 pl-4 text-sm font-medium text-gray-900",
+                    )}
+                  >
+                    {formattedLength(subsubsection.lengthM)}
+                  </td>
+                  <td
+                    className={clsx(
+                      compact ? "hidden" : "",
+                      "py-4 pr-3 pl-4 text-sm font-medium text-gray-900",
+                    )}
+                  >
+                    {formattedEuro(subsubsection.costEstimate)}
+                  </td>
+                  <td
+                    className={clsx(
+                      compact ? "hidden" : "",
+                      "py-4 pr-3 pl-4 text-sm font-medium text-gray-900",
+                    )}
+                  >
+                    {subsubsection.qualityLevel?.title || "k.A."}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+          <SubsubsectionTableFooter subsubsections={subsubsections} compact={compact} />
+        </table>
+        {!subsubsections.length && (
+          <div className="border-t border-gray-200 px-3 py-5">
+            <ZeroCase visible={subsubsections.length} name="Einträge" />
+          </div>
+        )}
+      </TableWrapper>
+
+      <div className="mt-4 flex gap-3">
+        <IfUserCanEdit>
+          <Link
+            button="blue"
+            icon="plus"
+            href={subsubsectionNewRoute(projectSlug, subsectionSlug!)}
+          >
+            Neuer Eintrag
+          </Link>
+          {subsubsections.length > 0 && (
+            <Link
+              button="white"
+              icon="download"
+              href={`/api/${projectSlug}/subsections/${subsectionSlug}/subsubsections/export`}
+            >
+              Einträge herunterladen (CSV)
+            </Link>
+          )}
+        </IfUserCanEdit>
+      </div>
+    </section>
+  )
+}

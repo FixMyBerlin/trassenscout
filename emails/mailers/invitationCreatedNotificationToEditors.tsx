@@ -1,5 +1,4 @@
 import { quote } from "@/src/core/components/text/quote"
-import { RouteUrlObject } from "blitz"
 import { Route } from "next"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
@@ -10,7 +9,7 @@ type Props = {
   user: { email: string; name: string }
   projectName: string
   inviterName: string
-  path: RouteUrlObject | Route
+  path: Route
 }
 
 export async function invitationCreatedNotificationToEditors(props: Props) {

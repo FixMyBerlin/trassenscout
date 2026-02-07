@@ -13,6 +13,7 @@ import { ProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation } from "@blitzjs/rpc"
 import { SparklesIcon } from "@heroicons/react/20/solid"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 
 type Props = {
   projectRecord: Awaited<ReturnType<typeof getProjectRecord>>
@@ -29,14 +30,18 @@ export const ReprocessProjectRecordEditForm = ({
   const [updateProjectRecordMutation] = useMutation(updateProjectRecord)
   const projectSlug = useProjectSlug()
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<typeof ProjectRecordFormSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
+      // Exclude m2m fields that are transformed by the form schema but need different format for mutation
+      const { uploads, projectRecordTopics, ...restValues } = values
       await updateProjectRecordMutation({
-        ...values,
+        ...restValues,
         id: projectRecord.id,
         date: values.date === "" ? null : new Date(values.date),
         projectSlug,
+        uploads: Array.isArray(uploads) ? uploads : undefined,
+        projectRecordTopics: Array.isArray(projectRecordTopics) ? projectRecordTopics : undefined,
       })
       router.refresh()
       onCancel() // Close the AI suggestions view

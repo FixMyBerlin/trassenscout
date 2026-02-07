@@ -1,8 +1,8 @@
-import { RouteUrlObject } from "blitz"
+import { Route } from "next"
 
 export type MenuItem = {
   name: string
-  href: RouteUrlObject
-  alsoHighlightPathnames?: RouteUrlObject[]
-  children?: { name: string; href: RouteUrlObject; slug: string }[]
+  href: Route
+  alsoHighlightPathnames?: Route[]
+  children?: { name: string; href: Route; slug: string }[]
 }

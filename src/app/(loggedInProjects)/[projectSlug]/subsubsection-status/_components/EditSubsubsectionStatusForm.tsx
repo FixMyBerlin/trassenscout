@@ -13,6 +13,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { PromiseReturnType } from "blitz"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 import { SubsubsectionStatusForm } from "./SubsubsectionStatusForm"
 
 type Props = {
@@ -27,7 +28,7 @@ export const EditSubsubsectionStatusForm = ({ subsubsectionStatus, projectSlug }
 
   const returnPath = `/${projectSlug}/subsubsection-status` as Route
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<typeof SubsubsectionStatus>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await updateSubsubsectionStatusMutation({

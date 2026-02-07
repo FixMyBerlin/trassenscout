@@ -7,7 +7,6 @@ import {
   TrashIcon,
 } from "@heroicons/react/20/solid"
 import { ArrowTopRightOnSquareIcon, PencilIcon, UserGroupIcon } from "@heroicons/react/24/outline"
-import { RouteUrlObject } from "blitz"
 import { Route } from "next"
 import NextLink from "next/link"
 import { forwardRef } from "react"
@@ -16,7 +15,7 @@ import { UrlObject } from "url"
 import { selectLinkStyle } from "./styles"
 
 export type LinkProps = {
-  href: RouteUrlObject | UrlObject | string
+  href: Route | UrlObject | string
   prefetch?: boolean
   className?: string
   classNameOverwrites?: string

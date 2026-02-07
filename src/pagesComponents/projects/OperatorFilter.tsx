@@ -1,33 +1,36 @@
 import { shortTitle } from "@/src/core/components/text"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
-import { Routes, useRouterQuery } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from "@headlessui/react"
 import { clsx } from "clsx"
-import router from "next/router"
+import { Route } from "next"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 export const OperatorFilter = () => {
-  const params = useRouterQuery()
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
   const projectSlug = useProjectSlug()
   const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
 
   if (!operators?.length) return null
 
+  const currentOperator = searchParams?.get("operator") || ""
+
   return (
     <div className="mt-12">
       {/* <p>Planungsabschnitte anzeigen für:</p> */}
       <RadioGroup
-        value={params.operator || ""}
+        value={currentOperator}
         onChange={(value) => {
-          void router.push(
-            Routes.ProjectDashboardPage({
-              projectSlug,
-              ...(value ? { operator: value } : {}),
-            }),
-            undefined,
-            { scroll: false },
-          )
+          const params = new URLSearchParams(searchParams?.toString() || "")
+          if (value) {
+            params.set("operator", value)
+          } else {
+            params.delete("operator")
+          }
+          router.push(`${pathname}?${params.toString()}` as Route, { scroll: false })
         }}
         className="mt-2"
       >

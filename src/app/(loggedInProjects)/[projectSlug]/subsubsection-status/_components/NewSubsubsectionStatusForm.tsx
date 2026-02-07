@@ -7,6 +7,7 @@ import { SubsubsectionStatus } from "@/src/server/subsubsectionStatus/schema"
 import { useMutation } from "@blitzjs/rpc"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 import { SubsubsectionStatusForm } from "./SubsubsectionStatusForm"
 
 type Props = {
@@ -17,7 +18,7 @@ export const NewSubsubsectionStatusForm = ({ projectSlug }: Props) => {
   const router = useRouter()
   const [createSubsubsectionStatusMutation] = useMutation(createSubsubsectionStatus)
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<ReturnType<typeof SubsubsectionStatus.omit<{ projectId: true }>>>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await createSubsubsectionStatusMutation({ ...values, projectSlug })

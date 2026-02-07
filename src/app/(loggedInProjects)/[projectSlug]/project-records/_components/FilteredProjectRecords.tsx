@@ -12,15 +12,12 @@ import { useEffect, useState } from "react"
 import { useFilteredProjectRecords } from "../_utils/filter/useFilteredProjectRecords"
 import { useFilters } from "../_utils/filter/useFilters.nuqs"
 
-type FilteredProjectRecordsProps = {
+type Props = {
   projectRecords: Awaited<ReturnType<typeof getProjectRecords>>
   highlightId: number | null
 }
 
-export const FilteredProjectRecords = ({
-  projectRecords,
-  highlightId,
-}: FilteredProjectRecordsProps) => {
+export const FilteredProjectRecords = ({ projectRecords, highlightId }: Props) => {
   const router = useRouter()
   const { filter, setFilter } = useFilters()
   const [searchterm, setSearchterm] = useState("")

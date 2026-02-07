@@ -11,6 +11,7 @@ import { HeadingWithAction } from "@/src/core/components/text/HeadingWithAction"
 import createProjectRecord from "@/src/server/projectRecords/mutations/createProjectRecord"
 import { NewProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation } from "@blitzjs/rpc"
+import { z } from "zod"
 
 type Props = {
   projectSlug: string
@@ -31,13 +32,17 @@ export const ProjectRecordNewModal = ({
 }: Props) => {
   const [createProjectRecordMutation] = useMutation(createProjectRecord)
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<typeof NewProjectRecordFormSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
+      // Exclude m2m fields that are transformed by the form schema but need different format for mutation
+      const { uploads, projectRecordTopics, ...restValues } = values
       const projectRecord = await createProjectRecordMutation({
-        ...values,
+        ...restValues,
         date: values.date ? new Date(values.date) : null,
         projectSlug,
+        uploads: Array.isArray(uploads) ? uploads : undefined,
+        projectRecordTopics: Array.isArray(projectRecordTopics) ? projectRecordTopics : undefined,
       })
       if (onSuccess) {
         await onSuccess(projectRecord.id)

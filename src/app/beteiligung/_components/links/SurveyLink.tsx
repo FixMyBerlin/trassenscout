@@ -1,5 +1,5 @@
-import { RouteUrlObject } from "blitz"
 import { clsx } from "clsx"
+import { Route } from "next"
 import NextLink from "next/link"
 import { forwardRef } from "react"
 import { selectSurveyLinkStyle } from "./styles"
@@ -7,7 +7,7 @@ import { selectSurveyLinkStyle } from "./styles"
 // the link component is duplicated to avoid dependencies between TS and 'Beteiligung'
 
 export type SurveyLinkProps = {
-  href: RouteUrlObject | string
+  href: Route | string
   className?: string
   classNameOverwrites?: string
   /** @default `false` */

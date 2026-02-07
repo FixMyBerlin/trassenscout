@@ -1,4 +1,4 @@
-import { RouteUrlObject } from "blitz"
+import { Route } from "next"
 import { addressNoreply } from "./utils/addresses"
 import { mailUrl } from "./utils/mailUrl"
 import { sendMail } from "./utils/sendMail"
@@ -6,7 +6,7 @@ import { Mail } from "./utils/types"
 
 type Props = {
   user: { email: string; name: string }
-  path: RouteUrlObject
+  path: Route
 }
 
 export async function userCreatedNotificationToUser(props: Props) {

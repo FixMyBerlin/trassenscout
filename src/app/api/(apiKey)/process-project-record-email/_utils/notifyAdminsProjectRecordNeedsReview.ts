@@ -1,6 +1,7 @@
 import db from "@/db"
 import { projectRecordNeedsReviewNotificationToAdmins } from "@/emails/mailers/projectRecordNeedsReviewNotificationToAdmins"
 import { mailUrl } from "@/emails/mailers/utils/mailUrl"
+import { Route } from "next"
 
 type Props = {
   projectId: number
@@ -40,8 +41,7 @@ export const notifyAdminsProjectRecordNeedsReview = async ({
       projectSlug: project.slug,
       senderEmail,
       emailSubject,
-      // @ts-expect-error bypass the strict type checking for the Route type
-      projectRecordReviewUrl: mailUrl(`/admin/project-records/${projectRecordId}/edit`),
+      projectRecordReviewUrl: mailUrl(`/admin/project-records/${projectRecordId}/edit` as Route),
       isAiEnabled,
       isSenderApproved,
     })

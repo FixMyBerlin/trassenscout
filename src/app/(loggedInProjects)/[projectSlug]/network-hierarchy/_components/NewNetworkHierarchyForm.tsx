@@ -7,6 +7,7 @@ import { NetworkHierarchySchema } from "@/src/server/networkHierarchy/schema"
 import { useMutation } from "@blitzjs/rpc"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 import { NetworkHierarchyForm } from "./NetworkHierarchyForm"
 
 type Props = {
@@ -17,7 +18,7 @@ export const NewNetworkHierarchyForm = ({ projectSlug }: Props) => {
   const router = useRouter()
   const [createNetworkHierarchyMutation] = useMutation(createNetworkHierarchy)
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<ReturnType<typeof NetworkHierarchySchema.omit<{ projectId: true }>>>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await createNetworkHierarchyMutation({ ...values, projectSlug })

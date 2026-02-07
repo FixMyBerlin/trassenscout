@@ -9,10 +9,12 @@ import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import deleteContact from "@/src/server/contacts/mutations/deleteContact"
 import updateContact from "@/src/server/contacts/mutations/updateContact"
+import { ContactSchema } from "@/src/server/contacts/schema"
 import { useMutation } from "@blitzjs/rpc"
 import { Contact } from "@prisma/client"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 
 type Props = {
   contact: Contact
@@ -27,7 +29,7 @@ export const EditContactForm = ({ contact, projectSlug }: Props) => {
   const showPath = `/${projectSlug}/contacts/${contact.id}` as Route
   const indexPath = `/${projectSlug}/contacts` as Route
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<typeof ContactSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateContactMutation({
@@ -46,6 +48,7 @@ export const EditContactForm = ({ contact, projectSlug }: Props) => {
     <>
       <ContactForm
         submitText="Speichern"
+        schema={ContactSchema}
         initialValues={contact}
         onSubmit={handleSubmit}
         actionBarRight={

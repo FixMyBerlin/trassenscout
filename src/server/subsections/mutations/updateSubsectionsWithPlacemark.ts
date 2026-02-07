@@ -1,6 +1,5 @@
 import db from "@/db"
 import { ProjectSlugRequiredSchema } from "@/src/authorization/extractProjectSlug"
-import { multilinestringToLinestring } from "@/src/pagesComponents/subsections/utils/multilinestringToLinestring"
 import { geometryTypeValidationRefine } from "@/src/server/shared/utils/geometryTypeValidation"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
@@ -8,6 +7,7 @@ import { length, lineString } from "@turf/turf"
 import { z } from "zod"
 import { createLogEntry } from "../../logEntries/create/createLogEntry"
 import { FeatureCollectionSchema, SubsectionBaseSchema } from "../schema"
+import { multilinestringToLinestring } from "../utils/multilinestringToLinestring"
 
 const updateSubsectionsWithPlacemarkSchema = ProjectSlugRequiredSchema.merge(
   z.object({

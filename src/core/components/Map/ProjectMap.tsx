@@ -1,11 +1,11 @@
-import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
+import { useUserCan } from "@/src/app/_components/memberships/hooks/useUserCan"
+import { subsectionDashboardRoute, subsectionEditRoute } from "@/src/core/routes/subsectionRoutes"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
-import { Routes } from "@blitzjs/next"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 import { MapEvent, MapLayerMouseEvent, ViewStateChangeEvent, useMap } from "react-map-gl/maplibre"
-import { IfUserCanEdit } from "../../../pagesComponents/memberships/IfUserCan"
-import { useUserCan } from "../../../pagesComponents/memberships/hooks/useUserCan"
 import { BaseMap } from "./BaseMap"
 import { MapLegend } from "./MapLegend"
 import { projectLegendConfig } from "./ProjectMap.legendConfig"
@@ -39,13 +39,12 @@ export const ProjectMap = ({ subsections }: Props) => {
   type HandleSelectProps = { subsectionSlug: string; edit: boolean }
   const handleSelect = ({ subsectionSlug, edit }: HandleSelectProps) => {
     if (!projectSlug) return
-    // alt+click
     const url =
       userCan.edit && edit
-        ? Routes.EditSubsectionPage({ projectSlug, subsectionSlug })
-        : Routes.SubsectionDashboardPage({ projectSlug, subsectionSlug })
+        ? subsectionEditRoute(projectSlug, subsectionSlug)
+        : subsectionDashboardRoute(projectSlug, subsectionSlug)
 
-    void router.push(url, undefined, { scroll: edit ? true : false })
+    router.push(url, { scroll: edit })
   }
 
   const handleClickMap = (e: MapLayerMouseEvent) => {

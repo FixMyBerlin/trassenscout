@@ -7,6 +7,7 @@ import { SubsubsectionInfra } from "@/src/server/subsubsectionInfra/schema"
 import { useMutation } from "@blitzjs/rpc"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 import { SubsubsectionInfraForm } from "./SubsubsectionInfraForm"
 
 type Props = {
@@ -17,7 +18,7 @@ export const NewSubsubsectionInfraForm = ({ projectSlug }: Props) => {
   const router = useRouter()
   const [createSubsubsectionInfraMutation] = useMutation(createSubsubsectionInfra)
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<ReturnType<typeof SubsubsectionInfra.omit<{ projectId: true }>>>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await createSubsubsectionInfraMutation({ ...values, projectSlug })

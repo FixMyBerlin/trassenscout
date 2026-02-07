@@ -2,7 +2,6 @@ import { SurveyAnalysis } from "@/src/app/(loggedInProjects)/[projectSlug]/surve
 import { invoke } from "@/src/blitz-server"
 import { Spinner } from "@/src/core/components/Spinner"
 import getSurvey from "@/src/server/surveys/queries/getSurvey"
-import { Metadata } from "next"
 import { Suspense } from "react"
 import { getSurveyTabs } from "../_utils/getSurveyTabs"
 
@@ -10,7 +9,7 @@ export async function generateMetadata({
   params,
 }: {
   params: { projectSlug: string; surveyId: string }
-}): Promise<Metadata> {
+}) {
   const survey = await invoke(getSurvey, {
     projectSlug: params.projectSlug,
     id: Number(params.surveyId),

@@ -1,12 +1,17 @@
-import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
+import {
+  subsectionDashboardRoute,
+  subsectionEditRoute,
+  subsubsectionDashboardRoute,
+  subsubsectionEditRoute,
+} from "@/src/core/routes/subsectionRoutes"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { useSlug } from "@/src/core/routes/useSlug"
 import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
-import { Routes } from "@blitzjs/next"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import { useEffect, useMemo } from "react"
 import { MapLayerMouseEvent, useMap } from "react-map-gl/maplibre"
-import { useSlug } from "../../routes/usePagesDirectorySlug"
 import { BaseMap } from "./BaseMap"
 import { getLineEndPointsLayerId } from "./layers/LineEndPointsLayer"
 import { getLineLayerId } from "./layers/LinesLayer"
@@ -53,13 +58,13 @@ export const SubsectionSubsubsectionMap = ({
     if (!projectSlug) return
     const url = edit
       ? subsubsectionSlug
-        ? Routes.EditSubsubsectionPage({ projectSlug, subsectionSlug, subsubsectionSlug })
-        : Routes.EditSubsectionPage({ projectSlug, subsectionSlug })
+        ? subsubsectionEditRoute(projectSlug, subsectionSlug, subsubsectionSlug)
+        : subsectionEditRoute(projectSlug, subsectionSlug)
       : subsubsectionSlug
-        ? Routes.SubsubsectionDashboardPage({ projectSlug, subsectionSlug, subsubsectionSlug })
-        : Routes.SubsectionDashboardPage({ projectSlug, subsectionSlug })
+        ? subsubsectionDashboardRoute(projectSlug, subsectionSlug, subsubsectionSlug)
+        : subsectionDashboardRoute(projectSlug, subsectionSlug)
 
-    void router.push(url, undefined, { scroll: edit ? true : false })
+    router.push(url, { scroll: edit })
   }
 
   const handleClickMap = (e: MapLayerMouseEvent) => {

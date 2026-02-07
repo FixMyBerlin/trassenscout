@@ -8,6 +8,7 @@ import { OperatorSchema } from "@/src/server/operators/schema"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 import { OperatorForm } from "./OperatorForm"
 
 type Props = {
@@ -19,7 +20,7 @@ export const NewOperatorForm = ({ projectSlug }: Props) => {
   const [createOperatorMutation] = useMutation(createOperator)
   const [maxOrderOperators] = useQuery(getOperatorMaxOrder, projectSlug)
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<ReturnType<typeof OperatorSchema.omit<{ projectId: true }>>>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await createOperatorMutation({ ...values, projectSlug })
