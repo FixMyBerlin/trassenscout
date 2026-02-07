@@ -1,4 +1,3 @@
-import { legendItemsConfig } from "@/src/core/components/Map/legendConfig"
 import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
 import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { Routes } from "@blitzjs/next"
@@ -9,6 +8,7 @@ import { IfUserCanEdit } from "../../../pagesComponents/memberships/IfUserCan"
 import { useUserCan } from "../../../pagesComponents/memberships/hooks/useUserCan"
 import { BaseMap } from "./BaseMap"
 import { MapLegend } from "./MapLegend"
+import { projectLegendConfig } from "./ProjectMap.legendConfig"
 import { SubsectionMarkers } from "./markers/SubsectionMarkers"
 import { geometriesBbox } from "./utils/bboxHelpers"
 import { getSubsectionFeatures } from "./utils/getSubsectionFeatures"
@@ -83,7 +83,7 @@ export const ProjectMap = ({ subsections }: Props) => {
       >
         <SubsectionMarkers subsections={subsections} zoom={zoom} onSelect={handleSelect} />
       </BaseMap>
-      <MapLegend legendItemsConfig={legendItemsConfig.project} title="" />
+      <MapLegend legendItemsConfig={projectLegendConfig} />
       <IfUserCanEdit>
         <p className="mt-2 text-right text-xs text-gray-400">
           Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)

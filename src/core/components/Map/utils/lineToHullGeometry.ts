@@ -1,4 +1,4 @@
-import { convex } from "@turf/convex"
+import { buffer } from "@turf/buffer"
 import { featureCollection } from "@turf/helpers"
 import { union } from "@turf/union"
 import type { LineString, MultiLineString, MultiPolygon, Polygon } from "geojson"
@@ -7,6 +7,7 @@ import { lineStringToGeoJSON } from "./lineStringToGeoJSON"
 /**
  * Converts LineString or MultiLineString geometry to a hull polygon geometry.
  * For MultiLineString, creates hulls for each LineString and merges them.
+ * Uses buffer() to create a uniform-width polygon around the line.
  * Returns Polygon or MultiPolygon geometry.
  */
 export const lineToHullGeometry = (
@@ -16,9 +17,13 @@ export const lineToHullGeometry = (
   const lineFeatures = lineStringToGeoJSON(geometry, {})
 
   // 2. Create hull for each LineString (MultiLineString returns multiple features)
-  const hulls = lineFeatures
-    .map((lineFeature) => convex(lineFeature))
-    .filter((hull): hull is NonNullable<typeof hull> => hull !== null)
+  // Buffer radius: 10 meters (small buffer for visualization)
+  const hullResults = lineFeatures.map((lineFeature) => {
+    const hull = buffer(lineFeature, 10, { units: "meters" })
+    return { lineFeature, hull }
+  })
+
+  const hulls = hullResults.map((r) => r.hull).filter(Boolean)
 
   if (hulls.length === 0) {
     throw new Error("Failed to create hull from line geometry")

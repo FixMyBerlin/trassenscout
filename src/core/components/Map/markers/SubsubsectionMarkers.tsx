@@ -1,10 +1,9 @@
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { Marker } from "react-map-gl/maplibre"
-import { shortTitle } from "../../text"
 import { SubsubsectionMapIcon } from "../Icons"
 import { TitleLabel } from "../Labels"
 import { TipMarker } from "../TipMarker"
-import { getCenterOfMass } from "../utils/getCenterOfMass"
+import { getLabelPosition } from "../utils/getLabelPosition"
 
 type Props = {
   subsubsections: SubsubsectionWithPosition[]
@@ -23,7 +22,7 @@ const SubsubsectionMarker = ({
   pageSubsectionSlug,
   onSelect,
 }: SubsubsectionMarkerProps) => {
-  const [longitude, latitude] = getCenterOfMass(subsubsection.geometry)
+  const [longitude, latitude] = getLabelPosition(subsubsection.geometry)
 
   return (
     <Marker
@@ -48,7 +47,7 @@ const SubsubsectionMarker = ({
         slug={subsubsection.slug}
       >
         <TitleLabel
-          icon={<SubsubsectionMapIcon label={shortTitle(subsubsection.slug)} />}
+          icon={<SubsubsectionMapIcon slug={subsubsection.slug} />}
           subtitle={subsubsection.SubsubsectionTask?.title}
         />
       </TipMarker>

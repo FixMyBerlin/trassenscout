@@ -259,7 +259,8 @@ export const subsubsectionsForPoly3: Omit<
     width: null,
     costEstimate: null,
     qualityLevelId: null,
-    description: "Test subsubsection: Subsubsection with 5 Points (3 in areas, 1 on line, 1 offset)",
+    description:
+      "Test subsubsection: Subsubsection with 5 Points (3 in areas, 1 on line, 1 offset)",
     mapillaryKey: null,
     managerId: null,
     maxSpeed: null,
@@ -533,7 +534,8 @@ export const subsubsectionsForLine3: Omit<
     width: null,
     costEstimate: null,
     qualityLevelId: null,
-    description: "Test subsubsection: Subsubsection with 5 Points (3 in areas, 1 on line, 1 offset)",
+    description:
+      "Test subsubsection: Subsubsection with 5 Points (3 in areas, 1 on line, 1 offset)",
     mapillaryKey: null,
     managerId: null,
     maxSpeed: null,

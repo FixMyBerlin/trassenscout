@@ -1,6 +1,6 @@
 import { clsx } from "clsx"
 import "maplibre-gl/dist/maplibre-gl.css"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import MapComponent, {
   MapEvent,
   MapLayerMouseEvent,
@@ -28,6 +28,7 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
     Pick<
       MapProps,
       | "onMouseEnter"
+      | "onMouseMove"
       | "onMouseLeave"
       | "onClick"
       | "onZoomEnd"
@@ -55,6 +56,7 @@ export const BaseMap = ({
   id: mapId,
   initialViewState,
   onMouseEnter,
+  onMouseMove,
   onMouseLeave,
   onClick,
   onZoomEnd,
@@ -94,7 +96,7 @@ export const BaseMap = ({
     pointIds: string[]
     endPointIds: string[]
   }
-  const map = new Map<string, SlugFeatureIds>()
+  const slugFeatureMap = new Map<string, SlugFeatureIds>()
 
   const getSlug = (props: { subsubsectionSlug?: string; subsectionSlug?: string }) =>
     props.subsubsectionSlug || props.subsectionSlug
@@ -105,14 +107,14 @@ export const BaseMap = ({
       const slug = getSlug(f.properties || {})
       const featureId = f.properties?.featureId
       if (slug && featureId) {
-        const featureIds = map.get(slug) ?? {
+        const featureIds = slugFeatureMap.get(slug) ?? {
           lineIds: [],
           polygonIds: [],
           pointIds: [],
           endPointIds: [],
         }
         featureIds.lineIds.push(featureId)
-        map.set(slug, featureIds)
+        slugFeatureMap.set(slug, featureIds)
       }
     })
   }
@@ -123,14 +125,14 @@ export const BaseMap = ({
       const slug = getSlug(f.properties || {})
       const featureId = f.properties?.featureId
       if (slug && featureId) {
-        const featureIds = map.get(slug) ?? {
+        const featureIds = slugFeatureMap.get(slug) ?? {
           lineIds: [],
           polygonIds: [],
           pointIds: [],
           endPointIds: [],
         }
         featureIds.polygonIds.push(featureId)
-        map.set(slug, featureIds)
+        slugFeatureMap.set(slug, featureIds)
       }
     })
   }
@@ -141,14 +143,14 @@ export const BaseMap = ({
       const slug = getSlug(f.properties || {})
       const featureId = f.properties?.featureId
       if (slug && featureId) {
-        const featureIds = map.get(slug) ?? {
+        const featureIds = slugFeatureMap.get(slug) ?? {
           lineIds: [],
           polygonIds: [],
           pointIds: [],
           endPointIds: [],
         }
         featureIds.pointIds.push(featureId)
-        map.set(slug, featureIds)
+        slugFeatureMap.set(slug, featureIds)
       }
     })
   }
@@ -160,37 +162,49 @@ export const BaseMap = ({
       const featureId = f.properties?.featureId
       if (lineId && featureId) {
         const lineIdStr = String(lineId)
-        const featureIds = map.get(lineIdStr) ?? {
+        const featureIds = slugFeatureMap.get(lineIdStr) ?? {
           lineIds: [],
           polygonIds: [],
           pointIds: [],
           endPointIds: [],
         }
         featureIds.endPointIds.push(featureId)
-        map.set(lineIdStr, featureIds)
+        slugFeatureMap.set(lineIdStr, featureIds)
       }
     })
   }
 
-  const slugFeatureMap = map
+  // Track previous hovered slug to avoid unnecessary global state updates
+  const previousHoveredSlugRef = useRef<string | null>(null)
 
   // Handle hover state via MapLibre internal global state
-  const handleMouseEnterInternal = (e: MapLayerMouseEvent) => {
+  // Use onMouseMove instead of onMouseEnter to detect changes when moving between overlapping features
+  const handleMouseMoveInternal = (e: MapLayerMouseEvent) => {
     const map = e.target
     const features = e.features || []
 
     if (!map || features.length === 0) {
+      // No features under cursor - clear highlight if needed
+      if (previousHoveredSlugRef.current !== null) {
+        map.setGlobalStateProperty("highlightSlug", null)
+        previousHoveredSlugRef.current = null
+      }
       setCursorStyle("grab")
-      if (onMouseEnter) onMouseEnter(e)
+      if (onMouseMove) onMouseMove(e)
       return
     }
 
-    // Get the first feature
+    // Get the first feature (topmost feature)
     const feature = features[0]
     const featureId = feature?.properties?.featureId
     if (!feature || !featureId || !feature.source) {
+      // Invalid feature - clear highlight if needed
+      if (previousHoveredSlugRef.current !== null) {
+        map.setGlobalStateProperty("highlightSlug", null)
+        previousHoveredSlugRef.current = null
+      }
       setCursorStyle("grab")
-      if (onMouseEnter) onMouseEnter(e)
+      if (onMouseMove) onMouseMove(e)
       return
     }
 
@@ -203,12 +217,19 @@ export const BaseMap = ({
       feature.properties?.lineId
     const lookupSlug = rawSlug ? String(rawSlug) : undefined
 
-    if (lookupSlug) {
-      map.setGlobalStateProperty("highlightSlug", lookupSlug)
+    // Only update global state if the slug actually changed
+    if (lookupSlug !== previousHoveredSlugRef.current) {
+      if (lookupSlug) {
+        map.setGlobalStateProperty("highlightSlug", lookupSlug)
+      } else {
+        map.setGlobalStateProperty("highlightSlug", null)
+      }
+      previousHoveredSlugRef.current = lookupSlug ?? null
     }
 
     setCursorStyle("pointer")
-    if (onMouseEnter) onMouseEnter(e)
+    // Call onMouseMove if provided (for parent components that need it)
+    if (onMouseMove) onMouseMove(e)
   }
 
   const handleMouseLeaveInternal = (e: MapLayerMouseEvent) => {
@@ -220,6 +241,7 @@ export const BaseMap = ({
     }
 
     map.setGlobalStateProperty("highlightSlug", null)
+    previousHoveredSlugRef.current = null
 
     setCursorStyle("grab")
     if (onMouseLeave) onMouseLeave(e)
@@ -374,7 +396,7 @@ export const BaseMap = ({
           mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
           scrollZoom={false}
           cursor={cursorStyle}
-          onMouseEnter={handleMouseEnterInternal}
+          onMouseMove={handleMouseMoveInternal}
           onMouseLeave={handleMouseLeaveInternal}
           onClick={handleClickInternal}
           onZoomEnd={handleZoomEnd}

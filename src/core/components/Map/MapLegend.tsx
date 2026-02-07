@@ -26,24 +26,85 @@ export type LegendItemConfig =
       text: string
       color: string
       dots?: boolean
+      isHull?: boolean
+    }
+  | {
+      shapes: [
+        typeof GeometryTypeEnum.LINE,
+        typeof GeometryTypeEnum.POINT,
+        typeof GeometryTypeEnum.POLYGON,
+      ]
+      text: string
+      color: string
+      dots?: boolean
+      isDashed?: boolean
+      secondColor?: string
     }
 
 type LegendProps = {
   legendItemsConfig?: LegendItemConfig[]
-  title?: string
 }
 
-export const MapLegend = ({ legendItemsConfig, title }: LegendProps) => {
+export const MapLegend = ({ legendItemsConfig }: LegendProps) => {
   if (!legendItemsConfig) return
   return (
-    <LegendWrapper title={title}>
+    <LegendWrapper>
       {legendItemsConfig.map((item) => {
         if ("shapes" in item) {
-          // Multiple shapes (LINE + POLYGON)
+          // Multiple shapes
+          if (item.shapes.length === 3) {
+            // LINE + POINT + POLYGON
+            const threeShapesItem = item as Extract<
+              LegendItemConfig,
+              {
+                shapes: [
+                  typeof GeometryTypeEnum.LINE,
+                  typeof GeometryTypeEnum.POINT,
+                  typeof GeometryTypeEnum.POLYGON,
+                ]
+              }
+            >
+            return (
+              <LegendItem text={item.text} key={item.text}>
+                <>
+                  <LegendIcon
+                    type={GeometryTypeEnum.LINE}
+                    color={item.color}
+                    showDots={threeShapesItem.dots}
+                    isDashed={threeShapesItem.isDashed}
+                    secondColor={threeShapesItem.secondColor}
+                  />
+                  <LegendIcon type={GeometryTypeEnum.POINT} color={item.color} />
+                  <LegendIcon type={GeometryTypeEnum.POLYGON} color={item.color} />
+                </>
+              </LegendItem>
+            )
+          }
+          // LINE + POLYGON
+          const twoShapesItem = item as Extract<
+            LegendItemConfig,
+            { shapes: [typeof GeometryTypeEnum.LINE, typeof GeometryTypeEnum.POLYGON] }
+          >
+          if (twoShapesItem.isHull) {
+            // Show POLYGON icon for both (hull representation) with dotted border
+            return (
+              <LegendItem text={item.text} key={item.text}>
+                <LegendIcon
+                  type={GeometryTypeEnum.POLYGON}
+                  color={item.color}
+                  dottedBorder={true}
+                />
+              </LegendItem>
+            )
+          }
           return (
             <LegendItem text={item.text} key={item.text}>
               <>
-                <LegendIcon type={GeometryTypeEnum.LINE} color={item.color} showDots={item.dots} />
+                <LegendIcon
+                  type={GeometryTypeEnum.LINE}
+                  color={item.color}
+                  showDots={twoShapesItem.dots}
+                />
                 <LegendIcon type={GeometryTypeEnum.POLYGON} color={item.color} />
               </>
             </LegendItem>
@@ -84,15 +145,13 @@ export const MapLegend = ({ legendItemsConfig, title }: LegendProps) => {
 }
 
 type LegendWrapperProps = {
-  title?: string
   children: ReactNode[]
 }
 
-export const LegendWrapper = ({ title = "Kartenlegende", children }: LegendWrapperProps) => {
+export const LegendWrapper = ({ children }: LegendWrapperProps) => {
   return (
     <div className="rounded-b-md bg-gray-100 px-3 py-2 text-xs drop-shadow-md">
-      {title && <p className="font-semibold">{title}</p>}
-      <div className="flex flex-wrap gap-6">{children}</div>
+      <div className="flex flex-wrap gap-x-6 gap-y-2">{children}</div>
     </div>
   )
 }

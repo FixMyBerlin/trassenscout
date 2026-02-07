@@ -1,7 +1,7 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "@/src/core/components/Breadcrumb/Breadcrumb"
 import { SubsectionMapIcon } from "@/src/core/components/Map/Icons"
-import { SubsectionSubsubsectionMap } from "@/src/core/components/Map/SubsectionSubsubsectionMap"
+import { SubsectionSubsubsectionMapWithProvider } from "@/src/core/components/Map/SubsectionSubsubsectionMapWithProvider"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
@@ -78,7 +78,7 @@ export const SubsectionDashboardWithQuery = () => {
 
       <div className="relative mt-12 flex w-full gap-10">
         <div className="w-full">
-          <SubsectionSubsubsectionMap
+          <SubsectionSubsubsectionMapWithProvider
             // Make sure the map rerenders when we close the SubsectionSidebar
             key={`map-${subsubsectionSlug ? "subsubsection" : "subsection"}`}
             subsections={subsections}

@@ -24,10 +24,7 @@ export const LineEndPointsLayer = ({
 }: LineEndPointsLayerProps) => {
   if (!lineEndPoints || lineEndPoints.features.length === 0) return null
 
-  const sourceId = getLineEndPointsLayerId(layerIdSuffix)
-  const layerId = getLineEndPointsLayerId(layerIdSuffix)
-
-  // Import colors based on colorSchema
+  const id = getLineEndPointsLayerId(layerIdSuffix)
   const colors = colorSchema === "subsubsection" ? subsubsectionColors : subsectionColors
 
   const colorExpression: ExpressionSpecification = [
@@ -38,28 +35,21 @@ export const LineEndPointsLayer = ({
       ["coalesce", ["get", "projectSlug"], ["get", "lineId"]],
       ["coalesce", ["global-state", "highlightSlug"], ""],
     ],
-    sharedColors.hovered,
+    sharedColors.hovered, // Yellow hover color
     ["boolean", ["feature-state", "selected"], false],
-    sharedColors.selected,
-    colors.lineDotSelected, // Inner fill color
-  ]
-
-  const strokeColorExpression: ExpressionSpecification = [
-    "case",
-    ["boolean", ["feature-state", "selected"], false],
-    sharedColors.selected, // Yellow border when selected
-    colors.lineDotRing, // Dark border on hover and default
+    colors.lineDotSelected, // Light blue fill when selected (not yellow)
+    colors.lineDotUnselected, // Default blue fill
   ]
 
   return (
-    <Source id={sourceId} key={sourceId} type="geojson" data={lineEndPoints} promoteId="featureId">
+    <Source id={id} key={id} type="geojson" data={lineEndPoints} promoteId="featureId">
       <Layer
-        id={layerId}
+        id={id}
         type="circle"
         paint={{
-          "circle-color": colorExpression, // Inner fill
+          "circle-color": colorExpression,
           "circle-radius": colors.lineDotRadius,
-          "circle-stroke-color": strokeColorExpression, // Border color responds to hover/selected
+          "circle-stroke-color": colors.lineDotRing,
           "circle-stroke-width": colors.lineDotStrokeWidth,
         }}
       />

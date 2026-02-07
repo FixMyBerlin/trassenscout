@@ -67,7 +67,7 @@ export const LinesLayer = ({
         }}
         paint={{
           "line-width": colors.lineOutlineWidth,
-          "line-color": subsectionColors.lineDotSelected,
+          "line-color": colors.linesBorderColor, // Blackish border color for line outlines
           "line-opacity": 0.6,
         }}
       />

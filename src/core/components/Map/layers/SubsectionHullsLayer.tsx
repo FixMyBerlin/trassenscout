@@ -70,7 +70,7 @@ export const SubsectionHullsLayer = ({
         type="fill"
         paint={{
           "fill-color": colorExpression,
-          "fill-opacity": 0.3,
+          "fill-opacity": 0.05,
         }}
       />
       <Layer
@@ -81,10 +81,10 @@ export const SubsectionHullsLayer = ({
           "line-join": "round",
         }}
         paint={{
-          "line-width": 1,
+          "line-width": 2,
           "line-color": colorExpression,
-          "line-opacity": 0.8,
-          "line-dasharray": [2, 2],
+          "line-opacity": 0.7,
+          "line-dasharray": [0.5, 1.5],
         }}
       />
     </Source>

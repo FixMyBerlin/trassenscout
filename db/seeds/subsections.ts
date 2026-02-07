@@ -119,7 +119,8 @@ const seedSubsections = async () => {
       type: "POLYGON",
       start: "Test Start",
       end: "Test End",
-      description: "Test subsection with MultiPolygon geometry (3 polygons: 2 connected, 1 separate)",
+      description:
+        "Test subsection with MultiPolygon geometry (3 polygons: 2 connected, 1 separate)",
       labelPos: "bottom",
       geometry: {
         type: "MultiPolygon",
@@ -194,7 +195,8 @@ const seedSubsections = async () => {
       type: "LINE",
       start: "Test Start",
       end: "Test End",
-      description: "Test subsection with MultiLineString geometry (3 lines: 2 connected, 1 separate)",
+      description:
+        "Test subsection with MultiLineString geometry (3 lines: 2 connected, 1 separate)",
       labelPos: "bottom",
       geometry: {
         type: "MultiLineString",

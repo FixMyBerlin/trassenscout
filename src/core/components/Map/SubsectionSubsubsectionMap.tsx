@@ -13,9 +13,9 @@ import { getLineLayerId } from "./layers/LinesLayer"
 import { getPointLayerId } from "./layers/PointsLayer"
 import { getPolygonLayerId } from "./layers/PolygonsLayer"
 import { SubsectionHullsLayer } from "./layers/SubsectionHullsLayer"
-import { legendItemsConfig } from "./legendConfig"
 import { MapLegend } from "./MapLegend"
 import { SubsubsectionMarkers } from "./markers/SubsubsectionMarkers"
+import { subsectionLegendConfig } from "./SubsectionSubsubsectionMap.legendConfig"
 import { UploadMarkers } from "./UploadMarkers"
 import { geometriesBbox } from "./utils/bboxHelpers"
 import { getSubsectionFeatures } from "./utils/getSubsectionFeatures"
@@ -187,8 +187,10 @@ export const SubsectionSubsubsectionMap = ({
       subsubsectionPoints.features.forEach((f) => {
         const featureId = f.properties?.featureId
         if (featureId) {
-          const sourceId = getPointLayerId(suffix)
-          map.setFeatureState({ source: sourceId, id: featureId }, { selected: false })
+          map.setFeatureState(
+            { source: getPointLayerId(suffix), id: featureId },
+            { selected: false },
+          )
         }
       })
     }
@@ -198,6 +200,17 @@ export const SubsectionSubsubsectionMap = ({
         if (featureId) {
           map.setFeatureState(
             { source: getPolygonLayerId(suffix), id: featureId },
+            { selected: false },
+          )
+        }
+      })
+    }
+    if (allLineEndPointsGeoms) {
+      allLineEndPointsGeoms.features.forEach((f) => {
+        const featureId = f.properties?.featureId
+        if (featureId) {
+          map.setFeatureState(
+            { source: getLineEndPointsLayerId(suffix), id: featureId },
             { selected: false },
           )
         }
@@ -295,11 +308,7 @@ export const SubsectionSubsubsectionMap = ({
         />
         <UploadMarkers projectSlug={projectSlug} interactive={true} />
       </BaseMap>
-      <MapLegend
-        legendItemsConfig={
-          pageSubsubsectionSlug ? legendItemsConfig.subsubsection : legendItemsConfig.subsection
-        }
-      />
+      <MapLegend legendItemsConfig={subsectionLegendConfig} />
       <p className="mt-2 text-right text-xs text-gray-400">
         Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)
       </p>

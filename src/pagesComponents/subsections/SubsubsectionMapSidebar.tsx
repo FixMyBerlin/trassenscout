@@ -65,7 +65,7 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
     <section className="overlflow-y-scroll h-full w-[950px] overflow-x-hidden rounded-md border border-gray-400/10 bg-white p-3 drop-shadow-md">
       <div className="mt-3 flex items-center justify-between">
         <div className="flex items-center justify-start gap-2">
-          <SubsubsectionIcon label={shortTitle(subsubsection.slug)} />
+          <SubsubsectionIcon slug={subsubsection.slug} />
         </div>
         <div className="flex items-center gap-3">
           <IfUserCanEdit>

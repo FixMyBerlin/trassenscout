@@ -1,5 +1,5 @@
 import db from "@/db"
-import { getCenterOfMass } from "@/src/core/components/Map/utils/getCenterOfMass"
+import { getLabelPosition } from "@/src/core/components/Map/utils/getLabelPosition"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { PointGeometrySchema } from "@/src/core/utils/geojson-schemas"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
@@ -142,7 +142,7 @@ export const POST = withApiKey(async ({ request }) => {
 
     // Calculate fallback geometry for new records when geometry is not provided
     const calculateFallbackGeometry = () => {
-      const coordinates = getCenterOfMass(subsectionGeometry)
+      const coordinates = getLabelPosition(subsectionGeometry)
 
       return PointGeometrySchema.parse({
         type: "Point",

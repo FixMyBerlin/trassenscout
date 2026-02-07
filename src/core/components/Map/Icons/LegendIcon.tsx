@@ -9,6 +9,7 @@ type Props = {
   color: string
   secondColor?: string
   showDots?: boolean
+  dottedBorder?: boolean
   className?: string
 }
 
@@ -31,6 +32,7 @@ export const LegendIcon = ({
   color,
   secondColor,
   showDots = false,
+  dottedBorder = false,
   className,
 }: Props) => {
   switch (type) {
@@ -73,7 +75,7 @@ export const LegendIcon = ({
       return (
         <span className={clsx("relative size-[18px] shrink-0", className)}>
           <span
-            className="absolute inline-block size-[18px] rounded-full border-[3px]"
+            className="absolute inline-block size-[18px] rounded-full border-2"
             style={{ borderColor: color }}
           />
           <span
@@ -87,7 +89,10 @@ export const LegendIcon = ({
       return (
         <span className={clsx("relative size-[18px] shrink-0", className)}>
           <span
-            className="absolute inline-block size-[18px] rounded border-2"
+            className={clsx(
+              "absolute inline-block size-[18px] rounded",
+              dottedBorder ? "border border-dashed" : "border-2",
+            )}
             style={{ borderColor: color, backgroundColor: `${color}30` }}
           />
         </span>

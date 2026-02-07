@@ -4,7 +4,7 @@ import { shortTitle } from "../../text"
 import { SubsectionMapIcon } from "../Icons"
 import { StartEndLabel } from "../Labels"
 import { TipMarker } from "../TipMarker"
-import { getCenterOfMass } from "../utils/getCenterOfMass"
+import { getLabelPosition } from "../utils/getLabelPosition"
 
 type Props = {
   subsections: TSubsections
@@ -21,7 +21,7 @@ type SubsectionMarkerProps = {
 }
 
 const SubsectionMarker = ({ subsection, zoom, onSelect }: SubsectionMarkerProps) => {
-  const [longitude, latitude] = getCenterOfMass(subsection.geometry)
+  const [longitude, latitude] = getLabelPosition(subsection.geometry)
 
   return (
     <Marker
