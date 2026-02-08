@@ -7,6 +7,9 @@ type Props = {
   mode: TerraDrawMode
   setMode: (mode: TerraDrawMode) => void
   onClear?: () => void
+  getSelectedIds?: () => string[]
+  deleteSelected?: () => void
+  selectedIds?: string[]
   showPoint?: boolean
   showLine?: boolean
   showPolygon?: boolean
@@ -27,6 +30,9 @@ export const DrawingToolbar = ({
   mode,
   setMode,
   onClear,
+  getSelectedIds,
+  deleteSelected,
+  selectedIds = [],
   showPoint = true,
   showLine = true,
   showPolygon = true,
@@ -39,6 +45,23 @@ export const DrawingToolbar = ({
   },
   trailingButtons,
 }: Props) => {
+  // Get selected count - prefer selectedIds prop if provided, otherwise call getSelectedIds
+  const selectedCount = selectedIds.length > 0 ? selectedIds.length : (getSelectedIds ? getSelectedIds().length : 0)
+  const hasSelection = selectedCount > 0
+
+  // Determine delete button text and handler
+  const deleteButtonText = hasSelection ? "Ausgewähltes löschen" : "Alle löschen"
+  const deleteButtonTitle = hasSelection
+    ? "Ausgewähltes Element löschen"
+    : "Alle Elemente löschen"
+
+  const handleDelete = () => {
+    if (hasSelection && deleteSelected) {
+      deleteSelected()
+    } else if (onClear) {
+      onClear()
+    }
+  }
   const buttonClass = (isActive: boolean, isDisabled: boolean) =>
     clsx(
       "flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
@@ -134,15 +157,15 @@ export const DrawingToolbar = ({
         Bearbeiten
       </button>
 
-      {onClear && (
+      {(onClear || deleteSelected) && (
         <button
           type="button"
-          onClick={onClear}
+          onClick={handleDelete}
           className="flex items-center gap-1.5 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-100"
-          title="Alles löschen"
+          title={deleteButtonTitle}
         >
           <TrashIcon className="size-4" />
-          Löschen
+          {deleteButtonText}
         </button>
       )}
 

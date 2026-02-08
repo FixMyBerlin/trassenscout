@@ -30,6 +30,9 @@ type Props = {
     clear: () => void
     getSnapshot: () => Geometry[]
     updateFeatures: (geometry: Geometry | null) => void
+    getSelectedIds: () => string[]
+    deleteSelected: () => void
+    selectedIds: string[]
     enabledButtons: {
       point: boolean
       linestring: boolean
@@ -69,6 +72,9 @@ const TerraDrawControls = ({
             clear: control.clear,
             getSnapshot: control.getSnapshot,
             updateFeatures: control.updateFeatures,
+            getSelectedIds: control.getSelectedIds,
+            deleteSelected: control.deleteSelected,
+            selectedIds: control.selectedIds,
             enabledButtons: control.enabledButtons,
           })}
         </div>

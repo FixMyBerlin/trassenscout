@@ -86,7 +86,7 @@ export const GeometryInputMap = ({
         subsubsections={subsubsections}
         selectedSubsubsectionSlug={selectedSubsubsectionSlug}
       >
-        {({ mode, setMode, clear, updateFeatures, enabledButtons }) => {
+        {({ mode, setMode, clear, updateFeatures, getSelectedIds, deleteSelected, selectedIds, enabledButtons }) => {
           // Store updateFeatures in ref so SnappingControls can use it
           updateTerraDrawRef.current = updateFeatures
           return (
@@ -94,6 +94,9 @@ export const GeometryInputMap = ({
               mode={mode}
               setMode={setMode}
               onClear={clear}
+              getSelectedIds={getSelectedIds}
+              deleteSelected={deleteSelected}
+              selectedIds={selectedIds}
               showPoint={showPoint}
               showLine={showLine}
               showPolygon={showPolygon}

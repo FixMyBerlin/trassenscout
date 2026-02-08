@@ -87,9 +87,11 @@ class TerraDrawControl {
   private currentMode: TerraDrawMode = "select"
   private onModeChange?: (mode: TerraDrawMode) => void
   private onButtonsChange?: () => void
+  private onSelectionChange?: () => void
   private isInitialized = false
   private pendingMode: TerraDrawMode | null = null
   private ignoreNextChangeCount = 0
+  private selectedIds: Array<string | number> = []
 
   constructor(
     onChange?: (geometry: Geometry | null, geometryType: string | null) => void,
@@ -290,9 +292,31 @@ class TerraDrawControl {
         this.onButtonsChange()
       }
 
+      // Track selection through events
+      this.draw.on("select", (id) => {
+        if (!this.selectedIds.includes(id)) {
+          this.selectedIds = [...this.selectedIds, id]
+        }
+        if (this.onSelectionChange) {
+          this.onSelectionChange()
+        }
+      })
+
+      this.draw.on("deselect", () => {
+        this.selectedIds = []
+        if (this.onSelectionChange) {
+          this.onSelectionChange()
+        }
+      })
+
       // Set up change listener
       this.draw.on("change", () => {
         if (!this.draw) return
+
+        // Notify selection change
+        if (this.onSelectionChange) {
+          this.onSelectionChange()
+        }
 
         // Skip onChange callback if this is a programmatic update
         if (this.ignoreNextChangeCount > 0) {
@@ -506,6 +530,33 @@ class TerraDrawControl {
   setOnButtonsChange(callback: () => void) {
     this.onButtonsChange = callback
   }
+
+  setOnSelectionChange(callback: () => void) {
+    this.onSelectionChange = callback
+  }
+
+  getSelectedIds() {
+    return this.selectedIds.map(String)
+  }
+
+  deleteSelected() {
+    if (!this.draw || !this.isInitialized) return
+
+    if (this.selectedIds.length > 0) {
+      // Delete only selected features
+      this.draw.removeFeatures(this.selectedIds)
+      // Check if all features were deleted after removal
+      const snapshot = this.draw.getSnapshot()
+      if (snapshot.length === 0) {
+        // All features deleted - use clear() to signal the app
+        this.clear()
+      }
+      // Otherwise, the change event will handle updating the geometry
+    } else {
+      // No selection - delete all features
+      this.clear()
+    }
+  }
 }
 
 /**
@@ -534,6 +585,7 @@ export const useTerraDrawControl = ({ initialGeometry, onChange }: Props) => {
   }
 
   const [enabledButtons, setEnabledButtons] = useState(getInitialButtonState())
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
 
   const control = useControl<TerraDrawControl>(
     () => {
@@ -553,6 +605,11 @@ export const useTerraDrawControl = ({ initialGeometry, onChange }: Props) => {
       ctrl.setOnButtonsChange(() => {
         if (ctrl) {
           setEnabledButtons(ctrl.getEnabledButtons())
+        }
+      })
+      ctrl.setOnSelectionChange(() => {
+        if (ctrl) {
+          setSelectedIds(ctrl.getSelectedIds())
         }
       })
       return ctrl
@@ -593,6 +650,21 @@ export const useTerraDrawControl = ({ initialGeometry, onChange }: Props) => {
     }
   }
 
+  const getSelectedIds = () => {
+    if (control) {
+      return control.getSelectedIds()
+    }
+    return []
+  }
+
+  const deleteSelected = () => {
+    if (control) {
+      control.deleteSelected()
+      setEnabledButtons(control.getEnabledButtons())
+      setSelectedIds(control.getSelectedIds())
+    }
+  }
+
   return {
     mode,
     setMode,
@@ -600,5 +672,8 @@ export const useTerraDrawControl = ({ initialGeometry, onChange }: Props) => {
     getSnapshot,
     updateFeatures,
     enabledButtons,
+    getSelectedIds,
+    deleteSelected,
+    selectedIds,
   }
 }
