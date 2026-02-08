@@ -10,6 +10,8 @@ import { m2mFields, type M2MFieldsType } from "@/src/server/subsubsections/m2mFi
 import { z } from "zod"
 import { withApiKey } from "../../_utils/withApiKey"
 
+export const dynamic = "force-dynamic" // required with withApiKey (uses request.url)
+
 const ImportSubsubsectionRequestSchema = z.object({
   projectSlug: z.string(),
   subsectionSlug: z.string(),

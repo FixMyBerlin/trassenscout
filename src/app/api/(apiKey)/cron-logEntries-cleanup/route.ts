@@ -3,6 +3,8 @@ import { guardedCreateSystemLogEntry } from "@/src/server/systemLogEntries/creat
 import { calculateComparisonDate } from "../../_utils/calculateComparisonDate"
 import { withApiKey } from "../_utils/withApiKey"
 
+export const dynamic = "force-dynamic" // required with withApiKey (uses request.url)
+
 const LOGENTRIES_DAYS_TO_DELETION = 365
 
 export const GET = withApiKey(async ({ apiKey }) => {

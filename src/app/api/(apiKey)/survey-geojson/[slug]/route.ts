@@ -5,6 +5,8 @@ import adler32 from "adler-32"
 import type { Feature, LineString, MultiLineString, Point, Position } from "geojson"
 import { withApiKey } from "../../_utils/withApiKey"
 
+export const dynamic = "force-dynamic" // required with withApiKey (uses request.url)
+
 // READ THIS:
 // This API is custom made for BB.
 // There is more on how we use this in TILDA at `app/scripts/StaticDatasets/geojson/region-bb/_bb-trassenscout-beteiligung/README.md`
