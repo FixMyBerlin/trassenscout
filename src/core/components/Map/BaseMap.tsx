@@ -35,6 +35,7 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
       | "onLoad"
       | "interactiveLayerIds"
       | "hash"
+      | "reuseMaps"
     >
   > &
   Omit<LinesLayerProps, "layerIdSuffix" | "interactive" | "lines"> &
@@ -63,6 +64,7 @@ export const BaseMap = ({
   onLoad,
   interactiveLayerIds,
   hash,
+  reuseMaps = true,
   lines,
   polygons,
   points,
@@ -391,7 +393,7 @@ export const BaseMap = ({
       <div className="relative h-full w-full">
         <MapComponent
           id={mapId}
-          reuseMaps
+          reuseMaps={reuseMaps}
           initialViewState={initialViewState}
           mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
           scrollZoom={false}

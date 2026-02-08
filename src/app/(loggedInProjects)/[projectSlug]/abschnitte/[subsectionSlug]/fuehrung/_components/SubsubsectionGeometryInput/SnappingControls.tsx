@@ -1,3 +1,4 @@
+import { MagnetIcon } from "@/src/core/components/Map/Icons/MagnetIcon"
 import { snapGeometryToLine } from "@/src/core/components/Map/TerraDraw/snapToLine"
 import type { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import type { Geometry } from "geojson"
@@ -41,15 +42,14 @@ export const SnappingControls = ({
   }
 
   return (
-    <div className="flex justify-end gap-2">
-      <button
-        type="button"
-        onClick={handleSnap}
-        className="rounded-md border border-green-200 bg-green-50 px-3 py-1 text-sm font-medium text-green-700 transition-colors hover:bg-green-100"
-        title="Punkte innerhalb 20m zum Planungsabschnitt snappen"
-      >
-        🧲 Snappen
-      </button>
-    </div>
+    <button
+      type="button"
+      onClick={handleSnap}
+      className="flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+      title="Punkte innerhalb 20m zum Planungsabschnitt snappen"
+    >
+      <MagnetIcon className="size-4" />
+      Snappen
+    </button>
   )
 }

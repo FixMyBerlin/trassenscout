@@ -1,3 +1,5 @@
+import { sharedColors } from "@/src/core/components/Map/colors/sharedColors"
+import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
 import { isDev } from "@/src/core/utils/isEnv"
 import type { Geometry } from "geojson"
 import type { Map as MapLibreMap } from "maplibre-gl"
@@ -5,6 +7,7 @@ import { useState } from "react"
 import { useControl } from "react-map-gl/maplibre"
 import {
   type GeoJSONStoreFeatures,
+  type HexColor,
   TerraDraw,
   TerraDrawFreehandLineStringMode,
   TerraDrawLineStringMode,
@@ -15,8 +18,9 @@ import {
 import { TerraDrawMapLibreGLAdapter } from "terra-draw-maplibre-gl-adapter"
 
 const TERRA_DRAW_COLORS = {
-  drawing: "#B377FE" as const,
-  selectedDark: "#333333" as const,
+  drawing: sharedColors.hovered as HexColor, // Yellow for edited feature
+  selectedDark: sharedColors.hovered as HexColor, // Yellow for selected feature
+  selectionPoint: subsubsectionColors.lineDotSelected as HexColor, // Light blue for corner/vertex points
 }
 
 export type TerraDrawMode = "point" | "linestring" | "freehand-linestring" | "polygon" | "select"
@@ -185,7 +189,11 @@ class TerraDrawControl {
           styles: { lineStringColor: TERRA_DRAW_COLORS.drawing },
         }),
         new TerraDrawPolygonMode({
-          styles: { outlineColor: TERRA_DRAW_COLORS.drawing },
+          styles: {
+            outlineColor: TERRA_DRAW_COLORS.drawing,
+            fillColor: TERRA_DRAW_COLORS.drawing, // Yellow fill for polygons
+            fillOpacity: 0.3, // Semi-transparent yellow fill
+          },
         }),
         new TerraDrawSelectMode({
           flags: {
@@ -216,16 +224,17 @@ class TerraDrawControl {
           },
           styles: {
             // https://github.com/JamesLMilner/terra-draw/blob/main/guides/5.STYLING.md#selection-points
-            selectedPointColor: TERRA_DRAW_COLORS.drawing,
-            selectionPointColor: TERRA_DRAW_COLORS.drawing,
-            selectedLineStringColor: TERRA_DRAW_COLORS.selectedDark,
-            selectedPolygonColor: TERRA_DRAW_COLORS.selectedDark,
+            selectedPointColor: TERRA_DRAW_COLORS.selectionPoint, // Light blue for corner/vertex points
+            selectionPointColor: TERRA_DRAW_COLORS.selectionPoint, // Light blue for corner/vertex points
+            selectedLineStringColor: TERRA_DRAW_COLORS.selectedDark, // Yellow for selected line
+            selectedPolygonColor: TERRA_DRAW_COLORS.selectedDark, // Yellow for selected polygon outline
+            selectedPolygonFillOpacity: 0.3, // Semi-transparent yellow fill for selected polygon
           },
         }),
       ],
     })
 
-    // Initialize Terra Draw after style loads
+    // Initialize Terra Draw after map loads
     const initializeDraw = () => {
       if (!this.draw) return
 
@@ -235,8 +244,9 @@ class TerraDrawControl {
       this.isInitialized = true
 
       // Load initial geometry if provided BEFORE setting the mode
-      // This is required for select mode to recognize the features
-      if (this.initialGeometry && this.draw) {
+      // This is required for select mode to recognize the features.
+      // Only add when store is empty to avoid duplicate geometry on React Strict Mode double-mount.
+      if (this.initialGeometry && this.draw && this.draw.getSnapshot().length === 0) {
         // Terra Draw only accepts Point, LineString, and Polygon (not Multi* geometries)
         // Convert Multi* geometries to individual features
         const featuresToAdd = this.convertGeometryToFeatures(this.initialGeometry)
@@ -370,11 +380,16 @@ class TerraDrawControl {
       }
     }
 
-    // Wait for style to load before initializing
-    if (map.isStyleLoaded()) {
+    // Wait for map to be fully loaded before initializing TerraDraw
+    // Use map.loaded() and 'load' event (not isStyleLoaded() and 'style.load')
+    // This follows the @watergis/maplibre-gl-terradraw pattern and ensures the map
+    // is ready to accept all layers (both React Source/Layer and TerraDraw layers)
+    if (map.loaded()) {
       initializeDraw()
     } else {
-      map.once("style.load", initializeDraw)
+      map.once("load", () => {
+        initializeDraw()
+      })
     }
 
     // Required by IControl interface, but unused (Terra Draw renders via adapter)

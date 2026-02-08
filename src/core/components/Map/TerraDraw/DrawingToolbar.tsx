@@ -17,6 +17,7 @@ type Props = {
     polygon: boolean
     edit: boolean
   }
+  trailingButtons?: React.ReactNode
 }
 
 /**
@@ -36,6 +37,7 @@ export const DrawingToolbar = ({
     polygon: true,
     edit: false,
   },
+  trailingButtons,
 }: Props) => {
   const buttonClass = (isActive: boolean, isDisabled: boolean) =>
     clsx(
@@ -143,6 +145,8 @@ export const DrawingToolbar = ({
           Löschen
         </button>
       )}
+
+      {trailingButtons}
     </div>
   )
 }

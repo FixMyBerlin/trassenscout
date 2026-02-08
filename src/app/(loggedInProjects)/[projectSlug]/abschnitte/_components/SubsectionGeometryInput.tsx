@@ -1,7 +1,17 @@
+"use client"
+
 import { GeometryInputBase } from "@/src/core/components/forms/GeometryInputBase"
 import { GeometryInputMap } from "@/src/core/components/forms/GeometryInputMap"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { useSlug } from "@/src/core/routes/useSlug"
+import getSubsections from "@/src/server/subsections/queries/getSubsections"
+import { useQuery } from "@blitzjs/rpc"
 
 export const SubsectionGeometryInput = () => {
+  const projectSlug = useProjectSlug()
+  const subsectionSlug = useSlug("subsectionSlug")
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
+
   return (
     <GeometryInputBase
       label="Geometrie des Planungsabschnitts"
@@ -12,7 +22,11 @@ export const SubsectionGeometryInput = () => {
         </>
       }
     >
-      <GeometryInputMap allowedTypes={["line", "polygon"]} />
+      <GeometryInputMap
+        allowedTypes={["line", "polygon"]}
+        subsections={subsections}
+        selectedSubsectionSlug={subsectionSlug}
+      />
     </GeometryInputBase>
   )
 }

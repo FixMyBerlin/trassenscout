@@ -3,6 +3,8 @@ import { DrawingToolbar } from "@/src/core/components/Map/TerraDraw/DrawingToolb
 import { TerraDrawMap } from "@/src/core/components/Map/TerraDraw/TerraDrawMap"
 import { mapGeoTypeToEnum } from "@/src/server/shared/utils/mapGeoTypeToEnum"
 import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
+import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
+import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { bbox } from "@turf/turf"
 import type { Geometry } from "geojson"
 import { useMemo, useRef } from "react"
@@ -14,9 +16,20 @@ type AllowedType = "point" | "line" | "polygon"
 type Props = {
   allowedTypes: AllowedType[]
   subsection?: TGetSubsection
+  subsections?: TSubsections
+  selectedSubsectionSlug?: string
+  subsubsections?: SubsubsectionWithPosition[]
+  selectedSubsubsectionSlug?: string
 }
 
-export const GeometryInputMap = ({ allowedTypes, subsection }: Props) => {
+export const GeometryInputMap = ({
+  allowedTypes,
+  subsection,
+  subsections,
+  selectedSubsectionSlug,
+  subsubsections,
+  selectedSubsubsectionSlug,
+}: Props) => {
   const { watch, setValue } = useFormContext()
   const geometry = watch("geometry") as Geometry
   const updateTerraDrawRef = useRef<
@@ -68,32 +81,36 @@ export const GeometryInputMap = ({ allowedTypes, subsection }: Props) => {
         initialGeometry={geometry}
         onChange={handleChange}
         initialViewState={initialViewState}
+        subsections={subsections}
+        selectedSubsectionSlug={selectedSubsectionSlug}
+        subsubsections={subsubsections}
+        selectedSubsubsectionSlug={selectedSubsubsectionSlug}
       >
         {({ mode, setMode, clear, updateFeatures, enabledButtons }) => {
           // Store updateFeatures in ref so SnappingControls can use it
           updateTerraDrawRef.current = updateFeatures
           return (
-            <>
-              {subsection && (
-                <SnappingControls
-                  subsection={subsection}
-                  geometry={geometry}
-                  handleChange={handleChange}
-                  updateTerraDraw={(geo, ignoreChangeEvents) =>
-                    updateTerraDrawRef.current?.(geo, ignoreChangeEvents)
-                  }
-                />
-              )}
-              <DrawingToolbar
-                mode={mode}
-                setMode={setMode}
-                onClear={clear}
-                showPoint={showPoint}
-                showLine={showLine}
-                showPolygon={showPolygon}
-                enabledButtons={enabledButtons}
-              />
-            </>
+            <DrawingToolbar
+              mode={mode}
+              setMode={setMode}
+              onClear={clear}
+              showPoint={showPoint}
+              showLine={showLine}
+              showPolygon={showPolygon}
+              enabledButtons={enabledButtons}
+              trailingButtons={
+                subsection ? (
+                  <SnappingControls
+                    subsection={subsection}
+                    geometry={geometry}
+                    handleChange={handleChange}
+                    updateTerraDraw={(geo, ignoreChangeEvents) =>
+                      updateTerraDrawRef.current?.(geo, ignoreChangeEvents)
+                    }
+                  />
+                ) : null
+              }
+            />
           )
         }}
       </TerraDrawMap>
