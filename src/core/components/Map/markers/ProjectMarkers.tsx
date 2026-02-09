@@ -4,7 +4,7 @@ import { shortTitle } from "../../text"
 import { ProjectMapIcon } from "../Icons/ProjectIcon"
 import { StartEndLabel } from "../Labels"
 import { TipMarker } from "../TipMarker"
-import { getCentralPointOfGeometry } from "../utils/getCentralPointOfGeometry"
+import { getLabelPosition } from "../utils/getLabelPosition"
 
 type Props = {
   projects: TGetProjectsWithGeometryWithMembershipRole
@@ -23,7 +23,7 @@ const ProjectMarker = ({ projectSlug, subsections, onSelect }: ProjectMarkerProp
   const firstSubsection = subsections[0]
   if (!firstSubsection) return null
 
-  const center = getCentralPointOfGeometry(firstSubsection.geometry)
+  const center = getLabelPosition(firstSubsection.geometry)
 
   return (
     <Marker
