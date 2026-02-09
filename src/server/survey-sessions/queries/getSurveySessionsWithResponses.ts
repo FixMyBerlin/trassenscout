@@ -1,4 +1,4 @@
-import db from "@/db"
+import db, { SurveyResponseStateEnum } from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import {
@@ -22,6 +22,7 @@ export default resolver.pipe(
       where: { surveyId },
       include: {
         responses: {
+          where: { state: SurveyResponseStateEnum.SUBMITTED },
           include: {
             surveyResponseTopics: true,
             surveyResponseComments: { include: { author: true } },

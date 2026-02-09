@@ -64,6 +64,7 @@ export default async function ProjectRecordDetail({
             projectRecordId={projectRecord.id}
             projectRecordTitle={projectRecord.title}
             returnPath={returnPath}
+            uploadsCount={projectRecord.uploads.length}
           />
         }
       />

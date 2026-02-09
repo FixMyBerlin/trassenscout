@@ -1,4 +1,4 @@
-import db from "@/db"
+import db, { SurveyResponseStateEnum } from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { resolver } from "@blitzjs/rpc"
 import { viewerRoles } from "../../../authorization/constants"
@@ -15,6 +15,7 @@ export default resolver.pipe(
   async ({ surveySessionId, projectSlug }: GetSurveySurveyResponsesBySurveySessionIdInput) => {
     const surveyResponse = await db.surveyResponse.findFirst({
       where: {
+        state: SurveyResponseStateEnum.SUBMITTED,
         surveySession: {
           survey: { project: { slug: projectSlug } },
           id: surveySessionId,

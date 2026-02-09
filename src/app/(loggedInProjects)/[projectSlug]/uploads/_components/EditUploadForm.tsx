@@ -6,11 +6,8 @@ import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogD
 import { LabeledSelect, LabeledSelectProps, LabeledTextField } from "@/src/core/components/forms"
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
-import { Link } from "@/src/core/components/links"
 import { shortTitle } from "@/src/core/components/text/titles"
-import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
 import { formatFileSize } from "@/src/core/utils/formatFileSize"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
@@ -29,7 +26,9 @@ import { LuckyCloudActionBar } from "./LuckyCloudActionBar"
 import { LuckyCloudDocumentLink } from "./LuckyCloudDocumentLink"
 import { LuckyCloudNotice } from "./LuckyCloudNotice"
 import { SuperAdminLuckyCloud } from "./SuperAdminLuckyCloud"
+import { UploadAuthorAndDates } from "./UploadAuthorAndDates"
 import { UploadPreview } from "./UploadPreview"
+import { UploadVerknuepfungen } from "./UploadVerknuepfungen"
 
 type UploadSubsectionFieldsProps = {
   subsections: Awaited<ReturnType<typeof getSubsections>>["subsections"]
@@ -206,43 +205,26 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
         </Form>
       </div>
 
-      {/* Related Project Records */}
-      {upload.projectRecords && upload.projectRecords.length > 0 && (
-        <div className="mt-8">
-          <h3 className="mb-3 text-sm font-semibold text-gray-700">Verknüpfte Protokolleinträge</h3>
-          <ul className="space-y-2">
-            {upload.projectRecords.map((projectRecord) => (
-              <li key={projectRecord.id} className="flex items-center gap-2 text-sm">
-                <Link href={projectRecordDetailRoute(projectSlug, projectRecord.id)}>
-                  {projectRecord.title}
-                  {projectRecord.date && (
-                    <span className="text-gray-500">
-                      {" "}
-                      ({formatBerlinTime(projectRecord.date, "dd.MM.yyyy")})
-                    </span>
-                  )}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Related Email */}
-      {upload.projectRecordEmail && (
-        <div className="mt-6">
-          <p className="text-sm text-gray-600">
-            <strong>Quelle:</strong> E-Mail {upload.projectRecordEmail.subject}
-            <span className="text-gray-500">
-              {" "}
-              ({formatBerlinTime(upload.projectRecordEmail.createdAt, "dd.MM.yyyy")})
-            </span>
-          </p>
-        </div>
-      )}
-
       <SuperAdminLuckyCloud upload={upload} projectSlug={projectSlug} />
       <BackLink href={returnPath} text={returnText} />
+
+      <UploadAuthorAndDates
+        className="mt-4"
+        createdBy={upload.createdBy}
+        createdAt={upload.createdAt}
+        updatedBy={upload.updatedBy ?? undefined}
+        updatedAt={upload.updatedAt ?? undefined}
+      />
+
+      <UploadVerknuepfungen
+        className="mt-4"
+        projectSlug={projectSlug}
+        subsection={upload.subsection}
+        subsubsection={upload.Subsubsection}
+        projectRecords={upload.projectRecords}
+        projectRecordEmail={upload.projectRecordEmail}
+      />
+
       <SuperAdminLogData data={{ upload, subsections, returnPath, returnText }} />
     </>
   )

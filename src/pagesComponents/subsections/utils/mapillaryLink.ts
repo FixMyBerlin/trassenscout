@@ -1,4 +1,4 @@
-import { getCenterOfMass } from "@/src/core/components/Map/utils/getCenterOfMass"
+import { getCentralPointOfGeometry } from "@/src/core/components/Map/utils/getCentralPointOfGeometry"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 
 //** @desc A mapillary link, either for a given key *OR* for a given lat/lng */
@@ -7,7 +7,7 @@ export const mapillaryLink = (subsubsection: SubsubsectionWithPosition) => {
   if (subsubsection.mapillaryKey) {
     url.searchParams.append("pKey", subsubsection.mapillaryKey)
   } else {
-    const [lng, lat] = getCenterOfMass(subsubsection.geometry)
+    const [lng, lat] = getCentralPointOfGeometry(subsubsection.geometry)
     url.searchParams.append("lat", String(lat))
     url.searchParams.append("lng", String(lng))
     url.searchParams.append("z", String(12)) // does not really matter, Mapillary will zoom on the pKey image.

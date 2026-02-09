@@ -1,7 +1,7 @@
 import { SurveyPart2 } from "@/src/app/beteiligung/_shared/types"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Prettify } from "@/src/core/types"
-import getFeedbackSurveyResponses from "@/src/server/survey-responses/queries/getFeedbackSurveyResponses"
+import getFeedbackSurveyResponses from "@/src/server/survey-responses/queries/getPart2SurveyResponses"
 import clsx from "clsx"
 
 type Props = {

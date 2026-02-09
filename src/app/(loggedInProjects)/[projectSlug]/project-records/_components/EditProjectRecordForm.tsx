@@ -1,6 +1,7 @@
 "use client"
 
 import { CreateEditReviewHistory } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordCreateEditReviewHistory"
+import { ProjectRecordDeleteActionBar } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordDeleteActionBar"
 import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
 import { ProjectRecordNeedsReviewBanner } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordNeedsReviewBanner"
 import { ReviewProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReviewProjectRecordForm"
@@ -9,7 +10,6 @@ import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Form, FORM_ERROR } from "@/src/core/components/forms"
 import { BackLink } from "@/src/core/components/forms/BackLink"
-import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
@@ -103,10 +103,12 @@ export const EditProjectRecordForm = ({
         }}
         onSubmit={handleSubmit}
         actionBarRight={
-          <DeleteActionBar
-            itemTitle={projectRecord.title}
-            onDelete={() => deleteProjectRecordMutation({ id: projectRecord.id, projectSlug })}
+          <ProjectRecordDeleteActionBar
+            projectSlug={projectSlug}
+            projectRecordId={projectRecord.id}
+            projectRecordTitle={projectRecord.title}
             returnPath={indexPath}
+            uploadsCount={projectRecord.uploads.length}
           />
         }
       >

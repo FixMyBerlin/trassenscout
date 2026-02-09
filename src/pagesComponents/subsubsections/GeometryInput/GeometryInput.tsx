@@ -1,4 +1,4 @@
-import { getCenterOfMass } from "@/src/core/components/Map/utils/getCenterOfMass"
+import { getCentralPointOfGeometry } from "@/src/core/components/Map/utils/getCentralPointOfGeometry"
 import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
 import { LabeledRadiobuttonGroup } from "@/src/core/components/forms/LabeledRadiobuttonGroup"
 import { linkStyles } from "@/src/core/components/links"
@@ -50,7 +50,7 @@ export const GeometryInput = () => {
           break
         case "POINT":
           // Default to center of subsection as Point
-          const center = getCenterOfMass(subsection.geometry)
+          const center = getCentralPointOfGeometry(subsection.geometry)
           setValue("geometry", {
             type: "Point",
             coordinates: center,

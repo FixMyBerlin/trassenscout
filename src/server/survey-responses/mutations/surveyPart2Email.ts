@@ -6,7 +6,7 @@ import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getCo
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 
-export const SurveyFeedbackMail = z.object({
+export const SurveyPart2EmailSchema = z.object({
   surveySessionId: z.number(),
   data: z.record(z.any()),
   surveySlug: z.string() as z.ZodType<AllowedSurveySlugs>,
@@ -14,7 +14,7 @@ export const SurveyFeedbackMail = z.object({
 })
 
 export default resolver.pipe(
-  resolver.zod(SurveyFeedbackMail),
+  resolver.zod(SurveyPart2EmailSchema),
   async ({ surveySessionId, data, surveySlug, searchParams }) => {
     // Get email configuration from survey config
     const emailConfig = getConfigBySurveySlug(surveySlug, "email")

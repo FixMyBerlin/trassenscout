@@ -94,7 +94,7 @@ export const isPdf = (mimeType: string | null | undefined) => {
 
 /**
  * MIME types that support Lucky Cloud collaboration
- * Text documents and spreadsheets, but not presentations
+ * Text documents, spreadsheets, and presentations
  */
 const TEXT_DOCUMENT_MIME_TYPES = [
   "application/msword",
@@ -108,6 +108,9 @@ const COLLABORATION_SUPPORTED_MIME_TYPES = [
   "application/vnd.ms-excel",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   "application/vnd.oasis.opendocument.spreadsheet",
+  // Presentations
+  "application/vnd.ms-powerpoint",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
 ] as const
 
 export const isTextDocument = (mimeType: string | null | undefined) => {
@@ -122,7 +125,7 @@ export const canCollaborateInLuckyCloud = (mimeType: string | null | undefined) 
 
 /**
  * Get the list of file extensions that support Lucky Cloud collaboration
- * Returns extensions like [".doc", ".docx", ".odt", ".xls", ".xlsx", ".ods"]
+ * Returns extensions like [".doc", ".docx", ".odt", ".xls", ".xlsx", ".ods", ".ppt", ".pptx"]
  */
 export const getCollaborationSupportedExtensions = () => {
   const extensions = new Set<string>()

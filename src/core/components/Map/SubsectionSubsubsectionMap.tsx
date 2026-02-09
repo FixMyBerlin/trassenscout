@@ -16,7 +16,7 @@ import { TitleLabel } from "./Labels"
 import { TipMarker } from "./TipMarker"
 import { UploadMarkers } from "./UploadMarkers"
 import { layerColors } from "./layerColors"
-import { getCenterOfMass } from "./utils/getCenterOfMass"
+import { getCentralPointOfGeometry } from "./utils/getCentralPointOfGeometry"
 import { lineStringToGeoJSON } from "./utils/lineStringToGeoJSON"
 import { pointToGeoJSON } from "./utils/pointToGeoJSON"
 import { polygonToGeoJSON } from "./utils/polygonToGeoJSON"
@@ -230,7 +230,7 @@ export const SubsectionSubsubsectionMap = ({
     .filter(Boolean)
 
   const markers = subsubsections.map((subsub) => {
-    const [longitude, latitude] = getCenterOfMass(subsub.geometry)
+    const [longitude, latitude] = getCentralPointOfGeometry(subsub.geometry)
 
     return (
       <Marker

@@ -589,6 +589,7 @@ model SurveyResponse {
   status                 String?
   note                   String?
   source                 SurveyResponseSourceEnum @default(FORM)
+  state                  SurveyResponseStateEnum  @default(SUBMITTED)
   //
   surveySession          SurveySession            @relation(fields: [surveySessionId], references: [id])
   surveySessionId        Int
@@ -604,6 +605,11 @@ enum SurveyResponseSourceEnum {
   EMAIL
   LETTER
   FORM
+}
+
+enum SurveyResponseStateEnum {
+  CREATED
+  SUBMITTED
 }
 
 model SurveyResponseTopic {
