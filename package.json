@@ -37,8 +37,9 @@
     "test:watch": "npm run pretest && vitest watch && npm run posttest",
     "test:ui": "npm run pretest && vitest --ui && npm run posttest",
     "seed": "npm run predev && npm run migrate && blitz prisma migrate reset && blitz db seed",
-    "updatePackages:major": "npx taze major --includeLocked --write --exclude eslint && npm run updatePackages:minor && npm install",
-    "updatePackages:minor": "npx taze minor --includeLocked --write && npm install",
+    "updatePackages:major": "bunx taze major --includeLocked --write --exclude eslint && npm run updatePackages:minor && npm install",
+    "updatePackages:minor": "bunx taze minor --includeLocked --write && npm install",
+    "knip": "bunx knip",
     "release": "gh pr create --base main --head develop --title \"Release $(date '+%Y-%m-%d')\" --body \"\"",
     "prepare": "husky"
   },
