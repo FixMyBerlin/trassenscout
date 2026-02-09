@@ -1,5 +1,4 @@
 import { DrawingToolbar } from "@/src/core/components/Map/TerraDraw/DrawingToolbar"
-import { SnappingControls } from "@/src/core/components/Map/TerraDraw/snapping/SnappingControls"
 import { TerraDrawMap } from "@/src/core/components/Map/TerraDraw/TerraDrawMap"
 import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { mapGeoTypeToEnum } from "@/src/server/shared/utils/mapGeoTypeToEnum"
@@ -111,16 +110,18 @@ export const GeometryInputMap = ({
               showPolygon={showPolygon}
               enabledButtons={enabledButtons}
               trailingButtons={
-                subsection ? (
-                  <SnappingControls
-                    subsection={subsection}
-                    geometry={geometry}
-                    handleChange={handleChange}
-                    updateTerraDraw={(geo, ignoreChangeEvents) =>
-                      updateTerraDrawRef.current?.(geo, ignoreChangeEvents)
-                    }
-                  />
-                ) : null
+                null
+                // TODO: Disabled for now, does currently not work.
+                // subsection ? (
+                //   <SnappingControls
+                //     subsection={subsection}
+                //     geometry={geometry}
+                //     handleChange={handleChange}
+                //     updateTerraDraw={(geo, ignoreChangeEvents) =>
+                //       updateTerraDrawRef.current?.(geo, ignoreChangeEvents)
+                //     }
+                //   />
+                // ) : null
               }
             />
           )
