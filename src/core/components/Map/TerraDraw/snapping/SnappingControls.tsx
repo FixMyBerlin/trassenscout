@@ -1,14 +1,14 @@
 import { MagnetIcon } from "@/src/core/components/Map/Icons/MagnetIcon"
-import { snapGeometryToLine } from "@/src/core/components/Map/TerraDraw/snapToLine"
+import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import type { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
-import type { Geometry } from "geojson"
 import { extractLineStringForSnapping } from "./extractLineStringForSnapping"
+import { snapGeometryToLine } from "./snapToLine"
 
 type Props = {
   subsection: TGetSubsection
-  geometry: Geometry | undefined
-  handleChange: (geometry: Geometry | null, geometryType: string | null) => void
-  updateTerraDraw: (geometry: Geometry | null, ignoreChangeEvents?: boolean) => void
+  geometry: SupportedGeometry | undefined
+  handleChange: (geometry: SupportedGeometry | null, geometryType: string | null) => void
+  updateTerraDraw: (geometry: SupportedGeometry | null, ignoreChangeEvents?: boolean) => void
   thresholdMeters?: number
 }
 

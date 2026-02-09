@@ -46,14 +46,13 @@ export const DrawingToolbar = ({
   trailingButtons,
 }: Props) => {
   // Get selected count - prefer selectedIds prop if provided, otherwise call getSelectedIds
-  const selectedCount = selectedIds.length > 0 ? selectedIds.length : (getSelectedIds ? getSelectedIds().length : 0)
+  const selectedCount =
+    selectedIds.length > 0 ? selectedIds.length : getSelectedIds ? getSelectedIds().length : 0
   const hasSelection = selectedCount > 0
 
   // Determine delete button text and handler
   const deleteButtonText = hasSelection ? "Ausgewähltes löschen" : "Alle löschen"
-  const deleteButtonTitle = hasSelection
-    ? "Ausgewähltes Element löschen"
-    : "Alle Elemente löschen"
+  const deleteButtonTitle = hasSelection ? "Ausgewähltes Element löschen" : "Alle Elemente löschen"
 
   const handleDelete = () => {
     if (hasSelection && deleteSelected) {

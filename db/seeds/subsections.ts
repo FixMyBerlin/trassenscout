@@ -34,7 +34,7 @@ const seedSubsections = async () => {
 
   // Helper function to add irrelevant status to one subsubsection of each geometry type
   const addIrrelevantStatus = (
-    subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "subsectionId">[]
+    subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "subsectionId">[],
   ): Omit<Prisma.SubsubsectionUncheckedCreateInput, "subsectionId">[] => {
     const slugsToMark = ["line-1", "poly-1", "point-1"]
     return subsubsections.map((sub) => {

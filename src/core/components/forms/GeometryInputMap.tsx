@@ -1,12 +1,12 @@
-import { SnappingControls } from "@/src/app/(loggedInProjects)/[projectSlug]/abschnitte/[subsectionSlug]/fuehrung/_components/SubsubsectionGeometryInput/SnappingControls"
 import { DrawingToolbar } from "@/src/core/components/Map/TerraDraw/DrawingToolbar"
+import { SnappingControls } from "@/src/core/components/Map/TerraDraw/snapping/SnappingControls"
 import { TerraDrawMap } from "@/src/core/components/Map/TerraDraw/TerraDrawMap"
+import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { mapGeoTypeToEnum } from "@/src/server/shared/utils/mapGeoTypeToEnum"
 import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { bbox } from "@turf/turf"
-import type { Geometry } from "geojson"
 import { useMemo, useRef } from "react"
 import { useFormContext } from "react-hook-form"
 import type { LngLatBoundsLike } from "react-map-gl/maplibre"
@@ -31,9 +31,9 @@ export const GeometryInputMap = ({
   selectedSubsubsectionSlug,
 }: Props) => {
   const { watch, setValue } = useFormContext()
-  const geometry = watch("geometry") as Geometry
+  const geometry = watch("geometry") as SupportedGeometry | undefined
   const updateTerraDrawRef = useRef<
-    ((geometry: Geometry | null, ignoreChangeEvents?: boolean) => void) | null
+    ((geometry: SupportedGeometry | null, ignoreChangeEvents?: boolean) => void) | null
   >(null)
 
   const showPoint = allowedTypes.includes("point")
@@ -45,7 +45,7 @@ export const GeometryInputMap = ({
   // 2. Else if subsection provided: use subsection bounds
   // 3. Otherwise: undefined (will use default view)
   const initialViewState = useMemo(() => {
-    let targetGeometry: Geometry | undefined
+    let targetGeometry: SupportedGeometry | undefined
 
     if (geometry) {
       targetGeometry = geometry
@@ -65,7 +65,7 @@ export const GeometryInputMap = ({
     return undefined
   }, [geometry, subsection])
 
-  const handleChange = (geo: Geometry | null, geoType: string | null) => {
+  const handleChange = (geo: SupportedGeometry | null, geoType: string | null) => {
     if (geo && geoType) {
       setValue("geometry", geo, { shouldValidate: true })
       setValue("type", mapGeoTypeToEnum(geoType), { shouldValidate: true })
@@ -86,7 +86,16 @@ export const GeometryInputMap = ({
         subsubsections={subsubsections}
         selectedSubsubsectionSlug={selectedSubsubsectionSlug}
       >
-        {({ mode, setMode, clear, updateFeatures, getSelectedIds, deleteSelected, selectedIds, enabledButtons }) => {
+        {({
+          mode,
+          setMode,
+          clear,
+          updateFeatures,
+          getSelectedIds,
+          deleteSelected,
+          selectedIds,
+          enabledButtons,
+        }) => {
           // Store updateFeatures in ref so SnappingControls can use it
           updateTerraDrawRef.current = updateFeatures
           return (
