@@ -545,6 +545,8 @@ model Upload {
   subsubsectionId      Int?
   projectRecordEmail   ProjectRecordEmail? @relation(fields: [projectRecordEmailId], references: [id])
   projectRecordEmailId Int?
+  surveyResponse       SurveyResponse?     @relation(fields: [surveyResponseId], references: [id])
+  surveyResponseId     Int?
   projectRecords       ProjectRecord[]
   LogEntry             LogEntry[]
   //
@@ -600,6 +602,7 @@ model SurveyResponse {
   surveyResponseTopics   SurveyResponseTopic[]
   surveyResponseComments SurveyResponseComment[]
   LogEntry               LogEntry[]
+  uploads                Upload[]
 }
 
 enum SurveyResponseSourceEnum {

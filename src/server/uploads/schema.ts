@@ -14,6 +14,7 @@ export const UploadSchema = z.object({
   summary: z.string().nullable(),
   subsectionId: InputNumberOrNullSchema,
   projectRecordEmailId: InputNumberOrNullSchema,
+  surveyResponseId: InputNumberOrNullSchema,
   subsubsectionId: InputNumberOrNullSchema, // TODO Make this more fancy and guard against a case where both subsectionId and subsubsectionId are given
   externalUrl: z.string().url(),
   mimeType: z.string().nullable().optional(),

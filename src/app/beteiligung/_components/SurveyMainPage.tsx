@@ -214,6 +214,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           stage="part1"
           handleSubmit={handleSurveyPart1Submit}
           surveyResponseId={responseIdByPart[1]}
+          surveySessionId={surveySessionId}
           onStartPart={() => handleStartPart(1)}
         />
       )
@@ -229,6 +230,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           stage="part2"
           handleSubmit={handleSurveyPart2Submit}
           surveyResponseId={responseIdByPart[2]}
+          surveySessionId={surveySessionId}
           onStartPart={() => handleStartPart(2)}
         />
       )
@@ -242,6 +244,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           stage="part3"
           handleSubmit={handleSurveyPart3Submit}
           surveyResponseId={responseIdByPart[3]}
+          surveySessionId={surveySessionId}
           onStartPart={() => handleStartPart(3)}
         />
       )

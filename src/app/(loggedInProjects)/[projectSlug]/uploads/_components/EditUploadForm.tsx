@@ -111,6 +111,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
     longitude: upload.longitude,
     collaborationUrl: upload.collaborationUrl,
     collaborationPath: upload.collaborationPath,
+    surveyResponseId: upload.surveyResponseId,
     projectRecords: upload.projectRecords?.map((pr) => pr.id) ?? [],
   }
 

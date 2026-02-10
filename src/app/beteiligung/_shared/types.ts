@@ -8,6 +8,7 @@ import { SurveyReadonlyTextfield } from "@/src/app/beteiligung/_components/form/
 import { SurveySelect } from "@/src/app/beteiligung/_components/form/Select"
 import { SurveyTextarea } from "@/src/app/beteiligung/_components/form/Textarea"
 import { SurveyTextfield } from "@/src/app/beteiligung/_components/form/Textfield"
+import { SurveyUploadField } from "@/src/app/beteiligung/_components/form/UploadField"
 import { SurveyMarkdown } from "@/src/app/beteiligung/_components/layout/SurveyMarkdown"
 import { TBackendConfig } from "@/src/app/beteiligung/_shared/backend-types"
 import { fieldValidationEnum } from "@/src/app/beteiligung/_shared/fieldvalidationEnum"
@@ -162,6 +163,19 @@ export type FieldConfig =
     } & FormFieldBase & {
         props: Omit<ComponentProps<typeof SurveySelect>, "required">
       })
+  | ({
+      component: "SurveyUploadField"
+      componentType: "form"
+      validation:
+        | (typeof fieldValidationEnum)["optionalArrayOfNumber"]
+        | (typeof fieldValidationEnum)["requiredArrayOfNumber"]
+      defaultValue: Array<number>
+    } & FormFieldBase & {
+        props: Omit<
+          ComponentProps<typeof SurveyUploadField>,
+          "surveySessionId" | "surveyResponseId" | "required"
+        >
+      })
   | {
       component: "hidden"
       componentType: "form"
@@ -306,5 +320,7 @@ export type TResponseConfig = {
     geometryCategory?: number // this is typed as optional because it is introduced in survey BB, for RS8 and FRM7 we use a fallback geometry-category
     "line-id"?: number // survey BB
     "line-from-to-name"?: number // survey BB
+    uploads?: number[]
+    uploadsDescription?: string
   }
 }

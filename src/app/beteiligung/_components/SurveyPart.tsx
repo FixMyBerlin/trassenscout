@@ -31,6 +31,7 @@ type Props = {
   isIntro: boolean
   setIsIntro: (intro: boolean) => void
   surveyResponseId: number | null
+  surveySessionId: number | null
   onStartPart: () => Promise<void>
 }
 
@@ -41,6 +42,7 @@ export const SurveyPart = ({
   setIsIntro,
   isIntro,
   surveyResponseId,
+  surveySessionId,
   onStartPart,
 }: Props) => {
   const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
@@ -232,12 +234,24 @@ export const SurveyPart = ({
                                 {(field) => {
                                   const Component = field[configField.component]
                                   if (!Component) return null
+                                  // Special handling for SurveyUploadField to pass surveyResponseId and surveySessionId
+                                  const props =
+                                    configField.component === "SurveyUploadField" &&
+                                    surveyResponseId !== null &&
+                                    surveySessionId !== null
+                                      ? {
+                                          ...configField.props,
+                                          surveyResponseId,
+                                          surveySessionId,
+                                        }
+                                      : configField.props
+
                                   return (
                                     // typescript does not know that the component is a valid field component
                                     // @ts-expect-error tbd
                                     <Component
                                       required={configField.validation.required}
-                                      {...configField.props}
+                                      {...props}
                                     />
                                   )
                                 }}
@@ -257,13 +271,22 @@ export const SurveyPart = ({
                         {(field) => {
                           const Component = field[configField.component]
                           if (!Component) return null
+                          // Special handling for SurveyUploadField to pass surveyResponseId and surveySessionId
+                          const props =
+                            configField.component === "SurveyUploadField" &&
+                            surveyResponseId !== null &&
+                            surveySessionId !== null
+                              ? {
+                                  ...configField.props,
+                                  surveyResponseId,
+                                  surveySessionId,
+                                }
+                              : configField.props
+
                           return (
                             // typescript does not know that the component is a valid field component
                             // @ts-expect-error tbd
-                            <Component
-                              required={configField.validation.required}
-                              {...configField.props}
-                            />
+                            <Component required={configField.validation.required} {...props} />
                           )
                         }}
                       </form.AppField>

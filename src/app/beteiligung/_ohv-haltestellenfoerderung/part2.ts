@@ -144,6 +144,26 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
           },
         },
         {
+          name: "uploads",
+          componentType: "form",
+          component: "SurveyUploadField",
+          validation: fieldValidationEnum["optionalArrayOfNumber"],
+          defaultValue: [],
+          props: {
+            label: "Dokumente",
+          },
+        },
+        {
+          name: "uploadsDescription",
+          componentType: "form",
+          component: "SurveyTextarea",
+          validation: fieldValidationEnum["optionalString"],
+          defaultValue: "",
+          props: {
+            label: "Beschreibung der Dokumente",
+          },
+        },
+        {
           name: "geometryCategory",
           componentType: "form",
           component: "SurveyGeoCategoryMapWithLegend",
