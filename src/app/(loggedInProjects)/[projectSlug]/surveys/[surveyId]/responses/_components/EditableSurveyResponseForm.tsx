@@ -4,6 +4,7 @@ import {
   TBackendConfig,
   backendConfig as defaultBackendConfig,
 } from "@/src/app/beteiligung/_shared/backend-types"
+import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
@@ -15,6 +16,7 @@ import { invalidateQuery, useMutation } from "@blitzjs/rpc"
 import { Operator } from "@prisma/client"
 import { clsx } from "clsx"
 import { PropsWithoutRef, useState } from "react"
+import { EditableSurveyResponseUploadsSection } from "./EditableSurveyResponseUploadsSection"
 import { LabeledInputRadioCheckbox } from "./form/LabeledInputRadioCheckbox"
 import { FormElementWrapper } from "./form/LabeledInputRadioCheckboxWrapper"
 import { LabeledTextarea } from "./form/LabeledTextarea"
@@ -48,6 +50,7 @@ export function EditableSurveyResponseForm({
   const [responseNote, setResponseNote] = useState(response.note)
   const [responseTopics, setResponseTopics] = useState(response.surveyResponseTopics.map(String))
   const [newTopic, setNewTopic] = useState("")
+  const surveySlug = response.surveySession.survey.slug as AllowedSurveySlugs
 
   const labels = backendConfig.labels || defaultBackendConfig.labels
 
@@ -184,6 +187,13 @@ export function EditableSurveyResponseForm({
   return (
     <>
       <div className="flex flex-col gap-6">
+        {/* UPLOADS */}
+        <EditableSurveyResponseUploadsSection
+          projectSlug={projectSlug}
+          responseId={response.id}
+          responseData={response.data}
+          surveySlug={surveySlug}
+        />
         <div className={clsx("flex gap-6", showMap ? "flex-row" : "flex-col")}>
           <form className="flex flex-col gap-6">
             {/* BLT */}

@@ -1,4 +1,5 @@
 import db, { Prisma, ProjectRecordReviewState } from "@/db"
+import { uploadWithSubsectionsInclude } from "@/src/server/uploads/_utils/uploadInclude"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
@@ -51,36 +52,7 @@ export default resolver.pipe(
           ...paginateArgs,
           where: safeWhere,
           orderBy,
-          include: {
-            subsection: { select: { id: true, slug: true, start: true, end: true } },
-            Subsubsection: {
-              select: {
-                id: true,
-                slug: true,
-                subsection: { select: { slug: true } },
-              },
-            },
-            projectRecords: {
-              select: {
-                id: true,
-                title: true,
-                date: true,
-              },
-            },
-            projectRecordEmail: {
-              select: {
-                id: true,
-                createdAt: true,
-              },
-            },
-            createdBy: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-              },
-            },
-          },
+          include: uploadWithSubsectionsInclude,
         }),
     })
 

@@ -15,6 +15,7 @@ import { UploadDropzoneProgress } from "./UploadDropzoneProgress"
 type Props = {
   subsubsectionId?: number
   subsectionId?: number
+  surveyResponseId?: number
   onUploadComplete?: (uploadIds: number[]) => Promise<void>
   fillContainer?: boolean
 }
@@ -22,6 +23,7 @@ type Props = {
 export const UploadDropzone = ({
   subsubsectionId,
   subsectionId,
+  surveyResponseId,
   onUploadComplete,
   fillContainer,
 }: Props) => {
@@ -59,6 +61,7 @@ export const UploadDropzone = ({
             subsectionId: subsectionId || null,
             summary: null, // Users can add this in step 2 /edit
             subsubsectionId: subsubsectionId || null,
+            surveyResponseId: surveyResponseId || null,
             mimeType: file.type || null,
             fileSize: file.size || null,
             // latitude and longitude will be extracted server-side from EXIF data
