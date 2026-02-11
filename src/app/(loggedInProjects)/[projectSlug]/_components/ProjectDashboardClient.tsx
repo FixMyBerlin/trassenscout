@@ -4,9 +4,10 @@ import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "@/src/core/components/Breadcrumb/Breadcrumb"
+import { Link } from "@/src/core/components/links"
 import { ProjectMap } from "@/src/core/components/Map/ProjectMap"
 import { ProjectMapFallback } from "@/src/core/components/Map/ProjectMapFallback"
-import { Link } from "@/src/core/components/links"
+import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { shortTitle } from "@/src/core/components/text"
 import { projectEditRoute } from "@/src/core/routes/projectRoutes"
@@ -61,14 +62,23 @@ export const ProjectDashboardClient = ({ initialProject, initialSubsections }: P
       {Boolean(subsections.length) ? (
         Boolean(filteredSubsections.length) ? (
           <MapProvider>
-            <ProjectMap subsections={filteredSubsections} />
+            <ProjectMap
+              subsections={filteredSubsections}
+              staticOverlay={getStaticOverlayForProject(projectSlug)}
+            />
           </MapProvider>
         ) : (
-          <ProjectMapFallback subsections={subsections} />
+          <ProjectMapFallback
+            subsections={subsections}
+            staticOverlay={getStaticOverlayForProject(projectSlug)}
+          />
         )
       ) : (
         <MapProvider>
-          <ProjectMapFallback subsections={[]} />
+          <ProjectMapFallback
+            subsections={[]}
+            staticOverlay={getStaticOverlayForProject(projectSlug)}
+          />
         </MapProvider>
       )}
 

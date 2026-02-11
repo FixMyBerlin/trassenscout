@@ -10,12 +10,16 @@ import { BaseMap } from "./BaseMap"
 import { MapLegend } from "./MapLegend"
 import { projectLegendConfig } from "./ProjectMap.legendConfig"
 import { SubsectionMarkers } from "./markers/SubsectionMarkers"
+import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
 import { geometriesBbox } from "./utils/bboxHelpers"
 import { getSubsectionFeatures } from "./utils/getSubsectionFeatures"
 
-type Props = { subsections: TSubsections }
+type Props = {
+  subsections: TSubsections
+  staticOverlay?: StaticOverlayConfig
+}
 
-export const ProjectMap = ({ subsections }: Props) => {
+export const ProjectMap = ({ subsections, staticOverlay }: Props) => {
   const router = useRouter()
   const projectSlug = useProjectSlug()
   const { mainMap } = useMap()
@@ -79,6 +83,7 @@ export const ProjectMap = ({ subsections }: Props) => {
         polygons={selectablePolygons}
         lineEndPoints={lineEndPointsGeoms}
         colorSchema="subsection"
+        staticOverlay={staticOverlay}
       >
         <SubsectionMarkers subsections={subsections} zoom={zoom} onSelect={handleSelect} />
       </BaseMap>

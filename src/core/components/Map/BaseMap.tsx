@@ -1,6 +1,8 @@
 import { clsx } from "clsx"
+import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
-import { useRef, useState } from "react"
+import * as pmtiles from "pmtiles"
+import { useEffect, useRef, useState } from "react"
 import MapComponent, {
   MapEvent,
   MapLayerMouseEvent,
@@ -18,6 +20,8 @@ import {
 import { LinesLayer, getLineLayerId, type LinesLayerProps } from "./layers/LinesLayer"
 import { PointsLayer, getPointLayerId, type PointsLayerProps } from "./layers/PointsLayer"
 import { PolygonsLayer, getPolygonLayerId, type PolygonsLayerProps } from "./layers/PolygonsLayer"
+import { StaticOverlay } from "./staticOverlay/StaticOverlay"
+import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
 
 const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
 export const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
@@ -48,6 +52,7 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
   Partial<Pick<LineEndPointsLayerProps, "lineEndPoints">> & {
     classHeight?: string
     children?: React.ReactNode
+    staticOverlay?: StaticOverlayConfig
     backgroundSwitcherPosition?: "top-left" | "top-right" | "bottom-left" | "bottom-right"
     selectableLayerIdSuffix?: string // Defaults to "" if not provided
     colorSchema: "subsection" | "subsubsection"
@@ -71,6 +76,7 @@ export const BaseMap = ({
   lineEndPoints,
   classHeight,
   children,
+  staticOverlay,
   backgroundSwitcherPosition = "top-left",
   selectableLayerIdSuffix = "",
   colorSchema,
@@ -81,6 +87,15 @@ export const BaseMap = ({
   }
 
   const [cursorStyle, setCursorStyle] = useState("grab")
+
+  useEffect(() => {
+    if (!staticOverlay) return
+    const protocol = new pmtiles.Protocol()
+    maplibregl.addProtocol("pmtiles", protocol.tile)
+    return () => {
+      maplibregl.removeProtocol("pmtiles")
+    }
+  }, [staticOverlay])
 
   // Map layer source IDs - shared across all handlers (still needed for selected state)
   const sourceIds = {
@@ -408,6 +423,7 @@ export const BaseMap = ({
         >
           <NavigationControl showCompass={false} />
           <ScaleControl />
+          {staticOverlay && <StaticOverlay config={staticOverlay} />}
           {lines && (
             <LinesLayer
               lines={lines}

@@ -20,6 +20,7 @@ import { getPolygonLayerId } from "./layers/PolygonsLayer"
 import { SubsectionHullsLayer } from "./layers/SubsectionHullsLayer"
 import { MapLegend } from "./MapLegend"
 import { SubsubsectionMarkers } from "./markers/SubsubsectionMarkers"
+import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
 import { subsectionLegendConfig } from "./SubsectionSubsubsectionMap.legendConfig"
 import { UploadMarkers } from "./UploadMarkers"
 import { geometriesBbox } from "./utils/bboxHelpers"
@@ -30,12 +31,14 @@ type Props = {
   subsections: TGetSubsection[]
   selectedSubsection: TGetSubsection
   subsubsections: SubsubsectionWithPosition[]
+  staticOverlay?: StaticOverlayConfig
 }
 
 export const SubsectionSubsubsectionMap = ({
   subsections,
   selectedSubsection,
   subsubsections,
+  staticOverlay,
 }: Props) => {
   const pageSubsectionSlug = useSlug("subsectionSlug")
   const pageSubsubsectionSlug = useSlug("subsubsectionSlug")
@@ -300,6 +303,7 @@ export const SubsectionSubsubsectionMap = ({
         lineEndPoints={allLineEndPointsGeoms}
         selectableLayerIdSuffix="_subsubsection"
         colorSchema="subsubsection"
+        staticOverlay={staticOverlay}
       >
         <SubsectionHullsLayer
           lines={subsectionLines}
