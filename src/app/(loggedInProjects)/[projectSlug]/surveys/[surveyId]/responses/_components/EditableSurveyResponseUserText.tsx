@@ -54,7 +54,7 @@ const EditableSurveyResponseUserText = ({
           </blockquote>
         )}
         <div className="mt-2 text-sm text-gray-500">
-          Bürger:innenbeitrag vom: {response.surveySession.createdAt.toLocaleDateString()} um{" "}
+          Beitrag vom: {response.surveySession.createdAt.toLocaleDateString()} um{" "}
           {response.surveySession.createdAt.toLocaleTimeString("de-DE")}
         </div>
       </div>
@@ -70,7 +70,7 @@ const EditableSurveyResponseUserText = ({
             {/* @ts-expect-error `data` is of type unkown */}
             <Markdown markdown={response.data[userTextIndex]} />
             <div className="mt-2 text-sm text-gray-500">
-              Bürger:innenbeitrag vom: {response.surveySession.createdAt.toLocaleDateString()} um{" "}
+              Beitrag vom: {response.surveySession.createdAt.toLocaleDateString()} um{" "}
               {response.surveySession.createdAt.toLocaleTimeString("de-DE")}
             </div>
           </div>
