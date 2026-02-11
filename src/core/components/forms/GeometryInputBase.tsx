@@ -8,9 +8,11 @@ type GeometryInputBaseProps = {
   label: string
   description: ReactNode
   children: ReactNode
+  /** Determines which geometry types are allowed. "subsection" allows LineString and Polygon only. "subsubsection" allows all types (Point, LineString, Polygon). */
+  allowedGeometryTypesFor?: "subsection" | "subsubsection"
 }
 
-export const GeometryInputBase = ({ label, description, children }: GeometryInputBaseProps) => {
+export const GeometryInputBase = ({ label, description, children, allowedGeometryTypesFor }: GeometryInputBaseProps) => {
   const { watch } = useFormContext()
   const geometry = watch("geometry") as Geometry
 
@@ -32,6 +34,7 @@ export const GeometryInputBase = ({ label, description, children }: GeometryInpu
           <LabeledGeometryField
             name="geometry"
             label="GeoJSON Geometrie (`Point`, `MultiPoint`, `LineString`, `MultiLineString`, `Polygon`, oder `MultiPolygon`)"
+            allowedGeometryTypesFor={allowedGeometryTypesFor}
             outerProps={{
               className: "rounded-sm border border-gray-200 bg-white p-3",
             }}
