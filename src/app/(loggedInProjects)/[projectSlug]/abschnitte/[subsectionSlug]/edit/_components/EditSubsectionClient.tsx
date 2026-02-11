@@ -13,8 +13,9 @@ import getProject from "@/src/server/projects/queries/getProject"
 import deleteSubsection from "@/src/server/subsections/mutations/deleteSubsection"
 import updateSubsection from "@/src/server/subsections/mutations/updateSubsection"
 import getSubsection from "@/src/server/subsections/queries/getSubsection"
+import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import { SubsectionSchema } from "@/src/server/subsections/schema"
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { invalidateQuery, useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
 import { z } from "zod"
 import { SubsectionForm } from "../../../_components/SubsectionForm"
@@ -45,6 +46,9 @@ export const EditSubsectionClient = ({ initialSubsection, initialProject }: Prop
         projectSlug,
       })
       await setQueryData(updated)
+      // Invalidate queries so the overview page shows fresh data
+      await invalidateQuery(getSubsection)
+      await invalidateQuery(getSubsections)
       await router.push(subsectionDashboardRoute(projectSlug, updated.slug))
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["order", "slug"])
