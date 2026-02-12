@@ -15,7 +15,7 @@ import {
 } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
 import { scrollToTopWithDelay } from "@/src/app/beteiligung/_shared/utils/scrollToTopWithDelay"
-import createSurveyResponse from "@/src/server/survey-responses/mutations/createSurveyResponse"
+import getOrCreateCreatedSurveyResponsePublic from "@/src/server/survey-responses/mutations/getOrCreateCreatedSurveyResponsePublic"
 import surveyFeedbackEmail from "@/src/server/survey-responses/mutations/surveyPart2Email"
 import updateSurveyResponsePublic from "@/src/server/survey-responses/mutations/updateSurveyResponsePublic"
 import createSurveySession from "@/src/server/survey-sessions/mutations/createSurveySession"
@@ -50,7 +50,9 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
   const [isSpinner, setIsSpinner] = useState(false)
   const [surveySessionId, setSurveySessionId] = useState<null | number>(null)
   const [createSurveySessionMutation] = useMutation(createSurveySession)
-  const [createSurveyResponseMutation] = useMutation(createSurveyResponse)
+  const [getOrCreateCreatedSurveyResponseMutation] = useMutation(
+    getOrCreateCreatedSurveyResponsePublic,
+  )
   const [updateSurveyResponsePublicMutation] = useMutation(updateSurveyResponsePublic)
   const [surveyPart2EmailMutation] = useMutation(surveyFeedbackEmail)
   // to reset form when repeated
@@ -71,9 +73,9 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
     if (surveySessionId) {
       return surveySessionId
     } else {
-      const surveySession = await createSurveySessionMutation({ surveyId })
-      setSurveySessionId(surveySession.id)
-      return surveySession.id
+      const { id } = await createSurveySessionMutation({ surveyId })
+      setSurveySessionId(id)
+      return id
     }
   }
 
@@ -83,16 +85,15 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
   // Create a (CREATED) response when starting a part
   const createPendingResponse = async (part: 1 | 2 | 3) => {
     const surveySessionId_ = await getOrCreateSurveySessionId()
-    const response = await createSurveyResponseMutation({
+    const { id } = await getOrCreateCreatedSurveyResponseMutation({
       surveySessionId: surveySessionId_,
       surveyPart: part,
       data: "{}",
       source: "FORM",
       status: surveyResponseDefaultStatus,
-      state: "CREATED",
     })
-    setResponseIdByPart((prev) => ({ ...prev, [part]: response.id }))
-    return response.id
+    setResponseIdByPart((prev) => ({ ...prev, [part]: id }))
+    return id
   }
 
   // Update response to SUBMITTED on submit

@@ -117,7 +117,8 @@ export const SurveyPart = ({
   const currentProgressBar = getprogressBarDefinitionBySurveySlug(surveySlug, stage)
 
   const handleStart = async () => {
-    // Create pending CREATED response before starting the form
+    // Ensure we have a CREATED response before starting the form
+    // (server-side getOrCreate prevents duplicates when switching intro <-> form)
     await onStartPart()
     setIsIntro(false)
     setPage(0)
