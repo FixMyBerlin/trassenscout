@@ -8,13 +8,14 @@ import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
-import { uploadEditRoute } from "@/src/core/routes/uploadRoutes"
+import { surveyResponseUploadEditRoute } from "@/src/core/routes/uploadRoutes"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/server/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
 import getSurveyResponseUploadsSplit from "@/src/server/uploads/queries/getSurveyResponseUploadsSplit"
 import { invalidateQuery, useQuery } from "@blitzjs/rpc"
 
 type Props = {
   projectSlug: string
+  surveyId: number
   responseId: number
   responseData: Record<string, any>
   surveySlug: AllowedSurveySlugs
@@ -22,6 +23,7 @@ type Props = {
 
 export const EditableSurveyResponseUploadsSection = ({
   projectSlug,
+  surveyId,
   responseId,
   responseData,
   surveySlug,
@@ -82,7 +84,7 @@ export const EditableSurveyResponseUploadsSection = ({
                 uploadId={upload.id}
                 projectSlug={projectSlug}
                 size="grid"
-                editUrl={uploadEditRoute(projectSlug, upload.id)}
+                editUrl={surveyResponseUploadEditRoute(projectSlug, surveyId, responseId, upload.id)}
               />
             ))}
           </div>
@@ -101,7 +103,7 @@ export const EditableSurveyResponseUploadsSection = ({
               uploadId={upload.id}
               projectSlug={projectSlug}
               size="grid"
-              editUrl={uploadEditRoute(projectSlug, upload.id)}
+              editUrl={surveyResponseUploadEditRoute(projectSlug, surveyId, responseId, upload.id)}
             />
           ))}
         </div>

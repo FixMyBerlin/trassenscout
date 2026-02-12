@@ -190,6 +190,7 @@ export function EditableSurveyResponseForm({
         {/* UPLOADS */}
         <EditableSurveyResponseUploadsSection
           projectSlug={projectSlug}
+          surveyId={response.surveySession.surveyId}
           responseId={response.id}
           responseData={response.data}
           surveySlug={surveySlug}
