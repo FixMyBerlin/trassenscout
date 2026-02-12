@@ -29,8 +29,8 @@ export const UploadLocationMap = () => {
   const subsubsectionId = watch("subsubsectionId")
   const projectSlug = useProjectSlug()
 
-  const [{ subsections }] = useQuery(getSubsections, { projectSlug, take: 500 })
-  const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug, take: 500 })
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
+  const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
 
   const currentSubsection = subsections.find((ss: TGetSubsection) => {
     return ss.id === subsectionId

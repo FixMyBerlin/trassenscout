@@ -13,8 +13,6 @@ export const metadata: Metadata = {
   },
 }
 
-const ITEMS_PER_PAGE = 100
-
 type Props = {
   params: { projectSlug: string }
   searchParams: { page?: string }
@@ -24,8 +22,6 @@ export default async function OperatorsPage({ params: { projectSlug }, searchPar
   const page = Number(searchParams?.page ?? 0) || 0
   const { operators, hasMore } = await invoke(getOperatorsWithCount, {
     projectSlug,
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
   })
 
   return (

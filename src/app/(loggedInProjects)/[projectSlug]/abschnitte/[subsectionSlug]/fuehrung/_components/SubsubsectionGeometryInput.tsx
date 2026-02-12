@@ -21,7 +21,6 @@ export const SubsubsectionGeometryInput = () => {
   const [{ subsubsections }] = useQuery(getSubsubsections, {
     projectSlug,
     where: { subsectionId: subsection.id },
-    take: 250,
   })
 
   return (

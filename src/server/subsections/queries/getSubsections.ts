@@ -24,7 +24,7 @@ export default resolver.pipe(
     where,
     orderBy = { order: "asc" },
     skip = 0,
-    take = 500,
+    take = 100,
   }: GetSubsectionsInput) => {
     const safeWhere = { project: { slug: projectSlug }, ...where }
 
@@ -36,7 +36,6 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      maxTake: 501,
       count: () => db.subsection.count({ where: safeWhere }),
       query: (paginateArgs) =>
         db.subsection.findMany({
