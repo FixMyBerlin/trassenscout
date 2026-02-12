@@ -110,7 +110,7 @@ const SurveyUploadPreview = ({ upload }: SurveyUploadPreviewProps) => {
   const sizeConfig = UPLOAD_SIZES["grid"]
 
   return (
-    <div className="relative flex flex-col items-start justify-center rounded-md bg-white text-xs ring-1 ring-gray-200/30">
+    <div className="relative flex flex-col items-start justify-center rounded-md bg-white text-xs">
       <span className={sizeConfig.containerHeight + " w-full overflow-hidden rounded-md"}>
         <Tooltip content={fileType}>
           <FileIcon
