@@ -8,11 +8,8 @@ import { backendConfig as defaultBackendConfig } from "@/src/app/beteiligung/_sh
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
-import { blueButtonStyles } from "@/src/core/components/links/styles"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
-import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
-import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
@@ -21,7 +18,7 @@ import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/server/su
 import { useSession } from "@blitzjs/auth"
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/16/solid"
 import clsx from "clsx"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useResponseDetails } from "./useResponseDetails.nuqs"
 
 export type EditableSurveyResponseListItemProps = {
@@ -50,10 +47,8 @@ const EditableSurveyResponseListItem = ({
   mapProps,
 }: EditableSurveyResponseListItemProps) => {
   const { responseDetails, setResponseDetails } = useResponseDetails()
-  const projectSlug = useProjectSlug()
   const open = !isAccordion ? true : parseInt(String(responseDetails)) === response.id
   const surveySlug = response.surveySession.survey.slug as AllowedSurveySlugs
-  const [isConvertToMaßnahmeModalOpen, setIsConvertToMaßnahmeModalOpen] = useState(false)
 
   const session = useSession()
   const isEditorOrAdmin = useUserCan().edit || session.role === "ADMIN"
@@ -174,53 +169,7 @@ const EditableSurveyResponseListItem = ({
               </IfUserCanEdit>
             </ul>
           </div>
-
-          {/* Dummy button without functionality atm */}
-          {projectSlug === "ohv" && (
-            <div className="mt-4 flex justify-end">
-              <button
-                type="button"
-                onClick={() => setIsConvertToMaßnahmeModalOpen(true)}
-                className={clsx(blueButtonStyles)}
-              >
-                Meldung in Maßnahme überführen
-              </button>
-            </div>
-          )}
         </div>
-      )}
-
-      {projectSlug === "ohv" && (
-        <Modal
-          open={isConvertToMaßnahmeModalOpen}
-          handleClose={() => setIsConvertToMaßnahmeModalOpen(false)}
-          className="space-y-4 sm:max-w-md"
-        >
-          <div className="flex items-start justify-between">
-            <h3 className="text-lg font-semibold">Meldung in Maßnahme überführen</h3>
-            <ModalCloseButton onClose={() => setIsConvertToMaßnahmeModalOpen(false)} />
-          </div>
-          <p className="text-gray-600">
-            Soll diese Meldung (ID: {response.id}, Status: {response.status}) in eine Maßnahme
-            überführt werden?
-          </p>
-          <div className="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              onClick={() => setIsConvertToMaßnahmeModalOpen(false)}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-xs hover:bg-gray-50"
-            >
-              Nein
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsConvertToMaßnahmeModalOpen(false)}
-              className={clsx(blueButtonStyles)}
-            >
-              Ja
-            </button>
-          </div>
-        </Modal>
       )}
     </article>
   )
