@@ -12,7 +12,12 @@ type GeometryInputBaseProps = {
   allowedGeometryTypesFor?: "subsection" | "subsubsection"
 }
 
-export const GeometryInputBase = ({ label, description, children, allowedGeometryTypesFor }: GeometryInputBaseProps) => {
+export const GeometryInputBase = ({
+  label,
+  description,
+  children,
+  allowedGeometryTypesFor,
+}: GeometryInputBaseProps) => {
   const { watch } = useFormContext()
   const geometry = watch("geometry") as Geometry
 
