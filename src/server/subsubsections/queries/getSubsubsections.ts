@@ -37,6 +37,7 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
+      maxTake: 501,
       count: () => db.subsubsection.count({ where: safeWhere }),
       query: (paginateArgs) =>
         db.subsubsection.findMany({
