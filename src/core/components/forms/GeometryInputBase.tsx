@@ -27,13 +27,8 @@ export const GeometryInputBase = ({
   // Once in raw mode, stay in raw mode (one-way switch)
   if (isRawMode) {
     return (
-      <>
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">{label}</label>
-          <p className="text-sm text-gray-500">
-            Bearbeiten Sie die GeoJSON-Geometrie direkt. Der Geometrietyp wird automatisch erkannt.
-          </p>
-        </div>
+      <div className="space-y-2">
+        <label className="block text-sm font-medium text-gray-700">{label}</label>
 
         <div className="rounded-md border border-gray-200 bg-gray-100 p-2">
           <LabeledGeometryField
@@ -45,7 +40,7 @@ export const GeometryInputBase = ({
             }}
           />
         </div>
-      </>
+      </div>
     )
   }
 
