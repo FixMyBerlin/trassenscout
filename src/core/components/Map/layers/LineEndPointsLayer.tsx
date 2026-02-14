@@ -7,7 +7,13 @@ const baseLineEndPointsLayerId = "layer_line_endpoints"
 
 const lineIdMatchExpression: ExpressionSpecification = [
   "==",
-  ["coalesce", ["get", "projectSlug"], ["get", "lineId"]],
+  [
+    "coalesce",
+    ["get", "projectSlug"],
+    ["get", "subsubsectionSlug"],
+    ["get", "subsectionSlug"],
+    ["get", "lineId"],
+  ],
   ["coalesce", ["global-state", "highlightSlug"], ""],
 ]
 
@@ -15,7 +21,15 @@ export const getLineEndPointsLayerId = (suffix: string) => `${baseLineEndPointsL
 
 export type LineEndPointsLayerProps = {
   lineEndPoints:
-    | FeatureCollection<Point, { lineId?: string | number; featureId?: string }>
+    | FeatureCollection<
+        Point,
+        {
+          lineId?: string | number
+          subsectionSlug?: string
+          subsubsectionSlug?: string
+          featureId?: string
+        }
+      >
     | undefined
   layerIdSuffix: string
   colorSchema: "subsection" | "subsubsection"

@@ -104,13 +104,7 @@ export const GeometryDrawingSubsubsectionContextLayers = ({
     }
     const filteredLineEndPoints = {
       ...allFeatures.lineEndPoints,
-      features: allFeatures.lineEndPoints.features.filter((f) => {
-        const lineSlug = f.properties.lineId
-        const lineFeature = allFeatures.lines.features.find(
-          (lf) => lf.properties.subsubsectionSlug === lineSlug,
-        )
-        return lineFeature && !lineFeature.properties.isCurrent
-      }),
+      features: allFeatures.lineEndPoints.features.filter((f) => !f.properties.isCurrent),
     }
     return {
       lines: filteredLines.features.length > 0 ? filteredLines : undefined,

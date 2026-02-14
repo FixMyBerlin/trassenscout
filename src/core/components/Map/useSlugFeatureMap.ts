@@ -10,6 +10,8 @@ export type SlugFeatureIds = {
 
 type LineEndPointProperties = {
   lineId?: string | number
+  subsectionSlug?: string
+  subsubsectionSlug?: string
   featureId?: string
 }
 
@@ -53,16 +55,15 @@ export function useSlugFeatureMap(
     // Process endpoints
     if (lineEndPoints) {
       lineEndPoints.features.forEach((f) => {
-        const lineId = f.properties?.lineId
+        const slug = getSlug(f.properties || {})
         const featureId = f.properties?.featureId
-        if (lineId && featureId) {
-          const lineIdStr = String(lineId)
-          const featureIds = map.get(lineIdStr) ?? {
+        if (slug && featureId) {
+          const featureIds = map.get(slug) ?? {
             featureIds: [],
             endPointIds: [],
           }
           featureIds.endPointIds.push(featureId)
-          map.set(lineIdStr, featureIds)
+          map.set(slug, featureIds)
         }
       })
     }

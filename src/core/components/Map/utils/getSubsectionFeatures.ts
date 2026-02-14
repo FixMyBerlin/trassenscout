@@ -47,6 +47,8 @@ export type PolygonProperties = {
 
 export type LineEndPointProperties = {
   lineId: string
+  subsectionSlug: string
+  isCurrent: boolean
   featureId: string
 }
 
@@ -81,6 +83,8 @@ export const getSubsectionFeatures = (props: Props) => {
           lineEndPointFeatures.push(
             point(endpoint, {
               lineId: subsection.slug,
+              subsectionSlug: subsection.slug,
+              isCurrent,
               featureId,
             } satisfies LineEndPointProperties),
           )
