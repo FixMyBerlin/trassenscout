@@ -10,16 +10,14 @@ import { lineStringToGeoJSON } from "./lineStringToGeoJSON"
  * Uses buffer() to create a uniform-width polygon around the line.
  * Returns Polygon or MultiPolygon geometry.
  */
-export const lineToHullGeometry = (
-  geometry: LineString | MultiLineString,
-): Polygon | MultiPolygon => {
+export const lineToHullGeometry = (geometry: LineString | MultiLineString) => {
   // 1. Convert line(s) to features - handles both LineString and MultiLineString
   const lineFeatures = lineStringToGeoJSON(geometry, {})
 
   // 2. Create hull for each LineString (MultiLineString returns multiple features)
   // Buffer radius: 10 meters (small buffer for visualization)
   const hullResults = lineFeatures.map((lineFeature) => {
-    const hull = buffer(lineFeature, 10, { units: "meters" })
+    const hull = buffer(lineFeature, 20, { units: "meters" })
     return { lineFeature, hull }
   })
 
