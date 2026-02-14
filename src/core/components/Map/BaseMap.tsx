@@ -24,7 +24,7 @@ import {
 } from "./layers/UnifiedFeaturesLayer"
 import { StaticOverlay } from "./staticOverlay/StaticOverlay"
 import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
-import { useMapHighlight } from "./useMapHighlight"
+import { useMapHighlight, type MapHighlightLevel } from "./useMapHighlight"
 import { useSlugFeatureMap } from "./useSlugFeatureMap"
 import { mergeFeatureCollections } from "./utils/mergeFeatureCollections"
 
@@ -51,6 +51,7 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
     backgroundSwitcherPosition?: "top-left" | "top-right" | "bottom-left" | "bottom-right"
     selectableLayerIdSuffix?: string // Defaults to "" if not provided
     colorSchema: "subsection" | "subsubsection"
+    restrictHighlightToLevel?: MapHighlightLevel
   }
 
 export const BaseMap = ({
@@ -74,6 +75,7 @@ export const BaseMap = ({
   backgroundSwitcherPosition = "top-left",
   selectableLayerIdSuffix = "",
   colorSchema,
+  restrictHighlightToLevel,
 }: BaseMapProps) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const handleLayerSwitch = (layer: LayerType) => {
@@ -103,7 +105,7 @@ export const BaseMap = ({
     endPoints: getLineEndPointsLayerId(selectableLayerIdSuffix),
   }
 
-  const highlightHandlers = useMapHighlight()
+  const highlightHandlers = useMapHighlight(restrictHighlightToLevel)
 
   const handleMouseMoveInternal = (event: MapLayerMouseEvent) => {
     highlightHandlers.handleMouseMove(event)

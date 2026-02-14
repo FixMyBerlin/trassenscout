@@ -21,6 +21,8 @@ function applyHighlight(map: Map, state: HighlightState) {
   map.setGlobalStateProperty("highlightSubsubsectionSlug", state.subsubsection)
 }
 
+export type MapHighlightLevel = "project" | "subsection" | "subsubsection"
+
 function highlightChanged(prev: HighlightState, next: HighlightState) {
   return (
     prev.project !== next.project ||
@@ -29,7 +31,7 @@ function highlightChanged(prev: HighlightState, next: HighlightState) {
   )
 }
 
-function getHighlightFromFeature(prop: HighlightSlugProperties) {
+function getHighlightFromFeatureCascade(prop: HighlightSlugProperties) {
   if (prop.subsubsectionSlug) {
     return { ...CLEAR_HIGHLIGHT, subsubsection: prop.subsubsectionSlug }
   }
@@ -42,6 +44,25 @@ function getHighlightFromFeature(prop: HighlightSlugProperties) {
   return CLEAR_HIGHLIGHT
 }
 
+function getHighlightFromFeature(prop: HighlightSlugProperties, level: MapHighlightLevel) {
+  switch (level) {
+    case null:
+      return CLEAR_HIGHLIGHT
+    case "project": {
+      const value = prop.projectSlug ?? null
+      return value ? { ...CLEAR_HIGHLIGHT, project: value } : CLEAR_HIGHLIGHT
+    }
+    case "subsection": {
+      const value = prop.subsectionSlug ?? null
+      return value ? { ...CLEAR_HIGHLIGHT, subsection: value } : CLEAR_HIGHLIGHT
+    }
+    case "subsubsection": {
+      const value = prop.subsubsectionSlug ?? null
+      return value ? { ...CLEAR_HIGHLIGHT, subsubsection: value } : CLEAR_HIGHLIGHT
+    }
+  }
+}
+
 export type MapHighlightHandlers = {
   handleMouseMove: (event: MapLayerMouseEvent) => void
   handleMouseLeave: (event: MapLayerMouseEvent) => void
@@ -50,8 +71,10 @@ export type MapHighlightHandlers = {
 /**
  * Encapsulates hover highlight state and handlers for the map.
  * Handlers only update MapLibre global state (highlight*Slug); caller is responsible for cursor and forwarding onMouseMove/onMouseLeave.
+ * When restrictHighlightToLevel is undefined, uses cascade from feature properties (subsubsection → subsection → project).
+ * When restrictHighlightToLevel is set (including null), restricts highlighting to that level (null = no highlight).
  */
-export function useMapHighlight() {
+export function useMapHighlight(restrictHighlightToLevel?: MapHighlightLevel) {
   const previousHighlightRef = useRef<HighlightState>(CLEAR_HIGHLIGHT)
 
   const handleMouseMove = (event: MapLayerMouseEvent) => {
@@ -71,7 +94,10 @@ export function useMapHighlight() {
       return
     }
 
-    const next = getHighlightFromFeature(feature.properties)
+    const next =
+      restrictHighlightToLevel === undefined
+        ? getHighlightFromFeatureCascade(feature.properties)
+        : getHighlightFromFeature(feature.properties, restrictHighlightToLevel)
     if (highlightChanged(previousHighlightRef.current, next)) {
       applyHighlight(map, next)
       previousHighlightRef.current = next

@@ -138,6 +138,7 @@ export const DashboardMap = ({ projects }: Props) => {
         polygons={polygons}
         lineEndPoints={lineEndPoints}
         colorSchema="subsection"
+        restrictHighlightToLevel="project"
       >
         <ProjectMarkers projects={projects} onSelect={handleSelect} />
       </BaseMap>
