@@ -4,7 +4,7 @@ const defaultColor = "#38BDF8" // light-blue-400 - default fill/line for entries
 export const subsubsectionColors = {
   line: {
     current: defaultColor,
-    unselected: "#2c62a9", // blue-500
+    unselected: defaultColor, // same light blue as circle/poly
     hovered: highlight,
     selected: highlight,
     default: defaultColor,
@@ -16,12 +16,12 @@ export const subsubsectionColors = {
   },
   lineEndPoints: {
     current: "#38BDF8",
-    unselected: "#2c62a9",
+    unselected: defaultColor,
     hovered: highlight,
     selected: highlight,
     default: defaultColor,
-    ring: "#075985", // light-blue-800
-    strokeWidth: 2,
+    ring: "#0F172A",
+    strokeWidth: 0.5,
     radius: 4,
   },
   polygon: {
