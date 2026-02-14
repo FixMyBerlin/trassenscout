@@ -603,6 +603,8 @@ model SurveyResponse {
   surveyResponseComments SurveyResponseComment[]
   LogEntry               LogEntry[]
   uploads                Upload[]
+
+  @@unique([surveySessionId, surveyPart, state])
 }
 
 enum SurveyResponseSourceEnum {

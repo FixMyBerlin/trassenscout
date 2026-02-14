@@ -20,22 +20,16 @@ const GetOrCreateCreatedSurveyResponsePublicSchema = z.object({
  */
 export default resolver.pipe(
   resolver.zod(GetOrCreateCreatedSurveyResponsePublicSchema),
-  async (input) => {
-    const existing = await db.surveyResponse.findFirst({
+  async (input) =>
+    db.surveyResponse.upsert({
       where: {
-        surveySessionId: input.surveySessionId,
-        surveyPart: input.surveyPart,
-        state: SurveyResponseStateEnum.CREATED,
+        surveySessionId_surveyPart_state: {
+          surveySessionId: input.surveySessionId,
+          surveyPart: input.surveyPart,
+          state: SurveyResponseStateEnum.CREATED,
+        },
       },
-      select: {
-        id: true,
-      },
-    })
-
-    if (existing) return existing
-
-    return await db.surveyResponse.create({
-      data: {
+      create: {
         surveySessionId: input.surveySessionId,
         surveyPart: input.surveyPart,
         data: input.data,
@@ -43,9 +37,7 @@ export default resolver.pipe(
         status: input.status,
         state: SurveyResponseStateEnum.CREATED,
       },
-      select: {
-        id: true,
-      },
-    })
-  },
+      update: {},
+      select: { id: true },
+    }),
 )
