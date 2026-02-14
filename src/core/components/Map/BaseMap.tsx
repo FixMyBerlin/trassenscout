@@ -249,11 +249,11 @@ export const BaseMap = ({
     if (onMouseMove) onMouseMove(e)
   }
 
-  const handleMouseLeaveInternal = (e: MapLayerMouseEvent) => {
-    const map = e.target
+  const handleMouseLeaveInternal = (event: MapLayerMouseEvent) => {
+    const map = event.target
     if (!map) {
       setCursorStyle("grab")
-      if (onMouseLeave) onMouseLeave(e)
+      if (onMouseLeave) onMouseLeave(event)
       return
     }
 
@@ -261,15 +261,15 @@ export const BaseMap = ({
     previousHoveredSlugRef.current = null
 
     setCursorStyle("grab")
-    if (onMouseLeave) onMouseLeave(e)
+    if (onMouseLeave) onMouseLeave(event)
   }
 
   // Handle selection state via setFeatureState
-  const handleClickInternal = (e: MapLayerMouseEvent) => {
-    const map = e.target
-    const features = e.features || []
+  const handleClickInternal = (event: MapLayerMouseEvent) => {
+    const map = event.target
+    const features = event.features || []
     if (!map || features.length === 0) {
-      if (onClick) onClick(e)
+      if (onClick) onClick(event)
       return
     }
 
@@ -312,11 +312,10 @@ export const BaseMap = ({
 
     // Set selected on all features from the same subsubsection/subsection
     const feature = features[0]
-    const rawSlug =
+    const lookupSlug =
       feature?.properties?.subsubsectionSlug ||
       feature?.properties?.subsectionSlug ||
       feature?.properties?.lineId
-    const lookupSlug = rawSlug ? String(rawSlug) : undefined
 
     if (lookupSlug) {
       const featureIds = slugFeatureMap.get(lookupSlug)
@@ -341,7 +340,7 @@ export const BaseMap = ({
     }
 
     // Call parent onClick for navigation logic
-    if (onClick) onClick(e)
+    if (onClick) onClick(event)
   }
 
   const handleZoomEnd = (e: ViewStateChangeEvent) => {

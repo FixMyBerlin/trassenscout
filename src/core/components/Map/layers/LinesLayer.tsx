@@ -1,11 +1,15 @@
-import { sharedColors } from "@/src/core/components/Map/colors/sharedColors"
-import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
-import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
+import { mapLayerColorConfigs } from "@/src/core/components/Map/colors/mapLayerColorConfigs"
 import type { FeatureCollection, LineString } from "geojson"
-import { ExpressionSpecification } from "maplibre-gl"
+import type { ExpressionSpecification } from "maplibre-gl"
 import { Layer, Source } from "react-map-gl/maplibre"
 
 const baseLineLayerId = "layer_line_features"
+
+const slugMatchExpression: ExpressionSpecification = [
+  "==",
+  ["coalesce", ["get", "projectSlug"], ["get", "subsubsectionSlug"], ["get", "subsectionSlug"]],
+  ["coalesce", ["global-state", "highlightSlug"], ""],
+]
 
 export const getLineLayerId = (suffix: string) => `${baseLineLayerId}${suffix}`
 
@@ -38,22 +42,15 @@ export const LinesLayer = ({
 
   const sourceId = getLineLayerId(layerIdSuffix)
   const layerId = getLineLayerId(layerIdSuffix)
-
-  // Import colors based on colorSchema
-  const colors = colorSchema === "subsubsection" ? subsubsectionColors : subsectionColors
+  const colors = mapLayerColorConfigs[colorSchema]
 
   const colorExpression: ExpressionSpecification = [
     "case",
-    [
-      "==",
-      // DashboardMap uses `projectSlug` to highlight all Subsections of the given project
-      ["coalesce", ["get", "projectSlug"], ["get", "subsubsectionSlug"], ["get", "subsectionSlug"]],
-      ["coalesce", ["global-state", "highlightSlug"], ""],
-    ],
-    sharedColors.hovered,
+    slugMatchExpression,
+    colors.line.hovered,
     ["boolean", ["feature-state", "selected"], false],
-    colors.current, // Selected subsubsections use light blue (not yellow)
-    ["case", ["get", "isCurrent"], colors.current, colors.unselected],
+    colors.line.selected,
+    ["case", ["get", "isCurrent"], colors.line.current, colors.line.unselected],
   ]
 
   return (
@@ -62,12 +59,12 @@ export const LinesLayer = ({
         id={`${layerId}-outline`}
         type="line"
         layout={{
-          "line-cap": colors.lineCap,
+          "line-cap": colors.line.cap,
           "line-join": "round",
         }}
         paint={{
-          "line-width": colors.lineOutlineWidth,
-          "line-color": colors.linesBorderColor, // Blackish border color for line outlines
+          "line-width": colors.line.outlineWidth,
+          "line-color": colors.line.borderColor,
           "line-opacity": 0.6,
         }}
       />
@@ -75,12 +72,12 @@ export const LinesLayer = ({
         id={`${layerId}-bg`}
         type="line"
         layout={{
-          "line-cap": colors.lineCap,
+          "line-cap": colors.line.cap,
           "line-join": "round",
         }}
         paint={{
-          "line-width": colors.lineWidth,
-          "line-color": colors.dashedSecondary,
+          "line-width": colors.line.width,
+          "line-color": colors.line.dashedSecondary,
           "line-opacity": 0.9,
         }}
         filter={["==", ["get", "style"], "DASHED"]}
@@ -89,11 +86,11 @@ export const LinesLayer = ({
         id={`${layerId}-solid`}
         type="line"
         layout={{
-          "line-cap": colors.lineCap,
+          "line-cap": colors.line.cap,
           "line-join": "round",
         }}
         paint={{
-          "line-width": colors.lineWidth,
+          "line-width": colors.line.width,
           "line-color": colorExpression,
           "line-opacity": 1,
         }}
@@ -103,11 +100,11 @@ export const LinesLayer = ({
         id={`${layerId}-dashed`}
         type="line"
         layout={{
-          "line-cap": colors.lineCap,
+          "line-cap": colors.line.cap,
           "line-join": "round",
         }}
         paint={{
-          "line-width": colors.lineWidth,
+          "line-width": colors.line.width,
           "line-color": colorExpression,
           "line-opacity": 1,
           "line-dasharray": [1, 1],
@@ -119,7 +116,7 @@ export const LinesLayer = ({
           id={`${layerId}-click-target`}
           type="line"
           layout={{
-            "line-cap": colors.lineCap,
+            "line-cap": colors.line.cap,
             "line-join": "round",
           }}
           paint={{

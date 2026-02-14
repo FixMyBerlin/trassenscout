@@ -1,11 +1,15 @@
-import { sharedColors } from "@/src/core/components/Map/colors/sharedColors"
-import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
-import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
+import { mapLayerColorConfigs } from "@/src/core/components/Map/colors/mapLayerColorConfigs"
 import type { FeatureCollection, Point } from "geojson"
-import { ExpressionSpecification } from "maplibre-gl"
+import type { ExpressionSpecification } from "maplibre-gl"
 import { Layer, Source } from "react-map-gl/maplibre"
 
 const baseLineEndPointsLayerId = "layer_line_endpoints"
+
+const lineIdMatchExpression: ExpressionSpecification = [
+  "==",
+  ["coalesce", ["get", "projectSlug"], ["get", "lineId"]],
+  ["coalesce", ["global-state", "highlightSlug"], ""],
+]
 
 export const getLineEndPointsLayerId = (suffix: string) => `${baseLineEndPointsLayerId}${suffix}`
 
@@ -25,20 +29,15 @@ export const LineEndPointsLayer = ({
   if (!lineEndPoints || lineEndPoints.features.length === 0) return null
 
   const id = getLineEndPointsLayerId(layerIdSuffix)
-  const colors = colorSchema === "subsubsection" ? subsubsectionColors : subsectionColors
+  const colors = mapLayerColorConfigs[colorSchema]
 
   const colorExpression: ExpressionSpecification = [
     "case",
-    [
-      "==",
-      // DashboardMap uses `projectSlug` to highlight all Subsections of the given project
-      ["coalesce", ["get", "projectSlug"], ["get", "lineId"]],
-      ["coalesce", ["global-state", "highlightSlug"], ""],
-    ],
-    sharedColors.hovered, // Yellow hover color
+    lineIdMatchExpression,
+    colors.lineEndPoints.hovered,
     ["boolean", ["feature-state", "selected"], false],
-    colors.lineDotSelected, // Light blue fill when selected (not yellow)
-    colors.lineDotUnselected, // Default blue fill
+    colors.lineEndPoints.selected,
+    colors.lineEndPoints.default,
   ]
 
   return (
@@ -48,9 +47,9 @@ export const LineEndPointsLayer = ({
         type="circle"
         paint={{
           "circle-color": colorExpression,
-          "circle-radius": colors.lineDotRadius,
-          "circle-stroke-color": colors.lineDotRing,
-          "circle-stroke-width": colors.lineDotStrokeWidth,
+          "circle-radius": colors.lineEndPoints.radius,
+          "circle-stroke-color": colors.lineEndPoints.ring,
+          "circle-stroke-width": colors.lineEndPoints.strokeWidth,
         }}
       />
     </Source>

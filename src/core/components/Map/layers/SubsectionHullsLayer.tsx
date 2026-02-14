@@ -21,7 +21,6 @@ export const SubsectionHullsLayer = ({
   polygons,
   layerIdSuffix,
 }: SubsectionHullsLayerProps) => {
-  // Convert subsection lines to hulls
   const hullFeatures: Array<Feature<Polygon | MultiPolygon, LineProperties | PolygonProperties>> =
     []
 
@@ -59,8 +58,8 @@ export const SubsectionHullsLayer = ({
   const colorExpression: ExpressionSpecification = [
     "case",
     ["get", "isCurrent"],
-    subsectionColors.current,
-    subsectionColors.unselected,
+    subsectionColors.hull.current,
+    subsectionColors.hull.unselected,
   ]
 
   return (
@@ -81,10 +80,9 @@ export const SubsectionHullsLayer = ({
           "line-join": "round",
         }}
         paint={{
-          "line-width": 2,
+          "line-width": 1,
           "line-color": colorExpression,
           "line-opacity": 0.7,
-          "line-dasharray": [0.5, 1.5],
         }}
       />
     </Source>

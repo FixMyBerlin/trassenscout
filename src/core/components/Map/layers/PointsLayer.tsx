@@ -1,10 +1,15 @@
-import { sharedColors } from "@/src/core/components/Map/colors/sharedColors"
-import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
+import { mapLayerColorConfigs } from "@/src/core/components/Map/colors/mapLayerColorConfigs"
 import type { FeatureCollection, Point } from "geojson"
-import { ExpressionSpecification } from "maplibre-gl"
+import type { ExpressionSpecification } from "maplibre-gl"
 import { Layer, Source } from "react-map-gl/maplibre"
 
 const basePointLayerId = "layer_point_features"
+
+const slugMatchExpression: ExpressionSpecification = [
+  "==",
+  ["coalesce", ["get", "projectSlug"], ["get", "subsubsectionSlug"], ["get", "subsectionSlug"]],
+  ["coalesce", ["global-state", "highlightSlug"], ""],
+]
 
 export const getPointLayerId = (suffix: string) => `${basePointLayerId}${suffix}`
 
@@ -36,79 +41,59 @@ export const PointsLayer = ({
 
   const sourceId = getPointLayerId(layerIdSuffix)
   const layerId = getPointLayerId(layerIdSuffix)
-
-  // Import colors based on colorSchema (points are typically subsubsection)
-  const colors = colorSchema === "subsubsection" ? subsubsectionColors : subsubsectionColors
+  const colors = mapLayerColorConfigs[colorSchema]
 
   const colorExpression: ExpressionSpecification = [
     "case",
     ["boolean", ["feature-state", "selected"], false],
-    sharedColors.selected,
-    [
-      "==",
-      // DashboardMap uses `projectSlug` to highlight all Subsections of the given project
-      ["coalesce", ["get", "projectSlug"], ["get", "subsubsectionSlug"], ["get", "subsectionSlug"]],
-      ["coalesce", ["global-state", "highlightSlug"], ""],
-    ],
-    sharedColors.hovered,
-    // Points are areas that use inner fill color
-    subsubsectionColors.pointInnerFill,
+    colors.point.selected,
+    slugMatchExpression,
+    colors.point.hovered,
+    colors.point.default,
   ]
 
   const borderColorExpression: ExpressionSpecification = [
     "case",
-    [
-      "==",
-      // DashboardMap uses `projectSlug` to highlight all Subsections of the given project
-      ["coalesce", ["get", "projectSlug"], ["get", "subsubsectionSlug"], ["get", "subsectionSlug"]],
-      ["coalesce", ["global-state", "highlightSlug"], ""],
-    ],
-    sharedColors.hovered,
+    slugMatchExpression,
+    colors.point.hovered,
     ["boolean", ["feature-state", "selected"], false],
-    colors.current, // Selected subsubsections use light blue (not yellow)
-    ["case", ["get", "isCurrent"], colors.current, colors.unselected],
+    colors.point.selected,
+    colors.point.default,
   ]
 
   return (
     <Source id={sourceId} key={sourceId} type="geojson" data={points} promoteId="featureId">
-      {/* Background circle for dashed border effect (secondary color shows through gaps) */}
       <Layer
         id={`${layerId}-bg`}
         type="circle"
         paint={{
-          "circle-radius": [
-            "+",
-            10, // radius for subsubsection points
-            3, // border-width
-          ],
-          "circle-color": colors.dashedSecondary,
+          "circle-radius": ["+", 10, 3],
+          "circle-color": colors.point.dashedSecondary,
           "circle-opacity": 0.9,
         }}
         filter={["==", ["get", "style"], "DASHED"]}
       />
-      {/* Main circle layer - regular border for REGULAR style */}
       <Layer
         id={layerId}
         type="circle"
         paint={{
-          "circle-radius": 10, // radius for subsubsection points
+          "circle-radius": 10,
           "circle-color": colorExpression,
-          "circle-stroke-width": 3, // border-width for subsubsection points
+          "circle-stroke-width": 3,
           "circle-stroke-color": borderColorExpression,
-          "circle-opacity": 0.3, // opacity for subsubsection points
+          "circle-opacity": 0.3,
         }}
         filter={["==", ["get", "style"], "REGULAR"]}
       />
-      {/* Dashed style circle - thinner border to create visual gap effect */}
       <Layer
         id={`${layerId}-dashed`}
         type="circle"
         paint={{
-          "circle-radius": 10, // radius for subsubsection points
+          "circle-radius": 10,
           "circle-color": colorExpression,
-          "circle-stroke-width": 1.5, // Thinner border (50% of 3px) to create visual gap effect
+          "circle-stroke-width": 1.5,
           "circle-stroke-color": borderColorExpression,
-          "circle-opacity": 0.3, // opacity for subsubsection points
+          "circle-opacity": 0.3,
         }}
         filter={["==", ["get", "style"], "DASHED"]}
       />
@@ -117,7 +102,7 @@ export const PointsLayer = ({
           id={`${layerId}-click-target`}
           type="circle"
           paint={{
-            "circle-radius": 10, // radius for subsubsection points
+            "circle-radius": 10,
             "circle-opacity": 0,
           }}
         />

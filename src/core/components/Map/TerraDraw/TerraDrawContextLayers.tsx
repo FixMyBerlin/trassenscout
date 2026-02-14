@@ -2,6 +2,7 @@ import { LineEndPointsLayer } from "@/src/core/components/Map/layers/LineEndPoin
 import { LinesLayer } from "@/src/core/components/Map/layers/LinesLayer"
 import { PointsLayer } from "@/src/core/components/Map/layers/PointsLayer"
 import { PolygonsLayer } from "@/src/core/components/Map/layers/PolygonsLayer"
+import { SubsectionHullsLayer } from "@/src/core/components/Map/layers/SubsectionHullsLayer"
 import { getSubsectionFeatures } from "@/src/core/components/Map/utils/getSubsectionFeatures"
 import { getSubsubsectionFeatures } from "@/src/core/components/Map/utils/getSubsubsectionFeatures"
 import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
@@ -15,8 +16,8 @@ type Props = {
   selectedSubsubsectionSlug?: string
 }
 
-// Encapsulates all context rendering for TerraDrawMap
-// Keeps computation and layer rendering inline (no unnecessary abstraction)
+// Encapsulates all context rendering for TerraDrawMap.
+// Subsection hulls aligned with presentational maps: same getSubsectionFeatures (all subsections, isCurrent set).
 export const TerraDrawContextLayers = ({
   subsections,
   selectedSubsectionSlug,
@@ -25,10 +26,9 @@ export const TerraDrawContextLayers = ({
 }: Props) => {
   const isSubsubsectionContext = Boolean(subsections && selectedSubsectionSlug && subsubsections)
 
-  // 1. Compute subsection features
+  // 1. Subsection features: same as SubsectionSubsubsectionMap (all subsections, isCurrent for selected)
   const subsectionFeatures = useMemo(() => {
     if (!subsections || !selectedSubsectionSlug) return null
-
     return getSubsectionFeatures({
       subsections,
       highlight: "currentSubsection",
@@ -36,47 +36,35 @@ export const TerraDrawContextLayers = ({
     })
   }, [subsections, selectedSubsectionSlug])
 
-  // 2. For subsection edit: filter to only other subsections (isCurrent === false)
-  const subsectionEditFeatures = useMemo(() => {
-    if (!subsectionFeatures || isSubsubsectionContext) return null
-
-    const filteredLines = {
-      ...subsectionFeatures.lines,
-      features: subsectionFeatures.lines.features.filter((f) => !f.properties.isCurrent),
+  // 2. Subsection hull input for SubsectionHullsLayer (same two-color behavior as presentational map).
+  // Presentational: subsection map and subsubsection map both show all subsections as hulls in two colors (current vs other).
+  // - Subsection edit: we want the same (current one color, others the other). Current is drawn by TerraDraw, so we pass
+  //   only "other" subsections to the hull layer; they all get the "other" color. No double-draw of current.
+  // - Subsubsection edit: same as presentational – pass all subsections; hull layer styles by isCurrent (two colors).
+  const subsectionHullFeatures = useMemo(() => {
+    if (!subsectionFeatures) return null
+    if (isSubsubsectionContext) {
+      return { lines: subsectionFeatures.lines, polygons: subsectionFeatures.polygons }
     }
-    const filteredPolygons = {
-      ...subsectionFeatures.polygons,
-      features: subsectionFeatures.polygons.features.filter((f) => !f.properties.isCurrent),
-    }
-    const filteredLineEndPoints = {
-      ...subsectionFeatures.lineEndPoints,
-      features: subsectionFeatures.lineEndPoints.features.filter((f) => {
-        // Filter endpoints based on their associated line's isCurrent status
-        const lineSlug = f.properties.lineId
-        const lineFeature = subsectionFeatures.lines.features.find(
-          (lf) => lf.properties.subsectionSlug === lineSlug,
-        )
-        return lineFeature && !lineFeature.properties.isCurrent
-      }),
-    }
-
     return {
-      lines: filteredLines,
-      polygons: filteredPolygons,
-      lineEndPoints: filteredLineEndPoints,
+      lines: {
+        ...subsectionFeatures.lines,
+        features: subsectionFeatures.lines.features.filter((f) => !f.properties.isCurrent),
+      },
+      polygons: {
+        ...subsectionFeatures.polygons,
+        features: subsectionFeatures.polygons.features.filter((f) => !f.properties.isCurrent),
+      },
     }
   }, [subsectionFeatures, isSubsubsectionContext])
 
-  // 3. For subsubsection edit: compute other subsubsection features (isCurrent === false)
+  // 3. Other subsubsection features (subsubsection edit only): same idea as presentational map – "other" entries
   const otherSubsubsectionFeatures = useMemo(() => {
     if (!subsubsections) return null
-
     const allFeatures = getSubsubsectionFeatures({
       subsubsections,
       selectedSubsubsectionSlug: selectedSubsubsectionSlug ?? null,
     })
-
-    // Filter to only features where isCurrent === false
     const filteredLines = {
       ...allFeatures.lines,
       features: allFeatures.lines.features.filter((f) => !f.properties.isCurrent),
@@ -99,7 +87,6 @@ export const TerraDrawContextLayers = ({
         return lineFeature && !lineFeature.properties.isCurrent
       }),
     }
-
     return {
       lines: filteredLines.features.length > 0 ? filteredLines : undefined,
       polygons: filteredPolygons.features.length > 0 ? filteredPolygons : undefined,
@@ -108,103 +95,50 @@ export const TerraDrawContextLayers = ({
     }
   }, [subsubsections, selectedSubsubsectionSlug])
 
-  // Subsection edit mode: show other subsections as actual lines/polygons (not hulls)
-  if (subsectionEditFeatures) {
-    return (
-      <>
-        {subsectionEditFeatures.lines && subsectionEditFeatures.lines.features.length > 0 && (
-          <LinesLayer
-            lines={subsectionEditFeatures.lines}
-            layerIdSuffix="_terra_draw_other_subsection"
-            interactive={false}
-            colorSchema="subsection"
-          />
-        )}
-        {subsectionEditFeatures.polygons && subsectionEditFeatures.polygons.features.length > 0 && (
-          <PolygonsLayer
-            polygons={subsectionEditFeatures.polygons}
-            layerIdSuffix="_terra_draw_other_subsection"
-            interactive={false}
-            colorSchema="subsection"
-          />
-        )}
-        {subsectionEditFeatures.lineEndPoints &&
-          subsectionEditFeatures.lineEndPoints.features.length > 0 && (
-            <LineEndPointsLayer
-              lineEndPoints={subsectionEditFeatures.lineEndPoints}
-              layerIdSuffix="_terra_draw_other_subsection"
-              colorSchema="subsection"
+  if (!subsectionHullFeatures) return null
+
+  return (
+    <>
+      <SubsectionHullsLayer
+        lines={subsectionHullFeatures.lines}
+        polygons={subsectionHullFeatures.polygons}
+        layerIdSuffix="_terra_draw_subsection"
+      />
+      {isSubsubsectionContext && (
+        <>
+          {otherSubsubsectionFeatures?.lines && (
+            <LinesLayer
+              lines={otherSubsubsectionFeatures.lines}
+              layerIdSuffix="_terra_draw_other_subsubsection"
+              interactive={false}
+              colorSchema="subsubsection"
             />
           )}
-      </>
-    )
-  }
-
-  // Subsubsection edit mode: show subsection layers + other subsubsections
-  if (isSubsubsectionContext && subsectionFeatures) {
-    return (
-      <>
-        {/* Subsection features as non-interactive background */}
-        {subsectionFeatures.lines && subsectionFeatures.lines.features.length > 0 && (
-          <LinesLayer
-            lines={subsectionFeatures.lines}
-            layerIdSuffix="_terra_draw_subsection"
-            interactive={false}
-            colorSchema="subsection"
-          />
-        )}
-        {subsectionFeatures.polygons && subsectionFeatures.polygons.features.length > 0 && (
-          <PolygonsLayer
-            polygons={subsectionFeatures.polygons}
-            layerIdSuffix="_terra_draw_subsection"
-            interactive={false}
-            colorSchema="subsection"
-          />
-        )}
-        {subsectionFeatures.lineEndPoints &&
-          subsectionFeatures.lineEndPoints.features.length > 0 && (
-            <LineEndPointsLayer
-              lineEndPoints={subsectionFeatures.lineEndPoints}
-              layerIdSuffix="_terra_draw_subsection"
-              colorSchema="subsection"
+          {otherSubsubsectionFeatures?.polygons && (
+            <PolygonsLayer
+              polygons={otherSubsubsectionFeatures.polygons}
+              layerIdSuffix="_terra_draw_other_subsubsection"
+              interactive={false}
+              colorSchema="subsubsection"
             />
           )}
-
-        {/* Other subsubsections as non-interactive layers */}
-        {otherSubsubsectionFeatures?.lines && (
-          <LinesLayer
-            lines={otherSubsubsectionFeatures.lines}
-            layerIdSuffix="_terra_draw_other_subsubsection"
-            interactive={false}
-            colorSchema="subsubsection"
-          />
-        )}
-        {otherSubsubsectionFeatures?.polygons && (
-          <PolygonsLayer
-            polygons={otherSubsubsectionFeatures.polygons}
-            layerIdSuffix="_terra_draw_other_subsubsection"
-            interactive={false}
-            colorSchema="subsubsection"
-          />
-        )}
-        {otherSubsubsectionFeatures?.points && (
-          <PointsLayer
-            points={otherSubsubsectionFeatures.points}
-            layerIdSuffix="_terra_draw_other_subsubsection"
-            interactive={false}
-            colorSchema="subsubsection"
-          />
-        )}
-        {otherSubsubsectionFeatures?.lineEndPoints && (
-          <LineEndPointsLayer
-            lineEndPoints={otherSubsubsectionFeatures.lineEndPoints}
-            layerIdSuffix="_terra_draw_other_subsubsection"
-            colorSchema="subsubsection"
-          />
-        )}
-      </>
-    )
-  }
-
-  return null
+          {otherSubsubsectionFeatures?.points && (
+            <PointsLayer
+              points={otherSubsubsectionFeatures.points}
+              layerIdSuffix="_terra_draw_other_subsubsection"
+              interactive={false}
+              colorSchema="subsubsection"
+            />
+          )}
+          {otherSubsubsectionFeatures?.lineEndPoints && (
+            <LineEndPointsLayer
+              lineEndPoints={otherSubsubsectionFeatures.lineEndPoints}
+              layerIdSuffix="_terra_draw_other_subsubsection"
+              colorSchema="subsubsection"
+            />
+          )}
+        </>
+      )}
+    </>
+  )
 }

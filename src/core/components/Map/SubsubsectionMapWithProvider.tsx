@@ -2,8 +2,8 @@
 import type { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import type { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { MapProvider } from "react-map-gl/maplibre"
-import { SubsectionSubsubsectionMap } from "./SubsectionSubsubsectionMap"
 import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
+import { SubsubsectionMap } from "./SubsubsectionMap"
 
 type Props = {
   subsections: TGetSubsection[]
@@ -12,10 +12,10 @@ type Props = {
   staticOverlay?: StaticOverlayConfig
 }
 
-export const SubsectionSubsubsectionMapWithProvider = (props: Props) => {
+export const SubsubsectionMapWithProvider = (props: Props) => {
   return (
     <MapProvider>
-      <SubsectionSubsubsectionMap {...props} />
+      <SubsubsectionMap {...props} />
     </MapProvider>
   )
 }

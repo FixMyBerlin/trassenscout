@@ -4,7 +4,7 @@ import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { Breadcrumb } from "@/src/core/components/Breadcrumb/Breadcrumb"
 import { SubsectionMapIcon } from "@/src/core/components/Map/Icons"
-import { SubsectionSubsubsectionMapWithProvider } from "@/src/core/components/Map/SubsectionSubsubsectionMapWithProvider"
+import { SubsubsectionMapWithProvider } from "@/src/core/components/Map/SubsubsectionMapWithProvider"
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
@@ -78,7 +78,7 @@ export const SubsectionDashboardClient = ({ initialSubsections, initialSubsubsec
 
       <div className="relative mt-12 flex w-full gap-10">
         <div className="w-full">
-          <SubsectionSubsubsectionMapWithProvider
+          <SubsubsectionMapWithProvider
             key={`map-${subsubsectionSlug ? "subsubsection" : "subsection"}`}
             subsections={subsections}
             selectedSubsection={subsection}

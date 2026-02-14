@@ -84,7 +84,12 @@ export const EditableSurveyResponseUploadsSection = ({
                 uploadId={upload.id}
                 projectSlug={projectSlug}
                 size="grid"
-                editUrl={surveyResponseUploadEditRoute(projectSlug, surveyId, responseId, upload.id)}
+                editUrl={surveyResponseUploadEditRoute(
+                  projectSlug,
+                  surveyId,
+                  responseId,
+                  upload.id,
+                )}
               />
             ))}
           </div>

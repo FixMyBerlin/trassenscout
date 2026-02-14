@@ -1,5 +1,3 @@
-import { sharedColors } from "@/src/core/components/Map/colors/sharedColors"
-import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
 import type { HexColor } from "terra-draw"
 import {
   TerraDrawFreehandLineStringMode,
@@ -10,9 +8,9 @@ import {
 } from "terra-draw"
 
 export const TERRA_DRAW_COLORS = {
-  drawing: sharedColors.hovered as HexColor, // Yellow for edited feature
-  selectedDark: sharedColors.hovered as HexColor, // Yellow for selected feature
-  selectionPoint: subsubsectionColors.lineDotSelected as HexColor, // Light blue for corner/vertex points
+  drawing: "#F8C62B" as HexColor,
+  selectedDark: "#F8C62B" as HexColor,
+  selectionPoint: "#c33cb68c" as HexColor,
 }
 
 // DOCS STYLING: https://github.com/JamesLMilner/terra-draw/blob/main/guides/5.STYLING.md

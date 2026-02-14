@@ -7,30 +7,25 @@ export const subsectionLegendConfig: LegendItemConfig[] = [
   {
     shapes: [GeometryTypeEnum.LINE, GeometryTypeEnum.POLYGON],
     text: "Aktueller Planungsabschnitt",
-    color: subsectionColors.selected,
+    color: subsectionColors.hull.current,
     isHull: true,
   },
   {
     shapes: [GeometryTypeEnum.LINE, GeometryTypeEnum.POLYGON],
     text: "Andere Planungsabschnitte",
-    color: subsectionColors.unselected,
+    color: subsectionColors.hull.unselected,
     isHull: true,
   },
   {
     shapes: [GeometryTypeEnum.LINE, GeometryTypeEnum.POINT, GeometryTypeEnum.POLYGON],
     text: "Eintrag/Maßnahme",
-    color: subsubsectionColors.unselected,
-  },
-  {
-    shapes: [GeometryTypeEnum.LINE, GeometryTypeEnum.POINT, GeometryTypeEnum.POLYGON],
-    text: "Ausgewählter Eintrag/Maßnahme",
-    color: subsubsectionColors.current,
+    color: subsubsectionColors.line.current,
   },
   {
     text: "Eintrag/Maßnahme mit besonderem Status",
-    color: subsubsectionColors.unselected,
+    color: subsubsectionColors.line.unselected,
     shape: GeometryTypeEnum.LINE,
     isDashed: true,
-    secondColor: subsubsectionColors.dashedSecondary,
+    secondColor: subsubsectionColors.line.dashedSecondary,
   },
 ]

@@ -8,8 +8,8 @@ export const getLegendIconPropsForSubsection = (subsection: TSubsections[number]
   return {
     type: subsection.type,
     isDashed,
-    color: subsectionColors.selected,
-    secondColor: isDashed ? subsectionColors.dashedSecondary : undefined,
+    color: subsectionColors.hull.current,
+    secondColor: isDashed ? subsectionColors.line.dashedSecondary : undefined,
     showDots: subsection.type === "LINE",
   }
 }
@@ -19,8 +19,8 @@ export const getLegendIconPropsForSubsubsection = (subsubsection: SubsubsectionW
   return {
     type: subsubsection.type,
     isDashed,
-    color: subsubsectionColors.current,
-    secondColor: isDashed ? subsubsectionColors.dashedSecondary : undefined,
+    color: subsubsectionColors.line.current,
+    secondColor: isDashed ? subsubsectionColors.line.dashedSecondary : undefined,
     showDots: subsubsection.type === "LINE",
   }
 }

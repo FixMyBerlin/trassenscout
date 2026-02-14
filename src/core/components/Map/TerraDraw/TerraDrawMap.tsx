@@ -66,7 +66,7 @@ export const TerraDrawMap = ({
     <div className="relative h-[500px] w-full overflow-clip rounded-md border border-gray-200">
       <BaseMap
         id="terra-draw-map"
-        // Kritikal to avoid a bug where the Terra Draw Geometries where hidden during navigaton between pages (Subsubsection => Subsubsection/Edit)
+        // Critikal to avoid a bug where the Terra Draw Geometries where hidden during navigaton between pages (Subsubsection => Subsubsection/Edit)
         reuseMaps={false}
         initialViewState={initialViewState || defaultViewState}
         backgroundSwitcherPosition="bottom-left"

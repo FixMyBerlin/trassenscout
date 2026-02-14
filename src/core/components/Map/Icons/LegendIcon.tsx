@@ -1,4 +1,3 @@
-import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
 import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
 import { GeometryTypeEnum } from "@prisma/client"
 import { clsx } from "clsx"
@@ -17,11 +16,11 @@ const LegendDots = () => (
   <>
     <span
       className="absolute top-1/2 z-10 size-2.5 -translate-y-1/2 rounded-full"
-      style={{ backgroundColor: subsectionColors.lineDotSelected }}
+      style={{ backgroundColor: subsubsectionColors.lineEndPoints.current }}
     />
     <span
       className="absolute top-1/2 left-6 z-10 size-2.5 -translate-y-1/2 rounded-full"
-      style={{ backgroundColor: subsectionColors.lineDotSelected }}
+      style={{ backgroundColor: subsubsectionColors.lineEndPoints.current }}
     />
   </>
 )
@@ -47,15 +46,15 @@ export const LegendIcon = ({
             />
             <span
               className="absolute top-1/2 h-2 w-1 -translate-y-1/2 rounded-l"
-              style={{ backgroundColor: secondColor || subsubsectionColors.dashedSecondary }}
+              style={{ backgroundColor: secondColor }}
             />
             <span
               className="absolute top-1/2 left-2.5 h-2 w-1 -translate-y-1/2"
-              style={{ backgroundColor: secondColor || subsubsectionColors.dashedSecondary }}
+              style={{ backgroundColor: secondColor }}
             />
             <span
               className="absolute top-1/2 left-5 h-2 w-1 -translate-y-1/2"
-              style={{ backgroundColor: secondColor || subsubsectionColors.dashedSecondary }}
+              style={{ backgroundColor: secondColor }}
             />
           </span>
         )

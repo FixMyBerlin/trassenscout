@@ -6,15 +6,15 @@ export const projectLegendConfig: LegendItemConfig[] = [
   {
     shapes: [GeometryTypeEnum.LINE, GeometryTypeEnum.POLYGON],
     text: "Planungsabschnitte",
-    color: subsectionColors.selected,
+    color: subsectionColors.hull.current,
     dots: true,
   },
   {
     text: "Verlauf ungeklärt",
-    color: subsectionColors.selected,
+    color: subsectionColors.hull.current,
     shape: GeometryTypeEnum.LINE,
     dots: false,
     isDashed: true,
-    secondColor: subsectionColors.dashedSecondary,
+    secondColor: subsectionColors.line.dashedSecondary,
   },
 ]

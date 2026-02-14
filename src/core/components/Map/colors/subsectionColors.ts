@@ -1,15 +1,50 @@
+const highlight = "#F8C62B" // yellow-400/ocker - hover and selected/current
+
 export const subsectionColors = {
-  current: "#2c62a9", // blue-500 - current subsection (isCurrent=true)
-  selected: "#2c62a9", // blue-500 - alias for current (backward compatibility)
-  unselected: "#4B5563", // gray-600 - unselected subsection (isCurrent=false)
-  dashedSecondary: "#fbcfe8", // pink-200 - dashed subsection secondary
-  lineDotSelected: "#0F172A", // slate-900 - selected subsection dots (solid, no border)
-  lineDotUnselected: "#4b5563", // gray-700 - unselected subsection dots (solid, no border)
-  lineDotRing: "#0F172A", // Ring color for subsection dots
-  linesBorderColor: "#0F172A", // slate-900 - blackish border color for line outlines
-  lineDotStrokeWidth: 1, // Border width for subsection dots
-  lineDotRadius: 4, // 4+1+1px radius for subsection line dots
-  lineWidth: 7, // 7px line width for subsections
-  lineOutlineWidth: 9, // 9px outline width for subsections
-  lineCap: "butt" as const, // Sharp line endings for subsections
-}
+  line: {
+    current: "#2c62a9", // blue-500 - current subsection (isCurrent=true)
+    unselected: "#4B5563", // gray-600 - unselected (isCurrent=false)
+    hovered: highlight,
+    selected: highlight,
+    default: "#2c62a9", // not used as literal; layer builds expression from current/unselected
+    dashedSecondary: "#fbcfe8", // pink-200 - dashed subsection secondary
+    borderColor: "#0F172A",
+    width: 7,
+    outlineWidth: 9,
+    cap: "butt" as const,
+  },
+  lineEndPoints: {
+    current: "#0F172A", // slate-900 - selected line end point
+    unselected: "#4b5563", // gray-700
+    hovered: highlight,
+    selected: highlight,
+    default: "#4b5563",
+    ring: "#0F172A",
+    strokeWidth: 1,
+    radius: 4,
+  },
+  polygon: {
+    current: "#2c62a9",
+    unselected: "#4B5563",
+    hovered: highlight,
+    selected: highlight,
+    default: "#2c62a9",
+    dashedSecondary: "#fbcfe8",
+  },
+  hull: {
+    current: "#2c62a9",
+    unselected: "#4B5563",
+  },
+  /** Stub for type safety when PointsLayer uses colorSchema subsection (points only rendered for subsubsection). */
+  point: {
+    current: "#000",
+    unselected: "#000",
+    hovered: "#000",
+    selected: "#000",
+    default: "#000",
+    dashedSecondary: "#000",
+    currentBorderClass: "#000",
+    currentTextClass: "#000",
+    innerFill: "#000",
+  },
+} as const
