@@ -16,7 +16,7 @@ import { BaseMap } from "./BaseMap"
 import { getLineEndPointsLayerId } from "./layers/LineEndPointsLayer"
 import { SubsectionHullsLayer } from "./layers/SubsectionHullsLayer"
 import { getUnifiedLayerId } from "./layers/UnifiedFeaturesLayer"
-import { MapLegend } from "./MapLegend"
+import { MapFooter } from "./MapFooter"
 import { SubsubsectionMarkers } from "./markers/SubsubsectionMarkers"
 import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
 import { subsectionLegendConfig } from "./SubsectionSubsubsectionMap.legendConfig"
@@ -248,10 +248,7 @@ export const SubsubsectionMap = ({
         />
         <UploadMarkers projectSlug={projectSlug} interactive={true} />
       </BaseMap>
-      <MapLegend legendItemsConfig={subsectionLegendConfig} />
-      <p className="mt-2 text-right text-xs text-gray-400">
-        Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)
-      </p>
+      <MapFooter legendItemsConfig={subsectionLegendConfig} />
     </>
   )
 }

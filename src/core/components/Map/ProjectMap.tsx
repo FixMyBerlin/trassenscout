@@ -1,4 +1,3 @@
-import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { useUserCan } from "@/src/app/_components/memberships/hooks/useUserCan"
 import { subsectionDashboardRoute, subsectionEditRoute } from "@/src/core/routes/subsectionRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
@@ -7,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 import { MapEvent, MapLayerMouseEvent, ViewStateChangeEvent, useMap } from "react-map-gl/maplibre"
 import { BaseMap } from "./BaseMap"
-import { MapLegend } from "./MapLegend"
+import { MapFooter } from "./MapFooter"
 import { projectLegendConfig } from "./ProjectMap.legendConfig"
 import { SubsectionMarkers } from "./markers/SubsectionMarkers"
 import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
@@ -87,12 +86,7 @@ export const ProjectMap = ({ subsections, staticOverlay }: Props) => {
       >
         <SubsectionMarkers subsections={subsections} zoom={zoom} onSelect={handleSelect} />
       </BaseMap>
-      <MapLegend legendItemsConfig={projectLegendConfig} />
-      <IfUserCanEdit>
-        <p className="mt-2 text-right text-xs text-gray-400">
-          Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)
-        </p>
-      </IfUserCanEdit>
+      <MapFooter legendItemsConfig={projectLegendConfig} />
     </section>
   )
 }
