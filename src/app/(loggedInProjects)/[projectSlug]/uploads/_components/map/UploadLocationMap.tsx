@@ -2,6 +2,7 @@
 
 import { blueButtonStyles, linkStyles } from "@/src/core/components/links/styles"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
+import type { LineEndPointFeatureProperties } from "@/src/core/components/Map/layers/LineEndPointsLayer"
 import { UploadMarkers } from "@/src/core/components/Map/UploadMarkers"
 import { geometriesBbox, geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
 import { getSubsectionFeatures } from "@/src/core/components/Map/utils/getSubsectionFeatures"
@@ -80,14 +81,14 @@ export const UploadLocationMap = () => {
   const subsubsectionPointsList = subsubsectionFeatures.points?.features || []
   const allPoints = subsubsectionPointsList.length === 0 ? undefined : subsubsectionFeatures.points
 
-  const allLineEndPoints: FeatureCollection<Point, { lineId?: string | number }> | undefined =
+  const allLineEndPoints: FeatureCollection<Point, LineEndPointFeatureProperties> | undefined =
     !subsectionLineEndPoints?.features?.length &&
     !subsubsectionFeatures.lineEndPoints?.features?.length
       ? undefined
       : (featureCollection([
           ...(subsectionLineEndPoints?.features ?? []),
           ...(subsubsectionFeatures.lineEndPoints?.features ?? []),
-        ]) as FeatureCollection<Point, { lineId?: string | number }>)
+        ]) as FeatureCollection<Point, LineEndPointFeatureProperties>)
 
   // Get current position from form values
   const hasPosition = typeof latitude === "number" && typeof longitude === "number"

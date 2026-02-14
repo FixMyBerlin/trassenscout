@@ -210,7 +210,7 @@ export const SubsubsectionMap = ({
 
       // Set selected on line endpoints for this line
       lineEndPointFeatures
-        .filter((ep) => ep.properties?.lineId === slug)
+        .filter((ep) => ep.properties?.subsubsectionSlug === slug)
         .forEach((ep) => {
           const id = ep.properties?.featureId
           if (id) {

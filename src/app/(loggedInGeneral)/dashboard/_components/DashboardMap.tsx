@@ -81,10 +81,10 @@ export const DashboardMap = ({ projects }: Props) => {
       }
     })
 
-    // Add projectSlug to line endpoints based on lineId (which is the subsection slug)
+    // Add projectSlug to line endpoints based on subsectionSlug
     const processedLineEndPoints = lineEndPoints.features.map((feature) => {
-      const projectSlug = feature.properties.lineId
-        ? projectSlugMap.get(String(feature.properties.lineId))
+      const projectSlug = feature.properties.subsectionSlug
+        ? projectSlugMap.get(feature.properties.subsectionSlug)
         : undefined
       return {
         ...feature,

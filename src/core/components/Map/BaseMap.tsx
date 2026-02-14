@@ -153,9 +153,7 @@ export const BaseMap = ({
     // Set selected on all features from the same subsubsection/subsection
     const feature = features[0]
     const lookupSlug =
-      feature?.properties?.subsubsectionSlug ||
-      feature?.properties?.subsectionSlug ||
-      feature?.properties?.lineId
+      feature?.properties?.subsubsectionSlug || feature?.properties?.subsectionSlug
 
     if (lookupSlug) {
       const featureIds = slugFeatureMap.get(lookupSlug)

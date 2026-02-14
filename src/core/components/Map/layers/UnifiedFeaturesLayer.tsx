@@ -4,7 +4,7 @@ import type { FeatureCollection } from "geojson"
 import type { ExpressionSpecification, FilterSpecification, MapGeoJSONFeature } from "maplibre-gl"
 import { Layer, Source } from "react-map-gl/maplibre"
 
-const slugMatchExpression: ExpressionSpecification = [
+export const slugMatchExpression: ExpressionSpecification = [
   "any",
   [
     "==",
