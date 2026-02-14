@@ -26,7 +26,7 @@ export const subsubsectionColors = {
   },
   polygon: {
     current: defaultColor,
-    unselected: "#2c62a9",
+    unselected: defaultColor, // same light blue as line/circle
     hovered: highlight,
     selected: highlight,
     default: defaultColor,
