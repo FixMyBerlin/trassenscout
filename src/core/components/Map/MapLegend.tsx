@@ -8,6 +8,8 @@ export type LegendItemConfig =
       text: string
       color: string
       dots?: boolean
+      dotsColor?: string
+      lineWidth?: number
       isDashed?: boolean
       secondColor?: string
     }
@@ -20,12 +22,18 @@ export type LegendItemConfig =
       shape: typeof GeometryTypeEnum.POLYGON
       text: string
       color: string
+      borderWidth?: number
+      borderStyle?: "solid" | "dashed"
     }
   | {
       shapes: [typeof GeometryTypeEnum.LINE, typeof GeometryTypeEnum.POLYGON]
       text: string
       color: string
       dots?: boolean
+      dotsColor?: string
+      lineWidth?: number
+      borderWidth?: number
+      borderStyle?: "solid" | "dashed"
       isHull?: boolean
     }
   | {
@@ -37,6 +45,10 @@ export type LegendItemConfig =
       text: string
       color: string
       dots?: boolean
+      dotsColor?: string
+      lineWidth?: number
+      borderWidth?: number
+      borderStyle?: "solid" | "dashed"
       isDashed?: boolean
       secondColor?: string
     }
@@ -71,11 +83,18 @@ export const MapLegend = ({ legendItemsConfig }: LegendProps) => {
                     type={GeometryTypeEnum.LINE}
                     color={item.color}
                     showDots={threeShapesItem.dots}
+                    dotsColor={threeShapesItem.dotsColor}
+                    lineWidth={threeShapesItem.lineWidth}
                     isDashed={threeShapesItem.isDashed}
                     secondColor={threeShapesItem.secondColor}
                   />
                   <LegendIcon type={GeometryTypeEnum.POINT} color={item.color} />
-                  <LegendIcon type={GeometryTypeEnum.POLYGON} color={item.color} />
+                  <LegendIcon
+                    type={GeometryTypeEnum.POLYGON}
+                    color={item.color}
+                    borderWidth={threeShapesItem.borderWidth}
+                    borderStyle={threeShapesItem.borderStyle}
+                  />
                 </>
               </LegendItem>
             )
@@ -86,13 +105,13 @@ export const MapLegend = ({ legendItemsConfig }: LegendProps) => {
             { shapes: [typeof GeometryTypeEnum.LINE, typeof GeometryTypeEnum.POLYGON] }
           >
           if (twoShapesItem.isHull) {
-            // Show POLYGON icon for both (hull representation) with dotted border
             return (
               <LegendItem text={item.text} key={item.text}>
                 <LegendIcon
                   type={GeometryTypeEnum.POLYGON}
                   color={item.color}
-                  dottedBorder={true}
+                  borderWidth={twoShapesItem.borderWidth}
+                  borderStyle={twoShapesItem.borderStyle}
                 />
               </LegendItem>
             )
@@ -104,8 +123,15 @@ export const MapLegend = ({ legendItemsConfig }: LegendProps) => {
                   type={GeometryTypeEnum.LINE}
                   color={item.color}
                   showDots={twoShapesItem.dots}
+                  dotsColor={twoShapesItem.dotsColor}
+                  lineWidth={twoShapesItem.lineWidth}
                 />
-                <LegendIcon type={GeometryTypeEnum.POLYGON} color={item.color} />
+                <LegendIcon
+                  type={GeometryTypeEnum.POLYGON}
+                  color={item.color}
+                  borderWidth={twoShapesItem.borderWidth}
+                  borderStyle={twoShapesItem.borderStyle}
+                />
               </>
             </LegendItem>
           )
@@ -121,6 +147,8 @@ export const MapLegend = ({ legendItemsConfig }: LegendProps) => {
                   color={item.color}
                   secondColor={item.secondColor}
                   showDots={item.dots}
+                  dotsColor={item.dotsColor}
+                  lineWidth={item.lineWidth}
                 />
               </LegendItem>
             )
@@ -135,7 +163,12 @@ export const MapLegend = ({ legendItemsConfig }: LegendProps) => {
           case GeometryTypeEnum.POLYGON:
             return (
               <LegendItem text={item.text} key={item.text}>
-                <LegendIcon type={item.shape} color={item.color} />
+                <LegendIcon
+                  type={item.shape}
+                  color={item.color}
+                  borderWidth={item.borderWidth}
+                  borderStyle={item.borderStyle}
+                />
               </LegendItem>
             )
         }

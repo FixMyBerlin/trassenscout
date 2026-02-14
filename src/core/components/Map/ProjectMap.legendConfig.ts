@@ -8,6 +8,10 @@ export const projectLegendConfig: LegendItemConfig[] = [
     text: "Planungsabschnitte",
     color: subsectionColors.hull.current,
     dots: true,
+    dotsColor: subsectionColors.lineEndPoints.current,
+    lineWidth: subsectionColors.line.width,
+    borderWidth: 2,
+    borderStyle: "solid",
   },
   {
     text: "Verlauf ungeklärt",
@@ -16,5 +20,6 @@ export const projectLegendConfig: LegendItemConfig[] = [
     dots: false,
     isDashed: true,
     secondColor: subsectionColors.line.dashedSecondary,
+    lineWidth: subsectionColors.line.width,
   },
 ]
