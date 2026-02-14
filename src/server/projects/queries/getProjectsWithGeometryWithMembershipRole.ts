@@ -22,6 +22,7 @@ export default resolver.pipe(
             slug: true,
             geometry: true,
             type: true,
+            labelPos: true,
             SubsectionStatus: { select: { style: true } },
           },
         },

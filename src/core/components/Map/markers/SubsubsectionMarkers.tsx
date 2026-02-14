@@ -22,7 +22,7 @@ const SubsubsectionMarker = ({
   pageSubsectionSlug,
   onSelect,
 }: SubsubsectionMarkerProps) => {
-  const [longitude, latitude] = getLabelPosition(subsubsection.geometry)
+  const [longitude, latitude] = getLabelPosition(subsubsection.geometry, subsubsection.labelPos)
 
   return (
     <Marker

@@ -1,3 +1,4 @@
+import { LabelPositionEnum } from "@prisma/client"
 import { featureCollection, multiPoint, point, polygon } from "@turf/helpers"
 import {
   area,
@@ -14,11 +15,13 @@ import { midPoint } from "./midPoint"
 type Dot = [number, number]
 
 /**
- * Get the bottom-center point on a polygon's outer boundary.
- * Uses bbox to find southernmost latitude and center longitude,
- * then snaps to the outer ring boundary to avoid spikes.
+ * Get a point on a polygon's outer boundary based on label position.
+ * Uses bbox to find the target side/corner, then snaps to the outer ring boundary to avoid spikes.
  */
-const getBottomCenterOnBoundary = (polygonCoords: number[][][]): Dot => {
+const getPointOnBoundary = (
+  polygonCoords: number[][][],
+  labelPos: LabelPositionEnum = LabelPositionEnum.bottom,
+): Dot => {
   // Extract outer ring (first ring) as LineString
   const outerRing = polygonCoords[0]
   if (!outerRing || outerRing.length < 2) {
@@ -33,10 +36,44 @@ const getBottomCenterOnBoundary = (polygonCoords: number[][][]): Dot => {
   const minX = bounds[0]
   const minY = bounds[1] // Southernmost latitude
   const maxX = bounds[2]
-  const centerLng = (minX + maxX) / 2
+  const maxY = bounds[3] // Northernmost latitude
+  const centerX = (minX + maxX) / 2
+  const centerY = (minY + maxY) / 2
 
-  // Create target point at bottom-center
-  const targetPoint = point([centerLng, minY])
+  // Determine target point based on label position
+  let targetCoords: [number, number]
+  switch (labelPos) {
+    case LabelPositionEnum.bottom:
+      targetCoords = [centerX, minY]
+      break
+    case LabelPositionEnum.top:
+      targetCoords = [centerX, maxY]
+      break
+    case LabelPositionEnum.left:
+      targetCoords = [minX, centerY]
+      break
+    case LabelPositionEnum.right:
+      targetCoords = [maxX, centerY]
+      break
+    case LabelPositionEnum.bottomLeft:
+      targetCoords = [minX, minY]
+      break
+    case LabelPositionEnum.bottomRight:
+      targetCoords = [maxX, minY]
+      break
+    case LabelPositionEnum.topLeft:
+      targetCoords = [minX, maxY]
+      break
+    case LabelPositionEnum.topRight:
+      targetCoords = [maxX, maxY]
+      break
+    default:
+      // Fallback to bottom-center
+      targetCoords = [centerX, minY]
+  }
+
+  // Create target point
+  const targetPoint = point(targetCoords)
 
   // Find nearest point on outer ring boundary
   const nearest = nearestPointOnLine(outerRingLineString, targetPoint)
@@ -48,10 +85,10 @@ const getBottomCenterOnBoundary = (polygonCoords: number[][][]): Dot => {
  * For points, returns the coordinates directly.
  * For MultiPoint, returns the POSITION of the Point closest to the center of all points.
  * For lines and multi-lines, uses midpoint.
- * For polygons, places label at bottom-center point on the outer boundary (avoids spikes).
- * For MultiPolygon, finds the largest polygon and places label at its bottom-center boundary point.
+ * For polygons, places label at the specified side/corner of the polygon's bbox, then snaps to the outer boundary (avoids spikes).
+ * For MultiPolygon, finds the largest polygon and places label at its boundary point based on labelPos.
  */
-export const getLabelPosition = (geometry: Geometry) => {
+export const getLabelPosition = (geometry: Geometry, labelPos?: LabelPositionEnum) => {
   switch (geometry.type) {
     case "Point": {
       return geometry.coordinates as Dot
@@ -100,11 +137,11 @@ export const getLabelPosition = (geometry: Geometry) => {
       return [0, 0] as Dot
     }
     case "Polygon": {
-      // Place label at bottom-center point on outer boundary
-      return getBottomCenterOnBoundary(geometry.coordinates)
+      // Place label at the specified side/corner point on outer boundary
+      return getPointOnBoundary(geometry.coordinates, labelPos)
     }
     case "MultiPolygon": {
-      // Find the polygon with the largest area, then place label at its bottom-center boundary
+      // Find the polygon with the largest area, then place label at its boundary point based on labelPos
       if (geometry.coordinates.length === 0) {
         return [0, 0] as Dot
       }
@@ -121,7 +158,7 @@ export const getLabelPosition = (geometry: Geometry) => {
         }
       }
 
-      return getBottomCenterOnBoundary(largestPolygon)
+      return getPointOnBoundary(largestPolygon, labelPos)
     }
     default: {
       // Fallback for unsupported geometry types

@@ -23,7 +23,7 @@ const ProjectMarker = ({ projectSlug, subsections, onSelect }: ProjectMarkerProp
   const firstSubsection = subsections[0]
   if (!firstSubsection) return null
 
-  const center = getLabelPosition(firstSubsection.geometry)
+  const center = getLabelPosition(firstSubsection.geometry, firstSubsection.labelPos)
 
   return (
     <Marker

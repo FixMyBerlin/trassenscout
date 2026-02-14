@@ -21,7 +21,7 @@ type SubsectionMarkerProps = {
 }
 
 const SubsectionMarker = ({ subsection, zoom, onSelect }: SubsectionMarkerProps) => {
-  const [longitude, latitude] = getLabelPosition(subsection.geometry)
+  const [longitude, latitude] = getLabelPosition(subsection.geometry, subsection.labelPos)
 
   return (
     <Marker
