@@ -24,6 +24,7 @@ import {
 } from "./layers/UnifiedFeaturesLayer"
 import { StaticOverlay } from "./staticOverlay/StaticOverlay"
 import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
+import { useSlugFeatureMap } from "./useSlugFeatureMap"
 import { mergeFeatureCollections } from "./utils/mergeFeatureCollections"
 
 const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
@@ -101,54 +102,6 @@ export const BaseMap = ({
     endPoints: getLineEndPointsLayerId(selectableLayerIdSuffix),
   }
 
-  // Build feature map grouped by slug (only needed for selected state, not hover)
-  // This allows highlighting all features belonging to the same subsubsection/subsection
-  type SlugFeatureIds = {
-    featureIds: string[]
-    endPointIds: string[]
-  }
-  const slugFeatureMap = useMemo(() => {
-    const map = new Map<string, SlugFeatureIds>()
-
-    const getSlug = (props: { subsubsectionSlug?: string; subsectionSlug?: string }) =>
-      props.subsubsectionSlug || props.subsectionSlug
-
-    // Process unified features (lines, polygons, points)
-    if (unifiedFeatures) {
-      unifiedFeatures.features.forEach((f) => {
-        const slug = getSlug(f.properties || {})
-        const featureId = f.properties?.featureId
-        if (slug && featureId) {
-          const featureIds = map.get(slug) ?? {
-            featureIds: [],
-            endPointIds: [],
-          }
-          featureIds.featureIds.push(featureId)
-          map.set(slug, featureIds)
-        }
-      })
-    }
-
-    // Process endpoints
-    if (lineEndPoints) {
-      lineEndPoints.features.forEach((f) => {
-        const lineId = f.properties?.lineId
-        const featureId = f.properties?.featureId
-        if (lineId && featureId) {
-          const lineIdStr = String(lineId)
-          const featureIds = map.get(lineIdStr) ?? {
-            featureIds: [],
-            endPointIds: [],
-          }
-          featureIds.endPointIds.push(featureId)
-          map.set(lineIdStr, featureIds)
-        }
-      })
-    }
-
-    return map
-  }, [unifiedFeatures, lineEndPoints])
-
   // Track previous hovered slug to avoid unnecessary global state updates
   const previousHoveredSlugRef = useRef<string | null>(null)
 
@@ -221,6 +174,10 @@ export const BaseMap = ({
     setCursorStyle("grab")
     if (onMouseLeave) onMouseLeave(event)
   }
+
+  // Build feature map grouped by slug (only needed for selected state, not hover)
+  // This allows highlighting all features belonging to the same subsubsection/subsection
+  const slugFeatureMap = useSlugFeatureMap(unifiedFeatures, lineEndPoints)
 
   // Handle selection state via setFeatureState
   const handleClickInternal = (event: MapLayerMouseEvent) => {
