@@ -5,22 +5,33 @@ import type { ExpressionSpecification, FilterSpecification } from "maplibre-gl"
 import { Layer, Source } from "react-map-gl/maplibre"
 
 const slugMatchExpression: ExpressionSpecification = [
-  "==",
-  ["coalesce", ["get", "projectSlug"], ["get", "subsubsectionSlug"], ["get", "subsectionSlug"]],
-  ["coalesce", ["global-state", "highlightSlug"], ""],
+  "any",
+  [
+    "==",
+    ["get", "subsubsectionSlug"],
+    ["coalesce", ["global-state", "highlightSubsubsectionSlug"], ""],
+  ],
+  ["==", ["get", "subsectionSlug"], ["coalesce", ["global-state", "highlightSubsectionSlug"], ""]],
+  ["==", ["get", "projectSlug"], ["coalesce", ["global-state", "highlightProjectSlug"], ""]],
 ]
 
 export const getUnifiedLayerId = (suffix: string) => `features${suffix}`
 
 /** Shared properties for unified map features (lines, polygons, points). */
 export type UnifiedFeatureProperties = {
+  projectSlug?: string
   subsectionSlug?: string
   subsubsectionSlug?: string
-  projectSlug?: string
   style?: "REGULAR" | "DASHED"
   isCurrent?: boolean
   featureId?: string
 }
+
+/** Slug properties used for hover highlight; hull and line-endpoint features use the same shape. */
+export type HighlightSlugProperties = Pick<
+  UnifiedFeatureProperties,
+  "projectSlug" | "subsectionSlug" | "subsubsectionSlug"
+>
 
 export type UnifiedFeaturesLayerProps = {
   features: FeatureCollection<SupportedGeometry, UnifiedFeatureProperties | null> | undefined

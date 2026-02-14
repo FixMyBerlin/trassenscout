@@ -6,15 +6,16 @@ import { Layer, Source } from "react-map-gl/maplibre"
 const baseLineEndPointsLayerId = "layer_line_endpoints"
 
 const lineIdMatchExpression: ExpressionSpecification = [
-  "==",
+  "any",
   [
-    "coalesce",
-    ["get", "projectSlug"],
+    "==",
     ["get", "subsubsectionSlug"],
-    ["get", "subsectionSlug"],
-    ["get", "lineId"],
+    ["coalesce", ["global-state", "highlightSubsubsectionSlug"], ""],
   ],
-  ["coalesce", ["global-state", "highlightSlug"], ""],
+  ["==", ["get", "subsectionSlug"], ["coalesce", ["global-state", "highlightSubsectionSlug"], ""]],
+  ["==", ["get", "lineId"], ["coalesce", ["global-state", "highlightSubsectionSlug"], ""]],
+  ["==", ["get", "lineId"], ["coalesce", ["global-state", "highlightSubsubsectionSlug"], ""]],
+  ["==", ["get", "projectSlug"], ["coalesce", ["global-state", "highlightProjectSlug"], ""]],
 ]
 
 export const getLineEndPointsLayerId = (suffix: string) => `${baseLineEndPointsLayerId}${suffix}`

@@ -45,6 +45,7 @@ const SubsubsectionMarker = ({
             : "opacity-50 hover:opacity-100"
         }
         slug={subsubsection.slug}
+        highlightLevel="subsubsection"
       >
         <TitleLabel
           icon={<SubsubsectionMapIcon slug={subsubsection.slug} />}

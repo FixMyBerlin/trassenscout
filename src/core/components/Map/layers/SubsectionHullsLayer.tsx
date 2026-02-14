@@ -1,7 +1,7 @@
 import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
 import { feature, featureCollection } from "@turf/helpers"
 import type { Feature, FeatureCollection, LineString, MultiPolygon, Polygon } from "geojson"
-import { ExpressionSpecification } from "maplibre-gl"
+import type { ExpressionSpecification, FilterSpecification } from "maplibre-gl"
 import { Layer, Source } from "react-map-gl/maplibre"
 import type { LineProperties, PolygonProperties } from "../utils/getSubsectionFeatures"
 import { lineToHullGeometry } from "../utils/lineToHullGeometry"
@@ -9,6 +9,10 @@ import { lineToHullGeometry } from "../utils/lineToHullGeometry"
 const baseSubsectionHullLayerId = "layer_subsection_hull_features"
 
 export const getSubsectionHullLayerId = (suffix: string) => `${baseSubsectionHullLayerId}${suffix}`
+
+/** Layer id for the "other" (non-current) subsection hull fill; use in interactiveLayerIds for hover/click. */
+export const getSubsectionHullOtherFillLayerId = (suffix: string) =>
+  `${getSubsectionHullLayerId(suffix)}-fill-other`
 
 export type SubsectionHullsLayerProps = {
   lines: FeatureCollection<LineString, LineProperties> | undefined
@@ -55,33 +59,67 @@ export const SubsectionHullsLayer = ({
   const sourceId = getSubsectionHullLayerId(layerIdSuffix)
   const layerId = getSubsectionHullLayerId(layerIdSuffix)
 
-  const colorExpression: ExpressionSpecification = [
+  const filterCurrent: FilterSpecification = ["==", ["get", "isCurrent"], true]
+  const filterOther: FilterSpecification = ["==", ["get", "isCurrent"], false]
+
+  const colorOtherExpression: ExpressionSpecification = [
     "case",
-    ["get", "isCurrent"],
-    subsectionColors.hull.current,
+    [
+      "==",
+      ["get", "subsectionSlug"],
+      ["coalesce", ["global-state", "highlightSubsectionSlug"], ""],
+    ],
+    subsectionColors.hull.hovered,
     subsectionColors.hull.unselected,
   ]
 
   return (
-    <Source id={sourceId} key={sourceId} type="geojson" data={allFeatures}>
+    <Source id={sourceId} key={sourceId} type="geojson" data={allFeatures} promoteId="featureId">
+      {/* Current subsection: always blue, not interactive */}
       <Layer
-        id={`${layerId}-fill`}
+        id={`${layerId}-fill-current`}
         type="fill"
+        filter={filterCurrent}
         paint={{
-          "fill-color": colorExpression,
+          "fill-color": subsectionColors.hull.current,
           "fill-opacity": 0.05,
         }}
       />
       <Layer
-        id={`${layerId}-outline`}
+        id={`${layerId}-outline-current`}
         type="line"
+        filter={filterCurrent}
         layout={{
           "line-cap": "round",
           "line-join": "round",
         }}
         paint={{
           "line-width": 1,
-          "line-color": colorExpression,
+          "line-color": subsectionColors.hull.current,
+          "line-opacity": 0.7,
+        }}
+      />
+      {/* Other subsections: gray, yellow on hover, interactive */}
+      <Layer
+        id={`${layerId}-fill-other`}
+        type="fill"
+        filter={filterOther}
+        paint={{
+          "fill-color": colorOtherExpression,
+          "fill-opacity": 0.05,
+        }}
+      />
+      <Layer
+        id={`${layerId}-outline-other`}
+        type="line"
+        filter={filterOther}
+        layout={{
+          "line-cap": "round",
+          "line-join": "round",
+        }}
+        paint={{
+          "line-width": 1,
+          "line-color": colorOtherExpression,
           "line-opacity": 0.7,
         }}
       />

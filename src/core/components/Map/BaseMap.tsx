@@ -20,6 +20,7 @@ import {
   UnifiedFeaturesLayer,
   getUnifiedClickTargetLayerIds,
   getUnifiedLayerId,
+  type HighlightSlugProperties,
   type UnifiedFeatureProperties,
 } from "./layers/UnifiedFeaturesLayer"
 import { StaticOverlay } from "./staticOverlay/StaticOverlay"
@@ -102,61 +103,73 @@ export const BaseMap = ({
     endPoints: getLineEndPointsLayerId(selectableLayerIdSuffix),
   }
 
-  // Track previous hovered slug to avoid unnecessary global state updates
-  const previousHoveredSlugRef = useRef<string | null>(null)
+  type HighlightState = {
+    project: string | null
+    subsection: string | null
+    subsubsection: string | null
+  }
+  const CLEAR_HIGHLIGHT: HighlightState = {
+    project: null,
+    subsection: null,
+    subsubsection: null,
+  }
+  const previousHighlightRef = useRef<HighlightState>(CLEAR_HIGHLIGHT)
 
-  // Handle hover state via MapLibre internal global state
+  const applyHighlight = (map: maplibregl.Map, next: HighlightState) => {
+    map.setGlobalStateProperty("highlightProjectSlug", next.project)
+    map.setGlobalStateProperty("highlightSubsectionSlug", next.subsection)
+    map.setGlobalStateProperty("highlightSubsubsectionSlug", next.subsubsection)
+  }
+
+  const highlightChanged = (prev: HighlightState, next: HighlightState) =>
+    prev.project !== next.project ||
+    prev.subsection !== next.subsection ||
+    prev.subsubsection !== next.subsubsection
+
+  // Handle hover state via MapLibre internal global state (three keys by level)
   // Use onMouseMove instead of onMouseEnter to detect changes when moving between overlapping features
   const handleMouseMoveInternal = (e: MapLayerMouseEvent) => {
     const map = e.target
     const features = e.features || []
 
     if (!map || features.length === 0) {
-      // No features under cursor - clear highlight if needed
-      if (previousHoveredSlugRef.current !== null) {
-        map.setGlobalStateProperty("highlightSlug", null)
-        previousHoveredSlugRef.current = null
+      if (highlightChanged(previousHighlightRef.current, CLEAR_HIGHLIGHT)) {
+        applyHighlight(map, CLEAR_HIGHLIGHT)
+        previousHighlightRef.current = CLEAR_HIGHLIGHT
       }
       setCursorStyle("grab")
       if (onMouseMove) onMouseMove(e)
       return
     }
 
-    // Get the first feature (topmost feature)
     const feature = features[0]
     const featureId = feature?.properties?.featureId
     if (!feature || !featureId || !feature.source) {
-      // Invalid feature - clear highlight if needed
-      if (previousHoveredSlugRef.current !== null) {
-        map.setGlobalStateProperty("highlightSlug", null)
-        previousHoveredSlugRef.current = null
+      if (highlightChanged(previousHighlightRef.current, CLEAR_HIGHLIGHT)) {
+        applyHighlight(map, CLEAR_HIGHLIGHT)
+        previousHighlightRef.current = CLEAR_HIGHLIGHT
       }
       setCursorStyle("grab")
       if (onMouseMove) onMouseMove(e)
       return
     }
 
-    // Extract slug to set MapLibre internal global state
-    // DashboardMap uses projectSlug to highlight all subsections for a project
-    const rawSlug =
-      feature.properties?.projectSlug ||
-      feature.properties?.subsubsectionSlug ||
-      feature.properties?.subsectionSlug ||
-      feature.properties?.lineId
-    const lookupSlug = rawSlug ? String(rawSlug) : undefined
+    const prop = feature.properties as HighlightSlugProperties
+    let next = CLEAR_HIGHLIGHT
+    if (prop.subsubsectionSlug) {
+      next = { ...CLEAR_HIGHLIGHT, subsubsection: prop.subsubsectionSlug }
+    } else if (prop.subsectionSlug) {
+      next = { ...CLEAR_HIGHLIGHT, subsection: prop.subsectionSlug }
+    } else if (prop.projectSlug) {
+      next = { ...CLEAR_HIGHLIGHT, project: prop.projectSlug }
+    }
 
-    // Only update global state if the slug actually changed
-    if (lookupSlug !== previousHoveredSlugRef.current) {
-      if (lookupSlug) {
-        map.setGlobalStateProperty("highlightSlug", lookupSlug)
-      } else {
-        map.setGlobalStateProperty("highlightSlug", null)
-      }
-      previousHoveredSlugRef.current = lookupSlug ?? null
+    if (highlightChanged(previousHighlightRef.current, next)) {
+      applyHighlight(map, next)
+      previousHighlightRef.current = next
     }
 
     setCursorStyle("pointer")
-    // Call onMouseMove if provided (for parent components that need it)
     if (onMouseMove) onMouseMove(e)
   }
 
@@ -167,10 +180,10 @@ export const BaseMap = ({
       if (onMouseLeave) onMouseLeave(event)
       return
     }
-
-    map.setGlobalStateProperty("highlightSlug", null)
-    previousHoveredSlugRef.current = null
-
+    if (highlightChanged(previousHighlightRef.current, CLEAR_HIGHLIGHT)) {
+      applyHighlight(map, CLEAR_HIGHLIGHT)
+      previousHighlightRef.current = CLEAR_HIGHLIGHT
+    }
     setCursorStyle("grab")
     if (onMouseLeave) onMouseLeave(event)
   }

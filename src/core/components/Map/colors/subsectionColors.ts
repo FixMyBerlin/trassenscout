@@ -34,6 +34,7 @@ export const subsectionColors = {
   hull: {
     current: "#2c62a9",
     unselected: "#4B5563",
+    hovered: highlight,
   },
   /** Stub for type safety when UnifiedFeaturesLayer uses colorSchema subsection (points only rendered for subsubsection). */
   point: {

@@ -14,7 +14,10 @@ import { useEffect, useMemo } from "react"
 import { MapLayerMouseEvent, useMap } from "react-map-gl/maplibre"
 import { BaseMap } from "./BaseMap"
 import { getLineEndPointsLayerId } from "./layers/LineEndPointsLayer"
-import { SubsectionHullsLayer } from "./layers/SubsectionHullsLayer"
+import {
+  getSubsectionHullOtherFillLayerId,
+  SubsectionHullsLayer,
+} from "./layers/SubsectionHullsLayer"
 import { getUnifiedLayerId } from "./layers/UnifiedFeaturesLayer"
 import { MapFooter } from "./MapFooter"
 import { SubsubsectionMarkers } from "./markers/SubsubsectionMarkers"
@@ -226,6 +229,7 @@ export const SubsubsectionMap = ({
           fitBoundsOptions: { padding: 60 },
         }}
         onClick={handleClickMap}
+        interactiveLayerIds={[getSubsectionHullOtherFillLayerId("_subsubsection")]}
         lines={subsubsectionLines?.features.length ? subsubsectionLines : undefined}
         polygons={subsubsectionPolygons?.features.length ? subsubsectionPolygons : undefined}
         points={subsubsectionPoints}

@@ -30,7 +30,7 @@ const SubsectionMarker = ({ subsection, zoom, onSelect }: SubsectionMarkerProps)
       anchor="center"
       onClick={(e) => onSelect({ subsectionSlug: subsection.slug, edit: e.originalEvent.altKey })}
     >
-      <TipMarker anchor={subsection.labelPos} slug={subsection.slug}>
+      <TipMarker anchor={subsection.labelPos} slug={subsection.slug} highlightLevel="subsection">
         <StartEndLabel
           icon={<SubsectionMapIcon label={shortTitle(subsection.slug)} />}
           subIcon={subsection.operator?.slug}

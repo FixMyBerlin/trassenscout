@@ -2,6 +2,14 @@ import { clsx } from "clsx"
 import { CSSProperties } from "react"
 import { useMap } from "react-map-gl/maplibre"
 
+const HIGHLIGHT_STATE_KEYS = {
+  project: "highlightProjectSlug",
+  subsection: "highlightSubsectionSlug",
+  subsubsection: "highlightSubsubsectionSlug",
+} as const
+
+export type HighlightLevel = keyof typeof HIGHLIGHT_STATE_KEYS
+
 type Props = React.HTMLAttributes<HTMLDivElement> & {
   anchor:
     | "bottomRight"
@@ -13,6 +21,7 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
     | "topRight"
     | "right"
   slug: string
+  highlightLevel: HighlightLevel
 }
 
 const createSvg = (style: CSSProperties, rotation: number, path: JSX.Element) => {
@@ -65,16 +74,21 @@ export const TipMarker = ({
   anchor,
   children,
   slug,
+  highlightLevel,
   onMouseEnter: propsOnMouseEnter,
   onMouseLeave: propsOnMouseLeave,
   ...props
 }: Props) => {
   const { mainMap } = useMap()
+  const activeKey = HIGHLIGHT_STATE_KEYS[highlightLevel]
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     const map = mainMap?.getMap()
     if (map) {
-      map.setGlobalStateProperty("highlightSlug", String(slug))
+      map.setGlobalStateProperty("highlightProjectSlug", null)
+      map.setGlobalStateProperty("highlightSubsectionSlug", null)
+      map.setGlobalStateProperty("highlightSubsubsectionSlug", null)
+      map.setGlobalStateProperty(activeKey, String(slug))
     }
     propsOnMouseEnter?.(e)
   }
@@ -82,7 +96,7 @@ export const TipMarker = ({
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
     const map = mainMap?.getMap()
     if (map) {
-      map.setGlobalStateProperty("highlightSlug", null)
+      map.setGlobalStateProperty(activeKey, null)
     }
     propsOnMouseLeave?.(e)
   }
