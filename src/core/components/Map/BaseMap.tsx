@@ -3,7 +3,7 @@ import type { FeatureCollection, LineString, Point, Polygon } from "geojson"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import * as pmtiles from "pmtiles"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import MapComponent, {
   MapLayerMouseEvent,
   MapProps,
@@ -20,11 +20,11 @@ import {
   UnifiedFeaturesLayer,
   getUnifiedClickTargetLayerIds,
   getUnifiedLayerId,
-  type HighlightSlugProperties,
   type UnifiedFeatureProperties,
 } from "./layers/UnifiedFeaturesLayer"
 import { StaticOverlay } from "./staticOverlay/StaticOverlay"
 import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
+import { useMapHighlight } from "./useMapHighlight"
 import { useSlugFeatureMap } from "./useSlugFeatureMap"
 import { mergeFeatureCollections } from "./utils/mergeFeatureCollections"
 
@@ -103,89 +103,18 @@ export const BaseMap = ({
     endPoints: getLineEndPointsLayerId(selectableLayerIdSuffix),
   }
 
-  type HighlightState = {
-    project: string | null
-    subsection: string | null
-    subsubsection: string | null
-  }
-  const CLEAR_HIGHLIGHT: HighlightState = {
-    project: null,
-    subsection: null,
-    subsubsection: null,
-  }
-  const previousHighlightRef = useRef<HighlightState>(CLEAR_HIGHLIGHT)
+  const highlightHandlers = useMapHighlight()
 
-  const applyHighlight = (map: maplibregl.Map, next: HighlightState) => {
-    map.setGlobalStateProperty("highlightProjectSlug", next.project)
-    map.setGlobalStateProperty("highlightSubsectionSlug", next.subsection)
-    map.setGlobalStateProperty("highlightSubsubsectionSlug", next.subsubsection)
-  }
-
-  const highlightChanged = (prev: HighlightState, next: HighlightState) =>
-    prev.project !== next.project ||
-    prev.subsection !== next.subsection ||
-    prev.subsubsection !== next.subsubsection
-
-  // Handle hover state via MapLibre internal global state (three keys by level)
-  // Use onMouseMove instead of onMouseEnter to detect changes when moving between overlapping features
-  const handleMouseMoveInternal = (e: MapLayerMouseEvent) => {
-    const map = e.target
-    const features = e.features || []
-
-    if (!map || features.length === 0) {
-      if (highlightChanged(previousHighlightRef.current, CLEAR_HIGHLIGHT)) {
-        applyHighlight(map, CLEAR_HIGHLIGHT)
-        previousHighlightRef.current = CLEAR_HIGHLIGHT
-      }
-      setCursorStyle("grab")
-      if (onMouseMove) onMouseMove(e)
-      return
-    }
-
-    const feature = features[0]
-    const featureId = feature?.properties?.featureId
-    if (!feature || !featureId || !feature.source) {
-      if (highlightChanged(previousHighlightRef.current, CLEAR_HIGHLIGHT)) {
-        applyHighlight(map, CLEAR_HIGHLIGHT)
-        previousHighlightRef.current = CLEAR_HIGHLIGHT
-      }
-      setCursorStyle("grab")
-      if (onMouseMove) onMouseMove(e)
-      return
-    }
-
-    const prop = feature.properties as HighlightSlugProperties
-    let next = CLEAR_HIGHLIGHT
-    if (prop.subsubsectionSlug) {
-      next = { ...CLEAR_HIGHLIGHT, subsubsection: prop.subsubsectionSlug }
-    } else if (prop.subsectionSlug) {
-      next = { ...CLEAR_HIGHLIGHT, subsection: prop.subsectionSlug }
-    } else if (prop.projectSlug) {
-      next = { ...CLEAR_HIGHLIGHT, project: prop.projectSlug }
-    }
-
-    if (highlightChanged(previousHighlightRef.current, next)) {
-      applyHighlight(map, next)
-      previousHighlightRef.current = next
-    }
-
-    setCursorStyle("pointer")
-    if (onMouseMove) onMouseMove(e)
+  const handleMouseMoveInternal = (event: MapLayerMouseEvent) => {
+    highlightHandlers.handleMouseMove(event)
+    setCursorStyle((event.features?.length ?? 0) > 0 ? "pointer" : "grab")
+    onMouseMove?.(event)
   }
 
   const handleMouseLeaveInternal = (event: MapLayerMouseEvent) => {
-    const map = event.target
-    if (!map) {
-      setCursorStyle("grab")
-      if (onMouseLeave) onMouseLeave(event)
-      return
-    }
-    if (highlightChanged(previousHighlightRef.current, CLEAR_HIGHLIGHT)) {
-      applyHighlight(map, CLEAR_HIGHLIGHT)
-      previousHighlightRef.current = CLEAR_HIGHLIGHT
-    }
+    highlightHandlers.handleMouseLeave(event)
     setCursorStyle("grab")
-    if (onMouseLeave) onMouseLeave(event)
+    onMouseLeave?.(event)
   }
 
   // Build feature map grouped by slug (only needed for selected state, not hover)

@@ -1,7 +1,7 @@
 import { mapLayerColorConfigs } from "@/src/core/components/Map/colors/mapLayerColorConfigs"
 import type { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import type { FeatureCollection } from "geojson"
-import type { ExpressionSpecification, FilterSpecification } from "maplibre-gl"
+import type { ExpressionSpecification, FilterSpecification, MapGeoJSONFeature } from "maplibre-gl"
 import { Layer, Source } from "react-map-gl/maplibre"
 
 const slugMatchExpression: ExpressionSpecification = [
@@ -32,6 +32,11 @@ export type HighlightSlugProperties = Pick<
   UnifiedFeatureProperties,
   "projectSlug" | "subsectionSlug" | "subsubsectionSlug"
 >
+
+/** Map feature with properties required for hover highlight (unified + line-endpoint layers). */
+export type MapHighlightFeature = MapGeoJSONFeature & {
+  properties: HighlightSlugProperties & { featureId: string }
+}
 
 export type UnifiedFeaturesLayerProps = {
   features: FeatureCollection<SupportedGeometry, UnifiedFeatureProperties | null> | undefined
