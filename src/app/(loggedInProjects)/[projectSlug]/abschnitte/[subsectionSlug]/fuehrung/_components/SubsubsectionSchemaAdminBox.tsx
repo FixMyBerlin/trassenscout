@@ -41,127 +41,134 @@ export const SubsubsectionSchemaAdminBox = ({ projectSlug, className }: Props) =
   const missingTranslations = allSchemaFields.filter(
     (field) => !(field in subsubsectionFieldTranslations),
   )
-  const missingDataTypes = allSchemaFields.filter((field) => !(field in fieldDataTypes))
+
   return (
     <SuperAdminBox className={className}>
-      <h3 className="mb-4 font-bold text-purple-700">Schema Information</h3>
-
-      <div className="space-y-4">
-        <div>
-          <h4 className="mb-2 font-semibold text-purple-600">Enum Values:</h4>
-          <div className="grid gap-2 text-xs">
-            <div>
-              <strong>type (GeometryTypeEnum) - Enum:</strong>{" "}
-              {Object.values(GeometryTypeEnum).join(", ")}
-            </div>
-            <div>
-              <strong>location (LocationEnum) - Enum:</strong>{" "}
-              {Object.values(LocationEnum).join(", ")} + null
-            </div>
-            <div>
-              <strong>labelPos (LabelPositionEnum) - Enum:</strong>{" "}
-              {Object.values(LabelPositionEnum).join(", ")}
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h4 className="mb-2 font-semibold text-purple-600">Relation Options (ID, SLUG/Title):</h4>
-          <div className="space-y-2 text-xs">
-            <div>
-              <strong>managerId (Project Users) - Relation:</strong>
-              <div className="ml-2">
-                {users.map((user) => (
-                  <div key={user.id}>
-                    ID: {user.id} - {user.firstName} {user.lastName} ({user.email})
-                  </div>
-                ))}
+      <details>
+        <summary className="cursor-pointer underline-offset-2 hover:underline">
+          Schema Information
+        </summary>
+        <div className="mt-4 space-y-4">
+          <div>
+            <h4 className="mb-2 font-semibold text-purple-600">Enum Values:</h4>
+            <div className="grid gap-2 text-xs">
+              <div>
+                <strong>type (GeometryTypeEnum) - Enum:</strong>{" "}
+                {Object.values(GeometryTypeEnum).join(", ")}
               </div>
-            </div>
-
-            <div>
-              <strong>qualityLevelId (Quality Levels) - Relation:</strong>
-              <div className="ml-2">
-                {qualityLevels.map((ql) => (
-                  <div key={ql.id}>
-                    ID: {ql.id} - SLUG: {quote(ql.slug)} - Title: {quote(ql.title)}
-                  </div>
-                ))}
+              <div>
+                <strong>location (LocationEnum) - Enum:</strong>{" "}
+                {Object.values(LocationEnum).join(", ")} + null
               </div>
-            </div>
-
-            <div>
-              <strong>subsubsectionStatusId (Phase) - Relation:</strong>
-              <div className="ml-2">
-                {subsubsectionStatuss.map((status) => (
-                  <div key={status.id}>
-                    ID: {status.id} - SLUG: {quote(status.slug)} - Title: {quote(status.title)}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <strong>subsubsectionTaskId (Tasks) - Relation:</strong>
-              <div className="ml-2">
-                {subsubsectionTasks.map((task) => (
-                  <div key={task.id}>
-                    ID: {task.id} - SLUG: {quote(task.slug)} - Title: {quote(task.title)}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <strong>subsubsectionInfraId (Infrastructure) - Relation:</strong>
-              <div className="ml-2">
-                {subsubsectionInfras.map((infra) => (
-                  <div key={infra.id}>
-                    ID: {infra.id} - SLUG: {quote(infra.slug)} - Title: {quote(infra.title)}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <strong>specialFeatures (Special Features - M2M) - Relation:</strong>
-              <div className="ml-2">
-                {subsubsectionSpecials.map((special) => (
-                  <div key={special.id}>
-                    ID: {special.id} - Title: {quote(special.title)}
-                  </div>
-                ))}
+              <div>
+                <strong>labelPos (LabelPositionEnum) - Enum:</strong>{" "}
+                {Object.values(LabelPositionEnum).join(", ")}
               </div>
             </div>
           </div>
-        </div>
 
-        <div>
-          <h4 className="mb-2 font-semibold text-purple-600">Schema Fields:</h4>
-          <div className="grid grid-cols-1 gap-1 text-xs">
-            {Object.entries(subsubsectionFieldTranslations).map(([fieldName, translation]) => {
-              const isRequired = requiredFields.includes(fieldName as any)
-              const dataType = fieldDataTypes[fieldName as keyof typeof fieldDataTypes] || "Unknown"
-              return (
-                <div key={fieldName} className={isRequired ? "font-bold" : ""}>
-                  {translation} ({fieldName}){isRequired ? "" : " (optional)"} : {dataType}
+          <div>
+            <h4 className="mb-2 font-semibold text-purple-600">
+              Relation Options (ID, SLUG/Title):
+            </h4>
+            <div className="space-y-2 text-xs">
+              <div>
+                <strong>managerId (Project Users) - Relation:</strong>
+                <div className="ml-2">
+                  {users.map((user) => (
+                    <div key={user.id}>
+                      ID: {user.id} - {user.firstName} {user.lastName} ({user.email})
+                    </div>
+                  ))}
                 </div>
-              )
-            })}
+              </div>
 
-            {missingTranslations.map((fieldName) => {
-              const isRequired = requiredFields.includes(fieldName as any)
-              const dataType = fieldDataTypes[fieldName as keyof typeof fieldDataTypes] || "Unknown"
-              return (
-                <div key={fieldName} className={`${isRequired ? "font-bold" : ""} text-red-600`}>
-                  [MISSING TRANSLATION] {fieldName}
-                  {isRequired ? "" : " (optional)"} : {dataType}
+              <div>
+                <strong>qualityLevelId (Quality Levels) - Relation:</strong>
+                <div className="ml-2">
+                  {qualityLevels.map((ql) => (
+                    <div key={ql.id}>
+                      ID: {ql.id} - SLUG: {quote(ql.slug)} - Title: {quote(ql.title)}
+                    </div>
+                  ))}
                 </div>
-              )
-            })}
+              </div>
+
+              <div>
+                <strong>subsubsectionStatusId (Phase) - Relation:</strong>
+                <div className="ml-2">
+                  {subsubsectionStatuss.map((status) => (
+                    <div key={status.id}>
+                      ID: {status.id} - SLUG: {quote(status.slug)} - Title: {quote(status.title)}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <strong>subsubsectionTaskId (Tasks) - Relation:</strong>
+                <div className="ml-2">
+                  {subsubsectionTasks.map((task) => (
+                    <div key={task.id}>
+                      ID: {task.id} - SLUG: {quote(task.slug)} - Title: {quote(task.title)}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <strong>subsubsectionInfraId (Infrastructure) - Relation:</strong>
+                <div className="ml-2">
+                  {subsubsectionInfras.map((infra) => (
+                    <div key={infra.id}>
+                      ID: {infra.id} - SLUG: {quote(infra.slug)} - Title: {quote(infra.title)}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <strong>specialFeatures (Special Features - M2M) - Relation:</strong>
+                <div className="ml-2">
+                  {subsubsectionSpecials.map((special) => (
+                    <div key={special.id}>
+                      ID: {special.id} - Title: {quote(special.title)}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="mb-2 font-semibold text-purple-600">Schema Fields:</h4>
+            <div className="grid grid-cols-1 gap-1 text-xs">
+              {Object.entries(subsubsectionFieldTranslations).map(([fieldName, translation]) => {
+                const isRequired = requiredFields.includes(fieldName as any)
+                const dataType =
+                  fieldDataTypes[fieldName as keyof typeof fieldDataTypes] || "Unknown"
+                return (
+                  <div key={fieldName} className={isRequired ? "font-bold" : ""}>
+                    {translation} ({fieldName}){isRequired ? "" : " (optional)"} : {dataType}
+                  </div>
+                )
+              })}
+
+              {missingTranslations.map((fieldName) => {
+                const isRequired = requiredFields.includes(fieldName as any)
+                const dataType =
+                  fieldDataTypes[fieldName as keyof typeof fieldDataTypes] || "Unknown"
+                return (
+                  <div key={fieldName} className={`${isRequired ? "font-bold" : ""} text-red-600`}>
+                    [MISSING TRANSLATION] {fieldName}
+                    {isRequired ? "" : " (optional)"} : {dataType}
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </div>
-      </div>
+      </details>
     </SuperAdminBox>
   )
 }
