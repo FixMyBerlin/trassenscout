@@ -234,13 +234,6 @@ export const BaseMap = ({
     if (onClick) onClick(event)
   }
 
-  const handleZoomEnd = (e: ViewStateChangeEvent) => {
-    if (onZoomEnd) onZoomEnd(e)
-  }
-  const handleOnLoad = (e: MapEvent) => {
-    if (onLoad) onLoad(e)
-  }
-
   return (
     <div
       className={clsx(
@@ -259,8 +252,8 @@ export const BaseMap = ({
           onMouseMove={handleMouseMoveInternal}
           onMouseLeave={handleMouseLeaveInternal}
           onClick={handleClickInternal}
-          onZoomEnd={handleZoomEnd}
-          onLoad={handleOnLoad}
+          onZoomEnd={onZoomEnd}
+          onLoad={onLoad}
           interactiveLayerIds={[
             ...(interactiveLayerIds ?? []),
             ...(unifiedFeatures ? getUnifiedClickTargetLayerIds(selectableLayerIdSuffix) : []),
