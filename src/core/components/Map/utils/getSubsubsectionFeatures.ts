@@ -1,6 +1,7 @@
+import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { feature, featureCollection, point } from "@turf/helpers"
-import type { Feature, LineString, Point, Polygon } from "geojson"
+import type { Feature, FeatureCollection, LineString, Point, Polygon } from "geojson"
 import { extractLineEndpoints } from "./extractLineEndpoints"
 import { lineStringToGeoJSON } from "./lineStringToGeoJSON"
 import { pointToGeoJSON } from "./pointToGeoJSON"
@@ -111,9 +112,21 @@ export const getSubsubsectionFeatures = ({ subsubsections, selectedSubsubsection
   }
 
   return {
-    lines: featureCollection(lineFeatures),
-    points: featureCollection(pointFeatures),
-    polygons: featureCollection(polygonFeatures),
-    lineEndPoints: featureCollection(lineEndPointFeatures),
+    lines: featureCollection(lineFeatures) satisfies FeatureCollection<
+      SupportedGeometry,
+      LineProperties
+    >,
+    points: featureCollection(pointFeatures) satisfies FeatureCollection<
+      SupportedGeometry,
+      PointProperties
+    >,
+    polygons: featureCollection(polygonFeatures) satisfies FeatureCollection<
+      SupportedGeometry,
+      PolygonProperties
+    >,
+    lineEndPoints: featureCollection(lineEndPointFeatures) satisfies FeatureCollection<
+      SupportedGeometry,
+      LineEndPointProperties
+    >,
   } as const
 }

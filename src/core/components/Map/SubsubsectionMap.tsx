@@ -14,10 +14,8 @@ import { useEffect, useMemo } from "react"
 import { MapLayerMouseEvent, useMap } from "react-map-gl/maplibre"
 import { BaseMap } from "./BaseMap"
 import { getLineEndPointsLayerId } from "./layers/LineEndPointsLayer"
-import { getLineLayerId } from "./layers/LinesLayer"
-import { getPointLayerId } from "./layers/PointsLayer"
-import { getPolygonLayerId } from "./layers/PolygonsLayer"
 import { SubsectionHullsLayer } from "./layers/SubsectionHullsLayer"
+import { getUnifiedLayerId } from "./layers/UnifiedFeaturesLayer"
 import { MapLegend } from "./MapLegend"
 import { SubsubsectionMarkers } from "./markers/SubsubsectionMarkers"
 import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
@@ -26,6 +24,7 @@ import { UploadMarkers } from "./UploadMarkers"
 import { geometriesBbox } from "./utils/bboxHelpers"
 import { getSubsectionFeatures } from "./utils/getSubsectionFeatures"
 import { getSubsubsectionFeatures } from "./utils/getSubsubsectionFeatures"
+import { mergeFeatureCollections } from "./utils/mergeFeatureCollections"
 
 type Props = {
   subsections: TGetSubsection[]
@@ -156,46 +155,29 @@ export const SubsubsectionMap = ({
     [filteredSubsubsections, pageSubsubsectionSlug],
   )
 
+  // Merge lines, polygons, and points into unified features
+  const unifiedSubsubsectionFeatures = useMemo(
+    () => mergeFeatureCollections(subsubsectionLines, subsubsectionPolygons, subsubsectionPoints),
+    [subsubsectionLines, subsubsectionPolygons, subsubsectionPoints],
+  )
+
   // Set selected state via setFeatureState when selection changes
   useEffect(() => {
     if (!mainMap) return
 
     const map = mainMap.getMap()
     const suffix = "_subsubsection"
+    const unifiedSourceId = getUnifiedLayerId(suffix)
+    const endPointsSourceId = getLineEndPointsLayerId(suffix)
     const lineEndPointFeatures = subsubsectionLineEndPoints.features
 
     // Reset all selected states first
     // All features in BaseMap are subsubsections (subsection features are handled by hulls)
-    if (subsubsectionLines.features.length) {
-      subsubsectionLines.features.forEach((f) => {
+    if (unifiedSubsubsectionFeatures) {
+      unifiedSubsubsectionFeatures.features.forEach((f) => {
         const featureId = f.properties?.featureId
         if (featureId) {
-          map.setFeatureState(
-            { source: getLineLayerId(suffix), id: featureId },
-            { selected: false },
-          )
-        }
-      })
-    }
-    if (subsubsectionPoints.features.length) {
-      subsubsectionPoints.features.forEach((f) => {
-        const featureId = f.properties?.featureId
-        if (featureId) {
-          map.setFeatureState(
-            { source: getPointLayerId(suffix), id: featureId },
-            { selected: false },
-          )
-        }
-      })
-    }
-    if (subsubsectionPolygons.features.length) {
-      subsubsectionPolygons.features.forEach((f) => {
-        const featureId = f.properties?.featureId
-        if (featureId) {
-          map.setFeatureState(
-            { source: getPolygonLayerId(suffix), id: featureId },
-            { selected: false },
-          )
+          map.setFeatureState({ source: unifiedSourceId, id: featureId }, { selected: false })
         }
       })
     }
@@ -203,55 +185,37 @@ export const SubsubsectionMap = ({
       lineEndPointFeatures.forEach((f) => {
         const featureId = f.properties?.featureId
         if (featureId) {
-          map.setFeatureState(
-            { source: getLineEndPointsLayerId(suffix), id: featureId },
-            { selected: false },
-          )
+          map.setFeatureState({ source: endPointsSourceId, id: featureId }, { selected: false })
         }
       })
     }
 
     // Set selected state for current selection (subsubsectionSlug uniquely identifies the subsubsection)
-    if (pageSubsubsectionSlug) {
+    if (pageSubsubsectionSlug && unifiedSubsubsectionFeatures) {
       const slug = pageSubsubsectionSlug
-      const matchSlug = (f: { properties?: { subsubsectionSlug?: string } }) =>
-        f.properties?.subsubsectionSlug === slug
 
-      subsubsectionLines.features.filter(matchSlug).forEach((f) => {
-        const id = f.properties?.featureId
-        if (id) {
-          map.setFeatureState({ source: getLineLayerId(suffix), id }, { selected: true })
+      // Set selected on all unified features matching the slug
+      unifiedSubsubsectionFeatures.features.forEach((f) => {
+        const props = f.properties as { subsubsectionSlug?: string; featureId?: string } | null
+        if (props && props.subsubsectionSlug === slug) {
+          const id = props.featureId
+          if (id) {
+            map.setFeatureState({ source: unifiedSourceId, id }, { selected: true })
+          }
         }
       })
-      subsubsectionPoints.features.filter(matchSlug).forEach((f) => {
-        const id = f.properties?.featureId
-        if (id) {
-          map.setFeatureState({ source: getPointLayerId(suffix), id }, { selected: true })
-        }
-      })
-      subsubsectionPolygons.features.filter(matchSlug).forEach((f) => {
-        const id = f.properties?.featureId
-        if (id) {
-          map.setFeatureState({ source: getPolygonLayerId(suffix), id }, { selected: true })
-        }
-      })
+
+      // Set selected on line endpoints for this line
       lineEndPointFeatures
         .filter((ep) => ep.properties?.lineId === slug)
         .forEach((ep) => {
           const id = ep.properties?.featureId
           if (id) {
-            map.setFeatureState({ source: getLineEndPointsLayerId(suffix), id }, { selected: true })
+            map.setFeatureState({ source: endPointsSourceId, id }, { selected: true })
           }
         })
     }
-  }, [
-    mainMap,
-    pageSubsubsectionSlug,
-    subsubsectionLines,
-    subsubsectionPoints,
-    subsubsectionPolygons,
-    subsubsectionLineEndPoints,
-  ])
+  }, [mainMap, pageSubsubsectionSlug, unifiedSubsubsectionFeatures, subsubsectionLineEndPoints])
 
   return (
     <>

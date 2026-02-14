@@ -1,10 +1,12 @@
 import { LineEndPointsLayer } from "@/src/core/components/Map/layers/LineEndPointsLayer"
-import { LinesLayer } from "@/src/core/components/Map/layers/LinesLayer"
-import { PointsLayer } from "@/src/core/components/Map/layers/PointsLayer"
-import { PolygonsLayer } from "@/src/core/components/Map/layers/PolygonsLayer"
 import { SubsectionHullsLayer } from "@/src/core/components/Map/layers/SubsectionHullsLayer"
+import {
+  UnifiedFeaturesLayer,
+  type UnifiedFeatureProperties,
+} from "@/src/core/components/Map/layers/UnifiedFeaturesLayer"
 import { getSubsectionFeatures } from "@/src/core/components/Map/utils/getSubsectionFeatures"
 import { getSubsubsectionFeatures } from "@/src/core/components/Map/utils/getSubsubsectionFeatures"
+import { mergeFeatureCollections } from "@/src/core/components/Map/utils/mergeFeatureCollections"
 import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { useMemo } from "react"
@@ -118,6 +120,21 @@ export const GeometryDrawingSubsubsectionContextLayers = ({
     }
   }, [subsubsections, selectedSubsubsectionSlug])
 
+  // Merge filtered lines, polygons, and points into unified features
+  const unifiedOtherFeatures = useMemo(
+    () =>
+      mergeFeatureCollections<UnifiedFeatureProperties>(
+        otherSubsubsectionFeatures.lines,
+        otherSubsubsectionFeatures.polygons,
+        otherSubsubsectionFeatures.points,
+      ),
+    [
+      otherSubsubsectionFeatures.lines,
+      otherSubsubsectionFeatures.polygons,
+      otherSubsubsectionFeatures.points,
+    ],
+  )
+
   return (
     <>
       <SubsectionHullsLayer
@@ -125,25 +142,9 @@ export const GeometryDrawingSubsubsectionContextLayers = ({
         polygons={subsectionHullFeatures.polygons}
         layerIdSuffix="_terra_draw_subsection"
       />
-      {otherSubsubsectionFeatures?.lines && (
-        <LinesLayer
-          lines={otherSubsubsectionFeatures.lines}
-          layerIdSuffix="_terra_draw_other_subsubsection"
-          interactive={false}
-          colorSchema="subsubsection"
-        />
-      )}
-      {otherSubsubsectionFeatures?.polygons && (
-        <PolygonsLayer
-          polygons={otherSubsubsectionFeatures.polygons}
-          layerIdSuffix="_terra_draw_other_subsubsection"
-          interactive={false}
-          colorSchema="subsubsection"
-        />
-      )}
-      {otherSubsubsectionFeatures?.points && (
-        <PointsLayer
-          points={otherSubsubsectionFeatures.points}
+      {unifiedOtherFeatures && (
+        <UnifiedFeaturesLayer
+          features={unifiedOtherFeatures}
           layerIdSuffix="_terra_draw_other_subsubsection"
           interactive={false}
           colorSchema="subsubsection"

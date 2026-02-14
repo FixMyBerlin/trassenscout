@@ -1,15 +1,14 @@
 import { clsx } from "clsx"
+import type { FeatureCollection, LineString, Point, Polygon } from "geojson"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import * as pmtiles from "pmtiles"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import MapComponent, {
-  MapEvent,
   MapLayerMouseEvent,
   MapProps,
   NavigationControl,
   ScaleControl,
-  ViewStateChangeEvent,
 } from "react-map-gl/maplibre"
 import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher"
 import {
@@ -17,11 +16,15 @@ import {
   getLineEndPointsLayerId,
   type LineEndPointsLayerProps,
 } from "./layers/LineEndPointsLayer"
-import { LinesLayer, getLineLayerId, type LinesLayerProps } from "./layers/LinesLayer"
-import { PointsLayer, getPointLayerId, type PointsLayerProps } from "./layers/PointsLayer"
-import { PolygonsLayer, getPolygonLayerId, type PolygonsLayerProps } from "./layers/PolygonsLayer"
+import {
+  UnifiedFeaturesLayer,
+  getUnifiedClickTargetLayerIds,
+  getUnifiedLayerId,
+  type UnifiedFeatureProperties,
+} from "./layers/UnifiedFeaturesLayer"
 import { StaticOverlay } from "./staticOverlay/StaticOverlay"
 import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
+import { mergeFeatureCollections } from "./utils/mergeFeatureCollections"
 
 const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
 export const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
@@ -31,24 +34,14 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
   Partial<
     Pick<
       MapProps,
-      | "onMouseEnter"
-      | "onMouseMove"
-      | "onMouseLeave"
-      | "onClick"
-      | "onZoomEnd"
-      | "onLoad"
-      | "interactiveLayerIds"
-      | "hash"
-      | "reuseMaps"
+      "onMouseMove" | "onMouseLeave" | "onClick" | "onZoomEnd" | "onLoad" | "hash" | "reuseMaps"
     >
-  > &
-  Omit<LinesLayerProps, "layerIdSuffix" | "interactive" | "lines"> &
-  Partial<Pick<LinesLayerProps, "lines">> &
-  Omit<PolygonsLayerProps, "layerIdSuffix" | "interactive" | "polygons"> &
-  Partial<Pick<PolygonsLayerProps, "polygons">> &
-  Omit<PointsLayerProps, "layerIdSuffix" | "interactive" | "points"> &
-  Partial<Pick<PointsLayerProps, "points">> &
-  Omit<LineEndPointsLayerProps, "layerIdSuffix" | "lineEndPoints"> &
+  > & {
+    interactiveLayerIds?: string[]
+    lines?: FeatureCollection<LineString, UnifiedFeatureProperties>
+    polygons?: FeatureCollection<Polygon, UnifiedFeatureProperties>
+    points?: FeatureCollection<Point, UnifiedFeatureProperties>
+  } & Omit<LineEndPointsLayerProps, "layerIdSuffix" | "lineEndPoints"> &
   Partial<Pick<LineEndPointsLayerProps, "lineEndPoints">> & {
     classHeight?: string
     children?: React.ReactNode
@@ -61,7 +54,6 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
 export const BaseMap = ({
   id: mapId,
   initialViewState,
-  onMouseEnter,
   onMouseMove,
   onMouseLeave,
   onClick,
@@ -97,99 +89,65 @@ export const BaseMap = ({
     }
   }, [staticOverlay])
 
+  // Merge lines, polygons, and points into a single FeatureCollection
+  const unifiedFeatures = useMemo(
+    () => mergeFeatureCollections(lines, polygons, points),
+    [lines, polygons, points],
+  )
+
   // Map layer source IDs - shared across all handlers (still needed for selected state)
   const sourceIds = {
-    line: getLineLayerId(selectableLayerIdSuffix),
-    polygon: getPolygonLayerId(selectableLayerIdSuffix),
-    point: getPointLayerId(selectableLayerIdSuffix),
+    unified: getUnifiedLayerId(selectableLayerIdSuffix),
     endPoints: getLineEndPointsLayerId(selectableLayerIdSuffix),
   }
 
   // Build feature map grouped by slug (only needed for selected state, not hover)
   // This allows highlighting all features belonging to the same subsubsection/subsection
   type SlugFeatureIds = {
-    lineIds: string[]
-    polygonIds: string[]
-    pointIds: string[]
+    featureIds: string[]
     endPointIds: string[]
   }
-  const slugFeatureMap = new Map<string, SlugFeatureIds>()
+  const slugFeatureMap = useMemo(() => {
+    const map = new Map<string, SlugFeatureIds>()
 
-  const getSlug = (props: { subsubsectionSlug?: string; subsectionSlug?: string }) =>
-    props.subsubsectionSlug || props.subsectionSlug
+    const getSlug = (props: { subsubsectionSlug?: string; subsectionSlug?: string }) =>
+      props.subsubsectionSlug || props.subsectionSlug
 
-  // Process lines
-  if (lines) {
-    lines.features.forEach((f) => {
-      const slug = getSlug(f.properties || {})
-      const featureId = f.properties?.featureId
-      if (slug && featureId) {
-        const featureIds = slugFeatureMap.get(slug) ?? {
-          lineIds: [],
-          polygonIds: [],
-          pointIds: [],
-          endPointIds: [],
+    // Process unified features (lines, polygons, points)
+    if (unifiedFeatures) {
+      unifiedFeatures.features.forEach((f) => {
+        const slug = getSlug(f.properties || {})
+        const featureId = f.properties?.featureId
+        if (slug && featureId) {
+          const featureIds = map.get(slug) ?? {
+            featureIds: [],
+            endPointIds: [],
+          }
+          featureIds.featureIds.push(featureId)
+          map.set(slug, featureIds)
         }
-        featureIds.lineIds.push(featureId)
-        slugFeatureMap.set(slug, featureIds)
-      }
-    })
-  }
+      })
+    }
 
-  // Process polygons
-  if (polygons) {
-    polygons.features.forEach((f) => {
-      const slug = getSlug(f.properties || {})
-      const featureId = f.properties?.featureId
-      if (slug && featureId) {
-        const featureIds = slugFeatureMap.get(slug) ?? {
-          lineIds: [],
-          polygonIds: [],
-          pointIds: [],
-          endPointIds: [],
+    // Process endpoints
+    if (lineEndPoints) {
+      lineEndPoints.features.forEach((f) => {
+        const lineId = f.properties?.lineId
+        const featureId = f.properties?.featureId
+        if (lineId && featureId) {
+          const lineIdStr = String(lineId)
+          const featureIds = map.get(lineIdStr) ?? {
+            featureIds: [],
+            endPointIds: [],
+          }
+          featureIds.endPointIds.push(featureId)
+          map.set(lineIdStr, featureIds)
         }
-        featureIds.polygonIds.push(featureId)
-        slugFeatureMap.set(slug, featureIds)
-      }
-    })
-  }
+      })
+    }
 
-  // Process points
-  if (points) {
-    points.features.forEach((f) => {
-      const slug = getSlug(f.properties || {})
-      const featureId = f.properties?.featureId
-      if (slug && featureId) {
-        const featureIds = slugFeatureMap.get(slug) ?? {
-          lineIds: [],
-          polygonIds: [],
-          pointIds: [],
-          endPointIds: [],
-        }
-        featureIds.pointIds.push(featureId)
-        slugFeatureMap.set(slug, featureIds)
-      }
-    })
-  }
-
-  // Process endpoints
-  if (lineEndPoints) {
-    lineEndPoints.features.forEach((f) => {
-      const lineId = f.properties?.lineId
-      const featureId = f.properties?.featureId
-      if (lineId && featureId) {
-        const lineIdStr = String(lineId)
-        const featureIds = slugFeatureMap.get(lineIdStr) ?? {
-          lineIds: [],
-          polygonIds: [],
-          pointIds: [],
-          endPointIds: [],
-        }
-        featureIds.endPointIds.push(featureId)
-        slugFeatureMap.set(lineIdStr, featureIds)
-      }
-    })
-  }
+    return map
+  }, [unifiedFeatures, lineEndPoints])
 
   // Track previous hovered slug to avoid unnecessary global state updates
   const previousHoveredSlugRef = useRef<string | null>(null)
@@ -273,34 +231,17 @@ export const BaseMap = ({
       return
     }
 
-    // Reset selected state for ALL features in all sources
-    if (lines) {
-      lines.features.forEach((f) => {
+    // Reset selected state for ALL features in unified source
+    if (unifiedFeatures) {
+      unifiedFeatures.features.forEach((f) => {
         const featureId = f.properties?.featureId
         if (featureId) {
-          map.setFeatureState({ source: sourceIds.line, id: featureId }, { selected: false })
+          map.setFeatureState({ source: sourceIds.unified, id: featureId }, { selected: false })
         }
       })
     }
 
-    if (polygons) {
-      polygons.features.forEach((f) => {
-        const featureId = f.properties?.featureId
-        if (featureId) {
-          map.setFeatureState({ source: sourceIds.polygon, id: featureId }, { selected: false })
-        }
-      })
-    }
-
-    if (points) {
-      points.features.forEach((f) => {
-        const featureId = f.properties?.featureId
-        if (featureId) {
-          map.setFeatureState({ source: sourceIds.point, id: featureId }, { selected: false })
-        }
-      })
-    }
-
+    // Reset selected state for line endpoints
     if (lineEndPoints) {
       lineEndPoints.features.forEach((f) => {
         const featureId = f.properties?.featureId
@@ -320,19 +261,12 @@ export const BaseMap = ({
     if (lookupSlug) {
       const featureIds = slugFeatureMap.get(lookupSlug)
       if (featureIds) {
-        // Set selected on all features from this subsubsection/subsection
-        featureIds.lineIds.forEach((id) => {
-          map.setFeatureState({ source: sourceIds.line, id }, { selected: true })
+        // Set selected on all unified features from this subsubsection/subsection
+        featureIds.featureIds.forEach((id) => {
+          map.setFeatureState({ source: sourceIds.unified, id }, { selected: true })
         })
 
-        featureIds.polygonIds.forEach((id) => {
-          map.setFeatureState({ source: sourceIds.polygon, id }, { selected: true })
-        })
-
-        featureIds.pointIds.forEach((id) => {
-          map.setFeatureState({ source: sourceIds.point, id }, { selected: true })
-        })
-
+        // Set selected on line endpoints
         featureIds.endPointIds.forEach((id) => {
           map.setFeatureState({ source: sourceIds.endPoints, id }, { selected: true })
         })
@@ -349,53 +283,6 @@ export const BaseMap = ({
   const handleOnLoad = (e: MapEvent) => {
     if (onLoad) onLoad(e)
   }
-
-  // Build interactive layer IDs
-  const ids: string[] = []
-
-  // Normalize external interactiveLayerIds to array
-  if (interactiveLayerIds) {
-    const normalized = Array.isArray(interactiveLayerIds)
-      ? interactiveLayerIds
-      : [interactiveLayerIds]
-    ids.push(...normalized)
-  }
-
-  // Add visual layers for hover interaction (they share the same source as click-targets)
-  if (lines) {
-    const lineLayerId = getLineLayerId(selectableLayerIdSuffix)
-    ids.push(
-      `${lineLayerId}-solid`,
-      `${lineLayerId}-dashed`,
-      `${lineLayerId}-outline`,
-      `${lineLayerId}-bg`,
-    )
-    // Also add click-target for better click detection
-    ids.push(`${lineLayerId}-click-target`)
-  }
-  if (polygons) {
-    const polygonLayerId = getPolygonLayerId(selectableLayerIdSuffix)
-    ids.push(
-      `${polygonLayerId}-fill`,
-      `${polygonLayerId}-outline`,
-      `${polygonLayerId}-dashed-outline`,
-      `${polygonLayerId}-bg-outline`,
-    )
-    // Also add click-target for better click detection
-    ids.push(`${polygonLayerId}-click-target`)
-  }
-  if (points) {
-    const pointLayerId = getPointLayerId(selectableLayerIdSuffix)
-    ids.push(pointLayerId, `${pointLayerId}-bg`, `${pointLayerId}-dashed`)
-    // Also add click-target for better click detection
-    ids.push(`${pointLayerId}-click-target`)
-  }
-  if (lineEndPoints) {
-    const endPointsLayerId = getLineEndPointsLayerId(selectableLayerIdSuffix)
-    ids.push(endPointsLayerId)
-  }
-
-  const allInteractiveLayerIds = ids
 
   return (
     <div
@@ -417,31 +304,19 @@ export const BaseMap = ({
           onClick={handleClickInternal}
           onZoomEnd={handleZoomEnd}
           onLoad={handleOnLoad}
-          interactiveLayerIds={allInteractiveLayerIds}
+          interactiveLayerIds={[
+            ...(interactiveLayerIds ?? []),
+            ...(unifiedFeatures ? getUnifiedClickTargetLayerIds(selectableLayerIdSuffix) : []),
+            ...(lineEndPoints ? [getLineEndPointsLayerId(selectableLayerIdSuffix)] : []),
+          ]}
           hash={hash || false}
         >
           <NavigationControl showCompass={false} />
           <ScaleControl />
           {staticOverlay && <StaticOverlay config={staticOverlay} />}
-          {lines && (
-            <LinesLayer
-              lines={lines}
-              layerIdSuffix={selectableLayerIdSuffix}
-              interactive={true}
-              colorSchema={colorSchema}
-            />
-          )}
-          {polygons && (
-            <PolygonsLayer
-              polygons={polygons}
-              layerIdSuffix={selectableLayerIdSuffix}
-              interactive={true}
-              colorSchema={colorSchema}
-            />
-          )}
-          {points && (
-            <PointsLayer
-              points={points}
+          {unifiedFeatures && (
+            <UnifiedFeaturesLayer
+              features={unifiedFeatures}
               layerIdSuffix={selectableLayerIdSuffix}
               interactive={true}
               colorSchema={colorSchema}

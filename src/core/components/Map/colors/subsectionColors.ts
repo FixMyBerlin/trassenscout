@@ -35,7 +35,7 @@ export const subsectionColors = {
     current: "#2c62a9",
     unselected: "#4B5563",
   },
-  /** Stub for type safety when PointsLayer uses colorSchema subsection (points only rendered for subsubsection). */
+  /** Stub for type safety when UnifiedFeaturesLayer uses colorSchema subsection (points only rendered for subsubsection). */
   point: {
     current: "#000",
     unselected: "#000",
