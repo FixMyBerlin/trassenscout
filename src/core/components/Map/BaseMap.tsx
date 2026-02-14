@@ -154,8 +154,7 @@ export const BaseMap = ({
 
     // Set selected on all features from the same subsubsection/subsection
     const feature = features[0]
-    const lookupSlug =
-      feature?.properties?.subsubsectionSlug || feature?.properties?.subsectionSlug
+    const lookupSlug = feature?.properties?.subsubsectionSlug || feature?.properties?.subsectionSlug
 
     if (lookupSlug) {
       const featureIds = slugFeatureMap.get(lookupSlug)
@@ -212,13 +211,15 @@ export const BaseMap = ({
               layerIdSuffix={selectableLayerIdSuffix}
               interactive={true}
               colorSchema={colorSchema}
-            />
-          )}
-          {lineEndPoints && (
-            <LineEndPointsLayer
-              lineEndPoints={lineEndPoints}
-              layerIdSuffix={selectableLayerIdSuffix}
-              colorSchema={colorSchema}
+              layersBetweenLinesAndPoints={
+                lineEndPoints ? (
+                  <LineEndPointsLayer
+                    lineEndPoints={lineEndPoints}
+                    layerIdSuffix={selectableLayerIdSuffix}
+                    colorSchema={colorSchema}
+                  />
+                ) : undefined
+              }
             />
           )}
           {children}

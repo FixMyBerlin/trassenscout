@@ -2,6 +2,7 @@ import { mapLayerColorConfigs } from "@/src/core/components/Map/colors/mapLayerC
 import type { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import type { FeatureCollection } from "geojson"
 import type { ExpressionSpecification, FilterSpecification, MapGeoJSONFeature } from "maplibre-gl"
+import type { ReactNode } from "react"
 import { Layer, Source } from "react-map-gl/maplibre"
 
 export const slugMatchExpression: ExpressionSpecification = [
@@ -43,19 +44,21 @@ export type UnifiedFeaturesLayerProps = {
   layerIdSuffix: string
   interactive?: boolean
   colorSchema: "subsection" | "subsubsection"
+  /** Rendered between line layers and point layers (e.g. LineEndPointsLayer) for correct draw order. */
+  layersBetweenLinesAndPoints?: ReactNode
 }
 
 /**
  * Unified layer component that renders polygons, lines, and points from a single FeatureCollection.
- * Uses geometry-type filters to separate the different geometry types.
- * Rendering order: first layer = bottom, last layer = on top (MapLibre draws in array order).
- * Order here: polygons (bottom) → lines → points (top).
+ * Source and Layer are separate: one Source (by id), all layers reference it via source prop.
+ * Rendering order: polygons (bottom) → lines → layersBetweenLinesAndPoints → points (top).
  */
 export const UnifiedFeaturesLayer = ({
   features,
   layerIdSuffix,
   interactive = true,
   colorSchema,
+  layersBetweenLinesAndPoints,
 }: UnifiedFeaturesLayerProps) => {
   if (!features || features.features.length === 0) return null
 
@@ -108,22 +111,23 @@ export const UnifiedFeaturesLayer = ({
   const pointFilter = ["==", ["geometry-type"], "Point"] satisfies FilterSpecification
 
   return (
-    <Source id={sourceId} key={sourceId} type="geojson" data={features} promoteId="featureId">
+    <>
+      <Source id={sourceId} key={sourceId} type="geojson" data={features} promoteId="featureId" />
       {/* POLYGON LAYERS - first in list = bottom */}
-      {/* Polygon fill */}
       <Layer
         id={`${layerId}-polygon-fill`}
         type="fill"
+        source={sourceId}
         filter={polygonFilter}
         paint={{
           "fill-color": polygonColorExpression,
           "fill-opacity": 0.3,
         }}
       />
-      {/* Background border for dashed polygons */}
       <Layer
         id={`${layerId}-polygon-bg-outline`}
         type="line"
+        source={sourceId}
         filter={["all", polygonFilter, ["==", ["get", "style"], "DASHED"]]}
         layout={{
           "line-cap": "round",
@@ -135,10 +139,10 @@ export const UnifiedFeaturesLayer = ({
           "line-opacity": 0.8,
         }}
       />
-      {/* Regular polygon outline */}
       <Layer
         id={`${layerId}-polygon-outline`}
         type="line"
+        source={sourceId}
         filter={["all", polygonFilter, ["==", ["get", "style"], "REGULAR"]]}
         layout={{
           "line-cap": "round",
@@ -150,10 +154,10 @@ export const UnifiedFeaturesLayer = ({
           "line-opacity": 0.8,
         }}
       />
-      {/* Dashed polygon outline */}
       <Layer
         id={`${layerId}-polygon-dashed-outline`}
         type="line"
+        source={sourceId}
         filter={["all", polygonFilter, ["==", ["get", "style"], "DASHED"]]}
         layout={{
           "line-cap": "round",
@@ -166,23 +170,21 @@ export const UnifiedFeaturesLayer = ({
           "line-dasharray": [2, 2],
         }}
       />
-      {/* Polygon click target */}
       {interactive && (
         <Layer
           id={`${layerId}-polygon-click-target`}
           type="fill"
+          source={sourceId}
           filter={polygonFilter}
-          paint={{
-            "fill-opacity": 0,
-          }}
+          paint={{ "fill-opacity": 0 }}
         />
       )}
 
-      {/* LINE LAYERS - middle; above polygons, below points */}
-      {/* Line outline (border) */}
+      {/* LINE LAYERS - above polygons, below slot */}
       <Layer
         id={`${layerId}-line-outline`}
         type="line"
+        source={sourceId}
         filter={lineFilter}
         layout={{
           "line-cap": colors.line.cap,
@@ -194,10 +196,10 @@ export const UnifiedFeaturesLayer = ({
           "line-opacity": 0.6,
         }}
       />
-      {/* Background for dashed lines */}
       <Layer
         id={`${layerId}-line-bg`}
         type="line"
+        source={sourceId}
         filter={["all", lineFilter, ["==", ["get", "style"], "DASHED"]]}
         layout={{
           "line-cap": colors.line.cap,
@@ -209,10 +211,10 @@ export const UnifiedFeaturesLayer = ({
           "line-opacity": 0.9,
         }}
       />
-      {/* Regular solid line */}
       <Layer
         id={`${layerId}-line-solid`}
         type="line"
+        source={sourceId}
         filter={["all", lineFilter, ["==", ["get", "style"], "REGULAR"]]}
         layout={{
           "line-cap": colors.line.cap,
@@ -224,10 +226,10 @@ export const UnifiedFeaturesLayer = ({
           "line-opacity": 1,
         }}
       />
-      {/* Dashed line */}
       <Layer
         id={`${layerId}-line-dashed`}
         type="line"
+        source={sourceId}
         filter={["all", lineFilter, ["==", ["get", "style"], "DASHED"]]}
         layout={{
           "line-cap": colors.line.cap,
@@ -240,28 +242,28 @@ export const UnifiedFeaturesLayer = ({
           "line-dasharray": [1, 1],
         }}
       />
-      {/* Line click target */}
       {interactive && (
         <Layer
           id={`${layerId}-line-click-target`}
           type="line"
+          source={sourceId}
           filter={lineFilter}
           layout={{
             "line-cap": colors.line.cap,
             "line-join": "round",
           }}
-          paint={{
-            "line-width": 20,
-            "line-opacity": 0,
-          }}
+          paint={{ "line-width": 20, "line-opacity": 0 }}
         />
       )}
 
-      {/* POINT LAYERS - last in list = on top */}
-      {/* Background circle for dashed points */}
+      {/* Slot: e.g. LineEndPointsLayer (above lines, below points) */}
+      {layersBetweenLinesAndPoints}
+
+      {/* POINT LAYERS - on top */}
       <Layer
         id={`${layerId}-point-bg`}
         type="circle"
+        source={sourceId}
         filter={["all", pointFilter, ["==", ["get", "style"], "DASHED"]]}
         paint={{
           "circle-radius": ["+", 10, 3],
@@ -269,10 +271,10 @@ export const UnifiedFeaturesLayer = ({
           "circle-opacity": 0.9,
         }}
       />
-      {/* Regular point circle */}
       <Layer
         id={`${layerId}-point`}
         type="circle"
+        source={sourceId}
         filter={["all", pointFilter, ["==", ["get", "style"], "REGULAR"]]}
         paint={{
           "circle-radius": 10,
@@ -282,10 +284,10 @@ export const UnifiedFeaturesLayer = ({
           "circle-opacity": 0.3,
         }}
       />
-      {/* Dashed point circle */}
       <Layer
         id={`${layerId}-point-dashed`}
         type="circle"
+        source={sourceId}
         filter={["all", pointFilter, ["==", ["get", "style"], "DASHED"]]}
         paint={{
           "circle-radius": 10,
@@ -295,19 +297,16 @@ export const UnifiedFeaturesLayer = ({
           "circle-opacity": 0.3,
         }}
       />
-      {/* Point click target */}
       {interactive && (
         <Layer
           id={`${layerId}-point-click-target`}
           type="circle"
+          source={sourceId}
           filter={pointFilter}
-          paint={{
-            "circle-radius": 10,
-            "circle-opacity": 0,
-          }}
+          paint={{ "circle-radius": 10, "circle-opacity": 0 }}
         />
       )}
-    </Source>
+    </>
   )
 }
 

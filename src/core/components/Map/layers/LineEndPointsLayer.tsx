@@ -2,10 +2,7 @@ import { mapLayerColorConfigs } from "@/src/core/components/Map/colors/mapLayerC
 import type { FeatureCollection, Point } from "geojson"
 import type { ExpressionSpecification } from "maplibre-gl"
 import { Layer, Source } from "react-map-gl/maplibre"
-import {
-  HighlightSlugProperties,
-  slugMatchExpression,
-} from "./UnifiedFeaturesLayer"
+import { HighlightSlugProperties, slugMatchExpression } from "./UnifiedFeaturesLayer"
 
 const baseLineEndPointsLayerId = "layer_line_endpoints"
 
@@ -17,9 +14,7 @@ export type LineEndPointFeatureProperties = HighlightSlugProperties & {
 }
 
 export type LineEndPointsLayerProps = {
-  lineEndPoints:
-    | FeatureCollection<Point, LineEndPointFeatureProperties>
-    | undefined
+  lineEndPoints: FeatureCollection<Point, LineEndPointFeatureProperties> | undefined
   layerIdSuffix: string
   colorSchema: "subsection" | "subsubsection"
 }
