@@ -1,7 +1,8 @@
 "use client"
 
+import { GeometryDrawingMap } from "@/src/core/components/forms/GeometryDrawingMap"
 import { GeometryInputBase } from "@/src/core/components/forms/GeometryInputBase"
-import { GeometryInputMap } from "@/src/core/components/forms/GeometryInputMap"
+import { GeometryDrawingSubsubsectionContextLayers } from "@/src/core/components/Map/TerraDraw/TerraDrawContextLayers"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import getSubsection from "@/src/server/subsections/queries/getSubsection"
@@ -34,14 +35,14 @@ export const SubsubsectionGeometryInput = () => {
         </>
       }
     >
-      <GeometryInputMap
-        allowedTypes={["point", "line", "polygon"]}
-        subsection={subsection}
-        subsections={subsections}
-        selectedSubsectionSlug={subsectionSlug}
-        subsubsections={subsubsections}
-        selectedSubsubsectionSlug={subsubsectionSlug}
-      />
+      <GeometryDrawingMap allowedTypes={["point", "line", "polygon"]} subsection={subsection}>
+        <GeometryDrawingSubsubsectionContextLayers
+          subsections={subsections}
+          selectedSubsectionSlug={subsectionSlug}
+          subsubsections={subsubsections}
+          selectedSubsubsectionSlug={subsubsectionSlug}
+        />
+      </GeometryDrawingMap>
     </GeometryInputBase>
   )
 }

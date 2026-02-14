@@ -9,26 +9,19 @@ import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { useMemo } from "react"
 
-type Props = {
-  subsections?: TSubsections
-  selectedSubsectionSlug?: string
-  subsubsections?: SubsubsectionWithPosition[]
-  selectedSubsubsectionSlug?: string
+type GeometryDrawingSubsectionContextLayersProps = {
+  subsections: TSubsections
+  selectedSubsectionSlug: string
 }
 
-// Encapsulates all context rendering for TerraDrawMap.
-// Subsection hulls aligned with presentational maps: same getSubsectionFeatures (all subsections, isCurrent set).
-export const TerraDrawContextLayers = ({
+// Context layers for subsection-only editing in the geometry drawing map.
+// Shows subsection hulls with the current subsection filtered out (so TerraDraw-drawn geometry is not doubled).
+export const GeometryDrawingSubsectionContextLayers = ({
   subsections,
   selectedSubsectionSlug,
-  subsubsections,
-  selectedSubsubsectionSlug,
-}: Props) => {
-  const isSubsubsectionContext = Boolean(subsections && selectedSubsectionSlug && subsubsections)
-
-  // 1. Subsection features: same as SubsectionSubsubsectionMap (all subsections, isCurrent for selected)
+}: GeometryDrawingSubsectionContextLayersProps) => {
+  // Subsection features: same as SubsectionSubsubsectionMap (all subsections, isCurrent for selected)
   const subsectionFeatures = useMemo(() => {
-    if (!subsections || !selectedSubsectionSlug) return null
     return getSubsectionFeatures({
       subsections,
       highlight: "currentSubsection",
@@ -36,16 +29,9 @@ export const TerraDrawContextLayers = ({
     })
   }, [subsections, selectedSubsectionSlug])
 
-  // 2. Subsection hull input for SubsectionHullsLayer (same two-color behavior as presentational map).
-  // Presentational: subsection map and subsubsection map both show all subsections as hulls in two colors (current vs other).
-  // - Subsection edit: we want the same (current one color, others the other). Current is drawn by TerraDraw, so we pass
-  //   only "other" subsections to the hull layer; they all get the "other" color. No double-draw of current.
-  // - Subsubsection edit: same as presentational – pass all subsections; hull layer styles by isCurrent (two colors).
+  // Subsection hull input: filter out current subsection (it's drawn by TerraDraw)
+  // Only "other" subsections are shown; they all get the "other" color. No double-draw of current.
   const subsectionHullFeatures = useMemo(() => {
-    if (!subsectionFeatures) return null
-    if (isSubsubsectionContext) {
-      return { lines: subsectionFeatures.lines, polygons: subsectionFeatures.polygons }
-    }
     return {
       lines: {
         ...subsectionFeatures.lines,
@@ -56,11 +42,48 @@ export const TerraDrawContextLayers = ({
         features: subsectionFeatures.polygons.features.filter((f) => !f.properties.isCurrent),
       },
     }
-  }, [subsectionFeatures, isSubsubsectionContext])
+  }, [subsectionFeatures])
 
-  // 3. Other subsubsection features (subsubsection edit only): same idea as presentational map – "other" entries
+  return (
+    <SubsectionHullsLayer
+      lines={subsectionHullFeatures.lines}
+      polygons={subsectionHullFeatures.polygons}
+      layerIdSuffix="_terra_draw_subsection"
+    />
+  )
+}
+
+type GeometryDrawingSubsubsectionContextLayersProps = {
+  subsections: TSubsections
+  selectedSubsectionSlug: string
+  subsubsections: SubsubsectionWithPosition[]
+  selectedSubsubsectionSlug?: string
+}
+
+// Context layers for subsubsection editing in the geometry drawing map.
+// Shows subsection hulls (all, two-color) plus "other" subsubsection lines/polygons/points/lineEndPoints.
+export const GeometryDrawingSubsubsectionContextLayers = ({
+  subsections,
+  selectedSubsectionSlug,
+  subsubsections,
+  selectedSubsubsectionSlug,
+}: GeometryDrawingSubsubsectionContextLayersProps) => {
+  // Subsection features: all subsections, isCurrent for selected
+  const subsectionFeatures = useMemo(() => {
+    return getSubsectionFeatures({
+      subsections,
+      highlight: "currentSubsection",
+      selectedSubsectionSlug,
+    })
+  }, [subsections, selectedSubsectionSlug])
+
+  // Subsection hulls: pass all subsections; hull layer styles by isCurrent (two colors)
+  const subsectionHullFeatures = useMemo(() => {
+    return { lines: subsectionFeatures.lines, polygons: subsectionFeatures.polygons }
+  }, [subsectionFeatures])
+
+  // Other subsubsection features: filter to "other" entries only (same idea as presentational map)
   const otherSubsubsectionFeatures = useMemo(() => {
-    if (!subsubsections) return null
     const allFeatures = getSubsubsectionFeatures({
       subsubsections,
       selectedSubsubsectionSlug: selectedSubsubsectionSlug ?? null,
@@ -95,8 +118,6 @@ export const TerraDrawContextLayers = ({
     }
   }, [subsubsections, selectedSubsubsectionSlug])
 
-  if (!subsectionHullFeatures) return null
-
   return (
     <>
       <SubsectionHullsLayer
@@ -104,40 +125,36 @@ export const TerraDrawContextLayers = ({
         polygons={subsectionHullFeatures.polygons}
         layerIdSuffix="_terra_draw_subsection"
       />
-      {isSubsubsectionContext && (
-        <>
-          {otherSubsubsectionFeatures?.lines && (
-            <LinesLayer
-              lines={otherSubsubsectionFeatures.lines}
-              layerIdSuffix="_terra_draw_other_subsubsection"
-              interactive={false}
-              colorSchema="subsubsection"
-            />
-          )}
-          {otherSubsubsectionFeatures?.polygons && (
-            <PolygonsLayer
-              polygons={otherSubsubsectionFeatures.polygons}
-              layerIdSuffix="_terra_draw_other_subsubsection"
-              interactive={false}
-              colorSchema="subsubsection"
-            />
-          )}
-          {otherSubsubsectionFeatures?.points && (
-            <PointsLayer
-              points={otherSubsubsectionFeatures.points}
-              layerIdSuffix="_terra_draw_other_subsubsection"
-              interactive={false}
-              colorSchema="subsubsection"
-            />
-          )}
-          {otherSubsubsectionFeatures?.lineEndPoints && (
-            <LineEndPointsLayer
-              lineEndPoints={otherSubsubsectionFeatures.lineEndPoints}
-              layerIdSuffix="_terra_draw_other_subsubsection"
-              colorSchema="subsubsection"
-            />
-          )}
-        </>
+      {otherSubsubsectionFeatures?.lines && (
+        <LinesLayer
+          lines={otherSubsubsectionFeatures.lines}
+          layerIdSuffix="_terra_draw_other_subsubsection"
+          interactive={false}
+          colorSchema="subsubsection"
+        />
+      )}
+      {otherSubsubsectionFeatures?.polygons && (
+        <PolygonsLayer
+          polygons={otherSubsubsectionFeatures.polygons}
+          layerIdSuffix="_terra_draw_other_subsubsection"
+          interactive={false}
+          colorSchema="subsubsection"
+        />
+      )}
+      {otherSubsubsectionFeatures?.points && (
+        <PointsLayer
+          points={otherSubsubsectionFeatures.points}
+          layerIdSuffix="_terra_draw_other_subsubsection"
+          interactive={false}
+          colorSchema="subsubsection"
+        />
+      )}
+      {otherSubsubsectionFeatures?.lineEndPoints && (
+        <LineEndPointsLayer
+          lineEndPoints={otherSubsubsectionFeatures.lineEndPoints}
+          layerIdSuffix="_terra_draw_other_subsubsection"
+          colorSchema="subsubsection"
+        />
       )}
     </>
   )

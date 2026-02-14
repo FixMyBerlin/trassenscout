@@ -26,7 +26,7 @@ type Props = {
 /**
  * Toolbar for switching between drawing modes in Terra Draw
  */
-export const DrawingToolbar = ({
+export const TerraDrawToolbar = ({
   mode,
   setMode,
   onClear,
