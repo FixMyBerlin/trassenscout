@@ -6,7 +6,7 @@ export const LabeledRadiobuttonGroupLabelPos = () => {
     <LabeledRadiobuttonGroup
       label=""
       scope="labelPos"
-      classNameItemWrapper="sm:columns-2 pt-2"
+      classNameItemWrapper="space-y-6 sm:columns-2 pt-2"
       items={[
         {
           value: "top",

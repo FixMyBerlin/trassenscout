@@ -99,6 +99,10 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         </LinkWithFormDirtyConfirm>
       </div>
       <SubsubsectionGeometryInput />
+      <details>
+        <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
+        <LabeledRadiobuttonGroupLabelPos />
+      </details>
       <LabeledCheckbox
         scope="isExistingInfra"
         value="true"
@@ -203,10 +207,6 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         optional
         options={getUserSelectOptions(users)}
       />
-      <details>
-        <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
-        <LabeledRadiobuttonGroupLabelPos />
-      </details>
       <details>
         <summary className="mb-2 cursor-pointer">Verkehrsbelastung</summary>
         <LabeledTextField
