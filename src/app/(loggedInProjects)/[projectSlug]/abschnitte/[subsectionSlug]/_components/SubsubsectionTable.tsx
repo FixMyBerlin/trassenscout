@@ -3,8 +3,8 @@
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SubsubsectionIcon } from "@/src/core/components/Map/Icons"
 import { LegendIcon } from "@/src/core/components/Map/Icons/LegendIcon"
+import { getIconIdForSubsubsection } from "@/src/core/components/Map/legendIconRegistry"
 import { GEOMETRY_TYPE_TOOLTIPS } from "@/src/core/components/Map/utils/geometryTypeTranslations"
-import { getLegendIconPropsForSubsubsection } from "@/src/core/components/Map/utils/getLegendIconProps"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
 import { Link } from "@/src/core/components/links"
@@ -17,6 +17,7 @@ import {
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
+import { StatusStyleEnum } from "@prisma/client"
 import { clsx } from "clsx"
 import { useRouter } from "next/navigation"
 import { SubsubsectionTableFooter } from "./SubsubsectionTableFooter"
@@ -106,7 +107,12 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
                   <td className="px-1.5 py-2 text-sm">
                     <div className="flex items-center justify-center">
                       <Tooltip content={GEOMETRY_TYPE_TOOLTIPS[subsubsection.type]}>
-                        <LegendIcon {...getLegendIconPropsForSubsubsection(subsubsection)} />
+                        <LegendIcon
+                          iconId={getIconIdForSubsubsection(
+                            subsubsection.type,
+                            subsubsection.SubsubsectionStatus?.style as StatusStyleEnum | null,
+                          )}
+                        />
                       </Tooltip>
                     </div>
                   </td>

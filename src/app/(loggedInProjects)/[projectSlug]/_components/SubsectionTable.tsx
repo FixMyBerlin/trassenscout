@@ -3,8 +3,8 @@
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
 import { SubsectionIcon } from "@/src/core/components/Map/Icons"
 import { LegendIcon } from "@/src/core/components/Map/Icons/LegendIcon"
+import { getIconIdForSubsection } from "@/src/core/components/Map/legendIconRegistry"
 import { GEOMETRY_TYPE_TOOLTIPS } from "@/src/core/components/Map/utils/geometryTypeTranslations"
-import { getLegendIconPropsForSubsection } from "@/src/core/components/Map/utils/getLegendIconProps"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
 import { Link } from "@/src/core/components/links"
@@ -76,7 +76,12 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
                   <td className="px-1.5 py-2 text-sm">
                     <div className="flex items-center justify-center">
                       <Tooltip content={GEOMETRY_TYPE_TOOLTIPS[subsection.type]}>
-                        <LegendIcon {...getLegendIconPropsForSubsection(subsection)} />
+                        <LegendIcon
+                          iconId={getIconIdForSubsection(
+                            subsection.type,
+                            subsection.SubsectionStatus?.style,
+                          )}
+                        />
                       </Tooltip>
                     </div>
                   </td>
