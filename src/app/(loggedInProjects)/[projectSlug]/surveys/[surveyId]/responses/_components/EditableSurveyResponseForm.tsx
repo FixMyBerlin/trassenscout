@@ -7,7 +7,8 @@ import {
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
-import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
+
+import { useUserCan } from "@/src/app/_components/memberships/hooks/useUserCan"
 import createSurveyResponseTopic from "@/src/server/survey-response-topics/mutations/createSurveyResponseTopic"
 import getSurveyResponseTopicsByProject from "@/src/server/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import updateSurveyResponse from "@/src/server/survey-responses/mutations/updateSurveyResponse"

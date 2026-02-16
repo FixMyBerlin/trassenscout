@@ -11,7 +11,8 @@ import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/g
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Prettify } from "@/src/core/types"
-import { useUserCan } from "@/src/pagesComponents/memberships/hooks/useUserCan"
+
+import { useUserCan } from "@/src/app/_components/memberships/hooks/useUserCan"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
 import getSurveyResponseTopicsByProject from "@/src/server/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/server/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
