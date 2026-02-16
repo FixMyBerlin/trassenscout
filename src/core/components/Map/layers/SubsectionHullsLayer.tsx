@@ -75,31 +75,7 @@ export const SubsectionHullsLayer = ({
 
   return (
     <Source id={sourceId} key={sourceId} type="geojson" data={allFeatures} promoteId="featureId">
-      {/* Current subsection: always blue, not interactive */}
-      <Layer
-        id={`${layerId}-fill-current`}
-        type="fill"
-        filter={filterCurrent}
-        paint={{
-          "fill-color": subsectionColors.hull.current,
-          "fill-opacity": 0.05,
-        }}
-      />
-      <Layer
-        id={`${layerId}-outline-current`}
-        type="line"
-        filter={filterCurrent}
-        layout={{
-          "line-cap": "round",
-          "line-join": "round",
-        }}
-        paint={{
-          "line-width": 1,
-          "line-color": subsectionColors.hull.current,
-          "line-opacity": 0.7,
-        }}
-      />
-      {/* Other subsections: gray, yellow on hover, interactive */}
+      {/* Other subsections first (below); gray, yellow on hover, interactive */}
       <Layer
         id={`${layerId}-fill-other`}
         type="fill"
@@ -121,6 +97,30 @@ export const SubsectionHullsLayer = ({
           "line-width": 1,
           "line-color": colorOtherExpression,
           "line-opacity": 0.7,
+        }}
+      />
+      {/* Current subsection on top: always blue, non-transparent line, not interactive */}
+      <Layer
+        id={`${layerId}-fill-current`}
+        type="fill"
+        filter={filterCurrent}
+        paint={{
+          "fill-color": subsectionColors.hull.current,
+          "fill-opacity": 0.05,
+        }}
+      />
+      <Layer
+        id={`${layerId}-outline-current`}
+        type="line"
+        filter={filterCurrent}
+        layout={{
+          "line-cap": "round",
+          "line-join": "round",
+        }}
+        paint={{
+          "line-width": 1,
+          "line-color": subsectionColors.hull.current,
+          "line-opacity": 1,
         }}
       />
     </Source>
