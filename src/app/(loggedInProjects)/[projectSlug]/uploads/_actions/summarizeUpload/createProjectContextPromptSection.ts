@@ -1,6 +1,6 @@
 export type CreateProjectContextPromptSectionParams = {
   projectContext: {
-    subsections: { id: number; slug: string }[] | null
+    subsections: { id: number; slug: string; description: string | null }[] | null
     subsubsections: { id: number; slug: string; subsection: { id: number; slug: string } }[] | null
     projectRecordTopics: { id: number; title: string }[]
   }
@@ -48,7 +48,9 @@ ${
 ${
   subsections.length > 0
     ? `This project has the following predefined route subsections:
-${subsections.map((s) => `- **${s.slug.toUpperCase()}**`).join("\n")}
+${subsections
+  .map((s) => `- **${s.slug.toUpperCase()}**${s.description ? `: ${s.description}` : ""}`)
+  .join("\n")}
 
 If the document mentions any of these subsection abbreviations (e.g., 'PA1', 'BA 1', 'Abschnitt 1'), include them in the summary with their proper designation. Also include any other route section references not in this list.`
     : "No predefined subsections for this project. Still identify and include any route section names or abbreviations mentioned in the document."
