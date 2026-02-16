@@ -33,7 +33,7 @@ const ProjectMarker = ({ projectSlug, subsections, onSelect }: ProjectMarkerProp
       onClick={() => onSelect(projectSlug)}
     >
       <TipMarker anchor="top" slug={projectSlug} highlightLevel="project">
-        <MarkerLabel icon={<ProjectMapIcon label={shortTitle(projectSlug)} />} layout="compact" />
+        <MarkerLabel icon={<ProjectMapIcon label={shortTitle(projectSlug)} />} />
       </TipMarker>
     </Marker>
   )
