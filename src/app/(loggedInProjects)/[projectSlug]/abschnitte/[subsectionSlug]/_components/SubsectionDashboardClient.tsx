@@ -80,7 +80,9 @@ export const SubsectionDashboardClient = ({ initialSubsections, initialSubsubsec
             </Link>
           </IfUserCanEdit>
         }
-        description={subsection.description ? <Markdown markdown={subsection.description} /> : undefined}
+        description={
+          subsection.description ? <Markdown markdown={subsection.description} /> : undefined
+        }
       />
 
       <div className="relative mt-12 flex w-full gap-10">
