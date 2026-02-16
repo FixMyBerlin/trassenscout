@@ -1,8 +1,6 @@
 "use client"
 
-import { getAcceptAttribute } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { errorMessageTranslations } from "@/src/core/components/forms/errorMessageTranslations"
-import { S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES } from "@/src/server/uploads/_utils/config"
 import type { FileUploadInfo } from "@better-upload/client"
 import { useUploadFiles } from "@better-upload/client"
 import { useState } from "react"
@@ -14,9 +12,14 @@ export type UploadDropzoneBaseDescription = {
   maxFiles?: number
 }
 
+export type SurveyUploadMetadata = {
+  surveyResponseId: number
+  surveySessionId: number
+}
+
 type Props = {
   api: string
-  metadata?: Record<string, unknown>
+  surveyMeta?: SurveyUploadMetadata
   createUploadRecord: (file: FileUploadInfo<"complete">) => Promise<{ id: number } | number>
   onUploadComplete?: (uploadIds: number[]) => Promise<void> | void
   fillContainer?: boolean
@@ -24,29 +27,16 @@ type Props = {
   description?: UploadDropzoneBaseDescription | string
 }
 
-const DEFAULT_DESCRIPTION: UploadDropzoneBaseDescription = {
-  fileTypes: `Bilder, PDF, Office-Dokumente bis ${S3_MAX_FILE_SIZE_BYTES / (1024 * 1024)} MB`,
-  maxFiles: S3_MAX_FILES,
-}
-
 export const UploadDropzoneBase = ({
   api,
-  metadata,
+  surveyMeta,
   createUploadRecord,
   onUploadComplete,
   fillContainer,
-  accept = getAcceptAttribute(),
-  description = DEFAULT_DESCRIPTION,
+  accept,
+  description,
 }: Props) => {
   const [uploadError, setUploadError] = useState<string | null>(null)
-
-  const resolvedDescription =
-    typeof description === "string"
-      ? description
-      : {
-          ...DEFAULT_DESCRIPTION,
-          ...description,
-        }
 
   const uploader = useUploadFiles({
     route: "upload",
@@ -88,11 +78,11 @@ export const UploadDropzoneBase = ({
     <UploadDropzoneProgress
       control={uploader.control}
       accept={accept}
-      metadata={metadata}
+      surveyMeta={surveyMeta}
       fillContainer={fillContainer}
       error={uploadError}
       onErrorDismiss={() => setUploadError(null)}
-      description={resolvedDescription}
+      description={description}
       translations={{
         dragAndDrop: "Dateien hierher ziehen und ablegen",
         dropFiles: "Dateien hier ablegen",

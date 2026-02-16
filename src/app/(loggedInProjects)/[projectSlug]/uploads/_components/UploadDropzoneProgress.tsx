@@ -1,3 +1,4 @@
+import { SurveyUploadMetadata } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneBase"
 import { getFileIcon } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileIcon"
 import { getFileTypeLabel } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { SpinnerIcon } from "@/src/core/components/Spinner"
@@ -15,7 +16,7 @@ type Props = {
   control: UploadHookControl<true>
   id?: string
   accept?: string
-  metadata?: Record<string, unknown>
+  surveyMeta?: SurveyUploadMetadata
   description?:
     | {
         fileTypes?: string
@@ -48,7 +49,7 @@ export function UploadDropzoneProgress({
   control: { upload, isPending, progresses },
   id: _id,
   accept,
-  metadata,
+  surveyMeta,
   description,
   uploadOverride,
   fillContainer = false,
@@ -142,9 +143,9 @@ export function UploadDropzoneProgress({
         selectedFilesCountRef.current = files.length
 
         if (uploadOverride) {
-          uploadOverride(files, { metadata })
+          uploadOverride(files, { metadata: surveyMeta })
         } else {
-          upload(files, { metadata })
+          upload(files, { metadata: surveyMeta })
         }
       }
       if (inputRef.current) {

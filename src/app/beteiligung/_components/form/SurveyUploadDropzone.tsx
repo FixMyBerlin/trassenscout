@@ -1,6 +1,8 @@
 "use client"
 
 import { UploadDropzoneBase } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneBase"
+import { getAcceptAttribute } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
+import { S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES } from "@/src/server/uploads/_utils/config"
 import { getS3Url } from "@/src/server/uploads/_utils/url"
 import createSurveyUploadPublic from "@/src/server/uploads/mutations/createSurveyUploadPublic"
 import type { FileUploadInfo } from "@better-upload/client"
@@ -33,10 +35,15 @@ export const SurveyUploadDropzone = ({
   return (
     <UploadDropzoneBase
       api="/api/survey-upload"
-      metadata={{ surveyResponseId, surveySessionId }}
+      surveyMeta={{ surveyResponseId, surveySessionId }}
       createUploadRecord={createUploadRecord}
       onUploadComplete={onUploadComplete}
       fillContainer
+      accept={getAcceptAttribute()}
+      description={{
+        fileTypes: `Bilder, PDF, Office-Dokumente bis ${S3_MAX_FILE_SIZE_BYTES / (1024 * 1024)} MB`,
+        maxFiles: S3_MAX_FILES,
+      }}
     />
   )
 }

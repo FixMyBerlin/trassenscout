@@ -1,6 +1,8 @@
 "use client"
 
+import { getAcceptAttribute } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { S3_MAX_FILE_SIZE_BYTES, S3_MAX_FILES } from "@/src/server/uploads/_utils/config"
 import { getS3Url } from "@/src/server/uploads/_utils/url"
 import createUpload from "@/src/server/uploads/mutations/createUpload"
 import type { FileUploadInfo } from "@better-upload/client"
@@ -48,6 +50,11 @@ export const UploadDropzone = ({
       createUploadRecord={createUploadRecord}
       onUploadComplete={onUploadComplete}
       fillContainer={fillContainer}
+      accept={getAcceptAttribute()}
+      description={{
+        fileTypes: `Bilder, PDF, Office-Dokumente bis ${S3_MAX_FILE_SIZE_BYTES / (1024 * 1024)} MB`,
+        maxFiles: S3_MAX_FILES,
+      }}
     />
   )
 }
