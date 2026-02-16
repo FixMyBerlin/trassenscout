@@ -64,189 +64,180 @@ export const LabeledGeometryFieldPreview = ({ name, hasError }: Props) => {
         )}
       </h3>
       {schemaResult.success ? (
-        <>
-          <div className="mb-3 h-[300px] w-full overflow-clip rounded-md drop-shadow-md">
-            <Map
-              key={geometry ? JSON.stringify(geometry) : "empty"}
-              initialViewState={{
-                ...(geometry &&
-                (geometry.type === "LineString" ||
-                  geometry.type === "MultiLineString" ||
-                  geometry.type === "Polygon" ||
-                  geometry.type === "MultiPolygon")
+        <div className="mb-3 h-[300px] w-full overflow-clip rounded-md drop-shadow-md">
+          <Map
+            key={geometry ? JSON.stringify(geometry) : "empty"}
+            initialViewState={{
+              ...(geometry &&
+              (geometry.type === "LineString" ||
+                geometry.type === "MultiLineString" ||
+                geometry.type === "Polygon" ||
+                geometry.type === "MultiPolygon")
+                ? {
+                    bounds: bbox(
+                      geometry.type === "LineString" || geometry.type === "MultiLineString"
+                        ? featureCollection(lineStringToGeoJSON(geometry))
+                        : geometry.type === "Polygon" || geometry.type === "MultiPolygon"
+                          ? featureCollection(polygonToGeoJSON(geometry))
+                          : lineString([
+                              [0, 0],
+                              [0, 0],
+                            ]), // Fallback for invalid geometries
+                    ) as LngLatBoundsLike,
+                    fitBoundsOptions: { padding: 40 },
+                  }
+                : {}),
+              ...(geometry && geometry.type === "Point"
+                ? {
+                    latitude: geometry.coordinates[1],
+                    longitude: geometry.coordinates[0],
+                    zoom: 14,
+                  }
+                : geometry && geometry.type === "MultiPoint" && geometry.coordinates.length > 0
                   ? {
-                      bounds: bbox(
-                        geometry.type === "LineString" || geometry.type === "MultiLineString"
-                          ? featureCollection(lineStringToGeoJSON(geometry))
-                          : geometry.type === "Polygon" || geometry.type === "MultiPolygon"
-                            ? featureCollection(polygonToGeoJSON(geometry))
-                            : lineString([
-                                [0, 0],
-                                [0, 0],
-                              ]), // Fallback for invalid geometries
-                      ) as LngLatBoundsLike,
+                      bounds: bbox(featureCollection(pointToGeoJSON(geometry))) as LngLatBoundsLike,
                       fitBoundsOptions: { padding: 40 },
                     }
                   : {}),
-                ...(geometry && geometry.type === "Point"
-                  ? {
-                      latitude: geometry.coordinates[1],
-                      longitude: geometry.coordinates[0],
-                      zoom: 14,
-                    }
-                  : geometry && geometry.type === "MultiPoint" && geometry.coordinates.length > 0
-                    ? {
-                        bounds: bbox(
-                          featureCollection(pointToGeoJSON(geometry)),
-                        ) as LngLatBoundsLike,
-                        fitBoundsOptions: { padding: 40 },
-                      }
-                    : {}),
-              }}
-              id="preview"
-              mapStyle={vectorStyle}
-              scrollZoom={false}
-            >
-              <NavigationControl showCompass={false} />
-              <ScaleControl />
+            }}
+            id="preview"
+            mapStyle={vectorStyle}
+            scrollZoom={false}
+          >
+            <NavigationControl showCompass={false} />
+            <ScaleControl />
 
-              {geometry &&
-                (geometry.type === "Point" || geometry.type === "MultiPoint") &&
-                pointToGeoJSON(geometry).length > 0 && (
-                  <>
-                    <Source
-                      id="geometryFieldPoint"
-                      key="geometryFieldPoint"
-                      type="geojson"
-                      data={featureCollection(pointToGeoJSON(geometry))}
-                    />
-                    <Layer
-                      id="geometryFieldPoint-layer"
-                      key="geometryFieldPoint-layer"
-                      source="geometryFieldPoint"
-                      type="circle"
-                      paint={{
-                        "circle-radius": 4,
-                        "circle-color": "black",
-                        "circle-opacity": 0.6,
-                      }}
-                    />
-                  </>
-                )}
+            {geometry &&
+              (geometry.type === "Point" || geometry.type === "MultiPoint") &&
+              pointToGeoJSON(geometry).length > 0 && (
+                <>
+                  <Source
+                    id="geometryFieldPoint"
+                    key="geometryFieldPoint"
+                    type="geojson"
+                    data={featureCollection(pointToGeoJSON(geometry))}
+                  />
+                  <Layer
+                    id="geometryFieldPoint-layer"
+                    key="geometryFieldPoint-layer"
+                    source="geometryFieldPoint"
+                    type="circle"
+                    paint={{
+                      "circle-radius": 4,
+                      "circle-color": "black",
+                      "circle-opacity": 0.6,
+                    }}
+                  />
+                </>
+              )}
 
-              {geometry &&
-                (geometry.type === "LineString" || geometry.type === "MultiLineString") &&
-                lineStringToGeoJSON(geometry).length > 0 && (
-                  <>
-                    <Source
-                      id="geometryFieldLine"
-                      key="geometryFieldLine"
-                      type="geojson"
-                      data={featureCollection(lineStringToGeoJSON(geometry))}
-                    />
-                    <Layer
-                      id="geometryFieldLine-layer"
-                      key="geometryFieldLine-layer"
-                      source="geometryFieldLine"
-                      type="line"
-                      paint={{
-                        "line-width": 4,
-                        "line-color": "black",
-                        "line-opacity": 0.6,
-                      }}
-                    />
+            {geometry &&
+              (geometry.type === "LineString" || geometry.type === "MultiLineString") &&
+              lineStringToGeoJSON(geometry).length > 0 && (
+                <>
+                  <Source
+                    id="geometryFieldLine"
+                    key="geometryFieldLine"
+                    type="geojson"
+                    data={featureCollection(lineStringToGeoJSON(geometry))}
+                  />
+                  <Layer
+                    id="geometryFieldLine-layer"
+                    key="geometryFieldLine-layer"
+                    source="geometryFieldLine"
+                    type="line"
+                    paint={{
+                      "line-width": 4,
+                      "line-color": "black",
+                      "line-opacity": 0.6,
+                    }}
+                  />
 
-                    {/* Highlight the start of a Geometry so help understand the direction */}
-                    {geometry.type === "LineString" && geometry.coordinates[0] && (
-                      <>
+                  {/* Highlight the start of a Geometry so help understand the direction */}
+                  {geometry.type === "LineString" && geometry.coordinates[0] && (
+                    <>
+                      <Source
+                        id="geometryFieldLinePoint"
+                        key="geometryFieldLinePoint"
+                        type="geojson"
+                        data={point(geometry.coordinates[0])}
+                      />
+                      <Layer
+                        id="geometryFieldLinePoint-layer"
+                        key="geometryFieldLinePoint-layer"
+                        source="geometryFieldLinePoint"
+                        type="circle"
+                        paint={{
+                          "circle-radius": 6,
+                          "circle-color": "black",
+                        }}
+                      />
+                    </>
+                  )}
+                  {/* For MultiLineString, highlight start of each line */}
+                  {geometry.type === "MultiLineString" &&
+                    geometry.coordinates.map((coords, index) => {
+                      if (!coords[0]) return null
+                      return (
                         <Source
-                          id="geometryFieldLinePoint"
-                          key="geometryFieldLinePoint"
+                          key={`geometryFieldLinePoint-${index}`}
+                          id={`geometryFieldLinePoint-${index}`}
                           type="geojson"
-                          data={point(geometry.coordinates[0])}
+                          data={point(coords[0])}
                         />
-                        <Layer
-                          id="geometryFieldLinePoint-layer"
-                          key="geometryFieldLinePoint-layer"
-                          source="geometryFieldLinePoint"
-                          type="circle"
-                          paint={{
-                            "circle-radius": 6,
-                            "circle-color": "black",
-                          }}
-                        />
-                      </>
-                    )}
-                    {/* For MultiLineString, highlight start of each line */}
-                    {geometry.type === "MultiLineString" &&
-                      geometry.coordinates.map((coords, index) => {
-                        if (!coords[0]) return null
-                        return (
-                          <Source
-                            key={`geometryFieldLinePoint-${index}`}
-                            id={`geometryFieldLinePoint-${index}`}
-                            type="geojson"
-                            data={point(coords[0])}
-                          />
-                        )
-                      })}
-                    {geometry.type === "MultiLineString" &&
-                      geometry.coordinates.map((_, index) => (
-                        <Layer
-                          key={`geometryFieldLinePoint-${index}-layer`}
-                          id={`geometryFieldLinePoint-${index}-layer`}
-                          source={`geometryFieldLinePoint-${index}`}
-                          type="circle"
-                          paint={{
-                            "circle-radius": 6,
-                            "circle-color": "black",
-                          }}
-                        />
-                      ))}
-                  </>
-                )}
+                      )
+                    })}
+                  {geometry.type === "MultiLineString" &&
+                    geometry.coordinates.map((_, index) => (
+                      <Layer
+                        key={`geometryFieldLinePoint-${index}-layer`}
+                        id={`geometryFieldLinePoint-${index}-layer`}
+                        source={`geometryFieldLinePoint-${index}`}
+                        type="circle"
+                        paint={{
+                          "circle-radius": 6,
+                          "circle-color": "black",
+                        }}
+                      />
+                    ))}
+                </>
+              )}
 
-              {geometry &&
-                (geometry.type === "Polygon" || geometry.type === "MultiPolygon") &&
-                polygonToGeoJSON(geometry).length > 0 && (
-                  <>
-                    <Source
-                      id="geometryFieldPolygon"
-                      key="geometryFieldPolygon"
-                      type="geojson"
-                      data={featureCollection(polygonToGeoJSON(geometry))}
-                    />
-                    <Layer
-                      id="geometryFieldPolygon-fill"
-                      key="geometryFieldPolygon-fill"
-                      source="geometryFieldPolygon"
-                      type="fill"
-                      paint={{
-                        "fill-color": "black",
-                        "fill-opacity": 0.3,
-                      }}
-                    />
-                    <Layer
-                      id="geometryFieldPolygon-outline"
-                      key="geometryFieldPolygon-outline"
-                      source="geometryFieldPolygon"
-                      type="line"
-                      paint={{
-                        "line-width": 3,
-                        "line-color": "black",
-                        "line-opacity": 0.8,
-                      }}
-                    />
-                  </>
-                )}
-            </Map>
-          </div>
-
-          <details className="prose prose-sm">
-            <summary className="cursor-pointer">Geometry</summary>
-            <pre className="m-0 text-xs leading-none">{JSON.stringify(geometry, undefined, 2)}</pre>
-          </details>
-        </>
+            {geometry &&
+              (geometry.type === "Polygon" || geometry.type === "MultiPolygon") &&
+              polygonToGeoJSON(geometry).length > 0 && (
+                <>
+                  <Source
+                    id="geometryFieldPolygon"
+                    key="geometryFieldPolygon"
+                    type="geojson"
+                    data={featureCollection(polygonToGeoJSON(geometry))}
+                  />
+                  <Layer
+                    id="geometryFieldPolygon-fill"
+                    key="geometryFieldPolygon-fill"
+                    source="geometryFieldPolygon"
+                    type="fill"
+                    paint={{
+                      "fill-color": "black",
+                      "fill-opacity": 0.3,
+                    }}
+                  />
+                  <Layer
+                    id="geometryFieldPolygon-outline"
+                    key="geometryFieldPolygon-outline"
+                    source="geometryFieldPolygon"
+                    type="line"
+                    paint={{
+                      "line-width": 3,
+                      "line-color": "black",
+                      "line-opacity": 0.8,
+                    }}
+                  />
+                </>
+              )}
+          </Map>
+        </div>
       ) : (
         <p className="mt-2 mb-0 min-h-[300px] text-sm">
           <strong>Achtung Validierung:</strong> Dieser Fehler muss behoben werden. Aus technischen
