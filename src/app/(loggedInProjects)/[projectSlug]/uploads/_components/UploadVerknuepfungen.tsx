@@ -5,7 +5,7 @@ import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
 
 type Props = {
   projectSlug: string
-  subsection: { start: string; end: string; slug?: string } | null
+  subsection: { slug: string } | null
   subsubsection: { slug: string } | null
   projectRecords: { id: number; title: string; date: Date | null }[] | null
   projectRecordEmail: { createdAt: Date } | null
@@ -35,8 +35,7 @@ export const UploadVerknuepfungen = ({
           {hasSubsection && (
             <li>
               <strong className="font-medium">Planungsabschnitt: </strong>
-              {subsection!.slug && shortTitle(subsection.slug)} {subsection!.start}–
-              {subsection!.end}
+              {shortTitle(subsection!.slug)} ({subsection!.slug})
             </li>
           )}
           {hasSubsubsection && (

@@ -127,11 +127,13 @@ const UploadTableRow = ({
           </span>
         </div>
       </td>
-      <td className="px-1.5 py-2 text-center text-sm">
+      <td className="px-1.5 py-2 text-sm">
         {hasLocation && (
-          <Tooltip content="Ist Geolokalisiert">
-            <MapPinIcon className="h-4 w-4 text-gray-400" />
-          </Tooltip>
+          <div className="flex items-center justify-center">
+            <Tooltip content="Ist Geolokalisiert">
+              <MapPinIcon className="size-4 text-gray-400" />
+            </Tooltip>
+          </div>
         )}
       </td>
       <td className="px-3 py-2 text-sm text-gray-500">
@@ -153,7 +155,7 @@ const UploadTableRow = ({
             {upload.subsection && (
               <li>
                 <Link href={subsectionDashboardRoute(projectSlug, upload.subsection.slug)}>
-                  Planungsabschnitt: {upload.subsection.start}–{upload.subsection.end}
+                  Planungsabschnitt: {shortTitle(upload.subsection.slug)}
                 </Link>
               </li>
             )}

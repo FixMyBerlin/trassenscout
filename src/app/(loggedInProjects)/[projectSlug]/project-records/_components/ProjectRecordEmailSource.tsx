@@ -1,4 +1,4 @@
-type ProjectRecordEmailSourceProps = {
+type Props = {
   adminView?: boolean
   reviewView?: boolean
   email: {
@@ -10,11 +10,7 @@ type ProjectRecordEmailSourceProps = {
   }
 }
 
-export const ProjectRecordEmailSourceText = ({
-  email,
-}: {
-  email: ProjectRecordEmailSourceProps["email"]
-}) => {
+export const ProjectRecordEmailSourceText = ({ email }: { email: Props["email"] }) => {
   return (
     <div className="space-y-2">
       {email.from && (
@@ -53,7 +49,7 @@ export const ProjectRecordEmailSourceText = ({
   )
 }
 
-export const ProjectRecordEmailSource = ({ email }: ProjectRecordEmailSourceProps) => {
+export const ProjectRecordEmailSource = ({ email }: Props) => {
   return (
     <div className="w-96 shrink-0 text-xs">
       <h4 className="mb-1 font-medium">Quellnachricht (unverarbeitet)</h4>

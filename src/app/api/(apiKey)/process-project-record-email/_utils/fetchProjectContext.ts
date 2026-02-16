@@ -7,8 +7,7 @@ export const fetchProjectContext = async ({ projectId }: { projectId: number }) 
     select: {
       id: true,
       slug: true,
-      start: true,
-      end: true,
+      description: true,
     },
     orderBy: { order: "asc" },
   })

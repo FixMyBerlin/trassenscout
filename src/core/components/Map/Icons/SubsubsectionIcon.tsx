@@ -1,21 +1,27 @@
+import { twJoin } from "tailwind-merge"
+import { shortTitle } from "../../text"
+
 type Props = React.HTMLAttributes<HTMLDivElement> & {
-  label: string
+  slug: string
 }
 
-export const SubsubsectionIcon = ({ label, ...props }: Props) => (
-  <div
-    className="flex h-9 w-auto flex-none items-center justify-center rounded-lg border-2 border-gray-900 bg-white px-1.5 font-sans text-xl leading-none font-semibold text-gray-900"
-    {...props}
-  >
-    {label}
-  </div>
-)
+const defaultIconClass =
+  "flex flex-none items-center justify-center border-2 border-gray-900 bg-white font-sans font-semibold leading-none text-gray-900"
 
-export const SubsubsectionMapIcon = ({ label, ...props }: Props) => (
-  <div
-    className="flex h-5 w-auto flex-none items-center justify-center rounded-md border-2 border-gray-900 bg-white px-1.5 font-sans text-xs leading-none font-semibold text-gray-900"
-    {...props}
-  >
-    {label}
-  </div>
-)
+export const SubsubsectionIcon = ({ slug, ...props }: Props) => {
+  const label = shortTitle(slug)
+  return (
+    <div className={twJoin(defaultIconClass, "h-9 w-auto rounded-lg px-1.5 text-xl")} {...props}>
+      {label}
+    </div>
+  )
+}
+
+export const SubsubsectionMapIcon = ({ slug, ...props }: Props) => {
+  const label = shortTitle(slug)
+  return (
+    <div className={twJoin(defaultIconClass, "h-5 w-auto rounded-md px-1.5 text-xs")} {...props}>
+      {label}
+    </div>
+  )
+}

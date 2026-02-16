@@ -1,7 +1,3 @@
-// This is a copy of /src/pagesComponents/memberships/IfUserCan.tsx
-// The only difference is that it uses useUserCan from "./hooks/useUserCan"
-// which internally uses the app directory version of useProjectSlug
-
 "use client"
 
 import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"

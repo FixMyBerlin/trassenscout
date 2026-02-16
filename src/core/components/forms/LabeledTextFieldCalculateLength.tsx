@@ -10,8 +10,8 @@ export const LabeledTextFieldCalculateLength: React.FC<LabeledTextFieldProps> = 
   const geometryType = watch("type") || "LINE"
 
   function isPoint(geometry: any) {
-    // Check if it's a Point GeoJSON geometry
-    if (geometry?.type === "Point") return true
+    // Check if it's a Point or MultiPoint GeoJSON geometry
+    if (geometry?.type === "Point" || geometry?.type === "MultiPoint") return true
     // Backward compatibility: check if it's just coordinates array [number, number]
     return (
       Array.isArray(geometry) &&
@@ -44,6 +44,7 @@ export const LabeledTextFieldCalculateLength: React.FC<LabeledTextFieldProps> = 
           )
           break
         case "Point":
+        case "MultiPoint":
         case "Polygon":
         case "MultiPolygon":
           // For points and polygons, return 0 - length calculation not applicable

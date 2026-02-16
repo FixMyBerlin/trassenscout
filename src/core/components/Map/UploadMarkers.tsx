@@ -48,7 +48,7 @@ export const UploadMarkers = ({ projectSlug, interactive }: Props) => {
           )
         })}
       {filteredUploads.length > 0 && (
-        <div className="absolute top-16 left-4 z-10">
+        <div className="absolute top-20 right-4 z-[5]">
           <button
             type="button"
             onClick={() => setIsVisible(!isVisible)}

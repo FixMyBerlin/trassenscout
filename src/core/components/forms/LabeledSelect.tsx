@@ -3,8 +3,10 @@ import { clsx } from "clsx"
 import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef } from "react"
 import { useFormContext } from "react-hook-form"
 
-export interface LabeledSelectProps
-  extends Omit<PropsWithoutRef<JSX.IntrinsicElements["select"]>, "onChange"> {
+export interface LabeledSelectProps extends Omit<
+  PropsWithoutRef<JSX.IntrinsicElements["select"]>,
+  "onChange"
+> {
   /** Select name. */
   name: string
   /** Options: [value, text], use `""` for `null` in some cases, see src/pages/[projectSlug]/uploads/[uploadId]/edit.tsx */

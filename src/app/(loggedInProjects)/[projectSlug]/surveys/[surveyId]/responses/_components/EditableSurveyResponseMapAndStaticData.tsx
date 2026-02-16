@@ -119,83 +119,87 @@ const EditableSurveyResponseMapAndStaticData = ({
     : null
 
   return (
-    <div className={clsx("grid gap-6 md:gap-4", showMap && "md:grid-cols-2")}>
-      {tildaUrl && !showMap && (
-        <Link target="_blank" href={tildaUrl} className="flex items-center gap-2">
-          <ArrowUpRightIcon className="h-3 w-3" />
-          In Tilda öffnen
-        </Link>
-      )}
-      {/* LEFT SIDE */}
-      <div className="flex flex-col gap-6">
-        {response.source !== "FORM" && (
-          <span className="flex flex-row items-center gap-2">
-            <EnvelopeIcon className="h-4 w-4" />
-            <span>per {getTranslatedSource(response.source)} eingegangen </span>
-            <IfUserCanEdit>
-              <span>| </span>
-              <button onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
-                Eintrag löschen
-              </button>
-            </IfUserCanEdit>
-          </span>
+    <>
+      <div className={clsx("grid gap-6 md:gap-4", showMap && "md:grid-cols-2")}>
+        {tildaUrl && !showMap && (
+          <Link target="_blank" href={tildaUrl} className="flex items-center gap-2">
+            <ArrowUpRightIcon className="h-3 w-3" />
+            In Tilda öffnen
+          </Link>
         )}
-        {/* TEXT */}
-        <EditableSurveyResponseUserText
-          surveyId={surveyIdString || ""}
-          userTextIndices={[String(feedbackTextId), String(text2Id)]}
-          feedbackQuestions={feedbackQuestions}
-          response={response}
-        />
-        {/* CATEGORY */}
-        <div className="flex shrink-0 flex-col items-start gap-4">
-          <h4 className="font-semibold">{categoryLabel}</h4>
-          <div className="rounded-sm bg-gray-300 p-3 px-4 font-semibold whitespace-nowrap">
-            {userCategoryLabel}
+        {/* LEFT SIDE */}
+        <div className="flex flex-col gap-6">
+          {response.source !== "FORM" && (
+            <span className="flex flex-row items-center gap-2">
+              <EnvelopeIcon className="h-4 w-4" />
+              <span>per {getTranslatedSource(response.source)} eingegangen </span>
+              <IfUserCanEdit>
+                <span>| </span>
+                <button onClick={handleDelete} className={clsx(linkStyles, "my-0")}>
+                  Eintrag löschen
+                </button>
+              </IfUserCanEdit>
+            </span>
+          )}
+          {/* TEXT */}
+          <EditableSurveyResponseUserText
+            surveyId={surveyIdString || ""}
+            userTextIndices={[String(feedbackTextId), String(text2Id)]}
+            feedbackQuestions={feedbackQuestions}
+            response={response}
+          />
+          {/* CATEGORY */}
+          <div className="flex shrink-0 flex-col items-start gap-4">
+            <h4 className="font-semibold">{categoryLabel}</h4>
+            <div className="rounded-sm bg-gray-300 p-3 px-4 font-semibold whitespace-nowrap">
+              {userCategoryLabel}
+            </div>
           </div>
+          {/* TABEL */}
+          <EditableSurveyResponseAdditionalFilterFields
+            additionalFilterFields={additionalFilterFields}
+            surveySlug={surveySlug}
+            surveyPart1ResponseData={response.surveyPart1ResponseData}
+            surveyPart3ResponseData={response.surveyPart3ResponseData}
+            surveyPart2ResponseData={response.data}
+          />
         </div>
-        {/* TABEL */}
-        <EditableSurveyResponseAdditionalFilterFields
-          additionalFilterFields={additionalFilterFields}
-          surveySlug={surveySlug}
-          surveyPart1ResponseData={response.surveyPart1ResponseData}
-          surveyPart3ResponseData={response.surveyPart3ResponseData}
-          surveyPart2ResponseData={response.data}
-        />
-      </div>
-      {/* RIGHT SIDE */}
-      {showMap && (
-        <div>
-          <MapProvider>
-            <EditableSurveyResponseFormMap
-              surveySlug={surveySlug}
-              marker={response.data[locationId] as { lat: number; lng: number } | undefined}
-              geometryCategoryCoordinates={geometryCategoryId && response.data[geometryCategoryId]}
-              geoCategoryQuestion={geoCategoryQuestion as GeoCategoryFieldConfig}
-              maptilerUrl={maptilerUrl}
-            />
-          </MapProvider>
-          <div className="flex flex-col items-start pt-4">
-            <Link
-              href={surveyResponsesMapHref(projectSlug, surveyId, {
-                responseDetails: response.id,
-                selectedResponses: [response.id],
-              })}
-              className="flex items-center gap-2"
-            >
-              <ArrowsPointingOutIcon className="h-4 w-4" />
-              In großer Karte öffnen
-            </Link>
-            {tildaUrl && (
-              <Link target="_blank" href={tildaUrl} className="flex items-center gap-2">
-                <ArrowUpRightIcon className="h-3 w-3" />
-                In Tilda öffnen
+        {/* RIGHT SIDE */}
+        {showMap && (
+          <div>
+            <MapProvider>
+              <EditableSurveyResponseFormMap
+                surveySlug={surveySlug}
+                marker={response.data[locationId] as { lat: number; lng: number } | undefined}
+                geometryCategoryCoordinates={
+                  geometryCategoryId && response.data[geometryCategoryId]
+                }
+                geoCategoryQuestion={geoCategoryQuestion as GeoCategoryFieldConfig}
+                maptilerUrl={maptilerUrl}
+              />
+            </MapProvider>
+            <div className="flex flex-col items-start pt-4">
+              <Link
+                href={surveyResponsesMapHref(projectSlug, surveyId, {
+                  responseDetails: response.id,
+                  selectedResponses: [response.id],
+                })}
+                className="flex items-center gap-2"
+              >
+                <ArrowsPointingOutIcon className="h-4 w-4" />
+                In großer Karte öffnen
               </Link>
-            )}
+              {tildaUrl && (
+                <Link target="_blank" href={tildaUrl} className="flex items-center gap-2">
+                  <ArrowUpRightIcon className="h-3 w-3" />
+                  In Tilda öffnen
+                </Link>
+              )}
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   )
 }
 

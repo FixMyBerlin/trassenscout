@@ -7,6 +7,7 @@ import { QualityLevelSchema } from "@/src/server/qualityLevels/schema"
 import { useMutation } from "@blitzjs/rpc"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 import { QualityLevelForm } from "./QualityLevelForm"
 
 type Props = {
@@ -17,7 +18,7 @@ export const NewQualityLevelForm = ({ projectSlug }: Props) => {
   const router = useRouter()
   const [createQualityLevelMutation] = useMutation(createQualityLevel)
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<ReturnType<typeof QualityLevelSchema.omit<{ projectId: true }>>>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await createQualityLevelMutation({ ...values, projectSlug })

@@ -9,11 +9,11 @@ import { format } from "date-fns"
 import { de } from "date-fns/locale"
 import { twJoin } from "tailwind-merge"
 
-type ProjectRecordSummaryProps = {
+type Props = {
   projectRecord: Awaited<ReturnType<typeof getProjectRecord>>
 }
 
-export const ProjectRecordSummary = ({ projectRecord }: ProjectRecordSummaryProps) => {
+export const ProjectRecordSummary = ({ projectRecord }: Props) => {
   return (
     <div className="my-6 space-y-6 font-medium">
       <div className="grid max-w-3xl grid-cols-6 gap-3">

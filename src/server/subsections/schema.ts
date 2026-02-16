@@ -1,17 +1,17 @@
-import { LineStringGeometrySchema } from "@/src/core/utils/geojson-schemas"
 import { InputNumberOrNullSchema, SlugSchema } from "@/src/core/utils/schema-shared"
-import { LabelPositionEnum } from "@prisma/client"
+import { SupportedGeometrySchema } from "@/src/server/shared/utils/geometrySchemas"
+import { geometryTypeValidationRefine } from "@/src/server/shared/utils/geometryTypeValidation"
+import { GeometryTypeEnum, LabelPositionEnum } from "@prisma/client"
 import { z } from "zod"
 
-export const SubsectionSchema = z.object({
+export const SubsectionBaseSchema = z.object({
   slug: SlugSchema,
   order: z.coerce.number(),
+  type: z.nativeEnum(GeometryTypeEnum),
   lengthM: InputNumberOrNullSchema,
   description: z.string().nullish(),
-  start: z.string().min(1, { message: "Pflichtfeld. Mindestens 1 Zeichen." }),
-  end: z.string().min(1, { message: "Pflichtfeld. Mindestens 1 Zeichen." }),
   labelPos: z.nativeEnum(LabelPositionEnum),
-  geometry: LineStringGeometrySchema,
+  geometry: SupportedGeometrySchema,
   projectId: z.coerce.number(),
   managerId: InputNumberOrNullSchema,
   operatorId: InputNumberOrNullSchema,
@@ -22,6 +22,9 @@ export const SubsectionSchema = z.object({
     .regex(/^(\d{4}-\d{2}|)$/, { message: "Datum im Format JJJJ-MM" })
     .nullish(),
 })
+
+// Refined schema with geometry type validation
+export const SubsectionSchema = geometryTypeValidationRefine(SubsectionBaseSchema)
 
 export const SubsectionsFormSchema = z.object({
   prefix: z.string().regex(/^[a-z0-9-.]*$/, {

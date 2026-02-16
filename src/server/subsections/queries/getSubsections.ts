@@ -5,21 +5,17 @@ import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
 import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
 import { resolver } from "@blitzjs/rpc"
 import { paginate } from "blitz"
-import { SubsectionWithPosition } from "./getSubsection"
+import { TGetSubsection } from "./getSubsection"
+import getSubsections from "./getSubsections"
 
 type GetSubsectionsInput = { projectSlug: string } & Pick<
   Prisma.SubsectionFindManyArgs,
   // Do not allow `include` or `select` here, since we overwrite the types below.
   "where" | "orderBy" | "skip" | "take"
 >
-export type SubsectionWithPositionAndStatus = SubsectionWithPosition & {
-  SubsectionStatus: {
-    id: number
-    slug: string
-    title: string
-    style: string
-  } | null
-}
+export type TGetSubsections = Awaited<ReturnType<typeof getSubsections>>
+export type TSubsections = TGetSubsections["subsections"]
+
 export default resolver.pipe(
   // @ts-expect-errors
   authorizeProjectMember(extractProjectSlug, viewerRoles),
@@ -28,7 +24,7 @@ export default resolver.pipe(
     where,
     orderBy = { order: "asc" },
     skip = 0,
-    take = 500,
+    take = 100,
   }: GetSubsectionsInput) => {
     const safeWhere = { project: { slug: projectSlug }, ...where }
 
@@ -40,7 +36,6 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      maxTake: 501,
       count: () => db.subsection.count({ where: safeWhere }),
       query: (paginateArgs) =>
         db.subsection.findMany({
@@ -51,12 +46,12 @@ export default resolver.pipe(
             operator: { select: { id: true, slug: true, title: true } },
             stakeholdernotes: { select: { id: true, status: true } },
             subsubsections: { select: { id: true } },
-            SubsectionStatus: true,
+            SubsectionStatus: { select: { slug: true, title: true, style: true } },
           },
         }),
     })
 
-    const subsectionsWithCounts: SubsectionWithPositionAndStatus[] = []
+    const subsectionsWithCounts: TGetSubsection[] = []
 
     subsections.forEach((subsection) => {
       const relevantStakeholdernotes = subsection.stakeholdernotes.filter(
@@ -68,19 +63,18 @@ export default resolver.pipe(
       ).length
 
       const subsubsectionCount = subsection.subsubsections.length
+      const {
+        stakeholdernotes: _delete1,
+        subsubsections: _delete2,
+        ...typedSubsection
+      } = typeSubsectionGeometry(subsection)
 
-      // We only needed those for the counts, we don't actually want the full list to be returned
-      // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)" is true but not relevant here
-      delete subsection.stakeholdernotes
-      // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)" is true but not relevant here
-      delete subsection.subsubsections
-
-      const typedSubsection = typeSubsectionGeometry(subsection)
-      subsectionsWithCounts.push({
+      const subsectionWithCounts = {
         ...typedSubsection,
         stakeholdernotesCounts: { relevant: relevantStakeholdernotes, done: doneStakeholdernotes },
         subsubsectionCount,
-      })
+      } satisfies TGetSubsection
+      subsectionsWithCounts.push(subsectionWithCounts)
     })
 
     return {

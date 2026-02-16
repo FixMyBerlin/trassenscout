@@ -1,17 +1,17 @@
-import { useProjectSlug } from "@/src/core/routes/usePagesDirectoryProjectSlug"
-import { useSlug } from "@/src/core/routes/usePagesDirectorySlug"
+import { projectDashboardRoute } from "@/src/core/routes/projectRoutes"
+import { subsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import { useSlug } from "@/src/core/routes/useSlug"
 import getProject from "@/src/server/projects/queries/getProject"
 import getSubsection from "@/src/server/subsections/queries/getSubsection"
 import getSubsubsection from "@/src/server/subsubsections/queries/getSubsubsection"
-import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { ChevronRightIcon } from "@heroicons/react/20/solid"
-import { RouteUrlObject } from "blitz"
 import type { Route } from "next"
 import { Link } from "../links"
 import { shortTitle } from "../text"
 
-type Props = { title: string; route?: RouteUrlObject | Route; arrow: boolean }
+type Props = { title: string; route?: Route; arrow: boolean }
 
 const BreadcrumbStep = ({ title, route, arrow }: Props) => {
   return (
@@ -55,19 +55,14 @@ export const Breadcrumb = () => {
         <BreadcrumbStep title="Meine Projekte" route="/dashboard" arrow={true} />
         <BreadcrumbStep
           title={shortTitle(project.slug)}
-          route={subsection ? Routes.ProjectDashboardPage({ projectSlug }) : undefined}
+          route={subsection ? projectDashboardRoute(projectSlug) : undefined}
           arrow={Boolean(subsection)}
         />
         {subsection && (
           <BreadcrumbStep
             title={shortTitle(subsection.slug)}
             route={
-              subsubsection
-                ? Routes.SubsectionDashboardPage({
-                    projectSlug,
-                    subsectionSlug: subsectionSlug!,
-                  })
-                : undefined
+              subsubsection ? subsectionDashboardRoute(projectSlug, subsectionSlug!) : undefined
             }
             arrow={Boolean(subsection && subsubsection)}
           />

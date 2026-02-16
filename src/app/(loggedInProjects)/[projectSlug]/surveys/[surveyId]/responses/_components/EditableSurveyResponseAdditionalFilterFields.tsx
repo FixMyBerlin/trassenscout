@@ -26,6 +26,8 @@ const EditableSurveyResponseAdditionalFilterFields = ({
     getQuestionIdBySurveySlug(surveySlug, "geometryCategory"),
     getQuestionIdBySurveySlug(surveySlug, "location"),
     getQuestionIdBySurveySlug(surveySlug, "enableLocation"),
+    getQuestionIdBySurveySlug(surveySlug, "uploads"),
+    getQuestionIdBySurveySlug(surveySlug, "uploadsDescription"),
     "geometryCategorySourceId",
     "geometryCategoryFeatureId",
   ]

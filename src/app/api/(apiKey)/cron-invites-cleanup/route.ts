@@ -4,6 +4,8 @@ import { guardedCreateSystemLogEntry } from "@/src/server/systemLogEntries/creat
 import { endOfDay, subDays } from "date-fns"
 import { withApiKey } from "../_utils/withApiKey"
 
+export const dynamic = "force-dynamic" // required with withApiKey (uses request.url)
+
 const calculateComparisonDate = (daysToComparison: number) => {
   const currentDate = endOfDay(new Date())
   // Calculate the date that is INVITE_DAYS_TO_DELETION days before the current date

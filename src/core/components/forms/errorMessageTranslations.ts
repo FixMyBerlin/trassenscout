@@ -44,6 +44,10 @@ export const errorMessageTranslations: TranslatedMessages = {
     "Dieses URL-Segment ist bereits für einen anderen Status vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
   "PrismaClientKnownRequestError: Invalid `prisma.subsubsectionStatus.update()` invocation:Unique constraint failed on the fields: (`projectId`,`slug`)":
     "Dieses URL-Segment ist bereits für einen anderen Status vergeben. Ein URL-Segment darf nur einmalig zugewiesen werden.",
+  // NETWORK / SERVER ERRORS (e.g. 502 Bad Gateway from staging)
+  Error: "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+  "Bad Gateway":
+    "Der Server ist vorübergehend nicht erreichbar. Bitte speichern Sie Ihre Änderungen und versuchen Sie es in Kürze erneut.",
   // UPLOAD ERRORS
   // NOTE: Some translation are from src/app/api/(auth)/[projectSlug]/upload/route.ts
   "Error: Too many files.":

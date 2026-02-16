@@ -1,90 +1,81 @@
-import { layerColors } from "@/src/core/components/Map/layerColors"
-import { featureCollection, point } from "@turf/helpers"
 import { clsx } from "clsx"
 import type { FeatureCollection, LineString, Point, Polygon } from "geojson"
+import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
-import { useState } from "react"
-import Map, {
-  Layer,
-  MapEvent,
+import * as pmtiles from "pmtiles"
+import { useEffect, useMemo, useState } from "react"
+import MapComponent, {
   MapLayerMouseEvent,
   MapProps,
   NavigationControl,
   ScaleControl,
-  Source,
-  ViewStateChangeEvent,
 } from "react-map-gl/maplibre"
 import { BackgroundSwitcher, LayerType } from "./BackgroundSwitcher"
+import {
+  LineEndPointsLayer,
+  getLineEndPointsLayerId,
+  type LineEndPointsLayerProps,
+} from "./layers/LineEndPointsLayer"
+import {
+  UnifiedFeaturesLayer,
+  getUnifiedClickTargetLayerIds,
+  getUnifiedLayerId,
+  type UnifiedFeatureProperties,
+} from "./layers/UnifiedFeaturesLayer"
+import { StaticOverlay } from "./staticOverlay/StaticOverlay"
+import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
+import { useMapHighlight, type MapHighlightLevel } from "./useMapHighlight"
+import { useSlugFeatureMap } from "./useSlugFeatureMap"
+import { mergeFeatureCollections } from "./utils/mergeFeatureCollections"
 
 const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
 export const vectorStyle = `https://api.maptiler.com/maps/a4824657-3edd-4fbd-925e-1af40ab06e9c/style.json?key=${maptilerApiKey}`
 const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
-const selectableLineLayerId = "layer_selectable_line_features"
-const selectablePointLayerId = "layer_selectable_point_features"
-const selectablePolygonLayerId = "layer_selectable_polygon_features"
 
 export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
   Partial<
     Pick<
       MapProps,
-      | "onMouseEnter"
-      | "onMouseLeave"
-      | "onClick"
-      | "onZoomEnd"
-      | "onLoad"
-      | "interactiveLayerIds"
-      | "hash"
+      "onMouseMove" | "onMouseLeave" | "onClick" | "onZoomEnd" | "onLoad" | "hash" | "reuseMaps"
     >
   > & {
-    lines?: FeatureCollection<
-      LineString,
-      {
-        color?: string
-        width?: number
-        opacity?: number
-      }
-    >
-    selectableLines?: FeatureCollection<
-      LineString,
-      | {
-          subsectionSlug: string
-          subsubsectionSlug?: string
-          color: string
-          opacity?: number
-          dashed?: boolean
-        }
-      | { projectSlug: string; color: string; opacity?: number; dashed?: boolean }
-    >
-    selectablePoints?: FeatureCollection<
-      Point,
-      { subsectionSlug: string; subsubsectionSlug?: string; color: string; opacity?: number }
-    >
-    selectablePolygons?: FeatureCollection<
-      Polygon,
-      { subsectionSlug: string; subsubsectionSlug?: string; color: string; opacity?: number }
-    >
-    dots?: [number, number][]
+    interactiveLayerIds?: string[]
+    lines?: FeatureCollection<LineString, UnifiedFeatureProperties>
+    polygons?: FeatureCollection<Polygon, UnifiedFeatureProperties>
+    points?: FeatureCollection<Point, UnifiedFeatureProperties>
+  } & Omit<LineEndPointsLayerProps, "layerIdSuffix" | "lineEndPoints"> &
+  Partial<Pick<LineEndPointsLayerProps, "lineEndPoints">> & {
     classHeight?: string
     children?: React.ReactNode
+    staticOverlay?: StaticOverlayConfig
+    backgroundSwitcherPosition?: "top-left" | "top-right" | "bottom-left" | "bottom-right"
+    selectableLayerIdSuffix?: string // Defaults to "" if not provided
+    colorSchema: "subsection" | "subsubsection"
+    restrictHighlightToLevel?: MapHighlightLevel
   }
 
 export const BaseMap = ({
   id: mapId,
   initialViewState,
-  onMouseEnter,
+  onMouseMove,
   onMouseLeave,
   onClick,
   onZoomEnd,
   onLoad,
   interactiveLayerIds,
   hash,
+  reuseMaps = true,
   lines,
-  selectableLines,
-  selectablePoints,
-  selectablePolygons,
-  dots,
+  polygons,
+  points,
+  lineEndPoints,
   classHeight,
   children,
+  staticOverlay,
+  backgroundSwitcherPosition = "top-left",
+  selectableLayerIdSuffix = "",
+  colorSchema,
+  restrictHighlightToLevel,
 }: BaseMapProps) => {
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const handleLayerSwitch = (layer: LayerType) => {
@@ -92,178 +83,97 @@ export const BaseMap = ({
   }
 
   const [cursorStyle, setCursorStyle] = useState("grab")
-  const handleMouseEnter = (e: MapLayerMouseEvent) => {
-    if (onMouseEnter) onMouseEnter(e)
-    setCursorStyle("pointer")
+
+  useEffect(() => {
+    if (!staticOverlay) return
+    const protocol = new pmtiles.Protocol()
+    maplibregl.addProtocol("pmtiles", protocol.tile)
+    return () => {
+      maplibregl.removeProtocol("pmtiles")
+    }
+  }, [staticOverlay])
+
+  // Merge lines, polygons, and points into a single FeatureCollection
+  const unifiedFeatures = useMemo(
+    () => mergeFeatureCollections(lines, polygons, points),
+    [lines, polygons, points],
+  )
+
+  // Map layer source IDs - shared across all handlers (still needed for selected state)
+  const sourceIds = {
+    unified: getUnifiedLayerId(selectableLayerIdSuffix),
+    endPoints: getLineEndPointsLayerId(selectableLayerIdSuffix),
   }
-  const handleMouseLeave = (e: MapLayerMouseEvent) => {
-    if (onMouseLeave) onMouseLeave(e)
+
+  const highlightHandlers = useMapHighlight(restrictHighlightToLevel)
+
+  const handleMouseMoveInternal = (event: MapLayerMouseEvent) => {
+    highlightHandlers.handleMouseMove(event)
+    setCursorStyle((event.features?.length ?? 0) > 0 ? "pointer" : "grab")
+    onMouseMove?.(event)
+  }
+
+  const handleMouseLeaveInternal = (event: MapLayerMouseEvent) => {
+    highlightHandlers.handleMouseLeave(event)
     setCursorStyle("grab")
-  }
-  const handleZoomEnd = (e: ViewStateChangeEvent) => {
-    if (onZoomEnd) onZoomEnd(e)
-  }
-  const handleOnLoad = (e: MapEvent) => {
-    if (onLoad) onLoad(e)
+    onMouseLeave?.(event)
   }
 
-  const dotSource = dots ? (
-    <Source id="dots" key="dots" type="geojson" data={featureCollection(dots.map((d) => point(d)))}>
-      <Layer type="circle" paint={{ "circle-color": layerColors.dot, "circle-radius": 6 }} />
-    </Source>
-  ) : null
+  // Build feature map grouped by slug (only needed for selected state, not hover)
+  // This allows highlighting all features belonging to the same subsubsection/subsection
+  const slugFeatureMap = useSlugFeatureMap(unifiedFeatures, lineEndPoints)
 
-  const featuresSource = lines ? (
-    <Source id="lines" key="lines" type="geojson" data={lines}>
-      {/* Background outline layer */}
-      <Layer
-        id="lines-layer-outline"
-        type="line"
-        layout={{
-          "line-cap": "round",
-          "line-join": "round",
-        }}
-        paint={{
-          "line-width": 9,
-          "line-color": layerColors.dot,
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.6],
-        }}
-      />
-      {/* Main colored line layer */}
-      <Layer
-        id="lines-layer"
-        type="line"
-        layout={{
-          "line-cap": "round",
-          "line-join": "round",
-        }}
-        paint={{
-          "line-width": ["case", ["has", "width"], ["get", "width"], 7],
-          "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
-        }}
-      />
-    </Source>
-  ) : null
+  // Handle selection state via setFeatureState
+  const handleClickInternal = (event: MapLayerMouseEvent) => {
+    const map = event.target
+    const features = event.features || []
+    if (!map || features.length === 0) {
+      if (onClick) onClick(event)
+      return
+    }
 
-  const selectableLineFeaturesSource = selectableLines ? (
-    <Source
-      id={selectableLineLayerId}
-      key={selectableLineLayerId}
-      type="geojson"
-      data={selectableLines}
-    >
-      <Layer
-        id={`${selectableLineLayerId}-outline`}
-        type="line"
-        layout={{
-          "line-cap": "round",
-          "line-join": "round",
-        }}
-        paint={{
-          "line-width": 9,
-          "line-color": layerColors.dot,
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.6],
-        }}
-      />
-      {/* Background outline layer for dashed lines */}
-      <Layer
-        id={`${selectableLineLayerId}-bg`}
-        type="line"
-        layout={{
-          "line-cap": "round",
-          "line-join": "round",
-        }}
-        paint={{
-          "line-width": 7,
-          "line-color": layerColors.background,
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.9],
-        }}
-        filter={["get", "dashed"]}
-      />
-      {/* Main colored line layer - solid lines */}
-      <Layer
-        id={`${selectableLineLayerId}-solid`}
-        type="line"
-        layout={{
-          "line-cap": "round",
-          "line-join": "round",
-        }}
-        paint={{
-          "line-width": 7,
-          "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
-        }}
-        // do not apply for lines that have the dashed property
-        filter={["any", ["!", ["has", "dashed"]], ["!", ["get", "dashed"]]]}
-      />
-      {/* Main colored line layer - dashed lines */}
-      <Layer
-        id={`${selectableLineLayerId}-dashed`}
-        type="line"
-        paint={{
-          "line-width": 7,
-          "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
-          "line-dasharray": [1, 1],
-        }}
-        filter={["get", "dashed"]}
-      />
-    </Source>
-  ) : null
+    // Reset selected state for ALL features in unified source
+    if (unifiedFeatures) {
+      unifiedFeatures.features.forEach((f) => {
+        const featureId = f.properties?.featureId
+        if (featureId) {
+          map.setFeatureState({ source: sourceIds.unified, id: featureId }, { selected: false })
+        }
+      })
+    }
 
-  const selectablePointFeaturesSource = selectablePoints ? (
-    <Source
-      id={selectablePointLayerId}
-      key={selectablePointLayerId}
-      type="geojson"
-      data={selectablePoints}
-    >
-      <Layer
-        id={selectablePointLayerId}
-        type="circle"
-        paint={{
-          "circle-radius": ["case", ["has", "radius"], ["get", "radius"], 17],
-          "circle-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "circle-stroke-width": ["case", ["has", "border-width"], ["get", "border-width"], 0],
-          "circle-stroke-color": [
-            "case",
-            ["has", "border-color"],
-            ["get", "border-color"],
-            "transparent",
-          ],
-          "circle-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 1],
-        }}
-      />
-    </Source>
-  ) : null
+    // Reset selected state for line endpoints
+    if (lineEndPoints) {
+      lineEndPoints.features.forEach((f) => {
+        const featureId = f.properties?.featureId
+        if (featureId) {
+          map.setFeatureState({ source: sourceIds.endPoints, id: featureId }, { selected: false })
+        }
+      })
+    }
 
-  const selectablePolygonFeaturesSource = selectablePolygons ? (
-    <Source
-      id={selectablePolygonLayerId}
-      key={selectablePolygonLayerId}
-      type="geojson"
-      data={selectablePolygons}
-    >
-      <Layer
-        id={`${selectablePolygonLayerId}-fill`}
-        type="fill"
-        paint={{
-          "fill-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "fill-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.3],
-        }}
-      />
-      <Layer
-        id={`${selectablePolygonLayerId}-outline`}
-        type="line"
-        paint={{
-          "line-width": 3,
-          "line-color": ["case", ["has", "color"], ["get", "color"], "black"],
-          "line-opacity": ["case", ["has", "opacity"], ["get", "opacity"], 0.8],
-        }}
-      />
-    </Source>
-  ) : null
+    // Set selected on all features from the same subsubsection/subsection
+    const feature = features[0]
+    const lookupSlug = feature?.properties?.subsubsectionSlug || feature?.properties?.subsectionSlug
+
+    if (lookupSlug) {
+      const featureIds = slugFeatureMap.get(lookupSlug)
+      if (featureIds) {
+        // Set selected on all unified features from this subsubsection/subsection
+        featureIds.featureIds.forEach((id) => {
+          map.setFeatureState({ source: sourceIds.unified, id }, { selected: true })
+        })
+
+        // Set selected on line endpoints
+        featureIds.endPointIds.forEach((id) => {
+          map.setFeatureState({ source: sourceIds.endPoints, id }, { selected: true })
+        })
+      }
+    }
+
+    // Call parent onClick for navigation logic
+    if (onClick) onClick(event)
+  }
 
   return (
     <div
@@ -273,40 +183,49 @@ export const BaseMap = ({
       )}
     >
       <div className="relative h-full w-full">
-        <Map
+        <MapComponent
           id={mapId}
-          reuseMaps
+          reuseMaps={reuseMaps}
           initialViewState={initialViewState}
           mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
           scrollZoom={false}
           cursor={cursorStyle}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          onClick={onClick}
-          onZoomEnd={handleZoomEnd}
-          onLoad={handleOnLoad}
+          onMouseMove={handleMouseMoveInternal}
+          onMouseLeave={handleMouseLeaveInternal}
+          onClick={handleClickInternal}
+          onZoomEnd={onZoomEnd}
+          onLoad={onLoad}
           interactiveLayerIds={[
-            interactiveLayerIds,
-            selectablePoints && selectablePointLayerId,
-            selectableLines && `${selectableLineLayerId}-solid`,
-            selectableLines && `${selectableLineLayerId}-dashed`,
-            selectablePolygons && `${selectablePolygonLayerId}-fill`,
-          ]
-            .flat()
-            .filter(Boolean)}
+            ...(interactiveLayerIds ?? []),
+            ...(unifiedFeatures ? getUnifiedClickTargetLayerIds(selectableLayerIdSuffix) : []),
+            ...(lineEndPoints ? [getLineEndPointsLayerId(selectableLayerIdSuffix)] : []),
+          ]}
           hash={hash || false}
         >
           <NavigationControl showCompass={false} />
           <ScaleControl />
-          {featuresSource}
-          {selectableLineFeaturesSource}
-          {selectablePointFeaturesSource}
-          {selectablePolygonFeaturesSource}
-          {dotSource}
+          {staticOverlay && <StaticOverlay config={staticOverlay} />}
+          {unifiedFeatures && (
+            <UnifiedFeaturesLayer
+              features={unifiedFeatures}
+              layerIdSuffix={selectableLayerIdSuffix}
+              interactive={true}
+              colorSchema={colorSchema}
+              layersBetweenLinesAndPoints={
+                lineEndPoints ? (
+                  <LineEndPointsLayer
+                    lineEndPoints={lineEndPoints}
+                    layerIdSuffix={selectableLayerIdSuffix}
+                    colorSchema={colorSchema}
+                  />
+                ) : undefined
+              }
+            />
+          )}
           {children}
-        </Map>
+        </MapComponent>
         <BackgroundSwitcher
-          className="absolute top-4 left-4 z-10"
+          position={backgroundSwitcherPosition}
           value={selectedLayer}
           onChange={handleLayerSwitch}
         />

@@ -14,6 +14,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { PromiseReturnType } from "blitz"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 
 type Props = {
   operator: PromiseReturnType<typeof getOperator>
@@ -27,7 +28,7 @@ export const EditOperatorForm = ({ operator, projectSlug }: Props) => {
 
   const returnPath = `/${projectSlug}/operators` as Route
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<typeof OperatorSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await updateOperatorMutation({

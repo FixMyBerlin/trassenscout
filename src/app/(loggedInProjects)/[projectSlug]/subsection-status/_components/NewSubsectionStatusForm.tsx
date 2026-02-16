@@ -8,6 +8,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { StatusStyleEnum } from "@prisma/client"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 import { SubsectionStatusForm } from "./SubsectionStatusForm"
 
 type Props = {
@@ -18,7 +19,7 @@ export const NewSubsectionStatusForm = ({ projectSlug }: Props) => {
   const router = useRouter()
   const [createSubsectionStatusMutation] = useMutation(createSubsectionStatus)
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<ReturnType<typeof SubsectionStatus.omit<{ projectId: true }>>>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await createSubsectionStatusMutation({ ...values, projectSlug })

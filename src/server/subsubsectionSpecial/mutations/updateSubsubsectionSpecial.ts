@@ -12,6 +12,7 @@ import { z } from "zod"
 const UpdateSubsubsectionSpecialSchema = ProjectSlugRequiredSchema.merge(
   SubsubsectionSpecial.merge(z.object({ id: z.number() })),
 )
+
 export default resolver.pipe(
   resolver.zod(UpdateSubsubsectionSpecialSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),

@@ -7,7 +7,7 @@ import { shortTitle } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import deleteSubsection from "@/src/server/subsections/mutations/deleteSubsection"
-import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
+import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import { useMutation } from "@blitzjs/rpc"
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid"
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline"
@@ -16,7 +16,7 @@ import { useSearchParams } from "next/navigation"
 import { defaultGeometryForMultipleSubsectionForm } from "../multiple-new/_components/MultipleNewSubsectionsForm"
 
 type Props = {
-  subsections: SubsectionWithPosition[]
+  subsections: TGetSubsection[]
 }
 
 export const SubsectionTableAdmin = ({ subsections }: Props) => {
@@ -70,18 +70,6 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
                 scope="col"
                 className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
               >
-                Start
-              </th>
-              <th
-                scope="col"
-                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
-              >
-                Ende
-              </th>
-              <th
-                scope="col"
-                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
-              >
                 Geometrie
               </th>
               <th
@@ -121,22 +109,6 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
                   </td>
                   <td className="py-4 pr-3 pl-4 text-sm font-medium text-gray-900">
                     {subsection.order}
-                  </td>
-                  <td
-                    className={clsx(
-                      "py-4 pr-3 pl-4 text-sm font-medium",
-                      subsection.end === "unbekannt" ? "text-gray-300" : "text-gray-900",
-                    )}
-                  >
-                    {subsection.start}
-                  </td>
-                  <td
-                    className={clsx(
-                      "py-4 pr-3 pl-4 text-sm font-medium",
-                      subsection.end === "unbekannt" ? "text-gray-300" : "text-gray-900",
-                    )}
-                  >
-                    {subsection.end}
                   </td>
 
                   <td

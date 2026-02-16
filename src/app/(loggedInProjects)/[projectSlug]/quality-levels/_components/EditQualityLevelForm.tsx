@@ -13,6 +13,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { PromiseReturnType } from "blitz"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 import { QualityLevelForm } from "./QualityLevelForm"
 
 type Props = {
@@ -27,7 +28,7 @@ export const EditQualityLevelForm = ({ qualityLevel, projectSlug }: Props) => {
 
   const returnPath = `/${projectSlug}/quality-levels` as Route
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<typeof QualityLevelSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await updateQualityLevelMutation({

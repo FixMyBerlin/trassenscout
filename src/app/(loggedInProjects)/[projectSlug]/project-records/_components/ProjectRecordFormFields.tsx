@@ -24,7 +24,7 @@ import clsx from "clsx"
 import { useState } from "react"
 import { useFormContext } from "react-hook-form"
 
-type ProjectRecordFormFieldsProps = {
+type Props = {
   splitView?: boolean
   projectSlug: string
   emailSource?: {
@@ -36,11 +36,7 @@ type ProjectRecordFormFieldsProps = {
   } | null
 }
 
-export const ProjectRecordFormFields = ({
-  projectSlug,
-  emailSource,
-  splitView,
-}: ProjectRecordFormFieldsProps) => {
+export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }: Props) => {
   const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
   const [{ projectRecordTopics }, { refetch: refetchTopics }] = useQuery(

@@ -1,7 +1,3 @@
-// This is a copy of /src/pagesComponents/memberships/hooks/useUserCan.ts
-// The only difference is that it uses useProjectSlug from "@/src/core/routes/useProjectSlug"
-// (app directory version) instead of "@/src/core/routes/usePagesDirectoryProjectSlug"
-
 import { MembershipRoleEnum, UserRoleEnum } from "@/db"
 import { editorRoles, viewerRoles } from "@/src/authorization/constants"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug" // App directory version

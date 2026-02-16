@@ -1,12 +1,16 @@
 import db from "@/db"
+import { getLabelPosition } from "@/src/core/components/Map/utils/getLabelPosition"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { PointGeometrySchema } from "@/src/core/utils/geojson-schemas"
 import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
+import { subsubsectionGeometryTypeValidationRefine } from "@/src/server/shared/utils/geometryTypeValidation"
 import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
 import { ImportSubsubsectionDataSchema } from "@/src/server/subsubsections/importSchema"
 import { m2mFields, type M2MFieldsType } from "@/src/server/subsubsections/m2mFields"
 import { z } from "zod"
 import { withApiKey } from "../../_utils/withApiKey"
+
+export const dynamic = "force-dynamic" // required with withApiKey (uses request.url)
 
 const ImportSubsubsectionRequestSchema = z.object({
   projectSlug: z.string(),
@@ -55,7 +59,7 @@ export const POST = withApiKey(async ({ request }) => {
           slug: projectSlug,
         },
       },
-      select: { id: true, geometry: true },
+      select: { id: true, geometry: true, type: true },
     })
 
     if (!subsection) {
@@ -140,18 +144,7 @@ export const POST = withApiKey(async ({ request }) => {
 
     // Calculate fallback geometry for new records when geometry is not provided
     const calculateFallbackGeometry = () => {
-      let coordinates: [number, number] = [0, 0]
-
-      if (subsectionGeometry.coordinates && subsectionGeometry.coordinates.length > 0) {
-        let minLng = subsectionGeometry.coordinates[0]![0]
-        let minLat = subsectionGeometry.coordinates[0]![1]
-
-        for (const [lng, lat] of subsectionGeometry.coordinates) {
-          if (lng < minLng) minLng = lng
-          if (lat < minLat) minLat = lat
-        }
-        coordinates = [minLng, minLat]
-      }
+      const coordinates = getLabelPosition(subsectionGeometry)
 
       return PointGeometrySchema.parse({
         type: "Point",
@@ -175,6 +168,33 @@ export const POST = withApiKey(async ({ request }) => {
     const subsubsectionData: Record<string, any> = {
       ...data,
       subsectionId: subsection.id,
+    }
+
+    // Validate geometry type (after fallback geometry is applied if needed)
+    // Both geometry and type should be present at this point
+    if (subsubsectionData.geometry && subsubsectionData.type) {
+      const validationSchema = subsubsectionGeometryTypeValidationRefine(
+        z.object({
+          geometry: z.any(),
+          type: z.any(),
+        }),
+      )
+      const validationResult = validationSchema.safeParse({
+        geometry: subsubsectionData.geometry,
+        type: subsubsectionData.type,
+      })
+      if (!validationResult.success) {
+        return Response.json(
+          {
+            error: "Invalid geometry type",
+            details: validationResult.error.errors.map((e) => ({
+              path: e.path.join("."),
+              message: e.message,
+            })),
+          },
+          { status: 400 },
+        )
+      }
     }
 
     // Handle m2m fields

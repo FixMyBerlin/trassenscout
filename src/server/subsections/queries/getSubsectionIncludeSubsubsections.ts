@@ -2,12 +2,14 @@ import db, { Prisma } from "@/db"
 import { authorizeProjectMember } from "@/src/authorization/authorizeProjectMember"
 import { viewerRoles } from "@/src/authorization/constants"
 import { extractProjectSlug } from "@/src/authorization/extractProjectSlug"
+import { typeSubsectionGeometry } from "@/src/server/subsections/utils/typeSubsectionGeometry"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
+import { typeSubsubsectionGeometry } from "@/src/server/subsubsections/utils/typeSubsubsectionGeometry"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
-import { GetSubsectionSchema, SubsectionWithPosition } from "./getSubsection"
+import { GetSubsectionSchema, TGetSubsection } from "./getSubsection"
 
-export type SubsectionWithSubsubsectionsWithPosition = SubsectionWithPosition & {
+export type SubsectionWithSubsubsectionsWithPosition = TGetSubsection & {
   subsubsections: SubsubsectionWithPosition[]
 }
 
@@ -31,7 +33,15 @@ export default resolver.pipe(
     }
     const subsection = await db.subsection.findFirst(query)
     if (!subsection) throw new NotFoundError()
-    // Hint: We cannot use `typeSubsectionGeometry` here due to the subsubsection geometry which is not handled by the helper
-    return subsection as SubsectionWithSubsubsectionsWithPosition // Tip: Validate type shape with `satisfies`
+
+    const typedSubsection = typeSubsectionGeometry(subsection)
+    const roundedSubsubsections = subsection.subsubsections.map((ss) =>
+      typeSubsubsectionGeometry(ss),
+    )
+
+    return {
+      ...typedSubsection,
+      subsubsections: roundedSubsubsections,
+    }
   },
 )

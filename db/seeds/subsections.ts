@@ -1,219 +1,245 @@
 import db, { Prisma } from "../index"
-import { subsubsections } from "./subsection_subsubsections"
+import { subsubsectionsForLine3, subsubsectionsForPoly3 } from "./subsection_subsubsections"
 
 // lengthM is NOT calculated here but arbitrary values to satisfy the schema
 
 const seedSubsections = async () => {
-  const seedData: Prisma.SubsectionUncheckedCreateInput[] = [
-    // NORD:
-    {
-      projectId: 1,
-      operatorId: 1,
-      slug: "pa1",
-      order: 1,
-      start: "Dovestraẞe",
-      end: "Kanzlerpark",
-      description: `
-**Das Hansaviertel** ist ein Stadtviertel in Berlin, das in den 1950er Jahren nach Plänen bekannter Architekten wie Walter Gropius, Alvar Aalto und Oscar Niemeyer erbaut wurde. Es liegt zwischen dem Berliner Tiergarten und dem Spreeufer und wurde als Modellprojekt für modernes, funktionales Wohnen konzipiert.
+  // Get projects
+  const projects = await db.project.findMany()
+  const rs3000Project = projects.find((p) => p.slug === "rs3000")
 
-- Foo
-- Bar
-      `,
-      labelPos: "top",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [13.317392954811083, 52.52039883952099],
-          [13.318029192341385, 52.52262482165125],
-          [13.322641914435906, 52.5248506909908],
-          [13.327890874060671, 52.523108715884604],
-          [13.329481467886865, 52.5184631112015],
-          [13.334253249364252, 52.51701125899095],
-          [13.33966126837197, 52.52233448255228],
-          [13.345069287379602, 52.52262482165125],
-          [13.350954484534668, 52.51914062581497],
-          [13.357157800454104, 52.517204842057566],
-          [13.363361116374904, 52.519430986022115],
-        ],
+  // Get operators
+  const operators = await db.operator.findMany()
+  const rs3000Operator = operators.find((o) => o.slug === "rs3000-operator")
+
+  // Query for the "Trassenverlauf ungeklärt" status
+  const trassenverlaufUngeklaertStatus = await db.subsectionStatus.findUnique({
+    where: {
+      projectId_slug: {
+        projectId: 1,
+        slug: "trassenverlauf-ungeklaert",
       },
-      lengthM: 56000,
-      managerId: 1,
-      subsubsections: { create: subsubsections },
     },
+  })
+
+  // Query for the "irrelevant" subsubsection status
+  const irrelevantStatus = await db.subsubsectionStatus.findUnique({
+    where: {
+      projectId_slug: {
+        projectId: 1,
+        slug: "irrelevant",
+      },
+    },
+  })
+
+  // Helper function to add irrelevant status to one subsubsection of each geometry type
+  const addIrrelevantStatus = (
+    subsubsections: Omit<Prisma.SubsubsectionUncheckedCreateInput, "subsectionId">[],
+  ): Omit<Prisma.SubsubsectionUncheckedCreateInput, "subsectionId">[] => {
+    const slugsToMark = ["line-1", "poly-1", "point-1"]
+    return subsubsections.map((sub) => {
+      if (slugsToMark.includes(sub.slug) && irrelevantStatus?.id) {
+        return { ...sub, subsubsectionStatusId: irrelevantStatus.id }
+      }
+      return sub
+    })
+  }
+
+  // Create subsubsection for RS3000 (LINE type)
+  const rs3000Subsubsection: Omit<Prisma.SubsubsectionUncheckedCreateInput, "subsectionId"> = {
+    slug: "rs3000-line-1",
+    subTitle: "RS3000 Line Subsubsection",
+    type: "LINE",
+    geometry: {
+      type: "LineString",
+      coordinates: [
+        [13.35, 52.51],
+        [13.352, 52.511],
+        [13.354, 52.512],
+      ],
+    },
+    labelPos: "top",
+    lengthM: 500,
+    width: 3,
+    costEstimate: null,
+    qualityLevelId: null,
+    description: "RS3000 subsubsection with single LineString geometry",
+    mapillaryKey: null,
+    managerId: null,
+    maxSpeed: null,
+    trafficLoad: null,
+    trafficLoadDate: null,
+    planningCosts: null,
+    deliveryCosts: null,
+    constructionCosts: null,
+    landAcquisitionCosts: null,
+    expensesOfficialOrders: null,
+    expensesTechnicalVerification: null,
+    nonEligibleExpenses: null,
+    revenuesEconomicIncome: null,
+    contributionsThirdParties: null,
+    grantsOtherFunding: null,
+    ownFunds: null,
+  }
+
+  const seedData: Prisma.SubsectionUncheckedCreateInput[] = [
+    // Subsection with 1 polygon
     {
       projectId: 1,
       operatorId: 1,
-      slug: "pa2",
+      slug: "poly-1",
+      order: 1,
+      type: "POLYGON",
+      description: "Test subsection with single Polygon geometry",
+      labelPos: "top",
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [13.31, 52.51],
+            [13.315, 52.51],
+            [13.315, 52.515],
+            [13.31, 52.515],
+            [13.31, 52.51],
+          ],
+        ],
+      },
+      lengthM: null,
+      managerId: null,
+    },
+    // Subsection with 3 polygons (MultiPolygon) - has nested subsubsections
+    // Two polygons connect at two points, one polygon is separate
+    {
+      projectId: 1,
+      operatorId: 1,
+      slug: "poly-3",
       order: 2,
-      start: "Kanzlerpark",
-      end: "Ebertsbrücke",
-      description: null,
-      labelPos: "top",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [13.392787102151175, 52.52243126246529],
-          [13.387538142526438, 52.52204414153442],
-          [13.381493885988561, 52.51904383865252],
-          [13.37656304512825, 52.520011700680215],
-          [13.375131510684866, 52.52233448255228],
-          [13.369246313529857, 52.52252804216468],
-          [13.36352017575777, 52.519430986022115],
-        ],
-      },
-      lengthM: 12,
-      managerId: null,
-    },
-    {
-      projectId: 1,
-      operatorId: 1,
-      slug: "pa3",
-      order: 3,
-      start: "Ebertsbrücke",
-      end: "Fischerinsel",
-      description: null,
-      labelPos: "topRight",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [13.410442693616204, 52.514591398693426],
-          [13.405352793374334, 52.51565615364305],
-          [13.399308536836458, 52.521366671697535],
-          [13.392787102151175, 52.52252804216468],
-        ],
-      },
-      lengthM: 12000,
-      managerId: null,
-    },
-    {
-      projectId: 1,
-      operatorId: 1,
-      slug: "pa4",
-      order: 4,
-      start: "Fischerinsel",
-      end: "Schleusenufer",
-      description: null,
-      labelPos: "topRight",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [13.41060175299907, 52.514591398693426],
-          [13.415532593858103, 52.51488178896585],
-          [13.421258731631525, 52.51333301867112],
-          [13.451639073702552, 52.499875779590525],
-        ],
-      },
-      lengthM: 12000,
-      managerId: 1,
-    },
-    // SÜD:
-    {
-      projectId: 1,
-      operatorId: 2,
-      slug: "pa5",
-      order: 5,
-      start: "Dovestraẞe",
-      end: "Lützowplatz",
-      description: null,
-      labelPos: "topRight",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [13.317597867354067, 52.52004509035683],
-          [13.3314161960285, 52.51250603081962],
-          [13.33697529376991, 52.51115272935999],
-          [13.35222310471977, 52.5057391067665],
-        ],
-      },
-      lengthM: 12000,
-      managerId: 2,
-    },
-    {
-      projectId: 1,
-      operatorId: 2,
-      slug: "pa6",
-      order: 6,
-      start: "Lützowplatz",
-      end: "Mehringdamm",
-      description: null,
-      labelPos: "topRight",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [13.35206427335541, 52.505835784446134],
-          [13.357305708370632, 52.50670587399276],
-          [13.362705974747598, 52.5055457507697],
-          [13.369218060675223, 52.505835784446134],
-          [13.37525365250832, 52.502645308750346],
-          [13.379859762067383, 52.49916452570534],
-          [13.388754318454033, 52.49800420344744],
-        ],
-      },
-      lengthM: 12,
-      managerId: 2,
-    },
-    {
-      projectId: 1,
-      operatorId: 2,
-      slug: "pa7",
-      order: 7,
-      start: "Mehringdamm",
-      end: "Kottbusser Damm",
-      description: null,
-      labelPos: "topRight",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [13.388480650254337, 52.497979825501545],
-          [13.395628061636813, 52.49788313054404],
-          [13.41278184895532, 52.4950788842759],
-          [13.41977042897335, 52.49614258494796],
-        ],
-      },
-      lengthM: 12000,
-      managerId: 2,
-    },
-    {
-      projectId: 1,
-      operatorId: 2,
-      slug: "pa8",
-      order: 8,
-      start: "Kottbusser Damm",
-      end: "Schleusenufer",
-      description: null,
+      type: "POLYGON",
+      description:
+        "Test subsection with MultiPolygon geometry (3 polygons: 2 connected, 1 separate)",
       labelPos: "bottom",
       geometry: {
+        type: "MultiPolygon",
+        coordinates: [
+          // First polygon of connected pair
+          [
+            [
+              [13.32, 52.51], // Shared point 1
+              [13.322, 52.51],
+              [13.322, 52.512],
+              [13.32, 52.512], // Shared point 2
+              [13.32, 52.51],
+            ],
+          ],
+          // Second polygon of connected pair (shares two points)
+          [
+            [
+              [13.32, 52.51], // Shared point 1
+              [13.32, 52.512], // Shared point 2
+              [13.318, 52.512],
+              [13.318, 52.51],
+              [13.32, 52.51],
+            ],
+          ],
+          // Separate polygon
+          [
+            [
+              [13.326, 52.514],
+              [13.328, 52.514],
+              [13.328, 52.516],
+              [13.326, 52.516],
+              [13.326, 52.514],
+            ],
+          ],
+        ],
+      },
+      lengthM: null,
+      managerId: null,
+      subsectionStatusId: trassenverlaufUngeklaertStatus?.id ?? null,
+      subsubsections: { create: addIrrelevantStatus(subsubsectionsForPoly3) },
+    },
+    // Subsection with 1 line
+    {
+      projectId: 1,
+      operatorId: 1,
+      slug: "line-1",
+      order: 3,
+      type: "LINE",
+      description: "Test subsection with single LineString geometry",
+      labelPos: "top",
+      geometry: {
         type: "LineString",
         coordinates: [
-          [13.41977042897335, 52.49633598230557],
-          [13.439306686753582, 52.4902435569129],
-          [13.451695533149916, 52.49991367999152],
+          [13.33, 52.51],
+          [13.332, 52.511],
+          [13.334, 52.512],
+          [13.336, 52.513],
+        ],
+      },
+      lengthM: 1000,
+      managerId: null,
+    },
+    // Subsection with 3 lines (MultiLineString) - has nested subsubsections
+    // Two lines connect at one end, one line is separate
+    {
+      projectId: 1,
+      operatorId: 1,
+      slug: "line-3",
+      order: 4,
+      type: "LINE",
+      description:
+        "Test subsection with MultiLineString geometry (3 lines: 2 connected, 1 separate)",
+      labelPos: "bottom",
+      geometry: {
+        type: "MultiLineString",
+        coordinates: [
+          // First line of connected pair
+          [
+            [13.34, 52.51],
+            [13.342, 52.511], // Shared endpoint
+          ],
+          // Second line of connected pair (shares endpoint)
+          [
+            [13.342, 52.511], // Shared endpoint
+            [13.344, 52.512],
+          ],
+          // Separate line
+          [
+            [13.346, 52.512],
+            [13.348, 52.513],
+          ],
         ],
       },
       lengthM: 3000,
-      managerId: 2,
+      managerId: null,
+      subsectionStatusId: trassenverlaufUngeklaertStatus?.id ?? null,
+      subsubsections: { create: addIrrelevantStatus(subsubsectionsForLine3) },
     },
-    {
-      projectId: 1,
-      operatorId: 2,
-      slug: "pa9",
-      order: 9,
-      start: "Schleusenufer",
-      end: "Kottbusser Brücke",
-      description: null,
-      labelPos: "bottom",
+  ]
+
+  // Add RS3000 subsection with one LINE subsubsection
+  if (rs3000Project) {
+    seedData.push({
+      projectId: rs3000Project.id,
+      operatorId: rs3000Operator?.id ?? null,
+      slug: "rs3000-line",
+      order: 1,
+      type: "LINE",
+      description: "RS3000 subsection with single LineString geometry",
+      labelPos: "top",
       geometry: {
         type: "LineString",
         coordinates: [
-          [13.41977042897335, 52.49633598230557],
-          [13.439306686753582, 52.4902435569129],
-          [13.451695533149916, 52.49991367999152],
+          [13.35, 52.51],
+          [13.352, 52.511],
+          [13.354, 52.512],
         ],
       },
-      lengthM: 8000,
-      managerId: 2,
-    },
-  ]
+      lengthM: 500,
+      managerId: null,
+      subsubsections: { create: [rs3000Subsubsection] },
+    })
+  }
 
   for (const data of seedData) {
     await db.subsection.create({ data })

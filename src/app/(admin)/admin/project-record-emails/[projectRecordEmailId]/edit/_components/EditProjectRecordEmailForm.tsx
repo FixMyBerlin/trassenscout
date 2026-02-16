@@ -9,6 +9,7 @@ import { ProjectRecordEmailFormSchema } from "@/src/server/ProjectRecordEmails/s
 import { TGetProjects } from "@/src/server/projects/queries/getProjects"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 import { ProjectRecordEmailForm } from "../../../_components/ProjectRecordEmailForm"
 
 export const EditProjectRecordEmailForm = ({
@@ -24,7 +25,7 @@ export const EditProjectRecordEmailForm = ({
   const [updateProjectRecordEmailMutation] = useMutation(updateProjectRecordEmail)
   const [deleteProjectRecordEmailMutation] = useMutation(deleteProjectRecordEmail)
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<typeof ProjectRecordEmailFormSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       const updated = await updateProjectRecordEmailMutation({

@@ -19,6 +19,8 @@ jobs:
         run: curl --fail -s -S -X GET "https://staging.trassenscout.de/api/cron-invites-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
       - name: Cleanup logEntries STAGING
         run: curl --fail -s -S -X GET "https://staging.trassenscout.de/api/cron-logEntries-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+      - name: Cleanup created surveyResponses STAGING
+        run: curl --fail -s -S -X GET "https://staging.trassenscout.de/api/cron-surveyResponses-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
 
   run-daily-tasks-production:
     runs-on: ubuntu-latest
@@ -29,3 +31,5 @@ jobs:
         run: curl --fail -s -S -X GET "https://trassenscout.de/api/cron-invites-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
       - name: Cleanup logEntries PRODUCTION
         run: curl --fail -s -S -X GET "https://trassenscout.de/api/cron-logEntries-cleanup?apiKey=${{ secrets.TS_API_KEY }}"
+      - name: Cleanup created surveyResponses PRODUCTION
+        run: curl --fail -s -S -X GET "https://trassenscout.de/api/cron-surveyResponses-cleanup?apiKey=${{ secrets.TS_API_KEY }}"

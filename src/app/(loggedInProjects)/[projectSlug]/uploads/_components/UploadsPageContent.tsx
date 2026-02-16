@@ -16,8 +16,6 @@ export const UploadsPageContent = () => {
 
   const [{ uploads, hasMore }, { refetch: refetchUploads }] = useQuery(getUploadsWithSubsections, {
     projectSlug,
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
   })
 
   return (

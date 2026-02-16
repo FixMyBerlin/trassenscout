@@ -20,6 +20,7 @@ const translatedComponentTypes = {
   SurveyGeoCategoryMapWithLegend: "geo",
   SurveyReadonlyTextfield: "text readonly",
   SurveyCheckbox: "bool",
+  SurveyUploadField: "uploads",
   hidden: "hidden",
 }
 

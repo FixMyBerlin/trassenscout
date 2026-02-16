@@ -5,21 +5,24 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
+import { geometryTypeValidationRefine } from "@/src/server/shared/utils/geometryTypeValidation"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 import { createLogEntry } from "../../logEntries/create/createLogEntry"
-import { SubsectionSchema } from "../schema"
+import { SubsectionBaseSchema } from "../schema"
 
 export const CreateSubsectionsSchema = ProjectSlugRequiredSchema.merge(
   z.object({
     subsections: z.array(
-      SubsectionSchema.omit({
-        managerId: true,
-        operatorId: true,
-        description: true,
-        subsectionStatusId: true,
-      }),
+      geometryTypeValidationRefine(
+        SubsectionBaseSchema.omit({
+          managerId: true,
+          operatorId: true,
+          description: true,
+          subsectionStatusId: true,
+        }),
+      ),
     ),
   }),
 )

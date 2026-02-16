@@ -1,4 +1,4 @@
-import { RouteUrlObject } from "blitz"
+import { Route } from "next"
 import { FooterBuildByLineAndFeedback } from "./FooterBuildByLineAndFeedback"
 import { FooterLinkList } from "./FooterLinkList"
 import { FooterLogos } from "./FooterLogos"
@@ -6,7 +6,7 @@ import { links } from "./links.const"
 
 export type FooterMenuItemLogo = {
   name: string
-  href: RouteUrlObject | string
+  href: Route | string
   blank: boolean
   img?: string
 }

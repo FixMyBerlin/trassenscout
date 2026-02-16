@@ -9,6 +9,7 @@ import { SurveySelect } from "@/src/app/beteiligung/_components/form/Select"
 import { SubscribeButton } from "@/src/app/beteiligung/_components/form/SubscribeButton"
 import { SurveyTextarea } from "@/src/app/beteiligung/_components/form/Textarea"
 import { SurveyTextfield } from "@/src/app/beteiligung/_components/form/Textfield"
+import { SurveyUploadField } from "@/src/app/beteiligung/_components/form/UploadField"
 import { SurveyMarkdown } from "@/src/app/beteiligung/_components/layout/SurveyMarkdown"
 
 import { fieldContext, formContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
@@ -27,6 +28,7 @@ export const { useAppForm } = createFormHook({
     SurveyGeoCategoryMapWithLegend,
     SurveyMarkdown,
     SurveyPageTitle,
+    SurveyUploadField,
   },
   formComponents: {
     SubscribeButton,

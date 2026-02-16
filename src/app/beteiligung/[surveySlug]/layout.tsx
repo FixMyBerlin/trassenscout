@@ -3,14 +3,13 @@ import { SurveyHeader } from "@/src/app/beteiligung/_components/layout/SurveyHea
 import "@/src/app/beteiligung/_components/stripe-backgrounds.css"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
-import { Metadata } from "next"
 
 type Props = {
   params: { surveySlug: AllowedSurveySlugs }
   children: React.ReactNode
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props) {
   const { surveySlug } = params
   const { logoUrl, canonicalUrl, title } = getConfigBySurveySlug(surveySlug, "meta")
 

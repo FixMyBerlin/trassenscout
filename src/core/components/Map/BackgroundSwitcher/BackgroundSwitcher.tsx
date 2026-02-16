@@ -11,20 +11,35 @@ import { Fragment } from "react"
 
 export type LayerType = "vector" | "satellite"
 
+export type ControlPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right"
+
 const labels: { [index: string]: string } = {
   vector: "Kartenlayer einblenden",
   satellite: "Satellitenlayer einblenden",
 }
 
+const positionClasses: Record<ControlPosition, string> = {
+  "top-left": "absolute top-4 left-4",
+  "top-right": "absolute top-4 right-4",
+  "bottom-left": "absolute bottom-4 left-4",
+  "bottom-right": "absolute bottom-4 right-4",
+}
+
 type Props = {
   value: LayerType
   onChange: (_: LayerType) => void
-  className: string
+  position?: ControlPosition
+  className?: string
 }
 
-export const BackgroundSwitcher: React.FC<Props> = ({ value, onChange, className }) => {
+export const BackgroundSwitcher = ({
+  value,
+  onChange,
+  position = "top-left",
+  className,
+}: Props) => {
   return (
-    <div className={className}>
+    <div className={clsx(positionClasses[position], className)}>
       <Listbox value={value} onChange={onChange}>
         {({ open }) => (
           <div className="relative mt-1">

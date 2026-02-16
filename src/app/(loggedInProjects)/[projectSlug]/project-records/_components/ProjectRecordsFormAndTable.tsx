@@ -13,10 +13,12 @@ import { blueButtonStyles } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import createProjectRecord from "@/src/server/projectRecords/mutations/createProjectRecord"
 import getProjectRecords from "@/src/server/projectRecords/queries/getProjectRecords"
+import { NewProjectRecordFormSchema } from "@/src/server/projectRecords/schemas"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { PlusIcon } from "@heroicons/react/16/solid"
 import { clsx } from "clsx"
 import { useEffect, useState } from "react"
+import { z } from "zod"
 
 export const ProjectRecordsFormAndTable = ({
   initialProjectRecords,
@@ -27,8 +29,11 @@ export const ProjectRecordsFormAndTable = ({
   const [projectRecords, { refetch }] = useQuery(
     getProjectRecords,
     { projectSlug },
-    // todo check if this works as expected
-    { initialData: initialProjectRecords },
+    {
+      initialData: initialProjectRecords,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
   )
   const [createProjectRecordMutation] = useMutation(createProjectRecord)
   const [showSuccess, setShowSuccess] = useState(false)
@@ -48,14 +53,18 @@ export const ProjectRecordsFormAndTable = ({
     }
   }, [showSuccess])
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<typeof NewProjectRecordFormSchema>
   const handleSubmit = async (values: HandleSubmit) => {
     console.log({ values })
     try {
+      // Exclude m2m fields that are transformed by the form schema but need different format for mutation
+      const { uploads, projectRecordTopics, ...restValues } = values
       const projectRecord = await createProjectRecordMutation({
-        ...values,
+        ...restValues,
         date: values.date ? new Date(values.date) : null,
         projectSlug,
+        uploads: Array.isArray(uploads) ? uploads : undefined,
+        projectRecordTopics: Array.isArray(projectRecordTopics) ? projectRecordTopics : undefined,
       })
       refetch()
       setShowSuccess(true)

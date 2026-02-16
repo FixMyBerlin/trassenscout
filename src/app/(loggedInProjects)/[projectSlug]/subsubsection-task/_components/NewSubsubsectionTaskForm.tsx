@@ -7,6 +7,7 @@ import { SubsubsectionTask } from "@/src/server/subsubsectionTask/schema"
 import { useMutation } from "@blitzjs/rpc"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
+import { z } from "zod"
 import { SubsubsectionTaskForm } from "./SubsubsectionTaskForm"
 
 type Props = {
@@ -17,7 +18,7 @@ export const NewSubsubsectionTaskForm = ({ projectSlug }: Props) => {
   const router = useRouter()
   const [createSubsubsectionTaskMutation] = useMutation(createSubsubsectionTask)
 
-  type HandleSubmit = any // TODO
+  type HandleSubmit = z.infer<ReturnType<typeof SubsubsectionTask.omit<{ projectId: true }>>>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await createSubsubsectionTaskMutation({ ...values, projectSlug })

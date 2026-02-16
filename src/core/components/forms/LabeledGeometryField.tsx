@@ -1,7 +1,16 @@
+import {
+  LineStringGeometrySchema,
+  MultiLineStringGeometrySchema,
+  MultiPolygonGeometrySchema,
+  PolygonGeometrySchema,
+} from "@/src/core/utils/geojson-schemas"
+import { SupportedGeometrySchema } from "@/src/server/shared/utils/geometrySchemas"
+import { mapGeoTypeToEnum } from "@/src/server/shared/utils/mapGeoTypeToEnum"
 import { ErrorMessage } from "@hookform/error-message"
 import { clsx } from "clsx"
 import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
+import { z } from "zod"
 import { LabeledGeometryFieldPreview } from "./LabeledGeometryFieldPreview"
 import { extractGeometryFromGeoJSON } from "./_utils/extractGeometryFromGeoJSON"
 
@@ -14,15 +23,34 @@ export interface LabeledTextareaProps extends PropsWithoutRef<JSX.IntrinsicEleme
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
   optional?: boolean
+  /** Determines which geometry types are allowed. "subsection" allows LineString and Polygon only. "subsubsection" allows all types (Point, LineString, Polygon). */
+  allowedGeometryTypesFor?: "subsection" | "subsubsection"
 }
+
+// Schema for subsection geometries (LINE and POLYGON only, no POINT)
+const SubsectionGeometrySchema = z.union([
+  LineStringGeometrySchema,
+  MultiLineStringGeometrySchema,
+  PolygonGeometrySchema,
+  MultiPolygonGeometrySchema,
+])
 
 export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTextareaProps>(
   function LabeledGeometryField(
-    { name, label, help, outerProps, labelProps, optional, className: textareaClasName, ...props },
+    {
+      name,
+      label,
+      help,
+      outerProps,
+      labelProps,
+      optional,
+      allowedGeometryTypesFor,
+      className: textareaClasName,
+      ...props
+    },
     ref,
   ) {
     const {
-      register,
       formState: { isSubmitting, errors },
       setValue,
       watch,
@@ -38,58 +66,84 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
     const [hasJsonParseError, setJsonParseError] = useState(false)
     const hasError = Boolean(errors[name])
 
+    // Determine allowed geometry schema based on context
+    // Subsections: LINE and POLYGON only (no POINT)
+    // Subsubsections: POINT, LINE, and POLYGON (all three)
+    const allowedGeometrySchema =
+      allowedGeometryTypesFor === "subsection" ? SubsectionGeometrySchema : SupportedGeometrySchema
+
     // Handle paste event for GeoJSON
     const handlePaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
       const pastedText = event.clipboardData.getData("text")
       if (!pastedText.trim()) return
 
-      const extracted = extractGeometryFromGeoJSON(pastedText)
-      if (!extracted) {
-        // Not valid GeoJSON or doesn't match expected format, allow normal paste
-        return
-      }
+      try {
+        // Try to extract geometry from Feature/FeatureCollection, or parse as raw geometry
+        const extracted = extractGeometryFromGeoJSON(pastedText)
+        if (!extracted) {
+          // Not valid GeoJSON or doesn't match expected format, allow normal paste
+          return
+        }
 
-      // Validate geometry type matches form selection
-      let isValid = false
-      if (geometryType === "POINT" && extracted.geometryType === "Point") {
-        isValid = true
-      } else if (
-        geometryType === "LINE" &&
-        (extracted.geometryType === "LineString" || extracted.geometryType === "MultiLineString")
-      ) {
-        isValid = true
-      } else if (
-        geometryType === "POLYGON" &&
-        (extracted.geometryType === "Polygon" || extracted.geometryType === "MultiPolygon")
-      ) {
-        isValid = true
-      }
+        // Validate with Zod schema to get clean types (same as handleTextareaChange)
+        const parseResult = allowedGeometrySchema.safeParse(extracted.geometry)
 
-      if (!isValid) {
+        if (!parseResult.success) {
+          event.preventDefault()
+          setJsonParseError(true)
+          console.error("ERROR in LabeledGeometryField: Invalid geometry schema", parseResult.error)
+          return
+        }
+
+        // Prevent default paste and update form value with validated geometry
         event.preventDefault()
+        setJsonParseError(false)
+        setValue(name, parseResult.data, { shouldValidate: true })
+        // Also set the type field (required by schema) - same as Terra Draw does
+        if (parseResult.data.type) {
+          setValue("type", mapGeoTypeToEnum(parseResult.data.type), { shouldValidate: true })
+        }
+        // valueString will be updated by useEffect when value changes
+      } catch (error) {
+        // If extraction or parsing fails, allow normal paste
         setJsonParseError(true)
-        return
+        console.error("ERROR in LabeledGeometryField: Paste error", error)
       }
-
-      // Prevent default paste and update form value with full GeoJSON geometry
-      event.preventDefault()
-      setValue(name, extracted.geometry, { shouldValidate: true })
-      setJsonParseError(false)
-      // valueString will be updated by useEffect when value changes
     }
 
     // Convert the JSON value to a string
     const handleTextareaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      let newValue = undefined
-      try {
-        newValue = JSON.parse(event.target.value)
+      const textValue = event.target.value.trim()
+
+      if (!textValue) {
         setJsonParseError(false)
-      } catch (error) {
-        setJsonParseError(true)
-        console.error("ERROR in LabeledGeometryField", error, JSON.stringify(event.target.value))
+        return
       }
 
-      newValue && setValue(name, newValue, { shouldValidate: true })
+      try {
+        // Parse JSON first
+        const parsedJson = JSON.parse(textValue)
+        // Validate with Zod schema to get clean types
+        const parseResult = allowedGeometrySchema.safeParse(parsedJson)
+
+        if (!parseResult.success) {
+          setJsonParseError(true)
+          console.error("ERROR in LabeledGeometryField: Invalid geometry schema", parseResult.error)
+          return
+        }
+
+        setJsonParseError(false)
+        setValue(name, parseResult.data, { shouldValidate: true })
+        // Also set the type field (required by schema) - same as Terra Draw does
+        const geoType = parseResult.data.type
+        if (geoType) {
+          setValue("type", mapGeoTypeToEnum(geoType), { shouldValidate: true })
+        }
+      } catch (error) {
+        setJsonParseError(true)
+        // Only log errors for non-empty values to avoid noise from empty strings
+        console.error("ERROR in LabeledGeometryField", error, JSON.stringify(event.target.value))
+      }
     }
 
     return (
@@ -106,14 +160,11 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
           <div className="flex flex-col">
             <textarea
               disabled={isSubmitting}
-              {...register(name)}
               id={name}
               {...props}
               value={valueString}
-              onFocus={handleTextareaChange}
               onChange={handleTextareaChange}
               onBlur={handleTextareaChange}
-              onSubmit={handleTextareaChange}
               onPaste={handlePaste}
               className={clsx(
                 textareaClasName,
@@ -132,6 +183,7 @@ export const LabeledGeometryField = forwardRef<HTMLTextAreaElement, LabeledTexta
                 <>
                   Das richtige Format für einen Punkt ist{" "}
                   <code>{JSON.stringify({ type: "Point", coordinates: [9.1943, 48.8932] })}</code>.
+                  Unterstützt auch MultiPoint.
                 </>
               ) : geometryType === "LINE" ? (
                 <>

@@ -43,10 +43,7 @@ const UploadSubsectionFields = ({
   // We use `""` here to signify the "All" case which gets translated to `NULL`
   const subsectionOptions: LabeledSelectProps["options"] = [["", "Übergreifendes Dokument"]]
   subsections.forEach((ss) => {
-    subsectionOptions.push([ss.id, `${shortTitle(ss.slug)} – ${ss.start}–${ss.end}`] as [
-      number,
-      string,
-    ])
+    subsectionOptions.push([ss.id, `${shortTitle(ss.slug)} (${ss.slug})`] as [number, string])
   })
 
   // Sort by subsection first, then by subsubsection slug, and include subsection in label
@@ -111,6 +108,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
     longitude: upload.longitude,
     collaborationUrl: upload.collaborationUrl,
     collaborationPath: upload.collaborationPath,
+    surveyResponseId: upload.surveyResponseId,
     projectRecords: upload.projectRecords?.map((pr) => pr.id) ?? [],
   }
 

@@ -18,6 +18,35 @@ import { useParams } from "next/navigation"
 import { useContext, useEffect, useState } from "react"
 import { z } from "zod"
 
+type ConfigFieldWithProps = {
+  component: string
+  props?: Record<string, unknown>
+}
+
+function getFieldPropsWithSurveyResponseContext({
+  configField,
+  surveyResponseId,
+  surveySessionId,
+}: {
+  configField: ConfigFieldWithProps
+  surveyResponseId: number | null
+  surveySessionId: number | null
+}) {
+  // Special handling for SurveyUploadField to pass surveyResponseId and surveySessionId
+  if (
+    configField.component === "SurveyUploadField" &&
+    surveyResponseId !== null &&
+    surveySessionId !== null
+  ) {
+    return {
+      ...configField.props,
+      surveyResponseId,
+      surveySessionId,
+    }
+  }
+  return configField.props
+}
+
 type Props = {
   stage: "part1" | "part2" | "part3"
   handleSubmit: ({
@@ -31,6 +60,7 @@ type Props = {
   isIntro: boolean
   setIsIntro: (intro: boolean) => void
   surveyResponseId: number | null
+  surveySessionId: number | null
   onStartPart: () => Promise<void>
 }
 
@@ -41,6 +71,7 @@ export const SurveyPart = ({
   setIsIntro,
   isIntro,
   surveyResponseId,
+  surveySessionId,
   onStartPart,
 }: Props) => {
   const surveySlug = useParams()?.surveySlug as AllowedSurveySlugs
@@ -115,7 +146,8 @@ export const SurveyPart = ({
   const currentProgressBar = getprogressBarDefinitionBySurveySlug(surveySlug, stage)
 
   const handleStart = async () => {
-    // Create pending CREATED response before starting the form
+    // Ensure we have a CREATED response before starting the form
+    // (server-side getOrCreate prevents duplicates when switching intro <-> form)
     await onStartPart()
     setIsIntro(false)
     setPage(0)
@@ -232,12 +264,18 @@ export const SurveyPart = ({
                                 {(field) => {
                                   const Component = field[configField.component]
                                   if (!Component) return null
+                                  const props = getFieldPropsWithSurveyResponseContext({
+                                    // configField has more properties; we only need component + props here
+                                    configField,
+                                    surveyResponseId,
+                                    surveySessionId,
+                                  })
                                   return (
                                     // typescript does not know that the component is a valid field component
                                     // @ts-expect-error tbd
                                     <Component
                                       required={configField.validation.required}
-                                      {...configField.props}
+                                      {...props}
                                     />
                                   )
                                 }}
@@ -257,13 +295,16 @@ export const SurveyPart = ({
                         {(field) => {
                           const Component = field[configField.component]
                           if (!Component) return null
+                          const props = getFieldPropsWithSurveyResponseContext({
+                            // configField has more properties; we only need component + props here
+                            configField,
+                            surveyResponseId,
+                            surveySessionId,
+                          })
                           return (
                             // typescript does not know that the component is a valid field component
                             // @ts-expect-error tbd
-                            <Component
-                              required={configField.validation.required}
-                              {...configField.props}
-                            />
+                            <Component required={configField.validation.required} {...props} />
                           )
                         }}
                       </form.AppField>
@@ -275,6 +316,7 @@ export const SurveyPart = ({
               {(fieldMeta) => (
                 <FormErrorBox
                   // fieldNamesToValidate={surveyPart.pages[page]?.fields.map((field) => field.name)}
+                  // @ts-expect-error this worked before but now shows a TS error; we should fix this…
                   fieldMeta={fieldMeta}
                   allCurrentFieldsOfPage={allCurrentPageFormFields}
                 />

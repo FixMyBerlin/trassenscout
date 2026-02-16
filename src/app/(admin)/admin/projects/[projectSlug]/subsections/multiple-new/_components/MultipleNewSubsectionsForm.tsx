@@ -4,7 +4,7 @@ import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMes
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProject from "@/src/server/projects/queries/getProject"
 import createSubsections from "@/src/server/subsections/mutations/createSubsections"
-import { SubsectionWithPosition } from "@/src/server/subsections/queries/getSubsection"
+import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import getSubsectionMaxOrder from "@/src/server/subsections/queries/getSubsectionMaxOrder"
 import { SubsectionsFormSchema } from "@/src/server/subsections/schema"
 import { useMutation, useQuery } from "@blitzjs/rpc"
@@ -19,7 +19,7 @@ export const defaultGeometryForMultipleSubsectionForm = {
     [5.98865807458, 47.3024876979],
     [15.0169958839, 54.983104153],
   ],
-} satisfies SubsectionWithPosition["geometry"]
+} satisfies TGetSubsection["geometry"]
 
 export const MultipleNewSubsectionsForm = () => {
   const router = useRouter()
@@ -30,17 +30,15 @@ export const MultipleNewSubsectionsForm = () => {
   const handleSubmit = async (values: z.infer<typeof SubsectionsFormSchema>) => {
     const maxOrderSubsections = (await getSubsectionMaxOrder(project.id)) || 0
     const newSubsections: Array<
-      { geometry: SubsectionWithPosition["geometry"] } & Pick<
+      { geometry: TGetSubsection["geometry"] } & Pick<
         Subsection,
-        "projectId" | "labelPos" | "start" | "end" | "slug" | "order" | "lengthM"
+        "projectId" | "labelPos" | "slug" | "order" | "lengthM"
       >
     > = []
     for (let i = 0; i < Number(values.no); i++) {
       newSubsections.push({
         projectId: project.id,
         labelPos: "bottom",
-        start: "unbekannt",
-        end: "unbekannt",
         slug: `pa${values.prefix}.${maxOrderSubsections + i + 1}`,
         order: maxOrderSubsections + i + 1,
         geometry: defaultGeometryForMultipleSubsectionForm,

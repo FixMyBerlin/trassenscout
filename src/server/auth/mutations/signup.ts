@@ -4,7 +4,7 @@ import { userCreatedNotificationToUser } from "@/emails/mailers/userCreatedNotif
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
-import { RouteUrlObject } from "blitz"
+import { Route } from "next"
 import { SignupSchema } from "../schema"
 import { createInviteLogEntry } from "../shared/createInviteLogEntry"
 import { getInvite } from "../shared/getInvite"
@@ -54,7 +54,7 @@ export default resolver.pipe(
     await (
       await userCreatedNotificationToUser({
         user: { email: user.email, name: getFullname(user) || "" },
-        path: { pathname: "/", query: undefined, href: "/" } satisfies RouteUrlObject,
+        path: "/" as Route,
       })
     ).send()
 

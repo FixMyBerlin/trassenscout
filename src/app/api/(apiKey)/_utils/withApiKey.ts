@@ -9,6 +9,9 @@ type HandlerCtx<TParams = {}> = {
  * The API key must be provided via query parameter: `apiKey`
  *
  * The function checks against `process.env.TS_API_KEY`
+ *
+ * Routes using this wrapper must also export: export const dynamic = "force-dynamic"
+ * (required because the wrapper uses request.url; Next would otherwise try to statically render.)
  */
 export function withApiKey<TParams = {}>(handler: (ctx: HandlerCtx<TParams>) => Promise<Response>) {
   return async (request: Request, { params }: { params?: Promise<TParams> | TParams }) => {

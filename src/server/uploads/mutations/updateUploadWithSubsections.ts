@@ -42,7 +42,7 @@ export default resolver.pipe(
       // copied from updateSubsubsection.ts
       // @ts-expect-error The whole `m2mFields` is way to hard to type but apparently working
       data: { ...data, ...connect, updatedById: currentUserId },
-      include: { subsection: { select: { id: true, slug: true, start: true, end: true } } },
+      include: { subsection: { select: { id: true, slug: true } } },
     })
   },
 )

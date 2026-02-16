@@ -87,6 +87,7 @@ Folgende Angaben wurden übermittelt:
 
 - **Fördergegenstand**: {{category}}
 - **Kommune**: {{commune}}
+- **Beschreibung der Dokumente**: {{uploadsDescription}}
 - **Verortung der Maßnahme:** {{geometryCategory}}
 - **Name der Haltestelle**: {{hsName}}
 - **Maßnahmenbeschreibung und Zielsetzung**: {{feedbackText}}
@@ -107,6 +108,7 @@ im Auftrag des Landkreises Oberhavel
     fields: [
       "commune",
       "category",
+      "uploadsDescription",
       "hsName",
       "feedbackText",
       "costs",

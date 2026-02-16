@@ -5,7 +5,10 @@ import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedS
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import { featureCollection, point } from "@turf/helpers"
-import maplibregl, { DataDrivenPropertyValueSpecification } from "maplibre-gl"
+import maplibregl, {
+  DataDrivenPropertyValueSpecification,
+  ExpressionSpecification,
+} from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import * as pmtiles from "pmtiles"
 import { useEffect, useState } from "react"
@@ -349,19 +352,29 @@ export const SurveyResponseOverviewMap = ({
     },
   ]
 
+  // Build match expression for geometryCategoryFor
+  // MapLibre match expression: ["match", input, label1, output1, label2, output2, ..., fallback]
+  // TypeScript doesn't recognize boolean literals when spread from flatMap, so we use a type assertion
+  const buildGeometryCategoryMatchFilter = (): ExpressionSpecification => {
+    const matchPairs: (number | boolean)[] = []
+    for (const id of mapSelection) {
+      matchPairs.push(id, true)
+    }
+    return [
+      "match",
+      ["get", "geometryCategoryFor"],
+      ...matchPairs,
+      false,
+    ] as unknown as ExpressionSpecification
+  }
+
   const geometryCategoryLayers: LayerProps[] = [
     {
       filter: [
         "all",
         ["==", ["get", "geometryType"], "line"],
         ["==", ["get", "geometryCategoryFor"], responseDetails],
-        // @ts-expect-error this works todo
-        [
-          "match",
-          ["get", "geometryCategoryFor"],
-          ...mapSelection.flatMap((id) => [id, true]),
-          false,
-        ],
+        buildGeometryCategoryMatchFilter(),
       ],
       id: "selected-response-geometry-category",
       beforeId: "survey-responses-with-location",
@@ -377,13 +390,7 @@ export const SurveyResponseOverviewMap = ({
         "all",
         ["==", ["get", "geometryType"], "polygon"],
         ["==", ["get", "geometryCategoryFor"], responseDetails],
-        // @ts-expect-error this works todo
-        [
-          "match",
-          ["get", "geometryCategoryFor"],
-          ...mapSelection.flatMap((id) => [id, true]),
-          false,
-        ],
+        buildGeometryCategoryMatchFilter(),
       ],
       id: "selected-response-geometry-category-polygon",
       beforeId: "survey-responses-with-location",
@@ -495,7 +502,7 @@ export const SurveyResponseOverviewMap = ({
         {surveyResponsesSource}
         {geometryCategorySource}
         <BackgroundSwitcher
-          className="absolute top-4 left-4"
+          position="top-left"
           value={selectedLayer}
           onChange={handleLayerSwitch}
         />

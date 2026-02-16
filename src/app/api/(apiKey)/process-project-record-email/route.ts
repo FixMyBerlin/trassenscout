@@ -3,6 +3,8 @@ import { processProjectRecordEmailOrchestrator } from "@/src/app/api/(apiKey)/pr
 
 import { z } from "zod"
 
+export const dynamic = "force-dynamic" // required with withApiKey (uses request.url)
+
 const ProcessProjectRecordEmailSchema = z.object({
   rawEmailText: z.string(),
   projectSlug: z.string().min(1).optional(),
