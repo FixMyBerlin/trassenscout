@@ -28,6 +28,8 @@ export const NewSubsectionClient = ({ initialMaxOrder, projectId }: Props) => {
   const [createSubsectionMutation] = useMutation(createSubsection)
   const [maxOrderSubsections] = useQuery(getSubsectionMaxOrder, projectId, {
     initialData: initialMaxOrder,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   })
 
   type HandleSubmit = z.infer<typeof NewSubsectionSchema>

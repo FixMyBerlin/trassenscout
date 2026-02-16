@@ -41,6 +41,8 @@ export const EditSubsubsectionClient = ({ initialSubsubsection }: Props) => {
     {
       initialData: initialSubsubsection,
       staleTime: Infinity,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
     },
   )
   const [updateSubsubsectionMutation] = useMutation(updateSubsubsection)

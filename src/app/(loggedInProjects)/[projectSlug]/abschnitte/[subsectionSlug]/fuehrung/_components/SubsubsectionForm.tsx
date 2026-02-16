@@ -30,30 +30,65 @@ import { SubsubsectionGeometryInput } from "./SubsubsectionGeometryInput"
 
 export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const projectSlug = useProjectSlug()
-  const [users] = useQuery(getProjectUsers, { projectSlug, role: "EDITOR" })
+  const [users] = useQuery(
+    getProjectUsers,
+    { projectSlug, role: "EDITOR" },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  )
 
-  const [{ qualityLevels }] = useQuery(getQualityLevelsWithCount, { projectSlug })
+  const [{ qualityLevels }] = useQuery(
+    getQualityLevelsWithCount,
+    { projectSlug },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  )
   const qualityLevelOptions = createFormOptions(
     qualityLevels,
     subsubsectionFieldTranslations.qualityLevelId,
     { optional: true, slugInLabel: true },
   )
 
-  const [{ subsubsectionStatuss }] = useQuery(getSubsubsectionStatussWithCount, { projectSlug })
+  const [{ subsubsectionStatuss }] = useQuery(
+    getSubsubsectionStatussWithCount,
+    { projectSlug },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  )
   const subsubsectionStatusOptions = createFormOptions(
     subsubsectionStatuss,
     subsubsectionFieldTranslations.subsubsectionStatusId,
     { optional: true, slugInLabel: false },
   )
 
-  const [{ subsubsectionTasks }] = useQuery(getSubsubsectionTasksWithCount, { projectSlug })
+  const [{ subsubsectionTasks }] = useQuery(
+    getSubsubsectionTasksWithCount,
+    { projectSlug },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  )
   const subsubsectionTaskOptions = createFormOptions(
     subsubsectionTasks,
     subsubsectionFieldTranslations.subsubsectionTaskId,
     { optional: true },
   )
 
-  const [{ subsubsectionInfras }] = useQuery(getSubsubsectionInfrasWithCount, { projectSlug })
+  const [{ subsubsectionInfras }] = useQuery(
+    getSubsubsectionInfrasWithCount,
+    { projectSlug },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  )
   const subsubsectionInfraOptions = createFormOptions(
     subsubsectionInfras,
     subsubsectionFieldTranslations.subsubsectionInfraId,
@@ -63,6 +98,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
   const [{ subsubsectionInfrastructureTypes }] = useQuery(
     getSubsubsectionInfrastructureTypesWithCount,
     { projectSlug },
+    { refetchOnWindowFocus: false, refetchOnReconnect: false },
   )
   const subsubsectionInfrastructureTypeOptions = createFormOptions(
     subsubsectionInfrastructureTypes,

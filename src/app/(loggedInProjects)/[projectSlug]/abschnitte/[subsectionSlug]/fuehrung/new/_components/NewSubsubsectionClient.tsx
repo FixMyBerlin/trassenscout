@@ -38,7 +38,11 @@ export const NewSubsubsectionClient = ({ initialSubsection }: Props) => {
       projectSlug,
       subsectionSlug: subsectionSlug!,
     },
-    { initialData: initialSubsection },
+    {
+      initialData: initialSubsection,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
   )
 
   type HandleSubmit = z.infer<typeof NewSubsubsectionSchema>

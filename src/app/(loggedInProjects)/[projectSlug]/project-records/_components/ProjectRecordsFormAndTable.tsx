@@ -29,8 +29,11 @@ export const ProjectRecordsFormAndTable = ({
   const [projectRecords, { refetch }] = useQuery(
     getProjectRecords,
     { projectSlug },
-    // todo check if this works as expected
-    { initialData: initialProjectRecords },
+    {
+      initialData: initialProjectRecords,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
   )
   const [createProjectRecordMutation] = useMutation(createProjectRecord)
   const [showSuccess, setShowSuccess] = useState(false)

@@ -35,7 +35,11 @@ export const SubsectionDashboardClient = ({ initialSubsections, initialSubsubsec
   const [subsectionsResult] = useQuery(
     getSubsections,
     { projectSlug },
-    { initialData: initialSubsections },
+    {
+      initialData: initialSubsections,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
   )
   const subsections = subsectionsResult?.subsections ?? []
   const subsection = subsections.find((ss) => ss.slug === subsectionSlug)
@@ -43,7 +47,11 @@ export const SubsectionDashboardClient = ({ initialSubsections, initialSubsubsec
   const [subsubsectionsResult] = useQuery(
     getSubsubsections,
     { projectSlug },
-    { initialData: initialSubsubsections },
+    {
+      initialData: initialSubsubsections,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
   )
   const subsubsections = subsubsectionsResult?.subsubsections ?? []
   const subsubsectionsForSubsection = subsubsections.filter(

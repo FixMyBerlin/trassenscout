@@ -28,10 +28,20 @@ export const EditProjectClient = ({ initialProject, initialUsers }: Props) => {
     {
       initialData: initialProject,
       staleTime: Infinity,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
     },
   )
   const [updateProjectMutation] = useMutation(updateProject)
-  const [users] = useQuery(getProjectUsers, { projectSlug }, { initialData: initialUsers })
+  const [users] = useQuery(
+    getProjectUsers,
+    { projectSlug },
+    {
+      initialData: initialUsers,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  )
 
   type HandleSubmit = z.infer<typeof ProjectFormSchema>
   const handleSubmit = async (values: HandleSubmit) => {

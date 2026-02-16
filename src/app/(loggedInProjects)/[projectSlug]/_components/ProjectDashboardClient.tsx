@@ -30,11 +30,23 @@ export const ProjectDashboardClient = ({ initialProject, initialSubsections }: P
   const searchParams = useSearchParams()
   const operatorParam = searchParams?.get("operator")
 
-  const [project] = useQuery(getProject, { projectSlug }, { initialData: initialProject })
+  const [project] = useQuery(
+    getProject,
+    { projectSlug },
+    {
+      initialData: initialProject,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  )
   const [subsectionsResult] = useQuery(
     getSubsections,
     { projectSlug },
-    { initialData: initialSubsections },
+    {
+      initialData: initialSubsections,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
   )
   const subsections = subsectionsResult?.subsections ?? []
 

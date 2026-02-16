@@ -30,15 +30,36 @@ type Props<S extends z.ZodType<any, any>> = FormProps<S>
 
 function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Props<S>) {
   const projectSlug = useProjectSlug()
-  const [users] = useQuery(getProjectUsers, { projectSlug, role: "EDITOR" })
+  const [users] = useQuery(
+    getProjectUsers,
+    { projectSlug, role: "EDITOR" },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  )
 
-  const [{ operators }] = useQuery(getOperatorsWithCount, { projectSlug })
+  const [{ operators }] = useQuery(
+    getOperatorsWithCount,
+    { projectSlug },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  )
   const operatorOptions = createFormOptions(operators, "Baulastträger", {
     optional: true,
     slugInLabel: true,
   })
 
-  const [{ networkHierarchys }] = useQuery(getNetworkHierarchysWithCount, { projectSlug })
+  const [{ networkHierarchys }] = useQuery(
+    getNetworkHierarchysWithCount,
+    { projectSlug },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  )
   const networkOptions = createFormOptions(networkHierarchys, "Netzstufe", {
     optional: true,
     slugInLabel: true,
@@ -48,7 +69,14 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
     return [priority, getPriorityTranslation(value)] as [string, string]
   })
 
-  const [{ subsectionStatuss }] = useQuery(getSubsectionStatussWithCount, { projectSlug })
+  const [{ subsectionStatuss }] = useQuery(
+    getSubsectionStatussWithCount,
+    { projectSlug },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  )
   const subsectionStatusOptions = createFormOptions(subsectionStatuss, "Status", { optional: true })
 
   return (

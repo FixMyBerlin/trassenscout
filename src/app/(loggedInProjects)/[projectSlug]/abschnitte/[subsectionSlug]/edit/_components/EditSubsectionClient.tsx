@@ -9,7 +9,6 @@ import { projectDashboardRoute } from "@/src/core/routes/projectRoutes"
 import { subsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
-import getProject from "@/src/server/projects/queries/getProject"
 import deleteSubsection from "@/src/server/subsections/mutations/deleteSubsection"
 import updateSubsection from "@/src/server/subsections/mutations/updateSubsection"
 import getSubsection from "@/src/server/subsections/queries/getSubsection"
@@ -22,18 +21,21 @@ import { SubsectionForm } from "../../../_components/SubsectionForm"
 
 type Props = {
   initialSubsection: Awaited<ReturnType<typeof getSubsection>>
-  initialProject: Awaited<ReturnType<typeof getProject>>
 }
 
-export const EditSubsectionClient = ({ initialSubsection, initialProject }: Props) => {
+export const EditSubsectionClient = ({ initialSubsection }: Props) => {
   const router = useRouter()
   const subsectionSlug = useSlug("subsectionSlug")
   const projectSlug = useProjectSlug()
-  const [project] = useQuery(getProject, { projectSlug }, { initialData: initialProject })
   const [subsection, { setQueryData }] = useQuery(
     getSubsection,
     { projectSlug, subsectionSlug: subsectionSlug! },
-    { initialData: initialSubsection, staleTime: Infinity },
+    {
+      initialData: initialSubsection,
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
   )
   const [updateSubsectionMutation] = useMutation(updateSubsection)
 
