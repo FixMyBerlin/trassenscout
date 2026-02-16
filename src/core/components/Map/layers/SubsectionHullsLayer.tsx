@@ -82,7 +82,7 @@ export const SubsectionHullsLayer = ({
         filter={filterOther}
         paint={{
           "fill-color": colorOtherExpression,
-          "fill-opacity": 0.05,
+          "fill-opacity": 0.28,
         }}
       />
       <Layer
