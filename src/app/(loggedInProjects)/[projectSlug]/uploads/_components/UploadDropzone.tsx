@@ -36,6 +36,7 @@ export const UploadDropzone = ({
       surveyResponseId: surveyResponseId || null,
       mimeType: file.type || null,
       fileSize: file.size || null,
+      // latitude and longitude will be extracted server-side from EXIF data
       latitude: null,
       longitude: null,
     })

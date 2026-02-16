@@ -52,10 +52,14 @@ export const UploadDropzoneBase = ({
     route: "upload",
     api,
     onError: (error) => {
+      // Follow better-upload pattern: use error.message with fallback
+      // See: https://github.com/Nic13Gamer/better-upload/blob/main/apps/docs/content/docs/guides/forms/react-hook-form.mdx
+      // This handles pre-upload errors (e.g., "Too many files")
+      // Per-file errors are shown in the FileUploadItem component
       const errorString =
         (error instanceof Error ? error.message : String(error)) ||
         "Ein unbekannter Fehler ist aufgetreten."
-
+      // Translate error message using the same system as Prisma errors
       const errorMessage = errorMessageTranslations[errorString] || errorString
       setUploadError(errorMessage)
     },
