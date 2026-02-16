@@ -70,18 +70,6 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
                 scope="col"
                 className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
               >
-                Start
-              </th>
-              <th
-                scope="col"
-                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
-              >
-                Ende
-              </th>
-              <th
-                scope="col"
-                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pr-6"
-              >
                 Geometrie
               </th>
               <th
@@ -121,22 +109,6 @@ export const SubsectionTableAdmin = ({ subsections }: Props) => {
                   </td>
                   <td className="py-4 pr-3 pl-4 text-sm font-medium text-gray-900">
                     {subsection.order}
-                  </td>
-                  <td
-                    className={clsx(
-                      "py-4 pr-3 pl-4 text-sm font-medium",
-                      subsection.end === "unbekannt" ? "text-gray-300" : "text-gray-900",
-                    )}
-                  >
-                    {subsection.start}
-                  </td>
-                  <td
-                    className={clsx(
-                      "py-4 pr-3 pl-4 text-sm font-medium",
-                      subsection.end === "unbekannt" ? "text-gray-300" : "text-gray-900",
-                    )}
-                  >
-                    {subsection.end}
                   </td>
 
                   <td

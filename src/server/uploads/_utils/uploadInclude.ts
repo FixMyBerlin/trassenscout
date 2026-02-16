@@ -1,5 +1,5 @@
 export const uploadWithSubsectionsInclude = {
-  subsection: { select: { id: true, slug: true, start: true, end: true } },
+  subsection: { select: { id: true, slug: true } },
   Subsubsection: {
     select: {
       id: true,

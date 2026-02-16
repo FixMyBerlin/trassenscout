@@ -8,7 +8,7 @@ import { SubsubsectionMapWithProvider } from "@/src/core/components/Map/Subsubse
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
-import { shortTitle, startEnd } from "@/src/core/components/text"
+import { shortTitle } from "@/src/core/components/text"
 import { subsectionEditRoute } from "@/src/core/routes/subsectionRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
@@ -70,7 +70,7 @@ export const SubsectionDashboardClient = ({ initialSubsections, initialSubsubsec
       <Breadcrumb />
       <PageHeader
         titleIcon={<SubsectionMapIcon label={shortTitle(subsection.slug)} />}
-        titleIconText={startEnd(subsection)}
+        titleIconText={subsection.slug}
         className="mt-12"
         action={
           <IfUserCanEdit>

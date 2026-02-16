@@ -2,7 +2,7 @@ import type { TGetProjectsWithGeometryWithMembershipRole } from "@/src/server/pr
 import { Marker } from "react-map-gl/maplibre"
 import { shortTitle } from "../../text"
 import { ProjectMapIcon } from "../Icons/ProjectIcon"
-import { StartEndLabel } from "../Labels"
+import { MarkerLabel } from "../Labels"
 import { TipMarker } from "../TipMarker"
 import { getLabelPosition } from "../utils/getLabelPosition"
 
@@ -33,7 +33,7 @@ const ProjectMarker = ({ projectSlug, subsections, onSelect }: ProjectMarkerProp
       onClick={() => onSelect(projectSlug)}
     >
       <TipMarker anchor="top" slug={projectSlug} highlightLevel="project">
-        <StartEndLabel icon={<ProjectMapIcon label={shortTitle(projectSlug)} />} layout="compact" />
+        <MarkerLabel icon={<ProjectMapIcon label={shortTitle(projectSlug)} />} layout="compact" />
       </TipMarker>
     </Marker>
   )

@@ -155,7 +155,7 @@ const UploadTableRow = ({
             {upload.subsection && (
               <li>
                 <Link href={subsectionDashboardRoute(projectSlug, upload.subsection.slug)}>
-                  Planungsabschnitt: {upload.subsection.start}–{upload.subsection.end}
+                  Planungsabschnitt: {shortTitle(upload.subsection.slug)}
                 </Link>
               </li>
             )}

@@ -28,7 +28,7 @@ export default resolver.pipe(
         uploads: {
           include: {
             subsection: {
-              select: { id: true, slug: true, start: true, end: true },
+              select: { id: true, slug: true },
             },
             Subsubsection: {
               select: {
@@ -71,7 +71,7 @@ export default resolver.pipe(
 
       // Build display data for links (when available)
       const displayData: {
-        subsection?: { id: number; slug: string; start: string; end: string }
+        subsection?: { id: number; slug: string }
         subsubsection?: { id: number; slug: string; subsectionSlug: string }
         otherProjectRecords?: Array<{ id: number; title: string }>
       } = {}
@@ -81,8 +81,6 @@ export default resolver.pipe(
         displayData.subsection = {
           id: upload.subsection.id,
           slug: upload.subsection.slug,
-          start: upload.subsection.start,
-          end: upload.subsection.end,
         }
       }
       if (upload.subsubsectionId && upload.Subsubsection) {

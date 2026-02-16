@@ -4,6 +4,7 @@ import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlu
 import { ActionBar } from "@/src/core/components/forms/ActionBar"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { Link } from "@/src/core/components/links"
+import { shortTitle } from "@/src/core/components/text"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
 import {
   subsectionDashboardRoute,
@@ -94,7 +95,7 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
         <span key="subsection">
           Planungsabschnitt:{" "}
           <Link href={subsectionDashboardRoute(projectSlug, subsection.slug)}>
-            {subsection.start}–{subsection.end}
+            {shortTitle(subsection.slug)}
           </Link>
         </span>,
       )

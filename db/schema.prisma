@@ -244,8 +244,6 @@ model Subsection {
   updatedAt                     DateTime          @updatedAt
   //
   slug                          String // shortTitle and URL Slug
-  start                         String
-  end                           String
   order                         Int               @default(autoincrement())
   type                          GeometryTypeEnum  @default(LINE) // Geometry type
   geometry                      Json

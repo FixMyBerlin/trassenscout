@@ -90,8 +90,6 @@ const seedSubsections = async () => {
       slug: "poly-1",
       order: 1,
       type: "POLYGON",
-      start: "Test Start",
-      end: "Test End",
       description: "Test subsection with single Polygon geometry",
       labelPos: "top",
       geometry: {
@@ -117,8 +115,6 @@ const seedSubsections = async () => {
       slug: "poly-3",
       order: 2,
       type: "POLYGON",
-      start: "Test Start",
-      end: "Test End",
       description:
         "Test subsection with MultiPolygon geometry (3 polygons: 2 connected, 1 separate)",
       labelPos: "bottom",
@@ -169,8 +165,6 @@ const seedSubsections = async () => {
       slug: "line-1",
       order: 3,
       type: "LINE",
-      start: "Test Start",
-      end: "Test End",
       description: "Test subsection with single LineString geometry",
       labelPos: "top",
       geometry: {
@@ -193,8 +187,6 @@ const seedSubsections = async () => {
       slug: "line-3",
       order: 4,
       type: "LINE",
-      start: "Test Start",
-      end: "Test End",
       description:
         "Test subsection with MultiLineString geometry (3 lines: 2 connected, 1 separate)",
       labelPos: "bottom",
@@ -233,8 +225,6 @@ const seedSubsections = async () => {
       slug: "rs3000-line",
       order: 1,
       type: "LINE",
-      start: "RS3000 Start",
-      end: "RS3000 End",
       description: "RS3000 subsection with single LineString geometry",
       labelPos: "top",
       geometry: {

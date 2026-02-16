@@ -2,7 +2,7 @@ import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { Marker } from "react-map-gl/maplibre"
 import { shortTitle } from "../../text"
 import { SubsectionMapIcon } from "../Icons"
-import { StartEndLabel } from "../Labels"
+import { MarkerLabel } from "../Labels"
 import { TipMarker } from "../TipMarker"
 import { getLabelPosition } from "../utils/getLabelPosition"
 
@@ -31,11 +31,9 @@ const SubsectionMarker = ({ subsection, zoom, onSelect }: SubsectionMarkerProps)
       onClick={(e) => onSelect({ subsectionSlug: subsection.slug, edit: e.originalEvent.altKey })}
     >
       <TipMarker anchor={subsection.labelPos} slug={subsection.slug} highlightLevel="subsection">
-        <StartEndLabel
+        <MarkerLabel
           icon={<SubsectionMapIcon label={shortTitle(subsection.slug)} />}
           subIcon={subsection.operator?.slug}
-          start={subsection.start}
-          end={subsection.end}
           layout={expandByZoom(zoom) ? "compact" : "details"}
         />
       </TipMarker>

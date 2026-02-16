@@ -32,15 +32,13 @@ export const MultipleNewSubsectionsForm = () => {
     const newSubsections: Array<
       { geometry: TGetSubsection["geometry"] } & Pick<
         Subsection,
-        "projectId" | "labelPos" | "start" | "end" | "slug" | "order" | "lengthM"
+        "projectId" | "labelPos" | "slug" | "order" | "lengthM"
       >
     > = []
     for (let i = 0; i < Number(values.no); i++) {
       newSubsections.push({
         projectId: project.id,
         labelPos: "bottom",
-        start: "unbekannt",
-        end: "unbekannt",
         slug: `pa${values.prefix}.${maxOrderSubsections + i + 1}`,
         order: maxOrderSubsections + i + 1,
         geometry: defaultGeometryForMultipleSubsectionForm,

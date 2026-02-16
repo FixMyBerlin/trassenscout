@@ -30,7 +30,7 @@ export const UploadsTableWithFilter = ({ uploads, hasMore, page, onDelete }: Pro
   ]
   subsections.forEach((ss) => {
     const count = uploads.filter((f) => f.subsectionId === ss.id).length
-    selectOptions.push([ss.id, `${shortTitle(ss.slug)} – ${ss.start}–${ss.end} (${count})`, count])
+    selectOptions.push([ss.id, `${shortTitle(ss.slug)} (${count})`, count])
   })
 
   const filteredUploads = filterSubsectionId

@@ -10,7 +10,6 @@ import { Tooltip } from "@/src/core/components/Tooltip/Tooltip"
 import { Link } from "@/src/core/components/links"
 import { shortTitle } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
-import { startEnd } from "@/src/core/components/text/startEnd"
 import { subsectionDashboardRoute, subsectionNewRoute } from "@/src/core/routes/subsectionRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
@@ -39,7 +38,7 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
                 Planungsabschnitt
               </th>
               <th scope="col" className={tableHeadClasses}>
-                Von–Bis
+                Slug
               </th>
               <th scope="col" className={tableHeadClasses}>
                 <span className="sr-only">Geometrietyp</span>
@@ -71,7 +70,7 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
                     <SubsectionIcon label={shortTitle(subsection.slug)} />
                   </td>
                   <td className="py-4 pr-3 pl-4 text-sm font-medium text-blue-500 group-hover:text-blue-800">
-                    {startEnd(subsection)}
+                    {subsection.slug}
                   </td>
                   <td className="px-1.5 py-2 text-sm">
                     <div className="flex items-center justify-center">

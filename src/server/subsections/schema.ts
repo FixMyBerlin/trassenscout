@@ -10,8 +10,6 @@ export const SubsectionBaseSchema = z.object({
   type: z.nativeEnum(GeometryTypeEnum),
   lengthM: InputNumberOrNullSchema,
   description: z.string().nullish(),
-  start: z.string().min(1, { message: "Pflichtfeld. Mindestens 1 Zeichen." }),
-  end: z.string().min(1, { message: "Pflichtfeld. Mindestens 1 Zeichen." }),
   labelPos: z.nativeEnum(LabelPositionEnum),
   geometry: SupportedGeometrySchema,
   projectId: z.coerce.number(),
