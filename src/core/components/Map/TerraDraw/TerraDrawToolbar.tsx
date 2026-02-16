@@ -1,5 +1,6 @@
-import { PaintBrushIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
+import { LineSquiggle } from "lucide-react"
 import { GeometryIcon } from "../Icons/GeometryIcon"
 import type { TerraDrawMode } from "./useTerraDrawControl"
 
@@ -120,7 +121,7 @@ export const TerraDrawToolbar = ({
             }
             disabled={!enabledButtons["freehand-linestring"]}
           >
-            <PaintBrushIcon className="size-4" />
+            <LineSquiggle className="size-4" />
             Freihand
           </button>
         </>
@@ -148,12 +149,12 @@ export const TerraDrawToolbar = ({
         onClick={() => enabledButtons.edit && setMode("select")}
         className={buttonClass(mode === "select", !enabledButtons.edit)}
         title={
-          enabledButtons.edit ? "Bearbeiten/Auswählen" : "Deaktiviert - keine Geometrien vorhanden"
+          enabledButtons.edit ? "Ändern/Auswählen" : "Deaktiviert - keine Geometrien vorhanden"
         }
         disabled={!enabledButtons.edit}
       >
         <PencilIcon className="size-4" />
-        Bearbeiten
+        Ändern
       </button>
 
       {(onClear || deleteSelected) && (
