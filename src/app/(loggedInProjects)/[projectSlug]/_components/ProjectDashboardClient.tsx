@@ -15,6 +15,8 @@ import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProject from "@/src/server/projects/queries/getProject"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import { useQuery } from "@blitzjs/rpc"
+
+import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { useSearchParams } from "next/navigation"
 import { MapProvider } from "react-map-gl/maplibre"
 import { OperatorFilter } from "./OperatorFilter"
@@ -60,7 +62,7 @@ export const ProjectDashboardClient = ({ initialProject, initialSubsections }: P
       <PageHeader
         title={shortTitle(project.slug)}
         subtitle={project.subTitle}
-        description={<div className="mt-4">{project.description}</div>}
+        description={project.description ? <Markdown markdown={project.description} /> : undefined}
         action={
           <IfUserCanEdit>
             <Link icon="edit" href={projectEditRoute(projectSlug)}>

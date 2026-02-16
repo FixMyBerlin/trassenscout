@@ -6,6 +6,7 @@ import { Breadcrumb } from "@/src/core/components/Breadcrumb/Breadcrumb"
 import { SubsectionMapIcon } from "@/src/core/components/Map/Icons"
 import { SubsubsectionMapWithProvider } from "@/src/core/components/Map/SubsubsectionMapWithProvider"
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
+import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { shortTitle } from "@/src/core/components/text"
@@ -79,9 +80,7 @@ export const SubsectionDashboardClient = ({ initialSubsections, initialSubsubsec
             </Link>
           </IfUserCanEdit>
         }
-        description={
-          <>{subsection.description && <div className="mt-4">{subsection.description}</div>}</>
-        }
+        description={subsection.description ? <Markdown markdown={subsection.description} /> : undefined}
       />
 
       <div className="relative mt-12 flex w-full gap-10">
