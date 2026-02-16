@@ -18,10 +18,7 @@ const RequestParamsSchema = z.object({
  * but this is a public route and we want to keep it simple for now.
  * We might want to add token authentication in the future.
  */
-async function verifySurveyResponseSession(
-  surveyResponseId: number,
-  surveySessionId: number,
-): Promise<{ projectSlug: string }> {
+async function verifySurveyResponseSession(surveyResponseId: number, surveySessionId: number) {
   const surveyResponse = await db.surveyResponse.findFirst({
     where: {
       id: surveyResponseId,
