@@ -18,6 +18,35 @@ import { useParams } from "next/navigation"
 import { useContext, useEffect, useState } from "react"
 import { z } from "zod"
 
+type ConfigFieldWithProps = {
+  component: string
+  props?: Record<string, unknown>
+}
+
+function getFieldPropsWithSurveyResponseContext({
+  configField,
+  surveyResponseId,
+  surveySessionId,
+}: {
+  configField: ConfigFieldWithProps
+  surveyResponseId: number | null
+  surveySessionId: number | null
+}) {
+  // Special handling for SurveyUploadField to pass surveyResponseId and surveySessionId
+  if (
+    configField.component === "SurveyUploadField" &&
+    surveyResponseId !== null &&
+    surveySessionId !== null
+  ) {
+    return {
+      ...configField.props,
+      surveyResponseId,
+      surveySessionId,
+    }
+  }
+  return configField.props
+}
+
 type Props = {
   stage: "part1" | "part2" | "part3"
   handleSubmit: ({
@@ -235,18 +264,12 @@ export const SurveyPart = ({
                                 {(field) => {
                                   const Component = field[configField.component]
                                   if (!Component) return null
-                                  // Special handling for SurveyUploadField to pass surveyResponseId and surveySessionId
-                                  const props =
-                                    configField.component === "SurveyUploadField" &&
-                                    surveyResponseId !== null &&
-                                    surveySessionId !== null
-                                      ? {
-                                          ...configField.props,
-                                          surveyResponseId,
-                                          surveySessionId,
-                                        }
-                                      : configField.props
-
+                                  const props = getFieldPropsWithSurveyResponseContext({
+                                    // configField has more properties; we only need component + props here
+                                    configField,
+                                    surveyResponseId,
+                                    surveySessionId,
+                                  })
                                   return (
                                     // typescript does not know that the component is a valid field component
                                     // @ts-expect-error tbd
@@ -272,18 +295,12 @@ export const SurveyPart = ({
                         {(field) => {
                           const Component = field[configField.component]
                           if (!Component) return null
-                          // Special handling for SurveyUploadField to pass surveyResponseId and surveySessionId
-                          const props =
-                            configField.component === "SurveyUploadField" &&
-                            surveyResponseId !== null &&
-                            surveySessionId !== null
-                              ? {
-                                  ...configField.props,
-                                  surveyResponseId,
-                                  surveySessionId,
-                                }
-                              : configField.props
-
+                          const props = getFieldPropsWithSurveyResponseContext({
+                            // configField has more properties; we only need component + props here
+                            configField,
+                            surveyResponseId,
+                            surveySessionId,
+                          })
                           return (
                             // typescript does not know that the component is a valid field component
                             // @ts-expect-error tbd
