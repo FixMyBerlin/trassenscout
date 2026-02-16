@@ -1,7 +1,6 @@
 import db, { SurveyResponseStateEnum } from "@/db"
 import { withApiKey } from "@/src/app/api/(apiKey)/_utils/withApiKey"
 import { calculateComparisonDate } from "@/src/app/api/_utils/calculateComparisonDate"
-import { isDev } from "@/src/core/utils/isEnv"
 import { guardedCreateSystemLogEntry } from "@/src/server/systemLogEntries/create/guardedCreateSystemLogEntry"
 import { deleteUploadFileAndDbRecord } from "@/src/server/uploads/_utils/deleteUploadFileAndDbRecord"
 
@@ -19,19 +18,18 @@ type UploadForDeletion = {
   collaborationPath: string | null
 }
 
-export const GET = withApiKey(async ({ apiKey, request }) => {
-  const url = new URL(request.url)
-  const daysOverrideRaw = url.searchParams.get("days")
+export const GET = withApiKey(async ({ apiKey }) => {
+  // Fire-and-forget: we don't want to await the cleanup work.
+  void runSurveyResponsesCleanup({ apiKey }).catch((error) => {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    console.error("[CRON surveyResponses-cleanup]", { statusText: "Error", error: errorMessage })
+  })
 
-  let daysToDeletion = SURVEYRESPONSES_CREATED_DAYS_TO_DELETION
-  if (isDev && daysOverrideRaw != null && daysOverrideRaw !== "") {
-    const parsed = Number(daysOverrideRaw)
-    if (Number.isFinite(parsed) && parsed >= 0) {
-      daysToDeletion = Math.floor(parsed)
-    }
-  }
+  return Response.json({ statusText: "Success" }, { status: 200 })
+})
 
-  const compareDate = calculateComparisonDate(daysToDeletion)
+async function runSurveyResponsesCleanup({ apiKey }: { apiKey: string }) {
+  const compareDate = calculateComparisonDate(SURVEYRESPONSES_CREATED_DAYS_TO_DELETION)
 
   const candidates = await db.surveyResponse.findMany({
     where: {
@@ -73,11 +71,14 @@ export const GET = withApiKey(async ({ apiKey, request }) => {
       orderBy: { id: "asc" },
     })
 
+    const deletableUploadsCount = uploadsToDelete.length
+    let deletedDeletableUploadsForSurveyResponseCount = 0
     let hadUploadErrors = false
     for (const upload of uploadsToDelete) {
       try {
         await deleteUploadFileAndDbRecord(upload)
         deletedUploadsCount += 1
+        deletedDeletableUploadsForSurveyResponseCount += 1
       } catch (error: any) {
         hadUploadErrors = true
         uploadDeletionFailedCount += 1
@@ -90,7 +91,12 @@ export const GET = withApiKey(async ({ apiKey, request }) => {
       }
     }
 
-    if (hadUploadErrors) {
+    // Only delete the Upload DB records and SurveyResponse if *all* deletable uploads were deleted successfully,
+    // or if there were no deletable uploads to begin with.
+    if (
+      hadUploadErrors ||
+      deletedDeletableUploadsForSurveyResponseCount !== deletableUploadsCount
+    ) {
       skippedSurveyResponsesDueToUploadErrorsCount += 1
       continue
     }
@@ -123,13 +129,33 @@ export const GET = withApiKey(async ({ apiKey, request }) => {
     deletedSurveyResponsesCount += count
   }
 
+  const resultForLogging = {
+    statusText: "Success",
+    candidateIdsCount: candidateIds.length,
+    deletedSurveyResponsesCount,
+    deletedUploadsCount,
+    uploadDeletionFailedCount,
+    skippedSurveyResponsesDueToUploadErrorsCount,
+  }
+
+  console.log(
+    `[CRON surveyResponses-cleanup] ${JSON.stringify(
+      {
+        ...resultForLogging,
+        candidateIds,
+      },
+      null,
+      2,
+    )}`,
+  )
+
   await guardedCreateSystemLogEntry({
     apiKey,
     logLevel: "INFO",
     message: "CRON surveyResponses-cleanup",
     context: {
       SURVEYRESPONSES_CREATED_DAYS_TO_DELETION,
-      daysToDeletion,
+      daysToDeletion: SURVEYRESPONSES_CREATED_DAYS_TO_DELETION,
       compareDate: compareDate.toISOString(),
       MAX_SURVEYRESPONSES_PER_RUN,
       candidateIdsCount: candidateIds.length,
@@ -140,16 +166,4 @@ export const GET = withApiKey(async ({ apiKey, request }) => {
       uploadDeletionFailedSample,
     },
   })
-
-  return Response.json(
-    {
-      statusText: "Success",
-      candidateIdsCount: candidateIds.length,
-      deletedSurveyResponsesCount,
-      deletedUploadsCount,
-      uploadDeletionFailedCount,
-      skippedSurveyResponsesDueToUploadErrorsCount,
-    },
-    { status: 200 },
-  )
-})
+}
