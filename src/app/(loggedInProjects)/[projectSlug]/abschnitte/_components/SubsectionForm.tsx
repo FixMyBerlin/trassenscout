@@ -93,7 +93,6 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
       </div>
       <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
       <SubsectionGeometryInput />
-      <LabeledTextFieldCalculateLength name="lengthM" label="Länge" optional />
       <details>
         <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
         <div className="space-y-6">
@@ -107,6 +106,7 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
           />
         </div>
       </details>
+      <LabeledTextFieldCalculateLength name="lengthM" label="Länge" optional />
       <div className="flex items-end gap-5">
         <LabeledSelect
           name="operatorId"
