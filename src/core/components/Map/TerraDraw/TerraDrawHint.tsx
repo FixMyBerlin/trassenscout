@@ -1,14 +1,11 @@
 import {
   terraDrawHintDismissedActions,
   terraDrawHintDismissedState,
+  terraDrawModeState,
   type TerraDrawHintMode,
 } from "@/src/core/store/terraDrawHintDismissed.zustand"
 import { XMarkIcon } from "@heroicons/react/24/outline"
 import { TERRA_DRAW_COLORS } from "./terraDrawConfig"
-
-type Props = {
-  mode: TerraDrawHintMode
-}
 
 function ColorDot({ color }: { color: string }) {
   return (
@@ -48,10 +45,12 @@ const HINT_BY_MODE: Partial<Record<TerraDrawHintMode, React.ReactNode>> = {
   ),
 }
 
-export const TerraDrawHint = ({ mode }: Props) => {
+export const TerraDrawHint = () => {
+  const mode = terraDrawModeState()
   const dismissedModes = terraDrawHintDismissedState()
   const { dismissTerraDrawHint } = terraDrawHintDismissedActions()
 
+  if (mode === null) return null
   if (dismissedModes.has(mode)) return null
 
   const content = HINT_BY_MODE[mode]
@@ -67,7 +66,7 @@ export const TerraDrawHint = ({ mode }: Props) => {
         type="button"
         onClick={() => dismissTerraDrawHint(mode)}
         className="shrink-0 rounded p-0.5 text-gray-300 hover:bg-gray-700 hover:text-white"
-        aria-label="Hinweis schließen"
+        aria-label="Hinweis heute nicht mehr anzeigen"
       >
         <XMarkIcon className="size-4" />
       </button>

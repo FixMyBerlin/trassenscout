@@ -10,22 +10,29 @@ export type TerraDrawHintMode =
 
 export type TTerraDrawHintDismissed = {
   dismissedModes: Set<TerraDrawHintMode>
-  actions: { dismissTerraDrawHint: (mode: TerraDrawHintMode) => void }
+  mode: TerraDrawHintMode | null
+  actions: {
+    dismissTerraDrawHint: (mode: TerraDrawHintMode) => void
+    setTerraDrawMode: (mode: TerraDrawHintMode | null) => void
+  }
 }
 
 const terraDrawHintDismissed = create<TTerraDrawHintDismissed>()((set) => ({
   dismissedModes: new Set(),
+  mode: null,
   actions: {
     dismissTerraDrawHint: (mode) => {
       set((state) => ({
         dismissedModes: new Set(state.dismissedModes).add(mode),
       }))
     },
+    setTerraDrawMode: (mode) => set({ mode }),
   },
 }))
 
 export const terraDrawHintDismissedState = () =>
   terraDrawHintDismissed((state) => state.dismissedModes)
 
-export const terraDrawHintDismissedActions = () =>
-  terraDrawHintDismissed((state) => state.actions)
+export const terraDrawModeState = () => terraDrawHintDismissed((state) => state.mode)
+
+export const terraDrawHintDismissedActions = () => terraDrawHintDismissed((state) => state.actions)

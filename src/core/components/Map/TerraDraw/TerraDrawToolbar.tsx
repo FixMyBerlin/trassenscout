@@ -185,7 +185,7 @@ export const TerraDrawToolbar = ({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-md bg-white p-2 shadow-md">
+    <div className="flex w-max flex-wrap items-center gap-3 rounded-md bg-white p-2 shadow-md">
       {/* Stift */}
       <div className="flex items-center gap-1.5">
         <span className="text-sm font-medium text-gray-700">Stift:</span>
