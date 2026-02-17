@@ -14,6 +14,7 @@ type Props = {
     getSelectedIds: () => string[]
     deleteSelected: () => void
     selectedIds: string[]
+    hasGeometries: boolean
     enabledButtons: {
       point: boolean
       linestring: boolean
@@ -48,6 +49,7 @@ export const TerraDrawProvider = ({ initialGeometry, onChange, children }: Props
             getSelectedIds: control.getSelectedIds,
             deleteSelected: control.deleteSelected,
             selectedIds: control.selectedIds,
+            hasGeometries: control.getSnapshot().length > 0,
             enabledButtons: control.enabledButtons,
           })}
         </div>

@@ -1,4 +1,4 @@
-import type { HexColor } from "terra-draw"
+import type { GeoJSONStoreFeatures, HexColor } from "terra-draw"
 import {
   TerraDrawFreehandLineStringMode,
   TerraDrawLineStringMode,
@@ -8,28 +8,35 @@ import {
 } from "terra-draw"
 
 export const TERRA_DRAW_COLORS = {
+  /** Yellow – selected (edit mode) or the feature being drawn (add mode) */
   drawing: "#F8C62B" as HexColor,
   selectedDark: "#F8C62B" as HexColor,
-  selectionPoint: "#c33cb68c" as HexColor,
-  editHandle: "#ec407a" as HexColor,
+  /** Blue – unselected (edit mode) or at-rest features (add mode) */
+  unselected: "#2c62a9" as HexColor,
 }
 
+/** Use yellow for the feature currently being drawn, blue for the rest. */
+const colorByDrawingState = (feature: GeoJSONStoreFeatures) =>
+  feature.properties?.currentlyDrawing ? TERRA_DRAW_COLORS.drawing : TERRA_DRAW_COLORS.unselected
+
 // DOCS STYLING: https://github.com/JamesLMilner/terra-draw/blob/main/guides/5.STYLING.md
+// In add/draw mode: existing features = blue (unselected), the one being drawn = yellow (colorByDrawingState).
+// In edit/select mode: unselected = blue (from these mode styles), selected = yellow (from SelectMode selected* styles).
 export const createTerraDrawModes = () => [
   new TerraDrawPointMode({
-    styles: { pointColor: TERRA_DRAW_COLORS.drawing },
+    styles: { pointColor: colorByDrawingState },
   }),
   new TerraDrawLineStringMode({
-    styles: { lineStringColor: TERRA_DRAW_COLORS.drawing },
+    styles: { lineStringColor: colorByDrawingState },
   }),
   new TerraDrawFreehandLineStringMode({
-    styles: { lineStringColor: TERRA_DRAW_COLORS.drawing },
+    styles: { lineStringColor: colorByDrawingState },
   }),
   new TerraDrawPolygonMode({
     styles: {
-      outlineColor: TERRA_DRAW_COLORS.drawing,
-      fillColor: TERRA_DRAW_COLORS.drawing, // Yellow fill for polygons
-      fillOpacity: 0.3, // Semi-transparent yellow fill
+      outlineColor: colorByDrawingState,
+      fillColor: colorByDrawingState,
+      fillOpacity: 0.3,
     },
   }),
   new TerraDrawSelectMode({
@@ -46,43 +53,54 @@ export const createTerraDrawModes = () => [
       linestring: {
         feature: {
           draggable: true,
-          coordinates: { draggable: true, midpoints: { draggable: true } },
+          coordinates: {
+            draggable: true,
+            // true, not {dragable:true} because that is worse UX
+            midpoints: true,
+          },
         },
       },
       "freehand-linestring": {
         feature: {
           draggable: true,
-          coordinates: { draggable: true, midpoints: { draggable: true } },
+          coordinates: {
+            draggable: true,
+            // true, not {dragable:true} because that is worse UX
+            midpoints: true,
+          },
         },
       },
       polygon: {
         feature: {
           draggable: true,
-          coordinates: { draggable: true, midpoints: { draggable: true } },
+          coordinates: {
+            draggable: true,
+            // true, not {dragable:true} because that is worse UX
+            midpoints: true,
+          },
         },
       },
     },
     styles: {
       // https://github.com/JamesLMilner/terra-draw/blob/main/guides/5.STYLING.md#selection-points
-      // Corner/vertex points (selection points)
-      selectedPointColor: TERRA_DRAW_COLORS.editHandle,
-      selectionPointColor: TERRA_DRAW_COLORS.editHandle,
+      // Edit mode: selected = yellow; unselected = blue (from drawing mode styles above).
+      selectedPointColor: TERRA_DRAW_COLORS.selectedDark,
+      selectionPointColor: "#ec407a",
       selectionPointOpacity: 0.95,
-      selectionPointWidth: 7,
-      selectionPointOutlineColor: TERRA_DRAW_COLORS.editHandle,
-      selectionPointOutlineWidth: 2,
+      selectionPointOutlineColor: "#ec407a",
       selectionPointOutlineOpacity: 0.95,
+      selectionPointOutlineWidth: 2,
+      selectionPointWidth: 7,
       selectedLineStringColor: TERRA_DRAW_COLORS.selectedDark,
       selectedPolygonColor: TERRA_DRAW_COLORS.selectedDark,
+      selectedPolygonFillOpacity: 0.3,
       selectedPolygonOutlineColor: TERRA_DRAW_COLORS.selectedDark,
-      selectedPolygonFillOpacity: 0.3, // Semi-transparent yellow fill for selected polygon
-      // Mid points (between-corner markers)
-      midPointColor: TERRA_DRAW_COLORS.editHandle,
-      midPointOutlineColor: TERRA_DRAW_COLORS.editHandle,
+      midPointColor: "#a855f7",
       midPointOpacity: 0.95,
-      midPointWidth: 3,
-      midPointOutlineWidth: 1,
+      midPointOutlineColor: "#a855f7",
       midPointOutlineOpacity: 0.95,
+      midPointOutlineWidth: 0,
+      midPointWidth: 3,
     },
   }),
 ]

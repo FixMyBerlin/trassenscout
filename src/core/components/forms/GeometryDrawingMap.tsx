@@ -86,9 +86,9 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
             setMode,
             clear,
             updateFeatures,
-            getSelectedIds,
             deleteSelected,
             selectedIds,
+            hasGeometries,
             enabledButtons,
           }) => {
             // Store updateFeatures in ref so SnappingControls can use it
@@ -98,9 +98,9 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
                 mode={mode}
                 setMode={setMode}
                 onClear={clear}
-                getSelectedIds={getSelectedIds}
                 deleteSelected={deleteSelected}
                 selectedIds={selectedIds}
+                hasGeometries={hasGeometries}
                 showPoint={showPoint}
                 showLine={showLine}
                 showPolygon={showPolygon}
