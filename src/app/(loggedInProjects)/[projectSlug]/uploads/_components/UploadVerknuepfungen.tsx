@@ -1,6 +1,7 @@
 import { Link } from "@/src/core/components/links"
 import { longTitle, shortTitle } from "@/src/core/components/text/titles"
 import { projectRecordDetailRoute } from "@/src/core/routes/projectRecordRoutes"
+
 import { formatBerlinTime } from "@/src/core/utils/formatBerlinTime"
 
 type Props = {
@@ -9,6 +10,7 @@ type Props = {
   subsubsection: { slug: string } | null
   projectRecords: { id: number; title: string; date: Date | null }[] | null
   projectRecordEmail: { createdAt: Date } | null
+  surveyResponse: { id: number; surveySession: { survey: { slug: string } } } | null
   className?: string
 }
 
@@ -18,14 +20,20 @@ export const UploadVerknuepfungen = ({
   subsubsection,
   projectRecords,
   projectRecordEmail,
+  surveyResponse,
   className,
 }: Props) => {
   const hasSubsection = subsection !== null
   const hasSubsubsection = subsubsection !== null
   const hasProjectRecords = projectRecords != null && projectRecords.length > 0
   const hasProjectRecordEmail = projectRecordEmail !== null
+  const hasSurveyResponse = surveyResponse !== null
   const hasRelations =
-    hasSubsection || hasSubsubsection || hasProjectRecords || hasProjectRecordEmail
+    hasSubsection ||
+    hasSubsubsection ||
+    hasProjectRecords ||
+    hasProjectRecordEmail ||
+    hasSurveyResponse
 
   return (
     <section className={className}>
@@ -54,6 +62,13 @@ export const UploadVerknuepfungen = ({
                   {index < projectRecords!.length - 1 && ", "}
                 </>
               ))}
+            </li>
+          )}
+          {hasSurveyResponse && (
+            <li>
+              <strong className="font-medium">Beteiligung: </strong>
+              Beitrag mit der ID {surveyResponse.id} - Formular{" "}
+              {surveyResponse.surveySession.survey.slug}
             </li>
           )}
           {hasProjectRecordEmail && (

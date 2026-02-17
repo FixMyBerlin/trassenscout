@@ -221,6 +221,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
         subsubsection={upload.Subsubsection}
         projectRecords={upload.projectRecords}
         projectRecordEmail={upload.projectRecordEmail}
+        surveyResponse={upload.surveyResponse}
       />
 
       <SuperAdminLogData data={{ upload, subsections, returnPath, returnText }} />
