@@ -2,6 +2,7 @@
 
 import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzone"
 import { UploadsTableWithFilter } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadsTableWithFilter"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWithSubsections"
 import { useQuery } from "@blitzjs/rpc"
@@ -16,6 +17,18 @@ export const UploadsPageContent = () => {
 
   const [{ uploads, hasMore }, { refetch: refetchUploads }] = useQuery(getUploadsWithSubsections, {
     projectSlug,
+    // Filter out uploads that are ONLY related to survey responses
+    where: {
+      NOT: {
+        AND: [
+          { surveyResponseId: { not: null } },
+          { subsectionId: null },
+          { subsubsectionId: null },
+          { projectRecordEmailId: null },
+          { projectRecords: { none: {} } },
+        ],
+      },
+    },
   })
 
   return (
@@ -35,6 +48,11 @@ export const UploadsPageContent = () => {
           await refetchUploads()
         }}
       />
+      <SuperAdminBox>
+        <strong>Hinweis:</strong> Uploads, die ausschließlich mit Beteiligungsbeiträgen verknüpft
+        sind, werden in dieser Übersicht nicht angezeigt. Diese Uploads sind nur über den jeweiligen
+        Beteiligungsbeitrag zugänglich.
+      </SuperAdminBox>
     </>
   )
 }
