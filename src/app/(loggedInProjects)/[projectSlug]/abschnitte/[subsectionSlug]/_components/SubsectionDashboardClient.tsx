@@ -71,7 +71,6 @@ export const SubsectionDashboardClient = ({ initialSubsections, initialSubsubsec
       <Breadcrumb />
       <PageHeader
         titleIcon={<SubsectionMapIcon label={shortTitle(subsection.slug)} />}
-        titleIconText={subsection.slug}
         className="mt-12"
         action={
           <IfUserCanEdit>

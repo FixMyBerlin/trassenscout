@@ -38,9 +38,6 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
                 Planungsabschnitt
               </th>
               <th scope="col" className={tableHeadClasses}>
-                Slug
-              </th>
-              <th scope="col" className={tableHeadClasses}>
                 <span className="sr-only">Geometrietyp</span>
               </th>
               <th scope="col" className={tableHeadClasses}>
@@ -68,9 +65,6 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
                 >
                   <td className="size-20 py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
                     <SubsectionIcon label={shortTitle(subsection.slug)} />
-                  </td>
-                  <td className="py-4 pr-3 pl-4 text-sm font-medium text-blue-500 group-hover:text-blue-800">
-                    {subsection.slug}
                   </td>
                   <td className="px-1.5 py-2 text-sm">
                     <div className="flex items-center justify-center">
