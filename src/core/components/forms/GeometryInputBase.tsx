@@ -6,7 +6,7 @@ import { useFormContext } from "react-hook-form"
 
 type GeometryInputBaseProps = {
   label: string
-  description: ReactNode
+  description?: ReactNode
   children: ReactNode
   /** Determines which geometry types are allowed. "subsection" allows LineString and Polygon only. "subsubsection" allows all types (Point, LineString, Polygon). */
   allowedGeometryTypesFor?: "subsection" | "subsubsection"
@@ -47,24 +47,22 @@ export const GeometryInputBase = ({
   const previewLink = <GeoJSONPreviewLink onOpen={() => setIsPreviewOpen(true)} />
 
   return (
-    <>
-      <div className="space-y-2">
+    <section className={description || isPreviewOpen ? "space-y-2" : ""}>
+      <div className="mb-1 flex justify-between gap-1">
         <label className="block text-sm font-medium text-gray-700">{label}</label>
-        <div className="flex justify-between gap-1">
-          <p className="text-sm text-gray-500">{description}</p>
-          {previewLink}
-        </div>
-
-        {isPreviewOpen && (
-          <GeoJSONPreviewPanel
-            geometry={geometry}
-            onEdit={() => setIsRawMode(true)}
-            onClose={() => setIsPreviewOpen(false)}
-          />
-        )}
+        {previewLink}
       </div>
+      {description && <p className="text-sm text-gray-500">{description}</p>}
+
+      {isPreviewOpen && (
+        <GeoJSONPreviewPanel
+          geometry={geometry}
+          onEdit={() => setIsRawMode(true)}
+          onClose={() => setIsPreviewOpen(false)}
+        />
+      )}
 
       <div className="rounded-md border border-gray-200 bg-gray-100 p-2">{children}</div>
-    </>
+    </section>
   )
 }

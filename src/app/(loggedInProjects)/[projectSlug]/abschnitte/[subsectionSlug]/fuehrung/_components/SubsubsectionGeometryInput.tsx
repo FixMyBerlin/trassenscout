@@ -25,16 +25,7 @@ export const SubsubsectionGeometryInput = () => {
   })
 
   return (
-    <GeometryInputBase
-      label="Geometrie des Eintrags"
-      description={
-        <>
-          Zeichnen Sie die gewünschte Geometrie auf der Karte. Der Geometrietyp wird automatisch
-          erkannt (Punkt, Linie oder Fläche). Mit &ldquo;Snappen&rdquo; können Sie die Geometrie am
-          Planungsabschnitt ausrichten.
-        </>
-      }
-    >
+    <GeometryInputBase label="Geometrie des Eintrags">
       <GeometryDrawingMap allowedTypes={["point", "line", "polygon"]} subsection={subsection}>
         <GeometryDrawingSubsubsectionContextLayers
           subsections={subsections}
