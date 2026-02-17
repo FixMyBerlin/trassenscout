@@ -22,7 +22,6 @@ type SubsectionGeometryWithTypeDiscriminated =
 
 export type TGetSubsection = Omit<Awaited<ReturnType<typeof getSubsection>>, "type" | "geometry"> &
   SubsectionGeometryWithTypeDiscriminated & {
-    stakeholdernotesCounts: { relevant: number; done: number }
     subsubsectionCount: number
   }
 
@@ -44,7 +43,6 @@ export default resolver.pipe(
       },
       include: {
         operator: { select: { id: true, slug: true, title: true } },
-        stakeholdernotes: { select: { id: true, status: true } },
         subsubsections: { select: { id: true } },
         SubsectionStatus: { select: { slug: true, title: true, style: true } },
       },
@@ -52,25 +50,12 @@ export default resolver.pipe(
     const subsection = await db.subsection.findFirst(query)
     if (!subsection) throw new NotFoundError()
 
-    const relevantStakeholdernotes = subsection.stakeholdernotes.filter(
-      (note) => note.status !== "IRRELEVANT",
-    ).length
-
-    const doneStakeholdernotes = subsection.stakeholdernotes.filter(
-      (note) => note.status === "DONE",
-    ).length
-
     const subsubsectionCount = subsection.subsubsections.length
 
-    const {
-      stakeholdernotes: _delete1,
-      subsubsections: _delete2,
-      ...typedSubsection
-    } = typeSubsectionGeometry(subsection)
+    const { subsubsections: _delete1, ...typedSubsection } = typeSubsectionGeometry(subsection)
 
     const subsectionWithCounts = {
       ...typedSubsection,
-      stakeholdernotesCounts: { relevant: relevantStakeholdernotes, done: doneStakeholdernotes },
       subsubsectionCount,
     }
 
