@@ -95,6 +95,7 @@
     "exifr": "7.1.3",
     "langfuse": "3.38.6",
     "langfuse-vercel": "3.38.6",
+    "lucide-react": "0.564.0",
     "maplibre-gl": "5.17.0",
     "next": "14.2.35",
     "node-mailjet": "6.0.11",

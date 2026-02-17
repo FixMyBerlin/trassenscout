@@ -1,3 +1,5 @@
+import { shortTitle } from "@/src/core/components/text"
+
 export type CreateProjectContextPromptSectionParams = {
   projectContext: {
     subsections: { id: number; slug: string; description: string | null }[] | null
@@ -49,7 +51,7 @@ ${
   subsections.length > 0
     ? `This project has the following predefined route subsections:
 ${subsections
-  .map((s) => `- **${s.slug.toUpperCase()}**${s.description ? `: ${s.description}` : ""}`)
+  .map((s) => `- **${shortTitle(s.slug)}**${s.description ? `: ${s.description}` : ""}`)
   .join("\n")}
 
 If the document mentions any of these subsection abbreviations (e.g., 'PA1', 'BA 1', 'Abschnitt 1'), include them in the summary with their proper designation. Also include any other route section references not in this list.`

@@ -3,8 +3,8 @@ import { subsectionDashboardRoute, subsectionEditRoute } from "@/src/core/routes
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { TSubsections } from "@/src/server/subsections/queries/getSubsections"
 import { useRouter } from "next/navigation"
-import { useEffect, useMemo, useState } from "react"
-import { MapEvent, MapLayerMouseEvent, ViewStateChangeEvent, useMap } from "react-map-gl/maplibre"
+import { useEffect, useMemo } from "react"
+import { MapLayerMouseEvent, useMap } from "react-map-gl/maplibre"
 import { BaseMap } from "./BaseMap"
 import { MapFooter } from "./MapFooter"
 import { projectLegendConfig } from "./ProjectMap.legendConfig"
@@ -57,10 +57,6 @@ export const ProjectMap = ({ subsections, staticOverlay }: Props) => {
     }
   }
 
-  const [zoom, setZoom] = useState<number | null>(null)
-  const handleZoomEnd = (e: ViewStateChangeEvent) => setZoom(e.viewState.zoom)
-  const handleZoomOnLoad = (e: MapEvent) => setZoom(e.target.getZoom())
-
   const {
     lines: selectableLines,
     polygons: selectablePolygons,
@@ -76,15 +72,13 @@ export const ProjectMap = ({ subsections, staticOverlay }: Props) => {
           fitBoundsOptions: { padding: 60 },
         }}
         onClick={handleClickMap}
-        onZoomEnd={handleZoomEnd}
-        onLoad={handleZoomOnLoad}
         lines={selectableLines}
         polygons={selectablePolygons}
         lineEndPoints={lineEndPointsGeoms}
         colorSchema="subsection"
         staticOverlay={staticOverlay}
       >
-        <SubsectionMarkers subsections={subsections} zoom={zoom} onSelect={handleSelect} />
+        <SubsectionMarkers subsections={subsections} onSelect={handleSelect} />
       </BaseMap>
       <MapFooter legendItemsConfig={projectLegendConfig} />
     </section>

@@ -84,6 +84,8 @@ export const BaseMap = ({
 
   const [cursorStyle, setCursorStyle] = useState("grab")
 
+  const showScaleControl = backgroundSwitcherPosition !== "bottom-left"
+
   useEffect(() => {
     if (!staticOverlay) return
     const protocol = new pmtiles.Protocol()
@@ -203,7 +205,7 @@ export const BaseMap = ({
           hash={hash || false}
         >
           <NavigationControl showCompass={false} />
-          <ScaleControl />
+          {showScaleControl && <ScaleControl />}
           {staticOverlay && <StaticOverlay config={staticOverlay} />}
           {unifiedFeatures && (
             <UnifiedFeaturesLayer

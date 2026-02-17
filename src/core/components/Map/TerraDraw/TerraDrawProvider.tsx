@@ -1,4 +1,6 @@
+import { terraDrawHintDismissedActions } from "@/src/core/store/terraDrawHintDismissed.zustand"
 import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
+import { useEffect } from "react"
 import type { TerraDrawMode } from "./useTerraDrawControl"
 import { useTerraDrawControl } from "./useTerraDrawControl"
 
@@ -14,6 +16,7 @@ type Props = {
     getSelectedIds: () => string[]
     deleteSelected: () => void
     selectedIds: string[]
+    hasGeometries: boolean
     enabledButtons: {
       point: boolean
       linestring: boolean
@@ -35,23 +38,24 @@ export const TerraDrawProvider = ({ initialGeometry, onChange, children }: Props
   // Note: initialGeometry only used on mount. Terra Draw manages state while drawing.
   // Form state is source of truth, but we don't sync changes back during active drawing.
 
-  return (
-    <>
-      {children && (
-        <div className="absolute top-4 left-4 z-10">
-          {children({
-            mode: control.mode,
-            setMode: control.setMode,
-            clear: control.clear,
-            getSnapshot: control.getSnapshot,
-            updateFeatures: control.updateFeatures,
-            getSelectedIds: control.getSelectedIds,
-            deleteSelected: control.deleteSelected,
-            selectedIds: control.selectedIds,
-            enabledButtons: control.enabledButtons,
-          })}
-        </div>
-      )}
-    </>
-  )
+  // The TerraDrawHint needs the initial and setMode
+  const { setTerraDrawMode } = terraDrawHintDismissedActions()
+  useEffect(() => {
+    setTerraDrawMode(control.mode)
+  }, [control.mode, setTerraDrawMode])
+
+  if (!children) return null
+
+  return children({
+    mode: control.mode,
+    setMode: control.setMode,
+    clear: control.clear,
+    getSnapshot: control.getSnapshot,
+    updateFeatures: control.updateFeatures,
+    getSelectedIds: control.getSelectedIds,
+    deleteSelected: control.deleteSelected,
+    selectedIds: control.selectedIds,
+    hasGeometries: control.getSnapshot().length > 0,
+    enabledButtons: control.enabledButtons,
+  })
 }

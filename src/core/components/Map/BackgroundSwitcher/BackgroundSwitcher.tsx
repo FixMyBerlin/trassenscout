@@ -38,6 +38,8 @@ export const BackgroundSwitcher = ({
   position = "top-left",
   className,
 }: Props) => {
+  const isBottomPosition = position === "bottom-left" || position === "bottom-right"
+
   return (
     <div className={clsx(positionClasses[position], className)}>
       <Listbox value={value} onChange={onChange}>
@@ -57,7 +59,12 @@ export const BackgroundSwitcher = ({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <ListboxOptions className="absolute z-10 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-gray-200/5 focus:outline-hidden sm:text-sm">
+              <ListboxOptions
+                className={clsx(
+                  "absolute z-10 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-gray-200/5 focus:outline-hidden sm:text-sm",
+                  isBottomPosition ? "bottom-full mb-1" : "mt-1",
+                )}
+              >
                 {Object.keys(labels).map((id) => (
                   <ListboxOption
                     key={id}

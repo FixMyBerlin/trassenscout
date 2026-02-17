@@ -1,4 +1,5 @@
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
+import { TerraDrawHint } from "@/src/core/components/Map/TerraDraw/TerraDrawHint"
 import { TerraDrawProvider } from "@/src/core/components/Map/TerraDraw/TerraDrawProvider"
 import { TerraDrawToolbar } from "@/src/core/components/Map/TerraDraw/TerraDrawToolbar"
 import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
@@ -80,49 +81,52 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
         colorSchema="subsection"
       >
         {children}
-        <TerraDrawProvider initialGeometry={geometry} onChange={handleChange}>
-          {({
-            mode,
-            setMode,
-            clear,
-            updateFeatures,
-            getSelectedIds,
-            deleteSelected,
-            selectedIds,
-            enabledButtons,
-          }) => {
-            // Store updateFeatures in ref so SnappingControls can use it
-            updateTerraDrawRef.current = updateFeatures
-            return (
-              <TerraDrawToolbar
-                mode={mode}
-                setMode={setMode}
-                onClear={clear}
-                getSelectedIds={getSelectedIds}
-                deleteSelected={deleteSelected}
-                selectedIds={selectedIds}
-                showPoint={showPoint}
-                showLine={showLine}
-                showPolygon={showPolygon}
-                enabledButtons={enabledButtons}
-                trailingButtons={
-                  null
-                  // TODO: Disabled for now, does currently not work.
-                  // subsection ? (
-                  //   <SnappingControls
-                  //     subsection={subsection}
-                  //     geometry={geometry}
-                  //     handleChange={handleChange}
-                  //     updateTerraDraw={(geo, ignoreChangeEvents) =>
-                  //       updateTerraDrawRef.current?.(geo, ignoreChangeEvents)
-                  //     }
-                  //   />
-                  // ) : null
-                }
-              />
-            )
-          }}
-        </TerraDrawProvider>
+        <div className="absolute top-4 left-4 z-10 flex flex-col gap-2.5">
+          <TerraDrawProvider initialGeometry={geometry} onChange={handleChange}>
+            {({
+              mode,
+              setMode,
+              clear,
+              updateFeatures,
+              deleteSelected,
+              selectedIds,
+              hasGeometries,
+              enabledButtons,
+            }) => {
+              // Store updateFeatures in ref so SnappingControls can use it
+              updateTerraDrawRef.current = updateFeatures
+              return (
+                <TerraDrawToolbar
+                  mode={mode}
+                  setMode={setMode}
+                  onClear={clear}
+                  deleteSelected={deleteSelected}
+                  selectedIds={selectedIds}
+                  hasGeometries={hasGeometries}
+                  showPoint={showPoint}
+                  showLine={showLine}
+                  showPolygon={showPolygon}
+                  enabledButtons={enabledButtons}
+                  trailingButtons={
+                    null
+                    // TODO: Disabled for now, does currently not work.
+                    // subsection ? (
+                    //   <SnappingControls
+                    //     subsection={subsection}
+                    //     geometry={geometry}
+                    //     handleChange={handleChange}
+                    //     updateTerraDraw={(geo, ignoreChangeEvents) =>
+                    //       updateTerraDrawRef.current?.(geo, ignoreChangeEvents)
+                    //     }
+                    //   />
+                    // ) : null
+                  }
+                />
+              )
+            }}
+          </TerraDrawProvider>
+          <TerraDrawHint />
+        </div>
       </BaseMap>
     </div>
   )

@@ -6,7 +6,7 @@ export type TShowMapLegend = {
 }
 
 const showMapLegend = create<TShowMapLegend>()((set) => ({
-  showMapLegend: true,
+  showMapLegend: false,
   actions: {
     toggleShowMapLegend: () => {
       set((state) => ({

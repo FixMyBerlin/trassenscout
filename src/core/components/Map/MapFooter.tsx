@@ -1,4 +1,5 @@
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
+import { linkStyles } from "@/src/core/components/links/styles"
 import { showMapLegendActions, showMapLegendState } from "@/src/core/store/showMapLegend.zustand"
 import { MapLegend, type LegendItemConfig } from "./MapLegend"
 
@@ -10,25 +11,24 @@ export const MapFooter = ({ legendItemsConfig }: MapFooterProps) => {
   const showMapLegend = showMapLegendState()
   const { toggleShowMapLegend } = showMapLegendActions()
 
-  const buttonLabel = showMapLegend ? "Legende ausblenden" : "Legende anzeigen"
+  const buttonLabel = showMapLegend ? "Kartenlegende ausblenden" : "Kartenlegende anzeigen"
 
   return (
     <>
       {showMapLegend && legendItemsConfig && <MapLegend legendItemsConfig={legendItemsConfig} />}
-      <div className="mt-2 flex justify-end gap-2 text-xs text-gray-400">
+      <div className="mt-2 flex justify-between gap-2 text-xs text-gray-400">
         <button
           onClick={toggleShowMapLegend}
-          className="cursor-pointer underline hover:text-gray-600"
+          className={`cursor-pointer ${linkStyles}`}
           type="button"
         >
           {buttonLabel}
         </button>
-        <IfUserCanEdit>
-          <>
-            {" ● "}
-            <p>Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)</p>
-          </>
-        </IfUserCanEdit>
+        <div>
+          <IfUserCanEdit>
+            Schnellzugriff zum Bearbeiten über option+click (Mac) / alt+click (Windows)
+          </IfUserCanEdit>
+        </div>
       </div>
     </>
   )
