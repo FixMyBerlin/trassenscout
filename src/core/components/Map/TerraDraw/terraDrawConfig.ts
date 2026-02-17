@@ -13,6 +13,10 @@ export const TERRA_DRAW_COLORS = {
   selectedDark: "#F8C62B" as HexColor,
   /** Blue – unselected (edit mode) or at-rest features (add mode) */
   unselected: "#2c62a9" as HexColor,
+  /** Pink – selection points (vertex handles) in edit mode */
+  selectionPoint: "#ec407a" as HexColor,
+  /** Purple – midpoint handles in edit mode */
+  midPoint: "#a855f7" as HexColor,
 }
 
 /** Use yellow for the feature currently being drawn, blue for the rest. */
@@ -85,9 +89,9 @@ export const createTerraDrawModes = () => [
       // https://github.com/JamesLMilner/terra-draw/blob/main/guides/5.STYLING.md#selection-points
       // Edit mode: selected = yellow; unselected = blue (from drawing mode styles above).
       selectedPointColor: TERRA_DRAW_COLORS.selectedDark,
-      selectionPointColor: "#ec407a",
+      selectionPointColor: TERRA_DRAW_COLORS.selectionPoint,
       selectionPointOpacity: 0.95,
-      selectionPointOutlineColor: "#ec407a",
+      selectionPointOutlineColor: TERRA_DRAW_COLORS.selectionPoint,
       selectionPointOutlineOpacity: 0.95,
       selectionPointOutlineWidth: 2,
       selectionPointWidth: 7,
@@ -95,9 +99,9 @@ export const createTerraDrawModes = () => [
       selectedPolygonColor: TERRA_DRAW_COLORS.selectedDark,
       selectedPolygonFillOpacity: 0.3,
       selectedPolygonOutlineColor: TERRA_DRAW_COLORS.selectedDark,
-      midPointColor: "#a855f7",
+      midPointColor: TERRA_DRAW_COLORS.midPoint,
       midPointOpacity: 0.95,
-      midPointOutlineColor: "#a855f7",
+      midPointOutlineColor: TERRA_DRAW_COLORS.midPoint,
       midPointOutlineOpacity: 0.95,
       midPointOutlineWidth: 0,
       midPointWidth: 3,

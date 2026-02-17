@@ -1,4 +1,5 @@
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
+import { TerraDrawHint } from "@/src/core/components/Map/TerraDraw/TerraDrawHint"
 import { TerraDrawProvider } from "@/src/core/components/Map/TerraDraw/TerraDrawProvider"
 import { TerraDrawToolbar } from "@/src/core/components/Map/TerraDraw/TerraDrawToolbar"
 import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
@@ -94,32 +95,37 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
             // Store updateFeatures in ref so SnappingControls can use it
             updateTerraDrawRef.current = updateFeatures
             return (
-              <TerraDrawToolbar
-                mode={mode}
-                setMode={setMode}
-                onClear={clear}
-                deleteSelected={deleteSelected}
-                selectedIds={selectedIds}
-                hasGeometries={hasGeometries}
-                showPoint={showPoint}
-                showLine={showLine}
-                showPolygon={showPolygon}
-                enabledButtons={enabledButtons}
-                trailingButtons={
-                  null
-                  // TODO: Disabled for now, does currently not work.
-                  // subsection ? (
-                  //   <SnappingControls
-                  //     subsection={subsection}
-                  //     geometry={geometry}
-                  //     handleChange={handleChange}
-                  //     updateTerraDraw={(geo, ignoreChangeEvents) =>
-                  //       updateTerraDrawRef.current?.(geo, ignoreChangeEvents)
-                  //     }
-                  //   />
-                  // ) : null
-                }
-              />
+              <>
+                <div className="w-max">
+                  <TerraDrawToolbar
+                    mode={mode}
+                    setMode={setMode}
+                    onClear={clear}
+                    deleteSelected={deleteSelected}
+                    selectedIds={selectedIds}
+                    hasGeometries={hasGeometries}
+                    showPoint={showPoint}
+                    showLine={showLine}
+                    showPolygon={showPolygon}
+                    enabledButtons={enabledButtons}
+                    trailingButtons={
+                      null
+                      // TODO: Disabled for now, does currently not work.
+                      // subsection ? (
+                      //   <SnappingControls
+                      //     subsection={subsection}
+                      //     geometry={geometry}
+                      //     handleChange={handleChange}
+                      //     updateTerraDraw={(geo, ignoreChangeEvents) =>
+                      //       updateTerraDrawRef.current?.(geo, ignoreChangeEvents)
+                      //     }
+                      //   />
+                      // ) : null
+                    }
+                  />
+                </div>
+                <TerraDrawHint mode={mode} />
+              </>
             )
           }}
         </TerraDrawProvider>
