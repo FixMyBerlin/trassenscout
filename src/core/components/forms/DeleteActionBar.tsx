@@ -6,7 +6,6 @@ import { frenchQuote } from "@/src/core/components/text/quote"
 import { TrashIcon } from "@heroicons/react/24/outline"
 import { Route } from "next"
 import { useRouter } from "next/navigation"
-import { twMerge } from "tailwind-merge"
 
 type Props = {
   itemTitle: string
@@ -59,11 +58,7 @@ export const DeleteActionBar = ({
       <button
         type="button"
         onClick={handleDelete}
-        className={twMerge(
-          blueButtonStyles,
-          "enabled:hover:bg-red-600 enabled:hover:text-white",
-          "enabled:active:bg-red-500 enabled:active:ring-red-600",
-        )}
+        className={blueButtonStyles}
         title={`${itemTitle} löschen`}
       >
         {variant === "icon" ? <TrashIcon className="size-5" /> : "Löschen"}
