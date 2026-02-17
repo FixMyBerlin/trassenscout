@@ -109,6 +109,7 @@ export const EditableSurveyResponseUploadsSection = ({
               projectSlug={projectSlug}
               size="grid"
               editUrl={surveyResponseUploadEditRoute(projectSlug, surveyId, responseId, upload.id)}
+              onDeleted={async () => {}}
             />
           ))}
         </div>

@@ -2,6 +2,7 @@
 
 import { SummaryField } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/SummaryField"
 import { UploadLocationMap } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/map/UploadLocationMap"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { LabeledSelect, LabeledSelectProps, LabeledTextField } from "@/src/core/components/forms"
 import { BackLink } from "@/src/core/components/forms/BackLink"
@@ -84,9 +85,17 @@ type Props = {
   upload: PromiseReturnType<typeof getUploadWithRelations>
   returnPath: Route
   returnText: string
+  /**
+   * Controls whether the delete button is shown in the action bar.
+   * When false, the delete button is hidden. This is used for uploads related to survey responses,
+   * because the relation might come from the original survey response (data)  and we don't want to allow deletion
+   * in that case. This is a temporary solution (TBD) - we do not know the exact use cases with
+   * uploads in surveys yet.
+   */
+  showDelete?: boolean
 }
 
-export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
+export const EditUploadForm = ({ upload, returnPath, returnText, showDelete = true }: Props) => {
   const router = useRouter()
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false)
   const projectSlug = useProjectSlug()
@@ -140,12 +149,23 @@ export const EditUploadForm = ({ upload, returnPath, returnText }: Props) => {
           actionBarRight={
             <>
               <LuckyCloudActionBar upload={upload} projectSlug={projectSlug} />
-              <DeleteUploadActionBar
-                projectSlug={projectSlug}
-                uploadId={upload.id}
-                uploadTitle={upload.title}
-                returnPath={returnPath}
-              />
+              {showDelete ? (
+                <DeleteUploadActionBar
+                  projectSlug={projectSlug}
+                  uploadId={upload.id}
+                  uploadTitle={upload.title}
+                  returnPath={returnPath}
+                />
+              ) : (
+                <SuperAdminBox>
+                  <DeleteUploadActionBar
+                    projectSlug={projectSlug}
+                    uploadId={upload.id}
+                    uploadTitle={upload.title}
+                    returnPath={returnPath}
+                  />
+                </SuperAdminBox>
+              )}
             </>
           }
         >
