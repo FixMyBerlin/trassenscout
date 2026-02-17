@@ -7,6 +7,7 @@ import { SubsectionMapIcon } from "@/src/core/components/Map/Icons"
 import { SubsubsectionMapWithProvider } from "@/src/core/components/Map/SubsubsectionMapWithProvider"
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
+import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { shortTitle } from "@/src/core/components/text"
@@ -22,22 +23,16 @@ import { SubsectionUploadsSection } from "./SubsectionUploadsSection"
 import { SubsubsectionMapSidebar } from "./SubsubsectionMapSidebar"
 import { SubsubsectionTable } from "./SubsubsectionTable"
 
-type Props = {
-  initialSubsections: Awaited<ReturnType<typeof getSubsections>>
-  initialSubsubsections: Awaited<ReturnType<typeof getSubsubsections>>
-}
-
-export const SubsectionDashboardClient = ({ initialSubsections, initialSubsubsections }: Props) => {
+export const SubsectionDashboardClient = () => {
   const router = useRouter()
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
 
-  const [subsectionsResult] = useQuery(
+  const [subsectionsResult, { isLoading: subsectionsLoading }] = useQuery(
     getSubsections,
     { projectSlug },
     {
-      initialData: initialSubsections,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
     },
@@ -45,11 +40,10 @@ export const SubsectionDashboardClient = ({ initialSubsections, initialSubsubsec
   const subsections = subsectionsResult?.subsections ?? []
   const subsection = subsections.find((ss) => ss.slug === subsectionSlug)
 
-  const [subsubsectionsResult] = useQuery(
+  const [subsubsectionsResult, { isLoading: subsubsectionsLoading }] = useQuery(
     getSubsubsections,
     { projectSlug },
     {
-      initialData: initialSubsubsections,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
     },
@@ -60,6 +54,9 @@ export const SubsectionDashboardClient = ({ initialSubsections, initialSubsubsec
   )
   const subsubsection = subsubsectionsForSubsection.find((ss) => ss.slug === subsubsectionSlug)
 
+  if ((subsectionsLoading || subsubsectionsLoading) && !subsection) {
+    return <Spinner page />
+  }
   if (!subsection) {
     return null
   }

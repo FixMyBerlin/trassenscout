@@ -10,6 +10,7 @@ import { ProjectMapFallback } from "@/src/core/components/Map/ProjectMapFallback
 import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { Spinner } from "@/src/core/components/Spinner"
 import { shortTitle } from "@/src/core/components/text"
 import { projectEditRoute } from "@/src/core/routes/projectRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
@@ -21,35 +22,35 @@ import { MapProvider } from "react-map-gl/maplibre"
 import { OperatorFilter } from "./OperatorFilter"
 import { SubsectionTable } from "./SubsectionTable"
 
-type Props = {
-  initialProject: Awaited<ReturnType<typeof getProject>>
-  initialSubsections: Awaited<ReturnType<typeof getSubsections>>
-}
-
-export const ProjectDashboardClient = ({ initialProject, initialSubsections }: Props) => {
+export const ProjectDashboardClient = () => {
   const projectSlug = useProjectSlug()
   const searchParams = useSearchParams()
   const operatorParam = searchParams?.get("operator")
 
-  const [project] = useQuery(
+  const [project, { isLoading: projectLoading }] = useQuery(
     getProject,
     { projectSlug },
     {
-      initialData: initialProject,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
     },
   )
-  const [subsectionsResult] = useQuery(
+  const [subsectionsResult, { isLoading: subsectionsLoading }] = useQuery(
     getSubsections,
     { projectSlug },
     {
-      initialData: initialSubsections,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
     },
   )
   const subsections = subsectionsResult?.subsections ?? []
+
+  if ((projectLoading || subsectionsLoading) && !project) {
+    return <Spinner page />
+  }
+  if (!project) {
+    return null
+  }
 
   const filteredSubsections = operatorParam
     ? subsections.filter((sec) => sec.operator?.slug === operatorParam)
