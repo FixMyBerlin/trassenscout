@@ -15,7 +15,6 @@ type LogEntryCreate = {
   subsectionId?: number
   networkhierarchyId?: number
   qualitylevelId?: number
-  stakeholdernoteId?: number
   uploadId?: number
   surveyResponseId?: number
   // To compute the `changes`
@@ -72,7 +71,6 @@ export const createLogEntry = async (input: LogEntryCreate) => {
       subsectionId: data.subsectionId,
       networkhierarchyId: data.networkhierarchyId,
       qualitylevelId: data.qualitylevelId,
-      stakeholdernoteId: data.stakeholdernoteId,
       uploadId: data.uploadId,
       surveyResponseId: data.surveyResponseId,
       projectRecordId: data.projectRecordId,

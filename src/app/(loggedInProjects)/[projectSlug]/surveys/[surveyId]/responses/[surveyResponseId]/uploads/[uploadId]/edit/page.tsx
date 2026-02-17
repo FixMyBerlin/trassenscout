@@ -39,7 +39,12 @@ export default async function EditSurveyResponseUploadPage({
   return (
     <>
       <PageHeader title="Dokument bearbeiten" className="mt-12" />
-      <EditUploadForm upload={upload} returnPath={returnPath} returnText={returnText} />
+      <EditUploadForm
+        upload={upload}
+        returnPath={returnPath}
+        returnText={returnText}
+        showDelete={false}
+      />
     </>
   )
 }

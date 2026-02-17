@@ -7,7 +7,7 @@ type Props = {
 }
 
 export const H1 = ({ className, children }: Props) => {
-  return <h1 className={clsx("text-3xl font-bold sm:text-5xl", className)}>{children}</h1>
+  return <h1 className={clsx("text-2xl font-bold sm:text-3xl", className)}>{children}</h1>
 }
 
 export const H2 = ({ className, children }: Props) => {

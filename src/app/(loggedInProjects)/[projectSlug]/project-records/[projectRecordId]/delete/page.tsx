@@ -1,5 +1,6 @@
 import { invoke } from "@/src/blitz-server"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
+import { H3 } from "@/src/core/components/text"
 import getProjectRecordDeleteInfo from "@/src/server/projectRecords/queries/getProjectRecordDeleteInfo"
 import { Metadata } from "next"
 import "server-only"
@@ -27,20 +28,23 @@ export default async function DeleteProjectRecordPage({
         className="mt-12"
         description={`Wollen Sie Protokolleintrag mit ID ${projectRecordId} unwiderruflich löschen?`}
       />
-      <>
-        <p className="mb-6">
-          Der Protokolleintrag <strong>{deleteInfo.projectRecord.title}</strong> hat{" "}
+      <div className="mb-8 max-w-3xl">
+        <H3>Verknüpfte Dokumente</H3>
+        <p>
+          Der Protokolleintrag <em>{deleteInfo.projectRecord.title}</em> hat{" "}
           {deleteInfo.uploads.length} verknüpfte Dokument
-          {deleteInfo.uploads.length !== 1 ? "e" : ""}. Entscheiden Sie für jedes Dokument, ob es
-          zusammen mit dem Protokolleintrag gelöscht oder unabhängig vom Protokolleintrag
-          gespeichert werden soll. Beachten Sie, dass einige Dokumente, die mit diesem
-          Protokolleintrag verknüpft sind, auch weitere Verknüpfungen haben.
+          {deleteInfo.uploads.length !== 1 ? "e" : ""}.
         </p>
-        <DeleteProjectRecordWithUploadsClient
-          deleteInfo={deleteInfo}
-          projectSlug={params.projectSlug}
-        />
-      </>
+        <p>
+          Entscheiden Sie für jedes Dokument, ob es zusammen mit dem Protokolleintrag gelöscht oder
+          unabhängig vom Protokolleintrag gespeichert werden soll. Beachten Sie, dass Dokumente auch
+          mit weitere Verknüpfungen haben können.
+        </p>
+      </div>
+      <DeleteProjectRecordWithUploadsClient
+        deleteInfo={deleteInfo}
+        projectSlug={params.projectSlug}
+      />
     </>
   )
 }

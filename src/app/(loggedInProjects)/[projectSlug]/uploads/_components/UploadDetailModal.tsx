@@ -110,6 +110,7 @@ export const UploadDetailModal = ({
             subsubsection={upload.Subsubsection}
             projectRecords={upload.projectRecords}
             projectRecordEmail={upload.projectRecordEmail}
+            surveyResponse={upload.surveyResponse}
           />
         </div>
 

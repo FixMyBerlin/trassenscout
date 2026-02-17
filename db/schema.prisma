@@ -265,7 +265,6 @@ model Subsection {
   subsectionStatusId            Int?
   //
   subsubsections                Subsubsection[]
-  stakeholdernotes              Stakeholdernote[]
   uploads                       Upload[]
   LogEntry                      LogEntry[]
   ProjectRecord                 ProjectRecord[]
@@ -500,26 +499,6 @@ model SubsectionStatus {
   @@unique([projectId, slug])
 }
 
-model Stakeholdernote {
-  id           Int                       @id @default(autoincrement())
-  createdAt    DateTime                  @default(now())
-  updatedAt    DateTime                  @updatedAt
-  title        String
-  status       StakeholdernoteStatusEnum @default(PENDING)
-  statusText   String?
-  //
-  subsection   Subsection                @relation(fields: [subsectionId], references: [id])
-  subsectionId Int
-  LogEntry     LogEntry[]
-}
-
-enum StakeholdernoteStatusEnum {
-  PENDING
-  IN_PROGRESS
-  DONE
-  IRRELEVANT
-}
-
 model Upload {
   id                   Int                 @id @default(autoincrement())
   createdAt            DateTime            @default(now())
@@ -689,8 +668,6 @@ model LogEntry {
   networkhierarchy   NetworkHierarchy?  @relation(fields: [networkhierarchyId], references: [id])
   qualitylevelId     Int?
   qualitylevel       QualityLevel?      @relation(fields: [qualitylevelId], references: [id])
-  stakeholdernoteId  Int?
-  stakeholdernote    Stakeholdernote?   @relation(fields: [stakeholdernoteId], references: [id])
   uploadId           Int?
   upload             Upload?            @relation(fields: [uploadId], references: [id])
   surveyResponseId   Int?

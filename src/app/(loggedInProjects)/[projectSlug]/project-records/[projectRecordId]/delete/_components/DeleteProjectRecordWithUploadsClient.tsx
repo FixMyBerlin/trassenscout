@@ -169,7 +169,7 @@ export const DeleteProjectRecordWithUploadsClient = ({ deleteInfo, projectSlug }
             <div key={upload.id}>
               <div
                 className={twJoin(
-                  "rounded-lg border-2 p-4",
+                  "flex items-center justify-center rounded-lg border-2 p-4",
                   isSave ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50",
                 )}
               >

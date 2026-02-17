@@ -64,6 +64,15 @@ export default resolver.pipe(
             slug: true,
           },
         },
+        surveyResponse: {
+          include: {
+            surveySession: {
+              include: {
+                survey: { select: { slug: true } },
+              },
+            },
+          },
+        },
       },
     })
 
