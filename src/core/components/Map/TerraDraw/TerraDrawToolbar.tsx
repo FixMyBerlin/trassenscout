@@ -1,6 +1,7 @@
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import { LineSquiggle } from "lucide-react"
+import { twMerge } from "tailwind-merge"
 import { GeometryIcon } from "../Icons/GeometryIcon"
 import type { TerraDrawMode } from "./useTerraDrawControl"
 
@@ -69,7 +70,7 @@ export const TerraDrawToolbar = ({
         ? "cursor-not-allowed border border-gray-200 bg-gray-100 text-gray-400"
         : isActive
           ? "bg-blue-600 text-white"
-          : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50",
+          : "cursor-pointer border border-gray-300 bg-white text-gray-700 hover:bg-gray-50",
     )
 
   return (
@@ -161,7 +162,10 @@ export const TerraDrawToolbar = ({
         <button
           type="button"
           onClick={handleDelete}
-          className="flex items-center gap-1.5 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-100"
+          className={twMerge(
+            buttonClass(false, false),
+            "transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-700",
+          )}
           title={deleteButtonTitle}
         >
           <TrashIcon className="size-4" />
