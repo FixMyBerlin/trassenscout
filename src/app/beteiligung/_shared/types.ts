@@ -124,7 +124,9 @@ export type FieldConfig =
   | ({
       component: "SurveyCheckbox"
       componentType: "form"
-      validation: (typeof fieldValidationEnum)["requiredBoolean"]
+      validation:
+        | (typeof fieldValidationEnum)["requiredBoolean"]
+        | (typeof fieldValidationEnum)["requiredTrueBoolean"]
       defaultValue: boolean
     } & FormFieldBase & {
         props: Omit<ComponentProps<typeof SurveyCheckbox>, "required">

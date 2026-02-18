@@ -5,6 +5,7 @@ import {
   geoCategorySetInitialBoundsDefinition,
   SurveyPart2,
 } from "@/src/app/beteiligung/_shared/types"
+import { isDev } from "@/src/core/utils/isEnv"
 
 export const part2Config: SurveyPart2 = {
   progressBarDefinition: 2,
@@ -246,6 +247,16 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
           },
         },
         {
+          name: "stateOfConstruction",
+          component: "SurveyTextarea",
+          componentType: "form",
+          validation: fieldValidationEnum["optionalString"],
+          defaultValue: "",
+          props: {
+            label: "Stand der Bauvorbereitung",
+          },
+        },
+        {
           name: "costs",
           component: "SurveyTextfield",
           componentType: "form",
@@ -253,6 +264,87 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
           defaultValue: "",
           props: {
             label: "Kostenschätzung",
+          },
+        },
+        {
+          name: "coFinancing",
+          component: "SurveyRadiobuttonGroup",
+          componentType: "form",
+          validation: fieldValidationEnum["requiredString"],
+          defaultValue: "unknown",
+          props: {
+            label: "Ko-Finanzierung",
+            options: [
+              { key: "yes", label: "Ja" },
+              { key: "no", label: "Nein" },
+              { key: "unknown", label: "keine Angabe" },
+            ],
+          },
+          // this deletes the value of fundingSource if condition is not met
+          listeners: {
+            onChange: ({ fieldApi }) => {
+              isDev &&
+                console.log(
+                  `${fieldApi.name} has changed to: ${fieldApi.state.value} --> resetting conditionalCase1A`,
+                )
+              if (fieldApi.state.value === "no" || fieldApi.state.value === "unknown") {
+                fieldApi.form.setFieldValue("fundingSource", "") // reset value of fundingSource if condition is not met
+                fieldApi.form.setFieldValue("programName", "") // reset value of programName if condition is not met
+              }
+            },
+          },
+        },
+        {
+          name: "fundingSource",
+          component: "SurveyTextfield",
+          componentType: "form",
+          validation: fieldValidationEnum["conditionalOptionalString"],
+          defaultValue: "",
+          condition: {
+            fieldName: "coFinancing",
+            conditionFn: (fieldValue) => fieldValue === "yes",
+          },
+          props: {
+            label: "Ko-Finanzierung: Mittelgeber",
+          },
+        },
+        {
+          name: "programName",
+          component: "SurveyTextfield",
+          componentType: "form",
+          validation: fieldValidationEnum["conditionalOptionalString"],
+          defaultValue: "",
+          condition: {
+            fieldName: "coFinancing",
+            conditionFn: (fieldValue) => fieldValue === "yes",
+          },
+          props: {
+            label: "Ko-Finanzierung: Programm",
+          },
+        },
+        {
+          name: "sharedBuilding",
+          component: "SurveyRadiobuttonGroup",
+          componentType: "form",
+          validation: fieldValidationEnum["requiredString"],
+          defaultValue: "unknown",
+          props: {
+            label: "Gemeinschaftsbauwerk",
+            options: [
+              { key: "yes", label: "Ja" },
+              { key: "no", label: "Nein" },
+              { key: "unknown", label: "keine Angabe" },
+            ],
+          },
+        },
+        {
+          name: "realisationYear",
+          component: "SurveyTextfield",
+          componentType: "form",
+          validation: fieldValidationEnum["requiredString"],
+          defaultValue: "",
+          props: {
+            label: "Voraussichtliches Realisierungsjahr",
           },
         },
         {
@@ -283,6 +375,18 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
           defaultValue: "",
           props: {
             label: "E-Mail-Adresse zur Bestätigung der Maßnahmenmeldung",
+          },
+        },
+        {
+          name: "declaration",
+          component: "SurveyCheckbox",
+          componentType: "form",
+          validation: fieldValidationEnum["requiredTrueBoolean"],
+          defaultValue: false,
+          props: {
+            label: "Erklärung",
+            itemLabel:
+              "Ich erkläre, dass ich die Sparsamkeit und Wirtschaftlichkeit bei der Maßnahmenmeldung beachtet habe.",
           },
         },
       ],

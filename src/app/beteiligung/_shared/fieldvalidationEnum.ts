@@ -22,6 +22,10 @@ export const fieldValidationEnum = {
     zodSchema: z.string().optional(),
     required: true,
   },
+  conditionalOptionalString: {
+    zodSchema: z.string().optional(),
+    required: false,
+  },
   optionalArrayOfString: { zodSchema: z.array(z.string()), required: false },
   requiredArrayOfString: {
     zodSchema: z.array(z.string()).nonempty({ message: "Pflichtfeld." }),
@@ -37,6 +41,10 @@ export const fieldValidationEnum = {
   },
 
   requiredBoolean: { zodSchema: z.boolean(), required: true },
+  requiredTrueBoolean: {
+    zodSchema: z.literal(true, { errorMap: () => ({ message: "Pflichtfeld." }) }),
+    required: true,
+  },
 
   conditionalRequiredLatLng: {
     zodSchema: z.object({ lat: z.number(), lng: z.number() }).nullish(),
