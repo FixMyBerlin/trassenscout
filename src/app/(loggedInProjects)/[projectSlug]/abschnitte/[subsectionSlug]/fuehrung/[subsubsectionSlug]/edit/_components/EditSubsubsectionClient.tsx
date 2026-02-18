@@ -65,7 +65,7 @@ export const EditSubsubsectionClient = ({ initialSubsubsection }: Props) => {
     }
   }
 
-  const [deleteSubsectionMutation] = useMutation(deleteSubsubsection)
+  const [deleteSubsubsectionMutation] = useMutation(deleteSubsubsection)
 
   const showPath = subsubsectionDashboardRoute(projectSlug, subsectionSlug!, subsubsection.slug)
   const indexPath = subsectionDashboardRoute(projectSlug, subsectionSlug!)
@@ -105,7 +105,7 @@ export const EditSubsubsectionClient = ({ initialSubsubsection }: Props) => {
         actionBarRight={
           <DeleteActionBar
             itemTitle={shortTitle(subsubsection.slug)}
-            onDelete={() => deleteSubsectionMutation({ projectSlug, id: subsubsection.id })}
+            onDelete={() => deleteSubsubsectionMutation({ projectSlug, id: subsubsection.id })}
             returnPath={indexPath}
           />
         }
