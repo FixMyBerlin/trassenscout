@@ -185,19 +185,23 @@ export function EditableSurveyResponseFilterForm<S extends z.ZodType<any, any>>(
                 ))}
               </FormElementWrapper>
               <div className="flex shrink-0 flex-col gap-4">
-                <FormElementWrapper label={labels.note?.sg || defaultBackendConfig.labels.note.sg}>
-                  {hasnotesOptions.map((item) => (
-                    <LabeledInputRadioCheckbox
-                      type="radio"
-                      label={item.label}
-                      value={item.value}
-                      key={item.value}
-                      name="hasnotes"
-                      onChange={handleInputChange}
-                      checked={filter?.hasnotes === item.value}
-                    />
-                  ))}
-                </FormElementWrapper>
+                {!backendConfig.disableNote && (
+                  <FormElementWrapper
+                    label={labels.note?.sg || defaultBackendConfig.labels.note.sg}
+                  >
+                    {hasnotesOptions.map((item) => (
+                      <LabeledInputRadioCheckbox
+                        type="radio"
+                        label={item.label}
+                        value={item.value}
+                        key={item.value}
+                        name="hasnotes"
+                        onChange={handleInputChange}
+                        checked={filter?.hasnotes === item.value}
+                      />
+                    ))}
+                  </FormElementWrapper>
+                )}
                 <FormElementWrapper
                   label={labels.location?.sg || defaultBackendConfig.labels.location.sg}
                 >

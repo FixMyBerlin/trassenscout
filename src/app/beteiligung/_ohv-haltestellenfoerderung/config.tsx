@@ -43,6 +43,7 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
     },
   },
   backend: {
+    disableNote: true,
     labels: {
       comment: {
         sg: "Gesprächsnotiz",

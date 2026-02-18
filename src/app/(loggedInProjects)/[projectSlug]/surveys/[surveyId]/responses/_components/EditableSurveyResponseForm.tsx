@@ -289,42 +289,44 @@ export function EditableSurveyResponseForm({
         </div>
       </div>
       {/* NOTE */}
-      <form className="flex" onSubmit={handleNoteFormSubmit}>
-        <fieldset className="max-w-3xl">
-          <FormElementWrapper label={labels.note?.sg || defaultBackendConfig.labels.note.sg}>
-            <LabeledTextarea
-              name="note"
-              value={responseNote || ""}
-              onChange={(e) => {
-                setHasUnsavedChanges(true)
-                setResponseNote(e.target.value)
-              }}
-              className={clsx(
-                hasUnsavedChanges &&
-                  "border-yellow-500 ring-yellow-500 focus:border-yellow-500 focus:ring-yellow-500",
-              )}
-              disabled={!userCanEdit}
-            />
-          </FormElementWrapper>
-          <div className="my-2 text-sm text-gray-500">
-            {userCanEdit ? labels.note?.help || defaultBackendConfig.labels.note.help : undefined}
-          </div>
-          <IfUserCanEdit>
-            <div className="flex items-end justify-between">
-              <button
-                type="submit"
+      {!backendConfig.disableNote && (
+        <form className="flex" onSubmit={handleNoteFormSubmit}>
+          <fieldset className="max-w-3xl">
+            <FormElementWrapper label={labels.note?.sg || defaultBackendConfig.labels.note.sg}>
+              <LabeledTextarea
+                name="note"
+                value={responseNote || ""}
+                onChange={(e) => {
+                  setHasUnsavedChanges(true)
+                  setResponseNote(e.target.value)
+                }}
+                className={clsx(
+                  hasUnsavedChanges &&
+                    "border-yellow-500 ring-yellow-500 focus:border-yellow-500 focus:ring-yellow-500",
+                )}
                 disabled={!userCanEdit}
-                className={clsx(blueButtonStyles, "px-3! py-2.5!")}
-              >
-                {labels.note?.sg || defaultBackendConfig.labels.note.sg} speichern
-              </button>
-              <small className={clsx(!hasUnsavedChanges && "opacity-0", "text-yellow-500")}>
-                ungespeicherte Änderungen
-              </small>
+              />
+            </FormElementWrapper>
+            <div className="my-2 text-sm text-gray-500">
+              {userCanEdit ? labels.note?.help || defaultBackendConfig.labels.note.help : undefined}
             </div>
-          </IfUserCanEdit>
-        </fieldset>
-      </form>
+            <IfUserCanEdit>
+              <div className="flex items-end justify-between">
+                <button
+                  type="submit"
+                  disabled={!userCanEdit}
+                  className={clsx(blueButtonStyles, "px-3! py-2.5!")}
+                >
+                  {labels.note?.sg || defaultBackendConfig.labels.note.sg} speichern
+                </button>
+                <small className={clsx(!hasUnsavedChanges && "opacity-0", "text-yellow-500")}>
+                  ungespeicherte Änderungen
+                </small>
+              </div>
+            </IfUserCanEdit>
+          </fieldset>
+        </form>
+      )}
     </>
   )
 }
