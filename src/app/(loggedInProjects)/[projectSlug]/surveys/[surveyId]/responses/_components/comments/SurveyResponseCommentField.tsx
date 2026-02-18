@@ -10,9 +10,10 @@ import { wasUpdated } from "./utils/wasUpdated"
 
 type Props = {
   comment: EditableSurveyResponseListItemProps["response"]["surveyResponseComments"][number]
+  commentLabel: string
 }
 
-export const SurveyResponseCommentField = ({ comment }: Props) => {
+export const SurveyResponseCommentField = ({ comment, commentLabel }: Props) => {
   const { author } = comment
   return (
     <div className="rounded-lg border border-gray-300 bg-blue-50 p-3 text-gray-700">
@@ -35,7 +36,7 @@ export const SurveyResponseCommentField = ({ comment }: Props) => {
           {wasUpdated(comment) && <>, aktualisiert {localDateTime(comment.updatedAt)}</>}
         </div>
         <IfUserCanEdit>
-          <EditSurveyResponseCommentForm comment={comment} />
+          <EditSurveyResponseCommentForm comment={comment} commentLabel={commentLabel} />
         </IfUserCanEdit>
       </div>
     </div>

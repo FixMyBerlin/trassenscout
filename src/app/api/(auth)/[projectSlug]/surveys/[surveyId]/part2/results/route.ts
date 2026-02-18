@@ -93,7 +93,11 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
       title:
         labels && labels["operator"]?.sg ? labels["operator"]?.sg : defaultLabels["operator"].sg,
     },
-    { id: "comments", title: "Kommentare" },
+    {
+      id: "comments",
+      title:
+        labels && labels["comment"]?.pl ? labels["comment"]?.pl : defaultLabels["comment"].pl,
+    },
   ]
 
   type Result = {

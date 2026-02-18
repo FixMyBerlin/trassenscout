@@ -43,6 +43,13 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
     },
   },
   backend: {
+    labels: {
+      comment: {
+        sg: "Gesprächsnotiz",
+        pl: "Gesprächsnotizen",
+        help: "Hier können Sie ein Anmeldegespräch vermerken. Erfassen Sie das Gesprächsdatum, notieren Sie einen Ansprechpartner und speichern Sie eine kurze Gesprächsnotiz. Bitte starten Sie immer mit ihrem Namen oder Kürzel.",
+      },
+    },
     additionalFilters: [
       {
         label: "Kommune",

@@ -27,6 +27,7 @@ export type TBackendConfig = {
     topics?: { sg: string; pl: string }
     category?: { sg: string }
     location?: { sg: string }
+    comment?: { sg: string; pl: string; help: string }
   }
   // additional filters can only be defined for questions of type text for now
   additionalFilters?: [TAdditionalFiltersItem, ...TAdditionalFiltersItem[]]
@@ -42,6 +43,7 @@ export type TBackendConfigDefaults = {
     topics: NonNullable<NonNullable<TBackendConfig["labels"]>["topics"]>
     category: NonNullable<NonNullable<TBackendConfig["labels"]>["category"]>
     location: NonNullable<NonNullable<TBackendConfig["labels"]>["location"]>
+    comment: NonNullable<NonNullable<TBackendConfig["labels"]>["comment"]>
   }
 }
 
@@ -74,5 +76,10 @@ export const backendConfig: TBackendConfigDefaults = {
     topics: { sg: "Tag", pl: "Tags" },
     category: { sg: "Kategorie" },
     location: { sg: "Ortsangabe" },
+    comment: {
+      sg: "Kommentar",
+      pl: "Kommentare",
+      help: "Dieser Kommentar wird extern nicht sichtbar sein.",
+    },
   },
 }

@@ -84,6 +84,8 @@ const EditableSurveyResponseListItem = ({
   const text2Id = getQuestionIdBySurveySlug(surveySlug, "feedbackText_2")
 
   const userTextPreview = response.data[text1Id] || response.data[text2Id]
+  const commentLabel = labels.comment?.sg || defaultBackendConfig.labels.comment.sg
+  const commentHelp = labels.comment?.help || defaultBackendConfig.labels.comment.help
 
   return (
     <article data-open={open} className="bg-white">
@@ -153,19 +155,23 @@ const EditableSurveyResponseListItem = ({
           />
           <div>
             {(!!response.surveyResponseComments.length || isEditorOrAdmin) && (
-              <h4 className="mb-3 font-semibold">Kommentar</h4>
+              <h4 className="mb-3 font-semibold">{commentLabel}</h4>
             )}
             <ul className="flex max-w-3xl flex-col gap-4">
               {response.surveyResponseComments?.map((comment) => {
                 return (
                   <li key={comment.id}>
-                    <SurveyResponseCommentField comment={comment} />
+                    <SurveyResponseCommentField comment={comment} commentLabel={commentLabel} />
                   </li>
                 )
               })}
               <IfUserCanEdit>
                 <li>
-                  <NewSurveyResponseCommentForm surveyResponseId={response.id} />
+                  <NewSurveyResponseCommentForm
+                    surveyResponseId={response.id}
+                    commentLabel={commentLabel}
+                    commentHelp={commentHelp}
+                  />
                 </li>
               </IfUserCanEdit>
             </ul>

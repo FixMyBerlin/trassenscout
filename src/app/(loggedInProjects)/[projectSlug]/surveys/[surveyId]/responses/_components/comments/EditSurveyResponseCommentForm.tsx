@@ -17,9 +17,10 @@ import { EditableSurveyResponseListItemProps } from "../EditableSurveyResponseLi
 
 type Props = {
   comment: EditableSurveyResponseListItemProps["response"]["surveyResponseComments"][number]
+  commentLabel: string
 }
 
-export const EditSurveyResponseCommentForm = ({ comment }: Props) => {
+export const EditSurveyResponseCommentForm = ({ comment, commentLabel }: Props) => {
   const projectSlug = useProjectSlug()
   const [updateSurveyResponseCommentMutation, { isLoading, error }] = useMutation(
     updateSurveyResponseComment,
@@ -65,11 +66,11 @@ export const EditSurveyResponseCommentForm = ({ comment }: Props) => {
 
       <Modal open={open} handleClose={() => setOpen(false)}>
         <HeadingWithAction className="mb-2">
-          <H3>Kommentar bearbeiten</H3>
+          <H3>{commentLabel} bearbeiten</H3>
           <ModalCloseButton onClose={() => setOpen(false)} />
         </HeadingWithAction>
 
-        <Form onSubmit={handleSubmit} submitText="Kommentar speichern">
+        <Form onSubmit={handleSubmit} submitText={`${commentLabel} speichern`}>
           <LabeledTextareaField
             name="body"
             className="min-h-40"
@@ -85,9 +86,9 @@ export const EditSurveyResponseCommentForm = ({ comment }: Props) => {
 
         <button
           type="button"
-          title="Kommentar löschen"
+          title={`${commentLabel} löschen`}
           onClick={async () => {
-            if (window.confirm("Sind Sie sicher, dass Sie diesen Kommentar löschen möchten?")) {
+            if (window.confirm(`Sind Sie sicher, dass Sie diesen ${commentLabel} löschen möchten?`)) {
               try {
                 setOpen(false)
                 await deleteSurveyResponseCommentMutation({
@@ -102,7 +103,7 @@ export const EditSurveyResponseCommentForm = ({ comment }: Props) => {
           }}
           className={clsx("mt-4 flex w-full items-end justify-end gap-2", linkStyles)}
         >
-          <p>Kommentar löschen</p>
+          <p>{commentLabel} löschen</p>
           <TrashIcon className={clsx(linkStyles, "h-6 w-6")} />
         </button>
       </Modal>
