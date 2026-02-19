@@ -95,8 +95,7 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
     },
     {
       id: "comments",
-      title:
-        labels && labels["comment"]?.pl ? labels["comment"]?.pl : defaultLabels["comment"].pl,
+      title: labels && labels["comment"]?.pl ? labels["comment"]?.pl : defaultLabels["comment"].pl,
     },
   ]
 

@@ -88,7 +88,9 @@ export const EditSurveyResponseCommentForm = ({ comment, commentLabel }: Props) 
           type="button"
           title={`${commentLabel} löschen`}
           onClick={async () => {
-            if (window.confirm(`Sind Sie sicher, dass Sie diesen ${commentLabel} löschen möchten?`)) {
+            if (
+              window.confirm(`Sind Sie sicher, dass Sie diesen ${commentLabel} löschen möchten?`)
+            ) {
               try {
                 setOpen(false)
                 await deleteSurveyResponseCommentMutation({
