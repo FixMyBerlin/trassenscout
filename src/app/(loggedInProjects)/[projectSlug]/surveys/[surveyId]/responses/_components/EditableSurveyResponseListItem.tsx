@@ -1,5 +1,6 @@
 import { NewSurveyResponseCommentForm } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/comments/NewSurveyResponseCommentForm"
 import { SurveyResponseCommentField } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/comments/SurveyResponseCommentField"
+import { ConvertSurveyResponseToSubsubsection } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/ConvertSurveyResponseToSubsubsection"
 import { EditableSurveyResponseForm } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/EditableSurveyResponseForm"
 import EditableSurveyResponseMapAndStaticData from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/EditableSurveyResponseMapAndStaticData"
 import { EditableSurveyResponseStatusLabel } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/EditableSurveyResponseStatusLabel"
@@ -10,6 +11,7 @@ import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getCo
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 
 import { useUserCan } from "@/src/app/_components/memberships/hooks/useUserCan"
@@ -48,6 +50,7 @@ const EditableSurveyResponseListItem = ({
   mapProps,
 }: EditableSurveyResponseListItemProps) => {
   const { responseDetails, setResponseDetails } = useResponseDetails()
+  const projectSlug = useProjectSlug()
   const open = !isAccordion ? true : parseInt(String(responseDetails)) === response.id
   const surveySlug = response.surveySession.survey.slug as AllowedSurveySlugs
 
@@ -176,6 +179,14 @@ const EditableSurveyResponseListItem = ({
               </IfUserCanEdit>
             </ul>
           </div>
+
+          {projectSlug === "ohv" && (
+            <ConvertSurveyResponseToSubsubsection
+              response={response}
+              projectSlug={projectSlug}
+              surveySlug={surveySlug}
+            />
+          )}
         </div>
       )}
     </article>

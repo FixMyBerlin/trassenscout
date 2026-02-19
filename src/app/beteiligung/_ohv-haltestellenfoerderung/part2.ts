@@ -99,6 +99,19 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
           },
         },
         {
+          name: "subsubsectionId",
+          component: "SurveyReadonlyTextfield",
+          componentType: "form",
+          validation: fieldValidationEnum["requiredString"],
+          defaultValue: "",
+          props: {
+            label: "Vorgangs-ID",
+            description:
+              "Diese Vorgangsnummer wird automatisch vergeben und dient der eindeutigen Identifizierung Ihres Antrags über den gesamten Bearbeitungsprozess hinweg.",
+          },
+        },
+        // Fördergegenstand/SubsubsectionInfrastructureType
+        {
           name: "category",
           componentType: "form",
           component: "SurveyRadiobuttonGroup",
@@ -110,7 +123,7 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
               { key: "zob", label: "Bau oder Ausbau von Zentralen Omnibusbahnhöfen (ZOB)" },
               { key: "haltestelleneinrichtungen", label: "Haltestelleneinrichtungen" },
               { key: "buswendeschleifen", label: "Buswendeschleifen und Bahnhofsvorplätze" },
-              { key: "pAndR", label: "Park-and-Ride- (P&R) und Bike-and-Ride-Anlagen (B&R)" },
+              { key: "pandr", label: "Park-and-Ride- (P&R) und Bike-and-Ride-Anlagen (B&R)" },
               { key: "beschleunigung", label: "Beschleunigungsmaßnahmen für den ÖPNV" },
             ],
           },
