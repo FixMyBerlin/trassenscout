@@ -18,7 +18,7 @@ export const SubsectionGeometryInput = () => {
       label="Geometrie des Planungsabschnitts"
       allowedGeometryTypesFor="subsection"
     >
-      <GeometryDrawingMap allowedTypes={["line", "polygon"]}>
+      <GeometryDrawingMap allowedTypes={["point", "line", "polygon"]}>
         <GeometryDrawingSubsectionContextLayers
           subsections={subsections}
           selectedSubsectionSlug={subsectionSlug}
