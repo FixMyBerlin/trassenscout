@@ -9,11 +9,16 @@ export type TerraDrawMode = "point" | "linestring" | "freehand-linestring" | "po
 type Props = {
   initialGeometry?: SupportedGeometry
   onChange?: (geometry: SupportedGeometry | null, geometryType: string | null) => void
+  onModeChange?: (mode: TerraDrawMode) => void
 }
 
 // Custom hook to integrate Terra Draw with react-map-gl using the useControl pattern
 // Manages terra-draw lifecycle internally without exposing refs or requiring useEffect in consumers
-export const useTerraDrawControl = ({ initialGeometry, onChange }: Props) => {
+export const useTerraDrawControl = ({
+  initialGeometry,
+  onChange,
+  onModeChange,
+}: Props) => {
   const [mode, setModeState] = useState<TerraDrawMode>(() =>
     getDefaultModeForGeometry(initialGeometry),
   )
@@ -51,7 +56,10 @@ export const useTerraDrawControl = ({ initialGeometry, onChange }: Props) => {
       }
 
       const ctrl = new TerraDrawControl(wrappedOnChange, initialGeometry)
-      ctrl.setOnModeChange(setModeState)
+      ctrl.setOnModeChange((mode) => {
+        setModeState(mode)
+        onModeChange?.(mode)
+      })
       ctrl.setOnButtonsChange(() => {
         if (ctrl) {
           setEnabledButtons(ctrl.getEnabledButtons())

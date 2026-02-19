@@ -1,10 +1,10 @@
 import type { GeoJSONStoreFeatures } from "terra-draw"
 
 // Helper to determine geometry type family
-export const getGeometryFamily = (type: string) => {
-  if (type === "Point" || type === "MultiPoint") return "point"
-  if (type === "LineString" || type === "MultiLineString") return "line"
-  if (type === "Polygon" || type === "MultiPolygon") return "polygon"
+export const getGeometryFamily = (type: string | undefined | null) => {
+  if (type === "Point" || type === "MultiPoint") return "point" as const
+  if (type === "LineString" || type === "MultiLineString") return "line" as const
+  if (type === "Polygon" || type === "MultiPolygon") return "polygon" as const
   return null
 }
 

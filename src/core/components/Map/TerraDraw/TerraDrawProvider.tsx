@@ -1,8 +1,11 @@
-import { terraDrawHintDismissedActions } from "@/src/core/store/terraDrawHintDismissed.zustand"
-import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { useEffect } from "react"
-import type { TerraDrawMode } from "./useTerraDrawControl"
+import {
+  useTerraDrawHintSetGeometryType,
+  useTerraDrawHintSetMode,
+} from "@/src/core/store/terraDrawHint.zustand"
+import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { useTerraDrawControl } from "./useTerraDrawControl"
+import type { TerraDrawMode } from "./useTerraDrawControl"
 
 type Props = {
   initialGeometry?: SupportedGeometry
@@ -30,25 +33,29 @@ type Props = {
 // Provides Terra Draw API to children via render props
 // Actual feature rendering happens in Terra Draw (MapLibre canvas), not React
 export const TerraDrawProvider = ({ initialGeometry, onChange, children }: Props) => {
+  const setHintMode = useTerraDrawHintSetMode()
+  const setHintGeometryType = useTerraDrawHintSetGeometryType()
+
   const control = useTerraDrawControl({
     initialGeometry,
     onChange,
+    onModeChange: setHintMode,
   })
 
-  // Note: initialGeometry only used on mount. Terra Draw manages state while drawing.
-  // Form state is source of truth, but we don't sync changes back during active drawing.
-
-  // The TerraDrawHint needs the initial and setMode
-  const { setTerraDrawMode } = terraDrawHintDismissedActions()
   useEffect(() => {
-    setTerraDrawMode(control.mode)
-  }, [control.mode, setTerraDrawMode])
+    setHintGeometryType(initialGeometry?.type ?? null)
+  }, [initialGeometry?.type, setHintGeometryType])
+
+  const setMode = (mode: TerraDrawMode) => {
+    control.setMode(mode)
+    setHintMode(mode)
+  }
 
   if (!children) return null
 
   return children({
     mode: control.mode,
-    setMode: control.setMode,
+    setMode,
     clear: control.clear,
     getSnapshot: control.getSnapshot,
     updateFeatures: control.updateFeatures,
