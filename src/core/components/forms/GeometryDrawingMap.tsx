@@ -47,7 +47,7 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
       const bounds: LngLatBoundsLike = [minX, minY, maxX, maxY]
       return {
         bounds,
-        fitBoundsOptions: { padding: 100 },
+        fitBoundsOptions: { padding: 100, maxZoom: 16 },
       }
     }
 

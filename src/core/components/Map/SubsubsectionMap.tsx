@@ -226,7 +226,7 @@ export const SubsubsectionMap = ({
         id="mainMap"
         initialViewState={{
           bounds: mapBbox,
-          fitBoundsOptions: { padding: 60 },
+          fitBoundsOptions: { padding: 60, maxZoom: 16 },
         }}
         onClick={handleClickMap}
         interactiveLayerIds={[getSubsectionHullOtherFillLayerId("_subsubsection")]}
