@@ -354,10 +354,11 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
           name: "realisationYear",
           component: "SurveyTextfield",
           componentType: "form",
-          validation: fieldValidationEnum["requiredString"],
+          validation: fieldValidationEnum["optionalYearString"],
           defaultValue: "",
           props: {
             label: "Voraussichtliches Realisierungsjahr",
+            description: "Datum im Format JJJJ, beispielsweise '2027'",
           },
         },
         {
