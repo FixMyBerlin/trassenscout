@@ -5,6 +5,7 @@ import { SurveySimpleMapWithLegend } from "@/src/app/beteiligung/_components/for
 import { SurveyPageTitle } from "@/src/app/beteiligung/_components/form/PageTitle"
 import { SurveyRadiobuttonGroup } from "@/src/app/beteiligung/_components/form/RadiobuttonGroup"
 import { SurveyReadonlyTextfield } from "@/src/app/beteiligung/_components/form/ReadOnlyTextfield"
+import { SurveyResponseIdField } from "@/src/app/beteiligung/_components/form/ResponseIdField"
 import { SurveySelect } from "@/src/app/beteiligung/_components/form/Select"
 import { SubscribeButton } from "@/src/app/beteiligung/_components/form/SubscribeButton"
 import { SurveyNumberfield } from "@/src/app/beteiligung/_components/form/Numberfield"
@@ -20,6 +21,7 @@ export const { useAppForm } = createFormHook({
   fieldComponents: {
     SurveyTextfield,
     SurveyReadonlyTextfield,
+    SurveyResponseIdField,
     SurveyTextarea,
     SurveyNumberfield,
     SurveyCheckbox,

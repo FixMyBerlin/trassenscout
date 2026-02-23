@@ -12,6 +12,8 @@ export const dynamic = "force-dynamic"
 
 const translatedComponentTypes = {
   SurveyCheckboxGroup: "mehrfach",
+  SurveyNumberfield: "zahl",
+  SurveyResponseIdField: "antwort_id",
   SurveyRadiobuttonGroup: "einfach",
   SurveySelect: "einfach",
   SurveyTextfield: "text",

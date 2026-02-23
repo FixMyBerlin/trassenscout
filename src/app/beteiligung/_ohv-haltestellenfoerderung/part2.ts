@@ -100,7 +100,7 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
         },
         {
           name: "subsubsectionId",
-          component: "SurveyReadonlyTextfield",
+          component: "SurveyResponseIdField",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
           defaultValue: "",

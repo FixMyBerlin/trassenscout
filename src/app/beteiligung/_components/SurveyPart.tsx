@@ -44,6 +44,13 @@ function getFieldPropsWithSurveyResponseContext({
       surveySessionId,
     }
   }
+  // Special handling for SurveyResponseIdField to pass surveyResponseId
+  if (configField.component === "SurveyResponseIdField" && surveyResponseId !== null) {
+    return {
+      ...configField.props,
+      surveyResponseId,
+    }
+  }
   return configField.props
 }
 
