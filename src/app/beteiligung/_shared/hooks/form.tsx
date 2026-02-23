@@ -7,6 +7,7 @@ import { SurveyRadiobuttonGroup } from "@/src/app/beteiligung/_components/form/R
 import { SurveyReadonlyTextfield } from "@/src/app/beteiligung/_components/form/ReadOnlyTextfield"
 import { SurveySelect } from "@/src/app/beteiligung/_components/form/Select"
 import { SubscribeButton } from "@/src/app/beteiligung/_components/form/SubscribeButton"
+import { SurveyNumberfield } from "@/src/app/beteiligung/_components/form/Numberfield"
 import { SurveyTextarea } from "@/src/app/beteiligung/_components/form/Textarea"
 import { SurveyTextfield } from "@/src/app/beteiligung/_components/form/Textfield"
 import { SurveyUploadField } from "@/src/app/beteiligung/_components/form/UploadField"
@@ -20,6 +21,7 @@ export const { useAppForm } = createFormHook({
     SurveyTextfield,
     SurveyReadonlyTextfield,
     SurveyTextarea,
+    SurveyNumberfield,
     SurveyCheckbox,
     SurveyCheckboxGroup,
     SurveyRadiobuttonGroup,

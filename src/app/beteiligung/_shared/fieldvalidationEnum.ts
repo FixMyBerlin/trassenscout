@@ -62,4 +62,14 @@ export const fieldValidationEnum = {
     zodSchema: z.array(z.coerce.number()).nonempty({ message: "Pflichtfeld." }),
     required: true,
   },
+  requiredNumber: {
+    zodSchema: z
+      .number({ message: "Pflichtfeld." })
+      .finite({ message: "Bitte eine gültige Zahl eingeben." }),
+    required: true,
+  },
+  optionalNumber: {
+    zodSchema: z.number().finite().nullish(),
+    required: false,
+  },
 }

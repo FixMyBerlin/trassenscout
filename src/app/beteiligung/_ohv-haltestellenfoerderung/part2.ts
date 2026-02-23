@@ -271,12 +271,12 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
         },
         {
           name: "costs",
-          component: "SurveyTextfield",
+          component: "SurveyNumberfield",
           componentType: "form",
-          validation: fieldValidationEnum["requiredString"],
-          defaultValue: "",
+          validation: fieldValidationEnum["requiredNumber"],
+          defaultValue: null,
           props: {
-            label: "Kostenschätzung",
+            label: "Kostenschätzung (€)",
           },
         },
         {

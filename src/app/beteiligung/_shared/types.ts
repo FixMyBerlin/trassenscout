@@ -7,6 +7,7 @@ import { SurveyRadiobuttonGroup } from "@/src/app/beteiligung/_components/form/R
 import { SurveyReadonlyTextfield } from "@/src/app/beteiligung/_components/form/ReadOnlyTextfield"
 import { SurveySelect } from "@/src/app/beteiligung/_components/form/Select"
 import { SurveyTextarea } from "@/src/app/beteiligung/_components/form/Textarea"
+import { SurveyNumberfield } from "@/src/app/beteiligung/_components/form/Numberfield"
 import { SurveyTextfield } from "@/src/app/beteiligung/_components/form/Textfield"
 import { SurveyUploadField } from "@/src/app/beteiligung/_components/form/UploadField"
 import { SurveyMarkdown } from "@/src/app/beteiligung/_components/layout/SurveyMarkdown"
@@ -87,6 +88,14 @@ export type FieldConfig =
         | (typeof fieldValidationEnum)["conditionalRequiredString"]
       defaultValue: string
     } & FormFieldBase & { props: Omit<ComponentProps<typeof SurveyTextfield>, "required"> })
+  | ({
+      component: "SurveyNumberfield"
+      componentType: "form"
+      validation:
+        | (typeof fieldValidationEnum)["requiredNumber"]
+        | (typeof fieldValidationEnum)["optionalNumber"]
+      defaultValue: number | null
+    } & FormFieldBase & { props: Omit<ComponentProps<typeof SurveyNumberfield>, "required"> })
   | ({
       component: "SurveyReadonlyTextfield"
       componentType: "form"
