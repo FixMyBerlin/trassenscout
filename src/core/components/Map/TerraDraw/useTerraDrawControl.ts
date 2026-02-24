@@ -14,11 +14,7 @@ type Props = {
 
 // Custom hook to integrate Terra Draw with react-map-gl using the useControl pattern
 // Manages terra-draw lifecycle internally without exposing refs or requiring useEffect in consumers
-export const useTerraDrawControl = ({
-  initialGeometry,
-  onChange,
-  onModeChange,
-}: Props) => {
+export const useTerraDrawControl = ({ initialGeometry, onChange, onModeChange }: Props) => {
   const [mode, setModeState] = useState<TerraDrawMode>(() =>
     getDefaultModeForGeometry(initialGeometry),
   )

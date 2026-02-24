@@ -10,10 +10,7 @@ type Props = {
   showLogEntries: boolean
 }
 
-export const AdminEnableProjectShowLogEntries = ({
-  slug,
-  showLogEntries,
-}: Props) => {
+export const AdminEnableProjectShowLogEntries = ({ slug, showLogEntries }: Props) => {
   const [isShowLogEntries, setIsShowLogEntries] = useState(showLogEntries)
   const [updateProjectMutation] = useMutation(updateProjectShowLogEntries)
 

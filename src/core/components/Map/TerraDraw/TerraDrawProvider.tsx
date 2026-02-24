@@ -1,11 +1,11 @@
-import { useEffect } from "react"
 import {
   useTerraDrawHintSetGeometryType,
   useTerraDrawHintSetMode,
 } from "@/src/core/store/terraDrawHint.zustand"
 import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
-import { useTerraDrawControl } from "./useTerraDrawControl"
+import { useEffect } from "react"
 import type { TerraDrawMode } from "./useTerraDrawControl"
+import { useTerraDrawControl } from "./useTerraDrawControl"
 
 type Props = {
   initialGeometry?: SupportedGeometry
