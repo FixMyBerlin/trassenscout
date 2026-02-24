@@ -56,9 +56,16 @@ E-Mail: [a.greifenberg@ohbv.de](mailto:a.greifenberg@ohbv.de)
 **Weitere Informationen**\\
 Die Maßnahmenmeldung wird nicht zwischengespeichert, d.h. bei Verlassen der Seite gehen alle eingetragenen Informationen verloren. Nach dem Absenden der Maßnahmenmeldung können Sie nicht mehr auf Ihre getätigten Eingaben zugreifen. Deshalb ist es sinnvoll die Maßnahmenmeldung erst dann auszufüllen und abzusenden, sobald Sie alle wichtigen Informationen für die Maßnahmenmeldung beisammen haben. Folgende Informationen werden im Rahmen der Maßnahmenmeldung abgefragt:
 - Auswahl des Fördergegenstands
+- Upload für Dokumente (optional)
+- Beschreibung der Dokumente (optional)
 - Bezug zu vorhandener Haltestelle durch Auswahl auf Karte
 - Maßnahmenbeschreibung und Zielsetzung
+- Stand der Bauvorbereitung (optional)
+- Kostenschätzung (€)
+- Angaben zur Ko-Finanzierung (wenn ja, Mittelgeber und Programm)
 - Angaben zum geschätzten Kostenaufwand
+- Abfrage ob Gemeinschaftsbauwerk
+- Voraussichtliches Realisierungsjahr (optional)
 - Name, Telefonnummer und E-Mail-Adresse der zuständigen Kontaktperson
 
 Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://trassenscout.de/datenschutz) zu. Die Daten werden gemäß DSGVO verarbeitet und nur für die Durchführung dieses digitalen Meldeverfahrens gespeichert.`,
@@ -89,13 +96,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           componentType: "content",
           component: "SurveyMarkdown",
           props: {
-            markdown: `Bitte nutzen Sie das Formular für jeweils nur eine Maßnahmenmeldung. Sie können weitere Maßnahmenmeldungen in einem weiteren Schritt hinzufügen und absenden.
-
-**Wählen Sie eine Bushaltestelle aus, zu der Sie Maßnahmenvorschläge geben möchten.**
-
-Wählen Sie eine Bushaltestelle durch Klicken auf den gewünschten orangen Punkt auf der Karte aus. Nun können Sie zu der gewählten Bushaltestelle eine Maßnahme melden.
-
-Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” verkleinern oder vergrößern.`,
+            markdown: `Bitte nutzen Sie das Formular für jeweils nur eine Maßnahmenmeldung. Sie können weitere Maßnahmenmeldungen in einem weiteren Schritt hinzufügen und absenden.`,
           },
         },
         {
