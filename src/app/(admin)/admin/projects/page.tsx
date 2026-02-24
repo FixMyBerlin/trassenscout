@@ -7,6 +7,7 @@ import { Metadata } from "next"
 import "server-only"
 import { AdminEnableProjectExportApi } from "./[projectSlug]/subsections/_components/AdminEnableProjectExportApi"
 import { AdminEnableProjectAi } from "./_components/AdminEnableProjectAi"
+import { AdminEnableProjectShowLogEntries } from "./_components/AdminEnableProjectShowLogEntries"
 
 export const metadata: Metadata = { title: "Projekte" }
 
@@ -37,6 +38,10 @@ export default async function AdminProjectsPage() {
                 exportEnabled={project.exportEnabled}
               />
               <AdminEnableProjectAi slug={project.slug} aiEnabled={project.aiEnabled} />
+              <AdminEnableProjectShowLogEntries
+                slug={project.slug}
+                showLogEntries={project.showLogEntries}
+              />
               <pre>{JSON.stringify(project, undefined, 2)}</pre>
             </li>
           )

@@ -1,20 +1,21 @@
-import { LogEntry, Project } from "@/db"
+import type { LogEntry, Project } from "@/db"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
-import { DebugData } from "@/src/app/beteiligung/_components/DebugData"
 import { invoke } from "@/src/blitz-server"
-import { SuperAdminBox } from "@/src/core/components/AdminBox/SuperAdminBox"
+import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { frenchQuote } from "@/src/core/components/text/quote"
 import { longTitle } from "@/src/core/components/text/titles"
 import getLogEntries from "@/src/server/logEntries/queries/getLogEntries"
-import getCurrentUser from "@/src/server/users/queries/getCurrentUser"
 import { clsx } from "clsx"
 import { format, formatDistanceToNow } from "date-fns"
 import { de } from "date-fns/locale/de"
 import "server-only"
 import { AdminLogEntryChanges } from "./AdminLogEntryChanges"
 
-type Props = { projectId: Project["id"]; projectSlug: Project["slug"] }
+type Props = {
+  projectId: Project["id"]
+  projectSlug: Project["slug"]
+}
 
 const actionName: Record<LogEntry["action"], string> = {
   CREATE: "Erstellt",
@@ -27,10 +28,7 @@ const actionColorClasses: Record<LogEntry["action"], string> = {
   DELETE: "bg-amber-50  text-amber-800  ring-amber-600/20",
 }
 
-export const AdminLogEntriesProject = async ({ projectId, projectSlug }: Props) => {
-  const user = await invoke(getCurrentUser, null)
-  if (user?.role !== "ADMIN") return null
-
+export const ProjectLogEntries = async ({ projectId, projectSlug }: Props) => {
   const { logEntries } = await invoke(getLogEntries, {
     projectSlug,
     where: { projectId },
@@ -38,7 +36,7 @@ export const AdminLogEntriesProject = async ({ projectId, projectSlug }: Props) 
   })
 
   return (
-    <SuperAdminBox>
+    <>
       <h2 className="mb-2 text-sm font-semibold">
         Änderungen in {frenchQuote(longTitle(projectSlug))}
       </h2>
@@ -108,7 +106,7 @@ export const AdminLogEntriesProject = async ({ projectId, projectSlug }: Props) 
           </tbody>
         </table>
       </TableWrapper>
-      <DebugData data={logEntries} />
-    </SuperAdminBox>
+      <SuperAdminLogData data={logEntries} />
+    </>
   )
 }

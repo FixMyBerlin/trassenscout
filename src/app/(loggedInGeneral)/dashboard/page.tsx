@@ -4,9 +4,9 @@ import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import getProjectsWithGeometryWithMembershipRole from "@/src/server/projects/queries/getProjectsWithGeometryWithMembershipRole"
 import { Metadata } from "next"
 import "server-only"
-import { AdminLogEntriesDashboard } from "./_components/AdminLogEntriesDashboard"
 import { AdminProjectsList } from "./_components/AdminProjectsList"
 import { DashboardMapWithProvider } from "./_components/DashboardMapWithProvider"
+import { LogEntriesDashboard } from "./_components/LogEntriesDashboard"
 import { NoProjectMembershipsYet } from "./_components/NoProjectMembershipsYet"
 import { ProjectsTable } from "./_components/ProjectsTable"
 
@@ -22,6 +22,7 @@ export default async function DashboardPage() {
       <>
         <NoProjectMembershipsYet />
         <AdminProjectsList />
+        <LogEntriesDashboard userProjects={[]} />
       </>
     )
   }
@@ -32,12 +33,12 @@ export default async function DashboardPage() {
         title="Meine Projekte"
         // subtitle={project.subTitle}
         description="Willkommen im Trassenscout. Hier finden Sie alle Projekte, an denen Sie beteiligt sind."
-        className="mt-10" // Usually added by the Breadcrumb component
+        className="mt-12" // Usually added by the Breadcrumb component
       />
       <DashboardMapWithProvider projects={projects} />
       <ProjectsTable projects={projects} />
       <AdminProjectsList />
-      <AdminLogEntriesDashboard />
+      <LogEntriesDashboard userProjects={projects} />
       <SuperAdminLogData data={projects} />
     </>
   )
