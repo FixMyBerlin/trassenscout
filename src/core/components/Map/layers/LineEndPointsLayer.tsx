@@ -35,6 +35,8 @@ export const LineEndPointsLayer = ({
     colors.lineEndPoints.hovered,
     ["boolean", ["feature-state", "selected"], false],
     colors.lineEndPoints.selected,
+    ["==", ["get", "style"], "GREEN"],
+    colors.lineEndPoints.green,
     colors.lineEndPoints.default,
   ]
 

@@ -17,7 +17,7 @@ import {
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
-import { StatusStyleEnum } from "@prisma/client"
+import { SubsubsectionStatusStyleEnum } from "@prisma/client"
 import { clsx } from "clsx"
 import { useRouter } from "next/navigation"
 import { SubsubsectionTableFooter } from "./SubsubsectionTableFooter"
@@ -110,7 +110,7 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
                         <LegendIcon
                           iconId={getIconIdForSubsubsection(
                             subsubsection.type,
-                            subsubsection.SubsubsectionStatus?.style as StatusStyleEnum | null,
+                            subsubsection.SubsubsectionStatus?.style as SubsubsectionStatusStyleEnum | null,
                           )}
                         />
                       </Tooltip>

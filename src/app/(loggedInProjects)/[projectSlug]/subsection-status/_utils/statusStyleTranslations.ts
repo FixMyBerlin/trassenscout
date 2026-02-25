@@ -1,6 +1,11 @@
-import { StatusStyleEnum } from "@prisma/client"
+import { SubsectionStatusStyleEnum, SubsubsectionStatusStyleEnum } from "@prisma/client"
 
-export const statusStyleTranslations: Record<StatusStyleEnum, string> = {
-  [StatusStyleEnum.REGULAR]: "Standard",
-  [StatusStyleEnum.DASHED]: "Gestrichelt",
+export const subsectionStatusStyleTranslations: Record<SubsectionStatusStyleEnum, string> = {
+  [SubsectionStatusStyleEnum.REGULAR]: "Standard",
+  [SubsectionStatusStyleEnum.DASHED]: "Gestrichelt",
+}
+
+export const subsubsectionStatusStyleTranslations: Record<SubsubsectionStatusStyleEnum, string> = {
+  [SubsubsectionStatusStyleEnum.REGULAR]: "Standard",
+  [SubsubsectionStatusStyleEnum.GREEN]: "Grün",
 }

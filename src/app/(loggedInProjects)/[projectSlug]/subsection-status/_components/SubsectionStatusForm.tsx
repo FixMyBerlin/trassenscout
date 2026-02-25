@@ -1,11 +1,11 @@
-import { statusStyleTranslations } from "@/src/app/(loggedInProjects)/[projectSlug]/subsection-status/_utils/statusStyleTranslations"
+import { subsectionStatusStyleTranslations } from "@/src/app/(loggedInProjects)/[projectSlug]/subsection-status/_utils/statusStyleTranslations"
 import {
   Form,
   FormProps,
   LabeledRadiobuttonGroup,
   LabeledTextField,
 } from "@/src/core/components/forms"
-import { StatusStyleEnum } from "@prisma/client"
+import { SubsectionStatusStyleEnum } from "@prisma/client"
 import { z } from "zod"
 
 export function SubsectionStatusForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
@@ -18,9 +18,9 @@ export function SubsectionStatusForm<S extends z.ZodType<any, any>>(props: FormP
       <LabeledRadiobuttonGroup
         label="Darstellung"
         scope="style"
-        items={Object.entries(StatusStyleEnum).map(([key, value]) => ({
+        items={Object.entries(SubsectionStatusStyleEnum).map(([key, value]) => ({
           value,
-          label: statusStyleTranslations[value],
+          label: subsectionStatusStyleTranslations[value],
         }))}
         classNameItemWrapper="flex gap-5 space-y-0! items-center"
       />

@@ -1,6 +1,6 @@
 import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
 import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
-import { GeometryTypeEnum, StatusStyleEnum } from "@prisma/client"
+import { GeometryTypeEnum, SubsectionStatusStyleEnum, SubsubsectionStatusStyleEnum } from "@prisma/client"
 
 type LegendIconProps = {
   type: GeometryTypeEnum
@@ -68,23 +68,20 @@ export const legendIconRegistry = {
     borderWidth: 2,
     borderStyle: "solid",
   },
-  subsubsectionLineDashed: {
+  subsubsectionLineGreen: {
     type: GeometryTypeEnum.LINE,
-    color: subsubsectionColors.line.unselected,
-    isDashed: true,
-    secondColor: subsubsectionColors.line.dashedSecondary,
+    color: subsubsectionColors.line.green,
     lineWidth: subsubsectionColors.line.width,
   },
-  subsubsectionPointDashed: {
+  subsubsectionPointGreen: {
     type: GeometryTypeEnum.POINT,
-    color: subsubsectionColors.line.unselected,
-    borderStyle: "dashed",
+    color: subsubsectionColors.point.green,
   },
-  subsubsectionPolygonDashed: {
+  subsubsectionPolygonGreen: {
     type: GeometryTypeEnum.POLYGON,
-    color: subsubsectionColors.line.unselected,
+    color: subsubsectionColors.polygon.green,
     borderWidth: 2,
-    borderStyle: "dashed",
+    borderStyle: "solid",
   },
 } as const satisfies Record<string, LegendIconProps>
 
@@ -92,14 +89,14 @@ export type LegendIconId = keyof typeof legendIconRegistry
 
 export function getIconIdForSubsection(
   type: GeometryTypeEnum,
-  statusStyle?: StatusStyleEnum | null,
+  statusStyle?: SubsectionStatusStyleEnum | null,
 ) {
   switch (type) {
     case GeometryTypeEnum.LINE: {
       switch (statusStyle) {
-        case StatusStyleEnum.DASHED:
+        case SubsectionStatusStyleEnum.DASHED:
           return "subsectionLineDashed"
-        case StatusStyleEnum.REGULAR:
+        case SubsectionStatusStyleEnum.REGULAR:
         case null:
         case undefined:
           return "subsectionLineDefault"
@@ -107,9 +104,9 @@ export function getIconIdForSubsection(
     }
     case GeometryTypeEnum.POLYGON: {
       switch (statusStyle) {
-        case StatusStyleEnum.DASHED:
+        case SubsectionStatusStyleEnum.DASHED:
           return "subsectionPolygonDashed"
-        case StatusStyleEnum.REGULAR:
+        case SubsectionStatusStyleEnum.REGULAR:
         case null:
         case undefined:
           return "subsectionPolygonDefault"
@@ -123,14 +120,14 @@ export function getIconIdForSubsection(
 
 export function getIconIdForSubsubsection(
   type: GeometryTypeEnum,
-  statusStyle: StatusStyleEnum | null,
+  statusStyle: SubsubsectionStatusStyleEnum | null,
 ) {
   switch (type) {
     case GeometryTypeEnum.LINE: {
       switch (statusStyle) {
-        case StatusStyleEnum.DASHED:
-          return "subsubsectionLineDashed"
-        case StatusStyleEnum.REGULAR:
+        case SubsubsectionStatusStyleEnum.GREEN:
+          return "subsubsectionLineGreen"
+        case SubsubsectionStatusStyleEnum.REGULAR:
         case null:
         case undefined:
           return "subsubsectionLine"
@@ -138,9 +135,9 @@ export function getIconIdForSubsubsection(
     }
     case GeometryTypeEnum.POINT: {
       switch (statusStyle) {
-        case StatusStyleEnum.DASHED:
-          return "subsubsectionPointDashed"
-        case StatusStyleEnum.REGULAR:
+        case SubsubsectionStatusStyleEnum.GREEN:
+          return "subsubsectionPointGreen"
+        case SubsubsectionStatusStyleEnum.REGULAR:
         case null:
         case undefined:
           return "subsubsectionPoint"
@@ -148,9 +145,9 @@ export function getIconIdForSubsubsection(
     }
     case GeometryTypeEnum.POLYGON: {
       switch (statusStyle) {
-        case StatusStyleEnum.DASHED:
-          return "subsubsectionPolygonDashed"
-        case StatusStyleEnum.REGULAR:
+        case SubsubsectionStatusStyleEnum.GREEN:
+          return "subsubsectionPolygonGreen"
+        case SubsubsectionStatusStyleEnum.REGULAR:
         case null:
         case undefined:
           return "subsubsectionPolygon"
