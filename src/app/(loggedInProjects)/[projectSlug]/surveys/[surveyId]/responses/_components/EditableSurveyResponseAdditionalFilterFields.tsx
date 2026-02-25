@@ -3,6 +3,7 @@ import { TBackendConfig } from "@/src/app/beteiligung/_shared/backend-types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
+import { SurveyResponseFieldValue } from "@/src/app/beteiligung/_shared/utils/SurveyResponseFieldValue"
 
 type Props = {
   additionalFilterFields: TBackendConfig["additionalFilters"]
@@ -71,20 +72,15 @@ const EditableSurveyResponseAdditionalFilterFields = ({
               </tr>
             ))}
           {filteredPart2Responses.map(([key, value]) => {
-            let displayValue: string
-            try {
-              const parsedValue = JSON.parse(value)
-              displayValue = Array.isArray(parsedValue) ? parsedValue.join(", ") : value
-            } catch {
-              displayValue = value
-            }
-
+            const field = part2Fields.find((f) => f.name === key)
             return (
               <tr key={key}>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                  {part2Fields.find((field) => field.name === key)?.props.label || key}
+                  {field?.props?.label || key}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-500">{displayValue || "-"}</td>
+                <td className="px-6 py-4 text-sm text-gray-500">
+                  <SurveyResponseFieldValue field={field} value={value} />
+                </td>
               </tr>
             )
           })}
