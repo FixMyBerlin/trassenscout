@@ -159,26 +159,6 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           },
         },
         {
-          name: "uploads",
-          componentType: "form",
-          component: "SurveyUploadField",
-          validation: fieldValidationEnum["optionalArrayOfNumber"],
-          defaultValue: [],
-          props: {
-            label: "Dokumente",
-          },
-        },
-        {
-          name: "uploadsDescription",
-          componentType: "form",
-          component: "SurveyTextarea",
-          validation: fieldValidationEnum["optionalString"],
-          defaultValue: "",
-          props: {
-            label: "Beschreibung der Dokumente",
-          },
-        },
-        {
           name: "geometryCategory",
           componentType: "form",
           component: "SurveyGeoCategoryMapWithLegend",
@@ -360,6 +340,26 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           props: {
             label: "Voraussichtliches Realisierungsjahr",
             description: "Datum im Format JJJJ, beispielsweise '2027'",
+          },
+        },
+        {
+          name: "uploads",
+          componentType: "form",
+          component: "SurveyUploadField",
+          validation: fieldValidationEnum["optionalArrayOfNumber"],
+          defaultValue: [],
+          props: {
+            label: "Dokumente",
+          },
+        },
+        {
+          name: "uploadsDescription",
+          componentType: "form",
+          component: "SurveyTextarea",
+          validation: fieldValidationEnum["optionalString"],
+          defaultValue: "",
+          props: {
+            label: "Beschreibung der Dokumente",
           },
         },
         {
