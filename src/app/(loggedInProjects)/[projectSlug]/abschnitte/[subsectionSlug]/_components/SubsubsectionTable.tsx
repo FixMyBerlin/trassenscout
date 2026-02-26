@@ -110,7 +110,8 @@ export const SubsubsectionTable = ({ subsubsections, compact }: Props) => {
                         <LegendIcon
                           iconId={getIconIdForSubsubsection(
                             subsubsection.type,
-                            subsubsection.SubsubsectionStatus?.style as SubsubsectionStatusStyleEnum | null,
+                            subsubsection.SubsubsectionStatus
+                              ?.style as SubsubsectionStatusStyleEnum | null,
                           )}
                         />
                       </Tooltip>

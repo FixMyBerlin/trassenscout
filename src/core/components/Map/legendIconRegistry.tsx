@@ -1,6 +1,10 @@
 import { subsectionColors } from "@/src/core/components/Map/colors/subsectionColors"
 import { subsubsectionColors } from "@/src/core/components/Map/colors/subsubsectionColors"
-import { GeometryTypeEnum, SubsectionStatusStyleEnum, SubsubsectionStatusStyleEnum } from "@prisma/client"
+import {
+  GeometryTypeEnum,
+  SubsectionStatusStyleEnum,
+  SubsubsectionStatusStyleEnum,
+} from "@prisma/client"
 
 type LegendIconProps = {
   type: GeometryTypeEnum
