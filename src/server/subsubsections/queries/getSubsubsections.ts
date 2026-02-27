@@ -25,7 +25,7 @@ export default resolver.pipe(
     where,
     orderBy = { slug: "asc" },
     skip = 0,
-    take = 100,
+    take = 249,
   }: GetSubsubsectionsInput) => {
     const safeWhere = { subsection: { project: { slug: projectSlug } }, ...where }
 
