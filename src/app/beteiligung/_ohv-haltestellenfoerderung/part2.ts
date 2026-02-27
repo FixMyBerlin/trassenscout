@@ -258,6 +258,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           defaultValue: null,
           props: {
             label: "Kostenschätzung (€)",
+            description: "Zahlen bitte ohne Punkt und Komma eingeben.",
           },
         },
         {
