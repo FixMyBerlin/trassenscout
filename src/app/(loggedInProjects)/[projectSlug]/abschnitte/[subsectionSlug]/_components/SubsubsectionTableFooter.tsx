@@ -15,12 +15,11 @@ export const SubsubsectionTableFooter = ({ subsubsections, compact }: Props) => 
   return (
     <tfoot className={clsx("bg-gray-50", { hidden: !subsubsections.length || compact })}>
       <tr>
-        <td
-          colSpan={2}
-          className="pt-4 pr-3 pb-2 pl-4 text-right text-xs font-medium text-gray-500 uppercase"
-        >
+        <td className="pt-4 pr-3 pb-2 pl-4 text-right text-xs font-medium text-gray-500 uppercase">
           Gesamt:
         </td>
+        <td></td>
+        <td></td>
         <td
           className={clsx(
             compact ? "hidden" : "",
@@ -37,7 +36,6 @@ export const SubsubsectionTableFooter = ({ subsubsections, compact }: Props) => 
         >
           {formattedEuro(subsubsections.reduce((acc, sub) => acc + (sub.costEstimate || 0), 0))}
         </td>
-        <td></td>
         <td></td>
       </tr>
 
