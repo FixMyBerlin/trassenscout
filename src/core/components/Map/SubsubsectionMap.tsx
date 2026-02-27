@@ -10,7 +10,7 @@ import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { useRouter } from "next/navigation"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { MapLayerMouseEvent, useMap } from "react-map-gl/maplibre"
 import { BaseMap } from "./BaseMap"
 import { getLineEndPointsLayerId } from "./layers/LineEndPointsLayer"
@@ -47,6 +47,7 @@ export const SubsubsectionMap = ({
   const projectSlug = useProjectSlug()
   const router = useRouter()
   const { mainMap } = useMap()
+  const [mapLoading, setMapLoading] = useState(true)
 
   // Filter subsubsections to only include entries belonging to the selected subsection
   const filteredSubsubsections = useMemo(
@@ -166,7 +167,7 @@ export const SubsubsectionMap = ({
 
   // Set selected state via setFeatureState when selection changes
   useEffect(() => {
-    if (!mainMap) return
+    if (!mainMap || mapLoading) return
 
     const map = mainMap.getMap()
     const suffix = "_subsubsection"
@@ -218,7 +219,13 @@ export const SubsubsectionMap = ({
           }
         })
     }
-  }, [mainMap, pageSubsubsectionSlug, unifiedSubsubsectionFeatures, subsubsectionLineEndPoints])
+  }, [
+    mainMap,
+    mapLoading,
+    pageSubsubsectionSlug,
+    unifiedSubsubsectionFeatures,
+    subsubsectionLineEndPoints,
+  ])
 
   return (
     <>
@@ -229,6 +236,7 @@ export const SubsubsectionMap = ({
           fitBoundsOptions: { padding: 60, maxZoom: 16 },
         }}
         onClick={handleClickMap}
+        onIdle={() => setMapLoading(false)}
         interactiveLayerIds={[getSubsectionHullOtherFillLayerId("_subsubsection")]}
         lines={subsubsectionLines?.features.length ? subsubsectionLines : undefined}
         polygons={subsubsectionPolygons?.features.length ? subsubsectionPolygons : undefined}

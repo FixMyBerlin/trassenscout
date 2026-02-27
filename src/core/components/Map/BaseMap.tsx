@@ -36,7 +36,14 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
   Partial<
     Pick<
       MapProps,
-      "onMouseMove" | "onMouseLeave" | "onClick" | "onZoomEnd" | "onLoad" | "hash" | "reuseMaps"
+      | "onMouseMove"
+      | "onMouseLeave"
+      | "onClick"
+      | "onZoomEnd"
+      | "onLoad"
+      | "onIdle"
+      | "hash"
+      | "reuseMaps"
     >
   > & {
     interactiveLayerIds?: string[]
@@ -62,6 +69,7 @@ export const BaseMap = ({
   onClick,
   onZoomEnd,
   onLoad,
+  onIdle,
   interactiveLayerIds,
   hash,
   reuseMaps = true,
@@ -197,6 +205,7 @@ export const BaseMap = ({
           onClick={handleClickInternal}
           onZoomEnd={onZoomEnd}
           onLoad={onLoad}
+          onIdle={onIdle}
           interactiveLayerIds={[
             ...(interactiveLayerIds ?? []),
             ...(unifiedFeatures ? getUnifiedClickTargetLayerIds(selectableLayerIdSuffix) : []),
