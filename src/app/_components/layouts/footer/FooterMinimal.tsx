@@ -1,10 +1,11 @@
 import { Link } from "@/src/core/components/links"
-import { links } from "./links.const"
+import { authLinks, publicLinks } from "./links.const"
 
 export const FooterMinimal = () => {
+  const allLinks = [...publicLinks, ...authLinks]
   return (
     <footer className="mx-auto space-x-5 pb-8 text-center">
-      {links.map((item) => (
+      {allLinks.map((item) => (
         <Link
           key={item.name}
           href={item.href}
