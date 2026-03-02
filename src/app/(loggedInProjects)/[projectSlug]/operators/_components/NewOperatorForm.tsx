@@ -13,18 +13,23 @@ import { OperatorForm } from "./OperatorForm"
 
 type Props = {
   projectSlug: string
+  /** Original form path to preserve in URL for back navigation */
+  fromParam?: string
 }
 
-export const NewOperatorForm = ({ projectSlug }: Props) => {
+export const NewOperatorForm = ({ projectSlug, fromParam }: Props) => {
   const router = useRouter()
   const [createOperatorMutation] = useMutation(createOperator)
   const [maxOrderOperators] = useQuery(getOperatorMaxOrder, projectSlug)
+
+  const listPath = `/${projectSlug}/operators`
+  const returnPath = fromParam ? `${listPath}?from=${encodeURIComponent(fromParam)}` : listPath
 
   type HandleSubmit = z.infer<ReturnType<typeof OperatorSchema.omit<{ projectId: true }>>>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await createOperatorMutation({ ...values, projectSlug })
-      router.push(`/${projectSlug}/operators` as Route)
+      router.push(returnPath as Route)
       router.refresh()
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])

@@ -14,15 +14,23 @@ export const metadata: Metadata = {
 
 type Props = {
   params: { projectSlug: string }
+  searchParams: { from?: string }
 }
 
-export default async function NewNetworkHierarchyPage({ params: { projectSlug } }: Props) {
+export default async function NewNetworkHierarchyPage({
+  params: { projectSlug },
+  searchParams,
+}: Props) {
+  const fromParam = searchParams?.from
+  const listPath = `/${projectSlug}/network-hierarchy` as Route
+  const appendFrom = fromParam ? `?from=${encodeURIComponent(fromParam)}` : ""
+
   return (
     <>
       <PageHeader title="Netzstufe hinzufügen" className="mt-12" />
-      <NewNetworkHierarchyForm projectSlug={projectSlug} />
+      <NewNetworkHierarchyForm projectSlug={projectSlug} fromParam={fromParam} />
       <hr className="my-5 text-gray-200" />
-      <Link href={`/${projectSlug}/network-hierarchy` as Route}>Zurück zur Übersicht</Link>
+      <Link href={`${listPath}${appendFrom}` as Route}>Zurück zur Übersicht</Link>
     </>
   )
 }

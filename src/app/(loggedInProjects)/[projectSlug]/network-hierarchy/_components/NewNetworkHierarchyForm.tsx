@@ -12,17 +12,22 @@ import { NetworkHierarchyForm } from "./NetworkHierarchyForm"
 
 type Props = {
   projectSlug: string
+  /** Original form path to preserve in URL for back navigation */
+  fromParam?: string
 }
 
-export const NewNetworkHierarchyForm = ({ projectSlug }: Props) => {
+export const NewNetworkHierarchyForm = ({ projectSlug, fromParam }: Props) => {
   const router = useRouter()
   const [createNetworkHierarchyMutation] = useMutation(createNetworkHierarchy)
+
+  const listPath = `/${projectSlug}/network-hierarchy`
+  const returnPath = fromParam ? `${listPath}?from=${encodeURIComponent(fromParam)}` : listPath
 
   type HandleSubmit = z.infer<ReturnType<typeof NetworkHierarchySchema.omit<{ projectId: true }>>>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await createNetworkHierarchyMutation({ ...values, projectSlug })
-      router.push(`/${projectSlug}/network-hierarchy` as Route)
+      router.push(returnPath as Route)
       router.refresh()
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])

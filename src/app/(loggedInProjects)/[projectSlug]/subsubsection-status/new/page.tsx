@@ -14,15 +14,23 @@ export const metadata: Metadata = {
 
 type Props = {
   params: { projectSlug: string }
+  searchParams: { from?: string }
 }
 
-export default async function NewSubsubsectionStatusPage({ params: { projectSlug } }: Props) {
+export default async function NewSubsubsectionStatusPage({
+  params: { projectSlug },
+  searchParams,
+}: Props) {
+  const fromParam = searchParams?.from
+  const listPath = `/${projectSlug}/subsubsection-status` as Route
+  const appendFrom = fromParam ? `?from=${encodeURIComponent(fromParam)}` : ""
+
   return (
     <>
       <PageHeader title="Phase hinzufügen" className="mt-12" />
-      <NewSubsubsectionStatusForm projectSlug={projectSlug} />
+      <NewSubsubsectionStatusForm projectSlug={projectSlug} fromParam={fromParam} />
       <hr className="my-5 text-gray-200" />
-      <Link href={`/${projectSlug}/subsubsection-status` as Route}>Zurück zur Übersicht</Link>
+      <Link href={`${listPath}${appendFrom}` as Route}>Zurück zur Übersicht</Link>
     </>
   )
 }

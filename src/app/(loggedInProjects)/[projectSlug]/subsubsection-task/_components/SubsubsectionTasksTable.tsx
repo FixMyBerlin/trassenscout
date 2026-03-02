@@ -17,11 +17,14 @@ import { useRouter } from "next/navigation"
 
 type Props = {
   subsubsectionTasks: PromiseReturnType<typeof getSubsubsectionTasksWithCount>["subsubsectionTasks"]
+  /** Optional path to return to after editing (from original form) */
+  fromPath?: string
 }
 
-export const SubsubsectionTasksTable = ({ subsubsectionTasks }: Props) => {
+export const SubsubsectionTasksTable = ({ subsubsectionTasks, fromPath }: Props) => {
   const projectSlug = useProjectSlug()
   const router = useRouter()
+  const appendFrom = fromPath ? `?from=${encodeURIComponent(fromPath)}` : ""
 
   const [deleteSubsubsectionTaskMutation] = useMutation(deleteSubsubsectionTask)
 
@@ -84,7 +87,9 @@ export const SubsubsectionTasksTable = ({ subsubsectionTasks }: Props) => {
                       <ButtonWrapper className="justify-end">
                         <Link
                           icon="edit"
-                          href={`/${projectSlug}/subsubsection-task/${Task.id}/edit` as Route}
+                          href={
+                            `/${projectSlug}/subsubsection-task/${Task.id}/edit${appendFrom}` as Route
+                          }
                         >
                           Bearbeiten
                         </Link>
@@ -114,12 +119,11 @@ export const SubsubsectionTasksTable = ({ subsubsectionTasks }: Props) => {
           button="blue"
           icon="plus"
           className="mt-4"
-          href={`/${projectSlug}/subsubsection-task/new` as Route}
+          href={`/${projectSlug}/subsubsection-task/new${appendFrom}` as Route}
         >
           Neuer Eintragstyp
         </Link>
       </IfUserCanEdit>
-
       <SuperAdminLogData data={{ subsubsectionTasks }} />
     </>
   )

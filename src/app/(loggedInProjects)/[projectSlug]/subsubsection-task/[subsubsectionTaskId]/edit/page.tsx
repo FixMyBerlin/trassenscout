@@ -15,20 +15,28 @@ export const metadata: Metadata = {
 
 type Props = {
   params: { projectSlug: string; subsubsectionTaskId: string }
+  searchParams: { from?: string }
 }
 
 export default async function EditSubsubsectionTaskPage({
   params: { projectSlug, subsubsectionTaskId },
+  searchParams,
 }: Props) {
   const subsubsectionTask = await invoke(getSubsubsectionTask, {
     projectSlug,
     id: Number(subsubsectionTaskId),
   })
 
+  const fromParam = searchParams?.from
+
   return (
     <>
       <PageHeader title="Eintragstyp bearbeiten" className="mt-12" />
-      <EditSubsubsectionTaskForm subsubsectionTask={subsubsectionTask} projectSlug={projectSlug} />
+      <EditSubsubsectionTaskForm
+        subsubsectionTask={subsubsectionTask}
+        projectSlug={projectSlug}
+        fromParam={fromParam}
+      />
     </>
   )
 }

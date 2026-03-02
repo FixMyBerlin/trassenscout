@@ -15,21 +15,29 @@ export const metadata: Metadata = {
 
 type Props = {
   params: { projectSlug: string; subsectionStatusId: string }
+  searchParams: { from?: string }
 }
 
 export default async function EditSubsectionStatusPage({
   params: { projectSlug, subsectionStatusId },
+  searchParams,
 }: Props) {
   const subsectionStatus = await invoke(getSubsectionStatus, {
     projectSlug,
     id: parseInt(subsectionStatusId),
   })
 
+  const fromParam = searchParams?.from
+
   return (
     <>
       <PageHeader title="Status bearbeiten" className="mt-12" />
 
-      <EditSubsectionStatusForm subsectionStatus={subsectionStatus} projectSlug={projectSlug} />
+      <EditSubsectionStatusForm
+        subsectionStatus={subsectionStatus}
+        projectSlug={projectSlug}
+        fromParam={fromParam}
+      />
     </>
   )
 }

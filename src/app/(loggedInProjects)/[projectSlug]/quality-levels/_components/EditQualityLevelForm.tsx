@@ -19,14 +19,19 @@ import { QualityLevelForm } from "./QualityLevelForm"
 type Props = {
   qualityLevel: PromiseReturnType<typeof getQualityLevel>
   projectSlug: string
+  /** Original form path to preserve in URL for back navigation */
+  fromParam?: string
 }
 
-export const EditQualityLevelForm = ({ qualityLevel, projectSlug }: Props) => {
+export const EditQualityLevelForm = ({ qualityLevel, projectSlug, fromParam }: Props) => {
   const router = useRouter()
   const [updateQualityLevelMutation] = useMutation(updateQualityLevel)
   const [deleteQualityLevelMutation] = useMutation(deleteQualityLevel)
 
-  const returnPath = `/${projectSlug}/quality-levels` as Route
+  const listPath = `/${projectSlug}/quality-levels`
+  const returnPath = (
+    fromParam ? `${listPath}?from=${encodeURIComponent(fromParam)}` : listPath
+  ) as Route
 
   type HandleSubmit = z.infer<typeof QualityLevelSchema>
   const handleSubmit = async (values: HandleSubmit) => {
@@ -36,7 +41,7 @@ export const EditQualityLevelForm = ({ qualityLevel, projectSlug }: Props) => {
         id: qualityLevel.id,
         projectSlug,
       })
-      router.push(`/${projectSlug}/quality-levels` as Route)
+      router.push(returnPath)
       router.refresh()
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])

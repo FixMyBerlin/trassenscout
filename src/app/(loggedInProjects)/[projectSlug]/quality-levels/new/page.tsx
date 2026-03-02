@@ -14,15 +14,23 @@ export const metadata: Metadata = {
 
 type Props = {
   params: { projectSlug: string }
+  searchParams: { from?: string }
 }
 
-export default async function NewQualityLevelPage({ params: { projectSlug } }: Props) {
+export default async function NewQualityLevelPage({
+  params: { projectSlug },
+  searchParams,
+}: Props) {
+  const fromParam = searchParams?.from
+  const listPath = `/${projectSlug}/quality-levels` as Route
+  const appendFrom = fromParam ? `?from=${encodeURIComponent(fromParam)}` : ""
+
   return (
     <>
       <PageHeader title="Ausbaustandard hinzufügen" className="mt-12" />
-      <NewQualityLevelForm projectSlug={projectSlug} />
+      <NewQualityLevelForm projectSlug={projectSlug} fromParam={fromParam} />
       <hr className="my-5 text-gray-200" />
-      <Link href={`/${projectSlug}/quality-levels` as Route}>Zurück zur Übersicht</Link>
+      <Link href={`${listPath}${appendFrom}` as Route}>Zurück zur Übersicht</Link>
     </>
   )
 }

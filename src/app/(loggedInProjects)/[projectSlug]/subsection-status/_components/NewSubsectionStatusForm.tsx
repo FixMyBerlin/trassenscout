@@ -13,17 +13,22 @@ import { SubsectionStatusForm } from "./SubsectionStatusForm"
 
 type Props = {
   projectSlug: string
+  /** Original form path to preserve in URL for back navigation */
+  fromParam?: string
 }
 
-export const NewSubsectionStatusForm = ({ projectSlug }: Props) => {
+export const NewSubsectionStatusForm = ({ projectSlug, fromParam }: Props) => {
   const router = useRouter()
   const [createSubsectionStatusMutation] = useMutation(createSubsectionStatus)
+
+  const listPath = `/${projectSlug}/subsection-status`
+  const returnPath = fromParam ? `${listPath}?from=${encodeURIComponent(fromParam)}` : listPath
 
   type HandleSubmit = z.infer<ReturnType<typeof SubsectionStatus.omit<{ projectId: true }>>>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await createSubsectionStatusMutation({ ...values, projectSlug })
-      router.push(`/${projectSlug}/subsection-status` as Route)
+      router.push(returnPath as Route)
       router.refresh()
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])

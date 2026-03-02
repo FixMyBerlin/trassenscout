@@ -18,11 +18,14 @@ type Props = {
   subsubsectionInfras: PromiseReturnType<
     typeof getSubsubsectionInfrasWithCount
   >["subsubsectionInfras"]
+  /** Optional path to return to after editing (from original form) */
+  fromPath?: string
 }
 
-export const SubsubsectionInfrasTable = ({ subsubsectionInfras }: Props) => {
+export const SubsubsectionInfrasTable = ({ subsubsectionInfras, fromPath }: Props) => {
   const projectSlug = useProjectSlug()
   const router = useRouter()
+  const appendFrom = fromPath ? `?from=${encodeURIComponent(fromPath)}` : ""
 
   const [deleteSubsubsectionInfraMutation] = useMutation(deleteSubsubsectionInfra)
 
@@ -85,7 +88,9 @@ export const SubsubsectionInfrasTable = ({ subsubsectionInfras }: Props) => {
                       <ButtonWrapper className="justify-end">
                         <Link
                           icon="edit"
-                          href={`/${projectSlug}/subsubsection-infra/${Infra.id}/edit` as Route}
+                          href={
+                            `/${projectSlug}/subsubsection-infra/${Infra.id}/edit${appendFrom}` as Route
+                          }
                         >
                           Bearbeiten
                         </Link>

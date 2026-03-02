@@ -18,11 +18,14 @@ type Props = {
   subsubsectionStatuss: PromiseReturnType<
     typeof getSubsubsectionStatussWithCount
   >["subsubsectionStatuss"]
+  /** Optional path to return to after editing (from original form) */
+  fromPath?: string
 }
 
-export const SubsubsectionStatussTable = ({ subsubsectionStatuss }: Props) => {
+export const SubsubsectionStatussTable = ({ subsubsectionStatuss, fromPath }: Props) => {
   const projectSlug = useProjectSlug()
   const router = useRouter()
+  const appendFrom = fromPath ? `?from=${encodeURIComponent(fromPath)}` : ""
 
   const [deleteSubsubsectionStatusMutation] = useMutation(deleteSubsubsectionStatus)
 
@@ -100,7 +103,9 @@ export const SubsubsectionStatussTable = ({ subsubsectionStatuss }: Props) => {
                       <ButtonWrapper className="justify-end">
                         <Link
                           icon="edit"
-                          href={`/${projectSlug}/subsubsection-status/${status.id}/edit` as Route}
+                          href={
+                            `/${projectSlug}/subsubsection-status/${status.id}/edit${appendFrom}` as Route
+                          }
                         >
                           Bearbeiten
                         </Link>

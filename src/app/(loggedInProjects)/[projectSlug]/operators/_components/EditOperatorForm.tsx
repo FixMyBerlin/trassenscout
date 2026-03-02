@@ -19,14 +19,19 @@ import { z } from "zod"
 type Props = {
   operator: PromiseReturnType<typeof getOperator>
   projectSlug: string
+  /** Original form path to preserve in URL for back navigation */
+  fromParam?: string
 }
 
-export const EditOperatorForm = ({ operator, projectSlug }: Props) => {
+export const EditOperatorForm = ({ operator, projectSlug, fromParam }: Props) => {
   const router = useRouter()
   const [updateOperatorMutation] = useMutation(updateOperator)
   const [deleteOperatorMutation] = useMutation(deleteOperator)
 
-  const returnPath = `/${projectSlug}/operators` as Route
+  const listPath = `/${projectSlug}/operators`
+  const returnPath = (
+    fromParam ? `${listPath}?from=${encodeURIComponent(fromParam)}` : listPath
+  ) as Route
 
   type HandleSubmit = z.infer<typeof OperatorSchema>
   const handleSubmit = async (values: HandleSubmit) => {
@@ -36,7 +41,7 @@ export const EditOperatorForm = ({ operator, projectSlug }: Props) => {
         id: operator.id,
         projectSlug,
       })
-      router.push(`/${projectSlug}/operators` as Route)
+      router.push(returnPath)
       router.refresh()
     } catch (error: any) {
       if (error.code === "P2002" && error.meta?.target?.includes("slug")) {
