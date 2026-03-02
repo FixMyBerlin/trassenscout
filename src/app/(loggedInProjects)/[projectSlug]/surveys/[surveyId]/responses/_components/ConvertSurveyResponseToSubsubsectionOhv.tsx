@@ -35,7 +35,7 @@ export type ConvertSurveyResponseToSubsubsectionProps = {
   surveySlug: AllowedSurveySlugs
 }
 
-export const ConvertSurveyResponseToSubsubsection = ({
+export const ConvertSurveyResponseToSubsubsectionOhv = ({
   response,
   projectSlug,
   surveySlug,
@@ -43,6 +43,10 @@ export const ConvertSurveyResponseToSubsubsection = ({
   const [convertError, setConvertError] = useState<string | null>(null)
   const [createSubsubsectionMutation, { isLoading }] = useMutation(createSubsubsection)
   const router = useRouter()
+
+  if (projectSlug !== "ohv") {
+    return null
+  }
 
   // Normalize the slug for the subsubsection
   const normalizedResponseSlug = response.data["subsubsectionId"]

@@ -1,6 +1,6 @@
 import { NewSurveyResponseCommentForm } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/comments/NewSurveyResponseCommentForm"
 import { SurveyResponseCommentField } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/comments/SurveyResponseCommentField"
-import { ConvertSurveyResponseToSubsubsection } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/ConvertSurveyResponseToSubsubsection"
+import { ConvertSurveyResponseToSubsubsectionOhv } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/ConvertSurveyResponseToSubsubsectionOhv"
 import { EditableSurveyResponseForm } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/EditableSurveyResponseForm"
 import EditableSurveyResponseMapAndStaticData from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/EditableSurveyResponseMapAndStaticData"
 import { EditableSurveyResponseStatusLabel } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/EditableSurveyResponseStatusLabel"
@@ -180,13 +180,11 @@ const EditableSurveyResponseListItem = ({
             </ul>
           </div>
 
-          {projectSlug === "ohv" && (
-            <ConvertSurveyResponseToSubsubsection
-              response={response}
-              projectSlug={projectSlug}
-              surveySlug={surveySlug}
-            />
-          )}
+          <ConvertSurveyResponseToSubsubsectionOhv
+            response={response}
+            projectSlug={projectSlug}
+            surveySlug={surveySlug}
+          />
         </div>
       )}
     </article>
