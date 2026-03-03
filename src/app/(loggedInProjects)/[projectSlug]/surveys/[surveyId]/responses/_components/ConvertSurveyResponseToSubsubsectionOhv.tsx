@@ -44,10 +44,6 @@ export const ConvertSurveyResponseToSubsubsectionOhv = ({
   const [createSubsubsectionMutation, { isLoading }] = useMutation(createSubsubsection)
   const router = useRouter()
 
-  if (projectSlug !== "ohv") {
-    return null
-  }
-
   // Normalize the slug for the subsubsection
   const normalizedResponseSlug = response.data["subsubsectionId"]
     ? response.data["subsubsectionId"].toLowerCase()
@@ -70,6 +66,10 @@ export const ConvertSurveyResponseToSubsubsectionOhv = ({
       enabled: Boolean(normalizedResponseSlug && normalizedResponseSubsectionSlug),
     },
   )
+
+  if (projectSlug !== "ohv") {
+    return null
+  }
 
   // Determine if subsubsection exists based on query result
   // If we have data, it exists. If error is NotFoundError, it doesn't exist.
