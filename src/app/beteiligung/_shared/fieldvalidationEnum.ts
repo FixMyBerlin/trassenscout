@@ -23,6 +23,14 @@ export const fieldValidationEnum = {
       .optional(),
     required: false,
   },
+  requiredYearString: {
+    zodSchema: z
+      .string()
+      .trim()
+      .min(4, { message: "Pflichtfeld." })
+      .regex(/^(\d{4}|)$/, { message: "Datum im Format JJJJ" }),
+    required: true,
+  },
   // the optional zod schema with "required: true" seems contradictory, but it is used for a field that is required, but only if a condition is met
   // the conditional required validation is handled in the form field logic manually - defined in the config
   // we want to have "required: true" so that the field is marked as required in the UI

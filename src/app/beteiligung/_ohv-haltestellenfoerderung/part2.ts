@@ -6,6 +6,28 @@ import {
   SurveyPart2,
 } from "@/src/app/beteiligung/_shared/types"
 import { isDev } from "@/src/core/utils/isEnv"
+import { AnyFieldApi } from "@tanstack/react-form"
+import { getYear, isBefore } from "date-fns"
+
+const validateRealisationYear = ({ fieldApi }: { fieldApi: AnyFieldApi }) => {
+  // we can be sure that it is numeric as we use the requiredYearString validation
+  const year = Number(fieldApi.state.value)
+
+  const now = new Date()
+  const currentYear = getYear(now)
+  const feb1 = new Date(currentYear, 1, 1)
+  const minYear = isBefore(now, feb1) ? currentYear + 1 : currentYear + 2
+  const maxYear = 2031
+
+  if (year < minYear) {
+    return `Das Realisierungsjahr muss mindestens ${minYear} sein.`
+  }
+  if (year > maxYear) {
+    return `Das Realisierungsjahr darf maximal ${maxYear} sein.`
+  }
+
+  return undefined
+}
 
 export const part2Config: SurveyPart2 = {
   progressBarDefinition: 2,
@@ -336,11 +358,16 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           name: "realisationYear",
           component: "SurveyTextfield",
           componentType: "form",
-          validation: fieldValidationEnum["optionalYearString"],
+          validation: fieldValidationEnum["requiredYearString"],
           defaultValue: "",
           props: {
             label: "Voraussichtliches Realisierungsjahr",
-            description: "Datum im Format JJJJ, beispielsweise '2027'",
+            description:
+              "Datum im Format JJJJ, beispielsweise '2027'. Bis 31. Januar eingereichte Maßnahmen können für das Folgejahr berücksichtigt werden. Ab 1. Februar ist eine Berücksichtigung frühestens ab dem übernächsten Jahr möglich (max. bis 2031).",
+          },
+          // here we use validators (not superrefine) as we need the isPristine state and as we do not have the pagehaserror problem here as it is the last page of the part tbd
+          validators: {
+            onSubmit: validateRealisationYear,
           },
         },
         {
