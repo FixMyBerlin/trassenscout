@@ -5,16 +5,16 @@ import {
   extractProjectSlug,
   ProjectSlugRequiredSchema,
 } from "@/src/authorization/extractProjectSlug"
-import { OperatorSchema } from "@/src/server/operators/schema"
+import { NetworkHierarchySchema } from "@/src/server/networkHierarchy/schema"
 import { getProjectIdBySlug } from "@/src/server/projects/queries/getProjectIdBySlug"
 import { resolver } from "@blitzjs/rpc"
 
-const CreateOperatorSchema = ProjectSlugRequiredSchema.merge(
-  OperatorSchema.omit({ projectId: true }),
+const CreateNetworkHierarchySchema = ProjectSlugRequiredSchema.merge(
+  NetworkHierarchySchema.omit({ projectId: true }),
 )
 
 export default resolver.pipe(
-  resolver.zod(CreateOperatorSchema),
+  resolver.zod(CreateNetworkHierarchySchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ projectSlug, ...input }) => {
     return await db.networkHierarchy.create({
