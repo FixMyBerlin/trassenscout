@@ -2,8 +2,8 @@
 // Used by both local dev and staging sync processes
 
 import { $, SQL } from "bun"
-import chalk from "chalk"
 import path from "node:path"
+import { styleText } from "node:util"
 
 // Helper function to normalize database URL for Bun SQL (runs on host, not in Docker)
 // Replaces host.docker.internal with localhost for direct connections from dev machine
@@ -46,12 +46,12 @@ export async function verifyDatabaseEnvironment(
   const connected = await checkDatabaseConnection(targetDbUrl)
   if (!connected) {
     console.error("")
-    console.error(chalk.red("❌ Failed to connect to database."))
+    console.error(styleText("red", "❌ Failed to connect to database."))
     console.error("")
     process.exit(1)
   }
 
-  console.log(chalk.inverse(`🔍 Verifying database environment...`))
+  console.log(styleText("inverse", `🔍 Verifying database environment...`))
 
   const normalizedUrl = normalizeUrlForBunSql(targetDbUrl)
   const db = new SQL(normalizedUrl)
@@ -63,8 +63,8 @@ export async function verifyDatabaseEnvironment(
 
     if (!storedEnv) {
       console.error("")
-      console.error(chalk.red("❌ ENV not found in _Meta table."))
-      console.error(chalk.red("   Where <env> is: development, staging, or production"))
+      console.error(styleText("red", "❌ ENV not found in _Meta table."))
+      console.error(styleText("red", "   Where <env> is: development, staging, or production"))
       console.error("")
       process.exit(1)
     }
@@ -75,9 +75,9 @@ export async function verifyDatabaseEnvironment(
     // Safety check: abort if production
     if (storedEnv === "production") {
       console.error("")
-      console.error(chalk.red("⚠️  CRITICAL: Connected to PRODUCTION database!"))
+      console.error(styleText("red", "⚠️  CRITICAL: Connected to PRODUCTION database!"))
       console.error(
-        chalk.red("   Aborting to prevent accidental production database modification."),
+        styleText("red", "   Aborting to prevent accidental production database modification."),
       )
       console.error("")
       process.exit(1)
@@ -86,13 +86,13 @@ export async function verifyDatabaseEnvironment(
     // Safety check: abort if mismatch
     if (storedEnv !== expectedEnv) {
       console.error("")
-      console.error(chalk.red("⚠️  CRITICAL: Environment mismatch!"))
-      console.error(chalk.red(`   Expected: ${expectedEnv}, Database: ${storedEnv}`))
+      console.error(styleText("red", "⚠️  CRITICAL: Environment mismatch!"))
+      console.error(styleText("red", `   Expected: ${expectedEnv}, Database: ${storedEnv}`))
       console.error("")
       process.exit(1)
     }
 
-    console.log(`✅ Environment verified: ${chalk.green(storedEnv)}`)
+    console.log(`✅ Environment verified: ${styleText("green", storedEnv)}`)
   } finally {
     db.close()
   }
@@ -101,19 +101,20 @@ export async function verifyDatabaseEnvironment(
 // Helper function to display SSH tunnel instructions for connection errors
 export function showSshTunnelInstructions(targetDbUrlOrStaging: string | boolean) {
   console.log("")
-  console.log(chalk.yellow("📝 Make sure SSH tunnel is running in a separate terminal:"))
+  console.log(styleText("yellow", "📝 Make sure SSH tunnel is running in a separate terminal:"))
   if (typeof targetDbUrlOrStaging === "boolean") {
     console.log(
-      chalk.yellow(
+      styleText(
+        "yellow",
         `   ssh trassenscout-${targetDbUrlOrStaging ? "staging" : "production"}-postgres-tunnel`,
       ),
     )
   } else {
     const targetDbUrl = targetDbUrlOrStaging
     if (targetDbUrl.includes("staging") || targetDbUrl.includes("5433")) {
-      console.log(chalk.yellow("   ssh trassenscout-staging-postgres-tunnel"))
+      console.log(styleText("yellow", "   ssh trassenscout-staging-postgres-tunnel"))
     } else {
-      console.log(chalk.yellow("   ssh trassenscout-production-postgres-tunnel"))
+      console.log(styleText("yellow", "   ssh trassenscout-production-postgres-tunnel"))
     }
   }
   console.log("")
@@ -121,7 +122,7 @@ export function showSshTunnelInstructions(targetDbUrlOrStaging: string | boolean
 
 // Function to reset database using pre-restore.sql
 export async function resetDatabase(targetDbUrl: string, sqlDir: string) {
-  console.log(chalk.inverse("🗑️  Resetting database..."))
+  console.log(styleText("inverse", "🗑️  Resetting database..."))
 
   const maintenanceUrl = targetDbUrl
     .replace("@localhost", "@host.docker.internal")
@@ -141,7 +142,7 @@ export async function resetDatabase(targetDbUrl: string, sqlDir: string) {
 
 // Function to restore dump to database (accepts a dump file path)
 export async function restoreDump(targetDbUrl: string, dumpFilePath: string) {
-  console.log(chalk.inverse("📥 Restoring dump..."))
+  console.log(styleText("inverse", "📥 Restoring dump..."))
 
   const dockerDbUrl = targetDbUrl.replace("@localhost", "@host.docker.internal")
 
@@ -168,7 +169,7 @@ export async function restoreDump(targetDbUrl: string, dumpFilePath: string) {
 
 // Function to anonymize data using Bun's native SQL API
 export async function anonymizeData(targetDbUrl: string, expectedEnv: "development" | "staging") {
-  console.log(chalk.inverse("🔒 Anonymizing data..."))
+  console.log(styleText("inverse", "🔒 Anonymizing data..."))
 
   const normalizedUrl = normalizeUrlForBunSql(targetDbUrl)
   const db = new SQL(normalizedUrl)
@@ -220,21 +221,21 @@ export async function checkDumpFile(sqlDir: string) {
 
 // Function to run migrations (uses DATABASE_URL from environment)
 export async function runMigrations() {
-  console.log(chalk.inverse("🔄 Running migrations..."))
+  console.log(styleText("inverse", "🔄 Running migrations..."))
 
   await $`blitz prisma migrate dev`
 }
 
 // Function to run seeding (local only)
 export async function runSeed() {
-  console.log(chalk.inverse("🌱 Seeding database..."))
+  console.log(styleText("inverse", "🌱 Seeding database..."))
 
   await $`SEED_ONLY_USERS=1 blitz db seed`
 }
 
 // Function to pull production dump
 export async function pullProductionDump(sqlDir: string, tempDir: string) {
-  console.log(chalk.inverse("📥 Pulling production database dump using get-dump.ts..."))
+  console.log(styleText("inverse", "📥 Pulling production database dump using get-dump.ts..."))
   await $`bun ${sqlDir}/../get-dump.ts`
   await $`cp ${sqlDir}/../data/dump.sql ${tempDir}/dump.sql`.quiet()
   const size = await $`ls -lh ${tempDir}/dump.sql`.text()
