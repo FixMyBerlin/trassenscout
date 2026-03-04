@@ -1,4 +1,5 @@
 import db from "@/db"
+import { createLogEntry } from "@/src/server/logEntries/create/createLogEntry"
 import { Ctx } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
@@ -35,6 +36,13 @@ export default resolver.pipe(
           },
         },
       },
+    })
+
+    await createLogEntry({
+      action: "CREATE",
+      message: `Neues Support-Dokument "${record.title}" erstellt`,
+      userId: currentUserId,
+      supportDocumentId: record.id,
     })
 
     return record

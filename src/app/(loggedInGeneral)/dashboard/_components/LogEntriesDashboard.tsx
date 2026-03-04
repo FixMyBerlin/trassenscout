@@ -4,6 +4,7 @@ import getProjects from "@/src/server/projects/queries/getProjects"
 import type { TGetProjectsWithGeometryWithMembershipRole } from "@/src/server/projects/queries/getProjectsWithGeometryWithMembershipRole"
 import getCurrentUser from "@/src/server/users/queries/getCurrentUser"
 import "server-only"
+import { GeneralLogEntries } from "./GeneralLogEntries"
 import { ProjectLogEntries } from "./ProjectLogEntries"
 
 type Props = { userProjects: TGetProjectsWithGeometryWithMembershipRole }
@@ -15,6 +16,7 @@ export const LogEntriesDashboard = async ({ userProjects }: Props) => {
     const { projects } = await invoke(getProjects, {})
     return (
       <SuperAdminBox className="space-y-6">
+        <GeneralLogEntries />
         {projects.map((project) => (
           <ProjectLogEntries key={project.id} projectId={project.id} projectSlug={project.slug} />
         ))}

@@ -551,9 +551,10 @@ model SupportDocument {
   description String?
   order       Int      @default(autoincrement())
 
-  createdBy   User?   @relation("SupportDocumentCreatedBy", fields: [createdById], references: [id])
+  createdBy   User?      @relation("SupportDocumentCreatedBy", fields: [createdById], references: [id])
   createdById Int?
   upload      Upload?
+  LogEntry    LogEntry[]
 }
 
 model Survey {
@@ -674,8 +675,8 @@ model LogEntry {
   message            String?
   changes            Json?
   // RELATED PROJECT…
-  projectId          Int
-  project            Project            @relation(fields: [projectId], references: [id])
+  projectId          Int?
+  project            Project?           @relation(fields: [projectId], references: [id], onDelete: Cascade)
   // OPTIONAL RELATED MODEL…
   inviteId           Int?
   invite             Invite?            @relation(fields: [inviteId], references: [id])
@@ -697,6 +698,8 @@ model LogEntry {
   surveyResponse     SurveyResponse?    @relation(fields: [surveyResponseId], references: [id])
   ProjectRecord      ProjectRecord?     @relation(fields: [projectRecordId], references: [id])
   projectRecordId    Int?
+  supportDocument    SupportDocument?   @relation(fields: [supportDocumentId], references: [id])
+  supportDocumentId  Int?
 
   @@index([projectId, createdAt])
 }
