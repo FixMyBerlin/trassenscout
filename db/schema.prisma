@@ -544,10 +544,12 @@ model Upload {
 }
 
 model SupportDocument {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  title       String
+  description String?
+  order       Int      @default(autoincrement())
 
   createdBy   User?   @relation("SupportDocumentCreatedBy", fields: [createdById], references: [id])
   createdById Int?
