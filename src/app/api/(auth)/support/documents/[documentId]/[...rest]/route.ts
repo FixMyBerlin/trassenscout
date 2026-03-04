@@ -25,15 +25,19 @@ export const GET = withAuth(async ({ params }) => {
         id: documentId,
       },
       select: {
-        externalUrl: true,
+        upload: {
+          select: {
+            externalUrl: true,
+          },
+        },
       },
     })
 
-    if (!document) {
+    if (!document || !document.upload) {
       return new Response("Not Found", { status: 404 })
     }
 
-    const key = getS3KeyFromUrl(document.externalUrl)
+    const key = getS3KeyFromUrl(document.upload.externalUrl)
     const s3Client = getConfiguredS3Client()
 
     const object = await getObject(s3Client, {

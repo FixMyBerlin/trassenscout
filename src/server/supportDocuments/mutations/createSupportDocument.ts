@@ -18,8 +18,18 @@ export default resolver.pipe(
 
     const record = await db.supportDocument.create({
       data: {
-        ...input,
+        title: input.title,
         createdById: currentUserId,
+        upload: {
+          create: {
+            title: input.title,
+            externalUrl: input.externalUrl,
+            mimeType: input.mimeType ?? null,
+            fileSize: input.fileSize ?? null,
+            createdById: currentUserId,
+            projectId: null,
+          },
+        },
       },
     })
 

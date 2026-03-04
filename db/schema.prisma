@@ -45,22 +45,23 @@ model User {
   phone          String?
   institution    String? // Organisation / Kommune
 
-  tokens                 Token[]
-  sessions               Session[]
-  subsections            Subsection[]
-  memberships            Membership[]
-  Subsubsection          Subsubsection[]
-  invites                Invite[]
-  SurveyResponseComment  SurveyResponseComment[]
-  LogEntry               LogEntry[]
-  SystemLogEntry         SystemLogEntry[]
+  tokens                  Token[]
+  sessions                Session[]
+  subsections             Subsection[]
+  memberships             Membership[]
+  Subsubsection           Subsubsection[]
+  invites                 Invite[]
+  SurveyResponseComment   SurveyResponseComment[]
+  LogEntry                LogEntry[]
+  SystemLogEntry          SystemLogEntry[]
   //
-  projectRecordsAuthored ProjectRecord[]         @relation("ProjectRecordAuthor")
-  projectRecordsUpdated  ProjectRecord[]         @relation("ProjectRecordUpdatedBy")
-  projectRecordsReviewed ProjectRecord[]         @relation("ProjectRecordReviewedBy")
-  uploadsCreated         Upload[]                @relation("UploadCreatedBy")
-  uploadsUpdated         Upload[]                @relation("UploadUpdatedBy")
-  supportDocumentsCreated SupportDocument[]      @relation("SupportDocumentCreatedBy")
+  projectRecordsAuthored  ProjectRecord[]         @relation("ProjectRecordAuthor")
+  projectRecordsUpdated   ProjectRecord[]         @relation("ProjectRecordUpdatedBy")
+  projectRecordsReviewed  ProjectRecord[]         @relation("ProjectRecordReviewedBy")
+  uploadsCreated          Upload[]                @relation("UploadCreatedBy")
+  uploadsUpdated          Upload[]                @relation("UploadUpdatedBy")
+  //
+  supportDocumentsCreated SupportDocument[]       @relation("SupportDocumentCreatedBy")
 }
 
 enum UserRoleEnum {
@@ -521,8 +522,8 @@ model Upload {
   latitude             Float?
   longitude            Float?
   //
-  project              Project             @relation(fields: [projectId], references: [id])
-  projectId            Int
+  project              Project?            @relation(fields: [projectId], references: [id])
+  projectId            Int?
   subsection           Subsection?         @relation(fields: [subsectionId], references: [id])
   subsectionId         Int?
   Subsubsection        Subsubsection?      @relation(fields: [subsubsectionId], references: [id])
@@ -531,6 +532,8 @@ model Upload {
   projectRecordEmailId Int?
   surveyResponse       SurveyResponse?     @relation(fields: [surveyResponseId], references: [id])
   surveyResponseId     Int?
+  supportDocument      SupportDocument?    @relation(fields: [supportDocumentId], references: [id])
+  supportDocumentId    Int?                @unique
   projectRecords       ProjectRecord[]
   LogEntry             LogEntry[]
   //
@@ -541,15 +544,14 @@ model Upload {
 }
 
 model SupportDocument {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  title       String
-  externalUrl String
-  mimeType    String?
-  fileSize    Int?
-  createdBy   User?    @relation("SupportDocumentCreatedBy", fields: [createdById], references: [id])
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String
+
+  createdBy   User?   @relation("SupportDocumentCreatedBy", fields: [createdById], references: [id])
   createdById Int?
+  upload      Upload?
 }
 
 model Survey {

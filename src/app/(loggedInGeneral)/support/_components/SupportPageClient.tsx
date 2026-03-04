@@ -76,9 +76,11 @@ export const SupportPageClient = () => {
       {/* Documents List */}
       {documents.length > 0 ? (
         <div className="space-y-4">
-          {documents.map((doc) => {
-            const filename = getFilenameFromS3(doc.externalUrl)
-            const downloadUrl = `/api/support/documents/${doc.id}/${filename}`
+          {documents
+            .filter((doc) => doc.upload)
+            .map((doc) => {
+              const filename = getFilenameFromS3(doc.upload!.externalUrl)
+              const downloadUrl = `/api/support/documents/${doc.id}/${filename}`
 
             return (
               <div

@@ -1,48 +1,41 @@
 import db from "@/db"
-import { getConfiguredS3Client } from "@/src/server/uploads/_utils/client"
-import { S3_BUCKET } from "@/src/server/uploads/_utils/config"
-import { getS3KeyFromUrl } from "@/src/server/uploads/_utils/url"
-import { deleteObject } from "@better-upload/server/helpers"
+import { deleteUploadFileAndDbRecord } from "@/src/server/uploads/_utils/deleteUploadFileAndDbRecord"
 import { resolver } from "@blitzjs/rpc"
 import { NotFoundError } from "blitz"
 import { z } from "zod"
 
-// equivalent to deleteUploadFileAndDbRecord in uploads/mutations/deleteUpload.ts
-
 const DeleteSupportDocumentSchema = z.object({ id: z.number() })
-
-async function deleteSupportDocumentFile(id: number): Promise<void> {
-  const document = await db.supportDocument.findFirstOrThrow({
-    where: { id },
-    select: {
-      id: true,
-      externalUrl: true,
-    },
-  })
-
-  const key = getS3KeyFromUrl(document.externalUrl)
-  const rootFolder = process.env.S3_UPLOAD_ROOTFOLDER
-
-  // Security: Only allow deletion of files in the current environment's root folder
-  if (!key.startsWith(rootFolder)) {
-    throw new NotFoundError(
-      `File does not belong to current environment (expected root folder: ${rootFolder})`,
-    )
-  }
-
-  // Delete from S3 (fail-fast: if this fails, we don't delete the DB record)
-  const s3 = getConfiguredS3Client()
-  await deleteObject(s3, { bucket: S3_BUCKET, key })
-
-  // Delete DB record
-  await db.supportDocument.deleteMany({ where: { id: document.id } })
-}
 
 export default resolver.pipe(
   resolver.zod(DeleteSupportDocumentSchema),
   resolver.authorize("ADMIN"),
   async ({ id }) => {
-    await deleteSupportDocumentFile(id)
+    const document = await db.supportDocument.findFirst({
+      where: { id },
+      include: {
+        upload: {
+          select: {
+            id: true,
+            externalUrl: true,
+            collaborationUrl: true,
+            collaborationPath: true,
+          },
+        },
+      },
+    })
+
+    if (!document) {
+      throw new NotFoundError("Support document not found")
+    }
+
+    // Delete the upload file (S3 + LuckyCloud + Upload DB record) if it exists
+    if (document.upload) {
+      await deleteUploadFileAndDbRecord(document.upload)
+    }
+
+    // Delete the SupportDocument record
+    await db.supportDocument.deleteMany({ where: { id } })
+
     return { id }
   },
 )

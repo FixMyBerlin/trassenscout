@@ -35,6 +35,10 @@ export const summarizeUpload = async ({
       include: { project: { select: { slug: true, id: true } } },
     })
 
+    if (!upload.project) {
+      throw new Error("Upload is not associated with a project")
+    }
+
     // Check if AI enabled for the project
     await checkProjectAiEnabled(upload.project.id)
 

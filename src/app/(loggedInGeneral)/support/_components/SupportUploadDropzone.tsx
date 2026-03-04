@@ -25,12 +25,11 @@ export const SupportUploadDropzone = ({ onUploadComplete }: Props) => {
 
   return (
     <UploadDropzoneBase
-      api="/api/support/document"
+      api="/api/support/documents/upload"
       createUploadRecord={createUploadRecord}
       onUploadComplete={onUploadComplete ? async () => await onUploadComplete() : undefined}
-      accept="application/pdf"
       description={{
-        fileTypes: `PDF-Dokumente bis ${S3_MAX_FILE_SIZE_BYTES / (1024 * 1024)} MB`,
+        fileTypes: `Alle Dateitypen bis ${S3_MAX_FILE_SIZE_BYTES / (1024 * 1024)} MB`,
         maxFiles: S3_MAX_FILES,
       }}
     />

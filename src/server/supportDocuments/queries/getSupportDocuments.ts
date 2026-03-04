@@ -7,15 +7,20 @@ export default resolver.pipe(async () => {
     select: {
       id: true,
       title: true,
-      externalUrl: true,
-      mimeType: true,
-      fileSize: true,
       createdAt: true,
       createdBy: {
         select: {
           id: true,
           firstName: true,
           lastName: true,
+        },
+      },
+      upload: {
+        select: {
+          id: true,
+          externalUrl: true,
+          mimeType: true,
+          fileSize: true,
         },
       },
     },
