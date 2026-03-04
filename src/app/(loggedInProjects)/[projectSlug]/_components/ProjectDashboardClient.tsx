@@ -7,7 +7,6 @@ import { Breadcrumb } from "@/src/core/components/Breadcrumb/Breadcrumb"
 import { Link } from "@/src/core/components/links"
 import { ProjectMap } from "@/src/core/components/Map/ProjectMap"
 import { ProjectMapFallback } from "@/src/core/components/Map/ProjectMapFallback"
-import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { Spinner } from "@/src/core/components/Spinner"
@@ -76,23 +75,14 @@ export const ProjectDashboardClient = () => {
       {Boolean(subsections.length) ? (
         Boolean(filteredSubsections.length) ? (
           <MapProvider>
-            <ProjectMap
-              subsections={filteredSubsections}
-              staticOverlay={getStaticOverlayForProject(projectSlug)}
-            />
+            <ProjectMap subsections={filteredSubsections} />
           </MapProvider>
         ) : (
-          <ProjectMapFallback
-            subsections={subsections}
-            staticOverlay={getStaticOverlayForProject(projectSlug)}
-          />
+          <ProjectMapFallback subsections={subsections} />
         )
       ) : (
         <MapProvider>
-          <ProjectMapFallback
-            subsections={[]}
-            staticOverlay={getStaticOverlayForProject(projectSlug)}
-          />
+          <ProjectMapFallback subsections={[]} />
         </MapProvider>
       )}
 

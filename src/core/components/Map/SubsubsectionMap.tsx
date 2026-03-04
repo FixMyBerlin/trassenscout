@@ -21,7 +21,7 @@ import {
 import { getUnifiedLayerId } from "./layers/UnifiedFeaturesLayer"
 import { MapFooter } from "./MapFooter"
 import { SubsubsectionMarkers } from "./markers/SubsubsectionMarkers"
-import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
+import { getStaticOverlayForProject } from "./staticOverlay/getStaticOverlayForProject"
 import { subsectionLegendConfig } from "./SubsectionSubsubsectionMap.legendConfig"
 import { UploadMarkers } from "./UploadMarkers"
 import { geometriesBbox } from "./utils/bboxHelpers"
@@ -33,15 +33,9 @@ type Props = {
   subsections: TGetSubsection[]
   selectedSubsection: TGetSubsection
   subsubsections: SubsubsectionWithPosition[]
-  staticOverlay?: StaticOverlayConfig
 }
 
-export const SubsubsectionMap = ({
-  subsections,
-  selectedSubsection,
-  subsubsections,
-  staticOverlay,
-}: Props) => {
+export const SubsubsectionMap = ({ subsections, selectedSubsection, subsubsections }: Props) => {
   const pageSubsectionSlug = useSlug("subsectionSlug")
   const pageSubsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
@@ -246,7 +240,7 @@ export const SubsubsectionMap = ({
         }
         selectableLayerIdSuffix="_subsubsection"
         colorSchema="subsubsection"
-        staticOverlay={staticOverlay}
+        staticOverlay={getStaticOverlayForProject(projectSlug)}
       >
         <SubsectionHullsLayer
           lines={subsectionLines}

@@ -5,7 +5,6 @@ import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogD
 import { Breadcrumb } from "@/src/core/components/Breadcrumb/Breadcrumb"
 import { SubsectionMapIcon } from "@/src/core/components/Map/Icons"
 import { SubsubsectionMapWithProvider } from "@/src/core/components/Map/SubsubsectionMapWithProvider"
-import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
 import { Notice } from "@/src/core/components/Notice/Notice"
 import { Spinner } from "@/src/core/components/Spinner"
@@ -123,7 +122,6 @@ export const SubsectionDashboardClient = () => {
             subsections={subsections}
             selectedSubsection={subsection}
             subsubsections={subsubsectionsForMap}
-            staticOverlay={getStaticOverlayForProject(projectSlug)}
           />
           {mapillaryHref && (
             <Link blank href={mapillaryHref} className="block text-xs">

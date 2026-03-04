@@ -4,6 +4,7 @@ import { blueButtonStyles, linkStyles } from "@/src/core/components/links/styles
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import type { LineEndPointFeatureProperties } from "@/src/core/components/Map/layers/LineEndPointsLayer"
 import type { UnifiedFeatureProperties } from "@/src/core/components/Map/layers/UnifiedFeaturesLayer"
+import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { UploadMarkers } from "@/src/core/components/Map/UploadMarkers"
 import { geometriesBbox, geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
 import { getSubsectionFeatures } from "@/src/core/components/Map/utils/getSubsectionFeatures"
@@ -145,6 +146,7 @@ export const UploadLocationMap = () => {
           points={allPoints}
           lineEndPoints={allLineEndPoints}
           interactiveLayerIds={[]}
+          staticOverlay={getStaticOverlayForProject(projectSlug)}
         >
           <UploadMarkers projectSlug={projectSlug} interactive={false} />
           {hasPosition && (
