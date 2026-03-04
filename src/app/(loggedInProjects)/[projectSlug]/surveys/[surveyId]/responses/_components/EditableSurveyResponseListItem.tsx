@@ -15,6 +15,7 @@ import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 
 import { useUserCan } from "@/src/app/_components/memberships/hooks/useUserCan"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
 import getSurveyResponseTopicsByProject from "@/src/server/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/server/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
@@ -179,12 +180,13 @@ const EditableSurveyResponseListItem = ({
               </IfUserCanEdit>
             </ul>
           </div>
-
-          <ConvertSurveyResponseToSubsubsectionOhv
-            response={response}
-            projectSlug={projectSlug}
-            surveySlug={surveySlug}
-          />
+          <SuperAdminBox>
+            <ConvertSurveyResponseToSubsubsectionOhv
+              response={response}
+              projectSlug={projectSlug}
+              surveySlug={surveySlug}
+            />
+          </SuperAdminBox>
         </div>
       )}
     </article>
