@@ -1,12 +1,13 @@
 "use client"
 
 import { SuperAdminBox } from "@/src/core/components/AdminBox/SuperAdminBox"
-import { Link, linkIcons, linkStyles } from "@/src/core/components/links"
+import { Link, linkIcons } from "@/src/core/components/links"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
 import getSupportDocuments from "@/src/server/supportDocuments/queries/getSupportDocuments"
 import { getFilenameFromS3 } from "@/src/server/uploads/_utils/url"
 import { useQuery } from "@blitzjs/rpc"
-import { twMerge } from "tailwind-merge"
+
+import { BookOpenIcon } from "@heroicons/react/24/outline"
 import { SupportUploadDropzone } from "./SupportUploadDropzone"
 
 export const SupportPageClient = () => {
@@ -21,7 +22,7 @@ export const SupportPageClient = () => {
   return (
     <div className="space-y-6">
       {documents.length > 0 ? (
-        <div className="space-y-4">
+        <ul className="space-y-4">
           {documents
             .filter((doc) => doc.upload)
             .map((doc) => {
@@ -29,49 +30,42 @@ export const SupportPageClient = () => {
               const downloadUrl = `/api/support/documents/${doc.id}/${filename}`
 
               return (
-                <div
+                <li
                   key={doc.id}
-                  className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4"
+                  className="flex flex-col items-center gap-2.5 rounded-lg border border-gray-200 p-8"
                 >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <Link href={downloadUrl} blank>
-                        {doc.title}
-                      </Link>
-                      <SuperAdminBox>
-                        <Link
-                          href={`/admin/support-documents/${doc.id}/edit`}
-                          className={twMerge(
-                            linkStyles,
-                            "flex cursor-pointer items-center justify-center gap-1",
-                          )}
-                        >
-                          {linkIcons["edit"]} Bearbeiten
-                        </Link>
-                      </SuperAdminBox>
-                    </div>
-                    {doc.description && (
-                      <p className="mt-1 text-sm text-gray-600">{doc.description}</p>
-                    )}
-                    <SuperAdminBox>
-                      <div className="mt-1 flex gap-4 text-sm text-gray-500">
+                  <BookOpenIcon className="size-8" />
+                  <p className="font-semibold">{doc.title}</p>
+                  {doc.description && (
+                    <p className="mt-1 text-center text-sm text-gray-600">{doc.description}</p>
+                  )}
+                  <Link href={downloadUrl} blank>
+                    Öffnen
+                  </Link>
+
+                  <SuperAdminBox>
+                    <div className="mt-1 flex gap-4 text-sm text-gray-500">
+                      <span>
+                        Hochgeladen: {new Date(doc.createdAt).toLocaleDateString("de-DE")}
+                      </span>
+                      {doc.createdBy && (
                         <span>
-                          Hochgeladen: {new Date(doc.createdAt).toLocaleDateString("de-DE")}
+                          von {doc.createdBy.firstName} {doc.createdBy.lastName}
                         </span>
-                        {doc.createdBy && (
-                          <span>
-                            von {doc.createdBy.firstName} {doc.createdBy.lastName}
-                          </span>
-                        )}
-                        <span>Reihenfolge: {doc.order}</span>
-                      </div>
-                    </SuperAdminBox>
-                  </div>
-                  <div className="ml-4 flex gap-2"></div>
-                </div>
+                      )}
+                      <span>Reihenfolge: {doc.order}</span>
+                    </div>
+                    <Link
+                      className="mt-2 flex items-center gap-2"
+                      href={`/admin/support-documents/${doc.id}/edit`}
+                    >
+                      {linkIcons["edit"]} Bearbeiten
+                    </Link>
+                  </SuperAdminBox>
+                </li>
               )
             })}
-        </div>
+        </ul>
       ) : (
         <ZeroCase visible={documents.length} name="Dokumente" />
       )}

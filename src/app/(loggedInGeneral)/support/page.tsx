@@ -13,7 +13,7 @@ export default async function SupportPage() {
       <PageHeader
         title="Support & Dokumentation"
         className="mt-12"
-        description="Hier finden Sie die aktuelle Dokumentation zum Trassenscout."
+        description="Hier finden Sie Anleitungen, Hintergrundinformationen und Erklärungen zu allen Funktionen des Trassenscouts."
       />
       <SupportPageClient />
     </>
