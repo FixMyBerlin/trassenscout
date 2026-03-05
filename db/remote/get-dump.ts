@@ -4,8 +4,8 @@
 // -h: Show help
 
 import { $ } from "bun"
-import chalk from "chalk"
 import { statSync } from "node:fs"
+import { styleText } from "node:util"
 import { checkDatabaseConnection, showSshTunnelInstructions } from "./db-helpers"
 
 // Parse command line arguments
@@ -46,17 +46,17 @@ const DIR = import.meta.dir
 await $`mkdir -p ${DIR}/data`
 
 // Check SSH connection before attempting dump
-console.log(chalk.inverse("🔍 Checking SSH connection..."))
+console.log(styleText("inverse", "🔍 Checking SSH connection..."))
 const connected = await checkDatabaseConnection(databaseUrl)
 if (!connected) {
   console.error("")
-  console.error(chalk.red("❌ Failed to connect to database."))
+  console.error(styleText("red", "❌ Failed to connect to database."))
   console.error("")
   process.exit(1)
 }
 
 // Pull database dump in plain SQL format
-console.log(chalk.inverse("📥 Pulling database dump..."))
+console.log(styleText("inverse", "📥 Pulling database dump..."))
 
 const dockerDbUrl = databaseUrl.replace("@localhost", "@host.docker.internal")
 const dumpFile = `${DIR}/data/dump.sql`
@@ -85,11 +85,12 @@ try {
     await $`rm -f ${tempDumpFile}`.quiet()
     console.error("")
     console.error(
-      chalk.red(
+      styleText(
+        "red",
         `❌ Dump file is too small (${(size / 1024 / 1024).toFixed(2)} MB). Expected at least 3 MB.`,
       ),
     )
-    console.error(chalk.red("   pg_dump may have failed silently."))
+    console.error(styleText("red", "   pg_dump may have failed silently."))
     console.error("")
     throw new Error("Dump file is too small")
   }

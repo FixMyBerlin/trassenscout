@@ -1,7 +1,9 @@
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
+import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { TerraDrawHint } from "@/src/core/components/Map/TerraDraw/TerraDrawHint"
 import { TerraDrawProvider } from "@/src/core/components/Map/TerraDraw/TerraDrawProvider"
 import { TerraDrawToolbar } from "@/src/core/components/Map/TerraDraw/TerraDrawToolbar"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { mapGeoTypeToEnum } from "@/src/server/shared/utils/mapGeoTypeToEnum"
 import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
@@ -24,7 +26,7 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
   const updateTerraDrawRef = useRef<
     ((geometry: SupportedGeometry | null, ignoreChangeEvents?: boolean) => void) | null
   >(null)
-
+  const projectSlug = useProjectSlug()
   const showPoint = allowedTypes.includes("point")
   const showLine = allowedTypes.includes("line")
   const showPolygon = allowedTypes.includes("polygon")
@@ -47,7 +49,7 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
       const bounds: LngLatBoundsLike = [minX, minY, maxX, maxY]
       return {
         bounds,
-        fitBoundsOptions: { padding: 100 },
+        fitBoundsOptions: { padding: 100, maxZoom: 16 },
       }
     }
 
@@ -79,6 +81,7 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
         initialViewState={initialViewState || defaultViewState}
         backgroundSwitcherPosition="bottom-left"
         colorSchema="subsection"
+        staticOverlay={getStaticOverlayForProject(projectSlug)}
       >
         {children}
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-2.5">

@@ -18,13 +18,17 @@ type Props = {
   subsubsectionInfrastructureTypes: PromiseReturnType<
     typeof getSubsubsectionInfrastructureTypesWithCount
   >["subsubsectionInfrastructureTypes"]
+  /** Optional path to return to after editing (from original form) */
+  fromPath?: string
 }
 
 export const SubsubsectionInfrastructureTypesTable = ({
   subsubsectionInfrastructureTypes,
+  fromPath,
 }: Props) => {
   const projectSlug = useProjectSlug()
   const router = useRouter()
+  const appendFrom = fromPath ? `?from=${encodeURIComponent(fromPath)}` : ""
 
   const [deleteSubsubsectionInfrastructureTypeMutation] = useMutation(
     deleteSubsubsectionInfrastructureType,
@@ -96,7 +100,7 @@ export const SubsubsectionInfrastructureTypesTable = ({
                         <Link
                           icon="edit"
                           href={
-                            `/${projectSlug}/subsubsection-infrastructure-type/${infrastructureType.id}/edit` as Route
+                            `/${projectSlug}/subsubsection-infrastructure-type/${infrastructureType.id}/edit${appendFrom}` as Route
                           }
                         >
                           Bearbeiten

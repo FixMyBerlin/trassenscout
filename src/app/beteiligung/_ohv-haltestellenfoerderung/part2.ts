@@ -5,6 +5,29 @@ import {
   geoCategorySetInitialBoundsDefinition,
   SurveyPart2,
 } from "@/src/app/beteiligung/_shared/types"
+import { isDev } from "@/src/core/utils/isEnv"
+import { AnyFieldApi } from "@tanstack/react-form"
+import { getYear, isBefore } from "date-fns"
+
+const validateRealisationYear = ({ fieldApi }: { fieldApi: AnyFieldApi }) => {
+  // we can be sure that it is numeric as we use the requiredYearString validation
+  const year = Number(fieldApi.state.value)
+
+  const now = new Date()
+  const currentYear = getYear(now)
+  const feb1 = new Date(currentYear, 1, 1)
+  const minYear = isBefore(now, feb1) ? currentYear + 1 : currentYear + 2
+  const maxYear = 2031
+
+  if (year < minYear) {
+    return `Das Realisierungsjahr muss mindestens ${minYear} sein.`
+  }
+  if (year > maxYear) {
+    return `Das Realisierungsjahr darf maximal ${maxYear} sein.`
+  }
+
+  return undefined
+}
 
 export const part2Config: SurveyPart2 = {
   progressBarDefinition: 2,
@@ -55,9 +78,16 @@ E-Mail: [a.greifenberg@ohbv.de](mailto:a.greifenberg@ohbv.de)
 **Weitere Informationen**\\
 Die Maßnahmenmeldung wird nicht zwischengespeichert, d.h. bei Verlassen der Seite gehen alle eingetragenen Informationen verloren. Nach dem Absenden der Maßnahmenmeldung können Sie nicht mehr auf Ihre getätigten Eingaben zugreifen. Deshalb ist es sinnvoll die Maßnahmenmeldung erst dann auszufüllen und abzusenden, sobald Sie alle wichtigen Informationen für die Maßnahmenmeldung beisammen haben. Folgende Informationen werden im Rahmen der Maßnahmenmeldung abgefragt:
 - Auswahl des Fördergegenstands
+- Upload für Dokumente (optional)
+- Beschreibung der Dokumente (optional)
 - Bezug zu vorhandener Haltestelle durch Auswahl auf Karte
 - Maßnahmenbeschreibung und Zielsetzung
+- Stand der Bauvorbereitung (optional)
+- Kostenschätzung (€)
+- Angaben zur Ko-Finanzierung (wenn ja, Mittelgeber und Programm)
 - Angaben zum geschätzten Kostenaufwand
+- Abfrage ob Gemeinschaftsbauwerk
+- Voraussichtliches Realisierungsjahr (optional)
 - Name, Telefonnummer und E-Mail-Adresse der zuständigen Kontaktperson
 
 Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://trassenscout.de/datenschutz) zu. Die Daten werden gemäß DSGVO verarbeitet und nur für die Durchführung dieses digitalen Meldeverfahrens gespeichert.`,
@@ -88,15 +118,22 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           componentType: "content",
           component: "SurveyMarkdown",
           props: {
-            markdown: `Bitte nutzen Sie das Formular für jeweils nur eine Maßnahmenmeldung. Sie können weitere Maßnahmenmeldungen in einem weiteren Schritt hinzufügen und absenden.
-
-**Wählen Sie eine Bushaltestelle aus, zu der Sie Maßnahmenvorschläge geben möchten.**
-
-Wählen Sie eine Bushaltestelle durch Klicken auf den gewünschten orangen Punkt auf der Karte aus. Nun können Sie zu der gewählten Bushaltestelle eine Maßnahme melden.
-
-Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” verkleinern oder vergrößern.`,
+            markdown: `Bitte nutzen Sie das Formular für jeweils nur eine Maßnahmenmeldung. Sie können weitere Maßnahmenmeldungen in einem weiteren Schritt hinzufügen und absenden.`,
           },
         },
+        {
+          name: "subsubsectionId",
+          component: "SurveyResponseIdField",
+          componentType: "form",
+          validation: fieldValidationEnum["requiredString"],
+          defaultValue: "",
+          props: {
+            label: "Vorgangs-ID",
+            description:
+              "Diese Vorgangsnummer wird automatisch vergeben und dient der eindeutigen Identifizierung Ihres Antrags über den gesamten Bearbeitungsprozess hinweg.",
+          },
+        },
+        // Fördergegenstand/SubsubsectionInfrastructureType
         {
           name: "category",
           componentType: "form",
@@ -109,7 +146,7 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
               { key: "zob", label: "Bau oder Ausbau von Zentralen Omnibusbahnhöfen (ZOB)" },
               { key: "haltestelleneinrichtungen", label: "Haltestelleneinrichtungen" },
               { key: "buswendeschleifen", label: "Buswendeschleifen und Bahnhofsvorplätze" },
-              { key: "pAndR", label: "Park-and-Ride- (P&R) und Bike-and-Ride-Anlagen (B&R)" },
+              { key: "pandr", label: "Park-and-Ride- (P&R) und Bike-and-Ride-Anlagen (B&R)" },
               { key: "beschleunigung", label: "Beschleunigungsmaßnahmen für den ÖPNV" },
             ],
           },
@@ -141,26 +178,6 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
             //   { key: "birkenwerder", label: "Birkenwerder" },
             //   { key: "leegebruch", label: "Leegebruch" },
             // ],
-          },
-        },
-        {
-          name: "uploads",
-          componentType: "form",
-          component: "SurveyUploadField",
-          validation: fieldValidationEnum["optionalArrayOfNumber"],
-          defaultValue: [],
-          props: {
-            label: "Dokumente",
-          },
-        },
-        {
-          name: "uploadsDescription",
-          componentType: "form",
-          component: "SurveyTextarea",
-          validation: fieldValidationEnum["optionalString"],
-          defaultValue: "",
-          props: {
-            label: "Beschreibung der Dokumente",
           },
         },
         {
@@ -246,13 +263,131 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
           },
         },
         {
-          name: "costs",
-          component: "SurveyTextfield",
+          name: "stateOfConstruction",
+          component: "SurveyTextarea",
           componentType: "form",
-          validation: fieldValidationEnum["requiredString"],
+          validation: fieldValidationEnum["optionalString"],
           defaultValue: "",
           props: {
-            label: "Kostenschätzung",
+            label: "Stand der Bauvorbereitung",
+          },
+        },
+        {
+          name: "costs",
+          component: "SurveyNumberfield",
+          componentType: "form",
+          validation: fieldValidationEnum["requiredNumber"],
+          defaultValue: null,
+          props: {
+            label: "Kostenschätzung (€)",
+            description: "Zahlen bitte ohne Punkt und Komma eingeben.",
+          },
+        },
+        {
+          name: "coFinancing",
+          component: "SurveyRadiobuttonGroup",
+          componentType: "form",
+          validation: fieldValidationEnum["requiredString"],
+          defaultValue: "unknown",
+          props: {
+            label: "Ko-Finanzierung",
+            options: [
+              { key: "yes", label: "Ja" },
+              { key: "no", label: "Nein" },
+              { key: "unknown", label: "keine Angabe" },
+            ],
+          },
+          // this deletes the value of fundingSource if condition is not met
+          listeners: {
+            onChange: ({ fieldApi }) => {
+              isDev &&
+                console.log(
+                  `${fieldApi.name} has changed to: ${fieldApi.state.value} --> resetting conditionalCase1A`,
+                )
+              if (fieldApi.state.value === "no" || fieldApi.state.value === "unknown") {
+                fieldApi.form.setFieldValue("fundingSource", "") // reset value of fundingSource if condition is not met
+                fieldApi.form.setFieldValue("programName", "") // reset value of programName if condition is not met
+              }
+            },
+          },
+        },
+        {
+          name: "fundingSource",
+          component: "SurveyTextfield",
+          componentType: "form",
+          validation: fieldValidationEnum["conditionalOptionalString"],
+          defaultValue: "",
+          condition: {
+            fieldName: "coFinancing",
+            conditionFn: (fieldValue) => fieldValue === "yes",
+          },
+          props: {
+            label: "Ko-Finanzierung: Mittelgeber",
+          },
+        },
+        {
+          name: "programName",
+          component: "SurveyTextfield",
+          componentType: "form",
+          validation: fieldValidationEnum["conditionalOptionalString"],
+          defaultValue: "",
+          condition: {
+            fieldName: "coFinancing",
+            conditionFn: (fieldValue) => fieldValue === "yes",
+          },
+          props: {
+            label: "Ko-Finanzierung: Programm",
+          },
+        },
+        {
+          name: "sharedBuilding",
+          component: "SurveyRadiobuttonGroup",
+          componentType: "form",
+          validation: fieldValidationEnum["requiredString"],
+          defaultValue: "unknown",
+          props: {
+            label: "Gemeinschaftsbauwerk",
+            options: [
+              { key: "yes", label: "Ja" },
+              { key: "no", label: "Nein" },
+              { key: "unknown", label: "keine Angabe" },
+            ],
+          },
+        },
+        {
+          name: "realisationYear",
+          component: "SurveyTextfield",
+          componentType: "form",
+          validation: fieldValidationEnum["requiredYearString"],
+          defaultValue: "",
+          props: {
+            label: "Voraussichtliches Realisierungsjahr",
+            description:
+              "Datum im Format JJJJ, beispielsweise '2027'. Bis 31. Januar eingereichte Maßnahmen können für das Folgejahr berücksichtigt werden. Ab 1. Februar ist eine Berücksichtigung frühestens ab dem übernächsten Jahr möglich (max. bis 2031).",
+          },
+          // here we use validators (not superrefine) as we need the isPristine state and as we do not have the pagehaserror problem here as it is the last page of the part tbd
+          validators: {
+            onSubmit: validateRealisationYear,
+          },
+        },
+        {
+          name: "uploads",
+          componentType: "form",
+          component: "SurveyUploadField",
+          validation: fieldValidationEnum["optionalArrayOfNumber"],
+          defaultValue: [],
+          props: {
+            label: "Dokumente",
+          },
+        },
+        {
+          name: "uploadsDescription",
+          componentType: "form",
+          component: "SurveyTextarea",
+          validation: fieldValidationEnum["optionalString"],
+          defaultValue: "",
+          props: {
+            label: "Beschreibung der Dokumente",
           },
         },
         {
@@ -283,6 +418,18 @@ Bei Bedarf können Sie die Ansicht der Karte verschieben oder über “+/-” ve
           defaultValue: "",
           props: {
             label: "E-Mail-Adresse zur Bestätigung der Maßnahmenmeldung",
+          },
+        },
+        {
+          name: "declaration",
+          component: "SurveyCheckbox",
+          componentType: "form",
+          validation: fieldValidationEnum["requiredTrueBoolean"],
+          defaultValue: false,
+          props: {
+            label: "Erklärung",
+            itemLabel:
+              "Ich erkläre, dass ich die Sparsamkeit und Wirtschaftlichkeit bei der Maßnahmenmeldung beachtet habe.",
           },
         },
       ],

@@ -15,18 +15,24 @@ export const metadata: Metadata = {
 
 type Props = {
   params: { projectSlug: string; operatorId: string }
+  searchParams: { from?: string }
 }
 
-export default async function EditOperatorPage({ params: { projectSlug, operatorId } }: Props) {
+export default async function EditOperatorPage({
+  params: { projectSlug, operatorId },
+  searchParams,
+}: Props) {
   const operator = await invoke(getOperator, {
     projectSlug,
     id: Number(operatorId),
   })
 
+  const fromParam = searchParams?.from
+
   return (
     <>
       <PageHeader title="Baulastträger bearbeiten" className="mt-12" />
-      <EditOperatorForm operator={operator} projectSlug={projectSlug} />
+      <EditOperatorForm operator={operator} projectSlug={projectSlug} fromParam={fromParam} />
     </>
   )
 }

@@ -1,7 +1,7 @@
 import type { GeoCategoryMapProps } from "@/src/app/beteiligung/_components/form/map/GeoCategoryMap"
 import { SurveyMapPanelContainer } from "@/src/app/beteiligung/_components/form/map/MapPanelContainer"
 import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
-import { isProduction } from "@/src/core/utils/isEnv"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
 
 type Props = {
   description?: GeoCategoryMapProps["description"]
@@ -26,15 +26,36 @@ export const SurveyMapGeoCategoryInfoPanel = ({
       {field.form.getFieldValue(geoCategoryIdDefinition.dataKey) ? (
         <SurveyMapPanelContainer>
           <ul className="text-left">
-            {!isProduction && (
-              <li className="font-mono">
-                <small>
+            {
+              <SuperAdminBox>
+                <li>
                   <strong>ID:</strong>{" "}
                   {field.form.getFieldValue(geoCategoryIdDefinition.dataKey) || "Keine Auswahl"} (
                   {geoCategoryIdDefinition.propertyName})
-                </small>
-              </li>
-            )}
+                </li>
+                {additionalData.map((data) => {
+                  const { label, dataKey, propertyName } = data
+                  const value = field.form.getFieldValue(dataKey)
+
+                  // Check if value is a stringified array and parse it
+                  let displayValue: string
+                  try {
+                    const parsedValue = JSON.parse(value)
+                    displayValue = Array.isArray(parsedValue) ? parsedValue.join(", ") : value
+                  } catch {
+                    displayValue = value
+                  }
+                  displayValue = displayValue || "Keine Auswahl"
+
+                  return (
+                    <li key={dataKey} className="text-black">
+                      <strong>{label}: </strong>
+                      {displayValue} ({propertyName})
+                    </li>
+                  )
+                })}
+              </SuperAdminBox>
+            }
             {additionalData.map((data) => {
               const { label, dataKey, propertyName } = data
               const value = field.form.getFieldValue(dataKey)
@@ -52,8 +73,7 @@ export const SurveyMapGeoCategoryInfoPanel = ({
               return (
                 <li key={dataKey} className="text-black">
                   <strong>{label}: </strong>
-                  {displayValue}{" "}
-                  {!isProduction && <small className="font-mono">({propertyName})</small>}
+                  {displayValue}
                 </li>
               )
             })}

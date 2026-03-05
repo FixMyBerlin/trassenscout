@@ -10,7 +10,7 @@ import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import { SubsubsectionWithPosition } from "@/src/server/subsubsections/queries/getSubsubsection"
 import { useRouter } from "next/navigation"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { MapLayerMouseEvent, useMap } from "react-map-gl/maplibre"
 import { BaseMap } from "./BaseMap"
 import { getLineEndPointsLayerId } from "./layers/LineEndPointsLayer"
@@ -21,7 +21,7 @@ import {
 import { getUnifiedLayerId } from "./layers/UnifiedFeaturesLayer"
 import { MapFooter } from "./MapFooter"
 import { SubsubsectionMarkers } from "./markers/SubsubsectionMarkers"
-import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
+import { getStaticOverlayForProject } from "./staticOverlay/getStaticOverlayForProject"
 import { subsectionLegendConfig } from "./SubsectionSubsubsectionMap.legendConfig"
 import { UploadMarkers } from "./UploadMarkers"
 import { geometriesBbox } from "./utils/bboxHelpers"
@@ -33,20 +33,15 @@ type Props = {
   subsections: TGetSubsection[]
   selectedSubsection: TGetSubsection
   subsubsections: SubsubsectionWithPosition[]
-  staticOverlay?: StaticOverlayConfig
 }
 
-export const SubsubsectionMap = ({
-  subsections,
-  selectedSubsection,
-  subsubsections,
-  staticOverlay,
-}: Props) => {
+export const SubsubsectionMap = ({ subsections, selectedSubsection, subsubsections }: Props) => {
   const pageSubsectionSlug = useSlug("subsectionSlug")
   const pageSubsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
   const router = useRouter()
   const { mainMap } = useMap()
+  const [mapLoading, setMapLoading] = useState(true)
 
   // Filter subsubsections to only include entries belonging to the selected subsection
   const filteredSubsubsections = useMemo(
@@ -166,7 +161,7 @@ export const SubsubsectionMap = ({
 
   // Set selected state via setFeatureState when selection changes
   useEffect(() => {
-    if (!mainMap) return
+    if (!mainMap || mapLoading) return
 
     const map = mainMap.getMap()
     const suffix = "_subsubsection"
@@ -218,7 +213,13 @@ export const SubsubsectionMap = ({
           }
         })
     }
-  }, [mainMap, pageSubsubsectionSlug, unifiedSubsubsectionFeatures, subsubsectionLineEndPoints])
+  }, [
+    mainMap,
+    mapLoading,
+    pageSubsubsectionSlug,
+    unifiedSubsubsectionFeatures,
+    subsubsectionLineEndPoints,
+  ])
 
   return (
     <>
@@ -226,9 +227,10 @@ export const SubsubsectionMap = ({
         id="mainMap"
         initialViewState={{
           bounds: mapBbox,
-          fitBoundsOptions: { padding: 60 },
+          fitBoundsOptions: { padding: 60, maxZoom: 16 },
         }}
         onClick={handleClickMap}
+        onIdle={() => setMapLoading(false)}
         interactiveLayerIds={[getSubsectionHullOtherFillLayerId("_subsubsection")]}
         lines={subsubsectionLines?.features.length ? subsubsectionLines : undefined}
         polygons={subsubsectionPolygons?.features.length ? subsubsectionPolygons : undefined}
@@ -238,7 +240,7 @@ export const SubsubsectionMap = ({
         }
         selectableLayerIdSuffix="_subsubsection"
         colorSchema="subsubsection"
-        staticOverlay={staticOverlay}
+        staticOverlay={getStaticOverlayForProject(projectSlug)}
       >
         <SubsectionHullsLayer
           lines={subsectionLines}

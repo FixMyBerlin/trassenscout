@@ -1,4 +1,5 @@
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
+import { SurveyResponseFieldValue } from "@/src/app/beteiligung/_shared/utils/SurveyResponseFieldValue"
 import { invoke } from "@/src/blitz-server"
 import getSurveyResponses from "@/src/server/survey-responses/queries/getSurveyResponses"
 import { Project } from "@prisma/client"
@@ -55,50 +56,6 @@ type AnswerDisplayProps = {
 }
 
 const AnswerDisplay: React.FC<AnswerDisplayProps> = ({ partConfig, answers }) => {
-  const renderAnswer = (field: any) => {
-    const value = answers[field.name]
-
-    if (value == null || value === "" || (Array.isArray(value) && value.length === 0)) {
-      return <em>Keine Antwort</em>
-    }
-
-    switch (field.component) {
-      case "SurveyCheckboxGroup":
-        return (
-          <ul className="list-disc pl-5">
-            {value.map((val: string) => {
-              const label =
-                field.props.options.find((opt: any) => String(opt.key) === String(val))?.label ||
-                val
-              return <li key={val}>{label}</li>
-            })}
-          </ul>
-        )
-
-      case "SurveyRadiobuttonGroup":
-        const radioLabel =
-          field.props.options.find((opt: any) => String(opt.key) === String(value))?.label || value
-        return <span>{radioLabel}</span>
-
-      case "SurveyTextfield":
-      case "SurveyTextarea":
-        return <span>{value}</span>
-
-      case "SurveyCheckbox":
-        return <span>{value ? "Ja" : "Nein"}</span>
-
-      case "SurveySimpleMapWithLegend":
-        return (
-          <pre className="overflow-x-auto rounded-sm bg-gray-100 p-2 text-sm text-black">
-            {JSON.stringify(value, null, 2)}
-          </pre>
-        )
-
-      default:
-        return <span>{String(value)}</span>
-    }
-  }
-
   return (
     <div className="space-y-6">
       {/* @ts-expect-error */}
@@ -112,8 +69,11 @@ const AnswerDisplay: React.FC<AnswerDisplayProps> = ({ partConfig, answers }) =>
             return (
               <div key={field.name} className="mb-4">
                 <strong className="mb-1 block text-gray-700">{field.props.label}</strong>
-                <strong className="mb-1 block text-gray-700">{}</strong>
-                {renderAnswer(field)}
+                <SurveyResponseFieldValue
+                  field={field}
+                  value={answers[field.name]}
+                  emptyLabel={<em>Keine Antwort</em>}
+                />
               </div>
             )
           })}

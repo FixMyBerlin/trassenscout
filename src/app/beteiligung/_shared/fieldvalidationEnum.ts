@@ -15,12 +15,32 @@ export const fieldValidationEnum = {
       .email({ message: "Bitte eine gültige E-Mail-Adresse eingeben." }),
     required: true,
   },
+  optionalYearString: {
+    zodSchema: z
+      .string()
+      .trim()
+      .regex(/^(\d{4}|)$/, { message: "Datum im Format JJJJ" })
+      .optional(),
+    required: false,
+  },
+  requiredYearString: {
+    zodSchema: z
+      .string()
+      .trim()
+      .min(4, { message: "Pflichtfeld." })
+      .regex(/^(\d{4}|)$/, { message: "Datum im Format JJJJ" }),
+    required: true,
+  },
   // the optional zod schema with "required: true" seems contradictory, but it is used for a field that is required, but only if a condition is met
   // the conditional required validation is handled in the form field logic manually - defined in the config
   // we want to have "required: true" so that the field is marked as required in the UI
   conditionalRequiredString: {
     zodSchema: z.string().optional(),
     required: true,
+  },
+  conditionalOptionalString: {
+    zodSchema: z.string().optional(),
+    required: false,
   },
   optionalArrayOfString: { zodSchema: z.array(z.string()), required: false },
   requiredArrayOfString: {
@@ -37,6 +57,10 @@ export const fieldValidationEnum = {
   },
 
   requiredBoolean: { zodSchema: z.boolean(), required: true },
+  requiredTrueBoolean: {
+    zodSchema: z.literal(true, { errorMap: () => ({ message: "Pflichtfeld." }) }),
+    required: true,
+  },
 
   conditionalRequiredLatLng: {
     zodSchema: z.object({ lat: z.number(), lng: z.number() }).nullish(),
@@ -53,5 +77,15 @@ export const fieldValidationEnum = {
   requiredArrayOfNumber: {
     zodSchema: z.array(z.coerce.number()).nonempty({ message: "Pflichtfeld." }),
     required: true,
+  },
+  requiredNumber: {
+    zodSchema: z
+      .number({ message: "Pflichtfeld." })
+      .finite({ message: "Bitte eine gültige Zahl eingeben." }),
+    required: true,
+  },
+  optionalNumber: {
+    zodSchema: z.number().finite().nullish(),
+    required: false,
   },
 }

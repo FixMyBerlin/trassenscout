@@ -21,6 +21,7 @@ const seedUploads = async () => {
       collaborationUrl: "https://fixmycity.de/",
       collaborationPath: null,
       surveyResponseId: null,
+      supportDocumentId: null,
     },
     {
       title: "AWS S3 Image",
@@ -38,6 +39,7 @@ const seedUploads = async () => {
       collaborationUrl: null,
       collaborationPath: null,
       surveyResponseId: null,
+      supportDocumentId: null,
     },
     {
       title: "Trassenplanung Projekt 1",
@@ -55,6 +57,7 @@ const seedUploads = async () => {
       collaborationUrl: null,
       collaborationPath: null,
       surveyResponseId: null,
+      supportDocumentId: null,
     },
     {
       title: "FAQ Baulastträger 1",
@@ -72,6 +75,7 @@ const seedUploads = async () => {
       collaborationUrl: null,
       collaborationPath: null,
       surveyResponseId: null,
+      supportDocumentId: null,
     },
     {
       title: "FAQ Baulastträger 2",
@@ -89,6 +93,7 @@ const seedUploads = async () => {
       collaborationUrl: null,
       collaborationPath: null,
       surveyResponseId: null,
+      supportDocumentId: null,
     },
     {
       title: "Protokoll Gesamttreffen Projekt 2",
@@ -106,6 +111,7 @@ const seedUploads = async () => {
       collaborationUrl: null,
       collaborationPath: null,
       surveyResponseId: null,
+      supportDocumentId: null,
     },
     {
       title: "Protokoll ADFC",
@@ -123,6 +129,7 @@ const seedUploads = async () => {
       collaborationUrl: null,
       collaborationPath: null,
       surveyResponseId: null,
+      supportDocumentId: null,
     },
     {
       title: "Planungsdokument",
@@ -140,6 +147,7 @@ const seedUploads = async () => {
       collaborationUrl: null,
       collaborationPath: null,
       surveyResponseId: null,
+      supportDocumentId: null,
     },
     {
       title: "Super langer Text in der Beschreibung sehr lang",
@@ -157,6 +165,7 @@ const seedUploads = async () => {
       collaborationUrl: null,
       collaborationPath: null,
       surveyResponseId: null,
+      supportDocumentId: null,
     },
     {
       title: "Kurz",
@@ -174,6 +183,7 @@ const seedUploads = async () => {
       collaborationUrl: null,
       collaborationPath: null,
       surveyResponseId: null,
+      supportDocumentId: null,
     },
   ]
 

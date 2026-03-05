@@ -15,7 +15,7 @@ type Props = {
 export type LineProperties = {
   subsectionSlug: string
   subsubsectionSlug: string
-  style: "REGULAR" | "DASHED"
+  style: "REGULAR" | "GREEN"
   isCurrent: boolean
   featureId: string
 }
@@ -23,7 +23,7 @@ export type LineProperties = {
 export type PointProperties = {
   subsectionSlug: string
   subsubsectionSlug: string
-  style: "REGULAR" | "DASHED"
+  style: "REGULAR" | "GREEN"
   isCurrent: boolean
   featureId: string
 }
@@ -31,7 +31,7 @@ export type PointProperties = {
 export type PolygonProperties = {
   subsectionSlug: string
   subsubsectionSlug: string
-  style: "REGULAR" | "DASHED"
+  style: "REGULAR" | "GREEN"
   isCurrent: boolean
   featureId: string
 }
@@ -39,6 +39,7 @@ export type PolygonProperties = {
 export type LineEndPointProperties = {
   subsectionSlug: string
   subsubsectionSlug: string
+  style: "REGULAR" | "GREEN"
   isCurrent: boolean
   featureId: string
 }
@@ -50,14 +51,14 @@ export const getSubsubsectionFeatures = ({ subsubsections, selectedSubsubsection
   const polygonFeatures: Feature<Polygon, PolygonProperties>[] = []
 
   for (const subsubsection of subsubsections) {
-    const isDashed = subsubsection.SubsubsectionStatus?.style === "DASHED"
+    const isGreen = subsubsection.SubsubsectionStatus?.style === "GREEN"
     const isCurrent = subsubsection.slug === selectedSubsubsectionSlug
     switch (subsubsection.type) {
       case "LINE": {
         const features = lineStringToGeoJSON(subsubsection.geometry, {
           subsectionSlug: subsubsection.subsection.slug,
           subsubsectionSlug: subsubsection.slug,
-          style: isDashed ? ("DASHED" as const) : ("REGULAR" as const),
+          style: isGreen ? ("GREEN" as const) : ("REGULAR" as const),
           isCurrent,
         })
         features.forEach((feat, featureIndex) => {
@@ -75,6 +76,7 @@ export const getSubsubsectionFeatures = ({ subsubsections, selectedSubsubsection
             point(endpoint, {
               subsectionSlug: subsubsection.subsection.slug,
               subsubsectionSlug: subsubsection.slug,
+              style: isGreen ? ("GREEN" as const) : ("REGULAR" as const),
               isCurrent,
               featureId,
             } satisfies LineEndPointProperties),
@@ -86,7 +88,7 @@ export const getSubsubsectionFeatures = ({ subsubsections, selectedSubsubsection
         const features = pointToGeoJSON(subsubsection.geometry, {
           subsectionSlug: subsubsection.subsection.slug,
           subsubsectionSlug: subsubsection.slug,
-          style: isDashed ? ("DASHED" as const) : ("REGULAR" as const),
+          style: isGreen ? ("GREEN" as const) : ("REGULAR" as const),
           isCurrent,
         })
         features.forEach((feat, featureIndex) => {
@@ -101,7 +103,7 @@ export const getSubsubsectionFeatures = ({ subsubsections, selectedSubsubsection
         const features = polygonToGeoJSON(subsubsection.geometry, {
           subsectionSlug: subsubsection.subsection.slug,
           subsubsectionSlug: subsubsection.slug,
-          style: isDashed ? ("DASHED" as const) : ("REGULAR" as const),
+          style: isGreen ? ("GREEN" as const) : ("REGULAR" as const),
           isCurrent,
         })
         features.forEach((feat, featureIndex) => {

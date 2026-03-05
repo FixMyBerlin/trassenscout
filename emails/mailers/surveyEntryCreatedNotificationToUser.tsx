@@ -87,7 +87,10 @@ export async function surveyEntryCreatedNotificationToUser({
         : value
 
     // default case for other fields
-    emailMarkdown = emailMarkdown.replace(new RegExp(placeholder, "g"), processedValue || "K.A.")
+    emailMarkdown = emailMarkdown.replace(
+      new RegExp(placeholder, "g"),
+      processedValue || "keine Angabe",
+    )
   })
 
   // emailMarkdown += `\n\nEingangsdatum: ${new Date().toLocaleDateString("de-DE")}\n`

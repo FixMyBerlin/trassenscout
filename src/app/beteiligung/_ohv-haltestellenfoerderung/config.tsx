@@ -43,6 +43,17 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
     },
   },
   backend: {
+    disableNote: true,
+    labels: {
+      category: {
+        sg: "Fördergegenstand",
+      },
+      comment: {
+        sg: "Gesprächsnotiz",
+        pl: "Gesprächsnotizen",
+        help: "Hier können Sie ein Anmeldegespräch vermerken. Erfassen Sie das Gesprächsdatum, notieren Sie einen Ansprechpartner und speichern Sie eine kurze Gesprächsnotiz. Bitte starten Sie immer mit ihrem Namen oder Kürzel.",
+      },
+    },
     additionalFilters: [
       {
         label: "Kommune",
@@ -91,7 +102,13 @@ Folgende Angaben wurden übermittelt:
 - **Verortung der Maßnahme:** {{geometryCategory}}
 - **Name der Haltestelle**: {{hsName}}
 - **Maßnahmenbeschreibung und Zielsetzung**: {{feedbackText}}
+- **Stand der Bauvorbereitung**: {{stateOfConstruction}}
 - **Kostenschätzung**: {{costs}}
+- **Ko-Finanzierung**: {{coFinancing}}
+- **Ko-Finanzierung: Mittelgeber**: {{fundingSource}}
+- **Ko-Finanzierung: Programm**: {{programName}}
+- **Gemeinschaftsbauwerk**: {{sharedBuilding}}
+- **Voraussichtliches Realisierungsjahr**: {{realisationYear}}
 - **Kontaktperson (optional)**: {{contact}}
 - **Telefonnummer (optional)**: {{phone}}
 - **E-Mail-Adresse**: {{email}}
@@ -111,7 +128,13 @@ im Auftrag des Landkreises Oberhavel
       "uploadsDescription",
       "hsName",
       "feedbackText",
+      "stateOfConstruction",
       "costs",
+      "coFinancing",
+      "fundingSource",
+      "programName",
+      "sharedBuilding",
+      "realisationYear",
       "contact",
       "phone",
       "email",

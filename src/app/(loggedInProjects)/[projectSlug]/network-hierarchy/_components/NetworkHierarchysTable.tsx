@@ -16,10 +16,13 @@ import { useRouter } from "next/navigation"
 
 type Props = {
   networkHierarchys: PromiseReturnType<typeof getNetworkHierarchyWithCount>["networkHierarchys"]
+  /** Optional path to return to after editing (from original form) */
+  fromPath?: string
 }
 
-export const NetworkHierarchysTable = ({ networkHierarchys }: Props) => {
+export const NetworkHierarchysTable = ({ networkHierarchys, fromPath }: Props) => {
   const projectSlug = useProjectSlug()
+  const appendFrom = fromPath ? `?from=${encodeURIComponent(fromPath)}` : ""
   const router = useRouter()
 
   const [deleteNetworkHierarchyMutation] = useMutation(deleteNetworkHierarchy)
@@ -83,7 +86,7 @@ export const NetworkHierarchysTable = ({ networkHierarchys }: Props) => {
                         <Link
                           icon="edit"
                           href={
-                            `/${projectSlug}/network-hierarchy/${networkHierarchy.id}/edit` as Route
+                            `/${projectSlug}/network-hierarchy/${networkHierarchy.id}/edit${appendFrom}` as Route
                           }
                         >
                           Bearbeiten

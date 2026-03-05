@@ -12,17 +12,22 @@ import { QualityLevelForm } from "./QualityLevelForm"
 
 type Props = {
   projectSlug: string
+  /** Original form path to preserve in URL for back navigation */
+  fromParam?: string
 }
 
-export const NewQualityLevelForm = ({ projectSlug }: Props) => {
+export const NewQualityLevelForm = ({ projectSlug, fromParam }: Props) => {
   const router = useRouter()
   const [createQualityLevelMutation] = useMutation(createQualityLevel)
+
+  const listPath = `/${projectSlug}/quality-levels`
+  const returnPath = fromParam ? `${listPath}?from=${encodeURIComponent(fromParam)}` : listPath
 
   type HandleSubmit = z.infer<ReturnType<typeof QualityLevelSchema.omit<{ projectId: true }>>>
   const handleSubmit = async (values: HandleSubmit) => {
     try {
       await createQualityLevelMutation({ ...values, projectSlug })
-      router.push(`/${projectSlug}/quality-levels` as Route)
+      router.push(returnPath as Route)
       router.refresh()
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])

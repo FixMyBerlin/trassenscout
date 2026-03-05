@@ -43,7 +43,9 @@ const MdH6 = (props: any) => (
     <strong {...props} />
   </p>
 )
-const MdA = (props: any) => <Link blank to={props.href} {...props} />
+const MdA = (props: any) => (
+  <Link className="block max-w-[40ch] truncate" blank to={props.href} {...props} />
+)
 
 const components = {
   h1: MdH1,

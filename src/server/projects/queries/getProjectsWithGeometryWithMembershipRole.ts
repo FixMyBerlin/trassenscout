@@ -17,6 +17,7 @@ export default resolver.pipe(
         id: true,
         slug: true,
         subTitle: true,
+        showLogEntries: true,
         subsections: {
           select: {
             slug: true,

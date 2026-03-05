@@ -5,8 +5,8 @@ import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogD
 import { Breadcrumb } from "@/src/core/components/Breadcrumb/Breadcrumb"
 import { SubsectionMapIcon } from "@/src/core/components/Map/Icons"
 import { SubsubsectionMapWithProvider } from "@/src/core/components/Map/SubsubsectionMapWithProvider"
-import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
+import { Notice } from "@/src/core/components/Notice/Notice"
 import { Spinner } from "@/src/core/components/Spinner"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
@@ -40,21 +40,49 @@ export const SubsectionDashboardClient = () => {
   const subsections = subsectionsResult?.subsections ?? []
   const subsection = subsections.find((ss) => ss.slug === subsectionSlug)
 
+  // QUERY 1: All subsubsections for the map (max 249 - default of query)
+  // The map component needs ALL subsubsections for the entire project to render
+  // the full geometry/overlay. We accept that with very large projects, some
+  // might be missing (visual degradation), but the map remains functional and a notice is shown.
   const [subsubsectionsResult, { isLoading: subsubsectionsLoading }] = useQuery(
     getSubsubsections,
-    { projectSlug },
+    { projectSlug, take: 249 },
     {
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
     },
   )
   const subsubsections = subsubsectionsResult?.subsubsections ?? []
-  const subsubsectionsForSubsection = subsubsections.filter(
-    (subsub) => subsub.subsectionId === subsection?.id,
+  const subsubsectionsHasMore = subsubsectionsResult?.hasMore
+  const subsubsectionsCount = subsubsectionsResult?.count
+
+  // QUERY 2: server-side filtered subsubsections for the table/sidebar (max 249 - default of query)
+  // Ensure selected subsection's subsubsections are always fully loaded for the table and sidebar, even in large projects.
+  const [filteredSubsubsectionsResult, { isLoading: filteredSubsubsectionsLoading }] = useQuery(
+    getSubsubsections,
+    { projectSlug, where: { subsectionId: subsection?.id } },
+    {
+      enabled: !!subsection,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
   )
+  const subsubsectionsForSubsection = filteredSubsubsectionsResult?.subsubsections ?? []
   const subsubsection = subsubsectionsForSubsection.find((ss) => ss.slug === subsubsectionSlug)
 
-  if ((subsectionsLoading || subsubsectionsLoading) && !subsection) {
+  // Merge: ensure all subsubsections from the current subsection are in the map data,
+  // even if they were truncated in Query 1.
+  const subsubsectionsForMap = [
+    ...subsubsections,
+    ...subsubsectionsForSubsection.filter(
+      (filtered) => !subsubsections.some((ss) => ss.id === filtered.id),
+    ),
+  ]
+
+  if (
+    (subsectionsLoading || subsubsectionsLoading || filteredSubsubsectionsLoading) &&
+    !subsection
+  ) {
     return <Spinner page />
   }
   if (!subsection) {
@@ -66,6 +94,12 @@ export const SubsectionDashboardClient = () => {
   return (
     <>
       <Breadcrumb />
+      {subsubsectionsHasMore && (
+        <Notice title="Einträge" type="warn">
+          Es werden nur {subsubsections.length} von {subsubsectionsCount} Einträge auf der Karte
+          angezeigt. Bitte kontaktieren Sie den Support.
+        </Notice>
+      )}
       <PageHeader
         titleIcon={<SubsectionMapIcon label={shortTitle(subsection.slug)} />}
         className="mt-12"
@@ -87,8 +121,7 @@ export const SubsectionDashboardClient = () => {
             key={`map-${subsubsectionSlug ? "subsubsection" : "subsection"}`}
             subsections={subsections}
             selectedSubsection={subsection}
-            subsubsections={subsubsections}
-            staticOverlay={getStaticOverlayForProject(projectSlug)}
+            subsubsections={subsubsectionsForMap}
           />
           {mapillaryHref && (
             <Link blank href={mapillaryHref} className="block text-xs">
@@ -118,6 +151,7 @@ export const SubsectionDashboardClient = () => {
           subsections,
           subsection,
           subsubsections,
+          subsubsectionsForMap,
           subsubsectionsForSubsection,
           subsubsection,
         }}

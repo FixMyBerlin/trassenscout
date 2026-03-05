@@ -40,7 +40,7 @@ export const ProjectRecordNeedsReviewBanner = (props: ProjectRecordNeedsReviewBa
           href={projectRecordEditRoute(props.projectSlug, props.projectRecordId)}
           className="text-sm"
         >
-          Zur Bestätigung
+          Bearbeiten und bestätigen
         </Link>
       )}
     </BannerShell>

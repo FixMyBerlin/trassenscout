@@ -15,20 +15,28 @@ export const metadata: Metadata = {
 
 type Props = {
   params: { projectSlug: string; qualityLevelId: string }
+  searchParams: { from?: string }
 }
 
 export default async function EditQualityLevelPage({
   params: { projectSlug, qualityLevelId },
+  searchParams,
 }: Props) {
   const qualityLevel = await invoke(getQualityLevel, {
     projectSlug,
     id: Number(qualityLevelId),
   })
 
+  const fromParam = searchParams?.from
+
   return (
     <>
       <PageHeader title="Ausbaustandard bearbeiten" className="mt-12" />
-      <EditQualityLevelForm qualityLevel={qualityLevel} projectSlug={projectSlug} />
+      <EditQualityLevelForm
+        qualityLevel={qualityLevel}
+        projectSlug={projectSlug}
+        fromParam={fromParam}
+      />
     </>
   )
 }

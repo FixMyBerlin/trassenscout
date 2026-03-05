@@ -24,7 +24,7 @@ export default async function EditProjectRecordPage({
 
   const needsReview = projectRecord.reviewState === ProjectRecordReviewState.NEEDSREVIEW
   const pageTitle = needsReview
-    ? "Protokolleintrag bearbeiten und  bestätigen"
+    ? "Protokolleintrag bearbeiten und bestätigen"
     : "Protokolleintrag bearbeiten"
 
   return (

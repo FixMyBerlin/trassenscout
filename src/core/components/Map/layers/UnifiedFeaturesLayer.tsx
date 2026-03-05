@@ -23,7 +23,7 @@ export type UnifiedFeatureProperties = {
   projectSlug?: string
   subsectionSlug?: string
   subsubsectionSlug?: string
-  style?: "REGULAR" | "DASHED"
+  style?: "REGULAR" | "DASHED" | "GREEN"
   isCurrent?: boolean
   featureId?: string
 }
@@ -66,33 +66,39 @@ export const UnifiedFeaturesLayer = ({
   const layerId = getUnifiedLayerId(layerIdSuffix)
   const colors = mapLayerColorConfigs[colorSchema]
 
-  // Polygon color expression (slugMatch → selected → current/unselected)
+  // Polygon color expression (slugMatch → selected → GREEN → current/unselected)
   const polygonColorExpression: ExpressionSpecification = [
     "case",
     slugMatchExpression,
     colors.polygon.hovered,
     ["boolean", ["feature-state", "selected"], false],
     colors.polygon.selected,
+    ["==", ["get", "style"], "GREEN"],
+    colors.polygon.green,
     ["case", ["get", "isCurrent"], colors.polygon.current, colors.polygon.unselected],
   ]
 
-  // Line color expression (slugMatch → selected → current/unselected)
+  // Line color expression (slugMatch → selected → GREEN → current/unselected)
   const lineColorExpression: ExpressionSpecification = [
     "case",
     slugMatchExpression,
     colors.line.hovered,
     ["boolean", ["feature-state", "selected"], false],
     colors.line.selected,
+    ["==", ["get", "style"], "GREEN"],
+    colors.line.green,
     ["case", ["get", "isCurrent"], colors.line.current, colors.line.unselected],
   ]
 
-  // Point color expression (selected → slugMatch → default) - different order than polygon/line
+  // Point color expression (selected → slugMatch → GREEN → default) - different order than polygon/line
   const pointColorExpression: ExpressionSpecification = [
     "case",
     ["boolean", ["feature-state", "selected"], false],
     colors.point.selected,
     slugMatchExpression,
     colors.point.hovered,
+    ["==", ["get", "style"], "GREEN"],
+    colors.point.green,
     colors.point.default,
   ]
 
@@ -102,6 +108,8 @@ export const UnifiedFeaturesLayer = ({
     colors.point.hovered,
     ["boolean", ["feature-state", "selected"], false],
     colors.point.selected,
+    ["==", ["get", "style"], "GREEN"],
+    colors.point.green,
     colors.point.default,
   ]
 
@@ -143,7 +151,7 @@ export const UnifiedFeaturesLayer = ({
         id={`${layerId}-polygon-outline`}
         type="line"
         source={sourceId}
-        filter={["all", polygonFilter, ["==", ["get", "style"], "REGULAR"]]}
+        filter={["all", polygonFilter, ["!=", ["get", "style"], "DASHED"]]}
         layout={{
           "line-cap": "round",
           "line-join": "round",
@@ -215,7 +223,7 @@ export const UnifiedFeaturesLayer = ({
         id={`${layerId}-line-solid`}
         type="line"
         source={sourceId}
-        filter={["all", lineFilter, ["==", ["get", "style"], "REGULAR"]]}
+        filter={["all", lineFilter, ["!=", ["get", "style"], "DASHED"]]}
         layout={{
           "line-cap": colors.line.cap,
           "line-join": "round",
@@ -275,7 +283,7 @@ export const UnifiedFeaturesLayer = ({
         id={`${layerId}-point`}
         type="circle"
         source={sourceId}
-        filter={["all", pointFilter, ["==", ["get", "style"], "REGULAR"]]}
+        filter={["all", pointFilter, ["!=", ["get", "style"], "DASHED"]]}
         paint={{
           "circle-radius": 10,
           "circle-color": pointColorExpression,

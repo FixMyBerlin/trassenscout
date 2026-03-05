@@ -1,5 +1,5 @@
-import { ProjectDashboardClient } from "./_components/ProjectDashboardClient"
 import { Metadata } from "next"
+import { ProjectDashboardClient } from "./_components/ProjectDashboardClient"
 
 export const metadata: Metadata = {
   title: "Projekt",

@@ -9,16 +9,15 @@ import { BaseMap } from "./BaseMap"
 import { MapFooter } from "./MapFooter"
 import { projectLegendConfig } from "./ProjectMap.legendConfig"
 import { SubsectionMarkers } from "./markers/SubsectionMarkers"
-import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
+import { getStaticOverlayForProject } from "./staticOverlay/getStaticOverlayForProject"
 import { geometriesBbox } from "./utils/bboxHelpers"
 import { getSubsectionFeatures } from "./utils/getSubsectionFeatures"
 
 type Props = {
   subsections: TSubsections
-  staticOverlay?: StaticOverlayConfig
 }
 
-export const ProjectMap = ({ subsections, staticOverlay }: Props) => {
+export const ProjectMap = ({ subsections }: Props) => {
   const router = useRouter()
   const projectSlug = useProjectSlug()
   const { mainMap } = useMap()
@@ -76,7 +75,7 @@ export const ProjectMap = ({ subsections, staticOverlay }: Props) => {
         polygons={selectablePolygons}
         lineEndPoints={lineEndPointsGeoms}
         colorSchema="subsection"
-        staticOverlay={staticOverlay}
+        staticOverlay={getStaticOverlayForProject(projectSlug)}
       >
         <SubsectionMarkers subsections={subsections} onSelect={handleSelect} />
       </BaseMap>
