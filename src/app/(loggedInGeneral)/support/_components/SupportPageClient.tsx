@@ -32,36 +32,38 @@ export const SupportPageClient = () => {
               return (
                 <li
                   key={doc.id}
-                  className="flex flex-col items-center gap-2.5 rounded-lg border border-gray-200 p-8"
+                  className="flex justify-center rounded-lg border border-gray-200 p-8"
                 >
-                  <BookOpenIcon className="size-8" />
-                  <p className="font-semibold">{doc.title}</p>
-                  {doc.description && (
-                    <p className="mt-1 text-center text-sm text-gray-600">{doc.description}</p>
-                  )}
-                  <Link href={downloadUrl} blank>
-                    Öffnen
-                  </Link>
-
-                  <SuperAdminBox>
-                    <div className="mt-1 flex gap-4 text-sm text-gray-500">
-                      <span>
-                        Hochgeladen: {new Date(doc.createdAt).toLocaleDateString("de-DE")}
-                      </span>
-                      {doc.createdBy && (
-                        <span>
-                          von {doc.createdBy.firstName} {doc.createdBy.lastName}
-                        </span>
-                      )}
-                      <span>Reihenfolge: {doc.order}</span>
-                    </div>
-                    <Link
-                      className="mt-2 flex items-center gap-2"
-                      href={`/admin/support-documents/${doc.id}/edit`}
-                    >
-                      {linkIcons["edit"]} Bearbeiten
+                  <div className="flex max-w-2xl flex-col items-center gap-2.5">
+                    <BookOpenIcon className="size-8" />
+                    <p className="font-semibold">{doc.title}</p>
+                    {doc.description && (
+                      <p className="mt-1 text-center text-sm text-gray-600">{doc.description}</p>
+                    )}
+                    <Link href={downloadUrl} blank>
+                      Öffnen
                     </Link>
-                  </SuperAdminBox>
+
+                    <SuperAdminBox>
+                      <div className="mt-1 flex gap-4 text-sm text-gray-500">
+                        <span>
+                          Hochgeladen: {new Date(doc.createdAt).toLocaleDateString("de-DE")}
+                        </span>
+                        {doc.createdBy && (
+                          <span>
+                            von {doc.createdBy.firstName} {doc.createdBy.lastName}
+                          </span>
+                        )}
+                        <span>Reihenfolge: {doc.order}</span>
+                      </div>
+                      <Link
+                        className="mt-2 flex items-center gap-2"
+                        href={`/admin/support-documents/${doc.id}/edit`}
+                      >
+                        {linkIcons["edit"]} Bearbeiten
+                      </Link>
+                    </SuperAdminBox>
+                  </div>
                 </li>
               )
             })}
