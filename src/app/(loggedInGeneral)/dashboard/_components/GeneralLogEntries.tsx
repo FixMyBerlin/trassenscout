@@ -1,47 +1,33 @@
-import { LogEntry, Project } from "@/db"
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
-import { DebugData } from "@/src/app/beteiligung/_components/DebugData"
 import { invoke } from "@/src/blitz-server"
-import { SuperAdminBox } from "@/src/core/components/AdminBox/SuperAdminBox"
+import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
-import { frenchQuote } from "@/src/core/components/text/quote"
-import { longTitle } from "@/src/core/components/text/titles"
-import getLogEntries from "@/src/server/logEntries/queries/getLogEntries"
-import getCurrentUser from "@/src/server/users/queries/getCurrentUser"
+import getGeneralLogEntries from "@/src/server/logEntries/queries/getGeneralLogEntries"
 import { clsx } from "clsx"
 import { format, formatDistanceToNow } from "date-fns"
 import { de } from "date-fns/locale/de"
 import "server-only"
-import { AdminLogEntryChanges } from "./AdminLogEntryChanges"
 
-type Props = { projectId: Project["id"]; projectSlug: Project["slug"] }
-
-const actionName: Record<LogEntry["action"], string> = {
+const actionName = {
   CREATE: "Erstellt",
   UPDATE: "Aktualisiert",
   DELETE: "Gelöscht",
-}
-const actionColorClasses: Record<LogEntry["action"], string> = {
+} as const
+
+const actionColorClasses = {
   CREATE: "bg-teal-50  text-teal-800  ring-teal-600/20",
   UPDATE: "bg-purple-50  text-purple-800  ring-purple-600/20",
   DELETE: "bg-amber-50  text-amber-800  ring-amber-600/20",
-}
+} as const
 
-export const AdminLogEntriesProject = async ({ projectId, projectSlug }: Props) => {
-  const user = await invoke(getCurrentUser, null)
-  if (user?.role !== "ADMIN") return null
+export const GeneralLogEntries = async () => {
+  const { logEntries } = await invoke(getGeneralLogEntries, null)
 
-  const { logEntries } = await invoke(getLogEntries, {
-    projectSlug,
-    where: { projectId },
-    take: 50,
-  })
+  if (!logEntries.length) return null
 
   return (
-    <SuperAdminBox>
-      <h2 className="mb-2 text-sm font-semibold">
-        Änderungen in {frenchQuote(longTitle(projectSlug))}
-      </h2>
+    <>
+      <h2 className="mb-2 text-sm font-semibold">Allgemeine Änderungen (projektunabhängig)</h2>
 
       <TableWrapper>
         <table className="min-w-full divide-y divide-gray-300">
@@ -88,18 +74,7 @@ export const AdminLogEntriesProject = async ({ projectId, projectSlug }: Props) 
                     {actionName[entry.action]}
                   </span>
                 </td>
-                <td className="px-3 py-4 align-top text-sm text-gray-500">
-                  {entry.changes ? (
-                    <details>
-                      <summary className="cursor-pointer underline-offset-2 hover:underline">
-                        {entry.message}
-                      </summary>
-                      <AdminLogEntryChanges projectSlug={projectSlug} context={entry.changes} />
-                    </details>
-                  ) : (
-                    entry.message
-                  )}
-                </td>
+                <td className="px-3 py-4 align-top text-sm text-gray-500">{entry.message}</td>
                 <td className="py-4 pr-4 pl-3 align-top text-sm sm:pr-6">
                   {entry.user ? getFullname(entry.user) : null}
                 </td>
@@ -108,7 +83,7 @@ export const AdminLogEntriesProject = async ({ projectId, projectSlug }: Props) 
           </tbody>
         </table>
       </TableWrapper>
-      <DebugData data={logEntries} />
-    </SuperAdminBox>
+      <SuperAdminLogData data={logEntries} />
+    </>
   )
 }

@@ -8,9 +8,13 @@ import dompurify from "dompurify"
 import { useState } from "react"
 import { LabeledTextarea } from "../form/LabeledTextarea"
 
-type Props = { surveyResponseId: number }
+type Props = { surveyResponseId: number; commentLabel: string; commentHelp: string }
 
-export const NewSurveyResponseCommentForm = ({ surveyResponseId }: Props) => {
+export const NewSurveyResponseCommentForm = ({
+  surveyResponseId,
+  commentLabel,
+  commentHelp,
+}: Props) => {
   const [createSurveyResponseCommentMutation, { error }] = useMutation(createSurveyResponseComment)
   const projectSlug = useProjectSlug()
 
@@ -45,10 +49,10 @@ export const NewSurveyResponseCommentForm = ({ surveyResponseId }: Props) => {
         value={body}
         required
         name="body"
-        help="Dieser Kommentar wird extern nicht sichtbar sein."
+        help={commentHelp}
       />
       <button className={clsx(blueButtonStyles, "mt-2 px-3! py-2.5!")} type="submit">
-        Kommentar hinzufügen
+        {commentLabel} hinzufügen
       </button>
     </form>
   )

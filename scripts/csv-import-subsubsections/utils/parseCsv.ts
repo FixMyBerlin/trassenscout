@@ -1,4 +1,4 @@
-import chalk from "chalk"
+import { styleText } from "node:util"
 import { parse } from "papaparse"
 
 /**
@@ -15,7 +15,7 @@ export type CsvRow = Record<string, CsvValue>
  * Parses CSV content and validates required columns
  */
 export function parseCsv(csvContent: string) {
-  console.log(chalk.inverse(" Parsing CSV... "))
+  console.log(styleText("inverse", " Parsing CSV... "))
 
   const parseResult = parse<CsvRow>(csvContent, {
     header: true,

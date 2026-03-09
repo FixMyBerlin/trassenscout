@@ -14,15 +14,20 @@ export const metadata: Metadata = {
 
 type Props = {
   params: { projectSlug: string }
+  searchParams: { from?: string }
 }
 
-export default async function NewOperatorPage({ params: { projectSlug } }: Props) {
+export default async function NewOperatorPage({ params: { projectSlug }, searchParams }: Props) {
+  const fromParam = searchParams?.from
+  const listPath = `/${projectSlug}/operators` as Route
+  const appendFrom = fromParam ? `?from=${encodeURIComponent(fromParam)}` : ""
+
   return (
     <>
       <PageHeader title="Baulastträger hinzufügen" className="mt-12" />
-      <NewOperatorForm projectSlug={projectSlug} />
+      <NewOperatorForm projectSlug={projectSlug} fromParam={fromParam} />
       <hr className="my-5 text-gray-200" />
-      <Link href={`/${projectSlug}/operators` as Route}>Zurück zur Übersicht</Link>
+      <Link href={`${listPath}${appendFrom}` as Route}>Zurück zur Übersicht</Link>
     </>
   )
 }

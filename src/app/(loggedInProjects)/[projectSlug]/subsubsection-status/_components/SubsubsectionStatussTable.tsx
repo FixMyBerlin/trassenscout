@@ -18,11 +18,14 @@ type Props = {
   subsubsectionStatuss: PromiseReturnType<
     typeof getSubsubsectionStatussWithCount
   >["subsubsectionStatuss"]
+  /** Optional path to return to after editing (from original form) */
+  fromPath?: string
 }
 
-export const SubsubsectionStatussTable = ({ subsubsectionStatuss }: Props) => {
+export const SubsubsectionStatussTable = ({ subsubsectionStatuss, fromPath }: Props) => {
   const projectSlug = useProjectSlug()
   const router = useRouter()
+  const appendFrom = fromPath ? `?from=${encodeURIComponent(fromPath)}` : ""
 
   const [deleteSubsubsectionStatusMutation] = useMutation(deleteSubsubsectionStatus)
 
@@ -56,6 +59,9 @@ export const SubsubsectionStatussTable = ({ subsubsectionStatuss }: Props) => {
                 Titel
               </th>
               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                Darstellung
+              </th>
+              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                 Anzahl Einträge in dieser Phase
               </th>
               <th
@@ -76,6 +82,18 @@ export const SubsubsectionStatussTable = ({ subsubsectionStatuss }: Props) => {
                   <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
                     <strong className="font-semibold">{status.title}</strong>
                   </td>
+                  <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
+                    <span
+                      className={clsx(
+                        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
+                        status.style === "REGULAR"
+                          ? "bg-sky-400/20 text-sky-600"
+                          : "bg-[#4BC556]/20 text-[#4BC556]",
+                      )}
+                    >
+                      {status.style === "REGULAR" ? "Standard" : "Grün"}
+                    </span>
+                  </td>
                   <td className="px-3 py-4 text-sm text-gray-500">
                     {status.subsubsectionCount}{" "}
                     {status.subsubsectionCount > 1 ? "Einträge" : "Eintrag"}
@@ -85,7 +103,9 @@ export const SubsubsectionStatussTable = ({ subsubsectionStatuss }: Props) => {
                       <ButtonWrapper className="justify-end">
                         <Link
                           icon="edit"
-                          href={`/${projectSlug}/subsubsection-status/${status.id}/edit` as Route}
+                          href={
+                            `/${projectSlug}/subsubsection-status/${status.id}/edit${appendFrom}` as Route
+                          }
                         >
                           Bearbeiten
                         </Link>

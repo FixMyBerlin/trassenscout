@@ -1,7 +1,7 @@
 // Script to restore database dump to staging environment
 // Uses existing dump.sql file and applies anonymization
 
-import { chalk } from "blitz"
+import { styleText } from "node:util"
 import {
   anonymizeData,
   checkDumpFile,
@@ -40,7 +40,7 @@ await anonymizeData(targetDbUrl, "staging")
 
 console.log("✅ Staging database restore completed successfully!")
 console.log("📧 All emails have been anonymized (except @fixmycity.de addresses)")
-console.log(chalk.inverse("⚠️  Note: Run migrations on staging manually if needed"))
-console.log(chalk.inverse("     Use the open ssh connection on staging"))
-console.log(chalk.inverse("     Restart blitz to trigger the migrations:"))
-console.log(chalk.inverse("       cd ./trassenscout-staging && docker compose restart app"))
+console.log(styleText("inverse", "⚠️  Note: Run migrations on staging manually if needed"))
+console.log(styleText("inverse", "     Use the open ssh connection on staging"))
+console.log(styleText("inverse", "     Restart blitz to trigger the migrations:"))
+console.log(styleText("inverse", "       cd ./trassenscout-staging && docker compose restart app"))

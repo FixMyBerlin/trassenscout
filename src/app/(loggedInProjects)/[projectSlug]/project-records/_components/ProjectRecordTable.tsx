@@ -218,23 +218,25 @@ export const ProjectRecordsTable = ({
                           {/* Action Buttons */}
                           <div className="flex grow items-end gap-3 @lg:flex-col">
                             <IfUserCanEdit>
-                              {projectRecord.reviewState === "NEEDSREVIEW" && (
+                              {projectRecord.reviewState === "NEEDSREVIEW" ? (
                                 <Link
                                   className="inline-flex items-center justify-center gap-1"
+                                  // icon="edit"
                                   href={projectRecordEditRoute(projectSlug, projectRecord.id)}
                                   blank={openLinksInNewTab}
                                 >
                                   <SparklesIcon className="h-3.5 w-3.5" />
-                                  Bestätigen
+                                  Bearbeiten und bestätigen
+                                </Link>
+                              ) : (
+                                <Link
+                                  icon="edit"
+                                  href={projectRecordEditRoute(projectSlug, projectRecord.id)}
+                                  blank={openLinksInNewTab}
+                                >
+                                  Bearbeiten
                                 </Link>
                               )}
-                              <Link
-                                icon="edit"
-                                href={projectRecordEditRoute(projectSlug, projectRecord.id)}
-                                blank={openLinksInNewTab}
-                              >
-                                Bearbeiten
-                              </Link>
                             </IfUserCanEdit>
                             <Link
                               icon="details"

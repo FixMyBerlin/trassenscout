@@ -19,12 +19,15 @@ type Props = {
   operators: PromiseReturnType<typeof getOperatorsWithCount>["operators"]
   hasMore: boolean
   page: number
+  /** Optional path to return to after editing (from original form) */
+  fromPath?: string
 }
 
-export const OperatorsTable = ({ operators, hasMore, page }: Props) => {
+export const OperatorsTable = ({ operators, hasMore, page, fromPath }: Props) => {
   const projectSlug = useProjectSlug()
   const router = useRouter()
   const searchParams = useSearchParams()
+  const appendFrom = fromPath ? `?from=${encodeURIComponent(fromPath)}` : ""
 
   const [deleteOperatorMutation] = useMutation(deleteOperator)
 
@@ -105,7 +108,9 @@ export const OperatorsTable = ({ operators, hasMore, page }: Props) => {
                       <ButtonWrapper className="justify-end">
                         <Link
                           icon="edit"
-                          href={`/${projectSlug}/operators/${operator.id}/edit` as Route}
+                          href={
+                            `/${projectSlug}/operators/${operator.id}/edit${appendFrom}` as Route
+                          }
                         >
                           Bearbeiten
                         </Link>
@@ -135,7 +140,7 @@ export const OperatorsTable = ({ operators, hasMore, page }: Props) => {
           button="blue"
           icon="plus"
           className="mt-4"
-          href={`/${projectSlug}/operators/new` as Route}
+          href={`/${projectSlug}/operators/new${appendFrom}` as Route}
         >
           Neuer Baulastträger
         </Link>

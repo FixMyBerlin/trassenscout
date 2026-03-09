@@ -17,10 +17,13 @@ import { useRouter } from "next/navigation"
 
 type Props = {
   qualityLevels: PromiseReturnType<typeof getQualityLevelsWithCount>["qualityLevels"]
+  /** Optional path to return to after editing (from original form) */
+  fromPath?: string
 }
 
-export const QualityLevelsTable = ({ qualityLevels }: Props) => {
+export const QualityLevelsTable = ({ qualityLevels, fromPath }: Props) => {
   const projectSlug = useProjectSlug()
+  const appendFrom = fromPath ? `?from=${encodeURIComponent(fromPath)}` : ""
   const router = useRouter()
 
   const [deleteQualityLevelMutation] = useMutation(deleteQualityLevel)
@@ -93,7 +96,9 @@ export const QualityLevelsTable = ({ qualityLevels }: Props) => {
                       <ButtonWrapper className="justify-end">
                         <Link
                           icon="edit"
-                          href={`/${projectSlug}/quality-levels/${qualityLevel.id}/edit` as Route}
+                          href={
+                            `/${projectSlug}/quality-levels/${qualityLevel.id}/edit${appendFrom}` as Route
+                          }
                         >
                           Bearbeiten
                         </Link>

@@ -3,6 +3,8 @@
 import { blueButtonStyles, linkStyles } from "@/src/core/components/links/styles"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import type { LineEndPointFeatureProperties } from "@/src/core/components/Map/layers/LineEndPointsLayer"
+import type { UnifiedFeatureProperties } from "@/src/core/components/Map/layers/UnifiedFeaturesLayer"
+import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
 import { UploadMarkers } from "@/src/core/components/Map/UploadMarkers"
 import { geometriesBbox, geometryBbox } from "@/src/core/components/Map/utils/bboxHelpers"
 import { getSubsectionFeatures } from "@/src/core/components/Map/utils/getSubsectionFeatures"
@@ -15,7 +17,7 @@ import { UploadSchema } from "@/src/server/uploads/schema"
 import { useQuery } from "@blitzjs/rpc"
 import { XMarkIcon } from "@heroicons/react/16/solid"
 import { featureCollection } from "@turf/helpers"
-import type { FeatureCollection, Point } from "geojson"
+import type { Feature, FeatureCollection, LineString, Point, Polygon } from "geojson"
 import { useFormContext } from "react-hook-form"
 import { Marker, MarkerDragEvent } from "react-map-gl/maplibre"
 import { twMerge } from "tailwind-merge"
@@ -66,17 +68,23 @@ export const UploadLocationMap = () => {
   // Combine features for BaseMap
   const subsectionFeaturesList = subsectionLines?.features || []
   const subsubsectionFeaturesList = subsubsectionFeatures.lines?.features || []
-  const allLines =
+  const allLines: FeatureCollection<LineString, UnifiedFeatureProperties> | undefined =
     subsectionFeaturesList.length === 0 && subsubsectionFeaturesList.length === 0
       ? undefined
-      : featureCollection([...subsectionFeaturesList, ...subsubsectionFeaturesList])
+      : featureCollection([
+          ...(subsectionFeaturesList as Feature<LineString, UnifiedFeatureProperties>[]),
+          ...(subsubsectionFeaturesList as Feature<LineString, UnifiedFeatureProperties>[]),
+        ])
 
   const subsectionPolygonsList = subsectionPolygons?.features || []
   const subsubsectionPolygonsList = subsubsectionFeatures.polygons?.features || []
-  const allPolygons =
+  const allPolygons: FeatureCollection<Polygon, UnifiedFeatureProperties> | undefined =
     subsectionPolygonsList.length === 0 && subsubsectionPolygonsList.length === 0
       ? undefined
-      : featureCollection([...subsectionPolygonsList, ...subsubsectionPolygonsList])
+      : featureCollection([
+          ...(subsectionPolygonsList as Feature<Polygon, UnifiedFeatureProperties>[]),
+          ...(subsubsectionPolygonsList as Feature<Polygon, UnifiedFeatureProperties>[]),
+        ])
 
   const subsubsectionPointsList = subsubsectionFeatures.points?.features || []
   const allPoints = subsubsectionPointsList.length === 0 ? undefined : subsubsectionFeatures.points
@@ -138,6 +146,7 @@ export const UploadLocationMap = () => {
           points={allPoints}
           lineEndPoints={allLineEndPoints}
           interactiveLayerIds={[]}
+          staticOverlay={getStaticOverlayForProject(projectSlug)}
         >
           <UploadMarkers projectSlug={projectSlug} interactive={false} />
           {hasPosition && (

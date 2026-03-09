@@ -1,4 +1,4 @@
-import chalk from "chalk"
+import { styleText } from "node:util"
 import { resolve } from "node:path"
 
 /**
@@ -14,7 +14,7 @@ export async function downloadAndStoreCsv(
   // Fetch Google Sheets as CSV
   const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${tableId}`
 
-  console.log(chalk.inverse(" Fetching CSV from Google Sheets... "), { csvUrl })
+  console.log(styleText("inverse", " Fetching CSV from Google Sheets... "), { csvUrl })
   let csvContent: string
   try {
     const response = await fetch(csvUrl)

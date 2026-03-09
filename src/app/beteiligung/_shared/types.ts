@@ -2,9 +2,11 @@ import { SurveyCheckbox } from "@/src/app/beteiligung/_components/form/Checkbox"
 import { SurveyCheckboxGroup } from "@/src/app/beteiligung/_components/form/CheckboxGroup"
 import { SurveyGeoCategoryMapWithLegend } from "@/src/app/beteiligung/_components/form/map/GeoCategoryMapWithLegend"
 import { SurveySimpleMapWithLegend } from "@/src/app/beteiligung/_components/form/map/SimpleMapWithLegend"
+import { SurveyNumberfield } from "@/src/app/beteiligung/_components/form/Numberfield"
 import { SurveyPageTitle } from "@/src/app/beteiligung/_components/form/PageTitle"
 import { SurveyRadiobuttonGroup } from "@/src/app/beteiligung/_components/form/RadiobuttonGroup"
 import { SurveyReadonlyTextfield } from "@/src/app/beteiligung/_components/form/ReadOnlyTextfield"
+import { SurveyResponseIdField } from "@/src/app/beteiligung/_components/form/ResponseIdField"
 import { SurveySelect } from "@/src/app/beteiligung/_components/form/Select"
 import { SurveyTextarea } from "@/src/app/beteiligung/_components/form/Textarea"
 import { SurveyTextfield } from "@/src/app/beteiligung/_components/form/Textfield"
@@ -88,6 +90,14 @@ export type FieldConfig =
       defaultValue: string
     } & FormFieldBase & { props: Omit<ComponentProps<typeof SurveyTextfield>, "required"> })
   | ({
+      component: "SurveyNumberfield"
+      componentType: "form"
+      validation:
+        | (typeof fieldValidationEnum)["requiredNumber"]
+        | (typeof fieldValidationEnum)["optionalNumber"]
+      defaultValue: number | null
+    } & FormFieldBase & { props: Omit<ComponentProps<typeof SurveyNumberfield>, "required"> })
+  | ({
       component: "SurveyReadonlyTextfield"
       componentType: "form"
       validation:
@@ -95,7 +105,19 @@ export type FieldConfig =
         | (typeof fieldValidationEnum)["requiredString"]
         | (typeof fieldValidationEnum)["conditionalRequiredString"]
       defaultValue: string
-    } & FormFieldBase & { props: Omit<ComponentProps<typeof SurveyReadonlyTextfield>, "required"> })
+    } & FormFieldBase & {
+        props: Omit<ComponentProps<typeof SurveyReadonlyTextfield>, "required">
+      })
+  | ({
+      component: "SurveyResponseIdField"
+      componentType: "form"
+      validation:
+        | (typeof fieldValidationEnum)["optionalString"]
+        | (typeof fieldValidationEnum)["requiredString"]
+      defaultValue: string
+    } & FormFieldBase & {
+        props: Omit<ComponentProps<typeof SurveyResponseIdField>, "required" | "surveyResponseId">
+      })
   | ({
       component: "SurveyTextarea"
       componentType: "form"
@@ -124,7 +146,9 @@ export type FieldConfig =
   | ({
       component: "SurveyCheckbox"
       componentType: "form"
-      validation: (typeof fieldValidationEnum)["requiredBoolean"]
+      validation:
+        | (typeof fieldValidationEnum)["requiredBoolean"]
+        | (typeof fieldValidationEnum)["requiredTrueBoolean"]
       defaultValue: boolean
     } & FormFieldBase & {
         props: Omit<ComponentProps<typeof SurveyCheckbox>, "required">

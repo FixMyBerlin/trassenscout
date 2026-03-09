@@ -7,6 +7,7 @@ export const subsectionColors = {
     hovered: highlight,
     selected: highlight,
     default: "#2c62a9", // not used as literal; layer builds expression from current/unselected
+    green: "#2c62a9", // stub - GREEN style not used for subsections
     dashedSecondary: "#fbcfe8", // pink-200 - dashed subsection secondary
     borderColor: "#0F172A",
     width: 7,
@@ -19,6 +20,7 @@ export const subsectionColors = {
     hovered: highlight,
     selected: highlight,
     default: "#4b5563",
+    green: "#4b5563", // stub - GREEN style not used for subsections
     ring: "#0F172A",
     strokeWidth: 1,
     radius: 4,
@@ -29,6 +31,7 @@ export const subsectionColors = {
     hovered: highlight,
     selected: highlight,
     default: "#2c62a9",
+    green: "#2c62a9", // stub - GREEN style not used for subsections
     dashedSecondary: "#fbcfe8",
   },
   hull: {
@@ -43,6 +46,7 @@ export const subsectionColors = {
     hovered: "#000",
     selected: "#000",
     default: "#000",
+    green: "#000", // stub - GREEN style not used for subsections
     dashedSecondary: "#000",
     currentBorderClass: "#000",
     currentTextClass: "#000",

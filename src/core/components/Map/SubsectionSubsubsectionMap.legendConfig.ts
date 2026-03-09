@@ -15,6 +15,6 @@ export const subsectionLegendConfig: LegendItemConfig[] = [
   },
   {
     text: "Eintrag mit besonderem Status",
-    iconIds: ["subsubsectionLineDashed", "subsubsectionPointDashed", "subsubsectionPolygonDashed"],
+    iconIds: ["subsubsectionLineGreen", "subsubsectionPointGreen", "subsubsectionPolygonGreen"],
   },
 ]

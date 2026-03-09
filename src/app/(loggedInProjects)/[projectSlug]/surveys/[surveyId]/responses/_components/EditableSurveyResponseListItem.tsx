@@ -1,5 +1,6 @@
 import { NewSurveyResponseCommentForm } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/comments/NewSurveyResponseCommentForm"
 import { SurveyResponseCommentField } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/comments/SurveyResponseCommentField"
+import { ConvertSurveyResponseToSubsubsectionOhv } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/ConvertSurveyResponseToSubsubsectionOhv"
 import { EditableSurveyResponseForm } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/EditableSurveyResponseForm"
 import EditableSurveyResponseMapAndStaticData from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/EditableSurveyResponseMapAndStaticData"
 import { EditableSurveyResponseStatusLabel } from "@/src/app/(loggedInProjects)/[projectSlug]/surveys/[surveyId]/responses/_components/EditableSurveyResponseStatusLabel"
@@ -10,9 +11,11 @@ import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getCo
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import { Markdown } from "@/src/core/components/Markdown/Markdown"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { Prettify } from "@/src/core/types"
 
 import { useUserCan } from "@/src/app/_components/memberships/hooks/useUserCan"
+import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import getOperatorsWithCount from "@/src/server/operators/queries/getOperatorsWithCount"
 import getSurveyResponseTopicsByProject from "@/src/server/survey-response-topics/queries/getSurveyResponseTopicsByProject"
 import getFeedbackSurveyResponsesWithSurveyDataAndComments from "@/src/server/survey-responses/queries/getFeedbackSurveyResponsesWithSurveyDataAndComments"
@@ -48,6 +51,7 @@ const EditableSurveyResponseListItem = ({
   mapProps,
 }: EditableSurveyResponseListItemProps) => {
   const { responseDetails, setResponseDetails } = useResponseDetails()
+  const projectSlug = useProjectSlug()
   const open = !isAccordion ? true : parseInt(String(responseDetails)) === response.id
   const surveySlug = response.surveySession.survey.slug as AllowedSurveySlugs
 
@@ -84,6 +88,8 @@ const EditableSurveyResponseListItem = ({
   const text2Id = getQuestionIdBySurveySlug(surveySlug, "feedbackText_2")
 
   const userTextPreview = response.data[text1Id] || response.data[text2Id]
+  const commentLabel = labels.comment?.sg || defaultBackendConfig.labels.comment.sg
+  const commentHelp = labels.comment?.help || defaultBackendConfig.labels.comment.help
 
   return (
     <article data-open={open} className="bg-white">
@@ -153,23 +159,34 @@ const EditableSurveyResponseListItem = ({
           />
           <div>
             {(!!response.surveyResponseComments.length || isEditorOrAdmin) && (
-              <h4 className="mb-3 font-semibold">Kommentar</h4>
+              <h4 className="mb-3 font-semibold">{commentLabel}</h4>
             )}
             <ul className="flex max-w-3xl flex-col gap-4">
               {response.surveyResponseComments?.map((comment) => {
                 return (
                   <li key={comment.id}>
-                    <SurveyResponseCommentField comment={comment} />
+                    <SurveyResponseCommentField comment={comment} commentLabel={commentLabel} />
                   </li>
                 )
               })}
               <IfUserCanEdit>
                 <li>
-                  <NewSurveyResponseCommentForm surveyResponseId={response.id} />
+                  <NewSurveyResponseCommentForm
+                    surveyResponseId={response.id}
+                    commentLabel={commentLabel}
+                    commentHelp={commentHelp}
+                  />
                 </li>
               </IfUserCanEdit>
             </ul>
           </div>
+          <SuperAdminBox>
+            <ConvertSurveyResponseToSubsubsectionOhv
+              response={response}
+              projectSlug={projectSlug}
+              surveySlug={surveySlug}
+            />
+          </SuperAdminBox>
         </div>
       )}
     </article>

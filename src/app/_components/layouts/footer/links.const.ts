@@ -6,7 +6,14 @@ export type FooterLink<T extends string> = {
   blank: boolean
 }
 
-export const links: FooterLink<string>[] = [
+export const publicLinks: FooterLink<string>[] = [
   { name: "Kontakt & Impressum", href: "/kontakt", blank: false },
   { name: "Datenschutz", href: "/datenschutz", blank: false },
 ]
+
+export const authLinks: FooterLink<string>[] = [
+  { name: "Support & Dokumentation", href: "/support", blank: false },
+]
+
+// Legacy export for backwards compatibility
+export const links = publicLinks

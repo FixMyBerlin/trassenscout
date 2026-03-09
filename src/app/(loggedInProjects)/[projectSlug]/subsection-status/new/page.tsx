@@ -1,6 +1,7 @@
+import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
 import { seoNewTitle } from "@/src/core/components/text"
-import { Metadata } from "next"
+import { Metadata, Route } from "next"
 import "server-only"
 import { NewSubsectionStatusForm } from "../_components/NewSubsectionStatusForm"
 
@@ -13,14 +14,25 @@ export const metadata: Metadata = {
 
 type Props = {
   params: { projectSlug: string }
+  searchParams: { from?: string }
 }
 
-export default async function NewSubsectionStatusPage({ params: { projectSlug } }: Props) {
+export default async function NewSubsectionStatusPage({
+  params: { projectSlug },
+  searchParams,
+}: Props) {
+  const fromParam = searchParams?.from
+  const listPath = `/${projectSlug}/subsection-status` as Route
+  const appendFrom = fromParam ? `?from=${encodeURIComponent(fromParam)}` : ""
+
   return (
     <>
       <PageHeader title="Status hinzufügen" className="mt-12" />
 
-      <NewSubsectionStatusForm projectSlug={projectSlug} />
+      <NewSubsectionStatusForm projectSlug={projectSlug} fromParam={fromParam} />
+
+      <hr className="my-5 text-gray-200" />
+      <Link href={`${listPath}${appendFrom}` as Route}>Zurück zur Übersicht</Link>
     </>
   )
 }

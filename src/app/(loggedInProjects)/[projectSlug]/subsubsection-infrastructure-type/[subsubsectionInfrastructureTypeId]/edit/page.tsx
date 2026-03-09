@@ -15,15 +15,19 @@ export const metadata: Metadata = {
 
 type Props = {
   params: { projectSlug: string; subsubsectionInfrastructureTypeId: string }
+  searchParams: { from?: string }
 }
 
 export default async function EditSubsubsectionInfrastructureTypePage({
   params: { projectSlug, subsubsectionInfrastructureTypeId },
+  searchParams,
 }: Props) {
   const subsubsectionInfrastructureType = await invoke(getSubsubsectionInfrastructureType, {
     projectSlug,
     id: Number(subsubsectionInfrastructureTypeId),
   })
+
+  const fromParam = searchParams?.from
 
   return (
     <>
@@ -31,6 +35,7 @@ export default async function EditSubsubsectionInfrastructureTypePage({
       <EditSubsubsectionInfrastructureTypeForm
         subsubsectionInfrastructureType={subsubsectionInfrastructureType}
         projectSlug={projectSlug}
+        fromParam={fromParam}
       />
     </>
   )

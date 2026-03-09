@@ -21,8 +21,7 @@ type Props = {
   createButton?: boolean
 }
 
-const tableHeadClasses =
-  "pl-4 py-3.5 pr-3 text-left text-sm font-semibold uppercase text-gray-900  "
+const tableHeadClasses = "pl-4 py-3.5 pr-3 text-left text-sm font-semibold text-gray-900  "
 
 export const SubsectionTable = ({ subsections, createButton = true }: Props) => {
   const router = useRouter()

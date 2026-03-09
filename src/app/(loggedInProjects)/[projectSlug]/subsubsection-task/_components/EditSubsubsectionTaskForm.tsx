@@ -19,14 +19,19 @@ import { SubsubsectionTaskForm } from "./SubsubsectionTaskForm"
 type Props = {
   subsubsectionTask: PromiseReturnType<typeof getSubsubsectionTask>
   projectSlug: string
+  /** Original form path to preserve in URL for back navigation */
+  fromParam?: string
 }
 
-export const EditSubsubsectionTaskForm = ({ subsubsectionTask, projectSlug }: Props) => {
+export const EditSubsubsectionTaskForm = ({ subsubsectionTask, projectSlug, fromParam }: Props) => {
   const router = useRouter()
   const [updateSubsubsectionTaskMutation] = useMutation(updateSubsubsectionTask)
   const [deleteSubsubsectionTaskMutation] = useMutation(deleteSubsubsectionTask)
 
-  const returnPath = `/${projectSlug}/subsubsection-task` as Route
+  const listPath = `/${projectSlug}/subsubsection-task`
+  const returnPath = (
+    fromParam ? `${listPath}?from=${encodeURIComponent(fromParam)}` : listPath
+  ) as Route
 
   type HandleSubmit = z.infer<typeof SubsubsectionTask>
   const handleSubmit = async (values: HandleSubmit) => {
@@ -36,7 +41,7 @@ export const EditSubsubsectionTaskForm = ({ subsubsectionTask, projectSlug }: Pr
         id: subsubsectionTask.id,
         projectSlug,
       })
-      router.push(`/${projectSlug}/subsubsection-task` as Route)
+      router.push(returnPath)
       router.refresh()
     } catch (error: any) {
       return improveErrorMessage(error, FORM_ERROR, ["slug"])

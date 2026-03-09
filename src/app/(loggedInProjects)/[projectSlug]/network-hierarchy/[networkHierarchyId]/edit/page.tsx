@@ -15,20 +15,28 @@ export const metadata: Metadata = {
 
 type Props = {
   params: { projectSlug: string; networkHierarchyId: string }
+  searchParams: { from?: string }
 }
 
 export default async function EditNetworkHierarchyPage({
   params: { projectSlug, networkHierarchyId },
+  searchParams,
 }: Props) {
   const networkHierarchy = await invoke(getNetworkHierarchy, {
     projectSlug,
     id: Number(networkHierarchyId),
   })
 
+  const fromParam = searchParams?.from
+
   return (
     <>
       <PageHeader title="Netzstufe bearbeiten" className="mt-12" />
-      <EditNetworkHierarchyForm networkHierarchy={networkHierarchy} projectSlug={projectSlug} />
+      <EditNetworkHierarchyForm
+        networkHierarchy={networkHierarchy}
+        projectSlug={projectSlug}
+        fromParam={fromParam}
+      />
     </>
   )
 }

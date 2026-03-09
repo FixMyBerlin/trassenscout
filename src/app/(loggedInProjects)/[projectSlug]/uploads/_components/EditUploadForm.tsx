@@ -202,7 +202,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText, showDelete = tr
               mimeType={upload.mimeType}
               isGeneratingSummary={isGeneratingSummary}
               setIsGeneratingSummary={setIsGeneratingSummary}
-              isAiEnabled={upload.project.aiEnabled}
+              isAiEnabled={upload.project?.aiEnabled ?? false}
               initialSummary={upload.summary}
             />
           )}

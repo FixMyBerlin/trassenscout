@@ -22,11 +22,14 @@ type SubsectionStatusWithCount = {
 type Props = {
   subsectionStatuss: SubsectionStatusWithCount[]
   projectSlug: string
+  /** Optional path to return to after editing (from original form) */
+  fromPath?: string
 }
 
-export const SubsectionStatusesTable = ({ subsectionStatuss, projectSlug }: Props) => {
+export const SubsectionStatusesTable = ({ subsectionStatuss, projectSlug, fromPath }: Props) => {
   const router = useRouter()
   const [deleteSubsectionStatusMutation] = useMutation(deleteSubsectionStatus)
+  const appendFrom = fromPath ? `?from=${encodeURIComponent(fromPath)}` : ""
 
   const handleDelete = async (subsectionStatusId: number) => {
     if (window.confirm(`Den Eintrag mit ID ${subsectionStatusId} unwiderruflich löschen?`)) {
@@ -101,7 +104,9 @@ export const SubsectionStatusesTable = ({ subsectionStatuss, projectSlug }: Prop
                     <ButtonWrapper className="justify-end">
                       <Link
                         icon="edit"
-                        href={`/${projectSlug}/subsection-status/${status.id}/edit`}
+                        href={
+                          `/${projectSlug}/subsection-status/${status.id}/edit${appendFrom}` as Route
+                        }
                       >
                         Bearbeiten
                       </Link>

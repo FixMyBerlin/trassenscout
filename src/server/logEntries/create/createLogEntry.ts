@@ -7,6 +7,9 @@ type LogEntryCreate = {
   action: LogLevelActionEnum
   message: string
   //
+  projectId?: number
+  projectSlug?: string
+  //
   inviteId?: number
   membershipId?: number
   contactId?: number
@@ -17,17 +20,11 @@ type LogEntryCreate = {
   qualitylevelId?: number
   uploadId?: number
   surveyResponseId?: number
+  supportDocumentId?: number
   // To compute the `changes`
   previousRecord?: Record<string, any> | null
   updatedRecord?: Record<string, any>
-} & (
-  | {
-      projectId: number
-    }
-  | {
-      projectSlug: string
-    }
-)
+}
 
 // We don't want to diff each coordinate change but we do want to see if something change, so we hash the geometry
 const replaceGeometryIfPresent = (
@@ -55,13 +52,14 @@ export const createLogEntry = async (input: LogEntryCreate) => {
     return
   }
 
+  const projectId = data.projectSlug ? await getProjectIdBySlug(data.projectSlug) : data.projectId
+
   return await db.logEntry.create({
     data: {
       action: data.action,
       userId: data.userId || undefined,
       message: data.message,
-      projectId:
-        "projectSlug" in data ? await getProjectIdBySlug(data.projectSlug) : data.projectId,
+      projectId: projectId || undefined,
       changes: changes,
       //
       inviteId: data.inviteId,
@@ -74,6 +72,7 @@ export const createLogEntry = async (input: LogEntryCreate) => {
       uploadId: data.uploadId,
       surveyResponseId: data.surveyResponseId,
       projectRecordId: data.projectRecordId,
+      supportDocumentId: data.supportDocumentId,
     },
   })
 }
