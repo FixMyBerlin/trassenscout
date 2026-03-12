@@ -9,6 +9,7 @@ import { FieldConfig } from "@/src/app/beteiligung/_shared/types"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
+import { getMapStyle, getVectorStyleUrl } from "@/src/core/components/Map/mapStyleConfig"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
@@ -54,10 +55,6 @@ export const EditableSurveyResponseFormMap = ({
   const handleLayerSwitch = (layer: LayerType) => {
     setSelectedLayer(layer)
   }
-
-  const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
-  const vectorStyle = `${maptilerUrl}?key=${maptilerApiKey}`
-  const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
 
   const mapData = geoCategoryQuestion ? geoCategoryQuestion.props.mapProps.mapData : undefined
 
@@ -156,7 +153,7 @@ export const EditableSurveyResponseFormMap = ({
         id="mainMap"
         initialViewState={getInitialViewState()}
         scrollZoom={false}
-        mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
+        mapStyle={getMapStyle(selectedLayer, getVectorStyleUrl(maptilerUrl))}
         // Set map state for <MapData>:
         onLoad={(event) => handleMapLoad(event)}
         onIdle={() => setMapLoading(false)}

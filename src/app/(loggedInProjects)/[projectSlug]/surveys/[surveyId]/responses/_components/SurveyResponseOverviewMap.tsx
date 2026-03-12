@@ -4,6 +4,7 @@ import { createGeoJSONFromString } from "@/src/app/beteiligung/_components/form/
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
+import { getMapStyle, getVectorStyleUrl } from "@/src/core/components/Map/mapStyleConfig"
 import { featureCollection, point } from "@turf/helpers"
 import maplibregl, {
   DataDrivenPropertyValueSpecification,
@@ -447,11 +448,6 @@ export const SurveyResponseOverviewMap = ({
     setSelectedLayer(layer)
   }
 
-  const maptilerApiKey = "ECOoUBmpqklzSCASXxcu"
-
-  const vectorStyle = `${maptilerUrl}?key=${maptilerApiKey}`
-  const satelliteStyle = `https://api.maptiler.com/maps/hybrid/style.json?key=${maptilerApiKey}`
-
   const handleMapClick = (event: MapLayerMouseEvent) => {
     const selectedResponses = event.features
     //  for some reason the mapSelection had duplicated entries
@@ -480,7 +476,7 @@ export const SurveyResponseOverviewMap = ({
         initialViewState={{
           bounds: defaultViewState,
         }}
-        mapStyle={selectedLayer === "vector" ? vectorStyle : satelliteStyle}
+        mapStyle={getMapStyle(selectedLayer, getVectorStyleUrl(maptilerUrl))}
         minZoom={6}
         maxZoom={20}
         onClick={handleMapClick}
