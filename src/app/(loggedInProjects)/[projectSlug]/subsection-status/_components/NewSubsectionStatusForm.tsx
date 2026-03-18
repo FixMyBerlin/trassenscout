@@ -1,6 +1,4 @@
 "use client"
-
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import createSubsectionStatus from "@/src/server/subsectionStatus/mutations/createSubsectionStatus"
 import { SubsectionStatus } from "@/src/server/subsectionStatus/schema"
@@ -31,7 +29,7 @@ export const NewSubsectionStatusForm = ({ projectSlug, fromParam }: Props) => {
       router.push(returnPath as Route)
       router.refresh()
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["slug"])
+      return improveErrorMessage(error, ["slug"])
     }
   }
 

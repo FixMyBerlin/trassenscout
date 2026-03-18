@@ -1,21 +1,23 @@
+import { formatFormError } from "@/src/core/components/forms/formatFormError"
+import type { FormApi } from "@/src/core/components/forms/types"
 import { clsx } from "clsx"
 import { LabeledRadiobutton, LabeledRadiobuttonProps } from "./LabeledRadiobutton"
 
 export type LabeledRadiobuttonGroupProps = {
+  form: FormApi<Record<string, unknown>>
   label?: string
   optional?: boolean
   disabled?: boolean
   scope: string
-  items: Omit<LabeledRadiobuttonProps, "scope">[]
+  items: Omit<LabeledRadiobuttonProps, "scope" | "form">[]
   classLabelOverwrite?: string
   classNameItemWrapper?: string
-  /** Callback fired when the value changes */
   onChange?: (value: string) => void
-  /** Help text displayed below the radio button group */
   help?: string | React.ReactNode
 }
 
 export const LabeledRadiobuttonGroup = ({
+  form,
   label,
   optional,
   disabled,
@@ -28,9 +30,10 @@ export const LabeledRadiobuttonGroup = ({
 }: LabeledRadiobuttonGroupProps) => {
   const itemsWithScope = items.map((i) => ({
     ...i,
+    form,
     scope,
-    // Pass onChange to register, not as input prop
     _onChange: onChange,
+    showScopeErrors: false,
   }))
 
   return (
@@ -46,6 +49,15 @@ export const LabeledRadiobuttonGroup = ({
         })}
       </div>
       {Boolean(help) && <p className="mt-2 text-sm text-gray-500">{help}</p>}
+      <form.Field name={scope}>
+        {(field) =>
+          field.state.meta.errors.length > 0 ? (
+            <p role="alert" className="mt-2 text-sm text-red-800">
+              {field.state.meta.errors.map((err) => formatFormError(err)).join(", ")}
+            </p>
+          ) : null
+        }
+      </form.Field>
     </div>
   )
 }

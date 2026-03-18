@@ -2,7 +2,6 @@ import db from "@/db"
 import { AuthServerPlugin, PrismaStorage, simpleRolesIsAuthorized } from "@blitzjs/auth"
 import { setupBlitzServer } from "@blitzjs/next"
 import { RpcServerPlugin } from "@blitzjs/rpc"
-import type { BlitzCliConfig } from "blitz"
 import { BlitzLogger, NotFoundError } from "blitz"
 import { notFound } from "next/navigation"
 import { authConfig } from "./blitz-auth-config"
@@ -31,7 +30,3 @@ export const { gSSP, gSP, api, useAuthenticatedBlitzContext, invoke, getBlitzCon
     ],
     logger: BlitzLogger({}),
   })
-
-export const cliConfig: BlitzCliConfig = {
-  customTemplates: "src/core/templates",
-}

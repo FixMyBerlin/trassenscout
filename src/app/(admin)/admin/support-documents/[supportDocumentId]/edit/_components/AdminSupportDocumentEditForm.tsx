@@ -1,6 +1,4 @@
 "use client"
-
-import { FORM_ERROR } from "@/src/core/components/forms"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import deleteSupportDocument from "@/src/server/supportDocuments/mutations/deleteSupportDocument"
 import updateSupportDocument from "@/src/server/supportDocuments/mutations/updateSupportDocument"
@@ -29,7 +27,7 @@ export const AdminSupportDocumentEditForm = () => {
       router.push("/support")
     } catch (error: any) {
       console.error(error)
-      return { [FORM_ERROR]: error }
+      return { success: false, message: error instanceof Error ? error.message : String(error) }
     }
   }
 

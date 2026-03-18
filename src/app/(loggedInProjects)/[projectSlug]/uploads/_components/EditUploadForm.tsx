@@ -6,7 +6,8 @@ import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { LabeledSelect, LabeledSelectProps, LabeledTextField } from "@/src/core/components/forms"
 import { BackLink } from "@/src/core/components/forms/BackLink"
-import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
+import { Form } from "@/src/core/components/forms/Form"
+import { formatFormError } from "@/src/core/components/forms/formatFormError"
 import { shortTitle } from "@/src/core/components/text/titles"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { formatFileSize } from "@/src/core/utils/formatFileSize"
@@ -38,9 +39,12 @@ type UploadSubsectionFieldsProps = {
 }
 
 const UploadSubsectionFields = ({
+  form,
   subsections,
   subsubsections,
-}: Omit<UploadSubsectionFieldsProps, "returnPath">) => {
+}: Omit<UploadSubsectionFieldsProps, "returnPath"> & {
+  form: import("@/src/core/components/forms/types").FormApi<Record<string, unknown>>
+}) => {
   // We use `""` here to signify the "All" case which gets translated to `NULL`
   const subsectionOptions: LabeledSelectProps["options"] = [["", "Übergreifendes Dokument"]]
   subsections.forEach((ss) => {
@@ -66,12 +70,14 @@ const UploadSubsectionFields = ({
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <LabeledSelect
+        form={form}
         name="subsectionId"
         label="Zuordnung zum Planungsabschnitt"
         options={subsectionOptions}
         optional
       />
       <LabeledSelect
+        form={form}
         name="subsubsectionId"
         label="Zuordnung zum Eintrag"
         options={subsubsectionOptions}
@@ -131,7 +137,7 @@ export const EditUploadForm = ({ upload, returnPath, returnText, showDelete = tr
       router.push(returnPath)
     } catch (error: any) {
       console.error(error)
-      return { [FORM_ERROR]: error }
+      return { success: false, message: formatFormError(error) }
     }
   }
 
@@ -169,57 +175,77 @@ export const EditUploadForm = ({ upload, returnPath, returnText, showDelete = tr
             </>
           }
         >
-          <div className="flex justify-center sm:block">
-            <div className="flex flex-col gap-10 sm:flex-row">
-              <UploadPreview
-                uploadId={upload.id}
-                projectSlug={projectSlug}
-                size="grid"
-                showTitle={false}
-              />
-              <div className="grow space-y-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label htmlFor="filename" className="block text-sm font-medium text-gray-700">
-                      Dateiname {upload.fileSize && "(Größe)"}
-                    </label>{" "}
-                    <p className="text-sm text-gray-500">
-                      {getFilenameFromS3(upload.externalUrl)}
-                      {upload.fileSize && ` (${formatFileSize(upload.fileSize)})`}
-                    </p>
+          {(form) => (
+            <>
+              <div className="flex justify-center sm:block">
+                <div className="flex flex-col gap-10 sm:flex-row">
+                  <UploadPreview
+                    uploadId={upload.id}
+                    projectSlug={projectSlug}
+                    size="grid"
+                    showTitle={false}
+                  />
+                  <div className="grow space-y-5">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <label
+                          htmlFor="filename"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Dateiname {upload.fileSize && "(Größe)"}
+                        </label>{" "}
+                        <p className="text-sm text-gray-500">
+                          {getFilenameFromS3(upload.externalUrl)}
+                          {upload.fileSize && ` (${formatFileSize(upload.fileSize)})`}
+                        </p>
+                      </div>
+                      <LuckyCloudDocumentLink collaborationUrl={upload.collaborationUrl} />
+                    </div>
+
+                    <LabeledTextField
+                      form={form}
+                      type="text"
+                      name="title"
+                      label="Kurzbeschreibung"
+                    />
                   </div>
-                  <LuckyCloudDocumentLink collaborationUrl={upload.collaborationUrl} />
                 </div>
-
-                <LabeledTextField type="text" name="title" label="Kurzbeschreibung" />
               </div>
-            </div>
-          </div>
-          <UploadSubsectionFields subsections={subsections} subsubsections={subsubsections} />
-          {upload.id && (
-            <SummaryField
-              uploadId={upload.id}
-              mimeType={upload.mimeType}
-              isGeneratingSummary={isGeneratingSummary}
-              setIsGeneratingSummary={setIsGeneratingSummary}
-              isAiEnabled={upload.project?.aiEnabled ?? false}
-              initialSummary={upload.summary}
-            />
+              <UploadSubsectionFields
+                form={form}
+                subsections={subsections}
+                subsubsections={subsubsections}
+              />
+              {upload.id && (
+                <SummaryField
+                  form={form}
+                  uploadId={upload.id}
+                  mimeType={upload.mimeType}
+                  isGeneratingSummary={isGeneratingSummary}
+                  setIsGeneratingSummary={setIsGeneratingSummary}
+                  isAiEnabled={upload.project?.aiEnabled ?? false}
+                  initialSummary={upload.summary}
+                />
+              )}
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Standort (optional)
+                </label>
+                <p className="mb-2 text-sm text-gray-500">
+                  Dokumente und Bilder lassen sich unabhängig von Planungsabschnitten oder Einträgen
+                  auf der Karte verorten. <br />
+                  Sobald ein Standort gesetzt ist, erscheint das Dokument auf der Karte.
+                </p>
+                <UploadLocationMap form={form} />
+              </div>
+
+              <LuckyCloudNotice
+                collaborationUrl={upload.collaborationUrl}
+                mimeType={upload.mimeType}
+              />
+            </>
           )}
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Standort (optional)
-            </label>
-            <p className="mb-2 text-sm text-gray-500">
-              Dokumente und Bilder lassen sich unabhängig von Planungsabschnitten oder Einträgen auf
-              der Karte verorten. <br />
-              Sobald ein Standort gesetzt ist, erscheint das Dokument auf der Karte.
-            </p>
-            <UploadLocationMap />
-          </div>
-
-          <LuckyCloudNotice collaborationUrl={upload.collaborationUrl} mimeType={upload.mimeType} />
         </Form>
       </div>
 

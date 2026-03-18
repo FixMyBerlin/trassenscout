@@ -1,6 +1,6 @@
 "use client"
 import { DevAdminBox } from "@/src/core/components/AdminBox/DevAdminBox"
-import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
+import { Form } from "@/src/core/components/forms/Form"
 import { HiddenField } from "@/src/core/components/forms/HiddenField"
 import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
@@ -32,8 +32,8 @@ export const SignupForm = () => {
       await signupMutation(values)
       router.push("/")
       router.refresh()
-    } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["email"])
+    } catch (error: unknown) {
+      return improveErrorMessage(error, ["email"])
     }
   }
 
@@ -49,48 +49,58 @@ export const SignupForm = () => {
         }}
         onSubmit={handleSubmit}
       >
-        <HiddenField name="inviteToken" />
-        <LabeledTextField
-          type="email"
-          name="email"
-          label={Boolean(invite?.email) ? "E-Mail-Adresse der Einladung" : "E-Mail-Adresse"}
-          placeholder="name@beispiel.de"
-          autoComplete="email"
-          readOnly={Boolean(invite?.email)}
-        />
-        <LabeledTextField
-          name="firstName"
-          label="Vorname"
-          placeholder=""
-          autoComplete="given-name"
-        />
-        <LabeledTextField
-          name="lastName"
-          label="Nachname"
-          placeholder=""
-          autoComplete="family-name"
-        />
-        <LabeledTextField
-          name="institution"
-          label="Organisation / Kommune"
-          placeholder=""
-          optional
-        />
-        <LabeledTextField
-          type="tel"
-          name="phone"
-          label="Telefon"
-          placeholder=""
-          autoComplete="tel"
-          optional
-        />
-        <LabeledTextField
-          name="password"
-          label="Passwort"
-          placeholder=""
-          type="password"
-          autoComplete="current-password"
-        />
+        {(form) => (
+          <>
+            <HiddenField form={form} name="inviteToken" />
+            <LabeledTextField
+              form={form}
+              type="email"
+              name="email"
+              label={Boolean(invite?.email) ? "E-Mail-Adresse der Einladung" : "E-Mail-Adresse"}
+              placeholder="name@beispiel.de"
+              autoComplete="email"
+              readOnly={Boolean(invite?.email)}
+            />
+            <LabeledTextField
+              form={form}
+              name="firstName"
+              label="Vorname"
+              placeholder=""
+              autoComplete="given-name"
+            />
+            <LabeledTextField
+              form={form}
+              name="lastName"
+              label="Nachname"
+              placeholder=""
+              autoComplete="family-name"
+            />
+            <LabeledTextField
+              form={form}
+              name="institution"
+              label="Organisation / Kommune"
+              placeholder=""
+              optional
+            />
+            <LabeledTextField
+              form={form}
+              type="tel"
+              name="phone"
+              label="Telefon"
+              placeholder=""
+              autoComplete="tel"
+              optional
+            />
+            <LabeledTextField
+              form={form}
+              name="password"
+              label="Passwort"
+              placeholder=""
+              type="password"
+              autoComplete="current-password"
+            />
+          </>
+        )}
       </Form>
 
       <DevAdminBox className="text-center">

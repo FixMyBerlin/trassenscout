@@ -1,5 +1,6 @@
 "use client"
 
+import type { FormApi } from "@/src/core/components/forms/types"
 import { blueButtonStyles, linkStyles } from "@/src/core/components/links/styles"
 import { BaseMap } from "@/src/core/components/Map/BaseMap"
 import type { LineEndPointFeatureProperties } from "@/src/core/components/Map/layers/LineEndPointsLayer"
@@ -13,28 +14,35 @@ import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
-import { UploadSchema } from "@/src/server/uploads/schema"
 import { useQuery } from "@blitzjs/rpc"
 import { XMarkIcon } from "@heroicons/react/16/solid"
 import { featureCollection } from "@turf/helpers"
 import type { Feature, FeatureCollection, LineString, Point, Polygon } from "geojson"
-import { useFormContext } from "react-hook-form"
 import { Marker, MarkerDragEvent } from "react-map-gl/maplibre"
 import { twMerge } from "tailwind-merge"
-import { z } from "zod"
 import { UploadPin } from "./UploadPin"
 
-export const UploadLocationMap = () => {
-  const { setValue, watch } = useFormContext<z.infer<typeof UploadSchema>>()
-  const latitude = watch("latitude")
-  const longitude = watch("longitude")
-  const subsectionId = watch("subsectionId")
-  const subsubsectionId = watch("subsubsectionId")
-  const projectSlug = useProjectSlug()
+type InnerProps = {
+  form: FormApi<Record<string, unknown>>
+  latitude: unknown
+  longitude: unknown
+  subsectionId: unknown
+  subsubsectionId: unknown
+  subsections: TGetSubsection[]
+  subsubsections: Awaited<ReturnType<typeof getSubsubsections>>["subsubsections"]
+  projectSlug: string
+}
 
-  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
-  const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
-
+function UploadLocationMapInner({
+  form,
+  latitude,
+  longitude,
+  subsectionId,
+  subsubsectionId,
+  subsections,
+  subsubsections,
+  projectSlug,
+}: InnerProps) {
   const currentSubsection = subsections.find((ss: TGetSubsection) => {
     return ss.id === subsectionId
   })
@@ -45,10 +53,8 @@ export const UploadLocationMap = () => {
     ? subsubsections
     : subsubsections.filter((ss) => ss.subsection.slug === currentSubsection?.slug)
 
-  // Determine color schema based on whether subsubsectionId exists
   const colorSchema = subsubsectionId ? ("subsubsection" as const) : ("subsection" as const)
 
-  // Extract subsection features
   const {
     lines: subsectionLines,
     lineEndPoints: subsectionLineEndPoints,
@@ -59,13 +65,11 @@ export const UploadLocationMap = () => {
     selectedSubsectionSlug: currentSubsection?.slug ?? "",
   })
 
-  // Extract subsubsection features
   const subsubsectionFeatures = getSubsubsectionFeatures({
     subsubsections: filteredSubsubsections,
     selectedSubsubsectionSlug: currentSubsubsection?.slug ?? null,
   })
 
-  // Combine features for BaseMap
   const subsectionFeaturesList = subsectionLines?.features || []
   const subsubsectionFeaturesList = subsubsectionFeatures.lines?.features || []
   const allLines: FeatureCollection<LineString, UnifiedFeatureProperties> | undefined =
@@ -98,11 +102,10 @@ export const UploadLocationMap = () => {
           ...(subsubsectionFeatures.lineEndPoints?.features ?? []),
         ]) as FeatureCollection<Point, LineEndPointFeatureProperties>)
 
-  // Get current position from form values
   const hasPosition = typeof latitude === "number" && typeof longitude === "number"
+  const lat = hasPosition ? latitude : 0
+  const lng = hasPosition ? longitude : 0
 
-  // 1. If we have a subsection from URL params, use its bbox
-  // 2. Otherwise, use project bbox
   const mapBbox = currentSubsection
     ? geometryBbox(currentSubsection.geometry)
     : subsections.length > 0
@@ -110,27 +113,29 @@ export const UploadLocationMap = () => {
       : undefined
 
   const initialViewState = hasPosition
-    ? { latitude, longitude, zoom: 12 }
+    ? { latitude: lat, longitude: lng, zoom: 12 }
     : { bounds: mapBbox, fitBoundsOptions: { padding: 5 } }
 
+  const setLatLng = (latV: number | null, lngV: number | null) => {
+    void form.setFieldValue("latitude" as never, latV as never)
+    void form.setFieldValue("longitude" as never, lngV as never)
+  }
+
   const onMarkerDragEnd = (event: MarkerDragEvent) => {
-    setValue("latitude", event.lngLat.lat, { shouldValidate: true })
-    setValue("longitude", event.lngLat.lng, { shouldValidate: true })
+    setLatLng(event.lngLat.lat, event.lngLat.lng)
   }
 
   const handlePlacePin = () => {
-    const bounds = initialViewState?.bounds
-    if (!bounds) {
+    const bounds = initialViewState && "bounds" in initialViewState ? initialViewState.bounds : null
+    if (!bounds || !Array.isArray(bounds)) {
       return
     }
-    const [minLng, minLat, maxLng, maxLat] = bounds
-    setValue("latitude", (minLat + maxLat) / 2, { shouldValidate: true })
-    setValue("longitude", (minLng + maxLng) / 2, { shouldValidate: true })
+    const [minLng, minLat, maxLng, maxLat] = bounds as [number, number, number, number]
+    setLatLng((minLat + maxLat) / 2, (minLng + maxLng) / 2)
   }
 
   const handleDeleteLocation = () => {
-    setValue("latitude", null, { shouldValidate: true })
-    setValue("longitude", null, { shouldValidate: true })
+    setLatLng(null, null)
   }
 
   return (
@@ -151,8 +156,8 @@ export const UploadLocationMap = () => {
           <UploadMarkers projectSlug={projectSlug} interactive={false} />
           {hasPosition && (
             <Marker
-              longitude={longitude}
-              latitude={latitude}
+              longitude={lng}
+              latitude={lat}
               anchor="bottom"
               draggable
               onDragEnd={onMarkerDragEnd}
@@ -180,9 +185,9 @@ export const UploadLocationMap = () => {
       <div className="mt-2 flex items-center justify-between gap-2">
         <p className="text-sm text-gray-500">
           <span className="hidden sm:inline">Geokoordinaten: </span>
-          {typeof latitude === "number" && typeof longitude === "number" ? (
+          {hasPosition ? (
             <>
-              {latitude.toFixed(6)}, {longitude.toFixed(6)}
+              {lat.toFixed(6)}, {lng.toFixed(6)}
             </>
           ) : (
             "—"
@@ -200,5 +205,34 @@ export const UploadLocationMap = () => {
         )}
       </div>
     </>
+  )
+}
+
+type Props = { form: FormApi<Record<string, unknown>> }
+
+export const UploadLocationMap = ({ form }: Props) => {
+  const projectSlug = useProjectSlug()
+  const [{ subsections }] = useQuery(getSubsections, { projectSlug })
+  const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
+
+  return (
+    <form.Subscribe
+      selector={(s) => ({
+        latitude: s.values.latitude,
+        longitude: s.values.longitude,
+        subsectionId: s.values.subsectionId,
+        subsubsectionId: s.values.subsubsectionId,
+      })}
+    >
+      {(v) => (
+        <UploadLocationMapInner
+          form={form}
+          {...v}
+          subsections={subsections}
+          subsubsections={subsubsections}
+          projectSlug={projectSlug}
+        />
+      )}
+    </form.Subscribe>
   )
 }

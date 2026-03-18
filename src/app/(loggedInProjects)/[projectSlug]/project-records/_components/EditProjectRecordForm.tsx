@@ -8,7 +8,7 @@ import { ReviewProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSl
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { Form, FORM_ERROR } from "@/src/core/components/forms"
+import { Form } from "@/src/core/components/forms"
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
@@ -56,7 +56,7 @@ export const EditProjectRecordForm = ({
       }
       router.refresh()
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["slug"])
+      return improveErrorMessage(error, ["slug"])
     }
   }
 
@@ -112,13 +112,17 @@ export const EditProjectRecordForm = ({
           />
         }
       >
-        <ProjectRecordFormFields
-          projectSlug={projectSlug}
-          splitView={needsReview}
-          emailSource={projectRecord.projectRecordEmail}
-        />
-
-        {needsReview && <ReviewProjectRecordForm />}
+        {(form) => (
+          <>
+            <ProjectRecordFormFields
+              form={form}
+              projectSlug={projectSlug}
+              splitView={needsReview}
+              emailSource={projectRecord.projectRecordEmail}
+            />
+            {needsReview && <ReviewProjectRecordForm form={form} />}
+          </>
+        )}
       </Form>
 
       <CreateEditReviewHistory projectRecord={projectRecord} />

@@ -1,10 +1,17 @@
 "use client"
 
 import { LabeledRadiobuttonGroup, LabeledTextareaField } from "@/src/core/components/forms"
+import type { FormApi } from "@/src/core/components/forms/types"
 import { SparklesIcon } from "@heroicons/react/16/solid"
 import { ProjectRecordReviewState } from "@prisma/client"
 
-export const ReviewProjectRecordForm = ({ admin }: { admin?: boolean }) => {
+export const ReviewProjectRecordForm = ({
+  form,
+  admin,
+}: {
+  form: FormApi<Record<string, unknown>>
+  admin?: boolean
+}) => {
   let reviewStateOptions: { value: ProjectRecordReviewState; label: string }[] = [
     {
       value: ProjectRecordReviewState.APPROVED,
@@ -41,9 +48,17 @@ export const ReviewProjectRecordForm = ({ admin }: { admin?: boolean }) => {
           Hinweis: Abgelehnte Protokolleinträge werden nicht mehr in der Protokoll-Übersicht
           angezeigt.
         </p>
-        <LabeledRadiobuttonGroup scope="reviewState" items={reviewStateOptions} />
+        <LabeledRadiobuttonGroup
+          form={form}
+          scope="reviewState"
+          items={reviewStateOptions.map((o) => ({
+            value: String(o.value),
+            label: o.label,
+          }))}
+        />
 
         <LabeledTextareaField
+          form={form}
           name="reviewNotes"
           label="Bestätigungsnotiz"
           placeholder="Kommentare, Verbesserungsvorschläge oder Begründung für die Entscheidung..."

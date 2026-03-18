@@ -1,6 +1,6 @@
 "use client"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import { Form, FORM_ERROR } from "@/src/core/components/forms"
+import { Form } from "@/src/core/components/forms"
 import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
 import updateUser from "@/src/server/auth/mutations/updateUser"
 import { UpdateUserSchema, UpdateUserType } from "@/src/server/auth/schema"
@@ -19,7 +19,7 @@ export const UserEditForm = () => {
       router.push("/dashboard")
     } catch (error: any) {
       console.error(error)
-      return { [FORM_ERROR]: error }
+      return { success: false, message: error instanceof Error ? error.message : String(error) }
     }
   }
 
@@ -34,32 +34,40 @@ export const UserEditForm = () => {
         schema={UpdateUserSchema}
         initialValues={user}
       >
-        <LabeledTextField
-          name="firstName"
-          label="Vorname"
-          placeholder=""
-          autoComplete="given-name"
-        />
-        <LabeledTextField
-          name="lastName"
-          label="Nachname"
-          placeholder=""
-          autoComplete="family-name"
-        />
-        <LabeledTextField
-          name="institution"
-          label="Organisation / Kommune"
-          placeholder=""
-          optional
-        />
-        <LabeledTextField
-          type="tel"
-          name="phone"
-          label="Telefon"
-          placeholder=""
-          autoComplete="tel"
-          optional
-        />
+        {(form) => (
+          <>
+            <LabeledTextField
+              form={form}
+              name="firstName"
+              label="Vorname"
+              placeholder=""
+              autoComplete="given-name"
+            />
+            <LabeledTextField
+              form={form}
+              name="lastName"
+              label="Nachname"
+              placeholder=""
+              autoComplete="family-name"
+            />
+            <LabeledTextField
+              form={form}
+              name="institution"
+              label="Organisation / Kommune"
+              placeholder=""
+              optional
+            />
+            <LabeledTextField
+              form={form}
+              type="tel"
+              name="phone"
+              label="Telefon"
+              placeholder=""
+              autoComplete="tel"
+              optional
+            />
+          </>
+        )}
       </Form>
       <SuperAdminLogData data={user} />
     </>

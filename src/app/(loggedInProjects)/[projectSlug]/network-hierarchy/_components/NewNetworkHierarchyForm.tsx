@@ -1,6 +1,4 @@
 "use client"
-
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import createNetworkHierarchy from "@/src/server/networkHierarchy/mutations/createNetworkHierarchy"
 import { NetworkHierarchySchema } from "@/src/server/networkHierarchy/schema"
@@ -30,7 +28,7 @@ export const NewNetworkHierarchyForm = ({ projectSlug, fromParam }: Props) => {
       router.push(returnPath as Route)
       router.refresh()
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["slug"])
+      return improveErrorMessage(error, ["slug"])
     }
   }
 

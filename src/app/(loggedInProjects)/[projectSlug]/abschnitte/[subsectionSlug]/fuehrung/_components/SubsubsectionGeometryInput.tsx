@@ -2,6 +2,7 @@
 
 import { GeometryDrawingMap } from "@/src/core/components/forms/GeometryDrawingMap"
 import { GeometryInputBase } from "@/src/core/components/forms/GeometryInputBase"
+import type { FormApi } from "@/src/core/components/forms/types"
 import { GeometryDrawingSubsubsectionContextLayers } from "@/src/core/components/Map/TerraDraw/TerraDrawContextLayers"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { useSlug } from "@/src/core/routes/useSlug"
@@ -10,7 +11,9 @@ import getSubsections from "@/src/server/subsections/queries/getSubsections"
 import getSubsubsections from "@/src/server/subsubsections/queries/getSubsubsections"
 import { useQuery } from "@blitzjs/rpc"
 
-export const SubsubsectionGeometryInput = () => {
+type Props = { form: FormApi<Record<string, unknown>> }
+
+export const SubsubsectionGeometryInput = ({ form }: Props) => {
   const subsectionSlug = useSlug("subsectionSlug")
   const subsubsectionSlug = useSlug("subsubsectionSlug")
   const projectSlug = useProjectSlug()
@@ -25,8 +28,12 @@ export const SubsubsectionGeometryInput = () => {
   })
 
   return (
-    <GeometryInputBase label="Geometrie des Eintrags">
-      <GeometryDrawingMap allowedTypes={["point", "line", "polygon"]} subsection={subsection}>
+    <GeometryInputBase form={form} label="Geometrie des Eintrags">
+      <GeometryDrawingMap
+        form={form}
+        allowedTypes={["point", "line", "polygon"]}
+        subsection={subsection}
+      >
         <GeometryDrawingSubsubsectionContextLayers
           subsections={subsections}
           selectedSubsectionSlug={subsectionSlug}

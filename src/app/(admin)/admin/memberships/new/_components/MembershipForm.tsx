@@ -14,30 +14,39 @@ import getUsers from "@/src/server/users/queries/getUsers"
 import { useQuery } from "@blitzjs/rpc"
 import { z } from "zod"
 
-export function MembershipForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+export function MembershipForm<S extends z.ZodType<any, any>>(
+  props: Omit<FormProps<S>, "children">,
+) {
   const [{ users }] = useQuery(getUsers, {})
   const [{ projects }] = useQuery(getProjects, {})
 
   return (
     <Form<S> {...props}>
-      <LabeledSelect name="userId" label="User" options={getUserSelectOptions(users)} />
-      <LabeledRadiobuttonGroup
-        scope="role"
-        label="Rechte"
-        items={membershipRoles.map((role) => {
-          return {
-            scope: role,
-            value: role,
-            label: roleTranslation[role],
-            defaultChecked: role === "EDITOR",
-          }
-        })}
-      />
-      <LabeledSelect
-        name="projectId"
-        label="Projekt, auf dem User Rechte erhalten soll"
-        options={getProjectSelectOptions(projects)}
-      />
+      {(form) => (
+        <>
+          <LabeledSelect
+            form={form}
+            name="userId"
+            label="User"
+            options={getUserSelectOptions(users)}
+          />
+          <LabeledRadiobuttonGroup
+            form={form}
+            scope="role"
+            label="Rechte"
+            items={membershipRoles.map((role) => ({
+              value: String(role),
+              label: roleTranslation[role],
+            }))}
+          />
+          <LabeledSelect
+            form={form}
+            name="projectId"
+            label="Projekt, auf dem User Rechte erhalten soll"
+            options={getProjectSelectOptions(projects)}
+          />
+        </>
+      )}
     </Form>
   )
 }

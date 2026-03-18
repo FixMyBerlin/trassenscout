@@ -1,6 +1,5 @@
 "use client"
 
-import { UserSelectOptions } from "@/src/app/_components/users/utils/getUserSelectOptions"
 import {
   Form,
   FormProps,
@@ -9,54 +8,29 @@ import {
 } from "@/src/core/components/forms"
 import { z } from "zod"
 
-type Props = FormProps<z.ZodType<any, any>> & { users: UserSelectOptions }
+type Props = Omit<FormProps<z.ZodType<any, any>>, "children">
 
-export const ProjectForm = ({ users, ...props }: Props) => {
+export const ProjectForm = (props: Props) => {
   return (
     <Form {...props}>
-      <LabeledTextField
-        type="text"
-        name="slug"
-        label="Kürzel"
-        help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
-      />
-      <LabeledTextField type="text" name="subTitle" label="Untertitel" optional />
-      {/* UNUSED */}
-      {/* <LabeledTextField
-        optional
-        type="text"
-        name="logoSrc"
-        label="Logo"
-        placeholder="beispiel.png"
-      /> */}
-      {/* <p className="mt-1! text-sm text-gray-500">
-        Das Logo wird von FixMyCity{" "}
-        <Link
-          href="https://s3.console.aws.amazon.com/s3/buckets/trassenscout-public?prefix=assets/&region=eu-central-1"
-          blank
-        >
-          extern in AWS abgelegt
-        </Link>
-        , von NextJS intern optimiert und hier referenziert.
-      </p> */}
-      <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
-      {/* UNUSED */}
-      {/* <LabeledTextareaField
-        optional
-        name="partnerLogoSrcs"
-        label="Partner-Logos (ein Logo pro Zeile)"
-        placeholder="beispiel.png"
-      />
-      <p className="mt-1! text-sm text-gray-500">
-        Die Logos werden von FixMyCity{" "}
-        <Link
-          href="https://s3.console.aws.amazon.com/s3/buckets/trassenscout-public?prefix=assets/&region=eu-central-1"
-          blank
-        >
-          extern in AWS abgelegt
-        </Link>
-        , von NextJS intern optimiert und hier referenziert.
-      </p> */}
+      {(form) => (
+        <>
+          <LabeledTextField
+            form={form}
+            type="text"
+            name="slug"
+            label="Kürzel"
+            help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
+          />
+          <LabeledTextField form={form} type="text" name="subTitle" label="Untertitel" optional />
+          <LabeledTextareaField
+            form={form}
+            name="description"
+            label="Beschreibung (Markdown)"
+            optional
+          />
+        </>
+      )}
     </Form>
   )
 }

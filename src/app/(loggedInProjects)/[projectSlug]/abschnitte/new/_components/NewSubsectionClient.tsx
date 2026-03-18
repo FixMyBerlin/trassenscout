@@ -1,6 +1,4 @@
 "use client"
-
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { subsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
@@ -42,7 +40,7 @@ export const NewSubsectionClient = ({ initialMaxOrder, projectId }: Props) => {
       })
       await router.push(subsectionDashboardRoute(projectSlug, subsection.slug))
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["order", "slug"])
+      return improveErrorMessage(error, ["order", "slug"])
     }
   }
 

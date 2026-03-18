@@ -1,6 +1,5 @@
 "use client"
 import { MembershipForm } from "@/src/app/(admin)/admin/memberships/new/_components/MembershipForm"
-import { FORM_ERROR } from "@/src/core/components/forms"
 import createMembership from "@/src/server/memberships/mutations/createMembership"
 import { MembershipSchema } from "@/src/server/memberships/schema"
 import { useMutation } from "@blitzjs/rpc"
@@ -21,13 +20,17 @@ export const MembershipNewForm = () => {
       router.refresh()
     } catch (error: any) {
       console.error(error)
-      return { [FORM_ERROR]: error }
+      return { success: false, message: error instanceof Error ? error.message : String(error) }
     }
   }
 
   return (
     <MembershipForm
-      initialValues={{ userId: userIdParam ? Number(userIdParam) : undefined }}
+      initialValues={{
+        userId: userIdParam ? Number(userIdParam) : 0,
+        role: "EDITOR",
+        projectId: 0,
+      }}
       schema={MembershipSchema}
       submitText="Erstellen"
       onSubmit={handleSubmit}

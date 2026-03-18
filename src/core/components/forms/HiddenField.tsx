@@ -1,15 +1,31 @@
+import type { FormApi } from "@/src/core/components/forms/types"
 import { forwardRef, PropsWithoutRef } from "react"
-import { useFormContext } from "react-hook-form"
 
-export interface HiddenFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
+export interface HiddenFieldProps extends Omit<
+  PropsWithoutRef<JSX.IntrinsicElements["input"]>,
+  "form"
+> {
+  form: FormApi<Record<string, unknown>>
   name: string
 }
 
 export const HiddenField = forwardRef<HTMLInputElement, HiddenFieldProps>(function HiddenField(
-  { name, ...props },
-  ref,
+  { form, name, ...props },
+  _ref,
 ) {
-  const { register } = useFormContext()
-
-  return <input readOnly={true} type="hidden" {...register(name)} id={name} {...props} />
+  return (
+    <form.Field name={name}>
+      {(field) => (
+        <input
+          readOnly
+          type="hidden"
+          id={name}
+          name={name}
+          value={field.state.value == null ? "" : String(field.state.value)}
+          onChange={() => {}}
+          {...props}
+        />
+      )}
+    </form.Field>
+  )
 })

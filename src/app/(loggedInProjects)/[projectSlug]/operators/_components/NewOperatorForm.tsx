@@ -1,6 +1,4 @@
 "use client"
-
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import createOperator from "@/src/server/operators/mutations/createOperator"
 import getOperatorMaxOrder from "@/src/server/operators/queries/getOperatorMaxOrder"
@@ -32,7 +30,7 @@ export const NewOperatorForm = ({ projectSlug, fromParam }: Props) => {
       router.push(returnPath as Route)
       router.refresh()
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["slug"])
+      return improveErrorMessage(error, ["slug"])
     }
   }
 

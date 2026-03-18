@@ -1,5 +1,4 @@
 "use client"
-import { FORM_ERROR } from "@/src/core/components/forms"
 import createSurvey from "@/src/server/surveys/mutations/createSurvey"
 import { CreateSurveySchema, CreateSurveyType } from "@/src/server/surveys/schemas"
 import { useMutation } from "@blitzjs/rpc"
@@ -21,7 +20,7 @@ export const AdminSurveyNewForm = () => {
       router.push("/admin/surveys")
     } catch (error: any) {
       console.error(error)
-      return { [FORM_ERROR]: error }
+      return { success: false, message: error instanceof Error ? error.message : String(error) }
     }
   }
 

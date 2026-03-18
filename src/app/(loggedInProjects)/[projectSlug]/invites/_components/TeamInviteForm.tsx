@@ -8,22 +8,31 @@ import {
 } from "@/src/core/components/forms"
 import { z } from "zod"
 
-export function TeamInviteForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+export function TeamInviteForm<S extends z.ZodType<any, any>>(
+  props: Omit<FormProps<S>, "children">,
+) {
   return (
     <Form<S> className="max-w-prose" {...props}>
-      <LabeledTextField type="text" name="email" label="E-Mail-Adresse" placeholder="" />
-      <LabeledRadiobuttonGroup
-        scope="role"
-        label="Rechte"
-        items={membershipRoles.map((role) => {
-          return {
-            scope: role,
-            value: role,
-            label: roleTranslation[role],
-            defaultChecked: role === "VIEWER",
-          }
-        })}
-      />
+      {(form) => (
+        <>
+          <LabeledTextField
+            form={form}
+            type="text"
+            name="email"
+            label="E-Mail-Adresse"
+            placeholder=""
+          />
+          <LabeledRadiobuttonGroup
+            form={form}
+            scope="role"
+            label="Rechte"
+            items={membershipRoles.map((role) => ({
+              value: String(role),
+              label: roleTranslation[role],
+            }))}
+          />
+        </>
+      )}
     </Form>
   )
 }

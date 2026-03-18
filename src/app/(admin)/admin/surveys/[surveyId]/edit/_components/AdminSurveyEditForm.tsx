@@ -1,5 +1,4 @@
 "use client"
-import { FORM_ERROR } from "@/src/core/components/forms"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import deleteSurvey from "@/src/server/surveys/mutations/deleteSurvey"
 import updateSurvey from "@/src/server/surveys/mutations/updateSurvey"
@@ -27,7 +26,7 @@ export const AdminSurveyEditForm = () => {
       router.push("/admin/surveys")
     } catch (error: any) {
       console.error(error)
-      return { [FORM_ERROR]: error }
+      return { success: false, message: error instanceof Error ? error.message : String(error) }
     }
   }
 

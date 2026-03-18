@@ -11,6 +11,7 @@ import {
   LabeledTextareaField,
   LabeledTextField,
 } from "@/src/core/components/forms"
+import type { FormApi } from "@/src/core/components/forms/types"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { frenchQuote, shortTitle } from "@/src/core/components/text"
 import { NumberArraySchema } from "@/src/core/utils/schema-shared"
@@ -22,9 +23,9 @@ import getUploadsWithSubsections from "@/src/server/uploads/queries/getUploadsWi
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import clsx from "clsx"
 import { useState } from "react"
-import { useFormContext } from "react-hook-form"
 
 type Props = {
+  form: FormApi<Record<string, unknown>>
   splitView?: boolean
   projectSlug: string
   emailSource?: {
@@ -36,7 +37,17 @@ type Props = {
   } | null
 }
 
-export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }: Props) => {
+function ProjectRecordFormFieldsInner({
+  form,
+  subsectionId,
+  uploadsValue,
+  splitView,
+  projectSlug,
+  emailSource,
+}: Props & {
+  subsectionId: unknown
+  uploadsValue: unknown
+}) {
   const [{ subsections }] = useQuery(getSubsections, { projectSlug })
   const [{ subsubsections }] = useQuery(getSubsubsections, { projectSlug })
   const [{ projectRecordTopics }, { refetch: refetchTopics }] = useQuery(
@@ -45,9 +56,6 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
   )
   const [newTopic, setNewTopic] = useState("")
   const [createProjectRecordTopicMutation] = useMutation(createProjectRecordTopic)
-  const { watch, setValue } = useFormContext()
-  const subsectionId = watch("subsectionId")
-  const uploadsValue = watch("uploads")
   const uploadIds = NumberArraySchema.parse(uploadsValue)
 
   const [{ uploads: selectedUploads = [] } = { uploads: [] }] = useQuery(
@@ -57,13 +65,13 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
   )
 
   const handleSubsectionChange = (newSubsectionId: string) => {
-    const currentSubsubsectionId = watch("subsubsectionId")
+    const currentSubsubsectionId = form.state.values.subsubsectionId
     if (currentSubsubsectionId) {
       const selectedSubsubsection = subsubsections.find(
         (s) => s.id === Number(currentSubsubsectionId),
       )
       if (selectedSubsubsection && selectedSubsubsection.subsectionId !== Number(newSubsectionId)) {
-        setValue("subsubsectionId", null)
+        void form.setFieldValue("subsubsectionId" as never, null as never)
       }
     }
   }
@@ -101,15 +109,19 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
     e.preventDefault()
     if (!newTopic.trim()) return
     try {
-      const createdOrFetched = await createProjectRecordTopicMutation({
+      await createProjectRecordTopicMutation({
         title: newTopic.trim(),
         projectSlug,
       })
       refetchTopics()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error)
     }
     setNewTopic("")
+  }
+
+  const setUploads = (ids: number[]) => {
+    void form.setFieldValue("uploads" as never, ids as never)
   }
 
   return (
@@ -118,15 +130,16 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
         <div className={splitView ? "flex-1 space-y-6" : "space-y-6"}>
           <div className="flex gap-4">
             <div className="w-48">
-              <LabeledTextField type="date" name="date" label="am/bis" placeholder="" />
+              <LabeledTextField form={form} type="date" name="date" label="am/bis" placeholder="" />
             </div>
             <div className="flex-1">
-              <LabeledTextField name="title" label="Titel" />
+              <LabeledTextField form={form} name="title" label="Titel" />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <LabeledSelect
+              form={form}
               optional
               name="subsectionId"
               options={subsectionOptions}
@@ -135,6 +148,7 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
             />
 
             <LabeledSelect
+              form={form}
               optional
               name="subsubsectionId"
               options={subsubsectionOptions}
@@ -142,9 +156,16 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
             />
           </div>
 
-          <LabeledTextareaField name="body" optional label="Notizen (Markdown)" rows={20} />
+          <LabeledTextareaField
+            form={form}
+            name="body"
+            optional
+            label="Notizen (Markdown)"
+            rows={20}
+          />
           <div className="flex flex-col gap-3">
             <LabeledCheckboxGroup
+              form={form}
               scope="projectRecordTopics"
               classNameItemWrapper="grid grid-cols-4 gap-1.5 w-full"
               items={topicsOptions}
@@ -152,17 +173,19 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
               optional
             />
             <div className="flex w-full items-end gap-2">
-              <LabeledTextField
-                onChange={(e) => setNewTopic(e.target.value)}
-                value={newTopic}
-                maxLength={35}
-                name="newTopic"
-                placeholder="Neues Tag"
-                className={
-                  "block w-full grow appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
-                }
-                label=""
-              />
+              <div className="grow">
+                <label className="sr-only" htmlFor="newTopic">
+                  Neues Tag
+                </label>
+                <input
+                  id="newTopic"
+                  value={newTopic}
+                  onChange={(e) => setNewTopic(e.target.value)}
+                  maxLength={35}
+                  placeholder="Neues Tag"
+                  className="block w-full grow appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-xs focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm"
+                />
+              </div>
               <button
                 type="button"
                 onClick={handleNewTopicFormSubmit}
@@ -190,7 +213,7 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
                 onDeleted={async () => {
                   const existingUploads = NumberArraySchema.parse(uploadsValue)
                   const newUploads = existingUploads.filter((id) => id !== upload.id)
-                  setValue("uploads", newUploads, { shouldDirty: true })
+                  setUploads(newUploads)
                 }}
               />
             )
@@ -199,10 +222,9 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
             <UploadDropzone
               fillContainer
               onUploadComplete={async (newUploadIds) => {
-                // Add new upload IDs to the form, ensuring all are numbers
                 const existingUploads = NumberArraySchema.parse(uploadsValue)
                 const newUploads = [...new Set([...existingUploads, ...newUploadIds])]
-                setValue("uploads", newUploads, { shouldDirty: true })
+                setUploads(newUploads)
               }}
             />
           </UploadDropzoneContainer>
@@ -211,5 +233,19 @@ export const ProjectRecordFormFields = ({ projectSlug, emailSource, splitView }:
 
       <SuperAdminLogData data={{ subsectionId, uploadsValue, uploadIds }} />
     </>
+  )
+}
+
+export const ProjectRecordFormFields = (props: Props) => {
+  const { form, ...rest } = props
+  return (
+    <form.Subscribe
+      selector={(s) => ({
+        subsectionId: s.values.subsectionId,
+        uploadsValue: s.values.uploads,
+      })}
+    >
+      {(v) => <ProjectRecordFormFieldsInner form={form} {...v} {...rest} />}
+    </form.Subscribe>
   )
 }

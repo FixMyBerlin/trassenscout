@@ -3,7 +3,6 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import deleteNetworkHierarchy from "@/src/server/networkHierarchy/mutations/deleteNetworkHierarchy"
 import updateNetworkHierarchy from "@/src/server/networkHierarchy/mutations/updateNetworkHierarchy"
@@ -44,7 +43,7 @@ export const EditNetworkHierarchyForm = ({ networkHierarchy, projectSlug, fromPa
       router.push(returnPath)
       router.refresh()
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["slug"])
+      return improveErrorMessage(error, ["slug"])
     }
   }
 

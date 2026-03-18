@@ -1,6 +1,4 @@
 "use client"
-
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import createSubsubsectionSpecial from "@/src/server/subsubsectionSpecial/mutations/createSubsubsectionSpecial"
 import { SubsubsectionSpecial } from "@/src/server/subsubsectionSpecial/schema"
@@ -25,7 +23,7 @@ export const NewSubsubsectionSpecialForm = ({ projectSlug }: Props) => {
       router.push(`/${projectSlug}/subsubsection-special` as Route)
       router.refresh()
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["slug"])
+      return improveErrorMessage(error, ["slug"])
     }
   }
 

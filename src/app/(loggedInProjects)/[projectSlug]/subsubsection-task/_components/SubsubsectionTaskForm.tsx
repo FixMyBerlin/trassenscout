@@ -3,13 +3,19 @@
 import { Form, FormProps, LabeledTextField } from "@/src/core/components/forms"
 import { z } from "zod"
 
-export function SubsubsectionTaskForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+export function SubsubsectionTaskForm<S extends z.ZodType<any, any>>(
+  props: Omit<FormProps<S>, "children">,
+) {
   const { ...formProps } = props
 
   return (
     <Form<S> {...formProps}>
-      <LabeledTextField type="text" name="slug" label="Kürzel" />
-      <LabeledTextField type="text" name="title" label="Titel" />
+      {(form) => (
+        <>
+          <LabeledTextField form={form} type="text" name="slug" label="Kürzel" />
+          <LabeledTextField form={form} type="text" name="title" label="Titel" />
+        </>
+      )}
     </Form>
   )
 }

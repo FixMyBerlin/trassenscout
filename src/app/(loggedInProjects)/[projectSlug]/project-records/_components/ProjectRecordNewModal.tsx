@@ -3,7 +3,7 @@
 import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
-import { Form, FORM_ERROR } from "@/src/core/components/forms"
+import { Form } from "@/src/core/components/forms"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
 import { H3 } from "@/src/core/components/text"
@@ -49,7 +49,7 @@ export const ProjectRecordNewModal = ({
       }
       onClose()
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, [])
+      return improveErrorMessage(error, [])
     }
   }
 
@@ -75,7 +75,7 @@ export const ProjectRecordNewModal = ({
           schema={NewProjectRecordFormSchema}
           submitText="Protokolleintrag speichern"
         >
-          <ProjectRecordFormFields projectSlug={projectSlug} />
+          {(form) => <ProjectRecordFormFields form={form} projectSlug={projectSlug} />}
         </Form>
       </Modal>
     </IfUserCanEdit>

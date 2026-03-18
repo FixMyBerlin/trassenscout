@@ -6,14 +6,18 @@ import {
 } from "@/src/core/components/forms"
 import { z } from "zod"
 
-type Props = FormProps<z.ZodType<any, any>>
+type Props = Omit<FormProps<z.ZodType<any, any>>, "children">
 
 export const SupportDocumentForm = (props: Props) => {
   return (
     <Form {...props}>
-      <LabeledTextField type="text" name="title" label="Titel" />
-      <LabeledTextareaField name="description" label="Beschreibung" optional />
-      <LabeledTextField type="number" name="order" label="Reihenfolge" />
+      {(form) => (
+        <>
+          <LabeledTextField form={form} type="text" name="title" label="Titel" />
+          <LabeledTextareaField form={form} name="description" label="Beschreibung" optional />
+          <LabeledTextField form={form} type="number" name="order" label="Reihenfolge" />
+        </>
+      )}
     </Form>
   )
 }

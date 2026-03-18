@@ -3,7 +3,6 @@
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import deleteSubsectionStatus from "@/src/server/subsectionStatus/mutations/deleteSubsectionStatus"
 import updateSubsectionStatus from "@/src/server/subsectionStatus/mutations/updateSubsectionStatus"
@@ -44,7 +43,7 @@ export const EditSubsectionStatusForm = ({ subsectionStatus, projectSlug, fromPa
       router.push(returnPath)
       router.refresh()
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["slug"])
+      return improveErrorMessage(error, ["slug"])
     }
   }
 
