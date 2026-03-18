@@ -97,7 +97,7 @@ Follow this steps to add a model with forms and pages:
 1. Use `npm run migrate` (`blitz prisma migrate dev`) to apply the migration.
 
 1. Schema:
-   - Follow the steps in `src/core/templates/page/__modelIdParam__/edit.tsx` to create a shared [Zod schema (Docs)](https://zod.dev/) and add it to the form for client side validations.
+   - Follow the steps in ~~`src/core/templates/page/__modelIdParam__/edit.tsx`~~ to create a shared [Zod schema (Docs)](https://zod.dev/) and add it to the form for client side validations.
    - Update the Zod schema to match the Prisma schema.
      - You can use `type UserType = z.infer<typeof UserSchema>` to create a TS schema from Zod that can be compared to the prisma schema (which are located in `node_modules/.prisma/client/index.d.ts`)
      - You can use https://github.com/CarterGrimmeisen/zod-prisma to generate a starting point for this based on the prisma schema. However, this package should only be used in a separate branch since it collides with blitz in some way.

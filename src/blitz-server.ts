@@ -30,7 +30,3 @@ export const { gSSP, gSP, api, useAuthenticatedBlitzContext, invoke, getBlitzCon
     ],
     logger: BlitzLogger({}),
   })
-
-export const cliConfig: BlitzCliConfig = {
-  customTemplates: "src/core/templates",
-}
