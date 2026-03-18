@@ -2,7 +2,7 @@ import { Form, FormProps, LabeledTextField } from "@/src/core/components/forms"
 import { z } from "zod"
 
 export function SubsubsectionInfrastructureTypeForm<S extends z.ZodType<any, any>>(
-  props: FormProps<S>,
+  props: Omit<FormProps<S>, "children">,
 ) {
   const { ...formProps } = props
 

@@ -26,7 +26,7 @@ import { LinkWithFormDirtyConfirm } from "../[subsectionSlug]/fuehrung/_componen
 import { getPriorityTranslation } from "../_utils/getPriorityTranslation"
 import { SubsectionGeometryInput } from "./SubsectionGeometryInput"
 
-type Props<S extends z.ZodType<any, any>> = FormProps<S>
+type Props<S extends z.ZodType<any, any>> = Omit<FormProps<S>, "children">
 
 function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Props<S>) {
   const projectSlug = useProjectSlug()

@@ -5,13 +5,13 @@ import { UploadDropzone } from "@/src/app/(loggedInProjects)/[projectSlug]/uploa
 import { UploadDropzoneContainer } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadDropzoneContainer"
 import { UploadPreviewClickable } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/UploadPreviewClickable"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
-import type { FormApi } from "@/src/core/components/forms/types"
 import {
   LabeledCheckboxGroup,
   LabeledSelect,
   LabeledTextareaField,
   LabeledTextField,
 } from "@/src/core/components/forms"
+import type { FormApi } from "@/src/core/components/forms/types"
 import { blueButtonStyles } from "@/src/core/components/links"
 import { frenchQuote, shortTitle } from "@/src/core/components/text"
 import { NumberArraySchema } from "@/src/core/utils/schema-shared"
@@ -130,13 +130,7 @@ function ProjectRecordFormFieldsInner({
         <div className={splitView ? "flex-1 space-y-6" : "space-y-6"}>
           <div className="flex gap-4">
             <div className="w-48">
-              <LabeledTextField
-                form={form}
-                type="date"
-                name="date"
-                label="am/bis"
-                placeholder=""
-              />
+              <LabeledTextField form={form} type="date" name="date" label="am/bis" placeholder="" />
             </div>
             <div className="flex-1">
               <LabeledTextField form={form} name="title" label="Titel" />

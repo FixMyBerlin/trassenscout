@@ -1,7 +1,10 @@
 import type { FormApi } from "@/src/core/components/forms/types"
 import { forwardRef, PropsWithoutRef } from "react"
 
-export interface HiddenFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
+export interface HiddenFieldProps extends Omit<
+  PropsWithoutRef<JSX.IntrinsicElements["input"]>,
+  "form"
+> {
   form: FormApi<Record<string, unknown>>
   name: string
 }

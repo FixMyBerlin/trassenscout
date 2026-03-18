@@ -28,10 +28,7 @@ export const improveErrorMessage = (error: any, fieldNames: string[]): SubmitRes
   return { success: false, message }
 }
 
-const getPrismaUniqueConstraintErrorMessage = (
-  error: any,
-  fieldNames: string[],
-): SubmitResult => {
+const getPrismaUniqueConstraintErrorMessage = (error: any, fieldNames: string[]): SubmitResult => {
   const errors: Record<string, string[]> = {}
   let hasFieldError = false
 

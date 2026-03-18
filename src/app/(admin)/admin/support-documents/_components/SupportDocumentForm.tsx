@@ -6,7 +6,7 @@ import {
 } from "@/src/core/components/forms"
 import { z } from "zod"
 
-type Props = FormProps<z.ZodType<any, any>>
+type Props = Omit<FormProps<z.ZodType<any, any>>, "children">
 
 export const SupportDocumentForm = (props: Props) => {
   return (

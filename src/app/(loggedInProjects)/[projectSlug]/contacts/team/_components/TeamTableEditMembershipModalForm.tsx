@@ -56,7 +56,7 @@ export const TeamTableEditMembershipModalForm = ({ editUser, closeModal }: Props
 
 const TeamTableEditMembershipModalFormFields = <S extends z.ZodType<any, any>>({
   ...props
-}: FormProps<S>) => {
+}: Omit<FormProps<S>, "children">) => {
   return (
     <Form<S> className="max-w-prose" {...props}>
       {(form) => (

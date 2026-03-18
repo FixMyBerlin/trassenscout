@@ -1,9 +1,12 @@
-import type { FormApi } from "@/src/core/components/forms/types"
 import { formatFormError } from "@/src/core/components/forms/formatFormError"
+import type { FormApi } from "@/src/core/components/forms/types"
 import { clsx } from "clsx"
 import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef } from "react"
 
-export interface LabeledTextareaProps extends PropsWithoutRef<JSX.IntrinsicElements["textarea"]> {
+export interface LabeledTextareaProps extends Omit<
+  PropsWithoutRef<JSX.IntrinsicElements["textarea"]>,
+  "form"
+> {
   form: FormApi<Record<string, unknown>>
   name: string
   label: string

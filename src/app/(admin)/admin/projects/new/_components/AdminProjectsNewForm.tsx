@@ -21,7 +21,5 @@ export const AdminProjectsNewForm = () => {
     }
   }
 
-  return (
-    <ProjectForm submitText="Erstellen" onSubmit={handleSubmit} schema={ProjectFormSchema} />
-  )
+  return <ProjectForm submitText="Erstellen" onSubmit={handleSubmit} schema={ProjectFormSchema} />
 }

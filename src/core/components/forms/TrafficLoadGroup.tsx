@@ -1,11 +1,17 @@
+import type { FormApi } from "@/src/core/components/forms/types"
 import { TagIcon } from "@heroicons/react/24/outline"
 import { LabeledRadiobuttonGroup } from "./LabeledRadiobuttonGroup"
 
-export const LabeledRadiobuttonGroupLabelPos = () => {
+export const LabeledRadiobuttonGroupLabelPos = ({
+  form,
+}: {
+  form: FormApi<Record<string, unknown>>
+}) => {
   return (
     <details>
       <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
       <LabeledRadiobuttonGroup
+        form={form}
         label=""
         scope="labelPos"
         classNameItemWrapper="sm:columns-2"

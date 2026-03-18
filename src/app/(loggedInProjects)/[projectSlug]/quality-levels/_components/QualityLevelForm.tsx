@@ -1,7 +1,9 @@
 import { Form, FormProps, LabeledTextField } from "@/src/core/components/forms"
 import { z } from "zod"
 
-export function QualityLevelForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+export function QualityLevelForm<S extends z.ZodType<any, any>>(
+  props: Omit<FormProps<S>, "children">,
+) {
   const { ...formProps } = props
 
   return (

@@ -1,9 +1,12 @@
-import type { FormApi } from "@/src/core/components/forms/types"
 import { formatFormError } from "@/src/core/components/forms/formatFormError"
+import type { FormApi } from "@/src/core/components/forms/types"
 import { clsx } from "clsx"
 import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef } from "react"
 
-export interface LabeledRadiobuttonProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
+export interface LabeledRadiobuttonProps extends Omit<
+  PropsWithoutRef<JSX.IntrinsicElements["input"]>,
+  "form"
+> {
   form: FormApi<Record<string, unknown>>
   scope: string
   value: string

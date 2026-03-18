@@ -11,13 +11,13 @@ import { z } from "zod"
 export type { SubmitResult } from "@/src/core/components/forms/types"
 
 export type FormProps<S extends z.ZodType<any, any>> = {
-  children: (form: FormApi<z.infer<S>>) => ReactNode
+  children: (form: FormApi<Record<string, unknown>>) => ReactNode
   submitText: string
   submitClassName?: string
   resetOnSubmit?: boolean
   schema: S
   onSubmit: (values: z.infer<S>) => Promise<void | SubmitResult<z.infer<S>>>
-  initialValues?: z.infer<S>
+  initialValues?: Partial<z.infer<S>>
   disabled?: boolean
   className?: string
   actionBarLeft?: ReactNode
@@ -127,7 +127,7 @@ export function Form<S extends z.ZodType<any, any>>({
       {onValuesChange ? (
         <FormValuesSync form={form as never} onValuesChange={onValuesChange} />
       ) : null}
-      {children(form as FormApi<V>)}
+      {children(form as FormApi<Record<string, unknown>>)}
 
       <form.Subscribe selector={(s) => s.errors}>
         {(errors) =>

@@ -138,10 +138,7 @@ export const ContactsTable = () => {
             console.log("ERROR", error, updatedContacts, context)
             setErrors((prev) => [
               ...prev,
-              [
-                String(id) || NEW_ID_VALUE,
-                improveErrorMessage(error, ["email"]) as any,
-              ],
+              [String(id) || NEW_ID_VALUE, improveErrorMessage(error, ["email"]) as any],
             ])
           },
           onSuccess: () => {

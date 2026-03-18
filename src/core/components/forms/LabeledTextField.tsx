@@ -1,22 +1,17 @@
-import type { FormApi } from "@/src/core/components/forms/types"
 import { formatFormError } from "@/src/core/components/forms/formatFormError"
+import type { FormApi } from "@/src/core/components/forms/types"
 import { clsx } from "clsx"
 import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef } from "react"
 
-export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
+export interface LabeledTextFieldProps extends Omit<
+  PropsWithoutRef<JSX.IntrinsicElements["input"]>,
+  "form"
+> {
   form: FormApi<Record<string, unknown>>
   name: string
   label: string
   help?: string
-  type?:
-    | "text"
-    | "password"
-    | "email"
-    | "number"
-    | "tel"
-    | "url"
-    | "date"
-    | "time"
+  type?: "text" | "password" | "email" | "number" | "tel" | "url" | "date" | "time"
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
   optional?: boolean
@@ -45,11 +40,7 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
         {(field) => {
           const v = field.state.value
           const strVal =
-            v === undefined || v === null
-              ? ""
-              : typeof v === "number"
-                ? String(v)
-                : String(v)
+            v === undefined || v === null ? "" : typeof v === "number" ? String(v) : String(v)
           const hasError = field.state.meta.errors.length > 0
           const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
             if (props.type === "number" && (e.key === "ArrowUp" || e.key === "ArrowDown")) {

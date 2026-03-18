@@ -4,7 +4,7 @@ import { Form, FormProps, LabeledSelect, LabeledTextareaField } from "@/src/core
 import { TGetProjects } from "@/src/server/projects/queries/getProjects"
 import { z } from "zod"
 
-type ProjectRecordEmailFormProps<S extends z.ZodType<any, any>> = FormProps<S> & {
+type ProjectRecordEmailFormProps<S extends z.ZodType<any, any>> = Omit<FormProps<S>, "children"> & {
   projects: TGetProjects["projects"]
 }
 

@@ -1,7 +1,6 @@
 import type { FormApi as TanStackFormApi } from "@tanstack/form-core"
 import type { ReactFormApi } from "@tanstack/react-form"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type _ = any
 export type FormApi<T> = TanStackFormApi<T, _, _, _, _, _, _, _, _, _, _, _> &
   ReactFormApi<T, _, _, _, _, _, _, _, _, _, _, _>

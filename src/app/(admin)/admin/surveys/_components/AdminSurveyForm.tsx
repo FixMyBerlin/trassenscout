@@ -11,7 +11,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { usePathname } from "next/navigation"
 import { z } from "zod"
 
-type Props = FormProps<z.ZodType<any, any>>
+type Props = Omit<FormProps<z.ZodType<any, any>>, "children">
 
 export const AdminSurveyForm = (props: Props) => {
   const [projects] = useQuery(getProjects, {})

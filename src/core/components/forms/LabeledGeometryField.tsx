@@ -1,3 +1,5 @@
+import { formatFormError } from "@/src/core/components/forms/formatFormError"
+import type { FormApi } from "@/src/core/components/forms/types"
 import {
   LineStringGeometrySchema,
   MultiLineStringGeometrySchema,
@@ -6,15 +8,16 @@ import {
 } from "@/src/core/utils/geojson-schemas"
 import { SupportedGeometrySchema } from "@/src/server/shared/utils/geometrySchemas"
 import { mapGeoTypeToEnum } from "@/src/server/shared/utils/mapGeoTypeToEnum"
-import type { FormApi } from "@/src/core/components/forms/types"
-import { formatFormError } from "@/src/core/components/forms/formatFormError"
 import { clsx } from "clsx"
 import { ComponentPropsWithoutRef, forwardRef, PropsWithoutRef, useEffect, useState } from "react"
 import { z } from "zod"
 import { LabeledGeometryFieldPreview } from "./LabeledGeometryFieldPreview"
 import { extractGeometryFromGeoJSON } from "./_utils/extractGeometryFromGeoJSON"
 
-export interface LabeledGeometryFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["textarea"]> {
+export interface LabeledGeometryFieldProps extends Omit<
+  PropsWithoutRef<JSX.IntrinsicElements["textarea"]>,
+  "form"
+> {
   form: FormApi<Record<string, unknown>>
   name: string
   label: string
@@ -227,9 +230,9 @@ function LabeledGeometryFieldBody({
           )}
           {hasJsonParseError && (
             <div role="alert" className="mb-3 rounded bg-red-800 p-3 text-sm text-white">
-              Es ist ein Fehler beim Verarbeiten der Geometrie aufgetreten. Die Änderung wurde
-              daher verworfen. Es könnte sein, dass ein Syntaxfehler vorlag, bspw. durch ein Komma
-              zu viel/wenig.
+              Es ist ein Fehler beim Verarbeiten der Geometrie aufgetreten. Die Änderung wurde daher
+              verworfen. Es könnte sein, dass ein Syntaxfehler vorlag, bspw. durch ein Komma zu
+              viel/wenig.
             </div>
           )}
           <LabeledGeometryFieldPreview

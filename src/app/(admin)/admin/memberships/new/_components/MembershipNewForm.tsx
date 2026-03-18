@@ -26,7 +26,11 @@ export const MembershipNewForm = () => {
 
   return (
     <MembershipForm
-      initialValues={{ userId: userIdParam ? Number(userIdParam) : undefined }}
+      initialValues={{
+        userId: userIdParam ? Number(userIdParam) : 0,
+        role: "EDITOR",
+        projectId: 0,
+      }}
       schema={MembershipSchema}
       submitText="Erstellen"
       onSubmit={handleSubmit}

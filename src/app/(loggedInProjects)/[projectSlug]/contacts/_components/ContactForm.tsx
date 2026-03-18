@@ -6,7 +6,7 @@ import {
 } from "@/src/core/components/forms"
 import { z } from "zod"
 
-export function ContactForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+export function ContactForm<S extends z.ZodType<any, any>>(props: Omit<FormProps<S>, "children">) {
   return (
     <Form<S> className="max-w-prose" {...props}>
       {(form) => (
