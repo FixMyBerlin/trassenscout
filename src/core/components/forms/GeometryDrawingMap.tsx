@@ -4,25 +4,30 @@ import { TerraDrawHint } from "@/src/core/components/Map/TerraDraw/TerraDrawHint
 import { TerraDrawProvider } from "@/src/core/components/Map/TerraDraw/TerraDrawProvider"
 import { TerraDrawToolbar } from "@/src/core/components/Map/TerraDraw/TerraDrawToolbar"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
+import type { FormApi } from "@/src/core/components/forms/types"
 import { SupportedGeometry } from "@/src/server/shared/utils/geometrySchemas"
 import { mapGeoTypeToEnum } from "@/src/server/shared/utils/mapGeoTypeToEnum"
 import { TGetSubsection } from "@/src/server/subsections/queries/getSubsection"
 import { bbox } from "@turf/turf"
 import { useMemo, useRef } from "react"
-import { useFormContext } from "react-hook-form"
 import type { LngLatBoundsLike } from "react-map-gl/maplibre"
 
 type AllowedType = "point" | "line" | "polygon"
 
 type Props = {
+  form: FormApi<Record<string, unknown>>
   allowedTypes: AllowedType[]
   subsection?: TGetSubsection
   children?: React.ReactNode
 }
 
-export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props) => {
-  const { watch, setValue } = useFormContext()
-  const geometry = watch("geometry") as SupportedGeometry | undefined
+function GeometryDrawingMapBody({
+  form,
+  allowedTypes,
+  subsection,
+  children,
+  geometry,
+}: Props & { geometry: SupportedGeometry | undefined }) {
   const updateTerraDrawRef = useRef<
     ((geometry: SupportedGeometry | null, ignoreChangeEvents?: boolean) => void) | null
   >(null)
@@ -31,10 +36,6 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
   const showLine = allowedTypes.includes("line")
   const showPolygon = allowedTypes.includes("polygon")
 
-  // Calculate initial view bounds (priority order):
-  // 1. If geometry exists (editing mode): use geometry bounds
-  // 2. Else if subsection provided: use subsection bounds
-  // 3. Otherwise: undefined (will use default view)
   const initialViewState = useMemo(() => {
     let targetGeometry: SupportedGeometry | undefined
 
@@ -64,11 +65,11 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
 
   const handleChange = (geo: SupportedGeometry | null, geoType: string | null) => {
     if (geo && geoType) {
-      setValue("geometry", geo, { shouldValidate: true })
-      setValue("type", mapGeoTypeToEnum(geoType), { shouldValidate: true })
+      form.setFieldValue("geometry" as never, geo as never)
+      form.setFieldValue("type" as never, mapGeoTypeToEnum(geoType) as never)
     } else {
-      setValue("geometry", undefined, { shouldValidate: true })
-      setValue("type", undefined, { shouldValidate: true })
+      form.setFieldValue("geometry" as never, undefined as never)
+      form.setFieldValue("type" as never, undefined as never)
     }
   }
 
@@ -76,7 +77,6 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
     <div className="relative h-[500px] w-full overflow-clip rounded-md border border-gray-200">
       <BaseMap
         id="terra-draw-map"
-        // Critical to avoid a bug where the Terra Draw Geometries where hidden during navigation between pages (Subsubsection => Subsubsection/Edit)
         reuseMaps={false}
         initialViewState={initialViewState || defaultViewState}
         backgroundSwitcherPosition="bottom-left"
@@ -96,7 +96,6 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
               hasGeometries,
               enabledButtons,
             }) => {
-              // Store updateFeatures in ref so SnappingControls can use it
               updateTerraDrawRef.current = updateFeatures
               return (
                 <TerraDrawToolbar
@@ -110,20 +109,7 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
                   showLine={showLine}
                   showPolygon={showPolygon}
                   enabledButtons={enabledButtons}
-                  trailingButtons={
-                    null
-                    // TODO: Disabled for now, does currently not work.
-                    // subsection ? (
-                    //   <SnappingControls
-                    //     subsection={subsection}
-                    //     geometry={geometry}
-                    //     handleChange={handleChange}
-                    //     updateTerraDraw={(geo, ignoreChangeEvents) =>
-                    //       updateTerraDrawRef.current?.(geo, ignoreChangeEvents)
-                    //     }
-                    //   />
-                    // ) : null
-                  }
+                  trailingButtons={null}
                 />
               )
             }}
@@ -132,5 +118,22 @@ export const GeometryDrawingMap = ({ allowedTypes, subsection, children }: Props
         </div>
       </BaseMap>
     </div>
+  )
+}
+
+export const GeometryDrawingMap = ({ form, allowedTypes, subsection, children }: Props) => {
+  return (
+    <form.Subscribe selector={(s) => s.values.geometry as SupportedGeometry | undefined}>
+      {(geometry) => (
+        <GeometryDrawingMapBody
+          form={form}
+          allowedTypes={allowedTypes}
+          subsection={subsection}
+          geometry={geometry}
+        >
+          {children}
+        </GeometryDrawingMapBody>
+      )}
+    </form.Subscribe>
   )
 }

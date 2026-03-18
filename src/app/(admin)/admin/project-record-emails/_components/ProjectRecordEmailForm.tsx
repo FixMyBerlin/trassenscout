@@ -19,15 +19,24 @@ export function ProjectRecordEmailForm<S extends z.ZodType<any, any>>(
 
   return (
     <Form<S> {...formProps}>
-      <div className="space-y-6">
-        <LabeledTextareaField
-          name="text"
-          label="Body"
-          rows={15}
-          placeholder="E-Mail-Inhalt einfügen..."
-        />
-        <LabeledSelect name="projectId" optional options={projectOptions} label="Projekt" />
-      </div>
+      {(form) => (
+        <div className="space-y-6">
+          <LabeledTextareaField
+            form={form}
+            name="text"
+            label="Body"
+            rows={15}
+            placeholder="E-Mail-Inhalt einfügen..."
+          />
+          <LabeledSelect
+            form={form}
+            name="projectId"
+            optional
+            options={projectOptions}
+            label="Projekt"
+          />
+        </div>
+      )}
     </Form>
   )
 }

@@ -4,7 +4,6 @@ import { OperatorForm } from "@/src/app/(loggedInProjects)/[projectSlug]/operato
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import deleteOperator from "@/src/server/operators/mutations/deleteOperator"
 import updateOperator from "@/src/server/operators/mutations/updateOperator"
@@ -45,7 +44,7 @@ export const EditOperatorForm = ({ operator, projectSlug, fromParam }: Props) =>
       router.refresh()
     } catch (error: any) {
       if (error.code === "P2002" && error.meta?.target?.includes("slug")) {
-        return improveErrorMessage(error, FORM_ERROR, ["slug"])
+        return improveErrorMessage(error, ["slug"])
       }
     }
   }

@@ -6,8 +6,12 @@ export function NetworkHierarchyForm<S extends z.ZodType<any, any>>(props: FormP
 
   return (
     <Form<S> {...formProps}>
-      <LabeledTextField type="text" name="slug" label="Kürzel" />
-      <LabeledTextField type="text" name="title" label="Titel" />
+      {(form) => (
+        <>
+          <LabeledTextField form={form} type="text" name="slug" label="Kürzel" />
+          <LabeledTextField form={form} type="text" name="title" label="Titel" />
+        </>
+      )}
     </Form>
   )
 }

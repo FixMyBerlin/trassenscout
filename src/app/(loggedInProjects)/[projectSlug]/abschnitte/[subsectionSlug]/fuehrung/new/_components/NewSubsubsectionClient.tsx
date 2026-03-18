@@ -1,6 +1,4 @@
 "use client"
-
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { subsubsectionDashboardRoute } from "@/src/core/routes/subsectionRoutes"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
@@ -64,7 +62,7 @@ export const NewSubsubsectionClient = ({ initialSubsection }: Props) => {
         subsubsectionDashboardRoute(projectSlug, subsectionSlug!, subsubsection.slug),
       )
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["slug"])
+      return improveErrorMessage(error, ["slug"])
     }
   }
 

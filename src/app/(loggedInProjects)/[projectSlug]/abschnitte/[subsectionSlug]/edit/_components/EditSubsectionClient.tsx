@@ -2,7 +2,6 @@
 
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { shortTitle } from "@/src/core/components/text"
 import { projectDashboardRoute } from "@/src/core/routes/projectRoutes"
@@ -53,7 +52,7 @@ export const EditSubsectionClient = ({ initialSubsection }: Props) => {
       await invalidateQuery(getSubsections)
       await router.push(subsectionDashboardRoute(projectSlug, updated.slug))
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["order", "slug"])
+      return improveErrorMessage(error, ["order", "slug"])
     }
   }
 

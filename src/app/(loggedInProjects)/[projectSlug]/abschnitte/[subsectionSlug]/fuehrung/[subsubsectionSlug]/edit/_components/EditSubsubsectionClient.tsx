@@ -3,7 +3,6 @@
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { shortTitle } from "@/src/core/components/text"
 import {
@@ -61,7 +60,7 @@ export const EditSubsubsectionClient = ({ initialSubsubsection }: Props) => {
       })
       await router.push(subsubsectionDashboardRoute(projectSlug, subsectionSlug!, updated.slug))
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["slug"])
+      return improveErrorMessage(error, ["slug"])
     }
   }
 

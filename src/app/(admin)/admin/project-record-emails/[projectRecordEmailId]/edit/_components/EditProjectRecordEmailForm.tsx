@@ -1,7 +1,6 @@
 "use client"
 
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import deleteProjectRecordEmail from "@/src/server/ProjectRecordEmails/mutations/deleteProjectRecordEmail"
 import updateProjectRecordEmail from "@/src/server/ProjectRecordEmails/mutations/updateProjectRecordEmail"
@@ -35,7 +34,7 @@ export const EditProjectRecordEmailForm = ({
       })
       router.push(`/admin/project-record-emails/${projectRecordEmailId}`)
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, [])
+      return improveErrorMessage(error, [])
     }
   }
 

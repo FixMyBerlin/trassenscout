@@ -1,5 +1,5 @@
 "use client"
-import { Form, FORM_ERROR, LabeledTextField } from "@/src/core/components/forms"
+import { Form, LabeledTextField } from "@/src/core/components/forms"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import getProject from "@/src/server/projects/queries/getProject"
@@ -58,26 +58,32 @@ export const MultipleNewSubsectionsForm = () => {
       })
       router.push(`/admin/projects/${projectSlug}/subsections`)
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["order", "slug"])
+      return improveErrorMessage(error, ["order", "slug"])
     }
   }
 
   return (
     <Form submitText="Erstellen" schema={SubsectionsFormSchema} onSubmit={handleSubmit}>
-      <LabeledTextField
-        inlineLeadingAddon="pa"
-        type="text"
-        name="prefix"
-        label="Präfix-Id"
-        help="Präfix aller Planungsabschnitte ist 'pa'. Optional kann eine zusätzliche Präfix-Id angegeben werden. Ergebnis: pa[Präfix-Id].[Nummer]"
-      />
-      <LabeledTextField
-        type="number"
-        step="1"
-        name="no"
-        label="Anzahl"
-        help="Anzahl der im Bulk-Mode erstellten Planungsabschnitte."
-      />
+      {(form) => (
+        <>
+          <LabeledTextField
+            form={form}
+            inlineLeadingAddon="pa"
+            type="text"
+            name="prefix"
+            label="Präfix-Id"
+            help="Präfix aller Planungsabschnitte ist 'pa'. Optional kann eine zusätzliche Präfix-Id angegeben werden. Ergebnis: pa[Präfix-Id].[Nummer]"
+          />
+          <LabeledTextField
+            form={form}
+            type="number"
+            step="1"
+            name="no"
+            label="Anzahl"
+            help="Anzahl der im Bulk-Mode erstellten Planungsabschnitte."
+          />
+        </>
+      )}
     </Form>
   )
 }

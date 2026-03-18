@@ -3,15 +3,16 @@
 import { summarizeUpload } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_actions/summarizeUpload"
 import { isPdf } from "@/src/app/(loggedInProjects)/[projectSlug]/uploads/_components/utils/getFileType"
 import { SuperAdminBox } from "@/src/core/components/AdminBox"
+import type { FormApi } from "@/src/core/components/forms/types"
 import { LabeledTextareaField } from "@/src/core/components/forms"
 import { blueButtonStyles, Link } from "@/src/core/components/links"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { SparklesIcon } from "@heroicons/react/16/solid"
 import { Dispatch, SetStateAction, useState } from "react"
-import { useFormContext } from "react-hook-form"
 import { twJoin } from "tailwind-merge"
 
 type Props = {
+  form: FormApi<Record<string, unknown>>
   uploadId: number
   mimeType: string | null
   isGeneratingSummary: boolean
@@ -20,24 +21,20 @@ type Props = {
   initialSummary?: string | null
 }
 
-export const SummaryField = ({
+function SummaryFieldBody({
+  form,
+  summaryValue,
   uploadId,
   mimeType,
   isGeneratingSummary,
   setIsGeneratingSummary,
   isAiEnabled,
-  initialSummary,
-}: Props) => {
-  const { setValue, watch } = useFormContext()
+}: Props & { summaryValue: unknown }) {
   const projectSlug = useProjectSlug()
   const [isFocused, setIsFocused] = useState(false)
-  const summaryValue = watch("summary")
+  const str = summaryValue == null ? "" : String(summaryValue)
 
-  const hasContent = Boolean(summaryValue && summaryValue.trim())
-  const hasInitialContent = Boolean(initialSummary && initialSummary.trim())
-  const shouldExpand = isFocused || hasContent || hasInitialContent
-  const rows = shouldExpand ? 20 : 2
-
+  const hasContent = Boolean(str && str.trim())
   const disclaimerText =
     "\n\n*Die Zusammenfassung wurde mit KI erstellt und dient der Orientierung und ersetzt nicht die Prüfung des Originaldokuments*"
 
@@ -46,7 +43,7 @@ export const SummaryField = ({
     try {
       const { summary } = await summarizeUpload({ uploadId, projectSlug })
       if (summary) {
-        setValue("summary", summary + disclaimerText, { shouldDirty: true })
+        void form.setFieldValue("summary" as never, (summary + disclaimerText) as never)
       } else {
         throw new Error("Invalid response data")
       }
@@ -59,10 +56,13 @@ export const SummaryField = ({
   }
 
   const showAiButton = isPdf(mimeType) && isAiEnabled
+  const shouldExpand = isFocused || hasContent
+  const rows = shouldExpand ? 20 : 2
 
   return (
     <div>
       <LabeledTextareaField
+        form={form}
         help={
           showAiButton
             ? "PDFs lassen sich mit KI zusammenfassen. Beachten Sie, dass nach Drücken des Buttons eine bereits vorhandene Zusammenfassung im Textfeld überschrieben wird."
@@ -107,5 +107,21 @@ export const SummaryField = ({
         </button>
       )}
     </div>
+  )
+}
+
+export const SummaryField = (props: Props) => {
+  const { form, initialSummary, ...rest } = props
+  return (
+    <form.Subscribe selector={(s) => s.values.summary}>
+      {(summaryValue) => (
+        <SummaryFieldBody
+          form={form}
+          summaryValue={summaryValue}
+          initialSummary={initialSummary}
+          {...rest}
+        />
+      )}
+    </form.Subscribe>
   )
 }

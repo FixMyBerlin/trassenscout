@@ -140,7 +140,7 @@ export const ContactsTable = () => {
               ...prev,
               [
                 String(id) || NEW_ID_VALUE,
-                improveErrorMessage(error, "FORM_ERROR", ["email"]) as any,
+                improveErrorMessage(error, ["email"]) as any,
               ],
             ])
           },

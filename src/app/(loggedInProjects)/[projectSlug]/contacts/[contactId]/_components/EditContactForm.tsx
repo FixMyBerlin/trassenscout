@@ -5,7 +5,6 @@ import { getFullname } from "@/src/app/_components/users/utils/getFullname"
 import { SuperAdminLogData } from "@/src/core/components/AdminBox/SuperAdminLogData"
 import { BackLink } from "@/src/core/components/forms/BackLink"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import deleteContact from "@/src/server/contacts/mutations/deleteContact"
 import updateContact from "@/src/server/contacts/mutations/updateContact"
@@ -40,7 +39,7 @@ export const EditContactForm = ({ contact, projectSlug }: Props) => {
       await router.push(`/${projectSlug}/contacts/${updated.id}` as Route)
       router.refresh()
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["email"])
+      return improveErrorMessage(error, ["email"])
     }
   }
 

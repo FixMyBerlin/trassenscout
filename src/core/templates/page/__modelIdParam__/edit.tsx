@@ -1,6 +1,5 @@
 import {
-  FORM_ERROR,
-  __ModelName__Form,
+    __ModelName__Form,
 } from "@/src/__modelNamesPath__/components/__ModelName__Form"
 import update__ModelName__ from "@/src/__modelNamesPath__/mutations/update__ModelName__"
 import get__ModelName__ from "@/src/__modelNamesPath__/queries/get__ModelName__"
@@ -47,7 +46,7 @@ const Edit__ModelName__ = () => {
       )
     } catch (error: any) {
       console.error(error)
-      return { [FORM_ERROR]: error }
+      return { success: false, message: error instanceof Error ? error.message : String(error) }
     }
   }
 

@@ -1,9 +1,13 @@
 import { LabeledRadiobuttonGroup } from "@/src/core/components/forms/LabeledRadiobuttonGroup"
+import type { FormApi } from "@/src/core/components/forms/types"
 import { TagIcon } from "@heroicons/react/24/outline"
 
-export const LabeledRadiobuttonGroupLabelPos = () => {
+type Props = { form: FormApi<Record<string, unknown>> }
+
+export const LabeledRadiobuttonGroupLabelPos = ({ form }: Props) => {
   return (
     <LabeledRadiobuttonGroup
+      form={form}
       label=""
       scope="labelPos"
       classNameItemWrapper="space-y-6 sm:columns-2 pt-2"

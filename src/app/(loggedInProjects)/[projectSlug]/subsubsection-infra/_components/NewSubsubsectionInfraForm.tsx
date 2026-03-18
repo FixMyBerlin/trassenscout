@@ -1,6 +1,4 @@
 "use client"
-
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import createSubsubsectionInfra from "@/src/server/subsubsectionInfra/mutations/createSubsubsectionInfra"
 import { SubsubsectionInfra } from "@/src/server/subsubsectionInfra/schema"
@@ -30,7 +28,7 @@ export const NewSubsubsectionInfraForm = ({ projectSlug, fromParam }: Props) => 
       router.push(returnPath as Route)
       router.refresh()
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["slug"])
+      return improveErrorMessage(error, ["slug"])
     }
   }
 

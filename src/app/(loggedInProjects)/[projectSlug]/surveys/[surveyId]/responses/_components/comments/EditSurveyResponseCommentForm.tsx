@@ -1,4 +1,7 @@
+"use client"
+
 import { Form, LabeledTextareaField } from "@/src/core/components/forms"
+import { formatFormError } from "@/src/core/components/forms/formatFormError"
 import { linkStyles } from "@/src/core/components/links"
 import { Modal, ModalCloseButton } from "@/src/core/components/Modal"
 import { H3 } from "@/src/core/components/text"
@@ -13,7 +16,12 @@ import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
 import { clsx } from "clsx"
 import dompurify from "dompurify"
 import { useState } from "react"
+import { z } from "zod"
 import { EditableSurveyResponseListItemProps } from "../EditableSurveyResponseListItem"
+
+const commentSchema = z.object({
+  body: z.string().min(1, "Pflichtfeld"),
+})
 
 type Props = {
   comment: EditableSurveyResponseListItemProps["response"]["surveyResponseComments"][number]
@@ -22,30 +30,26 @@ type Props = {
 
 export const EditSurveyResponseCommentForm = ({ comment, commentLabel }: Props) => {
   const projectSlug = useProjectSlug()
-  const [updateSurveyResponseCommentMutation, { isLoading, error }] = useMutation(
+  const [updateSurveyResponseCommentMutation, { isLoading }] = useMutation(
     updateSurveyResponseComment,
   )
   const [deleteSurveyResponseCommentMutation] = useMutation(deleteSurveyResponseComment)
   const [open, setOpen] = useState(false)
   const session = useSession()
 
-  // todo any
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: z.infer<typeof commentSchema>) => {
     const sanitize = (input: string) => (input ? dompurify.sanitize(input) : input)
-    updateSurveyResponseCommentMutation(
-      {
+    try {
+      await updateSurveyResponseCommentMutation({
         projectSlug: projectSlug!,
         commentId: comment.id,
         body: sanitize(values.body),
-      },
-      // todo tryout when the serach also includes the comment
-      {
-        onSuccess: () => {
-          invalidateQuery(getFeedbackSurveyResponsesWithSurveyDataAndComments)
-          setOpen(false)
-        },
-      },
-    )
+      })
+      invalidateQuery(getFeedbackSurveyResponsesWithSurveyDataAndComments)
+      setOpen(false)
+    } catch (error: unknown) {
+      return { success: false as const, message: formatFormError(error) }
+    }
   }
 
   const isAuthorOrAdmin = comment.author.id === session.userId || session.role === "ADMIN"
@@ -70,18 +74,24 @@ export const EditSurveyResponseCommentForm = ({ comment, commentLabel }: Props) 
           <ModalCloseButton onClose={() => setOpen(false)} />
         </HeadingWithAction>
 
-        <Form onSubmit={handleSubmit} submitText={`${commentLabel} speichern`}>
-          <LabeledTextareaField
-            name="body"
-            className="min-h-40"
-            label=""
-            data-1p-ignore
-            data-lpignore
-            defaultValue={comment.body}
-            required
-          />
-          {/* @ts-expect-errors TODO Research how the error message is provided by Blitz */}
-          {error ? <p className="text-red-500">{error.message}</p> : null}
+        <Form
+          schema={commentSchema}
+          initialValues={{ body: comment.body ?? "" }}
+          onSubmit={handleSubmit}
+          submitText={`${commentLabel} speichern`}
+          disabled={isLoading}
+        >
+          {(form) => (
+            <LabeledTextareaField
+              form={form}
+              name="body"
+              className="min-h-40"
+              label=""
+              data-1p-ignore
+              data-lpignore
+              required
+            />
+          )}
         </Form>
 
         <button
@@ -94,11 +104,11 @@ export const EditSurveyResponseCommentForm = ({ comment, commentLabel }: Props) 
               try {
                 setOpen(false)
                 await deleteSurveyResponseCommentMutation({
-                  projectSlug,
+                  projectSlug: projectSlug!,
                   commentId: comment.id,
                 })
-              } catch (error: any) {
-                window.alert(error.toString())
+              } catch (error: unknown) {
+                window.alert(String(error))
                 console.error(error)
               }
             }

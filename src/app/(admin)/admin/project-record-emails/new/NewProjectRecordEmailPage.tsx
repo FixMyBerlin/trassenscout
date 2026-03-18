@@ -1,6 +1,4 @@
 "use client"
-
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { Link } from "@/src/core/components/links"
 import { PageHeader } from "@/src/core/components/pages/PageHeader"
@@ -28,7 +26,7 @@ export function NewProjectRecordEmailPage({ projects }: Props) {
       })
       router.push(`/admin/project-record-emails/${projectRecordEmail.id}`)
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["body"])
+      return improveErrorMessage(error, ["body"])
     }
   }
 

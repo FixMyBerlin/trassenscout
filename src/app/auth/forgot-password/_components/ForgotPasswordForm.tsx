@@ -1,5 +1,5 @@
 "use client"
-import { FORM_ERROR, Form } from "@/src/core/components/forms/Form"
+import { Form } from "@/src/core/components/forms/Form"
 import { LabeledTextField } from "@/src/core/components/forms/LabeledTextField"
 import { frenchQuote } from "@/src/core/components/text/quote"
 import forgotPassword from "@/src/server/auth/mutations/forgotPassword"
@@ -10,13 +10,14 @@ export const ForgotPasswordForm = () => {
   const [forgotPasswordMutation, { isSuccess }] = useMutation(forgotPassword)
 
   type HandleSubmit = { email: string }
-  const handleSubmit = async (values: HandleSubmit) => {
+  const handleSubmit = async (_values: HandleSubmit) => {
     try {
-      await forgotPasswordMutation(values)
-    } catch (error: any) {
+      await forgotPasswordMutation(_values)
+    } catch {
       return {
-        [FORM_ERROR]: "Sorry, we had an unexpected error. Please try again.",
-      }
+        success: false,
+        message: "Sorry, we had an unexpected error. Please try again.",
+      } as const
     }
   }
 
@@ -36,7 +37,14 @@ export const ForgotPasswordForm = () => {
       initialValues={{ email: "" }}
       onSubmit={handleSubmit}
     >
-      <LabeledTextField name="email" label="E-Mail-Adresse" placeholder="name@beispiel.de" />
+      {(form) => (
+        <LabeledTextField
+          form={form}
+          name="email"
+          label="E-Mail-Adresse"
+          placeholder="name@beispiel.de"
+        />
+      )}
     </Form>
   )
 }

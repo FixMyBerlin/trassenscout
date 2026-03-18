@@ -108,19 +108,21 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
 
   return (
     <Form<S> {...props}>
-      <LabeledTextField
+      {(form) => (
+        <>
+      <LabeledTextField form={form}
         type="text"
         name="slug"
         label={subsubsectionFieldTranslations.slug}
         help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
       />
-      <LabeledTextareaField
+      <LabeledTextareaField form={form}
         name="description"
         label={`${subsubsectionFieldTranslations.description} (Markdown)`}
         optional
       />
       <div className="flex items-end gap-5">
-        <LabeledSelect
+        <LabeledSelect form={form}
           name="subsubsectionTaskId"
           label={subsubsectionFieldTranslations.subsubsectionTaskId}
           options={subsubsectionTaskOptions}
@@ -128,23 +130,24 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           optional
         />
         <LinkWithFormDirtyConfirm
+          form={form}
           href={`/${projectSlug}/subsubsection-task` as Route}
           className="py-2"
         >
           Eintragstypen verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-      <SubsubsectionGeometryInput />
+      <SubsubsectionGeometryInput form={form} />
       <details>
         <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
-        <LabeledRadiobuttonGroupLabelPos />
+        <LabeledRadiobuttonGroupLabelPos form={form} />
       </details>
-      <LabeledCheckbox
+      <LabeledCheckbox form={form}
         scope="isExistingInfra"
         value="true"
         label={subsubsectionFieldTranslations.isExistingInfra}
       />
-      <LabeledRadiobuttonGroup
+      <LabeledRadiobuttonGroup form={form}
         label={subsubsectionFieldTranslations.location}
         scope="location"
         items={[
@@ -154,13 +157,13 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         ]}
         classNameItemWrapper="flex gap-5 space-y-0! items-center"
       />
-      <LabeledTextFieldCalculateLength
+      <LabeledTextFieldCalculateLength form={form}
         name="lengthM"
         optional
         label={subsubsectionFieldTranslations.lengthM}
         help="Dieser Wert kann manuell eingetragen oder aus den vorhandenen Geometrien berechnet werden."
       />
-      <LabeledTextField
+      <LabeledTextField form={form}
         inlineLeadingAddon="m"
         type="number"
         step="0.01"
@@ -168,7 +171,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label={subsubsectionFieldTranslations.width}
         optional
       />
-      <LabeledTextField
+      <LabeledTextField form={form}
         optional
         name="costEstimate"
         type="number"
@@ -176,7 +179,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label={subsubsectionFieldTranslations.costEstimate}
       />
       <div className="flex items-end gap-5">
-        <LabeledSelect
+        <LabeledSelect form={form}
           name="subsubsectionInfrastructureTypeId"
           label={subsubsectionFieldTranslations.subsubsectionInfrastructureTypeId}
           optional
@@ -184,6 +187,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
+          form={form}
           href={`/${projectSlug}/subsubsection-infrastructure-type` as Route}
           className="py-2"
         >
@@ -191,25 +195,30 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         </LinkWithFormDirtyConfirm>
       </div>
       <div className="flex items-end gap-5">
-        <LabeledSelect
+        <LabeledSelect form={form}
           name="qualityLevelId"
           label={subsubsectionFieldTranslations.qualityLevelId}
           optional
           options={qualityLevelOptions}
           outerProps={{ className: "grow" }}
         />
-        <LinkWithFormDirtyConfirm href={`/${projectSlug}/quality-levels` as Route} className="py-2">
+        <LinkWithFormDirtyConfirm
+          form={form}
+          href={`/${projectSlug}/quality-levels` as Route}
+          className="py-2"
+        >
           Ausbaustandards verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
       <div className="flex items-end gap-5">
-        <LabeledSelect
+        <LabeledSelect form={form}
           name="subsubsectionInfraId"
           label={subsubsectionFieldTranslations.subsubsectionInfraId}
           options={subsubsectionInfraOptions}
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
+          form={form}
           href={`/${projectSlug}/subsubsection-infra` as Route}
           className="py-2"
         >
@@ -217,7 +226,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         </LinkWithFormDirtyConfirm>
       </div>
       <div className="flex items-end gap-5">
-        <LabeledSelect
+        <LabeledSelect form={form}
           name="subsubsectionStatusId"
           label={subsubsectionFieldTranslations.subsubsectionStatusId}
           optional
@@ -225,19 +234,20 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           outerProps={{ className: "grow" }}
         />
         <LinkWithFormDirtyConfirm
+          form={form}
           href={`/${projectSlug}/subsubsection-status` as Route}
           className="py-2"
         >
           Phase verwalten…
         </LinkWithFormDirtyConfirm>
       </div>
-      <LabeledTextField
+      <LabeledTextField form={form}
         help="Format: Datum im Format JJJJ, beispielsweise '2026'"
         name="estimatedConstructionDateString"
         label={subsubsectionFieldTranslations.estimatedConstructionDateString}
         optional
       />
-      <LabeledSelect
+      <LabeledSelect form={form}
         name="managerId"
         label={subsubsectionFieldTranslations.managerId}
         optional
@@ -245,7 +255,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       />
       <details>
         <summary className="mb-2 cursor-pointer">Verkehrsbelastung</summary>
-        <LabeledTextField
+        <LabeledTextField form={form}
           inlineLeadingAddon="kmh"
           type="number"
           name="maxSpeed"
@@ -253,7 +263,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           optional
         />
 
-        <LabeledTextField
+        <LabeledTextField form={form}
           inlineLeadingAddon="Kfz"
           type="number"
           name="trafficLoad"
@@ -261,7 +271,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           optional
         />
 
-        <LabeledTextField
+        <LabeledTextField form={form}
           type="date"
           name="trafficLoadDate"
           label={subsubsectionFieldTranslations.trafficLoadDate}
@@ -270,77 +280,77 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       </details>
       <details>
         <summary className="mb-2 cursor-pointer">Kostenstruktur</summary>
-        <LabeledTextField
+        <LabeledTextField form={form}
           inlineLeadingAddon="€"
           type="number"
           name="planningCosts"
           label={subsubsectionFieldTranslations.planningCosts}
           optional
         />
-        <LabeledTextField
+        <LabeledTextField form={form}
           inlineLeadingAddon="€"
           type="number"
           name="constructionCosts"
           label={subsubsectionFieldTranslations.constructionCosts}
           optional
         />
-        <LabeledTextField
+        <LabeledTextField form={form}
           inlineLeadingAddon="€"
           type="number"
           name="deliveryCosts"
           label={subsubsectionFieldTranslations.deliveryCosts}
           optional
         />
-        <LabeledTextField
+        <LabeledTextField form={form}
           inlineLeadingAddon="€"
           type="number"
           name="landAcquisitionCosts"
           label={subsubsectionFieldTranslations.landAcquisitionCosts}
           optional
         />
-        <LabeledTextField
+        <LabeledTextField form={form}
           inlineLeadingAddon="€"
           type="number"
           name="expensesOfficialOrders"
           label={subsubsectionFieldTranslations.expensesOfficialOrders}
           optional
         />
-        <LabeledTextField
+        <LabeledTextField form={form}
           inlineLeadingAddon="€"
           type="number"
           name="expensesTechnicalVerification"
           label={subsubsectionFieldTranslations.expensesTechnicalVerification}
           optional
         />
-        <LabeledTextField
+        <LabeledTextField form={form}
           inlineLeadingAddon="€"
           type="number"
           name="nonEligibleExpenses"
           label={subsubsectionFieldTranslations.nonEligibleExpenses}
           optional
         />
-        <LabeledTextField
+        <LabeledTextField form={form}
           inlineLeadingAddon="€"
           type="number"
           name="revenuesEconomicIncome"
           label={subsubsectionFieldTranslations.revenuesEconomicIncome}
           optional
         />
-        <LabeledTextField
+        <LabeledTextField form={form}
           inlineLeadingAddon="€"
           type="number"
           name="contributionsThirdParties"
           label={subsubsectionFieldTranslations.contributionsThirdParties}
           optional
         />
-        <LabeledTextField
+        <LabeledTextField form={form}
           inlineLeadingAddon="€"
           type="number"
           name="grantsOtherFunding"
           label={subsubsectionFieldTranslations.grantsOtherFunding}
           optional
         />
-        <LabeledTextField
+        <LabeledTextField form={form}
           inlineLeadingAddon="€"
           type="number"
           name="ownFunds"
@@ -350,7 +360,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
       </details>
       <details>
         <summary className="mb-2 cursor-pointer">Dauer</summary>
-        <LabeledTextField
+        <LabeledTextField form={form}
           type="number"
           step={1}
           name="planningPeriod"
@@ -358,7 +368,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           optional
           max={100}
         />
-        <LabeledTextField
+        <LabeledTextField form={form}
           type="number"
           step={1}
           name="constructionPeriod"
@@ -366,13 +376,15 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
           optional
           max={100}
         />
-        <LabeledTextField
+        <LabeledTextField form={form}
           type="date"
           name="estimatedCompletionDate"
           label={subsubsectionFieldTranslations.estimatedCompletionDate}
           optional
         />
       </details>
+        </>
+      )}
     </Form>
   )
 }

@@ -1,6 +1,5 @@
 import {
-  FORM_ERROR,
-  __ModelName__Form,
+    __ModelName__Form,
 } from "@/src/__modelNamesPath__/components/__ModelName__Form"
 import create__ModelName__ from "@/src/__modelNamesPath__/mutations/create__ModelName__"
 import { Spinner } from "@/src/core/components/Spinner"
@@ -44,7 +43,7 @@ const New__ModelName__ = () => {
       )
     } catch (error: any) {
       console.error(error)
-      return { [FORM_ERROR]: error }
+      return { success: false, message: error instanceof Error ? error.message : String(error) }
     }
   }
 

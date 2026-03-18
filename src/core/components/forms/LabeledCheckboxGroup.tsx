@@ -1,17 +1,21 @@
+import type { FormApi } from "@/src/core/components/forms/types"
+import { formatFormError } from "@/src/core/components/forms/formatFormError"
 import { clsx } from "clsx"
 import { LabeledCheckbox, LabeledCheckboxProps } from "./LabeledCheckbox"
 
 type Props = {
+  form: FormApi<Record<string, unknown>>
   label?: string
   optional?: boolean
   disabled?: boolean
   scope: string
-  items: Omit<LabeledCheckboxProps, "scope">[]
+  items: Omit<LabeledCheckboxProps, "scope" | "form">[]
   classLabelOverwrite?: string
   classNameItemWrapper?: string
 }
 
 export const LabeledCheckboxGroup = ({
+  form,
   label,
   optional,
   disabled,
@@ -20,8 +24,6 @@ export const LabeledCheckboxGroup = ({
   classLabelOverwrite,
   classNameItemWrapper,
 }: Props) => {
-  const itemsWithScope = items.map((i) => ({ ...i, scope }))
-
   return (
     <div>
       {label && (
@@ -30,10 +32,26 @@ export const LabeledCheckboxGroup = ({
         </p>
       )}
       <div className={clsx(classNameItemWrapper, "flex flex-col gap-3")}>
-        {itemsWithScope.map((item) => {
-          return <LabeledCheckbox key={item.value} {...item} disabled={disabled} />
-        })}
+        {items.map((item) => (
+          <LabeledCheckbox
+            key={item.value}
+            form={form}
+            scope={scope}
+            {...item}
+            disabled={disabled}
+            showScopeErrors={false}
+          />
+        ))}
       </div>
+      <form.Field name={scope}>
+        {(field) =>
+          field.state.meta.errors.length > 0 ? (
+            <p role="alert" className="mt-2 text-sm text-red-800">
+              {field.state.meta.errors.map((err) => formatFormError(err)).join(", ")}
+            </p>
+          ) : null
+        }
+      </form.Field>
     </div>
   )
 }

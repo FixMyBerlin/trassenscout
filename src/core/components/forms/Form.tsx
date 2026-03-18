@@ -1,40 +1,68 @@
 import { ActionBar } from "@/src/core/components/forms/ActionBar"
-import { SubmitButton } from "@/src/core/components/forms/SubmitButton"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { formatFormError } from "@/src/core/components/forms/formatFormError"
+import type { FormApi, SubmitResult } from "@/src/core/components/forms/types"
+import { blueButtonStyles } from "@/src/core/components/links"
+import type { FormValidateOrFn } from "@tanstack/form-core"
+import { useForm } from "@tanstack/react-form"
 import { clsx } from "clsx"
-import { PropsWithoutRef, ReactNode, useState } from "react"
-import { FormProvider, UseFormProps, useForm } from "react-hook-form"
-import { IntlProvider } from "react-intl"
+import { ReactNode, useEffect, useState } from "react"
 import { z } from "zod"
-import { FormError } from "./FormError"
-import { errorMessageTranslations } from "./errorMessageTranslations"
 
-export interface FormProps<S extends z.ZodType<any, any>> extends Omit<
-  PropsWithoutRef<JSX.IntrinsicElements["form"]>,
-  "onSubmit"
-> {
-  /** All your form fields */
-  children?: ReactNode
-  /** Text to display in the submit button */
+export type { SubmitResult } from "@/src/core/components/forms/types"
+
+export type FormProps<S extends z.ZodType<any, any>> = {
+  children: (form: FormApi<z.infer<S>>) => ReactNode
   submitText: string
   submitClassName?: string
   resetOnSubmit?: boolean
-  schema?: S
-  onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
-  initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
+  schema: S
+  onSubmit: (values: z.infer<S>) => Promise<void | SubmitResult<z.infer<S>>>
+  initialValues?: z.infer<S>
   disabled?: boolean
-  /** Action bar content to display next to submit button (on the left) */
+  className?: string
   actionBarLeft?: ReactNode
-  /** Action bar content to display on the right side of the action bar */
   actionBarRight?: ReactNode
+  onValuesChange?: (values: z.infer<S>) => void
+  /** When false, only custom submit controls (e.g. in children) submit the form. */
+  showDefaultSubmit?: boolean
 }
 
-interface OnSubmitResult {
-  FORM_ERROR?: string
-  [prop: string]: any
+function applyFieldErrors(
+  form: { setFieldMeta: unknown; state: { values: unknown } },
+  errors: Partial<Record<string, string[]>> | undefined,
+) {
+  if (!errors) return
+  const values = form.state.values
+  if (typeof values !== "object" || values === null) return
+  const setFieldMeta = form.setFieldMeta as (
+    field: string,
+    updater: (prev: { errors?: string[] }) => { errors: string[] },
+  ) => void
+  for (const key of Object.keys(errors)) {
+    if (!(key in values)) continue
+    const messages = errors[key]
+    if (!messages?.length) continue
+    setFieldMeta(key, (prev) => ({
+      ...prev,
+      errors: [...(prev?.errors ?? []), ...messages],
+    }))
+  }
 }
 
-export const FORM_ERROR = "FORM_ERROR"
+function FormValuesSync<S extends z.ZodType<any, any>>({
+  form,
+  onValuesChange,
+}: {
+  form: { store: { subscribe: (fn: () => void) => () => void }; state: { values: z.infer<S> } }
+  onValuesChange: (values: z.infer<S>) => void
+}) {
+  useEffect(() => {
+    return form.store.subscribe(() => {
+      onValuesChange(form.state.values)
+    })
+  }, [form, onValuesChange])
+  return null
+}
 
 export function Form<S extends z.ZodType<any, any>>({
   children,
@@ -48,66 +76,109 @@ export function Form<S extends z.ZodType<any, any>>({
   disabled,
   actionBarLeft,
   actionBarRight,
-  ...props
+  onValuesChange,
+  showDefaultSubmit = true,
 }: FormProps<S>) {
-  const ctx = useForm<z.infer<S>>({
-    mode: "onBlur",
-    resolver: schema ? zodResolver(schema) : undefined,
-    defaultValues: initialValues,
-    disabled,
+  const [submitMessage, setSubmitMessage] = useState<{
+    type: "success" | "error"
+    text: string
+  } | null>(null)
+
+  type V = z.infer<S>
+  const defaults = (initialValues ?? {}) as V
+
+  const form = useForm({
+    defaultValues: defaults,
+    validators: {
+      onBlur: schema as FormValidateOrFn<V>,
+      onSubmit: schema as FormValidateOrFn<V>,
+    },
+    onSubmit: async ({ value }) => {
+      setSubmitMessage(null)
+      const result = await onSubmit(value)
+      if (!result) {
+        if (resetOnSubmit) {
+          form.reset()
+          setSubmitMessage(null)
+        }
+        return
+      }
+      if (result.success) {
+        setSubmitMessage({ type: "success", text: result.message ?? "Gespeichert." })
+        if (resetOnSubmit) {
+          form.reset()
+        }
+        return
+      }
+      setSubmitMessage({ type: "error", text: result.message })
+      applyFieldErrors(form, result.errors)
+    },
   })
-  const [formError, setFormError] = useState<string | null>(null)
+
   return (
-    <IntlProvider messages={errorMessageTranslations} locale="de" defaultLocale="de">
-      <FormProvider {...ctx}>
-        <form
-          className={clsx("space-y-6", className)}
-          onSubmit={ctx.handleSubmit(async (values) => {
-            const result = (await onSubmit(values)) || {}
-            for (const [key, value] of Object.entries(result)) {
-              if (key === FORM_ERROR) {
-                // For ZodErrors, the message field is not deserialized.
-                // We try to parse it here but also make catch edge cases.
-                // Learn more at https://github.com/blitz-js/blitz/issues/4059
-                if (value.name === "ZodError" && typeof value.message === "string") {
-                  try {
-                    value.message = JSON.parse(value.message)
-                  } catch {}
-                }
-                setFormError(value)
-              } else {
-                ctx.setError(key as any, {
-                  type: "submit",
-                  message: value,
-                })
-              }
-            }
-            // Reset form state if resetOnSubmit is true and no FORM_ERROR is present
-            // introduced for ProjectRecordform
-            if (resetOnSubmit && !result.FORM_ERROR) {
-              ctx.reset()
-              setFormError(null)
-            }
-          })}
-          {...props}
+    <form
+      className={clsx("space-y-6", className)}
+      onSubmit={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        form.handleSubmit()
+      }}
+    >
+      {onValuesChange ? (
+        <FormValuesSync form={form as never} onValuesChange={onValuesChange} />
+      ) : null}
+      {children(form as FormApi<V>)}
+
+      <form.Subscribe selector={(s) => s.errors}>
+        {(errors) =>
+          errors.length > 0 && (
+            <div role="alert" className="rounded-sm bg-red-50 px-2 py-1 text-sm text-red-800">
+              {errors.map((err) => (
+                <p key={formatFormError(err)}>{formatFormError(err)}</p>
+              ))}
+            </div>
+          )
+        }
+      </form.Subscribe>
+
+      {submitMessage && (
+        <div
+          className={clsx(
+            "rounded-sm px-2 py-1 text-sm",
+            submitMessage.type === "success"
+              ? "bg-green-50 text-green-800"
+              : "bg-red-50 text-red-800",
+          )}
+          role={submitMessage.type === "error" ? "alert" : "status"}
         >
-          {/* Form fields supplied as children are rendered here */}
-          {children}
+          {submitMessage.text}
+        </div>
+      )}
 
-          <FormError formError={formError} />
-
-          <ActionBar
-            left={
-              <>
-                <SubmitButton className={submitClassName}>{submitText}</SubmitButton>
-                {actionBarLeft}
-              </>
-            }
-            right={actionBarRight}
-          />
-        </form>
-      </FormProvider>
-    </IntlProvider>
+      {(showDefaultSubmit || actionBarLeft != null || actionBarRight != null) && (
+        <ActionBar
+          left={
+            <>
+              {showDefaultSubmit ? (
+                <form.Subscribe selector={(s) => [s.canSubmit, s.isSubmitting] as const}>
+                  {([canSubmit, isSubmitting]) => (
+                    <button
+                      type="submit"
+                      disabled={disabled || !canSubmit || isSubmitting}
+                      className={submitClassName || blueButtonStyles}
+                    >
+                      {isSubmitting ? "…" : submitText}
+                    </button>
+                  )}
+                </form.Subscribe>
+              ) : null}
+              {actionBarLeft}
+            </>
+          }
+          right={actionBarRight}
+        />
+      )}
+    </form>
   )
 }
 

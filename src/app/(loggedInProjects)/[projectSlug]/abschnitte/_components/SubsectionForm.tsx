@@ -81,88 +81,116 @@ function SubsectionFormWithQuery<S extends z.ZodType<any, any>>({ ...props }: Pr
 
   return (
     <Form<S> {...props}>
-      <LabeledTextField
-        type="text"
-        name="slug"
-        label="Kürzel"
-        help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
-      />
-      <div className="grid grid-cols-2 gap-5">
-        <LabeledTextField type="text" name="start" label="Startpunkt" />
-        <LabeledTextField type="text" name="end" label="Endpunkt" />
-      </div>
-      <LabeledTextareaField name="description" label="Beschreibung (Markdown)" optional />
-      <SubsectionGeometryInput />
-      <details>
-        <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
-        <div className="space-y-6">
-          <LabeledRadiobuttonGroupLabelPos />
+      {(form) => (
+        <>
           <LabeledTextField
-            type="number"
-            step="1"
-            name="order"
-            label="Reihenfolge Planungsabschnitte"
-            help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung."
+            form={form}
+            type="text"
+            name="slug"
+            label="Kürzel"
+            help="Nachträgliche Änderungen sorgen dafür, dass bisherige URLs (Bookmarks, in E-Mails) nicht mehr funktionieren."
           />
-        </div>
-      </details>
-      <LabeledTextFieldCalculateLength name="lengthM" label="Länge" optional />
-      <div className="flex items-end gap-5">
-        <LabeledSelect
-          name="operatorId"
-          label="Baulastträger"
-          optional
-          options={operatorOptions}
-          outerProps={{ className: "grow" }}
-        />
-        <LinkWithFormDirtyConfirm href={`/${projectSlug}/operators` as Route} className="py-2">
-          Baulastträger verwalten…
-        </LinkWithFormDirtyConfirm>
-      </div>
-      <div className="flex items-end gap-5">
-        <LabeledSelect
-          name="subsectionStatusId"
-          label="Status"
-          optional
-          options={subsectionStatusOptions}
-          outerProps={{ className: "grow" }}
-        />
-        <LinkWithFormDirtyConfirm
-          href={`/${projectSlug}/subsection-status` as Route}
-          className="py-2"
-        >
-          Status verwalten…
-        </LinkWithFormDirtyConfirm>
-      </div>
-      <LabeledSelect
-        name="managerId"
-        label="Projektleiter:in"
-        optional
-        options={getUserSelectOptions(users)}
-      />
-      <LabeledTextField
-        type="text"
-        help="Format: Datum im Format JJJJ-MM, beispielsweise '2026-03'; Wert muss in ein Datum umgewandelt werden können."
-        name="estimatedCompletionDateString"
-        label="Jahr und Monat der geplanten Fertigstellung"
-        optional
-      />
-      <LabeledSelect name="priority" label="Priorität" optional options={prioritySelectOptions} />
-      <div className="flex items-end gap-5">
-        <LabeledSelect
-          name="networkHierarchyId"
-          label="Netzstufe"
-          optional
-          options={networkOptions}
-          outerProps={{ className: "grow" }}
-        />
-        <LinkWithFormDirtyConfirm
-          href={`/${projectSlug}/network-hierarchy` as Route}
-          className="py-2"
-        >
-          Netzstufen verwalten…
-        </LinkWithFormDirtyConfirm>
-      </div>
+          <div className="grid grid-cols-2 gap-5">
+            <LabeledTextField form={form} type="text" name="start" label="Startpunkt" />
+            <LabeledTextField form={form} type="text" name="end" label="Endpunkt" />
+          </div>
+          <LabeledTextareaField
+            form={form}
+            name="description"
+            label="Beschreibung (Markdown)"
+            optional
+          />
+          <SubsectionGeometryInput form={form} />
+          <details>
+            <summary className="mb-2 cursor-pointer">Anzeige-Optionen für Karten-Label</summary>
+            <div className="space-y-6">
+              <LabeledRadiobuttonGroupLabelPos form={form} />
+              <LabeledTextField
+                form={form}
+                type="number"
+                step="1"
+                name="order"
+                label="Reihenfolge Planungsabschnitte"
+                help="Die muss sicherstellen, dass die Geometrien in einer fortlaufenden Linie mit gleicher Linienrichtung dargestellt werden; sie ist auch die Standard-Sortierung."
+              />
+            </div>
+          </details>
+          <LabeledTextFieldCalculateLength form={form} name="lengthM" label="Länge" optional />
+          <div className="flex items-end gap-5">
+            <LabeledSelect
+              form={form}
+              name="operatorId"
+              label="Baulastträger"
+              optional
+              options={operatorOptions}
+              outerProps={{ className: "grow" }}
+            />
+            <LinkWithFormDirtyConfirm
+              form={form}
+              href={`/${projectSlug}/operators` as Route}
+              className="py-2"
+            >
+              Baulastträger verwalten…
+            </LinkWithFormDirtyConfirm>
+          </div>
+          <div className="flex items-end gap-5">
+            <LabeledSelect
+              form={form}
+              name="subsectionStatusId"
+              label="Status"
+              optional
+              options={subsectionStatusOptions}
+              outerProps={{ className: "grow" }}
+            />
+            <LinkWithFormDirtyConfirm
+              form={form}
+              href={`/${projectSlug}/subsection-status` as Route}
+              className="py-2"
+            >
+              Status verwalten…
+            </LinkWithFormDirtyConfirm>
+          </div>
+          <LabeledSelect
+            form={form}
+            name="managerId"
+            label="Projektleiter:in"
+            optional
+            options={getUserSelectOptions(users)}
+          />
+          <LabeledTextField
+            form={form}
+            type="text"
+            help="Format: Datum im Format JJJJ-MM, beispielsweise '2026-03'; Wert muss in ein Datum umgewandelt werden können."
+            name="estimatedCompletionDateString"
+            label="Jahr und Monat der geplanten Fertigstellung"
+            optional
+          />
+          <LabeledSelect
+            form={form}
+            name="priority"
+            label="Priorität"
+            optional
+            options={prioritySelectOptions}
+          />
+          <div className="flex items-end gap-5">
+            <LabeledSelect
+              form={form}
+              name="networkHierarchyId"
+              label="Netzstufe"
+              optional
+              options={networkOptions}
+              outerProps={{ className: "grow" }}
+            />
+            <LinkWithFormDirtyConfirm
+              form={form}
+              href={`/${projectSlug}/network-hierarchy` as Route}
+              className="py-2"
+            >
+              Netzstufen verwalten…
+            </LinkWithFormDirtyConfirm>
+          </div>
+        </>
+      )}
     </Form>
   )
 }

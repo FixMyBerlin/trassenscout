@@ -5,7 +5,7 @@ import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSl
 import { ProjectRecordNeedsReviewBanner } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordNeedsReviewBanner"
 import { ReviewProjectRecordForm } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ReviewProjectRecordForm"
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
-import { Form, FORM_ERROR } from "@/src/core/components/forms"
+import { Form } from "@/src/core/components/forms"
 import { DeleteActionBar } from "@/src/core/components/forms/DeleteActionBar"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
@@ -46,7 +46,7 @@ export const AdminEditProjectRecordForm = ({
       router.push(`/admin/project-records`)
       router.refresh()
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["slug"])
+      return improveErrorMessage(error, ["slug"])
     }
   }
 
@@ -90,17 +90,22 @@ export const AdminEditProjectRecordForm = ({
           />
         }
       >
-        <p>
-          Projekt: <span className="font-medium uppercase">{projectSlug}</span>
-        </p>
-        <div className="space-y-6">
-          <ProjectRecordFormFields
-            projectSlug={projectSlug}
-            splitView={true}
-            emailSource={projectRecord.projectRecordEmail}
-          />
-        </div>
-        <ReviewProjectRecordForm admin />
+        {(form) => (
+          <>
+            <p>
+              Projekt: <span className="font-medium uppercase">{projectSlug}</span>
+            </p>
+            <div className="space-y-6">
+              <ProjectRecordFormFields
+                form={form}
+                projectSlug={projectSlug}
+                splitView={true}
+                emailSource={projectRecord.projectRecordEmail}
+              />
+            </div>
+            <ReviewProjectRecordForm form={form} admin />
+          </>
+        )}
       </Form>
 
       <CreateEditReviewHistory projectRecord={projectRecord} />

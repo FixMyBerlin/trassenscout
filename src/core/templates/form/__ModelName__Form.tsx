@@ -4,6 +4,8 @@ import { z } from "zod"
 export function __ModelName__Form<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
     <Form<S> {...props}>
+      {() => (
+        <>
       {/*
         <LabeledTextField type="text" name="name" label="Name" placeholder="Name" />
 
@@ -35,6 +37,8 @@ export function __ModelName__Form<S extends z.ZodType<any, any>>(props: FormProp
           ]}
         />
       */}
+        </>
+      )}
     </Form>
   )
 }

@@ -13,17 +13,22 @@ export function SubsubsectionStatusForm<S extends z.ZodType<any, any>>(props: Fo
 
   return (
     <Form<S> {...formProps}>
-      <LabeledTextField type="text" name="slug" label="Kürzel" />
-      <LabeledTextField type="text" name="title" label="Titel" />
-      <LabeledRadiobuttonGroup
-        label="Darstellung"
-        scope="style"
-        items={Object.entries(SubsubsectionStatusStyleEnum).map(([key, value]) => ({
-          value,
-          label: subsubsectionStatusStyleTranslations[value],
-        }))}
-        classNameItemWrapper="flex gap-5 space-y-0! items-center"
-      />
+      {(form) => (
+        <>
+          <LabeledTextField form={form} type="text" name="slug" label="Kürzel" />
+          <LabeledTextField form={form} type="text" name="title" label="Titel" />
+          <LabeledRadiobuttonGroup
+            form={form}
+            label="Darstellung"
+            scope="style"
+            items={Object.entries(SubsubsectionStatusStyleEnum).map(([_key, value]) => ({
+              value,
+              label: subsubsectionStatusStyleTranslations[value],
+            }))}
+            classNameItemWrapper="flex gap-5 space-y-0! items-center"
+          />
+        </>
+      )}
     </Form>
   )
 }

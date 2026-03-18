@@ -1,6 +1,4 @@
 "use client"
-
-import { FORM_ERROR } from "@/src/core/components/forms/Form"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import createContact from "@/src/server/contacts/mutations/createContact"
 import { ContactSchema } from "@/src/server/contacts/schema"
@@ -25,7 +23,7 @@ export const NewContactForm = ({ projectSlug }: Props) => {
       await router.push(`/${projectSlug}/contacts/${contact.id}` as Route)
       router.refresh()
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["email"])
+      return improveErrorMessage(error, ["email"])
     }
   }
 

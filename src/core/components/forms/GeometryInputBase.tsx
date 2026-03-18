@@ -1,30 +1,31 @@
 import { GeoJSONPreviewLink, GeoJSONPreviewPanel } from "@/src/core/components/forms/GeoJSONPreview"
 import { LabeledGeometryField } from "@/src/core/components/forms/LabeledGeometryField"
+import type { FormApi } from "@/src/core/components/forms/types"
 import type { Geometry } from "geojson"
 import { ReactNode, useState } from "react"
-import { useFormContext } from "react-hook-form"
 
 type GeometryInputBaseProps = {
+  form: FormApi<Record<string, unknown>>
   label: string
   description?: ReactNode
   children: ReactNode
-  /** Determines which geometry types are allowed. "subsection" allows LineString and Polygon only. "subsubsection" allows all types (Point, LineString, Polygon). */
   allowedGeometryTypesFor?: "subsection" | "subsubsection"
 }
 
-export const GeometryInputBase = ({
+function GeometryInputBody({
+  form,
   label,
   description,
   children,
   allowedGeometryTypesFor,
-}: GeometryInputBaseProps) => {
-  const { watch } = useFormContext()
-  const geometry = watch("geometry") as Geometry
-
+  geometry,
+}: Omit<GeometryInputBaseProps, "form"> & {
+  form: FormApi<Record<string, unknown>>
+  geometry: Geometry | undefined
+}) {
   const [isRawMode, setIsRawMode] = useState(false)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
 
-  // Once in raw mode, stay in raw mode (one-way switch)
   if (isRawMode) {
     return (
       <div className="space-y-2">
@@ -32,6 +33,7 @@ export const GeometryInputBase = ({
 
         <div className="rounded-md border border-gray-200 bg-gray-100 p-2">
           <LabeledGeometryField
+            form={form}
             name="geometry"
             label="GeoJSON Geometrie (`Point`, `MultiPoint`, `LineString`, `MultiLineString`, `Polygon`, oder `MultiPolygon`)"
             allowedGeometryTypesFor={allowedGeometryTypesFor}
@@ -64,5 +66,29 @@ export const GeometryInputBase = ({
 
       <div className="rounded-md border border-gray-200 bg-gray-100 p-2">{children}</div>
     </section>
+  )
+}
+
+export const GeometryInputBase = ({
+  form,
+  label,
+  description,
+  children,
+  allowedGeometryTypesFor,
+}: GeometryInputBaseProps) => {
+  return (
+    <form.Subscribe selector={(s) => s.values.geometry as Geometry | undefined}>
+      {(geometry) => (
+        <GeometryInputBody
+          form={form}
+          label={label}
+          description={description}
+          allowedGeometryTypesFor={allowedGeometryTypesFor}
+          geometry={geometry}
+        >
+          {children}
+        </GeometryInputBody>
+      )}
+    </form.Subscribe>
   )
 }

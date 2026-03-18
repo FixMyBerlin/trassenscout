@@ -6,7 +6,6 @@ import { useFilters } from "@/src/app/(loggedInProjects)/[projectSlug]/project-r
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
 import { useInitialFormValues } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/useInitialFormValues.nuqs"
 import { IfUserCanEdit } from "@/src/app/_components/memberships/IfUserCan"
-import { FORM_ERROR } from "@/src/core/components/forms"
 import { FormSuccess } from "@/src/core/components/forms/FormSuccess"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { blueButtonStyles } from "@/src/core/components/links"
@@ -74,7 +73,7 @@ export const ProjectRecordsFormAndTable = ({
       setTimeout(() => window.scrollTo(0, 0), 150)
     } catch (error: any) {
       // todo ?
-      return improveErrorMessage(error, FORM_ERROR, [])
+      return improveErrorMessage(error, [])
     }
   }
 

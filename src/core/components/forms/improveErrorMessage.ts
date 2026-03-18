@@ -1,43 +1,60 @@
+import type { SubmitResult } from "@/src/core/components/forms/types"
 import { errorMessageTranslations } from "./errorMessageTranslations"
 
 const SERVER_UNAVAILABLE_MESSAGE =
   "Der Server ist vorübergehend nicht erreichbar. Bitte versuchen Sie es in Kürze erneut. Eventuell muss dafür die Seite neu geladen werden."
 
-export const improveErrorMessage = (error: any, formError: string, fieldNames: string[]) => {
+export const improveErrorMessage = (error: any, fieldNames: string[]): SubmitResult => {
   console.error(error)
-  // Check if it is a unique constraint error
+
   if (error.code === "P2002") {
-    return getPrismaUniqueConstraintErrorMessage(error, formError, fieldNames)
+    return getPrismaUniqueConstraintErrorMessage(error, fieldNames)
   }
-  // Check for HTTP 502/503 (Bad Gateway / Service Unavailable) from Blitz RPC
+
   const statusCode = error?.statusCode ?? error?.status
   if (statusCode === 502 || statusCode === 503) {
-    return { [formError]: SERVER_UNAVAILABLE_MESSAGE }
+    return { success: false, message: SERVER_UNAVAILABLE_MESSAGE }
   }
-  // Check for translated message by error string (e.g. from errorMessageTranslations)
+
   const errorKey = typeof error === "string" ? error : error?.message?.trim() || error?.toString?.()
   if (errorKey && errorMessageTranslations[errorKey]) {
-    return { [formError]: errorMessageTranslations[errorKey] }
+    return { success: false, message: errorMessageTranslations[errorKey]! }
   }
-  // Return error as-is; FormError will display message or a safe fallback
-  return { [formError]: error }
+
+  const message =
+    typeof error === "string"
+      ? error
+      : error?.message || "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+  return { success: false, message }
 }
 
 const getPrismaUniqueConstraintErrorMessage = (
   error: any,
-  formError: string,
   fieldNames: string[],
-) => {
-  const result = { [formError]: error }
-  fieldNames.forEach((fieldName: string) => {
-    // Check what field name is included and adapt return object accordingly
+): SubmitResult => {
+  const errors: Record<string, string[]> = {}
+  let hasFieldError = false
+
+  for (const fieldName of fieldNames) {
     if (error.meta?.target?.includes(fieldName)) {
-      result[formError] = "Bitte korrigieren Sie Ihre Angaben."
-      result[fieldName] =
-        // check for translation
+      hasFieldError = true
+      const translated =
         errorMessageTranslations[error.toString().replaceAll("\n", "")] ||
         error.toString().replaceAll("\n", "")
+      errors[fieldName] = [translated]
     }
-  })
-  return result
+  }
+
+  if (hasFieldError) {
+    return {
+      success: false,
+      message: "Bitte korrigieren Sie Ihre Angaben.",
+      errors,
+    }
+  }
+
+  const message =
+    errorMessageTranslations[error.toString().replaceAll("\n", "")] ||
+    error.toString().replaceAll("\n", "")
+  return { success: false, message }
 }

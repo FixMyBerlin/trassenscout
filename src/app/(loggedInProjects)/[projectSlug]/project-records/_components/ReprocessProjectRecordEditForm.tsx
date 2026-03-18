@@ -3,7 +3,7 @@
 import { ReprocessedProjectRecord } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordDetailClient"
 import { ProjectRecordFormFields } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_components/ProjectRecordFormFields"
 import { getDate } from "@/src/app/(loggedInProjects)/[projectSlug]/project-records/_utils/splitStartAt"
-import { Form, FORM_ERROR } from "@/src/core/components/forms"
+import { Form } from "@/src/core/components/forms"
 import { improveErrorMessage } from "@/src/core/components/forms/improveErrorMessage"
 import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import { m2mFields, M2MFieldsType } from "@/src/server/projectRecords/m2mFields"
@@ -46,7 +46,7 @@ export const ReprocessProjectRecordEditForm = ({
       router.refresh()
       onCancel() // Close the AI suggestions view
     } catch (error: any) {
-      return improveErrorMessage(error, FORM_ERROR, ["slug"])
+      return improveErrorMessage(error, ["slug"])
     }
   }
 
@@ -105,9 +105,11 @@ export const ReprocessProjectRecordEditForm = ({
         initialValues={initialValues}
         onSubmit={handleSubmit}
       >
-        <div className="space-y-6">
-          <ProjectRecordFormFields projectSlug={projectSlug} />
-        </div>
+        {(form) => (
+          <div className="space-y-6">
+            <ProjectRecordFormFields form={form} projectSlug={projectSlug} />
+          </div>
+        )}
       </Form>
     </div>
   )

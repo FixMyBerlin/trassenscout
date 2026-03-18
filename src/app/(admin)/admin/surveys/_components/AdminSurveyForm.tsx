@@ -24,49 +24,63 @@ export const AdminSurveyForm = (props: Props) => {
 
   return (
     <Form {...props}>
-      <SuperAdminLogData data={{ projects }} />
-      <LabeledTextField type="text" name="slug" label="Slug" />
-      <LabeledTextField type="text" name="title" label="Titel" />
-      {/* @ts-expect-error the defaults work fine; but the helper should be updated at some point */}
-      <LabeledCheckbox
-        label="Umfrage aktiv?"
-        scope="active"
-        help="Wenn deaktiviert, zeigt Umfrage-Seite einen generischen Hinweis an, dass die Umfrage nicht aktiv ist."
-      />
+      {(form) => (
+        <>
+          <SuperAdminLogData data={{ projects }} />
+          <LabeledTextField form={form} type="text" name="slug" label="Slug" />
+          <LabeledTextField form={form} type="text" name="title" label="Titel" />
+          <LabeledCheckbox
+            form={form}
+            label="Umfrage aktiv?"
+            scope="active"
+            help="Wenn deaktiviert, zeigt Umfrage-Seite einen generischen Hinweis an, dass die Umfrage nicht aktiv ist."
+          />
 
-      {/* projectSlug is only for the new form */}
-      {!editForm && <LabeledSelect name="projectId" label="Projekt" options={projectOptions} />}
+          {!editForm && (
+            <LabeledSelect
+              form={form}
+              name="projectId"
+              label="Projekt"
+              options={projectOptions ?? []}
+            />
+          )}
 
-      <div className="flex gap-4">
-        <LabeledTextField
-          optional
-          type="date"
-          name="startDate"
-          label="Neues Start-Datum"
-          help="Reine Anzeige fürs Backend."
-        />
-        <LabeledTextField
-          optional
-          type="date"
-          name="endDate"
-          label="Neus End-Datum"
-          help="Reine Anzeige fürs Backend."
-        />
-      </div>
-      <LabeledTextField
-        type="text"
-        optional
-        name="surveyResultsUrl"
-        label="Externe Url der Beteiligungsergebnisse"
-        help="Bspw. Google Spreadsheet"
-      />
-      <LabeledTextField
-        type="number"
-        optional
-        name="interestedParticipants"
-        label="Anzahl der an Updates interessierten Teilnehmenden"
-        help="Workflow: Wenn Beteiligung beendet, dann einmalig die Anzahl der angemeldeten und bestätigten E-Mail-Adressen von Mailjet übernehmen, bspw. https://app.mailjet.com/contacts/lists/show/GQcr"
-      />
+          <div className="flex gap-4">
+            <LabeledTextField
+              form={form}
+              optional
+              type="date"
+              name="startDate"
+              label="Neues Start-Datum"
+              help="Reine Anzeige fürs Backend."
+            />
+            <LabeledTextField
+              form={form}
+              optional
+              type="date"
+              name="endDate"
+              label="Neus End-Datum"
+              help="Reine Anzeige fürs Backend."
+            />
+          </div>
+          <LabeledTextField
+            form={form}
+            type="text"
+            optional
+            name="surveyResultsUrl"
+            label="Externe Url der Beteiligungsergebnisse"
+            help="Bspw. Google Spreadsheet"
+          />
+          <LabeledTextField
+            form={form}
+            type="number"
+            optional
+            name="interestedParticipants"
+            label="Anzahl der an Updates interessierten Teilnehmenden"
+            help="Workflow: Wenn Beteiligung beendet, dann einmalig die Anzahl der angemeldeten und bestätigten E-Mail-Adressen von Mailjet übernehmen, bspw. https://app.mailjet.com/contacts/lists/show/GQcr"
+          />
+        </>
+      )}
     </Form>
   )
 }
