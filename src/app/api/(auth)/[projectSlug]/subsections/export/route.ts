@@ -21,7 +21,7 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
     orderBy: [{ subsection: { slug: "asc" } }, { slug: "asc" }],
   })
 
-  const csvString = subsubsectionsToCsvString(subsubsections)
+  const csvString = subsubsectionsToCsvString(subsubsections, projectSlug)
   const filename = subsubsectionExportFilename(projectSlug /* no subsectionSlug = project-level */)
 
   return subsubsectionCsvResponse(csvString, filename)

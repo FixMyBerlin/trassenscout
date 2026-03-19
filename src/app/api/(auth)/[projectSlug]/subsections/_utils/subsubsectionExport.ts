@@ -1,3 +1,4 @@
+import { getPrdOrStgDomain } from "@/src/core/components/links/getDomain"
 import { subsubsectionLocationLabelMap } from "@/src/core/utils/subsubsectionLocationLabelMap"
 import type { Prisma } from "@prisma/client"
 import { createObjectCsvStringifier } from "csv-writer"
@@ -21,69 +22,84 @@ export type SubsubsectionExportRow = Prisma.SubsubsectionGetPayload<{
   include: typeof subsubsectionExportInclude
 }>
 
-const columns = {
-  titel: {
-    title: "Titel",
-    value: (s: SubsubsectionExportRow) => s.slug,
-  },
-  status: {
-    title: "Status",
-    value: (s: SubsubsectionExportRow) => s.SubsubsectionStatus?.title || "",
-  },
-  eintragstyp: {
-    title: "Eintragstyp",
-    value: (s: SubsubsectionExportRow) => s.SubsubsectionTask?.title || "",
-  },
-  ausbaustandard: {
-    title: "Ausbaustandard",
-    value: (s: SubsubsectionExportRow) => s.subsection.networkHierarchy?.title || "",
-  },
-  ansprechpartner: {
-    title: "Ansprechpartner:in",
-    value: (s: SubsubsectionExportRow) =>
-      s.manager ? `${s.manager.firstName} ${s.manager.lastName}` : "",
-  },
-  kostenschaetzung_euro: {
-    title: "Kostenschätzung (Euro)",
-    value: (s: SubsubsectionExportRow) => s.costEstimate?.toString() || "",
-  },
-  planungsabschnitt: {
-    title: "Planungsabschnitt",
-    value: (s: SubsubsectionExportRow) => s.subsection.slug,
-  },
-  laenge_m: {
-    title: "Länge (m)",
-    value: (s: SubsubsectionExportRow) => s.lengthM?.toString() || "",
-  },
-  breite_m: {
-    title: "Breite (m)",
-    value: (s: SubsubsectionExportRow) => s.width?.toString() || "",
-  },
-  beschreibung: {
-    title: "Beschreibung",
-    value: (s: SubsubsectionExportRow) => s.description || "",
-  },
-  fuehrungsform: {
-    title: "Führungsform",
-    value: (s: SubsubsectionExportRow) => s.SubsubsectionInfra?.title || "",
-  },
-  foerdergegenstand: {
-    title: "Fördergegenstand",
-    value: (s: SubsubsectionExportRow) => s.SubsubsectionInfrastructureType?.title || "",
-  },
-  lage: {
-    title: "Lage",
-    value: (s: SubsubsectionExportRow) => {
-      return (s.location && subsubsectionLocationLabelMap[s.location]) ?? ""
+function getExportColumns(projectSlug: string) {
+  const origin = getPrdOrStgDomain()
+  return {
+    titel: {
+      title: "Titel",
+      value: (s: SubsubsectionExportRow) => s.slug,
     },
-  },
-  fertigstellung: {
-    title: "Fertigstellung",
-    value: (s: SubsubsectionExportRow) => s.estimatedCompletionDate || "",
-  },
-} as const
+    status: {
+      title: "Status",
+      value: (s: SubsubsectionExportRow) => s.SubsubsectionStatus?.title || "",
+    },
+    eintragstyp: {
+      title: "Eintragstyp",
+      value: (s: SubsubsectionExportRow) => s.SubsubsectionTask?.title || "",
+    },
+    ausbaustandard: {
+      title: "Ausbaustandard",
+      value: (s: SubsubsectionExportRow) => s.subsection.networkHierarchy?.title || "",
+    },
+    ansprechpartner: {
+      title: "Ansprechpartner:in",
+      value: (s: SubsubsectionExportRow) =>
+        s.manager ? `${s.manager.firstName} ${s.manager.lastName}` : "",
+    },
+    kostenschaetzung_euro: {
+      title: "Kostenschätzung (Euro)",
+      value: (s: SubsubsectionExportRow) => s.costEstimate?.toString() || "",
+    },
+    planungsabschnitt: {
+      title: "Planungsabschnitt",
+      value: (s: SubsubsectionExportRow) => s.subsection.slug,
+    },
+    laenge_m: {
+      title: "Länge (m)",
+      value: (s: SubsubsectionExportRow) => s.lengthM?.toString() || "",
+    },
+    breite_m: {
+      title: "Breite (m)",
+      value: (s: SubsubsectionExportRow) => s.width?.toString() || "",
+    },
+    beschreibung: {
+      title: "Beschreibung",
+      value: (s: SubsubsectionExportRow) => s.description || "",
+    },
+    fuehrungsform: {
+      title: "Führungsform",
+      value: (s: SubsubsectionExportRow) => s.SubsubsectionInfra?.title || "",
+    },
+    foerdergegenstand: {
+      title: "Fördergegenstand",
+      value: (s: SubsubsectionExportRow) => s.SubsubsectionInfrastructureType?.title || "",
+    },
+    lage: {
+      title: "Lage",
+      value: (s: SubsubsectionExportRow) => {
+        return (s.location && subsubsectionLocationLabelMap[s.location]) ?? ""
+      },
+    },
+    fertigstellung: {
+      title: "Fertigstellung",
+      value: (s: SubsubsectionExportRow) => s.estimatedCompletionDate || "",
+    },
+    trassenscout_url: {
+      title: "trassenscout_url",
+      value: (s: SubsubsectionExportRow) =>
+        new URL(
+          `/${projectSlug}/abschnitte/${s.subsection.slug}/fuehrung/${s.slug}`,
+          origin,
+        ).toString(),
+    },
+  }
+}
 
-export function subsubsectionsToCsvString(subsubsections: SubsubsectionExportRow[]) {
+export function subsubsectionsToCsvString(
+  subsubsections: SubsubsectionExportRow[],
+  projectSlug: string,
+) {
+  const columns = getExportColumns(projectSlug)
   const headers = Object.entries(columns).map(([id, { title }]) => ({ id, title }))
 
   const csvData = subsubsections.map((s) =>
