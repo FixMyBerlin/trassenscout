@@ -26,6 +26,7 @@ const tableHeadClasses = "pl-4 py-3.5 pr-3 text-left text-sm font-semibold text-
 export const SubsectionTable = ({ subsections, createButton = true }: Props) => {
   const router = useRouter()
   const projectSlug = useProjectSlug()
+  const hasAnySubsubsections = subsections.some((s) => (s.subsubsectionCount ?? 0) > 0)
 
   return (
     <section>
@@ -108,9 +109,16 @@ export const SubsectionTable = ({ subsections, createButton = true }: Props) => 
 
       {createButton && (
         <IfUserCanEdit>
-          <Link button="blue" icon="plus" className="mt-4" href={subsectionNewRoute(projectSlug)}>
-            Neuer Planungsabschnitt
-          </Link>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link button="blue" icon="plus" href={subsectionNewRoute(projectSlug)}>
+              Neuer Planungsabschnitt
+            </Link>
+            {hasAnySubsubsections && (
+              <Link button="white" icon="download" href={`/api/${projectSlug}/subsections/export`}>
+                Alle Einträge herunterladen (CSV)
+              </Link>
+            )}
+          </div>
         </IfUserCanEdit>
       )}
     </section>

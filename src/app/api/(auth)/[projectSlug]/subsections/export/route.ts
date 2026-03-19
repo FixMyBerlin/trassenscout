@@ -9,21 +9,20 @@ import { withProjectMembership } from "@/src/app/api/(auth)/_utils/withProjectMe
 import { viewerRoles } from "@/src/authorization/constants"
 
 export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
-  const { projectSlug, subsectionSlug } = params
+  const { projectSlug } = params
 
   const subsubsections = await db.subsubsection.findMany({
     where: {
       subsection: {
         project: { slug: projectSlug },
-        slug: subsectionSlug,
       },
     },
     include: subsubsectionExportInclude,
-    orderBy: { slug: "asc" },
+    orderBy: [{ subsection: { slug: "asc" } }, { slug: "asc" }],
   })
 
   const csvString = subsubsectionsToCsvString(subsubsections)
-  const filename = subsubsectionExportFilename(projectSlug, subsectionSlug)
+  const filename = subsubsectionExportFilename(projectSlug /* no subsectionSlug = project-level */)
 
   return subsubsectionCsvResponse(csvString, filename)
 })

@@ -1,5 +1,5 @@
-import { styleText } from "node:util"
 import { resolve } from "node:path"
+import { styleText } from "node:util"
 
 /**
  * Downloads CSV from Google Sheets and stores it locally for inspection
