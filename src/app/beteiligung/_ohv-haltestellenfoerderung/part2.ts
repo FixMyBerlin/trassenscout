@@ -137,17 +137,30 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
         {
           name: "category",
           componentType: "form",
-          component: "SurveyRadiobuttonGroup",
-          validation: fieldValidationEnum["requiredString"],
-          defaultValue: "",
+          component: "SurveyCheckboxGroup",
+          validation: fieldValidationEnum["requiredArrayOfString"],
+          defaultValue: [],
           props: {
             label: "Bitte wählen Sie den Gegenstand der Förderung aus.",
             options: [
-              { key: "zob", label: "Bau oder Ausbau von Zentralen Omnibusbahnhöfen (ZOB)" },
+              { key: "zob", label: "Zentrale Omnibusbahnhöfe (ZOB)" },
               { key: "haltestelleneinrichtungen", label: "Haltestelleneinrichtungen" },
-              { key: "buswendeschleifen", label: "Buswendeschleifen und Bahnhofsvorplätze" },
-              { key: "pandr", label: "Park-and-Ride- (P&R) und Bike-and-Ride-Anlagen (B&R)" },
+              {
+                key: "buswendeschleifen",
+                label:
+                  "Buswendeschleifen / Bahnhofsvorplätze als Verknüpfungs- und Umsteigeanlagen unterschiedlicher Verkehrsträger (sofern sie nicht bereits im Zusammenhang mit Straßenbaumaßnahmen gefördert werden)",
+              },
+              {
+                key: "pandr",
+                label: "Umsteigeparkplätze ausgenommen Parkhäuser (P&R-, B&R-Anlagen)",
+              },
               { key: "beschleunigung", label: "Beschleunigungsmaßnahmen für den ÖPNV" },
+              {
+                key: "intermodale_mobilitaetsknoten",
+                label:
+                  "Weiterentwicklung von ÖPNV-Haltestellen zu intermodalen Mobilitätsknotenpunkten",
+              },
+              { key: "taxistellplaetze", label: "Taxistellplätze" },
             ],
           },
         },
