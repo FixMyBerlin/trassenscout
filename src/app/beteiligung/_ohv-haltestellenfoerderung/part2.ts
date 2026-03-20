@@ -46,7 +46,7 @@ Die Förderlinie verfolgt das Ziel, die Mobilität in der Region zu stärken, kl
 
 Bitte beachten Sie: Die Maßnahmenmeldung über dieses Formular stellt noch keinen Förderantrag dar. Sie dient als strukturierte Vorprüfung im Rahmen des Landkreiskonzepts und bildet die Grundlage für die Auswahl und Priorisierung der Projekte im Rahmen des jährlichen Fortschreibungsprozesses.
 
-## Fördergegenstand
+## Gegenstand der Förderung
 
 Die Kommunen können Maßnahmenvorschläge zu allen förderfähigen Gegenständen gemäß Ziffer 2.1 der Förderrichtlinie eintragen. Dazu gehören:
 - Bau oder Ausbau von Zentralen Omnibusbahnhöfen (ZOB)
@@ -77,13 +77,13 @@ E-Mail: [a.greifenberg@ohbv.de](mailto:a.greifenberg@ohbv.de)
 
 **Weitere Informationen**\\
 Die Maßnahmenmeldung wird nicht zwischengespeichert, d.h. bei Verlassen der Seite gehen alle eingetragenen Informationen verloren. Nach dem Absenden der Maßnahmenmeldung können Sie nicht mehr auf Ihre getätigten Eingaben zugreifen. Deshalb ist es sinnvoll die Maßnahmenmeldung erst dann auszufüllen und abzusenden, sobald Sie alle wichtigen Informationen für die Maßnahmenmeldung beisammen haben. Folgende Informationen werden im Rahmen der Maßnahmenmeldung abgefragt:
-- Auswahl des Fördergegenstands
+- Auswahl des Gegenstandes der Förderung
 - Upload für Dokumente (optional)
 - Beschreibung der Dokumente (optional)
 - Bezug zu vorhandener Haltestelle durch Auswahl auf Karte
 - Maßnahmenbeschreibung und Zielsetzung
 - Stand der Bauvorbereitung (optional)
-- Kostenschätzung (€)
+- Kostenberechnung
 - Angaben zur Ko-Finanzierung (wenn ja, Mittelgeber und Programm)
 - Angaben zum geschätzten Kostenaufwand
 - Abfrage ob Gemeinschaftsbauwerk
@@ -133,7 +133,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
               "Diese Vorgangsnummer wird automatisch vergeben und dient der eindeutigen Identifizierung Ihres Antrags über den gesamten Bearbeitungsprozess hinweg.",
           },
         },
-        // Fördergegenstand/SubsubsectionInfrastructureType
+        // Gegenstand der Förderung/SubsubsectionInfrastructureType
         {
           name: "category",
           componentType: "form",
@@ -141,7 +141,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           validation: fieldValidationEnum["requiredString"],
           defaultValue: "",
           props: {
-            label: "Bitte wählen Sie den Fördergegenstand aus.",
+            label: "Bitte wählen Sie den Gegenstand der Förderung aus.",
             options: [
               { key: "zob", label: "Bau oder Ausbau von Zentralen Omnibusbahnhöfen (ZOB)" },
               { key: "haltestelleneinrichtungen", label: "Haltestelleneinrichtungen" },
@@ -279,7 +279,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           validation: fieldValidationEnum["requiredNumber"],
           defaultValue: null,
           props: {
-            label: "Kostenschätzung (€)",
+            label: "Kostenberechnung",
             description: "Zahlen bitte ohne Punkt und Komma eingeben.",
           },
         },

@@ -46,7 +46,7 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
     disableNote: true,
     labels: {
       category: {
-        sg: "Fördergegenstand",
+        sg: "Gegenstand der Förderung",
       },
       comment: {
         sg: "Gesprächsnotiz",
@@ -96,7 +96,7 @@ Wir bestätigen den Eingang Ihrer Meldung über das Online-Formular unter folgen
 
 Folgende Angaben wurden übermittelt:
 
-- **Fördergegenstand**: {{category}}
+- **Gegenstand der Förderung**: {{category}}
 - **Kommune**: {{commune}}
 - **Beschreibung der Dokumente**: {{uploadsDescription}}
 - **Verortung der Maßnahme:** {{geometryCategory}}
