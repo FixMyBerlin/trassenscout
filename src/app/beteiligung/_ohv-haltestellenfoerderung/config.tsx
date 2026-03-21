@@ -8,6 +8,7 @@ export const formConfig: FormConfig = {
     logoUrl: "https://www.oberhavel.de/media/custom/2244_71430_1_g.PNG?1606723864",
     canonicalUrl: "https://www.oberhavel.de/",
     maptilerUrl: "https://api.maptiler.com/maps/b09268b1-91d0-42e2-9518-321a1a94738f/style.json",
+    hideProgressBar: true,
     primaryColor: "#006ab2",
     darkColor: "#00375D",
     lightColor: "#B8D5E9",

@@ -294,6 +294,7 @@ export type FormConfig = {
     logoUrl: string
     canonicalUrl: string
     maptilerUrl: string
+    hideProgressBar?: boolean
     tildaUrl?: string
     primaryColor: string
     darkColor: string

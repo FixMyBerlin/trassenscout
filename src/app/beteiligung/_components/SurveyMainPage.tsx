@@ -68,6 +68,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
   })
 
   const [progress, setProgress] = useState(getprogressBarDefinitionBySurveySlug(surveySlug, stage))
+  const surveyMeta = getConfigBySurveySlug(surveySlug, "meta")
 
   const getOrCreateSurveySessionId = async () => {
     if (surveySessionId) {
@@ -257,7 +258,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
 
   return (
     <ProgressContext.Provider value={{ progress, setProgress }}>
-      <ProgressBar />
+      {!surveyMeta.hideProgressBar && <ProgressBar />}
       <SurveyContainer>
         <Debug className="border border-red-500">
           <code>stage: {stage}</code>
