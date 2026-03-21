@@ -105,8 +105,7 @@ Folgende Angaben wurden übermittelt:
 - **Stand der Bauvorbereitung**: {{stateOfConstruction}}
 - **Kostenschätzung**: {{costs}}
 - **Ko-Finanzierung**: {{coFinancing}}
-- **Ko-Finanzierung: Mittelgeber**: {{fundingSource}}
-- **Ko-Finanzierung: Programm**: {{programName}}
+- **Ko-Finanzierung: Mittelgeber und Programm**: {{fundingSource}}
 - **Gemeinschaftsbauwerk**: {{sharedBuilding}}
 - **Voraussichtliches Realisierungsjahr**: {{realisationYear}}
 - **Kontaktperson (optional)**: {{contact}}
@@ -132,7 +131,6 @@ im Auftrag des Landkreises Oberhavel
       "costs",
       "coFinancing",
       "fundingSource",
-      "programName",
       "sharedBuilding",
       "realisationYear",
       "contact",

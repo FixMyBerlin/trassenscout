@@ -328,7 +328,6 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
                 )
               if (fieldApi.state.value === "no") {
                 fieldApi.form.setFieldValue("fundingSource", "") // reset value of fundingSource if condition is not met
-                fieldApi.form.setFieldValue("programName", "") // reset value of programName if condition is not met
               }
             },
           },
@@ -344,21 +343,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
             conditionFn: (fieldValue) => fieldValue === "planned" || fieldValue === "approved",
           },
           props: {
-            label: "Ko-Finanzierung: Mittelgeber",
-          },
-        },
-        {
-          name: "programName",
-          component: "SurveyTextfield",
-          componentType: "form",
-          validation: fieldValidationEnum["conditionalOptionalString"],
-          defaultValue: "",
-          condition: {
-            fieldName: "coFinancing",
-            conditionFn: (fieldValue) => fieldValue === "planned" || fieldValue === "approved",
-          },
-          props: {
-            label: "Ko-Finanzierung: Programm",
+            label: "Ko-Finanzierung: Mittelgeber und Programm",
           },
         },
         {
