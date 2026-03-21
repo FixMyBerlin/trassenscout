@@ -57,17 +57,35 @@ export default resolver.pipe(
         fieldValues[fieldName] = `https://trassenscout.de/beteiligung/${surveySlug}/?${queryParams}`
       } else {
         // Handle different field types
-        if (
-          field?.component === "SurveyRadiobuttonGroup" ||
-          field?.component === "SurveyCheckboxGroup"
-        ) {
-          // For radio/checkbox groups, get the label from options
+        if (field?.component === "SurveyRadiobuttonGroup") {
+          // For radio groups, get the label from options
           const props = field.props as any
           if (props.options) {
             const option = props.options.find((opt: any) => opt.key === value)
             fieldValues[fieldName] = option?.label || value
           } else {
             fieldValues[fieldName] = value
+          }
+        } else if (field?.component === "SurveyCheckboxGroup") {
+          // For checkbox groups, map all selected option keys to their labels.
+          const props = field.props as any
+          const selectedValues = (
+            Array.isArray(value)
+              ? value
+              : typeof value === "string" && value.length > 0
+                ? value.split(",")
+                : []
+          ).map((v) => String(v))
+
+          if (props.options) {
+            const labels = selectedValues.map((selectedValue) => {
+              const normalizedValue = selectedValue.trim()
+              const option = props.options.find((opt: any) => opt.key === normalizedValue)
+              return option?.label || normalizedValue
+            })
+            fieldValues[fieldName] = labels.join(", ")
+          } else {
+            fieldValues[fieldName] = selectedValues.join(", ")
           }
         } else {
           fieldValues[fieldName] = value
