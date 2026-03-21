@@ -361,7 +361,12 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           props: {
             label: "Gemeinschaftsbauwerk",
             options: [
-              { key: "yes", label: "Ja" },
+              {
+                key: "yes",
+                label: "Ja",
+                description:
+                  "Bei Gemeinschaftsbauwerken mit weiteren Projektpartnern laden Sie bitte vorhandene Vereinbarungen oder Abstimmungsunterlagen hoch. Spätestens im Rahmen der Förderantragstellung sind diese einzureichen.",
+              },
               { key: "no", label: "Nein" },
               { key: "unknown", label: "keine Angabe" },
             ],
