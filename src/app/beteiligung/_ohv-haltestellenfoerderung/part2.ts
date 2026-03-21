@@ -306,8 +306,17 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
             label: "Ko-Finanzierung",
             options: [
               { key: "no", label: "Nein" },
-              { key: "planned", label: "Ja – geplant" },
-              { key: "approved", label: "Ja – bewilligt" },
+              {
+                key: "planned",
+                label: "Ja – geplant",
+                description: "Bitte nachreichen sobald vorhanden",
+              },
+              {
+                key: "approved",
+                label: "Ja – bewilligt",
+                description:
+                  "Liegt bereits ein Bewilligungsbescheid zur Ko-Finanzierung vor, bitten wir um Upload des entsprechenden Dokuments.",
+              },
             ],
           },
           // this deletes the value of fundingSource if condition is not met
