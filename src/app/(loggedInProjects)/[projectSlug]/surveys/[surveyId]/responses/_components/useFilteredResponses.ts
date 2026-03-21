@@ -70,8 +70,15 @@ export const useFilteredResponses = (
     })
     // Handle `categories`
     .filter((response) => {
-      if (!categories) return
-      return categories.includes(String(response.data[userCategoryQuestionId]))
+      if (!categories) return true
+
+      const responseCategory = response.data[userCategoryQuestionId]
+
+      if (Array.isArray(responseCategory)) {
+        return responseCategory.some((category) => categories.includes(String(category)))
+      }
+
+      return categories.includes(String(responseCategory))
     })
     // Handle `searchterm`
     .filter((response) => {
