@@ -301,13 +301,13 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           component: "SurveyRadiobuttonGroup",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
-          defaultValue: "unknown",
+          defaultValue: "no",
           props: {
             label: "Ko-Finanzierung",
             options: [
-              { key: "yes", label: "Ja" },
               { key: "no", label: "Nein" },
-              { key: "unknown", label: "keine Angabe" },
+              { key: "planned", label: "Ja – geplant" },
+              { key: "approved", label: "Ja – bewilligt" },
             ],
           },
           // this deletes the value of fundingSource if condition is not met
@@ -317,7 +317,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
                 console.log(
                   `${fieldApi.name} has changed to: ${fieldApi.state.value} --> resetting conditionalCase1A`,
                 )
-              if (fieldApi.state.value === "no" || fieldApi.state.value === "unknown") {
+              if (fieldApi.state.value === "no") {
                 fieldApi.form.setFieldValue("fundingSource", "") // reset value of fundingSource if condition is not met
                 fieldApi.form.setFieldValue("programName", "") // reset value of programName if condition is not met
               }
@@ -332,7 +332,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           defaultValue: "",
           condition: {
             fieldName: "coFinancing",
-            conditionFn: (fieldValue) => fieldValue === "yes",
+            conditionFn: (fieldValue) => fieldValue === "planned" || fieldValue === "approved",
           },
           props: {
             label: "Ko-Finanzierung: Mittelgeber",
@@ -346,7 +346,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           defaultValue: "",
           condition: {
             fieldName: "coFinancing",
-            conditionFn: (fieldValue) => fieldValue === "yes",
+            conditionFn: (fieldValue) => fieldValue === "planned" || fieldValue === "approved",
           },
           props: {
             label: "Ko-Finanzierung: Programm",
