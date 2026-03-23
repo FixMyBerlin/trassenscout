@@ -49,11 +49,13 @@ Bitte beachten Sie: Die Maßnahmenmeldung über dieses Formular stellt noch kein
 ## Gegenstand der Förderung
 
 Die Kommunen können Maßnahmenvorschläge zu allen förderfähigen Gegenständen gemäß Ziffer 2.1 der Förderrichtlinie eintragen. Dazu gehören:
-- Bau oder Ausbau von Zentralen Omnibusbahnhöfen (ZOB)
+- Zentrale Omnibusbahnhöfe (ZOB)
 - Haltestelleneinrichtungen
-- Buswendeschleifen und Bahnhofsvorplätze
-- Park-and-Ride- (P&R) und Bike-and-Ride-Anlagen (B&R)
+- Buswendeschleifen / Bahnhofsvorplätze als Verknüpfungs- und Umsteigeanlagen unterschiedlicher Verkehrsträger (sofern sie nicht bereits im Zusammenhang mit Straßenbaumaßnahmen gefördert werden)
+- Umsteigeparkplätze ausgenommen Parkhäuser (P&R-, B&R-Anlagen)
 - Beschleunigungsmaßnahmen für den ÖPNV
+- Weiterentwicklung von ÖPNV-Haltestellen zu intermodalen Mobilitätsknotenpunkten
+- Taxistellplätze
 
 ## Fristen
 
