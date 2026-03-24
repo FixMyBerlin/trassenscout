@@ -11,6 +11,7 @@ import { SurveySelect } from "@/src/app/beteiligung/_components/form/Select"
 import { SurveyTextarea } from "@/src/app/beteiligung/_components/form/Textarea"
 import { SurveyTextfield } from "@/src/app/beteiligung/_components/form/Textfield"
 import { SurveyUploadField } from "@/src/app/beteiligung/_components/form/UploadField"
+import { SurveyVorgangsIdField } from "@/src/app/beteiligung/_components/form/VorgangsIdField"
 import { SurveyMarkdown } from "@/src/app/beteiligung/_components/layout/SurveyMarkdown"
 import { TBackendConfig } from "@/src/app/beteiligung/_shared/backend-types"
 import { fieldValidationEnum } from "@/src/app/beteiligung/_shared/fieldvalidationEnum"
@@ -107,6 +108,16 @@ export type FieldConfig =
       defaultValue: string
     } & FormFieldBase & {
         props: Omit<ComponentProps<typeof SurveyReadonlyTextfield>, "required">
+      })
+  | ({
+      component: "SurveyVorgangsIdField"
+      componentType: "form"
+      validation:
+        | (typeof fieldValidationEnum)["optionalString"]
+        | (typeof fieldValidationEnum)["requiredString"]
+      defaultValue: string
+    } & FormFieldBase & {
+        props: Omit<ComponentProps<typeof SurveyVorgangsIdField>, "required" | "vorgangsId">
       })
   | ({
       component: "SurveyResponseIdField"

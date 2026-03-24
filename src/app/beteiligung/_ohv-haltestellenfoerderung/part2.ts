@@ -124,8 +124,8 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           },
         },
         {
-          name: "subsubsectionId",
-          component: "SurveyResponseIdField",
+          name: "vorgangsId",
+          component: "SurveyVorgangsIdField",
           componentType: "form",
           validation: fieldValidationEnum["requiredString"],
           defaultValue: "",

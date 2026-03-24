@@ -14,6 +14,7 @@ const translatedComponentTypes = {
   SurveyCheckboxGroup: "mehrfach",
   SurveyNumberfield: "zahl",
   SurveyResponseIdField: "antwort_id",
+  SurveyVorgangsIdField: "text readonly",
   SurveyRadiobuttonGroup: "einfach",
   SurveySelect: "einfach",
   SurveyTextfield: "text",

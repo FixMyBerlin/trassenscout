@@ -66,6 +66,11 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
     2: null,
     3: null,
   })
+  const [vorgangsIdByPart, setVorgangsIdByPart] = useState<Record<1 | 2 | 3, string | null>>({
+    1: null,
+    2: null,
+    3: null,
+  })
 
   const [progress, setProgress] = useState(getprogressBarDefinitionBySurveySlug(surveySlug, stage))
   const surveyMeta = getConfigBySurveySlug(surveySlug, "meta")
@@ -86,14 +91,16 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
   // Create a (CREATED) response when starting a part
   const createPendingResponse = async (part: 1 | 2 | 3) => {
     const surveySessionId_ = await getOrCreateSurveySessionId()
-    const { id } = await getOrCreateCreatedSurveyResponseMutation({
+    const { id, data } = await getOrCreateCreatedSurveyResponseMutation({
       surveySessionId: surveySessionId_,
       surveyPart: part,
       data: "{}",
       source: "FORM",
       status: surveyResponseDefaultStatus,
     })
+    const parsedData = JSON.parse(data) as { vorgangsId?: string }
     setResponseIdByPart((prev) => ({ ...prev, [part]: id }))
+    setVorgangsIdByPart((prev) => ({ ...prev, [part]: parsedData.vorgangsId ?? null }))
     return id
   }
 
@@ -144,6 +151,9 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
     const locationId = getQuestionIdBySurveySlug(surveySlug, "location")
     if (value[enableLocationId] === "nein" || String(value[enableLocationId]) === "2")
       delete value[locationId]
+    if (surveySlug === "ohv-haltestellenfoerderung") {
+      value.subsubsectionId = String(meta.surveyResponseId)
+    }
     // tbd null or delete?
     // delete value.enableLocation
     void (async () => {
@@ -216,6 +226,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           stage="part1"
           handleSubmit={handleSurveyPart1Submit}
           surveyResponseId={responseIdByPart[1]}
+          vorgangsId={vorgangsIdByPart[1]}
           surveySessionId={surveySessionId}
           onStartPart={() => handleStartPart(1)}
         />
@@ -232,6 +243,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           stage="part2"
           handleSubmit={handleSurveyPart2Submit}
           surveyResponseId={responseIdByPart[2]}
+          vorgangsId={vorgangsIdByPart[2]}
           surveySessionId={surveySessionId}
           onStartPart={() => handleStartPart(2)}
         />
@@ -246,6 +258,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
           stage="part3"
           handleSubmit={handleSurveyPart3Submit}
           surveyResponseId={responseIdByPart[3]}
+          vorgangsId={vorgangsIdByPart[3]}
           surveySessionId={surveySessionId}
           onStartPart={() => handleStartPart(3)}
         />
