@@ -1,3 +1,4 @@
+import type { MapSourceType } from "@/src/app/beteiligung/_shared/types"
 import type {
   CircleLayerSpecification,
   FillLayerSpecification,
@@ -17,7 +18,8 @@ export type StaticOverlayLayerSpec = (
 }
 
 export type StaticOverlaySource = {
-  pmTilesUrl: string
+  tildaUrl: string
+  type: MapSourceType
   layers: StaticOverlayLayerSpec[]
 }
 

@@ -26,11 +26,19 @@ import type {
 } from "maplibre-gl"
 import { ComponentProps, ReactNode } from "react"
 
+/** How the resource at `tildaUrl` is exposed for map sources (GeoJSON vs PMTiles). */
+export const MapSourceType = {
+  geojson: "geojson",
+  pmtiles: "pmtiles",
+} as const
+export type MapSourceType = (typeof MapSourceType)[keyof typeof MapSourceType]
+
 export type MapData = {
   sources: {
     // Source `id`
     [sourceId: string]: {
-      pmTilesUrl: string
+      tildaUrl: string
+      type: MapSourceType
       layers: ((
         | Omit<FillLayerSpecification, "source" | "source-layer" | "metadata">
         | Omit<LineLayerSpecification, "source" | "source-layer" | "metadata">

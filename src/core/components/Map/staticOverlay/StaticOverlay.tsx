@@ -7,14 +7,14 @@ function generateOverlayLayers(config: StaticOverlayConfig) {
   return Object.entries(config.sources).flatMap(([sourceId, source]) =>
     source.layers.map((layer) => ({
       layerKey: `${sourceId}-${layer.id}`,
-      pmTilesUrl: source.pmTilesUrl,
+      tildaUrl: source.tildaUrl,
       layer,
     })),
   )
 }
 
 export const StaticOverlay = ({ config }: Props) => {
-  const sourceUrls = [...new Set(Object.values(config.sources).map((s) => s.pmTilesUrl))]
+  const sourceUrls = [...new Set(Object.values(config.sources).map((s) => s.tildaUrl))]
   const layers = generateOverlayLayers(config)
 
   return (
@@ -22,8 +22,8 @@ export const StaticOverlay = ({ config }: Props) => {
       {sourceUrls.map((url) => (
         <Source key={url} id={url} type="vector" url={`pmtiles://${url}`} />
       ))}
-      {layers.map(({ layerKey, pmTilesUrl, layer }) => (
-        <Layer key={layerKey} {...layer} source={pmTilesUrl} source-layer="default" />
+      {layers.map(({ layerKey, tildaUrl, layer }) => (
+        <Layer key={layerKey} {...layer} source={tildaUrl} source-layer="default" />
       ))}
     </>
   )
