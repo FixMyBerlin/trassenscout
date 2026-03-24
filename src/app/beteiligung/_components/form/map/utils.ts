@@ -1,3 +1,5 @@
+import type { MapData } from "@/src/app/beteiligung/_shared/types"
+import { MapSourceType } from "@/src/app/beteiligung/_shared/types"
 import { bbox, lineString, multiLineString, point, polygon } from "@turf/turf"
 
 export type GeometryType = "point" | "lineString" | "multiLineString" | "polygon" | "unknown"
@@ -128,4 +130,17 @@ export const getInitialViewStateFromGeometryString = (geometryString: string): a
       fitBoundsOptions: { padding: 70 },
     }
   }
+}
+
+/** MapLibre `setFeatureState` needs `sourceLayer` for vector/PMTiles sources, not for GeoJSON sources. */
+export function featureStateTargetForMapSource(
+  mapData: MapData,
+  source: string,
+  target: { id: string | number } & Record<string, unknown>,
+) {
+  const config = Object.values(mapData.sources).find((s) => s.tildaUrl === source)
+  if (config?.type === MapSourceType.geojson) {
+    return { source, ...target }
+  }
+  return { source, sourceLayer: "default" as const, ...target }
 }

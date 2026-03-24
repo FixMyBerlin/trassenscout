@@ -1,4 +1,4 @@
-import { MapData } from "@/src/app/beteiligung/_shared/types"
+import { MapData, MapSourceType } from "@/src/app/beteiligung/_shared/types"
 import type {
   CircleLayerSpecification,
   FillLayerSpecification,
@@ -11,7 +11,8 @@ import { Layer } from "react-map-gl/maplibre"
 type Props = {
   layers: {
     layerKey: string
-    pmTilesUrl: string
+    tildaUrl: string
+    mapSourceType: MapSourceType
     layer: (
       | Omit<FillLayerSpecification, "source" | "source-layer" | "metadata">
       | Omit<LineLayerSpecification, "source" | "source-layer" | "metadata">
@@ -31,7 +32,8 @@ export const generateLayers = (layers: MapData) => {
         const layerKey = `${sourceId}-${layer.id}`
         return {
           sourceId,
-          pmTilesUrl: sources.pmTilesUrl,
+          tildaUrl: sources.tildaUrl,
+          mapSourceType: sources.type,
           layerKey,
           layer,
         }
@@ -43,14 +45,16 @@ export const generateLayers = (layers: MapData) => {
 export const AllLayers = ({ layers }: Props) => {
   return (
     <>
-      {layers.map(({ layerKey, pmTilesUrl, layer }) => {
+      {layers.map(({ layerKey, tildaUrl, layer, mapSourceType }) => {
         return (
           <Layer
             {...layer}
-            source={pmTilesUrl}
+            source={tildaUrl}
             key={layerKey}
             id={layerKey}
-            source-layer="default"
+            {...(mapSourceType === MapSourceType.pmtiles
+              ? ({ "source-layer": "default" } as const)
+              : {})}
           />
         )
       })}

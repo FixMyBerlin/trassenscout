@@ -9,7 +9,8 @@ import type { StaticOverlayConfig } from "./staticOverlay.types"
 export const ohvStaticOverlayConfig: StaticOverlayConfig = {
   sources: {
     buslinien: {
-      pmTilesUrl: "https://tilda-geo.de/api/uploads/ohv-busverbindungen",
+      tildaUrl: "https://tilda-geo.de/api/uploads/ohv-busverbindungen",
+      type: "pmtiles",
       layers: [
         {
           id: "ohv-busverbindungen--line",
@@ -44,7 +45,8 @@ export const ohvStaticOverlayConfig: StaticOverlayConfig = {
       ],
     },
     grenzenGemeinde: {
-      pmTilesUrl: "https://tilda-geo.de/api/uploads/ohv-grenzen-gemeinden",
+      tildaUrl: "https://tilda-geo.de/api/uploads/ohv-grenzen-gemeinden",
+      type: "pmtiles",
       layers: [
         {
           id: "ohv-grenzen-gemeinden--line",
