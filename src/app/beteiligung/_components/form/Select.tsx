@@ -39,10 +39,13 @@ export const SurveySelect = ({
       const paramValue = searchParams?.get(queryId)
       if (paramValue) {
         const isValidOption = options.some((option) => option.key === paramValue)
-        field.setValue(isValidOption ? paramValue : "unknown")
+        const newValue = isValidOption ? paramValue : "unknown"
+        if (field.state.value !== newValue) {
+          field.setValue(newValue)
+        }
       }
     }
-  }, [field, searchParams, queryId])
+  }, [field, searchParams, queryId, options])
 
   return (
     <FieldWithErrorContainer hasError={hasError}>
