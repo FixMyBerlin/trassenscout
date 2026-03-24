@@ -185,10 +185,10 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           },
         },
         {
-          name: "geometryCategory",
+          name: "location",
           componentType: "form",
-          component: "SurveyGeoCategoryMapWithLegend",
-          validation: fieldValidationEnum["requiredString"],
+          component: "SwitchableMapWithLegend",
+          validation: fieldValidationEnum["conditionalRequiredLatLng"],
           defaultValue: null,
           props: {
             label: "Maßnahmenverortung",
@@ -251,7 +251,7 @@ Mit dem Aufrufen des Formulars stimme ich der [Datenschutzerklärung](https://tr
           props: { label: "Name der ausgewählten Haltestelle" },
         },
         {
-          name: "routeIds",
+          name: "hsName",
           componentType: "form",
           component: "hidden",
           props: { label: "IDs der Routen" },

@@ -4,6 +4,51 @@ import { bbox, lineString, multiLineString, point, polygon } from "@turf/turf"
 
 export type GeometryType = "point" | "lineString" | "multiLineString" | "polygon" | "unknown"
 
+/** `location` value for SwitchableMap (GeoJSON Point → `{ lng, lat }`). */
+export type SwitchableMapLocationPoint = { lng: number; lat: number }
+
+/**
+ * Normalizes a stored field value to a JSON string that {@link detectGeometryType} understands
+ * (point = `[lng, lat]`).
+ */
+export function geometryStringForSwitchableMapLocationPoint(value: unknown): string | null {
+  if (value == null || value === "") return null
+  if (typeof value === "object" && value !== null && "lng" in value && "lat" in value) {
+    const o = value as { lng: unknown; lat: unknown }
+    if (typeof o.lng === "number" && typeof o.lat === "number") {
+      return JSON.stringify([o.lng, o.lat])
+    }
+  }
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value) as unknown
+      if (
+        Array.isArray(parsed) &&
+        parsed.length >= 2 &&
+        typeof parsed[0] === "number" &&
+        typeof parsed[1] === "number"
+      ) {
+        return JSON.stringify([parsed[0], parsed[1]])
+      }
+      if (
+        typeof parsed === "object" &&
+        parsed !== null &&
+        "lng" in parsed &&
+        "lat" in parsed
+      ) {
+        const p = parsed as { lng: unknown; lat: unknown }
+        if (typeof p.lng === "number" && typeof p.lat === "number") {
+          return JSON.stringify([p.lng, p.lat])
+        }
+      }
+      return value
+    } catch {
+      return null
+    }
+  }
+  return null
+}
+
 export const detectGeometryType = (geometryString: string): GeometryType => {
   try {
     const parsedGeometry = JSON.parse(geometryString)
@@ -49,6 +94,23 @@ export const detectGeometryType = (geometryString: string): GeometryType => {
   } catch (error) {
     return "unknown"
   }
+}
+
+/**
+ * Parses the `location` field for SwitchableMap. **Points only** — uses {@link detectGeometryType}.
+ * @throws If the value encodes a non-point geometry (line, polygon, etc.).
+ */
+export function parseSwitchableMapLocationFieldValue(value: unknown): SwitchableMapLocationPoint | null {
+  const str = geometryStringForSwitchableMapLocationPoint(value)
+  if (str == null) return null
+  const type = detectGeometryType(str)
+  if (type !== "point") {
+    throw new Error(
+      `SwitchableMap only supports point locations; expected a point, got geometry type "${type}"`,
+    )
+  }
+  const parsed = JSON.parse(str) as [number, number]
+  return { lng: parsed[0], lat: parsed[1] }
 }
 
 export const createGeoJSONFromString = (

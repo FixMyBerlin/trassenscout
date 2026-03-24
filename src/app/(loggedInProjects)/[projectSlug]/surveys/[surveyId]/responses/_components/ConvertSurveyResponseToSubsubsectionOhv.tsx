@@ -7,6 +7,7 @@
  * configuration and needs refinement for other surveys in the future.
  */
 
+import { parseSwitchableMapLocationFieldValue } from "@/src/app/beteiligung/_components/form/map/utils"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getQuestionIdBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getQuestionIdBySurveySlug"
 import { blueButtonStyles, linkStyles } from "@/src/core/components/links/styles"
@@ -125,9 +126,12 @@ export const ConvertSurveyResponseToSubsubsectionOhv = ({
         ? projectUsers.find((user) => user.email === responseEmail)
         : null
 
-      // Parse geometry from geometryCategory — extract raw geometry, not the Feature wrapper
-      const coordinates = JSON.parse(response.data["geometryCategory"]) as [number, number]
-      const geometry = point(coordinates).geometry
+      // Location is `{ lng, lat }` from SwitchableMap (legacy `[lng, lat]` JSON still parses via utils)
+      const locationPoint = parseSwitchableMapLocationFieldValue(response.data["location"])
+      if (locationPoint == null) {
+        throw new Error("Standort (location) fehlt oder ist ungültig.")
+      }
+      const geometry = point([locationPoint.lng, locationPoint.lat]).geometry
 
       const description = response.data["stateOfConstruction"]
         ? `${response.data["feedbackText"]}\nStand der Bauvorbereitung: ${response.data["stateOfConstruction"]}`

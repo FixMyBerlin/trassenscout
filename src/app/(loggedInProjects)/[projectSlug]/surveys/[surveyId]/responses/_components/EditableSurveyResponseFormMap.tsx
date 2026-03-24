@@ -10,7 +10,10 @@ import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedS
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
 import { BackgroundSwitcher, LayerType } from "@/src/core/components/Map/BackgroundSwitcher"
 import { getMapStyle, getVectorStyleUrl } from "@/src/core/components/Map/mapStyleConfig"
+import { getStaticOverlayForProject } from "@/src/core/components/Map/staticOverlay/getStaticOverlayForProject"
+import { StaticOverlay } from "@/src/core/components/Map/staticOverlay/StaticOverlay"
 import SurveyStaticPin from "@/src/core/components/Map/SurveyStaticPin"
+import { useProjectSlug } from "@/src/core/routes/useProjectSlug"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import * as pmtiles from "pmtiles"
@@ -37,6 +40,8 @@ export const EditableSurveyResponseFormMap = ({
   geometryCategoryCoordinates,
   geoCategoryQuestion,
 }: Props) => {
+  const projectSlug = useProjectSlug()
+  const staticOverlay = getStaticOverlayForProject(projectSlug ?? "")
   const [selectedLayer, setSelectedLayer] = useState<LayerType>("vector")
   const [mapLoading, setMapLoading] = useState(true)
 
@@ -50,6 +55,7 @@ export const EditableSurveyResponseFormMap = ({
   }, [])
 
   const metaDefinition = getConfigBySurveySlug(surveySlug, "meta")
+  // TODO handle fallback geometry differently
   const fallbackGeometry = JSON.stringify(metaDefinition.geoCategoryFallback)
 
   const handleLayerSwitch = (layer: LayerType) => {
@@ -158,6 +164,7 @@ export const EditableSurveyResponseFormMap = ({
         onLoad={(event) => handleMapLoad(event)}
         onIdle={() => setMapLoading(false)}
       >
+        {staticOverlay && <StaticOverlay config={staticOverlay} />}
         {geometryCategorySource}
         {mapData && (
           <>
