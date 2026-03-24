@@ -49,6 +49,8 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
   const locationLabel = subsubsection.location
     ? subsubsectionLocationLabelMap[subsubsection.location]
     : null
+  const infrastructureTypeTitles =
+    subsubsection.SubsubsectionInfrastructureTypes.map((type) => type.title).filter(Boolean)
 
   const [{ uploads }, { refetch: refetchUploads }] = useQuery(getUploadsWithSubsections, {
     projectSlug,
@@ -162,13 +164,13 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
                   </td>
                 </tr>
               )}
-              {subsubsection.SubsubsectionInfrastructureType?.title && (
+              {infrastructureTypeTitles.length > 0 && (
                 <tr>
                   <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
                     Fördergegenstand
                   </th>
                   <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
-                    {subsubsection.SubsubsectionInfrastructureType.title}
+                    {infrastructureTypeTitles.join(", ")}
                   </td>
                 </tr>
               )}

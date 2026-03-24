@@ -40,7 +40,14 @@ export default resolver.pipe(
         const subsubsectionCount = await db.subsubsection.count({
           where: {
             subsection: { project: { slug: projectSlug } },
-            subsubsectionInfrastructureTypeId: subsubsectionInfrastructureType.id,
+            OR: [
+              { subsubsectionInfrastructureTypeId: subsubsectionInfrastructureType.id },
+              {
+                SubsubsectionInfrastructureTypes: {
+                  some: { id: subsubsectionInfrastructureType.id },
+                },
+              },
+            ],
           },
         })
         return {
