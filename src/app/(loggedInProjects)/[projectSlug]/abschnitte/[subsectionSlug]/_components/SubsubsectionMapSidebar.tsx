@@ -49,8 +49,9 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
   const locationLabel = subsubsection.location
     ? subsubsectionLocationLabelMap[subsubsection.location]
     : null
-  const infrastructureTypeTitles =
-    subsubsection.SubsubsectionInfrastructureTypes.map((type) => type.title).filter(Boolean)
+  const infrastructureTypeTitles = subsubsection.SubsubsectionInfrastructureTypes.map(
+    (type) => type.title,
+  ).filter(Boolean)
 
   const [{ uploads }, { refetch: refetchUploads }] = useQuery(getUploadsWithSubsections, {
     projectSlug,

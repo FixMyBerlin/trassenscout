@@ -73,8 +73,9 @@ const EditableSurveyResponseMapAndStaticData = ({
   const userCategoryId = response.data[categoryId]
   const surveyCategoryOptions = getSurveyCategoryOptions(surveySlug)
   const userCategoryLabels = (Array.isArray(userCategoryId) ? userCategoryId : [userCategoryId])
-    .map((selectedCategoryId) =>
-      surveyCategoryOptions.find((o) => String(o.value) === String(selectedCategoryId))?.label,
+    .map(
+      (selectedCategoryId) =>
+        surveyCategoryOptions.find((o) => String(o.value) === String(selectedCategoryId))?.label,
     )
     .filter(Boolean) as string[]
 

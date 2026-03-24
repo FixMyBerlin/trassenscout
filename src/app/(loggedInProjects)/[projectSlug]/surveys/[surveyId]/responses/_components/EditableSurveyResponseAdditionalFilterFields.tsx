@@ -103,8 +103,8 @@ const EditableSurveyResponseAdditionalFilterFields = ({
           {filteredPart2Responses.map(([key, value]) => {
             const isHistoricalOhvVorgangsId =
               surveySlug === "ohv-haltestellenfoerderung" && key === "subsubsectionId"
-            const field = part2Fields.find((f) =>
-              f.name === (isHistoricalOhvVorgangsId ? "vorgangsId" : key),
+            const field = part2Fields.find(
+              (f) => f.name === (isHistoricalOhvVorgangsId ? "vorgangsId" : key),
             )
             return (
               <tr key={key}>

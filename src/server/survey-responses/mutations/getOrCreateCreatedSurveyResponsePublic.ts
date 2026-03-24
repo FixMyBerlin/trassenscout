@@ -13,13 +13,7 @@ const GetOrCreateCreatedSurveyResponsePublicSchema = z.object({
   status: z.string().optional(),
 })
 
-const parseRunningNumber = ({
-  data,
-  prefix,
-}: {
-  data: string
-  prefix: string
-}): number | null => {
+const parseRunningNumber = ({ data, prefix }: { data: string; prefix: string }): number | null => {
   const parsedData = JSON.parse(data) as { vorgangsId?: unknown; subsubsectionId?: unknown }
 
   if (typeof parsedData.vorgangsId === "string") {
@@ -99,9 +93,10 @@ export default resolver.pipe(
         return runningNumber && runningNumber > highest ? runningNumber : highest
       }, 0)
 
-      const vorgangsId = `${OHV_VORGANGS_ID_PREFIX}_${String(
-        highestRunningNumber + 1,
-      ).padStart(3, "0")}`
+      const vorgangsId = `${OHV_VORGANGS_ID_PREFIX}_${String(highestRunningNumber + 1).padStart(
+        3,
+        "0",
+      )}`
 
       initialData = JSON.stringify({
         ...(JSON.parse(input.data) as Record<string, unknown>),
