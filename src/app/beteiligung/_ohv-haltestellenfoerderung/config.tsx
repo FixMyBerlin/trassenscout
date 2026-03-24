@@ -143,4 +143,57 @@ im Auftrag des Landkreises Oberhavel
       "surveyUrl",
     ],
   },
+  adminEmail: {
+    subject: "Neue Maßnahmenmeldung zur Haltestellenförderung im Landkreis Oberhavel",
+    markdown: `Sehr geehrte Damen und Herren,
+
+über das Online-Formular zur Haltestellenförderung im Landkreis Oberhavel ist eine neue Maßnahmenmeldung eingegangen.
+
+Folgende Angaben wurden übermittelt:
+
+- **Vorgangs-ID**: {{vorgangsId}}
+- **Gegenstand der Förderung**: {{category}}
+- **Kommune**: {{commune}}
+- **Beschreibung der Dokumente**: {{uploadsDescription}}
+- **Verortung der Maßnahme**: {{geometryCategory}}
+- **Name der Haltestelle**: {{hsName}}
+- **Maßnahmenbeschreibung und Zielsetzung**: {{feedbackText}}
+- **Stand der Bauvorbereitung**: {{stateOfConstruction}}
+- **Kostenschätzung**: {{costs}}
+- **Ko-Finanzierung**: {{coFinancing}}
+- **Ko-Finanzierung: Mittelgeber und Programm**: {{fundingSource}}
+- **Gemeinschaftsbauwerk**: {{sharedBuilding}}
+- **Voraussichtliches Realisierungsjahr**: {{realisationYear}}
+- **Kontaktperson (optional)**: {{contact}}
+- **Telefonnummer (optional)**: {{phone}}
+- **E-Mail-Adresse**: {{email}}
+
+Das Formular erreichen Sie unter folgendem Link:
+{{surveyUrl}}
+
+Mit freundlichen Grüßen
+
+Trassenscout
+`,
+    fields: [
+      "vorgangsId",
+      "commune",
+      "category",
+      "uploadsDescription",
+      "hsName",
+      "feedbackText",
+      "stateOfConstruction",
+      "costs",
+      "coFinancing",
+      "fundingSource",
+      "sharedBuilding",
+      "realisationYear",
+      "contact",
+      "phone",
+      "email",
+      "geometryCategory",
+      "surveyUrl",
+    ],
+    recipients: ["lk@dummy.de", "ohbv@dummy.de"],
+  },
 }

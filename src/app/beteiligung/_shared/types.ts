@@ -261,6 +261,13 @@ export type EmailConfig = {
   fields: string[] // Array of field names to include in email as [label]: value
 }
 
+export type AdminEmailConfig = {
+  subject: string
+  markdown: string
+  fields: string[]
+  recipients: string[]
+}
+
 export type IntroButton = {
   label: string
   action: Stage | "next"
@@ -347,6 +354,7 @@ export type FormConfig = {
   }
   backend: TBackendConfig
   email: EmailConfig | null
+  adminEmail?: AdminEmailConfig | null
 }
 
 export type SurveyFieldRadioOrCheckboxGroupConfig = Extract<

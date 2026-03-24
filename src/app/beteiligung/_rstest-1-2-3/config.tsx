@@ -3,7 +3,7 @@ import { part2Config } from "@/src/app/beteiligung/_rstest-1-2-3/part2"
 import { part3Config } from "@/src/app/beteiligung/_rstest-1-2-3/part3"
 import { FormConfig } from "@/src/app/beteiligung/_shared/types"
 
-export const formConfig = {
+export const formConfig: FormConfig = {
   meta: {
     version: 1,
     title: "Beteiligung",
