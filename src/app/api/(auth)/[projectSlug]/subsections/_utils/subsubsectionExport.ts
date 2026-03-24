@@ -15,7 +15,7 @@ export const subsubsectionExportInclude = {
   SubsubsectionTask: { select: { title: true } },
   SubsubsectionStatus: { select: { title: true } },
   SubsubsectionInfra: { select: { title: true } },
-  SubsubsectionInfrastructureType: { select: { title: true } },
+  SubsubsectionInfrastructureTypes: { select: { title: true } },
 } satisfies Prisma.SubsubsectionInclude
 
 export type SubsubsectionExportRow = Prisma.SubsubsectionGetPayload<{
@@ -72,7 +72,8 @@ function getExportColumns(projectSlug: string) {
     },
     foerdergegenstand: {
       title: "Fördergegenstand",
-      value: (s: SubsubsectionExportRow) => s.SubsubsectionInfrastructureType?.title || "",
+      value: (s: SubsubsectionExportRow) =>
+        s.SubsubsectionInfrastructureTypes.map((type) => type.title).join(", "),
     },
     lage: {
       title: "Lage",

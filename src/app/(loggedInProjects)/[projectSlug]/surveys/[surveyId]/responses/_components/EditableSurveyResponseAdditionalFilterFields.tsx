@@ -43,6 +43,11 @@ const EditableSurveyResponseAdditionalFilterFields = ({
 
   const filteredPart2Responses = Object.entries(surveyPart2ResponseData).filter(
     ([key]) =>
+      !(
+        surveySlug === "ohv-haltestellenfoerderung" &&
+        key === "subsubsectionId" &&
+        typeof surveyPart2ResponseData.vorgangsId === "string"
+      ) &&
       !standardFieldsForFilter.includes(key) &&
       // !key.startsWith("geometry") &&
       !additionaFilterKeysPart2ForFilter.includes(key),
@@ -96,7 +101,11 @@ const EditableSurveyResponseAdditionalFilterFields = ({
               )
             })}
           {filteredPart2Responses.map(([key, value]) => {
-            const field = part2Fields.find((f) => f.name === key)
+            const isHistoricalOhvVorgangsId =
+              surveySlug === "ohv-haltestellenfoerderung" && key === "subsubsectionId"
+            const field = part2Fields.find(
+              (f) => f.name === (isHistoricalOhvVorgangsId ? "vorgangsId" : key),
+            )
             return (
               <tr key={key}>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">

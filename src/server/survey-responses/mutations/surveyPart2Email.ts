@@ -13,11 +13,79 @@ export const SurveyPart2EmailSchema = z.object({
   searchParams: z.record(z.string()).nullable(),
 })
 
+const buildFieldValues = ({
+  data,
+  fields,
+  part2Fields,
+  searchParams,
+  surveySlug,
+}: {
+  data: Record<string, any>
+  fields: string[]
+  part2Fields: ReturnType<typeof getFlatSurveyFormFields>
+  searchParams: Record<string, string> | null
+  surveySlug: AllowedSurveySlugs
+}) => {
+  const fieldValues: Record<string, string> = {}
+
+  fields.forEach((fieldName) => {
+    const field = part2Fields.find((f) => String(f.name) === fieldName)
+    const value = data[fieldName] || ""
+
+    if (fieldName === "surveyUrl" && searchParams) {
+      const queryParams = Object.entries(searchParams)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join("&")
+      fieldValues[fieldName] = `https://trassenscout.de/beteiligung/${surveySlug}/?${queryParams}`
+      return
+    }
+
+    if (field?.component === "SurveyRadiobuttonGroup") {
+      const props = field.props as any
+      if (props.options) {
+        const option = props.options.find((opt: any) => opt.key === value)
+        fieldValues[fieldName] = option?.label || value
+      } else {
+        fieldValues[fieldName] = value
+      }
+      return
+    }
+
+    if (field?.component === "SurveyCheckboxGroup") {
+      const props = field.props as any
+      const selectedValues = (
+        Array.isArray(value)
+          ? value
+          : typeof value === "string" && value.length > 0
+            ? value.split(",")
+            : []
+      ).map((v) => String(v))
+
+      if (props.options) {
+        const labels = selectedValues.map((selectedValue) => {
+          const normalizedValue = selectedValue.trim()
+          const option = props.options.find((opt: any) => opt.key === normalizedValue)
+          return option?.label || normalizedValue
+        })
+        fieldValues[fieldName] = labels.join(", ")
+      } else {
+        fieldValues[fieldName] = selectedValues.join(", ")
+      }
+      return
+    }
+
+    fieldValues[fieldName] = value
+  })
+
+  return fieldValues
+}
+
 export default resolver.pipe(
   resolver.zod(SurveyPart2EmailSchema),
   async ({ surveySessionId, data, surveySlug, searchParams }) => {
     // Get email configuration from survey config
     const emailConfig = getConfigBySurveySlug(surveySlug, "email")
+    const adminEmailConfig = getConfigBySurveySlug(surveySlug, "adminEmail")
 
     if (!emailConfig) {
       return { success: false, message: "No email configuration found for this survey" }
@@ -42,37 +110,12 @@ export default resolver.pipe(
     const part2Config = getConfigBySurveySlug(surveySlug, "part2")
     const part2Fields = getFlatSurveyFormFields(part2Config)
 
-    // Build field values based on email configuration
-    const fieldValues: Record<string, string> = {}
-
-    emailConfig.fields.forEach((fieldName) => {
-      const field = part2Fields.find((f) => String(f.name) === fieldName)
-      // todo fields might be in parsedSurveyPart1 or parsedSurveyPart3
-      const value = data[fieldName] || ""
-
-      if (fieldName === "surveyUrl" && searchParams) {
-        const queryParams = Object.entries(searchParams)
-          .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-          .join("&")
-        fieldValues[fieldName] = `https://trassenscout.de/beteiligung/${surveySlug}/?${queryParams}`
-      } else {
-        // Handle different field types
-        if (
-          field?.component === "SurveyRadiobuttonGroup" ||
-          field?.component === "SurveyCheckboxGroup"
-        ) {
-          // For radio/checkbox groups, get the label from options
-          const props = field.props as any
-          if (props.options) {
-            const option = props.options.find((opt: any) => opt.key === value)
-            fieldValues[fieldName] = option?.label || value
-          } else {
-            fieldValues[fieldName] = value
-          }
-        } else {
-          fieldValues[fieldName] = value
-        }
-      }
+    const fieldValues = buildFieldValues({
+      data,
+      fields: emailConfig.fields,
+      part2Fields,
+      searchParams,
+      surveySlug,
     })
 
     // Create dynamic email mailer
@@ -84,6 +127,31 @@ export default resolver.pipe(
     })
 
     await message.send()
+
+    if (adminEmailConfig && adminEmailConfig.recipients.length > 0) {
+      const adminFieldValues = buildFieldValues({
+        data,
+        fields: adminEmailConfig.fields,
+        part2Fields,
+        searchParams,
+        surveySlug,
+      })
+
+      const recipients = Array.from(new Set(adminEmailConfig.recipients.filter(Boolean)))
+
+      await Promise.all(
+        recipients.map(async (recipient) => {
+          const adminMessage = await surveyEntryCreatedNotificationToUser({
+            userEmail: recipient,
+            subject: adminEmailConfig.subject,
+            markdown: adminEmailConfig.markdown,
+            fieldValues: adminFieldValues,
+          })
+
+          await adminMessage.send()
+        }),
+      )
+    }
 
     return { success: true, message: "Email sent successfully" }
   },

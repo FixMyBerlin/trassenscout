@@ -5,6 +5,7 @@ import {
   Form,
   FormProps,
   LabeledCheckbox,
+  LabeledCheckboxGroup,
   LabeledRadiobuttonGroup,
   LabeledSelect,
   LabeledTextareaField,
@@ -102,8 +103,14 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
   )
   const subsubsectionInfrastructureTypeOptions = createFormOptions(
     subsubsectionInfrastructureTypes,
-    subsubsectionFieldTranslations.subsubsectionInfrastructureTypeId,
-    { optional: true, slugInLabel: true },
+    subsubsectionFieldTranslations.subsubsectionInfrastructureTypeIds,
+    { slugInLabel: true },
+  )
+  const subsubsectionInfrastructureTypeCheckboxItems = subsubsectionInfrastructureTypeOptions.map(
+    ([value, label]) => ({
+      value: String(value),
+      label,
+    }),
   )
 
   return (
@@ -176,13 +183,15 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         label={subsubsectionFieldTranslations.costEstimate}
       />
       <div className="flex items-end gap-5">
-        <LabeledSelect
-          name="subsubsectionInfrastructureTypeId"
-          label={subsubsectionFieldTranslations.subsubsectionInfrastructureTypeId}
-          optional
-          options={subsubsectionInfrastructureTypeOptions}
-          outerProps={{ className: "grow" }}
-        />
+        <div className="grow">
+          <LabeledCheckboxGroup
+            scope="subsubsectionInfrastructureTypeIds"
+            label={subsubsectionFieldTranslations.subsubsectionInfrastructureTypeIds}
+            optional
+            items={subsubsectionInfrastructureTypeCheckboxItems}
+            classNameItemWrapper="grid grid-cols-1 gap-2 md:grid-cols-2"
+          />
+        </div>
         <LinkWithFormDirtyConfirm
           href={`/${projectSlug}/subsubsection-infrastructure-type` as Route}
           className="py-2"

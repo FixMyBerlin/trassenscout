@@ -53,9 +53,12 @@ export const GET = withProjectMembership(viewerRoles, async ({ params }) => {
     page.fields
       .filter((f) => f.componentType === "form")
       .forEach(({ name, component, props }) => {
+        const componentType =
+          translatedComponentTypes[component as keyof typeof translatedComponentTypes] ||
+          "text readonly"
         data.push({
           id: name,
-          type: translatedComponentTypes[component],
+          type: componentType,
           question: props.label || "",
         })
       })

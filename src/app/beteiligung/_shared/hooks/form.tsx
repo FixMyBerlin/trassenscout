@@ -12,6 +12,7 @@ import { SubscribeButton } from "@/src/app/beteiligung/_components/form/Subscrib
 import { SurveyTextarea } from "@/src/app/beteiligung/_components/form/Textarea"
 import { SurveyTextfield } from "@/src/app/beteiligung/_components/form/Textfield"
 import { SurveyUploadField } from "@/src/app/beteiligung/_components/form/UploadField"
+import { SurveyVorgangsIdField } from "@/src/app/beteiligung/_components/form/VorgangsIdField"
 import { SurveyMarkdown } from "@/src/app/beteiligung/_components/layout/SurveyMarkdown"
 
 import { fieldContext, formContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
@@ -22,6 +23,7 @@ export const { useAppForm } = createFormHook({
     SurveyTextfield,
     SurveyReadonlyTextfield,
     SurveyResponseIdField,
+    SurveyVorgangsIdField,
     SurveyTextarea,
     SurveyNumberfield,
     SurveyCheckbox,

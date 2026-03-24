@@ -11,6 +11,7 @@ import { SurveySelect } from "@/src/app/beteiligung/_components/form/Select"
 import { SurveyTextarea } from "@/src/app/beteiligung/_components/form/Textarea"
 import { SurveyTextfield } from "@/src/app/beteiligung/_components/form/Textfield"
 import { SurveyUploadField } from "@/src/app/beteiligung/_components/form/UploadField"
+import { SurveyVorgangsIdField } from "@/src/app/beteiligung/_components/form/VorgangsIdField"
 import { SurveyMarkdown } from "@/src/app/beteiligung/_components/layout/SurveyMarkdown"
 import { TBackendConfig } from "@/src/app/beteiligung/_shared/backend-types"
 import { fieldValidationEnum } from "@/src/app/beteiligung/_shared/fieldvalidationEnum"
@@ -115,6 +116,16 @@ export type FieldConfig =
       defaultValue: string
     } & FormFieldBase & {
         props: Omit<ComponentProps<typeof SurveyReadonlyTextfield>, "required">
+      })
+  | ({
+      component: "SurveyVorgangsIdField"
+      componentType: "form"
+      validation:
+        | (typeof fieldValidationEnum)["optionalString"]
+        | (typeof fieldValidationEnum)["requiredString"]
+      defaultValue: string
+    } & FormFieldBase & {
+        props: Omit<ComponentProps<typeof SurveyVorgangsIdField>, "required" | "vorgangsId">
       })
   | ({
       component: "SurveyResponseIdField"
@@ -250,6 +261,13 @@ export type EmailConfig = {
   fields: string[] // Array of field names to include in email as [label]: value
 }
 
+export type AdminEmailConfig = {
+  subject: string
+  markdown: string
+  fields: string[]
+  recipients: string[]
+}
+
 export type IntroButton = {
   label: string
   action: Stage | "next"
@@ -302,6 +320,7 @@ export type FormConfig = {
     logoUrl: string
     canonicalUrl: string
     maptilerUrl: string
+    hideProgressBar?: boolean
     tildaUrl?: string
     primaryColor: string
     darkColor: string
@@ -335,6 +354,7 @@ export type FormConfig = {
   }
   backend: TBackendConfig
   email: EmailConfig | null
+  adminEmail?: AdminEmailConfig | null
 }
 
 export type SurveyFieldRadioOrCheckboxGroupConfig = Extract<

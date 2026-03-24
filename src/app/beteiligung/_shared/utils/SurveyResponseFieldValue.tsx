@@ -47,6 +47,7 @@ export const SurveyResponseFieldValue = ({
     case "SurveyTextfield":
     case "SurveyReadonlyTextfield":
     case "SurveyResponseIdField":
+    case "SurveyVorgangsIdField":
     case "SurveyTextarea":
       return <span>{String(value)}</span>
 
