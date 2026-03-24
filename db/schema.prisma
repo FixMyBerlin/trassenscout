@@ -366,8 +366,6 @@ model Subsubsection {
   subsubsectionInfraId              Int?
   //
   SubsubsectionInfrastructureTypes  SubsubsectionInfrastructureType[] @relation("SubsubsectionInfrastructureTypes")
-  SubsubsectionInfrastructureType   SubsubsectionInfrastructureType?  @relation("LegacySubsubsectionInfrastructureType", fields: [subsubsectionInfrastructureTypeId], references: [id])
-  subsubsectionInfrastructureTypeId Int?
 
   specialFeatures SubsubsectionSpecial[] // - UNUSED
 
@@ -470,7 +468,6 @@ model SubsubsectionInfrastructureType {
   //
   project                        Project           @relation(fields: [projectId], references: [id])
   projectId                      Int
-  subsubsections                 Subsubsection[]   @relation("LegacySubsubsectionInfrastructureType")
   SubsubsectionInfrastructureTypes Subsubsection[] @relation("SubsubsectionInfrastructureTypes")
 
   @@unique([projectId, slug])

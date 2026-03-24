@@ -103,7 +103,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
   )
   const subsubsectionInfrastructureTypeOptions = createFormOptions(
     subsubsectionInfrastructureTypes,
-    subsubsectionFieldTranslations.subsubsectionInfrastructureTypeId,
+    subsubsectionFieldTranslations.subsubsectionInfrastructureTypeIds,
     { slugInLabel: true },
   )
   const subsubsectionInfrastructureTypeCheckboxItems = subsubsectionInfrastructureTypeOptions.map(
@@ -186,7 +186,7 @@ export function SubsubsectionForm<S extends z.ZodType<any, any>>(props: FormProp
         <div className="grow">
           <LabeledCheckboxGroup
             scope="subsubsectionInfrastructureTypeIds"
-            label={subsubsectionFieldTranslations.subsubsectionInfrastructureTypeId}
+            label={subsubsectionFieldTranslations.subsubsectionInfrastructureTypeIds}
             optional
             items={subsubsectionInfrastructureTypeCheckboxItems}
             classNameItemWrapper="grid grid-cols-1 gap-2 md:grid-cols-2"

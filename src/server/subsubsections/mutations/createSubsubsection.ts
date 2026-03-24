@@ -18,12 +18,6 @@ export default resolver.pipe(
   resolver.zod(CreateSubsubsectionSchema),
   authorizeProjectMember(extractProjectSlug, editorRoles),
   async ({ projectSlug, ...data }) => {
-    if (Array.isArray(data.subsubsectionInfrastructureTypeIds)) {
-      data.subsubsectionInfrastructureTypeId = data.subsubsectionInfrastructureTypeIds[0] ?? null
-    } else if (data.subsubsectionInfrastructureTypeId) {
-      data.subsubsectionInfrastructureTypeIds = [data.subsubsectionInfrastructureTypeId]
-    }
-
     const connect: Record<M2MFieldsType | string, { connect: { id: number }[] | undefined }> = {}
     m2mFields.forEach((fieldName) => {
       connect[fieldName] = {
