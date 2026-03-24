@@ -72,7 +72,11 @@ const EditableSurveyResponseMapAndStaticData = ({
 
   const userCategoryId = response.data[categoryId]
   const surveyCategoryOptions = getSurveyCategoryOptions(surveySlug)
-  const userCategoryLabel = surveyCategoryOptions.find((o) => o.value == userCategoryId)?.label
+  const userCategoryLabels = (Array.isArray(userCategoryId) ? userCategoryId : [userCategoryId])
+    .map((selectedCategoryId) =>
+      surveyCategoryOptions.find((o) => String(o.value) === String(selectedCategoryId))?.label,
+    )
+    .filter(Boolean) as string[]
 
   const additionalFilterFields = backendConfig.additionalFilters
 
@@ -151,8 +155,15 @@ const EditableSurveyResponseMapAndStaticData = ({
           {/* CATEGORY */}
           <div className="flex shrink-0 flex-col items-start gap-4">
             <h4 className="font-semibold">{categoryLabel}</h4>
-            <div className="rounded-sm bg-gray-300 p-3 px-4 font-semibold whitespace-nowrap">
-              {userCategoryLabel}
+            <div className="flex flex-wrap gap-2">
+              {userCategoryLabels.map((label) => (
+                <div
+                  key={label}
+                  className="rounded-sm bg-gray-300 p-3 px-4 font-semibold whitespace-nowrap"
+                >
+                  {label}
+                </div>
+              ))}
             </div>
           </div>
           {/* TABEL */}
