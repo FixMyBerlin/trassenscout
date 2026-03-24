@@ -365,7 +365,8 @@ model Subsubsection {
   SubsubsectionInfra                SubsubsectionInfra?              @relation(fields: [subsubsectionInfraId], references: [id])
   subsubsectionInfraId              Int?
   //
-  SubsubsectionInfrastructureType   SubsubsectionInfrastructureType? @relation(fields: [subsubsectionInfrastructureTypeId], references: [id])
+  SubsubsectionInfrastructureTypes  SubsubsectionInfrastructureType[] @relation("SubsubsectionInfrastructureTypes")
+  SubsubsectionInfrastructureType   SubsubsectionInfrastructureType?  @relation("LegacySubsubsectionInfrastructureType", fields: [subsubsectionInfrastructureTypeId], references: [id])
   subsubsectionInfrastructureTypeId Int?
 
   specialFeatures SubsubsectionSpecial[] // - UNUSED
@@ -460,16 +461,17 @@ model SubsubsectionInfra {
 }
 
 model SubsubsectionInfrastructureType {
-  id             Int             @id @default(autoincrement())
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  id                             Int               @id @default(autoincrement())
+  createdAt                      DateTime          @default(now())
+  updatedAt                      DateTime          @updatedAt
   //
-  slug           String // shortTitle and URL Slug
-  title          String
+  slug                           String // shortTitle and URL Slug
+  title                          String
   //
-  project        Project         @relation(fields: [projectId], references: [id])
-  projectId      Int
-  subsubsections Subsubsection[]
+  project                        Project           @relation(fields: [projectId], references: [id])
+  projectId                      Int
+  subsubsections                 Subsubsection[]   @relation("LegacySubsubsectionInfrastructureType")
+  SubsubsectionInfrastructureTypes Subsubsection[] @relation("SubsubsectionInfrastructureTypes")
 
   @@unique([projectId, slug])
 }
