@@ -56,25 +56,25 @@ To integrate geodata/maps into surveys:
 
 The `trassenscout-umfragen` region is used for survey-specific static data. If a TILDA region already exists for the project, that can be used instead.
 
-Example URLs:
+Example upload base URLs:
 
-- `https://staging.tilda-geo.de/api/uploads/ohv-busverbindungen`
-- `https://staging.tilda-geo.de/api/uploads/ohv-haltestellen`
+- `https://tilda-geo.de/api/uploads/ohv-busverbindungen` (production)
+- `https://staging.tilda-geo.de/api/uploads/ohv-haltestellen` (staging)
 
-PMTiles URLs can be found by:
+**`mapData` source type** (`mapData.const.tsx`, types in `_shared/types.ts`): each map source must set `type` to `pmtiles` or `geojson`. `AllSources` then creates either a **vector** source with `url` `pmtiles://<same base URL>` or a **GeoJSON** source with `data` set to that URL.
 
-- Opening the Inspector's Network tab
-- Filtering for "/api/uploads/"
-- Toggling layers on/off
+**Finding tile / upload URLs**:
 
-Note: These are PMTiles format and require the `pmtiles://https://staging...` prefix in the URL.
+- Browser DevTools → Network → filter `/api/uploads/` → toggle layers on the map
 
-The PMTiles URLs are referenced in a mapData file that is imoportet in the config for the respective map component (- so far we only use this for GeoCategoryMap, but in eventually we want to see the geo data also in the location Map component in case both are combined in a survey)
+**Note:** Only the `pmtiles` path uses the `pmtiles://` protocol prefix in the MapLibre source (handled in code, not in `mapData`).
+
+`mapData` is imported from the survey field config for map components (e.g. `SurveyGeoCategoryMapWithLegend`, `SwitchableMapWithLegend`). The same pattern can be extended later (e.g. showing geo layers alongside a location map when both exist in a survey).
 
 #### 3. Styling
 
 - Styles are defined (location for style specifications is TBD)
-- defined in a mapData file that is imoportet in the config
+- defined in a mapData file that is imported in the config
 - Styles may also be integrated into TILDA
 
 ## Referencing survey questions / evaluationRefs
