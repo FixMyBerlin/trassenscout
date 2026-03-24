@@ -1,6 +1,8 @@
 import { part2Config } from "@/src/app/beteiligung/_ohv-haltestellenfoerderung/part2"
 import { FormConfig } from "@/src/app/beteiligung/_shared/types"
 
+export const OHV_VORGANGS_ID_PREFIX = "547010"
+
 export const formConfig: FormConfig = {
   meta: {
     version: 1,
@@ -45,7 +47,6 @@ Nach Erstellung des Maßnahmenprogramms wird dieses per E-Mail an die Kommunen �
   },
   backend: {
     disableNote: true,
-    vorgangsIdPrefix: "547010",
     labels: {
       category: {
         sg: "Gegenstand der Förderung",

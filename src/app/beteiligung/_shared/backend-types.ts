@@ -19,7 +19,6 @@ type TAdditionalFiltersItem = {
 export type TBackendConfig = {
   // if no status property exists in the config object, the default status items will be used
   status: [StatusItem, ...StatusItem[]]
-  vorgangsIdPrefix?: string
   // if no labels property exists in the config object, the default labels will be used
   labels?: {
     note?: { sg: string; help: string }

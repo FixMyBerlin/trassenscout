@@ -1,5 +1,5 @@
 import db from "@/db"
-import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"
+import { OHV_VORGANGS_ID_PREFIX } from "@/src/app/beteiligung/_ohv-haltestellenfoerderung/config"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { resolver } from "@blitzjs/rpc"
 import { SurveyResponseSourceEnum, SurveyResponseStateEnum } from "@prisma/client"
@@ -72,11 +72,8 @@ export default resolver.pipe(
     })
 
     const surveySlug = surveySession.survey.slug as AllowedSurveySlugs
-    const surveyBackendConfig = getConfigBySurveySlug(surveySlug, "backend")
     const shouldGenerateVorgangsId =
-      surveySlug === "ohv-haltestellenfoerderung" &&
-      input.surveyPart === 2 &&
-      Boolean(surveyBackendConfig.vorgangsIdPrefix)
+      surveySlug === "ohv-haltestellenfoerderung" && input.surveyPart === 2
 
     let initialData = input.data
 
@@ -96,13 +93,13 @@ export default resolver.pipe(
       const highestRunningNumber = existingPart2Responses.reduce((highest, response) => {
         const runningNumber = parseRunningNumber({
           data: response.data,
-          prefix: surveyBackendConfig.vorgangsIdPrefix!,
+          prefix: OHV_VORGANGS_ID_PREFIX,
         })
 
         return runningNumber && runningNumber > highest ? runningNumber : highest
       }, 0)
 
-      const vorgangsId = `${surveyBackendConfig.vorgangsIdPrefix}_${String(
+      const vorgangsId = `${OHV_VORGANGS_ID_PREFIX}_${String(
         highestRunningNumber + 1,
       ).padStart(3, "0")}`
 
