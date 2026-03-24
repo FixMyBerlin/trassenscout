@@ -97,20 +97,26 @@ export const ConvertSurveyResponseToSubsubsectionOhv = ({
 
       // Get category (Fördergegenstand / SubsubsectionInfrastructureType) label from survey response
       const questionCategoryId = getQuestionIdBySurveySlug(surveySlug, "category")
-      const responseCategoryId = response.data[questionCategoryId]
+      const responseCategoryValue = response.data[questionCategoryId]
+      const responseCategorySlugs = Array.isArray(responseCategoryValue)
+        ? responseCategoryValue
+        : responseCategoryValue
+          ? [responseCategoryValue]
+          : []
 
-      // Get all SubsubsectionInfrastructureTypes and find matching one by title
+      // Resolve all selected Fördergegenstände to infrastructure type ids.
       const { subsubsectionInfrastructureTypes } = await invoke(
         getSubsubsectionInfrastructureTypesWithCount,
         {
           projectSlug,
         },
       )
-      const matchingInfrastructureType = responseCategoryId
-        ? subsubsectionInfrastructureTypes.find(
-            (infraType) => infraType.slug === responseCategoryId,
-          )
-        : null
+      const matchingInfrastructureTypes = subsubsectionInfrastructureTypes.filter((infraType) =>
+        responseCategorySlugs.includes(infraType.slug),
+      )
+      const subsubsectionInfrastructureTypeIds = matchingInfrastructureTypes.map(
+        (infraType) => infraType.id,
+      )
 
       // Get project users and find matching user by email
       const projectUsers = await invoke(getProjectUsers, { projectSlug })
@@ -137,6 +143,7 @@ export const ConvertSurveyResponseToSubsubsectionOhv = ({
         subsectionId: subsection.id,
         isExistingInfra: false,
         labelPos: "top",
+        subsubsectionInfrastructureTypeIds,
         estimatedConstructionDateString: response.data["realisationYear"],
         costEstimate: response.data["costs"] ?? null,
         planningCosts: null,
