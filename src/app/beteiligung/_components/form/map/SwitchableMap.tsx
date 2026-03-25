@@ -1,5 +1,3 @@
-import { AllLayers, generateLayers } from "@/src/core/components/Map/AllLayers"
-import { AllSources } from "@/src/core/components/Map/AllSources"
 import {
   LayerType,
   SurveyBackgroundSwitcher,
@@ -13,6 +11,8 @@ import {
   type SwitchableMapLocationPoint,
 } from "@/src/app/beteiligung/_components/form/map/utils"
 import { formClasses } from "@/src/app/beteiligung/_components/form/styles"
+import { AllLayers, generateLayers } from "@/src/core/components/Map/AllLayers"
+import { AllSources } from "@/src/core/components/Map/AllSources"
 
 import SurveyPin from "@/src/app/beteiligung/_components/form/map/Pin"
 import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
@@ -22,9 +22,9 @@ import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getCo
 import { playwrightSendMapLoadedEvent } from "@/tests/_utils/customMapLoadedEvent"
 import { Radio, RadioGroup } from "@headlessui/react"
 import clsx from "clsx"
+import type { Point } from "geojson"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
-import type { Point } from "geojson"
 import { useParams, useSearchParams } from "next/navigation"
 import * as pmtiles from "pmtiles"
 import { useEffect, useState } from "react"
@@ -148,7 +148,8 @@ export const SwitchableMap = ({
     )
       ? setInitialBounds.initialBoundsDefinition.find(
           (d) =>
-            d[setInitialBounds.queryParameter] === searchParams?.get(setInitialBounds.queryParameter),
+            d[setInitialBounds.queryParameter] ===
+            searchParams?.get(setInitialBounds.queryParameter),
         )?.bbox
       : config.bounds
 
@@ -159,10 +160,10 @@ export const SwitchableMap = ({
           longitude: initialLocationPoint.lng,
           zoom: 12,
         }
-      : getInitialViewStateFromGeometryString(fieldValueToGeometryString(field.state.value)) ?? {
+      : (getInitialViewStateFromGeometryString(fieldValueToGeometryString(field.state.value)) ?? {
           bounds: boundsFromConfig,
           fitBoundsOptions: { padding: 70 },
-        }
+        })
   // if we have a setInitialBounds config, set the bbox depending on the search params
   // this allows us to set the initial bounds based on a query parameter (e.g. set in a read only field)
 
@@ -215,9 +216,7 @@ export const SwitchableMap = ({
     // tbd we always want to stroe and id and a geometry maybe it makes more sense to store it as an object {id: string, geometry: string}
     field.form.setFieldValue(geoCategoryIdDefinition.dataKey, geoCategoryId)
     if (geometry.type !== "Point") {
-      throw new Error(
-        `SwitchableMap only supports Point geometries; got ${geometry.type}`,
-      )
+      throw new Error(`SwitchableMap only supports Point geometries; got ${geometry.type}`)
     }
     field.handleChange(pointFromPointGeometry(geometry))
     // read additional properties and set values in from context
@@ -322,7 +321,11 @@ export const SwitchableMap = ({
         aria-label="Bezieht sich Ihre Anmeldung auf eine Haltestelle im Bestand?"
       >
         {options.map((option) => (
-          <Radio value={option.key} className="group flex w-full items-start hover:cursor-pointer">
+          <Radio
+            key={String(option.key)}
+            value={option.key}
+            className="group flex w-full items-start hover:cursor-pointer"
+          >
             <div className="flex h-full min-h-10 items-center">
               <div
                 className={clsx(
