@@ -1,6 +1,4 @@
 import db from "@/db"
-import { OHV_VORGANGS_ID_PREFIX } from "@/src/app/beteiligung/_ohv-haltestellenfoerderung/config"
-import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { resolver } from "@blitzjs/rpc"
 import { SurveyResponseSourceEnum, SurveyResponseStateEnum } from "@prisma/client"
 import { z } from "zod"
@@ -12,22 +10,6 @@ const GetOrCreateCreatedSurveyResponsePublicSchema = z.object({
   source: z.nativeEnum(SurveyResponseSourceEnum),
   status: z.string().optional(),
 })
-
-const parseRunningNumber = ({ data, prefix }: { data: string; prefix: string }): number | null => {
-  const parsedData = JSON.parse(data) as { vorgangsId?: unknown; subsubsectionId?: unknown }
-
-  if (typeof parsedData.vorgangsId === "string") {
-    const formattedMatch = parsedData.vorgangsId.match(new RegExp(`^${prefix}_(\\d{3})$`))
-    if (formattedMatch) return Number(formattedMatch[1])
-  }
-
-  const historicalValue = parsedData.subsubsectionId
-  if (typeof historicalValue === "string" && /^\d{1,3}$/.test(historicalValue)) {
-    return Number(historicalValue)
-  }
-
-  return null
-}
 
 /**
  * Returns the existing CREATED SurveyResponse for the given session+part,
@@ -53,62 +35,11 @@ export default resolver.pipe(
 
     if (existing) return existing
 
-    const surveySession = await db.surveySession.findUniqueOrThrow({
-      where: { id: input.surveySessionId },
-      select: {
-        surveyId: true,
-        survey: {
-          select: {
-            slug: true,
-          },
-        },
-      },
-    })
-
-    const surveySlug = surveySession.survey.slug as AllowedSurveySlugs
-    const shouldGenerateVorgangsId =
-      surveySlug === "ohv-haltestellenfoerderung" && input.surveyPart === 2
-
-    let initialData = input.data
-
-    if (shouldGenerateVorgangsId) {
-      const existingPart2Responses = await db.surveyResponse.findMany({
-        where: {
-          surveyPart: 2,
-          surveySession: {
-            surveyId: surveySession.surveyId,
-          },
-        },
-        select: {
-          data: true,
-        },
-      })
-
-      const highestRunningNumber = existingPart2Responses.reduce((highest, response) => {
-        const runningNumber = parseRunningNumber({
-          data: response.data,
-          prefix: OHV_VORGANGS_ID_PREFIX,
-        })
-
-        return runningNumber && runningNumber > highest ? runningNumber : highest
-      }, 0)
-
-      const vorgangsId = `${OHV_VORGANGS_ID_PREFIX}_${String(highestRunningNumber + 1).padStart(
-        3,
-        "0",
-      )}`
-
-      initialData = JSON.stringify({
-        ...(JSON.parse(input.data) as Record<string, unknown>),
-        vorgangsId,
-      })
-    }
-
     return await db.surveyResponse.create({
       data: {
         surveySessionId: input.surveySessionId,
         surveyPart: input.surveyPart,
-        data: initialData,
+        data: input.data,
         source: input.source,
         status: input.status,
         state: SurveyResponseStateEnum.CREATED,
