@@ -5,3 +5,8 @@
 export const m2mFields = ["subsubsectionInfrastructureTypeIds", "specialFeatures"] as const
 
 export type M2MFieldsType = (typeof m2mFields)[number]
+
+export const m2mFieldRelationNames: Record<M2MFieldsType, string> = {
+  subsubsectionInfrastructureTypeIds: "SubsubsectionInfrastructureTypes",
+  specialFeatures: "specialFeatures",
+}
