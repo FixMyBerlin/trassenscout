@@ -53,16 +53,10 @@ const buildFieldValues = ({
 
     if (field?.component === "SurveyCheckboxGroup") {
       const props = field.props as any
-      const selectedValues = (
-        Array.isArray(value)
-          ? value
-          : typeof value === "string" && value.length > 0
-            ? value.split(",")
-            : []
-      ).map((v) => String(v))
+      const selectedValues = value.map((v: string | number) => String(v))
 
       if (props.options) {
-        const labels = selectedValues.map((selectedValue) => {
+        const labels = selectedValues.map((selectedValue: string) => {
           const normalizedValue = selectedValue.trim()
           const option = props.options.find((opt: any) => opt.key === normalizedValue)
           return option?.label || normalizedValue

@@ -99,11 +99,7 @@ export const ConvertSurveyResponseToSubsubsectionOhv = ({
       // Get category (Fördergegenstand / SubsubsectionInfrastructureType) label from survey response
       const questionCategoryId = getQuestionIdBySurveySlug(surveySlug, "category")
       const responseCategoryValue = response.data[questionCategoryId]
-      const responseCategorySlugs = Array.isArray(responseCategoryValue)
-        ? responseCategoryValue
-        : responseCategoryValue
-          ? [responseCategoryValue]
-          : []
+      const responseCategorySlugs = responseCategoryValue || []
 
       // Resolve all selected Fördergegenstände to infrastructure type ids.
       const { subsubsectionInfrastructureTypes } = await invoke(

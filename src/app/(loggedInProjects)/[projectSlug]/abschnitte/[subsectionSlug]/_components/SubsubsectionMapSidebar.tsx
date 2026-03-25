@@ -168,10 +168,19 @@ export const SubsubsectionMapSidebar = ({ subsubsection, onClose }: Props) => {
               {infrastructureTypeTitles.length > 0 && (
                 <tr>
                   <th className="py-4 pr-3 pl-3 text-left text-sm font-medium text-gray-900">
-                    Fördergegenstand
+                    Fördergegenstände
                   </th>
                   <td className="px-3 py-4 text-sm wrap-break-word text-gray-500">
-                    {infrastructureTypeTitles.join(", ")}
+                    <div className="flex flex-wrap gap-2">
+                      {infrastructureTypeTitles.map((title) => (
+                        <span
+                          key={title}
+                          className="rounded-sm bg-gray-200 px-3 py-1.5 font-medium text-gray-700"
+                        >
+                          {title}
+                        </span>
+                      ))}
+                    </div>
                   </td>
                 </tr>
               )}
