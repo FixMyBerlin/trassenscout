@@ -30,12 +30,7 @@ export function geometryStringForSwitchableMapLocationPoint(value: unknown): str
       ) {
         return JSON.stringify([parsed[0], parsed[1]])
       }
-      if (
-        typeof parsed === "object" &&
-        parsed !== null &&
-        "lng" in parsed &&
-        "lat" in parsed
-      ) {
+      if (typeof parsed === "object" && parsed !== null && "lng" in parsed && "lat" in parsed) {
         const p = parsed as { lng: unknown; lat: unknown }
         if (typeof p.lng === "number" && typeof p.lat === "number") {
           return JSON.stringify([p.lng, p.lat])
@@ -100,7 +95,9 @@ export const detectGeometryType = (geometryString: string): GeometryType => {
  * Parses the `location` field for SwitchableMap. **Points only** — uses {@link detectGeometryType}.
  * @throws If the value encodes a non-point geometry (line, polygon, etc.).
  */
-export function parseSwitchableMapLocationFieldValue(value: unknown): SwitchableMapLocationPoint | null {
+export function parseSwitchableMapLocationFieldValue(
+  value: unknown,
+): SwitchableMapLocationPoint | null {
   const str = geometryStringForSwitchableMapLocationPoint(value)
   if (str == null) return null
   const type = detectGeometryType(str)

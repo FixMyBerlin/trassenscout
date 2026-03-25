@@ -24,7 +24,7 @@ import {
 } from "./layers/UnifiedFeaturesLayer"
 import { getMapStyle } from "./mapStyleConfig"
 import { StaticOverlay } from "./staticOverlay/StaticOverlay"
-import { StaticOverlayPlacement, type StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
+import type { StaticOverlayConfig } from "./staticOverlay/staticOverlay.types"
 import { useMapHighlight, type MapHighlightLevel } from "./useMapHighlight"
 import { useSlugFeatureMap } from "./useSlugFeatureMap"
 import { mergeFeatureCollections } from "./utils/mergeFeatureCollections"
@@ -52,8 +52,6 @@ export type BaseMapProps = Required<Pick<MapProps, "id" | "initialViewState">> &
     classHeight?: string
     children?: React.ReactNode
     staticOverlay?: StaticOverlayConfig
-    /** Defaults to project maps (excludes sources that are only for the survey response form). */
-    staticOverlayPlacement?: StaticOverlayPlacement
     backgroundSwitcherPosition?: "top-left" | "top-right" | "bottom-left" | "bottom-right"
     selectableLayerIdSuffix?: string // Defaults to "" if not provided
     colorSchema: "subsection" | "subsubsection"
@@ -79,7 +77,6 @@ export const BaseMap = ({
   classHeight,
   children,
   staticOverlay,
-  staticOverlayPlacement = StaticOverlayPlacement.projectMap,
   backgroundSwitcherPosition = "top-left",
   selectableLayerIdSuffix = "",
   colorSchema,
@@ -215,9 +212,7 @@ export const BaseMap = ({
         >
           <NavigationControl showCompass={false} />
           {showScaleControl && <ScaleControl />}
-          {staticOverlay && (
-            <StaticOverlay config={staticOverlay} placement={staticOverlayPlacement} />
-          )}
+          {staticOverlay && <StaticOverlay config={staticOverlay} />}
           {unifiedFeatures && (
             <UnifiedFeaturesLayer
               features={unifiedFeatures}

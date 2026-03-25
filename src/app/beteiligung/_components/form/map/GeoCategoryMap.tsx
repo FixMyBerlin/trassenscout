@@ -1,5 +1,3 @@
-import { AllLayers, generateLayers } from "@/src/core/components/Map/AllLayers"
-import { AllSources } from "@/src/core/components/Map/AllSources"
 import {
   LayerType,
   SurveyBackgroundSwitcher,
@@ -10,6 +8,8 @@ import {
   featureStateTargetForMapSource,
   getInitialViewStateFromGeometryString,
 } from "@/src/app/beteiligung/_components/form/map/utils"
+import { AllLayers, generateLayers } from "@/src/core/components/Map/AllLayers"
+import { AllSources } from "@/src/core/components/Map/AllSources"
 
 import { useFieldContext } from "@/src/app/beteiligung/_shared/hooks/form-context"
 import { MapData } from "@/src/app/beteiligung/_shared/types"

@@ -1,27 +1,14 @@
 import { AllLayers, generateLayers } from "@/src/core/components/Map/AllLayers"
 import { AllSources } from "@/src/core/components/Map/AllSources"
-import { filterStaticOverlayForPlacement } from "@/src/core/components/Map/staticOverlay/filterStaticOverlayForPlacement"
-import type {
-  StaticOverlayConfig,
-  StaticOverlayPlacement,
-} from "@/src/core/components/Map/staticOverlay/staticOverlay.types"
-import { useMemo } from "react"
+import type { StaticOverlayConfig } from "@/src/core/components/Map/staticOverlay/staticOverlay.types"
 
-type Props = {
-  config: StaticOverlayConfig
-  placement: StaticOverlayPlacement
-}
+type Props = { config: StaticOverlayConfig }
 
-export const StaticOverlay = ({ config, placement }: Props) => {
-  const mapData = useMemo(
-    () => filterStaticOverlayForPlacement(config, placement),
-    [config, placement],
-  )
-
+export const StaticOverlay = ({ config }: Props) => {
   return (
     <>
-      <AllSources mapData={mapData} />
-      <AllLayers layers={generateLayers(mapData)} />
+      <AllSources mapData={config} />
+      <AllLayers layers={generateLayers(config)} />
     </>
   )
 }
