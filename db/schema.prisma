@@ -63,7 +63,6 @@ model User {
   uploadsUpdated           Upload[]                @relation("UploadUpdatedBy")
   //
   supportDocumentsCreated  SupportDocument[]       @relation("SupportDocumentCreatedBy")
-  projectRecords           ProjectRecord[]
 }
 
 enum UserRoleEnum {
@@ -769,7 +768,6 @@ model ProjectRecord {
   reviewedBy                 User?                    @relation("ProjectRecordReviewedBy", fields: [reviewedById], references: [id])
   reviewedById               Int?
   reviewNotes                String?
-  user                       User?                    @relation(fields: [userId], references: [id])
 }
 
 enum ProjectRecordType {
