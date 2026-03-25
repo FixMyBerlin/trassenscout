@@ -114,7 +114,7 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
     surveySessionId: number
     value: unknown
   }) => {
-    const response = await updateSurveyResponsePublicMutation({
+    return await updateSurveyResponsePublicMutation({
       id,
       surveySessionId: sessionId,
       data: JSON.stringify(value),
@@ -151,21 +151,22 @@ export const SurveyMainPage = ({ surveyId }: Props) => {
     const locationId = getQuestionIdBySurveySlug(surveySlug, "location")
     if (value[enableLocationId] === "nein" || String(value[enableLocationId]) === "2")
       delete value[locationId]
-    if (surveySlug === "ohv-haltestellenfoerderung") {
-      value.subsubsectionId = String(meta.surveyResponseId)
-    }
     // tbd null or delete?
     // delete value.enableLocation
     void (async () => {
       const surveySessionId_ = await getOrCreateSurveySessionId()
-      await updateResponseSubmitted({
+      const response = await updateResponseSubmitted({
         id: meta.surveyResponseId,
         surveySessionId: surveySessionId_,
         value,
       })
+      const submittedData = JSON.parse(response.data) as Record<string, unknown>
+      const submittedVorgangsId =
+        typeof submittedData.vorgangsId === "string" ? submittedData.vorgangsId : null
+      setVorgangsIdByPart((prev) => ({ ...prev, 2: submittedVorgangsId }))
       await surveyPart2EmailMutation({
         surveySessionId: surveySessionId_,
-        data: value,
+        data: submittedData,
         surveySlug,
         searchParams: allParams,
       })
