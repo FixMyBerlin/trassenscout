@@ -1,5 +1,5 @@
-import { AllLayers, generateLayers } from "@/src/app/beteiligung/_components/form/map/AllLayers"
-import { AllSources } from "@/src/app/beteiligung/_components/form/map/AllSources"
+import { AllLayers, generateLayers } from "@/src/core/components/Map/AllLayers"
+import { AllSources } from "@/src/core/components/Map/AllSources"
 import { createGeoJSONFromString } from "@/src/app/beteiligung/_components/form/map/utils"
 import { AllowedSurveySlugs } from "@/src/app/beteiligung/_shared/utils/allowedSurveySlugs"
 import { getConfigBySurveySlug } from "@/src/app/beteiligung/_shared/utils/getConfigBySurveySlug"

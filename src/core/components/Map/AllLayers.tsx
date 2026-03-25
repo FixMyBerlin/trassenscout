@@ -8,25 +8,30 @@ import type {
 } from "maplibre-gl"
 import { Layer } from "react-map-gl/maplibre"
 
-type Props = {
-  layers: {
-    layerKey: string
-    tildaUrl: string
-    mapSourceType: MapSourceType
-    layer: (
-      | Omit<FillLayerSpecification, "source" | "source-layer" | "metadata">
-      | Omit<LineLayerSpecification, "source" | "source-layer" | "metadata">
-      | Omit<SymbolLayerSpecification, "source" | "source-layer" | "metadata">
-      | Omit<CircleLayerSpecification, "source" | "source-layer" | "metadata">
-      | Omit<HeatmapLayerSpecification, "source" | "source-layer" | "metadata">
-    ) & {
-      beforeId?: string
-    }
-  }[]
+type MapLayerSpec = (
+  | Omit<FillLayerSpecification, "source" | "source-layer" | "metadata">
+  | Omit<LineLayerSpecification, "source" | "source-layer" | "metadata">
+  | Omit<SymbolLayerSpecification, "source" | "source-layer" | "metadata">
+  | Omit<CircleLayerSpecification, "source" | "source-layer" | "metadata">
+  | Omit<HeatmapLayerSpecification, "source" | "source-layer" | "metadata">
+) & {
+  beforeId?: string
 }
 
-export const generateLayers = (layers: MapData) => {
-  return Object.entries(layers.sources)
+export type GeneratedMapLayer = {
+  layerKey: string
+  sourceId: string
+  tildaUrl: string
+  mapSourceType: MapSourceType
+  layer: MapLayerSpec
+}
+
+type Props = {
+  layers: GeneratedMapLayer[]
+}
+
+export const generateLayers = (mapData: Pick<MapData, "sources">): GeneratedMapLayer[] => {
+  return Object.entries(mapData.sources)
     .map(([sourceId, sources]) => {
       return sources.layers.map((layer) => {
         const layerKey = `${sourceId}-${layer.id}`

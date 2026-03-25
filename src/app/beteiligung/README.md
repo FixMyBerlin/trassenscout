@@ -61,7 +61,7 @@ Example upload base URLs:
 - `https://tilda-geo.de/api/uploads/ohv-busverbindungen` (production)
 - `https://staging.tilda-geo.de/api/uploads/ohv-haltestellen` (staging)
 
-**`mapData` source type** (`mapData.const.tsx`, types in `_shared/types.ts`): each map source must set `type` to `pmtiles` or `geojson`. `AllSources` then creates either a **vector** source with `url` `pmtiles://<same base URL>` or a **GeoJSON** source with `data` set to that URL.
+**`mapData` source type** (`mapData.const.tsx`, types in `_shared/types.ts`): each map source must set `type` to `pmtiles` or `geojson`. `AllSources` (`src/core/components/Map/AllSources.tsx`) then creates either a **vector** source with `url` `pmtiles://<same base URL>` or a **GeoJSON** source with `data` set to that URL.
 
 **Finding tile / upload URLs**:
 
