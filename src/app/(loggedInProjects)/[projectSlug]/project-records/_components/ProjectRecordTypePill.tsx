@@ -1,4 +1,5 @@
 import { getFullname } from "@/src/app/_components/users/utils/getFullname"
+import { pillShellClassName } from "@/src/core/utils/pillClassNames"
 import getProjectRecord from "@/src/server/projectRecords/queries/getProjectRecord"
 import { SparklesIcon } from "@heroicons/react/16/solid"
 import { ProjectRecordType } from "@prisma/client"
@@ -13,7 +14,9 @@ export const ProjectRecordTypePill = ({
 }) => (
   <span
     className={clsx(
-      "inline-flex items-center rounded-full border border-gray-200 px-2 py-0.5 font-medium text-gray-500",
+      pillShellClassName,
+      "border border-gray-200",
+      "text-gray-500",
       type === ProjectRecordType.USER ? "bg-blue-100" : "bg-gray-100",
     )}
   >
@@ -25,7 +28,7 @@ export const ProjectRecordTypePill = ({
       )
     ) : (
       <span className="inline-flex items-center gap-1">
-        <SparklesIcon className="h-3.5 w-3.5" />
+        <SparklesIcon className="size-3.5" />
         KI
       </span>
     )}

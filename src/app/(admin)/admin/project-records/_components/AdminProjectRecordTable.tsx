@@ -4,6 +4,7 @@ import { Link } from "@/src/core/components/links"
 import { TableWrapper } from "@/src/core/components/Table/TableWrapper"
 import { shortTitle } from "@/src/core/components/text"
 import { ZeroCase } from "@/src/core/components/text/ZeroCase"
+import { pillShellSmClassName } from "@/src/core/utils/pillClassNames"
 import { AdminProjectRecordWithRelations } from "@/src/server/projectRecords/queries/getAllProjectRecordsAdmin"
 import { ProjectRecordReviewState } from "@prisma/client"
 import clsx from "clsx"
@@ -13,7 +14,8 @@ import { de } from "date-fns/locale"
 export const ProjectRecordReviewStatePill = ({ state }: { state: ProjectRecordReviewState }) => (
   <span
     className={clsx(
-      "inline-flex items-center rounded-full border border-gray-200 px-2 py-0.5 text-xs font-medium",
+      pillShellSmClassName,
+      "border",
       {
         [ProjectRecordReviewState.NEEDSREVIEW]: "border-yellow-200 bg-yellow-100 text-yellow-800",
         [ProjectRecordReviewState.NEEDSADMINREVIEW]:
